@@ -1963,6 +1963,18 @@ class NostalgiaForInfinityNext(IStrategy):
 
         return False, None
 
+    def sell_stoploss(self, current_profit: float, last_candle: DataFrame, trade: 'Trade', current_time: 'datetime', max_loss: float) -> tuple:
+        if (current_profit < -0.0) & (last_candle['close'] < last_candle['ema_200']) & (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < self.sell_custom_stoploss_under_rel_1.value) & (last_candle['rsi'] > last_candle['rsi_1h'] + self.sell_custom_stoploss_under_rsi_diff_1.value) & (last_candle['cmf'] < 0.0) & (last_candle['sma_200_dec_24']) & (current_time - timedelta(minutes=720) > trade.open_date_utc):
+            return True, 'signal_stoploss_u_1'
+
+        elif (self.sell_custom_stoploss_long_profit_min_1.value < current_profit < self.sell_custom_stoploss_long_profit_max_1.value) & (current_profit > (-max_loss + self.sell_custom_stoploss_long_recover_1.value)) & (last_candle['cmf'] < 0.0) & (last_candle['close'] < last_candle['ema_200'])  & (last_candle['rsi'] > last_candle['rsi_1h'] + self.sell_custom_stoploss_long_rsi_diff_1.value) & (last_candle['sma_200_dec_24']) & (current_time - timedelta(minutes=1200) > trade.open_date_utc):
+            return True, 'signal_stoploss_l_r_u_1'
+
+        elif (current_profit < -0.0) & (current_profit > (-max_loss + self.sell_custom_stoploss_long_recover_2.value)) & (last_candle['close'] < last_candle['ema_200']) & (last_candle['cmf'] < 0.0) & (last_candle['rsi'] > last_candle['rsi_1h'] + self.sell_custom_stoploss_long_rsi_diff_2.value) & (last_candle['sma_200_dec_24']) & (current_time - timedelta(minutes=1200) > trade.open_date_utc):
+            return True, 'signal_stoploss_l_r_u_2'
+
+        return False, None
+
     def custom_sell(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float,
                     current_profit: float, **kwargs):
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
@@ -2009,6 +2021,11 @@ class NostalgiaForInfinityNext(IStrategy):
 
             # Under EMA200, exit with any profit
             sell, signal_name = self.sell_under_min(current_profit, last_candle)
+            if (sell) and (signal_name is not None):
+                return signal_name
+
+            # Stoplosses
+            sell, signal_name = self.sell_stoploss(current_profit, last_candle, trade, current_time, max_loss)
             if (sell) and (signal_name is not None):
                 return signal_name
 
