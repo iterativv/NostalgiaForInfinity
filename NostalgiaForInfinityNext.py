@@ -1928,9 +1928,24 @@ class NostalgiaForInfinityNext(IStrategy):
 
     def sell_dec_main(self, current_profit: float, last_candle: DataFrame) -> tuple:
         if (self.sell_custom_dec_profit_max_1.value > current_profit > self.sell_custom_dec_profit_min_1.value) & (last_candle['sma_200_dec_20']):
-                return True, 'signal_profit_d_1'
+            return True, 'signal_profit_d_1'
         elif (self.sell_custom_dec_profit_max_2.value > current_profit > self.sell_custom_dec_profit_min_2.value) & (last_candle['close'] < last_candle['ema_100']):
             return True, 'signal_profit_d_2'
+
+        return False, None
+
+    def sell_trail_main(self, current_profit: float, last_candle: DataFrame, max_profit: float) -> tuple:
+        if (self.sell_trail_profit_max_1.value > current_profit > self.sell_trail_profit_min_1.value) & (self.sell_trail_rsi_min_1.value < last_candle['rsi'] < self.sell_trail_rsi_max_1.value) & (max_profit > (current_profit + self.sell_trail_down_1.value)):
+            return True, 'signal_profit_t_1'
+        elif (self.sell_trail_profit_max_2.value > current_profit > self.sell_trail_profit_min_2.value) & (self.sell_trail_rsi_min_2.value < last_candle['rsi'] < self.sell_trail_rsi_max_2.value) & (max_profit > (current_profit + self.sell_trail_down_2.value)):
+            return True, 'signal_profit_t_2'
+        elif (self.sell_trail_profit_max_3.value > current_profit > self.sell_trail_profit_min_3.value) & (max_profit > (current_profit + self.sell_trail_down_3.value)) & (last_candle['sma_200_dec_20_1h']):
+            return True, 'signal_profit_t_3'
+        elif (self.sell_trail_profit_max_4.value > current_profit > self.sell_trail_profit_min_4.value) & (max_profit > (current_profit + self.sell_trail_down_4.value)) & (last_candle['sma_200_dec_24']) & (last_candle['cmf'] < 0.0):
+            return True, 'signal_profit_t_4'
+
+        elif (last_candle['close'] < last_candle['ema_200']) & (current_profit > self.sell_trail_profit_min_3.value) & (current_profit < self.sell_trail_profit_max_3.value) & (max_profit > (current_profit + self.sell_trail_down_3.value)):
+            return True, 'signal_profit_u_t_1'
 
         return False, None
 
@@ -1965,6 +1980,11 @@ class NostalgiaForInfinityNext(IStrategy):
 
             # The pair is descending
             sell, signal_name = self.sell_dec_main(current_profit, last_candle)
+            if (sell) and (signal_name is not None):
+                return signal_name
+
+            # Trailing
+            sell, signal_name = self.sell_trail_main(current_profit, last_candle, max_profit)
             if (sell) and (signal_name is not None):
                 return signal_name
 
