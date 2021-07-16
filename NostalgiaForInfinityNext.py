@@ -1937,7 +1937,7 @@ class NostalgiaForInfinityNext(IStrategy):
     def sell_trail_main(self, current_profit: float, last_candle, max_profit: float) -> tuple:
         if (self.sell_trail_profit_max_1.value > current_profit > self.sell_trail_profit_min_1.value) & (self.sell_trail_rsi_min_1.value < last_candle['rsi'] < self.sell_trail_rsi_max_1.value) & (max_profit > (current_profit + self.sell_trail_down_1.value)):
             return True, 'signal_profit_t_1'
-        elif (self.sell_trail_profit_max_2.value > current_profit > self.sell_trail_profit_min_2.value) & (self.sell_trail_rsi_min_2.value < last_candle['rsi'] < self.sell_trail_rsi_max_2.value) & (max_profit > (current_profit + self.sell_trail_down_2.value)):
+        elif (self.sell_trail_profit_max_2.value > current_profit > self.sell_trail_profit_min_2.value) & (self.sell_trail_rsi_min_2.value < last_candle['rsi'] < self.sell_trail_rsi_max_2.value) & (max_profit > (current_profit + self.sell_trail_down_2.value)) & (last_candle['ema_25'] < last_candle['ema_50']):
             return True, 'signal_profit_t_2'
         elif (self.sell_trail_profit_max_3.value > current_profit > self.sell_trail_profit_min_3.value) & (max_profit > (current_profit + self.sell_trail_down_3.value)) & (last_candle['sma_200_dec_20_1h']):
             return True, 'signal_profit_t_3'
@@ -1969,6 +1969,9 @@ class NostalgiaForInfinityNext(IStrategy):
     def sell_stoploss(self, current_profit: float, last_candle, trade: 'Trade', current_time: 'datetime', max_loss: float, max_profit: float) -> tuple:
         if (current_profit < -0.0) & (last_candle['close'] < last_candle['ema_200']) & (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < self.sell_custom_stoploss_under_rel_1.value) & (last_candle['rsi'] > last_candle['rsi_1h'] + self.sell_custom_stoploss_under_rsi_diff_1.value) & (last_candle['cmf'] < 0.0) & (last_candle['sma_200_dec_24']) & (current_time - timedelta(minutes=720) > trade.open_date_utc):
             return True, 'signal_stoploss_u_1'
+
+        elif (-0.03 > current_profit > -0.05) & (last_candle['btc_not_downtrend_1h'] is False) & (max_profit < 0.005) & (last_candle['sma_200_dec_24']) & (last_candle['cmf'] < 0.0) & (last_candle['close'] < last_candle['ema_200']) & (last_candle['ema_25'] < last_candle['ema_50']):
+            return True, 'signal_stoploss_u_b_1'
 
         elif (self.sell_custom_stoploss_long_profit_min_1.value < current_profit < self.sell_custom_stoploss_long_profit_max_1.value) & (current_profit > (-max_loss + self.sell_custom_stoploss_long_recover_1.value)) & (last_candle['cmf'] < 0.0) & (last_candle['close'] < last_candle['ema_200'])  & (last_candle['rsi'] > last_candle['rsi_1h'] + self.sell_custom_stoploss_long_rsi_diff_1.value) & (last_candle['sma_200_dec_24']) & (current_time - timedelta(minutes=1200) > trade.open_date_utc):
             return True, 'signal_stoploss_l_r_u_1'
