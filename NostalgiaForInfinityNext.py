@@ -1952,7 +1952,14 @@ class NostalgiaForInfinityNext(IStrategy):
     def sell_duration_main(self, current_profit: float, last_candle: DataFrame, trade: 'Trade', current_time: 'datetime') -> tuple:
         # Pumped pair, short duration
         if (last_candle['sell_pump_24_1_1h']) & (0.2 > current_profit > 0.07) & (current_time - timedelta(minutes=30) < trade.open_date_utc):
-                return True, 'signal_profit_p_s_1'
+            return True, 'signal_profit_p_s_1'
+
+        return False, None
+
+
+    def sell_under_min(self, current_profit: float, last_candle: DataFrame) -> tuple:
+        if (current_profit > 0.0) & (last_candle['close'] < last_candle['ema_200']) & (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < self.sell_custom_profit_under_rel_1.value) & (last_candle['rsi'] > last_candle['rsi_1h'] + self.sell_custom_profit_under_rsi_diff_1.value):
+            return True, 'signal_profit_u_e_1'
 
         return False, None
 
@@ -1997,6 +2004,11 @@ class NostalgiaForInfinityNext(IStrategy):
 
             # Duration based
             sell, signal_name = self.sell_duration_main(current_profit, last_candle, trade, current_time)
+            if (sell) and (signal_name is not None):
+                return signal_name
+
+            # Under EMA200, exit with any profit
+            sell, signal_name = self.sell_under_min(current_profit, last_candle)
             if (sell) and (signal_name is not None):
                 return signal_name
 
