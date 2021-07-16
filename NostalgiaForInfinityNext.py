@@ -1987,6 +1987,17 @@ class NostalgiaForInfinityNext(IStrategy):
 
         return False, None
 
+    def sell_pump_extra(self, current_profit: float, last_candle, max_profit: float) -> tuple:
+        # Pumped 48h 1, under EMA200
+        if (self.sell_custom_pump_under_profit_max_1.value > current_profit > self.sell_custom_pump_under_profit_min_1.value) & (last_candle['sell_pump_48_1_1h']) & (last_candle['close'] < last_candle['ema_200']):
+            return True, 'signal_profit_p_u_1'
+
+            # Pumped 36h 2, trail 1
+        elif (last_candle['sell_pump_36_2_1h']) & (self.sell_custom_pump_trail_profit_max_1.value > current_profit > self.sell_custom_pump_trail_profit_min_1.value) & (self.sell_custom_pump_trail_rsi_min_1.value < last_candle['rsi'] < self.sell_custom_pump_trail_rsi_max_1.value) & (max_profit > (current_profit + self.sell_custom_pump_trail_down_1.value)):
+            return True, 'signal_profit_p_t_1'
+
+        return False, None
+
     def custom_sell(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float,
                     current_profit: float, **kwargs):
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
@@ -2043,6 +2054,11 @@ class NostalgiaForInfinityNext(IStrategy):
 
             # Pumped descending pairs
             sell, signal_name = self.sell_pump_dec(current_profit, last_candle)
+            if (sell) and (signal_name is not None):
+                return signal_name
+
+            # Extra sells for pumped pairs
+            sell, signal_name = self.sell_pump_extra(current_profit, last_candle, max_profit)
             if (sell) and (signal_name is not None):
                 return signal_name
 
