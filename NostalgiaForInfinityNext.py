@@ -1791,7 +1791,7 @@ class NostalgiaForInfinityNext(IStrategy):
     def get_ticker_indicator(self):
         return int(self.timeframe[:-1])
 
-    def sell_over_main(self, current_profit: float, last_candle: DataFrame) -> tuple:
+    def sell_over_main(self, current_profit: float, last_candle) -> tuple:
         if (last_candle['close'] > last_candle['ema_200']):
             if (current_profit > self.sell_custom_profit_11.value):
                 if (last_candle['rsi'] < self.sell_custom_rsi_11.value) & (last_candle['ema_25'] < last_candle['ema_50']):
@@ -1831,7 +1831,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     return True, 'signal_profit_0'
         return False, None
 
-    def sell_under_main(self, current_profit: float, last_candle: DataFrame) -> tuple:
+    def sell_under_main(self, current_profit: float, last_candle) -> tuple:
         if (last_candle['close'] < last_candle['ema_200']):
             if (current_profit > self.sell_custom_under_profit_11.value):
                 if (last_candle['rsi'] < self.sell_custom_under_rsi_11.value) & (last_candle['ema_25'] < last_candle['ema_50']):
@@ -1872,7 +1872,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
         return False, None
 
-    def sell_pump_main(self, current_profit: float, last_candle: DataFrame) -> tuple:
+    def sell_pump_main(self, current_profit: float, last_candle) -> tuple:
         if (last_candle['sell_pump_48_1_1h']):
             if (current_profit > self.sell_custom_pump_profit_1_5.value):
                 if (last_candle['rsi'] < self.sell_custom_pump_rsi_1_5.value):
@@ -1926,7 +1926,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
         return False, None
 
-    def sell_dec_main(self, current_profit: float, last_candle: DataFrame) -> tuple:
+    def sell_dec_main(self, current_profit: float, last_candle) -> tuple:
         if (self.sell_custom_dec_profit_max_1.value > current_profit > self.sell_custom_dec_profit_min_1.value) & (last_candle['sma_200_dec_20']):
             return True, 'signal_profit_d_1'
         elif (self.sell_custom_dec_profit_max_2.value > current_profit > self.sell_custom_dec_profit_min_2.value) & (last_candle['close'] < last_candle['ema_100']):
@@ -1934,7 +1934,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
         return False, None
 
-    def sell_trail_main(self, current_profit: float, last_candle: DataFrame, max_profit: float) -> tuple:
+    def sell_trail_main(self, current_profit: float, last_candle, max_profit: float) -> tuple:
         if (self.sell_trail_profit_max_1.value > current_profit > self.sell_trail_profit_min_1.value) & (self.sell_trail_rsi_min_1.value < last_candle['rsi'] < self.sell_trail_rsi_max_1.value) & (max_profit > (current_profit + self.sell_trail_down_1.value)):
             return True, 'signal_profit_t_1'
         elif (self.sell_trail_profit_max_2.value > current_profit > self.sell_trail_profit_min_2.value) & (self.sell_trail_rsi_min_2.value < last_candle['rsi'] < self.sell_trail_rsi_max_2.value) & (max_profit > (current_profit + self.sell_trail_down_2.value)):
@@ -1949,7 +1949,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
         return False, None
 
-    def sell_duration_main(self, current_profit: float, last_candle: DataFrame, trade: 'Trade', current_time: 'datetime') -> tuple:
+    def sell_duration_main(self, current_profit: float, last_candle, trade: 'Trade', current_time: 'datetime') -> tuple:
         # Pumped pair, short duration
         if (last_candle['sell_pump_24_1_1h']) & (0.2 > current_profit > 0.07) & (current_time - timedelta(minutes=30) < trade.open_date_utc):
             return True, 'signal_profit_p_s_1'
@@ -1957,13 +1957,13 @@ class NostalgiaForInfinityNext(IStrategy):
         return False, None
 
 
-    def sell_under_min(self, current_profit: float, last_candle: DataFrame) -> tuple:
+    def sell_under_min(self, current_profit: float, last_candle) -> tuple:
         if (current_profit > 0.0) & (last_candle['close'] < last_candle['ema_200']) & (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < self.sell_custom_profit_under_rel_1.value) & (last_candle['rsi'] > last_candle['rsi_1h'] + self.sell_custom_profit_under_rsi_diff_1.value):
             return True, 'signal_profit_u_e_1'
 
         return False, None
 
-    def sell_stoploss(self, current_profit: float, last_candle: DataFrame, trade: 'Trade', current_time: 'datetime', max_loss: float) -> tuple:
+    def sell_stoploss(self, current_profit: float, last_candle, trade: 'Trade', current_time: 'datetime', max_loss: float) -> tuple:
         if (current_profit < -0.0) & (last_candle['close'] < last_candle['ema_200']) & (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < self.sell_custom_stoploss_under_rel_1.value) & (last_candle['rsi'] > last_candle['rsi_1h'] + self.sell_custom_stoploss_under_rsi_diff_1.value) & (last_candle['cmf'] < 0.0) & (last_candle['sma_200_dec_24']) & (current_time - timedelta(minutes=720) > trade.open_date_utc):
             return True, 'signal_stoploss_u_1'
 
@@ -1972,6 +1972,18 @@ class NostalgiaForInfinityNext(IStrategy):
 
         elif (current_profit < -0.0) & (current_profit > (-max_loss + self.sell_custom_stoploss_long_recover_2.value)) & (last_candle['close'] < last_candle['ema_200']) & (last_candle['cmf'] < 0.0) & (last_candle['rsi'] > last_candle['rsi_1h'] + self.sell_custom_stoploss_long_rsi_diff_2.value) & (last_candle['sma_200_dec_24']) & (current_time - timedelta(minutes=1200) > trade.open_date_utc):
             return True, 'signal_stoploss_l_r_u_2'
+
+        return False, None
+
+    def sell_pump_dec(self, current_profit: float, last_candle) -> tuple:
+        if (self.sell_custom_pump_dec_profit_max_1.value > current_profit > self.sell_custom_pump_dec_profit_min_1.value) & (last_candle['sell_pump_48_1_1h']) & (last_candle['sma_200_dec_20']) & (last_candle['close'] < last_candle['ema_200']):
+            return True, 'signal_profit_p_d_1'
+        elif (self.sell_custom_pump_dec_profit_max_2.value > current_profit > self.sell_custom_pump_dec_profit_min_2.value) & (last_candle['sell_pump_48_2_1h']) & (last_candle['sma_200_dec_20']) & (last_candle['close'] < last_candle['ema_200']):
+            return True, 'signal_profit_p_d_2'
+        elif (self.sell_custom_pump_dec_profit_max_3.value > current_profit > self.sell_custom_pump_dec_profit_min_3.value) & (last_candle['sell_pump_48_3_1h']) & (last_candle['sma_200_dec_20']) & (last_candle['close'] < last_candle['ema_200']):
+            return True, 'signal_profit_p_d_3'
+        elif (self.sell_custom_pump_dec_profit_max_4.value > current_profit > self.sell_custom_pump_dec_profit_min_4.value) & (last_candle['sma_200_dec_20']) & (last_candle['sell_pump_24_2_1h']):
+            return True, 'signal_profit_p_d_4'
 
         return False, None
 
@@ -2026,6 +2038,11 @@ class NostalgiaForInfinityNext(IStrategy):
 
             # Stoplosses
             sell, signal_name = self.sell_stoploss(current_profit, last_candle, trade, current_time, max_loss)
+            if (sell) and (signal_name is not None):
+                return signal_name
+
+            # Pumped descending pairs
+            sell, signal_name = self.sell_pump_dec(current_profit, last_candle)
             if (sell) and (signal_name is not None):
                 return signal_name
 
