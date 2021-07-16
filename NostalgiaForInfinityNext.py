@@ -1954,6 +1954,9 @@ class NostalgiaForInfinityNext(IStrategy):
         if (last_candle['sell_pump_24_1_1h']) & (0.2 > current_profit > 0.07) & (current_time - timedelta(minutes=30) < trade.open_date_utc):
             return True, 'signal_profit_p_s_1'
 
+        elif (self.sell_custom_long_profit_min_1.value < current_profit < self.sell_custom_long_profit_max_1.value) & (current_time - timedelta(minutes=self.sell_custom_long_duration_min_1.value) > trade.open_date_utc):
+            return True, 'signal_profit_l_1'
+
         return False, None
 
 
