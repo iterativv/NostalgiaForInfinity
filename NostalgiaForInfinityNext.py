@@ -1773,7 +1773,7 @@ class NostalgiaForInfinityNext(IStrategy):
     sell_custom_stoploss_pump_ma_offset_3 = DecimalParameter(0.7, 0.99, default=0.88, space='sell', decimals=2, optimize=False, load=True)
 
     # Recover
-    sell_custom_recover_profit_1 = DecimalParameter(0.01, 0.06, default=0.04, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_recover_profit_1 = DecimalParameter(0.01, 0.06, default=0.06, space='sell', decimals=3, optimize=False, load=True)
     sell_custom_recover_min_loss_1 = DecimalParameter(0.06, 0.16, default=0.12, space='sell', decimals=3, optimize=False, load=True)
 
     sell_custom_recover_profit_min_2 = DecimalParameter(0.01, 0.04, default=0.01, space='sell', decimals=3, optimize=False, load=True)
@@ -2004,6 +2004,15 @@ class NostalgiaForInfinityNext(IStrategy):
 
         return False, None
 
+    def sell_recover(self, current_profit: float, last_candle, max_loss: float) -> tuple:
+        if (max_loss > self.sell_custom_recover_min_loss_1.value) & (current_profit > self.sell_custom_recover_profit_1.value):
+            return True, 'signal_profit_r_1'
+
+        elif (max_loss > self.sell_custom_recover_min_loss_2.value) & (self.sell_custom_recover_profit_max_2.value > current_profit > self.sell_custom_recover_profit_min_2.value) & (last_candle['rsi'] < self.sell_custom_recover_rsi_2.value) & (last_candle['ema_25'] < last_candle['ema_50']):
+            return True, 'signal_profit_r_2'
+
+        return False, None
+
     def custom_sell(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float,
                     current_profit: float, **kwargs):
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
@@ -2065,6 +2074,11 @@ class NostalgiaForInfinityNext(IStrategy):
 
             # Extra sells for pumped pairs
             sell, signal_name = self.sell_pump_extra(current_profit, last_candle, max_profit)
+            if (sell) and (signal_name is not None):
+                return signal_name
+
+            # Extra sells for trades that recovered
+            sell, signal_name = self.sell_recover(current_profit, last_candle, max_loss)
             if (sell) and (signal_name is not None):
                 return signal_name
 
