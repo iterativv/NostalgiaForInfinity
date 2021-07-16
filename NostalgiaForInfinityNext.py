@@ -1926,6 +1926,14 @@ class NostalgiaForInfinityNext(IStrategy):
 
         return False, None
 
+    def sell_dec_main(self, current_profit: float, last_candle: DataFrame) -> tuple:
+        if (self.sell_custom_dec_profit_max_1.value > current_profit > self.sell_custom_dec_profit_min_1.value) & (last_candle['sma_200_dec_20']):
+                return True, 'signal_profit_d_1'
+        elif (self.sell_custom_dec_profit_max_2.value > current_profit > self.sell_custom_dec_profit_min_2.value) & (last_candle['close'] < last_candle['ema_100']):
+            return True, 'signal_profit_d_2'
+
+        return False, None
+
     def custom_sell(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float,
                     current_profit: float, **kwargs):
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
@@ -1952,6 +1960,11 @@ class NostalgiaForInfinityNext(IStrategy):
 
             # The pair is pumped
             sell, signal_name = self.sell_pump_main(current_profit, last_candle)
+            if (sell) and (signal_name is not None):
+                return signal_name
+
+            # The pair is descending
+            sell, signal_name = self.sell_dec_main(current_profit, last_candle)
             if (sell) and (signal_name is not None):
                 return signal_name
 
