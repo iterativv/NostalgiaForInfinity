@@ -94,31 +94,31 @@ class NostalgiaForInfinityNext(IStrategy):
         #############
         # Enable/Disable conditions
         "buy_condition_1_enable": True,
-        "buy_condition_2_enable": False,
-        "buy_condition_3_enable": False,
-        "buy_condition_4_enable": False,
-        "buy_condition_5_enable": False,
-        "buy_condition_6_enable": False,
-        "buy_condition_7_enable": False,
-        "buy_condition_8_enable": False,
-        "buy_condition_9_enable": False,
-        "buy_condition_10_enable": False,
-        "buy_condition_11_enable": False,
-        "buy_condition_12_enable": False,
-        "buy_condition_13_enable": False,
-        "buy_condition_14_enable": False,
-        "buy_condition_15_enable": False,
-        "buy_condition_16_enable": False,
-        "buy_condition_17_enable": False,
-        "buy_condition_18_enable": False,
-        "buy_condition_19_enable": False,
-        "buy_condition_20_enable": False,
-        "buy_condition_21_enable": False,
-        "buy_condition_22_enable": False,
-        "buy_condition_23_enable": False,
-        "buy_condition_24_enable": False,
-        "buy_condition_25_enable": False,
-        "buy_condition_26_enable": False,
+        "buy_condition_2_enable": True,
+        "buy_condition_3_enable": True,
+        "buy_condition_4_enable": True,
+        "buy_condition_5_enable": True,
+        "buy_condition_6_enable": True,
+        "buy_condition_7_enable": True,
+        "buy_condition_8_enable": True,
+        "buy_condition_9_enable": True,
+        "buy_condition_10_enable": True,
+        "buy_condition_11_enable": True,
+        "buy_condition_12_enable": True,
+        "buy_condition_13_enable": True,
+        "buy_condition_14_enable": True,
+        "buy_condition_15_enable": True,
+        "buy_condition_16_enable": True,
+        "buy_condition_17_enable": True,
+        "buy_condition_18_enable": True,
+        "buy_condition_19_enable": True,
+        "buy_condition_20_enable": True,
+        "buy_condition_21_enable": True,
+        "buy_condition_22_enable": True,
+        "buy_condition_23_enable": True,
+        "buy_condition_24_enable": True,
+        "buy_condition_25_enable": True,
+        "buy_condition_26_enable": True,
         "buy_condition_27_enable": False,
         #############
     }
@@ -1872,6 +1872,60 @@ class NostalgiaForInfinityNext(IStrategy):
 
         return False, None
 
+    def sell_pump_main(self, current_profit: float, last_candle: DataFrame) -> tuple:
+        if (last_candle['sell_pump_48_1_1h']):
+            if (current_profit > self.sell_custom_pump_profit_1_5.value):
+                if (last_candle['rsi'] < self.sell_custom_pump_rsi_1_5.value):
+                    return True, 'signal_profit_p_1_5'
+            elif (self.sell_custom_pump_profit_1_5.value > current_profit > self.sell_custom_pump_profit_1_4.value):
+                if (last_candle['rsi'] < self.sell_custom_pump_rsi_1_4.value):
+                    return True, 'signal_profit_p_1_4'
+            elif (self.sell_custom_pump_profit_1_4.value > current_profit > self.sell_custom_pump_profit_1_3.value):
+                if (last_candle['rsi'] < self.sell_custom_pump_rsi_1_3.value):
+                    return True, 'signal_profit_p_1_3'
+            elif (self.sell_custom_pump_profit_1_3.value > current_profit > self.sell_custom_pump_profit_1_2.value):
+                if (last_candle['rsi'] < self.sell_custom_pump_rsi_1_2.value):
+                    return True, 'signal_profit_p_1_2'
+            elif (self.sell_custom_pump_profit_1_2.value > current_profit > self.sell_custom_pump_profit_1_1.value):
+                if(last_candle['rsi'] < self.sell_custom_pump_rsi_1_1.value):
+                    return True, 'signal_profit_p_1_1'
+
+        elif (last_candle['sell_pump_36_1_1h']):
+            if (current_profit > self.sell_custom_pump_profit_2_5.value):
+                if (last_candle['rsi'] < self.sell_custom_pump_rsi_2_5.value):
+                    return True, 'signal_profit_p_2_5'
+            elif (self.sell_custom_pump_profit_2_5.value > current_profit > self.sell_custom_pump_profit_2_4.value):
+                if (last_candle['rsi'] < self.sell_custom_pump_rsi_2_4.value):
+                    return True, 'signal_profit_p_2_4'
+            elif (self.sell_custom_pump_profit_2_4.value > current_profit > self.sell_custom_pump_profit_2_3.value):
+                if (last_candle['rsi'] < self.sell_custom_pump_rsi_2_3.value):
+                    return True, 'signal_profit_p_2_3'
+            elif (self.sell_custom_pump_profit_2_3.value > current_profit > self.sell_custom_pump_profit_2_2.value):
+                if (last_candle['rsi'] < self.sell_custom_pump_rsi_2_2.value):
+                    return True, 'signal_profit_p_2_2'
+            elif (self.sell_custom_pump_profit_2_2.value > current_profit > self.sell_custom_pump_profit_2_1.value):
+                if (last_candle['rsi'] < self.sell_custom_pump_rsi_2_1.value):
+                    return True, 'signal_profit_p_2_1'
+
+        elif (last_candle['sell_pump_24_1_1h']):
+            if (current_profit > self.sell_custom_pump_profit_3_5.value):
+                if (last_candle['rsi'] < self.sell_custom_pump_rsi_3_5.value):
+                    return True, 'signal_profit_p_3_5'
+            elif (self.sell_custom_pump_profit_3_5.value > current_profit > self.sell_custom_pump_profit_3_4.value):
+                if (last_candle['rsi'] < self.sell_custom_pump_rsi_3_4.value):
+                    return True, 'signal_profit_p_3_4'
+            elif (self.sell_custom_pump_profit_3_4.value > current_profit > self.sell_custom_pump_profit_3_3.value):
+                if (last_candle['rsi'] < self.sell_custom_pump_rsi_3_3.value):
+                    return True, 'signal_profit_p_3_3'
+            elif (self.sell_custom_pump_profit_3_3.value > current_profit > self.sell_custom_pump_profit_3_2.value):
+                if (last_candle['rsi'] < self.sell_custom_pump_rsi_3_2.value):
+                    return True, 'signal_profit_p_3_2'
+            elif (self.sell_custom_pump_profit_3_2.value > current_profit > self.sell_custom_pump_profit_3_1.value):
+                if (last_candle['rsi'] < self.sell_custom_pump_rsi_3_1.value):
+                    return True, 'signal_profit_p_3_1'
+
+        return False, None
+
     def custom_sell(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float,
                     current_profit: float, **kwargs):
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
@@ -1893,6 +1947,11 @@ class NostalgiaForInfinityNext(IStrategy):
 
             # Under EMA200, main profit targets
             sell, signal_name = self.sell_under_main(current_profit, last_candle)
+            if (sell) and (signal_name is not None):
+                return signal_name
+
+            # The pair is pumped
+            sell, signal_name = self.sell_pump_main(current_profit, last_candle)
             if (sell) and (signal_name is not None):
                 return signal_name
 
