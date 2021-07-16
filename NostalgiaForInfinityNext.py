@@ -1949,6 +1949,13 @@ class NostalgiaForInfinityNext(IStrategy):
 
         return False, None
 
+    def sell_duration_main(self, current_profit: float, last_candle: DataFrame, trade: 'Trade', current_time: 'datetime') -> tuple:
+        # Pumped pair, short duration
+        if (last_candle['sell_pump_24_1_1h']) & (0.2 > current_profit > 0.07) & (current_time - timedelta(minutes=30) < trade.open_date_utc):
+                return True, 'signal_profit_p_s_1'
+
+        return False, None
+
     def custom_sell(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float,
                     current_profit: float, **kwargs):
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
@@ -1985,6 +1992,11 @@ class NostalgiaForInfinityNext(IStrategy):
 
             # Trailing
             sell, signal_name = self.sell_trail_main(current_profit, last_candle, max_profit)
+            if (sell) and (signal_name is not None):
+                return signal_name
+
+            # Duration based
+            sell, signal_name = self.sell_duration_main(current_profit, last_candle, trade, current_time)
             if (sell) and (signal_name is not None):
                 return signal_name
 
