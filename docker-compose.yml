@@ -1,0 +1,24 @@
+---
+version: '3'
+services:
+  backtesting:
+    image: freqtradeorg/freqtrade:develop
+    container_name: freqtrade-backtesting
+    volumes:
+      - "./user_data:/freqtrade/user_data"
+    command: >
+      backtesting
+      --strategy-list NostalgiaForInfinityNext
+      --timerange ${TIMERANGE}
+      --config user_data/pairlists.json
+      --config user_data/one_trade_unlimited.json
+      --max-open-trades
+      ${MAX_OPEN_TRADES}
+      --stake-amount ${STAKE_AMOUNT}
+  download-data:
+    image: freqtradeorg/freqtrade:develop
+    container_name: download-data
+    volumes:
+      - "./user_data:/freqtrade/user_data"
+    command: >
+      download-data --timerange 20201201-20210701 --timeframe 5m 1h --config user_data/pairlists.json --config user_data/one_trade_unlimited.json
