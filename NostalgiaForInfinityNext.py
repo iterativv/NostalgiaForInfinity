@@ -2100,6 +2100,23 @@ class NostalgiaForInfinityNext(IStrategy):
 
         return False, None
 
+
+    def sell_r_3(self, current_profit: float, last_candle) -> tuple:
+        if (0.02 > current_profit > 0.012):
+            if (last_candle['r_480'] > -6.0) & (last_candle['rsi'] > 74.0) & (last_candle['stochrsi_fastk_96'] > 99.0) & (last_candle['stochrsi_fastd_96'] > 99.0):
+                return True, 'signal_profit_w_3_1'
+        elif (0.03 > current_profit > 0.02):
+            if (last_candle['r_480'] > -8.0) & (last_candle['rsi'] > 74.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
+                return True, 'signal_profit_w_3_2'
+        elif (0.04 > current_profit > 0.03):
+            if (last_candle['r_480'] > -29.0) & (last_candle['rsi'] > 74.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
+                return True, 'signal_profit_w_3_3'
+        elif (0.05 > current_profit > 0.04):
+            if (last_candle['r_480'] > -30.0) & (last_candle['rsi'] > 79.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
+                return True, 'signal_profit_w_3_4'
+
+        return False, None
+
     def custom_sell(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float,
                     current_profit: float, **kwargs):
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
@@ -2176,6 +2193,11 @@ class NostalgiaForInfinityNext(IStrategy):
 
             # Williams %R based sell 2
             sell, signal_name = self.sell_r_2(current_profit, last_candle)
+            if (sell) and (signal_name is not None):
+                return signal_name
+
+            # Williams %R based sell 3
+            sell, signal_name = self.sell_r_3(current_profit, last_candle)
             if (sell) and (signal_name is not None):
                 return signal_name
 
