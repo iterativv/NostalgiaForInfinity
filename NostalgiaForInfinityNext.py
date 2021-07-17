@@ -2020,7 +2020,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
         return False, None
 
-    def sell_r(self, current_profit: float, last_candle) -> tuple:
+    def sell_r_1(self, current_profit: float, last_candle) -> tuple:
         if (0.02 > current_profit > 0.012):
             if (last_candle['r_480'] > -5.0):
                 return True, 'signal_profit_w_1'
