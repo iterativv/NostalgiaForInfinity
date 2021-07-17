@@ -1,7 +1,6 @@
 {
     "exchange": {
         "pair_whitelist": [
-            "AAVE/USDT",
             "ADA/USDT",
             "AION/USDT",
             "ALGO/USDT",
@@ -127,6 +126,7 @@
             "ZEN/USDT",
             "ZIL/USDT",
             "ZRX/USDT",
+            "AAVE/USDT",
         ]
     }
 }
