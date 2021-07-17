@@ -93,32 +93,32 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_params = {
         #############
         # Enable/Disable conditions
-        "buy_condition_1_enable": False,
-        "buy_condition_2_enable": False,
-        "buy_condition_3_enable": False,
-        "buy_condition_4_enable": False,
-        "buy_condition_5_enable": False,
-        "buy_condition_6_enable": False,
-        "buy_condition_7_enable": False,
-        "buy_condition_8_enable": False,
-        "buy_condition_9_enable": False,
-        "buy_condition_10_enable": False,
-        "buy_condition_11_enable": False,
-        "buy_condition_12_enable": False,
-        "buy_condition_13_enable": False,
-        "buy_condition_14_enable": False,
-        "buy_condition_15_enable": False,
-        "buy_condition_16_enable": False,
-        "buy_condition_17_enable": False,
-        "buy_condition_18_enable": False,
-        "buy_condition_19_enable": False,
-        "buy_condition_20_enable": False,
-        "buy_condition_21_enable": False,
+        "buy_condition_1_enable": True,
+        "buy_condition_2_enable": True,
+        "buy_condition_3_enable": True,
+        "buy_condition_4_enable": True,
+        "buy_condition_5_enable": True,
+        "buy_condition_6_enable": True,
+        "buy_condition_7_enable": True,
+        "buy_condition_8_enable": True,
+        "buy_condition_9_enable": True,
+        "buy_condition_10_enable": True,
+        "buy_condition_11_enable": True,
+        "buy_condition_12_enable": True,
+        "buy_condition_13_enable": True,
+        "buy_condition_14_enable": True,
+        "buy_condition_15_enable": True,
+        "buy_condition_16_enable": True,
+        "buy_condition_17_enable": True,
+        "buy_condition_18_enable": True,
+        "buy_condition_19_enable": True,
+        "buy_condition_20_enable": True,
+        "buy_condition_21_enable": True,
         "buy_condition_22_enable": True,
-        "buy_condition_23_enable": False,
-        "buy_condition_24_enable": False,
-        "buy_condition_25_enable": False,
-        "buy_condition_26_enable": False,
+        "buy_condition_23_enable": True,
+        "buy_condition_24_enable": True,
+        "buy_condition_25_enable": True,
+        "buy_condition_26_enable": True,
         "buy_condition_27_enable": False,
         #############
     }
@@ -1971,7 +1971,7 @@ class NostalgiaForInfinityNext(IStrategy):
             return True, 'signal_stoploss_u_1'
 
         # Under EMA200, pair & BTC negative, low max rate
-        elif (-0.03 > current_profit > -0.05) & (last_candle['btc_not_downtrend_1h'] is False) & (max_profit < 0.005) & (last_candle['sma_200_dec_24']) & (last_candle['cmf'] < 0.0) & (last_candle['close'] < last_candle['ema_200']) & (last_candle['ema_25'] < last_candle['ema_50']):
+        elif (-0.03 > current_profit > -0.07) & (last_candle['btc_not_downtrend_1h'] is False) & (max_profit < 0.005) & (last_candle['sma_200_dec_24']) & (last_candle['cmf'] < 0.0) & (last_candle['close'] < last_candle['ema_200']) & (last_candle['ema_25'] < last_candle['ema_50']):
             return True, 'signal_stoploss_u_b_1'
 
         elif (self.sell_custom_stoploss_long_profit_min_1.value < current_profit < self.sell_custom_stoploss_long_profit_max_1.value) & (current_profit > (-max_loss + self.sell_custom_stoploss_long_recover_1.value)) & (last_candle['cmf'] < 0.0) & (last_candle['close'] < last_candle['ema_200'])  & (last_candle['rsi'] > last_candle['rsi_1h'] + self.sell_custom_stoploss_long_rsi_diff_1.value) & (last_candle['sma_200_dec_24']) & (current_time - timedelta(minutes=1200) > trade.open_date_utc):
