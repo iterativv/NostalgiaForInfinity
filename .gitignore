@@ -130,3 +130,6 @@ dmypy.json
 
 # Don't commit candle data
 user_data/data/*.json
+
+# IntelliJ
+.idea
