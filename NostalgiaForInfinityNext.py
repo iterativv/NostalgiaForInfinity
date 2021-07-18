@@ -2062,44 +2062,43 @@ class NostalgiaForInfinityNext(IStrategy):
 
     def sell_r_2(self, current_profit: float, last_candle) -> tuple:
         if (0.02 > current_profit > 0.012):
-            if (last_candle['r_480'] > -4.0) & (last_candle['rsi'] > 78.0) & (last_candle['stochrsi_fastk_96'] > 99.0) & (last_candle['stochrsi_fastd_96'] > 99.0):
+            if (last_candle['r_480'] > -2.0) & (last_candle['rsi'] > 79.0) & (last_candle['stochrsi_fastk_96'] > 99.0) & (last_candle['stochrsi_fastd_96'] > 99.0):
                 return True, 'signal_profit_w_2_1'
         elif (0.03 > current_profit > 0.02):
-            if (last_candle['r_480'] > -4.5) & (last_candle['rsi'] > 78.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
+            if (last_candle['r_480'] > -2.1) & (last_candle['rsi'] > 79.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
                 return True, 'signal_profit_w_2_2'
         elif (0.04 > current_profit > 0.03):
-            if (last_candle['r_480'] > -5.0) & (last_candle['rsi'] > 78.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
+            if (last_candle['r_480'] > -2.2) & (last_candle['rsi'] > 79.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
                 return True, 'signal_profit_w_2_3'
         elif (0.05 > current_profit > 0.04):
-            if (last_candle['r_480'] > -5.5) & (last_candle['rsi'] > 78.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
+            if (last_candle['r_480'] > -2.3) & (last_candle['rsi'] > 79.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
                 return True, 'signal_profit_w_2_4'
         elif (0.06 > current_profit > 0.05):
-            if (last_candle['r_480'] > -6.0) & (last_candle['rsi'] > 78.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
+            if (last_candle['r_480'] > -2.4) & (last_candle['rsi'] > 79.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
                 return True, 'signal_profit_w_2_5'
         elif (0.07 > current_profit > 0.06):
-            if (last_candle['r_480'] > -30.0) & (last_candle['rsi'] > 79.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
+            if (last_candle['r_480'] > -2.5) & (last_candle['rsi'] > 79.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
                 return True, 'signal_profit_w_2_6'
         elif (0.08 > current_profit > 0.07):
             if (last_candle['r_480'] > -34.0) & (last_candle['rsi'] > 80.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
                 return True, 'signal_profit_w_2_7'
         elif (0.09 > current_profit > 0.08):
-            if (last_candle['r_480'] > -7.0) & (last_candle['rsi'] > 80.5) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
+            if (last_candle['r_480'] > -3.0) & (last_candle['rsi'] > 80.5) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
                 return True, 'signal_profit_w_2_8'
         elif (0.1 > current_profit > 0.09):
-            if (last_candle['r_480'] > -6.0) & (last_candle['rsi'] > 80.5) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
+            if (last_candle['r_480'] > -2.8) & (last_candle['rsi'] > 80.5) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
                 return True, 'signal_profit_w_2_9'
         elif (0.12 > current_profit > 0.1):
-            if (last_candle['r_480'] > -5.0) & (last_candle['rsi'] > 80.5) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
+            if (last_candle['r_480'] > -2.4) & (last_candle['rsi'] > 80.5) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
                 return True, 'signal_profit_w_2_10'
         elif (0.2 > current_profit > 0.12):
-            if (last_candle['r_480'] > -4.0) & (last_candle['rsi'] > 81.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
+            if (last_candle['r_480'] > -2.2) & (last_candle['rsi'] > 81.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
                 return True, 'signal_profit_w_2_11'
         elif (current_profit > 0.2):
-            if (last_candle['r_480'] > -3.0) & (last_candle['rsi'] > 81.5) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
+            if (last_candle['r_480'] > -2.0) & (last_candle['rsi'] > 81.5) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
                 return True, 'signal_profit_w_2_12'
 
         return False, None
-
 
     def sell_r_3(self, current_profit: float, last_candle) -> tuple:
         if (0.02 > current_profit > 0.012):
