@@ -233,7 +233,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "close_above_ema_fast"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
             "close_above_ema_fast_len"  : CategoricalParameter(["12","20","26","50","100","200"], default="100", space='buy', optimize=False, load=True),
             "close_above_ema_slow"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
-            "close_above_ema_slow_len"  : CategoricalParameter(["24","36","48"], default="36", space='buy', optimize=False, load=True),
+            "close_above_ema_slow_len"  : CategoricalParameter(["50","100","200"], default="200", space='buy', optimize=False, load=True),
             "sma200_rising"             : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
             "sma200_rising_val"         : CategoricalParameter(["20","30","36","44","50"], default="50", space='buy', optimize=False, load=True),
             "sma200_1h_rising"          : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
