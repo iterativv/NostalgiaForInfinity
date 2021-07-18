@@ -10,11 +10,10 @@ services:
     command: >
       backtesting
       --strategy-list NostalgiaForInfinityNext
-      --timerange ${TIMERANGE}
+      --timerange ${TIMERANGE:-20210601-20210701}
       --config user_data/pairlists.json
-      --max-open-trades
-      ${MAX_OPEN_TRADES}
-      --stake-amount ${STAKE_AMOUNT}
+      --max-open-trades ${MAX_OPEN_TRADES:-5}
+      --stake-amount ${STAKE_AMOUNT:-unlimited}
   download-data:
     image: freqtradeorg/freqtrade:develop
     container_name: download-data
