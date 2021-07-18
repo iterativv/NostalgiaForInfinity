@@ -6,7 +6,7 @@ services:
     container_name: freqtrade-backtesting
     volumes:
       - "./user_data:/freqtrade/user_data"
-      - "./NostalgiaForInfinityNext.py:/freqtrade/NostalgiaForInfinityNext.py"
+      - "./NostalgiaForInfinityNext.py:/freqtrade/user_data/strategies/NostalgiaForInfinityNext.py"
     command: >
       backtesting
       --strategy-list NostalgiaForInfinityNext
