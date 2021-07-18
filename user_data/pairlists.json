@@ -6,7 +6,7 @@
   "fiat_display_currency": "USD",
   "timeframe": "5m",
   "dry_run": false,
-  "dry_run_wallet": 112,
+  "dry_run_wallet": 1000,
   "cancel_open_orders_on_exit": false,
   "bid_strategy": {
       "price_side": "ask",
