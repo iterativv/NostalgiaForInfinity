@@ -2022,40 +2022,40 @@ class NostalgiaForInfinityNext(IStrategy):
 
     def sell_r_1(self, current_profit: float, last_candle) -> tuple:
         if (0.02 > current_profit > 0.012):
-            if (last_candle['r_480'] > -5.0):
+            if (last_candle['r_480'] > -2.0):
                 return True, 'signal_profit_w_1_1'
         elif (0.03 > current_profit > 0.02):
-            if (last_candle['r_480'] > -5.5):
+            if (last_candle['r_480'] > -2.1):
                 return True, 'signal_profit_w_1_2'
         elif (0.04 > current_profit > 0.03):
-            if (last_candle['r_480'] > -6.0):
+            if (last_candle['r_480'] > -2.2):
                 return True, 'signal_profit_w_1_3'
         elif (0.05 > current_profit > 0.04):
-            if (last_candle['r_480'] > -6.5):
+            if (last_candle['r_480'] > -2.3):
                 return True, 'signal_profit_w_1_4'
         elif (0.06 > current_profit > 0.05):
-            if (last_candle['r_480'] > -6.0):
+            if (last_candle['r_480'] > -2.4):
                 return True, 'signal_profit_w_1_5'
         elif (0.07 > current_profit > 0.06):
-            if (last_candle['r_480'] > -7.0):
+            if (last_candle['r_480'] > -2.5): ###
                 return True, 'signal_profit_w_1_6'
         elif (0.08 > current_profit > 0.07):
-            if (last_candle['r_480'] > -6.0):
+            if (last_candle['r_480'] > -2.6):
                 return True, 'signal_profit_w_1_7'
         elif (0.09 > current_profit > 0.08):
             if (last_candle['r_480'] > -5.5):
                 return True, 'signal_profit_w_1_8'
         elif (0.1 > current_profit > 0.09):
-            if (last_candle['r_480'] > -4.5):
+            if (last_candle['r_480'] > -3.0):
                 return True, 'signal_profit_w_1_9'
         elif (0.12 > current_profit > 0.1):
-            if (last_candle['r_480'] > -9.5):
+            if (last_candle['r_480'] > -8.0):
                 return True, 'signal_profit_w_1_10'
         elif (0.2 > current_profit > 0.12):
-            if (last_candle['r_480'] > -4.0) & (last_candle['rsi'] > 78.0):
+            if (last_candle['r_480'] > -2.0) & (last_candle['rsi'] > 78.0):
                 return True, 'signal_profit_w_1_11'
         elif (current_profit > 0.2):
-            if (last_candle['r_480'] > -3.0) & (last_candle['rsi'] > 80.0):
+            if (last_candle['r_480'] > -1.5) & (last_candle['rsi'] > 80.0):
                 return True, 'signal_profit_w_1_12'
 
         return False, None
