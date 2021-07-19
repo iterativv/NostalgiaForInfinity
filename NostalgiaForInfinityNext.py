@@ -141,6 +141,7 @@ class NostalgiaForInfinityNext(IStrategy):
         "buy_condition_26_enable": True,
         "buy_condition_27_enable": True,
         "buy_condition_28_enable": True,
+        "buy_condition_29_enable": True,
         #############
     }
 
@@ -748,6 +749,27 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_type"            : CategoricalParameter(["10","50","100"], default="110", space='buy', optimize=False, load=True),
             "safe_pump_period"          : CategoricalParameter(["24","36","48"], default="36", space='buy', optimize=False, load=True),
             "btc_1h_not_downtrend"      : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True)
+        },
+        29: {
+            "enable"                    : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
+            "ema_fast"                  : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "ema_fast_len"              : CategoricalParameter(["26","50","100","200"], default="50", space='buy', optimize=False, load=True),
+            "ema_slow"                  : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "ema_slow_len"              : CategoricalParameter(["26","50","100","200"], default="100", space='buy', optimize=False, load=True),
+            "close_above_ema_fast"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "close_above_ema_fast_len"  : CategoricalParameter(["12","20","26","50","100","200"], default="50", space='buy', optimize=False, load=True),
+            "close_above_ema_slow"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "close_above_ema_slow_len"  : CategoricalParameter(["15","50","200"], default="200", space='buy', optimize=False, load=True),
+            "sma200_rising"             : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "sma200_rising_val"         : CategoricalParameter(["20","30","36","44","50"], default="30", space='buy', optimize=False, load=True),
+            "sma200_1h_rising"          : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "sma200_1h_rising_val"      : CategoricalParameter(["20","30","36","44","50"], default="50", space='buy', optimize=False, load=True),
+            "safe_dips"                 : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "safe_dips_type"            : CategoricalParameter(["10","50","100"], default="50", space='buy', optimize=False, load=True),
+            "safe_pump"                 : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "safe_pump_type"            : CategoricalParameter(["10","50","100"], default="110", space='buy', optimize=False, load=True),
+            "safe_pump_period"          : CategoricalParameter(["24","36","48"], default="36", space='buy', optimize=False, load=True),
+            "btc_1h_not_downtrend"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
         }
     }
 
@@ -1310,6 +1332,26 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_28_protection__safe_pump_type           = buy_protection_params[28]["safe_pump_type"]
     buy_28_protection__safe_pump_period         = buy_protection_params[28]["safe_pump_period"]
     buy_28_protection__btc_1h_not_downtrend     = buy_protection_params[28]["btc_1h_not_downtrend"]
+
+    buy_condition_29_enable = buy_protection_params[29]["enable"]
+    buy_29_protection__ema_fast                 = buy_protection_params[29]["ema_fast"]
+    buy_29_protection__ema_fast_len             = buy_protection_params[29]["ema_fast_len"]
+    buy_29_protection__ema_slow                 = buy_protection_params[29]["ema_slow"]
+    buy_29_protection__ema_slow_len             = buy_protection_params[29]["ema_slow_len"]
+    buy_29_protection__close_above_ema_fast     = buy_protection_params[29]["close_above_ema_fast"]
+    buy_29_protection__close_above_ema_fast_len = buy_protection_params[29]["close_above_ema_fast_len"]
+    buy_29_protection__close_above_ema_slow     = buy_protection_params[29]["close_above_ema_slow"]
+    buy_29_protection__close_above_ema_slow_len = buy_protection_params[29]["close_above_ema_slow_len"]
+    buy_29_protection__sma200_rising            = buy_protection_params[29]["sma200_rising"]
+    buy_29_protection__sma200_rising_val        = buy_protection_params[29]["sma200_rising_val"]
+    buy_29_protection__sma200_1h_rising         = buy_protection_params[29]["sma200_1h_rising"]
+    buy_29_protection__sma200_1h_rising_val     = buy_protection_params[29]["sma200_1h_rising_val"]
+    buy_29_protection__safe_dips                = buy_protection_params[29]["safe_dips"]
+    buy_29_protection__safe_dips_type           = buy_protection_params[29]["safe_dips_type"]
+    buy_29_protection__safe_pump                = buy_protection_params[29]["safe_pump"]
+    buy_29_protection__safe_pump_type           = buy_protection_params[29]["safe_pump_type"]
+    buy_29_protection__safe_pump_period         = buy_protection_params[29]["safe_pump_period"]
+    buy_29_protection__btc_1h_not_downtrend     = buy_protection_params[29]["btc_1h_not_downtrend"]
 
     # Strict dips - level 10
     buy_dip_threshold_10_1 = DecimalParameter(0.001, 0.05, default=0.015, space='buy', decimals=3, optimize=False, load=True)
@@ -3212,6 +3254,19 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['close'] < dataframe['hull_75'] * 0.92)
             item_buy_logic.append(dataframe['ewo'] > 12.4)
             item_buy_logic.append(dataframe['rsi'] < 38.0)
+            item_buy_logic.append(dataframe['volume'] > 0)
+            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+
+        # Buy Condition #29
+        # -----------------------------------------------------------------------------------------
+        if self.buy_params['buy_condition_29_enable']:
+            # Non-Standard protections (add below)
+
+            item_buy_logic = []
+            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[28]))
+            item_buy_logic.append(dataframe['moderi_64'] == True)
+            item_buy_logic.append(dataframe['close'] < dataframe['hull_75'] * 0.9)
+            item_buy_logic.append(dataframe['ewo'] < -4.0)
             item_buy_logic.append(dataframe['volume'] > 0)
             conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
 
