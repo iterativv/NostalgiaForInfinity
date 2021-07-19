@@ -1870,65 +1870,65 @@ class NostalgiaForInfinityNext(IStrategy):
     def sell_over_main(self, current_profit: float, last_candle) -> tuple:
         if (last_candle['close'] > last_candle['ema_200']):
             if (current_profit > self.sell_custom_profit_11.value):
-                if (last_candle['rsi'] < self.sell_custom_rsi_11.value) & (last_candle['ema_25'] < last_candle['ema_50']):
+                if (last_candle['rsi'] < self.sell_custom_rsi_11.value):
                     return True, 'signal_profit_11'
             elif (self.sell_custom_profit_11.value > current_profit > self.sell_custom_profit_10.value):
-                if (last_candle['rsi'] < self.sell_custom_rsi_10.value) & (last_candle['ema_25'] < last_candle['ema_50']):
+                if (last_candle['rsi'] < self.sell_custom_rsi_10.value):
                     return True, 'signal_profit_10'
             elif (self.sell_custom_profit_10.value > current_profit > self.sell_custom_profit_9.value):
-                if (last_candle['rsi'] < self.sell_custom_rsi_9.value) & (last_candle['ema_25'] < last_candle['ema_50']):
+                if (last_candle['rsi'] < self.sell_custom_rsi_9.value):
                     return True, 'signal_profit_9'
             elif (self.sell_custom_profit_9.value > current_profit > self.sell_custom_profit_8.value):
-                if (last_candle['rsi'] < self.sell_custom_rsi_8.value) & (last_candle['ema_25'] < last_candle['ema_50']):
+                if (last_candle['rsi'] < self.sell_custom_rsi_8.value):
                     return True, 'signal_profit_8'
             elif (self.sell_custom_profit_8.value > current_profit > self.sell_custom_profit_7.value):
-                if (last_candle['rsi'] < self.sell_custom_rsi_7.value) & (last_candle['cmf'] < 0.0)  & (last_candle['ema_25'] < last_candle['ema_50']):
+                if (last_candle['rsi'] < self.sell_custom_rsi_7.value) & (last_candle['cmf'] < 0.0) :
                     return True, 'signal_profit_7'
             elif (self.sell_custom_profit_7.value > current_profit > self.sell_custom_profit_6.value):
-                if (last_candle['rsi'] < self.sell_custom_rsi_6.value) & (last_candle['cmf'] < 0.0) & (last_candle['ema_25'] < last_candle['ema_50']):
+                if (last_candle['rsi'] < self.sell_custom_rsi_6.value) & (last_candle['cmf'] < 0.0):
                     return True, 'signal_profit_6'
             elif (self.sell_custom_profit_6.value > current_profit > self.sell_custom_profit_5.value):
-                if (last_candle['rsi'] < self.sell_custom_rsi_5.value) & (last_candle['cmf'] < 0.0) & (last_candle['ema_25'] < last_candle['ema_50']):
+                if (last_candle['rsi'] < self.sell_custom_rsi_5.value) & (last_candle['cmf'] < 0.0):
                     return True, 'signal_profit_5'
             elif (self.sell_custom_profit_5.value > current_profit > self.sell_custom_profit_4.value):
-                if (last_candle['rsi'] < self.sell_custom_rsi_4.value) & (last_candle['cmf'] < 0.0)  & (last_candle['ema_25'] < last_candle['ema_50']):
+                if (last_candle['rsi'] < self.sell_custom_rsi_4.value) & (last_candle['cmf'] < 0.0) :
                     return True, 'signal_profit_4'
             elif (self.sell_custom_profit_4.value > current_profit > self.sell_custom_profit_3.value):
-                if (last_candle['rsi'] < self.sell_custom_rsi_3.value) & (last_candle['cmf'] < 0.0) & (last_candle['ema_25'] < last_candle['ema_50']):
+                if (last_candle['rsi'] < self.sell_custom_rsi_3.value) & (last_candle['cmf'] < 0.0):
                     return True, 'signal_profit_3'
             elif (self.sell_custom_profit_3.value > current_profit > self.sell_custom_profit_2.value):
-                if (last_candle['rsi'] < self.sell_custom_rsi_2.value) & (last_candle['cmf'] < 0.0) & (last_candle['ema_25'] < last_candle['ema_50']):
+                if (last_candle['rsi'] < self.sell_custom_rsi_2.value) & (last_candle['cmf'] < 0.0):
                     return True, 'signal_profit_2'
             elif (self.sell_custom_profit_2.value > current_profit > self.sell_custom_profit_1.value):
-                if (last_candle['rsi'] < self.sell_custom_rsi_1.value) & (last_candle['cmf'] < 0.0) & (last_candle['ema_25'] < last_candle['ema_50']):
+                if (last_candle['rsi'] < self.sell_custom_rsi_1.value) & (last_candle['cmf'] < 0.0):
                     return True, 'signal_profit_1'
             elif (self.sell_custom_profit_1.value > current_profit > self.sell_custom_profit_0.value):
-                if (last_candle['rsi'] < self.sell_custom_rsi_0.value) & (last_candle['cmf'] < 0.0) & (last_candle['ema_25'] < last_candle['ema_50']):
+                if (last_candle['rsi'] < self.sell_custom_rsi_0.value) & (last_candle['cmf'] < 0.0):
                     return True, 'signal_profit_0'
         return False, None
 
     def sell_under_main(self, current_profit: float, last_candle) -> tuple:
         if (last_candle['close'] < last_candle['ema_200']):
             if (current_profit > self.sell_custom_under_profit_11.value):
-                if (last_candle['rsi'] < self.sell_custom_under_rsi_11.value) & (last_candle['ema_25'] < last_candle['ema_50']):
+                if (last_candle['rsi'] < self.sell_custom_under_rsi_11.value):
                     return True, 'signal_profit_u_11'
             elif (self.sell_custom_under_profit_11.value > current_profit > self.sell_custom_under_profit_10.value):
-                if (last_candle['rsi'] < self.sell_custom_under_rsi_10.value) & (last_candle['ema_25'] < last_candle['ema_50']):
+                if (last_candle['rsi'] < self.sell_custom_under_rsi_10.value):
                     return True, 'signal_profit_u_10'
             elif (self.sell_custom_under_profit_10.value > current_profit > self.sell_custom_under_profit_9.value):
-                if (last_candle['rsi'] < self.sell_custom_under_rsi_9.value) & (last_candle['ema_25'] < last_candle['ema_50']):
+                if (last_candle['rsi'] < self.sell_custom_under_rsi_9.value):
                     return True, 'signal_profit_u_9'
             elif (self.sell_custom_under_profit_9.value > current_profit > self.sell_custom_under_profit_8.value):
-                if (last_candle['rsi'] < self.sell_custom_under_rsi_8.value) & (last_candle['ema_25'] < last_candle['ema_50']):
+                if (last_candle['rsi'] < self.sell_custom_under_rsi_8.value):
                     return True, 'signal_profit_u_8'
             elif (self.sell_custom_under_profit_8.value > current_profit > self.sell_custom_under_profit_7.value):
-                if (last_candle['rsi'] < self.sell_custom_under_rsi_7.value) & (last_candle['ema_25'] < last_candle['ema_50']):
+                if (last_candle['rsi'] < self.sell_custom_under_rsi_7.value):
                     return True, 'signal_profit_u_7'
             elif (self.sell_custom_under_profit_7.value > current_profit > self.sell_custom_under_profit_6.value):
-                if (last_candle['rsi'] < self.sell_custom_under_rsi_6.value) & (last_candle['ema_25'] < last_candle['ema_50']):
+                if (last_candle['rsi'] < self.sell_custom_under_rsi_6.value):
                     return True, 'signal_profit_u_6'
             elif (self.sell_custom_under_profit_6.value > current_profit > self.sell_custom_under_profit_5.value):
-                if (last_candle['rsi'] < self.sell_custom_under_rsi_5.value) & (last_candle['ema_25'] < last_candle['ema_50']):
+                if (last_candle['rsi'] < self.sell_custom_under_rsi_5.value):
                     return True, 'signal_profit_u_5'
             elif (self.sell_custom_under_profit_5.value > current_profit > self.sell_custom_under_profit_4.value):
                 if (last_candle['rsi'] < self.sell_custom_under_rsi_4.value):
