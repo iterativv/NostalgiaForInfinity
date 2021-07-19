@@ -3428,7 +3428,7 @@ class NostalgiaForInfinityNext(IStrategy):
         if not self.hold_trade_ids:
             # We have no pairs we want to hold until profit, sell
             return True
-        if pair.id not in self.hold_trade_ids:
+        if trade.id not in self.hold_trade_ids:
             # This pair is not on the list to hold until profit, sell
             return True
         if trade.calc_profit_ratio(rate) >= self.hold_trade_ids_profit_ratio:
