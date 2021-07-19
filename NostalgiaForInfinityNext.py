@@ -1,6 +1,10 @@
+import logging
+import pathlib
+import rapidjson
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 import numpy as np
 import talib.abstract as ta
+from freqtrade.misc import json_load
 from freqtrade.strategy.interface import IStrategy
 from freqtrade.strategy import merge_informative_pair, timeframe_to_minutes
 from freqtrade.strategy import DecimalParameter, IntParameter, CategoricalParameter
@@ -10,6 +14,8 @@ from freqtrade.persistence import Trade
 from datetime import datetime, timedelta
 from technical.util import resample_to_interval, resampled_merge
 from technical.indicators import zema
+
+log = logging.getLogger(__name__)
 
 
 ###########################################################################################################
@@ -29,6 +35,19 @@ from technical.indicators import zema
 ##     use_sell_signal must set to true (or not set at all).                                             ##
 ##     sell_profit_only must set to false (or not set at all).                                           ##
 ##     ignore_roi_if_buy_signal must set to true (or not set at all).                                    ##
+##                                                                                                       ##
+###########################################################################################################
+##               HOLD SUPPORT                                                                            ##
+##   In case you want to have SOME of the trades to only be sold when on profit, add a file named        ##
+##   "hold-trades.json" in the same directory as this strategy.                                          ##
+##                                                                                                       ##
+##   The contents should be similar to:                                                                  ##
+##                                                                                                       ##
+##   {"trade_ids": [1, 3, 7, ...], "profit_ratio": 0.005}                                                ##
+##                                                                                                       ##
+##                                                                                                       ##
+##   DO NOTE that `trade_ids` is a list of integers, the trade ID's, which you can get from the logs     ##
+##   or from the output of the telegram status command.                                                  ##
 ##                                                                                                       ##
 ###########################################################################################################
 ##               DONATIONS                                                                               ##
@@ -1788,6 +1807,63 @@ class NostalgiaForInfinityNext(IStrategy):
 
     #############################################################
 
+    def bot_loop_start(self, **kwargs) -> None:
+        """
+        Called at the start of the bot iteration (one loop).
+        Might be used to perform pair-independent tasks
+        (e.g. gather some remote resource for comparison)
+        :param **kwargs: Ensure to keep this here so updates to this won't break your strategy.
+        """
+        # Default Values
+        self.hold_trade_ids = set()
+        self.hold_trade_ids_profit_ratio = 0.005
+
+        # Update values from config file, if it exists
+        strat_directory = pathlib.Path(__file__).resolve()
+        hold_trades_config_file = strat_directory / "hold-trades.json"
+        if not hold_trades_config_file.is_file():
+            return
+
+        with hold_trades_config_file.open('r') as f:
+            try:
+                hold_trades_config = json_load(f)
+            except rapidjson.JSONDecodeError as exc:
+                log.error("Failed to load JSON from %s: %s", hold_trades_config_file, exc)
+            else:
+                profit_ratio = hold_trades_config.get("profit_ratio")
+                if profit_ratio:
+                    if not isinstance(profit_ratio, float):
+                        log.error(
+                            "The 'profit_ratio' config value(%s) in %s is not a float",
+                            profit_ratio,
+                            hold_trades_config_file
+                        )
+                    else:
+                        self.hold_trade_ids_profit_ratio = profit_ratio
+                open_trades = {
+                    trade.id: trade for trade in Trade.get_trades_proxy(is_open=True)
+                }
+                for trade_id in hold_trades_config.get("trade_ids", ()):
+                    if not isinstance(trade_id, int):
+                        log.error(
+                            "The trade_id(%s) defined under 'trade_ids' in %s is not an integer",
+                            trade_id, hold_trades_config_file
+                        )
+                        continue
+                    if trade_id in open_trades:
+                        log.warning(
+                            "The trade %s is configured to HOLD until the profit ratio of %s is met",
+                            open_trades[trade_id],
+                            self.hold_trade_ids_profit_ratio
+                        )
+                        self.hold_trade_ids.add(trade_id)
+                    else:
+                        log.warning(
+                            "The trade_id(%s) is no longer open. Please remove it from 'trade_ids' in %s",
+                            trade_id,
+                            hold_trades_config_file
+                        )
+
     def get_ticker_indicator(self):
         return int(self.timeframe[:-1])
 
@@ -3051,6 +3127,42 @@ class NostalgiaForInfinityNext(IStrategy):
     def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe.loc[:,"sell"] = 0
         return dataframe
+
+    def confirm_trade_exit(self, pair: str, trade: "Trade", order_type: str, amount: float,
+                           rate: float, time_in_force: str, sell_reason: str, **kwargs) -> bool:
+        """
+        Called right before placing a regular sell order.
+        Timing for this function is critical, so avoid doing heavy computations or
+        network requests in this method.
+
+        For full documentation please go to https://www.freqtrade.io/en/latest/strategy-advanced/
+
+        When not implemented by a strategy, returns True (always confirming).
+
+        :param pair: Pair that's about to be sold.
+        :param trade: trade object.
+        :param order_type: Order type (as configured in order_types). usually limit or market.
+        :param amount: Amount in quote currency.
+        :param rate: Rate that's going to be used when using limit orders
+        :param time_in_force: Time in force. Defaults to GTC (Good-til-cancelled).
+        :param sell_reason: Sell reason.
+            Can be any of ['roi', 'stop_loss', 'stoploss_on_exchange', 'trailing_stop_loss',
+                           'sell_signal', 'force_sell', 'emergency_sell']
+        :param **kwargs: Ensure to keep this here so updates to this won't break your strategy.
+        :return bool: When True is returned, then the sell-order is placed on the exchange.
+            False aborts the process
+        """
+        if not self.hold_trade_ids:
+            # We have no pairs we want to hold until profit, sell
+            return True
+        if pair.id not in self.hold_trade_ids:
+            # This pair is not on the list to hold until profit, sell
+            return True
+        if trade.calc_profit_ratio(rate) >= self.hold_trade_ids_profit_ratio:
+            # This pair is on the list to hold, and we reached minimum profit, sell
+            return True
+        # This pair is on the list to hold, and we haven't reached minimum profit, hold
+        return False
 
 
 # Elliot Wave Oscillator
