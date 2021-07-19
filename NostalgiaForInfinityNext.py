@@ -1843,6 +1843,7 @@ class NostalgiaForInfinityNext(IStrategy):
                 open_trades = {
                     trade.id: trade for trade in Trade.get_trades_proxy(is_open=True)
                 }
+                formatted_profit_ratio = "{}%".format(self.hold_trade_ids_profit_ratio * 100)
                 for trade_id in hold_trades_config.get("trade_ids", ()):
                     if not isinstance(trade_id, int):
                         log.error(
@@ -1854,7 +1855,7 @@ class NostalgiaForInfinityNext(IStrategy):
                         log.warning(
                             "The trade %s is configured to HOLD until the profit ratio of %s is met",
                             open_trades[trade_id],
-                            self.hold_trade_ids_profit_ratio
+                            formatted_profit_ratio
                         )
                         self.hold_trade_ids.add(trade_id)
                     else:
