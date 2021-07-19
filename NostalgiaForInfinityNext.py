@@ -10,6 +10,7 @@ from freqtrade.strategy import merge_informative_pair, timeframe_to_minutes
 from freqtrade.strategy import DecimalParameter, IntParameter, CategoricalParameter
 from pandas import DataFrame, Series
 from functools import reduce
+import math
 from freqtrade.persistence import Trade
 from datetime import datetime, timedelta
 from technical.util import resample_to_interval, resampled_merge
@@ -2733,7 +2734,7 @@ class NostalgiaForInfinityNext(IStrategy):
         if self.buy_params['buy_condition_1_enable']:
             # Non-Standard protections (add below)
 
-            # Logic        
+            # Logic
             item_buy_logic = []
             item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[0]))
             item_buy_logic.append(((dataframe['close'] - dataframe['open'].rolling(36).min()) / dataframe['open'].rolling(36).min()) > self.buy_min_inc_1.value)
@@ -3283,3 +3284,35 @@ def vwma(dataframe: DataFrame, length: int = 10):
 def moderi(dataframe: DataFrame, lenSlowMA: int = 32) -> Series:
     slowMA = Series(ta.EMA(vwma(dataframe, length=lenSlowMA), timeperiod=lenSlowMA))
     return (slowMA>=slowMA.shift(1)) #we just need true & false for ERI trend
+
+# zlema
+def zlema(dataframe, timeperiod):
+    lag =  int(math.floor((timeperiod - 1) / 2) )
+    if isinstance(dataframe, pd.Series):
+        ema_data = dataframe  + (dataframe  - dataframe.shift(lag))
+    else:
+        ema_data = dataframe['close']  + (dataframe['close']  - dataframe['close'] .shift(lag))
+    return ta.EMA(ema_data, timeperiod = timeperiod)
+
+# zlhull
+def zlhull(dataframe, timeperiod):
+    lag =  int(math.floor((timeperiod - 1) / 2) )
+    if isinstance(dataframe, pd.Series):
+        wma_data = dataframe + (dataframe  - dataframe.shift(lag))
+    else:
+        wma_data = dataframe['close'] + (dataframe['close']  - dataframe['close'] .shift(lag))
+
+    return  ta.WMA(
+        2 * ta.WMA(wma_data, int(math.floor(timeperiod/2))) - ta.WMA(wma_data, timeperiod), int(round(np.sqrt(timeperiod)))
+    )
+
+# hull
+def hull(dataframe, timeperiod):
+    if isinstance(dataframe, Series):
+        return  ta.WMA(
+            2 * ta.WMA(dataframe, int(math.floor(timeperiod/2))) - ta.WMA(dataframe, timeperiod), int(round(np.sqrt(timeperiod)))
+        )
+    else:
+        return  ta.WMA(
+            2 * ta.WMA(dataframe['close'], int(math.floor(timeperiod/2))) - ta.WMA(dataframe['close'], timeperiod), int(round(np.sqrt(timeperiod)))
+        )
