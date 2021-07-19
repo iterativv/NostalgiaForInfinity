@@ -1787,6 +1787,12 @@ class NostalgiaForInfinityNext(IStrategy):
     sell_custom_long_duration_min_1 = IntParameter(700, 2000, default=900, space='sell', optimize=False, load=True)
 
     #############################################################
+    # In case of emergency, HOLD support
+    # Add the trade ID(the number) to `hold_trade_ids`, not the `<Token>/USDT` string.
+    # You can get the trade ID from the logs or from the status command on telegram
+    hold_trade_ids = []
+    hold_trade_ids_profit_ratio = 0.005
+    #############################################################
 
     def get_ticker_indicator(self):
         return int(self.timeframe[:-1])
@@ -3051,6 +3057,42 @@ class NostalgiaForInfinityNext(IStrategy):
     def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe.loc[:,"sell"] = 0
         return dataframe
+
+    def confirm_trade_exit(self, pair: str, trade: "Trade", order_type: str, amount: float,
+                           rate: float, time_in_force: str, sell_reason: str, **kwargs) -> bool:
+        """
+        Called right before placing a regular sell order.
+        Timing for this function is critical, so avoid doing heavy computations or
+        network requests in this method.
+
+        For full documentation please go to https://www.freqtrade.io/en/latest/strategy-advanced/
+
+        When not implemented by a strategy, returns True (always confirming).
+
+        :param pair: Pair that's about to be sold.
+        :param trade: trade object.
+        :param order_type: Order type (as configured in order_types). usually limit or market.
+        :param amount: Amount in quote currency.
+        :param rate: Rate that's going to be used when using limit orders
+        :param time_in_force: Time in force. Defaults to GTC (Good-til-cancelled).
+        :param sell_reason: Sell reason.
+            Can be any of ['roi', 'stop_loss', 'stoploss_on_exchange', 'trailing_stop_loss',
+                           'sell_signal', 'force_sell', 'emergency_sell']
+        :param **kwargs: Ensure to keep this here so updates to this won't break your strategy.
+        :return bool: When True is returned, then the sell-order is placed on the exchange.
+            False aborts the process
+        """
+        if not self.hold_trade_ids:
+            # We have no pairs we want to hold until profit, sell
+            return True
+        if pair.id not in self.hold_trade_ids:
+            # This pair is not on the list to hold until profit, sell
+            return True
+        if trade.calc_profit_ratio(rate) >= self.hold_trade_ids_profit_ratio:
+            # This pair is on the list to hold, and we reached minimum profit, sell
+            return True
+        # This pair is on the list to hold, and we haven't reached minimum profit, hold
+        return False
 
 
 # Elliot Wave Oscillator
