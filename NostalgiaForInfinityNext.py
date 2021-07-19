@@ -3252,3 +3252,16 @@ def williams_r(dataframe: DataFrame, period: int = 14) -> Series:
     )
 
     return WR * -100
+
+# Volume Weighted Moving Average
+def vwma(dataframe: DataFrame, length: int = 10):
+    """Indicator: Volume Weighted Moving Average (VWMA)"""
+    # Calculate Result
+    pv = dataframe['close'] * dataframe['volume']
+    vwma = Series(ta.SMA(pv, timeperiod=length) / ta.SMA(dataframe['volume'], timeperiod=length))
+    return vwma
+
+# Modified Elder Ray Index
+def moderi(dataframe: DataFrame, lenSlowMA: int = 32) -> Series:
+    slowMA = Series(ta.EMA(vwma(dataframe, length=lenSlowMA), timeperiod=lenSlowMA))
+    return (slowMA>=slowMA.shift(1)) #we just need true & false for ERI trend
