@@ -1807,19 +1807,19 @@ class NostalgiaForInfinityNext(IStrategy):
 
     #############################################################
 
-    def bot_loop_start(self, **kwargs) -> None:
-        """
-        Called at the start of the bot iteration (one loop).
-        Might be used to perform pair-independent tasks
-        (e.g. gather some remote resource for comparison)
-        :param **kwargs: Ensure to keep this here so updates to this won't break your strategy.
-        """
+    hold_trade_ids = hold_trade_ids_profit_ratio = None
+
+    def load_hold_trades_config(self):
+        if self.hold_trade_ids is not None and self.hold_trade_ids_profit_ratio is not None:
+            # Already loaded
+            return
+
         # Default Values
         self.hold_trade_ids = set()
         self.hold_trade_ids_profit_ratio = 0.005
 
         # Update values from config file, if it exists
-        strat_directory = pathlib.Path(__file__).resolve()
+        strat_directory = pathlib.Path(__file__).resolve().parent
         hold_trades_config_file = strat_directory / "hold-trades.json"
         if not hold_trades_config_file.is_file():
             return
@@ -1863,6 +1863,16 @@ class NostalgiaForInfinityNext(IStrategy):
                             trade_id,
                             hold_trades_config_file
                         )
+
+    def bot_loop_start(self, **kwargs) -> None:
+        """
+        Called at the start of the bot iteration (one loop).
+        Might be used to perform pair-independent tasks
+        (e.g. gather some remote resource for comparison)
+        :param **kwargs: Ensure to keep this here so updates to this won't break your strategy.
+        """
+        self.load_hold_trades_config()
+        return super().bot_loop_start(**kwargs)
 
     def get_ticker_indicator(self):
         return int(self.timeframe[:-1])
@@ -3152,6 +3162,9 @@ class NostalgiaForInfinityNext(IStrategy):
         :return bool: When True is returned, then the sell-order is placed on the exchange.
             False aborts the process
         """
+        # Just to be sure our hold data is loaded, should be a no-op call after the first bot loop
+        self.load_hold_trades_config()
+
         if not self.hold_trade_ids:
             # We have no pairs we want to hold until profit, sell
             return True
