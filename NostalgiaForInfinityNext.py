@@ -1709,7 +1709,7 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_bb_offset_18 = DecimalParameter(0.98, 1.0, default=0.982, space='buy', decimals=3, optimize=False, load=True)
 
     buy_rsi_1h_min_19 = DecimalParameter(40.0, 70.0, default=50.0, space='buy', decimals=1, optimize=False, load=True)
-    buy_chop_min_19 = DecimalParameter(20.0, 60.0, default=26.1, space='buy', decimals=1, optimize=False, load=True)
+    buy_chop_min_19 = DecimalParameter(20.0, 60.0, default=22.1, space='buy', decimals=1, optimize=False, load=True)
 
     buy_rsi_20 = DecimalParameter(20.0, 36.0, default=27.0, space='buy', decimals=1, optimize=False, load=True)
     buy_rsi_1h_20 = DecimalParameter(14.0, 30.0, default=20.0, space='buy', decimals=1, optimize=False, load=True)
@@ -2760,6 +2760,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
         # Modified Elder Ray Index
         dataframe['moderi_64'] = moderi(dataframe, 64)
+        dataframe['moderi_96'] = moderi(dataframe, 96)
 
         # TSI
         dataframe['tsi_slow'] = tsi(dataframe, window_slow=20, window_fast=5)
@@ -3205,6 +3206,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['close'] > dataframe['ema_100_1h'])
             item_buy_logic.append(dataframe['rsi_1h'] > self.buy_rsi_1h_min_19.value)
             item_buy_logic.append(dataframe['chop'] < self.buy_chop_min_19.value)
+            item_buy_logic.append(dataframe['moderi_64'] == True)
             item_buy_logic.append(dataframe['volume'] > 0)
             conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
 
