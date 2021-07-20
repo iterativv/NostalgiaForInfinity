@@ -2226,7 +2226,7 @@ class NostalgiaForInfinityNext(IStrategy):
             return True, 'signal_stoploss_u_1'
 
         # Under EMA200, pair & BTC negative, low max rate
-        elif (-0.03 > current_profit > -0.07) & (last_candle['btc_not_downtrend_1h'] is False) & (max_profit < 0.005) & (last_candle['sma_200_dec_24']) & (last_candle['cmf'] < 0.0) & (last_candle['close'] < last_candle['ema_200']) & (last_candle['ema_25'] < last_candle['ema_50']):
+        elif (-0.05 > current_profit > -0.07) & (last_candle['btc_not_downtrend_1h'] is False) & (max_profit < 0.005) & (last_candle['sma_200_dec_24']) & (last_candle['cmf'] < 0.0) & (last_candle['close'] < last_candle['ema_200']) & (last_candle['ema_25'] < last_candle['ema_50']):
             return True, 'signal_stoploss_u_b_1'
 
         elif (self.sell_custom_stoploss_long_profit_min_1.value < current_profit < self.sell_custom_stoploss_long_profit_max_1.value) & (current_profit > (-max_loss + self.sell_custom_stoploss_long_recover_1.value)) & (last_candle['cmf'] < 0.0) & (last_candle['close'] < last_candle['ema_200'])  & (last_candle['rsi'] > last_candle['rsi_1h'] + self.sell_custom_stoploss_long_rsi_diff_1.value) & (last_candle['sma_200_dec_24']) & (current_time - timedelta(minutes=1200) > trade.open_date_utc):
