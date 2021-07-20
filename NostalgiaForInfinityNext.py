@@ -15,6 +15,7 @@ from freqtrade.persistence import Trade
 from datetime import datetime, timedelta
 from technical.util import resample_to_interval, resampled_merge
 from technical.indicators import zema
+import pandas_ta as pta
 
 log = logging.getLogger(__name__)
 
@@ -2368,6 +2369,46 @@ class NostalgiaForInfinityNext(IStrategy):
 
         return False, None
 
+    def sell_r_4(self, current_profit: float, last_candle) -> tuple:
+        if (0.02 > current_profit > 0.012):
+            if (last_candle['r_480'] > -3.0) & (last_candle['rsi'] > 68.0) & (last_candle['cti'] > 0.9):
+                return True, 'signal_profit_w_4_1'
+        elif (0.03 > current_profit > 0.02):
+            if (last_candle['r_480'] > -4.0) & (last_candle['rsi'] > 68.0) & (last_candle['cti'] > 0.9):
+                return True, 'signal_profit_w_4_2'
+        elif (0.04 > current_profit > 0.03):
+            if (last_candle['r_480'] > -5.0) & (last_candle['rsi'] > 68.0) & (last_candle['cti'] > 0.9):
+                return True, 'signal_profit_w_4_3'
+        elif (0.05 > current_profit > 0.04):
+            if (last_candle['r_480'] > -6.0) & (last_candle['rsi'] > 68.0) & (last_candle['cti'] > 0.9):
+                return True, 'signal_profit_w_4_4'
+        elif (0.06 > current_profit > 0.05):
+            if (last_candle['r_480'] > -24.0) & (last_candle['rsi'] > 68.0) & (last_candle['cti'] > 0.9):
+                return True, 'signal_profit_w_4_5'
+        elif (0.07 > current_profit > 0.06):
+            if (last_candle['r_480'] > -26.0) & (last_candle['rsi'] > 79.0) & (last_candle['cti'] > 0.9):
+                return True, 'signal_profit_w_4_6'
+        elif (0.08 > current_profit > 0.07):
+            if (last_candle['r_480'] > -20.0) & (last_candle['rsi'] > 79.0) & (last_candle['cti'] > 0.9):
+                return True, 'signal_profit_w_4_7'
+        elif (0.09 > current_profit > 0.08):
+            if (last_candle['r_480'] > -18.0) & (last_candle['rsi'] > 79.0) & (last_candle['cti'] > 0.9):
+                return True, 'signal_profit_w_4_8'
+        elif (0.1 > current_profit > 0.09):
+            if (last_candle['r_480'] > -16.0) & (last_candle['rsi'] > 79.0) & (last_candle['cti'] > 0.9):
+                return True, 'signal_profit_w_4_9'
+        elif (0.12 > current_profit > 0.1):
+            if (last_candle['r_480'] > -5.0) & (last_candle['rsi'] > 79.0) & (last_candle['cti'] > 0.9):
+                return True, 'signal_profit_w_4_10'
+        elif (0.2 > current_profit > 0.12):
+            if (last_candle['r_480'] > -4.0) & (last_candle['rsi'] > 80.0) & (last_candle['cti'] > 0.9):
+                return True, 'signal_profit_w_4_11'
+        elif (current_profit > 0.2):
+            if (last_candle['r_480'] > -3.0) & (last_candle['rsi'] > 80.0) & (last_candle['cti'] > 0.9):
+                return True, 'signal_profit_w_4_12'
+
+        return False, None
+
     def custom_sell(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float,
                     current_profit: float, **kwargs):
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
@@ -2450,6 +2491,11 @@ class NostalgiaForInfinityNext(IStrategy):
             # Williams %R based sell 3
             sell, signal_name = self.sell_r_3(current_profit, last_candle)
             if sell and (signal_name is not None):
+                return signal_name
+
+            # Williams %R based sell 4, plus CTI
+            sell, signal_name = self.sell_r_4(current_profit, last_candle)
+            if (sell) and (signal_name is not None):
                 return signal_name
 
             # Sell signal 1
@@ -2777,6 +2823,9 @@ class NostalgiaForInfinityNext(IStrategy):
 
         # zlema
         dataframe['zlema_68'] = zlema(dataframe, 68)
+
+        # CTI
+        dataframe['cti'] = pta.cti(dataframe["close"], length=20)
 
         # For sell checks
         dataframe['crossed_below_ema_12_26'] = qtpylib.crossed_below(dataframe['ema_12'], dataframe['ema_26'])
