@@ -1899,7 +1899,7 @@ class NostalgiaForInfinityNext(IStrategy):
     sell_trail_profit_max_3 = DecimalParameter(0.1, 0.3, default=0.2, space='sell', decimals=2, optimize=False, load=True)
     sell_trail_down_3 = DecimalParameter(0.01, 0.06, default=0.05, space='sell', decimals=3, optimize=False, load=True)
 
-    # Trail 3
+    # Trail 4
     sell_trail_profit_min_4 = DecimalParameter(0.01, 0.12, default=0.03, space='sell', decimals=3, optimize=False, load=True)
     sell_trail_profit_max_4 = DecimalParameter(0.02, 0.1, default=0.06, space='sell', decimals=2, optimize=False, load=True)
     sell_trail_down_4 = DecimalParameter(0.01, 0.06, default=0.02, space='sell', decimals=3, optimize=False, load=True)
@@ -2198,9 +2198,6 @@ class NostalgiaForInfinityNext(IStrategy):
             return True, 'signal_profit_t_3'
         elif (self.sell_trail_profit_max_4.value > current_profit > self.sell_trail_profit_min_4.value) & (max_profit > (current_profit + self.sell_trail_down_4.value)) & (last_candle['sma_200_dec_24']) & (last_candle['cmf'] < 0.0):
             return True, 'signal_profit_t_4'
-
-        elif (last_candle['close'] < last_candle['ema_200']) & (current_profit > self.sell_trail_profit_min_3.value) & (current_profit < self.sell_trail_profit_max_3.value) & (max_profit > (current_profit + self.sell_trail_down_3.value)):
-            return True, 'signal_profit_u_t_1'
 
         return False, None
 
