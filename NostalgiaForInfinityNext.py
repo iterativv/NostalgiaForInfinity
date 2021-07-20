@@ -1884,8 +1884,8 @@ class NostalgiaForInfinityNext(IStrategy):
     sell_trail_profit_min_1 = DecimalParameter(0.1, 0.2, default=0.03, space='sell', decimals=2, optimize=False, load=True)
     sell_trail_profit_max_1 = DecimalParameter(0.4, 0.7, default=0.05, space='sell', decimals=2, optimize=False, load=True)
     sell_trail_down_1 = DecimalParameter(0.01, 0.08, default=0.05, space='sell', decimals=3, optimize=False, load=True)
-    sell_trail_rsi_min_1 = DecimalParameter(16.0, 36.0, default=20.0, space='sell', decimals=1, optimize=False, load=True)
-    sell_trail_rsi_max_1 = DecimalParameter(30.0, 50.0, default=56.0, space='sell', decimals=1, optimize=False, load=True)
+    sell_trail_rsi_min_1 = DecimalParameter(16.0, 36.0, default=10.0, space='sell', decimals=1, optimize=False, load=True)
+    sell_trail_rsi_max_1 = DecimalParameter(30.0, 50.0, default=20.0, space='sell', decimals=1, optimize=False, load=True)
 
     # Trail 2
     sell_trail_profit_min_2 = DecimalParameter(0.08, 0.16, default=0.1, space='sell', decimals=3, optimize=False, load=True)
