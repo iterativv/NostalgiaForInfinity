@@ -3396,6 +3396,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['close'] < dataframe['hull_75'] * 0.92)
             item_buy_logic.append(dataframe['ewo'] > 12.4)
             item_buy_logic.append(dataframe['rsi'] < 38.0)
+            item_buy_logic.append(dataframe['cti'] < -0.6)
             item_buy_logic.append(dataframe['volume'] > 0)
             conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
 
