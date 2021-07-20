@@ -2,7 +2,9 @@
 version: '3'
 services:
   backtesting:
-    image: freqtradeorg/freqtrade:develop
+    build:
+       context: .
+       dockerfile: "./docker/Dockerfile.custom"
     container_name: freqtrade-backtesting
     volumes:
       - "./user_data:/freqtrade/user_data"
