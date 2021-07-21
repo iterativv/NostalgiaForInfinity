@@ -2225,7 +2225,7 @@ class NostalgiaForInfinityNext(IStrategy):
             return True, 'signal_stoploss_u_1'
 
         # Under EMA200, pair & BTC negative, low max rate
-        elif (-0.05 > current_profit > -0.07) & (last_candle['btc_not_downtrend_1h'] is False) & (last_candle['moderi_32'] == False) & (last_candle['moderi_64'] == False) & (max_profit < 0.005) & (last_candle['sma_200_dec_24']) & (last_candle['cmf'] < 0.0) & (last_candle['close'] < last_candle['ema_200']) & (last_candle['ema_25'] < last_candle['ema_50']):
+        elif (-0.05 > current_profit > -0.07) & (last_candle['btc_not_downtrend_1h'] is False) & (last_candle['moderi_32'] == False) & (last_candle['moderi_64'] == False) & (max_profit < 0.005) & (max_loss < 0.07) & (last_candle['sma_200_dec_24']) & (last_candle['cmf'] < 0.0) & (last_candle['close'] < last_candle['ema_200']) & (last_candle['ema_25'] < last_candle['ema_50']):
             return True, 'signal_stoploss_u_b_1'
 
         # Under EMA200, pair & BTC negative, CTI, Elder Ray Index negative, normal max rate
