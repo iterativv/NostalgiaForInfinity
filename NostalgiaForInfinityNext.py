@@ -1917,7 +1917,7 @@ class NostalgiaForInfinityNext(IStrategy):
     # Long duration/recover stoploss 1
     sell_custom_stoploss_long_profit_min_1 = DecimalParameter(-0.1, -0.02, default=-0.08, space='sell', optimize=False, load=True)
     sell_custom_stoploss_long_profit_max_1 = DecimalParameter(-0.06, -0.01, default=-0.04, space='sell', optimize=False, load=True)
-    sell_custom_stoploss_long_recover_1 = DecimalParameter(0.05, 0.15, default=0.1, space='sell', optimize=False, load=True)
+    sell_custom_stoploss_long_recover_1 = DecimalParameter(0.05, 0.15, default=0.14, space='sell', optimize=False, load=True)
     sell_custom_stoploss_long_rsi_diff_1 = DecimalParameter(0.0, 20.0, default=4.0, space='sell', optimize=False, load=True)
 
     # Long duration/recover stoploss 2
