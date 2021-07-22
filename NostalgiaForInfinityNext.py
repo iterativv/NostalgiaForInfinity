@@ -2240,7 +2240,7 @@ class NostalgiaForInfinityNext(IStrategy):
             return True, 'signal_stoploss_u_b_1'
 
         # Under EMA200, pair & BTC negative, CTI, Elder Ray Index negative, normal max rate
-        elif (-0.1 > current_profit > -0.2) & (last_candle['btc_not_downtrend_1h'] == False) & (last_candle['moderi_32'] == False) & (last_candle['moderi_64'] == False) & (last_candle['moderi_96'] == False) & (max_profit < 0.05) & (max_loss < 0.2) & (last_candle['sma_200_dec_24'])& (last_candle['sma_200_dec_20_1h']) & (last_candle['cmf'] < 0.0) & (last_candle['close'] < last_candle['ema_200']) & (last_candle['ema_25'] < last_candle['ema_50']) & (last_candle['cti'] < -0.8):
+        elif (-0.1 > current_profit > -0.2) & (last_candle['btc_not_downtrend_1h'] == False) & (last_candle['moderi_32'] == False) & (last_candle['moderi_64'] == False) & (last_candle['moderi_96'] == False) & (max_profit < 0.05) & (max_loss < 0.2) & (last_candle['sma_200_dec_24'])& (last_candle['sma_200_dec_20_1h']) & (last_candle['cmf'] < -0.45) & (last_candle['close'] < last_candle['ema_200']) & (last_candle['ema_25'] < last_candle['ema_50']) & (last_candle['cti'] < -0.8) & (last_candle['r_480'] < -97.0):
             return True, 'signal_stoploss_u_b_2'
 
         elif (self.sell_custom_stoploss_long_profit_min_1.value < current_profit < self.sell_custom_stoploss_long_profit_max_1.value) & (current_profit > (-max_loss + self.sell_custom_stoploss_long_recover_1.value)) & (last_candle['cmf'] < 0.0) & (last_candle['close'] < last_candle['ema_200'])  & (last_candle['rsi'] > last_candle['rsi_1h'] + self.sell_custom_stoploss_long_rsi_diff_1.value) & (last_candle['sma_200_dec_24']) & (current_time - timedelta(minutes=1200) > trade.open_date_utc):
