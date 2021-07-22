@@ -3638,25 +3638,3 @@ def hull(dataframe, timeperiod):
         return  ta.WMA(
             2 * ta.WMA(dataframe['close'], int(math.floor(timeperiod/2))) - ta.WMA(dataframe['close'], timeperiod), int(round(np.sqrt(timeperiod)))
         )
-
-def Kalman(dataframe: DataFrame):
-        """
-        One-dimensional steady-state Kalman filter. It is obtained from the
-        alpha filter.
-        """
-        df = dataframe.copy()
-        df['value1'] = np.nan
-        df['value2'] = np.nan
-        src = dataframe['close']
-        tr = ta.TRANGE(dataframe)
-        df['value1'] = 0.2 * (src - src.shift(1).fillna(0)) + 0.8 * df['value1'].shift(1).fillna()
-        df['value2'] = 0.1 * (tr) + 0.8 * df['value2'].shift(1, fill_value=0)
-
-        L = abs(df['value1'] / df['value2'])
-        # Alpha filter
-        alpha = (-L ** 2.0 + np.sqrt(L ** 4.0 + 16.0 * L ** 2.0)) / 8.0
-
-        df['value3'] = np.nan
-        df['value3'] = alpha * src + (1 - alpha) * df['value3'].shift(1).fillna()
-
-        return df['value3']
