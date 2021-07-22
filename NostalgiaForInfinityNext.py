@@ -1907,8 +1907,13 @@ class NostalgiaForInfinityNext(IStrategy):
     sell_trail_down_4 = DecimalParameter(0.01, 0.06, default=0.02, space='sell', decimals=3, optimize=False, load=True)
 
     # Under & near EMA200, accept profit
+    sell_custom_profit_under_profit_1 = DecimalParameter(0.0, 0.01, default=0.0, space='sell', optimize=False, load=True)
     sell_custom_profit_under_rel_1 = DecimalParameter(0.01, 0.04, default=0.024, space='sell', optimize=False, load=True)
     sell_custom_profit_under_rsi_diff_1 = DecimalParameter(0.0, 20.0, default=4.4, space='sell', optimize=False, load=True)
+
+    sell_custom_profit_under_profit_2 = DecimalParameter(0.0, 0.05, default=0.03, space='sell', optimize=False, load=True)
+    sell_custom_profit_under_rel_2 = DecimalParameter(0.01, 0.04, default=0.024, space='sell', optimize=False, load=True)
+    sell_custom_profit_under_rsi_diff_2 = DecimalParameter(0.0, 20.0, default=4.4, space='sell', optimize=False, load=True)
 
     # Under & near EMA200, take the loss
     sell_custom_stoploss_under_rel_1 = DecimalParameter(0.001, 0.02, default=0.002, space='sell', optimize=False, load=True)
@@ -1917,7 +1922,7 @@ class NostalgiaForInfinityNext(IStrategy):
     # Long duration/recover stoploss 1
     sell_custom_stoploss_long_profit_min_1 = DecimalParameter(-0.1, -0.02, default=-0.08, space='sell', optimize=False, load=True)
     sell_custom_stoploss_long_profit_max_1 = DecimalParameter(-0.06, -0.01, default=-0.04, space='sell', optimize=False, load=True)
-    sell_custom_stoploss_long_recover_1 = DecimalParameter(0.05, 0.15, default=0.1, space='sell', optimize=False, load=True)
+    sell_custom_stoploss_long_recover_1 = DecimalParameter(0.05, 0.15, default=0.14, space='sell', optimize=False, load=True)
     sell_custom_stoploss_long_rsi_diff_1 = DecimalParameter(0.0, 20.0, default=4.0, space='sell', optimize=False, load=True)
 
     # Long duration/recover stoploss 2
@@ -2215,8 +2220,14 @@ class NostalgiaForInfinityNext(IStrategy):
 
 
     def sell_under_min(self, current_profit: float, last_candle) -> tuple:
-        if (current_profit > 0.0) & (last_candle['close'] < last_candle['ema_200']) & (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < self.sell_custom_profit_under_rel_1.value) & (last_candle['rsi'] > last_candle['rsi_1h'] + self.sell_custom_profit_under_rsi_diff_1.value):
-            return True, 'signal_profit_u_e_1'
+        if ((last_candle['moderi_96']) == False):
+            # Downtrend
+            if (current_profit > self.sell_custom_profit_under_profit_1.value) & (last_candle['close'] < last_candle['ema_200']) & (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < self.sell_custom_profit_under_rel_1.value) & (last_candle['rsi'] > last_candle['rsi_1h'] + self.sell_custom_profit_under_rsi_diff_1.value):
+                return True, 'signal_profit_u_e_1'
+        else:
+            # Uptrend
+            if (current_profit > self.sell_custom_profit_under_profit_2.value) & (last_candle['close'] < last_candle['ema_200']) & (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < self.sell_custom_profit_under_rel_2.value) & (last_candle['rsi'] > last_candle['rsi_1h'] + self.sell_custom_profit_under_rsi_diff_2.value):
+                return True, 'signal_profit_u_e_2'
 
         return False, None
 
