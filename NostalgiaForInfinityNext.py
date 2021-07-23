@@ -3086,7 +3086,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * self.buy_ema_open_mult_7.value))
             item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
             item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_7.value)
-            item_buy_logic.append(dataframe['cti'] < -0.88)
+            item_buy_logic.append(dataframe['cti'] < -0.7)
             item_buy_logic.append(dataframe['volume'] > 0)
             conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
 
@@ -3376,7 +3376,7 @@ class NostalgiaForInfinityNext(IStrategy):
                 (dataframe['open'] < dataframe['ema_20_1h']) & (dataframe['low'] < dataframe['ema_20_1h']) |
                 (dataframe['open'] > dataframe['ema_20_1h']) & (dataframe['low'] > dataframe['ema_20_1h'])
             )
-            item_buy_logic.append(dataframe['cti'] < -0.85)
+            item_buy_logic.append(dataframe['cti'] < -0.6)
             conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
 
         # Buy Condition #26
