@@ -8,6 +8,7 @@ from freqtrade.misc import json_load
 from freqtrade.strategy.interface import IStrategy
 from freqtrade.strategy import merge_informative_pair, timeframe_to_minutes
 from freqtrade.strategy import DecimalParameter, IntParameter, CategoricalParameter
+from freqtrade.exchange import timeframe_to_prev_date
 from pandas import DataFrame, Series
 from functools import reduce
 import math
@@ -2618,10 +2619,14 @@ class NostalgiaForInfinityNext(IStrategy):
         previous_candle_4 = dataframe.iloc[-5].squeeze()
         previous_candle_5 = dataframe.iloc[-6].squeeze()
 
+        trade_open_date = timeframe_to_prev_date(self.timeframe, trade.open_date_utc)
+        buy_signal_candle = dataframe.loc[dataframe['date'] < trade_open_date].tail(1)
+        buy_signal_candle = buy_signal_candle.squeeze()
+
         max_profit = ((trade.max_rate - trade.open_rate) / trade.open_rate)
         max_loss = ((trade.open_rate - trade.min_rate) / trade.min_rate)
 
-        if (last_candle is not None) & (previous_candle_1 is not None) & (previous_candle_2 is not None) & (previous_candle_3 is not None) & (previous_candle_4 is not None) & (previous_candle_5 is not None):
+        if (last_candle is not None) & (previous_candle_1 is not None) & (previous_candle_2 is not None) & (previous_candle_3 is not None) & (previous_candle_4 is not None) & (previous_candle_5 is not None) & (buy_signal_candle is not None):
             # Over EMA200, main profit targets
             sell, signal_name = self.sell_over_main(current_profit, last_candle)
             if sell and (signal_name is not None):
@@ -2736,6 +2741,10 @@ class NostalgiaForInfinityNext(IStrategy):
             # Sell signal 8
             elif self.sell_condition_8_enable.value & (last_candle['close'] > last_candle['bb20_2_upp_1h'] * self.sell_bb_relative_8.value):
                 return 'sell_signal_8'
+
+            sell, signal_name = self.sell_quick_mode(current_profit, max_profit, last_candle, buy_signal_candle)
+            if sell and (signal_name is not None):
+                return signal_name
 
         return None
 
