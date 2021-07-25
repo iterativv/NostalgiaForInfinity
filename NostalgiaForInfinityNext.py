@@ -3510,16 +3510,16 @@ class NostalgiaForInfinityNext(IStrategy):
             # This pair is not on the list to hold until profit, sell
             return True
         current_profit_ratio = trade.calc_profit_ratio(rate)
-        if current_profit_ratio >= self.hold_trade_ids_profit_ratio:
-            # This pair is on the list to hold, and we reached minimum profit, sell
-            return True
-        if sell_reason == "forcesell":
+        if sell_reason == "force_sell":
             formatted_profit_ratio = "{}%".format(self.hold_trade_ids_profit_ratio * 100)
             formatted_current_profit_ratio = "{}%".format(current_profit_ratio * 100)
             log.warning(
                 "Force selling %s even though the current profit of %s < %s",
                 trade, formatted_current_profit_ratio, formatted_profit_ratio
             )
+            return True
+        elif current_profit_ratio >= self.hold_trade_ids_profit_ratio:
+            # This pair is on the list to hold, and we reached minimum profit, sell
             return True
         # This pair is on the list to hold, and we haven't reached minimum profit, hold
         return False
