@@ -1994,10 +1994,12 @@ class NostalgiaForInfinityNext(IStrategy):
         self.hold_trade_ids_profit_ratio = 0.005
 
         # Update values from config file, if it exists
-        strat_directory = pathlib.Path(__file__).resolve().parent
-        hold_trades_config_file = strat_directory / "hold-trades.json"
+        hold_trades_config_file = pathlib.Path(__file__).parent / "hold-trades.json"
         if not hold_trades_config_file.is_file():
-            return
+            # Now let's try resolving symlinks
+            hold_trades_config_file = pathlib.Path(__file__).resolve().parent / "hold-trades.json"
+            if not hold_trades_config_file.is_file():
+                return
 
         with hold_trades_config_file.open('r') as f:
             try:
