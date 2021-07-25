@@ -2560,7 +2560,13 @@ class NostalgiaForInfinityNext(IStrategy):
 
             # Sell signal 1
             if self.sell_condition_1_enable.value & (last_candle['rsi'] > self.sell_rsi_bb_1.value) & (last_candle['close'] > last_candle['bb20_2_upp']) & (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) & (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']) & (previous_candle_3['close'] > previous_candle_3['bb20_2_upp']) & (previous_candle_4['close'] > previous_candle_4['bb20_2_upp']) & (previous_candle_5['close'] > previous_candle_5['bb20_2_upp']):
-                return 'sell_signal_1'
+                if (last_candle['close'] > last_candle['ema_200']):
+                    if (current_profit > 0.0):
+                        return 'sell_signal_1_1_1'
+                    elif (max_loss > 0.1):
+                        return 'sell_signal_1_1_2'
+                else:
+                    return 'sell_signal_1_2'
 
             # Sell signal 2
             elif (self.sell_condition_2_enable.value) & (last_candle['rsi'] > self.sell_rsi_bb_2.value) & (last_candle['close'] > last_candle['bb20_2_upp']) & (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) & (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']):
