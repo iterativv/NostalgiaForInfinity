@@ -45,8 +45,11 @@ log = logging.getLogger(__name__)
 ##                                                                                                       ##
 ##   The contents should be similar to:                                                                  ##
 ##                                                                                                       ##
-##   {"trade_ids": [1, 3, 7, ...], "profit_ratio": 0.005}                                                ##
+##   {"trade_ids": [1, 3, 7], "profit_ratio": 0.005}                                                     ##
 ##                                                                                                       ##
+##   Or, for individual profit ratios:                                                                   ##
+##                                                                                                       ##
+##   {"trade_ids": {1: 0.001, 3: -0.005, 7: 0.05}}                                                       ##
 ##                                                                                                       ##
 ##   DO NOTE that `trade_ids` is a list of integers, the trade ID's, which you can get from the logs     ##
 ##   or from the output of the telegram status command.                                                  ##
@@ -1982,16 +1985,15 @@ class NostalgiaForInfinityNext(IStrategy):
 
     #############################################################
 
-    hold_trade_ids = hold_trade_ids_profit_ratio = None
+    hold_trade_ids = None
 
     def load_hold_trades_config(self):
-        if self.hold_trade_ids is not None and self.hold_trade_ids_profit_ratio is not None:
+        if self.hold_trade_ids is not None:
             # Already loaded
             return
 
         # Default Values
-        self.hold_trade_ids = set()
-        self.hold_trade_ids_profit_ratio = 0.005
+        self.hold_trade_ids = {}
 
         # Update values from config file, if it exists
         hold_trades_config_file = pathlib.Path(__file__).parent / "hold-trades.json"
@@ -2002,11 +2004,54 @@ class NostalgiaForInfinityNext(IStrategy):
                 return
 
         with hold_trades_config_file.open('r') as f:
+            trade_ids = None
+            hold_trades_config = None
             try:
                 hold_trades_config = json_load(f)
             except rapidjson.JSONDecodeError as exc:
                 log.error("Failed to load JSON from %s: %s", hold_trades_config_file, exc)
             else:
+                trade_ids = hold_trades_config.get("trade_ids")
+
+            if not trade_ids:
+                return
+
+            open_trades = {
+                trade.id: trade for trade in Trade.get_trades_proxy(is_open=True)
+            }
+
+            if isinstance(trade_ids, dict):
+                # New syntax
+                for trade_id, profit_ratio in trade_ids.items():
+                    if not isinstance(trade_id, int):
+                        log.error(
+                            "The trade_id(%s) defined under 'trade_ids' in %s is not an integer",
+                            trade_id, hold_trades_config_file
+                        )
+                        continue
+                    if not isinstance(profit_ratio, float):
+                        log.error(
+                            "The 'profit_ratio' config value(%s) for trade_id %s in %s is not a float",
+                            profit_ratio,
+                            trade_id,
+                            hold_trades_config_file
+                        )
+                    if trade_id in open_trades:
+                        formatted_profit_ratio = "{}%".format(profit_ratio * 100)
+                        log.warning(
+                            "The trade %s is configured to HOLD until the profit ratio of %s is met",
+                            open_trades[trade_id],
+                            formatted_profit_ratio
+                        )
+                        self.hold_trade_ids[trade_id] = profit_ratio
+                    else:
+                        log.warning(
+                            "The trade_id(%s) is no longer open. Please remove it from 'trade_ids' in %s",
+                            trade_id,
+                            hold_trades_config_file
+                        )
+            else:
+                # Initial Syntax
                 profit_ratio = hold_trades_config.get("profit_ratio")
                 if profit_ratio:
                     if not isinstance(profit_ratio, float):
@@ -2015,13 +2060,10 @@ class NostalgiaForInfinityNext(IStrategy):
                             profit_ratio,
                             hold_trades_config_file
                         )
-                    else:
-                        self.hold_trade_ids_profit_ratio = profit_ratio
-                open_trades = {
-                    trade.id: trade for trade in Trade.get_trades_proxy(is_open=True)
-                }
-                formatted_profit_ratio = "{}%".format(self.hold_trade_ids_profit_ratio * 100)
-                for trade_id in hold_trades_config.get("trade_ids", ()):
+                else:
+                    profit_ratio = 0.005
+                formatted_profit_ratio = "{}%".format(profit_ratio * 100)
+                for trade_id in trade_ids:
                     if not isinstance(trade_id, int):
                         log.error(
                             "The trade_id(%s) defined under 'trade_ids' in %s is not an integer",
@@ -2034,7 +2076,7 @@ class NostalgiaForInfinityNext(IStrategy):
                             open_trades[trade_id],
                             formatted_profit_ratio
                         )
-                        self.hold_trade_ids.add(trade_id)
+                        self.hold_trade_ids[trade_id] = profit_ratio
                     else:
                         log.warning(
                             "The trade_id(%s) is no longer open. Please remove it from 'trade_ids' in %s",
@@ -3506,21 +3548,25 @@ class NostalgiaForInfinityNext(IStrategy):
         if not self.hold_trade_ids:
             # We have no pairs we want to hold until profit, sell
             return True
+
         if trade.id not in self.hold_trade_ids:
             # This pair is not on the list to hold until profit, sell
             return True
+
+        trade_profit_ratio = self.hold_trade_ids[trade.id]
         current_profit_ratio = trade.calc_profit_ratio(rate)
         if sell_reason == "force_sell":
-            formatted_profit_ratio = "{}%".format(self.hold_trade_ids_profit_ratio * 100)
+            formatted_profit_ratio = "{}%".format(trade_profit_ratio * 100)
             formatted_current_profit_ratio = "{}%".format(current_profit_ratio * 100)
             log.warning(
                 "Force selling %s even though the current profit of %s < %s",
                 trade, formatted_current_profit_ratio, formatted_profit_ratio
             )
             return True
-        elif current_profit_ratio >= self.hold_trade_ids_profit_ratio:
+        elif current_profit_ratio >= trade_profit_ratio:
             # This pair is on the list to hold, and we reached minimum profit, sell
             return True
+
         # This pair is on the list to hold, and we haven't reached minimum profit, hold
         return False
 
