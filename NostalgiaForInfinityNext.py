@@ -1999,7 +1999,7 @@ class NostalgiaForInfinityNext(IStrategy):
         hold_trades_config_file = pathlib.Path(__file__).parent / "hold-trades.json"
         if not hold_trades_config_file.is_file():
             # Now let's try resolving symlinks
-            hold_trades_config_file = pathlib.Path(__file__).resolve().parent / "hold-trades.json"
+            hold_trades_config_file = pathlib.Path(__file__).absolute().parent / "hold-trades.json"
             if not hold_trades_config_file.is_file():
                 return
 
