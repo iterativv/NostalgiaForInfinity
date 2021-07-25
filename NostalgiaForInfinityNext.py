@@ -3517,8 +3517,8 @@ class NostalgiaForInfinityNext(IStrategy):
             formatted_profit_ratio = "{}%".format(self.hold_trade_ids_profit_ratio * 100)
             formatted_current_profit_ratio = "{}%".format(current_profit_ratio * 100)
             log.warning(
-                "Force selling pair %s even though the current profit of %s < %s",
-                pair, formatted_current_profit_ratio, formatted_profit_ratio
+                "Force selling %s even though the current profit of %s < %s",
+                trade, formatted_current_profit_ratio, formatted_profit_ratio
             )
             return True
         # This pair is on the list to hold, and we haven't reached minimum profit, hold
