@@ -2738,10 +2738,6 @@ class NostalgiaForInfinityNext(IStrategy):
             else:
                 return 'sell_signal_2_2'
 
-        # Sell signal 3
-        # elif (self.sell_condition_3_enable.value) & (last_candle['rsi'] > self.sell_rsi_main_3.value):
-        #     return 'sell_signal_3'
-
         # Sell signal 4
         elif self.sell_condition_4_enable.value & (last_candle['rsi'] > self.sell_dual_rsi_rsi_4.value) & (last_candle['rsi_1h'] > self.sell_dual_rsi_rsi_1h_4.value):
             return 'sell_signal_4'
