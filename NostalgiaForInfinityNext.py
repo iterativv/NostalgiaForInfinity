@@ -2118,6 +2118,27 @@ class NostalgiaForInfinityNext(IStrategy):
 
     hold_trade_ids = None
 
+    @staticmethod
+    def get_hold_trades_config_file():
+        strat_file_path = pathlib.Path(__file__)
+        hold_trades_config_file_resolve = strat_file_path.resolve().parent / "hold-trades.json"
+        if hold_trades_config_file_resolve.is_file():
+            return hold_trades_config_file_resolve
+
+        # The resolved path does not exist, is it a symlink?
+        hold_trades_config_file_absolute = strat_file_path.absolute().parent / "hold-trades.json"
+        if hold_trades_config_file_absolute.is_file():
+            return hold_trades_config_file_absolute
+
+        if hold_trades_config_file_resolve != hold_trades_config_file_absolute:
+            looked_in = f"'{hold_trades_config_file_resolve}' and '{hold_trades_config_file_absolute}'"
+        else:
+            looked_in = f"'{hold_trades_config_file_resolve}'"
+        log.warning(
+            "The 'hold-trades.json' file was not found. Looked in %s. HOLD support disabled.",
+            looked_in
+        )
+
     def load_hold_trades_config(self):
         if self.hold_trade_ids is not None:
             # Already loaded
@@ -2127,18 +2148,9 @@ class NostalgiaForInfinityNext(IStrategy):
         self.hold_trade_ids = {}
 
         # Update values from config file, if it exists
-        strat_file_path = pathlib.Path(__file__)
-        hold_trades_config_file = strat_file_path.resolve().parent / "hold-trades.json"
-        if not hold_trades_config_file.is_file():
-            # The resolved path does not exist, is it a symlink?
-            hold_trades_config_file = strat_file_path.absolute().parent / "hold-trades.json"
-            if not hold_trades_config_file.is_file():
-                log.warning(
-                    "The 'hold-trades.json' file was not found. Looked in '%s' and '%s'. HOLD support disabled.",
-                    strat_file_path.resolve().parent,
-                    strat_file_path.absolute().parent
-                )
-                return
+        hold_trades_config_file = NostalgiaForInfinityNext.get_hold_trades_config_file()
+        if not hold_trades_config_file:
+            return
 
         with hold_trades_config_file.open('r') as f:
             trade_ids = None
