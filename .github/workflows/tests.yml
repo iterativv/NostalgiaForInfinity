@@ -1,0 +1,75 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  Pre-Commit:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
+    - id: changed-files
+      name: Get Changed Files
+      uses: dorny/paths-filter@v2
+      with:
+        token: ${{ github.token }}
+        list-files: shell
+        filters: |
+          repo:
+            - added|modified:
+              - '**'
+    - name: Set Cache Key
+      run: echo "PY=$(python --version --version | sha256sum | cut -d' ' -f1)" >> $GITHUB_ENV
+    - uses: actions/cache@v2
+      with:
+        path: ~/.cache/pre-commit
+        key: pre-commit|${{ env.PY }}|${{ hashFiles('.pre-commit-config.yaml') }}
+    - name: Check ALL Files On Branch
+      uses: pre-commit/action@v2.0.0
+      if: github.event_name != 'pull_request'
+    - name: Check Changed Files On PR
+      uses: pre-commit/action@v2.0.0
+      if: github.event_name == 'pull_request'
+      with:
+        extra_args: --files ${{ steps.changed-files.outputs.repo_files }}
+
+  Download-Data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Download Data Cache
+        continue-on-error: true
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: backtest.yml
+          name: download-data
+          path: user_data/data
+
+      - name: Download Backtest Data
+        env:
+          START_DATE: "20210101"
+        run: |
+          docker-compose run --rm download-data
+
+      - name: Upload Data Cache
+        uses: actions/upload-artifact@v2
+        with:
+          name: download-data
+          path: user_data/data
+
+  Test:
+    runs-on: ubuntu-20.04
+    needs:
+      - Pre-Commit
+      - Download-Data
+
+    steps:
+      - name: Run Tests
+        run: docker-compose run --rm tests
