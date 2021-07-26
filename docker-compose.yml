@@ -22,4 +22,4 @@ services:
     volumes:
       - "./user_data:/freqtrade/user_data"
     command: >
-      download-data --timerange 20201201-20210701 --timeframe 5m 1h --config user_data/pairlists.json
+      download-data --timerange ${START_DATE}-${END_DATE} --timeframe 5m 1h --config user_data/pairlists.json

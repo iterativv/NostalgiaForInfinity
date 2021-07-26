@@ -133,3 +133,5 @@ user_data/data/*.json
 
 # IntelliJ
 .idea
+
+user_data/data/*/*.json
