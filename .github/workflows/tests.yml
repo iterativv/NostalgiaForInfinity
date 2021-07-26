@@ -55,9 +55,9 @@ jobs:
         continue-on-error: true
         uses: dawidd6/action-download-artifact@v2
         with:
-          workflow: backtest.yml
-          name: download-data
-          path: user_data/data
+          workflow: tests.yml
+          name: download-data-${{ matrix.exchange }}
+          path: user_data/data/${{ matrix.exchange }}
 
       - name: Download Exchange Data
         env:
@@ -69,8 +69,8 @@ jobs:
       - name: Upload Exchange Data Cache
         uses: actions/upload-artifact@v2
         with:
-          name: download-data
-          path: user_data/data
+          name: download-data-${{ matrix.exchange }}
+          path: user_data/data/${{ matrix.exchange }}
 
   Test:
     runs-on: ubuntu-20.04
@@ -103,9 +103,9 @@ jobs:
         continue-on-error: true
         uses: dawidd6/action-download-artifact@v2
         with:
-          workflow: backtest.yml
-          name: download-data
-          path: user_data/data
+          workflow: tests.yml
+          name: download-data-${{ matrix.exchange }}
+          path: user_data/data/${{ matrix.exchange }}
 
       - name: Run Backtest ${{ matrix.opentrades }} trades ${{ matrix.timerange }}
         env:
