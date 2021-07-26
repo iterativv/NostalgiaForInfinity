@@ -3195,6 +3195,10 @@ class NostalgiaForInfinityNext(IStrategy):
             buy_protection_list.append(item_buy_protection_list)
 
         # Buy Condition #1
+        dataframe.loc[
+            :,
+            'buy_condition_1'
+        ] = 0
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_1_enable']:
             # Non-Standard protections (add below)
@@ -3208,9 +3212,18 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_1.value)
             item_buy_logic.append(dataframe['mfi'] < self.buy_mfi_1.value)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            dataframe.loc[
+                item_buy,
+                'buy_condition_1'
+            ] = 1
+            conditions.append(item_buy)
 
         # Buy Condition #2
+        dataframe.loc[
+            :,
+            'buy_condition_2'
+        ] = 0
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_2_enable']:
             # Non-Standard protections (add below)
@@ -3222,9 +3235,18 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['mfi'] < self.buy_mfi_2.value)
             item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_2.value))
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            dataframe.loc[
+                item_buy,
+                'buy_condition_2'
+            ] = 1
+            conditions.append(item_buy)
 
         # Buy Condition #3
+        dataframe.loc[
+            :,
+            'buy_condition_3'
+        ] = 0
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_3_enable']:
             # Non-Standard protections (add below)
@@ -3240,9 +3262,18 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['close'].lt(dataframe['bb40_2_low'].shift()))
             item_buy_logic.append(dataframe['close'].le(dataframe['close'].shift()))
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            dataframe.loc[
+                item_buy,
+                'buy_condition_3'
+            ] = 1
+            conditions.append(item_buy)
 
         # Buy Condition #4
+        dataframe.loc[
+            :,
+            'buy_condition_4'
+        ] = 0
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_4_enable']:
             # Non-Standard protections (add below)
@@ -3254,9 +3285,18 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['close'] < self.buy_bb20_close_bblowerband_4.value * dataframe['bb20_2_low'])
             item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_30'].shift(1) * self.buy_bb20_volume_4.value))
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            dataframe.loc[
+                item_buy,
+                'buy_condition_4'
+            ] = 1
+            conditions.append(item_buy)
 
         # Buy Condition #5
+        dataframe.loc[
+            :,
+            'buy_condition_5'
+        ] = 0
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_5_enable']:
             # Non-Standard protections (add below)
@@ -3270,9 +3310,18 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
             item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_5.value))
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            dataframe.loc[
+                item_buy,
+                'buy_condition_5'
+            ] = 1
+            conditions.append(item_buy)
 
         # Buy Condition #6
+        dataframe.loc[
+            :,
+            'buy_condition_6'
+        ] = 0
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_6_enable']:
             # Non-Standard protections (add below)
@@ -3285,9 +3334,18 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
             item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_6.value))
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            dataframe.loc[
+                item_buy,
+                'buy_condition_6'
+            ] = 1
+            conditions.append(item_buy)
 
         # Buy Condition #7
+        dataframe.loc[
+            :,
+            'buy_condition_7'
+        ] = 0
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_7_enable']:
             # Non-Standard protections (add below)
@@ -3301,9 +3359,18 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_7.value)
             item_buy_logic.append(dataframe['cti'] < -0.7)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            dataframe.loc[
+                item_buy,
+                'buy_condition_7'
+            ] = 1
+            conditions.append(item_buy)
 
         # Buy Condition #8
+        dataframe.loc[
+            :,
+            'buy_condition_8'
+        ] = 0
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_8_enable']:
             # Non-Standard protections (add below)
@@ -3316,9 +3383,18 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['close'] > dataframe['open'])
             item_buy_logic.append((dataframe['close'] - dataframe['low']) > ((dataframe['close'] - dataframe['open']) * self.buy_tail_diff_8.value))
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            dataframe.loc[
+                item_buy,
+                'buy_condition_8'
+            ] = 1
+            conditions.append(item_buy)
 
         # Buy Condition #9
+        dataframe.loc[
+            :,
+            'buy_condition_9'
+        ] = 0
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_9_enable']:
             # Non-Standard protections (add below)
@@ -3333,9 +3409,18 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_max_9.value)
             item_buy_logic.append(dataframe['mfi'] < self.buy_mfi_9.value)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            dataframe.loc[
+                item_buy,
+                'buy_condition_9'
+            ] = 1
+            conditions.append(item_buy)
 
         # Buy Condition #10
+        dataframe.loc[
+            :,
+            'buy_condition_10'
+        ] = 0
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_10_enable']:
             # Non-Standard protections (add below)
@@ -3348,9 +3433,18 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['close'] < dataframe['bb20_2_low'] * self.buy_bb_offset_10.value)
             item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_10.value)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            dataframe.loc[
+                item_buy,
+                'buy_condition_10'
+            ] = 1
+            conditions.append(item_buy)
 
         # Buy Condition #11
+        dataframe.loc[
+            :,
+            'buy_condition_11'
+        ] = 0
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_11_enable']:
             # Non-Standard protections (add below)
@@ -3368,9 +3462,18 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_11.value)
             item_buy_logic.append(dataframe['mfi'] < self.buy_mfi_11.value)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            dataframe.loc[
+                item_buy,
+                'buy_condition_11'
+            ] = 1
+            conditions.append(item_buy)
 
         # Buy Condition #12
+        dataframe.loc[
+            :,
+            'buy_condition_12'
+        ] = 0
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_12_enable']:
             # Non-Standard protections (add below)
@@ -3382,9 +3485,18 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['ewo'] > self.buy_ewo_12.value)
             item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_12.value)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            dataframe.loc[
+                item_buy,
+                'buy_condition_12'
+            ] = 1
+            conditions.append(item_buy)
 
         # Buy Condition #13
+        dataframe.loc[
+            :,
+            'buy_condition_13'
+        ] = 0
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_13_enable']:
             # Non-Standard protections (add below)
@@ -3397,9 +3509,18 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * self.buy_ma_offset_13.value)
             item_buy_logic.append(dataframe['ewo'] < self.buy_ewo_13.value)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            dataframe.loc[
+                item_buy,
+                'buy_condition_13'
+            ] = 1
+            conditions.append(item_buy)
 
         # Buy Condition #14
+        dataframe.loc[
+            :,
+            'buy_condition_14'
+        ] = 0
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_14_enable']:
             # Non-Standard protections (add below)
@@ -3413,9 +3534,18 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_14.value))
             item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_ma_offset_14.value)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            dataframe.loc[
+                item_buy,
+                'buy_condition_14'
+            ] = 1
+            conditions.append(item_buy)
 
         # Buy Condition #15
+        dataframe.loc[
+            :,
+            'buy_condition_15'
+        ] = 0
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_15_enable']:
             # Non-Standard protections (add below)
@@ -3430,9 +3560,18 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_15.value)
             item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_ma_offset_15.value)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            dataframe.loc[
+                item_buy,
+                'buy_condition_15'
+            ] = 1
+            conditions.append(item_buy)
 
         # Buy Condition #16
+        dataframe.loc[
+            :,
+            'buy_condition_16'
+        ] = 0
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_16_enable']:
             # Non-Standard protections (add below)
@@ -3444,9 +3583,18 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['ewo'] > self.buy_ewo_16.value)
             item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_16.value)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            dataframe.loc[
+                item_buy,
+                'buy_condition_16'
+            ] = 1
+            conditions.append(item_buy)
 
         # Buy Condition #17
+        dataframe.loc[
+            :,
+            'buy_condition_17'
+        ] = 0
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_17_enable']:
             # Non-Standard protections (add below)
@@ -3457,9 +3605,18 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_ma_offset_17.value)
             item_buy_logic.append(dataframe['ewo'] < self.buy_ewo_17.value)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            dataframe.loc[
+                item_buy,
+                'buy_condition_17'
+            ] = 1
+            conditions.append(item_buy)
 
         # Buy Condition #18
+        dataframe.loc[
+            :,
+            'buy_condition_18'
+        ] = 0
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_18_enable']:
             # Non-Standard protections (add below)
@@ -3473,9 +3630,18 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_18.value)
             item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_18.value))
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            dataframe.loc[
+                item_buy,
+                'buy_condition_18'
+            ] = 1
+            conditions.append(item_buy)
 
         # Buy Condition #19
+        dataframe.loc[
+            :,
+            'buy_condition_19'
+        ] = 0
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_19_enable']:
             # Non-Standard protections (add below)
@@ -3491,9 +3657,18 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['chop'] < self.buy_chop_min_19.value)
             item_buy_logic.append(dataframe['moderi_64'] == True)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            dataframe.loc[
+                item_buy,
+                'buy_condition_19'
+            ] = 1
+            conditions.append(item_buy)
 
         # Buy Condition #20
+        dataframe.loc[
+            :,
+            'buy_condition_20'
+        ] = 0
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_20_enable']:
             # Non-Standard protections (add below)
@@ -3504,9 +3679,18 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_20.value)
             item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_20.value)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            dataframe.loc[
+                item_buy,
+                'buy_condition_20'
+            ] = 1
+            conditions.append(item_buy)
 
         # Buy Condition #21
+        dataframe.loc[
+            :,
+            'buy_condition_21'
+        ] = 0
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_21_enable']:
             # Non-Standard protections (add below)
@@ -3518,9 +3702,18 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_21.value)
             item_buy_logic.append(dataframe['cti'] < self.buy_cti_21.value)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            dataframe.loc[
+                item_buy,
+                'buy_condition_21'
+            ] = 1
+            conditions.append(item_buy)
 
         # Buy Condition #22
+        dataframe.loc[
+            :,
+            'buy_condition_22'
+        ] = 0
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_22_enable']:
             # Non-Standard protections (add below)
@@ -3537,9 +3730,18 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_22.value)
             item_buy_logic.append(dataframe['safe_dump_20_1h'])
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            dataframe.loc[
+                item_buy,
+                'buy_condition_22'
+            ] = 1
+            conditions.append(item_buy)
 
         # Buy Condition #23
+        dataframe.loc[
+            :,
+            'buy_condition_23'
+        ] = 0
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_23_enable']:
             # Non-Standard protections (add below)
@@ -3552,9 +3754,18 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_23.value)
             item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_23.value)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            dataframe.loc[
+                item_buy,
+                'buy_condition_23'
+            ] = 1
+            conditions.append(item_buy)
 
         # Buy Condition #24
+        dataframe.loc[
+            :,
+            'buy_condition_24'
+        ] = 0
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_24_enable']:
             # Non-Standard protections (add below)
@@ -3570,9 +3781,18 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['rsi'] < self.buy_24_rsi_max.value)
             item_buy_logic.append(dataframe['rsi_1h'] > self.buy_24_rsi_1h_min.value)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            dataframe.loc[
+                item_buy,
+                'buy_condition_24'
+            ] = 1
+            conditions.append(item_buy)
 
         # Buy Condition #25
+        dataframe.loc[
+            :,
+            'buy_condition_25'
+        ] = 0
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_25_enable']:
             # Non-Standard protections (add below)
@@ -3590,9 +3810,18 @@ class NostalgiaForInfinityNext(IStrategy):
                 (dataframe['open'] > dataframe['ema_20_1h']) & (dataframe['low'] > dataframe['ema_20_1h'])
             )
             item_buy_logic.append(dataframe['cti'] < -0.6)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            dataframe.loc[
+                item_buy,
+                'buy_condition_25'
+            ] = 1
+            conditions.append(item_buy)
 
         # Buy Condition #26
+        dataframe.loc[
+            :,
+            'buy_condition_26'
+        ] = 0
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_26_enable']:
             # Non-Standard protections (add below)
@@ -3602,9 +3831,18 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[25]))
             item_buy_logic.append(dataframe['close'] < (dataframe['zema'] * self.buy_26_zema_low_offset.value))
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            dataframe.loc[
+                item_buy,
+                'buy_condition_26'
+            ] = 1
+            conditions.append(item_buy)
 
         # Buy Condition #27
+        dataframe.loc[
+            :,
+            'buy_condition_27'
+        ] = 0
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_27_enable']:
             # Non-Standard protections (add below)
@@ -3616,9 +3854,18 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['r_480_1h'] < -self.buy_27_wr_1h_max.value)
             item_buy_logic.append(dataframe['rsi_1h'] + dataframe['rsi'] < self.buy_27_rsi_max.value)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            dataframe.loc[
+                item_buy,
+                'buy_condition_27'
+            ] = 1
+            conditions.append(item_buy)
 
         # Buy Condition #28
+        dataframe.loc[
+            :,
+            'buy_condition_28'
+        ] = 0
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_28_enable']:
             # Non-Standard protections (add below)
@@ -3632,9 +3879,18 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['rsi'] < 38.0)
             item_buy_logic.append(dataframe['cti'] < -0.6)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            dataframe.loc[
+                item_buy,
+                'buy_condition_28'
+            ] = 1
+            conditions.append(item_buy)
 
         # Buy Condition #29
+        dataframe.loc[
+            :,
+            'buy_condition_29'
+        ] = 0
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_29_enable']:
             # Non-Standard protections (add below)
@@ -3645,9 +3901,18 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['close'] < dataframe['hull_75'] * 0.9)
             item_buy_logic.append(dataframe['ewo'] < -4.0)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            dataframe.loc[
+                item_buy,
+                'buy_condition_29'
+            ] = 1
+            conditions.append(item_buy)
 
         # Buy Condition #30
+        dataframe.loc[
+            :,
+            'buy_condition_30'
+        ] = 0
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_30_enable']:
             # Non-Standard protections (add below)
@@ -3659,9 +3924,18 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['ewo'] > 9.0)
             item_buy_logic.append(dataframe['rsi'] < 42.0)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            dataframe.loc[
+                item_buy,
+                'buy_condition_30'
+            ] = 1
+            conditions.append(item_buy)
 
         # Buy Condition #31
+        dataframe.loc[
+            :,
+            'buy_condition_31'
+        ] = 0
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_31_enable']:
             # Non-Standard protections (add below)
@@ -3673,7 +3947,12 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['ewo'] < -19.0)
             item_buy_logic.append(dataframe['r_480'] < -99.0)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            dataframe.loc[
+                item_buy,
+                'buy_condition_31'
+            ] = 1
+            conditions.append(item_buy)
 
         # Buy Condition #32
         dataframe.loc[
