@@ -9,6 +9,7 @@ repos:
       - id: mixed-line-ending     # Replaces or checks mixed line ending.
         args: [--fix=lf]
       - id: end-of-file-fixer     # Makes sure files end in a newline and only a newline.
+        exclude: user_data/.*
       - id: check-merge-conflict  # Check for files that contain merge conflict strings.
       - id: check-ast             # Simply check whether files parse as valid python.
 
@@ -20,6 +21,7 @@ repos:
         name: Rewrite Code to be Py3.7+
         args: [--py37-plus]
         files: tests/.*\.py
+        exclude: user_data/.*
 
   - repo: https://github.com/asottile/reorder_python_imports
     rev: v2.6.0
