@@ -76,7 +76,7 @@ jobs:
     runs-on: ubuntu-20.04
     needs:
       - Pre-Commit
-      - Exchange-Data
+      # - Exchange-Data
 
     steps:
       - uses: actions/checkout@v2
