@@ -41,6 +41,12 @@ jobs:
   Download-Data:
     runs-on: ubuntu-latest
     timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        exchange:
+          - binance
+          - kucoin
 
     steps:
       - uses: actions/checkout@v2
@@ -56,6 +62,7 @@ jobs:
       - name: Download Exchange Data
         env:
           START_DATE: "20210101"
+          EXCHANGE: ${{ matrix.exchange }}
         run: |
           docker-compose run --rm download-data
 
@@ -85,6 +92,9 @@ jobs:
       matrix:
         timerange: [20210101-20210201, 20210201-20210301, 20210301-20210401, 20210401-20210501, 20210601-20210701]
         opentrades: [5]
+        exchange:
+          - binance
+          - kucoin
     runs-on: ubuntu-latest
 
     steps:
@@ -103,6 +113,7 @@ jobs:
           MAX_OPEN_TRADES: ${{ matrix.opentrades }}
           STAKE_AMOUNT: unlimited
           TIMERANGE: ${{ matrix.timerange }}
+          EXCHANGE: ${{ matrix.exchange }}
         run: docker-compose run --rm backtesting > backtest_${{ matrix.timerange }}_${{ matrix.opentrades }}.txt
 
       - name: Show Backtest ${{ matrix.timerange }} ${{ matrix.opentrades }}
