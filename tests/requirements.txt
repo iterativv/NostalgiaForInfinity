@@ -1,0 +1,4 @@
+freqtrade
+pandas-ta
+pytest
+pytest-mock
