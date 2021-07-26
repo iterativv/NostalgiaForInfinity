@@ -1996,11 +1996,17 @@ class NostalgiaForInfinityNext(IStrategy):
         self.hold_trade_ids = {}
 
         # Update values from config file, if it exists
-        hold_trades_config_file = pathlib.Path(__file__).parent / "hold-trades.json"
+        strat_file_path = pathlib.Path(__file__)
+        hold_trades_config_file = strat_file_path.resolve().parent / "hold-trades.json"
         if not hold_trades_config_file.is_file():
-            # Now let's try resolving symlinks
-            hold_trades_config_file = pathlib.Path(__file__).absolute().parent / "hold-trades.json"
+            # The resolved path does not exist, is it a symlink?
+            hold_trades_config_file = strat_file_path.absolute().parent / "hold-trades.json"
             if not hold_trades_config_file.is_file():
+                log.warning(
+                    "The 'hold-trades.json' file was not found. Looked in '%s' and '%s'. HOLD support disabled.",
+                    strat_file_path.resolve().parent,
+                    strat_file_path.absolute().parent
+                )
                 return
 
         with hold_trades_config_file.open('r') as f:
