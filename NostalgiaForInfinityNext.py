@@ -51,8 +51,11 @@ log = logging.getLogger(__name__)
 ##                                                                                                       ##
 ##   {"trade_ids": {1: 0.001, 3: -0.005, 7: 0.05}}                                                       ##
 ##                                                                                                       ##
-##   DO NOTE that `trade_ids` is a list of integers, the trade ID's, which you can get from the logs     ##
-##   or from the output of the telegram status command.                                                  ##
+##   NOTE:                                                                                               ##
+##    * `trade_ids` is a list of integers, the trade ID's, which you can get from the logs or from the   ##
+##      output of the telegram status command.                                                           ##
+##    * Regardless of the defined profit ratio(s), the strategy MUST still produce a SELL signal for the ##
+##      HOLD support logic to run                                                                        ##
 ##                                                                                                       ##
 ###########################################################################################################
 ##               DONATIONS                                                                               ##
