@@ -79,6 +79,7 @@ jobs:
       - Download-Data
 
     steps:
+      - uses: actions/checkout@v2
       - name: Run Tests
         run: docker-compose run --rm tests
 
