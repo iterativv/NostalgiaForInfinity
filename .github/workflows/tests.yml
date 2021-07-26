@@ -38,15 +38,11 @@ jobs:
       with:
         extra_args: --files ${{ steps.changed-files.outputs.repo_files }}
 
-  Exchange-Data:
+  Binance-Exchange-Data:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     strategy:
       fail-fast: false
-      matrix:
-        exchange:
-          - binance
-          - kucoin
 
     steps:
       - uses: actions/checkout@v2
@@ -56,21 +52,139 @@ jobs:
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: tests.yml
-          name: exchange-data-${{ matrix.exchange }}
-          path: user_data/data/${{ matrix.exchange }}
+          name: exchange-data-binance
+          path: user_data/data/binance
 
       - name: Download Data
         env:
           START_DATE: "20210101"
-          EXCHANGE: ${{ matrix.exchange }}
+          EXCHANGE: binance
         run: |
           docker-compose run --rm download-data
 
       - name: Upload Cache
         uses: actions/upload-artifact@v2
         with:
-          name: exchange-data-${{ matrix.exchange }}
-          path: user_data/data/${{ matrix.exchange }}
+          name: exchange-data-binance
+          path: user_data/data/binance
+
+  Kucoin-Exchange-Data:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Download Cache
+        continue-on-error: true
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: tests.yml
+          name: exchange-data-kucoin
+          path: user_data/data/kucoin
+
+      - name: Download Data
+        env:
+          START_DATE: "20210101"
+          EXCHANGE: kucoin
+        run: |
+          docker-compose run --rm download-data
+
+      - name: Upload Cache
+        uses: actions/upload-artifact@v2
+        with:
+          name: exchange-data-kucoin
+          path: user_data/data/kucoin
+
+  Binance-Backtests:
+    needs:
+      - Pre-Commit
+      - Binance-Exchange-Data
+    strategy:
+      fail-fast: false
+      matrix:
+        timerange:
+          - 20210101-20210201
+          - 20210201-20210301
+          - 20210301-20210401
+          - 20210401-20210501
+          - 20210601-20210701
+        opentrades:
+          - 5
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Download Data Cache
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: tests.yml
+          name: exchange-data-binance
+          path: user_data/data/binance
+
+      - name: Run Backtest ${{ matrix.opentrades }} trades ${{ matrix.timerange }}
+        env:
+          MAX_OPEN_TRADES: ${{ matrix.opentrades }}
+          STAKE_AMOUNT: unlimited
+          TIMERANGE: ${{ matrix.timerange }}
+          EXCHANGE: binance
+        run: docker-compose run --rm backtesting > backtest_${{ matrix.timerange }}_${{ matrix.opentrades }}.txt
+
+      - name: Show Backtest ${{ matrix.timerange }} ${{ matrix.opentrades }}
+        run: cat backtest_${{ matrix.timerange }}_${{ matrix.opentrades }}.txt
+
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v2
+        with:
+          name: backtest_result
+          path: backtest_${{ matrix.timerange }}_${{ matrix.opentrades }}.txt
+
+  Kucoin-Backtests:
+    needs:
+      - Pre-Commit
+      - Kucoin-Exchange-Data
+    strategy:
+      fail-fast: false
+      matrix:
+        timerange:
+          - 20210101-20210201
+          - 20210201-20210301
+          - 20210301-20210401
+          - 20210401-20210501
+          - 20210601-20210701
+        opentrades:
+          - 5
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Download Data Cache
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: tests.yml
+          name: exchange-data-kucoin
+          path: user_data/data/kucoin
+
+      - name: Run Backtest ${{ matrix.opentrades }} trades ${{ matrix.timerange }}
+        env:
+          MAX_OPEN_TRADES: ${{ matrix.opentrades }}
+          STAKE_AMOUNT: unlimited
+          TIMERANGE: ${{ matrix.timerange }}
+          EXCHANGE: kucoin
+        run: docker-compose run --rm backtesting > backtest_${{ matrix.timerange }}_${{ matrix.opentrades }}.txt
+
+      - name: Show Backtest ${{ matrix.timerange }} ${{ matrix.opentrades }}
+        run: cat backtest_${{ matrix.timerange }}_${{ matrix.opentrades }}.txt
+
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v2
+        with:
+          name: backtest_result
+          path: backtest_${{ matrix.timerange }}_${{ matrix.opentrades }}.txt
 
   Test:
     runs-on: ubuntu-20.04
@@ -82,45 +196,3 @@ jobs:
       - uses: actions/checkout@v2
       - name: Run Tests
         run: docker-compose run --rm tests
-
-  Backtests:
-    needs:
-      - Pre-Commit
-      - Exchange-Data
-    strategy:
-      fail-fast: false
-      matrix:
-        timerange: [20210101-20210201, 20210201-20210301, 20210301-20210401, 20210401-20210501, 20210601-20210701]
-        opentrades: [5]
-        exchange:
-          - binance
-          - kucoin
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Download Data Cache
-        continue-on-error: true
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          workflow: tests.yml
-          name: exchange-data-${{ matrix.exchange }}
-          path: user_data/data/${{ matrix.exchange }}
-
-      - name: Run Backtest ${{ matrix.opentrades }} trades ${{ matrix.timerange }}
-        env:
-          MAX_OPEN_TRADES: ${{ matrix.opentrades }}
-          STAKE_AMOUNT: unlimited
-          TIMERANGE: ${{ matrix.timerange }}
-          EXCHANGE: ${{ matrix.exchange }}
-        run: docker-compose run --rm backtesting > backtest_${{ matrix.timerange }}_${{ matrix.opentrades }}.txt
-
-      - name: Show Backtest ${{ matrix.timerange }} ${{ matrix.opentrades }}
-        run: cat backtest_${{ matrix.timerange }}_${{ matrix.opentrades }}.txt
-
-      - name: 'Upload Artifact'
-        uses: actions/upload-artifact@v2
-        with:
-          name: backtest_result
-          path: backtest_${{ matrix.timerange }}_${{ matrix.opentrades }}.txt
