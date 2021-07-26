@@ -23,6 +23,7 @@ services:
       --strategy-list NostalgiaForInfinityNext
       --timerange ${TIMERANGE:-20210601-20210701}
       --config user_data/pairlists.json
+      --config user_data/${EXCHANGE:-binance}-usdt-static.json
       --max-open-trades ${MAX_OPEN_TRADES:-5}
       --stake-amount ${STAKE_AMOUNT:-unlimited}
   download-data:
@@ -31,4 +32,4 @@ services:
     volumes:
       - "./user_data:/freqtrade/user_data"
     command: >
-      download-data --timerange ${START_DATE}-${END_DATE} --timeframe 5m 1h --config user_data/pairlists.json
+      download-data --timerange ${START_DATE}-${END_DATE} --timeframe 5m 1h --config user_data/pairlists.json --config user_data/${EXCHANGE:-binance}-usdt-static.json
