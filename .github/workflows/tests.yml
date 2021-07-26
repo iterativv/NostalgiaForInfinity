@@ -52,6 +52,7 @@ jobs:
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: tests.yml
+          workflow_conclusion: success,failure,completed
           name: exchange-data-binance
           path: user_data/data/binance
 
@@ -65,6 +66,7 @@ jobs:
           docker-compose run --rm download-data
 
       - name: Upload Cache
+        if: always()
         uses: actions/upload-artifact@v2
         with:
           name: exchange-data-binance
@@ -84,6 +86,7 @@ jobs:
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: tests.yml
+          workflow_conclusion: success,failure,completed
           name: exchange-data-kucoin
           path: user_data/data/kucoin
 
@@ -97,6 +100,7 @@ jobs:
           docker-compose run --rm download-data
 
       - name: Upload Cache
+        if: always()
         uses: actions/upload-artifact@v2
         with:
           name: exchange-data-kucoin
@@ -123,23 +127,16 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Download Data Cache
-        if: github.event_name != 'pull_request'
+        continue-on-error: true
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: tests.yml
+          workflow_conclusion: success,failure,completed
           name: exchange-data-binance
           path: user_data/data/binance
-
-      - name: Download PR Data Cache
-        if: github.event_name == 'pull_request'
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          workflow: tests.yml
-          name: exchange-data-binance
-          path: user_data/data/binance
-          pr: ${{github.event.pull_request.number}}
 
       - name: Run Backtest ${{ matrix.opentrades }} trades ${{ matrix.timerange }}
+        continue-on-error: true
         env:
           MAX_OPEN_TRADES: ${{ matrix.opentrades }}
           STAKE_AMOUNT: unlimited
@@ -177,23 +174,16 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Download Data Cache
-        if: github.event_name != 'pull_request'
         uses: dawidd6/action-download-artifact@v2
+        continue-on-error: true
         with:
           workflow: tests.yml
+          workflow_conclusion: success,failure,completed
           name: exchange-data-kucoin
           path: user_data/data/kucoin
-
-      - name: Download PR Data Cache
-        if: github.event_name == 'pull_request'
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          workflow: tests.yml
-          name: exchange-data-kucoin
-          path: user_data/data/kucoin
-          pr: ${{github.event.pull_request.number}}
 
       - name: Run Backtest ${{ matrix.opentrades }} trades ${{ matrix.timerange }}
+        continue-on-error: true
         env:
           MAX_OPEN_TRADES: ${{ matrix.opentrades }}
           STAKE_AMOUNT: unlimited
