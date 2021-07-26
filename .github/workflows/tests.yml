@@ -3,6 +3,7 @@ name: CI
 on: [push, pull_request]
 
 jobs:
+
   Pre-Commit:
     runs-on: ubuntu-20.04
     steps:
