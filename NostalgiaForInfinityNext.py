@@ -47,12 +47,15 @@ log = logging.getLogger(__name__)
 ##                                                                                                       ##
 ##   {"trade_ids": [1, 3, 7], "profit_ratio": 0.005}                                                     ##
 ##                                                                                                       ##
-##   Or, for individual profit ratios:                                                                   ##
+##   Or, for individual profit ratios(Notice the trade ID's as strings:                                  ##
 ##                                                                                                       ##
-##   {"trade_ids": {1: 0.001, 3: -0.005, 7: 0.05}}                                                       ##
+##   {"trade_ids": {"1": 0.001, "3": -0.005, "7": 0.05}}                                                 ##
 ##                                                                                                       ##
-##   DO NOTE that `trade_ids` is a list of integers, the trade ID's, which you can get from the logs     ##
-##   or from the output of the telegram status command.                                                  ##
+##   NOTE:                                                                                               ##
+##    * `trade_ids` is a list of integers, the trade ID's, which you can get from the logs or from the   ##
+##      output of the telegram status command.                                                           ##
+##    * Regardless of the defined profit ratio(s), the strategy MUST still produce a SELL signal for the ##
+##      HOLD support logic to run                                                                        ##
 ##                                                                                                       ##
 ###########################################################################################################
 ##               DONATIONS                                                                               ##
@@ -1996,11 +1999,17 @@ class NostalgiaForInfinityNext(IStrategy):
         self.hold_trade_ids = {}
 
         # Update values from config file, if it exists
-        hold_trades_config_file = pathlib.Path(__file__).parent / "hold-trades.json"
+        strat_file_path = pathlib.Path(__file__)
+        hold_trades_config_file = strat_file_path.resolve().parent / "hold-trades.json"
         if not hold_trades_config_file.is_file():
-            # Now let's try resolving symlinks
-            hold_trades_config_file = pathlib.Path(__file__).absolute().parent / "hold-trades.json"
+            # The resolved path does not exist, is it a symlink?
+            hold_trades_config_file = strat_file_path.absolute().parent / "hold-trades.json"
             if not hold_trades_config_file.is_file():
+                log.warning(
+                    "The 'hold-trades.json' file was not found. Looked in '%s' and '%s'. HOLD support disabled.",
+                    strat_file_path.resolve().parent,
+                    strat_file_path.absolute().parent
+                )
                 return
 
         with hold_trades_config_file.open('r') as f:
@@ -2023,7 +2032,9 @@ class NostalgiaForInfinityNext(IStrategy):
             if isinstance(trade_ids, dict):
                 # New syntax
                 for trade_id, profit_ratio in trade_ids.items():
-                    if not isinstance(trade_id, int):
+                    try:
+                        trade_id = int(trade_id)
+                    except ValueError:
                         log.error(
                             "The trade_id(%s) defined under 'trade_ids' in %s is not an integer",
                             trade_id, hold_trades_config_file
