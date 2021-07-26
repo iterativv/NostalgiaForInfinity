@@ -3,12 +3,7 @@ name: Backtest
 on: [push, pull_request]
 
 jobs:
-  main_job:
-    strategy:
-      fail-fast: false
-      matrix:
-        timerange: [20210101-20210201, 20210201-20210301, 20210301-20210401, 20210401-20210501, 20210601-20210701]
-        opentrades: [5]
+  download-data:
     runs-on: ubuntu-latest
 
     steps:
@@ -28,6 +23,32 @@ jobs:
         run: |
           docker-compose run --rm download-data
 
+      - name: Upload Data Cache
+        uses: actions/upload-artifact@v2
+        with:
+          name: download-data
+          path: user_data/data
+
+  main_job:
+    needs: download-data
+    strategy:
+      fail-fast: false
+      matrix:
+        timerange: [20210101-20210201, 20210201-20210301, 20210301-20210401, 20210401-20210501, 20210601-20210701]
+        opentrades: [5]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Download Data Cache
+        continue-on-error: true
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: backtest.yml
+          name: download-data
+          path: user_data/data
+
       - name: Run Backtest ${{ matrix.opentrades }} trades ${{ matrix.timerange }}
         env:
           MAX_OPEN_TRADES: ${{ matrix.opentrades }}
@@ -43,9 +64,3 @@ jobs:
         with:
           name: backtest_result
           path: backtest_${{ matrix.timerange }}_${{ matrix.opentrades }}.txt
-
-      - name: Upload Data Cache
-        uses: actions/upload-artifact@v2
-        with:
-          name: download-data
-          path: user_data/data
