@@ -8,6 +8,7 @@ from freqtrade.misc import json_load
 from freqtrade.strategy.interface import IStrategy
 from freqtrade.strategy import merge_informative_pair, timeframe_to_minutes
 from freqtrade.strategy import DecimalParameter, IntParameter, CategoricalParameter
+from freqtrade.exchange import timeframe_to_prev_date
 from pandas import DataFrame, Series
 from functools import reduce
 import math
@@ -151,6 +152,9 @@ class NostalgiaForInfinityNext(IStrategy):
         "buy_condition_29_enable": True,
         "buy_condition_30_enable": True,
         "buy_condition_31_enable": True,
+        "buy_condition_32_enable": True,
+        "buy_condition_33_enable": True,
+        "buy_condition_34_enable": True,
         #############
     }
 
@@ -821,6 +825,69 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_type"            : CategoricalParameter(["10","50","100"], default="10", space='buy', optimize=False, load=True),
             "safe_pump_period"          : CategoricalParameter(["24","36","48"], default="48", space='buy', optimize=False, load=True),
             "btc_1h_not_downtrend"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+        },
+        32: {
+            "enable"                    : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
+            "ema_fast"                  : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "ema_fast_len"              : CategoricalParameter(["26","50","100","200"], default="50", space='buy', optimize=False, load=True),
+            "ema_slow"                  : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "ema_slow_len"              : CategoricalParameter(["26","50","100","200"], default="100", space='buy', optimize=False, load=True),
+            "close_above_ema_fast"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "close_above_ema_fast_len"  : CategoricalParameter(["12","20","26","50","100","200"], default="50", space='buy', optimize=False, load=True),
+            "close_above_ema_slow"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "close_above_ema_slow_len"  : CategoricalParameter(["15","50","200"], default="100", space='buy', optimize=False, load=True),
+            "sma200_rising"             : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "sma200_rising_val"         : CategoricalParameter(["20","30","36","44","50"], default="30", space='buy', optimize=False, load=True),
+            "sma200_1h_rising"          : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "sma200_1h_rising_val"      : CategoricalParameter(["20","30","36","44","50"], default="50", space='buy', optimize=False, load=True),
+            "safe_dips"                 : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
+            "safe_dips_type"            : CategoricalParameter(["10","50","100"], default="10", space='buy', optimize=False, load=True),
+            "safe_pump"                 : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
+            "safe_pump_type"            : CategoricalParameter(["10","50","100"], default="20", space='buy', optimize=False, load=True),
+            "safe_pump_period"          : CategoricalParameter(["24","36","48"], default="48", space='buy', optimize=False, load=True),
+            "btc_1h_not_downtrend"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+        },
+        33: {
+            "enable"                    : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
+            "ema_fast"                  : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "ema_fast_len"              : CategoricalParameter(["26","50","100","200"], default="50", space='buy', optimize=False, load=True),
+            "ema_slow"                  : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "ema_slow_len"              : CategoricalParameter(["26","50","100","200"], default="100", space='buy', optimize=False, load=True),
+            "close_above_ema_fast"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "close_above_ema_fast_len"  : CategoricalParameter(["12","20","26","50","100","200"], default="50", space='buy', optimize=False, load=True),
+            "close_above_ema_slow"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "close_above_ema_slow_len"  : CategoricalParameter(["15","50","200"], default="100", space='buy', optimize=False, load=True),
+            "sma200_rising"             : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "sma200_rising_val"         : CategoricalParameter(["20","30","36","44","50"], default="30", space='buy', optimize=False, load=True),
+            "sma200_1h_rising"          : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "sma200_1h_rising_val"      : CategoricalParameter(["20","30","36","44","50"], default="50", space='buy', optimize=False, load=True),
+            "safe_dips"                 : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
+            "safe_dips_type"            : CategoricalParameter(["10","50","100"], default="100", space='buy', optimize=False, load=True),
+            "safe_pump"                 : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "safe_pump_type"            : CategoricalParameter(["10","50","100"], default="100", space='buy', optimize=False, load=True),
+            "safe_pump_period"          : CategoricalParameter(["24","36","48"], default="24", space='buy', optimize=False, load=True),
+            "btc_1h_not_downtrend"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+        },
+        34: {
+            "enable"                    : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
+            "ema_fast"                  : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "ema_fast_len"              : CategoricalParameter(["26","50","100","200"], default="50", space='buy', optimize=False, load=True),
+            "ema_slow"                  : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "ema_slow_len"              : CategoricalParameter(["26","50","100","200"], default="100", space='buy', optimize=False, load=True),
+            "close_above_ema_fast"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "close_above_ema_fast_len"  : CategoricalParameter(["12","20","26","50","100","200"], default="50", space='buy', optimize=False, load=True),
+            "close_above_ema_slow"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "close_above_ema_slow_len"  : CategoricalParameter(["15","50","200"], default="100", space='buy', optimize=False, load=True),
+            "sma200_rising"             : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "sma200_rising_val"         : CategoricalParameter(["20","30","36","44","50"], default="30", space='buy', optimize=False, load=True),
+            "sma200_1h_rising"          : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "sma200_1h_rising_val"      : CategoricalParameter(["20","30","36","44","50"], default="50", space='buy', optimize=False, load=True),
+            "safe_dips"                 : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "safe_dips_type"            : CategoricalParameter(["10","50","100"], default="100", space='buy', optimize=False, load=True),
+            "safe_pump"                 : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "safe_pump_type"            : CategoricalParameter(["10","50","100"], default="10", space='buy', optimize=False, load=True),
+            "safe_pump_period"          : CategoricalParameter(["24","36","48"], default="24", space='buy', optimize=False, load=True),
+            "btc_1h_not_downtrend"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
         }
     }
 
@@ -1443,6 +1510,66 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_31_protection__safe_pump_type           = buy_protection_params[31]["safe_pump_type"]
     buy_31_protection__safe_pump_period         = buy_protection_params[31]["safe_pump_period"]
     buy_31_protection__btc_1h_not_downtrend     = buy_protection_params[31]["btc_1h_not_downtrend"]
+
+    buy_condition_32_enable = buy_protection_params[32]["enable"]
+    buy_32_protection__ema_fast                 = buy_protection_params[32]["ema_fast"]
+    buy_32_protection__ema_fast_len             = buy_protection_params[32]["ema_fast_len"]
+    buy_32_protection__ema_slow                 = buy_protection_params[32]["ema_slow"]
+    buy_32_protection__ema_slow_len             = buy_protection_params[32]["ema_slow_len"]
+    buy_32_protection__close_above_ema_fast     = buy_protection_params[32]["close_above_ema_fast"]
+    buy_32_protection__close_above_ema_fast_len = buy_protection_params[32]["close_above_ema_fast_len"]
+    buy_32_protection__close_above_ema_slow     = buy_protection_params[32]["close_above_ema_slow"]
+    buy_32_protection__close_above_ema_slow_len = buy_protection_params[32]["close_above_ema_slow_len"]
+    buy_32_protection__sma200_rising            = buy_protection_params[32]["sma200_rising"]
+    buy_32_protection__sma200_rising_val        = buy_protection_params[32]["sma200_rising_val"]
+    buy_32_protection__sma200_1h_rising         = buy_protection_params[32]["sma200_1h_rising"]
+    buy_32_protection__sma200_1h_rising_val     = buy_protection_params[32]["sma200_1h_rising_val"]
+    buy_32_protection__safe_dips                = buy_protection_params[32]["safe_dips"]
+    buy_32_protection__safe_dips_type           = buy_protection_params[32]["safe_dips_type"]
+    buy_32_protection__safe_pump                = buy_protection_params[32]["safe_pump"]
+    buy_32_protection__safe_pump_type           = buy_protection_params[32]["safe_pump_type"]
+    buy_32_protection__safe_pump_period         = buy_protection_params[32]["safe_pump_period"]
+    buy_32_protection__btc_1h_not_downtrend     = buy_protection_params[32]["btc_1h_not_downtrend"]
+
+    buy_condition_33_enable = buy_protection_params[33]["enable"]
+    buy_33_protection__ema_fast                 = buy_protection_params[33]["ema_fast"]
+    buy_33_protection__ema_fast_len             = buy_protection_params[33]["ema_fast_len"]
+    buy_33_protection__ema_slow                 = buy_protection_params[33]["ema_slow"]
+    buy_33_protection__ema_slow_len             = buy_protection_params[33]["ema_slow_len"]
+    buy_33_protection__close_above_ema_fast     = buy_protection_params[33]["close_above_ema_fast"]
+    buy_33_protection__close_above_ema_fast_len = buy_protection_params[33]["close_above_ema_fast_len"]
+    buy_33_protection__close_above_ema_slow     = buy_protection_params[33]["close_above_ema_slow"]
+    buy_33_protection__close_above_ema_slow_len = buy_protection_params[33]["close_above_ema_slow_len"]
+    buy_33_protection__sma200_rising            = buy_protection_params[33]["sma200_rising"]
+    buy_33_protection__sma200_rising_val        = buy_protection_params[33]["sma200_rising_val"]
+    buy_33_protection__sma200_1h_rising         = buy_protection_params[33]["sma200_1h_rising"]
+    buy_33_protection__sma200_1h_rising_val     = buy_protection_params[33]["sma200_1h_rising_val"]
+    buy_33_protection__safe_dips                = buy_protection_params[33]["safe_dips"]
+    buy_33_protection__safe_dips_type           = buy_protection_params[33]["safe_dips_type"]
+    buy_33_protection__safe_pump                = buy_protection_params[33]["safe_pump"]
+    buy_33_protection__safe_pump_type           = buy_protection_params[33]["safe_pump_type"]
+    buy_33_protection__safe_pump_period         = buy_protection_params[33]["safe_pump_period"]
+    buy_33_protection__btc_1h_not_downtrend     = buy_protection_params[33]["btc_1h_not_downtrend"]
+
+    buy_condition_34_enable = buy_protection_params[34]["enable"]
+    buy_34_protection__ema_fast                 = buy_protection_params[34]["ema_fast"]
+    buy_34_protection__ema_fast_len             = buy_protection_params[34]["ema_fast_len"]
+    buy_34_protection__ema_slow                 = buy_protection_params[34]["ema_slow"]
+    buy_34_protection__ema_slow_len             = buy_protection_params[34]["ema_slow_len"]
+    buy_34_protection__close_above_ema_fast     = buy_protection_params[34]["close_above_ema_fast"]
+    buy_34_protection__close_above_ema_fast_len = buy_protection_params[34]["close_above_ema_fast_len"]
+    buy_34_protection__close_above_ema_slow     = buy_protection_params[34]["close_above_ema_slow"]
+    buy_34_protection__close_above_ema_slow_len = buy_protection_params[34]["close_above_ema_slow_len"]
+    buy_34_protection__sma200_rising            = buy_protection_params[34]["sma200_rising"]
+    buy_34_protection__sma200_rising_val        = buy_protection_params[34]["sma200_rising_val"]
+    buy_34_protection__sma200_1h_rising         = buy_protection_params[34]["sma200_1h_rising"]
+    buy_34_protection__sma200_1h_rising_val     = buy_protection_params[34]["sma200_1h_rising_val"]
+    buy_34_protection__safe_dips                = buy_protection_params[34]["safe_dips"]
+    buy_34_protection__safe_dips_type           = buy_protection_params[34]["safe_dips_type"]
+    buy_34_protection__safe_pump                = buy_protection_params[34]["safe_pump"]
+    buy_34_protection__safe_pump_type           = buy_protection_params[34]["safe_pump_type"]
+    buy_34_protection__safe_pump_period         = buy_protection_params[34]["safe_pump_period"]
+    buy_34_protection__btc_1h_not_downtrend     = buy_protection_params[34]["btc_1h_not_downtrend"]
 
     # Strict dips - level 10
     buy_dip_threshold_10_1 = DecimalParameter(0.001, 0.05, default=0.015, space='buy', decimals=3, optimize=False, load=True)
@@ -2273,7 +2400,6 @@ class NostalgiaForInfinityNext(IStrategy):
 
         return False, None
 
-
     def sell_under_min(self, current_profit: float, last_candle) -> tuple:
         if ((last_candle['moderi_96']) == False):
             # Downtrend
@@ -2480,6 +2606,19 @@ class NostalgiaForInfinityNext(IStrategy):
 
         return False, None
 
+    def sell_quick_mode(self, current_profit: float, max_profit:float, last_candle, buy_signal_candle) -> tuple:
+        if (buy_signal_candle['buy_condition_32'] == 1) or (buy_signal_candle['buy_condition_33'] == 1) or (buy_signal_candle['buy_condition_34'] == 1):
+            if (0.06 > current_profit > 0.02) & (last_candle['rsi'] > 79.0):
+                return True, 'signal_profit_q_1'
+
+            if (0.06 > current_profit > 0.02) & (last_candle['cti'] > 0.9):
+                return True, 'signal_profit_q_2'
+
+            if (current_profit < -0.1):
+                return True, 'signal_stoploss_q_1'
+
+        return False, None
+
     def custom_sell(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float,
                     current_profit: float, **kwargs):
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
@@ -2490,124 +2629,130 @@ class NostalgiaForInfinityNext(IStrategy):
         previous_candle_4 = dataframe.iloc[-5].squeeze()
         previous_candle_5 = dataframe.iloc[-6].squeeze()
 
+        trade_open_date = timeframe_to_prev_date(self.timeframe, trade.open_date_utc)
+        buy_signal = dataframe.loc[dataframe['date'] < trade_open_date]
+        if not buy_signal.empty:
+            buy_signal_candle = buy_signal.iloc[-1].squeeze()
+
         max_profit = ((trade.max_rate - trade.open_rate) / trade.open_rate)
         max_loss = ((trade.open_rate - trade.min_rate) / trade.min_rate)
 
-        if (last_candle is not None) & (previous_candle_1 is not None) & (previous_candle_2 is not None) & (previous_candle_3 is not None) & (previous_candle_4 is not None) & (previous_candle_5 is not None):
-            # Over EMA200, main profit targets
-            sell, signal_name = self.sell_over_main(current_profit, last_candle)
+        # Quick sell mode
+        if not buy_signal.empty:
+            sell, signal_name = self.sell_quick_mode(current_profit, max_profit, last_candle, buy_signal_candle)
             if sell and (signal_name is not None):
                 return signal_name
 
-            # Under EMA200, main profit targets
-            sell, signal_name = self.sell_under_main(current_profit, last_candle)
-            if sell and (signal_name is not None):
-                return signal_name
+        # Over EMA200, main profit targets
+        sell, signal_name = self.sell_over_main(current_profit, last_candle)
+        if sell and (signal_name is not None):
+            return signal_name
 
-            # The pair is pumped
-            sell, signal_name = self.sell_pump_main(current_profit, last_candle)
-            if sell and (signal_name is not None):
-                return signal_name
+        # Under EMA200, main profit targets
+        sell, signal_name = self.sell_under_main(current_profit, last_candle)
+        if sell and (signal_name is not None):
+            return signal_name
 
-            # The pair is descending
-            sell, signal_name = self.sell_dec_main(current_profit, last_candle)
-            if sell and (signal_name is not None):
-                return signal_name
+        # The pair is pumped
+        sell, signal_name = self.sell_pump_main(current_profit, last_candle)
+        if sell and (signal_name is not None):
+            return signal_name
 
-            # Trailing
-            sell, signal_name = self.sell_trail_main(current_profit, last_candle, max_profit)
-            if sell and (signal_name is not None):
-                return signal_name
+        # The pair is descending
+        sell, signal_name = self.sell_dec_main(current_profit, last_candle)
+        if sell and (signal_name is not None):
+            return signal_name
 
-            # Duration based
-            sell, signal_name = self.sell_duration_main(current_profit, last_candle, trade, current_time)
-            if sell and (signal_name is not None):
-                return signal_name
+        # Trailing
+        sell, signal_name = self.sell_trail_main(current_profit, last_candle, max_profit)
+        if sell and (signal_name is not None):
+            return signal_name
 
-            # Under EMA200, exit with any profit
-            sell, signal_name = self.sell_under_min(current_profit, last_candle)
-            if sell and (signal_name is not None):
-                return signal_name
+        # Duration based
+        sell, signal_name = self.sell_duration_main(current_profit, last_candle, trade, current_time)
+        if sell and (signal_name is not None):
+            return signal_name
 
-            # Stoplosses
-            sell, signal_name = self.sell_stoploss(current_profit, last_candle, trade, current_time, max_loss, max_profit)
-            if sell and (signal_name is not None):
-                return signal_name
+        # Under EMA200, exit with any profit
+        sell, signal_name = self.sell_under_min(current_profit, last_candle)
+        if sell and (signal_name is not None):
+            return signal_name
 
-            # Pumped descending pairs
-            sell, signal_name = self.sell_pump_dec(current_profit, last_candle)
-            if sell and (signal_name is not None):
-                return signal_name
+        # Stoplosses
+        sell, signal_name = self.sell_stoploss(current_profit, last_candle, trade, current_time, max_loss, max_profit)
+        if sell and (signal_name is not None):
+            return signal_name
 
-            # Extra sells for pumped pairs
-            sell, signal_name = self.sell_pump_extra(current_profit, last_candle, max_profit)
-            if sell and (signal_name is not None):
-                return signal_name
+        # Pumped descending pairs
+        sell, signal_name = self.sell_pump_dec(current_profit, last_candle)
+        if sell and (signal_name is not None):
+            return signal_name
 
-            # Extra sells for trades that recovered
-            sell, signal_name = self.sell_recover(current_profit, last_candle, max_loss)
-            if sell and (signal_name is not None):
-                return signal_name
+        # Extra sells for pumped pairs
+        sell, signal_name = self.sell_pump_extra(current_profit, last_candle, max_profit)
+        if sell and (signal_name is not None):
+            return signal_name
 
-            # Williams %R based sell 1
-            sell, signal_name = self.sell_r_1(current_profit, last_candle)
-            if sell and (signal_name is not None):
-                return signal_name
+        # Extra sells for trades that recovered
+        sell, signal_name = self.sell_recover(current_profit, last_candle, max_loss)
+        if sell and (signal_name is not None):
+            return signal_name
 
-            # Williams %R based sell 2
-            sell, signal_name = self.sell_r_2(current_profit, last_candle)
-            if sell and (signal_name is not None):
-                return signal_name
+        # Williams %R based sell 1
+        sell, signal_name = self.sell_r_1(current_profit, last_candle)
+        if sell and (signal_name is not None):
+            return signal_name
 
-            # Williams %R based sell 3
-            sell, signal_name = self.sell_r_3(current_profit, last_candle)
-            if sell and (signal_name is not None):
-                return signal_name
+        # Williams %R based sell 2
+        sell, signal_name = self.sell_r_2(current_profit, last_candle)
+        if sell and (signal_name is not None):
+            return signal_name
 
-            # Williams %R based sell 4, plus CTI
-            sell, signal_name = self.sell_r_4(current_profit, last_candle)
-            if (sell) and (signal_name is not None):
-                return signal_name
+        # Williams %R based sell 3
+        sell, signal_name = self.sell_r_3(current_profit, last_candle)
+        if sell and (signal_name is not None):
+            return signal_name
 
-            # Sell signal 1
-            if self.sell_condition_1_enable.value & (last_candle['rsi'] > self.sell_rsi_bb_1.value) & (last_candle['close'] > last_candle['bb20_2_upp']) & (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) & (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']) & (previous_candle_3['close'] > previous_candle_3['bb20_2_upp']) & (previous_candle_4['close'] > previous_candle_4['bb20_2_upp']) & (previous_candle_5['close'] > previous_candle_5['bb20_2_upp']):
-                if (last_candle['close'] > last_candle['ema_200']):
-                    if (current_profit > 0.0):
-                        return 'sell_signal_1_1_1'
-                    elif (max_loss > 0.1):
-                        return 'sell_signal_1_1_2'
-                else:
-                    return 'sell_signal_1_2'
+        # Williams %R based sell 4, plus CTI
+        sell, signal_name = self.sell_r_4(current_profit, last_candle)
+        if (sell) and (signal_name is not None):
+            return signal_name
 
-            # Sell signal 2
-            elif (self.sell_condition_2_enable.value) & (last_candle['rsi'] > self.sell_rsi_bb_2.value) & (last_candle['close'] > last_candle['bb20_2_upp']) & (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) & (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']):
-                if (last_candle['close'] > last_candle['ema_200']):
-                    if (current_profit > 0.0):
-                        return 'sell_signal_2_1_1'
-                    elif (max_loss > 0.07):
-                        return 'sell_signal_2_1_2'
-                else:
-                    return 'sell_signal_2_2'
+        # Sell signal 1
+        if self.sell_condition_1_enable.value & (last_candle['rsi'] > self.sell_rsi_bb_1.value) & (last_candle['close'] > last_candle['bb20_2_upp']) & (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) & (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']) & (previous_candle_3['close'] > previous_candle_3['bb20_2_upp']) & (previous_candle_4['close'] > previous_candle_4['bb20_2_upp']) & (previous_candle_5['close'] > previous_candle_5['bb20_2_upp']):
+            if (last_candle['close'] > last_candle['ema_200']):
+                if (current_profit > 0.0):
+                    return 'sell_signal_1_1_1'
+                elif (max_loss > 0.1):
+                    return 'sell_signal_1_1_2'
+            else:
+                return 'sell_signal_1_2'
 
-            # Sell signal 3
-            # elif (self.sell_condition_3_enable.value) & (last_candle['rsi'] > self.sell_rsi_main_3.value):
-            #     return 'sell_signal_3'
+        # Sell signal 2
+        elif (self.sell_condition_2_enable.value) & (last_candle['rsi'] > self.sell_rsi_bb_2.value) & (last_candle['close'] > last_candle['bb20_2_upp']) & (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) & (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']):
+            if (last_candle['close'] > last_candle['ema_200']):
+                if (current_profit > 0.0):
+                    return 'sell_signal_2_1_1'
+                elif (max_loss > 0.07):
+                    return 'sell_signal_2_1_2'
+            else:
+                return 'sell_signal_2_2'
 
-            # Sell signal 4
-            elif self.sell_condition_4_enable.value & (last_candle['rsi'] > self.sell_dual_rsi_rsi_4.value) & (last_candle['rsi_1h'] > self.sell_dual_rsi_rsi_1h_4.value):
-                return 'sell_signal_4'
+        # Sell signal 4
+        elif self.sell_condition_4_enable.value & (last_candle['rsi'] > self.sell_dual_rsi_rsi_4.value) & (last_candle['rsi_1h'] > self.sell_dual_rsi_rsi_1h_4.value):
+            return 'sell_signal_4'
 
-            # Sell signal 6
-            elif self.sell_condition_6_enable.value & (last_candle['close'] < last_candle['ema_200']) & (last_candle['close'] > last_candle['ema_50']) & (last_candle['rsi'] > self.sell_rsi_under_6.value):
-                return 'sell_signal_6'
+        # Sell signal 6
+        elif self.sell_condition_6_enable.value & (last_candle['close'] < last_candle['ema_200']) & (last_candle['close'] > last_candle['ema_50']) & (last_candle['rsi'] > self.sell_rsi_under_6.value):
+            return 'sell_signal_6'
 
-            # Sell signal 7
-            elif self.sell_condition_7_enable.value & (last_candle['rsi_1h'] > self.sell_rsi_1h_7.value) & (last_candle['crossed_below_ema_12_26']):
-                return 'sell_signal_7'
+        # Sell signal 7
+        elif self.sell_condition_7_enable.value & (last_candle['rsi_1h'] > self.sell_rsi_1h_7.value) & (last_candle['crossed_below_ema_12_26']):
+            return 'sell_signal_7'
 
-            # Sell signal 8
-            elif self.sell_condition_8_enable.value & (last_candle['close'] > last_candle['bb20_2_upp_1h'] * self.sell_bb_relative_8.value):
-                return 'sell_signal_8'
+        # Sell signal 8
+        elif self.sell_condition_8_enable.value & (last_candle['close'] > last_candle['bb20_2_upp_1h'] * self.sell_bb_relative_8.value):
+            return 'sell_signal_8'
 
         return None
 
@@ -2715,6 +2860,7 @@ class NostalgiaForInfinityNext(IStrategy):
         informative_1h['ema_12'] = ta.EMA(informative_1h, timeperiod=12)
         informative_1h['ema_15'] = ta.EMA(informative_1h, timeperiod=15)
         informative_1h['ema_20'] = ta.EMA(informative_1h, timeperiod=20)
+        informative_1h['ema_25'] = ta.EMA(informative_1h, timeperiod=25)
         informative_1h['ema_26'] = ta.EMA(informative_1h, timeperiod=26)
         informative_1h['ema_35'] = ta.EMA(informative_1h, timeperiod=35)
         informative_1h['ema_50'] = ta.EMA(informative_1h, timeperiod=50)
@@ -2838,6 +2984,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
         # EMA 200
         dataframe['ema_12'] = ta.EMA(dataframe, timeperiod=12)
+        dataframe['ema_13'] = ta.EMA(dataframe, timeperiod=13)
         dataframe['ema_15'] = ta.EMA(dataframe, timeperiod=15)
         dataframe['ema_20'] = ta.EMA(dataframe, timeperiod=20)
         dataframe['ema_25'] = ta.EMA(dataframe, timeperiod=25)
@@ -2849,6 +2996,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
         # SMA
         dataframe['sma_5'] = ta.SMA(dataframe, timeperiod=5)
+        dataframe['sma_15'] = ta.SMA(dataframe, timeperiod=15)
         dataframe['sma_20'] = ta.SMA(dataframe, timeperiod=20)
         dataframe['sma_30'] = ta.SMA(dataframe, timeperiod=30)
         dataframe['sma_200'] = ta.SMA(dataframe, timeperiod=200)
@@ -3041,6 +3189,7 @@ class NostalgiaForInfinityNext(IStrategy):
                 item_buy_protection_list.append(dataframe[f"safe_pump_{global_buy_protection_params['safe_pump_period'].value}_{global_buy_protection_params['safe_pump_type'].value}_1h"])
             if global_buy_protection_params['btc_1h_not_downtrend'].value:
                 item_buy_protection_list.append(dataframe['btc_not_downtrend_1h'])
+            item_buy_protection_list.append(dataframe['volume'].rolling(window=480, min_periods=480).count().notna())
             buy_protection_list.append(item_buy_protection_list)
 
         # Buy Condition #1
@@ -3102,6 +3251,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['close'] < dataframe['ema_50'])
             item_buy_logic.append(dataframe['close'] < self.buy_bb20_close_bblowerband_4.value * dataframe['bb20_2_low'])
             item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_30'].shift(1) * self.buy_bb20_volume_4.value))
+            item_buy_logic.append(dataframe['volume'] > 0)
             conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
 
         # Buy Condition #5
@@ -3523,16 +3673,96 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['volume'] > 0)
             conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
 
-        if conditions:
+        # Buy Condition #32
+        dataframe.loc[
+            :,
+            'buy_condition_32'
+        ] = 0
+        # Quick mode buy
+        # -----------------------------------------------------------------------------------------
+        if self.buy_params['buy_condition_32_enable']:
+            # Non-Standard protections (add below)
+
+            item_buy_logic = []
+            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[31]))
+            item_buy_logic.append(dataframe['moderi_32'])
+            item_buy_logic.append(dataframe['moderi_64'])
+            item_buy_logic.append(dataframe['moderi_96'])
+            item_buy_logic.append(dataframe['cti'] < -0.8)
+            item_buy_logic.append(dataframe['rsi_20'] < dataframe['rsi_20'].shift(1))
+            item_buy_logic.append(dataframe['rsi_4'] < 46.0)
+            item_buy_logic.append(dataframe['ema_20_1h'] > dataframe['ema_25_1h'])
+            item_buy_logic.append((dataframe['open'] - dataframe['close']) / dataframe['close'] < 0.005)
+            item_buy_logic.append(dataframe['close'] < (dataframe['sma_15'] * 0.946))
+            item_buy_logic.append(
+                ((dataframe['open'] < dataframe['ema_20_1h']) & (dataframe['low'] < dataframe['ema_20_1h'])) |
+                ((dataframe['open'] > dataframe['ema_20_1h']) & (dataframe['low'] > dataframe['ema_20_1h'])))
+            item_buy_logic.append(dataframe['volume'] > 0)
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             dataframe.loc[
-                reduce(lambda x, y: x | y, conditions),
-                'buy'
+                item_buy,
+                'buy_condition_32'
             ] = 1
+            conditions.append(item_buy)
+
+        # Buy Condition #33
+        dataframe.loc[
+            :,
+            'buy_condition_33'
+        ] = 0
+        # Quick mode buy
+        # -----------------------------------------------------------------------------------------
+        if self.buy_params['buy_condition_33_enable']:
+            # Non-Standard protections (add below)
+
+            item_buy_logic = []
+            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[32]))
+            item_buy_logic.append(dataframe['moderi_96'])
+            item_buy_logic.append(dataframe['cti'] < -0.8)
+            item_buy_logic.append((dataframe['open'] - dataframe['close']) / dataframe['close'] < 0.005)
+            item_buy_logic.append(dataframe['close'] < (dataframe['ema_13'] * 0.954))
+            item_buy_logic.append(dataframe['ewo'] > 11.0)
+            item_buy_logic.append(dataframe['rsi'] < 36.0)
+            item_buy_logic.append(dataframe['volume'] > 0)
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            dataframe.loc[
+                item_buy,
+                'buy_condition_33'
+            ] = 1
+            conditions.append(item_buy)
+
+        # Buy Condition #34
+        dataframe.loc[
+            :,
+            'buy_condition_34'
+        ] = 0
+        # Quick mode buy
+        # -----------------------------------------------------------------------------------------
+        if self.buy_params['buy_condition_34_enable']:
+            # Non-Standard protections (add below)
+
+            item_buy_logic = []
+            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[33]))
+            item_buy_logic.append(dataframe['cti'] < -0.88)
+            item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * 1.1))
+            item_buy_logic.append((dataframe['open'] - dataframe['close']) / dataframe['close'] < 0.002)
+            item_buy_logic.append(dataframe['close'] < dataframe['ema_13'] * 0.968)
+            item_buy_logic.append(dataframe['ewo'] < -20.0)
+            item_buy_logic.append(dataframe['volume'] > 0)
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            dataframe.loc[
+                item_buy,
+                'buy_condition_34'
+            ] = 1
+            conditions.append(item_buy)
+
+        if conditions:
+            dataframe.loc[:, 'buy'] = reduce(lambda x, y: x | y, conditions)
 
         return dataframe
 
     def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        dataframe.loc[:,"sell"] = 0
+        dataframe.loc[:, 'sell'] = 0
         return dataframe
 
     def confirm_trade_exit(self, pair: str, trade: "Trade", order_type: str, amount: float,
