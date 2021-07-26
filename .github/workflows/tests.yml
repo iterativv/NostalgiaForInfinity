@@ -38,7 +38,7 @@ jobs:
       with:
         extra_args: --files ${{ steps.changed-files.outputs.repo_files }}
 
-  Download-Data:
+  Exchange-Data:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     strategy:
@@ -51,32 +51,32 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Download Exchange Data Cache
+      - name: Download Cache
         continue-on-error: true
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: tests.yml
-          name: download-data-${{ matrix.exchange }}
+          name: exchange-data-${{ matrix.exchange }}
           path: user_data/data/${{ matrix.exchange }}
 
-      - name: Download Exchange Data
+      - name: Download Data
         env:
           START_DATE: "20210101"
           EXCHANGE: ${{ matrix.exchange }}
         run: |
           docker-compose run --rm download-data
 
-      - name: Upload Exchange Data Cache
+      - name: Upload Cache
         uses: actions/upload-artifact@v2
         with:
-          name: download-data-${{ matrix.exchange }}
+          name: exchange-data-${{ matrix.exchange }}
           path: user_data/data/${{ matrix.exchange }}
 
   Test:
     runs-on: ubuntu-20.04
     needs:
       - Pre-Commit
-      - Download-Data
+      - Exchange-Data
 
     steps:
       - uses: actions/checkout@v2
@@ -86,7 +86,7 @@ jobs:
   Backtests:
     needs:
       - Pre-Commit
-      - Download-Data
+      - Exchange-Data
     strategy:
       fail-fast: false
       matrix:
@@ -105,7 +105,7 @@ jobs:
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: tests.yml
-          name: download-data-${{ matrix.exchange }}
+          name: exchange-data-${{ matrix.exchange }}
           path: user_data/data/${{ matrix.exchange }}
 
       - name: Run Backtest ${{ matrix.opentrades }} trades ${{ matrix.timerange }}
