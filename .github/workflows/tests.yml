@@ -57,7 +57,9 @@ jobs:
 
       - name: Download Data
         env:
-          START_DATE: "20210101"
+          #START_DATE: "20210101"
+          START_DATE: "20210601"
+          END_DATE: "20210701"
           EXCHANGE: binance
         run: |
           docker-compose run --rm download-data
@@ -87,7 +89,10 @@ jobs:
 
       - name: Download Data
         env:
-          START_DATE: "20210101"
+          #START_DATE: "20210101"
+          START_DATE: "20210601"
+          END_DATE: "20210701"
+          EXCHANGE: binance
           EXCHANGE: kucoin
         run: |
           docker-compose run --rm download-data
@@ -106,10 +111,10 @@ jobs:
       fail-fast: false
       matrix:
         timerange:
-          - 20210101-20210201
-          - 20210201-20210301
-          - 20210301-20210401
-          - 20210401-20210501
+          # - 20210101-20210201
+          # - 20210201-20210301
+          # - 20210301-20210401
+          # - 20210401-20210501
           - 20210601-20210701
         opentrades:
           - 5
@@ -150,10 +155,10 @@ jobs:
       fail-fast: false
       matrix:
         timerange:
-          - 20210101-20210201
-          - 20210201-20210301
-          - 20210301-20210401
-          - 20210401-20210501
+          # - 20210101-20210201
+          # - 20210201-20210301
+          # - 20210301-20210401
+          # - 20210401-20210501
           - 20210601-20210701
         opentrades:
           - 5
