@@ -14,6 +14,20 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Download Data Cache
+        continue-on-error: true
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: backtest.yml
+          name: download-data
+          path: user_data/data
+
+      - name: Download Backtest Data
+        env:
+          START_DATE: "20210101"
+        run: |
+          docker-compose run --rm download-data
+
       - name: Run Backtest ${{ matrix.opentrades }} trades ${{ matrix.timerange }}
         env:
           MAX_OPEN_TRADES: ${{ matrix.opentrades }}
@@ -29,3 +43,9 @@ jobs:
         with:
           name: backtest_result
           path: backtest_${{ matrix.timerange }}_${{ matrix.opentrades }}.txt
+
+      - name: Upload Data Cache
+        uses: actions/upload-artifact@v2
+        with:
+          name: download-data
+          path: user_data/data
