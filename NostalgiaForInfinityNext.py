@@ -47,9 +47,9 @@ log = logging.getLogger(__name__)
 ##                                                                                                       ##
 ##   {"trade_ids": [1, 3, 7], "profit_ratio": 0.005}                                                     ##
 ##                                                                                                       ##
-##   Or, for individual profit ratios:                                                                   ##
+##   Or, for individual profit ratios(Notice the trade ID's as strings:                                  ##
 ##                                                                                                       ##
-##   {"trade_ids": {1: 0.001, 3: -0.005, 7: 0.05}}                                                       ##
+##   {"trade_ids": {"1": 0.001, "3": -0.005, "7": 0.05}}                                                 ##
 ##                                                                                                       ##
 ##   NOTE:                                                                                               ##
 ##    * `trade_ids` is a list of integers, the trade ID's, which you can get from the logs or from the   ##
@@ -2032,7 +2032,9 @@ class NostalgiaForInfinityNext(IStrategy):
             if isinstance(trade_ids, dict):
                 # New syntax
                 for trade_id, profit_ratio in trade_ids.items():
-                    if not isinstance(trade_id, int):
+                    try:
+                        trade_id = int(trade_id)
+                    except ValueError:
                         log.error(
                             "The trade_id(%s) defined under 'trade_ids' in %s is not an integer",
                             trade_id, hold_trades_config_file
