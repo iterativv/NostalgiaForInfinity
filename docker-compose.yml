@@ -1,6 +1,17 @@
 ---
 version: '3'
 services:
+  tests:
+    build:
+       context: .
+       dockerfile: "./docker/Dockerfile.custom"
+    container_name: freqtrade-backtesting
+    volumes:
+      - "./:/testing"
+    command: >
+      python -m pytest -ra -vv -s /testing
+    entrypoint: []
+    working_dir: /testing
   backtesting:
     build:
        context: .
