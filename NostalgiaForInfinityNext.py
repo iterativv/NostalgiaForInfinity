@@ -1626,6 +1626,16 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_dip_threshold_110_2 = DecimalParameter(0.16, 0.3, default=0.26, space='buy', decimals=3, optimize=False, load=True)
     buy_dip_threshold_110_3 = DecimalParameter(0.3, 0.5, default=0.44, space='buy', decimals=3, optimize=False, load=True)
     buy_dip_threshold_110_4 = DecimalParameter(0.6, 1.0, default=0.84, space='buy', decimals=3, optimize=False, load=True)
+    # Loose dips - level 120
+    buy_dip_threshold_120_1 = DecimalParameter(0.001, 0.05, default=0.028, space='buy', decimals=3, optimize=False, load=True)
+    buy_dip_threshold_120_2 = DecimalParameter(0.16, 0.3, default=0.28, space='buy', decimals=3, optimize=False, load=True)
+    buy_dip_threshold_120_3 = DecimalParameter(0.3, 0.5, default=0.46, space='buy', decimals=3, optimize=False, load=True)
+    buy_dip_threshold_120_4 = DecimalParameter(0.6, 1.0, default=0.86, space='buy', decimals=3, optimize=False, load=True)
+    # Loose dips - level 130
+    buy_dip_threshold_130_1 = DecimalParameter(0.001, 0.05, default=0.028, space='buy', decimals=3, optimize=False, load=True)
+    buy_dip_threshold_130_2 = DecimalParameter(0.16, 0.34, default=0.3, space='buy', decimals=3, optimize=False, load=True)
+    buy_dip_threshold_130_3 = DecimalParameter(0.36, 0.56, default=0.48, space='buy', decimals=3, optimize=False, load=True)
+    buy_dip_threshold_130_4 = DecimalParameter(0.6, 1.0, default=0.9, space='buy', decimals=3, optimize=False, load=True)
 
     # 24 hours - level 10
     buy_pump_pull_threshold_10_24 = DecimalParameter(1.5, 3.0, default=2.2, space='buy', decimals=2, optimize=False, load=True)
@@ -3077,6 +3087,8 @@ class NostalgiaForInfinityNext(IStrategy):
         dataframe['safe_dips_90']  = self.safe_dips(dataframe, self.buy_dip_threshold_90_1.value, self.buy_dip_threshold_90_2.value, self.buy_dip_threshold_90_3.value, self.buy_dip_threshold_90_4.value)
         dataframe['safe_dips_100'] = self.safe_dips(dataframe, self.buy_dip_threshold_100_1.value, self.buy_dip_threshold_100_2.value, self.buy_dip_threshold_100_3.value, self.buy_dip_threshold_100_4.value)
         dataframe['safe_dips_110'] = self.safe_dips(dataframe, self.buy_dip_threshold_110_1.value, self.buy_dip_threshold_110_2.value, self.buy_dip_threshold_110_3.value, self.buy_dip_threshold_110_4.value)
+        dataframe['safe_dips_120'] = self.safe_dips(dataframe, self.buy_dip_threshold_120_1.value, self.buy_dip_threshold_120_2.value, self.buy_dip_threshold_120_3.value, self.buy_dip_threshold_120_4.value)
+        dataframe['safe_dips_130'] = self.safe_dips(dataframe, self.buy_dip_threshold_130_1.value, self.buy_dip_threshold_130_2.value, self.buy_dip_threshold_130_3.value, self.buy_dip_threshold_130_4.value)
 
         # Volume
         dataframe['volume_mean_4'] = dataframe['volume'].rolling(4).mean().shift(1)
