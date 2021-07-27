@@ -3168,7 +3168,10 @@ class NostalgiaForInfinityNext(IStrategy):
         conditions = []
         buy_protection_list = []
 
-        not_empty_volume = dataframe['volume'].rolling(window=self.startup_candle_count, min_periods=self.startup_candle_count).count().notna()
+        if self.config['runmode'].value in ('live', 'dry_run'):
+            not_empty_volume = dataframe['volume'].rolling(window=72, min_periods=72).count().notna()
+        else:
+            not_empty_volume = dataframe['volume'].rolling(window=self.startup_candle_count, min_periods=self.startup_candle_count).count().notna()
 
         # Protections [STANDARD] - Common to every condition
         for index in self.buy_protection_params:
