@@ -1,10 +1,8 @@
-import functools
-
 import pytest
 
-from tests.backtests.helpers import exchange_backtest
+from tests.backtests.helpers import Backtest
 
 
 @pytest.fixture
-def backtest(tmp_path):
-    return functools.partial(exchange_backtest, "binance", tmp_path)
+def backtest(request):
+    return Backtest(request, "binance")

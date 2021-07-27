@@ -255,4 +255,13 @@ jobs:
         run: docker-compose build tests
 
       - name: Run Tests
-        run: docker-compose run --rm tests
+        run: |
+          mkdir artifacts
+          chmod 777 artifacts
+          docker-compose run --rm tests
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: testrun-artifacts
+          path: artifacts/

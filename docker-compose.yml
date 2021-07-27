@@ -9,7 +9,7 @@ services:
     volumes:
       - "./:/testing"
     command: >
-      python -m pytest -ra -vv -s --log-cli-level=info tests/
+      python -m pytest -ra -vv -s --log-cli-level=info --artifacts-path=artifacts/ tests/
     entrypoint: []
     working_dir: /testing
   backtesting:

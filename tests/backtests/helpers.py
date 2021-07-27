@@ -1,5 +1,6 @@
 import json
 import logging
+import shutil
 import subprocess
 from types import SimpleNamespace
 
@@ -52,53 +53,63 @@ class ProcessResult:
         return message + "\n"
 
 
-def exchange_backtest(
-    exchange,
-    tmp_path,
-    start_date,
-    end_date,
-    pairlist=None,
-    max_open_trades=5,
-    stake_amount="unlimited",
-):
-    exchange_config = f"user_data/{exchange}-usdt-static.json"
-    json_results_file = tmp_path / "backtest-results.json"
-    cmdline = [
-        "freqtrade",
-        "backtesting",
-        f"--user-data=user_data",
-        "--strategy-list=NostalgiaForInfinityNext",
-        f"--timerange={start_date}-{end_date}",
-        f"--max-open-trades={max_open_trades}",
-        f"--stake-amount={stake_amount}",
-        "--config=user_data/pairlists.json",
-        f"--export-filename={json_results_file}",
-    ]
-    if pairlist is None:
-        cmdline.append(f"--config={exchange_config}")
-    else:
-        pairlist_config = {"exchange": {"name": exchange, "pair_whitelist": pairlist}}
-        pairlist_config_file = tmp_path / "test-pairlist.json"
-        pairlist_config_file.write(json.dumps(pairlist_config))
-        cmdline.append(f"--config={pairlist_config_file}")
-    log.info("Running cmdline '%s' on '%s'", " ".join(cmdline), REPO_ROOT)
-    proc = subprocess.run(
-        cmdline, check=False, shell=False, cwd=REPO_ROOT, text=True, capture_output=True
-    )
-    ret = ProcessResult(
-        exitcode=proc.returncode,
-        stdout=proc.stdout.strip(),
-        stderr=proc.stderr.strip(),
-        cmdline=cmdline,
-    )
-    log.info("Command Result:\n%s", ret)
-    assert ret.exitcode == 0
-    generated_results_file = list(tmp_path.rglob("backtest-results-*.json"))[0]
-    results_data = json.loads(generated_results_file.read_text())
-    data = {
-        "stdout": ret.stdout.strip(),
-        "stderr": ret.stderr.strip(),
-        "comparison": results_data["strategy_comparison"],
-        "results": results_data["strategy"]["NostalgiaForInfinityNext"],
-    }
-    return json.loads(json.dumps(data), object_hook=lambda d: SimpleNamespace(**d))
+class Backtest:
+    def __init__(self, request, exchange):
+        self.request = request
+        self.exchange = exchange
+
+    def __call__(
+        self, start_date, end_date, pairlist=None, max_open_trades=5, stake_amount="unlimited"
+    ):
+        tmp_path = self.request.getfixturevalue("tmp_path")
+        exchange_config = f"user_data/{self.exchange}-usdt-static.json"
+        json_results_file = tmp_path / "backtest-results.json"
+        cmdline = [
+            "freqtrade",
+            "backtesting",
+            f"--user-data=user_data",
+            "--strategy-list=NostalgiaForInfinityNext",
+            f"--timerange={start_date}-{end_date}",
+            f"--max-open-trades={max_open_trades}",
+            f"--stake-amount={stake_amount}",
+            "--config=user_data/pairlists.json",
+            f"--export-filename={json_results_file}",
+        ]
+        if pairlist is None:
+            cmdline.append(f"--config={exchange_config}")
+        else:
+            pairlist_config = {"exchange": {"name": self.exchange, "pair_whitelist": pairlist}}
+            pairlist_config_file = tmp_path / "test-pairlist.json"
+            pairlist_config_file.write(json.dumps(pairlist_config))
+            cmdline.append(f"--config={pairlist_config_file}")
+        log.info("Running cmdline '%s' on '%s'", " ".join(cmdline), REPO_ROOT)
+        proc = subprocess.run(
+            cmdline, check=False, shell=False, cwd=REPO_ROOT, text=True, capture_output=True
+        )
+        ret = ProcessResult(
+            exitcode=proc.returncode,
+            stdout=proc.stdout.strip(),
+            stderr=proc.stderr.strip(),
+            cmdline=cmdline,
+        )
+        log.info("Command Result:\n%s", ret)
+        assert ret.exitcode == 0
+        generated_results_file = list(tmp_path.rglob("backtest-results-*.json"))[0]
+        if self.request.config.option.artifacts_path:
+            generated_json_results_artifact_path = (
+                self.request.config.option.artifacts_path / generated_results_file.name
+            )
+            shutil.copyfile(generated_results_file, generated_json_results_artifact_path)
+            generated_txt_results_artifact_path = generated_json_results_artifact_path.with_suffix(
+                ".txt"
+            )
+            generated_txt_results_artifact_path.write_text(ret.stdout.strip())
+
+        results_data = json.loads(generated_results_file.read_text())
+        data = {
+            "stdout": ret.stdout.strip(),
+            "stderr": ret.stderr.strip(),
+            "comparison": results_data["strategy_comparison"],
+            "results": results_data["strategy"]["NostalgiaForInfinityNext"],
+        }
+        return json.loads(json.dumps(data), object_hook=lambda d: SimpleNamespace(**d))
