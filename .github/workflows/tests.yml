@@ -47,18 +47,27 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Backtesting Variables
+        id: dotenv
+        uses: falti/dotenv-action@v0.2.6
+        with:
+          log-variables: true
+          path:
+            user_data/backtesting-binance.env
+
       - name: Download Cache
         continue-on-error: true
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: tests.yml
-          name: exchange-data-binance
-          path: user_data/data/binance
+          name: exchange-data-${{ steps.dotenv.outputs.exchange }}
+          path: user_data/data/${{ steps.dotenv.outputs.exchange }}
 
       - name: Download Data
         env:
-          START_DATE: "20210101"
-          EXCHANGE: binance
+          START_DATE: ${{ steps.dotenv.outputs.start_date }}
+          END_DATE: ${{ steps.dotenv.outputs.end_date }}
+          EXCHANGE: ${{ steps.dotenv.outputs.exchange }}
         run: |
           docker-compose run --rm download-data
 
@@ -66,8 +75,8 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v2
         with:
-          name: exchange-data-binance
-          path: user_data/data/binance
+          name: exchange-data-${{ steps.dotenv.outputs.exchange }}
+          path: user_data/data/${{ steps.dotenv.outputs.exchange }}
 
   Kucoin-Exchange-Data:
     runs-on: ubuntu-latest
@@ -78,18 +87,27 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Backtesting Variables
+        id: dotenv
+        uses: falti/dotenv-action@v0.2.6
+        with:
+          log-variables: true
+          path:
+            user_data/backtesting-kucoin.env
+
       - name: Download Cache
         continue-on-error: true
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: tests.yml
-          name: exchange-data-kucoin
-          path: user_data/data/kucoin
+          name: exchange-data-${{ steps.dotenv.outputs.exchange }}
+          path: user_data/data/${{ steps.dotenv.outputs.exchange }}
 
       - name: Download Data
         env:
-          START_DATE: "20210101"
-          EXCHANGE: kucoin
+          START_DATE: ${{ steps.dotenv.outputs.start_date }}
+          END_DATE: ${{ steps.dotenv.outputs.end_date }}
+          EXCHANGE: ${{ steps.dotenv.outputs.exchange }}
         run: |
           docker-compose run --rm download-data
 
@@ -97,8 +115,8 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v2
         with:
-          name: exchange-data-kucoin
-          path: user_data/data/kucoin
+          name: exchange-data-${{ steps.dotenv.outputs.exchange }}
+          path: user_data/data/${{ steps.dotenv.outputs.exchange }}
 
   Binance-Backtests:
     needs:
@@ -120,11 +138,19 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Backtesting Variables
+        id: dotenv
+        uses: falti/dotenv-action@v0.2.6
+        with:
+          log-variables: true
+          path:
+            user_data/backtesting-binance.env
+
       - name: Download Data Cache
         uses: actions/download-artifact@v2
         with:
-          name: exchange-data-binance
-          path: user_data/data/binance
+          name: exchange-data-${{ steps.dotenv.outputs.exchange }}
+          path: user_data/data/${{ steps.dotenv.outputs.exchange }}
 
       - name: Build Backtest Image
         run: docker-compose build backtesting
@@ -134,7 +160,7 @@ jobs:
           MAX_OPEN_TRADES: ${{ matrix.opentrades }}
           STAKE_AMOUNT: unlimited
           TIMERANGE: ${{ matrix.timerange }}
-          EXCHANGE: binance
+          EXCHANGE: ${{ steps.dotenv.outputs.exchange }}
         run: docker-compose run -T --rm backtesting 1> backtest_${{ matrix.timerange }}_${{ matrix.opentrades }}.txt
 
       - name: Show Backtest ${{ matrix.timerange }} ${{ matrix.opentrades }}
@@ -166,11 +192,19 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Backtesting Variables
+        id: dotenv
+        uses: falti/dotenv-action@v0.2.6
+        with:
+          log-variables: true
+          path:
+            user_data/backtesting-kucoin.env
+
       - name: Download Data Cache
         uses: actions/download-artifact@v2
         with:
-          name: exchange-data-kucoin
-          path: user_data/data/kucoin
+          name: exchange-data-${{ steps.dotenv.outputs.exchange }}
+          path: user_data/data/${{ steps.dotenv.outputs.exchange }}
 
       - name: Build Backtest Image
         run: docker-compose build backtesting
@@ -181,7 +215,7 @@ jobs:
           MAX_OPEN_TRADES: ${{ matrix.opentrades }}
           STAKE_AMOUNT: unlimited
           TIMERANGE: ${{ matrix.timerange }}
-          EXCHANGE: kucoin
+          EXCHANGE: ${{ steps.dotenv.outputs.exchange }}
         run: docker-compose run -T --rm backtesting 1> backtest_${{ matrix.timerange }}_${{ matrix.opentrades }}.txt
 
       - name: Show Backtest ${{ matrix.timerange }} ${{ matrix.opentrades }}
