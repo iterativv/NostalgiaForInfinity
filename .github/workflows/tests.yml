@@ -1,0 +1,267 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  Pre-Commit:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
+    - id: changed-files
+      name: Get Changed Files
+      uses: dorny/paths-filter@v2
+      with:
+        token: ${{ github.token }}
+        list-files: shell
+        filters: |
+          repo:
+            - added|modified:
+              - '**'
+    - name: Set Cache Key
+      run: echo "PY=$(python --version --version | sha256sum | cut -d' ' -f1)" >> $GITHUB_ENV
+    - uses: actions/cache@v2
+      with:
+        path: ~/.cache/pre-commit
+        key: pre-commit|${{ env.PY }}|${{ hashFiles('.pre-commit-config.yaml') }}
+    - name: Check ALL Files On Branch
+      uses: pre-commit/action@v2.0.0
+      if: github.event_name != 'pull_request'
+    - name: Check Changed Files On PR
+      uses: pre-commit/action@v2.0.0
+      if: github.event_name == 'pull_request'
+      with:
+        extra_args: --files ${{ steps.changed-files.outputs.repo_files }}
+
+  Binance-Exchange-Data:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Backtesting Variables
+        id: dotenv
+        uses: falti/dotenv-action@v0.2.6
+        with:
+          log-variables: true
+          path:
+            user_data/backtesting-binance.env
+
+      - name: Download Cache
+        continue-on-error: true
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: tests.yml
+          name: exchange-data-${{ steps.dotenv.outputs.exchange }}
+          path: user_data/data/${{ steps.dotenv.outputs.exchange }}
+
+      - name: Download Data
+        env:
+          START_DATE: ${{ steps.dotenv.outputs.start_date }}
+          END_DATE: ${{ steps.dotenv.outputs.end_date }}
+          EXCHANGE: ${{ steps.dotenv.outputs.exchange }}
+        run: |
+          docker-compose run --rm download-data
+
+      - name: Upload Cache
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: exchange-data-${{ steps.dotenv.outputs.exchange }}
+          path: user_data/data/${{ steps.dotenv.outputs.exchange }}
+
+#  Kucoin-Exchange-Data:
+#    runs-on: ubuntu-latest
+#    timeout-minutes: 90
+#    strategy:
+#      fail-fast: false
+#
+#    steps:
+#      - uses: actions/checkout@v2
+#
+#      - name: Backtesting Variables
+#        id: dotenv
+#        uses: falti/dotenv-action@v0.2.6
+#        with:
+#          log-variables: true
+#          path:
+#            user_data/backtesting-kucoin.env
+#
+#      - name: Download Cache
+#        continue-on-error: true
+#        uses: dawidd6/action-download-artifact@v2
+#        with:
+#          workflow: tests.yml
+#          name: exchange-data-${{ steps.dotenv.outputs.exchange }}
+#          path: user_data/data/${{ steps.dotenv.outputs.exchange }}
+#
+#      - name: Download Data
+#        env:
+#          START_DATE: ${{ steps.dotenv.outputs.start_date }}
+#          END_DATE: ${{ steps.dotenv.outputs.end_date }}
+#          EXCHANGE: ${{ steps.dotenv.outputs.exchange }}
+#        run: |
+#          docker-compose run --rm download-data
+#
+#      - name: Upload Cache
+#        if: always()
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: exchange-data-${{ steps.dotenv.outputs.exchange }}
+#          path: user_data/data/${{ steps.dotenv.outputs.exchange }}
+
+  Binance-Backtests:
+    needs:
+      - Pre-Commit
+      - Binance-Exchange-Data
+    strategy:
+      fail-fast: false
+      matrix:
+        timerange:
+          - 20210101-20210201
+          - 20210201-20210301
+          - 20210301-20210401
+          - 20210401-20210501
+          - 20210601-20210701
+        opentrades:
+          - 5
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Backtesting Variables
+        id: dotenv
+        uses: falti/dotenv-action@v0.2.6
+        with:
+          log-variables: true
+          path:
+            user_data/backtesting-binance.env
+
+      - name: Download Data Cache
+        uses: actions/download-artifact@v2
+        with:
+          name: exchange-data-${{ steps.dotenv.outputs.exchange }}
+          path: user_data/data/${{ steps.dotenv.outputs.exchange }}
+
+      - name: Build Backtest Image
+        run: docker-compose build backtesting
+
+      - name: Run Backtest ${{ matrix.opentrades }} trades ${{ matrix.timerange }}
+        env:
+          MAX_OPEN_TRADES: ${{ matrix.opentrades }}
+          STAKE_AMOUNT: unlimited
+          TIMERANGE: ${{ matrix.timerange }}
+          EXCHANGE: ${{ steps.dotenv.outputs.exchange }}
+        run: docker-compose run -T --rm backtesting 1> backtest_${{ matrix.timerange }}_${{ matrix.opentrades }}.txt
+
+      - name: Show Backtest ${{ matrix.timerange }} ${{ matrix.opentrades }}
+        run: cat backtest_${{ matrix.timerange }}_${{ matrix.opentrades }}.txt
+
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v2
+        with:
+          name: backtest_result
+          path: backtest_${{ matrix.timerange }}_${{ matrix.opentrades }}.txt
+
+#  Kucoin-Backtests:
+#    needs:
+#      - Pre-Commit
+#      - Kucoin-Exchange-Data
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        timerange:
+#          - 20210101-20210201
+#          - 20210201-20210301
+#          - 20210301-20210401
+#          - 20210401-20210501
+#          - 20210601-20210701
+#        opentrades:
+#          - 5
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - uses: actions/checkout@v2
+#
+#      - name: Backtesting Variables
+#        id: dotenv
+#        uses: falti/dotenv-action@v0.2.6
+#        with:
+#          log-variables: true
+#          path:
+#            user_data/backtesting-kucoin.env
+#
+#      - name: Download Data Cache
+#        uses: actions/download-artifact@v2
+#        with:
+#          name: exchange-data-${{ steps.dotenv.outputs.exchange }}
+#          path: user_data/data/${{ steps.dotenv.outputs.exchange }}
+#
+#      - name: Build Backtest Image
+#        run: docker-compose build backtesting
+#
+#      - name: Run Backtest ${{ matrix.opentrades }} trades ${{ matrix.timerange }}
+#        continue-on-error: true
+#        env:
+#          MAX_OPEN_TRADES: ${{ matrix.opentrades }}
+#          STAKE_AMOUNT: unlimited
+#          TIMERANGE: ${{ matrix.timerange }}
+#          EXCHANGE: ${{ steps.dotenv.outputs.exchange }}
+#        run: docker-compose run -T --rm backtesting 1> backtest_${{ matrix.timerange }}_${{ matrix.opentrades }}.txt
+#
+#      - name: Show Backtest ${{ matrix.timerange }} ${{ matrix.opentrades }}
+#        run: cat backtest_${{ matrix.timerange }}_${{ matrix.opentrades }}.txt
+#
+#      - name: 'Upload Artifact'
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: backtest_result
+#          path: backtest_${{ matrix.timerange }}_${{ matrix.opentrades }}.txt
+
+  Test:
+    runs-on: ubuntu-20.04
+    needs:
+      - Pre-Commit
+      - Binance-Exchange-Data
+      # - Kucoin-Exchange-Data
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Backtesting Variables
+        id: dotenv
+        uses: falti/dotenv-action@v0.2.6
+        with:
+          log-variables: true
+          path:
+            user_data/backtesting-binance.env
+
+      - name: Download Data Cache
+        uses: actions/download-artifact@v2
+        with:
+          name: exchange-data-${{ steps.dotenv.outputs.exchange }}
+          path: user_data/data/${{ steps.dotenv.outputs.exchange }}
+
+      - name: Build Tests Image
+        run: docker-compose build tests
+
+      - name: Run Tests
+        run: |
+          mkdir artifacts
+          chmod 777 artifacts
+          docker-compose run --rm tests
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: testrun-artifacts
+          path: artifacts/
