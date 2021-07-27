@@ -231,9 +231,28 @@ jobs:
     runs-on: ubuntu-20.04
     needs:
       - Pre-Commit
-      # - Exchange-Data
+      - Binance-Exchange-Data
+      # - Kucoin-Exchange-Data
 
     steps:
       - uses: actions/checkout@v2
+
+      - name: Backtesting Variables
+        id: dotenv
+        uses: falti/dotenv-action@v0.2.6
+        with:
+          log-variables: true
+          path:
+            user_data/backtesting-binance.env
+
+      - name: Download Data Cache
+        uses: actions/download-artifact@v2
+        with:
+          name: exchange-data-${{ steps.dotenv.outputs.exchange }}
+          path: user_data/data/${{ steps.dotenv.outputs.exchange }}
+
+      - name: Build Tests Image
+        run: docker-compose build tests
+
       - name: Run Tests
         run: docker-compose run --rm tests
