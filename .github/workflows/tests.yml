@@ -126,13 +126,16 @@ jobs:
           name: exchange-data-binance
           path: user_data/data/binance
 
+      - name: Build Backtest Image
+        run: docker-compose build backtesting
+
       - name: Run Backtest ${{ matrix.opentrades }} trades ${{ matrix.timerange }}
         env:
           MAX_OPEN_TRADES: ${{ matrix.opentrades }}
           STAKE_AMOUNT: unlimited
           TIMERANGE: ${{ matrix.timerange }}
           EXCHANGE: binance
-        run: docker-compose run --rm backtesting > backtest_${{ matrix.timerange }}_${{ matrix.opentrades }}.txt
+        run: docker-compose run -T --rm backtesting 1> backtest_${{ matrix.timerange }}_${{ matrix.opentrades }}.txt
 
       - name: Show Backtest ${{ matrix.timerange }} ${{ matrix.opentrades }}
         run: cat backtest_${{ matrix.timerange }}_${{ matrix.opentrades }}.txt
@@ -169,6 +172,9 @@ jobs:
           name: exchange-data-kucoin
           path: user_data/data/kucoin
 
+      - name: Build Backtest Image
+        run: docker-compose build backtesting
+
       - name: Run Backtest ${{ matrix.opentrades }} trades ${{ matrix.timerange }}
         continue-on-error: true
         env:
@@ -176,7 +182,7 @@ jobs:
           STAKE_AMOUNT: unlimited
           TIMERANGE: ${{ matrix.timerange }}
           EXCHANGE: kucoin
-        run: docker-compose run --rm backtesting > backtest_${{ matrix.timerange }}_${{ matrix.opentrades }}.txt
+        run: docker-compose run -T --rm backtesting 1> backtest_${{ matrix.timerange }}_${{ matrix.opentrades }}.txt
 
       - name: Show Backtest ${{ matrix.timerange }} ${{ matrix.opentrades }}
         run: cat backtest_${{ matrix.timerange }}_${{ matrix.opentrades }}.txt
