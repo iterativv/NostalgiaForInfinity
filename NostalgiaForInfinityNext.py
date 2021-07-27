@@ -1795,9 +1795,10 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_ema_open_mult_7 = DecimalParameter(0.02, 0.04, default=0.03, space='buy', decimals=3, optimize=False, load=True)
     buy_rsi_7 = DecimalParameter(24.0, 50.0, default=37.0, space='buy', decimals=1, optimize=False, load=True)
 
-    buy_volume_8 = DecimalParameter(1.0, 6.0, default=2.0, space='buy', decimals=1, optimize=False, load=True)
-    buy_rsi_8 = DecimalParameter(16.0, 30.0, default=29.0, space='buy', decimals=1, optimize=False, load=True)
-    buy_tail_diff_8 = DecimalParameter(3.0, 10.0, default=2.5, space='buy', decimals=1, optimize=False, load=True)
+    buy_cti_8 = DecimalParameter(-0.99, -0.5, default=-0.9, space='buy', decimals=2, optimize=False, load=True)
+    buy_rsi_8 = DecimalParameter(20.0, 50.0, default=30.0, space='buy', decimals=1, optimize=False, load=True)
+    buy_rsi_1h_8 = DecimalParameter(40.0, 66.0, default=54.0, space='buy', decimals=1, optimize=False, load=True)
+    buy_volume_8 = DecimalParameter(0.6, 6.0, default=1.2, space='buy', decimals=1, optimize=False, load=True)
 
     buy_ma_offset_9 = DecimalParameter(0.91, 0.94, default=0.922, space='buy', decimals=3, optimize=False, load=True)
     buy_bb_offset_9 = DecimalParameter(0.96, 0.98, default=0.942, space='buy', decimals=3, optimize=False, load=True)
@@ -3378,10 +3379,13 @@ class NostalgiaForInfinityNext(IStrategy):
             # Logic
             item_buy_logic = []
             item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[7]))
+            item_buy_logic.append(dataframe['moderi_32'])
+            item_buy_logic.append(dataframe['moderi_64'])
+            item_buy_logic.append(dataframe['moderi_96'])
+            item_buy_logic.append(dataframe['cti'] < self.buy_cti_8.value)
             item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_8.value)
-            item_buy_logic.append(dataframe['volume'] > (dataframe['volume'].shift(1) * self.buy_volume_8.value))
-            item_buy_logic.append(dataframe['close'] > dataframe['open'])
-            item_buy_logic.append((dataframe['close'] - dataframe['low']) > ((dataframe['close'] - dataframe['open']) * self.buy_tail_diff_8.value))
+            item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_8.value)
+            item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_volume_8.value))
             item_buy_logic.append(dataframe['volume'] > 0)
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             dataframe.loc[
