@@ -135,3 +135,9 @@ user_data/data/*.json
 .idea
 
 user_data/data/*/*.json
+user_data/backtest_results
+user_data/hyperopt_results
+user_data/hyperopts
+user_data/logs
+user_data/notebooks
+user_data/plot
