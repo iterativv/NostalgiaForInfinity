@@ -62,7 +62,7 @@ class Backtest:
         self, start_date, end_date, pairlist=None, max_open_trades=5, stake_amount="unlimited"
     ):
         tmp_path = self.request.getfixturevalue("tmp_path")
-        exchange_config = f"user_data/{self.exchange}-usdt-static.json"
+        exchange_config = f"user_data/data/{self.exchange}-usdt-static.json"
         json_results_file = tmp_path / "backtest-results.json"
         cmdline = [
             "freqtrade",
@@ -72,7 +72,7 @@ class Backtest:
             f"--timerange={start_date}-{end_date}",
             f"--max-open-trades={max_open_trades}",
             f"--stake-amount={stake_amount}",
-            "--config=user_data/pairlists.json",
+            "--config=user_data/data/pairlists.json",
             f"--export-filename={json_results_file}",
         ]
         if pairlist is None:
