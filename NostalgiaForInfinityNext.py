@@ -1807,8 +1807,8 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_ema_open_mult_6 = DecimalParameter(0.02, 0.03, default=0.021, space='buy', decimals=3, optimize=False, load=True)
     buy_bb_offset_6 = DecimalParameter(0.98, 0.999, default=0.984, space='buy', decimals=3, optimize=False, load=True)
 
-    buy_ema_open_mult_7 = DecimalParameter(0.02, 0.04, default=0.03, space='buy', decimals=3, optimize=False, load=True)
-    buy_rsi_7 = DecimalParameter(24.0, 50.0, default=37.0, space='buy', decimals=1, optimize=False, load=True)
+    buy_ema_open_mult_7 = DecimalParameter(0.02, 0.04, default=0.031, space='buy', decimals=3, optimize=False, load=True)
+    buy_cti_7 = DecimalParameter(-0.99, -0.5, default=-0.89, space='buy', decimals=2, optimize=False, load=True)
 
     buy_cti_8 = DecimalParameter(-0.99, -0.5, default=-0.9, space='buy', decimals=2, optimize=False, load=True)
     buy_rsi_8 = DecimalParameter(20.0, 50.0, default=30.0, space='buy', decimals=1, optimize=False, load=True)
@@ -3383,8 +3383,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
             item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * self.buy_ema_open_mult_7.value))
             item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
-            item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_7.value)
-            item_buy_logic.append(dataframe['cti'] < -0.7)
+            item_buy_logic.append(dataframe['cti'] < self.buy_cti_7.value)
             item_buy_logic.append(dataframe['volume'] > 0)
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             dataframe.loc[
