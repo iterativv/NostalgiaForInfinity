@@ -115,7 +115,7 @@ class Backtest:
         data = {
             "stdout": ret.stdout.strip(),
             "stderr": ret.stderr.strip(),
-            "comparison": results_data["strategy_comparison"],
             "results": results_data["strategy"]["NostalgiaForInfinityNext"],
+            "stats": results_data["strategy_comparison"][0],
         }
         return json.loads(json.dumps(data), object_hook=lambda d: SimpleNamespace(**d))
