@@ -1,5 +1,6 @@
 import json
 import logging
+import pprint
 import shutil
 import subprocess
 from types import SimpleNamespace
@@ -95,6 +96,11 @@ class Backtest:
         log.info("Command Result:\n%s", ret)
         assert ret.exitcode == 0
         generated_results_file = list(tmp_path.rglob("backtest-results-*.json"))[0]
+        # At some point, consider logging at the debug level or removing this log call
+        # which is only here to understand the JSON results data structure.
+        log.info(
+            "Backtest results:\n%s", pprint.pformat(json.loads(generated_results_file.read_text()))
+        )
         if self.request.config.option.artifacts_path:
             generated_json_results_artifact_path = (
                 self.request.config.option.artifacts_path / generated_results_file.name
