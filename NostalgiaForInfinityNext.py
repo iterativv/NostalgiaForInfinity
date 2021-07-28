@@ -1844,6 +1844,7 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_ema_open_mult_14 = DecimalParameter(0.01, 0.03, default=0.014, space='buy', decimals=3, optimize=False, load=True)
     buy_bb_offset_14 = DecimalParameter(0.98, 1.0, default=0.988, space='buy', decimals=3, optimize=False, load=True)
     buy_ma_offset_14 = DecimalParameter(0.93, 0.99, default=0.98, space='buy', decimals=3, optimize=False, load=True)
+    buy_cti_14 = DecimalParameter(-0.99, -0.5, default=-0.86, space='buy', decimals=2, optimize=False, load=True)
 
     buy_ema_open_mult_15 = DecimalParameter(0.01, 0.03, default=0.018, space='buy', decimals=3, optimize=False, load=True)
     buy_ma_offset_15 = DecimalParameter(0.93, 0.99, default=0.954, space='buy', decimals=3, optimize=False, load=True)
@@ -3560,6 +3561,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
             item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_14.value))
             item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_ma_offset_14.value)
+            item_buy_logic.append(dataframe['cti'] < self.buy_cti_14.value)
             item_buy_logic.append(dataframe['volume'] > 0)
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             dataframe.loc[
