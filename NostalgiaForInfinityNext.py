@@ -569,7 +569,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising_val"      : CategoricalParameter(["20","30","36","44","50"], default="50", space='buy', optimize=False, load=True),
             "safe_dips"                 : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
             "safe_dips_type"            : CategoricalParameter(["10","50","100"], default="50", space='buy', optimize=False, load=True),
-            "safe_pump"                 : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
+            "safe_pump"                 : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
             "safe_pump_type"            : CategoricalParameter(["10","50","100"], default="50", space='buy', optimize=False, load=True),
             "safe_pump_period"          : CategoricalParameter(["24","36","48"], default="24", space='buy', optimize=False, load=True),
             "btc_1h_not_downtrend"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
@@ -1866,7 +1866,7 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_volume_18 = DecimalParameter(0.6, 6.0, default=2.0, space='buy', decimals=1, optimize=False, load=True)
 
     buy_rsi_1h_min_19 = DecimalParameter(40.0, 70.0, default=50.0, space='buy', decimals=1, optimize=False, load=True)
-    buy_chop_min_19 = DecimalParameter(20.0, 60.0, default=22.1, space='buy', decimals=1, optimize=False, load=True)
+    buy_chop_min_19 = DecimalParameter(20.0, 60.0, default=23.0, space='buy', decimals=1, optimize=False, load=True)
 
     buy_rsi_20 = DecimalParameter(20.0, 36.0, default=27.0, space='buy', decimals=1, optimize=False, load=True)
     buy_rsi_1h_20 = DecimalParameter(14.0, 30.0, default=20.0, space='buy', decimals=1, optimize=False, load=True)
@@ -3682,7 +3682,6 @@ class NostalgiaForInfinityNext(IStrategy):
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_19_enable']:
             # Non-Standard protections (add below)
-            buy_protection_list[18].append(dataframe['ema_50_1h'] > dataframe['ema_200_1h'])
 
             # Logic
             item_buy_logic = []
@@ -3692,7 +3691,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['close'] > dataframe['ema_100_1h'])
             item_buy_logic.append(dataframe['rsi_1h'] > self.buy_rsi_1h_min_19.value)
             item_buy_logic.append(dataframe['chop'] < self.buy_chop_min_19.value)
-            item_buy_logic.append(dataframe['moderi_64'] == True)
+            item_buy_logic.append(dataframe['moderi_96'] == True)
             item_buy_logic.append(dataframe['volume'] > 0)
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             dataframe.loc[
