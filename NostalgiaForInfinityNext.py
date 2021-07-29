@@ -1857,7 +1857,9 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_cti_16 = DecimalParameter(-0.99, -0.5, default=-0.84, space='buy', decimals=2, optimize=False, load=True)
 
     buy_ma_offset_17 = DecimalParameter(0.93, 0.98, default=0.952, space='buy', decimals=3, optimize=False, load=True)
-    buy_ewo_17 = DecimalParameter(-18.0, -10.0, default=-12.8, space='buy', decimals=1, optimize=False, load=True)
+    buy_ewo_17 = DecimalParameter(-18.0, -10.0, default=-12.4, space='buy', decimals=1, optimize=False, load=True)
+    buy_cti_17 = DecimalParameter(-0.99, -0.5, default=-0.92, space='buy', decimals=2, optimize=False, load=True)
+    buy_volume_17 = DecimalParameter(0.6, 6.0, default=2.0, space='buy', decimals=1, optimize=False, load=True)
 
     buy_rsi_18 = DecimalParameter(16.0, 32.0, default=26.0, space='buy', decimals=1, optimize=False, load=True)
     buy_bb_offset_18 = DecimalParameter(0.98, 1.0, default=0.982, space='buy', decimals=3, optimize=False, load=True)
@@ -3635,6 +3637,8 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[16]))
             item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_ma_offset_17.value)
             item_buy_logic.append(dataframe['ewo'] < self.buy_ewo_17.value)
+            item_buy_logic.append(dataframe['cti'] < self.buy_cti_17.value)
+            item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_volume_17.value))
             item_buy_logic.append(dataframe['volume'] > 0)
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             dataframe.loc[
