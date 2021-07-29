@@ -1889,7 +1889,7 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_rsi_23 = DecimalParameter(20.0, 40.0, default=30.0, space='buy', decimals=1, optimize=False, load=True)
     buy_rsi_1h_23 = DecimalParameter(60.0, 80.0, default=70.0, space='buy', decimals=1, optimize=False, load=True)
 
-    buy_24_rsi_max = DecimalParameter(26.0, 60.0, default=60.0, space='buy', decimals=1, optimize=False, load=True)
+    buy_24_rsi_max = DecimalParameter(26.0, 60.0, default=50.0, space='buy', decimals=1, optimize=False, load=True)
     buy_24_rsi_1h_min = DecimalParameter(40.0, 90.0, default=66.9, space='buy', decimals=1, optimize=False, load=True)
 
     buy_25_ma_offset = DecimalParameter(0.90, 0.99, default=0.922, space='buy', optimize=False, load=True)
@@ -3815,7 +3815,6 @@ class NostalgiaForInfinityNext(IStrategy):
             # Logic
             item_buy_logic = []
             item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[23]))
-            item_buy_logic.append(dataframe['ema_12_1h'].shift(12) < dataframe['ema_35_1h'].shift(12))
             item_buy_logic.append(dataframe['ema_12_1h'].shift(12) < dataframe['ema_35_1h'].shift(12))
             item_buy_logic.append(dataframe['ema_12_1h'] > dataframe['ema_35_1h'])
             item_buy_logic.append(dataframe['cmf_1h'].shift(12) < 0)
