@@ -1,5 +1,6 @@
 import json
 import logging
+import pprint
 import shutil
 import subprocess
 from types import SimpleNamespace
@@ -62,7 +63,7 @@ class Backtest:
         self, start_date, end_date, pairlist=None, max_open_trades=5, stake_amount="unlimited"
     ):
         tmp_path = self.request.getfixturevalue("tmp_path")
-        exchange_config = f"user_data/{self.exchange}-usdt-static.json"
+        exchange_config = f"user_data/data/{self.exchange}-usdt-static.json"
         json_results_file = tmp_path / "backtest-results.json"
         cmdline = [
             "freqtrade",
@@ -72,7 +73,7 @@ class Backtest:
             f"--timerange={start_date}-{end_date}",
             f"--max-open-trades={max_open_trades}",
             f"--stake-amount={stake_amount}",
-            "--config=user_data/pairlists.json",
+            "--config=user_data/data/pairlists.json",
             f"--export-filename={json_results_file}",
         ]
         if pairlist is None:
@@ -109,7 +110,13 @@ class Backtest:
         data = {
             "stdout": ret.stdout.strip(),
             "stderr": ret.stderr.strip(),
-            "comparison": results_data["strategy_comparison"],
             "results": results_data["strategy"]["NostalgiaForInfinityNext"],
+            "stats": results_data["strategy_comparison"][0],
         }
+        # At some point, consider logging at the debug level or removing this log call
+        # which is only here to understand the JSON results data structure.
+        log.info(
+            "Backtest results:\n%s",
+            pprint.pformat({"results": data["results"], "stats": data["stats"]}),
+        )
         return json.loads(json.dumps(data), object_hook=lambda d: SimpleNamespace(**d))

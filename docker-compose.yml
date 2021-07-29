@@ -9,7 +9,7 @@ services:
     volumes:
       - "./:/testing"
     command: >
-      python -m pytest -ra -vv -s --log-cli-level=info --artifacts-path=artifacts/ tests/
+      python -m pytest -ra -vv -s --log-cli-level=info --artifacts-path=artifacts/ ${EXTRA_ARGS:-tests/}
     entrypoint: []
     working_dir: /testing
   backtesting:
@@ -24,8 +24,8 @@ services:
       backtesting
       --strategy-list NostalgiaForInfinityNext
       --timerange ${TIMERANGE:-20210601-20210701}
-      --config user_data/pairlists.json
-      --config user_data/${EXCHANGE:-binance}-usdt-static.json
+      --config user_data/data/pairlists.json
+      --config user_data/data/${EXCHANGE:-binance}-usdt-static.json
       --max-open-trades ${MAX_OPEN_TRADES:-5}
       --stake-amount ${STAKE_AMOUNT:-unlimited}
   download-data:
@@ -34,4 +34,9 @@ services:
     volumes:
       - "./user_data:/freqtrade/user_data"
     command: >
-      download-data --timerange ${START_DATE}-${END_DATE} --timeframe 5m 1h --config user_data/pairlists.json --config user_data/${EXCHANGE:-binance}-usdt-static.json
+      download-data
+      --timerange ${START_DATE:-20201201}-${END_DATE:-20210701}
+      --timeframe 5m 1h
+      --datadir user_data/data/${EXCHANGE:-binance}
+      --config user_data/data/pairlists.json
+      --config user_data/data/${EXCHANGE:-binance}-usdt-static.json
