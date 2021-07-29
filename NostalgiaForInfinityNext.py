@@ -1909,6 +1909,10 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_28_rsi = DecimalParameter(24.0, 44.0, default=38.0, space='buy', decimals=1, optimize=False, load=True)
     buy_28_cti = DecimalParameter(-0.99, -0.4, default=-0.6, space='buy', decimals=2, optimize=False, load=True)
 
+    buy_29_ma_offset = DecimalParameter(0.90, 0.99, default=0.91, space='buy', optimize=False, load=True)
+    buy_29_ewo = DecimalParameter(-14.0, -2.0, default=-4.0, space='buy', decimals=1, optimize=False, load=True)
+    buy_29_cti = DecimalParameter(-0.99, -0.4, default=-0.82, space='buy', decimals=2, optimize=False, load=True)
+
     # Sell
 
     sell_condition_1_enable = CategoricalParameter([True, False], default=True, space='sell', optimize=False, load=True)
@@ -3949,8 +3953,9 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic = []
             item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[28]))
             item_buy_logic.append(dataframe['moderi_64'] == True)
-            item_buy_logic.append(dataframe['close'] < dataframe['hull_75'] * 0.9)
-            item_buy_logic.append(dataframe['ewo'] < -4.0)
+            item_buy_logic.append(dataframe['close'] < dataframe['hull_75'] * self.buy_29_ma_offset.value)
+            item_buy_logic.append(dataframe['ewo'] < self.buy_29_ewo.value)
+            item_buy_logic.append(dataframe['cti'] < self.buy_29_cti.value)
             item_buy_logic.append(dataframe['volume'] > 0)
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             dataframe.loc[
