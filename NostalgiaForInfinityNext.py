@@ -3049,7 +3049,7 @@ class NostalgiaForInfinityNext(IStrategy):
         dataframe['chop']= qtpylib.chopiness(dataframe, 14)
 
         # Zero-Lag EMA
-        dataframe['zema'] = zema(dataframe, period=61)
+        dataframe['zema_61'] = zema(dataframe, period=61)
 
         # Williams %R
         dataframe['r_480'] = williams_r(dataframe, period=480)
@@ -3871,7 +3871,7 @@ class NostalgiaForInfinityNext(IStrategy):
             # Logic
             item_buy_logic = []
             item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[25]))
-            item_buy_logic.append(dataframe['close'] < (dataframe['zema'] * self.buy_26_zema_low_offset.value))
+            item_buy_logic.append(dataframe['close'] < (dataframe['zema_61'] * self.buy_26_zema_low_offset.value))
             item_buy_logic.append(dataframe['volume'] > 0)
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             dataframe.loc[
