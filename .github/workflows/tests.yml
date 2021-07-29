@@ -118,28 +118,7 @@ jobs:
           name: backtest_result
           path: backtest_${{ matrix.timerange }}_${{ matrix.opentrades }}.txt
 
-  Unit-Tests:
-    runs-on: ubuntu-20.04
-    needs:
-      - Pre-Commit
-
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: true
-
-      - name: Build Tests Image
-        run: docker-compose build tests
-
-      - name: Run Tests
-        env:
-          EXTRA_ARGS: tests/unit/
-        run: |
-          mkdir artifacts
-          chmod 777 artifacts
-          docker-compose run --rm tests
-
-  Binance-Tests:
+  Binance-Backest-Tests:
     runs-on: ubuntu-20.04
     needs:
       - Pre-Commit
@@ -166,7 +145,7 @@ jobs:
           name: binance-testrun-artifacts
           path: artifacts/
 
-  Kucoin-Tests:
+  Kucoin-Backest-Tests:
     runs-on: ubuntu-20.04
     needs:
       - Pre-Commit
@@ -192,3 +171,24 @@ jobs:
         with:
           name: kucoin-testrun-artifacts
           path: artifacts/
+
+  Remaining-Tests:
+    runs-on: ubuntu-20.04
+    needs:
+      - Pre-Commit
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Build Tests Image
+        run: docker-compose build tests
+
+      - name: Run Tests
+        env:
+          EXTRA_ARGS: --ignore tests/backtests/binance/ --ignore tests/backtests/kucoin/
+        run: |
+          mkdir artifacts
+          chmod 777 artifacts
+          docker-compose run --rm tests
