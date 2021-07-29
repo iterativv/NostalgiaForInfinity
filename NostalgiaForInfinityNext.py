@@ -1922,6 +1922,11 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_31_ewo = DecimalParameter(-22.0, -8.0, default=-19.0, space='buy', decimals=1, optimize=False, load=True)
     buy_31_wr = DecimalParameter(-99.9, -95.0, default=-98.4, space='buy', decimals=1, optimize=False, load=True)
 
+    buy_32_ma_offset = DecimalParameter(0.90, 0.99, default=0.946, space='buy', optimize=False, load=True)
+    buy_32_dip = DecimalParameter(0.001, 0.02, default=0.005, space='buy', decimals=3, optimize=False, load=True)
+    buy_32_rsi = DecimalParameter(24.0, 50.0, default=46.0, space='buy', decimals=1, optimize=False, load=True)
+    buy_32_cti = DecimalParameter(-0.99, -0.4, default=-0.8, space='buy', decimals=2, optimize=False, load=True)
+
     # Sell
 
     sell_condition_1_enable = CategoricalParameter([True, False], default=True, space='sell', optimize=False, load=True)
@@ -4035,12 +4040,12 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['moderi_32'])
             item_buy_logic.append(dataframe['moderi_64'])
             item_buy_logic.append(dataframe['moderi_96'])
-            item_buy_logic.append(dataframe['cti'] < -0.8)
+            item_buy_logic.append(dataframe['cti'] < self.buy_32_cti.value)
             item_buy_logic.append(dataframe['rsi_20'] < dataframe['rsi_20'].shift(1))
-            item_buy_logic.append(dataframe['rsi_4'] < 46.0)
+            item_buy_logic.append(dataframe['rsi_4'] < self.buy_32_rsi.value)
             item_buy_logic.append(dataframe['ema_20_1h'] > dataframe['ema_25_1h'])
-            item_buy_logic.append((dataframe['open'] - dataframe['close']) / dataframe['close'] < 0.005)
-            item_buy_logic.append(dataframe['close'] < (dataframe['sma_15'] * 0.946))
+            item_buy_logic.append((dataframe['open'] - dataframe['close']) / dataframe['close'] < self.buy_32_dip.value)
+            item_buy_logic.append(dataframe['close'] < (dataframe['sma_15'] * self.buy_32_ma_offset.value))
             item_buy_logic.append(
                 ((dataframe['open'] < dataframe['ema_20_1h']) & (dataframe['low'] < dataframe['ema_20_1h'])) |
                 ((dataframe['open'] > dataframe['ema_20_1h']) & (dataframe['low'] > dataframe['ema_20_1h'])))
