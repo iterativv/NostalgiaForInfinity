@@ -3244,894 +3244,433 @@ class NostalgiaForInfinityNext(IStrategy):
 
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         conditions = []
-        buy_protection_list = []
-
+        
         if self.config['runmode'].value in ('live', 'dry_run'):
             not_empty_volume = dataframe['volume'].rolling(window=72, min_periods=72).count().notna()
         else:
             not_empty_volume = dataframe['volume'].rolling(window=self.startup_candle_count, min_periods=self.startup_candle_count).count().notna()
-
-        # Protections [STANDARD] - Common to every condition
+                
         for index in self.buy_protection_params:
+            buy_protection_list = []
             item_buy_protection_list = [True]
-            global_buy_protection_params = self.buy_protection_params[index]
-            if global_buy_protection_params["ema_fast"].value:
-                item_buy_protection_list.append(dataframe[f"ema_{global_buy_protection_params['ema_fast_len'].value}"] > dataframe['ema_200'])
-            if global_buy_protection_params["ema_slow"].value:
-                item_buy_protection_list.append(dataframe[f"ema_{global_buy_protection_params['ema_slow_len'].value}_1h"] > dataframe['ema_200_1h'])
-            if global_buy_protection_params["close_above_ema_fast"].value:
-                item_buy_protection_list.append(dataframe['close'] > dataframe[f"ema_{global_buy_protection_params['close_above_ema_fast_len'].value}"])
-            if global_buy_protection_params["close_above_ema_slow"].value:
-                item_buy_protection_list.append(dataframe['close'] > dataframe[f"ema_{global_buy_protection_params['close_above_ema_slow_len'].value}_1h"])
-            if global_buy_protection_params["sma200_rising"].value:
-                item_buy_protection_list.append(dataframe['sma_200'] > dataframe['sma_200'].shift(int(global_buy_protection_params['sma200_rising_val'].value)))
-            if global_buy_protection_params["sma200_1h_rising"].value:
-                item_buy_protection_list.append(dataframe['sma_200_1h'] > dataframe['sma_200_1h'].shift(int(global_buy_protection_params['sma200_1h_rising_val'].value)))
-            if global_buy_protection_params["safe_dips"].value:
-                item_buy_protection_list.append(dataframe[f"safe_dips_{global_buy_protection_params['safe_dips_type'].value}"])
-            if global_buy_protection_params["safe_pump"].value:
-                item_buy_protection_list.append(dataframe[f"safe_pump_{global_buy_protection_params['safe_pump_period'].value}_{global_buy_protection_params['safe_pump_type'].value}_1h"])
-            if global_buy_protection_params['btc_1h_not_downtrend'].value:
-                item_buy_protection_list.append(dataframe['btc_not_downtrend_1h'])
-            item_buy_protection_list.append(not_empty_volume)
-            buy_protection_list.append(item_buy_protection_list)
-
-        # Buy Condition #1
-        dataframe.loc[
-            :,
-            'buy_condition_1'
-        ] = 0
-        # -----------------------------------------------------------------------------------------
-        if self.buy_params['buy_condition_1_enable']:
-            # Non-Standard protections (add below)
-
-            # Logic
-            item_buy_logic = []
-            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[0]))
-            item_buy_logic.append(((dataframe['close'] - dataframe['open'].rolling(36).min()) / dataframe['open'].rolling(36).min()) > self.buy_min_inc_1.value)
-            item_buy_logic.append(((dataframe['close'] - dataframe['open'].rolling(36).min()) / dataframe['open'].rolling(36).min()) > self.buy_min_inc_1.value)
-            item_buy_logic.append(dataframe['rsi_1h'] > self.buy_rsi_1h_min_1.value)
-            item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_max_1.value)
-            item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_1.value)
-            item_buy_logic.append(dataframe['mfi'] < self.buy_mfi_1.value)
-            item_buy_logic.append(dataframe['cti'] < self.buy_cti_1.value)
-            item_buy_logic.append(dataframe['volume'] > 0)
-            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-            dataframe.loc[
-                item_buy,
-                'buy_condition_1'
-            ] = 1
-            conditions.append(item_buy)
-
-        # Buy Condition #2
-        dataframe.loc[
-            :,
-            'buy_condition_2'
-        ] = 0
-        # -----------------------------------------------------------------------------------------
-        if self.buy_params['buy_condition_2_enable']:
-            # Non-Standard protections (add below)
-
-            # Logic
-            item_buy_logic = []
-            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[1]))
-            item_buy_logic.append(dataframe['rsi'] < dataframe['rsi_1h'] - self.buy_rsi_1h_diff_2.value)
-            item_buy_logic.append(dataframe['mfi'] < self.buy_mfi_2.value)
-            item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_2.value))
-            item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_volume_2.value))
-            item_buy_logic.append(dataframe['volume'] > 0)
-            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-            dataframe.loc[
-                item_buy,
-                'buy_condition_2'
-            ] = 1
-            conditions.append(item_buy)
-
-        # Buy Condition #3
-        dataframe.loc[
-            :,
-            'buy_condition_3'
-        ] = 0
-        # -----------------------------------------------------------------------------------------
-        if self.buy_params['buy_condition_3_enable']:
-            # Non-Standard protections (add below)
-            buy_protection_list[2].append(dataframe['close'] > (dataframe['ema_200_1h'] * self.buy_ema_rel_3.value))
-
-            # Logic
-            item_buy_logic = []
-            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[2]))
-            item_buy_logic.append(dataframe['bb40_2_low'].shift().gt(0))
-            item_buy_logic.append(dataframe['bb40_2_delta'].gt(dataframe['close'] * self.buy_bb40_bbdelta_close_3.value))
-            item_buy_logic.append(dataframe['closedelta'].gt(dataframe['close'] * self.buy_bb40_closedelta_close_3.value))
-            item_buy_logic.append(dataframe['tail'].lt(dataframe['bb40_2_delta'] * self.buy_bb40_tail_bbdelta_3.value))
-            item_buy_logic.append(dataframe['close'].lt(dataframe['bb40_2_low'].shift()))
-            item_buy_logic.append(dataframe['close'].le(dataframe['close'].shift()))
-            item_buy_logic.append(dataframe['cti'] < self.buy_cti_3.value)
-            item_buy_logic.append(dataframe['volume'] > 0)
-            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-            dataframe.loc[
-                item_buy,
-                'buy_condition_3'
-            ] = 1
-            conditions.append(item_buy)
-
-        # Buy Condition #4
-        dataframe.loc[
-            :,
-            'buy_condition_4'
-        ] = 0
-        # -----------------------------------------------------------------------------------------
-        if self.buy_params['buy_condition_4_enable']:
-            # Non-Standard protections (add below)
-
-            # Logic
-            item_buy_logic = []
-            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[3]))
-            item_buy_logic.append(dataframe['close'] < dataframe['ema_50'])
-            item_buy_logic.append(dataframe['close'] < self.buy_bb20_close_bblowerband_4.value * dataframe['bb20_2_low'])
-            item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_30'].shift(1) * self.buy_bb20_volume_4.value))
-            item_buy_logic.append(dataframe['volume'] > 0)
-            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-            dataframe.loc[
-                item_buy,
-                'buy_condition_4'
-            ] = 1
-            conditions.append(item_buy)
-
-        # Buy Condition #5
-        dataframe.loc[
-            :,
-            'buy_condition_5'
-        ] = 0
-        # -----------------------------------------------------------------------------------------
-        if self.buy_params['buy_condition_5_enable']:
-            # Non-Standard protections (add below)
-            buy_protection_list[4].append(dataframe['close'] > (dataframe['ema_200_1h'] * self.buy_ema_rel_5.value))
-
-            # Logic
-            item_buy_logic = []
-            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[4]))
-            item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
-            item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * self.buy_ema_open_mult_5.value))
-            item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
-            item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_5.value))
-            item_buy_logic.append(dataframe['cti'] < self.buy_cti_5.value)
-            item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_volume_5.value))
-            item_buy_logic.append(dataframe['volume'] > 0)
-            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-            dataframe.loc[
-                item_buy,
-                'buy_condition_5'
-            ] = 1
-            conditions.append(item_buy)
-
-        # Buy Condition #6
-        dataframe.loc[
-            :,
-            'buy_condition_6'
-        ] = 0
-        # -----------------------------------------------------------------------------------------
-        if self.buy_params['buy_condition_6_enable']:
-            # Non-Standard protections (add below)
-
-            # Logic
-            item_buy_logic = []
-            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[5]))
-            item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
-            item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * self.buy_ema_open_mult_6.value))
-            item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
-            item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_6.value))
-            item_buy_logic.append(dataframe['volume'] > 0)
-            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-            dataframe.loc[
-                item_buy,
-                'buy_condition_6'
-            ] = 1
-            conditions.append(item_buy)
-
-        # Buy Condition #7
-        dataframe.loc[
-            :,
-            'buy_condition_7'
-        ] = 0
-        # -----------------------------------------------------------------------------------------
-        if self.buy_params['buy_condition_7_enable']:
-            # Non-Standard protections (add below)
-
-            # Logic
-            item_buy_logic = []
-            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[6]))
-            item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
-            item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * self.buy_ema_open_mult_7.value))
-            item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
-            item_buy_logic.append(dataframe['cti'] < self.buy_cti_7.value)
-            item_buy_logic.append(dataframe['volume'] > 0)
-            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-            dataframe.loc[
-                item_buy,
-                'buy_condition_7'
-            ] = 1
-            conditions.append(item_buy)
-
-        # Buy Condition #8
-        dataframe.loc[
-            :,
-            'buy_condition_8'
-        ] = 0
-        # -----------------------------------------------------------------------------------------
-        if self.buy_params['buy_condition_8_enable']:
-            # Non-Standard protections (add below)
-
-            # Logic
-            item_buy_logic = []
-            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[7]))
-            item_buy_logic.append(dataframe['moderi_96'])
-            item_buy_logic.append(dataframe['cti'] < self.buy_cti_8.value)
-            item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_8.value))
-            item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_8.value)
-            item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_volume_8.value))
-            item_buy_logic.append(dataframe['volume'] > 0)
-            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-            dataframe.loc[
-                item_buy,
-                'buy_condition_8'
-            ] = 1
-            conditions.append(item_buy)
-
-        # Buy Condition #9
-        dataframe.loc[
-            :,
-            'buy_condition_9'
-        ] = 0
-        # -----------------------------------------------------------------------------------------
-        if self.buy_params['buy_condition_9_enable']:
-            # Non-Standard protections (add below)
-            buy_protection_list[8].append(dataframe['ema_50'] > dataframe['ema_200'])
-
-            # Logic
-            item_buy_logic = []
-            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[8]))
-            item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_ma_offset_9.value)
-            item_buy_logic.append(dataframe['close'] < dataframe['bb20_2_low'] * self.buy_bb_offset_9.value)
-            item_buy_logic.append(dataframe['rsi_1h'] > self.buy_rsi_1h_min_9.value)
-            item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_max_9.value)
-            item_buy_logic.append(dataframe['mfi'] < self.buy_mfi_9.value)
-            item_buy_logic.append(dataframe['volume'] > 0)
-            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-            dataframe.loc[
-                item_buy,
-                'buy_condition_9'
-            ] = 1
-            conditions.append(item_buy)
-
-        # Buy Condition #10
-        dataframe.loc[
-            :,
-            'buy_condition_10'
-        ] = 0
-        # -----------------------------------------------------------------------------------------
-        if self.buy_params['buy_condition_10_enable']:
-            # Non-Standard protections (add below)
-            buy_protection_list[9].append(dataframe['ema_50_1h'] > dataframe['ema_100_1h'])
-
-            # Logic
-            item_buy_logic = []
-            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[9]))
-            item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * self.buy_ma_offset_10.value)
-            item_buy_logic.append(dataframe['close'] < dataframe['bb20_2_low'] * self.buy_bb_offset_10.value)
-            item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_10.value)
-            item_buy_logic.append(dataframe['volume'] > 0)
-            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-            dataframe.loc[
-                item_buy,
-                'buy_condition_10'
-            ] = 1
-            conditions.append(item_buy)
-
-        # Buy Condition #11
-        dataframe.loc[
-            :,
-            'buy_condition_11'
-        ] = 0
-        # -----------------------------------------------------------------------------------------
-        if self.buy_params['buy_condition_11_enable']:
-            # Non-Standard protections (add below)
-            buy_protection_list[10].append(dataframe['ema_50_1h'] > dataframe['ema_100_1h'])
-
-            # Logic
-            item_buy_logic = []
-            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[10]))
-            item_buy_logic.append(((dataframe['close'] - dataframe['open'].rolling(36).min()) / dataframe['open'].rolling(36).min()) > self.buy_min_inc_11.value)
-            item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * self.buy_ma_offset_11.value)
-            item_buy_logic.append(dataframe['rsi_1h'] > self.buy_rsi_1h_min_11.value)
-            item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_max_11.value)
-            item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_11.value)
-            item_buy_logic.append(dataframe['mfi'] < self.buy_mfi_11.value)
-            item_buy_logic.append(dataframe['volume'] > 0)
-            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-            dataframe.loc[
-                item_buy,
-                'buy_condition_11'
-            ] = 1
-            conditions.append(item_buy)
-
-        # Buy Condition #12
-        dataframe.loc[
-            :,
-            'buy_condition_12'
-        ] = 0
-        # -----------------------------------------------------------------------------------------
-        if self.buy_params['buy_condition_12_enable']:
-            # Non-Standard protections (add below)
-
-            # Logic
-            item_buy_logic = []
-            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[11]))
-            item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * self.buy_ma_offset_12.value)
-            item_buy_logic.append(dataframe['ewo'] > self.buy_ewo_12.value)
-            item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_12.value)
-            item_buy_logic.append(dataframe['volume'] > 0)
-            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-            dataframe.loc[
-                item_buy,
-                'buy_condition_12'
-            ] = 1
-            conditions.append(item_buy)
-
-        # Buy Condition #13
-        dataframe.loc[
-            :,
-            'buy_condition_13'
-        ] = 0
-        # -----------------------------------------------------------------------------------------
-        if self.buy_params['buy_condition_13_enable']:
-            # Non-Standard protections (add below)
-            buy_protection_list[12].append(dataframe['ema_50_1h'] > dataframe['ema_100_1h'])
-
-            # Logic
-            item_buy_logic = []
-            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[12]))
-            item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * self.buy_ma_offset_13.value)
-            item_buy_logic.append(dataframe['cti'] < self.buy_cti_13.value)
-            item_buy_logic.append(dataframe['ewo'] < self.buy_ewo_13.value)
-            item_buy_logic.append(dataframe['volume'] > 0)
-            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-            dataframe.loc[
-                item_buy,
-                'buy_condition_13'
-            ] = 1
-            conditions.append(item_buy)
-
-        # Buy Condition #14
-        dataframe.loc[
-            :,
-            'buy_condition_14'
-        ] = 0
-        # -----------------------------------------------------------------------------------------
-        if self.buy_params['buy_condition_14_enable']:
-            # Non-Standard protections (add below)
-
-            # Logic
-            item_buy_logic = []
-            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[13]))
-            item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
-            item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * self.buy_ema_open_mult_14.value))
-            item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
-            item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_14.value))
-            item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_ma_offset_14.value)
-            item_buy_logic.append(dataframe['cti'] < self.buy_cti_14.value)
-            item_buy_logic.append(dataframe['volume'] > 0)
-            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-            dataframe.loc[
-                item_buy,
-                'buy_condition_14'
-            ] = 1
-            conditions.append(item_buy)
-
-        # Buy Condition #15
-        dataframe.loc[
-            :,
-            'buy_condition_15'
-        ] = 0
-        # -----------------------------------------------------------------------------------------
-        if self.buy_params['buy_condition_15_enable']:
-            # Non-Standard protections (add below)
-            buy_protection_list[14].append(dataframe['close'] > dataframe['ema_200_1h'] * self.buy_ema_rel_15.value)
-
-            # Logic
-            item_buy_logic = []
-            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[14]))
-            item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
-            item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * self.buy_ema_open_mult_15.value))
-            item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
-            item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_15.value)
-            item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_ma_offset_15.value)
-            item_buy_logic.append(dataframe['volume'] > 0)
-            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-            dataframe.loc[
-                item_buy,
-                'buy_condition_15'
-            ] = 1
-            conditions.append(item_buy)
-
-        # Buy Condition #16
-        dataframe.loc[
-            :,
-            'buy_condition_16'
-        ] = 0
-        # -----------------------------------------------------------------------------------------
-        if self.buy_params['buy_condition_16_enable']:
-            # Non-Standard protections (add below)
-
-            # Logic
-            item_buy_logic = []
-            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[15]))
-            item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_ma_offset_16.value)
-            item_buy_logic.append(dataframe['ewo'] > self.buy_ewo_16.value)
-            item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_16.value)
-            item_buy_logic.append(dataframe['cti'] < self.buy_cti_16.value)
-            item_buy_logic.append(dataframe['volume'] > 0)
-            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-            dataframe.loc[
-                item_buy,
-                'buy_condition_16'
-            ] = 1
-            conditions.append(item_buy)
-
-        # Buy Condition #17
-        dataframe.loc[
-            :,
-            'buy_condition_17'
-        ] = 0
-        # -----------------------------------------------------------------------------------------
-        if self.buy_params['buy_condition_17_enable']:
-            # Non-Standard protections (add below)
-
-            # Logic
-            item_buy_logic = []
-            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[16]))
-            item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_ma_offset_17.value)
-            item_buy_logic.append(dataframe['ewo'] < self.buy_ewo_17.value)
-            item_buy_logic.append(dataframe['cti'] < self.buy_cti_17.value)
-            item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_volume_17.value))
-            item_buy_logic.append(dataframe['volume'] > 0)
-            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-            dataframe.loc[
-                item_buy,
-                'buy_condition_17'
-            ] = 1
-            conditions.append(item_buy)
-
-        # Buy Condition #18
-        dataframe.loc[
-            :,
-            'buy_condition_18'
-        ] = 0
-        # -----------------------------------------------------------------------------------------
-        if self.buy_params['buy_condition_18_enable']:
-            # Non-Standard protections (add below)
-            # buy_18_protections.append(dataframe['ema_100'] > dataframe['ema_200'])
-            buy_protection_list[17].append(dataframe['sma_200'] > dataframe['sma_200'].shift(20))
-            buy_protection_list[17].append(dataframe['sma_200_1h'] > dataframe['sma_200_1h'].shift(36))
-
-            # Logic
-            item_buy_logic = []
-            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[17]))
-            item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_18.value)
-            item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_18.value))
-            item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_volume_18.value))
-            item_buy_logic.append(dataframe['volume'] > 0)
-            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-            dataframe.loc[
-                item_buy,
-                'buy_condition_18'
-            ] = 1
-            conditions.append(item_buy)
-
-        # Buy Condition #19
-        dataframe.loc[
-            :,
-            'buy_condition_19'
-        ] = 0
-        # -----------------------------------------------------------------------------------------
-        if self.buy_params['buy_condition_19_enable']:
-            # Non-Standard protections (add below)
-
-            # Logic
-            item_buy_logic = []
-            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[18]))
-            item_buy_logic.append(dataframe['close'].shift(1) > dataframe['ema_100_1h'])
-            item_buy_logic.append(dataframe['low'] < dataframe['ema_100_1h'])
-            item_buy_logic.append(dataframe['close'] > dataframe['ema_100_1h'])
-            item_buy_logic.append(dataframe['rsi_1h'] > self.buy_rsi_1h_min_19.value)
-            item_buy_logic.append(dataframe['chop'] < self.buy_chop_min_19.value)
-            item_buy_logic.append(dataframe['moderi_96'] == True)
-            item_buy_logic.append(dataframe['volume'] > 0)
-            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-            dataframe.loc[
-                item_buy,
-                'buy_condition_19'
-            ] = 1
-            conditions.append(item_buy)
-
-        # Buy Condition #20
-        dataframe.loc[
-            :,
-            'buy_condition_20'
-        ] = 0
-        # -----------------------------------------------------------------------------------------
-        if self.buy_params['buy_condition_20_enable']:
-            # Non-Standard protections (add below)
-
-            # Logic
-            item_buy_logic = []
-            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[19]))
-            item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_20.value)
-            item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_20.value)
-            item_buy_logic.append(dataframe['cti'] < self.buy_cti_20.value)
-            item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_volume_20.value))
-            item_buy_logic.append(dataframe['volume'] > 0)
-            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-            dataframe.loc[
-                item_buy,
-                'buy_condition_20'
-            ] = 1
-            conditions.append(item_buy)
-
-        # Buy Condition #21
-        dataframe.loc[
-            :,
-            'buy_condition_21'
-        ] = 0
-        # -----------------------------------------------------------------------------------------
-        if self.buy_params['buy_condition_21_enable']:
-            # Non-Standard protections (add below)
-
-            # Logic
-            item_buy_logic = []
-            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[20]))
-            item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_21.value)
-            item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_21.value)
-            item_buy_logic.append(dataframe['cti'] < self.buy_cti_21.value)
-            item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_volume_21.value))
-            item_buy_logic.append(dataframe['volume'] > 0)
-            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-            dataframe.loc[
-                item_buy,
-                'buy_condition_21'
-            ] = 1
-            conditions.append(item_buy)
-
-        # Buy Condition #22
-        dataframe.loc[
-            :,
-            'buy_condition_22'
-        ] = 0
-        # -----------------------------------------------------------------------------------------
-        if self.buy_params['buy_condition_22_enable']:
-            # Non-Standard protections (add below)
-            buy_protection_list[21].append(dataframe['ema_100_1h'] > dataframe['ema_100_1h'].shift(12))
-            buy_protection_list[21].append(dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(36))
-
-            # Logic
-            item_buy_logic = []
-            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[21]))
-            item_buy_logic.append((dataframe['volume_mean_4'] * self.buy_volume_22.value) > dataframe['volume'])
-            item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * self.buy_ma_offset_22.value)
-            item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_22.value))
-            item_buy_logic.append(dataframe['ewo'] > self.buy_ewo_22.value)
-            item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_22.value)
-            item_buy_logic.append(dataframe['safe_dump_20_1h'])
-            item_buy_logic.append(dataframe['volume'] > 0)
-            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-            dataframe.loc[
-                item_buy,
-                'buy_condition_22'
-            ] = 1
-            conditions.append(item_buy)
-
-        # Buy Condition #23
-        dataframe.loc[
-            :,
-            'buy_condition_23'
-        ] = 0
-        # -----------------------------------------------------------------------------------------
-        if self.buy_params['buy_condition_23_enable']:
-            # Non-Standard protections (add below)
-
-            # Logic
-            item_buy_logic = []
-            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[22]))
-            item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_23.value))
-            item_buy_logic.append(dataframe['ewo'] > self.buy_ewo_23.value)
-            item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_23.value)
-            item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_23.value)
-            item_buy_logic.append(dataframe['volume'] > 0)
-            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-            dataframe.loc[
-                item_buy,
-                'buy_condition_23'
-            ] = 1
-            conditions.append(item_buy)
-
-        # Buy Condition #24
-        dataframe.loc[
-            :,
-            'buy_condition_24'
-        ] = 0
-        # -----------------------------------------------------------------------------------------
-        if self.buy_params['buy_condition_24_enable']:
-            # Non-Standard protections (add below)
-
-            # Logic
-            item_buy_logic = []
-            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[23]))
-            item_buy_logic.append(dataframe['ema_12_1h'].shift(12) < dataframe['ema_35_1h'].shift(12))
-            item_buy_logic.append(dataframe['ema_12_1h'] > dataframe['ema_35_1h'])
-            item_buy_logic.append(dataframe['cmf_1h'].shift(12) < 0)
-            item_buy_logic.append(dataframe['cmf_1h'] > 0)
-            item_buy_logic.append(dataframe['rsi'] < self.buy_24_rsi_max.value)
-            item_buy_logic.append(dataframe['rsi_1h'] > self.buy_24_rsi_1h_min.value)
-            item_buy_logic.append(dataframe['volume'] > 0)
-            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-            dataframe.loc[
-                item_buy,
-                'buy_condition_24'
-            ] = 1
-            conditions.append(item_buy)
-
-        # Buy Condition #25
-        dataframe.loc[
-            :,
-            'buy_condition_25'
-        ] = 0
-        # -----------------------------------------------------------------------------------------
-        if self.buy_params['buy_condition_25_enable']:
-            # Non-Standard protections (add below)
-
-            # Logic
-            item_buy_logic = []
-            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[24]))
-            item_buy_logic.append(dataframe['rsi_20'] < dataframe['rsi_20'].shift())
-            item_buy_logic.append(dataframe['rsi_4'] < self.buy_25_rsi_14.value)
-            item_buy_logic.append(dataframe['ema_20_1h'] > dataframe['ema_26_1h'])
-            item_buy_logic.append(dataframe['close'] < (dataframe['sma_20'] * self.buy_25_ma_offset.value))
-            item_buy_logic.append(dataframe['open'] > (dataframe['sma_20'] * self.buy_25_ma_offset.value))
-            item_buy_logic.append(
-                (dataframe['open'] < dataframe['ema_20_1h']) & (dataframe['low'] < dataframe['ema_20_1h']) |
-                (dataframe['open'] > dataframe['ema_20_1h']) & (dataframe['low'] > dataframe['ema_20_1h'])
-            )
-            item_buy_logic.append(dataframe['cti'] < self.buy_25_cti.value)
-            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-            dataframe.loc[
-                item_buy,
-                'buy_condition_25'
-            ] = 1
-            conditions.append(item_buy)
-
-        # Buy Condition #26
-        dataframe.loc[
-            :,
-            'buy_condition_26'
-        ] = 0
-        # -----------------------------------------------------------------------------------------
-        if self.buy_params['buy_condition_26_enable']:
-            # Non-Standard protections (add below)
-
-            # Logic
-            item_buy_logic = []
-            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[25]))
-            item_buy_logic.append(dataframe['close'] < (dataframe['zema_61'] * self.buy_26_zema_low_offset.value))
-            item_buy_logic.append(dataframe['volume'] > 0)
-            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-            dataframe.loc[
-                item_buy,
-                'buy_condition_26'
-            ] = 1
-            conditions.append(item_buy)
-
-        # Buy Condition #27
-        dataframe.loc[
-            :,
-            'buy_condition_27'
-        ] = 0
-        # -----------------------------------------------------------------------------------------
-        if self.buy_params['buy_condition_27_enable']:
-            # Non-Standard protections (add below)
-
-            # Logic
-            item_buy_logic = []
-            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[26]))
-            item_buy_logic.append(dataframe['r_480'] < -self.buy_27_wr_max.value)
-            item_buy_logic.append(dataframe['r_480_1h'] < -self.buy_27_wr_1h_max.value)
-            item_buy_logic.append(dataframe['rsi_1h'] + dataframe['rsi'] < self.buy_27_rsi_max.value)
-            item_buy_logic.append(dataframe['cti'] < self.buy_27_cti.value)
-            item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_27_volume.value))
-            item_buy_logic.append(dataframe['volume'] > 0)
-            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-            dataframe.loc[
-                item_buy,
-                'buy_condition_27'
-            ] = 1
-            conditions.append(item_buy)
-
-        # Buy Condition #28
-        dataframe.loc[
-            :,
-            'buy_condition_28'
-        ] = 0
-        # -----------------------------------------------------------------------------------------
-        if self.buy_params['buy_condition_28_enable']:
-            # Non-Standard protections (add below)
-
-            # Logic
-            item_buy_logic = []
-            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[27]))
-            item_buy_logic.append(dataframe['moderi_64'] == True)
-            item_buy_logic.append(dataframe['close'] < dataframe['hull_75'] * self.buy_28_ma_offset.value)
-            item_buy_logic.append(dataframe['ewo'] > self.buy_28_ewo.value)
-            item_buy_logic.append(dataframe['rsi'] < self.buy_28_rsi.value)
-            item_buy_logic.append(dataframe['cti'] < self.buy_28_cti.value)
-            item_buy_logic.append(dataframe['volume'] > 0)
-            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-            dataframe.loc[
-                item_buy,
-                'buy_condition_28'
-            ] = 1
-            conditions.append(item_buy)
-
-        # Buy Condition #29
-        dataframe.loc[
-            :,
-            'buy_condition_29'
-        ] = 0
-        # -----------------------------------------------------------------------------------------
-        if self.buy_params['buy_condition_29_enable']:
-            # Non-Standard protections (add below)
-
-            item_buy_logic = []
-            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[28]))
-            item_buy_logic.append(dataframe['moderi_64'] == True)
-            item_buy_logic.append(dataframe['close'] < dataframe['hull_75'] * self.buy_29_ma_offset.value)
-            item_buy_logic.append(dataframe['ewo'] < self.buy_29_ewo.value)
-            item_buy_logic.append(dataframe['cti'] < self.buy_29_cti.value)
-            item_buy_logic.append(dataframe['volume'] > 0)
-            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-            dataframe.loc[
-                item_buy,
-                'buy_condition_29'
-            ] = 1
-            conditions.append(item_buy)
-
-        # Buy Condition #30
-        dataframe.loc[
-            :,
-            'buy_condition_30'
-        ] = 0
-        # -----------------------------------------------------------------------------------------
-        if self.buy_params['buy_condition_30_enable']:
-            # Non-Standard protections (add below)
-
-            item_buy_logic = []
-            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[29]))
-            item_buy_logic.append(dataframe['moderi_64'] == False)
-            item_buy_logic.append(dataframe['close'] < dataframe['zlema_68'] * self.buy_30_ma_offset.value)
-            item_buy_logic.append(dataframe['ewo'] > self.buy_30_ewo.value)
-            item_buy_logic.append(dataframe['rsi'] < self.buy_30_rsi.value)
-            item_buy_logic.append(dataframe['cti'] < self.buy_30_cti.value)
-            item_buy_logic.append(dataframe['volume'] > 0)
-            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-            dataframe.loc[
-                item_buy,
-                'buy_condition_30'
-            ] = 1
-            conditions.append(item_buy)
-
-        # Buy Condition #31
-        dataframe.loc[
-            :,
-            'buy_condition_31'
-        ] = 0
-        # -----------------------------------------------------------------------------------------
-        if self.buy_params['buy_condition_31_enable']:
-            # Non-Standard protections (add below)
-
-            item_buy_logic = []
-            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[30]))
-            item_buy_logic.append(dataframe['moderi_64'] == False)
-            item_buy_logic.append(dataframe['close'] < dataframe['zlema_68'] * self.buy_31_ma_offset.value )
-            item_buy_logic.append(dataframe['ewo'] < self.buy_31_ewo.value)
-            item_buy_logic.append(dataframe['r_480'] < self.buy_31_wr.value)
-            item_buy_logic.append(dataframe['volume'] > 0)
-            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-            dataframe.loc[
-                item_buy,
-                'buy_condition_31'
-            ] = 1
-            conditions.append(item_buy)
-
-        # Buy Condition #32
-        dataframe.loc[
-            :,
-            'buy_condition_32'
-        ] = 0
-        # Quick mode buy
-        # -----------------------------------------------------------------------------------------
-        if self.buy_params['buy_condition_32_enable']:
-            # Non-Standard protections (add below)
-
-            item_buy_logic = []
-            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[31]))
-            item_buy_logic.append(dataframe['moderi_32'])
-            item_buy_logic.append(dataframe['moderi_64'])
-            item_buy_logic.append(dataframe['moderi_96'])
-            item_buy_logic.append(dataframe['cti'] < self.buy_32_cti.value)
-            item_buy_logic.append(dataframe['rsi_20'] < dataframe['rsi_20'].shift(1))
-            item_buy_logic.append(dataframe['rsi_4'] < self.buy_32_rsi.value)
-            item_buy_logic.append(dataframe['ema_20_1h'] > dataframe['ema_25_1h'])
-            item_buy_logic.append((dataframe['open'] - dataframe['close']) / dataframe['close'] < self.buy_32_dip.value)
-            item_buy_logic.append(dataframe['close'] < (dataframe['sma_15'] * self.buy_32_ma_offset.value))
-            item_buy_logic.append(
-                ((dataframe['open'] < dataframe['ema_20_1h']) & (dataframe['low'] < dataframe['ema_20_1h'])) |
-                ((dataframe['open'] > dataframe['ema_20_1h']) & (dataframe['low'] > dataframe['ema_20_1h'])))
-            item_buy_logic.append(dataframe['volume'] > 0)
-            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-            dataframe.loc[
-                item_buy,
-                'buy_condition_32'
-            ] = 1
-            conditions.append(item_buy)
-
-        # Buy Condition #33
-        dataframe.loc[
-            :,
-            'buy_condition_33'
-        ] = 0
-        # Quick mode buy
-        # -----------------------------------------------------------------------------------------
-        if self.buy_params['buy_condition_33_enable']:
-            # Non-Standard protections (add below)
-
-            item_buy_logic = []
-            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[32]))
-            item_buy_logic.append(dataframe['moderi_96'])
-            item_buy_logic.append(dataframe['cti'] < self.buy_33_cti.value)
-            item_buy_logic.append(dataframe['close'] < (dataframe['ema_13'] * self.buy_33_ma_offset.value))
-            item_buy_logic.append(dataframe['ewo'] > self.buy_33_ewo.value)
-            item_buy_logic.append(dataframe['rsi'] < self.buy_33_rsi.value)
-            item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_33_volume.value))
-            item_buy_logic.append(dataframe['volume'] > 0)
-            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-            dataframe.loc[
-                item_buy,
-                'buy_condition_33'
-            ] = 1
-            conditions.append(item_buy)
-
-        # Buy Condition #34
-        dataframe.loc[
-            :,
-            'buy_condition_34'
-        ] = 0
-        # Quick mode buy
-        # -----------------------------------------------------------------------------------------
-        if self.buy_params['buy_condition_34_enable']:
-            # Non-Standard protections (add below)
-
-            item_buy_logic = []
-            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[33]))
-            item_buy_logic.append(dataframe['cti'] < self.buy_34_cti.value)
-            item_buy_logic.append((dataframe['open'] - dataframe['close']) / dataframe['close'] < self.buy_34_dip.value)
-            item_buy_logic.append(dataframe['close'] < dataframe['ema_13'] * self.buy_34_ma_offset.value)
-            item_buy_logic.append(dataframe['ewo'] < self.buy_34_ewo.value)
-            item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_34_volume.value))
-            item_buy_logic.append(dataframe['volume'] > 0)
-            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-            dataframe.loc[
-                item_buy,
-                'buy_condition_34'
-            ] = 1
-            conditions.append(item_buy)
+
+            if self.buy_params['buy_condition_' + index + '_enable']:                
+                # Standard protections - Common to every condition
+                # -----------------------------------------------------------------------------------------
+                global_buy_protection_params = self.buy_protection_params[index]
+                if global_buy_protection_params["ema_fast"].value:
+                    item_buy_protection_list.append(dataframe[f"ema_{global_buy_protection_params['ema_fast_len'].value}"] > dataframe['ema_200'])
+                if global_buy_protection_params["ema_slow"].value:
+                    item_buy_protection_list.append(dataframe[f"ema_{global_buy_protection_params['ema_slow_len'].value}_1h"] > dataframe['ema_200_1h'])
+                if global_buy_protection_params["close_above_ema_fast"].value:
+                    item_buy_protection_list.append(dataframe['close'] > dataframe[f"ema_{global_buy_protection_params['close_above_ema_fast_len'].value}"])
+                if global_buy_protection_params["close_above_ema_slow"].value:
+                    item_buy_protection_list.append(dataframe['close'] > dataframe[f"ema_{global_buy_protection_params['close_above_ema_slow_len'].value}_1h"])
+                if global_buy_protection_params["sma200_rising"].value:
+                    item_buy_protection_list.append(dataframe['sma_200'] > dataframe['sma_200'].shift(int(global_buy_protection_params['sma200_rising_val'].value)))
+                if global_buy_protection_params["sma200_1h_rising"].value:
+                    item_buy_protection_list.append(dataframe['sma_200_1h'] > dataframe['sma_200_1h'].shift(int(global_buy_protection_params['sma200_1h_rising_val'].value)))
+                if global_buy_protection_params["safe_dips"].value:
+                    item_buy_protection_list.append(dataframe[f"safe_dips_{global_buy_protection_params['safe_dips_type'].value}"])
+                if global_buy_protection_params["safe_pump"].value:
+                    item_buy_protection_list.append(dataframe[f"safe_pump_{global_buy_protection_params['safe_pump_period'].value}_{global_buy_protection_params['safe_pump_type'].value}_1h"])
+                if global_buy_protection_params['btc_1h_not_downtrend'].value:
+                    item_buy_protection_list.append(dataframe['btc_not_downtrend_1h'])
+                item_buy_protection_list.append(not_empty_volume)
+                buy_protection_list.append(item_buy_protection_list)
+                dataframe.loc[:, 'buy_condition_' + index] = 0
+
+                # Buy conditions
+                # -----------------------------------------------------------------------------------------
+                item_buy_logic = []
+                item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[index - 1]))
+                
+                # Condition #1
+                if index == 1:
+                    # Non-Standard protections (add below)
+
+                    # Logic                                        
+                    item_buy_logic.append(((dataframe['close'] - dataframe['open'].rolling(36).min()) / dataframe['open'].rolling(36).min()) > self.buy_min_inc_1.value)
+                    item_buy_logic.append(dataframe['rsi_1h'] > self.buy_rsi_1h_min_1.value)
+                    item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_max_1.value)
+                    item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_1.value)
+                    item_buy_logic.append(dataframe['mfi'] < self.buy_mfi_1.value)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_cti_1.value)
+                
+                # Condition #2
+                elif index == 2:
+                    # Non-Standard protections (add below)
+
+                    # Logic
+                    item_buy_logic.append(dataframe['rsi'] < dataframe['rsi_1h'] - self.buy_rsi_1h_diff_2.value)
+                    item_buy_logic.append(dataframe['mfi'] < self.buy_mfi_2.value)
+                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_2.value))
+                    item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_volume_2.value))
+                
+                # Condition #3
+                elif index == 3:
+                    # Non-Standard protections (add below)
+                    item_buy_logic.append(dataframe['close'] > (dataframe['ema_200_1h'] * self.buy_ema_rel_3.value))
+
+                    # Logic
+                    item_buy_logic.append(dataframe['bb40_2_low'].shift().gt(0))
+                    item_buy_logic.append(dataframe['bb40_2_delta'].gt(dataframe['close'] * self.buy_bb40_bbdelta_close_3.value))
+                    item_buy_logic.append(dataframe['closedelta'].gt(dataframe['close'] * self.buy_bb40_closedelta_close_3.value))
+                    item_buy_logic.append(dataframe['tail'].lt(dataframe['bb40_2_delta'] * self.buy_bb40_tail_bbdelta_3.value))
+                    item_buy_logic.append(dataframe['close'].lt(dataframe['bb40_2_low'].shift()))
+                    item_buy_logic.append(dataframe['close'].le(dataframe['close'].shift()))
+                    item_buy_logic.append(dataframe['cti'] < self.buy_cti_3.value)
+                    item_buy_logic.append(dataframe['volume'] > 0)
+
+                # Condition #4
+                elif index == 4:
+                    # Non-Standard protections (add below)
+
+                    # Logic
+                    item_buy_logic.append(dataframe['close'] < dataframe['ema_50'])
+                    item_buy_logic.append(dataframe['close'] < self.buy_bb20_close_bblowerband_4.value * dataframe['bb20_2_low'])
+                    item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_30'].shift(1) * self.buy_bb20_volume_4.value))
+                
+                # Condition #5
+                elif index == 5:
+                    # Non-Standard protections (add below)
+                    item_buy_logic.append(dataframe['close'] > (dataframe['ema_200_1h'] * self.buy_ema_rel_5.value))
+
+                    # Logic
+                    item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
+                    item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * self.buy_ema_open_mult_5.value))
+                    item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
+                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_5.value))
+                    item_buy_logic.append(dataframe['cti'] < self.buy_cti_5.value)
+                    item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_volume_5.value))
+                    
+                # Condition #6
+                elif index == 6:
+                    # Non-Standard protections (add below)
+
+                    # Logic
+                    item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
+                    item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * self.buy_ema_open_mult_6.value))
+                    item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
+                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_6.value))
+                
+                # Condition #7
+                elif index == 7:
+                    # Non-Standard protections (add below)
+
+                    # Logic
+                    item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
+                    item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * self.buy_ema_open_mult_7.value))
+                    item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
+                    item_buy_logic.append(dataframe['cti'] < self.buy_cti_7.value)
+                
+                # Condition #8
+                elif index == 8:
+                    # Non-Standard protections (add below)
+
+                    # Logic
+                    item_buy_logic.append(dataframe['moderi_96'])
+                    item_buy_logic.append(dataframe['cti'] < self.buy_cti_8.value)
+                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_8.value))
+                    item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_8.value)
+                    item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_volume_8.value))
+                    
+                # Condition #9
+                elif index == 9:
+                    # Non-Standard protections (add below)
+                    item_buy_logic.append(dataframe['ema_50'] > dataframe['ema_200'])
+
+                    # Logic
+                    item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_ma_offset_9.value)
+                    item_buy_logic.append(dataframe['close'] < dataframe['bb20_2_low'] * self.buy_bb_offset_9.value)
+                    item_buy_logic.append(dataframe['rsi_1h'] > self.buy_rsi_1h_min_9.value)
+                    item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_max_9.value)
+                    item_buy_logic.append(dataframe['mfi'] < self.buy_mfi_9.value)
+                    
+                # Condition #10
+                elif index == 10:
+                    # Non-Standard protections (add below)
+                    item_buy_logic.append(dataframe['ema_50_1h'] > dataframe['ema_100_1h'])
+
+                    # Logic
+                    item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * self.buy_ma_offset_10.value)
+                    item_buy_logic.append(dataframe['close'] < dataframe['bb20_2_low'] * self.buy_bb_offset_10.value)
+                    item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_10.value)
+
+                # Condition #11
+                elif index == 11:
+                    # Non-Standard protections (add below)
+                    item_buy_logic.append(dataframe['ema_50_1h'] > dataframe['ema_100_1h'])
+
+                    # Logic
+                    item_buy_logic.append(((dataframe['close'] - dataframe['open'].rolling(36).min()) / dataframe['open'].rolling(36).min()) > self.buy_min_inc_11.value)
+                    item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * self.buy_ma_offset_11.value)
+                    item_buy_logic.append(dataframe['rsi_1h'] > self.buy_rsi_1h_min_11.value)
+                    item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_max_11.value)
+                    item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_11.value)
+                    item_buy_logic.append(dataframe['mfi'] < self.buy_mfi_11.value)
+
+                # Condition #12
+                elif index == 12:
+                    # Non-Standard protections (add below)
+
+                    # Logic
+                    item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * self.buy_ma_offset_12.value)
+                    item_buy_logic.append(dataframe['ewo'] > self.buy_ewo_12.value)
+                    item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_12.value)
+
+                # Condition #13
+                elif index == 13:
+                    # Non-Standard protections (add below)
+                    item_buy_logic.append(dataframe['ema_50_1h'] > dataframe['ema_100_1h'])
+
+                    # Logic
+                    item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * self.buy_ma_offset_13.value)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_cti_13.value)
+                    item_buy_logic.append(dataframe['ewo'] < self.buy_ewo_13.value)
+
+                # Condition #14
+                elif index == 14:
+                    # Non-Standard protections (add below)
+
+                    # Logic
+                    item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
+                    item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * self.buy_ema_open_mult_14.value))
+                    item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
+                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_14.value))
+                    item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_ma_offset_14.value)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_cti_14.value)
+
+                # Condition #15
+                elif index == 15:
+                    # Non-Standard protections (add below)
+                    item_buy_logic.append(dataframe['close'] > dataframe['ema_200_1h'] * self.buy_ema_rel_15.value)
+
+                    # Logic
+                    item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
+                    item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * self.buy_ema_open_mult_15.value))
+                    item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
+                    item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_15.value)
+                    item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_ma_offset_15.value)
+
+                # Condition #16
+                elif index == 16:
+                    # Non-Standard protections (add below)
+
+                    # Logic
+                    item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_ma_offset_16.value)
+                    item_buy_logic.append(dataframe['ewo'] > self.buy_ewo_16.value)
+                    item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_16.value)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_cti_16.value)
+                    item_buy_logic.append(dataframe['volume'] > 0)
+
+                # Condition #17
+                elif index == 17:
+                    # Non-Standard protections (add below)
+
+                    # Logic
+                    item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_ma_offset_17.value)
+                    item_buy_logic.append(dataframe['ewo'] < self.buy_ewo_17.value)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_cti_17.value)
+                    item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_volume_17.value))
+
+                # Condition #18
+                elif index == 18:
+                    # Non-Standard protections (add below)
+                    # buy_18_protections.append(dataframe['ema_100'] > dataframe['ema_200'])
+                    item_buy_logic.append(dataframe['sma_200'] > dataframe['sma_200'].shift(20))
+                    item_buy_logic.append(dataframe['sma_200_1h'] > dataframe['sma_200_1h'].shift(36))
+
+                    # Logic
+                    item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_18.value)
+                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_18.value))
+                    item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_volume_18.value))
+
+                # Condition #19
+                elif index == 19:
+                    # Non-Standard protections (add below)
+
+                    # Logic
+                    item_buy_logic.append(dataframe['close'].shift(1) > dataframe['ema_100_1h'])
+                    item_buy_logic.append(dataframe['low'] < dataframe['ema_100_1h'])
+                    item_buy_logic.append(dataframe['close'] > dataframe['ema_100_1h'])
+                    item_buy_logic.append(dataframe['rsi_1h'] > self.buy_rsi_1h_min_19.value)
+                    item_buy_logic.append(dataframe['chop'] < self.buy_chop_min_19.value)
+                    item_buy_logic.append(dataframe['moderi_96'] == True)
+
+                # Condition #20
+                elif index == 20:
+                    # Non-Standard protections (add below)
+
+                    # Logic
+                    item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_20.value)
+                    item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_20.value)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_cti_20.value)
+                    item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_volume_20.value))
+
+                # Condition #21
+                elif index == 21:
+                    # Non-Standard protections (add below)
+
+                    # Logic
+                    item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_21.value)
+                    item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_21.value)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_cti_21.value)
+                    item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_volume_21.value))
+
+                # Condition #22
+                elif index == 22:
+                    # Non-Standard protections (add below)
+                    item_buy_logic.append(dataframe['ema_100_1h'] > dataframe['ema_100_1h'].shift(12))
+                    item_buy_logic.append(dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(36))
+
+                    # Logic
+                    item_buy_logic.append((dataframe['volume_mean_4'] * self.buy_volume_22.value) > dataframe['volume'])
+                    item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * self.buy_ma_offset_22.value)
+                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_22.value))
+                    item_buy_logic.append(dataframe['ewo'] > self.buy_ewo_22.value)
+                    item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_22.value)
+                    item_buy_logic.append(dataframe['safe_dump_20_1h'])
+
+                # Condition #23
+                elif index == 23:
+                    # Non-Standard protections (add below)
+
+                    # Logic
+                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_23.value))
+                    item_buy_logic.append(dataframe['ewo'] > self.buy_ewo_23.value)
+                    item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_23.value)
+                    item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_23.value)
+                    item_buy_logic.append(dataframe['volume'] > 0)
+
+                # Condition #24
+                elif index == 24:
+                    # Non-Standard protections (add below)
+
+                    # Logic
+                    item_buy_logic.append(dataframe['ema_12_1h'].shift(12) < dataframe['ema_35_1h'].shift(12))
+                    item_buy_logic.append(dataframe['ema_12_1h'] > dataframe['ema_35_1h'])
+                    item_buy_logic.append(dataframe['cmf_1h'].shift(12) < 0)
+                    item_buy_logic.append(dataframe['cmf_1h'] > 0)
+                    item_buy_logic.append(dataframe['rsi'] < self.buy_24_rsi_max.value)
+                    item_buy_logic.append(dataframe['rsi_1h'] > self.buy_24_rsi_1h_min.value)
+
+                # Condition #25
+                elif index == 25:
+                    # Non-Standard protections (add below)
+
+                    # Logic
+                    item_buy_logic.append(dataframe['rsi_20'] < dataframe['rsi_20'].shift())
+                    item_buy_logic.append(dataframe['rsi_4'] < self.buy_25_rsi_14.value)
+                    item_buy_logic.append(dataframe['ema_20_1h'] > dataframe['ema_26_1h'])
+                    item_buy_logic.append(dataframe['close'] < (dataframe['sma_20'] * self.buy_25_ma_offset.value))
+                    item_buy_logic.append(dataframe['open'] > (dataframe['sma_20'] * self.buy_25_ma_offset.value))
+                    item_buy_logic.append(
+                        (dataframe['open'] < dataframe['ema_20_1h']) & (dataframe['low'] < dataframe['ema_20_1h']) |
+                        (dataframe['open'] > dataframe['ema_20_1h']) & (dataframe['low'] > dataframe['ema_20_1h'])
+                    )
+                    item_buy_logic.append(dataframe['cti'] < self.buy_25_cti.value)
+
+                # Condition #26
+                elif index == 26:
+                    # Non-Standard protections (add below)
+
+                    # Logic
+                    item_buy_logic.append(dataframe['close'] < (dataframe['zema_61'] * self.buy_26_zema_low_offset.value))
+
+                # Condition #27
+                elif index == 27:
+                    # Non-Standard protections (add below)
+
+                    # Logic
+                    item_buy_logic.append(dataframe['r_480'] < -self.buy_27_wr_max.value)
+                    item_buy_logic.append(dataframe['r_480_1h'] < -self.buy_27_wr_1h_max.value)
+                    item_buy_logic.append(dataframe['rsi_1h'] + dataframe['rsi'] < self.buy_27_rsi_max.value)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_27_cti.value)
+                    item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_27_volume.value))
+
+                # Condition #28
+                elif index == 28:
+                    # Non-Standard protections (add below)
+
+                    # Logic
+                    item_buy_logic.append(dataframe['moderi_64'] == True)
+                    item_buy_logic.append(dataframe['close'] < dataframe['hull_75'] * self.buy_28_ma_offset.value)
+                    item_buy_logic.append(dataframe['ewo'] > self.buy_28_ewo.value)
+                    item_buy_logic.append(dataframe['rsi'] < self.buy_28_rsi.value)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_28_cti.value)
+
+                # Condition #29
+                elif index == 29:
+                    # Non-Standard protections (add below)
+
+                    item_buy_logic.append(dataframe['moderi_64'] == True)
+                    item_buy_logic.append(dataframe['close'] < dataframe['hull_75'] * self.buy_29_ma_offset.value)
+                    item_buy_logic.append(dataframe['ewo'] < self.buy_29_ewo.value)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_29_cti.value)
+
+                # Condition #30
+                elif index == 30:
+                    # Non-Standard protections (add below)
+
+                    item_buy_logic.append(dataframe['moderi_64'] == False)
+                    item_buy_logic.append(dataframe['close'] < dataframe['zlema_68'] * self.buy_30_ma_offset.value)
+                    item_buy_logic.append(dataframe['ewo'] > self.buy_30_ewo.value)
+                    item_buy_logic.append(dataframe['rsi'] < self.buy_30_rsi.value)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_30_cti.value)
+
+                # Condition #31
+                elif index == 31:
+                    # Non-Standard protections (add below)
+
+                    item_buy_logic.append(dataframe['moderi_64'] == False)
+                    item_buy_logic.append(dataframe['close'] < dataframe['zlema_68'] * self.buy_31_ma_offset.value )
+                    item_buy_logic.append(dataframe['ewo'] < self.buy_31_ewo.value)
+                    item_buy_logic.append(dataframe['r_480'] < self.buy_31_wr.value)
+                    item_buy_logic.append(dataframe['volume'] > 0)
+
+                # Condition #32 - Quick mode buy
+                elif index == 32:
+                    # Non-Standard protections (add below)
+
+                    item_buy_logic.append(dataframe['moderi_32'])
+                    item_buy_logic.append(dataframe['moderi_64'])
+                    item_buy_logic.append(dataframe['moderi_96'])
+                    item_buy_logic.append(dataframe['cti'] < self.buy_32_cti.value)
+                    item_buy_logic.append(dataframe['rsi_20'] < dataframe['rsi_20'].shift(1))
+                    item_buy_logic.append(dataframe['rsi_4'] < self.buy_32_rsi.value)
+                    item_buy_logic.append(dataframe['ema_20_1h'] > dataframe['ema_25_1h'])
+                    item_buy_logic.append((dataframe['open'] - dataframe['close']) / dataframe['close'] < self.buy_32_dip.value)
+                    item_buy_logic.append(dataframe['close'] < (dataframe['sma_15'] * self.buy_32_ma_offset.value))
+                    item_buy_logic.append(
+                        ((dataframe['open'] < dataframe['ema_20_1h']) & (dataframe['low'] < dataframe['ema_20_1h'])) |
+                        ((dataframe['open'] > dataframe['ema_20_1h']) & (dataframe['low'] > dataframe['ema_20_1h'])))
+
+                # Condition #33 - Quick mode buy
+                elif index == 33:
+                    # Non-Standard protections (add below)
+
+                    item_buy_logic.append(dataframe['moderi_96'])
+                    item_buy_logic.append(dataframe['cti'] < self.buy_33_cti.value)
+                    item_buy_logic.append(dataframe['close'] < (dataframe['ema_13'] * self.buy_33_ma_offset.value))
+                    item_buy_logic.append(dataframe['ewo'] > self.buy_33_ewo.value)
+                    item_buy_logic.append(dataframe['rsi'] < self.buy_33_rsi.value)
+                    item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_33_volume.value))
+
+                # Condition #34 - Quick mode buy
+                elif index == 34:
+                    # Non-Standard protections (add below)
+
+                    item_buy_logic.append(dataframe['cti'] < self.buy_34_cti.value)
+                    item_buy_logic.append((dataframe['open'] - dataframe['close']) / dataframe['close'] < self.buy_34_dip.value)
+                    item_buy_logic.append(dataframe['close'] < dataframe['ema_13'] * self.buy_34_ma_offset.value)
+                    item_buy_logic.append(dataframe['ewo'] < self.buy_34_ewo.value)
+                    item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_34_volume.value))
+                
+                item_buy_logic.append(dataframe['volume'] > 0)
+                item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+                dataframe.loc[item_buy, 'buy_condition_' + index] = 1
+                conditions.append(item_buy)
 
         if conditions:
             dataframe.loc[:, 'buy'] = reduce(lambda x, y: x | y, conditions)
