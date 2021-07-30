@@ -3284,7 +3284,7 @@ class NostalgiaForInfinityNext(IStrategy):
                 # Buy conditions
                 # -----------------------------------------------------------------------------------------
                 item_buy_logic = []
-                item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[index]))
+                item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[index - 1]))
                 
                 # Condition #1
                 if index == 1:
