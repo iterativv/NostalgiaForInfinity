@@ -2649,13 +2649,13 @@ class NostalgiaForInfinityNext(IStrategy):
             if (last_candle['r_480'] > -3.0) & (last_candle['rsi'] > 68.0) & (last_candle['cti'] > 0.9):
                 return True, 'signal_profit_w_4_1'
         elif (0.03 > current_profit > 0.02):
-            if (last_candle['r_480'] > -4.0) & (last_candle['rsi'] > 68.0) & (last_candle['cti'] > 0.9):
+            if (last_candle['r_480'] > -3.5) & (last_candle['rsi'] > 68.0) & (last_candle['cti'] > 0.9):
                 return True, 'signal_profit_w_4_2'
         elif (0.04 > current_profit > 0.03):
-            if (last_candle['r_480'] > -5.0) & (last_candle['rsi'] > 68.0) & (last_candle['cti'] > 0.9):
+            if (last_candle['r_480'] > -4.0) & (last_candle['rsi'] > 68.0) & (last_candle['cti'] > 0.9):
                 return True, 'signal_profit_w_4_3'
         elif (0.05 > current_profit > 0.04):
-            if (last_candle['r_480'] > -6.0) & (last_candle['rsi'] > 68.0) & (last_candle['cti'] > 0.9):
+            if (last_candle['r_480'] > -4.5) & (last_candle['rsi'] > 68.0) & (last_candle['cti'] > 0.9):
                 return True, 'signal_profit_w_4_4'
         elif (0.06 > current_profit > 0.05):
             if (last_candle['r_480'] > -24.0) & (last_candle['rsi'] > 68.0) & (last_candle['cti'] > 0.9):
@@ -2673,13 +2673,13 @@ class NostalgiaForInfinityNext(IStrategy):
             if (last_candle['r_480'] > -16.0) & (last_candle['rsi'] > 79.0) & (last_candle['cti'] > 0.9):
                 return True, 'signal_profit_w_4_9'
         elif (0.12 > current_profit > 0.1):
-            if (last_candle['r_480'] > -5.0) & (last_candle['rsi'] > 79.0) & (last_candle['cti'] > 0.9):
+            if (last_candle['r_480'] > -4.0) & (last_candle['rsi'] > 79.0) & (last_candle['cti'] > 0.9):
                 return True, 'signal_profit_w_4_10'
         elif (0.2 > current_profit > 0.12):
-            if (last_candle['r_480'] > -4.0) & (last_candle['rsi'] > 80.0) & (last_candle['cti'] > 0.9):
+            if (last_candle['r_480'] > -3.0) & (last_candle['rsi'] > 80.0) & (last_candle['cti'] > 0.9):
                 return True, 'signal_profit_w_4_11'
         elif (current_profit > 0.2):
-            if (last_candle['r_480'] > -3.0) & (last_candle['rsi'] > 80.0) & (last_candle['cti'] > 0.9):
+            if (last_candle['r_480'] > -2.0) & (last_candle['rsi'] > 80.0) & (last_candle['cti'] > 0.9):
                 return True, 'signal_profit_w_4_12'
 
         return False, None
