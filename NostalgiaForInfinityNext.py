@@ -3254,7 +3254,7 @@ class NostalgiaForInfinityNext(IStrategy):
             buy_protection_list = []
             item_buy_protection_list = [True]
 
-            if self.buy_params['buy_condition_' + index + '_enable']:                
+            if self.buy_params['buy_condition_' + str(index) + '_enable']:                
                 # Standard protections - Common to every condition
                 # -----------------------------------------------------------------------------------------
                 global_buy_protection_params = self.buy_protection_params[index]
@@ -3278,7 +3278,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_protection_list.append(dataframe['btc_not_downtrend_1h'])
                 item_buy_protection_list.append(not_empty_volume)
                 buy_protection_list.append(item_buy_protection_list)
-                dataframe.loc[:, 'buy_condition_' + index] = 0
+                dataframe.loc[:, 'buy_condition_' + str(index)] = 0
 
                 # Buy conditions
                 # -----------------------------------------------------------------------------------------
@@ -3669,7 +3669,7 @@ class NostalgiaForInfinityNext(IStrategy):
                 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-                dataframe.loc[item_buy, 'buy_condition_' + index] = 1
+                dataframe.loc[item_buy, 'buy_condition_' + str(index)] = 1
                 conditions.append(item_buy)
 
         if conditions:
