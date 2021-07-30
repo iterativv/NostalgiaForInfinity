@@ -2104,7 +2104,8 @@ class NostalgiaForInfinityNext(IStrategy):
     sell_trail_down_4 = DecimalParameter(0.01, 0.06, default=0.02, space='sell', decimals=3, optimize=False, load=True)
 
     # Under & near EMA200, accept profit
-    sell_custom_profit_under_profit_1 = DecimalParameter(0.0, 0.01, default=0.0, space='sell', optimize=False, load=True)
+    sell_custom_profit_under_profit_min_1 = DecimalParameter(0.0, 0.01, default=0.0, space='sell', optimize=False, load=True)
+    sell_custom_profit_under_profit_max_1 = DecimalParameter(0.0, 0.05, default=0.02, space='sell', optimize=False, load=True)
     sell_custom_profit_under_rel_1 = DecimalParameter(0.01, 0.04, default=0.024, space='sell', optimize=False, load=True)
     sell_custom_profit_under_rsi_diff_1 = DecimalParameter(0.0, 20.0, default=4.4, space='sell', optimize=False, load=True)
 
@@ -2480,7 +2481,7 @@ class NostalgiaForInfinityNext(IStrategy):
     def sell_under_min(self, current_profit: float, last_candle) -> tuple:
         if ((last_candle['moderi_96']) == False):
             # Downtrend
-            if (current_profit > self.sell_custom_profit_under_profit_1.value) & (last_candle['close'] < last_candle['ema_200']) & (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < self.sell_custom_profit_under_rel_1.value) & (last_candle['rsi'] > last_candle['rsi_1h'] + self.sell_custom_profit_under_rsi_diff_1.value):
+             if (self.sell_custom_profit_under_profit_max_1.value > current_profit > self.sell_custom_profit_under_profit_min_1.value) & (last_candle['close'] < last_candle['ema_200']) & (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < self.sell_custom_profit_under_rel_1.value) & (last_candle['rsi'] > last_candle['rsi_1h'] + self.sell_custom_profit_under_rsi_diff_1.value):
                 return True, 'signal_profit_u_e_1'
         else:
             # Uptrend
@@ -2549,40 +2550,40 @@ class NostalgiaForInfinityNext(IStrategy):
 
     def sell_r_1(self, current_profit: float, last_candle) -> tuple:
         if 0.02 > current_profit > 0.012:
-            if last_candle['r_480'] > -2.0:
+            if last_candle['r_480'] > -1.0:
                 return True, 'signal_profit_w_1_1'
         elif 0.03 > current_profit > 0.02:
-            if last_candle['r_480'] > -2.1:
+            if last_candle['r_480'] > -1.2:
                 return True, 'signal_profit_w_1_2'
         elif 0.04 > current_profit > 0.03:
-            if last_candle['r_480'] > -2.2:
+            if last_candle['r_480'] > -1.4:
                 return True, 'signal_profit_w_1_3'
         elif 0.05 > current_profit > 0.04:
-            if last_candle['r_480'] > -2.3:
+            if last_candle['r_480'] > -1.6:
                 return True, 'signal_profit_w_1_4'
         elif 0.06 > current_profit > 0.05:
-            if last_candle['r_480'] > -2.4:
+            if last_candle['r_480'] > -1.8:
                 return True, 'signal_profit_w_1_5'
         elif 0.07 > current_profit > 0.06:
-            if last_candle['r_480'] > -2.5: ###
+            if last_candle['r_480'] > -2.0:
                 return True, 'signal_profit_w_1_6'
         elif 0.08 > current_profit > 0.07:
-            if last_candle['r_480'] > -2.6:
+            if last_candle['r_480'] > -2.2:
                 return True, 'signal_profit_w_1_7'
         elif 0.09 > current_profit > 0.08:
-            if last_candle['r_480'] > -5.5:
+            if last_candle['r_480'] > -2.4:
                 return True, 'signal_profit_w_1_8'
         elif 0.1 > current_profit > 0.09:
-            if last_candle['r_480'] > -3.0:
+            if last_candle['r_480'] > -2.6:
                 return True, 'signal_profit_w_1_9'
         elif 0.12 > current_profit > 0.1:
-            if last_candle['r_480'] > -8.0:
+            if (last_candle['r_480'] > -8.0) & (last_candle['rsi'] > 72.0):
                 return True, 'signal_profit_w_1_10'
         elif 0.2 > current_profit > 0.12:
-            if (last_candle['r_480'] > -2.0) & (last_candle['rsi'] > 78.0):
+            if (last_candle['r_480'] > -1.5) & (last_candle['rsi'] > 78.0):
                 return True, 'signal_profit_w_1_11'
         elif current_profit > 0.2:
-            if (last_candle['r_480'] > -1.5) & (last_candle['rsi'] > 80.0):
+            if (last_candle['r_480'] > -1.0) & (last_candle['rsi'] > 80.0):
                 return True, 'signal_profit_w_1_12'
 
         return False, None
@@ -2684,7 +2685,7 @@ class NostalgiaForInfinityNext(IStrategy):
         return False, None
 
     def sell_quick_mode(self, current_profit: float, max_profit:float, last_candle, buy_signal_candle) -> tuple:
-        if (buy_signal_candle['buy_condition_32'] == 1) or (buy_signal_candle['buy_condition_33'] == 1) or (buy_signal_candle['buy_condition_34'] == 1):
+        if (buy_signal_candle['buy_condition_32']) or (buy_signal_candle['buy_condition_33']) or (buy_signal_candle['buy_condition_34']):
             if (0.06 > current_profit > 0.02) & (last_candle['rsi'] > 79.0):
                 return True, 'signal_profit_q_1'
 
@@ -3278,12 +3279,12 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_protection_list.append(dataframe['btc_not_downtrend_1h'])
                 item_buy_protection_list.append(not_empty_volume)
                 buy_protection_list.append(item_buy_protection_list)
-                dataframe.loc[:, 'buy_condition_' + str(index)] = 0
+                # dataframe.loc[:, 'buy_condition_' + str(index)] = False
 
                 # Buy conditions
                 # -----------------------------------------------------------------------------------------
                 item_buy_logic = []
-                item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[index - 1]))
+                item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[index]))
                 
                 # Condition #1
                 if index == 1:
@@ -3669,7 +3670,7 @@ class NostalgiaForInfinityNext(IStrategy):
                 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-                dataframe.loc[item_buy, 'buy_condition_' + str(index)] = 1
+                dataframe.loc[item_buy, 'buy_condition_' + str(index)] = True
                 conditions.append(item_buy)
 
         if conditions:
