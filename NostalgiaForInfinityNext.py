@@ -1784,7 +1784,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
     buy_rsi_1h_min_2 = DecimalParameter(30.0, 40.0, default=32.0, space='buy', decimals=1, optimize=False, load=True)
     buy_rsi_1h_max_2 = DecimalParameter(70.0, 95.0, default=84.0, space='buy', decimals=1, optimize=False, load=True)
-    buy_rsi_1h_diff_2 = DecimalParameter(30.0, 50.0, default=38.0, space='buy', decimals=1, optimize=False, load=True)
+    buy_rsi_1h_diff_2 = DecimalParameter(30.0, 50.0, default=38.8, space='buy', decimals=1, optimize=False, load=True)
     buy_mfi_2 = DecimalParameter(30.0, 56.0, default=49.0, space='buy', decimals=1, optimize=False, load=True)
     buy_bb_offset_2 = DecimalParameter(0.97, 0.999, default=0.983, space='buy', decimals=3, optimize=False, load=True)
     buy_volume_2 = DecimalParameter(0.6, 6.0, default=1.6, space='buy', decimals=1, optimize=False, load=True)
