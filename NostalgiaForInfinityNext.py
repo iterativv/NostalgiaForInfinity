@@ -1933,6 +1933,12 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_33_ewo = DecimalParameter(2.0, 14.0, default=9.0, space='buy', decimals=1, optimize=False, load=True)
     buy_33_volume = DecimalParameter(0.6, 6.0, default=2.0, space='buy', decimals=1, optimize=False, load=True)
 
+    buy_34_ma_offset = DecimalParameter(0.90, 0.99, default=0.968, space='buy', optimize=False, load=True)
+    buy_34_dip = DecimalParameter(0.001, 0.02, default=0.002, space='buy', decimals=3, optimize=False, load=True)
+    buy_34_ewo = DecimalParameter(-24.0, -8.0, default=-20.0, space='buy', decimals=1, optimize=False, load=True)
+    buy_34_cti = DecimalParameter(-0.99, -0.4, default=-0.88, space='buy', decimals=2, optimize=False, load=True)
+    buy_34_volume = DecimalParameter(0.6, 6.0, default=1.1, space='buy', decimals=1, optimize=False, load=True)
+
     # Sell
 
     sell_condition_1_enable = CategoricalParameter([True, False], default=True, space='sell', optimize=False, load=True)
@@ -4101,11 +4107,11 @@ class NostalgiaForInfinityNext(IStrategy):
 
             item_buy_logic = []
             item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[33]))
-            item_buy_logic.append(dataframe['cti'] < -0.88)
-            item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * 1.1))
-            item_buy_logic.append((dataframe['open'] - dataframe['close']) / dataframe['close'] < 0.002)
-            item_buy_logic.append(dataframe['close'] < dataframe['ema_13'] * 0.968)
-            item_buy_logic.append(dataframe['ewo'] < -20.0)
+            item_buy_logic.append(dataframe['cti'] < self.buy_34_cti.value)
+            item_buy_logic.append((dataframe['open'] - dataframe['close']) / dataframe['close'] < self.buy_34_dip.value)
+            item_buy_logic.append(dataframe['close'] < dataframe['ema_13'] * self.buy_34_ma_offset.value)
+            item_buy_logic.append(dataframe['ewo'] < self.buy_34_ewo.value)
+            item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_34_volume.value))
             item_buy_logic.append(dataframe['volume'] > 0)
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             dataframe.loc[
