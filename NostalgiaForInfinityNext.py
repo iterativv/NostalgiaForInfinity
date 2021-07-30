@@ -2242,7 +2242,8 @@ class NostalgiaForInfinityNext(IStrategy):
         (e.g. gather some remote resource for comparison)
         :param **kwargs: Ensure to keep this here so updates to this won't break your strategy.
         """
-        self.load_hold_trades_config()
+        if self.config['runmode'].value in ('live', 'dry_run'):
+            self.load_hold_trades_config()
         return super().bot_loop_start(**kwargs)
 
     def get_ticker_indicator(self):
@@ -4090,33 +4091,35 @@ class NostalgiaForInfinityNext(IStrategy):
             False aborts the process
         """
         # Just to be sure our hold data is loaded, should be a no-op call after the first bot loop
-        self.load_hold_trades_config()
+        if self.config['runmode'].value in ('live', 'dry_run'):
+            self.load_hold_trades_config()
 
-        if not self.hold_trade_ids:
-            # We have no pairs we want to hold until profit, sell
+            if not self.hold_trade_ids:
+                # We have no pairs we want to hold until profit, sell
+                return True
+
+            if trade.id not in self.hold_trade_ids:
+                # This pair is not on the list to hold until profit, sell
+                return True
+
+            trade_profit_ratio = self.hold_trade_ids[trade.id]
+            current_profit_ratio = trade.calc_profit_ratio(rate)
+            if sell_reason == "force_sell":
+                formatted_profit_ratio = "{}%".format(trade_profit_ratio * 100)
+                formatted_current_profit_ratio = "{}%".format(current_profit_ratio * 100)
+                log.warning(
+                    "Force selling %s even though the current profit of %s < %s",
+                    trade, formatted_current_profit_ratio, formatted_profit_ratio
+                )
+                return True
+            elif current_profit_ratio >= trade_profit_ratio:
+                # This pair is on the list to hold, and we reached minimum profit, sell
+                return True
+
+            # This pair is on the list to hold, and we haven't reached minimum profit, hold
+            return False
+        else:
             return True
-
-        if trade.id not in self.hold_trade_ids:
-            # This pair is not on the list to hold until profit, sell
-            return True
-
-        trade_profit_ratio = self.hold_trade_ids[trade.id]
-        current_profit_ratio = trade.calc_profit_ratio(rate)
-        if sell_reason == "force_sell":
-            formatted_profit_ratio = "{}%".format(trade_profit_ratio * 100)
-            formatted_current_profit_ratio = "{}%".format(current_profit_ratio * 100)
-            log.warning(
-                "Force selling %s even though the current profit of %s < %s",
-                trade, formatted_current_profit_ratio, formatted_profit_ratio
-            )
-            return True
-        elif current_profit_ratio >= trade_profit_ratio:
-            # This pair is on the list to hold, and we reached minimum profit, sell
-            return True
-
-        # This pair is on the list to hold, and we haven't reached minimum profit, hold
-        return False
-
 
 # Elliot Wave Oscillator
 def ewo(dataframe, sma1_length=5, sma2_length=35):
