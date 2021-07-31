@@ -3253,6 +3253,7 @@ class NostalgiaForInfinityNext(IStrategy):
         for index in self.buy_protection_params:
             item_buy_protection_list = [True]
             global_buy_protection_params = self.buy_protection_params[index]
+            dataframe.loc[:, 'buy_condition_' + str(index)] = False
 
             if global_buy_protection_params["enable"].value:
                 # Standard protections - Common to every condition
@@ -3280,7 +3281,6 @@ class NostalgiaForInfinityNext(IStrategy):
                 # Buy conditions
                 # -----------------------------------------------------------------------------------------
                 item_buy_logic = []
-                dataframe.loc[item_buy, 'buy_condition_' + str(index)] = False
                 item_buy_logic.append(reduce(lambda x, y: x & y, item_buy_protection_list))
                 
                 # Condition #1
@@ -3668,7 +3668,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_34_volume.value))
                 
                 item_buy_logic.append(dataframe['volume'] > 0)
-                item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+                item_buy = reduce(lambda x, y: x & y, item_buy_logic)            
                 dataframe.loc[item_buy, 'buy_condition_' + str(index)] = True
                 conditions.append(item_buy)
 
