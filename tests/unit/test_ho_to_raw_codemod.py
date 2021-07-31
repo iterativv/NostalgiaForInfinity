@@ -2,8 +2,12 @@ from codemods.ho_to_raw_codemod import transform_code
 
 
 def test_transform_code_categorical_param():
-    categorical_param = "CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True)"
-    categorical_param_edge = "CategoricalParameter([True, False], space='buy', optimize=False, load=True, default=False)"
+    categorical_param = (
+        "CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True)"
+    )
+    categorical_param_edge = (
+        "CategoricalParameter([True, False], space='buy', optimize=False, load=True, default=False)"
+    )
     assert transform_code(categorical_param) == "True"
     assert transform_code(categorical_param_edge) == "False"
     # Should leave it untouched
@@ -19,20 +23,20 @@ def test_transform_code_decimal_param():
 
 
 def test_transform_code_int_param():
-    int_param = (
-        "IntParameter(700, 2000, default=900, space='sell', optimize=False, load=True)"
-    )
-    int_param_edge = (
-        "IntParameter(700, 2000, space='sell', optimize=False, load=True,default=413)"
-    )
+    int_param = "IntParameter(700, 2000, default=900, space='sell', optimize=False, load=True)"
+    int_param_edge = "IntParameter(700, 2000, space='sell', optimize=False, load=True,default=413)"
     assert transform_code(int_param) == "900"
     assert transform_code(int_param_edge) == "413"
     assert transform_code("IntParameter") == "IntParameter"
 
 
 def test_transform_code_real_param():
-    real_param = "RealParameter(20.542, 75.123,default=90.23, space='sell', optimize=False, load=True)"
-    real_param_edge = "RealParameter(20.542, 75.123, space='sell', optimize=False, load=True, default=95.2311)"
+    real_param = (
+        "RealParameter(20.542, 75.123,default=90.23, space='sell', optimize=False, load=True)"
+    )
+    real_param_edge = (
+        "RealParameter(20.542, 75.123, space='sell', optimize=False, load=True, default=95.2311)"
+    )
     assert transform_code(real_param) == "90.23"
     assert transform_code(real_param_edge) == "95.2311"
     assert transform_code("RealParameter") == "RealParameter"
