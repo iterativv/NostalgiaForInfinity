@@ -1,11 +1,14 @@
-from codemods.HOtoRawCodemod import transform_code
+from codemods.ho_to_raw_codemod import transform_code
+
 
 def test_transform_code_categorical_param():
     categorical_param = "CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True)"
     categorical_param_edge = "CategoricalParameter([True, False], space='buy', optimize=False, load=True, default=False)"
     assert transform_code(categorical_param) == 'True'
     assert transform_code(categorical_param_edge) == 'False'
-    assert transform_code("CategoricalParameter") == "CategoricalParameter" # Should leave it untouched
+    # Should leave it untouched
+    assert transform_code("CategoricalParameter") == "CategoricalParameter"
+
 
 def test_transform_code_decimal_param():
     decimal_param = "DecimalParameter(0.001, 0.05, default=0.015, space='buy', decimals=3, optimize=False, load=True)"
@@ -14,12 +17,14 @@ def test_transform_code_decimal_param():
     assert transform_code(decimal_param_edge) == '0.12'
     assert transform_code("DecimalParameter") == "DecimalParameter"
 
+
 def test_transform_code_int_param():
     int_param = "IntParameter(700, 2000, default=900, space='sell', optimize=False, load=True)"
-    int_param_edge = "IntParameter(700, 2000, space='sell', optimize=False, load=True,default=413)" 
+    int_param_edge = "IntParameter(700, 2000, space='sell', optimize=False, load=True,default=413)"
     assert transform_code(int_param) == '900'
     assert transform_code(int_param_edge) == '413'
     assert transform_code("IntParameter") == "IntParameter"
+
 
 def test_transform_code_real_param():
     real_param = "RealParameter(20.542, 75.123,default=90.23, space='sell', optimize=False, load=True)"
