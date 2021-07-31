@@ -9,7 +9,7 @@ from freqtrade.strategy.interface import IStrategy
 from freqtrade.strategy import merge_informative_pair, timeframe_to_minutes
 from freqtrade.strategy import DecimalParameter, IntParameter, CategoricalParameter
 from freqtrade.exchange import timeframe_to_prev_date
-from pandas import DataFrame, Series
+from pandas import DataFrame, Series, concat
 from functools import reduce
 import math
 from freqtrade.persistence import Trade
@@ -155,6 +155,10 @@ class NostalgiaForInfinityNext(IStrategy):
         "buy_condition_32_enable": True,
         "buy_condition_33_enable": True,
         "buy_condition_34_enable": True,
+        "buy_condition_35_enable": True,
+        "buy_condition_36_enable": True,
+        "buy_condition_37_enable": True,
+        "buy_condition_38_enable": True,
         #############
     }
 
@@ -888,6 +892,111 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_type"            : CategoricalParameter(["10","50","100"], default="10", space='buy', optimize=False, load=True),
             "safe_pump_period"          : CategoricalParameter(["24","36","48"], default="24", space='buy', optimize=False, load=True),
             "btc_1h_not_downtrend"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+        },
+        34: {
+            "enable"                    : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
+            "ema_fast"                  : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "ema_fast_len"              : CategoricalParameter(["26","50","100","200"], default="50", space='buy', optimize=False, load=True),
+            "ema_slow"                  : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "ema_slow_len"              : CategoricalParameter(["26","50","100","200"], default="100", space='buy', optimize=False, load=True),
+            "close_above_ema_fast"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "close_above_ema_fast_len"  : CategoricalParameter(["12","20","26","50","100","200"], default="50", space='buy', optimize=False, load=True),
+            "close_above_ema_slow"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "close_above_ema_slow_len"  : CategoricalParameter(["15","50","200"], default="100", space='buy', optimize=False, load=True),
+            "sma200_rising"             : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "sma200_rising_val"         : CategoricalParameter(["20","30","36","44","50"], default="30", space='buy', optimize=False, load=True),
+            "sma200_1h_rising"          : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "sma200_1h_rising_val"      : CategoricalParameter(["20","30","36","44","50"], default="50", space='buy', optimize=False, load=True),
+            "safe_dips"                 : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "safe_dips_type"            : CategoricalParameter(["10","50","100"], default="100", space='buy', optimize=False, load=True),
+            "safe_pump"                 : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "safe_pump_type"            : CategoricalParameter(["10","50","100"], default="10", space='buy', optimize=False, load=True),
+            "safe_pump_period"          : CategoricalParameter(["24","36","48"], default="24", space='buy', optimize=False, load=True),
+            "btc_1h_not_downtrend"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+        },
+        35: {
+            "enable"                    : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
+            "ema_fast"                  : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "ema_fast_len"              : CategoricalParameter(["26","50","100","200"], default="50", space='buy', optimize=False, load=True),
+            "ema_slow"                  : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "ema_slow_len"              : CategoricalParameter(["26","50","100","200"], default="100", space='buy', optimize=False, load=True),
+            "close_above_ema_fast"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "close_above_ema_fast_len"  : CategoricalParameter(["12","20","26","50","100","200"], default="50", space='buy', optimize=False, load=True),
+            "close_above_ema_slow"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "close_above_ema_slow_len"  : CategoricalParameter(["15","50","200"], default="100", space='buy', optimize=False, load=True),
+            "sma200_rising"             : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "sma200_rising_val"         : CategoricalParameter(["20","30","36","44","50"], default="30", space='buy', optimize=False, load=True),
+            "sma200_1h_rising"          : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "sma200_1h_rising_val"      : CategoricalParameter(["20","30","36","44","50"], default="50", space='buy', optimize=False, load=True),
+            "safe_dips"                 : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
+            "safe_dips_type"            : CategoricalParameter(["10","50","100"], default="100", space='buy', optimize=False, load=True),
+            "safe_pump"                 : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "safe_pump_type"            : CategoricalParameter(["10","50","100"], default="10", space='buy', optimize=False, load=True),
+            "safe_pump_period"          : CategoricalParameter(["24","36","48"], default="24", space='buy', optimize=False, load=True),
+            "btc_1h_not_downtrend"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+        },
+        36: {
+            "enable"                    : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
+            "ema_fast"                  : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "ema_fast_len"              : CategoricalParameter(["26","50","100","200"], default="50", space='buy', optimize=False, load=True),
+            "ema_slow"                  : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "ema_slow_len"              : CategoricalParameter(["26","50","100","200"], default="100", space='buy', optimize=False, load=True),
+            "close_above_ema_fast"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "close_above_ema_fast_len"  : CategoricalParameter(["12","20","26","50","100","200"], default="50", space='buy', optimize=False, load=True),
+            "close_above_ema_slow"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "close_above_ema_slow_len"  : CategoricalParameter(["15","50","200"], default="100", space='buy', optimize=False, load=True),
+            "sma200_rising"             : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "sma200_rising_val"         : CategoricalParameter(["20","30","36","44","50"], default="30", space='buy', optimize=False, load=True),
+            "sma200_1h_rising"          : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "sma200_1h_rising_val"      : CategoricalParameter(["20","30","36","44","50"], default="50", space='buy', optimize=False, load=True),
+            "safe_dips"                 : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
+            "safe_dips_type"            : CategoricalParameter(["10","50","100"], default="100", space='buy', optimize=False, load=True),
+            "safe_pump"                 : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "safe_pump_type"            : CategoricalParameter(["10","50","100"], default="10", space='buy', optimize=False, load=True),
+            "safe_pump_period"          : CategoricalParameter(["24","36","48"], default="24", space='buy', optimize=False, load=True),
+            "btc_1h_not_downtrend"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+        },
+        37: {
+            "enable"                    : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
+            "ema_fast"                  : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "ema_fast_len"              : CategoricalParameter(["26","50","100","200"], default="50", space='buy', optimize=False, load=True),
+            "ema_slow"                  : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "ema_slow_len"              : CategoricalParameter(["26","50","100","200"], default="100", space='buy', optimize=False, load=True),
+            "close_above_ema_fast"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "close_above_ema_fast_len"  : CategoricalParameter(["12","20","26","50","100","200"], default="50", space='buy', optimize=False, load=True),
+            "close_above_ema_slow"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "close_above_ema_slow_len"  : CategoricalParameter(["15","50","200"], default="100", space='buy', optimize=False, load=True),
+            "sma200_rising"             : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "sma200_rising_val"         : CategoricalParameter(["20","30","36","44","50"], default="30", space='buy', optimize=False, load=True),
+            "sma200_1h_rising"          : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "sma200_1h_rising_val"      : CategoricalParameter(["20","30","36","44","50"], default="50", space='buy', optimize=False, load=True),
+            "safe_dips"                 : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
+            "safe_dips_type"            : CategoricalParameter(["10","50","100"], default="100", space='buy', optimize=False, load=True),
+            "safe_pump"                 : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "safe_pump_type"            : CategoricalParameter(["10","50","100"], default="100", space='buy', optimize=False, load=True),
+            "safe_pump_period"          : CategoricalParameter(["24","36","48"], default="48", space='buy', optimize=False, load=True),
+            "btc_1h_not_downtrend"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+        },
+        38: {
+            "enable"                    : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
+            "ema_fast"                  : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "ema_fast_len"              : CategoricalParameter(["26","50","100","200"], default="50", space='buy', optimize=False, load=True),
+            "ema_slow"                  : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "ema_slow_len"              : CategoricalParameter(["26","50","100","200"], default="100", space='buy', optimize=False, load=True),
+            "close_above_ema_fast"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "close_above_ema_fast_len"  : CategoricalParameter(["12","20","26","50","100","200"], default="50", space='buy', optimize=False, load=True),
+            "close_above_ema_slow"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "close_above_ema_slow_len"  : CategoricalParameter(["15","50","200"], default="100", space='buy', optimize=False, load=True),
+            "sma200_rising"             : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "sma200_rising_val"         : CategoricalParameter(["20","30","36","44","50"], default="30", space='buy', optimize=False, load=True),
+            "sma200_1h_rising"          : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "sma200_1h_rising_val"      : CategoricalParameter(["20","30","36","44","50"], default="50", space='buy', optimize=False, load=True),
+            "safe_dips"                 : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "safe_dips_type"            : CategoricalParameter(["10","50","100"], default="100", space='buy', optimize=False, load=True),
+            "safe_pump"                 : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "safe_pump_type"            : CategoricalParameter(["10","50","100"], default="10", space='buy', optimize=False, load=True),
+            "safe_pump_period"          : CategoricalParameter(["24","36","48"], default="36", space='buy', optimize=False, load=True),
+            "btc_1h_not_downtrend"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
         }
     }
 
@@ -1570,6 +1679,86 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_34_protection__safe_pump_type           = buy_protection_params[34]["safe_pump_type"]
     buy_34_protection__safe_pump_period         = buy_protection_params[34]["safe_pump_period"]
     buy_34_protection__btc_1h_not_downtrend     = buy_protection_params[34]["btc_1h_not_downtrend"]
+
+    buy_condition_35_enable = buy_protection_params[35]["enable"]
+    buy_35_protection__ema_fast                 = buy_protection_params[35]["ema_fast"]
+    buy_35_protection__ema_fast_len             = buy_protection_params[35]["ema_fast_len"]
+    buy_35_protection__ema_slow                 = buy_protection_params[35]["ema_slow"]
+    buy_35_protection__ema_slow_len             = buy_protection_params[35]["ema_slow_len"]
+    buy_35_protection__close_above_ema_fast     = buy_protection_params[35]["close_above_ema_fast"]
+    buy_35_protection__close_above_ema_fast_len = buy_protection_params[35]["close_above_ema_fast_len"]
+    buy_35_protection__close_above_ema_slow     = buy_protection_params[35]["close_above_ema_slow"]
+    buy_35_protection__close_above_ema_slow_len = buy_protection_params[35]["close_above_ema_slow_len"]
+    buy_35_protection__sma200_rising            = buy_protection_params[35]["sma200_rising"]
+    buy_35_protection__sma200_rising_val        = buy_protection_params[35]["sma200_rising_val"]
+    buy_35_protection__sma200_1h_rising         = buy_protection_params[35]["sma200_1h_rising"]
+    buy_35_protection__sma200_1h_rising_val     = buy_protection_params[35]["sma200_1h_rising_val"]
+    buy_35_protection__safe_dips                = buy_protection_params[35]["safe_dips"]
+    buy_35_protection__safe_dips_type           = buy_protection_params[35]["safe_dips_type"]
+    buy_35_protection__safe_pump                = buy_protection_params[35]["safe_pump"]
+    buy_35_protection__safe_pump_type           = buy_protection_params[35]["safe_pump_type"]
+    buy_35_protection__safe_pump_period         = buy_protection_params[35]["safe_pump_period"]
+    buy_35_protection__btc_1h_not_downtrend     = buy_protection_params[35]["btc_1h_not_downtrend"]
+
+    buy_condition_36_enable = buy_protection_params[36]["enable"]
+    buy_36_protection__ema_fast                 = buy_protection_params[36]["ema_fast"]
+    buy_36_protection__ema_fast_len             = buy_protection_params[36]["ema_fast_len"]
+    buy_36_protection__ema_slow                 = buy_protection_params[36]["ema_slow"]
+    buy_36_protection__ema_slow_len             = buy_protection_params[36]["ema_slow_len"]
+    buy_36_protection__close_above_ema_fast     = buy_protection_params[36]["close_above_ema_fast"]
+    buy_36_protection__close_above_ema_fast_len = buy_protection_params[36]["close_above_ema_fast_len"]
+    buy_36_protection__close_above_ema_slow     = buy_protection_params[36]["close_above_ema_slow"]
+    buy_36_protection__close_above_ema_slow_len = buy_protection_params[36]["close_above_ema_slow_len"]
+    buy_36_protection__sma200_rising            = buy_protection_params[36]["sma200_rising"]
+    buy_36_protection__sma200_rising_val        = buy_protection_params[36]["sma200_rising_val"]
+    buy_36_protection__sma200_1h_rising         = buy_protection_params[36]["sma200_1h_rising"]
+    buy_36_protection__sma200_1h_rising_val     = buy_protection_params[36]["sma200_1h_rising_val"]
+    buy_36_protection__safe_dips                = buy_protection_params[36]["safe_dips"]
+    buy_36_protection__safe_dips_type           = buy_protection_params[36]["safe_dips_type"]
+    buy_36_protection__safe_pump                = buy_protection_params[36]["safe_pump"]
+    buy_36_protection__safe_pump_type           = buy_protection_params[36]["safe_pump_type"]
+    buy_36_protection__safe_pump_period         = buy_protection_params[36]["safe_pump_period"]
+    buy_36_protection__btc_1h_not_downtrend     = buy_protection_params[36]["btc_1h_not_downtrend"]
+
+    buy_condition_37_enable = buy_protection_params[37]["enable"]
+    buy_37_protection__ema_fast                 = buy_protection_params[37]["ema_fast"]
+    buy_37_protection__ema_fast_len             = buy_protection_params[37]["ema_fast_len"]
+    buy_37_protection__ema_slow                 = buy_protection_params[37]["ema_slow"]
+    buy_37_protection__ema_slow_len             = buy_protection_params[37]["ema_slow_len"]
+    buy_37_protection__close_above_ema_fast     = buy_protection_params[37]["close_above_ema_fast"]
+    buy_37_protection__close_above_ema_fast_len = buy_protection_params[37]["close_above_ema_fast_len"]
+    buy_37_protection__close_above_ema_slow     = buy_protection_params[37]["close_above_ema_slow"]
+    buy_37_protection__close_above_ema_slow_len = buy_protection_params[37]["close_above_ema_slow_len"]
+    buy_37_protection__sma200_rising            = buy_protection_params[37]["sma200_rising"]
+    buy_37_protection__sma200_rising_val        = buy_protection_params[37]["sma200_rising_val"]
+    buy_37_protection__sma200_1h_rising         = buy_protection_params[37]["sma200_1h_rising"]
+    buy_37_protection__sma200_1h_rising_val     = buy_protection_params[37]["sma200_1h_rising_val"]
+    buy_37_protection__safe_dips                = buy_protection_params[37]["safe_dips"]
+    buy_37_protection__safe_dips_type           = buy_protection_params[37]["safe_dips_type"]
+    buy_37_protection__safe_pump                = buy_protection_params[37]["safe_pump"]
+    buy_37_protection__safe_pump_type           = buy_protection_params[37]["safe_pump_type"]
+    buy_37_protection__safe_pump_period         = buy_protection_params[37]["safe_pump_period"]
+    buy_37_protection__btc_1h_not_downtrend     = buy_protection_params[37]["btc_1h_not_downtrend"]
+
+    buy_condition_38_enable = buy_protection_params[38]["enable"]
+    buy_38_protection__ema_fast                 = buy_protection_params[38]["ema_fast"]
+    buy_38_protection__ema_fast_len             = buy_protection_params[38]["ema_fast_len"]
+    buy_38_protection__ema_slow                 = buy_protection_params[38]["ema_slow"]
+    buy_38_protection__ema_slow_len             = buy_protection_params[38]["ema_slow_len"]
+    buy_38_protection__close_above_ema_fast     = buy_protection_params[38]["close_above_ema_fast"]
+    buy_38_protection__close_above_ema_fast_len = buy_protection_params[38]["close_above_ema_fast_len"]
+    buy_38_protection__close_above_ema_slow     = buy_protection_params[38]["close_above_ema_slow"]
+    buy_38_protection__close_above_ema_slow_len = buy_protection_params[38]["close_above_ema_slow_len"]
+    buy_38_protection__sma200_rising            = buy_protection_params[38]["sma200_rising"]
+    buy_38_protection__sma200_rising_val        = buy_protection_params[38]["sma200_rising_val"]
+    buy_38_protection__sma200_1h_rising         = buy_protection_params[38]["sma200_1h_rising"]
+    buy_38_protection__sma200_1h_rising_val     = buy_protection_params[38]["sma200_1h_rising_val"]
+    buy_38_protection__safe_dips                = buy_protection_params[38]["safe_dips"]
+    buy_38_protection__safe_dips_type           = buy_protection_params[38]["safe_dips_type"]
+    buy_38_protection__safe_pump                = buy_protection_params[38]["safe_pump"]
+    buy_38_protection__safe_pump_type           = buy_protection_params[38]["safe_pump_type"]
+    buy_38_protection__safe_pump_period         = buy_protection_params[38]["safe_pump_period"]
+    buy_38_protection__btc_1h_not_downtrend     = buy_protection_params[38]["btc_1h_not_downtrend"]
 
     # Strict dips - level 10
     buy_dip_threshold_10_1 = DecimalParameter(0.001, 0.05, default=0.015, space='buy', decimals=3, optimize=False, load=True)
@@ -3134,6 +3323,29 @@ class NostalgiaForInfinityNext(IStrategy):
         # For sell checks
         dataframe['crossed_below_ema_12_26'] = qtpylib.crossed_below(dataframe['ema_12'], dataframe['ema_26'])
 
+        # Heiken Ashi
+        heikinashi = qtpylib.heikinashi(dataframe)
+        heikinashi["volume"] = dataframe["volume"]
+
+        # Profit Maximizer - PMAX
+        dataframe['pm'], dataframe['pmx'] = pmax(heikinashi, MAtype=1, length=9, multiplier=27, period=10, src=3)
+        dataframe['source'] = (dataframe['high'] + dataframe['low'] + dataframe['open'] + dataframe['close'])/4
+        dataframe['pmax_thresh'] = ta.EMA(dataframe['source'], timeperiod=9)
+
+        dataframe['sma_21'] = ta.SMA(dataframe, timeperiod=21)
+        dataframe['sma_68'] = ta.SMA(dataframe, timeperiod=68)
+        dataframe['sma_75'] = ta.SMA(dataframe, timeperiod=75)
+
+        # ATR
+        dataframe['atr'] = ta.ATR(dataframe, timeperiod=14)
+        dataframe['atr_high_thresh'] = (dataframe['high'] - (dataframe['atr'] * 2.83))
+
+        dataframe['rsi_5'] = ta.RSI(dataframe, 5)
+        dataframe['streak'] = calc_streaks(dataframe["close"])
+        dataframe['srsi'] = ta.RSI(dataframe['streak'], 2)
+        dataframe['roc'] = ta.ROC(dataframe, 5)
+        dataframe['crsi'] = (dataframe['rsi_5'] + dataframe['srsi'] + dataframe['roc']) / 3
+
         # Dip protection
         dataframe['tpct_change_0']   = self.top_percent_change(dataframe,0)
         dataframe['tpct_change_2']   = self.top_percent_change(dataframe,2)
@@ -3958,6 +4170,62 @@ class NostalgiaForInfinityNext(IStrategy):
 
             dataframe.loc[item_buy,'buy_condition_34'] = True
 
+        # Buy Condition #36
+        dataframe.loc[:,'buy_condition_36'] = False
+        # PMAX1 buy
+        # -----------------------------------------------------------------------------------------
+        if self.buy_params['buy_condition_36_enable']:
+            # Non-Standard protections (add below)
+
+            item_buy_logic = []
+            item_buy_logic.append(dataframe['pm'] <= dataframe['pmax_thresh'])
+            item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * 0.98)
+            item_buy_logic.append(dataframe['ewo'] < -8.0)
+            item_buy_logic.append(dataframe['cti'] < -0.8)
+            item_buy_logic.append(dataframe['volume'] > 0)
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            conditions.append(item_buy)
+
+            dataframe.loc[item_buy,'buy_condition_36'] = True
+
+        # Buy Condition #37
+        dataframe.loc[:,'buy_condition_37'] = False
+        # PMAX2 buy
+        # -----------------------------------------------------------------------------------------
+        if self.buy_params['buy_condition_37_enable']:
+            # Non-Standard protections (add below)
+
+            item_buy_logic = []
+            item_buy_logic.append(dataframe['pm'] > dataframe['pmax_thresh'])
+            item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * 0.93)
+            item_buy_logic.append(dataframe['ewo'] > 8.0)
+            item_buy_logic.append(dataframe['rsi'] < 56.0)
+            item_buy_logic.append(dataframe['cti'] < -0.84)
+            item_buy_logic.append(dataframe['safe_dump_50_1h'])
+            item_buy_logic.append(dataframe['volume'] > 0)
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            conditions.append(item_buy)
+
+            dataframe.loc[item_buy,'buy_condition_37'] = True
+
+        # Buy Condition #38
+        dataframe.loc[:,'buy_condition_38'] = False
+        # PMAX3 buy
+        # -----------------------------------------------------------------------------------------
+        if self.buy_params['buy_condition_38_enable']:
+            # Non-Standard protections (add below)
+
+            item_buy_logic = []
+            item_buy_logic.append(dataframe['pm'] > dataframe['pmax_thresh'])
+            item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * 0.7)
+            item_buy_logic.append(dataframe['ewo'] < -2.0)
+            item_buy_logic.append(dataframe['cti'] < -0.86)
+            item_buy_logic.append(dataframe['volume'] > 0)
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            conditions.append(item_buy)
+
+            dataframe.loc[item_buy,'buy_condition_38'] = True
+
         if conditions:
             dataframe.loc[:, 'buy'] = reduce(lambda x, y: x | y, conditions)
 
@@ -4148,3 +4416,117 @@ def hull(dataframe, timeperiod):
         return  ta.WMA(
             2 * ta.WMA(dataframe['close'], int(math.floor(timeperiod/2))) - ta.WMA(dataframe['close'], timeperiod), int(round(np.sqrt(timeperiod)))
         )
+
+
+# PMAX
+def pmax(df, period, multiplier, length, MAtype, src):
+
+    period = int(period)
+    multiplier = int(multiplier)
+    length = int(length)
+    MAtype = int(MAtype)
+    src = int(src)
+
+    mavalue = 'MA_' + str(MAtype) + '_' + str(length)
+    atr = 'ATR_' + str(period)
+    pm = 'pm_' + str(period) + '_' + str(multiplier) + '_' + str(length) + '_' + str(MAtype)
+    pmx = 'pmX_' + str(period) + '_' + str(multiplier) + '_' + str(length) + '_' + str(MAtype)
+
+    # MAtype==1 --> EMA
+    # MAtype==2 --> DEMA
+    # MAtype==3 --> T3
+    # MAtype==4 --> SMA
+    # MAtype==5 --> VIDYA
+    # MAtype==6 --> TEMA
+    # MAtype==7 --> WMA
+    # MAtype==8 --> VWMA
+    # MAtype==9 --> zema
+    if src == 1:
+        masrc = df["close"]
+    elif src == 2:
+        masrc = (df["high"] + df["low"]) / 2
+    elif src == 3:
+        masrc = (df["high"] + df["low"] + df["close"] + df["open"]) / 4
+
+    if MAtype == 1:
+        mavalue = ta.EMA(masrc, timeperiod=length)
+    elif MAtype == 2:
+        mavalue = ta.DEMA(masrc, timeperiod=length)
+    elif MAtype == 3:
+        mavalue = ta.T3(masrc, timeperiod=length)
+    elif MAtype == 4:
+        mavalue = ta.SMA(masrc, timeperiod=length)
+    elif MAtype == 5:
+        mavalue = VIDYA(df, length=length)
+    elif MAtype == 6:
+        mavalue = ta.TEMA(masrc, timeperiod=length)
+    elif MAtype == 7:
+        mavalue = ta.WMA(df, timeperiod=length)
+    elif MAtype == 8:
+        mavalue = vwma(df, length)
+    elif MAtype == 9:
+        mavalue = zema(df, period=length)
+
+    df[atr] = ta.ATR(df, timeperiod=period)
+    df['basic_ub'] = mavalue + ((multiplier/10) * df[atr])
+    df['basic_lb'] = mavalue - ((multiplier/10) * df[atr])
+
+
+    basic_ub = df['basic_ub'].values
+    final_ub = np.full(len(df), 0.00)
+    basic_lb = df['basic_lb'].values
+    final_lb = np.full(len(df), 0.00)
+
+    for i in range(period, len(df)):
+        final_ub[i] = basic_ub[i] if (
+            basic_ub[i] < final_ub[i - 1]
+            or mavalue[i - 1] > final_ub[i - 1]) else final_ub[i - 1]
+        final_lb[i] = basic_lb[i] if (
+            basic_lb[i] > final_lb[i - 1]
+            or mavalue[i - 1] < final_lb[i - 1]) else final_lb[i - 1]
+
+    df['final_ub'] = final_ub
+    df['final_lb'] = final_lb
+
+    pm_arr = np.full(len(df), 0.00)
+    for i in range(period, len(df)):
+        pm_arr[i] = (
+            final_ub[i] if (pm_arr[i - 1] == final_ub[i - 1]
+                                    and mavalue[i] <= final_ub[i])
+        else final_lb[i] if (
+            pm_arr[i - 1] == final_ub[i - 1]
+            and mavalue[i] > final_ub[i]) else final_lb[i]
+        if (pm_arr[i - 1] == final_lb[i - 1]
+            and mavalue[i] >= final_lb[i]) else final_ub[i]
+        if (pm_arr[i - 1] == final_lb[i - 1]
+            and mavalue[i] < final_lb[i]) else 0.00)
+
+    pm = Series(pm_arr)
+
+    # Mark the trend direction up/down
+    pmx = np.where((pm_arr > 0.00), np.where((mavalue < pm_arr), 'down',  'up'), np.NaN)
+
+    return pm, pmx
+
+
+def calc_streaks(series: Series):
+    # logic tables
+    geq = series >= series.shift(1)  # True if rising
+    eq = series == series.shift(1)  # True if equal
+    logic_table = concat([geq, eq], axis=1)
+
+    streaks = [0]  # holds the streak duration, starts with 0
+
+    for row in logic_table.iloc[1:].itertuples():  # iterate through logic table
+        if row[2]:  # same value as before
+            streaks.append(0)
+            continue
+        last_value = streaks[-1]
+        if row[1]:  # higher value than before
+            streaks.append(last_value + 1 if last_value >=
+                                             0 else 1)  # increase or reset to +1
+        else:  # lower value than before
+            streaks.append(last_value - 1 if last_value <
+                                             0 else -1)  # decrease or reset to -1
+
+    return streaks
