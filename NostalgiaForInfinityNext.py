@@ -2873,8 +2873,8 @@ class NostalgiaForInfinityNext(IStrategy):
 
         return False, None
 
-    def sell_quick_mode(self, current_profit: float, max_profit:float, last_candle, buy_signal_candle) -> tuple:
-        if buy_signal_candle['buy_condition_32'] or buy_signal_candle['buy_condition_33'] or buy_signal_candle['buy_condition_34']:
+    def sell_quick_mode(self, current_profit: float, max_profit:float, last_candle, previous_candle_1, buy_signal_candle) -> tuple:
+        if buy_signal_candle['buy_condition_32'] or buy_signal_candle['buy_condition_33'] or buy_signal_candle['buy_condition_34'] or buy_signal_candle['buy_condition_35'] or buy_signal_candle['buy_condition_36'] or buy_signal_candle['buy_condition_37'] or buy_signal_candle['buy_condition_38']:
             if (0.06 > current_profit > 0.02) & (last_candle['rsi'] > 79.0):
                 return True, 'signal_profit_q_1'
 
@@ -2883,6 +2883,17 @@ class NostalgiaForInfinityNext(IStrategy):
 
             if (current_profit < -0.1):
                 return True, 'signal_stoploss_q_1'
+
+            if(last_candle['close'] < last_candle['atr_high_thresh']) & (previous_candle_1['close'] > previous_candle_1['atr_high_thresh']):
+                return True, 'signal_stoploss_q_atr'
+
+            if (current_profit > 0.0):
+                if (last_candle['pm'] <= last_candle['pmax_thresh']) & (last_candle['close'] > last_candle['sma_21'] * 1.039):
+                    return True, 'signal_profit_q_pmax_bull'
+                if (last_candle['pm'] > last_candle['pmax_thresh']) & (last_candle['close'] > last_candle['sma_21'] * 1.012):
+                    return True, 'signal_profit_q_pmax_bear'
+                if (last_candle['pm'] > last_candle['pmax_thresh']) & (last_candle['crsi'] >= 70):
+                    return True, 'signal_profit_q_pmax_c'
 
         return False, None
 
@@ -2906,7 +2917,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
         # Quick sell mode
         if not buy_signal.empty:
-            sell, signal_name = self.sell_quick_mode(current_profit, max_profit, last_candle, buy_signal_candle)
+            sell, signal_name = self.sell_quick_mode(current_profit, max_profit, last_candle, previous_candle_1, buy_signal_candle)
             if sell and (signal_name is not None):
                 return signal_name
 
@@ -4169,6 +4180,25 @@ class NostalgiaForInfinityNext(IStrategy):
             conditions.append(item_buy)
 
             dataframe.loc[item_buy,'buy_condition_34'] = True
+
+        # Buy Condition #35
+        # PMAX0 buy
+        # -----------------------------------------------------------------------------------------
+        dataframe.loc[:,'buy_condition_35'] = False
+        if self.buy_params['buy_condition_35_enable']:
+            # Non-Standard protections (add below)
+
+            item_buy_logic = []
+            item_buy_logic.append(dataframe['pm'] <= dataframe['pmax_thresh'])
+            item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * 0.98)
+            item_buy_logic.append(dataframe['ewo'] > 8.2)
+            item_buy_logic.append(dataframe['rsi'] < 32.0)
+            item_buy_logic.append(dataframe['cti'] < -0.5)
+            item_buy_logic.append(dataframe['volume'] > 0)
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            conditions.append(item_buy)
+
+            dataframe.loc[item_buy,'buy_condition_35'] = True
 
         # Buy Condition #36
         dataframe.loc[:,'buy_condition_36'] = False
