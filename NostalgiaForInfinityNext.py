@@ -3457,7 +3457,7 @@ class NostalgiaForInfinityNext(IStrategy):
             global_buy_protection_params = self.buy_protection_params[index]
             dataframe.loc[:, 'buy_condition_' + str(index)] = False
 
-            if self.buy_params['buy_condition_' + str(index)]:
+            if self.buy_params['buy_condition_' + str(index) + '_enable']:
                 # Standard protections - Common to every condition
                 # -----------------------------------------------------------------------------------------                
                 if global_buy_protection_params["ema_fast"].value:
