@@ -3247,11 +3247,6 @@ class NostalgiaForInfinityNext(IStrategy):
         conditions = []
         buy_protection_list = []
 
-        if self.config['runmode'].value in ('live', 'dry_run'):
-            not_empty_volume = dataframe['volume'].rolling(window=72, min_periods=72).count().notna()
-        else:
-            not_empty_volume = dataframe['volume'].rolling(window=self.startup_candle_count, min_periods=self.startup_candle_count).count().notna()
-
         # Protections [STANDARD] - Common to every condition
         for index in self.buy_protection_params:
             item_buy_protection_list = [True]
@@ -3274,7 +3269,6 @@ class NostalgiaForInfinityNext(IStrategy):
                 item_buy_protection_list.append(dataframe[f"safe_pump_{global_buy_protection_params['safe_pump_period'].value}_{global_buy_protection_params['safe_pump_type'].value}_1h"])
             if global_buy_protection_params['btc_1h_not_downtrend'].value:
                 item_buy_protection_list.append(dataframe['btc_not_downtrend_1h'])
-            item_buy_protection_list.append(not_empty_volume)
             buy_protection_list.append(item_buy_protection_list)
 
         # Buy Condition #1
