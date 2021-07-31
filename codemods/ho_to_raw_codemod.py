@@ -1,5 +1,5 @@
-import re
 import ast
+import re
 
 pattern = re.compile(
     r"(CategoricalParameter|DecimalParameter|IntParameter|RealParameter).*(default=)(?P<value>.+?)[,|\)].*"
@@ -20,11 +20,24 @@ def transform_code(src: str):
 
 if __name__ == "__main__":
     import argparse
+
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input', '-i', metavar="INPUT_PATH",  help="Strategy path",
-                        type=str, default="NostalgiaForInfinityNext.py")
-    parser.add_argument('--output', '-o', metavar="OUTPUT_PATH", help="Output of transformed file",
-                        type=str, default="NostalgiaForInfinityNext_Raw.py")
+    parser.add_argument(
+        "--input",
+        "-i",
+        metavar="INPUT_PATH",
+        help="Strategy path",
+        type=str,
+        default="NostalgiaForInfinityNext.py",
+    )
+    parser.add_argument(
+        "--output",
+        "-o",
+        metavar="OUTPUT_PATH",
+        help="Output of transformed file",
+        type=str,
+        default="NostalgiaForInfinityNext_Raw.py",
+    )
 
     args = parser.parse_args()
     filename = args.input
@@ -33,5 +46,5 @@ if __name__ == "__main__":
         source = f.read()
     validate_syntax(source)
     transformed = transform_code(source)
-    with open(args.output, 'w') as f:
+    with open(args.output, "w") as f:
         f.write(transformed)
