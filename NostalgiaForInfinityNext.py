@@ -93,8 +93,16 @@ class NostalgiaForInfinityNext(IStrategy):
     res_timeframe = 'none'
     info_timeframe = '1h'
 
+    # BTC informative
     has_BTC_base_tf = False
     has_BTC_info_tf = True
+
+    # Backtest Age Filter emulation
+    has_bt_agefilter = False
+    bt_min_age_days = 7
+
+    # Exchange Downtime protection
+    has_downtime_protection = False
 
     # Run "populate_indicators()" only for new candle.
     process_only_new_candles = True
@@ -3381,6 +3389,14 @@ class NostalgiaForInfinityNext(IStrategy):
         dataframe['volume_mean_4'] = dataframe['volume'].rolling(4).mean().shift(1)
         dataframe['volume_mean_30'] = dataframe['volume'].rolling(30).mean()
 
+        if not self.config['runmode'].value in ('live', 'dry_run'):
+            # Backtest age filter
+            dataframe['bt_agefilter_ok'] = False
+            dataframe.loc[dataframe.index > (12 * 24 * self.bt_min_age_days),'bt_agefilter_ok'] = True
+        else:
+            # Exchange downtime protection
+            dataframe['live_data_ok'] = (dataframe['volume'].rolling(window=72, min_periods=72).min() > 0)
+
         return dataframe
 
     def resampled_tf_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
@@ -3492,6 +3508,12 @@ class NostalgiaForInfinityNext(IStrategy):
                 item_buy_protection_list.append(dataframe[f"safe_pump_{global_buy_protection_params['safe_pump_period'].value}_{global_buy_protection_params['safe_pump_type'].value}_1h"])
             if global_buy_protection_params['btc_1h_not_downtrend'].value:
                 item_buy_protection_list.append(dataframe['btc_not_downtrend_1h'])
+            if not self.config['runmode'].value in ('live', 'dry_run'):
+                if self.has_bt_agefilter:
+                    item_buy_protection_list.append(dataframe['bt_agefilter_ok'])
+            else:
+                if self.has_downtime_protection:
+                    item_buy_protection_list.append(dataframe['live_data_ok'])
             buy_protection_list.append(item_buy_protection_list)
 
         # Buy Condition #1
