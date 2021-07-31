@@ -3280,6 +3280,7 @@ class NostalgiaForInfinityNext(IStrategy):
                 # Buy conditions
                 # -----------------------------------------------------------------------------------------
                 item_buy_logic = []
+                dataframe.loc[item_buy, 'buy_condition_' + str(index)] = False
                 item_buy_logic.append(reduce(lambda x, y: x & y, item_buy_protection_list))
                 
                 # Condition #1
