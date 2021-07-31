@@ -1992,8 +1992,9 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_ema_rel_3 = DecimalParameter(0.97, 0.999, default=0.986, space='buy', decimals=3, optimize=False, load=True)
     buy_cti_3 = DecimalParameter(-0.99, -0.5, default=-0.9, space='buy', decimals=2, optimize=False, load=True)
 
-    buy_bb20_close_bblowerband_4 = DecimalParameter(0.96, 0.99, default=0.976, space='buy', optimize=False, load=True)
-    buy_bb20_volume_4 = DecimalParameter(1.0, 20.0, default=3.0, space='buy', decimals=2, optimize=False, load=True)
+    buy_bb20_close_bblowerband_4 = DecimalParameter(0.96, 0.99, default=0.979, space='buy', optimize=False, load=True)
+    buy_bb20_volume_4 = DecimalParameter(1.0, 20.0, default=10.0, space='buy', decimals=2, optimize=False, load=True)
+    buy_cti_4 = DecimalParameter(-0.99, -0.5, default=-0.68, space='buy', decimals=2, optimize=False, load=True)
 
     buy_ema_open_mult_5 = DecimalParameter(0.016, 0.03, default=0.018, space='buy', decimals=3, optimize=False, load=True)
     buy_bb_offset_5 = DecimalParameter(0.98, 1.0, default=0.996, space='buy', decimals=3, optimize=False, load=True)
@@ -3592,6 +3593,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['close'] < dataframe['ema_50'])
             item_buy_logic.append(dataframe['close'] < self.buy_bb20_close_bblowerband_4.value * dataframe['bb20_2_low'])
             item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_30'].shift(1) * self.buy_bb20_volume_4.value))
+            item_buy_logic.append(dataframe['cti'] < self.buy_cti_4.value)
             item_buy_logic.append(dataframe['volume'] > 0)
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
