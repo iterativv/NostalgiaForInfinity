@@ -978,7 +978,6 @@ class NostalgiaForInfinityNext(IStrategy):
             "btc_1h_not_downtrend"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
         }
     }
-    }
 
     buy_condition_1_enable = buy_protection_params[1]["enable"]
     buy_1_protection__ema_fast                 = buy_protection_params[1]["ema_fast"]
