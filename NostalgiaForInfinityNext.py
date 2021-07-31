@@ -93,8 +93,16 @@ class NostalgiaForInfinityNext(IStrategy):
     res_timeframe = 'none'
     info_timeframe = '1h'
 
+    # BTC informative
     has_BTC_base_tf = False
     has_BTC_info_tf = True
+
+    # Backtest Age Filter emulation
+    has_bt_agefilter = False
+    bt_min_age_days = 7
+
+    # Exchange Downtime protection
+    has_downtime_protection = False
 
     # Run "populate_indicators()" only for new candle.
     process_only_new_candles = True
@@ -869,6 +877,27 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_dips_type"            : CategoricalParameter(["10","50","100"], default="100", space='buy', optimize=False, load=True),
             "safe_pump"                 : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
             "safe_pump_type"            : CategoricalParameter(["10","50","100"], default="100", space='buy', optimize=False, load=True),
+            "safe_pump_period"          : CategoricalParameter(["24","36","48"], default="24", space='buy', optimize=False, load=True),
+            "btc_1h_not_downtrend"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+        },
+        34: {
+            "enable"                    : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
+            "ema_fast"                  : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "ema_fast_len"              : CategoricalParameter(["26","50","100","200"], default="50", space='buy', optimize=False, load=True),
+            "ema_slow"                  : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "ema_slow_len"              : CategoricalParameter(["26","50","100","200"], default="100", space='buy', optimize=False, load=True),
+            "close_above_ema_fast"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "close_above_ema_fast_len"  : CategoricalParameter(["12","20","26","50","100","200"], default="50", space='buy', optimize=False, load=True),
+            "close_above_ema_slow"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "close_above_ema_slow_len"  : CategoricalParameter(["15","50","200"], default="100", space='buy', optimize=False, load=True),
+            "sma200_rising"             : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "sma200_rising_val"         : CategoricalParameter(["20","30","36","44","50"], default="30", space='buy', optimize=False, load=True),
+            "sma200_1h_rising"          : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "sma200_1h_rising_val"      : CategoricalParameter(["20","30","36","44","50"], default="50", space='buy', optimize=False, load=True),
+            "safe_dips"                 : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "safe_dips_type"            : CategoricalParameter(["10","50","100"], default="100", space='buy', optimize=False, load=True),
+            "safe_pump"                 : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
+            "safe_pump_type"            : CategoricalParameter(["10","50","100"], default="10", space='buy', optimize=False, load=True),
             "safe_pump_period"          : CategoricalParameter(["24","36","48"], default="24", space='buy', optimize=False, load=True),
             "btc_1h_not_downtrend"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
         },
@@ -3360,6 +3389,14 @@ class NostalgiaForInfinityNext(IStrategy):
         dataframe['volume_mean_4'] = dataframe['volume'].rolling(4).mean().shift(1)
         dataframe['volume_mean_30'] = dataframe['volume'].rolling(30).mean()
 
+        if not self.config['runmode'].value in ('live', 'dry_run'):
+            # Backtest age filter
+            dataframe['bt_agefilter_ok'] = False
+            dataframe.loc[dataframe.index > (12 * 24 * self.bt_min_age_days),'bt_agefilter_ok'] = True
+        else:
+            # Exchange downtime protection
+            dataframe['live_data_ok'] = (dataframe['volume'].rolling(window=72, min_periods=72).min() > 0)
+
         return dataframe
 
     def resampled_tf_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
@@ -3443,6 +3480,7 @@ class NostalgiaForInfinityNext(IStrategy):
         '''
         dataframe = self.normal_tf_indicators(dataframe, metadata)
         return dataframe
+
 
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         conditions = []
@@ -3915,7 +3953,6 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['ewo'] < -2.0)
                     item_buy_logic.append(dataframe['cti'] < -0.86)
 
-
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)            
                 dataframe.loc[item_buy, 'buy_condition_' + str(index)] = True
@@ -4111,6 +4148,7 @@ def hull(dataframe, timeperiod):
         return  ta.WMA(
             2 * ta.WMA(dataframe['close'], int(math.floor(timeperiod/2))) - ta.WMA(dataframe['close'], timeperiod), int(round(np.sqrt(timeperiod)))
         )
+
 
 # PMAX
 def pmax(df, period, multiplier, length, MAtype, src):
