@@ -4216,6 +4216,7 @@ class NostalgiaForInfinityNext(IStrategy):
             # Non-Standard protections (add below)
 
             item_buy_logic = []
+            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[34]))
             item_buy_logic.append(dataframe['pm'] <= dataframe['pmax_thresh'])
             item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * 0.98)
             item_buy_logic.append(dataframe['ewo'] > 8.2)
@@ -4235,6 +4236,7 @@ class NostalgiaForInfinityNext(IStrategy):
             # Non-Standard protections (add below)
 
             item_buy_logic = []
+            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[35]))
             item_buy_logic.append(dataframe['pm'] <= dataframe['pmax_thresh'])
             item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * 0.98)
             item_buy_logic.append(dataframe['ewo'] < -8.0)
@@ -4253,6 +4255,7 @@ class NostalgiaForInfinityNext(IStrategy):
             # Non-Standard protections (add below)
 
             item_buy_logic = []
+            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[36]))
             item_buy_logic.append(dataframe['pm'] > dataframe['pmax_thresh'])
             item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * 0.93)
             item_buy_logic.append(dataframe['ewo'] > 8.0)
@@ -4273,6 +4276,7 @@ class NostalgiaForInfinityNext(IStrategy):
             # Non-Standard protections (add below)
 
             item_buy_logic = []
+            item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[37]))
             item_buy_logic.append(dataframe['pm'] > dataframe['pmax_thresh'])
             item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * 0.7)
             item_buy_logic.append(dataframe['ewo'] < -2.0)
