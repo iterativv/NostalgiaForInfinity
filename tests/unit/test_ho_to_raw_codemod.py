@@ -1,4 +1,8 @@
 from codemods.ho_to_raw_codemod import transform_code
+import ast
+import traceback
+
+from tests.unit.conftest import REPO_ROOT
 
 
 def test_transform_code_categorical_param():
@@ -95,3 +99,17 @@ buy_protection_params = {
 }
 """
     assert transform_code(code_input.strip()) == expected_output.strip()
+
+
+def test_transform_code_syntax():
+    source = ""
+    with open(REPO_ROOT.joinpath("NostalgiaForInfinityNext.py")) as f:
+        source = f.read()
+
+    is_valid = True
+    try:
+        ast.parse(transform_code(source))
+    except SyntaxError:
+        is_valid = False
+
+    assert is_valid is True
