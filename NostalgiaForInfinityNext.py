@@ -2045,9 +2045,9 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_cti_14 = DecimalParameter(-0.99, -0.5, default=-0.86, space='buy', decimals=2, optimize=False, load=True)
 
     buy_ema_open_mult_15 = DecimalParameter(0.01, 0.03, default=0.024, space='buy', decimals=3, optimize=False, load=True)
-    buy_ma_offset_15 = DecimalParameter(0.93, 0.99, default=0.968, space='buy', decimals=3, optimize=False, load=True)
+    buy_ma_offset_15 = DecimalParameter(0.93, 0.99, default=0.96, space='buy', decimals=3, optimize=False, load=True)
     buy_rsi_15 = DecimalParameter(20.0, 36.0, default=28.0, space='buy', decimals=1, optimize=False, load=True)
-    buy_ema_rel_15 = DecimalParameter(0.97, 0.999, default=0.978, space='buy', decimals=3, optimize=False, load=True)
+    buy_ema_rel_15 = DecimalParameter(0.97, 0.999, default=0.977, space='buy', decimals=3, optimize=False, load=True)
 
     buy_ma_offset_16 = DecimalParameter(0.93, 0.97, default=0.952, space='buy', decimals=3, optimize=False, load=True)
     buy_rsi_16 = DecimalParameter(26.0, 50.0, default=31.0, space='buy', decimals=1, optimize=False, load=True)
@@ -3023,7 +3023,10 @@ class NostalgiaForInfinityNext(IStrategy):
                 elif (max_loss > 0.07):
                     return 'sell_signal_2_1_2'
             else:
-                return 'sell_signal_2_2'
+                if (current_profit > 0.0):
+                    return 'sell_signal_2_2_1'
+                elif (max_loss > 0.07):
+                    return 'sell_signal_2_2_2'
 
         # Sell signal 4
         elif self.sell_condition_4_enable.value & (last_candle['rsi'] > self.sell_dual_rsi_rsi_4.value) & (last_candle['rsi_1h'] > self.sell_dual_rsi_rsi_1h_4.value):
