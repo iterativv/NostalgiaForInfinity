@@ -3031,7 +3031,10 @@ class NostalgiaForInfinityNext(IStrategy):
 
         # Sell signal 6
         elif self.sell_condition_6_enable.value & (last_candle['close'] < last_candle['ema_200']) & (last_candle['close'] > last_candle['ema_50']) & (last_candle['rsi'] > self.sell_rsi_under_6.value):
-            return 'sell_signal_6'
+            if (current_profit > 0.0):
+                    return 'sell_signal_6_1'
+            elif (max_loss > 0.08):
+                return 'sell_signal_6_2'
 
         # Sell signal 7
         elif self.sell_condition_7_enable.value & (last_candle['rsi_1h'] > self.sell_rsi_1h_7.value) & (last_candle['crossed_below_ema_12_26']):
