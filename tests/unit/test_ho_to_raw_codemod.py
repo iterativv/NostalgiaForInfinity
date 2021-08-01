@@ -1,4 +1,7 @@
+import ast
+
 from codemods.ho_to_raw_codemod import transform_code
+from tests.unit.conftest import REPO_ROOT
 
 
 def test_transform_code_categorical_param():
@@ -72,26 +75,40 @@ buy_protection_params = {
     expected_output = """
 buy_protection_params = {
     1: {
-            "enable"                    : True
-            "ema_fast"                  : False
-            "ema_fast_len"              : "26"
-            "ema_slow"                  : True
-            "ema_slow_len"              : "100"
-            "close_above_ema_fast"      : False
-            "close_above_ema_fast_len"  : "200"
-            "close_above_ema_slow"      : False
-            "close_above_ema_slow_len"  : "200"
-            "sma200_rising"             : True
-            "sma200_rising_val"         : "28"
-            "sma200_1h_rising"          : False
-            "sma200_1h_rising_val"      : "50"
-            "safe_dips"                 : True
-            "safe_dips_type"            : "80"
-            "safe_pump"                 : True
-            "safe_pump_type"            : "70"
-            "safe_pump_period"          : "24"
+            "enable"                    : True,
+            "ema_fast"                  : False,
+            "ema_fast_len"              : "26",
+            "ema_slow"                  : True,
+            "ema_slow_len"              : "100",
+            "close_above_ema_fast"      : False,
+            "close_above_ema_fast_len"  : "200",
+            "close_above_ema_slow"      : False,
+            "close_above_ema_slow_len"  : "200",
+            "sma200_rising"             : True,
+            "sma200_rising_val"         : "28",
+            "sma200_1h_rising"          : False,
+            "sma200_1h_rising_val"      : "50",
+            "safe_dips"                 : True,
+            "safe_dips_type"            : "80",
+            "safe_pump"                 : True,
+            "safe_pump_type"            : "70",
+            "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
     }
 }
 """
     assert transform_code(code_input.strip()) == expected_output.strip()
+
+
+def test_transform_code_syntax():
+    source = ""
+    with open(REPO_ROOT.joinpath("NostalgiaForInfinityNext.py")) as f:
+        source = f.read()
+
+    is_valid = True
+    try:
+        ast.parse(transform_code(source))
+    except SyntaxError:
+        is_valid = False
+
+    assert is_valid is True
