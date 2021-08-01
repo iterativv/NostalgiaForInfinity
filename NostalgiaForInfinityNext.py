@@ -2434,15 +2434,13 @@ class NostalgiaForInfinityNext(IStrategy):
             if isinstance(trade_pairs, dict):
                 # New syntax
                 for trade_pair, profit_ratio in trade_pairs.items():
-                    try:
-                        trade_pair = str(trade_pair)
-                    except TypeError:
+                    if trade_pair.endswith(f"/{self.stake_currency}") is False:
                         log.error(
-                            "The trade_pair(%s) defined under 'trade_pairs' in %s is not a string",
-                            trade_pair, hold_trades_config_file
+                            "The 'trade_pair' (%s) doesn't end with (%s)",
+                            trade_pair,
+                            self.stake_currency
                         )
-                        continue
-                    if not isinstance(profit_ratio, float):
+                    elif not isinstance(profit_ratio, float):
                         log.error(
                             "The 'profit_ratio' config value(%s) for trade_pairs %s in %s is not a float",
                             profit_ratio,
