@@ -15,7 +15,7 @@ import math
 from freqtrade.persistence import Trade
 from datetime import datetime, timedelta
 from technical.util import resample_to_interval, resampled_merge
-from technical.indicators import zema
+from technical.indicators import zema, VIDYA
 import pandas_ta as pta
 
 log = logging.getLogger(__name__)
