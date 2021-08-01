@@ -2059,9 +2059,10 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_cti_17 = DecimalParameter(-0.99, -0.5, default=-0.92, space='buy', decimals=2, optimize=False, load=True)
     buy_volume_17 = DecimalParameter(0.6, 6.0, default=2.0, space='buy', decimals=1, optimize=False, load=True)
 
-    buy_rsi_18 = DecimalParameter(16.0, 32.0, default=26.0, space='buy', decimals=1, optimize=False, load=True)
-    buy_bb_offset_18 = DecimalParameter(0.98, 1.0, default=0.982, space='buy', decimals=3, optimize=False, load=True)
+    buy_rsi_18 = DecimalParameter(16.0, 32.0, default=30.0, space='buy', decimals=1, optimize=False, load=True)
+    buy_bb_offset_18 = DecimalParameter(0.98, 1.0, default=0.985, space='buy', decimals=3, optimize=False, load=True)
     buy_volume_18 = DecimalParameter(0.6, 6.0, default=2.0, space='buy', decimals=1, optimize=False, load=True)
+    buy_cti_18 = DecimalParameter(-0.99, -0.5, default=-0.82, space='buy', decimals=2, optimize=False, load=True)
 
     buy_rsi_1h_min_19 = DecimalParameter(40.0, 70.0, default=50.0, space='buy', decimals=1, optimize=False, load=True)
     buy_chop_min_19 = DecimalParameter(20.0, 60.0, default=23.0, space='buy', decimals=1, optimize=False, load=True)
@@ -3870,7 +3871,6 @@ class NostalgiaForInfinityNext(IStrategy):
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_18_enable']:
             # Non-Standard protections (add below)
-            # buy_18_protections.append(dataframe['ema_100'] > dataframe['ema_200'])
             buy_protection_list[17].append(dataframe['sma_200'] > dataframe['sma_200'].shift(20))
             buy_protection_list[17].append(dataframe['sma_200_1h'] > dataframe['sma_200_1h'].shift(36))
 
@@ -3880,6 +3880,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_18.value)
             item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_18.value))
             item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_volume_18.value))
+            item_buy_logic.append(dataframe['cti'] < self.buy_cti_18.value)
             item_buy_logic.append(dataframe['volume'] > 0)
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
