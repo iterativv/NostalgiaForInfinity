@@ -3534,7 +3534,6 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic = []
             item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[0]))
             item_buy_logic.append(((dataframe['close'] - dataframe['open'].rolling(36).min()) / dataframe['open'].rolling(36).min()) > self.buy_min_inc_1.value)
-            item_buy_logic.append(((dataframe['close'] - dataframe['open'].rolling(36).min()) / dataframe['open'].rolling(36).min()) > self.buy_min_inc_1.value)
             item_buy_logic.append(dataframe['rsi_1h'] > self.buy_rsi_1h_min_1.value)
             item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_max_1.value)
             item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_1.value)
