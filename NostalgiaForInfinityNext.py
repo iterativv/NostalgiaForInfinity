@@ -2425,7 +2425,7 @@ class NostalgiaForInfinityNext(IStrategy):
                 trade_ids = hold_trades_config.get("trade_ids")
                 trade_pairs = hold_trades_config.get("trade_pairs")
 
-            if not trade_ids:
+            if not trade_ids and not trade_pairs:
                 return
 
             open_trades = {
