@@ -3261,9 +3261,10 @@ class NostalgiaForInfinityNext(IStrategy):
         return informative_1h.copy()
 
     def normal_tf_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        dataframe['candle_count'] = dataframe['volume'].count()
         # BB 40 - STD2
         bb_40_std2 = qtpylib.bollinger_bands(dataframe['close'], window=40, stds=2)
-        dataframe['bb40_2_low']= bb_40_std2['lower']
+        dataframe['bb40_2_low'] = bb_40_std2['lower']
         dataframe['bb40_2_mid'] = bb_40_std2['mid']
         dataframe['bb40_2_delta'] = (bb_40_std2['mid'] - dataframe['bb40_2_low']).abs()
         dataframe['closedelta'] = (dataframe['close'] - dataframe['close'].shift()).abs()
@@ -3493,6 +3494,11 @@ class NostalgiaForInfinityNext(IStrategy):
         conditions = []
         buy_protection_list = []
 
+        if self.config['runmode'].value in ('live', 'dry_run'):
+            min_candles = 72
+        else:
+            min_candles = self.startup_candle_count
+
         # Protections [STANDARD] - Common to every condition
         for index in self.buy_protection_params:
             item_buy_protection_list = [True]
@@ -3515,6 +3521,7 @@ class NostalgiaForInfinityNext(IStrategy):
                 item_buy_protection_list.append(dataframe[f"safe_pump_{global_buy_protection_params['safe_pump_period'].value}_{global_buy_protection_params['safe_pump_type'].value}_1h"])
             if global_buy_protection_params['btc_1h_not_downtrend'].value:
                 item_buy_protection_list.append(dataframe['btc_not_downtrend_1h'])
+            item_buy_protection_list.append(dataframe['candle_count'].ge(min_candles))
             if not self.config['runmode'].value in ('live', 'dry_run'):
                 if self.has_bt_agefilter:
                     item_buy_protection_list.append(dataframe['bt_agefilter_ok'])
