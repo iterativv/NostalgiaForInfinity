@@ -2438,7 +2438,7 @@ class NostalgiaForInfinityNext(IStrategy):
                         trade_pair = str(trade_pair)
                     except TypeError:
                         log.error(
-                            "The trade_id(%s) defined under 'trade_pairs' in %s is not a string",
+                            "The trade_pair(%s) defined under 'trade_pairs' in %s is not a string",
                             trade_pair, hold_trades_config_file
                         )
                         continue
