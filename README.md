@@ -84,7 +84,7 @@ git submodule update --remote --merge
 
 Now commit the changes and push.
 
-### Hyperopt values to raw values
+## Hyperopt values to raw values
 
 The strategy uses hyperopt values; this has some compute overhead and thus impact runtime performance with the number of parameters available in the strategy. There is a script available to transform all hyperopt values into raw values. E.g. The following line of code:
 
