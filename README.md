@@ -109,4 +109,3 @@ optional arguments:
 The script has a simple CLI, where it accepts two arguments, the input, which would be the strategy path and the output,  which is the path of the transformed file. E.g.
 
 `python codemods/ho_to_raw_codemod.py -i NostalgiaForInfinityNext.py -o NostalgiaForInfinityNext_Raw.py`
-
