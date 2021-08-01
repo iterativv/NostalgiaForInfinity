@@ -72,24 +72,24 @@ buy_protection_params = {
     expected_output = """
 buy_protection_params = {
     1: {
-            "enable"                    : True
-            "ema_fast"                  : False
-            "ema_fast_len"              : "26"
-            "ema_slow"                  : True
-            "ema_slow_len"              : "100"
-            "close_above_ema_fast"      : False
-            "close_above_ema_fast_len"  : "200"
-            "close_above_ema_slow"      : False
-            "close_above_ema_slow_len"  : "200"
-            "sma200_rising"             : True
-            "sma200_rising_val"         : "28"
-            "sma200_1h_rising"          : False
-            "sma200_1h_rising_val"      : "50"
-            "safe_dips"                 : True
-            "safe_dips_type"            : "80"
-            "safe_pump"                 : True
-            "safe_pump_type"            : "70"
-            "safe_pump_period"          : "24"
+            "enable"                    : True,
+            "ema_fast"                  : False,
+            "ema_fast_len"              : "26",
+            "ema_slow"                  : True,
+            "ema_slow_len"              : "100",
+            "close_above_ema_fast"      : False,
+            "close_above_ema_fast_len"  : "200",
+            "close_above_ema_slow"      : False,
+            "close_above_ema_slow_len"  : "200",
+            "sma200_rising"             : True,
+            "sma200_rising_val"         : "28",
+            "sma200_1h_rising"          : False,
+            "sma200_1h_rising_val"      : "50",
+            "safe_dips"                 : True,
+            "safe_dips_type"            : "80",
+            "safe_pump"                 : True,
+            "safe_pump_type"            : "70",
+            "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
     }
 }
