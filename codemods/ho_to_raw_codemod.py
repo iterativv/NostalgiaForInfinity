@@ -1,8 +1,7 @@
 import ast
 import re
-
 pattern = re.compile(
-    r"(CategoricalParameter|DecimalParameter|IntParameter|RealParameter).*(default=)(?P<value>.+?)[,|\)].*"
+    r"(CategoricalParameter|DecimalParameter|IntParameter|RealParameter).*((default=)(?P<value>.+?),.*\)|(default=)(?P<edge_value>.+?)\))"
 )
 
 
@@ -13,7 +12,7 @@ def validate_syntax(src: str):
 def transform_code(src: str):
     def repl(matchobj):
         groupdict = matchobj.groupdict()
-        return groupdict["value"]
+        return groupdict["value"] or groupdict["edge_value"]
 
     return pattern.sub(repl, src)
 
