@@ -1,22 +1,22 @@
-import logging
-import pathlib
-import rapidjson
-import freqtrade.vendor.qtpylib.indicators as qtpylib
-import numpy as np
-import talib.abstract as ta
-from freqtrade.misc import json_load
-from freqtrade.strategy.interface import IStrategy
-from freqtrade.strategy import merge_informative_pair, timeframe_to_minutes
-from freqtrade.strategy import DecimalParameter, IntParameter, CategoricalParameter
-from freqtrade.exchange import timeframe_to_prev_date
-from pandas import DataFrame, Series, concat
-from functools import reduce
-import math
-from freqtrade.persistence import Trade
-from datetime import datetime, timedelta
-from technical.util import resample_to_interval, resampled_merge
-from technical.indicators import zema, VIDYA
-import pandas_ta as pta
+import freqtrade.vendor.qtpylib.indicators as qtpylib
+import logging
+import math
+import numpy as np
+import pandas_ta as pta
+import pathlib
+import rapidjson
+import talib.abstract as ta
+from datetime import datetime, timedelta
+from freqtrade.exchange import timeframe_to_prev_date
+from freqtrade.misc import json_load
+from freqtrade.persistence import Trade
+from freqtrade.strategy import DecimalParameter, IntParameter, CategoricalParameter
+from freqtrade.strategy import merge_informative_pair, timeframe_to_minutes
+from freqtrade.strategy.interface import IStrategy
+from functools import reduce
+from pandas import DataFrame, Series, concat
+from technical.indicators import zema, VIDYA
+from technical.util import resample_to_interval, resampled_merge
 
 log = logging.getLogger(__name__)
 
@@ -134,11 +134,11 @@ class NostalgiaForInfinityNext(IStrategy):
         'stoploss_on_exchange': False
     }
 
-    #############################################################
 
+    # --------------------------------------------------------------------------------------------------- #
+    # BUY/SELL CONDITIONS ENABLE/DISABLE                                                                  #
+    # --------------------------------------------------------------------------------------------------- #
     buy_params = {
-        #############
-        # Enable/Disable conditions
         "buy_condition_1_enable": True,
         "buy_condition_2_enable": True,
         "buy_condition_3_enable": True,
@@ -176,13 +176,10 @@ class NostalgiaForInfinityNext(IStrategy):
         "buy_condition_35_enable": True,
         "buy_condition_36_enable": True,
         "buy_condition_37_enable": True,
-        "buy_condition_38_enable": True,
-        #############
+        "buy_condition_38_enable": True
     }
 
     sell_params = {
-        #############
-        # Enable/Disable conditions
         "sell_condition_1_enable": True,
         "sell_condition_2_enable": True,
         "sell_condition_3_enable": True,
@@ -190,12 +187,13 @@ class NostalgiaForInfinityNext(IStrategy):
         "sell_condition_5_enable": True,
         "sell_condition_6_enable": True,
         "sell_condition_7_enable": True,
-        "sell_condition_8_enable": True,
-        #############
+        "sell_condition_8_enable": True
     }
 
-    #############################################################
 
+    # --------------------------------------------------------------------------------------------------- #
+    # BUY PROTECTION HO PARAMETERS                                                                        #
+    # --------------------------------------------------------------------------------------------------- #
     buy_protection_params = {
         1: {
             "enable"                    : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
@@ -997,6 +995,10 @@ class NostalgiaForInfinityNext(IStrategy):
         }
     }
 
+
+    # --------------------------------------------------------------------------------------------------- #
+    # BUY PROTECTION HO VARIABLES MAPPING                                                                 #
+    # --------------------------------------------------------------------------------------------------- #
     buy_condition_1_enable = buy_protection_params[1]["enable"]
     buy_1_protection__ema_fast                 = buy_protection_params[1]["ema_fast"]
     buy_1_protection__ema_fast_len             = buy_protection_params[1]["ema_fast_len"]
@@ -1757,6 +1759,11 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_38_protection__safe_pump_period         = buy_protection_params[38]["safe_pump_period"]
     buy_38_protection__btc_1h_not_downtrend     = buy_protection_params[38]["btc_1h_not_downtrend"]
 
+
+    # --------------------------------------------------------------------------------------------------- #
+    # BUY DIP PROTECTION PARAMETERS                                                                       #
+    # --------------------------------------------------------------------------------------------------- #
+
     # Strict dips - level 10
     buy_dip_threshold_10_1 = DecimalParameter(0.001, 0.05, default=0.015, space='buy', decimals=3, optimize=False, load=True)
     buy_dip_threshold_10_2 = DecimalParameter(0.01, 0.2, default=0.1, space='buy', decimals=3, optimize=False, load=True)
@@ -1822,6 +1829,11 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_dip_threshold_130_2 = DecimalParameter(0.16, 0.34, default=0.3, space='buy', decimals=3, optimize=False, load=True)
     buy_dip_threshold_130_3 = DecimalParameter(0.36, 0.56, default=0.48, space='buy', decimals=3, optimize=False, load=True)
     buy_dip_threshold_130_4 = DecimalParameter(0.6, 1.0, default=0.9, space='buy', decimals=3, optimize=False, load=True)
+
+
+    # --------------------------------------------------------------------------------------------------- #
+    # BUY PUMP PROTECTION PARAMETERS                                                                      #
+    # --------------------------------------------------------------------------------------------------- #
 
     # 24 hours - level 10
     buy_pump_pull_threshold_10_24 = DecimalParameter(1.5, 3.0, default=2.2, space='buy', decimals=2, optimize=False, load=True)
@@ -1943,24 +1955,30 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_pump_pull_threshold_120_48 = DecimalParameter(1.3, 2.0, default=1.4, space='buy', decimals=2, optimize=False, load=True)
     buy_pump_threshold_120_48 = DecimalParameter(1.4, 2.8, default=2.0, space='buy', decimals=3, optimize=False, load=True)
 
+
+    # --------------------------------------------------------------------------------------------------- #
+    # BUY DUMP PROTECTION PARAMETERS                                                                      #
+    # --------------------------------------------------------------------------------------------------- #
+
     # 5 hours - level 10
     buy_dump_protection_10_5 = DecimalParameter(0.3, 0.8, default=0.4, space='buy', decimals=2, optimize=False, load=True)
-
     # 5 hours - level 20
     buy_dump_protection_20_5 = DecimalParameter(0.3, 0.8, default=0.44, space='buy', decimals=2, optimize=False, load=True)
-
     # 5 hours - level 30
     buy_dump_protection_30_5 = DecimalParameter(0.3, 0.8, default=0.50, space='buy', decimals=2, optimize=False, load=True)
-
     # 5 hours - level 40
     buy_dump_protection_40_5 = DecimalParameter(0.3, 0.8, default=0.58, space='buy', decimals=2, optimize=False, load=True)
-
     # 5 hours - level 50
     buy_dump_protection_50_5 = DecimalParameter(0.3, 0.8, default=0.66, space='buy', decimals=2, optimize=False, load=True)
-
     # 5 hours - level 60
     buy_dump_protection_60_5 = DecimalParameter(0.3, 0.8, default=0.74, space='buy', decimals=2, optimize=False, load=True)
 
+
+    # --------------------------------------------------------------------------------------------------- #
+    # BUY CONDITIONS LOGIC PARAMETERS                                                                     #
+    # --------------------------------------------------------------------------------------------------- #
+
+    # Buy condition #1 parameters
     buy_min_inc_1 = DecimalParameter(0.01, 0.05, default=0.021, space='buy', decimals=3, optimize=False, load=True)
     buy_rsi_1h_min_1 = DecimalParameter(25.0, 40.0, default=20.0, space='buy', decimals=1, optimize=False, load=True)
     buy_rsi_1h_max_1 = DecimalParameter(70.0, 90.0, default=84.0, space='buy', decimals=1, optimize=False, load=True)
@@ -1968,6 +1986,7 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_mfi_1 = DecimalParameter(20.0, 40.0, default=50.0, space='buy', decimals=1, optimize=False, load=True)
     buy_cti_1 = DecimalParameter(-0.99, -0.5, default=-0.87, space='buy', decimals=2, optimize=False, load=True)
 
+    # Buy condition #2 parameters
     buy_rsi_1h_min_2 = DecimalParameter(30.0, 40.0, default=32.0, space='buy', decimals=1, optimize=False, load=True)
     buy_rsi_1h_max_2 = DecimalParameter(70.0, 95.0, default=84.0, space='buy', decimals=1, optimize=False, load=True)
     buy_rsi_1h_diff_2 = DecimalParameter(30.0, 50.0, default=38.8, space='buy', decimals=1, optimize=False, load=True)
@@ -1975,44 +1994,53 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_bb_offset_2 = DecimalParameter(0.97, 0.999, default=0.983, space='buy', decimals=3, optimize=False, load=True)
     buy_volume_2 = DecimalParameter(0.6, 6.0, default=1.6, space='buy', decimals=1, optimize=False, load=True)
 
+    # Buy condition #3 parameters
     buy_bb40_bbdelta_close_3 = DecimalParameter(0.005, 0.06, default=0.045, space='buy', optimize=False, load=True)
     buy_bb40_closedelta_close_3 = DecimalParameter(0.01, 0.03, default=0.022, space='buy', optimize=False, load=True)
     buy_bb40_tail_bbdelta_3 = DecimalParameter(0.15, 0.45, default=0.418, space='buy', optimize=False, load=True)
     buy_ema_rel_3 = DecimalParameter(0.97, 0.999, default=0.986, space='buy', decimals=3, optimize=False, load=True)
     buy_cti_3 = DecimalParameter(-0.99, -0.5, default=-0.9, space='buy', decimals=2, optimize=False, load=True)
 
+    # Buy condition #4 parameters
     buy_bb20_close_bblowerband_4 = DecimalParameter(0.96, 0.99, default=0.979, space='buy', optimize=False, load=True)
     buy_bb20_volume_4 = DecimalParameter(1.0, 20.0, default=10.0, space='buy', decimals=2, optimize=False, load=True)
     buy_cti_4 = DecimalParameter(-0.99, -0.5, default=-0.68, space='buy', decimals=2, optimize=False, load=True)
 
+    # Buy condition #5 parameters
     buy_ema_open_mult_5 = DecimalParameter(0.016, 0.03, default=0.018, space='buy', decimals=3, optimize=False, load=True)
     buy_bb_offset_5 = DecimalParameter(0.98, 1.0, default=0.996, space='buy', decimals=3, optimize=False, load=True)
     buy_ema_rel_5 = DecimalParameter(0.97, 0.999, default=0.938, space='buy', decimals=3, optimize=False, load=True)
     buy_cti_5 = DecimalParameter(-0.99, -0.5, default=-0.84, space='buy', decimals=2, optimize=False, load=True)
     buy_volume_5 = DecimalParameter(0.6, 6.0, default=1.8, space='buy', decimals=1, optimize=False, load=True)
 
+    # Buy condition #6 parameters
     buy_ema_open_mult_6 = DecimalParameter(0.02, 0.03, default=0.021, space='buy', decimals=3, optimize=False, load=True)
     buy_bb_offset_6 = DecimalParameter(0.98, 0.999, default=0.984, space='buy', decimals=3, optimize=False, load=True)
 
+    # Buy condition #7 parameters
     buy_ema_open_mult_7 = DecimalParameter(0.02, 0.04, default=0.031, space='buy', decimals=3, optimize=False, load=True)
     buy_cti_7 = DecimalParameter(-0.99, -0.5, default=-0.89, space='buy', decimals=2, optimize=False, load=True)
 
+    # Buy condition #8 parameters
     buy_cti_8 = DecimalParameter(-0.99, -0.5, default=-0.88, space='buy', decimals=2, optimize=False, load=True)
     buy_rsi_8 = DecimalParameter(20.0, 50.0, default=40.0, space='buy', decimals=1, optimize=False, load=True)
     buy_bb_offset_8 = DecimalParameter(0.98, 1.0, default=0.99, space='buy', decimals=3, optimize=False, load=True)
     buy_rsi_1h_8 = DecimalParameter(40.0, 66.0, default=64.0, space='buy', decimals=1, optimize=False, load=True)
     buy_volume_8 = DecimalParameter(0.6, 6.0, default=1.8, space='buy', decimals=1, optimize=False, load=True)
 
+    # Buy condition #9 parameters
     buy_ma_offset_9 = DecimalParameter(0.91, 0.94, default=0.922, space='buy', decimals=3, optimize=False, load=True)
     buy_bb_offset_9 = DecimalParameter(0.96, 0.98, default=0.942, space='buy', decimals=3, optimize=False, load=True)
     buy_rsi_1h_min_9 = DecimalParameter(26.0, 40.0, default=20.0, space='buy', decimals=1, optimize=False, load=True)
     buy_rsi_1h_max_9 = DecimalParameter(70.0, 90.0, default=88.0, space='buy', decimals=1, optimize=False, load=True)
     buy_mfi_9 = DecimalParameter(36.0, 56.0, default=50.0, space='buy', decimals=1, optimize=False, load=True)
 
+    # Buy condition #10 parameters
     buy_ma_offset_10 = DecimalParameter(0.93, 0.97, default=0.948, space='buy', decimals=3, optimize=False, load=True)
     buy_bb_offset_10 = DecimalParameter(0.97, 0.99, default=0.985, space='buy', decimals=3, optimize=False, load=True)
     buy_rsi_1h_10 = DecimalParameter(20.0, 40.0, default=37.0, space='buy', decimals=1, optimize=False, load=True)
 
+    # Buy condition #11 parameters
     buy_ma_offset_11 = DecimalParameter(0.93, 0.99, default=0.934, space='buy', decimals=3, optimize=False, load=True)
     buy_min_inc_11 = DecimalParameter(0.005, 0.05, default=0.02, space='buy', decimals=3, optimize=False, load=True)
     buy_rsi_1h_min_11 = DecimalParameter(40.0, 60.0, default=55.0, space='buy', decimals=1, optimize=False, load=True)
@@ -2020,116 +2048,142 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_rsi_11 = DecimalParameter(34.0, 50.0, default=44.0, space='buy', decimals=1, optimize=False, load=True)
     buy_mfi_11 = DecimalParameter(30.0, 46.0, default=36.0, space='buy', decimals=1, optimize=False, load=True)
 
+    # Buy condition #12 parameters
     buy_ma_offset_12 = DecimalParameter(0.93, 0.97, default=0.907, space='buy', decimals=3, optimize=False, load=True)
     buy_rsi_12 = DecimalParameter(26.0, 40.0, default=34.0, space='buy', decimals=1, optimize=False, load=True)
     buy_ewo_12 = DecimalParameter(1.0, 6.0, default=1.8, space='buy', decimals=1, optimize=False, load=True)
 
+    # Buy condition #13 parameters
     buy_ma_offset_13 = DecimalParameter(0.93, 0.98, default=0.99, space='buy', decimals=3, optimize=False, load=True)
     buy_cti_13 = DecimalParameter(-0.99, -0.5, default=-0.74, space='buy', decimals=2, optimize=False, load=True)
     buy_ewo_13 = DecimalParameter(-14.0, -7.0, default=-9.6, space='buy', decimals=1, optimize=False, load=True)
 
+    # Buy condition #14 parameters
     buy_ema_open_mult_14 = DecimalParameter(0.01, 0.03, default=0.014, space='buy', decimals=3, optimize=False, load=True)
     buy_bb_offset_14 = DecimalParameter(0.98, 1.0, default=0.988, space='buy', decimals=3, optimize=False, load=True)
     buy_ma_offset_14 = DecimalParameter(0.93, 0.99, default=0.98, space='buy', decimals=3, optimize=False, load=True)
     buy_cti_14 = DecimalParameter(-0.99, -0.5, default=-0.86, space='buy', decimals=2, optimize=False, load=True)
 
+    # Buy condition #15 parameters
     buy_ema_open_mult_15 = DecimalParameter(0.01, 0.03, default=0.024, space='buy', decimals=3, optimize=False, load=True)
     buy_ma_offset_15 = DecimalParameter(0.93, 0.99, default=0.96, space='buy', decimals=3, optimize=False, load=True)
     buy_rsi_15 = DecimalParameter(20.0, 36.0, default=28.0, space='buy', decimals=1, optimize=False, load=True)
     buy_ema_rel_15 = DecimalParameter(0.97, 0.999, default=0.977, space='buy', decimals=3, optimize=False, load=True)
 
+    # Buy condition #16 parameters
     buy_ma_offset_16 = DecimalParameter(0.93, 0.97, default=0.952, space='buy', decimals=3, optimize=False, load=True)
     buy_rsi_16 = DecimalParameter(26.0, 50.0, default=31.0, space='buy', decimals=1, optimize=False, load=True)
     buy_ewo_16 = DecimalParameter(2.0, 6.0, default=2.8, space='buy', decimals=1, optimize=False, load=True)
     buy_cti_16 = DecimalParameter(-0.99, -0.5, default=-0.84, space='buy', decimals=2, optimize=False, load=True)
 
+    # Buy condition #17 parameters
     buy_ma_offset_17 = DecimalParameter(0.93, 0.98, default=0.94, space='buy', decimals=3, optimize=False, load=True)
     buy_ewo_17 = DecimalParameter(-18.0, -10.0, default=-12.4, space='buy', decimals=1, optimize=False, load=True)
     buy_cti_17 = DecimalParameter(-0.99, -0.5, default=-0.92, space='buy', decimals=2, optimize=False, load=True)
     buy_volume_17 = DecimalParameter(0.6, 6.0, default=2.0, space='buy', decimals=1, optimize=False, load=True)
 
+    # Buy condition #18 parameters
     buy_rsi_18 = DecimalParameter(16.0, 32.0, default=30.0, space='buy', decimals=1, optimize=False, load=True)
     buy_bb_offset_18 = DecimalParameter(0.98, 1.0, default=0.985, space='buy', decimals=3, optimize=False, load=True)
     buy_volume_18 = DecimalParameter(0.6, 6.0, default=2.0, space='buy', decimals=1, optimize=False, load=True)
     buy_cti_18 = DecimalParameter(-0.99, -0.5, default=-0.82, space='buy', decimals=2, optimize=False, load=True)
 
+    # Buy condition #19 parameters
     buy_rsi_1h_min_19 = DecimalParameter(40.0, 70.0, default=30.0, space='buy', decimals=1, optimize=False, load=True)
     buy_chop_min_19 = DecimalParameter(20.0, 60.0, default=23.0, space='buy', decimals=1, optimize=False, load=True)
 
+    # Buy condition #20 parameters
     buy_rsi_20 = DecimalParameter(20.0, 36.0, default=36.0, space='buy', decimals=1, optimize=False, load=True)
     buy_rsi_1h_20 = DecimalParameter(14.0, 30.0, default=16.0, space='buy', decimals=1, optimize=False, load=True)
     buy_cti_20 = DecimalParameter(-0.99, -0.5, default=-0.9, space='buy', decimals=2, optimize=False, load=True)
     buy_volume_20 = DecimalParameter(0.6, 6.0, default=2.0, space='buy', decimals=1, optimize=False, load=True)
 
+    # Buy condition #21 parameters
     buy_rsi_21 = DecimalParameter(10.0, 28.0, default=14.0, space='buy', decimals=1, optimize=False, load=True)
     buy_rsi_1h_21 = DecimalParameter(18.0, 40.0, default=28.0, space='buy', decimals=1, optimize=False, load=True)
     buy_cti_21 = DecimalParameter(-0.99, -0.4, default=-0.9, space='buy', decimals=2, optimize=False, load=True)
     buy_volume_21 = DecimalParameter(0.6, 6.0, default=2.0, space='buy', decimals=1, optimize=False, load=True)
 
+    # Buy condition #22 parameters
     buy_volume_22 = DecimalParameter(0.5, 6.0, default=2.0, space='buy', decimals=1, optimize=False, load=True)
     buy_bb_offset_22 = DecimalParameter(0.98, 1.0, default=0.984, space='buy', decimals=3, optimize=False, load=True)
     buy_ma_offset_22 = DecimalParameter(0.93, 0.98, default=0.946, space='buy', decimals=3, optimize=False, load=True)
     buy_ewo_22 = DecimalParameter(2.0, 10.0, default=6.2, space='buy', decimals=1, optimize=False, load=True)
     buy_rsi_22 = DecimalParameter(26.0, 56.0, default=37.0, space='buy', decimals=1, optimize=False, load=True)
 
+    # Buy condition #23 parameters
     buy_bb_offset_23 = DecimalParameter(0.97, 1.0, default=0.983, space='buy', decimals=3, optimize=False, load=True)
     buy_ewo_23 = DecimalParameter(2.0, 10.0, default=7.0, space='buy', decimals=1, optimize=False, load=True)
     buy_rsi_23 = DecimalParameter(20.0, 40.0, default=30.0, space='buy', decimals=1, optimize=False, load=True)
     buy_rsi_1h_23 = DecimalParameter(60.0, 80.0, default=70.0, space='buy', decimals=1, optimize=False, load=True)
 
+    # Buy condition #24 parameters
     buy_24_rsi_max = DecimalParameter(26.0, 60.0, default=50.0, space='buy', decimals=1, optimize=False, load=True)
     buy_24_rsi_1h_min = DecimalParameter(40.0, 90.0, default=66.9, space='buy', decimals=1, optimize=False, load=True)
 
+    # Buy condition #25 parameters
     buy_25_ma_offset = DecimalParameter(0.90, 0.99, default=0.922, space='buy', optimize=False, load=True)
     buy_25_rsi_4 = DecimalParameter(26.0, 40.0, default=38.0, space='buy', decimals=1, optimize=False, load=True)
     buy_25_cti = DecimalParameter(-0.99, -0.4, default=-0.76, space='buy', decimals=2, optimize=False, load=True)
 
+    # Buy condition #26 parameters
     buy_26_zema_low_offset = DecimalParameter(0.90, 0.99, default=0.932, space='buy', optimize=False, load=True)
     buy_26_cti = DecimalParameter(-0.99, -0.4, default=-0.8, space='buy', decimals=2, optimize=False, load=True)
     buy_26_volume = DecimalParameter(0.6, 6.0, default=1.2, space='buy', decimals=1, optimize=False, load=True)
 
+    # Buy condition #27 parameters
     buy_27_wr_max = DecimalParameter(95, 99, default=99.0, space='buy', decimals=1, optimize=False, load=True)
     buy_27_wr_1h_max = DecimalParameter(90, 99, default=97.6, space='buy', decimals=1, optimize=False, load=True)
     buy_27_rsi_max = DecimalParameter(40, 70, default=50, space='buy', decimals=0, optimize=False, load=True)
     buy_27_cti = DecimalParameter(-0.99, -0.4, default=-0.9, space='buy', decimals=2, optimize=False, load=True)
     buy_27_volume = DecimalParameter(0.6, 6.0, default=2.0, space='buy', decimals=1, optimize=False, load=True)
 
+    # Buy condition #28 parameters
     buy_28_ma_offset = DecimalParameter(0.90, 0.99, default=0.96, space='buy', optimize=False, load=True)
     buy_28_ewo = DecimalParameter(2.0, 14.0, default=12.2, space='buy', decimals=1, optimize=False, load=True)
     buy_28_rsi = DecimalParameter(24.0, 44.0, default=40.0, space='buy', decimals=1, optimize=False, load=True)
     buy_28_cti = DecimalParameter(-0.99, -0.4, default=-0.84, space='buy', decimals=2, optimize=False, load=True)
 
+    # Buy condition #29 parameters
     buy_29_ma_offset = DecimalParameter(0.90, 0.99, default=0.94, space='buy', optimize=False, load=True)
     buy_29_ewo = DecimalParameter(-14.0, -2.0, default=-4.0, space='buy', decimals=1, optimize=False, load=True)
     buy_29_cti = DecimalParameter(-0.99, -0.4, default=-0.95, space='buy', decimals=2, optimize=False, load=True)
 
+    # Buy condition #30 parameters
     buy_30_ma_offset = DecimalParameter(0.90, 0.99, default=0.97, space='buy', optimize=False, load=True)
     buy_30_ewo = DecimalParameter(2.0, 14.0, default=7.2, space='buy', decimals=1, optimize=False, load=True)
     buy_30_rsi = DecimalParameter(24.0, 48.0, default=42.0, space='buy', decimals=1, optimize=False, load=True)
     buy_30_cti = DecimalParameter(-0.99, -0.4, default=-0.88, space='buy', decimals=2, optimize=False, load=True)
 
+    # Buy condition #31 parameters
     buy_31_ma_offset = DecimalParameter(0.90, 0.99, default=0.94, space='buy', optimize=False, load=True)
     buy_31_ewo = DecimalParameter(-22.0, -8.0, default=-19.0, space='buy', decimals=1, optimize=False, load=True)
     buy_31_wr = DecimalParameter(-99.9, -95.0, default=-98.4, space='buy', decimals=1, optimize=False, load=True)
 
+    # Buy condition #32 parameters
     buy_32_ma_offset = DecimalParameter(0.90, 0.99, default=0.946, space='buy', optimize=False, load=True)
     buy_32_dip = DecimalParameter(0.001, 0.02, default=0.005, space='buy', decimals=3, optimize=False, load=True)
     buy_32_rsi = DecimalParameter(24.0, 50.0, default=46.0, space='buy', decimals=1, optimize=False, load=True)
     buy_32_cti = DecimalParameter(-0.99, -0.4, default=-0.8, space='buy', decimals=2, optimize=False, load=True)
 
+    # Buy condition #33 parameters
     buy_33_ma_offset = DecimalParameter(0.90, 0.99, default=0.988, space='buy', optimize=False, load=True)
     buy_33_rsi = DecimalParameter(24.0, 50.0, default=32.0, space='buy', decimals=1, optimize=False, load=True)
     buy_33_cti = DecimalParameter(-0.99, -0.4, default=-0.9, space='buy', decimals=2, optimize=False, load=True)
     buy_33_ewo = DecimalParameter(2.0, 14.0, default=7.6, space='buy', decimals=1, optimize=False, load=True)
     buy_33_volume = DecimalParameter(0.6, 6.0, default=2.0, space='buy', decimals=1, optimize=False, load=True)
 
+    # Buy condition #34 parameters
     buy_34_ma_offset = DecimalParameter(0.90, 0.99, default=0.94, space='buy', optimize=False, load=True)
     buy_34_dip = DecimalParameter(0.001, 0.02, default=0.005, space='buy', decimals=3, optimize=False, load=True)
     buy_34_ewo = DecimalParameter(-24.0, -8.0, default=-20.0, space='buy', decimals=1, optimize=False, load=True)
     buy_34_cti = DecimalParameter(-0.99, -0.4, default=-0.88, space='buy', decimals=2, optimize=False, load=True)
     buy_34_volume = DecimalParameter(0.6, 6.0, default=1.1, space='buy', decimals=1, optimize=False, load=True)
 
-    # Sell
+
+    # --------------------------------------------------------------------------------------------------- #
+    # SELL CONDITIONS HO VARIABLES MAPPING                                                                #
+    # --------------------------------------------------------------------------------------------------- #
 
     sell_condition_1_enable = CategoricalParameter([True, False], default=True, space='sell', optimize=False, load=True)
     sell_condition_2_enable = CategoricalParameter([True, False], default=True, space='sell', optimize=False, load=True)
@@ -2140,37 +2194,53 @@ class NostalgiaForInfinityNext(IStrategy):
     sell_condition_7_enable = CategoricalParameter([True, False], default=True, space='sell', optimize=False, load=True)
     sell_condition_8_enable = CategoricalParameter([True, False], default=True, space='sell', optimize=False, load=True)
 
+
+    # --------------------------------------------------------------------------------------------------- #
+    # SELL PUMP PROTECTION PARAMETERS                                                                     #
+    # --------------------------------------------------------------------------------------------------- #
+
     # 48h for pump sell checks
     sell_pump_threshold_48_1 = DecimalParameter(0.5, 1.2, default=0.9, space='sell', decimals=2, optimize=False, load=True)
     sell_pump_threshold_48_2 = DecimalParameter(0.4, 0.9, default=0.7, space='sell', decimals=2, optimize=False, load=True)
     sell_pump_threshold_48_3 = DecimalParameter(0.3, 0.7, default=0.5, space='sell', decimals=2, optimize=False, load=True)
-
     # 36h for pump sell checks
     sell_pump_threshold_36_1 = DecimalParameter(0.5, 0.9, default=0.72, space='sell', decimals=2, optimize=False, load=True)
     sell_pump_threshold_36_2 = DecimalParameter(3.0, 6.0, default=4.0, space='sell', decimals=2, optimize=False, load=True)
     sell_pump_threshold_36_3 = DecimalParameter(0.8, 1.6, default=1.0, space='sell', decimals=2, optimize=False, load=True)
-
     # 24h for pump sell checks
     sell_pump_threshold_24_1 = DecimalParameter(0.5, 0.9, default=0.68, space='sell', decimals=2, optimize=False, load=True)
     sell_pump_threshold_24_2 = DecimalParameter(0.3, 0.6, default=0.62, space='sell', decimals=2, optimize=False, load=True)
     sell_pump_threshold_24_3 = DecimalParameter(0.2, 0.5, default=0.88, space='sell', decimals=2, optimize=False, load=True)
 
+
+    # --------------------------------------------------------------------------------------------------- #
+    # SELL CONDITIONS LOGIC PARAMETERS                                                                     #
+    # --------------------------------------------------------------------------------------------------- #
+
+    # Sell condition #1 parameters
     sell_rsi_bb_1 = DecimalParameter(60.0, 80.0, default=79.5, space='sell', decimals=1, optimize=False, load=True)
 
+    # Sell condition #2 parameters
     sell_rsi_bb_2 = DecimalParameter(72.0, 90.0, default=81, space='sell', decimals=1, optimize=False, load=True)
 
+    # Sell condition #3 parameters
     sell_rsi_main_3 = DecimalParameter(77.0, 90.0, default=82, space='sell', decimals=1, optimize=False, load=True)
 
+    # Sell condition #4 parameters
     sell_dual_rsi_rsi_4 = DecimalParameter(72.0, 84.0, default=73.4, space='sell', decimals=1, optimize=False, load=True)
     sell_dual_rsi_rsi_1h_4 = DecimalParameter(78.0, 92.0, default=79.6, space='sell', decimals=1, optimize=False, load=True)
 
+    # Sell condition #5 parameters
     sell_ema_relative_5 = DecimalParameter(0.005, 0.05, default=0.024, space='sell', optimize=False, load=True)
     sell_rsi_diff_5 = DecimalParameter(0.0, 20.0, default=4.4, space='sell', optimize=False, load=True)
 
+    # Sell condition #6 parameters
     sell_rsi_under_6 = DecimalParameter(72.0, 90.0, default=79.0, space='sell', decimals=1, optimize=False, load=True)
 
+    # Sell condition #7 parameters
     sell_rsi_1h_7 = DecimalParameter(80.0, 95.0, default=81.7, space='sell', decimals=1, optimize=False, load=True)
 
+    # Sell condition #8 parameters
     sell_bb_relative_8 = DecimalParameter(1.05, 1.3, default=1.1, space='sell', decimals=3, optimize=False, load=True)
 
     # Profit over EMA200
@@ -2490,12 +2560,6 @@ class NostalgiaForInfinityNext(IStrategy):
                         )
 
     def bot_loop_start(self, **kwargs) -> None:
-        """
-        Called at the start of the bot iteration (one loop).
-        Might be used to perform pair-independent tasks
-        (e.g. gather some remote resource for comparison)
-        :param **kwargs: Ensure to keep this here so updates to this won't break your strategy.
-        """
         if self.config['runmode'].value in ('live', 'dry_run'):
             self.load_hold_trades_config()
         return super().bot_loop_start(**kwargs)
@@ -2897,8 +2961,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
         return False, None
 
-    def custom_sell(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float,
-                    current_profit: float, **kwargs):
+    def custom_sell(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float, current_profit: float, **kwargs):
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
         last_candle = dataframe.iloc[-1]
         previous_candle_1 = dataframe.iloc[-2]
@@ -3404,18 +3467,15 @@ class NostalgiaForInfinityNext(IStrategy):
 
     def resampled_tf_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Indicators
-        # -----------------------------------------------------------------------------------------
         dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
 
         return dataframe
 
     def base_tf_btc_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Indicators
-        # -----------------------------------------------------------------------------------------
         dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
 
         # Add prefix
-        # -----------------------------------------------------------------------------------------
         ignore_columns = ['date', 'open', 'high', 'low', 'close', 'volume']
         dataframe.rename(columns=lambda s: "btc_" + s  if (not s in ignore_columns) else s, inplace=True)
 
@@ -3423,22 +3483,17 @@ class NostalgiaForInfinityNext(IStrategy):
 
     def info_tf_btc_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Indicators
-        # -----------------------------------------------------------------------------------------
         dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
         dataframe['not_downtrend'] = ((dataframe['close'] > dataframe['close'].shift(2)) | (dataframe['rsi'] > 50))
 
         # Add prefix
-        # -----------------------------------------------------------------------------------------
         ignore_columns = ['date', 'open', 'high', 'low', 'close', 'volume']
         dataframe.rename(columns=lambda s: "btc_" + s if (not s in ignore_columns) else s, inplace=True)
 
         return dataframe
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        '''
-        --> BTC informative (5m/1h)
-        ___________________________________________________________________________________________
-        '''
+        # BTC informative (5m/1h)
         if self.has_BTC_base_tf:
             btc_base_tf = self.dp.get_pair_dataframe("BTC/USDT", self.timeframe)
             btc_base_tf = self.base_tf_btc_indicators(btc_base_tf, metadata)
@@ -3453,20 +3508,14 @@ class NostalgiaForInfinityNext(IStrategy):
             drop_columns = [(s + "_" + self.info_timeframe) for s in ['date', 'open', 'high', 'low', 'close', 'volume']]
             dataframe.drop(columns=dataframe.columns.intersection(drop_columns), inplace=True)
 
-        '''
-        --> Informative timeframe
-        ___________________________________________________________________________________________
-        '''
+        # Informative timeframe
         if self.info_timeframe != 'none':
             informative_1h = self.informative_1h_indicators(dataframe, metadata)
             dataframe = merge_informative_pair(dataframe, informative_1h, self.timeframe, self.info_timeframe, ffill=True)
             drop_columns = [(s + "_" + self.info_timeframe) for s in ['date']]
             dataframe.drop(columns=dataframe.columns.intersection(drop_columns), inplace=True)
 
-        '''
-        --> Resampled to another timeframe
-        ___________________________________________________________________________________________
-        '''
+        # Resampled to another timeframe
         if self.res_timeframe != 'none':
             resampled = resample_to_interval(dataframe, timeframe_to_minutes(self.res_timeframe))
             resampled = self.resampled_tf_indicators(resampled, metadata)
@@ -3477,12 +3526,10 @@ class NostalgiaForInfinityNext(IStrategy):
             drop_columns = [(s + "_" + self.res_timeframe) for s in ['date']]
             dataframe.drop(columns=dataframe.columns.intersection(drop_columns), inplace=True)
 
-        '''
-        --> The indicators for the normal (5m) timeframe
-        ___________________________________________________________________________________________
-        '''
+        # The indicators for the normal (5m) timeframe
         dataframe = self.normal_tf_indicators(dataframe, metadata)
         return dataframe
+
 
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         conditions = []
@@ -3968,35 +4015,14 @@ class NostalgiaForInfinityNext(IStrategy):
 
         return dataframe
 
+    
     def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe.loc[:, 'sell'] = 0
 
         return dataframe
+        
 
-    def confirm_trade_exit(self, pair: str, trade: "Trade", order_type: str, amount: float,
-                           rate: float, time_in_force: str, sell_reason: str, **kwargs) -> bool:
-        """
-        Called right before placing a regular sell order.
-        Timing for this function is critical, so avoid doing heavy computations or
-        network requests in this method.
-
-        For full documentation please go to https://www.freqtrade.io/en/latest/strategy-advanced/
-
-        When not implemented by a strategy, returns True (always confirming).
-
-        :param pair: Pair that's about to be sold.
-        :param trade: trade object.
-        :param order_type: Order type (as configured in order_types). usually limit or market.
-        :param amount: Amount in quote currency.
-        :param rate: Rate that's going to be used when using limit orders
-        :param time_in_force: Time in force. Defaults to GTC (Good-til-cancelled).
-        :param sell_reason: Sell reason.
-            Can be any of ['roi', 'stop_loss', 'stoploss_on_exchange', 'trailing_stop_loss',
-                           'sell_signal', 'force_sell', 'emergency_sell']
-        :param **kwargs: Ensure to keep this here so updates to this won't break your strategy.
-        :return bool: When True is returned, then the sell-order is placed on the exchange.
-            False aborts the process
-        """
+    def confirm_trade_exit(self, pair: str, trade: "Trade", order_type: str, amount: float, rate: float, time_in_force: str, sell_reason: str, **kwargs) -> bool:
         # Just to be sure our hold data is loaded, should be a no-op call after the first bot loop
         if self.config['runmode'].value in ('live', 'dry_run'):
             self.load_hold_trades_config()
@@ -4027,6 +4053,13 @@ class NostalgiaForInfinityNext(IStrategy):
             return False
         else:
             return True
+
+
+
+
+# --------------------------------------------------------------------------------------------------- #
+# ADDITIONAL TECHNICAL ANALYISIS FUNCTIONS                                                            #
+# --------------------------------------------------------------------------------------------------- #
 
 # Elliot Wave Oscillator
 def ewo(dataframe, sma1_length=5, sma2_length=35):
