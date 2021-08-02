@@ -2945,124 +2945,124 @@ class NostalgiaForInfinityNext(IStrategy):
         if any(c in buy_tag for c in ['32', '33', '34', '35', '36', '37', '38']):
             sell, signal_name = self.sell_quick_mode(current_profit, max_profit, last_candle, previous_candle_1)
             if sell and (signal_name is not None):
-                return signal_name + ' ' + buy_tag
+                return signal_name + ' ( ' + buy_tag + ')'
 
         # Over EMA200, main profit targets
         sell, signal_name = self.sell_over_main(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return signal_name + ' ' + buy_tag
+            return signal_name + ' ( ' + buy_tag + ')'
 
         # Under EMA200, main profit targets
         sell, signal_name = self.sell_under_main(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return signal_name + ' ' + buy_tag
+            return signal_name + ' ( ' + buy_tag + ')'
 
         # The pair is pumped
         sell, signal_name = self.sell_pump_main(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return signal_name + ' ' + buy_tag
+            return signal_name + ' ( ' + buy_tag + ')'
 
         # The pair is descending
         sell, signal_name = self.sell_dec_main(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return signal_name + ' ' + buy_tag
+            return signal_name + ' ( ' + buy_tag + ')'
 
         # Trailing
         sell, signal_name = self.sell_trail_main(current_profit, last_candle, max_profit)
         if sell and (signal_name is not None):
-            return signal_name + ' ' + buy_tag
+            return signal_name + ' ( ' + buy_tag + ')'
 
         # Duration based
         sell, signal_name = self.sell_duration_main(current_profit, last_candle, trade, current_time)
         if sell and (signal_name is not None):
-            return signal_name + ' ' + buy_tag
+            return signal_name + ' ( ' + buy_tag + ')'
 
         # Under EMA200, exit with any profit
         sell, signal_name = self.sell_under_min(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return signal_name + ' ' + buy_tag
+            return signal_name + ' ( ' + buy_tag + ')'
 
         # Stoplosses
         sell, signal_name = self.sell_stoploss(current_profit, last_candle, trade, current_time, max_loss, max_profit)
         if sell and (signal_name is not None):
-            return signal_name + ' ' + buy_tag
+            return signal_name + ' ( ' + buy_tag + ')'
 
         # Pumped descending pairs
         sell, signal_name = self.sell_pump_dec(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return signal_name + ' ' + buy_tag
+            return signal_name + ' ( ' + buy_tag + ')'
 
         # Extra sells for pumped pairs
         sell, signal_name = self.sell_pump_extra(current_profit, last_candle, max_profit)
         if sell and (signal_name is not None):
-            return signal_name + ' ' + buy_tag
+            return signal_name + ' ( ' + buy_tag + ')'
 
         # Extra sells for trades that recovered
         sell, signal_name = self.sell_recover(current_profit, last_candle, max_loss)
         if sell and (signal_name is not None):
-            return signal_name + ' ' + buy_tag
+            return signal_name + ' ( ' + buy_tag + ')'
 
         # Williams %R based sell 1
         sell, signal_name = self.sell_r_1(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return signal_name + ' ' + buy_tag
+            return signal_name + ' ( ' + buy_tag + ')'
 
         # Williams %R based sell 2
         sell, signal_name = self.sell_r_2(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return signal_name + ' ' + buy_tag
+            return signal_name + ' ( ' + buy_tag + ')'
 
         # Williams %R based sell 3
         sell, signal_name = self.sell_r_3(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return signal_name + ' ' + buy_tag
+            return signal_name + ' ( ' + buy_tag + ')'
 
         # Williams %R based sell 4, plus CTI
         sell, signal_name = self.sell_r_4(current_profit, last_candle)
         if (sell) and (signal_name is not None):
-            return signal_name + ' ' + buy_tag
+            return signal_name + ' ( ' + buy_tag + ')'
 
         # Sell signal 1
         if self.sell_condition_1_enable.value & (last_candle['rsi'] > self.sell_rsi_bb_1.value) & (last_candle['close'] > last_candle['bb20_2_upp']) & (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) & (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']) & (previous_candle_3['close'] > previous_candle_3['bb20_2_upp']) & (previous_candle_4['close'] > previous_candle_4['bb20_2_upp']) & (previous_candle_5['close'] > previous_candle_5['bb20_2_upp']):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.0):
-                    return 'sell_signal_1_1_1' + ' ' + buy_tag
+                    return 'sell_signal_1_1_1' + ' ( ' + buy_tag + ')'
                 elif (max_loss > 0.1):
-                    return 'sell_signal_1_1_2' + ' ' + buy_tag
+                    return 'sell_signal_1_1_2' + ' ( ' + buy_tag + ')'
             else:
-                return 'sell_signal_1_2' + ' ' + buy_tag
+                return 'sell_signal_1_2' + ' ( ' + buy_tag + ')'
 
         # Sell signal 2
         elif (self.sell_condition_2_enable.value) & (last_candle['rsi'] > self.sell_rsi_bb_2.value) & (last_candle['close'] > last_candle['bb20_2_upp']) & (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) & (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.0):
-                    return 'sell_signal_2_1_1' + ' ' + buy_tag
+                    return 'sell_signal_2_1_1' + ' ( ' + buy_tag + ')'
                 elif (max_loss > 0.07):
-                    return 'sell_signal_2_1_2' + ' ' + buy_tag
+                    return 'sell_signal_2_1_2' + ' ( ' + buy_tag + ')'
             else:
                 if (current_profit > 0.0):
-                    return 'sell_signal_2_2_1' + ' ' + buy_tag
+                    return 'sell_signal_2_2_1' + ' ( ' + buy_tag + ')'
                 elif (max_loss > 0.07):
-                    return 'sell_signal_2_2_2' + ' ' + buy_tag
+                    return 'sell_signal_2_2_2' + ' ( ' + buy_tag + ')'
 
         # Sell signal 4
         elif self.sell_condition_4_enable.value & (last_candle['rsi'] > self.sell_dual_rsi_rsi_4.value) & (last_candle['rsi_1h'] > self.sell_dual_rsi_rsi_1h_4.value):
-            return 'sell_signal_4' + ' ' + buy_tag
+            return 'sell_signal_4' + ' ( ' + buy_tag + ')'
 
         # Sell signal 6
         elif self.sell_condition_6_enable.value & (last_candle['close'] < last_candle['ema_200']) & (last_candle['close'] > last_candle['ema_50']) & (last_candle['rsi'] > self.sell_rsi_under_6.value):
             if (current_profit > 0.0):
-                    return 'sell_signal_6_1' + ' ' + buy_tag
+                    return 'sell_signal_6_1' + ' ( ' + buy_tag + ')'
             elif (max_loss > 0.08):
-                return 'sell_signal_6_2' + ' ' + buy_tag
+                return 'sell_signal_6_2' + ' ( ' + buy_tag + ')'
 
         # Sell signal 7
         elif self.sell_condition_7_enable.value & (last_candle['rsi_1h'] > self.sell_rsi_1h_7.value) & (last_candle['crossed_below_ema_12_26']):
-            return 'sell_signal_7' + ' ' + buy_tag
+            return 'sell_signal_7' + ' ( ' + buy_tag + ')'
 
         # Sell signal 8
         elif self.sell_condition_8_enable.value & (last_candle['close'] > last_candle['bb20_2_upp_1h'] * self.sell_bb_relative_8.value):
-            return 'sell_signal_8' + ' ' + buy_tag
+            return 'sell_signal_8' + ' ( ' + buy_tag + ')'
 
         return None
 
