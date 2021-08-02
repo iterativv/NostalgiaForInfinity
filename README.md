@@ -96,16 +96,16 @@ Would be transformed to:
 
 ### Command reference
 ```
-usage: ho_to_raw_codemod.py [-h] [--input INPUT_PATH] [--output OUTPUT_PATH]
+usage: ho_to_raw_codemod.py [-h] [--strategy STRATEGY] [--output OUTPUT_PATH]
 
 optional arguments:
   -h, --help            show this help message and exit
-  --input INPUT_PATH, -i INPUT_PATH
-                        Strategy path
+  --strategy STRATEGY, -s STRATEGY
+                        Name of the strategy
   --output OUTPUT_PATH, -o OUTPUT_PATH
                         Output of transformed file
 ```
 
-The script has a simple CLI, where it accepts two arguments, the input, which would be the strategy path and the output,  which is the path of the transformed file. E.g.
+The script has a simple CLI, where it accepts two arguments, the strategy name, and the output,  which is the path of the transformed file. E.g.
 
-`python codemods/ho_to_raw_codemod.py -i NostalgiaForInfinityNext.py -o NostalgiaForInfinityNext_Raw.py`
+`python codemods/ho_to_raw_codemod.py --strategy NostalgiaForInfinityNext --output NostalgiaForInfinityNext_Raw.py`
