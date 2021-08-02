@@ -106,6 +106,6 @@ optional arguments:
                         Output of transformed file
 ```
 
-The script has a simple CLI, where it accepts two arguments, the strategy name, and the output,  which is the path of the transformed file. E.g.
+The script has a simple CLI, where it accepts two arguments, the strategy name, and the output file,  which is the path of the transformed file. E.g.
 
 `python codemods/ho_to_raw_codemod.py --strategy NostalgiaForInfinityNext --output NostalgiaForInfinityNext_Raw.py`
