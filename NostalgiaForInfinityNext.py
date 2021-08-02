@@ -108,7 +108,7 @@ class NostalgiaForInfinityNext(IStrategy):
     has_BTC_info_tf = True
 
     # Backtest Age Filter emulation
-    has_bt_agefilter = True
+    has_bt_agefilter = False
     bt_min_age_days = 3
 
     # Exchange Downtime protection
