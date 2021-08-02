@@ -1,8 +1,8 @@
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 import logging
 import math
-import numpy as np
-import pandas_ta as pta
+import numpy as np
+import pandas_ta as pta
 import pathlib
 import rapidjson
 import talib.abstract as ta
