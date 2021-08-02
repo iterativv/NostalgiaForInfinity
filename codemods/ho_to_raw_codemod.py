@@ -4,6 +4,7 @@ from typing import List
 
 from freqtrade.configuration import Configuration
 from freqtrade.resolvers import StrategyResolver
+from freqtrade.strategy.interface import IStrategy
 
 pattern = re.compile(
     r"(CategoricalParameter|DecimalParameter|IntParameter|RealParameter).*((default=)(?P<value>.+?),.*\)|(default=)(?P<edge_value>.+?)\))"
@@ -37,7 +38,7 @@ def replace_references(source: str, references_to_replace: List[str]):
     return modified_source
 
 
-def replace_all_references(source: str):
+def replace_all_references(strategy: IStrategy, source: str):
     params = strategy.detect_all_parameters()
     buy_params = [param[0] for param in params["buy"]]
     sell_params = [param[0] for param in params["sell"]]
@@ -76,8 +77,8 @@ if __name__ == "__main__":
     with open(strategy.__file__) as f:
         source = f.read()
     validate_syntax(source)
-    new_source = replace_all_references(source)
-    print("Transforming all hyperopt values to raw values...")
+    new_source = replace_all_references(strategy, source)
+    print("Transforming all hyperopt values to raw...")
     transformed = transform_code(new_source)
     with open(args.output, "w") as f:
         f.write(transformed)
