@@ -3508,7 +3508,7 @@ class NostalgiaForInfinityNext(IStrategy):
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         conditions = []
         dataframe.loc[:, 'buy_tag'] = ''
-          
+
         for index in self.buy_protection_params:
             item_buy_protection_list = [True]
             global_buy_protection_params = self.buy_protection_params[index]
@@ -3516,7 +3516,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
             if self.buy_params['buy_condition_' + str(index) + '_enable']:
                 # Standard protections - Common to every condition
-                # -----------------------------------------------------------------------------------------                
+                # -----------------------------------------------------------------------------------------
                 if global_buy_protection_params["ema_fast"].value:
                     item_buy_protection_list.append(dataframe[f"ema_{global_buy_protection_params['ema_fast_len'].value}"] > dataframe['ema_200'])
                 if global_buy_protection_params["ema_slow"].value:
@@ -3541,24 +3541,24 @@ class NostalgiaForInfinityNext(IStrategy):
                 else:
                     if self.has_downtime_protection:
                         item_buy_protection_list.append(dataframe['live_data_ok'])
-                
+
                 # Buy conditions
                 # -----------------------------------------------------------------------------------------
                 item_buy_logic = []
                 item_buy_logic.append(reduce(lambda x, y: x & y, item_buy_protection_list))
-                
+
                 # Condition #1
                 if index == 1:
                     # Non-Standard protections
 
-                    # Logic                                        
+                    # Logic
                     item_buy_logic.append(((dataframe['close'] - dataframe['open'].rolling(36).min()) / dataframe['open'].rolling(36).min()) > self.buy_min_inc_1.value)
                     item_buy_logic.append(dataframe['rsi_1h'] > self.buy_rsi_1h_min_1.value)
                     item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_max_1.value)
                     item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_1.value)
                     item_buy_logic.append(dataframe['mfi'] < self.buy_mfi_1.value)
                     item_buy_logic.append(dataframe['cti'] < self.buy_cti_1.value)
-                
+
                 # Condition #2
                 elif index == 2:
                     # Non-Standard protections
@@ -3568,7 +3568,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['mfi'] < self.buy_mfi_2.value)
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_2.value))
                     item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_volume_2.value))
-                
+
                 # Condition #3
                 elif index == 3:
                     # Non-Standard protections
@@ -3592,7 +3592,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['close'] < self.buy_bb20_close_bblowerband_4.value * dataframe['bb20_2_low'])
                     item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_30'].shift(1) * self.buy_bb20_volume_4.value))
                     item_buy_logic.append(dataframe['cti'] < self.buy_cti_4.value)
- 
+
                 # Condition #5
                 elif index == 5:
                     # Non-Standard protections
@@ -3605,7 +3605,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_5.value))
                     item_buy_logic.append(dataframe['cti'] < self.buy_cti_5.value)
                     item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_volume_5.value))
-                    
+
                 # Condition #6
                 elif index == 6:
                     # Non-Standard protections
@@ -3935,7 +3935,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['close'] < dataframe['ema_13'] * self.buy_34_ma_offset.value)
                     item_buy_logic.append(dataframe['ewo'] < self.buy_34_ewo.value)
                     item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_34_volume.value))
-                
+
                 # Condition #35 - PMAX0 buy
                 elif index == 35:
                     # Non-Standard protections
@@ -3946,7 +3946,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['ewo'] > 8.2)
                     item_buy_logic.append(dataframe['rsi'] < 32.0)
                     item_buy_logic.append(dataframe['cti'] < -0.5)
-                
+
                 # Condition #36 - PMAX1 buy
                 elif index == 36:
                     # Non-Standard protections (add below)
@@ -3986,7 +3986,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
         if conditions:
             dataframe.loc[:, 'buy'] = reduce(lambda x, y: x | y, conditions)
-        
+
         return dataframe
 
     def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
