@@ -2144,8 +2144,8 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_33_ewo = DecimalParameter(2.0, 14.0, default=7.6, space='buy', decimals=1, optimize=False, load=True)
     buy_33_volume = DecimalParameter(0.6, 6.0, default=2.0, space='buy', decimals=1, optimize=False, load=True)
 
-    buy_34_ma_offset = DecimalParameter(0.90, 0.99, default=0.968, space='buy', optimize=False, load=True)
-    buy_34_dip = DecimalParameter(0.001, 0.02, default=0.002, space='buy', decimals=3, optimize=False, load=True)
+    buy_34_ma_offset = DecimalParameter(0.90, 0.99, default=0.94, space='buy', optimize=False, load=True)
+    buy_34_dip = DecimalParameter(0.001, 0.02, default=0.005, space='buy', decimals=3, optimize=False, load=True)
     buy_34_ewo = DecimalParameter(-24.0, -8.0, default=-20.0, space='buy', decimals=1, optimize=False, load=True)
     buy_34_cti = DecimalParameter(-0.99, -0.4, default=-0.88, space='buy', decimals=2, optimize=False, load=True)
     buy_34_volume = DecimalParameter(0.6, 6.0, default=1.1, space='buy', decimals=1, optimize=False, load=True)
