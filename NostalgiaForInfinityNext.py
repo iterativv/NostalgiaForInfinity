@@ -1,4 +1,4 @@
-import freqtrade.vendor.qtpylib.indicators as qtpylib
+import freqtrade.vendor.qtpylib.indicators as qtpylib
 import logging
 import math
 import numpy as np
