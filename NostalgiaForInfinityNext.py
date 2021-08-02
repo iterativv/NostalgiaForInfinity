@@ -73,7 +73,17 @@ log = logging.getLogger(__name__)
 class NostalgiaForInfinityNext(IStrategy):
     INTERFACE_VERSION = 2
 
-    # # ROI table:
+    plot_config = {
+        'main_plot': {
+             },
+        'subplots': {
+            "buy tag": {
+                'buy_tag': {'color': 'green'}
+            },
+        }
+    }
+
+    # ROI table:
     minimal_roi = {
         "0": 10,
     }
@@ -99,7 +109,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
     # Backtest Age Filter emulation
     has_bt_agefilter = False
-    bt_min_age_days = 7
+    bt_min_age_days = 3
 
     # Exchange Downtime protection
     has_downtime_protection = False
@@ -2885,170 +2895,174 @@ class NostalgiaForInfinityNext(IStrategy):
 
         return False, None
 
-    def sell_quick_mode(self, current_profit: float, max_profit:float, last_candle, previous_candle_1, buy_signal_candle) -> tuple:
-        if buy_signal_candle['buy_condition_32'] or buy_signal_candle['buy_condition_33'] or buy_signal_candle['buy_condition_34'] or buy_signal_candle['buy_condition_35'] or buy_signal_candle['buy_condition_36'] or buy_signal_candle['buy_condition_37'] or buy_signal_candle['buy_condition_38']:
-            if (0.06 > current_profit > 0.02) & (last_candle['rsi'] > 79.0):
-                return True, 'signal_profit_q_1'
+    def sell_quick_mode(self, current_profit: float, max_profit:float, last_candle, previous_candle_1) -> tuple:
+        if (0.06 > current_profit > 0.02) & (last_candle['rsi'] > 79.0):
+            return True, 'signal_profit_q_1'
 
-            if (0.06 > current_profit > 0.02) & (last_candle['cti'] > 0.9):
-                return True, 'signal_profit_q_2'
+        if (0.06 > current_profit > 0.02) & (last_candle['cti'] > 0.9):
+            return True, 'signal_profit_q_2'
 
-            if (current_profit < -0.1):
-                return True, 'signal_stoploss_q_1'
+        if (current_profit < -0.1):
+            return True, 'signal_stoploss_q_1'
 
-            if(last_candle['close'] < last_candle['atr_high_thresh']) & (previous_candle_1['close'] > previous_candle_1['atr_high_thresh']):
-                return True, 'signal_stoploss_q_atr'
+        if(last_candle['close'] < last_candle['atr_high_thresh']) & (previous_candle_1['close'] > previous_candle_1['atr_high_thresh']):
+            return True, 'signal_stoploss_q_atr'
 
-            if (current_profit > 0.0):
-                if (last_candle['pm'] <= last_candle['pmax_thresh']) & (last_candle['close'] > last_candle['sma_21'] * 1.039):
-                    return True, 'signal_profit_q_pmax_bull'
-                if (last_candle['pm'] > last_candle['pmax_thresh']) & (last_candle['close'] > last_candle['sma_21'] * 1.012):
-                    return True, 'signal_profit_q_pmax_bear'
-                if (last_candle['pm'] > last_candle['pmax_thresh']) & (last_candle['crsi'] >= 70):
-                    return True, 'signal_profit_q_pmax_c'
+        if (current_profit > 0.0):
+            if (last_candle['pm'] <= last_candle['pmax_thresh']) & (last_candle['close'] > last_candle['sma_21'] * 1.039):
+                return True, 'signal_profit_q_pmax_bull'
+            if (last_candle['pm'] > last_candle['pmax_thresh']) & (last_candle['close'] > last_candle['sma_21'] * 1.012):
+                return True, 'signal_profit_q_pmax_bear'
+            if (last_candle['pm'] > last_candle['pmax_thresh']) & (last_candle['crsi'] >= 70):
+                return True, 'signal_profit_q_pmax_c'
 
         return False, None
 
     def custom_sell(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float,
                     current_profit: float, **kwargs):
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
-        last_candle = dataframe.iloc[-1].squeeze()
-        previous_candle_1 = dataframe.iloc[-2].squeeze()
-        previous_candle_2 = dataframe.iloc[-3].squeeze()
-        previous_candle_3 = dataframe.iloc[-4].squeeze()
-        previous_candle_4 = dataframe.iloc[-5].squeeze()
-        previous_candle_5 = dataframe.iloc[-6].squeeze()
+        last_candle = dataframe.iloc[-1]
+        previous_candle_1 = dataframe.iloc[-2]
+        previous_candle_2 = dataframe.iloc[-3]
+        previous_candle_3 = dataframe.iloc[-4]
+        previous_candle_4 = dataframe.iloc[-5]
+        previous_candle_5 = dataframe.iloc[-6]
 
-        trade_open_date = timeframe_to_prev_date(self.timeframe, trade.open_date_utc)
-        buy_signal = dataframe.loc[dataframe['date'] < trade_open_date]
-        if not buy_signal.empty:
-            buy_signal_candle = buy_signal.iloc[-1].squeeze()
+        buy_tag = 'empty'
+        if self.config['runmode'].value in ('live', 'dry_run') and hasattr(trade, 'buy_tag'):
+            buy_tag = trade.buy_tag
+        else:
+            trade_open_date = timeframe_to_prev_date(self.timeframe, trade.open_date_utc)
+            buy_signal = dataframe.loc[dataframe['date'] < trade_open_date]
+            if not buy_signal.empty:
+                buy_signal_candle = buy_signal.iloc[-1]
+                buy_tag = buy_signal_candle['buy_tag']
 
         max_profit = ((trade.max_rate - trade.open_rate) / trade.open_rate)
         max_loss = ((trade.open_rate - trade.min_rate) / trade.min_rate)
 
         # Quick sell mode
-        if not buy_signal.empty:
-            sell, signal_name = self.sell_quick_mode(current_profit, max_profit, last_candle, previous_candle_1, buy_signal_candle)
+        if any(c in buy_tag for c in ['32', '33', '34', '35', '36', '37', '38']):
+            sell, signal_name = self.sell_quick_mode(current_profit, max_profit, last_candle, previous_candle_1)
             if sell and (signal_name is not None):
-                return signal_name
+                return signal_name + ' ( ' + buy_tag + ')'
 
         # Over EMA200, main profit targets
         sell, signal_name = self.sell_over_main(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return signal_name
+            return signal_name + ' ( ' + buy_tag + ')'
 
         # Under EMA200, main profit targets
         sell, signal_name = self.sell_under_main(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return signal_name
+            return signal_name + ' ( ' + buy_tag + ')'
 
         # The pair is pumped
         sell, signal_name = self.sell_pump_main(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return signal_name
+            return signal_name + ' ( ' + buy_tag + ')'
 
         # The pair is descending
         sell, signal_name = self.sell_dec_main(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return signal_name
+            return signal_name + ' ( ' + buy_tag + ')'
 
         # Trailing
         sell, signal_name = self.sell_trail_main(current_profit, last_candle, max_profit)
         if sell and (signal_name is not None):
-            return signal_name
+            return signal_name + ' ( ' + buy_tag + ')'
 
         # Duration based
         sell, signal_name = self.sell_duration_main(current_profit, last_candle, trade, current_time)
         if sell and (signal_name is not None):
-            return signal_name
+            return signal_name + ' ( ' + buy_tag + ')'
 
         # Under EMA200, exit with any profit
         sell, signal_name = self.sell_under_min(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return signal_name
+            return signal_name + ' ( ' + buy_tag + ')'
 
         # Stoplosses
         sell, signal_name = self.sell_stoploss(current_profit, last_candle, trade, current_time, max_loss, max_profit)
         if sell and (signal_name is not None):
-            return signal_name
+            return signal_name + ' ( ' + buy_tag + ')'
 
         # Pumped descending pairs
         sell, signal_name = self.sell_pump_dec(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return signal_name
+            return signal_name + ' ( ' + buy_tag + ')'
 
         # Extra sells for pumped pairs
         sell, signal_name = self.sell_pump_extra(current_profit, last_candle, max_profit)
         if sell and (signal_name is not None):
-            return signal_name
+            return signal_name + ' ( ' + buy_tag + ')'
 
         # Extra sells for trades that recovered
         sell, signal_name = self.sell_recover(current_profit, last_candle, max_loss)
         if sell and (signal_name is not None):
-            return signal_name
+            return signal_name + ' ( ' + buy_tag + ')'
 
         # Williams %R based sell 1
         sell, signal_name = self.sell_r_1(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return signal_name
+            return signal_name + ' ( ' + buy_tag + ')'
 
         # Williams %R based sell 2
         sell, signal_name = self.sell_r_2(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return signal_name
+            return signal_name + ' ( ' + buy_tag + ')'
 
         # Williams %R based sell 3
         sell, signal_name = self.sell_r_3(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return signal_name
+            return signal_name + ' ( ' + buy_tag + ')'
 
         # Williams %R based sell 4, plus CTI
         sell, signal_name = self.sell_r_4(current_profit, last_candle)
         if (sell) and (signal_name is not None):
-            return signal_name
+            return signal_name + ' ( ' + buy_tag + ')'
 
         # Sell signal 1
         if self.sell_condition_1_enable.value & (last_candle['rsi'] > self.sell_rsi_bb_1.value) & (last_candle['close'] > last_candle['bb20_2_upp']) & (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) & (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']) & (previous_candle_3['close'] > previous_candle_3['bb20_2_upp']) & (previous_candle_4['close'] > previous_candle_4['bb20_2_upp']) & (previous_candle_5['close'] > previous_candle_5['bb20_2_upp']):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.0):
-                    return 'sell_signal_1_1_1'
+                    return 'sell_signal_1_1_1' + ' ( ' + buy_tag + ')'
                 elif (max_loss > 0.1):
-                    return 'sell_signal_1_1_2'
+                    return 'sell_signal_1_1_2' + ' ( ' + buy_tag + ')'
             else:
-                return 'sell_signal_1_2'
+                return 'sell_signal_1_2' + ' ( ' + buy_tag + ')'
 
         # Sell signal 2
         elif (self.sell_condition_2_enable.value) & (last_candle['rsi'] > self.sell_rsi_bb_2.value) & (last_candle['close'] > last_candle['bb20_2_upp']) & (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) & (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.0):
-                    return 'sell_signal_2_1_1'
+                    return 'sell_signal_2_1_1' + ' ( ' + buy_tag + ')'
                 elif (max_loss > 0.07):
-                    return 'sell_signal_2_1_2'
+                    return 'sell_signal_2_1_2' + ' ( ' + buy_tag + ')'
             else:
                 if (current_profit > 0.0):
-                    return 'sell_signal_2_2_1'
+                    return 'sell_signal_2_2_1' + ' ( ' + buy_tag + ')'
                 elif (max_loss > 0.07):
-                    return 'sell_signal_2_2_2'
+                    return 'sell_signal_2_2_2' + ' ( ' + buy_tag + ')'
 
         # Sell signal 4
         elif self.sell_condition_4_enable.value & (last_candle['rsi'] > self.sell_dual_rsi_rsi_4.value) & (last_candle['rsi_1h'] > self.sell_dual_rsi_rsi_1h_4.value):
-            return 'sell_signal_4'
+            return 'sell_signal_4' + ' ( ' + buy_tag + ')'
 
         # Sell signal 6
         elif self.sell_condition_6_enable.value & (last_candle['close'] < last_candle['ema_200']) & (last_candle['close'] > last_candle['ema_50']) & (last_candle['rsi'] > self.sell_rsi_under_6.value):
             if (current_profit > 0.0):
-                    return 'sell_signal_6_1'
+                    return 'sell_signal_6_1' + ' ( ' + buy_tag + ')'
             elif (max_loss > 0.08):
-                return 'sell_signal_6_2'
+                return 'sell_signal_6_2' + ' ( ' + buy_tag + ')'
 
         # Sell signal 7
         elif self.sell_condition_7_enable.value & (last_candle['rsi_1h'] > self.sell_rsi_1h_7.value) & (last_candle['crossed_below_ema_12_26']):
-            return 'sell_signal_7'
+            return 'sell_signal_7' + ' ( ' + buy_tag + ')'
 
         # Sell signal 8
         elif self.sell_condition_8_enable.value & (last_candle['close'] > last_candle['bb20_2_upp_1h'] * self.sell_bb_relative_8.value):
-            return 'sell_signal_8'
+            return 'sell_signal_8' + ' ( ' + buy_tag + ')'
 
         return None
 
@@ -3266,7 +3280,7 @@ class NostalgiaForInfinityNext(IStrategy):
     def normal_tf_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # BB 40 - STD2
         bb_40_std2 = qtpylib.bollinger_bands(dataframe['close'], window=40, stds=2)
-        dataframe['bb40_2_low']= bb_40_std2['lower']
+        dataframe['bb40_2_low'] = bb_40_std2['lower']
         dataframe['bb40_2_mid'] = bb_40_std2['mid']
         dataframe['bb40_2_delta'] = (bb_40_std2['mid'] - dataframe['bb40_2_low']).abs()
         dataframe['closedelta'] = (dataframe['close'] - dataframe['close'].shift()).abs()
@@ -3526,6 +3540,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_protection_list.append(dataframe['live_data_ok'])
             buy_protection_list.append(item_buy_protection_list)
 
+        dataframe.loc[:, 'buy_tag'] = ''
         # Buy Condition #1
         dataframe.loc[:,'buy_condition_1'] = False
         # -----------------------------------------------------------------------------------------
@@ -3545,7 +3560,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_1'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '1 '
 
         # Buy Condition #2
         dataframe.loc[:,'buy_condition_2'] = False
@@ -3564,7 +3579,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_2'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '2 '
 
         # Buy Condition #3
         dataframe.loc[:,'buy_condition_3'] = False
@@ -3587,7 +3602,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_3'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '3 '
 
         # Buy Condition #4
         dataframe.loc[:,'buy_condition_4'] = False
@@ -3606,7 +3621,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_4'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '4 '
 
         # Buy Condition #5
         dataframe.loc[:,'buy_condition_5'] = False
@@ -3628,7 +3643,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_5'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '5 '
 
         # Buy Condition #6
         dataframe.loc[:,'buy_condition_6'] = False
@@ -3647,7 +3662,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_6'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '6 '
 
         # Buy Condition #7
         dataframe.loc[:,'buy_condition_7'] = False
@@ -3666,7 +3681,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_7'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '7 '
 
         # Buy Condition #8
         dataframe.loc[:,'buy_condition_8'] = False
@@ -3686,7 +3701,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_8'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '8 '
 
         # Buy Condition #9
         dataframe.loc[:,'buy_condition_9'] = False
@@ -3707,7 +3722,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_9'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '9 '
 
         # Buy Condition #10
         dataframe.loc[:,'buy_condition_10'] = False
@@ -3726,7 +3741,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_10'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '10 '
 
         # Buy Condition #11
         dataframe.loc[:,'buy_condition_11'] = False
@@ -3748,7 +3763,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_11'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '11 '
 
         # Buy Condition #12
         dataframe.loc[:,'buy_condition_12'] = False
@@ -3766,7 +3781,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_12'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '12 '
 
         # Buy Condition #13
         dataframe.loc[:,'buy_condition_13'] = False
@@ -3785,7 +3800,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_13'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '13 '
 
         # Buy Condition #14
         dataframe.loc[ :,'buy_condition_14'] = False
@@ -3806,7 +3821,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_14'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '14 '
 
         # Buy Condition #15
         dataframe.loc[:,'buy_condition_15'] = False
@@ -3827,7 +3842,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_15'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '15 '
 
         # Buy Condition #16
         dataframe.loc[:,'buy_condition_16'] = False
@@ -3846,7 +3861,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_16'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '16 '
 
         # Buy Condition #17
         dataframe.loc[:,'buy_condition_17'] = False
@@ -3865,7 +3880,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_17'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '17 '
 
         # Buy Condition #18
         dataframe.loc[:,'buy_condition_18'] = False
@@ -3886,7 +3901,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_18'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '18 '
 
         # Buy Condition #19
         dataframe.loc[:,'buy_condition_19'] = False
@@ -3909,7 +3924,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_19'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '19 '
 
         # Buy Condition #20
         dataframe.loc[:,'buy_condition_20'] = False
@@ -3928,7 +3943,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_20'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '20 '
 
         # Buy Condition #21
         dataframe.loc[:,'buy_condition_21'] = False
@@ -3947,7 +3962,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_21'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '21 '
 
         # Buy Condition #22
         dataframe.loc[:,'buy_condition_22'] = False
@@ -3970,7 +3985,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_22'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '22 '
 
         # Buy Condition #23
         dataframe.loc[:,'buy_condition_23'] = False
@@ -3989,7 +4004,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_23'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '23 '
 
         # Buy Condition #24
         dataframe.loc[:,'buy_condition_24'] = False
@@ -4010,7 +4025,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_24'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '24 '
 
         # Buy Condition #25
         dataframe.loc[:,'buy_condition_25'] = False
@@ -4034,7 +4049,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_25'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '25 '
 
         # Buy Condition #26
         dataframe.loc[:,'buy_condition_26'] = False
@@ -4052,7 +4067,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_26'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '26 '
 
         # Buy Condition #27
         dataframe.loc[:,'buy_condition_27'] = False
@@ -4072,7 +4087,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_27'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '27 '
 
         # Buy Condition #28
         dataframe.loc[:,'buy_condition_28'] = False
@@ -4092,7 +4107,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_28'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '28 '
 
         # Buy Condition #29
         dataframe.loc[:,'buy_condition_29'] = False
@@ -4110,7 +4125,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_29'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '29 '
 
         # Buy Condition #30
         dataframe.loc[:,'buy_condition_30'] = False
@@ -4129,7 +4144,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_30'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '30 '
 
         # Buy Condition #31
         dataframe.loc[:,'buy_condition_31'] = False
@@ -4147,7 +4162,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_31'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '31 '
 
         # Buy Condition #32
         dataframe.loc[:,'buy_condition_32'] = False
@@ -4174,7 +4189,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_32'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '32 '
 
         # Buy Condition #33
         dataframe.loc[:,'buy_condition_33'] = False
@@ -4195,7 +4210,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_33'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '33 '
 
         # Buy Condition #34
         dataframe.loc[:,'buy_condition_34'] = False
@@ -4215,7 +4230,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_34'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '34 '
 
         # Buy Condition #35
         # PMAX0 buy
@@ -4235,7 +4250,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_35'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '35 '
 
         # Buy Condition #36
         dataframe.loc[:,'buy_condition_36'] = False
@@ -4254,7 +4269,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_36'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '36 '
 
         # Buy Condition #37
         dataframe.loc[:,'buy_condition_37'] = False
@@ -4275,7 +4290,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_37'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '37 '
 
         # Buy Condition #38
         dataframe.loc[:,'buy_condition_38'] = False
@@ -4294,7 +4309,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
 
-            dataframe.loc[item_buy,'buy_condition_38'] = True
+            dataframe.loc[item_buy, 'buy_tag'] += '38 '
 
         if conditions:
             dataframe.loc[:, 'buy'] = reduce(lambda x, y: x | y, conditions)
@@ -4303,6 +4318,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
     def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe.loc[:, 'sell'] = 0
+
         return dataframe
 
     def confirm_trade_exit(self, pair: str, trade: "Trade", order_type: str, amount: float,
