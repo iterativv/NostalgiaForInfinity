@@ -3541,8 +3541,8 @@ class NostalgiaForInfinityNext(IStrategy):
             buy_protection_list.append(item_buy_protection_list)
 
         dataframe.loc[:, 'buy_tag'] = ''
+        
         # Buy Condition #1
-        dataframe.loc[:,'buy_condition_1'] = False
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_1_enable']:
             # Non-Standard protections (add below)
@@ -3563,7 +3563,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '1 '
 
         # Buy Condition #2
-        dataframe.loc[:,'buy_condition_2'] = False
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_2_enable']:
             # Non-Standard protections (add below)
@@ -3582,7 +3581,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '2 '
 
         # Buy Condition #3
-        dataframe.loc[:,'buy_condition_3'] = False
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_3_enable']:
             # Non-Standard protections (add below)
@@ -3605,7 +3603,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '3 '
 
         # Buy Condition #4
-        dataframe.loc[:,'buy_condition_4'] = False
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_4_enable']:
             # Non-Standard protections (add below)
@@ -3624,7 +3621,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '4 '
 
         # Buy Condition #5
-        dataframe.loc[:,'buy_condition_5'] = False
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_5_enable']:
             # Non-Standard protections (add below)
@@ -3646,7 +3642,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '5 '
 
         # Buy Condition #6
-        dataframe.loc[:,'buy_condition_6'] = False
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_6_enable']:
             # Non-Standard protections (add below)
@@ -3665,7 +3660,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '6 '
 
         # Buy Condition #7
-        dataframe.loc[:,'buy_condition_7'] = False
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_7_enable']:
             # Non-Standard protections (add below)
@@ -3684,7 +3678,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '7 '
 
         # Buy Condition #8
-        dataframe.loc[:,'buy_condition_8'] = False
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_8_enable']:
             # Non-Standard protections (add below)
@@ -3704,7 +3697,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '8 '
 
         # Buy Condition #9
-        dataframe.loc[:,'buy_condition_9'] = False
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_9_enable']:
             # Non-Standard protections (add below)
@@ -3725,7 +3717,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '9 '
 
         # Buy Condition #10
-        dataframe.loc[:,'buy_condition_10'] = False
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_10_enable']:
             # Non-Standard protections (add below)
@@ -3744,7 +3735,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '10 '
 
         # Buy Condition #11
-        dataframe.loc[:,'buy_condition_11'] = False
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_11_enable']:
             # Non-Standard protections (add below)
@@ -3766,7 +3756,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '11 '
 
         # Buy Condition #12
-        dataframe.loc[:,'buy_condition_12'] = False
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_12_enable']:
             # Non-Standard protections (add below)
@@ -3784,7 +3773,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '12 '
 
         # Buy Condition #13
-        dataframe.loc[:,'buy_condition_13'] = False
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_13_enable']:
             # Non-Standard protections (add below)
@@ -3803,7 +3791,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '13 '
 
         # Buy Condition #14
-        dataframe.loc[ :,'buy_condition_14'] = False
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_14_enable']:
             # Non-Standard protections (add below)
@@ -3824,7 +3811,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '14 '
 
         # Buy Condition #15
-        dataframe.loc[:,'buy_condition_15'] = False
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_15_enable']:
             # Non-Standard protections (add below)
@@ -3845,7 +3831,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '15 '
 
         # Buy Condition #16
-        dataframe.loc[:,'buy_condition_16'] = False
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_16_enable']:
             # Non-Standard protections (add below)
@@ -3864,7 +3849,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '16 '
 
         # Buy Condition #17
-        dataframe.loc[:,'buy_condition_17'] = False
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_17_enable']:
             # Non-Standard protections (add below)
@@ -3883,7 +3867,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '17 '
 
         # Buy Condition #18
-        dataframe.loc[:,'buy_condition_18'] = False
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_18_enable']:
             # Non-Standard protections (add below)
@@ -3904,7 +3887,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '18 '
 
         # Buy Condition #19
-        dataframe.loc[:,'buy_condition_19'] = False
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_19_enable']:
             # Non-Standard protections (add below)
@@ -3927,7 +3909,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '19 '
 
         # Buy Condition #20
-        dataframe.loc[:,'buy_condition_20'] = False
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_20_enable']:
             # Non-Standard protections (add below)
@@ -3946,7 +3927,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '20 '
 
         # Buy Condition #21
-        dataframe.loc[:,'buy_condition_21'] = False
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_21_enable']:
             # Non-Standard protections (add below)
@@ -3965,7 +3945,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '21 '
 
         # Buy Condition #22
-        dataframe.loc[:,'buy_condition_22'] = False
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_22_enable']:
             # Non-Standard protections (add below)
@@ -3988,7 +3967,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '22 '
 
         # Buy Condition #23
-        dataframe.loc[:,'buy_condition_23'] = False
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_23_enable']:
             # Non-Standard protections (add below)
@@ -4007,7 +3985,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '23 '
 
         # Buy Condition #24
-        dataframe.loc[:,'buy_condition_24'] = False
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_24_enable']:
             # Non-Standard protections (add below)
@@ -4028,7 +4005,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '24 '
 
         # Buy Condition #25
-        dataframe.loc[:,'buy_condition_25'] = False
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_25_enable']:
             # Non-Standard protections (add below)
@@ -4052,7 +4028,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '25 '
 
         # Buy Condition #26
-        dataframe.loc[:,'buy_condition_26'] = False
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_26_enable']:
             # Non-Standard protections (add below)
@@ -4070,7 +4045,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '26 '
 
         # Buy Condition #27
-        dataframe.loc[:,'buy_condition_27'] = False
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_27_enable']:
             # Non-Standard protections (add below)
@@ -4090,7 +4064,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '27 '
 
         # Buy Condition #28
-        dataframe.loc[:,'buy_condition_28'] = False
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_28_enable']:
             # Non-Standard protections (add below)
@@ -4110,7 +4083,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '28 '
 
         # Buy Condition #29
-        dataframe.loc[:,'buy_condition_29'] = False
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_29_enable']:
             # Non-Standard protections (add below)
@@ -4128,7 +4100,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '29 '
 
         # Buy Condition #30
-        dataframe.loc[:,'buy_condition_30'] = False
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_30_enable']:
             # Non-Standard protections (add below)
@@ -4147,7 +4118,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '30 '
 
         # Buy Condition #31
-        dataframe.loc[:,'buy_condition_31'] = False
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_31_enable']:
             # Non-Standard protections (add below)
@@ -4165,7 +4135,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '31 '
 
         # Buy Condition #32
-        dataframe.loc[:,'buy_condition_32'] = False
         # Quick mode buy
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_32_enable']:
@@ -4192,7 +4161,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '32 '
 
         # Buy Condition #33
-        dataframe.loc[:,'buy_condition_33'] = False
         # Quick mode buy
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_33_enable']:
@@ -4213,7 +4181,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '33 '
 
         # Buy Condition #34
-        dataframe.loc[:,'buy_condition_34'] = False
         # Quick mode buy
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_34_enable']:
@@ -4235,7 +4202,6 @@ class NostalgiaForInfinityNext(IStrategy):
         # Buy Condition #35
         # PMAX0 buy
         # -----------------------------------------------------------------------------------------
-        dataframe.loc[:,'buy_condition_35'] = False
         if self.buy_params['buy_condition_35_enable']:
             # Non-Standard protections (add below)
 
@@ -4253,7 +4219,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '35 '
 
         # Buy Condition #36
-        dataframe.loc[:,'buy_condition_36'] = False
         # PMAX1 buy
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_36_enable']:
@@ -4272,7 +4237,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '36 '
 
         # Buy Condition #37
-        dataframe.loc[:,'buy_condition_37'] = False
         # PMAX2 buy
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_37_enable']:
@@ -4293,7 +4257,6 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe.loc[item_buy, 'buy_tag'] += '37 '
 
         # Buy Condition #38
-        dataframe.loc[:,'buy_condition_38'] = False
         # PMAX3 buy
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_38_enable']:
