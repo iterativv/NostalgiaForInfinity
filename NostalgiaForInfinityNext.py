@@ -2092,8 +2092,8 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_24_rsi_1h_min = DecimalParameter(40.0, 90.0, default=66.9, space='buy', decimals=1, optimize=False, load=True)
 
     buy_25_ma_offset = DecimalParameter(0.90, 0.99, default=0.922, space='buy', optimize=False, load=True)
-    buy_25_rsi_14 = DecimalParameter(26.0, 40.0, default=38.0, space='buy', decimals=1, optimize=False, load=True)
-    buy_25_cti = DecimalParameter(-0.99, -0.4, default=-0.6, space='buy', decimals=2, optimize=False, load=True)
+    buy_25_rsi_4 = DecimalParameter(26.0, 40.0, default=38.0, space='buy', decimals=1, optimize=False, load=True)
+    buy_25_cti = DecimalParameter(-0.99, -0.4, default=-0.76, space='buy', decimals=2, optimize=False, load=True)
 
     buy_26_zema_low_offset = DecimalParameter(0.90, 0.99, default=0.93, space='buy', optimize=False, load=True)
 
@@ -4020,7 +4020,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic = []
             item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[24]))
             item_buy_logic.append(dataframe['rsi_20'] < dataframe['rsi_20'].shift())
-            item_buy_logic.append(dataframe['rsi_4'] < self.buy_25_rsi_14.value)
+            item_buy_logic.append(dataframe['rsi_4'] < self.buy_25_rsi_4.value)
             item_buy_logic.append(dataframe['ema_20_1h'] > dataframe['ema_26_1h'])
             item_buy_logic.append(dataframe['close'] < (dataframe['sma_20'] * self.buy_25_ma_offset.value))
             item_buy_logic.append(dataframe['open'] > (dataframe['sma_20'] * self.buy_25_ma_offset.value))
