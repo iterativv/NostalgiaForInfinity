@@ -127,10 +127,9 @@ def test_transform_and_replace_references():
     config["strategy_path"] = test_data_dir.joinpath("input")
     strategy = StrategyResolver.load_strategy(config)
     source_input = ""
-    with open(config["strategy_path"].joinpath('Strategy1.py')) as f:
+    with open(config["strategy_path"].joinpath("Strategy1.py")) as f:
         source_input = f.read()
-    transformed_input = transform_code(
-        replace_all_references(strategy, source_input))
+    transformed_input = transform_code(replace_all_references(strategy, source_input))
 
     expected_source = ""
     with open(test_data_dir.joinpath("output/Strategy1.py")) as f:
