@@ -2929,7 +2929,7 @@ class NostalgiaForInfinityNext(IStrategy):
         previous_candle_5 = dataframe.iloc[-6]
 
         buy_tag = 'empty'
-        if self.config['runmode'].value in ('live', 'dry_run') and hasattr(trade, 'buy_tag'):
+        if self.config['runmode'].value in ('live', 'dry_run') and hasattr(trade, 'buy_tag') and trade.buy_tag is not None:
             buy_tag = trade.buy_tag
         else:
             trade_open_date = timeframe_to_prev_date(self.timeframe, trade.open_date_utc)
