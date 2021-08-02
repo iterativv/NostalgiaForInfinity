@@ -2916,12 +2916,12 @@ class NostalgiaForInfinityNext(IStrategy):
             if not buy_signal.empty:
                 buy_signal_candle = buy_signal.iloc[-1]
                 buy_tag = buy_signal_candle['buy_tag']
-
+        buy_tags = buy_tag.split()
         max_profit = ((trade.max_rate - trade.open_rate) / trade.open_rate)
         max_loss = ((trade.open_rate - trade.min_rate) / trade.min_rate)
 
         # Quick sell mode
-        if any(c in buy_tag for c in ['32', '33', '34', '35', '36', '37', '38']):
+        if all(c in ['32', '33', '34', '35', '36', '37', '38'] for c in buy_tags):
             sell, signal_name = self.sell_quick_mode(current_profit, max_profit, last_candle, previous_candle_1)
             if sell and (signal_name is not None):
                 return signal_name + ' ( ' + buy_tag + ')'
