@@ -727,7 +727,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising"          : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
             "sma200_1h_rising_val"      : CategoricalParameter(["20","30","36","44","50"], default="50", space='buy', optimize=False, load=True),
             "safe_dips"                 : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
-            "safe_dips_type"            : CategoricalParameter(["10","50","100"], default="10", space='buy', optimize=False, load=True),
+            "safe_dips_type"            : CategoricalParameter(["10","50","100"], default="60", space='buy', optimize=False, load=True),
             "safe_pump"                 : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
             "safe_pump_type"            : CategoricalParameter(["10","50","100"], default="100", space='buy', optimize=False, load=True),
             "safe_pump_period"          : CategoricalParameter(["24","36","48"], default="48", space='buy', optimize=False, load=True),
@@ -2095,7 +2095,9 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_25_rsi_4 = DecimalParameter(26.0, 40.0, default=38.0, space='buy', decimals=1, optimize=False, load=True)
     buy_25_cti = DecimalParameter(-0.99, -0.4, default=-0.76, space='buy', decimals=2, optimize=False, load=True)
 
-    buy_26_zema_low_offset = DecimalParameter(0.90, 0.99, default=0.93, space='buy', optimize=False, load=True)
+    buy_26_zema_low_offset = DecimalParameter(0.90, 0.99, default=0.932, space='buy', optimize=False, load=True)
+    buy_26_cti = DecimalParameter(-0.99, -0.4, default=-0.8, space='buy', decimals=2, optimize=False, load=True)
+    buy_26_volume = DecimalParameter(0.6, 6.0, default=1.2, space='buy', decimals=1, optimize=False, load=True)
 
     buy_27_wr_max = DecimalParameter(95, 99, default=99.0, space='buy', decimals=1, optimize=False, load=True)
     buy_27_wr_1h_max = DecimalParameter(90, 99, default=97.6, space='buy', decimals=1, optimize=False, load=True)
@@ -4044,6 +4046,8 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_logic = []
             item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[25]))
             item_buy_logic.append(dataframe['close'] < (dataframe['zema_61'] * self.buy_26_zema_low_offset.value))
+            item_buy_logic.append(dataframe['cti'] < self.buy_26_cti.value)
+            item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_26_volume.value))
             item_buy_logic.append(dataframe['volume'] > 0)
             item_buy = reduce(lambda x, y: x & y, item_buy_logic)
             conditions.append(item_buy)
