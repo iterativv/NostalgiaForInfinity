@@ -2138,10 +2138,10 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_32_rsi = DecimalParameter(24.0, 50.0, default=46.0, space='buy', decimals=1, optimize=False, load=True)
     buy_32_cti = DecimalParameter(-0.99, -0.4, default=-0.8, space='buy', decimals=2, optimize=False, load=True)
 
-    buy_33_ma_offset = DecimalParameter(0.90, 0.99, default=0.974, space='buy', optimize=False, load=True)
+    buy_33_ma_offset = DecimalParameter(0.90, 0.99, default=0.988, space='buy', optimize=False, load=True)
     buy_33_rsi = DecimalParameter(24.0, 50.0, default=32.0, space='buy', decimals=1, optimize=False, load=True)
     buy_33_cti = DecimalParameter(-0.99, -0.4, default=-0.9, space='buy', decimals=2, optimize=False, load=True)
-    buy_33_ewo = DecimalParameter(2.0, 14.0, default=9.0, space='buy', decimals=1, optimize=False, load=True)
+    buy_33_ewo = DecimalParameter(2.0, 14.0, default=7.6, space='buy', decimals=1, optimize=False, load=True)
     buy_33_volume = DecimalParameter(0.6, 6.0, default=2.0, space='buy', decimals=1, optimize=False, load=True)
 
     buy_34_ma_offset = DecimalParameter(0.90, 0.99, default=0.968, space='buy', optimize=False, load=True)
@@ -3541,7 +3541,7 @@ class NostalgiaForInfinityNext(IStrategy):
             buy_protection_list.append(item_buy_protection_list)
 
         dataframe.loc[:, 'buy_tag'] = ''
-        
+
         # Buy Condition #1
         # -----------------------------------------------------------------------------------------
         if self.buy_params['buy_condition_1_enable']:
