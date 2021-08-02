@@ -1,22 +1,22 @@
-import freqtrade.vendor.qtpylib.indicators as qtpylib
-import logging
-import math
-import numpy as np
-import pandas_ta as pta
-import pathlib
-import rapidjson
-import talib.abstract as ta
-from datetime import datetime, timedelta
-from freqtrade.exchange import timeframe_to_prev_date
-from freqtrade.misc import json_load
-from freqtrade.persistence import Trade
-from freqtrade.strategy import DecimalParameter, IntParameter, CategoricalParameter
-from freqtrade.strategy import merge_informative_pair, timeframe_to_minutes
-from freqtrade.strategy.interface import IStrategy
-from functools import reduce
-from pandas import DataFrame, Series, concat
-from technical.indicators import zema, VIDYA
-from technical.util import resample_to_interval, resampled_merge
+import freqtrade.vendor.qtpylib.indicators as qtpylib
+import logging
+import math
+import numpy as np
+import pandas_ta as pta
+import pathlib
+import rapidjson
+import talib.abstract as ta
+from datetime import datetime, timedelta
+from freqtrade.exchange import timeframe_to_prev_date
+from freqtrade.misc import json_load
+from freqtrade.persistence import Trade
+from freqtrade.strategy import DecimalParameter, IntParameter, CategoricalParameter
+from freqtrade.strategy import merge_informative_pair, timeframe_to_minutes
+from freqtrade.strategy.interface import IStrategy
+from functools import reduce
+from pandas import DataFrame, Series, concat
+from technical.indicators import zema, VIDYA
+from technical.util import resample_to_interval, resampled_merge
 
 log = logging.getLogger(__name__)
 
@@ -999,6 +999,7 @@ class NostalgiaForInfinityNext(IStrategy):
     # --------------------------------------------------------------------------------------------------- #
     # BUY PROTECTION HO VARIABLES MAPPING                                                                 #
     # --------------------------------------------------------------------------------------------------- #
+    
     buy_condition_1_enable = buy_protection_params[1]["enable"]
     buy_1_protection__ema_fast                 = buy_protection_params[1]["ema_fast"]
     buy_1_protection__ema_fast_len             = buy_protection_params[1]["ema_fast_len"]
@@ -1018,7 +1019,7 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_1_protection__safe_pump_type           = buy_protection_params[1]["safe_pump_type"]
     buy_1_protection__safe_pump_period         = buy_protection_params[1]["safe_pump_period"]
     buy_1_protection__btc_1h_not_downtrend     = buy_protection_params[1]["btc_1h_not_downtrend"]
-
+    
     buy_condition_2_enable = buy_protection_params[2]["enable"]
     buy_2_protection__ema_fast                 = buy_protection_params[2]["ema_fast"]
     buy_2_protection__ema_fast_len             = buy_protection_params[2]["ema_fast_len"]
@@ -4020,7 +4021,7 @@ class NostalgiaForInfinityNext(IStrategy):
         dataframe.loc[:, 'sell'] = 0
 
         return dataframe
-        
+
 
     def confirm_trade_exit(self, pair: str, trade: "Trade", order_type: str, amount: float, rate: float, time_in_force: str, sell_reason: str, **kwargs) -> bool:
         # Just to be sure our hold data is loaded, should be a no-op call after the first bot loop
