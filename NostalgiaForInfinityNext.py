@@ -10,7 +10,7 @@ from freqtrade.strategy import merge_informative_pair, timeframe_to_minutes
 from freqtrade.strategy import DecimalParameter, IntParameter, CategoricalParameter
 from freqtrade.exchange import timeframe_to_prev_date
 from pandas import DataFrame, Series, concat
-from functools import reduce
+from functools import reduce, cached_property
 import math
 from freqtrade.persistence import Trade
 from datetime import datetime, timedelta
@@ -1690,7 +1690,7 @@ class NostalgiaForInfinityNext(IStrategy):
                             hold_trades_config_file
                         )
 
-    @property
+    @cached_property
     def buy_protection_params(self) -> dict[int, dict[str, CategoricalParameter]]:
         from pprint import pprint
         buy_protection_params = {}
