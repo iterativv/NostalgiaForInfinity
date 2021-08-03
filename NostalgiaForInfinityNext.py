@@ -2890,7 +2890,7 @@ class NostalgiaForInfinityNext(IStrategy):
             return True, 'signal_stoploss_q_atr'
 
         if (current_profit > 0.0):
-            if (last_candle['pm'] <= last_candle['pmax_thresh']) & (last_candle['close'] > last_candle['sma_21'] * 1.039):
+            if (last_candle['pm'] <= last_candle['pmax_thresh']) & (last_candle['close'] > last_candle['sma_21'] * 1.1):
                 return True, 'signal_profit_q_pmax_bull'
             if (last_candle['pm'] > last_candle['pmax_thresh']) & (last_candle['close'] > last_candle['sma_21'] * 1.014):
                 return True, 'signal_profit_q_pmax_bear'
