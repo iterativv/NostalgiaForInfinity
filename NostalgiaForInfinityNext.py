@@ -2681,29 +2681,16 @@ class NostalgiaForInfinityNext(IStrategy):
 
         return False, None
 
-    def sell_stoploss(self, current_profit: float, last_candle, trade: 'Trade', current_time: 'datetime', max_loss: float, max_profit: float) -> tuple:
-        if (current_profit < -0.0) & (last_candle['close'] < last_candle['ema_200']) & (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < self.sell_custom_stoploss_under_rel_1.value) & (last_candle['rsi'] > last_candle['rsi_1h'] + self.sell_custom_stoploss_under_rsi_diff_1.value) & (last_candle['cmf'] < -0.2) & (last_candle['sma_200_dec_24']) & (current_time - timedelta(minutes=720) > trade.open_date_utc):
-            return True, 'signal_stoploss_u_1'
-
-        # Under EMA200, pair & BTC negative, low max rate
-        elif (-0.1 > current_profit > -0.14) & (last_candle['btc_not_downtrend_1h'] == False) & (last_candle['moderi_32'] == False) & (last_candle['moderi_64'] == False) & (max_profit < 0.005) & (max_loss < 0.14) & (last_candle['sma_200_dec_24']) & (last_candle['cmf'] < -0.0) & (last_candle['close'] < last_candle['ema_200']) & (last_candle['ema_25'] < last_candle['ema_50']) & (last_candle['cti'] < -0.8) & (last_candle['r_480'] < -50.0):
-            return True, 'signal_stoploss_u_b_1'
-
-        # Under EMA200, pair & BTC negative, CTI, Elder Ray Index negative, normal max rate
-        elif (-0.1 > current_profit > -0.2) & (last_candle['btc_not_downtrend_1h'] == False) & (last_candle['moderi_32'] == False) & (last_candle['moderi_64'] == False) & (last_candle['moderi_96'] == False) & (max_profit < 0.05) & (max_loss < 0.2) & (last_candle['sma_200_dec_24'])& (last_candle['sma_200_dec_20_1h']) & (last_candle['cmf'] < -0.45) & (last_candle['close'] < last_candle['ema_200']) & (last_candle['ema_25'] < last_candle['ema_50']) & (last_candle['cti'] < -0.8) & (last_candle['r_480'] < -97.0):
-            return True, 'signal_stoploss_u_b_2'
-
-        elif (self.sell_custom_stoploss_long_profit_min_1.value < current_profit < self.sell_custom_stoploss_long_profit_max_1.value) & (current_profit > (-max_loss + self.sell_custom_stoploss_long_recover_1.value)) & (last_candle['cmf'] < 0.0) & (last_candle['close'] < last_candle['ema_200'])  & (last_candle['rsi'] > last_candle['rsi_1h'] + self.sell_custom_stoploss_long_rsi_diff_1.value) & (last_candle['sma_200_dec_24']) & (current_time - timedelta(minutes=1200) > trade.open_date_utc):
-            return True, 'signal_stoploss_l_r_u_1'
-
-        elif (current_profit < -0.0) & (current_profit > (-max_loss + self.sell_custom_stoploss_long_recover_2.value)) & (last_candle['close'] < last_candle['ema_200']) & (last_candle['cmf'] < 0.0) & (last_candle['rsi'] > last_candle['rsi_1h'] + self.sell_custom_stoploss_long_rsi_diff_2.value) & (last_candle['sma_200_dec_24']) & (current_time - timedelta(minutes=1200) > trade.open_date_utc):
-            return True, 'signal_stoploss_l_r_u_2'
-
-        elif (max_profit < self.sell_custom_stoploss_pump_max_profit_2.value) & (current_profit < self.sell_custom_stoploss_pump_loss_2.value) & (last_candle['sell_pump_48_1_1h']) & (last_candle['cmf'] < 0.0) & (last_candle['sma_200_dec_20_1h']) & (last_candle['close'] < (last_candle['ema_200'] * self.sell_custom_stoploss_pump_ma_offset_2.value)):
-            return True, 'signal_stoploss_p_2'
-
-        elif (max_profit < self.sell_custom_stoploss_pump_max_profit_3.value) & (current_profit < self.sell_custom_stoploss_pump_loss_3.value) & (last_candle['sell_pump_36_3_1h']) & (last_candle['close'] < (last_candle['ema_200'] * self.sell_custom_stoploss_pump_ma_offset_3.value)):
-            return True, 'signal_stoploss_p_3'
+    def sell_stoploss(self, current_profit: float, last_candle, previous_candle_1) -> tuple:
+        if (-0.1 < current_profit < -0.05):
+            if (last_candle['close'] < last_candle['atr_high_thresh_1']) & (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_1']):
+                return True, 'signal_stoploss_atr_1'
+        elif (-0.15 < current_profit < -0.1):
+            if (last_candle['close'] < last_candle['atr_high_thresh_2']) & (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_2']):
+                return True, 'signal_stoploss_atr_2'
+        elif (current_profit < -0.15):
+            if (last_candle['close'] < last_candle['atr_high_thresh_3']) & (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_3']):
+                return True, 'signal_stoploss_atr_3'
 
         return False, None
 
@@ -2882,11 +2869,11 @@ class NostalgiaForInfinityNext(IStrategy):
         if (0.06 > current_profit > 0.02) & (last_candle['cti'] > 0.9):
             return True, 'signal_profit_q_2'
 
-        if (current_profit < -0.1):
-            return True, 'signal_stoploss_q_1'
-
-        if(last_candle['close'] < last_candle['atr_high_thresh']) & (previous_candle_1['close'] > previous_candle_1['atr_high_thresh']):
-            return True, 'signal_stoploss_q_atr'
+        if (last_candle['close'] < last_candle['atr_high_thresh_q']) & (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_q']):
+            if (current_profit > 0.0):
+                return True, 'signal_profit_q_atr'
+            elif (current_profit < -0.05):
+                return True, 'signal_stoploss_q_atr'
 
         if (current_profit > 0.0):
             if (last_candle['pm'] <= last_candle['pmax_thresh']) & (last_candle['close'] > last_candle['sma_21'] * 1.1):
@@ -2963,7 +2950,7 @@ class NostalgiaForInfinityNext(IStrategy):
             return signal_name + ' ( ' + buy_tag + ')'
 
         # Stoplosses
-        sell, signal_name = self.sell_stoploss(current_profit, last_candle, trade, current_time, max_loss, max_profit)
+        sell, signal_name = self.sell_stoploss(current_profit, last_candle, previous_candle_1)
         if sell and (signal_name is not None):
             return signal_name + ' ( ' + buy_tag + ')'
 
@@ -3361,7 +3348,10 @@ class NostalgiaForInfinityNext(IStrategy):
 
         # ATR
         dataframe['atr'] = ta.ATR(dataframe, timeperiod=14)
-        dataframe['atr_high_thresh'] = (dataframe['high'] - (dataframe['atr'] * 2.83))
+        dataframe['atr_high_thresh_1'] = (dataframe['high'] - (dataframe['atr'] * 3.0))
+        dataframe['atr_high_thresh_2'] = (dataframe['high'] - (dataframe['atr'] * 2.2))
+        dataframe['atr_high_thresh_3'] = (dataframe['high'] - (dataframe['atr'] * 2.0))
+        dataframe['atr_high_thresh_q'] = (dataframe['high'] - (dataframe['atr'] * 2.8))
 
         dataframe['rsi_5'] = ta.RSI(dataframe, 5)
         dataframe['streak'] = calc_streaks(dataframe["close"])
