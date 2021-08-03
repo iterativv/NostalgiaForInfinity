@@ -444,8 +444,8 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising_val"      : CategoricalParameter(["20","30","36","44","50"], default="24", space='buy', optimize=False, load=True),
             "safe_dips"                 : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
             "safe_dips_type"            : CategoricalParameter(["10","50","100"], default="100", space='buy', optimize=False, load=True),
-            "safe_pump"                 : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
-            "safe_pump_type"            : CategoricalParameter(["10","50","100"], default="50", space='buy', optimize=False, load=True),
+            "safe_pump"                 : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
+            "safe_pump_type"            : CategoricalParameter(["10","50","100"], default="40", space='buy', optimize=False, load=True),
             "safe_pump_period"          : CategoricalParameter(["24","36","48"], default="24", space='buy', optimize=False, load=True),
             "btc_1h_not_downtrend"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
         },
@@ -2020,9 +2020,10 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_rsi_11 = DecimalParameter(34.0, 50.0, default=44.0, space='buy', decimals=1, optimize=False, load=True)
     buy_mfi_11 = DecimalParameter(30.0, 46.0, default=36.0, space='buy', decimals=1, optimize=False, load=True)
 
-    buy_ma_offset_12 = DecimalParameter(0.93, 0.97, default=0.907, space='buy', decimals=3, optimize=False, load=True)
-    buy_rsi_12 = DecimalParameter(26.0, 40.0, default=34.0, space='buy', decimals=1, optimize=False, load=True)
+    buy_ma_offset_12 = DecimalParameter(0.93, 0.97, default=0.921, space='buy', decimals=3, optimize=False, load=True)
+    buy_rsi_12 = DecimalParameter(26.0, 40.0, default=28.0, space='buy', decimals=1, optimize=False, load=True)
     buy_ewo_12 = DecimalParameter(1.0, 6.0, default=1.8, space='buy', decimals=1, optimize=False, load=True)
+    buy_cti_12 = DecimalParameter(-0.99, -0.5, default=-0.7, space='buy', decimals=2, optimize=False, load=True)
 
     buy_ma_offset_13 = DecimalParameter(0.93, 0.98, default=0.99, space='buy', decimals=3, optimize=False, load=True)
     buy_cti_13 = DecimalParameter(-0.99, -0.5, default=-0.74, space='buy', decimals=2, optimize=False, load=True)
@@ -3659,6 +3660,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * self.buy_ma_offset_12.value)
                     item_buy_logic.append(dataframe['ewo'] > self.buy_ewo_12.value)
                     item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_12.value)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_cti_12.value)
 
                 # Condition #13
                 elif index == 13:
