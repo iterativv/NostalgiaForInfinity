@@ -1692,7 +1692,6 @@ class NostalgiaForInfinityNext(IStrategy):
 
     @cached_property
     def buy_protection_params(self) -> dict[int, dict[str, CategoricalParameter]]:
-        from pprint import pprint
         buy_protection_params = {}
         buy_params = self.detect_parameters("buy")
         for param, value in buy_params:
