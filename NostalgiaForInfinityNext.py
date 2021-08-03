@@ -1498,265 +1498,265 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_protection_25__safe_pump_period          = CategoricalParameter(["24","36","48"], default="24", space='buy', optimize=False, load=True)
     buy_protection_25__btc_1h_not_downtrend      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
 
-    buy_condition_26_enable = buy_protection_params[26]["enable"]
-    buy_26_protection__ema_fast                 = buy_protection_params[26]["ema_fast"]
-    buy_26_protection__ema_fast_len             = buy_protection_params[26]["ema_fast_len"]
-    buy_26_protection__ema_slow                 = buy_protection_params[26]["ema_slow"]
-    buy_26_protection__ema_slow_len             = buy_protection_params[26]["ema_slow_len"]
-    buy_26_protection__close_above_ema_fast     = buy_protection_params[26]["close_above_ema_fast"]
-    buy_26_protection__close_above_ema_fast_len = buy_protection_params[26]["close_above_ema_fast_len"]
-    buy_26_protection__close_above_ema_slow     = buy_protection_params[26]["close_above_ema_slow"]
-    buy_26_protection__close_above_ema_slow_len = buy_protection_params[26]["close_above_ema_slow_len"]
-    buy_26_protection__sma200_rising            = buy_protection_params[26]["sma200_rising"]
-    buy_26_protection__sma200_rising_val        = buy_protection_params[26]["sma200_rising_val"]
-    buy_26_protection__sma200_1h_rising         = buy_protection_params[26]["sma200_1h_rising"]
-    buy_26_protection__sma200_1h_rising_val     = buy_protection_params[26]["sma200_1h_rising_val"]
-    buy_26_protection__safe_dips                = buy_protection_params[26]["safe_dips"]
-    buy_26_protection__safe_dips_type           = buy_protection_params[26]["safe_dips_type"]
-    buy_26_protection__safe_pump                = buy_protection_params[26]["safe_pump"]
-    buy_26_protection__safe_pump_type           = buy_protection_params[26]["safe_pump_type"]
-    buy_26_protection__safe_pump_period         = buy_protection_params[26]["safe_pump_period"]
-    buy_26_protection__btc_1h_not_downtrend     = buy_protection_params[26]["btc_1h_not_downtrend"]
+    buy_condition_26_enable                      = CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True)
+    buy_26_protection__ema_fast                  = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_26_protection__ema_fast_len              = CategoricalParameter(["26","50","100","200"], default="50", space='buy', optimize=False, load=True)
+    buy_26_protection__ema_slow                  = CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True)
+    buy_26_protection__ema_slow_len              = CategoricalParameter(["26","50","100","200"], default="100", space='buy', optimize=False, load=True)
+    buy_26_protection__close_above_ema_fast      = CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True)
+    buy_26_protection__close_above_ema_fast_len  = CategoricalParameter(["12","20","26","50","100","200"], default="50", space='buy', optimize=False, load=True)
+    buy_26_protection__close_above_ema_slow      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_26_protection__close_above_ema_slow_len  = CategoricalParameter(["15","50","200"], default="200", space='buy', optimize=False, load=True)
+    buy_26_protection__sma200_rising             = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_26_protection__sma200_rising_val         = CategoricalParameter(["20","30","36","44","50"], default="30", space='buy', optimize=False, load=True)
+    buy_26_protection__sma200_1h_rising          = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_26_protection__sma200_1h_rising_val      = CategoricalParameter(["20","30","36","44","50"], default="50", space='buy', optimize=False, load=True)
+    buy_26_protection__safe_dips                 = CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True)
+    buy_26_protection__safe_dips_type            = CategoricalParameter(["10","50","100"], default="60", space='buy', optimize=False, load=True)
+    buy_26_protection__safe_pump                 = CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True)
+    buy_26_protection__safe_pump_type            = CategoricalParameter(["10","50","100"], default="100", space='buy', optimize=False, load=True)
+    buy_26_protection__safe_pump_period          = CategoricalParameter(["24","36","48"], default="48", space='buy', optimize=False, load=True)
+    buy_26_protection__btc_1h_not_downtrend      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
 
-    buy_condition_27_enable = buy_protection_params[27]["enable"]
-    buy_27_protection__ema_fast                 = buy_protection_params[27]["ema_fast"]
-    buy_27_protection__ema_fast_len             = buy_protection_params[27]["ema_fast_len"]
-    buy_27_protection__ema_slow                 = buy_protection_params[27]["ema_slow"]
-    buy_27_protection__ema_slow_len             = buy_protection_params[27]["ema_slow_len"]
-    buy_27_protection__close_above_ema_fast     = buy_protection_params[27]["close_above_ema_fast"]
-    buy_27_protection__close_above_ema_fast_len = buy_protection_params[27]["close_above_ema_fast_len"]
-    buy_27_protection__close_above_ema_slow     = buy_protection_params[27]["close_above_ema_slow"]
-    buy_27_protection__close_above_ema_slow_len = buy_protection_params[27]["close_above_ema_slow_len"]
-    buy_27_protection__sma200_rising            = buy_protection_params[27]["sma200_rising"]
-    buy_27_protection__sma200_rising_val        = buy_protection_params[27]["sma200_rising_val"]
-    buy_27_protection__sma200_1h_rising         = buy_protection_params[27]["sma200_1h_rising"]
-    buy_27_protection__sma200_1h_rising_val     = buy_protection_params[27]["sma200_1h_rising_val"]
-    buy_27_protection__safe_dips                = buy_protection_params[27]["safe_dips"]
-    buy_27_protection__safe_dips_type           = buy_protection_params[27]["safe_dips_type"]
-    buy_27_protection__safe_pump                = buy_protection_params[27]["safe_pump"]
-    buy_27_protection__safe_pump_type           = buy_protection_params[27]["safe_pump_type"]
-    buy_27_protection__safe_pump_period         = buy_protection_params[27]["safe_pump_period"]
-    buy_27_protection__btc_1h_not_downtrend     = buy_protection_params[27]["btc_1h_not_downtrend"]
+    buy_condition_27_enable                      = CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True)
+    buy_27_protection__ema_fast                  = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_27_protection__ema_fast_len              = CategoricalParameter(["26","50","100","200"], default="50", space='buy', optimize=False, load=True)
+    buy_27_protection__ema_slow                  = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_27_protection__ema_slow_len              = CategoricalParameter(["26","50","100","200"], default="100", space='buy', optimize=False, load=True)
+    buy_27_protection__close_above_ema_fast      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_27_protection__close_above_ema_fast_len  = CategoricalParameter(["12","20","26","50","100","200"], default="50", space='buy', optimize=False, load=True)
+    buy_27_protection__close_above_ema_slow      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_27_protection__close_above_ema_slow_len  = CategoricalParameter(["15","50","200"], default="200", space='buy', optimize=False, load=True)
+    buy_27_protection__sma200_rising             = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_27_protection__sma200_rising_val         = CategoricalParameter(["20","30","36","44","50"], default="30", space='buy', optimize=False, load=True)
+    buy_27_protection__sma200_1h_rising          = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_27_protection__sma200_1h_rising_val      = CategoricalParameter(["20","30","36","44","50"], default="50", space='buy', optimize=False, load=True)
+    buy_27_protection__safe_dips                 = CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True)
+    buy_27_protection__safe_dips_type            = CategoricalParameter(["10","50","100"], default="100", space='buy', optimize=False, load=True)
+    buy_27_protection__safe_pump                 = CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True)
+    buy_27_protection__safe_pump_type            = CategoricalParameter(["10","50","100"], default="50", space='buy', optimize=False, load=True)
+    buy_27_protection__safe_pump_period          = CategoricalParameter(["24","36","48"], default="36", space='buy', optimize=False, load=True)
+    buy_27_protection__btc_1h_not_downtrend      = CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True)
 
-    buy_condition_28_enable = buy_protection_params[28]["enable"]
-    buy_28_protection__ema_fast                 = buy_protection_params[28]["ema_fast"]
-    buy_28_protection__ema_fast_len             = buy_protection_params[28]["ema_fast_len"]
-    buy_28_protection__ema_slow                 = buy_protection_params[28]["ema_slow"]
-    buy_28_protection__ema_slow_len             = buy_protection_params[28]["ema_slow_len"]
-    buy_28_protection__close_above_ema_fast     = buy_protection_params[28]["close_above_ema_fast"]
-    buy_28_protection__close_above_ema_fast_len = buy_protection_params[28]["close_above_ema_fast_len"]
-    buy_28_protection__close_above_ema_slow     = buy_protection_params[28]["close_above_ema_slow"]
-    buy_28_protection__close_above_ema_slow_len = buy_protection_params[28]["close_above_ema_slow_len"]
-    buy_28_protection__sma200_rising            = buy_protection_params[28]["sma200_rising"]
-    buy_28_protection__sma200_rising_val        = buy_protection_params[28]["sma200_rising_val"]
-    buy_28_protection__sma200_1h_rising         = buy_protection_params[28]["sma200_1h_rising"]
-    buy_28_protection__sma200_1h_rising_val     = buy_protection_params[28]["sma200_1h_rising_val"]
-    buy_28_protection__safe_dips                = buy_protection_params[28]["safe_dips"]
-    buy_28_protection__safe_dips_type           = buy_protection_params[28]["safe_dips_type"]
-    buy_28_protection__safe_pump                = buy_protection_params[28]["safe_pump"]
-    buy_28_protection__safe_pump_type           = buy_protection_params[28]["safe_pump_type"]
-    buy_28_protection__safe_pump_period         = buy_protection_params[28]["safe_pump_period"]
-    buy_28_protection__btc_1h_not_downtrend     = buy_protection_params[28]["btc_1h_not_downtrend"]
+    buy_condition_28_enable                      = CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True)
+    buy_28_protection__ema_fast                  = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_28_protection__ema_fast_len              = CategoricalParameter(["26","50","100","200"], default="50", space='buy', optimize=False, load=True)
+    buy_28_protection__ema_slow                  = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_28_protection__ema_slow_len              = CategoricalParameter(["26","50","100","200"], default="100", space='buy', optimize=False, load=True)
+    buy_28_protection__close_above_ema_fast      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_28_protection__close_above_ema_fast_len  = CategoricalParameter(["12","20","26","50","100","200"], default="50", space='buy', optimize=False, load=True)
+    buy_28_protection__close_above_ema_slow      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_28_protection__close_above_ema_slow_len  = CategoricalParameter(["15","50","200"], default="200", space='buy', optimize=False, load=True)
+    buy_28_protection__sma200_rising             = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_28_protection__sma200_rising_val         = CategoricalParameter(["20","30","36","44","50"], default="30", space='buy', optimize=False, load=True)
+    buy_28_protection__sma200_1h_rising          = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_28_protection__sma200_1h_rising_val      = CategoricalParameter(["20","30","36","44","50"], default="50", space='buy', optimize=False, load=True)
+    buy_28_protection__safe_dips                 = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_28_protection__safe_dips_type            = CategoricalParameter(["10","50","100"], default="50", space='buy', optimize=False, load=True)
+    buy_28_protection__safe_pump                 = CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True)
+    buy_28_protection__safe_pump_type            = CategoricalParameter(["10","50","100"], default="110", space='buy', optimize=False, load=True)
+    buy_28_protection__safe_pump_period          = CategoricalParameter(["24","36","48"], default="36", space='buy', optimize=False, load=True)
+    buy_28_protection__btc_1h_not_downtrend      = CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True)
 
-    buy_condition_29_enable = buy_protection_params[29]["enable"]
-    buy_29_protection__ema_fast                 = buy_protection_params[29]["ema_fast"]
-    buy_29_protection__ema_fast_len             = buy_protection_params[29]["ema_fast_len"]
-    buy_29_protection__ema_slow                 = buy_protection_params[29]["ema_slow"]
-    buy_29_protection__ema_slow_len             = buy_protection_params[29]["ema_slow_len"]
-    buy_29_protection__close_above_ema_fast     = buy_protection_params[29]["close_above_ema_fast"]
-    buy_29_protection__close_above_ema_fast_len = buy_protection_params[29]["close_above_ema_fast_len"]
-    buy_29_protection__close_above_ema_slow     = buy_protection_params[29]["close_above_ema_slow"]
-    buy_29_protection__close_above_ema_slow_len = buy_protection_params[29]["close_above_ema_slow_len"]
-    buy_29_protection__sma200_rising            = buy_protection_params[29]["sma200_rising"]
-    buy_29_protection__sma200_rising_val        = buy_protection_params[29]["sma200_rising_val"]
-    buy_29_protection__sma200_1h_rising         = buy_protection_params[29]["sma200_1h_rising"]
-    buy_29_protection__sma200_1h_rising_val     = buy_protection_params[29]["sma200_1h_rising_val"]
-    buy_29_protection__safe_dips                = buy_protection_params[29]["safe_dips"]
-    buy_29_protection__safe_dips_type           = buy_protection_params[29]["safe_dips_type"]
-    buy_29_protection__safe_pump                = buy_protection_params[29]["safe_pump"]
-    buy_29_protection__safe_pump_type           = buy_protection_params[29]["safe_pump_type"]
-    buy_29_protection__safe_pump_period         = buy_protection_params[29]["safe_pump_period"]
-    buy_29_protection__btc_1h_not_downtrend     = buy_protection_params[29]["btc_1h_not_downtrend"]
+    buy_condition_29_enable                      = CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True)
+    buy_29_protection__ema_fast                  = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_29_protection__ema_fast_len              = CategoricalParameter(["26","50","100","200"], default="50", space='buy', optimize=False, load=True)
+    buy_29_protection__ema_slow                  = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_29_protection__ema_slow_len              = CategoricalParameter(["26","50","100","200"], default="100", space='buy', optimize=False, load=True)
+    buy_29_protection__close_above_ema_fast      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_29_protection__close_above_ema_fast_len  = CategoricalParameter(["12","20","26","50","100","200"], default="50", space='buy', optimize=False, load=True)
+    buy_29_protection__close_above_ema_slow      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_29_protection__close_above_ema_slow_len  = CategoricalParameter(["15","50","200"], default="200", space='buy', optimize=False, load=True)
+    buy_29_protection__sma200_rising             = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_29_protection__sma200_rising_val         = CategoricalParameter(["20","30","36","44","50"], default="30", space='buy', optimize=False, load=True)
+    buy_29_protection__sma200_1h_rising          = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_29_protection__sma200_1h_rising_val      = CategoricalParameter(["20","30","36","44","50"], default="50", space='buy', optimize=False, load=True)
+    buy_29_protection__safe_dips                 = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_29_protection__safe_dips_type            = CategoricalParameter(["10","50","100"], default="50", space='buy', optimize=False, load=True)
+    buy_29_protection__safe_pump                 = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_29_protection__safe_pump_type            = CategoricalParameter(["10","50","100"], default="110", space='buy', optimize=False, load=True)
+    buy_29_protection__safe_pump_period          = CategoricalParameter(["24","36","48"], default="36", space='buy', optimize=False, load=True)
+    buy_29_protection__btc_1h_not_downtrend      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
 
-    buy_condition_30_enable = buy_protection_params[30]["enable"]
-    buy_30_protection__ema_fast                 = buy_protection_params[30]["ema_fast"]
-    buy_30_protection__ema_fast_len             = buy_protection_params[30]["ema_fast_len"]
-    buy_30_protection__ema_slow                 = buy_protection_params[30]["ema_slow"]
-    buy_30_protection__ema_slow_len             = buy_protection_params[30]["ema_slow_len"]
-    buy_30_protection__close_above_ema_fast     = buy_protection_params[30]["close_above_ema_fast"]
-    buy_30_protection__close_above_ema_fast_len = buy_protection_params[30]["close_above_ema_fast_len"]
-    buy_30_protection__close_above_ema_slow     = buy_protection_params[30]["close_above_ema_slow"]
-    buy_30_protection__close_above_ema_slow_len = buy_protection_params[30]["close_above_ema_slow_len"]
-    buy_30_protection__sma200_rising            = buy_protection_params[30]["sma200_rising"]
-    buy_30_protection__sma200_rising_val        = buy_protection_params[30]["sma200_rising_val"]
-    buy_30_protection__sma200_1h_rising         = buy_protection_params[30]["sma200_1h_rising"]
-    buy_30_protection__sma200_1h_rising_val     = buy_protection_params[30]["sma200_1h_rising_val"]
-    buy_30_protection__safe_dips                = buy_protection_params[30]["safe_dips"]
-    buy_30_protection__safe_dips_type           = buy_protection_params[30]["safe_dips_type"]
-    buy_30_protection__safe_pump                = buy_protection_params[30]["safe_pump"]
-    buy_30_protection__safe_pump_type           = buy_protection_params[30]["safe_pump_type"]
-    buy_30_protection__safe_pump_period         = buy_protection_params[30]["safe_pump_period"]
-    buy_30_protection__btc_1h_not_downtrend     = buy_protection_params[30]["btc_1h_not_downtrend"]
+    buy_condition_30_enable                      = CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True)
+    buy_30_protection__ema_fast                  = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_30_protection__ema_fast_len              = CategoricalParameter(["26","50","100","200"], default="50", space='buy', optimize=False, load=True)
+    buy_30_protection__ema_slow                  = CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True)
+    buy_30_protection__ema_slow_len              = CategoricalParameter(["26","50","100","200"], default="100", space='buy', optimize=False, load=True)
+    buy_30_protection__close_above_ema_fast      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_30_protection__close_above_ema_fast_len  = CategoricalParameter(["12","20","26","50","100","200"], default="50", space='buy', optimize=False, load=True)
+    buy_30_protection__close_above_ema_slow      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_30_protection__close_above_ema_slow_len  = CategoricalParameter(["15","50","200"], default="200", space='buy', optimize=False, load=True)
+    buy_30_protection__sma200_rising             = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_30_protection__sma200_rising_val         = CategoricalParameter(["20","30","36","44","50"], default="30", space='buy', optimize=False, load=True)
+    buy_30_protection__sma200_1h_rising          = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_30_protection__sma200_1h_rising_val      = CategoricalParameter(["20","30","36","44","50"], default="50", space='buy', optimize=False, load=True)
+    buy_30_protection__safe_dips                 = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_30_protection__safe_dips_type            = CategoricalParameter(["10","50","100"], default="50", space='buy', optimize=False, load=True)
+    buy_30_protection__safe_pump                 = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_30_protection__safe_pump_type            = CategoricalParameter(["10","50","100"], default="110", space='buy', optimize=False, load=True)
+    buy_30_protection__safe_pump_period          = CategoricalParameter(["24","36","48"], default="36", space='buy', optimize=False, load=True)
+    buy_30_protection__btc_1h_not_downtrend      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
 
-    buy_condition_31_enable = buy_protection_params[31]["enable"]
-    buy_31_protection__ema_fast                 = buy_protection_params[31]["ema_fast"]
-    buy_31_protection__ema_fast_len             = buy_protection_params[31]["ema_fast_len"]
-    buy_31_protection__ema_slow                 = buy_protection_params[31]["ema_slow"]
-    buy_31_protection__ema_slow_len             = buy_protection_params[31]["ema_slow_len"]
-    buy_31_protection__close_above_ema_fast     = buy_protection_params[31]["close_above_ema_fast"]
-    buy_31_protection__close_above_ema_fast_len = buy_protection_params[31]["close_above_ema_fast_len"]
-    buy_31_protection__close_above_ema_slow     = buy_protection_params[31]["close_above_ema_slow"]
-    buy_31_protection__close_above_ema_slow_len = buy_protection_params[31]["close_above_ema_slow_len"]
-    buy_31_protection__sma200_rising            = buy_protection_params[31]["sma200_rising"]
-    buy_31_protection__sma200_rising_val        = buy_protection_params[31]["sma200_rising_val"]
-    buy_31_protection__sma200_1h_rising         = buy_protection_params[31]["sma200_1h_rising"]
-    buy_31_protection__sma200_1h_rising_val     = buy_protection_params[31]["sma200_1h_rising_val"]
-    buy_31_protection__safe_dips                = buy_protection_params[31]["safe_dips"]
-    buy_31_protection__safe_dips_type           = buy_protection_params[31]["safe_dips_type"]
-    buy_31_protection__safe_pump                = buy_protection_params[31]["safe_pump"]
-    buy_31_protection__safe_pump_type           = buy_protection_params[31]["safe_pump_type"]
-    buy_31_protection__safe_pump_period         = buy_protection_params[31]["safe_pump_period"]
-    buy_31_protection__btc_1h_not_downtrend     = buy_protection_params[31]["btc_1h_not_downtrend"]
+    buy_condition_31_enable                      = CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True)
+    buy_31_protection__ema_fast                  = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_31_protection__ema_fast_len              = CategoricalParameter(["26","50","100","200"], default="50", space='buy', optimize=False, load=True)
+    buy_31_protection__ema_slow                  = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_31_protection__ema_slow_len              = CategoricalParameter(["26","50","100","200"], default="100", space='buy', optimize=False, load=True)
+    buy_31_protection__close_above_ema_fast      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_31_protection__close_above_ema_fast_len  = CategoricalParameter(["12","20","26","50","100","200"], default="50", space='buy', optimize=False, load=True)
+    buy_31_protection__close_above_ema_slow      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_31_protection__close_above_ema_slow_len  = CategoricalParameter(["15","50","200"], default="100", space='buy', optimize=False, load=True)
+    buy_31_protection__sma200_rising             = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_31_protection__sma200_rising_val         = CategoricalParameter(["20","30","36","44","50"], default="30", space='buy', optimize=False, load=True)
+    buy_31_protection__sma200_1h_rising          = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_31_protection__sma200_1h_rising_val      = CategoricalParameter(["20","30","36","44","50"], default="50", space='buy', optimize=False, load=True)
+    buy_31_protection__safe_dips                 = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_31_protection__safe_dips_type            = CategoricalParameter(["10","50","100"], default="110", space='buy', optimize=False, load=True)
+    buy_31_protection__safe_pump                 = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_31_protection__safe_pump_type            = CategoricalParameter(["10","50","100"], default="10", space='buy', optimize=False, load=True)
+    buy_31_protection__safe_pump_period          = CategoricalParameter(["24","36","48"], default="48", space='buy', optimize=False, load=True)
+    buy_31_protection__btc_1h_not_downtrend      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
 
-    buy_condition_32_enable = buy_protection_params[32]["enable"]
-    buy_32_protection__ema_fast                 = buy_protection_params[32]["ema_fast"]
-    buy_32_protection__ema_fast_len             = buy_protection_params[32]["ema_fast_len"]
-    buy_32_protection__ema_slow                 = buy_protection_params[32]["ema_slow"]
-    buy_32_protection__ema_slow_len             = buy_protection_params[32]["ema_slow_len"]
-    buy_32_protection__close_above_ema_fast     = buy_protection_params[32]["close_above_ema_fast"]
-    buy_32_protection__close_above_ema_fast_len = buy_protection_params[32]["close_above_ema_fast_len"]
-    buy_32_protection__close_above_ema_slow     = buy_protection_params[32]["close_above_ema_slow"]
-    buy_32_protection__close_above_ema_slow_len = buy_protection_params[32]["close_above_ema_slow_len"]
-    buy_32_protection__sma200_rising            = buy_protection_params[32]["sma200_rising"]
-    buy_32_protection__sma200_rising_val        = buy_protection_params[32]["sma200_rising_val"]
-    buy_32_protection__sma200_1h_rising         = buy_protection_params[32]["sma200_1h_rising"]
-    buy_32_protection__sma200_1h_rising_val     = buy_protection_params[32]["sma200_1h_rising_val"]
-    buy_32_protection__safe_dips                = buy_protection_params[32]["safe_dips"]
-    buy_32_protection__safe_dips_type           = buy_protection_params[32]["safe_dips_type"]
-    buy_32_protection__safe_pump                = buy_protection_params[32]["safe_pump"]
-    buy_32_protection__safe_pump_type           = buy_protection_params[32]["safe_pump_type"]
-    buy_32_protection__safe_pump_period         = buy_protection_params[32]["safe_pump_period"]
-    buy_32_protection__btc_1h_not_downtrend     = buy_protection_params[32]["btc_1h_not_downtrend"]
+    buy_condition_32_enable                      = CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True)
+    buy_32_protection__ema_fast                  = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_32_protection__ema_fast_len              = CategoricalParameter(["26","50","100","200"], default="50", space='buy', optimize=False, load=True)
+    buy_32_protection__ema_slow                  = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_32_protection__ema_slow_len              = CategoricalParameter(["26","50","100","200"], default="100", space='buy', optimize=False, load=True)
+    buy_32_protection__close_above_ema_fast      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_32_protection__close_above_ema_fast_len  = CategoricalParameter(["12","20","26","50","100","200"], default="50", space='buy', optimize=False, load=True)
+    buy_32_protection__close_above_ema_slow      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_32_protection__close_above_ema_slow_len  = CategoricalParameter(["15","50","200"], default="100", space='buy', optimize=False, load=True)
+    buy_32_protection__sma200_rising             = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_32_protection__sma200_rising_val         = CategoricalParameter(["20","30","36","44","50"], default="30", space='buy', optimize=False, load=True)
+    buy_32_protection__sma200_1h_rising          = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_32_protection__sma200_1h_rising_val      = CategoricalParameter(["20","30","36","44","50"], default="50", space='buy', optimize=False, load=True)
+    buy_32_protection__safe_dips                 = CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True)
+    buy_32_protection__safe_dips_type            = CategoricalParameter(["10","50","100"], default="10", space='buy', optimize=False, load=True)
+    buy_32_protection__safe_pump                 = CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True)
+    buy_32_protection__safe_pump_type            = CategoricalParameter(["10","50","100"], default="20", space='buy', optimize=False, load=True)
+    buy_32_protection__safe_pump_period          = CategoricalParameter(["24","36","48"], default="48", space='buy', optimize=False, load=True)
+    buy_32_protection__btc_1h_not_downtrend      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
 
-    buy_condition_33_enable = buy_protection_params[33]["enable"]
-    buy_33_protection__ema_fast                 = buy_protection_params[33]["ema_fast"]
-    buy_33_protection__ema_fast_len             = buy_protection_params[33]["ema_fast_len"]
-    buy_33_protection__ema_slow                 = buy_protection_params[33]["ema_slow"]
-    buy_33_protection__ema_slow_len             = buy_protection_params[33]["ema_slow_len"]
-    buy_33_protection__close_above_ema_fast     = buy_protection_params[33]["close_above_ema_fast"]
-    buy_33_protection__close_above_ema_fast_len = buy_protection_params[33]["close_above_ema_fast_len"]
-    buy_33_protection__close_above_ema_slow     = buy_protection_params[33]["close_above_ema_slow"]
-    buy_33_protection__close_above_ema_slow_len = buy_protection_params[33]["close_above_ema_slow_len"]
-    buy_33_protection__sma200_rising            = buy_protection_params[33]["sma200_rising"]
-    buy_33_protection__sma200_rising_val        = buy_protection_params[33]["sma200_rising_val"]
-    buy_33_protection__sma200_1h_rising         = buy_protection_params[33]["sma200_1h_rising"]
-    buy_33_protection__sma200_1h_rising_val     = buy_protection_params[33]["sma200_1h_rising_val"]
-    buy_33_protection__safe_dips                = buy_protection_params[33]["safe_dips"]
-    buy_33_protection__safe_dips_type           = buy_protection_params[33]["safe_dips_type"]
-    buy_33_protection__safe_pump                = buy_protection_params[33]["safe_pump"]
-    buy_33_protection__safe_pump_type           = buy_protection_params[33]["safe_pump_type"]
-    buy_33_protection__safe_pump_period         = buy_protection_params[33]["safe_pump_period"]
-    buy_33_protection__btc_1h_not_downtrend     = buy_protection_params[33]["btc_1h_not_downtrend"]
+    buy_condition_33_enable                      = CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True)
+    buy_33_protection__ema_fast                  = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_33_protection__ema_fast_len              = CategoricalParameter(["26","50","100","200"], default="50", space='buy', optimize=False, load=True)
+    buy_33_protection__ema_slow                  = CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True)
+    buy_33_protection__ema_slow_len              = CategoricalParameter(["26","50","100","200"], default="50", space='buy', optimize=False, load=True)
+    buy_33_protection__close_above_ema_fast      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_33_protection__close_above_ema_fast_len  = CategoricalParameter(["12","20","26","50","100","200"], default="50", space='buy', optimize=False, load=True)
+    buy_33_protection__close_above_ema_slow      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_33_protection__close_above_ema_slow_len  = CategoricalParameter(["15","50","200"], default="100", space='buy', optimize=False, load=True)
+    buy_33_protection__sma200_rising             = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_33_protection__sma200_rising_val         = CategoricalParameter(["20","30","36","44","50"], default="30", space='buy', optimize=False, load=True)
+    buy_33_protection__sma200_1h_rising          = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_33_protection__sma200_1h_rising_val      = CategoricalParameter(["20","30","36","44","50"], default="50", space='buy', optimize=False, load=True)
+    buy_33_protection__safe_dips                 = CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True)
+    buy_33_protection__safe_dips_type            = CategoricalParameter(["10","50","100"], default="100", space='buy', optimize=False, load=True)
+    buy_33_protection__safe_pump                 = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_33_protection__safe_pump_type            = CategoricalParameter(["10","50","100"], default="100", space='buy', optimize=False, load=True)
+    buy_33_protection__safe_pump_period          = CategoricalParameter(["24","36","48"], default="24", space='buy', optimize=False, load=True)
+    buy_33_protection__btc_1h_not_downtrend      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
 
-    buy_condition_34_enable = buy_protection_params[34]["enable"]
-    buy_34_protection__ema_fast                 = buy_protection_params[34]["ema_fast"]
-    buy_34_protection__ema_fast_len             = buy_protection_params[34]["ema_fast_len"]
-    buy_34_protection__ema_slow                 = buy_protection_params[34]["ema_slow"]
-    buy_34_protection__ema_slow_len             = buy_protection_params[34]["ema_slow_len"]
-    buy_34_protection__close_above_ema_fast     = buy_protection_params[34]["close_above_ema_fast"]
-    buy_34_protection__close_above_ema_fast_len = buy_protection_params[34]["close_above_ema_fast_len"]
-    buy_34_protection__close_above_ema_slow     = buy_protection_params[34]["close_above_ema_slow"]
-    buy_34_protection__close_above_ema_slow_len = buy_protection_params[34]["close_above_ema_slow_len"]
-    buy_34_protection__sma200_rising            = buy_protection_params[34]["sma200_rising"]
-    buy_34_protection__sma200_rising_val        = buy_protection_params[34]["sma200_rising_val"]
-    buy_34_protection__sma200_1h_rising         = buy_protection_params[34]["sma200_1h_rising"]
-    buy_34_protection__sma200_1h_rising_val     = buy_protection_params[34]["sma200_1h_rising_val"]
-    buy_34_protection__safe_dips                = buy_protection_params[34]["safe_dips"]
-    buy_34_protection__safe_dips_type           = buy_protection_params[34]["safe_dips_type"]
-    buy_34_protection__safe_pump                = buy_protection_params[34]["safe_pump"]
-    buy_34_protection__safe_pump_type           = buy_protection_params[34]["safe_pump_type"]
-    buy_34_protection__safe_pump_period         = buy_protection_params[34]["safe_pump_period"]
-    buy_34_protection__btc_1h_not_downtrend     = buy_protection_params[34]["btc_1h_not_downtrend"]
+    buy_condition_34_enable                      = CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True)
+    buy_34_protection__ema_fast                  = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_34_protection__ema_fast_len              = CategoricalParameter(["26","50","100","200"], default="50", space='buy', optimize=False, load=True)
+    buy_34_protection__ema_slow                  = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_34_protection__ema_slow_len              = CategoricalParameter(["26","50","100","200"], default="100", space='buy', optimize=False, load=True)
+    buy_34_protection__close_above_ema_fast      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_34_protection__close_above_ema_fast_len  = CategoricalParameter(["12","20","26","50","100","200"], default="50", space='buy', optimize=False, load=True)
+    buy_34_protection__close_above_ema_slow      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_34_protection__close_above_ema_slow_len  = CategoricalParameter(["15","50","200"], default="100", space='buy', optimize=False, load=True)
+    buy_34_protection__sma200_rising             = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_34_protection__sma200_rising_val         = CategoricalParameter(["20","30","36","44","50"], default="30", space='buy', optimize=False, load=True)
+    buy_34_protection__sma200_1h_rising          = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_34_protection__sma200_1h_rising_val      = CategoricalParameter(["20","30","36","44","50"], default="50", space='buy', optimize=False, load=True)
+    buy_34_protection__safe_dips                 = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_34_protection__safe_dips_type            = CategoricalParameter(["10","50","100"], default="100", space='buy', optimize=False, load=True)
+    buy_34_protection__safe_pump                 = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_34_protection__safe_pump_type            = CategoricalParameter(["10","50","100"], default="10", space='buy', optimize=False, load=True)
+    buy_34_protection__safe_pump_period          = CategoricalParameter(["24","36","48"], default="24", space='buy', optimize=False, load=True)
+    buy_34_protection__btc_1h_not_downtrend      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
 
-    buy_condition_35_enable = buy_protection_params[35]["enable"]
-    buy_35_protection__ema_fast                 = buy_protection_params[35]["ema_fast"]
-    buy_35_protection__ema_fast_len             = buy_protection_params[35]["ema_fast_len"]
-    buy_35_protection__ema_slow                 = buy_protection_params[35]["ema_slow"]
-    buy_35_protection__ema_slow_len             = buy_protection_params[35]["ema_slow_len"]
-    buy_35_protection__close_above_ema_fast     = buy_protection_params[35]["close_above_ema_fast"]
-    buy_35_protection__close_above_ema_fast_len = buy_protection_params[35]["close_above_ema_fast_len"]
-    buy_35_protection__close_above_ema_slow     = buy_protection_params[35]["close_above_ema_slow"]
-    buy_35_protection__close_above_ema_slow_len = buy_protection_params[35]["close_above_ema_slow_len"]
-    buy_35_protection__sma200_rising            = buy_protection_params[35]["sma200_rising"]
-    buy_35_protection__sma200_rising_val        = buy_protection_params[35]["sma200_rising_val"]
-    buy_35_protection__sma200_1h_rising         = buy_protection_params[35]["sma200_1h_rising"]
-    buy_35_protection__sma200_1h_rising_val     = buy_protection_params[35]["sma200_1h_rising_val"]
-    buy_35_protection__safe_dips                = buy_protection_params[35]["safe_dips"]
-    buy_35_protection__safe_dips_type           = buy_protection_params[35]["safe_dips_type"]
-    buy_35_protection__safe_pump                = buy_protection_params[35]["safe_pump"]
-    buy_35_protection__safe_pump_type           = buy_protection_params[35]["safe_pump_type"]
-    buy_35_protection__safe_pump_period         = buy_protection_params[35]["safe_pump_period"]
-    buy_35_protection__btc_1h_not_downtrend     = buy_protection_params[35]["btc_1h_not_downtrend"]
+    buy_condition_35_enable                      = CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True)
+    buy_35_protection__ema_fast                  = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_35_protection__ema_fast_len              = CategoricalParameter(["26","50","100","200"], default="50", space='buy', optimize=False, load=True)
+    buy_35_protection__ema_slow                  = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_35_protection__ema_slow_len              = CategoricalParameter(["26","50","100","200"], default="100", space='buy', optimize=False, load=True)
+    buy_35_protection__close_above_ema_fast      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_35_protection__close_above_ema_fast_len  = CategoricalParameter(["12","20","26","50","100","200"], default="50", space='buy', optimize=False, load=True)
+    buy_35_protection__close_above_ema_slow      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_35_protection__close_above_ema_slow_len  = CategoricalParameter(["15","50","200"], default="100", space='buy', optimize=False, load=True)
+    buy_35_protection__sma200_rising             = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_35_protection__sma200_rising_val         = CategoricalParameter(["20","30","36","44","50"], default="30", space='buy', optimize=False, load=True)
+    buy_35_protection__sma200_1h_rising          = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_35_protection__sma200_1h_rising_val      = CategoricalParameter(["20","30","36","44","50"], default="50", space='buy', optimize=False, load=True)
+    buy_35_protection__safe_dips                 = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_35_protection__safe_dips_type            = CategoricalParameter(["10","50","100"], default="100", space='buy', optimize=False, load=True)
+    buy_35_protection__safe_pump                 = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_35_protection__safe_pump_type            = CategoricalParameter(["10","50","100"], default="10", space='buy', optimize=False, load=True)
+    buy_35_protection__safe_pump_period          = CategoricalParameter(["24","36","48"], default="24", space='buy', optimize=False, load=True)
+    buy_35_protection__btc_1h_not_downtrend      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
 
-    buy_condition_36_enable = buy_protection_params[36]["enable"]
-    buy_36_protection__ema_fast                 = buy_protection_params[36]["ema_fast"]
-    buy_36_protection__ema_fast_len             = buy_protection_params[36]["ema_fast_len"]
-    buy_36_protection__ema_slow                 = buy_protection_params[36]["ema_slow"]
-    buy_36_protection__ema_slow_len             = buy_protection_params[36]["ema_slow_len"]
-    buy_36_protection__close_above_ema_fast     = buy_protection_params[36]["close_above_ema_fast"]
-    buy_36_protection__close_above_ema_fast_len = buy_protection_params[36]["close_above_ema_fast_len"]
-    buy_36_protection__close_above_ema_slow     = buy_protection_params[36]["close_above_ema_slow"]
-    buy_36_protection__close_above_ema_slow_len = buy_protection_params[36]["close_above_ema_slow_len"]
-    buy_36_protection__sma200_rising            = buy_protection_params[36]["sma200_rising"]
-    buy_36_protection__sma200_rising_val        = buy_protection_params[36]["sma200_rising_val"]
-    buy_36_protection__sma200_1h_rising         = buy_protection_params[36]["sma200_1h_rising"]
-    buy_36_protection__sma200_1h_rising_val     = buy_protection_params[36]["sma200_1h_rising_val"]
-    buy_36_protection__safe_dips                = buy_protection_params[36]["safe_dips"]
-    buy_36_protection__safe_dips_type           = buy_protection_params[36]["safe_dips_type"]
-    buy_36_protection__safe_pump                = buy_protection_params[36]["safe_pump"]
-    buy_36_protection__safe_pump_type           = buy_protection_params[36]["safe_pump_type"]
-    buy_36_protection__safe_pump_period         = buy_protection_params[36]["safe_pump_period"]
-    buy_36_protection__btc_1h_not_downtrend     = buy_protection_params[36]["btc_1h_not_downtrend"]
+    buy_condition_36_enable                      = CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True)
+    buy_36_protection__ema_fast                  = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_36_protection__ema_fast_len              = CategoricalParameter(["26","50","100","200"], default="50", space='buy', optimize=False, load=True)
+    buy_36_protection__ema_slow                  = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_36_protection__ema_slow_len              = CategoricalParameter(["26","50","100","200"], default="100", space='buy', optimize=False, load=True)
+    buy_36_protection__close_above_ema_fast      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_36_protection__close_above_ema_fast_len  = CategoricalParameter(["12","20","26","50","100","200"], default="50", space='buy', optimize=False, load=True)
+    buy_36_protection__close_above_ema_slow      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_36_protection__close_above_ema_slow_len  = CategoricalParameter(["15","50","200"], default="100", space='buy', optimize=False, load=True)
+    buy_36_protection__sma200_rising             = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_36_protection__sma200_rising_val         = CategoricalParameter(["20","30","36","44","50"], default="30", space='buy', optimize=False, load=True)
+    buy_36_protection__sma200_1h_rising          = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_36_protection__sma200_1h_rising_val      = CategoricalParameter(["20","30","36","44","50"], default="50", space='buy', optimize=False, load=True)
+    buy_36_protection__safe_dips                 = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_36_protection__safe_dips_type            = CategoricalParameter(["10","50","100"], default="100", space='buy', optimize=False, load=True)
+    buy_36_protection__safe_pump                 = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_36_protection__safe_pump_type            = CategoricalParameter(["10","50","100"], default="10", space='buy', optimize=False, load=True)
+    buy_36_protection__safe_pump_period          = CategoricalParameter(["24","36","48"], default="24", space='buy', optimize=False, load=True)
+    buy_36_protection__btc_1h_not_downtrend      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
 
-    buy_condition_37_enable = buy_protection_params[37]["enable"]
-    buy_37_protection__ema_fast                 = buy_protection_params[37]["ema_fast"]
-    buy_37_protection__ema_fast_len             = buy_protection_params[37]["ema_fast_len"]
-    buy_37_protection__ema_slow                 = buy_protection_params[37]["ema_slow"]
-    buy_37_protection__ema_slow_len             = buy_protection_params[37]["ema_slow_len"]
-    buy_37_protection__close_above_ema_fast     = buy_protection_params[37]["close_above_ema_fast"]
-    buy_37_protection__close_above_ema_fast_len = buy_protection_params[37]["close_above_ema_fast_len"]
-    buy_37_protection__close_above_ema_slow     = buy_protection_params[37]["close_above_ema_slow"]
-    buy_37_protection__close_above_ema_slow_len = buy_protection_params[37]["close_above_ema_slow_len"]
-    buy_37_protection__sma200_rising            = buy_protection_params[37]["sma200_rising"]
-    buy_37_protection__sma200_rising_val        = buy_protection_params[37]["sma200_rising_val"]
-    buy_37_protection__sma200_1h_rising         = buy_protection_params[37]["sma200_1h_rising"]
-    buy_37_protection__sma200_1h_rising_val     = buy_protection_params[37]["sma200_1h_rising_val"]
-    buy_37_protection__safe_dips                = buy_protection_params[37]["safe_dips"]
-    buy_37_protection__safe_dips_type           = buy_protection_params[37]["safe_dips_type"]
-    buy_37_protection__safe_pump                = buy_protection_params[37]["safe_pump"]
-    buy_37_protection__safe_pump_type           = buy_protection_params[37]["safe_pump_type"]
-    buy_37_protection__safe_pump_period         = buy_protection_params[37]["safe_pump_period"]
-    buy_37_protection__btc_1h_not_downtrend     = buy_protection_params[37]["btc_1h_not_downtrend"]
+    buy_condition_37_enable                      = CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True)
+    buy_37_protection__ema_fast                  = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_37_protection__ema_fast_len              = CategoricalParameter(["26","50","100","200"], default="50", space='buy', optimize=False, load=True)
+    buy_37_protection__ema_slow                  = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_37_protection__ema_slow_len              = CategoricalParameter(["26","50","100","200"], default="100", space='buy', optimize=False, load=True)
+    buy_37_protection__close_above_ema_fast      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_37_protection__close_above_ema_fast_len  = CategoricalParameter(["12","20","26","50","100","200"], default="50", space='buy', optimize=False, load=True)
+    buy_37_protection__close_above_ema_slow      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_37_protection__close_above_ema_slow_len  = CategoricalParameter(["15","50","200"], default="100", space='buy', optimize=False, load=True)
+    buy_37_protection__sma200_rising             = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_37_protection__sma200_rising_val         = CategoricalParameter(["20","30","36","44","50"], default="30", space='buy', optimize=False, load=True)
+    buy_37_protection__sma200_1h_rising          = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_37_protection__sma200_1h_rising_val      = CategoricalParameter(["20","30","36","44","50"], default="50", space='buy', optimize=False, load=True)
+    buy_37_protection__safe_dips                 = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_37_protection__safe_dips_type            = CategoricalParameter(["10","50","100"], default="100", space='buy', optimize=False, load=True)
+    buy_37_protection__safe_pump                 = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_37_protection__safe_pump_type            = CategoricalParameter(["10","50","100"], default="100", space='buy', optimize=False, load=True)
+    buy_37_protection__safe_pump_period          = CategoricalParameter(["24","36","48"], default="48", space='buy', optimize=False, load=True)
+    buy_37_protection__btc_1h_not_downtrend      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
 
-    buy_condition_38_enable = buy_protection_params[38]["enable"]
-    buy_38_protection__ema_fast                 = buy_protection_params[38]["ema_fast"]
-    buy_38_protection__ema_fast_len             = buy_protection_params[38]["ema_fast_len"]
-    buy_38_protection__ema_slow                 = buy_protection_params[38]["ema_slow"]
-    buy_38_protection__ema_slow_len             = buy_protection_params[38]["ema_slow_len"]
-    buy_38_protection__close_above_ema_fast     = buy_protection_params[38]["close_above_ema_fast"]
-    buy_38_protection__close_above_ema_fast_len = buy_protection_params[38]["close_above_ema_fast_len"]
-    buy_38_protection__close_above_ema_slow     = buy_protection_params[38]["close_above_ema_slow"]
-    buy_38_protection__close_above_ema_slow_len = buy_protection_params[38]["close_above_ema_slow_len"]
-    buy_38_protection__sma200_rising            = buy_protection_params[38]["sma200_rising"]
-    buy_38_protection__sma200_rising_val        = buy_protection_params[38]["sma200_rising_val"]
-    buy_38_protection__sma200_1h_rising         = buy_protection_params[38]["sma200_1h_rising"]
-    buy_38_protection__sma200_1h_rising_val     = buy_protection_params[38]["sma200_1h_rising_val"]
-    buy_38_protection__safe_dips                = buy_protection_params[38]["safe_dips"]
-    buy_38_protection__safe_dips_type           = buy_protection_params[38]["safe_dips_type"]
-    buy_38_protection__safe_pump                = buy_protection_params[38]["safe_pump"]
-    buy_38_protection__safe_pump_type           = buy_protection_params[38]["safe_pump_type"]
-    buy_38_protection__safe_pump_period         = buy_protection_params[38]["safe_pump_period"]
-    buy_38_protection__btc_1h_not_downtrend     = buy_protection_params[38]["btc_1h_not_downtrend"]
+    buy_condition_38_enable                      = CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True)
+    buy_38_protection__ema_fast                  = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_38_protection__ema_fast_len              = CategoricalParameter(["26","50","100","200"], default="50", space='buy', optimize=False, load=True)
+    buy_38_protection__ema_slow                  = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_38_protection__ema_slow_len              = CategoricalParameter(["26","50","100","200"], default="100", space='buy', optimize=False, load=True)
+    buy_38_protection__close_above_ema_fast      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_38_protection__close_above_ema_fast_len  = CategoricalParameter(["12","20","26","50","100","200"], default="50", space='buy', optimize=False, load=True)
+    buy_38_protection__close_above_ema_slow      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_38_protection__close_above_ema_slow_len  = CategoricalParameter(["15","50","200"], default="100", space='buy', optimize=False, load=True)
+    buy_38_protection__sma200_rising             = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_38_protection__sma200_rising_val         = CategoricalParameter(["20","30","36","44","50"], default="30", space='buy', optimize=False, load=True)
+    buy_38_protection__sma200_1h_rising          = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_38_protection__sma200_1h_rising_val      = CategoricalParameter(["20","30","36","44","50"], default="50", space='buy', optimize=False, load=True)
+    buy_38_protection__safe_dips                 = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_38_protection__safe_dips_type            = CategoricalParameter(["10","50","100"], default="100", space='buy', optimize=False, load=True)
+    buy_38_protection__safe_pump                 = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
+    buy_38_protection__safe_pump_type            = CategoricalParameter(["10","50","100"], default="10", space='buy', optimize=False, load=True)
+    buy_38_protection__safe_pump_period          = CategoricalParameter(["24","36","48"], default="36", space='buy', optimize=False, load=True)
+    buy_38_protection__btc_1h_not_downtrend      = CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
 
     # Strict dips - level 10
     buy_dip_threshold_10_1 = DecimalParameter(0.001, 0.05, default=0.015, space='buy', decimals=3, optimize=False, load=True)
