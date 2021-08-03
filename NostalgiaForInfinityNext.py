@@ -2915,7 +2915,7 @@ class NostalgiaForInfinityNext(IStrategy):
             buy_signal = dataframe.loc[dataframe['date'] < trade_open_date]
             if not buy_signal.empty:
                 buy_signal_candle = buy_signal.iloc[-1]
-                buy_tag = buy_signal_candle['buy_tag']
+                buy_tag = buy_signal_candle['buy_tag'] if buy_signal_candle['buy_tag'] != '' else 'empty'
         buy_tags = buy_tag.split()
         max_profit = ((trade.max_rate - trade.open_rate) / trade.open_rate)
         max_loss = ((trade.open_rate - trade.min_rate) / trade.min_rate)
