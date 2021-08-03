@@ -3,6 +3,7 @@ name: CI
 on: [push, pull_request]
 
 jobs:
+
   Pre-Commit:
     runs-on: ubuntu-20.04
     steps:
@@ -78,6 +79,7 @@ jobs:
           name: backtest_result
           path: backtest_${{ matrix.timerange }}_${{ matrix.opentrades }}.txt
 
+
   Kucoin-Backtests:
     strategy:
       fail-fast: false
@@ -118,10 +120,20 @@ jobs:
           name: backtest_result
           path: backtest_${{ matrix.timerange }}_${{ matrix.opentrades }}.txt
 
+
   Binance-Backest-Tests:
     runs-on: ubuntu-20.04
     needs:
       - Pre-Commit
+    strategy:
+      fail-fast: false
+      matrix:
+        timerange:
+          - 20210101-20210201
+          - 20210201-20210301
+          - 20210301-20210401
+          - 20210401-20210501
+          - 20210601-20210701
 
     steps:
       - uses: actions/checkout@v2
@@ -133,7 +145,7 @@ jobs:
 
       - name: Run Tests
         env:
-          EXTRA_ARGS: tests/backtests/binance/
+          EXTRA_ARGS: tests/backtests -k 'binance and ${{ matrix.timerange }}'
         run: |
           mkdir artifacts
           chmod 777 artifacts
@@ -145,10 +157,20 @@ jobs:
           name: binance-testrun-artifacts
           path: artifacts/
 
+
   Kucoin-Backest-Tests:
     runs-on: ubuntu-20.04
     needs:
       - Pre-Commit
+    strategy:
+      fail-fast: false
+      matrix:
+        timerange:
+          - 20210101-20210201
+          - 20210201-20210301
+          - 20210301-20210401
+          - 20210401-20210501
+          - 20210601-20210701
 
     steps:
       - uses: actions/checkout@v2
@@ -160,7 +182,7 @@ jobs:
 
       - name: Run Tests
         env:
-          EXTRA_ARGS: tests/backtests/kucoin/
+          EXTRA_ARGS: tests/backtests -k 'kucoin and ${{ matrix.timerange }}'
         run: |
           mkdir artifacts
           chmod 777 artifacts
@@ -171,6 +193,7 @@ jobs:
         with:
           name: kucoin-testrun-artifacts
           path: artifacts/
+
 
   Remaining-Tests:
     runs-on: ubuntu-20.04
@@ -187,7 +210,7 @@ jobs:
 
       - name: Run Tests
         env:
-          EXTRA_ARGS: --ignore tests/backtests/binance/ --ignore tests/backtests/kucoin/
+          EXTRA_ARGS: --ignore tests/backtests/
         run: |
           mkdir artifacts
           chmod 777 artifacts
