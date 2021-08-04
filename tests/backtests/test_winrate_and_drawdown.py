@@ -65,7 +65,7 @@ def timerange(request):
 def deviations():
     return {
         "binance": {
-            ("20210201", "20210301"): {"max_drawdown": 37, "winrate": 90},
+            ("20210201", "20210301"): {"max_drawdown": 44, "winrate": 90},
             ("20210101", "20210201"): {"max_drawdown": 40, "winrate": 90},
             ("20210301", "20210401"): {"max_drawdown": 42, "winrate": 90},
         },
