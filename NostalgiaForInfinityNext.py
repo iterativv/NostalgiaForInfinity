@@ -2507,80 +2507,80 @@ class NostalgiaForInfinityNext(IStrategy):
     def sell_over_main(self, current_profit: float, last_candle) -> tuple:
         if last_candle['close'] > last_candle['ema_200']:
             if current_profit > self.sell_custom_profit_11.value:
-                if last_candle['rsi'] < self.sell_custom_rsi_11.value:
+                if last_candle['rsi_14'] < self.sell_custom_rsi_11.value:
                     return True, 'signal_profit_11'
             elif self.sell_custom_profit_11.value > current_profit > self.sell_custom_profit_10.value:
-                if last_candle['rsi'] < self.sell_custom_rsi_10.value:
+                if last_candle['rsi_14'] < self.sell_custom_rsi_10.value:
                     return True, 'signal_profit_10'
             elif self.sell_custom_profit_10.value > current_profit > self.sell_custom_profit_9.value:
-                if last_candle['rsi'] < self.sell_custom_rsi_9.value:
+                if last_candle['rsi_14'] < self.sell_custom_rsi_9.value:
                     return True, 'signal_profit_9'
             elif self.sell_custom_profit_9.value > current_profit > self.sell_custom_profit_8.value:
-                if last_candle['rsi'] < self.sell_custom_rsi_8.value:
+                if last_candle['rsi_14'] < self.sell_custom_rsi_8.value:
                     return True, 'signal_profit_8'
             elif self.sell_custom_profit_8.value > current_profit > self.sell_custom_profit_7.value:
-                if (last_candle['rsi'] < self.sell_custom_rsi_7.value) & (last_candle['cmf'] < 0.0) :
+                if (last_candle['rsi_14'] < self.sell_custom_rsi_7.value) & (last_candle['cmf'] < 0.0) :
                     return True, 'signal_profit_7'
             elif self.sell_custom_profit_7.value > current_profit > self.sell_custom_profit_6.value:
-                if (last_candle['rsi'] < self.sell_custom_rsi_6.value) & (last_candle['cmf'] < 0.0):
+                if (last_candle['rsi_14'] < self.sell_custom_rsi_6.value) & (last_candle['cmf'] < 0.0):
                     return True, 'signal_profit_6'
             elif self.sell_custom_profit_6.value > current_profit > self.sell_custom_profit_5.value:
-                if (last_candle['rsi'] < self.sell_custom_rsi_5.value) & (last_candle['cmf'] < 0.0):
+                if (last_candle['rsi_14'] < self.sell_custom_rsi_5.value) & (last_candle['cmf'] < 0.0):
                     return True, 'signal_profit_5'
             elif self.sell_custom_profit_5.value > current_profit > self.sell_custom_profit_4.value:
-                if (last_candle['rsi'] < self.sell_custom_rsi_4.value) & (last_candle['cmf'] < 0.0) :
+                if (last_candle['rsi_14'] < self.sell_custom_rsi_4.value) & (last_candle['cmf'] < 0.0) :
                     return True, 'signal_profit_4'
             elif self.sell_custom_profit_4.value > current_profit > self.sell_custom_profit_3.value:
-                if (last_candle['rsi'] < self.sell_custom_rsi_3.value) & (last_candle['cmf'] < 0.0):
+                if (last_candle['rsi_14'] < self.sell_custom_rsi_3.value) & (last_candle['cmf'] < 0.0):
                     return True, 'signal_profit_3'
             elif self.sell_custom_profit_3.value > current_profit > self.sell_custom_profit_2.value:
-                if (last_candle['rsi'] < self.sell_custom_rsi_2.value) & (last_candle['cmf'] < 0.0):
+                if (last_candle['rsi_14'] < self.sell_custom_rsi_2.value) & (last_candle['cmf'] < 0.0):
                     return True, 'signal_profit_2'
             elif self.sell_custom_profit_2.value > current_profit > self.sell_custom_profit_1.value:
-                if (last_candle['rsi'] < self.sell_custom_rsi_1.value) & (last_candle['cmf'] < 0.0):
+                if (last_candle['rsi_14'] < self.sell_custom_rsi_1.value) & (last_candle['cmf'] < 0.0):
                     return True, 'signal_profit_1'
             elif self.sell_custom_profit_1.value > current_profit > self.sell_custom_profit_0.value:
-                if (last_candle['rsi'] < self.sell_custom_rsi_0.value) & (last_candle['cmf'] < 0.0):
+                if (last_candle['rsi_14'] < self.sell_custom_rsi_0.value) & (last_candle['cmf'] < 0.0):
                     return True, 'signal_profit_0'
         return False, None
 
     def sell_under_main(self, current_profit: float, last_candle) -> tuple:
         if last_candle['close'] < last_candle['ema_200']:
             if current_profit > self.sell_custom_under_profit_11.value:
-                if last_candle['rsi'] < self.sell_custom_under_rsi_11.value:
+                if last_candle['rsi_14'] < self.sell_custom_under_rsi_11.value:
                     return True, 'signal_profit_u_11'
             elif self.sell_custom_under_profit_11.value > current_profit > self.sell_custom_under_profit_10.value:
-                if last_candle['rsi'] < self.sell_custom_under_rsi_10.value:
+                if last_candle['rsi_14'] < self.sell_custom_under_rsi_10.value:
                     return True, 'signal_profit_u_10'
             elif self.sell_custom_under_profit_10.value > current_profit > self.sell_custom_under_profit_9.value:
-                if last_candle['rsi'] < self.sell_custom_under_rsi_9.value:
+                if last_candle['rsi_14'] < self.sell_custom_under_rsi_9.value:
                     return True, 'signal_profit_u_9'
             elif self.sell_custom_under_profit_9.value > current_profit > self.sell_custom_under_profit_8.value:
-                if last_candle['rsi'] < self.sell_custom_under_rsi_8.value:
+                if last_candle['rsi_14'] < self.sell_custom_under_rsi_8.value:
                     return True, 'signal_profit_u_8'
             elif self.sell_custom_under_profit_8.value > current_profit > self.sell_custom_under_profit_7.value:
-                if last_candle['rsi'] < self.sell_custom_under_rsi_7.value:
+                if last_candle['rsi_14'] < self.sell_custom_under_rsi_7.value:
                     return True, 'signal_profit_u_7'
             elif self.sell_custom_under_profit_7.value > current_profit > self.sell_custom_under_profit_6.value:
-                if last_candle['rsi'] < self.sell_custom_under_rsi_6.value:
+                if last_candle['rsi_14'] < self.sell_custom_under_rsi_6.value:
                     return True, 'signal_profit_u_6'
             elif self.sell_custom_under_profit_6.value > current_profit > self.sell_custom_under_profit_5.value:
-                if last_candle['rsi'] < self.sell_custom_under_rsi_5.value:
+                if last_candle['rsi_14'] < self.sell_custom_under_rsi_5.value:
                     return True, 'signal_profit_u_5'
             elif self.sell_custom_under_profit_5.value > current_profit > self.sell_custom_under_profit_4.value:
-                if last_candle['rsi'] < self.sell_custom_under_rsi_4.value:
+                if last_candle['rsi_14'] < self.sell_custom_under_rsi_4.value:
                     return True, 'signal_profit_u_4'
             elif self.sell_custom_under_profit_4.value > current_profit > self.sell_custom_under_profit_3.value:
-                if last_candle['rsi'] < self.sell_custom_under_rsi_3.value:
+                if last_candle['rsi_14'] < self.sell_custom_under_rsi_3.value:
                     return True, 'signal_profit_u_3'
             elif self.sell_custom_under_profit_3.value > current_profit > self.sell_custom_under_profit_2.value:
-                if last_candle['rsi'] < self.sell_custom_under_rsi_2.value:
+                if last_candle['rsi_14'] < self.sell_custom_under_rsi_2.value:
                     return True, 'signal_profit_u_2'
             elif self.sell_custom_under_profit_2.value > current_profit > self.sell_custom_under_profit_1.value:
-                if last_candle['rsi'] < self.sell_custom_under_rsi_1.value:
+                if last_candle['rsi_14'] < self.sell_custom_under_rsi_1.value:
                     return True, 'signal_profit_u_1'
             elif self.sell_custom_under_profit_1.value > current_profit > self.sell_custom_under_profit_0.value:
-                if (last_candle['rsi'] < self.sell_custom_under_rsi_0.value) & (last_candle['cmf'] < 0.0):
+                if (last_candle['rsi_14'] < self.sell_custom_under_rsi_0.value) & (last_candle['cmf'] < 0.0):
                     return True, 'signal_profit_u_0'
 
         return False, None
@@ -2588,53 +2588,53 @@ class NostalgiaForInfinityNext(IStrategy):
     def sell_pump_main(self, current_profit: float, last_candle) -> tuple:
         if last_candle['sell_pump_48_1_1h']:
             if current_profit > self.sell_custom_pump_profit_1_5.value:
-                if last_candle['rsi'] < self.sell_custom_pump_rsi_1_5.value:
+                if last_candle['rsi_14'] < self.sell_custom_pump_rsi_1_5.value:
                     return True, 'signal_profit_p_1_5'
             elif self.sell_custom_pump_profit_1_5.value > current_profit > self.sell_custom_pump_profit_1_4.value:
-                if last_candle['rsi'] < self.sell_custom_pump_rsi_1_4.value:
+                if last_candle['rsi_14'] < self.sell_custom_pump_rsi_1_4.value:
                     return True, 'signal_profit_p_1_4'
             elif self.sell_custom_pump_profit_1_4.value > current_profit > self.sell_custom_pump_profit_1_3.value:
-                if last_candle['rsi'] < self.sell_custom_pump_rsi_1_3.value:
+                if last_candle['rsi_14'] < self.sell_custom_pump_rsi_1_3.value:
                     return True, 'signal_profit_p_1_3'
             elif self.sell_custom_pump_profit_1_3.value > current_profit > self.sell_custom_pump_profit_1_2.value:
-                if last_candle['rsi'] < self.sell_custom_pump_rsi_1_2.value:
+                if last_candle['rsi_14'] < self.sell_custom_pump_rsi_1_2.value:
                     return True, 'signal_profit_p_1_2'
             elif self.sell_custom_pump_profit_1_2.value > current_profit > self.sell_custom_pump_profit_1_1.value:
-                if last_candle['rsi'] < self.sell_custom_pump_rsi_1_1.value:
+                if last_candle['rsi_14'] < self.sell_custom_pump_rsi_1_1.value:
                     return True, 'signal_profit_p_1_1'
 
         elif last_candle['sell_pump_36_1_1h']:
             if current_profit > self.sell_custom_pump_profit_2_5.value:
-                if last_candle['rsi'] < self.sell_custom_pump_rsi_2_5.value:
+                if last_candle['rsi_14'] < self.sell_custom_pump_rsi_2_5.value:
                     return True, 'signal_profit_p_2_5'
             elif self.sell_custom_pump_profit_2_5.value > current_profit > self.sell_custom_pump_profit_2_4.value:
-                if last_candle['rsi'] < self.sell_custom_pump_rsi_2_4.value:
+                if last_candle['rsi_14'] < self.sell_custom_pump_rsi_2_4.value:
                     return True, 'signal_profit_p_2_4'
             elif self.sell_custom_pump_profit_2_4.value > current_profit > self.sell_custom_pump_profit_2_3.value:
-                if last_candle['rsi'] < self.sell_custom_pump_rsi_2_3.value:
+                if last_candle['rsi_14'] < self.sell_custom_pump_rsi_2_3.value:
                     return True, 'signal_profit_p_2_3'
             elif self.sell_custom_pump_profit_2_3.value > current_profit > self.sell_custom_pump_profit_2_2.value:
-                if last_candle['rsi'] < self.sell_custom_pump_rsi_2_2.value:
+                if last_candle['rsi_14'] < self.sell_custom_pump_rsi_2_2.value:
                     return True, 'signal_profit_p_2_2'
             elif self.sell_custom_pump_profit_2_2.value > current_profit > self.sell_custom_pump_profit_2_1.value:
-                if last_candle['rsi'] < self.sell_custom_pump_rsi_2_1.value:
+                if last_candle['rsi_14'] < self.sell_custom_pump_rsi_2_1.value:
                     return True, 'signal_profit_p_2_1'
 
         elif last_candle['sell_pump_24_1_1h']:
             if current_profit > self.sell_custom_pump_profit_3_5.value:
-                if last_candle['rsi'] < self.sell_custom_pump_rsi_3_5.value:
+                if last_candle['rsi_14'] < self.sell_custom_pump_rsi_3_5.value:
                     return True, 'signal_profit_p_3_5'
             elif self.sell_custom_pump_profit_3_5.value > current_profit > self.sell_custom_pump_profit_3_4.value:
-                if last_candle['rsi'] < self.sell_custom_pump_rsi_3_4.value:
+                if last_candle['rsi_14'] < self.sell_custom_pump_rsi_3_4.value:
                     return True, 'signal_profit_p_3_4'
             elif self.sell_custom_pump_profit_3_4.value > current_profit > self.sell_custom_pump_profit_3_3.value:
-                if last_candle['rsi'] < self.sell_custom_pump_rsi_3_3.value:
+                if last_candle['rsi_14'] < self.sell_custom_pump_rsi_3_3.value:
                     return True, 'signal_profit_p_3_3'
             elif self.sell_custom_pump_profit_3_3.value > current_profit > self.sell_custom_pump_profit_3_2.value:
-                if last_candle['rsi'] < self.sell_custom_pump_rsi_3_2.value:
+                if last_candle['rsi_14'] < self.sell_custom_pump_rsi_3_2.value:
                     return True, 'signal_profit_p_3_2'
             elif self.sell_custom_pump_profit_3_2.value > current_profit > self.sell_custom_pump_profit_3_1.value:
-                if last_candle['rsi'] < self.sell_custom_pump_rsi_3_1.value:
+                if last_candle['rsi_14'] < self.sell_custom_pump_rsi_3_1.value:
                     return True, 'signal_profit_p_3_1'
 
         return False, None
@@ -2648,9 +2648,9 @@ class NostalgiaForInfinityNext(IStrategy):
         return False, None
 
     def sell_trail_main(self, current_profit: float, last_candle, max_profit: float) -> tuple:
-        if (self.sell_trail_profit_max_1.value > current_profit > self.sell_trail_profit_min_1.value) & (self.sell_trail_rsi_min_1.value < last_candle['rsi'] < self.sell_trail_rsi_max_1.value) & (max_profit > (current_profit + self.sell_trail_down_1.value)) & (last_candle['moderi_96'] == False):
+        if (self.sell_trail_profit_max_1.value > current_profit > self.sell_trail_profit_min_1.value) & (self.sell_trail_rsi_min_1.value < last_candle['rsi_14'] < self.sell_trail_rsi_max_1.value) & (max_profit > (current_profit + self.sell_trail_down_1.value)) & (last_candle['moderi_96'] == False):
             return True, 'signal_profit_t_1'
-        elif (self.sell_trail_profit_max_2.value > current_profit > self.sell_trail_profit_min_2.value) & (self.sell_trail_rsi_min_2.value < last_candle['rsi'] < self.sell_trail_rsi_max_2.value) & (max_profit > (current_profit + self.sell_trail_down_2.value)) & (last_candle['ema_25'] < last_candle['ema_50']):
+        elif (self.sell_trail_profit_max_2.value > current_profit > self.sell_trail_profit_min_2.value) & (self.sell_trail_rsi_min_2.value < last_candle['rsi_14'] < self.sell_trail_rsi_max_2.value) & (max_profit > (current_profit + self.sell_trail_down_2.value)) & (last_candle['ema_25'] < last_candle['ema_50']):
             return True, 'signal_profit_t_2'
         elif (self.sell_trail_profit_max_3.value > current_profit > self.sell_trail_profit_min_3.value) & (max_profit > (current_profit + self.sell_trail_down_3.value)) & (last_candle['sma_200_dec_20_1h']):
             return True, 'signal_profit_t_3'
@@ -2672,11 +2672,11 @@ class NostalgiaForInfinityNext(IStrategy):
     def sell_under_min(self, current_profit: float, last_candle) -> tuple:
         if ((last_candle['moderi_96']) == False):
             # Downtrend
-            if (self.sell_custom_profit_under_profit_max_1.value > current_profit > self.sell_custom_profit_under_profit_min_1.value) & (last_candle['close'] < last_candle['ema_200']) & (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < self.sell_custom_profit_under_rel_1.value) & (last_candle['rsi'] > last_candle['rsi_1h'] + self.sell_custom_profit_under_rsi_diff_1.value):
+            if (self.sell_custom_profit_under_profit_max_1.value > current_profit > self.sell_custom_profit_under_profit_min_1.value) & (last_candle['close'] < last_candle['ema_200']) & (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < self.sell_custom_profit_under_rel_1.value) & (last_candle['rsi_14'] > last_candle['rsi_14_1h'] + self.sell_custom_profit_under_rsi_diff_1.value):
                 return True, 'signal_profit_u_e_1'
         else:
             # Uptrend
-            if (current_profit > self.sell_custom_profit_under_profit_2.value) & (last_candle['close'] < last_candle['ema_200']) & (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < self.sell_custom_profit_under_rel_2.value) & (last_candle['rsi'] > last_candle['rsi_1h'] + self.sell_custom_profit_under_rsi_diff_2.value):
+            if (current_profit > self.sell_custom_profit_under_profit_2.value) & (last_candle['close'] < last_candle['ema_200']) & (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < self.sell_custom_profit_under_rel_2.value) & (last_candle['rsi_14'] > last_candle['rsi_14_1h'] + self.sell_custom_profit_under_rsi_diff_2.value):
                 return True, 'signal_profit_u_e_2'
 
         return False, None
@@ -2712,7 +2712,7 @@ class NostalgiaForInfinityNext(IStrategy):
             return True, 'signal_profit_p_u_1'
 
             # Pumped 36h 2, trail 1
-        elif (last_candle['sell_pump_36_2_1h']) & (self.sell_custom_pump_trail_profit_max_1.value > current_profit > self.sell_custom_pump_trail_profit_min_1.value) & (self.sell_custom_pump_trail_rsi_min_1.value < last_candle['rsi'] < self.sell_custom_pump_trail_rsi_max_1.value) & (max_profit > (current_profit + self.sell_custom_pump_trail_down_1.value)):
+        elif (last_candle['sell_pump_36_2_1h']) & (self.sell_custom_pump_trail_profit_max_1.value > current_profit > self.sell_custom_pump_trail_profit_min_1.value) & (self.sell_custom_pump_trail_rsi_min_1.value < last_candle['rsi_14'] < self.sell_custom_pump_trail_rsi_max_1.value) & (max_profit > (current_profit + self.sell_custom_pump_trail_down_1.value)):
             return True, 'signal_profit_p_t_1'
 
         return False, None
@@ -2721,7 +2721,7 @@ class NostalgiaForInfinityNext(IStrategy):
         if (max_loss > self.sell_custom_recover_min_loss_1.value) & (current_profit > self.sell_custom_recover_profit_1.value):
             return True, 'signal_profit_r_1'
 
-        elif (max_loss > self.sell_custom_recover_min_loss_2.value) & (self.sell_custom_recover_profit_max_2.value > current_profit > self.sell_custom_recover_profit_min_2.value) & (last_candle['rsi'] < self.sell_custom_recover_rsi_2.value) & (last_candle['ema_25'] < last_candle['ema_50']):
+        elif (max_loss > self.sell_custom_recover_min_loss_2.value) & (self.sell_custom_recover_profit_max_2.value > current_profit > self.sell_custom_recover_profit_min_2.value) & (last_candle['rsi_14'] < self.sell_custom_recover_rsi_2.value) & (last_candle['ema_25'] < last_candle['ema_50']):
             return True, 'signal_profit_r_2'
 
         return False, None
@@ -2755,115 +2755,115 @@ class NostalgiaForInfinityNext(IStrategy):
             if last_candle['r_480'] > -2.6:
                 return True, 'signal_profit_w_1_9'
         elif 0.12 > current_profit > 0.1:
-            if (last_candle['r_480'] > -8.0) & (last_candle['rsi'] > 72.0):
+            if (last_candle['r_480'] > -8.0) & (last_candle['rsi_14'] > 72.0):
                 return True, 'signal_profit_w_1_10'
         elif 0.2 > current_profit > 0.12:
-            if (last_candle['r_480'] > -1.5) & (last_candle['rsi'] > 78.0):
+            if (last_candle['r_480'] > -1.5) & (last_candle['rsi_14'] > 78.0):
                 return True, 'signal_profit_w_1_11'
         elif current_profit > 0.2:
-            if (last_candle['r_480'] > -1.0) & (last_candle['rsi'] > 80.0):
+            if (last_candle['r_480'] > -1.0) & (last_candle['rsi_14'] > 80.0):
                 return True, 'signal_profit_w_1_12'
 
         return False, None
 
     def sell_r_2(self, current_profit: float, last_candle) -> tuple:
         if 0.02 > current_profit > 0.012:
-            if (last_candle['r_480'] > -2.0) & (last_candle['rsi'] > 79.0) & (last_candle['stochrsi_fastk_96'] > 99.0) & (last_candle['stochrsi_fastd_96'] > 99.0):
+            if (last_candle['r_480'] > -2.0) & (last_candle['rsi_14'] > 79.0) & (last_candle['stochrsi_fastk_96'] > 99.0) & (last_candle['stochrsi_fastd_96'] > 99.0):
                 return True, 'signal_profit_w_2_1'
         elif 0.03 > current_profit > 0.02:
-            if (last_candle['r_480'] > -2.1) & (last_candle['rsi'] > 79.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
+            if (last_candle['r_480'] > -2.1) & (last_candle['rsi_14'] > 79.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
                 return True, 'signal_profit_w_2_2'
         elif 0.04 > current_profit > 0.03:
-            if (last_candle['r_480'] > -2.2) & (last_candle['rsi'] > 79.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
+            if (last_candle['r_480'] > -2.2) & (last_candle['rsi_14'] > 79.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
                 return True, 'signal_profit_w_2_3'
         elif 0.05 > current_profit > 0.04:
-            if (last_candle['r_480'] > -2.3) & (last_candle['rsi'] > 79.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
+            if (last_candle['r_480'] > -2.3) & (last_candle['rsi_14'] > 79.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
                 return True, 'signal_profit_w_2_4'
         elif 0.06 > current_profit > 0.05:
-            if (last_candle['r_480'] > -2.4) & (last_candle['rsi'] > 79.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
+            if (last_candle['r_480'] > -2.4) & (last_candle['rsi_14'] > 79.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
                 return True, 'signal_profit_w_2_5'
         elif 0.07 > current_profit > 0.06:
-            if (last_candle['r_480'] > -2.5) & (last_candle['rsi'] > 79.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
+            if (last_candle['r_480'] > -2.5) & (last_candle['rsi_14'] > 79.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
                 return True, 'signal_profit_w_2_6'
         elif 0.08 > current_profit > 0.07:
-            if (last_candle['r_480'] > -34.0) & (last_candle['rsi'] > 80.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
+            if (last_candle['r_480'] > -34.0) & (last_candle['rsi_14'] > 80.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
                 return True, 'signal_profit_w_2_7'
         elif 0.09 > current_profit > 0.08:
-            if (last_candle['r_480'] > -3.0) & (last_candle['rsi'] > 80.5) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
+            if (last_candle['r_480'] > -3.0) & (last_candle['rsi_14'] > 80.5) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
                 return True, 'signal_profit_w_2_8'
         elif 0.1 > current_profit > 0.09:
-            if (last_candle['r_480'] > -2.8) & (last_candle['rsi'] > 80.5) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
+            if (last_candle['r_480'] > -2.8) & (last_candle['rsi_14'] > 80.5) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
                 return True, 'signal_profit_w_2_9'
         elif 0.12 > current_profit > 0.1:
-            if (last_candle['r_480'] > -2.4) & (last_candle['rsi'] > 80.5) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
+            if (last_candle['r_480'] > -2.4) & (last_candle['rsi_14'] > 80.5) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
                 return True, 'signal_profit_w_2_10'
         elif 0.2 > current_profit > 0.12:
-            if (last_candle['r_480'] > -2.2) & (last_candle['rsi'] > 81.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
+            if (last_candle['r_480'] > -2.2) & (last_candle['rsi_14'] > 81.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
                 return True, 'signal_profit_w_2_11'
         elif current_profit > 0.2:
-            if (last_candle['r_480'] > -2.0) & (last_candle['rsi'] > 81.5) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
+            if (last_candle['r_480'] > -2.0) & (last_candle['rsi_14'] > 81.5) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
                 return True, 'signal_profit_w_2_12'
 
         return False, None
 
     def sell_r_3(self, current_profit: float, last_candle) -> tuple:
         if 0.02 > current_profit > 0.012:
-            if (last_candle['r_480'] > -6.0) & (last_candle['rsi'] > 74.0) & (last_candle['stochrsi_fastk_96'] > 99.0) & (last_candle['stochrsi_fastd_96'] > 99.0):
+            if (last_candle['r_480'] > -6.0) & (last_candle['rsi_14'] > 74.0) & (last_candle['stochrsi_fastk_96'] > 99.0) & (last_candle['stochrsi_fastd_96'] > 99.0):
                 return True, 'signal_profit_w_3_1'
         elif 0.03 > current_profit > 0.02:
-            if (last_candle['r_480'] > -8.0) & (last_candle['rsi'] > 74.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
+            if (last_candle['r_480'] > -8.0) & (last_candle['rsi_14'] > 74.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
                 return True, 'signal_profit_w_3_2'
         elif 0.04 > current_profit > 0.03:
-            if (last_candle['r_480'] > -29.0) & (last_candle['rsi'] > 74.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
+            if (last_candle['r_480'] > -29.0) & (last_candle['rsi_14'] > 74.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
                 return True, 'signal_profit_w_3_3'
         elif 0.05 > current_profit > 0.04:
-            if (last_candle['r_480'] > -30.0) & (last_candle['rsi'] > 79.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
+            if (last_candle['r_480'] > -30.0) & (last_candle['rsi_14'] > 79.0) & (last_candle['stochrsi_fastk_96'] > 99.0)  & (last_candle['stochrsi_fastd_96'] > 99.0):
                 return True, 'signal_profit_w_3_4'
 
         return False, None
 
     def sell_r_4(self, current_profit: float, last_candle) -> tuple:
         if (0.02 > current_profit > 0.012):
-            if (last_candle['r_480'] > -3.0) & (last_candle['rsi'] > 68.0) & (last_candle['cti'] > 0.9):
+            if (last_candle['r_480'] > -3.0) & (last_candle['rsi_14'] > 68.0) & (last_candle['cti'] > 0.9):
                 return True, 'signal_profit_w_4_1'
         elif (0.03 > current_profit > 0.02):
-            if (last_candle['r_480'] > -3.5) & (last_candle['rsi'] > 68.0) & (last_candle['cti'] > 0.9):
+            if (last_candle['r_480'] > -3.5) & (last_candle['rsi_14'] > 68.0) & (last_candle['cti'] > 0.9):
                 return True, 'signal_profit_w_4_2'
         elif (0.04 > current_profit > 0.03):
-            if (last_candle['r_480'] > -4.0) & (last_candle['rsi'] > 68.0) & (last_candle['cti'] > 0.9):
+            if (last_candle['r_480'] > -4.0) & (last_candle['rsi_14'] > 68.0) & (last_candle['cti'] > 0.9):
                 return True, 'signal_profit_w_4_3'
         elif (0.05 > current_profit > 0.04):
-            if (last_candle['r_480'] > -4.5) & (last_candle['rsi'] > 68.0) & (last_candle['cti'] > 0.9):
+            if (last_candle['r_480'] > -4.5) & (last_candle['rsi_14'] > 68.0) & (last_candle['cti'] > 0.9):
                 return True, 'signal_profit_w_4_4'
         elif (0.06 > current_profit > 0.05):
-            if (last_candle['r_480'] > -24.0) & (last_candle['rsi'] > 68.0) & (last_candle['cti'] > 0.9):
+            if (last_candle['r_480'] > -24.0) & (last_candle['rsi_14'] > 68.0) & (last_candle['cti'] > 0.9):
                 return True, 'signal_profit_w_4_5'
         elif (0.07 > current_profit > 0.06):
-            if (last_candle['r_480'] > -26.0) & (last_candle['rsi'] > 79.0) & (last_candle['cti'] > 0.9):
+            if (last_candle['r_480'] > -26.0) & (last_candle['rsi_14'] > 79.0) & (last_candle['cti'] > 0.9):
                 return True, 'signal_profit_w_4_6'
         elif (0.08 > current_profit > 0.07):
-            if (last_candle['r_480'] > -20.0) & (last_candle['rsi'] > 79.0) & (last_candle['cti'] > 0.9):
+            if (last_candle['r_480'] > -20.0) & (last_candle['rsi_14'] > 79.0) & (last_candle['cti'] > 0.9):
                 return True, 'signal_profit_w_4_7'
         elif (0.09 > current_profit > 0.08):
-            if (last_candle['r_480'] > -18.0) & (last_candle['rsi'] > 79.0) & (last_candle['cti'] > 0.9):
+            if (last_candle['r_480'] > -18.0) & (last_candle['rsi_14'] > 79.0) & (last_candle['cti'] > 0.9):
                 return True, 'signal_profit_w_4_8'
         elif (0.1 > current_profit > 0.09):
-            if (last_candle['r_480'] > -16.0) & (last_candle['rsi'] > 79.0) & (last_candle['cti'] > 0.9):
+            if (last_candle['r_480'] > -16.0) & (last_candle['rsi_14'] > 79.0) & (last_candle['cti'] > 0.9):
                 return True, 'signal_profit_w_4_9'
         elif (0.12 > current_profit > 0.1):
-            if (last_candle['r_480'] > -4.0) & (last_candle['rsi'] > 79.0) & (last_candle['cti'] > 0.9):
+            if (last_candle['r_480'] > -4.0) & (last_candle['rsi_14'] > 79.0) & (last_candle['cti'] > 0.9):
                 return True, 'signal_profit_w_4_10'
         elif (0.2 > current_profit > 0.12):
-            if (last_candle['r_480'] > -3.0) & (last_candle['rsi'] > 80.0) & (last_candle['cti'] > 0.9):
+            if (last_candle['r_480'] > -3.0) & (last_candle['rsi_14'] > 80.0) & (last_candle['cti'] > 0.9):
                 return True, 'signal_profit_w_4_11'
         elif (current_profit > 0.2):
-            if (last_candle['r_480'] > -2.0) & (last_candle['rsi'] > 80.0) & (last_candle['cti'] > 0.9):
+            if (last_candle['r_480'] > -2.0) & (last_candle['rsi_14'] > 80.0) & (last_candle['cti'] > 0.9):
                 return True, 'signal_profit_w_4_12'
 
         return False, None
 
     def sell_quick_mode(self, current_profit: float, max_profit:float, last_candle, previous_candle_1) -> tuple:
-        if (0.06 > current_profit > 0.02) & (last_candle['rsi'] > 79.0):
+        if (0.06 > current_profit > 0.02) & (last_candle['rsi_14'] > 79.0):
             return True, 'signal_profit_q_1'
 
         if (0.06 > current_profit > 0.02) & (last_candle['cti'] > 0.9):
@@ -2990,7 +2990,7 @@ class NostalgiaForInfinityNext(IStrategy):
             return signal_name + ' ( ' + buy_tag + ')'
 
         # Sell signal 1
-        if self.sell_condition_1_enable.value & (last_candle['rsi'] > self.sell_rsi_bb_1.value) & (last_candle['close'] > last_candle['bb20_2_upp']) & (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) & (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']) & (previous_candle_3['close'] > previous_candle_3['bb20_2_upp']) & (previous_candle_4['close'] > previous_candle_4['bb20_2_upp']) & (previous_candle_5['close'] > previous_candle_5['bb20_2_upp']):
+        if self.sell_condition_1_enable.value & (last_candle['rsi_14'] > self.sell_rsi_bb_1.value) & (last_candle['close'] > last_candle['bb20_2_upp']) & (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) & (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']) & (previous_candle_3['close'] > previous_candle_3['bb20_2_upp']) & (previous_candle_4['close'] > previous_candle_4['bb20_2_upp']) & (previous_candle_5['close'] > previous_candle_5['bb20_2_upp']):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.0):
                     return 'sell_signal_1_1_1' + ' ( ' + buy_tag + ')'
@@ -3001,7 +3001,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     return 'sell_signal_1_2_2' + ' ( ' + buy_tag + ')'
 
         # Sell signal 2
-        elif (self.sell_condition_2_enable.value) & (last_candle['rsi'] > self.sell_rsi_bb_2.value) & (last_candle['close'] > last_candle['bb20_2_upp']) & (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) & (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']):
+        elif (self.sell_condition_2_enable.value) & (last_candle['rsi_14'] > self.sell_rsi_bb_2.value) & (last_candle['close'] > last_candle['bb20_2_upp']) & (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) & (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.0):
                     return 'sell_signal_2_1_1' + ' ( ' + buy_tag + ')'
@@ -3012,7 +3012,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     return 'sell_signal_2_2_2' + ' ( ' + buy_tag + ')'
 
         # Sell signal 4
-        elif self.sell_condition_4_enable.value & (last_candle['rsi'] > self.sell_dual_rsi_rsi_4.value) & (last_candle['rsi_1h'] > self.sell_dual_rsi_rsi_1h_4.value):
+        elif self.sell_condition_4_enable.value & (last_candle['rsi_14'] > self.sell_dual_rsi_rsi_4.value) & (last_candle['rsi_14_1h'] > self.sell_dual_rsi_rsi_1h_4.value):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.0):
                     return 'sell_signal_4_1_1' + ' ( ' + buy_tag + ')'
@@ -3023,14 +3023,14 @@ class NostalgiaForInfinityNext(IStrategy):
                     return 'sell_signal_4_2_2' + ' ( ' + buy_tag + ')'
 
         # Sell signal 6
-        elif self.sell_condition_6_enable.value & (last_candle['close'] < last_candle['ema_200']) & (last_candle['close'] > last_candle['ema_50']) & (last_candle['rsi'] > self.sell_rsi_under_6.value):
+        elif self.sell_condition_6_enable.value & (last_candle['close'] < last_candle['ema_200']) & (last_candle['close'] > last_candle['ema_50']) & (last_candle['rsi_14'] > self.sell_rsi_under_6.value):
             if (current_profit > 0.0):
                     return 'sell_signal_6_1' + ' ( ' + buy_tag + ')'
             elif (max_loss > 0.15):
                 return 'sell_signal_6_2' + ' ( ' + buy_tag + ')'
 
         # Sell signal 7
-        elif self.sell_condition_7_enable.value & (last_candle['rsi_1h'] > self.sell_rsi_1h_7.value) & (last_candle['crossed_below_ema_12_26']):
+        elif self.sell_condition_7_enable.value & (last_candle['rsi_14_1h'] > self.sell_rsi_1h_7.value) & (last_candle['crossed_below_ema_12_26']):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.0):
                     return 'sell_signal_7_1_1' + ' ( ' + buy_tag + ')'
@@ -3169,7 +3169,7 @@ class NostalgiaForInfinityNext(IStrategy):
         informative_1h['sma_200_dec_20'] = informative_1h['sma_200'] < informative_1h['sma_200'].shift(20)
 
         # RSI
-        informative_1h['rsi'] = ta.RSI(informative_1h, timeperiod=14)
+        informative_1h['rsi_14'] = ta.RSI(informative_1h, timeperiod=14)
 
         # BB
         bollinger = qtpylib.bollinger_bands(qtpylib.typical_price(informative_1h), window=20, stds=2)
@@ -3311,8 +3311,8 @@ class NostalgiaForInfinityNext(IStrategy):
         dataframe['ewo'] = ewo(dataframe, 50, 200)
 
         # RSI
-        dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
         dataframe['rsi_4'] = ta.RSI(dataframe, timeperiod=4)
+        dataframe['rsi_14'] = ta.RSI(dataframe, timeperiod=14)
         dataframe['rsi_20'] = ta.RSI(dataframe, timeperiod=20)
 
         # Chopiness
@@ -3416,14 +3416,14 @@ class NostalgiaForInfinityNext(IStrategy):
     def resampled_tf_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Indicators
         # -----------------------------------------------------------------------------------------
-        dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
+        dataframe['rsi_14'] = ta.RSI(dataframe, timeperiod=14)
 
         return dataframe
 
     def base_tf_btc_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Indicators
         # -----------------------------------------------------------------------------------------
-        dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
+        dataframe['rsi_14'] = ta.RSI(dataframe, timeperiod=14)
 
         # Add prefix
         # -----------------------------------------------------------------------------------------
@@ -3435,8 +3435,8 @@ class NostalgiaForInfinityNext(IStrategy):
     def info_tf_btc_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Indicators
         # -----------------------------------------------------------------------------------------
-        dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
-        dataframe['not_downtrend'] = ((dataframe['close'] > dataframe['close'].shift(2)) | (dataframe['rsi'] > 50))
+        dataframe['rsi_14'] = ta.RSI(dataframe, timeperiod=14)
+        dataframe['not_downtrend'] = ((dataframe['close'] > dataframe['close'].shift(2)) | (dataframe['rsi_14'] > 50))
 
         # Add prefix
         # -----------------------------------------------------------------------------------------
@@ -3543,9 +3543,9 @@ class NostalgiaForInfinityNext(IStrategy):
 
                     # Logic
                     item_buy_logic.append(((dataframe['close'] - dataframe['open'].rolling(36).min()) / dataframe['open'].rolling(36).min()) > self.buy_min_inc_1.value)
-                    item_buy_logic.append(dataframe['rsi_1h'] > self.buy_rsi_1h_min_1.value)
-                    item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_max_1.value)
-                    item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_1.value)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] > self.buy_rsi_1h_min_1.value)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] < self.buy_rsi_1h_max_1.value)
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_rsi_1.value)
                     item_buy_logic.append(dataframe['mfi'] < self.buy_mfi_1.value)
                     item_buy_logic.append(dataframe['cti'] < self.buy_cti_1.value)
 
@@ -3554,7 +3554,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Non-Standard protections
 
                     # Logic
-                    item_buy_logic.append(dataframe['rsi'] < dataframe['rsi_1h'] - self.buy_rsi_1h_diff_2.value)
+                    item_buy_logic.append(dataframe['rsi_14'] < dataframe['rsi_14_1h'] - self.buy_rsi_1h_diff_2.value)
                     item_buy_logic.append(dataframe['mfi'] < self.buy_mfi_2.value)
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_2.value))
                     item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_volume_2.value))
@@ -3624,7 +3624,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['moderi_96'])
                     item_buy_logic.append(dataframe['cti'] < self.buy_cti_8.value)
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_8.value))
-                    item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_8.value)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] < self.buy_rsi_1h_8.value)
                     item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_volume_8.value))
 
                 # Condition #9
@@ -3635,8 +3635,8 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Logic
                     item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_ma_offset_9.value)
                     item_buy_logic.append(dataframe['close'] < dataframe['bb20_2_low'] * self.buy_bb_offset_9.value)
-                    item_buy_logic.append(dataframe['rsi_1h'] > self.buy_rsi_1h_min_9.value)
-                    item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_max_9.value)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] > self.buy_rsi_1h_min_9.value)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] < self.buy_rsi_1h_max_9.value)
                     item_buy_logic.append(dataframe['mfi'] < self.buy_mfi_9.value)
 
                 # Condition #10
@@ -3647,7 +3647,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Logic
                     item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * self.buy_ma_offset_10.value)
                     item_buy_logic.append(dataframe['close'] < dataframe['bb20_2_low'] * self.buy_bb_offset_10.value)
-                    item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_10.value)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] < self.buy_rsi_1h_10.value)
 
                 # Condition #11
                 elif index == 11:
@@ -3657,9 +3657,9 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Logic
                     item_buy_logic.append(((dataframe['close'] - dataframe['open'].rolling(36).min()) / dataframe['open'].rolling(36).min()) > self.buy_min_inc_11.value)
                     item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * self.buy_ma_offset_11.value)
-                    item_buy_logic.append(dataframe['rsi_1h'] > self.buy_rsi_1h_min_11.value)
-                    item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_max_11.value)
-                    item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_11.value)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] > self.buy_rsi_1h_min_11.value)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] < self.buy_rsi_1h_max_11.value)
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_rsi_11.value)
                     item_buy_logic.append(dataframe['mfi'] < self.buy_mfi_11.value)
 
                 # Condition #12
@@ -3669,7 +3669,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Logic
                     item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * self.buy_ma_offset_12.value)
                     item_buy_logic.append(dataframe['ewo'] > self.buy_ewo_12.value)
-                    item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_12.value)
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_rsi_12.value)
                     item_buy_logic.append(dataframe['cti'] < self.buy_cti_12.value)
 
                 # Condition #13
@@ -3703,7 +3703,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
                     item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * self.buy_ema_open_mult_15.value))
                     item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
-                    item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_15.value)
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_rsi_15.value)
                     item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_ma_offset_15.value)
 
                 # Condition #16
@@ -3713,7 +3713,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Logic
                     item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_ma_offset_16.value)
                     item_buy_logic.append(dataframe['ewo'] > self.buy_ewo_16.value)
-                    item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_16.value)
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_rsi_16.value)
                     item_buy_logic.append(dataframe['cti'] < self.buy_cti_16.value)
 
                 # Condition #17
@@ -3733,7 +3733,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['sma_200_1h'] > dataframe['sma_200_1h'].shift(36))
 
                     # Logic
-                    item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_18.value)
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_rsi_18.value)
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_18.value))
                     item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_volume_18.value))
                     item_buy_logic.append(dataframe['cti'] < self.buy_cti_18.value)
@@ -3746,7 +3746,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['close'].shift(1) > dataframe['ema_100_1h'])
                     item_buy_logic.append(dataframe['low'] < dataframe['ema_100_1h'])
                     item_buy_logic.append(dataframe['close'] > dataframe['ema_100_1h'])
-                    item_buy_logic.append(dataframe['rsi_1h'] > self.buy_rsi_1h_min_19.value)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] > self.buy_rsi_1h_min_19.value)
                     item_buy_logic.append(dataframe['chop'] < self.buy_chop_min_19.value)
                     item_buy_logic.append(dataframe['moderi_32'] == True)
                     item_buy_logic.append(dataframe['moderi_64'] == True)
@@ -3757,8 +3757,8 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Non-Standard protections
 
                     # Logic
-                    item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_20.value)
-                    item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_20.value)
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_rsi_20.value)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] < self.buy_rsi_1h_20.value)
                     item_buy_logic.append(dataframe['cti'] < self.buy_cti_20.value)
                     item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_volume_20.value))
 
@@ -3767,8 +3767,8 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Non-Standard protections
 
                     # Logic
-                    item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_21.value)
-                    item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_21.value)
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_rsi_21.value)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] < self.buy_rsi_1h_21.value)
                     item_buy_logic.append(dataframe['cti'] < self.buy_cti_21.value)
                     item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_volume_21.value))
 
@@ -3783,7 +3783,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * self.buy_ma_offset_22.value)
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_22.value))
                     item_buy_logic.append(dataframe['ewo'] > self.buy_ewo_22.value)
-                    item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_22.value)
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_rsi_22.value)
                     item_buy_logic.append(dataframe['safe_dump_20_1h'])
 
                 # Condition #23
@@ -3793,8 +3793,8 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Logic
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_23.value))
                     item_buy_logic.append(dataframe['ewo'] > self.buy_ewo_23.value)
-                    item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_23.value)
-                    item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_23.value)
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_rsi_23.value)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] < self.buy_rsi_1h_23.value)
 
                 # Condition #24
                 elif index == 24:
@@ -3805,8 +3805,8 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['ema_12_1h'] > dataframe['ema_35_1h'])
                     item_buy_logic.append(dataframe['cmf_1h'].shift(12) < 0)
                     item_buy_logic.append(dataframe['cmf_1h'] > 0)
-                    item_buy_logic.append(dataframe['rsi'] < self.buy_24_rsi_max.value)
-                    item_buy_logic.append(dataframe['rsi_1h'] > self.buy_24_rsi_1h_min.value)
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_24_rsi_max.value)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] > self.buy_24_rsi_1h_min.value)
 
                 # Condition #25
                 elif index == 25:
@@ -3840,7 +3840,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Logic
                     item_buy_logic.append(dataframe['r_480'] < -self.buy_27_wr_max.value)
                     item_buy_logic.append(dataframe['r_480_1h'] < -self.buy_27_wr_1h_max.value)
-                    item_buy_logic.append(dataframe['rsi_1h'] + dataframe['rsi'] < self.buy_27_rsi_max.value)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] + dataframe['rsi_14'] < self.buy_27_rsi_max.value)
                     item_buy_logic.append(dataframe['cti'] < self.buy_27_cti.value)
                     item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_27_volume.value))
 
@@ -3852,7 +3852,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['moderi_64'] == True)
                     item_buy_logic.append(dataframe['close'] < dataframe['hull_75'] * self.buy_28_ma_offset.value)
                     item_buy_logic.append(dataframe['ewo'] > self.buy_28_ewo.value)
-                    item_buy_logic.append(dataframe['rsi'] < self.buy_28_rsi.value)
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_28_rsi.value)
                     item_buy_logic.append(dataframe['cti'] < self.buy_28_cti.value)
 
                 # Condition #29
@@ -3873,7 +3873,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['moderi_64'] == False)
                     item_buy_logic.append(dataframe['close'] < dataframe['zlema_68'] * self.buy_30_ma_offset.value)
                     item_buy_logic.append(dataframe['ewo'] > self.buy_30_ewo.value)
-                    item_buy_logic.append(dataframe['rsi'] < self.buy_30_rsi.value)
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_30_rsi.value)
                     item_buy_logic.append(dataframe['cti'] < self.buy_30_cti.value)
 
                 # Condition #31
@@ -3913,7 +3913,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['cti'] < self.buy_33_cti.value)
                     item_buy_logic.append(dataframe['close'] < (dataframe['ema_13'] * self.buy_33_ma_offset.value))
                     item_buy_logic.append(dataframe['ewo'] > self.buy_33_ewo.value)
-                    item_buy_logic.append(dataframe['rsi'] < self.buy_33_rsi.value)
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_33_rsi.value)
                     item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_33_volume.value))
 
                 # Condition #34 - Quick mode buy
@@ -3935,7 +3935,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['pm'] <= dataframe['pmax_thresh'])
                     item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * 0.984)
                     item_buy_logic.append(dataframe['ewo'] > 8.2)
-                    item_buy_logic.append(dataframe['rsi'] < 32.0)
+                    item_buy_logic.append(dataframe['rsi_14'] < 32.0)
                     item_buy_logic.append(dataframe['cti'] < -0.5)
 
                 # Condition #36 - PMAX1 buy
@@ -3956,7 +3956,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['pm'] > dataframe['pmax_thresh'])
                     item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * 0.93)
                     item_buy_logic.append(dataframe['ewo'] > 8.0)
-                    item_buy_logic.append(dataframe['rsi'] < 56.0)
+                    item_buy_logic.append(dataframe['rsi_14'] < 56.0)
                     item_buy_logic.append(dataframe['cti'] < -0.84)
                     item_buy_logic.append(dataframe['safe_dump_50_1h'])
 
