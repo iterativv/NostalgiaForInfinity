@@ -3042,7 +3042,14 @@ class NostalgiaForInfinityNext(IStrategy):
 
         # Sell signal 8
         elif self.sell_condition_8_enable.value & (last_candle['close'] > last_candle['bb20_2_upp_1h'] * self.sell_bb_relative_8.value):
-            return 'sell_signal_8' + ' ( ' + buy_tag + ')'
+            if (last_candle['close'] > last_candle['ema_200']):
+                if (current_profit > 0.0):
+                    return 'sell_signal_8_1_1' + ' ( ' + buy_tag + ')'
+            else:
+                if (current_profit > 0.0):
+                    return 'sell_signal_8_2_1' + ' ( ' + buy_tag + ')'
+                elif (max_loss > 0.15):
+                    return 'sell_signal_8_2_2' + ' ( ' + buy_tag + ')'
 
         return None
 
