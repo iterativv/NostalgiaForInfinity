@@ -2682,13 +2682,13 @@ class NostalgiaForInfinityNext(IStrategy):
         return False, None
 
     def sell_stoploss(self, current_profit: float, last_candle, previous_candle_1) -> tuple:
-        if (-0.1 < current_profit < -0.05):
+        if (-0.12 < current_profit < -0.08):
             if (last_candle['close'] < last_candle['atr_high_thresh_1']) & (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_1']):
                 return True, 'signal_stoploss_atr_1'
-        elif (-0.15 < current_profit < -0.1):
+        elif (-0.16 < current_profit < -0.12):
             if (last_candle['close'] < last_candle['atr_high_thresh_2']) & (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_2']):
                 return True, 'signal_stoploss_atr_2'
-        elif (current_profit < -0.15):
+        elif (current_profit < -0.16):
             if (last_candle['close'] < last_candle['atr_high_thresh_3']) & (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_3']):
                 return True, 'signal_stoploss_atr_3'
 
@@ -3348,10 +3348,10 @@ class NostalgiaForInfinityNext(IStrategy):
 
         # ATR
         dataframe['atr'] = ta.ATR(dataframe, timeperiod=14)
-        dataframe['atr_high_thresh_1'] = (dataframe['high'] - (dataframe['atr'] * 3.0))
-        dataframe['atr_high_thresh_2'] = (dataframe['high'] - (dataframe['atr'] * 2.2))
+        dataframe['atr_high_thresh_1'] = (dataframe['high'] - (dataframe['atr'] * 3.6))
+        dataframe['atr_high_thresh_2'] = (dataframe['high'] - (dataframe['atr'] * 3.4))
         dataframe['atr_high_thresh_3'] = (dataframe['high'] - (dataframe['atr'] * 2.0))
-        dataframe['atr_high_thresh_q'] = (dataframe['high'] - (dataframe['atr'] * 2.8))
+        dataframe['atr_high_thresh_q'] = (dataframe['high'] - (dataframe['atr'] * 3.0))
 
         dataframe['rsi_5'] = ta.RSI(dataframe, 5)
         dataframe['streak'] = calc_streaks(dataframe["close"])
