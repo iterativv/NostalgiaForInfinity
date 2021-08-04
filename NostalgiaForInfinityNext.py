@@ -1976,10 +1976,10 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_volume_2 = DecimalParameter(0.6, 6.0, default=1.6, space='buy', decimals=1, optimize=False, load=True)
 
     buy_bb40_bbdelta_close_3 = DecimalParameter(0.005, 0.06, default=0.045, space='buy', optimize=False, load=True)
-    buy_bb40_closedelta_close_3 = DecimalParameter(0.01, 0.03, default=0.022, space='buy', optimize=False, load=True)
+    buy_bb40_closedelta_close_3 = DecimalParameter(0.01, 0.03, default=0.023, space='buy', optimize=False, load=True)
     buy_bb40_tail_bbdelta_3 = DecimalParameter(0.15, 0.45, default=0.418, space='buy', optimize=False, load=True)
     buy_ema_rel_3 = DecimalParameter(0.97, 0.999, default=0.986, space='buy', decimals=3, optimize=False, load=True)
-    buy_cti_3 = DecimalParameter(-0.99, -0.5, default=-0.9, space='buy', decimals=2, optimize=False, load=True)
+    buy_cti_3 = DecimalParameter(-0.99, -0.5, default=-0.5, space='buy', decimals=2, optimize=False, load=True)
 
     buy_bb20_close_bblowerband_4 = DecimalParameter(0.96, 0.99, default=0.979, space='buy', optimize=False, load=True)
     buy_bb20_volume_4 = DecimalParameter(1.0, 20.0, default=10.0, space='buy', decimals=2, optimize=False, load=True)
