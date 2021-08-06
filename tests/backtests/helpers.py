@@ -111,11 +111,17 @@ class Backtest:
             log.debug("Command Result:\n%s", ret)
         assert ret.exitcode == 0
         generated_results_file = list(tmp_path.rglob("backtest-results-*.json"))[0]
+        generated_json_ci_results_artifact_path = None
         if self.request.config.option.artifacts_path:
             generated_json_results_artifact_path = (
                 self.request.config.option.artifacts_path / generated_results_file.name
             )
             shutil.copyfile(generated_results_file, generated_json_results_artifact_path)
+            generated_json_ci_results_artifact_path = (
+                self.request.config.option.artifacts_path
+                / f"ci-results-{exchange}-{start_date}-{end_date}.json"
+            )
+
             generated_txt_results_artifact_path = generated_json_results_artifact_path.with_suffix(
                 ".txt"
             )
@@ -127,6 +133,10 @@ class Backtest:
             stderr=ret.stderr.strip(),
             raw_data=results_data,
         )
+        if generated_json_ci_results_artifact_path:
+            generated_json_ci_results_artifact_path.write_text(
+                json.dumps({f"{start_date}-{end_date}": ret._stats_pct})
+            )
         ret.log_info()
         return ret
 
@@ -140,6 +150,7 @@ class BacktestResults:
     _stats: dict = attr.ib(init=False, repr=False)
     results: SimpleNamespace = attr.ib(init=False, repr=False)
     full_stats: SimpleNamespace = attr.ib(init=False, repr=False)
+    _stats_pct: dict = attr.ib(init=False, repr=False)
     stats_pct: SimpleNamespace = attr.ib(init=False, repr=True)
 
     @_results.default
@@ -158,27 +169,31 @@ class BacktestResults:
     def _set_full_stats(self):
         return json.loads(json.dumps(self._stats), object_hook=lambda d: SimpleNamespace(**d))
 
-    @stats_pct.default
-    def _set_stats_pct(self):
-        data = {
+    @_stats_pct.default
+    def _set__stats_pct(self):
+        return {
+            "duration_avg": self.full_stats.duration_avg,
+            "profit_sum_pct": self.full_stats.profit_sum_pct,
+            "profit_mean_pct": self.full_stats.profit_mean_pct,
+            "profit_total_pct": self.full_stats.profit_total_pct,
             "max_drawdown": self.results.max_drawdown * 100,
             "winrate": round(self.full_stats.wins * 100.0 / self.full_stats.trades, 2),
         }
-        return json.loads(json.dumps(data), object_hook=lambda d: SimpleNamespace(**d))
+
+    @stats_pct.default
+    def _set_stats_pct(self):
+        return json.loads(json.dumps(self._stats_pct), object_hook=lambda d: SimpleNamespace(**d))
 
     def log_info(self):
         data = {
             "results": self._results,
             "full_stats": self._stats,
-            "stats_pct": {
-                "max_drawdown": self.stats_pct.max_drawdown,
-                "winrate": self.stats_pct.winrate,
-            },
+            "stats_pct": self._stats_pct,
         }
         log.debug("Backtest results:\n%s", pprint.pformat(data))
         log.info(
             "Backtests Stats PCTs(More info at the DEBUG log level): %s",
-            pprint.pformat(data["stats_pct"]),
+            pprint.pformat(self._stats_pct),
         )
 
 

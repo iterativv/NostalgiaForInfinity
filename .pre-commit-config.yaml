@@ -30,12 +30,12 @@ repos:
         args: [
           --py37-plus,
         ]
-        files: tests/.*\.py
+        files: (tests|.github)/.*\.py
 
   - repo: https://github.com/psf/black
     rev: 21.7b0
     hooks:
       - id: black
         args: [-l 100]
-        files: tests/.*\.py
+        files: (tests|.github)/.*\.py
   # <---- Formatting -------------------------------------------------------------------------------------------------

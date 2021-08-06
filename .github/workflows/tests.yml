@@ -215,3 +215,70 @@ jobs:
           mkdir artifacts
           chmod 777 artifacts
           docker-compose run --rm tests
+
+  Backest-CI-Stats:
+    runs-on: ubuntu-20.04
+    needs:
+      - Kucoin-Backest-Tests
+      - Binance-Backest-Tests
+
+    steps:
+
+      - uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install -r tests/ci-requirements.txt
+
+      - name: Download Previous Binance CI Artifacts
+        continue-on-error: true
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: tests.yml
+          branch: ${{ github.base_ref || 'main' }}
+          path: results/previous
+          name: binance-testrun-artifacts
+
+      - name: Download Previous Kucoin CI Artifacts
+        continue-on-error: true
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: tests.yml
+          branch: ${{ github.base_ref || 'main' }}
+          path: results/previous
+          name: kucoin-testrun-artifacts
+
+
+      - name: Download Current Binance CI Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: binance-testrun-artifacts
+          path: results/current
+
+      - name: Download Current Kucoin CI Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: kucoin-testrun-artifacts
+          path: results/current
+
+      - name: Show Downloaded Artifacts
+        run: |
+          tree results
+
+      - name: Show Environ
+        env:
+          PULL_REQUEST: ${{ github.event.number }}
+        run: |
+          env
+
+      - name: Comment CI Results
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python .github/workflows/scripts/comment-ci-results.py \
+            --repo=${{ github.event.repository.full_name }}
