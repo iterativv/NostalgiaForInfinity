@@ -3304,7 +3304,7 @@ class NostalgiaForInfinityNext(IStrategy):
         informative_1h['sell_pump_24_2'] = (informative_1h['hl_pct_change_24'] > self.sell_pump_threshold_24_2.value)
         informative_1h['sell_pump_24_3'] = (informative_1h['hl_pct_change_24'] > self.sell_pump_threshold_24_3.value)
 
-        return informative_1h.copy()
+        return informative_1h
 
     def normal_tf_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # BB 40 - STD2
@@ -3453,7 +3453,7 @@ class NostalgiaForInfinityNext(IStrategy):
             # Exchange downtime protection
             dataframe['live_data_ok'] = (dataframe['volume'].rolling(window=72, min_periods=72).min() > 0)
 
-        return dataframe.copy()
+        return dataframe
 
     def resampled_tf_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Indicators
