@@ -3061,11 +3061,10 @@ class NostalgiaForInfinityNext(IStrategy):
         :param method: High to Low / Open to Close
         :param length: int The length to look back
         """
-        df = dataframe.copy()
         if method == 'HL':
-            return (df['high'].rolling(length).max() - df['low'].rolling(length).min()) / df['low'].rolling(length).min()
+            return (dataframe['high'].rolling(length).max() - dataframe['low'].rolling(length).min()) / dataframe['low'].rolling(length).min()
         elif method == 'OC':
-            return (df['open'].rolling(length).max() - df['close'].rolling(length).min()) / df['close'].rolling(length).min()
+            return (dataframe['open'].rolling(length).max() - dataframe['close'].rolling(length).min()) / dataframe['close'].rolling(length).min()
         else:
             raise ValueError(f"Method {method} not defined!")
 
@@ -3076,11 +3075,10 @@ class NostalgiaForInfinityNext(IStrategy):
         :param dataframe: DataFrame The original OHLC dataframe
         :param length: int The length to look back
         """
-        df = dataframe.copy()
         if length == 0:
-            return (df['open'] - df['close']) / df['close']
+            return (dataframe['open'] - dataframe['close']) / dataframe['close']
         else:
-            return (df['open'].rolling(length).max() - df['close']) / df['close']
+            return (dataframe['open'].rolling(length).max() - dataframe['close']) / dataframe['close']
 
     def range_maxgap(self, dataframe: DataFrame, length: int) -> float:
         """
@@ -3089,8 +3087,7 @@ class NostalgiaForInfinityNext(IStrategy):
         :param dataframe: DataFrame The original OHLC dataframe
         :param length: int The length to look back
         """
-        df = dataframe.copy()
-        return df['open'].rolling(length).max() - df['close'].rolling(length).min()
+        return dataframe['open'].rolling(length).max() - dataframe['close'].rolling(length).min()
 
     def range_maxgap_adjusted(self, dataframe: DataFrame, length: int, adjustment: float) -> float:
         """
@@ -3109,8 +3106,7 @@ class NostalgiaForInfinityNext(IStrategy):
         :param dataframe: DataFrame The original OHLC dataframe
         :param length: int The length to look back
         """
-        df = dataframe.copy()
-        return df['close'] - df['close'].rolling(length).min()
+        return dataframe['close'] - dataframe['close'].rolling(length).min()
 
     def safe_pump(self, dataframe: DataFrame, length: int, thresh: float, pull_thresh: float) -> bool:
         """
@@ -3121,8 +3117,7 @@ class NostalgiaForInfinityNext(IStrategy):
         :param thresh: int Maximum percentage change threshold
         :param pull_thresh: int Pullback from interval maximum threshold
         """
-        df = dataframe.copy()
-        return (df[f'oc_pct_change_{length}'] < thresh) | (self.range_maxgap_adjusted(df, length, pull_thresh) > self.range_height(df, length))
+        return (dataframe[f'oc_pct_change_{length}'] < thresh) | (self.range_maxgap_adjusted(dataframe, length, pull_thresh) > self.range_height(dataframe, length))
 
     def safe_dips(self, dataframe: DataFrame, thresh_0, thresh_2, thresh_12, thresh_144) -> bool:
         """
@@ -4041,10 +4036,9 @@ class NostalgiaForInfinityNext(IStrategy):
 
 # Elliot Wave Oscillator
 def ewo(dataframe, sma1_length=5, sma2_length=35):
-    df = dataframe.copy()
-    sma1 = ta.EMA(df, timeperiod=sma1_length)
-    sma2 = ta.EMA(df, timeperiod=sma2_length)
-    smadif = (sma1 - sma2) / df['close'] * 100
+    sma1 = ta.EMA(dataframe, timeperiod=sma1_length)
+    sma2 = ta.EMA(dataframe, timeperiod=sma2_length)
+    smadif = (sma1 - sma2) / dataframe['close'] * 100
     return smadif
 
 
@@ -4060,12 +4054,11 @@ def chaikin_money_flow(dataframe, n=20, fillna=False) -> Series:
     Returns:
         pandas.Series: New feature generated.
     """
-    df = dataframe.copy()
-    mfv = ((df['close'] - df['low']) - (df['high'] - df['close'])) / (df['high'] - df['low'])
+    mfv = ((dataframe['close'] - dataframe['low']) - (dataframe['high'] - dataframe['close'])) / (dataframe['high'] - dataframe['low'])
     mfv = mfv.fillna(0.0)  # float division by zero
-    mfv *= df['volume']
+    mfv *= dataframe['volume']
     cmf = (mfv.rolling(n, min_periods=0).sum()
-           / df['volume'].rolling(n, min_periods=0).sum())
+           / dataframe['volume'].rolling(n, min_periods=0).sum())
     if fillna:
         cmf = cmf.replace([np.inf, -np.inf], np.nan).fillna(0)
     return Series(cmf, name='cmf')
@@ -4079,12 +4072,11 @@ def tsi(dataframe: DataFrame, window_slow: int, window_fast: int, fillna=False) 
     :param window_fast: fast smoothing period
     :param fillna: If True fill NaN values
     """
-    df = dataframe.copy()
 
     min_periods_slow = 0 if fillna else window_slow
     min_periods_fast = 0 if fillna else window_fast
 
-    close_diff            = df['close'].diff()
+    close_diff            = dataframe['close'].diff()
     close_diff_abs        = close_diff.abs()
     smooth_close_diff     = close_diff.ewm(span=window_slow, min_periods=min_periods_slow, adjust=False).mean().ewm(span=window_fast, min_periods=min_periods_fast, adjust=False).mean()
     smooth_close_diff_abs = close_diff_abs.ewm(span=window_slow, min_periods=min_periods_slow, adjust=False).mean().ewm(span=window_fast, min_periods=min_periods_fast, adjust=False).mean()
