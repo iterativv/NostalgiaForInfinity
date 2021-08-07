@@ -571,7 +571,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_dips"                 : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
             "safe_dips_type"            : CategoricalParameter(["10","50","100"], default="100", space='buy', optimize=False, load=True),
             "safe_pump"                 : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
-            "safe_pump_type"            : CategoricalParameter(["10","50","100"], default="60", space='buy', optimize=False, load=True),
+            "safe_pump_type"            : CategoricalParameter(["10","50","100"], default="120", space='buy', optimize=False, load=True),
             "safe_pump_period"          : CategoricalParameter(["24","36","48"], default="24", space='buy', optimize=False, load=True),
             "btc_1h_not_downtrend"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
         },
@@ -2049,10 +2049,10 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_cti_17 = DecimalParameter(-0.99, -0.5, default=-0.96, space='buy', decimals=2, optimize=False, load=True)
     buy_volume_17 = DecimalParameter(0.6, 6.0, default=2.0, space='buy', decimals=1, optimize=False, load=True)
 
-    buy_rsi_18 = DecimalParameter(16.0, 32.0, default=30.0, space='buy', decimals=1, optimize=False, load=True)
-    buy_bb_offset_18 = DecimalParameter(0.98, 1.0, default=0.985, space='buy', decimals=3, optimize=False, load=True)
+    buy_rsi_18 = DecimalParameter(20.0, 36.0, default=33.0, space='buy', decimals=1, optimize=False, load=True)
+    buy_bb_offset_18 = DecimalParameter(0.98, 1.0, default=0.988, space='buy', decimals=3, optimize=False, load=True)
     buy_volume_18 = DecimalParameter(0.6, 6.0, default=2.0, space='buy', decimals=1, optimize=False, load=True)
-    buy_cti_18 = DecimalParameter(-0.99, -0.5, default=-0.82, space='buy', decimals=2, optimize=False, load=True)
+    buy_cti_18 = DecimalParameter(-0.99, -0.5, default=-0.86, space='buy', decimals=2, optimize=False, load=True)
 
     buy_rsi_1h_min_19 = DecimalParameter(40.0, 70.0, default=30.0, space='buy', decimals=1, optimize=False, load=True)
     buy_chop_min_19 = DecimalParameter(20.0, 60.0, default=23.0, space='buy', decimals=1, optimize=False, load=True)
