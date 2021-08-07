@@ -2922,8 +2922,6 @@ class NostalgiaForInfinityNext(IStrategy):
                 return True, 'signal_profit_q_pmax_bull'
             if (last_candle['pm'] > last_candle['pmax_thresh']) and (last_candle['close'] > last_candle['sma_21'] * 1.014):
                 return True, 'signal_profit_q_pmax_bear'
-            if (last_candle['pm'] > last_candle['pmax_thresh']) and (last_candle['crsi'] >= 70):
-                return True, 'signal_profit_q_pmax_c'
 
         return False, None
 
@@ -3414,12 +3412,6 @@ class NostalgiaForInfinityNext(IStrategy):
         dataframe['atr_high_thresh_2'] = (dataframe['high'] - (dataframe['atr'] * 3.4))
         dataframe['atr_high_thresh_3'] = (dataframe['high'] - (dataframe['atr'] * 2.0))
         dataframe['atr_high_thresh_q'] = (dataframe['high'] - (dataframe['atr'] * 3.0))
-
-        dataframe['rsi_5'] = ta.RSI(dataframe, 5)
-        dataframe['streak'] = calc_streaks(dataframe["close"])
-        dataframe['srsi'] = ta.RSI(dataframe['streak'], 2)
-        dataframe['roc'] = ta.ROC(dataframe, 5)
-        dataframe['crsi'] = (dataframe['rsi_5'] + dataframe['srsi'] + dataframe['roc']) / 3
 
         # Dip protection
         dataframe['tpct_change_0']   = self.top_percent_change(dataframe,0)
