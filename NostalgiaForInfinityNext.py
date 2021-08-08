@@ -864,9 +864,9 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising"          : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
             "sma200_1h_rising_val"      : CategoricalParameter(["20","30","36","44","50"], default="50", space='buy', optimize=False, load=True),
             "safe_dips"                 : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
-            "safe_dips_type"            : CategoricalParameter(["10","50","100"], default="10", space='buy', optimize=False, load=True),
+            "safe_dips_type"            : CategoricalParameter(["10","50","100"], default="120", space='buy', optimize=False, load=True),
             "safe_pump"                 : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
-            "safe_pump_type"            : CategoricalParameter(["10","50","100"], default="20", space='buy', optimize=False, load=True),
+            "safe_pump_type"            : CategoricalParameter(["10","50","100"], default="120", space='buy', optimize=False, load=True),
             "safe_pump_period"          : CategoricalParameter(["24","36","48"], default="48", space='buy', optimize=False, load=True),
             "btc_1h_not_downtrend"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True)
         },
@@ -2155,7 +2155,7 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_31_ewo = DecimalParameter(-22.0, -8.0, default=-19.0, space='buy', decimals=1, optimize=False, load=True)
     buy_31_wr = DecimalParameter(-99.9, -95.0, default=-98.4, space='buy', decimals=1, optimize=False, load=True)
 
-    buy_32_ma_offset = DecimalParameter(0.90, 0.99, default=0.946, space='buy', optimize=False, load=True)
+    buy_32_ma_offset = DecimalParameter(0.90, 0.99, default=0.934, space='buy', optimize=False, load=True)
     buy_32_dip = DecimalParameter(0.001, 0.02, default=0.005, space='buy', decimals=3, optimize=False, load=True)
     buy_32_rsi = DecimalParameter(24.0, 50.0, default=46.0, space='buy', decimals=1, optimize=False, load=True)
     buy_32_cti = DecimalParameter(-0.99, -0.4, default=-0.8, space='buy', decimals=2, optimize=False, load=True)
