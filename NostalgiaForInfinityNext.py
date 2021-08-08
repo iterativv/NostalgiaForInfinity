@@ -2140,7 +2140,7 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_28_ma_offset = DecimalParameter(0.90, 0.99, default=0.96, space='buy', optimize=False, load=True)
     buy_28_ewo = DecimalParameter(2.0, 14.0, default=7.2, space='buy', decimals=1, optimize=False, load=True)
     buy_28_rsi = DecimalParameter(24.0, 44.0, default=32.5, space='buy', decimals=1, optimize=False, load=True)
-    buy_28_cti = DecimalParameter(-0.99, -0.4, default=-0.86, space='buy', decimals=2, optimize=False, load=True)
+    buy_28_cti = DecimalParameter(-0.99, -0.4, default=-0.9, space='buy', decimals=2, optimize=False, load=True)
 
     buy_29_ma_offset = DecimalParameter(0.90, 0.99, default=0.94, space='buy', optimize=False, load=True)
     buy_29_ewo = DecimalParameter(-14.0, -2.0, default=-4.0, space='buy', decimals=1, optimize=False, load=True)
