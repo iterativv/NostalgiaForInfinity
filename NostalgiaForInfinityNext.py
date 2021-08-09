@@ -2003,7 +2003,7 @@ class NostalgiaForInfinityNext(IStrategy):
     # 5 hours - level 60
     buy_dump_protection_60_5 = DecimalParameter(0.3, 0.8, default=0.74, space='buy', decimals=2, optimize=False, load=True)
 
-    buy_min_inc_1 = DecimalParameter(0.01, 0.05, default=0.021, space='buy', decimals=3, optimize=False, load=True)
+    buy_min_inc_1 = DecimalParameter(0.01, 0.05, default=0.022, space='buy', decimals=3, optimize=False, load=True)
     buy_rsi_1h_min_1 = DecimalParameter(25.0, 40.0, default=20.0, space='buy', decimals=1, optimize=False, load=True)
     buy_rsi_1h_max_1 = DecimalParameter(70.0, 90.0, default=84.0, space='buy', decimals=1, optimize=False, load=True)
     buy_rsi_1 = DecimalParameter(20.0, 40.0, default=35.4, space='buy', decimals=1, optimize=False, load=True)
