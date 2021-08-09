@@ -2217,56 +2217,106 @@ class NostalgiaForInfinityNext(IStrategy):
     sell_bb_relative_8 = DecimalParameter(1.05, 1.3, default=1.1, space='sell', decimals=3, optimize=False, load=True)
 
     # Profit over EMA200
-    sell_custom_profit_0 = DecimalParameter(0.01, 0.1, default=0.012, space='sell', decimals=3, optimize=False, load=True)
-    sell_custom_rsi_0 = DecimalParameter(30.0, 40.0, default=34.0, space='sell', decimals=3, optimize=False, load=True)
-    sell_custom_profit_1 = DecimalParameter(0.01, 0.1, default=0.02, space='sell', decimals=3, optimize=False, load=True)
-    sell_custom_rsi_1 = DecimalParameter(30.0, 50.0, default=35.0, space='sell', decimals=2, optimize=False, load=True)
-    sell_custom_profit_2 = DecimalParameter(0.01, 0.1, default=0.03, space='sell', decimals=3, optimize=False, load=True)
-    sell_custom_rsi_2 = DecimalParameter(30.0, 50.0, default=36.0, space='sell', decimals=2, optimize=False, load=True)
-    sell_custom_profit_3 = DecimalParameter(0.01, 0.1, default=0.04, space='sell', decimals=3, optimize=False, load=True)
-    sell_custom_rsi_3 = DecimalParameter(30.0, 50.0, default=37.0, space='sell', decimals=2, optimize=False, load=True)
-    sell_custom_profit_4 = DecimalParameter(0.01, 0.1, default=0.05, space='sell', decimals=3, optimize=False, load=True)
-    sell_custom_rsi_4 = DecimalParameter(35.0, 50.0, default=38.0, space='sell', decimals=2, optimize=False, load=True)
-    sell_custom_profit_5 = DecimalParameter(0.01, 0.1, default=0.06, space='sell', decimals=3, optimize=False, load=True)
-    sell_custom_rsi_5 = DecimalParameter(35.0, 50.0, default=39.0, space='sell', decimals=2, optimize=False, load=True)
-    sell_custom_profit_6 = DecimalParameter(0.01, 0.1, default=0.07, space='sell', decimals=3, optimize=False, load=True)
-    sell_custom_rsi_6 = DecimalParameter(38.0, 55.0, default=46.0, space='sell', decimals=2, optimize=False, load=True)
-    sell_custom_profit_7 = DecimalParameter(0.01, 0.1, default=0.08, space='sell', decimals=3, optimize=False, load=True)
-    sell_custom_rsi_7 = DecimalParameter(40.0, 58.0, default=54.0, space='sell', decimals=2, optimize=False, load=True)
-    sell_custom_profit_8 = DecimalParameter(0.06, 0.1, default=0.09, space='sell', decimals=3, optimize=False, load=True)
-    sell_custom_rsi_8 = DecimalParameter(40.0, 50.0, default=50.0, space='sell', decimals=2, optimize=False, load=True)
-    sell_custom_profit_9 = DecimalParameter(0.05, 0.14, default=0.1, space='sell', decimals=3, optimize=False, load=True)
-    sell_custom_rsi_9 = DecimalParameter(40.0, 60.0, default=50.0, space='sell', decimals=2, optimize=False, load=True)
-    sell_custom_profit_10 = DecimalParameter(0.1, 0.14, default=0.12, space='sell', decimals=3, optimize=False, load=True)
-    sell_custom_rsi_10 = DecimalParameter(38.0, 50.0, default=42.0, space='sell', decimals=2, optimize=False, load=True)
-    sell_custom_profit_11 = DecimalParameter(0.16, 0.45, default=0.20, space='sell', decimals=3, optimize=False, load=True)
-    sell_custom_rsi_11 = DecimalParameter(28.0, 40.0, default=30.0, space='sell', decimals=2, optimize=False, load=True)
+    sell_custom_profit_bull_0 = DecimalParameter(0.01, 0.1, default=0.012, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_rsi_bull_0 = DecimalParameter(30.0, 40.0, default=34.0, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_profit_bull_1 = DecimalParameter(0.01, 0.1, default=0.02, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_rsi_bull_1 = DecimalParameter(30.0, 50.0, default=35.0, space='sell', decimals=2, optimize=False, load=True)
+    sell_custom_profit_bull_2 = DecimalParameter(0.01, 0.1, default=0.03, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_rsi_bull_2 = DecimalParameter(30.0, 50.0, default=36.0, space='sell', decimals=2, optimize=False, load=True)
+    sell_custom_profit_bull_3 = DecimalParameter(0.01, 0.1, default=0.04, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_rsi_bull_3 = DecimalParameter(30.0, 50.0, default=37.0, space='sell', decimals=2, optimize=False, load=True)
+    sell_custom_profit_bull_4 = DecimalParameter(0.01, 0.1, default=0.05, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_rsi_bull_4 = DecimalParameter(35.0, 50.0, default=38.0, space='sell', decimals=2, optimize=False, load=True)
+    sell_custom_profit_bull_5 = DecimalParameter(0.01, 0.1, default=0.06, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_rsi_bull_5 = DecimalParameter(35.0, 50.0, default=39.0, space='sell', decimals=2, optimize=False, load=True)
+    sell_custom_profit_bull_6 = DecimalParameter(0.01, 0.1, default=0.07, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_rsi_bull_6 = DecimalParameter(38.0, 55.0, default=46.0, space='sell', decimals=2, optimize=False, load=True)
+    sell_custom_profit_bull_7 = DecimalParameter(0.01, 0.1, default=0.08, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_rsi_bull_7 = DecimalParameter(40.0, 58.0, default=54.0, space='sell', decimals=2, optimize=False, load=True)
+    sell_custom_profit_bull_8 = DecimalParameter(0.06, 0.1, default=0.09, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_rsi_bull_8 = DecimalParameter(40.0, 50.0, default=50.0, space='sell', decimals=2, optimize=False, load=True)
+    sell_custom_profit_bull_9 = DecimalParameter(0.05, 0.14, default=0.1, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_rsi_bull_9 = DecimalParameter(40.0, 60.0, default=50.0, space='sell', decimals=2, optimize=False, load=True)
+    sell_custom_profit_bull_10 = DecimalParameter(0.1, 0.14, default=0.12, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_rsi_bull_10 = DecimalParameter(38.0, 50.0, default=42.0, space='sell', decimals=2, optimize=False, load=True)
+    sell_custom_profit_bull_11 = DecimalParameter(0.16, 0.45, default=0.20, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_rsi_bull_11 = DecimalParameter(28.0, 40.0, default=30.0, space='sell', decimals=2, optimize=False, load=True)
+
+    sell_custom_profit_bear_0 = DecimalParameter(0.01, 0.1, default=0.012, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_rsi_bear_0 = DecimalParameter(30.0, 40.0, default=34.0, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_profit_bear_1 = DecimalParameter(0.01, 0.1, default=0.02, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_rsi_bear_1 = DecimalParameter(30.0, 50.0, default=35.0, space='sell', decimals=2, optimize=False, load=True)
+    sell_custom_profit_bear_2 = DecimalParameter(0.01, 0.1, default=0.03, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_rsi_bear_2 = DecimalParameter(30.0, 50.0, default=37.0, space='sell', decimals=2, optimize=False, load=True)
+    sell_custom_profit_bear_3 = DecimalParameter(0.01, 0.1, default=0.04, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_rsi_bear_3 = DecimalParameter(30.0, 50.0, default=42.0, space='sell', decimals=2, optimize=False, load=True)
+    sell_custom_profit_bear_4 = DecimalParameter(0.01, 0.1, default=0.05, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_rsi_bear_4 = DecimalParameter(35.0, 50.0, default=43.0, space='sell', decimals=2, optimize=False, load=True)
+    sell_custom_profit_bear_5 = DecimalParameter(0.01, 0.1, default=0.06, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_rsi_bear_5 = DecimalParameter(35.0, 50.0, default=45.0, space='sell', decimals=2, optimize=False, load=True)
+    sell_custom_profit_bear_6 = DecimalParameter(0.01, 0.1, default=0.07, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_rsi_bear_6 = DecimalParameter(38.0, 55.0, default=52.0, space='sell', decimals=2, optimize=False, load=True)
+    sell_custom_profit_bear_7 = DecimalParameter(0.01, 0.1, default=0.08, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_rsi_bear_7 = DecimalParameter(40.0, 58.0, default=54.0, space='sell', decimals=2, optimize=False, load=True)
+    sell_custom_profit_bear_8 = DecimalParameter(0.06, 0.1, default=0.09, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_rsi_bear_8 = DecimalParameter(40.0, 50.0, default=55.0, space='sell', decimals=2, optimize=False, load=True)
+    sell_custom_profit_bear_9 = DecimalParameter(0.05, 0.14, default=0.1, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_rsi_bear_9 = DecimalParameter(40.0, 60.0, default=50.0, space='sell', decimals=2, optimize=False, load=True)
+    sell_custom_profit_bear_10 = DecimalParameter(0.1, 0.14, default=0.12, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_rsi_bear_10 = DecimalParameter(38.0, 50.0, default=42.0, space='sell', decimals=2, optimize=False, load=True)
+    sell_custom_profit_bear_11 = DecimalParameter(0.16, 0.45, default=0.20, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_rsi_bear_11 = DecimalParameter(28.0, 40.0, default=30.0, space='sell', decimals=2, optimize=False, load=True)
 
     # Profit under EMA200
-    sell_custom_under_profit_0 = DecimalParameter(0.01, 0.4, default=0.01, space='sell', decimals=3, optimize=False, load=True)
-    sell_custom_under_rsi_0 = DecimalParameter(28.0, 40.0, default=38.0, space='sell', decimals=1, optimize=False, load=True)
-    sell_custom_under_profit_1 = DecimalParameter(0.01, 0.10, default=0.02, space='sell', decimals=3, optimize=False, load=True)
-    sell_custom_under_rsi_1 = DecimalParameter(36.0, 60.0, default=54.0, space='sell', decimals=1, optimize=False, load=True)
-    sell_custom_under_profit_2 = DecimalParameter(0.01, 0.10, default=0.03, space='sell', decimals=3, optimize=False, load=True)
-    sell_custom_under_rsi_2 = DecimalParameter(46.0, 66.0, default=55.0, space='sell', decimals=1, optimize=False, load=True)
-    sell_custom_under_profit_3 = DecimalParameter(0.01, 0.10, default=0.04, space='sell', decimals=3, optimize=False, load=True)
-    sell_custom_under_rsi_3 = DecimalParameter(50.0, 68.0, default=50.0, space='sell', decimals=1, optimize=False, load=True)
-    sell_custom_under_profit_4 = DecimalParameter(0.02, 0.1, default=0.05, space='sell', decimals=3, optimize=False, load=True)
-    sell_custom_under_rsi_4 = DecimalParameter(50.0, 68.0, default=42.0, space='sell', decimals=1, optimize=False, load=True)
-    sell_custom_under_profit_5 = DecimalParameter(0.02, 0.1, default=0.06, space='sell', decimals=3, optimize=False, load=True)
-    sell_custom_under_rsi_5 = DecimalParameter(46.0, 62.0, default=42.0, space='sell', decimals=1, optimize=False, load=True)
-    sell_custom_under_profit_6 = DecimalParameter(0.03, 0.1, default=0.07, space='sell', decimals=3, optimize=False, load=True)
-    sell_custom_under_rsi_6 = DecimalParameter(44.0, 60.0, default=40.0, space='sell', decimals=1, optimize=False, load=True)
-    sell_custom_under_profit_7 = DecimalParameter(0.04, 0.1, default=0.08, space='sell', decimals=3, optimize=False, load=True)
-    sell_custom_under_rsi_7 = DecimalParameter(46.0, 60.0, default=39.0, space='sell', decimals=1, optimize=False, load=True)
-    sell_custom_under_profit_8 = DecimalParameter(0.06, 0.12, default=0.09, space='sell', decimals=3, optimize=False, load=True)
-    sell_custom_under_rsi_8 = DecimalParameter(40.0, 58.0, default=38.0, space='sell', decimals=1, optimize=False, load=True)
-    sell_custom_under_profit_9 = DecimalParameter(0.08, 0.14, default=0.1, space='sell', decimals=3, optimize=False, load=True)
-    sell_custom_under_rsi_9 = DecimalParameter(40.0, 60.0, default=36.0, space='sell', decimals=1, optimize=False, load=True)
-    sell_custom_under_profit_10 = DecimalParameter(0.1, 0.16, default=0.12, space='sell', decimals=3, optimize=False, load=True)
-    sell_custom_under_rsi_10 = DecimalParameter(30.0, 50.0, default=34.0, space='sell', decimals=1, optimize=False, load=True)
-    sell_custom_under_profit_11 = DecimalParameter(0.16, 0.3, default=0.2, space='sell', decimals=3, optimize=False, load=True)
-    sell_custom_under_rsi_11 = DecimalParameter(24.0, 40.0, default=30.0, space='sell', decimals=1, optimize=False, load=True)
+    sell_custom_under_profit_bull_0 = DecimalParameter(0.01, 0.4, default=0.01, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_under_rsi_bull_0 = DecimalParameter(28.0, 40.0, default=38.0, space='sell', decimals=1, optimize=False, load=True)
+    sell_custom_under_profit_bull_1 = DecimalParameter(0.01, 0.10, default=0.02, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_under_rsi_bull_1 = DecimalParameter(36.0, 60.0, default=54.0, space='sell', decimals=1, optimize=False, load=True)
+    sell_custom_under_profit_bull_2 = DecimalParameter(0.01, 0.10, default=0.03, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_under_rsi_bull_2 = DecimalParameter(46.0, 66.0, default=55.0, space='sell', decimals=1, optimize=False, load=True)
+    sell_custom_under_profit_bull_3 = DecimalParameter(0.01, 0.10, default=0.04, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_under_rsi_bull_3 = DecimalParameter(50.0, 68.0, default=56.0, space='sell', decimals=1, optimize=False, load=True)
+    sell_custom_under_profit_bull_4 = DecimalParameter(0.02, 0.1, default=0.05, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_under_rsi_bull_4 = DecimalParameter(50.0, 68.0, default=57.0, space='sell', decimals=1, optimize=False, load=True)
+    sell_custom_under_profit_bull_5 = DecimalParameter(0.02, 0.1, default=0.06, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_under_rsi_bull_5 = DecimalParameter(46.0, 62.0, default=58.0, space='sell', decimals=1, optimize=False, load=True)
+    sell_custom_under_profit_bull_6 = DecimalParameter(0.03, 0.1, default=0.07, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_under_rsi_bull_6 = DecimalParameter(44.0, 60.0, default=48.0, space='sell', decimals=1, optimize=False, load=True)
+    sell_custom_under_profit_bull_7 = DecimalParameter(0.04, 0.1, default=0.08, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_under_rsi_bull_7 = DecimalParameter(46.0, 60.0, default=44.0, space='sell', decimals=1, optimize=False, load=True)
+    sell_custom_under_profit_bull_8 = DecimalParameter(0.06, 0.12, default=0.09, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_under_rsi_bull_8 = DecimalParameter(40.0, 58.0, default=42.0, space='sell', decimals=1, optimize=False, load=True)
+    sell_custom_under_profit_bull_9 = DecimalParameter(0.08, 0.14, default=0.1, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_under_rsi_bull_9 = DecimalParameter(40.0, 60.0, default=38.0, space='sell', decimals=1, optimize=False, load=True)
+    sell_custom_under_profit_bull_10 = DecimalParameter(0.1, 0.16, default=0.12, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_under_rsi_bull_10 = DecimalParameter(30.0, 50.0, default=34.0, space='sell', decimals=1, optimize=False, load=True)
+    sell_custom_under_profit_bull_11 = DecimalParameter(0.16, 0.3, default=0.2, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_under_rsi_bull_11 = DecimalParameter(24.0, 40.0, default=30.0, space='sell', decimals=1, optimize=False, load=True)
+
+    sell_custom_under_profit_bear_0 = DecimalParameter(0.01, 0.4, default=0.01, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_under_rsi_bear_0 = DecimalParameter(28.0, 40.0, default=38.0, space='sell', decimals=1, optimize=False, load=True)
+    sell_custom_under_profit_bear_1 = DecimalParameter(0.01, 0.10, default=0.02, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_under_rsi_bear_1 = DecimalParameter(36.0, 60.0, default=56.0, space='sell', decimals=1, optimize=False, load=True)
+    sell_custom_under_profit_bear_2 = DecimalParameter(0.01, 0.10, default=0.03, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_under_rsi_bear_2 = DecimalParameter(46.0, 66.0, default=57.0, space='sell', decimals=1, optimize=False, load=True)
+    sell_custom_under_profit_bear_3 = DecimalParameter(0.01, 0.10, default=0.04, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_under_rsi_bear_3 = DecimalParameter(50.0, 68.0, default=58.0, space='sell', decimals=1, optimize=False, load=True)
+    sell_custom_under_profit_bear_4 = DecimalParameter(0.02, 0.1, default=0.05, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_under_rsi_bear_4 = DecimalParameter(50.0, 68.0, default=59.0, space='sell', decimals=1, optimize=False, load=True)
+    sell_custom_under_profit_bear_5 = DecimalParameter(0.02, 0.1, default=0.06, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_under_rsi_bear_5 = DecimalParameter(46.0, 62.0, default=60.0, space='sell', decimals=1, optimize=False, load=True)
+    sell_custom_under_profit_bear_6 = DecimalParameter(0.03, 0.1, default=0.07, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_under_rsi_bear_6 = DecimalParameter(44.0, 60.0, default=50.0, space='sell', decimals=1, optimize=False, load=True)
+    sell_custom_under_profit_bear_7 = DecimalParameter(0.04, 0.1, default=0.08, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_under_rsi_bear_7 = DecimalParameter(46.0, 60.0, default=46.0, space='sell', decimals=1, optimize=False, load=True)
+    sell_custom_under_profit_bear_8 = DecimalParameter(0.06, 0.12, default=0.09, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_under_rsi_bear_8 = DecimalParameter(40.0, 58.0, default=40.0, space='sell', decimals=1, optimize=False, load=True)
+    sell_custom_under_profit_bear_9 = DecimalParameter(0.08, 0.14, default=0.1, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_under_rsi_bear_9 = DecimalParameter(40.0, 60.0, default=36.0, space='sell', decimals=1, optimize=False, load=True)
+    sell_custom_under_profit_bear_10 = DecimalParameter(0.1, 0.16, default=0.12, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_under_rsi_bear_10 = DecimalParameter(30.0, 50.0, default=34.0, space='sell', decimals=1, optimize=False, load=True)
+    sell_custom_under_profit_bear_11 = DecimalParameter(0.16, 0.3, default=0.2, space='sell', decimals=3, optimize=False, load=True)
+    sell_custom_under_rsi_bear_11 = DecimalParameter(24.0, 40.0, default=30.0, space='sell', decimals=1, optimize=False, load=True)
 
     # Profit targets for pumped pairs 48h 1
     sell_custom_pump_profit_1_1 = DecimalParameter(0.01, 0.03, default=0.01, space='sell', decimals=3, optimize=False, load=True)
@@ -2548,82 +2598,159 @@ class NostalgiaForInfinityNext(IStrategy):
 
     def sell_over_main(self, current_profit: float, last_candle) -> tuple:
         if last_candle['close'] > last_candle['ema_200']:
-            if current_profit >= self.sell_custom_profit_11.value:
-                if last_candle['rsi_14'] < self.sell_custom_rsi_11.value:
-                    return True, 'signal_profit_11'
-            elif self.sell_custom_profit_11.value > current_profit >= self.sell_custom_profit_10.value:
-                if last_candle['rsi_14'] < self.sell_custom_rsi_10.value:
-                    return True, 'signal_profit_10'
-            elif self.sell_custom_profit_10.value > current_profit >= self.sell_custom_profit_9.value:
-                if last_candle['rsi_14'] < self.sell_custom_rsi_9.value:
-                    return True, 'signal_profit_9'
-            elif self.sell_custom_profit_9.value > current_profit >= self.sell_custom_profit_8.value:
-                if last_candle['rsi_14'] < self.sell_custom_rsi_8.value:
-                    return True, 'signal_profit_8'
-            elif self.sell_custom_profit_8.value > current_profit >= self.sell_custom_profit_7.value:
-                if (last_candle['rsi_14'] < self.sell_custom_rsi_7.value) and (last_candle['cmf'] < 0.0) :
-                    return True, 'signal_profit_7'
-            elif self.sell_custom_profit_7.value > current_profit >= self.sell_custom_profit_6.value:
-                if (last_candle['rsi_14'] < self.sell_custom_rsi_6.value) and (last_candle['cmf'] < 0.0):
-                    return True, 'signal_profit_6'
-            elif self.sell_custom_profit_6.value > current_profit >= self.sell_custom_profit_5.value:
-                if (last_candle['rsi_14'] < self.sell_custom_rsi_5.value) and (last_candle['cmf'] < 0.0):
-                    return True, 'signal_profit_5'
-            elif self.sell_custom_profit_5.value > current_profit >= self.sell_custom_profit_4.value:
-                if (last_candle['rsi_14'] < self.sell_custom_rsi_4.value) and (last_candle['cmf'] < 0.0) :
-                    return True, 'signal_profit_4'
-            elif self.sell_custom_profit_4.value > current_profit >= self.sell_custom_profit_3.value:
-                if (last_candle['rsi_14'] < self.sell_custom_rsi_3.value) and (last_candle['cmf'] < 0.0):
-                    return True, 'signal_profit_3'
-            elif self.sell_custom_profit_3.value > current_profit >= self.sell_custom_profit_2.value:
-                if (last_candle['rsi_14'] < self.sell_custom_rsi_2.value) and (last_candle['cmf'] < 0.0):
-                    return True, 'signal_profit_2'
-            elif self.sell_custom_profit_2.value > current_profit >= self.sell_custom_profit_1.value:
-                if (last_candle['rsi_14'] < self.sell_custom_rsi_1.value) and (last_candle['cmf'] < 0.0):
-                    return True, 'signal_profit_1'
-            elif self.sell_custom_profit_1.value > current_profit >= self.sell_custom_profit_0.value:
-                if (last_candle['rsi_14'] < self.sell_custom_rsi_0.value) and (last_candle['cmf'] < 0.0):
-                    return True, 'signal_profit_0'
+            if (last_candle['moderi_96']):
+                if current_profit >= self.sell_custom_profit_bull_11.value:
+                    if last_candle['rsi_14'] < self.sell_custom_rsi_bull_11.value:
+                        return True, 'signal_profit_11'
+                elif self.sell_custom_profit_bull_11.value > current_profit >= self.sell_custom_profit_bull_10.value:
+                    if last_candle['rsi_14'] < self.sell_custom_rsi_bull_10.value:
+                        return True, 'signal_profit_10'
+                elif self.sell_custom_profit_bull_10.value > current_profit >= self.sell_custom_profit_bull_9.value:
+                    if last_candle['rsi_14'] < self.sell_custom_rsi_bull_9.value:
+                        return True, 'signal_profit_9'
+                elif self.sell_custom_profit_bull_9.value > current_profit >= self.sell_custom_profit_bull_8.value:
+                    if last_candle['rsi_14'] < self.sell_custom_rsi_bull_8.value:
+                        return True, 'signal_profit_8'
+                elif self.sell_custom_profit_bull_8.value > current_profit >= self.sell_custom_profit_bull_7.value:
+                    if (last_candle['rsi_14'] < self.sell_custom_rsi_bull_7.value) and (last_candle['cmf'] < 0.0) :
+                        return True, 'signal_profit_7'
+                elif self.sell_custom_profit_bull_7.value > current_profit >= self.sell_custom_profit_bull_6.value:
+                    if (last_candle['rsi_14'] < self.sell_custom_rsi_bull_6.value) and (last_candle['cmf'] < 0.0):
+                        return True, 'signal_profit_6'
+                elif self.sell_custom_profit_bull_6.value > current_profit >= self.sell_custom_profit_bull_5.value:
+                    if (last_candle['rsi_14'] < self.sell_custom_rsi_bull_5.value) and (last_candle['cmf'] < 0.0):
+                        return True, 'signal_profit_5'
+                elif self.sell_custom_profit_bull_5.value > current_profit >= self.sell_custom_profit_bull_4.value:
+                    if (last_candle['rsi_14'] < self.sell_custom_rsi_bull_4.value) and (last_candle['cmf'] < 0.0) :
+                        return True, 'signal_profit_4'
+                elif self.sell_custom_profit_bull_4.value > current_profit >= self.sell_custom_profit_bull_3.value:
+                    if (last_candle['rsi_14'] < self.sell_custom_rsi_bull_3.value) and (last_candle['cmf'] < 0.0):
+                        return True, 'signal_profit_3'
+                elif self.sell_custom_profit_bull_3.value > current_profit >= self.sell_custom_profit_bull_2.value:
+                    if (last_candle['rsi_14'] < self.sell_custom_rsi_bull_2.value) and (last_candle['cmf'] < 0.0):
+                        return True, 'signal_profit_2'
+                elif self.sell_custom_profit_bull_2.value > current_profit >= self.sell_custom_profit_bull_1.value:
+                    if (last_candle['rsi_14'] < self.sell_custom_rsi_bull_1.value) and (last_candle['cmf'] < 0.0):
+                        return True, 'signal_profit_1'
+                elif self.sell_custom_profit_bull_1.value > current_profit >= self.sell_custom_profit_bull_0.value:
+                    if (last_candle['rsi_14'] < self.sell_custom_rsi_bull_0.value) and (last_candle['cmf'] < 0.0):
+                        return True, 'signal_profit_0'
+            else:
+                if current_profit >= self.sell_custom_profit_bear_11.value:
+                    if last_candle['rsi_14'] < self.sell_custom_rsi_bear_11.value:
+                        return True, 'signal_profit_11'
+                elif self.sell_custom_profit_bear_11.value > current_profit >= self.sell_custom_profit_bear_10.value:
+                    if last_candle['rsi_14'] < self.sell_custom_rsi_bear_10.value:
+                        return True, 'signal_profit_10'
+                elif self.sell_custom_profit_bear_10.value > current_profit >= self.sell_custom_profit_bear_9.value:
+                    if last_candle['rsi_14'] < self.sell_custom_rsi_bear_9.value:
+                        return True, 'signal_profit_9'
+                elif self.sell_custom_profit_bear_9.value > current_profit >= self.sell_custom_profit_bear_8.value:
+                    if last_candle['rsi_14'] < self.sell_custom_rsi_bear_8.value:
+                        return True, 'signal_profit_8'
+                elif self.sell_custom_profit_bear_8.value > current_profit >= self.sell_custom_profit_bear_7.value:
+                    if (last_candle['rsi_14'] < self.sell_custom_rsi_bear_7.value) and (last_candle['cmf'] < 0.0) :
+                        return True, 'signal_profit_7'
+                elif self.sell_custom_profit_bear_7.value > current_profit >= self.sell_custom_profit_bear_6.value:
+                    if (last_candle['rsi_14'] < self.sell_custom_rsi_bear_6.value) and (last_candle['cmf'] < 0.0):
+                        return True, 'signal_profit_6'
+                elif self.sell_custom_profit_bear_6.value > current_profit >= self.sell_custom_profit_bear_5.value:
+                    if (last_candle['rsi_14'] < self.sell_custom_rsi_bear_5.value) and (last_candle['cmf'] < 0.0):
+                        return True, 'signal_profit_5'
+                elif self.sell_custom_profit_bear_5.value > current_profit >= self.sell_custom_profit_bear_4.value:
+                    if (last_candle['rsi_14'] < self.sell_custom_rsi_bear_4.value) and (last_candle['cmf'] < 0.0) :
+                        return True, 'signal_profit_4'
+                elif self.sell_custom_profit_bear_4.value > current_profit >= self.sell_custom_profit_bear_3.value:
+                    if (last_candle['rsi_14'] < self.sell_custom_rsi_bear_3.value) and (last_candle['cmf'] < 0.0):
+                        return True, 'signal_profit_3'
+                elif self.sell_custom_profit_bear_3.value > current_profit >= self.sell_custom_profit_bear_2.value:
+                    if (last_candle['rsi_14'] < self.sell_custom_rsi_bear_2.value) and (last_candle['cmf'] < 0.0):
+                        return True, 'signal_profit_2'
+                elif self.sell_custom_profit_bear_2.value > current_profit >= self.sell_custom_profit_bear_1.value:
+                    if (last_candle['rsi_14'] < self.sell_custom_rsi_bear_1.value) and (last_candle['cmf'] < 0.0):
+                        return True, 'signal_profit_1'
+                elif self.sell_custom_profit_bear_1.value > current_profit >= self.sell_custom_profit_bear_0.value:
+                    if (last_candle['rsi_14'] < self.sell_custom_rsi_bear_0.value) and (last_candle['cmf'] < 0.0):
+                        return True, 'signal_profit_0'
+
         return False, None
 
     def sell_under_main(self, current_profit: float, last_candle) -> tuple:
         if last_candle['close'] < last_candle['ema_200']:
-            if current_profit >= self.sell_custom_under_profit_11.value:
-                if last_candle['rsi_14'] < self.sell_custom_under_rsi_11.value:
-                    return True, 'signal_profit_u_11'
-            elif self.sell_custom_under_profit_11.value > current_profit >= self.sell_custom_under_profit_10.value:
-                if last_candle['rsi_14'] < self.sell_custom_under_rsi_10.value:
-                    return True, 'signal_profit_u_10'
-            elif self.sell_custom_under_profit_10.value > current_profit >= self.sell_custom_under_profit_9.value:
-                if last_candle['rsi_14'] < self.sell_custom_under_rsi_9.value:
-                    return True, 'signal_profit_u_9'
-            elif self.sell_custom_under_profit_9.value > current_profit >= self.sell_custom_under_profit_8.value:
-                if last_candle['rsi_14'] < self.sell_custom_under_rsi_8.value:
-                    return True, 'signal_profit_u_8'
-            elif self.sell_custom_under_profit_8.value > current_profit >= self.sell_custom_under_profit_7.value:
-                if last_candle['rsi_14'] < self.sell_custom_under_rsi_7.value:
-                    return True, 'signal_profit_u_7'
-            elif self.sell_custom_under_profit_7.value > current_profit >= self.sell_custom_under_profit_6.value:
-                if last_candle['rsi_14'] < self.sell_custom_under_rsi_6.value:
-                    return True, 'signal_profit_u_6'
-            elif self.sell_custom_under_profit_6.value > current_profit >= self.sell_custom_under_profit_5.value:
-                if last_candle['rsi_14'] < self.sell_custom_under_rsi_5.value:
-                    return True, 'signal_profit_u_5'
-            elif self.sell_custom_under_profit_5.value > current_profit >= self.sell_custom_under_profit_4.value:
-                if last_candle['rsi_14'] < self.sell_custom_under_rsi_4.value:
-                    return True, 'signal_profit_u_4'
-            elif self.sell_custom_under_profit_4.value > current_profit >= self.sell_custom_under_profit_3.value:
-                if last_candle['rsi_14'] < self.sell_custom_under_rsi_3.value:
-                    return True, 'signal_profit_u_3'
-            elif self.sell_custom_under_profit_3.value > current_profit >= self.sell_custom_under_profit_2.value:
-                if last_candle['rsi_14'] < self.sell_custom_under_rsi_2.value:
-                    return True, 'signal_profit_u_2'
-            elif self.sell_custom_under_profit_2.value > current_profit >= self.sell_custom_under_profit_1.value:
-                if last_candle['rsi_14'] < self.sell_custom_under_rsi_1.value:
-                    return True, 'signal_profit_u_1'
-            elif self.sell_custom_under_profit_1.value > current_profit >= self.sell_custom_under_profit_0.value:
-                if (last_candle['rsi_14'] < self.sell_custom_under_rsi_0.value) and (last_candle['cmf'] < 0.0):
-                    return True, 'signal_profit_u_0'
+            if (last_candle['moderi_96']):
+                if current_profit >= self.sell_custom_under_profit_bull_11.value:
+                    if last_candle['rsi_14'] < self.sell_custom_under_rsi_bull_11.value:
+                        return True, 'signal_profit_u_11'
+                elif self.sell_custom_under_profit_bull_11.value > current_profit >= self.sell_custom_under_profit_bull_10.value:
+                    if last_candle['rsi_14'] < self.sell_custom_under_rsi_bull_10.value:
+                        return True, 'signal_profit_u_10'
+                elif self.sell_custom_under_profit_bull_10.value > current_profit >= self.sell_custom_under_profit_bull_9.value:
+                    if last_candle['rsi_14'] < self.sell_custom_under_rsi_bull_9.value:
+                        return True, 'signal_profit_u_9'
+                elif self.sell_custom_under_profit_bull_9.value > current_profit >= self.sell_custom_under_profit_bull_8.value:
+                    if last_candle['rsi_14'] < self.sell_custom_under_rsi_bull_8.value:
+                        return True, 'signal_profit_u_8'
+                elif self.sell_custom_under_profit_bull_8.value > current_profit >= self.sell_custom_under_profit_bull_7.value:
+                    if last_candle['rsi_14'] < self.sell_custom_under_rsi_bull_7.value:
+                        return True, 'signal_profit_u_7'
+                elif self.sell_custom_under_profit_bull_7.value > current_profit >= self.sell_custom_under_profit_bull_6.value:
+                    if last_candle['rsi_14'] < self.sell_custom_under_rsi_bull_6.value:
+                        return True, 'signal_profit_u_6'
+                elif self.sell_custom_under_profit_bull_6.value > current_profit >= self.sell_custom_under_profit_bull_5.value:
+                    if last_candle['rsi_14'] < self.sell_custom_under_rsi_bull_5.value:
+                        return True, 'signal_profit_u_5'
+                elif self.sell_custom_under_profit_bull_5.value > current_profit >= self.sell_custom_under_profit_bull_4.value:
+                    if last_candle['rsi_14'] < self.sell_custom_under_rsi_bull_4.value:
+                        return True, 'signal_profit_u_4'
+                elif self.sell_custom_under_profit_bull_4.value > current_profit >= self.sell_custom_under_profit_bull_3.value:
+                    if last_candle['rsi_14'] < self.sell_custom_under_rsi_bull_3.value:
+                        return True, 'signal_profit_u_3'
+                elif self.sell_custom_under_profit_bull_3.value > current_profit >= self.sell_custom_under_profit_bull_2.value:
+                    if last_candle['rsi_14'] < self.sell_custom_under_rsi_bull_2.value:
+                        return True, 'signal_profit_u_2'
+                elif self.sell_custom_under_profit_bull_2.value > current_profit >= self.sell_custom_under_profit_bull_1.value:
+                    if last_candle['rsi_14'] < self.sell_custom_under_rsi_bull_1.value:
+                        return True, 'signal_profit_u_1'
+                elif self.sell_custom_under_profit_bull_1.value > current_profit >= self.sell_custom_under_profit_bull_0.value:
+                    if (last_candle['rsi_14'] < self.sell_custom_under_rsi_bull_0.value) and (last_candle['cmf'] < 0.0):
+                        return True, 'signal_profit_u_0'
+            else:
+                if current_profit >= self.sell_custom_under_profit_bear_11.value:
+                    if last_candle['rsi_14'] < self.sell_custom_under_rsi_bear_11.value:
+                        return True, 'signal_profit_u_11'
+                elif self.sell_custom_under_profit_bear_11.value > current_profit >= self.sell_custom_under_profit_bear_10.value:
+                    if last_candle['rsi_14'] < self.sell_custom_under_rsi_bear_10.value:
+                        return True, 'signal_profit_u_10'
+                elif self.sell_custom_under_profit_bear_10.value > current_profit >= self.sell_custom_under_profit_bear_9.value:
+                    if last_candle['rsi_14'] < self.sell_custom_under_rsi_bear_9.value:
+                        return True, 'signal_profit_u_9'
+                elif self.sell_custom_under_profit_bear_9.value > current_profit >= self.sell_custom_under_profit_bear_8.value:
+                    if last_candle['rsi_14'] < self.sell_custom_under_rsi_bear_8.value:
+                        return True, 'signal_profit_u_8'
+                elif self.sell_custom_under_profit_bear_8.value > current_profit >= self.sell_custom_under_profit_bear_7.value:
+                    if last_candle['rsi_14'] < self.sell_custom_under_rsi_bear_7.value:
+                        return True, 'signal_profit_u_7'
+                elif self.sell_custom_under_profit_bear_7.value > current_profit >= self.sell_custom_under_profit_bear_6.value:
+                    if last_candle['rsi_14'] < self.sell_custom_under_rsi_bear_6.value:
+                        return True, 'signal_profit_u_6'
+                elif self.sell_custom_under_profit_bear_6.value > current_profit >= self.sell_custom_under_profit_bear_5.value:
+                    if last_candle['rsi_14'] < self.sell_custom_under_rsi_bear_5.value:
+                        return True, 'signal_profit_u_5'
+                elif self.sell_custom_under_profit_bear_5.value > current_profit >= self.sell_custom_under_profit_bear_4.value:
+                    if last_candle['rsi_14'] < self.sell_custom_under_rsi_bear_4.value:
+                        return True, 'signal_profit_u_4'
+                elif self.sell_custom_under_profit_bear_4.value > current_profit >= self.sell_custom_under_profit_bear_3.value:
+                    if last_candle['rsi_14'] < self.sell_custom_under_rsi_bear_3.value:
+                        return True, 'signal_profit_u_3'
+                elif self.sell_custom_under_profit_bear_3.value > current_profit >= self.sell_custom_under_profit_bear_2.value:
+                    if last_candle['rsi_14'] < self.sell_custom_under_rsi_bear_2.value:
+                        return True, 'signal_profit_u_2'
+                elif self.sell_custom_under_profit_bear_2.value > current_profit >= self.sell_custom_under_profit_bear_1.value:
+                    if last_candle['rsi_14'] < self.sell_custom_under_rsi_bear_1.value:
+                        return True, 'signal_profit_u_1'
+                elif self.sell_custom_under_profit_bear_1.value > current_profit >= self.sell_custom_under_profit_bear_0.value:
+                    if (last_candle['rsi_14'] < self.sell_custom_under_rsi_bear_0.value) and (last_candle['cmf'] < 0.0):
+                        return True, 'signal_profit_u_0'
 
         return False, None
 
