@@ -3978,7 +3978,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Logic
                     item_buy_logic.append(dataframe['pm'] <= dataframe['pmax_thresh'])
                     item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * 0.98)
-                    item_buy_logic.append(dataframe['ewo'] < -8.0)
+                    item_buy_logic.append(dataframe['ewo'] < -8.8)
                     item_buy_logic.append(dataframe['cti'] < -0.8)
 
                 # Condition #37 - PMAX2 buy
