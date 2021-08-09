@@ -2857,7 +2857,7 @@ class NostalgiaForInfinityNext(IStrategy):
         elif (-0.16 <= current_profit < -0.12):
             if (last_candle['close'] < last_candle['atr_high_thresh_2']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_2']):
                 return True, 'signal_stoploss_atr_2'
-        elif (current_profit < -0.16):
+        elif (current_profit < -0.2):
             if (last_candle['close'] < last_candle['atr_high_thresh_3']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_3']):
                 return True, 'signal_stoploss_atr_3'
 
