@@ -122,8 +122,9 @@ class Backtest:
                 / f"ci-results-{exchange}-{start_date}-{end_date}.json"
             )
 
-            generated_txt_results_artifact_path = generated_json_results_artifact_path.with_suffix(
-                ".txt"
+            generated_txt_results_artifact_path = (
+                self.request.config.option.artifacts_path
+                / f"backtest-output-{exchange}-{start_date}-{end_date}.txt"
             )
             generated_txt_results_artifact_path.write_text(ret.stdout.strip())
 
@@ -177,6 +178,7 @@ class BacktestResults:
             "profit_mean_pct": self.full_stats.profit_mean_pct,
             "profit_total_pct": self.full_stats.profit_total_pct,
             "max_drawdown": self.results.max_drawdown * 100,
+            "trades": self.full_stats.trades,
             "winrate": round(self.full_stats.wins * 100.0 / self.full_stats.trades, 2),
         }
 
