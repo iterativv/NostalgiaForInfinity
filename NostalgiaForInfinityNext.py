@@ -2857,9 +2857,12 @@ class NostalgiaForInfinityNext(IStrategy):
         elif (-0.16 <= current_profit < -0.12):
             if (last_candle['close'] < last_candle['atr_high_thresh_2']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_2']):
                 return True, 'signal_stoploss_atr_2'
-        elif (current_profit < -0.2):
+        elif (-0.2 <= current_profit < -0.16):
             if (last_candle['close'] < last_candle['atr_high_thresh_3']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_3']):
                 return True, 'signal_stoploss_atr_3'
+        elif (current_profit < -0.2):
+            if (last_candle['close'] < last_candle['atr_high_thresh_4']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_4']):
+                return True, 'signal_stoploss_atr_4'
 
         return False, None
 
@@ -3535,9 +3538,10 @@ class NostalgiaForInfinityNext(IStrategy):
 
         # ATR
         dataframe['atr'] = ta.ATR(dataframe, timeperiod=14)
-        dataframe['atr_high_thresh_1'] = (dataframe['high'] - (dataframe['atr'] * 3.6))
-        dataframe['atr_high_thresh_2'] = (dataframe['high'] - (dataframe['atr'] * 3.4))
-        dataframe['atr_high_thresh_3'] = (dataframe['high'] - (dataframe['atr'] * 2.0))
+        dataframe['atr_high_thresh_1'] = (dataframe['high'] - (dataframe['atr'] * 5.4))
+        dataframe['atr_high_thresh_2'] = (dataframe['high'] - (dataframe['atr'] * 5.2))
+        dataframe['atr_high_thresh_3'] = (dataframe['high'] - (dataframe['atr'] * 5.0))
+        dataframe['atr_high_thresh_4'] = (dataframe['high'] - (dataframe['atr'] * 2.0))
         dataframe['atr_high_thresh_q'] = (dataframe['high'] - (dataframe['atr'] * 3.0))
 
         # Dip protection
