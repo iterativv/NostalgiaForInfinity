@@ -41,87 +41,6 @@ jobs:
 
 
   Binance-Backtests:
-    strategy:
-      fail-fast: false
-      matrix:
-        timerange:
-          - 20210101-20210201
-          - 20210201-20210301
-          - 20210301-20210401
-          - 20210401-20210501
-          - 20210601-20210701
-        opentrades:
-          - 5
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: true
-
-      - name: Build Backtest Image
-        run: docker-compose build backtesting
-
-      - name: Run Backtest ${{ matrix.opentrades }} trades ${{ matrix.timerange }}
-        env:
-          MAX_OPEN_TRADES: ${{ matrix.opentrades }}
-          STAKE_AMOUNT: unlimited
-          TIMERANGE: ${{ matrix.timerange }}
-          EXCHANGE: ${{ steps.dotenv.outputs.exchange }}
-        run: docker-compose run -T --rm backtesting 1> backtest_${{ matrix.timerange }}_${{ matrix.opentrades }}.txt
-
-      - name: Show Backtest ${{ matrix.timerange }} ${{ matrix.opentrades }}
-        run: cat backtest_${{ matrix.timerange }}_${{ matrix.opentrades }}.txt
-
-      - name: 'Upload Artifact'
-        uses: actions/upload-artifact@v2
-        with:
-          name: backtest_result
-          path: backtest_${{ matrix.timerange }}_${{ matrix.opentrades }}.txt
-
-
-  Kucoin-Backtests:
-    strategy:
-      fail-fast: false
-      matrix:
-        timerange:
-          - 20210101-20210201
-          - 20210201-20210301
-          - 20210301-20210401
-          - 20210401-20210501
-          - 20210601-20210701
-        opentrades:
-          - 5
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: true
-
-      - name: Build Backtest Image
-        run: docker-compose build backtesting
-
-      - name: Run Backtest ${{ matrix.opentrades }} trades ${{ matrix.timerange }}
-        continue-on-error: true
-        env:
-          MAX_OPEN_TRADES: ${{ matrix.opentrades }}
-          STAKE_AMOUNT: unlimited
-          TIMERANGE: ${{ matrix.timerange }}
-          EXCHANGE: ${{ steps.dotenv.outputs.exchange }}
-        run: docker-compose run -T --rm backtesting 1> backtest_${{ matrix.timerange }}_${{ matrix.opentrades }}.txt
-
-      - name: Show Backtest ${{ matrix.timerange }} ${{ matrix.opentrades }}
-        run: cat backtest_${{ matrix.timerange }}_${{ matrix.opentrades }}.txt
-
-      - name: 'Upload Artifact'
-        uses: actions/upload-artifact@v2
-        with:
-          name: backtest_result
-          path: backtest_${{ matrix.timerange }}_${{ matrix.opentrades }}.txt
-
-
-  Binance-Backest-Tests:
     runs-on: ubuntu-20.04
     needs:
       - Pre-Commit
@@ -151,6 +70,14 @@ jobs:
           chmod 777 artifacts
           docker-compose run --rm tests
 
+      - name: List Artifacts
+        run: |
+          ls -lah artifacts/
+
+      - name: Show Backest Output
+        run: |
+          cat artifacts/backtest-output-binance-${{ matrix.timerange }}.txt
+
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
         with:
@@ -158,7 +85,7 @@ jobs:
           path: artifacts/
 
 
-  Kucoin-Backest-Tests:
+  Kucoin-Backtests:
     runs-on: ubuntu-20.04
     needs:
       - Pre-Commit
@@ -187,6 +114,14 @@ jobs:
           mkdir artifacts
           chmod 777 artifacts
           docker-compose run --rm tests
+
+      - name: List Artifacts
+        run: |
+          ls -lah artifacts/
+
+      - name: Show Backest Output
+        run: |
+          cat artifacts/backtest-output-kucoin-${{ matrix.timerange }}.txt
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
@@ -219,8 +154,8 @@ jobs:
   Backest-CI-Stats:
     runs-on: ubuntu-20.04
     needs:
-      - Kucoin-Backest-Tests
-      - Binance-Backest-Tests
+      - Kucoin-Backtests
+      - Binance-Backtests
 
     steps:
 
@@ -236,49 +171,50 @@ jobs:
           python -m pip install -r tests/ci-requirements.txt
 
       - name: Download Previous Binance CI Artifacts
-        continue-on-error: true
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          workflow: tests.yml
-          branch: ${{ github.base_ref || 'main' }}
-          path: results/previous
-          name: binance-testrun-artifacts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python .github/workflows/scripts/download-previous-artifacts.py \
+            --repo=${{ github.event.repository.full_name }} \
+            --branch=main \
+            --workflow=tests.yml \
+            --exchange=binance \
+            --name=binance-testrun-artifacts downloaded-results
 
       - name: Download Previous Kucoin CI Artifacts
-        continue-on-error: true
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          workflow: tests.yml
-          branch: ${{ github.base_ref || 'main' }}
-          path: results/previous
-          name: kucoin-testrun-artifacts
-
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python .github/workflows/scripts/download-previous-artifacts.py \
+            --repo=${{ github.event.repository.full_name }} \
+            --branch=main \
+            --workflow=tests.yml \
+            --exchange=kucoin \
+            --name=kucoin-testrun-artifacts downloaded-results
 
       - name: Download Current Binance CI Artifacts
         uses: actions/download-artifact@v2
         with:
           name: binance-testrun-artifacts
-          path: results/current
+          path: downloaded-results/current
 
       - name: Download Current Kucoin CI Artifacts
         uses: actions/download-artifact@v2
         with:
           name: kucoin-testrun-artifacts
-          path: results/current
+          path: downloaded-results/current
+
+      - name: Show Environ
+        run: |
+          env
 
       - name: Show Downloaded Artifacts
         run: |
-          tree results
-
-      - name: Show Environ
-        env:
-          PULL_REQUEST: ${{ github.event.number }}
-        run: |
-          env
+          tree downloaded-results
 
       - name: Comment CI Results
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           python .github/workflows/scripts/comment-ci-results.py \
-            --repo=${{ github.event.repository.full_name }}
+            --repo=${{ github.event.repository.full_name }} downloaded-results
