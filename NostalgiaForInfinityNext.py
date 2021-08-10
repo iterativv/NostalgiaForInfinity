@@ -2079,7 +2079,7 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_ema_open_mult_15 = DecimalParameter(0.01, 0.03, default=0.024, space='buy', decimals=3, optimize=False, load=True)
     buy_ma_offset_15 = DecimalParameter(0.93, 0.99, default=0.958, space='buy', decimals=3, optimize=False, load=True)
     buy_rsi_15 = DecimalParameter(20.0, 36.0, default=28.0, space='buy', decimals=1, optimize=False, load=True)
-    buy_ema_rel_15 = DecimalParameter(0.97, 0.999, default=0.977, space='buy', decimals=3, optimize=False, load=True)
+    buy_ema_rel_15 = DecimalParameter(0.97, 0.999, default=0.974, space='buy', decimals=3, optimize=False, load=True)
 
     buy_ma_offset_16 = DecimalParameter(0.93, 0.97, default=0.953, space='buy', decimals=3, optimize=False, load=True)
     buy_rsi_16 = DecimalParameter(26.0, 50.0, default=31.0, space='buy', decimals=1, optimize=False, load=True)
