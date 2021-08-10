@@ -402,7 +402,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising"          : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
             "sma200_1h_rising_val"      : CategoricalParameter(["20","30","36","44","50"], default="24", space='buy', optimize=False, load=True),
             "safe_dips"                 : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
-            "safe_dips_type"            : CategoricalParameter(["10","50","100"], default="50", space='buy', optimize=False, load=True),
+            "safe_dips_type"            : CategoricalParameter(["10","50","100"], default="120", space='buy', optimize=False, load=True),
             "safe_pump"                 : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
             "safe_pump_type"            : CategoricalParameter(["10","50","100"], default="50", space='buy', optimize=False, load=True),
             "safe_pump_period"          : CategoricalParameter(["24","36","48"], default="24", space='buy', optimize=False, load=True),
@@ -2051,9 +2051,9 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_rsi_1h_max_9 = DecimalParameter(70.0, 90.0, default=88.0, space='buy', decimals=1, optimize=False, load=True)
     buy_mfi_9 = DecimalParameter(36.0, 56.0, default=50.0, space='buy', decimals=1, optimize=False, load=True)
 
-    buy_ma_offset_10 = DecimalParameter(0.93, 0.97, default=0.978, space='buy', decimals=3, optimize=False, load=True)
+    buy_ma_offset_10 = DecimalParameter(0.94, 0.99, default=0.98, space='buy', decimals=3, optimize=False, load=True)
     buy_bb_offset_10 = DecimalParameter(0.97, 0.99, default=0.972, space='buy', decimals=3, optimize=False, load=True)
-    buy_rsi_1h_10 = DecimalParameter(20.0, 40.0, default=47.0, space='buy', decimals=1, optimize=False, load=True)
+    buy_rsi_1h_10 = DecimalParameter(30.0, 60.0, default=50.0, space='buy', decimals=1, optimize=False, load=True)
 
     buy_ma_offset_11 = DecimalParameter(0.93, 0.99, default=0.936, space='buy', decimals=3, optimize=False, load=True)
     buy_min_inc_11 = DecimalParameter(0.005, 0.05, default=0.038, space='buy', decimals=3, optimize=False, load=True)
