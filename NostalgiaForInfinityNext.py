@@ -3044,7 +3044,7 @@ class NostalgiaForInfinityNext(IStrategy):
         if (last_candle['close'] < last_candle['atr_high_thresh_q']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_q']):
             if (current_profit > 0.0):
                 return True, 'signal_profit_q_atr'
-            elif (current_profit < -0.05):
+            elif (current_profit < -0.05 or (max_profit > 0 and (max_profit - current_profit > 0.05))): # we had profit and current profit is over 5% less
                 return True, 'signal_stoploss_q_atr'
 
         if (current_profit > 0.0):
@@ -3079,7 +3079,7 @@ class NostalgiaForInfinityNext(IStrategy):
         max_loss = ((trade.open_rate - trade.min_rate) / trade.min_rate)
 
         # Quick sell mode
-        if all(c in ['32', '33', '34', '35', '36', '37', '38'] for c in buy_tags):
+        if any(c in ['32', '33', '34', '35', '36', '37', '38'] for c in buy_tags):
             sell, signal_name = self.sell_quick_mode(current_profit, max_profit, last_candle, previous_candle_1)
             if sell and (signal_name is not None):
                 return signal_name + ' ( ' + buy_tag + ')'
