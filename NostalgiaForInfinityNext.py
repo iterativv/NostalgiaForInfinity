@@ -3008,19 +3008,19 @@ class NostalgiaForInfinityNext(IStrategy):
             if (last_candle['r_480'] > -4.5) and (last_candle['rsi_14'] > 68.0) and (last_candle['cti'] > 0.9):
                 return True, 'signal_profit_w_4_4'
         elif (0.06 > current_profit >= 0.05):
-            if (last_candle['r_480'] > -24.0) and (last_candle['rsi_14'] > 68.0) and (last_candle['cti'] > 0.9):
+            if (last_candle['r_480'] > -5.0) and (last_candle['rsi_14'] > 68.0) and (last_candle['cti'] > 0.9):
                 return True, 'signal_profit_w_4_5'
         elif (0.07 > current_profit >= 0.06):
-            if (last_candle['r_480'] > -26.0) and (last_candle['rsi_14'] > 79.0) and (last_candle['cti'] > 0.9):
+            if (last_candle['r_480'] > -5.5) and (last_candle['rsi_14'] > 79.0) and (last_candle['cti'] > 0.9):
                 return True, 'signal_profit_w_4_6'
         elif (0.08 > current_profit >= 0.07):
-            if (last_candle['r_480'] > -20.0) and (last_candle['rsi_14'] > 79.0) and (last_candle['cti'] > 0.9):
+            if (last_candle['r_480'] > -6.0) and (last_candle['rsi_14'] > 79.0) and (last_candle['cti'] > 0.9):
                 return True, 'signal_profit_w_4_7'
         elif (0.09 > current_profit >= 0.08):
-            if (last_candle['r_480'] > -18.0) and (last_candle['rsi_14'] > 79.0) and (last_candle['cti'] > 0.9):
+            if (last_candle['r_480'] > -6.5) and (last_candle['rsi_14'] > 79.0) and (last_candle['cti'] > 0.9):
                 return True, 'signal_profit_w_4_8'
         elif (0.1 > current_profit >= 0.09):
-            if (last_candle['r_480'] > -16.0) and (last_candle['rsi_14'] > 79.0) and (last_candle['cti'] > 0.9):
+            if (last_candle['r_480'] > -5.0) and (last_candle['rsi_14'] > 79.0) and (last_candle['cti'] > 0.9):
                 return True, 'signal_profit_w_4_9'
         elif (0.12 > current_profit >= 0.1):
             if (last_candle['r_480'] > -4.0) and (last_candle['rsi_14'] > 79.0) and (last_candle['cti'] > 0.9):
