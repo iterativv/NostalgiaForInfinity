@@ -2039,13 +2039,13 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_ema_open_mult_7 = DecimalParameter(0.02, 0.04, default=0.030, space='buy', decimals=3, optimize=False, load=True)
     buy_cti_7 = DecimalParameter(-0.99, -0.5, default=-0.89, space='buy', decimals=2, optimize=False, load=True)
 
-    buy_cti_8 = DecimalParameter(-0.99, -0.5, default=-0.85, space='buy', decimals=2, optimize=False, load=True)
+    buy_cti_8 = DecimalParameter(-0.99, -0.5, default=-0.88, space='buy', decimals=2, optimize=False, load=True)
     buy_rsi_8 = DecimalParameter(20.0, 50.0, default=40.0, space='buy', decimals=1, optimize=False, load=True)
     buy_bb_offset_8 = DecimalParameter(0.98, 1.0, default=0.99, space='buy', decimals=3, optimize=False, load=True)
     buy_rsi_1h_8 = DecimalParameter(40.0, 66.0, default=64.0, space='buy', decimals=1, optimize=False, load=True)
     buy_volume_8 = DecimalParameter(0.6, 6.0, default=1.8, space='buy', decimals=1, optimize=False, load=True)
 
-    buy_ma_offset_9 = DecimalParameter(0.91, 0.94, default=0.922, space='buy', decimals=3, optimize=False, load=True)
+    buy_ma_offset_9 = DecimalParameter(0.91, 0.94, default=0.968, space='buy', decimals=3, optimize=False, load=True)
     buy_bb_offset_9 = DecimalParameter(0.96, 0.98, default=0.942, space='buy', decimals=3, optimize=False, load=True)
     buy_rsi_1h_min_9 = DecimalParameter(26.0, 40.0, default=20.0, space='buy', decimals=1, optimize=False, load=True)
     buy_rsi_1h_max_9 = DecimalParameter(70.0, 90.0, default=88.0, space='buy', decimals=1, optimize=False, load=True)
