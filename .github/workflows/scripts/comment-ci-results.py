@@ -17,14 +17,36 @@ def sort_report_names(value):
     return -3
 
 
+def delete_previous_comments(commit, created_comment_ids, exchanges):
+    comment_starts = {f"# {exchange.capitalize()}" for exchange in exchanges}
+    for comment in commit.get_comments():
+        if comment.user.login != "github-actions[bot]":
+            # Not a comment made by this bot
+            continue
+        if comment.id in created_comment_ids:
+            # These are the comments we have just created
+            continue
+        if not comment.body.startswith(comment_starts):
+            # This comment does not start with our headers
+            continue
+        # We have a match, delete it
+        print(f"Deleting previous comment {comment}")
+        comment.delete()
+
+
 def comment_results(options, results_data):
     gh = github.Github(os.environ["GITHUB_TOKEN"])
     repo = gh.get_repo(options.repo)
     print(f"Loaded Repository: {repo.full_name}", file=sys.stderr, flush=True)
 
-    comment_body = ""
+    exchanges = set()
+    comment_ids = set()
+    commit = repo.get_commit(os.environ["GITHUB_SHA"])
+    print(f"Loaded Commit: {commit}", file=sys.stderr, flush=True)
+
     for exchange in sorted(results_data):
-        comment_body += f"# {exchange.capitalize()}\n\n"
+        exchanges.add(exchange)
+        comment_body = f"# {exchange.capitalize()}\n\n"
         sorted_report_names = list(
             reversed(sorted(results_data[exchange]["names"], key=sort_report_names))
         )
@@ -107,12 +129,11 @@ def comment_results(options, results_data):
             comment_body += f"<pre>{ft_output.read_text().strip()}</pre>\n"
             comment_body += "</details>\n"
             comment_body += "\n\n"
-        comment_body += "\n\n"
+        comment = commit.create_comment(comment_body.rstrip())
+        print(f"Created Comment: {comment}", file=sys.stderr, flush=True)
+        comment_ids.add(comment.id)
 
-    commit = repo.get_commit(os.environ["GITHUB_SHA"])
-    print(f"Loaded Commit: {commit}", file=sys.stderr, flush=True)
-    comment = commit.create_comment(comment_body)
-    print(f"Created Comment: {comment}", file=sys.stderr, flush=True)
+    delete_previous_comments(commit, comment_ids, exchanges)
 
 
 def main():
