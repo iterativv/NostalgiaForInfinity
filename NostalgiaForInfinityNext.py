@@ -570,7 +570,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising"          : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
             "sma200_1h_rising_val"      : CategoricalParameter(["20","30","36","44","50"], default="72", space='buy', optimize=False, load=True),
             "safe_dips"                 : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
-            "safe_dips_type"            : CategoricalParameter(["10","50","100"], default="100", space='buy', optimize=False, load=True),
+            "safe_dips_type"            : CategoricalParameter(["10","50","100"], default="130", space='buy', optimize=False, load=True),
             "safe_pump"                 : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
             "safe_pump_type"            : CategoricalParameter(["10","50","100"], default="120", space='buy', optimize=False, load=True),
             "safe_pump_period"          : CategoricalParameter(["24","36","48"], default="24", space='buy', optimize=False, load=True),
