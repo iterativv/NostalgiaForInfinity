@@ -693,9 +693,9 @@ class NostalgiaForInfinityNext(IStrategy):
             "close_above_ema_slow_len"  : CategoricalParameter(["15","50","200"], default="200", space='buy', optimize=False, load=True),
             "sma200_rising"             : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
             "sma200_rising_val"         : CategoricalParameter(["20","30","36","44","50"], default="30", space='buy', optimize=False, load=True),
-            "sma200_1h_rising"          : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
+            "sma200_1h_rising"          : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
             "sma200_1h_rising_val"      : CategoricalParameter(["20","30","36","44","50"], default="36", space='buy', optimize=False, load=True),
-            "safe_dips"                 : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
+            "safe_dips"                 : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
             "safe_dips_type"            : CategoricalParameter(["10","50","100"], default="20", space='buy', optimize=False, load=True),
             "safe_pump"                 : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
             "safe_pump_type"            : CategoricalParameter(["10","50","100"], default="50", space='buy', optimize=False, load=True),
@@ -2120,8 +2120,8 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_rsi_23 = DecimalParameter(20.0, 40.0, default=32.5, space='buy', decimals=1, optimize=False, load=True)
     buy_rsi_1h_23 = DecimalParameter(60.0, 80.0, default=70.0, space='buy', decimals=1, optimize=False, load=True)
 
-    buy_24_rsi_max = DecimalParameter(26.0, 60.0, default=50.0, space='buy', decimals=1, optimize=False, load=True)
-    buy_24_rsi_1h_min = DecimalParameter(40.0, 90.0, default=66.9, space='buy', decimals=1, optimize=False, load=True)
+    buy_24_rsi_max = DecimalParameter(26.0, 60.0, default=41.0, space='buy', decimals=1, optimize=False, load=True)
+    buy_24_rsi_1h_min = DecimalParameter(40.0, 90.0, default=59.0, space='buy', decimals=1, optimize=False, load=True)
 
     buy_25_ma_offset = DecimalParameter(0.90, 0.99, default=0.922, space='buy', optimize=False, load=True)
     buy_25_rsi_4 = DecimalParameter(26.0, 40.0, default=38.0, space='buy', decimals=1, optimize=False, load=True)
