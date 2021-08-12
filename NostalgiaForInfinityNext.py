@@ -15,7 +15,7 @@ import math
 from freqtrade.persistence import Trade
 from datetime import datetime, timedelta
 from technical.util import resample_to_interval, resampled_merge
-from technical.indicators import zema, VIDYA
+from technical.indicators import zema, VIDYA, ichimoku
 import pandas_ta as pta
 
 log = logging.getLogger(__name__)
@@ -1000,21 +1000,21 @@ class NostalgiaForInfinityNext(IStrategy):
             "enable"                    : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
             "ema_fast"                  : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
             "ema_fast_len"              : CategoricalParameter(["26","50","100","200"], default="100", space='buy', optimize=False, load=True),
-            "ema_slow"                  : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
-            "ema_slow_len"              : CategoricalParameter(["26","50","100","200"], default="100", space='buy', optimize=False, load=True),
+            "ema_slow"                  : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
+            "ema_slow_len"              : CategoricalParameter(["26","50","100","200"], default="50", space='buy', optimize=False, load=True),
             "close_above_ema_fast"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
             "close_above_ema_fast_len"  : CategoricalParameter(["12","20","26","50","100","200"], default="50", space='buy', optimize=False, load=True),
-            "close_above_ema_slow"      : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
-            "close_above_ema_slow_len"  : CategoricalParameter(["15","50","200"], default="100", space='buy', optimize=False, load=True),
+            "close_above_ema_slow"      : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
+            "close_above_ema_slow_len"  : CategoricalParameter(["15","50","200"], default="50", space='buy', optimize=False, load=True),
             "sma200_rising"             : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
             "sma200_rising_val"         : CategoricalParameter(["20","30","36","44","50"], default="30", space='buy', optimize=False, load=True),
             "sma200_1h_rising"          : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
             "sma200_1h_rising_val"      : CategoricalParameter(["20","30","36","44","50"], default="20", space='buy', optimize=False, load=True),
             "safe_dips"                 : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
             "safe_dips_type"            : CategoricalParameter(["10","50","100"], default="100", space='buy', optimize=False, load=True),
-            "safe_pump"                 : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
-            "safe_pump_type"            : CategoricalParameter(["10","50","100"], default="10", space='buy', optimize=False, load=True),
-            "safe_pump_period"          : CategoricalParameter(["24","36","48"], default="24", space='buy', optimize=False, load=True),
+            "safe_pump"                 : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
+            "safe_pump_type"            : CategoricalParameter(["10","50","100"], default="50", space='buy', optimize=False, load=True),
+            "safe_pump_period"          : CategoricalParameter(["24","36","48"], default="48", space='buy', optimize=False, load=True),
             "btc_1h_not_downtrend"      : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True)
         }
     }
@@ -3079,6 +3079,28 @@ class NostalgiaForInfinityNext(IStrategy):
 
         return False, None
 
+    def sell_ichi(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, trade: 'Trade', current_time: 'datetime') -> tuple:
+        if (-0.03 < current_profit < 0.05) and (current_time - timedelta(minutes=1440) > trade.open_date_utc) and (last_candle['rsi_14'] > 75):
+            return True, 'signal_ichi_underwater'
+        if (max_loss > 0.07) and (current_profit > 0.02):
+            return True, 'signal_ichi_recover_0'
+        if (max_loss > 0.06) and (current_profit > 0.03):
+            return True, 'signal_ichi_recover_1'
+        if (max_loss > 0.05) and (current_profit > 0.04):
+            return True, 'signal_ichi_recover_2'
+        if (max_loss > 0.04) and (current_profit > 0.05):
+            return True, 'signal_ichi_recover_3'
+        if (max_loss > 0.03) and (current_profit > 0.06):
+            return True, 'signal_ichi_recover_4'
+        if (0.05 < current_profit < 0.1) and (current_time - timedelta(minutes=720) > trade.open_date_utc):
+            return True, 'signal_ichi_slow_trade'
+        if (0.07 < current_profit < 0.1) and (max_profit-current_profit > 0.025) and (max_profit > 0.1):
+            return True, 'signal_ichi_trailing'
+        if (current_profit < -0.1):
+            return True, 'signal_ichi_stoploss'
+
+        return False, None
+
     def custom_sell(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float,
                     current_profit: float, **kwargs):
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
@@ -3105,6 +3127,12 @@ class NostalgiaForInfinityNext(IStrategy):
         # Quick sell mode
         if all(c in ['32', '33', '34', '35', '36', '37', '38'] for c in buy_tags):
             sell, signal_name = self.sell_quick_mode(current_profit, max_profit, last_candle, previous_candle_1)
+            if sell and (signal_name is not None):
+                return signal_name + ' ( ' + buy_tag + ')'
+
+        # Ichi Trade management
+        if all(c in ['39'] for c in buy_tags):
+            sell, signal_name = self.sell_ichi(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
             if sell and (signal_name is not None):
                 return signal_name + ' ( ' + buy_tag + ')'
 
@@ -3371,6 +3399,25 @@ class NostalgiaForInfinityNext(IStrategy):
 
         # Williams %R
         informative_1h['r_480'] = williams_r(informative_1h, period=480)
+
+        # Ichimoku
+        ichi = ichimoku(informative_1h, conversion_line_period=20, base_line_periods=60, laggin_span=120, displacement=30)
+        informative_1h['chikou_span'] = ichi['chikou_span']
+        informative_1h['tenkan_sen'] = ichi['tenkan_sen']
+        informative_1h['kijun_sen'] = ichi['kijun_sen']
+        informative_1h['senkou_a'] = ichi['senkou_span_a']
+        informative_1h['senkou_b'] = ichi['senkou_span_b']
+        informative_1h['leading_senkou_span_a'] = ichi['leading_senkou_span_a']
+        informative_1h['leading_senkou_span_b'] = ichi['leading_senkou_span_b']
+        informative_1h.loc[:, 'cloud_top'] = informative_1h.loc[:, ['senkou_a', 'senkou_b']].max(axis=1)
+
+        # EFI - Elders Force Index
+        informative_1h['efi'] = pta.efi(informative_1h["close"], informative_1h["volume"], length=13)
+
+        # SSL
+        ssl_down, ssl_up = SSLChannels(informative_1h, 10)
+        informative_1h['ssl_down'] = ssl_down
+        informative_1h['ssl_up'] = ssl_up
 
         # Pump protections
         informative_1h['hl_pct_change_48'] = self.range_percent_change(informative_1h, 'HL', 48)
@@ -4145,6 +4192,26 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['ewo'] < -2.0)
                     item_buy_logic.append(dataframe['cti'] < -0.86)
 
+                # Condition #39 - Ichimoku
+                elif index == 39:
+                    # Non-Standard protections (add below)
+
+                    # Logic
+                    item_buy_logic.append(dataframe['tenkan_sen_1h'] > dataframe['kijun_sen_1h'])
+                    item_buy_logic.append(dataframe['close'] > dataframe['cloud_top_1h'])
+                    item_buy_logic.append(dataframe['leading_senkou_span_a_1h'] > dataframe['leading_senkou_span_b_1h'])
+                    item_buy_logic.append(dataframe['chikou_span_1h'] > dataframe['senkou_a_1h'])
+                    item_buy_logic.append(dataframe['efi_1h'] > 0)
+                    item_buy_logic.append(dataframe['ssl_up_1h'] > dataframe['ssl_down_1h'])
+                    item_buy_logic.append(dataframe['close'] < dataframe['ssl_up_1h'])
+                    item_buy_logic.append(dataframe['cti'] < -0.73)
+                    # Start of trend
+                    item_buy_logic.append(
+                        (dataframe['leading_senkou_span_a_1h'].shift(12) < dataframe['leading_senkou_span_b_1h'].shift(12)) |
+                        (dataframe['efi_1h'] < 0) |
+                        (dataframe['ssl_up_1h'].shift(12) < dataframe['ssl_down_1h'].shift(12))
+                    )
+
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
                 dataframe.loc[item_buy, 'buy_tag'] += str(index) + ' '
@@ -4427,3 +4494,15 @@ def calc_streaks(series: Series):
                                              0 else -1)  # decrease or reset to -1
 
     return streaks
+
+# SSL Channels
+def SSLChannels(dataframe, length = 7):
+    df = dataframe.copy()
+    ATR = ta.ATR(dataframe, timeperiod=14)
+    smaHigh = dataframe['high'].rolling(length).mean() + ATR
+    smaLow = dataframe['low'].rolling(length).mean() - ATR
+    hlv = Series(np.where(dataframe['close'] > smaHigh, 1, np.where(dataframe['close'] < smaLow, -1, np.NAN)))
+    hlv = hlv.ffill()
+    sslDown = np.where(hlv < 0, smaHigh, smaLow)
+    sslUp = np.where(hlv < 0, smaLow, smaHigh)
+    return sslDown, sslUp
