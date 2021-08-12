@@ -3372,11 +3372,6 @@ class NostalgiaForInfinityNext(IStrategy):
         # Williams %R
         informative_1h['r_480'] = williams_r(informative_1h, period=480)
 
-        # Linreg
-        informative_1h['linreg_24'] = pta.linreg(qtpylib.typical_price(informative_1h), length=24, tsf=True)
-        informative_1h['vwma_12'] = vwma(informative_1h, 12)
-        informative_1h['cti'] = pta.cti(informative_1h["close"], length=24)
-
         # Pump protections
         informative_1h['hl_pct_change_48'] = self.range_percent_change(informative_1h, 'HL', 48)
         informative_1h['hl_pct_change_36'] = self.range_percent_change(informative_1h, 'HL', 36)
@@ -4149,17 +4144,6 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * 0.7)
                     item_buy_logic.append(dataframe['ewo'] < -2.0)
                     item_buy_logic.append(dataframe['cti'] < -0.86)
-
-                # Condition #39
-                elif index == 39:
-                    # Non-Standard protections (add below)
-
-                    # Logic
-                    item_buy_logic.append(dataframe['linreg_24_1h'] > dataframe['vwma_12_1h'])
-                    item_buy_logic.append(dataframe['linreg_24_1h'].shift() < dataframe['vwma_12_1h'].shift())
-                    item_buy_logic.append(dataframe['cti_1h'] < -0.62)
-                    item_buy_logic.append(dataframe['rsi_14_1h'] < 74.0)
-                    item_buy_logic.append(dataframe['cti'] < -0.9)
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
