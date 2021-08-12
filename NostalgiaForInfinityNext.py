@@ -3528,13 +3528,6 @@ class NostalgiaForInfinityNext(IStrategy):
         dataframe['moderi_64'] = moderi(dataframe, 64)
         dataframe['moderi_96'] = moderi(dataframe, 96)
 
-        # TSI
-        dataframe['tsi_slow'] = tsi(dataframe, window_slow=20, window_fast=5)
-        dataframe['tsi_ema_slow'] = ta.EMA(dataframe['tsi_slow'], timeperiod=5)
-
-        dataframe['tsi_fast'] = tsi(dataframe, window_slow=4, window_fast=2)
-        dataframe['tsi_ema_fast'] = ta.EMA(dataframe['tsi_fast'], timeperiod=2)
-
         # hull
         dataframe['hull_75'] = hull(dataframe, 75)
 
@@ -4266,31 +4259,6 @@ def chaikin_money_flow(dataframe, n=20, fillna=False) -> Series:
     if fillna:
         cmf = cmf.replace([np.inf, -np.inf], np.nan).fillna(0)
     return Series(cmf, name='cmf')
-
-
-def tsi(dataframe: DataFrame, window_slow: int, window_fast: int, fillna=False) -> Series:
-    """
-    Indicator: True Strength Index (TSI)
-    :param dataframe: DataFrame The original OHLC dataframe
-    :param window_slow: slow smoothing period
-    :param window_fast: fast smoothing period
-    :param fillna: If True fill NaN values
-    """
-
-    min_periods_slow = 0 if fillna else window_slow
-    min_periods_fast = 0 if fillna else window_fast
-
-    close_diff            = dataframe['close'].diff()
-    close_diff_abs        = close_diff.abs()
-    smooth_close_diff     = close_diff.ewm(span=window_slow, min_periods=min_periods_slow, adjust=False).mean().ewm(span=window_fast, min_periods=min_periods_fast, adjust=False).mean()
-    smooth_close_diff_abs = close_diff_abs.ewm(span=window_slow, min_periods=min_periods_slow, adjust=False).mean().ewm(span=window_fast, min_periods=min_periods_fast, adjust=False).mean()
-
-    tsi = smooth_close_diff / smooth_close_diff_abs * 100
-
-    if fillna:
-        tsi = tsi.replace([np.inf, -np.inf], np.nan).fillna(0)
-
-    return tsi
 
 
 # Williams %R
