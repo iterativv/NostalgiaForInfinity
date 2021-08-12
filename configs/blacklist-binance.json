@@ -2,20 +2,19 @@
   "exchange": {
     "pair_blacklist": [
       // Exchange Tokens
-      "FTT/.*",
+      "BNB/.*",
       // Major Crypto
       "(BTC|ETH)/.*",
       // Leverage tokens
-      ".*(BULL|BEAR|HALF|HEDGE|-PERP)/.*",
-      "(BVOL|IBVOL)/.*",
+      ".*(UP|DOWN)/.*",
       // Fiat
       "(AUD|EUR|GBP|CHF|CAD|JPY)/.*",
       // Stable tokens
       "(BUSD|USDT|TUSD|USDC|CUSDT)/.*",
       // FAN Tokens
       "(ACM|AFA|ALA|ALL|APL|ASR|ATM|BAR|CAI|CITY|FOR|GAL|GOZ|IBFK|JUV|LEG|LOCK-1|NAVI|NMR|NOV|OG|PFL|PSG|ROUSH|STV|TH|TRA|UCH|UFC|YBO)/.*",
-      // Shit Coins
-      "(CHZ|CTXC|HBAR|NMR|SHIB|SLP|XVS|ZEN)/.*"
+      // Other Coins
+      "(CHZ|CTXC|HBAR|NMR|SHIB|SLP|XVS)/.*"
     ]
   }
 }
