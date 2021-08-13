@@ -2911,25 +2911,25 @@ class NostalgiaForInfinityNext(IStrategy):
             if self.buy_params['buy_condition_' + str(index) + '_enable']:
                 # Standard protections - Common to every condition
                 # -----------------------------------------------------------------------------------------
-                if global_buy_protection_params["ema_fast"].value:
-                    item_buy_protection_list.append(dataframe[f"ema_{global_buy_protection_params['ema_fast_len'].value}"] > dataframe['ema_200'])
-                if global_buy_protection_params["ema_slow"].value:
-                    item_buy_protection_list.append(dataframe[f"ema_{global_buy_protection_params['ema_slow_len'].value}_1h"] > dataframe['ema_200_1h'])
-                if global_buy_protection_params["close_above_ema_fast"].value:
-                    item_buy_protection_list.append(dataframe['close'] > dataframe[f"ema_{global_buy_protection_params['close_above_ema_fast_len'].value}"])
-                if global_buy_protection_params["close_above_ema_slow"].value:
-                    item_buy_protection_list.append(dataframe['close'] > dataframe[f"ema_{global_buy_protection_params['close_above_ema_slow_len'].value}_1h"])
-                if global_buy_protection_params["sma200_rising"].value:
-                    item_buy_protection_list.append(dataframe['sma_200'] > dataframe['sma_200'].shift(int(global_buy_protection_params['sma200_rising_val'].value)))
-                if global_buy_protection_params["sma200_1h_rising"].value:
-                    item_buy_protection_list.append(dataframe['sma_200_1h'] > dataframe['sma_200_1h'].shift(int(global_buy_protection_params['sma200_1h_rising_val'].value)))
-                if global_buy_protection_params["safe_dips"].value:
-                    item_buy_protection_list.append(dataframe[f"safe_dips_{global_buy_protection_params['safe_dips_type'].value}"])
-                if global_buy_protection_params["safe_pump"].value:
-                    item_buy_protection_list.append(dataframe[f"safe_pump_{global_buy_protection_params['safe_pump_period'].value}_{global_buy_protection_params['safe_pump_type'].value}_1h"])
-                if global_buy_protection_params['btc_1h_not_downtrend'].value:
+                if global_buy_protection_params["ema_fast"]:
+                    item_buy_protection_list.append(dataframe[f"ema_{global_buy_protection_params['ema_fast_len']}"] > dataframe['ema_200'])
+                if global_buy_protection_params["ema_slow"]:
+                    item_buy_protection_list.append(dataframe[f"ema_{global_buy_protection_params['ema_slow_len']}_1h"] > dataframe['ema_200_1h'])
+                if global_buy_protection_params["close_above_ema_fast"]:
+                    item_buy_protection_list.append(dataframe['close'] > dataframe[f"ema_{global_buy_protection_params['close_above_ema_fast_len']}"])
+                if global_buy_protection_params["close_above_ema_slow"]:
+                    item_buy_protection_list.append(dataframe['close'] > dataframe[f"ema_{global_buy_protection_params['close_above_ema_slow_len']}_1h"])
+                if global_buy_protection_params["sma200_rising"]:
+                    item_buy_protection_list.append(dataframe['sma_200'] > dataframe['sma_200'].shift(int(global_buy_protection_params['sma200_rising_val'])))
+                if global_buy_protection_params["sma200_1h_rising"]:
+                    item_buy_protection_list.append(dataframe['sma_200_1h'] > dataframe['sma_200_1h'].shift(int(global_buy_protection_params['sma200_1h_rising_val'])))
+                if global_buy_protection_params["safe_dips"]:
+                    item_buy_protection_list.append(dataframe[f"safe_dips_{global_buy_protection_params['safe_dips_type']}"])
+                if global_buy_protection_params["safe_pump"]:
+                    item_buy_protection_list.append(dataframe[f"safe_pump_{global_buy_protection_params['safe_pump_period']}_{global_buy_protection_params['safe_pump_type']}_1h"])
+                if global_buy_protection_params['btc_1h_not_downtrend']:
                     item_buy_protection_list.append(dataframe['btc_not_downtrend_1h'])
-                if not self.config['runmode'].value in ('live', 'dry_run'):
+                if not self.config['runmode'] in ('live', 'dry_run'):
                     if self.has_bt_agefilter:
                         item_buy_protection_list.append(dataframe['bt_agefilter_ok'])
                 else:
