@@ -198,7 +198,7 @@ class NostalgiaForInfinityNext(IStrategy):
     #############################################################
 
     buy_protection_params = {
-        1: {            
+        1: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "26",
             "ema_slow"                  : True,
@@ -218,7 +218,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
         },
-        2: {            
+        2: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : True,
@@ -238,7 +238,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
         },
-        3: {            
+        3: {
             "ema_fast"                  : True,
             "ema_fast_len"              : "100",
             "ema_slow"                  : True,
@@ -258,7 +258,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "36",
             "btc_1h_not_downtrend"      : False
         },
-        4: {            
+        4: {
             "ema_fast"                  : True,
             "ema_fast_len"              : "50",
             "ema_slow"                  : True,
@@ -278,7 +278,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "48",
             "btc_1h_not_downtrend"      : False
         },
-        5: {            
+        5: {
             "ema_fast"                  : True,
             "ema_fast_len"              : "100",
             "ema_slow"                  : False,
@@ -298,7 +298,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "36",
             "btc_1h_not_downtrend"      : False
         },
-        6: {            
+        6: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : True,
@@ -318,7 +318,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "36",
             "btc_1h_not_downtrend"      : False
         },
-        7: {            
+        7: {
             "ema_fast"                  : True,
             "ema_fast_len"              : "100",
             "ema_slow"                  : True,
@@ -338,7 +338,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
         },
-        8: {            
+        8: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : True,
@@ -358,7 +358,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
         },
-        9: {            
+        9: {
             "ema_fast"                  : True,
             "ema_fast_len"              : "100",
             "ema_slow"                  : False,
@@ -378,7 +378,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
         },
-        10: {            
+        10: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : True,
@@ -398,7 +398,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
         },
-        11: {            
+        11: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : False,
@@ -418,7 +418,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
         },
-        12: {            
+        12: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : False,
@@ -438,7 +438,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
         },
-        13: {            
+        13: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : False,
@@ -458,7 +458,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
         },
-        14: {            
+        14: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : False,
@@ -478,7 +478,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
         },
-        15: {            
+        15: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : True,
@@ -498,7 +498,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "36",
             "btc_1h_not_downtrend"      : False
         },
-        16: {            
+        16: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : True,
@@ -518,7 +518,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
         },
-        17: {            
+        17: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : False,
@@ -538,7 +538,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
         },
-        18: {            
+        18: {
             "ema_fast"                  : True,
             "ema_fast_len"              : "100",
             "ema_slow"                  : True,
@@ -558,7 +558,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
         },
-        19: {            
+        19: {
             "ema_fast"                  : True,
             "ema_fast_len"              : "50",
             "ema_slow"                  : True,
@@ -578,7 +578,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
         },
-        20: {            
+        20: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : True,
@@ -598,7 +598,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
         },
-        21: {            
+        21: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : True,
@@ -618,7 +618,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
         },
-        22: {            
+        22: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : False,
@@ -638,7 +638,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
         },
-        23: {            
+        23: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : False,
@@ -658,7 +658,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
         },
-        24: {            
+        24: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : False,
@@ -678,7 +678,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
         },
-        25: {            
+        25: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : False,
@@ -698,7 +698,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
         },
-        26: {            
+        26: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : True,
@@ -718,7 +718,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "48",
             "btc_1h_not_downtrend"      : False
         },
-        27: {            
+        27: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : False,
@@ -738,7 +738,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "36",
             "btc_1h_not_downtrend"      : True
         },
-        28: {            
+        28: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : False,
@@ -758,7 +758,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "36",
             "btc_1h_not_downtrend"      : True
         },
-        29: {            
+        29: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : False,
@@ -778,7 +778,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "36",
             "btc_1h_not_downtrend"      : False
         },
-        30: {            
+        30: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : True,
@@ -798,7 +798,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "36",
             "btc_1h_not_downtrend"      : False
         },
-        31: {            
+        31: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : False,
@@ -818,7 +818,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "48",
             "btc_1h_not_downtrend"      : False
         },
-        32: {            
+        32: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : False,
@@ -838,7 +838,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "48",
             "btc_1h_not_downtrend"      : False
         },
-        33: {            
+        33: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : True,
@@ -858,7 +858,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
         },
-        34: {            
+        34: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : False,
@@ -878,7 +878,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
         },
-        35: {            
+        35: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : False,
@@ -898,7 +898,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
         },
-        36: {            
+        36: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : False,
@@ -918,7 +918,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
         },
-        37: {            
+        37: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : False,
@@ -938,7 +938,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "48",
             "btc_1h_not_downtrend"      : False
         },
-        38: {            
+        38: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : False,
@@ -958,7 +958,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "36",
             "btc_1h_not_downtrend"      : False
         },
-        39: {            
+        39: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "100",
             "ema_slow"                  : True,
@@ -978,7 +978,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "48",
             "btc_1h_not_downtrend"      : True
         }
-    }    
+    }
 
     # Strict dips - level 10
     buy_dip_threshold_10_1 = DecimalParameter(0.001, 0.05, default=0.015, space='buy', decimals=3, optimize=False, load=True)
