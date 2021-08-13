@@ -46,6 +46,13 @@ def replace_all_references(strategy: IStrategy, source: str):
     new_source = replace_references(source, buy_params)
     print("Replacing references of 'sell' hyperopting params...")
     new_source = replace_references(new_source, sell_params)
+    
+    print("Replacing 'references' of 'buy_protection_params' hyperopting params...")
+    new_source = re.sub(
+      r"(global_buy_protection_params\[([\"\'])[\w\_]+\2\]).value"
+      , r'\1',
+      new_source)
+    
     return new_source
 
 
