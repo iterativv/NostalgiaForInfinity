@@ -109,19 +109,3 @@ optional arguments:
 The script has a simple CLI, where it accepts two arguments, the strategy name, and the output file,  which is the path of the transformed file. E.g.
 
 `python codemods/ho_to_raw_codemod.py --strategy NostalgiaForInfinityNext --output NostalgiaForInfinityNext_Raw.py`
-
-### Limitation
-
-The codemod doesn't currently replace HO values in more complex data structures such as `dict` or `list`. E.g.
-
-If we have HO values that are structured as follows:
-
-```
-buy_protection_params = {
-            "enable"                    : CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True),
-            "ema_fast"                  : CategoricalParameter([True, False], default=False, space='buy', optimize=False, load=True),
-            ...
-}
-```
-
-Then, the codemod would replace only the HO values with raw values, and the references will **not** get replaced. This is due to freqtrade not being available to pick up HO parameters inside `dict`, `list` or other similar data structures.
