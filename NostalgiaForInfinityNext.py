@@ -1343,8 +1343,8 @@ class NostalgiaForInfinityNext(IStrategy):
 
     buy_33_ma_offset = 0.988
     buy_33_rsi = 32.0
-    buy_33_cti = -0.9
-    buy_33_ewo = 6.5
+    buy_33_cti = -0.88
+    buy_33_ewo = 6.4
     buy_33_volume = 2.0
 
     buy_34_ma_offset = 0.93
