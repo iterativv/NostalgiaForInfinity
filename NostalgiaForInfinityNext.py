@@ -1446,7 +1446,7 @@ class NostalgiaForInfinityNext(IStrategy):
     sell_custom_rsi_under_bear_8 = 52.0
     sell_custom_rsi_over_bear_8 = 82.0
     sell_custom_profit_bear_9 = 0.1
-    sell_custom_rsi_under_bear_9 = 50.0
+    sell_custom_rsi_under_bear_9 = 46.0
     sell_custom_profit_bear_10 = 0.12
     sell_custom_rsi_under_bear_10 = 42.0
     sell_custom_profit_bear_11 = 0.20
