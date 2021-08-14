@@ -2929,7 +2929,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_protection_list.append(dataframe[f"safe_pump_{global_buy_protection_params['safe_pump_period']}_{global_buy_protection_params['safe_pump_type']}_1h"])
                 if global_buy_protection_params['btc_1h_not_downtrend']:
                     item_buy_protection_list.append(dataframe['btc_not_downtrend_1h'])
-                if not self.config['runmode'] in ('live', 'dry_run'):
+                if not self.config['runmode'].value in ('live', 'dry_run'):
                     if self.has_bt_agefilter:
                         item_buy_protection_list.append(dataframe['bt_agefilter_ok'])
                 else:
