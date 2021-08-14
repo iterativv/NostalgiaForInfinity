@@ -1409,9 +1409,9 @@ class NostalgiaForInfinityNext(IStrategy):
     sell_custom_profit_bull_4 = 0.05
     sell_custom_rsi_under_bull_4 = 42.0
     sell_custom_profit_bull_5 = 0.06
-    sell_custom_rsi_under_bull_5 = 49.0
+    sell_custom_rsi_under_bull_5 = 45.0
     sell_custom_profit_bull_6 = 0.07
-    sell_custom_rsi_under_bull_6 = 50.0
+    sell_custom_rsi_under_bull_6 = 48.0
     sell_custom_profit_bull_7 = 0.08
     sell_custom_rsi_under_bull_7 = 54.0
     sell_custom_profit_bull_8 = 0.09
