@@ -962,10 +962,10 @@ class NostalgiaForInfinityNext(IStrategy):
             "ema_fast"                  : False,
             "ema_fast_len"              : "100",
             "ema_slow"                  : True,
-            "ema_slow_len"              : "50",
+            "ema_slow_len"              : "15",
             "close_above_ema_fast"      : False,
             "close_above_ema_fast_len"  : "50",
-            "close_above_ema_slow"      : True,
+            "close_above_ema_slow"      : False,
             "close_above_ema_slow_len"  : "50",
             "sma200_rising"             : False,
             "sma200_rising_val"         : "30",
@@ -973,7 +973,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising_val"      : "20",
             "safe_dips"                 : False,
             "safe_dips_type"            : "100",
-            "safe_pump"                 : True,
+            "safe_pump"                 : False,
             "safe_pump_type"            : "50",
             "safe_pump_period"          : "48",
             "btc_1h_not_downtrend"      : True
@@ -1366,6 +1366,10 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_37_ewo = 9.8
     buy_37_rsi = 56.0
     buy_37_cti = -0.7
+
+    buy_39_cti = -0.77
+    buy_39_r = -70.0
+    buy_39_r_1h = -62.0
 
     # Sell
 
@@ -2326,7 +2330,7 @@ class NostalgiaForInfinityNext(IStrategy):
         max_loss = ((trade.open_rate - trade.min_rate) / trade.min_rate)
 
         # Quick sell mode
-        if all(c in ['32', '33', '34', '35', '36', '37', '38', '39'] for c in buy_tags):
+        if all(c in ['32', '33', '34', '35', '36', '37', '38'] for c in buy_tags):
             sell, signal_name = self.sell_quick_mode(current_profit, max_profit, last_candle, previous_candle_1)
             if sell and (signal_name is not None):
                 return signal_name + ' ( ' + buy_tag + ')'
@@ -3406,7 +3410,9 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['efi_1h'] > 0)
                     item_buy_logic.append(dataframe['ssl_up_1h'] > dataframe['ssl_down_1h'])
                     item_buy_logic.append(dataframe['close'] < dataframe['ssl_up_1h'])
-                    item_buy_logic.append(dataframe['cti'] < -0.73)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_39_cti)
+                    item_buy_logic.append(dataframe['r_480'] > self.buy_39_r)
+                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_39_r_1h)
                     # Start of trend
                     item_buy_logic.append(
                         (dataframe['leading_senkou_span_a_1h'].shift(12) < dataframe['leading_senkou_span_b_1h'].shift(12)) |
