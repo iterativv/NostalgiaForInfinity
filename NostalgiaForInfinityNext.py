@@ -2261,24 +2261,30 @@ class NostalgiaForInfinityNext(IStrategy):
         return False, None
 
     def sell_ichi(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, trade: 'Trade', current_time: 'datetime') -> tuple:
-        if (-0.03 < current_profit < 0.05) and (current_time - timedelta(minutes=1440) > trade.open_date_utc) and (last_candle['rsi_14'] > 75):
-            return True, 'signal_ichi_underwater'
-        if (max_loss > 0.07) and (current_profit > 0.02):
-            return True, 'signal_ichi_recover_0'
-        if (max_loss > 0.06) and (current_profit > 0.03):
-            return True, 'signal_ichi_recover_1'
-        if (max_loss > 0.05) and (current_profit > 0.04):
-            return True, 'signal_ichi_recover_2'
-        if (max_loss > 0.04) and (current_profit > 0.05):
-            return True, 'signal_ichi_recover_3'
-        if (max_loss > 0.03) and (current_profit > 0.06):
-            return True, 'signal_ichi_recover_4'
-        if (0.05 < current_profit < 0.1) and (current_time - timedelta(minutes=720) > trade.open_date_utc):
-            return True, 'signal_ichi_slow_trade'
-        if (0.07 < current_profit < 0.1) and (max_profit-current_profit > 0.025) and (max_profit > 0.1):
-            return True, 'signal_ichi_trailing'
-        if (current_profit < -0.1):
-            return True, 'signal_ichi_stoploss'
+        if (0.0 < current_profit < 0.05) and (current_time - timedelta(minutes=1440) > trade.open_date_utc) and (last_candle['rsi_14'] > 78.0):
+            return True, 'signal_profit_ichi_u'
+        elif (-0.03 < current_profit < -0.0) and (current_time - timedelta(minutes=1440) > trade.open_date_utc) and (last_candle['rsi_14'] > 75.0):
+            return True, 'signal_stoploss_ichi_u'
+
+        elif (max_loss > 0.07) and (current_profit > 0.02):
+            return True, 'signal_profit_ichi_r_0'
+        elif (max_loss > 0.06) and (current_profit > 0.03):
+            return True, 'signal_profit_ichi_r_1'
+        elif (max_loss > 0.05) and (current_profit > 0.04):
+            return True, 'signal_profit_ichi_r_2'
+        elif (max_loss > 0.04) and (current_profit > 0.05):
+            return True, 'signal_profit_ichi_r_3'
+        elif (max_loss > 0.03) and (current_profit > 0.06):
+            return True, 'signal_profit_ichi_r_4'
+
+        elif (0.05 < current_profit < 0.1) and (current_time - timedelta(minutes=720) > trade.open_date_utc):
+            return True, 'signal_profit_ichi_slow'
+
+        elif (0.07 < current_profit < 0.1) and (max_profit-current_profit > 0.025) and (max_profit > 0.1):
+            return True, 'signal_profit_ichi_t'
+
+        elif (current_profit < -0.1):
+            return True, 'signal_stoploss_ichi'
 
         return False, None
 
