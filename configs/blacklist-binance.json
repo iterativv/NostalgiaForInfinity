@@ -1,20 +1,20 @@
 {
   "exchange": {
     "pair_blacklist": [
-      // Exchange Tokens
-      "BNB/.*",
-      // Major Crypto
-      "(BTC|ETH)/.*",
-      // Leverage tokens
-      ".*(UP|DOWN)/.*",
+      // Exchange
+      ".*(BNB)/.*",
+      // Major
+       ".*(BTC|ETH)/.*",
+       // Leverage
+       ".*(_PREMIUM|BEAR|BULL|DOWN|HALF|HEDGE|UP|[1235][SL]).*/.*",
       // Fiat
-      "(AUD|EUR|GBP|CHF|CAD|JPY)/.*",
-      // Stable tokens
-      "(BUSD|USDT|TUSD|USDC|CUSDT)/.*",
-      // FAN Tokens
-      "(ACM|AFA|ALA|ALL|APL|ASR|ATM|BAR|CAI|CITY|FOR|GAL|GOZ|IBFK|JUV|LEG|LOCK-1|NAVI|NMR|NOV|OG|PFL|PSG|ROUSH|STV|TH|TRA|UCH|UFC|YBO)/.*",
-      // Other Coins
-      "(CHZ|CTXC|HBAR|NMR|SHIB|SLP|XVS)/.*"
+      ".*(AUD|BRZ|CAD|CHF|EUR|GBP|HKD|IDRT|JPY|NGN|RUB|SGD|TRY|UAH|USD|ZAR)/.*",
+      // Stable
+      ".*(BUSD|CUSDT|DAI|PAX|PAXG|SUSD|TUSD|USDC|USDT|VAI)/.*",
+      // FAN
+      ".*(ACM|AFA|ALA|ALL|APL|ASR|ATM|BAR|CAI|CITY|FOR|GAL|GOZ|IBFK|JUV|LEG|LOCK-1|NAVI|NMR|NOV|OG|PFL|PSG|ROUSH|STV|TH|TRA|UCH|UFC|YBO)/.*",
+      // Others
+      ".*(CHZ|CTXC|HBAR|NMR|SHIB|SLP|XVS)/.*"
     ]
   }
 }
