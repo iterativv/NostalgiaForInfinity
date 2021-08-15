@@ -924,7 +924,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "ema_slow"                  : False,
             "ema_slow_len"              : "100",
             "close_above_ema_fast"      : False,
-            "close_above_ema_fast_len"  : "50",
+            "close_above_ema_fast_len"  : "200",
             "close_above_ema_slow"      : False,
             "close_above_ema_slow_len"  : "100",
             "sma200_rising"             : False,
@@ -1361,6 +1361,11 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_36_ma_offset = 0.98
     buy_36_ewo = -8.8
     buy_36_cti = -0.8
+
+    buy_37_ma_offset = 0.98
+    buy_37_ewo = 9.8
+    buy_37_rsi = 56.0
+    buy_37_cti = -0.7
 
     # Sell
 
@@ -3373,10 +3378,10 @@ class NostalgiaForInfinityNext(IStrategy):
 
                     # Logic
                     item_buy_logic.append(dataframe['pm'] > dataframe['pmax_thresh'])
-                    item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * 0.98)
-                    item_buy_logic.append(dataframe['ewo'] > 9.8)
-                    item_buy_logic.append(dataframe['rsi_14'] < 56.0)
-                    item_buy_logic.append(dataframe['cti'] < -0.7)
+                    item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * self.buy_37_ma_offset)
+                    item_buy_logic.append(dataframe['ewo'] > self.buy_37_ewo)
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_37_rsi)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_37_cti)
                     item_buy_logic.append(dataframe['safe_dump_50_1h'])
 
                 # Condition #38 - PMAX3 buy
