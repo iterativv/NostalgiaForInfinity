@@ -178,6 +178,7 @@ class NostalgiaForInfinityNext(IStrategy):
         "buy_condition_37_enable": True,
         "buy_condition_38_enable": True,
         "buy_condition_39_enable": True,
+        "buy_condition_40_enable": True,
         #############
     }
 
@@ -977,6 +978,26 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_type"            : "50",
             "safe_pump_period"          : "48",
             "btc_1h_not_downtrend"      : True
+        },
+        40: {
+            "ema_fast"                  : True,
+            "ema_fast_len"              : "12",
+            "ema_slow"                  : True,
+            "ema_slow_len"              : "25",
+            "close_above_ema_fast"      : False,
+            "close_above_ema_fast_len"  : "200",
+            "close_above_ema_slow"      : True,
+            "close_above_ema_slow_len"  : "200",
+            "sma200_rising"             : False,
+            "sma200_rising_val"         : "30",
+            "sma200_1h_rising"          : False,
+            "sma200_1h_rising_val"      : "20",
+            "safe_dips"                 : False,
+            "safe_dips_type"            : "130",
+            "safe_pump"                 : False,
+            "safe_pump_type"            : "50",
+            "safe_pump_period"          : "48",
+            "btc_1h_not_downtrend"      : True
         }
     }
 
@@ -1376,6 +1397,13 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_39_cti = -0.77
     buy_39_r = -70.0
     buy_39_r_1h = -62.0
+
+    buy_40_hrsi = 30.0
+    buy_40_cci = -240.0
+    buy_40_rsi = 30.0
+    buy_40_cti = -0.8
+    buy_40_r = -90.0
+    buy_40_r_1h = -90.0
 
     # Sell
 
@@ -2336,7 +2364,7 @@ class NostalgiaForInfinityNext(IStrategy):
         max_loss = ((trade.open_rate - trade.min_rate) / trade.min_rate)
 
         # Quick sell mode
-        if all(c in ['32', '33', '34', '35', '36', '37', '38', '39'] for c in buy_tags):
+        if all(c in ['32', '33', '34', '35', '36', '37', '38', '39', '40'] for c in buy_tags):
             sell, signal_name = self.sell_quick_mode(current_profit, max_profit, last_candle, previous_candle_1)
             if sell and (signal_name is not None):
                 return signal_name + ' ( ' + buy_tag + ')'
@@ -2805,6 +2833,20 @@ class NostalgiaForInfinityNext(IStrategy):
         dataframe['sma_21'] = ta.SMA(dataframe, timeperiod=21)
         dataframe['sma_68'] = ta.SMA(dataframe, timeperiod=68)
         dataframe['sma_75'] = ta.SMA(dataframe, timeperiod=75)
+
+        # HLC3
+        dataframe['hlc3'] = (dataframe['high'] + dataframe['low'] + dataframe['close']) / 3
+
+        # HRSI
+        dataframe['hull'] = (2 * dataframe['hlc3'] - ta.WMA(dataframe['hlc3'], 2))
+        dataframe['hrsi'] = ta.RSI(dataframe['hull'], 2)
+
+        # ZLEMA
+        dataframe['zlema_2'] = pta.zlma(dataframe['hlc3'], length = 2)
+        dataframe['zlema_4'] = pta.zlma(dataframe['hlc3'], length = 4)
+
+        # CCI
+        dataframe['cci'] = ta.CCI(dataframe, source='hlc3', timeperiod=20)
 
         # ATR
         dataframe['atr'] = ta.ATR(dataframe, timeperiod=14)
@@ -3428,6 +3470,19 @@ class NostalgiaForInfinityNext(IStrategy):
                         (dataframe['efi_1h'] < 0) |
                         (dataframe['ssl_up_1h'].shift(12) < dataframe['ssl_down_1h'].shift(12))
                     )
+
+                # Condition #40 - ZLEMA X buy
+                elif index == 40:
+                    # Non-Standard protections (add below)
+
+                    # Logic
+                    item_buy_logic.append(qtpylib.crossed_above(dataframe['zlema_2'], dataframe['zlema_4']))
+                    item_buy_logic.append(dataframe['hrsi'] < self.buy_40_hrsi)
+                    item_buy_logic.append(dataframe['cci'] < self.buy_40_cci)
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_40_rsi)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_40_cti)
+                    item_buy_logic.append(dataframe['r_480'] > self.buy_40_r)
+                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_40_r_1h)
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
