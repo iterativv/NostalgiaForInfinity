@@ -3421,8 +3421,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Non-Standard protections (add below)
 
                     # Logic
-                    item_buy_logic.append(dataframe['pm'] <= dataframe['pmax_thresh'])
-                    item_buy_logic.append(dataframe['pm'] <= dataframe['pmax_thresh'])
+                     item_buy_logic.append(dataframe['pm'] <= dataframe['pmax_thresh'])
                     item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * self.buy_36_ma_offset)
                     item_buy_logic.append(dataframe['ewo'] < self.buy_36_ewo)
                     item_buy_logic.append(dataframe['cti'] < self.buy_36_cti)
