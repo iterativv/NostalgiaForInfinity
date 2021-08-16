@@ -951,12 +951,12 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_rising_val"         : "30",
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
-            "safe_dips"                 : False,
-            "safe_dips_type"            : "100",
+            "safe_dips"                 : True,
+            "safe_dips_type"            : "130",
             "safe_pump"                 : False,
             "safe_pump_type"            : "10",
             "safe_pump_period"          : "36",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : True
         },
         39: {
             "ema_fast"                  : False,
@@ -1366,6 +1366,10 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_37_ewo = 9.8
     buy_37_rsi = 56.0
     buy_37_cti = -0.7
+
+    buy_38_ma_offset = 0.98
+    buy_38_ewo = -5.2
+    buy_38_cti = -0.96
 
     buy_39_cti = -0.77
     buy_39_r = -70.0
@@ -3394,9 +3398,9 @@ class NostalgiaForInfinityNext(IStrategy):
 
                     # Logic
                     item_buy_logic.append(dataframe['pm'] > dataframe['pmax_thresh'])
-                    item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * 0.7)
-                    item_buy_logic.append(dataframe['ewo'] < -2.0)
-                    item_buy_logic.append(dataframe['cti'] < -0.86)
+                    item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * self.buy_38_ma_offset)
+                    item_buy_logic.append(dataframe['ewo'] < self.buy_38_ewo)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_38_cti)
 
                 # Condition #39 - Ichimoku
                 elif index == 39:
