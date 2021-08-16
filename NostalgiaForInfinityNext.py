@@ -700,23 +700,23 @@ class NostalgiaForInfinityNext(IStrategy):
         },
         26: {
             "ema_fast"                  : False,
-            "ema_fast_len"              : "50",
+            "ema_fast_len"              : "100",
             "ema_slow"                  : True,
-            "ema_slow_len"              : "100",
-            "close_above_ema_fast"      : True,
-            "close_above_ema_fast_len"  : "50",
+            "ema_slow_len"              : "12",
+            "close_above_ema_fast"      : False,
+            "close_above_ema_fast_len"  : "200",
             "close_above_ema_slow"      : False,
             "close_above_ema_slow_len"  : "200",
             "sma200_rising"             : False,
             "sma200_rising_val"         : "30",
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
-            "safe_dips"                 : True,
-            "safe_dips_type"            : "60",
-            "safe_pump"                 : True,
-            "safe_pump_type"            : "100",
-            "safe_pump_period"          : "48",
-            "btc_1h_not_downtrend"      : False
+            "safe_dips"                 : False,
+            "safe_dips_type"            : "10",
+            "safe_pump"                 : False,
+            "safe_pump_type"            : "10",
+            "safe_pump_period"          : "36",
+            "btc_1h_not_downtrend"      : True
         },
         27: {
             "ema_fast"                  : False,
@@ -1308,9 +1308,11 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_25_rsi_4 = 38.0
     buy_25_cti = -0.76
 
-    buy_26_zema_low_offset = 0.932
-    buy_26_cti = -0.82
-    buy_26_volume = 1.2
+    buy_26_zema_low_offset = 0.9
+    buy_26_cti = -0.9
+    buy_26_r = -80.0
+    buy_26_r_1h = -80.0
+    buy_26_volume = 2.0
 
     buy_27_wr_max = 90.0
     buy_27_wr_1h_max = 90.0
@@ -3258,10 +3260,13 @@ class NostalgiaForInfinityNext(IStrategy):
                 # Condition #26
                 elif index == 26:
                     # Non-Standard protections
+                    item_buy_logic.append(dataframe['close'] < dataframe['sma_75'])
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < (dataframe['zema_61'] * self.buy_26_zema_low_offset))
                     item_buy_logic.append(dataframe['cti'] < self.buy_26_cti)
+                    item_buy_logic.append(dataframe['r_480'] > self.buy_26_r)
+                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_26_r_1h)
                     item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_26_volume))
 
                 # Condition #27
