@@ -3824,9 +3824,9 @@ def SSLChannels(dataframe, length = 7):
 # ------------------------------
 # Utility
 # ------------------------------
-ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+USER_DATA_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_NFI_TARGET_PROFIT_BY_PAIR_PATH = os.path.join(
-    ROOT_DIR, "data-nfi-profit_target_by_pair.json")
+    USER_DATA_DIR, "data-nfi-profit_target_by_pair.json")
 
 def get_profit_target_by_pair() -> Dict:
     if not os.path.isfile(DATA_NFI_TARGET_PROFIT_BY_PAIR_PATH):
