@@ -202,6 +202,13 @@ class NostalgiaForInfinityNext(IStrategy):
         #############
     }
 
+    profit_target_params = {
+        #############
+        # Enable/Disable conditions
+        "profit_target_1_enable": True,
+        #############
+    }
+
     #############################################################
 
     buy_protection_params = {
@@ -1708,6 +1715,9 @@ class NostalgiaForInfinityNext(IStrategy):
     sell_custom_long_profit_max_1 = 0.04
     sell_custom_long_duration_min_1 = 900
 
+
+    # Profit Target Signal
+    profit_target_1_enable = True
     #############################################################
 
     hold_trade_ids = None
@@ -2304,6 +2314,27 @@ class NostalgiaForInfinityNext(IStrategy):
 
         return False, None
 
+    def mark_profit_target(self, pair: str, trade: "Trade", current_time: "datetime", current_rate: float, current_profit: float, last_candle, previous_candle_1) -> tuple:
+        if self.profit_target_1_enable:
+            if (current_profit > 0) and (last_candle['zlema_4_lowKF'] > last_candle['lowKF']) and (previous_candle_1['zlema_4_lowKF'] < previous_candle_1['lowKF']) and (last_candle['cci'] > -100) and (last_candle['hrsi'] > 70):
+                self._set_profit_target(pair, current_rate, "mark_profit_target_01", current_time)
+
+    def sell_profit_target(self, pair: str, trade: "Trade", current_time: "datetime", current_rate: float, current_profit: float, last_candle, previous_candle_1) -> tuple:
+        # Check if pair exist on custom_info
+        if pair not in self.custom_info.keys():
+            return False, None
+
+        previous_rate = self.custom_info[pair]['rate']
+        previous_sell_reason = self.custom_info[pair]['sell_reason']
+        previous_time_profit_reached = datetime.fromisoformat(self.custom_info[pair]['time_profit_reached'])
+
+        if self.profit_target_1_enable and previous_sell_reason == "mark_profit_target_01":
+            if (current_rate < previous_rate) and (current_time - timedelta(minutes=60) > previous_time_profit_reached):
+            # if (current_profit > 0) and (current_rate < (previous_rate - 0.005)):
+                return True, 'sell_profit_target_01'
+
+        return False, None
+
     def sell_quick_mode(self, current_profit: float, max_profit:float, last_candle, previous_candle_1) -> tuple:
         if (0.06 > current_profit > 0.02) and (last_candle['rsi_14'] > 79.0):
             return True, 'signal_profit_q_1'
@@ -2462,6 +2493,13 @@ class NostalgiaForInfinityNext(IStrategy):
         sell, signal_name = self.sell_r_4(current_profit, last_candle)
         if (sell) and (signal_name is not None):
             return signal_name + ' ( ' + buy_tag + ')'
+
+        # Profit Target Signal
+        sell, signal_name = self.sell_profit_target(pair, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
+        if (sell) and (signal_name is not None):
+            return signal_name + ' ( ' + buy_tag + ')'
+
+        self.mark_profit_target(pair, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
 
         # Sell signal 1
         if self.sell_condition_1_enable and (last_candle['rsi_14'] > self.sell_rsi_bb_1) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']) and (previous_candle_3['close'] > previous_candle_3['bb20_2_upp']) and (previous_candle_4['close'] > previous_candle_4['bb20_2_upp']) and (previous_candle_5['close'] > previous_candle_5['bb20_2_upp']):
@@ -2854,9 +2892,13 @@ class NostalgiaForInfinityNext(IStrategy):
         dataframe['hull'] = (2 * dataframe['hlc3'] - ta.WMA(dataframe['hlc3'], 2))
         dataframe['hrsi'] = ta.RSI(dataframe['hull'], 2)
 
+        # Kalman Filter
+        dataframe['lowKF'] = KalmanFilter(dataframe, source='low')
+
         # ZLEMA
         dataframe['zlema_2'] = pta.zlma(dataframe['hlc3'], length = 2)
         dataframe['zlema_4'] = pta.zlma(dataframe['hlc3'], length = 4)
+        dataframe['zlema_4_lowKF'] = ta.EMA(dataframe['lowKF']  + (dataframe['lowKF']  - dataframe['lowKF'].shift(2)), timeperiod = 4)
 
         # CCI
         dataframe['cci'] = ta.CCI(dataframe, source='hlc3', timeperiod=20)
@@ -3537,29 +3579,20 @@ class NostalgiaForInfinityNext(IStrategy):
         """
         if self._should_hold_trade(trade, rate, sell_reason):
             return False
-        if self._should_catch_profit_target(pair, trade, rate, sell_reason):
-            self._set_profit_target(pair, trade, rate, sell_reason)
-            return False
+
         self._remove_profit_target(pair)
         return True
 
-    def _should_catch_profit_target(self, pair: str, trade: "Trade", rate: float, sell_reason: str) -> bool:
-        if sell_reason == "force_sell":
-            return False
-
-        # ADD LOGIC HERE
-        # if sell_reason in ['xxx', 'yyyy']:
-        #   return True
-        return False
-
-    def _set_profit_target(self, pair: str, trade: "Trade", rate: float, sell_reason: str):
+    def _set_profit_target(self, pair: str, rate: float, sell_reason: str, current_time: "datetime"):
         self.custom_info[pair] = {
             "rate": rate,
-            "sell_reason": sell_reason
+            "sell_reason": sell_reason,
+            "time_profit_reached": current_time.isoformat()
         }
 
-    def _remove_profit_target(self, pair: str, trade: "Trade", rate: float, sell_reason: str):
-        self.custom_info.pop(pair)
+    def _remove_profit_target(self, pair: str):
+        if pair in self.custom_info.keys():
+            self.custom_info.pop(pair)
 
     def _should_hold_trade(self, trade: "Trade", rate: float, sell_reason: str) -> bool:
 
@@ -3819,6 +3852,38 @@ def SSLChannels(dataframe, length = 7):
     sslUp = np.where(hlv < 0, smaLow, smaHigh)
     return sslDown, sslUp
 
+#Kalman Filter
+def KalmanFilter(dtloc, source = 'close'):
+
+    dtKF = dtloc.copy().fillna(0)
+    dtKF['TRANGE'] = ta.TRANGE(dtloc).fillna(0)
+
+
+    def calc_dtKF(dfr, init=0):
+        global calc_dtKF_value_1
+        global calc_dtKF_value_2
+        global calc_dtKF_value_3
+        global calc_dtKF_source
+        if init == 1:
+            calc_dtKF_value_1 = 0.0
+            calc_dtKF_value_2 = 0.0
+            calc_dtKF_value_3 = 0.0
+            calc_dtKF_source = 0.0
+            return
+        calc_dtKF_value_1 = 0.2 * (dfr[source] - calc_dtKF_source) + 0.8 * calc_dtKF_value_1
+        calc_dtKF_value_2 = 0.1 * dfr['TRANGE'] + 0.8 * calc_dtKF_value_2
+        if calc_dtKF_value_2 != 0:
+            vlambda = abs(calc_dtKF_value_1/calc_dtKF_value_2)
+        else:
+            vlambda = 0
+        valpha =  (-1*math.pow(vlambda,2) + math.sqrt(math.pow(vlambda,4) + 16 * math.pow(vlambda,2)))/8
+        calc_dtKF_value_3 = valpha * dfr[source] + (1 - valpha) * calc_dtKF_value_3
+        calc_dtKF_source = dfr[source]
+
+        return calc_dtKF_value_3
+    calc_dtKF(None, init=1)
+    dtKF['KF'] = dtKF.apply(calc_dtKF, axis = 1)
+    return dtKF['KF']
 
 
 # ------------------------------
