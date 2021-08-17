@@ -1372,7 +1372,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
     buy_rsi_21 = 14.0
     buy_rsi_1h_21 = 28.0
-    buy_cti_21 = -0.9
+    buy_cti_21 = -0.902
     buy_volume_21 = 2.0
 
     buy_volume_22 = 2.0
