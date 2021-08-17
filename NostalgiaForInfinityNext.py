@@ -179,6 +179,7 @@ class NostalgiaForInfinityNext(IStrategy):
         "buy_condition_38_enable": True,
         "buy_condition_39_enable": True,
         "buy_condition_40_enable": True,
+        "buy_condition_41_enable": True,
         #############
     }
 
@@ -998,6 +999,26 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_type"            : "50",
             "safe_pump_period"          : "48",
             "btc_1h_not_downtrend"      : True
+        },
+        41: {
+            "ema_fast"                  : False,
+            "ema_fast_len"              : "12",
+            "ema_slow"                  : True,
+            "ema_slow_len"              : "12",
+            "close_above_ema_fast"      : False,
+            "close_above_ema_fast_len"  : "200",
+            "close_above_ema_slow"      : False,
+            "close_above_ema_slow_len"  : "200",
+            "sma200_rising"             : False,
+            "sma200_rising_val"         : "30",
+            "sma200_1h_rising"          : False,
+            "sma200_1h_rising_val"      : "20",
+            "safe_dips"                 : True,
+            "safe_dips_type"            : "50",
+            "safe_pump"                 : False,
+            "safe_pump_type"            : "120",
+            "safe_pump_period"          : "24",
+            "btc_1h_not_downtrend"      : True
         }
     }
 
@@ -1404,6 +1425,12 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_40_cti = -0.8
     buy_40_r = -90.0
     buy_40_r_1h = -90.0
+
+    buy_41_cti_1h = -0.84
+    buy_41_r_1h = -42.0
+    buy_41_ma_offset = 0.97
+    buy_41_cti = -0.8
+    buy_41_r = -75.0
 
     # Sell
 
@@ -2638,6 +2665,9 @@ class NostalgiaForInfinityNext(IStrategy):
         # Williams %R
         informative_1h['r_480'] = williams_r(informative_1h, period=480)
 
+        # CTI
+        informative_1h['cti'] = pta.cti(informative_1h["close"], length=20)
+
         # Ichimoku
         ichi = ichimoku(informative_1h, conversion_line_period=20, base_line_periods=60, laggin_span=120, displacement=30)
         informative_1h['chikou_span'] = ichi['chikou_span']
@@ -3482,6 +3512,19 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['cti'] < self.buy_40_cti)
                     item_buy_logic.append(dataframe['r_480'] > self.buy_40_r)
                     item_buy_logic.append(dataframe['r_480_1h'] > self.buy_40_r_1h)
+
+                # Condition #41
+                elif index == 41:
+                    # Non-Standard protections (add below)
+
+                    # Logic
+                    item_buy_logic.append(dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(12))
+                    item_buy_logic.append(dataframe['ema_200_1h'].shift(12) > dataframe['ema_200_1h'].shift(24))
+                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_41_cti_1h)
+                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_41_r_1h)
+                    item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * self.buy_41_ma_offset)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_41_cti)
+                    item_buy_logic.append(dataframe['r_480'] < self.buy_41_r)
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
