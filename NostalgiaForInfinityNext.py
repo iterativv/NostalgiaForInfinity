@@ -1840,7 +1840,7 @@ class NostalgiaForInfinityNext(IStrategy):
             self.load_hold_trades_config()
 
             # Load custom_info for initial else save every loop start
-            if self.custom_info is None:
+            if not self.custom_info:
                 self.custom_info = get_profit_target_by_pair()
             else:
                 save_profit_target_by_pair(self.custom_info)
