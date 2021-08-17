@@ -2317,7 +2317,8 @@ class NostalgiaForInfinityNext(IStrategy):
     def mark_profit_target(self, pair: str, trade: "Trade", current_time: "datetime", current_rate: float, current_profit: float, last_candle, previous_candle_1) -> tuple:
         if self.profit_target_1_enable:
             if (current_profit > 0) and (last_candle['zlema_4_lowKF'] > last_candle['lowKF']) and (previous_candle_1['zlema_4_lowKF'] < previous_candle_1['lowKF']) and (last_candle['cci'] > -100) and (last_candle['hrsi'] > 70):
-                self._set_profit_target(pair, current_rate, "mark_profit_target_01", current_time)
+                return pair, "mark_profit_target_01"
+        return None, None
 
     def sell_profit_target(self, pair: str, trade: "Trade", current_time: "datetime", current_rate: float, current_profit: float, last_candle, previous_candle_1) -> tuple:
         # Check if pair exist on custom_info
@@ -2499,7 +2500,9 @@ class NostalgiaForInfinityNext(IStrategy):
         if (sell) and (signal_name is not None):
             return signal_name + ' ( ' + buy_tag + ')'
 
-        self.mark_profit_target(pair, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
+        pair, mark_signal = self.mark_profit_target(pair, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
+        if pair:
+            self._set_profit_target(pair, mark_signal, current_rate, current_time)
 
         # Sell signal 1
         if self.sell_condition_1_enable and (last_candle['rsi_14'] > self.sell_rsi_bb_1) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']) and (previous_candle_3['close'] > previous_candle_3['bb20_2_upp']) and (previous_candle_4['close'] > previous_candle_4['bb20_2_upp']) and (previous_candle_5['close'] > previous_candle_5['bb20_2_upp']):
@@ -3583,7 +3586,7 @@ class NostalgiaForInfinityNext(IStrategy):
         self._remove_profit_target(pair)
         return True
 
-    def _set_profit_target(self, pair: str, rate: float, sell_reason: str, current_time: "datetime"):
+    def _set_profit_target(self, pair: str, sell_reason: str, rate: float, current_time: "datetime"):
         self.custom_info[pair] = {
             "rate": rate,
             "sell_reason": sell_reason,
