@@ -2320,17 +2320,8 @@ class NostalgiaForInfinityNext(IStrategy):
                 return pair, "mark_profit_target_01"
         return None, None
 
-    def sell_profit_target(self, pair: str, trade: "Trade", current_time: "datetime", current_rate: float, current_profit: float, last_candle, previous_candle_1) -> tuple:
-        # Check if pair exist on custom_info
-        if pair not in self.custom_info.keys():
-            return False, None
-
-        previous_rate = self.custom_info[pair]['rate']
-        previous_sell_reason = self.custom_info[pair]['sell_reason']
-        previous_time_profit_reached = datetime.fromisoformat(self.custom_info[pair]['time_profit_reached'])
-
+    def sell_profit_target(self, pair: str, trade: "Trade", current_time: "datetime", current_rate: float, current_profit: float, last_candle, previous_candle_1, previous_rate, previous_sell_reason, previous_time_profit_reached) -> tuple:
         if self.profit_target_1_enable and previous_sell_reason == "mark_profit_target_01":
-            # if (current_rate < previous_rate) and (current_time - timedelta(minutes=60) > previous_time_profit_reached):
             if (current_profit > 0) and (current_rate < (previous_rate - 0.005)):
                 return True, 'sell_profit_target_01'
 
@@ -2496,9 +2487,15 @@ class NostalgiaForInfinityNext(IStrategy):
             return signal_name + ' ( ' + buy_tag + ')'
 
         # Profit Target Signal
-        sell, signal_name = self.sell_profit_target(pair, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
-        if (sell) and (signal_name is not None):
-            return signal_name + ' ( ' + buy_tag + ')'
+        # Check if pair exist on custom_info
+        if pair in self.custom_info.keys():
+            previous_rate = self.custom_info[pair]['rate']
+            previous_sell_reason = self.custom_info[pair]['sell_reason']
+            previous_time_profit_reached = datetime.fromisoformat(self.custom_info[pair]['time_profit_reached'])
+
+            sell, signal_name = self.sell_profit_target(pair, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1, previous_rate, previous_sell_reason, previous_time_profit_reached)
+            if (sell) and (signal_name is not None):
+                return signal_name + ' ( ' + buy_tag + ')'
 
         pair, mark_signal = self.mark_profit_target(pair, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
         if pair:
