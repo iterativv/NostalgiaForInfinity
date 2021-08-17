@@ -2329,8 +2329,8 @@ class NostalgiaForInfinityNext(IStrategy):
         previous_time_profit_reached = datetime.fromisoformat(self.custom_info[pair]['time_profit_reached'])
 
         if self.profit_target_1_enable and previous_sell_reason == "mark_profit_target_01":
-            if (current_rate < previous_rate) and (current_time - timedelta(minutes=60) > previous_time_profit_reached):
-            # if (current_profit > 0) and (current_rate < (previous_rate - 0.005)):
+            # if (current_rate < previous_rate) and (current_time - timedelta(minutes=60) > previous_time_profit_reached):
+            if (current_profit > 0) and (current_rate < (previous_rate - 0.005)):
                 return True, 'sell_profit_target_01'
 
         return False, None
