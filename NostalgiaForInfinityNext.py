@@ -1471,7 +1471,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
     buy_41_cti_1h = -0.84
     buy_41_r_1h = -42.0
-    buy_41_ma_offset = 0.97
+    buy_41_ma_offset = 0.96
     buy_41_cti = -0.8
     buy_41_r = -75.0
 
