@@ -3550,7 +3550,7 @@ class NostalgiaForInfinityNext(IStrategy):
         # ADD LOGIC HERE
         # if sell_reason in ['xxx', 'yyyy']:
         #   return True
-        return True
+        return False
 
     def _set_profit_target(self, pair: str, trade: "Trade", rate: float, sell_reason: str):
         self.custom_info[pair] = {
