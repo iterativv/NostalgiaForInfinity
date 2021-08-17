@@ -182,6 +182,7 @@ class NostalgiaForInfinityNext(IStrategy):
         "buy_condition_40_enable": True,
         "buy_condition_41_enable": True,
         "buy_condition_42_enable": True,
+        "buy_condition_43_enable": True,
         #############
     }
 
@@ -1041,6 +1042,26 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_type"            : "100",
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : True
+        },
+        43: {
+            "ema_fast"                  : False,
+            "ema_fast_len"              : "12",
+            "ema_slow"                  : False,
+            "ema_slow_len"              : "12",
+            "close_above_ema_fast"      : False,
+            "close_above_ema_fast_len"  : "200",
+            "close_above_ema_slow"      : False,
+            "close_above_ema_slow_len"  : "200",
+            "sma200_rising"             : False,
+            "sma200_rising_val"         : "30",
+            "sma200_1h_rising"          : False,
+            "sma200_1h_rising_val"      : "20",
+            "safe_dips"                 : True,
+            "safe_dips_type"            : "70",
+            "safe_pump"                 : False,
+            "safe_pump_type"            : "100",
+            "safe_pump_period"          : "24",
+            "btc_1h_not_downtrend"      : True
         }
     }
 
@@ -1458,6 +1479,14 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_42_r_1h = -46.0
     buy_42_ema_open_mult = 0.018
     buy_42_bb_offset = 0.992
+
+    buy_43_cti_1h = 0.5
+    buy_43_r_1h = -80.0
+    buy_43_bb40_bbdelta_close = 0.046
+    buy_43_bb40_closedelta_close = 0.02
+    buy_43_bb40_tail_bbdelta = 0.5
+    buy_43_cti = -0.6
+    buy_43_r = -90.0
 
     # Sell
 
@@ -3479,6 +3508,24 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * self.buy_42_ema_open_mult))
                     item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_42_bb_offset))
+
+                # Condition #43
+                elif index == 43:
+                    # Non-Standard protections
+
+                    # Logic
+                    item_buy_logic.append(dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(12))
+                    item_buy_logic.append(dataframe['ema_200_1h'].shift(12) > dataframe['ema_200_1h'].shift(24))
+                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_43_cti_1h)
+                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_43_r_1h)
+                    item_buy_logic.append(dataframe['bb40_2_low'].shift().gt(0))
+                    item_buy_logic.append(dataframe['bb40_2_delta'].gt(dataframe['close'] * self.buy_43_bb40_bbdelta_close))
+                    item_buy_logic.append(dataframe['closedelta'].gt(dataframe['close'] * self.buy_43_bb40_closedelta_close))
+                    item_buy_logic.append(dataframe['tail'].lt(dataframe['bb40_2_delta'] * self.buy_43_bb40_tail_bbdelta))
+                    item_buy_logic.append(dataframe['close'].lt(dataframe['bb40_2_low'].shift()))
+                    item_buy_logic.append(dataframe['close'].le(dataframe['close'].shift()))
+                    item_buy_logic.append(dataframe['cti'] < self.buy_43_cti)
+                    item_buy_logic.append(dataframe['r_480'] > self.buy_43_r)
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
