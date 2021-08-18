@@ -1716,7 +1716,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
     # Under & near EMA200, accept profit
     sell_custom_profit_under_profit_min_1 = 0.001
-    sell_custom_profit_under_profit_max_1 = 0.01
+    sell_custom_profit_under_profit_max_1 = 0.008
     sell_custom_profit_under_rel_1 = 0.024
     sell_custom_profit_under_rsi_diff_1 = 4.4
 
