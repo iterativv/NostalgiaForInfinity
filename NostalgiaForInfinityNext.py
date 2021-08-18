@@ -16,9 +16,17 @@ from freqtrade.persistence import Trade
 from datetime import datetime, timedelta
 from technical.util import resample_to_interval, resampled_merge
 from technical.indicators import zema, VIDYA, ichimoku
-import pandas_ta as pta
+
 
 log = logging.getLogger(__name__)
+
+
+try:
+    import pandas_ta as pta
+except ImportError:
+    log.error("IMPORTANT - please install the pandas_ta python module which is needed for this strategy. If you're running Docker, add RUN pip install pandas_ta to your Dockerfile, otherwise run: pip install pandas_ta")
+else:
+    log.info("pandas_ta successfully imported")
 
 
 ###########################################################################################################
