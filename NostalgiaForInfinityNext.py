@@ -712,14 +712,14 @@ class NostalgiaForInfinityNext(IStrategy):
             "close_above_ema_fast_len"  : "200",
             "close_above_ema_slow"      : False,
             "close_above_ema_slow_len"  : "200",
-            "sma200_rising"             : False,
+            "sma200_rising"             : True,
             "sma200_rising_val"         : "30",
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
-            "safe_dips"                 : False,
-            "safe_dips_type"            : "10",
-            "safe_pump"                 : False,
-            "safe_pump_type"            : "10",
+            "safe_dips"                 : True,
+            "safe_dips_type"            : "70",
+            "safe_pump"                 : True,
+            "safe_pump_type"            : "20",
             "safe_pump_period"          : "36",
             "btc_1h_not_downtrend"      : True
         },
@@ -1396,10 +1396,10 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_25_rsi_4 = 38.0
     buy_25_cti = -0.76
 
-    buy_26_zema_low_offset = 0.9
-    buy_26_cti = -0.9
-    buy_26_r = -80.0
-    buy_26_r_1h = -80.0
+    buy_26_zema_low_offset = 0.94
+    buy_26_cti = -0.91
+    buy_26_r = -35.0
+    buy_26_r_1h = -60.0
     buy_26_volume = 2.0
 
     buy_27_wr_max = 90.0
