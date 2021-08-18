@@ -646,20 +646,20 @@ class NostalgiaForInfinityNext(IStrategy):
         23: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
-            "ema_slow"                  : False,
-            "ema_slow_len"              : "50",
-            "close_above_ema_fast"      : True,
+            "ema_slow"                  : True,
+            "ema_slow_len"              : "15",
+            "close_above_ema_fast"      : False,
             "close_above_ema_fast_len"  : "200",
-            "close_above_ema_slow"      : True,
+            "close_above_ema_slow"      : False,
             "close_above_ema_slow_len"  : "200",
-            "sma200_rising"             : False,
-            "sma200_rising_val"         : "50",
+            "sma200_rising"             : True,
+            "sma200_rising_val"         : "24",
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
             "safe_dips"                 : True,
-            "safe_dips_type"            : "50",
-            "safe_pump"                 : False,
-            "safe_pump_type"            : "50",
+            "safe_dips_type"            : "110",
+            "safe_pump"                 : True,
+            "safe_pump_type"            : "100",
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
         },
@@ -1381,10 +1381,13 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_ewo_22 = 5.8
     buy_rsi_22 = 36.0
 
-    buy_bb_offset_23 = 0.985
-    buy_ewo_23 = 6.2
-    buy_rsi_23 = 32.4
-    buy_rsi_1h_23 = 70.0
+    buy_23_bb_offset = 0.984
+    buy_23_ewo = 7.8
+    buy_23_rsi = 32.4
+    buy_23_rsi_1h = 80.0
+    buy_23_cti = -0.66
+    buy_23_r = -80.0
+    buy_23_r_1h = -80.0
 
     buy_24_rsi_max = 50.0
     buy_24_rsi_1h_min = 66.9
@@ -3265,10 +3268,13 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Non-Standard protections
 
                     # Logic
-                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_23))
-                    item_buy_logic.append(dataframe['ewo'] > self.buy_ewo_23)
-                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_rsi_23)
-                    item_buy_logic.append(dataframe['rsi_14_1h'] < self.buy_rsi_1h_23)
+                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_23_bb_offset))
+                    item_buy_logic.append(dataframe['ewo'] > self.buy_23_ewo)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_23_cti)
+                    item_buy_logic.append(dataframe['r_480'] > self.buy_23_r)
+                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_23_r_1h)
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_23_rsi)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] < self.buy_23_rsi_1h)
 
                 # Condition #24
                 elif index == 24:
