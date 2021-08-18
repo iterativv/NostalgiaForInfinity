@@ -8,7 +8,6 @@ import talib.abstract as ta
 from freqtrade.misc import json_load, file_dump_json
 from freqtrade.strategy.interface import IStrategy
 from freqtrade.strategy import merge_informative_pair, timeframe_to_minutes
-from freqtrade.strategy import DecimalParameter, IntParameter, CategoricalParameter
 from freqtrade.exchange import timeframe_to_prev_date
 from pandas import DataFrame, Series, concat
 from functools import reduce
@@ -187,6 +186,7 @@ class NostalgiaForInfinityNext(IStrategy):
         "buy_condition_41_enable": True,
         "buy_condition_42_enable": True,
         "buy_condition_43_enable": True,
+        "buy_condition_44_enable": True,
         #############
     }
 
@@ -1066,6 +1066,26 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_type"            : "100",
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : True
+        },
+        44: {
+            "ema_fast"                  : False,
+            "ema_fast_len"              : "12",
+            "ema_slow"                  : False,
+            "ema_slow_len"              : "12",
+            "close_above_ema_fast"      : False,
+            "close_above_ema_fast_len"  : "200",
+            "close_above_ema_slow"      : False,
+            "close_above_ema_slow_len"  : "200",
+            "sma200_rising"             : False,
+            "sma200_rising_val"         : "30",
+            "sma200_1h_rising"          : False,
+            "sma200_1h_rising_val"      : "20",
+            "safe_dips"                 : False,
+            "safe_dips_type"            : "70",
+            "safe_pump"                 : False,
+            "safe_pump_type"            : "100",
+            "safe_pump_period"          : "24",
+            "btc_1h_not_downtrend"      : False
         }
     }
 
@@ -1495,6 +1515,9 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_43_bb40_tail_bbdelta = 0.5
     buy_43_cti = -0.6
     buy_43_r = -90.0
+
+    buy_44_ma_offset = 0.982
+    buy_44_ewo = -18.143
 
     # Sell
 
@@ -2489,7 +2512,7 @@ class NostalgiaForInfinityNext(IStrategy):
         # Sell signal 6
         elif self.sell_condition_6_enable and (last_candle['close'] < last_candle['ema_200']) and (last_candle['close'] > last_candle['ema_50']) and (last_candle['rsi_14'] > self.sell_rsi_under_6):
             if (current_profit > 0.0):
-                    return 'sell_signal_6_1' + ' ( ' + buy_tag + ')'
+                return 'sell_signal_6_1' + ' ( ' + buy_tag + ')'
             elif (max_loss > 0.25):
                 return 'sell_signal_6_2' + ' ( ' + buy_tag + ')'
 
@@ -2765,6 +2788,7 @@ class NostalgiaForInfinityNext(IStrategy):
         dataframe['ema_12'] = ta.EMA(dataframe, timeperiod=12)
         dataframe['ema_13'] = ta.EMA(dataframe, timeperiod=13)
         dataframe['ema_15'] = ta.EMA(dataframe, timeperiod=15)
+        dataframe['ema_16'] = ta.EMA(dataframe, timeperiod=16)
         dataframe['ema_20'] = ta.EMA(dataframe, timeperiod=20)
         dataframe['ema_25'] = ta.EMA(dataframe, timeperiod=25)
         dataframe['ema_26'] = ta.EMA(dataframe, timeperiod=26)
@@ -3539,6 +3563,14 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['cti'] < self.buy_43_cti)
                     item_buy_logic.append(dataframe['r_480'] > self.buy_43_r)
 
+                # Condition #44
+                elif index == 44:
+                    # Non-Standard protections
+
+                    # Logic
+                    item_buy_logic.append(dataframe['close'] < (dataframe['ema_16'] * self.buy_44_ma_offset))
+                    item_buy_logic.append(dataframe['ewo'] < self.buy_44_ewo)
+
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
                 dataframe.loc[item_buy, 'buy_tag'] += str(index) + ' '
@@ -3658,7 +3690,7 @@ def williams_r(dataframe: DataFrame, period: int = 14) -> Series:
     WR = Series(
         (highest_high - dataframe["close"]) / (highest_high - lowest_low),
         name="{0} Williams %R".format(period),
-    )
+        )
 
     return WR * -100
 
