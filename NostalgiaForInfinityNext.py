@@ -816,8 +816,8 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_rising_val"         : "30",
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
-            "safe_dips"                 : False,
-            "safe_dips_type"            : "110",
+            "safe_dips"                 : True,
+            "safe_dips_type"            : "50",
             "safe_pump"                 : False,
             "safe_pump_type"            : "10",
             "safe_pump_period"          : "48",
@@ -1422,9 +1422,10 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_30_rsi = 40.0
     buy_30_cti = -0.88
 
-    buy_31_ma_offset = 0.94
-    buy_31_ewo = -19.0
-    buy_31_wr = -98.4
+    buy_31_ma_offset = 0.962
+    buy_31_ewo = -10.4
+    buy_31_wr = -90.0
+    buy_31_cti = -0.89
 
     buy_32_ma_offset = 0.934
     buy_32_dip = 0.005
@@ -3368,6 +3369,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['close'] < dataframe['zlema_68'] * self.buy_31_ma_offset )
                     item_buy_logic.append(dataframe['ewo'] < self.buy_31_ewo)
                     item_buy_logic.append(dataframe['r_480'] < self.buy_31_wr)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_31_cti)
 
                 # Condition #32 - Quick mode buy
                 elif index == 32:
