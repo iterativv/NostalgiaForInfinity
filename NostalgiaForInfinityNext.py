@@ -58,6 +58,7 @@ log = logging.getLogger(__name__)
 ##      output of the telegram status command.                                                           ##
 ##    * Regardless of the defined profit ratio(s), the strategy MUST still produce a SELL signal for the ##
 ##      HOLD support logic to run                                                                        ##
+##    * This feature can be completely disabled with the holdSupportEnabled parameter                    ##
 ##                                                                                                       ##
 ###########################################################################################################
 ##               DONATIONS                                                                               ##
@@ -114,6 +115,9 @@ class NostalgiaForInfinityNext(IStrategy):
 
     # Exchange Downtime protection
     has_downtime_protection = False
+
+    # Do you want to use the hold feature? (with hold-trades.json)
+    holdSupportEnabled = True
 
     # Run "populate_indicators()" only for new candle.
     process_only_new_candles = True
@@ -1830,7 +1834,7 @@ class NostalgiaForInfinityNext(IStrategy):
         (e.g. gather some remote resource for comparison)
         :param **kwargs: Ensure to keep this here so updates to this won't break your strategy.
         """
-        if self.config['runmode'].value in ('live', 'dry_run'):
+        if self.holdSupportEnabled and self.config['runmode'].value in ('live', 'dry_run'):
             self.load_hold_trades_config()
         return super().bot_loop_start(**kwargs)
 
@@ -3575,7 +3579,7 @@ class NostalgiaForInfinityNext(IStrategy):
             False aborts the process
         """
         # Just to be sure our hold data is loaded, should be a no-op call after the first bot loop
-        if self.config['runmode'].value in ('live', 'dry_run'):
+        if self.holdSupportEnabled and self.config['runmode'].value in ('live', 'dry_run'):
             self.load_hold_trades_config()
 
             if not self.hold_trades_cache:
