@@ -3636,15 +3636,19 @@ class NostalgiaForInfinityNext(IStrategy):
             # Just to be sure our hold data is loaded, should be a no-op call after the first bot loop
             self.load_hold_trades_config()
 
-            if not self.hold_trade_ids:
+            if not self.hold_trades_cache:
+                # Cache hasn't been setup, likely because the corresponding file does not exist, sell
+                return True
+
+            if not self.hold_trades_cache.data:
                 # We have no pairs we want to hold until profit, sell
                 return False
 
-            if trade.id not in self.hold_trade_ids:
+            if trade.id not in self.hold_trades_cache.data:
                 # This pair is not on the list to hold until profit, sell
                 return False
 
-            trade_profit_ratio = self.hold_trade_ids[trade.id]
+            trade_profit_ratio = self.hold_trades_cache.data[trade.id]
             current_profit_ratio = trade.calc_profit_ratio(rate)
             if sell_reason == "force_sell":
                 formatted_profit_ratio = "{}%".format(trade_profit_ratio * 100)
