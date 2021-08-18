@@ -1,10 +1,11 @@
+import copy
 import logging
 import pathlib
 import rapidjson
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 import numpy as np
 import talib.abstract as ta
-from freqtrade.misc import json_load
+from freqtrade.misc import json_load, file_dump_json
 from freqtrade.strategy.interface import IStrategy
 from freqtrade.strategy import merge_informative_pair, timeframe_to_minutes
 from freqtrade.strategy import DecimalParameter, IntParameter, CategoricalParameter
@@ -12,14 +13,11 @@ from freqtrade.exchange import timeframe_to_prev_date
 from pandas import DataFrame, Series, concat
 from functools import reduce
 import math
-from typing import Dict
 from freqtrade.persistence import Trade
 from datetime import datetime, timedelta
 from technical.util import resample_to_interval, resampled_merge
 from technical.indicators import zema, VIDYA, ichimoku
 import pandas_ta as pta
-import os
-import json
 
 log = logging.getLogger(__name__)
 
@@ -185,6 +183,9 @@ class NostalgiaForInfinityNext(IStrategy):
         "buy_condition_38_enable": True,
         "buy_condition_39_enable": True,
         "buy_condition_40_enable": True,
+        "buy_condition_41_enable": True,
+        "buy_condition_42_enable": True,
+        "buy_condition_43_enable": True,
         #############
     }
 
@@ -205,7 +206,7 @@ class NostalgiaForInfinityNext(IStrategy):
     profit_target_params = {
         #############
         # Enable/Disable conditions
-        "profit_target_1_enable": True,
+        "profit_target_1_enable": False,
         #############
     }
 
@@ -977,10 +978,10 @@ class NostalgiaForInfinityNext(IStrategy):
             "ema_fast_len"              : "100",
             "ema_slow"                  : True,
             "ema_slow_len"              : "15",
-            "close_above_ema_fast"      : False,
-            "close_above_ema_fast_len"  : "50",
-            "close_above_ema_slow"      : False,
-            "close_above_ema_slow_len"  : "50",
+            "close_above_ema_fast"      : True,
+            "close_above_ema_fast_len"  : "100",
+            "close_above_ema_slow"      : True,
+            "close_above_ema_slow_len"  : "200",
             "sma200_rising"             : False,
             "sma200_rising_val"         : "30",
             "sma200_1h_rising"          : False,
@@ -1010,6 +1011,66 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : False,
             "safe_pump_type"            : "50",
             "safe_pump_period"          : "48",
+            "btc_1h_not_downtrend"      : True
+        },
+        41: {
+            "ema_fast"                  : False,
+            "ema_fast_len"              : "12",
+            "ema_slow"                  : True,
+            "ema_slow_len"              : "12",
+            "close_above_ema_fast"      : False,
+            "close_above_ema_fast_len"  : "200",
+            "close_above_ema_slow"      : False,
+            "close_above_ema_slow_len"  : "200",
+            "sma200_rising"             : False,
+            "sma200_rising_val"         : "30",
+            "sma200_1h_rising"          : False,
+            "sma200_1h_rising_val"      : "20",
+            "safe_dips"                 : True,
+            "safe_dips_type"            : "50",
+            "safe_pump"                 : False,
+            "safe_pump_type"            : "120",
+            "safe_pump_period"          : "24",
+            "btc_1h_not_downtrend"      : True
+        },
+        42: {
+            "ema_fast"                  : False,
+            "ema_fast_len"              : "12",
+            "ema_slow"                  : False,
+            "ema_slow_len"              : "12",
+            "close_above_ema_fast"      : False,
+            "close_above_ema_fast_len"  : "200",
+            "close_above_ema_slow"      : False,
+            "close_above_ema_slow_len"  : "200",
+            "sma200_rising"             : False,
+            "sma200_rising_val"         : "30",
+            "sma200_1h_rising"          : False,
+            "sma200_1h_rising_val"      : "20",
+            "safe_dips"                 : True,
+            "safe_dips_type"            : "110",
+            "safe_pump"                 : False,
+            "safe_pump_type"            : "100",
+            "safe_pump_period"          : "24",
+            "btc_1h_not_downtrend"      : True
+        },
+        43: {
+            "ema_fast"                  : False,
+            "ema_fast_len"              : "12",
+            "ema_slow"                  : False,
+            "ema_slow_len"              : "12",
+            "close_above_ema_fast"      : False,
+            "close_above_ema_fast_len"  : "200",
+            "close_above_ema_slow"      : False,
+            "close_above_ema_slow_len"  : "200",
+            "sma200_rising"             : False,
+            "sma200_rising_val"         : "30",
+            "sma200_1h_rising"          : False,
+            "sma200_1h_rising_val"      : "20",
+            "safe_dips"                 : True,
+            "safe_dips_type"            : "70",
+            "safe_pump"                 : False,
+            "safe_pump_type"            : "100",
+            "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : True
         }
     }
@@ -1321,7 +1382,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
     buy_rsi_21 = 14.0
     buy_rsi_1h_21 = 28.0
-    buy_cti_21 = -0.9
+    buy_cti_21 = -0.902
     buy_volume_21 = 2.0
 
     buy_volume_22 = 2.0
@@ -1408,8 +1469,8 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_38_cti = -0.96
 
     buy_39_cti = -0.77
-    buy_39_r = -70.0
-    buy_39_r_1h = -62.0
+    buy_39_r = -60.0
+    buy_39_r_1h = -38.0
 
     buy_40_hrsi = 30.0
     buy_40_cci = -240.0
@@ -1417,6 +1478,25 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_40_cti = -0.8
     buy_40_r = -90.0
     buy_40_r_1h = -90.0
+
+    buy_41_cti_1h = -0.84
+    buy_41_r_1h = -42.0
+    buy_41_ma_offset = 0.96
+    buy_41_cti = -0.8
+    buy_41_r = -75.0
+
+    buy_42_cti_1h = 0.5
+    buy_42_r_1h = -46.0
+    buy_42_ema_open_mult = 0.018
+    buy_42_bb_offset = 0.992
+
+    buy_43_cti_1h = 0.5
+    buy_43_r_1h = -80.0
+    buy_43_bb40_bbdelta_close = 0.046
+    buy_43_bb40_closedelta_close = 0.02
+    buy_43_bb40_tail_bbdelta = 0.5
+    buy_43_cti = -0.6
+    buy_43_r = -90.0
 
     # Sell
 
@@ -1641,8 +1721,8 @@ class NostalgiaForInfinityNext(IStrategy):
     sell_trail_down_4 = 0.02
 
     # Under & near EMA200, accept profit
-    sell_custom_profit_under_profit_min_1 = 0.0
-    sell_custom_profit_under_profit_max_1 = 0.02
+    sell_custom_profit_under_profit_min_1 = 0.001
+    sell_custom_profit_under_profit_max_1 = 0.01
     sell_custom_profit_under_rel_1 = 0.024
     sell_custom_profit_under_rsi_diff_1 = 4.4
 
@@ -1715,12 +1795,11 @@ class NostalgiaForInfinityNext(IStrategy):
     sell_custom_long_profit_max_1 = 0.04
     sell_custom_long_duration_min_1 = 900
 
-
     # Profit Target Signal
-    profit_target_1_enable = True
+    profit_target_1_enable = False
     #############################################################
 
-    hold_trade_ids = None
+    hold_trades_cache = None
 
     @staticmethod
     def get_hold_trades_config_file():
@@ -1744,100 +1823,13 @@ class NostalgiaForInfinityNext(IStrategy):
         )
 
     def load_hold_trades_config(self):
-        if self.hold_trade_ids is not None:
-            # Already loaded
-            return
+        if self.hold_trades_cache is None:
+            hold_trades_config_file = NostalgiaForInfinityNext.get_hold_trades_config_file()
+            if hold_trades_config_file:
+                self.hold_trades_cache = HoldsCache(hold_trades_config_file)
 
-        # Default Values
-        self.hold_trade_ids = {}
-
-        # Update values from config file, if it exists
-        hold_trades_config_file = NostalgiaForInfinityNext.get_hold_trades_config_file()
-        if not hold_trades_config_file:
-            return
-
-        with hold_trades_config_file.open('r') as f:
-            trade_ids = None
-            hold_trades_config = None
-            try:
-                hold_trades_config = json_load(f)
-            except rapidjson.JSONDecodeError as exc:
-                log.error("Failed to load JSON from %s: %s", hold_trades_config_file, exc)
-            else:
-                trade_ids = hold_trades_config.get("trade_ids")
-
-            if not trade_ids:
-                return
-
-            open_trades = {
-                trade.id: trade for trade in Trade.get_trades_proxy(is_open=True)
-            }
-
-            if isinstance(trade_ids, dict):
-                # New syntax
-                for trade_id, profit_ratio in trade_ids.items():
-                    try:
-                        trade_id = int(trade_id)
-                    except ValueError:
-                        log.error(
-                            "The trade_id(%s) defined under 'trade_ids' in %s is not an integer",
-                            trade_id, hold_trades_config_file
-                        )
-                        continue
-                    if not isinstance(profit_ratio, float):
-                        log.error(
-                            "The 'profit_ratio' config value(%s) for trade_id %s in %s is not a float",
-                            profit_ratio,
-                            trade_id,
-                            hold_trades_config_file
-                        )
-                    if trade_id in open_trades:
-                        formatted_profit_ratio = "{}%".format(profit_ratio * 100)
-                        log.warning(
-                            "The trade %s is configured to HOLD until the profit ratio of %s is met",
-                            open_trades[trade_id],
-                            formatted_profit_ratio
-                        )
-                        self.hold_trade_ids[trade_id] = profit_ratio
-                    else:
-                        log.warning(
-                            "The trade_id(%s) is no longer open. Please remove it from 'trade_ids' in %s",
-                            trade_id,
-                            hold_trades_config_file
-                        )
-            else:
-                # Initial Syntax
-                profit_ratio = hold_trades_config.get("profit_ratio")
-                if profit_ratio:
-                    if not isinstance(profit_ratio, float):
-                        log.error(
-                            "The 'profit_ratio' config value(%s) in %s is not a float",
-                            profit_ratio,
-                            hold_trades_config_file
-                        )
-                else:
-                    profit_ratio = 0.005
-                formatted_profit_ratio = "{}%".format(profit_ratio * 100)
-                for trade_id in trade_ids:
-                    if not isinstance(trade_id, int):
-                        log.error(
-                            "The trade_id(%s) defined under 'trade_ids' in %s is not an integer",
-                            trade_id, hold_trades_config_file
-                        )
-                        continue
-                    if trade_id in open_trades:
-                        log.warning(
-                            "The trade %s is configured to HOLD until the profit ratio of %s is met",
-                            open_trades[trade_id],
-                            formatted_profit_ratio
-                        )
-                        self.hold_trade_ids[trade_id] = profit_ratio
-                    else:
-                        log.warning(
-                            "The trade_id(%s) is no longer open. Please remove it from 'trade_ids' in %s",
-                            trade_id,
-                            hold_trades_config_file
-                        )
+        if self.hold_trades_cache:
+            self.hold_trades_cache.load()
 
     def bot_loop_start(self, **kwargs) -> None:
         """
@@ -1854,7 +1846,6 @@ class NostalgiaForInfinityNext(IStrategy):
                 self.custom_info = get_profit_target_by_pair()
             else:
                 save_profit_target_by_pair(self.custom_info)
-
         return super().bot_loop_start(**kwargs)
 
     def get_ticker_indicator(self):
@@ -2314,36 +2305,36 @@ class NostalgiaForInfinityNext(IStrategy):
 
         return False, None
 
+
     def mark_profit_target(self, pair: str, trade: "Trade", current_time: "datetime", current_rate: float, current_profit: float, last_candle, previous_candle_1) -> tuple:
-        if self.profit_target_1_enable:
-            if (current_profit > 0) and (last_candle['zlema_4_lowKF'] > last_candle['lowKF']) and (previous_candle_1['zlema_4_lowKF'] < previous_candle_1['lowKF']) and (last_candle['cci'] > -100) and (last_candle['hrsi'] > 70):
-                return pair, "mark_profit_target_01"
+        # if self.profit_target_1_enable:
+        #     if (current_profit > 0) and (last_candle['zlema_4_lowKF'] > last_candle['lowKF']) and (previous_candle_1['zlema_4_lowKF'] < previous_candle_1['lowKF']) and (last_candle['cci'] > -100) and (last_candle['hrsi'] > 70):
+        #         return pair, "mark_profit_target_01"
         return None, None
 
     def sell_profit_target(self, pair: str, trade: "Trade", current_time: "datetime", current_rate: float, current_profit: float, last_candle, previous_candle_1, previous_rate, previous_sell_reason, previous_time_profit_reached) -> tuple:
-        if self.profit_target_1_enable and previous_sell_reason == "mark_profit_target_01":
-            if (current_profit > 0) and (current_rate < (previous_rate - 0.005)):
-                return True, 'sell_profit_target_01'
+        # if self.profit_target_1_enable and previous_sell_reason == "mark_profit_target_01":
+        #     if (current_profit > 0) and (current_rate < (previous_rate - 0.005)):
+        #         return True, 'sell_profit_target_01'
 
         return False, None
 
     def sell_quick_mode(self, current_profit: float, max_profit:float, last_candle, previous_candle_1) -> tuple:
-        if (0.06 > current_profit > 0.02) and (last_candle['rsi_14'] > 79.0):
+        if (0.06 > current_profit > 0.02) and (last_candle['rsi_14'] > 80.0):
             return True, 'signal_profit_q_1'
 
-        if (0.06 > current_profit > 0.02) and (last_candle['cti'] > 0.9):
+        if (0.06 > current_profit > 0.02) and (last_candle['cti'] > 0.95):
             return True, 'signal_profit_q_2'
 
         if (last_candle['close'] < last_candle['atr_high_thresh_q']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_q']):
-            if (current_profit > 0.0):
+            if (0.05 > current_profit > 0.02):
                 return True, 'signal_profit_q_atr'
             elif (current_profit < -0.08):
                 return True, 'signal_stoploss_q_atr'
 
-        if (current_profit > 0.0):
-            if (last_candle['pm'] <= last_candle['pmax_thresh']) and (last_candle['close'] > last_candle['sma_21'] * 1.1):
+        if (current_profit > 0.02) and (last_candle['pm'] <= last_candle['pmax_thresh']) and (last_candle['close'] > last_candle['sma_21'] * 1.1):
                 return True, 'signal_profit_q_pmax_bull'
-            if (last_candle['pm'] > last_candle['pmax_thresh']) and (last_candle['close'] > last_candle['sma_21'] * 1.016):
+        if (current_profit > 0.001) and (last_candle['pm'] > last_candle['pmax_thresh']) and (last_candle['close'] > last_candle['sma_21'] * 1.016):
                 return True, 'signal_profit_q_pmax_bear'
 
         return False, None
@@ -2690,6 +2681,9 @@ class NostalgiaForInfinityNext(IStrategy):
         # Williams %R
         informative_1h['r_480'] = williams_r(informative_1h, period=480)
 
+        # CTI
+        informative_1h['cti'] = pta.cti(informative_1h["close"], length=20)
+
         # Ichimoku
         ichi = ichimoku(informative_1h, conversion_line_period=20, base_line_periods=60, laggin_span=120, displacement=30)
         informative_1h['chikou_span'] = ichi['chikou_span']
@@ -2699,6 +2693,7 @@ class NostalgiaForInfinityNext(IStrategy):
         informative_1h['senkou_b'] = ichi['senkou_span_b']
         informative_1h['leading_senkou_span_a'] = ichi['leading_senkou_span_a']
         informative_1h['leading_senkou_span_b'] = ichi['leading_senkou_span_b']
+        informative_1h['chikou_span_greater'] = (informative_1h['chikou_span'] > informative_1h['senkou_a']).shift(30).fillna(False)
         informative_1h.loc[:, 'cloud_top'] = informative_1h.loc[:, ['senkou_a', 'senkou_b']].max(axis=1)
 
         # EFI - Elders Force Index
@@ -2892,13 +2887,9 @@ class NostalgiaForInfinityNext(IStrategy):
         dataframe['hull'] = (2 * dataframe['hlc3'] - ta.WMA(dataframe['hlc3'], 2))
         dataframe['hrsi'] = ta.RSI(dataframe['hull'], 2)
 
-        # Kalman Filter
-        dataframe['lowKF'] = KalmanFilter(dataframe, source='low')
-
         # ZLEMA
         dataframe['zlema_2'] = pta.zlma(dataframe['hlc3'], length = 2)
         dataframe['zlema_4'] = pta.zlma(dataframe['hlc3'], length = 4)
-        dataframe['zlema_4_lowKF'] = ta.EMA(dataframe['lowKF']  + (dataframe['lowKF']  - dataframe['lowKF'].shift(2)), timeperiod = 4)
 
         # CCI
         dataframe['cci'] = ta.CCI(dataframe, source='hlc3', timeperiod=20)
@@ -3511,17 +3502,17 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['tenkan_sen_1h'] > dataframe['kijun_sen_1h'])
                     item_buy_logic.append(dataframe['close'] > dataframe['cloud_top_1h'])
                     item_buy_logic.append(dataframe['leading_senkou_span_a_1h'] > dataframe['leading_senkou_span_b_1h'])
-                    item_buy_logic.append(dataframe['chikou_span_1h'] > dataframe['senkou_a_1h'])
+                    item_buy_logic.append(dataframe['chikou_span_greater_1h'])
                     item_buy_logic.append(dataframe['efi_1h'] > 0)
                     item_buy_logic.append(dataframe['ssl_up_1h'] > dataframe['ssl_down_1h'])
                     item_buy_logic.append(dataframe['close'] < dataframe['ssl_up_1h'])
                     item_buy_logic.append(dataframe['cti'] < self.buy_39_cti)
                     item_buy_logic.append(dataframe['r_480'] > self.buy_39_r)
                     item_buy_logic.append(dataframe['r_480_1h'] > self.buy_39_r_1h)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] > dataframe['rsi_14_1h'].shift(12))
                     # Start of trend
                     item_buy_logic.append(
                         (dataframe['leading_senkou_span_a_1h'].shift(12) < dataframe['leading_senkou_span_b_1h'].shift(12)) |
-                        (dataframe['efi_1h'] < 0) |
                         (dataframe['ssl_up_1h'].shift(12) < dataframe['ssl_down_1h'].shift(12))
                     )
 
@@ -3537,6 +3528,51 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['cti'] < self.buy_40_cti)
                     item_buy_logic.append(dataframe['r_480'] > self.buy_40_r)
                     item_buy_logic.append(dataframe['r_480_1h'] > self.buy_40_r_1h)
+
+                # Condition #41
+                elif index == 41:
+                    # Non-Standard protections (add below)
+
+                    # Logic
+                    item_buy_logic.append(dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(12))
+                    item_buy_logic.append(dataframe['ema_200_1h'].shift(12) > dataframe['ema_200_1h'].shift(24))
+                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_41_cti_1h)
+                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_41_r_1h)
+                    item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * self.buy_41_ma_offset)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_41_cti)
+                    item_buy_logic.append(dataframe['r_480'] < self.buy_41_r)
+
+                # Condition #42
+                elif index == 42:
+                    # Non-Standard protections (add below)
+
+                    # Logic
+                    item_buy_logic.append(dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(12))
+                    item_buy_logic.append(dataframe['ema_200_1h'].shift(12) > dataframe['ema_200_1h'].shift(24))
+                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_42_cti_1h)
+                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_42_r_1h)
+                    item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
+                    item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * self.buy_42_ema_open_mult))
+                    item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
+                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_42_bb_offset))
+
+                # Condition #43
+                elif index == 43:
+                    # Non-Standard protections
+
+                    # Logic
+                    item_buy_logic.append(dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(12))
+                    item_buy_logic.append(dataframe['ema_200_1h'].shift(12) > dataframe['ema_200_1h'].shift(24))
+                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_43_cti_1h)
+                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_43_r_1h)
+                    item_buy_logic.append(dataframe['bb40_2_low'].shift().gt(0))
+                    item_buy_logic.append(dataframe['bb40_2_delta'].gt(dataframe['close'] * self.buy_43_bb40_bbdelta_close))
+                    item_buy_logic.append(dataframe['closedelta'].gt(dataframe['close'] * self.buy_43_bb40_closedelta_close))
+                    item_buy_logic.append(dataframe['tail'].lt(dataframe['bb40_2_delta'] * self.buy_43_bb40_tail_bbdelta))
+                    item_buy_logic.append(dataframe['close'].lt(dataframe['bb40_2_low'].shift()))
+                    item_buy_logic.append(dataframe['close'].le(dataframe['close'].shift()))
+                    item_buy_logic.append(dataframe['cti'] < self.buy_43_cti)
+                    item_buy_logic.append(dataframe['r_480'] > self.buy_43_r)
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
@@ -3852,38 +3888,133 @@ def SSLChannels(dataframe, length = 7):
     sslUp = np.where(hlv < 0, smaLow, smaHigh)
     return sslDown, sslUp
 
-#Kalman Filter
-def KalmanFilter(dtloc, source = 'close'):
 
-    dtKF = dtloc.copy().fillna(0)
-    dtKF['TRANGE'] = ta.TRANGE(dtloc).fillna(0)
+class Cache:
+
+    def __init__(self, path):
+        self.path = path
+        self.data = {}
+        self._mtime = None
+        self._previous_data = {}
+        try:
+            self.load()
+        except FileNotFoundError:
+            pass
+
+    def load(self):
+        if not self._mtime or self.path.stat().st_mtime_ns != self._mtime:
+            self._load()
+
+    def save(self):
+        if self.data != self._previous_data:
+            self._save()
+
+    def process_loaded_data(self, data):
+        return data
+
+    def _load(self):
+        # This method only exists to simplify unit testing
+        with self.path.open("r") as rfh:
+            try:
+                data = json_load(rfh)
+            except rapidjson.JSONDecodeError as exc:
+                log.error("Failed to load JSON from %s: %s", self.path, exc)
+            else:
+                self.data = self.process_loaded_data(data)
+                self._previous_data = copy.deepcopy(self.data)
+                self._mtime = self.path.stat().st_mtime_ns
+
+    def _save(self):
+        # This method only exists to simplify unit testing
+        file_dump_json(self.path, self.data, is_zip=False, log=True)
+        self._mtime = self.path.stat().st_mtime
+        self._previous_data = copy.deepcopy(self.data)
 
 
-    def calc_dtKF(dfr, init=0):
-        global calc_dtKF_value_1
-        global calc_dtKF_value_2
-        global calc_dtKF_value_3
-        global calc_dtKF_source
-        if init == 1:
-            calc_dtKF_value_1 = 0.0
-            calc_dtKF_value_2 = 0.0
-            calc_dtKF_value_3 = 0.0
-            calc_dtKF_source = 0.0
-            return
-        calc_dtKF_value_1 = 0.2 * (dfr[source] - calc_dtKF_source) + 0.8 * calc_dtKF_value_1
-        calc_dtKF_value_2 = 0.1 * dfr['TRANGE'] + 0.8 * calc_dtKF_value_2
-        if calc_dtKF_value_2 != 0:
-            vlambda = abs(calc_dtKF_value_1/calc_dtKF_value_2)
+class HoldsCache(Cache):
+
+    def save(self):
+        raise RuntimeError("The holds cache does not allow programatical save")
+
+    def process_loaded_data(self, data):
+        trade_ids = data.get("trade_ids")
+
+        if not trade_ids:
+            return {}
+
+        rdata = {}
+        open_trades = {
+            trade.id: trade for trade in Trade.get_trades_proxy(is_open=True)
+        }
+
+        if isinstance(trade_ids, dict):
+            # New syntax
+            for trade_id, profit_ratio in trade_ids.items():
+                try:
+                    trade_id = int(trade_id)
+                except ValueError:
+                    log.error(
+                        "The trade_id(%s) defined under 'trade_ids' in %s is not an integer",
+                        trade_id, self.path
+                    )
+                    continue
+                if not isinstance(profit_ratio, float):
+                    log.error(
+                        "The 'profit_ratio' config value(%s) for trade_id %s in %s is not a float",
+                        profit_ratio,
+                        trade_id,
+                        self.path
+                    )
+                if trade_id in open_trades:
+                    formatted_profit_ratio = "{}%".format(profit_ratio * 100)
+                    log.warning(
+                        "The trade %s is configured to HOLD until the profit ratio of %s is met",
+                        open_trades[trade_id],
+                        formatted_profit_ratio
+                    )
+                    rdata[trade_id] = profit_ratio
+                else:
+                    log.warning(
+                        "The trade_id(%s) is no longer open. Please remove it from 'trade_ids' in %s",
+                        trade_id,
+                        self.path
+                    )
         else:
-            vlambda = 0
-        valpha =  (-1*math.pow(vlambda,2) + math.sqrt(math.pow(vlambda,4) + 16 * math.pow(vlambda,2)))/8
-        calc_dtKF_value_3 = valpha * dfr[source] + (1 - valpha) * calc_dtKF_value_3
-        calc_dtKF_source = dfr[source]
+            # Initial Syntax
+            profit_ratio = data.get("profit_ratio")
+            if profit_ratio:
+                if not isinstance(profit_ratio, float):
+                    log.error(
+                        "The 'profit_ratio' config value(%s) in %s is not a float",
+                        profit_ratio,
+                        self.path
+                    )
+            else:
+                profit_ratio = 0.005
+            formatted_profit_ratio = "{}%".format(profit_ratio * 100)
+            for trade_id in trade_ids:
+                if not isinstance(trade_id, int):
+                    log.error(
+                        "The trade_id(%s) defined under 'trade_ids' in %s is not an integer",
+                        trade_id, self.path
+                    )
+                    continue
+                if trade_id in open_trades:
+                    log.warning(
+                        "The trade %s is configured to HOLD until the profit ratio of %s is met",
+                        open_trades[trade_id],
+                        formatted_profit_ratio
+                    )
+                    rdata[trade_id] = profit_ratio
+                else:
+                    log.warning(
+                        "The trade_id(%s) is no longer open. Please remove it from 'trade_ids' in %s",
+                        trade_id,
+                        self.path
+                    )
 
-        return calc_dtKF_value_3
-    calc_dtKF(None, init=1)
-    dtKF['KF'] = dtKF.apply(calc_dtKF, axis = 1)
-    return dtKF['KF']
+        return rdata
+
 
 
 # ------------------------------
