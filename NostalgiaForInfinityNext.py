@@ -1081,7 +1081,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "20",
             "safe_dips"                 : False,
-            "safe_dips_type"            : "70",
+            "safe_dips_type"            : "100",
             "safe_pump"                 : False,
             "safe_pump_type"            : "100",
             "safe_pump_period"          : "24",
@@ -1518,6 +1518,8 @@ class NostalgiaForInfinityNext(IStrategy):
 
     buy_44_ma_offset = 0.982
     buy_44_ewo = -18.143
+    buy_44_cti = -0.8
+    buy_44_r_1h = -75.0
 
     # Sell
 
@@ -3570,6 +3572,8 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Logic
                     item_buy_logic.append(dataframe['close'] < (dataframe['ema_16'] * self.buy_44_ma_offset))
                     item_buy_logic.append(dataframe['ewo'] < self.buy_44_ewo)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_44_cti)
+                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_44_r_1h)
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
