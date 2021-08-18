@@ -1,11 +1,10 @@
-import copy
 import logging
 import pathlib
 import rapidjson
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 import numpy as np
 import talib.abstract as ta
-from freqtrade.misc import json_load, file_dump_json
+from freqtrade.misc import json_load
 from freqtrade.strategy.interface import IStrategy
 from freqtrade.strategy import merge_informative_pair, timeframe_to_minutes
 from freqtrade.strategy import DecimalParameter, IntParameter, CategoricalParameter
@@ -13,12 +12,14 @@ from freqtrade.exchange import timeframe_to_prev_date
 from pandas import DataFrame, Series, concat
 from functools import reduce
 import math
+from typing import Dict
 from freqtrade.persistence import Trade
 from datetime import datetime, timedelta
 from technical.util import resample_to_interval, resampled_merge
 from technical.indicators import zema, VIDYA, ichimoku
 import pandas_ta as pta
-
+import os
+import json
 log = logging.getLogger(__name__)
 
 
@@ -4038,4 +4039,3 @@ def save_profit_target_by_pair(profit_target_by_pair: Dict):
     file1 = open(DATA_NFI_TARGET_PROFIT_BY_PAIR_PATH, "w")
     file1.write(json.dumps(profit_target_by_pair))
     file1.close()
-
