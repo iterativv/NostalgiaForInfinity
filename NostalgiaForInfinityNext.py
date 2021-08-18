@@ -25,7 +25,7 @@ log = logging.getLogger(__name__)
 try:
     import pandas_ta as pta
 except ImportError:
-    log.warning("### IMPORTANT: you have not installed pandas_ta.\nIf you're running Docker, add\nRUN pip install pandas_ta\nto your Dockerfile, otherwise run \npip install pandas_ta")
+    log.error("IMPORTANT - please install the pandas_ta python module which is needed for this strategy. If you're running Docker, add RUN pip install pandas_ta to your Dockerfile, otherwise run: pip install pandas_ta")
 else:
     log.info("pandas_ta successfully imported")
 
