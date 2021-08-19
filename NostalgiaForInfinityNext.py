@@ -3051,12 +3051,10 @@ class NostalgiaForInfinityNext(IStrategy):
         # hull
         dataframe['hull_75'] = hull(dataframe, 75)
 
-        # CRSI preparation
-        dataframe['closechange'] = dataframe['close'] / dataframe['close'].shift(1)
-        dataframe['updown'] = np.where(dataframe['closechange'].gt(1), 1, np.where(dataframe['closechange'].lt(1), -1, 0))
-
         # CRSI (3, 2, 100)
-        dataframe['crsi'] =  (ta.RSI(dataframe['close'], timeperiod=3) + ta.RSI(dataframe['updown'], timeperiod=2) + ta.ROC(dataframe['close'], 100)) / 3
+        crsi_closechange = dataframe['close'] / dataframe['close'].shift(1)
+        crsi_updown = np.where(crsi_closechange.gt(1), 1.0, np.where(crsi_closechange.lt(1), -1.0, 0.0))
+        dataframe['crsi'] =  (ta.RSI(dataframe['close'], timeperiod=3) + ta.RSI(crsi_updown, timeperiod=2) + ta.ROC(dataframe['close'], 100)) / 3
 
         # zlema
         dataframe['zlema_68'] = zlema(dataframe, 68)
