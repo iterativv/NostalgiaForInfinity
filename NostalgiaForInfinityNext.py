@@ -846,15 +846,15 @@ class NostalgiaForInfinityNext(IStrategy):
         32: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
-            "ema_slow"                  : False,
-            "ema_slow_len"              : "100",
+            "ema_slow"                  : True,
+            "ema_slow_len"              : "12",
             "close_above_ema_fast"      : False,
             "close_above_ema_fast_len"  : "50",
             "close_above_ema_slow"      : False,
             "close_above_ema_slow_len"  : "100",
             "sma200_rising"             : False,
             "sma200_rising_val"         : "30",
-            "sma200_1h_rising"          : False,
+            "sma200_1h_rising"          : True,
             "sma200_1h_rising_val"      : "50",
             "safe_dips"                 : True,
             "safe_dips_type"            : "120",
@@ -1470,10 +1470,12 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_31_wr = -90.0
     buy_31_cti = -0.898
 
-    buy_32_ma_offset = 0.934
-    buy_32_dip = 0.005
+    buy_32_ma_offset = 0.948
     buy_32_rsi = 46.0
-    buy_32_cti = -0.8
+    buy_32_cti = -0.86
+    buy_32_cti_1h = -0.2
+    buy_32_r_480_1h = -48.0
+    buy_32_crsi_1h = 10.0
 
     buy_33_ma_offset = 0.988
     buy_33_rsi = 32.0
@@ -3682,18 +3684,17 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Non-Standard protections
 
                     # Logic
-                    item_buy_logic.append(dataframe['moderi_32'])
-                    item_buy_logic.append(dataframe['moderi_64'])
-                    item_buy_logic.append(dataframe['moderi_96'])
-                    item_buy_logic.append(dataframe['cti'] < self.buy_32_cti)
                     item_buy_logic.append(dataframe['rsi_20'] < dataframe['rsi_20'].shift(1))
                     item_buy_logic.append(dataframe['rsi_4'] < self.buy_32_rsi)
                     item_buy_logic.append(dataframe['ema_20_1h'] > dataframe['ema_25_1h'])
-                    item_buy_logic.append((dataframe['open'] - dataframe['close']) / dataframe['close'] < self.buy_32_dip)
                     item_buy_logic.append(dataframe['close'] < (dataframe['sma_15'] * self.buy_32_ma_offset))
                     item_buy_logic.append(
                         ((dataframe['open'] < dataframe['ema_20_1h']) & (dataframe['low'] < dataframe['ema_20_1h'])) |
                         ((dataframe['open'] > dataframe['ema_20_1h']) & (dataframe['low'] > dataframe['ema_20_1h'])))
+                    item_buy_logic.append(dataframe['cti'] < self.buy_32_cti)
+                    item_buy_logic.append(dataframe['cti_1h'] > self.buy_32_cti_1h)
+                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_32_r_480_1h)
+                    item_buy_logic.append(dataframe['crsi_1h'] > self.buy_32_crsi_1h)
 
                 # Condition #33 - Quick mode buy
                 elif index == 33:
