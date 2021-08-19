@@ -31,6 +31,7 @@ else:
 
 ###########################################################################################################
 ##                NostalgiaForInfinityV8 by iterativ                                                     ##
+##           https://github.com/iterativv/NostalgiaForInfinity                                           ##
 ##                                                                                                       ##
 ##    Strategy for Freqtrade https://github.com/freqtrade/freqtrade                                      ##
 ##                                                                                                       ##
@@ -49,6 +50,7 @@ else:
 ##                                                                                                       ##
 ###########################################################################################################
 ##               HOLD SUPPORT                                                                            ##
+##                                                                                                       ##
 ##   In case you want to have SOME of the trades to only be sold when on profit, add a file named        ##
 ##   "hold-trades.json" in the same directory as this strategy.                                          ##
 ##                                                                                                       ##
@@ -76,6 +78,10 @@ else:
 ##   ETH (ERC20): 0x83D3cFb8001BDC5d2211cBeBB8cB3461E5f7Ec91                                             ##
 ##   BEP20/BSC (ETH, BNB, ...): 0x86A0B21a20b39d16424B7c8003E4A7e12d78ABEe                               ##
 ##                                                                                                       ##
+##               REFERRAL LINKS                                                                          ##
+##                                                                                                       ##
+##  Binance: https://accounts.binance.com/en/register?ref=37365811                                       ##
+##  Kucoin: https://www.kucoin.com/ucenter/signup?rcode=rJTLZ9K                                          ##
 ###########################################################################################################
 
 
