@@ -469,7 +469,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising"          : True,
             "sma200_1h_rising_val"      : "24",
             "safe_dips"                 : True,
-            "safe_dips_type"            : "20",
+            "safe_dips_type"            : "130",
             "safe_pump"                 : False,
             "safe_pump_type"            : "50",
             "safe_pump_period"          : "24",
@@ -1365,9 +1365,10 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_ewo_12 = 1.8
     buy_cti_12 = -0.7
 
-    buy_ma_offset_13 = 0.99
-    buy_cti_13 = -0.82
-    buy_ewo_13 = -9.0
+    buy_13_ma_offset = 0.99
+    buy_13_cti = -0.82
+    buy_13_ewo = -6.5
+    buy_13_r_1h = -78.0
 
     buy_ema_open_mult_14 = 0.014
     buy_bb_offset_14 = 0.988
@@ -3195,9 +3196,10 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['ema_50_1h'] > dataframe['ema_100_1h'])
 
                     # Logic
-                    item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * self.buy_ma_offset_13)
-                    item_buy_logic.append(dataframe['cti'] < self.buy_cti_13)
-                    item_buy_logic.append(dataframe['ewo'] < self.buy_ewo_13)
+                    item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * self.buy_13_ma_offset)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_13_cti)
+                    item_buy_logic.append(dataframe['ewo'] < self.buy_13_ewo)
+                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_13_r_1h)
 
                 # Condition #14
                 elif index == 14:
