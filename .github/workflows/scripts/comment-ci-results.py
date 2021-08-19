@@ -18,7 +18,7 @@ def sort_report_names(value):
 
 
 def delete_previous_comments(commit, created_comment_ids, exchanges):
-    comment_starts = {f"# {exchange.capitalize()}" for exchange in exchanges}
+    comment_starts = tuple({f"# {exchange.capitalize()}" for exchange in exchanges})
     for comment in commit.get_comments():
         if comment.user.login != "github-actions[bot]":
             # Not a comment made by this bot
@@ -46,12 +46,11 @@ def comment_results(options, results_data):
 
     for exchange in sorted(results_data):
         exchanges.add(exchange)
-        comment_body = f"# {exchange.capitalize()}\n\n"
         sorted_report_names = list(
             reversed(sorted(results_data[exchange]["names"], key=sort_report_names))
         )
         for timerange in results_data[exchange]["timeranges"]:
-            comment_body += f"## {timerange}\n\n"
+            comment_body = f"## {exchange.capitalize()} - {timerange}\n\n"
             report_table_header_1 = f"| "
             report_table_header_2 = "| --: "
             for report_name in sorted_report_names:
@@ -129,9 +128,9 @@ def comment_results(options, results_data):
             comment_body += f"<pre>{ft_output.read_text().strip()}</pre>\n"
             comment_body += "</details>\n"
             comment_body += "\n\n"
-        comment = commit.create_comment(comment_body.rstrip())
-        print(f"Created Comment: {comment}", file=sys.stderr, flush=True)
-        comment_ids.add(comment.id)
+            comment = commit.create_comment(comment_body.rstrip())
+            print(f"Created Comment: {comment}", file=sys.stderr, flush=True)
+            comment_ids.add(comment.id)
 
     delete_previous_comments(commit, comment_ids, exchanges)
 
