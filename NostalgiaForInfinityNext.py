@@ -1536,9 +1536,9 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_43_r = -90.0
 
     buy_44_ma_offset = 0.982
-    buy_44_ewo = -18.143
-    buy_44_cti = -0.8
-    buy_44_r_1h = -75.0
+    buy_44_ewo = -18.0
+    buy_44_cti = -0.73
+    buy_44_crsi_1h = 10.0
 
     # Sell
 
@@ -2933,6 +2933,11 @@ class NostalgiaForInfinityNext(IStrategy):
         # CTI
         informative_1h['cti'] = pta.cti(informative_1h["close"], length=20)
 
+        # CRSI (3, 2, 100)
+        crsi_closechange = informative_1h['close'] / informative_1h['close'].shift(1)
+        crsi_updown = np.where(crsi_closechange.gt(1), 1.0, np.where(crsi_closechange.lt(1), -1.0, 0.0))
+        informative_1h['crsi'] =  (ta.RSI(informative_1h['close'], timeperiod=3) + ta.RSI(crsi_updown, timeperiod=2) + ta.ROC(informative_1h['close'], 100)) / 3
+
         # Ichimoku
         ichi = ichimoku(informative_1h, conversion_line_period=20, base_line_periods=60, laggin_span=120, displacement=30)
         informative_1h['chikou_span'] = ichi['chikou_span']
@@ -3844,7 +3849,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['close'] < (dataframe['ema_16'] * self.buy_44_ma_offset))
                     item_buy_logic.append(dataframe['ewo'] < self.buy_44_ewo)
                     item_buy_logic.append(dataframe['cti'] < self.buy_44_cti)
-                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_44_r_1h)
+                    item_buy_logic.append(dataframe['crsi_1h'] > self.buy_44_crsi_1h)
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
