@@ -545,8 +545,8 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
             "safe_dips"                 : True,
-            "safe_dips_type"            : "120",
-            "safe_pump"                 : True,
+            "safe_dips_type"            : "130",
+            "safe_pump"                 : False,
             "safe_pump_type"            : "120",
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
@@ -1381,10 +1381,12 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_ewo_16 = 2.8
     buy_cti_16 = -0.84
 
-    buy_ma_offset_17 = 0.99
-    buy_ewo_17 = -9.4
-    buy_cti_17 = -0.96
-    buy_volume_17 = 2.0
+    buy_17_ma_offset = 0.99
+    buy_17_ewo = -9.6
+    buy_17_cti = -0.96
+    buy_17_cti_1h = -0.92
+    buy_17_r_1h = -20.0
+    buy_17_volume = 2.0
 
     buy_rsi_18 = 33.0
     buy_bb_offset_18 = 0.986
@@ -3439,10 +3441,12 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Non-Standard protections
 
                     # Logic
-                    item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_ma_offset_17)
-                    item_buy_logic.append(dataframe['ewo'] < self.buy_ewo_17)
-                    item_buy_logic.append(dataframe['cti'] < self.buy_cti_17)
-                    item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_volume_17))
+                    item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_17_ma_offset)
+                    item_buy_logic.append(dataframe['ewo'] < self.buy_17_ewo)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_17_cti)
+                    item_buy_logic.append(dataframe['cti_1h'] > self.buy_17_cti_1h)
+                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_17_r_1h)
+                    item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_17_volume))
 
                 # Condition #18
                 elif index == 18:
