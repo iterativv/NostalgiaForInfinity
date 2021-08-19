@@ -12,11 +12,13 @@ from freqtrade.exchange import timeframe_to_prev_date
 from pandas import DataFrame, Series, concat
 from functools import reduce
 import math
+from typing import Dict
 from freqtrade.persistence import Trade
 from datetime import datetime, timedelta
 from technical.util import resample_to_interval, resampled_merge
 from technical.indicators import zema, VIDYA, ichimoku
-
+import os
+import json
 
 log = logging.getLogger(__name__)
 
@@ -133,6 +135,9 @@ class NostalgiaForInfinityNext(IStrategy):
     # Number of candles the strategy requires before producing valid signals
     startup_candle_count: int = 480
 
+    # Initialize custom_info
+    custom_info = {}
+
     # Optional order type mapping.
     order_types = {
         'buy': 'limit',
@@ -205,6 +210,13 @@ class NostalgiaForInfinityNext(IStrategy):
         "sell_condition_6_enable": True,
         "sell_condition_7_enable": True,
         "sell_condition_8_enable": True,
+        #############
+    }
+
+    profit_target_params = {
+        #############
+        # Enable/Disable conditions
+        "profit_target_1_enable": False,
         #############
     }
 
@@ -1825,6 +1837,8 @@ class NostalgiaForInfinityNext(IStrategy):
     sell_custom_long_profit_max_1 = 0.04
     sell_custom_long_duration_min_1 = 900
 
+    # Profit Target Signal
+    profit_target_1_enable = False
     #############################################################
 
     hold_trades_cache = None
@@ -2071,6 +2085,12 @@ class NostalgiaForInfinityNext(IStrategy):
         """
         if self.holdSupportEnabled and self.config['runmode'].value in ('live', 'dry_run'):
             self.load_hold_trades_config()
+
+            # Load custom_info for initial else save every loop start
+            if not self.custom_info:
+                self.custom_info = get_profit_target_by_pair()
+            else:
+                save_profit_target_by_pair(self.custom_info)
         return super().bot_loop_start(**kwargs)
 
     def get_ticker_indicator(self):
@@ -2530,6 +2550,20 @@ class NostalgiaForInfinityNext(IStrategy):
 
         return False, None
 
+
+    def mark_profit_target(self, pair: str, trade: "Trade", current_time: "datetime", current_rate: float, current_profit: float, last_candle, previous_candle_1) -> tuple:
+        # if self.profit_target_1_enable:
+        #     if (current_profit > 0) and (last_candle['zlema_4_lowKF'] > last_candle['lowKF']) and (previous_candle_1['zlema_4_lowKF'] < previous_candle_1['lowKF']) and (last_candle['cci'] > -100) and (last_candle['hrsi'] > 70):
+        #         return pair, "mark_profit_target_01"
+        return None, None
+
+    def sell_profit_target(self, pair: str, trade: "Trade", current_time: "datetime", current_rate: float, current_profit: float, last_candle, previous_candle_1, previous_rate, previous_sell_reason, previous_time_profit_reached) -> tuple:
+        # if self.profit_target_1_enable and previous_sell_reason == "mark_profit_target_01":
+        #     if (current_profit > 0) and (current_rate < (previous_rate - 0.005)):
+        #         return True, 'sell_profit_target_01'
+
+        return False, None
+
     def sell_quick_mode(self, current_profit: float, max_profit:float, last_candle, previous_candle_1) -> tuple:
         if (0.06 > current_profit > 0.02) and (last_candle['rsi_14'] > 80.0):
             return True, 'signal_profit_q_1'
@@ -2687,6 +2721,21 @@ class NostalgiaForInfinityNext(IStrategy):
         sell, signal_name = self.sell_r_4(current_profit, last_candle)
         if (sell) and (signal_name is not None):
             return signal_name + ' ( ' + buy_tag + ')'
+
+        # Profit Target Signal
+        # Check if pair exist on custom_info
+        if pair in self.custom_info.keys():
+            previous_rate = self.custom_info[pair]['rate']
+            previous_sell_reason = self.custom_info[pair]['sell_reason']
+            previous_time_profit_reached = datetime.fromisoformat(self.custom_info[pair]['time_profit_reached'])
+
+            sell, signal_name = self.sell_profit_target(pair, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1, previous_rate, previous_sell_reason, previous_time_profit_reached)
+            if (sell) and (signal_name is not None):
+                return signal_name + ' ( ' + buy_tag + ')'
+
+        pair, mark_signal = self.mark_profit_target(pair, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
+        if pair:
+            self._set_profit_target(pair, mark_signal, current_rate, current_time)
 
         # Sell signal 1
         if self.sell_condition_1_enable and (last_candle['rsi_14'] > self.sell_rsi_bb_1) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']) and (previous_candle_3['close'] > previous_candle_3['bb20_2_upp']) and (previous_candle_4['close'] > previous_candle_4['bb20_2_upp']) and (previous_candle_5['close'] > previous_candle_5['bb20_2_upp']):
@@ -3827,6 +3876,25 @@ class NostalgiaForInfinityNext(IStrategy):
         :return bool: When True is returned, then the sell-order is placed on the exchange.
             False aborts the process
         """
+        if self._should_hold_trade(trade, rate, sell_reason):
+            return False
+
+        self._remove_profit_target(pair)
+        return True
+
+    def _set_profit_target(self, pair: str, sell_reason: str, rate: float, current_time: "datetime"):
+        self.custom_info[pair] = {
+            "rate": rate,
+            "sell_reason": sell_reason,
+            "time_profit_reached": current_time.isoformat()
+        }
+
+    def _remove_profit_target(self, pair: str):
+        if pair in self.custom_info.keys():
+            self.custom_info.pop(pair)
+
+    def _should_hold_trade(self, trade: "Trade", rate: float, sell_reason: str) -> bool:
+
         # Just to be sure our hold data is loaded, should be a no-op call after the first bot loop
         if self.holdSupportEnabled and self.config['runmode'].value in ('live', 'dry_run'):
             self.load_hold_trades_config()
@@ -3837,11 +3905,11 @@ class NostalgiaForInfinityNext(IStrategy):
 
             if not self.hold_trades_cache.data:
                 # We have no pairs we want to hold until profit, sell
-                return True
+                return False
 
             if trade.id not in self.hold_trades_cache.data:
                 # This pair is not on the list to hold until profit, sell
-                return True
+                return False
 
             trade_profit_ratio = self.hold_trades_cache.data[trade.id]
             current_profit_ratio = trade.calc_profit_ratio(rate)
@@ -3852,15 +3920,15 @@ class NostalgiaForInfinityNext(IStrategy):
                     "Force selling %s even though the current profit of %s < %s",
                     trade, formatted_current_profit_ratio, formatted_profit_ratio
                 )
-                return True
+                return False
             elif current_profit_ratio >= trade_profit_ratio:
                 # This pair is on the list to hold, and we reached minimum profit, sell
-                return True
+                return False
 
             # This pair is on the list to hold, and we haven't reached minimum profit, hold
-            return False
-        else:
             return True
+        else:
+            return False
 
 # Elliot Wave Oscillator
 def ewo(dataframe, sma1_length=5, sma2_length=35):
@@ -4213,3 +4281,23 @@ class HoldsCache(Cache):
                     )
 
         return rdata
+
+
+
+# ------------------------------
+# Utility
+# ------------------------------
+USER_DATA_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_NFI_TARGET_PROFIT_BY_PAIR_PATH = os.path.join(
+    USER_DATA_DIR, "data-nfi-profit_target_by_pair.json")
+
+def get_profit_target_by_pair() -> Dict:
+    if not os.path.isfile(DATA_NFI_TARGET_PROFIT_BY_PAIR_PATH):
+        return {}
+    f = open(DATA_NFI_TARGET_PROFIT_BY_PAIR_PATH)
+    return json.load(f)
+
+def save_profit_target_by_pair(profit_target_by_pair: Dict):
+    file1 = open(DATA_NFI_TARGET_PROFIT_BY_PAIR_PATH, "w")
+    file1.write(json.dumps(profit_target_by_pair))
+    file1.close()
