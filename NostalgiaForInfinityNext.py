@@ -3916,7 +3916,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
             if not self.hold_trades_cache:
                 # Cache hasn't been setup, likely because the corresponding file does not exist, sell
-                return True
+                return False
 
             if not self.hold_trades_cache.data:
                 # We have no pairs we want to hold until profit, sell
