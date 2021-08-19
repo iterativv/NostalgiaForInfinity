@@ -1468,7 +1468,7 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_31_ma_offset = 0.962
     buy_31_ewo = -10.4
     buy_31_wr = -90.0
-    buy_31_cti = -0.89
+    buy_31_cti = -0.898
 
     buy_32_ma_offset = 0.934
     buy_32_dip = 0.005
