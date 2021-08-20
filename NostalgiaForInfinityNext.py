@@ -3994,7 +3994,7 @@ class NostalgiaForInfinityNext(IStrategy):
                 # This pair is not on the list to hold until profit, sell
                 return False
 
-            trade_profit_ratio = trade_pairs[trade.id]
+            trade_profit_ratio = trade_pairs[trade.pair]
             current_profit_ratio = trade.calc_profit_ratio(rate)
             if sell_reason == "force_sell":
                 formatted_profit_ratio = "{}%".format(trade_profit_ratio * 100)
