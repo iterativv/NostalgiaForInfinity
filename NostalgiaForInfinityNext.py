@@ -4322,13 +4322,11 @@ class HoldsCache(Cache):
         if not trade_ids and not trade_pairs:
             return data
 
-        r_trade_ids = {}
-        open_trades = {
-            trade.id: trade for trade in Trade.get_trades_proxy(is_open=True)
-        }
-        for trade in open_trades.values():
-            open_trades[trade.pair] = trade
+        open_trades = {}
+        for trade in Trade.get_trades_proxy(is_open=True):
+            open_trades[trade.id] = open_trades[trade.pair] = trade
 
+        r_trade_ids = {}
         if trade_ids:
             if isinstance(trade_ids, dict):
                 # New syntax
