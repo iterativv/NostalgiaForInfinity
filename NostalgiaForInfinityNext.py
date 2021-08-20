@@ -1446,8 +1446,9 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_23_r_1h = -80.0
 
     buy_24_rsi_max = 50.0
-    buy_24_rsi_1h_min = 62.0
-    buy_24_crsi_1h = 57.5
+    buy_24_rsi_1h_min = 60.0
+    buy_24_crsi_1h = 53.0
+    buy_24_cti_1h = 0.38
 
     buy_25_ma_offset = 0.922
     buy_25_rsi_4 = 38.0
@@ -3633,6 +3634,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['rsi_14'] < self.buy_24_rsi_max)
                     item_buy_logic.append(dataframe['rsi_14_1h'] > self.buy_24_rsi_1h_min)
                     item_buy_logic.append(dataframe['crsi_1h'] > self.buy_24_crsi_1h)
+                    item_buy_logic.append(dataframe['cti_1h'] > self.buy_24_cti_1h)
 
                 # Condition #25
                 elif index == 25:
