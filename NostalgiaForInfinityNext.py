@@ -5,7 +5,6 @@ import rapidjson
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 import numpy as np
 import talib.abstract as ta
-from freqtrade.misc import json_load, file_dump_json
 from freqtrade.strategy.interface import IStrategy
 from freqtrade.strategy import merge_informative_pair, timeframe_to_minutes
 from freqtrade.exchange import timeframe_to_prev_date
@@ -25,7 +24,11 @@ log = logging.getLogger(__name__)
 try:
     import pandas_ta as pta
 except ImportError:
-    log.error("IMPORTANT - please install the pandas_ta python module which is needed for this strategy. If you're running Docker, add RUN pip install pandas_ta to your Dockerfile, otherwise run: pip install pandas_ta")
+    log.error(
+        "IMPORTANT - please install the pandas_ta python module which is needed for this strategy. "
+        "If you're running Docker, add RUN pip install pandas_ta to your Dockerfile, otherwise run: "
+        "pip install pandas_ta"
+    )
 else:
     log.info("pandas_ta successfully imported")
 
@@ -52,8 +55,9 @@ else:
 ###########################################################################################################
 ##               HOLD SUPPORT                                                                            ##
 ##                                                                                                       ##
+## -------- SPECIFIC TRADES ---------------------------------------------------------------------------- ##
 ##   In case you want to have SOME of the trades to only be sold when on profit, add a file named        ##
-##   "hold-trades.json" in the same directory as this strategy.                                          ##
+##   "nfi-hold-trades.json" in the user_data directory                                                   ##
 ##                                                                                                       ##
 ##   The contents should be similar to:                                                                  ##
 ##                                                                                                       ##
@@ -68,8 +72,18 @@ else:
 ##      output of the telegram status command.                                                           ##
 ##    * Regardless of the defined profit ratio(s), the strategy MUST still produce a SELL signal for the ##
 ##      HOLD support logic to run                                                                        ##
-##    * This feature can be completely disabled with the holdSupportEnabled parameter                    ##
+##    * This feature can be completely disabled with the holdSupportEnabled class attribute              ##
 ##                                                                                                       ##
+## -------- SPECIFIC PAIRS ----------------------------------------------------------------------------- ##
+##   In case you want to have some pairs to always be on held until a specific profit, using the same    ##
+##   "hold-trades.json" file add something like:                                                         ##
+##                                                                                                       ##
+##   {"trade_pairs": {"BTC/USDT": 0.001, "ETH/USDT": -0.005}}                                            ##
+##                                                                                                       ##
+## -------- SPECIFIC TRADES AND PAIRS ------------------------------------------------------------------ ##
+##   It is also valid to include specific trades and pairs on the holds file, for example:               ##
+##                                                                                                       ##
+##   {"trade_ids": {"1": 0.001}, "trade_pairs": {"BTC/USDT": 0.001}}                                     ##
 ###########################################################################################################
 ##               DONATIONS                                                                               ##
 ##                                                                                                       ##
@@ -2057,31 +2071,36 @@ class NostalgiaForInfinityNext(IStrategy):
     target_profit_cache = None
     #############################################################
 
-    @staticmethod
-    def get_hold_trades_config_file():
+    def get_hold_trades_config_file(self):
+        proper_holds_file_path = self.config["user_data_dir"].resolve() / "nfi-hold-trades.json"
+        if proper_holds_file_path.is_file():
+            return proper_holds_file_path
+
         strat_file_path = pathlib.Path(__file__)
         hold_trades_config_file_resolve = strat_file_path.resolve().parent / "hold-trades.json"
         if hold_trades_config_file_resolve.is_file():
+            log.warning(
+                "Please move %s to %s which is now the expected path for the holds file",
+                hold_trades_config_file_resolve,
+                proper_holds_file_path,
+            )
             return hold_trades_config_file_resolve
 
         # The resolved path does not exist, is it a symlink?
         hold_trades_config_file_absolute = strat_file_path.absolute().parent / "hold-trades.json"
         if hold_trades_config_file_absolute.is_file():
+            log.warning(
+                "Please move %s to %s which is now the expected path for the holds file",
+                hold_trades_config_file_absolute,
+                proper_holds_file_path,
+            )
             return hold_trades_config_file_absolute
-
-        if hold_trades_config_file_resolve != hold_trades_config_file_absolute:
-            looked_in = f"'{hold_trades_config_file_resolve}' and '{hold_trades_config_file_absolute}'"
-        else:
-            looked_in = f"'{hold_trades_config_file_resolve}'"
-        log.warning(
-            "The 'hold-trades.json' file was not found. Looked in %s. HOLD support disabled.",
-            looked_in
-        )
 
     def load_hold_trades_config(self):
         if self.hold_trades_cache is None:
-            hold_trades_config_file = NostalgiaForInfinityNext.get_hold_trades_config_file()
+            hold_trades_config_file = self.get_hold_trades_config_file()
             if hold_trades_config_file:
+                log.warning("Loading hold support data from %s", hold_trades_config_file)
                 self.hold_trades_cache = HoldsCache(hold_trades_config_file)
 
         if self.hold_trades_cache:
@@ -3929,23 +3948,30 @@ class NostalgiaForInfinityNext(IStrategy):
             self.target_profit_cache.save()
 
     def _should_hold_trade(self, trade: "Trade", rate: float, sell_reason: str) -> bool:
+        if self.config['runmode'].value not in ('live', 'dry_run'):
+            return False
+
+        if not self.holdSupportEnabled:
+            return False
+
         # Just to be sure our hold data is loaded, should be a no-op call after the first bot loop
-        if self.holdSupportEnabled and self.config['runmode'].value in ('live', 'dry_run'):
-            self.load_hold_trades_config()
+        self.load_hold_trades_config()
 
-            if not self.hold_trades_cache:
-                # Cache hasn't been setup, likely because the corresponding file does not exist, sell
-                return False
+        if not self.hold_trades_cache:
+            # Cache hasn't been setup, likely because the corresponding file does not exist, sell
+            return False
 
-            if not self.hold_trades_cache.data:
-                # We have no pairs we want to hold until profit, sell
-                return False
+        if not self.hold_trades_cache.data:
+            # We have no pairs we want to hold until profit, sell
+            return False
 
-            if trade.id not in self.hold_trades_cache.data:
+        trade_ids: dict = self.hold_trades_cache.data.get("trade_ids")
+        if trade_ids:
+            if trade.id not in trade_ids:
                 # This pair is not on the list to hold until profit, sell
                 return False
 
-            trade_profit_ratio = self.hold_trades_cache.data[trade.id]
+            trade_profit_ratio = trade_ids[trade.id]
             current_profit_ratio = trade.calc_profit_ratio(rate)
             if sell_reason == "force_sell":
                 formatted_profit_ratio = "{}%".format(trade_profit_ratio * 100)
@@ -3961,8 +3987,31 @@ class NostalgiaForInfinityNext(IStrategy):
 
             # This pair is on the list to hold, and we haven't reached minimum profit, hold
             return True
-        else:
-            return False
+
+        trade_pairs: dict = self.hold_trades_cache.data.get("trade_pairs")
+        if trade_pairs:
+            if trade.pair not in trade_pairs:
+                # This pair is not on the list to hold until profit, sell
+                return False
+
+            trade_profit_ratio = trade_pairs[trade.id]
+            current_profit_ratio = trade.calc_profit_ratio(rate)
+            if sell_reason == "force_sell":
+                formatted_profit_ratio = "{}%".format(trade_profit_ratio * 100)
+                formatted_current_profit_ratio = "{}%".format(current_profit_ratio * 100)
+                log.warning(
+                    "Force selling %s even though the current profit of %s < %s",
+                    trade, formatted_current_profit_ratio, formatted_profit_ratio
+                )
+                return False
+            elif current_profit_ratio >= trade_profit_ratio:
+                # This pair is on the list to hold, and we reached minimum profit, sell
+                return False
+
+            # This pair is on the list to hold, and we haven't reached minimum profit, hold
+            return True
+        # By default, no hold should be done
+        return False
 
 # Elliot Wave Oscillator
 def ewo(dataframe, sma1_length=5, sma2_length=35):
@@ -4202,6 +4251,14 @@ class Cache:
         except FileNotFoundError:
             pass
 
+    @staticmethod
+    def rapidjson_load_kwargs():
+        return {"number_mode": rapidjson.NM_NATIVE}
+
+    @staticmethod
+    def rapidjson_dump_kwargs():
+        return {"number_mode": rapidjson.NM_NATIVE}
+
     def load(self):
         if not self._mtime or self.path.stat().st_mtime_ns != self._mtime:
             self._load()
@@ -4217,7 +4274,10 @@ class Cache:
         # This method only exists to simplify unit testing
         with self.path.open("r") as rfh:
             try:
-                data = json_load(rfh)
+                data = rapidjson.load(
+                    rfh,
+                    **self.rapidjson_load_kwargs()
+                )
             except rapidjson.JSONDecodeError as exc:
                 log.error("Failed to load JSON from %s: %s", self.path, exc)
             else:
@@ -4227,91 +4287,150 @@ class Cache:
 
     def _save(self):
         # This method only exists to simplify unit testing
-        file_dump_json(self.path, self.data, is_zip=False, log=True)
+        rapidjson.dump(
+            self.data,
+            self.path.open("w"),
+            **self.rapidjson_dump_kwargs()
+        )
         self._mtime = self.path.stat().st_mtime
         self._previous_data = copy.deepcopy(self.data)
 
 
 class HoldsCache(Cache):
 
+    @staticmethod
+    def rapidjson_load_kwargs():
+        return {
+            "number_mode": rapidjson.NM_NATIVE,
+            "object_hook": HoldsCache._object_hook,
+        }
+
+    @staticmethod
+    def rapidjson_dump_kwargs():
+        return {
+            "number_mode": rapidjson.NM_NATIVE,
+            "mapping_mode": rapidjson.MM_COERCE_KEYS_TO_STRINGS,
+        }
+
     def save(self):
         raise RuntimeError("The holds cache does not allow programatical save")
 
     def process_loaded_data(self, data):
         trade_ids = data.get("trade_ids")
+        trade_pairs = data.get("trade_pairs")
 
-        if not trade_ids:
-            return {}
+        if not trade_ids and not trade_pairs:
+            return data
 
-        rdata = {}
+        r_trade_ids = {}
         open_trades = {
             trade.id: trade for trade in Trade.get_trades_proxy(is_open=True)
         }
 
-        if isinstance(trade_ids, dict):
-            # New syntax
-            for trade_id, profit_ratio in trade_ids.items():
-                try:
-                    trade_id = int(trade_id)
-                except ValueError:
-                    log.error(
-                        "The trade_id(%s) defined under 'trade_ids' in %s is not an integer",
-                        trade_id, self.path
-                    )
-                    continue
-                if not isinstance(profit_ratio, float):
-                    log.error(
-                        "The 'profit_ratio' config value(%s) for trade_id %s in %s is not a float",
-                        profit_ratio,
-                        trade_id,
-                        self.path
-                    )
-                if trade_id in open_trades:
-                    formatted_profit_ratio = "{}%".format(profit_ratio * 100)
-                    log.warning(
-                        "The trade %s is configured to HOLD until the profit ratio of %s is met",
-                        open_trades[trade_id],
-                        formatted_profit_ratio
-                    )
-                    rdata[trade_id] = profit_ratio
-                else:
-                    log.warning(
-                        "The trade_id(%s) is no longer open. Please remove it from 'trade_ids' in %s",
-                        trade_id,
-                        self.path
-                    )
-        else:
-            # Initial Syntax
-            profit_ratio = data.get("profit_ratio")
-            if profit_ratio:
-                if not isinstance(profit_ratio, float):
-                    log.error(
-                        "The 'profit_ratio' config value(%s) in %s is not a float",
-                        profit_ratio,
-                        self.path
-                    )
+        if trade_ids:
+            if isinstance(trade_ids, dict):
+                # New syntax
+                for trade_id, profit_ratio in trade_ids.items():
+                    if not isinstance(trade_id, int):
+                        log.error(
+                            "The trade_id(%s) defined under 'trade_ids' in %s is not an integer",
+                            trade_id, self.path
+                        )
+                        continue
+                    if not isinstance(profit_ratio, float):
+                        log.error(
+                            "The 'profit_ratio' config value(%s) for trade_id %s in %s is not a float",
+                            profit_ratio,
+                            trade_id,
+                            self.path
+                        )
+                    if trade_id in open_trades:
+                        formatted_profit_ratio = "{}%".format(profit_ratio * 100)
+                        log.warning(
+                            "The trade %s is configured to HOLD until the profit ratio of %s is met",
+                            open_trades[trade_id],
+                            formatted_profit_ratio
+                        )
+                        r_trade_ids[trade_id] = profit_ratio
+                    else:
+                        log.warning(
+                            "The trade_id(%s) is no longer open. Please remove it from 'trade_ids' in %s",
+                            trade_id,
+                            self.path
+                        )
             else:
-                profit_ratio = 0.005
-            formatted_profit_ratio = "{}%".format(profit_ratio * 100)
-            for trade_id in trade_ids:
-                if not isinstance(trade_id, int):
+                # Initial Syntax
+                profit_ratio = data.get("profit_ratio")
+                if profit_ratio:
+                    if not isinstance(profit_ratio, float):
+                        log.error(
+                            "The 'profit_ratio' config value(%s) in %s is not a float",
+                            profit_ratio,
+                            self.path
+                        )
+                else:
+                    profit_ratio = 0.005
+                formatted_profit_ratio = "{}%".format(profit_ratio * 100)
+                for trade_id in trade_ids:
+                    if not isinstance(trade_id, int):
+                        log.error(
+                            "The trade_id(%s) defined under 'trade_ids' in %s is not an integer",
+                            trade_id, self.path
+                        )
+                        continue
+                    if trade_id in open_trades:
+                        log.warning(
+                            "The trade %s is configured to HOLD until the profit ratio of %s is met",
+                            open_trades[trade_id],
+                            formatted_profit_ratio
+                        )
+                        r_trade_ids[trade_id] = profit_ratio
+                    else:
+                        log.warning(
+                            "The trade_id(%s) is no longer open. Please remove it from 'trade_ids' in %s",
+                            trade_id,
+                            self.path
+                        )
+
+        r_trade_pairs = {}
+        if trade_pairs:
+            for trade_pair, profit_ratio in trade_pairs.items():
+                if not isinstance(trade_pair, str):
                     log.error(
-                        "The trade_id(%s) defined under 'trade_ids' in %s is not an integer",
-                        trade_id, self.path
+                        "The trade_pair(%s) defined under 'trade_pairs' in %s is not a string",
+                        trade_pair, self.path
                     )
                     continue
-                if trade_id in open_trades:
-                    log.warning(
-                        "The trade %s is configured to HOLD until the profit ratio of %s is met",
-                        open_trades[trade_id],
-                        formatted_profit_ratio
+                if "/" not in trade_pair:
+                    log.error(
+                        "The trade_pair(%s) defined under 'trade_pairs' in %s does not look like "
+                        "a valid '<TOKEN_NAME>/<STAKE_CURRENCY>' formatted pair.",
+                        trade_pair, self.path
                     )
-                    rdata[trade_id] = profit_ratio
-                else:
-                    log.warning(
-                        "The trade_id(%s) is no longer open. Please remove it from 'trade_ids' in %s",
-                        trade_id,
+                    continue
+                if not isinstance(profit_ratio, float):
+                    log.error(
+                        "The 'profit_ratio' config value(%s) for trade_pair %s in %s is not a float",
+                        profit_ratio,
+                        trade_pair,
                         self.path
                     )
+                r_trade_pairs[trade_pair] = profit_ratio
 
-        return rdata
+        r_data = {}
+        if r_trade_ids:
+            r_data["trade_ids"] = r_trade_ids
+        if r_trade_pairs:
+            r_data["trade_pairs"] = r_trade_pairs
+        return r_data
+
+    @staticmethod
+    def _object_hook(data):
+        _data = {}
+        for key, value in data.items():
+            try:
+                key = int(key)
+            except ValueError:
+                pass
+            _data[key] = value
+        return _data
