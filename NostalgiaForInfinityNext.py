@@ -2740,7 +2740,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
         # Profit Target Signal
         # Check if pair exist on target_profit_cache
-        if pair in self.target_profit_cache.data:
+        if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
             previous_rate = self.target_profit_cache.data[pair]['rate']
             previous_sell_reason = self.target_profit_cache.data[pair]['sell_reason']
             previous_time_profit_reached = datetime.fromisoformat(self.target_profit_cache.data[pair]['time_profit_reached'])
@@ -3922,8 +3922,9 @@ class NostalgiaForInfinityNext(IStrategy):
         self.target_profit_cache.save()
 
     def _remove_profit_target(self, pair: str):
-        self.target_profit_cache.data.pop(pair, None)
-        self.target_profit_cache.save()
+        if self.target_profit_cache is not None:
+            self.target_profit_cache.data.pop(pair, None)
+            self.target_profit_cache.save()
 
     def _should_hold_trade(self, trade: "Trade", rate: float, sell_reason: str) -> bool:
         # Just to be sure our hold data is loaded, should be a no-op call after the first bot loop
