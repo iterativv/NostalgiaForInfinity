@@ -696,9 +696,9 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising"          : True,
             "sma200_1h_rising_val"      : "36",
             "safe_dips"                 : True,
-            "safe_dips_type"            : "20",
+            "safe_dips_type"            : "130",
             "safe_pump"                 : False,
-            "safe_pump_type"            : "50",
+            "safe_pump_type"            : "10",
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
         },
@@ -1432,7 +1432,8 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_23_r_1h = -80.0
 
     buy_24_rsi_max = 50.0
-    buy_24_rsi_1h_min = 66.9
+    buy_24_rsi_1h_min = 62.0
+    buy_24_crsi_1h = 57.5
 
     buy_25_ma_offset = 0.922
     buy_25_rsi_4 = 38.0
@@ -3612,6 +3613,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['cmf_1h'] > 0)
                     item_buy_logic.append(dataframe['rsi_14'] < self.buy_24_rsi_max)
                     item_buy_logic.append(dataframe['rsi_14_1h'] > self.buy_24_rsi_1h_min)
+                    item_buy_logic.append(dataframe['crsi_1h'] > self.buy_24_crsi_1h)
 
                 # Condition #25
                 elif index == 25:
