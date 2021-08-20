@@ -40,13 +40,13 @@ def v2_syntax_hold_file(testdatadir, initial_trade):
 def test_hold_support_v1_syntax(strategy, v1_syntax_hold_file):
     assert strategy.get_hold_trades_config_file() == v1_syntax_hold_file
     strategy.load_hold_trades_config()
-    assert strategy.hold_trades_cache.data == {1: 0.0025}
+    assert strategy.hold_trades_cache.data == {"trade_ids": {1: 0.0025}}
 
 
 def test_hold_support_v2_syntax(strategy, v2_syntax_hold_file):
     assert strategy.get_hold_trades_config_file() == v2_syntax_hold_file
     strategy.load_hold_trades_config()
-    assert strategy.hold_trades_cache.data == {1: 0.0035}
+    assert strategy.hold_trades_cache.data == {"trade_ids": {1: 0.0035}}
 
 
 @pytest.fixture
@@ -64,7 +64,7 @@ def symlink_strat(testdatadir, strategy, initial_trade):
 def test_symlinked_strat_hold_config_file(symlink_strat, testdatadir):
     assert testdatadir.joinpath("strategies", "NostalgiaForInfinityNext.py").is_symlink()
     symlink_strat.load_hold_trades_config()
-    assert symlink_strat.hold_trades_cache.data == {1: 0.0025}
+    assert symlink_strat.hold_trades_cache.data == {"trade_ids": {1: 0.0025}}
 
 
 def test_missing_hold_trades(strategy, caplog, testdatadir):
@@ -104,7 +104,7 @@ def test_missing_hold_trades_symlinked_strat(symlink_strat_no_config, caplog, te
 def test_hold_caches_save_raises_exception(strategy, v2_syntax_hold_file):
     assert strategy.get_hold_trades_config_file() == v2_syntax_hold_file
     strategy.load_hold_trades_config()
-    assert strategy.hold_trades_cache.data == {1: 0.0035}
-    strategy.hold_trades_cache.data[2] = 0.0035
+    assert strategy.hold_trades_cache.data == {"trade_ids": {1: 0.0035}}
+    strategy.hold_trades_cache.data["trade_ids"][2] = 0.0035
     with pytest.raises(RuntimeError):
         strategy.hold_trades_cache.save()

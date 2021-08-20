@@ -67,7 +67,7 @@ else:
 ##      output of the telegram status command.                                                           ##
 ##    * Regardless of the defined profit ratio(s), the strategy MUST still produce a SELL signal for the ##
 ##      HOLD support logic to run                                                                        ##
-##    * This feature can be completely disabled with the holdSupportEnabled parameter                    ##
+##    * This feature can be completely disabled with the holdSupportEnabled class attribute              ##
 ##                                                                                                       ##
 ###########################################################################################################
 ##               DONATIONS                                                                               ##
@@ -3928,23 +3928,30 @@ class NostalgiaForInfinityNext(IStrategy):
             self.target_profit_cache.save()
 
     def _should_hold_trade(self, trade: "Trade", rate: float, sell_reason: str) -> bool:
+        if self.config['runmode'].value not in ('live', 'dry_run'):
+            return False
+
+        if not self.holdSupportEnabled:
+            return False
+
         # Just to be sure our hold data is loaded, should be a no-op call after the first bot loop
-        if self.holdSupportEnabled and self.config['runmode'].value in ('live', 'dry_run'):
-            self.load_hold_trades_config()
+        self.load_hold_trades_config()
 
-            if not self.hold_trades_cache:
-                # Cache hasn't been setup, likely because the corresponding file does not exist, sell
-                return False
+        if not self.hold_trades_cache:
+            # Cache hasn't been setup, likely because the corresponding file does not exist, sell
+            return False
 
-            if not self.hold_trades_cache.data:
-                # We have no pairs we want to hold until profit, sell
-                return False
+        if not self.hold_trades_cache.data:
+            # We have no pairs we want to hold until profit, sell
+            return False
 
-            if trade.id not in self.hold_trades_cache.data:
+        trade_ids: dict = self.hold_trades_cache.data.get("trade_ids")
+        if trade_ids:
+            if trade.id not in trade_ids:
                 # This pair is not on the list to hold until profit, sell
                 return False
 
-            trade_profit_ratio = self.hold_trades_cache.data[trade.id]
+            trade_profit_ratio = trade_ids[trade.id]
             current_profit_ratio = trade.calc_profit_ratio(rate)
             if sell_reason == "force_sell":
                 formatted_profit_ratio = "{}%".format(trade_profit_ratio * 100)
@@ -3960,8 +3967,8 @@ class NostalgiaForInfinityNext(IStrategy):
 
             # This pair is on the list to hold, and we haven't reached minimum profit, hold
             return True
-        else:
-            return False
+        # By default, no hold should be done
+        return False
 
 # Elliot Wave Oscillator
 def ewo(dataframe, sma1_length=5, sma2_length=35):
@@ -4269,7 +4276,7 @@ class HoldsCache(Cache):
         trade_ids = data.get("trade_ids")
 
         if not trade_ids:
-            return {}
+            return data
 
         rdata = {}
         open_trades = {
@@ -4279,9 +4286,7 @@ class HoldsCache(Cache):
         if isinstance(trade_ids, dict):
             # New syntax
             for trade_id, profit_ratio in trade_ids.items():
-                try:
-                    trade_id = int(trade_id)
-                except ValueError:
+                if not isinstance(trade_id, int):
                     log.error(
                         "The trade_id(%s) defined under 'trade_ids' in %s is not an integer",
                         trade_id, self.path
@@ -4342,7 +4347,7 @@ class HoldsCache(Cache):
                         self.path
                     )
 
-        return rdata
+        return {"trade_ids": rdata}
 
     @staticmethod
     def _object_hook(data):
