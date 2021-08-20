@@ -123,7 +123,7 @@ class NostalgiaForInfinityNext(IStrategy):
     has_downtime_protection = False
 
     # Report populate_indicators loop time per pair
-    has_loop_perf_logging = True
+    has_loop_perf_logging = False
 
     # Do you want to use the hold feature? (with hold-trades.json)
     holdSupportEnabled = True
