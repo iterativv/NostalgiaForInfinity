@@ -4326,6 +4326,8 @@ class HoldsCache(Cache):
         open_trades = {
             trade.id: trade for trade in Trade.get_trades_proxy(is_open=True)
         }
+        for trade in open_trades.values():
+            open_trades[trade.pair] = trade
 
         if trade_ids:
             if isinstance(trade_ids, dict):
@@ -4416,11 +4418,18 @@ class HoldsCache(Cache):
                         self.path
                     )
                 formatted_profit_ratio = "{}%".format(profit_ratio * 100)
-                log.warning(
-                    "The trade pair %s is configured to HOLD until the profit ratio of %s is met",
-                    trade_pair,
-                    formatted_profit_ratio
-                )
+                if trade_pair in open_trades:
+                    log.warning(
+                        "The trade %s is configured to HOLD until the profit ratio of %s is met",
+                        open_trades[trade_pair],
+                        formatted_profit_ratio
+                    )
+                else:
+                    log.warning(
+                        "The trade pair %s is configured to HOLD until the profit ratio of %s is met",
+                        trade_pair,
+                        formatted_profit_ratio
+                    )
                 r_trade_pairs[trade_pair] = profit_ratio
 
         r_data = {}
