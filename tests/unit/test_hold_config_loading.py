@@ -37,6 +37,13 @@ def v2_syntax_hold_file(testdatadir, initial_trade):
     return hold_trade_file
 
 
+@pytest.fixture
+def trade_pairs_hold_file(testdatadir, initial_trade):
+    hold_trade_file = testdatadir / "strategies" / "hold-trades.json"
+    hold_trade_file.write_text(json.dumps({"trade_pairs": {"BTC/USDT": 0.0035}}))
+    return hold_trade_file
+
+
 def test_hold_support_v1_syntax(strategy, v1_syntax_hold_file):
     assert strategy.get_hold_trades_config_file() == v1_syntax_hold_file
     strategy.load_hold_trades_config()
@@ -47,6 +54,12 @@ def test_hold_support_v2_syntax(strategy, v2_syntax_hold_file):
     assert strategy.get_hold_trades_config_file() == v2_syntax_hold_file
     strategy.load_hold_trades_config()
     assert strategy.hold_trades_cache.data == {"trade_ids": {1: 0.0035}}
+
+
+def test_trade_paits_hold_support_pairs(strategy, trade_pairs_hold_file):
+    assert strategy.get_hold_trades_config_file() == trade_pairs_hold_file
+    strategy.load_hold_trades_config()
+    assert strategy.hold_trades_cache.data == {"trade_pairs": {"BTC/USDT": 0.0035}}
 
 
 @pytest.fixture

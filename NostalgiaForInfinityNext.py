@@ -24,7 +24,11 @@ log = logging.getLogger(__name__)
 try:
     import pandas_ta as pta
 except ImportError:
-    log.error("IMPORTANT - please install the pandas_ta python module which is needed for this strategy. If you're running Docker, add RUN pip install pandas_ta to your Dockerfile, otherwise run: pip install pandas_ta")
+    log.error(
+        "IMPORTANT - please install the pandas_ta python module which is needed for this strategy. "
+        "If you're running Docker, add RUN pip install pandas_ta to your Dockerfile, otherwise run: "
+        "pip install pandas_ta"
+    )
 else:
     log.info("pandas_ta successfully imported")
 
@@ -51,6 +55,7 @@ else:
 ###########################################################################################################
 ##               HOLD SUPPORT                                                                            ##
 ##                                                                                                       ##
+## -------- SPECIFIC TRADES ---------------------------------------------------------------------------- ##
 ##   In case you want to have SOME of the trades to only be sold when on profit, add a file named        ##
 ##   "hold-trades.json" in the same directory as this strategy.                                          ##
 ##                                                                                                       ##
@@ -69,6 +74,16 @@ else:
 ##      HOLD support logic to run                                                                        ##
 ##    * This feature can be completely disabled with the holdSupportEnabled class attribute              ##
 ##                                                                                                       ##
+## -------- SPECIFIC PAIRS ----------------------------------------------------------------------------- ##
+##   In case you want to have some pairs to always be on held until a specific profit, using the same    ##
+##   "hold-trades.json" file add something like:                                                         ##
+##                                                                                                       ##
+##   {"trade_pairs": {"BTC/USDT": 0.001, "ETH/USDT": -0.005}}                                            ##
+##                                                                                                       ##
+## -------- SPECIFIC TRADES AND PAIRS ------------------------------------------------------------------ ##
+##   It is also valid to include specific trades and pairs on the holds file, for example:               ##
+##                                                                                                       ##
+##   {"trade_ids": {"1": 0.001}, "trade_pairs": {"BTC/USDT": 0.001}}                                     ##
 ###########################################################################################################
 ##               DONATIONS                                                                               ##
 ##                                                                                                       ##
@@ -3967,6 +3982,29 @@ class NostalgiaForInfinityNext(IStrategy):
 
             # This pair is on the list to hold, and we haven't reached minimum profit, hold
             return True
+
+        trade_pairs: dict = self.hold_trades_cache.data.get("trade_pairs")
+        if trade_pairs:
+            if trade.pair not in trade_pairs:
+                # This pair is not on the list to hold until profit, sell
+                return False
+
+            trade_profit_ratio = trade_pairs[trade.id]
+            current_profit_ratio = trade.calc_profit_ratio(rate)
+            if sell_reason == "force_sell":
+                formatted_profit_ratio = "{}%".format(trade_profit_ratio * 100)
+                formatted_current_profit_ratio = "{}%".format(current_profit_ratio * 100)
+                log.warning(
+                    "Force selling %s even though the current profit of %s < %s",
+                    trade, formatted_current_profit_ratio, formatted_profit_ratio
+                )
+                return False
+            elif current_profit_ratio >= trade_profit_ratio:
+                # This pair is on the list to hold, and we reached minimum profit, sell
+                return False
+
+            # This pair is on the list to hold, and we haven't reached minimum profit, hold
+            return True
         # By default, no hold should be done
         return False
 
@@ -4274,80 +4312,112 @@ class HoldsCache(Cache):
 
     def process_loaded_data(self, data):
         trade_ids = data.get("trade_ids")
+        trade_pairs = data.get("trade_pairs")
 
-        if not trade_ids:
+        if not trade_ids and not trade_pairs:
             return data
 
-        rdata = {}
+        r_trade_ids = {}
         open_trades = {
             trade.id: trade for trade in Trade.get_trades_proxy(is_open=True)
         }
 
-        if isinstance(trade_ids, dict):
-            # New syntax
-            for trade_id, profit_ratio in trade_ids.items():
-                if not isinstance(trade_id, int):
-                    log.error(
-                        "The trade_id(%s) defined under 'trade_ids' in %s is not an integer",
-                        trade_id, self.path
-                    )
-                    continue
-                if not isinstance(profit_ratio, float):
-                    log.error(
-                        "The 'profit_ratio' config value(%s) for trade_id %s in %s is not a float",
-                        profit_ratio,
-                        trade_id,
-                        self.path
-                    )
-                if trade_id in open_trades:
-                    formatted_profit_ratio = "{}%".format(profit_ratio * 100)
-                    log.warning(
-                        "The trade %s is configured to HOLD until the profit ratio of %s is met",
-                        open_trades[trade_id],
-                        formatted_profit_ratio
-                    )
-                    rdata[trade_id] = profit_ratio
-                else:
-                    log.warning(
-                        "The trade_id(%s) is no longer open. Please remove it from 'trade_ids' in %s",
-                        trade_id,
-                        self.path
-                    )
-        else:
-            # Initial Syntax
-            profit_ratio = data.get("profit_ratio")
-            if profit_ratio:
-                if not isinstance(profit_ratio, float):
-                    log.error(
-                        "The 'profit_ratio' config value(%s) in %s is not a float",
-                        profit_ratio,
-                        self.path
-                    )
+        if trade_ids:
+            if isinstance(trade_ids, dict):
+                # New syntax
+                for trade_id, profit_ratio in trade_ids.items():
+                    if not isinstance(trade_id, int):
+                        log.error(
+                            "The trade_id(%s) defined under 'trade_ids' in %s is not an integer",
+                            trade_id, self.path
+                        )
+                        continue
+                    if not isinstance(profit_ratio, float):
+                        log.error(
+                            "The 'profit_ratio' config value(%s) for trade_id %s in %s is not a float",
+                            profit_ratio,
+                            trade_id,
+                            self.path
+                        )
+                    if trade_id in open_trades:
+                        formatted_profit_ratio = "{}%".format(profit_ratio * 100)
+                        log.warning(
+                            "The trade %s is configured to HOLD until the profit ratio of %s is met",
+                            open_trades[trade_id],
+                            formatted_profit_ratio
+                        )
+                        r_trade_ids[trade_id] = profit_ratio
+                    else:
+                        log.warning(
+                            "The trade_id(%s) is no longer open. Please remove it from 'trade_ids' in %s",
+                            trade_id,
+                            self.path
+                        )
             else:
-                profit_ratio = 0.005
-            formatted_profit_ratio = "{}%".format(profit_ratio * 100)
-            for trade_id in trade_ids:
-                if not isinstance(trade_id, int):
+                # Initial Syntax
+                profit_ratio = data.get("profit_ratio")
+                if profit_ratio:
+                    if not isinstance(profit_ratio, float):
+                        log.error(
+                            "The 'profit_ratio' config value(%s) in %s is not a float",
+                            profit_ratio,
+                            self.path
+                        )
+                else:
+                    profit_ratio = 0.005
+                formatted_profit_ratio = "{}%".format(profit_ratio * 100)
+                for trade_id in trade_ids:
+                    if not isinstance(trade_id, int):
+                        log.error(
+                            "The trade_id(%s) defined under 'trade_ids' in %s is not an integer",
+                            trade_id, self.path
+                        )
+                        continue
+                    if trade_id in open_trades:
+                        log.warning(
+                            "The trade %s is configured to HOLD until the profit ratio of %s is met",
+                            open_trades[trade_id],
+                            formatted_profit_ratio
+                        )
+                        r_trade_ids[trade_id] = profit_ratio
+                    else:
+                        log.warning(
+                            "The trade_id(%s) is no longer open. Please remove it from 'trade_ids' in %s",
+                            trade_id,
+                            self.path
+                        )
+
+        r_trade_pairs = {}
+        if trade_pairs:
+            for trade_pair, profit_ratio in trade_pairs.items():
+                if not isinstance(trade_pair, str):
                     log.error(
-                        "The trade_id(%s) defined under 'trade_ids' in %s is not an integer",
-                        trade_id, self.path
+                        "The trade_pair(%s) defined under 'trade_pairs' in %s is not a string",
+                        trade_pair, self.path
                     )
                     continue
-                if trade_id in open_trades:
-                    log.warning(
-                        "The trade %s is configured to HOLD until the profit ratio of %s is met",
-                        open_trades[trade_id],
-                        formatted_profit_ratio
+                if "/" not in trade_pair:
+                    log.error(
+                        "The trade_pair(%s) defined under 'trade_pairs' in %s does not look like "
+                        "a valid '<TOKEN_NAME>/<STAKE_CURRENCY>' formatted pair.",
+                        trade_pair, self.path
                     )
-                    rdata[trade_id] = profit_ratio
-                else:
-                    log.warning(
-                        "The trade_id(%s) is no longer open. Please remove it from 'trade_ids' in %s",
-                        trade_id,
+                    continue
+                if not isinstance(profit_ratio, float):
+                    log.error(
+                        "The 'profit_ratio' config value(%s) for trade_pair %s in %s is not a float",
+                        profit_ratio,
+                        trade_pair,
                         self.path
                     )
+                r_trade_pairs[trade_pair] = profit_ratio
 
-        return {"trade_ids": rdata}
+        r_data = {}
+        if r_trade_ids:
+            r_data["trade_ids"] = r_trade_ids
+        if r_trade_pairs:
+            r_data["trade_pairs"] = r_trade_pairs
+        return r_data
 
     @staticmethod
     def _object_hook(data):
