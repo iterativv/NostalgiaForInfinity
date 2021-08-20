@@ -2113,7 +2113,7 @@ class NostalgiaForInfinityNext(IStrategy):
         (e.g. gather some remote resource for comparison)
         :param **kwargs: Ensure to keep this here so updates to this won't break your strategy.
         """
-        if self.config["runmode"] not in ("live", "dry_run"):
+        if self.config["runmode"].value not in ("live", "dry_run"):
             return super().bot_loop_start(**kwargs)
 
         if self.target_profit_cache is None:
