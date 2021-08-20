@@ -57,7 +57,7 @@ else:
 ##                                                                                                       ##
 ## -------- SPECIFIC TRADES ---------------------------------------------------------------------------- ##
 ##   In case you want to have SOME of the trades to only be sold when on profit, add a file named        ##
-##   "hold-trades.json" in the same directory as this strategy.                                          ##
+##   "nfi-hold-trades.json" in the user_data directory                                                   ##
 ##                                                                                                       ##
 ##   The contents should be similar to:                                                                  ##
 ##                                                                                                       ##
@@ -2071,31 +2071,36 @@ class NostalgiaForInfinityNext(IStrategy):
     target_profit_cache = None
     #############################################################
 
-    @staticmethod
-    def get_hold_trades_config_file():
+    def get_hold_trades_config_file(self):
+        proper_holds_file_path = self.config["user_data_dir"].resolve() / "nfi-hold-trades.json"
+        if proper_holds_file_path.is_file():
+            return proper_holds_file_path
+
         strat_file_path = pathlib.Path(__file__)
         hold_trades_config_file_resolve = strat_file_path.resolve().parent / "hold-trades.json"
         if hold_trades_config_file_resolve.is_file():
+            log.warning(
+                "Please move %s to %s which is now the expected path for the holds file",
+                hold_trades_config_file_resolve,
+                proper_holds_file_path,
+            )
             return hold_trades_config_file_resolve
 
         # The resolved path does not exist, is it a symlink?
         hold_trades_config_file_absolute = strat_file_path.absolute().parent / "hold-trades.json"
         if hold_trades_config_file_absolute.is_file():
+            log.warning(
+                "Please move %s to %s which is now the expected path for the holds file",
+                hold_trades_config_file_absolute,
+                proper_holds_file_path,
+            )
             return hold_trades_config_file_absolute
-
-        if hold_trades_config_file_resolve != hold_trades_config_file_absolute:
-            looked_in = f"'{hold_trades_config_file_resolve}' and '{hold_trades_config_file_absolute}'"
-        else:
-            looked_in = f"'{hold_trades_config_file_resolve}'"
-        log.warning(
-            "The 'hold-trades.json' file was not found. Looked in %s. HOLD support disabled.",
-            looked_in
-        )
 
     def load_hold_trades_config(self):
         if self.hold_trades_cache is None:
-            hold_trades_config_file = NostalgiaForInfinityNext.get_hold_trades_config_file()
+            hold_trades_config_file = self.get_hold_trades_config_file()
             if hold_trades_config_file:
+                log.warning("Loading hold support data from %s", hold_trades_config_file)
                 self.hold_trades_cache = HoldsCache(hold_trades_config_file)
 
         if self.hold_trades_cache:

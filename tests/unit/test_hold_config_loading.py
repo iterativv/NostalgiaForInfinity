@@ -80,12 +80,14 @@ def test_symlinked_strat_hold_config_file(symlink_strat, testdatadir):
     assert symlink_strat.hold_trades_cache.data == {"trade_ids": {1: 0.0025}}
 
 
-def test_missing_hold_trades(strategy, caplog, testdatadir):
+def test_move_old_hold_trades(strategy, caplog, testdatadir):
+    hold_trade_file = testdatadir / "strategies" / "hold-trades.json"
+    hold_trade_file.write_text(json.dumps({"trade_ids": {"1": 0.0035}}))
     with caplog.at_level(logging.WARNING, "NostalgiaForInfinityNext"):
         strategy.load_hold_trades_config()
     expected_log_message = (
-        "The 'hold-trades.json' file was not found. Looked in '{}'. HOLD support disabled.".format(
-            testdatadir / "strategies" / "hold-trades.json"
+        "Please move {} to {} which is now the expected path for the holds file".format(
+            hold_trade_file, testdatadir.resolve() / "nfi-hold-trades.json"
         )
     )
     assert expected_log_message in caplog.text
@@ -101,14 +103,17 @@ def symlink_strat_no_config(testdatadir, strategy):
     return strategy
 
 
-def test_missing_hold_trades_symlinked_strat(symlink_strat_no_config, caplog, testdatadir):
+def test_move_old_hold_trades_symlinked_strat(
+    request, symlink_strat_no_config, caplog, testdatadir
+):
+    hold_trade_file = REPO_ROOT / "hold-trades.json"
+    request.addfinalizer(hold_trade_file.unlink)
+    hold_trade_file.write_text(json.dumps({"trade_ids": {"1": 0.0035}}))
     with caplog.at_level(logging.WARNING, "NostalgiaForInfinityNext"):
         symlink_strat_no_config.load_hold_trades_config()
     expected_log_message = (
-        "The 'hold-trades.json' file was not found. Looked in {}. HOLD support disabled.".format(
-            "'{}' and '{}'".format(
-                REPO_ROOT / "hold-trades.json", testdatadir / "strategies" / "hold-trades.json"
-            )
+        "Please move {} to {} which is now the expected path for the holds file".format(
+            hold_trade_file, testdatadir.resolve() / "nfi-hold-trades.json"
         )
     )
     assert expected_log_message in caplog.text
