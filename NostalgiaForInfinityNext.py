@@ -5,7 +5,6 @@ import rapidjson
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 import numpy as np
 import talib.abstract as ta
-from freqtrade.misc import json_load, file_dump_json
 from freqtrade.strategy.interface import IStrategy
 from freqtrade.strategy import merge_informative_pair, timeframe_to_minutes
 from freqtrade.exchange import timeframe_to_prev_date
@@ -4202,6 +4201,14 @@ class Cache:
         except FileNotFoundError:
             pass
 
+    @staticmethod
+    def rapidjson_load_kwargs():
+        return {"number_mode": rapidjson.NM_NATIVE}
+
+    @staticmethod
+    def rapidjson_dump_kwargs():
+        return {"number_mode": rapidjson.NM_NATIVE}
+
     def load(self):
         if not self._mtime or self.path.stat().st_mtime_ns != self._mtime:
             self._load()
@@ -4217,7 +4224,10 @@ class Cache:
         # This method only exists to simplify unit testing
         with self.path.open("r") as rfh:
             try:
-                data = json_load(rfh)
+                data = rapidjson.load(
+                    rfh,
+                    **self.rapidjson_load_kwargs()
+                )
             except rapidjson.JSONDecodeError as exc:
                 log.error("Failed to load JSON from %s: %s", self.path, exc)
             else:
@@ -4227,12 +4237,30 @@ class Cache:
 
     def _save(self):
         # This method only exists to simplify unit testing
-        file_dump_json(self.path, self.data, is_zip=False, log=True)
+        rapidjson.dump(
+            self.data,
+            self.path.open("w"),
+            **self.rapidjson_dump_kwargs()
+        )
         self._mtime = self.path.stat().st_mtime
         self._previous_data = copy.deepcopy(self.data)
 
 
 class HoldsCache(Cache):
+
+    @staticmethod
+    def rapidjson_load_kwargs():
+        return {
+            "number_mode": rapidjson.NM_NATIVE,
+            "object_hook": HoldsCache._object_hook,
+        }
+
+    @staticmethod
+    def rapidjson_dump_kwargs():
+        return {
+            "number_mode": rapidjson.NM_NATIVE,
+            "mapping_mode": rapidjson.MM_COERCE_KEYS_TO_STRINGS,
+        }
 
     def save(self):
         raise RuntimeError("The holds cache does not allow programatical save")
@@ -4315,3 +4343,14 @@ class HoldsCache(Cache):
                     )
 
         return rdata
+
+    @staticmethod
+    def _object_hook(data):
+        _data = {}
+        for key, value in data.items():
+            try:
+                key = int(key)
+            except ValueError:
+                pass
+            _data[key] = value
+        return _data
