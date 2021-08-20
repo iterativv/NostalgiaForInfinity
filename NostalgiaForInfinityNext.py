@@ -19,6 +19,7 @@ from technical.util import resample_to_interval, resampled_merge
 from technical.indicators import zema, VIDYA, ichimoku
 import os
 import json
+import time
 
 log = logging.getLogger(__name__)
 
@@ -120,6 +121,9 @@ class NostalgiaForInfinityNext(IStrategy):
 
     # Exchange Downtime protection
     has_downtime_protection = False
+
+    # Report populate_indicators loop time per pair
+    has_loop_perf_logging = False
 
     # Do you want to use the hold feature? (with hold-trades.json)
     holdSupportEnabled = True
@@ -3231,6 +3235,7 @@ class NostalgiaForInfinityNext(IStrategy):
         return dataframe
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        tik = time.perf_counter()
         '''
         --> BTC informative (5m/1h)
         ___________________________________________________________________________________________
@@ -3278,6 +3283,11 @@ class NostalgiaForInfinityNext(IStrategy):
         ___________________________________________________________________________________________
         '''
         dataframe = self.normal_tf_indicators(dataframe, metadata)
+
+        tok = time.perf_counter()
+        if self.has_loop_perf_logging:
+            log.info(f"Populate indicators for pair: {metadata['pair']} took {tok - tik:0.4f} seconds.")
+
         return dataframe
 
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
