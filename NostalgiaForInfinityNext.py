@@ -1431,11 +1431,14 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_cti_21 = -0.902
     buy_volume_21 = 2.0
 
-    buy_volume_22 = 2.0
-    buy_bb_offset_22 = 0.984
-    buy_ma_offset_22 = 0.942
-    buy_ewo_22 = 5.8
-    buy_rsi_22 = 36.0
+    buy_22_volume = 2.0
+    buy_22_bb_offset = 0.984
+    buy_22_ma_offset = 0.968
+    buy_22_ewo = 5.0
+    buy_22_rsi = 36.0
+    buy_22_cti = -0.5
+    buy_22_cti_1h = -0.5
+    buy_22_r = -40.0
 
     buy_23_bb_offset = 0.984
     buy_23_ewo = 7.8
@@ -3494,11 +3497,14 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(36))
 
                     # Logic
-                    item_buy_logic.append((dataframe['volume_mean_4'] * self.buy_volume_22) > dataframe['volume'])
-                    item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * self.buy_ma_offset_22)
-                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_22))
-                    item_buy_logic.append(dataframe['ewo'] > self.buy_ewo_22)
-                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_rsi_22)
+                    item_buy_logic.append((dataframe['volume_mean_4'] * self.buy_22_volume) > dataframe['volume'])
+                    item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * self.buy_22_ma_offset)
+                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_22_bb_offset))
+                    item_buy_logic.append(dataframe['ewo'] > self.buy_22_ewo)
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_22_rsi)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_22_cti)
+                    item_buy_logic.append(dataframe['cti_1h'] > self.buy_22_cti_1h)
+                    item_buy_logic.append(dataframe['r_480'] < self.buy_22_r)
 
                 # Condition #23
                 elif index == 23:
