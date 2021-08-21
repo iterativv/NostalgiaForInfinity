@@ -2438,6 +2438,45 @@ class NostalgiaForInfinityNext(IStrategy):
 
         return False, None
 
+    def sell_r_5(self, current_profit: float, last_candle) -> tuple:
+        if (0.02 > current_profit >= 0.012):
+            if (last_candle['r_480'] > -1.0) and (last_candle['rsi_14'] > 75.0) and (last_candle['cti_1h'] > 0.92):
+                return True, 'signal_profit_w_5_1'
+        elif (0.03 > current_profit >= 0.02):
+            if (last_candle['r_480'] > -1.5) and (last_candle['rsi_14'] > 75.0) and (last_candle['cti_1h'] > 0.92):
+                return True, 'signal_profit_w_5_2'
+        elif (0.04 > current_profit >= 0.03):
+            if (last_candle['r_480'] > -2.0) and (last_candle['rsi_14'] > 75.0) and (last_candle['cti_1h'] > 0.92):
+                return True, 'signal_profit_w_5_3'
+        elif (0.05 > current_profit >= 0.04):
+            if (last_candle['r_480'] > -2.5) and (last_candle['rsi_14'] > 75.0) and (last_candle['cti_1h'] > 0.92):
+                return True, 'signal_profit_w_5_4'
+        elif (0.06 > current_profit >= 0.05):
+            if (last_candle['r_480'] > -3.0) and (last_candle['rsi_14'] > 75.0) and (last_candle['cti_1h'] > 0.92):
+                return True, 'signal_profit_w_5_5'
+        elif (0.07 > current_profit >= 0.06):
+            if (last_candle['r_480'] > -3.5) and (last_candle['rsi_14'] > 75.0) and (last_candle['cti_1h'] > 0.92):
+                return True, 'signal_profit_w_5_6'
+        elif (0.08 > current_profit >= 0.07):
+            if (last_candle['r_480'] > -4.0) and (last_candle['rsi_14'] > 75.0) and (last_candle['cti_1h'] > 0.92):
+                return True, 'signal_profit_w_5_7'
+        elif (0.09 > current_profit >= 0.08):
+            if (last_candle['r_480'] > -4.5) and (last_candle['rsi_14'] > 75.0) and (last_candle['cti_1h'] > 0.92):
+                return True, 'signal_profit_w_5_8'
+        elif (0.1 > current_profit >= 0.09):
+            if (last_candle['r_480'] > -3.0) and (last_candle['rsi_14'] > 75.0) and (last_candle['cti_1h'] > 0.92):
+                return True, 'signal_profit_w_5_9'
+        elif (0.12 > current_profit >= 0.1):
+            if (last_candle['r_480'] > -2.5) and (last_candle['rsi_14'] > 75.0) and (last_candle['cti_1h'] > 0.92):
+                return True, 'signal_profit_w_5_10'
+        elif (0.2 > current_profit >= 0.12):
+            if (last_candle['r_480'] > -2.0) and (last_candle['rsi_14'] > 75.0) and (last_candle['cti_1h'] > 0.92):
+                return True, 'signal_profit_w_5_11'
+        elif (current_profit >= 0.2):
+            if (last_candle['r_480'] > -1.5) and (last_candle['rsi_14'] > 80.0) and (last_candle['cti_1h'] > 0.92):
+                return True, 'signal_profit_w_5_12'
+
+        return False, None
 
     def mark_profit_target(self, pair: str, trade: "Trade", current_time: "datetime", current_rate: float, current_profit: float, last_candle, previous_candle_1) -> tuple:
         # if self.profit_target_1_enable:
@@ -2608,6 +2647,11 @@ class NostalgiaForInfinityNext(IStrategy):
         # Williams %R based sell 4, plus CTI
         sell, signal_name = self.sell_r_4(current_profit, last_candle)
         if (sell) and (signal_name is not None):
+            return signal_name + ' ( ' + buy_tag + ')'
+
+        # Williams %R based sell 5, plus  RSI and CTI 1h
+        sell, signal_name = self.sell_r_5(current_profit, last_candle)
+        if sell and (signal_name is not None):
             return signal_name + ' ( ' + buy_tag + ')'
 
         # Profit Target Signal
