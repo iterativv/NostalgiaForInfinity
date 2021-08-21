@@ -1871,13 +1871,13 @@ class NostalgiaForInfinityNext(IStrategy):
         },
         'subplots': {
             'buy tag': { 'buy_tag': {'color': 'green'} },
-            'RSI/BTC': { 
+            'RSI/BTC': {
                 'btc_not_downtrend_1h': { 'color': 'yellow' },
                 'btc_rsi_14_1h': { 'color': 'green' },
                 'rsi_14_1h': { 'color': '#f41cd1' },
                 'crsi': {'color': 'blue' }
             },
-            'pump': { 
+            'pump': {
                 'cti_1h': {'color': 'pink' },
                 'safe_pump_24_10_1h': {'color': '#481110' },
                 'safe_pump_24_20_1h': {'color': '#481C0' },
