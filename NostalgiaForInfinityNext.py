@@ -1517,7 +1517,7 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_37_cti = -0.7
 
     buy_38_ma_offset = 0.98
-    buy_38_ewo = -5.2
+    buy_38_ewo = -6.5
     buy_38_cti = -0.96
 
     buy_39_cti = -0.77
