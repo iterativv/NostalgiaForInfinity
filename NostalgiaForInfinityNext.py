@@ -1371,12 +1371,12 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_mfi_1 = 50.0
     buy_cti_1 = -0.92
 
-    buy_rsi_1h_min_2 = 32.0
-    buy_rsi_1h_max_2 = 84.0
-    buy_rsi_1h_diff_2 = 38.8
-    buy_mfi_2 = 49.0
-    buy_bb_offset_2 = 0.983
-    buy_volume_2 = 1.6
+    buy_2_rsi_1h_diff = 36.0
+    buy_2_mfi = 49.0
+    buy_2_bb_offset = 0.985
+    buy_2_cti = -0.62
+    buy_2_cti_1h = 0.9
+    buy_2_volume = 1.6
 
     buy_bb40_bbdelta_close_3 = 0.045
     buy_bb40_closedelta_close_3 = 0.023
@@ -3403,10 +3403,12 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Non-Standard protections
 
                     # Logic
-                    item_buy_logic.append(dataframe['rsi_14'] < dataframe['rsi_14_1h'] - self.buy_rsi_1h_diff_2)
-                    item_buy_logic.append(dataframe['mfi'] < self.buy_mfi_2)
-                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_2))
-                    item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_volume_2))
+                    item_buy_logic.append(dataframe['rsi_14'] < dataframe['rsi_14_1h'] - self.buy_2_rsi_1h_diff)
+                    item_buy_logic.append(dataframe['mfi'] < self.buy_2_mfi)
+                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_2_bb_offset))
+                    item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_2_volume))
+                    item_buy_logic.append(dataframe['cti'] < self.buy_2_cti)
+                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_2_cti_1h)
 
                 # Condition #3
                 elif index == 3:
