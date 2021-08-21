@@ -1911,11 +1911,10 @@ class NostalgiaForInfinityNext(IStrategy):
                 'safe_pump_48_80_1h': {'color': '#961180' },
                 'safe_pump_48_90_1h': {'color': '#961190' },
                 'safe_pump_48_100_1h': {'color': '#9611A0' },
-                'safe_pump_48_120_1h': {'color': '#9611C0'
+                'safe_pump_48_120_1h': {'color': '#9611C0' }
             }
         }
     }
-}
 
     #############################################################
     # CACHES
