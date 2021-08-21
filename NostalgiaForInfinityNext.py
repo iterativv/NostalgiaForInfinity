@@ -1019,7 +1019,7 @@ class NostalgiaForInfinityNext(IStrategy):
         40: {
             "ema_fast"                  : True,
             "ema_fast_len"              : "12",
-            "ema_slow"                  : True,
+            "ema_slow"                  : False,
             "ema_slow_len"              : "25",
             "close_above_ema_fast"      : False,
             "close_above_ema_fast_len"  : "200",
@@ -1029,7 +1029,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_rising_val"         : "30",
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "20",
-            "safe_dips"                 : False,
+            "safe_dips"                 : True,
             "safe_dips_type"            : "130",
             "safe_pump"                 : False,
             "safe_pump_type"            : "50",
@@ -1524,11 +1524,10 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_39_r = -60.0
     buy_39_r_1h = -38.0
 
-    buy_40_hrsi = 30.0
-    buy_40_cci = -240.0
-    buy_40_rsi = 30.0
+    buy_40_crsi = 50.0
+    buy_40_cci = -250.0
+    buy_40_rsi = 31.0
     buy_40_cti = -0.8
-    buy_40_r = -90.0
     buy_40_r_1h = -90.0
 
     buy_41_cti_1h = -0.84
@@ -3174,10 +3173,6 @@ class NostalgiaForInfinityNext(IStrategy):
         # HLC3
         dataframe['hlc3'] = (dataframe['high'] + dataframe['low'] + dataframe['close']) / 3
 
-        # HRSI
-        dataframe['hull'] = (2 * dataframe['hlc3'] - ta.WMA(dataframe['hlc3'], 2))
-        dataframe['hrsi'] = ta.RSI(dataframe['hull'], 2)
-
         # ZLEMA
         dataframe['zlema_2'] = pta.zlma(dataframe['hlc3'], length = 2)
         dataframe['zlema_4'] = pta.zlma(dataframe['hlc3'], length = 4)
@@ -3825,11 +3820,10 @@ class NostalgiaForInfinityNext(IStrategy):
 
                     # Logic
                     item_buy_logic.append(qtpylib.crossed_above(dataframe['zlema_2'], dataframe['zlema_4']))
-                    item_buy_logic.append(dataframe['hrsi'] < self.buy_40_hrsi)
+                    item_buy_logic.append(dataframe['crsi'] < self.buy_40_crsi)
                     item_buy_logic.append(dataframe['cci'] < self.buy_40_cci)
                     item_buy_logic.append(dataframe['rsi_14'] < self.buy_40_rsi)
                     item_buy_logic.append(dataframe['cti'] < self.buy_40_cti)
-                    item_buy_logic.append(dataframe['r_480'] > self.buy_40_r)
                     item_buy_logic.append(dataframe['r_480_1h'] > self.buy_40_r_1h)
 
                 # Condition #41
