@@ -2304,19 +2304,19 @@ class NostalgiaForInfinityNext(IStrategy):
 
     def sell_r_1(self, current_profit: float, last_candle) -> tuple:
         if 0.02 > current_profit >= 0.012:
-            if last_candle['r_480'] > -0.5:
+            if last_candle['r_480'] > -0.4:
                 return True, 'signal_profit_w_1_1'
         elif 0.03 > current_profit >= 0.02:
-            if last_candle['r_480'] > -0.6:
+            if last_candle['r_480'] > -0.5:
                 return True, 'signal_profit_w_1_2'
         elif 0.04 > current_profit >= 0.03:
-            if last_candle['r_480'] > -0.7:
+            if last_candle['r_480'] > -0.6:
                 return True, 'signal_profit_w_1_3'
         elif 0.05 > current_profit >= 0.04:
-            if last_candle['r_480'] > -0.8:
+            if last_candle['r_480'] > -0.7:
                 return True, 'signal_profit_w_1_4'
         elif 0.06 > current_profit >= 0.05:
-            if last_candle['r_480'] > -0.9:
+            if last_candle['r_480'] > -1.0:
                 return True, 'signal_profit_w_1_5'
         elif 0.07 > current_profit >= 0.06:
             if last_candle['r_480'] > -2.0:
