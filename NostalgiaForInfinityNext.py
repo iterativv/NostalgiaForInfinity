@@ -2021,9 +2021,6 @@ class NostalgiaForInfinityNext(IStrategy):
         (e.g. gather some remote resource for comparison)
         :param **kwargs: Ensure to keep this here so updates to this won't break your strategy.
         """
-        if self.config["runmode"].value not in ("live", "dry_run"):
-            return super().bot_loop_start(**kwargs)
-
         if self.target_profit_cache is None:
             self.target_profit_cache = Cache(
                 self.config["user_data_dir"] / "data-nfi-profit_target_by_pair.json"
@@ -2031,6 +2028,9 @@ class NostalgiaForInfinityNext(IStrategy):
 
         # If the cached data hasn't changed, it's a no-op
         self.target_profit_cache.save()
+
+        if self.config["runmode"].value not in ("live", "dry_run"):
+            return super().bot_loop_start(**kwargs)
 
         if self.holdSupportEnabled:
             self.load_hold_trades_config()
