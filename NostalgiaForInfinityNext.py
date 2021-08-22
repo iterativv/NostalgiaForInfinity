@@ -1398,8 +1398,11 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_ema_open_mult_6 = 0.021
     buy_bb_offset_6 = 0.976
 
-    buy_ema_open_mult_7 = 0.030
-    buy_cti_7 = -0.89
+    buy_7_ema_open_mult = 0.0302
+    buy_7_cti = -0.89
+    buy_7_ma_offset = 0.932
+    buy_7_rsi = 42.0
+    buy_7_cmf_1h = -0.16
 
     buy_cti_8 = -0.88
     buy_rsi_8 = 40.0
@@ -3475,9 +3478,12 @@ class NostalgiaForInfinityNext(IStrategy):
 
                     # Logic
                     item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
-                    item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * self.buy_ema_open_mult_7))
+                    item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * self.buy_7_ema_open_mult))
                     item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
-                    item_buy_logic.append(dataframe['cti'] < self.buy_cti_7)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_7_cti)
+                    item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * self.buy_7_ma_offset)
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_7_rsi)
+                    item_buy_logic.append(dataframe['cmf_1h'] > self.buy_7_cmf_1h)
 
                 # Condition #8
                 elif index == 8:
