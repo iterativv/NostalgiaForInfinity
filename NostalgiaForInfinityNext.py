@@ -242,7 +242,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "ema_fast"                  : False,
             "ema_fast_len"              : "26",
             "ema_slow"                  : True,
-            "ema_slow_len"              : "100",
+            "ema_slow_len"              : "12",
             "close_above_ema_fast"      : False,
             "close_above_ema_fast_len"  : "200",
             "close_above_ema_slow"      : False,
@@ -251,8 +251,8 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_rising_val"         : "28",
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
-            "safe_dips"                 : False,
-            "safe_dips_type"            : "80",
+            "safe_dips"                 : True,
+            "safe_dips_type"            : "130",
             "safe_pump"                 : False,
             "safe_pump_type"            : "70",
             "safe_pump_period"          : "24",
@@ -1364,12 +1364,13 @@ class NostalgiaForInfinityNext(IStrategy):
     # 5 hours - level 60
     buy_dump_protection_60_5 = 0.74
 
-    buy_min_inc_1 = 0.022
-    buy_rsi_1h_min_1 = 20.0
-    buy_rsi_1h_max_1 = 84.0
-    buy_rsi_1 = 36.0
-    buy_mfi_1 = 50.0
-    buy_cti_1 = -0.92
+    buy_1_min_inc = 0.022
+    buy_1_rsi_1h_min = 20.0
+    buy_1_rsi_1h_max = 84.0
+    buy_1_rsi = 36.0
+    buy_1_mfi = 50.0
+    buy_1_cti = -0.92
+    buy_1_ma_low_offset = 0.945
 
     buy_2_rsi_1h_diff = 36.0
     buy_2_mfi = 49.0
@@ -3391,12 +3392,13 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Non-Standard protections
 
                     # Logic
-                    item_buy_logic.append(((dataframe['close'] - dataframe['open'].rolling(36).min()) / dataframe['open'].rolling(36).min()) > self.buy_min_inc_1)
-                    item_buy_logic.append(dataframe['rsi_14_1h'] > self.buy_rsi_1h_min_1)
-                    item_buy_logic.append(dataframe['rsi_14_1h'] < self.buy_rsi_1h_max_1)
-                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_rsi_1)
-                    item_buy_logic.append(dataframe['mfi'] < self.buy_mfi_1)
-                    item_buy_logic.append(dataframe['cti'] < self.buy_cti_1)
+                    item_buy_logic.append(((dataframe['close'] - dataframe['open'].rolling(36).min()) / dataframe['open'].rolling(36).min()) > self.buy_1_min_inc)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] > self.buy_1_rsi_1h_min)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] < self.buy_1_rsi_1h_max)
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_1_rsi)
+                    item_buy_logic.append(dataframe['mfi'] < self.buy_1_mfi)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_1_cti)
+                    item_buy_logic.append(dataframe['close'] > dataframe['sma_30'] * self.buy_1_ma_low_offset)
 
                 # Condition #2
                 elif index == 2:
