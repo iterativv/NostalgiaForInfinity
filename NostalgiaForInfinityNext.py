@@ -1420,12 +1420,13 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_bb_offset_10 = 0.972
     buy_rsi_1h_10 = 50.0
 
-    buy_ma_offset_11 = 0.946
-    buy_min_inc_11 = 0.038
-    buy_rsi_1h_min_11 = 46.0
-    buy_rsi_1h_max_11 = 84.0
-    buy_rsi_11 = 38.0
-    buy_mfi_11 = 36.0
+    buy_11_ma_offset = 0.946
+    buy_11_min_inc = 0.038
+    buy_11_rsi_1h_min = 46.0
+    buy_11_rsi_1h_max = 84.0
+    buy_11_rsi = 38.0
+    buy_11_mfi = 36.0
+    buy_11_r_480_1h = -16.0
 
     buy_ma_offset_12 = 0.921
     buy_rsi_12 = 28.0
@@ -3524,12 +3525,13 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['ema_50_1h'] > dataframe['ema_100_1h'])
 
                     # Logic
-                    item_buy_logic.append(((dataframe['close'] - dataframe['open'].rolling(36).min()) / dataframe['open'].rolling(36).min()) > self.buy_min_inc_11)
-                    item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * self.buy_ma_offset_11)
-                    item_buy_logic.append(dataframe['rsi_14_1h'] > self.buy_rsi_1h_min_11)
-                    item_buy_logic.append(dataframe['rsi_14_1h'] < self.buy_rsi_1h_max_11)
-                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_rsi_11)
-                    item_buy_logic.append(dataframe['mfi'] < self.buy_mfi_11)
+                    item_buy_logic.append(((dataframe['close'] - dataframe['open'].rolling(36).min()) / dataframe['open'].rolling(36).min()) > self.buy_11_min_inc)
+                    item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * self.buy_11_ma_offset)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] > self.buy_11_rsi_1h_min)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] < self.buy_11_rsi_1h_max)
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_11_rsi)
+                    item_buy_logic.append(dataframe['mfi'] < self.buy_11_mfi)
+                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_11_r_480_1h)
 
                 # Condition #12
                 elif index == 12:
