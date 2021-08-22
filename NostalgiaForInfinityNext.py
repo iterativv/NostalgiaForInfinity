@@ -822,9 +822,9 @@ class NostalgiaForInfinityNext(IStrategy):
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : True,
-            "ema_slow_len"              : "100",
+            "ema_slow_len"              : "12",
             "close_above_ema_fast"      : False,
-            "close_above_ema_fast_len"  : "50",
+            "close_above_ema_fast_len"  : "200",
             "close_above_ema_slow"      : False,
             "close_above_ema_slow_len"  : "200",
             "sma200_rising"             : False,
@@ -832,7 +832,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
             "safe_dips"                 : False,
-            "safe_dips_type"            : "50",
+            "safe_dips_type"            : "130",
             "safe_pump"                 : False,
             "safe_pump_type"            : "110",
             "safe_pump_period"          : "36",
@@ -1519,10 +1519,10 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_29_ewo = -4.0
     buy_29_cti = -0.95
 
-    buy_30_ma_offset = 0.97
+    buy_30_ma_offset = 0.945
     buy_30_ewo = 7.4
     buy_30_rsi = 40.0
-    buy_30_cti = -0.88
+    buy_30_cti = -0.87
 
     buy_31_ma_offset = 0.962
     buy_31_ewo = -10.4
