@@ -2050,85 +2050,107 @@ class NostalgiaForInfinityNext(IStrategy):
             if (last_candle['moderi_96']):
                 if current_profit >= self.sell_custom_profit_bull_11:
                     if last_candle['rsi_14'] < self.sell_custom_rsi_under_bull_11:
-                        return True, 'signal_profit_o_bull_11'
+                        return True, 'signal_profit_o_bull_12_1'
                 elif self.sell_custom_profit_bull_11 > current_profit >= self.sell_custom_profit_bull_10:
                     if last_candle['rsi_14'] < self.sell_custom_rsi_under_bull_10:
-                        return True, 'signal_profit_o_bull_10'
+                        return True, 'signal_profit_o_bull_11_1'
                 elif self.sell_custom_profit_bull_10 > current_profit >= self.sell_custom_profit_bull_9:
                     if last_candle['rsi_14'] < self.sell_custom_rsi_under_bull_9:
-                        return True, 'signal_profit_o_bull_9'
+                        return True, 'signal_profit_o_bull_10_1'
                 elif self.sell_custom_profit_bull_9 > current_profit >= self.sell_custom_profit_bull_8:
                     if last_candle['rsi_14'] < self.sell_custom_rsi_under_bull_8:
-                        return True, 'signal_profit_o_bull_8'
+                        return True, 'signal_profit_o_bull_9_1'
                 elif self.sell_custom_profit_bull_8 > current_profit >= self.sell_custom_profit_bull_7:
                     if (last_candle['rsi_14'] < self.sell_custom_rsi_under_bull_7):
-                        return True, 'signal_profit_o_bull_7'
+                        return True, 'signal_profit_o_bull_8_1'
                 elif self.sell_custom_profit_bull_7 > current_profit >= self.sell_custom_profit_bull_6:
                     if (last_candle['rsi_14'] < self.sell_custom_rsi_under_bull_6) and (last_candle['cmf'] < 0.0):
-                        return True, 'signal_profit_o_bull_6'
+                        return True, 'signal_profit_o_bull_7_1'
                 elif self.sell_custom_profit_bull_6 > current_profit >= self.sell_custom_profit_bull_5:
                     if (last_candle['rsi_14'] < self.sell_custom_rsi_under_bull_5) and (last_candle['cmf'] < 0.0):
-                        return True, 'signal_profit_o_bull_5'
+                        return True, 'signal_profit_o_bull_6_1'
                 elif self.sell_custom_profit_bull_5 > current_profit >= self.sell_custom_profit_bull_4:
                     if (last_candle['rsi_14'] < self.sell_custom_rsi_under_bull_4) and (last_candle['cmf'] < 0.0) :
-                        return True, 'signal_profit_o_bull_4'
+                        return True, 'signal_profit_o_bull_5_1'
+                    elif (last_candle['rsi_14'] < 45.0) and (last_candle['cmf'] < -0.4):
+                        return True, 'signal_profit_o_bull_5_3'
                 elif self.sell_custom_profit_bull_4 > current_profit >= self.sell_custom_profit_bull_3:
                     if (last_candle['rsi_14'] < self.sell_custom_rsi_under_bull_3) and (last_candle['cmf'] < 0.0):
-                        return True, 'signal_profit_o_bull_3'
+                        return True, 'signal_profit_o_bull_4_1'
+                    elif (last_candle['rsi_14'] < 44.0) and (last_candle['cmf'] < -0.4):
+                        return True, 'signal_profit_o_bull_4_3'
                 elif self.sell_custom_profit_bull_3 > current_profit >= self.sell_custom_profit_bull_2:
                     if (last_candle['rsi_14'] < self.sell_custom_rsi_under_bull_2) and (last_candle['cmf'] < 0.0):
-                        return True, 'signal_profit_o_bull_2'
+                        return True, 'signal_profit_o_bull_3_1'
+                    elif (last_candle['rsi_14'] < 43.0) and (last_candle['cmf'] < -0.4):
+                        return True, 'signal_profit_o_bull_3_3'
                 elif self.sell_custom_profit_bull_2 > current_profit >= self.sell_custom_profit_bull_1:
                     if (last_candle['rsi_14'] < self.sell_custom_rsi_under_bull_1) and (last_candle['cmf'] < 0.0):
-                        return True, 'signal_profit_o_bull_1'
+                        return True, 'signal_profit_o_bull_2_1'
+                    elif (last_candle['rsi_14'] < 42.0) and (last_candle['cmf'] < -0.4):
+                        return True, 'signal_profit_o_bull_2_3'
                 elif self.sell_custom_profit_bull_1 > current_profit >= self.sell_custom_profit_bull_0:
                     if (last_candle['rsi_14'] < self.sell_custom_rsi_under_bull_0) and (last_candle['cmf'] < 0.0):
-                        return True, 'signal_profit_o_bull_0'
+                        return True, 'signal_profit_o_bull_1_1'
+                    elif (last_candle['rsi_14'] < 41.0) and (last_candle['cmf'] < -0.4):
+                        return True, 'signal_profit_o_bull_1_3'
             else:
                 if current_profit >= self.sell_custom_profit_bear_11:
                     if last_candle['rsi_14'] < self.sell_custom_rsi_under_bear_11:
-                        return True, 'signal_profit_o_bear_11'
+                        return True, 'signal_profit_o_bear_12_1'
                 elif self.sell_custom_profit_bear_11 > current_profit >= self.sell_custom_profit_bear_10:
                     if last_candle['rsi_14'] < self.sell_custom_rsi_under_bear_10:
-                        return True, 'signal_profit_o_bear_10'
+                        return True, 'signal_profit_o_bear_11_1'
                 elif self.sell_custom_profit_bear_10 > current_profit >= self.sell_custom_profit_bear_9:
                     if last_candle['rsi_14'] < self.sell_custom_rsi_under_bear_9:
-                        return True, 'signal_profit_o_bear_9'
+                        return True, 'signal_profit_o_bear_10_1'
                 elif self.sell_custom_profit_bear_9 > current_profit >= self.sell_custom_profit_bear_8:
                     if last_candle['rsi_14'] < self.sell_custom_rsi_under_bear_8:
-                        return True, 'signal_profit_o_bear_8_1'
+                        return True, 'signal_profit_o_bear_9_1'
                     elif (last_candle['rsi_14'] > self.sell_custom_rsi_over_bear_8):
-                        return True, 'signal_profit_o_bear_8_2'
+                        return True, 'signal_profit_o_bear_9_2'
                 elif self.sell_custom_profit_bear_8 > current_profit >= self.sell_custom_profit_bear_7:
                     if (last_candle['rsi_14'] < self.sell_custom_rsi_under_bear_7):
-                        return True, 'signal_profit_o_bear_7_1'
+                        return True, 'signal_profit_o_bear_8_1'
                     elif (last_candle['rsi_14'] > self.sell_custom_rsi_over_bear_7):
-                        return True, 'signal_profit_o_bear_7_2'
+                        return True, 'signal_profit_o_bear_8_2'
                 elif self.sell_custom_profit_bear_7 > current_profit >= self.sell_custom_profit_bear_6:
                     if (last_candle['rsi_14'] < self.sell_custom_rsi_under_bear_6):
-                        return True, 'signal_profit_o_bear_6_1'
+                        return True, 'signal_profit_o_bear_7_1'
                     elif (last_candle['rsi_14'] > self.sell_custom_rsi_over_bear_6):
-                        return True, 'signal_profit_o_bear_6_2'
+                        return True, 'signal_profit_o_bear_7_2'
                 elif self.sell_custom_profit_bear_6 > current_profit >= self.sell_custom_profit_bear_5:
                     if (last_candle['rsi_14'] < self.sell_custom_rsi_under_bear_5):
-                        return True, 'signal_profit_o_bear_5_1'
+                        return True, 'signal_profit_o_bear_6_1'
                     elif (last_candle['rsi_14'] > self.sell_custom_rsi_over_bear_5):
-                        return True, 'signal_profit_o_bear_5_2'
+                        return True, 'signal_profit_o_bear_6_2'
+                    elif (last_candle['rsi_14'] < 52.0) and (last_candle['cmf'] < -0.4):
+                        return True, 'signal_profit_o_bear_6_3'
                 elif self.sell_custom_profit_bear_5 > current_profit >= self.sell_custom_profit_bear_4:
                     if (last_candle['rsi_14'] < self.sell_custom_rsi_under_bear_4):
-                        return True, 'signal_profit_o_bear_4'
+                        return True, 'signal_profit_o_bear_5_1'
+                    elif (last_candle['rsi_14'] < 50.0) and (last_candle['cmf'] < -0.4):
+                        return True, 'signal_profit_o_bear_5_3'
                 elif self.sell_custom_profit_bear_4 > current_profit >= self.sell_custom_profit_bear_3:
                     if (last_candle['rsi_14'] < self.sell_custom_rsi_under_bear_3) and (last_candle['cmf'] < 0.0):
-                        return True, 'signal_profit_o_bear_3'
+                        return True, 'signal_profit_o_bear_4_1'
+                    elif (last_candle['rsi_14'] < 48.0) and (last_candle['cmf'] < -0.4):
+                        return True, 'signal_profit_o_bear_4_3'
                 elif self.sell_custom_profit_bear_3 > current_profit >= self.sell_custom_profit_bear_2:
                     if (last_candle['rsi_14'] < self.sell_custom_rsi_under_bear_2) and (last_candle['cmf'] < 0.0):
-                        return True, 'signal_profit_o_bear_2'
+                        return True, 'signal_profit_o_bear_3_1'
+                    elif (last_candle['rsi_14'] < 44.0) and (last_candle['cmf'] < -0.4):
+                        return True, 'signal_profit_o_bear_3_3'
                 elif self.sell_custom_profit_bear_2 > current_profit >= self.sell_custom_profit_bear_1:
                     if (last_candle['rsi_14'] < self.sell_custom_rsi_under_bear_1) and (last_candle['cmf'] < 0.0):
-                        return True, 'signal_profit_o_bear_1'
+                        return True, 'signal_profit_o_bear_2_1'
+                    elif (last_candle['rsi_14'] < 43.0) and (last_candle['cmf'] < -0.4):
+                        return True, 'signal_profit_o_bear_2_3'
                 elif self.sell_custom_profit_bear_1 > current_profit >= self.sell_custom_profit_bear_0:
                     if (last_candle['rsi_14'] < self.sell_custom_rsi_under_bear_0) and (last_candle['cmf'] < 0.0):
-                        return True, 'signal_profit_o_bear_0'
+                        return True, 'signal_profit_o_bear_1_1'
+                    elif (last_candle['rsi_14'] < 42.0) and (last_candle['cmf'] < -0.4):
+                        return True, 'signal_profit_o_bear_1_3'
 
         return False, None
 
