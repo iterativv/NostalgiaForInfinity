@@ -2956,8 +2956,13 @@ class NostalgiaForInfinityNext(IStrategy):
         pairs = self.dp.current_whitelist()
         # Assign tf to each pair so they can be downloaded and cached for strategy.
         informative_pairs = [(pair, self.info_timeframe) for pair in pairs]
-        informative_pairs.append((f"BTC/{self.config['stake_currency']}", self.timeframe))
-        informative_pairs.append((f"BTC/{self.config['stake_currency']}", self.info_timeframe))
+        if self.config['stake_currency'] in ['USDT','BUSD','USDC','DAI','TUSD','PAX']:
+            btc_info_pair = f"BTC/{self.config['stake_currency']}"
+        else:
+            btc_info_pair = "BTC/USDT"
+
+        informative_pairs.append((btc_info_pair, self.timeframe))
+        informative_pairs.append((btc_info_pair, self.info_timeframe))
         return informative_pairs
 
     def informative_1h_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
@@ -3296,15 +3301,20 @@ class NostalgiaForInfinityNext(IStrategy):
         --> BTC informative (5m/1h)
         ___________________________________________________________________________________________
         '''
+        if self.config['stake_currency'] in ['USDT','BUSD','USDC','DAI','TUSD','PAX']:
+            btc_info_pair = f"BTC/{self.config['stake_currency']}"
+        else:
+            btc_info_pair = "BTC/USDT"
+
         if self.has_BTC_base_tf:
-            btc_base_tf = self.dp.get_pair_dataframe(f"BTC/{self.config['stake_currency']}", self.timeframe)
+            btc_base_tf = self.dp.get_pair_dataframe(btc_info_pair, self.timeframe)
             btc_base_tf = self.base_tf_btc_indicators(btc_base_tf, metadata)
             dataframe = merge_informative_pair(dataframe, btc_base_tf, self.timeframe, self.timeframe, ffill=True)
             drop_columns = [(s + "_" + self.timeframe) for s in ['date', 'open', 'high', 'low', 'close', 'volume']]
             dataframe.drop(columns=dataframe.columns.intersection(drop_columns), inplace=True)
 
         if self.has_BTC_info_tf:
-            btc_info_tf = self.dp.get_pair_dataframe(f"BTC/{self.config['stake_currency']}", self.info_timeframe)
+            btc_info_tf = self.dp.get_pair_dataframe(btc_info_pair, self.info_timeframe)
             btc_info_tf = self.info_tf_btc_indicators(btc_info_tf, metadata)
             dataframe = merge_informative_pair(dataframe, btc_info_tf, self.timeframe, self.info_timeframe, ffill=True)
             drop_columns = [(s + "_" + self.info_timeframe) for s in ['date', 'open', 'high', 'low', 'close', 'volume']]
