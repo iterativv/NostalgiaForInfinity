@@ -2956,7 +2956,7 @@ class NostalgiaForInfinityNext(IStrategy):
         pairs = self.dp.current_whitelist()
         # Assign tf to each pair so they can be downloaded and cached for strategy.
         informative_pairs = [(pair, self.info_timeframe) for pair in pairs]
-        if self.config['stake_currency'] in ['USDT','BUSD','USDC','DAI','TUSD','PAX']:
+        if self.config['stake_currency'] in ['USDT','BUSD','USDC','DAI','TUSD','PAX','USD','EUR','GBP']:
             btc_info_pair = f"BTC/{self.config['stake_currency']}"
         else:
             btc_info_pair = "BTC/USDT"
@@ -3301,7 +3301,7 @@ class NostalgiaForInfinityNext(IStrategy):
         --> BTC informative (5m/1h)
         ___________________________________________________________________________________________
         '''
-        if self.config['stake_currency'] in ['USDT','BUSD','USDC','DAI','TUSD','PAX']:
+        if self.config['stake_currency'] in ['USDT','BUSD','USDC','DAI','TUSD','PAX','USD','EUR','GBP']:
             btc_info_pair = f"BTC/{self.config['stake_currency']}"
         else:
             btc_info_pair = "BTC/USDT"
