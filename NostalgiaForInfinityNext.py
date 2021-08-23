@@ -592,7 +592,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising"          : True,
             "sma200_1h_rising_val"      : "72",
             "safe_dips"                 : True,
-            "safe_dips_type"            : "130",
+            "safe_dips_type"            : "100",
             "safe_pump"                 : True,
             "safe_pump_type"            : "120",
             "safe_pump_period"          : "24",
@@ -1467,7 +1467,7 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_17_volume = 2.0
 
     buy_18_rsi = 33.5
-    buy_18_bb_offset = 0.988
+    buy_18_bb_offset = 0.986
     buy_18_volume = 2.0
     buy_18_cti = -0.86
     buy_18_cti_1h = 0.91
