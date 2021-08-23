@@ -18,7 +18,7 @@ fi
 
 ########################################### GO ##########################################
 
-# we disable each by on the original strategy
+# we disable each buy on the original strategy
 for i in $(seq 1 $numberOfBuyCondition); do
   sed -i "s/\"buy_condition_${i}_enable\": True,/\"buy_condition_${i}_enable\": False,/g" "$originalStrategyFile"
 done
@@ -34,7 +34,7 @@ for i in $(seq 1 $numberOfBuyCondition); do
 done
 printf "\n"
 
-# we re-enable each by on the original strategy
+# we re-enable each buy on the original strategy
 for i in $(seq 1 $numberOfBuyCondition); do
   sed -i "s/\"buy_condition_${i}_enable\": False,/\"buy_condition_${i}_enable\": True,/g" "$originalStrategyFile"
 done
