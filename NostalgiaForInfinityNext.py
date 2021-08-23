@@ -592,7 +592,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising"          : True,
             "sma200_1h_rising_val"      : "72",
             "safe_dips"                 : True,
-            "safe_dips_type"            : "100",
+            "safe_dips_type"            : "130",
             "safe_pump"                 : True,
             "safe_pump_type"            : "120",
             "safe_pump_period"          : "24",
@@ -1466,10 +1466,11 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_17_r_1h = -20.0
     buy_17_volume = 2.0
 
-    buy_rsi_18 = 33.0
-    buy_bb_offset_18 = 0.986
-    buy_volume_18 = 2.0
-    buy_cti_18 = -0.86
+    buy_18_rsi = 33.5
+    buy_18_bb_offset = 0.988
+    buy_18_volume = 2.0
+    buy_18_cti = -0.86
+    buy_18_cti_1h = 0.91
 
     buy_rsi_1h_min_19 = 30.0
     buy_chop_max_19 = 21.3
@@ -3997,10 +3998,11 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['sma_200_1h'] > dataframe['sma_200_1h'].shift(36))
 
                     # Logic
-                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_rsi_18)
-                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_18))
-                    item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_volume_18))
-                    item_buy_logic.append(dataframe['cti'] < self.buy_cti_18)
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_18_rsi)
+                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_18_bb_offset))
+                    item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_18_volume))
+                    item_buy_logic.append(dataframe['cti'] < self.buy_18_cti)
+                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_18_cti_1h)
 
                 # Condition #19
                 elif index == 19:
