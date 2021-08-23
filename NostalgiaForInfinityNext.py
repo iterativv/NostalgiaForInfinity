@@ -2028,12 +2028,18 @@ class NostalgiaForInfinityNext(IStrategy):
                 elif self.sell_custom_profit_bull_8 > current_profit >= self.sell_custom_profit_bull_7:
                     if (last_candle['rsi_14'] < self.sell_custom_rsi_under_bull_7):
                         return True, 'signal_profit_o_bull_8_1'
+                    elif (last_candle['rsi_14'] < 56.0) and (last_candle['cmf'] < -0.4):
+                        return True, 'signal_profit_o_bull_8_3'
                 elif self.sell_custom_profit_bull_7 > current_profit >= self.sell_custom_profit_bull_6:
                     if (last_candle['rsi_14'] < self.sell_custom_rsi_under_bull_6) and (last_candle['cmf'] < 0.0):
                         return True, 'signal_profit_o_bull_7_1'
+                    elif (last_candle['rsi_14'] < 54.0) and (last_candle['cmf'] < -0.4):
+                        return True, 'signal_profit_o_bull_7_3'
                 elif self.sell_custom_profit_bull_6 > current_profit >= self.sell_custom_profit_bull_5:
                     if (last_candle['rsi_14'] < self.sell_custom_rsi_under_bull_5) and (last_candle['cmf'] < 0.0):
                         return True, 'signal_profit_o_bull_6_1'
+                    elif (last_candle['rsi_14'] < 52.0) and (last_candle['cmf'] < -0.4):
+                        return True, 'signal_profit_o_bull_6_3'
                 elif self.sell_custom_profit_bull_5 > current_profit >= self.sell_custom_profit_bull_4:
                     if (last_candle['rsi_14'] < self.sell_custom_rsi_under_bull_4) and (last_candle['cmf'] < 0.0) :
                         return True, 'signal_profit_o_bull_5_1'
