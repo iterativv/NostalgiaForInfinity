@@ -791,8 +791,8 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_rising_val"         : "30",
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
-            "safe_dips"                 : False,
-            "safe_dips_type"            : "50",
+            "safe_dips"                 : True,
+            "safe_dips_type"            : "130",
             "safe_pump"                 : True,
             "safe_pump_type"            : "110",
             "safe_pump_period"          : "36",
@@ -1514,10 +1514,11 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_27_cti = -0.93
     buy_27_volume = 2.0
 
-    buy_28_ma_offset = 0.97
+    buy_28_ma_offset = 0.984
     buy_28_ewo = 7.2
-    buy_28_rsi = 32.5
+    buy_28_rsi = 32.2
     buy_28_cti = -0.9
+    buy_28_cti_1h = 0.95
 
     buy_29_ma_offset = 0.94
     buy_29_ewo = -4.0
@@ -4114,6 +4115,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['ewo'] > self.buy_28_ewo)
                     item_buy_logic.append(dataframe['rsi_14'] < self.buy_28_rsi)
                     item_buy_logic.append(dataframe['cti'] < self.buy_28_cti)
+                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_28_cti_1h)
 
                 # Condition #29
                 elif index == 29:
