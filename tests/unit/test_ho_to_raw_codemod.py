@@ -3,8 +3,8 @@ import ast
 from freqtrade.configuration import Configuration
 from freqtrade.resolvers import StrategyResolver
 
-from codemods.ho_to_raw_codemod import replace_all_references
-from codemods.ho_to_raw_codemod import transform_code
+from tools.ho_to_raw_codemod import replace_all_references
+from tools.ho_to_raw_codemod import transform_code
 from tests.unit.conftest import REPO_ROOT
 
 
