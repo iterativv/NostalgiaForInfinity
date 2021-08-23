@@ -422,7 +422,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : True,
-            "ema_slow_len"              : "50",
+            "ema_slow_len"              : "12",
             "close_above_ema_fast"      : False,
             "close_above_ema_fast_len"  : "200",
             "close_above_ema_slow"      : False,
@@ -1416,9 +1416,12 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_rsi_1h_max_9 = 88.0
     buy_mfi_9 = 50.0
 
-    buy_ma_offset_10 = 0.98
-    buy_bb_offset_10 = 0.972
-    buy_rsi_1h_10 = 50.0
+    buy_10_ma_offset_low = 0.92
+    buy_10_ma_offset_high = 0.94
+    buy_10_bb_offset = 0.98
+    buy_10_cti_1h_min = -0.5
+    buy_10_cti_1h_max = 0.94
+    buy_10_r_480_1h = -65.0
 
     buy_11_ma_offset = 0.946
     buy_11_min_inc = 0.038
@@ -3895,9 +3898,12 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['ema_50_1h'] > dataframe['ema_100_1h'])
 
                     # Logic
-                    item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * self.buy_ma_offset_10)
-                    item_buy_logic.append(dataframe['close'] < dataframe['bb20_2_low'] * self.buy_bb_offset_10)
-                    item_buy_logic.append(dataframe['rsi_14_1h'] < self.buy_rsi_1h_10)
+                    item_buy_logic.append(dataframe['close'] > dataframe['sma_30'] * self.buy_10_ma_offset_low)
+                    item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * self.buy_10_ma_offset_high)
+                    item_buy_logic.append(dataframe['close'] < dataframe['bb20_2_low'] * self.buy_10_bb_offset)
+                    item_buy_logic.append(dataframe['cti_1h'] > self.buy_10_cti_1h_min)
+                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_10_cti_1h_max)
+                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_10_r_480_1h)
 
                 # Condition #11
                 elif index == 11:
