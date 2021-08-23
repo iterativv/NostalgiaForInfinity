@@ -3551,6 +3551,7 @@ class NostalgiaForInfinityNext(IStrategy):
         dataframe['zema_61'] = zema(dataframe, period=61)
 
         # Williams %R
+        dataframe['r_14'] = williams_r(dataframe, period=14)
         dataframe['r_480'] = williams_r(dataframe, period=480)
 
         # Stochastic RSI
