@@ -379,20 +379,20 @@ class NostalgiaForInfinityNext(IStrategy):
             "btc_1h_not_downtrend"      : False
         },
         8: {
-            "ema_fast"                  : False,
-            "ema_fast_len"              : "50",
+            "ema_fast"                  : True,
+            "ema_fast_len"              : "12",
             "ema_slow"                  : True,
             "ema_slow_len"              : "12",
             "close_above_ema_fast"      : True,
             "close_above_ema_fast_len"  : "200",
             "close_above_ema_slow"      : False,
             "close_above_ema_slow_len"  : "200",
-            "sma200_rising"             : False,
-            "sma200_rising_val"         : "50",
+            "sma200_rising"             : True,
+            "sma200_rising_val"         : "36",
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
             "safe_dips"                 : True,
-            "safe_dips_type"            : "100",
+            "safe_dips_type"            : "130",
             "safe_pump"                 : True,
             "safe_pump_type"            : "120",
             "safe_pump_period"          : "24",
@@ -1404,11 +1404,14 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_7_rsi = 42.0
     buy_7_cmf_1h = -0.16
 
-    buy_cti_8 = -0.88
-    buy_rsi_8 = 40.0
-    buy_bb_offset_8 = 0.99
-    buy_rsi_1h_8 = 64.0
-    buy_volume_8 = 1.8
+    buy_8_cti = -0.88
+    buy_8_rsi = 40.0
+    buy_8_bb_offset = 0.995
+    buy_8_rsi_1h = 64.0
+    buy_8_volume = 1.8
+    buy_8_r_480 = -45.0
+    buy_8_cti_1h = 0.8
+    buy_8_r_480_1h = -55.0
 
     buy_ma_offset_9 = 0.968
     buy_bb_offset_9 = 0.942
@@ -3874,11 +3877,12 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Non-Standard protections
 
                     # Logic
-                    item_buy_logic.append(dataframe['moderi_96'])
-                    item_buy_logic.append(dataframe['cti'] < self.buy_cti_8)
-                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_8))
-                    item_buy_logic.append(dataframe['rsi_14_1h'] < self.buy_rsi_1h_8)
-                    item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_volume_8))
+                    item_buy_logic.append(dataframe['cti'] < self.buy_8_cti)
+                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_8_bb_offset))
+                    item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_8_volume))
+                    item_buy_logic.append(dataframe['r_480'] < self.buy_8_r_480)
+                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_8_cti_1h)
+                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_8_r_480_1h)
 
                 # Condition #9
                 elif index == 9:
