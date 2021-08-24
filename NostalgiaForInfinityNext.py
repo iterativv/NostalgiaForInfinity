@@ -727,14 +727,14 @@ class NostalgiaForInfinityNext(IStrategy):
             "close_above_ema_fast_len"  : "50",
             "close_above_ema_slow"      : False,
             "close_above_ema_slow_len"  : "200",
-            "sma200_rising"             : True,
+            "sma200_rising"             : False,
             "sma200_rising_val"         : "20",
-            "sma200_1h_rising"          : False,
-            "sma200_1h_rising_val"      : "50",
-            "safe_dips"                 : False,
-            "safe_dips_type"            : "10",
+            "sma200_1h_rising"          : True,
+            "sma200_1h_rising_val"      : "36",
+            "safe_dips"                 : True,
+            "safe_dips_type"            : "80",
             "safe_pump"                 : True,
-            "safe_pump_type"            : "20",
+            "safe_pump_type"            : "120",
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
         },
@@ -1505,9 +1505,15 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_24_rsi_max = 50.0
     buy_24_rsi_1h_min = 66.9
 
-    buy_25_ma_offset = 0.922
-    buy_25_rsi_4 = 38.0
-    buy_25_cti = -0.76
+    buy_25_ma_offset = 0.953
+    buy_25_rsi_4 = 30.0
+    buy_25_cti = -0.88
+    buy_25_ma_offset_low = 0.918
+    buy_25_cti_1h_min = 0.1
+    buy_25_cti_1h_max = 0.82
+    buy_25_r_1h = -75.0
+    buy_25_crsi_1h_min = 10.0
+    buy_25_crsi_1h_max = 50.0
 
     buy_26_zema_low_offset = 0.94
     buy_26_cti = -0.91
@@ -4113,13 +4119,19 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['rsi_20'] < dataframe['rsi_20'].shift())
                     item_buy_logic.append(dataframe['rsi_4'] < self.buy_25_rsi_4)
                     item_buy_logic.append(dataframe['ema_20_1h'] > dataframe['ema_26_1h'])
-                    item_buy_logic.append(dataframe['close'] < (dataframe['sma_20'] * self.buy_25_ma_offset))
-                    item_buy_logic.append(dataframe['open'] > (dataframe['sma_20'] * self.buy_25_ma_offset))
+                    item_buy_logic.append(dataframe['close'] < (dataframe['sma_15'] * self.buy_25_ma_offset))
+                    item_buy_logic.append(dataframe['open'] > (dataframe['sma_15'] * self.buy_25_ma_offset))
                     item_buy_logic.append(
                         (dataframe['open'] < dataframe['ema_20_1h']) & (dataframe['low'] < dataframe['ema_20_1h']) |
                         (dataframe['open'] > dataframe['ema_20_1h']) & (dataframe['low'] > dataframe['ema_20_1h'])
                     )
                     item_buy_logic.append(dataframe['cti'] < self.buy_25_cti)
+                    item_buy_logic.append(dataframe['close'] > (dataframe['sma_30'] * self.buy_25_ma_offset_low))
+                    item_buy_logic.append(dataframe['cti_1h'] > self.buy_25_cti_1h_min)
+                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_25_cti_1h_max)
+                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_25_r_1h)
+                    item_buy_logic.append(dataframe['crsi_1h'] > self.buy_25_crsi_1h_min)
+                    item_buy_logic.append(dataframe['crsi_1h'] < self.buy_25_crsi_1h_max)
 
                 # Condition #26
                 elif index == 26:
