@@ -453,7 +453,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising_val"      : "50",
             "safe_dips"                 : False,
             "safe_dips_type"            : "100",
-            "safe_pump"                 : True,
+            "safe_pump"                 : False,
             "safe_pump_type"            : "50",
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
@@ -1426,12 +1426,13 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_10_cti_1h_max = 0.94
     buy_10_r_480_1h = -65.0
 
-    buy_11_ma_offset = 0.946
+    buy_11_ma_offset = 0.955
     buy_11_min_inc = 0.038
     buy_11_rsi_1h_min = 46.0
     buy_11_rsi_1h_max = 84.0
-    buy_11_rsi = 38.0
+    buy_11_rsi = 37.0
     buy_11_mfi = 36.0
+    buy_11_r_480 = -32.0
     buy_11_r_480_1h = -16.0
 
     buy_ma_offset_12 = 0.921
@@ -3948,6 +3949,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['rsi_14'] < self.buy_11_rsi)
                     item_buy_logic.append(dataframe['mfi'] < self.buy_11_mfi)
                     item_buy_logic.append(dataframe['r_480_1h'] < self.buy_11_r_480_1h)
+                    item_buy_logic.append(dataframe['r_480'] < self.buy_11_r_480)
 
                 # Condition #12
                 elif index == 12:
