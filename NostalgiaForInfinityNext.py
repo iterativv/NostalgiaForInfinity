@@ -1002,10 +1002,10 @@ class NostalgiaForInfinityNext(IStrategy):
             "ema_fast"                  : False,
             "ema_fast_len"              : "100",
             "ema_slow"                  : True,
-            "ema_slow_len"              : "15",
-            "close_above_ema_fast"      : True,
+            "ema_slow_len"              : "12",
+            "close_above_ema_fast"      : False,
             "close_above_ema_fast_len"  : "100",
-            "close_above_ema_slow"      : True,
+            "close_above_ema_slow"      : False,
             "close_above_ema_slow_len"  : "200",
             "sma200_rising"             : False,
             "sma200_rising_val"         : "30",
@@ -1584,9 +1584,10 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_38_ewo = -6.5
     buy_38_cti = -0.96
 
-    buy_39_cti = -0.77
-    buy_39_r = -60.0
-    buy_39_r_1h = -38.0
+    buy_39_cti = -0.1
+    buy_39_r_1h = -22.0
+    buy_39_cti_1h_min = -0.1
+    buy_39_cti_1h_max = 0.4
 
     buy_40_crsi = 50.0
     buy_40_cci = -250.0
@@ -2993,8 +2994,6 @@ class NostalgiaForInfinityNext(IStrategy):
     def sell_ichi(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, trade: 'Trade', current_time: 'datetime') -> tuple:
         if (0.0 < current_profit < 0.05) and (current_time - timedelta(minutes=1440) > trade.open_date_utc) and (last_candle['rsi_14'] > 78.0):
             return True, 'signal_profit_ichi_u'
-        elif (-0.03 < current_profit < -0.0) and (current_time - timedelta(minutes=1440) > trade.open_date_utc) and (last_candle['rsi_14'] > 75.0):
-            return True, 'signal_stoploss_ichi_u'
 
         elif (max_loss > 0.07) and (current_profit > 0.02):
             return True, 'signal_profit_ichi_r_0'
@@ -3012,9 +3011,6 @@ class NostalgiaForInfinityNext(IStrategy):
 
         elif (0.07 < current_profit < 0.1) and (max_profit-current_profit > 0.025) and (max_profit > 0.1):
             return True, 'signal_profit_ichi_t'
-
-        elif (current_profit < -0.1):
-            return True, 'signal_stoploss_ichi'
 
         return False, None
 
@@ -3441,9 +3437,6 @@ class NostalgiaForInfinityNext(IStrategy):
         informative_1h['leading_senkou_span_b'] = ichi['leading_senkou_span_b']
         informative_1h['chikou_span_greater'] = (informative_1h['chikou_span'] > informative_1h['senkou_a']).shift(30).fillna(False)
         informative_1h.loc[:, 'cloud_top'] = informative_1h.loc[:, ['senkou_a', 'senkou_b']].max(axis=1)
-
-        # EFI - Elders Force Index
-        informative_1h['efi'] = pta.efi(informative_1h["close"], informative_1h["volume"], length=13)
 
         # SSL
         ssl_down, ssl_up = SSLChannels(informative_1h, 10)
@@ -4292,17 +4285,16 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['close'] > dataframe['cloud_top_1h'])
                     item_buy_logic.append(dataframe['leading_senkou_span_a_1h'] > dataframe['leading_senkou_span_b_1h'])
                     item_buy_logic.append(dataframe['chikou_span_greater_1h'])
-                    item_buy_logic.append(dataframe['efi_1h'] > 0)
                     item_buy_logic.append(dataframe['ssl_up_1h'] > dataframe['ssl_down_1h'])
                     item_buy_logic.append(dataframe['close'] < dataframe['ssl_up_1h'])
-                    item_buy_logic.append(dataframe['cti'] < self.buy_39_cti)
-                    item_buy_logic.append(dataframe['r_480'] > self.buy_39_r)
-                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_39_r_1h)
                     item_buy_logic.append(dataframe['rsi_14_1h'] > dataframe['rsi_14_1h'].shift(12))
+                    item_buy_logic.append(dataframe['cti'] < self.buy_39_cti)
+                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_39_r_1h)
+                    item_buy_logic.append(dataframe['cti_1h'] > self.buy_39_cti_1h_min)
+                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_39_cti_1h_max)
                     # Start of trend
                     item_buy_logic.append(
-                        (dataframe['leading_senkou_span_a_1h'].shift(12) < dataframe['leading_senkou_span_b_1h'].shift(12)) |
-                        (dataframe['ssl_up_1h'].shift(12) < dataframe['ssl_down_1h'].shift(12))
+                        (dataframe['leading_senkou_span_a_1h'].shift(12) < dataframe['leading_senkou_span_b_1h'].shift(12))
                     )
 
                 # Condition #40 - ZLEMA X buy
