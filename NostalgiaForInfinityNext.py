@@ -1913,7 +1913,7 @@ class NostalgiaForInfinityNext(IStrategy):
         'subplots': {
             'buy tag': { 'buy_tag': {'color': 'green'} },
             'RSI/BTC': {
-                'btc_not_downtrend_1h': { 'color': 'yellow' },
+                'btc_1h_not_downtrend': { 'color': 'yellow' },
                 'btc_rsi_14_1h': { 'color': 'green' },
                 'rsi_14_1h': { 'color': '#f41cd1' },
                 'crsi': {'color': 'blue' }
@@ -3851,7 +3851,7 @@ class NostalgiaForInfinityNext(IStrategy):
                 if global_buy_protection_params["safe_pump"]:
                     item_buy_protection_list.append(dataframe[f"safe_pump_{global_buy_protection_params['safe_pump_period']}_{global_buy_protection_params['safe_pump_type']}_1h"])
                 if global_buy_protection_params['btc_1h_not_downtrend']:
-                    item_buy_protection_list.append(dataframe['btc_not_downtrend_1h'])
+                    item_buy_protection_list.append(dataframe['btc_1h_not_downtrend'])
                 if not self.config['runmode'].value in ('live', 'dry_run'):
                     if self.has_bt_agefilter:
                         item_buy_protection_list.append(dataframe['bt_agefilter_ok'])
