@@ -3133,7 +3133,7 @@ class NostalgiaForInfinityNext(IStrategy):
         # elif (current_profit < -0.05):
         #     return True, 'sell_long_stoploss_u_2'
 
-        return self.sell_stoploss(current_profit, last_candle, previous_candle_1)
+        return self.sell_stoploss(current_profit, last_candle, previous_candle_1, trade, current_time)
 
         return False, None
 
@@ -3216,7 +3216,7 @@ class NostalgiaForInfinityNext(IStrategy):
             return f"{signal_name} ( {buy_tag} )"
 
         # Stoplosses
-        sell, signal_name = self.sell_stoploss(current_profit, last_candle, previous_candle_1)
+        sell, signal_name = self.sell_stoploss(current_profit, last_candle, previous_candle_1, trade, current_time)
         if sell and (signal_name is not None):
             return f"{signal_name} ( {buy_tag} )"
 
