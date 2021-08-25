@@ -270,9 +270,9 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_rising"             : False,
             "sma200_rising_val"         : "50",
             "sma200_1h_rising"          : False,
-            "sma200_1h_rising_val"      : "50",
+            "sma200_1h_rising_val"      : "24",
             "safe_dips"                 : True,
-            "safe_dips_type"            : "50",
+            "safe_dips_type"            : "130",
             "safe_pump"                 : False,
             "safe_pump_type"            : "50",
             "safe_pump_period"          : "24",
@@ -1373,10 +1373,13 @@ class NostalgiaForInfinityNext(IStrategy):
 
     buy_2_rsi_1h_diff = 36.0
     buy_2_mfi = 49.0
-    buy_2_bb_offset = 0.985
-    buy_2_cti = -0.62
+    buy_2_bb_offset = 0.988
+    buy_2_cti = -0.68
     buy_2_cti_1h = 0.9
-    buy_2_volume = 1.6
+    buy_2_r_480_1h = -70.0
+    buy_2_r_480_min = -75.0
+    buy_2_r_480_max = -35.0
+    buy_2_volume = 1.7
 
     buy_bb40_bbdelta_close_3 = 0.045
     buy_bb40_closedelta_close_3 = 0.023
@@ -3880,6 +3883,7 @@ class NostalgiaForInfinityNext(IStrategy):
                 # Condition #2
                 elif index == 2:
                     # Non-Standard protections
+                    item_buy_logic.append(dataframe['moderi_96'])
 
                     # Logic
                     item_buy_logic.append(dataframe['rsi_14'] < dataframe['rsi_14_1h'] - self.buy_2_rsi_1h_diff)
@@ -3888,6 +3892,9 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_2_volume))
                     item_buy_logic.append(dataframe['cti'] < self.buy_2_cti)
                     item_buy_logic.append(dataframe['cti_1h'] < self.buy_2_cti_1h)
+                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_2_r_480_1h)
+                    item_buy_logic.append(dataframe['r_480'] > self.buy_2_r_480_min)
+                    item_buy_logic.append(dataframe['r_480'] < self.buy_2_r_480_max)
 
                 # Condition #3
                 elif index == 3:
