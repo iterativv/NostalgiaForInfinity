@@ -2785,7 +2785,7 @@ class NostalgiaForInfinityNext(IStrategy):
         return False, None
 
     def sell_stoploss(self, current_profit: float, last_candle, previous_candle_1, trade: 'Trade', current_time: 'datetime') -> tuple:
-        if (current_time - timedelta(minutes=1440) > trade.open_date_utc):
+        if (last_candle['sma_200_dec_24']) and (last_candle['ema_25'] < last_candle['ema_50']):
             if (-0.12 <= current_profit < -0.08):
                 if (last_candle['close'] < last_candle['atr_high_thresh_1']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_1']):
                     return True, 'signal_stoploss_atr_1'
