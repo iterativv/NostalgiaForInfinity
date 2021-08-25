@@ -2197,7 +2197,7 @@ class NostalgiaForInfinityNext(IStrategy):
                 elif 0.02 > current_profit >= 0.012:
                     if (last_candle['rsi_14'] < 35.0) and (last_candle['cmf'] < 0.0):
                         return True, 'signal_profit_o_bear_1_1'
-                    elif (last_candle['rsi_14'] < 42.0) and (last_candle['cmf'] < -0.4):
+                    elif (last_candle['rsi_14'] < 43.0) and (last_candle['cmf'] < -0.12):
                         return True, 'signal_profit_o_bear_1_3'
                     elif (last_candle['rsi_14'] < 46.0) and (last_candle['r_14'] == 0.0):
                         return True, 'signal_profit_o_bear_1_4'
