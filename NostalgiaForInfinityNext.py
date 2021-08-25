@@ -1964,6 +1964,16 @@ class NostalgiaForInfinityNext(IStrategy):
     target_profit_cache = None
     #############################################################
 
+    def __init__(self, config: dict) -> None:
+        super().__init__(config)
+        if self.target_profit_cache is None:
+            self.target_profit_cache = Cache(
+                self.config["user_data_dir"] / "data-nfi-profit_target_by_pair.json"
+            )
+
+        # If the cached data hasn't changed, it's a no-op
+        self.target_profit_cache.save()
+
     def get_hold_trades_config_file(self):
         proper_holds_file_path = self.config["user_data_dir"].resolve() / "nfi-hold-trades.json"
         if proper_holds_file_path.is_file():
@@ -2006,13 +2016,6 @@ class NostalgiaForInfinityNext(IStrategy):
         (e.g. gather some remote resource for comparison)
         :param **kwargs: Ensure to keep this here so updates to this won't break your strategy.
         """
-        if self.target_profit_cache is None:
-            self.target_profit_cache = Cache(
-                self.config["user_data_dir"] / "data-nfi-profit_target_by_pair.json"
-            )
-
-        # If the cached data hasn't changed, it's a no-op
-        self.target_profit_cache.save()
 
         if self.config["runmode"].value not in ("live", "dry_run"):
             return super().bot_loop_start(**kwargs)
