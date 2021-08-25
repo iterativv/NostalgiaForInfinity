@@ -1964,6 +1964,16 @@ class NostalgiaForInfinityNext(IStrategy):
     target_profit_cache = None
     #############################################################
 
+    def __init__(self, config: dict) -> None:
+        super().__init__(config)
+        if self.target_profit_cache is None:
+            self.target_profit_cache = Cache(
+                self.config["user_data_dir"] / "data-nfi-profit_target_by_pair.json"
+            )
+
+        # If the cached data hasn't changed, it's a no-op
+        self.target_profit_cache.save()
+
     def get_hold_trades_config_file(self):
         proper_holds_file_path = self.config["user_data_dir"].resolve() / "nfi-hold-trades.json"
         if proper_holds_file_path.is_file():
@@ -2006,13 +2016,6 @@ class NostalgiaForInfinityNext(IStrategy):
         (e.g. gather some remote resource for comparison)
         :param **kwargs: Ensure to keep this here so updates to this won't break your strategy.
         """
-        if self.target_profit_cache is None:
-            self.target_profit_cache = Cache(
-                self.config["user_data_dir"] / "data-nfi-profit_target_by_pair.json"
-            )
-
-        # If the cached data hasn't changed, it's a no-op
-        self.target_profit_cache.save()
 
         if self.config["runmode"].value not in ("live", "dry_run"):
             return super().bot_loop_start(**kwargs)
@@ -3160,7 +3163,7 @@ class NostalgiaForInfinityNext(IStrategy):
         if all(c in ['45', '46'] for c in buy_tags):
             sell, signal_name = self.sell_long_mode(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, buy_tag)
             if sell and (signal_name is not None):
-                return signal_name + ' ( ' + buy_tag + ')'
+                return f"{signal_name} ( {buy_tag} )"
             # Skip remaining sell logic for long mode
             return None
 
@@ -3168,93 +3171,93 @@ class NostalgiaForInfinityNext(IStrategy):
         if all(c in ['32', '33', '34', '35', '36', '37', '38', '39', '40'] for c in buy_tags):
             sell, signal_name = self.sell_quick_mode(current_profit, max_profit, last_candle, previous_candle_1)
             if sell and (signal_name is not None):
-                return signal_name + ' ( ' + buy_tag + ')'
+                return f"{signal_name} ( {buy_tag} )"
 
         # Ichi Trade management
         if all(c in ['39'] for c in buy_tags):
             sell, signal_name = self.sell_ichi(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
             if sell and (signal_name is not None):
-                return signal_name + ' ( ' + buy_tag + ')'
+                return f"{signal_name} ( {buy_tag} )"
 
         # Over EMA200, main profit targets
         sell, signal_name = self.sell_over_main(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return signal_name + ' ( ' + buy_tag + ')'
+            return f"{signal_name} ( {buy_tag} )"
 
         # Under EMA200, main profit targets
         sell, signal_name = self.sell_under_main(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return signal_name + ' ( ' + buy_tag + ')'
+            return f"{signal_name} ( {buy_tag} )"
 
         # The pair is pumped
         sell, signal_name = self.sell_pump_main(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return signal_name + ' ( ' + buy_tag + ')'
+            return f"{signal_name} ( {buy_tag} )"
 
         # The pair is descending
         sell, signal_name = self.sell_dec_main(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return signal_name + ' ( ' + buy_tag + ')'
+            return f"{signal_name} ( {buy_tag} )"
 
         # Trailing
         sell, signal_name = self.sell_trail_main(current_profit, last_candle, max_profit)
         if sell and (signal_name is not None):
-            return signal_name + ' ( ' + buy_tag + ')'
+            return f"{signal_name} ( {buy_tag} )"
 
         # Duration based
         sell, signal_name = self.sell_duration_main(current_profit, last_candle, trade, current_time)
         if sell and (signal_name is not None):
-            return signal_name + ' ( ' + buy_tag + ')'
+            return f"{signal_name} ( {buy_tag} )"
 
         # Under EMA200, exit with any profit
         sell, signal_name = self.sell_under_min(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return signal_name + ' ( ' + buy_tag + ')'
+            return f"{signal_name} ( {buy_tag} )"
 
         # Stoplosses
         sell, signal_name = self.sell_stoploss(current_profit, last_candle, previous_candle_1)
         if sell and (signal_name is not None):
-            return signal_name + ' ( ' + buy_tag + ')'
+            return f"{signal_name} ( {buy_tag} )"
 
         # Pumped descending pairs
         sell, signal_name = self.sell_pump_dec(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return signal_name + ' ( ' + buy_tag + ')'
+            return f"{signal_name} ( {buy_tag} )"
 
         # Extra sells for pumped pairs
         sell, signal_name = self.sell_pump_extra(current_profit, last_candle, max_profit)
         if sell and (signal_name is not None):
-            return signal_name + ' ( ' + buy_tag + ')'
+            return f"{signal_name} ( {buy_tag} )"
 
         # Extra sells for trades that recovered
         sell, signal_name = self.sell_recover(current_profit, last_candle, max_loss)
         if sell and (signal_name is not None):
-            return signal_name + ' ( ' + buy_tag + ')'
+            return f"{signal_name} ( {buy_tag} )"
 
         # Williams %R based sell 1
         sell, signal_name = self.sell_r_1(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return signal_name + ' ( ' + buy_tag + ')'
+            return f"{signal_name} ( {buy_tag} )"
 
         # Williams %R based sell 2
         sell, signal_name = self.sell_r_2(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return signal_name + ' ( ' + buy_tag + ')'
+            return f"{signal_name} ( {buy_tag} )"
 
         # Williams %R based sell 3
         sell, signal_name = self.sell_r_3(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return signal_name + ' ( ' + buy_tag + ')'
+            return f"{signal_name} ( {buy_tag} )"
 
         # Williams %R based sell 4, plus CTI
         sell, signal_name = self.sell_r_4(current_profit, last_candle)
         if (sell) and (signal_name is not None):
-            return signal_name + ' ( ' + buy_tag + ')'
+            return f"{signal_name} ( {buy_tag} )"
 
         # Williams %R based sell 5, plus  RSI and CTI 1h
         sell, signal_name = self.sell_r_5(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return signal_name + ' ( ' + buy_tag + ')'
+            return f"{signal_name} ( {buy_tag} )"
 
         # Profit Target Signal
         # Check if pair exist on target_profit_cache
@@ -3827,7 +3830,7 @@ class NostalgiaForInfinityNext(IStrategy):
             item_buy_protection_list = [True]
             global_buy_protection_params = self.buy_protection_params[index]
 
-            if self.buy_params['buy_condition_' + str(index) + '_enable']:
+            if self.buy_params[f"buy_condition_{index}_enable"]:
                 # Standard protections - Common to every condition
                 # -----------------------------------------------------------------------------------------
                 if global_buy_protection_params["ema_fast"]:
@@ -4672,10 +4675,10 @@ def pmax(df, period, multiplier, length, MAtype, src):
     MAtype = int(MAtype)
     src = int(src)
 
-    mavalue = 'MA_' + str(MAtype) + '_' + str(length)
-    atr = 'ATR_' + str(period)
-    pm = 'pm_' + str(period) + '_' + str(multiplier) + '_' + str(length) + '_' + str(MAtype)
-    pmx = 'pmX_' + str(period) + '_' + str(multiplier) + '_' + str(length) + '_' + str(MAtype)
+    mavalue = f'MA_{MAtype}_{length}'
+    atr = f'ATR_{period}'
+    pm = f'pm_{period}_{multiplierl}_{length}_{MAtype}'
+    pmx = f'pmX_{period}_{multiplier}_{length}_{MAtype}'
 
     # MAtype==1 --> EMA
     # MAtype==2 --> DEMA
