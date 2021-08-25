@@ -4677,7 +4677,7 @@ def pmax(df, period, multiplier, length, MAtype, src):
 
     mavalue = f'MA_{MAtype}_{length}'
     atr = f'ATR_{period}'
-    pm = f'pm_{period}_{multiplierl}_{length}_{MAtype}'
+    pm = f'pm_{period}_{multiplier}_{length}_{MAtype}'
     pmx = f'pmX_{period}_{multiplier}_{length}_{MAtype}'
 
     # MAtype==1 --> EMA
