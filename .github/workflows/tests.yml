@@ -152,7 +152,7 @@ jobs:
           EXTRA_ARGS: --ignore tests/backtests/
         run: |
           mkdir artifacts
-          chmod 777 artifacts
+          chmod 777 artifacts $(pwd)
           docker-compose run --rm tests
 
   Backest-CI-Stats:

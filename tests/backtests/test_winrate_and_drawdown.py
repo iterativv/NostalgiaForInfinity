@@ -68,7 +68,7 @@ def deviations():
         "binance": {
             ("20210101", "20210201"): {"max_drawdown": 90, "winrate": 90},
             ("20210201", "20210301"): {"max_drawdown": 65, "winrate": 90},
-            ("20210301", "20210401"): {"max_drawdown": 42, "winrate": 90},
+            ("20210301", "20210401"): {"max_drawdown": 55, "winrate": 90},
         },
         "kucoin": {
             ("20210401", "20210501"): {"max_drawdown": 51, "winrate": 76},
