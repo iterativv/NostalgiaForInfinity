@@ -4535,6 +4535,9 @@ class NostalgiaForInfinityNext(IStrategy):
             # We have no pairs we want to hold until profit, sell
             return False
 
+        # By default, no hold should be done
+        hold_trade = False
+
         trade_ids: dict = self.hold_trades_cache.data.get("trade_ids")
         if trade_ids:
             if trade.id not in trade_ids:
@@ -4556,7 +4559,7 @@ class NostalgiaForInfinityNext(IStrategy):
                 return False
 
             # This pair is on the list to hold, and we haven't reached minimum profit, hold
-            return True
+            hold_trade = True
 
         trade_pairs: dict = self.hold_trades_cache.data.get("trade_pairs")
         if trade_pairs:
@@ -4579,9 +4582,9 @@ class NostalgiaForInfinityNext(IStrategy):
                 return False
 
             # This pair is on the list to hold, and we haven't reached minimum profit, hold
-            return True
-        # By default, no hold should be done
-        return False
+            hold_trade = True
+
+        return hold_trade
 
 # Elliot Wave Oscillator
 def ewo(dataframe, sma1_length=5, sma2_length=35):
