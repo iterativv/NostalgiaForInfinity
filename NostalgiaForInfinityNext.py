@@ -1141,12 +1141,12 @@ class NostalgiaForInfinityNext(IStrategy):
         },
         46: {
             "ema_fast"                  : True,
-            "ema_fast_len"              : "50",
+            "ema_fast_len"              : "12",
             "ema_slow"                  : True,
-            "ema_slow_len"              : "50",
-            "close_above_ema_fast"      : True,
+            "ema_slow_len"              : "12",
+            "close_above_ema_fast"      : False,
             "close_above_ema_fast_len"  : "200",
-            "close_above_ema_slow"      : False,
+            "close_above_ema_slow"      : True,
             "close_above_ema_slow_len"  : "200",
             "sma200_rising"             : False,
             "sma200_rising_val"         : "30",
@@ -1631,10 +1631,12 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_45_cti_1h_max = 0.9
     buy_45_r = -55.0
 
-    buy_46_ema_open_mult = 0.016
-    buy_46_bb_offset = 0.992
-    buy_46_ma_offset_low = 0.9
-    buy_46_cti_1h_max = 0.85
+    buy_46_ema_open_mult = 0.0218
+    buy_46_bb_offset = 0.998
+    buy_46_ma_offset_low = 0.915
+    buy_46_cti_1h_max = 0.9
+    buy_46_cti = -0.6
+    buy_43_r_1h_max = -10.0
 
     # Sell
 
@@ -4461,6 +4463,8 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_46_bb_offset))
                     item_buy_logic.append(dataframe['close'] > dataframe['sma_30'] * self.buy_46_ma_offset_low)
                     item_buy_logic.append(dataframe['cti_1h'] < self.buy_46_cti_1h_max)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_46_cti)
+                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_43_r_1h_max)
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
