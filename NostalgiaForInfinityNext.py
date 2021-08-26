@@ -3071,7 +3071,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
     def sell_long_mode(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
         # Sell signal 1
-        if (last_candle['rsi_14'] > 80.0) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']) and (previous_candle_3['close'] > previous_candle_3['bb20_2_upp']) and (previous_candle_4['close'] > previous_candle_4['bb20_2_upp']) and (previous_candle_5['close'] > previous_candle_5['bb20_2_upp']):
+        if (last_candle['rsi_14'] > 79.0) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']) and (previous_candle_3['close'] > previous_candle_3['bb20_2_upp']) and (previous_candle_4['close'] > previous_candle_4['bb20_2_upp']) and (previous_candle_5['close'] > previous_candle_5['bb20_2_upp']):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.0):
                     return True, 'sell_long_1_1_1'
@@ -3080,13 +3080,22 @@ class NostalgiaForInfinityNext(IStrategy):
                     return True, 'sell_long_1_2_1'
 
         # Sell signal 2
-        elif (last_candle['rsi_14'] > 82) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']):
+        elif (last_candle['rsi_14'] > 80.0) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.0):
                     return True, 'sell_long_2_1_1'
             else:
                 if (current_profit > 0.0):
                     return True, 'sell_long_2_2_1'
+
+        # Sell signal 3
+        elif (last_candle['rsi_14'] > 85.0):
+            if (last_candle['close'] > last_candle['ema_200']):
+                if (current_profit > 0.0):
+                    return True, 'sell_long_3_1_1'
+            else:
+                if (current_profit > 0.0):
+                    return True, 'sell_long_3_2_1'
 
         # Sell signal 4
         elif (last_candle['rsi_14'] > 80.0) and (last_candle['rsi_14_1h'] > 82.0):
@@ -3112,7 +3121,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     return True, 'sell_long_7_2_1'
 
         # Sell signal 8
-        elif (last_candle['close'] > last_candle['bb20_2_upp_1h'] * 1.12):
+        elif (last_candle['close'] > last_candle['bb20_2_upp_1h'] * 1.1):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.0):
                     return True, 'sell_long_8_1_1'
@@ -3120,22 +3129,19 @@ class NostalgiaForInfinityNext(IStrategy):
                 if (current_profit > 0.0):
                     return True, 'sell_long_8_2_1'
 
-        elif (0.02 < current_profit <= 0.06) and (max_profit - current_profit > 0.08):
+        elif (0.02 < current_profit <= 0.06) and (max_profit - current_profit > 0.04) and (last_candle['cmf'] < 0.0):
             return True, 'sell_long_t_1'
-        elif (0.06 < current_profit <= 0.12) and (max_profit - current_profit > 0.09):
+        elif (0.06 < current_profit <= 0.12) and (max_profit - current_profit > 0.06) and (last_candle['cmf'] < 0.0):
             return True, 'sell_long_t_2'
-        elif (0.12 < current_profit <= 0.24) and (max_profit - current_profit > 0.1):
+        elif (0.12 < current_profit <= 0.24) and (max_profit - current_profit > 0.08) and (last_candle['cmf'] < 0.0):
             return True, 'sell_long_t_3'
-        elif (0.24 < current_profit <= 0.5) and (max_profit - current_profit > 0.12):
+        elif (0.24 < current_profit <= 0.5) and (max_profit - current_profit > 0.1) and (last_candle['cmf'] < 0.0):
             return True, 'sell_long_t_4'
-        elif (0.5 < current_profit <= 0.9) and (max_profit - current_profit > 0.2):
+        elif (0.5 < current_profit <= 0.9) and (max_profit - current_profit > 0.2) and (last_candle['cmf'] < 0.0):
             return True, 'sell_long_t_5'
 
-        # elif (current_profit < -0.02) and (last_candle['close'] < last_candle['atr_high_thresh_l']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_q']):
-        #         return True, 'sell_long_stoploss_u_1'
-
-        # elif (current_profit < -0.05):
-        #     return True, 'sell_long_stoploss_u_2'
+        elif (current_profit < -0.1) and (last_candle['close'] < last_candle['atr_high_thresh_l']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_q']) and (last_candle['sma_200_dec_24']) and (last_candle['ema_25'] < last_candle['ema_50']):
+                return True, 'sell_long_stoploss_1'
 
         return self.sell_stoploss(current_profit, last_candle, previous_candle_1, trade, current_time)
 
