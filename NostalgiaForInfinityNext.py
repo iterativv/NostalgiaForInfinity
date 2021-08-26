@@ -3141,6 +3141,9 @@ class NostalgiaForInfinityNext(IStrategy):
         elif (0.5 < current_profit <= 0.9) and (max_profit - current_profit > 0.2) and (last_candle['cmf'] < 0.0):
             return True, 'sell_long_t_5'
 
+        elif (0.03 < current_profit <= 0.06) and (current_time - timedelta(minutes=720) > trade.open_date_utc) and (last_candle['r_480'] > -20.0):
+            return True, 'sell_long_l_1'
+
         elif (current_profit < -0.1) and (last_candle['close'] < last_candle['atr_high_thresh_l']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_q']) and (last_candle['sma_200_dec_24']) and (last_candle['ema_25'] < last_candle['ema_50']):
                 return True, 'sell_long_stoploss_1'
 
