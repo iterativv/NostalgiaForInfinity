@@ -59,3 +59,4 @@ If you like to help, you can also use the following links to sign up to various 
 
 * Binance: https://accounts.binance.com/en/register?ref=37365811
 * Kucoin: https://www.kucoin.com/ucenter/signup?rcode=rJTLZ9K
+* Huobi: https://www.huobi.com/en-us/topic/double-reward/?invite_code=ubpt2223
