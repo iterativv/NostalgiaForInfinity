@@ -2278,6 +2278,8 @@ class NostalgiaForInfinityNext(IStrategy):
                         return True, 'signal_profit_u_bull_5_4'
                     elif (last_candle['cti'] > 0.952):
                         return True, 'signal_profit_u_bull_5_5'
+                    elif (last_candle['rsi_14'] < 51.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf'] < 0.0):
+                        return True, 'signal_profit_u_bull_5_6'
                 elif 0.05 > current_profit >= 0.04:
                     if last_candle['rsi_14'] < 47.0 and (last_candle['cmf'] < 0.0):
                         return True, 'signal_profit_u_bull_4_1'
@@ -2287,6 +2289,8 @@ class NostalgiaForInfinityNext(IStrategy):
                         return True, 'signal_profit_u_bull_4_4'
                     elif (last_candle['cti'] > 0.954):
                         return True, 'signal_profit_u_bull_4_5'
+                    elif (last_candle['rsi_14'] < 50.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf'] < 0.0):
+                        return True, 'signal_profit_u_bull_4_6'
                 elif 0.04 > current_profit >= 0.03:
                     if last_candle['rsi_14'] < 46.0 and (last_candle['cmf'] < 0.0):
                         return True, 'signal_profit_u_bull_3_1'
@@ -2296,6 +2300,8 @@ class NostalgiaForInfinityNext(IStrategy):
                         return True, 'signal_profit_u_bull_3_4'
                     elif (last_candle['cti'] > 0.956):
                         return True, 'signal_profit_u_bull_3_5'
+                    elif (last_candle['rsi_14'] < 49.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf'] < 0.0):
+                        return True, 'signal_profit_u_bull_3_6'
                 elif 0.03 > current_profit >= 0.02:
                     if last_candle['rsi_14'] < 45.0 and (last_candle['cmf'] < 0.0):
                         return True, 'signal_profit_u_bull_2_1'
@@ -2305,6 +2311,8 @@ class NostalgiaForInfinityNext(IStrategy):
                         return True, 'signal_profit_u_bull_2_4'
                     elif (last_candle['cti'] > 0.958):
                         return True, 'signal_profit_u_bull_2_5'
+                    elif (last_candle['rsi_14'] < 46.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf'] < 0.0):
+                        return True, 'signal_profit_u_bull_2_6'
                 elif 0.02 > current_profit >= 0.01:
                     if (last_candle['rsi_14'] < 37.0) and (last_candle['cmf'] < 0.0):
                         return True, 'signal_profit_u_bull_1_1'
@@ -2314,6 +2322,8 @@ class NostalgiaForInfinityNext(IStrategy):
                         return True, 'signal_profit_u_bull_1_4'
                     elif (last_candle['cti'] > 0.96):
                         return True, 'signal_profit_u_bull_1_5'
+                    elif (last_candle['rsi_14'] < 43.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf'] < 0.0):
+                        return True, 'signal_profit_u_bull_1_6'
             else:
                 if current_profit >= 0.20:
                     if last_candle['rsi_14'] < 30.0:
@@ -2357,6 +2367,8 @@ class NostalgiaForInfinityNext(IStrategy):
                         return True, 'signal_profit_u_bear_5_4'
                     elif (last_candle['cti'] > 0.942):
                         return True, 'signal_profit_u_bear_5_5'
+                    elif (last_candle['rsi_14'] < 57.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf'] < 0.0):
+                        return True, 'signal_profit_u_bull_5_6'
                 elif 0.05 > current_profit >= 0.04:
                     if last_candle['rsi_14'] < 50.0:
                         return True, 'signal_profit_u_bear_4_1'
@@ -2366,6 +2378,8 @@ class NostalgiaForInfinityNext(IStrategy):
                         return True, 'signal_profit_u_bear_4_4'
                     elif (last_candle['cti'] > 0.944):
                         return True, 'signal_profit_u_bear_4_5'
+                    elif (last_candle['rsi_14'] < 56.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf'] < 0.0):
+                        return True, 'signal_profit_u_bull_4_6'
                 elif 0.04 > current_profit >= 0.03:
                     if last_candle['rsi_14'] < 48.0:
                         return True, 'signal_profit_u_bear_3_1'
@@ -2375,6 +2389,8 @@ class NostalgiaForInfinityNext(IStrategy):
                         return True, 'signal_profit_u_bear_3_4'
                     elif (last_candle['cti'] > 0.946):
                         return True, 'signal_profit_u_bear_3_5'
+                    elif (last_candle['rsi_14'] < 55.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf'] < 0.0):
+                        return True, 'signal_profit_u_bull_3_6'
                 elif 0.03 > current_profit >= 0.02:
                     if last_candle['rsi_14'] < 55.0: #46
                         return True, 'signal_profit_u_bear_2_1'
@@ -2384,6 +2400,8 @@ class NostalgiaForInfinityNext(IStrategy):
                         return True, 'signal_profit_u_bear_2_4'
                     elif (last_candle['cti'] > 0.948):
                         return True, 'signal_profit_u_bear_2_5'
+                    elif (last_candle['rsi_14'] < 54.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf'] < 0.0):
+                        return True, 'signal_profit_u_bull_2_6'
                 elif 0.02 > current_profit >= 0.01:
                     if (last_candle['rsi_14'] < 38.0) and (last_candle['cmf'] < 0.0):
                         return True, 'signal_profit_u_bear_1_1'
@@ -2393,6 +2411,8 @@ class NostalgiaForInfinityNext(IStrategy):
                         return True, 'signal_profit_u_bear_1_4'
                     elif (last_candle['cti'] > 0.95):
                         return True, 'signal_profit_u_bear_1_5'
+                    elif (last_candle['rsi_14'] < 44.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf'] < 0.0):
+                        return True, 'signal_profit_u_bull_1_6'
         return False, None
 
     def sell_pump_main(self, current_profit: float, last_candle) -> tuple:
