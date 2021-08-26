@@ -4539,11 +4539,7 @@ class NostalgiaForInfinityNext(IStrategy):
         hold_trade = False
 
         trade_ids: dict = self.hold_trades_cache.data.get("trade_ids")
-        if trade_ids:
-            if trade.id not in trade_ids:
-                # This pair is not on the list to hold until profit, sell
-                return False
-
+        if trade_ids and trade.id in trade_ids:
             trade_profit_ratio = trade_ids[trade.id]
             current_profit_ratio = trade.calc_profit_ratio(rate)
             if sell_reason == "force_sell":
@@ -4556,17 +4552,19 @@ class NostalgiaForInfinityNext(IStrategy):
                 return False
             elif current_profit_ratio >= trade_profit_ratio:
                 # This pair is on the list to hold, and we reached minimum profit, sell
+                formatted_profit_ratio = "{}%".format(trade_profit_ratio * 100)
+                formatted_current_profit_ratio = "{}%".format(current_profit_ratio * 100)
+                log.warning(
+                    "Selling %s because the current profit of %s >= %s",
+                    trade, formatted_current_profit_ratio, formatted_profit_ratio
+                )
                 return False
 
             # This pair is on the list to hold, and we haven't reached minimum profit, hold
             hold_trade = True
 
         trade_pairs: dict = self.hold_trades_cache.data.get("trade_pairs")
-        if trade_pairs:
-            if trade.pair not in trade_pairs:
-                # This pair is not on the list to hold until profit, sell
-                return False
-
+        if trade_pairs and trade.pair in trade_pairs:
             trade_profit_ratio = trade_pairs[trade.pair]
             current_profit_ratio = trade.calc_profit_ratio(rate)
             if sell_reason == "force_sell":
@@ -4579,6 +4577,12 @@ class NostalgiaForInfinityNext(IStrategy):
                 return False
             elif current_profit_ratio >= trade_profit_ratio:
                 # This pair is on the list to hold, and we reached minimum profit, sell
+                formatted_profit_ratio = "{}%".format(trade_profit_ratio * 100)
+                formatted_current_profit_ratio = "{}%".format(current_profit_ratio * 100)
+                log.warning(
+                    "Selling %s because the current profit of %s >= %s",
+                    trade, formatted_current_profit_ratio, formatted_profit_ratio
+                )
                 return False
 
             # This pair is on the list to hold, and we haven't reached minimum profit, hold
