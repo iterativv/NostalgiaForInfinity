@@ -320,7 +320,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "btc_1h_not_downtrend"      : False
         },
         5: {
-            "ema_fast"                  : True,
+            "ema_fast"                  : False,
             "ema_fast_len"              : "100",
             "ema_slow"                  : False,
             "ema_slow_len"              : "50",
@@ -333,9 +333,9 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
             "safe_dips"                 : True,
-            "safe_dips_type"            : "100",
+            "safe_dips_type"            : "70",
             "safe_pump"                 : True,
-            "safe_pump_type"            : "30",
+            "safe_pump_type"            : "80",
             "safe_pump_period"          : "36",
             "btc_1h_not_downtrend"      : False
         },
@@ -1392,11 +1392,12 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_bb20_volume_4 = 10.0
     buy_cti_4 = -0.8
 
-    buy_ema_open_mult_5 = 0.018
-    buy_bb_offset_5 = 0.996
-    buy_ema_rel_5 = 0.915
-    buy_cti_5 = -0.84
-    buy_volume_5 = 1.8
+    buy_5_ema_rel = 0.84
+    buy_5_ema_open_mult = 0.018
+    buy_5_bb_offset = 0.996
+    buy_5_cti = -0.82
+    buy_5_crsi_1h = 24.0
+    buy_5_volume = 1.8
 
     buy_ema_open_mult_6 = 0.021
     buy_bb_offset_6 = 0.976
@@ -3936,15 +3937,16 @@ class NostalgiaForInfinityNext(IStrategy):
                 # Condition #5
                 elif index == 5:
                     # Non-Standard protections
-                    item_buy_logic.append(dataframe['close'] > (dataframe['ema_200_1h'] * self.buy_ema_rel_5))
+                    item_buy_logic.append(dataframe['close'] > (dataframe['ema_200_1h'] * self.buy_5_ema_rel))
 
                     # Logic
                     item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
-                    item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * self.buy_ema_open_mult_5))
+                    item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * self.buy_5_ema_open_mult))
                     item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
-                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_5))
-                    item_buy_logic.append(dataframe['cti'] < self.buy_cti_5)
-                    item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_volume_5))
+                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_5_bb_offset))
+                    item_buy_logic.append(dataframe['cti'] < self.buy_5_cti)
+                    item_buy_logic.append(dataframe['crsi_1h'] > self.buy_5_crsi_1h)
+                    item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_5_volume))
 
                 # Condition #6
                 elif index == 6:
