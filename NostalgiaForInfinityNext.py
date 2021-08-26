@@ -1120,10 +1120,10 @@ class NostalgiaForInfinityNext(IStrategy):
         },
         45: {
             "ema_fast"                  : True,
-            "ema_fast_len"              : "50",
+            "ema_fast_len"              : "12",
             "ema_slow"                  : True,
-            "ema_slow_len"              : "50",
-            "close_above_ema_fast"      : True,
+            "ema_slow_len"              : "12",
+            "close_above_ema_fast"      : False,
             "close_above_ema_fast_len"  : "200",
             "close_above_ema_slow"      : False,
             "close_above_ema_slow_len"  : "200",
@@ -1623,11 +1623,12 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_44_cti = -0.73
     buy_44_crsi_1h = 10.0
 
-    buy_45_bb40_bbdelta_close = 0.052
+    buy_45_bb40_bbdelta_close = 0.039
     buy_45_bb40_closedelta_close = 0.02
-    buy_45_bb40_tail_bbdelta = 0.4
-    buy_45_ma_offset_low = 0.948
-    buy_45_cti_1h_max = 0.88
+    buy_45_bb40_tail_bbdelta = 0.24
+    buy_45_ma_offset = 0.956
+    buy_45_cti_1h_max = 0.9
+    buy_45_r = -55.0
 
     buy_46_ema_open_mult = 0.016
     buy_46_bb_offset = 0.992
@@ -4435,8 +4436,9 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['tail'].lt(dataframe['bb40_2_delta'] * self.buy_45_bb40_tail_bbdelta))
                     item_buy_logic.append(dataframe['close'].lt(dataframe['bb40_2_low'].shift()))
                     item_buy_logic.append(dataframe['close'].le(dataframe['close'].shift()))
-                    item_buy_logic.append(dataframe['close'] > dataframe['sma_30'] * self.buy_45_ma_offset_low)
                     item_buy_logic.append(dataframe['cti_1h'] < self.buy_45_cti_1h_max)
+                    item_buy_logic.append(dataframe['r_480'] < self.buy_45_r)
+                    item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * self.buy_45_ma_offset)
 
                 # Condition #46 - Long mode
                 elif index == 46:
