@@ -3246,7 +3246,7 @@ class NostalgiaForInfinityNext(IStrategy):
         max_loss = ((trade.open_rate - trade.min_rate) / trade.min_rate)
 
         # Long mode
-        if all(c in ['45', '46'] for c in buy_tags):
+        if all(c in ['45', '46', '47'] for c in buy_tags):
             sell, signal_name = self.sell_long_mode(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, buy_tag)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag} )"
