@@ -3203,13 +3203,13 @@ class NostalgiaForInfinityNext(IStrategy):
 
         elif (0.02 < current_profit <= 0.06) and (max_profit - current_profit > 0.04) and (last_candle['cmf'] < 0.0):
             return True, 'sell_long_t_1'
-        elif (0.06 < current_profit <= 0.12) and (max_profit - current_profit > 0.06) and (last_candle['cmf'] < 0.0):
+        elif (0.06 < current_profit <= 0.12) and (max_profit - current_profit > 0.05) and (last_candle['cmf'] < 0.0):
             return True, 'sell_long_t_2'
-        elif (0.12 < current_profit <= 0.24) and (max_profit - current_profit > 0.08) and (last_candle['cmf'] < 0.0):
+        elif (0.12 < current_profit <= 0.24) and (max_profit - current_profit > 0.06) and (last_candle['cmf'] < 0.0):
             return True, 'sell_long_t_3'
-        elif (0.24 < current_profit <= 0.5) and (max_profit - current_profit > 0.1) and (last_candle['cmf'] < 0.0):
+        elif (0.24 < current_profit <= 0.5) and (max_profit - current_profit > 0.08) and (last_candle['cmf'] < 0.0):
             return True, 'sell_long_t_4'
-        elif (0.5 < current_profit <= 0.9) and (max_profit - current_profit > 0.2) and (last_candle['cmf'] < 0.0):
+        elif (0.5 < current_profit <= 0.9) and (max_profit - current_profit > 0.1) and (last_candle['cmf'] < 0.0):
             return True, 'sell_long_t_5'
 
         elif (0.03 < current_profit <= 0.06) and (current_time - timedelta(minutes=720) > trade.open_date_utc) and (last_candle['r_480'] > -20.0):
