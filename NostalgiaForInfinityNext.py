@@ -212,6 +212,7 @@ class NostalgiaForInfinityNext(IStrategy):
         "buy_condition_44_enable": True,
         "buy_condition_45_enable": True,
         "buy_condition_46_enable": True,
+        "buy_condition_47_enable": True,
         #############
     }
 
@@ -1158,6 +1159,26 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_type"            : "100",
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : True
+        },
+        47: {
+            "ema_fast"                  : False,
+            "ema_fast_len"              : "12",
+            "ema_slow"                  : False,
+            "ema_slow_len"              : "12",
+            "close_above_ema_fast"      : False,
+            "close_above_ema_fast_len"  : "200",
+            "close_above_ema_slow"      : False,
+            "close_above_ema_slow_len"  : "200",
+            "sma200_rising"             : False,
+            "sma200_rising_val"         : "30",
+            "sma200_1h_rising"          : False,
+            "sma200_1h_rising_val"      : "24",
+            "safe_dips"                 : True,
+            "safe_dips_type"            : "130",
+            "safe_pump"                 : False,
+            "safe_pump_type"            : "100",
+            "safe_pump_period"          : "24",
+            "btc_1h_not_downtrend"      : False
         }
     }
 
@@ -1638,6 +1659,13 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_46_cti_1h_max = 0.9
     buy_46_cti = -0.6
     buy_46_r_1h_max = -10.0
+
+    buy_47_ewo = 10.0
+    buy_47_ma_offset = 0.975
+    buy_47_rsi_diff = 43.0
+    buy_47_r_1h_max = -20.0
+    buy_47_cti_1h_max = 0.95
+    buy_47_crsi_1h_min = 45.0
 
     # Sell
 
@@ -4506,7 +4534,19 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['close'] > dataframe['sma_30'] * self.buy_46_ma_offset_low)
                     item_buy_logic.append(dataframe['cti_1h'] < self.buy_46_cti_1h_max)
                     item_buy_logic.append(dataframe['cti'] < self.buy_46_cti)
-                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_43_r_1h_max)
+                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_46_r_1h_max)
+
+                # Condition #47 - Long mode
+                elif index == 47:
+                    # Non-Standard protections
+
+                    # Logic
+                    item_buy_logic.append(dataframe['ewo'] > self.buy_47_ewo)
+                    item_buy_logic.append(dataframe['close'] < (dataframe['ema_50'] * self.buy_47_ma_offset))
+                    item_buy_logic.append(dataframe['rsi_14'] < (dataframe['rsi_14_1h'] - self.buy_47_rsi_diff))
+                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_47_r_1h_max)
+                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_47_cti_1h_max)
+                    item_buy_logic.append(dataframe['crsi_1h'] > self.buy_47_crsi_1h_min)
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
