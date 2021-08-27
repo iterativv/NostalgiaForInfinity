@@ -109,7 +109,7 @@ class NostalgiaForInfinityNext(IStrategy):
         "0": 10,
     }
 
-    stoploss = -0.99
+    stoploss = -0.50
 
     # Trailing stoploss (not used)
     trailing_stop = False
