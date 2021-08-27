@@ -554,9 +554,9 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
             "safe_dips"                 : True,
-            "safe_dips_type"            : "10",
+            "safe_dips_type"            : "110",
             "safe_pump"                 : True,
-            "safe_pump_type"            : "10",
+            "safe_pump_type"            : "120",
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
         },
@@ -1481,10 +1481,13 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_rsi_15 = 28.0
     buy_ema_rel_15 = 0.974
 
-    buy_ma_offset_16 = 0.953
-    buy_rsi_16 = 31.0
-    buy_ewo_16 = 2.8
-    buy_cti_16 = -0.84
+    buy_16_ma_offset = 0.955
+    buy_16_rsi = 30.0
+    buy_16_ewo = 2.8
+    buy_16_cti = -0.9
+    buy_16_cti_1h = 0.9
+    buy_16_r = -30.0
+    buy_16_r_1h = -20.0
 
     buy_17_ma_offset = 0.99
     buy_17_ewo = -9.6
@@ -4177,10 +4180,13 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Non-Standard protections
 
                     # Logic
-                    item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_ma_offset_16)
-                    item_buy_logic.append(dataframe['ewo'] > self.buy_ewo_16)
-                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_rsi_16)
-                    item_buy_logic.append(dataframe['cti'] < self.buy_cti_16)
+                    item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_16_ma_offset)
+                    item_buy_logic.append(dataframe['ewo'] > self.buy_16_ewo)
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_16_rsi)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_16_cti)
+                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_16_cti_1h)
+                    item_buy_logic.append(dataframe['r_480'] < self.buy_16_r)
+                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_16_r_1h)
 
                 # Condition #17
                 elif index == 17:
