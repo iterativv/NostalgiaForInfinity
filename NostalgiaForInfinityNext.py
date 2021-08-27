@@ -381,7 +381,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "btc_1h_not_downtrend"      : False
         },
         8: {
-            "ema_fast"                  : True,
+            "ema_fast"                  : False,
             "ema_fast_len"              : "12",
             "ema_slow"                  : True,
             "ema_slow_len"              : "12",
@@ -389,10 +389,10 @@ class NostalgiaForInfinityNext(IStrategy):
             "close_above_ema_fast_len"  : "200",
             "close_above_ema_slow"      : False,
             "close_above_ema_slow_len"  : "200",
-            "sma200_rising"             : True,
+            "sma200_rising"             : False,
             "sma200_rising_val"         : "36",
-            "sma200_1h_rising"          : False,
-            "sma200_1h_rising_val"      : "50",
+            "sma200_1h_rising"          : True,
+            "sma200_1h_rising_val"      : "20",
             "safe_dips"                 : True,
             "safe_dips_type"            : "130",
             "safe_pump"                 : True,
@@ -1430,13 +1430,14 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_7_cmf_1h = -0.16
 
     buy_8_cti = -0.88
-    buy_8_rsi = 40.0
-    buy_8_bb_offset = 0.995
-    buy_8_rsi_1h = 64.0
+    buy_8_bb_offset = 0.998
     buy_8_volume = 1.8
     buy_8_r_480 = -45.0
-    buy_8_cti_1h = 0.8
-    buy_8_r_480_1h = -55.0
+    buy_8_cti_1h = 0.95
+    buy_8_r_480_1h_min = -75.0
+    buy_8_r_480_1h_max = -20.0
+    buy_8_cmf_min = -0.4
+    buy_8_cmf_max = -0.18
 
     buy_ma_offset_9 = 0.968
     buy_bb_offset_9 = 0.942
@@ -4065,7 +4066,10 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_8_volume))
                     item_buy_logic.append(dataframe['r_480'] < self.buy_8_r_480)
                     item_buy_logic.append(dataframe['cti_1h'] < self.buy_8_cti_1h)
-                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_8_r_480_1h)
+                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_8_r_480_1h_min)
+                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_8_r_480_1h_max)
+                    item_buy_logic.append(dataframe['cmf'] > self.buy_8_cmf_min)
+                    item_buy_logic.append(dataframe['cmf'] < self.buy_8_cmf_max)
 
                 # Condition #9
                 elif index == 9:
