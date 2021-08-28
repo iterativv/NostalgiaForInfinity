@@ -1042,7 +1042,7 @@ class NostalgiaForInfinityNext(IStrategy):
         },
         41: {
             "ema_fast"                  : False,
-            "ema_fast_len"              : "12",
+            "ema_fast_len"              : "50",
             "ema_slow"                  : False,
             "ema_slow_len"              : "12",
             "close_above_ema_fast"      : False,
@@ -1054,8 +1054,8 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "20",
             "safe_dips"                 : True,
-            "safe_dips_type"            : "50",
-            "safe_pump"                 : False,
+            "safe_dips_type"            : "130",
+            "safe_pump"                 : True,
             "safe_pump_type"            : "120",
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : True
@@ -1625,11 +1625,16 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_40_cti = -0.8
     buy_40_r_1h = -90.0
 
-    buy_41_cti_1h = -0.84
-    buy_41_r_1h = -42.0
-    buy_41_ma_offset = 0.96
-    buy_41_cti = -0.8
-    buy_41_r = -75.0
+    buy_41_ewo_1h_min = 4.0
+    buy_41_crsi_1h_min = 10.0
+    buy_41_cti_1h_max = 0.85
+    buy_41_r_1h_min = -75.0
+    buy_41_r_1h_max = -14.0
+    buy_41_ma_offset_low = 0.92
+    buy_41_ma_offset_high = 0.95
+    buy_41_cti_max = -0.9
+    buy_41_cci_max = -178.0
+    buy_41_r_max = -10.0
 
     buy_42_cti_1h = 0.72
     buy_42_r_1h = -46.0
@@ -1701,7 +1706,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
     sell_rsi_bb_2 = 81
 
-    sell_rsi_main_3 = 85.0
+    sell_rsi_main_3 = 87.0
 
     sell_dual_rsi_rsi_4 = 73.4
     sell_dual_rsi_rsi_1h_4 = 79.6
@@ -3573,6 +3578,9 @@ class NostalgiaForInfinityNext(IStrategy):
         # RSI
         informative_1h['rsi_14'] = ta.RSI(informative_1h, timeperiod=14)
 
+        # EWO
+        informative_1h['ewo'] = ewo(informative_1h, 50, 200)
+
         # BB
         bollinger = qtpylib.bollinger_bands(qtpylib.typical_price(informative_1h), window=20, stds=2)
         informative_1h['bb20_2_low'] = bollinger['lower']
@@ -4495,11 +4503,16 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Logic
                     item_buy_logic.append(dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(12))
                     item_buy_logic.append(dataframe['ema_200_1h'].shift(12) > dataframe['ema_200_1h'].shift(24))
-                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_41_cti_1h)
-                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_41_r_1h)
-                    item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * self.buy_41_ma_offset)
-                    item_buy_logic.append(dataframe['cti'] < self.buy_41_cti)
-                    item_buy_logic.append(dataframe['r_480'] < self.buy_41_r)
+                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_41_cti_1h_max)
+                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_41_r_1h_min)
+                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_41_r_1h_max)
+                    item_buy_logic.append(dataframe['crsi_1h'] > self.buy_41_crsi_1h_min)
+                    item_buy_logic.append(dataframe['ewo_1h'] > self.buy_41_ewo_1h_min)
+                    item_buy_logic.append(dataframe['close'] > dataframe['sma_75'] * self.buy_41_ma_offset_low)
+                    item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * self.buy_41_ma_offset_high)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_41_cti_max)
+                    item_buy_logic.append(dataframe['r_480'] < self.buy_41_r_max)
+                    item_buy_logic.append(dataframe['cci'] < self.buy_41_cci_max)
 
                 # Condition #42
                 elif index == 42:
