@@ -2098,6 +2098,8 @@ class NostalgiaForInfinityNext(IStrategy):
                 elif 0.08 > current_profit >= 0.07:
                     if (last_candle['rsi_14'] < 51.0) and (last_candle['cmf'] < 0.0):
                         return True, 'signal_profit_o_bull_7_1'
+                    if last_candle['rsi_14'] > 83.0 and (last_candle['r_14'] == 0.0):
+                        return True, 'signal_profit_o_bull_7_2'
                     elif (last_candle['rsi_14'] < 54.0) and (last_candle['cmf'] < -0.4):
                         return True, 'signal_profit_o_bull_7_3'
                     elif (last_candle['rsi_14'] < 55.0) and (last_candle['r_14'] == 0.0):
@@ -2105,6 +2107,8 @@ class NostalgiaForInfinityNext(IStrategy):
                 elif 0.07 > current_profit >= 0.06:
                     if (last_candle['rsi_14'] < 50.0) and (last_candle['cmf'] < 0.0):
                         return True, 'signal_profit_o_bull_6_1'
+                    if last_candle['rsi_14'] > 82.0 and (last_candle['r_14'] == 0.0):
+                        return True, 'signal_profit_o_bull_6_2'
                     elif (last_candle['rsi_14'] < 52.0) and (last_candle['cmf'] < -0.4):
                         return True, 'signal_profit_o_bull_6_3'
                     elif (last_candle['rsi_14'] < 53.0) and (last_candle['r_14'] == 0.0):
@@ -2114,6 +2118,8 @@ class NostalgiaForInfinityNext(IStrategy):
                 elif 0.06 > current_profit >= 0.05:
                     if (last_candle['rsi_14'] < 46.0) and (last_candle['cmf'] < 0.0):
                         return True, 'signal_profit_o_bull_5_1'
+                    if last_candle['rsi_14'] > 80.0 and (last_candle['r_14'] == 0.0):
+                        return True, 'signal_profit_o_bull_5_2'
                     elif (last_candle['rsi_14'] < 50.0) and (last_candle['cmf'] < -0.4):
                         return True, 'signal_profit_o_bull_5_3'
                     elif (last_candle['rsi_14'] < 52.0) and (last_candle['r_14'] == 0.0):
