@@ -1075,8 +1075,8 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising_val"      : "20",
             "safe_dips"                 : True,
             "safe_dips_type"            : "110",
-            "safe_pump"                 : False,
-            "safe_pump_type"            : "100",
+            "safe_pump"                 : True,
+            "safe_pump_type"            : "10",
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : True
         },
@@ -1636,9 +1636,11 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_41_cci_max = -178.0
     buy_41_r_max = -10.0
 
-    buy_42_cti_1h = 0.72
-    buy_42_r_1h = -46.0
-    buy_42_cmf_1h = -0.06
+    buy_42_ewo_1h_min = 3.5
+    buy_42_cti_1h_min = -0.5
+    buy_42_cti_1h_max = 0.85
+    buy_42_r_1h_min = -90.0
+    buy_42_r_1h_max = -10.0
     buy_42_ema_open_mult = 0.018
     buy_42_bb_offset = 0.992
 
@@ -4523,9 +4525,11 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Logic
                     item_buy_logic.append(dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(12))
                     item_buy_logic.append(dataframe['ema_200_1h'].shift(12) > dataframe['ema_200_1h'].shift(24))
-                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_42_cti_1h)
-                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_42_r_1h)
-                    item_buy_logic.append(dataframe['cmf_1h'] > self.buy_42_cmf_1h)
+                    item_buy_logic.append(dataframe['ewo_1h'] > self.buy_42_ewo_1h_min)
+                    item_buy_logic.append(dataframe['cti_1h'] > self.buy_42_cti_1h_min)
+                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_42_cti_1h_max)
+                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_42_r_1h_min)
+                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_42_r_1h_max)
                     item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
                     item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * self.buy_42_ema_open_mult))
                     item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
