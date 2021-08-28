@@ -1886,16 +1886,6 @@ class NostalgiaForInfinityNext(IStrategy):
     sell_custom_stoploss_long_recover_2 = 0.06
     sell_custom_stoploss_long_rsi_diff_2 = 40.0
 
-    # Pumped, descending SMA
-    sell_custom_pump_dec_profit_min_1 = 0.005
-    sell_custom_pump_dec_profit_max_1 = 0.05
-    sell_custom_pump_dec_profit_min_2 = 0.04
-    sell_custom_pump_dec_profit_max_2 = 0.06
-    sell_custom_pump_dec_profit_min_3 = 0.06
-    sell_custom_pump_dec_profit_max_3 = 0.09
-    sell_custom_pump_dec_profit_min_4 = 0.02
-    sell_custom_pump_dec_profit_max_4 = 0.04
-
     # Pumped 48h 1, under EMA200
     sell_custom_pump_under_profit_min_1 = 0.04
     sell_custom_pump_under_profit_max_1 = 0.09
@@ -2915,13 +2905,13 @@ class NostalgiaForInfinityNext(IStrategy):
         return False, None
 
     def sell_pump_dec(self, current_profit: float, last_candle) -> tuple:
-        if (self.sell_custom_pump_dec_profit_max_1 > current_profit >= self.sell_custom_pump_dec_profit_min_1) and (last_candle['sell_pump_48_1_1h']) and (last_candle['sma_200_dec_20']) and (last_candle['close'] < last_candle['ema_200']):
+        if (0.03 > current_profit >= 0.005) and (last_candle['sell_pump_48_1_1h']) and (last_candle['sma_200_dec_20']) and (last_candle['close'] < last_candle['ema_200']):
             return True, 'signal_profit_p_d_1'
-        elif (self.sell_custom_pump_dec_profit_max_2 > current_profit >= self.sell_custom_pump_dec_profit_min_2) and (last_candle['sell_pump_48_2_1h']) and (last_candle['sma_200_dec_20']) and (last_candle['close'] < last_candle['ema_200']):
+        elif (0.06 > current_profit >= 0.04) and (last_candle['sell_pump_48_2_1h']) and (last_candle['sma_200_dec_20']) and (last_candle['close'] < last_candle['ema_200']):
             return True, 'signal_profit_p_d_2'
-        elif (self.sell_custom_pump_dec_profit_max_3 > current_profit >= self.sell_custom_pump_dec_profit_min_3) and (last_candle['sell_pump_48_3_1h']) and (last_candle['sma_200_dec_20']) and (last_candle['close'] < last_candle['ema_200']):
+        elif (0.09 > current_profit >= 0.06) and (last_candle['sell_pump_48_3_1h']) and (last_candle['sma_200_dec_20']) and (last_candle['close'] < last_candle['ema_200']):
             return True, 'signal_profit_p_d_3'
-        elif (self.sell_custom_pump_dec_profit_max_4 > current_profit >= self.sell_custom_pump_dec_profit_min_4) and (last_candle['sma_200_dec_20']) and (last_candle['sell_pump_24_2_1h']):
+        elif (0.04 > current_profit >= 0.02) and (last_candle['sma_200_dec_20']) and (last_candle['sell_pump_24_2_1h']):
             return True, 'signal_profit_p_d_4'
 
         return False, None
