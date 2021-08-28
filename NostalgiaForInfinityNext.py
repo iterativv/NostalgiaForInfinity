@@ -3174,60 +3174,60 @@ class NostalgiaForInfinityNext(IStrategy):
         # Sell signal 1
         if (last_candle['rsi_14'] > 79.0) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']) and (previous_candle_3['close'] > previous_candle_3['bb20_2_upp']) and (previous_candle_4['close'] > previous_candle_4['bb20_2_upp']) and (previous_candle_5['close'] > previous_candle_5['bb20_2_upp']):
             if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.0):
+                if (current_profit > 0.01):
                     return True, 'sell_long_1_1_1'
             else:
-                if (current_profit > 0.0):
+                if (current_profit > 0.01):
                     return True, 'sell_long_1_2_1'
 
         # Sell signal 2
         elif (last_candle['rsi_14'] > 80.0) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']):
             if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.0):
+                if (current_profit > 0.01):
                     return True, 'sell_long_2_1_1'
             else:
-                if (current_profit > 0.0):
+                if (current_profit > 0.01):
                     return True, 'sell_long_2_2_1'
 
         # Sell signal 3
         elif (last_candle['rsi_14'] > 85.0):
             if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.0):
+                if (current_profit > 0.01):
                     return True, 'sell_long_3_1_1'
             else:
-                if (current_profit > 0.0):
+                if (current_profit > 0.01):
                     return True, 'sell_long_3_2_1'
 
         # Sell signal 4
         elif (last_candle['rsi_14'] > 80.0) and (last_candle['rsi_14_1h'] > 82.0):
             if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.0):
+                if (current_profit > 0.01):
                     return True, 'sell_long_4_1_1'
             else:
-                if (current_profit > 0.0):
+                if (current_profit > 0.01):
                     return True, 'sell_long_4_2_1'
 
         # Sell signal 6
         elif (last_candle['close'] < last_candle['ema_200']) and (last_candle['close'] > last_candle['ema_50']) and (last_candle['rsi_14'] > 79.5):
-            if (current_profit > 0.0):
+            if (current_profit > 0.01):
                 return True, 'sell_long_6_1'
 
         # Sell signal 7
         elif (last_candle['rsi_14_1h'] > 83.0) and (last_candle['crossed_below_ema_12_26']):
             if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.0):
+                if (current_profit > 0.01):
                     return True, 'sell_long_7_1_1'
             else:
-                if (current_profit > 0.0):
+                if (current_profit > 0.01):
                     return True, 'sell_long_7_2_1'
 
         # Sell signal 8
         elif (last_candle['close'] > last_candle['bb20_2_upp_1h'] * 1.1):
             if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.0):
+                if (current_profit > 0.01):
                     return True, 'sell_long_8_1_1'
             else:
-                if (current_profit > 0.0):
+                if (current_profit > 0.01):
                     return True, 'sell_long_8_2_1'
 
         elif (0.02 < current_profit <= 0.06) and (max_profit - current_profit > 0.04) and (last_candle['cmf'] < 0.0):
@@ -3822,7 +3822,7 @@ class NostalgiaForInfinityNext(IStrategy):
         dataframe['atr_high_thresh_3'] = (dataframe['high'] - (dataframe['atr'] * 5.0))
         dataframe['atr_high_thresh_4'] = (dataframe['high'] - (dataframe['atr'] * 2.0))
         dataframe['atr_high_thresh_q'] = (dataframe['high'] - (dataframe['atr'] * 3.0))
-        dataframe['atr_high_thresh_l'] = (dataframe['high'] - (dataframe['atr'] * 1.5))
+        dataframe['atr_high_thresh_l'] = (dataframe['high'] - (dataframe['atr'] * 3.0))
 
         # Dip protection
         dataframe['tpct_change_0']   = self.top_percent_change(dataframe,0)
