@@ -1701,7 +1701,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
     sell_rsi_bb_2 = 81
 
-    sell_rsi_main_3 = 82
+    sell_rsi_main_3 = 85.0
 
     sell_dual_rsi_rsi_4 = 73.4
     sell_dual_rsi_rsi_1h_4 = 79.6
@@ -3401,6 +3401,17 @@ class NostalgiaForInfinityNext(IStrategy):
                     return f"sell_signal_2_2_1 ( {buy_tag} )"
                 elif (max_loss > 0.25):
                     return f"sell_signal_2_2_2 ( {buy_tag} )"
+
+        # Sell signal 3
+        elif (self.sell_condition_3_enable) and (last_candle['rsi_14'] > self.sell_rsi_main_3):
+            if (last_candle['close'] > last_candle['ema_200']):
+                if (current_profit > 0.0):
+                    return f"sell_signal_3_1_1 ( {buy_tag} )"
+            else:
+                if (current_profit > 0.0):
+                    return f"sell_signal_3_2_1 ( {buy_tag} )"
+                elif (max_loss > 0.25):
+                    return f"sell_signal_3_2_2 ( {buy_tag} )"
 
         # Sell signal 4
         elif self.sell_condition_4_enable and (last_candle['rsi_14'] > self.sell_dual_rsi_rsi_4) and (last_candle['rsi_14_1h'] > self.sell_dual_rsi_rsi_1h_4):
