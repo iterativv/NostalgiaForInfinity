@@ -3393,10 +3393,10 @@ class NostalgiaForInfinityNext(IStrategy):
         # Sell signal 1
         if self.sell_condition_1_enable and (last_candle['rsi_14'] > self.sell_rsi_bb_1) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']) and (previous_candle_3['close'] > previous_candle_3['bb20_2_upp']) and (previous_candle_4['close'] > previous_candle_4['bb20_2_upp']) and (previous_candle_5['close'] > previous_candle_5['bb20_2_upp']):
             if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.0):
+                if (current_profit > 0.01):
                     return f"sell_signal_1_1_1 ( {buy_tag} )"
             else:
-                if (current_profit > 0.0):
+                if (current_profit > 0.01):
                     return f"sell_signal_1_2_1 ( {buy_tag} )"
                 elif (max_loss > 0.25):
                     return f"sell_signal_1_2_2 ( {buy_tag} )"
@@ -3404,10 +3404,10 @@ class NostalgiaForInfinityNext(IStrategy):
         # Sell signal 2
         elif (self.sell_condition_2_enable) and (last_candle['rsi_14'] > self.sell_rsi_bb_2) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']):
             if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.0):
+                if (current_profit > 0.01):
                     return f"sell_signal_2_1_1 ( {buy_tag} )"
             else:
-                if (current_profit > 0.0):
+                if (current_profit > 0.01):
                     return f"sell_signal_2_2_1 ( {buy_tag} )"
                 elif (max_loss > 0.25):
                     return f"sell_signal_2_2_2 ( {buy_tag} )"
@@ -3415,10 +3415,10 @@ class NostalgiaForInfinityNext(IStrategy):
         # Sell signal 3
         elif (self.sell_condition_3_enable) and (last_candle['rsi_14'] > self.sell_rsi_main_3):
             if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.0):
+                if (current_profit > 0.01):
                     return f"sell_signal_3_1_1 ( {buy_tag} )"
             else:
-                if (current_profit > 0.0):
+                if (current_profit > 0.01):
                     return f"sell_signal_3_2_1 ( {buy_tag} )"
                 elif (max_loss > 0.25):
                     return f"sell_signal_3_2_2 ( {buy_tag} )"
@@ -3426,17 +3426,17 @@ class NostalgiaForInfinityNext(IStrategy):
         # Sell signal 4
         elif self.sell_condition_4_enable and (last_candle['rsi_14'] > self.sell_dual_rsi_rsi_4) and (last_candle['rsi_14_1h'] > self.sell_dual_rsi_rsi_1h_4):
             if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.0):
+                if (current_profit > 0.01):
                     return f"sell_signal_4_1_1 ( {buy_tag} )"
             else:
-                if (current_profit > 0.0):
+                if (current_profit > 0.01):
                     return f"sell_signal_4_2_1 ( {buy_tag} )"
                 elif (max_loss > 0.25):
                     return f"sell_signal_4_2_2 ( {buy_tag} )"
 
         # Sell signal 6
         elif self.sell_condition_6_enable and (last_candle['close'] < last_candle['ema_200']) and (last_candle['close'] > last_candle['ema_50']) and (last_candle['rsi_14'] > self.sell_rsi_under_6):
-            if (current_profit > 0.0):
+            if (current_profit > 0.01):
                 return f"sell_signal_6_1 ( {buy_tag} )"
             elif (max_loss > 0.25):
                 return f"sell_signal_6_2 ( {buy_tag} )"
@@ -3444,10 +3444,10 @@ class NostalgiaForInfinityNext(IStrategy):
         # Sell signal 7
         elif self.sell_condition_7_enable and (last_candle['rsi_14_1h'] > self.sell_rsi_1h_7) and (last_candle['crossed_below_ema_12_26']):
             if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.0):
+                if (current_profit > 0.01):
                     return f"sell_signal_7_1_1 ( {buy_tag} )"
             else:
-                if (current_profit > 0.0):
+                if (current_profit > 0.01):
                     return f"sell_signal_7_2_1 ( {buy_tag} )"
                 elif (max_loss > 0.25):
                     return f"sell_signal_7_2_2 ( {buy_tag} )"
@@ -3455,10 +3455,10 @@ class NostalgiaForInfinityNext(IStrategy):
         # Sell signal 8
         elif self.sell_condition_8_enable and (last_candle['close'] > last_candle['bb20_2_upp_1h'] * self.sell_bb_relative_8):
             if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.0):
+                if (current_profit > 0.01):
                     return f"sell_signal_8_1_1 ( {buy_tag} )"
             else:
-                if (current_profit > 0.0):
+                if (current_profit > 0.01):
                     return f"sell_signal_8_2_1 ( {buy_tag} )"
                 elif (max_loss > 0.25):
                     return f"sell_signal_8_2_2 ( {buy_tag} )"
