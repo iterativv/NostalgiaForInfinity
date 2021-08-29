@@ -1141,13 +1141,13 @@ class NostalgiaForInfinityNext(IStrategy):
             "btc_1h_not_downtrend"      : True
         },
         46: {
-            "ema_fast"                  : True,
+            "ema_fast"                  : False,
             "ema_fast_len"              : "12",
             "ema_slow"                  : True,
             "ema_slow_len"              : "12",
             "close_above_ema_fast"      : False,
             "close_above_ema_fast_len"  : "200",
-            "close_above_ema_slow"      : True,
+            "close_above_ema_slow"      : False,
             "close_above_ema_slow_len"  : "200",
             "sma200_rising"             : False,
             "sma200_rising_val"         : "30",
@@ -1668,12 +1668,14 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_45_r_1h_max = -25.0
     buy_45_r = -10.0
 
-    buy_46_ema_open_mult = 0.0218
-    buy_46_bb_offset = 0.998
-    buy_46_ma_offset_low = 0.915
-    buy_46_cti_1h_max = 0.9
-    buy_46_cti = -0.6
-    buy_46_r_1h_max = -10.0
+    buy_46_ema_open_mult = 0.02
+    buy_46_bb_offset = 0.999
+    buy_46_ewo_1h_min = 3.5
+    buy_46_cti_1h_min = -0.7
+    buy_46_cti_1h_max = 0.66
+    buy_46_r_1h_min = -70.0
+    buy_46_r_1h_max = -34.0
+    buy_46_r_max = -70.0
 
     buy_47_ewo = 10.0
     buy_47_ma_offset = 0.975
@@ -4595,10 +4597,12 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * self.buy_46_ema_open_mult))
                     item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_46_bb_offset))
-                    item_buy_logic.append(dataframe['close'] > dataframe['sma_30'] * self.buy_46_ma_offset_low)
+                    item_buy_logic.append(dataframe['ewo_1h'] > self.buy_46_ewo_1h_min)
+                    item_buy_logic.append(dataframe['cti_1h'] > self.buy_46_cti_1h_min)
                     item_buy_logic.append(dataframe['cti_1h'] < self.buy_46_cti_1h_max)
-                    item_buy_logic.append(dataframe['cti'] < self.buy_46_cti)
+                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_46_r_1h_min)
                     item_buy_logic.append(dataframe['r_480_1h'] < self.buy_46_r_1h_max)
+                    item_buy_logic.append(dataframe['r_480'] < self.buy_46_r_max)
 
                 # Condition #47 - Long mode
                 elif index == 47:
