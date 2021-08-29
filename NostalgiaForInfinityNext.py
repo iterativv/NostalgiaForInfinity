@@ -1525,12 +1525,12 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_22_r = -40.0
 
     buy_23_bb_offset = 0.984
-    buy_23_ewo = 7.8
-    buy_23_rsi = 32.4
-    buy_23_rsi_1h = 80.0
-    buy_23_cti = -0.66
-    buy_23_r = -80.0
-    buy_23_r_1h = -80.0
+    buy_23_ewo_min = 3.5
+    buy_23_rsi_max = 28.0
+    buy_23_cti_max = -0.74
+    buy_23_rsi_1h_max = 80.0
+    buy_23_r_1h_min = -95.0
+    buy_23_cti_1h_max = 0.92
 
     buy_24_rsi_max = 50.0
     buy_24_rsi_1h_min = 66.9
@@ -4285,12 +4285,12 @@ class NostalgiaForInfinityNext(IStrategy):
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_23_bb_offset))
-                    item_buy_logic.append(dataframe['ewo'] > self.buy_23_ewo)
-                    item_buy_logic.append(dataframe['cti'] < self.buy_23_cti)
-                    item_buy_logic.append(dataframe['r_480'] > self.buy_23_r)
-                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_23_r_1h)
-                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_23_rsi)
-                    item_buy_logic.append(dataframe['rsi_14_1h'] < self.buy_23_rsi_1h)
+                    item_buy_logic.append(dataframe['ewo'] > self.buy_23_ewo_min)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_23_cti_max)
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_23_rsi_max)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] < self.buy_23_rsi_1h_max)
+                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_23_r_1h_min)
+                    item_buy_logic.append(dataframe['cti_1h'] < 0.92)
 
                 # Condition #24
                 elif index == 24:
