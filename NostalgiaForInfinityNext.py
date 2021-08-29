@@ -1680,7 +1680,7 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_47_ewo_min = 4.0
     buy_47_ma_offset = 0.974
     buy_47_rsi_diff = 43.0
-    buy_47_ewo_1h_min = 4.0
+    buy_47_ewo_1h_min = 4.5
     buy_47_r_1h_min = -90.0
     buy_47_r_1h_max = -16.0
     buy_47_cti_1h_min = -0.7
