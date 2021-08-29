@@ -1163,7 +1163,7 @@ class NostalgiaForInfinityNext(IStrategy):
         47: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "12",
-            "ema_slow"                  : False,
+            "ema_slow"                  : True,
             "ema_slow_len"              : "12",
             "close_above_ema_fast"      : False,
             "close_above_ema_fast_len"  : "200",
@@ -1175,8 +1175,8 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising_val"      : "24",
             "safe_dips"                 : True,
             "safe_dips_type"            : "130",
-            "safe_pump"                 : False,
-            "safe_pump_type"            : "100",
+            "safe_pump"                 : True,
+            "safe_pump_type"            : "120",
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
         }
@@ -1677,12 +1677,15 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_46_r_1h_max = -34.0
     buy_46_r_max = -70.0
 
-    buy_47_ewo = 10.0
-    buy_47_ma_offset = 0.975
+    buy_47_ewo_min = 4.0
+    buy_47_ma_offset = 0.974
     buy_47_rsi_diff = 43.0
-    buy_47_r_1h_max = -20.0
+    buy_47_ewo_1h_min = 4.0
+    buy_47_r_1h_min = -90.0
+    buy_47_r_1h_max = -15.0
+    buy_47_cti_1h_min = -0.7
     buy_47_cti_1h_max = 0.95
-    buy_47_crsi_1h_min = 45.0
+    buy_47_crsi_1h_min = 10.0
 
     # Sell
 
@@ -4601,12 +4604,14 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Non-Standard protections
 
                     # Logic
-                    item_buy_logic.append(dataframe['ewo'] > self.buy_47_ewo)
+                    item_buy_logic.append(dataframe['ewo'] > self.buy_47_ewo_min)
                     item_buy_logic.append(dataframe['close'] < (dataframe['ema_50'] * self.buy_47_ma_offset))
                     item_buy_logic.append(dataframe['rsi_14'] < (dataframe['rsi_14_1h'] - self.buy_47_rsi_diff))
+                    item_buy_logic.append(dataframe['ewo_1h'] > self.buy_47_ewo_1h_min)
+                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_47_r_1h_min)
                     item_buy_logic.append(dataframe['r_480_1h'] < self.buy_47_r_1h_max)
+                    item_buy_logic.append(dataframe['cti_1h'] > self.buy_47_cti_1h_min)
                     item_buy_logic.append(dataframe['cti_1h'] < self.buy_47_cti_1h_max)
-                    item_buy_logic.append(dataframe['crsi_1h'] > self.buy_47_crsi_1h_min)
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
