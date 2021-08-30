@@ -755,9 +755,9 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
             "safe_dips"                 : True,
-            "safe_dips_type"            : "70",
+            "safe_dips_type"            : "100",
             "safe_pump"                 : True,
-            "safe_pump_type"            : "20",
+            "safe_pump_type"            : "80",
             "safe_pump_period"          : "36",
             "btc_1h_not_downtrend"      : True
         },
@@ -1548,10 +1548,14 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_25_crsi_1h_min = 10.0
     buy_25_crsi_1h_max = 50.0
 
+    buy_25_ma_offset_low = 0.945
+    buy_25_ma_offset_high = 0.978
     buy_26_zema_low_offset = 0.94
-    buy_26_cti = -0.91
-    buy_26_r = -35.0
-    buy_26_r_1h = -60.0
+    buy_26_cti_max = -0.91
+    buy_26_r_min = -90.0
+    buy_26_r_1h_min = -90.0
+    buy_26_cti_1h_max = 0.95
+    buy_26_crsi_1h_min = 20.0
     buy_26_volume = 2.0
 
     buy_27_wr_max = -95.0
@@ -4357,13 +4361,16 @@ class NostalgiaForInfinityNext(IStrategy):
                 # Condition #26
                 elif index == 26:
                     # Non-Standard protections
-                    item_buy_logic.append(dataframe['close'] < dataframe['sma_75'])
+                    item_buy_logic.append(dataframe['close'] > dataframe['sma_75'] * self.buy_25_ma_offset_low)
+                    item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * self.buy_25_ma_offset_high)
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < (dataframe['zema_61'] * self.buy_26_zema_low_offset))
-                    item_buy_logic.append(dataframe['cti'] < self.buy_26_cti)
-                    item_buy_logic.append(dataframe['r_480'] > self.buy_26_r)
-                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_26_r_1h)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_26_cti_max)
+                    item_buy_logic.append(dataframe['r_480'] > self.buy_26_r_min)
+                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_26_r_1h_min)
+                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_26_cti_1h_max)
+                    item_buy_logic.append(dataframe['crsi_1h'] > self.buy_26_crsi_1h_min)
                     item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_26_volume))
 
                 # Condition #27
