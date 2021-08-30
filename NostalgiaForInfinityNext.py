@@ -127,6 +127,7 @@ class NostalgiaForInfinityNext(IStrategy):
     # BTC informative
     has_BTC_base_tf = False
     has_BTC_info_tf = True
+    has_BTC_daily_tf = False
 
     # Backtest Age Filter emulation
     has_bt_agefilter = False
@@ -3568,6 +3569,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
         informative_pairs.append((btc_info_pair, self.timeframe))
         informative_pairs.append((btc_info_pair, self.info_timeframe))
+        informative_pairs.append((btc_info_pair, '1d'))
         return informative_pairs
 
     def informative_1h_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
@@ -3901,6 +3903,21 @@ class NostalgiaForInfinityNext(IStrategy):
 
         return dataframe
 
+    def daily_tf_btc_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        # Indicators
+        # -----------------------------------------------------------------------------------------
+        dataframe['rsi_14'] = ta.RSI(dataframe, timeperiod=14)
+        dataframe['not_downtrend'] = ((dataframe['close'] > dataframe['close'].shift(2)) | (dataframe['rsi_14'] > 50))
+
+        # pivots
+        dataframe['pivot'], dataframe['res1'], dataframe['res2'], dataframe['res3'], dataframe['sup1'], dataframe['sup2'], dataframe['sup3'] = pivot_points(dataframe, mode='fibonacci')
+        # Add prefix
+        # -----------------------------------------------------------------------------------------
+        ignore_columns = ['date', 'open', 'high', 'low', 'close', 'volume']
+        dataframe.rename(columns=lambda s: "btc_" + s if (not s in ignore_columns) else s, inplace=True)
+
+        return dataframe
+
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         tik = time.perf_counter()
         '''
@@ -3925,6 +3942,14 @@ class NostalgiaForInfinityNext(IStrategy):
             dataframe = merge_informative_pair(dataframe, btc_info_tf, self.timeframe, self.info_timeframe, ffill=True)
             drop_columns = [(s + "_" + self.info_timeframe) for s in ['date', 'open', 'high', 'low', 'close', 'volume']]
             dataframe.drop(columns=dataframe.columns.intersection(drop_columns), inplace=True)
+
+        if self.has_BTC_daily_tf:
+            btc_daily_tf = self.dp.get_pair_dataframe(btc_info_pair, '1d')
+            btc_daily_tf = self.daily_tf_btc_indicators(btc_daily_tf, metadata)
+            dataframe = merge_informative_pair(dataframe, btc_daily_tf, self.timeframe, '1d', ffill=True)
+            drop_columns = [(s + "_" + '1d') for s in ['date', 'open', 'high', 'low', 'close', 'volume']]
+            dataframe.drop(columns=dataframe.columns.intersection(drop_columns), inplace=True)
+
 
         '''
         --> Informative timeframe
@@ -4980,6 +5005,25 @@ def SSLChannels(dataframe, length = 7):
     sslUp = np.where(hlv < 0, smaLow, smaHigh)
     return sslDown, sslUp
 
+def pivot_points(dataframe: DataFrame, mode = 'fibonacci') -> Series:
+    hlc3_pivot = (dataframe['high'] + dataframe['low'] + dataframe['close']).shift(1) / 3
+    hl_range = (dataframe['high'] - dataframe['low']).shift(1)
+    if mode == 'simple':
+        res1 = hlc3_pivot * 2 - dataframe['low'].shift(1)
+        sup1 = hlc3_pivot * 2 - dataframe['high'].shift(1)
+        res2 = hlc3_pivot + (dataframe['high'] - dataframe['low']).shift()
+        sup2 = hlc3_pivot - (dataframe['high'] - dataframe['low']).shift()
+        res3 = hlc3_pivot * 2 + (dataframe['high'] - 2 * dataframe['low']).shift()
+        sup3 = hlc3_pivot * 2 - (2 * dataframe['high'] - dataframe['low']).shift()
+    elif mode == 'fibonacci':
+        res1 = hlc3_pivot + 0.382 * hl_range
+        sup1 = hlc3_pivot - 0.382 * hl_range
+        res2 = hlc3_pivot + 0.618 * hl_range
+        sup2 = hlc3_pivot - 0.618 * hl_range
+        res3 = hlc3_pivot + 1 * hl_range
+        sup3 = hlc3_pivot - 1 * hl_range
+
+    return hlc3_pivot, res1, res2, res3, sup1, sup2, sup3
 
 class Cache:
 
