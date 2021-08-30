@@ -14,7 +14,7 @@ def exchange_fmt(value):
     scope="session",
     params=(
         Exchange(name="binance", winrate=90, max_drawdown=30),
-        Exchange(name="kucoin", winrate=76, max_drawdown=30),
+        Exchange(name="kucoin", winrate=76, max_drawdown=50),
     ),
     ids=exchange_fmt,
 )
@@ -72,8 +72,8 @@ def deviations():
         },
         "kucoin": {
             ("20210401", "20210501"): {"max_drawdown": 51, "winrate": 76},
-            ("20210501", "20210601"): {"max_drawdown": 35, "winrate": 76},
-            ("20210601", "20210701"): {"max_drawdown": 35, "winrate": 76},
+            ("20210501", "20210601"): {"max_drawdown": 51, "winrate": 76},
+            ("20210601", "20210701"): {"max_drawdown": 51, "winrate": 76},
         },
     }
 
