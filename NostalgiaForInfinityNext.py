@@ -775,7 +775,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising_val"      : "50",
             "safe_dips"                 : True,
             "safe_dips_type"            : "130",
-            "safe_pump"                 : False,
+            "safe_pump"                 : True,
             "safe_pump_type"            : "50",
             "safe_pump_period"          : "36",
             "btc_1h_not_downtrend"      : True
@@ -1553,10 +1553,10 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_26_r_1h = -60.0
     buy_26_volume = 2.0
 
-    buy_27_wr_max = 90.0
-    buy_27_wr_1h_max = 90.0
-    buy_27_rsi_max = 50
-    buy_27_cti = -0.93
+    buy_27_wr_max = -95.0
+    buy_27_r_14 = -100.0
+    buy_27_wr_1h_max = -90.0
+    buy_27_rsi_max = 46.0
     buy_27_volume = 2.0
 
     buy_28_ma_offset = 0.984
@@ -4346,10 +4346,10 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Non-Standard protections
 
                     # Logic
-                    item_buy_logic.append(dataframe['r_480'] < -self.buy_27_wr_max)
-                    item_buy_logic.append(dataframe['r_480_1h'] < -self.buy_27_wr_1h_max)
+                    item_buy_logic.append(dataframe['r_480'] < self.buy_27_wr_max)
+                    item_buy_logic.append(dataframe['r_14'] == self.buy_27_r_14)
+                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_27_wr_1h_max)
                     item_buy_logic.append(dataframe['rsi_14_1h'] + dataframe['rsi_14'] < self.buy_27_rsi_max)
-                    item_buy_logic.append(dataframe['cti'] < self.buy_27_cti)
                     item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_27_volume))
 
                 # Condition #28
