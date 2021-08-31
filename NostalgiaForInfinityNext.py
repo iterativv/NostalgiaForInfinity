@@ -214,6 +214,7 @@ class NostalgiaForInfinityNext(IStrategy):
         "buy_condition_45_enable": True,
         "buy_condition_46_enable": True,
         "buy_condition_47_enable": True,
+        "buy_condition_48_enable": True,
         #############
     }
 
@@ -1180,6 +1181,26 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_type"            : "120",
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
+        },
+        48: {
+            "ema_fast"                  : True,
+            "ema_fast_len"              : "12",
+            "ema_slow"                  : True,
+            "ema_slow_len"              : "12",
+            "close_above_ema_fast"      : True,
+            "close_above_ema_fast_len"  : "200",
+            "close_above_ema_slow"      : True,
+            "close_above_ema_slow_len"  : "200",
+            "sma200_rising"             : True,
+            "sma200_rising_val"         : "30",
+            "sma200_1h_rising"          : True,
+            "sma200_1h_rising_val"      : "24",
+            "safe_dips"                 : False,
+            "safe_dips_type"            : "130",
+            "safe_pump"                 : False,
+            "safe_pump_type"            : "120",
+            "safe_pump_period"          : "24",
+            "btc_1h_not_downtrend"      : False
         }
     }
 
@@ -1693,6 +1714,14 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_47_cti_1h_min = -0.7
     buy_47_cti_1h_max = 0.95
     buy_47_crsi_1h_min = 10.0
+
+    buy_48_ewo_min = 8.0
+    buy_48_ewo_1h_min = 14.0
+    buy_48_r_min = -25.0
+    buy_48_r_1h_min = -50.0
+    buy_48_r_1h_max = -10.0
+    buy_48_cti_1h_min = 0.5
+    buy_48_crsi_1h_min = 10.0
 
     # Sell
 
@@ -3171,6 +3200,12 @@ class NostalgiaForInfinityNext(IStrategy):
 
         return False, None
 
+    def sell_uptrend_mode(self, current_profit: float, max_profit:float, last_candle, previous_candle_1) -> tuple:
+        if (current_profit < -0.05) and (last_candle['sma_200_dec_24']) and (last_candle['ema_25'] < last_candle['ema_50']):
+            return True, 'sell_up_stoploss_1'
+
+        return False, None
+
     def sell_ichi(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, trade: 'Trade', current_time: 'datetime') -> tuple:
         if (0.0 < current_profit < 0.05) and (current_time - timedelta(minutes=1440) > trade.open_date_utc) and (last_candle['rsi_14'] > 78.0):
             return True, 'signal_profit_ichi_u'
@@ -3301,6 +3336,12 @@ class NostalgiaForInfinityNext(IStrategy):
         # Quick sell mode
         if all(c in ['32', '33', '34', '35', '36', '37', '38', '39', '40'] for c in buy_tags):
             sell, signal_name = self.sell_quick_mode(current_profit, max_profit, last_candle, previous_candle_1)
+            if sell and (signal_name is not None):
+                return f"{signal_name} ( {buy_tag} )"
+
+        # Uptrend sell mode
+        if all(c in ['48'] for c in buy_tags):
+            sell, signal_name = self.sell_uptrend_mode(current_profit, max_profit, last_candle, previous_candle_1)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag} )"
 
@@ -4655,6 +4696,29 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['r_480_1h'] < self.buy_47_r_1h_max)
                     item_buy_logic.append(dataframe['cti_1h'] > self.buy_47_cti_1h_min)
                     item_buy_logic.append(dataframe['cti_1h'] < self.buy_47_cti_1h_max)
+
+                # Condition #48 - Uptrend mode
+                elif index == 48:
+                    # Non-Standard protections
+                    item_buy_logic.append(dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(12))
+                    item_buy_logic.append(dataframe['ema_200_1h'].shift(12) > dataframe['ema_200_1h'].shift(24))
+                    item_buy_logic.append(dataframe['moderi_32'])
+                    item_buy_logic.append(dataframe['moderi_64'])
+                    item_buy_logic.append(dataframe['moderi_96'])
+
+                    # Logic
+                    item_buy_logic.append(dataframe['ewo'] > self.buy_48_ewo_min)
+                    item_buy_logic.append(dataframe['ewo_1h'] > self.buy_48_ewo_1h_min)
+                    item_buy_logic.append(dataframe['r_480'] > self.buy_48_r_min)
+                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_48_r_1h_min)
+                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_48_r_1h_max)
+                    item_buy_logic.append(dataframe['r_480_1h'] > dataframe['r_480_1h'].shift(12))
+                    item_buy_logic.append(dataframe['cti_1h'] > self.buy_48_cti_1h_min)
+                    item_buy_logic.append(dataframe['crsi_1h'] > self.buy_48_crsi_1h_min)
+                    item_buy_logic.append(dataframe['cti'].shift(1).rolling(12).min() < -0.5)
+                    item_buy_logic.append(dataframe['cti'].shift(1).rolling(12).max() < 0.0)
+                    item_buy_logic.append(dataframe['cti'].shift(1) < 0.0)
+                    item_buy_logic.append(dataframe['cti'] > 0.0)
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
