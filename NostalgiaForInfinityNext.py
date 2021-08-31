@@ -20,17 +20,21 @@ import time
 
 log = logging.getLogger(__name__)
 
-
 try:
     import pandas_ta as pta
 except ImportError:
-    log.error(
-        "IMPORTANT - please install the pandas_ta python module which is needed for this strategy. "
-        "If you're running Docker, add RUN pip install pandas_ta to your Dockerfile, otherwise run: "
-        "pip install pandas_ta"
-    )
+    try:
+        import subprocess, sys
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "pandas_ta"])
+        except ImportError:
+            log.error(
+                "IMPORTANT - please install the pandas_ta python module which is needed for this strategy. "
+                "If you're running Docker, add RUN pip install pandas_ta to your Dockerfile, otherwise run: "
+                "pip install pandas_ta"
+            )
 else:
     log.info("pandas_ta successfully imported")
+
 
 
 ###########################################################################################################
