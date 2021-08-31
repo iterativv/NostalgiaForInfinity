@@ -3890,7 +3890,7 @@ class NostalgiaForInfinityNext(IStrategy):
         # Add prefix
         # -----------------------------------------------------------------------------------------
         ignore_columns = ['date', 'open', 'high', 'low', 'close', 'volume']
-        dataframe.rename(columns=lambda s: "btc_" + s  if (not s in ignore_columns) else s, inplace=True)
+        dataframe.rename(columns=lambda s: f"btc_{s}" if s not in ignore_columns else s, inplace=True)
 
         return dataframe
 
@@ -3903,7 +3903,7 @@ class NostalgiaForInfinityNext(IStrategy):
         # Add prefix
         # -----------------------------------------------------------------------------------------
         ignore_columns = ['date', 'open', 'high', 'low', 'close', 'volume']
-        dataframe.rename(columns=lambda s: "btc_" + s if (not s in ignore_columns) else s, inplace=True)
+        dataframe.rename(columns=lambda s: f"btc_{s}" if s not in ignore_columns else s, inplace=True)
 
         return dataframe
 
@@ -3918,7 +3918,7 @@ class NostalgiaForInfinityNext(IStrategy):
         # Add prefix
         # -----------------------------------------------------------------------------------------
         ignore_columns = ['date', 'open', 'high', 'low', 'close', 'volume']
-        dataframe.rename(columns=lambda s: "btc_" + s if (not s in ignore_columns) else s, inplace=True)
+        dataframe.rename(columns=lambda s: f"btc_{s}" if s not in ignore_columns else s, inplace=True)
 
         return dataframe
 
@@ -3937,21 +3937,21 @@ class NostalgiaForInfinityNext(IStrategy):
             btc_base_tf = self.dp.get_pair_dataframe(btc_info_pair, self.timeframe)
             btc_base_tf = self.base_tf_btc_indicators(btc_base_tf, metadata)
             dataframe = merge_informative_pair(dataframe, btc_base_tf, self.timeframe, self.timeframe, ffill=True)
-            drop_columns = [(s + "_" + self.timeframe) for s in ['date', 'open', 'high', 'low', 'close', 'volume']]
+            drop_columns = [f"{s}_{self.timeframe}" for s in ['date', 'open', 'high', 'low', 'close', 'volume']]
             dataframe.drop(columns=dataframe.columns.intersection(drop_columns), inplace=True)
 
         if self.has_BTC_info_tf:
             btc_info_tf = self.dp.get_pair_dataframe(btc_info_pair, self.info_timeframe)
             btc_info_tf = self.info_tf_btc_indicators(btc_info_tf, metadata)
             dataframe = merge_informative_pair(dataframe, btc_info_tf, self.timeframe, self.info_timeframe, ffill=True)
-            drop_columns = [(s + "_" + self.info_timeframe) for s in ['date', 'open', 'high', 'low', 'close', 'volume']]
+            drop_columns = [f"{s}_{self.info_timeframe}" for s in ['date', 'open', 'high', 'low', 'close', 'volume']]
             dataframe.drop(columns=dataframe.columns.intersection(drop_columns), inplace=True)
 
         if self.has_BTC_daily_tf:
             btc_daily_tf = self.dp.get_pair_dataframe(btc_info_pair, '1d')
             btc_daily_tf = self.daily_tf_btc_indicators(btc_daily_tf, metadata)
             dataframe = merge_informative_pair(dataframe, btc_daily_tf, self.timeframe, '1d', ffill=True)
-            drop_columns = [(s + "_" + '1d') for s in ['date', 'open', 'high', 'low', 'close', 'volume']]
+            drop_columns = [f"{s}_1d" for s in ['date', 'open', 'high', 'low', 'close', 'volume']]
             dataframe.drop(columns=dataframe.columns.intersection(drop_columns), inplace=True)
 
 
@@ -3962,7 +3962,7 @@ class NostalgiaForInfinityNext(IStrategy):
         if self.info_timeframe != 'none':
             informative_1h = self.informative_1h_indicators(dataframe, metadata)
             dataframe = merge_informative_pair(dataframe, informative_1h, self.timeframe, self.info_timeframe, ffill=True)
-            drop_columns = [(s + "_" + self.info_timeframe) for s in ['date']]
+            drop_columns = [f"{s}_{self.info_timeframe}" for s in ['date']]
             dataframe.drop(columns=dataframe.columns.intersection(drop_columns), inplace=True)
 
         '''
@@ -3974,9 +3974,9 @@ class NostalgiaForInfinityNext(IStrategy):
             resampled = self.resampled_tf_indicators(resampled, metadata)
             # Merge resampled info dataframe
             dataframe = resampled_merge(dataframe, resampled, fill_na=True)
-            dataframe.rename(columns=lambda s: s+"_{}".format(self.res_timeframe) if "resample_" in s else s, inplace=True)
+            dataframe.rename(columns=lambda s: f"{s}_{self.res_timeframe}" if "resample_" in s else s, inplace=True)
             dataframe.rename(columns=lambda s: s.replace("resample_{}_".format(self.res_timeframe.replace("m","")), ""), inplace=True)
-            drop_columns = [(s + "_" + self.res_timeframe) for s in ['date']]
+            drop_columns = [f"{s}_{self.res_timeframe}" for s in ['date']]
             dataframe.drop(columns=dataframe.columns.intersection(drop_columns), inplace=True)
 
         '''
@@ -4658,7 +4658,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-                dataframe.loc[item_buy, 'buy_tag'] += str(index) + ' '
+                dataframe.loc[item_buy, 'buy_tag'] += f"{index} "
                 conditions.append(item_buy)
 
         if conditions:
@@ -4740,8 +4740,8 @@ class NostalgiaForInfinityNext(IStrategy):
             trade_profit_ratio = trade_ids[trade.id]
             current_profit_ratio = trade.calc_profit_ratio(rate)
             if sell_reason == "force_sell":
-                formatted_profit_ratio = "{}%".format(trade_profit_ratio * 100)
-                formatted_current_profit_ratio = "{}%".format(current_profit_ratio * 100)
+                formatted_profit_ratio = f"{trade_profit_ratio * 100}%"
+                formatted_current_profit_ratio = f"{current_profit_ratio * 100}%"
                 log.warning(
                     "Force selling %s even though the current profit of %s < %s",
                     trade, formatted_current_profit_ratio, formatted_profit_ratio
@@ -4749,8 +4749,8 @@ class NostalgiaForInfinityNext(IStrategy):
                 return False
             elif current_profit_ratio >= trade_profit_ratio:
                 # This pair is on the list to hold, and we reached minimum profit, sell
-                formatted_profit_ratio = "{}%".format(trade_profit_ratio * 100)
-                formatted_current_profit_ratio = "{}%".format(current_profit_ratio * 100)
+                formatted_profit_ratio = f"{trade_profit_ratio * 100}%"
+                formatted_current_profit_ratio = f"{current_profit_ratio * 100}%"
                 log.warning(
                     "Selling %s because the current profit of %s >= %s",
                     trade, formatted_current_profit_ratio, formatted_profit_ratio
@@ -4765,8 +4765,8 @@ class NostalgiaForInfinityNext(IStrategy):
             trade_profit_ratio = trade_pairs[trade.pair]
             current_profit_ratio = trade.calc_profit_ratio(rate)
             if sell_reason == "force_sell":
-                formatted_profit_ratio = "{}%".format(trade_profit_ratio * 100)
-                formatted_current_profit_ratio = "{}%".format(current_profit_ratio * 100)
+                formatted_profit_ratio = f"{trade_profit_ratio * 100}%"
+                formatted_current_profit_ratio = f"{current_profit_ratio * 100}%"
                 log.warning(
                     "Force selling %s even though the current profit of %s < %s",
                     trade, formatted_current_profit_ratio, formatted_profit_ratio
@@ -4774,8 +4774,8 @@ class NostalgiaForInfinityNext(IStrategy):
                 return False
             elif current_profit_ratio >= trade_profit_ratio:
                 # This pair is on the list to hold, and we reached minimum profit, sell
-                formatted_profit_ratio = "{}%".format(trade_profit_ratio * 100)
-                formatted_current_profit_ratio = "{}%".format(current_profit_ratio * 100)
+                formatted_profit_ratio = f"{trade_profit_ratio * 100}%"
+                formatted_current_profit_ratio = f"{current_profit_ratio * 100}%"
                 log.warning(
                     "Selling %s because the current profit of %s >= %s",
                     trade, formatted_current_profit_ratio, formatted_profit_ratio
@@ -4831,7 +4831,7 @@ def williams_r(dataframe: DataFrame, period: int = 14) -> Series:
 
     WR = Series(
         (highest_high - dataframe["close"]) / (highest_high - lowest_low),
-        name="{0} Williams %R".format(period),
+        name=f"{period} Williams %R",
         )
 
     return WR * -100
@@ -5138,7 +5138,7 @@ class HoldsCache(Cache):
                             self.path
                         )
                     if trade_id in open_trades:
-                        formatted_profit_ratio = "{}%".format(profit_ratio * 100)
+                        formatted_profit_ratio = f"{profit_ratio * 100}%"
                         log.warning(
                             "The trade %s is configured to HOLD until the profit ratio of %s is met",
                             open_trades[trade_id],
@@ -5163,7 +5163,7 @@ class HoldsCache(Cache):
                         )
                 else:
                     profit_ratio = 0.005
-                formatted_profit_ratio = "{}%".format(profit_ratio * 100)
+                formatted_profit_ratio = f"{profit_ratio * 100}%"
                 for trade_id in trade_ids:
                     if not isinstance(trade_id, int):
                         log.error(
@@ -5208,7 +5208,7 @@ class HoldsCache(Cache):
                         trade_pair,
                         self.path
                     )
-                formatted_profit_ratio = "{}%".format(profit_ratio * 100)
+                formatted_profit_ratio = f"{profit_ratio * 100}%"
                 if trade_pair in open_trades:
                     log.warning(
                         "The trade %s is configured to HOLD until the profit ratio of %s is met",
