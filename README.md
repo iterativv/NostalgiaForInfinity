@@ -21,7 +21,7 @@ git clone --recursive https://github.com/iterativv/NostalgiaForInfinity.git chec
 
 ### Existing Checkouts
 ```
-git submodule update --remote --recursive
+git submodule update --remote --checkout
 ```
 
 

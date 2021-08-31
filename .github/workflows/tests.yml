@@ -66,7 +66,7 @@ jobs:
 
       - name: Run Tests
         env:
-          EXTRA_ARGS: tests/backtests -k 'binance and ${{ matrix.timerange }}'
+          EXTRA_ARGS: -p no:cacheprovider tests/backtests -k 'binance and ${{ matrix.timerange }}'
         run: |
           mkdir artifacts
           chmod 777 artifacts
@@ -113,7 +113,7 @@ jobs:
 
       - name: Run Tests
         env:
-          EXTRA_ARGS: tests/backtests -k 'kucoin and ${{ matrix.timerange }}'
+          EXTRA_ARGS: -p no:cacheprovider tests/backtests -k 'kucoin and ${{ matrix.timerange }}'
         run: |
           mkdir artifacts
           chmod 777 artifacts
@@ -149,7 +149,7 @@ jobs:
 
       - name: Run Tests
         env:
-          EXTRA_ARGS: --ignore tests/backtests/
+          EXTRA_ARGS: -p no:cacheprovider --ignore tests/backtests/
         run: |
           mkdir artifacts
           chmod 777 artifacts $(pwd)
