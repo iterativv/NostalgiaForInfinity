@@ -538,7 +538,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_dips"                 : True,
             "safe_dips_type"            : "130",
             "safe_pump"                 : True,
-            "safe_pump_type"            : "20",
+            "safe_pump_type"            : "120",
             "safe_pump_period"          : "36",
             "btc_1h_not_downtrend"      : False
         },
@@ -1502,10 +1502,11 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_ma_offset_14 = 0.945
     buy_cti_14 = -0.86
 
-    buy_ema_open_mult_15 = 0.024
-    buy_ma_offset_15 = 0.958
-    buy_rsi_15 = 28.0
-    buy_ema_rel_15 = 0.974
+    buy_15_ema_rel = 0.974
+    buy_15_ema_open_mult = 0.0238
+    buy_15_ma_offset = 0.956
+    buy_15_rsi_min = 28.0
+    buy_15_cti_1h_min = -0.72
 
     buy_16_ma_offset = 0.955
     buy_16_rsi = 30.0
@@ -4259,14 +4260,16 @@ class NostalgiaForInfinityNext(IStrategy):
                 # Condition #15
                 elif index == 15:
                     # Non-Standard protections
-                    item_buy_logic.append(dataframe['close'] > dataframe['ema_200_1h'] * self.buy_ema_rel_15)
+                    item_buy_logic.append(dataframe['close'] > dataframe['ema_200_1h'] * self.buy_15_ema_rel)
+                    item_buy_logic.append(dataframe['safe_dump_20_1h'])
 
                     # Logic
                     item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
-                    item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * self.buy_ema_open_mult_15))
+                    item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * self.buy_15_ema_open_mult))
                     item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
-                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_rsi_15)
-                    item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_ma_offset_15)
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_15_rsi_min)
+                    item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_15_ma_offset)
+                    item_buy_logic.append(dataframe['cti_1h'] > self.buy_15_cti_1h_min)
 
                 # Condition #16
                 elif index == 16:
