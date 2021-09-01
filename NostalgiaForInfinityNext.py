@@ -4275,7 +4275,7 @@ class NostalgiaForInfinityNext(IStrategy):
                 if global_buy_protection_params['close_over_pivot_type'] != 'none':
                     item_buy_protection_list.append(dataframe['close'] > dataframe[f"{global_buy_protection_params['close_over_pivot_type']}_1d"] * global_buy_protection_params['close_over_pivot_offset'])
                 if global_buy_protection_params['close_under_pivot_type'] != 'none':
-                    item_buy_protection_list.append(dataframe['close'] > dataframe[f"{global_buy_protection_params['close_under_pivot_type']}_1d"] * global_buy_protection_params['close_under_pivot_offset'])
+                    item_buy_protection_list.append(dataframe['close'] < dataframe[f"{global_buy_protection_params['close_under_pivot_type']}_1d"] * global_buy_protection_params['close_under_pivot_offset'])
                 if not self.config['runmode'].value in ('live', 'dry_run'):
                     if self.has_bt_agefilter:
                         item_buy_protection_list.append(dataframe['bt_agefilter_ok'])
