@@ -3813,7 +3813,6 @@ class NostalgiaForInfinityNext(IStrategy):
         informative_pairs.append((btc_info_pair, self.timeframe))
         informative_pairs.append((btc_info_pair, self.info_timeframe_1h))
         informative_pairs.append((btc_info_pair, self.info_timeframe_1d))
-        informative_pairs.append((btc_info_pair, '1d'))
         return informative_pairs
 
     def informative_1d_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
