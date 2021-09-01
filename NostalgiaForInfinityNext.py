@@ -122,7 +122,8 @@ class NostalgiaForInfinityNext(IStrategy):
     # Optimal timeframe for the strategy.
     timeframe = '5m'
     res_timeframe = 'none'
-    info_timeframe = '1h'
+    info_timeframe_1h = '1h'
+    info_timeframe_1d = '1d'
 
     # BTC informative
     has_BTC_base_tf = False
