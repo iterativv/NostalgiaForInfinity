@@ -480,7 +480,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "btc_1h_not_downtrend"      : False,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_over_pivot_offset"   : 1.0,
-            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_type"    : "res3", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_under_pivot_offset"  : 1.6
         },
         11: {
@@ -1665,6 +1665,7 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_9_rsi_1h_max = 88.0
     buy_9_crsi_1h_min = 20.0
 
+    buy_10_ma_offset_low = 0.93
     buy_10_ma_offset_high = 0.94
     buy_10_bb_offset = 0.98
     buy_10_cti_1h_min = -0.5
@@ -4413,6 +4414,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['ema_50_1h'] > dataframe['ema_100_1h'])
 
                     # Logic
+                    item_buy_logic.append(dataframe['close'] > dataframe['sma_30'] * self.buy_10_ma_offset_low)
                     item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * self.buy_10_ma_offset_high)
                     item_buy_logic.append(dataframe['close'] < dataframe['bb20_2_low'] * self.buy_10_bb_offset)
                     item_buy_logic.append(dataframe['cti_1h'] > self.buy_10_cti_1h_min)
