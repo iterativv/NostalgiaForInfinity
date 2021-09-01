@@ -768,8 +768,8 @@ class NostalgiaForInfinityNext(IStrategy):
             "btc_1h_not_downtrend"      : False,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_over_pivot_offset"   : 1.0,
-            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
-            "close_under_pivot_offset"  : 1.0
+            "close_under_pivot_type"    : "res3", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.6
         },
         23: {
             "ema_fast"                  : False,
@@ -1737,12 +1737,12 @@ class NostalgiaForInfinityNext(IStrategy):
 
     buy_22_volume = 2.0
     buy_22_bb_offset = 0.984
-    buy_22_ma_offset = 0.968
-    buy_22_ewo = 5.0
-    buy_22_rsi = 36.0
-    buy_22_cti = -0.5
-    buy_22_cti_1h = -0.5
-    buy_22_r = -40.0
+    buy_22_ma_offset = 0.98
+    buy_22_ewo_min = 5.0
+    buy_22_rsi_max = 36.0
+    buy_22_cti_max = -0.5
+    buy_22_cti_1h_min = -0.5
+    buy_22_r_480_max = -40.0
 
     buy_23_bb_offset = 0.984
     buy_23_ewo_min = 3.5
@@ -4563,11 +4563,11 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append((dataframe['volume_mean_4'] * self.buy_22_volume) > dataframe['volume'])
                     item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * self.buy_22_ma_offset)
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_22_bb_offset))
-                    item_buy_logic.append(dataframe['ewo'] > self.buy_22_ewo)
-                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_22_rsi)
-                    item_buy_logic.append(dataframe['cti'] < self.buy_22_cti)
-                    item_buy_logic.append(dataframe['cti_1h'] > self.buy_22_cti_1h)
-                    item_buy_logic.append(dataframe['r_480'] < self.buy_22_r)
+                    item_buy_logic.append(dataframe['ewo'] > self.buy_22_ewo_min)
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_22_rsi_max)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_22_cti_max)
+                    item_buy_logic.append(dataframe['cti_1h'] > self.buy_22_cti_1h_min)
+                    item_buy_logic.append(dataframe['r_480'] < self.buy_22_r_480_max)
 
                 # Condition #23
                 elif index == 23:
