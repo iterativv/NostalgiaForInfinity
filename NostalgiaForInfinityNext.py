@@ -1497,10 +1497,10 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_13_ewo = -6.5
     buy_13_r_1h = -78.0
 
-    buy_ema_open_mult_14 = 0.014
-    buy_bb_offset_14 = 0.988
-    buy_ma_offset_14 = 0.945
-    buy_cti_14 = -0.86
+    buy_14_ema_open_mult = 0.014
+    buy_14_bb_offset = 0.989
+    buy_14_ma_offset = 0.945
+    buy_14_cti = -0.85
 
     buy_15_ema_rel = 0.974
     buy_15_ema_open_mult = 0.0238
@@ -4251,11 +4251,11 @@ class NostalgiaForInfinityNext(IStrategy):
 
                     # Logic
                     item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
-                    item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * self.buy_ema_open_mult_14))
+                    item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * self.buy_14_ema_open_mult))
                     item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
-                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_14))
-                    item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_ma_offset_14)
-                    item_buy_logic.append(dataframe['cti'] < self.buy_cti_14)
+                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_14_bb_offset))
+                    item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_14_ma_offset)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_14_cti)
 
                 # Condition #15
                 elif index == 15:
