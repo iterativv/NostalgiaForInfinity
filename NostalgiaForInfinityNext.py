@@ -416,9 +416,9 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
             "safe_dips"                 : False,
-            "safe_dips_type"            : "10",
+            "safe_dips_type"            : "130",
             "safe_pump"                 : False,
-            "safe_pump_type"            : "50",
+            "safe_pump_type"            : "100",
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
         },
@@ -1463,11 +1463,13 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_8_cmf_min = -0.4
     buy_8_cmf_max = -0.18
 
-    buy_ma_offset_9 = 0.968
-    buy_bb_offset_9 = 0.942
-    buy_rsi_1h_min_9 = 20.0
-    buy_rsi_1h_max_9 = 88.0
-    buy_mfi_9 = 50.0
+    buy_9_ma_offset = 0.968
+    buy_9_bb_offset = 0.98
+    buy_9_mfi_max = 50.0
+    buy_8_cti_max = -0.84
+    buy_9_rsi_1h_min = 20.0
+    buy_9_rsi_1h_max = 88.0
+    buy_9_crsi_1h_min = 20.0
 
     buy_10_ma_offset_low = 0.92
     buy_10_ma_offset_high = 0.94
@@ -4185,11 +4187,13 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['ema_50'] > dataframe['ema_200'])
 
                     # Logic
-                    item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_ma_offset_9)
-                    item_buy_logic.append(dataframe['close'] < dataframe['bb20_2_low'] * self.buy_bb_offset_9)
-                    item_buy_logic.append(dataframe['rsi_14_1h'] > self.buy_rsi_1h_min_9)
-                    item_buy_logic.append(dataframe['rsi_14_1h'] < self.buy_rsi_1h_max_9)
-                    item_buy_logic.append(dataframe['mfi'] < self.buy_mfi_9)
+                    item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_9_ma_offset)
+                    item_buy_logic.append(dataframe['close'] < dataframe['bb20_2_low'] * self.buy_9_bb_offset)
+                    item_buy_logic.append(dataframe['mfi'] < self.buy_9_mfi_max)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_8_cti_max)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] > self.buy_9_rsi_1h_min)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] < self.buy_9_rsi_1h_max)
+                    item_buy_logic.append(dataframe['crsi_1h'] > self.buy_9_crsi_1h_min)
 
                 # Condition #10
                 elif index == 10:
