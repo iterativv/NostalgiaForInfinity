@@ -1504,9 +1504,8 @@ class NostalgiaForInfinityNext(IStrategy):
 
     buy_15_ema_rel = 0.974
     buy_15_ema_open_mult = 0.0238
-    buy_15_ma_offset = 0.956
+    buy_15_ma_offset = 0.958
     buy_15_rsi_min = 28.0
-    buy_15_cti_1h_min = -0.72
 
     buy_16_ma_offset = 0.955
     buy_16_rsi = 30.0
@@ -4261,7 +4260,6 @@ class NostalgiaForInfinityNext(IStrategy):
                 elif index == 15:
                     # Non-Standard protections
                     item_buy_logic.append(dataframe['close'] > dataframe['ema_200_1h'] * self.buy_15_ema_rel)
-                    item_buy_logic.append(dataframe['safe_dump_20_1h'])
 
                     # Logic
                     item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
@@ -4269,7 +4267,6 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
                     item_buy_logic.append(dataframe['rsi_14'] < self.buy_15_rsi_min)
                     item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_15_ma_offset)
-                    item_buy_logic.append(dataframe['cti_1h'] > self.buy_15_cti_1h_min)
 
                 # Condition #16
                 elif index == 16:
