@@ -260,7 +260,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : False,
             "safe_pump_type"            : "70",
             "safe_pump_period"          : "24",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         2: {
             "ema_fast"                  : False,
@@ -280,7 +284,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : True,
             "safe_pump_type"            : "80",
             "safe_pump_period"          : "24",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         3: {
             "ema_fast"                  : True,
@@ -300,7 +308,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : True,
             "safe_pump_type"            : "100",
             "safe_pump_period"          : "36",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         4: {
             "ema_fast"                  : True,
@@ -320,7 +332,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : False,
             "safe_pump_type"            : "110",
             "safe_pump_period"          : "48",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         5: {
             "ema_fast"                  : False,
@@ -340,7 +356,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : True,
             "safe_pump_type"            : "80",
             "safe_pump_period"          : "36",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         6: {
             "ema_fast"                  : False,
@@ -360,7 +380,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : True,
             "safe_pump_type"            : "20",
             "safe_pump_period"          : "36",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         7: {
             "ema_fast"                  : True,
@@ -380,7 +404,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : True,
             "safe_pump_type"            : "120",
             "safe_pump_period"          : "24",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         8: {
             "ema_fast"                  : False,
@@ -400,7 +428,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : True,
             "safe_pump_type"            : "120",
             "safe_pump_period"          : "24",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         9: {
             "ema_fast"                  : True,
@@ -420,7 +452,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : False,
             "safe_pump_type"            : "100",
             "safe_pump_period"          : "24",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         10: {
             "ema_fast"                  : False,
@@ -440,7 +476,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : False,
             "safe_pump_type"            : "50",
             "safe_pump_period"          : "24",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         11: {
             "ema_fast"                  : False,
@@ -460,7 +500,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : False,
             "safe_pump_type"            : "50",
             "safe_pump_period"          : "24",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         12: {
             "ema_fast"                  : False,
@@ -480,7 +524,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : True,
             "safe_pump_type"            : "40",
             "safe_pump_period"          : "24",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         13: {
             "ema_fast"                  : False,
@@ -500,7 +548,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : False,
             "safe_pump_type"            : "50",
             "safe_pump_period"          : "24",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         14: {
             "ema_fast"                  : False,
@@ -520,7 +572,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : False,
             "safe_pump_type"            : "100",
             "safe_pump_period"          : "24",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         15: {
             "ema_fast"                  : False,
@@ -540,7 +596,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : True,
             "safe_pump_type"            : "120",
             "safe_pump_period"          : "36",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         16: {
             "ema_fast"                  : False,
@@ -560,7 +620,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : True,
             "safe_pump_type"            : "120",
             "safe_pump_period"          : "24",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         17: {
             "ema_fast"                  : False,
@@ -580,7 +644,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : False,
             "safe_pump_type"            : "120",
             "safe_pump_period"          : "24",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         18: {
             "ema_fast"                  : True,
@@ -600,7 +668,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : True,
             "safe_pump_type"            : "120",
             "safe_pump_period"          : "24",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         19: {
             "ema_fast"                  : True,
@@ -620,7 +692,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : False,
             "safe_pump_type"            : "50",
             "safe_pump_period"          : "24",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         20: {
             "ema_fast"                  : False,
@@ -640,7 +716,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : False,
             "safe_pump_type"            : "50",
             "safe_pump_period"          : "24",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         21: {
             "ema_fast"                  : False,
@@ -660,7 +740,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : False,
             "safe_pump_type"            : "50",
             "safe_pump_period"          : "24",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         22: {
             "ema_fast"                  : False,
@@ -680,7 +764,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : True,
             "safe_pump_type"            : "110",
             "safe_pump_period"          : "24",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         23: {
             "ema_fast"                  : False,
@@ -700,7 +788,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : True,
             "safe_pump_type"            : "100",
             "safe_pump_period"          : "24",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         24: {
             "ema_fast"                  : False,
@@ -720,7 +812,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : False,
             "safe_pump_type"            : "10",
             "safe_pump_period"          : "24",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         25: {
             "ema_fast"                  : False,
@@ -740,7 +836,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : True,
             "safe_pump_type"            : "120",
             "safe_pump_period"          : "24",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         26: {
             "ema_fast"                  : False,
@@ -760,7 +860,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : True,
             "safe_pump_type"            : "80",
             "safe_pump_period"          : "36",
-            "btc_1h_not_downtrend"      : True
+            "btc_1h_not_downtrend"      : True,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         27: {
             "ema_fast"                  : False,
@@ -780,7 +884,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : True,
             "safe_pump_type"            : "50",
             "safe_pump_period"          : "36",
-            "btc_1h_not_downtrend"      : True
+            "btc_1h_not_downtrend"      : True,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         28: {
             "ema_fast"                  : False,
@@ -800,7 +908,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : True,
             "safe_pump_type"            : "110",
             "safe_pump_period"          : "36",
-            "btc_1h_not_downtrend"      : True
+            "btc_1h_not_downtrend"      : True,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         29: {
             "ema_fast"                  : False,
@@ -820,7 +932,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : False,
             "safe_pump_type"            : "110",
             "safe_pump_period"          : "36",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         30: {
             "ema_fast"                  : False,
@@ -840,7 +956,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : False,
             "safe_pump_type"            : "110",
             "safe_pump_period"          : "36",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         31: {
             "ema_fast"                  : False,
@@ -860,7 +980,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : False,
             "safe_pump_type"            : "10",
             "safe_pump_period"          : "48",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         32: {
             "ema_fast"                  : False,
@@ -880,7 +1004,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : True,
             "safe_pump_type"            : "120",
             "safe_pump_period"          : "48",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         33: {
             "ema_fast"                  : False,
@@ -900,7 +1028,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : True,
             "safe_pump_type"            : "10",
             "safe_pump_period"          : "24",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         34: {
             "ema_fast"                  : False,
@@ -920,7 +1052,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : False,
             "safe_pump_type"            : "10",
             "safe_pump_period"          : "24",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         35: {
             "ema_fast"                  : False,
@@ -940,7 +1076,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : False,
             "safe_pump_type"            : "10",
             "safe_pump_period"          : "24",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         36: {
             "ema_fast"                  : False,
@@ -960,7 +1100,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : False,
             "safe_pump_type"            : "10",
             "safe_pump_period"          : "24",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         37: {
             "ema_fast"                  : False,
@@ -980,7 +1124,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : False,
             "safe_pump_type"            : "100",
             "safe_pump_period"          : "48",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         38: {
             "ema_fast"                  : False,
@@ -1000,7 +1148,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : False,
             "safe_pump_type"            : "10",
             "safe_pump_period"          : "36",
-            "btc_1h_not_downtrend"      : True
+            "btc_1h_not_downtrend"      : True,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         39: {
             "ema_fast"                  : False,
@@ -1020,7 +1172,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : False,
             "safe_pump_type"            : "50",
             "safe_pump_period"          : "48",
-            "btc_1h_not_downtrend"      : True
+            "btc_1h_not_downtrend"      : True,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         40: {
             "ema_fast"                  : True,
@@ -1040,7 +1196,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : False,
             "safe_pump_type"            : "50",
             "safe_pump_period"          : "48",
-            "btc_1h_not_downtrend"      : True
+            "btc_1h_not_downtrend"      : True,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         41: {
             "ema_fast"                  : False,
@@ -1060,7 +1220,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : True,
             "safe_pump_type"            : "120",
             "safe_pump_period"          : "24",
-            "btc_1h_not_downtrend"      : True
+            "btc_1h_not_downtrend"      : True,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         42: {
             "ema_fast"                  : False,
@@ -1080,7 +1244,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : True,
             "safe_pump_type"            : "10",
             "safe_pump_period"          : "24",
-            "btc_1h_not_downtrend"      : True
+            "btc_1h_not_downtrend"      : True,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         43: {
             "ema_fast"                  : False,
@@ -1100,7 +1268,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : False,
             "safe_pump_type"            : "100",
             "safe_pump_period"          : "24",
-            "btc_1h_not_downtrend"      : True
+            "btc_1h_not_downtrend"      : True,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         44: {
             "ema_fast"                  : False,
@@ -1120,7 +1292,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : False,
             "safe_pump_type"            : "100",
             "safe_pump_period"          : "24",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         45: {
             "ema_fast"                  : True,
@@ -1140,7 +1316,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : False,
             "safe_pump_type"            : "100",
             "safe_pump_period"          : "24",
-            "btc_1h_not_downtrend"      : True
+            "btc_1h_not_downtrend"      : True,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         46: {
             "ema_fast"                  : False,
@@ -1160,7 +1340,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : False,
             "safe_pump_type"            : "100",
             "safe_pump_period"          : "24",
-            "btc_1h_not_downtrend"      : True
+            "btc_1h_not_downtrend"      : True,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         47: {
             "ema_fast"                  : False,
@@ -1180,7 +1364,11 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : True,
             "safe_pump_type"            : "120",
             "safe_pump_period"          : "24",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
         },
         48: {
             "ema_fast"                  : True,
@@ -1200,7 +1388,12 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : False,
             "safe_pump_type"            : "120",
             "safe_pump_period"          : "24",
-            "btc_1h_not_downtrend"      : False
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
+
         }
     }
 
@@ -3608,21 +3801,32 @@ class NostalgiaForInfinityNext(IStrategy):
         # get access to all pairs available in whitelist.
         pairs = self.dp.current_whitelist()
         # Assign tf to each pair so they can be downloaded and cached for strategy.
-        informative_pairs = [(pair, self.info_timeframe) for pair in pairs]
+        informative_pairs = [(pair, self.info_timeframe_1h) for pair in pairs]
         if self.config['stake_currency'] in ['USDT','BUSD','USDC','DAI','TUSD','PAX','USD','EUR','GBP']:
             btc_info_pair = f"BTC/{self.config['stake_currency']}"
         else:
             btc_info_pair = "BTC/USDT"
 
         informative_pairs.append((btc_info_pair, self.timeframe))
-        informative_pairs.append((btc_info_pair, self.info_timeframe))
+        informative_pairs.append((btc_info_pair, self.info_timeframe_1h))
+        informative_pairs.append((btc_info_pair, self.info_timeframe_1d))
         informative_pairs.append((btc_info_pair, '1d'))
         return informative_pairs
+
+    def informative_1d_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        assert self.dp, "DataProvider is required for multiple timeframes."
+        # Get the informative pair
+        informative_1d = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.info_timeframe_1d)
+
+        # pivots
+        informative_1d['pivot'], informative_1d['res1'], informative_1d['res2'], informative_1d['res3'], informative_1d['sup1'], informative_1d['sup2'], informative_1d['sup3'] = pivot_points(informative_1d, mode='fibonacci')
+
+        return informative_1d
 
     def informative_1h_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         assert self.dp, "DataProvider is required for multiple timeframes."
         # Get the informative pair
-        informative_1h = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.info_timeframe)
+        informative_1h = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.info_timeframe_1h)
 
         # EMA
         informative_1h['ema_12'] = ta.EMA(informative_1h, timeperiod=12)
@@ -3945,7 +4149,8 @@ class NostalgiaForInfinityNext(IStrategy):
 
         # Add prefix
         # -----------------------------------------------------------------------------------------
-        ignore_columns = ['date', 'open', 'high', 'low', 'close', 'volume']
+        ignore_columns = ['date', 'open', 'high', 'low', 'volume']
+        #ignore_columns = ['date', 'open', 'high', 'low', 'close', 'volume']
         dataframe.rename(columns=lambda s: f"btc_{s}" if s not in ignore_columns else s, inplace=True)
 
         return dataframe
@@ -3953,8 +4158,8 @@ class NostalgiaForInfinityNext(IStrategy):
     def daily_tf_btc_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Indicators
         # -----------------------------------------------------------------------------------------
-        dataframe['rsi_14'] = ta.RSI(dataframe, timeperiod=14)
-        dataframe['not_downtrend'] = ((dataframe['close'] > dataframe['close'].shift(2)) | (dataframe['rsi_14'] > 50))
+        #dataframe['rsi_14'] = ta.RSI(dataframe, timeperiod=14)
+        #dataframe['not_downtrend'] = ((dataframe['close'] > dataframe['close'].shift(2)) | (dataframe['rsi_14'] > 50))
 
         # pivots
         dataframe['pivot'], dataframe['res1'], dataframe['res2'], dataframe['res3'], dataframe['sup1'], dataframe['sup2'], dataframe['sup3'] = pivot_points(dataframe, mode='fibonacci')
@@ -3976,20 +4181,6 @@ class NostalgiaForInfinityNext(IStrategy):
         else:
             btc_info_pair = "BTC/USDT"
 
-        if self.has_BTC_base_tf:
-            btc_base_tf = self.dp.get_pair_dataframe(btc_info_pair, self.timeframe)
-            btc_base_tf = self.base_tf_btc_indicators(btc_base_tf, metadata)
-            dataframe = merge_informative_pair(dataframe, btc_base_tf, self.timeframe, self.timeframe, ffill=True)
-            drop_columns = [f"{s}_{self.timeframe}" for s in ['date', 'open', 'high', 'low', 'close', 'volume']]
-            dataframe.drop(columns=dataframe.columns.intersection(drop_columns), inplace=True)
-
-        if self.has_BTC_info_tf:
-            btc_info_tf = self.dp.get_pair_dataframe(btc_info_pair, self.info_timeframe)
-            btc_info_tf = self.info_tf_btc_indicators(btc_info_tf, metadata)
-            dataframe = merge_informative_pair(dataframe, btc_info_tf, self.timeframe, self.info_timeframe, ffill=True)
-            drop_columns = [f"{s}_{self.info_timeframe}" for s in ['date', 'open', 'high', 'low', 'close', 'volume']]
-            dataframe.drop(columns=dataframe.columns.intersection(drop_columns), inplace=True)
-
         if self.has_BTC_daily_tf:
             btc_daily_tf = self.dp.get_pair_dataframe(btc_info_pair, '1d')
             btc_daily_tf = self.daily_tf_btc_indicators(btc_daily_tf, metadata)
@@ -3997,16 +4188,36 @@ class NostalgiaForInfinityNext(IStrategy):
             drop_columns = [f"{s}_1d" for s in ['date', 'open', 'high', 'low', 'close', 'volume']]
             dataframe.drop(columns=dataframe.columns.intersection(drop_columns), inplace=True)
 
+        if self.has_BTC_info_tf:
+            btc_info_tf = self.dp.get_pair_dataframe(btc_info_pair, self.info_timeframe_1h)
+            btc_info_tf = self.info_tf_btc_indicators(btc_info_tf, metadata)
+            dataframe = merge_informative_pair(dataframe, btc_info_tf, self.timeframe, self.info_timeframe_1h, ffill=True)
+            drop_columns = [f"{s}_{self.info_timeframe_1h}" for s in ['date', 'open', 'high', 'low', 'close', 'volume']]
+            dataframe.drop(columns=dataframe.columns.intersection(drop_columns), inplace=True)
+
+        if self.has_BTC_base_tf:
+            btc_base_tf = self.dp.get_pair_dataframe(btc_info_pair, self.timeframe)
+            btc_base_tf = self.base_tf_btc_indicators(btc_base_tf, metadata)
+            dataframe = merge_informative_pair(dataframe, btc_base_tf, self.timeframe, self.timeframe, ffill=True)
+            drop_columns = [f"{s}_{self.timeframe}" for s in ['date', 'open', 'high', 'low', 'close', 'volume']]
+            dataframe.drop(columns=dataframe.columns.intersection(drop_columns), inplace=True)
 
         '''
         --> Informative timeframe
         ___________________________________________________________________________________________
         '''
-        if self.info_timeframe != 'none':
-            informative_1h = self.informative_1h_indicators(dataframe, metadata)
-            dataframe = merge_informative_pair(dataframe, informative_1h, self.timeframe, self.info_timeframe, ffill=True)
-            drop_columns = [f"{s}_{self.info_timeframe}" for s in ['date']]
+        if self.info_timeframe_1d != 'none':
+            informative_1d = self.informative_1d_indicators(dataframe, metadata)
+            dataframe = merge_informative_pair(dataframe, informative_1d, self.timeframe, self.info_timeframe_1d, ffill=True)
+            drop_columns = [f"{s}_{self.info_timeframe_1d}" for s in ['date','open', 'high', 'low', 'close', 'volume']]
             dataframe.drop(columns=dataframe.columns.intersection(drop_columns), inplace=True)
+
+        if self.info_timeframe_1h != 'none':
+            informative_1h = self.informative_1h_indicators(dataframe, metadata)
+            dataframe = merge_informative_pair(dataframe, informative_1h, self.timeframe, self.info_timeframe_1h, ffill=True)
+            drop_columns = [f"{s}_{self.info_timeframe_1h}" for s in ['date']]
+            dataframe.drop(columns=dataframe.columns.intersection(drop_columns), inplace=True)
+
 
         '''
         --> Resampled to another timeframe
@@ -4063,6 +4274,10 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_protection_list.append(dataframe[f"safe_pump_{global_buy_protection_params['safe_pump_period']}_{global_buy_protection_params['safe_pump_type']}_1h"])
                 if global_buy_protection_params['btc_1h_not_downtrend']:
                     item_buy_protection_list.append(dataframe['btc_not_downtrend_1h'])
+                if global_buy_protection_params['close_over_pivot_type'] != 'none':
+                    item_buy_protection_list.append(dataframe['close'] > dataframe[f"{global_buy_protection_params['close_over_pivot_type']}_1d"] * global_buy_protection_params['close_over_pivot_offset'])
+                if global_buy_protection_params['close_under_pivot_type'] != 'none':
+                    item_buy_protection_list.append(dataframe['close'] > dataframe[f"{global_buy_protection_params['close_under_pivot_type']}_1d"] * global_buy_protection_params['close_under_pivot_offset'])
                 if not self.config['runmode'].value in ('live', 'dry_run'):
                     if self.has_bt_agefilter:
                         item_buy_protection_list.append(dataframe['bt_agefilter_ok'])
