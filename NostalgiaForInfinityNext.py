@@ -4151,8 +4151,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
         # Add prefix
         # -----------------------------------------------------------------------------------------
-        ignore_columns = ['date', 'open', 'high', 'low', 'volume']
-        #ignore_columns = ['date', 'open', 'high', 'low', 'close', 'volume']
+        ignore_columns = ['date', 'open', 'high', 'low', 'close', 'volume']
         dataframe.rename(columns=lambda s: f"btc_{s}" if s not in ignore_columns else s, inplace=True)
 
         return dataframe
