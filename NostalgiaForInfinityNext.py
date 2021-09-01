@@ -478,10 +478,10 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_type"            : "50",
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False,
-            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_type"     : "sup3", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_over_pivot_offset"   : 1.0,
-            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
-            "close_under_pivot_offset"  : 1.0
+            "close_under_pivot_type"    : "res3", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.6
         },
         11: {
             "ema_fast"                  : False,
@@ -1665,12 +1665,11 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_9_rsi_1h_max = 88.0
     buy_9_crsi_1h_min = 20.0
 
-    buy_10_ma_offset_low = 0.92
     buy_10_ma_offset_high = 0.94
     buy_10_bb_offset = 0.98
     buy_10_cti_1h_min = -0.5
     buy_10_cti_1h_max = 0.94
-    buy_10_r_480_1h = -65.0
+    buy_10_r_480_1h_min = -65.0
 
     buy_11_ma_offset = 0.955
     buy_11_min_inc = 0.038
@@ -4414,12 +4413,11 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['ema_50_1h'] > dataframe['ema_100_1h'])
 
                     # Logic
-                    item_buy_logic.append(dataframe['close'] > dataframe['sma_30'] * self.buy_10_ma_offset_low)
                     item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * self.buy_10_ma_offset_high)
                     item_buy_logic.append(dataframe['close'] < dataframe['bb20_2_low'] * self.buy_10_bb_offset)
                     item_buy_logic.append(dataframe['cti_1h'] > self.buy_10_cti_1h_min)
                     item_buy_logic.append(dataframe['cti_1h'] < self.buy_10_cti_1h_max)
-                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_10_r_480_1h)
+                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_10_r_480_1h_min)
 
                 # Condition #11
                 elif index == 11:
