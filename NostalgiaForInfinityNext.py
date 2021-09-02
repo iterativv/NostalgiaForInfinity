@@ -3501,6 +3501,32 @@ class NostalgiaForInfinityNext(IStrategy):
 
         return False, None
 
+    def sell_pivot(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, trade: 'Trade', current_time: 'datetime') -> tuple:
+        if (last_candle['close'] > (last_candle['res3_1d'] * 2.2)):
+            if (0.02 > current_profit >= 0.012):
+                if (last_candle['r_14'] >= -0.0) and (last_candle['rsi_14'] > 79.0) and (last_candle['r_480'] > -3.0):
+                    return True, 'signal_profit_pv_1_1'
+            elif (0.03 > current_profit >= 0.02):
+                if (last_candle['r_14'] > -0.4) and (last_candle['rsi_14'] > 76.0) and (last_candle['r_480'] > -5.0):
+                    return True, 'signal_profit_pv_1_2'
+            elif (0.04 > current_profit >= 0.03):
+                if (last_candle['r_14'] > -0.8) and (last_candle['rsi_14'] > 74.0) and (last_candle['r_480'] > -10.0):
+                    return True, 'signal_profit_pv_1_3'
+            elif (0.05 > current_profit >= 0.04):
+                if (last_candle['r_14'] > -1.0) and (last_candle['rsi_14'] > 70.0) and (last_candle['r_480'] > -15.0):
+                    return True, 'signal_profit_pv_1_4'
+            elif (0.06 > current_profit >= 0.05):
+                if (last_candle['r_14'] > -1.2) and (last_candle['rsi_14'] > 66.0) and (last_candle['r_480'] > -20.0):
+                    return True, 'signal_profit_pv_1_5'
+            elif (0.07 > current_profit >= 0.06):
+                if (last_candle['r_14'] > -1.6) and (last_candle['rsi_14'] > 60.0) and (last_candle['r_480'] > -25.0):
+                    return True, 'signal_profit_pv_1_6'
+            elif (0.08 > current_profit >= 0.07):
+                if (last_candle['r_14'] > -2.0) and (last_candle['rsi_14'] > 56.0) and (last_candle['r_480'] > -30.0):
+                    return True, 'signal_profit_pv_1_7'
+
+        return False, None
+
     def custom_sell(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float,
                     current_profit: float, **kwargs):
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
@@ -3627,6 +3653,11 @@ class NostalgiaForInfinityNext(IStrategy):
 
         # Williams %R based sell 5, plus  RSI and CTI 1h
         sell, signal_name = self.sell_r_5(current_profit, last_candle)
+        if sell and (signal_name is not None):
+            return f"{signal_name} ( {buy_tag} )"
+
+        # Pivot points based sells
+        sell, signal_name = self.sell_pivot(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
         if sell and (signal_name is not None):
             return f"{signal_name} ( {buy_tag} )"
 
