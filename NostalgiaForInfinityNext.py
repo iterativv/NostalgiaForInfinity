@@ -1829,8 +1829,8 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_35_cti_max = -0.7
 
     buy_36_ma_offset = 0.98
-    buy_36_ewo = -8.8
-    buy_36_cti = -0.8
+    buy_36_ewo_max = -8.6
+    buy_36_cti_max = -0.8
 
     buy_37_ma_offset = 0.98
     buy_37_ewo = 9.8
@@ -4780,8 +4780,8 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Logic
                     item_buy_logic.append(dataframe['pm'] <= dataframe['pmax_thresh'])
                     item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * self.buy_36_ma_offset)
-                    item_buy_logic.append(dataframe['ewo'] < self.buy_36_ewo)
-                    item_buy_logic.append(dataframe['cti'] < self.buy_36_cti)
+                    item_buy_logic.append(dataframe['ewo'] < self.buy_36_ewo_max)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_36_cti_max)
 
                 # Condition #37 - PMAX2 buy
                 elif index == 37:
