@@ -3525,6 +3525,29 @@ class NostalgiaForInfinityNext(IStrategy):
                 if (last_candle['r_14'] > -2.0) and (last_candle['rsi_14'] > 56.0) and (last_candle['r_480'] > -30.0):
                     return True, 'signal_profit_pv_1_7'
 
+        elif (last_candle['close'] > (last_candle['res3_1d'] * 1.3)):
+            if (0.02 > current_profit >= 0.012):
+                if (last_candle['rsi_14'] > 80.0) and (last_candle['cti_1h'] > 0.84) and (last_candle['cmf'] < 0.0) and (last_candle['cci'] > 200.0):
+                    return True, 'signal_profit_pv_2_1'
+            elif (0.03 > current_profit >= 0.02):
+                if (last_candle['rsi_14'] > 78.0) and (last_candle['cti_1h'] > 0.84) and (last_candle['cmf'] < 0.0) and (last_candle['cci'] > 200.0):
+                    return True, 'signal_profit_pv_2_2'
+            elif (0.04 > current_profit >= 0.03):
+                if (last_candle['rsi_14'] > 76.0) and (last_candle['cti_1h'] > 0.84) and (last_candle['cmf'] < 0.0) and (last_candle['cci'] > 200.0):
+                    return True, 'signal_profit_pv_2_3'
+            elif (0.05 > current_profit >= 0.04):
+                if (last_candle['rsi_14'] > 72.0) and (last_candle['cti_1h'] > 0.84) and (last_candle['cmf'] < 0.0) and (last_candle['cci'] > 200.0):
+                    return True, 'signal_profit_pv_2_4'
+            elif (0.06 > current_profit >= 0.05):
+                if (last_candle['rsi_14'] > 68.0) and (last_candle['cti_1h'] > 0.84) and (last_candle['cmf'] < 0.0) and (last_candle['cci'] > 200.0):
+                    return True, 'signal_profit_pv_2_5'
+            elif (0.07 > current_profit >= 0.06):
+                if (last_candle['rsi_14'] > 60.0) and (last_candle['cti_1h'] > 0.84) and (last_candle['cmf'] < 0.0) and (last_candle['cci'] > 200.0):
+                    return True, 'signal_profit_pv_2_6'
+            elif (0.08 > current_profit >= 0.07):
+                if (last_candle['rsi_14'] > 58.0) and (last_candle['cti_1h'] > 0.84) and (last_candle['cmf'] < 0.0) and (last_candle['cci'] > 200.0):
+                    return True, 'signal_profit_pv_2_7'
+
         return False, None
 
     def custom_sell(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float,
