@@ -1075,15 +1075,15 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
             "safe_dips"                 : False,
-            "safe_dips_type"            : "100",
+            "safe_dips_type"            : "10",
             "safe_pump"                 : False,
             "safe_pump_type"            : "10",
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_over_pivot_offset"   : 1.0,
-            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
-            "close_under_pivot_offset"  : 1.0
+            "close_under_pivot_type"    : "res3", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.1
         },
         36: {
             "ema_fast"                  : False,
@@ -1826,9 +1826,10 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_34_volume = 2.0
 
     buy_35_ma_offset = 0.984
-    buy_35_ewo_min = 9.0
+    buy_35_ewo_min = 7.8
     buy_35_rsi_max = 32.0
-    buy_35_cti_max = -0.7
+    buy_35_cti_max = -0.8
+    buy_35_r_14_max = -98.0
 
     buy_36_ma_offset = 0.98
     buy_36_ewo_max = -8.6
@@ -4813,9 +4814,10 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Logic
                     item_buy_logic.append(dataframe['pm'] <= dataframe['pmax_thresh'])
                     item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * self.buy_35_ma_offset)
-                    item_buy_logic.append(dataframe['ewo'] > self.buy_35_ewo_min)
+                    item_buy_logic.append(dataframe['ewo_sma'] > self.buy_35_ewo_min)
                     item_buy_logic.append(dataframe['rsi_14'] < self.buy_35_rsi_max)
                     item_buy_logic.append(dataframe['cti'] < self.buy_35_cti_max)
+                    item_buy_logic.append(dataframe['r_14'] < self.buy_35_r_14_max)
 
                 # Condition #36 - PMAX1 buy
                 elif index == 36:
