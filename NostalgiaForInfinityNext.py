@@ -3926,6 +3926,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
         # EWO
         informative_1h['ewo'] = ewo(informative_1h, 50, 200)
+        informative_1h['ewo_sma'] = ewo_sma(informative_1h, 50, 200)
 
         # BB
         bollinger = qtpylib.bollinger_bands(qtpylib.typical_price(informative_1h), window=20, stds=2)
@@ -4091,6 +4092,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
         # EWO
         dataframe['ewo'] = ewo(dataframe, 50, 200)
+        dataframe['ewo_sma'] = ewo_sma(dataframe, 50, 200)
 
         # RSI
         dataframe['rsi_4'] = ta.RSI(dataframe, timeperiod=4)
@@ -5153,6 +5155,13 @@ class NostalgiaForInfinityNext(IStrategy):
 def ewo(dataframe, sma1_length=5, sma2_length=35):
     sma1 = ta.EMA(dataframe, timeperiod=sma1_length)
     sma2 = ta.EMA(dataframe, timeperiod=sma2_length)
+    smadif = (sma1 - sma2) / dataframe['close'] * 100
+    return smadif
+
+
+def ewo_sma(dataframe, sma1_length=5, sma2_length=35):
+    sma1 = ta.SMA(dataframe, timeperiod=sma1_length)
+    sma2 = ta.SMA(dataframe, timeperiod=sma2_length)
     smadif = (sma1 - sma2) / dataframe['close'] * 100
     return smadif
 
