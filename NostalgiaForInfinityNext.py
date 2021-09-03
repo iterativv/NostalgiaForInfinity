@@ -1035,7 +1035,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_over_pivot_offset"   : 1.0,
             "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
-            "close_under_pivot_offset"  : 1.2
+            "close_under_pivot_offset"  : 1.0
         },
         34: {
             "ema_fast"                  : False,
@@ -1813,9 +1813,9 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_33_ma_offset = 0.988
     buy_33_rsi_max = 32.0
     buy_33_cti_max = -0.88
-    buy_33_ewo_min = 6.8
+    buy_33_ewo_min = 6.2
+    buy_33_r_14_max = -98.0
     buy_33_cti_1h_max = 0.92
-    buy_33_r_480_1h_max = -20.0
     buy_33_volume = 2.0
 
     buy_34_ma_offset = 0.932
@@ -4788,8 +4788,8 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['close'] < (dataframe['ema_13'] * self.buy_33_ma_offset))
                     item_buy_logic.append(dataframe['ewo'] > self.buy_33_ewo_min)
                     item_buy_logic.append(dataframe['rsi_14'] < self.buy_33_rsi_max)
+                    item_buy_logic.append(dataframe['r_14'] < self.buy_33_r_14_max)
                     item_buy_logic.append(dataframe['cti_1h'] < self.buy_33_cti_1h_max)
-                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_33_r_480_1h_max)
                     item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_33_volume))
 
                 # Condition #34 - Quick mode buy
