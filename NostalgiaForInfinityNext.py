@@ -1051,7 +1051,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
             "safe_dips"                 : False,
-            "safe_dips_type"            : "130",
+            "safe_dips_type"            : "50",
             "safe_pump"                 : False,
             "safe_pump_type"            : "10",
             "safe_pump_period"          : "24",
@@ -1820,9 +1820,9 @@ class NostalgiaForInfinityNext(IStrategy):
 
     buy_34_ma_offset = 0.932
     buy_34_ewo_max = -5.8
-    buy_34_cti_max = -0.88
-    buy_34_r_480_max = -70.0
-    buy_34_crsi_1h_min = 10.0
+    buy_34_cti_max = -0.84
+    buy_34_r_14_max = -97.0
+    buy_34_crsi_1h_min = 8.0
     buy_34_volume = 2.0
 
     buy_35_ma_offset = 0.984
@@ -4800,7 +4800,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['close'] < dataframe['ema_13'] * self.buy_34_ma_offset)
                     item_buy_logic.append(dataframe['cti'] < self.buy_34_cti_max)
                     item_buy_logic.append(dataframe['ewo'] < self.buy_34_ewo_max)
-                    item_buy_logic.append(dataframe['r_480'] < self.buy_34_r_480_max)
+                    item_buy_logic.append(dataframe['r_14'] < self.buy_34_r_14_max)
                     item_buy_logic.append(dataframe['crsi_1h'] > self.buy_34_crsi_1h_min)
                     item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_34_volume))
 
