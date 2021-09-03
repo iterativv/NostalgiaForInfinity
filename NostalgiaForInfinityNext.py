@@ -3510,48 +3510,62 @@ class NostalgiaForInfinityNext(IStrategy):
         if (last_candle['close'] > (last_candle['res3_1d'] * 2.2)):
             if (0.02 > current_profit >= 0.012):
                 if (last_candle['r_14'] >= -0.0) and (last_candle['rsi_14'] > 79.0) and (last_candle['r_480'] > -3.0):
-                    return True, 'signal_profit_pv_1_1'
+                    return True, 'signal_profit_pv_1_1_1'
             elif (0.03 > current_profit >= 0.02):
                 if (last_candle['r_14'] > -0.4) and (last_candle['rsi_14'] > 76.0) and (last_candle['r_480'] > -5.0):
-                    return True, 'signal_profit_pv_1_2'
+                    return True, 'signal_profit_pv_1_2_1'
             elif (0.04 > current_profit >= 0.03):
                 if (last_candle['r_14'] > -0.8) and (last_candle['rsi_14'] > 74.0) and (last_candle['r_480'] > -10.0):
-                    return True, 'signal_profit_pv_1_3'
+                    return True, 'signal_profit_pv_1_3_1'
             elif (0.05 > current_profit >= 0.04):
                 if (last_candle['r_14'] > -1.0) and (last_candle['rsi_14'] > 70.0) and (last_candle['r_480'] > -15.0):
-                    return True, 'signal_profit_pv_1_4'
+                    return True, 'signal_profit_pv_1_4_1'
             elif (0.06 > current_profit >= 0.05):
                 if (last_candle['r_14'] > -1.2) and (last_candle['rsi_14'] > 66.0) and (last_candle['r_480'] > -20.0):
-                    return True, 'signal_profit_pv_1_5'
+                    return True, 'signal_profit_pv_1_5_1'
             elif (0.07 > current_profit >= 0.06):
                 if (last_candle['r_14'] > -1.6) and (last_candle['rsi_14'] > 60.0) and (last_candle['r_480'] > -25.0):
-                    return True, 'signal_profit_pv_1_6'
+                    return True, 'signal_profit_pv_1_6_1'
             elif (0.08 > current_profit >= 0.07):
                 if (last_candle['r_14'] > -2.0) and (last_candle['rsi_14'] > 56.0) and (last_candle['r_480'] > -30.0):
-                    return True, 'signal_profit_pv_1_7'
+                    return True, 'signal_profit_pv_1_7_1'
 
         elif (last_candle['close'] > (last_candle['res3_1d'] * 1.3)):
             if (0.02 > current_profit >= 0.012):
                 if (last_candle['rsi_14'] > 80.0) and (last_candle['cti_1h'] > 0.84) and (last_candle['cmf'] < 0.0) and (last_candle['cci'] > 200.0):
-                    return True, 'signal_profit_pv_2_1'
+                    return True, 'signal_profit_pv_2_1_1'
+                elif (last_candle['rsi_14'] > 79.0) and (last_candle['r_14'] > -1.0) and (last_candle['cti'] > 0.9):
+                    return True, 'signal_profit_pv_2_1_2'
             elif (0.03 > current_profit >= 0.02):
                 if (last_candle['rsi_14'] > 78.0) and (last_candle['cti_1h'] > 0.84) and (last_candle['cmf'] < 0.0) and (last_candle['cci'] > 200.0):
-                    return True, 'signal_profit_pv_2_2'
+                    return True, 'signal_profit_pv_2_2_1'
+                elif (last_candle['rsi_14'] > 77.0) and (last_candle['r_14'] > -3.0) and (last_candle['cti'] > 0.9):
+                    return True, 'signal_profit_pv_2_2_2'
             elif (0.04 > current_profit >= 0.03):
                 if (last_candle['rsi_14'] > 76.0) and (last_candle['cti_1h'] > 0.84) and (last_candle['cmf'] < 0.0) and (last_candle['cci'] > 200.0):
-                    return True, 'signal_profit_pv_2_3'
+                    return True, 'signal_profit_pv_2_3_1'
+                elif (last_candle['rsi_14'] > 75.0) and (last_candle['r_14'] > -5.0) and (last_candle['cti'] > 0.9):
+                    return True, 'signal_profit_pv_2_3_2'
             elif (0.05 > current_profit >= 0.04):
                 if (last_candle['rsi_14'] > 72.0) and (last_candle['cti_1h'] > 0.84) and (last_candle['cmf'] < 0.0) and (last_candle['cci'] > 200.0):
-                    return True, 'signal_profit_pv_2_4'
+                    return True, 'signal_profit_pv_2_4_1'
+                elif (last_candle['rsi_14'] > 71.0) and (last_candle['r_14'] > -7.0) and (last_candle['cti'] > 0.9):
+                    return True, 'signal_profit_pv_2_4_2'
             elif (0.06 > current_profit >= 0.05):
                 if (last_candle['rsi_14'] > 68.0) and (last_candle['cti_1h'] > 0.84) and (last_candle['cmf'] < 0.0) and (last_candle['cci'] > 200.0):
-                    return True, 'signal_profit_pv_2_5'
+                    return True, 'signal_profit_pv_2_5_1'
+                elif (last_candle['rsi_14'] > 67.0) and (last_candle['r_14'] > -9.0) and (last_candle['cti'] > 0.9):
+                    return True, 'signal_profit_pv_2_5_2'
             elif (0.07 > current_profit >= 0.06):
                 if (last_candle['rsi_14'] > 60.0) and (last_candle['cti_1h'] > 0.84) and (last_candle['cmf'] < 0.0) and (last_candle['cci'] > 200.0):
-                    return True, 'signal_profit_pv_2_6'
+                    return True, 'signal_profit_pv_2_6_1'
+                elif (last_candle['rsi_14'] > 59.0) and (last_candle['r_14'] > -9.0) and (last_candle['cti'] > 0.9):
+                    return True, 'signal_profit_pv_2_6_2'
             elif (0.08 > current_profit >= 0.07):
                 if (last_candle['rsi_14'] > 58.0) and (last_candle['cti_1h'] > 0.84) and (last_candle['cmf'] < 0.0) and (last_candle['cci'] > 200.0):
-                    return True, 'signal_profit_pv_2_7'
+                    return True, 'signal_profit_pv_2_7_1'
+                elif (last_candle['rsi_14'] > 57.0) and (last_candle['r_14'] > -9.0) and (last_candle['cti'] > 0.9):
+                    return True, 'signal_profit_pv_2_7_2'
 
         return False, None
 
