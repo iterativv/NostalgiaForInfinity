@@ -1057,7 +1057,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
-            "close_over_pivot_offset"   : 1.0,
+            "close_over_pivot_offset"   : 0.99,
             "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_under_pivot_offset"  : 1.0
         },
@@ -1818,11 +1818,10 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_33_cti_1h_max = 0.92
     buy_33_volume = 2.0
 
-    buy_34_ma_offset = 0.932
-    buy_34_ewo_max = -5.8
-    buy_34_cti_max = -0.84
-    buy_34_r_14_max = -97.0
-    buy_34_crsi_1h_min = 8.0
+    buy_34_ma_offset = 0.936
+    buy_34_ewo_max = -4.0
+    buy_34_cti_max = -0.95
+    buy_34_r_14_max = -99.9
     buy_34_volume = 2.0
 
     buy_35_ma_offset = 0.984
@@ -4802,9 +4801,8 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Logic
                     item_buy_logic.append(dataframe['close'] < dataframe['ema_13'] * self.buy_34_ma_offset)
                     item_buy_logic.append(dataframe['cti'] < self.buy_34_cti_max)
-                    item_buy_logic.append(dataframe['ewo'] < self.buy_34_ewo_max)
+                    item_buy_logic.append(dataframe['ewo_sma'] < self.buy_34_ewo_max)
                     item_buy_logic.append(dataframe['r_14'] < self.buy_34_r_14_max)
-                    item_buy_logic.append(dataframe['crsi_1h'] > self.buy_34_crsi_1h_min)
                     item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_34_volume))
 
                 # Condition #35 - PMAX0 buy
