@@ -1843,7 +1843,7 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_37_cti_1h_max = 0.92
 
     buy_38_ma_offset = 0.98
-    buy_38_ewo_max = -4.0
+    buy_38_ewo_max = -4.4
     buy_38_cti_max = -0.95
     buy_38_r_14_max = -97.0
 
@@ -4850,7 +4850,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Logic
                     item_buy_logic.append(dataframe['pm'] > dataframe['pmax_thresh'])
                     item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * self.buy_38_ma_offset)
-                    item_buy_logic.append(dataframe['ewo'] < self.buy_38_ewo_max)
+                    item_buy_logic.append(dataframe['ewo_sma'] < self.buy_38_ewo_max)
                     item_buy_logic.append(dataframe['cti'] < self.buy_38_cti_max)
                     item_buy_logic.append(dataframe['r_14'] < self.buy_38_r_14_max)
 
