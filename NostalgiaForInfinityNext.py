@@ -1852,11 +1852,11 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_39_cti_1h_min = -0.1
     buy_39_cti_1h_max = 0.4
 
-    buy_40_crsi = 50.0
-    buy_40_cci = -250.0
-    buy_40_rsi = 31.0
-    buy_40_cti = -0.8
-    buy_40_r_1h = -90.0
+    buy_40_crsi_max = 50.0
+    buy_40_cci_max = -250.0
+    buy_40_rsi_max = 36.0
+    buy_40_r_14_max = -90.0
+    buy_40_cti_max = -0.8
 
     buy_41_ewo_1h_min = 4.0
     buy_41_crsi_1h_min = 10.0
@@ -4881,11 +4881,11 @@ class NostalgiaForInfinityNext(IStrategy):
 
                     # Logic
                     item_buy_logic.append(qtpylib.crossed_above(dataframe['zlema_2'], dataframe['zlema_4']))
-                    item_buy_logic.append(dataframe['crsi'] < self.buy_40_crsi)
-                    item_buy_logic.append(dataframe['cci'] < self.buy_40_cci)
-                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_40_rsi)
-                    item_buy_logic.append(dataframe['cti'] < self.buy_40_cti)
-                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_40_r_1h)
+                    item_buy_logic.append(dataframe['crsi'] < self.buy_40_crsi_max)
+                    item_buy_logic.append(dataframe['cci'] < self.buy_40_cci_max)
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_40_rsi_max)
+                    item_buy_logic.append(dataframe['r_14'] < self.buy_40_r_14_max)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_40_cti_max)
 
                 # Condition #41
                 elif index == 41:
