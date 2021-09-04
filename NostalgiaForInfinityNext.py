@@ -1113,7 +1113,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : False,
-            "ema_slow_len"              : "100",
+            "ema_slow_len"              : "12",
             "close_above_ema_fast"      : False,
             "close_above_ema_fast_len"  : "200",
             "close_above_ema_slow"      : False,
@@ -1123,12 +1123,12 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
             "safe_dips"                 : True,
-            "safe_dips_type"            : "130",
+            "safe_dips_type"            : "30",
             "safe_pump"                 : False,
             "safe_pump_type"            : "10",
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False,
-            "close_over_pivot_type"     : "res1", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_over_pivot_offset"   : 0.92,
             "close_under_pivot_type"    : "res3", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_under_pivot_offset"  : 1.5
@@ -1836,7 +1836,7 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_36_r_14_max = -97.0
 
     buy_37_ma_offset = 0.98
-    buy_37_ewo_min = 5.4
+    buy_37_ewo_min = 7.5
     buy_37_rsi_max = 46.0
     buy_37_cti_max = -0.85
     buy_37_r_14_max = -97.0
@@ -4837,7 +4837,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Logic
                     item_buy_logic.append(dataframe['pm'] > dataframe['pmax_thresh'])
                     item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * self.buy_37_ma_offset)
-                    item_buy_logic.append(dataframe['ewo'] > self.buy_37_ewo_min)
+                    item_buy_logic.append(dataframe['ewo_sma'] > self.buy_37_ewo_min)
                     item_buy_logic.append(dataframe['rsi_14'] < self.buy_37_rsi_max)
                     item_buy_logic.append(dataframe['cti'] < self.buy_37_cti_max)
                     item_buy_logic.append(dataframe['r_14'] < self.buy_37_r_14_max)
