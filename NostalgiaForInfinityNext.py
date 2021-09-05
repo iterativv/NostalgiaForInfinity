@@ -840,10 +840,10 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_type"            : "120",
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False,
-            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
-            "close_over_pivot_offset"   : 1.0,
-            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
-            "close_under_pivot_offset"  : 1.0
+            "close_over_pivot_type"     : "pivot", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 0.98,
+            "close_under_pivot_type"    : "res3", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.4
         },
         26: {
             "ema_fast"                  : False,
@@ -1758,14 +1758,9 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_24_rsi_1h_min = 66.9
 
     buy_25_ma_offset = 0.953
-    buy_25_rsi_4 = 30.0
-    buy_25_cti = -0.88
-    buy_25_ma_offset_low = 0.918
-    buy_25_cti_1h_min = 0.1
-    buy_25_cti_1h_max = 0.82
-    buy_25_r_1h = -75.0
-    buy_25_crsi_1h_min = 10.0
-    buy_25_crsi_1h_max = 50.0
+    buy_25_rsi_4_max = 30.0
+    buy_25_cti_max = -0.78
+    buy_25_cci_max = -200.0
 
     buy_26_zema_low_offset = 0.94
     buy_26_cti_max = -0.72
@@ -4676,7 +4671,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
                     # Logic
                     item_buy_logic.append(dataframe['rsi_20'] < dataframe['rsi_20'].shift())
-                    item_buy_logic.append(dataframe['rsi_4'] < self.buy_25_rsi_4)
+                    item_buy_logic.append(dataframe['rsi_4'] < self.buy_25_rsi_4_max)
                     item_buy_logic.append(dataframe['ema_20_1h'] > dataframe['ema_26_1h'])
                     item_buy_logic.append(dataframe['close'] < (dataframe['sma_15'] * self.buy_25_ma_offset))
                     item_buy_logic.append(dataframe['open'] > (dataframe['sma_15'] * self.buy_25_ma_offset))
@@ -4684,13 +4679,8 @@ class NostalgiaForInfinityNext(IStrategy):
                         (dataframe['open'] < dataframe['ema_20_1h']) & (dataframe['low'] < dataframe['ema_20_1h']) |
                         (dataframe['open'] > dataframe['ema_20_1h']) & (dataframe['low'] > dataframe['ema_20_1h'])
                     )
-                    item_buy_logic.append(dataframe['cti'] < self.buy_25_cti)
-                    item_buy_logic.append(dataframe['close'] > (dataframe['sma_30'] * self.buy_25_ma_offset_low))
-                    item_buy_logic.append(dataframe['cti_1h'] > self.buy_25_cti_1h_min)
-                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_25_cti_1h_max)
-                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_25_r_1h)
-                    item_buy_logic.append(dataframe['crsi_1h'] > self.buy_25_crsi_1h_min)
-                    item_buy_logic.append(dataframe['crsi_1h'] < self.buy_25_crsi_1h_max)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_25_cti_max)
+                    item_buy_logic.append(dataframe['cci'] < self.buy_25_cci_max)
 
                 # Condition #26
                 elif index == 26:
