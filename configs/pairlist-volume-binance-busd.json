@@ -1,0 +1,26 @@
+{
+    "pairlists": [
+        {
+            "method": "VolumePairList",
+            "number_assets": 60,
+            "sort_key": "quoteVolume",
+            "refresh_period": 1800
+        },
+        {"method": "AgeFilter", "min_days_listed": 3},
+        {"method": "SpreadFilter", "max_spread_ratio": 0.006},
+        {
+            "method": "RangeStabilityFilter",
+            "lookback_days": 3,
+            "min_rate_of_change": 0.1,
+            "refresh_period": 1440
+        },
+        {
+            "method": "VolatilityFilter",
+            "lookback_days": 4,
+            "min_volatility": 0.02,
+            "max_volatility": 0.75,
+            "refresh_period": 86400
+        },
+        {"method": "ShuffleFilter"}
+    ]
+}
