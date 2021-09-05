@@ -1641,6 +1641,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
     buy_6_ema_open_mult = 0.019
     buy_6_bb_offset = 0.984
+    buy_6_r_14_max = -85.0
     buy_6_crsi_1h_min = 15.0
     buy_6_cti_1h_min = 0.0
 
@@ -4481,6 +4482,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * self.buy_6_ema_open_mult))
                     item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_6_bb_offset))
+                    item_buy_logic.append(dataframe['r_14'] < self.buy_6_r_14_max)
                     item_buy_logic.append(dataframe['cti_1h'] > self.buy_6_cti_1h_min)
                     item_buy_logic.append(dataframe['crsi_1h'] > self.buy_6_crsi_1h_min)
 
