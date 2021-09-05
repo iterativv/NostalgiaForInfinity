@@ -379,9 +379,9 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
             "safe_dips"                 : True,
-            "safe_dips_type"            : "90",
+            "safe_dips_type"            : "50",
             "safe_pump"                 : True,
-            "safe_pump_type"            : "20",
+            "safe_pump_type"            : "120",
             "safe_pump_period"          : "36",
             "btc_1h_not_downtrend"      : False,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
@@ -1640,8 +1640,9 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_5_volume = 1.8
 
     buy_6_ema_open_mult = 0.019
-    buy_6_bb_offset = 0.977
-    buy_6_crsi_1h_min = 5.0
+    buy_6_bb_offset = 0.984
+    buy_6_crsi_1h_min = 15.0
+    buy_6_cti_1h_min = 0.0
 
     buy_7_ema_open_mult = 0.0302
     buy_7_cti = -0.89
@@ -4480,6 +4481,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * self.buy_6_ema_open_mult))
                     item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_6_bb_offset))
+                    item_buy_logic.append(dataframe['cti_1h'] > self.buy_6_cti_1h_min)
                     item_buy_logic.append(dataframe['crsi_1h'] > self.buy_6_crsi_1h_min)
 
                 # Condition #7
