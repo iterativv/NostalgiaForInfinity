@@ -854,20 +854,20 @@ class NostalgiaForInfinityNext(IStrategy):
             "close_above_ema_fast_len"  : "200",
             "close_above_ema_slow"      : False,
             "close_above_ema_slow_len"  : "200",
-            "sma200_rising"             : True,
+            "sma200_rising"             : False,
             "sma200_rising_val"         : "30",
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
             "safe_dips"                 : True,
-            "safe_dips_type"            : "100",
+            "safe_dips_type"            : "20",
             "safe_pump"                 : True,
-            "safe_pump_type"            : "80",
+            "safe_pump_type"            : "100",
             "safe_pump_period"          : "36",
             "btc_1h_not_downtrend"      : True,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_over_pivot_offset"   : 1.0,
             "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
-            "close_under_pivot_offset"  : 1.0
+            "close_under_pivot_offset"  : 1.1
         },
         27: {
             "ema_fast"                  : False,
@@ -1767,14 +1767,11 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_25_crsi_1h_min = 10.0
     buy_25_crsi_1h_max = 50.0
 
-    buy_25_ma_offset_low = 0.945
-    buy_25_ma_offset_high = 0.978
     buy_26_zema_low_offset = 0.94
-    buy_26_cti_max = -0.91
-    buy_26_r_min = -90.0
-    buy_26_r_1h_min = -90.0
+    buy_26_cti_max = -0.72
+    buy_26_cci_max = -160.0
+    buy_26_r_14_max = -98.0
     buy_26_cti_1h_max = 0.95
-    buy_26_crsi_1h_min = 20.0
     buy_26_volume = 2.0
 
     buy_27_wr_max = -95.0
@@ -4698,16 +4695,13 @@ class NostalgiaForInfinityNext(IStrategy):
                 # Condition #26
                 elif index == 26:
                     # Non-Standard protections
-                    item_buy_logic.append(dataframe['close'] > dataframe['sma_75'] * self.buy_25_ma_offset_low)
-                    item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * self.buy_25_ma_offset_high)
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < (dataframe['zema_61'] * self.buy_26_zema_low_offset))
                     item_buy_logic.append(dataframe['cti'] < self.buy_26_cti_max)
-                    item_buy_logic.append(dataframe['r_480'] > self.buy_26_r_min)
-                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_26_r_1h_min)
+                    item_buy_logic.append(dataframe['cci'] < self.buy_26_cci_max)
+                    item_buy_logic.append(dataframe['r_14'] < self.buy_26_r_14_max)
                     item_buy_logic.append(dataframe['cti_1h'] < self.buy_26_cti_1h_max)
-                    item_buy_logic.append(dataframe['crsi_1h'] > self.buy_26_crsi_1h_min)
                     item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_26_volume))
 
                 # Condition #27
