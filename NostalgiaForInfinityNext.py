@@ -983,9 +983,9 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump"                 : False,
             "safe_pump_type"            : "10",
             "safe_pump_period"          : "48",
-            "btc_1h_not_downtrend"      : False,
-            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
-            "close_over_pivot_offset"   : 1.0,
+            "btc_1h_not_downtrend"      : True,
+            "close_over_pivot_type"     : "sup3", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 0.98,
             "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_under_pivot_offset"  : 1.0
         },
@@ -1791,9 +1791,9 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_30_cti = -0.87
 
     buy_31_ma_offset = 0.962
-    buy_31_ewo = -10.4
-    buy_31_wr = -90.0
-    buy_31_cti = -0.898
+    buy_31_ewo_max = -5.2
+    buy_31_r_14_max = -94.0
+    buy_31_cti_max = -0.9
 
     buy_32_ma_offset = 0.942
     buy_32_rsi = 46.0
@@ -4789,10 +4789,10 @@ class NostalgiaForInfinityNext(IStrategy):
 
                     # Logic
                     item_buy_logic.append(dataframe['moderi_64'] == False)
-                    item_buy_logic.append(dataframe['close'] < dataframe['zlema_68'] * self.buy_31_ma_offset )
-                    item_buy_logic.append(dataframe['ewo'] < self.buy_31_ewo)
-                    item_buy_logic.append(dataframe['r_480'] < self.buy_31_wr)
-                    item_buy_logic.append(dataframe['cti'] < self.buy_31_cti)
+                    item_buy_logic.append(dataframe['close'] < dataframe['zlema_68'] * self.buy_31_ma_offset)
+                    item_buy_logic.append(dataframe['ewo_sma'] < self.buy_31_ewo_max)
+                    item_buy_logic.append(dataframe['r_14'] < self.buy_31_r_14_max)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_31_cti_max)
 
                 # Condition #32 - Quick mode buy
                 elif index == 32:
