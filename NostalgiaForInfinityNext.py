@@ -938,8 +938,8 @@ class NostalgiaForInfinityNext(IStrategy):
             "btc_1h_not_downtrend"      : False,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_over_pivot_offset"   : 1.0,
-            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
-            "close_under_pivot_offset"  : 1.0
+            "close_under_pivot_type"    : "pivot", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.01
         },
         30: {
             "ema_fast"                  : False,
@@ -1781,9 +1781,9 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_28_cti = -0.9
     buy_28_cti_1h = 0.95
 
-    buy_29_ma_offset = 0.94
-    buy_29_ewo = -4.0
-    buy_29_cti = -0.95
+    buy_29_ma_offset = 0.984
+    buy_29_ewo_max = -4.2
+    buy_29_cti_max = -0.96
 
     buy_30_ma_offset = 0.962
     buy_30_ewo_min = 6.4
@@ -4770,8 +4770,8 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Logic
                     item_buy_logic.append(dataframe['moderi_64'] == True)
                     item_buy_logic.append(dataframe['close'] < dataframe['hull_75'] * self.buy_29_ma_offset)
-                    item_buy_logic.append(dataframe['ewo'] < self.buy_29_ewo)
-                    item_buy_logic.append(dataframe['cti'] < self.buy_29_cti)
+                    item_buy_logic.append(dataframe['ewo_sma'] < self.buy_29_ewo_max)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_29_cti_max)
 
                 # Condition #30
                 elif index == 30:
