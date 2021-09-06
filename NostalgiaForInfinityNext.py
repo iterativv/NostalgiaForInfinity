@@ -1785,10 +1785,11 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_29_ewo = -4.0
     buy_29_cti = -0.95
 
-    buy_30_ma_offset = 0.945
-    buy_30_ewo = 7.4
-    buy_30_rsi = 40.0
-    buy_30_cti = -0.87
+    buy_30_ma_offset = 0.962
+    buy_30_ewo_min = 6.4
+    buy_30_rsi_max = 34.0
+    buy_30_cti_max = -0.87
+    buy_30_r_14_max = -97.0
 
     buy_31_ma_offset = 0.962
     buy_31_ewo_max = -5.2
@@ -4779,9 +4780,10 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Logic
                     item_buy_logic.append(dataframe['moderi_64'] == False)
                     item_buy_logic.append(dataframe['close'] < dataframe['zlema_68'] * self.buy_30_ma_offset)
-                    item_buy_logic.append(dataframe['ewo'] > self.buy_30_ewo)
-                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_30_rsi)
-                    item_buy_logic.append(dataframe['cti'] < self.buy_30_cti)
+                    item_buy_logic.append(dataframe['ewo_sma'] > self.buy_30_ewo_min)
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_30_rsi_max)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_30_cti_max)
+                    item_buy_logic.append(dataframe['r_14'] < self.buy_30_r_14_max)
 
                 # Condition #31
                 elif index == 31:
