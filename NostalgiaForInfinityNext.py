@@ -433,7 +433,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
-            "close_over_pivot_offset"   : 1.0,
+            "close_over_pivot_offset"   : 0.99,
             "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_under_pivot_offset"  : 1.0
         },
@@ -1651,15 +1651,12 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_7_rsi = 42.0
     buy_7_cmf_1h = -0.16
 
-    buy_8_cti = -0.88
-    buy_8_bb_offset = 0.998
-    buy_8_volume = 1.8
-    buy_8_r_480 = -45.0
-    buy_8_cti_1h = 0.95
-    buy_8_r_480_1h_min = -75.0
+    buy_8_bb_offset = 0.994
+    buy_8_cti_max = -0.9
+    buy_8_r_14_max = -96.0
+    buy_8_cti_1h_max = 0.95
     buy_8_r_480_1h_max = -20.0
-    buy_8_cmf_min = -0.4
-    buy_8_cmf_max = -0.18
+    buy_8_volume = 1.8
 
     buy_9_ma_offset = 0.968
     buy_9_bb_offset = 0.982
@@ -4505,15 +4502,12 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Non-Standard protections
 
                     # Logic
-                    item_buy_logic.append(dataframe['cti'] < self.buy_8_cti)
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_8_bb_offset))
-                    item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_8_volume))
-                    item_buy_logic.append(dataframe['r_480'] < self.buy_8_r_480)
-                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_8_cti_1h)
-                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_8_r_480_1h_min)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_8_cti_max)
+                    item_buy_logic.append(dataframe['r_14'] < self.buy_8_r_14_max)
+                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_8_cti_1h_max)
                     item_buy_logic.append(dataframe['r_480_1h'] < self.buy_8_r_480_1h_max)
-                    item_buy_logic.append(dataframe['cmf'] > self.buy_8_cmf_min)
-                    item_buy_logic.append(dataframe['cmf'] < self.buy_8_cmf_max)
+                    item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_8_volume))
 
                 # Condition #9
                 elif index == 9:
