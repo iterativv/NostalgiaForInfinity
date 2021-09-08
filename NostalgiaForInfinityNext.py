@@ -3158,6 +3158,12 @@ class NostalgiaForInfinityNext(IStrategy):
 
         return False, None
 
+    def sell_stoploss_extra(self, current_profit: float, max_profit: float, max_loss: float, last_candle, previous_candle_1, trade: 'Trade', current_time: 'datetime') -> tuple:
+        if (current_profit < -0.0) and (last_candle['close'] < last_candle['ema_200']) and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < 0.004) and last_candle['rsi_14'] > previous_candle_1['rsi_14'] and (last_candle['rsi_14'] > (last_candle['rsi_14_1h'] + 18.0)) and (last_candle['sma_200_dec_24']) & (current_time - timedelta(minutes=720) > trade.open_date_utc):
+                return True, 'signal_stoploss_u_e_1'
+
+        return False, None
+
     def sell_pump_dec(self, current_profit: float, last_candle) -> tuple:
         if (0.03 > current_profit >= 0.005) and (last_candle['sell_pump_48_1_1h']) and (last_candle['sma_200_dec_20']) and (last_candle['close'] < last_candle['ema_200']):
             return True, 'signal_profit_p_d_1'
@@ -3700,6 +3706,11 @@ class NostalgiaForInfinityNext(IStrategy):
         sell, signal_name = self.sell_stoploss(current_profit, last_candle, previous_candle_1, trade, current_time)
         if sell and (signal_name is not None):
             return f"{signal_name} ( {buy_tag} )"
+
+        if all(c in ['0'] for c in buy_tags):
+            sell, signal_name = self.sell_stoploss_extra(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
+            if sell and (signal_name is not None):
+                return f"{signal_name} ( {buy_tag} )"
 
         # Pumped descending pairs
         sell, signal_name = self.sell_pump_dec(current_profit, last_candle)
