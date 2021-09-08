@@ -4207,6 +4207,12 @@ class NostalgiaForInfinityNext(IStrategy):
         # CCI
         dataframe['cci'] = ta.CCI(dataframe, source='hlc3', timeperiod=20)
 
+        # CCI Oscillator
+        cci_36 = ta.CCI(dataframe, timeperiod=36)
+        cci_36_max = cci_36.max()
+        cci_36_min = cci_36.min()
+        dataframe['cci_36_osc'] = (cci_36 / cci_36_max).where(cci_36 > 0, -cci_36 / cci_36_min)
+
         # ATR
         dataframe['atr'] = ta.ATR(dataframe, timeperiod=14)
         dataframe['atr_high_thresh_1'] = (dataframe['high'] - (dataframe['atr'] * 5.4))
