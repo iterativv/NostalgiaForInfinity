@@ -3144,7 +3144,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
         return False, None
 
-    def sell_stoploss(self, current_profit: float, last_candle, previous_candle_1, trade: 'Trade', current_time: 'datetime') -> tuple:
+    def sell_stoploss_atr(self, current_profit: float, last_candle, previous_candle_1, trade: 'Trade', current_time: 'datetime') -> tuple:
         if (last_candle['sma_200_dec_24']) and (last_candle['ema_25'] < last_candle['ema_50']):
             if (-0.12 <= current_profit < -0.08):
                 if (last_candle['close'] < last_candle['atr_high_thresh_1']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_1']):
@@ -3554,7 +3554,7 @@ class NostalgiaForInfinityNext(IStrategy):
         elif (current_profit < -0.1) and (last_candle['close'] < last_candle['atr_high_thresh_l']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_l']) and (last_candle['sma_200_dec_24']) and (last_candle['ema_25'] < last_candle['ema_50']):
                 return True, 'sell_long_stoploss_1'
 
-        return self.sell_stoploss(current_profit, last_candle, previous_candle_1, trade, current_time)
+        return self.sell_stoploss_atr(current_profit, last_candle, previous_candle_1, trade, current_time)
 
         return False, None
 
@@ -3706,9 +3706,10 @@ class NostalgiaForInfinityNext(IStrategy):
             return f"{signal_name} ( {buy_tag} )"
 
         # Stoplosses
-        sell, signal_name = self.sell_stoploss(current_profit, last_candle, previous_candle_1, trade, current_time)
-        if sell and (signal_name is not None):
-            return f"{signal_name} ( {buy_tag} )"
+        if any(c in ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48'] for c in buy_tags):
+            sell, signal_name = self.sell_stoploss_atr(current_profit, last_candle, previous_candle_1, trade, current_time)
+            if sell and (signal_name is not None):
+                return f"{signal_name} ( {buy_tag} )"
 
         if all(c in ['0'] for c in buy_tags):
             sell, signal_name = self.sell_stoploss_extra(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
