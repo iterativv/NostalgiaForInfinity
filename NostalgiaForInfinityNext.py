@@ -488,21 +488,21 @@ class NostalgiaForInfinityNext(IStrategy):
         11: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
-            "ema_slow"                  : False,
-            "ema_slow_len"              : "50",
+            "ema_slow"                  : True,
+            "ema_slow_len"              : "20",
             "close_above_ema_fast"      : False,
             "close_above_ema_fast_len"  : "200",
             "close_above_ema_slow"      : False,
             "close_above_ema_slow_len"  : "200",
             "sma200_rising"             : False,
-            "sma200_rising_val"         : "50",
-            "sma200_1h_rising"          : False,
-            "sma200_1h_rising_val"      : "50",
-            "safe_dips"                 : False,
-            "safe_dips_type"            : "100",
+            "sma200_rising_val"         : "24",
+            "sma200_1h_rising"          : True,
+            "sma200_1h_rising_val"      : "36",
+            "safe_dips"                 : True,
+            "safe_dips_type"            : "60",
             "safe_pump"                 : False,
-            "safe_pump_type"            : "50",
-            "safe_pump_period"          : "24",
+            "safe_pump_type"            : "120",
+            "safe_pump_period"          : "36",
             "btc_1h_not_downtrend"      : False,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_over_pivot_offset"   : 1.0,
@@ -1677,14 +1677,17 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_10_cti_1h_max = 0.94
     buy_10_r_480_1h_max = -5.0
 
-    buy_11_ma_offset = 0.955
-    buy_11_min_inc = 0.038
-    buy_11_rsi_1h_min = 46.0
+    buy_11_ma_offset = 0.956
+    buy_11_min_inc = 0.022
+    buy_11_rsi_max = 37.0
+    buy_11_mfi_max = 46.0
+    buy_11_cci_max = -120.0
+    buy_11_r_480_max = -32.0
+    buy_11_rsi_1h_min = 30.0
     buy_11_rsi_1h_max = 84.0
-    buy_11_rsi = 37.0
-    buy_11_mfi = 36.0
-    buy_11_r_480 = -32.0
-    buy_11_r_480_1h = -16.0
+    buy_11_cti_1h_max = 0.91
+    buy_11_r_480_1h_max = -20.0
+    buy_11_crsi_1h_min = 26.0
 
     buy_ma_offset_12 = 0.921
     buy_rsi_12 = 28.0
@@ -4575,17 +4578,18 @@ class NostalgiaForInfinityNext(IStrategy):
                 # Condition #11
                 elif index == 11:
                     # Non-Standard protections
-                    item_buy_logic.append(dataframe['ema_50_1h'] > dataframe['ema_100_1h'])
 
                     # Logic
-                    item_buy_logic.append(((dataframe['close'] - dataframe['open'].rolling(36).min()) / dataframe['open'].rolling(36).min()) > self.buy_11_min_inc)
+                    item_buy_logic.append(((dataframe['close'] - dataframe['open'].rolling(6).min()) / dataframe['open'].rolling(6).min()) > self.buy_11_min_inc)
                     item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * self.buy_11_ma_offset)
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_11_rsi_max)
+                    item_buy_logic.append(dataframe['mfi'] < self.buy_11_mfi_max)
+                    item_buy_logic.append(dataframe['cci'] < self.buy_11_cci_max)
                     item_buy_logic.append(dataframe['rsi_14_1h'] > self.buy_11_rsi_1h_min)
                     item_buy_logic.append(dataframe['rsi_14_1h'] < self.buy_11_rsi_1h_max)
-                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_11_rsi)
-                    item_buy_logic.append(dataframe['mfi'] < self.buy_11_mfi)
-                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_11_r_480_1h)
-                    item_buy_logic.append(dataframe['r_480'] < self.buy_11_r_480)
+                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_11_cti_1h_max)
+                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_11_r_480_1h_max)
+                    item_buy_logic.append(dataframe['crsi_1h'] > self.buy_11_crsi_1h_min)
 
                 # Condition #12
                 elif index == 12:
