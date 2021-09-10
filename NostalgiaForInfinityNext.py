@@ -294,22 +294,22 @@ class NostalgiaForInfinityNext(IStrategy):
             "close_under_pivot_offset"  : 1.0
         },
         3: {
-            "ema_fast"                  : True,
+            "ema_fast"                  : False,
             "ema_fast_len"              : "100",
-            "ema_slow"                  : True,
+            "ema_slow"                  : False,
             "ema_slow_len"              : "100",
             "close_above_ema_fast"      : False,
             "close_above_ema_fast_len"  : "200",
             "close_above_ema_slow"      : False,
             "close_above_ema_slow_len"  : "200",
             "sma200_rising"             : False,
-            "sma200_rising_val"         : "50",
+            "sma200_rising_val"         : "30",
             "sma200_1h_rising"          : False,
-            "sma200_1h_rising_val"      : "50",
-            "safe_dips"                 : True,
+            "sma200_1h_rising_val"      : "36",
+            "safe_dips"                 : False,
             "safe_dips_type"            : "70",
             "safe_pump"                 : True,
-            "safe_pump_type"            : "100",
+            "safe_pump_type"            : "110",
             "safe_pump_period"          : "36",
             "btc_1h_not_downtrend"      : False,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
@@ -1622,11 +1622,14 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_2_r_480_1h_max = -10.0
     buy_2_volume = 2.0
 
-    buy_bb40_bbdelta_close_3 = 0.045
-    buy_bb40_closedelta_close_3 = 0.023
-    buy_bb40_tail_bbdelta_3 = 0.418
-    buy_ema_rel_3 = 0.986
-    buy_cti_3 = -0.5
+    buy_3_bb40_bbdelta_close = 0.057
+    buy_3_bb40_closedelta_close = 0.023
+    buy_3_bb40_tail_bbdelta = 0.418
+    buy_3_cti_max = -0.5
+    buy_3_cci_36_osc_min = -0.25
+    buy_3_crsi_1h_min = 20.0
+    buy_3_r_480_1h_min = -48.0
+    buy_3_cti_1h_max = 0.82
 
     buy_bb20_close_bblowerband_4 = 0.979
     buy_bb20_volume_4 = 10.0
@@ -3708,12 +3711,12 @@ class NostalgiaForInfinityNext(IStrategy):
             return f"{signal_name} ( {buy_tag} )"
 
         # Stoplosses
-        if any(c in ['1', '2', '3', '4', '5', '6', '8', '9', '10', '13', '14', '15', '16', '17', '18', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48'] for c in buy_tags):
+        if any(c in ['1', '2', '4', '5', '6', '8', '9', '10', '13', '14', '15', '16', '17', '18', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48'] for c in buy_tags):
             sell, signal_name = self.sell_stoploss_atr(current_profit, last_candle, previous_candle_1, trade, current_time)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag} )"
 
-        if all(c in ['7', '11', '12', '19'] for c in buy_tags):
+        if all(c in ['3', '7', '11', '12', '19'] for c in buy_tags):
             sell, signal_name = self.sell_stoploss_extra(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag} )"
@@ -4469,16 +4472,18 @@ class NostalgiaForInfinityNext(IStrategy):
                 # Condition #3
                 elif index == 3:
                     # Non-Standard protections
-                    item_buy_logic.append(dataframe['close'] > (dataframe['ema_200_1h'] * self.buy_ema_rel_3))
 
                     # Logic
                     item_buy_logic.append(dataframe['bb40_2_low'].shift().gt(0))
-                    item_buy_logic.append(dataframe['bb40_2_delta'].gt(dataframe['close'] * self.buy_bb40_bbdelta_close_3))
-                    item_buy_logic.append(dataframe['closedelta'].gt(dataframe['close'] * self.buy_bb40_closedelta_close_3))
-                    item_buy_logic.append(dataframe['tail'].lt(dataframe['bb40_2_delta'] * self.buy_bb40_tail_bbdelta_3))
+                    item_buy_logic.append(dataframe['bb40_2_delta'].gt(dataframe['close'] * self.buy_3_bb40_bbdelta_close))
+                    item_buy_logic.append(dataframe['closedelta'].gt(dataframe['close'] * self.buy_3_bb40_closedelta_close))
+                    item_buy_logic.append(dataframe['tail'].lt(dataframe['bb40_2_delta'] * self.buy_3_bb40_tail_bbdelta))
                     item_buy_logic.append(dataframe['close'].lt(dataframe['bb40_2_low'].shift()))
                     item_buy_logic.append(dataframe['close'].le(dataframe['close'].shift()))
-                    item_buy_logic.append(dataframe['cti'] < self.buy_cti_3)
+                    item_buy_logic.append(dataframe['cci_36_osc'] > self.buy_3_cci_36_osc_min)
+                    item_buy_logic.append(dataframe['crsi_1h'] > self.buy_3_crsi_1h_min)
+                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_3_r_480_1h_min)
+                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_3_cti_1h_max)
 
                 # Condition #4
                 elif index == 4:
