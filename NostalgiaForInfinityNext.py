@@ -2364,7 +2364,7 @@ class NostalgiaForInfinityNext(IStrategy):
             self.top_traded_coins['dataframe'].set_index('date')
             self.top_traded_coins['updated'] = True
             log.info("Updated top traded pairlist (tail-5):")
-            log.info("\n", self.top_traded_coins['dataframe'].tail(5))
+            log.info(f"\n{self.top_traded_coins['dataframe'].tail(5)}")
 
             tok = time.perf_counter()
             log.info(f"Updating top traded pairlist took {tok - tik:0.4f} seconds...")
