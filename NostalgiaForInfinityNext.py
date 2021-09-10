@@ -1731,7 +1731,7 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_18_cti_1h = 0.91
 
     buy_19_rsi_1h_min = 30.0
-    buy_19_chop_max = 26.0
+    buy_19_chop_max = 21.3
 
     buy_rsi_20 = 36.0
     buy_rsi_1h_20 = 16.0
