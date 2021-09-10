@@ -4052,6 +4052,9 @@ class NostalgiaForInfinityNext(IStrategy):
         # Pivots
         informative_1d['pivot'], informative_1d['res1'], informative_1d['res2'], informative_1d['res3'], informative_1d['sup1'], informative_1d['sup2'], informative_1d['sup3'] = pivot_points(informative_1d, mode='fibonacci')
 
+        # Smoothed Heikin-Ashi
+        informative_1d['open_sha'], informative_1d['close_sha'], informative_1d['low_sha'] = HeikinAshi(informative_1d, smooth_inputs=True, smooth_outputs=False, length=10)
+
         tok = time.perf_counter()
         log.debug(f"[{metadata['pair']}] informative_1d_indicators took: {tok - tik:0.4f} seconds.")
 
@@ -5585,6 +5588,39 @@ def pivot_points(dataframe: DataFrame, mode = 'fibonacci') -> Series:
         sup3 = hlc3_pivot - 1 * hl_range
 
     return hlc3_pivot, res1, res2, res3, sup1, sup2, sup3
+
+def HeikinAshi(dataframe, smooth_inputs = False, smooth_outputs = False, length = 10):
+    df = dataframe[['open','close','high','low']].copy().fillna(0)
+    if smooth_inputs:
+        df['open_s']  = ta.EMA(df['open'], timeframe = length)
+        df['high_s']  = ta.EMA(df['high'], timeframe = length)
+        df['low_s']   = ta.EMA(df['low'],  timeframe = length)
+        df['close_s'] = ta.EMA(df['close'],timeframe = length)
+
+        open_ha  = (df['open_s'].shift(1) + df['close_s'].shift(1)) / 2
+        high_ha  = df.loc[:, ['high_s', 'open_s', 'close_s']].max(axis=1)
+        low_ha   = df.loc[:, ['low_s', 'open_s', 'close_s']].min(axis=1)
+        close_ha = (df['open_s'] + df['high_s'] + df['low_s'] + df['close_s'])/4
+    else:
+        open_ha  = (df['open'].shift(1) + df['close'].shift(1)) / 2
+        high_ha  = df.loc[:, ['high', 'open', 'close']].max(axis=1)
+        low_ha   = df.loc[:, ['low', 'open', 'close']].min(axis=1)
+        close_ha = (df['open'] + df['high'] + df['low'] + df['close'])/4
+
+    open_ha = open_ha.fillna(0)
+    high_ha = high_ha.fillna(0)
+    low_ha  = low_ha.fillna(0)
+    close_ha = close_ha.fillna(0)
+
+    if smooth_outputs:
+        open_sha  = ta.EMA(open_ha, timeframe = length)
+        high_sha  = ta.EMA(high_ha, timeframe = length)
+        low_sha   = ta.EMA(low_ha, timeframe = length)
+        close_sha = ta.EMA(close_ha, timeframe = length)
+
+        return open_sha, close_sha, low_sha
+    else:
+        return open_ha, close_ha, low_ha
 
 class Cache:
 
