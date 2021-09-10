@@ -19,6 +19,7 @@ from technical.indicators import zema, VIDYA, ichimoku
 import time
 
 log = logging.getLogger(__name__)
+#log.setLevel(logging.DEBUG)
 
 
 try:
@@ -4492,7 +4493,7 @@ class NostalgiaForInfinityNext(IStrategy):
         dataframe = self.normal_tf_indicators(dataframe, metadata)
 
         tok = time.perf_counter()
-        log.debug(f"Populate indicators for pair: {metadata['pair']} took {tok - tik:0.4f} seconds.")
+        log.debug(f"[{metadata['pair']}] Populate indicators took a total of: {tok - tik:0.4f} seconds.")
 
         return dataframe
 
