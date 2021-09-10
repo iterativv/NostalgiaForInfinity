@@ -137,9 +137,6 @@ class NostalgiaForInfinityNext(IStrategy):
     # Exchange Downtime protection
     has_downtime_protection = False
 
-    # Report populate_indicators loop time per pair
-    has_loop_perf_logging = False
-
     # Do you want to use the hold feature? (with hold-trades.json)
     holdSupportEnabled = True
 
@@ -2364,7 +2361,7 @@ class NostalgiaForInfinityNext(IStrategy):
             self.top_traded_coins['dataframe'].set_index('date')
             self.top_traded_coins['updated'] = True
             log.info("Updated top traded pairlist (tail-5):")
-            print(self.top_traded_coins['dataframe'].tail(5))
+            log.info("\n", self.top_traded_coins['dataframe'].tail(5))
 
             tok = time.perf_counter()
             log.info(f"Updating top traded pairlist took {tok - tik:0.4f} seconds...")
@@ -4034,6 +4031,7 @@ class NostalgiaForInfinityNext(IStrategy):
         return informative_pairs
 
     def informative_1d_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        tik = time.perf_counter()
         assert self.dp, "DataProvider is required for multiple timeframes."
         # Get the informative pair
         informative_1d = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.info_timeframe_1d)
@@ -4045,12 +4043,16 @@ class NostalgiaForInfinityNext(IStrategy):
             column_names = [f"Coin #{i}" for i in range(1, self.top_traded_coins['list_length'] + 1)]
             informative_1d.drop(columns = column_names, inplace=True)
 
-        # pivots
+        # Pivots
         informative_1d['pivot'], informative_1d['res1'], informative_1d['res2'], informative_1d['res3'], informative_1d['sup1'], informative_1d['sup2'], informative_1d['sup3'] = pivot_points(informative_1d, mode='fibonacci')
+
+        tok = time.perf_counter()
+        log.debug(f"[{metadata['pair']}] informative_1d_indicators took: {tok - tik:0.4f} seconds.")
 
         return informative_1d
 
     def informative_1h_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        tik = time.perf_counter()
         assert self.dp, "DataProvider is required for multiple timeframes."
         # Get the informative pair
         informative_1h = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.info_timeframe_1h)
@@ -4193,9 +4195,13 @@ class NostalgiaForInfinityNext(IStrategy):
         informative_1h['sell_pump_24_2'] = (informative_1h['hl_pct_change_24'] > self.sell_pump_threshold_24_2)
         informative_1h['sell_pump_24_3'] = (informative_1h['hl_pct_change_24'] > self.sell_pump_threshold_24_3)
 
+        tok = time.perf_counter()
+        log.debug(f"[{metadata['pair']}] informative_1h_indicators took: {tok - tik:0.4f} seconds.")
+
         return informative_1h
 
     def normal_tf_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        tik = time.perf_counter()
         # BB 40 - STD2
         bb_40_std2 = qtpylib.bollinger_bands(dataframe['close'], window=40, stds=2)
         dataframe['bb40_2_low'] = bb_40_std2['lower']
@@ -4355,6 +4361,9 @@ class NostalgiaForInfinityNext(IStrategy):
             # Exchange downtime protection
             dataframe['live_data_ok'] = (dataframe['volume'].rolling(window=72, min_periods=72).min() > 0)
 
+        tok = time.perf_counter()
+        log.debug(f"[{metadata['pair']}] normal_tf_indicators took: {tok - tik:0.4f} seconds.")
+
         return dataframe
 
     def resampled_tf_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
@@ -4365,6 +4374,7 @@ class NostalgiaForInfinityNext(IStrategy):
         return dataframe
 
     def base_tf_btc_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        tik = time.perf_counter()
         # Indicators
         # -----------------------------------------------------------------------------------------
         dataframe['rsi_14'] = ta.RSI(dataframe, timeperiod=14)
@@ -4374,9 +4384,13 @@ class NostalgiaForInfinityNext(IStrategy):
         ignore_columns = ['date', 'open', 'high', 'low', 'close', 'volume']
         dataframe.rename(columns=lambda s: f"btc_{s}" if s not in ignore_columns else s, inplace=True)
 
+        tok = time.perf_counter()
+        log.debug(f"[{metadata['pair']}] base_tf_btc_indicators took: {tok - tik:0.4f} seconds.")
+
         return dataframe
 
     def info_tf_btc_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        tik = time.perf_counter()
         # Indicators
         # -----------------------------------------------------------------------------------------
         dataframe['rsi_14'] = ta.RSI(dataframe, timeperiod=14)
@@ -4387,9 +4401,13 @@ class NostalgiaForInfinityNext(IStrategy):
         ignore_columns = ['date', 'open', 'high', 'low', 'close', 'volume']
         dataframe.rename(columns=lambda s: f"btc_{s}" if s not in ignore_columns else s, inplace=True)
 
+        tok = time.perf_counter()
+        log.debug(f"[{metadata['pair']}] info_tf_btc_indicators took: {tok - tik:0.4f} seconds.")
+
         return dataframe
 
     def daily_tf_btc_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        tik = time.perf_counter()
         # Indicators
         # -----------------------------------------------------------------------------------------
         dataframe['pivot'], dataframe['res1'], dataframe['res2'], dataframe['res3'], dataframe['sup1'], dataframe['sup2'], dataframe['sup3'] = pivot_points(dataframe, mode='fibonacci')
@@ -4398,6 +4416,9 @@ class NostalgiaForInfinityNext(IStrategy):
         # -----------------------------------------------------------------------------------------
         ignore_columns = ['date', 'open', 'high', 'low', 'close', 'volume']
         dataframe.rename(columns=lambda s: f"btc_{s}" if s not in ignore_columns else s, inplace=True)
+
+        tok = time.perf_counter()
+        log.debug(f"[{metadata['pair']}] daily_tf_btc_indicators took: {tok - tik:0.4f} seconds.")
 
         return dataframe
 
@@ -4471,8 +4492,7 @@ class NostalgiaForInfinityNext(IStrategy):
         dataframe = self.normal_tf_indicators(dataframe, metadata)
 
         tok = time.perf_counter()
-        if self.has_loop_perf_logging:
-            log.info(f"Populate indicators for pair: {metadata['pair']} took {tok - tik:0.4f} seconds.")
+        log.debug(f"Populate indicators for pair: {metadata['pair']} took {tok - tik:0.4f} seconds.")
 
         return dataframe
 
