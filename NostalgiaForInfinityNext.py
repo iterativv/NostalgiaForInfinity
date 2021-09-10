@@ -2324,7 +2324,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
             # Build traded volume dataframe
             for coin_pair in self.top_traded_coins['current_whitelist']:
-                coin, _ = coin_pair.split('/')
+                coin = coin_pair.split('/')[0]
 
                 # Get the volume for the daily informative timeframe and name the column for the coin
                 pair_dataframe = self.dp.get_pair_dataframe(pair=coin_pair, timeframe=self.info_timeframe_1d)
@@ -2356,7 +2356,6 @@ class NostalgiaForInfinityNext(IStrategy):
 
             # Build columns and top traded coins
             column_names = [f"Coin #{i}" for i in range(1, self.top_traded_coins['list_length'] + 1)]
-            res = self.top_traded_coins['dataframe'].apply(lambda x: x.nlargest(self.top_traded_coins['list_length']).index.values, axis=1, result_type='expand')
             self.top_traded_coins['dataframe'][column_names] = self.top_traded_coins['dataframe'].apply(lambda x: x.nlargest(self.top_traded_coins['list_length']).index.values, axis=1, result_type='expand')
             self.top_traded_coins['dataframe'].drop(columns=[col for col in self.top_traded_coins['dataframe'] if col not in column_names], inplace=True)
 
@@ -2380,6 +2379,7 @@ class NostalgiaForInfinityNext(IStrategy):
         (e.g. gather some remote resource for comparison)
         :param **kwargs: Ensure to keep this here so updates to this won't break your strategy.
         """
+
         if self.top_traded_coins['enabled']:
             self.dynamic_volume_list()
 
