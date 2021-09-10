@@ -143,6 +143,14 @@ class NostalgiaForInfinityNext(IStrategy):
     # Do you want to use the hold feature? (with hold-trades.json)
     holdSupportEnabled = True
 
+    # Traded Volume Coin ranking
+    top_traded_coins = {}
+    top_traded_coins['enabled'] = False
+    top_traded_coins['updated'] = False
+    top_traded_coins['list_length'] = 20
+    top_traded_coins['current_whitelist'] = []
+    top_traded_coins['dataframe'] = DataFrame()
+
     # Run "populate_indicators()" only for new candle.
     process_only_new_candles = True
 
@@ -2295,6 +2303,75 @@ class NostalgiaForInfinityNext(IStrategy):
         if self.hold_trades_cache:
             self.hold_trades_cache.load()
 
+    def dynamic_volume_list(self):
+
+        if sorted(self.top_traded_coins['current_whitelist']) != sorted(self.dp.current_whitelist()):
+            log.info("Whitelist has changed...")
+            self.top_traded_coins['updated'] = False
+
+        if self.top_traded_coins['updated'] == False:
+            log.info("Updating top traded pairlist...")
+            tik = time.perf_counter()
+
+            self.top_traded_coins['dataframe'] = DataFrame()
+
+            # Update pairlist
+            self.top_traded_coins['current_whitelist'] = self.dp.current_whitelist()
+
+            # Move up BTC for largest data footprint
+            self.top_traded_coins['current_whitelist'].insert(0, self.top_traded_coins['current_whitelist'].pop(self.top_traded_coins['current_whitelist'].index(f"BTC/{self.config['stake_currency']}")))
+
+            # Build traded volume dataframe
+            for coin_pair in self.top_traded_coins['current_whitelist']:
+                coin, _ = coin_pair.split('/')
+
+                # Get the volume for the daily informative timeframe and name the column for the coin
+                pair_dataframe = self.dp.get_pair_dataframe(pair=coin_pair, timeframe=self.info_timeframe_1d)
+                pair_dataframe.set_index('date')
+
+                if self.config['runmode'].value in ('live', 'dry_run'):
+                    pair_dataframe = pair_dataframe.iloc[-7:,:]
+
+                # Set the date index of the self.top_traded_coins['dataframe'] once
+                if not 'date' in self.top_traded_coins['dataframe']:
+                    self.top_traded_coins['dataframe']['date'] = pair_dataframe['date']
+                    self.top_traded_coins['dataframe'].set_index('date')
+
+                # Calculate daily traded volume
+                pair_dataframe[coin] = pair_dataframe['volume'] * qtpylib.typical_price(pair_dataframe)
+
+                # Drop the columns we don't need
+                pair_dataframe.drop(columns=['open', 'high', 'low', 'close', 'volume'], inplace=True)
+
+                # Merge it in on the date key
+                self.top_traded_coins['dataframe'] = self.top_traded_coins['dataframe'].merge(pair_dataframe, on='date', how='left')
+
+            # Forward fill empty cells (due to different df shapes)
+            self.top_traded_coins['dataframe'].ffill()
+
+            # Store and drop date column for value sorting
+            pair_dates = self.top_traded_coins['dataframe']['date']
+            self.top_traded_coins['dataframe'].drop(columns=['date'], inplace=True)
+
+            # Build columns and top traded coins
+            column_names = [f"Coin #{i}" for i in range(1, self.top_traded_coins['list_length'] + 1)]
+            res = self.top_traded_coins['dataframe'].apply(lambda x: x.nlargest(self.top_traded_coins['list_length']).index.values, axis=1, result_type='expand')
+            self.top_traded_coins['dataframe'][column_names] = self.top_traded_coins['dataframe'].apply(lambda x: x.nlargest(self.top_traded_coins['list_length']).index.values, axis=1, result_type='expand')
+            self.top_traded_coins['dataframe'].drop(columns=[col for col in self.top_traded_coins['dataframe'] if col not in column_names], inplace=True)
+
+            # Re-add stored date column
+            self.top_traded_coins['dataframe'].insert(loc = 0, column = 'date', value = pair_dates)
+            self.top_traded_coins['dataframe'].set_index('date')
+            self.top_traded_coins['updated'] = True
+            log.info("Updated top traded pairlist (tail-5):")
+            print(self.top_traded_coins['dataframe'].tail(5))
+
+            tok = time.perf_counter()
+            log.info(f"Updating top traded pairlist took {tok - tik:0.4f} seconds...")
+
+    def is_top_coin(self, coin_pair, row_data) -> bool:
+        return coin_pair.split('/')[0] in row_data.loc['Coin #1':f"Coin #{self.top_traded_coins['list_length']}"].values
+
     def bot_loop_start(self, **kwargs) -> None:
         """
         Called at the start of the bot iteration (one loop).
@@ -3960,6 +4037,13 @@ class NostalgiaForInfinityNext(IStrategy):
         assert self.dp, "DataProvider is required for multiple timeframes."
         # Get the informative pair
         informative_1d = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.info_timeframe_1d)
+
+        # Top traded coins
+        if self.top_traded_coins['enabled']:
+            informative_1d = informative_1d.merge(self.top_traded_coins['dataframe'], on='date', how='left')
+            informative_1d['is_top_coin'] = informative_1d.apply(lambda row: self.is_top_coin(metadata['pair'], row), axis=1)
+            column_names = [f"Coin #{i}" for i in range(1, self.top_traded_coins['list_length'] + 1)]
+            informative_1d.drop(columns = column_names, inplace=True)
 
         # pivots
         informative_1d['pivot'], informative_1d['res1'], informative_1d['res2'], informative_1d['res3'], informative_1d['sup1'], informative_1d['sup2'], informative_1d['sup3'] = pivot_points(informative_1d, mode='fibonacci')
