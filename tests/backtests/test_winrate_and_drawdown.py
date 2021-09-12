@@ -70,6 +70,7 @@ def deviations():
             ("20210101", "20210201"): {"max_drawdown": 90, "winrate": 90},
             ("20210201", "20210301"): {"max_drawdown": 65, "winrate": 90},
             ("20210301", "20210401"): {"max_drawdown": 55, "winrate": 90},
+            ("20210701", "20210801"): {"max_drawdown": 55, "winrate": 90},
             ("20210801", "20210901"): {"max_drawdown": 55, "winrate": 85},
         },
         "kucoin": {
