@@ -276,7 +276,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "close_under_pivot_offset"  : 1.0
         },
         2: {
-            "ema_fast"                  : False,
+            "ema_fast"                  : True,
             "ema_fast_len"              : "50",
             "ema_slow"                  : True,
             "ema_slow_len"              : "20",
