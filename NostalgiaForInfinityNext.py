@@ -5627,7 +5627,6 @@ def calc_streaks(series: Series):
 
 # SSL Channels
 def SSLChannels(dataframe, length = 7):
-    df = dataframe.copy()
     ATR = ta.ATR(dataframe, timeperiod=14)
     smaHigh = dataframe['high'].rolling(length).mean() + ATR
     smaLow = dataframe['low'].rolling(length).mean() - ATR
