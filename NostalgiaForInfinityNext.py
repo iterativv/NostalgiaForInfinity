@@ -3943,7 +3943,7 @@ class NostalgiaForInfinityNext(IStrategy):
             else:
                 if (current_profit > 0.01):
                     return f"sell_signal_1_2_1 ( {buy_tag} )"
-                elif (max_loss > 0.25):
+                elif (max_loss > 0.5):
                     return f"sell_signal_1_2_2 ( {buy_tag} )"
 
         # Sell signal 2
@@ -3954,7 +3954,7 @@ class NostalgiaForInfinityNext(IStrategy):
             else:
                 if (current_profit > 0.01):
                     return f"sell_signal_2_2_1 ( {buy_tag} )"
-                elif (max_loss > 0.25):
+                elif (max_loss > 0.5):
                     return f"sell_signal_2_2_2 ( {buy_tag} )"
 
         # Sell signal 3
@@ -3965,7 +3965,7 @@ class NostalgiaForInfinityNext(IStrategy):
             else:
                 if (current_profit > 0.01):
                     return f"sell_signal_3_2_1 ( {buy_tag} )"
-                elif (max_loss > 0.25):
+                elif (max_loss > 0.5):
                     return f"sell_signal_3_2_2 ( {buy_tag} )"
 
         # Sell signal 4
@@ -3976,14 +3976,14 @@ class NostalgiaForInfinityNext(IStrategy):
             else:
                 if (current_profit > 0.01):
                     return f"sell_signal_4_2_1 ( {buy_tag} )"
-                elif (max_loss > 0.25):
+                elif (max_loss > 0.5):
                     return f"sell_signal_4_2_2 ( {buy_tag} )"
 
         # Sell signal 6
         elif self.sell_condition_6_enable and (last_candle['close'] < last_candle['ema_200']) and (last_candle['close'] > last_candle['ema_50']) and (last_candle['rsi_14'] > self.sell_rsi_under_6):
             if (current_profit > 0.01):
                 return f"sell_signal_6_1 ( {buy_tag} )"
-            elif (max_loss > 0.25):
+            elif (max_loss > 0.5):
                 return f"sell_signal_6_2 ( {buy_tag} )"
 
         # Sell signal 7
@@ -3994,7 +3994,7 @@ class NostalgiaForInfinityNext(IStrategy):
             else:
                 if (current_profit > 0.01):
                     return f"sell_signal_7_2_1 ( {buy_tag} )"
-                elif (max_loss > 0.25):
+                elif (max_loss > 0.5):
                     return f"sell_signal_7_2_2 ( {buy_tag} )"
 
         # Sell signal 8
@@ -4005,7 +4005,7 @@ class NostalgiaForInfinityNext(IStrategy):
             else:
                 if (current_profit > 0.01):
                     return f"sell_signal_8_2_1 ( {buy_tag} )"
-                elif (max_loss > 0.25):
+                elif (max_loss > 0.5):
                     return f"sell_signal_8_2_2 ( {buy_tag} )"
 
         return None
