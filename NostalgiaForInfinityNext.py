@@ -1621,7 +1621,7 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_2_mfi = 49.0
     buy_2_cti_max = -0.9
     buy_2_r_480_min = -95.0
-    buy_2_r_480_max = -25.0
+    buy_2_r_480_max = -46.0
     buy_2_cti_1h_max = 0.9
     buy_2_volume = 2.0
 
