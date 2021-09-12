@@ -1691,7 +1691,7 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_11_rsi_1h_min = 30.0
     buy_11_rsi_1h_max = 84.0
     buy_11_cti_1h_max = 0.91
-    buy_11_r_480_1h_max = -20.0
+    buy_11_r_480_1h_max = -25.0
     buy_11_crsi_1h_min = 26.0
 
     buy_12_ma_offset = 0.927
