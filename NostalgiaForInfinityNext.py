@@ -280,7 +280,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "ema_fast_len"              : "50",
             "ema_slow"                  : True,
             "ema_slow_len"              : "20",
-            "close_above_ema_fast"      : True,
+            "close_above_ema_fast"      : False,
             "close_above_ema_fast_len"  : "200",
             "close_above_ema_slow"      : False,
             "close_above_ema_slow_len"  : "200",
@@ -290,14 +290,14 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising_val"      : "48",
             "safe_dips"                 : True,
             "safe_dips_type"            : "130",
-            "safe_pump"                 : True,
-            "safe_pump_type"            : "80",
+            "safe_pump"                 : False,
+            "safe_pump_type"            : "20",
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_over_pivot_offset"   : 1.0,
-            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
-            "close_under_pivot_offset"  : 1.0
+            "close_under_pivot_type"    : "res3", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.4
         },
         3: {
             "ema_fast"                  : False,
@@ -1617,15 +1617,12 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_1_rsi_1h_min = 30.0
     buy_1_rsi_1h_max = 84.0
 
-    buy_2_rsi_1h_diff = 37.0
-    buy_2_mfi = 35.0
-    buy_2_bb_offset = 0.998
-    buy_2_cti_max = -0.65
-    buy_2_r_480_min = -90.0
-    buy_2_r_480_max = -35.0
-    buy_2_cti_1h_max = 0.82
-    buy_2_r_480_1h_min = -60.0
-    buy_2_r_480_1h_max = -10.0
+    buy_2_rsi_1h_diff = 39.0
+    buy_2_mfi = 49.0
+    buy_2_cti_max = -0.9
+    buy_2_r_480_min = -95.0
+    buy_2_r_480_max = -25.0
+    buy_2_cti_1h_max = 0.9
     buy_2_volume = 2.0
 
     buy_3_bb40_bbdelta_close = 0.057
@@ -3863,12 +3860,12 @@ class NostalgiaForInfinityNext(IStrategy):
             return f"{signal_name} ( {buy_tag} )"
 
         # Stoplosses
-        if any(c in ['empty', '2', '4', '5', '6', '8', '9', '10', '13', '14', '15', '16', '17', '18', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '40', '41', '42', '43', '44', '45', '46', '47', '48'] for c in buy_tags):
+        if any(c in ['empty', '4', '5', '6', '8', '9', '10', '13', '14', '15', '16', '17', '18', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '40', '41', '42', '43', '44', '45', '46', '47', '48'] for c in buy_tags):
             sell, signal_name = self.sell_stoploss_atr(current_profit, last_candle, previous_candle_1, trade, current_time)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag} )"
 
-        if any(c in ['empty', '1', '3', '7', '11', '12', '19', '39'] for c in buy_tags):
+        if any(c in ['empty', '1', '2', '3', '7', '11', '12', '19', '39'] for c in buy_tags):
             sell, signal_name = self.sell_stoploss_extra(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag} )"
@@ -4644,14 +4641,11 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Logic
                     item_buy_logic.append(dataframe['rsi_14'] < dataframe['rsi_14_1h'] - self.buy_2_rsi_1h_diff)
                     item_buy_logic.append(dataframe['mfi'] < self.buy_2_mfi)
-                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_2_bb_offset))
-                    item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_2_volume))
                     item_buy_logic.append(dataframe['cti'] < self.buy_2_cti_max)
                     item_buy_logic.append(dataframe['r_480'] > self.buy_2_r_480_min)
                     item_buy_logic.append(dataframe['r_480'] < self.buy_2_r_480_max)
                     item_buy_logic.append(dataframe['cti_1h'] < self.buy_2_cti_1h_max)
-                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_2_r_480_1h_min)
-                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_2_r_480_1h_max)
+                    item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_2_volume))
 
                 # Condition #3
                 elif index == 3:
