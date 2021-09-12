@@ -1694,10 +1694,10 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_11_r_480_1h_max = -20.0
     buy_11_crsi_1h_min = 26.0
 
-    buy_ma_offset_12 = 0.928
-    buy_ewo_12_min = 2.0
-    buy_rsi_12_max = 32.0
-    buy_cti_12_max = -0.9
+    buy_12_ma_offset = 0.927
+    buy_12_ewo_min = 2.0
+    buy_12_rsi_max = 32.0
+    buy_12_cti_max = -0.9
 
     buy_13_ma_offset = 0.99
     buy_13_cti = -0.82
@@ -4777,10 +4777,10 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Non-Standard protections
 
                     # Logic
-                    item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * self.buy_ma_offset_12)
-                    item_buy_logic.append(dataframe['ewo_sma'] > self.buy_ewo_12_min)
-                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_rsi_12_max)
-                    item_buy_logic.append(dataframe['cti'] < self.buy_cti_12_max)
+                    item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * self.buy_12_ma_offset)
+                    item_buy_logic.append(dataframe['ewo_sma'] > self.buy_12_ewo_min)
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_12_rsi_max)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_12_cti_max)
 
                 # Condition #13
                 elif index == 13:
