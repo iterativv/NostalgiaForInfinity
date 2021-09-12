@@ -3319,7 +3319,7 @@ class NostalgiaForInfinityNext(IStrategy):
         return False, None
 
     def sell_stoploss_extra(self, current_profit: float, max_profit: float, max_loss: float, last_candle, previous_candle_1, trade: 'Trade', current_time: 'datetime') -> tuple:
-        if (current_profit < -0.0) and (last_candle['close'] < last_candle['ema_200']) and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < 0.004) and last_candle['rsi_14'] > previous_candle_1['rsi_14'] and (last_candle['rsi_14'] > (last_candle['rsi_14_1h'] + 18.0)) and (last_candle['sma_200_dec_24']) & (current_time - timedelta(minutes=1440) > trade.open_date_utc):
+        if (current_profit < -0.0) and (last_candle['close'] < last_candle['ema_200']) and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < 0.004) and last_candle['rsi_14'] > previous_candle_1['rsi_14'] and (last_candle['rsi_14'] > (last_candle['rsi_14_1h'] + 10.0)) and (last_candle['sma_200_dec_24']) & (current_time - timedelta(minutes=1440) > trade.open_date_utc):
                 return True, 'signal_stoploss_u_e_1'
 
         return False, None
