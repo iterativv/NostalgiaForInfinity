@@ -1273,7 +1273,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "20",
             "safe_dips"                 : True,
-            "safe_dips_type"            : "70",
+            "safe_dips_type"            : "80",
             "safe_pump"                 : False,
             "safe_pump_type"            : "100",
             "safe_pump_period"          : "24",
@@ -1880,13 +1880,13 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_42_ema_open_mult = 0.018
     buy_42_bb_offset = 0.992
 
-    buy_43_cti_1h = 0.5
-    buy_43_r_1h = -80.0
-    buy_43_bb40_bbdelta_close = 0.046
+    buy_43_bb40_bbdelta_close = 0.045
     buy_43_bb40_closedelta_close = 0.02
     buy_43_bb40_tail_bbdelta = 0.5
-    buy_43_cti = -0.6
-    buy_43_r = -90.0
+    buy_43_cti_max = -0.75
+    buy_43_r_480_min = -94.0
+    buy_43_cti_1h_max = 0.45
+    buy_43_r_480_1h_min = -80.0
 
     buy_44_ma_offset = 0.982
     buy_44_ewo = -18.0
@@ -3858,12 +3858,12 @@ class NostalgiaForInfinityNext(IStrategy):
             return f"{signal_name} ( {buy_tag} )"
 
         # Stoplosses
-        if any(c in ['empty', '10', '13', '14', '15', '16', '17', '18', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '40', '41', '42', '43', '44', '45', '46', '47', '48'] for c in buy_tags):
+        if any(c in ['empty', '13', '14', '15', '16', '17', '18', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '40', '41', '42', '44', '45', '46', '47', '48'] for c in buy_tags):
             sell, signal_name = self.sell_stoploss_atr(current_profit, last_candle, previous_candle_1, trade, current_time)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag} )"
 
-        if any(c in ['empty', '1', '2', '3', '4', '5', '6', '7', '8', '9', '11', '12', '19', '39'] for c in buy_tags):
+        if any(c in ['empty', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '19', '39', '43'] for c in buy_tags):
             sell, signal_name = self.sell_stoploss_extra(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag} )"
@@ -5180,16 +5180,16 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Logic
                     item_buy_logic.append(dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(12))
                     item_buy_logic.append(dataframe['ema_200_1h'].shift(12) > dataframe['ema_200_1h'].shift(24))
-                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_43_cti_1h)
-                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_43_r_1h)
                     item_buy_logic.append(dataframe['bb40_2_low'].shift().gt(0))
                     item_buy_logic.append(dataframe['bb40_2_delta'].gt(dataframe['close'] * self.buy_43_bb40_bbdelta_close))
                     item_buy_logic.append(dataframe['closedelta'].gt(dataframe['close'] * self.buy_43_bb40_closedelta_close))
                     item_buy_logic.append(dataframe['tail'].lt(dataframe['bb40_2_delta'] * self.buy_43_bb40_tail_bbdelta))
                     item_buy_logic.append(dataframe['close'].lt(dataframe['bb40_2_low'].shift()))
                     item_buy_logic.append(dataframe['close'].le(dataframe['close'].shift()))
-                    item_buy_logic.append(dataframe['cti'] < self.buy_43_cti)
-                    item_buy_logic.append(dataframe['r_480'] > self.buy_43_r)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_43_cti_max)
+                    item_buy_logic.append(dataframe['r_480'] > self.buy_43_r_480_min)
+                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_43_cti_1h_max)
+                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_43_r_480_1h_min)
 
                 # Condition #44
                 elif index == 44:
