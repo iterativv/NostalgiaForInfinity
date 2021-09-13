@@ -370,7 +370,7 @@ def get_default_conf(testdatadir):
         "datadir": str(testdatadir),
         "initial_state": "running",
         "db_url": "sqlite://",
-        "user_data_dir": Path("user_data"),
+        "user_data_dir": testdatadir,
         "verbosity": 3,
         "strategy_path": str(testdatadir / "strategies"),
         "strategy": "NostalgiaForInfinityNext",

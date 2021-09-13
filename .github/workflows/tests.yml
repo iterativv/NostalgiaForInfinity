@@ -55,6 +55,7 @@ jobs:
           - 20210501-20210601
           - 20210601-20210701
           - 20210701-20210801
+          - 20210801-20210901
 
     steps:
       - uses: actions/checkout@v2
@@ -66,7 +67,7 @@ jobs:
 
       - name: Run Tests
         env:
-          EXTRA_ARGS: tests/backtests -k 'binance and ${{ matrix.timerange }}'
+          EXTRA_ARGS: -p no:cacheprovider tests/backtests -k 'binance and ${{ matrix.timerange }}'
         run: |
           mkdir artifacts
           chmod 777 artifacts
@@ -102,6 +103,7 @@ jobs:
           - 20210501-20210601
           - 20210601-20210701
           - 20210701-20210801
+          - 20210801-20210901
 
     steps:
       - uses: actions/checkout@v2
@@ -113,7 +115,7 @@ jobs:
 
       - name: Run Tests
         env:
-          EXTRA_ARGS: tests/backtests -k 'kucoin and ${{ matrix.timerange }}'
+          EXTRA_ARGS: -p no:cacheprovider tests/backtests -k 'kucoin and ${{ matrix.timerange }}'
         run: |
           mkdir artifacts
           chmod 777 artifacts
@@ -149,10 +151,10 @@ jobs:
 
       - name: Run Tests
         env:
-          EXTRA_ARGS: --ignore tests/backtests/
+          EXTRA_ARGS: -p no:cacheprovider --ignore tests/backtests/
         run: |
           mkdir artifacts
-          chmod 777 artifacts
+          chmod 777 artifacts $(pwd)
           docker-compose run --rm tests
 
   Backest-CI-Stats:

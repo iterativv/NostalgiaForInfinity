@@ -14,7 +14,7 @@ def exchange_fmt(value):
     scope="session",
     params=(
         Exchange(name="binance", winrate=90, max_drawdown=30),
-        Exchange(name="kucoin", winrate=76, max_drawdown=30),
+        Exchange(name="kucoin", winrate=76, max_drawdown=50),
     ),
     ids=exchange_fmt,
 )
@@ -55,6 +55,7 @@ def timerange_fmt(value):
         Timerange("20210501", "20210601"),
         Timerange("20210601", "20210701"),
         Timerange("20210701", "20210801"),
+        Timerange("20210801", "20210901"),
     ),
     ids=timerange_fmt,
 )
@@ -68,11 +69,18 @@ def deviations():
         "binance": {
             ("20210101", "20210201"): {"max_drawdown": 90, "winrate": 90},
             ("20210201", "20210301"): {"max_drawdown": 65, "winrate": 90},
-            ("20210301", "20210401"): {"max_drawdown": 42, "winrate": 90},
+            ("20210301", "20210401"): {"max_drawdown": 55, "winrate": 90},
+            ("20210701", "20210801"): {"max_drawdown": 55, "winrate": 90},
+            ("20210801", "20210901"): {"max_drawdown": 55, "winrate": 85},
         },
         "kucoin": {
-            ("20210401", "20210501"): {"max_drawdown": 51, "winrate": 76},
-            ("20210501", "20210601"): {"max_drawdown": 35, "winrate": 76},
+            ("20210201", "20210301"): {"max_drawdown": 100, "winrate": 90},
+            ("20210301", "20210401"): {"max_drawdown": 100, "winrate": 85},
+            ("20210401", "20210501"): {"max_drawdown": 80, "winrate": 90},
+            ("20210501", "20210601"): {"max_drawdown": 145, "winrate": 90},
+            ("20210601", "20210701"): {"max_drawdown": 51, "winrate": 76},
+            ("20210701", "20210801"): {"max_drawdown": 82, "winrate": 90},
+            ("20210801", "20210901"): {"max_drawdown": 80, "winrate": 90},
         },
     }
 
