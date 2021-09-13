@@ -468,8 +468,8 @@ class NostalgiaForInfinityNext(IStrategy):
             "close_under_pivot_offset"  : 1.1
         },
         10: {
-            "ema_fast"                  : False,
-            "ema_fast_len"              : "50",
+            "ema_fast"                  : True,
+            "ema_fast_len"              : "35",
             "ema_slow"                  : True,
             "ema_slow_len"              : "12",
             "close_above_ema_fast"      : False,
@@ -1674,11 +1674,10 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_9_crsi_1h_min = 21.0
 
     buy_10_ma_offset_high = 0.94
-    buy_10_bb_offset = 0.982
-    buy_10_r_14_max = -90.0
+    buy_10_bb_offset = 0.984
+    buy_10_r_14_max = -88.0
     buy_10_cti_1h_min = -0.5
     buy_10_cti_1h_max = 0.94
-    buy_10_r_480_1h_max = -5.0
 
     buy_11_ma_offset = 0.956
     buy_11_min_inc = 0.022
@@ -4753,7 +4752,6 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['r_14'] < self.buy_10_r_14_max)
                     item_buy_logic.append(dataframe['cti_1h'] > self.buy_10_cti_1h_min)
                     item_buy_logic.append(dataframe['cti_1h'] < self.buy_10_cti_1h_max)
-                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_10_r_480_1h_max)
 
                 # Condition #11
                 elif index == 11:
