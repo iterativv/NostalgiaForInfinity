@@ -420,7 +420,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "close_under_pivot_offset"  : 1.0
         },
         8: {
-            "ema_fast"                  : False,
+            "ema_fast"                  : True,
             "ema_fast_len"              : "12",
             "ema_slow"                  : True,
             "ema_slow_len"              : "12",
@@ -433,15 +433,15 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising"          : True,
             "sma200_1h_rising_val"      : "20",
             "safe_dips"                 : True,
-            "safe_dips_type"            : "130",
+            "safe_dips_type"            : "20",
             "safe_pump"                 : True,
             "safe_pump_type"            : "120",
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
-            "close_over_pivot_offset"   : 0.99,
-            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
-            "close_under_pivot_offset"  : 1.0
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "res3", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.05
         },
         9: {
             "ema_fast"                  : True,
@@ -1659,11 +1659,9 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_7_cti_max = -0.9
     buy_7_rsi_max = 45.0
 
-    buy_8_bb_offset = 0.994
-    buy_8_cti_max = -0.9
-    buy_8_r_14_max = -96.0
+    buy_8_bb_offset = 0.986
+    buy_8_r_14_max = -98.0
     buy_8_cti_1h_max = 0.95
-    buy_8_r_480_1h_max = -20.0
     buy_8_volume = 1.8
 
     buy_9_ma_offset = 0.968
@@ -3860,12 +3858,12 @@ class NostalgiaForInfinityNext(IStrategy):
             return f"{signal_name} ( {buy_tag} )"
 
         # Stoplosses
-        if any(c in ['empty', '8', '9', '10', '13', '14', '15', '16', '17', '18', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '40', '41', '42', '43', '44', '45', '46', '47', '48'] for c in buy_tags):
+        if any(c in ['empty', '9', '10', '13', '14', '15', '16', '17', '18', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '40', '41', '42', '43', '44', '45', '46', '47', '48'] for c in buy_tags):
             sell, signal_name = self.sell_stoploss_atr(current_profit, last_candle, previous_candle_1, trade, current_time)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag} )"
 
-        if any(c in ['empty', '1', '2', '3', '4', '5', '6', '7', '11', '12', '19', '39'] for c in buy_tags):
+        if any(c in ['empty', '1', '2', '3', '4', '5', '6', '7', '8', '11', '12', '19', '39'] for c in buy_tags):
             sell, signal_name = self.sell_stoploss_extra(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag} )"
@@ -4719,13 +4717,14 @@ class NostalgiaForInfinityNext(IStrategy):
                 # Condition #8
                 elif index == 8:
                     # Non-Standard protections
+                    item_buy_logic.append(dataframe['ema_20'] > dataframe['ema_50'])
+                    item_buy_logic.append(dataframe['ema_15'] > dataframe['ema_100'])
+                    item_buy_logic.append(dataframe['ema_200'] > dataframe['sma_200'])
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_8_bb_offset))
-                    item_buy_logic.append(dataframe['cti'] < self.buy_8_cti_max)
                     item_buy_logic.append(dataframe['r_14'] < self.buy_8_r_14_max)
                     item_buy_logic.append(dataframe['cti_1h'] < self.buy_8_cti_1h_max)
-                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_8_r_480_1h_max)
                     item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_8_volume))
 
                 # Condition #9
