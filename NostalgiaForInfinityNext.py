@@ -577,7 +577,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising"          : True,
             "sma200_1h_rising_val"      : "50",
             "safe_dips"                 : True,
-            "safe_dips_type"            : "120",
+            "safe_dips_type"            : "130",
             "safe_pump"                 : False,
             "safe_pump_type"            : "100",
             "safe_pump_period"          : "24",
@@ -585,7 +585,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_over_pivot_offset"   : 1.0,
             "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
-            "close_under_pivot_offset"  : 1.0
+            "close_under_pivot_offset"  : 1.5
         },
         15: {
             "ema_fast"                  : False,
@@ -1705,7 +1705,7 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_14_ema_open_mult = 0.014
     buy_14_bb_offset = 0.989
     buy_14_ma_offset = 0.945
-    buy_14_cti = -0.85
+    buy_14_cti_max = -0.85
 
     buy_15_ema_rel = 0.974
     buy_15_ema_open_mult = 0.0238
@@ -3858,12 +3858,12 @@ class NostalgiaForInfinityNext(IStrategy):
             return f"{signal_name} ( {buy_tag} )"
 
         # Stoplosses
-        if any(c in ['empty', '14', '15', '16', '17', '18', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '40', '41', '42', '44', '45', '46', '47', '48'] for c in buy_tags):
+        if any(c in ['empty', '15', '16', '17', '18', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '40', '41', '42', '44', '45', '46', '47', '48'] for c in buy_tags):
             sell, signal_name = self.sell_stoploss_atr(current_profit, last_candle, previous_candle_1, trade, current_time)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag} )"
 
-        if any(c in ['empty', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '19', '39', '43'] for c in buy_tags):
+        if any(c in ['empty', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '19', '39', '43'] for c in buy_tags):
             sell, signal_name = self.sell_stoploss_extra(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag} )"
@@ -4802,7 +4802,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_14_bb_offset))
                     item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_14_ma_offset)
-                    item_buy_logic.append(dataframe['cti'] < self.buy_14_cti)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_14_cti_max)
 
                 # Condition #15
                 elif index == 15:
