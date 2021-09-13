@@ -4395,8 +4395,8 @@ class NostalgiaForInfinityNext(IStrategy):
 
         # CCI Oscillator
         cci_36 = ta.CCI(dataframe, timeperiod=36)
-        cci_36_max = cci_36.max()
-        cci_36_min = cci_36.min()
+        cci_36_max = cci_36.rolling(self.startup_candle_count).max()
+        cci_36_min = cci_36.rolling(self.startup_candle_count).min()
         dataframe['cci_36_osc'] = (cci_36 / cci_36_max).where(cci_36 > 0, -cci_36 / cci_36_min)
 
         # ATR
