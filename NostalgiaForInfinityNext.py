@@ -1723,11 +1723,11 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_17_crsi_1h_min = 12.0
     buy_17_volume = 2.0
 
-    buy_18_rsi = 33.5
     buy_18_bb_offset = 0.986
+    buy_18_rsi_max = 33.5
+    buy_18_cti_max = -0.85
+    buy_18_cti_1h_max = 0.91
     buy_18_volume = 2.0
-    buy_18_cti = -0.86
-    buy_18_cti_1h = 0.91
 
     buy_19_rsi_1h_min = 30.0
     buy_19_chop_max = 21.3
@@ -3854,12 +3854,12 @@ class NostalgiaForInfinityNext(IStrategy):
             return f"{signal_name} ( {buy_tag} )"
 
         # Stoplosses
-        if any(c in ['empty', '18', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '40', '41', '42', '44', '45', '46', '47', '48'] for c in buy_tags):
+        if any(c in ['empty', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '40', '41', '42', '44', '45', '46', '47', '48'] for c in buy_tags):
             sell, signal_name = self.sell_stoploss_atr(current_profit, last_candle, previous_candle_1, trade, current_time)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag} )"
 
-        if any(c in ['empty', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '19', '39', '43'] for c in buy_tags):
+        if any(c in ['empty', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '39', '43'] for c in buy_tags):
             sell, signal_name = self.sell_stoploss_extra(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag} )"
@@ -4840,11 +4840,11 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['sma_200_1h'] > dataframe['sma_200_1h'].shift(36))
 
                     # Logic
-                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_18_rsi)
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_18_bb_offset))
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_18_rsi_max)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_18_cti_max)
+                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_18_cti_1h_max)
                     item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_18_volume))
-                    item_buy_logic.append(dataframe['cti'] < self.buy_18_cti)
-                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_18_cti_1h)
 
                 # Condition #19
                 elif index == 19:
