@@ -1011,7 +1011,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_dips"                 : True,
             "safe_dips_type"            : "130",
             "safe_pump"                 : True,
-            "safe_pump_type"            : "120",
+            "safe_pump_type"            : "80",
             "safe_pump_period"          : "48",
             "btc_1h_not_downtrend"      : False,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
@@ -1803,11 +1803,9 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_31_cti_max = -0.9
 
     buy_32_ma_offset = 0.942
-    buy_32_rsi = 46.0
-    buy_32_cti = -0.86
-    buy_32_cti_1h = -0.22
-    buy_32_r_480_1h = -38.0
-    buy_32_crsi_1h = 10.0
+    buy_32_rsi_4_max = 46.0
+    buy_32_cti_max = -0.86
+    buy_32_crsi_1h_min = 10.0
 
     buy_33_ma_offset = 0.988
     buy_33_rsi_max = 32.0
@@ -3848,7 +3846,7 @@ class NostalgiaForInfinityNext(IStrategy):
             return f"{signal_name} ( {buy_tag} )"
 
         # Stoplosses
-        if any(c in ['empty', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '40', '41', '42', '44', '45', '46', '47', '48'] for c in buy_tags):
+        if any(c in ['empty', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '33', '34', '35', '36', '37', '38', '40', '41', '42', '44', '45', '46', '47', '48'] for c in buy_tags):
             sell, signal_name = self.sell_stoploss_atr(current_profit, last_candle, previous_candle_1, trade, current_time)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag} )"
@@ -5007,16 +5005,14 @@ class NostalgiaForInfinityNext(IStrategy):
 
                     # Logic
                     item_buy_logic.append(dataframe['rsi_20'] < dataframe['rsi_20'].shift(1))
-                    item_buy_logic.append(dataframe['rsi_4'] < self.buy_32_rsi)
+                    item_buy_logic.append(dataframe['rsi_4'] < self.buy_32_rsi_4_max)
                     item_buy_logic.append(dataframe['ema_20_1h'] > dataframe['ema_25_1h'])
                     item_buy_logic.append(dataframe['close'] < (dataframe['sma_15'] * self.buy_32_ma_offset))
                     item_buy_logic.append(
                         ((dataframe['open'] < dataframe['ema_20_1h']) & (dataframe['low'] < dataframe['ema_20_1h'])) |
                         ((dataframe['open'] > dataframe['ema_20_1h']) & (dataframe['low'] > dataframe['ema_20_1h'])))
-                    item_buy_logic.append(dataframe['cti'] < self.buy_32_cti)
-                    item_buy_logic.append(dataframe['cti_1h'] > self.buy_32_cti_1h)
-                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_32_r_480_1h)
-                    item_buy_logic.append(dataframe['crsi_1h'] > self.buy_32_crsi_1h)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_32_cti_max)
+                    item_buy_logic.append(dataframe['crsi_1h'] > self.buy_32_crsi_1h_min)
 
                 # Condition #33 - Quick mode buy
                 elif index == 33:
