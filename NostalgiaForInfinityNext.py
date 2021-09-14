@@ -1071,7 +1071,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : False,
-            "ema_slow_len"              : "100",
+            "ema_slow_len"              : "12",
             "close_above_ema_fast"      : False,
             "close_above_ema_fast_len"  : "50",
             "close_above_ema_slow"      : False,
@@ -1080,10 +1080,10 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_rising_val"         : "30",
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
-            "safe_dips"                 : False,
-            "safe_dips_type"            : "10",
-            "safe_pump"                 : False,
-            "safe_pump_type"            : "10",
+            "safe_dips"                 : True,
+            "safe_dips_type"            : "130",
+            "safe_pump"                 : True,
+            "safe_pump_type"            : "120",
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
@@ -1826,7 +1826,7 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_35_ewo_min = 7.8
     buy_35_rsi_max = 32.0
     buy_35_cti_max = -0.8
-    buy_35_r_14_max = -98.0
+    buy_35_r_14_max = -95.0
 
     buy_36_ma_offset = 0.98
     buy_36_ewo_max = -7.6
@@ -3854,7 +3854,7 @@ class NostalgiaForInfinityNext(IStrategy):
             return f"{signal_name} ( {buy_tag} )"
 
         # Stoplosses
-        if any(c in ['empty', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '35', '36', '37', '38', '40', '41', '42', '44', '45', '46', '47', '48'] for c in buy_tags):
+        if any(c in ['empty', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '36', '37', '38', '40', '41', '42', '44', '45', '46', '47', '48'] for c in buy_tags):
             sell, signal_name = self.sell_stoploss_atr(current_profit, last_candle, previous_candle_1, trade, current_time)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag} )"
