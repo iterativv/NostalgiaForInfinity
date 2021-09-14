@@ -1056,8 +1056,8 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_rising_val"         : "30",
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
-            "safe_dips"                 : False,
-            "safe_dips_type"            : "50",
+            "safe_dips"                 : True,
+            "safe_dips_type"            : "130",
             "safe_pump"                 : False,
             "safe_pump_type"            : "10",
             "safe_pump_period"          : "24",
@@ -1815,10 +1815,11 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_33_cti_1h_max = 0.92
     buy_33_volume = 2.0
 
-    buy_34_ma_offset = 0.936
+    buy_34_ma_offset = 0.97
     buy_34_ewo_max = -4.0
     buy_34_cti_max = -0.95
     buy_34_r_14_max = -99.9
+    buy_34_crsi_1h_min = 8.0
     buy_34_volume = 2.0
 
     buy_35_ma_offset = 0.984
@@ -3853,7 +3854,7 @@ class NostalgiaForInfinityNext(IStrategy):
             return f"{signal_name} ( {buy_tag} )"
 
         # Stoplosses
-        if any(c in ['empty', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '34', '35', '36', '37', '38', '40', '41', '42', '44', '45', '46', '47', '48'] for c in buy_tags):
+        if any(c in ['empty', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '35', '36', '37', '38', '40', '41', '42', '44', '45', '46', '47', '48'] for c in buy_tags):
             sell, signal_name = self.sell_stoploss_atr(current_profit, last_candle, previous_candle_1, trade, current_time)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag} )"
@@ -5054,9 +5055,10 @@ class NostalgiaForInfinityNext(IStrategy):
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < dataframe['ema_13'] * self.buy_34_ma_offset)
-                    item_buy_logic.append(dataframe['cti'] < self.buy_34_cti_max)
                     item_buy_logic.append(dataframe['ewo_sma'] < self.buy_34_ewo_max)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_34_cti_max)
                     item_buy_logic.append(dataframe['r_14'] < self.buy_34_r_14_max)
+                    item_buy_logic.append(dataframe['crsi_1h'] > self.buy_34_crsi_1h_min)
                     item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_34_volume))
 
                 # Condition #35 - PMAX0 buy
