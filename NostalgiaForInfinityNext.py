@@ -1808,9 +1808,9 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_32_crsi_1h_min = 10.0
 
     buy_33_ma_offset = 0.988
+    buy_33_ewo_min = 9.2
     buy_33_rsi_max = 32.0
     buy_33_cti_max = -0.88
-    buy_33_ewo_min = 9.2
     buy_33_r_14_max = -98.0
     buy_33_cti_1h_max = 0.92
     buy_33_volume = 2.0
@@ -4183,6 +4183,13 @@ class NostalgiaForInfinityNext(IStrategy):
         informative_1h['ssl_down'] = ssl_down
         informative_1h['ssl_up'] = ssl_up
 
+        # MOMDIV
+        mom = momdiv(informative_1h)
+        informative_1h['momdiv_buy'] = mom['momdiv_buy']
+        informative_1h['momdiv_sell'] = mom['momdiv_sell']
+        informative_1h['momdiv_coh'] = mom['momdiv_coh']
+        informative_1h['momdiv_col'] = mom['momdiv_col']
+
         # Pump protections
         informative_1h['hl_pct_change_48'] = self.range_percent_change(informative_1h, 'HL', 48)
         informative_1h['hl_pct_change_36'] = self.range_percent_change(informative_1h, 'HL', 36)
@@ -4394,6 +4401,13 @@ class NostalgiaForInfinityNext(IStrategy):
         dataframe['atr_high_thresh_3'] = (dataframe['high'] - (dataframe['atr'] * 5.0))
         dataframe['atr_high_thresh_4'] = (dataframe['high'] - (dataframe['atr'] * 2.0))
         dataframe['atr_high_thresh_l'] = (dataframe['high'] - (dataframe['atr'] * 3.0))
+
+        # MOMDIV
+        mom = momdiv(dataframe)
+        dataframe['momdiv_buy'] = mom['momdiv_buy']
+        dataframe['momdiv_sell'] = mom['momdiv_sell']
+        dataframe['momdiv_coh'] = mom['momdiv_coh']
+        dataframe['momdiv_col'] = mom['momdiv_col']
 
         # Dip protection
         dataframe['tpct_change_0']   = self.top_percent_change(dataframe,0)
@@ -5668,6 +5682,29 @@ def HeikinAshi(dataframe, smooth_inputs = False, smooth_outputs = False, length 
         return open_sha, close_sha, low_sha
     else:
         return open_ha, close_ha, low_ha
+
+
+# Mom DIV
+def momdiv(dataframe: DataFrame, mom_length: int = 10, bb_length: int = 20, bb_dev: float = 2.0, lookback: int = 30) -> DataFrame:
+    mom: Series = ta.MOM(dataframe, timeperiod=mom_length)
+    upperband, middleband, lowerband = ta.BBANDS(mom, timeperiod=bb_length, nbdevup=bb_dev, nbdevdn=bb_dev, matype=0)
+    buy = qtpylib.crossed_below(mom, lowerband)
+    sell = qtpylib.crossed_above(mom, upperband)
+    hh = dataframe['high'].rolling(lookback).max()
+    ll = dataframe['low'].rolling(lookback).min()
+    coh = dataframe['high'] >= hh
+    col = dataframe['low'] <= ll
+    df = DataFrame({
+            "momdiv_mom": mom,
+            "momdiv_upperb": upperband,
+            "momdiv_lowerb": lowerband,
+            "momdiv_buy": buy,
+            "momdiv_sell": sell,
+            "momdiv_coh": coh,
+            "momdiv_col": col,
+        }, index=dataframe['close'].index)
+    return df
+
 
 class Cache:
 
