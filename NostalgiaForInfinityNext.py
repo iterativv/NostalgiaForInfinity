@@ -1717,11 +1717,10 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_16_rsi_max = 36.0
     buy_16_cti_max = -0.9
 
-    buy_17_ma_offset = 0.99
-    buy_17_ewo = -9.6
-    buy_17_cti = -0.96
-    buy_17_cti_1h = -0.92
-    buy_17_r_1h = -20.0
+    buy_17_ma_offset = 0.999
+    buy_17_ewo_max = -7.0
+    buy_17_cti_max = -0.96
+    buy_17_crsi_1h_min = 12.0
     buy_17_volume = 2.0
 
     buy_18_rsi = 33.5
@@ -3855,12 +3854,12 @@ class NostalgiaForInfinityNext(IStrategy):
             return f"{signal_name} ( {buy_tag} )"
 
         # Stoplosses
-        if any(c in ['empty', '17', '18', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '40', '41', '42', '44', '45', '46', '47', '48'] for c in buy_tags):
+        if any(c in ['empty', '18', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '40', '41', '42', '44', '45', '46', '47', '48'] for c in buy_tags):
             sell, signal_name = self.sell_stoploss_atr(current_profit, last_candle, previous_candle_1, trade, current_time)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag} )"
 
-        if any(c in ['empty', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '19', '39', '43'] for c in buy_tags):
+        if any(c in ['empty', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '19', '39', '43'] for c in buy_tags):
             sell, signal_name = self.sell_stoploss_extra(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag} )"
@@ -4829,10 +4828,9 @@ class NostalgiaForInfinityNext(IStrategy):
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_17_ma_offset)
-                    item_buy_logic.append(dataframe['ewo'] < self.buy_17_ewo)
-                    item_buy_logic.append(dataframe['cti'] < self.buy_17_cti)
-                    item_buy_logic.append(dataframe['cti_1h'] > self.buy_17_cti_1h)
-                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_17_r_1h)
+                    item_buy_logic.append(dataframe['ewo_sma'] < self.buy_17_ewo_max)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_17_cti_max)
+                    item_buy_logic.append(dataframe['crsi_1h'] > self.buy_17_crsi_1h_min)
                     item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_17_volume))
 
                 # Condition #18
