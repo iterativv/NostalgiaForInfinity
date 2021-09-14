@@ -3586,6 +3586,13 @@ class NostalgiaForInfinityNext(IStrategy):
         if (0.045 > current_profit > 0.005) and (last_candle['pm'] > last_candle['pmax_thresh']) and (last_candle['close'] > last_candle['sma_21'] * 1.016):
             return True, 'signal_profit_q_pmax_bear'
 
+        if (last_candle['momdiv_sell_1h'] == True) and (current_profit > 0.02):
+            return True, 'signal_profit_q_momdiv_1h'
+        if (last_candle['momdiv_sell'] == True) and (current_profit > 0.02):
+            return True, 'signal_profit_q_momdiv'
+        if (last_candle['momdiv_coh'] == True) and (current_profit > 0.02):
+            return True, 'signal_profit_q_momdiv_coh'
+
         return False, None
 
     def sell_uptrend_mode(self, current_profit: float, max_profit:float, last_candle, previous_candle_1) -> tuple:
