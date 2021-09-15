@@ -468,8 +468,8 @@ class NostalgiaForInfinityNext(IStrategy):
             "close_under_pivot_offset"  : 1.1
         },
         10: {
-            "ema_fast"                  : False,
-            "ema_fast_len"              : "50",
+            "ema_fast"                  : True,
+            "ema_fast_len"              : "35",
             "ema_slow"                  : True,
             "ema_slow_len"              : "12",
             "close_above_ema_fast"      : False,
@@ -577,7 +577,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising"          : True,
             "sma200_1h_rising_val"      : "50",
             "safe_dips"                 : True,
-            "safe_dips_type"            : "120",
+            "safe_dips_type"            : "130",
             "safe_pump"                 : False,
             "safe_pump_type"            : "100",
             "safe_pump_period"          : "24",
@@ -585,7 +585,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_over_pivot_offset"   : 1.0,
             "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
-            "close_under_pivot_offset"  : 1.0
+            "close_under_pivot_offset"  : 1.5
         },
         15: {
             "ema_fast"                  : False,
@@ -603,7 +603,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_dips"                 : True,
             "safe_dips_type"            : "130",
             "safe_pump"                 : True,
-            "safe_pump_type"            : "120",
+            "safe_pump_type"            : "80",
             "safe_pump_period"          : "36",
             "btc_1h_not_downtrend"      : False,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
@@ -1011,7 +1011,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "safe_dips"                 : True,
             "safe_dips_type"            : "130",
             "safe_pump"                 : True,
-            "safe_pump_type"            : "120",
+            "safe_pump_type"            : "80",
             "safe_pump_period"          : "48",
             "btc_1h_not_downtrend"      : False,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
@@ -1056,8 +1056,8 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_rising_val"         : "30",
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
-            "safe_dips"                 : False,
-            "safe_dips_type"            : "50",
+            "safe_dips"                 : True,
+            "safe_dips_type"            : "130",
             "safe_pump"                 : False,
             "safe_pump_type"            : "10",
             "safe_pump_period"          : "24",
@@ -1071,7 +1071,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : False,
-            "ema_slow_len"              : "100",
+            "ema_slow_len"              : "12",
             "close_above_ema_fast"      : False,
             "close_above_ema_fast_len"  : "50",
             "close_above_ema_slow"      : False,
@@ -1080,10 +1080,10 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_rising_val"         : "30",
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
-            "safe_dips"                 : False,
-            "safe_dips_type"            : "10",
-            "safe_pump"                 : False,
-            "safe_pump_type"            : "10",
+            "safe_dips"                 : True,
+            "safe_dips_type"            : "130",
+            "safe_pump"                 : True,
+            "safe_pump_type"            : "120",
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
@@ -1116,9 +1116,9 @@ class NostalgiaForInfinityNext(IStrategy):
             "close_under_pivot_offset"  : 1.0
         },
         37: {
-            "ema_fast"                  : False,
+            "ema_fast"                  : True,
             "ema_fast_len"              : "50",
-            "ema_slow"                  : False,
+            "ema_slow"                  : True,
             "ema_slow_len"              : "12",
             "close_above_ema_fast"      : False,
             "close_above_ema_fast_len"  : "200",
@@ -1129,13 +1129,13 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
             "safe_dips"                 : True,
-            "safe_dips_type"            : "30",
-            "safe_pump"                 : False,
-            "safe_pump_type"            : "10",
-            "safe_pump_period"          : "24",
+            "safe_dips_type"            : "130",
+            "safe_pump"                 : True,
+            "safe_pump_type"            : "120",
+            "safe_pump_period"          : "48",
             "btc_1h_not_downtrend"      : False,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
-            "close_over_pivot_offset"   : 0.92,
+            "close_over_pivot_offset"   : 1.0,
             "close_under_pivot_type"    : "res3", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_under_pivot_offset"  : 1.5
         },
@@ -1273,7 +1273,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "20",
             "safe_dips"                 : True,
-            "safe_dips_type"            : "70",
+            "safe_dips_type"            : "80",
             "safe_pump"                 : False,
             "safe_pump_type"            : "100",
             "safe_pump_period"          : "24",
@@ -1674,11 +1674,10 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_9_crsi_1h_min = 21.0
 
     buy_10_ma_offset_high = 0.94
-    buy_10_bb_offset = 0.982
-    buy_10_r_14_max = -90.0
+    buy_10_bb_offset = 0.984
+    buy_10_r_14_max = -88.0
     buy_10_cti_1h_min = -0.5
     buy_10_cti_1h_max = 0.94
-    buy_10_r_480_1h_max = -5.0
 
     buy_11_ma_offset = 0.956
     buy_11_min_inc = 0.022
@@ -1698,40 +1697,37 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_12_cti_max = -0.9
 
     buy_13_ma_offset = 0.99
-    buy_13_cti = -0.82
-    buy_13_ewo = -6.5
-    buy_13_r_1h = -78.0
+    buy_13_cti_max = -0.92
+    buy_13_ewo_max = -6.0
+    buy_13_cti_1h_max = -0.88
+    buy_13_crsi_1h_min = 10.0
 
     buy_14_ema_open_mult = 0.014
     buy_14_bb_offset = 0.989
     buy_14_ma_offset = 0.945
-    buy_14_cti = -0.85
+    buy_14_cti_max = -0.85
 
-    buy_15_ema_rel = 0.974
     buy_15_ema_open_mult = 0.0238
     buy_15_ma_offset = 0.958
     buy_15_rsi_min = 28.0
+    buy_15_cti_1h_min = -0.2
 
-    buy_16_ma_offset = 0.955
-    buy_16_rsi = 30.0
-    buy_16_ewo = 2.8
-    buy_16_cti = -0.9
-    buy_16_cti_1h = 0.9
-    buy_16_r = -30.0
-    buy_16_r_1h = -20.0
+    buy_16_ma_offset = 0.942
+    buy_16_ewo_min = 2.0
+    buy_16_rsi_max = 36.0
+    buy_16_cti_max = -0.9
 
-    buy_17_ma_offset = 0.99
-    buy_17_ewo = -9.6
-    buy_17_cti = -0.96
-    buy_17_cti_1h = -0.92
-    buy_17_r_1h = -20.0
+    buy_17_ma_offset = 0.999
+    buy_17_ewo_max = -7.0
+    buy_17_cti_max = -0.96
+    buy_17_crsi_1h_min = 12.0
     buy_17_volume = 2.0
 
-    buy_18_rsi = 33.5
     buy_18_bb_offset = 0.986
+    buy_18_rsi_max = 33.5
+    buy_18_cti_max = -0.85
+    buy_18_cti_1h_max = 0.91
     buy_18_volume = 2.0
-    buy_18_cti = -0.86
-    buy_18_cti_1h = 0.91
 
     buy_19_rsi_1h_min = 30.0
     buy_19_chop_max = 21.3
@@ -1807,42 +1803,43 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_31_cti_max = -0.9
 
     buy_32_ma_offset = 0.942
-    buy_32_rsi = 46.0
-    buy_32_cti = -0.86
-    buy_32_cti_1h = -0.22
-    buy_32_r_480_1h = -38.0
-    buy_32_crsi_1h = 10.0
+    buy_32_rsi_4_max = 46.0
+    buy_32_cti_max = -0.86
+    buy_32_crsi_1h_min = 10.0
 
     buy_33_ma_offset = 0.988
+    buy_33_ewo_min = 9.0
     buy_33_rsi_max = 32.0
     buy_33_cti_max = -0.88
-    buy_33_ewo_min = 9.2
     buy_33_r_14_max = -98.0
     buy_33_cti_1h_max = 0.92
     buy_33_volume = 2.0
 
-    buy_34_ma_offset = 0.936
+    buy_34_ma_offset = 0.97
     buy_34_ewo_max = -4.0
     buy_34_cti_max = -0.95
     buy_34_r_14_max = -99.9
+    buy_34_crsi_1h_min = 8.0
     buy_34_volume = 2.0
 
     buy_35_ma_offset = 0.984
     buy_35_ewo_min = 7.8
     buy_35_rsi_max = 32.0
     buy_35_cti_max = -0.8
-    buy_35_r_14_max = -98.0
+    buy_35_r_14_max = -95.0
 
     buy_36_ma_offset = 0.98
-    buy_36_ewo_max = -7.6
+    buy_36_ewo_max = -5.0
     buy_36_cti_max = -0.82
     buy_36_r_14_max = -97.0
+    buy_36_crsi_1h_min = 12.0
 
-    buy_37_ma_offset = 0.98
-    buy_37_ewo_min = 7.5
+    buy_37_ma_offset = 0.945
+    buy_37_ewo_min = 5.0
     buy_37_rsi_max = 46.0
-    buy_37_cti_max = -0.85
+    buy_37_cti_max = -0.84
     buy_37_r_14_max = -97.0
+    buy_37_close_1h_max = 0.04
     buy_37_cti_1h_max = 0.92
 
     buy_38_ma_offset = 0.98
@@ -1880,13 +1877,13 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_42_ema_open_mult = 0.018
     buy_42_bb_offset = 0.992
 
-    buy_43_cti_1h = 0.5
-    buy_43_r_1h = -80.0
-    buy_43_bb40_bbdelta_close = 0.046
+    buy_43_bb40_bbdelta_close = 0.045
     buy_43_bb40_closedelta_close = 0.02
     buy_43_bb40_tail_bbdelta = 0.5
-    buy_43_cti = -0.6
-    buy_43_r = -90.0
+    buy_43_cti_max = -0.75
+    buy_43_r_480_min = -94.0
+    buy_43_cti_1h_max = 0.45
+    buy_43_r_480_1h_min = -80.0
 
     buy_44_ma_offset = 0.982
     buy_44_ewo = -18.0
@@ -3587,16 +3584,17 @@ class NostalgiaForInfinityNext(IStrategy):
         if (0.06 > current_profit > 0.02) and (last_candle['cti'] > 0.95):
             return True, 'signal_profit_q_2'
 
-        if (last_candle['close'] < last_candle['atr_high_thresh_q']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_q']):
-            if (0.05 > current_profit > 0.02):
-                return True, 'signal_profit_q_atr'
-            elif (current_profit < -0.08) and (last_candle['sma_200_dec_24']) and (last_candle['ema_25'] < last_candle['ema_50']) and (last_candle['sma_200_dec_24']) and (last_candle['ema_25'] < last_candle['ema_50']):
-                return True, 'signal_stoploss_q_atr'
-
         if (0.04 > current_profit > 0.02) and (last_candle['pm'] <= last_candle['pmax_thresh']) and (last_candle['close'] > last_candle['sma_21'] * 1.1):
             return True, 'signal_profit_q_pmax_bull'
         if (0.045 > current_profit > 0.005) and (last_candle['pm'] > last_candle['pmax_thresh']) and (last_candle['close'] > last_candle['sma_21'] * 1.016):
             return True, 'signal_profit_q_pmax_bear'
+
+        if (last_candle['momdiv_sell_1h'] == True) and (current_profit > 0.02):
+            return True, 'signal_profit_q_momdiv_1h'
+        if (last_candle['momdiv_sell'] == True) and (current_profit > 0.02):
+            return True, 'signal_profit_q_momdiv'
+        if (last_candle['momdiv_coh'] == True) and (current_profit > 0.02):
+            return True, 'signal_profit_q_momdiv_coh'
 
         return False, None
 
@@ -3858,12 +3856,12 @@ class NostalgiaForInfinityNext(IStrategy):
             return f"{signal_name} ( {buy_tag} )"
 
         # Stoplosses
-        if any(c in ['empty', '10', '13', '14', '15', '16', '17', '18', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '40', '41', '42', '43', '44', '45', '46', '47', '48'] for c in buy_tags):
+        if any(c in ['empty', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '40', '41', '42', '44', '45', '46', '47', '48'] for c in buy_tags):
             sell, signal_name = self.sell_stoploss_atr(current_profit, last_candle, previous_candle_1, trade, current_time)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag} )"
 
-        if any(c in ['empty', '1', '2', '3', '4', '5', '6', '7', '8', '9', '11', '12', '19', '39'] for c in buy_tags):
+        if any(c in ['empty', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '32', '33', '34', '35', '36', '37', '38', '39','40', '43'] for c in buy_tags):
             sell, signal_name = self.sell_stoploss_extra(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag} )"
@@ -4195,6 +4193,13 @@ class NostalgiaForInfinityNext(IStrategy):
         informative_1h['ssl_down'] = ssl_down
         informative_1h['ssl_up'] = ssl_up
 
+        # MOMDIV
+        mom = momdiv(informative_1h)
+        informative_1h['momdiv_buy'] = mom['momdiv_buy']
+        informative_1h['momdiv_sell'] = mom['momdiv_sell']
+        informative_1h['momdiv_coh'] = mom['momdiv_coh']
+        informative_1h['momdiv_col'] = mom['momdiv_col']
+
         # Pump protections
         informative_1h['hl_pct_change_48'] = self.range_percent_change(informative_1h, 'HL', 48)
         informative_1h['hl_pct_change_36'] = self.range_percent_change(informative_1h, 'HL', 36)
@@ -4405,8 +4410,14 @@ class NostalgiaForInfinityNext(IStrategy):
         dataframe['atr_high_thresh_2'] = (dataframe['high'] - (dataframe['atr'] * 5.2))
         dataframe['atr_high_thresh_3'] = (dataframe['high'] - (dataframe['atr'] * 5.0))
         dataframe['atr_high_thresh_4'] = (dataframe['high'] - (dataframe['atr'] * 2.0))
-        dataframe['atr_high_thresh_q'] = (dataframe['high'] - (dataframe['atr'] * 3.0))
         dataframe['atr_high_thresh_l'] = (dataframe['high'] - (dataframe['atr'] * 3.0))
+
+        # MOMDIV
+        mom = momdiv(dataframe)
+        dataframe['momdiv_buy'] = mom['momdiv_buy']
+        dataframe['momdiv_sell'] = mom['momdiv_sell']
+        dataframe['momdiv_coh'] = mom['momdiv_coh']
+        dataframe['momdiv_col'] = mom['momdiv_col']
 
         # Dip protection
         dataframe['tpct_change_0']   = self.top_percent_change(dataframe,0)
@@ -4753,7 +4764,6 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['r_14'] < self.buy_10_r_14_max)
                     item_buy_logic.append(dataframe['cti_1h'] > self.buy_10_cti_1h_min)
                     item_buy_logic.append(dataframe['cti_1h'] < self.buy_10_cti_1h_max)
-                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_10_r_480_1h_max)
 
                 # Condition #11
                 elif index == 11:
@@ -4788,9 +4798,10 @@ class NostalgiaForInfinityNext(IStrategy):
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * self.buy_13_ma_offset)
-                    item_buy_logic.append(dataframe['cti'] < self.buy_13_cti)
-                    item_buy_logic.append(dataframe['ewo'] < self.buy_13_ewo)
-                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_13_r_1h)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_13_cti_max)
+                    item_buy_logic.append(dataframe['ewo_sma'] < self.buy_13_ewo_max)
+                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_13_cti_1h_max)
+                    item_buy_logic.append(dataframe['crsi_1h'] > self.buy_13_crsi_1h_min)
 
                 # Condition #14
                 elif index == 14:
@@ -4802,12 +4813,11 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_14_bb_offset))
                     item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_14_ma_offset)
-                    item_buy_logic.append(dataframe['cti'] < self.buy_14_cti)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_14_cti_max)
 
                 # Condition #15
                 elif index == 15:
                     # Non-Standard protections
-                    item_buy_logic.append(dataframe['close'] > dataframe['ema_200_1h'] * self.buy_15_ema_rel)
 
                     # Logic
                     item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
@@ -4815,6 +4825,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
                     item_buy_logic.append(dataframe['rsi_14'] < self.buy_15_rsi_min)
                     item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_15_ma_offset)
+                    item_buy_logic.append(dataframe['cti_1h'] > self.buy_15_cti_1h_min)
 
                 # Condition #16
                 elif index == 16:
@@ -4822,12 +4833,9 @@ class NostalgiaForInfinityNext(IStrategy):
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_16_ma_offset)
-                    item_buy_logic.append(dataframe['ewo'] > self.buy_16_ewo)
-                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_16_rsi)
-                    item_buy_logic.append(dataframe['cti'] < self.buy_16_cti)
-                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_16_cti_1h)
-                    item_buy_logic.append(dataframe['r_480'] < self.buy_16_r)
-                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_16_r_1h)
+                    item_buy_logic.append(dataframe['ewo_sma'] > self.buy_16_ewo_min)
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_16_rsi_max)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_16_cti_max)
 
                 # Condition #17
                 elif index == 17:
@@ -4835,10 +4843,9 @@ class NostalgiaForInfinityNext(IStrategy):
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_17_ma_offset)
-                    item_buy_logic.append(dataframe['ewo'] < self.buy_17_ewo)
-                    item_buy_logic.append(dataframe['cti'] < self.buy_17_cti)
-                    item_buy_logic.append(dataframe['cti_1h'] > self.buy_17_cti_1h)
-                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_17_r_1h)
+                    item_buy_logic.append(dataframe['ewo_sma'] < self.buy_17_ewo_max)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_17_cti_max)
+                    item_buy_logic.append(dataframe['crsi_1h'] > self.buy_17_crsi_1h_min)
                     item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_17_volume))
 
                 # Condition #18
@@ -4848,11 +4855,11 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['sma_200_1h'] > dataframe['sma_200_1h'].shift(36))
 
                     # Logic
-                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_18_rsi)
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_18_bb_offset))
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_18_rsi_max)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_18_cti_max)
+                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_18_cti_1h_max)
                     item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_18_volume))
-                    item_buy_logic.append(dataframe['cti'] < self.buy_18_cti)
-                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_18_cti_1h)
 
                 # Condition #19
                 elif index == 19:
@@ -5022,25 +5029,23 @@ class NostalgiaForInfinityNext(IStrategy):
 
                     # Logic
                     item_buy_logic.append(dataframe['rsi_20'] < dataframe['rsi_20'].shift(1))
-                    item_buy_logic.append(dataframe['rsi_4'] < self.buy_32_rsi)
+                    item_buy_logic.append(dataframe['rsi_4'] < self.buy_32_rsi_4_max)
                     item_buy_logic.append(dataframe['ema_20_1h'] > dataframe['ema_25_1h'])
                     item_buy_logic.append(dataframe['close'] < (dataframe['sma_15'] * self.buy_32_ma_offset))
                     item_buy_logic.append(
                         ((dataframe['open'] < dataframe['ema_20_1h']) & (dataframe['low'] < dataframe['ema_20_1h'])) |
                         ((dataframe['open'] > dataframe['ema_20_1h']) & (dataframe['low'] > dataframe['ema_20_1h'])))
-                    item_buy_logic.append(dataframe['cti'] < self.buy_32_cti)
-                    item_buy_logic.append(dataframe['cti_1h'] > self.buy_32_cti_1h)
-                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_32_r_480_1h)
-                    item_buy_logic.append(dataframe['crsi_1h'] > self.buy_32_crsi_1h)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_32_cti_max)
+                    item_buy_logic.append(dataframe['crsi_1h'] > self.buy_32_crsi_1h_min)
 
                 # Condition #33 - Quick mode buy
                 elif index == 33:
                     # Non-Standard protections
 
                     # Logic
-                    item_buy_logic.append(dataframe['cti'] < self.buy_33_cti_max)
                     item_buy_logic.append(dataframe['close'] < (dataframe['ema_13'] * self.buy_33_ma_offset))
                     item_buy_logic.append(dataframe['ewo_sma'] > self.buy_33_ewo_min)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_33_cti_max)
                     item_buy_logic.append(dataframe['rsi_14'] < self.buy_33_rsi_max)
                     item_buy_logic.append(dataframe['r_14'] < self.buy_33_r_14_max)
                     item_buy_logic.append(dataframe['cti_1h'] < self.buy_33_cti_1h_max)
@@ -5052,9 +5057,10 @@ class NostalgiaForInfinityNext(IStrategy):
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < dataframe['ema_13'] * self.buy_34_ma_offset)
-                    item_buy_logic.append(dataframe['cti'] < self.buy_34_cti_max)
                     item_buy_logic.append(dataframe['ewo_sma'] < self.buy_34_ewo_max)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_34_cti_max)
                     item_buy_logic.append(dataframe['r_14'] < self.buy_34_r_14_max)
+                    item_buy_logic.append(dataframe['crsi_1h'] > self.buy_34_crsi_1h_min)
                     item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_34_volume))
 
                 # Condition #35 - PMAX0 buy
@@ -5079,6 +5085,8 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['ewo_sma'] < self.buy_36_ewo_max)
                     item_buy_logic.append(dataframe['cti'] < self.buy_36_cti_max)
                     item_buy_logic.append(dataframe['r_14'] < self.buy_36_r_14_max)
+                    item_buy_logic.append(dataframe['crsi_1h'] > self.buy_36_crsi_1h_min)
+
 
                 # Condition #37 - PMAX2 buy
                 elif index == 37:
@@ -5092,6 +5100,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['rsi_14'] < self.buy_37_rsi_max)
                     item_buy_logic.append(dataframe['cti'] < self.buy_37_cti_max)
                     item_buy_logic.append(dataframe['r_14'] < self.buy_37_r_14_max)
+                    item_buy_logic.append(((dataframe['close_1h'].shift(12) - dataframe['close_1h']) / dataframe['close_1h']) < self.buy_37_close_1h_max)
                     item_buy_logic.append(dataframe['cti_1h'] < self.buy_37_cti_1h_max)
 
                 # Condition #38 - PMAX3 buy
@@ -5180,16 +5189,16 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Logic
                     item_buy_logic.append(dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(12))
                     item_buy_logic.append(dataframe['ema_200_1h'].shift(12) > dataframe['ema_200_1h'].shift(24))
-                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_43_cti_1h)
-                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_43_r_1h)
                     item_buy_logic.append(dataframe['bb40_2_low'].shift().gt(0))
                     item_buy_logic.append(dataframe['bb40_2_delta'].gt(dataframe['close'] * self.buy_43_bb40_bbdelta_close))
                     item_buy_logic.append(dataframe['closedelta'].gt(dataframe['close'] * self.buy_43_bb40_closedelta_close))
                     item_buy_logic.append(dataframe['tail'].lt(dataframe['bb40_2_delta'] * self.buy_43_bb40_tail_bbdelta))
                     item_buy_logic.append(dataframe['close'].lt(dataframe['bb40_2_low'].shift()))
                     item_buy_logic.append(dataframe['close'].le(dataframe['close'].shift()))
-                    item_buy_logic.append(dataframe['cti'] < self.buy_43_cti)
-                    item_buy_logic.append(dataframe['r_480'] > self.buy_43_r)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_43_cti_max)
+                    item_buy_logic.append(dataframe['r_480'] > self.buy_43_r_480_min)
+                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_43_cti_1h_max)
+                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_43_r_480_1h_min)
 
                 # Condition #44
                 elif index == 44:
@@ -5687,6 +5696,29 @@ def HeikinAshi(dataframe, smooth_inputs = False, smooth_outputs = False, length 
         return open_sha, close_sha, low_sha
     else:
         return open_ha, close_ha, low_ha
+
+
+# Mom DIV
+def momdiv(dataframe: DataFrame, mom_length: int = 10, bb_length: int = 20, bb_dev: float = 2.0, lookback: int = 30) -> DataFrame:
+    mom: Series = ta.MOM(dataframe, timeperiod=mom_length)
+    upperband, middleband, lowerband = ta.BBANDS(mom, timeperiod=bb_length, nbdevup=bb_dev, nbdevdn=bb_dev, matype=0)
+    buy = qtpylib.crossed_below(mom, lowerband)
+    sell = qtpylib.crossed_above(mom, upperband)
+    hh = dataframe['high'].rolling(lookback).max()
+    ll = dataframe['low'].rolling(lookback).min()
+    coh = dataframe['high'] >= hh
+    col = dataframe['low'] <= ll
+    df = DataFrame({
+            "momdiv_mom": mom,
+            "momdiv_upperb": upperband,
+            "momdiv_lowerb": lowerband,
+            "momdiv_buy": buy,
+            "momdiv_sell": sell,
+            "momdiv_coh": coh,
+            "momdiv_col": col,
+        }, index=dataframe['close'].index)
+    return df
+
 
 class Cache:
 
