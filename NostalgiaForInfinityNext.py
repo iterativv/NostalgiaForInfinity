@@ -5085,11 +5085,6 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['cti'] < self.buy_36_cti_max)
                     item_buy_logic.append(dataframe['r_14'] < self.buy_36_r_14_max)
                     item_buy_logic.append(dataframe['crsi_1h'] > self.buy_36_crsi_1h_min)
-                    item_buy_logic.append(dataframe['pm'] <= dataframe['pmax_thresh'])
-                    item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * self.buy_36_ma_offset)
-                    item_buy_logic.append(dataframe['ewo_sma'] < self.buy_36_ewo_max)
-                    item_buy_logic.append(dataframe['cti'] < self.buy_36_cti_max)
-                    item_buy_logic.append(dataframe['r_14'] < self.buy_36_r_14_max)
 
 
                 # Condition #37 - PMAX2 buy
