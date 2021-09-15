@@ -1116,9 +1116,9 @@ class NostalgiaForInfinityNext(IStrategy):
             "close_under_pivot_offset"  : 1.0
         },
         37: {
-            "ema_fast"                  : False,
+            "ema_fast"                  : True,
             "ema_fast_len"              : "50",
-            "ema_slow"                  : False,
+            "ema_slow"                  : True,
             "ema_slow_len"              : "12",
             "close_above_ema_fast"      : False,
             "close_above_ema_fast_len"  : "200",
@@ -1129,13 +1129,13 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
             "safe_dips"                 : True,
-            "safe_dips_type"            : "30",
-            "safe_pump"                 : False,
-            "safe_pump_type"            : "10",
-            "safe_pump_period"          : "24",
+            "safe_dips_type"            : "130",
+            "safe_pump"                 : True,
+            "safe_pump_type"            : "120",
+            "safe_pump_period"          : "48",
             "btc_1h_not_downtrend"      : False,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
-            "close_over_pivot_offset"   : 0.92,
+            "close_over_pivot_offset"   : 1.0,
             "close_under_pivot_type"    : "res3", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_under_pivot_offset"  : 1.5
         },
@@ -1834,11 +1834,12 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_36_r_14_max = -97.0
     buy_36_crsi_1h_min = 12.0
 
-    buy_37_ma_offset = 0.98
-    buy_37_ewo_min = 7.5
+    buy_37_ma_offset = 0.945
+    buy_37_ewo_min = 5.0
     buy_37_rsi_max = 46.0
-    buy_37_cti_max = -0.85
+    buy_37_cti_max = -0.84
     buy_37_r_14_max = -97.0
+    buy_37_close_1h_max = 0.04
     buy_37_cti_1h_max = 0.92
 
     buy_38_ma_offset = 0.98
@@ -3855,7 +3856,7 @@ class NostalgiaForInfinityNext(IStrategy):
             return f"{signal_name} ( {buy_tag} )"
 
         # Stoplosses
-        if any(c in ['empty', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '37', '38', '40', '41', '42', '44', '45', '46', '47', '48'] for c in buy_tags):
+        if any(c in ['empty', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '38', '40', '41', '42', '44', '45', '46', '47', '48'] for c in buy_tags):
             sell, signal_name = self.sell_stoploss_atr(current_profit, last_candle, previous_candle_1, trade, current_time)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag} )"
@@ -5099,6 +5100,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['rsi_14'] < self.buy_37_rsi_max)
                     item_buy_logic.append(dataframe['cti'] < self.buy_37_cti_max)
                     item_buy_logic.append(dataframe['r_14'] < self.buy_37_r_14_max)
+                    item_buy_logic.append(((dataframe['close_1h'].shift(12) - dataframe['close_1h']) / dataframe['close_1h']) < self.buy_37_close_1h_max)
                     item_buy_logic.append(dataframe['cti_1h'] < self.buy_37_cti_1h_max)
 
                 # Condition #38 - PMAX3 buy
