@@ -1948,11 +1948,11 @@ class NostalgiaForInfinityNext(IStrategy):
     sell_pump_threshold_24_2 = 0.62
     sell_pump_threshold_24_3 = 0.88
 
-    sell_rsi_bb_1 = 79.5
+    sell_rsi_bb_1 = 79.0
 
-    sell_rsi_bb_2 = 81
+    sell_rsi_bb_2 = 80.0
 
-    sell_rsi_main_3 = 87.0
+    sell_rsi_main_3 = 83.0
 
     sell_dual_rsi_rsi_4 = 73.4
     sell_dual_rsi_rsi_1h_4 = 79.6
