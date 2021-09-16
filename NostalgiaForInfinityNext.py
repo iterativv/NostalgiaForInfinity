@@ -1294,7 +1294,7 @@ class NostalgiaForInfinityNext(IStrategy):
         41: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
-            "ema_slow"                  : False,
+            "ema_slow"                  : True,
             "ema_slow_len"              : "12",
             "close_above_ema_fast"      : False,
             "close_above_ema_fast_len"  : "200",
@@ -1304,10 +1304,10 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_rising_val"         : "30",
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "20",
-            "safe_dips_threshold_0"     : 0.028,
-            "safe_dips_threshold_2"     : 0.3,
-            "safe_dips_threshold_12"    : 0.48,
-            "safe_dips_threshold_144"   : 0.9,
+            "safe_dips_threshold_0"     : 0.015,
+            "safe_dips_threshold_2"     : 0.1,
+            "safe_dips_threshold_12"    : 0.24,
+            "safe_dips_threshold_144"   : 0.42,
             "safe_pump"                 : True,
             "safe_pump_type"            : "120",
             "safe_pump_period"          : "24",
@@ -1887,24 +1887,19 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_40_r_14_max = -99.9
     buy_40_cti_max = -0.8
 
-    buy_41_ewo_1h_min = 4.0
-    buy_41_crsi_1h_min = 10.0
-    buy_41_cti_1h_max = 0.85
-    buy_41_r_1h_min = -75.0
-    buy_41_r_1h_max = -14.0
-    buy_41_ma_offset_low = 0.92
     buy_41_ma_offset_high = 0.95
-    buy_41_cti_max = -0.9
+    buy_41_cti_max = -0.92
     buy_41_cci_max = -178.0
-    buy_41_r_max = -10.0
+    buy_41_ewo_1h_min = 0.5
+    buy_41_r_480_1h_max = -14.0
+    buy_41_crsi_1h_min = 14.0
 
-    buy_42_ewo_1h_min = 3.5
-    buy_42_cti_1h_min = -0.5
-    buy_42_cti_1h_max = 0.85
-    buy_42_r_1h_min = -90.0
-    buy_42_r_1h_max = -10.0
     buy_42_ema_open_mult = 0.018
     buy_42_bb_offset = 0.992
+    buy_42_ewo_1h_min = 2.8
+    buy_42_cti_1h_min = -0.5
+    buy_42_cti_1h_max = 0.88
+    buy_42_r_480_1h_max = -12.0
 
     buy_43_bb40_bbdelta_close = 0.045
     buy_43_bb40_closedelta_close = 0.02
@@ -1915,9 +1910,9 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_43_r_480_1h_min = -80.0
 
     buy_44_ma_offset = 0.982
-    buy_44_ewo = -18.0
-    buy_44_cti = -0.73
-    buy_44_crsi_1h = 10.0
+    buy_44_ewo_max = -18.0
+    buy_44_cti_max = -0.73
+    buy_44_crsi_1h_min = 8.0
 
     buy_45_bb40_bbdelta_close = 0.039
     buy_45_bb40_closedelta_close = 0.02
@@ -1983,11 +1978,11 @@ class NostalgiaForInfinityNext(IStrategy):
     sell_pump_threshold_24_2 = 0.62
     sell_pump_threshold_24_3 = 0.88
 
-    sell_rsi_bb_1 = 79.5
+    sell_rsi_bb_1 = 79.0
 
-    sell_rsi_bb_2 = 81
+    sell_rsi_bb_2 = 80.0
 
-    sell_rsi_main_3 = 87.0
+    sell_rsi_main_3 = 83.0
 
     sell_dual_rsi_rsi_4 = 73.4
     sell_dual_rsi_rsi_1h_4 = 79.6
@@ -2851,7 +2846,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     elif (last_candle['cti'] > 0.942):
                         return True, 'signal_profit_u_bear_5_5'
                     elif (last_candle['rsi_14'] < 57.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf'] < 0.0):
-                        return True, 'signal_profit_u_bull_5_6'
+                        return True, 'signal_profit_u_bear_5_6'
                 elif 0.05 > current_profit >= 0.04:
                     if last_candle['rsi_14'] < 50.0:
                         return True, 'signal_profit_u_bear_4_1'
@@ -2862,7 +2857,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     elif (last_candle['cti'] > 0.944):
                         return True, 'signal_profit_u_bear_4_5'
                     elif (last_candle['rsi_14'] < 56.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf'] < 0.0):
-                        return True, 'signal_profit_u_bull_4_6'
+                        return True, 'signal_profit_u_bear_4_6'
                 elif 0.04 > current_profit >= 0.03:
                     if last_candle['rsi_14'] < 48.0:
                         return True, 'signal_profit_u_bear_3_1'
@@ -2873,7 +2868,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     elif (last_candle['cti'] > 0.946):
                         return True, 'signal_profit_u_bear_3_5'
                     elif (last_candle['rsi_14'] < 55.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf'] < 0.0):
-                        return True, 'signal_profit_u_bull_3_6'
+                        return True, 'signal_profit_u_bear_3_6'
                 elif 0.03 > current_profit >= 0.02:
                     if last_candle['rsi_14'] < 55.0: #46
                         return True, 'signal_profit_u_bear_2_1'
@@ -2884,7 +2879,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     elif (last_candle['cti'] > 0.948):
                         return True, 'signal_profit_u_bear_2_5'
                     elif (last_candle['rsi_14'] < 54.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf'] < 0.0):
-                        return True, 'signal_profit_u_bull_2_6'
+                        return True, 'signal_profit_u_bear_2_6'
                     elif (last_candle['rsi_14'] < 54.0) and (last_candle['cmf_1h'] < -0.05) and (last_candle['cti_1h'] > 0.85):
                         return True, 'signal_profit_u_bear_2_7'
                 elif 0.02 > current_profit >= 0.01:
@@ -2897,7 +2892,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     elif (last_candle['cti'] > 0.95):
                         return True, 'signal_profit_u_bear_1_5'
                     elif (last_candle['rsi_14'] < 44.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf'] < 0.0):
-                        return True, 'signal_profit_u_bull_1_6'
+                        return True, 'signal_profit_u_bear_1_6'
                     elif (last_candle['rsi_14'] < 44.0) and (last_candle['cmf_1h'] < -0.05) and (last_candle['cti_1h'] > 0.85):
                         return True, 'signal_profit_u_bear_1_7'
                     elif (last_candle['rsi_14'] < 34.0):
@@ -3658,7 +3653,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
     def sell_long_mode(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
         # Sell signal 1
-        if (last_candle['rsi_14'] > 79.0) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']) and (previous_candle_3['close'] > previous_candle_3['bb20_2_upp']) and (previous_candle_4['close'] > previous_candle_4['bb20_2_upp']) and (previous_candle_5['close'] > previous_candle_5['bb20_2_upp']):
+        if (last_candle['rsi_14'] > 78.0) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']) and (previous_candle_3['close'] > previous_candle_3['bb20_2_upp']) and (previous_candle_4['close'] > previous_candle_4['bb20_2_upp']) and (previous_candle_5['close'] > previous_candle_5['bb20_2_upp']):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
                     return True, 'sell_long_1_1_1'
@@ -3667,7 +3662,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     return True, 'sell_long_1_2_1'
 
         # Sell signal 2
-        elif (last_candle['rsi_14'] > 80.0) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']):
+        elif (last_candle['rsi_14'] > 79.0) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
                     return True, 'sell_long_2_1_1'
@@ -3676,7 +3671,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     return True, 'sell_long_2_2_1'
 
         # Sell signal 3
-        elif (last_candle['rsi_14'] > 85.0):
+        elif (last_candle['rsi_14'] > 82.0):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
                     return True, 'sell_long_3_1_1'
@@ -3685,7 +3680,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     return True, 'sell_long_3_2_1'
 
         # Sell signal 4
-        elif (last_candle['rsi_14'] > 80.0) and (last_candle['rsi_14_1h'] > 82.0):
+        elif (last_candle['rsi_14'] > 78.0) and (last_candle['rsi_14_1h'] > 80.0):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
                     return True, 'sell_long_4_1_1'
@@ -3699,7 +3694,7 @@ class NostalgiaForInfinityNext(IStrategy):
                 return True, 'sell_long_6_1'
 
         # Sell signal 7
-        elif (last_candle['rsi_14_1h'] > 83.0) and (last_candle['crossed_below_ema_12_26']):
+        elif (last_candle['rsi_14_1h'] > 82.0) and (last_candle['crossed_below_ema_12_26']):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
                     return True, 'sell_long_7_1_1'
@@ -3708,7 +3703,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     return True, 'sell_long_7_2_1'
 
         # Sell signal 8
-        elif (last_candle['close'] > last_candle['bb20_2_upp_1h'] * 1.1):
+        elif (last_candle['close'] > last_candle['bb20_2_upp_1h'] * 1.05):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
                     return True, 'sell_long_8_1_1'
@@ -3730,10 +3725,7 @@ class NostalgiaForInfinityNext(IStrategy):
         elif (0.03 < current_profit <= 0.06) and (current_time - timedelta(minutes=720) > trade.open_date_utc) and (last_candle['r_480'] > -20.0):
             return True, 'sell_long_l_1'
 
-        elif (current_profit < -0.1) and (last_candle['close'] < last_candle['atr_high_thresh_l']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_l']) and (last_candle['sma_200_dec_24']) and (last_candle['ema_25'] < last_candle['ema_50']):
-                return True, 'sell_long_stoploss_1'
-
-        return self.sell_stoploss_atr(current_profit, last_candle, previous_candle_1, trade, current_time)
+        return self.sell_stoploss_extra(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
 
         return False, None
 
@@ -3827,7 +3819,7 @@ class NostalgiaForInfinityNext(IStrategy):
         if all(c in ['45', '46', '47'] for c in buy_tags):
             sell, signal_name = self.sell_long_mode(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, buy_tag)
             if sell and (signal_name is not None):
-                return f"{signal_name} ( {buy_tag} )"
+                return f"{signal_name} ( {buy_tag})"
             # Skip remaining sell logic for long mode
             return None
 
@@ -3835,115 +3827,115 @@ class NostalgiaForInfinityNext(IStrategy):
         if all(c in ['empty', '32', '33', '34', '35', '36', '37', '38', '40'] for c in buy_tags):
             sell, signal_name = self.sell_quick_mode(current_profit, max_profit, last_candle, previous_candle_1)
             if sell and (signal_name is not None):
-                return f"{signal_name} ( {buy_tag} )"
+                return f"{signal_name} ( {buy_tag})"
 
         # Uptrend sell mode
         if all(c in ['48'] for c in buy_tags):
             sell, signal_name = self.sell_uptrend_mode(current_profit, max_profit, last_candle, previous_candle_1)
             if sell and (signal_name is not None):
-                return f"{signal_name} ( {buy_tag} )"
+                return f"{signal_name} ( {buy_tag})"
 
         # Ichi Trade management
         if all(c in ['39'] for c in buy_tags):
             sell, signal_name = self.sell_ichi(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
             if sell and (signal_name is not None):
-                return f"{signal_name} ( {buy_tag} )"
+                return f"{signal_name} ( {buy_tag})"
 
         # Over EMA200, main profit targets
         sell, signal_name = self.sell_over_main(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return f"{signal_name} ( {buy_tag} )"
+            return f"{signal_name} ( {buy_tag})"
 
         # Under EMA200, main profit targets
         sell, signal_name = self.sell_under_main(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return f"{signal_name} ( {buy_tag} )"
+            return f"{signal_name} ( {buy_tag})"
 
         # The pair is pumped
         sell, signal_name = self.sell_pump_main(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return f"{signal_name} ( {buy_tag} )"
+            return f"{signal_name} ( {buy_tag})"
 
         # The pair is descending
         sell, signal_name = self.sell_dec_main(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return f"{signal_name} ( {buy_tag} )"
+            return f"{signal_name} ( {buy_tag})"
 
         # Trailing
         sell, signal_name = self.sell_trail_main(current_profit, last_candle, max_profit)
         if sell and (signal_name is not None):
-            return f"{signal_name} ( {buy_tag} )"
+            return f"{signal_name} ( {buy_tag})"
 
         # Duration based
         sell, signal_name = self.sell_duration_main(current_profit, last_candle, trade, current_time)
         if sell and (signal_name is not None):
-            return f"{signal_name} ( {buy_tag} )"
+            return f"{signal_name} ( {buy_tag})"
 
         # Under EMA200, exit with any profit
         sell, signal_name = self.sell_under_min(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return f"{signal_name} ( {buy_tag} )"
+            return f"{signal_name} ( {buy_tag})"
 
         # Stoplosses
-        if any(c in ['empty', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '41', '42', '44', '45', '46', '47', '48'] for c in buy_tags):
+        if any(c in ['empty', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '45', '46', '47', '48'] for c in buy_tags):
             sell, signal_name = self.sell_stoploss_atr(current_profit, last_candle, previous_candle_1, trade, current_time)
             if sell and (signal_name is not None):
-                return f"{signal_name} ( {buy_tag} )"
+                return f"{signal_name} ( {buy_tag})"
 
-        if any(c in ['empty', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '32', '33', '34', '35', '36', '37', '38', '39','40', '43'] for c in buy_tags):
+        if any(c in ['empty', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '32', '33', '34', '35', '36', '37', '38', '39','40', '41', '42', '43', '44'] for c in buy_tags):
             sell, signal_name = self.sell_stoploss_extra(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
             if sell and (signal_name is not None):
-                return f"{signal_name} ( {buy_tag} )"
+                return f"{signal_name} ( {buy_tag})"
 
         # Pumped descending pairs
         sell, signal_name = self.sell_pump_dec(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return f"{signal_name} ( {buy_tag} )"
+            return f"{signal_name} ( {buy_tag})"
 
         # Extra sells for pumped pairs
         sell, signal_name = self.sell_pump_extra(current_profit, last_candle, max_profit)
         if sell and (signal_name is not None):
-            return f"{signal_name} ( {buy_tag} )"
+            return f"{signal_name} ( {buy_tag})"
 
         # Extra sells for trades that recovered
         sell, signal_name = self.sell_recover(current_profit, last_candle, max_loss)
         if sell and (signal_name is not None):
-            return f"{signal_name} ( {buy_tag} )"
+            return f"{signal_name} ( {buy_tag})"
 
         # Williams %R based sell 1
         sell, signal_name = self.sell_r_1(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return f"{signal_name} ( {buy_tag} )"
+            return f"{signal_name} ( {buy_tag})"
 
         # Williams %R based sell 2
         sell, signal_name = self.sell_r_2(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return f"{signal_name} ( {buy_tag} )"
+            return f"{signal_name} ( {buy_tag})"
 
         # Williams %R based sell 3
         sell, signal_name = self.sell_r_3(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return f"{signal_name} ( {buy_tag} )"
+            return f"{signal_name} ( {buy_tag})"
 
         # Williams %R based sell 4, plus CTI
         sell, signal_name = self.sell_r_4(current_profit, last_candle)
         if (sell) and (signal_name is not None):
-            return f"{signal_name} ( {buy_tag} )"
+            return f"{signal_name} ( {buy_tag})"
 
         # Williams %R based sell 5, plus  RSI and CTI 1h
         sell, signal_name = self.sell_r_5(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return f"{signal_name} ( {buy_tag} )"
+            return f"{signal_name} ( {buy_tag})"
 
         # Williams %R based sell 6, plus  RSI, CTI, CCI
         sell, signal_name = self.sell_r_6(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return f"{signal_name} ( {buy_tag} )"
+            return f"{signal_name} ( {buy_tag})"
 
         # Pivot points based sells
         sell, signal_name = self.sell_pivot(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
         if sell and (signal_name is not None):
-            return f"{signal_name} ( {buy_tag} )"
+            return f"{signal_name} ( {buy_tag})"
 
         # Profit Target Signal
         # Check if pair exist on target_profit_cache
@@ -3954,7 +3946,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
             sell, signal_name = self.sell_profit_target(pair, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1, previous_rate, previous_sell_reason, previous_time_profit_reached)
             if sell and signal_name is not None:
-                return f"{signal_name} ( {buy_tag} )"
+                return f"{signal_name} ( {buy_tag})"
 
         pair, mark_signal = self.mark_profit_target(pair, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
         if pair:
@@ -3964,74 +3956,74 @@ class NostalgiaForInfinityNext(IStrategy):
         if self.sell_condition_1_enable and (last_candle['rsi_14'] > self.sell_rsi_bb_1) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']) and (previous_candle_3['close'] > previous_candle_3['bb20_2_upp']) and (previous_candle_4['close'] > previous_candle_4['bb20_2_upp']) and (previous_candle_5['close'] > previous_candle_5['bb20_2_upp']):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
-                    return f"sell_signal_1_1_1 ( {buy_tag} )"
+                    return f"sell_signal_1_1_1 ( {buy_tag})"
             else:
                 if (current_profit > 0.01):
-                    return f"sell_signal_1_2_1 ( {buy_tag} )"
+                    return f"sell_signal_1_2_1 ( {buy_tag})"
                 elif (max_loss > 0.5):
-                    return f"sell_signal_1_2_2 ( {buy_tag} )"
+                    return f"sell_signal_1_2_2 ( {buy_tag})"
 
         # Sell signal 2
         elif (self.sell_condition_2_enable) and (last_candle['rsi_14'] > self.sell_rsi_bb_2) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
-                    return f"sell_signal_2_1_1 ( {buy_tag} )"
+                    return f"sell_signal_2_1_1 ( {buy_tag})"
             else:
                 if (current_profit > 0.01):
-                    return f"sell_signal_2_2_1 ( {buy_tag} )"
+                    return f"sell_signal_2_2_1 ( {buy_tag})"
                 elif (max_loss > 0.5):
-                    return f"sell_signal_2_2_2 ( {buy_tag} )"
+                    return f"sell_signal_2_2_2 ( {buy_tag})"
 
         # Sell signal 3
         elif (self.sell_condition_3_enable) and (last_candle['rsi_14'] > self.sell_rsi_main_3):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
-                    return f"sell_signal_3_1_1 ( {buy_tag} )"
+                    return f"sell_signal_3_1_1 ( {buy_tag})"
             else:
                 if (current_profit > 0.01):
-                    return f"sell_signal_3_2_1 ( {buy_tag} )"
+                    return f"sell_signal_3_2_1 ( {buy_tag})"
                 elif (max_loss > 0.5):
-                    return f"sell_signal_3_2_2 ( {buy_tag} )"
+                    return f"sell_signal_3_2_2 ( {buy_tag})"
 
         # Sell signal 4
         elif self.sell_condition_4_enable and (last_candle['rsi_14'] > self.sell_dual_rsi_rsi_4) and (last_candle['rsi_14_1h'] > self.sell_dual_rsi_rsi_1h_4):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
-                    return f"sell_signal_4_1_1 ( {buy_tag} )"
+                    return f"sell_signal_4_1_1 ( {buy_tag})"
             else:
                 if (current_profit > 0.01):
-                    return f"sell_signal_4_2_1 ( {buy_tag} )"
+                    return f"sell_signal_4_2_1 ( {buy_tag})"
                 elif (max_loss > 0.5):
-                    return f"sell_signal_4_2_2 ( {buy_tag} )"
+                    return f"sell_signal_4_2_2 ( {buy_tag})"
 
         # Sell signal 6
         elif self.sell_condition_6_enable and (last_candle['close'] < last_candle['ema_200']) and (last_candle['close'] > last_candle['ema_50']) and (last_candle['rsi_14'] > self.sell_rsi_under_6):
             if (current_profit > 0.01):
-                return f"sell_signal_6_1 ( {buy_tag} )"
+                return f"sell_signal_6_1 ( {buy_tag})"
             elif (max_loss > 0.5):
-                return f"sell_signal_6_2 ( {buy_tag} )"
+                return f"sell_signal_6_2 ( {buy_tag})"
 
         # Sell signal 7
         elif self.sell_condition_7_enable and (last_candle['rsi_14_1h'] > self.sell_rsi_1h_7) and (last_candle['crossed_below_ema_12_26']):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
-                    return f"sell_signal_7_1_1 ( {buy_tag} )"
+                    return f"sell_signal_7_1_1 ( {buy_tag})"
             else:
                 if (current_profit > 0.01):
-                    return f"sell_signal_7_2_1 ( {buy_tag} )"
+                    return f"sell_signal_7_2_1 ( {buy_tag})"
                 elif (max_loss > 0.5):
-                    return f"sell_signal_7_2_2 ( {buy_tag} )"
+                    return f"sell_signal_7_2_2 ( {buy_tag})"
 
         # Sell signal 8
         elif self.sell_condition_8_enable and (last_candle['close'] > last_candle['bb20_2_upp_1h'] * self.sell_bb_relative_8):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
-                    return f"sell_signal_8_1_1 ( {buy_tag} )"
+                    return f"sell_signal_8_1_1 ( {buy_tag})"
             else:
                 if (current_profit > 0.01):
-                    return f"sell_signal_8_2_1 ( {buy_tag} )"
+                    return f"sell_signal_8_2_1 ( {buy_tag})"
                 elif (max_loss > 0.5):
-                    return f"sell_signal_8_2_2 ( {buy_tag} )"
+                    return f"sell_signal_8_2_2 ( {buy_tag})"
 
         return None
 
@@ -5174,16 +5166,12 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Logic
                     item_buy_logic.append(dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(12))
                     item_buy_logic.append(dataframe['ema_200_1h'].shift(12) > dataframe['ema_200_1h'].shift(24))
-                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_41_cti_1h_max)
-                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_41_r_1h_min)
-                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_41_r_1h_max)
-                    item_buy_logic.append(dataframe['crsi_1h'] > self.buy_41_crsi_1h_min)
-                    item_buy_logic.append(dataframe['ewo_1h'] > self.buy_41_ewo_1h_min)
-                    item_buy_logic.append(dataframe['close'] > dataframe['sma_75'] * self.buy_41_ma_offset_low)
                     item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * self.buy_41_ma_offset_high)
                     item_buy_logic.append(dataframe['cti'] < self.buy_41_cti_max)
-                    item_buy_logic.append(dataframe['r_480'] < self.buy_41_r_max)
                     item_buy_logic.append(dataframe['cci'] < self.buy_41_cci_max)
+                    item_buy_logic.append(dataframe['ewo_sma_1h'] > self.buy_41_ewo_1h_min)
+                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_41_r_480_1h_max)
+                    item_buy_logic.append(dataframe['crsi_1h'] > self.buy_41_crsi_1h_min)
 
                 # Condition #42
                 elif index == 42:
@@ -5192,15 +5180,13 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Logic
                     item_buy_logic.append(dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(12))
                     item_buy_logic.append(dataframe['ema_200_1h'].shift(12) > dataframe['ema_200_1h'].shift(24))
-                    item_buy_logic.append(dataframe['ewo_1h'] > self.buy_42_ewo_1h_min)
-                    item_buy_logic.append(dataframe['cti_1h'] > self.buy_42_cti_1h_min)
-                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_42_cti_1h_max)
-                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_42_r_1h_min)
-                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_42_r_1h_max)
                     item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
                     item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * self.buy_42_ema_open_mult))
                     item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_42_bb_offset))
+                    item_buy_logic.append(dataframe['ewo_sma_1h'] > self.buy_42_ewo_1h_min)
+                    item_buy_logic.append(dataframe['cti_1h'] > self.buy_42_cti_1h_min)
+                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_42_r_480_1h_max)
 
                 # Condition #43
                 elif index == 43:
@@ -5226,9 +5212,9 @@ class NostalgiaForInfinityNext(IStrategy):
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < (dataframe['ema_16'] * self.buy_44_ma_offset))
-                    item_buy_logic.append(dataframe['ewo'] < self.buy_44_ewo)
-                    item_buy_logic.append(dataframe['cti'] < self.buy_44_cti)
-                    item_buy_logic.append(dataframe['crsi_1h'] > self.buy_44_crsi_1h)
+                    item_buy_logic.append(dataframe['ewo_sma'] < self.buy_44_ewo_max)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_44_cti_max)
+                    item_buy_logic.append(dataframe['crsi_1h'] > self.buy_44_crsi_1h_min)
 
                 # Condition #45 - Long mode
                 elif index == 45:
