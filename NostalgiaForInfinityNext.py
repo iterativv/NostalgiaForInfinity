@@ -1214,7 +1214,7 @@ class NostalgiaForInfinityNext(IStrategy):
         41: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
-            "ema_slow"                  : False,
+            "ema_slow"                  : True,
             "ema_slow_len"              : "12",
             "close_above_ema_fast"      : False,
             "close_above_ema_fast_len"  : "200",
@@ -1225,7 +1225,7 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "20",
             "safe_dips"                 : True,
-            "safe_dips_type"            : "130",
+            "safe_dips_type"            : "10",
             "safe_pump"                 : True,
             "safe_pump_type"            : "120",
             "safe_pump_period"          : "24",
@@ -1857,16 +1857,12 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_40_r_14_max = -99.9
     buy_40_cti_max = -0.8
 
-    buy_41_ewo_1h_min = 4.0
-    buy_41_crsi_1h_min = 10.0
-    buy_41_cti_1h_max = 0.85
-    buy_41_r_1h_min = -75.0
-    buy_41_r_1h_max = -14.0
-    buy_41_ma_offset_low = 0.92
     buy_41_ma_offset_high = 0.95
-    buy_41_cti_max = -0.9
+    buy_41_cti_max = -0.92
     buy_41_cci_max = -178.0
-    buy_41_r_max = -10.0
+    buy_41_ewo_1h_min = 0.5
+    buy_41_r_480_1h_max = -14.0
+    buy_41_crsi_1h_min = 14.0
 
     buy_42_ewo_1h_min = 3.5
     buy_42_cti_1h_min = -0.5
@@ -3855,12 +3851,12 @@ class NostalgiaForInfinityNext(IStrategy):
             return f"{signal_name} ( {buy_tag})"
 
         # Stoplosses
-        if any(c in ['empty', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '41', '42', '44', '45', '46', '47', '48'] for c in buy_tags):
+        if any(c in ['empty', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '42', '44', '45', '46', '47', '48'] for c in buy_tags):
             sell, signal_name = self.sell_stoploss_atr(current_profit, last_candle, previous_candle_1, trade, current_time)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag})"
 
-        if any(c in ['empty', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '32', '33', '34', '35', '36', '37', '38', '39','40', '43'] for c in buy_tags):
+        if any(c in ['empty', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '32', '33', '34', '35', '36', '37', '38', '39','40', '41', '43'] for c in buy_tags):
             sell, signal_name = self.sell_stoploss_extra(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag})"
@@ -5152,16 +5148,12 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Logic
                     item_buy_logic.append(dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(12))
                     item_buy_logic.append(dataframe['ema_200_1h'].shift(12) > dataframe['ema_200_1h'].shift(24))
-                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_41_cti_1h_max)
-                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_41_r_1h_min)
-                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_41_r_1h_max)
-                    item_buy_logic.append(dataframe['crsi_1h'] > self.buy_41_crsi_1h_min)
-                    item_buy_logic.append(dataframe['ewo_1h'] > self.buy_41_ewo_1h_min)
-                    item_buy_logic.append(dataframe['close'] > dataframe['sma_75'] * self.buy_41_ma_offset_low)
                     item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * self.buy_41_ma_offset_high)
                     item_buy_logic.append(dataframe['cti'] < self.buy_41_cti_max)
-                    item_buy_logic.append(dataframe['r_480'] < self.buy_41_r_max)
                     item_buy_logic.append(dataframe['cci'] < self.buy_41_cci_max)
+                    item_buy_logic.append(dataframe['ewo_sma_1h'] > self.buy_41_ewo_1h_min)
+                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_41_r_480_1h_max)
+                    item_buy_logic.append(dataframe['crsi_1h'] > self.buy_41_crsi_1h_min)
 
                 # Condition #42
                 elif index == 42:
