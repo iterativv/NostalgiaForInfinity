@@ -2821,7 +2821,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     elif (last_candle['cti'] > 0.942):
                         return True, 'signal_profit_u_bear_5_5'
                     elif (last_candle['rsi_14'] < 57.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf'] < 0.0):
-                        return True, 'signal_profit_u_bull_5_6'
+                        return True, 'signal_profit_u_bear_5_6'
                 elif 0.05 > current_profit >= 0.04:
                     if last_candle['rsi_14'] < 50.0:
                         return True, 'signal_profit_u_bear_4_1'
@@ -2832,7 +2832,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     elif (last_candle['cti'] > 0.944):
                         return True, 'signal_profit_u_bear_4_5'
                     elif (last_candle['rsi_14'] < 56.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf'] < 0.0):
-                        return True, 'signal_profit_u_bull_4_6'
+                        return True, 'signal_profit_u_bear_4_6'
                 elif 0.04 > current_profit >= 0.03:
                     if last_candle['rsi_14'] < 48.0:
                         return True, 'signal_profit_u_bear_3_1'
@@ -2843,7 +2843,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     elif (last_candle['cti'] > 0.946):
                         return True, 'signal_profit_u_bear_3_5'
                     elif (last_candle['rsi_14'] < 55.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf'] < 0.0):
-                        return True, 'signal_profit_u_bull_3_6'
+                        return True, 'signal_profit_u_bear_3_6'
                 elif 0.03 > current_profit >= 0.02:
                     if last_candle['rsi_14'] < 55.0: #46
                         return True, 'signal_profit_u_bear_2_1'
@@ -2854,7 +2854,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     elif (last_candle['cti'] > 0.948):
                         return True, 'signal_profit_u_bear_2_5'
                     elif (last_candle['rsi_14'] < 54.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf'] < 0.0):
-                        return True, 'signal_profit_u_bull_2_6'
+                        return True, 'signal_profit_u_bear_2_6'
                     elif (last_candle['rsi_14'] < 54.0) and (last_candle['cmf_1h'] < -0.05) and (last_candle['cti_1h'] > 0.85):
                         return True, 'signal_profit_u_bear_2_7'
                 elif 0.02 > current_profit >= 0.01:
@@ -2867,7 +2867,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     elif (last_candle['cti'] > 0.95):
                         return True, 'signal_profit_u_bear_1_5'
                     elif (last_candle['rsi_14'] < 44.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf'] < 0.0):
-                        return True, 'signal_profit_u_bull_1_6'
+                        return True, 'signal_profit_u_bear_1_6'
                     elif (last_candle['rsi_14'] < 44.0) and (last_candle['cmf_1h'] < -0.05) and (last_candle['cti_1h'] > 0.85):
                         return True, 'signal_profit_u_bear_1_7'
                     elif (last_candle['rsi_14'] < 34.0):
