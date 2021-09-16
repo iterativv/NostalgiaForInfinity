@@ -3802,7 +3802,7 @@ class NostalgiaForInfinityNext(IStrategy):
             return None
 
         # Quick sell mode
-        if all(c in ['32', '33', '34', '35', '36', '37', '38', '40'] for c in buy_tags):
+        if all(c in ['empty', '32', '33', '34', '35', '36', '37', '38', '40'] for c in buy_tags):
             sell, signal_name = self.sell_quick_mode(current_profit, max_profit, last_candle, previous_candle_1)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag} )"
