@@ -1397,7 +1397,7 @@ class NostalgiaForInfinityNext(IStrategy):
         },
         45: {
             "ema_fast"                  : True,
-            "ema_fast_len"              : "50",
+            "ema_fast_len"              : "15",
             "ema_slow"                  : True,
             "ema_slow_len"              : "12",
             "close_above_ema_fast"      : False,
