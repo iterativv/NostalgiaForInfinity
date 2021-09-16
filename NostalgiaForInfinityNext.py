@@ -1917,7 +1917,7 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_45_bb40_bbdelta_close = 0.039
     buy_45_bb40_closedelta_close = 0.0231
     buy_45_bb40_tail_bbdelta = 0.24
-    buy_45_ma_offset = 0.94
+    buy_45_ma_offset = 0.948
     buy_45_ewo_min = 2.0
     buy_45_ewo_1h_min = 2.0
     buy_45_cti_1h_max = 0.76
