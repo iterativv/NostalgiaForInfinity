@@ -3673,7 +3673,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     return True, 'sell_long_7_2_1'
 
         # Sell signal 8
-        elif (last_candle['close'] > last_candle['bb20_2_upp_1h'] * 1.08):
+        elif (last_candle['close'] > last_candle['bb20_2_upp_1h'] * 1.05):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
                     return True, 'sell_long_8_1_1'
