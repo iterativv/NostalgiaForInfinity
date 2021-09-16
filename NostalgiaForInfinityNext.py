@@ -3650,7 +3650,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     return True, 'sell_long_3_2_1'
 
         # Sell signal 4
-        elif (last_candle['rsi_14'] > 80.0) and (last_candle['rsi_14_1h'] > 80.0):
+        elif (last_candle['rsi_14'] > 78.0) and (last_candle['rsi_14_1h'] > 80.0):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
                     return True, 'sell_long_4_1_1'
@@ -3664,7 +3664,7 @@ class NostalgiaForInfinityNext(IStrategy):
                 return True, 'sell_long_6_1'
 
         # Sell signal 7
-        elif (last_candle['rsi_14_1h'] > 83.0) and (last_candle['crossed_below_ema_12_26']):
+        elif (last_candle['rsi_14_1h'] > 82.0) and (last_candle['crossed_below_ema_12_26']):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
                     return True, 'sell_long_7_1_1'
@@ -3673,7 +3673,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     return True, 'sell_long_7_2_1'
 
         # Sell signal 8
-        elif (last_candle['close'] > last_candle['bb20_2_upp_1h'] * 1.05):
+        elif (last_candle['close'] > last_candle['bb20_2_upp_1h'] * 1.08):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
                     return True, 'sell_long_8_1_1'
