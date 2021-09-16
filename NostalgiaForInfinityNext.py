@@ -1834,12 +1834,12 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_36_r_14_max = -97.0
     buy_36_crsi_1h_min = 12.0
 
-    buy_37_ma_offset = 0.945
-    buy_37_ewo_min = 5.0
+    buy_37_ma_offset = 0.98
+    buy_37_ewo_min = 7.5
     buy_37_rsi_max = 46.0
     buy_37_cti_max = -0.84
     buy_37_r_14_max = -97.0
-    buy_37_close_1h_max = 0.04
+    buy_37_close_1h_max = 0.055
     buy_37_cti_1h_max = 0.92
 
     buy_38_ma_offset = 0.98
