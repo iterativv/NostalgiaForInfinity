@@ -1189,9 +1189,9 @@ class NostalgiaForInfinityNext(IStrategy):
         },
         40: {
             "ema_fast"                  : True,
-            "ema_fast_len"              : "12",
-            "ema_slow"                  : False,
-            "ema_slow_len"              : "25",
+            "ema_fast_len"              : "50",
+            "ema_slow"                  : True,
+            "ema_slow_len"              : "12",
             "close_above_ema_fast"      : False,
             "close_above_ema_fast_len"  : "200",
             "close_above_ema_slow"      : True,
@@ -1202,14 +1202,14 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising_val"      : "20",
             "safe_dips"                 : True,
             "safe_dips_type"            : "130",
-            "safe_pump"                 : False,
-            "safe_pump_type"            : "50",
+            "safe_pump"                 : True,
+            "safe_pump_type"            : "100",
             "safe_pump_period"          : "48",
             "btc_1h_not_downtrend"      : True,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_over_pivot_offset"   : 1.0,
             "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
-            "close_under_pivot_offset"  : 1.0
+            "close_under_pivot_offset"  : 1.2
         },
         41: {
             "ema_fast"                  : False,
@@ -1834,12 +1834,12 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_36_r_14_max = -97.0
     buy_36_crsi_1h_min = 12.0
 
-    buy_37_ma_offset = 0.945
-    buy_37_ewo_min = 5.0
+    buy_37_ma_offset = 0.98
+    buy_37_ewo_min = 7.5
     buy_37_rsi_max = 46.0
     buy_37_cti_max = -0.84
     buy_37_r_14_max = -97.0
-    buy_37_close_1h_max = 0.04
+    buy_37_close_1h_max = 0.055
     buy_37_cti_1h_max = 0.92
 
     buy_38_ma_offset = 0.98
@@ -1852,10 +1852,9 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_39_cti_1h_min = -0.1
     buy_39_cti_1h_max = 0.4
 
-    buy_40_crsi_max = 50.0
-    buy_40_cci_max = -250.0
-    buy_40_rsi_max = 36.0
-    buy_40_r_14_max = -90.0
+    buy_40_cci_max = -150.0
+    buy_40_rsi_max = 30.0
+    buy_40_r_14_max = -99.9
     buy_40_cti_max = -0.8
 
     buy_41_ewo_1h_min = 4.0
@@ -2822,7 +2821,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     elif (last_candle['cti'] > 0.942):
                         return True, 'signal_profit_u_bear_5_5'
                     elif (last_candle['rsi_14'] < 57.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf'] < 0.0):
-                        return True, 'signal_profit_u_bull_5_6'
+                        return True, 'signal_profit_u_bear_5_6'
                 elif 0.05 > current_profit >= 0.04:
                     if last_candle['rsi_14'] < 50.0:
                         return True, 'signal_profit_u_bear_4_1'
@@ -2833,7 +2832,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     elif (last_candle['cti'] > 0.944):
                         return True, 'signal_profit_u_bear_4_5'
                     elif (last_candle['rsi_14'] < 56.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf'] < 0.0):
-                        return True, 'signal_profit_u_bull_4_6'
+                        return True, 'signal_profit_u_bear_4_6'
                 elif 0.04 > current_profit >= 0.03:
                     if last_candle['rsi_14'] < 48.0:
                         return True, 'signal_profit_u_bear_3_1'
@@ -2844,7 +2843,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     elif (last_candle['cti'] > 0.946):
                         return True, 'signal_profit_u_bear_3_5'
                     elif (last_candle['rsi_14'] < 55.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf'] < 0.0):
-                        return True, 'signal_profit_u_bull_3_6'
+                        return True, 'signal_profit_u_bear_3_6'
                 elif 0.03 > current_profit >= 0.02:
                     if last_candle['rsi_14'] < 55.0: #46
                         return True, 'signal_profit_u_bear_2_1'
@@ -2855,7 +2854,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     elif (last_candle['cti'] > 0.948):
                         return True, 'signal_profit_u_bear_2_5'
                     elif (last_candle['rsi_14'] < 54.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf'] < 0.0):
-                        return True, 'signal_profit_u_bull_2_6'
+                        return True, 'signal_profit_u_bear_2_6'
                     elif (last_candle['rsi_14'] < 54.0) and (last_candle['cmf_1h'] < -0.05) and (last_candle['cti_1h'] > 0.85):
                         return True, 'signal_profit_u_bear_2_7'
                 elif 0.02 > current_profit >= 0.01:
@@ -2868,7 +2867,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     elif (last_candle['cti'] > 0.95):
                         return True, 'signal_profit_u_bear_1_5'
                     elif (last_candle['rsi_14'] < 44.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf'] < 0.0):
-                        return True, 'signal_profit_u_bull_1_6'
+                        return True, 'signal_profit_u_bear_1_6'
                     elif (last_candle['rsi_14'] < 44.0) and (last_candle['cmf_1h'] < -0.05) and (last_candle['cti_1h'] > 0.85):
                         return True, 'signal_profit_u_bear_1_7'
                     elif (last_candle['rsi_14'] < 34.0):
@@ -3803,7 +3802,7 @@ class NostalgiaForInfinityNext(IStrategy):
             return None
 
         # Quick sell mode
-        if all(c in ['32', '33', '34', '35', '36', '37', '38', '40'] for c in buy_tags):
+        if all(c in ['empty', '32', '33', '34', '35', '36', '37', '38', '40'] for c in buy_tags):
             sell, signal_name = self.sell_quick_mode(current_profit, max_profit, last_candle, previous_candle_1)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag} )"
@@ -3856,7 +3855,7 @@ class NostalgiaForInfinityNext(IStrategy):
             return f"{signal_name} ( {buy_tag} )"
 
         # Stoplosses
-        if any(c in ['empty', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '40', '41', '42', '44', '45', '46', '47', '48'] for c in buy_tags):
+        if any(c in ['empty', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '41', '42', '44', '45', '46', '47', '48'] for c in buy_tags):
             sell, signal_name = self.sell_stoploss_atr(current_profit, last_candle, previous_candle_1, trade, current_time)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag} )"
@@ -5135,13 +5134,12 @@ class NostalgiaForInfinityNext(IStrategy):
                         (dataframe['leading_senkou_span_a_1h'].shift(12) < dataframe['leading_senkou_span_b_1h'].shift(12))
                     )
 
-                # Condition #40 - ZLEMA X buy
+                # Condition #40
                 elif index == 40:
                     # Non-Standard protections (add below)
 
                     # Logic
-                    item_buy_logic.append(qtpylib.crossed_above(dataframe['zlema_2'], dataframe['zlema_4']))
-                    item_buy_logic.append(dataframe['crsi'] < self.buy_40_crsi_max)
+                    item_buy_logic.append(dataframe['momdiv_buy_1h'] == True)
                     item_buy_logic.append(dataframe['cci'] < self.buy_40_cci_max)
                     item_buy_logic.append(dataframe['rsi_14'] < self.buy_40_rsi_max)
                     item_buy_logic.append(dataframe['r_14'] < self.buy_40_r_14_max)
