@@ -1865,12 +1865,11 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_41_crsi_1h_min = 14.0
 
     buy_42_ema_open_mult = 0.018
-    buy_42_bb_offset = 0.99
+    buy_42_bb_offset = 0.992
     buy_42_ewo_1h_min = 2.8
     buy_42_cti_1h_min = -0.5
     buy_42_cti_1h_max = 0.88
-    buy_42_r_480_1h_min = -90.0
-    buy_42_r_480_1h_max = -10.0
+    buy_42_r_480_1h_max = -12.0
 
     buy_43_bb40_bbdelta_close = 0.045
     buy_43_bb40_closedelta_close = 0.02
@@ -5165,7 +5164,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_42_bb_offset))
                     item_buy_logic.append(dataframe['ewo_sma_1h'] > self.buy_42_ewo_1h_min)
                     item_buy_logic.append(dataframe['cti_1h'] > self.buy_42_cti_1h_min)
-                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_42_cti_1h_max)
+                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_42_r_480_1h_max)
 
                 # Condition #43
                 elif index == 43:
