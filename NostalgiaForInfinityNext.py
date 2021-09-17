@@ -1766,10 +1766,10 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_19_rsi_1h_min = 30.0
     buy_19_chop_max = 21.3
 
-    buy_rsi_20 = 36.0
-    buy_rsi_1h_20 = 16.0
-    buy_cti_20 = -0.84
-    buy_volume_20 = 2.0
+    buy_20_rsi_14_max = 36.0
+    buy_20_rsi_14_1h_max = 16.0
+    buy_20_cti_max = -0.84
+    buy_20_volume = 2.0
 
     buy_rsi_21 = 14.0
     buy_rsi_1h_21 = 28.0
@@ -3922,12 +3922,12 @@ class NostalgiaForInfinityNext(IStrategy):
             return f"{signal_name} ( {buy_tag})"
 
         # Stoplosses
-        if any(c in ['empty', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'] for c in buy_tags):
+        if any(c in ['empty', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'] for c in buy_tags):
             sell, signal_name = self.sell_stoploss_atr(current_profit, last_candle, previous_candle_1, trade, current_time)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag})"
 
-        if any(c in ['empty', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '32', '33', '34', '35', '36', '37', '38', '39','40', '41', '42', '43', '44', '45', '46', '47', '48'] for c in buy_tags):
+        if any(c in ['empty', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '32', '33', '34', '35', '36', '37', '38', '39','40', '41', '42', '43', '44', '45', '46', '47', '48'] for c in buy_tags):
             sell, signal_name = self.sell_stoploss_extra(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag})"
@@ -4944,10 +4944,10 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Non-Standard protections
 
                     # Logic
-                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_rsi_20)
-                    item_buy_logic.append(dataframe['rsi_14_1h'] < self.buy_rsi_1h_20)
-                    item_buy_logic.append(dataframe['cti'] < self.buy_cti_20)
-                    item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_volume_20))
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_20_rsi_14_max)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] < self.buy_20_rsi_14_1h_max)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_20_cti_max)
+                    item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_20_volume))
 
                 # Condition #21
                 elif index == 21:
