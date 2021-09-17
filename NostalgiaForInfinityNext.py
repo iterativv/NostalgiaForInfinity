@@ -1464,10 +1464,10 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_rising_val"         : "30",
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "24",
-            "safe_dips_threshold_0"     : 0.028,
-            "safe_dips_threshold_2"     : 0.3,
-            "safe_dips_threshold_12"    : 0.48,
-            "safe_dips_threshold_144"   : 0.9,
+            "safe_dips_threshold_0"     : 0.025,
+            "safe_dips_threshold_2"     : 0.05,
+            "safe_dips_threshold_12"    : 0.25,
+            "safe_dips_threshold_144"   : 0.5,
             "safe_pump"                 : True,
             "safe_pump_type"            : "120",
             "safe_pump_period"          : "24",
@@ -1932,15 +1932,14 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_46_cti_1h_min = -0.9
     buy_46_cti_1h_max = 0.5
 
-    buy_47_ewo_min = 4.0
-    buy_47_ma_offset = 0.974
-    buy_47_rsi_diff = 43.0
-    buy_47_ewo_1h_min = 4.5
-    buy_47_r_1h_min = -90.0
-    buy_47_r_1h_max = -16.0
-    buy_47_cti_1h_min = -0.7
-    buy_47_cti_1h_max = 0.95
-    buy_47_crsi_1h_min = 10.0
+    buy_47_ewo_min = 3.2
+    buy_47_ma_offset = 0.952
+    buy_47_rsi_14_max = 46.0
+    buy_47_cti_max = -0.93
+    buy_47_r_14_max = -97.0
+    buy_47_ewo_1h_min = 2.0
+    buy_47_cti_1h_min = -0.9
+    buy_47_cti_1h_max = 0.3
 
     buy_48_ewo_min = 8.0
     buy_48_ewo_1h_min = 14.0
@@ -3935,12 +3934,12 @@ class NostalgiaForInfinityNext(IStrategy):
             return f"{signal_name} ( {buy_tag})"
 
         # Stoplosses
-        if any(c in ['empty', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '47', '48'] for c in buy_tags):
+        if any(c in ['empty', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '48'] for c in buy_tags):
             sell, signal_name = self.sell_stoploss_atr(current_profit, last_candle, previous_candle_1, trade, current_time)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag})"
 
-        if any(c in ['empty', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '32', '33', '34', '35', '36', '37', '38', '39','40', '41', '42', '43', '44', '45', '46'] for c in buy_tags):
+        if any(c in ['empty', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '32', '33', '34', '35', '36', '37', '38', '39','40', '41', '42', '43', '44', '45', '46', '47'] for c in buy_tags):
             sell, signal_name = self.sell_stoploss_extra(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag})"
@@ -5314,12 +5313,12 @@ class NostalgiaForInfinityNext(IStrategy):
                     # Non-Standard protections
 
                     # Logic
-                    item_buy_logic.append(dataframe['ewo'] > self.buy_47_ewo_min)
-                    item_buy_logic.append(dataframe['close'] < (dataframe['ema_50'] * self.buy_47_ma_offset))
-                    item_buy_logic.append(dataframe['rsi_14'] < (dataframe['rsi_14_1h'] - self.buy_47_rsi_diff))
-                    item_buy_logic.append(dataframe['ewo_1h'] > self.buy_47_ewo_1h_min)
-                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_47_r_1h_min)
-                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_47_r_1h_max)
+                    item_buy_logic.append(dataframe['ewo_sma'] > self.buy_47_ewo_min)
+                    item_buy_logic.append(dataframe['close'] < (dataframe['sma_30'] * self.buy_47_ma_offset))
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_47_rsi_14_max)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_47_cti_max)
+                    item_buy_logic.append(dataframe['r_14'] < self.buy_47_r_14_max)
+                    item_buy_logic.append(dataframe['ewo_sma_1h'] > self.buy_47_ewo_1h_min)
                     item_buy_logic.append(dataframe['cti_1h'] > self.buy_47_cti_1h_min)
                     item_buy_logic.append(dataframe['cti_1h'] < self.buy_47_cti_1h_max)
 
