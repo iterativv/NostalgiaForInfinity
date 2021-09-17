@@ -1892,7 +1892,7 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_40_cti_max = -0.8
 
     buy_41_ma_offset_high = 0.95
-    buy_41_cti_max = -0.92
+    buy_41_cti_max = -0.95
     buy_41_cci_max = -178.0
     buy_41_ewo_1h_min = 0.5
     buy_41_r_480_1h_max = -14.0
