@@ -1941,7 +1941,7 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_47_cti_1h_min = -0.9
     buy_47_cti_1h_max = 0.3
 
-    buy_48_ewo_min = 8.0
+    buy_48_ewo_min = 8.5
     buy_48_ewo_1h_min = 14.0
     buy_48_r_480_min = -25.0
     buy_48_r_480_1h_min = -50.0
@@ -5298,8 +5298,8 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['moderi_96'])
 
                     # Logic
-                    item_buy_logic.append(dataframe['ewo'] > self.buy_48_ewo_min)
-                    item_buy_logic.append(dataframe['ewo_1h'] > self.buy_48_ewo_1h_min)
+                    item_buy_logic.append(dataframe['ewo_sma'] > self.buy_48_ewo_min)
+                    item_buy_logic.append(dataframe['ewo_sma_1h'] > self.buy_48_ewo_1h_min)
                     item_buy_logic.append(dataframe['r_480'] > self.buy_48_r_480_min)
                     item_buy_logic.append(dataframe['r_480_1h'] > self.buy_48_r_480_1h_min)
                     item_buy_logic.append(dataframe['r_480_1h'] < self.buy_48_r_480_1h_max)
