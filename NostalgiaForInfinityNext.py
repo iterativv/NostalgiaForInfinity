@@ -1880,6 +1880,7 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_38_ewo_max = -4.4
     buy_38_cti_max = -0.95
     buy_38_r_14_max = -97.0
+    buy_38_crsi_1h_min = 0.5
 
     buy_39_cti_max = -0.1
     buy_39_r_1h_max = -22.0
@@ -5141,6 +5142,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['ewo_sma'] < self.buy_38_ewo_max)
                     item_buy_logic.append(dataframe['cti'] < self.buy_38_cti_max)
                     item_buy_logic.append(dataframe['r_14'] < self.buy_38_r_14_max)
+                    item_buy_logic.append(dataframe['crsi_1h'] > self.buy_38_crsi_1h_min)
 
                 # Condition #39 - Ichimoku
                 elif index == 39:
