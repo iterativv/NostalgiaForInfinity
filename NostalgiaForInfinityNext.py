@@ -1779,9 +1779,9 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_22_volume = 2.0
     buy_22_bb_offset = 0.984
     buy_22_ma_offset = 0.98
-    buy_22_ewo_min = 5.8
+    buy_22_ewo_min = 5.6
     buy_22_rsi_14_max = 36.0
-    buy_22_cti_max = -0.5
+    buy_22_cti_max = -0.54
     buy_22_r_480_max = -40.0
     buy_22_cti_1h_min = -0.5
 
