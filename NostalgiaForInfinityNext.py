@@ -919,17 +919,17 @@ class NostalgiaForInfinityNext(IStrategy):
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
             "safe_dips_threshold_0"     : 0.016,
-            "safe_dips_threshold_2"     : 0.11,
-            "safe_dips_threshold_12"    : 0.26,
-            "safe_dips_threshold_144"   : 0.44,
+            "safe_dips_threshold_2"     : 0.1,
+            "safe_dips_threshold_12"    : 0.11,
+            "safe_dips_threshold_144"   : 0.22,
             "safe_pump"                 : True,
             "safe_pump_type"            : "100",
             "safe_pump_period"          : "36",
             "btc_1h_not_downtrend"      : True,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_over_pivot_offset"   : 1.0,
-            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
-            "close_under_pivot_offset"  : 1.1
+            "close_under_pivot_type"    : "res3", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.35
         },
         27: {
             "ema_fast"                  : False,
@@ -1801,9 +1801,9 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_25_cti_max = -0.78
     buy_25_cci_max = -200.0
 
-    buy_26_zema_low_offset = 0.94
+    buy_26_zema_low_offset = 0.9405
     buy_26_cti_max = -0.72
-    buy_26_cci_max = -160.0
+    buy_26_cci_max = -166.0
     buy_26_r_14_max = -98.0
     buy_26_cti_1h_max = 0.95
     buy_26_volume = 2.0
@@ -3922,12 +3922,12 @@ class NostalgiaForInfinityNext(IStrategy):
             return f"{signal_name} ( {buy_tag})"
 
         # Stoplosses
-        if any(c in ['empty', '26', '27', '28', '29', '30', '31'] for c in buy_tags):
+        if any(c in ['empty', '27', '28', '29', '30', '31'] for c in buy_tags):
             sell, signal_name = self.sell_stoploss_atr(current_profit, last_candle, previous_candle_1, trade, current_time)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag})"
 
-        if any(c in ['empty', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '32', '33', '34', '35', '36', '37', '38', '39','40', '41', '42', '43', '44', '45', '46', '47', '48'] for c in buy_tags):
+        if any(c in ['empty', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '32', '33', '34', '35', '36', '37', '38', '39','40', '41', '42', '43', '44', '45', '46', '47', '48'] for c in buy_tags):
             sell, signal_name = self.sell_stoploss_extra(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag})"
