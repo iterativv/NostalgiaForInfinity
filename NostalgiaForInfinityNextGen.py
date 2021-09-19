@@ -1035,6 +1035,13 @@ class NostalgiaForInfinityNextGen(IStrategy):
         # CTI
         informative_1h['cti'] = pta.cti(informative_1h["close"], length=20)
 
+        # Williams %R
+        informative_1h['r_14'] = williams_r(informative_1h, period=14)
+        informative_1h['r_480'] = williams_r(informative_1h, period=480)
+
+        # EWO
+        informative_1h['ewo'] = ewo(informative_1h, 50, 200)
+
         # Pump protections
         informative_1h['hl_pct_change_48'] = self.range_percent_change(informative_1h, 'HL', 48)
         informative_1h['hl_pct_change_36'] = self.range_percent_change(informative_1h, 'HL', 36)
@@ -1098,6 +1105,9 @@ class NostalgiaForInfinityNextGen(IStrategy):
         dataframe['moderi_32'] = moderi(dataframe, 32)
         dataframe['moderi_64'] = moderi(dataframe, 64)
         dataframe['moderi_96'] = moderi(dataframe, 96)
+
+        # EWO
+        dataframe['ewo'] = ewo(dataframe, 50, 200)
 
         # For sell checks
         dataframe['crossed_below_ema_12_26'] = qtpylib.crossed_below(dataframe['ema_12'], dataframe['ema_26'])
