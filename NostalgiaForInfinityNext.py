@@ -1696,6 +1696,7 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_8_bb_offset = 0.986
     buy_8_r_14_max = -98.0
     buy_8_cti_1h_max = 0.95
+    buy_8_r_480_1h_max = -18.0
     buy_8_volume = 1.8
 
     buy_9_ma_offset = 0.968
@@ -4765,6 +4766,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_8_bb_offset))
                     item_buy_logic.append(dataframe['r_14'] < self.buy_8_r_14_max)
                     item_buy_logic.append(dataframe['cti_1h'] < self.buy_8_cti_1h_max)
+                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_8_r_480_1h_max)
                     item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * self.buy_8_volume))
 
                 # Condition #9
