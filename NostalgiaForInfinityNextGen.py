@@ -1258,11 +1258,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
         informative_1h['hl_pct_change_48'] = self.range_percent_change(informative_1h, 'HL', 48)
         informative_1h['hl_pct_change_36'] = self.range_percent_change(informative_1h, 'HL', 36)
         informative_1h['hl_pct_change_24'] = self.range_percent_change(informative_1h, 'HL', 24)
-
-        informative_1h['oc_pct_change_48'] = self.range_percent_change(informative_1h, 'OC', 48)
-        informative_1h['oc_pct_change_36'] = self.range_percent_change(informative_1h, 'OC', 36)
-        informative_1h['oc_pct_change_24'] = self.range_percent_change(informative_1h, 'OC', 24)
-        informative_1h['oc_pct_change_12'] = self.range_percent_change(informative_1h, 'OC', 12)
+        informative_1h['hl_pct_change_12'] = self.range_percent_change(informative_1h, 'HL', 12)
 
         tok = time.perf_counter()
         log.debug(f"[{metadata['pair']}] informative_1h_indicators took: {tok - tik:0.4f} seconds.")
@@ -1510,13 +1506,13 @@ class NostalgiaForInfinityNextGen(IStrategy):
                 if global_buy_protection_params["safe_dips_threshold_144"] is not None:
                     item_buy_protection_list.append(dataframe['tpct_change_144'] < global_buy_protection_params["safe_dips_threshold_144"])
                 if global_buy_protection_params["safe_pump_12h_threshold"] is not None:
-                    item_buy_protection_list.append(dataframe['oc_pct_change_12_1h'] < global_buy_protection_params["safe_pump_12h_threshold"])
+                    item_buy_protection_list.append(dataframe['hl_pct_change_12_1h'] < global_buy_protection_params["safe_pump_12h_threshold"])
                 if global_buy_protection_params["safe_pump_24h_threshold"] is not None:
-                    item_buy_protection_list.append(dataframe['oc_pct_change_24_1h'] < global_buy_protection_params["safe_pump_24h_threshold"])
+                    item_buy_protection_list.append(dataframe['hl_pct_change_24_1h'] < global_buy_protection_params["safe_pump_24h_threshold"])
                 if global_buy_protection_params["safe_pump_36h_threshold"] is not None:
-                    item_buy_protection_list.append(dataframe['oc_pct_change_36_1h'] < global_buy_protection_params["safe_pump_36h_threshold"])
+                    item_buy_protection_list.append(dataframe['hl_pct_change_36_1h'] < global_buy_protection_params["safe_pump_36h_threshold"])
                 if global_buy_protection_params["safe_pump_48h_threshold"] is not None:
-                    item_buy_protection_list.append(dataframe['oc_pct_change_48_1h'] < global_buy_protection_params["safe_pump_48h_threshold"])
+                    item_buy_protection_list.append(dataframe['hl_pct_change_48_1h'] < global_buy_protection_params["safe_pump_48h_threshold"])
                 if global_buy_protection_params['btc_1h_not_downtrend']:
                     item_buy_protection_list.append(dataframe['btc_not_downtrend_1h'])
                 if global_buy_protection_params['close_over_pivot_type'] != 'none':
