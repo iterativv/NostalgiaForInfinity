@@ -185,6 +185,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
         "buy_condition_3_enable": True,
         "buy_condition_4_enable": True,
         "buy_condition_5_enable": True,
+        "buy_condition_6_enable": True,
         #############
     }
 
@@ -331,6 +332,33 @@ class NostalgiaForInfinityNextGen(IStrategy):
             "close_over_pivot_offset"   : 1.0,
             "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_under_pivot_offset"  : 1.3
+        },
+        6: {
+            "ema_fast"                  : False,
+            "ema_fast_len"              : "50",
+            "ema_slow"                  : True,
+            "ema_slow_len"              : "50",
+            "close_above_ema_fast"      : False,
+            "close_above_ema_fast_len"  : "200",
+            "close_above_ema_slow"      : False,
+            "close_above_ema_slow_len"  : "200",
+            "sma200_rising"             : False,
+            "sma200_rising_val"         : "50",
+            "sma200_1h_rising"          : False,
+            "sma200_1h_rising_val"      : "24",
+            "safe_dips_threshold_0"     : 0.08,
+            "safe_dips_threshold_2"     : 0.24,
+            "safe_dips_threshold_12"    : 0.4,
+            "safe_dips_threshold_144"   : 0.8,
+            "safe_pump_12h_threshold"   : 0.4,
+            "safe_pump_24h_threshold"   : 0.5,
+            "safe_pump_36h_threshold"   : 0.6,
+            "safe_pump_48h_threshold"   : 0.8,
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "sup3", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "res3", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.15
         }
     }
 
@@ -1249,6 +1277,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
 
         # EMAs
         dataframe['ema_12'] = ta.EMA(dataframe, timeperiod=12)
+        dataframe['ema_20'] = ta.EMA(dataframe, timeperiod=20)
         dataframe['ema_26'] = ta.EMA(dataframe, timeperiod=26)
         dataframe['ema_50'] = ta.EMA(dataframe, timeperiod=50)
         dataframe['ema_100'] = ta.EMA(dataframe, timeperiod=100)
@@ -1293,6 +1322,9 @@ class NostalgiaForInfinityNextGen(IStrategy):
 
         # EWO
         dataframe['ewo'] = ewo(dataframe, 50, 200)
+
+        # CCI
+        dataframe['cci'] = ta.CCI(dataframe, source='hlc3', timeperiod=20)
 
         # For sell checks
         dataframe['crossed_below_ema_12_26'] = qtpylib.crossed_below(dataframe['ema_12'], dataframe['ema_26'])
@@ -1559,6 +1591,19 @@ class NostalgiaForInfinityNextGen(IStrategy):
                     item_buy_logic.append(dataframe['rsi_14'] < 24.0)
                     item_buy_logic.append(dataframe['cti'] < -0.9)
                     item_buy_logic.append(dataframe['r_14'] < -95.0)
+
+                # Condition #6 - Semi swing. Local deeper dip. Uptrend.
+                elif index == 6:
+                    # Non-Standard protections
+
+                    # Logic
+                    item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * 0.942)
+                    item_buy_logic.append(dataframe['ewo'] > 2.8)
+                    item_buy_logic.append(dataframe['rsi_14'] < 36.0)
+                    item_buy_logic.append(dataframe['cti'] < -0.86)
+                    item_buy_logic.append(dataframe['cci'] < -180.0)
+                    item_buy_logic.append(dataframe['r_14'] < -97.0)
+                    item_buy_logic.append(dataframe['r_480_1h'] < -35.0)
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
