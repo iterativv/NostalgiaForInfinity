@@ -216,6 +216,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
             "safe_dips_threshold_2"     : None,
             "safe_dips_threshold_12"    : None,
             "safe_dips_threshold_144"   : None,
+            "safe_pump_6h_threshold"    : None,
             "safe_pump_12h_threshold"   : 0.4,
             "safe_pump_24h_threshold"   : None,
             "safe_pump_36h_threshold"   : None,
@@ -243,6 +244,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
             "safe_dips_threshold_2"     : 0.1,
             "safe_dips_threshold_12"    : 0.2,
             "safe_dips_threshold_144"   : 0.25,
+            "safe_pump_6h_threshold"    : None,
             "safe_pump_12h_threshold"   : 0.4,
             "safe_pump_24h_threshold"   : 0.6,
             "safe_pump_36h_threshold"   : 0.7,
@@ -270,6 +272,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
             "safe_dips_threshold_2"     : 0.12,
             "safe_dips_threshold_12"    : 0.25,
             "safe_dips_threshold_144"   : 0.4,
+            "safe_pump_6h_threshold"    : None,
             "safe_pump_12h_threshold"   : 0.5,
             "safe_pump_24h_threshold"   : 0.6,
             "safe_pump_36h_threshold"   : 0.8,
@@ -297,6 +300,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
             "safe_dips_threshold_2"     : 0.1,
             "safe_dips_threshold_12"    : 0.15,
             "safe_dips_threshold_144"   : 0.2,
+            "safe_pump_6h_threshold"    : None,
             "safe_pump_12h_threshold"   : 0.12,
             "safe_pump_24h_threshold"   : 0.2,
             "safe_pump_36h_threshold"   : 0.7,
@@ -324,6 +328,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
             "safe_dips_threshold_2"     : 0.14,
             "safe_dips_threshold_12"    : 0.24,
             "safe_dips_threshold_144"   : 0.36,
+            "safe_pump_6h_threshold"    : None,
             "safe_pump_12h_threshold"   : 0.3,
             "safe_pump_24h_threshold"   : 0.4,
             "safe_pump_36h_threshold"   : 0.6,
@@ -351,6 +356,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
             "safe_dips_threshold_2"     : 0.24,
             "safe_dips_threshold_12"    : 0.4,
             "safe_dips_threshold_144"   : 0.8,
+            "safe_pump_6h_threshold"    : None,
             "safe_pump_12h_threshold"   : 0.4,
             "safe_pump_24h_threshold"   : 0.5,
             "safe_pump_36h_threshold"   : 0.6,
@@ -378,6 +384,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
             "safe_dips_threshold_2"     : 0.1,
             "safe_dips_threshold_12"    : 0.2,
             "safe_dips_threshold_144"   : 0.6,
+            "safe_pump_6h_threshold"    : None,
             "safe_pump_12h_threshold"   : None,
             "safe_pump_24h_threshold"   : None,
             "safe_pump_36h_threshold"   : None,
@@ -1431,6 +1438,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
         informative_1h['hl_pct_change_36'] = self.range_percent_change(informative_1h, 'HL', 36)
         informative_1h['hl_pct_change_24'] = self.range_percent_change(informative_1h, 'HL', 24)
         informative_1h['hl_pct_change_12'] = self.range_percent_change(informative_1h, 'HL', 12)
+        informative_1h['hl_pct_change_6'] = self.range_percent_change(informative_1h, 'HL', 6)
 
         tok = time.perf_counter()
         log.debug(f"[{metadata['pair']}] informative_1h_indicators took: {tok - tik:0.4f} seconds.")
@@ -1678,6 +1686,8 @@ class NostalgiaForInfinityNextGen(IStrategy):
                     item_buy_protection_list.append(dataframe['tpct_change_12'] < global_buy_protection_params["safe_dips_threshold_12"])
                 if global_buy_protection_params["safe_dips_threshold_144"] is not None:
                     item_buy_protection_list.append(dataframe['tpct_change_144'] < global_buy_protection_params["safe_dips_threshold_144"])
+                if global_buy_protection_params["safe_pump_6h_threshold"] is not None:
+                    item_buy_protection_list.append(dataframe['hl_pct_change_6_1h'] < global_buy_protection_params["safe_pump_6h_threshold"])
                 if global_buy_protection_params["safe_pump_12h_threshold"] is not None:
                     item_buy_protection_list.append(dataframe['hl_pct_change_12_1h'] < global_buy_protection_params["safe_pump_12h_threshold"])
                 if global_buy_protection_params["safe_pump_24h_threshold"] is not None:
