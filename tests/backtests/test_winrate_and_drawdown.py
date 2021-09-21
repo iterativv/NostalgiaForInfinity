@@ -76,11 +76,11 @@ def deviations():
         "kucoin": {
             ("20210201", "20210301"): {"max_drawdown": 100, "winrate": 90},
             ("20210301", "20210401"): {"max_drawdown": 100, "winrate": 85},
-            ("20210401", "20210501"): {"max_drawdown": 80, "winrate": 90},
+            ("20210401", "20210501"): {"max_drawdown": 85, "winrate": 90},
             ("20210501", "20210601"): {"max_drawdown": 145, "winrate": 90},
-            ("20210601", "20210701"): {"max_drawdown": 51, "winrate": 76},
+            ("20210601", "20210701"): {"max_drawdown": 55, "winrate": 76},
             ("20210701", "20210801"): {"max_drawdown": 82, "winrate": 90},
-            ("20210801", "20210901"): {"max_drawdown": 80, "winrate": 90},
+            ("20210801", "20210901"): {"max_drawdown": 120, "winrate": 90},
         },
     }
 
