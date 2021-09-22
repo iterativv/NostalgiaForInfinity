@@ -718,8 +718,19 @@ class NostalgiaForInfinityNextGen(IStrategy):
         return False, None
 
     def sell_stoploss(self, current_profit: float, max_profit: float, max_loss: float, last_candle, previous_candle_1, trade: 'Trade', current_time: 'datetime') -> tuple:
-        if (current_profit < -0.0) and (last_candle['close'] < last_candle['ema_200']) and (last_candle['cmf'] < 0.0) and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < 0.015) and last_candle['rsi_14'] > previous_candle_1['rsi_14'] and (last_candle['rsi_14'] > (last_candle['rsi_14_1h'] + 10.0)) and (last_candle['sma_200_dec_24']) and (current_time - timedelta(minutes=1440) > trade.open_date_utc):
-            return True, 'sell_stoploss_u_e_1'
+        if (last_candle['close'] < last_candle['ema_200']) and (last_candle['sma_200_dec_24']) and (last_candle['ema_25'] < last_candle['ema_50']) and (current_time - timedelta(minutes=1440) > trade.open_date_utc):
+            if (-0.12 <= current_profit < -0.08):
+                if (last_candle['close'] < last_candle['atr_high_thresh_1']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_1']):
+                    return True, 'sell_stoploss_atr_1'
+            elif (-0.16 <= current_profit < -0.12):
+                if (last_candle['close'] < last_candle['atr_high_thresh_2']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_2']):
+                    return True, 'sell_stoploss_atr_2'
+            elif (-0.2 <= current_profit < -0.16):
+                if (last_candle['close'] < last_candle['atr_high_thresh_3']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_3']):
+                    return True, 'sell_stoploss_atr_3'
+            elif (current_profit < -0.2):
+                if (last_candle['close'] < last_candle['atr_high_thresh_4']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_4']):
+                    return True, 'sell_stoploss_atr_4'
 
         return False, None
 
@@ -1608,6 +1619,13 @@ class NostalgiaForInfinityNextGen(IStrategy):
 
         # CCI
         dataframe['cci'] = ta.CCI(dataframe, source='hlc3', timeperiod=20)
+
+        # ATR
+        dataframe['atr'] = ta.ATR(dataframe, timeperiod=14)
+        dataframe['atr_high_thresh_1'] = (dataframe['high'] - (dataframe['atr'] * 2.6))
+        dataframe['atr_high_thresh_2'] = (dataframe['high'] - (dataframe['atr'] * 2.4))
+        dataframe['atr_high_thresh_3'] = (dataframe['high'] - (dataframe['atr'] * 2.2))
+        dataframe['atr_high_thresh_4'] = (dataframe['high'] - (dataframe['atr'] * 2.0))
 
         # For sell checks
         dataframe['crossed_below_ema_12_26'] = qtpylib.crossed_below(dataframe['ema_12'], dataframe['ema_26'])
