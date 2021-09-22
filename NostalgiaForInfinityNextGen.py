@@ -1297,6 +1297,46 @@ class NostalgiaForInfinityNextGen(IStrategy):
 
         return False, None
 
+    def sell_dec_main(self, current_profit: float, last_candle) -> tuple:
+        if (last_candle['close'] < last_candle['ema_200']):
+            if 0.02 > current_profit >= 0.012:
+                if (last_candle['rsi_14'] < 55.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.05) and (last_candle['rsi_14_1h'] < 36.0) and (last_candle['cti_1h'] < -0.85):
+                    return True, 'sell_profit_d_u_1_1'
+            elif 0.03 > current_profit >= 0.02:
+                if (last_candle['rsi_14'] < 57.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.05) and (last_candle['rsi_14_1h'] < 39.0) and (last_candle['cti_1h'] < -0.85):
+                    return True, 'sell_profit_d_u_2_1'
+            elif 0.04 > current_profit >= 0.03:
+                if (last_candle['rsi_14'] < 57.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.05) and (last_candle['rsi_14_1h'] < 39.5) and (last_candle['cti_1h'] < -0.85):
+                    return True, 'sell_profit_d_u_3_1'
+            elif 0.05 > current_profit >= 0.04:
+                if (last_candle['rsi_14'] < 58.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.05) and (last_candle['rsi_14_1h'] < 40.0) and (last_candle['cti_1h'] < -0.85):
+                    return True, 'sell_profit_d_u_4_1'
+            elif 0.06 > current_profit >= 0.05:
+                if (last_candle['rsi_14'] < 57.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.05) and (last_candle['rsi_14_1h'] < 39.5) and (last_candle['cti_1h'] < -0.85):
+                    return True, 'sell_profit_d_u_5_1'
+            elif 0.07 > current_profit >= 0.06:
+                if (last_candle['rsi_14'] < 56.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.05) and (last_candle['rsi_14_1h'] < 39.0) and (last_candle['cti_1h'] < -0.85):
+                    return True, 'sell_profit_d_u_6_1'
+            elif 0.08 > current_profit >= 0.07:
+                if (last_candle['rsi_14'] < 55.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.05) and (last_candle['rsi_14_1h'] < 38.5) and (last_candle['cti_1h'] < -0.85):
+                    return True, 'sell_profit_d_u_7_1'
+            elif 0.09 > current_profit >= 0.08:
+                if (last_candle['rsi_14'] < 54.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.05) and (last_candle['rsi_14_1h'] < 38.0) and (last_candle['cti_1h'] < -0.85):
+                    return True, 'sell_profit_d_u_8_1'
+            elif 0.1 > current_profit >= 0.09:
+                if (last_candle['rsi_14'] < 53.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.05) and (last_candle['rsi_14_1h'] < 37.0) and (last_candle['cti_1h'] < -0.85):
+                    return True, 'sell_profit_d_u_9_1'
+            elif 0.12 > current_profit >= 0.1:
+                if (last_candle['rsi_14'] < 52.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.05) and (last_candle['rsi_14_1h'] < 36.0) and (last_candle['cti_1h'] < -0.85):
+                    return True, 'sell_profit_d_u_10_1'
+            elif 0.2 > current_profit >= 0.12:
+                if (last_candle['rsi_14'] < 50.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.05) and (last_candle['rsi_14_1h'] < 35.0) and (last_candle['cti_1h'] < -0.85):
+                    return True, 'sell_profit_d_u_11_1'
+            elif current_profit >= 0.2:
+                if (last_candle['rsi_14'] < 48.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.05) and (last_candle['rsi_14_1h'] < 34.0) and (last_candle['cti_1h'] < -0.85):
+                    return True, 'sell_profit_d_u_12_1'
+        return False, None
+
     def custom_sell(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float,
                     current_profit: float, **kwargs):
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
@@ -1341,6 +1381,11 @@ class NostalgiaForInfinityNextGen(IStrategy):
 
         # Trailing
         sell, signal_name = self.sell_trail(current_profit, max_profit, last_candle)
+        if sell and (signal_name is not None):
+            return f"{signal_name} ( {buy_tag})"
+
+        # The pair is descending
+        sell, signal_name = self.sell_dec_main(current_profit, last_candle)
         if sell and (signal_name is not None):
             return f"{signal_name} ( {buy_tag})"
 
