@@ -1869,13 +1869,17 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_36_r_14_max = -97.0
     buy_36_crsi_1h_min = 12.0
 
-    buy_37_ma_offset = 0.98
-    buy_37_ewo_min = 7.5
-    buy_37_rsi_max = 46.0
-    buy_37_cti_max = -0.84
-    buy_37_r_14_max = -97.0
-    buy_37_close_1h_max = 0.055
+    buy_37_ma_offset = 0.984
+    buy_37_ewo_min = 8.3
+    buy_37_ewo_max = 11.1
+    buy_37_rsi_14_min = 26.0
+    buy_37_rsi_14_max = 46.0
+    buy_37_crsi_1h_min = 12.0
+    buy_37_crsi_1h_max = 56.0
+    buy_37_cti_max = -0.85
     buy_37_cti_1h_max = 0.92
+    buy_37_r_14_max = -97.0
+    buy_37_close_1h_max = 0.1
 
     buy_38_ma_offset = 0.98
     buy_38_ewo_max = -4.4
@@ -4321,13 +4325,6 @@ class NostalgiaForInfinityNext(IStrategy):
         informative_1h['safe_pump_36_120'] = self.safe_pump(informative_1h, 36, self.buy_pump_threshold_120_36, self.buy_pump_pull_threshold_120_36)
         informative_1h['safe_pump_48_120'] = self.safe_pump(informative_1h, 48, self.buy_pump_threshold_120_48, self.buy_pump_pull_threshold_120_48)
 
-        informative_1h['safe_dump_10'] = ((informative_1h['hl_pct_change_5'] < self.buy_dump_protection_10_5) | (informative_1h['close'] < informative_1h['low_5']) | (informative_1h['close'] > informative_1h['open']))
-        informative_1h['safe_dump_20'] = ((informative_1h['hl_pct_change_5'] < self.buy_dump_protection_20_5) | (informative_1h['close'] < informative_1h['low_5']) | (informative_1h['close'] > informative_1h['open']))
-        informative_1h['safe_dump_30'] = ((informative_1h['hl_pct_change_5'] < self.buy_dump_protection_30_5) | (informative_1h['close'] < informative_1h['low_5']) | (informative_1h['close'] > informative_1h['open']))
-        informative_1h['safe_dump_40'] = ((informative_1h['hl_pct_change_5'] < self.buy_dump_protection_40_5) | (informative_1h['close'] < informative_1h['low_5']) | (informative_1h['close'] > informative_1h['open']))
-        informative_1h['safe_dump_50'] = ((informative_1h['hl_pct_change_5'] < self.buy_dump_protection_50_5) | (informative_1h['close'] < informative_1h['low_5']) | (informative_1h['close'] > informative_1h['open']))
-        informative_1h['safe_dump_60'] = ((informative_1h['hl_pct_change_5'] < self.buy_dump_protection_60_5) | (informative_1h['close'] < informative_1h['low_5']) | (informative_1h['close'] > informative_1h['open']))
-
         informative_1h['sell_pump_48_1'] = (informative_1h['hl_pct_change_48'] > self.sell_pump_threshold_48_1)
         informative_1h['sell_pump_48_2'] = (informative_1h['hl_pct_change_48'] > self.sell_pump_threshold_48_2)
         informative_1h['sell_pump_48_3'] = (informative_1h['hl_pct_change_48'] > self.sell_pump_threshold_48_3)
@@ -5136,20 +5133,22 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['crsi_1h'] > self.buy_36_crsi_1h_min)
 
 
-                # Condition #37 - PMAX2 buy
+                # Condition #37 - Quick mode buy
                 elif index == 37:
                     # Non-Standard protections (add below)
-                    item_buy_logic.append(dataframe['safe_dump_50_1h'])
 
                     # Logic
-                    item_buy_logic.append(dataframe['pm'] > dataframe['pmax_thresh'])
                     item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * self.buy_37_ma_offset)
-                    item_buy_logic.append(dataframe['ewo_sma'] > self.buy_37_ewo_min)
-                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_37_rsi_max)
-                    item_buy_logic.append(dataframe['cti'] < self.buy_37_cti_max)
-                    item_buy_logic.append(dataframe['r_14'] < self.buy_37_r_14_max)
                     item_buy_logic.append(((dataframe['close_1h'].shift(12) - dataframe['close_1h']) / dataframe['close_1h']) < self.buy_37_close_1h_max)
+                    item_buy_logic.append(dataframe['ewo_sma'] > self.buy_37_ewo_min)
+                    item_buy_logic.append(dataframe['ewo_sma'] < self.buy_37_ewo_max)
+                    item_buy_logic.append(dataframe['rsi_14'] > self.buy_37_rsi_14_min)
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_37_rsi_14_max)
+                    item_buy_logic.append(dataframe['crsi_1h'] > self.buy_37_crsi_1h_min)
+                    item_buy_logic.append(dataframe['crsi_1h'] < self.buy_37_crsi_1h_max)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_37_cti_max)
                     item_buy_logic.append(dataframe['cti_1h'] < self.buy_37_cti_1h_max)
+                    item_buy_logic.append(dataframe['r_14'] < self.buy_37_r_14_max)
 
                 # Condition #38 - PMAX3 buy
                 elif index == 38:
