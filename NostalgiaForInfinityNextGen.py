@@ -48,7 +48,7 @@ else:
 ##   Prefer stable coin (USDT, BUSDT etc) pairs, instead of BTC or ETH pairs.                            ##
 ##   Highly recommended to blacklist leveraged tokens (*BULL, *BEAR, *UP, *DOWN etc).                    ##
 ##   Ensure that you don't override any variables in you config.json. Especially                         ##
-##   the timeframe (must be 5m).                                                                         ##
+##   the timeframe (must be 15m).                                                                         ##
 ##     use_sell_signal must set to true (or not set at all).                                             ##
 ##     sell_profit_only must set to false (or not set at all).                                           ##
 ##     ignore_roi_if_buy_signal must set to true (or not set at all).                                    ##
@@ -341,7 +341,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
         },
         6: {
             "ema_fast"                  : False,
-            "ema_fast_len"              : "50",
+            "ema_fast_len"              : "12",
             "ema_slow"                  : True,
             "ema_slow_len"              : "50",
             "close_above_ema_fast"      : False,
@@ -353,18 +353,18 @@ class NostalgiaForInfinityNextGen(IStrategy):
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "24",
             "safe_dips_threshold_0"     : 0.08,
-            "safe_dips_threshold_2"     : 0.24,
+            "safe_dips_threshold_2"     : 0.16,
             "safe_dips_threshold_12"    : 0.4,
             "safe_dips_threshold_144"   : 0.8,
             "safe_pump_6h_threshold"    : None,
-            "safe_pump_12h_threshold"   : 0.4,
-            "safe_pump_24h_threshold"   : 0.5,
-            "safe_pump_36h_threshold"   : 0.6,
-            "safe_pump_48h_threshold"   : 0.8,
+            "safe_pump_12h_threshold"   : None,
+            "safe_pump_24h_threshold"   : None,
+            "safe_pump_36h_threshold"   : None,
+            "safe_pump_48h_threshold"   : 1.3,
             "btc_1h_not_downtrend"      : False,
-            "close_over_pivot_type"     : "sup3", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_over_pivot_offset"   : 1.0,
-            "close_under_pivot_type"    : "res3", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_under_pivot_offset"  : 1.15
         },
         7: {
@@ -1907,13 +1907,13 @@ class NostalgiaForInfinityNextGen(IStrategy):
                     # Non-Standard protections
 
                     # Logic
-                    item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * 0.942)
-                    item_buy_logic.append(dataframe['ewo'] > 2.8)
-                    item_buy_logic.append(dataframe['rsi_14'] < 36.0)
-                    item_buy_logic.append(dataframe['cti'] < -0.86)
-                    item_buy_logic.append(dataframe['cci'] < -180.0)
+                    item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * 0.952) # 0.952
+                    item_buy_logic.append(dataframe['ewo'] > 2.4)
+                    item_buy_logic.append(dataframe['cci'] < -190.0)
                     item_buy_logic.append(dataframe['r_14'] < -97.0)
-                    item_buy_logic.append(dataframe['r_480_1h'] < -35.0)
+                    item_buy_logic.append(dataframe['r_480'] < -35.0)
+                    item_buy_logic.append(dataframe['ewo_1h'] > 4.0)
+                    item_buy_logic.append((dataframe['rsi_14_1h'] + dataframe['rsi_14']) < 74.0)
 
                 # Condition #7 - Semi swing. 1h uptrend.
                 elif index == 7:
