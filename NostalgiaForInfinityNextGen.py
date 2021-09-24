@@ -189,6 +189,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
         "buy_condition_7_enable": True,
         "buy_condition_8_enable": True,
         "buy_condition_9_enable": True,
+        "buy_condition_10_enable": True,
         #############
     }
 
@@ -446,6 +447,34 @@ class NostalgiaForInfinityNextGen(IStrategy):
             "safe_pump_12h_threshold"   : None,
             "safe_pump_24h_threshold"   : None,
             "safe_pump_36h_threshold"   : None,
+            "safe_pump_48h_threshold"   : 0.9,
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
+        },
+        10: {
+            "ema_fast"                  : False,
+            "ema_fast_len"              : "50",
+            "ema_slow"                  : True,
+            "ema_slow_len"              : "50",
+            "close_above_ema_fast"      : False,
+            "close_above_ema_fast_len"  : "200",
+            "close_above_ema_slow"      : False,
+            "close_above_ema_slow_len"  : "200",
+            "sma200_rising"             : False,
+            "sma200_rising_val"         : "24",
+            "sma200_1h_rising"          : False,
+            "sma200_1h_rising_val"      : "50",
+            "safe_dips_threshold_0"     : 0.03,
+            "safe_dips_threshold_2"     : 0.07,
+            "safe_dips_threshold_12"    : 0.26,
+            "safe_dips_threshold_144"   : 0.38,
+            "safe_pump_6h_threshold"    : 0.2,
+            "safe_pump_12h_threshold"   : 0.3,
+            "safe_pump_24h_threshold"   : 0.5,
+            "safe_pump_36h_threshold"   : 0.6,
             "safe_pump_48h_threshold"   : 0.9,
             "btc_1h_not_downtrend"      : False,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
@@ -1766,6 +1795,11 @@ class NostalgiaForInfinityNextGen(IStrategy):
         # CTI
         dataframe['cti'] = pta.cti(dataframe["close"], length=20)
 
+        # CRSI (3, 2, 100)
+        crsi_closechange = dataframe['close'] / dataframe['close'].shift(1)
+        crsi_updown = np.where(crsi_closechange.gt(1), 1.0, np.where(crsi_closechange.lt(1), -1.0, 0.0))
+        dataframe['crsi'] =  (ta.RSI(dataframe['close'], timeperiod=3) + ta.RSI(crsi_updown, timeperiod=2) + ta.ROC(dataframe['close'], 100)) / 3
+
         # Modified Elder Ray Index
         dataframe['moderi_32'] = moderi(dataframe, 32)
         dataframe['moderi_64'] = moderi(dataframe, 64)
@@ -2113,6 +2147,19 @@ class NostalgiaForInfinityNextGen(IStrategy):
                     item_buy_logic.append(dataframe['r_14'].shift(1) < -94.0)
                     item_buy_logic.append(dataframe['ewo_1h'] > 2.0)
                     item_buy_logic.append(dataframe['cti_1h'] < -0.75)
+
+                # Condition #10 - Semi swing. Local dip.
+                elif index == 10:
+                    # Non-Standard protections
+
+                    # Logic
+                    item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
+                    item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.024))
+                    item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
+                    item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * 0.942)
+                    item_buy_logic.append(dataframe['rsi_14'] < 25.5)
+                    item_buy_logic.append(dataframe['crsi'] > 8.0)
+                    item_buy_logic.append(dataframe['r_480_1h'] > -75.0)
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
