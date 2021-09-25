@@ -191,6 +191,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
         "buy_condition_9_enable": True,
         "buy_condition_10_enable": True,
         "buy_condition_11_enable": True,
+        "buy_condition_12_enable": True,
         #############
     }
 
@@ -508,6 +509,34 @@ class NostalgiaForInfinityNextGen(IStrategy):
             "btc_1h_not_downtrend"      : False,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
+        },
+        12: {
+            "ema_fast"                  : False,
+            "ema_fast_len"              : "50",
+            "ema_slow"                  : False,
+            "ema_slow_len"              : "50",
+            "close_above_ema_fast"      : False,
+            "close_above_ema_fast_len"  : "200",
+            "close_above_ema_slow"      : False,
+            "close_above_ema_slow_len"  : "200",
+            "sma200_rising"             : False,
+            "sma200_rising_val"         : "24",
+            "sma200_1h_rising"          : False,
+            "sma200_1h_rising_val"      : "50",
+            "safe_dips_threshold_0"     : 0.06,
+            "safe_dips_threshold_2"     : 0.09,
+            "safe_dips_threshold_12"    : 0.32,
+            "safe_dips_threshold_144"   : 0.44,
+            "safe_pump_6h_threshold"    : 0.2,
+            "safe_pump_12h_threshold"   : 0.4,
+            "safe_pump_24h_threshold"   : 0.6,
+            "safe_pump_36h_threshold"   : 0.8,
+            "safe_pump_48h_threshold"   : 0.9,
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 0.9,
             "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_under_pivot_offset"  : 1.0
         }
@@ -1805,6 +1834,11 @@ class NostalgiaForInfinityNextGen(IStrategy):
         # CTI
         informative_1h['cti'] = pta.cti(informative_1h["close"], length=20)
 
+        # CRSI (3, 2, 100)
+        crsi_closechange = informative_1h['close'] / informative_1h['close'].shift(1)
+        crsi_updown = np.where(crsi_closechange.gt(1), 1.0, np.where(crsi_closechange.lt(1), -1.0, 0.0))
+        informative_1h['crsi'] =  (ta.RSI(informative_1h['close'], timeperiod=3) + ta.RSI(crsi_updown, timeperiod=2) + ta.ROC(informative_1h['close'], 100)) / 3
+
         # Williams %R
         informative_1h['r_14'] = williams_r(informative_1h, period=14)
         informative_1h['r_480'] = williams_r(informative_1h, period=480)
@@ -1832,6 +1866,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
 
         # EMAs
         dataframe['ema_12'] = ta.EMA(dataframe, timeperiod=12)
+        dataframe['ema_16'] = ta.EMA(dataframe, timeperiod=16)
         dataframe['ema_20'] = ta.EMA(dataframe, timeperiod=20)
         dataframe['ema_25'] = ta.EMA(dataframe, timeperiod=25)
         dataframe['ema_26'] = ta.EMA(dataframe, timeperiod=26)
@@ -2247,6 +2282,17 @@ class NostalgiaForInfinityNextGen(IStrategy):
                     item_buy_logic.append(dataframe['ewo'] > 2.0)
                     item_buy_logic.append(dataframe['cti'] < -0.9)
                     item_buy_logic.append(dataframe['cti_1h'] < 0.25)
+
+                # Condition #12 - Semi swing. Downtrend. Dip.
+                elif index == 12:
+                    # Non-Standard protections
+
+                    # Logic
+                    item_buy_logic.append(dataframe['close'] < (dataframe['ema_16'] * 0.952))
+                    item_buy_logic.append(dataframe['ewo'] < -9.2)
+                    item_buy_logic.append(dataframe['cti'] < -0.9)
+                    item_buy_logic.append(dataframe['r_14'] < -94.0)
+                    item_buy_logic.append(dataframe['crsi_1h'] > 3.0)
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
