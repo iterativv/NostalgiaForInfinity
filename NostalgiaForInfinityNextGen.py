@@ -889,6 +889,16 @@ class NostalgiaForInfinityNextGen(IStrategy):
     def is_top_coin(self, coin_pair, row_data, top_length) -> bool:
         return coin_pair.split('/')[0] in row_data.loc['Coin #1':f"Coin #{top_length}"].values
 
+    def is_support(self, row_data) -> bool:
+        if row_data[0] > row_data[1] and row_data[1] > row_data[2] and row_data[2] < row_data[3] and row_data[3] < row_data[4]:
+            return True
+        return False
+
+    def is_resistance(self, row_data) -> bool:
+        if row_data[0] < row_data[1] and row_data[1] < row_data[2] and row_data[2] > row_data[3] and row_data[3] > row_data[4]:
+            return True
+        return False
+
     def bot_loop_start(self, **kwargs) -> None:
         """
         Called at the start of the bot iteration (one loop).
@@ -1979,6 +1989,17 @@ class NostalgiaForInfinityNextGen(IStrategy):
         # EWO
         informative_1h['ewo'] = ewo(informative_1h, 50, 200)
         informative_1h['ewo_ema'] = ewo_ema(informative_1h, 50, 200)
+
+        # S/R
+        res_series = informative_1h['high'].rolling(window = 5, center=True).apply(lambda row: self.is_resistance(row), raw=True).shift(2)
+        sup_series = informative_1h['low'].rolling(window = 5, center=True).apply(lambda row: self.is_support(row), raw=True).shift(2)
+        informative_1h['res_level'] = Series(np.where(res_series, np.where(informative_1h['close'] > informative_1h['open'], informative_1h['close'], informative_1h['open']), float('NaN'))).ffill()
+        informative_1h['res_hlevel'] = Series(np.where(res_series, informative_1h['high'], float('NaN'))).ffill()
+        # informative_1h['res_level_high'] = Series(np.where(res_series, informative_1h['high'], float('NaN'))).ffill()
+        # informative_1h['res_level_low'] = Series(np.where(res_series, informative_1h['low'], float('NaN'))).ffill()
+        informative_1h['sup_level'] = Series(np.where(sup_series, np.where(informative_1h['close'] < informative_1h['open'], informative_1h['close'], informative_1h['open']), float('NaN'))).ffill()
+        # informative_1h['sup_level_high'] = Series(np.where(sup_series, informative_1h['high'], float('NaN'))).ffill()
+        # informative_1h['sup_level_low'] = Series(np.where(sup_series, informative_1h['low'], float('NaN'))).ffill()
 
         # Pump protections
         informative_1h['hl_pct_change_48'] = self.range_percent_change(informative_1h, 'HL', 48)
