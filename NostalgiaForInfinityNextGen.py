@@ -1906,6 +1906,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
 
         # EWO
         informative_1h['ewo'] = ewo(informative_1h, 50, 200)
+        informative_1h['ewo_ema'] = ewo_ema(informative_1h, 50, 200)
 
         # Pump protections
         informative_1h['hl_pct_change_48'] = self.range_percent_change(informative_1h, 'HL', 48)
@@ -1980,6 +1981,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
 
         # EWO
         dataframe['ewo'] = ewo(dataframe, 50, 200)
+        dataframe['ewo_ema'] = ewo_ema(dataframe, 50, 200)
 
         # CCI
         dataframe['cci'] = ta.CCI(dataframe, source='hlc3', timeperiod=20)
@@ -2499,6 +2501,12 @@ class NostalgiaForInfinityNextGen(IStrategy):
 def ewo(dataframe, sma1_length=5, sma2_length=35):
     sma1 = ta.SMA(dataframe, timeperiod=sma1_length)
     sma2 = ta.SMA(dataframe, timeperiod=sma2_length)
+    smadif = (sma1 - sma2) / dataframe['close'] * 100
+    return smadif
+
+def ewo_ema(dataframe, sma1_length=5, sma2_length=35):
+    sma1 = ta.EMA(dataframe, timeperiod=sma1_length)
+    sma2 = ta.EMA(dataframe, timeperiod=sma2_length)
     smadif = (sma1 - sma2) / dataframe['close'] * 100
     return smadif
 
