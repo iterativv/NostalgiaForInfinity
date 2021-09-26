@@ -1889,6 +1889,9 @@ class NostalgiaForInfinityNextGen(IStrategy):
         informative_1h['bb20_2_mid'] = bollinger['mid']
         informative_1h['bb20_2_upp'] = bollinger['upper']
 
+        # CMF
+        informative_1h['cmf'] = chaikin_money_flow(informative_1h, 20)
+
         # CTI
         informative_1h['cti'] = pta.cti(informative_1h["close"], length=20)
 
