@@ -3387,7 +3387,7 @@ class NostalgiaForInfinityNext(IStrategy):
             current_profit < -0.05
             and last_candle['close'] < last_candle['ema_200']
             and last_candle['cmf'] < 0.0
-            and (last_candle['ema_200'] - last_candle['close']) / last_candle['close'] < 0.015
+            and (last_candle['ema_200'] - last_candle['close']) / last_candle['close'] < 0.004
             and last_candle['rsi_14'] > previous_candle_1['rsi_14']
             and last_candle['rsi_14'] > last_candle['rsi_14_1h'] + 10.0
             and last_candle['sma_200_dec_24']
@@ -3408,12 +3408,26 @@ class NostalgiaForInfinityNext(IStrategy):
         ):
             return True, 'sell_stoploss_u_e_2'
 
+        # Under EMA200, pair negative, low max rate
+        if (
+            -0.04 > current_profit > -0.08
+            and max_profit < 0.005
+            and max_loss < 0.08
+            and last_candle['close'] < last_candle['ema_200']
+            and last_candle['ema_25'] < last_candle['ema_50']
+            and last_candle['ema_vwma_osc_32'] < 0
+            and last_candle['ema_vwma_osc_64'] < 0
+            and last_candle['ema_vwma_osc_96'] < 0
+            and last_candle['cmf'] < -0.0
+        ):
+            return True, 'sell_stoploss_u_e_3'
+ 
         # Under EMA200, pair and BTC negative, low max rate
         if (
             -0.05 > current_profit > -0.09
             and not last_candle['btc_not_downtrend_1h']
-            and not last_candle['ema_vwma_osc_32']
-            and not last_candle['ema_vwma_osc_64']
+            and last_candle['ema_vwma_osc_32'] < 0
+            and last_candle['ema_vwma_osc_64'] < 0
             and max_profit < 0.005
             and max_loss < 0.09
             and last_candle['sma_200_dec_24']
@@ -3429,9 +3443,9 @@ class NostalgiaForInfinityNext(IStrategy):
         elif (
             -0.1 > current_profit > -0.2
             and not last_candle['btc_not_downtrend_1h']
-            and not last_candle['ema_vwma_osc_32'] < 0
-            and not last_candle['ema_vwma_osc_64'] < 0
-            and not last_candle['ema_vwma_osc_96'] < 0
+            and last_candle['ema_vwma_osc_32'] < 0
+            and last_candle['ema_vwma_osc_64'] < 0
+            and last_candle['ema_vwma_osc_96'] < 0
             and max_profit < 0.05
             and max_loss < 0.2
             and last_candle['sma_200_dec_24']
