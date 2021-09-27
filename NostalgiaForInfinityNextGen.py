@@ -2400,13 +2400,12 @@ class NostalgiaForInfinityNextGen(IStrategy):
                     # Non-Standard protections
 
                     # Logic
-                    item_buy_logic.append(dataframe['ema_20_1h'] > dataframe['ema_25_1h'])
                     item_buy_logic.append(dataframe['close'].shift(1) < (dataframe['sma_15'].shift(1) * 0.97))
                     item_buy_logic.append(dataframe['close'] > (dataframe['open'].shift(1)))
-                    item_buy_logic.append(dataframe['ewo'] > 4.4)
+                    item_buy_logic.append(dataframe['ewo_ema'] > 4.2)
                     item_buy_logic.append(dataframe['cti'] < -0.75)
                     item_buy_logic.append(dataframe['r_14'].shift(1) < -94.0)
-                    item_buy_logic.append(dataframe['ewo_1h'] > 2.0)
+                    item_buy_logic.append(dataframe['ewo_ema_1h'] > 2.0)
                     item_buy_logic.append(dataframe['cti_1h'] < -0.75)
 
                 # Condition #10 - Semi swing. Local dip.
