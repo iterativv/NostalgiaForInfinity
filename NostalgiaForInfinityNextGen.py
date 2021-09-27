@@ -2195,6 +2195,18 @@ class NostalgiaForInfinityNextGen(IStrategy):
 
         return False, None
 
+    def sell_pump_dec(self, current_profit: float, max_profit: float, max_loss: float, last_candle, previous_candle_1, trade: 'Trade', current_time: 'datetime') -> tuple:
+        if (0.05 > current_profit > 0.01) and (last_candle['hl_pct_change_24_1h'] > 0.8) and (last_candle['sma_200_dec_20']) and (last_candle['close'] < last_candle['ema_200']):
+            return True, 'sell_profit_p_d_1'
+
+        elif (0.05 > current_profit > 0.02) and (last_candle['hl_pct_change_36_1h'] > 1.2) and (last_candle['sma_200_dec_20']) and (last_candle['close'] < last_candle['ema_200']):
+            return True, 'sell_profit_p_d_2'
+
+        elif (0.06 > current_profit > 0.04) and (last_candle['hl_pct_change_48_1h'] > 1.4) and (last_candle['sma_200_dec_20']) and (last_candle['close'] < last_candle['ema_200']):
+            return True, 'sell_profit_p_d_3'
+
+        return False, None
+
     def custom_sell(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float,
                     current_profit: float, **kwargs):
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
@@ -2249,6 +2261,11 @@ class NostalgiaForInfinityNextGen(IStrategy):
 
         # Sell logic for pumped pairs
         sell, signal_name = self.sell_pump_main(current_profit, last_candle)
+        if sell and (signal_name is not None):
+            return f"{signal_name} ( {buy_tag})"
+
+        # The pair is pumped, descending
+        sell, signal_name = self.sell_pump_dec(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
         if sell and (signal_name is not None):
             return f"{signal_name} ( {buy_tag})"
 
