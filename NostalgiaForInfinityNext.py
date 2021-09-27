@@ -5076,7 +5076,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['rsi_20'] < dataframe['rsi_20'].shift(1))
                     item_buy_logic.append(dataframe['rsi_4'] < self.buy_32_rsi_4_max)
                     item_buy_logic.append(dataframe['rsi_14'] > self.buy_32_rsi_14_min)
-                    item_buy_logic.append(dataframe['close'] < (dataframe['sma_15'] * self.buy_32_ma_offset))
+                    item_buy_logic.append(dataframe['close'] < dataframe['sma_15'] * self.buy_32_ma_offset)
                     item_buy_logic.append(dataframe['cti'] < self.buy_32_cti_max)
                     item_buy_logic.append(dataframe['crsi_1h'] > self.buy_32_crsi_1h_min)
                     item_buy_logic.append(dataframe['crsi_1h'] < self.buy_32_crsi_1h_max)
