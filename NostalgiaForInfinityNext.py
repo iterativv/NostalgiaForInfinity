@@ -1916,6 +1916,7 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_43_bb40_tail_bbdelta = 0.5
     buy_43_cti_max = -0.75
     buy_43_r_480_min = -94.0
+    buy_43_cti_1h_min = -0.75
     buy_43_cti_1h_max = 0.45
     buy_43_r_480_1h_min = -80.0
 
@@ -5231,6 +5232,7 @@ class NostalgiaForInfinityNext(IStrategy):
                     item_buy_logic.append(dataframe['close'].le(dataframe['close'].shift()))
                     item_buy_logic.append(dataframe['cti'] < self.buy_43_cti_max)
                     item_buy_logic.append(dataframe['r_480'] > self.buy_43_r_480_min)
+                    item_buy_logic.append(dataframe['cti_1h'] > self.buy_43_cti_1h_min)
                     item_buy_logic.append(dataframe['cti_1h'] < self.buy_43_cti_1h_max)
                     item_buy_logic.append(dataframe['r_480_1h'] > self.buy_43_r_480_1h_min)
 
