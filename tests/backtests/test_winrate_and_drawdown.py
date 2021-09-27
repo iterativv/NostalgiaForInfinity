@@ -67,23 +67,23 @@ def timerange(request):
 def deviations():
     return {
         "binance": {
-            ("20210101", "20210201"): {"max_drawdown": 90, "winrate": 90},
-            ("20210201", "20210301"): {"max_drawdown": 65, "winrate": 90},
-            ("20210301", "20210401"): {"max_drawdown": 55, "winrate": 90},
+            ("20210101", "20210201"): {"max_drawdown": 40, "winrate": 90},
+            ("20210201", "20210301"): {"max_drawdown": 40, "winrate": 90},
+            ("20210301", "20210401"): {"max_drawdown": 40, "winrate": 90},
             ("20210401", "20210501"): {"max_drawdown": 40, "winrate": 90},
             ("20210501", "20210601"): {"max_drawdown": 40, "winrate": 90},
             ("20210601", "20210701"): {"max_drawdown": 40, "winrate": 90},
-            ("20210701", "20210801"): {"max_drawdown": 55, "winrate": 90},
-            ("20210801", "20210901"): {"max_drawdown": 55, "winrate": 90},
+            ("20210701", "20210801"): {"max_drawdown": 40, "winrate": 90},
+            ("20210801", "20210901"): {"max_drawdown": 40, "winrate": 90},
         },
         "kucoin": {
-            ("20210201", "20210301"): {"max_drawdown": 100, "winrate": 88},
-            ("20210301", "20210401"): {"max_drawdown": 100, "winrate": 88},
-            ("20210401", "20210501"): {"max_drawdown": 85, "winrate": 88},
-            ("20210501", "20210601"): {"max_drawdown": 145, "winrate": 88},
-            ("20210601", "20210701"): {"max_drawdown": 55, "winrate": 88},
-            ("20210701", "20210801"): {"max_drawdown": 82, "winrate": 88},
-            ("20210801", "20210901"): {"max_drawdown": 120, "winrate": 88},
+            ("20210201", "20210301"): {"max_drawdown": 90, "winrate": 85},
+            ("20210301", "20210401"): {"max_drawdown": 90, "winrate": 85},
+            ("20210401", "20210501"): {"max_drawdown": 90, "winrate": 85},
+            ("20210501", "20210601"): {"max_drawdown": 90, "winrate": 85},
+            ("20210601", "20210701"): {"max_drawdown": 90, "winrate": 85},
+            ("20210701", "20210801"): {"max_drawdown": 90, "winrate": 85},
+            ("20210801", "20210901"): {"max_drawdown": 90, "winrate": 85},
         },
     }
 
