@@ -1840,7 +1840,9 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_32_ma_offset = 0.942
     buy_32_rsi_4_max = 46.0
     buy_32_cti_max = -0.86
+    buy_32_rsi_14_min = 19.0
     buy_32_crsi_1h_min = 10.0
+    buy_32_crsi_1h_max = 60.0
 
     buy_33_ma_offset = 0.988
     buy_33_ewo_min = 9.0
@@ -5144,14 +5146,16 @@ class NostalgiaForInfinityNext(IStrategy):
                 # Condition #32 - Quick mode buy
                 elif index == 32:
                     # Non-Standard protections
+                    item_buy_logic.append(dataframe['ema_20_1h'] > dataframe['ema_25_1h'])
 
                     # Logic
                     item_buy_logic.append(dataframe['rsi_20'] < dataframe['rsi_20'].shift(1))
                     item_buy_logic.append(dataframe['rsi_4'] < self.buy_32_rsi_4_max)
-                    item_buy_logic.append(dataframe['ema_20_1h'] > dataframe['ema_25_1h'])
+                    item_buy_logic.append(dataframe['rsi_14'] > self.buy_32_rsi_14_min)
                     item_buy_logic.append(dataframe['close'] < dataframe['sma_15'] * self.buy_32_ma_offset)
                     item_buy_logic.append(dataframe['cti'] < self.buy_32_cti_max)
                     item_buy_logic.append(dataframe['crsi_1h'] > self.buy_32_crsi_1h_min)
+                    item_buy_logic.append(dataframe['crsi_1h'] < self.buy_32_crsi_1h_max)
 
                 # Condition #33 - Quick mode buy
                 elif index == 33:
