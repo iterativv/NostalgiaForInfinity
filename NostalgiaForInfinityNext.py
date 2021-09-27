@@ -1912,7 +1912,7 @@ class NostalgiaForInfinityNext(IStrategy):
     buy_42_r_480_1h_max = -12.0
 
     buy_43_bb40_bbdelta_close = 0.045
-    buy_43_bb40_closedelta_close = 0.02
+    buy_43_bb40_closedelta_close = 0.024
     buy_43_bb40_tail_bbdelta = 0.5
     buy_43_cti_max = -0.75
     buy_43_r_480_min = -94.0
