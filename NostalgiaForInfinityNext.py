@@ -3382,7 +3382,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
     def sell_stoploss(self, current_profit: float, max_profit: float, max_loss: float, last_candle, previous_candle_1, trade: 'Trade', current_time: 'datetime') -> tuple:
         # Under & near EMA200, local uptrend move
-        if (current_profit < -0.05) and (last_candle['close'] < last_candle['ema_200']) and (last_candle['cmf'] < 0.0) and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < 0.004) and last_candle['rsi_14'] > previous_candle_1['rsi_14'] and (last_candle['rsi_14'] > (last_candle['rsi_14_1h'] + 10.0)) and (last_candle['sma_200_dec_24']) and (current_time - timedelta(minutes=2880) > trade.open_date_utc):
+        if (current_profit < -0.05) and (last_candle['close'] < last_candle['ema_200']) and (last_candle['cmf'] < 0.0) and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < 0.01) and last_candle['rsi_14'] > previous_candle_1['rsi_14'] and (last_candle['rsi_14'] > (last_candle['rsi_14_1h'] + 10.0)) and (last_candle['sma_200_dec_24']) and (current_time - timedelta(minutes=2880) > trade.open_date_utc):
             return True, 'signal_stoploss_u_e_1'
 
         # Under EMA200, local strong uptrend move
