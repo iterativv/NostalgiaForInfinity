@@ -2923,12 +2923,12 @@ class NostalgiaForInfinityNextGen(IStrategy):
                     # Non-Standard protections (add below)
 
                     # Logic
-                    item_buy_logic.append(dataframe['ewo'] > 2.0)
-                    item_buy_logic.append(dataframe['close'].shift(1) < (dataframe['ema_20'].shift(1) * 0.972))
+                    item_buy_logic.append(dataframe['ewo_ema'] > 2.0)
+                    item_buy_logic.append(dataframe['close'].shift(1) < (dataframe['ema_20'].shift(1) * 0.992))
                     item_buy_logic.append(dataframe['close'] > (dataframe['close'].shift(1)))
                     item_buy_logic.append(dataframe['cmf'].shift(1) < -0.48)
                     item_buy_logic.append(dataframe['r_14'].shift(1) < -97.0)
-                    item_buy_logic.append(dataframe['ewo_1h'] > 7.5)
+                    item_buy_logic.append(dataframe['ewo_ema_1h'] > 7.5)
                     item_buy_logic.append(dataframe['cti_1h'] < 0.0)
 
                 # Condition #15 - Semi swing. Downtrend.Local dip.
@@ -2937,7 +2937,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
 
                     # Logic
                     item_buy_logic.append(dataframe['close'].shift(1) < dataframe['ema_20'].shift(1) * 0.996)
-                    item_buy_logic.append(dataframe['ewo_ema'].shift(1) < -11.6)
+                    item_buy_logic.append(dataframe['ewo_ema'].shift(1) < -10.4)
                     item_buy_logic.append(dataframe['cti'].shift(1).rolling(5).max() < -0.9)
                     item_buy_logic.append(dataframe['r_14'].shift(1) < -90.0)
                     item_buy_logic.append(dataframe['crsi_1h'] > 2.0)
