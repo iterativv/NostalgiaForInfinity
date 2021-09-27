@@ -214,7 +214,7 @@ class NostalgiaForInfinityNext(IStrategy):
         "buy_condition_32_enable": True,
         "buy_condition_33_enable": True,
         "buy_condition_34_enable": True,
-        "buy_condition_35_enable": True,
+        "buy_condition_35_enable": False,
         "buy_condition_36_enable": True,
         "buy_condition_37_enable": True,
         "buy_condition_38_enable": True,
