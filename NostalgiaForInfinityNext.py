@@ -3382,19 +3382,83 @@ class NostalgiaForInfinityNext(IStrategy):
         return False, None
 
     def sell_stoploss(self, current_profit: float, max_profit: float, max_loss: float, last_candle, previous_candle_1, trade: 'Trade', current_time: 'datetime') -> tuple:
-        if (current_profit < -0.05) and (last_candle['close'] < last_candle['ema_200']) and (last_candle['cmf'] < 0.0) and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < 0.015) and last_candle['rsi_14'] > previous_candle_1['rsi_14'] and (last_candle['rsi_14'] > (last_candle['rsi_14_1h'] + 10.0)) and (last_candle['sma_200_dec_24']) and (current_time - timedelta(minutes=2880) > trade.open_date_utc):
+        # Under & near EMA200, local uptrend move
+        if (
+            current_profit < -0.05
+            and last_candle['close'] < last_candle['ema_200']
+            and last_candle['cmf'] < 0.0
+            and (last_candle['ema_200'] - last_candle['close']) / last_candle['close'] < 0.015
+            and last_candle['rsi_14'] > previous_candle_1['rsi_14']
+            and last_candle['rsi_14'] > last_candle['rsi_14_1h'] + 10.0
+            and last_candle['sma_200_dec_24']
+            and current_time - timedelta(minutes=2880) > trade.open_date_utc
+        ):
             return True, 'sell_stoploss_u_e_1'
 
-        if (current_profit < -0.08) and (last_candle['close'] < last_candle['ema_200']) and (last_candle['cmf'] < 0.0) and last_candle['rsi_14'] > previous_candle_1['rsi_14'] and (last_candle['rsi_14'] > (last_candle['rsi_14_1h'] + 20.0)) and (last_candle['sma_200_dec_24']) and (current_time - timedelta(minutes=2880) > trade.open_date_utc):
+        # Under EMA200, local strong uptrend move
+        if (
+            current_profit < -0.08
+            and last_candle['close'] < last_candle['ema_200']
+            and last_candle['cmf'] < 0.0
+            and last_candle['rsi_14'] > previous_candle_1['rsi_14']
+            and last_candle['rsi_14'] > last_candle['rsi_14_1h'] + 24.0
+            and last_candle['sma_200_dec_20']
+            and last_candle['sma_200_dec_24']
+            and current_time - timedelta(minutes=2880) > trade.open_date_utc
+        ):
             return True, 'sell_stoploss_u_e_2'
 
-        # Under EMA200, pair & BTC negative, low max rate
-        if (-0.05 > current_profit >= -0.1) & (last_candle['btc_not_downtrend_1h'] == False) & (last_candle['moderi_32'] == False) & (last_candle['moderi_64'] == False) & (max_profit < 0.005) & (max_loss < 0.14) & (last_candle['sma_200_dec_24']) & (last_candle['cmf'] < -0.0) & (last_candle['close'] < last_candle['ema_200']) & (last_candle['ema_25'] < last_candle['ema_50']) & (last_candle['cti'] < -0.8) & (last_candle['r_480'] < -50.0):
+        # Under EMA200, pair and BTC negative, low max rate
+        if (
+            -0.05 > current_profit > -0.09
+            and not last_candle['btc_not_downtrend_1h']
+            and not last_candle['ema_vwma_osc_32']
+            and not last_candle['ema_vwma_osc_64']
+            and max_profit < 0.005
+            and max_loss < 0.09
+            and last_candle['sma_200_dec_24']
+            and last_candle['cmf'] < -0.0
+            and last_candle['close'] < last_candle['ema_200']
+            and last_candle['ema_25'] < last_candle['ema_50']
+            and last_candle['cti'] < -0.8
+            and last_candle['r_480'] < -50.0
+        ):
             return True, 'sell_stoploss_u_e_b_1'
 
-        # Under EMA200, pair & BTC negative, CTI, Elder Ray Index negative, normal max rate
-        elif (current_profit < -0.1) & (last_candle['btc_not_downtrend_1h'] == False) & (last_candle['moderi_32'] == False) & (last_candle['moderi_64'] == False) & (last_candle['moderi_96'] == False) & (max_profit < 0.05) & (max_loss < 0.2) & (last_candle['sma_200_dec_24'])& (last_candle['sma_200_dec_20_1h']) & (last_candle['cmf'] < -0.45) & (last_candle['close'] < last_candle['ema_200']) & (last_candle['ema_25'] < last_candle['ema_50']) & (last_candle['cti'] < -0.8) & (last_candle['r_480'] < -97.0):
+        # Under EMA200, pair & BTC negative, CTI, downtrend, normal max rate
+        elif (
+            -0.1 > current_profit > -0.2
+            and not last_candle['btc_not_downtrend_1h']
+            and not last_candle['ema_vwma_osc_32'] < 0
+            and not last_candle['ema_vwma_osc_64'] < 0
+            and not last_candle['ema_vwma_osc_96'] < 0
+            and max_profit < 0.05
+            and max_loss < 0.2
+            and last_candle['sma_200_dec_24']
+            and last_candle['sma_200_dec_20_1h']
+            and last_candle['cmf'] < -0.45
+            and last_candle['close'] < last_candle['ema_200']
+            and last_candle['ema_25'] < last_candle['ema_50']
+            and last_candle['cti'] < -0.8
+            and last_candle['r_480'] < -97.0
+        ):
             return True, 'signal_stoploss_u_e_b_2'
+
+        # Under EMA200, pair and BTC negative, low max rate
+        if (
+            -0.04 > current_profit > -0.07
+            and last_candle['ema_vwma_osc_32'] < 0
+            and last_candle['ema_vwma_osc_64'] < 0
+            and max_profit < 0.005
+            and max_loss < 0.07
+            and last_candle['sma_200_dec_24']
+            and last_candle['close'] < last_candle['ema_200']
+            and last_candle['ema_25'] < last_candle['ema_50']
+            and last_candle['cmf'] < -0.0
+            and last_candle['r_480'] < -50.0
+            and not last_candle['btc_not_downtrend_1h']
+        ):
+            return True, 'sell_stoploss_u_e_b_3'
 
         return False, None
 
@@ -4417,6 +4481,11 @@ class NostalgiaForInfinityNext(IStrategy):
         dataframe['moderi_64'] = moderi(dataframe, 64)
         dataframe['moderi_96'] = moderi(dataframe, 96)
 
+        # EMA of VWMA Oscillator
+        dataframe['ema_vwma_osc_32'] = ema_vwma_osc(dataframe, 32)
+        dataframe['ema_vwma_osc_64'] = ema_vwma_osc(dataframe, 64)
+        dataframe['ema_vwma_osc_96'] = ema_vwma_osc(dataframe, 96)
+
         # hull
         dataframe['hull_75'] = hull(dataframe, 75)
 
@@ -4465,13 +4534,6 @@ class NostalgiaForInfinityNext(IStrategy):
         dataframe['momdiv_sell'] = mom['momdiv_sell']
         dataframe['momdiv_coh'] = mom['momdiv_coh']
         dataframe['momdiv_col'] = mom['momdiv_col']
-
-        # ATR
-        dataframe['atr'] = ta.ATR(dataframe, timeperiod=14)
-        dataframe['atr_high_thresh_1'] = (dataframe['high'] - (dataframe['atr'] * 3.4))
-        dataframe['atr_high_thresh_2'] = (dataframe['high'] - (dataframe['atr'] * 3.2))
-        dataframe['atr_high_thresh_3'] = (dataframe['high'] - (dataframe['atr'] * 3.0))
-        dataframe['atr_high_thresh_4'] = (dataframe['high'] - (dataframe['atr'] * 2.0))
 
         # Dip protection
         dataframe['tpct_change_0']   = self.top_percent_change(dataframe,0)
@@ -5514,6 +5576,11 @@ def moderi(dataframe: DataFrame, len_slow_ma: int = 32) -> Series:
     slow_ma = Series(ta.EMA(vwma(dataframe, length=len_slow_ma), timeperiod=len_slow_ma))
     return slow_ma >= slow_ma.shift(1)  # we just need true & false for ERI trend
 
+# Exponential moving average of a volume weighted simple moving average
+def ema_vwma_osc(dataframe, len_slow_ma):
+    slow_ema = Series(ta.EMA(vwma(dataframe, len_slow_ma), len_slow_ma))
+
+    return ((slow_ema - slow_ema.shift(1)) / slow_ema.shift(1)) * 100
 
 # zlema
 def zlema(dataframe, timeperiod):
