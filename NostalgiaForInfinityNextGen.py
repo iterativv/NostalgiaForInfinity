@@ -1003,19 +1003,25 @@ class NostalgiaForInfinityNextGen(IStrategy):
         return False, None
 
     def sell_stoploss(self, current_profit: float, max_profit: float, max_loss: float, last_candle, previous_candle_1, trade: 'Trade', current_time: 'datetime') -> tuple:
+        # Under & near EMA200, local uptrend move
         if (current_profit < -0.05) and (last_candle['close'] < last_candle['ema_200']) and (last_candle['cmf'] < 0.0) and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < 0.015) and last_candle['rsi_14'] > previous_candle_1['rsi_14'] and (last_candle['rsi_14'] > (last_candle['rsi_14_1h'] + 10.0)) and (last_candle['sma_200_dec_24']) and (current_time - timedelta(minutes=2880) > trade.open_date_utc):
             return True, 'sell_stoploss_u_e_1'
 
-        if (current_profit < -0.08) and (last_candle['close'] < last_candle['ema_200']) and (last_candle['cmf'] < 0.0) and last_candle['rsi_14'] > previous_candle_1['rsi_14'] and (last_candle['rsi_14'] > (last_candle['rsi_14_1h'] + 20.0)) and (last_candle['sma_200_dec_24']) and (current_time - timedelta(minutes=2880) > trade.open_date_utc):
+        # Under EMA200, local strong uptrend move
+        if (current_profit < -0.08) and (last_candle['close'] < last_candle['ema_200']) and (last_candle['cmf'] < 0.0) and last_candle['rsi_14'] > previous_candle_1['rsi_14'] and (last_candle['rsi_14'] > (last_candle['rsi_14_1h'] + 24.0)) and (last_candle['sma_200_dec_24']) and (last_candle['sma_200_dec_24']) and (current_time - timedelta(minutes=2880) > trade.open_date_utc):
             return True, 'sell_stoploss_u_e_2'
 
-        # Under EMA200, pair & BTC negative, low max rate
-        if (-0.05 > current_profit > -0.09) & (last_candle['btc_not_downtrend_1h'] == False) & (last_candle['moderi_32'] == False) & (last_candle['moderi_64'] == False) & (max_profit < 0.005) & (max_loss < 0.14) & (last_candle['sma_200_dec_24']) & (last_candle['cmf'] < -0.0) & (last_candle['close'] < last_candle['ema_200']) & (last_candle['ema_25'] < last_candle['ema_50']) & (last_candle['cti'] < -0.8) & (last_candle['r_480'] < -50.0):
+        # Under EMA200, pair and BTC negative, low max rate
+        if (-0.05 > current_profit > -0.09) and (last_candle['btc_not_downtrend_1h'] == False) and (last_candle['moderi_32'] == False) and (last_candle['moderi_64'] == False) and (max_profit < 0.005) and (max_loss < 0.09) and (last_candle['sma_200_dec_24']) and (last_candle['cmf'] < -0.0) and (last_candle['close'] < last_candle['ema_200']) and (last_candle['ema_25'] < last_candle['ema_50']) and (last_candle['cti'] < -0.8) and (last_candle['r_480'] < -50.0):
             return True, 'sell_stoploss_u_e_b_1'
 
-        # Under EMA200, pair & BTC negative, CTI, Elder Ray Index negative, normal max rate
-        elif (-0.1 > current_profit > -0.2) & (last_candle['btc_not_downtrend_1h'] == False) & (last_candle['moderi_32'] == False) & (last_candle['moderi_64'] == False) & (last_candle['moderi_96'] == False) & (max_profit < 0.05) & (max_loss < 0.2) & (last_candle['sma_200_dec_24'])& (last_candle['sma_200_dec_20_1h']) & (last_candle['cmf'] < -0.45) & (last_candle['close'] < last_candle['ema_200']) & (last_candle['ema_25'] < last_candle['ema_50']) & (last_candle['cti'] < -0.8) & (last_candle['r_480'] < -97.0):
+        # Under EMA200, pair and BTC negative, CTI, Elder Ray Index negative, normal max rate
+        elif (-0.1 > current_profit > -0.2) and (last_candle['btc_not_downtrend_1h'] == False) and (last_candle['moderi_32'] == False) and (last_candle['moderi_64'] == False) and (last_candle['moderi_96'] == False) and (max_profit < 0.05) and (max_loss < 0.2) and (last_candle['sma_200_dec_24'])and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf'] < -0.45) and (last_candle['close'] < last_candle['ema_200']) and (last_candle['ema_25'] < last_candle['ema_50']) and (last_candle['cti'] < -0.8) and (last_candle['r_480'] < -97.0):
             return True, 'signal_stoploss_u_e_b_2'
+
+        # Under EMA200, pair and BTC negative, low max rate
+        if (-0.04 > current_profit > -0.07) and (last_candle['moderi_32'] == False) and (last_candle['moderi_64'] == False) and (max_profit < 0.005) and (max_loss < 0.07) and (last_candle['sma_200_dec_24']) and (last_candle['close'] < last_candle['ema_200']) and (last_candle['ema_25'] < last_candle['ema_50']) and (last_candle['cmf'] < -0.0) and (last_candle['r_480'] < -50.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            return True, 'sell_stoploss_u_e_b_3'
 
         return False, None
 
