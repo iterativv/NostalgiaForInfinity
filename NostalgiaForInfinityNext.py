@@ -3393,7 +3393,7 @@ class NostalgiaForInfinityNext(IStrategy):
             and last_candle['sma_200_dec_24']
             and current_time - timedelta(minutes=2880) > trade.open_date_utc
         ):
-            return True, 'sell_stoploss_u_e_1'
+            return True, 'signal_stoploss_u_e_1'
 
         # Under EMA200, local strong uptrend move
         if (
@@ -3406,7 +3406,7 @@ class NostalgiaForInfinityNext(IStrategy):
             and last_candle['sma_200_dec_24']
             and current_time - timedelta(minutes=2880) > trade.open_date_utc
         ):
-            return True, 'sell_stoploss_u_e_2'
+            return True, 'signal_stoploss_u_e_2'
 
         # Under EMA200, pair negative, low max rate
         if (
@@ -3420,7 +3420,7 @@ class NostalgiaForInfinityNext(IStrategy):
             and last_candle['ema_vwma_osc_96'] < 0
             and last_candle['cmf'] < -0.0
         ):
-            return True, 'sell_stoploss_u_e_3'
+            return True, 'signal_stoploss_u_e_3'
  
         # Under EMA200, pair and BTC negative, low max rate
         if (
@@ -3437,7 +3437,7 @@ class NostalgiaForInfinityNext(IStrategy):
             and last_candle['cti'] < -0.8
             and last_candle['r_480'] < -50.0
         ):
-            return True, 'sell_stoploss_u_e_b_1'
+            return True, 'signal_stoploss_u_e_b_1'
 
         # Under EMA200, pair & BTC negative, CTI, downtrend, normal max rate
         elif (
@@ -3472,7 +3472,7 @@ class NostalgiaForInfinityNext(IStrategy):
             and last_candle['r_480'] < -50.0
             and not last_candle['btc_not_downtrend_1h']
         ):
-            return True, 'sell_stoploss_u_e_b_3'
+            return True, 'signal_stoploss_u_e_b_3'
 
         return False, None
 
