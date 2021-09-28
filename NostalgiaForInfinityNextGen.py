@@ -1059,7 +1059,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
         ):
                 return True, 'sell_stoploss_u_e_4'
 
-                # Under EMA200, pair negative, low max rate
+        # Under EMA200, pair negative, low max rate
         if (
                 (-0.04 > current_profit > -0.07)
                 and (max_profit < 0.015)
