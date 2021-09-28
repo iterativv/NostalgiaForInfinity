@@ -2562,6 +2562,11 @@ class NostalgiaForInfinityNextGen(IStrategy):
         dataframe['moderi_64'] = moderi(dataframe, 64)
         dataframe['moderi_96'] = moderi(dataframe, 96)
 
+        # EMA of VWMA Oscillator
+        dataframe['ema_vwma_osc_32'] = ema_vwma_osc(dataframe, 32)
+        dataframe['ema_vwma_osc_64'] = ema_vwma_osc(dataframe, 64)
+        dataframe['ema_vwma_osc_96'] = ema_vwma_osc(dataframe, 96)
+
         # EWO
         dataframe['ewo'] = ewo(dataframe, 50, 200)
         dataframe['ewo_ema'] = ewo_ema(dataframe, 50, 200)
@@ -3161,6 +3166,11 @@ def vwma(dataframe: DataFrame, length: int = 10):
 def moderi(dataframe: DataFrame, len_slow_ma: int = 32) -> Series:
     slow_ma = Series(ta.EMA(vwma(dataframe, length=len_slow_ma), timeperiod=len_slow_ma))
     return slow_ma >= slow_ma.shift(1)  # we just need true & false for ERI trend
+
+# Exponential moving average of a volume weighted simple moving average
+def ema_vwma_osc(dataframe, len_slow_ma):
+    slow_ema = Series(ta.EMA(vwma(dataframe, len_slow_ma), len_slow_ma))
+    return ((slow_ema - slow_ema.shift(1)) / slow_ema.shift(1)) * 100
 
 def pivot_points(dataframe: DataFrame, mode = 'fibonacci') -> Series:
     hlc3_pivot = (dataframe['high'] + dataframe['low'] + dataframe['close']).shift(1) / 3
