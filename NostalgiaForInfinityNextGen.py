@@ -648,7 +648,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
             "safe_pump_6h_threshold"    : 0.4,
             "safe_pump_12h_threshold"   : 0.5,
             "safe_pump_24h_threshold"   : 0.7,
-            "safe_pump_36h_threshold"   : 0.9,
+            "safe_pump_36h_threshold"   : 1.1,
             "safe_pump_48h_threshold"   : None,
             "btc_1h_not_downtrend"      : True,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
@@ -2947,14 +2947,13 @@ class NostalgiaForInfinityNextGen(IStrategy):
                     # Non-Standard protections
 
                     # Logic
-                    item_buy_logic.append(dataframe['ewo_ema'].shift(1) > 9.0)
-                    item_buy_logic.append(dataframe['close'].shift(1) < (dataframe['sma_30'].shift(1) * 0.988)) # 0.968
-                    item_buy_logic.append(dataframe['close'].shift(1) < (dataframe['bb20_2_low'].shift(1) * 0.985)) # 0.982
-                    item_buy_logic.append(dataframe['rsi_14'].shift(1) < 31.0)
+                    item_buy_logic.append(dataframe['ewo_ema'].shift(1) > 6.6)
+                    item_buy_logic.append(dataframe['close'].shift(1) < (dataframe['sma_30'].shift(1) * 0.988))
+                    item_buy_logic.append(dataframe['close'].shift(1) < (dataframe['bb20_2_low'].shift(1) * 0.982))
+                    item_buy_logic.append(dataframe['rsi_14'].shift(1) < 32.0)
                     item_buy_logic.append(dataframe['r_14'].shift(1) < -94.0)
                     item_buy_logic.append(dataframe['ewo_ema_1h'] > 2.0)
                     item_buy_logic.append(dataframe['r_480_1h'] < -20.0)
-                    item_buy_logic.append(dataframe['crsi_1h'] > 10.0)
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
