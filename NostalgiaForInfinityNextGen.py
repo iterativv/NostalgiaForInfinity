@@ -225,9 +225,9 @@ class NostalgiaForInfinityNextGen(IStrategy):
             "safe_dips_threshold_2"     : None,
             "safe_dips_threshold_12"    : None,
             "safe_dips_threshold_144"   : None,
-            "safe_pump_6h_threshold"    : None,
-            "safe_pump_12h_threshold"   : 0.2,
-            "safe_pump_24h_threshold"   : 0.54,
+            "safe_pump_6h_threshold"    : 0.36,
+            "safe_pump_12h_threshold"   : None,
+            "safe_pump_24h_threshold"   : None,
             "safe_pump_36h_threshold"   : None,
             "safe_pump_48h_threshold"   : None,
             "btc_1h_not_downtrend"      : False,
@@ -3381,10 +3381,10 @@ class NostalgiaForInfinityNextGen(IStrategy):
                     # Non-Standard protections
 
                     # Logic
-                    item_buy_logic.append(((dataframe['close'] - dataframe['open'].rolling(4).min()) / dataframe['open'].rolling(4).min()) > 0.04)
-                    item_buy_logic.append(dataframe['rsi_14'] < 36.0)
+                    item_buy_logic.append(((dataframe['close'] - dataframe['open'].rolling(4).min()) / dataframe['open'].rolling(4).min()) > 0.038)
+                    item_buy_logic.append(dataframe['rsi_14'] < 33.0)
                     item_buy_logic.append(dataframe['rsi_14_1h'] > 30.0)
-                    item_buy_logic.append(dataframe['rsi_14_1h'] < 80.0)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] < 50.0)
                     item_buy_logic.append(dataframe['r_480_1h'] > -99.0)
 
                 # Condition #2 - Semi swing. Local dip. Uptrend.
