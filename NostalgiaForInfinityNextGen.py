@@ -2685,6 +2685,47 @@ class NostalgiaForInfinityNextGen(IStrategy):
 
         return False, None
 
+    def sell_duration(self, current_profit: float, max_profit: float, max_loss: float, last_candle, previous_candle_1, trade: 'Trade', current_time: 'datetime') -> tuple:
+        if (current_time - timedelta(minutes=1440) > trade.open_date_utc):
+            if current_profit >= 0.2:
+                if (last_candle['rsi_14'] > 81.5):
+                    return True, 'sell_profit_l_12_1'
+            elif 0.2 > current_profit >= 0.12:
+                if (last_candle['rsi_14'] > 81.0):
+                    return True, 'sell_profit_l_11_1'
+            elif 0.12 > current_profit >= 0.1:
+                if (last_candle['rsi_14'] > 80.5):
+                    return True, 'sell_profit_l_10_1'
+            elif 0.1 > current_profit >= 0.09:
+                if (last_candle['rsi_14'] > 80.0):
+                    return True, 'sell_profit_l_9_1'
+            elif 0.09 > current_profit >= 0.08:
+                if (last_candle['rsi_14'] > 79.5):
+                    return True, 'sell_profit_l_8_1'
+            elif 0.08 > current_profit >= 0.07:
+                if (last_candle['rsi_14'] > 79.0):
+                    return True, 'sell_profit_l_7_1'
+            elif 0.07 > current_profit >= 0.06:
+                if (last_candle['rsi_14'] > 78.5):
+                    return True, 'sell_profit_l_6_1'
+            elif 0.06 > current_profit >= 0.05:
+                if (last_candle['rsi_14'] > 78.0):
+                    return True, 'sell_profit_l_5_1'
+            elif 0.05 > current_profit >= 0.04:
+                if (last_candle['rsi_14'] > 79.0):
+                    return True, 'sell_profit_l_4_1'
+            elif 0.04 > current_profit >= 0.03:
+                if (last_candle['rsi_14'] > 80.0):
+                    return True, 'sell_profit_l_3_1'
+            elif 0.03 > current_profit >= 0.02:
+                if (last_candle['rsi_14'] > 80.5):
+                    return True, 'sell_profit_l_2_1'
+            elif 0.02 > current_profit >= 0.01:
+                if (last_candle['rsi_14'] > 81.0):
+                    return True, 'sell_profit_l_1_1'
+
+        return False, None
+
     def custom_sell(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float,
                     current_profit: float, **kwargs):
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
@@ -2754,6 +2795,11 @@ class NostalgiaForInfinityNextGen(IStrategy):
 
         # The pair is pumped, stoploss
         sell, signal_name = self.sell_pump_stoploss(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
+        if sell and (signal_name is not None):
+            return f"{signal_name} ( {buy_tag})"
+
+        # Trade duration based sell logic
+        sell, signal_name = self.sell_duration(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
         if sell and (signal_name is not None):
             return f"{signal_name} ( {buy_tag})"
 
