@@ -3423,7 +3423,7 @@ class NostalgiaForInfinityNext(IStrategy):
             and last_candle['cmf'] < -0.0
         ):
             return True, 'signal_stoploss_u_e_3'
- 
+
         # Under EMA200, pair and BTC negative, low max rate
         if (
             -0.05 > current_profit > -0.09
