@@ -215,9 +215,9 @@ class NostalgiaForInfinityNext(IStrategy):
         "buy_condition_33_enable": True,
         "buy_condition_34_enable": True,
         "buy_condition_35_enable": False,
-        "buy_condition_36_enable": True,
+        "buy_condition_36_enable": False,
         "buy_condition_37_enable": True,
-        "buy_condition_38_enable": False,
+        "buy_condition_38_enable": True,
         "buy_condition_39_enable": True,
         "buy_condition_40_enable": True,
         "buy_condition_41_enable": True,
@@ -3859,8 +3859,6 @@ class NostalgiaForInfinityNext(IStrategy):
 
         return self.sell_stoploss(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
 
-        return False, None
-
     def sell_pivot(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, trade: 'Trade', current_time: 'datetime') -> tuple:
         if (last_candle['close'] > (last_candle['res3_1d'] * 2.2)):
             if (0.02 > current_profit >= 0.012):
@@ -3934,15 +3932,7 @@ class NostalgiaForInfinityNext(IStrategy):
         previous_candle_4 = dataframe.iloc[-5]
         previous_candle_5 = dataframe.iloc[-6]
 
-        buy_tag = 'empty'
-        if hasattr(trade, 'buy_tag') and trade.buy_tag is not None:
-            buy_tag = trade.buy_tag
-        else:
-            trade_open_date = timeframe_to_prev_date(self.timeframe, trade.open_date_utc)
-            buy_signal = dataframe.loc[dataframe['date'] < trade_open_date]
-            if not buy_signal.empty:
-                buy_signal_candle = buy_signal.iloc[-1]
-                buy_tag = buy_signal_candle['buy_tag'] if buy_signal_candle['buy_tag'] != '' else 'empty'
+        buy_tag = trade.buy_tag if not None else 'empty'
         buy_tags = buy_tag.split()
         max_profit = ((trade.max_rate - trade.open_rate) / trade.open_rate)
         max_loss = ((trade.open_rate - trade.min_rate) / trade.min_rate)
@@ -4003,10 +3993,9 @@ class NostalgiaForInfinityNext(IStrategy):
             return f"{signal_name} ( {buy_tag})"
 
         # Stoplosses
-        if any(c in ['empty', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39','40', '41', '42', '43', '44', '45', '46', '47', '48'] for c in buy_tags):
-            sell, signal_name = self.sell_stoploss(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
-            if sell and (signal_name is not None):
-                return f"{signal_name} ( {buy_tag})"
+        sell, signal_name = self.sell_stoploss(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
+        if sell and (signal_name is not None):
+            return f"{signal_name} ( {buy_tag})"
 
         # Pumped descending pairs
         sell, signal_name = self.sell_pump_dec(current_profit, last_candle)
