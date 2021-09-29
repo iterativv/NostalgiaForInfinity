@@ -2314,7 +2314,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
                     elif (last_candle['rsi_14'] > 78.0) and (last_candle['r_14'] >= -0.1):
                         return True, 'sell_profit_p_bear_48_1_1_5'
 
-        elif (last_candle['hl_pct_change_48_1h'] > 0.8):
+        if (last_candle['hl_pct_change_48_1h'] > 0.8):
             if (last_candle['moderi_96']):
                 if current_profit >= 0.2:
                     if (last_candle['rsi_14'] < 32.0) and (last_candle['cmf'] < -0.35):
@@ -2390,7 +2390,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
                     if (last_candle['rsi_14'] < 40.0) and (last_candle['cmf'] < -0.15):
                         return True, 'sell_profit_p_bear_48_2_1_1'
 
-        elif (last_candle['hl_pct_change_48_1h'] > 0.5):
+        if (last_candle['hl_pct_change_48_1h'] > 0.5):
             if (last_candle['moderi_96']):
                 if current_profit >= 0.2:
                     if (last_candle['rsi_14'] < 32.0) and (last_candle['cmf'] < -0.35):
@@ -2514,7 +2514,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
                     elif (last_candle['rsi_14'] > 75.0) and (last_candle['r_14'] > -1.0) and (last_candle['cmf_1h'] < -0.25):
                         return True, 'sell_profit_p_bear_48_3_1_2'
 
-        elif (last_candle['hl_pct_change_36_1h'] > 0.72):
+        if (last_candle['hl_pct_change_36_1h'] > 0.72):
             if (last_candle['moderi_96']):
                 if current_profit >= 0.2:
                     if (last_candle['rsi_14'] < 31.0):
@@ -2638,7 +2638,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
                     elif (last_candle['rsi_14'] < 48.0) and (last_candle['r_14'] == 0):
                         return True, 'sell_profit_p_bear_36_1_1_4'
 
-        elif (last_candle['hl_pct_change_24_1h'] > 0.68):
+        if (last_candle['hl_pct_change_24_1h'] > 0.68):
             if (last_candle['moderi_96']):
                 if current_profit >= 0.2:
                     if (last_candle['rsi_14'] < 31.0):
