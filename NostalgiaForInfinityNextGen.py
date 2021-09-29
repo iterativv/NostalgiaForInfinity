@@ -1164,6 +1164,23 @@ class NostalgiaForInfinityNextGen(IStrategy):
         ):
             return True, 'sell_stoploss_u_e_b_5'
 
+        # Under EMA200, pair & BTC negative, low max rate, short trade duration
+        if (
+                (-0.04 > current_profit > -0.1)
+                and (max_profit < 0.015)
+                and (last_candle['close'] < last_candle['ema_200'])
+                and (last_candle['ema_25'] < last_candle['ema_50'])
+                and (last_candle['ema_vwma_osc_32'] < 0.0 )
+                and (last_candle['ema_vwma_osc_64'] < 0.0)
+                and (last_candle['ema_vwma_osc_96'] < 0.0)
+                and (last_candle['cmf'] < -0.25)
+                and (last_candle['r_480'] < -75.0)
+                and (last_candle['close'] < last_candle['sup_level_1h'])
+                and (current_time - timedelta(minutes=60) < trade.open_date_utc)
+                and (last_candle['btc_not_downtrend_1h'] == False)
+        ):
+            return True, 'sell_stoploss_u_e_b_6'
+
         return False, None
 
     def sell_over_main(self, current_profit: float, last_candle) -> tuple:
