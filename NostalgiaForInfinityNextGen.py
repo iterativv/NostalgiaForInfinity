@@ -1040,6 +1040,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
                 and (last_candle['ema_vwma_osc_64'] < 0.0)
                 and (last_candle['ema_vwma_osc_96'] < 0.0)
                 and (last_candle['cmf'] < -0.0)
+                and (last_candle['close'] < last_candle['sup_level_1h'])
         ):
             return True, 'sell_stoploss_u_e_3'
 
@@ -1055,6 +1056,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
                 and (last_candle['ema_vwma_osc_64'] < 0.0)
                 and (last_candle['ema_vwma_osc_96'] < 0.0)
                 and (last_candle['cmf'] < -0.0)
+                and (last_candle['close'] < last_candle['sup_level_1h'])
                 and (current_time - timedelta(minutes=720) > trade.open_date_utc)
         ):
                 return True, 'sell_stoploss_u_e_4'
@@ -1072,6 +1074,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
                 and (last_candle['ema_vwma_osc_64'] < 0.0)
                 and (last_candle['ema_vwma_osc_96'] < 0.0)
                 and (last_candle['cmf'] < -0.0)
+                and (last_candle['close'] < last_candle['sup_level_1h'])
                 and (current_time - timedelta(minutes=120) < trade.open_date_utc)
         ):
             return True, 'sell_stoploss_u_e_5'
