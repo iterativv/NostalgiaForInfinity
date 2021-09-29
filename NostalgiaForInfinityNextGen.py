@@ -3750,10 +3750,9 @@ class NostalgiaForInfinityNextGen(IStrategy):
 
                     # Logic
                     item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
-                    item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.026)) # 0.026
+                    item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.026))
                     item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * 0.999))
-                    item_buy_logic.append(dataframe['r_480_1h'] < -35.0)
 
                 # Condition #8 - Semi swing. Local dip. 1h minor dip.
                 elif index == 8:
