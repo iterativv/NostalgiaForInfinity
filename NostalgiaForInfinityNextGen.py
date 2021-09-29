@@ -277,11 +277,11 @@ class NostalgiaForInfinityNextGen(IStrategy):
             "sma200_rising_val"         : "50",
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
-            "safe_dips_threshold_0"     : 0.04,
+            "safe_dips_threshold_0"     : 0.035,
             "safe_dips_threshold_2"     : 0.08,
-            "safe_dips_threshold_12"    : 0.18,
+            "safe_dips_threshold_12"    : 0.2,
             "safe_dips_threshold_144"   : 0.28,
-            "safe_pump_6h_threshold"    : 0.2,
+            "safe_pump_6h_threshold"    : 0.45,
             "safe_pump_12h_threshold"   : None,
             "safe_pump_24h_threshold"   : None,
             "safe_pump_36h_threshold"   : None,
@@ -3601,13 +3601,12 @@ class NostalgiaForInfinityNextGen(IStrategy):
                     # Non-Standard protections
 
                     # Logic
-                    item_buy_logic.append(dataframe['close'] < dataframe['ema_25'] * 0.95)
+                    item_buy_logic.append(dataframe['close'] < dataframe['ema_25'] * 0.952)
                     item_buy_logic.append(dataframe['ewo_ema'] > 2.0)
                     item_buy_logic.append(dataframe['rsi_14'] < 40.0)
-                    item_buy_logic.append(dataframe['cti'] < -0.95)
+                    item_buy_logic.append(dataframe['cti'] < -0.9)
                     item_buy_logic.append(dataframe['r_14'] < -97.0)
                     item_buy_logic.append(dataframe['cti_1h'] < 0.0)
-                    item_buy_logic.append(dataframe['r_480_1h'] < -25.0)
 
                 # Condition #4 - Semi swing. Local dip. Uptrend. Strict pump & dip protections.
                 elif index == 4:
