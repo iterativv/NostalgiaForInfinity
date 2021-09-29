@@ -2957,7 +2957,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
             ):
                 return True, 'sell_stoploss_p_48_1_2'
 
-        elif (last_candle['hl_pct_change_36_1h'] > 0.7):
+        if (last_candle['hl_pct_change_36_1h'] > 0.7):
             if (
                     (-0.04 > current_profit > -0.08)
                     and (max_loss < 0.08)
@@ -2970,7 +2970,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
             ):
                 return True, 'sell_stoploss_p_36_1_1'
 
-        elif (last_candle['hl_pct_change_36_1h'] > 0.5):
+        if (last_candle['hl_pct_change_36_1h'] > 0.5):
             if (
                     (-0.05 > current_profit > -0.08)
                     and (max_loss < 0.08)
@@ -2984,7 +2984,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
             ):
                 return True, 'sell_stoploss_p_36_2_1'
 
-        elif (last_candle['hl_pct_change_24_1h'] > 0.6):
+        if (last_candle['hl_pct_change_24_1h'] > 0.6):
             if (
                     (-0.04 > current_profit > -0.08)
                     and (max_loss < 0.08)
