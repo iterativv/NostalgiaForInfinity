@@ -1141,6 +1141,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
                 and (last_candle['ema_vwma_osc_96'] < 0.0)
                 and (last_candle['cmf'] < -0.1)
                 and (last_candle['r_480'] < -75.0)
+                and (last_candle['close'] < last_candle['sup_level_1h'])
                 and (current_time - timedelta(minutes=60) < trade.open_date_utc)
                 and (last_candle['btc_not_downtrend_1h'] == False)
         ):
