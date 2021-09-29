@@ -1051,6 +1051,8 @@ class NostalgiaForInfinityNextGen(IStrategy):
                 and (max_profit > (current_profit + 0.1))
                 and (last_candle['close'] < last_candle['ema_200'])
                 and (last_candle['ema_25'] < last_candle['ema_50'])
+                and (last_candle['sma_200_dec_24'])
+                and (last_candle['sma_200_dec_20_1h'])
                 and (last_candle['ema_vwma_osc_32'] < 0.0)
                 and (last_candle['ema_vwma_osc_64'] < 0.0)
                 and (last_candle['ema_vwma_osc_96'] < 0.0)
