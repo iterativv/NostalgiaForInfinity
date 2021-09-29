@@ -1040,6 +1040,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
                 and (last_candle['ema_vwma_osc_64'] < 0.0)
                 and (last_candle['ema_vwma_osc_96'] < 0.0)
                 and (last_candle['cmf'] < -0.0)
+                and (current_time - timedelta(minutes=30) > trade.open_date_utc)
         ):
             return True, 'sell_stoploss_u_e_3'
 
