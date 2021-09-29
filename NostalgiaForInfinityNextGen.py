@@ -309,14 +309,14 @@ class NostalgiaForInfinityNextGen(IStrategy):
             "safe_dips_threshold_2"     : 0.12,
             "safe_dips_threshold_12"    : 0.34,
             "safe_dips_threshold_144"   : 0.48,
-            "safe_pump_6h_threshold"    : 0.19,
-            "safe_pump_12h_threshold"   : None,
+            "safe_pump_6h_threshold"    : None,
+            "safe_pump_12h_threshold"   : 0.42,
             "safe_pump_24h_threshold"   : None,
             "safe_pump_36h_threshold"   : None,
             "safe_pump_48h_threshold"   : None,
             "btc_1h_not_downtrend"      : False,
-            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
-            "close_over_pivot_offset"   : 0.95,
+            "close_over_pivot_type"     : "sup3", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 0.97,
             "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_under_pivot_offset"  : 1.0
         },
@@ -3712,7 +3712,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
                     item_buy_logic.append(dataframe['close'].lt(dataframe['bb40_2_low'].shift()))
                     item_buy_logic.append(dataframe['close'].le(dataframe['close'].shift()))
                     item_buy_logic.append(dataframe['cti'] < -0.5)
-                    item_buy_logic.append(dataframe['cti_1h'] < -0.6)
+                    item_buy_logic.append(dataframe['cti_1h'] < 0.8)
                     item_buy_logic.append(dataframe['r_480_1h'] < -35.0)
 
                 # Condition #5 - Semi swing. Local deeper dip. Uptrend.
