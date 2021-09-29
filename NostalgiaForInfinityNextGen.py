@@ -1036,7 +1036,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
                 and (max_loss < 0.07)
                 and (last_candle['close'] < last_candle['ema_200'])
                 and (last_candle['ema_25'] < last_candle['ema_50'])
-                and (last_candle['ema_vwma_osc_32'] < 0.0 )
+                and (last_candle['ema_vwma_osc_32'] < 0.0)
                 and (last_candle['ema_vwma_osc_64'] < 0.0)
                 and (last_candle['ema_vwma_osc_96'] < 0.0)
                 and (last_candle['cmf'] < -0.0)
@@ -1069,7 +1069,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
                 and (last_candle['ema_25'] < last_candle['ema_50'])
                 and (last_candle['sma_200_dec_24'])
                 and (last_candle['sma_200_dec_20_1h'])
-                and (last_candle['ema_vwma_osc_32'] < 0.0 )
+                and (last_candle['ema_vwma_osc_32'] < 0.0)
                 and (last_candle['ema_vwma_osc_64'] < 0.0)
                 and (last_candle['ema_vwma_osc_96'] < 0.0)
                 and (last_candle['cmf'] < -0.0)
@@ -1077,6 +1077,26 @@ class NostalgiaForInfinityNextGen(IStrategy):
                 and (current_time - timedelta(minutes=120) < trade.open_date_utc)
         ):
             return True, 'sell_stoploss_u_e_5'
+
+        # Under EMA200, pair negative, low max rate
+        if (
+                (current_profit < -0.08)
+                and (max_profit < 0.04)
+                and (last_candle['close'] < last_candle['ema_200'])
+                and (last_candle['ema_25'] < last_candle['ema_50'])
+                and (last_candle['sma_200_dec_20'])
+                and (last_candle['sma_200_dec_24'])
+                and (last_candle['sma_200_dec_20_1h'])
+                and (last_candle['ema_vwma_osc_32'] < 0.0)
+                and (last_candle['ema_vwma_osc_64'] < 0.0)
+                and (last_candle['ema_vwma_osc_96'] < 0.0)
+                and (last_candle['cmf'] < -0.0)
+                and (last_candle['cmf_1h'] < -0.0)
+                and (last_candle['close'] < last_candle['sup_level_1h'])
+                and (last_candle['btc_not_downtrend_1h'] == False)
+                and (current_time - timedelta(minutes=1440) > trade.open_date_utc)
+        ):
+            return True, 'sell_stoploss_u_e_doom'
 
         # Under EMA200, pair and BTC negative, low max rate
         if (
