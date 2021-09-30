@@ -3694,7 +3694,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
                     item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.026))
                     item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
                     item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * 0.942)
-                    item_buy_logic.append(dataframe['rsi_14'] < 28.0)
+                    item_buy_logic.append(dataframe['rsi_14'] < 28.2)
                     item_buy_logic.append(dataframe['crsi'] > 10.0)
 
                 # Condition #11 - Semi swing. Deep local dip. Mild uptrend.
