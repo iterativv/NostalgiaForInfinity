@@ -477,11 +477,11 @@ class NostalgiaForInfinityNextGen(IStrategy):
             "safe_dips_threshold_2"     : 0.07,
             "safe_dips_threshold_12"    : 0.26,
             "safe_dips_threshold_144"   : 0.38,
-            "safe_pump_6h_threshold"    : 0.2,
-            "safe_pump_12h_threshold"   : 0.3,
-            "safe_pump_24h_threshold"   : 0.5,
-            "safe_pump_36h_threshold"   : 0.6,
-            "safe_pump_48h_threshold"   : 0.9,
+            "safe_pump_6h_threshold"    : 0.45,
+            "safe_pump_12h_threshold"   : None,
+            "safe_pump_24h_threshold"   : None,
+            "safe_pump_36h_threshold"   : None,
+            "safe_pump_48h_threshold"   : None,
             "btc_1h_not_downtrend"      : False,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_over_pivot_offset"   : 1.0,
@@ -3691,12 +3691,11 @@ class NostalgiaForInfinityNextGen(IStrategy):
 
                     # Logic
                     item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
-                    item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.024))
+                    item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.026))
                     item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
                     item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * 0.942)
-                    item_buy_logic.append(dataframe['rsi_14'] < 25.5)
-                    item_buy_logic.append(dataframe['crsi'] > 8.0)
-                    item_buy_logic.append(dataframe['r_480_1h'] > -75.0)
+                    item_buy_logic.append(dataframe['rsi_14'] < 28.0)
+                    item_buy_logic.append(dataframe['crsi'] > 10.0)
 
                 # Condition #11 - Semi swing. Deep local dip. Mild uptrend.
                 elif index == 11:
