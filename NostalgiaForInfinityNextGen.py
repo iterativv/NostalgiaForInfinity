@@ -3785,13 +3785,13 @@ class NostalgiaForInfinityNextGen(IStrategy):
                     # Logic
                     item_buy_logic.append(dataframe['rsi_14'] < dataframe['rsi_14'].shift(1))
                     item_buy_logic.append(dataframe['ema_20_1h'] > dataframe['ema_25_1h'])
-                    item_buy_logic.append(dataframe['close'] < (dataframe['sma_15'] * 0.936))
+                    item_buy_logic.append(dataframe['close'] < (dataframe['sma_15'] * 0.95))
                     item_buy_logic.append(
                         ((dataframe['open'] < dataframe['ema_20_1h']) & (dataframe['low'] < dataframe['ema_20_1h'])) |
                         ((dataframe['open'] > dataframe['ema_20_1h']) & (dataframe['low'] > dataframe['ema_20_1h'])))
-                    item_buy_logic.append(dataframe['cti'] < -0.88)
-                    item_buy_logic.append(dataframe['r_14'] < -90.0)
-                    item_buy_logic.append(dataframe['cti_1h'] < -0.25)
+                    item_buy_logic.append(dataframe['cti'] < -0.9)
+                    item_buy_logic.append(dataframe['r_14'] < -92.0)
+                    item_buy_logic.append(dataframe['cti_1h'] < -0.1)
 
                 # Condition #9 - Semi swing. Local deep. Uptrend, 1h uptrend.
                 elif index == 9:
