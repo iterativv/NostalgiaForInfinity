@@ -3332,6 +3332,10 @@ class NostalgiaForInfinityNextGen(IStrategy):
 
         # Williams %R
         dataframe['r_14'] = williams_r(dataframe, period=14)
+        dataframe['r_24'] = williams_r(dataframe, period=24)
+        dataframe['r_32'] = williams_r(dataframe, period=32)
+        dataframe['r_64'] = williams_r(dataframe, period=64)
+        dataframe['r_96'] = williams_r(dataframe, period=96)
         dataframe['r_480'] = williams_r(dataframe, period=480)
 
         # CTI
