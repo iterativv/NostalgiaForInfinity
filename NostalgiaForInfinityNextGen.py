@@ -533,14 +533,14 @@ class NostalgiaForInfinityNextGen(IStrategy):
             "safe_dips_threshold_2"     : 0.09,
             "safe_dips_threshold_12"    : 0.32,
             "safe_dips_threshold_144"   : 0.44,
-            "safe_pump_6h_threshold"    : 0.2,
-            "safe_pump_12h_threshold"   : 0.4,
-            "safe_pump_24h_threshold"   : 0.6,
-            "safe_pump_36h_threshold"   : 0.8,
-            "safe_pump_48h_threshold"   : 0.9,
+            "safe_pump_6h_threshold"    : 0.22,
+            "safe_pump_12h_threshold"   : 0.45,
+            "safe_pump_24h_threshold"   : None,
+            "safe_pump_36h_threshold"   : None,
+            "safe_pump_48h_threshold"   : None,
             "btc_1h_not_downtrend"      : False,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
-            "close_over_pivot_offset"   : 0.9,
+            "close_over_pivot_offset"   : 1.0,
             "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_under_pivot_offset"  : 1.0
         },
