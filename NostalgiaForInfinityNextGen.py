@@ -3582,7 +3582,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
                     # Non-Standard protections
 
                     # Logic
-                    item_buy_logic.append(((dataframe['close'] - dataframe['open'].rolling(4).min()) / dataframe['open'].rolling(4).min()) > 0.038)
+                    item_buy_logic.append(((dataframe['close'] - dataframe['open'].rolling(4).min()) / dataframe['open'].rolling(4).min()) > 0.04)
                     item_buy_logic.append(dataframe['rsi_14'] < 33.0)
                     item_buy_logic.append(dataframe['rsi_14_1h'] > 30.0)
                     item_buy_logic.append(dataframe['rsi_14_1h'] < 50.0)
