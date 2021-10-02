@@ -614,10 +614,10 @@ class NostalgiaForInfinityNextGen(IStrategy):
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
             "safe_dips_threshold_0"     : 0.06,
-            "safe_dips_threshold_2"     : 0.09,
-            "safe_dips_threshold_12"    : 0.24,
-            "safe_dips_threshold_144"   : 0.38,
-            "safe_pump_6h_threshold"    : 0.4,
+            "safe_dips_threshold_2"     : 0.1,
+            "safe_dips_threshold_12"    : 0.28,
+            "safe_dips_threshold_144"   : 0.48,
+            "safe_pump_6h_threshold"    : 0.5,
             "safe_pump_12h_threshold"   : None,
             "safe_pump_24h_threshold"   : None,
             "safe_pump_36h_threshold"   : 0.9,
@@ -3752,9 +3752,8 @@ class NostalgiaForInfinityNextGen(IStrategy):
                     # Non-Standard protections (add below)
 
                     # Logic
-                    item_buy_logic.append(dataframe['close'].shift(1) < dataframe['ema_20'].shift(1) * 0.996)
                     item_buy_logic.append(dataframe['ewo_ema'].shift(1) < -10.4)
-                    item_buy_logic.append(dataframe['cti'].shift(1).rolling(5).max() < -0.9)
+                    item_buy_logic.append(dataframe['cti'].shift(1).rolling(5).max() < -0.88)
                     item_buy_logic.append(dataframe['r_14'].shift(1) < -90.0)
                     item_buy_logic.append(dataframe['crsi_1h'] > 2.0)
 
