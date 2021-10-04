@@ -198,6 +198,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
         "buy_condition_16_enable": True,
         "buy_condition_17_enable": True,
         "buy_condition_18_enable": True,
+        "buy_condition_19_enable": True,
         #############
     }
 
@@ -709,6 +710,34 @@ class NostalgiaForInfinityNextGen(IStrategy):
             "safe_pump_36h_threshold"   : 0.75,
             "safe_pump_48h_threshold"   : None,
             "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
+        },
+        19: {
+            "ema_fast"                  : False,
+            "ema_fast_len"              : "50",
+            "ema_slow"                  : False,
+            "ema_slow_len"              : "12",
+            "close_above_ema_fast"      : False,
+            "close_above_ema_fast_len"  : "200",
+            "close_above_ema_slow"      : False,
+            "close_above_ema_slow_len"  : "200",
+            "sma200_rising"             : False,
+            "sma200_rising_val"         : "24",
+            "sma200_1h_rising"          : False,
+            "sma200_1h_rising_val"      : "24",
+            "safe_dips_threshold_0"     : 0.08,
+            "safe_dips_threshold_2"     : 0.12,
+            "safe_dips_threshold_12"    : None,
+            "safe_dips_threshold_144"   : None,
+            "safe_pump_6h_threshold"    : 0.45,
+            "safe_pump_12h_threshold"   : None,
+            "safe_pump_24h_threshold"   : None,
+            "safe_pump_36h_threshold"   : 0.75,
+            "safe_pump_48h_threshold"   : None,
+            "btc_1h_not_downtrend"      : True,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_over_pivot_offset"   : 1.0,
             "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
@@ -3201,7 +3230,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
         max_loss = ((trade.open_rate - trade.min_rate) / trade.min_rate)
 
         # Quick sell mode
-        if all(c in ['empty'] for c in buy_tags):
+        if all(c in ['empty', '19'] for c in buy_tags):
             sell, signal_name = self.sell_quick_mode(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag})"
@@ -3922,6 +3951,17 @@ class NostalgiaForInfinityNextGen(IStrategy):
                     item_buy_logic.append(dataframe['r_96'] < -97.0)
                     item_buy_logic.append(dataframe['ewo_ema_1h'] > 2.0)
                     item_buy_logic.append(dataframe['cti_1h'] > -0.5)
+
+                # Condition #19 - Quick mode. Uptrend. Local dip.
+                elif index == 19:
+                    # Non-Standard protections
+
+                    # Logic
+
+                    item_buy_logic.append(dataframe['ewo_ema'] > 6.8)
+                    item_buy_logic.append(dataframe['cci'] < -180.0)
+                    item_buy_logic.append(dataframe['r_14'] < -95.0)
+                    item_buy_logic.append(qtpylib.crossed_below(dataframe['close'], dataframe['ema_200']))
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
