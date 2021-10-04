@@ -199,6 +199,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
         "buy_condition_17_enable": True,
         "buy_condition_18_enable": True,
         "buy_condition_19_enable": True,
+        "buy_condition_20_enable": True,
         #############
     }
 
@@ -738,6 +739,34 @@ class NostalgiaForInfinityNextGen(IStrategy):
             "safe_pump_36h_threshold"   : 0.75,
             "safe_pump_48h_threshold"   : None,
             "btc_1h_not_downtrend"      : True,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
+        },
+        20: {
+            "ema_fast"                  : False,
+            "ema_fast_len"              : "50",
+            "ema_slow"                  : False,
+            "ema_slow_len"              : "50",
+            "close_above_ema_fast"      : False,
+            "close_above_ema_fast_len"  : "200",
+            "close_above_ema_slow"      : False,
+            "close_above_ema_slow_len"  : "200",
+            "sma200_rising"             : False,
+            "sma200_rising_val"         : "50",
+            "sma200_1h_rising"          : False,
+            "sma200_1h_rising_val"      : "24",
+            "safe_dips_threshold_0"     : None,
+            "safe_dips_threshold_2"     : None,
+            "safe_dips_threshold_12"    : None,
+            "safe_dips_threshold_144"   : None,
+            "safe_pump_6h_threshold"    : None,
+            "safe_pump_12h_threshold"   : None,
+            "safe_pump_24h_threshold"   : None,
+            "safe_pump_36h_threshold"   : None,
+            "safe_pump_48h_threshold"   : None,
+            "btc_1h_not_downtrend"      : False,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_over_pivot_offset"   : 1.0,
             "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
@@ -3438,6 +3467,13 @@ class NostalgiaForInfinityNextGen(IStrategy):
         # Smoothed Heikin-Ashi
         informative_1d['open_sha'], informative_1d['close_sha'], informative_1d['low_sha'] = heikin_ashi(informative_1d, smooth_inputs=True, smooth_outputs=False, length=10)
 
+        # S/R
+        res_series = informative_1d['high'].rolling(window = 5, center=True).apply(lambda row: self.is_resistance(row), raw=True).shift(2)
+        sup_series = informative_1d['low'].rolling(window = 5, center=True).apply(lambda row: self.is_support(row), raw=True).shift(2)
+        informative_1d['res_level'] = Series(np.where(res_series, np.where(informative_1d['close'] > informative_1d['open'], informative_1d['close'], informative_1d['open']), float('NaN'))).ffill()
+        informative_1d['res_hlevel'] = Series(np.where(res_series, informative_1d['high'], float('NaN'))).ffill()
+        informative_1d['sup_level'] = Series(np.where(sup_series, np.where(informative_1d['close'] < informative_1d['open'], informative_1d['close'], informative_1d['open']), float('NaN'))).ffill()
+
         tok = time.perf_counter()
         log.debug(f"[{metadata['pair']}] informative_1d_indicators took: {tok - tik:0.4f} seconds.")
 
@@ -3496,11 +3532,7 @@ class NostalgiaForInfinityNextGen(IStrategy):
         sup_series = informative_1h['low'].rolling(window = 5, center=True).apply(lambda row: self.is_support(row), raw=True).shift(2)
         informative_1h['res_level'] = Series(np.where(res_series, np.where(informative_1h['close'] > informative_1h['open'], informative_1h['close'], informative_1h['open']), float('NaN'))).ffill()
         informative_1h['res_hlevel'] = Series(np.where(res_series, informative_1h['high'], float('NaN'))).ffill()
-        # informative_1h['res_level_high'] = Series(np.where(res_series, informative_1h['high'], float('NaN'))).ffill()
-        # informative_1h['res_level_low'] = Series(np.where(res_series, informative_1h['low'], float('NaN'))).ffill()
         informative_1h['sup_level'] = Series(np.where(sup_series, np.where(informative_1h['close'] < informative_1h['open'], informative_1h['close'], informative_1h['open']), float('NaN'))).ffill()
-        # informative_1h['sup_level_high'] = Series(np.where(sup_series, informative_1h['high'], float('NaN'))).ffill()
-        # informative_1h['sup_level_low'] = Series(np.where(sup_series, informative_1h['low'], float('NaN'))).ffill()
 
         # Pump protections
         informative_1h['hl_pct_change_48'] = self.range_percent_change(informative_1h, 'HL', 48)
@@ -3594,6 +3626,11 @@ class NostalgiaForInfinityNextGen(IStrategy):
 
         # For sell checks
         dataframe['crossed_below_ema_12_26'] = qtpylib.crossed_below(dataframe['ema_12'], dataframe['ema_26'])
+
+        # Volume
+        dataframe['vma_10'] = ta.SMA(dataframe['volume'], timeperiod=10)
+        dataframe['vma_20'] = ta.SMA(dataframe['volume'], timeperiod=20)
+        dataframe['vol_osc'] = (dataframe['vma_10'] - dataframe['vma_20']) / dataframe['vma_20'] * 100
 
         # Dip protection
         dataframe['tpct_change_0']   = self.top_percent_change(dataframe,0)
@@ -4033,6 +4070,27 @@ class NostalgiaForInfinityNextGen(IStrategy):
                     item_buy_logic.append(dataframe['cci'] < -180.0)
                     item_buy_logic.append(dataframe['r_14'] < -95.0)
                     item_buy_logic.append(qtpylib.crossed_below(dataframe['close'], dataframe['ema_200']))
+
+                # Condition #20 - Swing. Uptrend. Bounce from daily support level
+                elif index == 20:
+                    # Non-Standard protections
+                    item_buy_logic.append(dataframe['close_1h'] > dataframe['sup_level_1d'])
+                    item_buy_logic.append(dataframe['close_1h'] < dataframe['sup_level_1d'] * 1.05)
+                    item_buy_logic.append(dataframe['low_1h'] < dataframe['sup_level_1d'] * 0.99)
+                    item_buy_logic.append(dataframe['close_1h'] < dataframe['res_level_1h'])
+                    item_buy_logic.append(dataframe['res_level_1d'] > dataframe['sup_level_1d'])
+                    #item_buy_logic.append(dataframe['close'].shift(1) < dataframe['sup_level_1d'])
+                    #item_buy_logic.append(dataframe['close'].shift(2) < dataframe['sup_level_1d'])
+                    item_buy_logic.append(dataframe['volume'] > dataframe['volume'].shift() * 3)
+                    item_buy_logic.append(dataframe['rsi_14'] < 65)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] > 48)
+                    item_buy_logic.append(dataframe['vol_osc'] > 0)
+
+                    # Confirm uptrend - Heikin-Ashi
+                    item_buy_logic.append(dataframe['open_sha_1d'] < dataframe['close_sha_1d'])
+                    item_buy_logic.append(dataframe['open_sha_1d'].shift(96) < dataframe['close_sha_1d'].shift(96))
+
+                    item_buy_logic.append(dataframe['pivot_1d'] > dataframe['pivot_1d'].shift(96) * 0.95)
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
