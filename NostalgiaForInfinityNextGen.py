@@ -3170,6 +3170,19 @@ class NostalgiaForInfinityNextGen(IStrategy):
 
         return False, None
 
+    def sell_quick_mode(self, current_profit: float, max_profit: float, max_loss: float, last_candle, previous_candle_1, trade: 'Trade', current_time: 'datetime') -> tuple:
+        if (0.04 > current_profit >= 0.02):
+            if (max_profit > (current_profit + 0.02)):
+                return True, 'sell_profit_q_t_1'
+        elif (0.06 > current_profit >= 0.04):
+            if (max_profit > (current_profit + 0.03)):
+                return True, 'sell_profit_q_t_2'
+        elif (0.08 > current_profit >= 0.06):
+            if (max_profit > (current_profit + 0.04)):
+                return True, 'sell_profit_q_t_3'
+
+        return False, None
+
     def custom_sell(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float,
                     current_profit: float, **kwargs):
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
@@ -3186,6 +3199,12 @@ class NostalgiaForInfinityNextGen(IStrategy):
         buy_tags = buy_tag.split()
         max_profit = ((trade.max_rate - trade.open_rate) / trade.open_rate)
         max_loss = ((trade.open_rate - trade.min_rate) / trade.min_rate)
+
+        # Quick sell mode
+        if all(c in ['empty'] for c in buy_tags):
+            sell, signal_name = self.sell_quick_mode(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
+            if sell and (signal_name is not None):
+                return f"{signal_name} ( {buy_tag})"
 
         # Original sell signals
         sell, signal_name = self.sell_signals(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, buy_tag)
