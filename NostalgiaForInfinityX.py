@@ -582,7 +582,7 @@ class NostalgiaForInfinityX(IStrategy):
                 and last_candle['rsi_14'] > previous_candle_1['rsi_14']
                 and (last_candle['rsi_14'] > (last_candle['rsi_14_1h'] + 10.0))
                 and (last_candle['sma_200_dec_24'])
-                and (current_time - timedelta(minutes=2880) > trade.open_date_utc)
+                and (current_time - timedelta(minutes=600) > trade.open_date_utc)
         ):
             return True, 'sell_stoploss_u_e_1'
 
