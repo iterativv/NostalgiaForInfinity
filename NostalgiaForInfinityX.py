@@ -1941,6 +1941,83 @@ class NostalgiaForInfinityX(IStrategy):
 
         return False, None
 
+    def sell_pump_stoploss(self, current_profit: float, max_profit: float, max_loss: float, last_candle, previous_candle_1, trade: 'Trade', current_time: 'datetime') -> tuple:
+        if (last_candle['hl_pct_change_48_1h'] > 0.95):
+            if (
+                    (-0.04 > current_profit > -0.08)
+                    and (max_profit < 0.005)
+                    and (max_loss < 0.08)
+                    and (last_candle['close'] < last_candle['ema_200'])
+                    and (last_candle['sma_200_dec_20'])
+                    and (last_candle['ema_vwma_osc_32'] < 0.0)
+                    and (last_candle['ema_vwma_osc_64'] < 0.0)
+                    and (last_candle['ema_vwma_osc_96'] < 0.0)
+                    and (last_candle['cmf'] < -0.25)
+                    and (last_candle['cmf_1h'] < -0.0)
+            ):
+                return True, 'sell_stoploss_p_48_1_1'
+            elif (
+                    (-0.04 > current_profit > -0.08)
+                    and (max_profit < 0.01)
+                    and (max_loss < 0.08)
+                    and (last_candle['close'] < last_candle['ema_200'])
+                    and (last_candle['sma_200_dec_20'])
+                    and (last_candle['ema_vwma_osc_32'] < 0.0)
+                    and (last_candle['ema_vwma_osc_64'] < 0.0)
+                    and (last_candle['ema_vwma_osc_96'] < 0.0)
+                    and (last_candle['cmf'] < -0.25)
+                    and (last_candle['cmf_1h'] < -0.0)
+            ):
+                return True, 'sell_stoploss_p_48_1_2'
+
+        if (last_candle['hl_pct_change_36_1h'] > 0.7):
+            if (
+                    (-0.04 > current_profit > -0.08)
+                    and (max_loss < 0.08)
+                    and (max_profit > (current_profit + 0.1))
+                    and (last_candle['close'] < last_candle['ema_200'])
+                    and (last_candle['sma_200_dec_20'])
+                    and (last_candle['sma_200_dec_20_1h'])
+                    and (last_candle['ema_vwma_osc_32'] < 0.0)
+                    and (last_candle['ema_vwma_osc_64'] < 0.0)
+                    and (last_candle['ema_vwma_osc_96'] < 0.0)
+                    and (last_candle['cmf'] < -0.25)
+            ):
+                return True, 'sell_stoploss_p_36_1_1'
+
+        if (last_candle['hl_pct_change_36_1h'] > 0.5):
+            if (
+                    (-0.05 > current_profit > -0.08)
+                    and (max_loss < 0.08)
+                    and (max_profit > (current_profit + 0.1))
+                    and (last_candle['close'] < last_candle['ema_200'])
+                    and (last_candle['sma_200_dec_20'])
+                    and (last_candle['sma_200_dec_20_1h'])
+                    and (last_candle['ema_vwma_osc_32'] < 0.0)
+                    and (last_candle['ema_vwma_osc_64'] < 0.0)
+                    and (last_candle['ema_vwma_osc_96'] < 0.0)
+                    and (last_candle['cmf'] < -0.25)
+                    and (last_candle['rsi_14'] < 40.0)
+            ):
+                return True, 'sell_stoploss_p_36_2_1'
+
+        if (last_candle['hl_pct_change_24_1h'] > 0.6):
+            if (
+                    (-0.04 > current_profit > -0.08)
+                    and (max_loss < 0.08)
+                    and (last_candle['close'] < last_candle['ema_200'])
+                    and (last_candle['sma_200_dec_20'])
+                    and (last_candle['sma_200_dec_20_1h'])
+                    and (last_candle['ema_vwma_osc_32'] < 0.0)
+                    and (last_candle['ema_vwma_osc_64'] < 0.0)
+                    and (last_candle['ema_vwma_osc_96'] < 0.0)
+                    and (last_candle['cmf'] < -0.25)
+            ):
+                return True, 'sell_stoploss_p_24_1_1'
+
+
+        return False, None
+
     def custom_sell(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float,
                     current_profit: float, **kwargs):
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
@@ -1995,6 +2072,11 @@ class NostalgiaForInfinityX(IStrategy):
 
         # Sell logic for pumped pairs
         sell, signal_name = self.sell_pump_main(current_profit, last_candle)
+        if sell and (signal_name is not None):
+            return f"{signal_name} ( {buy_tag})"
+
+        # The pair is pumped, stoploss
+        sell, signal_name = self.sell_pump_stoploss(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
         if sell and (signal_name is not None):
             return f"{signal_name} ( {buy_tag})"
 
