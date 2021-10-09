@@ -3,8 +3,6 @@
     "pair_blacklist": [
       // Exchange Tokens
       "KCS/.*",
-      // Major Crypto
-      "(BTC|ETH)/.*",
       // Leverage tokens
       ".*(3|3L|3S)/.*",
       // Fiat

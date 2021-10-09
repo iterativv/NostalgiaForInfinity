@@ -2,15 +2,14 @@
     "pairlists": [
         {
 			"method": "VolumePairList",
-			"number_assets": 70,
+			"number_assets": 75,
 			"sort_key": "quoteVolume",
 			"refresh_period": 1800
 		},
 		{"method": "AgeFilter", "min_days_listed": 14},
-		{"method": "SpreadFilter", "max_spread_ratio": 0.005},
+		{"method": "SpreadFilter", "max_spread_ratio": 0.006},
 		{
 			"method": "PriceFilter",
-			"low_price_ratio": 0.10,
 			"min_price": 0.001
 		},
 		{
@@ -28,7 +27,7 @@
 		},
 		{
 			"method": "VolumePairList",
-			"number_assets": 50,
+			"number_assets": 60,
 			"sort_key": "quoteVolume"
 		},
         {"method": "ShuffleFilter"}
