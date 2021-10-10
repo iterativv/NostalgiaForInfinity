@@ -1,6 +1,8 @@
 {
   "exchange": {
     "pair_blacklist": [
+      // Exchange
+      "(BNB)/.*",
       // Leverage
       ".*(_PREMIUM|BEAR|BULL|DOWN|HALF|HEDGE|UP|[1235][SL])/.*",
       // Fiat
