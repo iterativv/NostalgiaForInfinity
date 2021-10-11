@@ -541,6 +541,9 @@ class NostalgiaForInfinityX(IStrategy):
         tok = time.perf_counter()
         log.info(f"Updating top grossing pairlist took {tok - tik:0.4f} seconds...")
 
+    def is_top_coin(self, coin_pair, row_data, top_length) -> bool:
+        return coin_pair.split('/')[0] in row_data.loc['Coin #1':f"Coin #{top_length}"].values
+
     def is_support(self, row_data) -> bool:
         conditions = []
         for row in range(len(row_data)-1):
