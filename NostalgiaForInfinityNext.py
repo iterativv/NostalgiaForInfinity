@@ -2425,8 +2425,6 @@ class NostalgiaForInfinityNext(IStrategy):
         # Forward fill empty cells (due to different df shapes)
         self.coin_metrics['tg_dataframe'].fillna(0, inplace=True)
 
-        self.coin_metrics['tg_dataframe'].to_html('pct_df.html')
-
         # Store and drop date column for value sorting
         pair_dates = self.coin_metrics['tg_dataframe']['date']
         self.coin_metrics['tg_dataframe'].drop(columns=['date'], inplace=True)
