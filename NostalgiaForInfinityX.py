@@ -186,6 +186,7 @@ class NostalgiaForInfinityX(IStrategy):
         "buy_condition_4_enable": True,
         "buy_condition_5_enable": True,
         "buy_condition_6_enable": True,
+        "buy_condition_7_enable": True,
         #############
     }
 
@@ -365,6 +366,34 @@ class NostalgiaForInfinityX(IStrategy):
             "close_over_pivot_offset"   : 0.98,
             "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_under_pivot_offset"  : 1.4
+        },
+        7: {
+            "ema_fast"                  : True,
+            "ema_fast_len"              : "26",
+            "ema_slow"                  : True,
+            "ema_slow_len"              : "12",
+            "close_above_ema_fast"      : False,
+            "close_above_ema_fast_len"  : "200",
+            "close_above_ema_slow"      : False,
+            "close_above_ema_slow_len"  : "200",
+            "sma200_rising"             : False,
+            "sma200_rising_val"         : "28",
+            "sma200_1h_rising"          : False,
+            "sma200_1h_rising_val"      : "36",
+            "safe_dips_threshold_0"     : 0.02,
+            "safe_dips_threshold_2"     : 0.09,
+            "safe_dips_threshold_12"    : 0.3,
+            "safe_dips_threshold_144"   : 0.9,
+            "safe_pump_6h_threshold"    : 0.4,
+            "safe_pump_12h_threshold"   : None,
+            "safe_pump_24h_threshold"   : None,
+            "safe_pump_36h_threshold"   : 0.8,
+            "safe_pump_48h_threshold"   : None,
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 0.98,
+            "close_under_pivot_type"    : "res3", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.6
         }
     }
 
@@ -2762,6 +2791,20 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['rsi_14'] < 28.0)
                     item_buy_logic.append(dataframe['cti'] < -0.82)
                     item_buy_logic.append(dataframe['cci'] < -200.0)
+
+                # Condition #7 - Semi swing. Local dip.
+                elif index == 7:
+                    # Non-Standard protections
+                    item_buy_logic.append(dataframe['ema_50_1h'] > dataframe['ema_100_1h'])
+
+                    # Logic
+                    item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * 0.94)
+                    item_buy_logic.append(dataframe['close'] < dataframe['bb20_2_low'] * 0.984)
+                    item_buy_logic.append(dataframe['cti'] < -0.8)
+                    item_buy_logic.append(dataframe['r_14'] < -97.0)
+                    item_buy_logic.append(dataframe['crsi'] > 8.0)
+                    item_buy_logic.append(dataframe['cti_1h'] > -0.5)
+                    item_buy_logic.append(dataframe['cti_1h'] < 0.85)
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
