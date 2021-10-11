@@ -156,7 +156,7 @@ class BacktestResults:
 
     @_results.default
     def _set_results(self):
-        return self.raw_data["strategy"]["NostalgiaForInfinityNext"]
+        return self.raw_data["strategy"]["NostalgiaForInfinityX"]
 
     @_stats.default
     def _set_stats(self):
