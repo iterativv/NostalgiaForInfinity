@@ -19,10 +19,10 @@ services:
     container_name: freqtrade-backtesting
     volumes:
       - "./user_data:/freqtrade/user_data"
-      - "./NostalgiaForInfinityNext.py:/freqtrade/NostalgiaForInfinityNext.py"
+      - "./NostalgiaForInfinityX.py:/freqtrade/NostalgiaForInfinityX.py"
     command: >
       backtesting
-      --strategy-list NostalgiaForInfinityNext
+      --strategy-list NostalgiaForInfinityX
       --timerange ${TIMERANGE:-20210601-20210701}
       --config user_data/data/pairlists.json
       --config user_data/data/${EXCHANGE:-binance}-usdt-static.json

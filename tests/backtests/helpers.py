@@ -81,7 +81,7 @@ class Backtest:
             "freqtrade",
             "backtesting",
             f"--user-data=user_data",
-            "--strategy-list=NostalgiaForInfinityNext",
+            "--strategy-list=NostalgiaForInfinityX",
             f"--timerange={start_date}-{end_date}",
             f"--max-open-trades={max_open_trades}",
             f"--stake-amount={stake_amount}",
