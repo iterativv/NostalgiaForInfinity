@@ -541,18 +541,23 @@ class NostalgiaForInfinityX(IStrategy):
         tok = time.perf_counter()
         log.info(f"Updating top grossing pairlist took {tok - tik:0.4f} seconds...")
 
-    def is_top_coin(self, coin_pair, row_data, top_length) -> bool:
-        return coin_pair.split('/')[0] in row_data.loc['Coin #1':f"Coin #{top_length}"].values
-
     def is_support(self, row_data) -> bool:
-        if row_data[0] > row_data[1] and row_data[1] > row_data[2] and row_data[2] < row_data[3] and row_data[3] < row_data[4]:
-            return True
-        return False
+        conditions = []
+        for row in range(len(row_data)-1):
+            if row < len(row_data)/2:
+                conditions.append(row_data[row] > row_data[row+1])
+            else:
+                conditions.append(row_data[row] < row_data[row+1])
+        return reduce(lambda x, y: x & y, conditions)
 
     def is_resistance(self, row_data) -> bool:
-        if row_data[0] < row_data[1] and row_data[1] < row_data[2] and row_data[2] > row_data[3] and row_data[3] > row_data[4]:
-            return True
-        return False
+        conditions = []
+        for row in range(len(row_data)-1):
+            if row < len(row_data)/2:
+                conditions.append(row_data[row] < row_data[row+1])
+            else:
+                conditions.append(row_data[row] > row_data[row+1])
+        return reduce(lambda x, y: x & y, conditions)
 
     def bot_loop_start(self, **kwargs) -> None:
         """
