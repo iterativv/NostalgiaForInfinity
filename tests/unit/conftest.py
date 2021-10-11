@@ -317,6 +317,10 @@ def testdatadir(tmp_path) -> Path:
         REPO_ROOT / "NostalgiaForInfinityNext.py",
         user_data / "strategies" / "NostalgiaForInfinityNext.py",
     )
+    shutil.copyfile(
+        REPO_ROOT / "NostalgiaForInfinityX.py",
+        user_data / "strategies" / "NostalgiaForInfinityX.py",
+    )
     return user_data
 
 
