@@ -193,6 +193,7 @@ class NostalgiaForInfinityX(IStrategy):
         "buy_condition_11_enable": True,
         "buy_condition_12_enable": True,
         "buy_condition_13_enable": True,
+        "buy_condition_14_enable": True,
         #############
     }
 
@@ -554,6 +555,34 @@ class NostalgiaForInfinityX(IStrategy):
             "sma200_rising_val"         : "30",
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
+            "safe_dips_threshold_0"     : 0.028,
+            "safe_dips_threshold_2"     : 0.09,
+            "safe_dips_threshold_12"    : 0.48,
+            "safe_dips_threshold_144"   : 0.9,
+            "safe_pump_6h_threshold"    : 0.4,
+            "safe_pump_12h_threshold"   : None,
+            "safe_pump_24h_threshold"   : None,
+            "safe_pump_36h_threshold"   : 0.9,
+            "safe_pump_48h_threshold"   : None,
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
+        },
+        14: {
+            "ema_fast"                  : False,
+            "ema_fast_len"              : "100",
+            "ema_slow"                  : False,
+            "ema_slow_len"              : "50",
+            "close_above_ema_fast"      : False,
+            "close_above_ema_fast_len"  : "200",
+            "close_above_ema_slow"      : False,
+            "close_above_ema_slow_len"  : "200",
+            "sma200_rising"             : False,
+            "sma200_rising_val"         : "44",
+            "sma200_1h_rising"          : False,
+            "sma200_1h_rising_val"      : "72",
             "safe_dips_threshold_0"     : 0.028,
             "safe_dips_threshold_2"     : 0.09,
             "safe_dips_threshold_12"    : 0.48,
@@ -3190,6 +3219,20 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['ewo'] < -5.7)
                     item_buy_logic.append(dataframe['cti'] < -0.97)
                     item_buy_logic.append(dataframe['crsi_1h'] > 12.0)
+
+                # Condition #14 - Semi swing. Strong uptrend. Local dip.
+                elif index == 14:
+                    # Non-Standard protections
+                    item_buy_logic.append(dataframe['ema_100_1h'] > dataframe['ema_100_1h'].shift(12))
+                    item_buy_logic.append(dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(36))
+
+                    # Logic
+                    item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * 0.98)
+                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * 0.984))
+                    item_buy_logic.append(dataframe['ewo'] > 7.8) # 4.0 7.8
+                    item_buy_logic.append(dataframe['rsi_14'] < 32.0) # 36.0
+                    item_buy_logic.append(dataframe['cti'] < -0.54)
+                    item_buy_logic.append(dataframe['cti_1h'] > -0.5)
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
