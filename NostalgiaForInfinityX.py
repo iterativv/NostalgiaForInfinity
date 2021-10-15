@@ -1027,17 +1027,17 @@ class NostalgiaForInfinityX(IStrategy):
         ):
             return True, 'sell_stoploss_u_e_1'
 
-        if (
-                (current_profit < -0.00)
-                and (last_candle['close'] < last_candle['ema_200'])
-                and (last_candle['cmf'] < 0.0)
-                and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < 0.024)
-                and last_candle['rsi_14'] > previous_candle_1['rsi_14']
-                and (last_candle['rsi_14'] > (last_candle['rsi_14_1h'] + 10.0))
-                #and (last_candle['sma_200_dec_24'])
-                and (current_time - timedelta(minutes=60) > trade.open_date_utc)
-        ):
-            return True, 'sell_stoploss_u_e_2'
+        # if (
+        #         (current_profit < -0.00)
+        #         and (last_candle['close'] < last_candle['ema_200'])
+        #         and (last_candle['cmf'] < 0.0)
+        #         and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < 0.024)
+        #         and last_candle['rsi_14'] > previous_candle_1['rsi_14']
+        #         and (last_candle['rsi_14'] > (last_candle['rsi_14_1h'] + 10.0))
+        #         #and (last_candle['sma_200_dec_24'])
+        #         and (current_time - timedelta(minutes=60) > trade.open_date_utc)
+        # ):
+        #     return True, 'sell_stoploss_u_e_2'
 
         # # Under EMA200, local strong uptrend move
         # if (
