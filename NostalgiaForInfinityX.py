@@ -1728,8 +1728,11 @@ class NostalgiaForInfinityX(IStrategy):
         return False, None
 
     def sell_trail(self, current_profit: float, max_profit: float, max_loss: float, last_candle, previous_candle_1, trade: 'Trade', current_time: 'datetime') -> tuple:
-        if 0.02 > current_profit >= 0.012:
-            if (max_profit > (current_profit + 0.01)) and (last_candle['rsi_14'] < 39.0): # 34.0 39.0
+        if 0.012 > current_profit >= 0.0:
+            if (max_profit > (current_profit + 0.05)) and (last_candle['rsi_14'] < 46.0):
+                return True, 'sell_profit_t_0_1'
+        elif 0.02 > current_profit >= 0.012:
+            if (max_profit > (current_profit + 0.01)) and (last_candle['rsi_14'] < 39.0):
                 return True, 'sell_profit_t_1_1'
             elif (max_profit > (current_profit + 0.035)) and (last_candle['rsi_14'] < 45.0) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_1h'] < -0.0):
                 return True, 'sell_profit_t_1_2'
