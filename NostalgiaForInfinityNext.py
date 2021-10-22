@@ -8,6 +8,7 @@ import talib.abstract as ta
 from freqtrade.strategy.interface import IStrategy
 from freqtrade.strategy import merge_informative_pair, timeframe_to_minutes
 from freqtrade.exchange import timeframe_to_prev_date
+from freqtrade.data.dataprovider import DataProvider
 from pandas import DataFrame, Series, concat
 from functools import reduce
 import math
@@ -2283,6 +2284,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
     def __init__(self, config: dict) -> None:
         super().__init__(config)
+        self.dp = DataProvider(config, config['exchange'])
         if self.target_profit_cache is None:
             self.target_profit_cache = Cache(
                 self.config["user_data_dir"] / "data-nfi-profit_target_by_pair.json"
