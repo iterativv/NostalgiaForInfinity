@@ -3160,6 +3160,13 @@ class NostalgiaForInfinityX(IStrategy):
         # MFI
         dataframe['mfi'] = ta.MFI(dataframe)
 
+        # ATR
+        dataframe['atr'] = ta.ATR(dataframe, timeperiod=14)
+        dataframe['atr_high_thresh_1'] = (dataframe['high'] - (dataframe['atr'] * 5.4))
+        dataframe['atr_high_thresh_2'] = (dataframe['high'] - (dataframe['atr'] * 5.2))
+        dataframe['atr_high_thresh_3'] = (dataframe['high'] - (dataframe['atr'] * 5.0))
+        dataframe['atr_high_thresh_4'] = (dataframe['high'] - (dataframe['atr'] * 2.0))
+
         # For sell checks
         dataframe['crossed_below_ema_12_26'] = qtpylib.crossed_below(dataframe['ema_12'], dataframe['ema_26'])
 
