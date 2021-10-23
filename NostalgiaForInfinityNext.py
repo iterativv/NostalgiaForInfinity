@@ -2284,7 +2284,7 @@ class NostalgiaForInfinityNext(IStrategy):
 
     def __init__(self, config: dict) -> None:
         super().__init__(config)
-        self.dp = DataProvider(config, config['exchange'])
+        #self.dp = DataProvider(config, config['exchange'])
         if self.target_profit_cache is None:
             self.target_profit_cache = Cache(
                 self.config["user_data_dir"] / "data-nfi-profit_target_by_pair.json"
