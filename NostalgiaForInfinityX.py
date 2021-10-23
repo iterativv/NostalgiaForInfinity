@@ -1166,7 +1166,7 @@ class NostalgiaForInfinityX(IStrategy):
                 and (last_candle['ema_vwma_osc_96'] < -0.0)
                 and (last_candle['cmf'] < -0.0)
                 and (last_candle['cmf_1h'] < -0.0)
-                and (current_time - timedelta(minutes=1440) > trade.open_date_utc)
+                and (current_time - timedelta(minutes=60) > trade.open_date_utc)
         ):
             if (-0.12 <= current_profit < -0.08):
                 if (last_candle['close'] < last_candle['atr_high_thresh_1']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_1']):
