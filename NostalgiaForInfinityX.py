@@ -3498,7 +3498,7 @@ class NostalgiaForInfinityX(IStrategy):
                     # Logic
                     item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * 0.99)
                     item_buy_logic.append(dataframe['cti'] < -0.92)
-                    item_buy_logic.append(dataframe['ewo'] < -4.5)
+                    item_buy_logic.append(dataframe['ewo'] < -5.0)
                     item_buy_logic.append(dataframe['cti_1h'] < -0.88)
                     item_buy_logic.append(dataframe['crsi_1h'] > 20.0)
 
