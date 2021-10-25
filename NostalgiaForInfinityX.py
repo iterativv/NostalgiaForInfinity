@@ -208,6 +208,7 @@ class NostalgiaForInfinityX(IStrategy):
         "buy_condition_26_enable": True,
         "buy_condition_27_enable": True,
         "buy_condition_28_enable": True,
+        "buy_condition_29_enable": True,
         #############
     }
 
@@ -977,6 +978,34 @@ class NostalgiaForInfinityX(IStrategy):
             "close_under_pivot_offset"  : 1.0
         },
         28: {
+            "ema_fast"                  : False,
+            "ema_fast_len"              : "50",
+            "ema_slow"                  : False,
+            "ema_slow_len"              : "12",
+            "close_above_ema_fast"      : False,
+            "close_above_ema_fast_len"  : "200",
+            "close_above_ema_slow"      : False,
+            "close_above_ema_slow_len"  : "200",
+            "sma200_rising"             : False,
+            "sma200_rising_val"         : "30",
+            "sma200_1h_rising"          : False,
+            "sma200_1h_rising_val"      : "50",
+            "safe_dips_threshold_0"     : 0.028,
+            "safe_dips_threshold_2"     : 0.09,
+            "safe_dips_threshold_12"    : 0.26,
+            "safe_dips_threshold_144"   : 0.44,
+            "safe_pump_6h_threshold"    : 0.5,
+            "safe_pump_12h_threshold"   : None,
+            "safe_pump_24h_threshold"   : None,
+            "safe_pump_36h_threshold"   : None,
+            "safe_pump_48h_threshold"   : None,
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
+        },
+        29: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
             "ema_slow"                  : False,
@@ -3953,6 +3982,15 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['cti'] < -0.9)
                     item_buy_logic.append(dataframe['r_14'] < -97.0)
                     item_buy_logic.append(dataframe['crsi_1h'] > 14.0)
+
+                # Condition #29 - Semi swing. Downtrend. Local deep.
+                elif index == 29:
+                    # Non-Standard protections
+
+                    # Logic
+                    item_buy_logic.append(dataframe['close'] < (dataframe['ema_16'] * 0.982))
+                    item_buy_logic.append(dataframe['ewo'] < -16.0)
+                    item_buy_logic.append(dataframe['cti'] < -0.75)
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
