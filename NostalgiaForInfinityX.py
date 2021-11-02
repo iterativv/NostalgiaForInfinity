@@ -3682,8 +3682,9 @@ class NostalgiaForInfinityX(IStrategy):
             btc_info_pair = "BTC/USDT"
 
         informative_pairs.append((btc_info_pair, self.timeframe))
-        informative_pairs.append((btc_info_pair, self.info_timeframe_1h))
         informative_pairs.append((btc_info_pair, self.info_timeframe_1d))
+        informative_pairs.append((btc_info_pair, self.info_timeframe_1h))
+        informative_pairs.append((btc_info_pair, self.info_timeframe_15m))
         return informative_pairs
 
     def informative_1d_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
