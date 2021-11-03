@@ -222,6 +222,7 @@ class NostalgiaForInfinityX(IStrategy):
         "buy_condition_39_enable": True,
         "buy_condition_40_enable": True,
         "buy_condition_41_enable": True,
+        "buy_condition_42_enable": True,
         #############
     }
 
@@ -1380,6 +1381,34 @@ class NostalgiaForInfinityX(IStrategy):
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_over_pivot_offset"   : 1.0,
             "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
+        },
+        42: {
+            "ema_fast"                  : False,
+            "ema_fast_len"              : "12",
+            "ema_slow"                  : False,
+            "ema_slow_len"              : "12",
+            "close_above_ema_fast"      : False,
+            "close_above_ema_fast_len"  : "200",
+            "close_above_ema_slow"      : False,
+            "close_above_ema_slow_len"  : "200",
+            "sma200_rising"             : False,
+            "sma200_rising_val"         : "42",
+            "sma200_1h_rising"          : False,
+            "sma200_1h_rising_val"      : "50",
+            "safe_dips_threshold_0"     : 0.022,
+            "safe_dips_threshold_2"     : 0.09,
+            "safe_dips_threshold_12"    : None,
+            "safe_dips_threshold_144"   : 0.4,
+            "safe_pump_6h_threshold"    : 0.5,
+            "safe_pump_12h_threshold"   : None,
+            "safe_pump_24h_threshold"   : 0.5, # 0.5
+            "safe_pump_36h_threshold"   : None,
+            "safe_pump_48h_threshold"   : 1.4,
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "res3", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_under_pivot_offset"  : 1.0
         }
     }
@@ -3896,6 +3925,15 @@ class NostalgiaForInfinityX(IStrategy):
         # CTI
         informative_15m['cti'] = pta.cti(informative_15m["close"], length=20)
 
+        # Williams %R
+        informative_15m['r_14'] = williams_r(informative_15m, period=14)
+
+        # EWO
+        informative_15m['ewo'] = ewo(informative_15m, 50, 200)
+
+        # CCI
+        informative_15m['cci'] = ta.CCI(informative_15m, source='hlc3', timeperiod=20)
+
         tok = time.perf_counter()
         log.debug(f"[{metadata['pair']}] informative_1h_indicators took: {tok - tik:0.4f} seconds.")
 
@@ -4697,6 +4735,18 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.03))
                     item_buy_logic.append((dataframe['ema_26_15m'].shift(3) - dataframe['ema_12_15m'].shift(3)) > (dataframe['open_15m'] / 100))
                     item_buy_logic.append(dataframe['close_15m'] < (dataframe['bb20_2_low_15m'] * 0.99))
+
+                # Condition #42 - 15m. Semi swing. Local dip. 15m uptrend.
+                elif index == 42:
+                    # Non-Standard protections
+
+                    # Logic
+                    item_buy_logic.append(dataframe['ewo_15m'] > 5.4)
+                    item_buy_logic.append(dataframe['rsi_14_15m'] < 36.0)
+                    item_buy_logic.append(dataframe['cti_15m'] < -0.9)
+                    item_buy_logic.append(dataframe['cci_15m'] < -160.0)
+                    item_buy_logic.append(dataframe['r_14_15m'] < -90.0)
+                    item_buy_logic.append(dataframe['cti_1h'] < 0.5)
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
