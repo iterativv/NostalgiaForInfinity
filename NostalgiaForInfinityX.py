@@ -3436,7 +3436,7 @@ class NostalgiaForInfinityX(IStrategy):
                         return True, 'sell_profit_p_bull_48_3_2_1'
                 elif 0.02 > current_profit >= 0.01:
                     if (last_candle['rsi_14'] < 37.0) and (last_candle['cmf'] < -0.25):
-                        return True, 'sell_profit_p_bull_48_3_2_1'
+                        return True, 'sell_profit_p_bull_48_3_1_1'
             else:
                 if current_profit >= 0.2:
                     if (last_candle['rsi_14'] < 33.0) and (last_candle['cmf'] < -0.35):
