@@ -2935,6 +2935,8 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_t_0_7'
             elif (max_profit > (current_profit + 0.06)) and (last_candle['rsi_14'] < 49.0):
                 return True, 'sell_profit_t_0_8'
+            elif (max_profit > (current_profit + 0.04)) and (last_candle['rsi_14'] < 34.0) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_1h'] < -0.0):
+                return True, 'sell_profit_t_0_9'
         elif 0.02 > current_profit >= 0.012:
             if (max_profit > (current_profit + 0.01)) and (last_candle['rsi_14'] < 39.0):
                 return True, 'sell_profit_t_1_1'
