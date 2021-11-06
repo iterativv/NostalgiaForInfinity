@@ -2260,7 +2260,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_1_11'
             elif (last_candle['r_14'] > -1.0) and (last_candle['r_32'] > -2.0) and (last_candle['rsi_14'] > 78.0) and (last_candle['cci'] > 260.0) and (last_candle['r_480_1h'] > -20.0):
                 return True, 'sell_profit_w_1_12'
-            elif (last_candle['r_14'] > -1.0) and (last_candle['r_32'] > -2.0) and (last_candle['rsi_14'] > 7.0) and (last_candle['cti'] > 0.9) and (last_candle['cmf_1h'] < -0.0):
+            elif (last_candle['r_14'] > -1.0) and (last_candle['r_32'] > -2.0) and (last_candle['rsi_14'] > 77.0) and (last_candle['cti'] > 0.9) and (last_candle['cmf_1h'] < -0.0):
                 return True, 'sell_profit_w_1_13'
             elif (last_candle['r_14'] == 0.0) and (last_candle['close'] < last_candle['ema_200']) and (last_candle['sma_200_dec_20']) and (last_candle['rsi_14'] > 72.0):
                 return True, 'sell_profit_w_1_14'
