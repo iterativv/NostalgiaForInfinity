@@ -4253,6 +4253,8 @@ class NostalgiaForInfinityX(IStrategy):
         # SMA
         informative_15m['sma_200'] = ta.SMA(informative_15m, timeperiod=200)
 
+        informative_15m['sma_200_dec_20'] = informative_15m['sma_200'] < informative_15m['sma_200'].shift(20)
+
         # BB
         bollinger = qtpylib.bollinger_bands(qtpylib.typical_price(informative_15m), window=20, stds=2)
         informative_15m['bb20_2_low'] = bollinger['lower']
