@@ -3313,7 +3313,7 @@ class NostalgiaForInfinityX(IStrategy):
             elif (max_profit > (current_profit + 0.075)) and (last_candle['rsi_14_15m'] < 36.0) and (last_candle['rsi_14_1h'] < 39.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0):
                 return True, 'sell_profit_t_10_14'
         elif 0.2 > current_profit >= 0.12:
-            if (max_profit > (current_profit + 0.06)) and (last_candle['rsi_14'] < 38.0):
+            if (max_profit > (current_profit + 0.06)) and (last_candle['rsi_14'] < 39.0):
                 return True, 'sell_profit_t_11_1'
             elif (max_profit > (current_profit + 0.095)) and (last_candle['rsi_14'] < 40.0) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_1h'] < -0.0):
                 return True, 'sell_profit_t_11_2'
@@ -3340,7 +3340,7 @@ class NostalgiaForInfinityX(IStrategy):
             elif (max_profit > (current_profit + 0.08)) and (last_candle['rsi_14_15m'] < 36.0) and (last_candle['rsi_14_1h'] < 38.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0):
                 return True, 'sell_profit_t_11_14'
         elif current_profit >= 0.2:
-            if (max_profit > (current_profit + 0.1)) and (last_candle['rsi_14'] < 36.0):
+            if (max_profit > (current_profit + 0.7)) and (last_candle['rsi_14'] < 38.0):
                 return True, 'sell_profit_t_12_1'
             elif (max_profit > (current_profit + 0.1)) and (last_candle['rsi_14'] < 38.0) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_1h'] < -0.0):
                 return True, 'sell_profit_t_12_2'
