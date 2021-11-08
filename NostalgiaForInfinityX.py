@@ -1262,7 +1262,7 @@ class NostalgiaForInfinityX(IStrategy):
             "sma200_rising_val"         : "30",
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
-            "safe_dips_threshold_0"     : 0.029,
+            "safe_dips_threshold_0"     : 0.021,
             "safe_dips_threshold_2"     : 0.12,
             "safe_dips_threshold_12"    : 0.28,
             "safe_dips_threshold_144"   : None,
