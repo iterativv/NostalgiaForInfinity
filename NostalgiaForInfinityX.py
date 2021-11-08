@@ -5404,6 +5404,25 @@ class NostalgiaForInfinityX(IStrategy):
 
         return dataframe
 
+    def confirm_trade_entry(self, pair: str, order_type: str, amount: float, rate: float,
+                            time_in_force: str, current_time: datetime, **kwargs) -> bool:
+        dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
+
+        if(len(dataframe) < 1):
+            return False
+
+        dataframe = dataframe.iloc[-1].squeeze()
+
+        if ((rate > dataframe['close'])):
+            slippage = ((rate / dataframe['close']) - 1.0)
+
+            if slippage < 0.00668:
+                return True
+            else:
+                return False
+
+        return True
+
     def confirm_trade_exit(self, pair: str, trade: "Trade", order_type: str, amount: float,
                            rate: float, time_in_force: str, sell_reason: str, **kwargs) -> bool:
         """
