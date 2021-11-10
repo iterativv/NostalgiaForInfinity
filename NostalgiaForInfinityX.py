@@ -4686,6 +4686,7 @@ class NostalgiaForInfinityX(IStrategy):
         # Williams %R
         informative_15m['r_14'] = williams_r(informative_15m, period=14)
         informative_15m['r_64'] = williams_r(informative_15m, period=64)
+        informative_15m['r_96'] = williams_r(informative_15m, period=96)
 
         # EWO
         informative_15m['ewo'] = ewo(informative_15m, 50, 200)
