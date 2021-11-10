@@ -88,8 +88,6 @@ else:
 ###########################################################################################################
 ##               DONATIONS                                                                               ##
 ##                                                                                                       ##
-##   Absolutely not required. However, will be accepted as a token of appreciation.                      ##
-##                                                                                                       ##
 ##   BTC: bc1qvflsvddkmxh7eqhc4jyu5z5k6xcw3ay8jl49sk                                                     ##
 ##   ETH (ERC20): 0x83D3cFb8001BDC5d2211cBeBB8cB3461E5f7Ec91                                             ##
 ##   BEP20/BSC (ETH, BNB, ...): 0x86A0B21a20b39d16424B7c8003E4A7e12d78ABEe                               ##
@@ -99,6 +97,7 @@ else:
 ##  Binance: https://accounts.binance.com/en/register?ref=37365811                                       ##
 ##  Kucoin: https://www.kucoin.com/ucenter/signup?rcode=rJTLZ9K                                          ##
 ##  Huobi: https://www.huobi.com/en-us/topic/double-reward/?invite_code=ubpt2223                         ##
+##  Gate.io: https://www.gate.io/signup/8054544                                                          ##
 ###########################################################################################################
 
 
