@@ -5792,7 +5792,7 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
 
                     # Logic
-                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * 0.986))
+                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * 0.977))
                     item_buy_logic.append(dataframe['r_14'] < -75.0)
                     item_buy_logic.append(dataframe['r_64'] < -75.0)
                     item_buy_logic.append(dataframe['cmf_1h'] < 0.25)
