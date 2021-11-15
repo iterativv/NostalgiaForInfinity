@@ -5074,6 +5074,44 @@ class NostalgiaForInfinityX(IStrategy):
                 if (last_candle['r_14'] > -10.0) and (last_candle['rsi_14'] > 74.0) and (last_candle['cci'] > 260.0) and (last_candle['cmf_15m'] < -0.1):
                     return True, 'sell_profit_pv_1_12_1'
 
+        if (last_candle['close'] > (last_candle['res3_1d'] * 1.1)):
+            if (0.02 > current_profit >= 0.01):
+                if (last_candle['rsi_14'] < 43.0) and (last_candle['cmf_15m'] < -0.1) and (last_candle['cmf_1h'] < -0.0):
+                    return True, 'sell_profit_pv_2_1_1'
+            elif (0.03 > current_profit >= 0.02):
+                if (last_candle['rsi_14'] < 44.0) and (last_candle['cmf_15m'] < -0.1) and (last_candle['cmf_1h'] < -0.0):
+                    return True, 'sell_profit_pv_2_2_1'
+            elif (0.04 > current_profit >= 0.03):
+                if (last_candle['rsi_14'] < 45.0) and (last_candle['cmf_15m'] < -0.1) and (last_candle['cmf_1h'] < -0.0):
+                    return True, 'sell_profit_pv_2_3_1'
+            elif (0.05 > current_profit >= 0.04):
+                if (last_candle['rsi_14'] < 46.0) and (last_candle['cmf_15m'] < -0.1) and (last_candle['cmf_1h'] < -0.0):
+                    return True, 'sell_profit_pv_2_4_1'
+            elif (0.06 > current_profit >= 0.05):
+                if (last_candle['rsi_14'] < 47.0) and (last_candle['cmf_15m'] < -0.1) and (last_candle['cmf_1h'] < -0.0):
+                    return True, 'sell_profit_pv_2_5_1'
+            elif (0.07 > current_profit >= 0.06):
+                if (last_candle['rsi_14'] < 46.0) and (last_candle['cmf_15m'] < -0.1) and (last_candle['cmf_1h'] < -0.0):
+                    return True, 'sell_profit_pv_2_6_1'
+            elif (0.08 > current_profit >= 0.07):
+                if (last_candle['rsi_14'] < 45.0) and (last_candle['cmf_15m'] < -0.1) and (last_candle['cmf_1h'] < -0.0):
+                    return True, 'sell_profit_pv_2_7_1'
+            elif (0.09 > current_profit >= 0.08):
+                if (last_candle['rsi_14'] < 44.0) and (last_candle['cmf_15m'] < -0.1) and (last_candle['cmf_1h'] < -0.0):
+                    return True, 'sell_profit_pv_2_8_1'
+            elif (0.1 > current_profit >= 0.09):
+                if (last_candle['rsi_14'] < 43.0) and (last_candle['cmf_15m'] < -0.1) and (last_candle['cmf_1h'] < -0.0):
+                    return True, 'sell_profit_pv_2_9_1'
+            elif (0.12 > current_profit >= 0.1):
+                if (last_candle['rsi_14'] < 42.0) and (last_candle['cmf_15m'] < -0.1) and (last_candle['cmf_1h'] < -0.0):
+                    return True, 'sell_profit_pv_2_10_1'
+            elif (0.2 > current_profit >= 0.12):
+                if (last_candle['rsi_14'] < 41.0) and (last_candle['cmf_15m'] < -0.1) and (last_candle['cmf_1h'] < -0.0):
+                    return True, 'sell_profit_pv_2_11_1'
+            elif (current_profit >= 0.2):
+                if (last_candle['rsi_14'] < 40.0) and (last_candle['cmf_15m'] < -0.1) and (last_candle['cmf_1h'] < -0.0):
+                    return True, 'sell_profit_pv_2_12_1'
+
         return False, None
 
     def sell_long_mode(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
