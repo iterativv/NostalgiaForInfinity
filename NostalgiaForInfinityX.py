@@ -6106,6 +6106,7 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * 0.986))
                     item_buy_logic.append(dataframe['r_14'] < -75.0)
                     item_buy_logic.append(dataframe['r_64'] < -75.0)
+                    item_buy_logic.append(dataframe['mfi'] < 24.5)
                     item_buy_logic.append(dataframe['cmf_1h'] < 0.25)
 
                 # Condition #38 - Semi swing. Uptrend. Local dip.
