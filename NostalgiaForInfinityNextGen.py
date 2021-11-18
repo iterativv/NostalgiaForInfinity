@@ -94,10 +94,10 @@ else:
 ##                                                                                                       ##
 ##               REFERRAL LINKS                                                                          ##
 ##                                                                                                       ##
-##  Binance: https://accounts.binance.com/en/register?ref=EAZC47FM (Lifetime 5% cashback on fees)        ##
-##  Kucoin: https://www.kucoin.com/ucenter/signup?rcode=rJTLZ9K                                          ##
+##  Binance: https://accounts.binance.com/en/register?ref=EAZC47FM (5% discount on trading fees)         ##
+##  Kucoin: https://www.kucoin.com/r/QBSSSPYV (5% discount on trading fees)                              ##
+##  Gate.io: https://www.gate.io/signup/8054544                                                          ##
 ##  Huobi: https://www.huobi.com/en-us/topic/double-reward/?invite_code=ubpt2223                         ##
-##  https://www.gate.io/signup/8054544                                                                   ##
 ###########################################################################################################
 
 

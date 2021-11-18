@@ -57,7 +57,7 @@ Absolutely not required. However, will be accepted as a token of appreciation.
 
 If you like to help, you can also use the following links to sign up to various exchanges:
 
-* Binance: https://accounts.binance.com/en/register?ref=EAZC47FM (Lifetime 5% cashback on fees)
-* Kucoin: https://www.kucoin.com/ucenter/signup?rcode=rJTLZ9K
-* Huobi: https://www.huobi.com/en-us/topic/double-reward/?invite_code=ubpt2223
+* Binance: https://accounts.binance.com/en/register?ref=EAZC47FM (5% discount on fees)
+* Kucoin: https://www.kucoin.com/r/QBSSSPYV (5% discount on trading fees)
 * Gate.io: https://www.gate.io/signup/8054544
+* Huobi: https://www.huobi.com/en-us/topic/double-reward/?invite_code=ubpt2223
