@@ -57,6 +57,7 @@ def timerange_fmt(value):
         Timerange("20210701", "20210801"),
         Timerange("20210801", "20210901"),
         Timerange("20210901", "20211001"),
+        Timerange("20211001", "20211101"),
     ),
     ids=timerange_fmt,
 )
