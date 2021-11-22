@@ -6622,7 +6622,7 @@ class NostalgiaForInfinityX(IStrategy):
                     # Logic
                     item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * 0.932)
                     item_buy_logic.append(dataframe['ewo'] > 3.6)
-                    item_buy_logic.append(dataframe['cti'] < -0.9)
+                    item_buy_logic.append(dataframe['cti'] < -0.93)
                     item_buy_logic.append(dataframe['r_14'] < -97.0)
 
                 # Condition #6 - Semi swing. Local dip.
