@@ -62,3 +62,7 @@ If you like to help, you can also use the following links to sign up to various 
 * Kucoin: https://www.kucoin.com/r/QBSSSPYV (5% discount on trading fees)
 * Gate.io: https://www.gate.io/signup/8054544
 * Huobi: https://www.huobi.com/en-us/topic/double-reward/?invite_code=ubpt2223
+
+
+### Chat
+* Discord: https://discord.gg/p7nuUNVfP7
