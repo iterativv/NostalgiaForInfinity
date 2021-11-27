@@ -65,4 +65,4 @@ If you like to help, you can also use the following links to sign up to various 
 
 
 ### Chat
-* Discord: https://discord.gg/p7nuUNVfP7
+* Discord: https://discord.gg/DeAmv3btxQ
