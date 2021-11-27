@@ -56,6 +56,8 @@ Absolutely not required. However, will be accepted as a token of appreciation.
 * BEP20/BSC (USDT, ETH, BNB, ...): `0x86A0B21a20b39d16424B7c8003E4A7e12d78ABEe`
 * TRC20/TRON (USDT, TRON, ...): `TTAa9MX6zMLXNgWMhg7tkNormVHWCoq8Xk`
 
+* Patreon : https://www.patreon.com/iterativ
+
 ### Referral Links
 
 If you like to help, you can also use the following links to sign up to various exchanges:
@@ -69,4 +71,4 @@ If you like to help, you can also use the following links to sign up to various 
 
 This is where we chat, hangout and contribute as a community
 
-* https://discord.gg/DeAmv3btxQ
+* [Discord](https://discord.gg/DeAmv3btxQ)
