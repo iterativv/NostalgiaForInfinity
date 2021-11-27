@@ -5942,6 +5942,7 @@ class NostalgiaForInfinityX(IStrategy):
                     and (last_candle['ema_vwma_osc_64'] < 0.0)
                     and (last_candle['ema_vwma_osc_96'] < 0.0)
                     and (last_candle['cmf'] < -0.25)
+                    and (last_candle['cmf_15m'] < -0.25)
                     and (last_candle['cmf_1h'] < -0.0)
             ):
                 return True, 'sell_stoploss_p_48_1_1'
@@ -5955,6 +5956,7 @@ class NostalgiaForInfinityX(IStrategy):
                     and (last_candle['ema_vwma_osc_64'] < 0.0)
                     and (last_candle['ema_vwma_osc_96'] < 0.0)
                     and (last_candle['cmf'] < -0.25)
+                    and (last_candle['cmf_15m'] < -0.25)
                     and (last_candle['cmf_1h'] < -0.0)
             ):
                 return True, 'sell_stoploss_p_48_1_2'
@@ -5971,6 +5973,8 @@ class NostalgiaForInfinityX(IStrategy):
                     and (last_candle['ema_vwma_osc_64'] < 0.0)
                     and (last_candle['ema_vwma_osc_96'] < 0.0)
                     and (last_candle['cmf'] < -0.25)
+                    and (last_candle['cmf_15m'] < -0.25)
+                    and (last_candle['cmf_1h'] < -0.0)
             ):
                 return True, 'sell_stoploss_p_36_1_1'
 
@@ -5986,6 +5990,8 @@ class NostalgiaForInfinityX(IStrategy):
                     and (last_candle['ema_vwma_osc_64'] < 0.0)
                     and (last_candle['ema_vwma_osc_96'] < 0.0)
                     and (last_candle['cmf'] < -0.25)
+                    and (last_candle['cmf_15m'] < -0.25)
+                    and (last_candle['cmf_1h'] < -0.0)
                     and (last_candle['rsi_14'] < 40.0)
             ):
                 return True, 'sell_stoploss_p_36_2_1'
@@ -6001,6 +6007,8 @@ class NostalgiaForInfinityX(IStrategy):
                     and (last_candle['ema_vwma_osc_64'] < 0.0)
                     and (last_candle['ema_vwma_osc_96'] < 0.0)
                     and (last_candle['cmf'] < -0.25)
+                    and (last_candle['cmf_15m'] < -0.25)
+                    and (last_candle['cmf_1h'] < -0.0)
             ):
                 return True, 'sell_stoploss_p_24_1_1'
 
