@@ -29,6 +29,8 @@ git submodule update --remote --checkout
 
 Add strategies to the [user_data/strategies](user_data/strategies) folder and also in the [docker-compose.yml](docker-compose.yml) file at `strategy-list` add your strategy in the list.
 
+[Additional Information : NFINext is a older strategy on 5m tf , NFI-NG is a 15m tf stategy abandoned mid development , NFIX is the currently developed strategy (a rework of NG on 5m tf)]
+
 ## General Recommendations
 
 For optimal performance, suggested to use between 4 and 6 open trades, with unlimited stake.
@@ -62,3 +64,9 @@ If you like to help, you can also use the following links to sign up to various 
 * Kucoin: https://www.kucoin.com/r/QBSSSPYV (5% discount on trading fees)
 * Gate.io: https://www.gate.io/signup/8054544
 * Huobi: https://www.huobi.com/en-us/topic/double-reward/?invite_code=ubpt2223
+
+### Discord Link
+
+This is where we chat, hangout and contribute as a community
+
+* https://discord.gg/DeAmv3btxQ
