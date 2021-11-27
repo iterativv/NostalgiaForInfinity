@@ -15,7 +15,7 @@ from typing import Dict
 from freqtrade.persistence import Trade
 from datetime import datetime, timedelta
 from technical.util import resample_to_interval, resampled_merge
-from technical.indicators import zema, VIDYA, ichimoku
+from technical.indicators import RMI, zema, VIDYA, ichimoku
 import time
 
 log = logging.getLogger(__name__)
@@ -238,6 +238,7 @@ class NostalgiaForInfinityX(IStrategy):
         "buy_condition_55_enable": True,
         "buy_condition_56_enable": True,
         "buy_condition_57_enable": True,
+        "buy_condition_58_enable": True,
         #############
     }
 
@@ -1841,6 +1842,34 @@ class NostalgiaForInfinityX(IStrategy):
             "safe_pump_36h_threshold"   : None,
             "safe_pump_48h_threshold"   : 1.8,
             "btc_1h_not_downtrend"      : True,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
+         },
+        58: {
+            "ema_fast"                  : False,
+            "ema_fast_len"              : "50",
+            "ema_slow"                  : False,
+            "ema_slow_len"              : "50",
+            "close_above_ema_fast"      : False,
+            "close_above_ema_fast_len"  : "200",
+            "close_above_ema_slow"      : False,
+            "close_above_ema_slow_len"  : "200",
+            "sma200_rising"             : False,
+            "sma200_rising_val"         : "42",
+            "sma200_1h_rising"          : False,
+            "sma200_1h_rising_val"      : "50",
+            "safe_dips_threshold_0"     : 0.024,
+            "safe_dips_threshold_2"     : 0.09,
+            "safe_dips_threshold_12"    : None,
+            "safe_dips_threshold_144"   : None,
+            "safe_pump_6h_threshold"    : 0.5,
+            "safe_pump_12h_threshold"   : None,
+            "safe_pump_24h_threshold"   : None,
+            "safe_pump_36h_threshold"   : None,
+            "safe_pump_48h_threshold"   : 1.0,
+            "btc_1h_not_downtrend"      : False,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_over_pivot_offset"   : 1.0,
             "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
@@ -6468,6 +6497,15 @@ class NostalgiaForInfinityX(IStrategy):
         dataframe['bb20_2_mid'] = bb_20_std2['mid']
         dataframe['bb20_2_upp'] = bb_20_std2['upper']
 
+        # BB 20 - STD3
+        bb_20_std3 = qtpylib.bollinger_bands(qtpylib.typical_price(dataframe), window=20, stds=3)
+        dataframe['bb20_3_low'] = bb_20_std3['lower']
+        dataframe['bb20_3_mid'] = bb_20_std3['mid']
+        dataframe['bb20_3_upp'] = bb_20_std3['upper']
+
+        dataframe['bb20_width'] = ((dataframe['bb20_2_upp'] - dataframe['bb20_2_low']) / dataframe['bb20_2_mid'])
+        dataframe['bb20_delta'] = ((dataframe['bb20_2_low'] - dataframe['bb20_3_low']) / dataframe['bb20_2_low'])
+
         # CMF
         dataframe['cmf'] = chaikin_money_flow(dataframe, 20)
 
@@ -6497,9 +6535,21 @@ class NostalgiaForInfinityX(IStrategy):
 
         # CCI
         dataframe['cci'] = ta.CCI(dataframe, source='hlc3', timeperiod=20)
+        dataframe['cci_25'] = ta.CCI(dataframe, source='hlc3', timeperiod=25)
 
         # MFI
         dataframe['mfi'] = ta.MFI(dataframe)
+
+        # RMI
+        dataframe['rmi_17'] = RMI(dataframe, length=17, mom=4)
+
+        # STOCHRSI
+        stoch = ta.STOCHRSI(dataframe, 15, 20, 2, 2)
+        dataframe['srsi_fk'] = stoch['fastk']
+        dataframe['srsi_fd'] = stoch['fastd']
+
+        # Close delta
+        dataframe['close_delta'] = (dataframe['close'] - dataframe['close'].shift(1)).abs()
 
         # ATR
         dataframe['atr'] = ta.ATR(dataframe, timeperiod=14)
@@ -7424,6 +7474,19 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['r_14_15m'].shift(3) < -94.0)
                     item_buy_logic.append(dataframe['r_96_15m'].shift(3) < -80.0)
                     item_buy_logic.append(dataframe['r_480_1h'] < -18.0)
+
+                # Condition #58 - Semi swing. Local dip.
+                elif index == 58:
+                    # Non-Standard protections
+
+                    # Logic
+                    item_buy_logic.append(dataframe['rmi_17'] < 49.0)
+                    item_buy_logic.append(dataframe['cci_25'] < -120.0)
+                    item_buy_logic.append(dataframe['srsi_fk'] < 32.0)
+                    item_buy_logic.append(dataframe['bb20_delta'] > 0.025)
+                    item_buy_logic.append(dataframe['bb20_width'] > 0.095)
+                    item_buy_logic.append(dataframe['close_delta'] > dataframe['close'] * 10.0 / 1000.0 )
+                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_3_low'] * 0.996))
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
