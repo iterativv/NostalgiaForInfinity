@@ -6146,6 +6146,7 @@ class NostalgiaForInfinityX(IStrategy):
             if (
                     (-0.04 > current_profit > -0.08)
                     and (max_loss < 0.08)
+                    and (max_profit < 0.01)
                     and (last_candle['close'] < last_candle['ema_200'])
                     and (last_candle['sma_200_dec_20'])
                     and (last_candle['sma_200_dec_20_1h'])
