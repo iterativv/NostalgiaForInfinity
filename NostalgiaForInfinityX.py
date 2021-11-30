@@ -1615,7 +1615,7 @@ class NostalgiaForInfinityX(IStrategy):
             "safe_dips_threshold_144"   : None,
             "safe_pump_6h_threshold"    : None,
             "safe_pump_12h_threshold"   : None,
-            "safe_pump_24h_threshold"   : 1.0,
+            "safe_pump_24h_threshold"   : 0.6,
             "safe_pump_36h_threshold"   : None,
             "safe_pump_48h_threshold"   : 1.4,
             "btc_1h_not_downtrend"      : False,
@@ -7694,9 +7694,11 @@ class NostalgiaForInfinityX(IStrategy):
 
                     # Logic
                     item_buy_logic.append(dataframe['ema_26_15m'] > dataframe['ema_12_15m'])
-                    item_buy_logic.append((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.04))
+                    item_buy_logic.append((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.032))
                     item_buy_logic.append((dataframe['ema_26_15m'].shift(3) - dataframe['ema_12_15m'].shift(3)) > (dataframe['open_15m'] / 100))
-                    item_buy_logic.append(dataframe['rsi_14_15m'] < 24.0)
+                    item_buy_logic.append(dataframe['close_15m'] < dataframe['ema_20_15m'] * 0.928)
+                    item_buy_logic.append(dataframe['rsi_14_15m'] < 28.0)
+                    item_buy_logic.append(dataframe['crsi_15m'] > 18.0)
 
                 # Condition #50 - 15m. Semi swing. Deep local dip. Mild 15m uptrend.
                 elif index == 50:
