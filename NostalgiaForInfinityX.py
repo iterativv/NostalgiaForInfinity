@@ -7334,7 +7334,7 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['rsi_14'] < 28.5)
                     item_buy_logic.append(dataframe['cti'] < -0.75)
                     item_buy_logic.append(dataframe['rsi_14_1h'] < 80.0)
-                    item_buy_logic.append(dataframe['cti_1h'] < 0.62)
+                    item_buy_logic.append(dataframe['cti_1h'] < 0.4)
 
                 # Condition #16 - Semi swing. Cross above.
                 elif index == 16:
