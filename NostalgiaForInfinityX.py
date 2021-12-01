@@ -2213,7 +2213,6 @@ class NostalgiaForInfinityX(IStrategy):
                 and (last_candle['sma_200_dec_20'])
                 and (last_candle['sma_200_dec_24'])
                 and (last_candle['sma_200_dec_20_15m'])
-                and (last_candle['sma_200_dec_20_1h'])
                 and (last_candle['ema_vwma_osc_32'] < -0.0)
                 and (last_candle['ema_vwma_osc_64'] < -0.0)
                 and (last_candle['ema_vwma_osc_96'] < -0.0)
@@ -2221,9 +2220,7 @@ class NostalgiaForInfinityX(IStrategy):
                 and (last_candle['cmf_15m'] < -0.0)
                 and (last_candle['cmf_1h'] < -0.0)
             ):
-            if (-0.14 <= current_profit < -0.1) and (current_time - timedelta(minutes=2880) > trade.open_date_utc):
-                return True, 'sell_stoploss_0'
-            elif (-0.2 <= current_profit < -0.14):
+            if (-0.2 <= current_profit < -0.14):
                 return True, 'sell_stoploss_1'
             elif (current_profit < -0.2):
                 return True, 'sell_stoploss_2'
