@@ -2236,25 +2236,26 @@ class NostalgiaForInfinityX(IStrategy):
         if (
                 (current_profit < -0.0)
                 and (last_candle['close'] < last_candle['ema_200'])
-                and (last_candle['bb20_width'] < 0.044)
-                and (last_candle['close'] > (last_candle['bb20_2_mid_1h'] * 0.954))
-                and (last_candle['volume_mean_12'] < (last_candle['volume_mean_24'] * 2.4))
                 and (last_candle['sma_200_dec_20'])
-                and (last_candle['sma_200_dec_24'])
-                and (last_candle['sma_200_dec_20_15m'])
-                and (last_candle['sma_200_dec_20_1h'])
                 and (last_candle['ema_vwma_osc_32'] < -0.0)
                 and (last_candle['ema_vwma_osc_64'] < -0.0)
                 and (last_candle['ema_vwma_osc_96'] < -0.0)
                 and (last_candle['cmf'] < -0.0)
                 and (last_candle['cmf_15m'] < -0.0)
                 and (last_candle['cmf_1h'] < -0.0)
-                and (current_time - timedelta(minutes=2880) > trade.open_date_utc)
-            ):
-            if (-0.2 <= current_profit < -0.14):
-                return True, 'sell_stoploss_1'
+        ):
+            if (-0.12 <= current_profit < -0.08):
+                if (last_candle['close'] < last_candle['atr_high_thresh_1']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_1']):
+                    return True, 'sell_stoploss_atr_1'
+            elif (-0.16 <= current_profit < -0.12):
+                if (last_candle['close'] < last_candle['atr_high_thresh_2']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_2']):
+                    return True, 'sell_stoploss_atr_2'
+            elif (-0.2 <= current_profit < -0.16):
+                if (last_candle['close'] < last_candle['atr_high_thresh_3']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_3']):
+                    return True, 'sell_stoploss_atr_3'
             elif (current_profit < -0.2):
-                return True, 'sell_stoploss_2'
+                if (last_candle['close'] < last_candle['atr_high_thresh_4']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_4']):
+                    return True, 'sell_stoploss_atr_4'
 
         return False, None
 
@@ -7269,9 +7270,9 @@ class NostalgiaForInfinityX(IStrategy):
 
         # ATR
         dataframe['atr'] = ta.ATR(dataframe, timeperiod=14)
-        dataframe['atr_high_thresh_1'] = (dataframe['high'] - (dataframe['atr'] * 3.4))
-        dataframe['atr_high_thresh_2'] = (dataframe['high'] - (dataframe['atr'] * 3.2))
-        dataframe['atr_high_thresh_3'] = (dataframe['high'] - (dataframe['atr'] * 3.0))
+        dataframe['atr_high_thresh_1'] = (dataframe['high'] - (dataframe['atr'] * 5.4))
+        dataframe['atr_high_thresh_2'] = (dataframe['high'] - (dataframe['atr'] * 5.2))
+        dataframe['atr_high_thresh_3'] = (dataframe['high'] - (dataframe['atr'] * 5.0))
         dataframe['atr_high_thresh_4'] = (dataframe['high'] - (dataframe['atr'] * 2.0))
 
         # For sell checks
