@@ -77,7 +77,7 @@ else:
 ##                                                                                                       ##
 ## -------- SPECIFIC PAIRS ----------------------------------------------------------------------------- ##
 ##   In case you want to have some pairs to always be on held until a specific profit, using the same    ##
-##   "hold-trades.json" file add something like:                                                         ##
+##   "nfi-hold-trades.json" file add something like:                                                         ##
 ##                                                                                                       ##
 ##   {"trade_pairs": {"BTC/USDT": 0.001, "ETH/USDT": -0.005}}                                            ##
 ##                                                                                                       ##
