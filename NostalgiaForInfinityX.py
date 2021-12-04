@@ -241,6 +241,7 @@ class NostalgiaForInfinityX(IStrategy):
         "buy_condition_58_enable": True,
         "buy_condition_59_enable": True,
         "buy_condition_60_enable": True,
+        "buy_condition_61_enable": True,
         #############
     }
 
@@ -7311,6 +7312,14 @@ class NostalgiaForInfinityX(IStrategy):
         # RMI
         dataframe['rmi_17'] = RMI(dataframe, length=17, mom=4)
 
+        # Stochastic fast
+        stoch_fast = ta.STOCHF(dataframe, 5, 3, 0, 3, 0)
+        dataframe['fastd'] = stoch_fast['fastd']
+        dataframe['fastk'] = stoch_fast['fastk']
+
+        # ADX
+        dataframe['adx'] = ta.ADX(dataframe)
+
         # STOCHRSI
         stoch = ta.STOCHRSI(dataframe, 15, 20, 2, 2)
         dataframe['srsi_fk'] = stoch['fastk']
@@ -8285,6 +8294,19 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['ewo'] > -5.0)
                     item_buy_logic.append(dataframe['close'] < dataframe['ema_16'] * 0.968)
                     item_buy_logic.append(dataframe['rsi_14'] < 22.0)
+
+                    # Condition #61 - Semi swing. Local dip. Stochastic fast cross.
+                elif index == 61:
+                    # Non-Standard protections
+                    item_buy_logic.append(dataframe['open'] < dataframe['ema_8'] * 1.147)
+                    item_buy_logic.append(qtpylib.crossed_above(dataframe['fastk'], dataframe['fastd']))
+                    item_buy_logic.append(dataframe['fastk'] < 39.0)
+                    item_buy_logic.append(dataframe['fastd'] < 28.0)
+                    item_buy_logic.append(dataframe['adx'] > 13.0)
+                    item_buy_logic.append(dataframe['ewo'] > 2.5)
+                    item_buy_logic.append(dataframe['cti'] < -0.9)
+                    item_buy_logic.append(dataframe['cti_1h'] < 0.0)
+                    item_buy_logic.append(dataframe['r_480_1h'] < -25.0)
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
