@@ -1293,7 +1293,7 @@ class NostalgiaForInfinityX(IStrategy):
         },
         38: {
             "ema_fast"                  : False,
-            "ema_fast_len"              : "50",
+            "ema_fast_len"              : "16",
             "ema_slow"                  : False,
             "ema_slow_len"              : "12",
             "close_above_ema_fast"      : False,
@@ -1304,9 +1304,9 @@ class NostalgiaForInfinityX(IStrategy):
             "sma200_rising_val"         : "30",
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
-            "safe_dips_threshold_0"     : None,
-            "safe_dips_threshold_2"     : None,
-            "safe_dips_threshold_12"    : None,
+            "safe_dips_threshold_0"     : 0.032,
+            "safe_dips_threshold_2"     : 0.09,
+            "safe_dips_threshold_12"    : 0.16,
             "safe_dips_threshold_144"   : None,
             "safe_pump_6h_threshold"    : 0.45,
             "safe_pump_12h_threshold"   : None,
@@ -8013,9 +8013,8 @@ class NostalgiaForInfinityX(IStrategy):
 
                     # Logic
                     item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
-                    item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.02))
+                    item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.024))
                     item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
-                    item_buy_logic.append(dataframe['mfi'] < 34.5)
                     item_buy_logic.append(dataframe['r_64'] < -65.0)
                     item_buy_logic.append(dataframe['r_96'] < -50.0)
                     item_buy_logic.append(dataframe['r_480_1h'] < -1.0)
