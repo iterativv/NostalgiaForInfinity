@@ -97,7 +97,8 @@ else:
 ##                                                                                                       ##
 ##  Binance: https://accounts.binance.com/en/register?ref=EAZC47FM (5% discount on trading fees)         ##
 ##  Kucoin: https://www.kucoin.com/r/QBSSSPYV (5% discount on trading fees)                              ##
-##  Gate.io: https://www.gate.io/signup/8054544                                                          ##
+##  Gate.io: https://www.gate.io/signup/8054544 (10% discount on trading fees)                           ##
+##  OKEx: https://www.okex.com/join/11749725760 (5% discount on trading fees)                            ##
 ##  Huobi: https://www.huobi.com/en-us/topic/double-reward/?invite_code=ubpt2223                         ##
 ###########################################################################################################
 
