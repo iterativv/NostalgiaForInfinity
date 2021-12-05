@@ -4251,7 +4251,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_11_12'
             elif (last_candle['r_14'] > -3.0) and (last_candle['r_32'] > -3.0) and (last_candle['rsi_14'] > 75.0) and (last_candle['cti'] > 0.9) and (last_candle['cmf_1h'] < -0.0):
                 return True, 'sell_profit_w_11_13'
-            elif (last_candle['r_14'] == 0.0) and (last_candle['close'] < last_candle['ema_200']) and (last_candle['sma_200_dec_20']) and (last_candle['rsi_14'] > 72.0):
+            elif (last_candle['r_14'] == 0.0) and (last_candle['close'] < last_candle['ema_200']) and (last_candle['sma_200_dec_20']) and (last_candle['rsi_14'] > 71.0):
                 return True, 'sell_profit_w_11_14'
             elif (last_candle['r_14'] == 0.0) and (last_candle['close'] < last_candle['ema_200']) and (last_candle['sma_200_dec_20']) and (last_candle['rsi_14'] > 69.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['rsi_14_1h'] < 40.0):
                 return True, 'sell_profit_w_11_15'
@@ -4382,7 +4382,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_12_12'
             elif (last_candle['r_14'] > -3.0) and (last_candle['r_32'] > -3.0) and (last_candle['rsi_14'] > 76.0) and (last_candle['cti'] > 0.9) and (last_candle['cmf_1h'] < -0.0):
                 return True, 'sell_profit_w_12_13'
-            elif (last_candle['r_14'] == 0.0) and (last_candle['close'] < last_candle['ema_200']) and (last_candle['sma_200_dec_20']) and (last_candle['rsi_14'] > 73.0):
+            elif (last_candle['r_14'] == 0.0) and (last_candle['close'] < last_candle['ema_200']) and (last_candle['sma_200_dec_20']) and (last_candle['rsi_14'] > 71.0):
                 return True, 'sell_profit_w_12_14'
             elif (last_candle['r_14'] == 0.0) and (last_candle['close'] < last_candle['ema_200']) and (last_candle['sma_200_dec_20']) and (last_candle['rsi_14'] > 70.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['rsi_14_1h'] < 40.0):
                 return True, 'sell_profit_w_12_15'
