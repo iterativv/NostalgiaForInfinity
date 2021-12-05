@@ -1275,9 +1275,9 @@ class NostalgiaForInfinityX(IStrategy):
             "sma200_rising_val"         : "30",
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
-            "safe_dips_threshold_0"     : 0.021,
-            "safe_dips_threshold_2"     : 0.12,
-            "safe_dips_threshold_12"    : 0.28,
+            "safe_dips_threshold_0"     : 0.032,
+            "safe_dips_threshold_2"     : 0.09,
+            "safe_dips_threshold_12"    : 0.14,
             "safe_dips_threshold_144"   : None,
             "safe_pump_6h_threshold"    : 0.5,
             "safe_pump_12h_threshold"   : None,
@@ -7998,11 +7998,10 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
 
                     # Logic
-                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * 0.986))
-                    item_buy_logic.append(dataframe['r_14'] < -75.0)
+                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * 0.99))
+                    item_buy_logic.append(dataframe['r_14'] < -94.0)
                     item_buy_logic.append(dataframe['r_64'] < -75.0)
                     item_buy_logic.append(dataframe['r_480_1h'] < -20.0)
-                    item_buy_logic.append(dataframe['cmf_1h'] < 0.25)
 
                 # Condition #38 - Semi swing. Uptrend. Local dip.
                 elif index == 38:
