@@ -6643,7 +6643,7 @@ class NostalgiaForInfinityX(IStrategy):
                     if (last_candle['rsi_14'] < 35.0):
                         return True, 'sell_profit_p_bear_24_1_1_1'
 
-        if (last_candle['hl_pct_change_24_1h'] > 0.55):
+        if (last_candle['hl_pct_change_24_1h'] > 0.5):
             if (last_candle['ema_vwma_osc_96'] > 0.0):
                 if current_profit >= 0.2:
                     if (last_candle['r_14'] > -4.0) and (last_candle['rsi_14'] > 72.0) and (last_candle['cci'] > 240.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0):
