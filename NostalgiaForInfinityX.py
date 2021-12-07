@@ -107,7 +107,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v10.7.63"
+        return "v10.8.0"
 
     # ROI table:
     minimal_roi = {
@@ -246,6 +246,7 @@ class NostalgiaForInfinityX(IStrategy):
         "buy_condition_59_enable": True,
         "buy_condition_60_enable": True,
         "buy_condition_61_enable": True,
+        "buy_condition_62_enable": True,
         #############
     }
 
@@ -1935,6 +1936,34 @@ class NostalgiaForInfinityX(IStrategy):
             "btc_1h_not_downtrend"      : False,
             "close_over_pivot_type"     : "sup2", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_over_pivot_offset"   : 0.96,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
+         },
+        62: {
+            "ema_fast"                  : False,
+            "ema_fast_len"              : "50",
+            "ema_slow"                  : False,
+            "ema_slow_len"              : "50",
+            "close_above_ema_fast"      : False,
+            "close_above_ema_fast_len"  : "200",
+            "close_above_ema_slow"      : False,
+            "close_above_ema_slow_len"  : "200",
+            "sma200_rising"             : False,
+            "sma200_rising_val"         : "42",
+            "sma200_1h_rising"          : False,
+            "sma200_1h_rising_val"      : "50",
+            "safe_dips_threshold_0"     : 0.032,
+            "safe_dips_threshold_2"     : 0.09,
+            "safe_dips_threshold_12"    : 0.18,
+            "safe_dips_threshold_144"   : 0.23,
+            "safe_pump_6h_threshold"    : 0.5,
+            "safe_pump_12h_threshold"   : None,
+            "safe_pump_24h_threshold"   : None,
+            "safe_pump_36h_threshold"   : None,
+            "safe_pump_48h_threshold"   : 1.4,
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
             "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_under_pivot_offset"  : 1.0
          }
@@ -7270,6 +7299,9 @@ class NostalgiaForInfinityX(IStrategy):
         # ROC
         informative_1h['roc_9'] = ta.ROC(informative_1h, timeperiod=9)
 
+        # T3 Average
+        informative_1h['t3_avg'] = t3_average(informative_1h)
+
         # S/R
         res_series = informative_1h['high'].rolling(window = 5, center=True).apply(lambda row: self.is_resistance(row), raw=True).shift(2)
         sup_series = informative_1h['low'].rolling(window = 5, center=True).apply(lambda row: self.is_support(row), raw=True).shift(2)
@@ -7457,6 +7489,9 @@ class NostalgiaForInfinityX(IStrategy):
 
         # Close delta
         dataframe['close_delta'] = (dataframe['close'] - dataframe['close'].shift(1)).abs()
+
+        # T3 Average
+        dataframe['t3_avg'] = t3_average(dataframe)
 
         # ATR
         dataframe['atr'] = ta.ATR(dataframe, timeperiod=14)
@@ -8427,9 +8462,11 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['close'] < dataframe['ema_16'] * 0.968)
                     item_buy_logic.append(dataframe['rsi_14'] < 22.0)
 
-                    # Condition #61 - Semi swing. Local dip. Stochastic fast cross.
+                # Condition #61 - Semi swing. Local dip. Stochastic fast cross.
                 elif index == 61:
                     # Non-Standard protections
+
+                    # Logic
                     item_buy_logic.append(dataframe['open'] < dataframe['ema_8'] * 1.147)
                     item_buy_logic.append(qtpylib.crossed_above(dataframe['fastk'], dataframe['fastd']))
                     item_buy_logic.append(dataframe['fastk'] < 39.0)
@@ -8439,6 +8476,18 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['cti'] < -0.9)
                     item_buy_logic.append(dataframe['cti_1h'] < 0.0)
                     item_buy_logic.append(dataframe['r_480_1h'] < -25.0)
+
+                # Condition #62 - Semi swing. Local dip. Downtrend.
+                elif index == 62:
+                    # Non-Standard protections
+
+                    # Logic
+                    item_buy_logic.append(dataframe['ewo'] < -8.1)
+
+                    item_buy_logic.append(dataframe['bb20_2_mid_1h'] >= dataframe['t3_avg_1h'])
+                    item_buy_logic.append(dataframe['t3_avg'] <= dataframe['ema_8'] * 1.121)
+                    item_buy_logic.append(dataframe['cti'] < -0.9)
+                    item_buy_logic.append(dataframe['r_14'] < -75.0)
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
@@ -8637,6 +8686,34 @@ def vwma(dataframe: DataFrame, length: int = 10):
 def ema_vwma_osc(dataframe, len_slow_ma):
     slow_ema = Series(ta.EMA(vwma(dataframe, len_slow_ma), len_slow_ma))
     return ((slow_ema - slow_ema.shift(1)) / slow_ema.shift(1)) * 100
+
+def t3_average(dataframe, length=5):
+    """
+    T3 Average by HPotter on Tradingview
+    https://www.tradingview.com/script/qzoC9H1I-T3-Average/
+    """
+    df = dataframe.copy()
+
+    df['xe1'] = ta.EMA(df['close'], timeperiod=length)
+    df['xe1'].fillna(0, inplace=True)
+    df['xe2'] = ta.EMA(df['xe1'], timeperiod=length)
+    df['xe2'].fillna(0, inplace=True)
+    df['xe3'] = ta.EMA(df['xe2'], timeperiod=length)
+    df['xe3'].fillna(0, inplace=True)
+    df['xe4'] = ta.EMA(df['xe3'], timeperiod=length)
+    df['xe4'].fillna(0, inplace=True)
+    df['xe5'] = ta.EMA(df['xe4'], timeperiod=length)
+    df['xe5'].fillna(0, inplace=True)
+    df['xe6'] = ta.EMA(df['xe5'], timeperiod=length)
+    df['xe6'].fillna(0, inplace=True)
+    b = 0.7
+    c1 = -b * b * b
+    c2 = 3 * b * b + 3 * b * b * b
+    c3 = -6 * b * b - 3 * b - 3 * b * b * b
+    c4 = 1 + 3 * b + b * b * b + 3 * b * b
+    df['T3Average'] = c1 * df['xe6'] + c2 * df['xe5'] + c3 * df['xe4'] + c4 * df['xe3']
+
+    return df['T3Average']
 
 def pivot_points(dataframe: DataFrame, mode = 'fibonacci') -> Series:
     hlc3_pivot = (dataframe['high'] + dataframe['low'] + dataframe['close']).shift(1) / 3
