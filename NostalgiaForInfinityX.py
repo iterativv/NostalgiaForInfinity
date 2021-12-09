@@ -107,7 +107,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v10.8.17"
+        return "v10.8.18"
 
     # ROI table:
     minimal_roi = {
@@ -1595,7 +1595,7 @@ class NostalgiaForInfinityX(IStrategy):
             "safe_pump_6h_threshold"    : 0.5,
             "safe_pump_12h_threshold"   : None,
             "safe_pump_24h_threshold"   : None,
-            "safe_pump_36h_threshold"   : 1.3,
+            "safe_pump_36h_threshold"   : 0.95,
             "safe_pump_48h_threshold"   : 1.4,
             "btc_1h_not_downtrend"      : False,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
@@ -8450,13 +8450,12 @@ class NostalgiaForInfinityX(IStrategy):
                     # Non-Standard protections
 
                     # Logic
-                    item_buy_logic.append(dataframe['close_15m'].shift(3) < (dataframe['sma_15_15m'].shift(3) * 0.95))
+                    item_buy_logic.append(dataframe['close_15m'].shift(3) < (dataframe['sma_15_15m'].shift(3) * 0.94))
                     item_buy_logic.append(dataframe['close_15m'] > (dataframe['open_15m'].shift(3)))
                     item_buy_logic.append(dataframe['ewo_15m'] > 2.8)
-                    item_buy_logic.append(dataframe['cti_15m'] < -0.75)
+                    item_buy_logic.append(dataframe['cti_15m'] < -0.9)
                     item_buy_logic.append(dataframe['r_14_15m'].shift(3) < -94.0)
-                    item_buy_logic.append(dataframe['cti'] < -0.5)
-                    item_buy_logic.append(dataframe['cti_1h'] < 0.1)
+                    item_buy_logic.append(dataframe['cti'] < -0.75)
                     item_buy_logic.append(dataframe['crsi_1h'] > 18.0)
 
                 # Condition #49 - 15m. Semi swing. Local deeper dip.
