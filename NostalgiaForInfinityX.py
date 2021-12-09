@@ -1981,6 +1981,8 @@ class NostalgiaForInfinityX(IStrategy):
 
     def __init__(self, config: dict) -> None:
         super().__init__(config)
+        # Print our strategy name and version for cross reference
+        log.info("%s Version %s",self.config['strategy'],self.version());
         if self.target_profit_cache is None:
             self.target_profit_cache = Cache(
                 self.config["user_data_dir"] / "data-nfi-profit_target_by_pair.json"
