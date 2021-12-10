@@ -1,4 +1,7 @@
 {
+  // WARNING: This is an example configuration to use with NFIX.
+  // Please use at own risk
+  // For full documentation on Freqtrade configration files please visit https://www.freqtrade.io/en/stable/configuration/
   "dry_run": true,
   "timeframe": "5m",
   "max_open_trades": 6,
