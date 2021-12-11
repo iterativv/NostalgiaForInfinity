@@ -8871,7 +8871,8 @@ class NostalgiaForInfinityX(IStrategy):
 
         if(len(dataframe) < 1):
             log.warning("dataframe is less than 1")
-#            return False
+            #return False
+            return True
 
         dataframe = dataframe.iloc[-1].squeeze()
 
