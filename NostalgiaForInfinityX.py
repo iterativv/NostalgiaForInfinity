@@ -8678,7 +8678,8 @@ class NostalgiaForInfinityX(IStrategy):
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
 
         if(len(dataframe) < 1):
-            return False
+            log.warning("dataframe is less than 1")
+#            return False
 
         dataframe = dataframe.iloc[-1].squeeze()
 
