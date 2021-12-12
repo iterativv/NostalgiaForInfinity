@@ -107,7 +107,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v10.8.45"
+        return "v10.8.46"
 
     # ROI table:
     minimal_roi = {
@@ -1700,13 +1700,13 @@ class NostalgiaForInfinityX(IStrategy):
             "sma200_rising_val"         : "42",
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
-            "safe_dips_threshold_0"     : 0.024,
+            "safe_dips_threshold_0"     : 0.032,
             "safe_dips_threshold_2"     : 0.09,
-            "safe_dips_threshold_12"    : 0.4,
+            "safe_dips_threshold_12"    : 0.25,
             "safe_dips_threshold_144"   : None,
             "safe_pump_6h_threshold"    : 0.5,
             "safe_pump_12h_threshold"   : None,
-            "safe_pump_24h_threshold"   : 0.7,
+            "safe_pump_24h_threshold"   : 0.62,
             "safe_pump_36h_threshold"   : None,
             "safe_pump_48h_threshold"   : 0.95,
             "btc_1h_not_downtrend"      : True,
@@ -8721,7 +8721,7 @@ class NostalgiaForInfinityX(IStrategy):
 
                     # Logic
                     item_buy_logic.append(dataframe['ema_26_15m'] > dataframe['ema_12_15m'])
-                    item_buy_logic.append((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.032))
+                    item_buy_logic.append((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.03))
                     item_buy_logic.append((dataframe['ema_26_15m'].shift(3) - dataframe['ema_12_15m'].shift(3)) > (dataframe['open_15m'] / 100))
                     item_buy_logic.append(dataframe['close_15m'] < (dataframe['bb20_2_low_15m'] * 0.998))
                     item_buy_logic.append(dataframe['crsi_1h'] > 10.0)
