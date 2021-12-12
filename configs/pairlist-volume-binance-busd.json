@@ -6,7 +6,7 @@
 			"sort_key": "quoteVolume",
 			"refresh_period": 1800
 		},
-		{"method": "AgeFilter", "min_days_listed": 14},
+		{"method": "AgeFilter", "min_days_listed": 2},
 		{"method": "SpreadFilter", "max_spread_ratio": 0.005},
 		{
 			"method": "RangeStabilityFilter",
