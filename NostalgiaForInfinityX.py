@@ -107,7 +107,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v10.8.49"
+        return "v10.8.50"
 
     # ROI table:
     minimal_roi = {
@@ -722,7 +722,7 @@ class NostalgiaForInfinityX(IStrategy):
             "sma200_1h_rising_val"      : "36",
             "safe_dips_threshold_0"     : 0.028,
             "safe_dips_threshold_2"     : 0.09,
-            "safe_dips_threshold_12"    : 0.26,
+            "safe_dips_threshold_12"    : 0.25,
             "safe_dips_threshold_144"   : 0.44,
             "safe_pump_6h_threshold"    : 0.4,
             "safe_pump_12h_threshold"   : None,
@@ -8311,10 +8311,10 @@ class NostalgiaForInfinityX(IStrategy):
                     # Non-Standard protections
 
                     # Logic
-                    item_buy_logic.append(dataframe['r_480'] < -99.0)
-                    item_buy_logic.append(dataframe['r_14'] == -100.0)
-                    item_buy_logic.append(dataframe['r_480_1h'] < -95.0)
-                    item_buy_logic.append(dataframe['rsi_14_1h'] + dataframe['rsi_14'] < 40.0)
+                    item_buy_logic.append(dataframe['r_480'] < -90.0)
+                    item_buy_logic.append(dataframe['r_14'] < -99.0)
+                    item_buy_logic.append(dataframe['r_480_1h'] < -90.0)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] + dataframe['rsi_14'] < 33.0)
 
                 # Condition #18 - Semi swing. Local dip. BTC not negative.
                 elif index == 18:
