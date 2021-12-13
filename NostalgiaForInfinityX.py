@@ -8906,7 +8906,7 @@ class NostalgiaForInfinityX(IStrategy):
             if slippage < 0.038:
                 return True
             else:
-                log.warning("slippage is high")
+                log.warning("slippage is too high")
                 return True
 
         return True
