@@ -107,7 +107,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v10.8.91"
+        return "v10.8.92"
 
     # ROI table:
     minimal_roi = {
@@ -8533,7 +8533,7 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['ewo'] > 2.0)
                     item_buy_logic.append(dataframe['cti'] < -0.84)
                     item_buy_logic.append(dataframe['r_14'] < -97.0)
-                    item_buy_logic.append(dataframe['r_96'] < -85.0)
+                    item_buy_logic.append(dataframe['r_96'] < -87.0)
                     item_buy_logic.append(dataframe['cti_1h'] < 0.8)
 
                 # Condition #22 - Swing. Uptrend. Bounce from daily support level
