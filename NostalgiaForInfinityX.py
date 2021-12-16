@@ -107,7 +107,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v10.8.107"
+        return "v10.8.109"
 
     # ROI table:
     minimal_roi = {
