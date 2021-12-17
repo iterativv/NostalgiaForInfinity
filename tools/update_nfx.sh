@@ -22,7 +22,7 @@ curl -s -X "POST" "https://api.telegram.org/bot${telegram_token}/sendMessage" \
      -H 'Content-Type: application/json; charset=utf-8' \
      -d $'{
   "chat_id": "'$telegram_chat_id'",
-  "text": "<b>Aktualizacja</b>\n<pre>Strategia <b>NostalgiaForInfinityX</b> została zaktualizowana do wersji <b>'$version'</b>.</pre>",
+  "text": "<b>Update</b>\n<pre>Strategy <b>NostalgiaForInfinityX</b> has been updated to <b>'$version'</b>.</pre>",
   "parse_mode": "HTML"
 }'
 
