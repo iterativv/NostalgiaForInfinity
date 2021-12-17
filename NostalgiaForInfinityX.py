@@ -107,7 +107,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v10.8.125"
+        return "v10.8.126"
 
     # ROI table:
     minimal_roi = {
@@ -8664,7 +8664,7 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['low_1h'] < dataframe['sup_level_1d'] * 0.99)
                     item_buy_logic.append(dataframe['close_1h'] < dataframe['res_level_1h'])
                     item_buy_logic.append(dataframe['res_level_1d'] > dataframe['sup_level_1d'])
-                    item_buy_logic.append(dataframe['rsi_14'] < 40.0)
+                    item_buy_logic.append(dataframe['rsi_14'] < 39.8)
                     item_buy_logic.append(dataframe['rsi_14_1h'] > 48.0)
 
                     # Confirm uptrend - Heikin-Ashi
