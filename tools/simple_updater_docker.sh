@@ -28,25 +28,25 @@ current_tag=$(git describe --tags)
 # Create a new branch with the latest tag name and copy the new version of the strategy
 if [ "$latest_tag" != "$current_tag" ]; then
 
-        # Checkout to latest tag and update the NFI in Freqtrade folder
-        git checkout tags/$latest_tag -b $latest_tag || git checkout $latest_tag 
-        cp $NFI_PATH $FT_PATH
+    # Checkout to latest tag and update the NFI in Freqtrade folder
+    git checkout tags/$latest_tag -b $latest_tag || git checkout $latest_tag
+    cp $NFI_PATH $FT_PATH
 
-        # Get tag to which the latest tag is pointing
-        latest_tag_commit=$(git rev-list -n 1 tags/${latest_tag})
-		
-		# Compose the main message send by the bot
-        curl -s --data "text=NFI is updated to tag: *${latest_tag}* . Please wait for reload..." \
-                --data "parse_mode=markdown" \
-                --data "chat_id=$TG_CHAT_ID" \
-                "https://api.telegram.org/bot${TG_TOKEN}/sendMessage"
+    # Get tag to which the latest tag is pointing
+    latest_tag_commit=$(git rev-list -n 1 tags/${latest_tag})
 
-        sleep 120
+	# Compose the main message send by the bot
+    curl -s --data "text=NFI is updated to tag: *${latest_tag}* . Please wait for reload..." \
+         --data "parse_mode=markdown" \
+         --data "chat_id=$TG_CHAT_ID" \
+         "https://api.telegram.org/bot${TG_TOKEN}/sendMessage"
 
-        docker restart freqtrade
+    sleep 120
 
-        curl -s --data "text=NFI reload has been completed!" \
-                --data "parse_mode=markdown" \
-                --data "chat_id=$TG_CHAT_ID" \
-                "https://api.telegram.org/bot${TG_TOKEN}/sendMessage"
+    docker restart freqtrade
+
+    curl -s --data "text=NFI reload has been completed!" \
+         --data "parse_mode=markdown" \
+         --data "chat_id=$TG_CHAT_ID" \
+         "https://api.telegram.org/bot${TG_TOKEN}/sendMessage"
 fi
