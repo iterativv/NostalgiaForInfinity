@@ -107,7 +107,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v10.8.147"
+        return "v10.8.148"
 
     # ROI table:
     minimal_roi = {
@@ -2309,48 +2309,6 @@ class NostalgiaForInfinityX(IStrategy):
                 and (trade.open_date_utc + timedelta(minutes=3000) > current_time )
         ):
             return True, 'sell_stoploss_u_e_1'
-
-        # Under EMA200, pair and BTC negative, low max rate
-        if (
-                (-0.05 > current_profit > -0.09)
-                and (last_candle['btc_not_downtrend_1h'] == False)
-                and (last_candle['ema_vwma_osc_32'] < 0.0)
-                and (last_candle['ema_vwma_osc_64'] < 0.0)
-                and (last_candle['ema_vwma_osc_96'] < 0.0)
-                and (max_profit < 0.005)
-                and (max_loss < 0.09)
-                and (last_candle['ema_vwma_osc_96'] < 0.0)
-                and (max_profit < 0.005)
-                and (max_loss < 0.09)
-                and (last_candle['sma_200_dec_20'])
-                and (last_candle['sma_200_dec_24'])
-                and (last_candle['sma_200_dec_20_1h'])
-                and (last_candle['cmf'] < -0.0)
-                and (last_candle['close'] < last_candle['ema_200'])
-                and (last_candle['ema_25'] < last_candle['ema_50'])
-                and (last_candle['cti'] < -0.8)
-                and (last_candle['r_480'] < -50.0)
-        ):
-            return True, 'sell_stoploss_u_e_b_1'
-
-        # Under EMA200, pair and BTC negative, CTI, Elder Ray Index negative, normal max rate
-        elif (
-                (-0.1 > current_profit > -0.2)
-                and (last_candle['btc_not_downtrend_1h'] == False)
-                and (last_candle['ema_vwma_osc_32'] < 0.0)
-                and (last_candle['ema_vwma_osc_64'] < 0.0)
-                and (last_candle['ema_vwma_osc_96'] < 0.0)
-                and (max_profit < 0.05)
-                and (max_loss < 0.2)
-                and (last_candle['sma_200_dec_24'])
-                and (last_candle['sma_200_dec_20_1h'])
-                and (last_candle['cmf'] < -0.45)
-                and (last_candle['close'] < last_candle['ema_200'])
-                and (last_candle['ema_25'] < last_candle['ema_50'])
-                and (last_candle['cti'] < -0.8)
-                and (last_candle['r_480'] < -97.0)
-        ):
-            return True, 'signal_stoploss_u_e_b_2'
 
         return False, None
 
