@@ -17,10 +17,22 @@ from datetime import datetime, timedelta
 from technical.util import resample_to_interval, resampled_merge
 from technical.indicators import RMI, zema, VIDYA, ichimoku
 import time
+import json
+from urllib.request import urlopen
 
 log = logging.getLogger(__name__)
 #log.setLevel(logging.DEBUG)
 
+#Crypto Fear Protection
+with urlopen("https://api.alternative.me/fng/") as response:
+    fearsource = response.read()
+
+feardata = json.loads(fearsource)
+
+for data in feardata['data']:
+    fearindex = (data['value'])
+log.info("Crypto Fear Index:")
+log.info(fearindex)
 
 try:
     import pandas_ta as pta
