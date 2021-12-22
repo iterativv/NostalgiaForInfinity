@@ -107,7 +107,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v10.8.164"
+        return "v10.8.165"
 
     # ROI table:
     minimal_roi = {
@@ -2969,7 +2969,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_1_1'
             elif (last_candle['r_14'] >= -4.0) and (last_candle['r_32'] > -4.0) and (last_candle['r_64'] > -4.0) and (last_candle['rsi_14'] > 75.0):
                 return True, 'sell_profit_w_1_2'
-            elif (last_candle['r_14'] >= -2.0) and (last_candle['rsi_14'] < 42.0):
+            elif (last_candle['r_14'] >= -2.0) and (last_candle['rsi_14'] < 44.0):
                 return True, 'sell_profit_w_1_3'
             elif (last_candle['r_14'] >= -2.0) and (last_candle['rsi_14'] > 74.0):
                 return True, 'sell_profit_w_1_4'
@@ -3138,7 +3138,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_2_1'
             elif (last_candle['r_14'] >= -4.0) and (last_candle['r_32'] > -4.0) and (last_candle['r_64'] > -4.0) and (last_candle['rsi_14'] > 74.0):
                 return True, 'sell_profit_w_2_2'
-            elif (last_candle['r_14'] >= -2.0) and (last_candle['rsi_14'] < 44.0):
+            elif (last_candle['r_14'] >= -2.0) and (last_candle['rsi_14'] < 46.0):
                 return True, 'sell_profit_w_2_3'
             elif (last_candle['r_14'] >= -2.0) and (last_candle['rsi_14'] > 73.0):
                 return True, 'sell_profit_w_2_4'
