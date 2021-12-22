@@ -43,4 +43,3 @@ echo "Starting freqtrade with NFIX"
 docker-compose stop
 docker-compose build
 docker-compose up -d
-
