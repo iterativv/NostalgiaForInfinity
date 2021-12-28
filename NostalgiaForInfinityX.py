@@ -107,7 +107,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v10.9.33"
+        return "v10.9.34"
 
     # ROI table:
     minimal_roi = {
@@ -1983,8 +1983,8 @@ class NostalgiaForInfinityX(IStrategy):
             "sma200_1h_rising_val"      : "48",
             "safe_dips_threshold_0"     : 0.032,
             "safe_dips_threshold_2"     : 0.09,
-            "safe_dips_threshold_12"    : 0.15,
-            "safe_dips_threshold_144"   : 0.16,
+            "safe_dips_threshold_12"    : 0.18,
+            "safe_dips_threshold_144"   : 0.26,
             "safe_pump_6h_threshold"    : 0.5,
             "safe_pump_12h_threshold"   : None,
             "safe_pump_24h_threshold"   : None,
@@ -1994,7 +1994,7 @@ class NostalgiaForInfinityX(IStrategy):
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_over_pivot_offset"   : 1.0,
             "close_under_pivot_type"    : "res3", # pivot, sup1, sup2, sup3, res1, res2, res3
-            "close_under_pivot_offset"  : 1.1
+            "close_under_pivot_offset"  : 1.2
          }
     }
 
