@@ -33,10 +33,6 @@ except ImportError:
 else:
     log.info("pandas_ta successfully imported")
 
-def ha_typical_price(bars):
-    res = (bars['ha_high'] + bars['ha_low'] + bars['ha_close']) / 3.
-    return Series(index=bars.index, data=res)
-
 
 ###########################################################################################################
 ##                NostalgiaForInfinityX by iterativ                                                     ##
@@ -189,70 +185,70 @@ class NostalgiaForInfinityX(IStrategy):
     buy_params = {
         #############
         # Enable/Disable conditions
-        "buy_condition_1_enable": False,
-        "buy_condition_2_enable": False,
-        "buy_condition_3_enable": False,
-        "buy_condition_4_enable": False,
-        "buy_condition_5_enable": False,
-        "buy_condition_6_enable": False,
-        "buy_condition_7_enable": False,
-        "buy_condition_8_enable": False,
-        "buy_condition_9_enable": False,
-        "buy_condition_10_enable": False,
-        "buy_condition_11_enable": False,
-        "buy_condition_12_enable": False,
-        "buy_condition_13_enable": False,
-        "buy_condition_14_enable": False,
-        "buy_condition_15_enable": False,
-        "buy_condition_16_enable": False,
-        "buy_condition_17_enable": False,
-        "buy_condition_18_enable": False,
-        "buy_condition_19_enable": False,
-        "buy_condition_20_enable": False,
-        "buy_condition_21_enable": False,
-        "buy_condition_22_enable": False,
-        "buy_condition_23_enable": False,
-        "buy_condition_24_enable": False,
-        "buy_condition_25_enable": False,
-        "buy_condition_26_enable": False,
-        "buy_condition_27_enable": False,
-        "buy_condition_28_enable": False,
-        "buy_condition_29_enable": False,
-        "buy_condition_30_enable": False,
-        "buy_condition_31_enable": False,
-        "buy_condition_32_enable": False,
-        "buy_condition_33_enable": False,
-        "buy_condition_34_enable": False,
-        "buy_condition_35_enable": False,
-        "buy_condition_36_enable": False,
-        "buy_condition_37_enable": False,
-        "buy_condition_38_enable": False,
-        "buy_condition_39_enable": False,
-        "buy_condition_40_enable": False,
-        "buy_condition_41_enable": False,
-        "buy_condition_42_enable": False,
-        "buy_condition_43_enable": False,
-        "buy_condition_44_enable": False,
-        "buy_condition_45_enable": False,
-        "buy_condition_46_enable": False,
-        "buy_condition_47_enable": False,
-        "buy_condition_48_enable": False,
-        "buy_condition_49_enable": False,
-        "buy_condition_50_enable": False,
-        "buy_condition_51_enable": False,
-        "buy_condition_52_enable": False,
-        "buy_condition_53_enable": False,
-        "buy_condition_54_enable": False,
-        "buy_condition_55_enable": False,
-        "buy_condition_56_enable": False,
-        "buy_condition_57_enable": False,
-        "buy_condition_58_enable": False,
-        "buy_condition_59_enable": False,
-        "buy_condition_60_enable": False,
-        "buy_condition_61_enable": False,
-        "buy_condition_62_enable": False,
-        "buy_condition_63_enable": False,
-        "buy_condition_64_enable": False,
+        "buy_condition_1_enable": True,
+        "buy_condition_2_enable": True,
+        "buy_condition_3_enable": True,
+        "buy_condition_4_enable": True,
+        "buy_condition_5_enable": True,
+        "buy_condition_6_enable": True,
+        "buy_condition_7_enable": True,
+        "buy_condition_8_enable": True,
+        "buy_condition_9_enable": True,
+        "buy_condition_10_enable": True,
+        "buy_condition_11_enable": True,
+        "buy_condition_12_enable": True,
+        "buy_condition_13_enable": True,
+        "buy_condition_14_enable": True,
+        "buy_condition_15_enable": True,
+        "buy_condition_16_enable": True,
+        "buy_condition_17_enable": True,
+        "buy_condition_18_enable": True,
+        "buy_condition_19_enable": True,
+        "buy_condition_20_enable": True,
+        "buy_condition_21_enable": True,
+        "buy_condition_22_enable": True,
+        "buy_condition_23_enable": True,
+        "buy_condition_24_enable": True,
+        "buy_condition_25_enable": True,
+        "buy_condition_26_enable": True,
+        "buy_condition_27_enable": True,
+        "buy_condition_28_enable": True,
+        "buy_condition_29_enable": True,
+        "buy_condition_30_enable": True,
+        "buy_condition_31_enable": True,
+        "buy_condition_32_enable": True,
+        "buy_condition_33_enable": True,
+        "buy_condition_34_enable": True,
+        "buy_condition_35_enable": True,
+        "buy_condition_36_enable": True,
+        "buy_condition_37_enable": True,
+        "buy_condition_38_enable": True,
+        "buy_condition_39_enable": True,
+        "buy_condition_40_enable": True,
+        "buy_condition_41_enable": True,
+        "buy_condition_42_enable": True,
+        "buy_condition_43_enable": True,
+        "buy_condition_44_enable": True,
+        "buy_condition_45_enable": True,
+        "buy_condition_46_enable": True,
+        "buy_condition_47_enable": True,
+        "buy_condition_48_enable": True,
+        "buy_condition_49_enable": True,
+        "buy_condition_50_enable": True,
+        "buy_condition_51_enable": True,
+        "buy_condition_52_enable": True,
+        "buy_condition_53_enable": True,
+        "buy_condition_54_enable": True,
+        "buy_condition_55_enable": True,
+        "buy_condition_56_enable": True,
+        "buy_condition_57_enable": True,
+        "buy_condition_58_enable": True,
+        "buy_condition_59_enable": True,
+        "buy_condition_60_enable": True,
+        "buy_condition_61_enable": True,
+        "buy_condition_62_enable": True,
+        "buy_condition_63_enable": True,
+        "buy_condition_64_enable": True,
         "buy_condition_65_enable": True,
         "buy_condition_66_enable": True,
         #############
@@ -9744,670 +9740,6 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['bb_delta_cluc'] > dataframe['ha_close'] * 0.061)
                     item_buy_logic.append(dataframe['ha_closedelta'] > dataframe['ha_close'] * 0.04401)
                     item_buy_logic.append(dataframe['tail'] < dataframe['bb_delta_cluc'] * 1.02515)
-                    item_buy_logic.append(dataframe['ha_close'] < dataframe['bb40_2_low'].shift())
-                    item_buy_logic.append(dataframe['ha_close'] < dataframe['ha_close'].shift())
-                
-                elif index == 66:
-                    item_buy_logic.append(dataframe['rmi_length_17'] < 49)
-                    item_buy_logic.append(dataframe['cci_length_25'] <= -116)
-                    item_buy_logic.append(dataframe['srsi_fk'] < 32)
-                    item_buy_logic.append(dataframe['bb20_delta'] > 0.025)
-                    item_buy_logic.append(dataframe['bb20_width'] > 0.095)
-                    item_buy_logic.append(dataframe['closedelta'] > dataframe['close'] * 17.922 / 1000 )
-                    item_buy_logic.append(dataframe['close'] < dataframe['bb20_3_low'] * 0.999)
-
-                item_buy_logic.append(dataframe['volume'] > 0)
-                item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-                dataframe.loc[item_buy, 'buy_tag'] += f"{index} "
-                conditions.append(item_buy)
-
-        if conditions:
-            dataframe.loc[:, 'buy'] = reduce(lambda x, y: x | y, conditions)
-
-        return dataframe
-
-    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        dataframe.loc[:, 'sell'] = 0
-
-        return dataframe
-
-    def confirm_trade_entry(self, pair: str, order_type: str, amount: float, rate: float,
-                            time_in_force: str, current_time: datetime, **kwargs) -> bool:
-        dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
-
-        if(len(dataframe) < 1):
-            return False
-
-        dataframe = dataframe.iloc[-1].squeeze()
-
-        if ((rate > dataframe['close'])):
-            slippage = ((rate / dataframe['close']) - 1.0)
-
-            if slippage < 0.038:
-                return True
-            else:
-                return False
-
-        return True
-
-    def confirm_trade_exit(self, pair: str, trade: "Trade", order_type: str, amount: float,
-                           rate: float, time_in_force: str, sell_reason: str, **kwargs) -> bool:
-        """
-        Called right before placing a regular sell order.
-        Timing for this function is critical, so avoid doing heavy computations or
-        network requests in this method.
-
-        For full documentation please go to https://www.freqtrade.io/en/latest/strategy-advanced/
-
-        When not implemented by a strategy, returns True (always confirming).
-
-        :param pair: Pair that's about to be sold.
-        :param trade: trade object.
-        :param order_type: Order type (as configured in order_types). usually limit or market.
-        :param amount: Amount in quote currency.
-        :param rate: Rate that's going to be used when using limit orders
-        :param time_in_force: Time in force. Defaults to GTC (Good-til-cancelled).
-        :param sell_reason: Sell reason.
-            Can be any of ['roi', 'stop_loss', 'stoploss_on_exchange', 'trailing_stop_loss',
-                           'sell_signal', 'force_sell', 'emergency_sell']
-        :param **kwargs: Ensure to keep this here so updates to this won't break your strategy.
-        :return bool: When True is returned, then the sell-order is placed on the exchange.
-            False aborts the process
-        """
-        if self._should_hold_trade(trade, rate, sell_reason):
-            return False
-        if (sell_reason == 'stop_loss'):
-            return False
-        return True
-
-    def _should_hold_trade(self, trade: "Trade", rate: float, sell_reason: str) -> bool:
-        if self.config['runmode'].value not in ('live', 'dry_run'):
-            return False
-
-        if not self.holdSupportEnabled:
-            return False
-
-        # Just to be sure our hold data is loaded, should be a no-op call after the first bot loop
-        self.load_hold_trades_config()
-
-        if not self.hold_trades_cache:
-            # Cache hasn't been setup, likely because the corresponding file does not exist, sell
-            return False
-
-        if not self.hold_trades_cache.data:
-            # We have no pairs we want to hold until profit, sell
-            return False
-
-        # By default, no hold should be done
-        hold_trade = False
-
-        trade_ids: dict = self.hold_trades_cache.data.get("trade_ids")
-        if trade_ids and trade.id in trade_ids:
-            trade_profit_ratio = trade_ids[trade.id]
-            current_profit_ratio = trade.calc_profit_ratio(rate)
-            if sell_reason == "force_sell":
-                formatted_profit_ratio = f"{trade_profit_ratio * 100}%"
-                formatted_current_profit_ratio = f"{current_profit_ratio * 100}%"
-                log.warning(
-                    "Force selling %s even though the current profit of %s < %s",
-                    trade, formatted_current_profit_ratio, formatted_profit_ratio
-                )
-                return False
-            elif current_profit_ratio >= trade_profit_ratio:
-                # This pair is on the list to hold, and we reached minimum profit, sell
-                formatted_profit_ratio = f"{trade_profit_ratio * 100}%"
-                formatted_current_profit_ratio = f"{current_profit_ratio * 100}%"
-                log.warning(
-                    "Selling %s because the current profit of %s >= %s",
-                    trade, formatted_current_profit_ratio, formatted_profit_ratio
-                )
-                return False
-
-            # This pair is on the list to hold, and we haven't reached minimum profit, hold
-            hold_trade = True
-
-        trade_pairs: dict = self.hold_trades_cache.data.get("trade_pairs")
-        if trade_pairs and trade.pair in trade_pairs:
-            trade_profit_ratio = trade_pairs[trade.pair]
-            current_profit_ratio = trade.calc_profit_ratio(rate)
-            if sell_reason == "force_sell":
-                formatted_profit_ratio = f"{trade_profit_ratio * 100}%"
-                formatted_current_profit_ratio = f"{current_profit_ratio * 100}%"
-                log.warning(
-                    "Force selling %s even though the current profit of %s < %s",
-                    trade, formatted_current_profit_ratio, formatted_profit_ratio
-                )
-                return False
-            elif current_profit_ratio >= trade_profit_ratio:
-                # This pair is on the list to hold, and we reached minimum profit, sell
-                formatted_profit_ratio = f"{trade_profit_ratio * 100}%"
-                formatted_current_profit_ratio = f"{current_profit_ratio * 100}%"
-                log.warning(
-                    "Selling %s because the current profit of %s >= %s",
-                    trade, formatted_current_profit_ratio, formatted_profit_ratio
-                )
-                return False
-
-            # This pair is on the list to hold, and we haven't reached minimum profit, hold
-            hold_trade = True
-
-        return hold_trade
-
-# Elliot Wave Oscillator
-def ewo(dataframe, sma1_length=5, sma2_length=35):
-    sma1 = ta.EMA(dataframe, timeperiod=sma1_length)
-    sma2 = ta.EMA(dataframe, timeperiod=sma2_length)
-    smadif = (sma1 - sma2) / dataframe['close'] * 100
-    return smadif
-
-# Chaikin Money Flow
-def chaikin_money_flow(dataframe, n=20, fillna=False) -> Series:
-    """Chaikin Money Flow (CMF)
-    It measures the amount of Money Flow Volume over a specific period.
-    http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:chaikin_money_flow_cmf
-    Args:
-        dataframe(pandas.Dataframe): dataframe containing ohlcv
-        n(int): n period.
-        fillna(bool): if True, fill nan values.
-    Returns:
-        pandas.Series: New feature generated.
-    """
-    mfv = ((dataframe['close'] - dataframe['low']) - (dataframe['high'] - dataframe['close'])) / (dataframe['high'] - dataframe['low'])
-    mfv = mfv.fillna(0.0)  # float division by zero
-    mfv *= dataframe['volume']
-    cmf = (mfv.rolling(n, min_periods=0).sum()
-           / dataframe['volume'].rolling(n, min_periods=0).sum())
-    if fillna:
-        cmf = cmf.replace([np.inf, -np.inf], np.nan).fillna(0)
-    return Series(cmf, name='cmf')
-
-# Williams %R
-def williams_r(dataframe: DataFrame, period: int = 14) -> Series:
-    """Williams %R, or just %R, is a technical analysis oscillator showing the current closing price in relation to the high and low
-        of the past N days (for a given N). It was developed by a publisher and promoter of trading materials, Larry Williams.
-        Its purpose is to tell whether a stock or commodity market is trading near the high or the low, or somewhere in between,
-        of its recent trading range.
-        The oscillator is on a negative scale, from −100 (lowest) up to 0 (highest).
-    """
-
-    highest_high = dataframe["high"].rolling(center=False, window=period).max()
-    lowest_low = dataframe["low"].rolling(center=False, window=period).min()
-
-    WR = Series(
-        (highest_high - dataframe["close"]) / (highest_high - lowest_low),
-        name=f"{period} Williams %R",
-        )
-
-    return WR * -100
-
-# Volume Weighted Moving Average
-def vwma(dataframe: DataFrame, length: int = 10):
-    """Indicator: Volume Weighted Moving Average (VWMA)"""
-    # Calculate Result
-    pv = dataframe['close'] * dataframe['volume']
-    vwma = Series(ta.SMA(pv, timeperiod=length) / ta.SMA(dataframe['volume'], timeperiod=length))
-    vwma = vwma.fillna(0, inplace=True)
-    return vwma
-
-# Exponential moving average of a volume weighted simple moving average
-def ema_vwma_osc(dataframe, len_slow_ma):
-    slow_ema = Series(ta.EMA(vwma(dataframe, len_slow_ma), len_slow_ma))
-    return ((slow_ema - slow_ema.shift(1)) / slow_ema.shift(1)) * 100
-
-def t3_average(dataframe, length=5):
-    """
-    T3 Average by HPotter on Tradingview
-    https://www.tradingview.com/script/qzoC9H1I-T3-Average/
-    """
-    df = dataframe.copy()
-
-    df['xe1'] = ta.EMA(df['close'], timeperiod=length)
-    df['xe1'].fillna(0, inplace=True)
-    df['xe2'] = ta.EMA(df['xe1'], timeperiod=length)
-    df['xe2'].fillna(0, inplace=True)
-    df['xe3'] = ta.EMA(df['xe2'], timeperiod=length)
-    df['xe3'].fillna(0, inplace=True)
-    df['xe4'] = ta.EMA(df['xe3'], timeperiod=length)
-    df['xe4'].fillna(0, inplace=True)
-    df['xe5'] = ta.EMA(df['xe4'], timeperiod=length)
-    df['xe5'].fillna(0, inplace=True)
-    df['xe6'] = ta.EMA(df['xe5'], timeperiod=length)
-    df['xe6'].fillna(0, inplace=True)
-    b = 0.7
-    c1 = -b * b * b
-    c2 = 3 * b * b + 3 * b * b * b
-    c3 = -6 * b * b - 3 * b - 3 * b * b * b
-    c4 = 1 + 3 * b + b * b * b + 3 * b * b
-    df['T3Average'] = c1 * df['xe6'] + c2 * df['xe5'] + c3 * df['xe4'] + c4 * df['xe3']
-
-    return df['T3Average']
-
-def pivot_points(dataframe: DataFrame, mode = 'fibonacci') -> Series:
-    hlc3_pivot = (dataframe['high'] + dataframe['low'] + dataframe['close']).shift(1) / 3
-    hl_range = (dataframe['high'] - dataframe['low']).shift(1)
-    if mode == 'simple':
-        res1 = hlc3_pivot * 2 - dataframe['low'].shift(1)
-        sup1 = hlc3_pivot * 2 - dataframe['high'].shift(1)
-        res2 = hlc3_pivot + (dataframe['high'] - dataframe['low']).shift()
-        sup2 = hlc3_pivot - (dataframe['high'] - dataframe['low']).shift()
-        res3 = hlc3_pivot * 2 + (dataframe['high'] - 2 * dataframe['low']).shift()
-        sup3 = hlc3_pivot * 2 - (2 * dataframe['high'] - dataframe['low']).shift()
-    elif mode == 'fibonacci':
-        res1 = hlc3_pivot + 0.382 * hl_range
-        sup1 = hlc3_pivot - 0.382 * hl_range
-        res2 = hlc3_pivot + 0.618 * hl_range
-        sup2 = hlc3_pivot - 0.618 * hl_range
-        res3 = hlc3_pivot + 1 * hl_range
-        sup3 = hlc3_pivot - 1 * hl_range
-
-    return hlc3_pivot, res1, res2, res3, sup1, sup2, sup3
-
-def heikin_ashi(dataframe, smooth_inputs = False, smooth_outputs = False, length = 10):
-    df = dataframe[['open','close','high','low']].copy().fillna(0)
-    if smooth_inputs:
-        df['open_s']  = ta.EMA(df['open'], timeframe = length)
-        df['high_s']  = ta.EMA(df['high'], timeframe = length)
-        df['low_s']   = ta.EMA(df['low'],  timeframe = length)
-        df['close_s'] = ta.EMA(df['close'],timeframe = length)
-
-        open_ha  = (df['open_s'].shift(1) + df['close_s'].shift(1)) / 2
-        high_ha  = df.loc[:, ['high_s', 'open_s', 'close_s']].max(axis=1)
-        low_ha   = df.loc[:, ['low_s', 'open_s', 'close_s']].min(axis=1)
-        close_ha = (df['open_s'] + df['high_s'] + df['low_s'] + df['close_s'])/4
-    else:
-        open_ha  = (df['open'].shift(1) + df['close'].shift(1)) / 2
-        high_ha  = df.loc[:, ['high', 'open', 'close']].max(axis=1)
-        low_ha   = df.loc[:, ['low', 'open', 'close']].min(axis=1)
-        close_ha = (df['open'] + df['high'] + df['low'] + df['close'])/4
-
-    open_ha = open_ha.fillna(0)
-    high_ha = high_ha.fillna(0)
-    low_ha  = low_ha.fillna(0)
-    close_ha = close_ha.fillna(0)
-
-    if smooth_outputs:
-        open_sha  = ta.EMA(open_ha, timeframe = length)
-        high_sha  = ta.EMA(high_ha, timeframe = length)
-        low_sha   = ta.EMA(low_ha, timeframe = length)
-        close_sha = ta.EMA(close_ha, timeframe = length)
-
-        return open_sha, close_sha, low_sha
-    else:
-        return open_ha, close_ha, low_ha
-
-class Cache:
-
-    def __init__(self, path):
-        self.path = path
-        self.data = {}
-        self._mtime = None
-        self._previous_data = {}
-        try:
-            self.load()
-        except FileNotFoundError:
-            pass
-
-    @staticmethod
-    def rapidjson_load_kwargs():
-        return {"number_mode": rapidjson.NM_NATIVE}
-
-    @staticmethod
-    def rapidjson_dump_kwargs():
-        return {"number_mode": rapidjson.NM_NATIVE}
-
-    def load(self):
-        if not self._mtime or self.path.stat().st_mtime_ns != self._mtime:
-            self._load()
-
-    def save(self):
-        if self.data != self._previous_data:
-            self._save()
-
-    def process_loaded_data(self, data):
-        return data
-
-    def _load(self):
-        # This method only exists to simplify unit testing
-        with self.path.open("r") as rfh:
-            try:
-                data = rapidjson.load(
-                    rfh,
-                    **self.rapidjson_load_kwargs()
-                )
-            except rapidjson.JSONDecodeError as exc:
-                log.error("Failed to load JSON from %s: %s", self.path, exc)
-            else:
-                self.data = self.process_loaded_data(data)
-                self._previous_data = copy.deepcopy(self.data)
-                self._mtime = self.path.stat().st_mtime_ns
-
-    def _save(self):
-        # This method only exists to simplify unit testing
-        rapidjson.dump(
-            self.data,
-            self.path.open("w"),
-            **self.rapidjson_dump_kwargs()
-        )
-        self._mtime = self.path.stat().st_mtime
-        self._previous_data = copy.deepcopy(self.data)
-
-
-class HoldsCache(Cache):
-
-    @staticmethod
-    def rapidjson_load_kwargs():
-        return {
-            "number_mode": rapidjson.NM_NATIVE,
-            "object_hook": HoldsCache._object_hook,
-        }
-
-    @staticmethod
-    def rapidjson_dump_kwargs():
-        return {
-            "number_mode": rapidjson.NM_NATIVE,
-            "mapping_mode": rapidjson.MM_COERCE_KEYS_TO_STRINGS,
-        }
-
-    def save(self):
-        raise RuntimeError("The holds cache does not allow programatical save")
-
-    def process_loaded_data(self, data):
-        trade_ids = data.get("trade_ids")
-        trade_pairs = data.get("trade_pairs")
-
-        if not trade_ids and not trade_pairs:
-            return data
-
-        open_trades = {}
-        for trade in Trade.get_trades_proxy(is_open=True):
-            open_trades[trade.id] = open_trades[trade.pair] = trade
-
-        r_trade_ids = {}
-        if trade_ids:
-            if isinstance(trade_ids, dict):
-                # New syntax
-                for trade_id, profit_ratio in trade_ids.items():
-                    if not isinstance(trade_id, int):
-                        log.error(
-                            "The trade_id(%s) defined under 'trade_ids' in %s is not an integer",
-                            trade_id, self.path
-                        )
-                        continue
-                    if not isinstance(profit_ratio, float):
-                        log.error(
-                            "The 'profit_ratio' config value(%s) for trade_id %s in %s is not a float",
-                            profit_ratio,
-                            trade_id,
-                            self.path
-                        )
-                    if trade_id in open_trades:
-                        formatted_profit_ratio = f"{profit_ratio * 100}%"
-                        log.warning(
-                            "The trade %s is configured to HOLD until the profit ratio of %s is met",
-                            open_trades[trade_id],
-                            formatted_profit_ratio
-                        )
-                        r_trade_ids[trade_id] = profit_ratio
-                    else:
-                        log.warning(
-                            "The trade_id(%s) is no longer open. Please remove it from 'trade_ids' in %s",
-                            trade_id,
-                            self.path
-                        )
-            else:
-                # Initial Syntax
-                profit_ratio = data.get("profit_ratio")
-                if profit_ratio:
-                    if not isinstance(profit_ratio, float):
-                        log.error(
-                            "The 'profit_ratio' config value(%s) in %s is not a float",
-                            profit_ratio,
-                            self.path
-                        )
-                else:
-                    profit_ratio = 0.005
-                formatted_profit_ratio = f"{profit_ratio * 100}%"
-                for trade_id in trade_ids:
-                    if not isinstance(trade_id, int):
-                        log.error(
-                            "The trade_id(%s) defined under 'trade_ids' in %s is not an integer",
-                            trade_id, self.path
-                        )
-                        continue
-                    if trade_id in open_trades:
-                        log.warning(
-                            "The trade %s is configured to HOLD until the profit ratio of %s is met",
-                            open_trades[trade_id],
-                            formatted_profit_ratio
-                        )
-                        r_trade_ids[trade_id] = profit_ratio
-                    else:
-                        log.warning(
-                            "The trade_id(%s) is no longer open. Please remove it from 'trade_ids' in %s",
-                            trade_id,
-                            self.path
-                        )
-
-        r_trade_pairs = {}
-        if trade_pairs:
-            for trade_pair, profit_ratio in trade_pairs.items():
-                if not isinstance(trade_pair, str):
-                    log.error(
-                        "The trade_pair(%s) defined under 'trade_pairs' in %s is not a string",
-                        trade_pair, self.path
-                    )
-                    continue
-                if "/" not in trade_pair:
-                    log.error(
-                        "The trade_pair(%s) defined under 'trade_pairs' in %s does not look like "
-                        "a valid '<TOKEN_NAME>/<STAKE_CURRENCY>' formatted pair.",
-                        trade_pair, self.path
-                    )
-                    continue
-                if not isinstance(profit_ratio, float):
-                    log.error(
-                        "The 'profit_ratio' config value(%s) for trade_pair %s in %s is not a float",
-                        profit_ratio,
-                        trade_pair,
-                        self.path
-                    )
-                formatted_profit_ratio = f"{profit_ratio * 100}%"
-                if trade_pair in open_trades:
-                    log.warning(
-                        "The trade %s is configured to HOLD until the profit ratio of %s is met",
-                        open_trades[trade_pair],
-                        formatted_profit_ratio
-                    )
-                else:
-                    log.warning(
-                        "The trade pair %s is configured to HOLD until the profit ratio of %s is met",
-                        trade_pair,
-                        formatted_profit_ratio
-                    )
-                r_trade_pairs[trade_pair] = profit_ratio
-
-        r_data = {}
-        if r_trade_ids:
-            r_data["trade_ids"] = r_trade_ids
-        if r_trade_pairs:
-            r_data["trade_pairs"] = r_trade_pairs
-        return r_data
-
-    @staticmethod
-    def _object_hook(data):
-        _data = {}
-        for key, value in data.items():
-            try:
-                key = int(key)
-            except ValueError:
-                pass
-            _data[key] = value
-        return _data
-            item_buy_logic.append(dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(12))
-                    item_buy_logic.append(dataframe['ema_200_1h'].shift(12) > dataframe['ema_200_1h'].shift(24))
-                    item_buy_logic.append(dataframe['ema_200_1h'].shift(24) > dataframe['ema_200_1h'].shift(36))
-
-                    # Logic
-                    item_buy_logic.append(dataframe['ema_26_15m'] > dataframe['ema_12_15m'])
-                    item_buy_logic.append((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.02))
-                    item_buy_logic.append((dataframe['ema_26_15m'].shift(3) - dataframe['ema_12_15m'].shift(3)) > (dataframe['open_15m'] / 100))
-                    item_buy_logic.append(dataframe['close_15m'] < (dataframe['bb20_2_low_15m'] * 0.99))
-                    item_buy_logic.append(dataframe['r_14'] < -75.0)
-                    item_buy_logic.append(dataframe['cti_1h'] > -0.7)
-
-                # Condition #54 - 15m Semi swing. Uptrend. Local dip.
-                elif index == 54:
-                    # Non-Standard protections
-                    item_buy_logic.append(dataframe['ema_12_15m'] > dataframe['ema_200_15m'])
-
-                    # Logic
-                    item_buy_logic.append(dataframe['ewo_15m'] > 7.4)
-                    item_buy_logic.append(dataframe['r_14_15m'] < -96.0)
-                    item_buy_logic.append(dataframe['r_96_15m'] < -94.0)
-                    item_buy_logic.append(dataframe['r_14'] < -96.0)
-                    item_buy_logic.append(dataframe['crsi_1h'] > 12.0)
-
-                # Condition #55 - 15m. Semi swing. Uptrend. Local dip.
-                elif index == 55:
-                    # Non-Standard protections (add below)
-
-                    # Logic
-                    item_buy_logic.append(dataframe['ewo_15m'] > 7.0)
-                    item_buy_logic.append(dataframe['close_15m'] > (dataframe['close_15m'].shift(3)))
-                    item_buy_logic.append(dataframe['close_15m'].shift(3) < (dataframe['bb20_2_low_15m'].shift(3) * 0.992))
-                    item_buy_logic.append(dataframe['r_14_15m'].shift(3) < -95.0)
-                    item_buy_logic.append(dataframe['r_96_15m'].shift(3) < -86.0)
-                    item_buy_logic.append(dataframe['close'] < dataframe['open'])
-
-                # Condition #56 - 15m. Semi swing. Downtrend. Local dip.
-                elif index == 56:
-                    # Non-Standard protections (add below)
-
-                    # Logic
-                    item_buy_logic.append(dataframe['ewo_15m'].shift(3) < -14.8)
-                    item_buy_logic.append(dataframe['cti_15m'].shift(3).rolling(15).max() < -0.9)
-                    item_buy_logic.append(dataframe['r_14_15m'].shift(3) < -90.0)
-                    item_buy_logic.append(dataframe['r_14'] < -50.0)
-
-                # Condition #57 - 15m. Semi swing. Strong uptrend. Local dip. BTC not downtrend.
-                elif index == 57:
-                    # Non-Standard protections
-                    item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_1h'] * 0.92))
-
-                    # Logic
-                    item_buy_logic.append(dataframe['ewo_15m'].shift(3) > 6.5)
-                    item_buy_logic.append(dataframe['close_15m'].shift(3) < (dataframe['sma_30_15m'].shift(3) * 0.988))
-                    item_buy_logic.append(dataframe['close_15m'].shift(3) < (dataframe['bb20_2_low_15m'].shift(3) * 0.996))
-                    item_buy_logic.append(dataframe['rsi_14_15m'].shift(3) < 31.2)
-                    item_buy_logic.append(dataframe['r_14_15m'].shift(3) < -94.0)
-                    item_buy_logic.append(dataframe['r_96_15m'].shift(3) < -80.0)
-                    item_buy_logic.append(dataframe['close'] < dataframe['open'])
-
-                # Condition #58 - Semi swing. Local dip.
-                elif index == 58:
-                    # Non-Standard protections
-
-                    # Logic
-                    item_buy_logic.append(dataframe['rmi_17'] < 49.0)
-                    item_buy_logic.append(dataframe['cci_25'] < -120.0)
-                    item_buy_logic.append(dataframe['srsi_fk'] < 32.0)
-                    item_buy_logic.append(dataframe['bb20_delta'] > 0.026)
-                    item_buy_logic.append(dataframe['bb20_width'] > 0.095)
-                    item_buy_logic.append(dataframe['close_delta'] > dataframe['close'] * 10.0 / 1000.0 )
-                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_3_low'] * 0.995))
-
-                # Condition #59 - Semi swing. Local dip.
-                elif index == 59:
-                    # Non-Standard protections
-
-                    # Logic
-                    item_buy_logic.append(dataframe['ema_100'] < (dataframe['ema_200'] * 1.054))
-                    item_buy_logic.append(dataframe['bb20_width'] > 0.34)
-                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_mid'] * 1.014))
-                    item_buy_logic.append(dataframe['volume_mean_12'] > (dataframe['volume_mean_24'] * 1.78))
-                    item_buy_logic.append(dataframe['cti'] < -0.115)
-                    item_buy_logic.append(dataframe['r_14'] < -45.0)
-
-                # Condition #60 - Semi swing. Local dip.
-                elif index == 60:
-                    # Non-Standard protections
-                    item_buy_logic.append(dataframe['roc_9_1h'] < 86.0)
-                    item_buy_logic.append(dataframe['bb20_width_1h'] < 0.954)
-                    item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_1h'] * 0.75))
-
-                    # Logic
-                    item_buy_logic.append(dataframe['rsi_4'] < 44.0)
-                    item_buy_logic.append(dataframe['close'] < dataframe['ema_8'] * 0.935)
-                    item_buy_logic.append(dataframe['ewo'] > -5.0)
-                    item_buy_logic.append(dataframe['close'] < dataframe['ema_16'] * 0.968)
-                    item_buy_logic.append(dataframe['rsi_14'] < 22.0)
-
-                # Condition #61 - Semi swing. Local dip. Stochastic fast cross.
-                elif index == 61:
-                    # Non-Standard protections
-
-                    # Logic
-                    item_buy_logic.append(dataframe['open'] < dataframe['ema_8'] * 1.147)
-                    item_buy_logic.append(qtpylib.crossed_above(dataframe['fastk'], dataframe['fastd']))
-                    item_buy_logic.append(dataframe['fastk'] < 39.0)
-                    item_buy_logic.append(dataframe['fastd'] < 28.0)
-                    item_buy_logic.append(dataframe['adx'] > 13.0)
-                    item_buy_logic.append(dataframe['ewo'] > 3.4)
-                    item_buy_logic.append(dataframe['cti'] < -0.9)
-                    item_buy_logic.append(dataframe['cti_1h'] < 0.0)
-                    item_buy_logic.append(dataframe['r_480_1h'] < -25.0)
-
-                # Condition #62 - Semi swing. Local dip. Downtrend.
-                elif index == 62:
-                    # Non-Standard protections
-
-                    # Logic
-                    item_buy_logic.append(dataframe['ewo'] < -8.2)
-
-                    item_buy_logic.append(dataframe['bb20_2_mid_1h'] >= dataframe['t3_avg_1h'])
-                    item_buy_logic.append(dataframe['t3_avg'] <= dataframe['ema_8'] * 1.121)
-                    item_buy_logic.append(dataframe['cti'] < -0.9)
-                    item_buy_logic.append(dataframe['r_14'] < -78.0)
-
-                # Condition #63 - Semi swing. Local dip. ClucHA.
-                elif index == 63:
-                    # Non-Standard protections
-                    item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_1h'] * 0.9))
-                    item_buy_logic.append(dataframe['close'] > (dataframe['ema_200_1h'] * 0.7))
-
-                    # Logic
-                    item_buy_logic.append(dataframe['bb40_2_delta'] > dataframe['ha_close'] * 0.054)
-                    item_buy_logic.append(dataframe['ha_closedelta'] > dataframe['ha_close'] * 0.017)
-                    item_buy_logic.append(dataframe['ha_tail'] < dataframe['bb40_2_delta'] * 1.14)
-                    item_buy_logic.append(dataframe['ha_close'] < dataframe['bb40_2_low'].shift())
-                    item_buy_logic.append(dataframe['ha_close'] < dataframe['ha_close'].shift())
-                    item_buy_logic.append(dataframe['roc_9_1h'] > 0.526)
-                    item_buy_logic.append(dataframe['r_480_1h'] < -12.0)
-                    item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * 1.25))
-
-                # Condition #64 - Semi swing. Squeeze momentum.
-                elif index == 64:
-                    # Non-Standard protections
-                    item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_1h'] * 0.93))
-
-                    # Logic
-                    item_buy_logic.append(dataframe['bb20_2_low'] < dataframe['kc_lowerband_28_1'])
-                    item_buy_logic.append(dataframe['bb20_2_upp'] > dataframe['kc_upperband_28_1'])
-                    item_buy_logic.append(dataframe['linreg_val_20'].shift(2) > dataframe['linreg_val_20'].shift(1))
-                    item_buy_logic.append(dataframe['linreg_val_20'].shift(1) < dataframe['linreg_val_20'])
-                    item_buy_logic.append(dataframe['linreg_val_20'] < 0.0)
-                    item_buy_logic.append(dataframe['close'] < dataframe['ema_13'] * 0.981)
-                    item_buy_logic.append(dataframe['ewo'] < -4.0)
-                    item_buy_logic.append(dataframe['r_14'] < -46.0)
-                    item_buy_logic.append(dataframe['crsi_1h'] > 20.0)
-                
-                elif index == 65:
-                    
-                    item_buy_logic.append(dataframe['rocr_1h'] > 0.523)
-                    item_buy_logic.append(dataframe['bb40_2_low'].shift() > 0)
-                    item_buy_logic.append(dataframe['bb_delta_cluc'] > dataframe['ha_close'] * 0.061)
-                    item_buy_logic.append(dataframe['ha_closedelta'] > dataframe['ha_close'] * 0.08)
-                    item_buy_logic.append(dataframe['tail'] < dataframe['bb_delta_cluc'] * 1.19)
                     item_buy_logic.append(dataframe['ha_close'] < dataframe['bb40_2_low'].shift())
                     item_buy_logic.append(dataframe['ha_close'] < dataframe['ha_close'].shift())
                 
