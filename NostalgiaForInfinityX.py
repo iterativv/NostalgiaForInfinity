@@ -163,7 +163,7 @@ class NostalgiaForInfinityX(IStrategy):
 
     # These values can be overridden in the "ask_strategy" section in the config.
     use_sell_signal = True
-    sell_profit_only = True
+    sell_profit_only = False
     ignore_roi_if_buy_signal = True
 
     # Number of candles the strategy requires before producing valid signals
@@ -9292,7 +9292,6 @@ class NostalgiaForInfinityX(IStrategy):
                     # Non-Standard protections
 
                     # Logic
-                    item_buy_logic.append(dataframe['bb40_2_low'].shift().gt(0))
                     item_buy_logic.append(dataframe['bb40_2_delta'].gt(dataframe['close'] * 0.045))
                     item_buy_logic.append(dataframe['closedelta'].gt(dataframe['close'] * 0.028))
                     item_buy_logic.append(dataframe['tail'].lt(dataframe['bb40_2_delta'] * 0.25))
@@ -9390,7 +9389,6 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.0114))
 
                     # Logic
-                    item_buy_logic.append(dataframe['bb40_2_low'].shift().gt(0))
                     item_buy_logic.append(dataframe['bb40_2_delta'].gt(dataframe['close'] * 0.05))
                     item_buy_logic.append(dataframe['closedelta'].gt(dataframe['close'] * 0.01))
                     item_buy_logic.append(dataframe['tail'].lt(dataframe['bb40_2_delta'] * 0.5))
@@ -9736,7 +9734,7 @@ class NostalgiaForInfinityX(IStrategy):
                 elif index == 65:
                     
                     item_buy_logic.append(dataframe['rocr_1h'] > 0.04401)
-                    item_buy_logic.append(dataframe['bb40_2_low'].shift() > 0)
+                    #item_buy_logic.append(dataframe['bb40_2_low'].shift() > 0)
                     item_buy_logic.append(dataframe['bb_delta_cluc'] > dataframe['ha_close'] * 0.061)
                     item_buy_logic.append(dataframe['ha_closedelta'] > dataframe['ha_close'] * 0.04401)
                     item_buy_logic.append(dataframe['tail'] < dataframe['bb_delta_cluc'] * 1.02515)
