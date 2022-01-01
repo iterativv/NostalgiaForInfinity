@@ -111,7 +111,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v10.9.71"
+        return "v10.9.72"
 
     # ROI table:
     minimal_roi = {
@@ -167,7 +167,7 @@ class NostalgiaForInfinityX(IStrategy):
 
     # These values can be overridden in the "ask_strategy" section in the config.
     use_sell_signal = True
-    sell_profit_only = False
+    sell_profit_only = True
     ignore_roi_if_buy_signal = True
 
     # Number of candles the strategy requires before producing valid signals
