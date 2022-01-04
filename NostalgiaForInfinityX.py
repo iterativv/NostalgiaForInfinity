@@ -107,7 +107,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v10.9.101"
+        return "v10.9.102"
 
     # ROI table:
     minimal_roi = {
@@ -7948,6 +7948,7 @@ class NostalgiaForInfinityX(IStrategy):
                     and (last_candle['cmf'] < -0.25)
                     and (last_candle['cmf_15m'] < -0.25)
                     and (last_candle['cmf_1h'] < -0.0)
+                    and (last_candle['btc_not_downtrend_1h'] == False)
             ):
                 return True, 'sell_stoploss_p_48_1_1'
             elif (
@@ -7962,6 +7963,7 @@ class NostalgiaForInfinityX(IStrategy):
                     and (last_candle['cmf'] < -0.25)
                     and (last_candle['cmf_15m'] < -0.25)
                     and (last_candle['cmf_1h'] < -0.0)
+                    and (last_candle['btc_not_downtrend_1h'] == False)
             ):
                 return True, 'sell_stoploss_p_48_1_2'
 
@@ -8014,6 +8016,7 @@ class NostalgiaForInfinityX(IStrategy):
                     and (last_candle['cmf'] < -0.25)
                     and (last_candle['cmf_15m'] < -0.25)
                     and (last_candle['cmf_1h'] < -0.0)
+                    and (last_candle['btc_not_downtrend_1h'] == False)
             ):
                 return True, 'sell_stoploss_p_24_1_1'
 
