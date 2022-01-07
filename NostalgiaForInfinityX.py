@@ -107,7 +107,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v10.10.10"
+        return "v10.10.11"
 
     # ROI table:
     minimal_roi = {
@@ -672,7 +672,7 @@ class NostalgiaForInfinityX(IStrategy):
             "safe_dips_threshold_144"   : 0.9,
             "safe_pump_6h_threshold"    : 0.5,
             "safe_pump_12h_threshold"   : None,
-            "safe_pump_24h_threshold"   : None,
+            "safe_pump_24h_threshold"   : 0.5,
             "safe_pump_36h_threshold"   : 0.9,
             "safe_pump_48h_threshold"   : None,
             "btc_1h_not_downtrend"      : False,
@@ -9060,9 +9060,9 @@ class NostalgiaForInfinityX(IStrategy):
                     # Logic
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * 0.99))
                     item_buy_logic.append(dataframe['ewo'] > 4.8)
-                    item_buy_logic.append(dataframe['rsi_14'] < 32.0)
-                    item_buy_logic.append(dataframe['cti'] < -0.9)
-                    item_buy_logic.append(dataframe['r_480_1h'] < -14.0)
+                    item_buy_logic.append(dataframe['rsi_14'] < 31.0)
+                    item_buy_logic.append(dataframe['cti'] < -0.8)
+                    item_buy_logic.append(dataframe['r_480_1h'] < -18.0)
 
                 # Condition #16 - Semi swing. Cross above.
                 elif index == 16:
