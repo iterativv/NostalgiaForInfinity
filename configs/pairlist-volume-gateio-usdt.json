@@ -7,7 +7,6 @@
 			"refresh_period": 1800
 		},
 		{"method": "AgeFilter", "min_days_listed": 2},
-        {"method": "PriceFilter", "min_price": 0.00000100},
 		{"method": "SpreadFilter", "max_spread_ratio": 0.006},
 		{
 			"method": "RangeStabilityFilter",
