@@ -107,7 +107,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v10.10.21"
+        return "v10.10.22"
 
     # ROI table:
     minimal_roi = {
@@ -786,7 +786,7 @@ class NostalgiaForInfinityX(IStrategy):
             "safe_pump_12h_threshold"   : 0.45,
             "safe_pump_24h_threshold"   : None,
             "safe_pump_36h_threshold"   : None,
-            "safe_pump_48h_threshold"   : None,
+            "safe_pump_48h_threshold"   : 1.4,
             "btc_1h_not_downtrend"      : True,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_over_pivot_offset"   : 1.0,
@@ -9103,19 +9103,20 @@ class NostalgiaForInfinityX(IStrategy):
                 # Condition #19 - Semi swing. Uptrend. Local dip.  BTC not downtrend.
                 elif index == 19:
                     # Non-Standard protections
+                    item_buy_logic.append(dataframe['close_1h'] > (dataframe['sup_level_1d'] * 0.96))
+                    item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_1h'] * 0.88))
 
                     # Logic
                     item_buy_logic.append(dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(12))
                     item_buy_logic.append(dataframe['ema_200_1h'].shift(12) > dataframe['ema_200_1h'].shift(24))
                     item_buy_logic.append(dataframe['bb40_2_low'].shift().gt(0))
-                    item_buy_logic.append(dataframe['bb40_2_delta'].gt(dataframe['close'] * 0.045))
+                    item_buy_logic.append(dataframe['bb40_2_delta'].gt(dataframe['close'] * 0.046))
                     item_buy_logic.append(dataframe['closedelta'].gt(dataframe['close'] * 0.02))
                     item_buy_logic.append(dataframe['tail'].lt(dataframe['bb40_2_delta'] * 0.28))
                     item_buy_logic.append(dataframe['close'].lt(dataframe['bb40_2_low'].shift()))
                     item_buy_logic.append(dataframe['close'].le(dataframe['close'].shift()))
                     item_buy_logic.append(dataframe['cti'] < -0.9)
-                    item_buy_logic.append(dataframe['cti_1h'] > -0.75)
-                    item_buy_logic.append(dataframe['cti_1h'] < 0.25)
+                    item_buy_logic.append(dataframe['cti_1h'] < 0.86)
 
                 # Condition #20 - Semi swing. Uptrend. Local dip.
                 elif index == 20:
