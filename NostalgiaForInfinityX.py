@@ -107,7 +107,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v10.10.28"
+        return "v10.10.29"
 
     # ROI table:
     minimal_roi = {
@@ -796,7 +796,7 @@ class NostalgiaForInfinityX(IStrategy):
         20: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "12",
-            "ema_slow"                  : True,
+            "ema_slow"                  : False,
             "ema_slow_len"              : "12",
             "close_above_ema_fast"      : False,
             "close_above_ema_fast_len"  : "200",
@@ -806,15 +806,15 @@ class NostalgiaForInfinityX(IStrategy):
             "sma200_rising_val"         : "30",
             "sma200_1h_rising"          : None,
             "sma200_1h_rising_val"      : "24",
-            "safe_dips_threshold_0"     : 0.028,
+            "safe_dips_threshold_0"     : 0.032,
             "safe_dips_threshold_2"     : 0.09,
             "safe_dips_threshold_12"    : 0.26,
             "safe_dips_threshold_144"   : 0.44,
             "safe_pump_6h_threshold"    : 0.4,
             "safe_pump_12h_threshold"   : 0.35,
-            "safe_pump_24h_threshold"   : None,
+            "safe_pump_24h_threshold"   : 0.5,
             "safe_pump_36h_threshold"   : None,
-            "safe_pump_48h_threshold"   : None,
+            "safe_pump_48h_threshold"   : 1.8,
             "btc_1h_not_downtrend"      : False,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_over_pivot_offset"   : 1.0,
@@ -9123,10 +9123,9 @@ class NostalgiaForInfinityX(IStrategy):
                     # Non-Standard protections
 
                     # Logic
-                    item_buy_logic.append(dataframe['close'].shift(1) < (dataframe['sma_15'].shift(1) * 0.942))
+                    item_buy_logic.append(dataframe['close'].shift(1) < (dataframe['sma_15'].shift(1) * 0.938))
                     item_buy_logic.append(dataframe['close'] > (dataframe['open'].shift(1)))
-                    item_buy_logic.append(dataframe['ewo'] > 4.8)
-                    item_buy_logic.append(dataframe['cti'] < -0.9)
+                    item_buy_logic.append(dataframe['ewo'] > 5.0)
                     item_buy_logic.append(dataframe['r_14'].shift(1) < -97.0)
 
                 # Condition #21 - Semi swing. Deep local dip. Mild uptrend.
