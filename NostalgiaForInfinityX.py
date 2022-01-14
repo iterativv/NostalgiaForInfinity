@@ -107,7 +107,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v10.10.58"
+        return "v10.10.59"
 
     # ROI table:
     minimal_roi = {
@@ -852,7 +852,7 @@ class NostalgiaForInfinityX(IStrategy):
         22: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "12",
-            "ema_slow"                  : True,
+            "ema_slow"                  : False,
             "ema_slow_len"              : "12",
             "close_above_ema_fast"      : False,
             "close_above_ema_fast_len"  : "200",
