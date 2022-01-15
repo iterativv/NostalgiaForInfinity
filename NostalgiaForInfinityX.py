@@ -158,6 +158,11 @@ class NostalgiaForInfinityX(IStrategy):
     coin_metrics['tg_dataframe'] = DataFrame()
     coin_metrics['current_whitelist'] = []
 
+    # Rebuy feature
+    # position_adjustment_enable = True
+    max_rebuy_orders = 2
+    max_rebuy_multiplier = 3.0
+
     # Run "populate_indicators()" only for new candle.
     process_only_new_candles = True
 
@@ -2247,6 +2252,61 @@ class NostalgiaForInfinityX(IStrategy):
 
     def get_ticker_indicator(self):
         return int(self.timeframe[:-1])
+
+    def custom_stake_amount(self, pair: str, current_time: datetime, current_rate: float,
+                            proposed_stake: float, min_stake: float, max_stake: float,
+                            **kwargs) -> float:
+        if (self.config['position_adjustment_enable'] == True) and (self.config['stake_amount'] == 'unlimited'):
+            return proposed_stake / self.max_rebuy_multiplier
+        else:
+            return proposed_stake
+
+    def adjust_trade_position(self, trade: Trade, current_time: datetime,
+                              current_rate: float, current_profit: float, min_stake: float,
+                              max_stake: float, **kwargs):
+        """
+        Custom trade adjustment logic, returning the stake amount that a trade should be increased.
+        This means extra buy orders with additional fees.
+
+        :param trade: trade object.
+        :param current_time: datetime object, containing the current datetime
+        :param current_rate: Current buy rate.
+        :param current_profit: Current profit (as ratio), calculated based on current_rate.
+        :param min_stake: Minimal stake size allowed by exchange.
+        :param max_stake: Balance available for trading.
+        :param **kwargs: Ensure to keep this here so updates to this won't break your strategy.
+        :return float: Stake amount to adjust your trade
+        """
+
+        if (self.config['position_adjustment_enable'] == False) or (current_profit > -0.08):
+            return None
+
+        dataframe, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
+        last_candle = dataframe.iloc[-1].squeeze()
+        previous_candle = dataframe.iloc[-2].squeeze()
+        # simple TA checks, to assure that the price is not dropping rapidly
+        if (
+                (last_candle['crsi_1h'] < 20.0)
+                or (last_candle['close_1h'] < last_candle['open_1h'])
+                or (last_candle['close'] < last_candle['open'])
+        ):
+            return None
+
+        filled_buys = trade.select_filled_orders('buy')
+        count_of_buys = len(filled_buys)
+
+        # Maximum 2 rebuys, equal stake as the original
+        if 0 < count_of_buys <= self.max_rebuy_orders:
+            try:
+                # This returns first order stake size
+                stake_amount = filled_buys[0].cost
+                # This then calculates current safety order size
+                stake_amount = stake_amount
+                return stake_amount
+            except Exception as exception:
+                return None
+
+        return None
 
     def sell_signals(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
         # Sell signal 1
