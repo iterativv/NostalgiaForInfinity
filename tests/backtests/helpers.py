@@ -64,7 +64,7 @@ class Backtest:
         start_date,
         end_date,
         pairlist=None,
-        max_open_trades=4,
+        max_open_trades=5,
         stake_amount="unlimited",
         exchange=None,
     ):
