@@ -107,7 +107,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v10.10.63"
+        return "v10.10.64"
 
     # ROI table:
     minimal_roi = {
@@ -896,7 +896,7 @@ class NostalgiaForInfinityX(IStrategy):
             "safe_dips_threshold_144"   : 0.44,
             "safe_pump_6h_threshold"    : 0.4,
             "safe_pump_12h_threshold"   : None,
-            "safe_pump_24h_threshold"   : None,
+            "safe_pump_24h_threshold"   : 0.4,
             "safe_pump_36h_threshold"   : None,
             "safe_pump_48h_threshold"   : 1.2,
             "btc_1h_not_downtrend"      : False,
@@ -9211,7 +9211,7 @@ class NostalgiaForInfinityX(IStrategy):
                     # Non-Standard protections (add below)
 
                     # Logic
-                    item_buy_logic.append(dataframe['ewo'].shift(1) < -6.4)
+                    item_buy_logic.append(dataframe['ewo'].shift(1) < -6.0)
                     item_buy_logic.append(dataframe['cti'].shift(1).rolling(5).max() < -0.9)
                     item_buy_logic.append(dataframe['r_14'].shift(1) < -97.0)
                     item_buy_logic.append(dataframe['close'] > (dataframe['open'].shift(1)))
