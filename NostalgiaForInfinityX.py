@@ -107,7 +107,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.2"
+        return "v11.0.3"
 
     # ROI table:
     minimal_roi = {
@@ -2277,6 +2277,10 @@ class NostalgiaForInfinityX(IStrategy):
         :param **kwargs: Ensure to keep this here so updates to this won't break your strategy.
         :return float: Stake amount to adjust your trade
         """
+
+        # Don't rebuy for trades on hold
+        if self._should_hold_trade(trade, current_rate, 'none'):
+            return None
 
         if (self.config['position_adjustment_enable'] == False) or (current_profit > -0.03):
             return None
