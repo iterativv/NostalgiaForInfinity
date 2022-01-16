@@ -4,7 +4,7 @@
     // For full documentation on Freqtrade configration files please visit https://www.freqtrade.io/en/stable/configuration/
     "dry_run": true,
     "timeframe": "5m",
-    "max_open_trades": 4,
+    "max_open_trades": 2,
     "stake_currency": "USDT",
     "stake_amount": "unlimited",
     "tradable_balance_ratio": 0.99,
