@@ -107,7 +107,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.0"
+        return "v11.0.1"
 
     # ROI table:
     minimal_roi = {
@@ -8346,8 +8346,17 @@ class NostalgiaForInfinityX(IStrategy):
         if hasattr(trade, 'buy_tag') and trade.buy_tag is not None:
             buy_tag = trade.buy_tag
         buy_tags = buy_tag.split()
+
         max_profit = ((trade.max_rate - trade.open_rate) / trade.open_rate)
         max_loss = ((trade.open_rate - trade.min_rate) / trade.min_rate)
+
+        if hasattr(trade, 'select_filled_orders'):
+            filled_buys = trade.select_filled_orders('buy')
+            count_of_buys = len(filled_buys)
+            if count_of_buys > 0:
+                initial_buy = filled_buys[0]
+                max_profit = ((trade.max_rate - initial_buy.average) / initial_buy.average)
+                max_loss = ((initial_buy.average - trade.min_rate) / trade.min_rate)
 
         # Long mode
         if all(c in ['31', '32', '33', '34', '35', '36'] for c in buy_tags):
