@@ -111,7 +111,7 @@ class Backtest:
         else:
             log.debug("Command Result:\n%s", ret)
         assert ret.exitcode == 0
-        generated_results_file = list(tmp_path.rglob("backtest-results-*.json"))[0]
+        generated_results_file = list(f for f in tmp_path.rglob("backtest-result-*.json") if 'meta' not in f)[0]
         generated_json_ci_results_artifact_path = None
         if self.request.config.option.artifacts_path:
             generated_json_results_artifact_path = (
