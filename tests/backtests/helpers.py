@@ -86,6 +86,7 @@ class Backtest:
             f"--max-open-trades={max_open_trades}",
             f"--stake-amount={stake_amount}",
             "--config=user_data/data/pairlists.json",
+            "--no-cache",
         ]
         if pairlist is None:
             cmdline.append(f"--config={exchange_config}")
