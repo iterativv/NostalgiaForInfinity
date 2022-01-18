@@ -9866,6 +9866,10 @@ class NostalgiaForInfinityX(IStrategy):
             slippage = ((rate / dataframe['close']) - 1.0)
 
             if slippage < 0.038:
+                log.warning(
+                    "Cancelling buy for %s due to slippage %s",
+                    pair, slippage
+                )            	
                 return True
             else:
                 return False
