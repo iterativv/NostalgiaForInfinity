@@ -107,7 +107,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.13"
+        return "v11.0.14"
 
     # ROI table:
     minimal_roi = {
@@ -2315,7 +2315,7 @@ class NostalgiaForInfinityX(IStrategy):
                 # This returns first order stake size
                 stake_amount = filled_buys[0].cost
                 # This then calculates current safety order size
-                stake_amount = stake_amount / 2.0
+                stake_amount = stake_amount * (0.5 + (count_of_buys * 0.005))
                 return stake_amount
             except Exception as exception:
                 return None
