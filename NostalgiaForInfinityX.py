@@ -9374,7 +9374,7 @@ class NostalgiaForInfinityX(IStrategy):
                     # Non-Standard protections (add below)
 
                     # Logic
-                    item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * 0.96)
+                    item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * 0.966)
                     item_buy_logic.append(dataframe['ewo'] < -6.2)
                     item_buy_logic.append(dataframe['cti'] < -0.9)
                     item_buy_logic.append(dataframe['r_14'] < -97.0)
