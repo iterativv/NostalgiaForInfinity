@@ -29,4 +29,3 @@ services:
       --config user_data/data/${EXCHANGE:-binance}-usdt-static.json
       --max-open-trades ${MAX_OPEN_TRADES:-5}
       --stake-amount ${STAKE_AMOUNT:-unlimited}
-      --no-cache
