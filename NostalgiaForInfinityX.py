@@ -107,7 +107,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.37"
+        return "v11.0.38"
 
     # ROI table:
     minimal_roi = {
@@ -2414,7 +2414,10 @@ class NostalgiaForInfinityX(IStrategy):
         ):
             return True, 'sell_stoploss_u_e_1'
 
-        if (trade.open_date_utc + timedelta(minutes=5760) > current_time):
+        if (
+                (current_time - timedelta(minutes=30) > trade.open_date_utc)
+                and (trade.open_date_utc + timedelta(minutes=5760) > current_time)
+        ):
             if (-0.12 <= current_profit < -0.08):
                 if (last_candle['close'] < last_candle['atr_high_thresh_1']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_1']):
                     return True, 'sell_stoploss_atr_1'
