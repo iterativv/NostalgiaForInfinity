@@ -9166,7 +9166,7 @@ class NostalgiaForInfinityX(IStrategy):
                 # Condition #4 - Semi swing. Local dip.
                 elif index == 4:
                     # Non-Standard protections
-                    item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_1h'] * 0.93))
+                    item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_1h'] * 0.95))
 
                     # Logic
                     item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
