@@ -107,7 +107,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.55"
+        return "v11.0.56"
 
     # ROI table:
     minimal_roi = {
@@ -8350,33 +8350,33 @@ class NostalgiaForInfinityX(IStrategy):
         if sell and (signal_name is not None):
             return True, signal_name
 
-        if (0.0 < current_profit <= 0.02) and (max_profit - current_profit > 0.025):
+        if (0.0 < current_profit <= 0.02) and (max_profit - current_profit > 0.025) and (last_candle['cmf'] < 0.0):
             return True, 'sell_long_t_0'
-        elif (0.02 < current_profit <= 0.04) and (max_profit - current_profit > 0.03):
+        elif (0.02 < current_profit <= 0.04) and (max_profit - current_profit > 0.03) and (last_candle['cmf'] < 0.0):
             return True, 'sell_long_t_1'
-        elif (0.04 < current_profit <= 0.06) and (max_profit - current_profit > 0.035):
+        elif (0.04 < current_profit <= 0.06) and (max_profit - current_profit > 0.035) and (last_candle['cmf'] < 0.0):
             return True, 'sell_long_t_2'
-        elif (0.06 < current_profit <= 0.08) and (max_profit - current_profit > 0.04):
+        elif (0.06 < current_profit <= 0.08) and (max_profit - current_profit > 0.04) and (last_candle['cmf'] < 0.0):
             return True, 'sell_long_t_3'
-        elif (0.08 < current_profit <= 0.1) and (max_profit - current_profit > 0.045):
+        elif (0.08 < current_profit <= 0.1) and (max_profit - current_profit > 0.045) and (last_candle['cmf'] < 0.0):
             return True, 'sell_long_t_4'
-        elif (0.1 < current_profit <= 0.12) and (max_profit - current_profit > 0.05):
+        elif (0.1 < current_profit <= 0.12) and (max_profit - current_profit > 0.05) and (last_candle['cmf'] < 0.0):
             return True, 'sell_long_t_5'
-        elif (0.12 < current_profit <= 0.14) and (max_profit - current_profit > 0.055):
+        elif (0.12 < current_profit <= 0.14) and (max_profit - current_profit > 0.055) and (last_candle['cmf'] < 0.0):
             return True, 'sell_long_t_6'
-        elif (0.14 < current_profit <= 0.16) and (max_profit - current_profit > 0.06):
+        elif (0.14 < current_profit <= 0.16) and (max_profit - current_profit > 0.06) and (last_candle['cmf'] < 0.0):
             return True, 'sell_long_t_7'
-        elif (0.16 < current_profit <= 0.18) and (max_profit - current_profit > 0.065):
+        elif (0.16 < current_profit <= 0.18) and (max_profit - current_profit > 0.065) and (last_candle['cmf'] < 0.0):
             return True, 'sell_long_t_8'
-        elif (0.18 < current_profit <= 0.2) and (max_profit - current_profit > 0.07):
+        elif (0.18 < current_profit <= 0.2) and (max_profit - current_profit > 0.07) and (last_candle['cmf'] < 0.0):
             return True, 'sell_long_t_8'
-        elif (0.2 < current_profit <= 0.3) and (max_profit - current_profit > 0.075):
+        elif (0.2 < current_profit <= 0.3) and (max_profit - current_profit > 0.075) and (last_candle['cmf'] < 0.0):
             return True, 'sell_long_t_9'
-        elif (0.3 < current_profit <= 0.4) and (max_profit - current_profit > 0.08):
+        elif (0.3 < current_profit <= 0.4) and (max_profit - current_profit > 0.08) and (last_candle['cmf'] < 0.0):
             return True, 'sell_long_t_10'
-        elif (0.4 < current_profit <= 0.5) and (max_profit - current_profit > 0.085):
+        elif (0.4 < current_profit <= 0.5) and (max_profit - current_profit > 0.085) and (last_candle['cmf'] < 0.0):
             return True, 'sell_long_t_11'
-        elif (0.5 < current_profit <= 1.0) and (max_profit - current_profit > 0.09):
+        elif (0.5 < current_profit <= 1.0) and (max_profit - current_profit > 0.09) and (last_candle['cmf'] < 0.0):
             return True, 'sell_long_t_12'
 
         return False, None
