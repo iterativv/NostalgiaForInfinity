@@ -107,7 +107,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.59"
+        return "v11.0.60"
 
     # ROI table:
     minimal_roi = {
@@ -2430,7 +2430,7 @@ class NostalgiaForInfinityX(IStrategy):
             elif (-0.16 <= current_profit < -0.12):
                 if (
                         (last_candle['close'] < last_candle['ema_200'])
-                        and (last_candle['bb20_width'] < 0.014)
+                        and (last_candle['bb20_width'] < 0.01)
                         and (last_candle['close'] > (last_candle['bb20_2_mid_1h'] * 0.954))
                         and (last_candle['volume_mean_12'] < (last_candle['volume_mean_24'] * 2.0))
                         and (last_candle['cmf'] < -0.0)
@@ -2439,7 +2439,7 @@ class NostalgiaForInfinityX(IStrategy):
             elif (-0.2 <= current_profit < -0.16):
                 if (
                         (last_candle['close'] < last_candle['ema_200'])
-                        and (last_candle['bb20_width'] < 0.016)
+                        and (last_candle['bb20_width'] < 0.01)
                         and (last_candle['close'] > (last_candle['bb20_2_mid_1h'] * 0.954))
                         and (last_candle['volume_mean_12'] < (last_candle['volume_mean_24'] * 2.0))
                         and (last_candle['cmf'] < -0.0)
