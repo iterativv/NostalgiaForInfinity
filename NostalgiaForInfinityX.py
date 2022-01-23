@@ -107,7 +107,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.57"
+        return "v11.0.58"
 
     # ROI table:
     minimal_roi = {
@@ -2419,20 +2419,50 @@ class NostalgiaForInfinityX(IStrategy):
                 and (trade.open_date_utc + timedelta(minutes=7000) > current_time)
         ):
             if (-0.12 <= current_profit < -0.08):
-                if (last_candle['close'] < last_candle['atr_high_thresh_1']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_1']) and (last_candle['cmf'] < -0.0):
-                    return True, 'sell_stoploss_atr_1'
+                if (
+                        (last_candle['close'] < last_candle['ema_200'])
+                        and (last_candle['bb20_width'] < 0.01)
+                        and (last_candle['close'] > (last_candle['bb20_2_mid_1h'] * 0.954))
+                        and (last_candle['volume_mean_12'] < (last_candle['volume_mean_24'] * 2.0))
+                        and (last_candle['cmf'] < -0.0)
+                ):
+                    return True, 'sell_stoploss_1'
             elif (-0.16 <= current_profit < -0.12):
-                if (last_candle['close'] < last_candle['atr_high_thresh_2']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_2']) and (last_candle['cmf'] < -0.0):
-                    return True, 'sell_stoploss_atr_2'
+                if (
+                        (last_candle['close'] < last_candle['ema_200'])
+                        and (last_candle['bb20_width'] < 0.014)
+                        and (last_candle['close'] > (last_candle['bb20_2_mid_1h'] * 0.954))
+                        and (last_candle['volume_mean_12'] < (last_candle['volume_mean_24'] * 2.0))
+                        and (last_candle['cmf'] < -0.0)
+                ):
+                    return True, 'sell_stoploss_2'
             elif (-0.2 <= current_profit < -0.16):
-                if (last_candle['close'] < last_candle['atr_high_thresh_3']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_3']) and (last_candle['cmf'] < -0.0):
-                    return True, 'sell_stoploss_atr_3'
+                if (
+                        (last_candle['close'] < last_candle['ema_200'])
+                        and (last_candle['bb20_width'] < 0.016)
+                        and (last_candle['close'] > (last_candle['bb20_2_mid_1h'] * 0.954))
+                        and (last_candle['volume_mean_12'] < (last_candle['volume_mean_24'] * 2.0))
+                        and (last_candle['cmf'] < -0.0)
+                ):
+                    return True, 'sell_stoploss_3'
             elif (current_profit < -0.2):
-                if (last_candle['close'] < last_candle['atr_high_thresh_4']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_4']) and (last_candle['cmf'] < -0.0):
-                    return True, 'sell_stoploss_atr_4'
+                if (
+                        (last_candle['close'] < last_candle['ema_200'])
+                        and (last_candle['bb20_width'] < 0.02)
+                        and (last_candle['close'] > (last_candle['bb20_2_mid_1h'] * 0.954))
+                        and (last_candle['volume_mean_12'] < (last_candle['volume_mean_24'] * 2.0))
+                        and (last_candle['cmf'] < -0.0)
+                ):
+                    return True, 'sell_stoploss_4'
             elif (current_profit < -0.3):
-                if (last_candle['close'] < last_candle['atr_high_thresh_5']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_5']) and (last_candle['cmf'] < -0.0):
-                    return True, 'sell_stoploss_atr_5'
+                if (
+                        (last_candle['close'] < last_candle['ema_200'])
+                        and (last_candle['bb20_width'] < 0.024)
+                        and (last_candle['close'] > (last_candle['bb20_2_mid_1h'] * 0.954))
+                        and (last_candle['volume_mean_12'] < (last_candle['volume_mean_24'] * 2.0))
+                        and (last_candle['cmf'] < -0.0)
+                ):
+                    return True, 'sell_stoploss_5'
 
         return False, None
 
@@ -8887,14 +8917,6 @@ class NostalgiaForInfinityX(IStrategy):
         dataframe['avg_close_20'] = ta.SMA(dataframe['close'], 20)
         dataframe['avg_val_20'] = (dataframe['avg_hh_ll_20'] + dataframe['avg_close_20']) / 2.0
         dataframe['linreg_val_20'] = ta.LINEARREG(dataframe['close'] - dataframe['avg_val_20'], 20, 0)
-
-        # ATR
-        dataframe['atr'] = ta.ATR(dataframe, timeperiod=14)
-        dataframe['atr_high_thresh_1'] = (dataframe['high'] - (dataframe['atr'] * 5.4))
-        dataframe['atr_high_thresh_2'] = (dataframe['high'] - (dataframe['atr'] * 5.2))
-        dataframe['atr_high_thresh_3'] = (dataframe['high'] - (dataframe['atr'] * 5.0))
-        dataframe['atr_high_thresh_4'] = (dataframe['high'] - (dataframe['atr'] * 2.8))
-        dataframe['atr_high_thresh_5'] = (dataframe['high'] - (dataframe['atr'] * 2.0))
 
         # For sell checks
         dataframe['crossed_below_ema_12_26'] = qtpylib.crossed_below(dataframe['ema_12'], dataframe['ema_26'])
