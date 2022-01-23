@@ -107,7 +107,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.58"
+        return "v11.0.59"
 
     # ROI table:
     minimal_roi = {
@@ -1147,7 +1147,7 @@ class NostalgiaForInfinityX(IStrategy):
             "sma200_rising_val"         : "30",
             "sma200_1h_rising"          : True,
             "sma200_1h_rising_val"      : "50",
-            "safe_dips_threshold_0"     : 0.028,
+            "safe_dips_threshold_0"     : 0.032,
             "safe_dips_threshold_2"     : 0.09,
             "safe_dips_threshold_12"    : 0.26,
             "safe_dips_threshold_144"   : 0.3,
@@ -9535,10 +9535,11 @@ class NostalgiaForInfinityX(IStrategy):
 
                     # Logic
                     item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
-                    item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.046))
+                    item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.034))
                     item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
                     item_buy_logic.append(dataframe['cti'] < -0.9)
-                    item_buy_logic.append(dataframe['r_480_1h'] < -5.0)
+                    item_buy_logic.append(dataframe['r_480_1h'] < -30.0)
+                    item_buy_logic.append(dataframe['crsi_1h'] > 8.0)
 
                 # Condition #33 - Long mode. Local dip. Uptrend.
                 elif index == 33:
