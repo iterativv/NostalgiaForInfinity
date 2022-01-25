@@ -107,7 +107,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.82"
+        return "v11.0.83"
 
     # ROI table:
     minimal_roi = {
@@ -1231,15 +1231,15 @@ class NostalgiaForInfinityX(IStrategy):
             "sma200_rising_val"         : "30",
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
-            "safe_dips_threshold_0"     : 0.028,
-            "safe_dips_threshold_2"     : 0.066,
-            "safe_dips_threshold_12"    : 0.32,
-            "safe_dips_threshold_144"   : None,
+            "safe_dips_threshold_0"     : 0.032,
+            "safe_dips_threshold_2"     : 0.09,
+            "safe_dips_threshold_12"    : 0.22,
+            "safe_dips_threshold_144"   : 0.36,
             "safe_pump_6h_threshold"    : 0.5,
             "safe_pump_12h_threshold"   : None,
-            "safe_pump_24h_threshold"   : None,
+            "safe_pump_24h_threshold"   : 0.8,
             "safe_pump_36h_threshold"   : None,
-            "safe_pump_48h_threshold"   : None,
+            "safe_pump_48h_threshold"   : 1.0,
             "btc_1h_not_downtrend"      : False,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_over_pivot_offset"   : 1.0,
@@ -9551,13 +9551,13 @@ class NostalgiaForInfinityX(IStrategy):
                 # Condition #35 - Long mode. Local deep dip.
                 elif index == 35:
                     # Non-Standard protections
+                    item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_1h'] * 0.9))
 
                     # Logic
-                    item_buy_logic.append(dataframe['close'] < dataframe['ema_25'] * 0.85)
+                    item_buy_logic.append(dataframe['close'] < dataframe['ema_25'] * 0.9)
                     item_buy_logic.append(dataframe['close'] > dataframe['open'])
-                    item_buy_logic.append(dataframe['rsi_14'] < 46.0)
+                    item_buy_logic.append(dataframe['rsi_14'] < 36.0)
                     item_buy_logic.append(dataframe['mfi'] < 36.0)
-                    item_buy_logic.append(dataframe['cti_1h'] > -0.85)
 
                 # Condition #36 - Long mode. Uptrend. Local dip.
                 elif index == 36:
