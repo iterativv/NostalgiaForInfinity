@@ -10240,24 +10240,34 @@ def t3_average(dataframe, length=5):
     return df['T3Average']
 
 def pivot_points(dataframe: DataFrame, mode = 'fibonacci') -> Series:
-    hlc3_pivot = (dataframe['high'] + dataframe['low'] + dataframe['close']).shift(1) / 3
-    hl_range = (dataframe['high'] - dataframe['low']).shift(1)
     if mode == 'simple':
+        hlc3_pivot = (dataframe['high'] + dataframe['low'] + dataframe['close']).shift(1) / 3
         res1 = hlc3_pivot * 2 - dataframe['low'].shift(1)
         sup1 = hlc3_pivot * 2 - dataframe['high'].shift(1)
         res2 = hlc3_pivot + (dataframe['high'] - dataframe['low']).shift()
         sup2 = hlc3_pivot - (dataframe['high'] - dataframe['low']).shift()
         res3 = hlc3_pivot * 2 + (dataframe['high'] - 2 * dataframe['low']).shift()
         sup3 = hlc3_pivot * 2 - (2 * dataframe['high'] - dataframe['low']).shift()
+        return hlc3_pivot, res1, res2, res3, sup1, sup2, sup3
     elif mode == 'fibonacci':
+        hlc3_pivot = (dataframe['high'] + dataframe['low'] + dataframe['close']).shift(1) / 3
+        hl_range = (dataframe['high'] - dataframe['low']).shift(1)
         res1 = hlc3_pivot + 0.382 * hl_range
         sup1 = hlc3_pivot - 0.382 * hl_range
         res2 = hlc3_pivot + 0.618 * hl_range
         sup2 = hlc3_pivot - 0.618 * hl_range
         res3 = hlc3_pivot + 1 * hl_range
         sup3 = hlc3_pivot - 1 * hl_range
-
-    return hlc3_pivot, res1, res2, res3, sup1, sup2, sup3
+        return hlc3_pivot, res1, res2, res3, sup1, sup2, sup3
+    elif mode == 'DeMark':
+        demark_pivot_lt = (dataframe['low'] * 2 + dataframe['high'] + dataframe['close'])
+        demark_pivot_eq = (dataframe['close'] * 2 + dataframe['low'] + dataframe['high'])
+        demark_pivot_gt = (dataframe['high'] * 2 + dataframe['low'] + dataframe['close'])
+        demark_pivot = np.where((dataframe['close'] < dataframe['open']), demark_pivot_lt, np.where((dataframe['close'] > dataframe['open']), demark_pivot_gt, demark_pivot_eq))
+        dm_pivot = demark_pivot / 4
+        dm_res = demark_pivot / 2 - dataframe['low']
+        dm_sup = demark_pivot / 2 - dataframe['high']
+        return dm_pivot, dm_res, dm_sup
 
 def heikin_ashi(dataframe, smooth_inputs = False, smooth_outputs = False, length = 10):
     df = dataframe[['open','close','high','low']].copy().fillna(0)
