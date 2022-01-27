@@ -107,7 +107,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.91"
+        return "v11.0.92"
 
     # ROI table:
     minimal_roi = {
@@ -2319,7 +2319,7 @@ class NostalgiaForInfinityX(IStrategy):
         previous_candle = dataframe.iloc[-2].squeeze()
         # simple TA checks, to assure that the price is not dropping rapidly
         if (
-                (last_candle['crsi_1h'] < 12.0)
+                (last_candle['crsi_1h'] < 15.0)
                 # drop in the last candle
                 or (last_candle['tpct_change_0'] > 0.018)
         ):
