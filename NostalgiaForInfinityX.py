@@ -107,7 +107,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.98"
+        return "v11.0.99"
 
     # ROI table:
     minimal_roi = {
@@ -2320,7 +2320,7 @@ class NostalgiaForInfinityX(IStrategy):
         # simple TA checks, to assure that the price is not dropping rapidly
         if (
                 (last_candle['crsi'] < 12.0)
-                or (last_candle['crsi_1h'] < 10.0)
+                or (last_candle['crsi_1h'] < 11.0)
                 # drop in the last candle
                 or ((last_candle['tpct_change_0'] > 0.018) and (last_candle['close'] < last_candle['open']))
         ):
