@@ -107,7 +107,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.102"
+        return "v11.0.103"
 
     # ROI table:
     minimal_roi = {
@@ -2285,7 +2285,7 @@ class NostalgiaForInfinityX(IStrategy):
     def custom_stake_amount(self, pair: str, current_time: datetime, current_rate: float,
                             proposed_stake: float, min_stake: float, max_stake: float,
                             **kwargs) -> float:
-        if (self.config['position_adjustment_enable'] == True) and (self.config['stake_amount'] == 'unlimited'):
+        if (self.config['position_adjustment_enable'] == True):
             return proposed_stake / self.max_rebuy_multiplier
         else:
             return proposed_stake
