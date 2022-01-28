@@ -107,7 +107,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.105"
+        return "v11.0.106"
 
     # ROI table:
     minimal_roi = {
@@ -2319,8 +2319,6 @@ class NostalgiaForInfinityX(IStrategy):
         previous_candle = dataframe.iloc[-2].squeeze()
         # simple TA checks, to assure that the price is not dropping rapidly
         if (
-                (last_candle['crsi'] < 12.0)
-                or (last_candle['crsi_1h'] < 11.0)
                 # drop in the last candle
                 or ((last_candle['tpct_change_0'] > 0.018) and (last_candle['close'] < last_candle['open']))
         ):
@@ -2330,19 +2328,63 @@ class NostalgiaForInfinityX(IStrategy):
         count_of_buys = len(filled_buys)
 
         if (count_of_buys == 1):
-            if (current_profit > -0.03):
+            if (
+                    (current_profit > -0.03)
+                    or (
+                        (last_candle['buy'] == 0) and
+                        (
+                            (last_candle['crsi'] < 12.0)
+                            or (last_candle['crsi_1h'] < 11.0)
+                        )
+                    )
+            ):
                 return None
         elif (count_of_buys == 2):
-            if (current_profit > -0.075) or (last_candle['close'] < previous_candle['close']):
+            if (
+                    (current_profit > -0.075)
+                    or (
+                        (last_candle['buy'] == 0) and
+                        (
+                            (last_candle['crsi'] < 12.0)
+                            or (last_candle['crsi_1h'] < 11.0)
+                            or (last_candle['close'] < previous_candle['close'])
+                        )
+                    )
+            ):
                 return None
         elif (count_of_buys == 3):
-            if (current_profit > -0.1) or (last_candle['tpct_change_12'] > 0.05) or (last_candle['close'] < previous_candle['close']) or (last_candle['btc_not_downtrend_1h'] == False):
+            if (
+                    (current_profit > -0.1)
+                    or (
+                        (last_candle['buy'] == 0) and
+                        (
+                            (last_candle['crsi'] < 12.0)
+                            or (last_candle['crsi_1h'] < 11.0)
+                            or (last_candle['tpct_change_12'] > 0.05)
+                            or (last_candle['close'] < previous_candle['close'])
+                            or (last_candle['btc_not_downtrend_1h'] == False)
+                        )
+                    )
+            ):
                 return None
         elif (count_of_buys == 4):
-            if (current_profit > -0.15) or (last_candle['tpct_change_12'] > 0.04) or (last_candle['close'] < previous_candle['close']) or (last_candle['btc_not_downtrend_1h'] == False) or (last_candle['close_1h'] < last_candle['open_1h']):
+            if (
+                    (current_profit > -0.15)
+                    or (
+                        (last_candle['buy'] == 0) and
+                        (
+                            (last_candle['crsi'] < 12.0)
+                            or (last_candle['crsi_1h'] < 11.0)
+                            or (last_candle['tpct_change_12'] > 0.04)
+                            or (last_candle['close'] < previous_candle['close'])
+                            or (last_candle['btc_not_downtrend_1h'] == False)
+                            or (last_candle['close_1h'] < last_candle['open_1h'])
+                        )
+                    )
+            ):
                 return None
 
-        # Maximum 3 rebuys. Half the stake of the original.
+        # Maximum 4 rebuys. Half the stake of the original.
         if 0 < count_of_buys <= self.max_rebuy_orders:
             try:
                 # This returns first order stake size
