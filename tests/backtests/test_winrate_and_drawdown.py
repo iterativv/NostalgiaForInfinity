@@ -13,8 +13,8 @@ def exchange_fmt(value):
 @pytest.fixture(
     scope="session",
     params=(
-        Exchange(name="binance", winrate=90, max_drawdown=30),
-        Exchange(name="kucoin", winrate=76, max_drawdown=50),
+        Exchange(name="binance", winrate=90, max_drawdown=20),
+        Exchange(name="kucoin", winrate=76, max_drawdown=20),
     ),
     ids=exchange_fmt,
 )

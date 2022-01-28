@@ -179,7 +179,7 @@ class BacktestResults:
             "profit_sum_pct": self.full_stats.profit_sum_pct,
             "profit_mean_pct": self.full_stats.profit_mean_pct,
             "profit_total_pct": self.full_stats.profit_total_pct,
-            "max_drawdown": self.results.max_drawdown * 100,
+            "max_drawdown": self.results.max_drawdown_account * 100,
             "trades": self.full_stats.trades,
             "winrate": round(self.full_stats.wins * 100.0 / self.full_stats.trades, 2),
         }
