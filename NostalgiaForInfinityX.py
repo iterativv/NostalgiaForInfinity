@@ -2320,7 +2320,7 @@ class NostalgiaForInfinityX(IStrategy):
         # simple TA checks, to assure that the price is not dropping rapidly
         if (
                 # drop in the last candle
-                or ((last_candle['tpct_change_0'] > 0.018) and (last_candle['close'] < last_candle['open']))
+                ((last_candle['tpct_change_0'] > 0.018) and (last_candle['close'] < last_candle['open']))
         ):
             return None
 
