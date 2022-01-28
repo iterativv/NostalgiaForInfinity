@@ -107,7 +107,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.106"
+        return "v11.0.107"
 
     # ROI table:
     minimal_roi = {
@@ -2331,11 +2331,8 @@ class NostalgiaForInfinityX(IStrategy):
             if (
                     (current_profit > -0.03)
                     or (
-                        (last_candle['buy'] == 0) and
-                        (
-                            (last_candle['crsi'] < 12.0)
-                            or (last_candle['crsi_1h'] < 11.0)
-                        )
+                        (last_candle['crsi'] < 12.0)
+                        or (last_candle['crsi_1h'] < 11.0)
                     )
             ):
                 return None
@@ -2343,12 +2340,9 @@ class NostalgiaForInfinityX(IStrategy):
             if (
                     (current_profit > -0.075)
                     or (
-                        (last_candle['buy'] == 0) and
-                        (
-                            (last_candle['crsi'] < 12.0)
-                            or (last_candle['crsi_1h'] < 11.0)
-                            or (last_candle['close'] < previous_candle['close'])
-                        )
+                        (last_candle['crsi'] < 12.0)
+                        or (last_candle['crsi_1h'] < 11.0)
+                        or (last_candle['close'] < previous_candle['close'])
                     )
             ):
                 return None
@@ -2356,14 +2350,11 @@ class NostalgiaForInfinityX(IStrategy):
             if (
                     (current_profit > -0.1)
                     or (
-                        (last_candle['buy'] == 0) and
-                        (
-                            (last_candle['crsi'] < 12.0)
-                            or (last_candle['crsi_1h'] < 11.0)
-                            or (last_candle['tpct_change_12'] > 0.05)
-                            or (last_candle['close'] < previous_candle['close'])
-                            or (last_candle['btc_not_downtrend_1h'] == False)
-                        )
+                        (last_candle['crsi'] < 12.0)
+                        or (last_candle['crsi_1h'] < 11.0)
+                        or (last_candle['tpct_change_12'] > 0.05)
+                        or (last_candle['close'] < previous_candle['close'])
+                        or (last_candle['btc_not_downtrend_1h'] == False)
                     )
             ):
                 return None
@@ -2371,15 +2362,12 @@ class NostalgiaForInfinityX(IStrategy):
             if (
                     (current_profit > -0.15)
                     or (
-                        (last_candle['buy'] == 0) and
-                        (
-                            (last_candle['crsi'] < 12.0)
-                            or (last_candle['crsi_1h'] < 11.0)
-                            or (last_candle['tpct_change_12'] > 0.04)
-                            or (last_candle['close'] < previous_candle['close'])
-                            or (last_candle['btc_not_downtrend_1h'] == False)
-                            or (last_candle['close_1h'] < last_candle['open_1h'])
-                        )
+                        (last_candle['crsi'] < 12.0)
+                        or (last_candle['crsi_1h'] < 11.0)
+                        or (last_candle['tpct_change_12'] > 0.04)
+                        or (last_candle['close'] < previous_candle['close'])
+                        or (last_candle['btc_not_downtrend_1h'] == False)
+                        or (last_candle['close_1h'] < last_candle['open_1h'])
                     )
             ):
                 return None
