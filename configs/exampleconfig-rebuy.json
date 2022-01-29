@@ -26,7 +26,7 @@
         "stoploss_on_exchange_interval": 60
     },
     "bid_strategy": {
-        "price_side": "bid",
+        "price_side": "ask",
         "ask_last_balance": 0,
         "use_order_book": false,
         "order_book_top": 1,
