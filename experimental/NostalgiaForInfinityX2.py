@@ -280,7 +280,7 @@ class NostalgiaForInfinityX2(IStrategy):
 
         # Add prefix
         # -----------------------------------------------------------------------------------------
-        ignore_columns = ['date', 'open', 'high', 'low', 'close', 'volume']
+        ignore_columns = ['date']
         btc_info_1d.rename(columns=lambda s: f"btc_{s}" if s not in ignore_columns else s, inplace=True)
 
         tok = time.perf_counter()
@@ -299,7 +299,7 @@ class NostalgiaForInfinityX2(IStrategy):
 
         # Add prefix
         # -----------------------------------------------------------------------------------------
-        ignore_columns = ['date', 'open', 'high', 'low', 'close', 'volume']
+        ignore_columns = ['date']
         btc_info_4h.rename(columns=lambda s: f"btc_{s}" if s not in ignore_columns else s, inplace=True)
 
         tok = time.perf_counter()
@@ -319,7 +319,7 @@ class NostalgiaForInfinityX2(IStrategy):
 
         # Add prefix
         # -----------------------------------------------------------------------------------------
-        ignore_columns = ['date', 'open', 'high', 'low', 'close', 'volume']
+        ignore_columns = ['date']
         btc_info_1h.rename(columns=lambda s: f"btc_{s}" if s not in ignore_columns else s, inplace=True)
 
         tok = time.perf_counter()
@@ -338,7 +338,7 @@ class NostalgiaForInfinityX2(IStrategy):
 
         # Add prefix
         # -----------------------------------------------------------------------------------------
-        ignore_columns = ['date', 'open', 'high', 'low', 'close', 'volume']
+        ignore_columns = ['date']
         btc_info_15m.rename(columns=lambda s: f"btc_{s}" if s not in ignore_columns else s, inplace=True)
 
         tok = time.perf_counter()
@@ -357,7 +357,7 @@ class NostalgiaForInfinityX2(IStrategy):
 
         # Add prefix
         # -----------------------------------------------------------------------------------------
-        ignore_columns = ['date', 'open', 'high', 'low', 'close', 'volume']
+        ignore_columns = ['date']
         btc_info_5m.rename(columns=lambda s: f"btc_{s}" if s not in ignore_columns else s, inplace=True)
 
         tok = time.perf_counter()
@@ -395,15 +395,16 @@ class NostalgiaForInfinityX2(IStrategy):
         for btc_info_timeframe in self.btc_info_timeframes:
             btc_informative = self.btc_info_switcher(btc_info_pair, btc_info_timeframe, metadata)
             dataframe = merge_informative_pair(dataframe, btc_informative, self.timeframe, btc_info_timeframe, ffill=True)
-            # Customize what we drop - in case we need to maintain BTC some informative ohlcv data
+            # Customize what we drop - in case we need to maintain some BTC informative ohlcv data
             # Default drop all
             drop_columns = {
-                '1d':   [f"{s}_{btc_info_timeframe}" for s in ['date', 'open', 'high', 'low', 'close', 'volume']],
-                '4h':   [f"{s}_{btc_info_timeframe}" for s in ['date', 'open', 'high', 'low', 'close', 'volume']],
-                '1h':   [f"{s}_{btc_info_timeframe}" for s in ['date', 'open', 'high', 'low', 'close', 'volume']],
-                '15m':  [f"{s}_{btc_info_timeframe}" for s in ['date', 'open', 'high', 'low', 'close', 'volume']],
-                '5m':   [f"{s}_{btc_info_timeframe}" for s in ['date', 'open', 'high', 'low', 'close', 'volume']],
+                '1d':   [f"btc_{s}_{btc_info_timeframe}" for s in ['date', 'open', 'high', 'low', 'close', 'volume']],
+                '4h':   [f"btc_{s}_{btc_info_timeframe}" for s in ['date', 'open', 'high', 'low', 'close', 'volume']],
+                '1h':   [f"btc_{s}_{btc_info_timeframe}" for s in ['date', 'open', 'high', 'low', 'close', 'volume']],
+                '15m':  [f"btc_{s}_{btc_info_timeframe}" for s in ['date', 'open', 'high', 'low', 'close', 'volume']],
+                '5m':   [f"btc_{s}_{btc_info_timeframe}" for s in ['date', 'open', 'high', 'low', 'close', 'volume']],
             }.get(btc_info_timeframe,[f"{s}_{btc_info_timeframe}" for s in ['date', 'open', 'high', 'low', 'close', 'volume']])
+            drop_columns.append(f"date_{btc_info_timeframe}")
             dataframe.drop(columns=dataframe.columns.intersection(drop_columns), inplace=True)
 
         '''
