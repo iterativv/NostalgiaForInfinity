@@ -160,8 +160,8 @@ class NostalgiaForInfinityX(IStrategy):
 
     # Rebuy feature
     # position_adjustment_enable = True
-    max_rebuy_orders = 4
-    max_rebuy_multiplier = 2.0
+    max_rebuy_orders = 2
+    max_rebuy_multiplier = 1.0
 
     # Run "populate_indicators()" only for new candle.
     process_only_new_candles = True
@@ -2338,47 +2338,22 @@ class NostalgiaForInfinityX(IStrategy):
                 return None
         elif (count_of_buys == 2):
             if (
-                    (current_profit > -0.075)
+                    (current_profit > -0.04)
                     or (
-                        (last_candle['crsi'] < 12.0)
+                        (last_candle['crsi'] < 20.0)
                         or (last_candle['crsi_1h'] < 11.0)
                         or (last_candle['close'] < previous_candle['close'])
-                    )
-            ):
-                return None
-        elif (count_of_buys == 3):
-            if (
-                    (current_profit > -0.1)
-                    or (
-                        (last_candle['crsi'] < 12.0)
-                        or (last_candle['crsi_1h'] < 11.0)
-                        or (last_candle['tpct_change_12'] > 0.05)
-                        or (last_candle['close'] < previous_candle['close'])
-                        or (last_candle['btc_not_downtrend_1h'] == False)
-                    )
-            ):
-                return None
-        elif (count_of_buys == 4):
-            if (
-                    (current_profit > -0.15)
-                    or (
-                        (last_candle['crsi'] < 12.0)
-                        or (last_candle['crsi_1h'] < 11.0)
-                        or (last_candle['tpct_change_12'] > 0.04)
-                        or (last_candle['close'] < previous_candle['close'])
-                        or (last_candle['btc_not_downtrend_1h'] == False)
-                        or (last_candle['close_1h'] < last_candle['open_1h'])
                     )
             ):
                 return None
 
-        # Maximum 4 rebuys. Half the stake of the original.
+        # Maximum 2 rebuys. Half the stake of the original.
         if 0 < count_of_buys <= self.max_rebuy_orders:
             try:
                 # This returns first order stake size
                 stake_amount = filled_buys[0].cost
                 # This then calculates current safety order size
-                stake_amount = stake_amount * (0.5 + (count_of_buys * 0.005))
+                stake_amount = stake_amount * (0.25 + (count_of_buys * 0.005))
                 return stake_amount
             except Exception as exception:
                 return None
