@@ -1,5 +1,4 @@
 import logging
-from tokenize import String
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 import numpy as np
 import talib.abstract as ta
@@ -257,7 +256,7 @@ class NostalgiaForInfinityX2(IStrategy):
 
     # Coin Pair Indicator Switch Case
     # ---------------------------------------------------------------------------------------------
-    def info_switcher(self, metadata: dict, info_timeframe: String) -> DataFrame:
+    def info_switcher(self, metadata: dict, info_timeframe) -> DataFrame:
         if info_timeframe == '1d':
             return self.informative_1d_indicators(metadata, info_timeframe)
         elif info_timeframe == '4h':
@@ -368,7 +367,7 @@ class NostalgiaForInfinityX2(IStrategy):
 
     # BTC Indicator Switch Case
     # ---------------------------------------------------------------------------------------------
-    def btc_info_switcher(self, btc_info_pair: String, btc_info_timeframe: String, metadata: dict) -> DataFrame:
+    def btc_info_switcher(self, btc_info_pair, btc_info_timeframe, metadata: dict) -> DataFrame:
         if btc_info_timeframe == '1d':
             return self.btc_info_1d_indicators(btc_info_pair, btc_info_timeframe, metadata)
         elif btc_info_timeframe == '4h':
@@ -430,9 +429,6 @@ class NostalgiaForInfinityX2(IStrategy):
         '''
         dataframe = self.base_tf_5m_indicators(metadata, dataframe)
 
-        # RM2DBG
-        dataframe.to_html(f"{metadata['pair'].split('/')[0]}_df.html")
-
         tok = time.perf_counter()
         log.debug(f"[{metadata['pair']}] Populate indicators took a total of: {tok - tik:0.4f} seconds.")
 
@@ -442,40 +438,28 @@ class NostalgiaForInfinityX2(IStrategy):
         conditions = []
         dataframe.loc[:, 'buy_tag'] = ''
 
-        for index in self.buy_protection_params:
+        for buy_enable in self.buy_params:
+            index = int(buy_enable.split('_')[2])
             item_buy_protection_list = [True]
-            global_buy_protection_params = self.buy_protection_params[index]
-
-            if self.buy_params[f"buy_condition_{index}_enable"]:
-                # Standard protections - Customizable for every condition
-                # -----------------------------------------------------------------------------------------
-
-
-                # Global protections - Common every condition
-                # -----------------------------------------------------------------------------------------
-                if not self.config['runmode'].value in ('live', 'dry_run'):
-                    if self.has_bt_agefilter:
-                        item_buy_protection_list.append(dataframe['bt_agefilter_ok'])
-                else:
-                    if self.has_downtime_protection:
-                        item_buy_protection_list.append(dataframe['live_data_ok'])
+            if self.buy_params[f'{buy_enable}']:
 
                 # Buy conditions
                 # -----------------------------------------------------------------------------------------
                 item_buy_logic = []
                 item_buy_logic.append(reduce(lambda x, y: x & y, item_buy_protection_list))
 
-                # Condition #1 - Description
+                # Condition #1 - Describe
                 if index == 1:
-                    # Non-Standard protection logic
+                    # Protections
 
-                    # Trigger Logic
+                    # Logic
                     item_buy_logic.append(dataframe['rsi_14'] < 30.0)
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
                 dataframe.loc[item_buy, 'buy_tag'] += f"{index} "
                 conditions.append(item_buy)
+                dataframe.loc[:, 'buy'] = item_buy
 
         if conditions:
             dataframe.loc[:, 'buy'] = reduce(lambda x, y: x | y, conditions)
