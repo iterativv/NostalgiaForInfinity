@@ -107,7 +107,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.139"
+        return "v11.0.140"
 
     # ROI table:
     minimal_roi = {
@@ -159,7 +159,7 @@ class NostalgiaForInfinityX(IStrategy):
     coin_metrics['current_whitelist'] = []
 
     # Rebuy feature
-    # position_adjustment_enable = True
+    position_adjustment_enable = True
     max_rebuy_orders = 2
     max_rebuy_multiplier = 1.0
 
@@ -2285,7 +2285,7 @@ class NostalgiaForInfinityX(IStrategy):
     def custom_stake_amount(self, pair: str, current_time: datetime, current_rate: float,
                             proposed_stake: float, min_stake: float, max_stake: float,
                             **kwargs) -> float:
-        if (self.config['position_adjustment_enable'] == True):
+        if (self.position_adjustment_enable == True):
             return proposed_stake / self.max_rebuy_multiplier
         else:
             return proposed_stake
@@ -2311,7 +2311,7 @@ class NostalgiaForInfinityX(IStrategy):
         if self._should_hold_trade(trade, current_rate, 'none'):
             return None
 
-        if (self.config['position_adjustment_enable'] == False) or (current_profit > -0.03):
+        if (self.position_adjustment_enable == False) or (current_profit > -0.03):
             return None
 
         dataframe, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
