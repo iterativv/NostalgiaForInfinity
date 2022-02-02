@@ -72,10 +72,10 @@ def deviations():
     return {
         "binance": {
             ("20210101", "20210201"): {"max_drawdown": 20, "winrate": 90},
-            ("20210201", "20210301"): {"max_drawdown": 20, "winrate": 90},
+            ("20210201", "20210301"): {"max_drawdown": 35, "winrate": 90},
             ("20210301", "20210401"): {"max_drawdown": 20, "winrate": 90},
             ("20210401", "20210501"): {"max_drawdown": 20, "winrate": 90},
-            ("20210501", "20210601"): {"max_drawdown": 30, "winrate": 90},
+            ("20210501", "20210601"): {"max_drawdown": 35, "winrate": 90},
             ("20210601", "20210701"): {"max_drawdown": 20, "winrate": 90},
             ("20210701", "20210801"): {"max_drawdown": 20, "winrate": 90},
             ("20210801", "20210901"): {"max_drawdown": 20, "winrate": 90},
