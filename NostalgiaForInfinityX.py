@@ -110,7 +110,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.148"
+        return "v11.0.149"
 
     # ROI table:
     minimal_roi = {
@@ -2455,36 +2455,36 @@ class NostalgiaForInfinityX(IStrategy):
         ):
             return True, 'sell_stoploss_u_e_1'
 
-        # if (
-        #         (current_profit < -0.12)
-        #         and (last_candle['close'] < last_candle['ema_200'])
-        #         and (last_candle['close'] < (last_candle['ema_200'] - last_candle['atr']))
-        #         and (last_candle['sma_200_dec_20'])
-        #         # temporary
-        #         and (trade.open_date_utc + timedelta(minutes=3000) > current_time)
-        # ):
-        #     return True, 'sell_stoploss_doom'
-
         if (
-                (current_time - timedelta(minutes=30) > trade.open_date_utc)
-                and (trade.open_date_utc + timedelta(minutes=18000) > current_time)
+                (current_profit < -0.25)
                 and (last_candle['close'] < last_candle['ema_200'])
+                and (last_candle['close'] < (last_candle['ema_200'] - last_candle['atr']))
+                and (last_candle['sma_200_dec_20'])
+                # temporary
+                and (trade.open_date_utc + timedelta(minutes=4000) > current_time)
         ):
-            if (-0.12 <= current_profit < -0.08):
-                if (last_candle['close'] < last_candle['atr_high_thresh_1']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_1']) and (last_candle['cmf'] < -0.0):
-                    return True, 'sell_stoploss_atr_1'
-            elif (-0.16 <= current_profit < -0.12):
-                if (last_candle['close'] < last_candle['atr_high_thresh_2']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_2']) and (last_candle['cmf'] < -0.0):
-                    return True, 'sell_stoploss_atr_2'
-            elif (-0.2 <= current_profit < -0.16):
-                if (last_candle['close'] < last_candle['atr_high_thresh_3']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_3']) and (last_candle['cmf'] < -0.0):
-                    return True, 'sell_stoploss_atr_3'
-            elif (-0.3 <= current_profit < -0.2):
-                if (last_candle['close'] < last_candle['atr_high_thresh_4']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_4']) and (last_candle['cmf'] < -0.0):
-                    return True, 'sell_stoploss_atr_4'
-            elif (current_profit < -0.3):
-                if (last_candle['close'] < last_candle['atr_high_thresh_5']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_5']) and (last_candle['cmf'] < -0.0):
-                    return True, 'sell_stoploss_atr_5'
+            return True, 'sell_stoploss_doom'
+
+        # if (
+        #         (current_time - timedelta(minutes=30) > trade.open_date_utc)
+        #         and (trade.open_date_utc + timedelta(minutes=18000) > current_time)
+        #         and (last_candle['close'] < last_candle['ema_200'])
+        # ):
+        #     if (-0.12 <= current_profit < -0.08):
+        #         if (last_candle['close'] < last_candle['atr_high_thresh_1']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_1']) and (last_candle['cmf'] < -0.0):
+        #             return True, 'sell_stoploss_atr_1'
+        #     elif (-0.16 <= current_profit < -0.12):
+        #         if (last_candle['close'] < last_candle['atr_high_thresh_2']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_2']) and (last_candle['cmf'] < -0.0):
+        #             return True, 'sell_stoploss_atr_2'
+        #     elif (-0.2 <= current_profit < -0.16):
+        #         if (last_candle['close'] < last_candle['atr_high_thresh_3']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_3']) and (last_candle['cmf'] < -0.0):
+        #             return True, 'sell_stoploss_atr_3'
+        #     elif (-0.3 <= current_profit < -0.2):
+        #         if (last_candle['close'] < last_candle['atr_high_thresh_4']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_4']) and (last_candle['cmf'] < -0.0):
+        #             return True, 'sell_stoploss_atr_4'
+        #     elif (current_profit < -0.3):
+        #         if (last_candle['close'] < last_candle['atr_high_thresh_5']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_5']) and (last_candle['cmf'] < -0.0):
+        #             return True, 'sell_stoploss_atr_5'
 
         return False, None
 
