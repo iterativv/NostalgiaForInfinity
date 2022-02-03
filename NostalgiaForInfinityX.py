@@ -162,7 +162,7 @@ class NostalgiaForInfinityX(IStrategy):
     coin_metrics['current_whitelist'] = []
 
     # Rebuy feature
-    position_adjustment_enable = False
+    position_adjustment_enable = True
     max_rebuy_orders = 2
     max_rebuy_multiplier = 1.0
 
@@ -2309,8 +2309,6 @@ class NostalgiaForInfinityX(IStrategy):
         :param **kwargs: Ensure to keep this here so updates to this won't break your strategy.
         :return float: Stake amount to adjust your trade
        """
-
-        return None
 
         # Don't rebuy for trades on hold
         if self._should_hold_trade(trade, current_rate, 'none'):
