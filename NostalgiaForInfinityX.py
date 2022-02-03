@@ -110,7 +110,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.168"
+        return "v11.0.169"
 
     # ROI table:
     minimal_roi = {
@@ -2308,7 +2308,9 @@ class NostalgiaForInfinityX(IStrategy):
         :param max_stake: Balance available for trading.
         :param **kwargs: Ensure to keep this here so updates to this won't break your strategy.
         :return float: Stake amount to adjust your trade
-        """
+       """
+
+        return None
 
         # Don't rebuy for trades on hold
         if self._should_hold_trade(trade, current_rate, 'none'):
