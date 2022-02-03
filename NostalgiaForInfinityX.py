@@ -110,7 +110,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.166"
+        return "v11.0.168"
 
     # ROI table:
     minimal_roi = {
@@ -162,7 +162,7 @@ class NostalgiaForInfinityX(IStrategy):
     coin_metrics['current_whitelist'] = []
 
     # Rebuy feature
-    position_adjustment_enable = True
+    position_adjustment_enable = False
     max_rebuy_orders = 2
     max_rebuy_multiplier = 1.0
 
