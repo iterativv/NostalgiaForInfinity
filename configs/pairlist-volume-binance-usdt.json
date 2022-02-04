@@ -7,11 +7,11 @@
 			"refresh_period": 1800
 		},
 		{"method": "AgeFilter", "min_days_listed": 2},
-		{"method": "SpreadFilter", "max_spread_ratio": 0.005},
 		{
 			"method": "RangeStabilityFilter",
 			"lookback_days": 3,
 			"min_rate_of_change": 0.03,
+            "max_rate_of_change": 0.75,
 			"refresh_period": 1800
 		},
 		{

@@ -110,7 +110,9 @@ class Backtest:
         else:
             log.debug("Command Result:\n%s", ret)
         assert ret.exitcode == 0
-        generated_results_file = list(tmp_path.rglob("backtest-results-*.json"))[0]
+        generated_results_file = list(
+            f for f in tmp_path.rglob("backtest-results-*.json") if "meta" not in str(f)
+        )[0]
         generated_json_ci_results_artifact_path = None
         if self.request.config.option.artifacts_path:
             generated_json_results_artifact_path = (
@@ -177,7 +179,7 @@ class BacktestResults:
             "profit_sum_pct": self.full_stats.profit_sum_pct,
             "profit_mean_pct": self.full_stats.profit_mean_pct,
             "profit_total_pct": self.full_stats.profit_total_pct,
-            "max_drawdown": self.results.max_drawdown * 100,
+            "max_drawdown": self.results.max_drawdown_account * 100,
             "trades": self.full_stats.trades,
             "winrate": round(self.full_stats.wins * 100.0 / self.full_stats.trades, 2),
         }
