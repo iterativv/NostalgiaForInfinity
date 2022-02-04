@@ -4,14 +4,15 @@
 			"method": "VolumePairList",
 			"number_assets": 80,
 			"sort_key": "quoteVolume",
-			"refresh_period": 1800
+			"refresh_period": 1800,
+            "min_value": 2000000
 		},
 		{"method": "AgeFilter", "min_days_listed": 2},
-		{"method": "SpreadFilter", "max_spread_ratio": 0.01},
 		{
 			"method": "RangeStabilityFilter",
 			"lookback_days": 3,
 			"min_rate_of_change": 0.03,
+            "max_rate_of_change": 0.75,
 			"refresh_period": 1800
 		},
 		{
