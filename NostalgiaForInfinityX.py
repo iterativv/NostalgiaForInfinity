@@ -110,7 +110,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.185"
+        return "v11.0.186"
 
     # ROI table:
     minimal_roi = {
@@ -2050,7 +2050,7 @@ class NostalgiaForInfinityX(IStrategy):
             "safe_dips_threshold_0"     : 0.032,
             "safe_dips_threshold_2"     : 0.09,
             "safe_dips_threshold_12"    : 0.24,
-            "safe_dips_threshold_144"   : 0.36,
+            "safe_dips_threshold_144"   : 0.21,
             "safe_pump_6h_threshold"    : 0.5,
             "safe_pump_12h_threshold"   : None,
             "safe_pump_24h_threshold"   : 0.6,
@@ -10138,14 +10138,14 @@ class NostalgiaForInfinityX(IStrategy):
                 # Condition #65 - Semi swing. Local deep.
                 elif index == 65:
                     # Non-Standard protections
-                    item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_1h'] * 0.95))
+                    item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_1h'] * 0.94))
 
                     # Logic
                     item_buy_logic.append(dataframe['kama'] > dataframe['fama'])
                     item_buy_logic.append(dataframe['fama'] > (dataframe['mama'] * 0.981))
-                    item_buy_logic.append(dataframe['mama_diff'] < -0.044)
+                    item_buy_logic.append(dataframe['mama_diff'] < -0.033)
                     item_buy_logic.append(dataframe['cti'] < -0.715)
-                    item_buy_logic.append(dataframe['r_14'] < -61.3)
+                    item_buy_logic.append(dataframe['r_14'] < -90.0)
                     item_buy_logic.append(dataframe['rsi_14'] < 38.0)
                     item_buy_logic.append(dataframe['rsi_84'] < 60.0)
                     item_buy_logic.append(dataframe['rsi_112'] < 60.0)
