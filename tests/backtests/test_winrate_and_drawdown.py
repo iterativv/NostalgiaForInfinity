@@ -60,6 +60,7 @@ def timerange_fmt(value):
         Timerange("20211001", "20211101"),
         Timerange("20211101", "20211201"),
         Timerange("20211201", "20220101"),
+        Timerange("20220101", "20220201"),
     ),
     ids=timerange_fmt,
 )
@@ -81,7 +82,7 @@ def deviations():
             ("20210801", "20210901"): {"max_drawdown": 20, "winrate": 90},
             ("20210901", "20211001"): {"max_drawdown": 20, "winrate": 85},
             ("20211001", "20211101"): {"max_drawdown": 20, "winrate": 85},
-            ("20211201", "20220101"): {"max_drawdown": 30, "winrate": 75},
+            ("20211201", "20220101"): {"max_drawdown": 20, "winrate": 90},
         },
         "kucoin": {
             ("20210201", "20210301"): {"max_drawdown": 20, "winrate": 85},
@@ -92,7 +93,7 @@ def deviations():
             ("20210701", "20210801"): {"max_drawdown": 20, "winrate": 85},
             ("20210801", "20210901"): {"max_drawdown": 20, "winrate": 85},
             ("20210901", "20211001"): {"max_drawdown": 20, "winrate": 80},
-            ("20211001", "20211101"): {"max_drawdown": 20, "winrate": 85},
+            ("20211001", "20211101"): {"max_drawdown": 20, "winrate": 90},
         },
     }
 
