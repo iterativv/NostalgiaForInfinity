@@ -110,7 +110,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.195"
+        return "v11.0.196"
 
     # ROI table:
     minimal_roi = {
@@ -2050,7 +2050,7 @@ class NostalgiaForInfinityX(IStrategy):
             "safe_dips_threshold_0"     : 0.032,
             "safe_dips_threshold_2"     : 0.09,
             "safe_dips_threshold_12"    : 0.24,
-            "safe_dips_threshold_144"   : 0.21,
+            "safe_dips_threshold_144"   : 0.36,
             "safe_pump_6h_threshold"    : 0.5,
             "safe_pump_12h_threshold"   : None,
             "safe_pump_24h_threshold"   : 0.6,
@@ -10193,7 +10193,7 @@ class NostalgiaForInfinityX(IStrategy):
 
                     # Logic
                     item_buy_logic.append(dataframe['kama'] > dataframe['fama'])
-                    item_buy_logic.append(dataframe['mama_diff'] < -0.033)
+                    item_buy_logic.append(dataframe['mama_diff'] < -0.038)
                     item_buy_logic.append(dataframe['r_14'] < -90.0)
                     item_buy_logic.append(dataframe['rsi_14'] < 38.0)
                     item_buy_logic.append(dataframe['crsi_1h'] > 20.0)
