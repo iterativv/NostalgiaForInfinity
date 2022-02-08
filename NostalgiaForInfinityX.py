@@ -110,7 +110,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.196"
+        return "v11.0.197"
 
     # ROI table:
     minimal_roi = {
@@ -2332,20 +2332,28 @@ class NostalgiaForInfinityX(IStrategy):
 
         if (count_of_buys == 1):
             if (
-                    (current_profit > -0.03)
+                    (current_profit > -0.06)
                     or (
                         (last_candle['crsi'] < 12.0)
-                        or (last_candle['crsi_1h'] < 11.0)
                     )
             ):
                 return None
         elif (count_of_buys == 2):
             if (
-                    (current_profit > -0.04)
+                    (current_profit > -0.09)
                     or (
                         (last_candle['crsi'] < 20.0)
                         or (last_candle['crsi_1h'] < 11.0)
-                        or (last_candle['close'] < previous_candle['close'])
+                    )
+            ):
+                return None
+        elif (count_of_buys == 3):
+            if (
+                    (current_profit > -0.12)
+                    or (
+                        (last_candle['crsi'] < 20.0)
+                        or (last_candle['crsi_1h'] < 12.0)
+                        or (last_candle['btc_not_downtrend_1h'] == False)
                     )
             ):
                 return None
@@ -2356,7 +2364,7 @@ class NostalgiaForInfinityX(IStrategy):
                 # This returns first order stake size
                 stake_amount = filled_buys[0].cost
                 # This then calculates current safety order size
-                stake_amount = stake_amount * (0.25 + (count_of_buys * 0.005))
+                stake_amount = stake_amount * (0.32 + (count_of_buys * 0.005))
                 return stake_amount
             except Exception as exception:
                 return None
