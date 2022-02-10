@@ -110,7 +110,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.210"
+        return "v11.0.211"
 
     # ROI table:
     minimal_roi = {
@@ -10356,7 +10356,7 @@ class NostalgiaForInfinityX(IStrategy):
         if ((rate > dataframe['close'])):
             slippage = ((rate / dataframe['close']) - 1.0)
 
-            if slippage < 0.038:
+            if slippage < 0.044:
                 return True
             else:
                 log.warning(
