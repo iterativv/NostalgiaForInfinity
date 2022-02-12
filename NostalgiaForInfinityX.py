@@ -38,7 +38,7 @@ else:
 
 
 ###########################################################################################################
-##                NostalgiaForInfinityX by iterativ                                                     ##
+##                NostalgiaForInfinityX by iterativ                                                      ##
 ##           https://github.com/iterativv/NostalgiaForInfinity                                           ##
 ##                                                                                                       ##
 ##    Strategy for Freqtrade https://github.com/freqtrade/freqtrade                                      ##
@@ -55,6 +55,9 @@ else:
 ##     use_sell_signal must set to true (or not set at all).                                             ##
 ##     sell_profit_only must set to false (or not set at all).                                           ##
 ##     ignore_roi_if_buy_signal must set to true (or not set at all).                                    ##
+##                                                                                                       ##
+##   DCA(position_adjustment_enable = True) is enabled in the strategy. If this is not wanted,           ##
+##   disable it in your configuration.                                                                   ##
 ##                                                                                                       ##
 ###########################################################################################################
 ##               HOLD SUPPORT                                                                            ##
@@ -2310,6 +2313,7 @@ class NostalgiaForInfinityX(IStrategy):
         :return float: Stake amount to adjust your trade
        """
 
+       
         # Don't rebuy for trades on hold
         if self._should_hold_trade(trade, current_rate, 'none'):
             return None
@@ -2357,6 +2361,14 @@ class NostalgiaForInfinityX(IStrategy):
                     )
             ):
                 return None
+
+         # Obtain pair dataframe 
+        dataframe, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
+        last_candle = dataframe.iloc[-1].squeeze()
+
+        if last_candle['buy'] == 1 and self.dp.runmode.value in'dry_run':
+                logger.info("dry run enabled, extra 'fake'rebuy")
+    
 
         # Maximum 2 rebuys. Half the stake of the original.
         if 0 < count_of_buys <= self.max_rebuy_orders:
