@@ -110,7 +110,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.221"
+        return "v11.0.222"
 
     # ROI table:
     minimal_roi = {
@@ -2464,12 +2464,25 @@ class NostalgiaForInfinityX(IStrategy):
             return True, 'sell_stoploss_u_e_1'
 
         if (
+                (current_profit < -0.025)
+                and (last_candle['close'] < last_candle['ema_200'])
+                and (last_candle['cmf'] < -0.0)
+                and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < 0.024)
+                and last_candle['rsi_14'] > previous_candle_1['rsi_14']
+                and (last_candle['rsi_14'] > (last_candle['rsi_14_1h'] + 20.0))
+                and (current_time - timedelta(minutes=2880) > trade.open_date_utc)
+                # temporary
+                and (trade.open_date_utc + timedelta(minutes=12000) > current_time)
+        ):
+            return True, 'sell_stoploss_u_e_2'
+
+        if (
                 (current_profit < -0.35)
                 and (last_candle['close'] < last_candle['ema_200'])
                 and (last_candle['close'] < (last_candle['ema_200'] - last_candle['atr']))
                 and (last_candle['sma_200_dec_20'])
                 # temporary
-                and (trade.open_date_utc + timedelta(minutes=13000) > current_time)
+                and (trade.open_date_utc + timedelta(minutes=20000) > current_time)
         ):
             return True, 'sell_stoploss_doom'
 
