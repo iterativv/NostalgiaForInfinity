@@ -2313,7 +2313,6 @@ class NostalgiaForInfinityX(IStrategy):
         :return float: Stake amount to adjust your trade
        """
 
-       
         # Don't rebuy for trades on hold
         if self._should_hold_trade(trade, current_rate, 'none'):
             return None
@@ -2362,12 +2361,12 @@ class NostalgiaForInfinityX(IStrategy):
             ):
                 return None
 
-        # Obtain pair dataframe 
+        # Obtain pair dataframe
         dataframe, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
         last_candle = dataframe.iloc[-1].squeeze()
         if last_candle['buy'] == 1 and self.dp.runmode.value in ('backtest','dry_run'):
             log.info(f"dry run enabled, however a new buy tag is created for pair {trade.pair}")
-    
+
 
         # Maximum 2 rebuys. Half the stake of the original.
         if 0 < count_of_buys <= self.max_rebuy_orders:
