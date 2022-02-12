@@ -12,7 +12,7 @@
             // FAN
             "(ACM|AFA|ALA|ALL|APL|ASR|ATM|BAR|CAI|CITY|FOR|GAL|GOZ|IBFK|JUV|LAZIO|LEG|LOCK-1|NAVI|NMR|NOV|OG|PFL|PORTO|PSG|ROUSH|SANTOS|STV|TH|TRA|UCH|UFC|YBO)/.*",
             // Others
-            "(BOBA|CTXC|HBAR|NMR|SLP|OMG|ONG|ARDR)/.*"
+            "(BOBA|CTXC|HBAR|NMR|SLP|OMG|ONG|ARDR|PEOPLE)/.*"
         ]
     }
 }
