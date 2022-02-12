@@ -2362,12 +2362,11 @@ class NostalgiaForInfinityX(IStrategy):
             ):
                 return None
 
-         # Obtain pair dataframe 
+        # Obtain pair dataframe 
         dataframe, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
         last_candle = dataframe.iloc[-1].squeeze()
-
-        if last_candle['buy'] == 1 and self.dp.runmode.value in'dry_run':
-                logger.info("dry run enabled, extra 'fake'rebuy")
+        if last_candle['buy'] == 1 and self.dp.runmode.value in ('backtest','dry_run'):
+            log.info(f"dry run enabled, however a new buy tag is created for pair {trade.pair}")
     
 
         # Maximum 2 rebuys. Half the stake of the original.
