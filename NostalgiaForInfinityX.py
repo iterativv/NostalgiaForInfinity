@@ -110,7 +110,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.229"
+        return "v11.0.230"
 
     # ROI table:
     minimal_roi = {
@@ -2320,6 +2320,7 @@ class NostalgiaForInfinityX(IStrategy):
         dataframe, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
         last_candle = dataframe.iloc[-1].squeeze()
         previous_candle = dataframe.iloc[-2].squeeze()
+
         # simple TA checks, to assure that the price is not dropping rapidly
         if (
                 # drop in the last candle
@@ -2358,11 +2359,9 @@ class NostalgiaForInfinityX(IStrategy):
             ):
                 return None
 
-        # Obtain pair dataframe
-        dataframe, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
-        last_candle = dataframe.iloc[-1].squeeze()
+        # Log if the last candle triggered a buy signal, even if max rebuys reached
         if last_candle['buy'] == 1 and self.dp.runmode.value in ('backtest','dry_run'):
-            log.info(f"dry run enabled, however a new buy tag is created for pair {trade.pair}")
+            log.info(f"Rebuy: a buy tag found for pair {trade.pair}")
 
         # Maximum 2 rebuys. Half the stake of the original.
         if 0 < count_of_buys <= self.max_rebuy_orders:
