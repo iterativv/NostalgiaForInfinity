@@ -12,7 +12,7 @@
             // FAN Tokens
             "(ACM|AFA|ALA|ALL|APL|ASR|ATM|BAR|CAI|CITY|FOR|GAL|GOZ|IBFK|JUV|LEG|LOCK-1|NAVI|NMR|NOV|OG|PFL|PORTO|PSG|ROUSH|STV|TH|TRA|UCH|UFC|YBO)/.*",
             // Other Coins
-            "(BOBA|MEM|AMPL|OMG|XYM|CARR|SGB|SKEY|KLV|PEOPLE)/.*"
+            "(BOBA|CWAR|MEM|AMPL|OMG|XYM|CARR|SGB|SKEY|KLV|PEOPLE)/.*"
         ]
     }
 }
