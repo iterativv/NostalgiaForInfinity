@@ -122,7 +122,7 @@ class NostalgiaForInfinityX(IStrategy):
 
         code = string.ascii_uppercase[patch_version%26]
         if sell_tag:
-            return f"{sell_tag} {code}"        
+            return f"{sell_tag} {code}"
         return f"{buy_tag} {code}"
 
     # ROI table:
@@ -10380,7 +10380,7 @@ class NostalgiaForInfinityX(IStrategy):
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
                 dataframe.loc[item_buy, 'buy_tag'] += f"{index} "
                 conditions.append(item_buy)
-        dataframe.loc[item_buy, 'buy_tag'] = version_info(dataframe.loc[item_buy, 'buy_tag'])        
+        dataframe.loc[item_buy, 'buy_tag'] = version_info(dataframe.loc[item_buy, 'buy_tag'])
         if conditions:
             dataframe.loc[:, 'buy'] = reduce(lambda x, y: x | y, conditions)
 
