@@ -19,6 +19,7 @@ from technical.util import resample_to_interval, resampled_merge
 from technical.indicators import RMI, zema, VIDYA, ichimoku
 import time
 import warnings
+import string
 
 log = logging.getLogger(__name__)
 #log.setLevel(logging.DEBUG)
@@ -108,9 +109,21 @@ else:
 
 class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
+    patch_version=245
 
     def version(self) -> str:
-        return "v11.0.244"
+        return f"v11.0.{patch_version}"
+        
+    def version_info(buy_tag, sell_tag = None) -> str:
+        if self.dp.runmode.value == 'backtest':
+            if sell_tag:
+                return f"{sell_tag} ( {buy_tag})"
+            return buy_tag
+
+        code = string.ascii_uppercase[patch_version%26]
+        if sell_tag:
+            return f"{sell_tag} {code}"        
+        return f"{buy_tag} {code}"
 
     # ROI table:
     minimal_roi = {
@@ -8848,7 +8861,7 @@ class NostalgiaForInfinityX(IStrategy):
         if all(c in ['31', '32', '33', '34', '35', '36'] for c in buy_tags):
             sell, signal_name = self.sell_long_mode(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, buy_tag)
             if sell and (signal_name is not None):
-                return f"{signal_name} ( {buy_tag})"
+                return version_info(buy_tag, signal_name)
             # Skip remaining sell logic for long mode
             return None
 
@@ -8856,57 +8869,57 @@ class NostalgiaForInfinityX(IStrategy):
         if all(c in ['empty', '58', '59', '60', '61', '62', '63', '64', '65'] for c in buy_tags):
             sell, signal_name = self.sell_quick_mode(current_profit, max_profit, last_candle, previous_candle_1)
             if sell and (signal_name is not None):
-                return f"{signal_name} ( {buy_tag})"
+                return version_info(buy_tag, signal_name)
 
         # Original sell signals
         sell, signal_name = self.sell_signals(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, buy_tag)
         if sell and (signal_name is not None):
-            return f"{signal_name} ( {buy_tag})"
+            return version_info(buy_tag, signal_name)
 
         # Stoplosses
         sell, signal_name = self.sell_stoploss(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
         if sell and (signal_name is not None):
-            return f"{signal_name} ( {buy_tag})"
+            return version_info(buy_tag, signal_name)
 
         # Over EMA200, main profit targets
         sell, signal_name = self.sell_over_main(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return f"{signal_name} ( {buy_tag})"
+            return version_info(buy_tag, signal_name)
 
         # Under EMA200, main profit targets
         sell, signal_name = self.sell_under_main(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return f"{signal_name} ( {buy_tag})"
+            return version_info(buy_tag, signal_name)
 
         # Williams %R based sells
         sell, signal_name = self.sell_r(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
         if sell and (signal_name is not None):
-            return f"{signal_name} ( {buy_tag})"
+            return version_info(buy_tag, signal_name)
 
         # Trailing
         sell, signal_name = self.sell_trail(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
         if sell and (signal_name is not None):
-            return f"{signal_name} ( {buy_tag})"
+            return version_info(buy_tag, signal_name)
 
         # The pair is descending
         sell, signal_name = self.sell_dec_main(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return f"{signal_name} ( {buy_tag})"
+            return version_info(buy_tag, signal_name)
 
         # Sell logic for pumped pairs
         sell, signal_name = self.sell_pump_main(current_profit, last_candle)
         if sell and (signal_name is not None):
-            return f"{signal_name} ( {buy_tag})"
+            return version_info(buy_tag, signal_name)
 
         # The pair is pumped, stoploss
         sell, signal_name = self.sell_pump_stoploss(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
         if sell and (signal_name is not None):
-            return f"{signal_name} ( {buy_tag})"
+            return version_info(buy_tag, signal_name)
 
         # Pivot points based sells
         sell, signal_name = self.sell_pivot(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
         if sell and (signal_name is not None):
-            return f"{signal_name} ( {buy_tag})"
+            return version_info(buy_tag, signal_name)
 
         return None
 
@@ -10367,7 +10380,7 @@ class NostalgiaForInfinityX(IStrategy):
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
                 dataframe.loc[item_buy, 'buy_tag'] += f"{index} "
                 conditions.append(item_buy)
-
+        dataframe.loc[item_buy, 'buy_tag'] = version_info(dataframe.loc[item_buy, 'buy_tag'])        
         if conditions:
             dataframe.loc[:, 'buy'] = reduce(lambda x, y: x | y, conditions)
 
