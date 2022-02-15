@@ -113,7 +113,7 @@ class NostalgiaForInfinityX(IStrategy):
 
     def version(self) -> str:
         return f"v11.0.{patch_version}"
-        
+
     def version_info(buy_tag, sell_tag = None) -> str:
         if self.dp.runmode.value == 'backtest':
             if sell_tag:
