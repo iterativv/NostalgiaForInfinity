@@ -122,8 +122,8 @@ class NostalgiaForInfinityX(IStrategy):
 
         code = string.ascii_uppercase[self.patch_version%26]
         if sell_tag:
-            return f"{sell_tag} {code}"
-        return f"{buy_tag} {code}"
+            return f"{sell_tag} | {code}"
+        return f"{buy_tag} | {code}"
 
     # ROI table:
     minimal_roi = {
@@ -8843,7 +8843,7 @@ class NostalgiaForInfinityX(IStrategy):
         buy_tag = 'empty'
         if hasattr(trade, 'buy_tag') and trade.buy_tag is not None:
             buy_tag = trade.buy_tag
-        buy_tags = buy_tag.split()
+        buy_tags = buy_tag.split('|')
 
         max_profit = ((trade.max_rate - trade.open_rate) / trade.open_rate)
         max_loss = ((trade.open_rate - trade.min_rate) / trade.min_rate)
