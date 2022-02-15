@@ -8843,7 +8843,7 @@ class NostalgiaForInfinityX(IStrategy):
         buy_tag = 'empty'
         if hasattr(trade, 'buy_tag') and trade.buy_tag is not None:
             buy_tag = trade.buy_tag
-        buy_tags = buy_tag.split('|')
+        buy_tags = buy_tag.split('|')[0].split()
 
         max_profit = ((trade.max_rate - trade.open_rate) / trade.open_rate)
         max_loss = ((trade.open_rate - trade.min_rate) / trade.min_rate)
