@@ -110,20 +110,20 @@ else:
 class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
     patch_version=245
+    def __init__(self):
+        self.code = string.ascii_uppercase[self.patch_version%26]
 
     def version(self) -> str:
-        return f"v11.0.{self.patch_version}"
+        return f"v11.0.{self.patch_version} | {self.code}"
 
     def version_info(self, buy_tag, sell_tag = None) -> str:
         if self.dp.runmode.value == 'backtest':
             if sell_tag:
                 return f"{sell_tag} ( {buy_tag})"
-            return buy_tag
-
-        code = string.ascii_uppercase[self.patch_version%26]
+            return buy_tag            
         if sell_tag:
-            return f"{sell_tag} | {code}"
-        return f"{buy_tag} | {code}"
+            return f"{sell_tag} | {self.code}"
+        return f"{buy_tag} | {self.code}"
 
     # ROI table:
     minimal_roi = {
