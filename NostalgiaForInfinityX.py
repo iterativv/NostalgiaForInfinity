@@ -110,7 +110,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.255"
+        return "v11.0.256"
 
     # ROI table:
     minimal_roi = {
@@ -2480,7 +2480,7 @@ class NostalgiaForInfinityX(IStrategy):
                 and (last_candle['sma_200_dec_24'])
                 and (current_time - timedelta(minutes=9200) > trade.open_date_utc)
                 # temporary
-                and (trade.open_date_utc + timedelta(minutes=28000) > current_time)
+                and (trade.open_date_utc + timedelta(minutes=30000) > current_time)
         ):
             return True, 'sell_stoploss_u_e_2'
 
