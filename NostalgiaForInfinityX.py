@@ -2295,7 +2295,7 @@ class NostalgiaForInfinityX(IStrategy):
         else:
             return proposed_stake
 
-    def calc_profit_ratio2(self, open_rate: float, current_rate: float): ->float
+    def calc_profit_ratio2(self, open_rate: float, current_rate: float) ->float:
         return  float(( Decimal(1-self.fee_close)* Decimal(current_rate) )/
             (Decimal(1+self.fee_open)* Decimal(open_rate) )-1)
 
