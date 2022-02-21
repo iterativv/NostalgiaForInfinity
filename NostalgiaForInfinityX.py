@@ -2379,13 +2379,14 @@ class NostalgiaForInfinityX(IStrategy):
                 return stake_amount
             except Exception as exception:
                 return None
-        max_profit2=self.custom_info.get(metadata["pair"],0)
+        max_profit2=self.custom_info.get(trade.pair,0)
         last_buy_order = filled_buys[-1]
         last_open_rate = last_buy_order.average or last_buy_order.price
         current_profit2=calc_profit_ratio2(last_open_rate, current_rate)
-        if max_profit2<current_profit2: self.custom_info[metadata["pair"]]=current_profit2
+        if current_time.second %10 == 0: print(trade.pair, max_profit2, current_profit2)
+        if max_profit2<current_profit2: self.custom_info[trade.pair]=current_profit2
         if max_profit2-current_profit2>.005-0.0025*(count_of_buys-2) and current_profit2 > 0 and count_of_buys > 1:
-            self.custom_info[metadata["pair"]]=0
+            self.custom_info[trade.pair]=0
             last_stake_amt=last_buy_order.amount
             return -last_stake_amt
         return None
