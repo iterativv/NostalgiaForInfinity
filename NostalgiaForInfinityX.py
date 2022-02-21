@@ -15,6 +15,7 @@ import math
 from typing import Dict
 from freqtrade.persistence import Trade
 from datetime import datetime, timedelta
+from decimal import Decimal
 from technical.util import resample_to_interval, resampled_merge
 from technical.indicators import RMI, zema, VIDYA, ichimoku
 import time
@@ -2382,8 +2383,8 @@ class NostalgiaForInfinityX(IStrategy):
         max_profit2=self.custom_info.get(trade.pair,0)
         last_buy_order = filled_buys[-1]
         last_open_rate = last_buy_order.average or last_buy_order.price
-        current_profit2=calc_profit_ratio2(last_open_rate, current_rate)
-        if current_time.second %10 == 0: print(trade.pair, max_profit2, current_profit2)
+        current_profit2=self.calc_profit_ratio2(last_open_rate, current_rate)
+        if current_time.second %10 == 0: log.info(trade.pair, max_profit2, current_profit2)
         if max_profit2<current_profit2: self.custom_info[trade.pair]=current_profit2
         if max_profit2-current_profit2>.005-0.0025*(count_of_buys-2) and current_profit2 > 0 and count_of_buys > 1:
             self.custom_info[trade.pair]=0
