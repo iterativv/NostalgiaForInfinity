@@ -2387,7 +2387,7 @@ class NostalgiaForInfinityX(IStrategy):
         if max_profit2-current_profit2>.005-0.0025*(count_of_buys-2) and current_profit2 > 0:
             self.custom_info[metadata["pair"]]=0
             last_stake_amt=last_buy_order.amount
-            return last_stake_amt
+            return -last_stake_amt
         return None
 
     def sell_signals(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
