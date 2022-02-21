@@ -2384,7 +2384,7 @@ class NostalgiaForInfinityX(IStrategy):
         last_open_rate = last_buy_order.average or last_buy_order.price
         current_profit2=calc_profit_ratio2(last_open_rate, current_rate)
         if max_profit2<current_profit2: self.custom_info[metadata["pair"]]=current_profit2
-        if max_profit2-current_profit2>.005-0.0025*(count_of_buys-2) and current_profit2 > 0:
+        if max_profit2-current_profit2>.005-0.0025*(count_of_buys-2) and current_profit2 > 0 and count_of_buys > 1:
             self.custom_info[metadata["pair"]]=0
             last_stake_amt=last_buy_order.amount
             return -last_stake_amt
