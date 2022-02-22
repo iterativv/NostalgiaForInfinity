@@ -2352,7 +2352,7 @@ class NostalgiaForInfinityX(IStrategy):
 
         if (count_of_buys == 1):
             if (
-                    (current_profit > -0.08)
+                    (current_profit > -0.03)
                     or (
                         (last_candle['crsi'] < 12.0)
                     )
@@ -2360,7 +2360,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return None
         elif (count_of_buys == 2):
             if (
-                    (current_profit > -0.14)
+                    (current_profit > -0.04)
                     or (
                         (last_candle['crsi'] < 20.0)
                         or (last_candle['crsi_1h'] < 11.0)
