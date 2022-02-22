@@ -15,6 +15,7 @@ import math
 from typing import Dict
 from freqtrade.persistence import Trade
 from datetime import datetime, timedelta
+from decimal import Decimal
 from technical.util import resample_to_interval, resampled_merge
 from technical.indicators import RMI, zema, VIDYA, ichimoku
 import time
@@ -110,7 +111,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.269"
+        return "v11.0.270"
 
     # ROI table:
     minimal_roi = {
@@ -126,6 +127,8 @@ class NostalgiaForInfinityX(IStrategy):
     trailing_stop_positive_offset = 0.03
 
     use_custom_stoploss = False
+
+    custom_info = {}
 
     # Optimal timeframe for the strategy.
     timeframe = '5m'
@@ -2293,6 +2296,10 @@ class NostalgiaForInfinityX(IStrategy):
         else:
             return proposed_stake
 
+    def calc_profit_ratio2(self, open_rate: float, current_rate: float, trade: Trade) ->float:
+        return  float(( Decimal(1-trade.fee_close)* Decimal(current_rate) )/
+            (Decimal(1+trade.fee_open)* Decimal(open_rate) )-1)
+
     def adjust_trade_position(self, trade: Trade, current_time: datetime,
                               current_rate: float, current_profit: float, min_stake: float,
                               max_stake: float, **kwargs):
@@ -2333,7 +2340,7 @@ class NostalgiaForInfinityX(IStrategy):
 
         if (count_of_buys == 1):
             if (
-                    (current_profit > -0.08)
+                    (current_profit > -0.03)
                     or (
                         (last_candle['crsi'] < 12.0)
                     )
@@ -2341,7 +2348,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return None
         elif (count_of_buys == 2):
             if (
-                    (current_profit > -0.14)
+                    (current_profit > -0.04)
                     or (
                         (last_candle['crsi'] < 20.0)
                         or (last_candle['crsi_1h'] < 11.0)
@@ -2373,7 +2380,16 @@ class NostalgiaForInfinityX(IStrategy):
                 return stake_amount
             except Exception as exception:
                 return None
-
+        max_profit2=self.custom_info.get(trade.pair,0)
+        last_buy_order = filled_buys[-1]
+        last_open_rate = last_buy_order.average or last_buy_order.price
+        current_profit2=self.calc_profit_ratio2(last_open_rate, current_rate, trade)
+        if current_time.second %10 == 0: log.info(trade.pair, max_profit2, current_profit2)
+        if max_profit2<current_profit2: self.custom_info[trade.pair]=current_profit2
+        if max_profit2-current_profit2>.005-0.0025*(count_of_buys-2) and current_profit2 > 0 and count_of_buys > 1:
+            self.custom_info[trade.pair]=0
+            last_stake_amt=last_buy_order.amount
+            return -last_stake_amt
         return None
 
     def sell_signals(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
