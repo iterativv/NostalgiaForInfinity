@@ -2338,7 +2338,7 @@ class NostalgiaForInfinityX(IStrategy):
             return -last_stake_amt
 
         if count_of_buys > self.max_rebuy_orders and self.dp.runmode.value not in ('backtest','dry_run'):
-            return 
+            return
         dataframe, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
         last_candle = dataframe.iloc[-1].squeeze()
         previous_candle = dataframe.iloc[-2].squeeze()
@@ -2393,7 +2393,7 @@ class NostalgiaForInfinityX(IStrategy):
             return stake_amount
         except Exception as exception:
             return None
-        
+
         return None
 
     def sell_signals(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
