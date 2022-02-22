@@ -2324,6 +2324,21 @@ class NostalgiaForInfinityX(IStrategy):
         if (self.position_adjustment_enable == False) or (current_profit > -0.03):
             return None
 
+        filled_buys = trade.select_filled_orders('buy')
+        count_of_buys = len(filled_buys)
+        max_profit2=self.custom_info.get(trade.pair,0)
+        last_buy_order = filled_buys[-1]
+        last_open_rate = last_buy_order.average or last_buy_order.price
+        current_profit2=self.calc_profit_ratio2(last_open_rate, current_rate, trade)
+        # if current_time.second %10 == 0: log.info('partial_sell ' + ', '.join(map(str,(trade.pair, max_profit2, current_profit2, last_open_rate, current_rate))))
+        if max_profit2<current_profit2: self.custom_info[trade.pair]=current_profit2
+        if max_profit2-current_profit2>.005-0.0025*(count_of_buys-2) and current_profit2 > 0 and count_of_buys > 1:
+            self.custom_info[trade.pair]=0
+            last_stake_amt=last_buy_order.amount
+            return -last_stake_amt
+
+        if count_of_buys > self.max_rebuy_orders and self.dp.runmode.value not in ('backtest','dry_run'):
+            return 
         dataframe, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
         last_candle = dataframe.iloc[-1].squeeze()
         previous_candle = dataframe.iloc[-2].squeeze()
@@ -2335,12 +2350,9 @@ class NostalgiaForInfinityX(IStrategy):
         ):
             return None
 
-        filled_buys = trade.select_filled_orders('buy')
-        count_of_buys = len(filled_buys)
-
         if (count_of_buys == 1):
             if (
-                    (current_profit > -0.03)
+                    (current_profit > -0.08)
                     or (
                         (last_candle['crsi'] < 12.0)
                     )
@@ -2348,7 +2360,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return None
         elif (count_of_buys == 2):
             if (
-                    (current_profit > -0.04)
+                    (current_profit > -0.14)
                     or (
                         (last_candle['crsi'] < 20.0)
                         or (last_candle['crsi_1h'] < 11.0)
@@ -2369,27 +2381,19 @@ class NostalgiaForInfinityX(IStrategy):
         # Log if the last candle triggered a buy signal, even if max rebuys reached
         if last_candle['buy'] == 1 and self.dp.runmode.value in ('backtest','dry_run'):
             log.info(f"Rebuy: a buy tag found for pair {trade.pair}")
+            if count_of_buys > self.max_rebuy_orders:
+                return
 
         # Maximum 2 rebuys. Half the stake of the original.
-        if 0 < count_of_buys <= self.max_rebuy_orders:
-            try:
-                # This returns first order stake size
-                stake_amount = filled_buys[0].cost
-                # This then calculates current safety order size
-                stake_amount = stake_amount * (0.35 + (count_of_buys * 0.005))
-                return stake_amount
-            except Exception as exception:
-                return None
-        max_profit2=self.custom_info.get(trade.pair,0)
-        last_buy_order = filled_buys[-1]
-        last_open_rate = last_buy_order.average or last_buy_order.price
-        current_profit2=self.calc_profit_ratio2(last_open_rate, current_rate, trade)
-        if current_time.second %10 == 0: log.info(trade.pair, max_profit2, current_profit2)
-        if max_profit2<current_profit2: self.custom_info[trade.pair]=current_profit2
-        if max_profit2-current_profit2>.005-0.0025*(count_of_buys-2) and current_profit2 > 0 and count_of_buys > 1:
-            self.custom_info[trade.pair]=0
-            last_stake_amt=last_buy_order.amount
-            return -last_stake_amt
+        try:
+            # This returns first order stake size
+            stake_amount = filled_buys[0].cost
+            # This then calculates current safety order size
+            stake_amount = stake_amount * (0.35 + (count_of_buys * 0.005))
+            return stake_amount
+        except Exception as exception:
+            return None
+        
         return None
 
     def sell_signals(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
