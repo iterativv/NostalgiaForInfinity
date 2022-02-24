@@ -2491,7 +2491,7 @@ class NostalgiaForInfinityX(IStrategy):
                 and (last_candle['sma_200_dec_20'])
                 and (last_candle['cmf'] < -0.0)
                 # temporary
-                and (trade.open_date_utc + timedelta(minutes=5760) > current_time)
+                and (trade.open_date_utc + timedelta(minutes=3600) > current_time)
         ):
             return True, 'sell_stoploss_doom'
 
