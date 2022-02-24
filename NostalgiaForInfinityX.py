@@ -9213,7 +9213,7 @@ class NostalgiaForInfinityX(IStrategy):
         # CRSI (3, 2, 100)
         crsi_closechange = informative_1h['close'] / informative_1h['close'].shift(1)
         crsi_updown = np.where(crsi_closechange.gt(1), 1.0, np.where(crsi_closechange.lt(1), -1.0, 0.0))
-        informative_1h['crsi'] =  (ta.RSI(informative_1h['close'], timeperiod=3) + ta.RSI(crsi_updown, timeperiod=2) + ta.ROC(informative_1h['close'], 100)) / 3
+        informative_1h['crsi'] =  (ta.RSI(informative_1h['close'], timeperiod=3) + ta.RSI(crsi_updown, timeperiod=2) + crsi_closechange.rolling(window=101).apply(lambda x: len(x[x < x.iloc[-1]]) / (len(x)-1))) / 3
 
         # Williams %R
         informative_1h['r_14'] = williams_r(informative_1h, period=14)
@@ -9306,7 +9306,7 @@ class NostalgiaForInfinityX(IStrategy):
         # CRSI (3, 2, 100)
         crsi_closechange = informative_15m['close'] / informative_15m['close'].shift(1)
         crsi_updown = np.where(crsi_closechange.gt(1), 1.0, np.where(crsi_closechange.lt(1), -1.0, 0.0))
-        informative_15m['crsi'] =  (ta.RSI(informative_15m['close'], timeperiod=3) + ta.RSI(crsi_updown, timeperiod=2) + ta.ROC(informative_15m['close'], 100)) / 3
+        informative_15m['crsi'] =  (ta.RSI(informative_15m['close'], timeperiod=3) + ta.RSI(crsi_updown, timeperiod=2) + crsi_closechange.rolling(window=101).apply(lambda x: len(x[x < x.iloc[-1]]) / (len(x)-1))) / 3
 
         tok = time.perf_counter()
         log.debug(f"[{metadata['pair']}] informative_1h_indicators took: {tok - tik:0.4f} seconds.")
@@ -9384,7 +9384,7 @@ class NostalgiaForInfinityX(IStrategy):
         # CRSI (3, 2, 100)
         crsi_closechange = dataframe['close'] / dataframe['close'].shift(1)
         crsi_updown = np.where(crsi_closechange.gt(1), 1.0, np.where(crsi_closechange.lt(1), -1.0, 0.0))
-        dataframe['crsi'] =  (ta.RSI(dataframe['close'], timeperiod=3) + ta.RSI(crsi_updown, timeperiod=2) + ta.ROC(dataframe['close'], 100)) / 3
+        dataframe['crsi'] =  (ta.RSI(dataframe['close'], timeperiod=3) + ta.RSI(crsi_updown, timeperiod=2) + crsi_closechange.rolling(window=101).apply(lambda x: len(x[x < x.iloc[-1]]) / (len(x)-1))) / 3
 
         # EMA of VWMA Oscillator
         dataframe['ema_vwma_osc_32'] = ema_vwma_osc(dataframe, 32)
