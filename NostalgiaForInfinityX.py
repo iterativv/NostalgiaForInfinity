@@ -19,8 +19,10 @@ from technical.util import resample_to_interval, resampled_merge
 from technical.indicators import RMI, zema, VIDYA, ichimoku
 import time
 import warnings
+import re
 
 log = logging.getLogger(__name__)
+leverage_pattern = ".*(_PREMIUM|BEAR|BULL|DOWN|HALF|HEDGE|UP|[1235][SL]?|-PERP|BVOL|IBVOL)/.*"
 #log.setLevel(logging.DEBUG)
 warnings.simplefilter(action='ignore', category=pd.errors.PerformanceWarning)
 
@@ -165,6 +167,7 @@ class NostalgiaForInfinityX(IStrategy):
     position_adjustment_enable = True
     max_rebuy_orders = 2
     max_rebuy_multiplier = 1.0
+    rebuy_pcts = (-0.08, -0.12, -0.16)
 
     # Run "populate_indicators()" only for new candle.
     process_only_new_candles = True
@@ -2333,7 +2336,7 @@ class NostalgiaForInfinityX(IStrategy):
 
         if (count_of_buys == 1):
             if (
-                    (current_profit > -0.08)
+                    (current_profit > self.rebuy_pcts[0])
                     or (
                         (last_candle['crsi'] < 12.0)
                     )
@@ -2341,7 +2344,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return None
         elif (count_of_buys == 2):
             if (
-                    (current_profit > -0.12)
+                    (current_profit > self.rebuy_pcts[1])
                     or (
                         (last_candle['crsi'] < 20.0)
                         or (last_candle['crsi_1h'] < 11.0)
@@ -2350,7 +2353,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return None
         elif (count_of_buys == 3):
             if (
-                    (current_profit > -0.12)
+                    (current_profit > self.rebuy_pcts[2])
                     or (
                         (last_candle['crsi'] < 20.0)
                         or (last_candle['crsi_1h'] < 12.0)
@@ -2484,8 +2487,9 @@ class NostalgiaForInfinityX(IStrategy):
         ):
             return True, 'sell_stoploss_u_e_2'
 
+        is_leverage = bool(re.match(leverage_pattern,trade.pair))
         if (
-                (current_profit < -0.16)
+                (current_profit < [-0.16, -0.36][is_leverage])
                 and (last_candle['close'] < last_candle['ema_200'])
                 and (last_candle['close'] < (last_candle['ema_200'] - last_candle['atr']))
                 and (last_candle['sma_200_dec_20'])
