@@ -167,7 +167,7 @@ class NostalgiaForInfinityX(IStrategy):
     position_adjustment_enable = True
     max_rebuy_orders = 2
     max_rebuy_multiplier = 1.0
-    rebuy_pcts = (-0.08, -0.14, -0.12)
+    rebuy_pcts = (-0.08, -0.12, -0.16)
 
     # Run "populate_indicators()" only for new candle.
     process_only_new_candles = True
