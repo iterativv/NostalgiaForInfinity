@@ -167,6 +167,7 @@ class NostalgiaForInfinityX(IStrategy):
     position_adjustment_enable = True
     max_rebuy_orders = 2
     max_rebuy_multiplier = 1.0
+    rebuy_pcts = (-0.08, -0.14, -0.12)
 
     # Run "populate_indicators()" only for new candle.
     process_only_new_candles = True
@@ -2335,7 +2336,7 @@ class NostalgiaForInfinityX(IStrategy):
 
         if (count_of_buys == 1):
             if (
-                    (current_profit > -0.08)
+                    (current_profit > self.rebuy_pcts[0])
                     or (
                         (last_candle['crsi'] < 12.0)
                     )
@@ -2343,7 +2344,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return None
         elif (count_of_buys == 2):
             if (
-                    (current_profit > -0.12)
+                    (current_profit > self.rebuy_pcts[1])
                     or (
                         (last_candle['crsi'] < 20.0)
                         or (last_candle['crsi_1h'] < 11.0)
@@ -2352,7 +2353,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return None
         elif (count_of_buys == 3):
             if (
-                    (current_profit > -0.12)
+                    (current_profit > self.rebuy_pcts[2])
                     or (
                         (last_candle['crsi'] < 20.0)
                         or (last_candle['crsi_1h'] < 12.0)
