@@ -22,7 +22,7 @@ import warnings
 import re
 
 log = logging.getLogger(__name__)
-leverage_pattern = ".*(_PREMIUM|BEAR|BULL|DOWN|HALF|HEDGE|UP|[1235][SL]?|-PERP|BVOL|IBVOL)/.*"
+leverage_pattern = ".*(_PREMIUM|BEAR|BULL|DOWN|HALF|HEDGE|UP|[1235][SL]|-PERP|BVOL|IBVOL)/.*"
 #log.setLevel(logging.DEBUG)
 warnings.simplefilter(action='ignore', category=pd.errors.PerformanceWarning)
 
