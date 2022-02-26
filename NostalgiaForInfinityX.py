@@ -112,7 +112,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.301"
+        return "v11.0.302"
 
     # ROI table:
     minimal_roi = {
@@ -10190,7 +10190,7 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
 
                     # Logic
-                    item_buy_logic.append(dataframe['rsi_14'] < 31.0)
+                    item_buy_logic.append(dataframe['rsi_14'] < 32.0)
                     item_buy_logic.append(dataframe['r_14'] < -90.0)
                     item_buy_logic.append(dataframe['r_480_1h'] < -15.0)
 
