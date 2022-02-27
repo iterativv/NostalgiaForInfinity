@@ -9131,7 +9131,7 @@ class NostalgiaForInfinityX(IStrategy):
         if self.config['stake_currency'] in ['USDT','BUSD','USDC','DAI','TUSD','PAX','USD','EUR','GBP']:
             btc_info_pair = f"BTC/{self.config['stake_currency']}"
         else:
-            btc_info_pair = "BTC/USDT"
+            btc_info_pair = "BTC/KRW"
 
         informative_pairs.append((btc_info_pair, self.timeframe))
         informative_pairs.append((btc_info_pair, self.info_timeframe_1d))
@@ -9566,7 +9566,7 @@ class NostalgiaForInfinityX(IStrategy):
         if self.config['stake_currency'] in ['USDT','BUSD','USDC','DAI','TUSD','PAX','USD','EUR','GBP']:
             btc_info_pair = f"BTC/{self.config['stake_currency']}"
         else:
-            btc_info_pair = "BTC/USDT"
+            btc_info_pair = "BTC/KRW"
 
         if self.has_BTC_daily_tf:
             btc_daily_tf = self.dp.get_pair_dataframe(btc_info_pair, '1d')
