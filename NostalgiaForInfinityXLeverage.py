@@ -1,6 +1,5 @@
 import sys
 from pathlib import Path
-from pandas import DataFrame
 
 sys.path.append(str(Path(__file__).parent))
 
@@ -41,7 +40,3 @@ class NostalgiaForInfinityXLeverage(NostalgiaForInfinityX):
         informative_pairs.append((btc_info_pair, self.info_timeframe_1h, candle_type))
         informative_pairs.append((btc_info_pair, self.info_timeframe_15m, candle_type))
         return informative_pairs
-
-    # def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-    #     df = super().populate_buy_trend(dataframe, metadata)
-    #     return df

@@ -2487,7 +2487,7 @@ class NostalgiaForInfinityX(IStrategy):
         ):
             return True, 'sell_stoploss_u_e_2'
 
-        is_leverage = bool(re.match(leverage_pattern,trade.pair))
+        is_leverage = bool(re.match(leverage_pattern,trade.pair)) or True
         if (
                 (current_profit < [-0.25, -0.36][is_leverage])
                 and (last_candle['close'] < last_candle['ema_200'])
