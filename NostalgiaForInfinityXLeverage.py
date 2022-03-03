@@ -19,24 +19,3 @@ class NostalgiaForInfinityXLeverage(NostalgiaForInfinityX):
         :return: A leverage amount, which is between 1.0 and max_leverage.
         """
         return 2.0
-
-    def informative_pairs(self):
-        candle_type = 'futures'
-
-        # get access to all pairs available in whitelist.
-        pairs = self.dp.current_whitelist()
-        # Assign tf to each pair so they can be downloaded and cached for strategy.
-        informative_pairs = [(pair, self.info_timeframe_1h, candle_type) for pair in pairs]
-        informative_pairs.extend([(pair, self.info_timeframe_1d, candle_type) for pair in pairs])
-        informative_pairs.extend([(pair, self.info_timeframe_15m, candle_type) for pair in pairs])
-
-        if self.config["stake_currency"] in ["USDT", "BUSD", "USDC", "DAI", "TUSD", "PAX", "USD", "EUR", "GBP"]:
-            btc_info_pair = f"BTC/{self.config['stake_currency']}"
-        else:
-            btc_info_pair = "BTC/USDT"
-
-        informative_pairs.append((btc_info_pair, self.timeframe, candle_type))
-        informative_pairs.append((btc_info_pair, self.info_timeframe_1d, candle_type))
-        informative_pairs.append((btc_info_pair, self.info_timeframe_1h, candle_type))
-        informative_pairs.append((btc_info_pair, self.info_timeframe_15m, candle_type))
-        return informative_pairs
