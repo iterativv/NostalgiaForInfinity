@@ -114,6 +114,8 @@ class NostalgiaForInfinityX(IStrategy):
     def version(self) -> str:
         return "v11.0.333"
 
+    candle_type = "futures"
+
     # ROI table:
     minimal_roi = {
         "0": 100.0,
@@ -2145,10 +2147,10 @@ class NostalgiaForInfinityX(IStrategy):
             coin = coin_pair.split('/')[0]
 
             # Get the volume for the daily informative timeframe and name the column for the coin
-            pair_dataframe = self.dp.get_pair_dataframe(pair=coin_pair, timeframe=self.info_timeframe_1d)
+            pair_dataframe = self.dp.get_pair_dataframe(pair=coin_pair, timeframe=self.info_timeframe_1d, self.candle_type)
             pair_dataframe.set_index('date')
 
-            if self.config['runmode'].value in ('live', 'dry_run', 'backtest'):
+            if self.config['runmode'].value in ('live', 'dry_run'):
                 pair_dataframe = pair_dataframe.iloc[-7:,:]
 
             # Set the date index of the self.coin_metrics['tt_dataframe'] once
@@ -2198,10 +2200,10 @@ class NostalgiaForInfinityX(IStrategy):
             coin = coin_pair.split('/')[0]
 
             # Get the volume for the daily informative timeframe and name the column for the coin
-            pair_dataframe = self.dp.get_pair_dataframe(pair=coin_pair, timeframe=self.info_timeframe_1d)
+            pair_dataframe = self.dp.get_pair_dataframe(pair=coin_pair, timeframe=self.info_timeframe_1d, self.candle_type)
             pair_dataframe.set_index('date')
 
-            if self.config['runmode'].value in ('live', 'dry_run', 'backtest'):
+            if self.config['runmode'].value in ('live', 'dry_run'):
                 pair_dataframe = pair_dataframe.iloc[-7:,:]
 
             # Set the date index of the self.coin_metrics['tg_dataframe'] once
@@ -9167,7 +9169,7 @@ class NostalgiaForInfinityX(IStrategy):
         tik = time.perf_counter()
         assert self.dp, "DataProvider is required for multiple timeframes."
         # Get the informative pair
-        informative_1d = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.info_timeframe_1d)
+        informative_1d = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.info_timeframe_1d, self.candle_type)
 
         # Top traded coins
         if self.coin_metrics['top_traded_enabled']:
@@ -9204,7 +9206,7 @@ class NostalgiaForInfinityX(IStrategy):
         tik = time.perf_counter()
         assert self.dp, "DataProvider is required for multiple timeframes."
         # Get the informative pair
-        informative_1h = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.info_timeframe_1h)
+        informative_1h = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.info_timeframe_1h, self.candle_type)
 
         # RSI
         informative_1h['rsi_14'] = ta.RSI(informative_1h, timeperiod=14)
@@ -9279,7 +9281,7 @@ class NostalgiaForInfinityX(IStrategy):
         tik = time.perf_counter()
         assert self.dp, "DataProvider is required for multiple timeframes."
         # Get the informative pair
-        informative_15m = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.info_timeframe_15m)
+        informative_15m = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.info_timeframe_15m, self.candle_type)
 
         # RSI
         informative_15m['rsi_14'] = ta.RSI(informative_15m, timeperiod=14)
@@ -9512,7 +9514,7 @@ class NostalgiaForInfinityX(IStrategy):
         dataframe['tpct_change_12']  = self.top_percent_change(dataframe,12)
         dataframe['tpct_change_144'] = self.top_percent_change(dataframe,144)
 
-        if not self.config['runmode'].value in ('live', 'dry_run', 'backtest'):
+        if not self.config['runmode'].value in ('live', 'dry_run'):
             # Backtest age filter
             dataframe['bt_agefilter_ok'] = False
             dataframe.loc[dataframe.index > (12 * 24 * self.bt_min_age_days),'bt_agefilter_ok'] = True
@@ -9593,21 +9595,21 @@ class NostalgiaForInfinityX(IStrategy):
             btc_info_pair = "BTC/USDT"
 
         if self.has_BTC_daily_tf:
-            btc_daily_tf = self.dp.get_pair_dataframe(btc_info_pair, '1d')
+            btc_daily_tf = self.dp.get_pair_dataframe(btc_info_pair, '1d', self.candle_type)
             btc_daily_tf = self.daily_tf_btc_indicators(btc_daily_tf, metadata)
             dataframe = merge_informative_pair(dataframe, btc_daily_tf, self.timeframe, '1d', ffill=True)
             drop_columns = [f"{s}_1d" for s in ['date', 'open', 'high', 'low', 'close', 'volume']]
             dataframe.drop(columns=dataframe.columns.intersection(drop_columns), inplace=True)
 
         if self.has_BTC_info_tf:
-            btc_info_tf = self.dp.get_pair_dataframe(btc_info_pair, self.info_timeframe_1h)
+            btc_info_tf = self.dp.get_pair_dataframe(btc_info_pair, self.info_timeframe_1h, self.candle_type)
             btc_info_tf = self.info_tf_btc_indicators(btc_info_tf, metadata)
             dataframe = merge_informative_pair(dataframe, btc_info_tf, self.timeframe, self.info_timeframe_1h, ffill=True)
             drop_columns = [f"{s}_{self.info_timeframe_1h}" for s in ['date', 'open', 'high', 'low', 'close', 'volume']]
             dataframe.drop(columns=dataframe.columns.intersection(drop_columns), inplace=True)
 
         if self.has_BTC_base_tf:
-            btc_base_tf = self.dp.get_pair_dataframe(btc_info_pair, self.timeframe)
+            btc_base_tf = self.dp.get_pair_dataframe(btc_info_pair, self.timeframe, self.candle_type)
             btc_base_tf = self.base_tf_btc_indicators(btc_base_tf, metadata)
             dataframe = merge_informative_pair(dataframe, btc_base_tf, self.timeframe, self.timeframe, ffill=True)
             drop_columns = [f"{s}_{self.timeframe}" for s in ['date', 'open', 'high', 'low', 'close', 'volume']]
@@ -9707,7 +9709,7 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_protection_list.append(dataframe['close'] > dataframe[f"{global_buy_protection_params['close_over_pivot_type']}_1d"] * global_buy_protection_params['close_over_pivot_offset'])
                 if global_buy_protection_params['close_under_pivot_type'] != 'none':
                     item_buy_protection_list.append(dataframe['close'] < dataframe[f"{global_buy_protection_params['close_under_pivot_type']}_1d"] * global_buy_protection_params['close_under_pivot_offset'])
-                if not self.config['runmode'].value in ('live', 'dry_run', 'backtest'):
+                if not self.config['runmode'].value in ('live', 'dry_run'):
                     if self.has_bt_agefilter:
                         item_buy_protection_list.append(dataframe['bt_agefilter_ok'])
                 else:
@@ -10644,7 +10646,7 @@ class NostalgiaForInfinityX(IStrategy):
         return True
 
     def _should_hold_trade(self, trade: "Trade", rate: float, sell_reason: str) -> bool:
-        if self.config['runmode'].value not in ('live', 'dry_run', 'backtest'):
+        if self.config['runmode'].value not in ('live', 'dry_run'):
             return False
 
         if not self.holdSupportEnabled:
