@@ -2148,7 +2148,7 @@ class NostalgiaForInfinityX(IStrategy):
             pair_dataframe = self.dp.get_pair_dataframe(pair=coin_pair, timeframe=self.info_timeframe_1d)
             pair_dataframe.set_index('date')
 
-            if self.config['runmode'].value in ('live', 'dry_run'):
+            if self.config['runmode'].value in ('live', 'dry_run', 'backtest'):
                 pair_dataframe = pair_dataframe.iloc[-7:,:]
 
             # Set the date index of the self.coin_metrics['tt_dataframe'] once
@@ -2201,7 +2201,7 @@ class NostalgiaForInfinityX(IStrategy):
             pair_dataframe = self.dp.get_pair_dataframe(pair=coin_pair, timeframe=self.info_timeframe_1d)
             pair_dataframe.set_index('date')
 
-            if self.config['runmode'].value in ('live', 'dry_run'):
+            if self.config['runmode'].value in ('live', 'dry_run', 'backtest'):
                 pair_dataframe = pair_dataframe.iloc[-7:,:]
 
             # Set the date index of the self.coin_metrics['tg_dataframe'] once
@@ -9512,7 +9512,7 @@ class NostalgiaForInfinityX(IStrategy):
         dataframe['tpct_change_12']  = self.top_percent_change(dataframe,12)
         dataframe['tpct_change_144'] = self.top_percent_change(dataframe,144)
 
-        if not self.config['runmode'].value in ('live', 'dry_run'):
+        if not self.config['runmode'].value in ('live', 'dry_run', 'backtest'):
             # Backtest age filter
             dataframe['bt_agefilter_ok'] = False
             dataframe.loc[dataframe.index > (12 * 24 * self.bt_min_age_days),'bt_agefilter_ok'] = True
@@ -9707,7 +9707,7 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_protection_list.append(dataframe['close'] > dataframe[f"{global_buy_protection_params['close_over_pivot_type']}_1d"] * global_buy_protection_params['close_over_pivot_offset'])
                 if global_buy_protection_params['close_under_pivot_type'] != 'none':
                     item_buy_protection_list.append(dataframe['close'] < dataframe[f"{global_buy_protection_params['close_under_pivot_type']}_1d"] * global_buy_protection_params['close_under_pivot_offset'])
-                if not self.config['runmode'].value in ('live', 'dry_run'):
+                if not self.config['runmode'].value in ('live', 'dry_run', 'backtest'):
                     if self.has_bt_agefilter:
                         item_buy_protection_list.append(dataframe['bt_agefilter_ok'])
                 else:
@@ -10644,7 +10644,7 @@ class NostalgiaForInfinityX(IStrategy):
         return True
 
     def _should_hold_trade(self, trade: "Trade", rate: float, sell_reason: str) -> bool:
-        if self.config['runmode'].value not in ('live', 'dry_run'):
+        if self.config['runmode'].value not in ('live', 'dry_run', 'backtest'):
             return False
 
         if not self.holdSupportEnabled:
