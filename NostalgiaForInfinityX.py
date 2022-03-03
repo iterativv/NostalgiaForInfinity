@@ -2147,7 +2147,7 @@ class NostalgiaForInfinityX(IStrategy):
             coin = coin_pair.split('/')[0]
 
             # Get the volume for the daily informative timeframe and name the column for the coin
-            pair_dataframe = self.dp.get_pair_dataframe(pair=coin_pair, timeframe=self.info_timeframe_1d, self.candle_type)
+            pair_dataframe = self.dp.get_pair_dataframe(pair=coin_pair, timeframe=self.info_timeframe_1d, candle_type=self.candle_type)
             pair_dataframe.set_index('date')
 
             if self.config['runmode'].value in ('live', 'dry_run'):
@@ -2200,7 +2200,7 @@ class NostalgiaForInfinityX(IStrategy):
             coin = coin_pair.split('/')[0]
 
             # Get the volume for the daily informative timeframe and name the column for the coin
-            pair_dataframe = self.dp.get_pair_dataframe(pair=coin_pair, timeframe=self.info_timeframe_1d, self.candle_type)
+            pair_dataframe = self.dp.get_pair_dataframe(pair=coin_pair, timeframe=self.info_timeframe_1d, candle_type=self.candle_type)
             pair_dataframe.set_index('date')
 
             if self.config['runmode'].value in ('live', 'dry_run'):
@@ -9169,7 +9169,7 @@ class NostalgiaForInfinityX(IStrategy):
         tik = time.perf_counter()
         assert self.dp, "DataProvider is required for multiple timeframes."
         # Get the informative pair
-        informative_1d = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.info_timeframe_1d, self.candle_type)
+        informative_1d = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.info_timeframe_1d, candle_type=self.candle_type)
 
         # Top traded coins
         if self.coin_metrics['top_traded_enabled']:
@@ -9206,7 +9206,7 @@ class NostalgiaForInfinityX(IStrategy):
         tik = time.perf_counter()
         assert self.dp, "DataProvider is required for multiple timeframes."
         # Get the informative pair
-        informative_1h = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.info_timeframe_1h, self.candle_type)
+        informative_1h = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.info_timeframe_1h, candle_type=self.candle_type)
 
         # RSI
         informative_1h['rsi_14'] = ta.RSI(informative_1h, timeperiod=14)
@@ -9281,7 +9281,7 @@ class NostalgiaForInfinityX(IStrategy):
         tik = time.perf_counter()
         assert self.dp, "DataProvider is required for multiple timeframes."
         # Get the informative pair
-        informative_15m = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.info_timeframe_15m, self.candle_type)
+        informative_15m = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.info_timeframe_15m, candle_type=self.candle_type)
 
         # RSI
         informative_15m['rsi_14'] = ta.RSI(informative_15m, timeperiod=14)
@@ -9595,21 +9595,21 @@ class NostalgiaForInfinityX(IStrategy):
             btc_info_pair = "BTC/USDT"
 
         if self.has_BTC_daily_tf:
-            btc_daily_tf = self.dp.get_pair_dataframe(btc_info_pair, '1d', self.candle_type)
+            btc_daily_tf = self.dp.get_pair_dataframe(btc_info_pair, '1d', candle_type=self.candle_type)
             btc_daily_tf = self.daily_tf_btc_indicators(btc_daily_tf, metadata)
             dataframe = merge_informative_pair(dataframe, btc_daily_tf, self.timeframe, '1d', ffill=True)
             drop_columns = [f"{s}_1d" for s in ['date', 'open', 'high', 'low', 'close', 'volume']]
             dataframe.drop(columns=dataframe.columns.intersection(drop_columns), inplace=True)
 
         if self.has_BTC_info_tf:
-            btc_info_tf = self.dp.get_pair_dataframe(btc_info_pair, self.info_timeframe_1h, self.candle_type)
+            btc_info_tf = self.dp.get_pair_dataframe(btc_info_pair, self.info_timeframe_1h, candle_type=self.candle_type)
             btc_info_tf = self.info_tf_btc_indicators(btc_info_tf, metadata)
             dataframe = merge_informative_pair(dataframe, btc_info_tf, self.timeframe, self.info_timeframe_1h, ffill=True)
             drop_columns = [f"{s}_{self.info_timeframe_1h}" for s in ['date', 'open', 'high', 'low', 'close', 'volume']]
             dataframe.drop(columns=dataframe.columns.intersection(drop_columns), inplace=True)
 
         if self.has_BTC_base_tf:
-            btc_base_tf = self.dp.get_pair_dataframe(btc_info_pair, self.timeframe, self.candle_type)
+            btc_base_tf = self.dp.get_pair_dataframe(btc_info_pair, self.timeframe, candle_type=self.candle_type)
             btc_base_tf = self.base_tf_btc_indicators(btc_base_tf, metadata)
             dataframe = merge_informative_pair(dataframe, btc_base_tf, self.timeframe, self.timeframe, ffill=True)
             drop_columns = [f"{s}_{self.timeframe}" for s in ['date', 'open', 'high', 'low', 'close', 'volume']]
