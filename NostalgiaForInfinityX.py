@@ -2483,7 +2483,7 @@ class NostalgiaForInfinityX(IStrategy):
                 and (last_candle['sma_200_dec_24'])
                 and (current_time - timedelta(minutes=9200) > trade.open_date_utc)
                 # temporary
-                and (trade.open_date_utc > datetime(2022, 2, 8))
+                and (trade.open_date_utc + timedelta(minutes=36000) > current_time)
         ):
             return True, 'sell_stoploss_u_e_2'
 
@@ -2495,7 +2495,7 @@ class NostalgiaForInfinityX(IStrategy):
                 and (last_candle['sma_200_dec_20'])
                 and (last_candle['cmf'] < -0.0)
                 # temporary
-                and (trade.open_date_utc > datetime(2022, 2, 8))
+                and (trade.open_date_utc + timedelta(minutes=10600) > current_time)
         ):
             return True, 'sell_stoploss_doom'
 
@@ -11076,4 +11076,3 @@ class HoldsCache(Cache):
                 pass
             _data[key] = value
         return _data
-   
