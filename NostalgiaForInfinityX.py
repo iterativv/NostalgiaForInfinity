@@ -2483,7 +2483,7 @@ class NostalgiaForInfinityX(IStrategy):
                 and (last_candle['sma_200_dec_24'])
                 and (current_time - timedelta(minutes=9200) > trade.open_date_utc)
                 # temporary
-                and (trade.open_date_utc + timedelta(minutes=36000) > current_time)
+                and (trade.open_date_utc > datetime(2022, 2, 8))
         ):
             return True, 'sell_stoploss_u_e_2'
 
@@ -2495,7 +2495,7 @@ class NostalgiaForInfinityX(IStrategy):
                 and (last_candle['sma_200_dec_20'])
                 and (last_candle['cmf'] < -0.0)
                 # temporary
-                and (trade.open_date_utc + timedelta(minutes=10600) > current_time)
+                and (trade.open_date_utc > datetime(2022, 2, 8))
         ):
             return True, 'sell_stoploss_doom'
 
@@ -11076,3 +11076,60 @@ class HoldsCache(Cache):
                 pass
             _data[key] = value
         return _data
+
+import math
+import logging
+from datetime import datetime, timedelta, timezone
+from decimal import Decimal
+from freqtrade.persistence import Trade
+import time
+from typing import Dict, List, Optional
+
+logger = logging.getLogger(__name__)
+
+import sys
+import os
+from pathlib import Path
+sys.path.append(str(Path(__file__).parent))
+class x(NostalgiaForInfinityX):
+    max_rebuy_orders = 4
+    rebuy_pcts = (-0.03, -0.04, -0.05)
+    def calc_profit_ratio2(self, open_rate: float, current_rate: float, trade: Trade) ->float:
+        return  float(( Decimal(1-trade.fee_close)* Decimal(current_rate) )/
+            (Decimal(1+trade.fee_open)* Decimal(open_rate) )-1)
+
+    def adjust_trade_position(self, trade: Trade, current_time: datetime,
+                              current_rate: float, current_profit: float, min_stake: float,
+                              max_stake: float, **kwargs) -> Optional[float]:
+        # if 1:
+        filled_buys = trade.select_filled_orders('buy')
+        count_of_buys = len(filled_buys)
+        max_profit2=float(os.environ.get(trade.pair,0))
+        if int(os.environ.get(trade.pair + '2',0))!=count_of_buys:
+            os.environ[trade.pair + '2'] = str(count_of_buys)
+            os.environ[trade.pair]='0'
+
+        last_buy_order = filled_buys[-1]
+        last_open_rate = last_buy_order.average or last_buy_order.price
+        current_profit2=self.calc_profit_ratio2(last_open_rate, current_rate, trade)
+        if current_time.second %30 < 10: logger.info('partial_sell ' + ', '.join(map(str,(trade.pair, max_profit2, current_profit2, last_open_rate, current_rate))))
+        open_sell_order = trade.select_order('', True)
+        if open_sell_order:logger.info(f' bug open id {trade.pair} {open_sell_order.id}');return
+        if max_profit2<current_profit2:
+            os.environ[trade.pair]=str(current_profit2)
+            logger.info(f'max set {trade.pair} {os.environ.get(trade.pair,0)}')
+        if max_profit2-current_profit2>0.0025 and current_profit2 > 0 and count_of_buys > 1:
+            logger.info(f'partial_sell done {trade.pair}')
+            os.environ[trade.pair]='0'
+            last_stake_amt=last_buy_order.amount
+            return -last_stake_amt
+
+        if current_profit2>-.01 or count_of_buys > self.max_rebuy_orders and self.dp.runmode.value not in ('backtest','dry_run'):
+            return
+        stake_amount = super().adjust_trade_position(trade, current_time, current_rate, current_profit, min_stake,
+                              max_stake, **kwargs)
+        if stake_amount:
+
+            # if -stake_amount*current_rate > max_stake: return
+            # os.environ[trade.pair]='0'
+            return stake_amount
