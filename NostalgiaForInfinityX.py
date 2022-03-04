@@ -109,10 +109,11 @@ else:
 
 
 class NostalgiaForInfinityX(IStrategy):
+
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.333"
+        return "v11.0.339"
 
     candle_type = "futures"
 
@@ -1915,7 +1916,7 @@ class NostalgiaForInfinityX(IStrategy):
             "safe_dips_threshold_0"     : 0.032,
             "safe_dips_threshold_2"     : 0.09,
             "safe_dips_threshold_12"    : 0.35,
-            "safe_dips_threshold_144"   : None,
+            "safe_dips_threshold_144"   : 0.34,
             "safe_pump_6h_threshold"    : 0.5,
             "safe_pump_12h_threshold"   : None,
             "safe_pump_24h_threshold"   : 0.52,
@@ -2473,6 +2474,8 @@ class NostalgiaForInfinityX(IStrategy):
         ):
             return True, 'sell_stoploss_u_e_1'
 
+        is_backtest = self.dp.runmode.value == 'backtest'
+
         if (
                 (current_profit < -0.025)
                 and (last_candle['close'] < last_candle['ema_200'])
@@ -2485,7 +2488,7 @@ class NostalgiaForInfinityX(IStrategy):
                 and (last_candle['sma_200_dec_24'])
                 and (current_time - timedelta(minutes=9200) > trade.open_date_utc)
                 # temporary
-                and (trade.open_date_utc + timedelta(minutes=36000) > current_time)
+                and (trade.open_date_utc.replace(tzinfo=None) > datetime(2022, 2, 20) or is_backtest)
         ):
             return True, 'sell_stoploss_u_e_2'
 
@@ -2497,7 +2500,7 @@ class NostalgiaForInfinityX(IStrategy):
                 and (last_candle['sma_200_dec_20'])
                 and (last_candle['cmf'] < -0.0)
                 # temporary
-                and (trade.open_date_utc + timedelta(minutes=9600) > current_time)
+                and (trade.open_date_utc.replace(tzinfo=None) > datetime(2022, 2, 20) or is_backtest)
         ):
             return True, 'sell_stoploss_doom'
 
@@ -10028,7 +10031,7 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['ewo_1h'] > 2.8)
                     item_buy_logic.append(dataframe['cti_1h'] < 0.9)
                     item_buy_logic.append(dataframe['r_480_1h'] < -25.0)
-                    item_buy_logic.append(dataframe['volume_mean_12'] > (dataframe['volume_mean_24'] * 0.7))
+                    item_buy_logic.append(dataframe['volume_mean_12'] > (dataframe['volume_mean_24'] * 0.86))
 
                 # Condition #25 - Semi swing. CMF 1h cross.
                 elif index == 25:
@@ -10451,7 +10454,7 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_1h'] * 0.92))
 
                     # Logic
-                    item_buy_logic.append(dataframe['ewo_15m'].shift(3) > 5.0)
+                    item_buy_logic.append(dataframe['ewo_15m'].shift(3) > 5.2)
                     item_buy_logic.append(dataframe['close_15m'].shift(3) < (dataframe['sma_30_15m'].shift(3) * 0.988))
                     item_buy_logic.append(dataframe['close_15m'].shift(3) < (dataframe['bb20_2_low_15m'].shift(3) * 0.996))
                     item_buy_logic.append(dataframe['rsi_14_15m'].shift(3) < 31.2)
