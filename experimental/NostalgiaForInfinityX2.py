@@ -349,7 +349,18 @@ class NostalgiaForInfinityX2(IStrategy):
 
         # Indicators
         # -----------------------------------------------------------------------------------------
+        # RSI
         informative_1d['rsi_14'] = ta.RSI(informative_1d, timeperiod=14)
+
+        # Pivots
+        informative_1d['pivot'], informative_1d['res1'], informative_1d['res2'], informative_1d['res3'], informative_1d['sup1'], informative_1d['sup2'], informative_1d['sup3'] = pivot_points(informative_1d, mode='fibonacci')
+
+        # S/R
+        res_series = informative_1d['high'].rolling(window = 5, center=True).apply(lambda row: is_resistance(row), raw=True).shift(2)
+        sup_series = informative_1d['low'].rolling(window = 5, center=True).apply(lambda row: is_support(row), raw=True).shift(2)
+        informative_1d['res_level'] = Series(np.where(res_series, np.where(informative_1d['close'] > informative_1d['open'], informative_1d['close'], informative_1d['open']), float('NaN'))).ffill()
+        informative_1d['res_hlevel'] = Series(np.where(res_series, informative_1d['high'], float('NaN'))).ffill()
+        informative_1d['sup_level'] = Series(np.where(sup_series, np.where(informative_1d['close'] < informative_1d['open'], informative_1d['close'], informative_1d['open']), float('NaN'))).ffill()
 
         # Performance logging
         # -----------------------------------------------------------------------------------------
@@ -375,6 +386,13 @@ class NostalgiaForInfinityX2(IStrategy):
         # Williams %R
         informative_4h['r_14'] = williams_r(informative_4h, period=14)
         informative_4h['r_480'] = williams_r(informative_4h, period=480)
+
+        # S/R
+        res_series = informative_4h['high'].rolling(window = 5, center=True).apply(lambda row: is_resistance(row), raw=True).shift(2)
+        sup_series = informative_4h['low'].rolling(window = 5, center=True).apply(lambda row: is_support(row), raw=True).shift(2)
+        informative_4h['res_level'] = Series(np.where(res_series, np.where(informative_4h['close'] > informative_4h['open'], informative_4h['close'], informative_4h['open']), float('NaN'))).ffill()
+        informative_4h['res_hlevel'] = Series(np.where(res_series, informative_4h['high'], float('NaN'))).ffill()
+        informative_4h['sup_level'] = Series(np.where(sup_series, np.where(informative_4h['close'] < informative_4h['open'], informative_4h['close'], informative_4h['open']), float('NaN'))).ffill()
 
         # Performance logging
         # -----------------------------------------------------------------------------------------
@@ -408,6 +426,13 @@ class NostalgiaForInfinityX2(IStrategy):
         # Williams %R
         informative_1h['r_14'] = williams_r(informative_1h, period=14)
         informative_1h['r_480'] = williams_r(informative_1h, period=480)
+
+        # S/R
+        res_series = informative_1h['high'].rolling(window = 5, center=True).apply(lambda row: is_resistance(row), raw=True).shift(2)
+        sup_series = informative_1h['low'].rolling(window = 5, center=True).apply(lambda row: is_support(row), raw=True).shift(2)
+        informative_1h['res_level'] = Series(np.where(res_series, np.where(informative_1h['close'] > informative_1h['open'], informative_1h['close'], informative_1h['open']), float('NaN'))).ffill()
+        informative_1h['res_hlevel'] = Series(np.where(res_series, informative_1h['high'], float('NaN'))).ffill()
+        informative_1h['sup_level'] = Series(np.where(sup_series, np.where(informative_1h['close'] < informative_1h['open'], informative_1h['close'], informative_1h['open']), float('NaN'))).ffill()
 
         # Performance logging
         # -----------------------------------------------------------------------------------------
@@ -1107,7 +1132,7 @@ class NostalgiaForInfinityX2(IStrategy):
 # +---------------------------------------------------------------------------+
 
 # Range midpoint acts as Support
-def is_support(self, row_data) -> bool:
+def is_support(row_data) -> bool:
     conditions = []
     for row in range(len(row_data)-1):
         if row < len(row_data)/2:
@@ -1117,7 +1142,7 @@ def is_support(self, row_data) -> bool:
     return reduce(lambda x, y: x & y, conditions)
 
 # Range midpoint acts as Resistance
-def is_resistance(self, row_data) -> bool:
+def is_resistance(row_data) -> bool:
     conditions = []
     for row in range(len(row_data)-1):
         if row < len(row_data)/2:
