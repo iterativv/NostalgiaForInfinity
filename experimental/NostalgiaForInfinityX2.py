@@ -772,6 +772,13 @@ class NostalgiaForInfinityX2(IStrategy):
         informative_4h['r_14'] = williams_r(informative_4h, period=14)
         informative_4h['r_480'] = williams_r(informative_4h, period=480)
 
+        # S/R
+        res_series = informative_4h['high'].rolling(window = 5, center=True).apply(lambda row: is_resistance(row), raw=True).shift(2)
+        sup_series = informative_4h['low'].rolling(window = 5, center=True).apply(lambda row: is_support(row), raw=True).shift(2)
+        informative_4h['res_level'] = Series(np.where(res_series, np.where(informative_4h['close'] > informative_4h['open'], informative_4h['close'], informative_4h['open']), float('NaN'))).ffill()
+        informative_4h['res_hlevel'] = Series(np.where(res_series, informative_4h['high'], float('NaN'))).ffill()
+        informative_4h['sup_level'] = Series(np.where(sup_series, np.where(informative_4h['close'] < informative_4h['open'], informative_4h['close'], informative_4h['open']), float('NaN'))).ffill()
+
         # Performance logging
         # -----------------------------------------------------------------------------------------
         tok = time.perf_counter()
