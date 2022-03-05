@@ -122,6 +122,173 @@ class NostalgiaForInfinityX2(IStrategy):
     def get_ticker_indicator(self):
         return int(self.timeframe[:-1])
 
+    def sell_long_bull(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
+
+        # Original sell signals
+        sell, signal_name = self.sell_long_bull_signals(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, buy_tag)
+        if sell and (signal_name is not None):
+            return True, signal_name
+
+        # Main sell signals
+        sell, signal_name = self.sell_long_bull_main(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, buy_tag)
+        if sell and (signal_name is not None):
+            return True, signal_name
+
+        # Stoploss
+        if (
+                (current_profit < -0.05)
+        ):
+            return True, 'sell_long_bull_stoploss_doom'
+
+        return False, None
+
+
+    def sell_long_bull_signals(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
+        # Sell signal 1
+        if (last_candle['rsi_14'] > 78.0) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']) and (previous_candle_3['close'] > previous_candle_3['bb20_2_upp']) and (previous_candle_4['close'] > previous_candle_4['bb20_2_upp']):
+            if (last_candle['close'] > last_candle['ema_200']):
+                if (current_profit > 0.01):
+                    return True, 'sell_long_bull_1_1_1'
+            else:
+                if (current_profit > 0.01):
+                    return True, 'sell_long_bull_1_2_1'
+
+        # Sell signal 2
+        elif (last_candle['rsi_14'] > 79.0) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']):
+            if (last_candle['close'] > last_candle['ema_200']):
+                if (current_profit > 0.01):
+                    return True, 'sell_long_bull_2_1_1'
+            else:
+                if (current_profit > 0.01):
+                    return True, 'sell_long_bull_2_2_1'
+
+        # Sell signal 3
+        elif (last_candle['rsi_14'] > 81.0):
+            if (last_candle['close'] > last_candle['ema_200']):
+                if (current_profit > 0.01):
+                    return True, 'sell_long_bull_3_1_1'
+            else:
+                if (current_profit > 0.01):
+                    return True, 'sell_long_bull_3_2_1'
+
+        # Sell signal 4
+        elif (last_candle['rsi_14'] > 77.0) and (last_candle['rsi_14_1h'] > 77.0):
+            if (last_candle['close'] > last_candle['ema_200']):
+                if (current_profit > 0.01):
+                    return True, 'sell_long_bull_4_1_1'
+            else:
+                if (current_profit > 0.01):
+                    return True, 'sell_long_bull_4_2_1'
+
+        # Sell signal 6
+        elif (last_candle['close'] < last_candle['ema_200']) and (last_candle['close'] > last_candle['ema_50']) and (last_candle['rsi_14'] > 78.5):
+            if (current_profit > 0.01):
+                return True, 'sell_long_bull_6_1'
+
+        # Sell signal 7
+        elif (last_candle['rsi_14_1h'] > 79.0) and (last_candle['crossed_below_ema_12_26']):
+            if (last_candle['close'] > last_candle['ema_200']):
+                if (current_profit > 0.01):
+                    return True, 'sell_long_bull_7_1_1'
+            else:
+                if (current_profit > 0.01):
+                    return True, 'sell_long_bull_7_2_1'
+
+        # Sell signal 8
+        elif (last_candle['close'] > last_candle['bb20_2_upp_1h'] * 1.07):
+            if (last_candle['close'] > last_candle['ema_200']):
+                if (current_profit > 0.01):
+                    return True, 'sell_long_bull_8_1_1'
+            else:
+                if (current_profit > 0.01):
+                    return True, 'sell_long_bull_8_2_1'
+
+        return False, None
+
+    def sell_long_bull_main(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
+        if (last_candle['close'] > last_candle['sma_200_1h']):
+            if 0.01 > current_profit >= 0.001:
+                if (last_candle['rsi_14'] < 26.0):
+                    return True, 'sell_long_bull_o_0'
+            elif 0.02 > current_profit >= 0.01:
+                if (last_candle['rsi_14'] < 30.0):
+                    return True, 'sell_long_bull_o_1'
+            elif 0.03 > current_profit >= 0.02:
+                if (last_candle['rsi_14'] < 32.0):
+                    return True, 'sell_long_bull_o_2'
+            elif 0.04 > current_profit >= 0.03:
+                if (last_candle['rsi_14'] < 34.0):
+                    return True, 'sell_long_bull_o_3'
+            elif 0.05 > current_profit >= 0.04:
+                if (last_candle['rsi_14'] < 36.0):
+                    return True, 'sell_long_bull_o_4'
+            elif 0.06 > current_profit >= 0.05:
+                if (last_candle['rsi_14'] < 38.0):
+                    return True, 'sell_long_bull_o_5'
+            elif 0.07 > current_profit >= 0.06:
+                if (last_candle['rsi_14'] < 40.0):
+                    return True, 'sell_long_bull_o_6'
+            elif 0.08 > current_profit >= 0.07:
+                if (last_candle['rsi_14'] < 42.0):
+                    return True, 'sell_long_bull_o_7'
+            elif 0.09 > current_profit >= 0.08:
+                if (last_candle['rsi_14'] < 44.0):
+                    return True, 'sell_long_bull_o_8'
+            elif 0.1 > current_profit >= 0.09:
+                if (last_candle['rsi_14'] < 46.0):
+                    return True, 'sell_long_bull_o_9'
+            elif 0.12 > current_profit >= 0.1:
+                if (last_candle['rsi_14'] < 48.0):
+                    return True, 'sell_long_bull_o_10'
+            elif 0.2 > current_profit >= 0.12:
+                if (last_candle['rsi_14'] < 46.0):
+                    return True, 'sell_long_bull_o_11'
+            elif current_profit >= 0.2:
+                if (last_candle['rsi_14'] < 44.0):
+                    return True, 'sell_long_bull_o_12'
+        elif (last_candle['close'] < last_candle['sma_200_1h']):
+            if 0.01 > current_profit >= 0.001:
+                if (last_candle['rsi_14'] < 28.0):
+                    return True, 'sell_long_bull_u_0'
+            elif 0.02 > current_profit >= 0.01:
+                if (last_candle['rsi_14'] < 32.0):
+                    return True, 'sell_long_bull_u_1'
+            elif 0.03 > current_profit >= 0.02:
+                if (last_candle['rsi_14'] < 34.0):
+                    return True, 'sell_long_bull_u_2'
+            elif 0.04 > current_profit >= 0.03:
+                if (last_candle['rsi_14'] < 36.0):
+                    return True, 'sell_long_bull_u_3'
+            elif 0.05 > current_profit >= 0.04:
+                if (last_candle['rsi_14'] < 38.0):
+                    return True, 'sell_long_bull_u_4'
+            elif 0.06 > current_profit >= 0.05:
+                if (last_candle['rsi_14'] < 40.0):
+                    return True, 'sell_long_bull_u_5'
+            elif 0.07 > current_profit >= 0.06:
+                if (last_candle['rsi_14'] < 42.0):
+                    return True, 'sell_long_bull_u_6'
+            elif 0.08 > current_profit >= 0.07:
+                if (last_candle['rsi_14'] < 44.0):
+                    return True, 'sell_long_bull_u_7'
+            elif 0.09 > current_profit >= 0.08:
+                if (last_candle['rsi_14'] < 46.0):
+                    return True, 'sell_long_bull_u_8'
+            elif 0.1 > current_profit >= 0.09:
+                if (last_candle['rsi_14'] < 48.0):
+                    return True, 'sell_long_bull_u_9'
+            elif 0.12 > current_profit >= 0.1:
+                if (last_candle['rsi_14'] < 50.0):
+                    return True, 'sell_long_bull_u_10'
+            elif 0.2 > current_profit >= 0.12:
+                if (last_candle['rsi_14'] < 48.0):
+                    return True, 'sell_long_bull_u_11'
+            elif current_profit >= 0.2:
+                if (last_candle['rsi_14'] < 46.0):
+                    return True, 'sell_long_bull_u_12'
+
+        return False, None
+
     def custom_sell(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float,
                     current_profit: float, **kwargs):
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
@@ -139,6 +306,21 @@ class NostalgiaForInfinityX2(IStrategy):
 
         max_profit = ((trade.max_rate - trade.open_rate) / trade.open_rate)
         max_loss = ((trade.open_rate - trade.min_rate) / trade.min_rate)
+
+        if hasattr(trade, 'select_filled_orders'):
+            filled_buys = trade.select_filled_orders('buy')
+            count_of_buys = len(filled_buys)
+            if count_of_buys > 1:
+                initial_buy = filled_buys[0]
+                if (initial_buy is not None and initial_buy.average is not None):
+                    max_profit = ((trade.max_rate - initial_buy.average) / initial_buy.average)
+                    max_loss = ((initial_buy.average - trade.min_rate) / trade.min_rate)
+
+        # Long mode, bull
+        if all(c in ['1'] for c in buy_tags):
+            sell, signal_name = self.sell_long_bull(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, buy_tag)
+            if sell and (signal_name is not None):
+                return f"{signal_name} ( {buy_tag})"
 
         return None
 
