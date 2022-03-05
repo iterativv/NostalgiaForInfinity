@@ -122,7 +122,7 @@ class NostalgiaForInfinityX(IStrategy):
         if self.dp.runmode.value == 'backtest':
             if sell_tag:
                 return f"{sell_tag} ( {buy_tag})"
-            return buy_tag            
+            return buy_tag
         if sell_tag:
             return f"{sell_tag} | {self.code}"
         return f"{buy_tag}| {self.code}"
