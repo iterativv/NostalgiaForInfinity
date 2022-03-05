@@ -184,7 +184,15 @@ class NostalgiaForInfinityX2(IStrategy):
 
         # Indicators
         # -----------------------------------------------------------------------------------------
+        # RSI
         informative_4h['rsi_14'] = ta.RSI(informative_4h, timeperiod=14, fillna=True)
+
+        # SMA
+        informative_4h['sma_200'] = ta.SMA(informative_4h, timeperiod=200, fillna=True)
+
+        # Williams %R
+        informative_4h['r_14'] = williams_r(informative_4h, period=14)
+        informative_4h['r_480'] = williams_r(informative_4h, period=480)
 
         # Performance logging
         # -----------------------------------------------------------------------------------------
@@ -201,7 +209,23 @@ class NostalgiaForInfinityX2(IStrategy):
 
         # Indicators
         # -----------------------------------------------------------------------------------------
+        # RSI
         informative_1h['rsi_14'] = ta.RSI(informative_1h, timeperiod=14)
+
+        # SMA
+        informative_1h['sma_50'] = ta.SMA(informative_1h, timeperiod=50)
+        informative_1h['sma_100'] = ta.SMA(informative_1h, timeperiod=100)
+        informative_1h['sma_200'] = ta.SMA(informative_1h, timeperiod=200)
+
+        # BB
+        bollinger = qtpylib.bollinger_bands(qtpylib.typical_price(informative_1h), window=20, stds=2)
+        informative_1h['bb20_2_low'] = bollinger['lower']
+        informative_1h['bb20_2_mid'] = bollinger['mid']
+        informative_1h['bb20_2_upp'] = bollinger['upper']
+
+        # Williams %R
+        informative_1h['r_14'] = williams_r(informative_1h, period=14)
+        informative_1h['r_480'] = williams_r(informative_1h, period=480)
 
         # Performance logging
         # -----------------------------------------------------------------------------------------
@@ -235,7 +259,31 @@ class NostalgiaForInfinityX2(IStrategy):
 
         # Indicators
         # -----------------------------------------------------------------------------------------
+        # RSI
         dataframe['rsi_14'] = ta.RSI(dataframe, timeperiod=14)
+
+        # EMA
+        dataframe['ema_12'] = ta.EMA(dataframe, timeperiod=12)
+        dataframe['ema_26'] = ta.EMA(dataframe, timeperiod=26)
+        dataframe['ema_50'] = ta.EMA(dataframe, timeperiod=50)
+        dataframe['ema_200'] = ta.EMA(dataframe, timeperiod=200)
+
+        # SMA
+        dataframe['sma_50'] = ta.SMA(dataframe, timeperiod=50)
+        dataframe['sma_200'] = ta.SMA(dataframe, timeperiod=200)
+
+        # BB 20 - STD2
+        bb_20_std2 = qtpylib.bollinger_bands(qtpylib.typical_price(dataframe), window=20, stds=2)
+        dataframe['bb20_2_low'] = bb_20_std2['lower']
+        dataframe['bb20_2_mid'] = bb_20_std2['mid']
+        dataframe['bb20_2_upp'] = bb_20_std2['upper']
+
+        # Williams %R
+        dataframe['r_14'] = williams_r(dataframe, period=14)
+        dataframe['r_480'] = williams_r(dataframe, period=480)
+
+        # For sell checks
+        dataframe['crossed_below_ema_12_26'] = qtpylib.crossed_below(dataframe['ema_12'], dataframe['ema_26'])
 
         # Global protections
         # -----------------------------------------------------------------------------------------
@@ -295,7 +343,11 @@ class NostalgiaForInfinityX2(IStrategy):
         btc_info_4h = self.dp.get_pair_dataframe(btc_info_pair, btc_info_timeframe)
         # Indicators
         # -----------------------------------------------------------------------------------------
+        # RSI
         btc_info_4h['rsi_14'] = ta.RSI(btc_info_4h, timeperiod=14)
+
+        # SMA
+        btc_info_4h['sma_200'] = ta.SMA(btc_info_4h, timeperiod=200)
 
         # Add prefix
         # -----------------------------------------------------------------------------------------
@@ -314,7 +366,9 @@ class NostalgiaForInfinityX2(IStrategy):
         btc_info_1h = self.dp.get_pair_dataframe(btc_info_pair, btc_info_timeframe)
         # Indicators
         # -----------------------------------------------------------------------------------------
+        # RSI
         btc_info_1h['rsi_14'] = ta.RSI(btc_info_1h, timeperiod=14)
+
         btc_info_1h['not_downtrend'] = ((btc_info_1h['close'] > btc_info_1h['close'].shift(2)) | (btc_info_1h['rsi_14'] > 50))
 
         # Add prefix
