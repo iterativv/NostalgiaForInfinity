@@ -113,7 +113,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.345"
+        return "v11.0.346"
 
     # ROI table:
     minimal_roi = {
@@ -5789,7 +5789,7 @@ class NostalgiaForInfinityX(IStrategy):
 
     def sell_trail(self, current_profit: float, max_profit: float, max_loss: float, last_candle, previous_candle_1, trade: 'Trade', current_time: 'datetime') -> tuple:
         if 0.012 > current_profit >= 0.0:
-            if (max_profit > (current_profit + 0.045)) and (last_candle['rsi_14'] < 44.0):
+            if (max_profit > (current_profit + 0.045)) and (last_candle['rsi_14'] < 46.0):
                 return True, 'sell_profit_t_0_1'
             elif (max_profit > (current_profit + 0.025)) and (last_candle['rsi_14'] < 32.0):
                 return True, 'sell_profit_t_0_2'
