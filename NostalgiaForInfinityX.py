@@ -113,7 +113,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.344"
+        return "v11.0.352"
 
     candle_type = "futures"
 
@@ -2492,9 +2492,15 @@ class NostalgiaForInfinityX(IStrategy):
         ):
             return True, 'sell_stoploss_u_e_2'
 
+        count_of_buys = 1
+        if hasattr(trade, 'select_filled_orders'):
+            filled_buys = trade.select_filled_orders('buy')
+            count_of_buys = len(filled_buys)
+        is_rebuy = count_of_buys > 1
         is_leverage = bool(re.match(leverage_pattern,trade.pair)) or True
+        stop_index = 0 if is_rebuy and not is_leverage else 1 if not is_rebuy and not is_leverage else 2
         if (
-                (current_profit < [-0.25, -0.36][is_leverage])
+                (current_profit < [-0.25, -0.35, -0.46][stop_index])
                 and (last_candle['close'] < last_candle['ema_200'])
                 and (last_candle['close'] < (last_candle['ema_200'] - last_candle['atr']))
                 and (last_candle['sma_200_dec_20'])
@@ -5790,6 +5796,43 @@ class NostalgiaForInfinityX(IStrategy):
         return False, None
 
     def sell_trail(self, current_profit: float, max_profit: float, max_loss: float, last_candle, previous_candle_1, trade: 'Trade', current_time: 'datetime') -> tuple:
+        if 0.02 > current_profit >= 0.01:
+            if (max_profit > (current_profit + 0.07)):
+                return True, 'sell_profit_t_1_x'
+        elif 0.03 > current_profit >= 0.02:
+            if (max_profit > (current_profit + 0.07)):
+                return True, 'sell_profit_t_2_x'
+        elif 0.04 > current_profit >= 0.03:
+            if (max_profit > (current_profit + 0.07)):
+                return True, 'sell_profit_t_3_x'
+        elif 0.05 > current_profit >= 0.04:
+            if (max_profit > (current_profit + 0.07)):
+                return True, 'sell_profit_t_4_x'
+        elif 0.06 > current_profit >= 0.05:
+            if (max_profit > (current_profit + 0.02)):
+                return True, 'sell_profit_t_5_x'
+        elif 0.07 > current_profit >= 0.06:
+            if (max_profit > (current_profit + 0.07)):
+                return True, 'sell_profit_t_6_x'
+        elif 0.08 > current_profit >= 0.07:
+            if (max_profit > (current_profit + 0.07)):
+                return True, 'sell_profit_t_7_x'
+        elif 0.09 > current_profit >= 0.08:
+            if (max_profit > (current_profit + 0.07)):
+                return True, 'sell_profit_t_8_x'
+        elif 0.1 > current_profit >= 0.09:
+            if (max_profit > (current_profit + 0.07)):
+                return True, 'sell_profit_t_9_x'
+        elif 0.12 > current_profit >= 0.1:
+            if (max_profit > (current_profit + 0.07)):
+                return True, 'sell_profit_t_10_x'
+        elif 0.2 > current_profit >= 0.12:
+            if (max_profit > (current_profit + 0.08)):
+                return True, 'sell_profit_t_11_x'
+        elif current_profit >= 0.2:
+            if (max_profit > (current_profit + 0.09)):
+                return True, 'sell_profit_t_12_x'
+
         if 0.012 > current_profit >= 0.0:
             if (max_profit > (current_profit + 0.045)) and (last_candle['rsi_14'] < 46.0):
                 return True, 'sell_profit_t_0_1'
@@ -10433,6 +10476,7 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['r_14_15m'].shift(3) < -95.0)
                     item_buy_logic.append(dataframe['r_96_15m'].shift(3) < -86.0)
                     item_buy_logic.append(dataframe['close'] < dataframe['open'])
+                    item_buy_logic.append(dataframe['r_480_1h'] < -16.0)
 
                 # Condition #56 - 15m. Semi swing. Downtrend. Local dip.
                 elif index == 56:
@@ -10461,6 +10505,7 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['r_14_15m'].shift(3) < -94.0)
                     item_buy_logic.append(dataframe['r_96_15m'].shift(3) < -80.0)
                     item_buy_logic.append(dataframe['close'] < dataframe['open'])
+                    item_buy_logic.append(dataframe['r_480_1h'] < -16.0)
 
                 # Condition #58 - Semi swing. Local dip.
                 elif index == 58:

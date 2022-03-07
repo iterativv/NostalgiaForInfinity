@@ -11,11 +11,11 @@
             // Fiat
             "(AUD|EUR|GBP|CHF|CAD|JPY)/.*",
             // Stable tokens
-            "(BUSD|USDT|TUSD|USDC|CUSDT)/.*",
+            "(BUSD|USDT|TUSD|USDC|CUSDT|UST)/.*",
             // FAN Tokens
             "(ACM|AFA|ALA|ALL|ALPINE|APL|ASR|ATM|BAR|CAI|CITY|FOR|GAL|GOZ|IBFK|JUV|LEG|LOCK-1|NAVI|NMR|NOV|OG|PFL|PSG|ROUSH|STV|TH|TRA|UCH|UFC|YBO|INTER)/.*",
             // Other Coins
-            "(CTXC|CWAR|HBAR|NMR|OMG|SHIB|SLP|PEOPLE)/.*"
+            "(1EARTH|CTXC|CWAR|HBAR|NMR|OMG|SHIB|SLP|PEOPLE)/.*"
         ]
     }
 }
