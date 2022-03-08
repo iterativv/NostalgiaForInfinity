@@ -474,7 +474,8 @@ class NostalgiaForInfinityX2(IStrategy):
         informative_4h['rsi_14'] = ta.RSI(informative_4h, timeperiod=14, fillna=True)
 
         # SMA
-        informative_4h['sma_200'] = ta.SMA(informative_4h, timeperiod=200, fillna=True)
+        informative_4h['sma_50'] = ta.SMA(informative_4h, timeperiod=50)
+        informative_4h['sma_200'] = ta.SMA(informative_4h, timeperiod=200)
 
         # Williams %R
         informative_4h['r_14'] = williams_r(informative_4h, period=14)
@@ -808,13 +809,17 @@ class NostalgiaForInfinityX2(IStrategy):
                     # Protections
                     item_buy_logic.append(dataframe['sma_50'] > dataframe['sma_200'])
                     item_buy_logic.append(dataframe['sma_50_1h'] > dataframe['sma_200_1h'])
+                    item_buy_logic.append(dataframe['sma_50_4h'] > dataframe['sma_200_4h'])
                     item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_4h'] * 0.9))
                     item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_1h'] * 0.9))
                     item_buy_logic.append(dataframe['close'] > dataframe['sup3_1d'])
                     item_buy_logic.append(dataframe['close'] < dataframe['res3_1d'])
 
                     # Logic
-                    item_buy_logic.append(dataframe['rsi_14'] < 30.0)
+                    item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
+                    item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.01))
+                    item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
+                    item_buy_logic.append(dataframe['rsi_14_4h'] < 50.0)
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
