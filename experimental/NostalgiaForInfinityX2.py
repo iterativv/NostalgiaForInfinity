@@ -139,11 +139,10 @@ class NostalgiaForInfinityX2(IStrategy):
         if sell and (signal_name is not None):
             return True, signal_name
 
-        # Stoploss
-        if (
-                (current_profit < -0.05)
-        ):
-            return True, 'sell_long_bull_stoploss_doom'
+        # Stoplosses
+        sell, signal_name = self.sell_long_bull_stoploss(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, buy_tag)
+        if sell and (signal_name is not None):
+            return True, signal_name
 
         return False, None
 
@@ -360,6 +359,26 @@ class NostalgiaForInfinityX2(IStrategy):
                 return True, 'sell_long_bull_w_12_1'
             elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 80.0):
                 return True, 'sell_long_bull_w_12_2'
+
+        return False, None
+
+    def sell_long_bull_stoploss(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
+        # Stoploss doom
+        if (
+                (current_profit < -0.08)
+        ):
+            return True, 'sell_long_bull_stoploss_doom'
+
+        # Under & near EMA200, local uptrend move
+        if (
+                (current_profit < -0.025)
+                and (last_candle['close'] < last_candle['ema_200'])
+                and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < 0.024)
+                and last_candle['rsi_14'] > previous_candle_1['rsi_14']
+                and (last_candle['rsi_14'] > (last_candle['rsi_14_1h'] + 10.0))
+                and (current_time - timedelta(minutes=30) > trade.open_date_utc)
+        ):
+            return True, 'sell_long_bull_stoploss_u_e_1'
 
         return False, None
 
