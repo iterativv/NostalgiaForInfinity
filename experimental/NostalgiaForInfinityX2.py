@@ -807,6 +807,7 @@ class NostalgiaForInfinityX2(IStrategy):
                 # Condition #1 - Long mode bull. Uptrend.
                 if index == 1:
                     # Protections
+                    item_buy_logic.append(dataframe['close'] > dataframe['sma_200_4h'])
                     item_buy_logic.append(dataframe['sma_50'] > dataframe['sma_200'])
                     item_buy_logic.append(dataframe['sma_50_1h'] > dataframe['sma_200_1h'])
                     item_buy_logic.append(dataframe['sma_50_4h'] > dataframe['sma_200_4h'])
