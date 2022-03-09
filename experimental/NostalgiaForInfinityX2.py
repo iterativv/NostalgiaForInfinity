@@ -869,21 +869,23 @@ class NostalgiaForInfinityX2(IStrategy):
 def is_support(row_data) -> bool:
     conditions = []
     for row in range(len(row_data)-1):
-        if row < len(row_data)/2:
+        if row < len(row_data)//2:
             conditions.append(row_data[row] > row_data[row+1])
         else:
             conditions.append(row_data[row] < row_data[row+1])
-    return reduce(lambda x, y: x & y, conditions)
+    result = reduce(lambda x, y: x & y, conditions)
+    return result
 
 # Range midpoint acts as Resistance
 def is_resistance(row_data) -> bool:
     conditions = []
     for row in range(len(row_data)-1):
-        if row < len(row_data)/2:
+        if row < len(row_data)//2:
             conditions.append(row_data[row] < row_data[row+1])
         else:
             conditions.append(row_data[row] > row_data[row+1])
-    return reduce(lambda x, y: x & y, conditions)
+    result = reduce(lambda x, y: x & y, conditions)
+    return result
 
 # Elliot Wave Oscillator
 def ewo(dataframe, sma1_length=5, sma2_length=35):
