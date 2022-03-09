@@ -113,7 +113,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.357"
+        return "v11.0.358"
 
     # ROI table:
     minimal_roi = {
@@ -9058,6 +9058,8 @@ class NostalgiaForInfinityX(IStrategy):
     def custom_sell(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float,
                     current_profit: float, **kwargs):
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
+        if(len(dataframe) < 6):
+            return None
         last_candle = dataframe.iloc[-1]
         previous_candle_1 = dataframe.iloc[-2]
         previous_candle_2 = dataframe.iloc[-3]
