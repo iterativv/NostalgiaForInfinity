@@ -113,7 +113,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.359"
+        return "v11.0.360"
 
     # ROI table:
     minimal_roi = {
@@ -10027,7 +10027,7 @@ class NostalgiaForInfinityX(IStrategy):
                     # Non-Standard protections
                     item_buy_logic.append(dataframe['close_1h'] > dataframe['sup_level_1d'])
                     item_buy_logic.append(dataframe['close_1h'] < dataframe['sup_level_1d'] * 1.05)
-                    item_buy_logic.append(dataframe['low_1h'] < dataframe['sup_level_1d'] * 0.99)
+                    item_buy_logic.append(dataframe['low_1h'] < dataframe['sup_level_1d'] * 0.985)
                     item_buy_logic.append(dataframe['close_1h'] < dataframe['res_level_1h'])
                     item_buy_logic.append(dataframe['res_level_1d'] > dataframe['sup_level_1d'])
                     item_buy_logic.append(dataframe['rsi_14'] < 39.8)
