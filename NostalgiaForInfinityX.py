@@ -10673,7 +10673,7 @@ class NostalgiaForInfinityX(IStrategy):
         """
         if self._should_hold_trade(trade, rate, sell_reason):
             return False
-        if (sell_reason in ('stop_loss', 'trailing_stop_loss'):
+        if (sell_reason in ('stop_loss', 'trailing_stop_loss')):
             return False
         return True
 
