@@ -113,7 +113,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.395"
+        return "v11.0.396"
 
     # ROI table:
     minimal_roi = {
@@ -1196,7 +1196,7 @@ class NostalgiaForInfinityX(IStrategy):
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_over_pivot_offset"   : 1.0,
             "close_under_pivot_type"    : "res3", # pivot, sup1, sup2, sup3, res1, res2, res3
-            "close_under_pivot_offset"  : 1.07
+            "close_under_pivot_offset"  : 1.1
         },
         34: {
             "ema_fast"                  : False,
@@ -10157,10 +10157,10 @@ class NostalgiaForInfinityX(IStrategy):
                 # Condition #33 - Long mode. Local dip. Uptrend.
                 elif index == 33:
                     # Non-Standard protections
-                    item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_1h'] * 0.95))
+                    item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_1h'] * 0.9))
 
                     # Logic
-                    item_buy_logic.append(dataframe['close'] < (dataframe['ema_16'] * 0.934))
+                    item_buy_logic.append(dataframe['close'] < (dataframe['ema_16'] * 0.93))
                     item_buy_logic.append(dataframe['ewo'] > 2.5)
                     item_buy_logic.append(dataframe['rsi_14'] < 46.0)
                     item_buy_logic.append(dataframe['r_14'] < -97.0)
