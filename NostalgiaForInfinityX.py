@@ -113,7 +113,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.442"
+        return "v11.0.443"
 
     # ROI table:
     minimal_roi = {
@@ -290,7 +290,7 @@ class NostalgiaForInfinityX(IStrategy):
             "safe_dips_threshold_0"     : None,
             "safe_dips_threshold_2"     : 0.06,
             "safe_dips_threshold_12"    : 0.24,
-            "safe_dips_threshold_144"   : None,
+            "safe_dips_threshold_144"   : 0.2,
             "safe_pump_6h_threshold"    : 0.36,
             "safe_pump_12h_threshold"   : None,
             "safe_pump_24h_threshold"   : 1.2,
