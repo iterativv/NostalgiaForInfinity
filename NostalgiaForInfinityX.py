@@ -103,6 +103,7 @@ else:
 ##  Binance: https://accounts.binance.com/en/register?ref=EAZC47FM (5% discount on trading fees)         ##
 ##  Kucoin: https://www.kucoin.com/r/QBSSSPYV (5% discount on trading fees)                              ##
 ##  Gate.io: https://www.gate.io/signup/8054544 (10% discount on trading fees)                           ##
+##  FTX: https://ftx.com/eu/profile#a=100178030 (5% discount on trading fees)                            ##
 ##  OKX: https://www.okx.com/join/11749725760 (5% discount on trading fees)                              ##
 ##  Huobi: https://www.huobi.com/en-us/topic/double-reward/?invite_code=ubpt2223                         ##
 ###########################################################################################################
@@ -113,7 +114,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.438"
+        return "v11.0.446"
 
     # ROI table:
     minimal_roi = {
@@ -2499,6 +2500,7 @@ class NostalgiaForInfinityX(IStrategy):
                 and (last_candle['close'] < (last_candle['ema_200'] - last_candle['atr']))
                 and (last_candle['sma_200_dec_20'])
                 and (last_candle['cmf'] < -0.0)
+                and (current_time - timedelta(minutes=30) > trade.open_date_utc)
                 # temporary
                 and (trade.open_date_utc.replace(tzinfo=None) > datetime(2022, 3, 15) or is_backtest)
         ):
@@ -9897,7 +9899,7 @@ class NostalgiaForInfinityX(IStrategy):
                 # Condition #11 - Semi swing. Local dip.
                 elif index == 11:
                     # Non-Standard protections
-                    item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_1h'] * 0.8))
+                    item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_1h'] * 0.91))
 
                     # Logic
                     item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
@@ -9949,7 +9951,7 @@ class NostalgiaForInfinityX(IStrategy):
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * 0.992))
-                    item_buy_logic.append(dataframe['ewo'] > 4.8)
+                    item_buy_logic.append(dataframe['ewo'] > 5.0)
                     item_buy_logic.append(dataframe['rsi_14'] < 31.0)
                     item_buy_logic.append(dataframe['cti'] < -0.8)
                     item_buy_logic.append(dataframe['r_480_1h'] < -18.0)
@@ -10036,7 +10038,7 @@ class NostalgiaForInfinityX(IStrategy):
                 elif index == 22:
                     # Non-Standard protections
                     item_buy_logic.append(dataframe['close_1h'] > dataframe['sup_level_1d'])
-                    item_buy_logic.append(dataframe['close_1h'] < dataframe['sup_level_1d'] * 1.05)
+                    item_buy_logic.append(dataframe['close_1h'] < dataframe['sup_level_1d'] * 1.046)
                     item_buy_logic.append(dataframe['low_1h'] < dataframe['sup_level_1d'] * 0.982)
                     item_buy_logic.append(dataframe['close_1h'] < dataframe['res_level_1h'])
                     item_buy_logic.append(dataframe['res_level_1d'] > dataframe['sup_level_1d'])
