@@ -114,7 +114,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.447"
+        return "v11.0.448"
 
     # ROI table:
     minimal_roi = {
@@ -2372,73 +2372,85 @@ class NostalgiaForInfinityX(IStrategy):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
                     return True, 'sell_signal_1_1_1'
+                elif (current_profit > -0.05) and (max_loss > 0.13):
+                    return True, 'sell_signal_1_1_2'
             else:
                 if (current_profit > 0.01):
                     return True, 'sell_signal_1_2_1'
-                # elif (current_profit < -0.05) and (max_loss > 0.12):
-                #     return True, 'sell_signal_1_2_2'
+                elif (current_profit > -0.05) and (max_loss > 0.13):
+                    return True, 'sell_signal_1_2_2'
 
         # Sell signal 2
         elif (last_candle['rsi_14'] > 80.0) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']) and (previous_candle_3['close'] > previous_candle_3['bb20_2_upp']):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
                     return True, 'sell_signal_2_1_1'
+                elif (current_profit > -0.05) and (max_loss > 0.13):
+                    return True, 'sell_signal_2_1_2'
             else:
                 if (current_profit > 0.01):
                     return True, 'sell_signal_2_2_1'
-                # elif (current_profit < -0.05) and (max_loss > 0.12):
-                #     return True, 'sell_signal_2_2_2'
+                elif (current_profit > -0.05) and (max_loss > 0.13):
+                    return True, 'sell_signal_2_2_2'
 
         # Sell signal 3
         elif (last_candle['rsi_14'] > 83.0):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
                     return True, 'sell_signal_3_1_1'
+                elif (current_profit > -0.05) and (max_loss > 0.13):
+                    return True, 'sell_signal_3_1_2'
             else:
                 if (current_profit > 0.01):
                     return True, 'sell_signal_3_2_1'
-                # elif (current_profit < -0.05) and (max_loss > 0.12):
-                #     return True, 'sell_signal_3_2_2'
+                elif (current_profit > -0.05) and (max_loss > 0.13):
+                    return True, 'sell_signal_3_2_2'
 
         # Sell signal 4
         elif (last_candle['rsi_14'] > 78.0) and (last_candle['rsi_14_1h'] > 78.0):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
                     return True, 'sell_signal_4_1_1'
+                elif (current_profit > -0.05) and (max_loss > 0.13):
+                    return True, 'sell_signal_4_1_2'
             else:
                 if (current_profit > 0.01):
                     return True, 'sell_signal_4_2_1'
-                # elif (current_profit < -0.05) and (max_loss > 0.12):
-                #     return True, 'sell_signal_4_2_2'
+                elif (current_profit > -0.05) and (max_loss > 0.13):
+                    return True, 'sell_signal_4_2_2'
 
         # Sell signal 6
         elif (last_candle['close'] < last_candle['ema_200']) and (last_candle['close'] > last_candle['ema_50']) and (last_candle['rsi_14'] > 79.5):
             if (current_profit > 0.01):
                 return True, 'sell_signal_6_1'
-            # elif (current_profit < -0.05) and (max_loss > 0.12):
-            #     return True, 'sell_signal_6_2'
+            elif (current_profit > -0.05) and (max_loss > 0.13):
+                return True, 'sell_signal_6_2'
 
         # Sell signal 7
         elif (last_candle['rsi_14_1h'] > 80.0) and (last_candle['crossed_below_ema_12_26']):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
                     return True, 'sell_signal_7_1_1'
+                elif (current_profit > -0.05) and (max_loss > 0.13):
+                    return True, 'sell_signal_7_1_2'
             else:
                 if (current_profit > 0.01):
                     return True, 'sell_signal_7_2_1'
-                # elif (current_profit < -0.05) and (max_loss > 0.12):
-                #     return True, 'sell_signal_7_2_2'
+                elif (current_profit > -0.05) and (max_loss > 0.13):
+                    return True, 'sell_signal_7_2_2'
 
         # Sell signal 8
         elif (last_candle['close'] > last_candle['bb20_2_upp_1h'] * 1.08):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
                     return True, 'sell_signal_8_1_1'
+                elif (current_profit > -0.05) and (max_loss > 0.13):
+                    return True, 'sell_signal_8_1_2'
             else:
                 if (current_profit > 0.01):
                     return True, 'sell_signal_8_2_1'
-                # elif (current_profit < -0.05) and (max_loss > 0.12):
-                #     return True, 'sell_signal_8_2_2'
+                elif (current_profit > -0.05) and (max_loss > 0.13):
+                    return True, 'sell_signal_8_2_2'
 
         return False, None
 
