@@ -114,7 +114,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.457"
+        return "v11.0.458"
 
     # ROI table:
     minimal_roi = {
@@ -3251,6 +3251,17 @@ class NostalgiaForInfinityX(IStrategy):
                         return True, 'sell_profit_u_bear_1_6'
                     elif (last_candle['rsi_14'] < 45.0) and (last_candle['cmf'] < -0.4) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0):
                         return True, 'sell_profit_u_bear_1_7'
+
+        return False, None
+
+    def sell_recover(self, current_profit: float, max_profit: float, max_loss: float, last_candle, previous_candle_1, trade: 'Trade', current_time: 'datetime') -> tuple:
+        if (
+                (0.01 > current_profit > 0.001)
+                and (max_profit > (current_profit + 0.01))
+                and (max_loss > 0.12)
+                and (last_candle['close'] < previous_candle_1['close'])
+        ):
+            return True, 'sell_profit_rc_1'
 
         return False, None
 
@@ -9140,6 +9151,11 @@ class NostalgiaForInfinityX(IStrategy):
 
         # Under EMA200, main profit targets
         sell, signal_name = self.sell_under_main(current_profit, last_candle)
+        if sell and (signal_name is not None):
+            return f"{signal_name} ( {buy_tag})"
+
+        # Recover
+        sell, signal_name = self.sell_recover(current_profit, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
         if sell and (signal_name is not None):
             return f"{signal_name} ( {buy_tag})"
 
