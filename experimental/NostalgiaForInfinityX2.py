@@ -134,11 +134,15 @@ class NostalgiaForInfinityX2(IStrategy):
         if sell and (signal_name is not None):
             return True, signal_name
 
-        # Stoploss
-        if (
-                (current_profit < -0.05)
-        ):
-            return True, 'sell_long_bull_stoploss_doom'
+        # Williams %R based sells
+        sell, signal_name = self.sell_long_bull_r(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, buy_tag)
+        if sell and (signal_name is not None):
+            return True, signal_name
+
+        # Stoplosses
+        sell, signal_name = self.sell_long_bull_stoploss(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, buy_tag)
+        if sell and (signal_name is not None):
+            return True, signal_name
 
         return False, None
 
@@ -289,6 +293,95 @@ class NostalgiaForInfinityX2(IStrategy):
 
         return False, None
 
+    def sell_long_bull_r(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
+        if 0.01 > current_profit >= 0.001:
+            if (last_candle['r_480'] > -0.1):
+                return True, 'sell_long_bull_w_0_1'
+            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
+                return True, 'sell_long_bull_w_0_2'
+        elif 0.02 > current_profit >= 0.01:
+            if (last_candle['r_480'] > -0.2):
+                return True, 'sell_long_bull_w_1_1'
+            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
+                return True, 'sell_long_bull_w_1_2'
+        elif 0.03 > current_profit >= 0.02:
+            if (last_candle['r_480'] > -0.3):
+                return True, 'sell_long_bull_w_2_1'
+            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
+                return True, 'sell_long_bull_w_2_2'
+        elif 0.04 > current_profit >= 0.03:
+            if (last_candle['r_480'] > -0.4):
+                return True, 'sell_long_bull_w_3_1'
+            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
+                return True, 'sell_long_bull_w_3_2'
+        elif 0.05 > current_profit >= 0.04:
+            if (last_candle['r_480'] > -0.5):
+                return True, 'sell_long_bull_w_4_1'
+            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
+                return True, 'sell_long_bull_w_4_2'
+        elif 0.06 > current_profit >= 0.05:
+            if (last_candle['r_480'] > -0.6):
+                return True, 'sell_long_bull_w_5_1'
+            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
+                return True, 'sell_long_bull_w_5_2'
+        elif 0.07 > current_profit >= 0.06:
+            if (last_candle['r_480'] > -0.7):
+                return True, 'sell_long_bull_w_6_1'
+            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
+                return True, 'sell_long_bull_w_6_2'
+        elif 0.08 > current_profit >= 0.07:
+            if (last_candle['r_480'] > -0.8):
+                return True, 'sell_long_bull_w_7_1'
+            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
+                return True, 'sell_long_bull_w_7_2'
+        elif 0.09 > current_profit >= 0.08:
+            if (last_candle['r_480'] > -0.9):
+                return True, 'sell_long_bull_w_8_1'
+            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
+                return True, 'sell_long_bull_w_8_2'
+        elif 0.1 > current_profit >= 0.09:
+            if (last_candle['r_480'] > -1.0):
+                return True, 'sell_long_bull_w_9_1'
+            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
+                return True, 'sell_long_bull_w_9_2'
+        elif 0.12 > current_profit >= 0.1:
+            if (last_candle['r_480'] > -1.1):
+                return True, 'sell_long_bull_w_10_1'
+            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
+                return True, 'sell_long_bull_w_10_2'
+        elif 0.2 > current_profit >= 0.12:
+            if (last_candle['r_480'] > -0.4):
+                return True, 'sell_long_bull_w_11_1'
+            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
+                return True, 'sell_long_bull_w_11_2'
+        elif current_profit >= 0.2:
+            if (last_candle['r_480'] > -0.2):
+                return True, 'sell_long_bull_w_12_1'
+            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 80.0):
+                return True, 'sell_long_bull_w_12_2'
+
+        return False, None
+
+    def sell_long_bull_stoploss(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
+        # Stoploss doom
+        if (
+                (current_profit < -0.08)
+        ):
+            return True, 'sell_long_bull_stoploss_doom'
+
+        # Under & near EMA200, local uptrend move
+        if (
+                (current_profit < -0.025)
+                and (last_candle['close'] < last_candle['ema_200'])
+                and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < 0.024)
+                and last_candle['rsi_14'] > previous_candle_1['rsi_14']
+                and (last_candle['rsi_14'] > (last_candle['rsi_14_1h'] + 10.0))
+                and (current_time - timedelta(minutes=30) > trade.open_date_utc)
+        ):
+            return True, 'sell_long_bull_stoploss_u_e_1'
+
+        return False, None
+
     def custom_sell(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float,
                     current_profit: float, **kwargs):
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
@@ -381,7 +474,8 @@ class NostalgiaForInfinityX2(IStrategy):
         informative_4h['rsi_14'] = ta.RSI(informative_4h, timeperiod=14, fillna=True)
 
         # SMA
-        informative_4h['sma_200'] = ta.SMA(informative_4h, timeperiod=200, fillna=True)
+        informative_4h['sma_50'] = ta.SMA(informative_4h, timeperiod=50)
+        informative_4h['sma_200'] = ta.SMA(informative_4h, timeperiod=200)
 
         # Williams %R
         informative_4h['r_14'] = williams_r(informative_4h, period=14)
@@ -713,15 +807,20 @@ class NostalgiaForInfinityX2(IStrategy):
                 # Condition #1 - Long mode bull. Uptrend.
                 if index == 1:
                     # Protections
+                    item_buy_logic.append(dataframe['close'] > dataframe['sma_200_4h'])
                     item_buy_logic.append(dataframe['sma_50'] > dataframe['sma_200'])
                     item_buy_logic.append(dataframe['sma_50_1h'] > dataframe['sma_200_1h'])
+                    item_buy_logic.append(dataframe['sma_50_4h'] > dataframe['sma_200_4h'])
                     item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_4h'] * 0.9))
                     item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_1h'] * 0.9))
                     item_buy_logic.append(dataframe['close'] > dataframe['sup3_1d'])
                     item_buy_logic.append(dataframe['close'] < dataframe['res3_1d'])
 
                     # Logic
-                    item_buy_logic.append(dataframe['rsi_14'] < 30.0)
+                    item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
+                    item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.01))
+                    item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
+                    item_buy_logic.append(dataframe['rsi_14_4h'] < 50.0)
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
@@ -770,21 +869,23 @@ class NostalgiaForInfinityX2(IStrategy):
 def is_support(row_data) -> bool:
     conditions = []
     for row in range(len(row_data)-1):
-        if row < len(row_data)/2:
+        if row < len(row_data)//2:
             conditions.append(row_data[row] > row_data[row+1])
         else:
             conditions.append(row_data[row] < row_data[row+1])
-    return reduce(lambda x, y: x & y, conditions)
+    result = reduce(lambda x, y: x & y, conditions)
+    return result
 
 # Range midpoint acts as Resistance
 def is_resistance(row_data) -> bool:
     conditions = []
     for row in range(len(row_data)-1):
-        if row < len(row_data)/2:
+        if row < len(row_data)//2:
             conditions.append(row_data[row] < row_data[row+1])
         else:
             conditions.append(row_data[row] > row_data[row+1])
-    return reduce(lambda x, y: x & y, conditions)
+    result = reduce(lambda x, y: x & y, conditions)
+    return result
 
 # Elliot Wave Oscillator
 def ewo(dataframe, sma1_length=5, sma2_length=35):
