@@ -2324,7 +2324,7 @@ class NostalgiaForInfinityX(IStrategy):
             count_of_entries = trade.nr_of_successful_entries
         else:
             filled_entries = trade.select_filled_orders('buy')
-            count_of_entries = len(filled_buys)
+            count_of_entries = len(filled_entries)
 
         if (count_of_entries == 1):
             if (
@@ -9135,8 +9135,7 @@ class NostalgiaForInfinityX(IStrategy):
                 count_of_entries = trade.nr_of_successful_entries
             else:
                 filled_entries = trade.select_filled_orders('buy')
-                count_of_entries = len(filled_buys)
-            count_of_entries = len(filled_entries)
+                count_of_entries = len(filled_entries)
             if count_of_entries > 1:
                 initial_entry = filled_entries[0]
                 if (initial_entry is not None and initial_entry.average is not None):
