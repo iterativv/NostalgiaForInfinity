@@ -101,7 +101,7 @@ else:
 ##               REFERRAL LINKS                                                                          ##
 ##                                                                                                       ##
 ##  Binance: https://accounts.binance.com/en/register?ref=EAZC47FM (5% discount on trading fees)         ##
-##  Kucoin: https://www.kucoin.com/r/QBSSSPYV (5% discount on trading fees)                              ##
+##  Kucoin: https://www.kucoin.com/r/af/QBSSSPYV (5% discount on trading fees)                           ##
 ##  Gate.io: https://www.gate.io/signup/8054544 (10% discount on trading fees)                           ##
 ##  FTX: https://ftx.com/eu/profile#a=100178030 (5% discount on trading fees)                            ##
 ##  OKX: https://www.okx.com/join/11749725760 (5% discount on trading fees)                              ##
@@ -114,7 +114,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.492"
+        return "v11.0.493"
 
     # ROI table:
     minimal_roi = {
