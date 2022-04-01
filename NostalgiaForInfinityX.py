@@ -2318,10 +2318,15 @@ class NostalgiaForInfinityX(IStrategy):
         ):
             return None
 
-        filled_buys = trade.select_filled_orders('buy')
-        count_of_buys = len(filled_buys)
+        count_of_entries = 0
+        if (hasattr(trade, 'enter_side')):
+            filled_entries = trade.select_filled_orders(trade.enter_side)
+            count_of_entries = trade.nr_of_successful_entries
+        else:
+            filled_entries = trade.select_filled_orders('buy')
+            count_of_entries = len(filled_buys)
 
-        if (count_of_buys == 1):
+        if (count_of_entries == 1):
             if (
                     (current_profit > self.rebuy_pcts[0])
                     or (
@@ -2329,7 +2334,7 @@ class NostalgiaForInfinityX(IStrategy):
                     )
             ):
                 return None
-        elif (count_of_buys == 2):
+        elif (count_of_entries == 2):
             if (
                     (current_profit > self.rebuy_pcts[1])
                     or (
@@ -2338,7 +2343,7 @@ class NostalgiaForInfinityX(IStrategy):
                     )
             ):
                 return None
-        elif (count_of_buys == 3):
+        elif (count_of_entries == 3):
             if (
                     (current_profit > self.rebuy_pcts[2])
                     or (
@@ -2350,16 +2355,16 @@ class NostalgiaForInfinityX(IStrategy):
                 return None
 
         # Log if the last candle triggered a buy signal, even if max rebuys reached
-        if last_candle['buy'] == 1 and self.dp.runmode.value in ('backtest','dry_run'):
+        if (('buy' in last_candle and last_candle['buy'] == 1) or ('enter_long' in last_candle and last_candle['enter_long'] == 1)) and self.dp.runmode.value in ('backtest','dry_run'):
             log.info(f"Rebuy: a buy tag found for pair {trade.pair}")
 
         # Maximum 2 rebuys. Half the stake of the original.
-        if 0 < count_of_buys <= self.max_rebuy_orders:
+        if 0 < count_of_entries <= self.max_rebuy_orders:
             try:
                 # This returns first order stake size
-                stake_amount = filled_buys[0].cost
+                stake_amount = filled_entries[0].cost
                 # This then calculates current safety order size
-                stake_amount = stake_amount * (0.35 + (count_of_buys * 0.005))
+                stake_amount = stake_amount * (0.35 + (count_of_entries * 0.005))
                 return stake_amount
             except Exception as exception:
                 return None
@@ -9124,13 +9129,19 @@ class NostalgiaForInfinityX(IStrategy):
         max_loss = ((trade.open_rate - trade.min_rate) / trade.min_rate)
 
         if hasattr(trade, 'select_filled_orders'):
-            filled_buys = trade.select_filled_orders('buy')
-            count_of_buys = len(filled_buys)
-            if count_of_buys > 1:
-                initial_buy = filled_buys[0]
-                if (initial_buy is not None and initial_buy.average is not None):
-                    max_profit = ((trade.max_rate - initial_buy.average) / initial_buy.average)
-                    max_loss = ((initial_buy.average - trade.min_rate) / trade.min_rate)
+            count_of_entries = 1
+            if (hasattr(trade, 'enter_side')):
+                filled_entries = trade.select_filled_orders(trade.enter_side)
+                count_of_entries = trade.nr_of_successful_entries
+            else:
+                filled_entries = trade.select_filled_orders('buy')
+                count_of_entries = len(filled_buys)
+            count_of_entries = len(filled_entries)
+            if count_of_entries > 1:
+                initial_entry = filled_entries[0]
+                if (initial_entry is not None and initial_entry.average is not None):
+                    max_profit = ((trade.max_rate - initial_entry.average) / initial_entry.average)
+                    max_loss = ((initial_entry.average - trade.min_rate) / trade.min_rate)
 
         # Long mode
         if all(c in ['31', '32', '33', '34', '35', '36'] for c in buy_tags):
