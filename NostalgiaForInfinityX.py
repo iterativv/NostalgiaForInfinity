@@ -180,7 +180,7 @@ class NostalgiaForInfinityX(IStrategy):
     ignore_roi_if_buy_signal = True
 
     # Number of candles the strategy requires before producing valid signals
-    startup_candle_count: int = 200
+    startup_candle_count: int = 480
 
     # Optional order type mapping.
     order_types = {
