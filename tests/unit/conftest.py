@@ -354,7 +354,7 @@ def get_default_conf(testdatadir):
             "price_side": "same",
             "use_order_book": False,
             "order_book_top": 1,
-            "price_last_balance": 0.0
+            "price_last_balance": 0.0,
         },
         "exchange": {
             "name": "binance",
