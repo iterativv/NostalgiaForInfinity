@@ -349,7 +349,7 @@ def get_default_conf(testdatadir):
             "order_book_top": 1,
             "check_depth_of_market": {"enabled": False, "bids_to_ask_delta": 1},
         },
-        "exit_strategy": {
+        "exit_pricing": {
             "use_order_book": False,
             "order_book_top": 1,
         },
