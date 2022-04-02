@@ -342,14 +342,14 @@ def get_default_conf(testdatadir):
         "minimal_roi": {"40": 0.0, "30": 0.01, "20": 0.02, "0": 0.04},
         "dry_run_wallet": 1000,
         "stoploss": -0.10,
-        "unfilledtimeout": {"buy": 10, "sell": 30},
-        "bid_strategy": {
-            "ask_last_balance": 0.0,
+        "unfilledtimeout": {"enter": 10, "exit": 30},
+        "entry_pricing": {
+            "price_last_balance": 0.0,
             "use_order_book": False,
             "order_book_top": 1,
             "check_depth_of_market": {"enabled": False, "bids_to_ask_delta": 1},
         },
-        "ask_strategy": {
+        "exit_strategy": {
             "use_order_book": False,
             "order_book_top": 1,
         },
