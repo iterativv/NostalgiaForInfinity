@@ -6,7 +6,7 @@
             // Major Crypto
             "(BTC|ETH)/.*",
             // Leverage tokens
-            ".*(BULL|BEAR|HALF|HEDGE|-PERP)/.*",
+            ".*(BULL|BEAR|HALF|HEDGE|-PERP).*/.*",
             "(BVOL|IBVOL)/.*",
             // Fiat
             "(AUD|EUR|GBP|CHF|CAD|JPY)/.*",
