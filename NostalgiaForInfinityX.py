@@ -2336,7 +2336,6 @@ class NostalgiaForInfinityX(IStrategy):
                     or (
                         (last_candle['crsi'] < 12.0)
                         or (last_candle['crsi_1h'] < 10.0)
-                        or (last_candle['btc_not_downtrend_1h'] == False)
                     )
             ):
                 return None
