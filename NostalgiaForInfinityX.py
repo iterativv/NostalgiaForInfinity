@@ -114,7 +114,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.514"
+        return "v11.0.515"
 
     # ROI table:
     minimal_roi = {
@@ -167,9 +167,9 @@ class NostalgiaForInfinityX(IStrategy):
 
     # Rebuy feature
     position_adjustment_enable = True
-    max_rebuy_orders = 2
+    max_rebuy_orders = 7
     max_rebuy_multiplier = 1.0
-    rebuy_pcts = (-0.08, -0.12, -0.16)
+    rebuy_pcts = (-0.04, -0.04, -0.04, -0.04, -0.06, -0.07, -0.08)
 
     # Run "populate_indicators()" only for new candle.
     process_only_new_candles = True
@@ -2302,7 +2302,11 @@ class NostalgiaForInfinityX(IStrategy):
         if self._should_hold_trade(trade, current_rate, 'none'):
             return None
 
-        if (self.position_adjustment_enable == False) or (current_profit > -0.03):
+        if (self.position_adjustment_enable == False) or (current_profit > -0.04):
+            return None
+
+        is_backtest = self.dp.runmode.value == 'backtest'
+        if (trade.open_date_utc.replace(tzinfo=None) < datetime(2022, 4, 6) and not is_backtest):
             return None
 
         dataframe, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
@@ -2326,29 +2330,12 @@ class NostalgiaForInfinityX(IStrategy):
             filled_entries = trade.select_filled_orders('buy')
             count_of_entries = len(filled_entries)
 
-        if (count_of_entries == 1):
+        if (count_of_entries >= 1) and (count_of_entries <= self.max_rebuy_orders):
             if (
-                    (current_profit > self.rebuy_pcts[0])
+                    (current_profit > self.rebuy_pcts[count_of_entries - 1])
                     or (
                         (last_candle['crsi'] < 12.0)
-                    )
-            ):
-                return None
-        elif (count_of_entries == 2):
-            if (
-                    (current_profit > self.rebuy_pcts[1])
-                    or (
-                        (last_candle['crsi'] < 20.0)
-                        or (last_candle['crsi_1h'] < 11.0)
-                    )
-            ):
-                return None
-        elif (count_of_entries == 3):
-            if (
-                    (current_profit > self.rebuy_pcts[2])
-                    or (
-                        (last_candle['crsi'] < 20.0)
-                        or (last_candle['crsi_1h'] < 12.0)
+                        or (last_candle['crsi_1h'] < 10.0)
                         or (last_candle['btc_not_downtrend_1h'] == False)
                     )
             ):
@@ -2358,13 +2345,13 @@ class NostalgiaForInfinityX(IStrategy):
         if (('buy' in last_candle and last_candle['buy'] == 1) or ('enter_long' in last_candle and last_candle['enter_long'] == 1)) and self.dp.runmode.value in ('backtest','dry_run'):
             log.info(f"Rebuy: a buy tag found for pair {trade.pair}")
 
-        # Maximum 2 rebuys. Half the stake of the original.
+        # Maximum 7 rebuys. Half the stake of the original.
         if 0 < count_of_entries <= self.max_rebuy_orders:
             try:
                 # This returns first order stake size
                 stake_amount = filled_entries[0].cost
                 # This then calculates current safety order size
-                stake_amount = stake_amount * (0.35 + (count_of_entries * 0.005))
+                stake_amount = stake_amount * (0.15 + (count_of_entries * 0.005))
                 return stake_amount
             except Exception as exception:
                 return None
