@@ -114,7 +114,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.517"
+        return "v11.0.518"
 
     # ROI table:
     minimal_roi = {
@@ -169,7 +169,7 @@ class NostalgiaForInfinityX(IStrategy):
     position_adjustment_enable = True
     max_rebuy_orders = 7
     max_rebuy_multiplier = 1.0
-    rebuy_pcts = (-0.04, -0.04, -0.04, -0.04, -0.06, -0.07, -0.08)
+    rebuy_pcts = (-0.04, -0.05, -0.06, -0.07, -0.08, -0.09, -0.1)
 
     # Run "populate_indicators()" only for new candle.
     process_only_new_candles = True
