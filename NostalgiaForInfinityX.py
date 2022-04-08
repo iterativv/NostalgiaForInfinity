@@ -114,7 +114,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.520"
+        return "v11.0.521"
 
     # ROI table:
     minimal_roi = {
@@ -2395,7 +2395,7 @@ class NostalgiaForInfinityX(IStrategy):
                     stake_amount = stake_amount * (0.35 + (count_of_entries * 0.005))
                     if (stake_amount < min_stake):
                         stake_amount = min_stake
-                return stake_amxount
+                return stake_amount
             except Exception as exception:
                 return None
 
