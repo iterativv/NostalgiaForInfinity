@@ -114,7 +114,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.521"
+        return "v11.0.522"
 
     # ROI table:
     minimal_roi = {
@@ -2338,6 +2338,9 @@ class NostalgiaForInfinityX(IStrategy):
         # if to use alternate rebuy scheme
         use_alt = False
         if ((filled_entries[0].cost * (0.15 + (count_of_entries * 0.005))) < min_stake):
+            use_alt = True
+
+        if ('use_alt_rebuys' in self.config and self.config['use_alt_rebuys']):
             use_alt = True
 
         if not use_alt:
