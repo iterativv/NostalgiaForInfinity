@@ -114,7 +114,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.519"
+        return "v11.0.520"
 
     # ROI table:
     minimal_roi = {
@@ -168,8 +168,10 @@ class NostalgiaForInfinityX(IStrategy):
     # Rebuy feature
     position_adjustment_enable = True
     max_rebuy_orders = 7
+    max_rebuy_orders_alt = 2
     max_rebuy_multiplier = 1.0
     rebuy_pcts = (-0.04, -0.05, -0.06, -0.07, -0.08, -0.09, -0.1)
+    rebuy_pcts_alt = (-0.08, -0.12)
 
     # Run "populate_indicators()" only for new candle.
     process_only_new_candles = True
@@ -2330,39 +2332,70 @@ class NostalgiaForInfinityX(IStrategy):
             filled_entries = trade.select_filled_orders('buy')
             count_of_entries = len(filled_entries)
 
+        if (count_of_entries == 0):
+            return None
 
-        if (1 <= count_of_entries <= 2):
-            if (
-                    (current_profit > self.rebuy_pcts[count_of_entries - 1])
-                    or (
-                        (last_candle['crsi'] < 12.0)
-                        or (last_candle['crsi_1h'] < 10.0)
-                    )
-            ):
-                return None
-        elif (3 <= count_of_entries <= self.max_rebuy_orders):
-            if (
-                    (current_profit > self.rebuy_pcts[count_of_entries - 1])
-                    or (
-                        (last_candle['crsi'] < 12.0)
-                        or (last_candle['crsi_1h'] < 10.0)
-                        or (last_candle['btc_not_downtrend_1h'] == False)
-                    )
-            ):
-                return None
+        # if to use alternate rebuy scheme
+        use_alt = False
+        if ((filled_entries[0].cost * (0.15 + (count_of_entries * 0.005))) < min_stake):
+            use_alt = True
+
+        if not use_alt:
+            if (1 <= count_of_entries <= 2):
+                if (
+                        (current_profit > self.rebuy_pcts[count_of_entries - 1])
+                        or (
+                            (last_candle['crsi'] < 12.0)
+                            or (last_candle['crsi_1h'] < 10.0)
+                        )
+                ):
+                    return None
+            elif (3 <= count_of_entries <= self.max_rebuy_orders):
+                if (
+                        (current_profit > self.rebuy_pcts[count_of_entries - 1])
+                        or (
+                            (last_candle['crsi'] < 12.0)
+                            or (last_candle['crsi_1h'] < 10.0)
+                            or (last_candle['btc_not_downtrend_1h'] == False)
+                        )
+                ):
+                    return None
+        else:
+            if (count_of_entries == 1):
+                if (
+                        (current_profit > self.rebuy_pcts_alt[0])
+                        or (
+                            (last_candle['crsi'] < 12.0)
+                        )
+                ):
+                    return None
+            elif (count_of_entries == 2):
+                if (
+                        (current_profit > self.rebuy_pcts_alt[1])
+                        or (
+                            (last_candle['crsi'] < 20.0)
+                            or (last_candle['crsi_1h'] < 11.0)
+                        )
+                ):
+                    return None
 
         # Log if the last candle triggered a buy signal, even if max rebuys reached
         if (('buy' in last_candle and last_candle['buy'] == 1) or ('enter_long' in last_candle and last_candle['enter_long'] == 1)) and self.dp.runmode.value in ('backtest','dry_run'):
             log.info(f"Rebuy: a buy tag found for pair {trade.pair}")
 
-        # Maximum 7 rebuys. Half the stake of the original.
-        if 0 < count_of_entries <= self.max_rebuy_orders:
+        # Maximum 7 or 2 rebuys.
+        if 0 < count_of_entries <= self.max_rebuy_orders if not use_alt else self.max_rebuy_orders_alt:
             try:
                 # This returns first order stake size
                 stake_amount = filled_entries[0].cost
                 # This then calculates current safety order size
-                stake_amount = stake_amount * (0.15 + (count_of_entries * 0.005))
-                return stake_amount
+                if not use_alt:
+                    stake_amount = stake_amount * (0.15 + (count_of_entries * 0.005))
+                else:
+                    stake_amount = stake_amount * (0.35 + (count_of_entries * 0.005))
+                    if (stake_amount < min_stake):
+                        stake_amount = min_stake
+                return stake_amxount
             except Exception as exception:
                 return None
 
