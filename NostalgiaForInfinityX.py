@@ -114,7 +114,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.528"
+        return "v11.0.529"
 
     # ROI table:
     minimal_roi = {
@@ -2333,6 +2333,10 @@ class NostalgiaForInfinityX(IStrategy):
             count_of_entries = len(filled_entries)
 
         if (count_of_entries == 0):
+            return None
+
+        # The new rebuy should be lower than the previous
+        if (filled_entries[-1].average < current_rate):
             return None
 
         # if to use alternate rebuy scheme
