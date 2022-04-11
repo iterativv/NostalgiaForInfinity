@@ -114,7 +114,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.531"
+        return "v11.0.532"
 
     # ROI table:
     minimal_roi = {
@@ -2387,7 +2387,7 @@ class NostalgiaForInfinityX(IStrategy):
             log.info(f"Rebuy: a buy tag found for pair {trade.pair}")
 
         # Maximum 7 or 2 rebuys.
-        if 0 < count_of_entries <= self.max_rebuy_orders if not use_alt else self.max_rebuy_orders_alt:
+        if 0 < count_of_entries <= (self.max_rebuy_orders if not use_alt else self.max_rebuy_orders_alt):
             try:
                 # This returns first order stake size
                 stake_amount = filled_entries[0].cost
