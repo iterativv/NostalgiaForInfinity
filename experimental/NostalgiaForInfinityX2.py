@@ -9,6 +9,7 @@ from functools import reduce, partial
 from freqtrade.persistence import Trade
 from datetime import datetime, timedelta
 import time
+from typing import Optional
 
 log = logging.getLogger(__name__)
 #log.setLevel(logging.DEBUG)
@@ -28,9 +29,9 @@ log = logging.getLogger(__name__)
 ##   Highly recommended to blacklist leveraged tokens (*BULL, *BEAR, *UP, *DOWN etc).                    ##
 ##   Ensure that you don't override any variables in you config.json. Especially                         ##
 ##   the timeframe (must be 5m).                                                                         ##
-##     use_sell_signal must set to true (or not set at all).                                             ##
-##     sell_profit_only must set to false (or not set at all).                                           ##
-##     ignore_roi_if_buy_signal must set to true (or not set at all).                                    ##
+##     use_exit_signal must set to true (or not set at all).                                             ##
+##     exit_profit_only must set to false (or not set at all).                                           ##
+##     ignore_roi_if_entry_signal must set to true (or not set at all).                                    ##
 ##                                                                                                       ##
 ###########################################################################################################
 ##               DONATIONS                                                                               ##
@@ -89,9 +90,9 @@ class NostalgiaForInfinityX2(IStrategy):
     process_only_new_candles = True
 
     # These values can be overridden in the "ask_strategy" section in the config.
-    use_sell_signal = True
-    sell_profit_only = False
-    ignore_roi_if_buy_signal = True
+    use_exit_signal = True
+    exit_profit_only = False
+    ignore_roi_if_entry_signal = True
 
     # Number of candles the strategy requires before producing valid signals
     startup_candle_count: int = 480
@@ -383,7 +384,7 @@ class NostalgiaForInfinityX2(IStrategy):
 
         return False, None
 
-    def custom_sell(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float,
+    def custom_exit(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float,
                     current_profit: float, **kwargs):
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
         last_candle = dataframe.iloc[-1]
@@ -393,28 +394,34 @@ class NostalgiaForInfinityX2(IStrategy):
         previous_candle_4 = dataframe.iloc[-5]
         previous_candle_5 = dataframe.iloc[-6]
 
-        buy_tag = 'empty'
-        if hasattr(trade, 'buy_tag') and trade.buy_tag is not None:
-            buy_tag = trade.buy_tag
-        buy_tags = buy_tag.split()
+        enter_tag = 'empty'
+        if hasattr(trade, 'enter_tag') and trade.enter_tag is not None:
+            enter_tag = trade.enter_tag
+        enter_tags = enter_tag.split()
 
         max_profit = ((trade.max_rate - trade.open_rate) / trade.open_rate)
         max_loss = ((trade.open_rate - trade.min_rate) / trade.min_rate)
 
         if hasattr(trade, 'select_filled_orders'):
-            filled_buys = trade.select_filled_orders('buy')
-            count_of_buys = len(filled_buys)
-            if count_of_buys > 1:
-                initial_buy = filled_buys[0]
-                if (initial_buy is not None and initial_buy.average is not None):
-                    max_profit = ((trade.max_rate - initial_buy.average) / initial_buy.average)
-                    max_loss = ((initial_buy.average - trade.min_rate) / trade.min_rate)
+            filled_entries = trade.select_filled_orders('enter_long')
+            count_of_entries = len(filled_entries)
+            if count_of_entries > 1:
+                initial_entry = filled_entries[0]
+                if (initial_entry is not None and initial_entry.average is not None):
+                    max_profit = ((trade.max_rate - initial_entry.average) / initial_entry.average)
+                    max_loss = ((initial_entry.average - trade.min_rate) / trade.min_rate)
 
         # Long mode, bull
-        if all(c in ['1'] for c in buy_tags):
-            sell, signal_name = self.sell_long_bull(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, buy_tag)
+        if all(c in ['1'] for c in enter_tags):
+            sell, signal_name = self.sell_long_bull(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tag)
             if sell and (signal_name is not None):
-                return f"{signal_name} ( {buy_tag})"
+                return f"{signal_name} ( {enter_tag})"
+
+        # Long mode, bear
+        if all(c in ['11'] for c in enter_tags):
+            sell, signal_name = self.sell_long_bear(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tag)
+            if sell and (signal_name is not None):
+                return f"{signal_name} ( {enter_tag})"
 
         return None
 
@@ -791,9 +798,9 @@ class NostalgiaForInfinityX2(IStrategy):
 
         return dataframe
 
-    def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         conditions = []
-        dataframe.loc[:, 'buy_tag'] = ''
+        dataframe.loc[:, 'enter_tag'] = ''
 
         for buy_enable in self.buy_params:
             index = int(buy_enable.split('_')[2])
@@ -808,10 +815,16 @@ class NostalgiaForInfinityX2(IStrategy):
                 # Condition #1 - Long mode bull. Uptrend.
                 if index == 1:
                     # Protections
+                    #item_buy_logic.append(dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
+                    #item_buy_logic.append(dataframe['close'] > dataframe['sma_200'])
+                    #item_buy_logic.append(dataframe['close'] > dataframe['sma_200_1h'])
                     item_buy_logic.append(dataframe['close'] > dataframe['sma_200_4h'])
                     item_buy_logic.append(dataframe['sma_50'] > dataframe['sma_200'])
                     item_buy_logic.append(dataframe['sma_50_1h'] > dataframe['sma_200_1h'])
                     item_buy_logic.append(dataframe['sma_50_4h'] > dataframe['sma_200_4h'])
+                    #item_buy_logic.append(dataframe['ema_200'] > dataframe['sma_200'])
+                    #item_buy_logic.append(dataframe['btc_not_downtrend_1h'])
+                    #item_buy_logic.append(dataframe['btc_close_4h'] > dataframe['btc_sma_200_4h'])
                     item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_4h'] * 0.9))
                     item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_1h'] * 0.9))
                     item_buy_logic.append(dataframe['close'] > dataframe['sup3_1d'])
@@ -821,26 +834,35 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
                     item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.01))
                     item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
+
+                    #item_buy_logic.append(qtpylib.crossed_above(dataframe['close'], dataframe['sma_50']))
+                    #item_buy_logic.append(dataframe['rsi_14'] < 30.0)
+                    #item_buy_logic.append(dataframe['cti_20'] < -0.9)
                     item_buy_logic.append(dataframe['rsi_14_4h'] < 50.0)
+                    #item_buy_logic.append(dataframe['cti_20_4h'] < 0.0)
+                    #item_buy_logic.append(dataframe['r_480_1h'] < -20.0)
+                    #item_buy_logic.append(dataframe['close'] > dataframe['open'])
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-                dataframe.loc[item_buy, 'buy_tag'] += f"{index} "
+                dataframe.loc[item_buy, 'enter_tag'] += f"{index} "
                 conditions.append(item_buy)
-                dataframe.loc[:, 'buy'] = item_buy
+                dataframe.loc[:, 'enter_long'] = item_buy
 
         if conditions:
-            dataframe.loc[:, 'buy'] = reduce(lambda x, y: x | y, conditions)
+            dataframe.loc[:, 'enter_long'] = reduce(lambda x, y: x | y, conditions)
 
         return dataframe
 
-    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        dataframe.loc[:, 'sell'] = 0
+    def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        dataframe.loc[:, 'exit_long'] = 0
+        dataframe.loc[:, 'exit_short'] = 0
 
         return dataframe
 
     def confirm_trade_entry(self, pair: str, order_type: str, amount: float, rate: float,
-                            time_in_force: str, current_time: datetime, **kwargs) -> bool:
+                            time_in_force: str, current_time: datetime, entry_tag: Optional[str],
+                            **kwargs) -> bool:
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
 
         if(len(dataframe) < 1):
