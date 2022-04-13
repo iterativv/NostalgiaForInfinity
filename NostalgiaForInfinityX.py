@@ -114,7 +114,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.551"
+        return "v11.0.552"
 
     # ROI table:
     minimal_roi = {
@@ -10593,7 +10593,7 @@ class NostalgiaForInfinityX(IStrategy):
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
 
         if(len(dataframe) < 1):
-            return False
+            return True
 
         dataframe = dataframe.iloc[-1].squeeze()
 
