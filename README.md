@@ -67,6 +67,7 @@ If you like to help, you can also use the following links to sign up to various 
 * Gate.io: https://www.gate.io/signup/8054544 (10% discount on trading fees)
 * FTX: https://ftx.com/eu/profile#a=100178030 (5% discount on trading fees)
 * OKX: https://www.okx.com/join/11749725760 (5% discount on trading fees)
+* ByBit: https://partner.bybit.com/b/nfi
 * Huobi: https://www.huobi.com/en-us/topic/double-reward/?invite_code=ubpt2223
 
 ### Discord Link
