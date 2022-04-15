@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.557"
+        return "v11.0.558"
 
     # ROI table:
     minimal_roi = {
@@ -1887,10 +1887,10 @@ class NostalgiaForInfinityX(IStrategy):
             "sma200_rising_val"         : "42",
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
-            "safe_dips_threshold_0"     : 0.024,
+            "safe_dips_threshold_0"     : 0.032,
             "safe_dips_threshold_2"     : 0.09,
-            "safe_dips_threshold_12"    : 0.14,
-            "safe_dips_threshold_144"   : 0.24,
+            "safe_dips_threshold_12"    : None,
+            "safe_dips_threshold_144"   : 0.34,
             "safe_pump_6h_threshold"    : 0.5,
             "safe_pump_12h_threshold"   : None,
             "safe_pump_24h_threshold"   : None,
@@ -1899,8 +1899,8 @@ class NostalgiaForInfinityX(IStrategy):
             "btc_1h_not_downtrend"      : False,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_over_pivot_offset"   : 1.0,
-            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
-            "close_under_pivot_offset"  : 1.0
+            "close_under_pivot_type"    : "res3", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.6
          },
         59: {
             "ema_fast"                  : False,
@@ -10466,8 +10466,8 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['srsi_fk'] < 32.0)
                     item_buy_logic.append(dataframe['bb20_delta'] > 0.026)
                     item_buy_logic.append(dataframe['bb20_width'] > 0.095)
-                    item_buy_logic.append(dataframe['close_delta'] > dataframe['close'] * 10.0 / 1000.0 )
-                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_3_low'] * 0.997))
+                    item_buy_logic.append(dataframe['close_delta'] > dataframe['close'] * 12.0 / 1000.0 )
+                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_3_low'] * 0.999))
 
                 # Condition #59 - Semi swing. Local dip.
                 elif index == 59:
