@@ -178,7 +178,7 @@ class NostalgiaForInfinityX(IStrategy):
     process_only_new_candles = True
 
     # These values can be overridden in the "ask_strategy" section in the config.
-    use_sell_signal = True
+    use_sell_signal = False
     sell_profit_only = False
     ignore_roi_if_buy_signal = True
 
