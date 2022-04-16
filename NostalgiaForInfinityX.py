@@ -130,7 +130,7 @@ class NostalgiaForInfinityX(IStrategy):
     trailing_stop_positive = 0.01
     trailing_stop_positive_offset = 0.03
 
-    use_custom_stoploss = False
+    use_custom_stoploss = True
 
     # Optimal timeframe for the strategy.
     timeframe = '5m'
@@ -10589,7 +10589,20 @@ class NostalgiaForInfinityX(IStrategy):
         dataframe.loc[:, 'sell'] = 0
 
         return dataframe
+    def custom_stoploss(self, pair: str, trade: 'Trade', current_time: datetime,
+                        current_rate: float, current_profit: float, **kwargs) -> float:
+        new_stop = 1
 
+        if (current_profit > 0.2):
+            new_stop = 0.05
+        elif (current_profit > 0.1):
+            new_stop = 0.03
+        elif (current_profit > 0.06):
+            new_stop = 0.02
+        elif (current_profit > 0.03):
+            new_stop = 0.01
+
+        return new_stop
     def confirm_trade_entry(self, pair: str, order_type: str, amount: float, rate: float,
                             time_in_force: str, current_time: datetime, **kwargs) -> bool:
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
