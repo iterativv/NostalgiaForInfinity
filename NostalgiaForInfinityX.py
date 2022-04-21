@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.581"
+        return "v11.0.582"
 
     # ROI table:
     minimal_roi = {
@@ -2065,10 +2065,10 @@ class NostalgiaForInfinityX(IStrategy):
             "safe_pump_36h_threshold"   : None,
             "safe_pump_48h_threshold"   : 1.25,
             "btc_1h_not_downtrend"      : True,
-            "close_over_pivot_type"     : "sup1", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_over_pivot_offset"   : 1.0,
-            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
-            "close_under_pivot_offset"  : 1.0
+            "close_under_pivot_type"    : "res3", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.6
          }
     }
 
@@ -10561,16 +10561,17 @@ class NostalgiaForInfinityX(IStrategy):
                 # Condition #65 - Semi swing. Local deep.
                 elif index == 65:
                     # Non-Standard protections
-                    item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_1h'] * 0.966))
+                    item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_1h'] * 0.88))
 
                     # Logic
                     item_buy_logic.append(dataframe['kama'] > dataframe['fama'])
-                    item_buy_logic.append(dataframe['fama'] > (dataframe['mama'] * 0.981))
-                    item_buy_logic.append(dataframe['mama_diff'] < -0.028)
+                    item_buy_logic.append(dataframe['fama'] > (dataframe['mama'] * 0.96))
+                    item_buy_logic.append(dataframe['mama_diff'] < -0.025)
                     item_buy_logic.append(dataframe['r_14'] < -90.0)
                     item_buy_logic.append(dataframe['rsi_14'] < 31.5)
                     item_buy_logic.append(dataframe['cti_1h'] < 0.0)
-                    item_buy_logic.append(dataframe['crsi_1h'] > 20.0)
+                    item_buy_logic.append(dataframe['crsi_1h'] > 22.0)
+                    item_buy_logic.append(dataframe['volume_mean_12'] > (dataframe['volume_mean_24'] * 1.25))
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
