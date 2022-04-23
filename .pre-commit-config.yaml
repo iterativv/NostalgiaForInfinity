@@ -39,3 +39,10 @@ repos:
         args: [-l 100]
         files: (tests|.github)/.*\.py
   # <---- Formatting -------------------------------------------------------------------------------------------------
+
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+  - repo: https://github.com/pycqa/flake8
+    rev: '4.0.1'
+    hooks:
+    -   id: flake8
