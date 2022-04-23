@@ -168,11 +168,20 @@ class NostalgiaForInfinityX(IStrategy):
 
     # Rebuy feature
     position_adjustment_enable = True
-    max_rebuy_orders = 7
-    max_rebuy_orders_alt = 2
-    max_rebuy_multiplier = 1.0
-    rebuy_pcts = (-0.04, -0.05, -0.06, -0.07, -0.08, -0.09, -0.1)
-    rebuy_pcts_alt = (-0.08, -0.12)
+    rebuy_mode = 0
+    max_rebuy_orders_0 = 7
+    max_rebuy_orders_1 = 2
+    max_rebuy_orders_2 = 10
+    max_rebuy_multiplier_0 = 1.0
+    max_rebuy_multiplier_1 = 1.0
+    max_rebuy_multiplier_2 = 0.2
+    rebuy_pcts_n_0 = (-0.04, -0.05, -0.06, -0.07, -0.08, -0.09, -0.1)
+    rebuy_pcts_n_1 = (-0.08, -0.12)
+    rebuy_pcts_n_2 = (-0.02, -0.025, -0.025, -0.03, -0.04, -0.045, -0.05, -0.055, -0.06, -0.08)
+    rebuy_pcts_p_2 = (0.02, 0.025, 0.025, 0.03, 0.07, 0.075, 0.08, 0.085, 0.09, 0.095)
+    rebuy_multi_0 = 0.15
+    rebuy_multi_1 = 0.35
+    rebuy_multi_2 = 1.0
 
     # Run "populate_indicators()" only for new candle.
     process_only_new_candles = True
@@ -2280,9 +2289,18 @@ class NostalgiaForInfinityX(IStrategy):
                             proposed_stake: float, min_stake: float, max_stake: float,
                             **kwargs) -> float:
         if (self.position_adjustment_enable == True):
-            return proposed_stake / self.max_rebuy_multiplier
-        else:
-            return proposed_stake
+            if ('rebuy_mode' in self.config):
+                self.rebuy_mode = self.config['rebuy_mode']
+            if ('use_alt_rebuys' in self.config and self.config['use_alt_rebuys']):
+                self.rebuy_mode = 1
+            if (self.rebuy_mode == 0):
+                return proposed_stake * self.max_rebuy_multiplier_0
+            elif (self.rebuy_mode == 1):
+                return proposed_stake * self.max_rebuy_multiplier_1
+            elif (self.rebuy_mode == 2):
+                return proposed_stake * self.max_rebuy_multiplier_2
+
+        return proposed_stake
 
     def adjust_trade_position(self, trade: Trade, current_time: datetime,
                               current_rate: float, current_profit: float, min_stake: float,
@@ -2299,17 +2317,13 @@ class NostalgiaForInfinityX(IStrategy):
         :param max_stake: Balance available for trading.
         :param **kwargs: Ensure to keep this here so updates to this won't break your strategy.
         :return float: Stake amount to adjust your trade
-       """
+        """
 
         # Don't rebuy for trades on hold
         if self._should_hold_trade(trade, current_rate, 'none'):
             return None
 
-        if (self.position_adjustment_enable == False) or (current_profit > -0.04):
-            return None
-
-        is_backtest = self.dp.runmode.value == 'backtest'
-        if (trade.open_date_utc.replace(tzinfo=None) < datetime(2022, 4, 6) and not is_backtest):
+        if (self.position_adjustment_enable == False) or (current_profit > -0.02):
             return None
 
         dataframe, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
@@ -2317,7 +2331,6 @@ class NostalgiaForInfinityX(IStrategy):
             return None
         last_candle = dataframe.iloc[-1].squeeze()
         previous_candle = dataframe.iloc[-2].squeeze()
-
         # simple TA checks, to assure that the price is not dropping rapidly
         if (
                 # drop in the last candle
@@ -2338,67 +2351,95 @@ class NostalgiaForInfinityX(IStrategy):
 
         # if to use alternate rebuy scheme
         use_alt = False
-        if ((filled_entries[0].cost * (0.15 + (count_of_entries * 0.005))) < min_stake):
+        if (self.rebuy_mode == 0) and ((filled_entries[0].cost * (self.rebuy_multi_0 + (count_of_entries * 0.005))) < min_stake):
+            use_alt = True
+        if (self.rebuy_mode == 2) and ((filled_entries[0].cost * (self.rebuy_multi_2 + (count_of_entries * 0.005))) < min_stake):
             use_alt = True
 
         if ('use_alt_rebuys' in self.config and self.config['use_alt_rebuys']):
             use_alt = True
 
-        if not use_alt:
+        is_rebuy = False
+
+        if (self.rebuy_mode == 0) and (not use_alt):
             if (1 <= count_of_entries <= 2):
                 if (
-                        (current_profit > self.rebuy_pcts[count_of_entries - 1])
-                        or (
-                            (last_candle['crsi'] < 12.0)
-                            or (last_candle['crsi_1h'] < 10.0)
+                        (current_profit < self.rebuy_pcts_n_0[count_of_entries - 1])
+                        and (
+                            (last_candle['crsi'] > 12.0)
+                            and (last_candle['crsi_1h'] > 10.0)
                         )
                 ):
-                    return None
-            elif (3 <= count_of_entries <= self.max_rebuy_orders):
+                    is_rebuy = True
+            elif (3 <= count_of_entries <= self.max_rebuy_orders_0):
                 if (
-                        (current_profit > self.rebuy_pcts[count_of_entries - 1])
-                        or (
-                            (last_candle['crsi'] < 12.0)
-                            or (last_candle['crsi_1h'] < 10.0)
-                            or (last_candle['btc_not_downtrend_1h'] == False)
+                        (current_profit < self.rebuy_pcts_n_0[count_of_entries - 1])
+                        and (
+                            (last_candle['crsi'] > 12.0)
+                            and (last_candle['crsi_1h'] > 10.0)
+                            and (last_candle['btc_not_downtrend_1h'] == True)
                         )
                 ):
-                    return None
-        else:
+                    is_rebuy = True
+        elif (self.rebuy_mode == 1) or (use_alt):
             if (count_of_entries == 1):
                 if (
-                        (current_profit > self.rebuy_pcts_alt[0])
-                        or (
-                            (last_candle['crsi'] < 12.0)
+                        (current_profit < self.rebuy_pcts_n_1[0])
+                        and (
+                            (last_candle['crsi'] > 12.0)
                         )
                 ):
-                    return None
+                    is_rebuy = True
             elif (count_of_entries == 2):
                 if (
-                        (current_profit > self.rebuy_pcts_alt[1])
-                        or (
-                            (last_candle['crsi'] < 20.0)
-                            or (last_candle['crsi_1h'] < 11.0)
+                        (current_profit < self.rebuy_pcts_n_1[1])
+                        and (
+                            (last_candle['crsi'] > 20.0)
+                            and (last_candle['crsi_1h'] > 11.0)
                         )
                 ):
-                    return None
+                    is_rebuy = True
+        elif (self.rebuy_mode == 2):
+            if (1 <= count_of_entries <= 4):
+                if (
+                        (current_profit < self.rebuy_pcts_n_2[count_of_entries - 1])
+                        and (
+                            (last_candle['crsi'] > 5.0)
+                        )
+                ):
+                    is_rebuy = True
+            elif (5 <= count_of_entries <= self.max_rebuy_orders_2):
+                if (
+                        (current_profit < self.rebuy_pcts_n_2[count_of_entries - 1])
+                        and (
+                            (last_candle['crsi'] > 12.0)
+                            and (last_candle['crsi_1h'] > 10.0)
+                            and (last_candle['btc_not_downtrend_1h'] == True)
+                        )
+                ):
+                    is_rebuy = True
+
+        if not is_rebuy:
+            return None
 
         # Log if the last candle triggered a buy signal, even if max rebuys reached
         if (('buy' in last_candle and last_candle['buy'] == 1) or ('enter_long' in last_candle and last_candle['enter_long'] == 1)) and self.dp.runmode.value in ('backtest','dry_run'):
             log.info(f"Rebuy: a buy tag found for pair {trade.pair}")
 
-        # Maximum 7 or 2 rebuys.
-        if 0 < count_of_entries <= (self.max_rebuy_orders if not use_alt else self.max_rebuy_orders_alt):
+        # Calculate the new stake.
+        if 0 < count_of_entries <= (self.max_rebuy_orders_1 if use_alt else self.max_rebuy_orders_0 if self.rebuy_mode == 0 else self.max_rebuy_orders_1 if self.rebuy_mode == 1 else self.max_rebuy_orders_2):
             try:
                 # This returns first order stake size
                 stake_amount = filled_entries[0].cost
                 # This then calculates current safety order size
-                if not use_alt:
-                    stake_amount = stake_amount * (0.15 + (count_of_entries * 0.005))
-                else:
-                    stake_amount = stake_amount * (0.35 + (count_of_entries * 0.005))
+                if (self.rebuy_mode == 0) and (not use_alt):
+                    stake_amount = stake_amount * (self.rebuy_multi_0 + (count_of_entries * 0.005))
+                elif (self.rebuy_mode == 1) or (use_alt):
+                    stake_amount = stake_amount * (self.rebuy_multi_1 + (count_of_entries * 0.005))
                     if (stake_amount < min_stake):
                         stake_amount = min_stake
+                elif (self.rebuy_mode == 2):
+                    stake_amount = stake_amount * (self.rebuy_multi_2 + (count_of_entries * 0.005))
                 return stake_amount
             except Exception as exception:
                 return None
