@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.585"
+        return "v11.0.586"
 
     # ROI table:
     minimal_roi = {
@@ -2322,6 +2322,9 @@ class NostalgiaForInfinityX(IStrategy):
         # Don't rebuy for trades on hold
         if self._should_hold_trade(trade, current_rate, 'none'):
             return None
+
+        is_backtest = self.dp.runmode.value == 'backtest'
+        if (trade.open_date_utc.replace(tzinfo=None) < datetime(2022, 4, 6) and not is_backtest):
 
         if (self.position_adjustment_enable == False) or (current_profit > -0.02):
             return None
