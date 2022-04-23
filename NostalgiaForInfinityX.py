@@ -2325,6 +2325,7 @@ class NostalgiaForInfinityX(IStrategy):
 
         is_backtest = self.dp.runmode.value == 'backtest'
         if (trade.open_date_utc.replace(tzinfo=None) < datetime(2022, 4, 6) and not is_backtest):
+            return None
 
         if (self.position_adjustment_enable == False) or (current_profit > -0.02):
             return None
