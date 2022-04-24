@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.587"
+        return "v11.0.588"
 
     # ROI table:
     minimal_roi = {
@@ -303,17 +303,17 @@ class NostalgiaForInfinityX(IStrategy):
             "safe_dips_threshold_0"     : None,
             "safe_dips_threshold_2"     : 0.06,
             "safe_dips_threshold_12"    : 0.24,
-            "safe_dips_threshold_144"   : None,
+            "safe_dips_threshold_144"   : 0.44,
             "safe_pump_6h_threshold"    : 0.36,
             "safe_pump_12h_threshold"   : None,
             "safe_pump_24h_threshold"   : 1.2,
-            "safe_pump_36h_threshold"   : None,
+            "safe_pump_36h_threshold"   : 1.4,
             "safe_pump_48h_threshold"   : 2.0,
             "btc_1h_not_downtrend"      : False,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_over_pivot_offset"   : 1.0,
-            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
-            "close_under_pivot_offset"  : 1.0
+            "close_under_pivot_type"    : "res3", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.6
         },
         2: {
             "ema_fast"                  : False,
@@ -9752,12 +9752,13 @@ class NostalgiaForInfinityX(IStrategy):
                 # Condition #1 - Semi swing mode. Increase in the last candles & relative local dip.
                 if index == 1:
                     # Non-Standard protections
+                    item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_1h'] * 0.88))
 
                     # Logic
-                    item_buy_logic.append(((dataframe['close'] - dataframe['open'].rolling(12).min()) / dataframe['open'].rolling(12).min()) > 0.027)
-                    item_buy_logic.append(dataframe['rsi_14'] < 35.0)
+                    item_buy_logic.append(((dataframe['close'] - dataframe['open'].rolling(12).min()) / dataframe['open'].rolling(12).min()) > 0.032)
+                    item_buy_logic.append(dataframe['rsi_14'] < 36.0)
                     item_buy_logic.append(dataframe['r_32'] < -80.0)
-                    item_buy_logic.append(dataframe['mfi'] < 31.0)
+                    item_buy_logic.append(dataframe['mfi'] < 46.0)
                     item_buy_logic.append(dataframe['rsi_14_1h'] > 30.0)
                     item_buy_logic.append(dataframe['rsi_14_1h'] < 84.0)
                     item_buy_logic.append(dataframe['r_480_1h'] > -99.0)
