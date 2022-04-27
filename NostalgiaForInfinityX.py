@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.604"
+        return "v11.0.605"
 
     # ROI table:
     minimal_roi = {
@@ -176,7 +176,7 @@ class NostalgiaForInfinityX(IStrategy):
     max_rebuy_multiplier_1 = 1.0
     max_rebuy_multiplier_2 = 0.2
     rebuy_pcts_n_0 = (-0.04, -0.05, -0.06, -0.07, -0.08, -0.09, -0.1)
-    rebuy_pcts_n_1 = (-0.08, -0.12)
+    rebuy_pcts_n_1 = (-0.07, -0.09)
     rebuy_pcts_n_2 = (-0.02, -0.025, -0.025, -0.03, -0.04, -0.045, -0.05, -0.055, -0.06, -0.08)
     rebuy_pcts_p_2 = (0.02, 0.025, 0.025, 0.03, 0.07, 0.075, 0.08, 0.085, 0.09, 0.095)
     rebuy_multi_0 = 0.15
