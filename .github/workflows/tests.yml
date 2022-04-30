@@ -148,27 +148,6 @@ jobs:
           path: artifacts/
 
 
-  Remaining-Tests:
-    runs-on: ubuntu-20.04
-    needs:
-      - Pre-Commit
-
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: true
-
-      - name: Build Tests Image
-        run: docker-compose build tests
-
-      - name: Run Tests
-        env:
-          EXTRA_ARGS: -p no:cacheprovider --ignore tests/backtests/
-        run: |
-          mkdir artifacts
-          chmod 777 artifacts $(pwd)
-          docker-compose run --rm tests
-
   Backest-CI-Stats:
     runs-on: ubuntu-20.04
     needs:

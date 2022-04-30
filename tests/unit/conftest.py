@@ -7,7 +7,7 @@ from unittest.mock import MagicMock
 from unittest.mock import PropertyMock
 
 import pytest
-from freqtrade.enums import SellType
+from freqtrade.enums import ExitType
 from freqtrade.freqtradebot import FreqtradeBot
 from freqtrade.persistence import init_db
 from freqtrade.persistence import Trade
@@ -342,16 +342,19 @@ def get_default_conf(testdatadir):
         "minimal_roi": {"40": 0.0, "30": 0.01, "20": 0.02, "0": 0.04},
         "dry_run_wallet": 1000,
         "stoploss": -0.10,
-        "unfilledtimeout": {"buy": 10, "sell": 30},
-        "bid_strategy": {
-            "ask_last_balance": 0.0,
+        "unfilledtimeout": {"enter": 10, "exit": 30},
+        "entry_pricing": {
+            "price_side": "same",
             "use_order_book": False,
             "order_book_top": 1,
+            "price_last_balance": 0.0,
             "check_depth_of_market": {"enabled": False, "bids_to_ask_delta": 1},
         },
-        "ask_strategy": {
+        "exit_pricing": {
+            "price_side": "same",
             "use_order_book": False,
             "order_book_top": 1,
+            "price_last_balance": 0.0,
         },
         "exchange": {
             "name": "binance",
@@ -389,7 +392,7 @@ def generate_mock_trade(
     pair: str,
     fee: float,
     is_open: bool,
-    sell_reason: str = SellType.SELL_SIGNAL,
+    sell_reason: str = ExitType.EXIT_SIGNAL,
     min_ago_open: int = None,
     min_ago_close: int = None,
     profit_rate: float = 0.9,
