@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.627"
+        return "v11.0.628"
 
     # ROI table:
     minimal_roi = {
@@ -468,10 +468,10 @@ class NostalgiaForInfinityX(IStrategy):
             "sma200_rising_val"         : "28",
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "36",
-            "safe_dips_threshold_0"     : 0.022,
+            "safe_dips_threshold_0"     : 0.028,
             "safe_dips_threshold_2"     : 0.09,
-            "safe_dips_threshold_12"    : 0.24,
-            "safe_dips_threshold_144"   : 0.48,
+            "safe_dips_threshold_12"    : 0.3,
+            "safe_dips_threshold_144"   : 0.9,
             "safe_pump_6h_threshold"    : 0.4,
             "safe_pump_12h_threshold"   : None,
             "safe_pump_24h_threshold"   : None,
@@ -9881,12 +9881,13 @@ class NostalgiaForInfinityX(IStrategy):
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * 0.94)
-                    item_buy_logic.append(dataframe['close'] < dataframe['bb20_2_low'] * 0.996)
+                    item_buy_logic.append(dataframe['close'] < dataframe['bb20_2_low'] * 0.995)
                     item_buy_logic.append(dataframe['cti'] < -0.9)
                     item_buy_logic.append(dataframe['r_14'] < -95.0)
+                    item_buy_logic.append(dataframe['crsi'] > 8.0)
                     item_buy_logic.append(
                         (dataframe['btc_not_downtrend_1h'] == True)
-                        | (dataframe['crsi_1h'] > 16.0)
+                        | (dataframe['crsi_1h'] > 6.0)
                     )
 
                 # Condition #8 - Semi swing. Local deeper dip. Uptrend.
