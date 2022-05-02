@@ -54,9 +54,9 @@ else:
 ##   Highly recommended to blacklist leveraged tokens (*BULL, *BEAR, *UP, *DOWN etc).                    ##
 ##   Ensure that you don't override any variables in you config.json. Especially                         ##
 ##   the timeframe (must be 5m).                                                                         ##
-##     use_sell_signal must set to true (or not set at all).                                             ##
-##     sell_profit_only must set to false (or not set at all).                                           ##
-##     ignore_roi_if_buy_signal must set to true (or not set at all).                                    ##
+##     use_exit_signal must set to true (or not set at all).                                             ##
+##     exit_profit_only must set to false (or not set at all).                                           ##
+##     ignore_roi_if_entry_signal must set to true (or not set at all).                                  ##
 ##                                                                                                       ##
 ###########################################################################################################
 ##               HOLD SUPPORT                                                                            ##
@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.640"
+        return "v11.0.641"
 
     # ROI table:
     minimal_roi = {
@@ -186,10 +186,11 @@ class NostalgiaForInfinityX(IStrategy):
     # Run "populate_indicators()" only for new candle.
     process_only_new_candles = True
 
-    # These values can be overridden in the "ask_strategy" section in the config.
-    use_sell_signal = True
-    sell_profit_only = False
-    ignore_roi_if_buy_signal = True
+    # Exit options
+    use_exit_signal = True
+    exit_profit_only = False
+    exit_profit_offset = 0.01
+    ignore_roi_if_entry_signal = True
 
     # Number of candles the strategy requires before producing valid signals
     startup_candle_count: int = 480
