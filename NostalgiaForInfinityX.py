@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.635"
+        return "v11.0.636"
 
     # ROI table:
     minimal_roi = {
@@ -2580,16 +2580,6 @@ class NostalgiaForInfinityX(IStrategy):
         is_rebuy = count_of_buys > 2
         is_leverage = bool(re.match(leverage_pattern,trade.pair))
         stop_index = 0 if is_rebuy and not is_leverage else 1 if not is_rebuy and not is_leverage else 2
-        if (
-                (current_profit < [-0.5, -0.5, -0.5][stop_index])
-                and (last_candle['close'] < last_candle['ema_200'])
-                and (last_candle['close'] < (last_candle['ema_200'] - last_candle['atr']))
-                and (last_candle['sma_200_dec_20'])
-                and (last_candle['cmf'] < -0.0)
-                # temporary
-                and (trade.open_date_utc.replace(tzinfo=None) > datetime(2022, 2, 20) or is_backtest)
-        ):
-            return True, 'sell_stoploss_doom_1'
 
         if (
                 (current_profit < [-0.25, -0.25, -0.25][stop_index])
@@ -2601,7 +2591,7 @@ class NostalgiaForInfinityX(IStrategy):
                 # temporary
                 and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2022, 4, 26) or is_backtest)
         ):
-            return True, 'sell_stoploss_doom_2'
+            return True, 'sell_stoploss_doom_1'
 
         return False, None
 
