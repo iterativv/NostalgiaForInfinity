@@ -15,11 +15,11 @@
         "unit": "minutes"
     },
     "order_types": {
-        "buy": "limit",
-        "sell": "limit",
-        "emergencysell": "limit",
-        "forcebuy": "limit",
-        "forcesell": "limit",
+        "entry": "limit",
+        "exit": "limit",
+        "emergency_exit": "limit",
+        "force_entry": "limit",
+        "force_exit": "limit",
         "stoploss": "limit",
         "stoploss_on_exchange": false,
         "stoploss_on_exchange_interval": 60
