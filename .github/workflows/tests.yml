@@ -34,10 +34,10 @@ jobs:
         path: ~/.cache/pre-commit
         key: pre-commit|${{ env.PY }}|${{ hashFiles('.pre-commit-config.yaml') }}
     - name: Check ALL Files On Branch
-      uses: pre-commit/action@v2.0.0
+      uses: pre-commit/action@v2.0.3
       if: github.event_name != 'pull_request'
     - name: Check Changed Files On PR
-      uses: pre-commit/action@v2.0.0
+      uses: pre-commit/action@v2.0.3
       if: github.event_name == 'pull_request'
       with:
         extra_args: --files ${{ steps.changed-files.outputs.repo_files }}
