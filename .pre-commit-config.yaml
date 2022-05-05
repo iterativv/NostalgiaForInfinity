@@ -33,7 +33,7 @@ repos:
         files: (tests|.github)/.*\.py
 
   - repo: https://github.com/psf/black
-    rev: 21.7b0
+    rev: 22.3.0
     hooks:
       - id: black
         args: [-l 100]
