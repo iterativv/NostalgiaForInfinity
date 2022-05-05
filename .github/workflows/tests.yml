@@ -13,7 +13,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: 3.7
+        python-version: 3.9
     - id: changed-files
       name: Get Changed Files
       uses: dorny/paths-filter@v2
