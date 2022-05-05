@@ -15,8 +15,8 @@ jobs:
       with:
         python-version: 3.9
     - name: Install black
-        run: |
-            pip install black==22.3.0
+      run: |
+        pip install black==22.3.0
     - id: changed-files
       name: Get Changed Files
       uses: dorny/paths-filter@v2
