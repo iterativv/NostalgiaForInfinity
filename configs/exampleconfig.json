@@ -3,17 +3,18 @@
     // Please use at own risk
     // For full documentation on Freqtrade configration files please visit https://www.freqtrade.io/en/stable/configuration/
     "dry_run": true,
-    "timeframe": "5m",
-    "max_open_trades": 7,
+    "max_open_trades": 6,
     "stake_currency": "USDT",
     "stake_amount": "unlimited",
     "tradable_balance_ratio": 0.99,
     "fiat_display_currency": "USD",
+    "force_entry_enable": true,
     "unfilledtimeout": {
-        "buy": 15,
-        "sell": 15,
+        "enter": 15,
+        "exit": 15,
+        "exit_timeout_count": 0,
         "unit": "minutes"
-    },
+        },
     "order_types": {
         "entry": "limit",
         "exit": "limit",
@@ -24,19 +25,17 @@
         "stoploss_on_exchange": false,
         "stoploss_on_exchange_interval": 60
     },
-    "bid_strategy": {
-        "price_side": "ask",
-        "ask_last_balance": 0,
+    "entry_pricing": {
+        "price_side": "other",
         "use_order_book": false,
         "order_book_top": 1,
-        "check_depth_of_market": {
-            "enabled": false,
-            "bids_to_ask_delta": 1
-        }
+        "price_last_balance": 0.0,
+        "check_depth_of_market": {"enabled": false, "bids_to_ask_delta": 1},
     },
-    "ask_strategy": {
-        "price_side": "bid",
+    "exit_pricing": {
+        "price_side": "other",
         "use_order_book": false,
-        "order_book_top": 1
+        "order_book_top": 1,
+        "price_last_balance": 0.0,
     }
 }
