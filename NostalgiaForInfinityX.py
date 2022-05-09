@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.680"
+        return "v11.0.681"
 
     # ROI table:
     minimal_roi = {
@@ -336,7 +336,7 @@ class NostalgiaForInfinityX(IStrategy):
         3: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
-            "ema_slow"                  : False,
+            "ema_slow"                  : True,
             "ema_slow_len"              : "20",
             "close_above_ema_fast"      : False,
             "close_above_ema_fast_len"  : "200",
@@ -347,7 +347,7 @@ class NostalgiaForInfinityX(IStrategy):
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
             "safe_dips_threshold_0"     : 0.026,
-            "safe_dips_threshold_2"     : 0.06,
+            "safe_dips_threshold_2"     : 0.08,
             "safe_dips_threshold_12"    : 0.24,
             "safe_dips_threshold_144"   : 0.44,
             "safe_pump_6h_threshold"    : 0.4,
@@ -9799,19 +9799,19 @@ class NostalgiaForInfinityX(IStrategy):
 
                     # Logic
                     item_buy_logic.append(dataframe['bb40_2_low'].shift().gt(0))
-                    item_buy_logic.append(dataframe['bb40_2_delta'].gt(dataframe['close'] * 0.048))
-                    item_buy_logic.append(dataframe['closedelta'].gt(dataframe['close'] * 0.024))
+                    item_buy_logic.append(dataframe['bb40_2_delta'].gt(dataframe['close'] * 0.059))
+                    item_buy_logic.append(dataframe['closedelta'].gt(dataframe['close'] * 0.021))
                     item_buy_logic.append(dataframe['tail'].lt(dataframe['bb40_2_delta'] * 0.4))
                     item_buy_logic.append(dataframe['close'].lt(dataframe['bb40_2_low'].shift()))
                     item_buy_logic.append(dataframe['close'].le(dataframe['close'].shift()))
                     item_buy_logic.append(dataframe['cti'] < -0.1)
                     item_buy_logic.append(dataframe['cti_1h'] < 0.9)
-                    item_buy_logic.append(dataframe['r_480_1h'] < -24.0)
-                    item_buy_logic.append(dataframe['crsi_1h'] > 20.0)
+                    item_buy_logic.append(dataframe['r_480_1h'] < -20.0)
                     item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_4'] * 3.2))
+                    item_buy_logic.append(dataframe['volume_mean_12'] > (dataframe['volume_mean_24'] * 0.9))
                     item_buy_logic.append(
                         (dataframe['btc_not_downtrend_1h'] == True)
-                        | (dataframe['crsi_1h'] > 10.0)
+                        | (dataframe['crsi_1h'] > 18.0)
                     )
 
                 # Condition #4 - Semi swing. Local dip.
