@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.685"
+        return "v11.0.686"
 
     # ROI table:
     minimal_roi = {
@@ -2534,7 +2534,7 @@ class NostalgiaForInfinityX(IStrategy):
     def sell_stoploss(self, current_profit: float, max_profit: float, max_loss: float, last_candle, previous_candle_1, trade: 'Trade', current_time: 'datetime') -> tuple:
         # Under & near EMA200, local uptrend move
         if (
-                (current_profit < -0.04)
+                (current_profit < -0.025)
                 and (last_candle['close'] < last_candle['ema_200'])
                 and (last_candle['cmf'] < -0.0)
                 and (last_candle['ema_vwma_osc_96'] < -0.0)
