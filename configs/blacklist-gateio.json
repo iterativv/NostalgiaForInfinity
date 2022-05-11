@@ -6,9 +6,9 @@
             // Leverage tokens
             ".*(3L|3S|5L|5S)/.*",
             // Fiat
-            "(AUD|EUR|GBP|CHF|CAD|JPY)/.*",
+            "(AUD|BRZ|CAD|CHF|EUR|GBP|HKD|IDRT|JPY|NGN|RUB|SGD|TRY|UAH|USD|ZAR)/.*",
             // Stable tokens
-            "(BUSD|USDT|TUSD|USDC|CUSDT|DAI|USDN|CUSD|UST)/.*",
+            "(BUSD|CUSD|CUSDT|DAI|PAXG|SUSD|TUSD|USDC|USDN|USDP|USDT|VAI|UST)/.*",
             // FAN Tokens
             "(ACM|AFA|ALA|ALL|ALPINE|APL|ASR|ATM|BAR|CAI|CITY|FOR|GAL|GOZ|IBFK|JUV|LEG|LOCK-1|NAVI|NMR|NOV|OG|PFL|PORTO|PSG|ROUSH|STV|TH|TRA|UCH|UFC|YBO)/.*",
             // Other Coins
