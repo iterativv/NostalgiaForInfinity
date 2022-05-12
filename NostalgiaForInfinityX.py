@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.755"
+        return "v11.0.756"
 
     # ROI table:
     minimal_roi = {
@@ -10242,6 +10242,10 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['close'] < dataframe['sma_15'] * 0.958)
                     item_buy_logic.append(dataframe['cti'] < -0.9)
                     item_buy_logic.append(dataframe['ha_close'] > dataframe['ha_open'])
+                    item_buy_logic.append(
+                        (dataframe['sma_200'] > dataframe['sma_200'].shift(48))
+                        | (dataframe['close'] < (dataframe['res3_1d'] * 1.1))
+                    )
 
                 # Condition #27 - Semi swing. Local deep. Uptrend.
                 elif index == 27:
