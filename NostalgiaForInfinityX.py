@@ -10330,7 +10330,10 @@ class NostalgiaForInfinityX(IStrategy):
                     )
                     item_buy_logic.append(
                         (dataframe['btc_not_downtrend_1h'] == True)
+                        | (dataframe['ewo'] < -5.9)
+                        | (dataframe['ema_50'] > dataframe['ema_200'])
                         | (dataframe['tpct_change_144'] < 0.16)
+                        | (dataframe['cmf'] > 0.0)
                         | (dataframe['hl_pct_change_48_1h'] < 0.75)
                         | (dataframe['sma_200'] > dataframe['sma_200'].shift(48))
                         | (dataframe['close'] > (dataframe['sma_200'] * 0.95))
