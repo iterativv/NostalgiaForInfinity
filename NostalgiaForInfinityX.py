@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.786"
+        return "v11.0.787"
 
     # ROI table:
     minimal_roi = {
@@ -9836,12 +9836,12 @@ class NostalgiaForInfinityX(IStrategy):
                     # Non-Standard protections
 
                     # Logic
-                    item_buy_logic.append(((dataframe['close'] - dataframe['open'].rolling(12).min()) / dataframe['open'].rolling(12).min()) > 0.027)
-                    item_buy_logic.append(dataframe['rsi_14'] < 33.5)
+                    item_buy_logic.append(((dataframe['close'] - dataframe['open'].rolling(12).min()) /
+                                           dataframe['open'].rolling(12).min()) > 0.027)
+                    item_buy_logic.append(dataframe['rsi_14'] < 36.0)
                     item_buy_logic.append(dataframe['r_32'] < -75.0)
                     item_buy_logic.append(dataframe['mfi'] < 36.0)
                     item_buy_logic.append(dataframe['rsi_14_1h'] > 30.0)
-                    item_buy_logic.append(dataframe['rsi_14_1h'] < 84.0)
                     item_buy_logic.append(dataframe['r_480_1h'] > -99.0)
                     item_buy_logic.append(
                         (dataframe['cti_1h'] < 0.5)
@@ -9852,6 +9852,17 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['crsi_1h'] > 20.0)
                         | (dataframe['close'] > (dataframe['sma_200_1h'] * 0.94))
                         | (dataframe['ema_50'] > dataframe['ema_200'])
+                    )
+                    item_buy_logic.append(
+                        (dataframe['cti_1h'] < 0.3)
+                        | (dataframe['rsi_14_1h'] < 45.0)
+                        | (dataframe['rsi_14'] < 33.2)
+                    )
+                    item_buy_logic.append(
+                        (dataframe['btc_not_downtrend_1h'] == True)
+                        | (dataframe['cti_1h'] < 0.25)
+                        | (dataframe['crsi_1h'] > 14.0)
+                        | (dataframe['rsi_14'] < 33.4)
                     )
 
                 # Condition #2 - Semi swing. Local dip.
