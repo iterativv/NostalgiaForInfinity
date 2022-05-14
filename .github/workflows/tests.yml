@@ -13,7 +13,10 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: 3.7
+        python-version: 3.9
+    - name: Install black
+      run: |
+        pip install black==22.3.0
     - id: changed-files
       name: Get Changed Files
       uses: dorny/paths-filter@v2
@@ -31,10 +34,10 @@ jobs:
         path: ~/.cache/pre-commit
         key: pre-commit|${{ env.PY }}|${{ hashFiles('.pre-commit-config.yaml') }}
     - name: Check ALL Files On Branch
-      uses: pre-commit/action@v2.0.0
+      uses: pre-commit/action@v2.0.3
       if: github.event_name != 'pull_request'
     - name: Check Changed Files On PR
-      uses: pre-commit/action@v2.0.0
+      uses: pre-commit/action@v2.0.3
       if: github.event_name == 'pull_request'
       with:
         extra_args: --files ${{ steps.changed-files.outputs.repo_files }}
