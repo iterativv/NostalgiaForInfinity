@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.828"
+        return "v11.0.829"
 
     # ROI table:
     minimal_roi = {
@@ -10742,6 +10742,16 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['cti_1h'] < 0.9)
                         | (dataframe['hl_pct_change_48_1h'] < 0.5)
                         | (dataframe['close'] > dataframe['ema_26'])
+                    )
+                    item_buy_logic.append(
+                        (dataframe['cmf'] > 0.0)
+                        | (dataframe['rsi_14_1h'] < 50.0)
+                        | (dataframe['cti_1h'] < 0.5)
+                        | (dataframe['tpct_change_144'] < 0.1)
+                        | (dataframe['hl_pct_change_48_1h'] < 0.5)
+                        | (dataframe['sma_200_1h'] > dataframe['sma_200_1h'].shift(24))
+                        | (dataframe['close'] < dataframe['sma_30'] * 0.944)
+                        | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.016))
                     )
 
                 # Condition #41 - 15m. Semi swing. Local dip. BTC not downtrend.
