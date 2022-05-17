@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.824"
+        return "v11.0.825"
 
     # ROI table:
     minimal_roi = {
@@ -2603,7 +2603,7 @@ class NostalgiaForInfinityX(IStrategy):
 
         # For times with strongly negative sentiment
         if (
-                (current_profit < [-0.14, -0.14, -0.18][stop_index])
+                (current_profit < [-0.25, -0.25, -0.25][stop_index])
                 and (last_candle['close'] < last_candle['ema_200'])
                 and (last_candle['close'] < (last_candle['ema_200'] - last_candle['atr']))
                 and (last_candle['sma_200_dec_20'])
