@@ -10781,7 +10781,7 @@ class NostalgiaForInfinityX(IStrategy):
                     # Logic
                     item_buy_logic.append(dataframe['rsi_14'] < 32.0)
                     item_buy_logic.append(dataframe['r_14'] < -90.0)
-                    item_buy_logic.append(dataframe['cmf'] < -0.5)
+                    item_buy_logic.append(dataframe['cmf'] > -0.5)
                     item_buy_logic.append(dataframe['r_480_1h'] < -15.0)
                     item_buy_logic.append(
                         (dataframe['volume_mean_12'] > (dataframe['volume_mean_24'] * 1.15))
