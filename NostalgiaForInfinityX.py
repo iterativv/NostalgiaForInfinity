@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.853"
+        return "v11.0.854"
 
     # ROI table:
     minimal_roi = {
@@ -184,7 +184,7 @@ class NostalgiaForInfinityX(IStrategy):
     rebuy_multi_2 = 1.0
 
     # Profit maximizer
-    profit_max_enabled = False
+    profit_max_enabled = True
 
     # Run "populate_indicators()" only for new candle.
     process_only_new_candles = True
