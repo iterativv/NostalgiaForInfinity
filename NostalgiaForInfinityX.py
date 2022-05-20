@@ -9091,8 +9091,8 @@ class NostalgiaForInfinityX(IStrategy):
 
     def sell_profit_target(self, pair: str, trade: Trade, current_time: datetime, current_rate: float, current_profit: float, last_candle, previous_candle_1, previous_rate, previous_profit,  previous_sell_reason, previous_time_profit_reached) -> tuple:
         if self.profit_max_enabled:
-            if (previous_sell_reason == "sell_stoploss_u_e_1"):
-                if (current_profit < (previous_profit - 0.01)):
+            if (previous_sell_reason in ["sell_stoploss_u_e_1", "sell_stoploss_doom"]):
+                if (current_profit < (previous_profit - 0.005)):
                     return True, previous_sell_reason
             elif (current_profit < (previous_profit - 0.005)):
                 return True, previous_sell_reason
