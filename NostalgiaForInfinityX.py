@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.854"
+        return "v11.0.855"
 
     # ROI table:
     minimal_roi = {
@@ -2088,7 +2088,7 @@ class NostalgiaForInfinityX(IStrategy):
         super().__init__(config)
         if self.target_profit_cache is None:
             self.target_profit_cache = Cache(
-                self.config["user_data_dir"] / "nfi-profit_maximizer.json"
+                self.config["user_data_dir"] / ("nfi-profit_maximizer-" + self.config["exchange"]["name"] + "-" + self.config["stake_currency"] +  ("-(backtest)" if (self.config['runmode'].value == 'backtest') else "") + ".json")
             )
 
         # If the cached data hasn't changed, it's a no-op
