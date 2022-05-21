@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.859"
+        return "v11.0.860"
 
     # ROI table:
     minimal_roi = {
@@ -10152,66 +10152,51 @@ class NostalgiaForInfinityX(IStrategy):
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * 0.934)
-                    item_buy_logic.append(dataframe['ewo'] > 2.0)
+                    item_buy_logic.append(dataframe['ewo'] > 3.0)
                     item_buy_logic.append(dataframe['cti'] < -0.9)
-                    item_buy_logic.append(dataframe['r_14'] < -97.0)
+                    item_buy_logic.append(dataframe['r_14'] < -90.0)
+                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * 0.999))
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
-                        | (dataframe['tpct_change_144'] < 0.22)
-                        | (dataframe['cmf'] > -0.1)
+                        (dataframe['cmf'] > -0.5)
+                        | (dataframe['ewo'] > 4.0)
                         | (dataframe['cti_1h'] < 0.8)
+                        | (dataframe['crsi_1h'] > 20.0)
+                        | (dataframe['tpct_change_144'] < 0.12)
                         | (dataframe['hl_pct_change_48_1h'] < 0.5)
-                    )
-                    item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
-                        | (dataframe['cmf'] > -0.1)
-                        | (dataframe['cti_1h'] < 0.5)
+                        | (dataframe['ema_20'] > dataframe['ema_50'])
+                        | (dataframe['close'] > dataframe['ema_26'])
                         | (dataframe['close'] < dataframe['ema_20'] * 0.96)
                     )
                     item_buy_logic.append(
-                        (dataframe['cmf'] > 0.0)
-                        | (dataframe['cti_1h'] < 0.8)
-                        | (dataframe['tpct_change_144'] < 0.12)
-                        | (dataframe['close'] < dataframe['ema_20'] * 0.96)
-                        | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.99))
-                        | (dataframe['volume_mean_12'] > (dataframe['volume_mean_24'] * 0.9))
-                    )
-                    item_buy_logic.append(
                         (dataframe['btc_not_downtrend_1h'] == True)
+                        | (dataframe['ewo'] > 3.4)
                         | (dataframe['cmf'] > -0.1)
-                        | (dataframe['ewo'] > 4.6)
                         | (dataframe['cti_1h'] < 0.5)
                         | (dataframe['tpct_change_144'] < 0.12)
-                        | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.99))
+                        | (dataframe['hl_pct_change_48_1h'] < 0.5)
+                        | (dataframe['ema_20'] > dataframe['ema_50'])
+                        | (dataframe['close'] > dataframe['ema_26'])
                         | (dataframe['close'] < dataframe['ema_20'] * 0.94)
                     )
                     item_buy_logic.append(
                         (dataframe['cmf'] > -0.2)
-                        | (dataframe['ewo'] > 5.0)
-                        | (dataframe['cti_1h'] < 0.5)
-                        | (dataframe['tpct_change_144'] < 0.12)
-                        | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.99))
-                        | (dataframe['close'] < dataframe['ema_20'] * 0.93)
-                    )
-                    item_buy_logic.append(
-                        (dataframe['cmf'] > -0.1)
-                        | (dataframe['ewo'] > 4.2)
-                        | (dataframe['cti_1h'] < 0.5)
-                        | (dataframe['tpct_change_144'] < 0.12)
-                        | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.99))
-                        | (dataframe['close'] < dataframe['ema_20'] * 0.93)
-                        | (dataframe['close'] < (dataframe['res3_1d'] * 1.0))
-                    )
-                    item_buy_logic.append(
-                        (dataframe['cmf'] > -0.1)
                         | (dataframe['ewo'] > 7.2)
+                        | (dataframe['rsi_14'] < 30.0)
                         | (dataframe['cti_1h'] < 0.5)
                         | (dataframe['tpct_change_144'] < 0.12)
-                        | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.99))
+                        | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.995))
                         | (dataframe['close'] < dataframe['ema_20'] * 0.94)
                         | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
                     )
-
+                    item_buy_logic.append(
+                        (dataframe['btc_not_downtrend_1h'] == True)
+                        | (dataframe['ewo'] > 4.4)
+                        | (dataframe['cti_1h'] < 0.5)
+                        | (dataframe['tpct_change_144'] < 0.12)
+                        | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.995))
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.94)
+                        | (dataframe['close'] < (dataframe['res3_1d'] * 1.0))
+                    )
                 # Condition #6 - Semi swing. Local dip.
                 elif index == 6:
                     # Non-Standard protections
