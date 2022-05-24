@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.880"
+        return "v11.0.881"
 
     # ROI table:
     minimal_roi = {
@@ -10418,7 +10418,6 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['ewo'] > 2.0)
                     item_buy_logic.append(dataframe['rsi_14'] < 36.0)
                     item_buy_logic.append(dataframe['cti'] < -0.9)
-                    item_buy_logic.append(dataframe['close'] < dataframe['bb20_2_low'] * 0.999)
                     item_buy_logic.append(dataframe['r_480_1h'] < -5.0)
                     item_buy_logic.append(
                         (dataframe['ewo'] > 3.0)
@@ -10445,6 +10444,23 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['cti_1h'] < 0.5)
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.99)
                         | (dataframe['close'] < dataframe['ema_20'] * 0.94)
+                    )
+                    item_buy_logic.append(
+                        (dataframe['ewo'] > 9.4)
+                        | (dataframe['mfi'] > 30.0)
+                        | (dataframe['cti_1h'] < 0.5)
+                        | (dataframe['tpct_change_144'] < 0.14)
+                        | (dataframe['close'] < dataframe['bb20_2_low'] * 0.999)
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.93)
+                    )
+                    item_buy_logic.append(
+                        (dataframe['ewo'] > 10.0)
+                        | (dataframe['rsi_14'] < 20.0)
+                        | (dataframe['cmf'] > -0.2)
+                        | (dataframe['mfi'] > 30.0)
+                        | (dataframe['cti_1h'] < 0.0)
+                        | (dataframe['close'] < dataframe['bb20_2_low'] * 0.999)
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.93)
                     )
 
                 # Condition #9 - Semi swing. Local dip. Downtrend.
