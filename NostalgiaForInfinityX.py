@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.905"
+        return "v11.0.906"
 
     # ROI table:
     minimal_roi = {
@@ -9216,11 +9216,13 @@ class NostalgiaForInfinityX(IStrategy):
             pair, mark_signal = self.mark_profit_target(pair, sell, signal_name, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
             if pair:
                 self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
+            else:
+                return f"{signal_name} ( {buy_tag})"
 
         if (
                 (not self.profit_max_enabled)
                 # Enable profit maximizer for the stoplosses
-                or (signal_name not in ["sell_stoploss_u_e_1", "sell_stoploss_doom"])
+                or (signal_name not in ["sell_stoploss_u_e_1", "sell_stoploss_doom", "sell_stoploss_stop"])
         ):
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag})"
