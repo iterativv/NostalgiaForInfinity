@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.932"
+        return "v11.0.933"
 
     # ROI table:
     minimal_roi = {
@@ -9755,7 +9755,7 @@ class NostalgiaForInfinityX(IStrategy):
         --> BTC informative (5m/1h)
         ___________________________________________________________________________________________
         '''
-        if self.config['stake_currency'] in ['USDT','BUSD','USDC','DAI','TUSD','PAX','USD','EUR','GBP']:
+        if self.config['stake_currency'] in ['USDT','BUSD','USDC','DAI','TUSD','PAX','USD','EUR','GBP', 'TRY']:
             btc_info_pair = f"BTC/{self.config['stake_currency']}"
         else:
             btc_info_pair = "BTC/USDT"
