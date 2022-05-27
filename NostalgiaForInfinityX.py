@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.930"
+        return "v11.0.931"
 
     # ROI table:
     minimal_roi = {
@@ -3350,13 +3350,43 @@ class NostalgiaForInfinityX(IStrategy):
         return False, None
 
     def sell_recover(self, current_profit: float, max_profit: float, max_loss: float, last_candle, previous_candle_1, trade: 'Trade', current_time: 'datetime') -> tuple:
-        if (
-                (0.01 > current_profit > 0.001)
-                and (max_profit > (current_profit + 0.01))
-                and (max_loss > 0.09)
-                and (last_candle['close'] < previous_candle_1['close'])
-        ):
-            return True, 'sell_rc_1'
+        if (max_loss > 0.09):
+            if 0.02 > current_profit >= 0.01:
+                if (last_candle['rsi_14'] > 70.0):
+                    return True, 'sell_profit_rc_1_1'
+            elif 0.03 > current_profit >= 0.02:
+                if (last_candle['rsi_14'] > 70.0):
+                    return True, 'sell_profit_rc_2_1'
+            elif 0.04 > current_profit >= 0.03:
+                if (last_candle['rsi_14'] > 70.0):
+                    return True, 'sell_profit_rc_3_1'
+            elif 0.05 > current_profit >= 0.04:
+                if (last_candle['rsi_14'] > 70.0):
+                    return True, 'sell_profit_rc_4_1'
+            elif 0.06 > current_profit >= 0.05:
+                if (last_candle['rsi_14'] > 70.0):
+                    return True, 'sell_profit_rc_5_1'
+            elif 0.07 > current_profit >= 0.06:
+                if (last_candle['rsi_14'] > 70.0):
+                    return True, 'sell_profit_rc_6_1'
+            elif 0.08 > current_profit >= 0.07:
+                if (last_candle['rsi_14'] > 70.0):
+                    return True, 'sell_profit_rc_7_1'
+            elif 0.09 > current_profit >= 0.08:
+                if (last_candle['rsi_14'] > 70.0):
+                    return True, 'sell_profit_rc_8_1'
+            elif 0.1 > current_profit >= 0.09:
+                if (last_candle['rsi_14'] > 70.0):
+                    return True, 'sell_profit_rc_9_1'
+            elif 0.12 > current_profit >= 0.1:
+                if (last_candle['rsi_14'] > 70.0):
+                    return True, 'sell_profit_rc_10_1'
+            elif 0.2 > current_profit >= 0.12:
+                if (last_candle['rsi_14'] > 70.0):
+                    return True, 'sell_profit_rc_11_1'
+            elif current_profit >= 0.2:
+                if (last_candle['rsi_14'] > 70.0):
+                    return True, 'sell_profit_rc_12_1'
 
         if (
                 (0.01 > current_profit > -0.04)
