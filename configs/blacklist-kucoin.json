@@ -4,7 +4,7 @@
             // Exchange Tokens
             "KCS/.*",
             // Leverage tokens
-            ".*(3L|3S|5L|5S)/.*",
+            ".*(5L|5S)/.*",
             // Fiat
             "(AUD|BRZ|CAD|CHF|EUR|GBP|HKD|IDRT|JPY|NGN|RUB|SGD|TRY|UAH|USD|ZAR)/.*",
             // Stable tokens
