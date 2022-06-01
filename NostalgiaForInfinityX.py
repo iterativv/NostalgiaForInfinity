@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.986"
+        return "v11.0.987"
 
     # ROI table:
     minimal_roi = {
@@ -2290,22 +2290,23 @@ class NostalgiaForInfinityX(IStrategy):
                             proposed_stake: float, min_stake: float, max_stake: float,
                             **kwargs) -> float:
         if (self.position_adjustment_enable == True):
+            use_mode = self.rebuy_mode
             if ('rebuy_mode' in self.config):
-                self.rebuy_mode = self.config['rebuy_mode']
+                use_mode = self.config['rebuy_mode']
             if ('use_alt_rebuys' in self.config and self.config['use_alt_rebuys']):
-                self.rebuy_mode = 1
+                use_mode = 1
             is_leverage = bool(re.match(leverage_pattern,pair))
             if (is_leverage) and not ('do_not_use_leverage_rebuys' in self.config and self.config['do_not_use_leverage_rebuys']):
-                self.rebuy_mode = 4
-            if (self.rebuy_mode == 0):
+                use_mode = 4
+            if (use_mode == 0):
                 return proposed_stake * self.max_rebuy_multiplier_0
-            elif (self.rebuy_mode == 1):
+            elif (use_mode == 1):
                 return proposed_stake * self.max_rebuy_multiplier_1
-            elif (self.rebuy_mode == 2):
+            elif (use_mode == 2):
                 return proposed_stake * self.max_rebuy_multiplier_2
-            elif (self.rebuy_mode == 3):
+            elif (use_mode == 3):
                 return proposed_stake * self.max_rebuy_multiplier_3
-            elif (self.rebuy_mode == 4):
+            elif (use_mode == 4):
                 return proposed_stake * self.max_rebuy_multiplier_4
 
         return proposed_stake
@@ -2361,23 +2362,31 @@ class NostalgiaForInfinityX(IStrategy):
         if (count_of_entries == 0):
             return None
 
+        use_mode = self.rebuy_mode
+        is_leverage = bool(re.match(leverage_pattern, trade.pair))
+        if (is_leverage) and not ('do_not_use_leverage_rebuys' in self.config and self.config['do_not_use_leverage_rebuys']):
+            use_mode = 4
+
         # if to use alternate rebuy scheme
         use_alt = False
-        if (self.rebuy_mode == 0) and ((filled_entries[0].cost * (self.rebuy_multi_0 + (count_of_entries * 0.005))) < min_stake):
+        if (use_mode == 0) and ((filled_entries[0].cost * (self.rebuy_multi_0 + (count_of_entries * 0.005))) < min_stake):
             use_alt = True
-        if (self.rebuy_mode == 2) and ((filled_entries[0].cost * (self.rebuy_multi_2 + (count_of_entries * 0.005))) < min_stake):
+        if (use_mode == 2) and ((filled_entries[0].cost * (self.rebuy_multi_2 + (count_of_entries * 0.005))) < min_stake):
             use_alt = True
-        if (self.rebuy_mode == 3) and ((filled_entries[0].cost * (self.rebuy_multi_3 + (count_of_entries * 0.005))) < min_stake):
+        if (use_mode == 3) and ((filled_entries[0].cost * (self.rebuy_multi_3 + (count_of_entries * 0.005))) < min_stake):
             use_alt = True
-        if (self.rebuy_mode == 4) and ((filled_entries[0].cost * (self.rebuy_multi_4 + (count_of_entries * 0.005))) < min_stake):
+        if (use_mode == 4) and ((filled_entries[0].cost * (self.rebuy_multi_4 + (count_of_entries * 0.005))) < min_stake):
             use_alt = True
 
         if ('use_alt_rebuys' in self.config and self.config['use_alt_rebuys']):
             use_alt = True
 
+        if use_alt:
+            use_mode = 1
+
         is_rebuy = False
 
-        if (self.rebuy_mode == 0) and (not use_alt):
+        if (use_mode == 0):
             if (1 <= count_of_entries <= 2):
                 if (
                         (current_profit < self.rebuy_pcts_n_0[count_of_entries - 1])
@@ -2397,7 +2406,7 @@ class NostalgiaForInfinityX(IStrategy):
                         )
                 ):
                     is_rebuy = True
-        elif (self.rebuy_mode == 1) or (use_alt):
+        elif (use_mode == 1):
             if (count_of_entries == 1):
                 if (
                         (current_profit < self.rebuy_pcts_n_1[0])
@@ -2415,7 +2424,7 @@ class NostalgiaForInfinityX(IStrategy):
                         )
                 ):
                     is_rebuy = True
-        elif (self.rebuy_mode == 2):
+        elif (use_mode == 2):
             if (1 <= count_of_entries <= 4):
                 if (
                         (current_profit < self.rebuy_pcts_n_2[count_of_entries - 1])
@@ -2434,7 +2443,7 @@ class NostalgiaForInfinityX(IStrategy):
                         )
                 ):
                     is_rebuy = True
-        elif (self.rebuy_mode == 3):
+        elif (use_mode == 3):
             if (1 <= count_of_entries <= 4):
                 if (
                         (current_profit < self.rebuy_pcts_n_3[count_of_entries - 1])
@@ -2452,7 +2461,7 @@ class NostalgiaForInfinityX(IStrategy):
                         )
                 ):
                     is_rebuy = True
-        elif (self.rebuy_mode == 4):
+        elif (use_mode == 4):
             if (1 <= count_of_entries <= 1):
                 if (
                         (current_profit < self.rebuy_pcts_n_4[count_of_entries - 1])
@@ -2481,20 +2490,20 @@ class NostalgiaForInfinityX(IStrategy):
             log.info(f"Rebuy: a buy tag found for pair {trade.pair}")
 
         # Calculate the new stake.
-        if 0 < count_of_entries <= (self.max_rebuy_orders_1 if use_alt else self.max_rebuy_orders_0 if self.rebuy_mode == 0 else self.max_rebuy_orders_1 if self.rebuy_mode == 1 else self.max_rebuy_orders_2):
+        if 0 < count_of_entries <= (self.max_rebuy_orders_0 if use_mode == 0 else self.max_rebuy_orders_1 if use_mode == 1 else self.max_rebuy_orders_2 if use_mode == 2 else self.max_rebuy_orders_3 if use_mode == 3 else self.max_rebuy_orders_4):
             try:
                 # This returns first order stake size
                 stake_amount = filled_entries[0].cost
                 # This then calculates current safety order size
-                if (self.rebuy_mode == 0) and (not use_alt):
+                if (use_mode == 0):
                     stake_amount = stake_amount * (self.rebuy_multi_0 + (count_of_entries * 0.005))
-                elif (self.rebuy_mode == 1) or (use_alt):
+                elif (use_mode == 1) or (use_alt):
                     stake_amount = stake_amount * (self.rebuy_multi_1 + (count_of_entries * 0.005))
                     if (stake_amount < min_stake):
                         stake_amount = min_stake
-                elif (self.rebuy_mode == 2):
+                elif (use_mode == 2):
                     stake_amount = stake_amount * (self.rebuy_multi_2 + (count_of_entries * 0.005))
-                elif (self.rebuy_mode == 3):
+                elif (use_mode == 3):
                     if (count_of_entries == 1):
                         stake_amount = stake_amount * self.rebuy_multi_3 * 1
                     elif (count_of_entries == 2):
@@ -2511,7 +2520,7 @@ class NostalgiaForInfinityX(IStrategy):
                         stake_amount = stake_amount * self.rebuy_multi_3 * 4
                     elif (count_of_entries == 8):
                         stake_amount = stake_amount * self.rebuy_multi_3 * 4
-                elif (self.rebuy_mode == 4):
+                elif (use_mode == 4):
                       stake_amount = stake_amount + (stake_amount * (self.rebuy_multi_4 * (count_of_entries - 1)))
                 return stake_amount
             except Exception as exception:
