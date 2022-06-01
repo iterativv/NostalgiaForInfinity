@@ -9364,7 +9364,7 @@ class NostalgiaForInfinityX(IStrategy):
         informative_pairs.extend([(pair, self.info_timeframe_1d) for pair in pairs])
         informative_pairs.extend([(pair, self.info_timeframe_15m) for pair in pairs])
 
-        if self.config['stake_currency'] in ['USDT','BUSD','USDC','DAI','TUSD','PAX','USD','EUR','GBP','BRL']:
+        if self.config['stake_currency'] in ['USDT','BUSD','USDC','DAI','TUSD','PAX','USD','EUR','GBP', 'TRY', 'BRL']:
             btc_info_pair = f"BTC/{self.config['stake_currency']}"
         else:
             btc_info_pair = "BTC/USDT"
