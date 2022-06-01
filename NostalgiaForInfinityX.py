@@ -2295,7 +2295,7 @@ class NostalgiaForInfinityX(IStrategy):
                 self.rebuy_mode = 1
             is_leverage = bool(re.match(leverage_pattern,pair))
             if (is_leverage) and not ('do_not_use_leverage_rebuys' in self.config and self.config['do_not_use_leverage_rebuys']):
-                self.rebuy_mode = 3
+                self.rebuy_mode = 4
             if (self.rebuy_mode == 0):
                 return proposed_stake * self.max_rebuy_multiplier_0
             elif (self.rebuy_mode == 1):
