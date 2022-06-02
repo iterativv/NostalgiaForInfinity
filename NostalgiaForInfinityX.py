@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.987"
+        return "v11.0.988"
 
     # ROI table:
     minimal_roi = {
@@ -611,8 +611,8 @@ class NostalgiaForInfinityX(IStrategy):
             "sma200_1h_rising_val"      : "50",
             "safe_dips_threshold_0"     : 0.032,
             "safe_dips_threshold_2"     : 0.09,
-            "safe_dips_threshold_12"    : 0.13,
-            "safe_dips_threshold_144"   : 0.23,
+            "safe_dips_threshold_12"    : 0.18,
+            "safe_dips_threshold_144"   : 0.44,
             "safe_pump_6h_threshold"    : 0.5,
             "safe_pump_12h_threshold"   : 0.5,
             "safe_pump_24h_threshold"   : 0.75,
@@ -10955,6 +10955,26 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['mfi'] > 20.0)
                         | (dataframe['cti_1h'] < 0.5)
                         | (dataframe['crsi_1h'] > 16.0)
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.93)
+                    )
+                    item_buy_logic.append(
+                        (dataframe['cmf'] > -0.1)
+                        | (dataframe['mfi'] > 20.0)
+                        | (dataframe['ewo'] > 6.0)
+                        | (dataframe['cti_1h'] < 0.0)
+                        | (dataframe['rsi_14_1h'] < 40.0)
+                        | (dataframe['tpct_change_144'] < 0.1)
+                        | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.97))
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.9)
+                    )
+                    item_buy_logic.append(
+                        (dataframe['cmf'] > -0.2)
+                        | (dataframe['ewo'] > 6.0)
+                        | (dataframe['cti_1h'] < 0.5)
+                        | (dataframe['crsi_1h'] > 16.0)
+                        | (dataframe['rsi_14_1h'] < 40.0)
+                        | (dataframe['tpct_change_144'] < 0.2)
+                        | (dataframe['close'] > (dataframe['sup1_1d'] * 1.0))
                         | (dataframe['close'] < dataframe['ema_20'] * 0.93)
                     )
 
