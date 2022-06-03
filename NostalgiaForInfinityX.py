@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.1007"
+        return "v11.0.1008"
 
     # ROI table:
     minimal_roi = {
@@ -10284,7 +10284,6 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(
                         (dataframe['btc_not_downtrend_1h'] == True)
                         | (dataframe['cti'] < -0.9)
-                        | (dataframe['cti_1h'] < -0.9)
                         | (dataframe['crsi_1h'] > 12.0)
                         | (dataframe['tpct_change_0'] < 0.02)
                         | (dataframe['tpct_change_144'] < 0.14)
