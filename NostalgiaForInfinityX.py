@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.992"
+        return "v11.0.993"
 
     # ROI table:
     minimal_roi = {
@@ -10991,7 +10991,7 @@ class NostalgiaForInfinityX(IStrategy):
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * 0.999)
-                    item_buy_logic.append(dataframe['ewo'] < -5.4)
+                    item_buy_logic.append(dataframe['ewo'] < -4.8)
                     item_buy_logic.append(dataframe['cti'] < -0.97)
                     item_buy_logic.append(dataframe['crsi_1h'] > 6.0)
                     item_buy_logic.append(
@@ -11040,6 +11040,24 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['sma_200_1h'] > dataframe['sma_200_1h'].shift(24))
                         | (dataframe['close'] > (dataframe['sma_200_1h'] * 0.85))
                         | (dataframe['close'] < dataframe['ema_20'] * 0.954)
+                    )
+                    item_buy_logic.append(
+                        (dataframe['ewo'] < -6.0)
+                        | (dataframe['crsi_1h'] > 20.0)
+                        | (dataframe['tpct_change_144'] < 0.12)
+                        | (dataframe['sma_200'] > dataframe['sma_200'].shift(24))
+                        | (dataframe['sma_200_1h'] > dataframe['sma_200_1h'].shift(24))
+                        | (dataframe['close'] > (dataframe['sup2_1d'] * 1.0))
+                        | (dataframe['close'] > (dataframe['sma_200_1h'] * 0.85))
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.944)
+                    )
+                    item_buy_logic.append(
+                        (dataframe['btc_not_downtrend_1h'] == True)
+                        | (dataframe['ewo'] < -12.0)
+                        | (dataframe['crsi_1h'] > 25.0)
+                        | (dataframe['sma_200'] > dataframe['sma_200'].shift(24))
+                        | (dataframe['close'] > (dataframe['sup2_1d'] * 1.0))
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.934)
                     )
 
                 # Condition #14 - Semi swing. Strong uptrend. Local dip.
