@@ -9766,6 +9766,8 @@ class NostalgiaForInfinityX(IStrategy):
         dataframe['tpct_change_2']   = self.top_percent_change(dataframe,2)
         dataframe['tpct_change_12']  = self.top_percent_change(dataframe,12)
         dataframe['tpct_change_144'] = self.top_percent_change(dataframe,144)
+        # 3 hours, protect against wicks
+        dataframe['hl_pct_change_36'] = self.range_percent_change(dataframe, 'HL', 36)
 
         if not self.config['runmode'].value in ('live', 'dry_run'):
             # Backtest age filter
