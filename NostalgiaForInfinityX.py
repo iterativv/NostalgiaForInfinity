@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.1019"
+        return "v11.0.1020"
 
     # ROI table:
     minimal_roi = {
@@ -11186,7 +11186,6 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * 0.992))
                     item_buy_logic.append(dataframe['ewo'] > 5.0)
                     item_buy_logic.append(dataframe['rsi_14'] < 36.0)
-                    item_buy_logic.append(dataframe['r_480_1h'] < -18.0)
                     item_buy_logic.append(
                         (dataframe['ewo'] > 13.0)
                         | (dataframe['cti'] < -0.8)
@@ -11206,6 +11205,17 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < dataframe['ema_20'] * 0.95)
                         | (dataframe['close'] < (dataframe['res1_1d'] * 1.0))
                         | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.985))
+                    )
+                    item_buy_logic.append(
+                        (dataframe['ewo'] > 8.0)
+                        | (dataframe['cmf'] > -0.1)
+                        | (dataframe['rsi_14'] < 15.0)
+                        | (dataframe['cti_1h'] < 0.5)
+                        | (dataframe['r_480_1h'] < -18.0)
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.92)
+                        | (dataframe['close'] < (dataframe['res1_1d'] * 1.0))
+                        | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.98))
+                        | (dataframe['volume_mean_12'] > (dataframe['volume_mean_24'] * 1.5))
                     )
 
                 # Condition #16 - Semi swing. Cross above.
