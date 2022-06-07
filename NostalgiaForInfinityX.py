@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.1032"
+        return "v11.0.1033"
 
     # ROI table:
     minimal_roi = {
@@ -174,6 +174,7 @@ class NostalgiaForInfinityX(IStrategy):
     max_rebuy_orders_2 = 10
     max_rebuy_orders_3 = 8
     max_rebuy_orders_4 = 3
+    max_rebuy_multiplier_lev = 0.5 # for leveraged tokens
     max_rebuy_multiplier_0 = 1.0
     max_rebuy_multiplier_1 = 1.0
     max_rebuy_multiplier_2 = 0.2
@@ -2297,7 +2298,7 @@ class NostalgiaForInfinityX(IStrategy):
                 use_mode = 1
             is_leverage = bool(re.match(leverage_pattern,pair))
             if (is_leverage) and not ('do_not_use_leverage_rebuys' in self.config and self.config['do_not_use_leverage_rebuys']):
-                use_mode = 4
+                return proposed_stake * self.max_rebuy_multiplier_lev
             if (use_mode == 0):
                 return proposed_stake * self.max_rebuy_multiplier_0
             elif (use_mode == 1):
@@ -2365,7 +2366,7 @@ class NostalgiaForInfinityX(IStrategy):
         use_mode = self.rebuy_mode
         is_leverage = bool(re.match(leverage_pattern, trade.pair))
         if (is_leverage) and not ('do_not_use_leverage_rebuys' in self.config and self.config['do_not_use_leverage_rebuys']):
-            use_mode = 4
+            return None
 
         # if to use alternate rebuy scheme
         use_alt = False
