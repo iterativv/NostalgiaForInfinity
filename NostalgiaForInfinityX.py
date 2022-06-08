@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.1035"
+        return "v11.0.1036"
 
     # ROI table:
     minimal_roi = {
@@ -2702,7 +2702,14 @@ class NostalgiaForInfinityX(IStrategy):
                 # temporary
                 and (trade.open_date_utc.replace(tzinfo=None) > datetime(2022, 5, 25) or is_backtest)
         ):
-            return True, 'sell_stoploss_stop'
+            return True, 'sell_stoploss_stop_1'
+
+        if (
+                (current_profit < [-0.12, -0.12, -0.25][stop_index])
+                # temporary
+                and (trade.open_date_utc.replace(tzinfo=None) > datetime(2022, 6, 8) or is_backtest)
+        ):
+            return True, 'sell_stoploss_stop_2'
 
         return False, None
 
