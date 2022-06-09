@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.1038"
+        return "v11.0.1039"
 
     # ROI table:
     minimal_roi = {
@@ -2669,10 +2669,7 @@ class NostalgiaForInfinityX(IStrategy):
                 and (last_candle['cmf'] < -0.0)
                 and (last_candle['sma_200_dec_24'])
                 and (last_candle['sma_200_dec_20'])
-                and (last_candle['sma_200_dec_20_1h'])
-                and (last_candle['ema_vwma_osc_96'] < -0.0)
-                and (last_candle['btc_not_downtrend_1h'] == False)
-                and (current_time - timedelta(minutes=30) > trade.open_date_utc)
+                and (current_time - timedelta(hours=48) > trade.open_date_utc)
                 # temporary
                 and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2022, 5, 3) or is_backtest)
         ):
@@ -2680,7 +2677,7 @@ class NostalgiaForInfinityX(IStrategy):
 
         # For times with strongly negative sentiment
         if (
-                (current_profit < [-0.16, -0.16, -0.2][stop_index])
+                (current_profit < [-0.12, -0.12, -0.2][stop_index])
                 and (last_candle['close'] < last_candle['ema_200'])
                 and (last_candle['close'] < (last_candle['ema_200'] - last_candle['atr']))
                 and (last_candle['sma_200_dec_20'])
@@ -2688,28 +2685,21 @@ class NostalgiaForInfinityX(IStrategy):
                 and (last_candle['sma_200_dec_20_1h'])
                 and (last_candle['cmf'] < -0.0)
                 and (last_candle['btc_not_downtrend_1h'] == False)
-                and (last_candle['btc_tpct_change_144_5m'] > 0.2)
+                and (last_candle['btc_tpct_change_144_5m'] > 0.1)
                 and (last_candle['hl_pct_change_48_1h'] > 0.5)
                 and (last_candle['tpct_change_144'] > 0.25)
                 # temporary
                 and (trade.open_date_utc.replace(tzinfo=None) > datetime(2022, 5, 12) or is_backtest)
         ):
-            return True, 'sell_stoploss_doom'
+            return True, 'sell_stoploss_doom_1'
 
         # Absolute limit, just in case...
         if (
-                (current_profit < [-0.25, -0.25, -0.25][stop_index])
+                (current_profit < [-0.5, -0.5, -0.5][stop_index])
                 # temporary
                 and (trade.open_date_utc.replace(tzinfo=None) > datetime(2022, 5, 25) or is_backtest)
         ):
             return True, 'sell_stoploss_stop_1'
-
-        if (
-                (current_profit < [-0.16, -0.16, -0.25][stop_index])
-                # temporary
-                and (trade.open_date_utc.replace(tzinfo=None) > datetime(2022, 6, 8) or is_backtest)
-        ):
-            return True, 'sell_stoploss_stop_2'
 
         return False, None
 
