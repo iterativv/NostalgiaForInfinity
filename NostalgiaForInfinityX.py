@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.1045"
+        return "v11.0.1046"
 
     # ROI table:
     minimal_roi = {
@@ -9227,11 +9227,30 @@ class NostalgiaForInfinityX(IStrategy):
 
     def sell_profit_target(self, pair: str, trade: Trade, current_time: datetime, current_rate: float, current_profit: float, last_candle, previous_candle_1, previous_rate, previous_profit,  previous_sell_reason, previous_time_profit_reached) -> tuple:
         if self.profit_max_enabled:
-            if (previous_sell_reason in ["sell_stoploss_u_e_1", "sell_stoploss_doom"]):
+            if (previous_sell_reason in ["sell_stoploss_u_e_1"]):
                 if (current_profit < (previous_profit - 0.005)):
                     return True, previous_sell_reason
-            elif (current_profit < (previous_profit - 0.005)):
-                return True, previous_sell_reason
+            elif (previous_sell_reason in ["sell_stoploss_doom_1", "sell_stoploss_stop_1"]):
+                if (current_profit < (previous_profit - 0.005)):
+                    return True, previous_sell_reason
+            elif (previous_sell_reason in ["sell_profit_maximizer_01"]) and (current_profit >= 0.01):
+                if (last_candle['rsi_14'] > 81.0):
+                    return True, previous_sell_reason
+                elif (0.01 <= current_profit < 0.03):
+                    if ((current_profit < (previous_profit - 0.005)) or (last_candle['rsi_14'] > 80.0)):
+                        return True, previous_sell_reason
+                elif (0.03 <= current_profit < 0.05):
+                    if ((current_profit < (previous_profit - 0.01)) or (last_candle['rsi_14'] > 80.0)):
+                        return True, previous_sell_reason
+                elif (0.05 <= current_profit < 0.08):
+                    if ((current_profit < (previous_profit - 0.02)) or (last_candle['rsi_14'] > 80.0)):
+                        return True, previous_sell_reason
+                elif (0.08 <= current_profit < 0.12):
+                    if ((current_profit < (previous_profit - 0.03)) or (last_candle['rsi_14'] > 80.0)):
+                        return True, previous_sell_reason
+                elif (0.12 <= current_profit):
+                    if ((current_profit < (previous_profit - 0.04)) or (last_candle['rsi_14'] > 80.0)):
+                        return True, previous_sell_reason
 
         return False, None
 
@@ -9350,21 +9369,36 @@ class NostalgiaForInfinityX(IStrategy):
             if sell_max and signal_name_max is not None:
                 return f"{signal_name_max}_m ( {buy_tag})"
             if (current_profit > (previous_profit + 0.025)):
-                pair, mark_signal = self.mark_profit_target(pair, True, previous_sell_reason, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
-                if pair:
+                # Update the target, raise it.
+                mark_pair, mark_signal = self.mark_profit_target(pair, True, previous_sell_reason, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
+                if mark_pair:
                     self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
 
+        # Add the pair to the list, if a sell triggered and conditions met
         if sell and signal_name is not None:
-            pair, mark_signal = self.mark_profit_target(pair, sell, signal_name, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
-            if pair:
-                self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
-            else:
-                return f"{signal_name} ( {buy_tag})"
+            previous_profit = None
+            if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
+                previous_profit = self.target_profit_cache.data[pair]['profit']
+            if (previous_profit is None) or (previous_profit < current_profit):
+                mark_pair, mark_signal = self.mark_profit_target(pair, sell, signal_name, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
+                if mark_pair:
+                    self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
+                else:
+                    # Just sell it, without maximize
+                    return f"{signal_name} ( {buy_tag})"
+        else:
+            if (current_profit >= 0.02):
+                previous_profit = None
+                if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
+                    previous_profit = self.target_profit_cache.data[pair]['profit']
+                if (previous_profit is None) or (previous_profit < current_profit):
+                    mark_signal = "sell_profit_maximizer_01"
+                    self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
 
         if (
                 (not self.profit_max_enabled)
                 # Enable profit maximizer for the stoplosses
-                or (signal_name not in ["sell_stoploss_u_e_1", "sell_stoploss_doom", "sell_stoploss_stop"])
+                or (signal_name not in ["sell_profit_maximizer_01", "sell_stoploss_u_e_1", "sell_stoploss_doom_1", "sell_stoploss_stop_1"])
         ):
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag})"
