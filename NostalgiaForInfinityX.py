@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.1041"
+        return "v11.0.1042"
 
     # ROI table:
     minimal_roi = {
@@ -149,7 +149,7 @@ class NostalgiaForInfinityX(IStrategy):
     bt_min_age_days = 3
 
     # Exchange Downtime protection
-    has_downtime_protection = True
+    has_downtime_protection = False
 
     # Do you want to use the hold feature? (with hold-trades.json)
     holdSupportEnabled = True
