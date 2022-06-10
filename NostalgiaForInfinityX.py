@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.1042"
+        return "v11.0.1043"
 
     # ROI table:
     minimal_roi = {
@@ -11454,6 +11454,7 @@ class NostalgiaForInfinityX(IStrategy):
                 elif index == 21:
                     # Non-Standard protections
                     item_buy_logic.append(dataframe['close_1h'] < (dataframe['res_level_1d'] * 1.12))
+                    item_buy_logic.append(dataframe['hl_pct_change_36'] < 1.0)
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * 0.947)
@@ -11461,7 +11462,6 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['cti'] < -0.9)
                     item_buy_logic.append(dataframe['r_14'] < -97.0)
                     item_buy_logic.append(dataframe['cti_1h'] < 0.85)
-                    item_buy_logic.append(dataframe['crsi'] > 10.0)
                     item_buy_logic.append(
                         (dataframe['btc_not_downtrend_1h'] == True)
                         | (dataframe['crsi'] > 12.0)
@@ -11510,6 +11510,15 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['sma_200_1h'] > dataframe['sma_200_1h'].shift(48))
                         | (dataframe['close'] < dataframe['ema_20'] * 0.934)
                         | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.99))
+                    )
+                    item_buy_logic.append(
+                        (dataframe['btc_not_downtrend_1h'] == True)
+                        | (dataframe['cti_1h'] < -0.5)
+                        | (dataframe['rsi_14_1h'] < 50.0)
+                        | (dataframe['tpct_change_144'] < 0.14)
+                        | (dataframe['hl_pct_change_48_1h'] < 0.4)
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.94)
+                        | (dataframe['close'] < (dataframe['res1_1d'] * 1.0))
                     )
 
                 # Condition #22 - Swing. Uptrend. Bounce from daily support level
