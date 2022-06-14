@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.1098"
+        return "v11.0.1099"
 
     # ROI table:
     minimal_roi = {
@@ -13495,6 +13495,7 @@ class NostalgiaForInfinityX(IStrategy):
                     # Non-Standard protections
                     item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_1h'] * 0.9))
                     item_buy_logic.append(dataframe['close'] > (dataframe['ema_200_1h'] * 0.7))
+                    item_buy_logic.append(dataframe['hl_pct_change_36'] < 0.5)
 
                     # Logic
                     item_buy_logic.append(dataframe['bb40_2_delta'] > dataframe['ha_close'] * 0.042)
@@ -13549,6 +13550,17 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['cti_1h'] < 0.5)
                         | (dataframe['tpct_change_144'] < 0.1)
                         | (dataframe['hl_pct_change_48_1h'] < 0.5)
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.93)
+                        | (dataframe['bb40_2_delta'] > dataframe['ha_close'] * 0.05)
+                        | (dataframe['ha_closedelta'] > dataframe['ha_close'] * 0.04)
+                    )
+                    item_buy_logic.append(
+                        (dataframe['btc_not_downtrend_1h'] == True)
+                        | (dataframe['cmf'] > -0.1)
+                        | (dataframe['rsi_14'] < 28.0)
+                        | (dataframe['cti'] < 0.0)
+                        | (dataframe['cti_1h'] < 0.5)
+                        | (dataframe['tpct_change_144'] < 0.1)
                         | (dataframe['close'] < dataframe['ema_20'] * 0.93)
                         | (dataframe['bb40_2_delta'] > dataframe['ha_close'] * 0.05)
                         | (dataframe['ha_closedelta'] > dataframe['ha_close'] * 0.04)
