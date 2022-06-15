@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.1115"
+        return "v11.0.1116"
 
     # ROI table:
     minimal_roi = {
@@ -11994,6 +11994,7 @@ class NostalgiaForInfinityX(IStrategy):
                 # Condition #25 - Semi swing. CMF 1h cross.
                 elif index == 25:
                     # Non-Standard protections
+                    item_buy_logic.append(dataframe['hl_pct_change_36'] < 0.5)
 
                     # Logic
                     item_buy_logic.append(dataframe['ema_12_1h'].shift(12) < dataframe['ema_35_1h'].shift(12))
@@ -12013,6 +12014,13 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['rsi_14'] < 28.0)
                         | (dataframe['cmf_1h'] > 0.1)
                         | (dataframe['cti_1h'] < -0.5)
+                        | (dataframe['rsi_14_1h'] < 50.0)
+                    )
+                    item_buy_logic.append(
+                        (dataframe['cmf'] > -0.3)
+                        | (dataframe['rsi_14'] < 26.0)
+                        | (dataframe['cmf_1h'] > 0.3)
+                        | (dataframe['cti_1h'] < 0.5)
                         | (dataframe['rsi_14_1h'] < 50.0)
                     )
 
