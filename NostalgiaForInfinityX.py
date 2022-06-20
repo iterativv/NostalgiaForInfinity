@@ -9361,15 +9361,11 @@ class NostalgiaForInfinityX(IStrategy):
         if not sell:
             if all(c in ['empty', '58', '59', '60', '61', '62', '63', '64', '65'] for c in buy_tags):
                 sell, signal_name = self.sell_quick_mode(current_profit, max_profit, last_candle, previous_candle_1)
-                if sell and (signal_name is not None):
-                    return f"{signal_name} ( {buy_tag})"
 
         # Rapid sell mode
         if not sell:
-            if all(c in ['66'] for c in buy_tags):
+            if all(c in self.rapid_mode_tags for c in buy_tags):
                 sell, signal_name = self.sell_rapid_mode(trade, current_time, current_profit, max_profit, last_candle, previous_candle_1)
-                if sell and (signal_name is not None):
-                    return f"{signal_name} ( {buy_tag})"
 
         # Original sell signals
         if not sell:
@@ -9445,7 +9441,10 @@ class NostalgiaForInfinityX(IStrategy):
                     # Just sell it, without maximize
                     return f"{signal_name} ( {buy_tag})"
         else:
-            if (current_profit >= 0.02):
+            if (
+                    (current_profit >= 0.02)
+                    or ((current_profit >= 0.01) and (all(c in self.rapid_mode_tags for c in buy_tags)))
+            ):
                 previous_profit = None
                 if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
                     previous_profit = self.target_profit_cache.data[pair]['profit']
@@ -9456,7 +9455,9 @@ class NostalgiaForInfinityX(IStrategy):
         if (
                 (not self.profit_max_enabled)
                 # Enable profit maximizer for the stoplosses
-                or (signal_name not in ["sell_profit_maximizer_01", "sell_stoploss_u_e_1", "sell_stoploss_doom_1", "sell_stoploss_stop_1"])
+                or (
+                    (signal_name not in ["sell_profit_maximizer_01", "sell_stoploss_u_e_1", "sell_stoploss_doom_1", "sell_stoploss_stop_1", "sell_stoploss_rpd_stop_1"])
+                )
         ):
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {buy_tag})"
