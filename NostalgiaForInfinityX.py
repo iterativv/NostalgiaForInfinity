@@ -9225,6 +9225,16 @@ class NostalgiaForInfinityX(IStrategy):
 
         return False, None
 
+    def sell_rapid_mode(self, trade: Trade, current_time: datetime, current_profit: float, max_profit:float, last_candle, previous_candle_1) -> tuple:
+        is_leverage = bool(re.match(leverage_pattern, trade.pair))
+        stop_index = 0 if  not is_leverage else 1
+        if (
+                (current_profit < [-0.08, -0.1][stop_index])
+        ):
+            return True, 'sell_stoploss_rpd_stop_1'
+
+        return False, None
+
     def mark_profit_target(self, pair: str, sell: bool, signal_name: str, trade: Trade, current_time: datetime, current_rate: float, current_profit: float, last_candle, previous_candle_1) -> tuple:
         if self.profit_max_enabled:
             if sell and (signal_name is not None):
