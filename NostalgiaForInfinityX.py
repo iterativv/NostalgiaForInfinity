@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.1164"
+        return "v11.0.1165"
 
     # ROI table:
     minimal_roi = {
@@ -9268,6 +9268,15 @@ class NostalgiaForInfinityX(IStrategy):
         return False, None
 
     def sell_rapid_mode(self, trade: Trade, current_time: datetime, current_profit: float, max_profit:float, last_candle, previous_candle_1) -> tuple:
+        if (0.04 > current_profit > 0.01) and (last_candle['rsi_14'] > 80.0):
+            return True, 'sell_profit_rpd_1'
+
+        if (0.04 > current_profit > 0.01) and (last_candle['cti'] > 0.95):
+            return True, 'sell_profit_rpd_2'
+
+        if (0.04 > current_profit > 0.01) and (last_candle['r_14'] >= -0.1):
+            return True, 'sell_profit_rpd_3'
+
         is_leverage = bool(re.match(leverage_pattern, trade.pair))
         stop_index = 0 if  not is_leverage else 1
         if (
