@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.1163"
+        return "v11.0.1164"
 
     # ROI table:
     minimal_roi = {
@@ -2372,6 +2372,14 @@ class NostalgiaForInfinityX(IStrategy):
             return None
 
         if (self.position_adjustment_enable == False) or (current_profit > -0.02):
+            return None
+
+        buy_tag = 'empty'
+        if hasattr(trade, 'buy_tag') and trade.buy_tag is not None:
+            buy_tag = trade.buy_tag
+        buy_tags = buy_tag.split()
+        # No rebuys for rapid mode
+        if all(c in self.rapid_mode_tags for c in buy_tags):
             return None
 
         dataframe, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
