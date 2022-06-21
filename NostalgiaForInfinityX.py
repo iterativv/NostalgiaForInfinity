@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.1166"
+        return "v11.0.1167"
 
     # ROI table:
     minimal_roi = {
@@ -196,7 +196,7 @@ class NostalgiaForInfinityX(IStrategy):
     profit_max_enabled = True
 
     # Rapid more tags
-    rapid_mode_tags = ['66', '67']
+    rapid_mode_tags = ['66', '67', '68']
 
     # Run "populate_indicators()" only for new candle.
     process_only_new_candles = True
@@ -283,6 +283,7 @@ class NostalgiaForInfinityX(IStrategy):
 
         "buy_condition_66_enable": True,
         "buy_condition_67_enable": True,
+        "buy_condition_68_enable": True,
         #############
     }
 
@@ -2143,6 +2144,34 @@ class NostalgiaForInfinityX(IStrategy):
             "close_over_pivot_offset"   : 1.0,
             "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_under_pivot_offset"  : 1.25
+         },
+        68: {
+            "ema_fast"                  : False,
+            "ema_fast_len"              : "26",
+            "ema_slow"                  : False,
+            "ema_slow_len"              : "12",
+            "close_above_ema_fast"      : False,
+            "close_above_ema_fast_len"  : "200",
+            "close_above_ema_slow"      : False,
+            "close_above_ema_slow_len"  : "200",
+            "sma200_rising"             : False,
+            "sma200_rising_val"         : "48",
+            "sma200_1h_rising"          : False,
+            "sma200_1h_rising_val"      : "48",
+            "safe_dips_threshold_0"     : 0.032,
+            "safe_dips_threshold_2"     : 0.09,
+            "safe_dips_threshold_12"    : 0.24,
+            "safe_dips_threshold_144"   : 0.36,
+            "safe_pump_6h_threshold"    : 0.5,
+            "safe_pump_12h_threshold"   : None,
+            "safe_pump_24h_threshold"   : 0.5,
+            "safe_pump_36h_threshold"   : None,
+            "safe_pump_48h_threshold"   : 1.0,
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
          }
     }
 
@@ -9911,6 +9940,13 @@ class NostalgiaForInfinityX(IStrategy):
         dataframe['close_max_48'] = dataframe['close'].rolling(48).max()
         dataframe['close_max_288'] = dataframe['close'].rolling(288).max()
 
+        # VWAP
+        vwap_low, vwap, vwap_high = vwap_bands(dataframe, 20, 1)
+        dataframe['vwap_upperband'] = vwap_high
+        dataframe['vwap_middleband'] = vwap
+        dataframe['vwap_lowerband'] = vwap_low
+        dataframe['vwap_width'] = ((dataframe['vwap_upperband'] - dataframe['vwap_lowerband']) / dataframe['vwap_middleband']) * 100
+
         # ATR
         dataframe['atr'] = ta.ATR(dataframe, timeperiod=14)
         dataframe['atr_high_thresh_1'] = (dataframe['high'] - (dataframe['atr'] * 7.0))
@@ -9965,6 +10001,13 @@ class NostalgiaForInfinityX(IStrategy):
 
         # Dip protection
         dataframe['tpct_change_144'] = self.top_percent_change(dataframe, 144)
+
+        # Close max
+        dataframe['close_max_24'] = dataframe['close'].rolling(24).max()
+        dataframe['close_max_72'] = dataframe['close'].rolling(72).max()
+
+        dataframe['pct_close_max_24'] = dataframe['close_max_24'] / dataframe['close']
+        dataframe['pct_close_max_72'] = dataframe['close_max_72'] / dataframe['close']
 
         # Add prefix
         # -----------------------------------------------------------------------------------------
@@ -14508,6 +14551,30 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.98))
                     )
 
+                # Condition #68 - Rapid mode.
+                elif index == 68:
+                    # Non-Standard protections
+                    item_buy_logic.append(dataframe['close_max_48'] >= (dataframe['close'] * 1.125))
+                    item_buy_logic.append(dataframe['close_max_288'] >= (dataframe['close'] * 1.225))
+                    item_buy_logic.append(dataframe['btc_pct_close_max_24_5m'] < 1.03)
+                    item_buy_logic.append(dataframe['hl_pct_change_36'] < 0.5)
+
+                    # Logic
+                    item_buy_logic.append(dataframe['close'] < dataframe['vwap_lowerband'])
+                    item_buy_logic.append(dataframe['vwap_width'] > 1.31)
+                    item_buy_logic.append(dataframe['close_delta'] > dataframe['close'] * 27.0 / 1000)
+                    item_buy_logic.append(dataframe['cti'] < -0.1)
+                    item_buy_logic.append(dataframe['rsi_84'] < 60.0)
+                    item_buy_logic.append(dataframe['rsi_112'] < 60.0)
+                    item_buy_logic.append(
+                        (dataframe['ewo'] > 8.0)
+                        | (dataframe['tpct_change_144'] < 0.12)
+                        | ((dataframe['rsi_14'] < 20.0) & (dataframe['btc_pct_close_max_24_5m'] < 1.001))
+                        | ((dataframe['close'] > dataframe['ema_20'] * 0.89) & (dataframe['close'] < dataframe['ema_20'] * 0.9))
+                        | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.95))
+                        | (dataframe['close_delta'] > dataframe['close'] * 80.0 / 1000)
+                    )
+
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
                 dataframe.loc[item_buy, 'buy_tag'] += f"{index} "
@@ -14731,6 +14798,15 @@ def vwma(dataframe: DataFrame, length: int = 10):
 def ema_vwma_osc(dataframe, len_slow_ma):
     slow_ema = Series(ta.EMA(vwma(dataframe, len_slow_ma), len_slow_ma))
     return ((slow_ema - slow_ema.shift(1)) / slow_ema.shift(1)) * 100
+
+# VWAP bands
+def vwap_bands(dataframe, window_size=20, num_of_std=1):
+    df = dataframe.copy()
+    df['vwap'] = qtpylib.rolling_vwap(df,window=window_size)
+    rolling_std = df['vwap'].rolling(window=window_size).std()
+    df['vwap_low'] = df['vwap'] - (rolling_std * num_of_std)
+    df['vwap_high'] = df['vwap'] + (rolling_std * num_of_std)
+    return df['vwap_low'], df['vwap'], df['vwap_high']
 
 def t3_average(dataframe, length=5):
     """
