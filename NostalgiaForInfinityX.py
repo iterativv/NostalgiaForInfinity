@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.1167"
+        return "v11.0.1168"
 
     # ROI table:
     minimal_roi = {
@@ -2160,13 +2160,13 @@ class NostalgiaForInfinityX(IStrategy):
             "sma200_1h_rising_val"      : "48",
             "safe_dips_threshold_0"     : 0.032,
             "safe_dips_threshold_2"     : 0.09,
-            "safe_dips_threshold_12"    : 0.24,
-            "safe_dips_threshold_144"   : 0.36,
-            "safe_pump_6h_threshold"    : 0.5,
+            "safe_dips_threshold_12"    : 0.36,
+            "safe_dips_threshold_144"   : 0.48,
+            "safe_pump_6h_threshold"    : 0.6,
             "safe_pump_12h_threshold"   : None,
-            "safe_pump_24h_threshold"   : 0.5,
+            "safe_pump_24h_threshold"   : 0.8,
             "safe_pump_36h_threshold"   : None,
-            "safe_pump_48h_threshold"   : 1.0,
+            "safe_pump_48h_threshold"   : 1.2,
             "btc_1h_not_downtrend"      : False,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_over_pivot_offset"   : 1.0,
@@ -14573,6 +14573,13 @@ class NostalgiaForInfinityX(IStrategy):
                         | ((dataframe['close'] > dataframe['ema_20'] * 0.89) & (dataframe['close'] < dataframe['ema_20'] * 0.9))
                         | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.95))
                         | (dataframe['close_delta'] > dataframe['close'] * 80.0 / 1000)
+                    )
+                    item_buy_logic.append(
+                        (dataframe['cti'] < -0.9)
+                        | (dataframe['tpct_change_144'] < 0.24)
+                        | (dataframe['btc_pct_close_max_24_5m'] < 1.005)
+                        | (dataframe['btc_pct_close_max_72_5m'] < 1.01)
+                        | (dataframe['cti_1h'] < -0.9)
                     )
 
                 item_buy_logic.append(dataframe['volume'] > 0)
