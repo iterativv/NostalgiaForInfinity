@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.1174"
+        return "v11.0.1175"
 
     # ROI table:
     minimal_roi = {
@@ -14655,6 +14655,21 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < dataframe['ema_20'] * 0.9)
                         | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.034))
                         | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.98))
+                    )
+                    item_buy_logic.append(
+                        (dataframe['btc_not_downtrend_1h'] == True)
+                        | (dataframe['cmf'] > -0.1)
+                        | (dataframe['mfi'] > 10.0)
+                        | (dataframe['rsi_14'] < 20.0)
+                        | (dataframe['cti_1h'] < -0.75)
+                        | (dataframe['tpct_change_144'] < 0.16)
+                        | (dataframe['hl_pct_change_48_1h'] < 0.3)
+                        | (dataframe['btc_tpct_change_144_5m'] < 0.03)
+                        | (dataframe['btc_pct_close_max_24_5m'] < 1.03)
+                        | (dataframe['close'] > (dataframe['sma_200'] * 0.95))
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.94)
+                        | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.028))
+                        | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.99))
                     )
 
                 # Condition #68 - Rapid mode.
