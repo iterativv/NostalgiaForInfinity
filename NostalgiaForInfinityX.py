@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.1181"
+        return "v11.0.1182"
 
     # ROI table:
     minimal_roi = {
@@ -14620,6 +14620,34 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < dataframe['ema_20'] * 0.94)
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.97)
                         | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.022))
+                    )
+                    item_buy_logic.append(
+                        (
+                            (dataframe['btc_not_downtrend_1h'] == True)
+                            & (dataframe['tpct_change_144'] < 0.2)
+                            & (dataframe['hl_pct_change_48_1h'] < 0.5)
+                        )
+                        |
+                        (
+                            (dataframe['cmf'] > -0.2)
+                            & (dataframe['mfi'] > 10.0)
+                            & (dataframe['crsi_1h'] > 30.0)
+                        )
+                        | (dataframe['rsi_14'] < 22.0)
+                        | (dataframe['cti_1h'] < -0.8)
+                        | (dataframe['rsi_14_1h'] < 25.0)
+                        | (dataframe['crsi_1h'] > 40.0)
+                        | (dataframe['tpct_change_144'] < 0.2)
+                        | (dataframe['hl_pct_change_48_1h'] < 0.3)
+                        | (dataframe['close_max_48'] < (dataframe['close'] * 1.12))
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.9)
+                        | (dataframe['close'] < dataframe['bb20_2_low'] * 0.96)
+                        |
+                        (
+                            ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.028))
+                            & (dataframe['cmf'] > -0.3)
+                        )
+                        | (dataframe['volume_mean_12'] > (dataframe['volume_mean_24'] * 1.8))
                     )
 
                 # Condition #67 - Rapid mode.
