@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.1183"
+        return "v11.0.1184"
 
     # ROI table:
     minimal_roi = {
@@ -196,7 +196,7 @@ class NostalgiaForInfinityX(IStrategy):
     profit_max_enabled = True
 
     # Rapid more tags
-    rapid_mode_tags = ['66', '67', '68', '69', '70', '71']
+    rapid_mode_tags = ['66', '67', '68', '69', '70', '71', '72']
 
     # Run "populate_indicators()" only for new candle.
     process_only_new_candles = True
@@ -287,6 +287,7 @@ class NostalgiaForInfinityX(IStrategy):
         "buy_condition_69_enable": True,
         "buy_condition_70_enable": True,
         "buy_condition_71_enable": True,
+        "buy_condition_72_enable": True,
         #############
     }
 
@@ -2246,6 +2247,34 @@ class NostalgiaForInfinityX(IStrategy):
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "48",
             "safe_dips_threshold_0"     : None,
+            "safe_dips_threshold_2"     : 0.12,
+            "safe_dips_threshold_12"    : 0.36,
+            "safe_dips_threshold_144"   : 0.48,
+            "safe_pump_6h_threshold"    : 0.6,
+            "safe_pump_12h_threshold"   : None,
+            "safe_pump_24h_threshold"   : 0.8,
+            "safe_pump_36h_threshold"   : None,
+            "safe_pump_48h_threshold"   : 1.2,
+            "btc_1h_not_downtrend"      : False,
+            "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_over_pivot_offset"   : 1.0,
+            "close_under_pivot_type"    : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
+            "close_under_pivot_offset"  : 1.0
+         },
+        72: {
+            "ema_fast"                  : False,
+            "ema_fast_len"              : "26",
+            "ema_slow"                  : False,
+            "ema_slow_len"              : "12",
+            "close_above_ema_fast"      : False,
+            "close_above_ema_fast_len"  : "200",
+            "close_above_ema_slow"      : False,
+            "close_above_ema_slow_len"  : "200",
+            "sma200_rising"             : False,
+            "sma200_rising_val"         : "48",
+            "sma200_1h_rising"          : False,
+            "sma200_1h_rising_val"      : "48",
+            "safe_dips_threshold_0"     : 0.032,
             "safe_dips_threshold_2"     : 0.12,
             "safe_dips_threshold_12"    : 0.36,
             "safe_dips_threshold_144"   : 0.48,
@@ -14923,6 +14952,66 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['hl_pct_change_48_1h'] < 0.3)
                         | (dataframe['close'] < dataframe['ema_20'] * 0.9)
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.965)
+                    )
+
+                # Condition #72 - Rapid mode.
+                elif index == 72:
+                    # Non-Standard protections
+                    item_buy_logic.append(dataframe['btc_pct_close_max_24_5m'] < 1.03)
+                    item_buy_logic.append(dataframe['hl_pct_change_36'] < 0.5)
+
+                    # Logic
+                    item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
+                    item_buy_logic.append(dataframe['ema_26'] - dataframe['ema_12'] > dataframe['open'] * 0.024)
+                    item_buy_logic.append(dataframe['ema_26'].shift() - dataframe['ema_12'].shift() > dataframe['open'] / 100)
+                    item_buy_logic.append(dataframe['cti'] < -0.9) # -0.6
+                    item_buy_logic.append(dataframe['r_14'] < -44.0) # -44.0
+                    item_buy_logic.append(dataframe['rsi_84'] < 60.0)
+                    item_buy_logic.append(dataframe['rsi_112'] < 60.0)
+                    item_buy_logic.append(dataframe['ewo'] > -5.585)
+                    item_buy_logic.append(dataframe['ewo'] < -4.0)
+                    item_buy_logic.append(
+                        (dataframe['cmf'] > -0.2)
+                        | (dataframe['mfi'] > 35.0)
+                        | (dataframe['close_max_48'] < (dataframe['close'] * 1.1))
+                        | (dataframe['close'] > (dataframe['sma_200'] * 0.95))
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.94)
+                        | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.999))
+                        | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.038))
+                    )
+                    item_buy_logic.append(
+                        (
+                            (dataframe['cmf'] > -0.0)
+                            & (dataframe['mfi'] > 30.0)
+                        )
+                        | (dataframe['close_max_48'] < (dataframe['close'] * 1.1))
+                        | (dataframe['close'] > (dataframe['sma_200'] * 0.95))
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.94)
+                        | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.999))
+                        | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.044))
+                    )
+                    item_buy_logic.append(
+                        (dataframe['mfi'] > 40.0)
+                        | (dataframe['cti_1h'] < -0.9)
+                        | (dataframe['crsi_1h'] > 25.0)
+                        | (dataframe['tpct_change_144'] < 0.18)
+                        | (dataframe['hl_pct_change_48_1h'] < 0.3)
+                        | (dataframe['close_max_48'] < (dataframe['close'] * 1.14))
+                        | (dataframe['close'] > (dataframe['sma_200'] * 0.9))
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.92)
+                        | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.985))
+                        | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.042))
+                    )
+                    item_buy_logic.append(
+                        (dataframe['cmf'] > -0.1)
+                        | (dataframe['cti_1h'] < -0.9)
+                        | (dataframe['crsi_1h'] > 10.0)
+                        | (dataframe['tpct_change_144'] < 0.16)
+                        | (dataframe['hl_pct_change_48_1h'] < 0.3)
+                        | (dataframe['close_max_48'] < (dataframe['close'] * 1.08))
+                        | (dataframe['close'] > (dataframe['sma_200'] * 0.95))
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.9)
+                        | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.99))
                     )
 
                 item_buy_logic.append(dataframe['volume'] > 0)
