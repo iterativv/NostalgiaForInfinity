@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.1192"
+        return "v11.0.1193"
 
     # ROI table:
     minimal_roi = {
@@ -2190,15 +2190,15 @@ class NostalgiaForInfinityX(IStrategy):
             "sma200_rising_val"         : "48",
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "48",
-            "safe_dips_threshold_0"     : 0.032,
-            "safe_dips_threshold_2"     : 0.09,
-            "safe_dips_threshold_12"    : 0.36,
-            "safe_dips_threshold_144"   : 0.48,
-            "safe_pump_6h_threshold"    : 0.6,
+            "safe_dips_threshold_0"     : None,
+            "safe_dips_threshold_2"     : 0.12,
+            "safe_dips_threshold_12"    : 0.44,
+            "safe_dips_threshold_144"   : 0.9,
+            "safe_pump_6h_threshold"    : None,
             "safe_pump_12h_threshold"   : None,
             "safe_pump_24h_threshold"   : 0.8,
             "safe_pump_36h_threshold"   : None,
-            "safe_pump_48h_threshold"   : 1.2,
+            "safe_pump_48h_threshold"   : 1.8,
             "btc_1h_not_downtrend"      : False,
             "close_over_pivot_type"     : "none", # pivot, sup1, sup2, sup3, res1, res2, res3
             "close_over_pivot_offset"   : 1.0,
@@ -14838,8 +14838,8 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['hl_pct_change_48_1h'] < 0.4)
                         | (dataframe['close_max_48'] < (dataframe['close'] * 1.14))
                         | (dataframe['close'] < dataframe['ema_20'] * 0.9)
-                        | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.99))
-                        | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.034))
+                        | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.975))
+                        | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.038))
                     )
                     item_buy_logic.append(
                         (dataframe['cmf'] > -0.3)
