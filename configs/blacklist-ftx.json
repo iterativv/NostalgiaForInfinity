@@ -15,7 +15,7 @@
             // FAN Tokens
             "(ACM|AFA|ALA|ALL|ALPINE|APL|ASR|ATM|BAR|CAI|CITY|FOR|GAL|GOZ|IBFK|JUV|LEG|LOCK-1|NAVI|NMR|NOV|OG|PFL|PSG|ROUSH|STV|TH|TRA|UCH|UFC|YBO|INTER)/.*",
             // Other Coins
-            "(1EARTH|ILA|CTXC|CWAR|HBAR|NMR|OMG|SHIB|SLP|DMTR)/.*"
+            "(1EARTH|ILA|CTXC|CWAR|HBAR|NMR|OMG|SHIB|SLP|DMTR|DMG)/.*"
         ]
     }
 }
