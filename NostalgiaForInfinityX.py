@@ -12,7 +12,7 @@ from freqtrade.exchange import timeframe_to_prev_date
 from pandas import DataFrame, Series, concat
 from functools import reduce
 import math
-from typing import Dict
+from typing import Dict, Optional
 from freqtrade.persistence import Trade
 from datetime import datetime, timedelta
 from technical.util import resample_to_interval, resampled_merge
@@ -112,10 +112,10 @@ else:
 
 class NostalgiaForInfinityX(IStrategy):
 
-    INTERFACE_VERSION = 2
+    INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.0.1252"
+        return "v11.0.1253"
 
     # ROI table:
     minimal_roi = {
@@ -2499,8 +2499,8 @@ class NostalgiaForInfinityX(IStrategy):
         return int(self.timeframe[:-1])
 
     def custom_stake_amount(self, pair: str, current_time: datetime, current_rate: float,
-                            proposed_stake: float, min_stake: float, max_stake: float,
-                            **kwargs) -> float:
+                            proposed_stake: float, min_stake: Optional[float], max_stake: float,
+                            entry_tag: Optional[str], side: str, **kwargs) -> float:
         if (self.position_adjustment_enable == True):
             use_mode = self.rebuy_mode
             if ('rebuy_mode' in self.config):
@@ -2551,12 +2551,12 @@ class NostalgiaForInfinityX(IStrategy):
         if (self.position_adjustment_enable == False) or (current_profit > -0.02):
             return None
 
-        buy_tag = 'empty'
-        if hasattr(trade, 'buy_tag') and trade.buy_tag is not None:
-            buy_tag = trade.buy_tag
-        buy_tags = buy_tag.split()
+        enter_tag = 'empty'
+        if hasattr(trade, 'enter_tag') and trade.enter_tag is not None:
+            enter_tag = trade.enter_tag
+        enter_tags = enter_tag.split()
         # No rebuys for rapid mode
-        if all(c in self.rapid_mode_tags for c in buy_tags):
+        if all(c in self.rapid_mode_tags for c in enter_tags):
             return None
 
         dataframe, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
@@ -2748,7 +2748,7 @@ class NostalgiaForInfinityX(IStrategy):
 
         return None
 
-    def sell_signals(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
+    def sell_signals(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', enter_tag) -> tuple:
         # Sell signal 1
         if (last_candle['rsi_14'] > 79.0) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']) and (previous_candle_3['close'] > previous_candle_3['bb20_2_upp']) and (previous_candle_4['close'] > previous_candle_4['bb20_2_upp']) and (previous_candle_5['close'] > previous_candle_5['bb20_2_upp']):
             if (last_candle['close'] > last_candle['ema_200']):
@@ -9331,9 +9331,9 @@ class NostalgiaForInfinityX(IStrategy):
 
         return False, None
 
-    def sell_long_mode(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
+    def sell_long_mode(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', enter_tag) -> tuple:
         # Original sell signals
-        sell, signal_name = self.sell_long_signals(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, buy_tag)
+        sell, signal_name = self.sell_long_signals(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tag)
         if sell and (signal_name is not None):
             return True, signal_name
 
@@ -9373,7 +9373,7 @@ class NostalgiaForInfinityX(IStrategy):
 
         return False, None
 
-    def sell_long_signals(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
+    def sell_long_signals(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', enter_tag) -> tuple:
         # Sell signal 1
         if (last_candle['rsi_14'] > 78.0) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']) and (previous_candle_3['close'] > previous_candle_3['bb20_2_upp']) and (previous_candle_4['close'] > previous_candle_4['bb20_2_upp']):
             if (last_candle['close'] > last_candle['ema_200']):
@@ -9473,7 +9473,7 @@ class NostalgiaForInfinityX(IStrategy):
 
         return None, None
 
-    def sell_profit_target(self, pair: str, trade: Trade, current_time: datetime, current_rate: float, current_profit: float, last_candle, previous_candle_1, previous_rate, previous_profit,  previous_sell_reason, previous_time_profit_reached, buy_tags) -> tuple:
+    def sell_profit_target(self, pair: str, trade: Trade, current_time: datetime, current_rate: float, current_profit: float, last_candle, previous_candle_1, previous_rate, previous_profit,  previous_sell_reason, previous_time_profit_reached, enter_tags) -> tuple:
         if self.profit_max_enabled:
             if (previous_sell_reason in ["sell_stoploss_u_e_1"]):
                 if (current_profit < (previous_profit - 0.005)):
@@ -9481,7 +9481,7 @@ class NostalgiaForInfinityX(IStrategy):
             elif (previous_sell_reason in ["sell_stoploss_doom_1", "sell_stoploss_stop_1", "sell_stoploss_rpd_stop_1"]):
                 if (current_profit < (previous_profit - 0.005)):
                     return True, previous_sell_reason
-            elif all(c in self.rapid_mode_tags for c in buy_tags):
+            elif all(c in self.rapid_mode_tags for c in enter_tags):
                 if (current_profit < 0.02):
                     if ((current_profit < (previous_profit - 0.005)) or (last_candle['rsi_14'] > 85.0)):
                         return True, previous_sell_reason
@@ -9540,7 +9540,7 @@ class NostalgiaForInfinityX(IStrategy):
 
         return False, None
 
-    def custom_sell(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float,
+    def custom_exit(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float,
                     current_profit: float, **kwargs):
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
         if(len(dataframe) < 6):
@@ -9552,10 +9552,10 @@ class NostalgiaForInfinityX(IStrategy):
         previous_candle_4 = dataframe.iloc[-5]
         previous_candle_5 = dataframe.iloc[-6]
 
-        buy_tag = 'empty'
-        if hasattr(trade, 'buy_tag') and trade.buy_tag is not None:
-            buy_tag = trade.buy_tag
-        buy_tags = buy_tag.split()
+        enter_tag = 'empty'
+        if hasattr(trade, 'enter_tag') and trade.enter_tag is not None:
+            enter_tag = trade.enter_tag
+        enter_tags = enter_tag.split()
 
         max_profit = ((trade.max_rate - trade.open_rate) / trade.open_rate)
         max_loss = ((trade.open_rate - trade.min_rate) / trade.min_rate)
@@ -9578,26 +9578,26 @@ class NostalgiaForInfinityX(IStrategy):
         signal_name = None
 
         # Long mode
-        if all(c in ['31', '32', '33', '34', '35', '36'] for c in buy_tags):
-            sell, signal_name = self.sell_long_mode(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, buy_tag)
+        if all(c in ['31', '32', '33', '34', '35', '36'] for c in enter_tags):
+            sell, signal_name = self.sell_long_mode(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tag)
             if sell and (signal_name is not None):
-                return f"{signal_name} ( {buy_tag})"
+                return f"{signal_name} ( {enter_tag})"
             # Skip remaining sell logic for long mode
             return None
 
         # Quick sell mode
         if not sell:
-            if all(c in ['empty', '58', '59', '60', '61', '62', '63', '64', '65'] for c in buy_tags):
+            if all(c in ['empty', '58', '59', '60', '61', '62', '63', '64', '65'] for c in enter_tags):
                 sell, signal_name = self.sell_quick_mode(current_profit, max_profit, last_candle, previous_candle_1)
 
         # Rapid sell mode
         if not sell:
-            if all(c in self.rapid_mode_tags for c in buy_tags):
+            if all(c in self.rapid_mode_tags for c in enter_tags):
                 sell, signal_name = self.sell_rapid_mode(trade, current_time, current_profit, max_profit, last_candle, previous_candle_1)
 
         # Original sell signals
         if not sell:
-            sell, signal_name = self.sell_signals(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, buy_tag)
+            sell, signal_name = self.sell_signals(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tag)
 
         # Stoplosses
         if not sell:
@@ -9647,9 +9647,9 @@ class NostalgiaForInfinityX(IStrategy):
             previous_sell_reason = self.target_profit_cache.data[pair]['sell_reason']
             previous_time_profit_reached = datetime.fromisoformat(self.target_profit_cache.data[pair]['time_profit_reached'])
 
-            sell_max, signal_name_max = self.sell_profit_target(pair, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1, previous_rate, previous_profit, previous_sell_reason, previous_time_profit_reached, buy_tags)
+            sell_max, signal_name_max = self.sell_profit_target(pair, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1, previous_rate, previous_profit, previous_sell_reason, previous_time_profit_reached, enter_tags)
             if sell_max and signal_name_max is not None:
-                return f"{signal_name_max}_m ( {buy_tag})"
+                return f"{signal_name_max}_m ( {enter_tag})"
             if (current_profit > (previous_profit + 0.025)):
                 # Update the target, raise it.
                 mark_pair, mark_signal = self.mark_profit_target(pair, True, previous_sell_reason, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
@@ -9667,11 +9667,11 @@ class NostalgiaForInfinityX(IStrategy):
                     self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
                 else:
                     # Just sell it, without maximize
-                    return f"{signal_name} ( {buy_tag})"
+                    return f"{signal_name} ( {enter_tag})"
         else:
             if (
                     (current_profit >= 0.02)
-                    or ((current_profit >= 0.01) and (all(c in self.rapid_mode_tags for c in buy_tags)))
+                    or ((current_profit >= 0.01) and (all(c in self.rapid_mode_tags for c in enter_tags)))
             ):
                 previous_profit = None
                 if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
@@ -9688,7 +9688,7 @@ class NostalgiaForInfinityX(IStrategy):
                 )
         ):
             if sell and (signal_name is not None):
-                return f"{signal_name} ( {buy_tag})"
+                return f"{signal_name} ( {enter_tag})"
 
         return None
 
@@ -10253,9 +10253,9 @@ class NostalgiaForInfinityX(IStrategy):
 
         return dataframe
 
-    def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         conditions = []
-        dataframe.loc[:, 'buy_tag'] = ''
+        dataframe.loc[:, 'enter_tag'] = ''
 
         for index in self.buy_protection_params:
             item_buy_protection_list = [True]
@@ -15767,21 +15767,24 @@ class NostalgiaForInfinityX(IStrategy):
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-                dataframe.loc[item_buy, 'buy_tag'] += f"{index} "
+                dataframe.loc[item_buy, 'enter_tag'] += f"{index} "
                 conditions.append(item_buy)
+                dataframe.loc[:, 'enter_long'] = item_buy
 
         if conditions:
-            dataframe.loc[:, 'buy'] = reduce(lambda x, y: x | y, conditions)
+            dataframe.loc[:, 'enter_long'] = reduce(lambda x, y: x | y, conditions)
 
         return dataframe
 
-    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        dataframe.loc[:, 'sell'] = 0
+    def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        dataframe.loc[:, 'exit_long'] = 0
+        dataframe.loc[:, 'exit_short'] = 0
 
         return dataframe
 
     def confirm_trade_entry(self, pair: str, order_type: str, amount: float, rate: float,
-                            time_in_force: str, current_time: datetime, **kwargs) -> bool:
+                            time_in_force: str, current_time: datetime, entry_tag: Optional[str],
+                            side: str, **kwargs) -> bool:
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
 
         if(len(dataframe) < 1):
@@ -15803,8 +15806,9 @@ class NostalgiaForInfinityX(IStrategy):
 
         return True
 
-    def confirm_trade_exit(self, pair: str, trade: "Trade", order_type: str, amount: float,
-                           rate: float, time_in_force: str, sell_reason: str, **kwargs) -> bool:
+    def confirm_trade_exit(self, pair: str, trade: Trade, order_type: str, amount: float,
+                           rate: float, time_in_force: str, exit_reason: str,
+                           current_time: datetime, **kwargs) -> bool:
         """
         Called right before placing a regular sell order.
         Timing for this function is critical, so avoid doing heavy computations or
@@ -15827,9 +15831,9 @@ class NostalgiaForInfinityX(IStrategy):
         :return bool: When True is returned, then the sell-order is placed on the exchange.
             False aborts the process
         """
-        if self._should_hold_trade(trade, rate, sell_reason):
+        if self._should_hold_trade(trade, rate, exit_reason):
             return False
-        if (sell_reason == 'stop_loss'):
+        if (exit_reason == 'stop_loss'):
             return False
         if (('exit_profit_only' in self.config and self.config['exit_profit_only'])
             or ('sell_profit_only' in self.config and self.config['sell_profit_only'])):
