@@ -9506,7 +9506,7 @@ class NostalgiaForInfinityX(IStrategy):
             if (previous_sell_reason in ["sell_stoploss_u_e_1"]):
                 if (current_profit < (previous_profit - 0.005)):
                     return True, previous_sell_reason
-            elif (previous_sell_reason in ["sell_stoploss_doom_1", "sell_stoploss_stop_1", "sell_stoploss_rpd_stop_1"]):
+            elif (previous_sell_reason in ["sell_stoploss_doom_1", "sell_stoploss_stop_1", "sell_stoploss_rpd_stop_1", "sell_stoploss_hlf_stop_1"]):
                 if (current_profit < (previous_profit - 0.005)):
                     return True, previous_sell_reason
             elif all(c in self.rapid_mode_tags for c in enter_tags):
@@ -9527,6 +9527,28 @@ class NostalgiaForInfinityX(IStrategy):
                         return True, previous_sell_reason
                 elif (0.12 <= current_profit):
                     if ((current_profit < (previous_profit - 0.05)) or (last_candle['rsi_14'] > 85.0)):
+                        return True, previous_sell_reason
+            elif all(c in self.half_mode_tags for c in enter_tags):
+                if (0.001 <= current_profit < 0.01):
+                    if ((current_profit < (previous_profit - 0.005)) or (last_candle['rsi_14'] > 90.0)):
+                        return True, previous_sell_reason
+                elif (0.01 <= current_profit < 0.02):
+                    if ((current_profit < (previous_profit - 0.01)) or (last_candle['rsi_14'] > 90.0)):
+                        return True, previous_sell_reason
+                elif (0.02 <= current_profit < 0.03):
+                    if ((current_profit < (previous_profit - 0.02)) or (last_candle['rsi_14'] > 90.0)):
+                        return True, previous_sell_reason
+                elif (0.03 <= current_profit < 0.05):
+                    if ((current_profit < (previous_profit - 0.025)) or (last_candle['rsi_14'] > 90.0)):
+                        return True, previous_sell_reason
+                elif (0.05 <= current_profit < 0.08):
+                    if ((current_profit < (previous_profit - 0.025)) or (last_candle['rsi_14'] > 90.0)):
+                        return True, previous_sell_reason
+                elif (0.08 <= current_profit < 0.12):
+                    if ((current_profit < (previous_profit - 0.025)) or (last_candle['rsi_14'] > 90.0)):
+                        return True, previous_sell_reason
+                elif (0.12 <= current_profit):
+                    if ((current_profit < (previous_profit - 0.03)) or (last_candle['rsi_14'] > 90.0)):
                         return True, previous_sell_reason
             elif (previous_sell_reason in ["sell_profit_maximizer_01"]) and (current_profit >= 0.01):
                 if (last_candle['rsi_14'] > 81.0):
