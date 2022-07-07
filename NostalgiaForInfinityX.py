@@ -9484,6 +9484,16 @@ class NostalgiaForInfinityX(IStrategy):
 
         return False, None
 
+    def sell_half_mode(self, trade: Trade, current_time: datetime, current_profit: float, max_profit:float, last_candle, previous_candle_1) -> tuple:
+        is_leverage = bool(re.match(leverage_pattern, trade.pair))
+        stop_index = 0 if  not is_leverage else 1
+        if (
+                (current_profit < [-0.25, -0.30][stop_index])
+        ):
+            return True, 'sell_stoploss_hlf_stop_1'
+
+        return False, None
+
     def mark_profit_target(self, pair: str, sell: bool, signal_name: str, trade: Trade, current_time: datetime, current_rate: float, current_profit: float, last_candle, previous_candle_1) -> tuple:
         if self.profit_max_enabled:
             if sell and (signal_name is not None):
@@ -9613,6 +9623,11 @@ class NostalgiaForInfinityX(IStrategy):
             if all(c in self.rapid_mode_tags for c in enter_tags):
                 sell, signal_name = self.sell_rapid_mode(trade, current_time, current_profit, max_profit, last_candle, previous_candle_1)
 
+        # Half mode sells
+        if not sell:
+            if all(c in self.half_mode_tags for c in enter_tags):
+                sell, signal_name = self.sell_half_mode(trade, current_time, current_profit, max_profit, last_candle, previous_candle_1)
+
         # Original sell signals
         if not sell:
             sell, signal_name = self.sell_signals(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tag)
@@ -9702,7 +9717,8 @@ class NostalgiaForInfinityX(IStrategy):
                 (not self.profit_max_enabled)
                 # Enable profit maximizer for the stoplosses
                 or (
-                    (signal_name not in ["sell_profit_maximizer_01", "sell_stoploss_u_e_1", "sell_stoploss_doom_1", "sell_stoploss_stop_1", "sell_stoploss_rpd_stop_1"])
+                    (signal_name not in ["sell_profit_maximizer_01", "sell_stoploss_u_e_1", "sell_stoploss_doom_1", "sell_stoploss_stop_1", "sell_stoploss_rpd_stop_1", "sell_stoploss_hlf_stop_1"])
+                    and (not all(c in self.half_mode_tags for c in enter_tags))
                 )
         ):
             if sell and (signal_name is not None):
