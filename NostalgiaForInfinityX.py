@@ -174,23 +174,27 @@ class NostalgiaForInfinityX(IStrategy):
     max_rebuy_orders_2 = 10
     max_rebuy_orders_3 = 8
     max_rebuy_orders_4 = 3
+    max_rebuy_orders_5 = 2
     max_rebuy_multiplier_lev = 0.5 # for leveraged tokens
     max_rebuy_multiplier_0 = 1.0
     max_rebuy_multiplier_1 = 1.0
     max_rebuy_multiplier_2 = 0.2
     max_rebuy_multiplier_3 = 0.05
     max_rebuy_multiplier_4 = 0.1
+    max_rebuy_multiplier_5 = 0.35
     rebuy_pcts_n_0 = (-0.04, -0.06, -0.09, -0.12)
     rebuy_pcts_n_1 = (-0.07, -0.09)
     rebuy_pcts_n_2 = (-0.02, -0.025, -0.025, -0.03, -0.04, -0.045, -0.05, -0.055, -0.06, -0.08)
     rebuy_pcts_p_2 = (0.02, 0.025, 0.025, 0.03, 0.07, 0.075, 0.08, 0.085, 0.09, 0.095)
     rebuy_pcts_n_3 = (-0.02, -0.04, -0.06, -0.08, -0.1, -0.12, -0.14, -0.16)
     rebuy_pcts_n_4 = (-0.02, -0.06, -0.1)
+    rebuy_pcts_n_5 = (-0.1, -0.14)
     rebuy_multi_0 = 0.15
     rebuy_multi_1 = 0.35
     rebuy_multi_2 = 1.0
     rebuy_multi_3 = 1.0
     rebuy_multi_4 = 1.0
+    rebuy_multi_5 = 1.0
 
     # Profit maximizer
     profit_max_enabled = True
@@ -2510,9 +2514,9 @@ class NostalgiaForInfinityX(IStrategy):
                 use_mode = self.config['rebuy_mode']
             if ('use_alt_rebuys' in self.config and self.config['use_alt_rebuys']):
                 use_mode = 1
-            is_leverage = bool(re.match(leverage_pattern,pair))
-            if (is_leverage) and not ('do_not_use_leverage_rebuys' in self.config and self.config['do_not_use_leverage_rebuys']):
-                return proposed_stake * self.max_rebuy_multiplier_lev
+            enter_tags = entry_tag.split()
+            if all(c in self.half_mode_tags for c in enter_tags):
+                use_mode = 5
             if (use_mode == 0):
                 return proposed_stake * self.max_rebuy_multiplier_0
             elif (use_mode == 1):
@@ -2523,26 +2527,14 @@ class NostalgiaForInfinityX(IStrategy):
                 return proposed_stake * self.max_rebuy_multiplier_3
             elif (use_mode == 4):
                 return proposed_stake * self.max_rebuy_multiplier_4
+            elif (use_mode == 5):
+                return proposed_stake * self.max_rebuy_multiplier_5
 
         return proposed_stake
 
     def adjust_trade_position(self, trade: Trade, current_time: datetime,
                               current_rate: float, current_profit: float, min_stake: float,
                               max_stake: float, **kwargs):
-        """
-        Custom trade adjustment logic, returning the stake amount that a trade should be increased.
-        This means extra buy orders with additional fees.
-
-        :param trade: trade object.
-        :param current_time: datetime object, containing the current datetime
-        :param current_rate: Current buy rate.
-        :param current_profit: Current profit (as ratio), calculated based on current_rate.
-        :param min_stake: Minimal stake size allowed by exchange.
-        :param max_stake: Balance available for trading.
-        :param **kwargs: Ensure to keep this here so updates to this won't break your strategy.
-        :return float: Stake amount to adjust your trade
-        """
-
         # Don't rebuy for trades on hold
         if self._should_hold_trade(trade, current_rate, 'none'):
             return None
@@ -2570,7 +2562,7 @@ class NostalgiaForInfinityX(IStrategy):
         # simple TA checks, to assure that the price is not dropping rapidly
         if (
                 # drop in the last candle
-                ((last_candle['tpct_change_0'] > 0.018) and (last_candle['close'] < last_candle['open']))
+               (last_candle['tpct_change_0'] > 0.018)
         ):
             return None
 
@@ -2606,6 +2598,12 @@ class NostalgiaForInfinityX(IStrategy):
 
         if use_alt:
             use_mode = 1
+
+        if all(c in self.half_mode_tags for c in enter_tags):
+            use_mode = 5
+
+        if (use_mode in [0, 1, 2, 3, 4]):
+            return None
 
         is_rebuy = False
 
@@ -2704,6 +2702,21 @@ class NostalgiaForInfinityX(IStrategy):
                         )
                 ):
                     is_rebuy = True
+        elif (use_mode == 5):
+            if (count_of_entries == 1):
+                if (
+                        (current_profit < self.rebuy_pcts_n_5[count_of_entries - 1])
+                        and (last_candle['close_max_48'] < (last_candle['close'] * 1.05))
+                        and (last_candle['btc_pct_close_max_72_5m'] < 1.03)
+                ):
+                    is_rebuy = True
+            elif (2 <= count_of_entries <= self.max_rebuy_orders_5):
+                if (
+                        (current_profit < self.rebuy_pcts_n_5[count_of_entries - 1])
+                        and (last_candle['close_max_48'] < (last_candle['close'] * 1.05))
+                        and (last_candle['btc_pct_close_max_72_5m'] < 1.03)
+                ):
+                    is_rebuy = True
 
         if not is_rebuy:
             return None
@@ -2744,7 +2757,9 @@ class NostalgiaForInfinityX(IStrategy):
                     elif (count_of_entries == 8):
                         stake_amount = stake_amount * self.rebuy_multi_3 * 4
                 elif (use_mode == 4):
-                      stake_amount = stake_amount + (stake_amount * (self.rebuy_multi_4 * (count_of_entries - 1)))
+                    stake_amount = stake_amount + (stake_amount * (self.rebuy_multi_4 * (count_of_entries - 1)))
+                elif (use_mode == 5):
+                    stake_amount = stake_amount * self.rebuy_multi_5
                 return stake_amount
             except Exception as exception:
                 return None
