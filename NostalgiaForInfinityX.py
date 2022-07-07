@@ -198,6 +198,9 @@ class NostalgiaForInfinityX(IStrategy):
     # Rapid more tags
     rapid_mode_tags = ['66', '67', '68', '69', '70', '71', '72']
 
+    # Half mode tags
+    half_mode_tags = ['73']
+
     # Run "populate_indicators()" only for new candle.
     process_only_new_candles = True
 
