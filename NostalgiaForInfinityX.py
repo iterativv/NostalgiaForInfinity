@@ -167,7 +167,7 @@ class NostalgiaForInfinityX(IStrategy):
     coin_metrics['current_whitelist'] = []
 
     # Rebuy feature
-    position_adjustment_enable = False
+    position_adjustment_enable = True
     rebuy_mode = 0
     max_rebuy_orders_0 = 4
     max_rebuy_orders_1 = 1
