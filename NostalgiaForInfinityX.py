@@ -169,7 +169,7 @@ class NostalgiaForInfinityX(IStrategy):
     # Rebuy feature
     position_adjustment_enable = True
     rebuy_mode = 0
-    max_rebuy_orders_0 = 4
+    max_rebuy_orders_0 = 2
     max_rebuy_orders_1 = 1
     max_rebuy_orders_2 = 10
     max_rebuy_orders_3 = 8
