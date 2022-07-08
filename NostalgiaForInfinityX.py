@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.0.1256"
+        return "v11.0.1257"
 
     # ROI table:
     minimal_roi = {
@@ -2632,47 +2632,36 @@ class NostalgiaForInfinityX(IStrategy):
         if all(c in self.half_mode_tags for c in enter_tags):
             use_mode = 5
 
-        if (use_mode in [0, 1, 2, 3, 4]):
-            return None
-
         is_rebuy = False
 
         if (use_mode == 0):
             if (1 <= count_of_entries <= 2):
                 if (
                         (current_profit < self.rebuy_pcts_n_0[count_of_entries - 1])
-                        and (
-                            (last_candle['crsi'] > 12.0)
-                            and (last_candle['crsi_1h'] > 10.0)
-                        )
+                        and (last_candle['close_max_48'] < (last_candle['close'] * 1.05))
+                        and (last_candle['btc_pct_close_max_72_5m'] < 1.02)
                 ):
                     is_rebuy = True
             elif (3 <= count_of_entries <= self.max_rebuy_orders_0):
                 if (
                         (current_profit < self.rebuy_pcts_n_0[count_of_entries - 1])
-                        and (
-                            (last_candle['crsi'] > 12.0)
-                            and (last_candle['crsi_1h'] > 10.0)
-                            and (last_candle['btc_not_downtrend_1h'] == True)
-                        )
+                        and (last_candle['close_max_48'] < (last_candle['close'] * 1.05))
+                        and (last_candle['btc_pct_close_max_72_5m'] < 1.02)
                 ):
                     is_rebuy = True
         elif (use_mode == 1):
             if (count_of_entries == 1):
                 if (
                         (current_profit < self.rebuy_pcts_n_1[0])
-                        and (
-                            (last_candle['crsi'] > 12.0)
-                        )
+                        and (last_candle['close_max_48'] < (last_candle['close'] * 1.05))
+                        and (last_candle['btc_pct_close_max_72_5m'] < 1.02)
                 ):
                     is_rebuy = True
             elif (count_of_entries == 2):
                 if (
                         (current_profit < self.rebuy_pcts_n_1[1])
-                        and (
-                            (last_candle['crsi'] > 20.0)
-                            and (last_candle['crsi_1h'] > 11.0)
-                        )
+                        and (last_candle['close_max_48'] < (last_candle['close'] * 1.05))
+                        and (last_candle['btc_pct_close_max_72_5m'] < 1.02)
                 ):
                     is_rebuy = True
         elif (use_mode == 2):
