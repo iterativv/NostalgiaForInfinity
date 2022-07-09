@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.0.1260"
+        return "v11.0.1261"
 
     # ROI table:
     minimal_roi = {
@@ -9408,7 +9408,7 @@ class NostalgiaForInfinityX(IStrategy):
         is_leverage = bool(re.match(leverage_pattern, trade.pair))
         stop_index = 0 if  not is_leverage else 1
         if (
-                (current_profit < [-0.16, -0.18][stop_index])
+                (current_profit < [-0.35, -0.35][stop_index])
         ):
             return True, 'sell_stoploss_rpd_stop_1'
 
