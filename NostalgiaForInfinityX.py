@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.0.1262"
+        return "v11.0.1263"
 
     # ROI table:
     minimal_roi = {
@@ -204,6 +204,9 @@ class NostalgiaForInfinityX(IStrategy):
 
     # Half mode tags
     half_mode_tags = ['73', '74']
+
+    # Half mode minimum number of free slots
+    half_mode_min_free_slots = 2
 
     # Run "populate_indicators()" only for new candle.
     process_only_new_candles = True
@@ -10283,6 +10286,9 @@ class NostalgiaForInfinityX(IStrategy):
         conditions = []
         dataframe.loc[:, 'enter_tag'] = ''
 
+        # the number of free slots
+        current_free_slots = self.config["max_open_trades"] - len(Trade.get_trades_proxy(is_open=True))
+
         for index in self.buy_protection_params:
             item_buy_protection_list = [True]
             global_buy_protection_params = self.buy_protection_params[index]
@@ -15793,6 +15799,7 @@ class NostalgiaForInfinityX(IStrategy):
 
                 # Condition #73 - Half mode.
                 elif index == 73:
+                    item_buy_logic.append(current_free_slots >= self.half_mode_min_free_slots)
                     # Non-Standard protections
                     item_buy_logic.append(dataframe['close_max_48'] < (dataframe['close'] * 1.1))
                     item_buy_logic.append(dataframe['btc_pct_close_max_24_5m'] < 1.03)
@@ -15857,6 +15864,7 @@ class NostalgiaForInfinityX(IStrategy):
 
                 # Condition #74 - Half mode.
                 elif index == 74:
+                    item_buy_logic.append(current_free_slots >= self.half_mode_min_free_slots)
                     # Non-Standard protections
                     item_buy_logic.append(dataframe['btc_pct_close_max_24_5m'] < 1.03)
                     item_buy_logic.append(dataframe['btc_pct_close_max_72_5m'] < 1.03)
