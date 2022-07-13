@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.0.1283"
+        return "v11.0.1284"
 
 
     # ROI table:
@@ -13418,6 +13418,7 @@ class NostalgiaForInfinityX(IStrategy):
                 elif index == 40:
                     # Non-Standard protections
                     item_buy_logic.append(dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
+                    item_buy_logic.append(dataframe['hl_pct_change_36'] < 0.5)
 
                     # Logic
                     item_buy_logic.append(dataframe['rsi_14'] < 32.0)
@@ -13477,6 +13478,21 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < dataframe['sma_30'] * 0.944)
                         | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.012))
                         | (dataframe['volume_mean_12'] > (dataframe['volume_mean_24'] * 0.95))
+                    )
+                    item_buy_logic.append(
+                        (dataframe['cmf'] > -0.1)
+                        | (dataframe['mfi'] > 20.0)
+                        | (dataframe['cti'] < -0.9)
+                        | (dataframe['cti_1h'] < 0.5)
+                        | (dataframe['rsi_14_1h'] < 50.0)
+                        | (dataframe['tpct_change_144'] < 0.08)
+                        | (dataframe['close_max_48'] < (dataframe['close'] * 1.08))
+                        | (dataframe['hl_pct_change_48_1h'] < 0.4)
+                        | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.012))
+                        | (dataframe['close'] < dataframe['sma_30'] * 0.94)
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.95)
+                        | (dataframe['close'] < dataframe['bb20_2_low'] * 0.99)
+                        | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.02))
                     )
 
                 # Condition #41 - 15m. Semi swing. Local dip. BTC not downtrend.
