@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.0.1302"
+        return "v11.0.1303"
 
 
     # ROI table:
@@ -2581,6 +2581,8 @@ class NostalgiaForInfinityX(IStrategy):
             if ('use_alt_rebuys' in self.config and self.config['use_alt_rebuys']):
                 use_mode = 1
             enter_tags = entry_tag.split()
+            if all(c in self.rapid_mode_tags for c in enter_tags):
+                use_mode = 2
             if all(c in self.half_mode_tags for c in enter_tags):
                 use_mode = 5
             if (use_mode == 0):
@@ -2666,6 +2668,8 @@ class NostalgiaForInfinityX(IStrategy):
         if use_alt:
             use_mode = 1
 
+        if all(c in self.rapid_mode_tags for c in enter_tags):
+            use_mode = 2
         if all(c in self.half_mode_tags for c in enter_tags):
             use_mode = 5
 
