@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.0.1303"
+        return "v11.0.1304"
 
 
     # ROI table:
@@ -2627,12 +2627,6 @@ class NostalgiaForInfinityX(IStrategy):
             return None
         last_candle = dataframe.iloc[-1].squeeze()
         previous_candle = dataframe.iloc[-2].squeeze()
-        # simple TA checks, to assure that the price is not dropping rapidly
-        if (
-                # drop in the last candle
-               (last_candle['tpct_change_0'] > 0.018)
-        ):
-            return None
 
         count_of_entries = 0
         if (hasattr(trade, 'enter_side')):
