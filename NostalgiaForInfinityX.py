@@ -171,7 +171,7 @@ class NostalgiaForInfinityX(IStrategy):
     position_adjustment_enable = True
     rebuy_mode = 0
     max_rebuy_orders_0 = 2
-    max_rebuy_orders_1 = 1
+    max_rebuy_orders_1 = 2
     max_rebuy_orders_2 = 2
     max_rebuy_orders_2_alt = 1
     max_rebuy_orders_3 = 8
@@ -185,14 +185,14 @@ class NostalgiaForInfinityX(IStrategy):
     max_rebuy_multiplier_4 = 0.1
     max_rebuy_multiplier_5 = 0.35
     rebuy_pcts_n_0 = (-0.04, -0.06, -0.09, -0.12)
-    rebuy_pcts_n_1 = (-0.06, -0.09)
+    rebuy_pcts_n_1 = (-0.06, -0.12)
     rebuy_pcts_n_2 = (-0.02, -0.03)
     rebuy_pcts_p_2 = (0.02, 0.025, 0.025, 0.03, 0.07, 0.075, 0.08, 0.085, 0.09, 0.095)
     rebuy_pcts_n_3 = (-0.02, -0.04, -0.06, -0.08, -0.1, -0.12, -0.14, -0.16)
     rebuy_pcts_n_4 = (-0.02, -0.06, -0.1)
     rebuy_pcts_n_5 = (-0.05, -0.08)
     rebuy_multi_0 = 0.15
-    rebuy_multi_1 = 0.35
+    rebuy_multi_1 = 0.3
     rebuy_multi_2 = 0.15
     rebuy_multi_2_alt = 0.35
     rebuy_multi_3 = 1.0
