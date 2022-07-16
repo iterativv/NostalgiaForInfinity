@@ -172,7 +172,8 @@ class NostalgiaForInfinityX(IStrategy):
     rebuy_mode = 0
     max_rebuy_orders_0 = 2
     max_rebuy_orders_1 = 1
-    max_rebuy_orders_2 = 10
+    max_rebuy_orders_2 = 2
+    max_rebuy_orders_2_alt = 1
     max_rebuy_orders_3 = 8
     max_rebuy_orders_4 = 3
     max_rebuy_orders_5 = 2
@@ -185,14 +186,15 @@ class NostalgiaForInfinityX(IStrategy):
     max_rebuy_multiplier_5 = 0.35
     rebuy_pcts_n_0 = (-0.04, -0.06, -0.09, -0.12)
     rebuy_pcts_n_1 = (-0.06, -0.09)
-    rebuy_pcts_n_2 = (-0.02, -0.025, -0.025, -0.03, -0.04, -0.045, -0.05, -0.055, -0.06, -0.08)
+    rebuy_pcts_n_2 = (-0.02, -0.03)
     rebuy_pcts_p_2 = (0.02, 0.025, 0.025, 0.03, 0.07, 0.075, 0.08, 0.085, 0.09, 0.095)
     rebuy_pcts_n_3 = (-0.02, -0.04, -0.06, -0.08, -0.1, -0.12, -0.14, -0.16)
     rebuy_pcts_n_4 = (-0.02, -0.06, -0.1)
     rebuy_pcts_n_5 = (-0.05, -0.08)
     rebuy_multi_0 = 0.15
     rebuy_multi_1 = 0.35
-    rebuy_multi_2 = 1.0
+    rebuy_multi_2 = 0.15
+    rebuy_multi_2_alt = 0.35
     rebuy_multi_3 = 1.0
     rebuy_multi_4 = 1.0
     rebuy_multi_5 = 1.0
@@ -2648,10 +2650,11 @@ class NostalgiaForInfinityX(IStrategy):
 
         # if to use alternate rebuy scheme
         use_alt = False
+        use_alt_2 = False
         if (use_mode == 0) and ((filled_entries[0].cost * (self.rebuy_multi_0 + (count_of_entries * 0.005))) < min_stake):
             use_alt = True
         if (use_mode == 2) and ((filled_entries[0].cost * (self.rebuy_multi_2 + (count_of_entries * 0.005))) < min_stake):
-            use_alt = True
+            use_alt_2 = True
         if (use_mode == 3) and ((filled_entries[0].cost * (self.rebuy_multi_3 + (count_of_entries * 0.005))) < min_stake):
             use_alt = True
         if (use_mode == 4) and ((filled_entries[0].cost * (self.rebuy_multi_4 + (count_of_entries * 0.005))) < min_stake):
@@ -2699,22 +2702,9 @@ class NostalgiaForInfinityX(IStrategy):
                 ):
                     is_rebuy = True
         elif (use_mode == 2):
-            if (1 <= count_of_entries <= 4):
+            if (1 <= count_of_entries <= self.max_rebuy_orders_2):
                 if (
                         (current_profit < self.rebuy_pcts_n_2[count_of_entries - 1])
-                        and (
-                            (last_candle['crsi'] > 5.0)
-                        )
-                ):
-                    is_rebuy = True
-            elif (5 <= count_of_entries <= self.max_rebuy_orders_2):
-                if (
-                        (current_profit < self.rebuy_pcts_n_2[count_of_entries - 1])
-                        and (
-                            (last_candle['crsi'] > 12.0)
-                            and (last_candle['crsi_1h'] > 10.0)
-                            and (last_candle['btc_not_downtrend_1h'] == True)
-                        )
                 ):
                     is_rebuy = True
         elif (use_mode == 3):
@@ -2791,7 +2781,9 @@ class NostalgiaForInfinityX(IStrategy):
                     if (stake_amount < min_stake):
                         stake_amount = min_stake
                 elif (use_mode == 2):
-                    stake_amount = stake_amount * (self.rebuy_multi_2 + (count_of_entries * 0.005))
+                    if (use_alt_2) and (count_of_entries > max_rebuy_orders_2_alt):
+                        return None
+                    stake_amount = stake_amount * self.rebuy_multi_2
                 elif (use_mode == 3):
                     if (count_of_entries == 1):
                         stake_amount = stake_amount * self.rebuy_multi_3 * 1
