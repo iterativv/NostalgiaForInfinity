@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.0.1309"
+        return "v11.0.1310"
 
 
     # ROI table:
@@ -170,7 +170,7 @@ class NostalgiaForInfinityX(IStrategy):
     # Rebuy feature
     position_adjustment_enable = True
     rebuy_mode = 0
-    max_rebuy_orders_0 = 2
+    max_rebuy_orders_0 = 4
     max_rebuy_orders_1 = 2
     max_rebuy_orders_2 = 2
     max_rebuy_orders_2_alt = 1
