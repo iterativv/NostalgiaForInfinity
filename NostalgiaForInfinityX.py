@@ -180,7 +180,7 @@ class NostalgiaForInfinityX(IStrategy):
     max_rebuy_multiplier_lev = 0.5 # for leveraged tokens
     max_rebuy_multiplier_0 = 1.0
     max_rebuy_multiplier_1 = 1.0
-    max_rebuy_multiplier_2 = 0.2
+    max_rebuy_multiplier_2 = 0.8
     max_rebuy_multiplier_3 = 0.05
     max_rebuy_multiplier_4 = 0.1
     max_rebuy_multiplier_5 = 0.35
