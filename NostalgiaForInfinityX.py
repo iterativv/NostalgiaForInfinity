@@ -115,7 +115,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.0.1321"
+        return "v11.0.1322"
 
 
     # ROI table:
@@ -2776,9 +2776,9 @@ class NostalgiaForInfinityX(IStrategy):
                     if (stake_amount < min_stake):
                         stake_amount = min_stake
                 elif (use_mode == 2):
-                    if (use_alt_2) and (count_of_entries > max_rebuy_orders_2_alt):
+                    if (use_alt_2) and (count_of_entries > self.max_rebuy_orders_2_alt):
                         return None
-                    stake_amount = stake_amount * self.rebuy_multi_2
+                    stake_amount = stake_amount * (self.rebuy_multi_2_alt if use_alt_2 else self.rebuy_multi_2)
                 elif (use_mode == 3):
                     if (count_of_entries == 1):
                         stake_amount = stake_amount * self.rebuy_multi_3 * 1
