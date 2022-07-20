@@ -23,6 +23,7 @@ import re
 
 log = logging.getLogger(__name__)
 leverage_pattern = ".*(_PREMIUM|BEAR|BULL|DOWN|HALF|HEDGE|UP|[1235][SL]|-PERP|BVOL|IBVOL)/.*"
+leverage_pattern_long = ".*(BULL|UP|[1235]L)/.*"
 #log.setLevel(logging.DEBUG)
 warnings.simplefilter(action='ignore', category=pd.errors.PerformanceWarning)
 
@@ -115,7 +116,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.1.0"
+        return "v11.1.1"
 
 
     # ROI table:
@@ -16885,6 +16886,12 @@ class NostalgiaForInfinityX(IStrategy):
                     )
 
                 item_buy_logic.append(dataframe['volume'] > 0)
+                # for leveraged long pairs
+                is_leverage_long = bool(re.match(leverage_pattern_long, metadata['pair']))
+                item_buy_logic.append(
+                    (dataframe['btc_pct_close_max_72_5m'] < 1.01)
+                    | (not is_leverage_long)
+                )
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
                 dataframe.loc[item_buy, 'enter_tag'] += f"{index} "
                 conditions.append(item_buy)
