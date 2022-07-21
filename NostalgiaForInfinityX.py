@@ -116,7 +116,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.1.1"
+        return "v11.1.2"
 
 
     # ROI table:
@@ -2639,7 +2639,7 @@ class NostalgiaForInfinityX(IStrategy):
 
         use_mode = self.rebuy_mode
         is_leverage = bool(re.match(leverage_pattern, trade.pair))
-        if (is_leverage) and not ('do_not_use_leverage_rebuys' in self.config and self.config['do_not_use_leverage_rebuys']):
+        if (is_leverage) and ('do_not_use_leverage_rebuys' in self.config and self.config['do_not_use_leverage_rebuys']):
             return None
 
         # if to use alternate rebuy scheme
