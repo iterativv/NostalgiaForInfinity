@@ -116,7 +116,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.1.150"
+        return "v11.1.151"
 
 
     # ROI table:
@@ -9661,7 +9661,7 @@ class NostalgiaForInfinityX(IStrategy):
                     return f"{signal_name} ( {enter_tag})"
         else:
             if (
-                    (current_profit >= 0.05)
+                    (current_profit >= 0.02)
                     or ((current_profit >= 0.02) and (all(c in self.rapid_mode_tags for c in enter_tags)))
             ):
                 previous_profit = None
