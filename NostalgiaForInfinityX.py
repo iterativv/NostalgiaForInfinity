@@ -18473,15 +18473,16 @@ class NostalgiaForInfinityX(IStrategy):
                            rate: float, time_in_force: str, exit_reason: str,
                            current_time: datetime, **kwargs) -> bool:
         # Allow force exits
-        if self._should_hold_trade(trade, rate, exit_reason) and (exit_reason != 'force_exit'):
-            return False
-        if (exit_reason == 'stop_loss'):
-            return False
-        if (('exit_profit_only' in self.config and self.config['exit_profit_only'])
-            or ('sell_profit_only' in self.config and self.config['sell_profit_only'])):
-            current_profit = ((rate - trade.open_rate) / trade.open_rate)
-            if (current_profit < self.exit_profit_offset):
+        if exit_reason != 'force_exit':
+            if self._should_hold_trade(trade, rate, exit_reason):
                 return False
+            if (exit_reason == 'stop_loss'):
+                return False
+            if (('exit_profit_only' in self.config and self.config['exit_profit_only'])
+                or ('sell_profit_only' in self.config and self.config['sell_profit_only'])):
+                current_profit = ((rate - trade.open_rate) / trade.open_rate)
+                if (current_profit < self.exit_profit_offset):
+                    return False
 
         self._remove_profit_target(pair)
 
