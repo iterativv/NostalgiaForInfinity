@@ -116,7 +116,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.1.196"
+        return "v11.1.197"
 
 
     # ROI table:
@@ -11071,14 +11071,14 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['cti_1h'] < 0.0)
                         | (dataframe['rsi_14_1h'] < 30.0)
                         | (dataframe['r_14_1h'] < -90.0)
-                        | (dataframe['crsi_1h'] < -20.0)
                         | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
+                        | (dataframe['ema_100'] > (dataframe['ema_200'] * 1.05))
                         | (dataframe['close'] < dataframe['sma_30'] * 0.9)
                         | (dataframe['close'] < dataframe['ema_20'] * 0.92)
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.97)
                         | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.024))
                         | (dataframe['close_15m'] < (dataframe['bb20_2_low_15m'] * 0.97))
-                        | ((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.02))
+                        | ((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.014))
                         | (dataframe['rsi_14_15m'] < 20.0)
                         | (dataframe['cti_15m'] < -0.9)
                         |
@@ -11087,6 +11087,7 @@ class NostalgiaForInfinityX(IStrategy):
                             & (dataframe['closedelta'].gt(dataframe['close'] * 0.022))
                             & (dataframe['tail'].lt(dataframe['bb40_2_delta'] * 0.2))
                         )
+                        | (dataframe['volume_mean_12'] > (dataframe['volume_mean_24'] * 2.0))
                     )
 
                 # Condition #4 - Semi swing. Local dip.
