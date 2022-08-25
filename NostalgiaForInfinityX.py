@@ -116,7 +116,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.1.193"
+        return "v11.1.194"
 
 
     # ROI table:
@@ -13260,16 +13260,13 @@ class NostalgiaForInfinityX(IStrategy):
                         | ((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.02))
                     )
                     item_buy_logic.append(
-                        (dataframe['cmf'] > -0.1)
+                        (dataframe['cmf'] > 0.1)
                         | (dataframe['mfi'] > 20.0)
-                        | (dataframe['crsi'] > 30.0)
-                        | (dataframe['cti_1h'] < -0.9)
-                        | (dataframe['rsi_14_1h'] < 15.0)
+                        | (dataframe['crsi'] > 40.0)
+                        | (dataframe['cti_1h'] < -0.95)
+                        | (dataframe['rsi_14_1h'] < 8.0)
                         | (dataframe['r_14_1h'] < -97.0)
                         | (dataframe['crsi_1h'] > 10.0)
-                        | (dataframe['tpct_change_144'] < 0.08)
-                        | (dataframe['close_max_48'] < (dataframe['close'] * 1.06))
-                        | (dataframe['hl_pct_change_48_1h'] < 0.16)
                         | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
                         | (dataframe['close'] > (dataframe['sup1_1d'] * 1.0))
                         | (dataframe['close'] > (dataframe['sma_200'] * 0.99))
@@ -13279,8 +13276,8 @@ class NostalgiaForInfinityX(IStrategy):
                         | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.02))
                         | (dataframe['close_15m'] < (dataframe['bb20_2_low_15m'] * 0.99))
                         | ((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.02))
-                        | (dataframe['rsi_14_15m'] < 15.0)
-                        | (dataframe['cti_15m'] < -0.9)
+                        | (dataframe['rsi_14_15m'] < 10.0)
+                        | (dataframe['cti_15m'] < -0.95)
                     )
 
                 # Condition #18 - Semi swing. Local dip. BTC not negative.
