@@ -116,7 +116,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.1.206"
+        return "v11.1.207"
 
 
     # ROI table:
@@ -2898,22 +2898,6 @@ class NostalgiaForInfinityX(IStrategy):
     def sell_stoploss(self, current_profit: float, max_profit: float, max_loss: float, last_candle, previous_candle_1, trade: 'Trade', current_time: 'datetime') -> tuple:
         is_backtest = self.dp.runmode.value == 'backtest'
 
-        if (
-                (current_profit < -0.025)
-                and (last_candle['close'] < last_candle['ema_200'])
-                and (last_candle['cmf'] < -0.0)
-                and (last_candle['ema_vwma_osc_96'] < -0.0)
-                and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < 0.004)
-                and last_candle['rsi_14'] > previous_candle_1['rsi_14']
-                and (last_candle['rsi_14'] > (last_candle['rsi_14_1h'] + 20.0))
-                and (last_candle['sma_200_dec_20'])
-                and (last_candle['sma_200_dec_24'])
-                and (current_time - timedelta(minutes=9200) > trade.open_date_utc)
-                # temporary
-                and (trade.open_date_utc.replace(tzinfo=None) > datetime(2022, 2, 20) or is_backtest)
-        ):
-            return True, 'sell_stoploss_u_e_2'
-
         count_of_buys = 1
         if hasattr(trade, 'select_filled_orders'):
             filled_buys = trade.select_filled_orders('buy')
@@ -2922,22 +2906,6 @@ class NostalgiaForInfinityX(IStrategy):
         is_rebuy = count_of_buys > 2
         is_leverage = bool(re.match(leverage_pattern,trade.pair))
         stop_index = 0 if is_rebuy and not is_leverage else 1 if not is_rebuy and not is_leverage else 2
-
-        if (
-                (-0.075 < current_profit < -0.025)
-                and (last_candle['close'] < last_candle['ema_200'])
-                and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < 0.004)
-                and (last_candle['rsi_14'] > previous_candle_1['rsi_14'])
-                and (last_candle['rsi_14'] > last_candle['rsi_14_1h'] + 24.0)
-                and (last_candle['cmf'] < -0.0)
-                and (last_candle['sma_200_dec_24'])
-                and (last_candle['sma_200_dec_20'])
-                and (last_candle['btc_pct_close_max_72_5m'] > 1.03)
-                and (current_time - timedelta(hours=48) > trade.open_date_utc)
-                # temporary
-                and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2022, 5, 3) or is_backtest)
-        ):
-            return True, 'sell_stoploss_u_e_1'
 
         # For times with strongly negative sentiment
         if (
@@ -2967,12 +2935,17 @@ class NostalgiaForInfinityX(IStrategy):
             return True, 'sell_stoploss_stop_1'
 
         if (
-                (current_profit < [-0.35, -0.35, -0.35][stop_index])
-                and (current_time - timedelta(hours=1) > trade.open_date_utc)
+                (current_profit < -0.06)
+                and (last_candle['close'] < last_candle['ema_200'])
+                and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < 0.004)
+                and (last_candle['rsi_14'] > previous_candle_1['rsi_14'])
+                and (last_candle['rsi_14'] > last_candle['rsi_14_1h'] + 10.0)
+                and (last_candle['sma_200_dec_24'])
+                and (current_time - timedelta(hours=12) > trade.open_date_utc)
                 # temporary
-                and (trade.open_date_utc.replace(tzinfo=None) > datetime(2022, 6, 13) or is_backtest)
+                and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2022, 8, 28) or is_backtest)
         ):
-            return True, 'sell_stoploss_stop_2'
+            return True, 'sell_stoploss_u_e_1'
 
         return False, None
 
