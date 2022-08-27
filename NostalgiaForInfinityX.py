@@ -116,7 +116,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.1.208"
+        return "v11.1.209"
 
 
     # ROI table:
@@ -2906,6 +2906,7 @@ class NostalgiaForInfinityX(IStrategy):
         is_rebuy = count_of_buys > 2
         is_leverage = bool(re.match(leverage_pattern,trade.pair))
         stop_index = 0 if is_rebuy and not is_leverage else 1 if not is_rebuy and not is_leverage else 2
+        is_btc_stake = self.config['stake_currency'] in ['BTC','ETH']
 
         # For times with strongly negative sentiment
         if (
@@ -2934,18 +2935,28 @@ class NostalgiaForInfinityX(IStrategy):
         ):
             return True, 'sell_stoploss_stop_1'
 
-        if (
-                (current_profit < -0.06)
-                and (last_candle['close'] < last_candle['ema_200'])
-                and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < 0.004)
-                and (last_candle['rsi_14'] > previous_candle_1['rsi_14'])
-                and (last_candle['rsi_14'] > last_candle['rsi_14_1h'] + 10.0)
-                and (last_candle['sma_200_dec_24'])
-                and (current_time - timedelta(hours=12) > trade.open_date_utc)
+        if not is_btc_stake:
+            if (
+                    (current_profit < -0.06)
+                    and (last_candle['close'] < last_candle['ema_200'])
+                    and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < 0.004)
+                    and (last_candle['rsi_14'] > previous_candle_1['rsi_14'])
+                    and (last_candle['rsi_14'] > last_candle['rsi_14_1h'] + 10.0)
+                    and (last_candle['sma_200_dec_24'])
+                    and (current_time - timedelta(hours=12) > trade.open_date_utc)
+                    # temporary
+                    and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2022, 8, 28) or is_backtest)
+            ):
+                return True, 'sell_stoploss_u_e_1'
+        else:
+            # BTC/ETH stake
+            if (
+                (current_profit < [-0.25, -0.25, -0.35][stop_index])
+                and (current_time - timedelta(hours=1) > trade.open_date_utc)
                 # temporary
-                and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2022, 8, 28) or is_backtest)
-        ):
-            return True, 'sell_stoploss_u_e_1'
+                and (trade.open_date_utc.replace(tzinfo=None) > datetime(2022, 6, 13) or is_backtest)
+            ):
+                return True, 'sell_stoploss_stop_2'
 
         return False, None
 
