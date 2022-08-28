@@ -116,7 +116,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.0"
+        return "v11.2.1"
 
 
     # ROI table:
@@ -10530,14 +10530,21 @@ class NostalgiaForInfinityX(IStrategy):
                         | ((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.01))
                     )
                     item_buy_logic.append(
-                        (dataframe['cti_1h'] < -0.8)
+                        (dataframe['rsi_14'] < 15.0)
+                        | (dataframe['cti_1h'] < -0.8)
+                        | (dataframe['rsi_14_1h'] < 25.0)
                         | ((dataframe['cti'] < -0.8) & (dataframe['crsi_1h'] > 25.0))
                         | (dataframe['crsi_1h'] > 50.0)
                         | (dataframe['tpct_change_0'] < 0.02)
                         | (dataframe['tpct_change_144'] < 0.14)
+                        | (dataframe['close_max_48'] < (dataframe['close'] * 1.1))
+                        | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
                         | (dataframe['ema_20'] > dataframe['ema_50'])
                         | (dataframe['close'] > dataframe['ema_26'])
+                        | (dataframe['close'] < dataframe['bb20_2_low'] * 0.97)
                         | (dataframe['close'] < dataframe['ema_20'] * 0.934)
+                        | (dataframe['close_15m'] < (dataframe['bb20_2_low_15m'] * 0.96))
+                        | ((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.05))
                         | (dataframe['close'] > (dataframe['pivot_1d'] * 1.0))
                     )
                     item_buy_logic.append(
