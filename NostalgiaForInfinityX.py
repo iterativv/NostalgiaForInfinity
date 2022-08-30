@@ -116,7 +116,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.3"
+        return "v11.2.4"
 
 
     # ROI table:
@@ -2941,7 +2941,7 @@ class NostalgiaForInfinityX(IStrategy):
                     and (last_candle['close'] < last_candle['ema_200'])
                     and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < 0.004)
                     and (last_candle['rsi_14'] > previous_candle_1['rsi_14'])
-                    and (last_candle['rsi_14'] > last_candle['rsi_14_1h'] + 10.0)
+                    and (last_candle['rsi_14'] > last_candle['rsi_14_1h'] + 20.0)
                     and (last_candle['sma_200_dec_24'])
                     and (current_time - timedelta(hours=12) > trade.open_date_utc)
                     # temporary
