@@ -116,7 +116,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.2"
+        return "v11.2.3"
 
 
     # ROI table:
@@ -10573,11 +10573,21 @@ class NostalgiaForInfinityX(IStrategy):
                     )
                     item_buy_logic.append(
                         (dataframe['btc_not_downtrend_1h'] == True)
+                        | (dataframe['r_480'] > -30.0)
+                        | (dataframe['crsi'] > 20.0)
                         | (dataframe['cti_1h'] < 0.5)
+                        | (dataframe['rsi_14_1h'] < 20.0)
                         | (dataframe['tpct_change_0'] < 0.02)
+                        | (dataframe['tpct_change_144'] < 0.16)
+                        | (dataframe['close_max_48'] < (dataframe['close'] * 1.16))
                         | (dataframe['hl_pct_change_48_1h'] < 0.4)
+                        | (dataframe['btc_pct_close_max_72_5m'] < 1.01)
+                        | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
                         | (dataframe['close'] > dataframe['ema_26'])
+                        | (dataframe['close'] < dataframe['bb20_2_low'] * 0.999)
                         | (dataframe['close'] < dataframe['ema_20'] * 0.936)
+                        | (dataframe['close_15m'] < (dataframe['bb20_2_low_15m'] * 0.98))
+                        | ((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.02))
                         | (dataframe['bb40_2_delta'].gt(dataframe['close'] * 0.08))
                         | (dataframe['closedelta'].gt(dataframe['close'] * 0.024))
                     )
