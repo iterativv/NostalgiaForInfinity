@@ -108,6 +108,7 @@ else:
 ##  OKX: https://www.okx.com/join/11749725760 (5% discount on trading fees)                              ##
 ##  ByBit: https://partner.bybit.com/b/nfi                                                               ##
 ##  Huobi: https://www.huobi.com/en-us/topic/double-reward/?invite_code=ubpt2223                         ##
+##  Bitvavo: https://account.bitvavo.com/create?a=D22103A4BC (no fees for the first € 1000)              ##
 ###########################################################################################################
 
 
