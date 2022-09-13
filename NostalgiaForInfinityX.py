@@ -117,7 +117,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.85"
+        return "v11.2.86"
 
 
     # ROI table:
@@ -16083,7 +16083,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.028))
                     )
                     item_buy_logic.append(
-                        (dataframe['cmf'] > -0.2)
+                        (dataframe['cmf'] > 0.1)
                         | (dataframe['mfi'] > 30.0)
                         | (dataframe['rsi_14'] < 30.0)
                         | (dataframe['cti'] < -0.95)
@@ -16094,18 +16094,17 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['tpct_change_144'] < 0.16)
                         | (dataframe['close_max_48'] < (dataframe['close'] * 1.08))
                         | (dataframe['hl_pct_change_48_1h'] < 0.4)
-                        | (dataframe['btc_pct_close_max_72_5m'] < 1.03)
+                        | (dataframe['btc_pct_close_max_72_5m'] < 1.01)
                         | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
                         | (dataframe['close'] > (dataframe['sma_200'] * 0.99))
-                        | (dataframe['close'] < dataframe['sma_30'] * 0.94)
-                        | (dataframe['close'] < dataframe['ema_20'] * 0.95)
+                        | (dataframe['close'] < dataframe['sma_30'] * 0.9)
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.91)
                         | (dataframe['close'] > (dataframe['sup_level_1h'] * 0.96))
-                        | (dataframe['close'] < dataframe['bb20_2_low'] * 0.999)
-                        | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.024))
+                        | (dataframe['close'] < dataframe['bb20_2_low'] * 0.975)
+                        | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.034))
                         | (dataframe['close_15m'] < (dataframe['bb20_2_low_15m'] * 0.95))
-                        | ((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.04))
+                        | ((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.05))
                         | (dataframe['rsi_14_15m'] < 20.0)
-                        | (dataframe['cti_15m'] < -0.9)
                     )
 
                 # Condition #53 - 15m. Semi swing. BTC not negative. Local dip.
