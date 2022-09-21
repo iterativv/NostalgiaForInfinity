@@ -212,7 +212,7 @@ class NostalgiaForInfinityX(IStrategy):
     profit_max_enabled = True
 
     # Rapid more tags
-    rapid_mode_tags = ['66', '67', '68', '69', '70', '71', '72']
+    rapid_mode_tags = []
 
     # Half mode tags
     half_mode_tags = ['73', '74']
