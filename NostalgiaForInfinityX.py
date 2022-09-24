@@ -117,7 +117,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.197"
+        return "v11.2.198"
 
 
     # ROI table:
@@ -2954,7 +2954,7 @@ class NostalgiaForInfinityX(IStrategy):
         else:
             # BTC/ETH stake
             if (
-                (current_profit < [-0.25, -0.25, -0.35][stop_index])
+                (current_profit < [-0.1, -0.1, -0.35][stop_index])
                 and (current_time - timedelta(hours=1) > trade.open_date_utc)
                 # temporary
                 and (trade.open_date_utc.replace(tzinfo=None) > datetime(2022, 6, 13) or is_backtest)
