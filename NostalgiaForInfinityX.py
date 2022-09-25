@@ -117,7 +117,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.233"
+        return "v11.2.234"
 
 
     # ROI table:
@@ -9526,12 +9526,12 @@ class NostalgiaForInfinityX(IStrategy):
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
         if(len(dataframe) < 6):
             return None
-        last_candle = dataframe.iloc[-1]
-        previous_candle_1 = dataframe.iloc[-2]
-        previous_candle_2 = dataframe.iloc[-3]
-        previous_candle_3 = dataframe.iloc[-4]
-        previous_candle_4 = dataframe.iloc[-5]
-        previous_candle_5 = dataframe.iloc[-6]
+        last_candle = dataframe.iloc[-1].squeeze()
+        previous_candle_1 = dataframe.iloc[-2].squeeze()
+        previous_candle_2 = dataframe.iloc[-3].squeeze()
+        previous_candle_3 = dataframe.iloc[-4].squeeze()
+        previous_candle_4 = dataframe.iloc[-5].squeeze()
+        previous_candle_5 = dataframe.iloc[-6].squeeze()
 
         enter_tag = 'empty'
         if hasattr(trade, 'enter_tag') and trade.enter_tag is not None:
