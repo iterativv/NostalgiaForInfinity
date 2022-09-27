@@ -117,7 +117,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.285"
+        return "v11.2.286"
 
 
     # ROI table:
@@ -10445,7 +10445,11 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['mfi'] > 30.0)
                         | (dataframe['rsi_14'] < 22.0)
                         | (dataframe['cti'] < -0.92)
-                        | (dataframe['cti_1h'] < -0.5)
+                        |
+                        (
+                            (dataframe['cti_1h'] < -0.5)
+                            & (dataframe['btc_pct_close_max_72_5m'] < 1.06)
+                        )
                         | (dataframe['rsi_14_1h'] < 30.0)
                         | (dataframe['tpct_change_144'] < 0.12)
                         | (dataframe['close_max_48'] < (dataframe['close'] * 1.1))
@@ -10464,12 +10468,12 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] > (dataframe['sma_200'] * 0.99))
                         | (dataframe['close'] < dataframe['sma_30'] * 0.86)
                         | (dataframe['close'] < dataframe['ema_20'] * 0.89)
-                        | (dataframe['close'] < dataframe['bb20_2_low'] * 0.992)
+                        | (dataframe['close'] < dataframe['bb20_2_low'] * 0.988)
                         | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.05))
                         | (dataframe['close_15m'] < (dataframe['bb20_2_low_15m'] * 0.92))
                         | ((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.034))
-                        | (dataframe['rsi_14_15m'] < 20.0)
-                        | (dataframe['cti_15m'] < -0.9)
+                        | (dataframe['rsi_14_15m'] < 15.0)
+                        | (dataframe['cti_15m'] < -0.95)
                     )
 
                 # Condition #2 - Semi swing. Local dip.
