@@ -117,7 +117,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.382"
+        return "v11.2.383"
 
 
     # ROI table:
@@ -14450,17 +14450,10 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.99)
                     )
                     item_buy_logic.append(
-                        (
-                            (dataframe['cmf'] > -0.2)
-                            & (dataframe['btc_pct_close_max_72_5m'] < 1.01)
-                        )
+                        (dataframe['cmf'] > -0.2)
                         | (dataframe['mfi'] > 36.0)
                         | (dataframe['crsi'] > 20.0)
-                        |
-                        (
-                            (dataframe['ewo'] > 3.0)
-                            & (dataframe['cti_1h'] < 0.75)
-                        )
+                        | (dataframe['ewo'] > 3.0)
                         | (dataframe['cti_1h'] < 0.5)
                         | (dataframe['rsi_14_1h'] < 40.0)
                         | (dataframe['r_14_1h'] < -90.0)
@@ -14470,11 +14463,11 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             (dataframe['btc_pct_close_max_72_5m'] < 1.03)
-                            & (dataframe['cti_1h'] < 0.75)
+                            & (dataframe['cti_1h'] < 0.8)
                         )
                         | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
-                        | (dataframe['close'] < dataframe['sma_30'] * 0.9)
-                        | (dataframe['close'] < dataframe['ema_20'] * 0.92)
+                        | (dataframe['close'] < dataframe['sma_30'] * 0.91)
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.93)
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.98)
                         | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.03))
                         | (dataframe['close_15m'] < (dataframe['bb20_2_low_15m'] * 0.97))
