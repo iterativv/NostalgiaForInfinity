@@ -9930,6 +9930,7 @@ class NostalgiaForInfinityX(IStrategy):
         dataframe['ema_200'] = ta.EMA(dataframe, timeperiod=200)
 
         dataframe['ema_200_pct_change_144'] = ((dataframe['ema_200'] - dataframe['ema_200'].shift(144)) / dataframe['ema_200'].shift(144))
+        dataframe['ema_200_pct_change_288'] = ((dataframe['ema_200'] - dataframe['ema_200'].shift(288)) / dataframe['ema_200'].shift(288))
 
         # SMA
         dataframe['sma_15'] = ta.SMA(dataframe, timeperiod=15)
