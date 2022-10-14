@@ -117,7 +117,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.508"
+        return "v11.2.509"
 
 
     # ROI table:
@@ -174,8 +174,8 @@ class NostalgiaForInfinityX(IStrategy):
     rebuy_mode = 0
     max_rebuy_orders_0 = 4
     max_rebuy_orders_1 = 2
-    max_rebuy_orders_2 = 2
-    max_rebuy_orders_2_alt = 1
+    max_rebuy_orders_2 = 4
+    max_rebuy_orders_2_alt = 2
     max_rebuy_orders_3 = 8
     max_rebuy_orders_4 = 3
     max_rebuy_orders_5 = 2
@@ -188,7 +188,8 @@ class NostalgiaForInfinityX(IStrategy):
     max_rebuy_multiplier_5 = 0.35
     rebuy_pcts_n_0 = (-0.04, -0.06, -0.09, -0.12)
     rebuy_pcts_n_1 = (-0.06, -0.12)
-    rebuy_pcts_n_2 = (-0.02, -0.03)
+    rebuy_pcts_n_2 = (-0.03, -0.04, -0.06, -0.09)
+    rebuy_pcts_n_2_alt = (-0.03, -0.08)
     rebuy_pcts_p_2 = (0.02, 0.025, 0.025, 0.03, 0.07, 0.075, 0.08, 0.085, 0.09, 0.095)
     rebuy_pcts_n_3 = (-0.02, -0.04, -0.06, -0.08, -0.1, -0.12, -0.14, -0.16)
     rebuy_pcts_n_4 = (-0.02, -0.06, -0.1)
@@ -2699,11 +2700,32 @@ class NostalgiaForInfinityX(IStrategy):
                 ):
                     is_rebuy = True
         elif (use_mode == 2):
-            if (1 <= count_of_entries <= self.max_rebuy_orders_2):
-                if (
-                        (current_profit < self.rebuy_pcts_n_2[count_of_entries - 1])
-                ):
-                    is_rebuy = True
+            if (use_alt_2):
+                if (1 <= count_of_entries <= 1):
+                    if (
+                            (current_profit < self.rebuy_pcts_n_2_alt[count_of_entries - 1])
+                    ):
+                        is_rebuy = True
+                elif (2 <= count_of_entries <= self.max_rebuy_orders_2_alt):
+                    if (
+                            (current_profit < self.rebuy_pcts_n_2_alt[count_of_entries - 1])
+                            and (last_candle['close_max_48'] < (last_candle['close'] * 1.04))
+                            and (last_candle['btc_pct_close_max_72_5m'] < 1.02)
+                    ):
+                        is_rebuy = True
+            else:
+                if (1 <= count_of_entries <= 2):
+                    if (
+                            (current_profit < self.rebuy_pcts_n_2[count_of_entries - 1])
+                    ):
+                        is_rebuy = True
+                elif (3 <= count_of_entries <= self.max_rebuy_orders_2):
+                    if (
+                            (current_profit < self.rebuy_pcts_n_2[count_of_entries - 1])
+                            and (last_candle['close_max_48'] < (last_candle['close'] * 1.04))
+                            and (last_candle['btc_pct_close_max_72_5m'] < 1.02)
+                    ):
+                        is_rebuy = True
         elif (use_mode == 3):
             if (1 <= count_of_entries <= 4):
                 if (
