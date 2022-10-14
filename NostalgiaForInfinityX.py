@@ -117,7 +117,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.507"
+        return "v11.2.508"
 
 
     # ROI table:
@@ -9676,7 +9676,7 @@ class NostalgiaForInfinityX(IStrategy):
                 # Enable profit maximizer for the stoplosses
                 or (
                     (signal_name not in ["sell_profit_maximizer_01", "sell_stoploss_u_e_1", "sell_stoploss_doom_1", "sell_stoploss_stop_1", "sell_stoploss_stop_2", "sell_stoploss_rpd_stop_1", "sell_stoploss_hlf_stop_1"])
-                    and (not all(c in self.half_mode_tags for c in enter_tags))
+                    #and (not all(c in self.half_mode_tags for c in enter_tags))
                 )
         ):
             if sell and (signal_name is not None):
