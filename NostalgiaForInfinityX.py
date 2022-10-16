@@ -202,6 +202,15 @@ class NostalgiaForInfinityX(IStrategy):
     rebuy_multi_4 = 1.0
     rebuy_multi_5 = 1.0
 
+    # Partial exits/entries
+    use_partial_exits = True
+    pe_num_parts_0 = 4
+    pe_num_parts_1 = 2
+    pe_pcts_n_0 = (-0.06, -0.02, -0.02, -0.05)
+    pe_pcts_n_1 = (-0.06, -0.05)
+    pb_pcts_n_0 = (-0.02, -0.02)
+    pb_pcts_n_1 = (-0.04, -0.05)
+
     # Profit maximizer
     profit_max_enabled = True
 
@@ -2614,9 +2623,6 @@ class NostalgiaForInfinityX(IStrategy):
         if (trade.open_date_utc.replace(tzinfo=None) < datetime(2022, 4, 6) and not is_backtest):
             return None
 
-        if (self.position_adjustment_enable == False) or (current_profit > -0.02):
-            return None
-
         enter_tag = 'empty'
         if hasattr(trade, 'enter_tag') and trade.enter_tag is not None:
             enter_tag = trade.enter_tag
@@ -2629,12 +2635,12 @@ class NostalgiaForInfinityX(IStrategy):
         previous_candle = dataframe.iloc[-2].squeeze()
 
         count_of_entries = 0
-        if (hasattr(trade, 'enter_side')):
-            filled_entries = trade.select_filled_orders(trade.enter_side)
-            count_of_entries = trade.nr_of_successful_entries
-        else:
-            filled_entries = trade.select_filled_orders('buy')
-            count_of_entries = len(filled_entries)
+        count_of_exits = 0
+        filled_orders = trade.select_filled_orders()
+        filled_entries = trade.select_filled_orders(trade.entry_side)
+        filled_exits = trade.select_filled_orders(trade.exit_side)
+        count_of_entries = trade.nr_of_successful_entries
+        count_of_exits = trade.nr_of_successful_exits
 
         if (count_of_entries == 0):
             return None
@@ -2667,9 +2673,85 @@ class NostalgiaForInfinityX(IStrategy):
         if all(c in self.half_mode_tags for c in enter_tags):
             use_mode = 5
 
+        # Partial exits/enters
+
+        if (self.use_partial_exits) and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2022, 10, 16) or is_backtest):
+            total_profit = 0.0
+            if (trade.realized_profit != 0.0):
+                total_profit = ((current_rate - trade.open_rate) / trade.open_rate) * trade.stake_amount
+                total_profit = total_profit + trade.realized_profit
+                total_profit = total_profit / trade.stake_amount
+            else:
+                total_profit = current_profit
+            if (use_mode == 0):
+                slice_amount = filled_entries[0].cost / self.pe_num_parts_0
+                slice_profit = (current_rate - filled_orders[-1].average) / filled_orders[-1].average
+                slice_profit_entry = (current_rate - filled_entries[-1].average) / filled_entries[-1].average
+                slice_profit_exit = ((current_rate - filled_exits[-1].average) / filled_exits[-1].average) if count_of_exits > 0 else 0.0
+
+                if (
+                        (
+                            (count_of_entries == 1)
+                            and (count_of_exits == 0)
+                            and (count_of_exits < (self.pe_num_parts_0 - 1))
+                            and (slice_profit < self.pe_pcts_n_0[count_of_exits])
+                        )
+                ):
+                    if (count_of_exits == 0):
+                        return -(slice_amount * (self.pe_num_parts_0 - 1))
+                    else:
+                        return -(slice_amount)
+
+                # Buy backs
+
+                if (
+                        (
+                            (count_of_exits > 0)
+                            and ((count_of_exits - count_of_entries) > (1 - self.pe_num_parts_0))
+                            and (slice_profit < self.pb_pcts_n_0[0])
+                            and (last_candle['close_max_48'] < (last_candle['close'] * 1.04))
+                            and (last_candle['btc_pct_close_max_72_5m'] < 1.03)
+                        )
+                ):
+                    return slice_amount
+
+            elif (use_mode == 1):
+                slice_amount = filled_entries[0].cost / self.pe_num_parts_1
+                slice_profit = (current_rate - filled_orders[-1].average) / filled_orders[-1].average
+                slice_profit_entry = (current_rate - filled_entries[-1].average) / filled_entries[-1].average
+                slice_profit_exit = ((current_rate - filled_exits[-1].average) / filled_exits[-1].average) if count_of_exits > 0 else 0.0
+
+                if (
+                        (
+                            (count_of_entries == 1)
+                            and (count_of_exits == 0)
+                            and (count_of_exits < (self.pe_num_parts_1 - 1))
+                            and (slice_profit < self.pe_pcts_n_1[count_of_exits])
+                        )
+                ):
+                    if (count_of_exits == 0):
+                        return -(slice_amount * (self.pe_num_parts_1 - 1))
+                    else:
+                        return -(slice_amount)
+
+                # Buy backs
+
+                if (
+                        (
+                            (count_of_exits > 0)
+                            and ((count_of_exits - count_of_entries) > (1 - self.pe_num_parts_1))
+                            and (slice_profit < self.pb_pcts_n_1[0])
+                            and (last_candle['close_max_48'] < (last_candle['close'] * 1.04))
+                            and (last_candle['btc_pct_close_max_72_5m'] < 1.03)
+                        )
+                ):
+                    return slice_amount
+
+        # Rebuys
+
         is_rebuy = False
 
-        if (use_mode == 0):
+        if (not self.use_partial_exits) and (use_mode == 0):
             if (1 <= count_of_entries <= 1):
                 if (
                         (current_profit < self.rebuy_pcts_n_0[count_of_entries - 1])
@@ -2684,7 +2766,7 @@ class NostalgiaForInfinityX(IStrategy):
                         and (last_candle['btc_pct_close_max_72_5m'] < 1.02)
                 ):
                     is_rebuy = True
-        elif (use_mode == 1):
+        elif (not self.use_partial_exits) and (use_mode == 1):
             if (count_of_entries == 1):
                 if (
                         (current_profit < self.rebuy_pcts_n_1[0])
