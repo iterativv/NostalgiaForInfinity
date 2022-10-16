@@ -3035,8 +3035,9 @@ class NostalgiaForInfinityX(IStrategy):
         if (
                 (current_profit < [-0.5, -0.5, -0.5][stop_index])
                 and (current_time - timedelta(hours=1) > trade.open_date_utc)
-                # temporary
-                and (trade.open_date_utc.replace(tzinfo=None) > datetime(2022, 5, 25) or is_backtest)
+                # only for live, old trades
+                and (not is_backtest)
+                and (trade.open_date_utc.replace(tzinfo=None) > datetime(2022, 5, 25))
         ):
             return True, 'sell_stoploss_stop_1'
 
@@ -3044,31 +3045,53 @@ class NostalgiaForInfinityX(IStrategy):
             if (
                     (current_profit < [-0.35, -0.35, -0.35][stop_index])
                     and (current_time - timedelta(hours=1) > trade.open_date_utc)
-                    # temporary
-                     and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2022, 8, 28) or is_backtest)
+                    # only for live, old trades
+                    and (not is_backtest)
+                    and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2022, 8, 28))
+                    and (trade.open_date_utc.replace(tzinfo=None) < datetime(2022, 10, 16))
             ):
                  return True, 'sell_stoploss_stop_2'
 
             if (
                     (current_profit < [-0.18, -0.18, -0.18][stop_index])
+                    # only for live, old trades
+                    and (not is_backtest)
+                    and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2022, 9, 21))
+                    and (trade.open_date_utc.replace(tzinfo=None) < datetime(2022, 10, 16))
+            ):
+                return True, 'sell_stoploss_stop_2'
+
+            if (
+                    (current_profit < [-0.35, -0.35, -0.35][stop_index])
                     # temporary
-                    and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2022, 9, 21) or is_backtest)
+                    and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2022, 10, 16) or is_backtest)
             ):
                 return True, 'sell_stoploss_stop_2'
         else:
             # BTC/ETH stake
             if (
-                (current_profit < [-0.25, -0.25, -0.35][stop_index])
-                and (current_time - timedelta(hours=1) > trade.open_date_utc)
-                # temporary
-                and (trade.open_date_utc.replace(tzinfo=None) > datetime(2022, 6, 13) or is_backtest)
+                    (current_profit < [-0.35, -0.35, -0.35][stop_index])
+                    and (current_time - timedelta(hours=1) > trade.open_date_utc)
+                    # only for live, old trades
+                    and (not is_backtest)
+                    and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2022, 8, 28))
+                    and (trade.open_date_utc.replace(tzinfo=None) < datetime(2022, 10, 16))
+            ):
+                 return True, 'sell_stoploss_stop_2'
+
+            if (
+                    (current_profit < [-0.18, -0.18, -0.18][stop_index])
+                    # only for live, old trades
+                    and (not is_backtest)
+                    and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2022, 9, 21))
+                    and (trade.open_date_utc.replace(tzinfo=None) < datetime(2022, 10, 16))
             ):
                 return True, 'sell_stoploss_stop_2'
 
             if (
-                (current_profit < [-0.18, -0.18, -0.18][stop_index])
-                # temporary
-                and (trade.open_date_utc.replace(tzinfo=None) > datetime(2022, 9, 21) or is_backtest)
+                    (current_profit < [-0.35, -0.35, -0.35][stop_index])
+                    # temporary
+                    and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2022, 10, 16) or is_backtest)
             ):
                 return True, 'sell_stoploss_stop_2'
 
