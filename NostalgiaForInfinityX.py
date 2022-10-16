@@ -117,7 +117,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.511"
+        return "v11.2.512"
 
 
     # ROI table:
@@ -14788,11 +14788,7 @@ class NostalgiaForInfinityX(IStrategy):
                     )
                     item_buy_logic.append(
                         (dataframe['cmf'] > 0.0)
-                        |
-                        (
-                            (dataframe['rsi_14'] < 36.0)
-                            & (dataframe['ema_200_pct_change_288'] > -0.18)
-                        )
+                        | (dataframe['rsi_14'] < 36.0)
                         | (dataframe['r_14'] < -90.0)
                         | (dataframe['cti_1h'] < -0.9)
                         | (dataframe['tpct_change_144'] < 0.12)
@@ -14801,7 +14797,6 @@ class NostalgiaForInfinityX(IStrategy):
                         (
                             (dataframe['close'] > (dataframe['sma_200_1h'] * 0.7))
                             & (dataframe['btc_pct_close_max_72_5m'] < 1.01)
-                            & (dataframe['ema_200_pct_change_288'] > -0.18)
                         )
                         | (dataframe['close'] > (dataframe['sup1_1d'] * 1.0))
                         | (dataframe['close'] < dataframe['sma_30'] * 0.95)
