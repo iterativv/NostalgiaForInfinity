@@ -117,7 +117,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.520"
+        return "v11.2.521"
 
 
     # ROI table:
@@ -18219,7 +18219,6 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['close_max_48'] >= (dataframe['close'] * 1.125 ))
                     item_buy_logic.append(dataframe['close_max_288'] >= (dataframe['close'] * 1.225 ))
                     item_buy_logic.append(dataframe['hl_pct_change_36'] < 0.5)
-                    item_buy_logic.append(dataframe['ema_200_pct_change_144'] < 0.1)
 
                     # Logic
                     item_buy_logic.append(dataframe['kama'] > dataframe['fama'])
@@ -18360,14 +18359,25 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['volume_mean_12'] > (dataframe['volume_mean_24'] * 1.8))
                     )
                     item_buy_logic.append(
-                        (dataframe['cmf'] > -0.1)
+                        (
+                            (dataframe['cmf'] > -0.1)
+                            & (dataframe['ema_200_pct_change_144'] < 0.1)
+                        )
                         | (dataframe['mfi'] > 20.0)
                         | (dataframe['cti_1h'] < 0.5)
-                        | (dataframe['crsi_1h'] > 20.0)
+                        |
+                        (
+                            (dataframe['crsi_1h'] > 20.0)
+                            & (dataframe['ema_200_pct_change_144'] < 0.1)
+                        )
                         | (dataframe['tpct_change_144'] < 0.2)
                         | (dataframe['close_max_48'] < (dataframe['close'] * 1.12))
                         | (dataframe['close'] < dataframe['ema_20'] * 0.94)
-                        | (dataframe['close'] < dataframe['bb20_2_low'] * 0.999)
+                        |
+                        (
+                            (dataframe['close'] < dataframe['bb20_2_low'] * 0.999)
+                            & (dataframe['ema_200_pct_change_144'] < 0.1)
+                        )
                         | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.034))
                     )
                     item_buy_logic.append(
