@@ -101,6 +101,8 @@ class NostalgiaForInfinityX2(IStrategy):
 
     # Normal mode bull tags
     normal_mode_bull_tags = ['force_entry', '1']
+    # Normal mode bear tags
+    normal_mode_bear_tags = ['11']
 
     #############################################################
     # Buy side configuration
@@ -406,13 +408,13 @@ class NostalgiaForInfinityX2(IStrategy):
                     max_loss = ((initial_entry.average - trade.min_rate) / trade.min_rate)
 
         # Long mode, bull
-        if all(c in ['1'] for c in enter_tags):
+        if all(c in self.normal_mode_bull_tags for c in enter_tags):
             sell, signal_name = self.exit_normal_bull(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tag)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {enter_tag})"
 
         # Long mode, bear
-        if all(c in self.normal_mode_bull_tags for c in enter_tags):
+        if all(c in self.normal_mode_bear_tags for c in enter_tags):
             sell, signal_name = self.sell_long_bear(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tag)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {enter_tag})"
