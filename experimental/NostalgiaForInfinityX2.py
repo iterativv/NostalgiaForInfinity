@@ -829,6 +829,11 @@ class NostalgiaForInfinityX2(IStrategy):
         dataframe['r_14'] = williams_r(dataframe, period=14)
         dataframe['r_480'] = williams_r(dataframe, period=480)
 
+        # Close max
+        dataframe['close_max_48'] = dataframe['close'].rolling(48).max()
+
+        dataframe['pct_close_max_48'] = (dataframe['close_max_48'] - dataframe['close']) / dataframe['close']
+
         # For sell checks
         dataframe['crossed_below_ema_12_26'] = qtpylib.crossed_below(dataframe['ema_12'], dataframe['ema_26'])
 
@@ -954,7 +959,16 @@ class NostalgiaForInfinityX2(IStrategy):
         btc_info_5m = self.dp.get_pair_dataframe(btc_info_pair, btc_info_timeframe)
         # Indicators
         # -----------------------------------------------------------------------------------------
+
+        # RSI
         btc_info_5m['rsi_14'] = ta.RSI(btc_info_5m, timeperiod=14)
+
+        # Close max
+        btc_info_5m['close_max_24'] = btc_info_5m['close'].rolling(24).max()
+        btc_info_5m['close_max_72'] = btc_info_5m['close'].rolling(72).max()
+
+        btc_info_5m['pct_close_max_24'] = (btc_info_5m['close_max_24'] - btc_info_5m['close']) / btc_info_5m['close']
+        btc_info_5m['pct_close_max_72'] = (btc_info_5m['close_max_72'] - btc_info_5m['close']) / btc_info_5m['close']
 
         # Add prefix
         # -----------------------------------------------------------------------------------------
