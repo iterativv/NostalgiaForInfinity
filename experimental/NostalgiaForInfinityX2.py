@@ -398,60 +398,60 @@ class NostalgiaForInfinityX2(IStrategy):
         if (last_candle['rsi_14'] > 78.0) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']) and (previous_candle_3['close'] > previous_candle_3['bb20_2_upp']) and (previous_candle_4['close'] > previous_candle_4['bb20_2_upp']):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
-                    return True, 'sell_long_bear_1_1_1'
+                    return True, 'exit_normal_bear_1_1_1'
             else:
                 if (current_profit > 0.01):
-                    return True, 'sell_long_bear_1_2_1'
+                    return True, 'exit_normal_bear_1_2_1'
 
         # Sell signal 2
         elif (last_candle['rsi_14'] > 79.0) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
-                    return True, 'sell_long_bear_2_1_1'
+                    return True, 'exit_normal_bear_2_1_1'
             else:
                 if (current_profit > 0.01):
-                    return True, 'sell_long_bear_2_2_1'
+                    return True, 'exit_normal_bear_2_2_1'
 
         # Sell signal 3
         elif (last_candle['rsi_14'] > 81.0):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
-                    return True, 'sell_long_bear_3_1_1'
+                    return True, 'exit_normal_bear_3_1_1'
             else:
                 if (current_profit > 0.01):
-                    return True, 'sell_long_bear_3_2_1'
+                    return True, 'exit_normal_bear_3_2_1'
 
         # Sell signal 4
         elif (last_candle['rsi_14'] > 77.0) and (last_candle['rsi_14_1h'] > 77.0):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
-                    return True, 'sell_long_bear_4_1_1'
+                    return True, 'exit_normal_bear_4_1_1'
             else:
                 if (current_profit > 0.01):
-                    return True, 'sell_long_bear_4_2_1'
+                    return True, 'exit_normal_bear_4_2_1'
 
         # Sell signal 6
         elif (last_candle['close'] < last_candle['ema_200']) and (last_candle['close'] > last_candle['ema_50']) and (last_candle['rsi_14'] > 78.5):
             if (current_profit > 0.01):
-                return True, 'sell_long_bear_6_1'
+                return True, 'exit_normal_bear_6_1'
 
         # Sell signal 7
         elif (last_candle['rsi_14_1h'] > 79.0) and (last_candle['crossed_below_ema_12_26']):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
-                    return True, 'sell_long_bear_7_1_1'
+                    return True, 'exit_normal_bear_7_1_1'
             else:
                 if (current_profit > 0.01):
-                    return True, 'sell_long_bear_7_2_1'
+                    return True, 'exit_normal_bear_7_2_1'
 
         # Sell signal 8
         elif (last_candle['close'] > last_candle['bb20_2_upp_1h'] * 1.07):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
-                    return True, 'sell_long_bear_8_1_1'
+                    return True, 'exit_normal_bear_8_1_1'
             else:
                 if (current_profit > 0.01):
-                    return True, 'sell_long_bear_8_2_1'
+                    return True, 'exit_normal_bear_8_2_1'
 
         return False, None
 
