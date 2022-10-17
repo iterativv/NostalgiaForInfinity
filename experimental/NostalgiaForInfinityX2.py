@@ -363,20 +363,9 @@ class NostalgiaForInfinityX2(IStrategy):
     def exit_normal_bull_stoploss(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
         # Stoploss doom
         if (
-                (current_profit < -0.08)
+                (current_profit < -0.12)
         ):
             return True, 'exit_normal_bull_stoploss_doom'
-
-        # Under & near EMA200, local uptrend move
-        if (
-                (current_profit < -0.025)
-                and (last_candle['close'] < last_candle['ema_200'])
-                and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < 0.024)
-                and last_candle['rsi_14'] > previous_candle_1['rsi_14']
-                and (last_candle['rsi_14'] > (last_candle['rsi_14_1h'] + 10.0))
-                and (current_time - timedelta(minutes=30) > trade.open_date_utc)
-        ):
-            return True, 'exit_normal_bull_stoploss_u_e_1'
 
         return False, None
 
