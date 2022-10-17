@@ -380,6 +380,254 @@ class NostalgiaForInfinityX2(IStrategy):
 
         return False, None
 
+    def sell_normal_bear(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
+        # Original sell signals
+        sell, signal_name = self.exit_normal_bear_signals(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, buy_tag)
+        if sell and (signal_name is not None):
+            return True, signal_name
+
+        # Main sell signals
+        sell, signal_name = self.exit_normal_bear_main(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, buy_tag)
+        if sell and (signal_name is not None):
+            return True, signal_name
+
+        # Williams %R based sells
+        sell, signal_name = self.exit_normal_bear_r(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, buy_tag)
+        if sell and (signal_name is not None):
+            return True, signal_name
+
+        # Stoplosses
+        sell, signal_name = self.exit_normal_bear_stoploss(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, buy_tag)
+        if sell and (signal_name is not None):
+            return True, signal_name
+
+        return False, None
+
+
+    def sell_normal_bear_signals(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
+        # Sell signal 1
+        if (last_candle['rsi_14'] > 78.0) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']) and (previous_candle_3['close'] > previous_candle_3['bb20_2_upp']) and (previous_candle_4['close'] > previous_candle_4['bb20_2_upp']):
+            if (last_candle['close'] > last_candle['ema_200']):
+                if (current_profit > 0.01):
+                    return True, 'sell_long_bear_1_1_1'
+            else:
+                if (current_profit > 0.01):
+                    return True, 'sell_long_bear_1_2_1'
+
+        # Sell signal 2
+        elif (last_candle['rsi_14'] > 79.0) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']):
+            if (last_candle['close'] > last_candle['ema_200']):
+                if (current_profit > 0.01):
+                    return True, 'sell_long_bear_2_1_1'
+            else:
+                if (current_profit > 0.01):
+                    return True, 'sell_long_bear_2_2_1'
+
+        # Sell signal 3
+        elif (last_candle['rsi_14'] > 81.0):
+            if (last_candle['close'] > last_candle['ema_200']):
+                if (current_profit > 0.01):
+                    return True, 'sell_long_bear_3_1_1'
+            else:
+                if (current_profit > 0.01):
+                    return True, 'sell_long_bear_3_2_1'
+
+        # Sell signal 4
+        elif (last_candle['rsi_14'] > 77.0) and (last_candle['rsi_14_1h'] > 77.0):
+            if (last_candle['close'] > last_candle['ema_200']):
+                if (current_profit > 0.01):
+                    return True, 'sell_long_bear_4_1_1'
+            else:
+                if (current_profit > 0.01):
+                    return True, 'sell_long_bear_4_2_1'
+
+        # Sell signal 6
+        elif (last_candle['close'] < last_candle['ema_200']) and (last_candle['close'] > last_candle['ema_50']) and (last_candle['rsi_14'] > 78.5):
+            if (current_profit > 0.01):
+                return True, 'sell_long_bear_6_1'
+
+        # Sell signal 7
+        elif (last_candle['rsi_14_1h'] > 79.0) and (last_candle['crossed_below_ema_12_26']):
+            if (last_candle['close'] > last_candle['ema_200']):
+                if (current_profit > 0.01):
+                    return True, 'sell_long_bear_7_1_1'
+            else:
+                if (current_profit > 0.01):
+                    return True, 'sell_long_bear_7_2_1'
+
+        # Sell signal 8
+        elif (last_candle['close'] > last_candle['bb20_2_upp_1h'] * 1.07):
+            if (last_candle['close'] > last_candle['ema_200']):
+                if (current_profit > 0.01):
+                    return True, 'sell_long_bear_8_1_1'
+            else:
+                if (current_profit > 0.01):
+                    return True, 'sell_long_bear_8_2_1'
+
+        return False, None
+
+    def exit_normal_bear_main(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
+        if (last_candle['close'] > last_candle['sma_200_1h']):
+            if 0.01 > current_profit >= 0.001:
+                if (last_candle['rsi_14'] < 26.0):
+                    return True, 'exit_normal_bear_o_0'
+            elif 0.02 > current_profit >= 0.01:
+                if (last_candle['rsi_14'] < 30.0):
+                    return True, 'exit_normal_bear_o_1'
+            elif 0.03 > current_profit >= 0.02:
+                if (last_candle['rsi_14'] < 32.0):
+                    return True, 'exit_normal_bear_o_2'
+            elif 0.04 > current_profit >= 0.03:
+                if (last_candle['rsi_14'] < 34.0):
+                    return True, 'exit_normal_bear_o_3'
+            elif 0.05 > current_profit >= 0.04:
+                if (last_candle['rsi_14'] < 36.0):
+                    return True, 'exit_normal_bear_o_4'
+            elif 0.06 > current_profit >= 0.05:
+                if (last_candle['rsi_14'] < 38.0):
+                    return True, 'exit_normal_bear_o_5'
+            elif 0.07 > current_profit >= 0.06:
+                if (last_candle['rsi_14'] < 40.0):
+                    return True, 'exit_normal_bear_o_6'
+            elif 0.08 > current_profit >= 0.07:
+                if (last_candle['rsi_14'] < 42.0):
+                    return True, 'exit_normal_bear_o_7'
+            elif 0.09 > current_profit >= 0.08:
+                if (last_candle['rsi_14'] < 44.0):
+                    return True, 'exit_normal_bear_o_8'
+            elif 0.1 > current_profit >= 0.09:
+                if (last_candle['rsi_14'] < 46.0):
+                    return True, 'exit_normal_bear_o_9'
+            elif 0.12 > current_profit >= 0.1:
+                if (last_candle['rsi_14'] < 48.0):
+                    return True, 'exit_normal_bear_o_10'
+            elif 0.2 > current_profit >= 0.12:
+                if (last_candle['rsi_14'] < 46.0):
+                    return True, 'exit_normal_bear_o_11'
+            elif current_profit >= 0.2:
+                if (last_candle['rsi_14'] < 44.0):
+                    return True, 'exit_normal_bear_o_12'
+        elif (last_candle['close'] < last_candle['sma_200_1h']):
+            if 0.01 > current_profit >= 0.001:
+                if (last_candle['rsi_14'] < 28.0):
+                    return True, 'exit_normal_bear_u_0'
+            elif 0.02 > current_profit >= 0.01:
+                if (last_candle['rsi_14'] < 32.0):
+                    return True, 'exit_normal_bear_u_1'
+            elif 0.03 > current_profit >= 0.02:
+                if (last_candle['rsi_14'] < 34.0):
+                    return True, 'exit_normal_bear_u_2'
+            elif 0.04 > current_profit >= 0.03:
+                if (last_candle['rsi_14'] < 36.0):
+                    return True, 'exit_normal_bear_u_3'
+            elif 0.05 > current_profit >= 0.04:
+                if (last_candle['rsi_14'] < 38.0):
+                    return True, 'exit_normal_bear_u_4'
+            elif 0.06 > current_profit >= 0.05:
+                if (last_candle['rsi_14'] < 40.0):
+                    return True, 'exit_normal_bear_u_5'
+            elif 0.07 > current_profit >= 0.06:
+                if (last_candle['rsi_14'] < 42.0):
+                    return True, 'exit_normal_bear_u_6'
+            elif 0.08 > current_profit >= 0.07:
+                if (last_candle['rsi_14'] < 44.0):
+                    return True, 'exit_normal_bear_u_7'
+            elif 0.09 > current_profit >= 0.08:
+                if (last_candle['rsi_14'] < 46.0):
+                    return True, 'exit_normal_bear_u_8'
+            elif 0.1 > current_profit >= 0.09:
+                if (last_candle['rsi_14'] < 48.0):
+                    return True, 'exit_normal_bear_u_9'
+            elif 0.12 > current_profit >= 0.1:
+                if (last_candle['rsi_14'] < 50.0):
+                    return True, 'exit_normal_bear_u_10'
+            elif 0.2 > current_profit >= 0.12:
+                if (last_candle['rsi_14'] < 48.0):
+                    return True, 'exit_normal_bear_u_11'
+            elif current_profit >= 0.2:
+                if (last_candle['rsi_14'] < 46.0):
+                    return True, 'exit_normal_bear_u_12'
+
+        return False, None
+
+    def exit_normal_bear_r(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
+        if 0.01 > current_profit >= 0.001:
+            if (last_candle['r_480'] > -0.1):
+                return True, 'exit_normal_bear_w_0_1'
+            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
+                return True, 'exit_normal_bear_w_0_2'
+        elif 0.02 > current_profit >= 0.01:
+            if (last_candle['r_480'] > -0.2):
+                return True, 'exit_normal_bear_w_1_1'
+            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
+                return True, 'exit_normal_bear_w_1_2'
+        elif 0.03 > current_profit >= 0.02:
+            if (last_candle['r_480'] > -0.3):
+                return True, 'exit_normal_bear_w_2_1'
+            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
+                return True, 'exit_normal_bear_w_2_2'
+        elif 0.04 > current_profit >= 0.03:
+            if (last_candle['r_480'] > -0.4):
+                return True, 'exit_normal_bear_w_3_1'
+            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
+                return True, 'exit_normal_bear_w_3_2'
+        elif 0.05 > current_profit >= 0.04:
+            if (last_candle['r_480'] > -0.5):
+                return True, 'exit_normal_bear_w_4_1'
+            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
+                return True, 'exit_normal_bear_w_4_2'
+        elif 0.06 > current_profit >= 0.05:
+            if (last_candle['r_480'] > -0.6):
+                return True, 'exit_normal_bear_w_5_1'
+            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
+                return True, 'exit_normal_bear_w_5_2'
+        elif 0.07 > current_profit >= 0.06:
+            if (last_candle['r_480'] > -0.7):
+                return True, 'exit_normal_bear_w_6_1'
+            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
+                return True, 'exit_normal_bear_w_6_2'
+        elif 0.08 > current_profit >= 0.07:
+            if (last_candle['r_480'] > -0.8):
+                return True, 'exit_normal_bear_w_7_1'
+            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
+                return True, 'exit_normal_bear_w_7_2'
+        elif 0.09 > current_profit >= 0.08:
+            if (last_candle['r_480'] > -0.9):
+                return True, 'exit_normal_bear_w_8_1'
+            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
+                return True, 'exit_normal_bear_w_8_2'
+        elif 0.1 > current_profit >= 0.09:
+            if (last_candle['r_480'] > -1.0):
+                return True, 'exit_normal_bear_w_9_1'
+            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
+                return True, 'exit_normal_bear_w_9_2'
+        elif 0.12 > current_profit >= 0.1:
+            if (last_candle['r_480'] > -1.1):
+                return True, 'exit_normal_bear_w_10_1'
+            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
+                return True, 'exit_normal_bear_w_10_2'
+        elif 0.2 > current_profit >= 0.12:
+            if (last_candle['r_480'] > -0.4):
+                return True, 'exit_normal_bear_w_11_1'
+            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
+                return True, 'exit_normal_bear_w_11_2'
+        elif current_profit >= 0.2:
+            if (last_candle['r_480'] > -0.2):
+                return True, 'exit_normal_bear_w_12_1'
+            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 80.0):
+                return True, 'exit_normal_bear_w_12_2'
+
+        return False, None
+
+    def exit_normal_bear_stoploss(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
+        # Stoploss doom
+        if (
+                (current_profit < -0.12)
+        ):
+            return True, 'exit_normal_bear_stoploss_doom'
+
+        return False, None
+
     def custom_exit(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float,
                     current_profit: float, **kwargs):
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
