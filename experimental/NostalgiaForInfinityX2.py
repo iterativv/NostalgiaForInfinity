@@ -631,17 +631,19 @@ class NostalgiaForInfinityX2(IStrategy):
     def custom_exit(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float,
                     current_profit: float, **kwargs):
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
-        last_candle = dataframe.iloc[-1]
-        previous_candle_1 = dataframe.iloc[-2]
-        previous_candle_2 = dataframe.iloc[-3]
-        previous_candle_3 = dataframe.iloc[-4]
-        previous_candle_4 = dataframe.iloc[-5]
-        previous_candle_5 = dataframe.iloc[-6]
+        last_candle = dataframe.iloc[-1].squeeze()
+        previous_candle_1 = dataframe.iloc[-2].squeeze()
+        previous_candle_2 = dataframe.iloc[-3].squeeze()
+        previous_candle_3 = dataframe.iloc[-4].squeeze()
+        previous_candle_4 = dataframe.iloc[-5].squeeze()
+        previous_candle_5 = dataframe.iloc[-6].squeeze()
 
         enter_tag = 'empty'
         if hasattr(trade, 'enter_tag') and trade.enter_tag is not None:
             enter_tag = trade.enter_tag
         enter_tags = enter_tag.split()
+
+        profit = current_profit
 
         max_profit = ((trade.max_rate - trade.open_rate) / trade.open_rate)
         max_loss = ((trade.open_rate - trade.min_rate) / trade.min_rate)
@@ -655,15 +657,15 @@ class NostalgiaForInfinityX2(IStrategy):
                     max_profit = ((trade.max_rate - initial_entry.average) / initial_entry.average)
                     max_loss = ((initial_entry.average - trade.min_rate) / trade.min_rate)
 
-        # Long mode, bull
+        # Normal mode, bull
         if all(c in self.normal_mode_bull_tags for c in enter_tags):
-            sell, signal_name = self.exit_normal_bull(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tag)
+            sell, signal_name = self.exit_normal_bull(profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tag)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {enter_tag})"
 
-        # Long mode, bear
+        # Normal mode, bear
         if all(c in self.normal_mode_bear_tags for c in enter_tags):
-            sell, signal_name = self.sell_long_bear(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tag)
+            sell, signal_name = self.sell_normal_bear(profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tag)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {enter_tag})"
 
