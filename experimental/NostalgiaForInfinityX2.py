@@ -99,6 +99,9 @@ class NostalgiaForInfinityX2(IStrategy):
     # Number of candles the strategy requires before producing valid signals
     startup_candle_count: int = 480
 
+    # Normal mode bull tags
+    normal_mode_bull_tags = ['force_entry', '1']
+
     #############################################################
     # Buy side configuration
 
@@ -409,7 +412,7 @@ class NostalgiaForInfinityX2(IStrategy):
                 return f"{signal_name} ( {enter_tag})"
 
         # Long mode, bear
-        if all(c in ['11'] for c in enter_tags):
+        if all(c in self.normal_mode_bull_tags for c in enter_tags):
             sell, signal_name = self.sell_long_bear(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tag)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {enter_tag})"
