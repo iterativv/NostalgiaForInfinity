@@ -2721,11 +2721,8 @@ class NostalgiaForInfinityX(IStrategy):
                         (
                             ((count_of_exits - count_of_entries) >= 0)
                             and (slice_profit > self.pb_pcts_n_0[-1])
-                            and (last_candle['close_max_48'] < (last_candle['close'] * 1.01))
-                            and (last_candle['btc_pct_close_max_72_5m'] < 1.01)
-                            and (last_candle['crsi'] > 20.0)
-                            and (last_candle['crsi_1h'] > 20.0)
-                            and (last_candle['rsi_14'] < 40.0)
+                            and (last_candle['close_max_48'] < (last_candle['close'] * 1.04))
+                            and (last_candle['btc_pct_close_max_72_5m'] < 1.03)
                         )
                 ):
                     return slice_amount
@@ -2806,11 +2803,8 @@ class NostalgiaForInfinityX(IStrategy):
                         (
                             ((count_of_exits - count_of_entries) >= 0)
                             and (slice_profit > self.pb_pcts_n_1[-1])
-                            and (last_candle['close_max_48'] < (last_candle['close'] * 1.01))
-                            and (last_candle['btc_pct_close_max_72_5m'] < 1.01)
-                            and (last_candle['crsi'] > 20.0)
-                            and (last_candle['crsi_1h'] > 20.0)
-                            and (last_candle['rsi_14'] < 40.0)
+                            and (last_candle['close_max_48'] < (last_candle['close'] * 1.04))
+                            and (last_candle['btc_pct_close_max_72_5m'] < 1.03)
                         )
                 ):
                     return slice_amount
