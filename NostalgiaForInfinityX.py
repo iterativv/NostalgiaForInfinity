@@ -3126,8 +3126,9 @@ class NostalgiaForInfinityX(IStrategy):
                 and (last_candle['btc_tpct_change_144_5m'] > 0.12)
                 and (last_candle['hl_pct_change_48_1h'] > 0.5)
                 and (last_candle['tpct_change_144'] > 0.25)
-                # temporary
-                and (trade.open_date_utc.replace(tzinfo=None) > datetime(2022, 5, 12) or is_backtest)
+                # only for live, old trades
+                and (trade.open_date_utc.replace(tzinfo=None) > datetime(2022, 5, 12))
+                and (trade.open_date_utc.replace(tzinfo=None) < datetime(2022, 10, 16))
         ):
             return True, 'sell_stoploss_doom_1'
 
@@ -3162,7 +3163,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_stoploss_stop_2'
 
             if (
-                    (current_profit < [-0.35, -0.35, -0.35][stop_index])
+                    (current_profit < [-0.5, -0.5, -0.5][stop_index])
                     # temporary
                     and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2022, 10, 16) or is_backtest)
             ):
@@ -3189,7 +3190,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_stoploss_stop_2'
 
             if (
-                    (current_profit < [-0.35, -0.35, -0.35][stop_index])
+                    (current_profit < [-0.5, -0.5, -0.5][stop_index])
                     # temporary
                     and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2022, 10, 16) or is_backtest)
             ):
