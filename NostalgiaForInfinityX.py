@@ -206,10 +206,10 @@ class NostalgiaForInfinityX(IStrategy):
     use_partial_exits = True
     pe_num_parts_0 = 4
     pe_num_parts_1 = 2
-    pe_pcts_n_0 = (-0.06, -0.02, -0.02, -0.05)
-    pe_pcts_n_1 = (-0.06, -0.05)
-    pb_pcts_n_0 = (-0.02, -0.02)
-    pb_pcts_n_1 = (-0.04, -0.05)
+    pe_pcts_n_0 = (-0.06, -0.02, -0.02, -0.06)
+    pe_pcts_n_1 = (-0.06, -0.06)
+    pb_pcts_n_0 = (-0.02, 0.02)
+    pb_pcts_n_1 = (-0.04, 0.05)
 
     # Profit maximizer
     profit_max_enabled = True
@@ -2696,9 +2696,14 @@ class NostalgiaForInfinityX(IStrategy):
                             and (count_of_exits < (self.pe_num_parts_0 - 1))
                             and (slice_profit < self.pe_pcts_n_0[count_of_exits])
                         )
+                        or
+                        (
+                            (slice_profit < self.pe_pcts_n_0[-1])
+                            and ((count_of_exits - count_of_entries) < (self.pe_num_parts_0 - 2))
+                        )
                 ):
                     if (count_of_exits == 0):
-                        return -(slice_amount * (self.pe_num_parts_0 - 1))
+                        return -(slice_amount)
                     else:
                         return -(slice_amount)
 
@@ -2707,13 +2712,61 @@ class NostalgiaForInfinityX(IStrategy):
                 if (
                         (
                             (count_of_exits > 0)
-                            and ((count_of_exits - count_of_entries) > (1 - self.pe_num_parts_0))
+                            and ((count_of_exits - count_of_entries) > (0))
                             and (slice_profit < self.pb_pcts_n_0[0])
-                            and (last_candle['close_max_48'] < (last_candle['close'] * 1.04))
+                            and (last_candle['close_max_48'] < (last_candle['close'] * 1.06))
                             and (last_candle['btc_pct_close_max_72_5m'] < 1.03)
+                        )
+                        or
+                        (
+                            ((count_of_exits - count_of_entries) >= 0)
+                            and (slice_profit > self.pb_pcts_n_0[-1])
+                            and (last_candle['close_max_48'] < (last_candle['close'] * 1.01))
+                            and (last_candle['btc_pct_close_max_72_5m'] < 1.01)
+                            and (last_candle['crsi'] > 20.0)
+                            and (last_candle['crsi_1h'] > 20.0)
+                            and (last_candle['rsi_14'] < 40.0)
                         )
                 ):
                     return slice_amount
+
+                # profit sell
+
+                if (
+                        (slice_profit_entry > 0.02)
+                        and (total_profit < -0.06)
+                        and (count_of_entries > 1)
+                        and (count_of_entries > (count_of_exits - 2))
+                ):
+                    previous_candle_1 = dataframe.iloc[-2].squeeze()
+                    previous_candle_2 = dataframe.iloc[-3].squeeze()
+                    previous_candle_3 = dataframe.iloc[-4].squeeze()
+                    previous_candle_4 = dataframe.iloc[-5].squeeze()
+                    previous_candle_5 = dataframe.iloc[-6].squeeze()
+                    max_profit = ((trade.max_rate - trade.open_rate) / trade.open_rate)
+                    max_loss = ((trade.open_rate - trade.min_rate) / trade.min_rate)
+
+                    sell = False
+                    signal_name = None
+
+                    # Original sell signals
+                    if not sell:
+                        sell, signal_name = self.sell_signals(slice_profit_entry, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tag)
+
+                    # Over EMA200, main profit targets
+                    if not sell:
+                        sell, signal_name = self.sell_over_main(slice_profit_entry, last_candle)
+
+                    # Under EMA200, main profit targets
+                    if not sell:
+                        sell, signal_name = self.sell_under_main(slice_profit_entry, last_candle)
+
+                    # Williams %R based sells
+                    if not sell:
+                        sell, signal_name = self.sell_r(slice_profit_entry, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
+
+                    if sell and (signal_name is not None):
+                        return -(slice_amount)
 
             elif (use_mode == 1):
                 slice_amount = filled_entries[0].cost / self.pe_num_parts_1
@@ -2728,9 +2781,14 @@ class NostalgiaForInfinityX(IStrategy):
                             and (count_of_exits < (self.pe_num_parts_1 - 1))
                             and (slice_profit < self.pe_pcts_n_1[count_of_exits])
                         )
+                        or
+                        (
+                            (slice_profit < self.pe_pcts_n_1[-1])
+                            and ((count_of_exits - count_of_entries) < (self.pe_num_parts_1 - 2))
+                        )
                 ):
                     if (count_of_exits == 0):
-                        return -(slice_amount * (self.pe_num_parts_1 - 1))
+                        return -(slice_amount)
                     else:
                         return -(slice_amount)
 
@@ -2739,13 +2797,61 @@ class NostalgiaForInfinityX(IStrategy):
                 if (
                         (
                             (count_of_exits > 0)
-                            and ((count_of_exits - count_of_entries) > (1 - self.pe_num_parts_1))
+                            and ((count_of_exits - count_of_entries) > 0)
                             and (slice_profit < self.pb_pcts_n_1[0])
-                            and (last_candle['close_max_48'] < (last_candle['close'] * 1.04))
+                            and (last_candle['close_max_48'] < (last_candle['close'] * 1.06))
                             and (last_candle['btc_pct_close_max_72_5m'] < 1.03)
+                        )
+                        or
+                        (
+                            ((count_of_exits - count_of_entries) >= 0)
+                            and (slice_profit > self.pb_pcts_n_1[-1])
+                            and (last_candle['close_max_48'] < (last_candle['close'] * 1.01))
+                            and (last_candle['btc_pct_close_max_72_5m'] < 1.01)
+                            and (last_candle['crsi'] > 20.0)
+                            and (last_candle['crsi_1h'] > 20.0)
+                            and (last_candle['rsi_14'] < 40.0)
                         )
                 ):
                     return slice_amount
+
+                # profit sell
+
+                if (
+                        (slice_profit_entry > 0.02)
+                        and (total_profit < -0.06)
+                        and (count_of_entries > 1)
+                        and (count_of_entries > (count_of_exits - 2))
+                ):
+                    previous_candle_1 = dataframe.iloc[-2].squeeze()
+                    previous_candle_2 = dataframe.iloc[-3].squeeze()
+                    previous_candle_3 = dataframe.iloc[-4].squeeze()
+                    previous_candle_4 = dataframe.iloc[-5].squeeze()
+                    previous_candle_5 = dataframe.iloc[-6].squeeze()
+                    max_profit = ((trade.max_rate - trade.open_rate) / trade.open_rate)
+                    max_loss = ((trade.open_rate - trade.min_rate) / trade.min_rate)
+
+                    sell = False
+                    signal_name = None
+
+                    # Original sell signals
+                    if not sell:
+                        sell, signal_name = self.sell_signals(slice_profit_entry, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tag)
+
+                    # Over EMA200, main profit targets
+                    if not sell:
+                        sell, signal_name = self.sell_over_main(slice_profit_entry, last_candle)
+
+                    # Under EMA200, main profit targets
+                    if not sell:
+                        sell, signal_name = self.sell_under_main(slice_profit_entry, last_candle)
+
+                    # Williams %R based sells
+                    if not sell:
+                        sell, signal_name = self.sell_r(slice_profit_entry, max_profit, max_loss, last_candle, previous_candle_1, trade, current_time)
+
+                    if sell and (signal_name is not None):
+                        return -(slice_amount)
 
         # Rebuys
 
