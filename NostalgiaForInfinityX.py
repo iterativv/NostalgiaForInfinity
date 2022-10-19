@@ -117,7 +117,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.527"
+        return "v11.2.528"
 
 
     # ROI table:
@@ -18655,7 +18655,11 @@ class NostalgiaForInfinityX(IStrategy):
                             & (dataframe['tpct_change_144'] < 0.26)
                         )
                         | (dataframe['r_480'] > -50.0)
-                        | (dataframe['crsi'] > 30.0)
+                        |
+                        (
+                            (dataframe['crsi'] > 30.0)
+                            & (dataframe['hl_pct_change_36'] < 0.3)
+                        )
                         | (dataframe['cti_1h'] < -0.9)
                         | (dataframe['rsi_14_1h'] < 30.0)
                         |
@@ -18671,9 +18675,17 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < dataframe['sma_30'] * 0.86)
                         | (dataframe['close'] < dataframe['ema_20'] * 0.91)
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.98)
-                        | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.044))
+                        |
+                        (
+                            ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.044))
+                            & (dataframe['hl_pct_change_36'] < 0.3)
+                        )
                         | (dataframe['close_15m'] < (dataframe['bb20_2_low_15m'] * 0.96))
-                        | ((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.03))
+                        |
+                        (
+                            ((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.03))
+                            & (dataframe['hl_pct_change_36'] < 0.3)
+                        )
                     )
 
                 # Condition #67 - Rapid mode.
