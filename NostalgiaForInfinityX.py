@@ -117,7 +117,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.568"
+        return "v11.2.569"
 
 
     # ROI table:
@@ -10828,7 +10828,7 @@ class NostalgiaForInfinityX(IStrategy):
                         (dataframe['rsi_14'] < 20.0)
                         | (dataframe['crsi'] > 25.0)
                         | (dataframe['cti_1h'] < 0.0)
-                        | (dataframe['rsi_14_1h'] < 50.0)
+                        | (dataframe['rsi_14_1h'] < 40.0)
                         | (dataframe['r_14_1h'] < -90.0)
                         | (dataframe['tpct_change_144'] < 0.12)
                         | (dataframe['close_max_48'] < (dataframe['close'] * 1.1))
@@ -10839,7 +10839,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] > (dataframe['sup_level_1h'] * 0.95))
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.99)
                         | (dataframe['close'] < dataframe['ema_20'] * 0.926)
-                        | (dataframe['close_15m'] < (dataframe['bb20_2_low_15m'] * 0.98))
+                        | (dataframe['close_15m'] < (dataframe['bb20_2_low_15m'] * 0.975))
                         | ((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.02))
                         | ((dataframe['bb40_2_delta'].gt(dataframe['close'] * 0.065)) & (dataframe['closedelta'].gt(dataframe['close'] * 0.026)) & (dataframe['tail'].lt(dataframe['bb40_2_delta'] * 0.15)))
                     )
