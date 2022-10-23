@@ -117,7 +117,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.580"
+        return "v11.2.581"
 
 
     # ROI table:
@@ -170,7 +170,8 @@ class NostalgiaForInfinityX(IStrategy):
     coin_metrics['current_whitelist'] = []
 
     # Rebuy feature
-    position_adjustment_enable = False
+    position_adjustment_enable = True
+    nfi_automatic_rebuys_enable = False
     rebuy_mode = 0
     max_rebuy_orders_0 = 4
     max_rebuy_orders_1 = 2
@@ -2379,6 +2380,8 @@ class NostalgiaForInfinityX(IStrategy):
 
     def __init__(self, config: dict) -> None:
         super().__init__(config)
+        if ('nfi_automatic_rebuys_enable' in self.config):
+            nfi_automatic_rebuys_enable = self.config['nfi_automatic_rebuys_enable']
         if self.target_profit_cache is None:
             bot_name = ""
             if ('bot_name' in self.config):
@@ -2577,7 +2580,7 @@ class NostalgiaForInfinityX(IStrategy):
     def custom_stake_amount(self, pair: str, current_time: datetime, current_rate: float,
                             proposed_stake: float, min_stake: Optional[float], max_stake: float,
                             entry_tag: Optional[str], side: str, **kwargs) -> float:
-        if (self.position_adjustment_enable == True):
+        if self.position_adjustment_enable and self.nfi_automatic_rebuys_enable:
             use_mode = self.rebuy_mode
             if ('rebuy_mode' in self.config):
                 use_mode = self.config['rebuy_mode']
@@ -2614,7 +2617,7 @@ class NostalgiaForInfinityX(IStrategy):
         if (trade.open_date_utc.replace(tzinfo=None) < datetime(2022, 4, 6) and not is_backtest):
             return None
 
-        if (self.position_adjustment_enable == False) or (current_profit > -0.02):
+        if (self.position_adjustment_enable == False) or (self.nfi_automatic_rebuys_enable == False) or (current_profit > -0.02):
             return None
 
         enter_tag = 'empty'
