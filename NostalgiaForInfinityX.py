@@ -9687,7 +9687,7 @@ class NostalgiaForInfinityX(IStrategy):
                     return f"{signal_name} ( {enter_tag})"
         else:
             if (
-                    (current_profit >= 0.04)
+                    (current_profit >= 0.03)
             ):
                 previous_profit = None
                 if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
