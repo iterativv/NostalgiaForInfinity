@@ -13,7 +13,7 @@ from pandas import DataFrame, Series, concat
 from functools import reduce
 import math
 from typing import Dict, Optional
-from freqtrade.persistence import Trade
+from freqtrade.persistence import Trade, LocalTrade
 from datetime import datetime, timedelta
 from technical.util import resample_to_interval, resampled_merge
 from technical.indicators import RMI, zema, VIDYA, ichimoku
@@ -117,7 +117,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.627"
+        return "v11.2.628"
 
 
     # ROI table:
@@ -10273,7 +10273,7 @@ class NostalgiaForInfinityX(IStrategy):
         dataframe.loc[:, 'enter_tag'] = ''
 
         # the number of free slots
-        current_free_slots = self.config["max_open_trades"] - len(Trade.get_trades_proxy(is_open=True))
+        current_free_slots = self.config["max_open_trades"] - len(LocalTrade.get_trades_proxy(is_open=True))
 
         for index in self.buy_protection_params:
             item_buy_protection_list = [True]
