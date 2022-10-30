@@ -192,7 +192,7 @@ class NostalgiaForInfinityX(IStrategy):
     rebuy_pcts_n_2 = (-0.03, -0.04, -0.06, -0.09)
     rebuy_pcts_n_2_alt = (-0.03, -0.08)
     rebuy_pcts_p_2 = (0.02, 0.025, 0.025, 0.03, 0.07, 0.075, 0.08, 0.085, 0.09, 0.095)
-    rebuy_pcts_n_3 = (-0.08, -0.12)
+    rebuy_pcts_n_3 = (-0.06, -0.12)
     rebuy_pcts_n_4 = (-0.02, -0.06, -0.1)
     rebuy_pcts_n_5 = (-0.05, -0.08)
     rebuy_multi_0 = 0.15
