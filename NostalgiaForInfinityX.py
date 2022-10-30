@@ -171,20 +171,20 @@ class NostalgiaForInfinityX(IStrategy):
 
     # Rebuy feature
     position_adjustment_enable = True
-    nfi_automatic_rebuys_enable = False
-    rebuy_mode = 0
+    nfi_automatic_rebuys_enable = True
+    rebuy_mode = 3
     max_rebuy_orders_0 = 4
     max_rebuy_orders_1 = 2
     max_rebuy_orders_2 = 4
     max_rebuy_orders_2_alt = 2
-    max_rebuy_orders_3 = 8
+    max_rebuy_orders_3 = 2
     max_rebuy_orders_4 = 3
     max_rebuy_orders_5 = 2
     max_rebuy_multiplier_lev = 0.5 # for leveraged tokens
     max_rebuy_multiplier_0 = 1.0
     max_rebuy_multiplier_1 = 1.0
     max_rebuy_multiplier_2 = 0.8
-    max_rebuy_multiplier_3 = 0.05
+    max_rebuy_multiplier_3 = 0.5
     max_rebuy_multiplier_4 = 0.1
     max_rebuy_multiplier_5 = 0.35
     rebuy_pcts_n_0 = (-0.04, -0.06, -0.09, -0.12)
@@ -192,7 +192,7 @@ class NostalgiaForInfinityX(IStrategy):
     rebuy_pcts_n_2 = (-0.03, -0.04, -0.06, -0.09)
     rebuy_pcts_n_2_alt = (-0.03, -0.08)
     rebuy_pcts_p_2 = (0.02, 0.025, 0.025, 0.03, 0.07, 0.075, 0.08, 0.085, 0.09, 0.095)
-    rebuy_pcts_n_3 = (-0.02, -0.04, -0.06, -0.08, -0.1, -0.12, -0.14, -0.16)
+    rebuy_pcts_n_3 = (-0.08, -0.12)
     rebuy_pcts_n_4 = (-0.02, -0.06, -0.1)
     rebuy_pcts_n_5 = (-0.05, -0.08)
     rebuy_multi_0 = 0.15
@@ -2586,11 +2586,6 @@ class NostalgiaForInfinityX(IStrategy):
                 use_mode = self.config['rebuy_mode']
             if ('use_alt_rebuys' in self.config and self.config['use_alt_rebuys']):
                 use_mode = 1
-            enter_tags = entry_tag.split()
-            if all(c in self.rapid_mode_tags for c in enter_tags):
-                use_mode = 2
-            if all(c in self.half_mode_tags for c in enter_tags):
-                use_mode = 5
             if (use_mode == 0):
                 return proposed_stake * self.max_rebuy_multiplier_0
             elif (use_mode == 1):
@@ -2614,7 +2609,7 @@ class NostalgiaForInfinityX(IStrategy):
             return None
 
         is_backtest = self.dp.runmode.value == 'backtest'
-        if (trade.open_date_utc.replace(tzinfo=None) < datetime(2022, 4, 6) and not is_backtest):
+        if (trade.open_date_utc.replace(tzinfo=None) < datetime(2022, 11, 1) and not is_backtest):
             return None
 
         if (self.position_adjustment_enable == False) or (self.nfi_automatic_rebuys_enable == False) or (current_profit > -0.02):
@@ -2664,11 +2659,6 @@ class NostalgiaForInfinityX(IStrategy):
 
         if use_alt:
             use_mode = 1
-
-        if all(c in self.rapid_mode_tags for c in enter_tags):
-            use_mode = 2
-        if all(c in self.half_mode_tags for c in enter_tags):
-            use_mode = 5
 
         is_rebuy = False
 
@@ -2730,12 +2720,21 @@ class NostalgiaForInfinityX(IStrategy):
                     ):
                         is_rebuy = True
         elif (use_mode == 3):
-            if (1 <= count_of_entries <= 4):
+            if (1 <= count_of_entries <= self.max_rebuy_orders_3):
                 if (
                         (current_profit < self.rebuy_pcts_n_3[count_of_entries - 1])
                         and (
-                            (last_candle['crsi'] > 10.0)
+                            (last_candle['crsi'] > 12.0)
+                            and (last_candle['crsi_1h'] > 20.0)
+                            and (last_candle['close_max_48'] < (last_candle['close'] * 1.06))
+                            and (last_candle['btc_pct_close_max_72_5m'] < 1.03)
                         )
+                ):
+                    is_rebuy = True
+                elif (
+                        (current_profit > 0.04)
+                        #and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_date)
+
                 ):
                     is_rebuy = True
             elif (5 <= count_of_entries <= self.max_rebuy_orders_3):
