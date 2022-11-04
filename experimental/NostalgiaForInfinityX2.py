@@ -44,7 +44,7 @@ log = logging.getLogger(__name__)
 ##               REFERRAL LINKS                                                                            ##
 ##                                                                                                         ##
 ##  Binance: https://accounts.binance.com/en/register?ref=EAZC47FM (5% discount on trading fees)           ##
-##  Kucoin: https://www.kucoin.com/r/af/QBSSSPYV (5% discount on trading fees)                             ##
+##  Kucoin: https://www.kucoin.com/r/af/QBSSS5J2 (20% lifetime discount on trading fees)                   ##
 ##  Gate.io: https://www.gate.io/signup/8054544 (10% discount on trading fees)                             ##
 ##  FTX: https://ftx.com/eu/profile#a=100178030 (5% discount on trading fees)                              ##
 ##  OKX: https://www.okx.com/join/11749725760 (5% discount on trading fees)                                ##
