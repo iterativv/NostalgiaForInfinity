@@ -184,7 +184,7 @@ class NostalgiaForInfinityX(IStrategy):
     max_rebuy_multiplier_0 = 1.0
     max_rebuy_multiplier_1 = 1.0
     max_rebuy_multiplier_2 = 0.8
-    max_rebuy_multiplier_3 = 0.5
+    max_rebuy_multiplier_3 = 0.75
     max_rebuy_multiplier_4 = 0.1
     max_rebuy_multiplier_5 = 0.35
     rebuy_pcts_n_0 = (-0.04, -0.06, -0.09, -0.12)
