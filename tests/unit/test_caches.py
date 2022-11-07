@@ -5,7 +5,7 @@ from unittest.mock import patch
 
 import pytest
 
-from NostalgiaForInfinityNext import Cache
+from legacy.NostalgiaForInfinityNext import Cache
 
 
 def test_no_file_cache_load(tmp_path):

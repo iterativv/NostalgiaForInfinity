@@ -14,44 +14,44 @@ from typing import Optional
 log = logging.getLogger(__name__)
 #log.setLevel(logging.DEBUG)
 
-###########################################################################################################
-##                NostalgiaForInfinityX2 by iterativ                                                     ##
-##           https://github.com/iterativv/NostalgiaForInfinity                                           ##
-##                                                                                                       ##
-##    Strategy for Freqtrade https://github.com/freqtrade/freqtrade                                      ##
-##                                                                                                       ##
-###########################################################################################################
-##               GENERAL RECOMMENDATIONS                                                                 ##
-##                                                                                                       ##
-##   For optimal performance, suggested to use between 4 and 6 open trades, with unlimited stake.        ##
-##   A pairlist with 40 to 80 pairs. Volume pairlist works well.                                         ##
-##   Prefer stable coin (USDT, BUSDT etc) pairs, instead of BTC or ETH pairs.                            ##
-##   Highly recommended to blacklist leveraged tokens (*BULL, *BEAR, *UP, *DOWN etc).                    ##
-##   Ensure that you don't override any variables in you config.json. Especially                         ##
-##   the timeframe (must be 5m).                                                                         ##
-##     use_exit_signal must set to true (or not set at all).                                             ##
-##     exit_profit_only must set to false (or not set at all).                                           ##
+#############################################################################################################
+##                NostalgiaForInfinityX2 by iterativ                                                       ##
+##           https://github.com/iterativv/NostalgiaForInfinity                                             ##
+##                                                                                                         ##
+##    Strategy for Freqtrade https://github.com/freqtrade/freqtrade                                        ##
+##                                                                                                         ##
+#############################################################################################################
+##               GENERAL RECOMMENDATIONS                                                                   ##
+##                                                                                                         ##
+##   For optimal performance, suggested to use between 4 and 6 open trades, with unlimited stake.          ##
+##   A pairlist with 40 to 80 pairs. Volume pairlist works well.                                           ##
+##   Prefer stable coin (USDT, BUSDT etc) pairs, instead of BTC or ETH pairs.                              ##
+##   Highly recommended to blacklist leveraged tokens (*BULL, *BEAR, *UP, *DOWN etc).                      ##
+##   Ensure that you don't override any variables in you config.json. Especially                           ##
+##   the timeframe (must be 5m).                                                                           ##
+##     use_exit_signal must set to true (or not set at all).                                               ##
+##     exit_profit_only must set to false (or not set at all).                                             ##
 ##     ignore_roi_if_entry_signal must set to true (or not set at all).                                    ##
-##                                                                                                       ##
-###########################################################################################################
-##               DONATIONS                                                                               ##
-##                                                                                                       ##
-##   BTC: bc1qvflsvddkmxh7eqhc4jyu5z5k6xcw3ay8jl49sk                                                     ##
-##   ETH (ERC20): 0x83D3cFb8001BDC5d2211cBeBB8cB3461E5f7Ec91                                             ##
-##   BEP20/BSC (USDT, ETH, BNB, ...): 0x86A0B21a20b39d16424B7c8003E4A7e12d78ABEe                         ##
-##   TRC20/TRON (USDT, TRON, ...): TTAa9MX6zMLXNgWMhg7tkNormVHWCoq8Xk                                    ##
-##                                                                                                       ##
-##               REFERRAL LINKS                                                                          ##
-##                                                                                                       ##
-##   Binance: https://accounts.binance.com/en/register?ref=EAZC47FM (5% discount on trading fees)        ##
-##   Kucoin: https://www.kucoin.com/r/af/QBSSSPYV (5% discount on trading fees)                          ##
-##   Gate.io: https://www.gate.io/signup/8054544 (10% discount on trading fees)                          ##
-##   FTX: https://ftx.com/eu/profile#a=100178030 (5% discount on trading fees)                           ##
-##   OKX: https://www.okx.com/join/11749725760 (5% discount on trading fees)                             ##
-##   ByBit: https://partner.bybit.com/b/nfi                                                              ##
-##   Huobi: https://www.huobi.com/en-us/topic/double-reward/?invite_code=ubpt2223                        ##
-##   Bitvavo: https://account.bitvavo.com/create?a=D22103A4BC (no fees for the first € 1000)             ##
-###########################################################################################################
+##                                                                                                         ##
+#############################################################################################################
+##               DONATIONS                                                                                 ##
+##                                                                                                         ##
+##   BTC: bc1qvflsvddkmxh7eqhc4jyu5z5k6xcw3ay8jl49sk                                                       ##
+##   ETH (ERC20): 0x83D3cFb8001BDC5d2211cBeBB8cB3461E5f7Ec91                                               ##
+##   BEP20/BSC (USDT, ETH, BNB, ...): 0x86A0B21a20b39d16424B7c8003E4A7e12d78ABEe                           ##
+##   TRC20/TRON (USDT, TRON, ...): TTAa9MX6zMLXNgWMhg7tkNormVHWCoq8Xk                                      ##
+##                                                                                                         ##
+##               REFERRAL LINKS                                                                            ##
+##                                                                                                         ##
+##  Binance: https://accounts.binance.com/en/register?ref=EAZC47FM (5% discount on trading fees)           ##
+##  Kucoin: https://www.kucoin.com/r/af/QBSSS5J2 (20% lifetime discount on trading fees)                   ##
+##  Gate.io: https://www.gate.io/signup/8054544 (10% discount on trading fees)                             ##
+##  FTX: https://ftx.com/eu/profile#a=100178030 (5% discount on trading fees)                              ##
+##  OKX: https://www.okx.com/join/11749725760 (5% discount on trading fees)                                ##
+##  ByBit: https://partner.bybit.com/b/nfi                                                                 ##
+##  Huobi: https://www.huobi.com/en-us/v/register/double-invite/?inviter_id=11345710&invite_code=ubpt2223  ##
+##  Bitvavo: https://account.bitvavo.com/create?a=D22103A4BC (no fees for the first € 1000)                ##
+#############################################################################################################
 
 class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 2
