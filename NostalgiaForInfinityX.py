@@ -117,7 +117,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.700"
+        return "v11.2.701"
 
 
     # ROI table:
@@ -2933,24 +2933,6 @@ class NostalgiaForInfinityX(IStrategy):
         is_leverage = bool(re.match(leverage_pattern,trade.pair))
         stop_index = 0 if is_rebuy and not is_leverage else 1 if not is_rebuy and not is_leverage else 2
         is_btc_stake = self.config['stake_currency'] in ['BTC','ETH']
-
-        # For times with strongly negative sentiment
-        if (
-                (current_profit < [-0.12, -0.12, -0.16][stop_index])
-                and (last_candle['close'] < last_candle['ema_200'])
-                and (last_candle['close'] < (last_candle['ema_200'] - last_candle['atr']))
-                and (last_candle['sma_200_dec_20'])
-                and (last_candle['sma_200_dec_20'])
-                and (last_candle['sma_200_dec_20_1h'])
-                and (last_candle['cmf'] < -0.0)
-                and (last_candle['btc_not_downtrend_1h'] == False)
-                and (last_candle['btc_tpct_change_144_5m'] > 0.12)
-                and (last_candle['hl_pct_change_48_1h'] > 0.5)
-                and (last_candle['tpct_change_144'] > 0.25)
-                # temporary
-                and (trade.open_date_utc.replace(tzinfo=None) > datetime(2022, 5, 12) or is_backtest)
-        ):
-            return True, 'sell_stoploss_doom_1'
 
         # Absolute limit, just in case...
         if (
