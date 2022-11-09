@@ -117,7 +117,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.744"
+        return "v11.2.745"
 
 
     # ROI table:
@@ -14799,9 +14799,16 @@ class NostalgiaForInfinityX(IStrategy):
                         | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.034))
                     )
                     item_buy_logic.append(
-                        (dataframe['cmf'] > 0.0)
+                        (
+                            (dataframe['cmf'] > 0.0)
+                            & (dataframe['hl_pct_change_48_1h'] < 0.9)
+                        )
                         | (dataframe['rsi_14'] < 30.0)
-                        | (dataframe['cti'] < -0.9)
+                        |
+                        (
+                            (dataframe['cti'] < -0.9)
+                            & (dataframe['hl_pct_change_48_1h'] < 0.9)
+                        )
                         | (dataframe['ewo'].shift(1) < -6.0)
                         | (dataframe['cti_1h'] < -0.95)
                         | (dataframe['rsi_14_1h'] < 20.0)
@@ -14825,7 +14832,11 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close_15m'] < (dataframe['bb20_2_low_15m'] * 0.999))
                         | ((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.03))
                         | (dataframe['rsi_14_15m'] < 20.0)
-                        | (dataframe['cti_15m'] < -0.95)
+                        |
+                        (
+                            (dataframe['cti_15m'] < -0.95)
+                            & (dataframe['hl_pct_change_48_1h'] < 0.9)
+                        )
                     )
 
                 # Condition #24 - Semi swing. Uptrend. 1h uptrend. Local dip.
