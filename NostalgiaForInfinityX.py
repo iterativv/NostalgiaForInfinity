@@ -9433,10 +9433,18 @@ class NostalgiaForInfinityX(IStrategy):
                 if (current_profit < (previous_profit - 0.005)):
                     return True, previous_sell_reason
             elif (previous_sell_reason in ["sell_stoploss_stop_2"]):
-                if (current_profit > -0.18):
-                    # profit is over the threshold, don't exit
-                    self._remove_profit_target(pair)
-                    return False, None
+                if (current_profit < -0.18):
+                    if (current_profit < (previous_profit - 0.06)):
+                        return True, previous_sell_reason
+                elif (current_profit < -0.1):
+                    if (current_profit < (previous_profit - 0.05)):
+                        return True, previous_sell_reason
+                elif (current_profit < -0.04):
+                    if (current_profit < (previous_profit - 0.04)):
+                        return True, previous_sell_reason
+                else:
+                    if (current_profit < (previous_profit - 0.03)):
+                        return True, previous_sell_reason
                 elif (current_profit < (previous_profit - 0.005)):
                     return True, previous_sell_reason
             elif (previous_sell_reason in ["sell_stoploss_doom_1", "sell_stoploss_stop_1", "sell_stoploss_rpd_stop_1", "sell_stoploss_hlf_stop_1"]):
