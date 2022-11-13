@@ -116,7 +116,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.791"
+        return "v11.2.792"
 
 
     # ROI table:
@@ -9665,7 +9665,7 @@ class NostalgiaForInfinityX(IStrategy):
             sell_max, signal_name_max = self.sell_profit_target(pair, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1, previous_rate, previous_profit, previous_sell_reason, previous_time_profit_reached, enter_tags)
             if sell_max and signal_name_max is not None:
                 return f"{signal_name_max}_m ( {enter_tag})"
-            if (current_profit > (previous_profit + 0.025)):
+            if (current_profit > (previous_profit + 0.03)):
                 # Update the target, raise it.
                 mark_pair, mark_signal = self.mark_profit_target(pair, True, previous_sell_reason, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
                 if mark_pair:
