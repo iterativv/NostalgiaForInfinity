@@ -9655,7 +9655,6 @@ class NostalgiaForInfinityX(IStrategy):
             if (
                     (previous_profit is None)
                     or (previous_profit < current_profit)
-                    or (signal_name in ["sell_profit_maximizer_01", "sell_stoploss_u_e_1", "sell_stoploss_doom_1", "sell_stoploss_stop_1", "sell_stoploss_rpd_stop_1", "sell_stoploss_hlf_stop_1"])
             ):
                 mark_pair, mark_signal = self.mark_profit_target(pair, sell, signal_name, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
                 if mark_pair:
