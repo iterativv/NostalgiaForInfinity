@@ -116,7 +116,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.789"
+        return "v11.2.790"
 
 
     # ROI table:
@@ -208,7 +208,7 @@ class NostalgiaForInfinityX(IStrategy):
     stop_thresholds_btc = [-0.18, -0.18, -0.18]
 
     # Additional vigorous dump checks
-    insanity_dump_checks = True
+    insanity_dump_checks = False
 
     # Profit maximizer
     profit_max_enabled = True
@@ -21428,7 +21428,7 @@ class NostalgiaForInfinityX(IStrategy):
                 )
                 # Extra dump check
                 if (self.insanity_dump_checks):
-                    item_buy_logic.append((dataframe['btc_pct_close_max_24_5m'] < 1.03))
+                    item_buy_logic.append((dataframe['btc_pct_close_max_24_5m'] < 1.025))
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
                 dataframe.loc[item_buy, 'enter_tag'] += f"{index} "
                 conditions.append(item_buy)
