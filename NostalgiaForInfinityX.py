@@ -116,7 +116,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.781"
+        return "v11.2.782"
 
 
     # ROI table:
@@ -9433,6 +9433,10 @@ class NostalgiaForInfinityX(IStrategy):
                 if (current_profit < (previous_profit - 0.005)):
                     return True, previous_sell_reason
             elif (previous_sell_reason in ["sell_stoploss_stop_2"]):
+                if (current_profit > 0.04):
+                    # profit is over the threshold, don't exit
+                    self._remove_profit_target(pair)
+                    return False, None
                 if (current_profit < -0.18):
                     if (current_profit < (previous_profit - 0.06)):
                         return True, previous_sell_reason
