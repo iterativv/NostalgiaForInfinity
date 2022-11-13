@@ -116,7 +116,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.782"
+        return "v11.2.783"
 
 
     # ROI table:
@@ -201,6 +201,11 @@ class NostalgiaForInfinityX(IStrategy):
     rebuy_multi_3 = 1.0
     rebuy_multi_4 = 1.0
     rebuy_multi_5 = 1.0
+
+    # Stop thresholds
+    # 1 entry, more than 1, leveraged
+    stop_thresholds_stable = [-0.18, -0.18, -0.18]
+    stop_thresholds_btc = [-0.18, -0.18, -0.18]
 
     # Profit maximizer
     profit_max_enabled = True
@@ -2381,6 +2386,10 @@ class NostalgiaForInfinityX(IStrategy):
         super().__init__(config)
         if ('nfi_automatic_rebuys_enable' in self.config):
             nfi_automatic_rebuys_enable = self.config['nfi_automatic_rebuys_enable']
+        if ('stop_thresholds_stable' in self.config):
+            self.stop_thresholds_stable = self.config['stop_thresholds_stable']
+        if ('stop_thresholds_btc' in self.config):
+            self.stop_thresholds_btc = self.config['stop_thresholds_btc']
         if self.target_profit_cache is None:
             bot_name = ""
             if ('bot_name' in self.config):
@@ -2952,7 +2961,7 @@ class NostalgiaForInfinityX(IStrategy):
                  return True, 'sell_stoploss_stop_2'
 
             if (
-                    (current_profit < [-0.18, -0.18, -0.18][stop_index])
+                    (current_profit < self.stop_thresholds_stable[stop_index])
                     # temporary
                     and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2022, 9, 21) or is_backtest)
             ):
@@ -2968,7 +2977,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_stoploss_stop_2'
 
             if (
-                (current_profit < [-0.18, -0.18, -0.18][stop_index])
+                (current_profit < self.stop_thresholds_btc[stop_index])
                 # temporary
                 and (trade.open_date_utc.replace(tzinfo=None) > datetime(2022, 9, 21) or is_backtest)
             ):
