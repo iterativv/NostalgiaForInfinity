@@ -9445,8 +9445,6 @@ class NostalgiaForInfinityX(IStrategy):
                 else:
                     if (current_profit < (previous_profit - 0.03)):
                         return True, previous_sell_reason
-                elif (current_profit < (previous_profit - 0.005)):
-                    return True, previous_sell_reason
             elif (previous_sell_reason in ["sell_stoploss_doom_1", "sell_stoploss_stop_1", "sell_stoploss_rpd_stop_1", "sell_stoploss_hlf_stop_1"]):
                 if (current_profit < (previous_profit - 0.005)):
                     return True, previous_sell_reason
