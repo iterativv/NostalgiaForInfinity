@@ -116,7 +116,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.787"
+        return "v11.2.788"
 
 
     # ROI table:
@@ -206,6 +206,9 @@ class NostalgiaForInfinityX(IStrategy):
     # 1 entry, more than 1, leveraged
     stop_thresholds_stable = [-0.18, -0.18, -0.18]
     stop_thresholds_btc = [-0.18, -0.18, -0.18]
+
+    # Additional vigorous dump checks
+    insanity_dump_checks = True
 
     # Profit maximizer
     profit_max_enabled = True
@@ -2390,6 +2393,8 @@ class NostalgiaForInfinityX(IStrategy):
             self.stop_thresholds_stable = self.config['stop_thresholds_stable']
         if ('stop_thresholds_btc' in self.config):
             self.stop_thresholds_btc = self.config['stop_thresholds_btc']
+        if ('insanity_dump_checks' in self.config):
+            self.insanity_dump_checks = self.config['insanity_dump_checks']
         if self.target_profit_cache is None:
             bot_name = ""
             if ('bot_name' in self.config):
@@ -21409,6 +21414,9 @@ class NostalgiaForInfinityX(IStrategy):
                     (dataframe['btc_pct_close_max_72_5m'] < 1.01)
                     | (not is_leverage_long)
                 )
+                # Extra dump check
+                if (self.insanity_dump_checks):
+                    item_buy_logic.append((dataframe['btc_pct_close_max_24_5m'] < 1.03))
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
                 dataframe.loc[item_buy, 'enter_tag'] += f"{index} "
                 conditions.append(item_buy)
