@@ -65,7 +65,6 @@ If you like to help, you can also use the following links to sign up to various 
 * Binance: https://accounts.binance.com/en/register?ref=EAZC47FM (5% discount on fees)
 * Kucoin: https://www.kucoin.com/r/af/QBSSS5J2 (20% lifetime discount on trading fees)
 * Gate.io: https://www.gate.io/signup/8054544 (10% discount on trading fees)
-* FTX: https://ftx.com/eu/profile#a=100178030 (5% discount on trading fees)
 * OKX: https://www.okx.com/join/11749725760 (5% discount on trading fees)
 * ByBit: https://partner.bybit.com/b/nfi
 * Huobi: https://www.huobi.com/en-us/v/register/double-invite/?inviter_id=11345710&invite_code=ubpt2223
