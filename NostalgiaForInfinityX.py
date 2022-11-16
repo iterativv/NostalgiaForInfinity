@@ -116,7 +116,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.830"
+        return "v11.2.831"
 
 
     # ROI table:
@@ -12245,8 +12245,16 @@ class NostalgiaForInfinityX(IStrategy):
                             (dataframe['cmf'] > 0.1)
                             & (dataframe['cti_1h'] < -0.0)
                         )
-                        | (dataframe['mfi'] > 25.0)
-                        | (dataframe['crsi'] > 10.0)
+                        |
+                        (
+                            (dataframe['mfi'] > 25.0)
+                            & (dataframe['hl_pct_change_36'] < 0.12)
+                        )
+                        |
+                        (
+                            (dataframe['crsi'] > 10.0)
+                            & (dataframe['hl_pct_change_36'] < 0.12)
+                        )
                         | (dataframe['cmf_1h'] > 0.2)
                         |
                         (
@@ -12266,6 +12274,7 @@ class NostalgiaForInfinityX(IStrategy):
                             (dataframe['btc_pct_close_max_72_5m'] < 1.03)
                             & (dataframe['btc_not_downtrend_1h'] == True)
                             & (dataframe['cti_1h'] < 0.8)
+                            & (dataframe['hl_pct_change_36'] < 0.12)
                         )
                         | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
                         |
@@ -12273,6 +12282,7 @@ class NostalgiaForInfinityX(IStrategy):
                             (dataframe['close'] < dataframe['ema_20'] * 0.95)
                             & (dataframe['btc_pct_close_max_72_5m'] < 1.06)
                             & (dataframe['crsi'] > 5.0)
+                            & (dataframe['hl_pct_change_36'] < 0.12)
                         )
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.98)
                         | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.02))
