@@ -116,7 +116,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.841"
+        return "v11.2.842"
 
 
     # ROI table:
@@ -204,8 +204,8 @@ class NostalgiaForInfinityX(IStrategy):
 
     # Stop thresholds
     # 1 entry, more than 1, leveraged
-    stop_thresholds_stable = [-0.18, -0.18, -0.18]
-    stop_thresholds_btc = [-0.18, -0.18, -0.18]
+    stop_thresholds_stable = [-0.19, -0.19, -0.19]
+    stop_thresholds_btc = [-0.19, -0.19, -0.19]
 
     # Additional vigorous dump checks
     insanity_dump_checks = False
