@@ -116,7 +116,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.849"
+        return "v11.2.850"
 
 
     # ROI table:
@@ -212,6 +212,9 @@ class NostalgiaForInfinityX(IStrategy):
 
     # Profit maximizer
     profit_max_enabled = True
+
+    # Maximizer threshold
+    profit_max_threshold = 0.04
 
     # Rapid more tags
     rapid_mode_tags = ['66', '67', '68', '69', '70', '71', '72']
@@ -2395,6 +2398,8 @@ class NostalgiaForInfinityX(IStrategy):
             self.stop_thresholds_btc = self.config['stop_thresholds_btc']
         if ('insanity_dump_checks' in self.config):
             self.insanity_dump_checks = self.config['insanity_dump_checks']
+        if ('profit_max_threshold' in self.config):
+            self.profit_max_threshold = self.config['profit_max_threshold']
         if self.target_profit_cache is None:
             bot_name = ""
             if ('bot_name' in self.config):
@@ -9688,7 +9693,7 @@ class NostalgiaForInfinityX(IStrategy):
                     return f"{signal_name} ( {enter_tag})"
         else:
             if (
-                    (current_profit >= 0.04)
+                    (current_profit >= self.profit_max_threshold)
             ):
                 previous_profit = None
                 if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
