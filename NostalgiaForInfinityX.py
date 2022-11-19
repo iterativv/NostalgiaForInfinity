@@ -116,7 +116,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.894"
+        return "v11.2.895"
 
 
     # ROI table:
@@ -214,7 +214,7 @@ class NostalgiaForInfinityX(IStrategy):
     profit_max_enabled = True
 
     # Maximizer threshold
-    profit_max_threshold = 0.04
+    profit_max_threshold = 0.02
 
     # Rapid more tags
     rapid_mode_tags = ['66', '67', '68', '69', '70', '71', '72']
