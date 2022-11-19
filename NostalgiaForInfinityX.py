@@ -116,7 +116,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.884"
+        return "v11.2.885"
 
 
     # ROI table:
@@ -17451,6 +17451,7 @@ class NostalgiaForInfinityX(IStrategy):
                             (dataframe['rsi_14'] < 30.0)
                             & (dataframe['ema_200_pct_change_288'] < 0.16)
                             & (dataframe['btc_pct_close_max_24_5m'] < 1.05)
+                            & (dataframe['hl_pct_change_36'] < 0.16)
                         )
                         |
                         (
@@ -17467,11 +17468,13 @@ class NostalgiaForInfinityX(IStrategy):
                             (dataframe['r_14_1h'] < -90.0)
                             & (dataframe['crsi_1h'] > 2.0)
                             & (dataframe['ema_200_pct_change_288'] < 0.16)
+                            & (dataframe['hl_pct_change_36'] < 0.16)
                         )
                         |
                         (
                             (dataframe['crsi_1h'] > 30.0)
                             & (dataframe['btc_pct_close_max_24_5m'] < 1.05)
+                            & (dataframe['hl_pct_change_36'] < 0.16)
                         )
                         |
                         (
@@ -17501,20 +17504,34 @@ class NostalgiaForInfinityX(IStrategy):
                             (dataframe['close'] > (dataframe['sup1_1d'] * 1.0))
                             & (dataframe['ema_200_pct_change_288'] < 0.16)
                         )
-                        | (dataframe['close'] < dataframe['sma_30'] * 0.95)
-                        | (dataframe['close'] < dataframe['ema_20'] * 0.95)
+                        |
+                        (
+                            (dataframe['close'] < dataframe['sma_30'] * 0.95)
+                            & (dataframe['hl_pct_change_36'] < 0.16)
+                        )
+                        |
+                        (
+                            (dataframe['close'] < dataframe['ema_20'] * 0.95)
+                            & (dataframe['hl_pct_change_36'] < 0.16)
+                        )
                         |
                         (
                             (dataframe['close'] < dataframe['bb20_2_low'] * 0.999)
                             & (dataframe['crsi_1h'] > 4.0)
                             & (dataframe['ema_200_pct_change_288'] < 0.16)
                             & (dataframe['btc_pct_close_max_24_5m'] < 1.05)
+                            & (dataframe['hl_pct_change_36'] < 0.16)
                         )
-                        | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.02))
+                        |
+                        (
+                            ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.02))
+                            & (dataframe['hl_pct_change_36'] < 0.16)
+                        )
                         |
                         (
                             (dataframe['close_15m'] < (dataframe['bb20_2_low_15m'] * 0.99))
                             & (dataframe['btc_pct_close_max_24_5m'] < 1.05)
+                            & (dataframe['hl_pct_change_36'] < 0.16)
                         )
                         | ((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.04))
                         |
@@ -17523,11 +17540,13 @@ class NostalgiaForInfinityX(IStrategy):
                             & (dataframe['crsi_1h'] > 4.0)
                             & (dataframe['ema_200_pct_change_288'] < 0.16)
                             & (dataframe['btc_pct_close_max_24_5m'] < 1.05)
+                            & (dataframe['hl_pct_change_36'] < 0.16)
                         )
                         |
                         (
                             (dataframe['cti_15m'] < -0.9)
                             & (dataframe['ema_200_pct_change_288'] < 0.16)
+                            & (dataframe['hl_pct_change_36'] < 0.16)
                         )
                     )
 
