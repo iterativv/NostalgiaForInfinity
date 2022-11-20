@@ -116,7 +116,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.3.3"
+        return "v11.3.4"
 
 
     # ROI table:
@@ -12238,11 +12238,27 @@ class NostalgiaForInfinityX(IStrategy):
                             & (dataframe['btc_pct_close_max_72_5m'] < 1.05)
                             & (dataframe['hl_pct_change_36'] < 0.12)
                         )
-                        | (dataframe['close'] < dataframe['sma_30'] * 0.88)
-                        | (dataframe['close'] < dataframe['ema_20'] * 0.9)
+                        |
+                        (
+                            (dataframe['close'] < dataframe['sma_30'] * 0.88)
+                            & (dataframe['hl_pct_change_36'] < 0.24)
+                        )
+                        |
+                        (
+                            (dataframe['close'] < dataframe['ema_20'] * 0.9)
+                            & (dataframe['hl_pct_change_36'] < 0.24)
+                        )
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.96)
-                        | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.04))
-                        | (dataframe['close_15m'] < (dataframe['bb20_2_low_15m'] * 0.93))
+                        |
+                        (
+                            ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.04))
+                            & (dataframe['hl_pct_change_36'] < 0.24)
+                        )
+                        |
+                        (
+                            (dataframe['close_15m'] < (dataframe['bb20_2_low_15m'] * 0.93))
+                            & (dataframe['hl_pct_change_36'] < 0.24)
+                        )
                         | ((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.04))
                     )
 
