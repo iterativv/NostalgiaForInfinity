@@ -1,0 +1,74 @@
+{
+    "exchange": {
+        "pair_whitelist": [
+            "ADA/USDT",
+            "ALGO/USDT",
+            "APE/USDT",
+            "AR/USDT",
+            "ATOM/USDT",
+            "AVAX/USDT",
+            "BNB/USDT",
+            "BTC/USDT",
+            "CHZ/USDT",
+            "CRO/USDT",
+            "DC/USDT",
+            "DOGE/USDT",
+            "DYDX/USDT",
+            "EOS/USDT",
+            "ETH/USDT",
+            "FTM/USDT",
+            "GMT/USDT",
+            "LTC/USDT",
+            "LUNC/USDT",
+            "MANA/USDT",
+            "MASK/USDT",
+            "MATIC/USDT",
+            "NEAR/USDT",
+            "OP/USDT",
+            "PHA/USDT",
+            "SAND/USDT",
+            "SHIB/USDT",
+            "TEL/USDT",
+            "TRIAS/USDT",
+            "TRX/USDT",
+            "TWT/USDT",
+            "VRA/USDT",
+            "XDB/USDT",
+            "XLM/USDT",
+            "XMR/USDT",
+            "XPR/USDT",
+            "YFI/USDT",
+            "ZIL/USDT",
+        ]
+    },
+    "pairlists": [
+        {"method": "StaticPairList"},
+        {
+            "method": "PriceFilter",
+            "low_price_ratio": 0.01
+        },
+        {
+            "method": "SpreadFilter",
+            "max_spread_ratio": 0.0075
+        },
+        {
+            "method": "RangeStabilityFilter",
+            "lookback_days": 3,
+            "min_rate_of_change": 0.03,
+            "refresh_period": 1800
+        },
+        {
+            "method": "VolatilityFilter",
+            "lookback_days": 3,
+            "min_volatility": 0.01,
+            "max_volatility": 0.75,
+            "refresh_period": 43200
+        },
+        {
+            "method": "VolumePairList",
+            "number_assets": 65,
+            "sort_key": "quoteVolume"
+        },
+        {"method": "ShuffleFilter"}
+    ]
+}
