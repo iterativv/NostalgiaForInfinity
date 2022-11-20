@@ -116,7 +116,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.3.4"
+        return "v11.3.5"
 
 
     # ROI table:
@@ -13967,34 +13967,44 @@ class NostalgiaForInfinityX(IStrategy):
                         (
                             (dataframe['cmf'] > -0.1)
                             & (dataframe['crsi_1h'] > 8.0)
+                            & (dataframe['ema_200_pct_change_288'] > -0.16)
                         )
                         |
                         (
                             (dataframe['mfi'] > 30.0)
                             & (dataframe['crsi_1h'] > 8.0)
+                            & (dataframe['ema_200_pct_change_288'] > -0.16)
                         )
-                        | (dataframe['cti_1h'] < -0.8)
+                        |
+                        (
+                            (dataframe['cti_1h'] < -0.8)
+                            & (dataframe['ema_200_pct_change_288'] > -0.16)
+                        )
                         | (dataframe['crsi_1h'] > 25.0)
                         |
                         (
                             (dataframe['tpct_change_144'] < 0.2)
                             & (dataframe['crsi_1h'] > 8.0)
+                            & (dataframe['ema_200_pct_change_288'] > -0.16)
                         )
                         |
                         (
                             (dataframe['hl_pct_change_48_1h'] < 0.5)
                             & (dataframe['crsi_1h'] > 8.0)
+                            & (dataframe['ema_200_pct_change_288'] > -0.16)
                         )
                         |
                         (
                             (dataframe['close'] > (dataframe['sma_200'] * 0.9))
                             & (dataframe['crsi_1h'] > 8.0)
+                            & (dataframe['ema_200_pct_change_288'] > -0.16)
                         )
                         |
                         (
                             (dataframe['close'] > (dataframe['sma_200_1h'] * 0.9))
                             & (dataframe['tpct_change_144'] < 0.25)
                             & (dataframe['crsi_1h'] > 8.0)
+                            & (dataframe['ema_200_pct_change_288'] > -0.16)
                         )
                         |
                         (
