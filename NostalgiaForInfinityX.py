@@ -116,7 +116,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.3.13"
+        return "v11.3.14"
 
 
     # ROI table:
@@ -20816,7 +20816,7 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             (dataframe['mfi'] > 25.0)
-                            & (dataframe['hl_pct_change_36'] < 0.2)
+                            & (dataframe['hl_pct_change_36'] < 0.16)
                         )
                         | (dataframe['rsi_14'] < 20.0)
                         | (dataframe['cti'] < -0.9)
@@ -20828,7 +20828,7 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             (dataframe['rsi_14_1h'] < 40.0)
-                            & (dataframe['hl_pct_change_36'] < 0.2)
+                            & (dataframe['hl_pct_change_36'] < 0.16)
                         )
                         |
                         (
@@ -20840,7 +20840,7 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             (dataframe['hl_pct_change_48_1h'] < 0.5)
-                            & (dataframe['hl_pct_change_36'] < 0.2)
+                            & (dataframe['hl_pct_change_36'] < 0.16)
                         )
                         | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
                         | (dataframe['close'] > (dataframe['sma_200'] * 0.95))
@@ -20853,14 +20853,18 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.028))
-                            & (dataframe['hl_pct_change_36'] < 0.2)
+                            & (dataframe['hl_pct_change_36'] < 0.16)
                         )
                         |
                         (
                             (dataframe['rsi_14_15m'] < 30.0)
-                            & (dataframe['hl_pct_change_36'] < 0.2)
+                            & (dataframe['hl_pct_change_36'] < 0.16)
                         )
-                        | (dataframe['cti_15m'] < -0.9)
+                        |
+                        (
+                            (dataframe['cti_15m'] < -0.9)
+                            & (dataframe['hl_pct_change_36'] < 0.16)
+                        )
                     )
                     item_buy_logic.append(
                         (dataframe['cmf'] > -0.1)
