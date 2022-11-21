@@ -202,6 +202,9 @@ class NostalgiaForInfinityX(IStrategy):
     rebuy_multi_4 = 1.0
     rebuy_multi_5 = 1.0
 
+    # BTC/ETH stakes
+    btc_stakes = ['BTC','ETH']
+
     # Stop thresholds
     # 1 entry, more than 1, leveraged
     stop_thresholds_stable = [-0.19, -0.19, -0.19]
@@ -2950,7 +2953,7 @@ class NostalgiaForInfinityX(IStrategy):
         is_rebuy = count_of_buys > 2
         is_leverage = bool(re.match(leverage_pattern,trade.pair))
         stop_index = 0 if is_rebuy and not is_leverage else 1 if not is_rebuy and not is_leverage else 2
-        is_btc_stake = self.config['stake_currency'] in ['BTC','ETH']
+        is_btc_stake = self.config['stake_currency'] in self.btc_stakes
 
         # Absolute limit, just in case...
         if (
