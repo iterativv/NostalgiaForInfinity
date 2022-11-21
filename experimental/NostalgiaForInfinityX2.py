@@ -1199,33 +1199,17 @@ class NostalgiaForInfinityX2(IStrategy):
                 # Condition #1 - Long mode bull. Uptrend.
                 if index == 1:
                     # Protections
-                    #item_buy_logic.append(dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
-                    #item_buy_logic.append(dataframe['close'] > dataframe['sma_200'])
-                    #item_buy_logic.append(dataframe['close'] > dataframe['sma_200_1h'])
-                    item_buy_logic.append(dataframe['close'] > dataframe['sma_200_4h'])
-                    item_buy_logic.append(dataframe['sma_50'] > dataframe['sma_200'])
-                    item_buy_logic.append(dataframe['sma_50_1h'] > dataframe['sma_200_1h'])
-                    item_buy_logic.append(dataframe['sma_50_4h'] > dataframe['sma_200_4h'])
-                    #item_buy_logic.append(dataframe['ema_200'] > dataframe['sma_200'])
-                    #item_buy_logic.append(dataframe['btc_not_downtrend_1h'])
-                    #item_buy_logic.append(dataframe['btc_close_4h'] > dataframe['btc_sma_200_4h'])
-                    item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_4h'] * 0.9))
-                    item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_1h'] * 0.9))
-                    item_buy_logic.append(dataframe['close'] > dataframe['sup3_1d'])
-                    item_buy_logic.append(dataframe['close'] < dataframe['res3_1d'])
+                    item_buy_logic.append(dataframe['close'] > dataframe['ema_200'])
+
+                    item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_50'])
+                    item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_200'])
+                    item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_200'])
 
                     # Logic
                     item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
                     item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.01))
                     item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
-
-                    #item_buy_logic.append(qtpylib.crossed_above(dataframe['close'], dataframe['sma_50']))
-                    #item_buy_logic.append(dataframe['rsi_14'] < 30.0)
-                    #item_buy_logic.append(dataframe['cti_20'] < -0.9)
-                    item_buy_logic.append(dataframe['rsi_14_4h'] < 50.0)
-                    #item_buy_logic.append(dataframe['cti_20_4h'] < 0.0)
-                    #item_buy_logic.append(dataframe['r_480_1h'] < -20.0)
-                    #item_buy_logic.append(dataframe['close'] > dataframe['open'])
+                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * 0.999))
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
