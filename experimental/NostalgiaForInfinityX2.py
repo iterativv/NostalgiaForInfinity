@@ -1,4 +1,6 @@
+import copy
 import logging
+import rapidjson
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 import numpy as np
 import talib.abstract as ta
