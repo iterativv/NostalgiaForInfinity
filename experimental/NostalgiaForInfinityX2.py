@@ -117,6 +117,9 @@ class NostalgiaForInfinityX2(IStrategy):
     buy_protection_params = {}
 
     #############################################################
+    # CACHES
+    target_profit_cache = None
+    #############################################################
 
     def get_ticker_indicator(self):
         return int(self.timeframe[:-1])
