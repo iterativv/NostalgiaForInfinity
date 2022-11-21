@@ -1345,3 +1345,63 @@ def top_percent_change(self, dataframe: DataFrame, length: int) -> float:
         return (dataframe['open'] - dataframe['close']) / dataframe['close']
     else:
         return (dataframe['open'].rolling(length).max() - dataframe['close']) / dataframe['close']
+
+    # +---------------------------------------------------------------------------+
+# |                              Classes                                      |
+# +---------------------------------------------------------------------------+
+
+class Cache:
+
+    def __init__(self, path):
+        self.path = path
+        self.data = {}
+        self._mtime = None
+        self._previous_data = {}
+        try:
+            self.load()
+        except FileNotFoundError:
+            pass
+
+    @staticmethod
+    def rapidjson_load_kwargs():
+        return {"number_mode": rapidjson.NM_NATIVE}
+
+    @staticmethod
+    def rapidjson_dump_kwargs():
+        return {"number_mode": rapidjson.NM_NATIVE}
+
+    def load(self):
+        if not self._mtime or self.path.stat().st_mtime_ns != self._mtime:
+            self._load()
+
+    def save(self):
+        if self.data != self._previous_data:
+            self._save()
+
+    def process_loaded_data(self, data):
+        return data
+
+    def _load(self):
+        # This method only exists to simplify unit testing
+        with self.path.open("r") as rfh:
+            try:
+                data = rapidjson.load(
+                    rfh,
+                    **self.rapidjson_load_kwargs()
+                )
+            except rapidjson.JSONDecodeError as exc:
+                log.error("Failed to load JSON from %s: %s", self.path, exc)
+            else:
+                self.data = self.process_loaded_data(data)
+                self._previous_data = copy.deepcopy(self.data)
+                self._mtime = self.path.stat().st_mtime_ns
+
+    def _save(self):
+        # This method only exists to simplify unit testing
+        rapidjson.dump(
+            self.data,
+            self.path.open("w"),
+            **self.rapidjson_dump_kwargs()
+        )
+        self._mtime = self.path.stat().st_mtime
+        self._previous_data = copy.deepcopy(self.data)
