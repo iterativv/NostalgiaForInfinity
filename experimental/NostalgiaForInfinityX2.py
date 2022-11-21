@@ -326,83 +326,83 @@ class NostalgiaForInfinityX2(IStrategy):
     def exit_normal_bull_main(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
         if (last_candle['close'] > last_candle['sma_200_1h']):
             if 0.01 > current_profit >= 0.001:
-                if (last_candle['rsi_14'] < 26.0):
+                if (last_candle['rsi_14'] < 20.0):
                     return True, 'exit_normal_bull_o_0'
             elif 0.02 > current_profit >= 0.01:
-                if (last_candle['rsi_14'] < 30.0):
+                if (last_candle['rsi_14'] < 28.0):
                     return True, 'exit_normal_bull_o_1'
             elif 0.03 > current_profit >= 0.02:
-                if (last_candle['rsi_14'] < 32.0):
+                if (last_candle['rsi_14'] < 30.0):
                     return True, 'exit_normal_bull_o_2'
             elif 0.04 > current_profit >= 0.03:
-                if (last_candle['rsi_14'] < 34.0):
+                if (last_candle['rsi_14'] < 32.0):
                     return True, 'exit_normal_bull_o_3'
             elif 0.05 > current_profit >= 0.04:
-                if (last_candle['rsi_14'] < 36.0):
+                if (last_candle['rsi_14'] < 34.0):
                     return True, 'exit_normal_bull_o_4'
             elif 0.06 > current_profit >= 0.05:
-                if (last_candle['rsi_14'] < 38.0):
+                if (last_candle['rsi_14'] < 36.0):
                     return True, 'exit_normal_bull_o_5'
             elif 0.07 > current_profit >= 0.06:
-                if (last_candle['rsi_14'] < 40.0):
+                if (last_candle['rsi_14'] < 38.0):
                     return True, 'exit_normal_bull_o_6'
             elif 0.08 > current_profit >= 0.07:
-                if (last_candle['rsi_14'] < 42.0):
+                if (last_candle['rsi_14'] < 40.0):
                     return True, 'exit_normal_bull_o_7'
             elif 0.09 > current_profit >= 0.08:
-                if (last_candle['rsi_14'] < 44.0):
+                if (last_candle['rsi_14'] < 42.0):
                     return True, 'exit_normal_bull_o_8'
             elif 0.1 > current_profit >= 0.09:
-                if (last_candle['rsi_14'] < 46.0):
+                if (last_candle['rsi_14'] < 44.0):
                     return True, 'exit_normal_bull_o_9'
             elif 0.12 > current_profit >= 0.1:
-                if (last_candle['rsi_14'] < 48.0):
+                if (last_candle['rsi_14'] < 46.0):
                     return True, 'exit_normal_bull_o_10'
             elif 0.2 > current_profit >= 0.12:
-                if (last_candle['rsi_14'] < 46.0):
+                if (last_candle['rsi_14'] < 44.0):
                     return True, 'exit_normal_bull_o_11'
             elif current_profit >= 0.2:
-                if (last_candle['rsi_14'] < 44.0):
+                if (last_candle['rsi_14'] < 42.0):
                     return True, 'exit_normal_bull_o_12'
         elif (last_candle['close'] < last_candle['sma_200_1h']):
             if 0.01 > current_profit >= 0.001:
-                if (last_candle['rsi_14'] < 28.0):
+                if (last_candle['rsi_14'] < 22.0):
                     return True, 'exit_normal_bull_u_0'
             elif 0.02 > current_profit >= 0.01:
-                if (last_candle['rsi_14'] < 32.0):
+                if (last_candle['rsi_14'] < 30.0):
                     return True, 'exit_normal_bull_u_1'
             elif 0.03 > current_profit >= 0.02:
-                if (last_candle['rsi_14'] < 34.0):
+                if (last_candle['rsi_14'] < 32.0):
                     return True, 'exit_normal_bull_u_2'
             elif 0.04 > current_profit >= 0.03:
-                if (last_candle['rsi_14'] < 36.0):
+                if (last_candle['rsi_14'] < 34.0):
                     return True, 'exit_normal_bull_u_3'
             elif 0.05 > current_profit >= 0.04:
-                if (last_candle['rsi_14'] < 38.0):
+                if (last_candle['rsi_14'] < 36.0):
                     return True, 'exit_normal_bull_u_4'
             elif 0.06 > current_profit >= 0.05:
-                if (last_candle['rsi_14'] < 40.0):
+                if (last_candle['rsi_14'] < 38.0):
                     return True, 'exit_normal_bull_u_5'
             elif 0.07 > current_profit >= 0.06:
-                if (last_candle['rsi_14'] < 42.0):
+                if (last_candle['rsi_14'] < 40.0):
                     return True, 'exit_normal_bull_u_6'
             elif 0.08 > current_profit >= 0.07:
-                if (last_candle['rsi_14'] < 44.0):
+                if (last_candle['rsi_14'] < 42.0):
                     return True, 'exit_normal_bull_u_7'
             elif 0.09 > current_profit >= 0.08:
-                if (last_candle['rsi_14'] < 46.0):
+                if (last_candle['rsi_14'] < 44.0):
                     return True, 'exit_normal_bull_u_8'
             elif 0.1 > current_profit >= 0.09:
-                if (last_candle['rsi_14'] < 48.0):
+                if (last_candle['rsi_14'] < 46.0):
                     return True, 'exit_normal_bull_u_9'
             elif 0.12 > current_profit >= 0.1:
-                if (last_candle['rsi_14'] < 50.0):
+                if (last_candle['rsi_14'] < 48.0):
                     return True, 'exit_normal_bull_u_10'
             elif 0.2 > current_profit >= 0.12:
-                if (last_candle['rsi_14'] < 48.0):
+                if (last_candle['rsi_14'] < 46.0):
                     return True, 'exit_normal_bull_u_11'
             elif current_profit >= 0.2:
-                if (last_candle['rsi_14'] < 46.0):
+                if (last_candle['rsi_14'] < 44.0):
                     return True, 'exit_normal_bull_u_12'
 
         return False, None
