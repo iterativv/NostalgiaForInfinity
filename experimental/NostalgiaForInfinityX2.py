@@ -121,6 +121,19 @@ class NostalgiaForInfinityX2(IStrategy):
     target_profit_cache = None
     #############################################################
 
+    def __init__(self, config: dict) -> None:
+        super().__init__(config)
+        if self.target_profit_cache is None:
+            bot_name = ""
+            if ('bot_name' in self.config):
+                bot_name = self.config["bot_name"] + "-"
+            self.target_profit_cache = Cache(
+                self.config["user_data_dir"] / ("nfix2-profit_max-" + bot_name  + self.config["exchange"]["name"] + "-" + self.config["stake_currency"] +  ("-(backtest)" if (self.config['runmode'].value == 'backtest') else "") + ".json")
+            )
+
+        # If the cached data hasn't changed, it's a no-op
+        self.target_profit_cache.save()
+
     def get_ticker_indicator(self):
         return int(self.timeframe[:-1])
 
@@ -1139,6 +1152,26 @@ class NostalgiaForInfinityX2(IStrategy):
                 return False
 
         return True
+
+    def confirm_trade_exit(self, pair: str, trade: Trade, order_type: str, amount: float,
+                           rate: float, time_in_force: str, exit_reason: str,
+                           current_time: datetime, **kwargs) -> bool:
+        self._remove_profit_target(pair)
+        return True
+
+    def _set_profit_target(self, pair: str, sell_reason: str, rate: float, current_profit: float, current_time: datetime):
+        self.target_profit_cache.data[pair] = {
+            "rate": rate,
+            "profit": current_profit,
+            "sell_reason": sell_reason,
+            "time_profit_reached": current_time.isoformat()
+        }
+        self.target_profit_cache.save()
+
+    def _remove_profit_target(self, pair: str):
+        if self.target_profit_cache is not None:
+            self.target_profit_cache.data.pop(pair, None)
+            self.target_profit_cache.save()
 
 # +---------------------------------------------------------------------------+
 # |                              Custom Indicators                            |
