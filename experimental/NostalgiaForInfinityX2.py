@@ -887,6 +887,13 @@ class NostalgiaForInfinityX2(IStrategy):
         informative_1h['res_hlevel'] = Series(np.where(res_series, informative_1h['high'], float('NaN'))).ffill()
         informative_1h['sup_level'] = Series(np.where(sup_series, np.where(informative_1h['close'] < informative_1h['open'], informative_1h['close'], informative_1h['open']), float('NaN'))).ffill()
 
+        # Pump protections
+        informative_1h['hl_pct_change_48'] = range_percent_change(self, informative_1h, 'HL', 48)
+        informative_1h['hl_pct_change_36'] = range_percent_change(self, informative_1h, 'HL', 36)
+        informative_1h['hl_pct_change_24'] = range_percent_change(self, informative_1h, 'HL', 24)
+        informative_1h['hl_pct_change_12'] = range_percent_change(self, informative_1h, 'HL', 12)
+        informative_1h['hl_pct_change_6'] = range_percent_change(self, informative_1h, 'HL', 6)
+
         # Performance logging
         # -----------------------------------------------------------------------------------------
         tok = time.perf_counter()
@@ -944,6 +951,12 @@ class NostalgiaForInfinityX2(IStrategy):
         # Williams %R
         dataframe['r_14'] = williams_r(dataframe, period=14)
         dataframe['r_480'] = williams_r(dataframe, period=480)
+
+        # Dip protection
+        dataframe['tpct_change_0']   = top_percent_change(self, dataframe, 0)
+        dataframe['tpct_change_2']   = top_percent_change(self, dataframe, 2)
+        dataframe['tpct_change_12']  = top_percent_change(self, dataframe, 12)
+        dataframe['tpct_change_144'] = top_percent_change(self, dataframe, 144)
 
         # Close max
         dataframe['close_max_48'] = dataframe['close'].rolling(48).max()
@@ -1016,6 +1029,9 @@ class NostalgiaForInfinityX2(IStrategy):
 
         # SMA
         btc_info_4h['sma_200'] = ta.SMA(btc_info_4h, timeperiod=200)
+
+        # Bull market or not
+        btc_info_4h['is_bull'] = btc_info_4h['close'] > btc_info_4h['sma_200']
 
         # Add prefix
         # -----------------------------------------------------------------------------------------
