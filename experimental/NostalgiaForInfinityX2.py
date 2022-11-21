@@ -1132,6 +1132,10 @@ class NostalgiaForInfinityX2(IStrategy):
     def confirm_trade_entry(self, pair: str, order_type: str, amount: float, rate: float,
                             time_in_force: str, current_time: datetime, entry_tag: Optional[str],
                             **kwargs) -> bool:
+        # allow force entries
+        if (entry_tag == 'force_entry'):
+            return True
+
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
 
         if(len(dataframe) < 1):
