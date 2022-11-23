@@ -486,29 +486,129 @@ class NostalgiaForInfinityX2(IStrategy):
 
         return False, None
 
-    def sell_normal_bear(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
+    def exit_normal_bear(self, pair: str, current_rate: float, current_profit: float,
+                         max_profit: float, max_loss: float,
+                         last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5,
+                         trade: 'Trade', current_time: 'datetime', enter_tags) -> tuple:
+        sell = False
+
         # Original sell signals
-        sell, signal_name = self.exit_normal_bear_signals(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, buy_tag)
-        if sell and (signal_name is not None):
-            return True, signal_name
+        sell, signal_name = self.exit_normal_bear_signals(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Main sell signals
-        sell, signal_name = self.exit_normal_bear_main(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, buy_tag)
-        if sell and (signal_name is not None):
-            return True, signal_name
+        if not sell:
+            sell, signal_name = self.exit_normal_bear_main(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Williams %R based sells
-        sell, signal_name = self.exit_normal_bear_r(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, buy_tag)
-        if sell and (signal_name is not None):
-            return True, signal_name
+        if not sell:
+            sell, signal_name = self.exit_normal_bear_r(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Stoplosses
-        sell, signal_name = self.exit_normal_bear_stoploss(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, buy_tag)
-        if sell and (signal_name is not None):
-            return True, signal_name
+        if not sell:
+            sell, signal_name = self.exit_normal_bear_stoploss(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+
+        # Profit Target Signal
+        # Check if pair exist on target_profit_cache
+        if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
+            previous_rate = self.target_profit_cache.data[pair]['rate']
+            previous_profit = self.target_profit_cache.data[pair]['profit']
+            previous_sell_reason = self.target_profit_cache.data[pair]['sell_reason']
+            previous_time_profit_reached = datetime.fromisoformat(self.target_profit_cache.data[pair]['time_profit_reached'])
+
+            sell_max, signal_name_max = self.normal_bear_exit_profit_target(pair, trade, current_time, current_rate, current_profit,
+                                                                            last_candle, previous_candle_1,
+                                                                            previous_rate, previous_profit, previous_sell_reason,
+                                                                            previous_time_profit_reached, enter_tags)
+            if sell_max and signal_name_max is not None:
+                return True, f"{signal_name_max}_m"
+            if (current_profit > (previous_profit + 0.03)):
+                # Update the target, raise it.
+                mark_pair, mark_signal = self.normal_bear_mark_profit_target(pair, True, previous_sell_reason, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
+                if mark_pair:
+                    self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
+
+        # Add the pair to the list, if a sell triggered and conditions met
+        if sell and signal_name is not None:
+            previous_profit = None
+            if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
+                previous_profit = self.target_profit_cache.data[pair]['profit']
+            if (
+                    (previous_profit is None)
+                    or (previous_profit < current_profit)
+            ):
+                mark_pair, mark_signal = self.normal_bear_mark_profit_target(pair, sell, signal_name, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
+                if mark_pair:
+                    self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
+                else:
+                    # Just sell it, without maximize
+                    return True, f"{signal_name}"
+        else:
+            if (
+                    (current_profit >= 0.03)
+            ):
+                previous_profit = None
+                if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
+                    previous_profit = self.target_profit_cache.data[pair]['profit']
+                if (previous_profit is None) or (previous_profit < current_profit):
+                    mark_signal = "exit_profit_normal_bear_max"
+                    self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
+
+        if (signal_name not in ["exit_profit_normal_bear_max", "exit_normal_bear_stoploss_doom"]):
+            if sell and (signal_name is not None):
+                return True, f"{signal_name}"
 
         return False, None
 
+    def normal_bear_mark_profit_target(self, pair: str, sell: bool, signal_name: str, trade: Trade, current_time: datetime, current_rate: float, current_profit: float, last_candle, previous_candle_1) -> tuple:
+        if sell and (signal_name is not None):
+            return pair, signal_name
+
+        return None, None
+
+    def normal_bear_exit_profit_target(self, pair: str, trade: Trade, current_time: datetime, current_rate: float, current_profit: float, last_candle, previous_candle_1, previous_rate, previous_profit,  previous_sell_reason, previous_time_profit_reached, enter_tags) -> tuple:
+        if (previous_sell_reason in ["exit_normal_bear_stoploss_doom"]):
+            if (current_profit > 0.04):
+                # profit is over the threshold, don't exit
+                self._remove_profit_target(pair)
+                return False, None
+            if (current_profit < -0.18):
+                if (current_profit < (previous_profit - 0.06)):
+                    return True, previous_sell_reason
+            elif (current_profit < -0.1):
+                if (current_profit < (previous_profit - 0.055)):
+                    return True, previous_sell_reason
+            elif (current_profit < -0.04):
+                if (current_profit < (previous_profit - 0.05)):
+                    return True, previous_sell_reason
+            else:
+                if (current_profit < (previous_profit - 0.045)):
+                    return True, previous_sell_reason
+        elif (previous_sell_reason in ["exit_profit_normal_bear_max"]):
+            if (current_profit < 0.01):
+                if (current_profit < (previous_profit - 0.01)):
+                    return True, previous_sell_reason
+            elif (0.01 <= current_profit < 0.02):
+                if (current_profit < (previous_profit - 0.02)):
+                    return True, previous_sell_reason
+            elif (0.02 <= current_profit < 0.03):
+                if (current_profit < (previous_profit - 0.03)):
+                    return True, previous_sell_reason
+            elif (0.03 <= current_profit < 0.05):
+                if (current_profit < (previous_profit - 0.04)):
+                    return True, previous_sell_reason
+            elif (0.05 <= current_profit < 0.08):
+                if (current_profit < (previous_profit - 0.05)):
+                    return True, previous_sell_reason
+            elif (0.08 <= current_profit < 0.12):
+                if (current_profit < (previous_profit - 0.06)):
+                    return True, previous_sell_reason
+            elif (0.12 <= current_profit):
+                if (current_profit < (previous_profit - 0.07)):
+                    return True, previous_sell_reason
+        else:
+            return False, None
+
+        return False, None
 
     def exit_normal_bear_signals(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
         # Sell signal 1
@@ -728,7 +828,7 @@ class NostalgiaForInfinityX2(IStrategy):
     def exit_normal_bear_stoploss(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
         # Stoploss doom
         if (
-                (current_profit < -0.12)
+                (current_profit < -0.05)
         ):
             return True, 'exit_normal_bear_stoploss_doom'
 
@@ -770,8 +870,8 @@ class NostalgiaForInfinityX2(IStrategy):
                 return f"{signal_name} ( {enter_tag})"
 
         # Normal mode, bear
-        if all(c in self.normal_mode_bear_tags for c in enter_tags):
-            sell, signal_name = self.sell_normal_bear(profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tag)
+        if any(c in self.normal_mode_bear_tags for c in enter_tags):
+            sell, signal_name = self.exit_normal_bear(pair, current_rate, profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {enter_tag})"
 
