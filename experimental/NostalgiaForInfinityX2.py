@@ -480,7 +480,7 @@ class NostalgiaForInfinityX2(IStrategy):
     def exit_normal_bull_stoploss(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
         # Stoploss doom
         if (
-                (current_profit < -0.12)
+                (current_profit < -0.06)
         ):
             return True, 'exit_normal_bull_stoploss_doom'
 
