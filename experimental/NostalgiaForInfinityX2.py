@@ -876,7 +876,16 @@ class NostalgiaForInfinityX2(IStrategy):
         # RSI
         informative_1h['rsi_14'] = ta.RSI(informative_1h, timeperiod=14)
 
+        # EMA
+        informative_1h['ema_12'] = ta.EMA(informative_1h, timeperiod=12)
+        informative_1h['ema_26'] = ta.EMA(informative_1h, timeperiod=26)
+        informative_1h['ema_50'] = ta.EMA(informative_1h, timeperiod=50)
+        informative_1h['ema_100'] = ta.EMA(informative_1h, timeperiod=100)
+        informative_1h['ema_200'] = ta.EMA(informative_1h, timeperiod=200)
+
         # SMA
+        informative_1h['sma_12'] = ta.SMA(informative_1h, timeperiod=12)
+        informative_1h['sma_26'] = ta.SMA(informative_1h, timeperiod=26)
         informative_1h['sma_50'] = ta.SMA(informative_1h, timeperiod=50)
         informative_1h['sma_100'] = ta.SMA(informative_1h, timeperiod=100)
         informative_1h['sma_200'] = ta.SMA(informative_1h, timeperiod=200)
@@ -904,6 +913,8 @@ class NostalgiaForInfinityX2(IStrategy):
         informative_1h['hl_pct_change_24'] = range_percent_change(self, informative_1h, 'HL', 24)
         informative_1h['hl_pct_change_12'] = range_percent_change(self, informative_1h, 'HL', 12)
         informative_1h['hl_pct_change_6'] = range_percent_change(self, informative_1h, 'HL', 6)
+
+        informative_1h['not_downtrend'] = ((informative_1h['close'] > informative_1h['close'].shift(2)) | (informative_1h['rsi_14'] > 50.0))
 
         # Performance logging
         # -----------------------------------------------------------------------------------------
