@@ -832,7 +832,16 @@ class NostalgiaForInfinityX2(IStrategy):
         # RSI
         informative_4h['rsi_14'] = ta.RSI(informative_4h, timeperiod=14, fillna=True)
 
+        # EMA
+        informative_4h['ema_12'] = ta.EMA(informative_4h, timeperiod=12)
+        informative_4h['ema_26'] = ta.EMA(informative_4h, timeperiod=26)
+        informative_4h['ema_50'] = ta.EMA(informative_4h, timeperiod=50)
+        informative_4h['ema_100'] = ta.EMA(informative_4h, timeperiod=100)
+        informative_4h['ema_200'] = ta.EMA(informative_4h, timeperiod=200)
+
         # SMA
+        informative_4h['sma_12'] = ta.SMA(informative_4h, timeperiod=12)
+        informative_4h['sma_26'] = ta.SMA(informative_4h, timeperiod=26)
         informative_4h['sma_50'] = ta.SMA(informative_4h, timeperiod=50)
         informative_4h['sma_200'] = ta.SMA(informative_4h, timeperiod=200)
 
@@ -846,6 +855,8 @@ class NostalgiaForInfinityX2(IStrategy):
         informative_4h['res_level'] = Series(np.where(res_series, np.where(informative_4h['close'] > informative_4h['open'], informative_4h['close'], informative_4h['open']), float('NaN'))).ffill()
         informative_4h['res_hlevel'] = Series(np.where(res_series, informative_4h['high'], float('NaN'))).ffill()
         informative_4h['sup_level'] = Series(np.where(sup_series, np.where(informative_4h['close'] < informative_4h['open'], informative_4h['close'], informative_4h['open']), float('NaN'))).ffill()
+
+        informative_4h['not_downtrend'] = ((informative_4h['close'] > informative_4h['close'].shift(2)) | (informative_4h['rsi_14'] > 50.0))
 
         # Performance logging
         # -----------------------------------------------------------------------------------------
