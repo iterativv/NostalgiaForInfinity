@@ -979,6 +979,10 @@ class NostalgiaForInfinityX2(IStrategy):
         dataframe['tpct_change_2']   = top_percent_change(self, dataframe, 2)
         dataframe['tpct_change_12']  = top_percent_change(self, dataframe, 12)
         dataframe['tpct_change_144'] = top_percent_change(self, dataframe, 144)
+        # 3 hours, protect against wicks
+        dataframe['hl_pct_change_36'] = range_percent_change(self, dataframe, 'HL', 36)
+        # 12 hours
+        dataframe['hl_pct_change_144'] = range_percent_change(self, dataframe, 'HL', 144)
 
         # Close max
         dataframe['close_max_48'] = dataframe['close'].rolling(48).max()
