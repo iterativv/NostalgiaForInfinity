@@ -104,7 +104,7 @@ class NostalgiaForInfinityX2(IStrategy):
     # Normal mode bull tags
     normal_mode_bull_tags = ['force_entry', '1', '2']
     # Normal mode bear tags
-    normal_mode_bear_tags = ['11']
+    normal_mode_bear_tags = ['11', '12']
 
     #############################################################
     # Buy side configuration
@@ -116,6 +116,7 @@ class NostalgiaForInfinityX2(IStrategy):
         "buy_condition_2_enable": True,
 
         "buy_condition_11_enable": True,
+        "buy_condition_12_enable": True,
     }
 
     buy_protection_params = {}
@@ -1435,6 +1436,41 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.016))
                     item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * 1.0))
+
+                # Condition #12 - Normal mode bear.
+                if index == 12:
+                    # Protections
+                    item_buy_logic.append(dataframe['btc_is_bull_4h'] == False)
+                    item_buy_logic.append(dataframe['btc_pct_close_max_24_5m'] < 0.025)
+                    item_buy_logic.append(dataframe['btc_pct_close_max_72_5m'] < 0.025)
+                    item_buy_logic.append(dataframe['close_max_48'] < (dataframe['close'] * 1.2))
+                    item_buy_logic.append(dataframe['hl_pct_change_36'] < 0.2)
+                    item_buy_logic.append(dataframe['hl_pct_change_12_1h'] < 0.5)
+                    item_buy_logic.append(dataframe['hl_pct_change_48_1h'] < 0.75)
+
+                    item_buy_logic.append(dataframe['ema_12_1h'] > dataframe['ema_26_1h'])
+                    item_buy_logic.append(dataframe['ema_12_1h'] > dataframe['ema_200_1h'])
+                    item_buy_logic.append(dataframe['sma_12_1h'] > dataframe['sma_26_1h'])
+                    item_buy_logic.append(dataframe['sma_12_1h'] > dataframe['sma_200_1h'])
+                    item_buy_logic.append(dataframe['ema_12_1h'] > dataframe['sma_26_1h'])
+
+                    item_buy_logic.append(dataframe['ema_12_4h'] > dataframe['ema_26_4h'])
+                    item_buy_logic.append(dataframe['ema_12_4h'] > dataframe['ema_200_4h'])
+                    item_buy_logic.append(dataframe['sma_12_4h'] > dataframe['sma_26_4h'])
+                    item_buy_logic.append(dataframe['sma_12_4h'] > dataframe['sma_200_4h'])
+                    item_buy_logic.append(dataframe['ema_12_4h'] > dataframe['sma_26_4h'])
+
+                    item_buy_logic.append(dataframe['r_480_4h'] < -25.0)
+
+                    item_buy_logic.append(dataframe['not_downtrend_1h'])
+                    item_buy_logic.append(dataframe['not_downtrend_4h'])
+
+                    # Logic
+                    item_buy_logic.append(dataframe['bb40_2_delta'].gt(dataframe['close'] * 0.02))
+                    item_buy_logic.append(dataframe['close_delta'].gt(dataframe['close'] * 0.02))
+                    item_buy_logic.append(dataframe['bb40_2_tail'].lt(dataframe['bb40_2_delta'] * 0.1))
+                    item_buy_logic.append(dataframe['close'].lt(dataframe['bb40_2_low'].shift()))
+                    item_buy_logic.append(dataframe['close'].le(dataframe['close'].shift()))
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
