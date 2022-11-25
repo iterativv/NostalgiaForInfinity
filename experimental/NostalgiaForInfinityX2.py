@@ -1076,6 +1076,13 @@ class NostalgiaForInfinityX2(IStrategy):
         dataframe['bb20_2_mid'] = bb_20_std2['mid']
         dataframe['bb20_2_upp'] = bb_20_std2['upper']
 
+        # BB 40 - STD2
+        bb_40_std2 = qtpylib.bollinger_bands(dataframe['close'], window=40, stds=2)
+        dataframe['bb40_2_low'] = bb_40_std2['lower']
+        dataframe['bb40_2_mid'] = bb_40_std2['mid']
+        dataframe['bb40_2_delta'] = (bb_40_std2['mid'] - dataframe['bb40_2_low']).abs()
+        dataframe['bb40_2_tail'] = (dataframe['close'] - dataframe['bb40_2_low']).abs()
+
         # Williams %R
         dataframe['r_14'] = williams_r(dataframe, period=14)
         dataframe['r_480'] = williams_r(dataframe, period=480)
@@ -1094,6 +1101,9 @@ class NostalgiaForInfinityX2(IStrategy):
         dataframe['close_max_48'] = dataframe['close'].rolling(48).max()
 
         dataframe['pct_close_max_48'] = (dataframe['close_max_48'] - dataframe['close']) / dataframe['close']
+
+        # Close delta
+        dataframe['close_delta'] = (dataframe['close'] - dataframe['close'].shift()).abs()
 
         # For sell checks
         dataframe['crossed_below_ema_12_26'] = qtpylib.crossed_below(dataframe['ema_12'], dataframe['ema_26'])
