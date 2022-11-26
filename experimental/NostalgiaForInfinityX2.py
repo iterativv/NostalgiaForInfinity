@@ -1089,6 +1089,13 @@ class NostalgiaForInfinityX2(IStrategy):
         dataframe['r_14'] = williams_r(dataframe, period=14)
         dataframe['r_480'] = williams_r(dataframe, period=480)
 
+        # Heiken Ashi
+        heikinashi = qtpylib.heikinashi(dataframe)
+        dataframe['ha_open'] = heikinashi['open']
+        dataframe['ha_close'] = heikinashi['close']
+        dataframe['ha_high'] = heikinashi['high']
+        dataframe['ha_low'] = heikinashi['low']
+
         # Dip protection
         dataframe['tpct_change_0']   = top_percent_change(self, dataframe, 0)
         dataframe['tpct_change_2']   = top_percent_change(self, dataframe, 2)
