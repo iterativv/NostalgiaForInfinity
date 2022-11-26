@@ -116,7 +116,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.3.54"
+        return "v11.3.55"
 
 
     # ROI table:
@@ -22325,6 +22325,9 @@ class NostalgiaForInfinityX(IStrategy):
                 if (self.insanity_dump_checks):
                     item_buy_logic.append((dataframe['btc_pct_close_max_24_5m'] < 1.025))
                     item_buy_logic.append(dataframe['hl_pct_change_36'] < 0.3)
+                    item_buy_logic.append(dataframe['ema_200_pct_change_288'] < 0.3)
+                    item_buy_logic.append(dataframe['ema_200_pct_change_144'] < 0.25)
+                    item_buy_logic.append(dataframe['hl_pct_change_48_1h'] < 0.75)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
                 dataframe.loc[item_buy, 'enter_tag'] += f"{index} "
                 conditions.append(item_buy)
