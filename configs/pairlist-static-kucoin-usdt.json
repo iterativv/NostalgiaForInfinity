@@ -45,7 +45,7 @@
         {"method": "StaticPairList"},
         {
             "method": "PriceFilter",
-            "low_price_ratio": 0.01
+            "low_price_ratio": 0.003
         },
         {
             "method": "SpreadFilter",

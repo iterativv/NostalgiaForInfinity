@@ -9,7 +9,7 @@
         {"method": "AgeFilter", "min_days_listed": 30},
         {
             "method": "PriceFilter",
-            "low_price_ratio": 0.01
+            "low_price_ratio": 0.003
         },
         {
             "method": "SpreadFilter",
