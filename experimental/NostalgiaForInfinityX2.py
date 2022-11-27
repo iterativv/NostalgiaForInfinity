@@ -1457,6 +1457,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append((dataframe['tpct_change_2'] < 0.06))
                     item_buy_logic.append(dataframe['close_max_48'] < (dataframe['close'] * 1.3))
                     item_buy_logic.append(dataframe['hl_pct_change_36'] < 0.3)
+                    item_buy_logic.append(dataframe['hl_pct_change_24_1h'] < 3.0)
 
                     item_buy_logic.append(dataframe['ema_12_1h'] > dataframe['ema_26_1h'])
                     item_buy_logic.append(dataframe['ema_12_1h'] > dataframe['ema_200_1h'])
