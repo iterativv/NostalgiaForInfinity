@@ -959,6 +959,9 @@ class NostalgiaForInfinityX2(IStrategy):
         informative_4h['r_14'] = williams_r(informative_4h, period=14)
         informative_4h['r_480'] = williams_r(informative_4h, period=480)
 
+        # CTI
+        informative_4h['cti_20'] = pta.cti(informative_4h["close"], length=20)
+
         # S/R
         res_series = informative_4h['high'].rolling(window = 5, center=True).apply(lambda row: is_resistance(row), raw=True).shift(2)
         sup_series = informative_4h['low'].rolling(window = 5, center=True).apply(lambda row: is_support(row), raw=True).shift(2)
