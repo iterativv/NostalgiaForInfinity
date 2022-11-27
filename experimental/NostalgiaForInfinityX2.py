@@ -130,6 +130,9 @@ class NostalgiaForInfinityX2(IStrategy):
 
     def __init__(self, config: dict) -> None:
         super().__init__(config)
+        if (('exit_profit_only' in self.config and self.config['exit_profit_only'])
+                or ('sell_profit_only' in self.config and self.config['sell_profit_only'])):
+            self.exit_profit_only = True
         if self.target_profit_cache is None:
             bot_name = ""
             if ('bot_name' in self.config):
@@ -1593,6 +1596,13 @@ class NostalgiaForInfinityX2(IStrategy):
     def confirm_trade_exit(self, pair: str, trade: Trade, order_type: str, amount: float,
                            rate: float, time_in_force: str, exit_reason: str,
                            current_time: datetime, **kwargs) -> bool:
+        # Allow force exits
+        if exit_reason != 'force_exit':
+            if self.exit_profit_only:
+                current_profit = ((rate - trade.open_rate) / trade.open_rate)
+                if (current_profit < self.exit_profit_offset):
+                    return False
+
         self._remove_profit_target(pair)
         return True
 
