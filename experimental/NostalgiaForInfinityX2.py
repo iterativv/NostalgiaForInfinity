@@ -4,6 +4,7 @@ import rapidjson
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 import numpy as np
 import talib.abstract as ta
+import pandas as pd
 import pandas_ta as pta
 from freqtrade.strategy.interface import IStrategy
 from freqtrade.strategy import merge_informative_pair
@@ -13,9 +14,11 @@ from freqtrade.persistence import Trade
 from datetime import datetime, timedelta
 import time
 from typing import Optional
+import warnings
 
 log = logging.getLogger(__name__)
 #log.setLevel(logging.DEBUG)
+warnings.simplefilter(action='ignore', category=pd.errors.PerformanceWarning)
 
 #############################################################################################################
 ##                NostalgiaForInfinityX2 by iterativ                                                       ##
