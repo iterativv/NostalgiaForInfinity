@@ -116,7 +116,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.3.57"
+        return "v11.3.58"
 
 
     # ROI table:
@@ -10510,7 +10510,13 @@ class NostalgiaForInfinityX(IStrategy):
                             & (dataframe['hl_pct_change_48_1h'] < 0.5)
                         )
                         | (dataframe['rsi_14'] < 22.0)
-                        | (dataframe['cti'] < -0.93)
+                        |
+                        (
+                            (dataframe['cti'] < -0.93)
+                            & (dataframe['hl_pct_change_36'] < 0.3)
+                            & (dataframe['close_max_48'] < (dataframe['close'] * 1.3))
+                            & (dataframe['hl_pct_change_48_1h'] < 0.75)
+                        )
                         |
                         (
                             (dataframe['cti_1h'] < -0.5)
@@ -10553,15 +10559,33 @@ class NostalgiaForInfinityX(IStrategy):
                             & (dataframe['close_max_48'] > (dataframe['close'] * 1.05))
                         )
                         | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
-                        | (dataframe['close'] > (dataframe['sma_200'] * 0.99))
-                        | (dataframe['close'] < dataframe['sma_30'] * 0.86)
+                        |
+                        (
+                            (dataframe['close'] > (dataframe['sma_200'] * 0.99))
+                            & (dataframe['hl_pct_change_36'] < 0.3)
+                            & (dataframe['close_max_48'] < (dataframe['close'] * 1.3))
+                            & (dataframe['hl_pct_change_48_1h'] < 0.75)
+                        )
+                        |
+                        (
+                            (dataframe['close'] < dataframe['sma_30'] * 0.86)
+                            & (dataframe['hl_pct_change_36'] < 0.3)
+                            & (dataframe['close_max_48'] < (dataframe['close'] * 1.3))
+                            & (dataframe['hl_pct_change_48_1h'] < 0.75)
+                        )
                         | (dataframe['close'] < dataframe['ema_20'] * 0.89)
                         |
                         (
                             (dataframe['close'] < dataframe['bb20_2_low'] * 0.988)
                             & (dataframe['hl_pct_change_48_1h'] < 0.5)
                         )
-                        | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.05))
+                        |
+                        (
+                            ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.05))
+                            & (dataframe['hl_pct_change_36'] < 0.3)
+                            & (dataframe['close_max_48'] < (dataframe['close'] * 1.3))
+                            & (dataframe['hl_pct_change_48_1h'] < 0.75)
+                        )
                         |
                         (
                             (dataframe['close_15m'] < (dataframe['bb20_2_low_15m'] * 0.92))
