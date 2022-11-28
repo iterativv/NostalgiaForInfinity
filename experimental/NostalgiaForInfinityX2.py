@@ -59,7 +59,7 @@ warnings.simplefilter(action='ignore', category=pd.errors.PerformanceWarning)
 #############################################################################################################
 
 class NostalgiaForInfinityX2(IStrategy):
-    INTERFACE_VERSION = 2
+    INTERFACE_VERSION = 3
 
     def version(self) -> str:
         return "v0.0.1"
