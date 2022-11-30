@@ -116,7 +116,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.3.62"
+        return "v11.3.63"
 
 
     # ROI table:
@@ -13266,6 +13266,7 @@ class NostalgiaForInfinityX(IStrategy):
                         (
                             (dataframe['cmf'] > -0.2)
                             & (dataframe['hl_pct_change_48_1h'] < 0.7)
+                            & (dataframe['crsi_1h'] > 2.0)
                         )
                         |
                         (
@@ -13284,6 +13285,7 @@ class NostalgiaForInfinityX(IStrategy):
                             & (dataframe['btc_pct_close_max_72_5m'] < 1.06)
                             & (dataframe['cmf'] > -0.4)
                             & (dataframe['tpct_change_144'] < 0.22)
+                            & (dataframe['crsi_1h'] > 2.0)
                         )
                         | (dataframe['r_480'] > -30.0)
                         | (dataframe['crsi'] > 30.0)
@@ -13294,8 +13296,13 @@ class NostalgiaForInfinityX(IStrategy):
                             & (dataframe['cmf'] > -0.4)
                             & (dataframe['tpct_change_144'] < 0.22)
                             & (dataframe['hl_pct_change_36'] < 0.1)
+                            & (dataframe['crsi_1h'] > 2.0)
                         )
-                        | (dataframe['rsi_14_1h'] < 30.0)
+                        |
+                        (
+                            (dataframe['rsi_14_1h'] < 30.0)
+                            & (dataframe['crsi_1h'] > 2.0)
+                        )
                         |
                         (
                             (dataframe['r_14_1h'] < -95.0)
@@ -13322,6 +13329,7 @@ class NostalgiaForInfinityX(IStrategy):
                             & ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.0155))
                             & (dataframe['tpct_change_144'] < 0.22)
                             & (dataframe['hl_pct_change_36'] < 0.1)
+                            & (dataframe['crsi_1h'] > 2.0)
                         )
                         | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
                         |
