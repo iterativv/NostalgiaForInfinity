@@ -1019,6 +1019,11 @@ class NostalgiaForInfinityX2(IStrategy):
         # CTI
         informative_1h['cti_20'] = pta.cti(informative_1h["close"], length=20)
 
+        # CRSI
+        crsi_closechange = informative_1h['close'] / informative_1h['close'].shift(1)
+        crsi_updown = np.where(crsi_closechange.gt(1), 1.0, np.where(crsi_closechange.lt(1), -1.0, 0.0))
+        informative_1h['crsi'] =  (ta.RSI(informative_1h['close'], timeperiod=3) + ta.RSI(crsi_updown, timeperiod=2) + crsi_closechange.rolling(window=101).apply(lambda x: len(x[x < x.iloc[-1]]) / (len(x)-1))) / 3
+
         # S/R
         res_series = informative_1h['high'].rolling(window = 5, center=True).apply(lambda row: is_resistance(row), raw=True).shift(2)
         sup_series = informative_1h['low'].rolling(window = 5, center=True).apply(lambda row: is_support(row), raw=True).shift(2)
