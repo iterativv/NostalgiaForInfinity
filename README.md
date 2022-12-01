@@ -62,12 +62,12 @@ Absolutely not required. However, will be accepted as a token of appreciation.
 
 If you like to help, you can also use the following links to sign up to various exchanges:
 
-* Binance: https://accounts.binance.com/en/register?ref=EAZC47FM (5% discount on fees)
+* Binance: https://accounts.binance.com/en/register?ref=C68K26A9 (20% discount on trading fees)
 * Kucoin: https://www.kucoin.com/r/af/QBSSS5J2 (20% lifetime discount on trading fees)
-* Gate.io: https://www.gate.io/signup/8054544 (10% discount on trading fees)
-* OKX: https://www.okx.com/join/11749725760 (5% discount on trading fees)
+* Gate.io: https://www.gate.io/signup/8054544 (20% discount on trading fees)
+* OKX: https://www.okx.com/join/11749725931 (20% discount on trading fees)
 * ByBit: https://partner.bybit.com/b/nfi
-* Huobi: https://www.huobi.com/en-us/v/register/double-invite/?inviter_id=11345710&invite_code=ubpt2223
+* Huobi: https://www.huobi.com/en-us/v/register/double-invite/?inviter_id=11345710&invite_code=ubpt2223 (20% discount on trading fees)
 * Bitvavo: https://account.bitvavo.com/create?a=D22103A4BC (no fees for the first € 1000)
 
 ### Discord Link
