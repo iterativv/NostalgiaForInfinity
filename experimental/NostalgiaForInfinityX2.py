@@ -1073,7 +1073,14 @@ class NostalgiaForInfinityX2(IStrategy):
 
         # Indicators
         # -----------------------------------------------------------------------------------------
+
+        # RSI
         informative_15m['rsi_14'] = ta.RSI(informative_15m, timeperiod=14)
+
+        # CRSI
+        crsi_closechange = informative_15m['close'] / informative_15m['close'].shift(1)
+        crsi_updown = np.where(crsi_closechange.gt(1), 1.0, np.where(crsi_closechange.lt(1), -1.0, 0.0))
+        informative_15m['crsi'] =  (ta.RSI(informative_15m['close'], timeperiod=3) + ta.RSI(crsi_updown, timeperiod=2) + crsi_closechange.rolling(window=101).apply(lambda x: len(x[x < x.iloc[-1]]) / (len(x)-1))) / 3
 
         # Performance logging
         # -----------------------------------------------------------------------------------------
