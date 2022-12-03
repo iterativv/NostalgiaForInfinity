@@ -237,19 +237,19 @@ class NostalgiaForInfinityX2(IStrategy):
                 self._remove_profit_target(pair)
                 return False, None
             if (current_profit < -0.18):
-                if (current_profit < (previous_profit - 0.06)):
+                if (current_profit < (previous_profit - 0.04)):
                     return True, previous_sell_reason
             elif (current_profit < -0.1):
-                if (current_profit < (previous_profit - 0.055)):
+                if (current_profit < (previous_profit - 0.04)):
                     return True, previous_sell_reason
             elif (current_profit < -0.04):
-                if (current_profit < (previous_profit - 0.05)):
+                if (current_profit < (previous_profit - 0.04)):
                     return True, previous_sell_reason
             else:
-                if (current_profit < (previous_profit - 0.045)):
+                if (current_profit < (previous_profit - 0.04)):
                     return True, previous_sell_reason
         elif (previous_sell_reason in ["exit_profit_normal_bull_max"]):
-            if (0.001 <= current_profit < 0.01):
+            if (current_profit < 0.01):
                 if (current_profit < (previous_profit - 0.01)):
                     return True, previous_sell_reason
             elif (0.01 <= current_profit < 0.02):
