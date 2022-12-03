@@ -973,7 +973,14 @@ class NostalgiaForInfinityX2(IStrategy):
         informative_4h['res_hlevel'] = Series(np.where(res_series, informative_4h['high'], float('NaN'))).ffill()
         informative_4h['sup_level'] = Series(np.where(sup_series, np.where(informative_4h['close'] < informative_4h['open'], informative_4h['close'], informative_4h['open']), float('NaN'))).ffill()
 
+        # Downtrend checks
         informative_4h['not_downtrend'] = ((informative_4h['close'] > informative_4h['close'].shift(2)) | (informative_4h['rsi_14'] > 50.0))
+
+        # Max highs
+        informative_4h['high_max_3'] = informative_4h['high'].rolling(3).max()
+        informative_4h['high_max_12'] = informative_4h['high'].rolling(12).max()
+
+        informative_4h['pct_change_high_max_3_12'] = (informative_4h['high_max_3'] - informative_4h['high_max_12']) / informative_4h['high_max_12']
 
         # Performance logging
         # -----------------------------------------------------------------------------------------
