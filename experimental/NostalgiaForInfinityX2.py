@@ -1400,20 +1400,13 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append(dataframe['hl_pct_change_36'] < 0.3)
                     item_buy_logic.append(dataframe['hl_pct_change_24_1h'] < 3.0)
 
-                    item_buy_logic.append(dataframe['ema_12_1h'] > dataframe['ema_26_1h'])
-                    item_buy_logic.append(dataframe['ema_12_1h'] > dataframe['ema_200_1h'])
-                    item_buy_logic.append(dataframe['sma_12_1h'] > dataframe['sma_26_1h'])
-                    item_buy_logic.append(dataframe['sma_12_1h'] > dataframe['sma_200_1h'])
-                    item_buy_logic.append(dataframe['ema_12_1h'] > dataframe['sma_26_1h'])
-
-                    item_buy_logic.append(dataframe['ema_12_4h'] > dataframe['ema_26_4h'])
-                    item_buy_logic.append(dataframe['ema_12_4h'] > dataframe['ema_200_4h'])
                     item_buy_logic.append(dataframe['sma_12_4h'] > dataframe['sma_26_4h'])
-                    item_buy_logic.append(dataframe['sma_12_4h'] > dataframe['sma_200_4h'])
-                    item_buy_logic.append(dataframe['ema_12_4h'] > dataframe['sma_26_4h'])
+
+                    item_buy_logic.append(dataframe['sma_200'] > dataframe['sma_200'].shift(36))
 
                     item_buy_logic.append(dataframe['cti_20_1h'] < 0.85)
                     item_buy_logic.append(dataframe['cti_20_4h'] < 0.9)
+                    item_buy_logic.append(dataframe['r_480_4h'] < -25.0)
 
                     item_buy_logic.append(dataframe['not_downtrend_1h'])
                     item_buy_logic.append(dataframe['not_downtrend_4h'])
