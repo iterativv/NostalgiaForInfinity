@@ -1046,7 +1046,16 @@ class NostalgiaForInfinityX2(IStrategy):
         informative_1h['hl_pct_change_12'] = range_percent_change(self, informative_1h, 'HL', 12)
         informative_1h['hl_pct_change_6'] = range_percent_change(self, informative_1h, 'HL', 6)
 
+        # Downtrend checks
         informative_1h['not_downtrend'] = ((informative_1h['close'] > informative_1h['close'].shift(2)) | (informative_1h['rsi_14'] > 50.0))
+
+        # Max highs
+        informative_1h['high_max_6'] = informative_1h['high'].rolling(6).max()
+        informative_1h['high_max_12'] = informative_1h['high'].rolling(12).max()
+        informative_1h['high_max_24'] = informative_1h['high'].rolling(24).max()
+
+        informative_1h['pct_change_high_max_6_12'] = (informative_1h['high_max_6'] - informative_1h['high_max_12']) / informative_1h['high_max_12']
+        informative_1h['pct_change_high_max_6_24'] = (informative_1h['high_max_6'] - informative_1h['high_max_24']) / informative_1h['high_max_24']
 
         # Performance logging
         # -----------------------------------------------------------------------------------------
