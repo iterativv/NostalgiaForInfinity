@@ -1051,6 +1051,14 @@ class NostalgiaForInfinityX2(IStrategy):
         # Downtrend checks
         informative_1h['not_downtrend'] = ((informative_1h['close'] > informative_1h['close'].shift(2)) | (informative_1h['rsi_14'] > 50.0))
 
+        informative_1h['is_downtrend_5'] = ((informative_1h['close'] < informative_1h['open']) & (informative_1h['close'].shift(1) < informative_1h['open'].shift(1)) & (informative_1h['close'].shift(2) < informative_1h['open'].shift(2)) & (informative_1h['close'].shift(3) < informative_1h['open'].shift(3)) & (informative_1h['close'].shift(4) < informative_1h['open'].shift(4)))
+
+        # Wicks
+        informative_1h['top_wick_pct'] = ((informative_1h['high'] - np.maximum(informative_1h['open'], informative_1h['close'])) / np.maximum(informative_1h['open'], informative_1h['close']))
+
+        # Candle change
+        informative_1h['change_pct'] = (informative_1h['close'] - informative_1h['open']) / informative_1h['open']
+
         # Max highs
         informative_1h['high_max_6'] = informative_1h['high'].rolling(6).max()
         informative_1h['high_max_12'] = informative_1h['high'].rolling(12).max()
