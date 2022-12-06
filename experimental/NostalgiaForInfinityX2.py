@@ -106,7 +106,7 @@ class NostalgiaForInfinityX2(IStrategy):
     startup_candle_count: int = 480
 
     # Normal mode bull tags
-    normal_mode_bull_tags = ['force_entry', '1', '2', '3', '4']
+    normal_mode_bull_tags = ['force_entry', '1', '2', '3', '4', '5']
     # Normal mode bear tags
     normal_mode_bear_tags = ['11', '12', '13', '14']
 
@@ -119,6 +119,7 @@ class NostalgiaForInfinityX2(IStrategy):
         "buy_condition_1_enable": True,
         "buy_condition_2_enable": True,
         "buy_condition_3_enable": True,
+        "buy_condition_4_enable": True,
         "buy_condition_4_enable": True,
 
         "buy_condition_11_enable": True,
@@ -1525,6 +1526,32 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.018))
                     item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * 0.996))
+
+                # Condition #5 - Normal mode bull.
+                if index == 5:
+                    # Protections
+                    item_buy_logic.append(dataframe['btc_is_bull_4h'])
+                    item_buy_logic.append(dataframe['btc_pct_close_max_24_5m'] < 0.03)
+                    item_buy_logic.append(dataframe['btc_pct_close_max_72_5m'] < 0.03)
+                    item_buy_logic.append(dataframe['close_max_48'] < (dataframe['close'] * 1.36))
+
+                    item_buy_logic.append(dataframe['sma_200_4h'] > dataframe['sma_200_4h'].shift(96))
+
+                    item_buy_logic.append(dataframe['cti_20_1h'] < 0.9)
+                    item_buy_logic.append(dataframe['cti_20_4h'] < 0.9)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] < 85.0)
+                    item_buy_logic.append(dataframe['rsi_14_4h'] < 75.0)
+
+                    item_buy_logic.append(dataframe['not_downtrend_1h'])
+                    item_buy_logic.append(dataframe['not_downtrend_4h'])
+                    item_buy_logic.append(dataframe['pct_change_high_max_6_24_1h'] > -0.3)
+                    item_buy_logic.append(dataframe['pct_change_high_max_3_12_4h'] > -0.4)
+
+                    # Logic
+                    item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
+                    item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.03))
+                    item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
+                    item_buy_logic.append(dataframe['rsi_14'] < 36.0)
 
                 # Condition #11 - Normal mode bear.
                 if index == 11:
