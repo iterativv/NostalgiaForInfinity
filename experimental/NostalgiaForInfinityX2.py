@@ -981,10 +981,14 @@ class NostalgiaForInfinityX2(IStrategy):
         # Wicks
         informative_4h['top_wick_pct'] = ((informative_4h['high'] - np.maximum(informative_4h['open'], informative_4h['close'])) / np.maximum(informative_4h['open'], informative_4h['close']))
 
+        # Candle change
+        informative_4h['change_pct'] = (informative_4h['close'] - informative_4h['open']) / informative_4h['open']
+
         # Max highs
         informative_4h['high_max_3'] = informative_4h['high'].rolling(3).max()
         informative_4h['high_max_12'] = informative_4h['high'].rolling(12).max()
 
+        informative_4h['pct_change_high_max_1_12'] = (informative_4h['high'] - informative_4h['high_max_12']) / informative_4h['high_max_12']
         informative_4h['pct_change_high_max_3_12'] = (informative_4h['high_max_3'] - informative_4h['high_max_12']) / informative_4h['high_max_12']
 
         # Performance logging
