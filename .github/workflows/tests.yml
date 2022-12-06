@@ -43,62 +43,62 @@ jobs:
         extra_args: --files ${{ steps.changed-files.outputs.repo_files }}
 
 
-  Binance-Backtests:
-    runs-on: ubuntu-20.04
-    needs:
-      - Pre-Commit
-    strategy:
-      fail-fast: false
-      matrix:
-        timerange:
-          - 20210101-20210201
-          - 20210201-20210301
-          - 20210301-20210401
-          - 20210401-20210501
-          - 20210501-20210601
-          - 20210601-20210701
-          - 20210701-20210801
-          - 20210801-20210901
-          - 20210901-20211001
-          - 20211001-20211101
-          - 20211101-20211201
-          - 20211201-20220101
-          - 20220101-20220201
-          - 20220201-20220301
-          - 20220301-20220401
-          - 20220401-20220501
-          - 20220501-20220601
-          - 20220601-20220701
+  # Binance-Backtests:
+  #   runs-on: ubuntu-20.04
+  #   needs:
+  #     - Pre-Commit
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       timerange:
+  #         - 20210101-20210201
+  #         - 20210201-20210301
+  #         - 20210301-20210401
+  #         - 20210401-20210501
+  #         - 20210501-20210601
+  #         - 20210601-20210701
+  #         - 20210701-20210801
+  #         - 20210801-20210901
+  #         - 20210901-20211001
+  #         - 20211001-20211101
+  #         - 20211101-20211201
+  #         - 20211201-20220101
+  #         - 20220101-20220201
+  #         - 20220201-20220301
+  #         - 20220301-20220401
+  #         - 20220401-20220501
+  #         - 20220501-20220601
+  #         - 20220601-20220701
 
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: true
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         submodules: true
 
-      - name: Build Tests Image
-        run: docker-compose build tests
+  #     - name: Build Tests Image
+  #       run: docker-compose build tests
 
-      - name: Run Tests
-        env:
-          EXTRA_ARGS: -p no:cacheprovider tests/backtests -k 'binance and ${{ matrix.timerange }}'
-        run: |
-          mkdir artifacts
-          chmod 777 artifacts
-          docker-compose run --rm tests
+  #     - name: Run Tests
+  #       env:
+  #         EXTRA_ARGS: -p no:cacheprovider tests/backtests -k 'binance and ${{ matrix.timerange }}'
+  #       run: |
+  #         mkdir artifacts
+  #         chmod 777 artifacts
+  #         docker-compose run --rm tests
 
-      - name: List Artifacts
-        run: |
-          ls -lah artifacts/
+  #     - name: List Artifacts
+  #       run: |
+  #         ls -lah artifacts/
 
-      - name: Show Backest Output
-        run: |
-          cat artifacts/backtest-output-binance-${{ matrix.timerange }}.txt
+  #     - name: Show Backest Output
+  #       run: |
+  #         cat artifacts/backtest-output-binance-${{ matrix.timerange }}.txt
 
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: binance-testrun-artifacts
-          path: artifacts/
+  #     - name: Upload Artifacts
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: binance-testrun-artifacts
+  #         path: artifacts/
 
 
   Kucoin-Backtests:
@@ -163,7 +163,7 @@ jobs:
     runs-on: ubuntu-20.04
     needs:
       - Kucoin-Backtests
-      - Binance-Backtests
+      # - Binance-Backtests
 
     steps:
 
@@ -178,16 +178,16 @@ jobs:
         run: |
           python -m pip install -r tests/ci-requirements.txt
 
-      - name: Download Previous Binance CI Artifacts
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          python .github/workflows/scripts/download-previous-artifacts.py \
-            --repo=${{ github.event.repository.full_name }} \
-            --branch=main \
-            --workflow=tests.yml \
-            --exchange=binance \
-            --name=binance-testrun-artifacts downloaded-results
+      # - name: Download Previous Binance CI Artifacts
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   run: |
+      #     python .github/workflows/scripts/download-previous-artifacts.py \
+      #       --repo=${{ github.event.repository.full_name }} \
+      #       --branch=main \
+      #       --workflow=tests.yml \
+      #       --exchange=binance \
+      #       --name=binance-testrun-artifacts downloaded-results
 
       - name: Download Previous Kucoin CI Artifacts
         env:
@@ -200,11 +200,11 @@ jobs:
             --exchange=kucoin \
             --name=kucoin-testrun-artifacts downloaded-results
 
-      - name: Download Current Binance CI Artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: binance-testrun-artifacts
-          path: downloaded-results/current
+      # - name: Download Current Binance CI Artifacts
+      #   uses: actions/download-artifact@v2
+      #   with:
+      #     name: binance-testrun-artifacts
+      #     path: downloaded-results/current
 
       - name: Download Current Kucoin CI Artifacts
         uses: actions/download-artifact@v2
