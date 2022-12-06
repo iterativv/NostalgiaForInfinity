@@ -1443,28 +1443,29 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append(dataframe['btc_is_bull_4h'])
                     item_buy_logic.append(dataframe['btc_pct_close_max_24_5m'] < 0.03)
                     item_buy_logic.append(dataframe['btc_pct_close_max_72_5m'] < 0.03)
+                    item_buy_logic.append(dataframe['close_max_48'] < (dataframe['close'] * 1.3))
 
-                    item_buy_logic.append(dataframe['ema_12_1h'] > dataframe['ema_26_1h'])
-                    item_buy_logic.append(dataframe['ema_12_1h'] > dataframe['ema_200_1h'])
-                    item_buy_logic.append(dataframe['sma_12_1h'] > dataframe['sma_26_1h'])
-                    item_buy_logic.append(dataframe['sma_12_1h'] > dataframe['sma_200_1h'])
-                    item_buy_logic.append(dataframe['ema_12_1h'] > dataframe['sma_26_1h'])
-
-                    item_buy_logic.append(dataframe['ema_12_4h'] > dataframe['ema_26_4h'])
-                    item_buy_logic.append(dataframe['ema_12_4h'] > dataframe['ema_200_4h'])
-                    item_buy_logic.append(dataframe['sma_12_4h'] > dataframe['sma_26_4h'])
-                    item_buy_logic.append(dataframe['sma_12_4h'] > dataframe['sma_200_4h'])
                     item_buy_logic.append(dataframe['ema_12_4h'] > dataframe['sma_26_4h'])
 
-                    item_buy_logic.append(dataframe['r_480_4h'] < -25.0)
+                    item_buy_logic.append(dataframe['cti_20_1h'] < 0.88)
+                    item_buy_logic.append(dataframe['cti_20_4h'] < 0.9)
+                    item_buy_logic.append(dataframe['rsi_14_4h'] < 80.0)
 
                     item_buy_logic.append(dataframe['not_downtrend_1h'])
                     item_buy_logic.append(dataframe['not_downtrend_4h'])
-
+                    item_buy_logic.append((dataframe['change_pct_4h'] > -0.1)
+                                          | (dataframe['change_pct_4h'].shift(48) < 0.1)
+                                          | (dataframe['rsi_14_4h'].shift(48) < 80.0))
+                    item_buy_logic.append((dataframe['change_pct_4h'] > 0.0)
+                                          | (dataframe['top_wick_pct_4h'] < (abs(dataframe['change_pct_4h']) * 4.0))
+                                          | (dataframe['rsi_14_4h'] < 50.0))
+                    item_buy_logic.append((dataframe['pct_change_high_max_3_12_1h'] > -0.12)
+                                          | (dataframe['cti_20_1h'] < 0.8)
+                                          | (dataframe['volume_mean_factor_12_1h'] > 0.1))
                     # Logic
                     item_buy_logic.append(dataframe['bb40_2_delta'].gt(dataframe['close'] * 0.02))
                     item_buy_logic.append(dataframe['close_delta'].gt(dataframe['close'] * 0.02))
-                    item_buy_logic.append(dataframe['bb40_2_tail'].lt(dataframe['bb40_2_delta'] * 0.1))
+                    item_buy_logic.append(dataframe['bb40_2_tail'].lt(dataframe['bb40_2_delta'] * 0.18))
                     item_buy_logic.append(dataframe['close'].lt(dataframe['bb40_2_low'].shift()))
                     item_buy_logic.append(dataframe['close'].le(dataframe['close'].shift()))
 
