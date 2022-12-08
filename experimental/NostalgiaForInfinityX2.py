@@ -1793,7 +1793,7 @@ class NostalgiaForInfinityX2(IStrategy):
                 # Condition #16 - Normal mode bear.
                 if index == 16:
                     # Protections
-                    item_buy_logic.append(dataframe['btc_is_bull_4h'])
+                    item_buy_logic.append(dataframe['btc_is_bull_4h'] == False)
                     item_buy_logic.append(dataframe['btc_pct_close_max_24_5m'] < 0.03)
                     item_buy_logic.append(dataframe['btc_pct_close_max_72_5m'] < 0.03)
                     item_buy_logic.append(dataframe['close_max_48'] < (dataframe['close'] * 1.36))
