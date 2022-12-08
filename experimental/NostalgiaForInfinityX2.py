@@ -1108,6 +1108,9 @@ class NostalgiaForInfinityX2(IStrategy):
         # RSI
         informative_15m['rsi_14'] = ta.RSI(informative_15m, timeperiod=14)
 
+        # SMA
+        informative_15m['sma_200'] = ta.SMA(informative_15m, timeperiod=200)
+
         # CTI
         informative_15m['cti_20'] = pta.cti(informative_15m["close"], length=20)
 
@@ -1836,10 +1839,50 @@ class NostalgiaForInfinityX2(IStrategy):
                                           | (dataframe['hl_pct_change_48_1h'] < 0.5))
                     item_buy_logic.append((dataframe['cti_20_15m'] < 0.9)
                                           | (dataframe['cti_20_1h'] < 0.8))
+                    item_buy_logic.append((dataframe['cti_20_1h'] < 0.7)
+                                          | (dataframe['r_14_4h'] < -25.0)
+                                          | (dataframe['sma_200_15m'] > dataframe['sma_200_15m'].shift(12))
+                                          | (dataframe['sma_200_1h'] > dataframe['sma_200_1h'].shift(24))
+                                          | (dataframe['sma_200_4h'] > dataframe['sma_200_4h'].shift(96)))
+                    # current 1h red, previous 1h green
+                    item_buy_logic.append((dataframe['change_pct_1h'] > -0.04)
+                                          | (dataframe['change_pct_1h'].shift(12) < 0.04)
+                                          |(dataframe['cti_20_1h'].shift(12) < 0.8)
+                                          | (dataframe['r_14_1h'].shift(12) < -10.0)
+                                          | (dataframe['sma_200_1h'] > dataframe['sma_200_1h'].shift(24))
+                                          | (dataframe['sma_200_4h'] > dataframe['sma_200_4h'].shift(96)))
+                    item_buy_logic.append((dataframe['crsi_15m'] > 10.0)
+                                          | (dataframe['sma_200_15m'] > dataframe['sma_200_15m'].shift(12))
+                                          | (dataframe['sma_200_1h'] > dataframe['sma_200_1h'].shift(24))
+                                          | (dataframe['sma_200_4h'] > dataframe['sma_200_4h'].shift(96)))
+                    # curent 1h red, previous 1h long green with top wick
+                    item_buy_logic.append((dataframe['change_pct_1h'] > -0.04) |
+                                          (dataframe['change_pct_1h'].shift(12) < 0.08) |
+                                          (dataframe['top_wick_pct_1h'].shift(12) < 0.08) |
+                                          (dataframe['rsi_14_1h'].shift(12) < 85.0))
+                    item_buy_logic.append((dataframe['sma_200_1h'] > dataframe['sma_200_1h'].shift(24))
+                                          | (dataframe['sma_200_4h'] > dataframe['sma_200_4h'].shift(96))
+                                          | (dataframe['volume_mean_factor_12_15m'] > 0.1))
+                    # current 1h red and CTI 1h high
+                    # current 4h red and CTI 4h high
+                    # previous 4h green and CTI 4h high
+                    item_buy_logic.append((dataframe['change_pct_1h'] > -0.02)
+                                          | (dataframe['cti_20_1h'] < 0.85)
+                                          | (dataframe['change_pct_4h'] > -0.08)
+                                          | (dataframe['cti_20_4h'] < 0.75)
+                                          | (dataframe['change_pct_4h'].shift(48) < 0.08)
+                                          | (dataframe['cti_20_4h'].shift(48) < 0.8))
+                    # current 4h with very long top wick
+                    item_buy_logic.append((dataframe['cti_20_4h'] < 0.75)
+                                          | (dataframe['top_wick_pct_4h'] < (abs(dataframe['change_pct_4h']) * 20.0)))
+                    item_buy_logic.append((dataframe['cti_20_1h'] < 0.8)
+                                          | (dataframe['sma_200_15m'] > dataframe['sma_200_15m'].shift(12))
+                                          | (dataframe['sma_200_1h'] > dataframe['sma_200_1h'].shift(24))
+                                          | (dataframe['sma_200_4h'] > dataframe['sma_200_4h'].shift(96)))
 
                     # Logic
-                    item_buy_logic.append(dataframe['close'] < (dataframe['ema_26'] * 0.95))
-                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * 0.995))
+                    item_buy_logic.append(dataframe['close'] < (dataframe['ema_26'] * 0.94))
+                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * 0.996))
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
