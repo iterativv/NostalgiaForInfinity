@@ -694,7 +694,7 @@ class NostalgiaForInfinityX2(IStrategy):
     def exit_normal_bear_main(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
         if (last_candle['close'] > last_candle['sma_200_1h']):
             if 0.01 > current_profit >= 0.001:
-                if (last_candle['rsi_14'] < 26.0):
+                if (last_candle['rsi_14'] < 22.0):
                     return True, 'exit_normal_bear_o_0'
             elif 0.02 > current_profit >= 0.01:
                 if (last_candle['rsi_14'] < 30.0):
@@ -734,7 +734,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     return True, 'exit_normal_bear_o_12'
         elif (last_candle['close'] < last_candle['sma_200_1h']):
             if 0.01 > current_profit >= 0.001:
-                if (last_candle['rsi_14'] < 28.0):
+                if (last_candle['rsi_14'] < 24.0):
                     return True, 'exit_normal_bear_u_0'
             elif 0.02 > current_profit >= 0.01:
                 if (last_candle['rsi_14'] < 32.0):
