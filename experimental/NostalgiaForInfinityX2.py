@@ -106,7 +106,7 @@ class NostalgiaForInfinityX2(IStrategy):
     startup_candle_count: int = 480
 
     # Normal mode bull tags
-    normal_mode_bull_tags = ['force_entry', '1', '2', '3', '4', '5']
+    normal_mode_bull_tags = ['force_entry', '1', '2', '3', '4', '5', '6']
     # Normal mode bear tags
     normal_mode_bear_tags = ['11', '12', '13', '14', '15']
 
@@ -121,6 +121,7 @@ class NostalgiaForInfinityX2(IStrategy):
         "buy_condition_3_enable": True,
         "buy_condition_4_enable": True,
         "buy_condition_5_enable": True,
+        "buy_condition_6_enable": True,
 
         "buy_condition_11_enable": True,
         "buy_condition_12_enable": True,
@@ -950,6 +951,8 @@ class NostalgiaForInfinityX2(IStrategy):
         # RSI
         informative_4h['rsi_14'] = ta.RSI(informative_4h, timeperiod=14, fillna=True)
 
+        informative_4h['rsi_14_max_6'] = informative_4h['rsi_14'].rolling(6).max()
+
         # EMA
         informative_4h['ema_12'] = ta.EMA(informative_4h, timeperiod=12)
         informative_4h['ema_26'] = ta.EMA(informative_4h, timeperiod=26)
@@ -1565,6 +1568,54 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.03))
                     item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
                     item_buy_logic.append(dataframe['rsi_14'] < 36.0)
+
+                # Condition #6 - Normal mode bull.
+                if index == 6:
+                    # Protections
+                    item_buy_logic.append(dataframe['btc_is_bull_4h'])
+                    item_buy_logic.append(dataframe['btc_pct_close_max_24_5m'] < 0.03)
+                    item_buy_logic.append(dataframe['btc_pct_close_max_72_5m'] < 0.03)
+                    item_buy_logic.append(dataframe['close_max_48'] < (dataframe['close'] * 1.36))
+
+                    item_buy_logic.append(dataframe['cti_20_1h'] < 0.9)
+                    item_buy_logic.append(dataframe['cti_20_4h'] < 0.9)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] < 85.0)
+                    item_buy_logic.append(dataframe['rsi_14_4h'] < 75.0)
+
+                    item_buy_logic.append(dataframe['not_downtrend_15m'])
+                    item_buy_logic.append(dataframe['not_downtrend_1h'])
+                    item_buy_logic.append(dataframe['not_downtrend_4h'])
+                    item_buy_logic.append(dataframe['pct_change_high_max_6_24_1h'] > -0.3)
+                    item_buy_logic.append(dataframe['pct_change_high_max_3_12_4h'] > -0.4)
+                    # current 4h red and previous green with long top wick
+                    item_buy_logic.append((dataframe['change_pct_4h'] > -0.04)
+                                          | (dataframe['change_pct_4h'].shift(48) < 0.08)
+                                          | (dataframe['top_wick_pct_4h'].shift(48) < 0.16))
+                    # current 4h red and previous green with high RSI
+                    item_buy_logic.append((dataframe['change_pct_4h'] > -0.1)
+                                          | (dataframe['change_pct_4h'].shift(48) < 0.1)
+                                          | (dataframe['rsi_14_4h'].shift(48) < 75.0))
+                    # current 4h green and RSI high SMA 200 is negative
+                    item_buy_logic.append((dataframe['change_pct_4h'] < 0.12)
+                                          | (dataframe['rsi_14_4h'] < 70.0)
+                                          | (dataframe['sma_200_4h'] > dataframe['sma_200_4h'].shift(96)))
+                    # curent 4h and previous 4h red and RSI in last 6 4h high,
+                    # low volume on current 4h
+                    item_buy_logic.append((dataframe['change_pct_4h'] > -0.04)
+                                          | (dataframe['change_pct_4h'].shift(48) > -0.04)
+                                          | (dataframe['rsi_14_max_6_4h'] < 80.0)
+                                          | (dataframe['volume_mean_factor_6_4h'] > 0.7))
+                    # current 4h green with top wick, previous 4h red, 24 pump
+                    item_buy_logic.append((dataframe['change_pct_4h'] < 0.02)
+                                          | (dataframe['top_wick_pct_4h'] < (abs(dataframe['change_pct_4h']) * 2.0))
+                                          | (dataframe['change_pct_4h'].shift(48) > -0.02)
+                                          | (dataframe['hl_pct_change_48_1h'] < 0.5))
+                    item_buy_logic.append((dataframe['cti_20_15m'] < 0.9)
+                                          | (dataframe['cti_20_1h'] < 0.8))
+
+                    # Logic
+                    item_buy_logic.append(dataframe['close'] < (dataframe['ema_26'] * 0.95))
+                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * 0.995))
 
                 # Condition #11 - Normal mode bear.
                 if index == 11:
