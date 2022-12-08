@@ -993,6 +993,9 @@ class NostalgiaForInfinityX2(IStrategy):
         informative_4h['pct_change_high_max_1_12'] = (informative_4h['high'] - informative_4h['high_max_12']) / informative_4h['high_max_12']
         informative_4h['pct_change_high_max_3_12'] = (informative_4h['high_max_3'] - informative_4h['high_max_12']) / informative_4h['high_max_12']
 
+        # Volume
+        informative_4h['volume_mean_factor_6'] = informative_4h['volume'] / informative_4h['volume'].rolling(6).mean()
+
         # Performance logging
         # -----------------------------------------------------------------------------------------
         tok = time.perf_counter()
