@@ -1119,6 +1119,9 @@ class NostalgiaForInfinityX2(IStrategy):
         # Downtrend check
         informative_15m['not_downtrend'] = ((informative_15m['close'] > informative_15m['open']) | (informative_15m['close'].shift(1) > informative_15m['open'].shift(1)) | (informative_15m['close'].shift(2) > informative_15m['open'].shift(2)) | (informative_15m['rsi_14'] > 50.0) | (informative_15m['crsi'] > 20.0))
 
+        # Volume
+        informative_15m['volume_mean_factor_12'] = informative_15m['volume'] / informative_15m['volume'].rolling(12).mean()
+
         # Performance logging
         # -----------------------------------------------------------------------------------------
         tok = time.perf_counter()
