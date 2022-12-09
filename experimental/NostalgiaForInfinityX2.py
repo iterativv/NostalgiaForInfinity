@@ -1067,6 +1067,8 @@ class NostalgiaForInfinityX2(IStrategy):
         # Downtrend checks
         informative_1h['not_downtrend'] = ((informative_1h['close'] > informative_1h['close'].shift(2)) | (informative_1h['rsi_14'] > 50.0))
 
+        informative_1h['is_downtrend_3'] = ((informative_1h['close'] < informative_1h['open']) & (informative_1h['close'].shift(1) < informative_1h['open'].shift(1)) & (informative_1h['close'].shift(2) < informative_1h['open'].shift(2)))
+
         informative_1h['is_downtrend_5'] = ((informative_1h['close'] < informative_1h['open']) & (informative_1h['close'].shift(1) < informative_1h['open'].shift(1)) & (informative_1h['close'].shift(2) < informative_1h['open'].shift(2)) & (informative_1h['close'].shift(3) < informative_1h['open'].shift(3)) & (informative_1h['close'].shift(4) < informative_1h['open'].shift(4)))
 
         # Wicks
