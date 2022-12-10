@@ -1594,6 +1594,18 @@ class NostalgiaForInfinityX2(IStrategy):
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {enter_tag})"
 
+        # Pump mpde, bull
+        if any(c in self.pump_mode_bull_tags for c in enter_tags):
+            sell, signal_name = self.exit_pump_bull(pair, current_rate, profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            if sell and (signal_name is not None):
+                return f"{signal_name} ( {enter_tag})"
+
+        # Pumpx mode, bear
+        if any(c in self.normal_mode_bear_tags for c in enter_tags):
+            sell, signal_name = self.exit_normal_bear(pair, current_rate, profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            if sell and (signal_name is not None):
+                return f"{signal_name} ( {enter_tag})"
+
         return None
 
     def informative_pairs(self):
