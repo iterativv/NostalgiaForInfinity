@@ -1500,31 +1500,22 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append(dataframe['btc_pct_close_max_72_5m'] < 0.03)
                     item_buy_logic.append(dataframe['close_max_48'] < (dataframe['close'] * 1.26))
 
-                    item_buy_logic.append(dataframe['ema_12_1h'] > dataframe['ema_26_1h'])
                     item_buy_logic.append(dataframe['ema_12_1h'] > dataframe['ema_200_1h'])
-                    item_buy_logic.append(dataframe['sma_12_1h'] > dataframe['sma_26_1h'])
-                    item_buy_logic.append(dataframe['sma_12_1h'] > dataframe['sma_200_1h'])
-                    item_buy_logic.append(dataframe['ema_12_1h'] > dataframe['sma_26_1h'])
 
-                    item_buy_logic.append(dataframe['ema_12_4h'] > dataframe['ema_26_4h'])
                     item_buy_logic.append(dataframe['ema_12_4h'] > dataframe['ema_200_4h'])
-                    item_buy_logic.append(dataframe['sma_12_4h'] > dataframe['sma_26_4h'])
-                    item_buy_logic.append(dataframe['sma_12_4h'] > dataframe['sma_200_4h'])
-                    item_buy_logic.append(dataframe['ema_12_4h'] > dataframe['sma_26_4h'])
 
                     item_buy_logic.append(dataframe['rsi_14_4h'] < 75.0)
 
+                    item_buy_logic.append(dataframe['not_downtrend_15m'])
                     item_buy_logic.append(dataframe['not_downtrend_1h'])
                     item_buy_logic.append(dataframe['not_downtrend_4h'])
 
                     # Logic
-                    item_buy_logic.append(dataframe['ema_50'] > (dataframe['ema_200'] * 1.02))
-                    item_buy_logic.append(dataframe['sma_50'] > (dataframe['sma_200'] * 1.02))
                     item_buy_logic.append(dataframe['close'] > (dataframe['ema_200'] * 0.95))
                     item_buy_logic.append(dataframe['close'] < (dataframe['ema_200'] * 1.1))
                     item_buy_logic.append(dataframe['rsi_14'] < 36.0)
                     item_buy_logic.append(dataframe['ha_close'] > dataframe['ha_open'])
-                    item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.026))
+                    item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.02))
 
                 # Condition #4 - Normal mode bull.
                 if index == 4:
