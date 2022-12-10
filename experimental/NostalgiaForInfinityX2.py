@@ -135,6 +135,8 @@ class NostalgiaForInfinityX2(IStrategy):
         "buy_condition_16_enable": True,
 
         "buy_condition_21_enable": True,
+
+        "buy_condition_31_enable": True,
     }
 
     buy_protection_params = {}
@@ -1602,9 +1604,9 @@ class NostalgiaForInfinityX2(IStrategy):
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {enter_tag})"
 
-        # Pumpx mode, bear
-        if any(c in self.normal_mode_bear_tags for c in enter_tags):
-            sell, signal_name = self.exit_normal_bear(pair, current_rate, profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+        # Pump mode, bear
+        if any(c in self.pump_mode_bear_tags for c in enter_tags):
+            sell, signal_name = self.exit_pump_bear(pair, current_rate, profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {enter_tag})"
 
@@ -2638,6 +2640,51 @@ class NostalgiaForInfinityX2(IStrategy):
                 if index == 21:
                     # Protections
                     item_buy_logic.append(dataframe['btc_is_bull_4h'])
+                    item_buy_logic.append(dataframe['btc_pct_close_max_24_5m'] < 0.03)
+                    item_buy_logic.append(dataframe['btc_pct_close_max_72_5m'] < 0.03)
+                    item_buy_logic.append(dataframe['close_max_48'] < (dataframe['close'] * 1.2))
+                    item_buy_logic.append(dataframe['close_max_72'] < (dataframe['close'] * 1.24))
+                    item_buy_logic.append(dataframe['close_max_144'] < (dataframe['close'] * 1.3))
+
+                    item_buy_logic.append(dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(96))
+                    item_buy_logic.append(dataframe['sma_200_1h'] > dataframe['sma_200_1h'].shift(24))
+                    item_buy_logic.append(dataframe['sma_200_4h'] > dataframe['sma_200_4h'].shift(96))
+
+                    item_buy_logic.append(dataframe['close'] > dataframe['ema_200'])
+
+                    item_buy_logic.append(dataframe['cti_20_1h'] < 0.9)
+                    item_buy_logic.append(dataframe['cti_20_4h'] < 0.9)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] < 80.0)
+                    item_buy_logic.append(dataframe['rsi_14_4h'] < 80.0)
+
+                    item_buy_logic.append(dataframe['not_downtrend_15m'])
+                    item_buy_logic.append(dataframe['not_downtrend_1h'])
+                    item_buy_logic.append((dataframe['is_downtrend_3_1h'] == False)
+                                          | (dataframe['crsi_1h'] > 20.0))
+                    item_buy_logic.append(dataframe['is_downtrend_5_1h'] == False)
+                    item_buy_logic.append(dataframe['not_downtrend_4h'])
+                    item_buy_logic.append(dataframe['pct_change_high_max_6_24_1h'] > -0.3)
+                    item_buy_logic.append(dataframe['pct_change_high_max_3_12_4h'] > -0.4)
+                    # current 4h red with top wick, previous 4h long green
+                    item_buy_logic.append((dataframe['change_pct_4h'] > -0.04)
+                                          | (dataframe['top_wick_pct_4h'] < (abs(dataframe['change_pct_4h']) * 2.0))
+                                          | (dataframe['change_pct_4h'].shift(48) < 0.12))
+                    # current 4h red, previous 4h green with wick
+                    item_buy_logic.append((dataframe['change_pct_4h'] > -0.04)
+                                          | (dataframe['change_pct_4h'].shift(48) < 0.18)
+                                          | (dataframe['top_wick_pct_4h'].shift(48) < 0.08)
+                                          | (dataframe['rsi_14_max_6_4h'] < 80.0))
+
+                    # Logic
+                    item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
+                    item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.016))
+                    item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
+                    item_buy_logic.append(dataframe['rsi_14'] < 40.0)
+
+                # Condition #31 - Pump mode bear.
+                if index == 31:
+                    # Protections
+                    item_buy_logic.append(dataframe['btc_is_bull_4h'] == False)
                     item_buy_logic.append(dataframe['btc_pct_close_max_24_5m'] < 0.03)
                     item_buy_logic.append(dataframe['btc_pct_close_max_72_5m'] < 0.03)
                     item_buy_logic.append(dataframe['close_max_48'] < (dataframe['close'] * 1.2))
