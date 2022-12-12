@@ -143,6 +143,8 @@ class NostalgiaForInfinityX2(IStrategy):
         "buy_condition_31_enable": True,
 
         "buy_condition_41_enable": True,
+
+        "buy_condition_51_enable": True,
     }
 
     buy_protection_params = {}
@@ -3444,6 +3446,34 @@ class NostalgiaForInfinityX2(IStrategy):
                 if index == 41:
                     # Protections
                     item_buy_logic.append(dataframe['btc_is_bull_4h'])
+                    item_buy_logic.append(dataframe['btc_pct_close_max_24_5m'] < 0.03)
+                    item_buy_logic.append(dataframe['btc_pct_close_max_72_5m'] < 0.03)
+                    item_buy_logic.append(dataframe['close_max_48'] < (dataframe['close'] * 1.2))
+                    item_buy_logic.append(dataframe['high_max_6_1h'] < (dataframe['close'] * 1.24))
+                    item_buy_logic.append(dataframe['high_max_12_1h'] < (dataframe['close'] * 1.3))
+                    item_buy_logic.append(dataframe['high_max_24_1h'] < (dataframe['close'] * 1.36))
+
+                    item_buy_logic.append(dataframe['cti_20_1h'] < -0.8)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] < 75.0)
+                    item_buy_logic.append(dataframe['rsi_14_4h'] < 75.0)
+
+                    item_buy_logic.append(dataframe['pct_change_high_max_6_24_1h'] > -0.3)
+                    item_buy_logic.append(dataframe['pct_change_high_max_3_12_4h'] > -0.4)
+                    item_buy_logic.append((dataframe['r_480_1h'] > -90.0)
+                                          | (dataframe['not_downtrend_1h']))
+
+                    # Logic
+                    item_buy_logic.append(dataframe['bb40_2_delta'].gt(dataframe['close'] * 0.036))
+                    item_buy_logic.append(dataframe['close_delta'].gt(dataframe['close'] * 0.02))
+                    item_buy_logic.append(dataframe['bb40_2_tail'].lt(dataframe['bb40_2_delta'] * 0.4))
+                    item_buy_logic.append(dataframe['close'].lt(dataframe['bb40_2_low'].shift()))
+                    item_buy_logic.append(dataframe['close'].le(dataframe['close'].shift()))
+                    item_buy_logic.append(dataframe['rsi_14'] < 36.0)
+
+                # Condition #51 - Quick mode bear.
+                if index == 51:
+                    # Protections
+                    item_buy_logic.append(dataframe['btc_is_bull_4h'] == False)
                     item_buy_logic.append(dataframe['btc_pct_close_max_24_5m'] < 0.03)
                     item_buy_logic.append(dataframe['btc_pct_close_max_72_5m'] < 0.03)
                     item_buy_logic.append(dataframe['close_max_48'] < (dataframe['close'] * 1.2))
