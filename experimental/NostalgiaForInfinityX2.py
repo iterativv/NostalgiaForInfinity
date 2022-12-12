@@ -2901,6 +2901,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append(dataframe['btc_pct_close_max_24_5m'] < 0.03)
                     item_buy_logic.append(dataframe['btc_pct_close_max_72_5m'] < 0.03)
                     item_buy_logic.append(dataframe['close_max_48'] < (dataframe['close'] * 1.3))
+                    item_buy_logic.append(dataframe['high_max_12_1h'] < (dataframe['close'] * 1.5))
 
                     item_buy_logic.append(dataframe['ema_12_4h'] > dataframe['sma_26_4h'])
 
