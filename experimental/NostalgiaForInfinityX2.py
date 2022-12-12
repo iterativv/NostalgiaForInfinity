@@ -94,6 +94,9 @@ class NostalgiaForInfinityX2(IStrategy):
     # Exchange Downtime protection
     has_downtime_protection = False
 
+    # Do you want to use the hold feature? (with hold-trades.json)
+    hold_support_enabled = True
+
     # Run "populate_indicators()" only for new candle.
     process_only_new_candles = True
 
@@ -151,6 +154,8 @@ class NostalgiaForInfinityX2(IStrategy):
 
     #############################################################
     # CACHES
+
+    hold_trades_cache = None
     target_profit_cache = None
     #############################################################
 
@@ -3604,6 +3609,8 @@ class NostalgiaForInfinityX2(IStrategy):
                            current_time: datetime, **kwargs) -> bool:
         # Allow force exits
         if exit_reason != 'force_exit':
+            if self._should_hold_trade(trade, rate, exit_reason):
+                return False
             if self.exit_profit_only:
                 current_profit = ((rate - trade.open_rate) / trade.open_rate)
                 if (current_profit < self.exit_profit_offset):
@@ -3611,6 +3618,15 @@ class NostalgiaForInfinityX2(IStrategy):
 
         self._remove_profit_target(pair)
         return True
+
+    def bot_loop_start(self, **kwargs) -> None:
+        if self.config["runmode"].value not in ("live", "dry_run"):
+            return super().bot_loop_start(**kwargs)
+
+        if self.hold_support_enabled:
+            self.load_hold_trades_config()
+
+        return super().bot_loop_start(**kwargs)
 
     def _set_profit_target(self, pair: str, sell_reason: str, rate: float, current_profit: float, current_time: datetime):
         self.target_profit_cache.data[pair] = {
@@ -3625,6 +3641,114 @@ class NostalgiaForInfinityX2(IStrategy):
         if self.target_profit_cache is not None:
             self.target_profit_cache.data.pop(pair, None)
             self.target_profit_cache.save()
+
+    def get_hold_trades_config_file(self):
+        proper_holds_file_path = self.config["user_data_dir"].resolve() / "nfi-hold-trades.json"
+        if proper_holds_file_path.is_file():
+            return proper_holds_file_path
+
+        strat_file_path = pathlib.Path(__file__)
+        hold_trades_config_file_resolve = strat_file_path.resolve().parent / "hold-trades.json"
+        if hold_trades_config_file_resolve.is_file():
+            log.warning(
+                "Please move %s to %s which is now the expected path for the holds file",
+                hold_trades_config_file_resolve,
+                proper_holds_file_path,
+            )
+            return hold_trades_config_file_resolve
+
+        # The resolved path does not exist, is it a symlink?
+        hold_trades_config_file_absolute = strat_file_path.absolute().parent / "hold-trades.json"
+        if hold_trades_config_file_absolute.is_file():
+            log.warning(
+                "Please move %s to %s which is now the expected path for the holds file",
+                hold_trades_config_file_absolute,
+                proper_holds_file_path,
+            )
+            return hold_trades_config_file_absolute
+
+    def load_hold_trades_config(self):
+        if self.hold_trades_cache is None:
+            hold_trades_config_file = self.get_hold_trades_config_file()
+            if hold_trades_config_file:
+                log.warning("Loading hold support data from %s", hold_trades_config_file)
+                self.hold_trades_cache = HoldsCache(hold_trades_config_file)
+
+        if self.hold_trades_cache:
+            self.hold_trades_cache.load()
+
+    def _should_hold_trade(self, trade: "Trade", rate: float, sell_reason: str) -> bool:
+        if self.config['runmode'].value not in ('live', 'dry_run'):
+            return False
+
+        if not self.hold_support_enabled:
+            return False
+
+        # Just to be sure our hold data is loaded, should be a no-op call after the first bot loop
+        self.load_hold_trades_config()
+
+        if not self.hold_trades_cache:
+            # Cache hasn't been setup, likely because the corresponding file does not exist, sell
+            return False
+
+        if not self.hold_trades_cache.data:
+            # We have no pairs we want to hold until profit, sell
+            return False
+
+        # By default, no hold should be done
+        hold_trade = False
+
+        trade_ids: dict = self.hold_trades_cache.data.get("trade_ids")
+        if trade_ids and trade.id in trade_ids:
+            trade_profit_ratio = trade_ids[trade.id]
+            current_profit_ratio = trade.calc_profit_ratio(rate)
+            if sell_reason == "force_sell":
+                formatted_profit_ratio = f"{trade_profit_ratio * 100}%"
+                formatted_current_profit_ratio = f"{current_profit_ratio * 100}%"
+                log.warning(
+                    "Force selling %s even though the current profit of %s < %s",
+                    trade, formatted_current_profit_ratio, formatted_profit_ratio
+                )
+                return False
+            elif current_profit_ratio >= trade_profit_ratio:
+                # This pair is on the list to hold, and we reached minimum profit, sell
+                formatted_profit_ratio = f"{trade_profit_ratio * 100}%"
+                formatted_current_profit_ratio = f"{current_profit_ratio * 100}%"
+                log.warning(
+                    "Selling %s because the current profit of %s >= %s",
+                    trade, formatted_current_profit_ratio, formatted_profit_ratio
+                )
+                return False
+
+            # This pair is on the list to hold, and we haven't reached minimum profit, hold
+            hold_trade = True
+
+        trade_pairs: dict = self.hold_trades_cache.data.get("trade_pairs")
+        if trade_pairs and trade.pair in trade_pairs:
+            trade_profit_ratio = trade_pairs[trade.pair]
+            current_profit_ratio = trade.calc_profit_ratio(rate)
+            if sell_reason == "force_sell":
+                formatted_profit_ratio = f"{trade_profit_ratio * 100}%"
+                formatted_current_profit_ratio = f"{current_profit_ratio * 100}%"
+                log.warning(
+                    "Force selling %s even though the current profit of %s < %s",
+                    trade, formatted_current_profit_ratio, formatted_profit_ratio
+                )
+                return False
+            elif current_profit_ratio >= trade_profit_ratio:
+                # This pair is on the list to hold, and we reached minimum profit, sell
+                formatted_profit_ratio = f"{trade_profit_ratio * 100}%"
+                formatted_current_profit_ratio = f"{current_profit_ratio * 100}%"
+                log.warning(
+                    "Selling %s because the current profit of %s >= %s",
+                    trade, formatted_current_profit_ratio, formatted_profit_ratio
+                )
+                return False
+
+            # This pair is on the list to hold, and we haven't reached minimum profit, hold
+            hold_trade = True
+
+        return hold_trade
 
 # +---------------------------------------------------------------------------+
 # |                              Custom Indicators                            |
