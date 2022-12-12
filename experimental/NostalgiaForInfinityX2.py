@@ -63,7 +63,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.2"
+        return "v12.0.3"
 
     # ROI table:
     minimal_roi = {
@@ -119,7 +119,7 @@ class NostalgiaForInfinityX2(IStrategy):
     # Quick mode bull tags
     quick_mode_bull_tags = ['41', '42']
     # Quick mode bear tags
-    quick_mode_bear_tags = ['51']
+    quick_mode_bear_tags = ['51', '52']
 
     #############################################################
     # Buy side configuration
@@ -149,6 +149,7 @@ class NostalgiaForInfinityX2(IStrategy):
         "buy_condition_42_enable": True,
 
         "buy_condition_51_enable": True,
+        "buy_condition_52_enable": True,
     }
 
     buy_protection_params = {}
@@ -3586,6 +3587,33 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append(dataframe['close'].lt(dataframe['bb40_2_low'].shift()))
                     item_buy_logic.append(dataframe['close'].le(dataframe['close'].shift()))
                     item_buy_logic.append(dataframe['rsi_14'] < 36.0)
+
+                # Condition #52 - Quick mode bear.
+                if index == 52:
+                    # Protections
+                    item_buy_logic.append(dataframe['btc_is_bull_4h'] == False)
+                    item_buy_logic.append(dataframe['btc_pct_close_max_24_5m'] < 0.03)
+                    item_buy_logic.append(dataframe['btc_pct_close_max_72_5m'] < 0.03)
+                    item_buy_logic.append(dataframe['close_max_48'] < (dataframe['close'] * 1.2))
+                    item_buy_logic.append(dataframe['high_max_6_1h'] < (dataframe['close'] * 1.24))
+                    item_buy_logic.append(dataframe['high_max_12_1h'] < (dataframe['close'] * 1.3))
+                    item_buy_logic.append(dataframe['high_max_24_1h'] < (dataframe['close'] * 1.36))
+
+                    item_buy_logic.append(dataframe['cti_20_1h'] < -0.8)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] < 75.0)
+                    item_buy_logic.append(dataframe['rsi_14_4h'] < 75.0)
+
+                    item_buy_logic.append(dataframe['pct_change_high_max_6_24_1h'] > -0.3)
+                    item_buy_logic.append(dataframe['pct_change_high_max_3_12_4h'] > -0.4)
+                    item_buy_logic.append((dataframe['r_480_1h'] > -90.0)
+                                          | (dataframe['not_downtrend_1h']))
+
+                    # Logic
+                    item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
+                    item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.018))
+                    item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
+                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * 0.996))
+                    item_buy_logic.append(dataframe['rsi_14'] < 40.0)
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
