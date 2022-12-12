@@ -63,7 +63,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.1"
+        return "v12.0.2"
 
     # ROI table:
     minimal_roi = {
@@ -2923,12 +2923,26 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append((dataframe['change_pct_4h'] > -0.1)
                                           | (dataframe['change_pct_4h'].shift(48) < 0.1)
                                           | (dataframe['rsi_14_4h'].shift(48) < 80.0))
+                    # current 4h red, previous 4h green with top wick
+                    item_buy_logic.append((dataframe['change_pct_4h'] > -0.04)
+                                          | (dataframe['change_pct_4h'].shift(48) < 0.08)
+                                          | (dataframe['top_wick_pct_4h'].shift(48) < 0.16))
                     item_buy_logic.append((dataframe['change_pct_4h'] > 0.0)
                                           | (dataframe['top_wick_pct_4h'] < (abs(dataframe['change_pct_4h']) * 4.0))
                                           | (dataframe['rsi_14_4h'] < 50.0))
+                    # current 4h gree with top wick
+                    item_buy_logic.append((dataframe['change_pct_4h'] < 0.04)
+                                          | (dataframe['top_wick_pct_4h'] < (abs(dataframe['change_pct_4h']) * 2.0))
+                                          | (dataframe['rsi_14_4h'] < 50.0))
+                    # current 4h with long top wick
+                    item_buy_logic.append(dataframe['top_wick_pct_4h'] < (abs(dataframe['change_pct_4h']) * 8.0))
                     item_buy_logic.append((dataframe['pct_change_high_max_3_12_1h'] > -0.12)
                                           | (dataframe['cti_20_1h'] < 0.8)
                                           | (dataframe['volume_mean_factor_12_1h'] > 0.1))
+                    # current 4h red, previous 4h green
+                    item_buy_logic.append((dataframe['change_pct_4h'] > -0.05)
+                                          | (dataframe['top_wick_pct_4h'].shift(48) < 0.05)
+                                          | (dataframe['rsi_14_4h'].shift(48) < 80.0))
                     # current 4h green with wick
                     item_buy_logic.append((dataframe['change_pct_4h'] < 0.05)
                                           | (dataframe['top_wick_pct_4h'] < 0.05)
@@ -2939,6 +2953,7 @@ class NostalgiaForInfinityX2(IStrategy):
                                           | (dataframe['change_pct_4h'].shift(48) < 0.04)
                                           | (dataframe['top_wick_pct_4h'].shift(48) < 0.08)
                                           | (dataframe['high_max_12_1h'] < (dataframe['close'] * 1.3)))
+
                     # Logic
                     item_buy_logic.append(dataframe['bb40_2_delta'].gt(dataframe['close'] * 0.02))
                     item_buy_logic.append(dataframe['close_delta'].gt(dataframe['close'] * 0.02))
