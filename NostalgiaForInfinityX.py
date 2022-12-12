@@ -177,14 +177,14 @@ class NostalgiaForInfinityX(IStrategy):
     max_rebuy_orders_1 = 2
     max_rebuy_orders_2 = 4
     max_rebuy_orders_2_alt = 2
-    max_rebuy_orders_3 = 8
+    max_rebuy_orders_3 = 1
     max_rebuy_orders_4 = 3
     max_rebuy_orders_5 = 2
     max_rebuy_multiplier_lev = 0.5 # for leveraged tokens
     max_rebuy_multiplier_0 = 1.0
     max_rebuy_multiplier_1 = 1.0
     max_rebuy_multiplier_2 = 0.8
-    max_rebuy_multiplier_3 = 0.05
+    max_rebuy_multiplier_3 = 1.0
     max_rebuy_multiplier_4 = 0.1
     max_rebuy_multiplier_5 = 0.35
     rebuy_pcts_n_0 = (-0.04, -0.06, -0.09, -0.12)
@@ -192,14 +192,14 @@ class NostalgiaForInfinityX(IStrategy):
     rebuy_pcts_n_2 = (-0.03, -0.04, -0.06, -0.09)
     rebuy_pcts_n_2_alt = (-0.03, -0.08)
     rebuy_pcts_p_2 = (0.02, 0.025, 0.025, 0.03, 0.07, 0.075, 0.08, 0.085, 0.09, 0.095)
-    rebuy_pcts_n_3 = (-0.02, -0.04, -0.06, -0.08, -0.1, -0.12, -0.14, -0.16)
+    rebuy_pcts_n_3 = (-0.06, -0.12)
     rebuy_pcts_n_4 = (-0.02, -0.06, -0.1)
     rebuy_pcts_n_5 = (-0.05, -0.08)
     rebuy_multi_0 = 0.15
     rebuy_multi_1 = 0.3
     rebuy_multi_2 = 0.15
     rebuy_multi_2_alt = 0.35
-    rebuy_multi_3 = 1.0
+    rebuy_multi_3 = 0.5
     rebuy_multi_4 = 1.0
     rebuy_multi_5 = 1.0
 
@@ -2636,7 +2636,7 @@ class NostalgiaForInfinityX(IStrategy):
             return None
 
         is_backtest = self.dp.runmode.value == 'backtest'
-        if (trade.open_date_utc.replace(tzinfo=None) < datetime(2022, 4, 6) and not is_backtest):
+        if (trade.open_date_utc.replace(tzinfo=None) < datetime(2022, 12, 1) and not is_backtest):
             return None
 
         if (self.position_adjustment_enable == False) or (self.nfi_automatic_rebuys_enable == False) or (current_profit > -0.02):
@@ -2752,11 +2752,14 @@ class NostalgiaForInfinityX(IStrategy):
                     ):
                         is_rebuy = True
         elif (use_mode == 3):
-            if (1 <= count_of_entries <= 4):
-                if (
+            if (
                         (current_profit < self.rebuy_pcts_n_3[count_of_entries - 1])
                         and (
                             (last_candle['crsi'] > 10.0)
+                            and (last_candle['rsi_14'] < 40.0)
+                            and (last_candle['crsi_1h'] > 20.0)
+                            and (last_candle['close_max_48'] < (last_candle['close'] * 1.06))
+                            and (last_candle['btc_pct_close_max_72_5m'] < 1.03)
                         )
                 ):
                     is_rebuy = True
