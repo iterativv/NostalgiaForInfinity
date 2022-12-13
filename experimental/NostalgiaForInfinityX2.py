@@ -2524,6 +2524,7 @@ class NostalgiaForInfinityX2(IStrategy):
         informative_1h['high_max_6'] = informative_1h['high'].rolling(6).max()
         informative_1h['high_max_12'] = informative_1h['high'].rolling(12).max()
         informative_1h['high_max_24'] = informative_1h['high'].rolling(24).max()
+        informative_1h['high_max_48'] = informative_1h['high'].rolling(48).max()
 
         informative_1h['pct_change_high_max_3_12'] = (informative_1h['high_max_3'] - informative_1h['high_max_12']) / informative_1h['high_max_12']
         informative_1h['pct_change_high_max_6_12'] = (informative_1h['high_max_6'] - informative_1h['high_max_12']) / informative_1h['high_max_12']
