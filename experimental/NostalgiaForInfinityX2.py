@@ -3200,6 +3200,12 @@ class NostalgiaForInfinityX2(IStrategy):
                                           | (dataframe['top_wick_pct_4h'] < (abs(dataframe['change_pct_4h']) * 4.0))
                                           | (dataframe['r_480_4h'] > -95.0)
                                           | (dataframe['high_max_6_1h'] < (dataframe['close'] * 1.3)))
+                    # current 1h red, previous 1h long green with long wick
+                    item_buy_logic.append((dataframe['change_pct_1h'] > -0.04)
+                                          | (dataframe['change_pct_1h'].shift(12) < 0.1)
+                                          | (dataframe['top_wick_pct_1h'].shift(12) < 0.1)
+                                          | (dataframe['high_max_48_1h'] < (dataframe['close'] * 1.3))
+                                          | (dataframe['cti_20_1h'] < 0.5))
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < (dataframe['ema_26'] * 0.94))
