@@ -122,6 +122,11 @@ class NostalgiaForInfinityX2(IStrategy):
     # Quick mode bear tags
     quick_mode_bear_tags = ['51', '52', '53']
 
+    # Stop thesholds. Bull, Bear.
+    stop_thresholds_normal = [-0.1, -0.1]
+    stop_thresholds_pump = [-0.1, -0.1]
+    stop_thresholds_quick = [-0.1, -0.1]
+
     #############################################################
     # Buy side configuration
 
@@ -169,6 +174,12 @@ class NostalgiaForInfinityX2(IStrategy):
         if (('exit_profit_only' in self.config and self.config['exit_profit_only'])
                 or ('sell_profit_only' in self.config and self.config['sell_profit_only'])):
             self.exit_profit_only = True
+        if ('stop_thresholds_normal' in self.config):
+            self.stop_thresholds_normal = self.config['stop_thresholds_normal']
+        if ('stop_thresholds_pump' in self.config):
+            self.stop_thresholds_pump = self.config['stop_thresholds_pump']
+        if ('stop_thresholds_quick' in self.config):
+            self.stop_thresholds_quick = self.config['stop_thresholds_quick']
         if self.target_profit_cache is None:
             bot_name = ""
             if ('bot_name' in self.config):
@@ -525,7 +536,7 @@ class NostalgiaForInfinityX2(IStrategy):
     def exit_normal_bull_stoploss(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
         # Stoploss doom
         if (
-                (current_profit < -0.1)
+                (current_profit < self.stop_thresholds_normal[0])
         ):
             return True, 'exit_normal_bull_stoploss_doom'
 
@@ -873,7 +884,7 @@ class NostalgiaForInfinityX2(IStrategy):
     def exit_normal_bear_stoploss(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
         # Stoploss doom
         if (
-                (current_profit < -0.1)
+                (current_profit < self.stop_thresholds_normal[1])
         ):
             return True, 'exit_normal_bear_stoploss_doom'
 
@@ -1221,7 +1232,7 @@ class NostalgiaForInfinityX2(IStrategy):
     def exit_pump_bull_stoploss(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
         # Stoploss doom
         if (
-                (current_profit < -0.1)
+                (current_profit < self.stop_thresholds_pump[0])
         ):
             return True, 'exit_pump_bull_stoploss_doom'
 
@@ -1569,7 +1580,7 @@ class NostalgiaForInfinityX2(IStrategy):
     def exit_pump_bear_stoploss(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
         # Stoploss doom
         if (
-                (current_profit < -0.1)
+                (current_profit < self.stop_thresholds_pump[1])
         ):
             return True, 'exit_pump_bear_stoploss_doom'
 
@@ -1917,7 +1928,7 @@ class NostalgiaForInfinityX2(IStrategy):
     def exit_quick_bull_stoploss(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
         # Stoploss doom
         if (
-                (current_profit < -0.1)
+                (current_profit < self.stop_thresholds_quick[0])
         ):
             return True, 'exit_quick_bull_stoploss_doom'
 
@@ -2265,7 +2276,7 @@ class NostalgiaForInfinityX2(IStrategy):
     def exit_quick_bear_stoploss(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
         # Stoploss doom
         if (
-                (current_profit < -0.1)
+                (current_profit < self.stop_thresholds_quick[1])
         ):
             return True, 'exit_quick_bear_stoploss_doom'
 
