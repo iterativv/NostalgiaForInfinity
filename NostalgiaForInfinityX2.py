@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.13"
+        return "v12.0.14"
 
     # ROI table:
     minimal_roi = {
@@ -3550,6 +3550,10 @@ class NostalgiaForInfinityX2(IStrategy):
                                           | (dataframe['rsi_14_4h'].shift(48) < 70.0)
                                           | (dataframe['r_480_4h'] > -90.0)
                                           | (dataframe['high_max_6_1h'] < (dataframe['close'] * 1.16)))
+                    # current wick big green, previous high is higher than current
+                    item_buy_logic.append((dataframe['change_pct_4h'] < 0.1)
+                                          | (dataframe['pct_change_high_max_3_12_4h'] > -0.16)
+                                          | (dataframe['cti_20_4h'] < 0.8))
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < (dataframe['ema_26'] * 0.94))
