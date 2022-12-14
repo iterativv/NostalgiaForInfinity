@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.11"
+        return "v12.0.12"
 
     # ROI table:
     minimal_roi = {
@@ -2469,6 +2469,7 @@ class NostalgiaForInfinityX2(IStrategy):
         # Indicators
         # -----------------------------------------------------------------------------------------
         # RSI
+        informative_1h['rsi_3'] = ta.RSI(informative_1h, timeperiod=3)
         informative_1h['rsi_14'] = ta.RSI(informative_1h, timeperiod=14)
 
         # EMA
@@ -2497,11 +2498,6 @@ class NostalgiaForInfinityX2(IStrategy):
 
         # CTI
         informative_1h['cti_20'] = pta.cti(informative_1h["close"], length=20)
-
-        # CRSI
-        crsi_closechange = informative_1h['close'] / informative_1h['close'].shift(1)
-        crsi_updown = np.where(crsi_closechange.gt(1), 1.0, np.where(crsi_closechange.lt(1), -1.0, 0.0))
-        informative_1h['crsi'] =  (ta.RSI(informative_1h['close'], timeperiod=3) + ta.RSI(crsi_updown, timeperiod=2) + crsi_closechange.rolling(window=101).apply(lambda x: len(x[x < x.iloc[-1]]) / (len(x)-1))) / 3
 
         # S/R
         res_series = informative_1h['high'].rolling(window = 5, center=True).apply(lambda row: is_resistance(row), raw=True).shift(2)
@@ -2562,6 +2558,7 @@ class NostalgiaForInfinityX2(IStrategy):
         # -----------------------------------------------------------------------------------------
 
         # RSI
+        informative_15m['rsi_3'] = ta.RSI(informative_15m, timeperiod=3)
         informative_15m['rsi_14'] = ta.RSI(informative_15m, timeperiod=14)
 
         # SMA
@@ -2570,13 +2567,8 @@ class NostalgiaForInfinityX2(IStrategy):
         # CTI
         informative_15m['cti_20'] = pta.cti(informative_15m["close"], length=20)
 
-        # CRSI
-        crsi_closechange = informative_15m['close'] / informative_15m['close'].shift(1)
-        crsi_updown = np.where(crsi_closechange.gt(1), 1.0, np.where(crsi_closechange.lt(1), -1.0, 0.0))
-        informative_15m['crsi'] =  (ta.RSI(informative_15m['close'], timeperiod=3) + ta.RSI(crsi_updown, timeperiod=2) + crsi_closechange.rolling(window=101).apply(lambda x: len(x[x < x.iloc[-1]]) / (len(x)-1))) / 3
-
         # Downtrend check
-        informative_15m['not_downtrend'] = ((informative_15m['close'] > informative_15m['open']) | (informative_15m['close'].shift(1) > informative_15m['open'].shift(1)) | (informative_15m['close'].shift(2) > informative_15m['open'].shift(2)) | (informative_15m['rsi_14'] > 50.0) | (informative_15m['crsi'] > 20.0))
+        informative_15m['not_downtrend'] = ((informative_15m['close'] > informative_15m['open']) | (informative_15m['close'].shift(1) > informative_15m['open'].shift(1)) | (informative_15m['close'].shift(2) > informative_15m['open'].shift(2)) | (informative_15m['rsi_14'] > 50.0) | (informative_15m['rsi_3'] > 20.0))
 
         # Volume
         informative_15m['volume_mean_factor_12'] = informative_15m['volume'] / informative_15m['volume'].rolling(12).mean()
@@ -2912,7 +2904,7 @@ class NostalgiaForInfinityX2(IStrategy):
 
                     item_buy_logic.append(dataframe['not_downtrend_1h'])
                     item_buy_logic.append((dataframe['is_downtrend_3_1h'] == False)
-                                          | (dataframe['crsi_1h'] > 20.0))
+                                          | (dataframe['rsi_3_1h'] > 20.0))
                     item_buy_logic.append(dataframe['is_downtrend_5_1h'] == False)
                     item_buy_logic.append(dataframe['not_downtrend_4h'])
                     # current 4h red with top long wick,
@@ -3046,8 +3038,8 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append(dataframe['cti_20_4h'] < 0.9)
                     item_buy_logic.append(dataframe['r_480_1h'] < -25.0)
                     item_buy_logic.append(dataframe['r_480_4h'] < -4.0)
-                    item_buy_logic.append(dataframe['crsi_15m'] > 14.0)
-                    item_buy_logic.append(dataframe['crsi_1h'] > 16.0)
+                    item_buy_logic.append(dataframe['rsi_3_15m'] > 14.0)
+                    item_buy_logic.append(dataframe['rsi_3_1h'] > 16.0)
 
                     item_buy_logic.append(dataframe['not_downtrend_1h'])
                     item_buy_logic.append(dataframe['not_downtrend_4h'])
@@ -3149,7 +3141,7 @@ class NostalgiaForInfinityX2(IStrategy):
                                           | (dataframe['r_14_1h'].shift(12) < -10.0)
                                           | (dataframe['sma_200_1h'] > dataframe['sma_200_1h'].shift(24))
                                           | (dataframe['sma_200_4h'] > dataframe['sma_200_4h'].shift(96)))
-                    item_buy_logic.append((dataframe['crsi_15m'] > 10.0)
+                    item_buy_logic.append((dataframe['rsi_3_15m'] > 10.0)
                                           | (dataframe['sma_200_15m'] > dataframe['sma_200_15m'].shift(12))
                                           | (dataframe['sma_200_1h'] > dataframe['sma_200_1h'].shift(24))
                                           | (dataframe['sma_200_4h'] > dataframe['sma_200_4h'].shift(96)))
@@ -3244,7 +3236,7 @@ class NostalgiaForInfinityX2(IStrategy):
 
                     item_buy_logic.append(dataframe['not_downtrend_1h'])
                     item_buy_logic.append((dataframe['is_downtrend_3_1h'] == False)
-                                          | (dataframe['crsi_1h'] > 20.0))
+                                          | (dataframe['rsi_3_1h'] > 20.0))
                     item_buy_logic.append(dataframe['is_downtrend_5_1h'] == False)
                     item_buy_logic.append(dataframe['not_downtrend_4h'])
                     item_buy_logic.append(dataframe['pct_change_high_max_6_24_1h'] > -0.3)
@@ -3385,8 +3377,8 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append(dataframe['cti_20_4h'] < 0.9)
                     item_buy_logic.append(dataframe['r_480_1h'] < -25.0)
                     item_buy_logic.append(dataframe['r_480_4h'] < -4.0)
-                    item_buy_logic.append(dataframe['crsi_15m'] > 14.0)
-                    item_buy_logic.append(dataframe['crsi_1h'] > 16.0)
+                    item_buy_logic.append(dataframe['rsi_3_15m'] > 14.0)
+                    item_buy_logic.append(dataframe['rsi_3_1h'] > 16.0)
 
                     item_buy_logic.append(dataframe['not_downtrend_1h'])
                     item_buy_logic.append(dataframe['not_downtrend_4h'])
@@ -3488,7 +3480,7 @@ class NostalgiaForInfinityX2(IStrategy):
                                           | (dataframe['r_14_1h'].shift(12) < -10.0)
                                           | (dataframe['sma_200_1h'] > dataframe['sma_200_1h'].shift(24))
                                           | (dataframe['sma_200_4h'] > dataframe['sma_200_4h'].shift(96)))
-                    item_buy_logic.append((dataframe['crsi_15m'] > 10.0)
+                    item_buy_logic.append((dataframe['rsi_3_15m'] > 10.0)
                                           | (dataframe['sma_200_15m'] > dataframe['sma_200_15m'].shift(12))
                                           | (dataframe['sma_200_1h'] > dataframe['sma_200_1h'].shift(24))
                                           | (dataframe['sma_200_4h'] > dataframe['sma_200_4h'].shift(96)))
@@ -3581,7 +3573,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append(dataframe['not_downtrend_15m'])
                     item_buy_logic.append(dataframe['not_downtrend_1h'])
                     item_buy_logic.append((dataframe['is_downtrend_3_1h'] == False)
-                                          | (dataframe['crsi_1h'] > 20.0))
+                                          | (dataframe['rsi_3_1h'] > 20.0))
                     item_buy_logic.append(dataframe['is_downtrend_5_1h'] == False)
                     item_buy_logic.append(dataframe['not_downtrend_4h'])
                     item_buy_logic.append(dataframe['pct_change_high_max_6_24_1h'] > -0.3)
@@ -3628,7 +3620,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append(dataframe['not_downtrend_15m'])
                     item_buy_logic.append(dataframe['not_downtrend_1h'])
                     item_buy_logic.append((dataframe['is_downtrend_3_1h'] == False)
-                                          | (dataframe['crsi_1h'] > 20.0))
+                                          | (dataframe['rsi_3_1h'] > 20.0))
                     item_buy_logic.append(dataframe['is_downtrend_5_1h'] == False)
                     item_buy_logic.append(dataframe['not_downtrend_4h'])
                     item_buy_logic.append(dataframe['pct_change_high_max_6_24_1h'] > -0.3)
