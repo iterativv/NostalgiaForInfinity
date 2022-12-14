@@ -2492,12 +2492,16 @@ class NostalgiaForInfinityX2(IStrategy):
         informative_1h['bb20_2_mid'] = bollinger['mid']
         informative_1h['bb20_2_upp'] = bollinger['upper']
 
+        informative_1h['bb20_2_width'] = ((informative_1h['bb20_2_upp'] - informative_1h['bb20_2_low']) / informative_1h['bb20_2_mid'])
+
         # Williams %R
         informative_1h['r_14'] = williams_r(informative_1h, period=14)
+        informative_1h['r_96'] = williams_r(informative_1h, period=96)
         informative_1h['r_480'] = williams_r(informative_1h, period=480)
 
         # CTI
         informative_1h['cti_20'] = pta.cti(informative_1h["close"], length=20)
+        informative_1h['cti_40'] = pta.cti(informative_1h["close"], length=40)
 
         # S/R
         res_series = informative_1h['high'].rolling(window = 5, center=True).apply(lambda row: is_resistance(row), raw=True).shift(2)
