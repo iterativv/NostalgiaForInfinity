@@ -2612,18 +2612,8 @@ class NostalgiaForInfinityX(IStrategy):
                 use_mode = 2
             if all(c in self.half_mode_tags for c in enter_tags):
                 use_mode = 5
-            if (use_mode == 0):
-                return proposed_stake * self.max_rebuy_multiplier_0
-            elif (use_mode == 1):
-                return proposed_stake * self.max_rebuy_multiplier_1
-            elif (use_mode == 2):
-                return proposed_stake * self.max_rebuy_multiplier_2
-            elif (use_mode == 3):
-                return proposed_stake * self.max_rebuy_multiplier_3
-            elif (use_mode == 4):
-                return proposed_stake * self.max_rebuy_multiplier_4
-            elif (use_mode == 5):
-                return proposed_stake * self.max_rebuy_multiplier_5
+            if 0 <= use_mode <= 5:
+                return proposed_stake * object.__getattribute__(self, f'max_rebuy_multiplier_{use_mode}')
 
         return proposed_stake
 
