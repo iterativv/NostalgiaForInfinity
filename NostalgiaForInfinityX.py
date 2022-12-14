@@ -158,16 +158,15 @@ class NostalgiaForInfinityX(IStrategy):
     holdSupportEnabled = True
 
     # Coin Metrics
-    coin_metrics = {}
-    coin_metrics['top_traded_enabled'] = False
-    coin_metrics['top_traded_updated'] = False
-    coin_metrics['top_traded_len'] = 10
-    coin_metrics['tt_dataframe'] = DataFrame()
-    coin_metrics['top_grossing_enabled'] = False
-    coin_metrics['top_grossing_updated'] = False
-    coin_metrics['top_grossing_len'] = 20
-    coin_metrics['tg_dataframe'] = DataFrame()
-    coin_metrics['current_whitelist'] = []
+    coin_metrics = {'top_traded_enabled': False,
+                    'top_traded_updated': False,
+                    'top_traded_len': 10,
+                    'tt_dataframe': DataFrame(),
+                    'top_grossing_enabled': False,
+                    'top_grossing_updated': False,
+                    'top_grossing_len': 20,
+                    'tg_dataframe': DataFrame(),
+                    'current_whitelist': []}
 
     # Rebuy feature
     position_adjustment_enable = True
@@ -2821,36 +2820,25 @@ class NostalgiaForInfinityX(IStrategy):
                 # This returns first order stake size
                 stake_amount = filled_entries[0].cost
                 # This then calculates current safety order size
-                if (use_mode == 0):
+                if use_mode == 0:
                     stake_amount = stake_amount * (self.rebuy_multi_0 + (count_of_entries * 0.005))
-                elif (use_mode == 1) or (use_alt):
+                elif use_mode == 1 or use_alt:
                     stake_amount = stake_amount * (self.rebuy_multi_1 + (count_of_entries * 0.005))
-                    if (stake_amount < min_stake):
+                    if stake_amount < min_stake:
                         stake_amount = min_stake
-                elif (use_mode == 2):
-                    if (use_alt_2) and (count_of_entries > self.max_rebuy_orders_2_alt):
+                elif use_mode == 2:
+                    if use_alt_2 and count_of_entries > self.max_rebuy_orders_2_alt:
                         return None
                     stake_amount = stake_amount * (self.rebuy_multi_2_alt if use_alt_2 else self.rebuy_multi_2)
-                elif (use_mode == 3):
-                    if (count_of_entries == 1):
-                        stake_amount = stake_amount * self.rebuy_multi_3 * 1
-                    elif (count_of_entries == 2):
-                        stake_amount = stake_amount * self.rebuy_multi_3 * 1
-                    elif (count_of_entries == 3):
-                        stake_amount = stake_amount * self.rebuy_multi_3 * 2
-                    elif (count_of_entries == 4):
-                        stake_amount = stake_amount * self.rebuy_multi_3 * 2
-                    elif (count_of_entries == 5):
-                        stake_amount = stake_amount * self.rebuy_multi_3 * 3
-                    elif (count_of_entries == 6):
-                        stake_amount = stake_amount * self.rebuy_multi_3 * 3
-                    elif (count_of_entries == 7):
-                        stake_amount = stake_amount * self.rebuy_multi_3 * 4
-                    elif (count_of_entries == 8):
-                        stake_amount = stake_amount * self.rebuy_multi_3 * 4
-                elif (use_mode == 4):
+                elif use_mode == 3:
+                    if 1 <= count_of_entries <= 8:
+                        if count_of_entries % 2 == 1:
+                            stake_amount = stake_amount * self.rebuy_multi_3 * ((count_of_entries + 1) // 2)
+                        else:
+                            stake_amount = stake_amount * self.rebuy_multi_3 * (count_of_entries // 2)
+                elif use_mode == 4:
                     stake_amount = stake_amount + (stake_amount * (self.rebuy_multi_4 * (count_of_entries - 1)))
-                elif (use_mode == 5):
+                elif use_mode == 5:
                     stake_amount = stake_amount * self.rebuy_multi_5
                 return stake_amount
             except Exception as exception:
