@@ -118,7 +118,7 @@ class NostalgiaForInfinityX2(IStrategy):
     # Pump mode bear tags
     pump_mode_bear_tags = ['31']
     # Quick mode bull tags
-    quick_mode_bull_tags = ['41', '42', '43']
+    quick_mode_bull_tags = ['41', '42', '43', '44']
     # Quick mode bear tags
     quick_mode_bear_tags = ['51', '52', '53']
 
@@ -154,6 +154,7 @@ class NostalgiaForInfinityX2(IStrategy):
         "buy_condition_41_enable": True,
         "buy_condition_42_enable": True,
         "buy_condition_43_enable": True,
+        "buy_condition_44_enable": True,
 
         "buy_condition_51_enable": True,
         "buy_condition_52_enable": True,
@@ -2535,6 +2536,7 @@ class NostalgiaForInfinityX2(IStrategy):
         informative_1h['high_max_6'] = informative_1h['high'].rolling(6).max()
         informative_1h['high_max_12'] = informative_1h['high'].rolling(12).max()
         informative_1h['high_max_24'] = informative_1h['high'].rolling(24).max()
+        informative_1h['high_max_36'] = informative_1h['high'].rolling(36).max()
         informative_1h['high_max_48'] = informative_1h['high'].rolling(48).max()
 
         informative_1h['pct_change_high_max_3_12'] = (informative_1h['high_max_3'] - informative_1h['high_max_12']) / informative_1h['high_max_12']
@@ -3758,6 +3760,39 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append(dataframe['close'] < (dataframe['ema_26'] * 0.94))
                     item_buy_logic.append(dataframe['cti_20'] < -0.75)
                     item_buy_logic.append(dataframe['r_14'] < -94.0)
+
+                # Condition #44 - Quick mode bull.
+                if index == 44:
+                    # Protections
+                    item_buy_logic.append(dataframe['btc_is_bull_4h'])
+                    item_buy_logic.append(dataframe['btc_pct_close_max_24_5m'] < 0.03)
+                    item_buy_logic.append(dataframe['btc_pct_close_max_72_5m'] < 0.03)
+                    item_buy_logic.append(dataframe['close_max_48'] < (dataframe['close'] * 1.26))
+                    item_buy_logic.append(dataframe['high_max_6_1h'] < (dataframe['close'] * 1.3))
+                    item_buy_logic.append(dataframe['high_max_12_1h'] < (dataframe['close'] * 1.36))
+                    item_buy_logic.append(dataframe['high_max_24_1h'] < (dataframe['close'] * 1.4))
+                    item_buy_logic.append(dataframe['high_max_36_1h'] < (dataframe['close'] * 1.46))
+                    item_buy_logic.append(dataframe['high_max_48_1h'] < (dataframe['close'] * 1.5))
+
+                    item_buy_logic.append(dataframe['close_max_48'] > (dataframe['close'] * 1.1))
+
+                    item_buy_logic.append(dataframe['cti_40_1h'] < -0.8)
+                    item_buy_logic.append(dataframe['r_96_1h'] < -70.0)
+
+                    item_buy_logic.append((dataframe['not_downtrend_1h'])
+                                          | (dataframe['r_480_1h'] > -95.0))
+                    item_buy_logic.append((dataframe['not_downtrend_1h'])
+                                          | (dataframe['r_480_4h'] > -95.0))
+                    item_buy_logic.append((dataframe['not_downtrend_4h'])
+                                          | (dataframe['r_480_1h'] > -95.0))
+                    item_buy_logic.append((dataframe['not_downtrend_4h'])
+                                          | (dataframe['r_480_4h'] > -95.0))
+
+
+                    # Logic
+                    item_buy_logic.append(dataframe['bb20_2_width_1h'] > 0.156)
+                    item_buy_logic.append(dataframe['cti_20'] < -0.88)
+                    item_buy_logic.append(dataframe['r_14'] < -50.0)
 
                 # Condition #51 - Quick mode bear.
                 if index == 51:
