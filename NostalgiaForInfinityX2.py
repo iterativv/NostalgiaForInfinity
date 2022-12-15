@@ -3022,6 +3022,8 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append(dataframe['not_downtrend_15m'])
                     item_buy_logic.append(dataframe['not_downtrend_1h'])
                     item_buy_logic.append(dataframe['not_downtrend_4h'])
+                    item_buy_logic.append(dataframe['pct_change_high_max_6_24_1h'] > -0.3)
+                    item_buy_logic.append(dataframe['pct_change_high_max_3_12_4h'] > -0.4)
                     # current 4h green with wick
                     item_buy_logic.append((dataframe['change_pct_4h'] < 0.1)
                                           | (dataframe['top_wick_pct_4h'] < 0.16)
