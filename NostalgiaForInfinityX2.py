@@ -2595,6 +2595,7 @@ class NostalgiaForInfinityX2(IStrategy):
         # Indicators
         # -----------------------------------------------------------------------------------------
         # RSI
+        dataframe['rsi_3'] = ta.RSI(dataframe, timeperiod=3)
         dataframe['rsi_14'] = ta.RSI(dataframe, timeperiod=14)
 
         # EMA
