@@ -3528,7 +3528,6 @@ class NostalgiaForInfinityX2(IStrategy):
                                           | (dataframe['sma_200_1h'] > dataframe['sma_200_1h'].shift(24))
                                           | (dataframe['sma_200_4h'] > dataframe['sma_200_4h'].shift(96)))
                     item_buy_logic.append((dataframe['rsi_3_15m'] > 10.0)
-                                          | (dataframe['sma_200_15m'] > dataframe['sma_200_15m'].shift(12))
                                           | (dataframe['sma_200_1h'] > dataframe['sma_200_1h'].shift(24))
                                           | (dataframe['sma_200_4h'] > dataframe['sma_200_4h'].shift(96)))
                     # curent 1h red, previous 1h long green with top wick
