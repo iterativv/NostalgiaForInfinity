@@ -2820,7 +2820,7 @@ class NostalgiaForInfinityX(IStrategy):
                     if (use_alt_2) and (count_of_entries > self.max_rebuy_orders_2_alt):
                         return None
                     stake_amount = stake_amount * (self.rebuy_multi_2_alt if use_alt_2 else self.rebuy_multi_2)
-                    elif use_mode == 3 and 1 <= count_of_entries <= 8:
+                elif use_mode == 3 and 1 <= count_of_entries <= 8:
                         stake_amount = stake_amount * self.rebuy_multi_3 * math.ceil(count_of_entries/2)
                 elif (use_mode == 4):
                     stake_amount = stake_amount + (stake_amount * (self.rebuy_multi_4 * (count_of_entries - 1)))
