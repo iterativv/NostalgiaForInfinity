@@ -2639,7 +2639,7 @@ class NostalgiaForInfinityX(IStrategy):
         if (trade.open_date_utc.replace(tzinfo=None) < datetime(2022, 12, 1) and not is_backtest):
             return None
 
-        if (self.position_adjustment_enable == False) or (self.nfi_automatic_rebuys_enable == False) or (current_profit > -0.02):
+        if (self.position_adjustment_enable is False) or (self.nfi_automatic_rebuys_enable is False) or (current_profit > -0.02):
             return None
 
         enter_tag = 'empty'
@@ -2788,7 +2788,7 @@ class NostalgiaForInfinityX(IStrategy):
                         and (
                             (last_candle['crsi'] > 10.0)
                             and (last_candle['crsi_1h'] > 12.0)
-                            and (last_candle['crsi_1h'] > 10.0)and (last_candle['btc_not_downtrend_1h'] == True)
+                            and (last_candle['crsi_1h'] > 10.0)and (last_candle['btc_not_downtrend_1h'] is True)
                         )
                 ):
                     is_rebuy = True
@@ -3791,7 +3791,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_1_5'
             elif (last_candle['r_14'] > -3.0) and (last_candle['r_32'] > -3.0) and (last_candle['r_96'] > -3.0) and (last_candle['rsi_14'] > 72.0) and (last_candle['cci'] > 360.0) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_1_6'
-            elif (last_candle['rsi_14'] < 46.0) and (last_candle['btc_not_downtrend_1h'] == False) and (last_candle['cmf_1h'] < -0.1) and (last_candle['r_480_1h'] > -30.0):
+            elif (last_candle['rsi_14'] < 46.0) and (last_candle['btc_not_downtrend_1h'] is False) and (last_candle['cmf_1h'] < -0.1) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_1_7'
             elif (last_candle['r_14'] >= -5.0) and (last_candle['r_96'] >= -3.0) and (last_candle['rsi_14'] > 76.0) and (last_candle['cti'] > 0.9):
                 return True, 'sell_profit_w_1_8'
@@ -3819,7 +3819,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_1_19'
             elif (last_candle['r_64'] > -20.0) and (last_candle['r_96'] > -15.0) and (last_candle['rsi_14'] > 72.0) and (last_candle['cti'] > 0.8) and (last_candle['r_64_15m'] > -15.0) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_1_20'
-            elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 67.0) and (last_candle['btc_not_downtrend_1h'] == False)  and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 50.0):
+            elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 67.0) and (last_candle['btc_not_downtrend_1h'] is False)  and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 50.0):
                 return True, 'sell_profit_w_1_21'
             elif (last_candle['r_14'] > -1.0) and (last_candle['r_64'] > -10.0) and (last_candle['rsi_14'] > 69.0) and (last_candle['sma_200_dec_20']) and (last_candle['r_480_1h'] < -55.0) and (last_candle['rsi_14_1h'] < 50.0):
                 return True, 'sell_profit_w_1_22'
@@ -3957,7 +3957,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_1_88'
             elif (last_candle['r_14'] > -1.0) and (last_candle['rsi_14'] > 64.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 45.0):
                 return True, 'sell_profit_w_1_89'
-            elif (last_candle['r_14'] > -30.0) and (last_candle['rsi_14'] < 49.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 44.0) and (last_candle['r_96_15m'] < -85.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -30.0) and (last_candle['rsi_14'] < 49.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 44.0) and (last_candle['r_96_15m'] < -85.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_1_90'
             elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 60.0) and (last_candle['cmf_15m'] < -0.25):
                 return True, 'sell_profit_w_1_91'
@@ -3989,21 +3989,21 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_1_104'
             elif (last_candle['r_14'] > -40.0) and (last_candle['rsi_14'] > 78.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0):
                 return True, 'sell_profit_w_1_105'
-            elif (last_candle['r_14'] > -15.0) and (last_candle['rsi_14'] > 62.0) and (last_candle['sma_200_dec_20']) and (last_candle['rsi_14_1h'] < 45.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -15.0) and (last_candle['rsi_14'] > 62.0) and (last_candle['sma_200_dec_20']) and (last_candle['rsi_14_1h'] < 45.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_1_106'
-            elif (last_candle['r_14'] > -15.0) and (last_candle['r_64'] > -10.0) and (last_candle['r_96'] > -10.0) and (last_candle['rsi_14'] > 72.0) and (last_candle['rsi_14_1h'] > 65.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -15.0) and (last_candle['r_64'] > -10.0) and (last_candle['r_96'] > -10.0) and (last_candle['rsi_14'] > 72.0) and (last_candle['rsi_14_1h'] > 65.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_1_107'
             elif (last_candle['r_14'] > -15.0) and (last_candle['r_480'] > -30.0) and (last_candle['rsi_14'] > 61.0) and (last_candle['cmf_15m'] < -0.1):
                 return True, 'sell_profit_w_1_108'
-            elif (last_candle['r_480'] > -16.0) and (last_candle['rsi_14'] > 63.0) and (last_candle['cmf'] < -0.1) and (last_candle['cmf_15m'] < -0.1) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_480'] > -16.0) and (last_candle['rsi_14'] > 63.0) and (last_candle['cmf'] < -0.1) and (last_candle['cmf_15m'] < -0.1) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_1_109'
-            elif (last_candle['r_14'] > -20.0) and (last_candle['r_96'] > -20.0) and (last_candle['rsi_14'] > 67.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -20.0) and (last_candle['r_96'] > -20.0) and (last_candle['rsi_14'] > 67.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_1_110'
             elif (last_candle['r_14'] > -1.0) and (last_candle['rsi_14'] > 67.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['r_480_1h'] > -25.0):
                 return True, 'sell_profit_w_1_111'
             elif (last_candle['r_14'] > -18.0) and (last_candle['rsi_14'] > 66.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 40.0):
                 return True, 'sell_profit_w_1_112'
-            elif (last_candle['r_14'] > -4.0) and (last_candle['rsi_14'] > 59.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 34.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -4.0) and (last_candle['rsi_14'] > 59.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 34.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_1_113'
         elif 0.03 > current_profit >= 0.02:
             if (last_candle['r_480'] > -0.5):
@@ -4018,7 +4018,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_2_5'
             elif (last_candle['r_14'] > -3.0) and (last_candle['r_32'] > -3.0) and (last_candle['r_96'] > -3.0) and (last_candle['rsi_14'] > 71.0) and (last_candle['cci'] > 350.0) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_2_6'
-            elif (last_candle['rsi_14'] < 47.0) and (last_candle['btc_not_downtrend_1h'] == False) and (last_candle['cmf_1h'] < -0.1) and (last_candle['r_480_1h'] > -30.0):
+            elif (last_candle['rsi_14'] < 47.0) and (last_candle['btc_not_downtrend_1h'] is False) and (last_candle['cmf_1h'] < -0.1) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_2_7'
             elif (last_candle['r_14'] >= -5.0) and (last_candle['r_96'] >= -3.0) and (last_candle['rsi_14'] > 75.0) and (last_candle['cti'] > 0.9):
                 return True, 'sell_profit_w_2_8'
@@ -4046,7 +4046,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_2_19'
             elif (last_candle['r_64'] > -20.0) and (last_candle['r_96'] > -15.0) and (last_candle['rsi_14'] > 69.0) and (last_candle['cti'] > 0.8) and (last_candle['r_64_15m'] > -15.0) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_2_20'
-            elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 65.0) and (last_candle['btc_not_downtrend_1h'] == False)  and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 50.0):
+            elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 65.0) and (last_candle['btc_not_downtrend_1h'] is False)  and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 50.0):
                 return True, 'sell_profit_w_2_21'
             elif (last_candle['r_14'] > -1.0) and (last_candle['r_64'] > -10.0) and (last_candle['rsi_14'] > 68.0) and (last_candle['sma_200_dec_20']) and (last_candle['r_480_1h'] < -55.0) and (last_candle['rsi_14_1h'] < 50.0):
                 return True, 'sell_profit_w_2_22'
@@ -4184,7 +4184,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_2_88'
             elif (last_candle['r_14'] > -1.0) and (last_candle['rsi_14'] > 64.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 45.0):
                 return True, 'sell_profit_w_2_89'
-            elif (last_candle['r_14'] > -30.0) and (last_candle['rsi_14'] < 49.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 44.0) and (last_candle['r_96_15m'] < -85.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -30.0) and (last_candle['rsi_14'] < 49.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 44.0) and (last_candle['r_96_15m'] < -85.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_2_90'
             elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 60.0) and (last_candle['cmf_15m'] < -0.25):
                 return True, 'sell_profit_w_2_91'
@@ -4216,21 +4216,21 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_2_104'
             elif (last_candle['r_14'] > -40.0) and (last_candle['rsi_14'] > 77.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0):
                 return True, 'sell_profit_w_2_105'
-            elif (last_candle['r_14'] > -15.0) and (last_candle['rsi_14'] > 61.0) and (last_candle['sma_200_dec_20']) and (last_candle['rsi_14_1h'] < 45.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -15.0) and (last_candle['rsi_14'] > 61.0) and (last_candle['sma_200_dec_20']) and (last_candle['rsi_14_1h'] < 45.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_2_106'
-            elif (last_candle['r_14'] > -15.0) and (last_candle['r_64'] > -10.0) and (last_candle['r_96'] > -10.0) and (last_candle['rsi_14'] > 70.0) and (last_candle['rsi_14_1h'] > 65.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -15.0) and (last_candle['r_64'] > -10.0) and (last_candle['r_96'] > -10.0) and (last_candle['rsi_14'] > 70.0) and (last_candle['rsi_14_1h'] > 65.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_2_107'
             elif (last_candle['r_14'] > -15.0) and (last_candle['r_480'] > -30.0) and (last_candle['rsi_14'] > 60.0) and (last_candle['cmf_15m'] < -0.1):
                 return True, 'sell_profit_w_2_108'
-            elif (last_candle['r_480'] > -16.0) and (last_candle['rsi_14'] > 62.0) and (last_candle['cmf'] < -0.1) and (last_candle['cmf_15m'] < -0.1) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_480'] > -16.0) and (last_candle['rsi_14'] > 62.0) and (last_candle['cmf'] < -0.1) and (last_candle['cmf_15m'] < -0.1) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_2_109'
-            elif (last_candle['r_14'] > -20.0) and (last_candle['r_96'] > -20.0) and (last_candle['rsi_14'] > 66.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -20.0) and (last_candle['r_96'] > -20.0) and (last_candle['rsi_14'] > 66.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_2_110'
             elif (last_candle['r_14'] > -1.0) and (last_candle['rsi_14'] > 66.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['r_480_1h'] > -25.0):
                 return True, 'sell_profit_w_2_111'
             elif (last_candle['r_14'] > -18.0) and (last_candle['rsi_14'] > 65.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 40.0):
                 return True, 'sell_profit_w_2_112'
-            elif (last_candle['r_14'] > -4.0) and (last_candle['rsi_14'] > 58.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 34.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -4.0) and (last_candle['rsi_14'] > 58.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 34.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_2_113'
         elif 0.04 > current_profit >= 0.03:
             if (last_candle['r_480'] > -0.6):
@@ -4245,7 +4245,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_3_5'
             elif (last_candle['r_14'] > -3.0) and (last_candle['r_32'] > -3.0) and (last_candle['r_96'] > -3.0) and (last_candle['rsi_14'] > 70.0) and (last_candle['cci'] > 340.0) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_3_6'
-            elif (last_candle['rsi_14'] < 48.0) and (last_candle['btc_not_downtrend_1h'] == False) and (last_candle['cmf_1h'] < -0.1) and (last_candle['r_480_1h'] > -30.0):
+            elif (last_candle['rsi_14'] < 48.0) and (last_candle['btc_not_downtrend_1h'] is False) and (last_candle['cmf_1h'] < -0.1) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_3_7'
             elif (last_candle['r_14'] >= -5.0) and (last_candle['r_96'] >= -3.0) and (last_candle['rsi_14'] > 74.0) and (last_candle['cti'] > 0.85):
                 return True, 'sell_profit_w_3_8'
@@ -4273,7 +4273,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_3_19'
             elif (last_candle['r_64'] > -20.0) and (last_candle['r_96'] > -15.0) and (last_candle['rsi_14'] > 68.0) and (last_candle['cti'] > 0.8) and (last_candle['r_64_15m'] > -15.0) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_3_20'
-            elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 63.0) and (last_candle['btc_not_downtrend_1h'] == False)  and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 50.0):
+            elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 63.0) and (last_candle['btc_not_downtrend_1h'] is False)  and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 50.0):
                 return True, 'sell_profit_w_3_21'
             elif (last_candle['r_14'] > -1.0) and (last_candle['r_64'] > -10.0) and (last_candle['rsi_14'] > 67.0) and (last_candle['sma_200_dec_20']) and (last_candle['r_480_1h'] < -55.0) and (last_candle['rsi_14_1h'] < 50.0):
                 return True, 'sell_profit_w_3_22'
@@ -4411,7 +4411,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_3_88'
             elif (last_candle['r_14'] > -1.0) and (last_candle['rsi_14'] > 64.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 45.0):
                 return True, 'sell_profit_w_3_89'
-            elif (last_candle['r_14'] > -30.0) and (last_candle['rsi_14'] < 49.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 44.0) and (last_candle['r_96_15m'] < -85.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -30.0) and (last_candle['rsi_14'] < 49.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 44.0) and (last_candle['r_96_15m'] < -85.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_3_90'
             elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 60.0) and (last_candle['cmf_15m'] < -0.25):
                 return True, 'sell_profit_w_3_91'
@@ -4443,21 +4443,21 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_3_104'
             elif (last_candle['r_14'] > -40.0) and (last_candle['rsi_14'] > 76.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0):
                 return True, 'sell_profit_w_3_105'
-            elif (last_candle['r_14'] > -15.0) and (last_candle['rsi_14'] > 60.0) and (last_candle['sma_200_dec_20']) and (last_candle['rsi_14_1h'] < 45.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -15.0) and (last_candle['rsi_14'] > 60.0) and (last_candle['sma_200_dec_20']) and (last_candle['rsi_14_1h'] < 45.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_3_106'
-            elif (last_candle['r_14'] > -15.0) and (last_candle['r_64'] > -10.0) and (last_candle['r_96'] > -10.0) and (last_candle['rsi_14'] > 68.0) and (last_candle['rsi_14_1h'] > 65.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -15.0) and (last_candle['r_64'] > -10.0) and (last_candle['r_96'] > -10.0) and (last_candle['rsi_14'] > 68.0) and (last_candle['rsi_14_1h'] > 65.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_3_107'
             elif (last_candle['r_14'] > -15.0) and (last_candle['r_480'] > -30.0) and (last_candle['rsi_14'] > 59.0) and (last_candle['cmf_15m'] < -0.1):
                 return True, 'sell_profit_w_3_108'
-            elif (last_candle['r_480'] > -16.0) and (last_candle['rsi_14'] > 61.0) and (last_candle['cmf'] < -0.1) and (last_candle['cmf_15m'] < -0.1) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_480'] > -16.0) and (last_candle['rsi_14'] > 61.0) and (last_candle['cmf'] < -0.1) and (last_candle['cmf_15m'] < -0.1) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_3_109'
-            elif (last_candle['r_14'] > -20.0) and (last_candle['r_96'] > -20.0) and (last_candle['rsi_14'] > 65.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -20.0) and (last_candle['r_96'] > -20.0) and (last_candle['rsi_14'] > 65.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_3_110'
             elif (last_candle['r_14'] > -1.0) and (last_candle['rsi_14'] > 65.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['r_480_1h'] > -25.0):
                 return True, 'sell_profit_w_3_111'
             elif (last_candle['r_14'] > -18.0) and (last_candle['rsi_14'] > 64.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 40.0):
                 return True, 'sell_profit_w_3_112'
-            elif (last_candle['r_14'] > -4.0) and (last_candle['rsi_14'] > 57.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 34.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -4.0) and (last_candle['rsi_14'] > 57.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 34.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_3_113'
         elif 0.05 > current_profit >= 0.04:
             if (last_candle['r_480'] > -0.7):
@@ -4472,7 +4472,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_4_5'
             elif (last_candle['r_14'] > -3.0) and (last_candle['r_32'] > -3.0) and (last_candle['r_96'] > -3.0) and (last_candle['rsi_14'] > 69.0) and (last_candle['cci'] > 330.0) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_4_6'
-            elif (last_candle['rsi_14'] < 49.0) and (last_candle['btc_not_downtrend_1h'] == False) and (last_candle['cmf_1h'] < -0.1) and (last_candle['r_480_1h'] > -30.0):
+            elif (last_candle['rsi_14'] < 49.0) and (last_candle['btc_not_downtrend_1h'] is False) and (last_candle['cmf_1h'] < -0.1) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_4_7'
             elif (last_candle['r_14'] >= -5.0) and (last_candle['r_96'] >= -3.0) and (last_candle['rsi_14'] > 73.0) and (last_candle['cti'] > 0.85):
                 return True, 'sell_profit_w_4_8'
@@ -4500,7 +4500,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_4_19'
             elif (last_candle['r_64'] > -20.0) and (last_candle['r_96'] > -15.0) and (last_candle['rsi_14'] > 67.0) and (last_candle['cti'] > 0.8) and (last_candle['r_64_15m'] > -15.0) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_4_20'
-            elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 62.0) and (last_candle['btc_not_downtrend_1h'] == False)  and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 50.0):
+            elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 62.0) and (last_candle['btc_not_downtrend_1h'] is False)  and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 50.0):
                 return True, 'sell_profit_w_4_21'
             elif (last_candle['r_14'] > -1.0) and (last_candle['r_64'] > -10.0) and (last_candle['rsi_14'] > 66.0) and (last_candle['sma_200_dec_20']) and (last_candle['r_480_1h'] < -55.0) and (last_candle['rsi_14_1h'] < 50.0):
                 return True, 'sell_profit_w_4_22'
@@ -4638,7 +4638,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_4_88'
             elif (last_candle['r_14'] > -1.0) and (last_candle['rsi_14'] > 64.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 45.0):
                 return True, 'sell_profit_w_4_89'
-            elif (last_candle['r_14'] > -30.0) and (last_candle['rsi_14'] < 49.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 44.0) and (last_candle['r_96_15m'] < -85.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -30.0) and (last_candle['rsi_14'] < 49.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 44.0) and (last_candle['r_96_15m'] < -85.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_4_90'
             elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 60.0) and (last_candle['cmf_15m'] < -0.25):
                 return True, 'sell_profit_w_4_91'
@@ -4670,21 +4670,21 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_4_104'
             elif (last_candle['r_14'] > -40.0) and (last_candle['rsi_14'] > 75.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0):
                 return True, 'sell_profit_w_4_105'
-            elif (last_candle['r_14'] > -15.0) and (last_candle['rsi_14'] > 59.0) and (last_candle['sma_200_dec_20']) and (last_candle['rsi_14_1h'] < 45.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -15.0) and (last_candle['rsi_14'] > 59.0) and (last_candle['sma_200_dec_20']) and (last_candle['rsi_14_1h'] < 45.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_4_106'
-            elif (last_candle['r_14'] > -15.0) and (last_candle['r_64'] > -10.0) and (last_candle['r_96'] > -10.0) and (last_candle['rsi_14'] > 66.0) and (last_candle['rsi_14_1h'] > 65.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -15.0) and (last_candle['r_64'] > -10.0) and (last_candle['r_96'] > -10.0) and (last_candle['rsi_14'] > 66.0) and (last_candle['rsi_14_1h'] > 65.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_4_107'
             elif (last_candle['r_14'] > -15.0) and (last_candle['r_480'] > -30.0) and (last_candle['rsi_14'] > 58.0) and (last_candle['cmf_15m'] < -0.1):
                 return True, 'sell_profit_w_4_108'
-            elif (last_candle['r_480'] > -16.0) and (last_candle['rsi_14'] > 60.0) and (last_candle['cmf'] < -0.1) and (last_candle['cmf_15m'] < -0.1) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_480'] > -16.0) and (last_candle['rsi_14'] > 60.0) and (last_candle['cmf'] < -0.1) and (last_candle['cmf_15m'] < -0.1) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_4_109'
-            elif (last_candle['r_14'] > -20.0) and (last_candle['r_96'] > -20.0) and (last_candle['rsi_14'] > 64.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -20.0) and (last_candle['r_96'] > -20.0) and (last_candle['rsi_14'] > 64.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_4_110'
             elif (last_candle['r_14'] > -1.0) and (last_candle['rsi_14'] > 64.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['r_480_1h'] > -25.0):
                 return True, 'sell_profit_w_4_111'
             elif (last_candle['r_14'] > -18.0) and (last_candle['rsi_14'] > 63.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 40.0):
                 return True, 'sell_profit_w_4_112'
-            elif (last_candle['r_14'] > -4.0) and (last_candle['rsi_14'] > 56.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 34.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -4.0) and (last_candle['rsi_14'] > 56.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 34.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_4_113'
         elif 0.06 > current_profit >= 0.05:
             if (last_candle['r_480'] > -0.8):
@@ -4699,7 +4699,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_5_5'
             elif (last_candle['r_14'] > -3.0) and (last_candle['r_32'] > -3.0) and (last_candle['r_96'] > -3.0) and (last_candle['rsi_14'] > 68.0) and (last_candle['cci'] > 320.0) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_5_6'
-            elif (last_candle['rsi_14'] < 50.0) and (last_candle['btc_not_downtrend_1h'] == False) and (last_candle['cmf_1h'] < -0.1) and (last_candle['r_480_1h'] > -30.0):
+            elif (last_candle['rsi_14'] < 50.0) and (last_candle['btc_not_downtrend_1h'] is False) and (last_candle['cmf_1h'] < -0.1) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_5_7'
             elif (last_candle['r_14'] >= -5.0) and (last_candle['r_96'] >= -3.0) and (last_candle['rsi_14'] > 72.0) and (last_candle['cti'] > 0.85):
                 return True, 'sell_profit_w_5_8'
@@ -4727,7 +4727,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_5_19'
             elif (last_candle['r_64'] > -20.0) and (last_candle['r_96'] > -15.0) and (last_candle['rsi_14'] > 65.0) and (last_candle['cti'] > 0.8) and (last_candle['r_64_15m'] > -15.0) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_5_20'
-            elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 61.0) and (last_candle['btc_not_downtrend_1h'] == False)  and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 50.0):
+            elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 61.0) and (last_candle['btc_not_downtrend_1h'] is False)  and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 50.0):
                 return True, 'sell_profit_w_5_21'
             elif (last_candle['r_14'] > -1.0) and (last_candle['r_64'] > -10.0) and (last_candle['rsi_14'] > 65.0) and (last_candle['sma_200_dec_20']) and (last_candle['r_480_1h'] < -55.0) and (last_candle['rsi_14_1h'] < 50.0):
                 return True, 'sell_profit_w_5_22'
@@ -4865,7 +4865,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_5_88'
             elif (last_candle['r_14'] > -1.0) and (last_candle['rsi_14'] > 64.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 45.0):
                 return True, 'sell_profit_w_5_89'
-            elif (last_candle['r_14'] > -30.0) and (last_candle['rsi_14'] < 49.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 44.0) and (last_candle['r_96_15m'] < -85.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -30.0) and (last_candle['rsi_14'] < 49.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 44.0) and (last_candle['r_96_15m'] < -85.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_5_90'
             elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 60.0) and (last_candle['cmf_15m'] < -0.25):
                 return True, 'sell_profit_w_5_91'
@@ -4897,21 +4897,21 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_5_104'
             elif (last_candle['r_14'] > -40.0) and (last_candle['rsi_14'] > 74.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0):
                 return True, 'sell_profit_w_5_105'
-            elif (last_candle['r_14'] > -15.0) and (last_candle['rsi_14'] > 58.0) and (last_candle['sma_200_dec_20']) and (last_candle['rsi_14_1h'] < 45.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -15.0) and (last_candle['rsi_14'] > 58.0) and (last_candle['sma_200_dec_20']) and (last_candle['rsi_14_1h'] < 45.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_5_106'
-            elif (last_candle['r_14'] > -15.0) and (last_candle['r_64'] > -10.0) and (last_candle['r_96'] > -10.0) and (last_candle['rsi_14'] > 64.0) and (last_candle['rsi_14_1h'] > 65.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -15.0) and (last_candle['r_64'] > -10.0) and (last_candle['r_96'] > -10.0) and (last_candle['rsi_14'] > 64.0) and (last_candle['rsi_14_1h'] > 65.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_5_107'
             elif (last_candle['r_14'] > -15.0) and (last_candle['r_480'] > -30.0) and (last_candle['rsi_14'] > 57.0) and (last_candle['cmf_15m'] < -0.1):
                 return True, 'sell_profit_w_5_108'
-            elif (last_candle['r_480'] > -16.0) and (last_candle['rsi_14'] > 59.0) and (last_candle['cmf'] < -0.1) and (last_candle['cmf_15m'] < -0.1) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_480'] > -16.0) and (last_candle['rsi_14'] > 59.0) and (last_candle['cmf'] < -0.1) and (last_candle['cmf_15m'] < -0.1) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_5_109'
-            elif (last_candle['r_14'] > -20.0) and (last_candle['r_96'] > -20.0) and (last_candle['rsi_14'] > 63.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -20.0) and (last_candle['r_96'] > -20.0) and (last_candle['rsi_14'] > 63.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_5_110'
             elif (last_candle['r_14'] > -1.0) and (last_candle['rsi_14'] > 63.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['r_480_1h'] > -25.0):
                 return True, 'sell_profit_w_5_111'
             elif (last_candle['r_14'] > -18.0) and (last_candle['rsi_14'] > 62.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 40.0):
                 return True, 'sell_profit_w_5_112'
-            elif (last_candle['r_14'] > -4.0) and (last_candle['rsi_14'] > 55.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 34.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -4.0) and (last_candle['rsi_14'] > 55.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 34.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_5_113'
         elif 0.07 > current_profit >= 0.06:
             if (last_candle['r_480'] > -0.9):
@@ -4926,7 +4926,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_6_5'
             elif (last_candle['r_14'] > -3.0) and (last_candle['r_32'] > -3.0) and (last_candle['r_96'] > -3.0) and (last_candle['rsi_14'] > 69.0) and (last_candle['cci'] > 310.0) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_6_6'
-            elif (last_candle['rsi_14'] < 49.0) and (last_candle['btc_not_downtrend_1h'] == False) and (last_candle['cmf_1h'] < -0.1) and (last_candle['r_480_1h'] > -30.0):
+            elif (last_candle['rsi_14'] < 49.0) and (last_candle['btc_not_downtrend_1h'] is False) and (last_candle['cmf_1h'] < -0.1) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_6_7'
             elif (last_candle['r_14'] >= -5.0) and (last_candle['r_96'] >= -3.0) and (last_candle['rsi_14'] > 73.0) and (last_candle['cti'] > 0.85):
                 return True, 'sell_profit_w_6_8'
@@ -4954,7 +4954,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_6_19'
             elif (last_candle['r_64'] > -20.0) and (last_candle['r_96'] > -15.0) and (last_candle['rsi_14'] > 68.0) and (last_candle['cti'] > 0.8) and (last_candle['r_64_15m'] > -15.0) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_6_20'
-            elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 63.0) and (last_candle['btc_not_downtrend_1h'] == False)  and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 50.0):
+            elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 63.0) and (last_candle['btc_not_downtrend_1h'] is False)  and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 50.0):
                 return True, 'sell_profit_w_6_21'
             elif (last_candle['r_14'] > -1.0) and (last_candle['r_64'] > -10.0) and (last_candle['rsi_14'] > 66.0) and (last_candle['sma_200_dec_20']) and (last_candle['r_480_1h'] < -55.0) and (last_candle['rsi_14_1h'] < 50.0):
                 return True, 'sell_profit_w_6_22'
@@ -5092,7 +5092,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_6_88'
             elif (last_candle['r_14'] > -1.0) and (last_candle['rsi_14'] > 65.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 45.0):
                 return True, 'sell_profit_w_6_89'
-            elif (last_candle['r_14'] > -30.0) and (last_candle['rsi_14'] < 48.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 44.0) and (last_candle['r_96_15m'] < -85.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -30.0) and (last_candle['rsi_14'] < 48.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 44.0) and (last_candle['r_96_15m'] < -85.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_6_90'
             elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 61.0) and (last_candle['cmf_15m'] < -0.25):
                 return True, 'sell_profit_w_6_91'
@@ -5124,21 +5124,21 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_6_104'
             elif (last_candle['r_14'] > -40.0) and (last_candle['rsi_14'] > 75.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0):
                 return True, 'sell_profit_w_6_105'
-            elif (last_candle['r_14'] > -15.0) and (last_candle['rsi_14'] > 59.0) and (last_candle['sma_200_dec_20']) and (last_candle['rsi_14_1h'] < 45.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -15.0) and (last_candle['rsi_14'] > 59.0) and (last_candle['sma_200_dec_20']) and (last_candle['rsi_14_1h'] < 45.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_6_106'
-            elif (last_candle['r_14'] > -15.0) and (last_candle['r_64'] > -10.0) and (last_candle['r_96'] > -10.0) and (last_candle['rsi_14'] > 66.0) and (last_candle['rsi_14_1h'] > 65.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -15.0) and (last_candle['r_64'] > -10.0) and (last_candle['r_96'] > -10.0) and (last_candle['rsi_14'] > 66.0) and (last_candle['rsi_14_1h'] > 65.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_6_107'
             elif (last_candle['r_14'] > -15.0) and (last_candle['r_480'] > -30.0) and (last_candle['rsi_14'] > 58.0) and (last_candle['cmf_15m'] < -0.1):
                 return True, 'sell_profit_w_6_108'
-            elif (last_candle['r_480'] > -16.0) and (last_candle['rsi_14'] > 60.0) and (last_candle['cmf'] < -0.1) and (last_candle['cmf_15m'] < -0.1) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_480'] > -16.0) and (last_candle['rsi_14'] > 60.0) and (last_candle['cmf'] < -0.1) and (last_candle['cmf_15m'] < -0.1) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_6_109'
-            elif (last_candle['r_14'] > -20.0) and (last_candle['r_96'] > -20.0) and (last_candle['rsi_14'] > 64.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -20.0) and (last_candle['r_96'] > -20.0) and (last_candle['rsi_14'] > 64.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_6_110'
             elif (last_candle['r_14'] > -1.0) and (last_candle['rsi_14'] > 64.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['r_480_1h'] > -25.0):
                 return True, 'sell_profit_w_6_111'
             elif (last_candle['r_14'] > -18.0) and (last_candle['rsi_14'] > 63.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 40.0):
                 return True, 'sell_profit_w_6_112'
-            elif (last_candle['r_14'] > -4.0) and (last_candle['rsi_14'] > 56.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 34.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -4.0) and (last_candle['rsi_14'] > 56.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 34.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_6_113'
         elif 0.08 > current_profit >= 0.07:
             if (last_candle['r_480'] > -1.0):
@@ -5153,7 +5153,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_7_5'
             elif (last_candle['r_14'] > -3.0) and (last_candle['r_32'] > -3.0) and (last_candle['r_96'] > -3.0) and (last_candle['rsi_14'] > 70.0) and (last_candle['cci'] > 300.0) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_7_6'
-            elif (last_candle['rsi_14'] < 48.0) and (last_candle['btc_not_downtrend_1h'] == False) and (last_candle['cmf_1h'] < -0.1) and (last_candle['r_480_1h'] > -30.0):
+            elif (last_candle['rsi_14'] < 48.0) and (last_candle['btc_not_downtrend_1h'] is False) and (last_candle['cmf_1h'] < -0.1) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_7_7'
             elif (last_candle['r_14'] >= -5.0) and (last_candle['r_96'] >= -3.0) and (last_candle['rsi_14'] > 74.0) and (last_candle['cti'] > 0.85):
                 return True, 'sell_profit_w_7_8'
@@ -5181,7 +5181,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_7_19'
             elif (last_candle['r_64'] > -20.0) and (last_candle['r_96'] > -15.0) and (last_candle['rsi_14'] > 70.0) and (last_candle['cti'] > 0.85) and (last_candle['r_64_15m'] > -15.0) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_7_20'
-            elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 65.0) and (last_candle['btc_not_downtrend_1h'] == False)  and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 50.0):
+            elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 65.0) and (last_candle['btc_not_downtrend_1h'] is False)  and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 50.0):
                 return True, 'sell_profit_w_7_21'
             elif (last_candle['r_14'] > -1.0) and (last_candle['r_64'] > -10.0) and (last_candle['rsi_14'] > 67.0) and (last_candle['sma_200_dec_20']) and (last_candle['r_480_1h'] < -55.0) and (last_candle['rsi_14_1h'] < 50.0):
                 return True, 'sell_profit_w_7_22'
@@ -5319,7 +5319,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_7_88'
             elif (last_candle['r_14'] > -1.0) and (last_candle['rsi_14'] > 66.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 45.0):
                 return True, 'sell_profit_w_7_89'
-            elif (last_candle['r_14'] > -30.0) and (last_candle['rsi_14'] < 47.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 44.0) and (last_candle['r_96_15m'] < -85.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -30.0) and (last_candle['rsi_14'] < 47.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 44.0) and (last_candle['r_96_15m'] < -85.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_7_90'
             elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 62.0) and (last_candle['cmf_15m'] < -0.25):
                 return True, 'sell_profit_w_7_91'
@@ -5351,21 +5351,21 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_7_104'
             elif (last_candle['r_14'] > -40.0) and (last_candle['rsi_14'] > 76.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0):
                 return True, 'sell_profit_w_7_105'
-            elif (last_candle['r_14'] > -15.0) and (last_candle['rsi_14'] > 60.0) and (last_candle['sma_200_dec_20']) and (last_candle['rsi_14_1h'] < 45.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -15.0) and (last_candle['rsi_14'] > 60.0) and (last_candle['sma_200_dec_20']) and (last_candle['rsi_14_1h'] < 45.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_7_106'
-            elif (last_candle['r_14'] > -15.0) and (last_candle['r_64'] > -10.0) and (last_candle['r_96'] > -10.0) and (last_candle['rsi_14'] > 68.0) and (last_candle['rsi_14_1h'] > 65.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -15.0) and (last_candle['r_64'] > -10.0) and (last_candle['r_96'] > -10.0) and (last_candle['rsi_14'] > 68.0) and (last_candle['rsi_14_1h'] > 65.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_7_107'
             elif (last_candle['r_14'] > -15.0) and (last_candle['r_480'] > -30.0) and (last_candle['rsi_14'] > 59.0) and (last_candle['cmf_15m'] < -0.1):
                 return True, 'sell_profit_w_7_108'
-            elif (last_candle['r_480'] > -16.0) and (last_candle['rsi_14'] > 61.0) and (last_candle['cmf'] < -0.1) and (last_candle['cmf_15m'] < -0.1) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_480'] > -16.0) and (last_candle['rsi_14'] > 61.0) and (last_candle['cmf'] < -0.1) and (last_candle['cmf_15m'] < -0.1) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_7_109'
-            elif (last_candle['r_14'] > -20.0) and (last_candle['r_96'] > -20.0) and (last_candle['rsi_14'] > 65.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -20.0) and (last_candle['r_96'] > -20.0) and (last_candle['rsi_14'] > 65.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_7_110'
             elif (last_candle['r_14'] > -1.0) and (last_candle['rsi_14'] > 65.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['r_480_1h'] > -25.0):
                 return True, 'sell_profit_w_7_111'
             elif (last_candle['r_14'] > -18.0) and (last_candle['rsi_14'] > 64.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 40.0):
                 return True, 'sell_profit_w_7_112'
-            elif (last_candle['r_14'] > -4.0) and (last_candle['rsi_14'] > 57.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 34.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -4.0) and (last_candle['rsi_14'] > 57.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 34.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_7_113'
         elif 0.09 > current_profit >= 0.08:
             if (last_candle['r_480'] > -1.2):
@@ -5380,7 +5380,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_8_5'
             elif (last_candle['r_14'] > -3.0) and (last_candle['r_32'] > -3.0) and (last_candle['r_96'] > -3.0) and (last_candle['rsi_14'] > 71.0) and (last_candle['cci'] > 310.0) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_8_6'
-            elif (last_candle['rsi_14'] < 47.0) and (last_candle['btc_not_downtrend_1h'] == False) and (last_candle['cmf_1h'] < -0.1) and (last_candle['r_480_1h'] > -30.0):
+            elif (last_candle['rsi_14'] < 47.0) and (last_candle['btc_not_downtrend_1h'] is False) and (last_candle['cmf_1h'] < -0.1) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_8_7'
             elif (last_candle['r_14'] >= -5.0) and (last_candle['r_96'] >= -3.0) and (last_candle['rsi_14'] > 75.0) and (last_candle['cti'] > 0.85):
                 return True, 'sell_profit_w_8_8'
@@ -5408,7 +5408,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_8_19'
             elif (last_candle['r_64'] > -20.0) and (last_candle['r_96'] > -15.0) and (last_candle['rsi_14'] > 71.0) and (last_candle['cti'] > 0.85) and (last_candle['r_64_15m'] > -15.0) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_8_20'
-            elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 67.0) and (last_candle['btc_not_downtrend_1h'] == False)  and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 50.0):
+            elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 67.0) and (last_candle['btc_not_downtrend_1h'] is False)  and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 50.0):
                 return True, 'sell_profit_w_8_21'
             elif (last_candle['r_14'] > -1.0) and (last_candle['r_64'] > -10.0) and (last_candle['rsi_14'] > 68.0) and (last_candle['sma_200_dec_20']) and (last_candle['r_480_1h'] < -55.0) and (last_candle['rsi_14_1h'] < 50.0):
                 return True, 'sell_profit_w_8_22'
@@ -5546,7 +5546,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_8_88'
             elif (last_candle['r_14'] > -1.0) and (last_candle['rsi_14'] > 67.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 45.0):
                 return True, 'sell_profit_w_8_89'
-            elif (last_candle['r_14'] > -30.0) and (last_candle['rsi_14'] < 46.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 44.0) and (last_candle['r_96_15m'] < -85.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -30.0) and (last_candle['rsi_14'] < 46.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 44.0) and (last_candle['r_96_15m'] < -85.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_8_90'
             elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 63.0) and (last_candle['cmf_15m'] < -0.25):
                 return True, 'sell_profit_w_8_91'
@@ -5578,21 +5578,21 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_8_104'
             elif (last_candle['r_14'] > -40.0) and (last_candle['rsi_14'] > 77.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0):
                 return True, 'sell_profit_w_8_105'
-            elif (last_candle['r_14'] > -15.0) and (last_candle['rsi_14'] > 61.0) and (last_candle['sma_200_dec_20']) and (last_candle['rsi_14_1h'] < 45.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -15.0) and (last_candle['rsi_14'] > 61.0) and (last_candle['sma_200_dec_20']) and (last_candle['rsi_14_1h'] < 45.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_8_106'
-            elif (last_candle['r_14'] > -15.0) and (last_candle['r_64'] > -10.0) and (last_candle['r_96'] > -10.0) and (last_candle['rsi_14'] > 70.0) and (last_candle['rsi_14_1h'] > 65.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -15.0) and (last_candle['r_64'] > -10.0) and (last_candle['r_96'] > -10.0) and (last_candle['rsi_14'] > 70.0) and (last_candle['rsi_14_1h'] > 65.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_8_107'
             elif (last_candle['r_14'] > -15.0) and (last_candle['r_480'] > -30.0) and (last_candle['rsi_14'] > 60.0) and (last_candle['cmf_15m'] < -0.1):
                 return True, 'sell_profit_w_8_108'
-            elif (last_candle['r_480'] > -16.0) and (last_candle['rsi_14'] > 62.0) and (last_candle['cmf'] < -0.1) and (last_candle['cmf_15m'] < -0.1) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_480'] > -16.0) and (last_candle['rsi_14'] > 62.0) and (last_candle['cmf'] < -0.1) and (last_candle['cmf_15m'] < -0.1) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_8_109'
-            elif (last_candle['r_14'] > -20.0) and (last_candle['r_96'] > -20.0) and (last_candle['rsi_14'] > 66.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -20.0) and (last_candle['r_96'] > -20.0) and (last_candle['rsi_14'] > 66.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_8_110'
             elif (last_candle['r_14'] > -1.0) and (last_candle['rsi_14'] > 66.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['r_480_1h'] > -25.0):
                 return True, 'sell_profit_w_8_111'
             elif (last_candle['r_14'] > -18.0) and (last_candle['rsi_14'] > 65.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 40.0):
                 return True, 'sell_profit_w_8_112'
-            elif (last_candle['r_14'] > -4.0) and (last_candle['rsi_14'] > 58.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 34.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -4.0) and (last_candle['rsi_14'] > 58.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 34.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_8_113'
         elif 0.1 > current_profit >= 0.09:
             if (last_candle['r_480'] > -1.2):
@@ -5607,7 +5607,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_9_5'
             elif (last_candle['r_14'] > -2.0) and (last_candle['r_32'] > -3.0) and (last_candle['r_96'] > -3.0) and (last_candle['rsi_14'] > 72.0) and (last_candle['cci'] > 320.0) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_9_6'
-            elif (last_candle['rsi_14'] < 46.0) and (last_candle['btc_not_downtrend_1h'] == False) and (last_candle['cmf_1h'] < -0.1) and (last_candle['r_480_1h'] > -30.0):
+            elif (last_candle['rsi_14'] < 46.0) and (last_candle['btc_not_downtrend_1h'] is False) and (last_candle['cmf_1h'] < -0.1) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_9_7'
             elif (last_candle['r_14'] >= -5.0) and (last_candle['r_96'] >= -3.0) and (last_candle['rsi_14'] > 76.0) and (last_candle['cti'] > 0.85):
                 return True, 'sell_profit_w_9_8'
@@ -5635,7 +5635,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_9_19'
             elif (last_candle['r_64'] > -20.0) and (last_candle['r_96'] > -15.0) and (last_candle['rsi_14'] > 72.0) and (last_candle['cti'] > 0.85) and (last_candle['r_64_15m'] > -15.0) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_9_20'
-            elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 69.0) and (last_candle['btc_not_downtrend_1h'] == False)  and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 50.0):
+            elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 69.0) and (last_candle['btc_not_downtrend_1h'] is False)  and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 50.0):
                 return True, 'sell_profit_w_9_21'
             elif (last_candle['r_14'] > -1.0) and (last_candle['r_64'] > -10.0) and (last_candle['rsi_14'] > 69.0) and (last_candle['sma_200_dec_20']) and (last_candle['r_480_1h'] < -55.0) and (last_candle['rsi_14_1h'] < 50.0):
                 return True, 'sell_profit_w_9_22'
@@ -5773,7 +5773,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_9_88'
             elif (last_candle['r_14'] > -1.0) and (last_candle['rsi_14'] > 68.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 45.0):
                 return True, 'sell_profit_w_9_89'
-            elif (last_candle['r_14'] > -30.0) and (last_candle['rsi_14'] < 45.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 44.0) and (last_candle['r_96_15m'] < -85.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -30.0) and (last_candle['rsi_14'] < 45.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 44.0) and (last_candle['r_96_15m'] < -85.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_9_90'
             elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 64.0) and (last_candle['cmf_15m'] < -0.25):
                 return True, 'sell_profit_w_9_91'
@@ -5805,21 +5805,21 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_9_104'
             elif (last_candle['r_14'] > -40.0) and (last_candle['rsi_14'] > 78.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0):
                 return True, 'sell_profit_w_9_105'
-            elif (last_candle['r_14'] > -15.0) and (last_candle['rsi_14'] > 62.0) and (last_candle['sma_200_dec_20']) and (last_candle['rsi_14_1h'] < 45.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -15.0) and (last_candle['rsi_14'] > 62.0) and (last_candle['sma_200_dec_20']) and (last_candle['rsi_14_1h'] < 45.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_9_106'
-            elif (last_candle['r_14'] > -15.0) and (last_candle['r_64'] > -10.0) and (last_candle['r_96'] > -10.0) and (last_candle['rsi_14'] > 72.0) and (last_candle['rsi_14_1h'] > 65.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -15.0) and (last_candle['r_64'] > -10.0) and (last_candle['r_96'] > -10.0) and (last_candle['rsi_14'] > 72.0) and (last_candle['rsi_14_1h'] > 65.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_9_107'
             elif (last_candle['r_14'] > -15.0) and (last_candle['r_480'] > -30.0) and (last_candle['rsi_14'] > 61.0) and (last_candle['cmf_15m'] < -0.1):
                 return True, 'sell_profit_w_9_108'
-            elif (last_candle['r_480'] > -16.0) and (last_candle['rsi_14'] > 63.0) and (last_candle['cmf'] < -0.1) and (last_candle['cmf_15m'] < -0.1) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_480'] > -16.0) and (last_candle['rsi_14'] > 63.0) and (last_candle['cmf'] < -0.1) and (last_candle['cmf_15m'] < -0.1) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_9_109'
-            elif (last_candle['r_14'] > -20.0) and (last_candle['r_96'] > -20.0) and (last_candle['rsi_14'] > 67.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -20.0) and (last_candle['r_96'] > -20.0) and (last_candle['rsi_14'] > 67.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_9_110'
             elif (last_candle['r_14'] > -1.0) and (last_candle['rsi_14'] > 67.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['r_480_1h'] > -25.0):
                 return True, 'sell_profit_w_9_111'
             elif (last_candle['r_14'] > -18.0) and (last_candle['rsi_14'] > 66.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 40.0):
                 return True, 'sell_profit_w_9_112'
-            elif (last_candle['r_14'] > -4.0) and (last_candle['rsi_14'] > 59.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 34.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -4.0) and (last_candle['rsi_14'] > 59.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 34.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_9_113'
         elif 0.12 > current_profit >= 0.1:
             if (last_candle['r_480'] > -1.0):
@@ -5834,7 +5834,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_10_5'
             elif (last_candle['r_14'] > -2.0) and (last_candle['r_32'] > -3.0) and (last_candle['r_96'] > -3.0) and (last_candle['rsi_14'] > 73.0) and (last_candle['cci'] > 330.0) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_10_6'
-            elif (last_candle['rsi_14'] < 45.0) and (last_candle['btc_not_downtrend_1h'] == False) and (last_candle['cmf_1h'] < -0.1) and (last_candle['r_480_1h'] > -30.0):
+            elif (last_candle['rsi_14'] < 45.0) and (last_candle['btc_not_downtrend_1h'] is False) and (last_candle['cmf_1h'] < -0.1) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_10_7'
             elif (last_candle['r_14'] >= -5.0) and (last_candle['r_96'] >= -3.0) and (last_candle['rsi_14'] > 77.0) and (last_candle['cti'] > 0.9):
                 return True, 'sell_profit_w_10_8'
@@ -5862,7 +5862,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_10_19'
             elif (last_candle['r_64'] > -20.0) and (last_candle['r_96'] > -15.0) and (last_candle['rsi_14'] > 74.0) and (last_candle['cti'] > 0.85) and (last_candle['r_64_15m'] > -15.0) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_10_20'
-            elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 72.0) and (last_candle['btc_not_downtrend_1h'] == False)  and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 50.0):
+            elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 72.0) and (last_candle['btc_not_downtrend_1h'] is False)  and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 50.0):
                 return True, 'sell_profit_w_10_21'
             elif (last_candle['r_14'] > -1.0) and (last_candle['r_64'] > -10.0) and (last_candle['rsi_14'] > 70.0) and (last_candle['sma_200_dec_20']) and (last_candle['r_480_1h'] < -55.0) and (last_candle['rsi_14_1h'] < 50.0):
                 return True, 'sell_profit_w_10_22'
@@ -6000,7 +6000,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_10_88'
             elif (last_candle['r_14'] > -1.0) and (last_candle['rsi_14'] > 69.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 45.0):
                 return True, 'sell_profit_w_10_89'
-            elif (last_candle['r_14'] > -30.0) and (last_candle['rsi_14'] < 44.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 44.0) and (last_candle['r_96_15m'] < -85.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -30.0) and (last_candle['rsi_14'] < 44.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 44.0) and (last_candle['r_96_15m'] < -85.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_10_90'
             elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 65.0) and (last_candle['cmf_15m'] < -0.25):
                 return True, 'sell_profit_w_10_91'
@@ -6032,21 +6032,21 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_10_104'
             elif (last_candle['r_14'] > -40.0) and (last_candle['rsi_14'] > 79.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0):
                 return True, 'sell_profit_w_10_105'
-            elif (last_candle['r_14'] > -15.0) and (last_candle['rsi_14'] > 63.0) and (last_candle['sma_200_dec_20']) and (last_candle['rsi_14_1h'] < 45.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -15.0) and (last_candle['rsi_14'] > 63.0) and (last_candle['sma_200_dec_20']) and (last_candle['rsi_14_1h'] < 45.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_10_106'
-            elif (last_candle['r_14'] > -15.0) and (last_candle['r_64'] > -10.0) and (last_candle['r_96'] > -10.0) and (last_candle['rsi_14'] > 74.0) and (last_candle['rsi_14_1h'] > 65.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -15.0) and (last_candle['r_64'] > -10.0) and (last_candle['r_96'] > -10.0) and (last_candle['rsi_14'] > 74.0) and (last_candle['rsi_14_1h'] > 65.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_10_107'
             elif (last_candle['r_14'] > -15.0) and (last_candle['r_480'] > -30.0) and (last_candle['rsi_14'] > 62.0) and (last_candle['cmf_15m'] < -0.1):
                 return True, 'sell_profit_w_10_108'
-            elif (last_candle['r_480'] > -16.0) and (last_candle['rsi_14'] > 64.0) and (last_candle['cmf'] < -0.1) and (last_candle['cmf_15m'] < -0.1) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_480'] > -16.0) and (last_candle['rsi_14'] > 64.0) and (last_candle['cmf'] < -0.1) and (last_candle['cmf_15m'] < -0.1) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_10_109'
-            elif (last_candle['r_14'] > -20.0) and (last_candle['r_96'] > -20.0) and (last_candle['rsi_14'] > 68.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -20.0) and (last_candle['r_96'] > -20.0) and (last_candle['rsi_14'] > 68.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_10_110'
             elif (last_candle['r_14'] > -1.0) and (last_candle['rsi_14'] > 68.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['r_480_1h'] > -25.0):
                 return True, 'sell_profit_w_10_111'
             elif (last_candle['r_14'] > -18.0) and (last_candle['rsi_14'] > 67.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 40.0):
                 return True, 'sell_profit_w_10_112'
-            elif (last_candle['r_14'] > -4.0) and (last_candle['rsi_14'] > 60.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 34.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -4.0) and (last_candle['rsi_14'] > 60.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 34.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_10_113'
         elif 0.2 > current_profit >= 0.12:
             if (last_candle['r_480'] > -0.5):
@@ -6061,7 +6061,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_11_5'
             elif (last_candle['r_14'] > -2.0) and (last_candle['r_32'] > -3.0) and (last_candle['r_96'] > -3.0) and (last_candle['rsi_14'] > 74.0) and (last_candle['cci'] > 340.0) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_11_6'
-            elif (last_candle['rsi_14'] < 44.0) and (last_candle['btc_not_downtrend_1h'] == False) and (last_candle['cmf_1h'] < -0.1) and (last_candle['r_480_1h'] > -30.0):
+            elif (last_candle['rsi_14'] < 44.0) and (last_candle['btc_not_downtrend_1h'] is False) and (last_candle['cmf_1h'] < -0.1) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_11_7'
             elif (last_candle['r_14'] >= -5.0) and (last_candle['r_96'] >= -3.0) and (last_candle['rsi_14'] > 78.0) and (last_candle['cti'] > 0.9):
                 return True, 'sell_profit_w_11_8'
@@ -6089,7 +6089,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_11_19'
             elif (last_candle['r_64'] > -20.0) and (last_candle['r_96'] > -15.0) and (last_candle['rsi_14'] > 76.0) and (last_candle['cti'] > 0.85) and (last_candle['r_64_15m'] > -15.0) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_11_20'
-            elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 74.0) and (last_candle['btc_not_downtrend_1h'] == False)  and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 50.0):
+            elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 74.0) and (last_candle['btc_not_downtrend_1h'] is False)  and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 50.0):
                 return True, 'sell_profit_w_11_21'
             elif (last_candle['r_14'] > -1.0) and (last_candle['r_64'] > -10.0) and (last_candle['rsi_14'] > 71.0) and (last_candle['sma_200_dec_20']) and (last_candle['r_480_1h'] < -55.0) and (last_candle['rsi_14_1h'] < 50.0):
                 return True, 'sell_profit_w_11_22'
@@ -6227,7 +6227,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_11_88'
             elif (last_candle['r_14'] > -1.0) and (last_candle['rsi_14'] > 70.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 45.0):
                 return True, 'sell_profit_w_11_89'
-            elif (last_candle['r_14'] > -30.0) and (last_candle['rsi_14'] < 43.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 44.0) and (last_candle['r_96_15m'] < -85.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -30.0) and (last_candle['rsi_14'] < 43.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 44.0) and (last_candle['r_96_15m'] < -85.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_11_90'
             elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 66.0) and (last_candle['cmf_15m'] < -0.25):
                 return True, 'sell_profit_w_11_91'
@@ -6259,21 +6259,21 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_11_104'
             elif (last_candle['r_14'] > -40.0) and (last_candle['rsi_14'] > 80.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0):
                 return True, 'sell_profit_w_11_105'
-            elif (last_candle['r_14'] > -15.0) and (last_candle['rsi_14'] > 64.0) and (last_candle['sma_200_dec_20']) and (last_candle['rsi_14_1h'] < 45.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -15.0) and (last_candle['rsi_14'] > 64.0) and (last_candle['sma_200_dec_20']) and (last_candle['rsi_14_1h'] < 45.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_11_106'
-            elif (last_candle['r_14'] > -15.0) and (last_candle['r_64'] > -10.0) and (last_candle['r_96'] > -10.0) and (last_candle['rsi_14'] > 76.0) and (last_candle['rsi_14_1h'] > 65.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -15.0) and (last_candle['r_64'] > -10.0) and (last_candle['r_96'] > -10.0) and (last_candle['rsi_14'] > 76.0) and (last_candle['rsi_14_1h'] > 65.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_11_107'
             elif (last_candle['r_14'] > -15.0) and (last_candle['r_480'] > -30.0) and (last_candle['rsi_14'] > 63.0) and (last_candle['cmf_15m'] < -0.1):
                 return True, 'sell_profit_w_11_108'
-            elif (last_candle['r_480'] > -16.0) and (last_candle['rsi_14'] > 65.0) and (last_candle['cmf'] < -0.1) and (last_candle['cmf_15m'] < -0.1) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_480'] > -16.0) and (last_candle['rsi_14'] > 65.0) and (last_candle['cmf'] < -0.1) and (last_candle['cmf_15m'] < -0.1) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_11_109'
-            elif (last_candle['r_14'] > -20.0) and (last_candle['r_96'] > -20.0) and (last_candle['rsi_14'] > 69.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -20.0) and (last_candle['r_96'] > -20.0) and (last_candle['rsi_14'] > 69.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_11_110'
             elif (last_candle['r_14'] > -1.0) and (last_candle['rsi_14'] > 69.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['r_480_1h'] > -25.0):
                 return True, 'sell_profit_w_11_111'
             elif (last_candle['r_14'] > -18.0) and (last_candle['rsi_14'] > 68.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 40.0):
                 return True, 'sell_profit_w_11_112'
-            elif (last_candle['r_14'] > -4.0) and (last_candle['rsi_14'] > 61.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 34.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -4.0) and (last_candle['rsi_14'] > 61.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 34.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_11_113'
         elif current_profit >= 0.2:
             if (last_candle['r_480'] > -0.4):
@@ -6288,7 +6288,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_12_5'
             elif (last_candle['r_14'] > -2.0) and (last_candle['r_32'] > -3.0) and (last_candle['r_96'] > -3.0) and (last_candle['rsi_14'] > 75.0) and (last_candle['cci'] > 360.0) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_12_6'
-            elif (last_candle['rsi_14'] < 43.0) and (last_candle['btc_not_downtrend_1h'] == False) and (last_candle['cmf_1h'] < -0.1) and (last_candle['r_480_1h'] > -30.0):
+            elif (last_candle['rsi_14'] < 43.0) and (last_candle['btc_not_downtrend_1h'] is False) and (last_candle['cmf_1h'] < -0.1) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_12_7'
             elif (last_candle['r_14'] >= -5.0) and (last_candle['r_96'] >= -3.0) and (last_candle['rsi_14'] > 78.0) and (last_candle['cti'] > 0.9):
                 return True, 'sell_profit_w_12_8'
@@ -6316,7 +6316,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_12_19'
             elif (last_candle['r_64'] > -20.0) and (last_candle['r_96'] > -15.0) and (last_candle['rsi_14'] > 78.0) and (last_candle['cti'] > 0.85) and (last_candle['r_64_15m'] > -15.0) and (last_candle['r_480_1h'] > -30.0):
                 return True, 'sell_profit_w_12_20'
-            elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 76.0) and (last_candle['btc_not_downtrend_1h'] == False)  and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 50.0):
+            elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 76.0) and (last_candle['btc_not_downtrend_1h'] is False)  and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 50.0):
                 return True, 'sell_profit_w_12_21'
             elif (last_candle['r_14'] > -1.0) and (last_candle['r_64'] > -10.0) and (last_candle['rsi_14'] > 72.0) and (last_candle['sma_200_dec_20']) and (last_candle['r_480_1h'] < -55.0) and (last_candle['rsi_14_1h'] < 50.0):
                 return True, 'sell_profit_w_12_22'
@@ -6454,7 +6454,7 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_12_88'
             elif (last_candle['r_14'] > -1.0) and (last_candle['rsi_14'] > 71.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 45.0):
                 return True, 'sell_profit_w_12_89'
-            elif (last_candle['r_14'] > -30.0) and (last_candle['rsi_14'] < 42.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 44.0) and (last_candle['r_96_15m'] < -85.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -30.0) and (last_candle['rsi_14'] < 42.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 44.0) and (last_candle['r_96_15m'] < -85.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_12_90'
             elif (last_candle['r_14'] == 0.0) and (last_candle['rsi_14'] > 67.0) and (last_candle['cmf_15m'] < -0.25):
                 return True, 'sell_profit_w_12_91'
@@ -6486,21 +6486,21 @@ class NostalgiaForInfinityX(IStrategy):
                 return True, 'sell_profit_w_12_104'
             elif (last_candle['r_14'] > -40.0) and (last_candle['rsi_14'] > 81.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0):
                 return True, 'sell_profit_w_12_105'
-            elif (last_candle['r_14'] > -15.0) and (last_candle['rsi_14'] > 65.0) and (last_candle['sma_200_dec_20']) and (last_candle['rsi_14_1h'] < 45.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -15.0) and (last_candle['rsi_14'] > 65.0) and (last_candle['sma_200_dec_20']) and (last_candle['rsi_14_1h'] < 45.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_12_106'
-            elif (last_candle['r_14'] > -15.0) and (last_candle['r_64'] > -10.0) and (last_candle['r_96'] > -10.0) and (last_candle['rsi_14'] > 78.0) and (last_candle['rsi_14_1h'] > 65.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -15.0) and (last_candle['r_64'] > -10.0) and (last_candle['r_96'] > -10.0) and (last_candle['rsi_14'] > 78.0) and (last_candle['rsi_14_1h'] > 65.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_12_107'
             elif (last_candle['r_14'] > -15.0) and (last_candle['r_480'] > -30.0) and (last_candle['rsi_14'] > 64.0) and (last_candle['cmf_15m'] < -0.1):
                 return True, 'sell_profit_w_12_108'
-            elif (last_candle['r_480'] > -16.0) and (last_candle['rsi_14'] > 66.0) and (last_candle['cmf'] < -0.1) and (last_candle['cmf_15m'] < -0.1) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_480'] > -16.0) and (last_candle['rsi_14'] > 66.0) and (last_candle['cmf'] < -0.1) and (last_candle['cmf_15m'] < -0.1) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_12_109'
-            elif (last_candle['r_14'] > -20.0) and (last_candle['r_96'] > -20.0) and (last_candle['rsi_14'] > 70.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -20.0) and (last_candle['r_96'] > -20.0) and (last_candle['rsi_14'] > 70.0) and (last_candle['sma_200_dec_20_1h']) and (last_candle['cmf_1h'] < -0.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_12_110'
             elif (last_candle['r_14'] > -1.0) and (last_candle['rsi_14'] > 70.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['r_480_1h'] > -25.0):
                 return True, 'sell_profit_w_12_111'
             elif (last_candle['r_14'] > -18.0) and (last_candle['rsi_14'] > 69.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 40.0):
                 return True, 'sell_profit_w_12_112'
-            elif (last_candle['r_14'] > -4.0) and (last_candle['rsi_14'] > 62.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 34.0) and (last_candle['btc_not_downtrend_1h'] == False):
+            elif (last_candle['r_14'] > -4.0) and (last_candle['rsi_14'] > 62.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf'] < -0.0) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.0) and (last_candle['rsi_14_1h'] < 34.0) and (last_candle['btc_not_downtrend_1h'] is False):
                 return True, 'sell_profit_w_12_113'
 
         return False, None
@@ -6652,7 +6652,7 @@ class NostalgiaForInfinityX(IStrategy):
                     return True, 'sell_profit_d_o_1_39'
                 elif (last_candle['rsi_14'] < 47.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.1) and (last_candle['rsi_14_1h'] < 38.0):
                     return True, 'sell_profit_d_o_1_40'
-                elif (last_candle['rsi_14'] < 44.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] == False):
+                elif (last_candle['rsi_14'] < 44.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] is False):
                     return True, 'sell_profit_d_o_1_41'
             elif 0.03 > current_profit >= 0.02:
                 if (last_candle['rsi_14'] < 36.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.05) and (last_candle['rsi_14_1h'] < 48.0) and (last_candle['cti'] > 0.5):
@@ -6735,7 +6735,7 @@ class NostalgiaForInfinityX(IStrategy):
                     return True, 'sell_profit_d_o_2_39'
                 elif (last_candle['rsi_14'] < 48.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.1) and (last_candle['rsi_14_1h'] < 38.0):
                     return True, 'sell_profit_d_o_2_40'
-                elif (last_candle['rsi_14'] < 45.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] == False):
+                elif (last_candle['rsi_14'] < 45.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] is False):
                     return True, 'sell_profit_d_o_2_41'
             elif 0.04 > current_profit >= 0.03:
                 if (last_candle['rsi_14'] < 40.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.0) and (last_candle['rsi_14_1h'] < 50.0) and (last_candle['cti'] > 0.4):
@@ -6818,7 +6818,7 @@ class NostalgiaForInfinityX(IStrategy):
                     return True, 'sell_profit_d_o_3_39'
                 elif (last_candle['rsi_14'] < 49.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.1) and (last_candle['rsi_14_1h'] < 38.0):
                     return True, 'sell_profit_d_o_3_40'
-                elif (last_candle['rsi_14'] < 46.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] == False):
+                elif (last_candle['rsi_14'] < 46.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] is False):
                     return True, 'sell_profit_d_o_3_41'
             elif 0.05 > current_profit >= 0.04:
                 if (last_candle['rsi_14'] < 44.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < 0.05) and (last_candle['rsi_14_1h'] < 55.0) and (last_candle['cti'] > 0.3):
@@ -6901,7 +6901,7 @@ class NostalgiaForInfinityX(IStrategy):
                     return True, 'sell_profit_d_o_4_39'
                 elif (last_candle['rsi_14'] < 50.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.1) and (last_candle['rsi_14_1h'] < 38.0):
                     return True, 'sell_profit_d_o_4_40'
-                elif (last_candle['rsi_14'] < 47.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] == False):
+                elif (last_candle['rsi_14'] < 47.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] is False):
                     return True, 'sell_profit_d_o_4_41'
             elif 0.06 > current_profit >= 0.05:
                 if (last_candle['rsi_14'] < 48.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.0) and (last_candle['rsi_14_1h'] < 50.0) and (last_candle['cti'] > 0.4):
@@ -6984,7 +6984,7 @@ class NostalgiaForInfinityX(IStrategy):
                     return True, 'sell_profit_d_o_5_39'
                 elif (last_candle['rsi_14'] < 51.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.1) and (last_candle['rsi_14_1h'] < 38.0):
                     return True, 'sell_profit_d_o_5_40'
-                elif (last_candle['rsi_14'] < 48.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] == False):
+                elif (last_candle['rsi_14'] < 48.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] is False):
                     return True, 'sell_profit_d_o_5_41'
             elif 0.07 > current_profit >= 0.06:
                 if (last_candle['rsi_14'] < 46.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.05) and (last_candle['rsi_14_1h'] < 48.0) and (last_candle['cti'] > 0.5):
@@ -7067,7 +7067,7 @@ class NostalgiaForInfinityX(IStrategy):
                     return True, 'sell_profit_d_o_6_39'
                 elif (last_candle['rsi_14'] < 50.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.1) and (last_candle['rsi_14_1h'] < 38.0):
                     return True, 'sell_profit_d_o_6_40'
-                elif (last_candle['rsi_14'] < 47.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] == False):
+                elif (last_candle['rsi_14'] < 47.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] is False):
                     return True, 'sell_profit_d_o_6_41'
             elif 0.08 > current_profit >= 0.07:
                 if (last_candle['rsi_14'] < 44.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.1) and (last_candle['rsi_14_1h'] < 46.0) and (last_candle['cti'] > 0.5):
@@ -7150,7 +7150,7 @@ class NostalgiaForInfinityX(IStrategy):
                     return True, 'sell_profit_d_o_7_39'
                 elif (last_candle['rsi_14'] < 49.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.1) and (last_candle['rsi_14_1h'] < 38.0):
                     return True, 'sell_profit_d_o_7_40'
-                elif (last_candle['rsi_14'] < 46.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] == False):
+                elif (last_candle['rsi_14'] < 46.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] is False):
                     return True, 'sell_profit_d_o_7_41'
             elif 0.09 > current_profit >= 0.08:
                 if (last_candle['rsi_14'] < 42.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.1) and (last_candle['rsi_14_1h'] < 44.0) and (last_candle['cti_1h'] > 0.5):
@@ -7233,7 +7233,7 @@ class NostalgiaForInfinityX(IStrategy):
                     return True, 'sell_profit_d_o_8_39'
                 elif (last_candle['rsi_14'] < 48.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.1) and (last_candle['rsi_14_1h'] < 38.0):
                     return True, 'sell_profit_d_o_8_40'
-                elif (last_candle['rsi_14'] < 45.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] == False):
+                elif (last_candle['rsi_14'] < 45.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] is False):
                     return True, 'sell_profit_d_o_8_41'
             elif 0.1 > current_profit >= 0.09:
                 if (last_candle['rsi_14'] < 38.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.1) and (last_candle['rsi_14_1h'] < 42.0) and (last_candle['cti'] > 0.5):
@@ -7316,7 +7316,7 @@ class NostalgiaForInfinityX(IStrategy):
                     return True, 'sell_profit_d_o_9_39'
                 elif (last_candle['rsi_14'] < 47.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.1) and (last_candle['rsi_14_1h'] < 38.0):
                     return True, 'sell_profit_d_o_9_40'
-                elif (last_candle['rsi_14'] < 44.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] == False):
+                elif (last_candle['rsi_14'] < 44.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] is False):
                     return True, 'sell_profit_d_o_9_41'
             elif 0.12 > current_profit >= 0.1:
                 if (last_candle['rsi_14'] < 36.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.1) and (last_candle['rsi_14_1h'] < 38.0) and (last_candle['cti'] > 0.5):
@@ -7399,7 +7399,7 @@ class NostalgiaForInfinityX(IStrategy):
                     return True, 'sell_profit_d_o_10_39'
                 elif (last_candle['rsi_14'] < 46.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.1) and (last_candle['rsi_14_1h'] < 38.0):
                     return True, 'sell_profit_d_o_10_40'
-                elif (last_candle['rsi_14'] < 43.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] == False):
+                elif (last_candle['rsi_14'] < 43.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] is False):
                     return True, 'sell_profit_d_o_10_41'
             elif 0.2 > current_profit >= 0.12:
                 if (last_candle['rsi_14'] < 34.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.2) and (last_candle['rsi_14_1h'] < 35.0) and (last_candle['cti'] > 0.5):
@@ -7482,7 +7482,7 @@ class NostalgiaForInfinityX(IStrategy):
                     return True, 'sell_profit_d_o_11_39'
                 elif (last_candle['rsi_14'] < 45.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.1) and (last_candle['rsi_14_1h'] < 38.0):
                     return True, 'sell_profit_d_o_11_40'
-                elif (last_candle['rsi_14'] < 42.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] == False):
+                elif (last_candle['rsi_14'] < 42.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] is False):
                     return True, 'sell_profit_d_o_11_41'
             elif current_profit >= 0.2:
                 if (last_candle['rsi_14'] < 34.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.2) and (last_candle['rsi_14_1h'] < 34.0) and (last_candle['cti'] > 0.5):
@@ -7565,7 +7565,7 @@ class NostalgiaForInfinityX(IStrategy):
                     return True, 'sell_profit_d_o_12_39'
                 elif (last_candle['rsi_14'] < 44.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.1) and (last_candle['rsi_14_1h'] < 38.0):
                     return True, 'sell_profit_d_o_12_40'
-                elif (last_candle['rsi_14'] < 41.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] == False):
+                elif (last_candle['rsi_14'] < 41.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] is False):
                     return True, 'sell_profit_d_o_12_41'
         else:
             if 0.02 > current_profit >= 0.01:
@@ -7649,7 +7649,7 @@ class NostalgiaForInfinityX(IStrategy):
                     return True, 'sell_profit_d_u_1_39'
                 elif (last_candle['rsi_14'] < 48.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.1) and (last_candle['rsi_14_1h'] < 38.0):
                     return True, 'sell_profit_d_u_1_40'
-                elif (last_candle['rsi_14'] < 45.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] == False):
+                elif (last_candle['rsi_14'] < 45.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] is False):
                     return True, 'sell_profit_d_u_1_41'
             elif 0.03 > current_profit >= 0.02:
                 if (last_candle['rsi_14'] < 37.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.05) and (last_candle['rsi_14_1h'] < 39.0) and (last_candle['cti_1h'] < -0.85):
@@ -7732,7 +7732,7 @@ class NostalgiaForInfinityX(IStrategy):
                     return True, 'sell_profit_d_u_2_39'
                 elif (last_candle['rsi_14'] < 49.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.1) and (last_candle['rsi_14_1h'] < 38.0):
                     return True, 'sell_profit_d_u_2_40'
-                elif (last_candle['rsi_14'] < 46.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] == False):
+                elif (last_candle['rsi_14'] < 46.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] is False):
                     return True, 'sell_profit_d_u_2_41'
             elif 0.04 > current_profit >= 0.03:
                 if (last_candle['rsi_14'] < 41.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.05) and (last_candle['rsi_14_1h'] < 39.5) and (last_candle['cti_1h'] < -0.85):
@@ -7815,7 +7815,7 @@ class NostalgiaForInfinityX(IStrategy):
                     return True, 'sell_profit_d_u_3_39'
                 elif (last_candle['rsi_14'] < 50.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.1) and (last_candle['rsi_14_1h'] < 38.0):
                     return True, 'sell_profit_d_u_3_40'
-                elif (last_candle['rsi_14'] < 47.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] == False):
+                elif (last_candle['rsi_14'] < 47.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] is False):
                     return True, 'sell_profit_d_u_3_41'
             elif 0.05 > current_profit >= 0.04:
                 if (last_candle['rsi_14'] < 45.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.05) and (last_candle['rsi_14_1h'] < 40.0) and (last_candle['cti_1h'] < -0.85):
@@ -7898,7 +7898,7 @@ class NostalgiaForInfinityX(IStrategy):
                     return True, 'sell_profit_d_u_4_39'
                 elif (last_candle['rsi_14'] < 51.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.1) and (last_candle['rsi_14_1h'] < 38.0):
                     return True, 'sell_profit_d_u_4_40'
-                elif (last_candle['rsi_14'] < 48.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] == False):
+                elif (last_candle['rsi_14'] < 48.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] is False):
                     return True, 'sell_profit_d_u_4_41'
             elif 0.06 > current_profit >= 0.05:
                 if (last_candle['rsi_14'] < 49.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.05) and (last_candle['rsi_14_1h'] < 39.5) and (last_candle['cti_1h'] < -0.85):
@@ -7981,7 +7981,7 @@ class NostalgiaForInfinityX(IStrategy):
                     return True, 'sell_profit_d_u_5_39'
                 elif (last_candle['rsi_14'] < 52.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.1) and (last_candle['rsi_14_1h'] < 38.0):
                     return True, 'sell_profit_d_u_5_40'
-                elif (last_candle['rsi_14'] < 49.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] == False):
+                elif (last_candle['rsi_14'] < 49.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] is False):
                     return True, 'sell_profit_d_u_5_41'
             elif 0.07 > current_profit >= 0.06:
                 if (last_candle['rsi_14'] < 47.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.05) and (last_candle['rsi_14_1h'] < 39.0) and (last_candle['cti_1h'] < -0.85):
@@ -8064,7 +8064,7 @@ class NostalgiaForInfinityX(IStrategy):
                     return True, 'sell_profit_d_u_6_39'
                 elif (last_candle['rsi_14'] < 51.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.1) and (last_candle['rsi_14_1h'] < 38.0):
                     return True, 'sell_profit_d_u_6_40'
-                elif (last_candle['rsi_14'] < 48.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] == False):
+                elif (last_candle['rsi_14'] < 48.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] is False):
                     return True, 'sell_profit_d_u_6_41'
             elif 0.08 > current_profit >= 0.07:
                 if (last_candle['rsi_14'] < 45.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.05) and (last_candle['rsi_14_1h'] < 38.5) and (last_candle['cti_1h'] < -0.85):
@@ -8147,7 +8147,7 @@ class NostalgiaForInfinityX(IStrategy):
                     return True, 'sell_profit_d_u_7_39'
                 elif (last_candle['rsi_14'] < 50.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.1) and (last_candle['rsi_14_1h'] < 38.0):
                     return True, 'sell_profit_d_u_7_40'
-                elif (last_candle['rsi_14'] < 47.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] == False):
+                elif (last_candle['rsi_14'] < 47.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] is False):
                     return True, 'sell_profit_d_u_7_41'
             elif 0.09 > current_profit >= 0.08:
                 if (last_candle['rsi_14'] < 43.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.05) and (last_candle['rsi_14_1h'] < 38.0) and (last_candle['cti_1h'] < -0.85):
@@ -8230,7 +8230,7 @@ class NostalgiaForInfinityX(IStrategy):
                     return True, 'sell_profit_d_u_8_39'
                 elif (last_candle['rsi_14'] < 49.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.1) and (last_candle['rsi_14_1h'] < 38.0):
                     return True, 'sell_profit_d_u_8_40'
-                elif (last_candle['rsi_14'] < 46.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] == False):
+                elif (last_candle['rsi_14'] < 46.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] is False):
                     return True, 'sell_profit_d_u_8_41'
             elif 0.1 > current_profit >= 0.09:
                 if (last_candle['rsi_14'] < 39.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.05) and (last_candle['rsi_14_1h'] < 37.0) and (last_candle['cti_1h'] < -0.85):
@@ -8313,7 +8313,7 @@ class NostalgiaForInfinityX(IStrategy):
                     return True, 'sell_profit_d_u_9_39'
                 elif (last_candle['rsi_14'] < 48.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.1) and (last_candle['rsi_14_1h'] < 38.0):
                     return True, 'sell_profit_d_u_9_40'
-                elif (last_candle['rsi_14'] < 45.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] == False):
+                elif (last_candle['rsi_14'] < 45.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] is False):
                     return True, 'sell_profit_d_u_9_41'
             elif 0.12 > current_profit >= 0.1:
                 if (last_candle['rsi_14'] < 37.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.05) and (last_candle['rsi_14_1h'] < 36.0) and (last_candle['cti_1h'] < -0.85):
@@ -8396,7 +8396,7 @@ class NostalgiaForInfinityX(IStrategy):
                     return True, 'sell_profit_d_u_10_39'
                 elif (last_candle['rsi_14'] < 47.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.1) and (last_candle['rsi_14_1h'] < 38.0):
                     return True, 'sell_profit_d_u_10_40'
-                elif (last_candle['rsi_14'] < 44.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] == False):
+                elif (last_candle['rsi_14'] < 44.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] is False):
                     return True, 'sell_profit_d_u_10_41'
             elif 0.2 > current_profit >= 0.12:
                 if (last_candle['rsi_14'] < 35.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.05) and (last_candle['rsi_14_1h'] < 35.0) and (last_candle['cti_1h'] < -0.85):
@@ -8479,7 +8479,7 @@ class NostalgiaForInfinityX(IStrategy):
                     return True, 'sell_profit_d_u_11_39'
                 elif (last_candle['rsi_14'] < 46.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.1) and (last_candle['rsi_14_1h'] < 38.0):
                     return True, 'sell_profit_d_u_11_40'
-                elif (last_candle['rsi_14'] < 43.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] == False):
+                elif (last_candle['rsi_14'] < 43.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] is False):
                     return True, 'sell_profit_d_u_11_41'
             elif current_profit >= 0.2:
                 if (last_candle['rsi_14'] < 33.0) and (last_candle['sma_200_dec_20']) and (last_candle['cmf'] < -0.05) and (last_candle['rsi_14_1h'] < 34.0) and (last_candle['cti_1h'] < -0.85):
@@ -8562,7 +8562,7 @@ class NostalgiaForInfinityX(IStrategy):
                     return True, 'sell_profit_d_u_12_39'
                 elif (last_candle['rsi_14'] < 45.0) and (last_candle['sma_200_dec_20']) and (last_candle['sma_200_dec_20_15m']) and (last_candle['cmf_15m'] < -0.0) and (last_candle['cmf_1h'] < -0.1) and (last_candle['rsi_14_1h'] < 38.0):
                     return True, 'sell_profit_d_u_12_40'
-                elif (last_candle['rsi_14'] < 42.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] == False):
+                elif (last_candle['rsi_14'] < 42.0) and (last_candle['sma_200_dec_20']) and (last_candle['hl_pct_change_48_1h'] > 1.0) and (last_candle['btc_not_downtrend_1h'] is False):
                     return True, 'sell_profit_d_u_12_41'
 
         return False, None
@@ -10357,7 +10357,7 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['mfi'] < 36.0)
                     item_buy_logic.append(dataframe['r_480_1h'] > -99.0)
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.2)
                         | (dataframe['rsi_14'] < 33.0)
                         | (dataframe['cti_1h'] < 0.8)
@@ -10407,7 +10407,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < dataframe['sma_30'] * 0.92)
                     )
                     item_buy_logic.append(
-                        ((dataframe['btc_not_downtrend_1h'] == True) & (dataframe['cmf'] > 0.2))
+                        ((dataframe['btc_not_downtrend_1h'] is True) & (dataframe['cmf'] > 0.2))
                         | (dataframe['rsi_14'] < 28.0)
                         | (dataframe['r_96'] < -95.0)
                         | (dataframe['ewo'] > 2.0)
@@ -10426,7 +10426,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < dataframe['sma_30'] * 0.8)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['mfi'] > 30.0)
                         | (dataframe['rsi_14'] < 29.0)
                         | (dataframe['cti_1h'] < 0.0)
@@ -10446,7 +10446,7 @@ class NostalgiaForInfinityX(IStrategy):
                     )
                     item_buy_logic.append(
                         (
-                            (dataframe['btc_not_downtrend_1h'] == True)
+                            (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['btc_pct_close_max_72_5m'] < 1.03)
                         )
                         | (dataframe['cmf'] > -0.2)
@@ -10558,7 +10558,7 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             (dataframe['btc_pct_close_max_72_5m'] < 1.01)
-                            & (dataframe['btc_not_downtrend_1h'] == True)
+                            & (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['hl_pct_change_36'] < 0.25)
                             & (dataframe['close_max_48'] > (dataframe['close'] * 1.05))
                         )
@@ -10634,7 +10634,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < dataframe['sma_30'] * 0.938)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cti_1h'] < 0.5)
                         | (dataframe['close'] < dataframe['sma_30'] * 0.938)
                         | (dataframe['rsi_14'] < (dataframe['rsi_14_1h'] - 52.0))
@@ -10748,7 +10748,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.044))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['rsi_14'] < 10.0)
                         | (dataframe['crsi'] > 25.0)
                         | (dataframe['rsi_14_1h'] < 15.0)
@@ -10766,7 +10766,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] > (dataframe['pivot_1d'] * 1.0))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['rsi_14'] < 30.0)
                         | (dataframe['cti_1h'] < 0.5)
                         | (dataframe['rsi_14_1h'] < 40.0)
@@ -10817,7 +10817,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['tail'].lt(dataframe['bb40_2_delta'] * 0.12))
                     )
                     item_buy_logic.append(
-                        ((dataframe['btc_not_downtrend_1h'] == True) & (dataframe['crsi_1h'] > 16.0))
+                        ((dataframe['btc_not_downtrend_1h'] is True) & (dataframe['crsi_1h'] > 16.0))
                         | (dataframe['tpct_change_0'] < 0.02)
                         | (dataframe['tpct_change_144'] < 0.08)
                         | (dataframe['close_max_48'] < (dataframe['close'] * 1.06))
@@ -10831,7 +10831,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['tail'].lt(dataframe['bb40_2_delta'] * 0.02))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['r_480'] > -30.0)
                         | (dataframe['crsi'] > 20.0)
                         | (dataframe['cti_1h'] < 0.5)
@@ -10851,7 +10851,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['closedelta'].gt(dataframe['close'] * 0.024))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cti'] < -0.8)
                         | (dataframe['cti_1h'] < -0.5)
                         | (dataframe['tpct_change_0'] < 0.02)
@@ -10864,7 +10864,7 @@ class NostalgiaForInfinityX(IStrategy):
                     )
                     item_buy_logic.append(
                         (
-                            (dataframe['btc_not_downtrend_1h'] == True)
+                            (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['btc_pct_close_max_72_5m'] < 1.05)
                         )
                         |
@@ -10952,7 +10952,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | ((dataframe['bb40_2_delta'].gt(dataframe['close'] * 0.048)) & (dataframe['closedelta'].gt(dataframe['close'] * 0.021)))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['rsi_14'] < 25.0)
                         | (dataframe['cti_1h'] < -0.95)
                         | (dataframe['rsi_14_1h'] < 30.0)
@@ -11012,7 +11012,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | ((dataframe['bb40_2_delta'].gt(dataframe['close'] * 0.065)) & (dataframe['closedelta'].gt(dataframe['close'] * 0.026)) & (dataframe['tail'].lt(dataframe['bb40_2_delta'] * 0.15)))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.2)
                         | (dataframe['rsi_14'] < 30.0)
                         | (dataframe['crsi'] > 20.0)
@@ -11072,7 +11072,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['volume_mean_12'] > (dataframe['volume_mean_24'] * 1.4))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.1)
                         | (dataframe['rsi_14'] < 25.0)
                         | (dataframe['cti'] < -0.9)
@@ -11093,7 +11093,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['closedelta'].gt(dataframe['close'] * 0.028))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.1)
                         | (dataframe['r_480'] > -30.0)
                         | (dataframe['crsi'] > 20.0)
@@ -11114,7 +11114,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['volume_mean_12'] > (dataframe['volume_mean_24'] * 1.2))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['rsi_14'] < 20.0)
                         | (dataframe['cti'] < -0.9)
                         | (dataframe['r_480'] > -30.0)
@@ -11213,7 +11213,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['closedelta'].gt(dataframe['close'] * 0.04))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.2)
                         | (dataframe['mfi'] > 20.0)
                         | (dataframe['r_480'] > -30.0)
@@ -11510,7 +11510,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['cti_15m'] < -0.9)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.1)
                         | (dataframe['mfi'] > 40.0)
                         | (dataframe['rsi_14'] < 16.0)
@@ -11597,7 +11597,7 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * 0.995))
                     item_buy_logic.append(dataframe['cti_1h'] < 0.82)
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['rsi_14'] < 22.0)
                         | (dataframe['cti'] < -0.95)
                         | (dataframe['r_14'] < -95.0)
@@ -11621,7 +11621,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.038))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.3)
                         | (dataframe['mfi'] > 30.0)
                         | (dataframe['rsi_14'] < 20.0)
@@ -11653,7 +11653,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.022))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.0)
                         | (dataframe['mfi'] > 30.0)
                         | (dataframe['rsi_14'] < 20.0)
@@ -11709,7 +11709,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.028))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > 0.0)
                         | (dataframe['cti_1h'] < -0.8)
                         | (dataframe['crsi_1h'] > 14.0)
@@ -11852,7 +11852,7 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['r_14'] < -90.0)
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * 0.999))
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > 0.0)
                         | (dataframe['mfi'] > 40.0)
                         | (dataframe['ewo'] > 5.0)
@@ -11980,7 +11980,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['crsi_1h'] > 25.0)
                         | (dataframe['tpct_change_144'] < 0.12)
                         | (dataframe['close_max_48'] < (dataframe['close'] * 1.1))
-                        | ((dataframe['btc_pct_close_max_72_5m'] < 1.03) & (dataframe['btc_not_downtrend_1h'] == True))
+                        | ((dataframe['btc_pct_close_max_72_5m'] < 1.03) & (dataframe['btc_not_downtrend_1h'] is True))
                         | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
                         | (dataframe['close'] > (dataframe['sma_200'] * 0.95))
                         | (dataframe['close'] > (dataframe['sup_level_1h'] * 0.95))
@@ -12285,7 +12285,7 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             (dataframe['btc_pct_close_max_72_5m'] < 1.03)
-                            & (dataframe['btc_not_downtrend_1h'] == True)
+                            & (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['hl_pct_change_36'] < 0.12)
                             & (dataframe['tpct_change_2'] < 0.06)
                         )
@@ -12432,7 +12432,7 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             (dataframe['btc_pct_close_max_72_5m'] < 1.03)
-                            & (dataframe['btc_not_downtrend_1h'] == True)
+                            & (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['cti_1h'] < 0.8)
                             & (dataframe['hl_pct_change_36'] < 0.12)
                         )
@@ -12465,7 +12465,7 @@ class NostalgiaForInfinityX(IStrategy):
                         )
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.3)
                         | (dataframe['mfi'] > 20.0)
                         | (dataframe['crsi_1h'] > 16.0)
@@ -12508,7 +12508,7 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['rsi_14'] < 36.0)
                     item_buy_logic.append(
                         (
-                            (dataframe['btc_not_downtrend_1h'] == True)
+                            (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['close'] < (dataframe['res2_1d'] * 1.0))
                         )
                         | (dataframe['ewo'] > 8.0)
@@ -12550,7 +12550,7 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             (dataframe['btc_pct_close_max_72_5m'] < 1.01)
-                            & (dataframe['btc_not_downtrend_1h'] == True)
+                            & (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['hl_pct_change_48_1h'] < 0.5)
                             & (dataframe['ema_200_pct_change_288'] < 0.12)
                         )
@@ -12644,7 +12644,7 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             (dataframe['btc_pct_close_max_72_5m'] < 1.01)
-                            & (dataframe['btc_not_downtrend_1h'] == True)
+                            & (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['close'] < (dataframe['res3_1d'] * 1.0))
                         )
                         | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.014))
@@ -12654,7 +12654,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | ((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.02))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['ewo'] > 7.0)
                         | (dataframe['cmf'] > -0.1)
                         | (dataframe['mfi'] > 30.0)
@@ -12682,7 +12682,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.999)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > 0.1)
                         | (dataframe['mfi'] > 40.0)
                         | (dataframe['rsi_14'] < 20.0)
@@ -12699,7 +12699,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.024))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.2)
                         | (dataframe['mfi'] > 10.0)
                         | (dataframe['rsi_14'] < 20.0)
@@ -12965,7 +12965,7 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['close'] < dataframe['bb20_2_low'] * 0.995)
                     item_buy_logic.append(dataframe['volume_mean_12'] > (dataframe['volume_mean_24'] * 0.75))
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['ewo'] < -9.0)
                         | (dataframe['cmf'] > -0.1)
                         | (dataframe['mfi'] > 30.0)
@@ -12976,7 +12976,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < dataframe['ema_20'] * 0.91)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['ewo'] < -4.8)
                     )
                     item_buy_logic.append(
@@ -13126,7 +13126,7 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * 0.994))
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         |(dataframe['cmf'] > 0.1)
                         | (dataframe['mfi'] > 30.0)
                         | (dataframe['r_480'] > -30.0)
@@ -13159,7 +13159,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | ((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.02))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.2)
                         | (dataframe['hl_pct_change_48_1h'] < 0.75)
                         | (dataframe['close'] > (dataframe['sup_level_1h'] * 0.95))
@@ -13184,7 +13184,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | ((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.03))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['r_480'] > -30.0)
                         | (dataframe['cti_1h'] < -0.9)
                         | (dataframe['tpct_change_144'] < 0.1)
@@ -13232,7 +13232,7 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             (dataframe['btc_pct_close_max_72_5m'] < 1.01)
-                            & (dataframe['btc_not_downtrend_1h'] == True)
+                            & (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['hl_pct_change_24_1h'] < 0.5)
                         )
                         | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
@@ -13353,7 +13353,7 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             (dataframe['btc_pct_close_max_72_5m'] < 1.01)
-                            & (dataframe['btc_not_downtrend_1h'] == True)
+                            & (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['hl_pct_change_48_1h'] < 0.7)
                             & ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.0155))
                             & (dataframe['tpct_change_144'] < 0.22)
@@ -13402,11 +13402,11 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
                     item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * 0.934)
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['crsi_1h'] > 4.0)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['crsi_1h'] > 20.0)
                         | (dataframe['sma_200'] > dataframe['sma_200'].shift(48))
                         | (dataframe['close'] > (dataframe['sma_200_1h'] * 0.9))
@@ -13429,7 +13429,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['volume_mean_12'] > (dataframe['volume_mean_24'] * 1.9))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['mfi'] > 30.0)
                         | (dataframe['cti_1h'] < -0.5)
                         | (dataframe['crsi_1h'] > 16.0)
@@ -13448,7 +13448,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.034))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.2)
                         | (dataframe['mfi'] > 30.0)
                         | (dataframe['cti_1h'] < -0.9)
@@ -13459,7 +13459,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.024))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['mfi'] > 30.0)
                         | (dataframe['cti_1h'] < -0.5)
                         | (dataframe['close'] < dataframe['ema_20'] * 0.9)
@@ -13467,7 +13467,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.032))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['rsi_14'] < 20.0)
                         | (dataframe['cmf'] > -0.2)
                         | (dataframe['mfi'] > 20.0)
@@ -13477,7 +13477,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.028))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.3)
                         | (dataframe['ewo'] > 1.0)
                     )
@@ -13487,7 +13487,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['cti_1h'] < 0.0)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['ewo'] > 3.0)
                         | (dataframe['cti_1h'] < -0.9)
                         | (dataframe['crsi_1h'] > 20.0)
@@ -13552,7 +13552,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.97)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['ewo'] > 2.0)
                         | (dataframe['cti'] < -0.5)
                         | (dataframe['rsi_14'] < 30.0)
@@ -13564,7 +13564,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.98)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > 0.0)
                         | (dataframe['mfi'] > 20.0)
                         | (dataframe['ewo'] > 2.0)
@@ -13577,7 +13577,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.98)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.3)
                         | (dataframe['mfi'] > 10.0)
                         | (dataframe['rsi_14'] < 20.0)
@@ -13605,7 +13605,7 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             (dataframe['close'] < (dataframe['res3_1d'] * 1.0))
-                            & (dataframe['btc_not_downtrend_1h'] == True)
+                            & (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['btc_pct_close_max_72_5m'] < 1.03)
                             & (dataframe['tpct_change_144'] < 0.2)
                         )
@@ -13695,7 +13695,7 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             (dataframe['btc_pct_close_max_72_5m'] < 1.01)
-                            & (dataframe['btc_not_downtrend_1h'] == True)
+                            & (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['hl_pct_change_48_1h'] < 0.8)
                             & (dataframe['close'] > (dataframe['sma_200'] * 0.95))
                             & (dataframe['ema_200_pct_change_144'] < 0.2)
@@ -13738,7 +13738,7 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['ewo'] > 0.1)
                     item_buy_logic.append(dataframe['rsi_14'] < 40.0)
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['ewo'] > 2.0)
                         | (dataframe['rsi_14'] < 20.0)
                         | (dataframe['cmf'] > -0.2)
@@ -13788,7 +13788,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.955)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.2)
                         | (dataframe['mfi'] > 20.0)
                         | (dataframe['rsi_14'] < 20.0)
@@ -13803,7 +13803,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.97)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > 0.0)
                         | (dataframe['rsi_14'] < 15.0)
                         | (dataframe['cti'] < -0.9)
@@ -13816,7 +13816,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.96)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.3)
                         | (dataframe['mfi'] > 20.0)
                         | (dataframe['cti_1h'] < 0.5)
@@ -13887,7 +13887,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close_max_48'] < (dataframe['close'] * 1.16))
                         | (dataframe['hl_pct_change_36'] < 0.2)
                         | (dataframe['hl_pct_change_48_1h'] < 0.25)
-                        | ((dataframe['btc_pct_close_max_72_5m'] < 1.01) & (dataframe['btc_not_downtrend_1h'] == True))
+                        | ((dataframe['btc_pct_close_max_72_5m'] < 1.01) & (dataframe['btc_not_downtrend_1h'] is True))
                         | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
                         | (dataframe['close'] > (dataframe['sma_200'] * 0.99))
                         | (dataframe['close'] < dataframe['sma_30'] * 0.85)
@@ -13994,7 +13994,7 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['cti'] < -0.97)
                     item_buy_logic.append(dataframe['crsi_1h'] > 6.0)
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['crsi_1h'] > 12.0)
                     )
                     item_buy_logic.append(
@@ -14051,7 +14051,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < dataframe['ema_20'] * 0.944)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['ewo'] < -12.0)
                         | (dataframe['crsi_1h'] > 25.0)
                         | (dataframe['sma_200'] > dataframe['sma_200'].shift(24))
@@ -14132,7 +14132,7 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             (dataframe['close'] > (dataframe['sup2_1d'] * 1.0))
-                            & (dataframe['btc_not_downtrend_1h'] == True)
+                            & (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['tpct_change_144'] < 0.25)
                             & (dataframe['crsi_1h'] > 8.0)
                         )
@@ -14161,7 +14161,7 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['ewo'] > 2.4)
                     item_buy_logic.append(dataframe['rsi_14'] < 36.0)
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.1)
                         | (dataframe['mfi'] > 30.0)
                         | (dataframe['ewo'] > 4.0)
@@ -14184,7 +14184,7 @@ class NostalgiaForInfinityX(IStrategy):
                            & (dataframe['cti_1h'] < 0.5)
                            & (dataframe['r_480_1h'] < -20.0)
                            & (dataframe['rsi_14'] < 30.0))
-                        | ((dataframe['btc_not_downtrend_1h'] == True)
+                        | ((dataframe['btc_not_downtrend_1h'] is True)
                            & (dataframe['rsi_14'] < 30.0)
                            & (dataframe['close'] > (dataframe['sup3_1d'] * 1.0))
                            & (dataframe['close'] < (dataframe['res3_1d'] * 1.0))
@@ -14253,7 +14253,7 @@ class NostalgiaForInfinityX(IStrategy):
                     )
                     item_buy_logic.append(
                         (
-                            (dataframe['btc_not_downtrend_1h'] == True)
+                            (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['close'] < (dataframe['res3_1d'] * 1.0))
                         )
                         |
@@ -14275,7 +14275,7 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             (dataframe['btc_pct_close_max_72_5m'] < 1.01)
-                            & (dataframe['btc_not_downtrend_1h'] == True)
+                            & (dataframe['btc_not_downtrend_1h'] is True)
                         )
                         |
                         (
@@ -14478,7 +14478,7 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             (dataframe['close'] < (dataframe['res3_1d'] * 1.0))
-                            & (dataframe['btc_not_downtrend_1h'] == True)
+                            & (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['btc_pct_close_max_72_5m'] < 1.03)
                         )
                         | (dataframe['close'] < dataframe['ema_20'] * 0.93)
@@ -14486,7 +14486,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.02))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.1)
                         | (dataframe['mfi'] > 30.0)
                         | (dataframe['rsi_14'] < 30.0)
@@ -14913,7 +14913,7 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             (dataframe['btc_pct_close_max_72_5m'] < 1.01)
-                            & (dataframe['btc_not_downtrend_1h'] == True)
+                            & (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['hl_pct_change_48_1h'] < 0.5)
                             & (dataframe['close_max_48'] < (dataframe['close'] * 1.25))
                         )
@@ -15042,7 +15042,7 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['cti'] < -0.9)
                     item_buy_logic.append(dataframe['r_14'].shift(1) < -97.0)
                     item_buy_logic.append(
-                       (dataframe['btc_not_downtrend_1h'] == True)
+                       (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['ewo'] > 6.4)
                         | (dataframe['cmf'] > 0.0)
                         | (dataframe['cti_1h'] < 0.5)
@@ -15050,7 +15050,7 @@ class NostalgiaForInfinityX(IStrategy):
                     )
                     item_buy_logic.append(
                         (
-                            (dataframe['btc_not_downtrend_1h'] == True)
+                            (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['btc_pct_close_max_72_5m'] < 1.03)
                             & (dataframe['cti_1h'] < 0.5)
                         )
@@ -15111,7 +15111,7 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['cti'] < -0.9)
                     item_buy_logic.append(dataframe['r_14'] < -97.0)
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['crsi'] > 12.0)
                         | (dataframe['cti_1h'] < 0.5)
                         | (dataframe['cmf'] > 0.0)
@@ -15131,7 +15131,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < (dataframe['res3_1d'] * 1.4))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.1)
                         | (dataframe['mfi'] > 6.0)
                         | (dataframe['cti_1h'] < 0.5)
@@ -15160,7 +15160,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.99))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cti_1h'] < -0.5)
                         | (dataframe['rsi_14_1h'] < 50.0)
                         | (dataframe['tpct_change_144'] < 0.14)
@@ -15205,7 +15205,7 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             (dataframe['close'] < (dataframe['res3_1d'] * 1.0))
-                            & (dataframe['btc_not_downtrend_1h'] == True)
+                            & (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['btc_pct_close_max_72_5m'] < 1.03)
                             & (dataframe['close_max_48'] < (dataframe['close'] * 1.16))
                             & (dataframe['hl_pct_change_36'] < 0.12)
@@ -15259,7 +15259,7 @@ class NostalgiaForInfinityX(IStrategy):
                     )
                     item_buy_logic.append(
                         (
-                            (dataframe['btc_not_downtrend_1h'] == True)
+                            (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['cmf'] > -0.2)
                         )
                         | (dataframe['rsi_14'] < 30.0)
@@ -15288,7 +15288,7 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['close'] > (dataframe['open'].shift(1)))
                     item_buy_logic.append(dataframe['crsi_1h'] > 14.0)
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['ewo'].shift(1) < -6.8)
                         | (dataframe['cmf'] > 0.0)
                         | (dataframe['crsi_1h'] > 22.0)
@@ -15298,7 +15298,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < dataframe['sma_30'] * 0.948)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['rsi_14'] < 30.0)
                         | (dataframe['ewo'].shift(1) < -6.0)
                         | (dataframe['cti_1h'] < -0.8)
@@ -15311,7 +15311,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.999))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.2)
                         | (dataframe['rsi_14'] < 30.0)
                         | (dataframe['tpct_change_144'] < 0.2)
@@ -15376,7 +15376,7 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             (dataframe['btc_pct_close_max_72_5m'] < 1.03)
-                            & (dataframe['btc_not_downtrend_1h'] == True)
+                            & (dataframe['btc_not_downtrend_1h'] is True)
                         )
                         | (dataframe['sma_200'] > dataframe['sma_200'].shift(24))
                         | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
@@ -15418,7 +15418,7 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['cti_1h'] < 0.9)
                     item_buy_logic.append(dataframe['r_480_1h'] < -25.0)
                     item_buy_logic.append(
-                       (dataframe['btc_not_downtrend_1h'] == True)
+                       (dataframe['btc_not_downtrend_1h'] is True)
                        | (dataframe['volume_mean_12'] > (dataframe['volume_mean_24'] * 1.0))
                     )
                     item_buy_logic.append(
@@ -15674,7 +15674,7 @@ class NostalgiaForInfinityX(IStrategy):
                         (
                             (dataframe['cti_1h'] < 0.5)
                             & (dataframe['volume_mean_12'] > (dataframe['volume_mean_24'] * 0.5))
-                            & (dataframe['sma_200_dec_20'] == False)
+                            & (dataframe['sma_200_dec_20'] is False)
                         )
                         | (dataframe['rsi_14_1h'] < 50.0)
                         |
@@ -15682,14 +15682,14 @@ class NostalgiaForInfinityX(IStrategy):
                             (dataframe['btc_pct_close_max_72_5m'] < 1.01)
                             & (dataframe['volume_mean_12'] > (dataframe['volume_mean_24'] * 0.5))
                             & (dataframe['rsi_14_1h'] < 60.0)
-                            & (dataframe['sma_200_dec_20'] == False)
+                            & (dataframe['sma_200_dec_20'] is False)
                         )
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.99)
                         | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.01))
                         |
                         (
                             (dataframe['close_15m'] < (dataframe['bb20_2_low_15m'] * 0.999))
-                            & (dataframe['sma_200_dec_20'] == False)
+                            & (dataframe['sma_200_dec_20'] is False)
                             & (dataframe['btc_pct_close_max_24_5m'] < 1.03)
                         )
                         | ((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.01))
@@ -15718,7 +15718,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < (dataframe['res3_1d'] * 1.0))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.1)
                         | (dataframe['cti_1h'] < 0.5)
                         | (dataframe['crsi_1h'] > 12.0)
@@ -15748,7 +15748,7 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             (dataframe['btc_pct_close_max_72_5m'] < 1.01)
-                            & (dataframe['btc_not_downtrend_1h'] == True)
+                            & (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['close'] < (dataframe['res3_1d'] * 1.25))
                             & (dataframe['ema_200_pct_change_144'] < 0.16)
                         )
@@ -15787,7 +15787,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < dataframe['ema_20'] * 0.936)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > 0.0)
                         | (dataframe['ewo'] > 3.0)
                         | (dataframe['cti_1h'] < 0.5)
@@ -15923,7 +15923,7 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             (dataframe['btc_pct_close_max_72_5m'] < 1.03)
-                            & (dataframe['btc_not_downtrend_1h'] == True)
+                            & (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['ema_200_pct_change_288'] < 0.12)
                             & (dataframe['not_downtrend_1h'])
                             & (dataframe['hl_pct_change_36'] < 0.16)
@@ -15967,20 +15967,20 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['ha_close'] > dataframe['ha_open'])
                     item_buy_logic.append(dataframe['crsi_1h'] > 16.0)
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['sma_200'] > dataframe['sma_200'].shift(48))
                         | (dataframe['close'] > (dataframe['sma_200_1h'] * 0.92))
                         | (dataframe['volume_mean_12'] > (dataframe['volume_mean_24'] * 1.05))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['close'] > (dataframe['sma_200_1h'] * 0.98))
                         | (dataframe['tpct_change_144'] < 0.24)
                         | (dataframe['crsi_1h'] > 22.0)
                         | (dataframe['volume_mean_12'] > (dataframe['volume_mean_24'] * 1.05))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['ewo'] < -5.9)
                         | (dataframe['ema_50'] > dataframe['ema_200'])
                         | (dataframe['tpct_change_144'] < 0.16)
@@ -16000,7 +16000,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['volume_mean_12'] > (dataframe['volume_mean_24'] * 1.1))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['ewo'] < -6.6)
                         | (dataframe['cmf'] > 0.0)
                         | (dataframe['crsi_1h'] > 22.0)
@@ -16113,7 +16113,7 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(
                         (dataframe['ewo'] < -12.0)
                         | (dataframe['cmf'] > -0.2)
-                        | ((dataframe['mfi'] > 30.0) & (dataframe['btc_not_downtrend_1h'] == True))
+                        | ((dataframe['mfi'] > 30.0) & (dataframe['btc_not_downtrend_1h'] is True))
                         | (dataframe['rsi_14'] < 20.0)
                         | (dataframe['crsi_1h'] > 12.0)
                         | (dataframe['tpct_change_144'] < 0.2)
@@ -16556,7 +16556,7 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['cti_1h'] < 0.9)
                     item_buy_logic.append(dataframe['crsi_1h'] > 18.0)
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.2)
                         | (dataframe['rsi_14'] < 20.0)
                         | (dataframe['cti_1h'] < -0.5)
@@ -16596,7 +16596,7 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             (dataframe['btc_pct_close_max_72_5m'] < 1.01)
-                            & (dataframe['btc_not_downtrend_1h'] == True)
+                            & (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['hl_pct_change_24_1h'] < 0.5)
                         )
                         | (dataframe['close'] < (dataframe['res3_1d'] * 1.0))
@@ -16683,7 +16683,7 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             (dataframe['btc_pct_close_max_72_5m'] < 1.01)
-                            & (dataframe['btc_not_downtrend_1h'] == True)
+                            & (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['tpct_change_144'] < 0.2)
                         )
                         | (dataframe['close'] < dataframe['ema_20'] * 0.93)
@@ -16738,7 +16738,7 @@ class NostalgiaForInfinityX(IStrategy):
                         (
                             (dataframe['close'] < (dataframe['res3_1d'] * 1.0))
                             & (dataframe['btc_pct_close_max_72_5m'] < 1.03)
-                            & (dataframe['btc_not_downtrend_1h'] == True)
+                            & (dataframe['btc_not_downtrend_1h'] is True)
                         )
                         | (dataframe['close'] < dataframe['sma_30'] * 0.89)
                         | (dataframe['close'] < dataframe['ema_20'] * 0.92)
@@ -16896,7 +16896,7 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
                     item_buy_logic.append(dataframe['r_480_1h'] < -1.0)
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['close'] < (dataframe['res3_1d'] * 1.2))
                     )
                     item_buy_logic.append(
@@ -16909,7 +16909,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['volume_mean_12'] > (dataframe['volume_mean_24'] * 1.2))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > 0.0)
                         | (dataframe['mfi'] > 6.0)
                         | (dataframe['cti_1h'] < 0.5)
@@ -16918,7 +16918,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < dataframe['ema_20'] * 0.946)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.1)
                         | (dataframe['mfi'] > 30.0)
                         | (dataframe['rsi_14'] < 30.0)
@@ -17042,7 +17042,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.016))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.1)
                         | (dataframe['mfi'] > 30.0)
                         | (dataframe['cti'] < -0.8)
@@ -17088,7 +17088,7 @@ class NostalgiaForInfinityX(IStrategy):
                     )
                     item_buy_logic.append(
                         (
-                            (dataframe['btc_not_downtrend_1h'] == True)
+                            (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['btc_pct_close_max_72_5m'] < 1.03)
                             & (dataframe['hl_pct_change_48_1h'] < 0.6)
                         )
@@ -17160,7 +17160,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.016))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > 0.0)
                         | (dataframe['rsi_14'] < 28.0)
                         | (dataframe['rsi_14_1h'] < 50.0)
@@ -17194,7 +17194,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.02))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.2)
                         | (dataframe['mfi'] > 10.0)
                         | (dataframe['rsi_14'] < 20.0)
@@ -17685,13 +17685,13 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['tpct_change_144'] < 0.2)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['tpct_change_144'] < 0.2)
                         | (dataframe['sma_200'] > dataframe['sma_200'].shift(48))
                         | (dataframe['volume_mean_12'] > (dataframe['volume_mean_24'] * 0.9))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > 0.0)
                         | (dataframe['mfi'] > 30.0)
                         |
@@ -17832,7 +17832,7 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             (dataframe['btc_pct_close_max_72_5m'] < 1.01)
-                            & (dataframe['btc_not_downtrend_1h'] == True)
+                            & (dataframe['btc_not_downtrend_1h'] is True)
                         )
                         | (dataframe['close'] > (dataframe['sma_200'] * 0.9))
                         |
@@ -17903,13 +17903,13 @@ class NostalgiaForInfinityX(IStrategy):
                        | (dataframe['cti_1h'] < 0.5)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['close'] < (dataframe['res3_1d'] * 1.2))
                         | (dataframe['tpct_change_144'] < 0.18)
                     )
                     item_buy_logic.append(
                         (
-                            (dataframe['btc_not_downtrend_1h'] == True)
+                            (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['ema_200_pct_change_288'] < 0.12)
                             & (dataframe['cti_1h'] < 0.9)
                         )
@@ -17963,7 +17963,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['rsi_14_15m'] < 25.0)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['rsi_14'] < 30.0)
                         | (dataframe['cti_1h'] < 0.0)
                         | (dataframe['tpct_change_144'] < 0.1)
@@ -17984,7 +17984,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['rsi_14_15m'] < 25.0)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.2)
                         | (dataframe['mfi'] > 20.0)
                         | (dataframe['rsi_14'] < 30.0)
@@ -18022,7 +18022,7 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append((dataframe['rsi_14_1h'] + dataframe['rsi_14_15m']) < 69.5)
                     item_buy_logic.append(dataframe['crsi_1h'] > 18.0)
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.2)
                         | (dataframe['cti_1h'] < -0.5)
                         | (dataframe['crsi_1h'] > 20.0)
@@ -18124,21 +18124,21 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['r_14'] < -72.0)
                     item_buy_logic.append(dataframe['crsi_1h'] > 22.0)
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cti_1h'] < 0.0)
                         | (dataframe['volume_mean_12'] > (dataframe['volume_mean_24'] * 1.2))
                         | (dataframe['sma_200_1h'] > dataframe['sma_200_1h'].shift(48))
                         | (dataframe['close'] > (dataframe['sma_200'] * 0.9))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cti_1h'] < 0.5)
                         | (dataframe['r_480_1h'] < -5.0)
                         | (dataframe['tpct_change_144'] < 0.26)
                         | (dataframe['hl_pct_change_48_1h'] < 0.75)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cti_1h'] < 0.5)
                         | (dataframe['tpct_change_144'] < 0.26)
                         | (dataframe['hl_pct_change_48_1h'] < 0.75)
@@ -18196,11 +18196,11 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['r_14'] < -97.0)
                     item_buy_logic.append(dataframe['cti_1h'] < 0.1)
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['crsi_1h'] > 15.0)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.2)
                         | (dataframe['mfi'] > 25.0)
                         | (dataframe['cti_1h'] < -0.5)
@@ -18211,7 +18211,7 @@ class NostalgiaForInfinityX(IStrategy):
                     )
                     item_buy_logic.append(
                         (
-                            (dataframe['btc_not_downtrend_1h'] == True)
+                            (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['hl_pct_change_48_1h'] < 0.5)
                         )
                         | (dataframe['cti_1h'] < 0.0)
@@ -18243,17 +18243,17 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['cti_1h'] < 0.1)
                     item_buy_logic.append(dataframe['crsi_1h'] > 18.0)
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cti_1h'] < 0.0)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['ewo_15m'] > 3.2)
                         | (dataframe['cti'] < -0.8)
                         | (dataframe['cti_1h'] < -0.75)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         |
                         (
                             (dataframe['ewo_15m'] > 4.4)
@@ -18398,7 +18398,7 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             (dataframe['btc_pct_close_max_72_5m'] < 1.01)
-                            & (dataframe['btc_not_downtrend_1h'] == True)
+                            & (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['tpct_change_144'] < 0.2)
                             & (dataframe['crsi_1h'] > 12.0)
                         )
@@ -18431,7 +18431,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | ((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.032))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['rsi_14'] < 20.0)
                         | (dataframe['cti_1h'] < -0.5)
                         | (dataframe['tpct_change_144'] < 0.12)
@@ -18443,7 +18443,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close_15m'] < dataframe['ema_20_15m'] * 0.92)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.1)
                         | (dataframe['mfi'] > 40.0)
                         | (dataframe['rsi_14'] < 25.0)
@@ -18467,7 +18467,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close_max_48'] < (dataframe['close'] * 1.2))
                         | (dataframe['hl_pct_change_36'] < 0.12)
                         | (dataframe['hl_pct_change_48_1h'] < 0.25)
-                        | ((dataframe['btc_pct_close_max_72_5m'] < 1.01) & (dataframe['btc_not_downtrend_1h'] == True))
+                        | ((dataframe['btc_pct_close_max_72_5m'] < 1.01) & (dataframe['btc_not_downtrend_1h'] is True))
                         | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
                         | (dataframe['close'] > (dataframe['sma_200'] * 0.9))
                         | (dataframe['close'] < dataframe['sma_30'] * 0.86)
@@ -18492,7 +18492,7 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['rsi_14'] < 31.4)
                     item_buy_logic.append(dataframe['crsi'] > 13.0)
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > 0.0)
                         | (dataframe['cti_1h'] < 0.0)
                         | (dataframe['crsi_1h'] > 16.0)
@@ -18511,7 +18511,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < dataframe['ema_20'] * 0.968)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > 0.0)
                         | (dataframe['rsi_14'] < 25.0)
                         | (dataframe['cti_1h'] < -0.5)
@@ -18522,7 +18522,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.999))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['rsi_14'] < 25.0)
                         | (dataframe['cti_1h'] < -0.0)
                         | (dataframe['crsi_1h'] > 20.0)
@@ -18532,7 +18532,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.999))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.2)
                         | (dataframe['rsi_14'] < 20.0)
                         | (dataframe['cti'] < -0.9)
@@ -18609,7 +18609,7 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             (dataframe['btc_pct_close_max_72_5m'] < 1.03)
-                            & (dataframe['btc_not_downtrend_1h'] == True)
+                            & (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['cmf'] > -0.4)
                             & (dataframe['ema_200_pct_change_144'] > -0.1)
                         )
@@ -18642,7 +18642,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | ((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.04))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['tpct_change_144'] < 0.2)
                         | (dataframe['hl_pct_change_48_1h'] < 0.5)
                         | (dataframe['sma_200'] > dataframe['sma_200'].shift(48))
@@ -18656,7 +18656,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.97))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cti_1h'] < 0.0)
                         | (dataframe['tpct_change_144'] < 0.2)
                         | (dataframe['hl_pct_change_48_1h'] < 0.4)
@@ -18671,7 +18671,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.99))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['rsi_14'] < 25.0)
                         | (dataframe['cti'] < -0.9)
                         | (dataframe['cti_1h'] < 0.0)
@@ -19125,7 +19125,7 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             (dataframe['btc_pct_close_max_72_5m'] < 1.01)
-                            & (dataframe['btc_not_downtrend_1h'] == True)
+                            & (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['close'] < (dataframe['res3_1d'] * 1.1))
                             & (dataframe['ema_200_pct_change_288'] < 0.12)
                             & (dataframe['cmf_1h'] > -0.25)
@@ -19178,7 +19178,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.99))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cti_1h'] < -0.9)
                         | (dataframe['hl_pct_change_48_1h'] < 0.5)
                         | (dataframe['close'] < (dataframe['res2_1d'] * 1.0))
@@ -19304,7 +19304,7 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             (dataframe['btc_pct_close_max_72_5m'] < 1.03)
-                            & (dataframe['btc_not_downtrend_1h'] == True)
+                            & (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['rsi_14'] < 30.0)
                         )
                         | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
@@ -19352,7 +19352,7 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['r_14_15m'].shift(3) < -90.0)
                     item_buy_logic.append(dataframe['r_14'] < -65.0)
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['crsi_1h'] > 0.0)
                     )
 
@@ -19608,7 +19608,7 @@ class NostalgiaForInfinityX(IStrategy):
                     )
                     item_buy_logic.append(
                         (
-                            (dataframe['btc_not_downtrend_1h'] == True)
+                            (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['close_max_48'] < (dataframe['close'] * 1.24))
                         )
                         | (dataframe['cmf'] > 0.0)
@@ -19642,7 +19642,7 @@ class NostalgiaForInfinityX(IStrategy):
                         )
                         | (dataframe['hl_pct_change_36'] < 0.2)
                         | (dataframe['hl_pct_change_48_1h'] < 0.25)
-                        | ((dataframe['btc_pct_close_max_72_5m'] < 1.01) & (dataframe['btc_not_downtrend_1h'] == True))
+                        | ((dataframe['btc_pct_close_max_72_5m'] < 1.01) & (dataframe['btc_not_downtrend_1h'] is True))
                         | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
                         |
                         (
@@ -19689,7 +19689,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.96))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.3)
                         | (dataframe['mfi'] > 20.0)
                         | (dataframe['rsi_14'] < 15.0)
@@ -19701,7 +19701,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.96)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.3)
                         |
                         (
@@ -19841,7 +19841,7 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['cti'] < -0.9)
                     item_buy_logic.append(dataframe['r_14'] < -78.0)
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['crsi_1h'] > 4.0)
                     )
                     item_buy_logic.append(
@@ -19850,7 +19850,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['volume_mean_12'] > (dataframe['volume_mean_24'] * 1.2))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['crsi_1h'] > 6.0)
                         | (dataframe['sma_200'] > dataframe['sma_200'].shift(48))
                         | (dataframe['sma_200_1h'] > dataframe['sma_200_1h'].shift(48))
@@ -19880,7 +19880,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] > (dataframe['sup2_1d'] * 1.0))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['ewo'] < -8.0)
                         | (dataframe['cti_1h'] < -0.75)
                         | (dataframe['close'] > (dataframe['sma_200_1h'] * 0.75))
@@ -19959,7 +19959,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.999)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['ewo'] < -10.0)
                         | (dataframe['cmf'] > -0.3)
                         | (dataframe['crsi_1h'] > 12.0)
@@ -19969,7 +19969,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.999)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > 0.0)
                         | (dataframe['mfi'] > 40.0)
                         | (dataframe['rsi_14'] < 25.0)
@@ -20066,19 +20066,19 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['roc_9_1h'] > 0.526)
                     item_buy_logic.append(dataframe['r_480_1h'] < -12.0)
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['crsi_1h'] > 5.0)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['close'] > (dataframe['ema_200_1h'] * 0.76))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['volume_mean_12'] > (dataframe['volume_mean_24'] * 0.95))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['r_480_1h'] < -18.0)
                         | (dataframe['close'] > (dataframe['sma_200'] * 0.95))
                         | (dataframe['volume_mean_12'] > (dataframe['volume_mean_24'] * 1.5))
@@ -20115,7 +20115,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['ha_closedelta'] > dataframe['ha_close'] * 0.04)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.1)
                         | (dataframe['rsi_14'] < 28.0)
                         | (dataframe['cti'] < 0.0)
@@ -20126,7 +20126,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['ha_closedelta'] > dataframe['ha_close'] * 0.04)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['ewo'] > 4.0)
                         | (dataframe['cmf'] > -0.1)
                         | (dataframe['mfi'] > 30.0)
@@ -20151,7 +20151,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.97))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['ewo'] > 4.0)
                         | (dataframe['mfi'] > 30.0)
                         | (dataframe['rsi_14'] < 15.0)
@@ -20162,7 +20162,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.97))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.3)
                         | (dataframe['mfi'] > 20.0)
                         | (dataframe['rsi_14'] < 15.0)
@@ -20174,7 +20174,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.96)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.2)
                         | (dataframe['mfi'] > 36.0)
                         | (dataframe['rsi_14'] < 30.0)
@@ -20289,11 +20289,11 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['ewo'] < -3.92)
                     item_buy_logic.append(dataframe['r_14'] < -46.0)
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['volume_mean_12'] > (dataframe['volume_mean_24'] * 0.9))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['crsi_1h'] > 8.0)
                     )
                     item_buy_logic.append(
@@ -20522,7 +20522,7 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['rsi_84'] < 60.0)
                     item_buy_logic.append(dataframe['rsi_112'] < 60.0)
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['mfi'] > 20.0)
                         | (dataframe['rsi_14'] < 28.0)
                         | (dataframe['crsi_1h'] > 10.0)
@@ -20548,7 +20548,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.022))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['tpct_change_144'] < 0.14)
                         | (dataframe['btc_tpct_change_144_5m'] < 0.02)
                         | (dataframe['close'] > (dataframe['sup_level_1h'] * 0.95))
@@ -20570,7 +20570,7 @@ class NostalgiaForInfinityX(IStrategy):
                     )
                     item_buy_logic.append(
                         (
-                            (dataframe['btc_not_downtrend_1h'] == True)
+                            (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['tpct_change_144'] < 0.12)
                             & (dataframe['mfi'] > 30.0)
                         )
@@ -20584,7 +20584,7 @@ class NostalgiaForInfinityX(IStrategy):
                     )
                     item_buy_logic.append(
                         (
-                            (dataframe['btc_not_downtrend_1h'] == True)
+                            (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['tpct_change_144'] < 0.26)
                             & (dataframe['hl_pct_change_48_1h'] < 0.5)
                         )
@@ -20602,7 +20602,7 @@ class NostalgiaForInfinityX(IStrategy):
                     )
                     item_buy_logic.append(
                         (
-                            (dataframe['btc_not_downtrend_1h'] == True)
+                            (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['tpct_change_144'] < 0.36)
                             & (dataframe['hl_pct_change_48_1h'] < 0.6)
                         )
@@ -20621,7 +20621,7 @@ class NostalgiaForInfinityX(IStrategy):
                     )
                     item_buy_logic.append(
                         (
-                            (dataframe['btc_not_downtrend_1h'] == True)
+                            (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['tpct_change_144'] < 0.2)
                             & (dataframe['hl_pct_change_48_1h'] < 0.5)
                         )
@@ -20928,14 +20928,14 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             (dataframe['cti'] < -0.95)
-                            & (dataframe['btc_not_downtrend_1h'] == True)
+                            & (dataframe['btc_not_downtrend_1h'] is True)
                         )
                         | (dataframe['cti_1h'] < -0.5)
                         | (dataframe['rsi_14_1h'] < 40.0)
                         |
                         (
                             (dataframe['r_14_1h'] < -97.0)
-                            & (dataframe['btc_not_downtrend_1h'] == True)
+                            & (dataframe['btc_not_downtrend_1h'] is True)
                         )
                         | (dataframe['tpct_change_144'] < 0.16)
                         |
@@ -21050,7 +21050,7 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['ewo'] < 4.0)
                     item_buy_logic.append(
                         (
-                            (dataframe['btc_not_downtrend_1h'] == True)
+                            (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['hl_pct_change_48_1h'] < 0.75)
                         )
                         |
@@ -21089,7 +21089,7 @@ class NostalgiaForInfinityX(IStrategy):
                         )
                     )
                     item_buy_logic.append(
-                        ((dataframe['btc_not_downtrend_1h'] == True) & (dataframe['cmf'] > -0.3))
+                        ((dataframe['btc_not_downtrend_1h'] is True) & (dataframe['cmf'] > -0.3))
                         | (dataframe['mfi'] > 35.0)
                         | (dataframe['cti_1h'] < -0.8)
                         | (dataframe['tpct_change_144'] < 0.12)
@@ -21112,7 +21112,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.98))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.1)
                         | (dataframe['mfi'] > 25.0)
                         | (dataframe['rsi_14'] < 20.0)
@@ -21127,7 +21127,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.99))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['mfi'] > 40.0)
                         | (dataframe['rsi_14'] < 15.0)
                         | (dataframe['cti_1h'] < -0.5)
@@ -21260,7 +21260,7 @@ class NostalgiaForInfinityX(IStrategy):
                     )
                     item_buy_logic.append(
                         (
-                            (dataframe['btc_not_downtrend_1h'] == True)
+                            (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['cmf'] > -0.3)
                             & (dataframe['mfi'] > 20.0)
                         )
@@ -21287,7 +21287,7 @@ class NostalgiaForInfinityX(IStrategy):
                     )
                     item_buy_logic.append(
                         (
-                            (dataframe['btc_not_downtrend_1h'] == True)
+                            (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['cmf'] > -0.1)
                             & (dataframe['mfi'] > 10.0)
                             & (dataframe['ema_200_pct_change_144'] < 0.22)
@@ -21453,7 +21453,7 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             (dataframe['close'] < (dataframe['res3_1d'] * 1.0))
-                            & (dataframe['btc_not_downtrend_1h'] == True)
+                            & (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['btc_pct_close_max_72_5m'] < 1.03)
                             & (dataframe['tpct_change_144'] < 0.2)
                         )
@@ -21545,7 +21545,7 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(dataframe['ewo'] < 4.0)
                     item_buy_logic.append(dataframe['rsi_14_1h'] < 40.0)
                     item_buy_logic.append(
-                        ((dataframe['btc_not_downtrend_1h'] == True) & (dataframe['cmf'] > -0.3))
+                        ((dataframe['btc_not_downtrend_1h'] is True) & (dataframe['cmf'] > -0.3))
                         | (dataframe['mfi'] > 40.0)
                         | (dataframe['cti_1h'] < -0.9)
                         | (dataframe['crsi_1h'] > 30.0)
@@ -21635,7 +21635,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < dataframe['ema_20'] * 0.87)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.2)
                         | (dataframe['mfi'] > 40.0)
                         | (dataframe['cti_1h'] < -0.8)
@@ -21646,7 +21646,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.97)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.2)
                         | (dataframe['mfi'] > 35.0)
                         | (dataframe['crsi_1h'] > 30.0)
@@ -21666,7 +21666,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.99)
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.3)
                         | (dataframe['mfi'] > 40.0)
                         | (dataframe['cti_1h'] < -0.9)
@@ -21687,7 +21687,7 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             (dataframe['btc_pct_close_max_72_5m'] < 1.02)
-                            & (dataframe['btc_not_downtrend_1h'] == True)
+                            & (dataframe['btc_not_downtrend_1h'] is True)
                         )
                         | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
                         | (dataframe['close'] > (dataframe['sup1_1d'] * 1.0))
@@ -21882,14 +21882,14 @@ class NostalgiaForInfinityX(IStrategy):
                     )
                     item_buy_logic.append(
                         (dataframe['ewo'] < -4.0)
-                        | ((dataframe['btc_not_downtrend_1h'] == True) & (dataframe['cmf'] > -0.3))
+                        | ((dataframe['btc_not_downtrend_1h'] is True) & (dataframe['cmf'] > -0.3))
                         | (dataframe['cti_1h'] < -0.8)
                         | (dataframe['close'] > (dataframe['sma_200'] * 0.99))
                         | (dataframe['close'] < dataframe['ema_20'] * 0.9)
                         | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.98))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.3)
                         | (dataframe['mfi'] > 20.0)
                         | (dataframe['cti_1h'] < -0.8)
@@ -21905,7 +21905,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.028))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
+                        (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['cmf'] > -0.3)
                         | (dataframe['mfi'] > 10.0)
                         | (dataframe['cti_1h'] < -0.9)
@@ -21938,7 +21938,7 @@ class NostalgiaForInfinityX(IStrategy):
                     )
                     item_buy_logic.append(
                         (
-                            (dataframe['btc_not_downtrend_1h'] == True)
+                            (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['ema_200_pct_change_288'] < 0.2)
                             & (dataframe['hl_pct_change_36'] < 0.3)
                         )
@@ -22216,7 +22216,7 @@ class NostalgiaForInfinityX(IStrategy):
                             & (dataframe['crsi_1h'] > 10.0)
                             & (dataframe['close'] > (dataframe['sma_200'] * 0.95))
                             & (dataframe['btc_pct_close_max_72_5m'] < 1.01)
-                            & (dataframe['btc_not_downtrend_1h'] == True)
+                            & (dataframe['btc_not_downtrend_1h'] is True)
                         )
                         | (dataframe['close'] < dataframe['ema_20'] * 0.92)
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.99)
@@ -22464,14 +22464,14 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             (dataframe['tpct_change_144'] < 0.1)
-                            & (dataframe['sma_200_dec_20_1h'] == False)
+                            & (dataframe['sma_200_dec_20_1h'] is False)
                             & (dataframe['ema_200_pct_change_288'] < 0.12)
                         )
                         |
                         (
                             (dataframe['close_max_48'] < (dataframe['close'] * 1.1))
                             & (dataframe['tpct_change_144'] < 0.3)
-                            & (dataframe['sma_200_dec_20_1h'] == False)
+                            & (dataframe['sma_200_dec_20_1h'] is False)
                             & (dataframe['ema_200_pct_change_288'] < 0.12)
                         )
                         |
@@ -22483,7 +22483,7 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             (dataframe['btc_pct_close_max_72_5m'] < 1.01)
-                            & (dataframe['btc_not_downtrend_1h'] == True)
+                            & (dataframe['btc_not_downtrend_1h'] is True)
                             & (dataframe['hl_pct_change_48_1h'] < 0.8)
                             & (dataframe['crsi_1h'] > 10.0)
                             & (dataframe['ema_200_pct_change_288'] > -0.12)
