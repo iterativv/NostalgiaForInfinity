@@ -117,7 +117,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.3.87"
+        return "v11.3.91"
 
 
     # ROI table:
@@ -207,8 +207,8 @@ class NostalgiaForInfinityX(IStrategy):
 
     # Stop thresholds
     # 1 entry, more than 1, leveraged
-    stop_thresholds_stable = [-0.19, -0.19, -0.19]
-    stop_thresholds_btc = [-0.19, -0.19, -0.19]
+    stop_thresholds_stable = [-0.29, -0.29, -0.29]
+    stop_thresholds_btc = [-0.29, -0.29, -0.29]
 
     # Additional vigorous dump checks
     insanity_dump_checks = False
@@ -13677,6 +13677,7 @@ class NostalgiaForInfinityX(IStrategy):
                             & (dataframe['hl_pct_change_48_1h'] < 0.8)
                             & (dataframe['close'] > (dataframe['sma_200'] * 0.95))
                             & (dataframe['ema_200_pct_change_144'] < 0.2)
+                            & (dataframe['close_max_48'] < (dataframe['close'] * 1.16))
                         )
                         | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
                         | (dataframe['close'] < dataframe['sma_30'] * 0.88)
@@ -19332,6 +19333,11 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(
                         (dataframe['btc_not_downtrend_1h'] is True)
                         | (dataframe['crsi_1h'] > 0.0)
+                    )
+                    item_buy_logic.append(
+                        (dataframe['hl_pct_change_48_1h'] < 0.5)
+                        | (dataframe['r_480_1h'] > -95.0)
+                        | (dataframe['crsi_1h'] > 20.0)
                     )
 
                 # Condition #57 - 15m. Semi swing. Strong uptrend. Local dip. BTC not downtrend.
