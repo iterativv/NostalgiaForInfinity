@@ -294,7 +294,7 @@ class NostalgiaForInfinityX2(IStrategy):
                 if (current_profit < (previous_profit - 0.04)):
                     return True, previous_sell_reason
         elif (previous_sell_reason in ["exit_profit_normal_bull_max"]):
-            if (current_profit < 0.01):
+            if (0.001 <= current_profit < 0.01):
                 if (current_profit < (previous_profit - 0.01)):
                     return True, previous_sell_reason
             elif (0.01 <= current_profit < 0.02):
@@ -642,7 +642,7 @@ class NostalgiaForInfinityX2(IStrategy):
                 if (current_profit < (previous_profit - 0.04)):
                     return True, previous_sell_reason
         elif (previous_sell_reason in ["exit_profit_normal_bear_max"]):
-            if (current_profit < 0.01):
+            if (0.001 <= current_profit < 0.01):
                 if (current_profit < (previous_profit - 0.01)):
                     return True, previous_sell_reason
             elif (0.01 <= current_profit < 0.02):
@@ -990,7 +990,7 @@ class NostalgiaForInfinityX2(IStrategy):
                 if (current_profit < (previous_profit - 0.04)):
                     return True, previous_sell_reason
         elif (previous_sell_reason in ["exit_profit_pump_bull_max"]):
-            if (current_profit < 0.01):
+            if (0.001 <= current_profit < 0.01):
                 if (current_profit < (previous_profit - 0.01)):
                     return True, previous_sell_reason
             elif (0.01 <= current_profit < 0.02):
@@ -1338,7 +1338,7 @@ class NostalgiaForInfinityX2(IStrategy):
                 if (current_profit < (previous_profit - 0.04)):
                     return True, previous_sell_reason
         elif (previous_sell_reason in ["exit_profit_pump_bear_max"]):
-            if (current_profit < 0.01):
+            if (0.001 <= current_profit < 0.01):
                 if (current_profit < (previous_profit - 0.01)):
                     return True, previous_sell_reason
             elif (0.01 <= current_profit < 0.02):
@@ -1686,7 +1686,7 @@ class NostalgiaForInfinityX2(IStrategy):
                 if (current_profit < (previous_profit - 0.04)):
                     return True, previous_sell_reason
         elif (previous_sell_reason in ["exit_profit_quick_bull_max"]):
-            if (current_profit < 0.01):
+            if (0.001 <= current_profit < 0.01):
                 if (current_profit < (previous_profit - 0.01)):
                     return True, previous_sell_reason
             elif (0.01 <= current_profit < 0.02):
@@ -2034,7 +2034,7 @@ class NostalgiaForInfinityX2(IStrategy):
                 if (current_profit < (previous_profit - 0.04)):
                     return True, previous_sell_reason
         elif (previous_sell_reason in ["exit_profit_quick_bear_max"]):
-            if (current_profit < 0.01):
+            if (0.001 <= current_profit < 0.01):
                 if (current_profit < (previous_profit - 0.01)):
                     return True, previous_sell_reason
             elif (0.01 <= current_profit < 0.02):
