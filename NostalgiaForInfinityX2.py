@@ -3342,8 +3342,8 @@ class NostalgiaForInfinityX2(IStrategy):
 
                     item_buy_logic.append(dataframe['cti_20_1h'] < 0.9)
                     item_buy_logic.append(dataframe['cti_20_4h'] < 0.9)
-                    item_buy_logic.append(dataframe['rsi_14_1h'] < 80.0)
-                    item_buy_logic.append(dataframe['rsi_14_4h'] < 80.0)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] < 75.0)
+                    item_buy_logic.append(dataframe['rsi_14_4h'] < 75.0)
 
                     item_buy_logic.append(dataframe['not_downtrend_1h'])
                     item_buy_logic.append(dataframe['not_downtrend_4h'])
