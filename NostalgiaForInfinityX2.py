@@ -2661,10 +2661,6 @@ class NostalgiaForInfinityX2(IStrategy):
         dataframe['tpct_change_2']   = top_percent_change(self, dataframe, 2)
         dataframe['tpct_change_12']  = top_percent_change(self, dataframe, 12)
         dataframe['tpct_change_144'] = top_percent_change(self, dataframe, 144)
-        # 3 hours, protect against wicks
-        dataframe['hl_pct_change_36'] = range_percent_change(self, dataframe, 'HL', 36)
-        # 12 hours
-        dataframe['hl_pct_change_144'] = range_percent_change(self, dataframe, 'HL', 144)
 
         # Close max
         dataframe['close_max_48'] = dataframe['close'].rolling(48).max()
@@ -2916,7 +2912,6 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append((dataframe['tpct_change_2'] < 0.06))
                     item_buy_logic.append(dataframe['close_max_48'] < (dataframe['close'] * 1.3))
                     item_buy_logic.append(dataframe['high_max_24_1h'] < (dataframe['close'] * 1.36))
-                    item_buy_logic.append(dataframe['hl_pct_change_36'] < 0.3)
                     item_buy_logic.append(dataframe['hl_pct_change_24_1h'] < 3.0)
 
                     item_buy_logic.append(dataframe['sma_12_4h'] > dataframe['sma_26_4h'])
@@ -3072,7 +3067,6 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append(dataframe['close_max_48'] < (dataframe['close'] * 1.36))
                     item_buy_logic.append(dataframe['high_max_12_1h'] < (dataframe['close'] * 1.4))
                     item_buy_logic.append(dataframe['high_max_24_1h'] < (dataframe['close'] * 1.5))
-                    item_buy_logic.append(dataframe['hl_pct_change_36'] < 0.3)
 
                     item_buy_logic.append(dataframe['cti_20_1h'] < 0.9)
                     item_buy_logic.append(dataframe['cti_20_4h'] < 0.9)
@@ -3441,7 +3435,6 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append(dataframe['close_max_48'] < (dataframe['close'] * 1.36))
                     item_buy_logic.append(dataframe['high_max_12_1h'] < (dataframe['close'] * 1.4))
                     item_buy_logic.append(dataframe['high_max_24_1h'] < (dataframe['close'] * 1.5))
-                    item_buy_logic.append(dataframe['hl_pct_change_36'] < 0.3)
 
                     item_buy_logic.append(dataframe['cti_20_1h'] < 0.9)
                     item_buy_logic.append(dataframe['cti_20_4h'] < 0.9)
