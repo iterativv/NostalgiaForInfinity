@@ -3029,7 +3029,7 @@ class NostalgiaForInfinityX2(IStrategy):
                                           | (dataframe['hl_pct_change_24_1h'] < 0.5))
 
                     # Logic
-                    item_buy_logic.append(dataframe['bb40_2_delta'].gt(dataframe['close'] * 0.02))
+                    item_buy_logic.append(dataframe['bb40_2_delta'].gt(dataframe['close'] * 0.024))
                     item_buy_logic.append(dataframe['close_delta'].gt(dataframe['close'] * 0.02))
                     item_buy_logic.append(dataframe['bb40_2_tail'].lt(dataframe['bb40_2_delta'] * 0.18))
                     item_buy_logic.append(dataframe['close'].lt(dataframe['bb40_2_low'].shift()))
