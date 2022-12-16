@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.21"
+        return "v12.0.22"
 
     # ROI table:
     minimal_roi = {
@@ -123,9 +123,9 @@ class NostalgiaForInfinityX2(IStrategy):
     quick_mode_bear_tags = ['51', '52', '53', '54']
 
     # Stop thesholds. Bull, Bear.
-    stop_thresholds_normal = [-0.1, -0.1]
-    stop_thresholds_pump = [-0.1, -0.1]
-    stop_thresholds_quick = [-0.1, -0.1]
+    stop_thresholds_normal = [-0.14, -0.14]
+    stop_thresholds_pump = [-0.14, -0.14]
+    stop_thresholds_quick = [-0.14, -0.14]
 
     #############################################################
     # Buy side configuration
