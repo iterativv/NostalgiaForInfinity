@@ -114,7 +114,7 @@ class NostalgiaForInfinityX2(IStrategy):
     # Normal mode bear tags
     normal_mode_bear_tags = ['11', '12', '13', '14', '15', '16']
     # Pump mode bull tags
-    pump_mode_bull_tags = ['21']
+    pump_mode_bull_tags = ['21', '22']
     # Pump mode bear tags
     pump_mode_bear_tags = ['31']
     # Quick mode bull tags
@@ -148,6 +148,7 @@ class NostalgiaForInfinityX2(IStrategy):
         "buy_condition_16_enable": True,
 
         "buy_condition_21_enable": True,
+        "buy_condition_22_enable": True,
 
         "buy_condition_31_enable": True,
 
@@ -2466,9 +2467,11 @@ class NostalgiaForInfinityX2(IStrategy):
         # Max highs
         informative_4h['high_max_3'] = informative_4h['high'].rolling(3).max()
         informative_4h['high_max_12'] = informative_4h['high'].rolling(12).max()
+        informative_4h['high_max_24'] = informative_4h['high'].rolling(24).max()
 
         informative_4h['pct_change_high_max_1_12'] = (informative_4h['high'] - informative_4h['high_max_12']) / informative_4h['high_max_12']
         informative_4h['pct_change_high_max_3_12'] = (informative_4h['high_max_3'] - informative_4h['high_max_12']) / informative_4h['high_max_12']
+        informative_4h['pct_change_high_max_3_24'] = (informative_4h['high_max_3'] - informative_4h['high_max_24']) / informative_4h['high_max_24']
 
         # Volume
         informative_4h['volume_mean_factor_6'] = informative_4h['volume'] / informative_4h['volume'].rolling(6).mean()
@@ -2618,6 +2621,7 @@ class NostalgiaForInfinityX2(IStrategy):
 
         # EMA
         dataframe['ema_12'] = ta.EMA(dataframe, timeperiod=12)
+        dataframe['ema_16'] = ta.EMA(dataframe, timeperiod=16)
         dataframe['ema_26'] = ta.EMA(dataframe, timeperiod=26)
         dataframe['ema_50'] = ta.EMA(dataframe, timeperiod=50)
         dataframe['ema_200'] = ta.EMA(dataframe, timeperiod=200)
@@ -3675,6 +3679,44 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.016))
                     item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
                     item_buy_logic.append(dataframe['rsi_14'] < 40.0)
+
+                # Condition #22 - Pump mode bull.
+                if index == 22:
+                    # Protections
+                    item_buy_logic.append(dataframe['btc_is_bull_4h'])
+                    item_buy_logic.append(dataframe['btc_pct_close_max_24_5m'] < 0.03)
+                    item_buy_logic.append(dataframe['btc_pct_close_max_72_5m'] < 0.03)
+                    item_buy_logic.append(dataframe['close_max_48'] < (dataframe['close'] * 1.2))
+                    item_buy_logic.append(dataframe['high_max_12_1h'] < (dataframe['close'] * 1.3))
+                    item_buy_logic.append(dataframe['high_max_24_1h'] < (dataframe['close'] * 1.36))
+                    item_buy_logic.append(dataframe['high_max_48_1h'] < (dataframe['close'] * 1.4))
+
+                    item_buy_logic.append(dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(96))
+                    item_buy_logic.append(dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
+                    item_buy_logic.append(dataframe['sma_200_1h'] > dataframe['sma_200_1h'].shift(24))
+
+                    item_buy_logic.append(dataframe['cti_20_1h'] < 0.9)
+                    item_buy_logic.append(dataframe['cti_20_4h'] < 0.9)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] < 70.0)
+                    item_buy_logic.append(dataframe['rsi_14_4h'] < 70.0)
+                    item_buy_logic.append(dataframe['r_480_4h'] < -25.0)
+
+                    item_buy_logic.append(dataframe['not_downtrend_15m'])
+                    item_buy_logic.append(dataframe['not_downtrend_1h'])
+                    item_buy_logic.append((dataframe['is_downtrend_3_1h'] == False)
+                                          | (dataframe['rsi_3_1h'] > 20.0))
+                    item_buy_logic.append(dataframe['is_downtrend_5_1h'] == False)
+                    item_buy_logic.append(dataframe['not_downtrend_4h'])
+                    item_buy_logic.append(dataframe['pct_change_high_max_6_24_1h'] > -0.2)
+                    item_buy_logic.append(dataframe['pct_change_high_max_3_12_4h'] > -0.01)
+                    item_buy_logic.append(dataframe['pct_change_high_max_3_24_4h'] > -0.05)
+                    item_buy_logic.append((dataframe['top_wick_pct_4h'] < (abs(dataframe['change_pct_4h']) * 4.0))
+                                          | (dataframe['r_480_1h'] < -25.0))
+
+                    # Logic
+                    item_buy_logic.append(dataframe['close'] < (dataframe['ema_16'] * 0.968))
+                    item_buy_logic.append(dataframe['cti_20'] < -0.8)
+                    item_buy_logic.append(dataframe['rsi_14'] < 50.0)
 
                 # Condition #31 - Pump mode bear.
                 if index == 31:
