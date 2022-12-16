@@ -14349,7 +14349,12 @@ class NostalgiaForInfinityX(IStrategy):
                     )
                     item_buy_logic.append(
                         (dataframe['cmf'] > 0.2)
-                        | (dataframe['rsi_14'] < 20.0)
+                        |
+                        (
+                            (dataframe['rsi_14'] < 20.0)
+                            & (dataframe['hl_pct_change_36'] < 0.2)
+                            & (dataframe['cti_1h'] < 0.8)
+                        )
                         |
                         (
                             (dataframe['cti'] < -0.8)
