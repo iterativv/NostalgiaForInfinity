@@ -4244,6 +4244,8 @@ class NostalgiaForInfinityX2(IStrategy):
                                           | (dataframe['hl_pct_change_24_1h'] < 0.5))
                     item_buy_logic.append((dataframe['pct_change_high_max_3_12_4h'] > -0.1)
                                           | (dataframe['not_downtrend_4h']))
+                    item_buy_logic.append((dataframe['r_480_4h'] > -80.0)
+                                          | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(576)))
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < (dataframe['ema_26'] * 0.938))
