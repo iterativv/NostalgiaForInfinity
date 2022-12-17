@@ -158,16 +158,15 @@ class NostalgiaForInfinityX(IStrategy):
     holdSupportEnabled = True
 
     # Coin Metrics
-    coin_metrics = {}
-    coin_metrics['top_traded_enabled'] = False
-    coin_metrics['top_traded_updated'] = False
-    coin_metrics['top_traded_len'] = 10
-    coin_metrics['tt_dataframe'] = DataFrame()
-    coin_metrics['top_grossing_enabled'] = False
-    coin_metrics['top_grossing_updated'] = False
-    coin_metrics['top_grossing_len'] = 20
-    coin_metrics['tg_dataframe'] = DataFrame()
-    coin_metrics['current_whitelist'] = []
+    coin_metrics = {'top_traded_enabled': False,
+                    'top_traded_updated': False,
+                    'top_traded_len': 10,
+                    'tt_dataframe': DataFrame(),
+                    'top_grossing_enabled': False,
+                    'top_grossing_updated': False,
+                    'top_grossing_len': 20,
+                    'tg_dataframe': DataFrame(),
+                    'current_whitelist': []}
 
     # Rebuy feature
     position_adjustment_enable = True
@@ -2613,18 +2612,8 @@ class NostalgiaForInfinityX(IStrategy):
                 use_mode = 2
             if all(c in self.half_mode_tags for c in enter_tags):
                 use_mode = 5
-            if (use_mode == 0):
-                return proposed_stake * self.max_rebuy_multiplier_0
-            elif (use_mode == 1):
-                return proposed_stake * self.max_rebuy_multiplier_1
-            elif (use_mode == 2):
-                return proposed_stake * self.max_rebuy_multiplier_2
-            elif (use_mode == 3):
-                return proposed_stake * self.max_rebuy_multiplier_3
-            elif (use_mode == 4):
-                return proposed_stake * self.max_rebuy_multiplier_4
-            elif (use_mode == 5):
-                return proposed_stake * self.max_rebuy_multiplier_5
+            if 0 <= use_mode <= 5:
+                return proposed_stake * self.__getattribute__(f'max_rebuy_multiplier_{use_mode}')
 
         return proposed_stake
 
@@ -2788,7 +2777,7 @@ class NostalgiaForInfinityX(IStrategy):
                         and (
                             (last_candle['crsi'] > 10.0)
                             and (last_candle['crsi_1h'] > 12.0)
-                            and (last_candle['crsi_1h'] > 10.0)and (last_candle['btc_not_downtrend_1h'] == True)
+                            and (last_candle['crsi_1h'] > 10.0) and (last_candle['btc_not_downtrend_1h'] == True)
                         )
                 ):
                     is_rebuy = True
@@ -2831,23 +2820,8 @@ class NostalgiaForInfinityX(IStrategy):
                     if (use_alt_2) and (count_of_entries > self.max_rebuy_orders_2_alt):
                         return None
                     stake_amount = stake_amount * (self.rebuy_multi_2_alt if use_alt_2 else self.rebuy_multi_2)
-                elif (use_mode == 3):
-                    if (count_of_entries == 1):
-                        stake_amount = stake_amount * self.rebuy_multi_3 * 1
-                    elif (count_of_entries == 2):
-                        stake_amount = stake_amount * self.rebuy_multi_3 * 1
-                    elif (count_of_entries == 3):
-                        stake_amount = stake_amount * self.rebuy_multi_3 * 2
-                    elif (count_of_entries == 4):
-                        stake_amount = stake_amount * self.rebuy_multi_3 * 2
-                    elif (count_of_entries == 5):
-                        stake_amount = stake_amount * self.rebuy_multi_3 * 3
-                    elif (count_of_entries == 6):
-                        stake_amount = stake_amount * self.rebuy_multi_3 * 3
-                    elif (count_of_entries == 7):
-                        stake_amount = stake_amount * self.rebuy_multi_3 * 4
-                    elif (count_of_entries == 8):
-                        stake_amount = stake_amount * self.rebuy_multi_3 * 4
+                elif use_mode == 3 and 1 <= count_of_entries <= 8:
+                        stake_amount = stake_amount * self.rebuy_multi_3 * math.ceil(count_of_entries/2)
                 elif (use_mode == 4):
                     stake_amount = stake_amount + (stake_amount * (self.rebuy_multi_4 * (count_of_entries - 1)))
                 elif (use_mode == 5):
