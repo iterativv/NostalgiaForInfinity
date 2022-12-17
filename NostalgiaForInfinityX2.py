@@ -4100,6 +4100,8 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append(dataframe['pct_change_high_max_3_12_4h'] > -0.4)
                     item_buy_logic.append((dataframe['r_480_1h'] > -90.0)
                                           | (dataframe['not_downtrend_1h']))
+                    item_buy_logic.append((dataframe['pct_change_high_max_3_12_4h'] > -0.1)
+                                          | (dataframe['not_downtrend_1h']))
 
                     # Logic
                     item_buy_logic.append(dataframe['bb40_2_delta'].gt(dataframe['close'] * 0.036))
