@@ -4357,6 +4357,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append(dataframe['high_max_36_1h'] < (dataframe['close'] * 1.46))
                     item_buy_logic.append(dataframe['high_max_48_1h'] < (dataframe['close'] * 1.5))
                     item_buy_logic.append(dataframe['high_max_24_4h'] < (dataframe['close'] * 1.5))
+                    item_buy_logic.append(dataframe['high_max_36_4h'] < (dataframe['close'] * 1.7))
 
                     item_buy_logic.append(dataframe['close_max_48'] > (dataframe['close'] * 1.1))
 
