@@ -2469,11 +2469,13 @@ class NostalgiaForInfinityX2(IStrategy):
         informative_4h['high_max_3'] = informative_4h['high'].rolling(3).max()
         informative_4h['high_max_12'] = informative_4h['high'].rolling(12).max()
         informative_4h['high_max_24'] = informative_4h['high'].rolling(24).max()
+        informative_4h['high_max_36'] = informative_4h['high'].rolling(36).max()
         informative_4h['high_max_48'] = informative_4h['high'].rolling(48).max()
 
         informative_4h['pct_change_high_max_1_12'] = (informative_4h['high'] - informative_4h['high_max_12']) / informative_4h['high_max_12']
         informative_4h['pct_change_high_max_3_12'] = (informative_4h['high_max_3'] - informative_4h['high_max_12']) / informative_4h['high_max_12']
         informative_4h['pct_change_high_max_3_24'] = (informative_4h['high_max_3'] - informative_4h['high_max_24']) / informative_4h['high_max_24']
+        informative_4h['pct_change_high_max_3_36'] = (informative_4h['high_max_3'] - informative_4h['high_max_36']) / informative_4h['high_max_36']
         informative_4h['pct_change_high_max_3_48'] = (informative_4h['high_max_3'] - informative_4h['high_max_48']) / informative_4h['high_max_48']
 
         # Volume
