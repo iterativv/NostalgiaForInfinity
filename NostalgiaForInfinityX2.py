@@ -4033,7 +4033,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append(dataframe['high_max_48_1h'] < (dataframe['close'] * 1.4))
 
                     item_buy_logic.append(dataframe['cti_20_1h'] < 0.88)
-                    item_buy_logic.append(dataframe['cti_20_4h'] < 0.88)
+                    item_buy_logic.append(dataframe['cti_20_4h'] < 0.85)
                     item_buy_logic.append(dataframe['rsi_14_1h'] < 65.0)
                     item_buy_logic.append(dataframe['rsi_14_4h'] < 75.0)
                     item_buy_logic.append(dataframe['r_480_4h'] < -10.0)
