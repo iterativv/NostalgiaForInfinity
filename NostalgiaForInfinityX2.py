@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.57"
+        return "v12.0.58"
 
     # ROI table:
     minimal_roi = {
@@ -122,10 +122,11 @@ class NostalgiaForInfinityX2(IStrategy):
     # Quick mode bear tags
     quick_mode_bear_tags = ['51', '52', '53', '54']
 
-    # Stop thesholds. Bull, Bear.
-    stop_thresholds_normal = [-0.14, -0.14]
-    stop_thresholds_pump = [-0.14, -0.14]
-    stop_thresholds_quick = [-0.14, -0.14]
+    # Stop thesholds. Doom Bull & Bear. u_e Bull & Bear. u_e minutes Bull & Bear. Enable Doom Bull & Bear. Enable u_e Bull & Bear.
+    stop_thresholds_normal = [-0.2, -0.2, -0.025, -0.025, 2880, 2880, True, True, True, True]
+    stop_thresholds_pump = [-0.2, -0.2, -0.025, -0.025, 2880, 2880, True, True, True, True]
+    stop_thresholds_quick = [-0.2, -0.2, -0.025, -0.025, 2880, 2880, True, True, True, True]
+    stop_thresholds_rebuy = [-0.2, -0.2, -0.025, -0.025, 2880, 2880, True, True, True, True]
 
     #############################################################
     # Buy side configuration
@@ -543,9 +544,22 @@ class NostalgiaForInfinityX2(IStrategy):
     def exit_normal_bull_stoploss(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
         # Stoploss doom
         if (
-                (current_profit < self.stop_thresholds_normal[0])
+                (self.stop_thresholds_normal[6])
+                and (current_profit < self.stop_thresholds_normal[0])
         ):
             return True, 'exit_normal_bull_stoploss_doom'
+
+        # Under & near EMA200, local uptrend move
+        if (
+                (self.stop_thresholds_normal[8])
+                and (current_profit < self.stop_thresholds_normal[2])
+                and (last_candle['close'] < last_candle['ema_200'])
+                and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < 0.016)
+                and (last_candle['rsi_14'] > previous_candle_1['rsi_14'])
+                and (last_candle['rsi_14'] > (last_candle['rsi_14_1h'] + 10.0))
+                and (current_time - timedelta(minutes=self.stop_thresholds_normal[4]) > trade.open_date_utc)
+        ):
+            return True, 'exit_normal_bull_stoploss_u_e'
 
         return False, None
 
@@ -894,9 +908,22 @@ class NostalgiaForInfinityX2(IStrategy):
     def exit_normal_bear_stoploss(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
         # Stoploss doom
         if (
-                (current_profit < self.stop_thresholds_normal[1])
+                (self.stop_thresholds_normal[7])
+                and (current_profit < self.stop_thresholds_normal[1])
         ):
             return True, 'exit_normal_bear_stoploss_doom'
+
+        # Under & near EMA200, local uptrend move
+        if (
+                (self.stop_thresholds_normal[9])
+                and (current_profit < self.stop_thresholds_normal[3])
+                and (last_candle['close'] < last_candle['ema_200'])
+                and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < 0.016)
+                and (last_candle['rsi_14'] > previous_candle_1['rsi_14'])
+                and (last_candle['rsi_14'] > (last_candle['rsi_14_1h'] + 10.0))
+                and (current_time - timedelta(minutes=self.stop_thresholds_normal[5]) > trade.open_date_utc)
+        ):
+            return True, 'exit_normal_bear_stoploss_u_e'
 
         return False, None
 
@@ -1245,9 +1272,22 @@ class NostalgiaForInfinityX2(IStrategy):
     def exit_pump_bull_stoploss(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
         # Stoploss doom
         if (
-                (current_profit < self.stop_thresholds_pump[0])
+                (self.stop_thresholds_pump[6])
+                and (current_profit < self.stop_thresholds_pump[0])
         ):
             return True, 'exit_pump_bull_stoploss_doom'
+
+        # Under & near EMA200, local uptrend move
+        if (
+                (self.stop_thresholds_pump[8])
+                and (current_profit < self.stop_thresholds_pump[2])
+                and (last_candle['close'] < last_candle['ema_200'])
+                and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < 0.016)
+                and (last_candle['rsi_14'] > previous_candle_1['rsi_14'])
+                and (last_candle['rsi_14'] > (last_candle['rsi_14_1h'] + 10.0))
+                and (current_time - timedelta(minutes=self.stop_thresholds_pump[4]) > trade.open_date_utc)
+        ):
+            return True, 'exit_pump_bull_stoploss_u_e'
 
         return False, None
 
@@ -1596,9 +1636,22 @@ class NostalgiaForInfinityX2(IStrategy):
     def exit_pump_bear_stoploss(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
         # Stoploss doom
         if (
-                (current_profit < self.stop_thresholds_pump[1])
+                (self.stop_thresholds_pump[7])
+                and (current_profit < self.stop_thresholds_pump[1])
         ):
             return True, 'exit_pump_bear_stoploss_doom'
+
+        # Under & near EMA200, local uptrend move
+        if (
+                (self.stop_thresholds_pump[9])
+                and (current_profit < self.stop_thresholds_pump[3])
+                and (last_candle['close'] < last_candle['ema_200'])
+                and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < 0.016)
+                and (last_candle['rsi_14'] > previous_candle_1['rsi_14'])
+                and (last_candle['rsi_14'] > (last_candle['rsi_14_1h'] + 10.0))
+                and (current_time - timedelta(minutes=self.stop_thresholds_pump[5]) > trade.open_date_utc)
+        ):
+            return True, 'exit_pump_bear_stoploss_u_e'
 
         return False, None
 
@@ -1947,9 +2000,22 @@ class NostalgiaForInfinityX2(IStrategy):
     def exit_quick_bull_stoploss(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
         # Stoploss doom
         if (
-                (current_profit < self.stop_thresholds_quick[0])
+                (self.stop_thresholds_quick[6])
+                and (current_profit < self.stop_thresholds_quick[0])
         ):
             return True, 'exit_quick_bull_stoploss_doom'
+
+        # Under & near EMA200, local uptrend move
+        if (
+                (self.stop_thresholds_quick[8])
+                and (current_profit < self.stop_thresholds_quick[2])
+                and (last_candle['close'] < last_candle['ema_200'])
+                and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < 0.016)
+                and (last_candle['rsi_14'] > previous_candle_1['rsi_14'])
+                and (last_candle['rsi_14'] > (last_candle['rsi_14_1h'] + 10.0))
+                and (current_time - timedelta(minutes=self.stop_thresholds_quick[4]) > trade.open_date_utc)
+        ):
+            return True, 'exit_quick_bull_stoploss_u_e'
 
         return False, None
 
@@ -2298,9 +2364,22 @@ class NostalgiaForInfinityX2(IStrategy):
     def exit_quick_bear_stoploss(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
         # Stoploss doom
         if (
-                (current_profit < self.stop_thresholds_quick[1])
+                (self.stop_thresholds_quick[7])
+                and (current_profit < self.stop_thresholds_quick[1])
         ):
             return True, 'exit_quick_bear_stoploss_doom'
+
+        # Under & near EMA200, local uptrend move
+        if (
+                (self.stop_thresholds_quick[9])
+                and (current_profit < self.stop_thresholds_quick[3])
+                and (last_candle['close'] < last_candle['ema_200'])
+                and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < 0.016)
+                and (last_candle['rsi_14'] > previous_candle_1['rsi_14'])
+                and (last_candle['rsi_14'] > (last_candle['rsi_14_1h'] + 10.0))
+                and (current_time - timedelta(minutes=self.stop_thresholds_quick[5]) > trade.open_date_utc)
+        ):
+            return True, 'exit_quick_bear_stoploss_u_e'
 
         return False, None
 
