@@ -4056,16 +4056,14 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append((dataframe['change_pct_4h'] > -0.04)
                                           | (dataframe['top_wick_pct_4h'] < 0.06)
                                           | (dataframe['rsi_14_max_6_4h'] < 80.0))
-                    # current 4h green with top wick
                     item_buy_logic.append((dataframe['change_pct_4h'] < 0.1)
-                                          | (dataframe['top_wick_pct_4h'] < 0.1)
-                                          | (dataframe['pct_change_high_max_3_24_4h'] > -0.1))
+                                          | (dataframe['top_wick_pct_4h'] < 0.08))
 
                     # Logic
                     item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
                     item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.016))
                     item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
-                    item_buy_logic.append(dataframe['rsi_14'] < 40.0)
+                    item_buy_logic.append(dataframe['rsi_14'] < 36.0)
 
                 # Condition #32 - Pump mode bear.
                 if index == 32:
