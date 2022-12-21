@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.59"
+        return "v12.0.60"
 
     # ROI table:
     minimal_roi = {
@@ -125,10 +125,9 @@ class NostalgiaForInfinityX2(IStrategy):
     # Stop thesholds. 0: Doom Bull, 1: Doom Bear, 2: u_e Bull, 3: u_e Bear, 4: u_e mins Bull, 5: u_e mins Bear.
     # 6: u_e ema % Bull, 7: u_e ema % Bear, 8: u_e RSI diff Bull, 9: u_e RSI diff Bear.
     # 10: enable Doom Bull, 11: enable Doom Bear, 12: enable u_e Bull, 13: enable u_e Bear.
-    stop_thresholds_normal = [-0.2, -0.2, -0.025, -0.025, 2880, 2880, 0.016, 0.016, 10.0, 10.0, True, True, True, True]
-    stop_thresholds_pump = [-0.2, -0.2, -0.025, -0.025, 2880, 2880, 0.016, 0.016, 10.0, 10.0, True, True, True, True]
-    stop_thresholds_quick = [-0.2, -0.2, -0.025, -0.025, 2880, 2880, 0.016, 0.016, 10.0, 10.0, True, True, True, True]
-    stop_thresholds_rebuy = [-0.2, -0.2, -0.025, -0.025, 2880, 2880, 0.016, 0.016, 10.0, 10.0, True, True, True, True]
+    stop_thresholds_normal = [-0.2, -0.2, -0.025, -0.025, 2880, 2880, 0.016, 0.016, 10.0, 10.0, True, True, False, False]
+    stop_thresholds_pump = [-0.2, -0.2, -0.025, -0.025, 2880, 2880, 0.016, 0.016, 10.0, 10.0, True, True, False, False]
+    stop_thresholds_quick = [-0.2, -0.2, -0.025, -0.025, 2880, 2880, 0.016, 0.016, 10.0, 10.0, True, True, False, False]
 
     #############################################################
     # Buy side configuration
