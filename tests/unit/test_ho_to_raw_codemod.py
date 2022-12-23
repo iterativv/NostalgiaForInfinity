@@ -106,7 +106,7 @@ buy_protection_params = {
 
 def test_transform_code_syntax():
     source = ""
-    with open(REPO_ROOT.joinpath("NostalgiaForInfinityNext.py")) as f:
+    with open(REPO_ROOT.joinpath("NostalgiaForInfinityX2.py")) as f:
         source = f.read()
 
     is_valid = True

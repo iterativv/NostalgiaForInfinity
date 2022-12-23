@@ -65,9 +65,9 @@ def test_trade_paits_hold_support_pairs(strategy, trade_pairs_hold_file):
 @pytest.fixture
 def symlink_strat(testdatadir, strategy, initial_trade):
     # Remove copied strat file
-    testdatadir.joinpath("strategies", "NostalgiaForInfinityNext.py").unlink()
-    testdatadir.joinpath("strategies", "NostalgiaForInfinityNext.py").symlink_to(
-        REPO_ROOT.joinpath("NostalgiaForInfinityNext.py")
+    testdatadir.joinpath("strategies", "NostalgiaForInfinityX2.py").unlink()
+    testdatadir.joinpath("strategies", "NostalgiaForInfinityX2.py").symlink_to(
+        REPO_ROOT.joinpath("NostalgiaForInfinityX2.py")
     )
     hold_trade_file = testdatadir / "strategies" / "hold-trades.json"
     hold_trade_file.write_text(json.dumps({"trade_ids": [1], "profit_ratio": 0.0025}))
@@ -75,7 +75,7 @@ def symlink_strat(testdatadir, strategy, initial_trade):
 
 
 def test_symlinked_strat_hold_config_file(symlink_strat, testdatadir):
-    assert testdatadir.joinpath("strategies", "NostalgiaForInfinityNext.py").is_symlink()
+    assert testdatadir.joinpath("strategies", "NostalgiaForInfinityX2.py").is_symlink()
     symlink_strat.load_hold_trades_config()
     assert symlink_strat.hold_trades_cache.data == {"trade_ids": {1: 0.0025}}
 
@@ -83,7 +83,7 @@ def test_symlinked_strat_hold_config_file(symlink_strat, testdatadir):
 def test_move_old_hold_trades(strategy, caplog, testdatadir):
     hold_trade_file = testdatadir / "strategies" / "hold-trades.json"
     hold_trade_file.write_text(json.dumps({"trade_ids": {"1": 0.0035}}))
-    with caplog.at_level(logging.WARNING, "NostalgiaForInfinityNext"):
+    with caplog.at_level(logging.WARNING, "NostalgiaForInfinityX2"):
         strategy.load_hold_trades_config()
     expected_log_message = (
         "Please move {} to {} which is now the expected path for the holds file".format(
@@ -96,9 +96,9 @@ def test_move_old_hold_trades(strategy, caplog, testdatadir):
 @pytest.fixture
 def symlink_strat_no_config(testdatadir, strategy):
     # Remove copied strat file
-    testdatadir.joinpath("strategies", "NostalgiaForInfinityNext.py").unlink()
-    testdatadir.joinpath("strategies", "NostalgiaForInfinityNext.py").symlink_to(
-        REPO_ROOT.joinpath("NostalgiaForInfinityNext.py")
+    testdatadir.joinpath("strategies", "NostalgiaForInfinityX2.py").unlink()
+    testdatadir.joinpath("strategies", "NostalgiaForInfinityX2.py").symlink_to(
+        REPO_ROOT.joinpath("NostalgiaForInfinityX2.py")
     )
     return strategy
 
@@ -109,7 +109,7 @@ def test_move_old_hold_trades_symlinked_strat(
     hold_trade_file = REPO_ROOT / "hold-trades.json"
     request.addfinalizer(hold_trade_file.unlink)
     hold_trade_file.write_text(json.dumps({"trade_ids": {"1": 0.0035}}))
-    with caplog.at_level(logging.WARNING, "NostalgiaForInfinityNext"):
+    with caplog.at_level(logging.WARNING, "NostalgiaForInfinityX2"):
         symlink_strat_no_config.load_hold_trades_config()
     expected_log_message = (
         "Please move {} to {} which is now the expected path for the holds file".format(
