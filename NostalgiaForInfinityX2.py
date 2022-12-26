@@ -563,7 +563,6 @@ class NostalgiaForInfinityX2(IStrategy):
                 (self.stop_thresholds_normal[12])
                 and (current_profit < self.stop_thresholds_normal[2])
                 and (last_candle['close'] < last_candle['ema_200'])
-                #and (last_candle['cmf_20'] < -0.0)
                 and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < self.stop_thresholds_normal[6])
                 and (last_candle['rsi_14'] > previous_candle_1['rsi_14'])
                 and (last_candle['rsi_14'] > (last_candle['rsi_14_1h'] + self.stop_thresholds_normal[8]))
