@@ -2017,6 +2017,7 @@ class NostalgiaForInfinityX2(IStrategy):
         return False, None
 
     def exit_quick_bull_stoploss(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
+        is_backtest = self.dp.runmode.value == 'backtest'
         # Stoploss doom
         if (
                 (self.stop_thresholds_quick[10])
@@ -2033,6 +2034,8 @@ class NostalgiaForInfinityX2(IStrategy):
                 and (last_candle['rsi_14'] > previous_candle_1['rsi_14'])
                 and (last_candle['rsi_14'] > (last_candle['rsi_14_1h'] + self.stop_thresholds_quick[8]))
                 and (current_time - timedelta(minutes=self.stop_thresholds_quick[4]) > trade.open_date_utc)
+                # temporary
+                and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2022, 12, 25) or is_backtest)
         ):
             return True, 'exit_quick_bull_stoploss_u_e'
 
