@@ -235,7 +235,7 @@ class NostalgiaForInfinityX2(IStrategy):
                                                                             previous_time_profit_reached, enter_tags)
             if sell_max and signal_name_max is not None:
                 return True, f"{signal_name_max}_m"
-            if (current_profit > (previous_profit + 0.03)) and (previous_sell_reason not in ["exit_normal_bull_stoploss_doom"]):
+            if (current_profit > (previous_profit + 0.005)) and (previous_sell_reason not in ["exit_normal_bull_stoploss_doom"]):
                 # Update the target, raise it.
                 mark_pair, mark_signal = self.normal_bull_mark_profit_target(pair, True, previous_sell_reason, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
                 if mark_pair:
@@ -258,7 +258,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     return True, f"{signal_name}"
         else:
             if (
-                    (current_profit >= 0.03)
+                    (current_profit >= 0.01)
             ):
                 previous_profit = None
                 if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
