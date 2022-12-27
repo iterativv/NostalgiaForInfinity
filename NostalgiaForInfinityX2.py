@@ -3274,15 +3274,19 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append(dataframe['ema_12_4h'] > dataframe['ema_200_4h'])
 
                     item_buy_logic.append(dataframe['rsi_14_4h'] < 75.0)
+                    item_buy_logic.append(dataframe['rsi_14_1d'] < 85.0)
 
                     item_buy_logic.append(dataframe['not_downtrend_15m'])
                     item_buy_logic.append(dataframe['not_downtrend_1h'])
                     item_buy_logic.append(dataframe['not_downtrend_4h'])
                     item_buy_logic.append(dataframe['pct_change_high_max_6_24_1h'] > -0.3)
                     item_buy_logic.append(dataframe['pct_change_high_max_3_12_4h'] > -0.4)
-                    # current 4h green with wick
+                    # current 4h green with wick, overbought 4h
                     item_buy_logic.append((dataframe['change_pct_4h'] < 0.1)
                                           | (dataframe['top_wick_pct_4h'] < 0.16)
+                                          | (dataframe['rsi_14_4h'] < 70.0))
+                    # current 4h long green, overbought 4h
+                    item_buy_logic.append((dataframe['change_pct_4h'] < 0.12)
                                           | (dataframe['rsi_14_4h'] < 70.0))
                     # current 4h red with top wick
                     item_buy_logic.append((dataframe['change_pct_4h'] > 0.0)
@@ -3302,13 +3306,27 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append((dataframe['change_pct_4h'] < 0.04)
                                           | (dataframe['top_wick_pct_4h'] < 0.04)
                                           | (dataframe['rsi_14_4h'] < 70.00))
+                    # current 1d long red, previous 1d long green with long top wick
+                    item_buy_logic.append((dataframe['change_pct_1d'] > -0.2)
+                                          | (dataframe['change_pct_1d'].shift(288) < 0.2)
+                                          | (dataframe['top_wick_pct_1d'].shift(288) < 0.2))
+                    # current 1d green, overbought 4h
+                    item_buy_logic.append((dataframe['change_pct_1d'] < 0.12)
+                                          | (dataframe['rsi_14_4h'] < 70.0)
+                                          | (dataframe['cti_20_4h'] < 0.8))
+                    # current 1d long green with long green wick
+                    item_buy_logic.append((dataframe['change_pct_1d'] < 0.2)
+                                          | (dataframe['top_wick_pct_1d'] < 0.2))
+                    # current 1d long green, overbought 1d
+                    item_buy_logic.append((dataframe['change_pct_1d'] < 0.12)
+                                          | (dataframe['rsi_14_1d'] < 70.0)
+                                          | (dataframe['cti_20_1d'] < 0.8))
+
 
                     # Logic
-                    item_buy_logic.append(dataframe['close'] > (dataframe['ema_200'] * 0.95))
-                    item_buy_logic.append(dataframe['close'] < (dataframe['ema_200'] * 1.1))
                     item_buy_logic.append(dataframe['rsi_14'] < 36.0)
                     item_buy_logic.append(dataframe['ha_close'] > dataframe['ha_open'])
-                    item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.02))
+                    item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.018))
 
                 # Condition #4 - Normal mode bull.
                 if index == 4:
