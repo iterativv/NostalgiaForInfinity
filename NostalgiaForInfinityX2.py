@@ -144,6 +144,11 @@ class NostalgiaForInfinityX2(IStrategy):
     pa_rebuy_mode_bull_pcts = (-0.02, -0.04, -0.04)
     pa_rebuy_mode_bull_multi = (1.0, 1.0, 1.0)
 
+    stake_rebuy_mode_bear_multiplier = 0.33
+    pa_rebuy_mode_bear_max = 2
+    pa_rebuy_mode_bear_pcts = (-0.02, -0.04, -0.04)
+    pa_rebuy_mode_bear_multi = (1.0, 1.0, 1.0)
+
     #############################################################
     # Buy side configuration
 
@@ -2873,6 +2878,144 @@ class NostalgiaForInfinityX2(IStrategy):
             sell, signal_name = self.exit_rebuy_bull(pair, current_rate, profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {enter_tag})"
+
+        return None
+
+    def custom_stake_amount(self, pair: str, current_time: datetime, current_rate: float,
+                            proposed_stake: float, min_stake: Optional[float], max_stake: float,
+                            leverage: float, entry_tag: Optional[str], side: str,
+                            **kwargs) -> float:
+        if (self.position_adjustment_enable == True):
+            enter_tags = entry_tag.split()
+            if all(c in self.rebuy_mode_bull_tags for c in enter_tags):
+                return proposed_stake * self.stake_rebuy_mode_bull_multiplier
+            # Rebuy mode, bear
+            if all(c in self.rebuy_mode_bear_tags for c in enter_tags):
+                return proposed_stake * self.stake_rebuy_mode_bear_multiplier
+
+        return proposed_stake
+
+    def adjust_trade_position(self, trade: Trade, current_time: datetime,
+                          current_rate: float, current_profit: float,
+                          min_stake: Optional[float], max_stake: float,
+                          current_entry_rate: float, current_exit_rate: float,
+                          current_entry_profit: float, current_exit_profit: float,
+                          **kwargs) -> Optional[float]:
+        if (self.position_adjustment_enable == False):
+            return None
+
+        enter_tag = 'empty'
+        if hasattr(trade, 'enter_tag') and trade.enter_tag is not None:
+            enter_tag = trade.enter_tag
+            enter_tags = enter_tag.split()
+
+        # Rebuy mode, bull
+        if all(c in self.rebuy_mode_bull_tags for c in enter_tags):
+            return self.rebuy_bull_adjust_trade_position(trade, current_time,
+                                                         current_rate, current_profit,
+                                                         min_stake, max_stake,
+                                                         current_entry_rate, current_exit_rate,
+                                                         current_entry_profit, current_exit_profit
+                                                         )
+
+        # Rebuy mode, bear
+        if all(c in self.rebuy_mode_bear_tags for c in enter_tags):
+            return self.rebuy_bear_adjust_trade_position(trade, current_time,
+                                                         current_rate, current_profit,
+                                                         min_stake, max_stake,
+                                                         current_entry_rate, current_exit_rate,
+                                                         current_entry_profit, current_exit_profit
+                                                         )
+
+        return None
+
+    def rebuy_bull_adjust_trade_position(self, trade: Trade, current_time: datetime,
+                              current_rate: float, current_profit: float,
+                              min_stake: Optional[float], max_stake: float,
+                              current_entry_rate: float, current_exit_rate: float,
+                              current_entry_profit: float, current_exit_profit: float,
+                              **kwargs) -> Optional[float]:
+        dataframe, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
+        if(len(dataframe) < 2):
+            return None
+        last_candle = dataframe.iloc[-1].squeeze()
+        previous_candle = dataframe.iloc[-2].squeeze()
+
+        filled_orders = trade.select_filled_orders()
+        filled_entries = trade.select_filled_orders(trade.entry_side)
+        filled_exits = trade.select_filled_orders(trade.exit_side)
+        count_of_entries = trade.nr_of_successful_entries
+        count_of_exits = trade.nr_of_successful_exits
+
+        if (count_of_entries == 0):
+            return None
+
+        is_rebuy = False
+
+        if (0 < count_of_entries <= self.pa_rebuy_mode_bull_max):
+            if (
+                    (current_profit < self.pa_rebuy_mode_bull_pcts[count_of_entries - 1])
+                    and (
+                        (last_candle['rsi_3'] > 10.0)
+                        and (last_candle['rsi_14'] < 40.0)
+                        and (last_candle['rsi_3_1h'] > 10.0)
+                        and (last_candle['close_max_48'] < (last_candle['close'] * 1.1))
+                        and (last_candle['btc_pct_close_max_72_5m'] < 1.03)
+                    )
+            ):
+                is_rebuy = True
+
+        if is_rebuy:
+            # This returns first order stake size
+            stake_amount = filled_entries[0].cost
+            print('rebuying..')
+            stake_amount = stake_amount * self.pa_rebuy_mode_bull_multi[count_of_entries - 1]
+            return stake_amount
+
+        return None
+
+    def rebuy_bear_adjust_trade_position(self, trade: Trade, current_time: datetime,
+                              current_rate: float, current_profit: float,
+                              min_stake: Optional[float], max_stake: float,
+                              current_entry_rate: float, current_exit_rate: float,
+                              current_entry_profit: float, current_exit_profit: float,
+                              **kwargs) -> Optional[float]:
+        dataframe, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
+        if(len(dataframe) < 2):
+            return None
+        last_candle = dataframe.iloc[-1].squeeze()
+        previous_candle = dataframe.iloc[-2].squeeze()
+
+        filled_orders = trade.select_filled_orders()
+        filled_entries = trade.select_filled_orders(trade.entry_side)
+        filled_exits = trade.select_filled_orders(trade.exit_side)
+        count_of_entries = trade.nr_of_successful_entries
+        count_of_exits = trade.nr_of_successful_exits
+
+        if (count_of_entries == 0):
+            return None
+
+        is_rebuy = False
+
+        if (0 < count_of_entries <= self.pa_rebuy_mode_bear_max):
+            if (
+                    (current_profit < self.pa_rebuy_mode_bear_pcts[count_of_entries - 1])
+                    and (
+                        (last_candle['rsi_3'] > 10.0)
+                        and (last_candle['rsi_14'] < 40.0)
+                        and (last_candle['rsi_3_1h'] > 10.0)
+                        and (last_candle['close_max_48'] < (last_candle['close'] * 1.1))
+                        and (last_candle['btc_pct_close_max_72_5m'] < 1.03)
+                    )
+            ):
+                is_rebuy = True
+
+        if is_rebuy:
+            # This returns first order stake size
+            stake_amount = filled_entries[0].cost
+            print('rebuying..')
+            stake_amount = stake_amount * self.pa_rebuy_mode_bear_multi[count_of_entries - 1]
+            return stake_amount
 
         return None
 
