@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.71"
+        return "v12.0.72"
 
     # ROI table:
     minimal_roi = {
@@ -2887,7 +2887,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     mark_signal = "exit_profit_rebuy_bear_max"
                     self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
 
-        if (signal_name not in ["exit_profit_rebuy_bear_max", "exit_rebuy_bear_stoploss_doom"]):
+        if (signal_name not in ["exit_profit_rebuy_bear_max", "exit_rebuy_bear_stoploss_doom", "exit_rebuy_bear_stoploss_u_e"]):
             if sell and (signal_name is not None):
                 return True, f"{signal_name}"
 
