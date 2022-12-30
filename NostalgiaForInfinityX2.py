@@ -11,7 +11,7 @@ from freqtrade.strategy.interface import IStrategy
 from freqtrade.strategy import merge_informative_pair
 from pandas import DataFrame, Series
 from functools import reduce, partial
-from freqtrade.persistence import Trade
+from freqtrade.persistence import Trade, LocalTrade
 from datetime import datetime, timedelta
 import time
 from typing import Optional
@@ -3039,6 +3039,9 @@ class NostalgiaForInfinityX2(IStrategy):
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         conditions = []
         dataframe.loc[:, 'enter_tag'] = ''
+
+        # the number of free slots
+        current_free_slots = self.config["max_open_trades"] - len(LocalTrade.get_trades_proxy(is_open=True))
 
         for buy_enable in self.buy_params:
             index = int(buy_enable.split('_')[2])
