@@ -132,6 +132,14 @@ class NostalgiaForInfinityX2(IStrategy):
     # Rebuy mode minimum number of free slots
     rebuy_mode_min_free_slots = 2
 
+    # Position adjust feature
+    position_adjustment_enable = True
+
+    stake_rebuy_mode_bull_multiplier = 0.33
+    pa_rebuy_mode_bull_max = 2
+    pa_rebuy_mode_bull_pcts = (-0.02, -0.04, -0.04)
+    pa_rebuy_mode_bull_multi = (1.0, 1.0, 1.0)
+
     #############################################################
     # Buy side configuration
 
