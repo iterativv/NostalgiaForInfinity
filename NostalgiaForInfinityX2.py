@@ -129,6 +129,9 @@ class NostalgiaForInfinityX2(IStrategy):
     stop_thresholds_pump = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 10.0, 10.0, True, True, True, True]
     stop_thresholds_quick = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 10.0, 10.0, True, True, True, True]
 
+    # Rebuy mode minimum number of free slots
+    rebuy_mode_min_free_slots = 2
+
     #############################################################
     # Buy side configuration
 
