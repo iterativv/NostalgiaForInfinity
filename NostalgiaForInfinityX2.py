@@ -2518,7 +2518,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     mark_signal = "exit_profit_rebuy_bull_max"
                     self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
 
-        if (signal_name not in ["exit_profit_rebuy_bull_max", "exit_rebuy_bull_stoploss_doom", "rebuy_bull_stoploss_u_e"]):
+        if (signal_name not in ["exit_profit_rebuy_bull_max", "exit_rebuy_bull_stoploss_doom", "exit_rebuy_bull_stoploss_u_e"]):
             if sell and (signal_name is not None):
                 return True, f"{signal_name}"
 
