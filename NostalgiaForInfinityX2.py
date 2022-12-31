@@ -4401,13 +4401,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append(dataframe['pct_change_high_max_6_24_1h'] > -0.3)
                     item_buy_logic.append(dataframe['pct_change_high_max_3_12_4h'] > -0.4)
 
-                    # downtrend 15m, drop in the last 4h
-                    item_buy_logic.append((dataframe['not_downtrend_15m'])
-                                          | (dataframe['close_max_48'] < (dataframe['close'] * 1.2)))
-                    # downtrend 15m, downtrend 1h, drop in last 4h
-                    item_buy_logic.append((dataframe['not_downtrend_15m'])
-                                          | (dataframe['not_downtrend_1h'])
-                                          | (dataframe['close_max_48'] < (dataframe['close'] * 1.12)))
+                    item_buy_logic.append((dataframe['not_downtrend_15m']))
                     # downtrend 1h, drop in the last 1h
                     item_buy_logic.append((dataframe['not_downtrend_1h'])
                                           | (dataframe['close_max_12'] < (dataframe['close'] * 1.16)))
