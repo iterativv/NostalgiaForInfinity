@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.72"
+        return "v12.0.73"
 
     # ROI table:
     minimal_roi = {
@@ -211,6 +211,8 @@ class NostalgiaForInfinityX2(IStrategy):
             self.stop_thresholds_pump = self.config['stop_thresholds_pump']
         if ('stop_thresholds_quick' in self.config):
             self.stop_thresholds_quick = self.config['stop_thresholds_quick']
+        if ('stop_thresholds_rebuy' in self.config):
+            self.stop_thresholds_rebuy = self.config['stop_thresholds_rebuy']
         if self.target_profit_cache is None:
             bot_name = ""
             if ('bot_name' in self.config):
