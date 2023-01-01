@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.73"
+        return "v12.0.74"
 
     # ROI table:
     minimal_roi = {
@@ -196,6 +196,8 @@ class NostalgiaForInfinityX2(IStrategy):
         "buy_condition_71_enable": True,
 
         "buy_condition_81_enable": True,
+
+        "buy_condition_91_enable": True,
     }
 
     buy_protection_params = {}
@@ -6578,6 +6580,90 @@ class NostalgiaForInfinityX2(IStrategy):
                 if index == 81:
                     # Protections
                     item_buy_logic.append(dataframe['btc_is_bull_4h'])
+                    item_buy_logic.append(dataframe['btc_pct_close_max_24_5m'] < 0.03)
+                    item_buy_logic.append(dataframe['btc_pct_close_max_72_5m'] < 0.03)
+                    item_buy_logic.append(dataframe['close_max_12'] < (dataframe['close'] * 1.12))
+                    item_buy_logic.append(dataframe['close_max_24'] < (dataframe['close'] * 1.16))
+                    item_buy_logic.append(dataframe['close_max_48'] < (dataframe['close'] * 1.2))
+                    item_buy_logic.append(dataframe['high_max_6_1h'] < (dataframe['close'] * 1.24))
+
+                    item_buy_logic.append(dataframe['cti_20_1h'] < 0.95)
+                    item_buy_logic.append(dataframe['cti_20_4h'] < 0.95)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] < 85.0)
+                    item_buy_logic.append(dataframe['rsi_14_4h'] < 85.0)
+                    item_buy_logic.append(dataframe['rsi_14_1d'] < 85.0)
+                    item_buy_logic.append(dataframe['r_14_1h'] < -25.0)
+                    item_buy_logic.append(dataframe['r_14_4h'] < -25.0)
+
+                    item_buy_logic.append(dataframe['pct_change_high_max_6_24_1h'] > -0.3)
+                    item_buy_logic.append(dataframe['pct_change_high_max_3_12_4h'] > -0.4)
+
+                    item_buy_logic.append(dataframe['not_downtrend_15m'])
+
+                    # current 4h relative long top wick, overbought 1h, downtrend 1h, downtrend 4h
+                    item_buy_logic.append((dataframe['top_wick_pct_4h'] < (abs(dataframe['change_pct_4h']) * 2.0))
+                                          | (dataframe['cti_20_1h'] < 0.5)
+                                          | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(288))
+                                          | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(576)))
+                    # current 4h relative long top wick, overbought 1d
+                    item_buy_logic.append((dataframe['top_wick_pct_4h'] < (abs(dataframe['change_pct_4h']) * 6.0))
+                                          | (dataframe['cti_20_1d'] < 0.5))
+                    # current 4h relative long top wick, overbought 1h, downtrend 1h
+                    item_buy_logic.append((dataframe['top_wick_pct_4h'] < (abs(dataframe['change_pct_4h']) * 2.0))
+                                          | (dataframe['cti_20_1h'] < 0.5)
+                                          | (dataframe['not_downtrend_1h']))
+                    # big drop in last 48h, downtrend 1h
+                    item_buy_logic.append((dataframe['high_max_48_1h'] < (dataframe['close'] * 1.5))
+                                          | (dataframe['not_downtrend_1h']))
+                    # downtrend 1h, downtrend 4h, drop in last 2h
+                    item_buy_logic.append((dataframe['not_downtrend_1h'])
+                                          | (dataframe['not_downtrend_4h'])
+                                          | (dataframe['close_max_24'] < (dataframe['close'] * 1.1)))
+                    # downtrend 1h, overbought 1h
+                    item_buy_logic.append((dataframe['not_downtrend_1h'])
+                                          | (dataframe['cti_20_1h'] < 0.5))
+                    # downtrend 1h, overbought 4h
+                    item_buy_logic.append((dataframe['not_downtrend_1h'])
+                                          | (dataframe['cti_20_4h'] < 0.5))
+                    # downtrend 1h, downtrend 4h, overbought 1d
+                    item_buy_logic.append((dataframe['not_downtrend_1h'])
+                                          | (dataframe['not_downtrend_4h'])
+                                          | (dataframe['cti_20_1d'] < 0.5))
+                    # downtrend 1d, overbought 1d
+                    item_buy_logic.append((dataframe['is_downtrend_3_1d'] == False)
+                                          | (dataframe['cti_20_1d'] < 0.5))
+                    # downtrend 1d, downtrend 1h
+                    item_buy_logic.append((dataframe['is_downtrend_3_1d'] == False)
+                                          | (dataframe['not_downtrend_1h']))
+                    # current 4h red, previous 4h green, overbought 4h
+                    item_buy_logic.append((dataframe['change_pct_4h'] > -0.06)
+                                          | (dataframe['change_pct_4h'].shift(48) < 0.06)
+                                          | (dataframe['cti_20_4h'] < 0.5))
+                    # current 1d long green with long top wick
+                    item_buy_logic.append((dataframe['change_pct_1d'] < 0.12)
+                                          | (dataframe['top_wick_pct_1d'] < 0.12))
+                    # current 1d long 1d with top wick, overbought 1d, downtrend 1h
+                    item_buy_logic.append((dataframe['change_pct_1d'] < 0.2)
+                                          | (dataframe['top_wick_pct_1d'] < 0.04)
+                                          | (dataframe['cti_20_1d'] < 0.5)
+                                          | (dataframe['not_downtrend_1h']))
+                    # current 1d long red, overbought 1d, downtrend 1h
+                    item_buy_logic.append((dataframe['change_pct_1d'] > -0.1)
+                                          | (dataframe['cti_20_1d'] < 0.5)
+                                          | (dataframe['not_downtrend_1h']))
+
+                    # Logic
+                    item_buy_logic.append(dataframe['bb40_2_delta'].gt(dataframe['close'] * 0.052))
+                    item_buy_logic.append(dataframe['close_delta'].gt(dataframe['close'] * 0.024))
+                    item_buy_logic.append(dataframe['bb40_2_tail'].lt(dataframe['bb40_2_delta'] * 0.2))
+                    item_buy_logic.append(dataframe['close'].lt(dataframe['bb40_2_low'].shift()))
+                    item_buy_logic.append(dataframe['close'].le(dataframe['close'].shift()))
+                    item_buy_logic.append(dataframe['rsi_14'] < 30.0)
+
+                # Condition #91 - Long mode bear.
+                if index == 91:
+                    # Protections
+                    item_buy_logic.append(dataframe['btc_is_bull_4h'] == False)
                     item_buy_logic.append(dataframe['btc_pct_close_max_24_5m'] < 0.03)
                     item_buy_logic.append(dataframe['btc_pct_close_max_72_5m'] < 0.03)
                     item_buy_logic.append(dataframe['close_max_12'] < (dataframe['close'] * 1.12))
