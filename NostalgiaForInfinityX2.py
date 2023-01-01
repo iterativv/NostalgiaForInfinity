@@ -133,6 +133,7 @@ class NostalgiaForInfinityX2(IStrategy):
     stop_thresholds_pump = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 10.0, 10.0, True, True, True, True]
     stop_thresholds_quick = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 10.0, 10.0, True, True, True, True]
     stop_thresholds_rebuy = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 10.0, 10.0, True, True, True, True]
+    stop_thresholds_long = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 10.0, 10.0, True, True, True, True]
 
     # Rebuy mode minimum number of free slots
     rebuy_mode_min_free_slots = 2
@@ -213,6 +214,8 @@ class NostalgiaForInfinityX2(IStrategy):
             self.stop_thresholds_quick = self.config['stop_thresholds_quick']
         if ('stop_thresholds_rebuy' in self.config):
             self.stop_thresholds_rebuy = self.config['stop_thresholds_rebuy']
+        if ('stop_thresholds_long' in self.config):
+            self.stop_thresholds_long = self.config['stop_thresholds_long']
         if self.target_profit_cache is None:
             bot_name = ""
             if ('bot_name' in self.config):
