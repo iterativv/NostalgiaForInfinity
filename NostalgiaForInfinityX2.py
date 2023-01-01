@@ -125,6 +125,10 @@ class NostalgiaForInfinityX2(IStrategy):
     rebuy_mode_bull_tags = ['61']
     # Rebuy mode bear tags
     rebuy_mode_bear_tags = ['71']
+    # Long mode bull tags
+    long_mode_bull_tags = ['81']
+    # Long mode bear tags
+    long_mode_bear_tags = ['91']
 
     # Stop thesholds. 0: Doom Bull, 1: Doom Bear, 2: u_e Bull, 3: u_e Bear, 4: u_e mins Bull, 5: u_e mins Bear.
     # 6: u_e ema % Bull, 7: u_e ema % Bear, 8: u_e RSI diff Bull, 9: u_e RSI diff Bear.
