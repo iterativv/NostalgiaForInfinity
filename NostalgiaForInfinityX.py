@@ -9850,7 +9850,7 @@ class NostalgiaForInfinityX(IStrategy):
         informative_1h['hl_pct_change_6'] = self.range_percent_change(informative_1h, 'HL', 6)
 
         # 1h not strong downtrend
-        informative_1h['not_downtrend'] = ((informative_1h['close'] > informative_1h['close'].shift(2)) | (informative_1h['crsi'] > 30.0))
+        informative_1h['not_downtrend'] = ((informative_1h['close'] > informative_1h['close'].shift(2)) | (informative_1h['rsi_14'] > 50.0))
 
         tok = time.perf_counter()
         log.debug(f"[{metadata['pair']}] informative_1h_indicators took: {tok - tik:0.4f} seconds.")
