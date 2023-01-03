@@ -6681,8 +6681,6 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append(dataframe['rsi_14_1d'] < 85.0)
                     item_buy_logic.append(dataframe['r_480_4h'] < -10.0)
 
-                    #item_buy_logic.append(dataframe['not_downtrend_15m'])
-
                     # current 1d long green with long top wick
                     item_buy_logic.append((dataframe['change_pct_1d'] < 0.12)
                                           | (dataframe['top_wick_pct_1d'] < 0.12))
