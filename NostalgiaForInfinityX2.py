@@ -5684,6 +5684,10 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append((dataframe['change_pct_1h'] > -0.02)
                                           | (dataframe['cti_20_1h'] < 0.5)
                                           | (dataframe['close_max_24'] < (dataframe['close'] * 1.1)))
+                    # current 1h long red, downtrend 1h, drop in last 2h
+                    item_buy_logic.append((dataframe['change_pct_1h'] > -0.08)
+                                          | (dataframe['not_downtrend_1h'])
+                                          | (dataframe['close_max_24'] < (dataframe['close'] * 1.1)))
 
                     # Logic
                     item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
