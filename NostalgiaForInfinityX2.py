@@ -2131,6 +2131,17 @@ class NostalgiaForInfinityX2(IStrategy):
         if not sell:
             sell, signal_name = self.exit_quick_bear_stoploss(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
+        # Extra sell logic
+        if not sell:
+            if (0.09 >= current_profit > 0.02) and (last_candle['rsi_14'] > 78.0):
+                sell, signal_name =  True, 'exit_quick_bear_q_1'
+
+            if (0.09 >= current_profit > 0.02) and (last_candle['cti_20'] > 0.95):
+                sell, signal_name = True, 'exit_quick_bear_q_2'
+
+            if (0.09 >= current_profit > 0.02) and (last_candle['r_14'] >= -0.1):
+                sell, signal_name = True, 'exit_quick_bear_q_3'
+
         # Profit Target Signal
         # Check if pair exist on target_profit_cache
         if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
