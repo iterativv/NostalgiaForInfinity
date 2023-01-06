@@ -3354,7 +3354,7 @@ class NostalgiaForInfinityX2(IStrategy):
             if (current_profit < (previous_profit - 0.01)):
                     return True, previous_sell_reason
         elif (previous_sell_reason in ["exit_profit_long_bull_max"]):
-            if (current_profit < -0.1):
+            if (current_profit < -0.08):
                 # profit is under the threshold, cancel it
                 self._remove_profit_target(pair)
                 return False, None
