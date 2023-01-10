@@ -4259,6 +4259,9 @@ class NostalgiaForInfinityX2(IStrategy):
         # RSI
         informative_1d['rsi_14'] = ta.RSI(informative_1d, timeperiod=14)
 
+        # EMA
+        informative_1d['ema_200'] = ta.EMA(informative_1d, timeperiod=200)
+
         # CTI
         informative_1d['cti_20'] = pta.cti(informative_1d["close"], length=20)
 
