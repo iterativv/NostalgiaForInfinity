@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.83"
+        return "v12.0.84"
 
     # ROI table:
     minimal_roi = {
@@ -155,6 +155,9 @@ class NostalgiaForInfinityX2(IStrategy):
     pa_rebuy_mode_bear_pcts = (-0.02, -0.04, -0.04)
     pa_rebuy_mode_bear_multi = (1.0, 1.0, 1.0)
 
+    # Profit max thresholds
+    profit_max_thresholds = [0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.05, 0.05]
+
     #############################################################
     # Buy side configuration
 
@@ -226,6 +229,8 @@ class NostalgiaForInfinityX2(IStrategy):
             self.stop_thresholds_rebuy = self.config['stop_thresholds_rebuy']
         if ('stop_thresholds_long' in self.config):
             self.stop_thresholds_long = self.config['stop_thresholds_long']
+        if ('profit_max_thresholds' in self.config):
+            self.profit_max_thresholds = self.config['profit_max_thresholds']
         if self.target_profit_cache is None:
             bot_name = ""
             if ('bot_name' in self.config):
@@ -298,7 +303,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     return True, f"{signal_name}"
         else:
             if (
-                    (current_profit >= 0.01)
+                    (current_profit >= self.profit_max_thresholds[0])
             ):
                 previous_profit = None
                 if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
@@ -673,7 +678,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     return True, f"{signal_name}"
         else:
             if (
-                    (current_profit >= 0.01)
+                    (current_profit >= self.profit_max_thresholds[1])
             ):
                 previous_profit = None
                 if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
@@ -1048,7 +1053,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     return True, f"{signal_name}"
         else:
             if (
-                    (current_profit >= 0.01)
+                    (current_profit >= self.profit_max_thresholds[2])
             ):
                 previous_profit = None
                 if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
@@ -1423,7 +1428,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     return True, f"{signal_name}"
         else:
             if (
-                    (current_profit >= 0.01)
+                    (current_profit >= self.profit_max_thresholds[3])
             ):
                 previous_profit = None
                 if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
@@ -1809,7 +1814,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     return True, f"{signal_name}"
         else:
             if (
-                    (current_profit >= 0.01)
+                    (current_profit >= self.profit_max_thresholds[4])
             ):
                 previous_profit = None
                 if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
@@ -2195,7 +2200,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     return True, f"{signal_name}"
         else:
             if (
-                    (current_profit >= 0.01)
+                    (current_profit >= self.profit_max_thresholds[5])
             ):
                 previous_profit = None
                 if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
@@ -2570,7 +2575,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     return True, f"{signal_name}"
         else:
             if (
-                    (current_profit >= 0.01)
+                    (current_profit >= self.profit_max_thresholds[6])
             ):
                 previous_profit = None
                 if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
@@ -2943,7 +2948,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     return True, f"{signal_name}"
         else:
             if (
-                    (current_profit >= 0.01)
+                    (current_profit >= self.profit_max_thresholds[7])
             ):
                 previous_profit = None
                 if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
@@ -3315,7 +3320,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     return True, f"{signal_name}"
         else:
             if (
-                    (current_profit >= 0.05)
+                    (current_profit >= self.profit_max_thresholds[8])
             ):
                 previous_profit = None
                 if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
@@ -3688,7 +3693,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     return True, f"{signal_name}"
         else:
             if (
-                    (current_profit >= 0.05)
+                    (current_profit >= self.profit_max_thresholds[9])
             ):
                 previous_profit = None
                 if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
