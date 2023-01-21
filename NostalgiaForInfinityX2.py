@@ -9973,6 +9973,13 @@ class NostalgiaForInfinityX2(IStrategy):
                                           | (dataframe['cti_20_1h'] < -0.5)
                                           | (dataframe['cti_40_1h'] < -0.5)
                                           | (dataframe['cti_20_1d'] < 0.5))
+                    item_buy_logic.append((dataframe['not_downtrend_15m'])
+                                          | (dataframe['not_downtrend_1h'])
+                                          | (dataframe['not_downtrend_4h'])
+                                          | (dataframe['is_downtrend_3_4h'] == False)
+                                          | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
+                                          | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
+                                          | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152)))
 
                     # Logic
                     item_buy_logic.append(dataframe['bb20_2_width_1h'] > 0.132)
