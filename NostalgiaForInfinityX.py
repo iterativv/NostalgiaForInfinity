@@ -22551,6 +22551,7 @@ class NostalgiaForInfinityX(IStrategy):
                         (
                             (dataframe['mfi'] > 30.0)
                             & (dataframe['crsi_1h'] > 5.0)
+                            & (dataframe['cti_1h'] < 0.75)
                         )
                         |
                         (
