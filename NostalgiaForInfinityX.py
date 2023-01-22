@@ -22607,7 +22607,12 @@ class NostalgiaForInfinityX(IStrategy):
                             & (dataframe['ema_200_pct_change_288'] < 0.08)
                             & (dataframe['cmf'] > -0.3)
                         )
-                        | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
+                        |
+                        (
+                            (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
+                            & (dataframe['cti_1h'] < 0.5)
+                            & (dataframe['close_max_48'] < (dataframe['close'] * 1.16))
+                        )
                         |
                         (
                             (dataframe['close'] > (dataframe['sma_200'] * 0.99))
