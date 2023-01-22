@@ -2244,7 +2244,7 @@ class NostalgiaForInfinityX2(IStrategy):
                 # profit is over the threshold, don't exit
                 self._remove_profit_target(pair)
                 return False, None
-            if (current_profit < (previous_profit - 0.01)):
+            if (current_profit < (previous_profit - 0.04)):
                     return True, previous_sell_reason
         elif (previous_sell_reason in ["exit_profit_quick_bear_max"]):
             if (current_profit < -0.08):
