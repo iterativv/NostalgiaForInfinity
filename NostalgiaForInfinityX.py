@@ -14382,6 +14382,8 @@ class NostalgiaForInfinityX(IStrategy):
                         (
                             (dataframe['hl_pct_change_48_1h'] < 0.26)
                             & (dataframe['ema_200_pct_change_288'] < 0.1)
+                            & (dataframe['cti_1h'] < 0.5)
+                            & (dataframe['rsi_14_1h'] < 70.0)
                         )
                         |
                         (
