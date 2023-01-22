@@ -4124,7 +4124,7 @@ class NostalgiaForInfinityX2(IStrategy):
         enter_tag = 'empty'
         if hasattr(trade, 'enter_tag') and trade.enter_tag is not None:
             enter_tag = trade.enter_tag
-            enter_tags = enter_tag.split()
+        enter_tags = enter_tag.split()
 
         # Rebuy mode, bull
         if all(c in self.rebuy_mode_bull_tags for c in enter_tags):
