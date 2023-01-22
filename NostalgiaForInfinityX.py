@@ -21098,10 +21098,20 @@ class NostalgiaForInfinityX(IStrategy):
                             & (dataframe['ema_200_pct_change_288'] < 0.16)
                         )
                         | (dataframe['close_max_48'] < (dataframe['close'] * 1.12))
-                        | (dataframe['hl_pct_change_48_1h'] < 0.25)
+                        |
+                        (
+                            (dataframe['hl_pct_change_48_1h'] < 0.25)
+                            & (dataframe['close_max_48'] < (dataframe['close'] * 1.2))
+                            & (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
+                        )
                         | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
                         | (dataframe['close'] > (dataframe['sma_200'] * 0.99))
-                        | (dataframe['close'] < dataframe['sma_30'] * 0.86)
+                        |
+                        (
+                            (dataframe['close'] < dataframe['sma_30'] * 0.86)
+                            & (dataframe['close_max_48'] < (dataframe['close'] * 1.2))
+                            & (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
+                        )
                         |
                         (
                             (dataframe['close'] < dataframe['ema_20'] * 0.91)
@@ -21112,6 +21122,8 @@ class NostalgiaForInfinityX(IStrategy):
                         (
                             (dataframe['close'] < dataframe['bb20_2_low'] * 0.98)
                             & (dataframe['ema_200_pct_change_288'] < 0.16)
+                            & (dataframe['close_max_48'] < (dataframe['close'] * 1.2))
+                            & (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
                         )
                         |
                         (
@@ -21122,6 +21134,8 @@ class NostalgiaForInfinityX(IStrategy):
                         (
                             (dataframe['close_15m'] < (dataframe['bb20_2_low_15m'] * 0.96))
                             & (dataframe['ema_200_pct_change_288'] < 0.16)
+                            & (dataframe['close_max_48'] < (dataframe['close'] * 1.2))
+                            & (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
                         )
                         |
                         (
