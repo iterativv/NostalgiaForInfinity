@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.109"
+        return "v12.0.110"
 
     # ROI table:
     minimal_roi = {
@@ -730,25 +730,25 @@ class NostalgiaForInfinityX2(IStrategy):
                 self._remove_profit_target(pair)
                 return False, None
             if (0.001 <= current_profit < 0.01):
-                if (current_profit < (previous_profit - 0.005)):
-                    return True, previous_sell_reason
-            elif (0.01 <= current_profit < 0.02):
                 if (current_profit < (previous_profit - 0.01)):
                     return True, previous_sell_reason
-            elif (0.02 <= current_profit < 0.03):
+            elif (0.01 <= current_profit < 0.02):
                 if (current_profit < (previous_profit - 0.02)):
                     return True, previous_sell_reason
-            elif (0.03 <= current_profit < 0.05):
+            elif (0.02 <= current_profit < 0.03):
                 if (current_profit < (previous_profit - 0.03)):
                     return True, previous_sell_reason
-            elif (0.05 <= current_profit < 0.08):
+            elif (0.03 <= current_profit < 0.05):
                 if (current_profit < (previous_profit - 0.04)):
                     return True, previous_sell_reason
-            elif (0.08 <= current_profit < 0.12):
+            elif (0.05 <= current_profit < 0.08):
                 if (current_profit < (previous_profit - 0.05)):
                     return True, previous_sell_reason
-            elif (0.12 <= current_profit):
+            elif (0.08 <= current_profit < 0.12):
                 if (current_profit < (previous_profit - 0.06)):
+                    return True, previous_sell_reason
+            elif (0.12 <= current_profit):
+                if (current_profit < (previous_profit - 0.07)):
                     return True, previous_sell_reason
         else:
             return False, None
