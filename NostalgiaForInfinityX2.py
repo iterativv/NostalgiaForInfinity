@@ -4478,6 +4478,10 @@ class NostalgiaForInfinityX2(IStrategy):
         informative_15m['rsi_3'] = ta.RSI(informative_15m, timeperiod=3)
         informative_15m['rsi_14'] = ta.RSI(informative_15m, timeperiod=14)
 
+        # EMA
+        informative_15m['ema_12'] = ta.EMA(informative_15m, timeperiod=12)
+        informative_15m['ema_26'] = ta.EMA(informative_15m, timeperiod=26)
+
         # SMA
         informative_15m['sma_200'] = ta.SMA(informative_15m, timeperiod=200)
 
