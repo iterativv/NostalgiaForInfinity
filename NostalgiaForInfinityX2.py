@@ -12227,7 +12227,7 @@ class NostalgiaForInfinityX2(IStrategy):
         if ((rate > dataframe['close'])):
             slippage = ((rate / dataframe['close']) - 1.0)
 
-            if slippage < 0.0075:
+            if slippage < 0.02:
                 return True
             else:
                 log.warning(
