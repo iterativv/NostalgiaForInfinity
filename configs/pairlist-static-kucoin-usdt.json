@@ -49,7 +49,7 @@
         },
         {
             "method": "SpreadFilter",
-            "max_spread_ratio": 0.005
+            "max_spread_ratio": 0.0075
         },
         {
             "method": "RangeStabilityFilter",
