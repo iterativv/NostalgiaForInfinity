@@ -6002,12 +6002,14 @@ class NostalgiaForInfinityX2(IStrategy):
                                           | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
                                           | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
                                           | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.03)))
-                    item_buy_logic.append((dataframe['not_downtrend_15m'])
-                                          | (dataframe['cti_20_15m'] < -0.5)
-                                          | (dataframe['cti_20_1h'] < 0.75)
+                    item_buy_logic.append((dataframe['cti_20_1h'] < 0.5)
+                                          | (dataframe['rsi_14_1h'] < 50.0)
                                           | (dataframe['cti_20_4h'] < 0.5)
-                                          | (dataframe['cti_20_1d'] < -0.75)
+                                          | (dataframe['rsi_14_4h'] < 60.0)
+                                          | (dataframe['cti_20_1d'] < -0.0)
                                           | (dataframe['rsi_14_1d'] < 70.0)
+                                          | (dataframe['close'] < (dataframe['res3_1d'] * 1.5))
+                                          | (dataframe['close'] > (dataframe['sup_level_1h'] * 0.9))
                                           | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152)))
 
                     # Logic
