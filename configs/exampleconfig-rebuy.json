@@ -10,8 +10,8 @@
     "fiat_display_currency": "USD",
     "force_entry_enable": true,
     "unfilledtimeout": {
-        "entry": 15,
-        "exit": 15,
+        "entry": 2,
+        "exit": 2,
         "exit_timeout_count": 0,
         "unit": "minutes"
         },
