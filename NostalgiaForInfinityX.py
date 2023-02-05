@@ -18170,8 +18170,13 @@ class NostalgiaForInfinityX(IStrategy):
                         (
                             (dataframe['close'] < dataframe['sma_30'] * 0.94)
                             & (dataframe['cmf'] > -0.4)
+                            & (dataframe['ema_200_pct_change_288'] < 0.2)
                         )
-                        | (dataframe['close'] < dataframe['ema_20'] * 0.95)
+                        |
+                        (
+                            (dataframe['close'] < dataframe['ema_20'] * 0.95)
+                            & (dataframe['ema_200_pct_change_288'] < 0.2)
+                        )
                         |
                         (
                             (dataframe['close'] < dataframe['bb20_2_low'] * 0.999)
@@ -18182,23 +18187,34 @@ class NostalgiaForInfinityX(IStrategy):
                         (
                             ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.02))
                             & (dataframe['cmf'] > -0.4)
+                            & (dataframe['ema_200_pct_change_288'] < 0.2)
                         )
                         |
                         (
                             (dataframe['close_15m'] < (dataframe['bb20_2_low_15m'] * 0.98))
                             & (dataframe['cmf'] > -0.4)
+                            & (dataframe['ema_200_pct_change_288'] < 0.2)
                         )
-                        | ((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.02))
+                        |
+                        (
+                            ((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.02))
+                            & (dataframe['ema_200_pct_change_288'] < 0.2)
+                        )
                         |
                         (
                             (dataframe['rsi_14_15m'] < 20.0)
                             & (dataframe['cmf'] > -0.4)
                         )
-                        | (dataframe['cti_15m'] < -0.9)
+                        |
+                        (
+                            (dataframe['cti_15m'] < -0.9)
+                            & (dataframe['ema_200_pct_change_288'] < 0.2)
+                        )
                         |
                         (
                             (dataframe['ewo_15m'] > 5.0)
                             & (dataframe['cmf'] > -0.4)
+                            & (dataframe['ema_200_pct_change_288'] < 0.2)
                         )
                     )
 
