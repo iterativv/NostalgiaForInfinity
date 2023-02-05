@@ -18013,7 +18013,11 @@ class NostalgiaForInfinityX(IStrategy):
                             (dataframe['cti_1h'] < 0.8)
                             & (dataframe['ema_200_pct_change_288'] < 0.12)
                         )
-                        | (dataframe['r_480_1h'] < -30.0)
+                        |
+                        (
+                            (dataframe['r_480_1h'] < -30.0)
+                            & (dataframe['ema_200_pct_change_288'] < 0.2)
+                        )
                         |
                         (
                             (dataframe['crsi_1h'] > 30.0)
