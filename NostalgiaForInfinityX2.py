@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.125"
+        return "v12.0.126t"
 
     # ROI table:
     minimal_roi = {
@@ -6023,6 +6023,314 @@ class NostalgiaForInfinityX2(IStrategy):
                 | (dataframe['cti_20_4h'] < 0.5)
                 | (dataframe['cti_20_1d'] < -0.0)
             )
+            # BNX
+            &
+            (
+                (dataframe['not_downtrend_1h'])
+                | (dataframe['not_downtrend_4h'])
+                | (dataframe['rsi_3_15m'] > 30.0)
+                | (dataframe['cti_20_1d'] < -0.75)
+                | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
+                | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
+                | (dataframe['high_max_48_4h'] < (dataframe['close'] * 1.5))
+            )
+            &
+            (
+                (dataframe['not_downtrend_1h'])
+                | (dataframe['not_downtrend_4h'])
+                | (dataframe['cti_20_15m'] < -0.0)
+                | (dataframe['cti_20_1d'] < 0.75)
+                | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
+                | (dataframe['high_max_48_4h'] < (dataframe['close'] * 1.5))
+            )
+            &
+            (
+                (dataframe['not_downtrend_1h'])
+                | (dataframe['cti_20_15m'] < -0.75)
+                | (dataframe['rsi_3_15m'] > 20.0)
+                | (dataframe['cti_20_1h'] < -0.0)
+                | (dataframe['cti_20_1d'] < 0.5)
+                | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
+                | (dataframe['high_max_48_4h'] < (dataframe['close'] * 1.5))
+            )
+            &
+            (
+                (dataframe['not_downtrend_1h'])
+                | (dataframe['rsi_3_15m'] > 25.0)
+                | (dataframe['cti_40_1h'] < -0.75)
+                | (dataframe['cti_20_4h'] < -0.75)
+                | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
+                | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
+                | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
+            )
+            &
+            (
+                (dataframe['not_downtrend_1h'])
+                | (dataframe['cti_20_15m'] < -0.75)
+                | (dataframe['cti_20_1h'] < -0.5)
+                | (dataframe['cti_20_1d'] < -0.0)
+                | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
+                | (dataframe['high_max_48_4h'] < (dataframe['close'] * 1.5))
+            )
+            &
+            (
+                (dataframe['change_pct_1d'] > -0.3)
+                | (dataframe['cti_20_15m'] < -0.5)
+                | (dataframe['cti_20_1h'] < -0.5)
+                | (dataframe['cti_20_4h'] < -0.0)
+                | (dataframe['cti_20_1d'] < -0.0)
+                | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
+                | (dataframe['high_max_48_4h'] < (dataframe['close'] * 1.5))
+            )
+            &
+            (
+                (dataframe['not_downtrend_1h'])
+                | (dataframe['not_downtrend_4h'])
+                | (dataframe['rsi_3_15m'] > 20.0)
+                | (dataframe['cti_20_1h'] < -0.75)
+                | (dataframe['cti_20_1d'] < 0.5)
+                | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
+                | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
+            )
+            &
+            (
+                (dataframe['cti_20_15m'] < 0.5)
+                | (dataframe['cti_20_1h'] < -0.0)
+                | (dataframe['cti_20_1d'] < -0.5)
+                | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
+                | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
+                | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
+            )
+            &
+            (
+                (dataframe['cti_20_15m'] < 0.5)
+                | (dataframe['cti_20_1h'] < 0.5)
+                | (dataframe['cti_40_1h'] < -0.5)
+                | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
+                | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
+                | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
+            )
+            &
+            (
+                (dataframe['cti_20_15m'] < -0.0)
+                | (dataframe['rsi_3_15m'] > 20.0)
+                | (dataframe['cti_20_1h'] < 0.5)
+                | (dataframe['cti_40_1h'] < -0.5)
+                | (dataframe['cti_20_4h'] < -0.75)
+                | (dataframe['cti_20_1d'] < 0.5)
+                | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
+            )
+            &
+            (
+                (dataframe['cti_20_15m'] < 0.5)
+                | (dataframe['cti_20_1h'] < -0.0)
+                | (dataframe['cti_20_4h'] < -0.0)
+                | (dataframe['cti_20_1d'] < -0.0)
+                | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
+                | (dataframe['high_max_48_4h'] < (dataframe['close'] * 1.5))
+            )
+            &
+            (
+                (dataframe['cti_20_15m'] < 0.5)
+                | (dataframe['cti_20_1h'] < -0.75)
+                | (dataframe['cti_20_4h'] < -0.75)
+                | (dataframe['cti_20_1d'] < 0.75)
+                | (dataframe['high_max_48_4h'] < (dataframe['close'] * 1.5))
+            )
+            &
+            (
+                (dataframe['not_downtrend_15m'])
+                | (dataframe['cti_20_15m'] < -0.0)
+                | (dataframe['rsi_3_15m'] > 10.0)
+                | (dataframe['cti_20_1h'] < 0.5)
+                | (dataframe['cti_20_4h'] < -0.5)
+                | (dataframe['cti_20_1d'] < 0.5)
+            )
+            &
+            (
+                (dataframe['not_downtrend_1h'])
+                | (dataframe['rsi_3_15m'] > 20.0)
+                | (dataframe['cti_20_1h'] < -0.75)
+                | (dataframe['cti_20_4h'] < -0.0)
+                | (dataframe['cti_20_1d'] < -0.75)
+                | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
+                | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
+            )
+            &
+            (
+                (dataframe['not_downtrend_1h'])
+                | (dataframe['not_downtrend_4h'])
+                | (dataframe['cti_20_15m'] < -0.9)
+                | (dataframe['cti_20_1d'] < 0.5)
+                | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
+                | (dataframe['high_max_48_4h'] < (dataframe['close'] * 1.3))
+            )
+            &
+            (
+                (dataframe['not_downtrend_1h'])
+                | (dataframe['cti_20_1h'] < -0.0)
+                | (dataframe['cti_20_4h'] < -0.8)
+                | (dataframe['cti_20_1d'] < -0.75)
+                | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
+                | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
+                | (dataframe['high_max_48_4h'] < (dataframe['close'] * 1.25))
+            )
+            &
+            (
+                (dataframe['not_downtrend_1h'])
+                | (dataframe['cti_20_15m'] < -0.75)
+                | (dataframe['cti_20_4h'] < 0.5)
+                | (dataframe['cti_20_1d'] < -0.5)
+                | (dataframe['high_max_48_4h'] < (dataframe['close'] * 1.5))
+            )
+            &
+            (
+                (dataframe['not_downtrend_15m'])
+                | (dataframe['cti_20_15m'] < -0.5)
+                | (dataframe['rsi_3_15m'] > 20.0)
+                | (dataframe['cti_20_4h'] < -0.0)
+                | (dataframe['cti_20_1d'] < 0.75)
+                | (dataframe['high_max_48_4h'] < (dataframe['close'] * 1.5))
+            )
+            &
+            (
+                (dataframe['cti_20_15m'] < -0.5)
+                | (dataframe['rsi_3_15m'] > 15.0)
+                | (dataframe['cti_20_1h'] < 0.5)
+                | (dataframe['cti_20_4h'] < -0.75)
+                | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
+                | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
+            )
+            &
+            (
+                (dataframe['not_downtrend_1h'])
+                | (dataframe['rsi_3_15m'] > 10.0)
+                | (dataframe['cti_20_1h'] < -0.5)
+                | (dataframe['cti_20_4h'] < 0.5)
+                | (dataframe['cti_20_1d'] < -0.0)
+            )
+            &
+            (
+                (dataframe['not_downtrend_15m'])
+                | (dataframe['not_downtrend_1h'])
+                | (dataframe['not_downtrend_4h'])
+                | (dataframe['rsi_3_15m'] > 10.0)
+                | (dataframe['cti_20_1d'] < 0.75)
+                | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
+                | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
+            )
+            &
+            (
+                (dataframe['not_downtrend_1h'])
+                | (dataframe['cti_20_15m'] < -0.9)
+                | (dataframe['rsi_3_15m'] > 10.0)
+                | (dataframe['cti_20_1h'] < -0.0)
+                | (dataframe['cti_20_1d'] < 0.75)
+            )
+            &
+            (
+                (dataframe['not_downtrend_15m'])
+                | (dataframe['cti_20_15m'] < -0.5)
+                | (dataframe['rsi_3_15m'] > 20.0)
+                | (dataframe['cti_20_1h'] < -0.0)
+                | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
+                | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
+                | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
+            )
+            &
+            (
+                (dataframe['not_downtrend_15m'])
+                | (dataframe['not_downtrend_1h'])
+                | (dataframe['rsi_3_15m'] > 10.0)
+                | (dataframe['cti_20_1h'] < -0.5)
+                | (dataframe['cti_20_1d'] < -0.5)
+                | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
+                | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
+            )
+            &
+            (
+                (dataframe['not_downtrend_1h'])
+                | (dataframe['cti_20_15m'] < -0.75)
+                | (dataframe['rsi_3_15m'] > 25.0)
+                | (dataframe['cti_20_1h'] < -0.9)
+                | (dataframe['cti_20_4h'] < -0.75)
+                | (dataframe['cti_20_1d'] < 0.5)
+                | (dataframe['high_max_48_4h'] < (dataframe['close'] * 1.25))
+            )
+            &
+            (
+                (dataframe['not_downtrend_15m'])
+                | (dataframe['cti_20_15m'] < -0.5)
+                | (dataframe['cti_20_1h'] < -0.75)
+                | (dataframe['cti_20_4h'] < 0.75)
+                | (dataframe['cti_20_1d'] < -0.75)
+                | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
+                | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
+            )
+            &
+            (
+                (dataframe['cti_20_15m'] < -0.75)
+                | (dataframe['rsi_3_15m'] > 20.0)
+                | (dataframe['cti_20_1h'] < -0.5)
+                | (dataframe['cti_20_4h'] < -0.5)
+                | (dataframe['cti_20_1d'] < 0.75)
+                | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
+                | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
+            )
+            &
+            (
+                (dataframe['cti_20_15m'] < -0.9)
+                | (dataframe['cti_20_1h'] < 0.85)
+                | (dataframe['rsi_14_1h'] < 50.0)
+                | (dataframe['cti_20_4h'] < -0.75)
+                | (dataframe['rsi_14_4h'] < 50.0)
+                | (dataframe['cti_20_1d'] < 0.85)
+                | (dataframe['rsi_14_1d'] < 50.0)
+            )
+            # &
+            # (
+            #     (dataframe['cti_20_15m'] < -0.5)
+            #     | (dataframe['rsi_3_15m'] > 25.0)
+            #     | (dataframe['cti_20_1h'] < -0.0)
+            #     | (dataframe['cti_20_4h'] < -0.85)
+            #     | (dataframe['cti_20_1d'] < -0.0)
+            #     | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
+            # )
+            &
+            (
+                (dataframe['not_downtrend_1h'])
+                | (dataframe['rsi_3_15m'] > 20.0)
+                | (dataframe['cti_20_1h'] < -0.75)
+                | (dataframe['cti_20_4h'] < 0.5)
+                | (dataframe['cti_20_1d'] < 0.75)
+                | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
+            )
+            &
+            (
+                (dataframe['cti_20_15m'] < -0.5)
+                | (dataframe['rsi_3_15m'] > 10.0)
+                | (dataframe['cti_20_1h'] < -0.75)
+                | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
+                | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
+            )
+            &
+            (
+                (dataframe['cti_20_15m'] < -0.0)
+                | (dataframe['cti_20_1h'] < 0.5)
+                | (dataframe['cti_20_1d'] < -0.0)
+                | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
+                | (dataframe['high_max_48_4h'] < (dataframe['close'] * 1.5))
+            )
+            &
+            (
+                (dataframe['change_pct_4h'] < 0.2)
+                | (dataframe['cti_20_15m'] < -0.75)
+                | (dataframe['rsi_3_15m'] > 30.0)
+                | (dataframe['cti_20_1h'] < -0.75)
+                | (dataframe['cti_20_1d'] < -0.0)
+                | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
+                | (dataframe['high_max_48_4h'] < (dataframe['close'] * 1.5))
+            )
         )
 
         for buy_enable in self.buy_params:
@@ -9561,237 +9869,13 @@ class NostalgiaForInfinityX2(IStrategy):
 
                     item_buy_logic.append(dataframe['cti_40_1h'] < -0.0)
 
-                    # downtrend 1h, overbought 15m, overbought 1h
+                    item_buy_logic.append(protections_global)
                     item_buy_logic.append((dataframe['not_downtrend_1h'])
-                                          | (dataframe['cti_20_15m'] < -0.5)
-                                          | (dataframe['cti_20_1h'] < -0.75)
-                                          | (dataframe['r_96_1h'] < -70.0))
-                    # overbought 15m, overbought 1h
-                    item_buy_logic.append((dataframe['cti_20_15m'] < -0.0)
-                                          | (dataframe['cti_20_1h'] < 0.5)
-                                          | (dataframe['r_96_1h'] < -70.0))
-                    # overbought 1m, overbought 1h
-                    item_buy_logic.append((dataframe['cti_20_15m'] < -0.75)
-                                          | (dataframe['cti_20_1h'] < -0.0)
-                                          | (dataframe['r_96_1h'] < -70.0))
-                    # downtrend 1h, overbought 1h, overbought 4h
-                    item_buy_logic.append((dataframe['not_downtrend_1h'])
-                                          | (dataframe['cti_20_1h'] < -0.9)
-                                          | (dataframe['r_96_1h'] < -70.0)
-                                          | (dataframe['cti_20_4h'] < -0.0))
-                    # overbought 15m, overbought 1h, overbought 4h, overbought 1d
-                    item_buy_logic.append((dataframe['cti_20_15m'] < -0.9)
-                                          | (dataframe['cti_20_1h'] < -0.0)
-                                          | (dataframe['r_96_1h'] < -70.0)
-                                          | (dataframe['cti_20_4h'] < -0.75)
-                                          | (dataframe['cti_20_1d'] < 0.75))
-                    # downtrend 1h, overbought 15m, overbought 1h, overbought 4h
-                    item_buy_logic.append((dataframe['not_downtrend_1h'])
-                                          | (dataframe['cti_20_15m'] < -0.75)
-                                          | (dataframe['r_96_1h'] < -70.0)
-                                          | (dataframe['cti_20_4h'] < 0.75))
-                    # downtrend 1h, downtrend 4h, deep drop in last 48h
-                    item_buy_logic.append((dataframe['not_downtrend_1h'])
-                                          | (dataframe['not_downtrend_4h'])
-                                          | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
-                                          | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
-                                          | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
-                                          | (dataframe['high_max_48_1h'] < (dataframe['close'] * 1.5)))
-                    # downtrend 15m, downtrend 1h, downtrend 4h, deep drop in last 48h
-                    item_buy_logic.append((dataframe['not_downtrend_15m'])
-                                          | (dataframe['not_downtrend_1h'])
-                                          | (dataframe['not_downtrend_4h'])
-                                          | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
-                                          | (dataframe['high_max_48_1h'] < (dataframe['close'] * 1.5)))
-                    # downtrend 15m, downtrend 1h, downtrend 4h, drop in last 48h
-                    item_buy_logic.append((dataframe['not_downtrend_15m'])
-                                          | (dataframe['not_downtrend_1h'])
-                                          | (dataframe['not_downtrend_4h'])
-                                          | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
-                                          | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
-                                          | (dataframe['high_max_48_1h'] < (dataframe['close'] * 1.3)))
-                    # downtrend 15m, downtrend 1h, downtrend 4h, overbought 4h, overbought 1d
-                    item_buy_logic.append((dataframe['not_downtrend_15m'])
-                                          | (dataframe['not_downtrend_1h'])
-                                          | (dataframe['is_downtrend_3_4h'] == False)
-                                          | (dataframe['cti_20_4h'] < 0.5)
-                                          | (dataframe['cti_20_1d'] < 0.5))
-                    # downtrend 15m, downtrend 1h, downtrend 4h, overbought 15m, overbought 1h, drop in last 48h
-                    item_buy_logic.append((dataframe['not_downtrend_15m'])
-                                          | (dataframe['not_downtrend_1h'])
-                                          | (dataframe['not_downtrend_4h'])
-                                          | (dataframe['cti_20_15m'] < -0.9)
-                                          | (dataframe['cti_20_1h'] < -0.0)
-                                          | (dataframe['high_max_48_1h'] < (dataframe['close'] * 1.5)))
-                    # downtrend 1h, downtrend 4h, overbought 1d, downtrend 1h, downtrend 4h, downtrend 1d,  drop in last 48h
-                    item_buy_logic.append((dataframe['not_downtrend_1h'])
-                                          | (dataframe['not_downtrend_4h'])
-                                          | (dataframe['cti_20_1d'] < -0.0)
-                                          | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
-                                          | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
-                                          | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
-                                          | (dataframe['high_max_48_1h'] < (dataframe['close'] * 1.3)))
-                    # downtrend 15m, downtrend 1h, downtrend 4h, overbought 1d, drop in last 48h
-                    item_buy_logic.append((dataframe['not_downtrend_15m'])
-                                          | (dataframe['not_downtrend_1h'])
-                                          | (dataframe['not_downtrend_4h'])
-                                          | (dataframe['cti_20_1d'] < 0.8)
-                                          | (dataframe['high_max_48_1h'] < (dataframe['close'] * 1.3)))
-                    # downtrend 15m, downtrend 1h, overbought 1h, overbought 1d, drop in last 48h
-                    item_buy_logic.append((dataframe['not_downtrend_15m'])
-                                          | (dataframe['not_downtrend_1h'])
+                                          | (dataframe['rsi_3_15m'] > 15.0)
                                           | (dataframe['cti_20_1h'] < -0.5)
                                           | (dataframe['cti_20_1d'] < 0.5)
-                                          | (dataframe['high_max_48_1h'] < (dataframe['close'] * 1.3)))
-                    # downtrend 1h, overbought 1h, overbought 4h, overbought 1d, downtrend 1h, drop in last 48h
-                    item_buy_logic.append((dataframe['not_downtrend_1h'])
-                                          | (dataframe['cti_20_1h'] < -0.75)
-                                          | (dataframe['cti_20_4h'] < -0.75)
-                                          | (dataframe['cti_20_1d'] < -0.5)
-                                          | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
-                                          | (dataframe['high_max_48_1h'] < (dataframe['close'] * 1.5)))
-                    # downtrend 15m, downtrend 4h, overbought 15m, overbought 4h, overbought 1d, drop in last 48h
-                    item_buy_logic.append((dataframe['not_downtrend_15m'])
-                                          | (dataframe['not_downtrend_4h'])
-                                          | (dataframe['cti_20_15m'] < -0.5)
-                                          | (dataframe['cti_20_4h'] < -0.5)
-                                          | (dataframe['cti_20_1d'] < 0.5)
-                                          | (dataframe['high_max_48_1h'] < (dataframe['close'] * 1.5)))
-                    # overbought 15m, overbought 1h, overbought 4h, overbought 1d, drop in last 48h
-                    item_buy_logic.append((dataframe['cti_20_15m'] < -0.9)
-                                          | (dataframe['cti_20_1h'] < -0.75)
-                                          | (dataframe['cti_20_4h'] < -0.85)
-                                          | (dataframe['cti_20_1d'] < 0.5)
-                                          | (dataframe['high_max_48_1h'] < (dataframe['close'] * 1.4)))
-                    # downtrend 1h, downtrend 4h, overbought 15m, overbought 1h, overbought 4h, overbought 1d, drop in last 48h
-                    item_buy_logic.append((dataframe['not_downtrend_1h'])
-                                          | (dataframe['not_downtrend_4h'])
-                                          | (dataframe['cti_20_15m'] < -0.75)
-                                          | (dataframe['cti_20_1h'] < -0.9)
-                                          | (dataframe['cti_20_4h'] < -0.75)
-                                          | (dataframe['cti_20_1d'] < -0.0)
-                                          | (dataframe['high_max_48_1h'] < (dataframe['close'] * 1.25)))
-                    # downtrend 1h, overbought 15m, overbought 1h, overbought 1d, drop in last 48h
-                    item_buy_logic.append((dataframe['not_downtrend_1h'])
-                                          | (dataframe['cti_20_15m'] < -0.9)
-                                          | (dataframe['cti_20_1h'] < -0.5)
-                                          | (dataframe['cti_20_1d'] < 0.75)
-                                          | (dataframe['high_max_48_1h'] < (dataframe['close'] * 1.25)))
-                    # downtrend 1h, overbought 15m, overbought 1h, overbought 1d, downtrend 1d, drop in last 48h
-                    item_buy_logic.append((dataframe['not_downtrend_1h'])
-                                          | (dataframe['cti_20_15m'] < -0.0)
-                                          | (dataframe['cti_20_1h'] < -0.75)
-                                          | (dataframe['cti_20_1d'] < -0.0)
-                                          | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
-                                          | (dataframe['high_max_48_1h'] < (dataframe['close'] * 1.5)))
-                    # downtrend 1h, overbought 15m, downtrend 1h, downtrend 4h, downtrend 1h, downtrend 4h, drop in last 48h
-                    item_buy_logic.append((dataframe['not_downtrend_1h'])
-                                          | (dataframe['cti_20_15m'] < -0.5)
-                                          | (dataframe['cti_20_1h'] < -0.8)
-                                          | (dataframe['cti_20_4h'] < -0.75)
-                                          | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
-                                          | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
-                                          | (dataframe['high_max_48_1h'] < (dataframe['close'] * 1.4)))
-                    # downtrend 15m, downtrend 1h, downtrend 4h, overbought 15m, overbought 1h, downtrend 1h, downtrend 4h, drop in last 48h
-                    item_buy_logic.append((dataframe['not_downtrend_15m'])
-                                          | (dataframe['not_downtrend_1h'])
-                                          | (dataframe['not_downtrend_4h'])
-                                          | (dataframe['cti_20_15m'] < -0.9)
-                                          | (dataframe['cti_20_1h'] < -0.75)
-                                          | (dataframe['cti_40_1h'] < -0.75)
-                                          | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
-                                          | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
-                                          | (dataframe['high_max_48_1h'] < (dataframe['close'] * 1.25)))
-                    # downtrend 1h, downtrend 4h, overbought 1h, overbought 1d, downtrend 1d
-                    item_buy_logic.append((dataframe['not_downtrend_1h'])
-                                          | (dataframe['not_downtrend_4h'])
-                                          | (dataframe['cti_20_1h'] < -0.75)
-                                          | (dataframe['cti_40_1h'] < -0.75)
-                                          | (dataframe['cti_20_1d'] < 0.5)
-                                          | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152)))
-                    # overbought 15m, overbought 1h, overbought 4h, overbought 1d, downtrend 1d
-                    item_buy_logic.append((dataframe['cti_20_15m'] < -0.0)
-                                          | (dataframe['cti_20_1h'] < 0.25)
-                                          | (dataframe['cti_40_1h'] < -0.75)
-                                          | (dataframe['cti_20_4h'] < 0.25)
-                                          | (dataframe['cti_20_1d'] < 0.25)
-                                          | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152)))
-                    # downtrend 15m, overbought 15m, overbought 1h, downtrend 1h, downtrend 4h
-                    item_buy_logic.append((dataframe['not_downtrend_15m'])
-                                          | (dataframe['cti_20_15m'] < -0.0)
-                                          | (dataframe['cti_20_1h'] < -0.0)
-                                          | (dataframe['cti_40_1h'] < -0.75)
-                                          | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
-                                          | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152)))
-                    # downtrend 1h, overbought 15m, overbought 1h, downtrend 1h
-                    item_buy_logic.append((dataframe['not_downtrend_1h'])
-                                          | (dataframe['cti_20_15m'] < -0.9)
-                                          | (dataframe['cti_20_1h'] < -0.0)
-                                          | (dataframe['cti_40_1h'] < -0.75)
-                                          | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
-                                          | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152)))
-                    # downtrend 1h, downtrend 4h, overbought 15m, overbought 1h, downtrend 1h, downtrend 4h
-                    item_buy_logic.append((dataframe['not_downtrend_1h'])
-                                          | (dataframe['not_downtrend_4h'])
-                                          | (dataframe['cti_20_15m'] < -0.5)
-                                          | (dataframe['cti_40_1h'] < -0.75)
-                                          | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
-                                          | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152)))
-                    # overbought 15m, overbought 1h, overbought 4h, overbought 5m
-                    item_buy_logic.append((dataframe['cti_20_15m'] < -0.75)
-                                          | (dataframe['cti_20_1h'] < -0.9)
-                                          | (dataframe['cti_20_4h'] < -0.9)
-                                          | (dataframe['cti_20'] < -0.9))
-                    # downtrend 1h, downtrend 4h, overbought 5m, downtrend 1h, downtrend 4h
-                    item_buy_logic.append((dataframe['not_downtrend_1h'])
-                                          | (dataframe['not_downtrend_4h'])
                                           | (dataframe['cti_20'] < -0.9)
-                                          | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
-                                          | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152)))
-                    # downtrend 1h, overbought 1d, overbought 5m
-                    item_buy_logic.append((dataframe['not_downtrend_1h'])
-                                          | (dataframe['cti_20_1d'] < 0.5)
-                                          | (dataframe['cti_20'] < -0.9))
-                    # downtrend 1h, overbought 5m, downtrend 1h, downtrend 4, drop in last 48h
-                    item_buy_logic.append((dataframe['not_downtrend_1h'])
-                                          | (dataframe['cti_20'] < -0.9)
-                                          | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
-                                          | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
-                                          | (dataframe['high_max_48_1h'] < (dataframe['close'] * 1.5)))
-                    # downtrend 15m, downtrend 1h, overbought 1h
-                    item_buy_logic.append((dataframe['not_downtrend_15m'])
-                                          | (dataframe['not_downtrend_1h'])
-                                          | (dataframe['cti_40_1h'] < -0.5))
-                    # overbought 15m, overbought 1h, overbought 4h
-                    item_buy_logic.append((dataframe['cti_20_15m'] < -0.5)
-                                          | (dataframe['cti_20_1h'] < 0.5)
-                                          | (dataframe['cti_40_1h'] < -0.5)
-                                          | (dataframe['cti_20_4h'] < -0.5))
-                    # downtrend 1h, overbought 1h, overbought 4h
-                    item_buy_logic.append((dataframe['not_downtrend_1h'])
-                                          | (dataframe['cti_20_1h'] < -0.75)
-                                          | (dataframe['cti_40_1h'] < -0.5)
-                                          | (dataframe['cti_20_4h'] < -0.0))
-                    # overbought 15m, overbought 1h, overbought 4h, downtrend 1h, downtrend 4h
-                    item_buy_logic.append((dataframe['cti_20_15m'] < -0.9)
-                                          | (dataframe['cti_20_1h'] < -0.5)
-                                          | (dataframe['cti_40_1h'] < -0.5)
-                                          | (dataframe['cti_20_4h'] < 0.5)
-                                          | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
-                                          | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152)))
-                    # downtrend 15m, overbought 15m, overbought 1h, overbought 1d
-                    item_buy_logic.append((dataframe['not_downtrend_15m'])
-                                          | (dataframe['cti_20_15m'] < -0.75)
-                                          | (dataframe['cti_20_1h'] < -0.5)
-                                          | (dataframe['cti_40_1h'] < -0.5)
-                                          | (dataframe['cti_20_1d'] < 0.5))
-                    item_buy_logic.append((dataframe['not_downtrend_15m'])
-                                          | (dataframe['not_downtrend_1h'])
-                                          | (dataframe['not_downtrend_4h'])
-                                          | (dataframe['is_downtrend_3_4h'] == False)
-                                          | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
-                                          | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
-                                          | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152)))
+                                          | (dataframe['r_14'] < -94.0))
 
                     # Logic
                     item_buy_logic.append(dataframe['bb20_2_width_1h'] > 0.132)
