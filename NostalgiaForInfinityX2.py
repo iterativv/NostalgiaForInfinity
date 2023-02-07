@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.130"
+        return "v12.0.131"
 
     # ROI table:
     minimal_roi = {
@@ -9502,7 +9502,6 @@ class NostalgiaForInfinityX2(IStrategy):
 
                 # Condition #61 - Rebuy mode bull.
                 if index == 61:
-                    if index == 61:
                     # Protections
                     item_buy_logic.append(current_free_slots >= self.rebuy_mode_min_free_slots)
                     item_buy_logic.append(dataframe['btc_pct_close_max_24_5m'] < 0.03)
