@@ -17919,12 +17919,14 @@ class NostalgiaForInfinityX(IStrategy):
                         (
                             (dataframe['btc_pct_close_max_72_5m'] < 1.01)
                             & (dataframe['btc_not_downtrend_1h'] == True)
+                            & (dataframe['not_downtrend_1h'])
                         )
                         | (dataframe['close'] > (dataframe['sma_200'] * 0.9))
                         |
                         (
                             (dataframe['close'] > (dataframe['sup1_1d'] * 1.0))
                             & (dataframe['ema_200_pct_change_288'] < 0.16)
+                            & (dataframe['not_downtrend_1h'])
                         )
                         |
                         (
