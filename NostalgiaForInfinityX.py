@@ -19049,7 +19049,11 @@ class NostalgiaForInfinityX(IStrategy):
                             & (dataframe['hl_pct_change_36'] < 0.1)
                             & (dataframe['hl_pct_change_48_1h'] < 0.5)
                         )
-                        | (dataframe['close'] < dataframe['bb20_2_low'] * 0.975)
+                        |
+                        (
+                            (dataframe['close'] < dataframe['bb20_2_low'] * 0.975)
+                            & (dataframe['not_downtrend_1h'])
+                        )
                         |
                         (
                             ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.034))
