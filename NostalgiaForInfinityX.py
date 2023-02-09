@@ -12410,7 +12410,12 @@ class NostalgiaForInfinityX(IStrategy):
                             (dataframe['crsi'] > 10.0)
                             & (dataframe['hl_pct_change_36'] < 0.12)
                         )
-                        | (dataframe['cmf_1h'] > 0.2)
+                        |
+                        (
+                            (dataframe['cmf_1h'] > 0.2)
+                            & (dataframe['cti_1h'] < 0.5)
+                            & (dataframe['ema_200_pct_change_288'] < 0.2)
+                        )
                         |
                         (
                             (dataframe['cti_1h'] < -0.8)
