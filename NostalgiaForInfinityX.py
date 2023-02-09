@@ -15099,6 +15099,7 @@ class NostalgiaForInfinityX(IStrategy):
                             (dataframe['btc_not_downtrend_1h'] == True)
                             & (dataframe['btc_pct_close_max_72_5m'] < 1.03)
                             & (dataframe['cti_1h'] < 0.5)
+                            & (dataframe['r_480_1h'] < -16.0)
                         )
                         |
                         (
