@@ -22175,16 +22175,19 @@ class NostalgiaForInfinityX(IStrategy):
                             (dataframe['btc_not_downtrend_1h'] == True)
                             & (dataframe['ema_200_pct_change_288'] < 0.2)
                             & (dataframe['hl_pct_change_36'] < 0.3)
+                            & (dataframe['not_downtrend_1h'])
                         )
                         |
                         (
                             (dataframe['cmf'] > -0.2)
                             & (dataframe['hl_pct_change_36'] < 0.3)
+                            & (dataframe['not_downtrend_1h'])
                         )
                         |
                         (
                             (dataframe['mfi'] > 20.0)
                             & (dataframe['hl_pct_change_36'] < 0.3)
+                            & (dataframe['not_downtrend_1h'])
                         )
                         |
                         (
@@ -22202,6 +22205,7 @@ class NostalgiaForInfinityX(IStrategy):
                         (
                             (dataframe['crsi_1h'] > 16.0)
                             & (dataframe['hl_pct_change_36'] < 0.3)
+                            & (dataframe['not_downtrend_1h'])
                         )
                         |
                         (
@@ -22217,6 +22221,7 @@ class NostalgiaForInfinityX(IStrategy):
                         (
                             (dataframe['hl_pct_change_36'] < 0.2)
                             & (dataframe['btc_pct_close_max_72_5m'] < 1.04)
+                            & (dataframe['not_downtrend_1h'])
                         )
                         |
                         (
@@ -22243,7 +22248,11 @@ class NostalgiaForInfinityX(IStrategy):
                             ((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.05))
                             & (dataframe['hl_pct_change_36'] < 0.2)
                         )
-                        | (dataframe['cti_15m'] < -0.9)
+                        |
+                        (
+                            (dataframe['cti_15m'] < -0.9)
+                            & (dataframe['not_downtrend_1h'])
+                        )
                     )
 
                 # Condition #73 - Half mode.
