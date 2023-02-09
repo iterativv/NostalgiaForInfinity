@@ -13323,7 +13323,12 @@ class NostalgiaForInfinityX(IStrategy):
                             & (dataframe['tpct_change_144'] < 0.22)
                             & (dataframe['crsi_1h'] > 2.0)
                         )
-                        | (dataframe['r_480'] > -30.0)
+                        |
+                        (
+                            (dataframe['r_480'] > -30.0)
+                            & (dataframe['cti_1h'] < 0.5)
+                            & (dataframe['ema_200_pct_change_288'] < 0.2)
+                        )
                         | (dataframe['crsi'] > 30.0)
                         |
                         (
