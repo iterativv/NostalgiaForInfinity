@@ -14589,6 +14589,7 @@ class NostalgiaForInfinityX(IStrategy):
                         (
                             (dataframe['rsi_14'] < 25.0)
                             & (dataframe['cti_1h'] < 0.96)
+                            & (dataframe['ema_200_pct_change_288'] < 0.2)
                         )
                         | (dataframe['cti'] < -0.95)
                         |
