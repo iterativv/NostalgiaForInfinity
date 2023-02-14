@@ -7529,7 +7529,6 @@ class NostalgiaForInfinityX2(IStrategy):
 
                 # Condition #2 - Normal mode bull.
                 if index == 2:
-                    if index == 2:
                     # Protections
                     item_buy_logic.append(dataframe['btc_pct_close_max_24_5m'] < 0.03)
                     item_buy_logic.append(dataframe['btc_pct_close_max_72_5m'] < 0.03)
