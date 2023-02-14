@@ -22683,7 +22683,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.992)
                         | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.1))
                     )
-                                        item_buy_logic.append(
+                    item_buy_logic.append(
                         (
                             (dataframe['cmf'] > -0.1)
                             & (dataframe['hl_pct_change_48_1h'] < 0.9)
