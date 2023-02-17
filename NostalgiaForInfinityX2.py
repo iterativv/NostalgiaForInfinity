@@ -7939,6 +7939,14 @@ class NostalgiaForInfinityX2(IStrategy):
                                           | (dataframe['rsi_14_1d'] < 70.0)
                                           | (dataframe['bb40_2_delta'].gt(dataframe['close'] * 0.04))
                                           | (dataframe['close_delta'].gt(dataframe['close'] * 0.02)))
+                    item_buy_logic.append((dataframe['not_downtrend_15m'])
+                                          | (dataframe['not_downtrend_1h'])
+                                          | (dataframe['rsi_3_15m'] > 10.0)
+                                          | (dataframe['cti_20_1h'] < -0.75)
+                                          | (dataframe['rsi_14_4h'] < 30.0)
+                                          | (dataframe['cti_20_1d'] < -0.0)
+                                          | (dataframe['bb40_2_delta'].gt(dataframe['close'] * 0.05))
+                                          | (dataframe['close_delta'].gt(dataframe['close'] * 0.02)))
 
                     # Logic
                     item_buy_logic.append(dataframe['bb40_2_delta'].gt(dataframe['close'] * 0.03))
