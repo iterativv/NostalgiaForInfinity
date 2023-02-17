@@ -3,7 +3,7 @@
         "pair_blacklist": [
             // Exchange Tokens
             // Leverage tokens
-            ".*(5L|5S)/.*",
+            ".*(5L|5S|3L|3S)/.*",
             // Fiat
             "(AUD|BRZ|CAD|CHF|EUR|GBP|HKD|IDRT|JPY|NGN|RUB|SGD|TRY|UAH|USD|ZAR)/.*",
             // Stable tokens
