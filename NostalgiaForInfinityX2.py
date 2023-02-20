@@ -6493,7 +6493,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append(protections_global_8)
                     item_buy_logic.append(protections_global_9)
                     item_buy_logic.append(protections_global_10)
-                    
+
                     item_buy_logic.append((dataframe['rsi_3_15m'] > 20.0)
                                           | (dataframe['rsi_14_15m'] < 30.0)
                                           | (dataframe['cti_20_1h'] < 0.75)
@@ -6536,7 +6536,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append(protections_global_8)
                     item_buy_logic.append(protections_global_9)
                     item_buy_logic.append(protections_global_10)
-                    
+
                     item_buy_logic.append((dataframe['not_downtrend_15m'])
                                           | (dataframe['rsi_3_15m'] > 30.0)
                                           | (dataframe['rsi_14_15m'] < 30.0)
@@ -8271,7 +8271,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append(protections_global_8)
                     item_buy_logic.append(protections_global_9)
                     item_buy_logic.append(protections_global_10)
-                    
+
                     item_buy_logic.append((dataframe['not_downtrend_1h'])
                                           | (dataframe['cti_20_15m'] < -0.9)
                                           | (dataframe['cti_20_1h'] < -0.75)
@@ -8357,7 +8357,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append(protections_global_8)
                     item_buy_logic.append(protections_global_9)
                     item_buy_logic.append(protections_global_10)
-                    
+
                     item_buy_logic.append((dataframe['not_downtrend_15m'])
                                           | (dataframe['cti_20_15m'] < -0.75)
                                           | (dataframe['cti_20_1h'] < -0.75)
@@ -8404,7 +8404,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append(protections_global_8)
                     item_buy_logic.append(protections_global_9)
                     item_buy_logic.append(protections_global_10)
-                    
+
                     item_buy_logic.append((dataframe['cti_20_15m'] < -0.5)
                                           | (dataframe['cti_20_1h'] < -0.0)
                                           | (dataframe['cti_20_4h'] < 0.5)
@@ -8449,7 +8449,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append(protections_global_8)
                     item_buy_logic.append(protections_global_9)
                     item_buy_logic.append(protections_global_10)
-                    
+
                     item_buy_logic.append((dataframe['not_downtrend_1h'])
                                           | (dataframe['rsi_3_15m'] > 15.0)
                                           | (dataframe['cti_20_1h'] < -0.5)
