@@ -135,6 +135,9 @@ class NostalgiaForInfinityX2(IStrategy):
     # Position adjust feature
     position_adjustment_enable = True
 
+    # Grinding feature
+    grinding_enable = False
+
     stake_rebuy_mode_multiplier = 0.33
     pa_rebuy_mode_max = 2
     pa_rebuy_mode_pcts = (-0.02, -0.04, -0.04)
@@ -196,6 +199,8 @@ class NostalgiaForInfinityX2(IStrategy):
             self.stop_thresholds_long = self.config['stop_thresholds_long']
         if ('profit_max_thresholds' in self.config):
             self.profit_max_thresholds = self.config['profit_max_thresholds']
+        if ('grinding_enable' in self.config):
+            self.grinding_enable = self.config['grinding_enable']
         if self.target_profit_cache is None:
             bot_name = ""
             if ('bot_name' in self.config):
