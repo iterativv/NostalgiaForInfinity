@@ -9111,8 +9111,15 @@ class NostalgiaForInfinityX2(IStrategy):
             if self._should_hold_trade(trade, rate, exit_reason):
                 return False
             if self.exit_profit_only:
-                current_profit = ((rate - trade.open_rate) / trade.open_rate)
-                if (current_profit < self.exit_profit_offset):
+                if self.exit_profit_only:
+                profit = 0.0
+                if (trade.realized_profit != 0.0):
+                    profit = ((current_rate - trade.open_rate) / trade.open_rate) * trade.stake_amount
+                    profit = profit + trade.realized_profit
+                    profit = profit / trade.stake_amount
+                else:
+                    profit = trade.calc_profit_ratio(rate)
+                if (profit < self.exit_profit_offset):
                     return False
 
         self._remove_profit_target(pair)
