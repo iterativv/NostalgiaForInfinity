@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.159"
+        return "v12.0.160"
 
     # ROI table:
     minimal_roi = {
@@ -2230,7 +2230,7 @@ class NostalgiaForInfinityX2(IStrategy):
                               current_entry_profit: float, current_exit_profit: float,
                               **kwargs) -> Optional[float]:
         is_backtest = self.dp.runmode.value == 'backtest'
-        if (self.grinding_enable)and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2023, 2, 1) or is_backtest):
+        if (self.grinding_enable) and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2023, 2, 1) or is_backtest):
             dataframe, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
             if(len(dataframe) < 2):
                 return None
