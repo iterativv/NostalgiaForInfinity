@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.158"
+        return "v12.0.159"
 
     # ROI table:
     minimal_roi = {
@@ -2203,6 +2203,15 @@ class NostalgiaForInfinityX2(IStrategy):
             enter_tag = trade.enter_tag
         enter_tags = enter_tag.split()
 
+        # Grinding
+        if any(c in (self.normal_mode_tags + self.pump_mode_tags  + self.quick_mode_tags + self.long_mode_tags) for c in enter_tags):
+            return self.grind_adjust_trade_position(trade, current_time,
+                                                         current_rate, current_profit,
+                                                         min_stake, max_stake,
+                                                         current_entry_rate, current_exit_rate,
+                                                         current_entry_profit, current_exit_profit
+                                                         )
+
         # Rebuy mode
         if all(c in self.rebuy_mode_tags for c in enter_tags):
             return self.rebuy_adjust_trade_position(trade, current_time,
@@ -2211,6 +2220,67 @@ class NostalgiaForInfinityX2(IStrategy):
                                                          current_entry_rate, current_exit_rate,
                                                          current_entry_profit, current_exit_profit
                                                          )
+
+        return None
+
+    def grind_adjust_trade_position(self, trade: Trade, current_time: datetime,
+                              current_rate: float, current_profit: float,
+                              min_stake: Optional[float], max_stake: float,
+                              current_entry_rate: float, current_exit_rate: float,
+                              current_entry_profit: float, current_exit_profit: float,
+                              **kwargs) -> Optional[float]:
+        is_backtest = self.dp.runmode.value == 'backtest'
+        if (self.grinding_enable)and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2023, 2, 1) or is_backtest):
+            dataframe, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
+            if(len(dataframe) < 2):
+                return None
+            last_candle = dataframe.iloc[-1].squeeze()
+            previous_candle = dataframe.iloc[-2].squeeze()
+
+            filled_orders = trade.select_filled_orders()
+            filled_entries = trade.select_filled_orders(trade.entry_side)
+            filled_exits = trade.select_filled_orders(trade.exit_side)
+            count_of_entries = trade.nr_of_successful_entries
+            count_of_exits = trade.nr_of_successful_exits
+
+            if (count_of_entries == 0):
+                return None
+
+            total_profit = 0.0
+            if (trade.realized_profit != 0.0):
+                total_profit = ((current_rate - trade.open_rate) / trade.open_rate) * trade.stake_amount
+                total_profit = total_profit + trade.realized_profit
+                total_profit = total_profit / trade.stake_amount
+            else:
+                total_profit = current_profit
+
+            slice_amount = filled_entries[0].cost
+            slice_profit = (current_rate - filled_orders[-1].average) / filled_orders[-1].average
+            slice_profit_entry = (current_rate - filled_entries[-1].average) / filled_entries[-1].average
+            slice_profit_exit = ((current_rate - filled_exits[-1].average) / filled_exits[-1].average) if count_of_exits > 0 else 0.0
+
+            # Buy
+            if (
+                    ((count_of_entries - count_of_exits) < 2)
+                    and (total_profit < -0.08)
+                    and (
+                        (last_candle['rsi_14'] < 40.0)
+                        and (last_candle['r_14'] < -80.0)
+                        and (last_candle['rsi_3'] > 16.0)
+                        and (last_candle['btc_pct_close_max_72_5m'] < 1.03)
+                    )
+            ):
+                print("Grind buying...")
+                return slice_amount
+
+            # Sell
+            if (
+                    ((count_of_entries - count_of_exits) > 1)
+                    and (slice_profit > 0.01)
+            ):
+                print("Grind selling...")
+                return -(filled_entries[-1].amount * current_rate)
+                return -slice_amount
 
         return None
 
