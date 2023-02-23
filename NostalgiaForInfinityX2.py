@@ -5597,290 +5597,300 @@ class NostalgiaForInfinityX2(IStrategy):
         )
 
         protections_global_10 = (
-                (
-                        (dataframe['cti_20_15m'] < -0.75)
-                        | (dataframe['rsi_3_15m'] > 10.0)
-                        | (dataframe['cti_20_4h'] < -0.5)
-                        | (dataframe['cti_20_1d'] < 0.75)
-                        | (dataframe['rsi_14_1d'] < 70.0)
-                )
-                &
-                (
-                        (dataframe['not_downtrend_15m'])
-                        | (dataframe['not_downtrend_1h'])
-                        | (dataframe['not_downtrend_4h'])
-                        | (dataframe['rsi_3_15m'] > 10.0)
-                        | (dataframe['cti_20_1d'] < 0.75)
-                )
-                &
-                (
-                        (dataframe['not_downtrend_1h'])
-                        | (dataframe['rsi_3_15m'] > 30.0)
-                        | (dataframe['cti_20_4h'] < 0.75)
-                        | (dataframe['cti_20_1d'] < 0.75)
-                )
-                &
-                (
-                        (dataframe['not_downtrend_1h'])
-                        | (dataframe['cti_20_1h'] < -0.9)
-                        | (dataframe['cti_20_4h'] < 0.75)
-                        | (dataframe['cti_20_1d'] < -0.75)
-                        | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.02))
-                )
-                &
-                (
-                        (dataframe['rsi_3_15m'] > 10.0)
-                        | (dataframe['rsi_14_15m'] < 30.0)
-                        | (dataframe['cti_20_1h'] < 0.8)
-                        | (dataframe['cti_20_4h'] < 0.5)
-                        | (dataframe['cti_20_1d'] < 0.5)
-                        | (dataframe['rsi_14_1d'] < 60.0)
-                )
-                &
-                (
-                        (dataframe['not_downtrend_1h'])
-                        | (dataframe['rsi_14_15m'] < 30.0)
-                        | (dataframe['cti_20_1h'] < -0.75)
-                        | (dataframe['cti_20_4h'] < 0.5)
-                        | (dataframe['cti_20_1d'] < 0.5)
-                        | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
-                )
-                &
-                (
-                        (dataframe['not_downtrend_4h'])
-                        | (dataframe['cti_20_15m'] < 0.5)
-                        | (dataframe['rsi_14_15m'] < 30.0)
-                        | (dataframe['cti_20_1h'] < -0.0)
-                        | (dataframe['cti_20_1d'] < 0.5)
-                        | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
-                )
-                &
-                (
-                        (dataframe['cti_20_15m'] < -0.9)
-                        | (dataframe['rsi_14_15m'] < 30.0)
-                        | (dataframe['cti_20_1h'] < 0.5)
-                        | (dataframe['cti_20_4h'] < -0.0)
-                        | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
-                        | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
-                )
-                &
-                (
-                        (dataframe['cti_20_15m'] < -0.0)
-                        | (dataframe['rsi_14_15m'] < 30.0)
-                        | (dataframe['cti_20_1h'] < -0.5)
-                        | (dataframe['rsi_14_1h'] < 40.0)
-                        | (dataframe['rsi_14_4h'] < 40.0)
-                        | (dataframe['cti_20_1d'] < 0.75)
-                        | (dataframe['high_max_48_1h'] < (dataframe['close'] * 1.25))
-                )
-                &
-                (
-                        (dataframe['not_downtrend_4h'])
-                        | (dataframe['cti_20_15m'] < -0.5)
-                        | (dataframe['rsi_14_15m'] < 30.0)
-                        | (dataframe['cti_20_1h'] < -0.5)
-                        | (dataframe['cti_20_4h'] < -0.5)
-                        | (dataframe['cti_20_1d'] < -0.0)
-                        | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
-                )
-                &
-                (
-                        (dataframe['not_downtrend_1h'])
-                        | (dataframe['rsi_3_15m'] > 20.0)
-                        | (dataframe['cti_20_1h'] < -0.5)
-                        | (dataframe['cti_20_4h'] < -0.0)
-                        | (dataframe['cti_20_1d'] < -0.0)
-                        | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
-                )
-                &
-                (
-                        (dataframe['not_downtrend_1h'])
-                        | (dataframe['cti_20_1h'] < -0.75)
-                        | (dataframe['rsi_3_1h'] > 10.0)
-                        | (dataframe['cti_20_4h'] < -0.5)
-                        | (dataframe['cti_20_1d'] < -0.5)
-                        | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
-                        | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.06))
-                )
-                &
-                (
-                        (dataframe['cti_20_15m'] < -0.0)
-                        | (dataframe['rsi_14_15m'] < 30.0)
-                        | (dataframe['r_480_1h'] < -30.0)
-                        | (dataframe['cti_20_4h'] < -0.5)
-                        | (dataframe['r_480_4h'] < -30.0)
-                        | (dataframe['cti_20_1d'] < 0.8)
-                        | (dataframe['rsi_14_1d'] < 60.0)
-                )
-                &
-                (
-                        (dataframe['not_downtrend_1h'])
-                        | (dataframe['is_downtrend_3_1h'] == False)
-                        | (dataframe['not_downtrend_4h'])
-                        | (dataframe['rsi_3_15m'] > 20.0)
-                        | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
-                        | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
-                        | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
-                )
-                &
-                (
-                        (dataframe['not_downtrend_1h'])
-                        | (dataframe['rsi_3_15m'] > 30.0)
-                        | (dataframe['rsi_14_15m'] < 30.0)
-                        | (dataframe['cti_20_1h'] < 0.5)
-                        | (dataframe['cti_20_4h'] < -0.5)
-                        | (dataframe['cti_20_1d'] < 0.5)
-                )
-                &
-                (
-                        (dataframe['cti_20_15m'] < -0.5)
-                        | (dataframe['rsi_3_15m'] > 20.0)
-                        | (dataframe['rsi_14_15m'] < 30.0)
-                        | (dataframe['cti_20_1h'] < -0.0)
-                        | (dataframe['r_480_1h'] < -30.0)
-                        | (dataframe['cti_20_4h'] < -0.0)
-                        | (dataframe['r_480_4h'] < -30.0)
-                        | (dataframe['cti_20_1d'] < 0.5)
-                )
-                &
-                (
-                        (dataframe['not_downtrend_1h'])
-                        | (dataframe['cti_20_15m'] < -0.9)
-                        | (dataframe['rsi_3_15m'] > 20.0)
-                        | (dataframe['cti_20_1h'] < -0.75)
-                        | (dataframe['rsi_14_1h'] < 30.0)
-                        | (dataframe['cti_20_4h'] < -0.9)
-                        | (dataframe['rsi_14_4h'] < 30.0)
-                        | (dataframe['cti_20_1d'] < 0.75)
-                )
-                &
-                (
-                        (dataframe['rsi_14_15m'] < 30.0)
-                        | (dataframe['cti_20_1h'] < 0.5)
-                        | (dataframe['r_480_1h'] < -30.0)
-                        | (dataframe['cti_20_4h'] < 0.5)
-                        | (dataframe['r_480_4h'] < -30.0)
-                        | (dataframe['cti_20_1d'] < 0.5)
-                        | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.02))
-                )
-                &
-                (
-                        (dataframe['not_downtrend_15m'])
-                        | (dataframe['not_downtrend_1h'])
-                        | (dataframe['rsi_3_15m'] > 20.0)
-                        | (dataframe['rsi_14_15m'] < 30.0)
-                        | (dataframe['cti_20_1d'] < 0.75)
-                        | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
-                )
-                &
-                (
-                        (dataframe['not_downtrend_1h'])
-                        | (dataframe['not_downtrend_4h'])
-                        | (dataframe['rsi_3_15m'] > 20.0)
-                        | (dataframe['cti_20_1h'] < -0.9)
-                        | (dataframe['cti_20_1d'] < 0.75)
-                )
-                &
-                (
-                        (dataframe['not_downtrend_15m'])
-                        | (dataframe['not_downtrend_1h'])
-                        | (dataframe['rsi_3_15m'] > 10.0)
-                        | (dataframe['cti_20_1d'] < 0.75)
-                        | (dataframe['rsi_14_1d'] < 70.0)
-                )
-                &
-                (
-                        (dataframe['not_downtrend_15m'])
-                        | (dataframe['cti_20_15m'] < -0.0)
-                        | (dataframe['rsi_3_15m'] > 30.0)
-                        | (dataframe['rsi_14_15m'] < 30.0)
-                        | (dataframe['cti_20_1h'] < 0.5)
-                        | (dataframe['rsi_14_1h'] < 70.0)
-                        | (dataframe['cti_20_4h'] < -0.5)
-                        | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
-                )
-                &
-                (
-                        (dataframe['not_downtrend_1h'])
-                        | (dataframe['not_downtrend_4h'])
-                        | (dataframe['cti_20_15m'] < -0.9)
-                        | (dataframe['rsi_14_15m'] < 30.0)
-                        | (dataframe['cti_20_1h'] < -0.9)
-                        | (dataframe['cti_20_1d'] < 0.75)
-                )
-                &
-                (
-                        (dataframe['rsi_14_15m'] < 30.0)
-                        | (dataframe['cti_20_1h'] < -0.0)
-                        | (dataframe['cti_20_4h'] < 0.5)
-                        | (dataframe['cti_20_1d'] < -0.75)
-                        | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
-                        | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
-                )
-                &
-                (
-                        (dataframe['not_downtrend_1h'])
-                        | (dataframe['rsi_3_15m'] > 30.0)
-                        | (dataframe['cti_20_1h'] < -0.5)
-                        | (dataframe['rsi_3_1h'] > 20.0)
-                        | (dataframe['cti_20_4h'] < -0.5)
-                        | (dataframe['cti_20_1d'] < 0.75)
-                )
-                &
-                (
-                        (dataframe['not_downtrend_15m'])
-                        | (dataframe['cti_20_15m'] < -0.75)
-                        | (dataframe['rsi_3_15m'] > 10.0)
-                        | (dataframe['rsi_14_15m'] < 30.0)
-                        | (dataframe['cti_20_1h'] < -0.75)
-                        | (dataframe['cti_20_4h'] < 0.5)
-                        | (dataframe['cti_20_1d'] < -0.75)
-                        | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
-                )
-                &
-                (
-                        (dataframe['not_downtrend_1h'])
-                        | (dataframe['cti_20_15m'] < -0.9)
-                        | (dataframe['rsi_3_15m'] > 30.0)
-                        | (dataframe['rsi_14_15m'] < 30.0)
-                        | (dataframe['cti_20_1h'] < -0.75)
-                        | (dataframe['rsi_3_1h'] > 30.0)
-                        | (dataframe['cti_20_4h'] < -0.75)
-                        | (dataframe['cti_20_1d'] < -0.5)
-                        | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
-                )
-                &
-                (
-                        (dataframe['cti_20_15m'] < -0.75)
-                        | (dataframe['rsi_3_15m'] > 20.0)
-                        | (dataframe['rsi_14_15m'] < 30.0)
-                        | (dataframe['cti_20_1h'] < 0.5)
-                        | (dataframe['cti_20_1d'] < -0.5)
-                        | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
-                        | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
-                )
-                &
-                (
-                        (dataframe['not_downtrend_1h'])
-                        | (dataframe['not_downtrend_4h'])
-                        | (dataframe['cti_20_15m'] < -0.9)
-                        | (dataframe['rsi_3_15m'] > 30.0)
-                        | (dataframe['rsi_14_15m'] < 30.0)
-                        | (dataframe['cti_20_1h'] < -0.75)
-                        | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
-                        | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
-                        | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
-                )
-                &
-                (
-                        (dataframe['not_downtrend_15m'])
-                        | (dataframe['cti_20_15m'] < -0.75)
-                        | (dataframe['rsi_3_15m'] > 10.0)
-                        | (dataframe['cti_20_1h'] < -0.5)
-                        | (dataframe['cti_20_4h'] < 0.75)
-                        | (dataframe['cti_20_1d'] < -0.0)
-                        | (dataframe['rsi_14_1d'] < 70.0)
-                )
+            (
+                (dataframe['cti_20_15m'] < -0.75)
+                | (dataframe['rsi_3_15m'] > 10.0)
+                | (dataframe['cti_20_4h'] < -0.5)
+                | (dataframe['cti_20_1d'] < 0.75)
+                | (dataframe['rsi_14_1d'] < 70.0)
+            )
+            &
+            (
+                (dataframe['not_downtrend_15m'])
+                | (dataframe['not_downtrend_1h'])
+                | (dataframe['not_downtrend_4h'])
+                | (dataframe['rsi_3_15m'] > 10.0)
+                | (dataframe['cti_20_1d'] < 0.75)
+            )
+            &
+            (
+                (dataframe['not_downtrend_1h'])
+                | (dataframe['rsi_3_15m'] > 30.0)
+                | (dataframe['cti_20_4h'] < 0.75)
+                | (dataframe['cti_20_1d'] < 0.75)
+            )
+            &
+            (
+                (dataframe['not_downtrend_1h'])
+                | (dataframe['cti_20_1h'] < -0.9)
+                | (dataframe['cti_20_4h'] < 0.75)
+                | (dataframe['cti_20_1d'] < -0.75)
+                | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.02))
+            )
+            &
+            (
+                (dataframe['rsi_3_15m'] > 10.0)
+                | (dataframe['rsi_14_15m'] < 30.0)
+                | (dataframe['cti_20_1h'] < 0.8)
+                | (dataframe['cti_20_4h'] < 0.5)
+                | (dataframe['cti_20_1d'] < 0.5)
+                | (dataframe['rsi_14_1d'] < 60.0)
+            )
+            &
+            (
+                (dataframe['not_downtrend_1h'])
+                | (dataframe['rsi_14_15m'] < 30.0)
+                | (dataframe['cti_20_1h'] < -0.75)
+                | (dataframe['cti_20_4h'] < 0.5)
+                | (dataframe['cti_20_1d'] < 0.5)
+                | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
+            )
+            &
+            (
+                (dataframe['not_downtrend_4h'])
+                | (dataframe['cti_20_15m'] < 0.5)
+                | (dataframe['rsi_14_15m'] < 30.0)
+                | (dataframe['cti_20_1h'] < -0.0)
+                | (dataframe['cti_20_1d'] < 0.5)
+                | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
+            )
+            &
+            (
+                (dataframe['cti_20_15m'] < -0.9)
+                | (dataframe['rsi_14_15m'] < 30.0)
+                | (dataframe['cti_20_1h'] < 0.5)
+                | (dataframe['cti_20_4h'] < -0.0)
+                | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
+                | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
+            )
+            &
+            (
+                (dataframe['cti_20_15m'] < -0.0)
+                | (dataframe['rsi_14_15m'] < 30.0)
+                | (dataframe['cti_20_1h'] < -0.5)
+                | (dataframe['rsi_14_1h'] < 40.0)
+                | (dataframe['rsi_14_4h'] < 40.0)
+                | (dataframe['cti_20_1d'] < 0.75)
+                | (dataframe['high_max_48_1h'] < (dataframe['close'] * 1.25))
+            )
+            &
+            (
+                (dataframe['not_downtrend_4h'])
+                | (dataframe['cti_20_15m'] < -0.5)
+                | (dataframe['rsi_14_15m'] < 30.0)
+                | (dataframe['cti_20_1h'] < -0.5)
+                | (dataframe['cti_20_4h'] < -0.5)
+                | (dataframe['cti_20_1d'] < -0.0)
+                | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
+            )
+            &
+            (
+                (dataframe['not_downtrend_1h'])
+                | (dataframe['rsi_3_15m'] > 20.0)
+                | (dataframe['cti_20_1h'] < -0.5)
+                | (dataframe['cti_20_4h'] < -0.0)
+                | (dataframe['cti_20_1d'] < -0.0)
+                | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
+            )
+            &
+            (
+                (dataframe['not_downtrend_1h'])
+                | (dataframe['cti_20_1h'] < -0.75)
+                | (dataframe['rsi_3_1h'] > 10.0)
+                | (dataframe['cti_20_4h'] < -0.5)
+                | (dataframe['cti_20_1d'] < -0.5)
+                | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
+                | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.06))
+            )
+            &
+            (
+                (dataframe['cti_20_15m'] < -0.0)
+                | (dataframe['rsi_14_15m'] < 30.0)
+                | (dataframe['r_480_1h'] < -30.0)
+                | (dataframe['cti_20_4h'] < -0.5)
+                | (dataframe['r_480_4h'] < -30.0)
+                | (dataframe['cti_20_1d'] < 0.8)
+                | (dataframe['rsi_14_1d'] < 60.0)
+            )
+            &
+            (
+                (dataframe['not_downtrend_1h'])
+                | (dataframe['is_downtrend_3_1h'] == False)
+                | (dataframe['not_downtrend_4h'])
+                | (dataframe['rsi_3_15m'] > 20.0)
+                | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
+                | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
+                | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
+            )
+            &
+            (
+                (dataframe['not_downtrend_1h'])
+                | (dataframe['rsi_3_15m'] > 30.0)
+                | (dataframe['rsi_14_15m'] < 30.0)
+                | (dataframe['cti_20_1h'] < 0.5)
+                | (dataframe['cti_20_4h'] < -0.5)
+                | (dataframe['cti_20_1d'] < 0.5)
+            )
+            &
+            (
+                (dataframe['cti_20_15m'] < -0.5)
+                | (dataframe['rsi_3_15m'] > 20.0)
+                | (dataframe['rsi_14_15m'] < 30.0)
+                | (dataframe['cti_20_1h'] < -0.0)
+                | (dataframe['r_480_1h'] < -30.0)
+                | (dataframe['cti_20_4h'] < -0.0)
+                | (dataframe['r_480_4h'] < -30.0)
+                | (dataframe['cti_20_1d'] < 0.5)
+            )
+            &
+            (
+                (dataframe['not_downtrend_1h'])
+                | (dataframe['cti_20_15m'] < -0.9)
+                | (dataframe['rsi_3_15m'] > 20.0)
+                | (dataframe['cti_20_1h'] < -0.75)
+                | (dataframe['rsi_14_1h'] < 30.0)
+                | (dataframe['cti_20_4h'] < -0.9)
+                | (dataframe['rsi_14_4h'] < 30.0)
+                | (dataframe['cti_20_1d'] < 0.75)
+            )
+            &
+            (
+                (dataframe['rsi_14_15m'] < 30.0)
+                | (dataframe['cti_20_1h'] < 0.5)
+                | (dataframe['r_480_1h'] < -30.0)
+                | (dataframe['cti_20_4h'] < 0.5)
+                | (dataframe['r_480_4h'] < -30.0)
+                | (dataframe['cti_20_1d'] < 0.5)
+                | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.02))
+            )
+            &
+            (
+                (dataframe['not_downtrend_15m'])
+                | (dataframe['not_downtrend_1h'])
+                | (dataframe['rsi_3_15m'] > 20.0)
+                | (dataframe['rsi_14_15m'] < 30.0)
+                | (dataframe['cti_20_1d'] < 0.75)
+                | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
+            )
+            &
+            (
+                (dataframe['not_downtrend_1h'])
+                | (dataframe['not_downtrend_4h'])
+                | (dataframe['rsi_3_15m'] > 20.0)
+                | (dataframe['cti_20_1h'] < -0.9)
+                | (dataframe['cti_20_1d'] < 0.75)
+            )
+            &
+            (
+                (dataframe['not_downtrend_15m'])
+                | (dataframe['not_downtrend_1h'])
+                | (dataframe['rsi_3_15m'] > 10.0)
+                | (dataframe['cti_20_1d'] < 0.75)
+                | (dataframe['rsi_14_1d'] < 70.0)
+            )
+            &
+            (
+                (dataframe['not_downtrend_15m'])
+                | (dataframe['cti_20_15m'] < -0.0)
+                | (dataframe['rsi_3_15m'] > 30.0)
+                | (dataframe['rsi_14_15m'] < 30.0)
+                | (dataframe['cti_20_1h'] < 0.5)
+                | (dataframe['rsi_14_1h'] < 70.0)
+                | (dataframe['cti_20_4h'] < -0.5)
+                | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
+            )
+            &
+            (
+                (dataframe['not_downtrend_1h'])
+                | (dataframe['not_downtrend_4h'])
+                | (dataframe['cti_20_15m'] < -0.9)
+                | (dataframe['rsi_14_15m'] < 30.0)
+                | (dataframe['cti_20_1h'] < -0.9)
+                | (dataframe['cti_20_1d'] < 0.75)
+            )
+            &
+            (
+                (dataframe['rsi_14_15m'] < 30.0)
+                | (dataframe['cti_20_1h'] < -0.0)
+                | (dataframe['cti_20_4h'] < 0.5)
+                | (dataframe['cti_20_1d'] < -0.75)
+                | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
+                | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
+            )
+            &
+            (
+                (dataframe['not_downtrend_1h'])
+                | (dataframe['rsi_3_15m'] > 30.0)
+                | (dataframe['cti_20_1h'] < -0.5)
+                | (dataframe['rsi_3_1h'] > 20.0)
+                | (dataframe['cti_20_4h'] < -0.5)
+                | (dataframe['cti_20_1d'] < 0.75)
+            )
+            &
+            (
+                (dataframe['not_downtrend_15m'])
+                | (dataframe['cti_20_15m'] < -0.75)
+                | (dataframe['rsi_3_15m'] > 10.0)
+                | (dataframe['rsi_14_15m'] < 30.0)
+                | (dataframe['cti_20_1h'] < -0.75)
+                | (dataframe['cti_20_4h'] < 0.5)
+                | (dataframe['cti_20_1d'] < -0.75)
+                | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
+            )
+            &
+            (
+                (dataframe['not_downtrend_1h'])
+                | (dataframe['cti_20_15m'] < -0.9)
+                | (dataframe['rsi_3_15m'] > 30.0)
+                | (dataframe['rsi_14_15m'] < 30.0)
+                | (dataframe['cti_20_1h'] < -0.75)
+                | (dataframe['rsi_3_1h'] > 30.0)
+                | (dataframe['cti_20_4h'] < -0.75)
+                | (dataframe['cti_20_1d'] < -0.5)
+                | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
+            )
+            &
+            (
+                (dataframe['cti_20_15m'] < -0.75)
+                | (dataframe['rsi_3_15m'] > 20.0)
+                | (dataframe['rsi_14_15m'] < 30.0)
+                | (dataframe['cti_20_1h'] < 0.5)
+                | (dataframe['cti_20_1d'] < -0.5)
+                | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
+                | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
+            )
+            &
+            (
+                (dataframe['not_downtrend_1h'])
+                | (dataframe['not_downtrend_4h'])
+                | (dataframe['cti_20_15m'] < -0.9)
+                | (dataframe['rsi_3_15m'] > 30.0)
+                | (dataframe['rsi_14_15m'] < 30.0)
+                | (dataframe['cti_20_1h'] < -0.75)
+                | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
+                | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
+                | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
+            )
+            &
+            (
+                (dataframe['not_downtrend_15m'])
+                | (dataframe['cti_20_15m'] < -0.75)
+                | (dataframe['rsi_3_15m'] > 10.0)
+                | (dataframe['cti_20_1h'] < -0.5)
+                | (dataframe['cti_20_4h'] < 0.75)
+                | (dataframe['cti_20_1d'] < -0.0)
+                | (dataframe['rsi_14_1d'] < 70.0)
+            )
+            &
+            (
+                (dataframe['cti_20_15m'] < -0.8)
+                | (dataframe['rsi_14_15m'] < 30.0)
+                | (dataframe['cti_20_1h'] < 0.8)
+                | (dataframe['cti_20_4h'] < 0.8)
+                | (dataframe['cti_20_1d'] < -0.0)
+                | (dataframe['rsi_14_1d'] < 70.0)
+                | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.03))
+            )
         )
 
         for buy_enable in self.buy_params:
