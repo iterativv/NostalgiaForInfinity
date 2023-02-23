@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.157"
+        return "v12.0.158"
 
     # ROI table:
     minimal_roi = {
@@ -9207,7 +9207,14 @@ class NostalgiaForInfinityX2(IStrategy):
         trade_ids: dict = self.hold_trades_cache.data.get("trade_ids")
         if trade_ids and trade.id in trade_ids:
             trade_profit_ratio = trade_ids[trade.id]
-            current_profit_ratio = trade.calc_profit_ratio(rate)
+            profit = 0.0
+            if (trade.realized_profit != 0.0):
+                profit = ((current_rate - trade.open_rate) / trade.open_rate) * trade.stake_amount
+                profit = profit + trade.realized_profit
+                profit = profit / trade.stake_amount
+            else:
+                profit = trade.calc_profit_ratio(rate)
+            current_profit_ratio = profit
             if sell_reason == "force_sell":
                 formatted_profit_ratio = f"{trade_profit_ratio * 100}%"
                 formatted_current_profit_ratio = f"{current_profit_ratio * 100}%"
@@ -9232,7 +9239,14 @@ class NostalgiaForInfinityX2(IStrategy):
         trade_pairs: dict = self.hold_trades_cache.data.get("trade_pairs")
         if trade_pairs and trade.pair in trade_pairs:
             trade_profit_ratio = trade_pairs[trade.pair]
-            current_profit_ratio = trade.calc_profit_ratio(rate)
+            profit = 0.0
+            if (trade.realized_profit != 0.0):
+                profit = ((current_rate - trade.open_rate) / trade.open_rate) * trade.stake_amount
+                profit = profit + trade.realized_profit
+                profit = profit / trade.stake_amount
+            else:
+                profit = trade.calc_profit_ratio(rate)
+            current_profit_ratio = profit
             if sell_reason == "force_sell":
                 formatted_profit_ratio = f"{trade_profit_ratio * 100}%"
                 formatted_current_profit_ratio = f"{current_profit_ratio * 100}%"
