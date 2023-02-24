@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.161"
+        return "v12.0.162"
 
     # ROI table:
     minimal_roi = {
@@ -2271,6 +2271,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     )
             ):
                 print("Grind buying...")
+                self.dp.send_msg(f"Grinding buying... Total profit: {(total_profit * 100.0):.2f}%")
                 return slice_amount
 
             # Sell
@@ -2279,6 +2280,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     and (slice_profit > 0.01)
             ):
                 print("Grind selling...")
+                self.dp.send_msg(f"Grinding selling... Total profit: {(total_profit * 100.0):.2f} Grind profit: {(slice_profit * 100.0):.2f}%")
                 return -(filled_entries[-1].amount * current_rate)
                 return -slice_amount
 
