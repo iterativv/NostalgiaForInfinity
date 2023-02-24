@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.166"
+        return "v12.0.167"
 
     # ROI table:
     minimal_roi = {
@@ -2262,7 +2262,7 @@ class NostalgiaForInfinityX2(IStrategy):
             # Buy
             if (
                     ((count_of_entries - count_of_exits) < 2)
-                    and (total_profit < -0.08)
+                    and (total_profit < -0.06)
                     and (
                         (last_candle['rsi_14'] < 40.0)
                         and (last_candle['r_14'] < -80.0)
