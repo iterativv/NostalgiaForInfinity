@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.171"
+        return "v12.0.172"
 
     # ROI table:
     minimal_roi = {
@@ -209,9 +209,11 @@ class NostalgiaForInfinityX2(IStrategy):
                 self.config["user_data_dir"] / ("nfix2-profit_max-" + bot_name  + self.config["exchange"]["name"] + "-" + self.config["stake_currency"] +  ("-(backtest)" if (self.config['runmode'].value == 'backtest') else "") + ".json")
             )
 
-            # OKX, Kraken provides a lower number of candle data per API call
-        if self.config["exchange"]["name"] in ["okx", "kraken"]:
+        # OKX, Kraken provides a lower number of candle data per API call
+        if self.config["exchange"]["name"] in ["okx"]:
             self.startup_candle_count = 480
+        elif self.config["exchange"]["name"] in ["kraken"]:
+            self.startup_candle_count = 710
 
         # If the cached data hasn't changed, it's a no-op
         self.target_profit_cache.save()
