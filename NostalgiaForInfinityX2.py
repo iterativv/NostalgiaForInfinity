@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.174"
+        return "v12.0.175"
 
     # ROI table:
     minimal_roi = {
@@ -9867,7 +9867,7 @@ class NostalgiaForInfinityX2(IStrategy):
             trade_profit_ratio = trade_ids[trade.id]
             profit = 0.0
             if (trade.realized_profit != 0.0):
-                profit = ((current_rate - trade.open_rate) / trade.open_rate) * trade.stake_amount
+                profit = ((rate - trade.open_rate) / trade.open_rate) * trade.stake_amount
                 profit = profit + trade.realized_profit
                 profit = profit / trade.stake_amount
             else:
@@ -9899,7 +9899,7 @@ class NostalgiaForInfinityX2(IStrategy):
             trade_profit_ratio = trade_pairs[trade.pair]
             profit = 0.0
             if (trade.realized_profit != 0.0):
-                profit = ((current_rate - trade.open_rate) / trade.open_rate) * trade.stake_amount
+                profit = ((rate - trade.open_rate) / trade.open_rate) * trade.stake_amount
                 profit = profit + trade.realized_profit
                 profit = profit / trade.stake_amount
             else:
