@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.168"
+        return "v12.0.169"
 
     # ROI table:
     minimal_roi = {
@@ -2254,10 +2254,16 @@ class NostalgiaForInfinityX2(IStrategy):
             else:
                 total_profit = current_profit
 
+            exit_rate = current_rate
+            if self.dp.runmode.value in ('live', 'dry_run'):
+                ticker = self.dp.ticker(trade.pair)
+                if ticker['bid'] is not None:
+                    exit_rate = ticker['bid']
+
             slice_amount = filled_entries[0].cost
-            slice_profit = (current_rate - filled_orders[-1].average) / filled_orders[-1].average
-            slice_profit_entry = (current_rate - filled_entries[-1].average) / filled_entries[-1].average
-            slice_profit_exit = ((current_rate - filled_exits[-1].average) / filled_exits[-1].average) if count_of_exits > 0 else 0.0
+            slice_profit = (exit_rate - filled_orders[-1].average) / filled_orders[-1].average
+            slice_profit_entry = (exit_rate - filled_entries[-1].average) / filled_entries[-1].average
+            slice_profit_exit = ((exit_rate - filled_exits[-1].average) / filled_exits[-1].average) if count_of_exits > 0 else 0.0
 
             # Buy
             if (
@@ -2278,7 +2284,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     ((count_of_entries - count_of_exits) > 1)
                     and (slice_profit > 0.01)
             ):
-                sell_amount = filled_entries[-1].filled * current_rate
+                sell_amount = filled_entries[-1].filled * exit_rate
                 self.dp.send_msg(f"Grinding selling... | Amount: {sell_amount} | Total profit: {(total_profit * 100.0):.2f}% | Grind profit: {(slice_profit * 100.0):.2f}%")
                 return -sell_amount
 
