@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.169"
+        return "v12.0.170"
 
     # ROI table:
     minimal_roi = {
@@ -9750,6 +9750,12 @@ class NostalgiaForInfinityX2(IStrategy):
             self.load_hold_trades_config()
 
         return super().bot_loop_start(**kwargs)
+
+    def leverage(self, pair: str, current_time: datetime, current_rate: float,
+                 proposed_leverage: float, max_leverage: float, entry_tag: Optional[str], side: str,
+                 **kwargs) -> float:
+
+        return 5.0
 
     def _set_profit_target(self, pair: str, sell_reason: str, rate: float, current_profit: float, current_time: datetime):
         self.target_profit_cache.data[pair] = {
