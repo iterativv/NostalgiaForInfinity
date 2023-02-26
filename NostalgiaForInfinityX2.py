@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.187"
+        return "v12.0.188"
 
     # ROI table:
     minimal_roi = {
@@ -2279,6 +2279,8 @@ class NostalgiaForInfinityX2(IStrategy):
                     )
             ):
                 buy_amount = slice_amount if (slice_amount < max_stake) else max_stake
+                if (buy_amount < min_stake):
+                    return None
                 self.dp.send_msg(f"Grinding buying... | Amount: {buy_amount} | Total profit: {(total_profit * 100.0):.2f}%")
                 return buy_amount
 
