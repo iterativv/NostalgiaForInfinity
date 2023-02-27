@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.189"
+        return "v12.0.190"
 
     # ROI table:
     minimal_roi = {
@@ -2120,7 +2120,7 @@ class NostalgiaForInfinityX2(IStrategy):
 
         profit = 0.0
         if (trade.realized_profit != 0.0):
-            profit = ((current_rate - trade.open_rate) / trade.open_rate) * trade.stake_amount
+            profit = ((current_rate - trade.open_rate) / trade.open_rate) * trade.stake_amount * (1 - trade.fee_close)
             profit = profit + trade.realized_profit
             profit = profit / trade.stake_amount
         else:
@@ -2250,7 +2250,7 @@ class NostalgiaForInfinityX2(IStrategy):
 
             total_profit = 0.0
             if (trade.realized_profit != 0.0):
-                total_profit = ((current_rate - trade.open_rate) / trade.open_rate) * trade.stake_amount
+                total_profit = ((current_rate - trade.open_rate) / trade.open_rate) * trade.stake_amount * (1 - trade.fee_close)
                 total_profit = total_profit + trade.realized_profit
                 total_profit = total_profit / trade.stake_amount
             else:
@@ -9834,7 +9834,7 @@ class NostalgiaForInfinityX2(IStrategy):
                 if self.exit_profit_only:
                     profit = 0.0
                     if (trade.realized_profit != 0.0):
-                        profit = ((rate - trade.open_rate) / trade.open_rate) * trade.stake_amount
+                        profit = ((rate - trade.open_rate) / trade.open_rate) * trade.stake_amount * (1 - trade.fee_close)
                         profit = profit + trade.realized_profit
                         profit = profit / trade.stake_amount
                     else:
@@ -9935,7 +9935,7 @@ class NostalgiaForInfinityX2(IStrategy):
             trade_profit_ratio = trade_ids[trade.id]
             profit = 0.0
             if (trade.realized_profit != 0.0):
-                profit = ((rate - trade.open_rate) / trade.open_rate) * trade.stake_amount
+                profit = ((rate - trade.open_rate) / trade.open_rate) * trade.stake_amount * (1 - trade.fee_close)
                 profit = profit + trade.realized_profit
                 profit = profit / trade.stake_amount
             else:
@@ -9967,7 +9967,7 @@ class NostalgiaForInfinityX2(IStrategy):
             trade_profit_ratio = trade_pairs[trade.pair]
             profit = 0.0
             if (trade.realized_profit != 0.0):
-                profit = ((rate - trade.open_rate) / trade.open_rate) * trade.stake_amount
+                profit = ((rate - trade.open_rate) / trade.open_rate) * trade.stake_amount * (1 - trade.fee_close)
                 profit = profit + trade.realized_profit
                 profit = profit / trade.stake_amount
             else:
