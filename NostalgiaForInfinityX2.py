@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.190"
+        return "v12.0.191"
 
     # ROI table:
     minimal_roi = {
@@ -2206,7 +2206,8 @@ class NostalgiaForInfinityX2(IStrategy):
         enter_tags = enter_tag.split()
 
         # Grinding
-        if any(c in (self.normal_mode_tags + self.pump_mode_tags  + self.quick_mode_tags + self.long_mode_tags) for c in enter_tags):
+        if (any(c in (self.normal_mode_tags + self.pump_mode_tags  + self.quick_mode_tags + self.long_mode_tags) for c in enter_tags)
+            or not any(c in (self.normal_mode_tags + self.pump_mode_tags + self.quick_mode_tags + self.rebuy_mode_tags + self.long_mode_tags) for c in enter_tags)):
             return self.grind_adjust_trade_position(trade, current_time,
                                                          current_rate, current_profit,
                                                          min_stake, max_stake,
