@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.203"
+        return "v12.0.204"
 
     # ROI table:
     minimal_roi = {
@@ -2311,7 +2311,8 @@ class NostalgiaForInfinityX2(IStrategy):
             # Sell
 
             # Partial fills on grinding sells
-            for exit_order in reversed(filled_exits):
+            if (count_of_exits > 0):
+                exit_order = filled_exits[-1]
                 if ((exit_order.remaining * exit_rate) > min_stake):
                     if (
                             (slice_profit_exit > 0.01)
