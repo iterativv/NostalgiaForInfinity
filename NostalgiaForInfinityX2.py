@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.205"
+        return "v12.0.206"
 
     # ROI table:
     minimal_roi = {
@@ -2335,7 +2335,7 @@ class NostalgiaForInfinityX2(IStrategy):
                 if (count_of_entries > (count_of_full_exits + 1)):
                     num_buys = 0
                     num_sells = 0
-                    for order in reversed(filled_entries):
+                    for order in reversed(filled_orders):
                         if (order.ft_order_side == "buy"):
                             num_buys += 1
                         elif (order.ft_order_side == "sell"):
