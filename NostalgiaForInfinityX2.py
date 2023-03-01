@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.192"
+        return "v12.0.193"
 
     # ROI table:
     minimal_roi = {
@@ -136,7 +136,7 @@ class NostalgiaForInfinityX2(IStrategy):
     position_adjustment_enable = True
 
     # Grinding feature
-    grinding_enable = False
+    grinding_enable = True
 
     stake_rebuy_mode_multiplier = 0.33
     pa_rebuy_mode_max = 2
