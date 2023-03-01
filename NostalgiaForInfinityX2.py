@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.193"
+        return "v12.0.194"
 
     # ROI table:
     minimal_roi = {
@@ -137,6 +137,13 @@ class NostalgiaForInfinityX2(IStrategy):
 
     # Grinding feature
     grinding_enable = True
+    # Multiply of the initial buy stake
+    grinding_stake_factor = 1.0
+    # Div grinding stake
+    grinding_parts = 4
+    # Current total profit
+    grinding_thresholds = [-0.04, -0.06, -0.08, -0.1]
+    grinding_thresholds_alt = [-0.06, -0.07, -0.08, -0.1]
 
     stake_rebuy_mode_multiplier = 0.33
     pa_rebuy_mode_max = 2
@@ -201,6 +208,12 @@ class NostalgiaForInfinityX2(IStrategy):
             self.profit_max_thresholds = self.config['profit_max_thresholds']
         if ('grinding_enable' in self.config):
             self.grinding_enable = self.config['grinding_enable']
+        if ('grinding_stake_factor' in self.config):
+            self.grinding_stake_factor = self.config['grinding_stake_factor']
+        if ('grinding_parts' in self.config):
+            self.grinding_parts = self.config['grinding_parts']
+        if ('grinding_thresholds' in self.config):
+            self.grinding_thresholds = self.config['grinding_thresholds']
         if self.target_profit_cache is None:
             bot_name = ""
             if ('bot_name' in self.config):
@@ -2268,31 +2281,62 @@ class NostalgiaForInfinityX2(IStrategy):
             slice_profit_entry = (exit_rate - filled_entries[-1].average) / filled_entries[-1].average
             slice_profit_exit = ((exit_rate - filled_exits[-1].average) / filled_exits[-1].average) if count_of_exits > 0 else 0.0
 
+            grind_stake = filled_entries[0].cost * self.grinding_stake_factor
+            grind_part_stake = grind_stake / self.grinding_parts
+
+            # Low stakes, on Binance mostly
+            if (grind_part_stake < min_stake):
+                grind_part_stake = grind_stake
+                self.grinding_parts = 1
+                self.grinding_thresholds = self.grinding_thresholds_alt
+
             # Buy
-            if (
-                    ((count_of_entries - count_of_exits) < 2)
-                    and (total_profit < -0.06)
-                    and (
-                        (last_candle['rsi_14'] < 40.0)
-                        and (last_candle['r_14'] < -80.0)
-                        and (last_candle['rsi_3'] > 16.0)
-                        and (last_candle['btc_pct_close_max_72_5m'] < 1.03)
-                    )
-            ):
-                buy_amount = slice_amount if (slice_amount < max_stake) else max_stake
-                if (buy_amount < min_stake):
-                    return None
-                self.dp.send_msg(f"Grinding buying... | Amount: {buy_amount} | Total profit: {(total_profit * 100.0):.2f}%")
-                return buy_amount
+            for i in range(self.grinding_parts):
+                if (trade.stake_amount < (slice_amount + (grind_part_stake * i))):
+                    if (
+                            (total_profit < self.grinding_thresholds[i])
+                            and (
+                                (last_candle['rsi_14'] < 40.0)
+                                and (last_candle['r_14'] < -80.0)
+                                and (last_candle['rsi_3'] > 16.0)
+                                and (last_candle['btc_pct_close_max_72_5m'] < 1.03)
+                            )
+                    ):
+                        buy_amount = grind_part_stake if (grind_part_stake < max_stake) else max_stake
+                        if (buy_amount < min_stake):
+                            return None
+                        self.dp.send_msg(f"Grinding buying... | Amount: {buy_amount} | Total profit: {(total_profit * 100.0):.2f}%")
+                        return buy_amount
 
             # Sell
-            if (
-                    ((count_of_entries - count_of_exits) > 1)
-                    and (slice_profit > 0.01)
-            ):
-                sell_amount = filled_entries[-1].filled * exit_rate
-                self.dp.send_msg(f"Grinding selling... | Amount: {sell_amount} | Total profit: {(total_profit * 100.0):.2f}% | Grind profit: {(slice_profit * 100.0):.2f}%")
-                return -sell_amount
+
+            # Partial fills on grinding sells
+            for exit_order in reversed(filled_exits):
+                if (exit_order.remaining > min_stake):
+                    if (
+                            (slice_profit_exit > 0.01)
+                    ):
+                        sell_amount = exit_order.remaining * exit_rate
+                        self.dp.send_msg(f"Grinding selling... | Amount: {sell_amount} | Total profit: {(total_profit * 100.0):.2f}% | Grind profit: {(slice_profit_exit * 100.0):.2f}%")
+                        return -sell_amount
+
+            # Sell the corresponding buy order
+
+            if (count_of_entries > 1):
+                count_of_full_exits = 0
+                for exit_order in filled_exits:
+                    if (exit_order.remaining < min_stake):
+                        count_of_full_exits += 1
+
+                if (count_of_entries > (count_of_full_exits + 1)):
+                    buy_order = filled_entries[count_of_full_exits + 1]
+                    grind_profit = (exit_rate - buy_order.average) / buy_order.average
+                    if (
+                            (grind_profit > 0.01)
+                    ):
+                        sell_amount = buy_order.filled * exit_rate
+                        self.dp.send_msg(f"Grinding selling... | Amount: {sell_amount} | Total profit: {(total_profit * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%")
+                        return -sell_amount
 
         return None
 
