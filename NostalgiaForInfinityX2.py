@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.197"
+        return "v12.0.198"
 
     # ROI table:
     minimal_roi = {
@@ -2305,7 +2305,7 @@ class NostalgiaForInfinityX2(IStrategy):
                         buy_amount = grind_part_stake if (grind_part_stake < max_stake) else max_stake
                         if (buy_amount < min_stake):
                             return None
-                        self.dp.send_msg(f"Grinding buying... | Amount: {buy_amount} | Total profit: {(total_profit * 100.0):.2f}%")
+                        self.dp.send_msg(f"Grinding buying [{trade.pair}] | Rate: {current_rate} | Stake mount: {buy_amount} | Total profit: {(total_profit * 100.0):.2f}%")
                         return buy_amount
 
             # Sell
@@ -2317,7 +2317,7 @@ class NostalgiaForInfinityX2(IStrategy):
                             (slice_profit_exit > 0.01)
                     ):
                         sell_amount = exit_order.remaining * exit_rate
-                        self.dp.send_msg(f"Grinding selling... | Amount: {sell_amount} | Total profit: {(total_profit * 100.0):.2f}% | Grind profit: {(slice_profit_exit * 100.0):.2f}%")
+                        self.dp.send_msg(f"Grinding selling (remaining) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {exit_order.remaining} | Total profit: {(total_profit * 100.0):.2f}% | Grind profit: {(slice_profit_exit * 100.0):.2f}%")
                         return -sell_amount
 
             # Sell the corresponding buy order
@@ -2335,7 +2335,7 @@ class NostalgiaForInfinityX2(IStrategy):
                             (grind_profit > 0.01)
                     ):
                         sell_amount = buy_order.filled * exit_rate
-                        self.dp.send_msg(f"Grinding selling... | Amount: {sell_amount} | Total profit: {(total_profit * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%")
+                        self.dp.send_msg(f"Grinding selling [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount}| Coin amount: {buy_order.filled} | Total profit: {(total_profit * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%")
                         return -sell_amount
 
         return None
