@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.206"
+        return "v12.0.207"
 
     # ROI table:
     minimal_roi = {
@@ -2287,8 +2287,6 @@ class NostalgiaForInfinityX2(IStrategy):
             # Low stakes, on Binance mostly
             if (grind_part_stake < min_stake):
                 grind_part_stake = grind_stake
-                self.grinding_parts = 1
-                self.grinding_thresholds = self.grinding_thresholds_alt
 
             # Buy
             for i in range(self.grinding_parts):
