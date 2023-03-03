@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.209"
+        return "v12.0.210"
 
     # ROI table:
     minimal_roi = {
@@ -2299,9 +2299,10 @@ class NostalgiaForInfinityX2(IStrategy):
                             (total_profit < self.grinding_thresholds[i])
                             and (
                                 (last_candle['rsi_14'] < 40.0)
-                                and (last_candle['r_14'] < -80.0)
-                                and (last_candle['rsi_3'] > 16.0)
-                                and (last_candle['btc_pct_close_max_72_5m'] < 1.03)
+                                and (last_candle['rsi_3'] > 10.0)
+                                and (last_candle['rsi_3_1h'] > 10.0)
+                                and (last_candle['btc_pct_close_max_72_5m'] < 1.04)
+                                and (last_candle['btc_pct_close_max_24_5m'] < 1.03)
                             )
                     ):
                         buy_amount = grind_part_stake if (grind_part_stake < max_stake) else max_stake
