@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.208"
+        return "v12.0.209"
 
     # ROI table:
     minimal_roi = {
@@ -123,11 +123,11 @@ class NostalgiaForInfinityX2(IStrategy):
     # Stop thesholds. 0: Doom Bull, 1: Doom Bear, 2: u_e Bull, 3: u_e Bear, 4: u_e mins Bull, 5: u_e mins Bear.
     # 6: u_e ema % Bull, 7: u_e ema % Bear, 8: u_e RSI diff Bull, 9: u_e RSI diff Bear.
     # 10: enable Doom Bull, 11: enable Doom Bear, 12: enable u_e Bull, 13: enable u_e Bear.
-    stop_thresholds_normal = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 24.0, 24.0, False, False, True, True]
-    stop_thresholds_pump = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 24.0, 24.0, False, False, True, True]
-    stop_thresholds_quick = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 24.0, 24.0, False, False, True, True]
-    stop_thresholds_rebuy = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 24.0, 24.0, False, False, True, True]
-    stop_thresholds_long = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 24.0, 24.0, False, False, True, True]
+    stop_thresholds_normal = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 24.0, 24.0, True, True, False, False]
+    stop_thresholds_pump = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 24.0, 24.0, True, True, False, False]
+    stop_thresholds_quick = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 24.0, 24.0, True, True, False, False]
+    stop_thresholds_rebuy = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 24.0, 24.0, True, True, False, False]
+    stop_thresholds_long = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 24.0, 24.0, True, True, False, False]
 
     # Rebuy mode minimum number of free slots
     rebuy_mode_min_free_slots = 2
@@ -253,7 +253,7 @@ class NostalgiaForInfinityX2(IStrategy):
 
         # Stoplosses
         if not sell:
-            sell, signal_name = self.exit_normal_stoploss(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_normal_stoploss(current_rate, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Profit Target Signal
         # Check if pair exist on target_profit_cache
@@ -584,12 +584,13 @@ class NostalgiaForInfinityX2(IStrategy):
 
         return False, None
 
-    def exit_normal_stoploss(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
+    def exit_normal_stoploss(self, current_rate: float, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
         is_backtest = self.dp.runmode.value == 'backtest'
+        rel_profit = ((current_rate - trade.open_rate) / trade.open_rate)
         # Stoploss doom
         if (
                 (self.stop_thresholds_normal[10])
-                and (current_profit < self.stop_thresholds_normal[0])
+                and (rel_profit < self.stop_thresholds_normal[0])
         ):
             return True, 'exit_normal_stoploss_doom'
 
@@ -628,7 +629,7 @@ class NostalgiaForInfinityX2(IStrategy):
 
         # Stoplosses
         if not sell:
-            sell, signal_name = self.exit_pump_stoploss(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_pump_stoploss(current_rate, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Profit Target Signal
         # Check if pair exist on target_profit_cache
@@ -959,12 +960,13 @@ class NostalgiaForInfinityX2(IStrategy):
 
         return False, None
 
-    def exit_pump_stoploss(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
+    def exit_pump_stoploss(self, current_rate: float, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
         is_backtest = self.dp.runmode.value == 'backtest'
+        rel_profit = ((current_rate - trade.open_rate) / trade.open_rate)
         # Stoploss doom
         if (
                 (self.stop_thresholds_pump[10])
-                and (current_profit < self.stop_thresholds_pump[0])
+                and (rel_profit < self.stop_thresholds_pump[0])
         ):
             return True, 'exit_pump_stoploss_doom'
 
@@ -1003,7 +1005,7 @@ class NostalgiaForInfinityX2(IStrategy):
 
         # Stoplosses
         if not sell:
-            sell, signal_name = self.exit_quick_stoploss(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_quick_stoploss(current_rate, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Extra sell logic
         if not sell:
@@ -1345,12 +1347,13 @@ class NostalgiaForInfinityX2(IStrategy):
 
         return False, None
 
-    def exit_quick_stoploss(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
+    def exit_quick_stoploss(self, current_rate: float, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
         is_backtest = self.dp.runmode.value == 'backtest'
+        rel_profit = ((current_rate - trade.open_rate) / trade.open_rate)
         # Stoploss doom
         if (
                 (self.stop_thresholds_quick[10])
-                and (current_profit < self.stop_thresholds_quick[0])
+                and (rel_profit < self.stop_thresholds_quick[0])
         ):
             return True, 'exit_quick_stoploss_doom'
 
@@ -1389,7 +1392,7 @@ class NostalgiaForInfinityX2(IStrategy):
 
         # Stoplosses
         if not sell:
-            sell, signal_name = self.exit_rebuy_stoploss(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_rebuy_stoploss(current_rate, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Profit Target Signal
         # Check if pair exist on target_profit_cache
@@ -1720,11 +1723,12 @@ class NostalgiaForInfinityX2(IStrategy):
 
         return False, None
 
-    def exit_rebuy_stoploss(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
+    def exit_rebuy_stoploss(self, current_rate: float, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
+        rel_profit = ((current_rate - trade.open_rate) / trade.open_rate)
         # Stoploss doom
         if (
                 (self.stop_thresholds_rebuy[10])
-                and (current_profit < self.stop_thresholds_rebuy[0])
+                and (rel_profit < self.stop_thresholds_rebuy[0])
         ):
             return True, 'exit_rebuy_stoploss_doom'
 
@@ -1762,7 +1766,7 @@ class NostalgiaForInfinityX2(IStrategy):
 
         # Stoplosses
         if not sell:
-            sell, signal_name = self.exit_long_stoploss(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_long_stoploss(current_rate, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Profit Target Signal
         # Check if pair exist on target_profit_cache
@@ -2093,11 +2097,12 @@ class NostalgiaForInfinityX2(IStrategy):
 
         return False, None
 
-    def exit_long_stoploss(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
+    def exit_long_stoploss(self, current_rate: float, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
+        rel_profit = ((current_rate - trade.open_rate) / trade.open_rate)
         # Stoploss doom
         if (
                 (self.stop_thresholds_long[10])
-                and (current_profit < self.stop_thresholds_long[0])
+                and (rel_profit < self.stop_thresholds_long[0])
         ):
             return True, 'exit_long_stoploss_doom'
 
