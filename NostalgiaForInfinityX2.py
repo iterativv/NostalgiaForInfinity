@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.213"
+        return "v12.0.214"
 
     # ROI table:
     minimal_roi = {
@@ -2325,6 +2325,9 @@ class NostalgiaForInfinityX2(IStrategy):
                             (slice_profit_exit > 0.01)
                     ):
                         sell_amount = exit_order.remaining * exit_rate
+                        if ((sell_amount - trade.stake_amount) < min_stake):
+                            # it's the last exit. Normal exit with partial fill
+                            return None
                         self.dp.send_msg(f"Grinding exit (remaining) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {exit_order.remaining} | Total profit: {(total_profit * 100.0):.2f}% | Grind profit: {(slice_profit_exit * 100.0):.2f}%")
                         return -sell_amount
                     else:
