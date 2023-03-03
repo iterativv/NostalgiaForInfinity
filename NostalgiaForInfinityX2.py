@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.215"
+        return "v12.0.216"
 
     # ROI table:
     minimal_roi = {
@@ -137,13 +137,12 @@ class NostalgiaForInfinityX2(IStrategy):
 
     # Grinding feature
     grinding_enable = True
-    # Multiply of the initial buy stake
-    grinding_stake_factor = 1.0
-    # Div grinding stake
-    grinding_parts = 4
+    # Grinding stakes
+    grinding_stakes = [0.25, 0.25, 0.25, 0.25]
+    grinding_stakes_alt = [1.0]
     # Current total profit
-    grinding_thresholds = [-0.04, -0.06, -0.08, -0.1]
-    grinding_thresholds_alt = [-0.06, -0.07, -0.08, -0.1]
+    grinding_thresholds = [-0.06, -0.08, -0.1, -0.12]
+    grinding_thresholds_alt = [-0.08]
 
     stake_rebuy_mode_multiplier = 0.33
     pa_rebuy_mode_max = 2
@@ -208,10 +207,8 @@ class NostalgiaForInfinityX2(IStrategy):
             self.profit_max_thresholds = self.config['profit_max_thresholds']
         if ('grinding_enable' in self.config):
             self.grinding_enable = self.config['grinding_enable']
-        if ('grinding_stake_factor' in self.config):
-            self.grinding_stake_factor = self.config['grinding_stake_factor']
-        if ('grinding_parts' in self.config):
-            self.grinding_parts = self.config['grinding_parts']
+        if ('grinding_stakes' in self.config):
+            self.grinding_stakes = self.config['grinding_stakes']
         if ('grinding_thresholds' in self.config):
             self.grinding_thresholds = self.config['grinding_thresholds']
         if self.target_profit_cache is None:
@@ -2285,18 +2282,20 @@ class NostalgiaForInfinityX2(IStrategy):
             slice_profit_entry = (exit_rate - filled_entries[-1].average) / filled_entries[-1].average
             slice_profit_exit = ((exit_rate - filled_exits[-1].average) / filled_exits[-1].average) if count_of_exits > 0 else 0.0
 
-            grind_stake = filled_entries[0].cost * self.grinding_stake_factor
-            grind_part_stake = grind_stake / self.grinding_parts
-
-            # Low stakes, on Binance mostly
-            if (grind_part_stake < min_stake):
-                grind_part_stake = grind_stake
-
             # Buy
-            for i in range(self.grinding_parts):
-                if (trade.stake_amount < (slice_amount + (grind_part_stake * i))):
+            stake_amount_threshold = slice_amount
+            grinding_parts = len(self.grinding_stakes)
+            grinding_thresholds = self.grinding_thresholds
+            grinding_stakes = self.grinding_stakes
+            # Low stakes, on Binance mostly
+            if ((slice_amount * self.grinding_stakes[0]) < min_stake):
+                grinding_parts = len(self.grinding_stakes_alt)
+                grinding_thresholds = self.grinding_thresholds_alt
+                grinding_stakes = self.grinding_stakes_alt
+            for i in range(grinding_parts):
+                if (trade.stake_amount < stake_amount_threshold):
                     if (
-                            (total_profit < self.grinding_thresholds[i])
+                            (total_profit < grinding_thresholds[i])
                             and
                             (
                                 (current_time - timedelta(minutes=2) > filled_entries[-1].order_filled_utc)
@@ -2309,11 +2308,14 @@ class NostalgiaForInfinityX2(IStrategy):
                                 and (last_candle['btc_pct_close_max_24_5m'] < 1.03)
                             )
                     ):
-                        buy_amount = grind_part_stake if (grind_part_stake < max_stake) else max_stake
+                        buy_amount = slice_amount * grinding_stakes[i]
+                        if (buy_amount > max_stake):
+                            buy_amount = max_stake
                         if (buy_amount < min_stake):
                             return None
                         self.dp.send_msg(f"Grinding entry [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Total profit: {(total_profit * 100.0):.2f}%")
                         return buy_amount
+                stake_amount_threshold += slice_amount * grinding_stakes[i]
 
             # Sell
 
