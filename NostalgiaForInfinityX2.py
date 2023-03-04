@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.230"
+        return "v12.0.231"
 
     # ROI table:
     minimal_roi = {
@@ -141,7 +141,7 @@ class NostalgiaForInfinityX2(IStrategy):
     grinding_stakes = [0.25, 0.25, 0.25, 0.25]
     grinding_stakes_alt = [1.0]
     # Current total profit
-    grinding_thresholds = [-0.06, -0.08, -0.1, -0.12]
+    grinding_thresholds = [-0.04, -0.08, -0.1, -0.12]
     grinding_thresholds_alt = [-0.08]
 
     stake_rebuy_mode_multiplier = 0.33
