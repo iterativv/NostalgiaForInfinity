@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.218"
+        return "v12.0.219"
 
     # ROI table:
     minimal_roi = {
@@ -2274,8 +2274,13 @@ class NostalgiaForInfinityX2(IStrategy):
             exit_rate = current_rate
             if self.dp.runmode.value in ('live', 'dry_run'):
                 ticker = self.dp.ticker(trade.pair)
-                if ticker['bid'] is not None:
-                    exit_rate = ticker['bid']
+                if ('bid' in ticker) and ('ask' in ticker):
+                    if (trade.is_short):
+                        if (self.config['exit_pricing']['price_side'] in ["ask", "other"]):
+                            exit_rate = ticker['ask']
+                    else:
+                        if (self.config['exit_pricing']['price_side'] in ["bid", "other"]):
+                            exit_rate = ticker['bid']
 
             slice_amount = filled_entries[0].cost
             slice_profit = (exit_rate - filled_orders[-1].average) / filled_orders[-1].average
