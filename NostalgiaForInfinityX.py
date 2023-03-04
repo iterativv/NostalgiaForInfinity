@@ -117,7 +117,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.3.126"
+        return "v11.3.127"
 
 
     # ROI table:
@@ -19632,6 +19632,7 @@ class NostalgiaForInfinityX(IStrategy):
                         (
                             (dataframe['cmf'] > 0.0)
                             & (dataframe['close'] < (dataframe['res3_1d'] * 1.1))
+                            & (dataframe['not_downtrend_1h'])
                         )
                         | (dataframe['mfi'] > 50.0)
                         |
@@ -19645,6 +19646,7 @@ class NostalgiaForInfinityX(IStrategy):
                             & (dataframe['ema_200_pct_change_144'] < 0.05)
                             & (dataframe['rsi_14'] < 36.0)
                             & (dataframe['hl_pct_change_48_1h'] < 0.5)
+                            & (dataframe['not_downtrend_1h'])
                         )
                         |
                         (
@@ -19661,6 +19663,7 @@ class NostalgiaForInfinityX(IStrategy):
                         (
                             (dataframe['tpct_change_144'] < 0.12)
                             & (dataframe['rsi_14'] < 36.0)
+                            & (dataframe['not_downtrend_1h'])
                         )
                         |
                         (
@@ -19669,6 +19672,7 @@ class NostalgiaForInfinityX(IStrategy):
                             & (dataframe['ema_200_pct_change_144'] < 0.05)
                             & (dataframe['rsi_14'] < 36.0)
                             & (dataframe['hl_pct_change_48_1h'] < 0.5)
+                            & (dataframe['not_downtrend_1h'])
                         )
                         |
                         (
@@ -19680,6 +19684,7 @@ class NostalgiaForInfinityX(IStrategy):
                             (dataframe['sma_200'] > dataframe['sma_200'].shift(48))
                             & (dataframe['ema_200_pct_change_144'] < 0.05)
                             & (dataframe['rsi_14'] < 36.0)
+                            & (dataframe['not_downtrend_1h'])
                         )
                         | (dataframe['close'] < dataframe['ema_20'] * 0.96)
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.999)
