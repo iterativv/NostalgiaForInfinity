@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.219"
+        return "v12.0.220"
 
     # ROI table:
     minimal_roi = {
@@ -340,7 +340,7 @@ class NostalgiaForInfinityX2(IStrategy):
                 # profit is under the threshold, cancel it
                 self._remove_profit_target(pair)
                 return False, None
-            if (0.001 <= current_profit < 0.01):
+            if (0.005 <= current_profit < 0.01):
                 if (current_profit < (previous_profit - 0.01)):
                     return True, previous_sell_reason
             elif (0.01 <= current_profit < 0.02):
@@ -716,7 +716,7 @@ class NostalgiaForInfinityX2(IStrategy):
                 # profit is under the threshold, cancel
                 self._remove_profit_target(pair)
                 return False, None
-            if (0.001 <= current_profit < 0.01):
+            if (0.005 <= current_profit < 0.01):
                 if (current_profit < (previous_profit - 0.01)):
                     return True, previous_sell_reason
             elif (0.01 <= current_profit < 0.02):
@@ -1103,8 +1103,8 @@ class NostalgiaForInfinityX2(IStrategy):
                 # profit is under the threshold, cancel
                 self._remove_profit_target(pair)
                 return False, None
-            if (0.001 <= current_profit < 0.01):
-                if (current_profit < (previous_profit - 0.005)):
+            if (0.005 <= current_profit < 0.01):
+                if (current_profit < (previous_profit - 0.01)):
                     return True, previous_sell_reason
             elif (0.01 <= current_profit < 0.02):
                 if (current_profit < (previous_profit - 0.01)):
@@ -1479,7 +1479,7 @@ class NostalgiaForInfinityX2(IStrategy):
                 # profit is under the threshold, cancel
                 self._remove_profit_target(pair)
                 return False, None
-            if (0.001 <= current_profit < 0.01):
+            if (0.005 <= current_profit < 0.01):
                 if (current_profit < (previous_profit - 0.01)):
                     return True, previous_sell_reason
             elif (0.01 <= current_profit < 0.02):
@@ -1853,7 +1853,7 @@ class NostalgiaForInfinityX2(IStrategy):
                 # profit is under the threshold, cancel it
                 self._remove_profit_target(pair)
                 return False, None
-            if (0.001 <= current_profit < 0.01):
+            if (0.005 <= current_profit < 0.01):
                 if (current_profit < (previous_profit - 0.01)):
                     return True, previous_sell_reason
             elif (0.01 <= current_profit < 0.02):
