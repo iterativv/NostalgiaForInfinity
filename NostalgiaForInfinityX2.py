@@ -2118,6 +2118,29 @@ class NostalgiaForInfinityX2(IStrategy):
 
         return False, None
 
+    def calc_total_profit(self, trade: 'Trade', filled_entries: 'Orders', filled_exits: 'Orders', exit_rate: float) -> tuple:
+        """
+        Calculates the absolute profit for open trades.
+
+        :param trade: trade object.
+        :param filled_entries: Filled entries list.
+        :param filled_exits: Filled exits list.
+        :param exit_rate: The exit rate.
+        :return tuple: The total profit in stake and ratio.
+        """
+        total_stake = 0.0
+        total_profit = 0.0
+        for entry in filled_entries:
+            entry_stake = entry.filled * entry.average * (1 + trade.fee_open)
+            total_stake += entry_stake
+            total_profit -= entry_stake
+        for exit in filled_exits:
+            exit_stake = exit.filled * exit.average * (1 - trade.fee_close)
+            total_profit += exit_stake
+        total_profit += (trade.amount * exit_rate * (1 - trade.fee_close))
+        total_profit_ratio = (total_profit / total_stake)
+        return total_profit, total_profit_ratio
+
     def custom_exit(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float,
                     current_profit: float, **kwargs):
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
