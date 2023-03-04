@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.220"
+        return "v12.0.221"
 
     # ROI table:
     minimal_roi = {
@@ -2156,20 +2156,18 @@ class NostalgiaForInfinityX2(IStrategy):
             enter_tag = trade.enter_tag
         enter_tags = enter_tag.split()
 
+        filled_entries = trade.select_filled_orders(trade.entry_side)
+        filled_exits = trade.select_filled_orders(trade.exit_side)
+
         profit = 0.0
         if (trade.realized_profit != 0.0):
-            profit = ((current_rate - trade.open_rate) / trade.open_rate) * trade.stake_amount * (1 - trade.fee_close)
-            profit = profit + trade.realized_profit
-            profit = profit / trade.stake_amount
+            _, profit = self.calc_total_profit(trade, filled_entries, filled_exits, current_rate)
         else:
             profit = current_profit
-
-        #profit = current_profit
 
         max_profit = ((trade.max_rate - trade.open_rate) / trade.open_rate)
         max_loss = ((trade.open_rate - trade.min_rate) / trade.min_rate)
 
-        filled_entries = trade.select_filled_orders(trade.entry_side)
         count_of_entries = len(filled_entries)
         if count_of_entries > 1:
             initial_entry = filled_entries[0]
