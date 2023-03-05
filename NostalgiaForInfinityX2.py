@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.233"
+        return "v12.0.234"
 
     # ROI table:
     minimal_roi = {
@@ -123,11 +123,11 @@ class NostalgiaForInfinityX2(IStrategy):
     # Stop thesholds. 0: Doom Bull, 1: Doom Bear, 2: u_e Bull, 3: u_e Bear, 4: u_e mins Bull, 5: u_e mins Bear.
     # 6: u_e ema % Bull, 7: u_e ema % Bear, 8: u_e RSI diff Bull, 9: u_e RSI diff Bear.
     # 10: enable Doom Bull, 11: enable Doom Bear, 12: enable u_e Bull, 13: enable u_e Bear.
-    stop_thresholds_normal = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 24.0, 24.0, True, True, False, False]
-    stop_thresholds_pump = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 24.0, 24.0, True, True, False, False]
-    stop_thresholds_quick = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 24.0, 24.0, True, True, False, False]
-    stop_thresholds_rebuy = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 24.0, 24.0, True, True, False, False]
-    stop_thresholds_long = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 24.0, 24.0, True, True, False, False]
+    stop_thresholds_normal = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 24.0, 24.0, False, False, True, True]
+    stop_thresholds_pump = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 24.0, 24.0, False, False, True, True]
+    stop_thresholds_quick = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 24.0, 24.0, False, False, True, True]
+    stop_thresholds_rebuy = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 24.0, 24.0, False, False, True, True]
+    stop_thresholds_long = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 24.0, 24.0, False, False, True, True]
 
     # Rebuy mode minimum number of free slots
     rebuy_mode_min_free_slots = 2
@@ -594,7 +594,7 @@ class NostalgiaForInfinityX2(IStrategy):
         # Under & near EMA200, local uptrend move
         if (
                 (self.stop_thresholds_normal[12])
-                and (current_profit < self.stop_thresholds_normal[2])
+                and (rel_profit < self.stop_thresholds_normal[2])
                 and (last_candle['close'] < last_candle['ema_200'])
                 and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < self.stop_thresholds_normal[6])
                 and (last_candle['rsi_14'] > previous_candle_1['rsi_14'])
@@ -970,7 +970,7 @@ class NostalgiaForInfinityX2(IStrategy):
         # Under & near EMA200, local uptrend move
         if (
                 (self.stop_thresholds_pump[12])
-                and (current_profit < self.stop_thresholds_pump[2])
+                and (rel_profit < self.stop_thresholds_pump[2])
                 and (last_candle['close'] < last_candle['ema_200'])
                 and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < self.stop_thresholds_pump[6])
                 and (last_candle['rsi_14'] > previous_candle_1['rsi_14'])
@@ -1357,7 +1357,7 @@ class NostalgiaForInfinityX2(IStrategy):
         # Under & near EMA200, local uptrend move
         if (
                 (self.stop_thresholds_quick[12])
-                and (current_profit < self.stop_thresholds_quick[2])
+                and (rel_profit < self.stop_thresholds_quick[2])
                 and (last_candle['close'] < last_candle['ema_200'])
                 and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < self.stop_thresholds_quick[6])
                 and (last_candle['rsi_14'] > previous_candle_1['rsi_14'])
@@ -1732,7 +1732,7 @@ class NostalgiaForInfinityX2(IStrategy):
         # Under & near EMA200, local uptrend move
         if (
                 (self.stop_thresholds_rebuy[12])
-                and (current_profit < self.stop_thresholds_rebuy[2])
+                and (rel_profit < self.stop_thresholds_rebuy[2])
                 and (last_candle['close'] < last_candle['ema_200'])
                 #and (last_candle['cmf_20'] < -0.0)
                 and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < self.stop_thresholds_rebuy[6])
@@ -2106,7 +2106,7 @@ class NostalgiaForInfinityX2(IStrategy):
         # Under & near EMA200, local uptrend move
         if (
                 (self.stop_thresholds_long[12])
-                and (current_profit < self.stop_thresholds_long[2])
+                and (rel_profit < self.stop_thresholds_long[2])
                 and (last_candle['close'] < last_candle['ema_200'])
                 #and (last_candle['cmf_20'] < -0.0)
                 and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < self.stop_thresholds_long[6])
