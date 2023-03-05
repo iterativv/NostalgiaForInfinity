@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.237"
+        return "v12.0.238"
 
     # ROI table:
     minimal_roi = {
@@ -142,7 +142,7 @@ class NostalgiaForInfinityX2(IStrategy):
     grinding_stakes_alt = [1.0]
     # Current total profit
     grinding_thresholds = [-0.04, -0.08, -0.1, -0.12]
-    grinding_thresholds_alt = [-0.08]
+    grinding_thresholds_alt = [-0.06]
 
     stake_rebuy_mode_multiplier = 0.33
     pa_rebuy_mode_max = 2
@@ -2329,8 +2329,11 @@ class NostalgiaForInfinityX2(IStrategy):
                             )
                             and (
                                 (last_candle['rsi_14'] < 50.0)
-                                and (last_candle['rsi_3'] > 10.0)
-                                and (last_candle['ha_close'] > last_candle['ha_open'])
+                                and (last_candle['close_max_12'] < (last_candle['close'] * 1.06))
+                                and (last_candle['close_max_24'] < (last_candle['close'] * 1.08))
+                                and (last_candle['close_max_48'] < (last_candle['close'] * 1.1))
+                                and (last_candle['close'] < last_candle['bb20_2_low'])
+                                and (last_candle['rsi_3_1h'] > 10.0)
                                 and (last_candle['btc_pct_close_max_72_5m'] < 1.04)
                                 and (last_candle['btc_pct_close_max_24_5m'] < 1.03)
                             )
