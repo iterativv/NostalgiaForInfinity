@@ -57,7 +57,7 @@ Ensure that you don't override any variables in you config.json. Especially the 
 
   `{"trade_ids": [1, 3, 7], "profit_ratio": 0.005}`
 
-  Or, for individual profit ratios(Notice the trade ID's as strings:
+  Or, for individual profit ratios (Notice the trade ID's as strings):
 
   `{"trade_ids": {"1": 0.001, "3": -0.005, "7": 0.05}}`
 
