@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.239"
+        return "v12.0.240"
 
     # ROI table:
     minimal_roi = {
@@ -2126,7 +2126,7 @@ class NostalgiaForInfinityX2(IStrategy):
         :param filled_entries: Filled entries list.
         :param filled_exits: Filled exits list.
         :param exit_rate: The exit rate.
-        :return tuple: The total profit in stake and ratio.
+        :return tuple: The total profit in stake, ratio, and ratio based on the first entry stake.
         """
         total_stake = 0.0
         total_profit = 0.0
@@ -2139,7 +2139,8 @@ class NostalgiaForInfinityX2(IStrategy):
             total_profit += exit_stake
         total_profit += (trade.amount * exit_rate * (1 - trade.fee_close))
         total_profit_ratio = (total_profit / total_stake)
-        return total_profit, total_profit_ratio
+        init_profit_ratio = (total_profit / filled_entries[0].cost)
+        return total_profit, total_profit_ratio, init_profit_ratio
 
     def custom_exit(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float,
                     current_profit: float, **kwargs):
@@ -2161,7 +2162,7 @@ class NostalgiaForInfinityX2(IStrategy):
 
         profit = 0.0
         if (trade.realized_profit != 0.0):
-            _, profit = self.calc_total_profit(trade, filled_entries, filled_exits, current_rate)
+            _, _, profit = self.calc_total_profit(trade, filled_entries, filled_exits, current_rate)
         else:
             profit = current_profit
 
