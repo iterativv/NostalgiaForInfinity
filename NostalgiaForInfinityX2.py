@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.243"
+        return "v12.0.244"
 
     # ROI table:
     minimal_roi = {
@@ -152,6 +152,9 @@ class NostalgiaForInfinityX2(IStrategy):
     # Profit max thresholds
     profit_max_thresholds = [0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.05, 0.05]
 
+    # Max allowed buy "slippage", how high to buy on the candle
+    max_slippage = 0.03
+
     #############################################################
     # Buy side configuration
 
@@ -211,6 +214,8 @@ class NostalgiaForInfinityX2(IStrategy):
             self.grinding_stakes = self.config['grinding_stakes']
         if ('grinding_thresholds' in self.config):
             self.grinding_thresholds = self.config['grinding_thresholds']
+        if ('max_slippage' in self.config):
+            self.max_slippage = self.config['max_slippage']
         if self.target_profit_cache is None:
             bot_name = ""
             if ('bot_name' in self.config):
@@ -10644,7 +10649,7 @@ class NostalgiaForInfinityX2(IStrategy):
         if ((rate > dataframe['close'])):
             slippage = ((rate / dataframe['close']) - 1.0)
 
-            if slippage < 0.03:
+            if slippage < self.max_slippage:
                 return True
             else:
                 log.warning(
