@@ -2131,7 +2131,7 @@ class NostalgiaForInfinityX2(IStrategy):
         :param filled_entries: Filled entries list.
         :param filled_exits: Filled exits list.
         :param exit_rate: The exit rate.
-        :return tuple: The total profit in stake, ratio, and ratio based on the first entry stake.
+        :return tuple: The total profit in stake, ratio, ratio based on current stake, and ratio based on the first entry stake.
         """
         total_stake = 0.0
         total_profit = 0.0
@@ -2142,10 +2142,12 @@ class NostalgiaForInfinityX2(IStrategy):
         for exit in filled_exits:
             exit_stake = exit.filled * exit.average * (1 - trade.fee_close)
             total_profit += exit_stake
-        total_profit += (trade.amount * exit_rate * (1 - trade.fee_close))
+        current_stake = (trade.amount * exit_rate * (1 - trade.fee_close))
+        total_profit += current_stake
         total_profit_ratio = (total_profit / total_stake)
+        current_profit_ratio = (total_profit / current_stake)
         init_profit_ratio = (total_profit / filled_entries[0].cost)
-        return total_profit, total_profit_ratio, init_profit_ratio
+        return total_profit, total_profit_ratio, current_profit_ratio, init_profit_ratio
 
     def custom_exit(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float,
                     current_profit: float, **kwargs):
@@ -2165,11 +2167,13 @@ class NostalgiaForInfinityX2(IStrategy):
         filled_entries = trade.select_filled_orders(trade.entry_side)
         filled_exits = trade.select_filled_orders(trade.exit_side)
 
-        profit = 0.0
-        if (trade.realized_profit != 0.0):
-            _, profit, _ = self.calc_total_profit(trade, filled_entries, filled_exits, current_rate)
-        else:
-            profit = current_profit
+        profit_stake = 0.0
+        profit_ratio = 0.0
+        profit_current_stake_ratio = 0.0
+        profit_init_ratio = 0.0
+        profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = self.calc_total_profit(trade, filled_entries, filled_exits, current_rate)
+
+        profit = profit_ratio
 
         max_profit = ((trade.max_rate - trade.open_rate) / trade.open_rate)
         max_loss = ((trade.open_rate - trade.min_rate) / trade.min_rate)
@@ -2301,7 +2305,7 @@ class NostalgiaForInfinityX2(IStrategy):
                         if (self.config['exit_pricing']['price_side'] in ["bid", "other"]):
                             exit_rate = ticker['bid']
 
-            profit_stake, profit_ratio, profit_init_ratio = self.calc_total_profit(trade, filled_entries, filled_exits, exit_rate)
+            profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = self.calc_total_profit(trade, filled_entries, filled_exits, exit_rate)
 
             slice_amount = filled_entries[0].cost
             slice_profit = (exit_rate - filled_orders[-1].average) / filled_orders[-1].average
