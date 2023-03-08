@@ -2171,7 +2171,12 @@ class NostalgiaForInfinityX2(IStrategy):
         profit_ratio = 0.0
         profit_current_stake_ratio = 0.0
         profit_init_ratio = 0.0
-        profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = self.calc_total_profit(trade, filled_entries, filled_exits, current_rate)
+        if (trade.realized_profit != 0.0):
+            profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = self.calc_total_profit(trade, filled_entries, filled_exits, current_rate)
+        else:
+            profit_ratio = current_profit
+            profit_current_stake_ratio = current_profit
+            profit_init_ratio = current_profit
 
         profit = profit_ratio
 
