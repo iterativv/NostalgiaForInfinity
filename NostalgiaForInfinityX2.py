@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.255"
+        return "v12.0.256"
 
     # ROI table:
     minimal_roi = {
@@ -120,14 +120,16 @@ class NostalgiaForInfinityX2(IStrategy):
     # Long mode tags
     long_mode_tags = ['81', '82']
 
+    normal_mode_name = "normal"
+    pump_mode_name = "pump"
+    quick_mode_name = "quick"
+    rebuy_mode_name = "rebuy"
+    long_mode_name = "long"
+
     # Stop thesholds. 0: Doom Bull, 1: Doom Bear, 2: u_e Bull, 3: u_e Bear, 4: u_e mins Bull, 5: u_e mins Bear.
     # 6: u_e ema % Bull, 7: u_e ema % Bear, 8: u_e RSI diff Bull, 9: u_e RSI diff Bear.
     # 10: enable Doom Bull, 11: enable Doom Bear, 12: enable u_e Bull, 13: enable u_e Bear.
-    stop_thresholds_normal = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 24.0, 24.0, False, False, True, True]
-    stop_thresholds_pump = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 24.0, 24.0, False, False, True, True]
-    stop_thresholds_quick = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 24.0, 24.0, False, False, True, True]
-    stop_thresholds_rebuy = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 24.0, 24.0, False, False, True, True]
-    stop_thresholds_long = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 24.0, 24.0, False, False, True, True]
+    stop_thresholds = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 24.0, 24.0, False, False, True, True]
 
     # Rebuy mode minimum number of free slots
     rebuy_mode_min_free_slots = 2
@@ -237,25 +239,25 @@ class NostalgiaForInfinityX2(IStrategy):
         return int(self.timeframe[:-1])
 
     def exit_normal(self, pair: str, current_rate: float, current_profit: float,
-                         max_profit: float, max_loss: float,
-                         last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5,
-                         trade: 'Trade', current_time: 'datetime', enter_tags) -> tuple:
+                    max_profit: float, max_loss: float,
+                    last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5,
+                    trade: 'Trade', current_time: 'datetime', enter_tags) -> tuple:
         sell = False
 
         # Original sell signals
-        sell, signal_name = self.exit_normal_signals(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+        sell, signal_name = self.exit_signals(self.normal_mode_name, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Main sell signals
         if not sell:
-            sell, signal_name = self.exit_normal_main(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_main(self.normal_mode_name, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Williams %R based sells
         if not sell:
-            sell, signal_name = self.exit_normal_r(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_r(self.normal_mode_name, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Stoplosses
         if not sell:
-            sell, signal_name = self.exit_normal_stoploss(current_rate, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_stoploss(self.normal_mode_name, current_rate, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Profit Target Signal
         # Check if pair exist on target_profit_cache
@@ -265,15 +267,15 @@ class NostalgiaForInfinityX2(IStrategy):
             previous_sell_reason = self.target_profit_cache.data[pair]['sell_reason']
             previous_time_profit_reached = datetime.fromisoformat(self.target_profit_cache.data[pair]['time_profit_reached'])
 
-            sell_max, signal_name_max = self.normal_exit_profit_target(pair, trade, current_time, current_rate, current_profit,
-                                                                            last_candle, previous_candle_1,
-                                                                            previous_rate, previous_profit, previous_sell_reason,
-                                                                            previous_time_profit_reached, enter_tags)
+            sell_max, signal_name_max = self.exit_profit_target(self.normal_mode_name, pair, trade, current_time, current_rate, current_profit,
+                                                                       last_candle, previous_candle_1,
+                                                                       previous_rate, previous_profit, previous_sell_reason,
+                                                                       previous_time_profit_reached, enter_tags)
             if sell_max and signal_name_max is not None:
                 return True, f"{signal_name_max}_m"
-            if (current_profit > (previous_profit + 0.005)) and (previous_sell_reason not in ["exit_normal_stoploss_doom"]):
+            if (current_profit > (previous_profit + 0.005)) and (previous_sell_reason not in [f"exit_{self.normal_mode_name}_stoploss_doom"]):
                 # Update the target, raise it.
-                mark_pair, mark_signal = self.normal_mark_profit_target(pair, True, previous_sell_reason, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
+                mark_pair, mark_signal = self.mark_profit_target(self.normal_mode_name, pair, True, previous_sell_reason, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
                 if mark_pair:
                     self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
 
@@ -286,7 +288,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     (previous_profit is None)
                     or (previous_profit < current_profit)
             ):
-                mark_pair, mark_signal = self.normal_mark_profit_target(pair, sell, signal_name, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
+                mark_pair, mark_signal = self.mark_profit_target(self.normal_mode_name, pair, sell, signal_name, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
                 if mark_pair:
                     self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
                 else:
@@ -300,338 +302,35 @@ class NostalgiaForInfinityX2(IStrategy):
                 if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
                     previous_profit = self.target_profit_cache.data[pair]['profit']
                 if (previous_profit is None) or (previous_profit < current_profit):
-                    mark_signal = "exit_profit_normal_max"
+                    mark_signal = f"exit_profit_{self.normal_mode_name}_max"
                     self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
 
-        if (signal_name not in ["exit_profit_normal_max", "exit_normal_stoploss_doom", "exit_normal_stoploss_u_e", "exit_normal_bull_stoploss_u_e"]):
+        if (signal_name not in [f"exit_profit_{self.normal_mode_name}_max", f"exit_{self.normal_mode_name}_stoploss_doom", f"exit_{self.normal_mode_name}_stoploss_u_e"]):
             if sell and (signal_name is not None):
                 return True, f"{signal_name}"
 
         return False, None
 
-    def normal_mark_profit_target(self, pair: str, sell: bool, signal_name: str, trade: Trade, current_time: datetime, current_rate: float, current_profit: float, last_candle, previous_candle_1) -> tuple:
-        if sell and (signal_name is not None):
-            return pair, signal_name
-
-        return None, None
-
-    def normal_exit_profit_target(self, pair: str, trade: Trade, current_time: datetime, current_rate: float, current_profit: float, last_candle, previous_candle_1, previous_rate, previous_profit,  previous_sell_reason, previous_time_profit_reached, enter_tags) -> tuple:
-        if (previous_sell_reason in ["exit_normal_stoploss_doom"]):
-            if (current_profit > 0.04):
-                # profit is over the threshold, don't exit
-                self._remove_profit_target(pair)
-                return False, None
-            if (current_profit < -0.18):
-                if (current_profit < (previous_profit - 0.04)):
-                    return True, previous_sell_reason
-            elif (current_profit < -0.1):
-                if (current_profit < (previous_profit - 0.04)):
-                    return True, previous_sell_reason
-            elif (current_profit < -0.04):
-                if (current_profit < (previous_profit - 0.04)):
-                    return True, previous_sell_reason
-            else:
-                if (current_profit < (previous_profit - 0.04)):
-                    return True, previous_sell_reason
-        elif (previous_sell_reason in ["exit_normal_stoploss_u_e", "exit_normal_bull_stoploss_u_e"]):
-            if (current_profit > 0.04):
-                # profit is over the threshold, don't exit
-                self._remove_profit_target(pair)
-                return False, None
-            if (current_profit < (previous_profit - 0.14)):
-                    return True, previous_sell_reason
-        elif (previous_sell_reason in ["exit_profit_normal_max"]):
-            if (current_profit < -0.08):
-                # profit is under the threshold, cancel it
-                self._remove_profit_target(pair)
-                return False, None
-            if (0.001 <= current_profit < 0.01):
-                if (current_profit < (previous_profit - 0.01)):
-                    return True, previous_sell_reason
-            elif (0.01 <= current_profit < 0.02):
-                if (current_profit < (previous_profit - 0.02)):
-                    return True, previous_sell_reason
-            elif (0.02 <= current_profit < 0.03):
-                if (current_profit < (previous_profit - 0.03)):
-                    return True, previous_sell_reason
-            elif (0.03 <= current_profit < 0.05):
-                if (current_profit < (previous_profit - 0.04)):
-                    return True, previous_sell_reason
-            elif (0.05 <= current_profit < 0.08):
-                if (current_profit < (previous_profit - 0.05)):
-                    return True, previous_sell_reason
-            elif (0.08 <= current_profit < 0.12):
-                if (current_profit < (previous_profit - 0.06)):
-                    return True, previous_sell_reason
-            elif (0.12 <= current_profit):
-                if (current_profit < (previous_profit - 0.07)):
-                    return True, previous_sell_reason
-        else:
-            return False, None
-
-        return False, None
-
-    def exit_normal_signals(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
-        # Sell signal 1
-        if (last_candle['rsi_14'] > 79.0) and (last_candle['rsi_14_4h'] > 50.0) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']) and (previous_candle_3['close'] > previous_candle_3['bb20_2_upp']) and (previous_candle_4['close'] > previous_candle_4['bb20_2_upp']):
-            if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.01):
-                    return True, 'exit_normal_1_1_1'
-            else:
-                if (current_profit > 0.01):
-                    return True, 'exit_normal_1_2_1'
-
-        # Sell signal 2
-        elif (last_candle['rsi_14'] > 80.0) and (last_candle['rsi_14_4h'] > 50.0) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']):
-            if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.01):
-                    return True, 'exit_normal_2_1_1'
-            else:
-                if (current_profit > 0.01):
-                    return True, 'exit_normal_2_2_1'
-
-        # Sell signal 3
-        elif (last_candle['rsi_14'] > 85.0) and (last_candle['rsi_14_4h'] > 50.0):
-            if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.01):
-                    return True, 'exit_normal_3_1_1'
-            else:
-                if (current_profit > 0.01):
-                    return True, 'exit_normal_3_2_1'
-
-        # Sell signal 4
-        elif (last_candle['rsi_14'] > 80.0) and (last_candle['rsi_14_1h'] > 80.0) and (last_candle['rsi_14_4h'] > 50.0):
-            if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.01):
-                    return True, 'exit_normal_4_1_1'
-            else:
-                if (current_profit > 0.01):
-                    return True, 'exit_normal_4_2_1'
-
-        # Sell signal 6
-        elif (last_candle['close'] < last_candle['ema_200']) and (last_candle['close'] > last_candle['ema_50']) and (last_candle['rsi_14'] > 79.0):
-            if (current_profit > 0.01):
-                return True, 'exit_normal_6_1'
-
-        # Sell signal 7
-        elif (last_candle['rsi_14_1h'] > 79.0) and (last_candle['crossed_below_ema_12_26']):
-            if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.01):
-                    return True, 'exit_normal_7_1_1'
-            else:
-                if (current_profit > 0.01):
-                    return True, 'exit_normal_7_2_1'
-
-        # Sell signal 8
-        elif (last_candle['rsi_14_4h'] > 50.0) and (last_candle['close'] > last_candle['bb20_2_upp_1h'] * 1.08):
-            if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.01):
-                    return True, 'exit_normal_8_1_1'
-            else:
-                if (current_profit > 0.01):
-                    return True, 'exit_normal_8_2_1'
-
-        return False, None
-
-    def exit_normal_main(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
-        if (last_candle['close'] > last_candle['sma_200_1h']):
-            if 0.01 > current_profit >= 0.001:
-                if (last_candle['rsi_14'] < 20.0):
-                    return True, 'exit_normal_o_0'
-            elif 0.02 > current_profit >= 0.01:
-                if (last_candle['rsi_14'] < 28.0):
-                    return True, 'exit_normal_o_1'
-            elif 0.03 > current_profit >= 0.02:
-                if (last_candle['rsi_14'] < 30.0):
-                    return True, 'exit_normal_o_2'
-            elif 0.04 > current_profit >= 0.03:
-                if (last_candle['rsi_14'] < 32.0):
-                    return True, 'exit_normal_o_3'
-            elif 0.05 > current_profit >= 0.04:
-                if (last_candle['rsi_14'] < 34.0):
-                    return True, 'exit_normal_o_4'
-            elif 0.06 > current_profit >= 0.05:
-                if (last_candle['rsi_14'] < 36.0):
-                    return True, 'exit_normal_o_5'
-            elif 0.07 > current_profit >= 0.06:
-                if (last_candle['rsi_14'] < 38.0):
-                    return True, 'exit_normal_o_6'
-            elif 0.08 > current_profit >= 0.07:
-                if (last_candle['rsi_14'] < 40.0):
-                    return True, 'exit_normal_o_7'
-            elif 0.09 > current_profit >= 0.08:
-                if (last_candle['rsi_14'] < 42.0):
-                    return True, 'exit_normal_o_8'
-            elif 0.1 > current_profit >= 0.09:
-                if (last_candle['rsi_14'] < 44.0):
-                    return True, 'exit_normal_o_9'
-            elif 0.12 > current_profit >= 0.1:
-                if (last_candle['rsi_14'] < 46.0):
-                    return True, 'exit_normal_o_10'
-            elif 0.2 > current_profit >= 0.12:
-                if (last_candle['rsi_14'] < 44.0):
-                    return True, 'exit_normal_o_11'
-            elif current_profit >= 0.2:
-                if (last_candle['rsi_14'] < 42.0):
-                    return True, 'exit_normal_o_12'
-        elif (last_candle['close'] < last_candle['sma_200_1h']):
-            if 0.01 > current_profit >= 0.001:
-                if (last_candle['rsi_14'] < 22.0):
-                    return True, 'exit_normal_u_0'
-            elif 0.02 > current_profit >= 0.01:
-                if (last_candle['rsi_14'] < 30.0):
-                    return True, 'exit_normal_u_1'
-            elif 0.03 > current_profit >= 0.02:
-                if (last_candle['rsi_14'] < 32.0):
-                    return True, 'exit_normal_u_2'
-            elif 0.04 > current_profit >= 0.03:
-                if (last_candle['rsi_14'] < 34.0):
-                    return True, 'exit_normal_u_3'
-            elif 0.05 > current_profit >= 0.04:
-                if (last_candle['rsi_14'] < 36.0):
-                    return True, 'exit_normal_u_4'
-            elif 0.06 > current_profit >= 0.05:
-                if (last_candle['rsi_14'] < 38.0):
-                    return True, 'exit_normal_u_5'
-            elif 0.07 > current_profit >= 0.06:
-                if (last_candle['rsi_14'] < 40.0):
-                    return True, 'exit_normal_u_6'
-            elif 0.08 > current_profit >= 0.07:
-                if (last_candle['rsi_14'] < 42.0):
-                    return True, 'exit_normal_u_7'
-            elif 0.09 > current_profit >= 0.08:
-                if (last_candle['rsi_14'] < 44.0):
-                    return True, 'exit_normal_u_8'
-            elif 0.1 > current_profit >= 0.09:
-                if (last_candle['rsi_14'] < 46.0):
-                    return True, 'exit_normal_u_9'
-            elif 0.12 > current_profit >= 0.1:
-                if (last_candle['rsi_14'] < 48.0):
-                    return True, 'exit_normal_u_10'
-            elif 0.2 > current_profit >= 0.12:
-                if (last_candle['rsi_14'] < 46.0):
-                    return True, 'exit_normal_u_11'
-            elif current_profit >= 0.2:
-                if (last_candle['rsi_14'] < 44.0):
-                    return True, 'exit_normal_u_12'
-
-        return False, None
-
-    def exit_normal_r(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
-        if 0.01 > current_profit >= 0.001:
-            if (last_candle['r_480'] > -0.1):
-                return True, 'exit_normal_w_0_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_normal_w_0_2'
-        elif 0.02 > current_profit >= 0.01:
-            if (last_candle['r_480'] > -0.2):
-                return True, 'exit_normal_w_1_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_normal_w_1_2'
-        elif 0.03 > current_profit >= 0.02:
-            if (last_candle['r_480'] > -0.3):
-                return True, 'exit_normal_w_2_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_normal_w_2_2'
-        elif 0.04 > current_profit >= 0.03:
-            if (last_candle['r_480'] > -0.4):
-                return True, 'exit_normal_w_3_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_normal_w_3_2'
-        elif 0.05 > current_profit >= 0.04:
-            if (last_candle['r_480'] > -0.5):
-                return True, 'exit_normal_w_4_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_normal_w_4_2'
-        elif 0.06 > current_profit >= 0.05:
-            if (last_candle['r_480'] > -0.6):
-                return True, 'exit_normal_w_5_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_normal_w_5_2'
-        elif 0.07 > current_profit >= 0.06:
-            if (last_candle['r_480'] > -0.7):
-                return True, 'exit_normal_w_6_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_normal_w_6_2'
-        elif 0.08 > current_profit >= 0.07:
-            if (last_candle['r_480'] > -0.8):
-                return True, 'exit_normal_w_7_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_normal_w_7_2'
-        elif 0.09 > current_profit >= 0.08:
-            if (last_candle['r_480'] > -0.9):
-                return True, 'exit_normal_w_8_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_normal_w_8_2'
-        elif 0.1 > current_profit >= 0.09:
-            if (last_candle['r_480'] > -1.0):
-                return True, 'exit_normal_w_9_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_normal_w_9_2'
-        elif 0.12 > current_profit >= 0.1:
-            if (last_candle['r_480'] > -1.1):
-                return True, 'exit_normal_w_10_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_normal_w_10_2'
-        elif 0.2 > current_profit >= 0.12:
-            if (last_candle['r_480'] > -0.4):
-                return True, 'exit_normal_w_11_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_normal_w_11_2'
-        elif current_profit >= 0.2:
-            if (last_candle['r_480'] > -0.2):
-                return True, 'exit_normal_w_12_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 80.0):
-                return True, 'exit_normal_w_12_2'
-
-        return False, None
-
-    def exit_normal_stoploss(self, current_rate: float, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
-        is_backtest = self.dp.runmode.value == 'backtest'
-        rel_profit = ((current_rate - trade.open_rate) / trade.open_rate)
-        # Stoploss doom
-        if (
-                (self.stop_thresholds_normal[10])
-                and (rel_profit < self.stop_thresholds_normal[0])
-        ):
-            return True, 'exit_normal_stoploss_doom'
-
-        # Under & near EMA200, local uptrend move
-        if (
-                (self.stop_thresholds_normal[12])
-                and (rel_profit < self.stop_thresholds_normal[2])
-                and (last_candle['close'] < last_candle['ema_200'])
-                and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < self.stop_thresholds_normal[6])
-                and (last_candle['rsi_14'] > previous_candle_1['rsi_14'])
-                and (last_candle['rsi_14'] > (last_candle['rsi_14_1h'] + self.stop_thresholds_normal[8]))
-                and (current_time - timedelta(minutes=self.stop_thresholds_normal[4]) > trade.open_date_utc)
-                # temporary
-                and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2022, 12, 25) or is_backtest)
-        ):
-            return True, 'exit_normal_stoploss_u_e'
-
-        return False, None
-
     def exit_pump(self, pair: str, current_rate: float, current_profit: float,
-                         max_profit: float, max_loss: float,
-                         last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5,
-                         trade: 'Trade', current_time: 'datetime', enter_tags) -> tuple:
+                    max_profit: float, max_loss: float,
+                    last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5,
+                    trade: 'Trade', current_time: 'datetime', enter_tags) -> tuple:
         sell = False
 
         # Original sell signals
-        sell, signal_name = self.exit_pump_signals(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+        sell, signal_name = self.exit_signals(self.pump_mode_name, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Main sell signals
         if not sell:
-            sell, signal_name = self.exit_pump_main(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_main(self.pump_mode_name, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Williams %R based sells
         if not sell:
-            sell, signal_name = self.exit_pump_r(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_r(self.pump_mode_name, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Stoplosses
         if not sell:
-            sell, signal_name = self.exit_pump_stoploss(current_rate, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_stoploss(self.pump_mode_name, current_rate, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Profit Target Signal
         # Check if pair exist on target_profit_cache
@@ -641,15 +340,15 @@ class NostalgiaForInfinityX2(IStrategy):
             previous_sell_reason = self.target_profit_cache.data[pair]['sell_reason']
             previous_time_profit_reached = datetime.fromisoformat(self.target_profit_cache.data[pair]['time_profit_reached'])
 
-            sell_max, signal_name_max = self.pump_exit_profit_target(pair, trade, current_time, current_rate, current_profit,
-                                                                            last_candle, previous_candle_1,
-                                                                            previous_rate, previous_profit, previous_sell_reason,
-                                                                            previous_time_profit_reached, enter_tags)
+            sell_max, signal_name_max = self.exit_profit_target(self.pump_mode_name, pair, trade, current_time, current_rate, current_profit,
+                                                                       last_candle, previous_candle_1,
+                                                                       previous_rate, previous_profit, previous_sell_reason,
+                                                                       previous_time_profit_reached, enter_tags)
             if sell_max and signal_name_max is not None:
                 return True, f"{signal_name_max}_m"
-            if (current_profit > (previous_profit + 0.005)) and (previous_sell_reason not in ["exit_pump_stoploss_doom"]):
+            if (current_profit > (previous_profit + 0.005)) and (previous_sell_reason not in [f"exit_{self.pump_mode_name}_stoploss_doom"]):
                 # Update the target, raise it.
-                mark_pair, mark_signal = self.pump_mark_profit_target(pair, True, previous_sell_reason, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
+                mark_pair, mark_signal = self.mark_profit_target(self.pump_mode_name, pair, True, previous_sell_reason, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
                 if mark_pair:
                     self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
 
@@ -662,7 +361,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     (previous_profit is None)
                     or (previous_profit < current_profit)
             ):
-                mark_pair, mark_signal = self.pump_mark_profit_target(pair, sell, signal_name, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
+                mark_pair, mark_signal = self.mark_profit_target(self.pump_mode_name, pair, sell, signal_name, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
                 if mark_pair:
                     self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
                 else:
@@ -676,349 +375,46 @@ class NostalgiaForInfinityX2(IStrategy):
                 if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
                     previous_profit = self.target_profit_cache.data[pair]['profit']
                 if (previous_profit is None) or (previous_profit < current_profit):
-                    mark_signal = "exit_profit_pump_max"
+                    mark_signal = f"exit_profit_{self.pump_mode_name}_max"
                     self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
 
-        if (signal_name not in ["exit_profit_pump_max", "exit_pump_stoploss_doom", "exit_pump_stoploss_u_e", "exit_pump_bull_stoploss_u_e"]):
+        if (signal_name not in [f"exit_profit_{self.pump_mode_name}_max", f"exit_{self.pump_mode_name}_stoploss_doom", f"exit_{self.pump_mode_name}_stoploss_u_e"]):
             if sell and (signal_name is not None):
                 return True, f"{signal_name}"
 
         return False, None
 
-    def pump_mark_profit_target(self, pair: str, sell: bool, signal_name: str, trade: Trade, current_time: datetime, current_rate: float, current_profit: float, last_candle, previous_candle_1) -> tuple:
-        if sell and (signal_name is not None):
-            return pair, signal_name
-
-        return None, None
-
-    def pump_exit_profit_target(self, pair: str, trade: Trade, current_time: datetime, current_rate: float, current_profit: float, last_candle, previous_candle_1, previous_rate, previous_profit,  previous_sell_reason, previous_time_profit_reached, enter_tags) -> tuple:
-        if (previous_sell_reason in ["exit_pump_stoploss_doom"]):
-            if (current_profit > 0.04):
-                # profit is over the threshold, don't exit
-                self._remove_profit_target(pair)
-                return False, None
-            if (current_profit < -0.18):
-                if (current_profit < (previous_profit - 0.04)):
-                    return True, previous_sell_reason
-            elif (current_profit < -0.1):
-                if (current_profit < (previous_profit - 0.04)):
-                    return True, previous_sell_reason
-            elif (current_profit < -0.04):
-                if (current_profit < (previous_profit - 0.04)):
-                    return True, previous_sell_reason
-            else:
-                if (current_profit < (previous_profit - 0.04)):
-                    return True, previous_sell_reason
-        elif (previous_sell_reason in ["exit_pump_stoploss_u_e", "exit_pump_bull_stoploss_u_e"]):
-            if (current_profit > 0.04):
-                # profit is over the threshold, don't exit
-                self._remove_profit_target(pair)
-                return False, None
-            if (current_profit < (previous_profit - 0.14)):
-                    return True, previous_sell_reason
-        elif (previous_sell_reason in ["exit_profit_pump_max"]):
-            if (current_profit < -0.08):
-                # profit is under the threshold, cancel
-                self._remove_profit_target(pair)
-                return False, None
-            if (0.001 <= current_profit < 0.01):
-                if (current_profit < (previous_profit - 0.01)):
-                    return True, previous_sell_reason
-            elif (0.01 <= current_profit < 0.02):
-                if (current_profit < (previous_profit - 0.02)):
-                    return True, previous_sell_reason
-            elif (0.02 <= current_profit < 0.03):
-                if (current_profit < (previous_profit - 0.03)):
-                    return True, previous_sell_reason
-            elif (0.03 <= current_profit < 0.05):
-                if (current_profit < (previous_profit - 0.04)):
-                    return True, previous_sell_reason
-            elif (0.05 <= current_profit < 0.08):
-                if (current_profit < (previous_profit - 0.05)):
-                    return True, previous_sell_reason
-            elif (0.08 <= current_profit < 0.12):
-                if (current_profit < (previous_profit - 0.06)):
-                    return True, previous_sell_reason
-            elif (0.12 <= current_profit):
-                if (current_profit < (previous_profit - 0.07)):
-                    return True, previous_sell_reason
-        else:
-            return False, None
-
-        return False, None
-
-    def exit_pump_signals(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
-        # Sell signal 1
-        if (last_candle['rsi_14'] > 79.0) and (last_candle['rsi_14_4h'] > 75.0) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']) and (previous_candle_3['close'] > previous_candle_3['bb20_2_upp']) and (previous_candle_4['close'] > previous_candle_4['bb20_2_upp']):
-            if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.01):
-                    return True, 'exit_pump_1_1_1'
-            else:
-                if (current_profit > 0.01):
-                    return True, 'exit_pump_1_2_1'
-
-        # Sell signal 2
-        elif (last_candle['rsi_14'] > 80.0) and (last_candle['rsi_14_4h'] > 75.0) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']):
-            if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.01):
-                    return True, 'exit_pump_2_1_1'
-            else:
-                if (current_profit > 0.01):
-                    return True, 'exit_pump_2_2_1'
-
-        # Sell signal 3
-        elif (last_candle['rsi_14'] > 85.0) and (last_candle['rsi_14_4h'] > 75.0):
-            if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.01):
-                    return True, 'exit_pump_3_1_1'
-            else:
-                if (current_profit > 0.01):
-                    return True, 'exit_pump_3_2_1'
-
-        # Sell signal 4
-        elif (last_candle['rsi_14'] > 80.0) and (last_candle['rsi_14_1h'] > 80.0) and (last_candle['rsi_14_4h'] > 75.0):
-            if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.01):
-                    return True, 'exit_pump_4_1_1'
-            else:
-                if (current_profit > 0.01):
-                    return True, 'exit_pump_4_2_1'
-
-        # Sell signal 6
-        elif (last_candle['close'] < last_candle['ema_200']) and (last_candle['close'] > last_candle['ema_50']) and (last_candle['rsi_14'] > 79.0):
-            if (current_profit > 0.01):
-                return True, 'exit_pump_6_1'
-
-        # Sell signal 7
-        elif (last_candle['rsi_14_1h'] > 79.0) and (last_candle['crossed_below_ema_12_26']):
-            if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.01):
-                    return True, 'exit_pump_7_1_1'
-            else:
-                if (current_profit > 0.01):
-                    return True, 'exit_pump_7_2_1'
-
-        # Sell signal 8
-        elif (last_candle['rsi_14_4h'] > 75.0) and (last_candle['close'] > last_candle['bb20_2_upp_1h'] * 1.08):
-            if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.01):
-                    return True, 'exit_pump_8_1_1'
-            else:
-                if (current_profit > 0.01):
-                    return True, 'exit_pump_8_2_1'
-
-        return False, None
-
-    def exit_pump_main(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
-        if (last_candle['close'] > last_candle['sma_200_1h']):
-            if 0.01 > current_profit >= 0.001:
-                if (last_candle['rsi_14'] < 20.0):
-                    return True, 'exit_pump_o_0'
-            elif 0.02 > current_profit >= 0.01:
-                if (last_candle['rsi_14'] < 28.0):
-                    return True, 'exit_pump_o_1'
-            elif 0.03 > current_profit >= 0.02:
-                if (last_candle['rsi_14'] < 30.0):
-                    return True, 'exit_pump_o_2'
-            elif 0.04 > current_profit >= 0.03:
-                if (last_candle['rsi_14'] < 32.0):
-                    return True, 'exit_pump_o_3'
-            elif 0.05 > current_profit >= 0.04:
-                if (last_candle['rsi_14'] < 34.0):
-                    return True, 'exit_pump_o_4'
-            elif 0.06 > current_profit >= 0.05:
-                if (last_candle['rsi_14'] < 36.0):
-                    return True, 'exit_pump_o_5'
-            elif 0.07 > current_profit >= 0.06:
-                if (last_candle['rsi_14'] < 38.0):
-                    return True, 'exit_pump_o_6'
-            elif 0.08 > current_profit >= 0.07:
-                if (last_candle['rsi_14'] < 40.0):
-                    return True, 'exit_pump_o_7'
-            elif 0.09 > current_profit >= 0.08:
-                if (last_candle['rsi_14'] < 42.0):
-                    return True, 'exit_pump_o_8'
-            elif 0.1 > current_profit >= 0.09:
-                if (last_candle['rsi_14'] < 44.0):
-                    return True, 'exit_pump_o_9'
-            elif 0.12 > current_profit >= 0.1:
-                if (last_candle['rsi_14'] < 46.0):
-                    return True, 'exit_pump_o_10'
-            elif 0.2 > current_profit >= 0.12:
-                if (last_candle['rsi_14'] < 44.0):
-                    return True, 'exit_pump_o_11'
-            elif current_profit >= 0.2:
-                if (last_candle['rsi_14'] < 42.0):
-                    return True, 'exit_pump_o_12'
-        elif (last_candle['close'] < last_candle['sma_200_1h']):
-            if 0.01 > current_profit >= 0.001:
-                if (last_candle['rsi_14'] < 22.0):
-                    return True, 'exit_pump_u_0'
-            elif 0.02 > current_profit >= 0.01:
-                if (last_candle['rsi_14'] < 30.0):
-                    return True, 'exit_pump_u_1'
-            elif 0.03 > current_profit >= 0.02:
-                if (last_candle['rsi_14'] < 32.0):
-                    return True, 'exit_pump_u_2'
-            elif 0.04 > current_profit >= 0.03:
-                if (last_candle['rsi_14'] < 34.0):
-                    return True, 'exit_pump_u_3'
-            elif 0.05 > current_profit >= 0.04:
-                if (last_candle['rsi_14'] < 36.0):
-                    return True, 'exit_pump_u_4'
-            elif 0.06 > current_profit >= 0.05:
-                if (last_candle['rsi_14'] < 38.0):
-                    return True, 'exit_pump_u_5'
-            elif 0.07 > current_profit >= 0.06:
-                if (last_candle['rsi_14'] < 40.0):
-                    return True, 'exit_pump_u_6'
-            elif 0.08 > current_profit >= 0.07:
-                if (last_candle['rsi_14'] < 42.0):
-                    return True, 'exit_pump_u_7'
-            elif 0.09 > current_profit >= 0.08:
-                if (last_candle['rsi_14'] < 44.0):
-                    return True, 'exit_pump_u_8'
-            elif 0.1 > current_profit >= 0.09:
-                if (last_candle['rsi_14'] < 46.0):
-                    return True, 'exit_pump_u_9'
-            elif 0.12 > current_profit >= 0.1:
-                if (last_candle['rsi_14'] < 48.0):
-                    return True, 'exit_pump_u_10'
-            elif 0.2 > current_profit >= 0.12:
-                if (last_candle['rsi_14'] < 46.0):
-                    return True, 'exit_pump_u_11'
-            elif current_profit >= 0.2:
-                if (last_candle['rsi_14'] < 44.0):
-                    return True, 'exit_pump_u_12'
-
-        return False, None
-
-    def exit_pump_r(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
-        if 0.01 > current_profit >= 0.001:
-            if (last_candle['r_480'] > -0.1):
-                return True, 'exit_pump_w_0_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_pump_w_0_2'
-        elif 0.02 > current_profit >= 0.01:
-            if (last_candle['r_480'] > -0.2):
-                return True, 'exit_pump_w_1_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_pump_w_1_2'
-        elif 0.03 > current_profit >= 0.02:
-            if (last_candle['r_480'] > -0.3):
-                return True, 'exit_pump_w_2_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_pump_w_2_2'
-        elif 0.04 > current_profit >= 0.03:
-            if (last_candle['r_480'] > -0.4):
-                return True, 'exit_pump_w_3_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_pump_w_3_2'
-        elif 0.05 > current_profit >= 0.04:
-            if (last_candle['r_480'] > -0.5):
-                return True, 'exit_pump_w_4_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_pump_w_4_2'
-        elif 0.06 > current_profit >= 0.05:
-            if (last_candle['r_480'] > -0.6):
-                return True, 'exit_pump_w_5_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_pump_w_5_2'
-        elif 0.07 > current_profit >= 0.06:
-            if (last_candle['r_480'] > -0.7):
-                return True, 'exit_pump_w_6_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_pump_w_6_2'
-        elif 0.08 > current_profit >= 0.07:
-            if (last_candle['r_480'] > -0.8):
-                return True, 'exit_pump_w_7_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_pump_w_7_2'
-        elif 0.09 > current_profit >= 0.08:
-            if (last_candle['r_480'] > -0.9):
-                return True, 'exit_pump_w_8_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_pump_w_8_2'
-        elif 0.1 > current_profit >= 0.09:
-            if (last_candle['r_480'] > -1.0):
-                return True, 'exit_pump_w_9_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_pump_w_9_2'
-        elif 0.12 > current_profit >= 0.1:
-            if (last_candle['r_480'] > -1.1):
-                return True, 'exit_pump_w_10_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_pump_w_10_2'
-        elif 0.2 > current_profit >= 0.12:
-            if (last_candle['r_480'] > -0.4):
-                return True, 'exit_pump_w_11_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_pump_w_11_2'
-        elif current_profit >= 0.2:
-            if (last_candle['r_480'] > -0.2):
-                return True, 'exit_pump_w_12_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 80.0):
-                return True, 'exit_pump_w_12_2'
-
-        return False, None
-
-    def exit_pump_stoploss(self, current_rate: float, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
-        is_backtest = self.dp.runmode.value == 'backtest'
-        rel_profit = ((current_rate - trade.open_rate) / trade.open_rate)
-        # Stoploss doom
-        if (
-                (self.stop_thresholds_pump[10])
-                and (rel_profit < self.stop_thresholds_pump[0])
-        ):
-            return True, 'exit_pump_stoploss_doom'
-
-        # Under & near EMA200, local uptrend move
-        if (
-                (self.stop_thresholds_pump[12])
-                and (rel_profit < self.stop_thresholds_pump[2])
-                and (last_candle['close'] < last_candle['ema_200'])
-                and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < self.stop_thresholds_pump[6])
-                and (last_candle['rsi_14'] > previous_candle_1['rsi_14'])
-                and (last_candle['rsi_14'] > (last_candle['rsi_14_1h'] + self.stop_thresholds_pump[8]))
-                and (current_time - timedelta(minutes=self.stop_thresholds_pump[4]) > trade.open_date_utc)
-                # temporary
-                and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2022, 12, 25) or is_backtest)
-        ):
-            return True, 'exit_pump_stoploss_u_e'
-
-        return False, None
-
     def exit_quick(self, pair: str, current_rate: float, current_profit: float,
-                         max_profit: float, max_loss: float,
-                         last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5,
-                         trade: 'Trade', current_time: 'datetime', enter_tags) -> tuple:
+                    max_profit: float, max_loss: float,
+                    last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5,
+                    trade: 'Trade', current_time: 'datetime', enter_tags) -> tuple:
         sell = False
 
         # Original sell signals
-        sell, signal_name = self.exit_quick_signals(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+        sell, signal_name = self.exit_signals(self.quick_mode_name, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Main sell signals
         if not sell:
-            sell, signal_name = self.exit_quick_main(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_main(self.quick_mode_name, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Williams %R based sells
         if not sell:
-            sell, signal_name = self.exit_quick_r(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_r(self.quick_mode_name, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Stoplosses
         if not sell:
-            sell, signal_name = self.exit_quick_stoploss(current_rate, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_stoploss(self.quick_mode_name, current_rate, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Extra sell logic
         if not sell:
             if (0.09 >= current_profit > 0.02) and (last_candle['rsi_14'] > 78.0):
-                sell, signal_name =  True, 'exit_quick_q_1'
+                sell, signal_name =  True, f'exit_{self.quick_mode_name}_q_1'
 
             if (0.09 >= current_profit > 0.02) and (last_candle['cti_20'] > 0.95):
-                sell, signal_name = True, 'exit_quick_q_2'
+                sell, signal_name = True, f'exit_{self.quick_mode_name}_q_2'
 
             if (0.09 >= current_profit > 0.02) and (last_candle['r_14'] >= -0.1):
-                sell, signal_name = True, 'exit_quick_q_3'
+                sell, signal_name = True, f'exit_{self.quick_mode_name}_q_3'
 
         # Profit Target Signal
         # Check if pair exist on target_profit_cache
@@ -1028,15 +424,15 @@ class NostalgiaForInfinityX2(IStrategy):
             previous_sell_reason = self.target_profit_cache.data[pair]['sell_reason']
             previous_time_profit_reached = datetime.fromisoformat(self.target_profit_cache.data[pair]['time_profit_reached'])
 
-            sell_max, signal_name_max = self.quick_exit_profit_target(pair, trade, current_time, current_rate, current_profit,
-                                                                            last_candle, previous_candle_1,
-                                                                            previous_rate, previous_profit, previous_sell_reason,
-                                                                            previous_time_profit_reached, enter_tags)
+            sell_max, signal_name_max = self.exit_profit_target(self.quick_mode_name, pair, trade, current_time, current_rate, current_profit,
+                                                                       last_candle, previous_candle_1,
+                                                                       previous_rate, previous_profit, previous_sell_reason,
+                                                                       previous_time_profit_reached, enter_tags)
             if sell_max and signal_name_max is not None:
                 return True, f"{signal_name_max}_m"
-            if (current_profit > (previous_profit + 0.001)) and (previous_sell_reason not in ["exit_quick_stoploss_doom"]):
+            if (current_profit > (previous_profit + 0.005)) and (previous_sell_reason not in [f"exit_{self.quick_mode_name}_stoploss_doom"]):
                 # Update the target, raise it.
-                mark_pair, mark_signal = self.quick_mark_profit_target(pair, True, previous_sell_reason, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
+                mark_pair, mark_signal = self.mark_profit_target(self.quick_mode_name, pair, True, previous_sell_reason, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
                 if mark_pair:
                     self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
 
@@ -1049,7 +445,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     (previous_profit is None)
                     or (previous_profit < current_profit)
             ):
-                mark_pair, mark_signal = self.quick_mark_profit_target(pair, sell, signal_name, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
+                mark_pair, mark_signal = self.mark_profit_target(self.quick_mode_name, pair, sell, signal_name, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
                 if mark_pair:
                     self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
                 else:
@@ -1063,338 +459,35 @@ class NostalgiaForInfinityX2(IStrategy):
                 if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
                     previous_profit = self.target_profit_cache.data[pair]['profit']
                 if (previous_profit is None) or (previous_profit < current_profit):
-                    mark_signal = "exit_profit_quick_max"
+                    mark_signal = f"exit_profit_{self.quick_mode_name}_max"
                     self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
 
-        if (signal_name not in ["exit_profit_quick_max", "exit_quick_stoploss_doom", "exit_quick_stoploss_u_e", "exit_quick_bull_stoploss_u_e"]):
+        if (signal_name not in [f"exit_profit_{self.quick_mode_name}_max", f"exit_{self.quick_mode_name}_stoploss_doom", f"exit_{self.quick_mode_name}_stoploss_u_e"]):
             if sell and (signal_name is not None):
                 return True, f"{signal_name}"
 
         return False, None
 
-    def quick_mark_profit_target(self, pair: str, sell: bool, signal_name: str, trade: Trade, current_time: datetime, current_rate: float, current_profit: float, last_candle, previous_candle_1) -> tuple:
-        if sell and (signal_name is not None):
-            return pair, signal_name
-
-        return None, None
-
-    def quick_exit_profit_target(self, pair: str, trade: Trade, current_time: datetime, current_rate: float, current_profit: float, last_candle, previous_candle_1, previous_rate, previous_profit,  previous_sell_reason, previous_time_profit_reached, enter_tags) -> tuple:
-        if (previous_sell_reason in ["exit_quick_stoploss_doom"]):
-            if (current_profit > 0.04):
-                # profit is over the threshold, don't exit
-                self._remove_profit_target(pair)
-                return False, None
-            if (current_profit < -0.18):
-                if (current_profit < (previous_profit - 0.04)):
-                    return True, previous_sell_reason
-            elif (current_profit < -0.1):
-                if (current_profit < (previous_profit - 0.04)):
-                    return True, previous_sell_reason
-            elif (current_profit < -0.04):
-                if (current_profit < (previous_profit - 0.04)):
-                    return True, previous_sell_reason
-            else:
-                if (current_profit < (previous_profit - 0.04)):
-                    return True, previous_sell_reason
-        elif (previous_sell_reason in ["exit_quick_stoploss_u_e", "exit_quick_bull_stoploss_u_e"]):
-            if (current_profit > 0.04):
-                # profit is over the threshold, don't exit
-                self._remove_profit_target(pair)
-                return False, None
-            if (current_profit < (previous_profit - 0.14)):
-                    return True, previous_sell_reason
-        elif (previous_sell_reason in ["exit_profit_quick_max"]):
-            if (current_profit < -0.08):
-                # profit is under the threshold, cancel
-                self._remove_profit_target(pair)
-                return False, None
-            if (0.001 <= current_profit < 0.01):
-                if (current_profit < (previous_profit - 0.01)):
-                    return True, previous_sell_reason
-            elif (0.01 <= current_profit < 0.02):
-                if (current_profit < (previous_profit - 0.01)):
-                    return True, previous_sell_reason
-            elif (0.02 <= current_profit < 0.03):
-                if (current_profit < (previous_profit - 0.02)):
-                    return True, previous_sell_reason
-            elif (0.03 <= current_profit < 0.05):
-                if (current_profit < (previous_profit - 0.03)):
-                    return True, previous_sell_reason
-            elif (0.05 <= current_profit < 0.08):
-                if (current_profit < (previous_profit - 0.04)):
-                    return True, previous_sell_reason
-            elif (0.08 <= current_profit < 0.12):
-                if (current_profit < (previous_profit - 0.05)):
-                    return True, previous_sell_reason
-            elif (0.12 <= current_profit):
-                if (current_profit < (previous_profit - 0.06)):
-                    return True, previous_sell_reason
-        else:
-            return False, None
-
-        return False, None
-
-    def exit_quick_signals(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
-        # Sell signal 1
-        if (last_candle['rsi_14'] > 79.0) and (last_candle['rsi_14_4h'] > 75.0) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']) and (previous_candle_3['close'] > previous_candle_3['bb20_2_upp']) and (previous_candle_4['close'] > previous_candle_4['bb20_2_upp']):
-            if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.01):
-                    return True, 'exit_quick_1_1_1'
-            else:
-                if (current_profit > 0.01):
-                    return True, 'exit_quick_1_2_1'
-
-        # Sell signal 2
-        elif (last_candle['rsi_14'] > 80.0) and (last_candle['rsi_14_4h'] > 75.0) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']):
-            if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.01):
-                    return True, 'exit_quick_2_1_1'
-            else:
-                if (current_profit > 0.01):
-                    return True, 'exit_quick_2_2_1'
-
-        # Sell signal 3
-        elif (last_candle['rsi_14'] > 85.0) and (last_candle['rsi_14_4h'] > 75.0):
-            if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.01):
-                    return True, 'exit_quick_3_1_1'
-            else:
-                if (current_profit > 0.01):
-                    return True, 'exit_quick_3_2_1'
-
-        # Sell signal 4
-        elif (last_candle['rsi_14'] > 80.0) and (last_candle['rsi_14_1h'] > 80.0) and (last_candle['rsi_14_4h'] > 75.0):
-            if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.01):
-                    return True, 'exit_quick_4_1_1'
-            else:
-                if (current_profit > 0.01):
-                    return True, 'exit_quick_4_2_1'
-
-        # Sell signal 6
-        elif (last_candle['close'] < last_candle['ema_200']) and (last_candle['close'] > last_candle['ema_50']) and (last_candle['rsi_14'] > 79.0):
-            if (current_profit > 0.01):
-                return True, 'exit_quick_6_1'
-
-        # Sell signal 7
-        elif (last_candle['rsi_14_1h'] > 79.0) and (last_candle['crossed_below_ema_12_26']):
-            if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.01):
-                    return True, 'exit_quick_7_1_1'
-            else:
-                if (current_profit > 0.01):
-                    return True, 'exit_quick_7_2_1'
-
-        # Sell signal 8
-        elif (last_candle['rsi_14_4h'] > 75.0) and (last_candle['close'] > last_candle['bb20_2_upp_1h'] * 1.08):
-            if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.01):
-                    return True, 'exit_quick_8_1_1'
-            else:
-                if (current_profit > 0.01):
-                    return True, 'exit_quick_8_2_1'
-
-        return False, None
-
-    def exit_quick_main(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
-        if (last_candle['close'] > last_candle['sma_200_1h']):
-            if 0.01 > current_profit >= 0.001:
-                if (last_candle['rsi_14'] < 20.0):
-                    return True, 'exit_quick_o_0'
-            elif 0.02 > current_profit >= 0.01:
-                if (last_candle['rsi_14'] < 28.0):
-                    return True, 'exit_quick_o_1'
-            elif 0.03 > current_profit >= 0.02:
-                if (last_candle['rsi_14'] < 30.0):
-                    return True, 'exit_quick_o_2'
-            elif 0.04 > current_profit >= 0.03:
-                if (last_candle['rsi_14'] < 32.0):
-                    return True, 'exit_quick_o_3'
-            elif 0.05 > current_profit >= 0.04:
-                if (last_candle['rsi_14'] < 34.0):
-                    return True, 'exit_quick_o_4'
-            elif 0.06 > current_profit >= 0.05:
-                if (last_candle['rsi_14'] < 36.0):
-                    return True, 'exit_quick_o_5'
-            elif 0.07 > current_profit >= 0.06:
-                if (last_candle['rsi_14'] < 38.0):
-                    return True, 'exit_quick_o_6'
-            elif 0.08 > current_profit >= 0.07:
-                if (last_candle['rsi_14'] < 40.0):
-                    return True, 'exit_quick_o_7'
-            elif 0.09 > current_profit >= 0.08:
-                if (last_candle['rsi_14'] < 42.0):
-                    return True, 'exit_quick_o_8'
-            elif 0.1 > current_profit >= 0.09:
-                if (last_candle['rsi_14'] < 44.0):
-                    return True, 'exit_quick_o_9'
-            elif 0.12 > current_profit >= 0.1:
-                if (last_candle['rsi_14'] < 46.0):
-                    return True, 'exit_quick_o_10'
-            elif 0.2 > current_profit >= 0.12:
-                if (last_candle['rsi_14'] < 44.0):
-                    return True, 'exit_quick_o_11'
-            elif current_profit >= 0.2:
-                if (last_candle['rsi_14'] < 42.0):
-                    return True, 'exit_quick_o_12'
-        elif (last_candle['close'] < last_candle['sma_200_1h']):
-            if 0.01 > current_profit >= 0.001:
-                if (last_candle['rsi_14'] < 22.0):
-                    return True, 'exit_quick_u_0'
-            elif 0.02 > current_profit >= 0.01:
-                if (last_candle['rsi_14'] < 30.0):
-                    return True, 'exit_quick_u_1'
-            elif 0.03 > current_profit >= 0.02:
-                if (last_candle['rsi_14'] < 32.0):
-                    return True, 'exit_quick_u_2'
-            elif 0.04 > current_profit >= 0.03:
-                if (last_candle['rsi_14'] < 34.0):
-                    return True, 'exit_quick_u_3'
-            elif 0.05 > current_profit >= 0.04:
-                if (last_candle['rsi_14'] < 36.0):
-                    return True, 'exit_quick_u_4'
-            elif 0.06 > current_profit >= 0.05:
-                if (last_candle['rsi_14'] < 38.0):
-                    return True, 'exit_quick_u_5'
-            elif 0.07 > current_profit >= 0.06:
-                if (last_candle['rsi_14'] < 40.0):
-                    return True, 'exit_quick_u_6'
-            elif 0.08 > current_profit >= 0.07:
-                if (last_candle['rsi_14'] < 42.0):
-                    return True, 'exit_quick_u_7'
-            elif 0.09 > current_profit >= 0.08:
-                if (last_candle['rsi_14'] < 44.0):
-                    return True, 'exit_quick_u_8'
-            elif 0.1 > current_profit >= 0.09:
-                if (last_candle['rsi_14'] < 46.0):
-                    return True, 'exit_quick_u_9'
-            elif 0.12 > current_profit >= 0.1:
-                if (last_candle['rsi_14'] < 48.0):
-                    return True, 'exit_quick_u_10'
-            elif 0.2 > current_profit >= 0.12:
-                if (last_candle['rsi_14'] < 46.0):
-                    return True, 'exit_quick_u_11'
-            elif current_profit >= 0.2:
-                if (last_candle['rsi_14'] < 44.0):
-                    return True, 'exit_quick_u_12'
-
-        return False, None
-
-    def exit_quick_r(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
-        if 0.01 > current_profit >= 0.001:
-            if (last_candle['r_480'] > -0.1):
-                return True, 'exit_quick_w_0_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_quick_w_0_2'
-        elif 0.02 > current_profit >= 0.01:
-            if (last_candle['r_480'] > -0.2):
-                return True, 'exit_quick_w_1_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_quick_w_1_2'
-        elif 0.03 > current_profit >= 0.02:
-            if (last_candle['r_480'] > -0.3):
-                return True, 'exit_quick_w_2_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_quick_w_2_2'
-        elif 0.04 > current_profit >= 0.03:
-            if (last_candle['r_480'] > -0.4):
-                return True, 'exit_quick_w_3_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_quick_w_3_2'
-        elif 0.05 > current_profit >= 0.04:
-            if (last_candle['r_480'] > -0.5):
-                return True, 'exit_quick_w_4_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_quick_w_4_2'
-        elif 0.06 > current_profit >= 0.05:
-            if (last_candle['r_480'] > -0.6):
-                return True, 'exit_quick_w_5_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_quick_w_5_2'
-        elif 0.07 > current_profit >= 0.06:
-            if (last_candle['r_480'] > -0.7):
-                return True, 'exit_quick_w_6_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_quick_w_6_2'
-        elif 0.08 > current_profit >= 0.07:
-            if (last_candle['r_480'] > -0.8):
-                return True, 'exit_quick_w_7_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_quick_w_7_2'
-        elif 0.09 > current_profit >= 0.08:
-            if (last_candle['r_480'] > -0.9):
-                return True, 'exit_quick_w_8_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_quick_w_8_2'
-        elif 0.1 > current_profit >= 0.09:
-            if (last_candle['r_480'] > -1.0):
-                return True, 'exit_quick_w_9_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_quick_w_9_2'
-        elif 0.12 > current_profit >= 0.1:
-            if (last_candle['r_480'] > -1.1):
-                return True, 'exit_quick_w_10_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_quick_w_10_2'
-        elif 0.2 > current_profit >= 0.12:
-            if (last_candle['r_480'] > -0.4):
-                return True, 'exit_quick_w_11_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_quick_w_11_2'
-        elif current_profit >= 0.2:
-            if (last_candle['r_480'] > -0.2):
-                return True, 'exit_quick_w_12_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 80.0):
-                return True, 'exit_quick_w_12_2'
-
-        return False, None
-
-    def exit_quick_stoploss(self, current_rate: float, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
-        is_backtest = self.dp.runmode.value == 'backtest'
-        rel_profit = ((current_rate - trade.open_rate) / trade.open_rate)
-        # Stoploss doom
-        if (
-                (self.stop_thresholds_quick[10])
-                and (rel_profit < self.stop_thresholds_quick[0])
-        ):
-            return True, 'exit_quick_stoploss_doom'
-
-        # Under & near EMA200, local uptrend move
-        if (
-                (self.stop_thresholds_quick[12])
-                and (rel_profit < self.stop_thresholds_quick[2])
-                and (last_candle['close'] < last_candle['ema_200'])
-                and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < self.stop_thresholds_quick[6])
-                and (last_candle['rsi_14'] > previous_candle_1['rsi_14'])
-                and (last_candle['rsi_14'] > (last_candle['rsi_14_1h'] + self.stop_thresholds_quick[8]))
-                and (current_time - timedelta(minutes=self.stop_thresholds_quick[4]) > trade.open_date_utc)
-                # temporary
-                and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2022, 12, 25) or is_backtest)
-        ):
-            return True, 'exit_quick_stoploss_u_e'
-
-        return False, None
-
     def exit_rebuy(self, pair: str, current_rate: float, current_profit: float,
-                         max_profit: float, max_loss: float,
-                         last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5,
-                         trade: 'Trade', current_time: 'datetime', enter_tags) -> tuple:
+                    max_profit: float, max_loss: float,
+                    last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5,
+                    trade: 'Trade', current_time: 'datetime', enter_tags) -> tuple:
         sell = False
 
         # Original sell signals
-        sell, signal_name = self.exit_rebuy_signals(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+        sell, signal_name = self.exit_signals(self.rebuy_mode_name, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Main sell signals
         if not sell:
-            sell, signal_name = self.exit_rebuy_main(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_main(self.rebuy_mode_name, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Williams %R based sells
         if not sell:
-            sell, signal_name = self.exit_rebuy_r(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_r(self.rebuy_mode_name, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Stoplosses
         if not sell:
-            sell, signal_name = self.exit_rebuy_stoploss(current_rate, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_stoploss(self.rebuy_mode_name, current_rate, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Profit Target Signal
         # Check if pair exist on target_profit_cache
@@ -1404,15 +497,15 @@ class NostalgiaForInfinityX2(IStrategy):
             previous_sell_reason = self.target_profit_cache.data[pair]['sell_reason']
             previous_time_profit_reached = datetime.fromisoformat(self.target_profit_cache.data[pair]['time_profit_reached'])
 
-            sell_max, signal_name_max = self.rebuy_exit_profit_target(pair, trade, current_time, current_rate, current_profit,
-                                                                            last_candle, previous_candle_1,
-                                                                            previous_rate, previous_profit, previous_sell_reason,
-                                                                            previous_time_profit_reached, enter_tags)
+            sell_max, signal_name_max = self.exit_profit_target(self.rebuy_mode_name, pair, trade, current_time, current_rate, current_profit,
+                                                                       last_candle, previous_candle_1,
+                                                                       previous_rate, previous_profit, previous_sell_reason,
+                                                                       previous_time_profit_reached, enter_tags)
             if sell_max and signal_name_max is not None:
                 return True, f"{signal_name_max}_m"
-            if (current_profit > (previous_profit + 0.005)) and (previous_sell_reason not in ["exit_rebuy_stoploss_doom"]):
+            if (current_profit > (previous_profit + 0.005)) and (previous_sell_reason not in [f"exit_{self.rebuy_mode_name}_stoploss_doom"]):
                 # Update the target, raise it.
-                mark_pair, mark_signal = self.rebuy_mark_profit_target(pair, True, previous_sell_reason, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
+                mark_pair, mark_signal = self.mark_profit_target(self.rebuy_mode_name, pair, True, previous_sell_reason, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
                 if mark_pair:
                     self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
 
@@ -1425,7 +518,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     (previous_profit is None)
                     or (previous_profit < current_profit)
             ):
-                mark_pair, mark_signal = self.rebuy_mark_profit_target(pair, sell, signal_name, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
+                mark_pair, mark_signal = self.mark_profit_target(self.rebuy_mode_name, pair, sell, signal_name, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
                 if mark_pair:
                     self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
                 else:
@@ -1439,336 +532,35 @@ class NostalgiaForInfinityX2(IStrategy):
                 if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
                     previous_profit = self.target_profit_cache.data[pair]['profit']
                 if (previous_profit is None) or (previous_profit < current_profit):
-                    mark_signal = "exit_profit_rebuy_max"
+                    mark_signal = f"exit_profit_{self.rebuy_mode_name}_max"
                     self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
 
-        if (signal_name not in ["exit_profit_rebuy_max", "exit_rebuy_stoploss_doom", "rebuy_stoploss_u_e", "exit_rebuy_bull_stoploss_u_e"]):
+        if (signal_name not in [f"exit_profit_{self.rebuy_mode_name}_max", f"exit_{self.rebuy_mode_name}_stoploss_doom", f"exit_{self.rebuy_mode_name}_stoploss_u_e"]):
             if sell and (signal_name is not None):
                 return True, f"{signal_name}"
 
         return False, None
 
-    def rebuy_mark_profit_target(self, pair: str, sell: bool, signal_name: str, trade: Trade, current_time: datetime, current_rate: float, current_profit: float, last_candle, previous_candle_1) -> tuple:
-        if sell and (signal_name is not None):
-            return pair, signal_name
-
-        return None, None
-
-    def rebuy_exit_profit_target(self, pair: str, trade: Trade, current_time: datetime, current_rate: float, current_profit: float, last_candle, previous_candle_1, previous_rate, previous_profit,  previous_sell_reason, previous_time_profit_reached, enter_tags) -> tuple:
-        if (previous_sell_reason in ["exit_rebuy_stoploss_doom"]):
-            if (current_profit > 0.04):
-                # profit is over the threshold, don't exit
-                self._remove_profit_target(pair)
-                return False, None
-            if (current_profit < -0.18):
-                if (current_profit < (previous_profit - 0.04)):
-                    return True, previous_sell_reason
-            elif (current_profit < -0.1):
-                if (current_profit < (previous_profit - 0.04)):
-                    return True, previous_sell_reason
-            elif (current_profit < -0.04):
-                if (current_profit < (previous_profit - 0.04)):
-                    return True, previous_sell_reason
-            else:
-                if (current_profit < (previous_profit - 0.04)):
-                    return True, previous_sell_reason
-        elif (previous_sell_reason in ["exit_rebuy_stoploss_u_e", "exit_rebuy_bull_stoploss_u_e"]):
-            if (current_profit > 0.04):
-                # profit is over the threshold, don't exit
-                self._remove_profit_target(pair)
-                return False, None
-            if (current_profit < (previous_profit - 0.14)):
-                    return True, previous_sell_reason
-        elif (previous_sell_reason in ["exit_profit_rebuy_max"]):
-            if (current_profit < -0.08):
-                # profit is under the threshold, cancel
-                self._remove_profit_target(pair)
-                return False, None
-            if (0.001 <= current_profit < 0.01):
-                if (current_profit < (previous_profit - 0.01)):
-                    return True, previous_sell_reason
-            elif (0.01 <= current_profit < 0.02):
-                if (current_profit < (previous_profit - 0.02)):
-                    return True, previous_sell_reason
-            elif (0.02 <= current_profit < 0.03):
-                if (current_profit < (previous_profit - 0.03)):
-                    return True, previous_sell_reason
-            elif (0.03 <= current_profit < 0.05):
-                if (current_profit < (previous_profit - 0.04)):
-                    return True, previous_sell_reason
-            elif (0.05 <= current_profit < 0.08):
-                if (current_profit < (previous_profit - 0.05)):
-                    return True, previous_sell_reason
-            elif (0.08 <= current_profit < 0.12):
-                if (current_profit < (previous_profit - 0.06)):
-                    return True, previous_sell_reason
-            elif (0.12 <= current_profit):
-                if (current_profit < (previous_profit - 0.07)):
-                    return True, previous_sell_reason
-        else:
-            return False, None
-
-        return False, None
-
-    def exit_rebuy_signals(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
-        # Sell signal 1
-        if (last_candle['rsi_14'] > 79.0) and (last_candle['rsi_14_4h'] > 75.0) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']) and (previous_candle_3['close'] > previous_candle_3['bb20_2_upp']) and (previous_candle_4['close'] > previous_candle_4['bb20_2_upp']):
-            if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.01):
-                    return True, 'exit_rebuy_1_1_1'
-            else:
-                if (current_profit > 0.01):
-                    return True, 'exit_rebuy_1_2_1'
-
-        # Sell signal 2
-        elif (last_candle['rsi_14'] > 80.0) and (last_candle['rsi_14_4h'] > 75.0) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']):
-            if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.01):
-                    return True, 'exit_rebuy_2_1_1'
-            else:
-                if (current_profit > 0.01):
-                    return True, 'exit_rebuy_2_2_1'
-
-        # Sell signal 3
-        elif (last_candle['rsi_14'] > 85.0) and (last_candle['rsi_14_4h'] > 75.0):
-            if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.01):
-                    return True, 'exit_rebuy_3_1_1'
-            else:
-                if (current_profit > 0.01):
-                    return True, 'exit_rebuy_3_2_1'
-
-        # Sell signal 4
-        elif (last_candle['rsi_14'] > 80.0) and (last_candle['rsi_14_1h'] > 80.0) and (last_candle['rsi_14_4h'] > 75.0):
-            if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.01):
-                    return True, 'exit_rebuy_4_1_1'
-            else:
-                if (current_profit > 0.01):
-                    return True, 'exit_rebuy_4_2_1'
-
-        # Sell signal 6
-        elif (last_candle['close'] < last_candle['ema_200']) and (last_candle['close'] > last_candle['ema_50']) and (last_candle['rsi_14'] > 79.0):
-            if (current_profit > 0.01):
-                return True, 'exit_rebuy_6_1'
-
-        # Sell signal 7
-        elif (last_candle['rsi_14_1h'] > 79.0) and (last_candle['crossed_below_ema_12_26']):
-            if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.01):
-                    return True, 'exit_rebuy_7_1_1'
-            else:
-                if (current_profit > 0.01):
-                    return True, 'exit_rebuy_7_2_1'
-
-        # Sell signal 8
-        elif (last_candle['rsi_14_4h'] > 75.0) and (last_candle['close'] > last_candle['bb20_2_upp_1h'] * 1.08):
-            if (last_candle['close'] > last_candle['ema_200']):
-                if (current_profit > 0.01):
-                    return True, 'exit_rebuy_8_1_1'
-            else:
-                if (current_profit > 0.01):
-                    return True, 'exit_rebuy_8_2_1'
-
-        return False, None
-
-    def exit_rebuy_main(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
-        if (last_candle['close'] > last_candle['sma_200_1h']):
-            if 0.01 > current_profit >= 0.001:
-                if (last_candle['rsi_14'] < 20.0):
-                    return True, 'exit_rebuy_o_0'
-            elif 0.02 > current_profit >= 0.01:
-                if (last_candle['rsi_14'] < 28.0):
-                    return True, 'exit_rebuy_o_1'
-            elif 0.03 > current_profit >= 0.02:
-                if (last_candle['rsi_14'] < 30.0):
-                    return True, 'exit_rebuy_o_2'
-            elif 0.04 > current_profit >= 0.03:
-                if (last_candle['rsi_14'] < 32.0):
-                    return True, 'exit_rebuy_o_3'
-            elif 0.05 > current_profit >= 0.04:
-                if (last_candle['rsi_14'] < 34.0):
-                    return True, 'exit_rebuy_o_4'
-            elif 0.06 > current_profit >= 0.05:
-                if (last_candle['rsi_14'] < 36.0):
-                    return True, 'exit_rebuy_o_5'
-            elif 0.07 > current_profit >= 0.06:
-                if (last_candle['rsi_14'] < 38.0):
-                    return True, 'exit_rebuy_o_6'
-            elif 0.08 > current_profit >= 0.07:
-                if (last_candle['rsi_14'] < 40.0):
-                    return True, 'exit_rebuy_o_7'
-            elif 0.09 > current_profit >= 0.08:
-                if (last_candle['rsi_14'] < 42.0):
-                    return True, 'exit_rebuy_o_8'
-            elif 0.1 > current_profit >= 0.09:
-                if (last_candle['rsi_14'] < 44.0):
-                    return True, 'exit_rebuy_o_9'
-            elif 0.12 > current_profit >= 0.1:
-                if (last_candle['rsi_14'] < 46.0):
-                    return True, 'exit_rebuy_o_10'
-            elif 0.2 > current_profit >= 0.12:
-                if (last_candle['rsi_14'] < 44.0):
-                    return True, 'exit_rebuy_o_11'
-            elif current_profit >= 0.2:
-                if (last_candle['rsi_14'] < 42.0):
-                    return True, 'exit_rebuy_o_12'
-        elif (last_candle['close'] < last_candle['sma_200_1h']):
-            if 0.01 > current_profit >= 0.001:
-                if (last_candle['rsi_14'] < 22.0):
-                    return True, 'exit_rebuy_u_0'
-            elif 0.02 > current_profit >= 0.01:
-                if (last_candle['rsi_14'] < 30.0):
-                    return True, 'exit_rebuy_u_1'
-            elif 0.03 > current_profit >= 0.02:
-                if (last_candle['rsi_14'] < 32.0):
-                    return True, 'exit_rebuy_u_2'
-            elif 0.04 > current_profit >= 0.03:
-                if (last_candle['rsi_14'] < 34.0):
-                    return True, 'exit_rebuy_u_3'
-            elif 0.05 > current_profit >= 0.04:
-                if (last_candle['rsi_14'] < 36.0):
-                    return True, 'exit_rebuy_u_4'
-            elif 0.06 > current_profit >= 0.05:
-                if (last_candle['rsi_14'] < 38.0):
-                    return True, 'exit_rebuy_u_5'
-            elif 0.07 > current_profit >= 0.06:
-                if (last_candle['rsi_14'] < 40.0):
-                    return True, 'exit_rebuy_u_6'
-            elif 0.08 > current_profit >= 0.07:
-                if (last_candle['rsi_14'] < 42.0):
-                    return True, 'exit_rebuy_u_7'
-            elif 0.09 > current_profit >= 0.08:
-                if (last_candle['rsi_14'] < 44.0):
-                    return True, 'exit_rebuy_u_8'
-            elif 0.1 > current_profit >= 0.09:
-                if (last_candle['rsi_14'] < 46.0):
-                    return True, 'exit_rebuy_u_9'
-            elif 0.12 > current_profit >= 0.1:
-                if (last_candle['rsi_14'] < 48.0):
-                    return True, 'exit_rebuy_u_10'
-            elif 0.2 > current_profit >= 0.12:
-                if (last_candle['rsi_14'] < 46.0):
-                    return True, 'exit_rebuy_u_11'
-            elif current_profit >= 0.2:
-                if (last_candle['rsi_14'] < 44.0):
-                    return True, 'exit_rebuy_u_12'
-
-        return False, None
-
-    def exit_rebuy_r(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
-        if 0.01 > current_profit >= 0.001:
-            if (last_candle['r_480'] > -0.1):
-                return True, 'exit_rebuy_w_0_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_rebuy_w_0_2'
-        elif 0.02 > current_profit >= 0.01:
-            if (last_candle['r_480'] > -0.2):
-                return True, 'exit_rebuy_w_1_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_rebuy_w_1_2'
-        elif 0.03 > current_profit >= 0.02:
-            if (last_candle['r_480'] > -0.3):
-                return True, 'exit_rebuy_w_2_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_rebuy_w_2_2'
-        elif 0.04 > current_profit >= 0.03:
-            if (last_candle['r_480'] > -0.4):
-                return True, 'exit_rebuy_w_3_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_rebuy_w_3_2'
-        elif 0.05 > current_profit >= 0.04:
-            if (last_candle['r_480'] > -0.5):
-                return True, 'exit_rebuy_w_4_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_rebuy_w_4_2'
-        elif 0.06 > current_profit >= 0.05:
-            if (last_candle['r_480'] > -0.6):
-                return True, 'exit_rebuy_w_5_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_rebuy_w_5_2'
-        elif 0.07 > current_profit >= 0.06:
-            if (last_candle['r_480'] > -0.7):
-                return True, 'exit_rebuy_w_6_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_rebuy_w_6_2'
-        elif 0.08 > current_profit >= 0.07:
-            if (last_candle['r_480'] > -0.8):
-                return True, 'exit_rebuy_w_7_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_rebuy_w_7_2'
-        elif 0.09 > current_profit >= 0.08:
-            if (last_candle['r_480'] > -0.9):
-                return True, 'exit_rebuy_w_8_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_rebuy_w_8_2'
-        elif 0.1 > current_profit >= 0.09:
-            if (last_candle['r_480'] > -1.0):
-                return True, 'exit_rebuy_w_9_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_rebuy_w_9_2'
-        elif 0.12 > current_profit >= 0.1:
-            if (last_candle['r_480'] > -1.1):
-                return True, 'exit_rebuy_w_10_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_rebuy_w_10_2'
-        elif 0.2 > current_profit >= 0.12:
-            if (last_candle['r_480'] > -0.4):
-                return True, 'exit_rebuy_w_11_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_rebuy_w_11_2'
-        elif current_profit >= 0.2:
-            if (last_candle['r_480'] > -0.2):
-                return True, 'exit_rebuy_w_12_1'
-            elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 80.0):
-                return True, 'exit_rebuy_w_12_2'
-
-        return False, None
-
-    def exit_rebuy_stoploss(self, current_rate: float, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
-        rel_profit = ((current_rate - trade.open_rate) / trade.open_rate)
-        # Stoploss doom
-        if (
-                (self.stop_thresholds_rebuy[10])
-                and (rel_profit < self.stop_thresholds_rebuy[0])
-        ):
-            return True, 'exit_rebuy_stoploss_doom'
-
-        # Under & near EMA200, local uptrend move
-        if (
-                (self.stop_thresholds_rebuy[12])
-                and (rel_profit < self.stop_thresholds_rebuy[2])
-                and (last_candle['close'] < last_candle['ema_200'])
-                #and (last_candle['cmf_20'] < -0.0)
-                and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < self.stop_thresholds_rebuy[6])
-                and (last_candle['rsi_14'] > previous_candle_1['rsi_14'])
-                and (last_candle['rsi_14'] > (last_candle['rsi_14_1h'] + self.stop_thresholds_rebuy[8]))
-                and (current_time - timedelta(minutes=self.stop_thresholds_rebuy[4]) > trade.open_date_utc)
-        ):
-            return True, 'exit_rebuy_stoploss_u_e'
-
-        return False, None
-
     def exit_long(self, pair: str, current_rate: float, current_profit: float,
-                         max_profit: float, max_loss: float,
-                         last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5,
-                         trade: 'Trade', current_time: 'datetime', enter_tags) -> tuple:
+                    max_profit: float, max_loss: float,
+                    last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5,
+                    trade: 'Trade', current_time: 'datetime', enter_tags) -> tuple:
         sell = False
 
         # Original sell signals
-        sell, signal_name = self.exit_long_signals(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+        sell, signal_name = self.exit_signals(self.long_mode_name, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Main sell signals
         if not sell:
-            sell, signal_name = self.exit_long_main(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_main(self.long_mode_name, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Williams %R based sells
         if not sell:
-            sell, signal_name = self.exit_long_r(current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_r(self.long_mode_name, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Stoplosses
         if not sell:
-            sell, signal_name = self.exit_long_stoploss(current_rate, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_stoploss(self.long_mode_name, current_rate, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Profit Target Signal
         # Check if pair exist on target_profit_cache
@@ -1778,15 +570,15 @@ class NostalgiaForInfinityX2(IStrategy):
             previous_sell_reason = self.target_profit_cache.data[pair]['sell_reason']
             previous_time_profit_reached = datetime.fromisoformat(self.target_profit_cache.data[pair]['time_profit_reached'])
 
-            sell_max, signal_name_max = self.long_exit_profit_target(pair, trade, current_time, current_rate, current_profit,
-                                                                            last_candle, previous_candle_1,
-                                                                            previous_rate, previous_profit, previous_sell_reason,
-                                                                            previous_time_profit_reached, enter_tags)
+            sell_max, signal_name_max = self.exit_profit_target(self.long_mode_name, pair, trade, current_time, current_rate, current_profit,
+                                                                       last_candle, previous_candle_1,
+                                                                       previous_rate, previous_profit, previous_sell_reason,
+                                                                       previous_time_profit_reached, enter_tags)
             if sell_max and signal_name_max is not None:
                 return True, f"{signal_name_max}_m"
-            if (current_profit > (previous_profit + 0.005)) and (previous_sell_reason not in ["exit_long_stoploss_doom"]):
+            if (current_profit > (previous_profit + 0.005)) and (previous_sell_reason not in [f"exit_{self.long_mode_name}_stoploss_doom"]):
                 # Update the target, raise it.
-                mark_pair, mark_signal = self.long_mark_profit_target(pair, True, previous_sell_reason, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
+                mark_pair, mark_signal = self.mark_profit_target(self.long_mode_name, pair, True, previous_sell_reason, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
                 if mark_pair:
                     self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
 
@@ -1799,7 +591,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     (previous_profit is None)
                     or (previous_profit < current_profit)
             ):
-                mark_pair, mark_signal = self.long_mark_profit_target(pair, sell, signal_name, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
+                mark_pair, mark_signal = self.mark_profit_target(self.long_mode_name, pair, sell, signal_name, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
                 if mark_pair:
                     self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
                 else:
@@ -1813,23 +605,23 @@ class NostalgiaForInfinityX2(IStrategy):
                 if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
                     previous_profit = self.target_profit_cache.data[pair]['profit']
                 if (previous_profit is None) or (previous_profit < current_profit):
-                    mark_signal = "exit_profit_long_max"
+                    mark_signal = f"exit_profit_{self.long_mode_name}_max"
                     self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
 
-        if (signal_name not in ["exit_profit_long_max", "exit_long_stoploss_doom", "exit_long_stoploss_u_e", "exit_long_bull_stoploss_u_e"]):
+        if (signal_name not in [f"exit_profit_{self.long_mode_name}_max", f"exit_{self.long_mode_name}_stoploss_doom", f"exit_{self.long_mode_name}_stoploss_u_e"]):
             if sell and (signal_name is not None):
                 return True, f"{signal_name}"
 
         return False, None
 
-    def long_mark_profit_target(self, pair: str, sell: bool, signal_name: str, trade: Trade, current_time: datetime, current_rate: float, current_profit: float, last_candle, previous_candle_1) -> tuple:
+    def mark_profit_target(self, mode_name: str, pair: str, sell: bool, signal_name: str, trade: Trade, current_time: datetime, current_rate: float, current_profit: float, last_candle, previous_candle_1) -> tuple:
         if sell and (signal_name is not None):
             return pair, signal_name
 
         return None, None
 
-    def long_exit_profit_target(self, pair: str, trade: Trade, current_time: datetime, current_rate: float, current_profit: float, last_candle, previous_candle_1, previous_rate, previous_profit,  previous_sell_reason, previous_time_profit_reached, enter_tags) -> tuple:
-        if (previous_sell_reason in ["exit_long_stoploss_doom"]):
+    def exit_profit_target(self, mode_name: str, pair: str, trade: Trade, current_time: datetime, current_rate: float, current_profit: float, last_candle, previous_candle_1, previous_rate, previous_profit,  previous_sell_reason, previous_time_profit_reached, enter_tags) -> tuple:
+        if (previous_sell_reason in [f"exit_{mode_name}_stoploss_doom"]):
             if (current_profit > 0.04):
                 # profit is over the threshold, don't exit
                 self._remove_profit_target(pair)
@@ -1846,14 +638,14 @@ class NostalgiaForInfinityX2(IStrategy):
             else:
                 if (current_profit < (previous_profit - 0.04)):
                     return True, previous_sell_reason
-        elif (previous_sell_reason in ["exit_long_stoploss_u_e", "exit_long_bull_stoploss_u_e"]):
+        elif (previous_sell_reason in [f"exit_{mode_name}_stoploss_u_e"]):
             if (current_profit > 0.04):
                 # profit is over the threshold, don't exit
                 self._remove_profit_target(pair)
                 return False, None
             if (current_profit < (previous_profit - 0.14)):
                     return True, previous_sell_reason
-        elif (previous_sell_reason in ["exit_profit_long_max"]):
+        elif (previous_sell_reason in [f"exit_profit_{mode_name}_max"]):
             if (current_profit < -0.08):
                 # profit is under the threshold, cancel it
                 self._remove_profit_target(pair)
@@ -1884,242 +676,243 @@ class NostalgiaForInfinityX2(IStrategy):
 
         return False, None
 
-    def exit_long_signals(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
+    def exit_signals(self, mode_name: str, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
         # Sell signal 1
-        if (last_candle['rsi_14'] > 78.0) and (last_candle['rsi_14_4h'] > 50.0) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']) and (previous_candle_3['close'] > previous_candle_3['bb20_2_upp']) and (previous_candle_4['close'] > previous_candle_4['bb20_2_upp']):
+        if (last_candle['rsi_14'] > 79.0) and (last_candle['rsi_14_4h'] > 50.0) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']) and (previous_candle_3['close'] > previous_candle_3['bb20_2_upp']) and (previous_candle_4['close'] > previous_candle_4['bb20_2_upp']):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
-                    return True, 'exit_long_1_1_1'
+                    return True, f'exit_{mode_name}_1_1_1'
             else:
                 if (current_profit > 0.01):
-                    return True, 'exit_long_1_2_1'
+                    return True, f'exit_{mode_name}_1_2_1'
 
         # Sell signal 2
-        elif (last_candle['rsi_14'] > 79.0) and (last_candle['rsi_14_4h'] > 50.0) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']):
+        elif (last_candle['rsi_14'] > 80.0) and (last_candle['rsi_14_4h'] > 50.0) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
-                    return True, 'exit_long_2_1_1'
+                    return True, f'exit_{mode_name}_2_1_1'
             else:
                 if (current_profit > 0.01):
-                    return True, 'exit_long_2_2_1'
+                    return True, f'exit_{mode_name}_2_2_1'
 
         # Sell signal 3
-        elif (last_candle['rsi_14'] > 81.0) and (last_candle['rsi_14_4h'] > 50.0):
+        elif (last_candle['rsi_14'] > 85.0) and (last_candle['rsi_14_4h'] > 50.0):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
-                    return True, 'exit_long_3_1_1'
+                    return True, f'exit_{mode_name}_3_1_1'
             else:
                 if (current_profit > 0.01):
-                    return True, 'exit_long_3_2_1'
+                    return True, f'exit_{mode_name}_3_2_1'
 
         # Sell signal 4
         elif (last_candle['rsi_14'] > 80.0) and (last_candle['rsi_14_1h'] > 80.0) and (last_candle['rsi_14_4h'] > 50.0):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
-                    return True, 'exit_long_4_1_1'
+                    return True, f'exit_{mode_name}_4_1_1'
             else:
                 if (current_profit > 0.01):
-                    return True, 'exit_long_4_2_1'
+                    return True, f'exit_{mode_name}_4_2_1'
 
         # Sell signal 6
         elif (last_candle['close'] < last_candle['ema_200']) and (last_candle['close'] > last_candle['ema_50']) and (last_candle['rsi_14'] > 79.0):
             if (current_profit > 0.01):
-                return True, 'exit_long_6_1'
+                return True, f'exit_{mode_name}_6_1'
 
         # Sell signal 7
         elif (last_candle['rsi_14_1h'] > 79.0) and (last_candle['crossed_below_ema_12_26']):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
-                    return True, 'exit_long_7_1_1'
+                    return True, f'exit_{mode_name}_7_1_1'
             else:
                 if (current_profit > 0.01):
-                    return True, 'exit_long_7_2_1'
+                    return True, f'exit_{mode_name}_7_2_1'
 
         # Sell signal 8
         elif (last_candle['rsi_14_4h'] > 50.0) and (last_candle['close'] > last_candle['bb20_2_upp_1h'] * 1.08):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
-                    return True, 'exit_long_8_1_1'
+                    return True, f'exit_{mode_name}_8_1_1'
             else:
                 if (current_profit > 0.01):
-                    return True, 'exit_long_8_2_1'
+                    return True, f'exit_{mode_name}_8_2_1'
 
         return False, None
 
-    def exit_long_main(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
+    def exit_main(self, mode_name: str, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
         if (last_candle['close'] > last_candle['sma_200_1h']):
             if 0.01 > current_profit >= 0.001:
-                if (last_candle['rsi_14'] < 10.0):
-                    return True, 'exit_long_o_0'
+                if (last_candle['rsi_14'] < 20.0):
+                    return True, f'exit_{mode_name}_o_0'
             elif 0.02 > current_profit >= 0.01:
                 if (last_candle['rsi_14'] < 28.0):
-                    return True, 'exit_long_o_1'
+                    return True, f'exit_{mode_name}_o_1'
             elif 0.03 > current_profit >= 0.02:
                 if (last_candle['rsi_14'] < 30.0):
-                    return True, 'exit_long_o_2'
+                    return True, f'exit_{mode_name}_o_2'
             elif 0.04 > current_profit >= 0.03:
                 if (last_candle['rsi_14'] < 32.0):
-                    return True, 'exit_long_o_3'
+                    return True, f'exit_{mode_name}_o_3'
             elif 0.05 > current_profit >= 0.04:
                 if (last_candle['rsi_14'] < 34.0):
-                    return True, 'exit_long_o_4'
+                    return True, f'exit_{mode_name}_o_4'
             elif 0.06 > current_profit >= 0.05:
                 if (last_candle['rsi_14'] < 36.0):
-                    return True, 'exit_long_o_5'
+                    return True, f'exit_{mode_name}_o_5'
             elif 0.07 > current_profit >= 0.06:
                 if (last_candle['rsi_14'] < 38.0):
-                    return True, 'exit_long_o_6'
+                    return True, f'exit_{mode_name}_o_6'
             elif 0.08 > current_profit >= 0.07:
                 if (last_candle['rsi_14'] < 40.0):
-                    return True, 'exit_long_o_7'
+                    return True, f'exit_{mode_name}_o_7'
             elif 0.09 > current_profit >= 0.08:
                 if (last_candle['rsi_14'] < 42.0):
-                    return True, 'exit_long_o_8'
+                    return True, f'exit_{mode_name}_o_8'
             elif 0.1 > current_profit >= 0.09:
                 if (last_candle['rsi_14'] < 44.0):
-                    return True, 'exit_long_o_9'
+                    return True, f'exit_{mode_name}_o_9'
             elif 0.12 > current_profit >= 0.1:
                 if (last_candle['rsi_14'] < 46.0):
-                    return True, 'exit_long_o_10'
+                    return True, f'exit_{mode_name}_o_10'
             elif 0.2 > current_profit >= 0.12:
                 if (last_candle['rsi_14'] < 44.0):
-                    return True, 'exit_long_o_11'
+                    return True, f'exit_{mode_name}_o_11'
             elif current_profit >= 0.2:
                 if (last_candle['rsi_14'] < 42.0):
-                    return True, 'exit_long_o_12'
+                    return True, f'exit_{mode_name}_o_12'
         elif (last_candle['close'] < last_candle['sma_200_1h']):
             if 0.01 > current_profit >= 0.001:
-                if (last_candle['rsi_14'] < 12.0):
-                    return True, 'exit_long_u_0'
+                if (last_candle['rsi_14'] < 22.0):
+                    return True, f'exit_{mode_name}_u_0'
             elif 0.02 > current_profit >= 0.01:
                 if (last_candle['rsi_14'] < 30.0):
-                    return True, 'exit_long_u_1'
+                    return True, f'exit_{mode_name}_u_1'
             elif 0.03 > current_profit >= 0.02:
                 if (last_candle['rsi_14'] < 32.0):
-                    return True, 'exit_long_u_2'
+                    return True, f'exit_{mode_name}_u_2'
             elif 0.04 > current_profit >= 0.03:
                 if (last_candle['rsi_14'] < 34.0):
-                    return True, 'exit_long_u_3'
+                    return True, f'exit_{mode_name}_u_3'
             elif 0.05 > current_profit >= 0.04:
                 if (last_candle['rsi_14'] < 36.0):
-                    return True, 'exit_long_u_4'
+                    return True, f'exit_{mode_name}_u_4'
             elif 0.06 > current_profit >= 0.05:
                 if (last_candle['rsi_14'] < 38.0):
-                    return True, 'exit_long_u_5'
+                    return True, f'exit_{mode_name}_u_5'
             elif 0.07 > current_profit >= 0.06:
                 if (last_candle['rsi_14'] < 40.0):
-                    return True, 'exit_long_u_6'
+                    return True, f'exit_{mode_name}_u_6'
             elif 0.08 > current_profit >= 0.07:
                 if (last_candle['rsi_14'] < 42.0):
-                    return True, 'exit_long_u_7'
+                    return True, f'exit_{mode_name}_u_7'
             elif 0.09 > current_profit >= 0.08:
                 if (last_candle['rsi_14'] < 44.0):
-                    return True, 'exit_long_u_8'
+                    return True, f'exit_{mode_name}_u_8'
             elif 0.1 > current_profit >= 0.09:
                 if (last_candle['rsi_14'] < 46.0):
-                    return True, 'exit_long_u_9'
+                    return True, f'exit_{mode_name}_u_9'
             elif 0.12 > current_profit >= 0.1:
                 if (last_candle['rsi_14'] < 48.0):
-                    return True, 'exit_long_u_10'
+                    return True, f'exit_{mode_name}_u_10'
             elif 0.2 > current_profit >= 0.12:
                 if (last_candle['rsi_14'] < 46.0):
-                    return True, 'exit_long_u_11'
+                    return True, f'exit_{mode_name}_u_11'
             elif current_profit >= 0.2:
                 if (last_candle['rsi_14'] < 44.0):
-                    return True, 'exit_long_u_12'
+                    return True, f'exit_{mode_name}_u_12'
 
         return False, None
 
-    def exit_long_r(self, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
+    def exit_r(self, mode_name: str, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
         if 0.01 > current_profit >= 0.001:
             if (last_candle['r_480'] > -0.1):
-                return True, 'exit_long_w_0_1'
+                return True, f'exit_{mode_name}_w_0_1'
             elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_long_w_0_2'
+                return True, f'exit_{mode_name}_w_0_2'
         elif 0.02 > current_profit >= 0.01:
             if (last_candle['r_480'] > -0.2):
-                return True, 'exit_long_w_1_1'
+                return True, f'exit_{mode_name}_w_1_1'
             elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_long_w_1_2'
+                return True, f'exit_{mode_name}_w_1_2'
         elif 0.03 > current_profit >= 0.02:
             if (last_candle['r_480'] > -0.3):
-                return True, 'exit_long_w_2_1'
+                return True, f'exit_{mode_name}_w_2_1'
             elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_long_w_2_2'
+                return True, f'exit_{mode_name}_w_2_2'
         elif 0.04 > current_profit >= 0.03:
             if (last_candle['r_480'] > -0.4):
-                return True, 'exit_long_w_3_1'
+                return True, f'exit_{mode_name}_w_3_1'
             elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_long_w_3_2'
+                return True, f'exit_{mode_name}_w_3_2'
         elif 0.05 > current_profit >= 0.04:
             if (last_candle['r_480'] > -0.5):
-                return True, 'exit_long_w_4_1'
+                return True, f'exit_{mode_name}_w_4_1'
             elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_long_w_4_2'
+                return True, f'exit_{mode_name}_w_4_2'
         elif 0.06 > current_profit >= 0.05:
             if (last_candle['r_480'] > -0.6):
-                return True, 'exit_long_w_5_1'
+                return True, f'exit_{mode_name}_w_5_1'
             elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_long_w_5_2'
+                return True, f'exit_{mode_name}_w_5_2'
         elif 0.07 > current_profit >= 0.06:
             if (last_candle['r_480'] > -0.7):
-                return True, 'exit_long_w_6_1'
+                return True, f'exit_{mode_name}_w_6_1'
             elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_long_w_6_2'
+                return True, f'exit_{mode_name}_w_6_2'
         elif 0.08 > current_profit >= 0.07:
             if (last_candle['r_480'] > -0.8):
-                return True, 'exit_long_w_7_1'
+                return True, f'exit_{mode_name}_w_7_1'
             elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_long_w_7_2'
+                return True, f'exit_{mode_name}_w_7_2'
         elif 0.09 > current_profit >= 0.08:
             if (last_candle['r_480'] > -0.9):
-                return True, 'exit_long_w_8_1'
+                return True, f'exit_{mode_name}_w_8_1'
             elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_long_w_8_2'
+                return True, f'exit_{mode_name}_w_8_2'
         elif 0.1 > current_profit >= 0.09:
             if (last_candle['r_480'] > -1.0):
-                return True, 'exit_long_w_9_1'
+                return True, f'exit_{mode_name}_w_9_1'
             elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_long_w_9_2'
+                return True, f'exit_{mode_name}_w_9_2'
         elif 0.12 > current_profit >= 0.1:
             if (last_candle['r_480'] > -1.1):
-                return True, 'exit_long_w_10_1'
+                return True, f'exit_{mode_name}_w_10_1'
             elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_long_w_10_2'
+                return True, f'exit_{mode_name}_w_10_2'
         elif 0.2 > current_profit >= 0.12:
             if (last_candle['r_480'] > -0.4):
-                return True, 'exit_long_w_11_1'
+                return True, f'exit_{mode_name}_w_11_1'
             elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 79.0):
-                return True, 'exit_long_w_11_2'
+                return True, f'exit_{mode_name}_w_11_2'
         elif current_profit >= 0.2:
             if (last_candle['r_480'] > -0.2):
-                return True, 'exit_long_w_12_1'
+                return True, f'exit_{mode_name}_w_12_1'
             elif (last_candle['r_14'] >= -1.0) and (last_candle['rsi_14'] > 80.0):
-                return True, 'exit_long_w_12_2'
+                return True, f'exit_{mode_name}_w_12_2'
 
         return False, None
 
-    def exit_long_stoploss(self, current_rate: float, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
+    def exit_stoploss(self, mode_name: str, current_rate: float, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
+        is_backtest = self.dp.runmode.value == 'backtest'
         rel_profit = ((current_rate - trade.open_rate) / trade.open_rate)
+
         # Stoploss doom
         if (
-                (self.stop_thresholds_long[10])
-                and (rel_profit < self.stop_thresholds_long[0])
+                (self.stop_thresholds[10])
+                and (rel_profit < self.stop_thresholds[0])
         ):
-            return True, 'exit_long_stoploss_doom'
+            return True, f'exit_{mode_name}_stoploss_doom'
 
         # Under & near EMA200, local uptrend move
         if (
-                (self.stop_thresholds_long[12])
-                and (rel_profit < self.stop_thresholds_long[2])
+                (self.stop_thresholds[12])
+                and (rel_profit < self.stop_thresholds[2])
                 and (last_candle['close'] < last_candle['ema_200'])
-                #and (last_candle['cmf_20'] < -0.0)
-                and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < self.stop_thresholds_long[6])
+                and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < self.stop_thresholds[6])
                 and (last_candle['rsi_14'] > previous_candle_1['rsi_14'])
-                and (last_candle['rsi_14'] > (last_candle['rsi_14_1h'] + self.stop_thresholds_long[8]))
-                and (current_time - timedelta(minutes=self.stop_thresholds_long[4]) > trade.open_date_utc)
+                and (last_candle['rsi_14'] > (last_candle['rsi_14_1h'] + self.stop_thresholds[8]))
+                and (current_time - timedelta(minutes=self.stop_thresholds[4]) > trade.open_date_utc)
         ):
-            return True, 'exit_long_stoploss_u_e'
+            return True, f'exit_{mode_name}_stoploss_u_e'
 
         return False, None
 
