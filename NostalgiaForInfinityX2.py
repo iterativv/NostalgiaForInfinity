@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.249"
+        return "v12.0.250"
 
     # ROI table:
     minimal_roi = {
@@ -153,7 +153,7 @@ class NostalgiaForInfinityX2(IStrategy):
     profit_max_thresholds = [0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.05, 0.05]
 
     # Max allowed buy "slippage", how high to buy on the candle
-    max_slippage = 0.03
+    max_slippage = 0.01
 
     #############################################################
     # Buy side configuration
