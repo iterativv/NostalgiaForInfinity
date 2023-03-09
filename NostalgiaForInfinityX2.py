@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.258"
+        return "v12.0.259"
 
     # ROI table:
     minimal_roi = {
@@ -678,7 +678,7 @@ class NostalgiaForInfinityX2(IStrategy):
 
     def exit_signals(self, mode_name: str, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
         # Sell signal 1
-        if (last_candle['rsi_14'] > 79.0) and (last_candle['rsi_14_4h'] > 50.0) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']) and (previous_candle_3['close'] > previous_candle_3['bb20_2_upp']) and (previous_candle_4['close'] > previous_candle_4['bb20_2_upp']):
+        if (last_candle['rsi_14'] > 79.0) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']) and (previous_candle_3['close'] > previous_candle_3['bb20_2_upp']) and (previous_candle_4['close'] > previous_candle_4['bb20_2_upp']):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
                     return True, f'exit_{mode_name}_1_1_1'
@@ -687,7 +687,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     return True, f'exit_{mode_name}_1_2_1'
 
         # Sell signal 2
-        elif (last_candle['rsi_14'] > 80.0) and (last_candle['rsi_14_4h'] > 50.0) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']):
+        elif (last_candle['rsi_14'] > 80.0) and (last_candle['close'] > last_candle['bb20_2_upp']) and (previous_candle_1['close'] > previous_candle_1['bb20_2_upp']) and (previous_candle_2['close'] > previous_candle_2['bb20_2_upp']):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
                     return True, f'exit_{mode_name}_2_1_1'
@@ -696,7 +696,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     return True, f'exit_{mode_name}_2_2_1'
 
         # Sell signal 3
-        elif (last_candle['rsi_14'] > 85.0) and (last_candle['rsi_14_4h'] > 50.0):
+        elif (last_candle['rsi_14'] > 85.0):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
                     return True, f'exit_{mode_name}_3_1_1'
@@ -705,7 +705,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     return True, f'exit_{mode_name}_3_2_1'
 
         # Sell signal 4
-        elif (last_candle['rsi_14'] > 80.0) and (last_candle['rsi_14_1h'] > 80.0) and (last_candle['rsi_14_4h'] > 50.0):
+        elif (last_candle['rsi_14'] > 80.0) and (last_candle['rsi_14_1h'] > 78.0):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
                     return True, f'exit_{mode_name}_4_1_1'
@@ -728,7 +728,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     return True, f'exit_{mode_name}_7_2_1'
 
         # Sell signal 8
-        elif (last_candle['rsi_14_4h'] > 50.0) and (last_candle['close'] > last_candle['bb20_2_upp_1h'] * 1.08):
+        elif (last_candle['close'] > last_candle['bb20_2_upp_1h'] * 1.08):
             if (last_candle['close'] > last_candle['ema_200']):
                 if (current_profit > 0.01):
                     return True, f'exit_{mode_name}_8_1_1'
