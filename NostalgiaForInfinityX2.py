@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.271"
+        return "v12.0.273"
 
     # ROI table:
     minimal_roi = {
@@ -141,10 +141,10 @@ class NostalgiaForInfinityX2(IStrategy):
     grinding_enable = True
     # Grinding stakes
     grinding_stakes = [0.25, 0.25, 0.25, 0.25, 0.25]
-    grinding_stakes_alt = [1.0]
+    grinding_stakes_alt = [0.5, 0.5]
     # Current total profit
     grinding_thresholds = [-0.04, -0.08, -0.1, -0.12, -0.14]
-    grinding_thresholds_alt = [-0.06]
+    grinding_thresholds_alt = [-0.06, -0.12]
 
     stake_rebuy_mode_multiplier = 0.33
     pa_rebuy_mode_max = 2
@@ -8571,6 +8571,12 @@ class NostalgiaForInfinityX2(IStrategy):
                                           | (dataframe['cti_20_1h'] < -0.0)
                                           | (dataframe['cti_20_4h'] < 0.5)
                                           | (dataframe['cti_20_1d'] < -0.5)
+                                          | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152)))
+                    item_buy_logic.append((dataframe['cti_20_15m'] < -0.0)
+                                          | (dataframe['rsi_14_15m'] < 30.0)
+                                          | (dataframe['cti_20_1h'] < 0.5)
+                                          | (dataframe['cti_20_4h'] < -0.0)
+                                          | (dataframe['cti_20_1d'] < -0.8)
                                           | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152)))
 
                     # Logic
