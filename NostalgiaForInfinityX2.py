@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.275"
+        return "v12.0.276"
 
     # ROI table:
     minimal_roi = {
@@ -1268,7 +1268,7 @@ class NostalgiaForInfinityX2(IStrategy):
                             buy_order = order
                             grind_profit = (exit_rate - buy_order.average) / buy_order.average
                             if (
-                                    (grind_profit > 0.01)
+                                    (grind_profit > 0.012)
                             ):
                                 sell_amount = buy_order.filled * exit_rate
                                 self.dp.send_msg(f"Grinding exit [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount}| Coin amount: {buy_order.filled} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%")
