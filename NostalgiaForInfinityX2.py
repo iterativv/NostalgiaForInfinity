@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.276"
+        return "v12.0.277"
 
     # ROI table:
     minimal_roi = {
@@ -238,26 +238,27 @@ class NostalgiaForInfinityX2(IStrategy):
     def get_ticker_indicator(self):
         return int(self.timeframe[:-1])
 
-    def exit_normal(self, pair: str, current_rate: float, current_profit: float,
+    def exit_normal(self, pair: str, current_rate: float,
+                    profit_stake: float, profit_ratio: float, profit_current_stake_ratio: float, profit_init_ratio: float,
                     max_profit: float, max_loss: float,
                     last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5,
                     trade: 'Trade', current_time: 'datetime', enter_tags) -> tuple:
         sell = False
 
         # Original sell signals
-        sell, signal_name = self.exit_signals(self.normal_mode_name, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+        sell, signal_name = self.exit_signals(self.normal_mode_name, profit_current_stake_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Main sell signals
         if not sell:
-            sell, signal_name = self.exit_main(self.normal_mode_name, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_main(self.normal_mode_name, profit_current_stake_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Williams %R based sells
         if not sell:
-            sell, signal_name = self.exit_r(self.normal_mode_name, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_r(self.normal_mode_name, profit_current_stake_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Stoplosses
         if not sell:
-            sell, signal_name = self.exit_stoploss(self.normal_mode_name, current_rate, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_stoploss(self.normal_mode_name, current_rate, profit_current_stake_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Profit Target Signal
         # Check if pair exist on target_profit_cache
@@ -267,43 +268,56 @@ class NostalgiaForInfinityX2(IStrategy):
             previous_sell_reason = self.target_profit_cache.data[pair]['sell_reason']
             previous_time_profit_reached = datetime.fromisoformat(self.target_profit_cache.data[pair]['time_profit_reached'])
 
-            sell_max, signal_name_max = self.exit_profit_target(self.normal_mode_name, pair, trade, current_time, current_rate, current_profit,
-                                                                       last_candle, previous_candle_1,
-                                                                       previous_rate, previous_profit, previous_sell_reason,
-                                                                       previous_time_profit_reached, enter_tags)
+            sell_max, signal_name_max = self.exit_profit_target(self.normal_mode_name, pair, trade, current_time, current_rate,
+                                                                profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio,
+                                                                last_candle, previous_candle_1,
+                                                                previous_rate, previous_profit, previous_sell_reason,
+                                                                previous_time_profit_reached, enter_tags)
             if sell_max and signal_name_max is not None:
                 return True, f"{signal_name_max}_m"
-            if (current_profit > (previous_profit + 0.005)) and (previous_sell_reason not in [f"exit_{self.normal_mode_name}_stoploss_doom"]):
+            if (previous_sell_reason in [f"exit_{self.normal_mode_name}_stoploss_u_e"]):
+                if (profit_ratio > (previous_profit + 0.005)):
+                    mark_pair, mark_signal = self.mark_profit_target(self.normal_mode_name, pair, True, previous_sell_reason, trade, current_time, current_rate, profit_ratio, last_candle, previous_candle_1)
+                    if mark_pair:
+                        self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
+            elif (profit_current_stake_ratio > (previous_profit + 0.005)) and (previous_sell_reason not in [f"exit_{self.normal_mode_name}_stoploss_doom"]):
                 # Update the target, raise it.
-                mark_pair, mark_signal = self.mark_profit_target(self.normal_mode_name, pair, True, previous_sell_reason, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
+                mark_pair, mark_signal = self.mark_profit_target(self.normal_mode_name, pair, True, previous_sell_reason, trade, current_time, current_rate, profit_current_stake_ratio, last_candle, previous_candle_1)
                 if mark_pair:
-                    self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
+                    self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
 
         # Add the pair to the list, if a sell triggered and conditions met
         if sell and signal_name is not None:
             previous_profit = None
             if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
                 previous_profit = self.target_profit_cache.data[pair]['profit']
-            if (
-                    (previous_profit is None)
-                    or (previous_profit < current_profit)
-            ):
-                mark_pair, mark_signal = self.mark_profit_target(self.normal_mode_name, pair, sell, signal_name, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
+            if (signal_name in [f"exit_{self.normal_mode_name}_stoploss_doom", f"exit_{self.normal_mode_name}_stoploss_u_e"]):
+                mark_pair, mark_signal = self.mark_profit_target(self.normal_mode_name, pair, sell, signal_name, trade, current_time, current_rate, profit_ratio, last_candle, previous_candle_1)
                 if mark_pair:
-                    self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
+                    self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
+                else:
+                    # Just sell it, without maximize
+                    return True, f"{signal_name}"
+            elif (
+                    (previous_profit is None)
+                    or (previous_profit < profit_current_stake_ratio)
+            ):
+                mark_pair, mark_signal = self.mark_profit_target(self.normal_mode_name, pair, sell, signal_name, trade, current_time, current_rate, profit_current_stake_ratio, last_candle, previous_candle_1)
+                if mark_pair:
+                    self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
                 else:
                     # Just sell it, without maximize
                     return True, f"{signal_name}"
         else:
             if (
-                    (current_profit >= self.profit_max_thresholds[0])
+                    (profit_current_stake_ratio >= self.profit_max_thresholds[0])
             ):
                 previous_profit = None
                 if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
                     previous_profit = self.target_profit_cache.data[pair]['profit']
-                if (previous_profit is None) or (previous_profit < current_profit):
+                if (previous_profit is None) or (previous_profit < profit_current_stake_ratio):
                     mark_signal = f"exit_profit_{self.normal_mode_name}_max"
-                    self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
+                    self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
 
         if (signal_name not in [f"exit_profit_{self.normal_mode_name}_max", f"exit_{self.normal_mode_name}_stoploss_doom", f"exit_{self.normal_mode_name}_stoploss_u_e"]):
             if sell and (signal_name is not None):
@@ -311,26 +325,27 @@ class NostalgiaForInfinityX2(IStrategy):
 
         return False, None
 
-    def exit_pump(self, pair: str, current_rate: float, current_profit: float,
+    def exit_pump(self, pair: str, current_rate: float,
+                    profit_stake: float, profit_ratio: float, profit_current_stake_ratio: float, profit_init_ratio: float,
                     max_profit: float, max_loss: float,
                     last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5,
                     trade: 'Trade', current_time: 'datetime', enter_tags) -> tuple:
         sell = False
 
         # Original sell signals
-        sell, signal_name = self.exit_signals(self.pump_mode_name, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+        sell, signal_name = self.exit_signals(self.pump_mode_name, profit_current_stake_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Main sell signals
         if not sell:
-            sell, signal_name = self.exit_main(self.pump_mode_name, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_main(self.pump_mode_name, profit_current_stake_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Williams %R based sells
         if not sell:
-            sell, signal_name = self.exit_r(self.pump_mode_name, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_r(self.pump_mode_name, profit_current_stake_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Stoplosses
         if not sell:
-            sell, signal_name = self.exit_stoploss(self.pump_mode_name, current_rate, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_stoploss(self.pump_mode_name, current_rate, profit_current_stake_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Profit Target Signal
         # Check if pair exist on target_profit_cache
@@ -340,43 +355,56 @@ class NostalgiaForInfinityX2(IStrategy):
             previous_sell_reason = self.target_profit_cache.data[pair]['sell_reason']
             previous_time_profit_reached = datetime.fromisoformat(self.target_profit_cache.data[pair]['time_profit_reached'])
 
-            sell_max, signal_name_max = self.exit_profit_target(self.pump_mode_name, pair, trade, current_time, current_rate, current_profit,
-                                                                       last_candle, previous_candle_1,
-                                                                       previous_rate, previous_profit, previous_sell_reason,
-                                                                       previous_time_profit_reached, enter_tags)
+            sell_max, signal_name_max = self.exit_profit_target(self.pump_mode_name, pair, trade, current_time, current_rate,
+                                                                profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio,
+                                                                last_candle, previous_candle_1,
+                                                                previous_rate, previous_profit, previous_sell_reason,
+                                                                previous_time_profit_reached, enter_tags)
             if sell_max and signal_name_max is not None:
                 return True, f"{signal_name_max}_m"
-            if (current_profit > (previous_profit + 0.005)) and (previous_sell_reason not in [f"exit_{self.pump_mode_name}_stoploss_doom"]):
+            if (previous_sell_reason in [f"exit_{self.pump_mode_name}_stoploss_u_e"]):
+                if (profit_ratio > (previous_profit + 0.005)):
+                    mark_pair, mark_signal = self.mark_profit_target(self.pump_mode_name, pair, True, previous_sell_reason, trade, current_time, current_rate, profit_ratio, last_candle, previous_candle_1)
+                    if mark_pair:
+                        self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
+            elif (profit_current_stake_ratio > (previous_profit + 0.005)) and (previous_sell_reason not in [f"exit_{self.pump_mode_name}_stoploss_doom"]):
                 # Update the target, raise it.
-                mark_pair, mark_signal = self.mark_profit_target(self.pump_mode_name, pair, True, previous_sell_reason, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
+                mark_pair, mark_signal = self.mark_profit_target(self.pump_mode_name, pair, True, previous_sell_reason, trade, current_time, current_rate, profit_current_stake_ratio, last_candle, previous_candle_1)
                 if mark_pair:
-                    self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
+                    self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
 
         # Add the pair to the list, if a sell triggered and conditions met
         if sell and signal_name is not None:
             previous_profit = None
             if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
                 previous_profit = self.target_profit_cache.data[pair]['profit']
-            if (
-                    (previous_profit is None)
-                    or (previous_profit < current_profit)
-            ):
-                mark_pair, mark_signal = self.mark_profit_target(self.pump_mode_name, pair, sell, signal_name, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
+            if (signal_name in [f"exit_{self.pump_mode_name}_stoploss_doom", f"exit_{self.pump_mode_name}_stoploss_u_e"]):
+                mark_pair, mark_signal = self.mark_profit_target(self.pump_mode_name, pair, sell, signal_name, trade, current_time, current_rate, profit_ratio, last_candle, previous_candle_1)
                 if mark_pair:
-                    self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
+                    self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
+                else:
+                    # Just sell it, without maximize
+                    return True, f"{signal_name}"
+            elif (
+                    (previous_profit is None)
+                    or (previous_profit < profit_current_stake_ratio)
+            ):
+                mark_pair, mark_signal = self.mark_profit_target(self.pump_mode_name, pair, sell, signal_name, trade, current_time, current_rate, profit_current_stake_ratio, last_candle, previous_candle_1)
+                if mark_pair:
+                    self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
                 else:
                     # Just sell it, without maximize
                     return True, f"{signal_name}"
         else:
             if (
-                    (current_profit >= self.profit_max_thresholds[2])
+                    (profit_current_stake_ratio >= self.profit_max_thresholds[2])
             ):
                 previous_profit = None
                 if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
                     previous_profit = self.target_profit_cache.data[pair]['profit']
-                if (previous_profit is None) or (previous_profit < current_profit):
+                if (previous_profit is None) or (previous_profit < profit_current_stake_ratio):
                     mark_signal = f"exit_profit_{self.pump_mode_name}_max"
-                    self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
+                    self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
 
         if (signal_name not in [f"exit_profit_{self.pump_mode_name}_max", f"exit_{self.pump_mode_name}_stoploss_doom", f"exit_{self.pump_mode_name}_stoploss_u_e"]):
             if sell and (signal_name is not None):
@@ -384,36 +412,37 @@ class NostalgiaForInfinityX2(IStrategy):
 
         return False, None
 
-    def exit_quick(self, pair: str, current_rate: float, current_profit: float,
+    def exit_quick(self, pair: str, current_rate: float,
+                    profit_stake: float, profit_ratio: float, profit_current_stake_ratio: float, profit_init_ratio: float,
                     max_profit: float, max_loss: float,
                     last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5,
                     trade: 'Trade', current_time: 'datetime', enter_tags) -> tuple:
         sell = False
 
         # Original sell signals
-        sell, signal_name = self.exit_signals(self.quick_mode_name, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+        sell, signal_name = self.exit_signals(self.quick_mode_name, profit_current_stake_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Main sell signals
         if not sell:
-            sell, signal_name = self.exit_main(self.quick_mode_name, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_main(self.quick_mode_name, profit_current_stake_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Williams %R based sells
         if not sell:
-            sell, signal_name = self.exit_r(self.quick_mode_name, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_r(self.quick_mode_name, profit_current_stake_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Stoplosses
         if not sell:
-            sell, signal_name = self.exit_stoploss(self.quick_mode_name, current_rate, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_stoploss(self.quick_mode_name, current_rate, profit_current_stake_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Extra sell logic
         if not sell:
-            if (0.09 >= current_profit > 0.02) and (last_candle['rsi_14'] > 78.0):
+            if (0.09 >= profit_current_stake_ratio > 0.02) and (last_candle['rsi_14'] > 78.0):
                 sell, signal_name =  True, f'exit_{self.quick_mode_name}_q_1'
 
-            if (0.09 >= current_profit > 0.02) and (last_candle['cti_20'] > 0.95):
+            if (0.09 >= profit_current_stake_ratio > 0.02) and (last_candle['cti_20'] > 0.95):
                 sell, signal_name = True, f'exit_{self.quick_mode_name}_q_2'
 
-            if (0.09 >= current_profit > 0.02) and (last_candle['r_14'] >= -0.1):
+            if (0.09 >= profit_current_stake_ratio > 0.02) and (last_candle['r_14'] >= -0.1):
                 sell, signal_name = True, f'exit_{self.quick_mode_name}_q_3'
 
         # Profit Target Signal
@@ -424,43 +453,56 @@ class NostalgiaForInfinityX2(IStrategy):
             previous_sell_reason = self.target_profit_cache.data[pair]['sell_reason']
             previous_time_profit_reached = datetime.fromisoformat(self.target_profit_cache.data[pair]['time_profit_reached'])
 
-            sell_max, signal_name_max = self.exit_profit_target(self.quick_mode_name, pair, trade, current_time, current_rate, current_profit,
-                                                                       last_candle, previous_candle_1,
-                                                                       previous_rate, previous_profit, previous_sell_reason,
-                                                                       previous_time_profit_reached, enter_tags)
+            sell_max, signal_name_max = self.exit_profit_target(self.quick_mode_name, pair, trade, current_time, current_rate,
+                                                                profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio,
+                                                                last_candle, previous_candle_1,
+                                                                previous_rate, previous_profit, previous_sell_reason,
+                                                                previous_time_profit_reached, enter_tags)
             if sell_max and signal_name_max is not None:
                 return True, f"{signal_name_max}_m"
-            if (current_profit > (previous_profit + 0.005)) and (previous_sell_reason not in [f"exit_{self.quick_mode_name}_stoploss_doom"]):
+            if (previous_sell_reason in [f"exit_{self.quick_mode_name}_stoploss_u_e"]):
+                if (profit_ratio > (previous_profit + 0.005)):
+                    mark_pair, mark_signal = self.mark_profit_target(self.quick_mode_name, pair, True, previous_sell_reason, trade, current_time, current_rate, profit_ratio, last_candle, previous_candle_1)
+                    if mark_pair:
+                        self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
+            elif (profit_current_stake_ratio > (previous_profit + 0.005)) and (previous_sell_reason not in [f"exit_{self.quick_mode_name}_stoploss_doom"]):
                 # Update the target, raise it.
-                mark_pair, mark_signal = self.mark_profit_target(self.quick_mode_name, pair, True, previous_sell_reason, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
+                mark_pair, mark_signal = self.mark_profit_target(self.quick_mode_name, pair, True, previous_sell_reason, trade, current_time, current_rate, profit_current_stake_ratio, last_candle, previous_candle_1)
                 if mark_pair:
-                    self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
+                    self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
 
         # Add the pair to the list, if a sell triggered and conditions met
         if sell and signal_name is not None:
             previous_profit = None
             if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
                 previous_profit = self.target_profit_cache.data[pair]['profit']
-            if (
-                    (previous_profit is None)
-                    or (previous_profit < current_profit)
-            ):
-                mark_pair, mark_signal = self.mark_profit_target(self.quick_mode_name, pair, sell, signal_name, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
+            if (signal_name in [f"exit_{self.quick_mode_name}_stoploss_doom", f"exit_{self.quick_mode_name}_stoploss_u_e"]):
+                mark_pair, mark_signal = self.mark_profit_target(self.quick_mode_name, pair, sell, signal_name, trade, current_time, current_rate, profit_ratio, last_candle, previous_candle_1)
                 if mark_pair:
-                    self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
+                    self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
+                else:
+                    # Just sell it, without maximize
+                    return True, f"{signal_name}"
+            elif (
+                    (previous_profit is None)
+                    or (previous_profit < profit_current_stake_ratio)
+            ):
+                mark_pair, mark_signal = self.mark_profit_target(self.quick_mode_name, pair, sell, signal_name, trade, current_time, current_rate, profit_current_stake_ratio, last_candle, previous_candle_1)
+                if mark_pair:
+                    self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
                 else:
                     # Just sell it, without maximize
                     return True, f"{signal_name}"
         else:
             if (
-                    (current_profit >= self.profit_max_thresholds[4])
+                    (profit_current_stake_ratio >= self.profit_max_thresholds[4])
             ):
                 previous_profit = None
                 if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
                     previous_profit = self.target_profit_cache.data[pair]['profit']
-                if (previous_profit is None) or (previous_profit < current_profit):
+                if (previous_profit is None) or (previous_profit < profit_current_stake_ratio):
                     mark_signal = f"exit_profit_{self.quick_mode_name}_max"
-                    self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
+                    self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
 
         if (signal_name not in [f"exit_profit_{self.quick_mode_name}_max", f"exit_{self.quick_mode_name}_stoploss_doom", f"exit_{self.quick_mode_name}_stoploss_u_e"]):
             if sell and (signal_name is not None):
@@ -468,26 +510,27 @@ class NostalgiaForInfinityX2(IStrategy):
 
         return False, None
 
-    def exit_rebuy(self, pair: str, current_rate: float, current_profit: float,
+    def exit_rebuy(self, pair: str, current_rate: float,
+                    profit_stake: float, profit_ratio: float, profit_current_stake_ratio: float, profit_init_ratio: float,
                     max_profit: float, max_loss: float,
                     last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5,
                     trade: 'Trade', current_time: 'datetime', enter_tags) -> tuple:
         sell = False
 
         # Original sell signals
-        sell, signal_name = self.exit_signals(self.rebuy_mode_name, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+        sell, signal_name = self.exit_signals(self.rebuy_mode_name, profit_current_stake_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Main sell signals
         if not sell:
-            sell, signal_name = self.exit_main(self.rebuy_mode_name, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_main(self.rebuy_mode_name, profit_current_stake_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Williams %R based sells
         if not sell:
-            sell, signal_name = self.exit_r(self.rebuy_mode_name, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_r(self.rebuy_mode_name, profit_current_stake_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Stoplosses
         if not sell:
-            sell, signal_name = self.exit_stoploss(self.rebuy_mode_name, current_rate, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_stoploss(self.rebuy_mode_name, current_rate, profit_current_stake_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Profit Target Signal
         # Check if pair exist on target_profit_cache
@@ -497,43 +540,56 @@ class NostalgiaForInfinityX2(IStrategy):
             previous_sell_reason = self.target_profit_cache.data[pair]['sell_reason']
             previous_time_profit_reached = datetime.fromisoformat(self.target_profit_cache.data[pair]['time_profit_reached'])
 
-            sell_max, signal_name_max = self.exit_profit_target(self.rebuy_mode_name, pair, trade, current_time, current_rate, current_profit,
-                                                                       last_candle, previous_candle_1,
-                                                                       previous_rate, previous_profit, previous_sell_reason,
-                                                                       previous_time_profit_reached, enter_tags)
+            sell_max, signal_name_max = self.exit_profit_target(self.rebuy_mode_name, pair, trade, current_time, current_rate,
+                                                                profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio,
+                                                                last_candle, previous_candle_1,
+                                                                previous_rate, previous_profit, previous_sell_reason,
+                                                                previous_time_profit_reached, enter_tags)
             if sell_max and signal_name_max is not None:
                 return True, f"{signal_name_max}_m"
-            if (current_profit > (previous_profit + 0.005)) and (previous_sell_reason not in [f"exit_{self.rebuy_mode_name}_stoploss_doom"]):
+            if (previous_sell_reason in [f"exit_{self.rebuy_mode_name}_stoploss_u_e"]):
+                if (profit_ratio > (previous_profit + 0.005)):
+                    mark_pair, mark_signal = self.mark_profit_target(self.rebuy_mode_name, pair, True, previous_sell_reason, trade, current_time, current_rate, profit_ratio, last_candle, previous_candle_1)
+                    if mark_pair:
+                        self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
+            elif (profit_current_stake_ratio > (previous_profit + 0.005)) and (previous_sell_reason not in [f"exit_{self.rebuy_mode_name}_stoploss_doom"]):
                 # Update the target, raise it.
-                mark_pair, mark_signal = self.mark_profit_target(self.rebuy_mode_name, pair, True, previous_sell_reason, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
+                mark_pair, mark_signal = self.mark_profit_target(self.rebuy_mode_name, pair, True, previous_sell_reason, trade, current_time, current_rate, profit_current_stake_ratio, last_candle, previous_candle_1)
                 if mark_pair:
-                    self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
+                    self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
 
         # Add the pair to the list, if a sell triggered and conditions met
         if sell and signal_name is not None:
             previous_profit = None
             if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
                 previous_profit = self.target_profit_cache.data[pair]['profit']
-            if (
-                    (previous_profit is None)
-                    or (previous_profit < current_profit)
-            ):
-                mark_pair, mark_signal = self.mark_profit_target(self.rebuy_mode_name, pair, sell, signal_name, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
+            if (signal_name in [f"exit_{self.rebuy_mode_name}_stoploss_doom", f"exit_{self.rebuy_mode_name}_stoploss_u_e"]):
+                mark_pair, mark_signal = self.mark_profit_target(self.rebuy_mode_name, pair, sell, signal_name, trade, current_time, current_rate, profit_ratio, last_candle, previous_candle_1)
                 if mark_pair:
-                    self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
+                    self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
+                else:
+                    # Just sell it, without maximize
+                    return True, f"{signal_name}"
+            elif (
+                    (previous_profit is None)
+                    or (previous_profit < profit_current_stake_ratio)
+            ):
+                mark_pair, mark_signal = self.mark_profit_target(self.rebuy_mode_name, pair, sell, signal_name, trade, current_time, current_rate, profit_current_stake_ratio, last_candle, previous_candle_1)
+                if mark_pair:
+                    self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
                 else:
                     # Just sell it, without maximize
                     return True, f"{signal_name}"
         else:
             if (
-                    (current_profit >= self.profit_max_thresholds[6])
+                    (profit_current_stake_ratio >= self.profit_max_thresholds[6])
             ):
                 previous_profit = None
                 if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
                     previous_profit = self.target_profit_cache.data[pair]['profit']
-                if (previous_profit is None) or (previous_profit < current_profit):
+                if (previous_profit is None) or (previous_profit < profit_current_stake_ratio):
                     mark_signal = f"exit_profit_{self.rebuy_mode_name}_max"
-                    self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
+                    self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
 
         if (signal_name not in [f"exit_profit_{self.rebuy_mode_name}_max", f"exit_{self.rebuy_mode_name}_stoploss_doom", f"exit_{self.rebuy_mode_name}_stoploss_u_e"]):
             if sell and (signal_name is not None):
@@ -541,26 +597,27 @@ class NostalgiaForInfinityX2(IStrategy):
 
         return False, None
 
-    def exit_long(self, pair: str, current_rate: float, current_profit: float,
+    def exit_long(self, pair: str, current_rate: float,
+                    profit_stake: float, profit_ratio: float, profit_current_stake_ratio: float, profit_init_ratio: float,
                     max_profit: float, max_loss: float,
                     last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5,
                     trade: 'Trade', current_time: 'datetime', enter_tags) -> tuple:
         sell = False
 
         # Original sell signals
-        sell, signal_name = self.exit_signals(self.long_mode_name, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+        sell, signal_name = self.exit_signals(self.long_mode_name, profit_current_stake_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Main sell signals
         if not sell:
-            sell, signal_name = self.exit_main(self.long_mode_name, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_main(self.long_mode_name, profit_current_stake_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Williams %R based sells
         if not sell:
-            sell, signal_name = self.exit_r(self.long_mode_name, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_r(self.long_mode_name, profit_current_stake_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Stoplosses
         if not sell:
-            sell, signal_name = self.exit_stoploss(self.long_mode_name, current_rate, current_profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_stoploss(self.long_mode_name, current_rate, profit_current_stake_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Profit Target Signal
         # Check if pair exist on target_profit_cache
@@ -570,43 +627,56 @@ class NostalgiaForInfinityX2(IStrategy):
             previous_sell_reason = self.target_profit_cache.data[pair]['sell_reason']
             previous_time_profit_reached = datetime.fromisoformat(self.target_profit_cache.data[pair]['time_profit_reached'])
 
-            sell_max, signal_name_max = self.exit_profit_target(self.long_mode_name, pair, trade, current_time, current_rate, current_profit,
-                                                                       last_candle, previous_candle_1,
-                                                                       previous_rate, previous_profit, previous_sell_reason,
-                                                                       previous_time_profit_reached, enter_tags)
+            sell_max, signal_name_max = self.exit_profit_target(self.long_mode_name, pair, trade, current_time, current_rate,
+                                                                profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio,
+                                                                last_candle, previous_candle_1,
+                                                                previous_rate, previous_profit, previous_sell_reason,
+                                                                previous_time_profit_reached, enter_tags)
             if sell_max and signal_name_max is not None:
                 return True, f"{signal_name_max}_m"
-            if (current_profit > (previous_profit + 0.005)) and (previous_sell_reason not in [f"exit_{self.long_mode_name}_stoploss_doom"]):
+            if (previous_sell_reason in [f"exit_{self.long_mode_name}_stoploss_u_e"]):
+                if (profit_ratio > (previous_profit + 0.005)):
+                    mark_pair, mark_signal = self.mark_profit_target(self.long_mode_name, pair, True, previous_sell_reason, trade, current_time, current_rate, profit_ratio, last_candle, previous_candle_1)
+                    if mark_pair:
+                        self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
+            elif (profit_current_stake_ratio > (previous_profit + 0.005)) and (previous_sell_reason not in [f"exit_{self.long_mode_name}_stoploss_doom"]):
                 # Update the target, raise it.
-                mark_pair, mark_signal = self.mark_profit_target(self.long_mode_name, pair, True, previous_sell_reason, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
+                mark_pair, mark_signal = self.mark_profit_target(self.long_mode_name, pair, True, previous_sell_reason, trade, current_time, current_rate, profit_current_stake_ratio, last_candle, previous_candle_1)
                 if mark_pair:
-                    self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
+                    self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
 
         # Add the pair to the list, if a sell triggered and conditions met
         if sell and signal_name is not None:
             previous_profit = None
             if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
                 previous_profit = self.target_profit_cache.data[pair]['profit']
-            if (
-                    (previous_profit is None)
-                    or (previous_profit < current_profit)
-            ):
-                mark_pair, mark_signal = self.mark_profit_target(self.long_mode_name, pair, sell, signal_name, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
+            if (signal_name in [f"exit_{self.long_mode_name}_stoploss_doom", f"exit_{self.long_mode_name}_stoploss_u_e"]):
+                mark_pair, mark_signal = self.mark_profit_target(self.long_mode_name, pair, sell, signal_name, trade, current_time, current_rate, profit_ratio, last_candle, previous_candle_1)
                 if mark_pair:
-                    self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
+                    self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
+                else:
+                    # Just sell it, without maximize
+                    return True, f"{signal_name}"
+            elif (
+                    (previous_profit is None)
+                    or (previous_profit < profit_current_stake_ratio)
+            ):
+                mark_pair, mark_signal = self.mark_profit_target(self.long_mode_name, pair, sell, signal_name, trade, current_time, current_rate, profit_current_stake_ratio, last_candle, previous_candle_1)
+                if mark_pair:
+                    self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
                 else:
                     # Just sell it, without maximize
                     return True, f"{signal_name}"
         else:
             if (
-                    (current_profit >= self.profit_max_thresholds[8])
+                    (profit_current_stake_ratio >= self.profit_max_thresholds[8])
             ):
                 previous_profit = None
                 if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
                     previous_profit = self.target_profit_cache.data[pair]['profit']
-                if (previous_profit is None) or (previous_profit < current_profit):
+                if (previous_profit is None) or (previous_profit < profit_current_stake_ratio):
                     mark_signal = f"exit_profit_{self.long_mode_name}_max"
-                    self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
+                    self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
 
         if (signal_name not in [f"exit_profit_{self.long_mode_name}_max", f"exit_{self.long_mode_name}_stoploss_doom", f"exit_{self.long_mode_name}_stoploss_u_e"]):
             if sell and (signal_name is not None):
@@ -620,56 +690,58 @@ class NostalgiaForInfinityX2(IStrategy):
 
         return None, None
 
-    def exit_profit_target(self, mode_name: str, pair: str, trade: Trade, current_time: datetime, current_rate: float, current_profit: float, last_candle, previous_candle_1, previous_rate, previous_profit,  previous_sell_reason, previous_time_profit_reached, enter_tags) -> tuple:
+    def exit_profit_target(self, mode_name: str, pair: str, trade: Trade, current_time: datetime, current_rate: float,
+                           profit_stake: float, profit_ratio: float, profit_current_stake_ratio: float, profit_init_ratio: float,
+                           last_candle, previous_candle_1, previous_rate, previous_profit, previous_sell_reason, previous_time_profit_reached, enter_tags) -> tuple:
         if (previous_sell_reason in [f"exit_{mode_name}_stoploss_doom"]):
-            if (current_profit > 0.04):
+            if (profit_ratio > 0.04):
                 # profit is over the threshold, don't exit
                 self._remove_profit_target(pair)
                 return False, None
-            if (current_profit < -0.18):
-                if (current_profit < (previous_profit - 0.04)):
+            if (profit_ratio < -0.18):
+                if (profit_ratio < (previous_profit - 0.04)):
                     return True, previous_sell_reason
-            elif (current_profit < -0.1):
-                if (current_profit < (previous_profit - 0.04)):
+            elif (profit_ratio < -0.1):
+                if (profit_ratio < (previous_profit - 0.04)):
                     return True, previous_sell_reason
-            elif (current_profit < -0.04):
-                if (current_profit < (previous_profit - 0.04)):
+            elif (profit_ratio < -0.04):
+                if (profit_ratio < (previous_profit - 0.04)):
                     return True, previous_sell_reason
             else:
-                if (current_profit < (previous_profit - 0.04)):
+                if (profit_ratio < (previous_profit - 0.04)):
                     return True, previous_sell_reason
         elif (previous_sell_reason in [f"exit_{mode_name}_stoploss_u_e"]):
-            if (current_profit > 0.04):
+            if (profit_current_stake_ratio > 0.04):
                 # profit is over the threshold, don't exit
                 self._remove_profit_target(pair)
                 return False, None
-            if (current_profit < (previous_profit - 0.14)):
+            if (profit_ratio < (previous_profit - 0.14)):
                     return True, previous_sell_reason
         elif (previous_sell_reason in [f"exit_profit_{mode_name}_max"]):
-            if (current_profit < -0.08):
+            if (profit_current_stake_ratio < -0.08):
                 # profit is under the threshold, cancel it
                 self._remove_profit_target(pair)
                 return False, None
-            if (0.001 <= current_profit < 0.01):
-                if (current_profit < (previous_profit - 0.01)):
+            if (0.001 <= profit_current_stake_ratio < 0.01):
+                if (profit_current_stake_ratio < (previous_profit - 0.01)):
                     return True, previous_sell_reason
-            elif (0.01 <= current_profit < 0.02):
-                if (current_profit < (previous_profit - 0.02)):
+            elif (0.01 <= profit_current_stake_ratio < 0.02):
+                if (profit_current_stake_ratio < (previous_profit - 0.02)):
                     return True, previous_sell_reason
-            elif (0.02 <= current_profit < 0.03):
-                if (current_profit < (previous_profit - 0.03)):
+            elif (0.02 <= profit_current_stake_ratio < 0.03):
+                if (profit_current_stake_ratio < (previous_profit - 0.03)):
                     return True, previous_sell_reason
-            elif (0.03 <= current_profit < 0.05):
-                if (current_profit < (previous_profit - 0.04)):
+            elif (0.03 <= profit_current_stake_ratio < 0.05):
+                if (profit_current_stake_ratio < (previous_profit - 0.04)):
                     return True, previous_sell_reason
-            elif (0.05 <= current_profit < 0.08):
-                if (current_profit < (previous_profit - 0.05)):
+            elif (0.05 <= profit_current_stake_ratio < 0.08):
+                if (profit_current_stake_ratio < (previous_profit - 0.05)):
                     return True, previous_sell_reason
-            elif (0.08 <= current_profit < 0.12):
-                if (current_profit < (previous_profit - 0.06)):
+            elif (0.08 <= profit_current_stake_ratio < 0.12):
+                if (profit_current_stake_ratio < (previous_profit - 0.06)):
                     return True, previous_sell_reason
-            elif (0.12 <= current_profit):
-                if (current_profit < (previous_profit - 0.07)):
+            elif (0.12 <= profit_current_stake_ratio):
+                if (profit_current_stake_ratio < (previous_profit - 0.07)):
                     return True, previous_sell_reason
         else:
             return False, None
@@ -1049,8 +1121,6 @@ class NostalgiaForInfinityX2(IStrategy):
             profit_current_stake_ratio = current_profit
             profit_init_ratio = current_profit
 
-        profit = profit_ratio
-
         max_profit = ((trade.max_rate - trade.open_rate) / trade.open_rate)
         max_loss = ((trade.open_rate - trade.min_rate) / trade.min_rate)
 
@@ -1063,38 +1133,38 @@ class NostalgiaForInfinityX2(IStrategy):
 
         # Normal mode
         if any(c in self.normal_mode_tags for c in enter_tags):
-            sell, signal_name = self.exit_normal(pair, current_rate, profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_normal(pair, current_rate, profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {enter_tag})"
 
         # Pump mode
         if any(c in self.pump_mode_tags for c in enter_tags):
-            sell, signal_name = self.exit_pump(pair, current_rate, profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_pump(pair, current_rate, profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {enter_tag})"
 
         # Quick mode
         if any(c in self.quick_mode_tags for c in enter_tags):
-            sell, signal_name = self.exit_quick(pair, current_rate, profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_quick(pair, current_rate, profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {enter_tag})"
 
         # Rebuy mode
         if all(c in self.rebuy_mode_tags for c in enter_tags):
-            sell, signal_name = self.exit_rebuy(pair, current_rate, profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_rebuy(pair, current_rate, profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {enter_tag})"
 
         # Long mode
         if any(c in self.long_mode_tags for c in enter_tags):
-            sell, signal_name = self.exit_long(pair, current_rate, profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_long(pair, current_rate, profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {enter_tag})"
 
         # Trades not opened by X2
         if not any(c in (self.normal_mode_tags + self.pump_mode_tags + self.quick_mode_tags + self.rebuy_mode_tags + self.long_mode_tags) for c in enter_tags):
             # use normal mode for such trades
-            sell, signal_name = self.exit_normal(pair, current_rate, profit, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_normal(pair, current_rate, profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {enter_tag})"
 
