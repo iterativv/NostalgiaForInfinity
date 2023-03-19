@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.303"
+        return "v12.0.305"
 
     # ROI table:
     minimal_roi = {
@@ -1277,16 +1277,31 @@ class NostalgiaForInfinityX2(IStrategy):
                                 (current_time - timedelta(minutes=30) > filled_entries[-1].order_filled_utc)
                                 or (slice_profit_entry < -0.01)
                             )
-                            and (
-                                (last_candle['rsi_14'] < 46.0)
-                                and (last_candle['rsi_3'] > 10.0)
-                                and (last_candle['close_max_12'] < (last_candle['close'] * 1.1))
+                            and
+                            (
+                                (last_candle['close_max_12'] < (last_candle['close'] * 1.1))
                                 and (last_candle['close_max_24'] < (last_candle['close'] * 1.12))
                                 and (last_candle['close_max_48'] < (last_candle['close'] * 1.16))
-                                and (last_candle['ha_close'] > last_candle['ha_open'])
-                                and (last_candle['rsi_3_1h'] > 10.0)
                                 and (last_candle['btc_pct_close_max_72_5m'] < 0.04)
                                 and (last_candle['btc_pct_close_max_24_5m'] < 0.03)
+                            )
+                            and
+                            (
+                                (
+                                    (last_candle['rsi_14'] < 46.0)
+                                    and (last_candle['rsi_3'] > 10.0)
+                                    and (last_candle['ha_close'] > last_candle['ha_open'])
+                                    and (last_candle['rsi_3_1h'] > 10.0)
+                                )
+                                or
+                                (
+                                    (last_candle['rsi_14'] < 36.0)
+                                    and (last_candle['rsi_3'] > 5.0)
+                                    and (last_candle['close'] < (last_candle['bb20_2_low'] * 0.996))
+                                    and (last_candle['rsi_3_1h'] > 25.0)
+                                    and (last_candle['not_downtrend_1h'])
+                                    and (last_candle['not_downtrend_4h'])
+                                )
                             )
                     ):
                         buy_amount = slice_amount * grinding_stakes[i]
