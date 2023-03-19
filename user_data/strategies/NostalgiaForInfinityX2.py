@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.301"
+        return "v12.0.306"
 
     # ROI table:
     minimal_roi = {
@@ -141,10 +141,12 @@ class NostalgiaForInfinityX2(IStrategy):
     grinding_enable = True
     # Grinding stakes
     grinding_stakes = [0.25, 0.25, 0.25, 0.25, 0.25]
-    grinding_stakes_alt = [0.5, 0.5]
+    grinding_stakes_alt_1 = [0.5, 0.5]
+    grinding_stakes_alt_2 = [0.75]
     # Current total profit
     grinding_thresholds = [-0.04, -0.08, -0.1, -0.12, -0.14]
-    grinding_thresholds_alt = [-0.06, -0.12]
+    grinding_thresholds_alt_1 = [-0.06, -0.12]
+    grinding_thresholds_alt_2 = [-0.06]
 
     stake_rebuy_mode_multiplier = 0.33
     pa_rebuy_mode_max = 2
@@ -1265,9 +1267,14 @@ class NostalgiaForInfinityX2(IStrategy):
             grinding_stakes = self.grinding_stakes
             # Low stakes, on Binance mostly
             if ((slice_amount * self.grinding_stakes[0]) < min_stake):
-                grinding_parts = len(self.grinding_stakes_alt)
-                grinding_thresholds = self.grinding_thresholds_alt
-                grinding_stakes = self.grinding_stakes_alt
+                if ((slice_amount * self.grinding_stakes_alt_1[0]) < min_stake):
+                    grinding_parts = len(self.grinding_stakes_alt_2)
+                    grinding_thresholds = self.grinding_thresholds_alt_2
+                    grinding_stakes = self.grinding_stakes_alt_2
+                else:
+                    grinding_parts = len(self.grinding_stakes_alt_1)
+                    grinding_thresholds = self.grinding_thresholds_alt_1
+                    grinding_stakes = self.grinding_stakes_alt_1
             for i in range(grinding_parts):
                 if (trade.stake_amount < stake_amount_threshold):
                     if (
@@ -1277,17 +1284,31 @@ class NostalgiaForInfinityX2(IStrategy):
                                 (current_time - timedelta(minutes=30) > filled_entries[-1].order_filled_utc)
                                 or (slice_profit_entry < -0.01)
                             )
-                            and (
-                                (last_candle['rsi_14'] < 50.0)
-                                and (last_candle['close_max_12'] < (last_candle['close'] * 1.1))
+                            and
+                            (
+                                (last_candle['close_max_12'] < (last_candle['close'] * 1.1))
                                 and (last_candle['close_max_24'] < (last_candle['close'] * 1.12))
                                 and (last_candle['close_max_48'] < (last_candle['close'] * 1.16))
-                                and (last_candle['ema_26'] > last_candle['ema_12'])
-                                and ((last_candle['ema_26'] - last_candle['ema_12']) > (last_candle['open'] * 0.005))
-                                and ((previous_candle['ema_26'] - previous_candle['ema_12']) > (last_candle['open'] / 100))
-                                and (last_candle['rsi_3_1h'] > 10.0)
                                 and (last_candle['btc_pct_close_max_72_5m'] < 0.04)
                                 and (last_candle['btc_pct_close_max_24_5m'] < 0.03)
+                            )
+                            and
+                            (
+                                (
+                                    (last_candle['rsi_14'] < 46.0)
+                                    and (last_candle['rsi_3'] > 10.0)
+                                    and (last_candle['ha_close'] > last_candle['ha_open'])
+                                    and (last_candle['rsi_3_1h'] > 10.0)
+                                )
+                                or
+                                (
+                                    (last_candle['rsi_14'] < 36.0)
+                                    and (last_candle['rsi_3'] > 5.0)
+                                    and (last_candle['close'] < (last_candle['bb20_2_low'] * 0.996))
+                                    and (last_candle['rsi_3_1h'] > 25.0)
+                                    and (last_candle['not_downtrend_1h'])
+                                    and (last_candle['not_downtrend_4h'])
+                                )
                             )
                     ):
                         buy_amount = slice_amount * grinding_stakes[i]
