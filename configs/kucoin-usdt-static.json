@@ -1,0 +1,102 @@
+{
+  "max_open_trades": 5,
+  "stake_currency": "USDT",
+  "stake_amount": "unlimited",
+  "tradable_balance_ratio": 0.99,
+  "fiat_display_currency": "USD",
+  "dry_run": true,
+  "dry_run_wallet": 1000,
+  "cancel_open_orders_on_exit": false,
+  "timeframe": "5m",
+  "trading_mode": "spot",
+  "margin_mode": "",
+  "unfilledtimeout": {
+    "entry": 2,
+    "exit": 2,
+    "exit_timeout_count": 0,
+    "unit": "minutes"
+  },
+  "order_types": {
+    "entry": "limit",
+    "exit": "limit",
+    "emergency_exit": "limit",
+    "force_entry": "limit",
+    "force_exit": "limit",
+    "stoploss": "market",
+    "stoploss_on_exchange": false,
+    "stoploss_on_exchange_interval": 60
+  },
+  "entry_pricing": {
+    "price_side": "other",
+    "use_order_book": false,
+    "order_book_top": 1,
+    "price_last_balance": 0,
+    "check_depth_of_market": {
+      "enabled": false,
+      "bids_to_ask_delta": 1
+    }
+  },
+  "exit_pricing": {
+    "price_side": "other",
+    "use_order_book": false,
+    "order_book_top": 1,
+    "price_last_balance": 0
+  },
+  "exchange": {
+    "name": "kucoin",
+    "key": "",
+    "secret": "",
+    "markets_refresh_interval": 60,
+    "ccxt_config": {"enableRateLimit": false,
+     "timeout": 60000,
+            "urls": {
+                "api": {
+                  "public": "http://192.168.29.137:9080/kucoin",
+                  "private": "http://192.168.29.137:9080/kucoin"
+        }
+      }
+    },
+    "ccxt_async_config": {
+        "enableRateLimit": false,
+        "rateLimit": 3100,"timeout": 60000
+    }
+  },
+  "edge": {
+    "enabled": false,
+    "process_throttle_secs": 3600,
+    "calculate_since_number_of_days": 7,
+    "allowed_risk": 0.01,
+    "stoploss_range_min": -0.01,
+    "stoploss_range_max": -0.1,
+    "stoploss_range_step": -0.01,
+    "minimum_winrate": 0.6,
+    "minimum_expectancy": 0.2,
+    "min_trade_number": 10,
+    "max_trade_duration_minute": 1440,
+    "remove_pumps": false
+  },
+  "telegram": {
+    "enabled": true,
+    "token": "6259211286:AAHDftgcSSXNp7-5p5rZsBqlAHqgcgyTYiE",
+    "chat_id": "-871603229"
+  },
+  "api_server": {
+    "enabled": true,
+    "listen_ip_address": "0.0.0.0",
+    "listen_port": 8080,
+    "verbosity": "error",
+    "enable_openapi": false,
+    "jwt_secret_key": "",
+    "ws_token": "",
+    "CORS_origins": ["http://192.168.159.128:8081","http://192.168.29.137:8081","http://192.168.29.137:8080","http://192.168.159.128:8080","http://localhost:8080","http://192.168.159.128:8083" ],
+    "username": "freqtrader",
+    "password": "freqtrader",
+    "jwt_secret": ""
+  },
+  "bot_name": "nfi_ku_usdt",
+  "initial_state": "running",
+  "force_entry_enable": true,
+  "internals": {
+    "process_throttle_secs": 5
+  }
+} 
