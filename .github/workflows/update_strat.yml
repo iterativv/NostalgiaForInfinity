@@ -1,7 +1,7 @@
 name: Get latest release version
 on:
   schedule:
-    - cron: '2-59/5 * * * *'
+    - cron: '2-59/15 * * * *'
 jobs:
   get-version:
     runs-on: ubuntu-latest
@@ -36,6 +36,6 @@ jobs:
         uses: appleboy/telegram-action@master
         if: steps.git-check.outputs.modified == 'true'
         with:
-          to: -1001727864522
-          token: 5973729947:AAGeuav-xA1U6QNsabXi92BKbJ2_3gFK3F8
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
           args: Config Files updated.
