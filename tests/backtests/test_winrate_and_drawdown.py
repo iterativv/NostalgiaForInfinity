@@ -109,6 +109,10 @@ def deviations():
             ("20210901", "20211001"): {"max_drawdown": 20, "winrate": 70},
             ("20211001", "20211101"): {"max_drawdown": 20, "winrate": 70},
             ("20220101", "20220201"): {"max_drawdown": 25, "winrate": 70},
+            ("20220401", "20220501"): {"max_drawdown": 65, "winrate": 70},
+            ("20220601", "20220701"): {"max_drawdown": 25, "winrate": 70},
+            ("20211201", "20220101"): {"max_drawdown": 35, "winrate": 70},
+            ("20211101", "20211201"): {"max_drawdown": 25, "winrate": 70},
         },
     }
 
