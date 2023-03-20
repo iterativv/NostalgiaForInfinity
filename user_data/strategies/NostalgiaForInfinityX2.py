@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.313"
+        return "v12.0.314"
 
     # ROI table:
     minimal_roi = {
@@ -229,7 +229,7 @@ class NostalgiaForInfinityX2(IStrategy):
             )
 
         # OKX, Kraken provides a lower number of candle data per API call
-        if self.config["exchange"]["name"] in ["okx"]:
+        if self.config["exchange"]["name"] in ["okx", "okex"]:
             self.startup_candle_count = 480
         elif self.config["exchange"]["name"] in ["kraken"]:
             self.startup_candle_count = 710
