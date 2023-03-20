@@ -22,7 +22,7 @@ jobs:
           curl -O https://raw.githubusercontent.com/iterativv/NostalgiaForInfinity/main/configs/pairlist-volume-kucoin-usdt.json && \
           cp pairlist-volume-kucoin-usdt.json user_data/strategies/NostalgiaForInfinityX
           curl -O https://raw.githubusercontent.com/dida1990/freqtrade-blacklist/main/blacklist-kucoin-binance.json && \
-          cp blacklist-kucoin-binance.json user_data/strategies/NostalgiaForInfinityX
+          cp blacklist-kucoin-binance.json configs/
       - name: Check for modified files
         id: git-check
         run: echo "modified=$([ -z "`git status --porcelain`" ] && echo "false" || echo "true")" >> $GITHUB_OUTPUT
