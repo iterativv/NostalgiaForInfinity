@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.310"
+        return "v12.0.311"
 
     # ROI table:
     minimal_roi = {
@@ -1295,10 +1295,21 @@ class NostalgiaForInfinityX2(IStrategy):
                             and
                             (
                                 (
-                                    (last_candle['rsi_14'] < 46.0)
-                                    and (last_candle['rsi_3'] > 10.0)
-                                    and (last_candle['ha_close'] > last_candle['ha_open'])
+                                    (last_candle['rsi_14'] < 36.0)
+                                    and (last_candle['rsi_3'] > 5.0)
+                                    and (last_candle['ema_26'] > last_candle['ema_12'])
+                                    and ((last_candle['ema_26'] - last_candle['ema_12']) > (last_candle['open'] * 0.005))
+                                    and ((previous_candle['ema_26'] - previous_candle['ema_12']) > (last_candle['open'] / 100.0))
                                     and (last_candle['rsi_3_1h'] > 10.0)
+                                )
+                                or
+                                (
+                                    (last_candle['rsi_14'] < 40.0)
+                                    and (last_candle['rsi_3'] > 5.0)
+                                    and (last_candle['close'] < (last_candle['ema_12'] * 0.99))
+                                    and (last_candle['rsi_3_1h'] > 10.0)
+                                    and (last_candle['not_downtrend_1h'])
+                                    and (last_candle['not_downtrend_4h'])
                                 )
                                 or
                                 (
@@ -1308,6 +1319,13 @@ class NostalgiaForInfinityX2(IStrategy):
                                     and (last_candle['rsi_3_1h'] > 25.0)
                                     and (last_candle['not_downtrend_1h'])
                                     and (last_candle['not_downtrend_4h'])
+                                )
+                                or
+                                (
+                                    (last_candle['rsi_14'] < 32.0)
+                                    and (last_candle['rsi_3'] > 5.0)
+                                    and (last_candle['ha_close'] > last_candle['ha_open'])
+                                    and (last_candle['rsi_3_1h'] > 10.0)
                                 )
                             )
                     ):
