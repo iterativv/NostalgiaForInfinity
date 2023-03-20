@@ -10,17 +10,17 @@ jobs:
       - name: Fetch release version
         run: |
           curl -O https://raw.githubusercontent.com/iterativv/NostalgiaForInfinity/main/NostalgiaForInfinityX.py && \
-          mv NostalgiaForInfinityX.py user_data/strategies
+          cp NostalgiaForInfinityX.py user_data/strategies
           curl -O https://raw.githubusercontent.com/iterativv/NostalgiaForInfinity/main/NostalgiaForInfinityX2.py && \
-          mv NostalgiaForInfinityX2.py user_data/strategies
+          cp NostalgiaForInfinityX2.py user_data/strategies
           curl -O https://raw.githubusercontent.com/iterativv/NostalgiaForInfinity/main/configs/blacklist-binance.json && \
-          mv blacklist-binance.json user_data/strategies/NostalgiaForInfinityX
+          cp blacklist-binance.json user_data/strategies/NostalgiaForInfinityX
           curl -O https://raw.githubusercontent.com/iterativv/NostalgiaForInfinity/main/configs/pairlist-volume-binance-usdt.json && \
-          mv pairlist-volume-binance-usdt.json user_data/strategies/NostalgiaForInfinityX
+          cp pairlist-volume-binance-usdt.json user_data/strategies/NostalgiaForInfinityX
           curl -O https://raw.githubusercontent.com/iterativv/NostalgiaForInfinity/main/configs/blacklist-kucoin.json && \
-          mv blacklist-kucoin.json user_data/strategies/NostalgiaForInfinityX
+          cp blacklist-kucoin.json user_data/strategies/NostalgiaForInfinityX
           curl -O https://raw.githubusercontent.com/iterativv/NostalgiaForInfinity/main/configs/pairlist-volume-kucoin-usdt.json && \
-          mv pairlist-volume-kucoin-usdt.json user_data/strategies/NostalgiaForInfinityX
+          cp pairlist-volume-kucoin-usdt.json user_data/strategies/NostalgiaForInfinityX
       - name: Check for modified files
         id: git-check
         run: echo "modified=$([ -z "`git status --porcelain`" ] && echo "false" || echo "true")" >> $GITHUB_OUTPUT
