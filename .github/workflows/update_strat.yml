@@ -14,15 +14,15 @@ jobs:
           curl -O https://raw.githubusercontent.com/iterativv/NostalgiaForInfinity/main/NostalgiaForInfinityX2.py && \
           cp NostalgiaForInfinityX2.py user_data/strategies
           curl -O https://raw.githubusercontent.com/iterativv/NostalgiaForInfinity/main/configs/blacklist-binance.json && \
-          cp blacklist-binance.json user_data/strategies/NostalgiaForInfinityX
+          mv blacklist-binance.json user_data/strategies/NostalgiaForInfinityX
           curl -O https://raw.githubusercontent.com/iterativv/NostalgiaForInfinity/main/configs/pairlist-volume-binance-usdt.json && \
-          cp pairlist-volume-binance-usdt.json user_data/strategies/NostalgiaForInfinityX
+          mv pairlist-volume-binance-usdt.json user_data/strategies/NostalgiaForInfinityX
           curl -O https://raw.githubusercontent.com/iterativv/NostalgiaForInfinity/main/configs/blacklist-kucoin.json && \
-          cp blacklist-kucoin.json user_data/strategies/NostalgiaForInfinityX
+          mv blacklist-kucoin.json user_data/strategies/NostalgiaForInfinityX
           curl -O https://raw.githubusercontent.com/iterativv/NostalgiaForInfinity/main/configs/pairlist-volume-kucoin-usdt.json && \
-          cp pairlist-volume-kucoin-usdt.json user_data/strategies/NostalgiaForInfinityX
+          mv pairlist-volume-kucoin-usdt.json user_data/strategies/NostalgiaForInfinityX
           curl -O https://raw.githubusercontent.com/dida1990/freqtrade-blacklist/main/blacklist-kucoin-binance.json && \
-          cp blacklist-kucoin-binance.json configs/
+          mv blacklist-kucoin-binance.json configs/
       - name: Check for modified files
         id: git-check
         run: echo "modified=$([ -z "`git status --porcelain`" ] && echo "false" || echo "true")" >> $GITHUB_OUTPUT
@@ -32,7 +32,7 @@ jobs:
           git config user.name 'github-actions'
           git config user.email 'github-actions@github.com'
           git add .
-          git commit -am "Update NostalgiaForInfinityX Strategy & Blacklist"
+          git commit -am "Update NostalgiaForInfinityX2 Strategy & Blacklist"
           git push
       - name: Notify Telegram
         uses: appleboy/telegram-action@master
