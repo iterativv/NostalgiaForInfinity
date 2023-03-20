@@ -21,6 +21,8 @@ jobs:
           cp blacklist-kucoin.json user_data/strategies/NostalgiaForInfinityX
           curl -O https://raw.githubusercontent.com/iterativv/NostalgiaForInfinity/main/configs/pairlist-volume-kucoin-usdt.json && \
           cp pairlist-volume-kucoin-usdt.json user_data/strategies/NostalgiaForInfinityX
+          curl -O https://raw.githubusercontent.com/dida1990/freqtrade-blacklist/main/blacklist-kucoin-binance.json && \
+          cp blacklist-kucoin-binance.json user_data/strategies/NostalgiaForInfinityX
       - name: Check for modified files
         id: git-check
         run: echo "modified=$([ -z "`git status --porcelain`" ] && echo "false" || echo "true")" >> $GITHUB_OUTPUT
@@ -30,7 +32,7 @@ jobs:
           git config user.name 'github-actions'
           git config user.email 'github-actions@github.com'
           git add .
-          git commit -am "Update NostalgiaForInfinityX Strategy"
+          git commit -am "Update NostalgiaForInfinityX Strategy & Blacklist"
           git push
       - name: Notify Telegram
         uses: appleboy/telegram-action@master
