@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.308"
+        return "v12.0.310"
 
     # ROI table:
     minimal_roi = {
@@ -7445,6 +7445,13 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append(((dataframe['not_downtrend_1h'])
                                            & (dataframe['not_downtrend_4h']))
                                           | (dataframe['high_max_24_4h'] < (dataframe['close'] * 1.5)))
+                    item_buy_logic.append((dataframe['cti_20_15m'] < -0.8)
+                                          | (dataframe['rsi_14_15m'] < 20.0)
+                                          | (dataframe['cti_20_1h'] < -0.0)
+                                          | (dataframe['cti_20_4h'] < -0.5)
+                                          | (dataframe['cti_20_1d'] < -0.0)
+                                          | (dataframe['close_max_24'] < (dataframe['close'] * 1.2))
+                                          | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.08)))
 
                     # Logic
                     item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
@@ -9051,6 +9058,12 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append(((dataframe['not_downtrend_1h'])
                                            & (dataframe['not_downtrend_4h']))
                                           | (dataframe['high_max_24_4h'] < (dataframe['close'] * 1.5)))
+                    item_buy_logic.append((dataframe['cti_20_15m'] < -0.8)
+                                          | (dataframe['rsi_14_15m'] < 20.0)
+                                          | (dataframe['cti_20_1h'] < -0.0)
+                                          | (dataframe['cti_20_4h'] < -0.5)
+                                          | (dataframe['cti_20_1d'] < -0.0)
+                                          | (dataframe['close_max_24'] < (dataframe['close'] * 1.2)))
 
                     # Logic
                     item_buy_logic.append(dataframe['bb40_2_delta'].gt(dataframe['close'] * 0.036))
