@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.312"
+        return "v12.0.313"
 
     # ROI table:
     minimal_roi = {
@@ -1260,6 +1260,8 @@ class NostalgiaForInfinityX2(IStrategy):
             slice_profit_entry = (exit_rate - filled_entries[-1].average) / filled_entries[-1].average
             slice_profit_exit = ((exit_rate - filled_exits[-1].average) / filled_exits[-1].average) if count_of_exits > 0 else 0.0
 
+            current_stake_amount = trade.amount * current_rate
+
             # Buy
             stake_amount_threshold = slice_amount
             grinding_parts = len(self.grinding_stakes)
@@ -1276,7 +1278,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     grinding_thresholds = self.grinding_thresholds_alt_1
                     grinding_stakes = self.grinding_stakes_alt_1
             for i in range(grinding_parts):
-                if (trade.stake_amount < stake_amount_threshold):
+                if (current_stake_amount < stake_amount_threshold):
                     if (
                             (profit_current_stake_ratio < grinding_thresholds[i])
                             and
