@@ -13,14 +13,14 @@ jobs:
           cp NostalgiaForInfinityX.py user_data/strategies
           curl -O https://raw.githubusercontent.com/iterativv/NostalgiaForInfinity/main/NostalgiaForInfinityX2.py && \
           cp NostalgiaForInfinityX2.py user_data/strategies
-          curl -O https://raw.githubusercontent.com/iterativv/NostalgiaForInfinity/main/configs/blacklist-binance.json && \
-          mv blacklist-binance.json user_data/strategies/NostalgiaForInfinityX
-          curl -O https://raw.githubusercontent.com/iterativv/NostalgiaForInfinity/main/configs/pairlist-volume-binance-usdt.json && \
-          mv pairlist-volume-binance-usdt.json user_data/strategies/NostalgiaForInfinityX
-          curl -O https://raw.githubusercontent.com/iterativv/NostalgiaForInfinity/main/configs/blacklist-kucoin.json && \
-          mv blacklist-kucoin.json user_data/strategies/NostalgiaForInfinityX
-          curl -O https://raw.githubusercontent.com/iterativv/NostalgiaForInfinity/main/configs/pairlist-volume-kucoin-usdt.json && \
-          mv pairlist-volume-kucoin-usdt.json user_data/strategies/NostalgiaForInfinityX
+          #curl -O https://raw.githubusercontent.com/iterativv/NostalgiaForInfinity/main/configs/blacklist-binance.json && \
+          #mv blacklist-binance.json user_data/strategies/NostalgiaForInfinityX
+          #curl -O https://raw.githubusercontent.com/iterativv/NostalgiaForInfinity/main/configs/pairlist-volume-binance-usdt.json && \
+          #mv pairlist-volume-binance-usdt.json user_data/strategies/NostalgiaForInfinityX
+          #curl -O https://raw.githubusercontent.com/iterativv/NostalgiaForInfinity/main/configs/blacklist-kucoin.json && \
+          #mv blacklist-kucoin.json user_data/strategies/NostalgiaForInfinityX
+          #curl -O https://raw.githubusercontent.com/iterativv/NostalgiaForInfinity/main/configs/pairlist-volume-kucoin-usdt.json && \
+          #mv pairlist-volume-kucoin-usdt.json user_data/strategies/NostalgiaForInfinityX
           #curl -O https://raw.githubusercontent.com/dida1990/freqtrade-blacklist/main/blacklist-kucoin-binance.json && \
           #mv blacklist-kucoin-binance.json configs/
       - name: Check for modified files
