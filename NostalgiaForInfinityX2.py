@@ -64,7 +64,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.334"
+        return "v12.0.335"
 
     # ROI table:
     minimal_roi = {
@@ -233,6 +233,8 @@ class NostalgiaForInfinityX2(IStrategy):
             self.startup_candle_count = 480
         elif self.config["exchange"]["name"] in ["kraken"]:
             self.startup_candle_count = 710
+        elif self.config["exchange"]["name"] in ["bybit"]:
+            self.startup_candle_count = 199
 
         # If the cached data hasn't changed, it's a no-op
         self.target_profit_cache.save()
