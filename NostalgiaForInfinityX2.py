@@ -65,7 +65,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.349"
+        return "v12.0.350"
 
     # ROI table:
     minimal_roi = {
@@ -9931,6 +9931,8 @@ class NostalgiaForInfinityX2(IStrategy):
         # Allow force exits
         if exit_reason != 'force_exit':
             if self._should_hold_trade(trade, rate, exit_reason):
+                return False
+            if (exit_reason == 'stop_loss'):
                 return False
             if self.exit_profit_only:
                 if self.exit_profit_only:
