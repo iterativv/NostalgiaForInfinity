@@ -65,7 +65,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.350"
+        return "v12.0.351"
 
     # ROI table:
     minimal_roi = {
@@ -1347,19 +1347,17 @@ class NostalgiaForInfinityX2(IStrategy):
 
             # Partial fills on grinding sells
             if (count_of_exits > 0):
-                exit_order = filled_exits[-1]
-                sell_amount = exit_order.remaining * exit_rate
-                if (sell_amount > min_stake):
-                    # Test if it's the last exit. Normal exit with partial fill
-                    if ((trade.stake_amount - sell_amount) > min_stake):
-                        if (
-                                (slice_profit_exit > 0.01)
-                        ):
-                            self.dp.send_msg(f"Grinding exit (remaining) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {exit_order.remaining} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(slice_profit_exit * 100.0):.2f}%")
-                            return -sell_amount
-                        else:
-                            # partial fill on sell and not yet selling the remaining
-                            return None
+                for exit_order in reversed(filled_exits):
+                    sell_amount = exit_order.remaining * exit_rate
+                    grind_profit = (exit_rate - exit_order.average) / exit_order.average
+                    if (sell_amount > min_stake):
+                        # Test if it's the last exit. Normal exit with partial fill
+                        if ((trade.stake_amount - sell_amount) > min_stake):
+                            if (
+                                    (grind_profit > 0.01)
+                            ):
+                                self.dp.send_msg(f"Grinding exit (remaining) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {exit_order.remaining} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%")
+                                return -sell_amount
 
             # Sell the corresponding buy order
 
