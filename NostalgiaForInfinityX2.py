@@ -65,7 +65,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.360"
+        return "v12.0.361"
 
     # ROI table:
     minimal_roi = {
@@ -1345,33 +1345,37 @@ class NostalgiaForInfinityX2(IStrategy):
 
             # Sell
 
-            # Sell the corresponding buy order
-
             if (count_of_entries > 1):
-                count_of_full_exits = 0
-                for exit_order in filled_exits:
-                    if ((exit_order.remaining * exit_rate) < min_stake):
-                        count_of_full_exits += 1
-
-                if (count_of_entries > (count_of_full_exits + 1)):
-                    num_buys = 0
-                    num_sells = 0
-                    for order in reversed(filled_orders):
-                        if (order.ft_order_side == "buy"):
-                            num_buys += 1
-                        elif (order.ft_order_side == "sell"):
-                            if ((order.remaining * exit_rate) < min_stake):
-                                num_sells += 1
-                        if (num_buys > num_sells) and (order.ft_order_side == "buy"):
-                            buy_order = order
-                            grind_profit = (exit_rate - buy_order.average) / buy_order.average
-                            if (
-                                    (grind_profit > 0.012)
-                            ):
-                                sell_amount = buy_order.filled * exit_rate
-                                self.dp.send_msg(f"Grinding exit [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount}| Coin amount: {buy_order.filled} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%")
-                                return -sell_amount
-                            break
+                num_buys = 0
+                num_sells = 0
+                for order in reversed(filled_orders):
+                    if (order.ft_order_side == "buy"):
+                        num_buys += 1
+                    elif (order.ft_order_side == "sell"):
+                        if ((order.remaining * exit_rate) < min_stake):
+                            num_sells += 1
+                    # patial fills on exits
+                    if (num_buys == num_sells) and (order.ft_order_side == "sell"):
+                        sell_amount = order.remaining * exit_rate
+                        grind_profit = (exit_rate - order.average) / order.average
+                        if (sell_amount > min_stake):
+                            # Test if it's the last exit. Normal exit with partial fill
+                            if ((trade.stake_amount - sell_amount) > min_stake):
+                                if (
+                                        (grind_profit > 0.01)
+                                ):
+                                    self.dp.send_msg(f"Grinding exit (remaining) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {order.remaining} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%")
+                                    return -sell_amount
+                    elif (num_buys > num_sells) and (order.ft_order_side == "buy"):
+                        buy_order = order
+                        grind_profit = (exit_rate - buy_order.average) / buy_order.average
+                        if (
+                                (grind_profit > 0.012)
+                        ):
+                            sell_amount = buy_order.filled * exit_rate
+                            self.dp.send_msg(f"Grinding exit [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount}| Coin amount: {buy_order.filled} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%")
+                            return -sell_amount
+                        break
 
         return None
 
