@@ -65,7 +65,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.354"
+        return "v12.0.369"
 
     # ROI table:
     minimal_roi = {
@@ -1345,47 +1345,41 @@ class NostalgiaForInfinityX2(IStrategy):
 
             # Sell
 
-            # Partial fills on grinding sells
-            if (count_of_exits > 0):
-                for exit_order in reversed(filled_exits):
-                    sell_amount = exit_order.remaining * exit_rate
-                    grind_profit = (exit_rate - exit_order.average) / exit_order.average
-                    if (sell_amount > min_stake):
-                        # Test if it's the last exit. Normal exit with partial fill
-                        if ((trade.stake_amount - sell_amount) > min_stake):
-                            if (
-                                    (grind_profit > 0.01)
-                            ):
-                                self.dp.send_msg(f"Grinding exit (remaining) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {exit_order.remaining} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%")
-                                return -sell_amount
-
-            # Sell the corresponding buy order
-
             if (count_of_entries > 1):
                 count_of_full_exits = 0
                 for exit_order in filled_exits:
                     if ((exit_order.remaining * exit_rate) < min_stake):
                         count_of_full_exits += 1
-
-                if (count_of_entries > (count_of_full_exits + 1)):
-                    num_buys = 0
-                    num_sells = 0
-                    for order in reversed(filled_orders):
-                        if (order.ft_order_side == "buy"):
-                            num_buys += 1
-                        elif (order.ft_order_side == "sell"):
-                            if ((order.remaining * exit_rate) < min_stake):
-                                num_sells += 1
-                        if (num_buys > num_sells) and (order.ft_order_side == "buy"):
-                            buy_order = order
-                            grind_profit = (exit_rate - buy_order.average) / buy_order.average
-                            if (
-                                    (grind_profit > 0.012)
-                            ):
-                                sell_amount = buy_order.filled * exit_rate
-                                self.dp.send_msg(f"Grinding exit [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount}| Coin amount: {buy_order.filled} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%")
-                                return -sell_amount
-                            break
+                num_buys = 0
+                num_sells = 0
+                for order in reversed(filled_orders):
+                    if (order.ft_order_side == "buy"):
+                        num_buys += 1
+                    elif (order.ft_order_side == "sell"):
+                        if ((order.remaining * exit_rate) < min_stake):
+                            num_sells += 1
+                    # patial fills on exits
+                    if (num_buys == num_sells) and (order.ft_order_side == "sell"):
+                        sell_amount = order.remaining * exit_rate
+                        grind_profit = (exit_rate - order.average) / order.average
+                        if (sell_amount > min_stake):
+                            # Test if it's the last exit. Normal exit with partial fill
+                            if ((trade.stake_amount - sell_amount) > min_stake):
+                                if (
+                                        (grind_profit > 0.01)
+                                ):
+                                    self.dp.send_msg(f"Grinding exit (remaining) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {order.remaining} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%")
+                                    return -sell_amount
+                    elif (count_of_entries > (count_of_full_exits + 1)) and (num_buys > num_sells) and (order.ft_order_side == "buy"):
+                        buy_order = order
+                        grind_profit = (exit_rate - buy_order.average) / buy_order.average
+                        if (
+                                (grind_profit > 0.012)
+                        ):
+                            sell_amount = buy_order.filled * exit_rate
+                            self.dp.send_msg(f"Grinding exit [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount}| Coin amount: {buy_order.filled} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%")
+                            return -sell_amount
+                        break
 
         return None
 
@@ -5561,6 +5555,13 @@ class NostalgiaForInfinityX2(IStrategy):
                                           | (dataframe['cti_20_1h'] < -0.5)
                                           | (dataframe['cti_20_4h'] < 0.75)
                                           | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.03)))
+                    item_buy_logic.append((dataframe['cti_20_15m'] < -0.9)
+                                          | (dataframe['rsi_14_15m'] < 30.0)
+                                          | (dataframe['cti_20_1h'] < -0.0)
+                                          | (dataframe['cti_20_4h'] < 0.5)
+                                          | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
+                                          | (dataframe['close_max_24'] < (dataframe['close'] * 1.12))
+                                          | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.03)))
 
                     # Logic
                     item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
@@ -5895,6 +5896,15 @@ class NostalgiaForInfinityX2(IStrategy):
                                           | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
                                           | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
                                           | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152)))
+                    item_buy_logic.append((dataframe['not_downtrend_1h'])
+                                          | (dataframe['cti_20_15m'] < -0.8)
+                                          | (dataframe['rsi_14_15m'] < 20.0)
+                                          | (dataframe['cti_20_1h'] < -0.5)
+                                          | (dataframe['rsi_3_1h'] > 20.0)
+                                          | (dataframe['cti_20_4h'] < -0.8)
+                                          | (dataframe['cti_20_1d'] < -0.8)
+                                          | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
+                                          | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152)))
 
                     # Logic
                     item_buy_logic.append(dataframe['bb40_2_delta'].gt(dataframe['close'] * 0.06))
@@ -6245,6 +6255,18 @@ class NostalgiaForInfinityX2(IStrategy):
                                           | (dataframe['cti_20_4h'] < -0.0)
                                           | (dataframe['cti_20_1d'] < -0.0)
                                           | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.07)))
+                    item_buy_logic.append((dataframe['cti_20_1h'] < 0.5)
+                                          | (dataframe['cti_20_4h'] < 0.75)
+                                          | (dataframe['close_max_48'] < (dataframe['close'] * 1.16))
+                                          | (dataframe['hl_pct_change_24_1h'] < 0.4)
+                                          | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.03)))
+                    item_buy_logic.append((dataframe['cti_20_15m'] < -0.9)
+                                          | (dataframe['rsi_3_15m'] > 10.0)
+                                          | (dataframe['rsi_14_15m'] < 20.0)
+                                          | (dataframe['cti_20_1h'] < -0.8)
+                                          | (dataframe['cti_20_4h'] < 0.5)
+                                          | (dataframe['cti_20_1d'] < -0.8)
+                                          | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.04)))
 
                     # Logic
                     item_buy_logic.append(dataframe['rsi_14'] < 36.0)
@@ -6864,6 +6886,14 @@ class NostalgiaForInfinityX2(IStrategy):
                                           | (dataframe['rsi_3_15m'] > 10.0)
                                           | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
                                           | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
+                                          | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.03)))
+                    item_buy_logic.append((dataframe['not_downtrend_15m'])
+                                          | (dataframe['cti_20_15m'] < -0.5)
+                                          | (dataframe['rsi_3_15m'] > 20.0)
+                                          | (dataframe['rsi_14_15m'] < 30.0)
+                                          | (dataframe['cti_20_1h'] < 0.5)
+                                          | (dataframe['cti_20_4h'] < -0.8)
+                                          | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
                                           | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.03)))
 
                     # Logic
@@ -7629,6 +7659,22 @@ class NostalgiaForInfinityX2(IStrategy):
                                           | (dataframe['cti_20_4h'] < 0.5)
                                           | (dataframe['close_max_48'] < (dataframe['close'] * 1.2))
                                           | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.05)))
+                    item_buy_logic.append((dataframe['not_downtrend_1h'])
+                                          | (dataframe['cti_20_15m'] < -0.9)
+                                          | (dataframe['rsi_3_15m'] > 30.0)
+                                          | (dataframe['cti_20_1h'] < -0.5)
+                                          | (dataframe['rsi_3_1h'] > 5.0)
+                                          | (dataframe['cti_20_4h'] < -0.0)
+                                          | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.04)))
+                    item_buy_logic.append((dataframe['not_downtrend_1h'])
+                                          | (dataframe['cti_20_15m'] < -0.8)
+                                          | (dataframe['cti_20_1h'] < -0.5)
+                                          | (dataframe['rsi_3_1h'] > 30.0)
+                                          | (dataframe['cti_20_4h'] < -0.8)
+                                          | (dataframe['cti_20_1d'] < -0.8)
+                                          | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
+                                          | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
+                                          | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.04)))
 
                     # Logic
                     item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
@@ -8034,6 +8080,13 @@ class NostalgiaForInfinityX2(IStrategy):
                                           | (dataframe['cti_20_1d'] < 0.5)
                                           | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
                                           | (dataframe['close'] < (dataframe['ema_26'] * 0.88)))
+                    item_buy_logic.append((dataframe['not_downtrend_15m'])
+                                          | (dataframe['not_downtrend_1h'])
+                                          | (dataframe['not_downtrend_4h'])
+                                          | (dataframe['rsi_3_15m'] > 10.0)
+                                          | (dataframe['rsi_3_1h'] > 10.0)
+                                          | (dataframe['cti_20_4h'] < -0.8)
+                                          | (dataframe['close'] < (dataframe['ema_26'] * 0.93)))
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < (dataframe['ema_26'] * 0.94))
@@ -8736,6 +8789,13 @@ class NostalgiaForInfinityX2(IStrategy):
                                           | (dataframe['cti_20_1d'] < -0.0)
                                           | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
                                           | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.07)))
+                    item_buy_logic.append((dataframe['not_downtrend_1h'])
+                                          | (dataframe['cti_20_15m'] < -0.9)
+                                          | (dataframe['rsi_3_15m'] > 30.0)
+                                          | (dataframe['cti_20_1h'] < -0.5)
+                                          | (dataframe['rsi_3_1h'] > 5.0)
+                                          | (dataframe['cti_20_4h'] < -0.0)
+                                          | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.04)))
 
                     # Logic
                     item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
@@ -9894,6 +9954,13 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append((dataframe['not_downtrend_1h'])
                                           | (dataframe['cti_20_15m'] < -0.8)
                                           | (dataframe['rsi_3_15m'] > 10.0)
+                                          | (dataframe['cti_20_1h'] < -0.8)
+                                          | (dataframe['rsi_3_1h'] > 10.0)
+                                          | (dataframe['cti_20_4h'] < -0.0)
+                                          | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.04)))
+                    item_buy_logic.append((dataframe['not_downtrend_1h'])
+                                          | (dataframe['cti_20_15m'] < -0.9)
+                                          | (dataframe['rsi_3_15m'] > 30.0)
                                           | (dataframe['cti_20_1h'] < -0.8)
                                           | (dataframe['rsi_3_1h'] > 10.0)
                                           | (dataframe['cti_20_4h'] < -0.0)
