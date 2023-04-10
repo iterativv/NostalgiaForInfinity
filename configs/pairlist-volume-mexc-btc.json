@@ -6,14 +6,14 @@
             "sort_key": "quoteVolume",
             "refresh_period": 1800
         },
-        {"method": "AgeFilter", "min_days_listed": 3},
+        {"method": "AgeFilter", "min_days_listed": 28},
         {
             "method": "PriceFilter",
-            "low_price_ratio": 0.003
+            "low_price_ratio": 0.01
         },
         {
             "method": "SpreadFilter",
-            "max_spread_ratio": 0.008
+            "max_spread_ratio": 0.0075
         },
         {
             "method": "RangeStabilityFilter",
