@@ -65,7 +65,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.434"
+        return "v12.0.435"
 
     # ROI table:
     minimal_roi = {
@@ -197,6 +197,22 @@ class NostalgiaForInfinityX2(IStrategy):
     #############################################################
 
     def __init__(self, config: dict) -> None:
+        if 'options' not in config['exchange']:
+            config['exchange']['options'] = {}
+        if 'broker' not in config['exchange']['options']:
+            config['exchange']['options']['broker'] = {}
+        if 'partner' not in config['exchange']['options']:
+            config['exchange']['options']['partner'] = {}
+        if 'spot' not in config['exchange']['options']['partner']:
+            config['exchange']['options']['partner']['spot'] = {}
+        if 'future' not in config['exchange']['options']['partner']:
+            config['exchange']['options']['partner']['future'] = {}
+        config['exchange']['options']['brokerId'] = None
+        config['exchange']['options']['broker'].update({'spot': None, 'margin': None, 'future': None, 'delivery': None})
+        config['exchange']['options']['partner']['spot'].update({'id': None, 'key': None})
+        config['exchange']['options']['partner']['future'].update({'id': None, 'key': None})
+        config['exchange']['options']['partner']['id'] = None
+        config['exchange']['options']['partner']['key'] = None
         super().__init__(config)
         if (('exit_profit_only' in self.config and self.config['exit_profit_only'])
                 or ('sell_profit_only' in self.config and self.config['sell_profit_only'])):
