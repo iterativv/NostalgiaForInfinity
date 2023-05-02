@@ -117,7 +117,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.3.132"
+        return "v11.3.133"
 
 
     # ROI table:
@@ -2392,6 +2392,19 @@ class NostalgiaForInfinityX(IStrategy):
     #############################################################
 
     def __init__(self, config: dict) -> None:
+        if 'ccxt_config' not in config['exchange']:
+            config['exchange']['ccxt_config'] = {}
+        if 'ccxt_async_config' not in config['exchange']:
+            config['exchange']['ccxt_async_config'] = {}
+
+        options = {
+            'brokerId': None,
+            'broker': {'spot': None, 'margin': None, 'future': None, 'delivery': None},
+            'partner': {'spot': {'id': None, 'key': None}, 'future': {'id': None, 'key': None}, 'id': None, 'key': None}
+        }
+
+        config['exchange']['ccxt_config']['options'] = options
+        config['exchange']['ccxt_async_config']['options'] = options
         super().__init__(config)
         if ('nfi_automatic_rebuys_enable' in self.config):
             nfi_automatic_rebuys_enable = self.config['nfi_automatic_rebuys_enable']
