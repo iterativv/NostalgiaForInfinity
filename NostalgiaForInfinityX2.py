@@ -181,10 +181,10 @@ class NostalgiaForInfinityX2(IStrategy):
         "buy_condition_43_enable": True,
         "buy_condition_44_enable": True,
 
-        "buy_condition_61_enable": True,
+        # "buy_condition_61_enable": False,
 
-        "buy_condition_81_enable": True,
-        "buy_condition_82_enable": True,
+        # "buy_condition_81_enable": False,
+        # "buy_condition_82_enable": False,
     }
 
     buy_protection_params = {}
