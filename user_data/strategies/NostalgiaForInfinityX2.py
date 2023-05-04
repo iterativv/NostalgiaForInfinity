@@ -65,7 +65,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.491"
+        return "v12.0.493"
 
     # ROI table:
     minimal_roi = {
@@ -3341,6 +3341,9 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append((dataframe['change_pct_1d'] > -0.05)
                                           | (dataframe['cti_20_1d'] < 0.8)
                                           | (dataframe['rsi_14_1d'] < 65.0))
+                    item_buy_logic.append((dataframe['rsi_3'] > 20.0)
+                                          | (dataframe['rsi_3_15m'] > 20.0)
+                                          | (dataframe['cti_20_1d'] < 0.8))
 
                     # Logic
                     item_buy_logic.append(dataframe['rsi_14'] < 36.0)
@@ -5405,6 +5408,9 @@ class NostalgiaForInfinityX2(IStrategy):
                                           | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
                                           | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
                                           | (dataframe['close'] < (dataframe['ema_26'] * 0.91)))
+                    item_buy_logic.append((dataframe['rsi_3'] > 20.0)
+                                          | (dataframe['rsi_3_15m'] > 20.0)
+                                          | (dataframe['cti_20_1d'] < 0.8))
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < (dataframe['ema_26'] * 0.94))
@@ -6166,6 +6172,9 @@ class NostalgiaForInfinityX2(IStrategy):
                                           | (dataframe['change_pct_1d'] > -0.06)
                                           | (dataframe['cti_20_1d'] < 0.85)
                                           | (dataframe['rsi_14_1d'].shift(288) < 70.0))
+                    item_buy_logic.append((dataframe['rsi_3'] > 20.0)
+                                          | (dataframe['rsi_3_15m'] > 20.0)
+                                          | (dataframe['cti_20_1d'] < 0.8))
 
                     # Logic
                     item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
@@ -6805,6 +6814,9 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append((dataframe['change_pct_1d'] > -0.05)
                                           | (dataframe['cti_20_1d'] < 0.8)
                                           | (dataframe['rsi_14_1d'] < 65.0))
+                    item_buy_logic.append((dataframe['rsi_3'] > 20.0)
+                                          | (dataframe['rsi_3_15m'] > 20.0)
+                                          | (dataframe['cti_20_1d'] < 0.8))
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < (dataframe['ema_16'] * 0.968))
@@ -7995,6 +8007,9 @@ class NostalgiaForInfinityX2(IStrategy):
                                           | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
                                           | (dataframe['close_max_24'] < (dataframe['close'] * 1.1))
                                           | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.03)))
+                    item_buy_logic.append((dataframe['rsi_3'] > 20.0)
+                                          | (dataframe['rsi_3_15m'] > 20.0)
+                                          | (dataframe['cti_20_1d'] < 0.8))
 
                     # Logic
                     item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
@@ -8272,6 +8287,9 @@ class NostalgiaForInfinityX2(IStrategy):
                                           | (dataframe['rsi_3_1h'] > 20.0)
                                           | (dataframe['cti_20_4h'] < 0.5)
                                           | (dataframe['close'] < (dataframe['ema_26'] * 0.88)))
+                    item_buy_logic.append((dataframe['rsi_3'] > 20.0)
+                                          | (dataframe['rsi_3_15m'] > 20.0)
+                                          | (dataframe['cti_20_1d'] < 0.8))
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < (dataframe['ema_26'] * 0.938))
