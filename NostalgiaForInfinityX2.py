@@ -6166,6 +6166,9 @@ class NostalgiaForInfinityX2(IStrategy):
                                           | (dataframe['change_pct_1d'] > -0.06)
                                           | (dataframe['cti_20_1d'] < 0.85)
                                           | (dataframe['rsi_14_1d'].shift(288) < 70.0))
+                    item_buy_logic.append((dataframe['rsi_3'] > 20.0)
+                                          | (dataframe['rsi_3_15m'] > 20.0)
+                                          | (dataframe['cti_20_1d'] < 0.8))
 
                     # Logic
                     item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
