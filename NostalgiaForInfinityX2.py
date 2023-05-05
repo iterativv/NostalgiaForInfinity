@@ -1507,6 +1507,9 @@ class NostalgiaForInfinityX2(IStrategy):
         # Candle change
         informative_1d['change_pct'] = (informative_1d['close'] - informative_1d['open']) / informative_1d['open']
 
+        # Max highs
+        informative_1d['high_max_6'] = informative_1d['high'].rolling(6).max()
+
         # Performance logging
         # -----------------------------------------------------------------------------------------
         tok = time.perf_counter()
