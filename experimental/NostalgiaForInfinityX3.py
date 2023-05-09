@@ -22,7 +22,7 @@ log = logging.getLogger(__name__)
 warnings.simplefilter(action='ignore', category=pd.errors.PerformanceWarning)
 
 #############################################################################################################
-##                NostalgiaForInfinityX2 by iterativ                                                       ##
+##                NostalgiaForInfinityX3 by iterativ                                                       ##
 ##           https://github.com/iterativv/NostalgiaForInfinity                                             ##
 ##                                                                                                         ##
 ##    Strategy for Freqtrade https://github.com/freqtrade/freqtrade                                        ##
@@ -61,11 +61,11 @@ warnings.simplefilter(action='ignore', category=pd.errors.PerformanceWarning)
 ##  Bitvavo: https://account.bitvavo.com/create?a=D22103A4BC (no fees for the first € 1000)                ##
 #############################################################################################################
 
-class NostalgiaForInfinityX2(IStrategy):
+class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.521"
+        return "v13.0.0"
 
     # ROI table:
     minimal_roi = {
@@ -111,7 +111,7 @@ class NostalgiaForInfinityX2(IStrategy):
     startup_candle_count: int = 800
 
     # Normal mode tags
-    normal_mode_tags = ['force_entry', '1', '2', '3', '4', '5', '6']
+    normal_mode_tags = ['force_entry', '1', '2', '3', '4', '5', '6', '7', '8']
     # Pump mode tags
     pump_mode_tags = ['21', '22']
     # Quick mode tags
@@ -139,7 +139,7 @@ class NostalgiaForInfinityX2(IStrategy):
     position_adjustment_enable = True
 
     # Grinding feature
-    grinding_enable = True
+    grinding_enable = False
     # Grinding stakes
     grinding_stakes = [0.25, 0.25, 0.25, 0.25, 0.25]
     grinding_stakes_alt_1 = [0.5, 0.5]
@@ -172,6 +172,8 @@ class NostalgiaForInfinityX2(IStrategy):
         "buy_condition_4_enable": True,
         "buy_condition_5_enable": True,
         "buy_condition_6_enable": True,
+        "buy_condition_7_enable": True,
+        "buy_condition_8_enable": True,
 
         "buy_condition_21_enable": True,
         "buy_condition_22_enable": True,
@@ -181,10 +183,10 @@ class NostalgiaForInfinityX2(IStrategy):
         "buy_condition_43_enable": True,
         "buy_condition_44_enable": True,
 
-        # "buy_condition_61_enable": False,
+        # "buy_condition_61_enable": True,
 
-        # "buy_condition_81_enable": False,
-        # "buy_condition_82_enable": False,
+        # "buy_condition_81_enable": True,
+        # "buy_condition_82_enable": True,
     }
 
     buy_protection_params = {}
@@ -247,7 +249,7 @@ class NostalgiaForInfinityX2(IStrategy):
             if ('bot_name' in self.config):
                 bot_name = self.config["bot_name"] + "-"
             self.target_profit_cache = Cache(
-                self.config["user_data_dir"] / ("nfix2-profit_max-" + bot_name  + self.config["exchange"]["name"] + "-" + self.config["stake_currency"] +  ("-(backtest)" if (self.config['runmode'].value == 'backtest') else "") + ".json")
+                self.config["user_data_dir"] / ("nfix3-profit_max-" + bot_name  + self.config["exchange"]["name"] + "-" + self.config["stake_currency"] +  ("-(backtest)" if (self.config['runmode'].value == 'backtest') else "") + ".json")
             )
 
         # OKX, Kraken provides a lower number of candle data per API call
@@ -267,6 +269,7 @@ class NostalgiaForInfinityX2(IStrategy):
     def exit_normal(self, pair: str, current_rate: float,
                     profit_stake: float, profit_ratio: float, profit_current_stake_ratio: float, profit_init_ratio: float,
                     max_profit: float, max_loss: float,
+                    filled_entries, filled_exits,
                     last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5,
                     trade: 'Trade', current_time: 'datetime', enter_tags) -> tuple:
         sell = False
@@ -284,7 +287,7 @@ class NostalgiaForInfinityX2(IStrategy):
 
         # Stoplosses
         if not sell:
-            sell, signal_name = self.exit_stoploss(self.normal_mode_name, current_rate, profit_current_stake_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_stoploss(self.normal_mode_name, current_rate, profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio, max_profit, max_loss, filled_entries, filled_exits, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Profit Target Signal
         # Check if pair exist on target_profit_cache
@@ -354,6 +357,7 @@ class NostalgiaForInfinityX2(IStrategy):
     def exit_pump(self, pair: str, current_rate: float,
                     profit_stake: float, profit_ratio: float, profit_current_stake_ratio: float, profit_init_ratio: float,
                     max_profit: float, max_loss: float,
+                    filled_entries, filled_exits,
                     last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5,
                     trade: 'Trade', current_time: 'datetime', enter_tags) -> tuple:
         sell = False
@@ -371,7 +375,7 @@ class NostalgiaForInfinityX2(IStrategy):
 
         # Stoplosses
         if not sell:
-            sell, signal_name = self.exit_stoploss(self.pump_mode_name, current_rate, profit_current_stake_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_stoploss(self.pump_mode_name, current_rate, profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio, max_profit, max_loss, filled_entries, filled_exits, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Profit Target Signal
         # Check if pair exist on target_profit_cache
@@ -441,6 +445,7 @@ class NostalgiaForInfinityX2(IStrategy):
     def exit_quick(self, pair: str, current_rate: float,
                     profit_stake: float, profit_ratio: float, profit_current_stake_ratio: float, profit_init_ratio: float,
                     max_profit: float, max_loss: float,
+                    filled_entries, filled_exits,
                     last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5,
                     trade: 'Trade', current_time: 'datetime', enter_tags) -> tuple:
         sell = False
@@ -458,7 +463,7 @@ class NostalgiaForInfinityX2(IStrategy):
 
         # Stoplosses
         if not sell:
-            sell, signal_name = self.exit_stoploss(self.quick_mode_name, current_rate, profit_current_stake_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_stoploss(self.quick_mode_name, current_rate, profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio, max_profit, max_loss, filled_entries, filled_exits, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Extra sell logic
         if not sell:
@@ -539,6 +544,7 @@ class NostalgiaForInfinityX2(IStrategy):
     def exit_rebuy(self, pair: str, current_rate: float,
                     profit_stake: float, profit_ratio: float, profit_current_stake_ratio: float, profit_init_ratio: float,
                     max_profit: float, max_loss: float,
+                    filled_entries, filled_exits,
                     last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5,
                     trade: 'Trade', current_time: 'datetime', enter_tags) -> tuple:
         sell = False
@@ -556,7 +562,7 @@ class NostalgiaForInfinityX2(IStrategy):
 
         # Stoplosses
         if not sell:
-            sell, signal_name = self.exit_stoploss(self.rebuy_mode_name, current_rate, profit_current_stake_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_stoploss(self.rebuy_mode_name, current_rate, profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio, max_profit, max_loss, filled_entries, filled_exits, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Profit Target Signal
         # Check if pair exist on target_profit_cache
@@ -626,6 +632,7 @@ class NostalgiaForInfinityX2(IStrategy):
     def exit_long(self, pair: str, current_rate: float,
                     profit_stake: float, profit_ratio: float, profit_current_stake_ratio: float, profit_init_ratio: float,
                     max_profit: float, max_loss: float,
+                    filled_entries, filled_exits,
                     last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5,
                     trade: 'Trade', current_time: 'datetime', enter_tags) -> tuple:
         sell = False
@@ -643,8 +650,7 @@ class NostalgiaForInfinityX2(IStrategy):
 
         # Stoplosses
         if not sell:
-            sell, signal_name = self.exit_stoploss(self.long_mode_name, current_rate, profit_current_stake_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
-
+            sell, signal_name = self.exit_stoploss(self.long_mode_name, current_rate, profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio, max_profit, max_loss, filled_entries, filled_exits, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
         # Profit Target Signal
         # Check if pair exist on target_profit_cache
         if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
@@ -1067,28 +1073,17 @@ class NostalgiaForInfinityX2(IStrategy):
 
         return False, None
 
-    def exit_stoploss(self, mode_name: str, current_rate: float, current_profit: float, max_profit:float, max_loss:float, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
-        is_backtest = self.dp.runmode.value == 'backtest'
-        rel_profit = ((current_rate - trade.open_rate) / trade.open_rate)
-
+    def exit_stoploss(self, mode_name: str, current_rate: float,
+                      profit_stake: float, profit_ratio: float, profit_current_stake_ratio: float, profit_init_ratio: float,
+                      max_profit: float, max_loss: float,
+                      filled_entries, filled_exits,
+                      last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5,
+                      trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
         # Stoploss doom
         if (
-                (self.stop_thresholds[10])
-                and (rel_profit < self.stop_thresholds[0])
+                profit_stake < -(filled_entries[0].cost * 0.18)
         ):
-            return True, f'exit_{mode_name}_stoploss_doom'
-
-        # Under & near EMA200, local uptrend move
-        if (
-                (self.stop_thresholds[12])
-                and (rel_profit < self.stop_thresholds[2])
-                and (last_candle['close'] < last_candle['ema_200'])
-                and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < self.stop_thresholds[6])
-                and (last_candle['rsi_14'] > previous_candle_1['rsi_14'])
-                and (last_candle['rsi_14'] > (last_candle['rsi_14_1h'] + self.stop_thresholds[8]))
-                and (current_time - timedelta(minutes=self.stop_thresholds[4]) > trade.open_date_utc)
-        ):
-            return True, f'exit_{mode_name}_stoploss_u_e'
+            return True, f'exit_{mode_name}_stoploss'
 
         return False, None
 
@@ -1140,12 +1135,7 @@ class NostalgiaForInfinityX2(IStrategy):
         profit_ratio = 0.0
         profit_current_stake_ratio = 0.0
         profit_init_ratio = 0.0
-        if (trade.realized_profit != 0.0):
-            profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = self.calc_total_profit(trade, filled_entries, filled_exits, current_rate)
-        else:
-            profit_ratio = current_profit
-            profit_current_stake_ratio = current_profit
-            profit_init_ratio = current_profit
+        profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = self.calc_total_profit(trade, filled_entries, filled_exits, current_rate)
 
         max_profit = ((trade.max_rate - trade.open_rate) / trade.open_rate)
         max_loss = ((trade.open_rate - trade.min_rate) / trade.min_rate)
@@ -1159,38 +1149,38 @@ class NostalgiaForInfinityX2(IStrategy):
 
         # Normal mode
         if any(c in self.normal_mode_tags for c in enter_tags):
-            sell, signal_name = self.exit_normal(pair, current_rate, profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_normal(pair, current_rate, profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio, max_profit, max_loss, filled_entries, filled_exits, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {enter_tag})"
 
         # Pump mode
         if any(c in self.pump_mode_tags for c in enter_tags):
-            sell, signal_name = self.exit_pump(pair, current_rate, profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_pump(pair, current_rate, profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio, max_profit, max_loss, filled_entries, filled_exits, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {enter_tag})"
 
         # Quick mode
         if any(c in self.quick_mode_tags for c in enter_tags):
-            sell, signal_name = self.exit_quick(pair, current_rate, profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_quick(pair, current_rate, profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio, max_profit, max_loss, filled_entries, filled_exits, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {enter_tag})"
 
         # Rebuy mode
         if all(c in self.rebuy_mode_tags for c in enter_tags):
-            sell, signal_name = self.exit_rebuy(pair, current_rate, profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_rebuy(pair, current_rate, profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio, max_profit, max_loss, filled_entries, filled_exits, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {enter_tag})"
 
         # Long mode
         if any(c in self.long_mode_tags for c in enter_tags):
-            sell, signal_name = self.exit_long(pair, current_rate, profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_long(pair, current_rate, profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio, max_profit, max_loss, filled_entries, filled_exits, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {enter_tag})"
 
         # Trades not opened by X2
         if not any(c in (self.normal_mode_tags + self.pump_mode_tags + self.quick_mode_tags + self.rebuy_mode_tags + self.long_mode_tags) for c in enter_tags):
             # use normal mode for such trades
-            sell, signal_name = self.exit_normal(pair, current_rate, profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_normal(pair, current_rate, profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio, max_profit, max_loss, filled_entries, filled_exits, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {enter_tag})"
 
@@ -1765,6 +1755,9 @@ class NostalgiaForInfinityX2(IStrategy):
         # CTI
         dataframe['cti_20'] = pta.cti(dataframe["close"], length=20)
 
+        # EWO
+        dataframe['ewo_50_200'] = ewo(dataframe, 50, 200)
+
         # Heiken Ashi
         heikinashi = qtpylib.heikinashi(dataframe)
         dataframe['ha_open'] = heikinashi['open']
@@ -1785,6 +1778,11 @@ class NostalgiaForInfinityX2(IStrategy):
 
         # Close delta
         dataframe['close_delta'] = (dataframe['close'] - dataframe['close'].shift()).abs()
+
+        # Number of empty candles in the last 288
+        dataframe['num_empty_288'] = (dataframe['volume'] <= 0).rolling(
+            window=288,
+            min_periods=288).sum()
 
         # For sell checks
         dataframe['crossed_below_ema_12_26'] = qtpylib.crossed_below(dataframe['ema_12'], dataframe['ema_26'])
@@ -5559,6 +5557,66 @@ class NostalgiaForInfinityX2(IStrategy):
                     # Logic
                     item_buy_logic.append(dataframe['close'] < (dataframe['ema_26'] * 0.94))
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * 0.996))
+
+                # Condition #7 Normal mode.
+                if index == 7:
+                    item_buy_logic.append(dataframe['btc_pct_close_max_24_5m'] < 0.03)
+                    item_buy_logic.append(dataframe['btc_pct_close_max_72_5m'] < 0.03)
+                    item_buy_logic.append(dataframe['close_max_12'] < (dataframe['close'] * 1.2))
+                    item_buy_logic.append(dataframe['close_max_24'] < (dataframe['close'] * 1.24))
+                    item_buy_logic.append(dataframe['close_max_48'] < (dataframe['close'] * 1.3))
+                    item_buy_logic.append(dataframe['high_max_24_1h'] < (dataframe['close'] * 1.5))
+                    item_buy_logic.append(dataframe['high_max_24_4h'] < (dataframe['close'] * 1.75))
+                    item_buy_logic.append(dataframe['hl_pct_change_6_1h'] < 0.4)
+                    item_buy_logic.append(dataframe['hl_pct_change_12_1h'] < 0.5)
+                    item_buy_logic.append(dataframe['hl_pct_change_24_1h'] < 0.75)
+                    item_buy_logic.append(dataframe['hl_pct_change_48_1h'] < 0.9)
+                    item_buy_logic.append(dataframe['num_empty_288'] < 60)
+
+                    item_buy_logic.append(dataframe['cti_20_1h'] < 0.8)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] < 80.0)
+                    item_buy_logic.append(dataframe['cti_20_4h'] < 0.8)
+                    item_buy_logic.append(dataframe['rsi_14_4h'] < 80.0)
+                    item_buy_logic.append(dataframe['cti_20_1d'] < 0.8)
+                    item_buy_logic.append(dataframe['rsi_14_1d'] < 80.0)
+
+                    # item_buy_logic.append(dataframe['rsi_3'] > 16.0)
+                    # item_buy_logic.append(dataframe['rsi_3_15m'] > 16.0)
+
+                    # Logic
+                    item_buy_logic.append(dataframe['close'] < (dataframe['ema_16'] * 0.974))
+                    item_buy_logic.append(dataframe['ewo_50_200'] > 2.0)
+                    item_buy_logic.append(dataframe['rsi_14'] < 30.0)
+
+                # Condition #8 Normal mode.
+                if index == 8:
+                    item_buy_logic.append(dataframe['btc_pct_close_max_24_5m'] < 0.03)
+                    item_buy_logic.append(dataframe['btc_pct_close_max_72_5m'] < 0.03)
+                    item_buy_logic.append(dataframe['close_max_12'] < (dataframe['close'] * 1.2))
+                    item_buy_logic.append(dataframe['close_max_24'] < (dataframe['close'] * 1.24))
+                    item_buy_logic.append(dataframe['close_max_48'] < (dataframe['close'] * 1.3))
+                    item_buy_logic.append(dataframe['high_max_24_1h'] < (dataframe['close'] * 1.5))
+                    item_buy_logic.append(dataframe['high_max_24_4h'] < (dataframe['close'] * 1.75))
+                    item_buy_logic.append(dataframe['hl_pct_change_6_1h'] < 0.4)
+                    item_buy_logic.append(dataframe['hl_pct_change_12_1h'] < 0.5)
+                    item_buy_logic.append(dataframe['hl_pct_change_24_1h'] < 0.75)
+                    item_buy_logic.append(dataframe['hl_pct_change_48_1h'] < 0.9)
+                    item_buy_logic.append(dataframe['num_empty_288'] < 60)
+
+                    item_buy_logic.append(dataframe['cti_20_1h'] < 0.8)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] < 80.0)
+                    item_buy_logic.append(dataframe['cti_20_4h'] < 0.8)
+                    item_buy_logic.append(dataframe['rsi_14_4h'] < 80.0)
+                    item_buy_logic.append(dataframe['cti_20_1d'] < 0.8)
+                    item_buy_logic.append(dataframe['rsi_14_1d'] < 80.0)
+
+                    # item_buy_logic.append(dataframe['rsi_3'] > 16.0)
+                    # item_buy_logic.append(dataframe['rsi_3_15m'] > 16.0)
+
+                    # Logic
+                    item_buy_logic.append(dataframe['close'] < (dataframe['ema_16'] * 0.974))
+                    item_buy_logic.append(dataframe['ewo_50_200'] < -10.0)
+                    item_buy_logic.append(dataframe['rsi_14'] < 40.0)
 
                 # Condition #21 - Pump mode bull.
                 if index == 21:
@@ -9776,9 +9834,9 @@ class NostalgiaForInfinityX2(IStrategy):
         self._remove_profit_target(pair)
         return True
 
-    def bot_loop_start(self, **kwargs) -> None:
+    def bot_loop_start(self, current_time: datetime, **kwargs) -> None:
         if self.config["runmode"].value not in ("live", "dry_run"):
-            return super().bot_loop_start(**kwargs)
+            return super().bot_loop_start(datetime, **kwargs)
 
         if self.hold_support_enabled:
             self.load_hold_trades_config()
@@ -9954,11 +10012,11 @@ def is_resistance(row_data) -> bool:
     return result
 
 # Elliot Wave Oscillator
-def ewo(dataframe, sma1_length=5, sma2_length=35):
-    sma1 = ta.EMA(dataframe, timeperiod=sma1_length)
-    sma2 = ta.EMA(dataframe, timeperiod=sma2_length)
-    smadif = (sma1 - sma2) / dataframe['close'] * 100
-    return smadif
+def ewo(dataframe, ema1_length=5, ema2_length=35):
+    ema1 = ta.EMA(dataframe, timeperiod=ema1_length)
+    ema2 = ta.EMA(dataframe, timeperiod=ema2_length)
+    emadiff = (ema1 - ema2) / dataframe['close'] * 100.0
+    return emadiff
 
 # Chaikin Money Flow
 def chaikin_money_flow(dataframe, n=20, fillna=False) -> Series:
