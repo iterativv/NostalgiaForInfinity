@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.1"
+        return "v13.0.3"
 
     # ROI table:
     minimal_roi = {
@@ -5039,6 +5039,13 @@ class NostalgiaForInfinityX3(IStrategy):
                     item_buy_logic.append((dataframe['change_pct_4h'] < 0.08)
                                           | (dataframe['rsi_14_4h'] < 70.0)
                                           | (dataframe['close_max_48'] < (dataframe['close'] * 1.24)))
+                    item_buy_logic.append((dataframe['cti_20_15m'] < -0.9)
+                                          | (dataframe['rsi_3_15m'] > 25.0)
+                                          | (dataframe['rsi_14_15m'] < 20.0)
+                                          | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
+                                          | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
+                                          | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152))
+                                          | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.04)))
 
                     # Logic
                     item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
@@ -5615,7 +5622,7 @@ class NostalgiaForInfinityX3(IStrategy):
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < (dataframe['ema_16'] * 0.974))
-                    item_buy_logic.append(dataframe['ewo_50_200'] < -10.0)
+                    item_buy_logic.append(dataframe['ewo_50_200'] < -14.0)
                     item_buy_logic.append(dataframe['rsi_14'] < 40.0)
 
                 # Condition #21 - Pump mode bull.
