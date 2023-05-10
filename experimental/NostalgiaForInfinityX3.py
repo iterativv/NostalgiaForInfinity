@@ -1081,7 +1081,7 @@ class NostalgiaForInfinityX3(IStrategy):
                       trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
         # Stoploss doom
         if (
-                profit_stake < -(filled_entries[0].cost * 0.18)
+                profit_stake < -(filled_entries[0].cost * 0.7)
         ):
             return True, f'exit_{mode_name}_stoploss'
 
