@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.7"
+        return "v13.0.8"
 
     # ROI table:
     minimal_roi = {
@@ -139,13 +139,14 @@ class NostalgiaForInfinityX3(IStrategy):
     position_adjustment_enable = True
 
     # Grinding feature
-    grinding_enable = False
+    grinding_enable = True
+    stake_grinding_mode_multiplier = 0.5
     # Grinding stakes
-    grinding_stakes = [0.25, 0.25, 0.25, 0.25, 0.25]
+    grinding_stakes = [0.25, 0.25, 0.25, 0.25, 0.25, 0.25]
     grinding_stakes_alt_1 = [0.5, 0.5]
     grinding_stakes_alt_2 = [0.75]
     # Current total profit
-    grinding_thresholds = [-0.04, -0.08, -0.1, -0.12, -0.14]
+    grinding_thresholds = [-0.04, -0.08, -0.1, -0.12, -0.14, -0.16]
     grinding_thresholds_alt_1 = [-0.06, -0.12]
     grinding_thresholds_alt_2 = [-0.06]
 
@@ -1192,6 +1193,10 @@ class NostalgiaForInfinityX3(IStrategy):
                             **kwargs) -> float:
         if (self.position_adjustment_enable == True):
             enter_tags = entry_tag.split()
+            # For grinding
+            if (self.grinding_enable):
+                if (any(c in (self.normal_mode_tags + self.pump_mode_tags  + self.quick_mode_tags + self.long_mode_tags) for c in enter_tags)):
+                    return proposed_stake * self.stake_grinding_mode_multiplier
             # Rebuy mode
             if all(c in self.rebuy_mode_tags for c in enter_tags):
                 return proposed_stake * self.stake_rebuy_mode_multiplier
