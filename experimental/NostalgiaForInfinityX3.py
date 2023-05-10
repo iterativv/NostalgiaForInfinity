@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.1"
+        return "v13.0.2"
 
     # ROI table:
     minimal_roi = {
@@ -5615,7 +5615,7 @@ class NostalgiaForInfinityX3(IStrategy):
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < (dataframe['ema_16'] * 0.974))
-                    item_buy_logic.append(dataframe['ewo_50_200'] < -10.0)
+                    item_buy_logic.append(dataframe['ewo_50_200'] < -14.0)
                     item_buy_logic.append(dataframe['rsi_14'] < 40.0)
 
                 # Condition #21 - Pump mode bull.
