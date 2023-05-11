@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.16"
+        return "v13.0.17"
 
     # ROI table:
     minimal_roi = {
@@ -108,7 +108,7 @@ class NostalgiaForInfinityX3(IStrategy):
     ignore_roi_if_entry_signal = True
 
     # Number of candles the strategy requires before producing valid signals
-    startup_candle_count: int = 1200
+    startup_candle_count: int = 800
 
     # Normal mode tags
     normal_mode_tags = ['force_entry', '1', '2', '3', '4', '5', '6', '7', '8']
