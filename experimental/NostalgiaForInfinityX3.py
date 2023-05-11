@@ -150,7 +150,7 @@ class NostalgiaForInfinityX3(IStrategy):
     # Current total profit
     grinding_thresholds = [-0.03, -0.05, -0.08, -0.1, -0.14, -0.16, -0.18, -0.2]
     grinding_thresholds_alt_1 = [-0.06, -0.12]
-    grinding_thresholds_alt_2 = [-0.06]
+    grinding_thresholds_alt_2 = [-0.08]
 
     stake_rebuy_mode_multiplier = 0.33
     pa_rebuy_mode_max = 2
