@@ -141,6 +141,8 @@ class NostalgiaForInfinityX3(IStrategy):
     # Grinding feature
     grinding_enable = True
     stake_grinding_mode_multiplier = 0.5
+    stake_grinding_mode_multiplier_alt_1 = 0.75
+    stake_grinding_mode_multiplier_alt_2 = 1.0
     # Grinding stakes
     grinding_stakes = [0.25, 0.25, 0.25, 0.25, 0.25, 0.25]
     grinding_stakes_alt_1 = [0.5, 0.5]
@@ -1196,7 +1198,12 @@ class NostalgiaForInfinityX3(IStrategy):
             # For grinding
             if (self.grinding_enable):
                 if (any(c in (self.normal_mode_tags + self.pump_mode_tags  + self.quick_mode_tags + self.long_mode_tags) for c in enter_tags)):
-                    return proposed_stake * self.stake_grinding_mode_multiplier
+                    stake =  proposed_stake * self.stake_grinding_mode_multiplier
+                    if (stake < min_stake):
+                        stake =  proposed_stake * self.stake_grinding_mode_multiplier_alt_1
+                    if (stake < min_stake):
+                        stake =  proposed_stake * self.stake_grinding_mode_multiplier_alt_2
+                    return stake
             # Rebuy mode
             if all(c in self.rebuy_mode_tags for c in enter_tags):
                 return proposed_stake * self.stake_rebuy_mode_multiplier
