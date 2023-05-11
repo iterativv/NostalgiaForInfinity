@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.16"
+        return "v13.0.17"
 
     # ROI table:
     minimal_roi = {
@@ -108,7 +108,7 @@ class NostalgiaForInfinityX3(IStrategy):
     ignore_roi_if_entry_signal = True
 
     # Number of candles the strategy requires before producing valid signals
-    startup_candle_count: int = 1200
+    startup_candle_count: int = 800
 
     # Normal mode tags
     normal_mode_tags = ['force_entry', '1', '2', '3', '4', '5', '6', '7', '8']
@@ -141,14 +141,16 @@ class NostalgiaForInfinityX3(IStrategy):
     # Grinding feature
     grinding_enable = True
     stake_grinding_mode_multiplier = 0.5
+    stake_grinding_mode_multiplier_alt_1 = 0.75
+    stake_grinding_mode_multiplier_alt_2 = 1.0
     # Grinding stakes
-    grinding_stakes = [0.25, 0.25, 0.25, 0.25, 0.25, 0.25]
+    grinding_stakes = [0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25]
     grinding_stakes_alt_1 = [0.5, 0.5]
     grinding_stakes_alt_2 = [0.75]
     # Current total profit
-    grinding_thresholds = [-0.04, -0.08, -0.1, -0.12, -0.14, -0.16]
+    grinding_thresholds = [-0.03, -0.05, -0.08, -0.1, -0.14, -0.16, -0.18, -0.2]
     grinding_thresholds_alt_1 = [-0.06, -0.12]
-    grinding_thresholds_alt_2 = [-0.06]
+    grinding_thresholds_alt_2 = [-0.08]
 
     stake_rebuy_mode_multiplier = 0.33
     pa_rebuy_mode_max = 2
@@ -1196,7 +1198,12 @@ class NostalgiaForInfinityX3(IStrategy):
             # For grinding
             if (self.grinding_enable):
                 if (any(c in (self.normal_mode_tags + self.pump_mode_tags  + self.quick_mode_tags + self.long_mode_tags) for c in enter_tags)):
-                    return proposed_stake * self.stake_grinding_mode_multiplier
+                    stake =  proposed_stake * self.stake_grinding_mode_multiplier
+                    if (stake < min_stake):
+                        stake =  proposed_stake * self.stake_grinding_mode_multiplier_alt_1
+                    if (stake < min_stake):
+                        stake =  proposed_stake * self.stake_grinding_mode_multiplier_alt_2
+                    return stake
             # Rebuy mode
             if all(c in self.rebuy_mode_tags for c in enter_tags):
                 return proposed_stake * self.stake_rebuy_mode_multiplier
