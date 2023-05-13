@@ -4236,6 +4236,16 @@ class NostalgiaForInfinityX3(IStrategy):
                     # Protections
                     item_buy_logic.append(dataframe['btc_pct_close_max_24_5m'] < 0.03)
                     item_buy_logic.append(dataframe['btc_pct_close_max_72_5m'] < 0.03)
+                    item_buy_logic.append(dataframe['close_max_12'] < (dataframe['close'] * 1.2))
+                    item_buy_logic.append(dataframe['close_max_24'] < (dataframe['close'] * 1.24))
+                    item_buy_logic.append(dataframe['close_max_48'] < (dataframe['close'] * 1.3))
+                    item_buy_logic.append(dataframe['high_max_24_1h'] < (dataframe['close'] * 1.5))
+                    item_buy_logic.append(dataframe['high_max_24_4h'] < (dataframe['close'] * 1.75))
+                    item_buy_logic.append(dataframe['hl_pct_change_6_1h'] < 0.4)
+                    item_buy_logic.append(dataframe['hl_pct_change_12_1h'] < 0.5)
+                    item_buy_logic.append(dataframe['hl_pct_change_24_1h'] < 0.75)
+                    item_buy_logic.append(dataframe['hl_pct_change_48_1h'] < 0.9)
+                    item_buy_logic.append(dataframe['num_empty_288'] < 60)
 
                     item_buy_logic.append((dataframe['not_downtrend_1h'])
                                           | (dataframe['cti_20_1h'] < -0.5)
