@@ -5800,6 +5800,10 @@ class NostalgiaForInfinityX3(IStrategy):
                                           | (dataframe['cti_20_4h'] < -0.5)
                                           | (dataframe['rsi_14_4h'] < 40.0)
                                           | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152)))
+                    item_buy_logic.append((dataframe['change_pct_1d'] > -0.08)
+                                          | (dataframe['change_pct_1d'].shift(288) < 0.08)
+                                          | (dataframe['cti_20_1d'] < 0.5)
+                                          | (dataframe['rsi_14_1d'].shift(288) < 70.0))
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < (dataframe['ema_16'] * 0.974))
