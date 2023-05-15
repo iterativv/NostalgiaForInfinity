@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.27"
+        return "v13.0.28"
 
     # ROI table:
     minimal_roi = {
@@ -131,6 +131,8 @@ class NostalgiaForInfinityX3(IStrategy):
     # 6: u_e ema % Bull, 7: u_e ema % Bear, 8: u_e RSI diff Bull, 9: u_e RSI diff Bear.
     # 10: enable Doom Bull, 11: enable Doom Bear, 12: enable u_e Bull, 13: enable u_e Bear.
     stop_thresholds = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 24.0, 24.0, False, False, True, True]
+    # Based on the the first entry (regardless of rebuys)
+    stop_threshold = 0.7
 
     # Rebuy mode minimum number of free slots
     rebuy_mode_min_free_slots = 2
@@ -219,16 +221,8 @@ class NostalgiaForInfinityX3(IStrategy):
         if (('exit_profit_only' in self.config and self.config['exit_profit_only'])
                 or ('sell_profit_only' in self.config and self.config['sell_profit_only'])):
             self.exit_profit_only = True
-        if ('stop_thresholds_normal' in self.config):
-            self.stop_thresholds_normal = self.config['stop_thresholds_normal']
-        if ('stop_thresholds_pump' in self.config):
-            self.stop_thresholds_pump = self.config['stop_thresholds_pump']
-        if ('stop_thresholds_quick' in self.config):
-            self.stop_thresholds_quick = self.config['stop_thresholds_quick']
-        if ('stop_thresholds_rebuy' in self.config):
-            self.stop_thresholds_rebuy = self.config['stop_thresholds_rebuy']
-        if ('stop_thresholds_long' in self.config):
-            self.stop_thresholds_long = self.config['stop_thresholds_long']
+        if ('stop_threshold' in self.config):
+            self.stop_threshold = self.config['stop_threshold']
         if ('profit_max_thresholds' in self.config):
             self.profit_max_thresholds = self.config['profit_max_thresholds']
         if ('grinding_enable' in self.config):
@@ -1084,7 +1078,7 @@ class NostalgiaForInfinityX3(IStrategy):
                       trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
         # Stoploss doom
         if (
-                profit_stake < -(filled_entries[0].cost * 0.7)
+                profit_stake < -(filled_entries[0].cost * self.stop_threshold)
         ):
             return True, f'exit_{mode_name}_stoploss'
 
