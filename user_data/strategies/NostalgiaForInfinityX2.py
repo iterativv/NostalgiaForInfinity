@@ -65,7 +65,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.542"
+        return "v12.0.543"
 
     # ROI table:
     minimal_roi = {
@@ -1509,6 +1509,7 @@ class NostalgiaForInfinityX2(IStrategy):
 
         # Max highs
         informative_1d['high_max_6'] = informative_1d['high'].rolling(6).max()
+        informative_1d['high_max_12'] = informative_1d['high'].rolling(12).max()
 
         # Performance logging
         # -----------------------------------------------------------------------------------------
@@ -5723,6 +5724,9 @@ class NostalgiaForInfinityX2(IStrategy):
                                           | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
                                           | (dataframe['ema_200_4h'] > dataframe['ema_200_4h'].shift(1152))
                                           | (dataframe['ema_200_1d'] > dataframe['ema_200_1d'].shift(1152)))
+                    item_buy_logic.append((dataframe['not_downtrend_15m'])
+                                          | (dataframe['rsi_3_15m'] > 3.0)
+                                          | (dataframe['high_max_12_1d'] < (dataframe['close'] * 1.5)))
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < (dataframe['ema_26'] * 0.94))
@@ -7998,6 +8002,8 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append(dataframe['close_max_24'] < (dataframe['close'] * 1.24))
                     item_buy_logic.append(dataframe['close_max_48'] < (dataframe['close'] * 1.3))
                     item_buy_logic.append(dataframe['high_max_24_1h'] < (dataframe['close'] * 1.5))
+                    item_buy_logic.append(dataframe['high_max_24_4h'] < (dataframe['close'] * 1.75))
+                    item_buy_logic.append(dataframe['hl_pct_change_6_1h'] < 0.4)
                     item_buy_logic.append(dataframe['hl_pct_change_12_1h'] < 0.5)
                     item_buy_logic.append(dataframe['hl_pct_change_24_1h'] < 0.75)
                     item_buy_logic.append(dataframe['hl_pct_change_48_1h'] < 0.9)
@@ -8423,6 +8429,9 @@ class NostalgiaForInfinityX2(IStrategy):
                                           | (dataframe['top_wick_pct_4h'] < 0.04)
                                           | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(576))
                                           | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.03)))
+                    item_buy_logic.append((dataframe['not_downtrend_15m'])
+                                          | (dataframe['rsi_3_15m'] > 3.0)
+                                          | (dataframe['high_max_12_1d'] < (dataframe['close'] * 1.5)))
 
                     # Logic
                     item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
