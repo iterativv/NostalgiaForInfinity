@@ -1509,6 +1509,7 @@ class NostalgiaForInfinityX2(IStrategy):
 
         # Max highs
         informative_1d['high_max_6'] = informative_1d['high'].rolling(6).max()
+        informative_1d['high_max_12'] = informative_1d['high'].rolling(12).max()
 
         # Performance logging
         # -----------------------------------------------------------------------------------------
