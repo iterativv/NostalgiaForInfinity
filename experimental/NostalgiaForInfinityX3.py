@@ -1518,6 +1518,7 @@ class NostalgiaForInfinityX3(IStrategy):
         # Indicators
         # -----------------------------------------------------------------------------------------
         # RSI
+        informative_4h['rsi_3'] = ta.RSI(informative_4h, timeperiod=3, fillna=True)
         informative_4h['rsi_14'] = ta.RSI(informative_4h, timeperiod=14, fillna=True)
 
         informative_4h['rsi_14_max_6'] = informative_4h['rsi_14'].rolling(6).max()
@@ -1695,6 +1696,12 @@ class NostalgiaForInfinityX3(IStrategy):
 
         # SMA
         informative_15m['sma_200'] = ta.SMA(informative_15m, timeperiod=200)
+
+        # BB - 20 STD2
+        bollinger = qtpylib.bollinger_bands(qtpylib.typical_price(informative_15m), window=20, stds=2)
+        informative_15m['bb20_2_low'] = bollinger['lower']
+        informative_15m['bb20_2_mid'] = bollinger['mid']
+        informative_15m['bb20_2_upp'] = bollinger['upper']
 
         # CTI
         informative_15m['cti_20'] = pta.cti(informative_15m["close"], length=20)
@@ -1990,7 +1997,7 @@ class NostalgiaForInfinityX3(IStrategy):
                 '1d':   [f"{s}_{info_timeframe}" for s in ['date', 'open', 'high', 'low', 'close', 'volume']],
                 '4h':   [f"{s}_{info_timeframe}" for s in ['date', 'open', 'high', 'low', 'close', 'volume']],
                 '1h':   [f"{s}_{info_timeframe}" for s in ['date', 'open', 'high', 'low', 'close', 'volume']],
-                '15m':  [f"{s}_{info_timeframe}" for s in ['date', 'open', 'high', 'low', 'close', 'volume']]
+                '15m':  [f"{s}_{info_timeframe}" for s in ['date', 'high', 'low', 'volume']]
             }.get(info_timeframe,[f"{s}_{info_timeframe}" for s in ['date', 'open', 'high', 'low', 'close', 'volume']])
             dataframe.drop(columns=dataframe.columns.intersection(drop_columns), inplace=True)
 
