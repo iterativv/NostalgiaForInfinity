@@ -1667,7 +1667,7 @@ class NostalgiaForInfinityX3(IStrategy):
 
         # SMA
         informative_1h['sma_12'] = ta.SMA(informative_1h, timeperiod=12)
-        informative_1h['sma_26'] = ta.SMA(informative_1h, timeperiod=21)
+        informative_1h['sma_21'] = ta.SMA(informative_1h, timeperiod=21)
         informative_1h['sma_26'] = ta.SMA(informative_1h, timeperiod=26)
         informative_1h['sma_50'] = ta.SMA(informative_1h, timeperiod=50)
         informative_1h['sma_100'] = ta.SMA(informative_1h, timeperiod=100)
@@ -7594,7 +7594,7 @@ class NostalgiaForInfinityX3(IStrategy):
                     item_buy_logic.append(dataframe['cti_20'] < -0.9)
                     item_buy_logic.append(dataframe['rsi_14'] < 50.0)
 
-                # Condition #40 - Pump mode bull.
+                # Condition #40 - Pump mode bull. Added by https://github.com/Mandark-droid
                 if index == 40:
                     # Protections
                     item_buy_logic.append(dataframe['btc_pct_close_max_24_5m'] < 0.03)
@@ -7746,8 +7746,8 @@ class NostalgiaForInfinityX3(IStrategy):
                     #item_buy_logic.append(dataframe['close'] > dataframe['zlsma_1h'])
                     item_buy_logic.append((qtpylib.crossed_above(dataframe['close'], dataframe['zlsma_1h'])))
                     #item_buy_logic.append(dataframe['close'] > (dataframe['bb20_2_mid_1h']))
-                    item_buy_logic.append(dataframe['close'] > (dataframe['ema_21_1h']))
-                    item_buy_logic.append(dataframe['close'] > (dataframe['sma_21_1h']))
+                    #item_buy_logic.append(dataframe['close'] > (dataframe['ema_21_1h']))
+                    #item_buy_logic.append(dataframe['close'] > (dataframe['sma_21_1h']))
                     item_buy_logic.append(dataframe['ema_26'] > (dataframe['ema_12']))
                     #item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['close'] / 100))
 
