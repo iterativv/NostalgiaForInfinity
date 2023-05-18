@@ -65,7 +65,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.544"
+        return "v12.0.545"
 
     # ROI table:
     minimal_roi = {
@@ -1576,12 +1576,6 @@ class NostalgiaForInfinityX2(IStrategy):
         informative_4h['high_max_36'] = informative_4h['high'].rolling(36).max()
         informative_4h['high_max_48'] = informative_4h['high'].rolling(48).max()
 
-        informative_4h['pct_change_high_max_1_12'] = (informative_4h['high'] - informative_4h['high_max_12']) / informative_4h['high_max_12']
-        informative_4h['pct_change_high_max_3_12'] = (informative_4h['high_max_3'] - informative_4h['high_max_12']) / informative_4h['high_max_12']
-        informative_4h['pct_change_high_max_3_24'] = (informative_4h['high_max_3'] - informative_4h['high_max_24']) / informative_4h['high_max_24']
-        informative_4h['pct_change_high_max_3_36'] = (informative_4h['high_max_3'] - informative_4h['high_max_36']) / informative_4h['high_max_36']
-        informative_4h['pct_change_high_max_3_48'] = (informative_4h['high_max_3'] - informative_4h['high_max_48']) / informative_4h['high_max_48']
-
         # Volume
         informative_4h['volume_mean_factor_6'] = informative_4h['volume'] / informative_4h['volume'].rolling(6).mean()
 
@@ -1669,10 +1663,6 @@ class NostalgiaForInfinityX2(IStrategy):
         informative_1h['high_max_24'] = informative_1h['high'].rolling(24).max()
         informative_1h['high_max_36'] = informative_1h['high'].rolling(36).max()
         informative_1h['high_max_48'] = informative_1h['high'].rolling(48).max()
-
-        informative_1h['pct_change_high_max_3_12'] = (informative_1h['high_max_3'] - informative_1h['high_max_12']) / informative_1h['high_max_12']
-        informative_1h['pct_change_high_max_6_12'] = (informative_1h['high_max_6'] - informative_1h['high_max_12']) / informative_1h['high_max_12']
-        informative_1h['pct_change_high_max_6_24'] = (informative_1h['high_max_6'] - informative_1h['high_max_24']) / informative_1h['high_max_24']
 
         # Volume
         informative_1h['volume_mean_factor_12'] = informative_1h['volume'] / informative_1h['volume'].rolling(12).mean()
