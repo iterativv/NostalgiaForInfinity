@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.33"
+        return "v13.0.34"
 
     # ROI table:
     minimal_roi = {
@@ -1407,7 +1407,7 @@ class NostalgiaForInfinityX3(IStrategy):
                                 else:
                                     # Current order is sell partial fill
                                     return None
-                    elif (count_of_entries > (count_of_full_exits + 1)) and (num_buys > num_sells) and (order.ft_order_side == "buy"):
+                    elif (count_of_entries > (count_of_full_exits + 0)) and (order is not filled_orders[0]) and (num_buys > num_sells) and (order.ft_order_side == "buy"):
                         buy_order = order
                         grind_profit = (exit_rate - buy_order.average) / buy_order.average
                         if (
