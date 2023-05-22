@@ -7857,7 +7857,7 @@ class NostalgiaForInfinityX3(IStrategy):
                     #item_buy_logic.append(dataframe['close'] > (dataframe['ema_21_1h']))
                     #item_buy_logic.append(dataframe['close'] > (dataframe['sma_21_1h']))
                     item_buy_logic.append(dataframe['ema_26'] > (dataframe['ema_12']))
-                    item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
+                    #item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
 
 
                 # Condition #41 - Quick mode bull.
