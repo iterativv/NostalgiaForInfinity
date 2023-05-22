@@ -1423,7 +1423,7 @@ class NostalgiaForInfinityX3(IStrategy):
                                 # temporary
                                 and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2023, 5, 17) or is_backtest)
                         ):
-                            sell_amount = buy_order.filled * exit_rate
+                            sell_amount = buy_order.filled * exit_rate * 0.99
                             self.dp.send_msg(f"Grinding stop exit [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount}| Coin amount: {buy_order.filled} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%")
                             return -sell_amount
                         break
