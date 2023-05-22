@@ -1657,7 +1657,7 @@ class NostalgiaForInfinityX3(IStrategy):
         longStopPrev = longStop.shift(1).fillna(longStop)
         longStop = close.shift(1).where(close.shift(1) > longStopPrev, longStop)
 
-        shortStop = (low.rolling(22).min() if self.useClose else low.rolling(22).apply(
+        shortStop = (low.rolling(22).min() if True else low.rolling(22).apply(
             lambda x: x[:-1].min())) + atr
         shortStopPrev = shortStop.shift(1).fillna(shortStop)
         shortStop = close.shift(1).where(close.shift(1) < shortStopPrev, shortStop)
