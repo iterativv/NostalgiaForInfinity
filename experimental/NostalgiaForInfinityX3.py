@@ -167,13 +167,7 @@ class NostalgiaForInfinityX3(IStrategy):
 
     #############################################################
     # Buy side configuration
-    atr_period = 22
-    atr_multiplier = 3.0
-    showLabels = True
-    useClose = True
-    highlightState = True
-    zlsma_length = 50
-    zlsma_offset = 0
+   
     buy_params = {
         # Enable/Disable conditions
         # -------------------------------------------------------
@@ -1640,8 +1634,8 @@ class NostalgiaForInfinityX3(IStrategy):
         # Indicators
         # -----------------------------------------------------------------------------------------
          # Calculate the Linear Regression
-        lsma = pta.linreg(informative_1h['close'], length=self.zlsma_length, offset=self.zlsma_offset)
-        lsma2 = pta.linreg(lsma, length=self.zlsma_length, offset=self.zlsma_offset)
+        lsma = pta.linreg(informative_1h['close'], length=50, offset=0)
+        lsma2 = pta.linreg(lsma, length=50, offset=0)
         # Calculate the Zero Lag SMA
         if lsma is not None and lsma2 is not None:
             eq = lsma - lsma2
@@ -1659,12 +1653,12 @@ class NostalgiaForInfinityX3(IStrategy):
         close = informative_1h['close']  # Replace with your close data
         # atr = ta.ATR(high, low, close, self.atr_period) * self.atr_multiplier
         atr = ta.ATR(high, low, close, 22) * 3
-        longStop = (high.rolling(self.atr_period).max() if self.useClose else high.rolling(self.atr_period).apply(
+        longStop = (high.rolling(22).max() if True else high.rolling(22).apply(
             lambda x: x[:-1].max())) - atr
         longStopPrev = longStop.shift(1).fillna(longStop)
         longStop = close.shift(1).where(close.shift(1) > longStopPrev, longStop)
 
-        shortStop = (low.rolling(self.atr_period).min() if self.useClose else low.rolling(self.atr_period).apply(
+        shortStop = (low.rolling(22).min() if self.useClose else low.rolling(22).apply(
             lambda x: x[:-1].min())) + atr
         shortStopPrev = shortStop.shift(1).fillna(shortStop)
         shortStop = close.shift(1).where(close.shift(1) < shortStopPrev, shortStop)
@@ -1680,17 +1674,17 @@ class NostalgiaForInfinityX3(IStrategy):
         longStopPlot = longStop.where(informative_1h['dir'] == 1, None)
         buySignal = (informative_1h['dir'] == 1) & (informative_1h['dir'].shift(1) == -1)
         buySignalPlot = longStop.where(buySignal, None)
-        buyLabel = pd.Series(['Buy' if x else '' for x in buySignal]).where(self.showLabels & buySignal, None).any()
+        buyLabel = pd.Series(['Buy' if x else '' for x in buySignal]).where(True & buySignal, None).any()
 
         shortStopPlot = shortStop.where(informative_1h['dir'] == -1, None)
         sellSignal = (informative_1h['dir'] == -1) & (informative_1h['dir'].shift(1) == 1)
         sellSignalPlot = shortStop.where(sellSignal, None)
-        sellLabel = pd.Series(['Sell' if x else '' for x in sellSignal]).where(self.showLabels & sellSignal, None).any()
+        sellLabel = pd.Series(['Sell' if x else '' for x in sellSignal]).where(True & sellSignal, None).any()
 
         midPricePlot = close
 
-        longFillColor = longColor if self.highlightState and (informative_1h['dir'] == 1).any() else None
-        shortFillColor = shortColor if self.highlightState and (informative_1h['dir'] == -1).any() else None
+        longFillColor = longColor if True and (informative_1h['dir'] == 1).any() else None
+        shortFillColor = shortColor if True and (informative_1h['dir'] == -1).any() else None
 
         # RSI
         informative_1h['rsi_3'] = ta.RSI(informative_1h, timeperiod=3)
