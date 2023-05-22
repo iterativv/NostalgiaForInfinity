@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.48"
+        return "v13.0.50"
 
     # ROI table:
     minimal_roi = {
@@ -1374,6 +1374,17 @@ class NostalgiaForInfinityX3(IStrategy):
                                     and (last_candle['rsi_3_1h'] > 10.0)
                                     and (last_candle['rsi_3_4h'] > 20.0)
                                 )
+                                or
+                                (
+                                    (last_candle['rsi_14'] < 50.0)
+                                    and (last_candle['rsi_3'] > 5.0)
+                                    and (last_candle['cti_20'] > -0.5)
+                                    and (previous_candle['cti_20'] < -0.5)
+                                    and (last_candle['rsi_3_15m'] > 10.0)
+                                    and (last_candle['cti_20_1h'] < 0.8)
+                                    and (last_candle['rsi_3_1h'] > 30.0)
+                                    and (last_candle['rsi_3_4h'] > 30.0)
+                                )
                             )
                     ):
                         buy_amount = slice_amount * grinding_stakes[i]
@@ -1429,7 +1440,7 @@ class NostalgiaForInfinityX3(IStrategy):
                                 # temporary
                                 and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2023, 5, 17) or is_backtest)
                         ):
-                            sell_amount = buy_order.filled * exit_rate
+                            sell_amount = buy_order.filled * exit_rate * 0.99
                             self.dp.send_msg(f"Grinding stop exit [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount}| Coin amount: {buy_order.filled} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%")
                             return -sell_amount
                         break
@@ -10270,6 +10281,15 @@ class NostalgiaForInfinityX3(IStrategy):
                                           | (dataframe['rsi_14_4h'] < 40.0)
                                           | (dataframe['ema_200_dec_24_4h'] == False)
                                           | (dataframe['ema_200_dec_4_1d'] == False))
+                    item_buy_logic.append((dataframe['not_downtrend_15m'])
+                                          | (dataframe['not_downtrend_1h'])
+                                          | (dataframe['rsi_14_15m'] < 30.0)
+                                          | (dataframe['rsi_3_15m'] > 20.0)
+                                          | (dataframe['cti_20_1h'] < -0.5)
+                                          | (dataframe['rsi_14_1h'] < 40.0)
+                                          | (dataframe['rsi_14_4h'] < 40.0)
+                                          | (dataframe['ema_200_dec_48_1h'] == False)
+                                          | (dataframe['ema_200_dec_24_4h'] == False))
 
                     # Logic
                     item_buy_logic.append(dataframe['bb20_2_width_1h'] > 0.132)
