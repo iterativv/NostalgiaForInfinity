@@ -21,13 +21,13 @@
             "min_rate_of_change": 0.03,
             "refresh_period": 1800
         },
-        {
-            "method": "VolatilityFilter",
-            "lookback_days": 3,
-            "min_volatility": 0.01,
-            "max_volatility": 0.75,
-            "refresh_period": 43200
-        },
+        // {
+        //     "method": "VolatilityFilter",
+        //     "lookback_days": 3,
+        //     "min_volatility": 0.01,
+        //     "max_volatility": 0.75,
+        //     "refresh_period": 43200
+        // },
         {
             "method": "VolumePairList",
             "number_assets": 75,
