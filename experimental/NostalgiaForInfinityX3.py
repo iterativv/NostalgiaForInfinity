@@ -1359,17 +1359,17 @@ class NostalgiaForInfinityX3(IStrategy):
                                 )
                                 or
                                 (
-                                    (last_candle['rsi_14'] < 36.0)
+                                    (last_candle['rsi_14'] < 32.0)
                                     and (last_candle['rsi_3'] > 5.0)
                                     and (last_candle['ha_close'] > last_candle['ha_open'])
                                     and (last_candle['rsi_3_15m'] > 5.0)
                                     and (last_candle['cti_20_1h'] < 0.8)
-                                    and (last_candle['rsi_3_1h'] > 10.0)
-                                    and (last_candle['rsi_3_4h'] > 20.0)
+                                    and (last_candle['rsi_3_1h'] > 30.0)
+                                    and (last_candle['rsi_3_4h'] > 30.0)
                                 )
                                 or
                                 (
-                                    (last_candle['rsi_14'] < 50.0)
+                                    (last_candle['rsi_14'] < 40.0)
                                     and (last_candle['rsi_3'] > 5.0)
                                     and (last_candle['cti_20'] > -0.5)
                                     and (previous_candle['cti_20'] < -0.5)
