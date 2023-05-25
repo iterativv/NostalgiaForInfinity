@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.54"
+        return "v13.0.55"
 
     # ROI table:
     minimal_roi = {
@@ -1076,9 +1076,12 @@ class NostalgiaForInfinityX3(IStrategy):
                       filled_entries, filled_exits,
                       last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5,
                       trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
+        is_backtest = self.dp.runmode.value == 'backtest'
         # Stoploss doom
         if (
                 profit_stake < -(filled_entries[0].cost * self.stop_threshold)
+                # temporary
+                and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2023, 5, 17) or is_backtest)
         ):
             return True, f'exit_{mode_name}_stoploss'
 
@@ -1375,6 +1378,16 @@ class NostalgiaForInfinityX3(IStrategy):
                                     and (previous_candle['cti_20'] < -0.5)
                                     and (last_candle['rsi_3_15m'] > 10.0)
                                     and (last_candle['cti_20_1h'] < 0.8)
+                                    and (last_candle['rsi_3_1h'] > 30.0)
+                                    and (last_candle['rsi_3_4h'] > 30.0)
+                                )
+                                or
+                                (
+                                    (last_candle['rsi_14'] < 32.0)
+                                    and (last_candle['rsi_3'] > 5.0)
+                                    and (last_candle['ema_12'] < last_candle['ema_26'])
+                                    and (last_candle['rsi_3_15m'] > 10.0)
+                                    and (last_candle['cti_20_1h'] < -0.0)
                                     and (last_candle['rsi_3_1h'] > 30.0)
                                     and (last_candle['rsi_3_4h'] > 30.0)
                                 )
