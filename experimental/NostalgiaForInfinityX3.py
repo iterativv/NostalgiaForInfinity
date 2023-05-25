@@ -1294,7 +1294,7 @@ class NostalgiaForInfinityX3(IStrategy):
             # Stop init buy
             if (
                     (
-                        (slice_profit < self.grinding_stop_init)
+                        (profit_current_stake_ratio < self.grinding_stop_init)
                         and (count_of_entries == 1)
                         and (count_of_exits == 0)
                         # temporary
