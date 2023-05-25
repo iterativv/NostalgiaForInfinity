@@ -145,10 +145,11 @@ class NostalgiaForInfinityX3(IStrategy):
     stake_grinding_mode_multiplier = 1.0
     stake_grinding_mode_multiplier_alt_1 = 1.0
     stake_grinding_mode_multiplier_alt_2 = 1.0
-
     # Grinding stop thresholds
     grinding_stop_init = -0.05
     grinding_stop_grinds = -0.05
+    # Grinding take profit threshold
+    grinding_profit_threshold = 0.012
     # Grinding stakes
     grinding_stakes = [0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25]
     grinding_stakes_alt_1 = [0.5, 0.5, 0.5]
@@ -1447,7 +1448,7 @@ class NostalgiaForInfinityX3(IStrategy):
                         buy_order = order
                         grind_profit = (exit_rate - buy_order.average) / buy_order.average
                         if (
-                                (grind_profit > 0.012)
+                                (grind_profit > self.grinding_profit_threshold)
                         ):
                             sell_amount = buy_order.filled * exit_rate
                             self.dp.send_msg(f"Grinding exit [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount}| Coin amount: {buy_order.filled} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%")
