@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.56"
+        return "v13.0.57"
 
     # ROI table:
     minimal_roi = {
@@ -150,7 +150,7 @@ class NostalgiaForInfinityX3(IStrategy):
     grinding_stakes_alt_1 = [0.5, 0.5, 0.5]
     grinding_stakes_alt_2 = [0.75, 0.75]
     # Current total profit
-    grinding_thresholds = [-0.03, -0.05, -0.07, -0.09, -0.14, -0.16, -0.18, -0.2]
+    grinding_thresholds = [-0.05, -0.06, -0.08, -0.09, -0.14, -0.16, -0.18, -0.2]
     grinding_thresholds_alt_1 = [-0.06, -0.12, -0.18]
     grinding_thresholds_alt_2 = [-0.08, -0.18]
 
@@ -1452,7 +1452,7 @@ class NostalgiaForInfinityX3(IStrategy):
                                 # temporary
                                 and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2023, 5, 17) or is_backtest)
                         ):
-                            sell_amount = buy_order.filled * exit_rate * 0.99
+                            sell_amount = buy_order.filled * exit_rate * 0.999
                             self.dp.send_msg(f"Grinding stop exit [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount}| Coin amount: {buy_order.filled} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%")
                             return -sell_amount
                         break
