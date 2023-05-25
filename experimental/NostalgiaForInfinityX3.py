@@ -1077,9 +1077,12 @@ class NostalgiaForInfinityX3(IStrategy):
                       filled_entries, filled_exits,
                       last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5,
                       trade: 'Trade', current_time: 'datetime', buy_tag) -> tuple:
+        is_backtest = self.dp.runmode.value == 'backtest'
         # Stoploss doom
         if (
                 profit_stake < -(filled_entries[0].cost * self.stop_threshold)
+                # temporary
+                and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2023, 5, 17) or is_backtest)
         ):
             return True, f'exit_{mode_name}_stoploss'
 
