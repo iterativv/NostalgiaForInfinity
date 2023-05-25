@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.58"
+        return "v13.0.59"
 
     # ROI table:
     minimal_roi = {
@@ -1323,7 +1323,7 @@ class NostalgiaForInfinityX3(IStrategy):
             for i in range(grinding_parts):
                 if (current_stake_amount < stake_amount_threshold):
                     if (
-                            (profit_current_stake_ratio < grinding_thresholds[i])
+                            (profit_current_stake_ratio < (min(self.grinding_stop_init, grinding_thresholds[i]) if (count_of_entries == 1 and count_of_exits == 0) else grinding_thresholds[i]))
                             and
                             (
                                 (last_candle['close_max_12'] < (last_candle['close'] * 1.1))
