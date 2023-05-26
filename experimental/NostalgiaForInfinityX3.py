@@ -1335,7 +1335,7 @@ class NostalgiaForInfinityX3(IStrategy):
                             )
                             and
                             (
-                                (current_time - timedelta(minutes=30) > filled_entries[-1].order_filled_utc)
+                                (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
                                 or (slice_profit_entry < -0.01)
                             )
                             and
