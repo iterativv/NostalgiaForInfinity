@@ -1832,6 +1832,9 @@ class NostalgiaForInfinityX3(IStrategy):
         # CTI
         dataframe['cti_20'] = pta.cti(dataframe["close"], length=20)
 
+        # SAR
+        dataframe['sar'] = ta.SAR(dataframe)
+
         # EWO
         dataframe['ewo_50_200'] = ewo(dataframe, 50, 200)
 
