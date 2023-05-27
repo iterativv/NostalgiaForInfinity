@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.72"
+        return "v13.0.73"
 
     # ROI table:
     minimal_roi = {
@@ -1886,6 +1886,9 @@ class NostalgiaForInfinityX3(IStrategy):
 
         # CTI
         dataframe['cti_20'] = pta.cti(dataframe["close"], length=20)
+
+        # SAR
+        dataframe['sar'] = ta.SAR(dataframe)
 
         # EWO
         dataframe['ewo_50_200'] = ewo(dataframe, 50, 200)
@@ -5358,6 +5361,10 @@ class NostalgiaForInfinityX3(IStrategy):
                                           | (dataframe['cti_20_4h'] < 0.7)
                                           | (dataframe['rsi_14_4h'] < 40.0)
                                           | (dataframe['ema_200_dec_24_4h'] == False))
+                    item_buy_logic.append((dataframe['change_pct_1d'] > -0.03)
+                                          | (dataframe['rsi_14_4h'] < 40.0)
+                                          | (dataframe['cti_20_1d'] < 0.5)
+                                          | (dataframe['rsi_14_1d'] < 70.0))
 
                     # Logic
                     item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
