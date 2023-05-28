@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.75"
+        return "v13.0.76"
 
     # ROI table:
     minimal_roi = {
@@ -1465,8 +1465,11 @@ class NostalgiaForInfinityX3(IStrategy):
                                 (grind_profit > self.grinding_profit_threshold)
                         ):
                             sell_amount = buy_order.filled * exit_rate
-                            self.dp.send_msg(f"Grinding exit [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount}| Coin amount: {buy_order.filled} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%")
-                            return -sell_amount
+                            if ((current_stake_amount - sell_amount) < (min_stake * 1.5)):
+                                sell_amount = (trade.amount * exit_rate) - (min_stake * 1.5)
+                            if (sell_amount > min_stake):
+                                self.dp.send_msg(f"Grinding exit [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount}| Coin amount: {buy_order.filled} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%")
+                                return -sell_amount
                         elif (
                                 (grind_profit < self.grinding_stop_grinds)
                                 # temporary
@@ -1477,8 +1480,11 @@ class NostalgiaForInfinityX3(IStrategy):
                                 )
                         ):
                             sell_amount = buy_order.filled * exit_rate * 0.999
-                            self.dp.send_msg(f"Grinding stop exit [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount}| Coin amount: {buy_order.filled} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%")
-                            return -sell_amount
+                            if ((current_stake_amount - sell_amount) < (min_stake * 1.5)):
+                                sell_amount = (trade.amount * exit_rate) - (min_stake * 1.5)
+                            if (sell_amount > min_stake):
+                                self.dp.send_msg(f"Grinding stop exit [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount}| Coin amount: {buy_order.filled} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%")
+                                return -sell_amount
                         break
 
         return None
