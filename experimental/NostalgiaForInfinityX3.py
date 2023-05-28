@@ -1718,6 +1718,9 @@ class NostalgiaForInfinityX3(IStrategy):
         informative_1h['cti_20'] = pta.cti(informative_1h["close"], length=20)
         informative_1h['cti_40'] = pta.cti(informative_1h["close"], length=40)
 
+        # SAR
+        informative_1h['sar'] = ta.SAR(informative_1h)
+
         # S/R
         res_series = informative_1h['high'].rolling(window = 5, center=True).apply(lambda row: is_resistance(row), raw=True).shift(2)
         sup_series = informative_1h['low'].rolling(window = 5, center=True).apply(lambda row: is_support(row), raw=True).shift(2)
