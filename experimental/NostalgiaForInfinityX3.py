@@ -1860,6 +1860,9 @@ class NostalgiaForInfinityX3(IStrategy):
         # SAR
         dataframe['sar'] = ta.SAR(dataframe)
 
+        # CCI
+        dataframe['cci_20'] = ta.CCI(dataframe, source='hlc3', timeperiod=20)
+
         # EWO
         dataframe['ewo_50_200'] = ewo(dataframe, 50, 200)
 
