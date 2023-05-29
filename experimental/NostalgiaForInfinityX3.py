@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.76"
+        return "v13.0.78"
 
     # ROI table:
     minimal_roi = {
@@ -1350,20 +1350,19 @@ class NostalgiaForInfinityX3(IStrategy):
                                     and (last_candle['ema_26'] > last_candle['ema_12'])
                                     and ((last_candle['ema_26'] - last_candle['ema_12']) > (last_candle['open'] * 0.005))
                                     and ((previous_candle['ema_26'] - previous_candle['ema_12']) > (last_candle['open'] / 100.0))
-                                    and (last_candle['cti_20_1h'] < 0.5)
-                                    and (last_candle['rsi_3_1h'] > 20.0)
-                                    and (last_candle['rsi_3_4h'] > 20.0)
+                                    and (last_candle['close'] > last_candle['sar_1h'])
                                 )
                                 or
                                 (
                                     (last_candle['rsi_14'] < 32.0)
                                     and (last_candle['rsi_3'] > 5.0)
-                                    and (last_candle['close'] < (last_candle['ema_12'] * 0.996))
-                                    and (last_candle['rsi_3_15m'] > 16.0)
-                                    and (last_candle['cti_20_1h'] < 0.5)
-                                    and (last_candle['rsi_3_1h'] > 30.0)
+                                    and (last_candle['close'] < (last_candle['ema_12'] * 0.992))
+                                    and (last_candle['close'] > last_candle['sar_1h'])
+                                    and (last_candle['rsi_3_15m'] > 5.0)
+                                    and (last_candle['rsi_3_1h'] > 10.0)
                                     and (last_candle['rsi_3_4h'] > 10.0)
                                     and (last_candle['not_downtrend_1h'])
+                                    and (last_candle['not_downtrend_4h'])
                                 )
                                 or
                                 (
@@ -1772,6 +1771,9 @@ class NostalgiaForInfinityX3(IStrategy):
         # CTI
         informative_1h['cti_20'] = pta.cti(informative_1h["close"], length=20)
         informative_1h['cti_40'] = pta.cti(informative_1h["close"], length=40)
+
+        # SAR
+        informative_1h['sar'] = ta.SAR(informative_1h)
 
         # S/R
         res_series = informative_1h['high'].rolling(window = 5, center=True).apply(lambda row: is_resistance(row), raw=True).shift(2)
