@@ -10967,6 +10967,21 @@ def williams_r(dataframe: DataFrame, period: int = 14) -> Series:
 
     return WR * -100
 
+def williams_fractals(dataframe: pd.DataFrame, period: int = 2) -> tuple[pd.Series, pd.Series]:
+    """Williams Fractals implementation
+
+    :param dataframe: OHLC data
+    :param period: number of lower (or higher) points on each side of a high (or low)
+    :return: tuple of boolean Series (bearish, bullish) where True marks a fractal pattern
+    """
+
+    window = 2 * period + 1
+
+    bears = dataframe['high'].rolling(window, center=True).apply(lambda x: x[period] == max(x), raw=True)
+    bulls = dataframe['low'].rolling(window, center=True).apply(lambda x: x[period] == min(x), raw=True)
+
+    return bears, bulls
+
 # Volume Weighted Moving Average
 def vwma(dataframe: DataFrame, length: int = 10):
     """Indicator: Volume Weighted Moving Average (VWMA)"""
