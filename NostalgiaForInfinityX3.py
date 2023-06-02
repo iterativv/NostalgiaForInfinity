@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.100"
+        return "v13.0.101"
 
     # ROI table:
     minimal_roi = {
@@ -11008,7 +11008,7 @@ def williams_r(dataframe: DataFrame, period: int = 14) -> Series:
 
     return WR * -100
 
-def williams_fractals(dataframe: pd.DataFrame, period: int = 2) -> tuple[pd.Series, pd.Series]:
+def williams_fractals(dataframe: pd.DataFrame, period: int = 2) -> tuple:
     """Williams Fractals implementation
 
     :param dataframe: OHLC data
