@@ -1876,7 +1876,7 @@ class NostalgiaForInfinityX3(IStrategy):
         dataframe['r_480'] = williams_r(dataframe, period=480)
 
         # Williams Fractals
-        dataframe['f_bear_14'],  dataframe['f_bull_14']= williams_fractals(dataframe, period=14)
+        dataframe['f_bear_14'], dataframe['f_bull_14'] = williams_fractals(dataframe, period=14)
 
         # CTI
         dataframe['cti_20'] = pta.cti(dataframe["close"], length=20)
