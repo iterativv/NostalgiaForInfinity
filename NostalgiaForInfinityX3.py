@@ -11159,7 +11159,7 @@ def top_percent_change(self, dataframe: DataFrame, length: int) -> float:
     else:
         return (dataframe['open'].rolling(length).max() - dataframe['close']) / dataframe['close']
 
-    # +---------------------------------------------------------------------------+
+# +---------------------------------------------------------------------------+
 # |                              Classes                                      |
 # +---------------------------------------------------------------------------+
 
