@@ -1888,6 +1888,11 @@ class NostalgiaForInfinityX3(IStrategy):
         # CCI
         dataframe['cci_20'] = ta.CCI(dataframe, source='hlc3', timeperiod=20)
 
+        # TSI
+        tsi = pta.tsi(dataframe["close"])
+        dataframe['tsi'] = tsi.iloc[:, 0]
+        dataframe['tsi_signal'] = tsi.iloc[:, 1]
+
         # EWO
         dataframe['ewo_50_200'] = ewo(dataframe, 50, 200)
 
