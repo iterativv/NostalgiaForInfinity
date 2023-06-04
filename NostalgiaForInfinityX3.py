@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.113"
+        return "v13.0.114"
 
     # ROI table:
     minimal_roi = {
@@ -1481,19 +1481,6 @@ class NostalgiaForInfinityX3(IStrategy):
                         grind_profit = (exit_rate - buy_order.average) / buy_order.average
                         if (
                                 (grind_profit > self.grinding_profit_threshold)
-                                and
-                                (
-                                    (last_candle['close'] < last_candle['sar'])
-                                    or
-                                    (
-                                        (last_candle['tsi'] > 0.0)
-                                        and (last_candle['tsi'] < last_candle['tsi_signal'])
-                                        and (previous_candle['tsi'] > previous_candle['tsi_signal'])
-                                    )
-                                    or (last_candle['rsi_14'] > 80.0)
-                                    or (last_candle['cti_20'] > 0.95)
-                                    or (last_candle['r_14'] >= -1.0)
-                                )
                         ):
                             sell_amount = buy_order.filled * exit_rate
                             if ((current_stake_amount - sell_amount) < (min_stake * 1.5)):
