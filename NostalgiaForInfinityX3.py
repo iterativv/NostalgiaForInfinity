@@ -1607,6 +1607,9 @@ class NostalgiaForInfinityX3(IStrategy):
         # Candle change
         informative_1d['change_pct'] = (informative_1d['close'] - informative_1d['open']) / informative_1d['open']
 
+        # Pump protections
+        informative_1d['hl_pct_change_3'] = range_percent_change(self, informative_1d, 'HL', 3)
+
         # Max highs
         informative_1d['high_max_6'] = informative_1d['high'].rolling(6).max()
         informative_1d['high_max_12'] = informative_1d['high'].rolling(12).max()
