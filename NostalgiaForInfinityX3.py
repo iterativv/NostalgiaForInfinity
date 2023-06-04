@@ -1609,6 +1609,7 @@ class NostalgiaForInfinityX3(IStrategy):
 
         # Pump protections
         informative_1d['hl_pct_change_3'] = range_percent_change(self, informative_1d, 'HL', 3)
+        informative_1d['hl_pct_change_6'] = range_percent_change(self, informative_1d, 'HL', 6)
 
         # Max highs
         informative_1d['high_max_6'] = informative_1d['high'].rolling(6).max()
