@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.122"
+        return "v13.0.123"
 
     # ROI table:
     minimal_roi = {
@@ -245,6 +245,12 @@ class NostalgiaForInfinityX3(IStrategy):
             self.grinding_stakes_alt_2 = self.config['grinding_stakes_alt_2']
         if ('grinding_thresholds_alt_2' in self.config):
             self.grinding_thresholds_alt_2 = self.config['grinding_thresholds_alt_2']
+        if ('grinding_stop_init' in self.config):
+            self.grinding_stop_init = self.config['grinding_stop_init']
+        if ('grinding_stop_grinds' in self.config):
+            self.grinding_stop_grinds = self.config['grinding_stop_grinds']
+        if ('grinding_profit_threshold' in self.config):
+            self.grinding_profit_threshold = self.config['grinding_profit_threshold']
         if ('max_slippage' in self.config):
             self.max_slippage = self.config['max_slippage']
         if self.target_profit_cache is None:
