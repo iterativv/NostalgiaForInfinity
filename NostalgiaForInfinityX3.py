@@ -170,6 +170,9 @@ class NostalgiaForInfinityX3(IStrategy):
     # Max allowed buy "slippage", how high to buy on the candle
     max_slippage = 0.01
 
+    # BTC/ETH stakes
+    btc_stakes = ['BTC','ETH']
+
     #############################################################
     # Buy side configuration
 
