@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.127"
+        return "v13.0.128"
 
     # ROI table:
     minimal_roi = {
@@ -2144,6 +2144,9 @@ class NostalgiaForInfinityX3(IStrategy):
 
         # the number of free slots
         current_free_slots = self.config["max_open_trades"] - len(LocalTrade.get_trades_proxy(is_open=True))
+        # if BTC/ETH stake
+        is_btc_stake = self.config['stake_currency'] in self.btc_stakes
+        allowed_empty_candles = 144 if is_btc_stake else 60
 
         for buy_enable in self.buy_params:
             index = int(buy_enable.split('_')[2])
@@ -2169,7 +2172,7 @@ class NostalgiaForInfinityX3(IStrategy):
                     item_buy_logic.append(dataframe['hl_pct_change_12_1h'] < 0.5)
                     item_buy_logic.append(dataframe['hl_pct_change_24_1h'] < 0.75)
                     item_buy_logic.append(dataframe['hl_pct_change_48_1h'] < 0.9)
-                    item_buy_logic.append(dataframe['num_empty_288'] < 60)
+                    item_buy_logic.append(dataframe['num_empty_288'] < allowed_empty_candles)
 
                     item_buy_logic.append(dataframe['cti_20_1h'] < 0.9)
                     item_buy_logic.append(dataframe['rsi_14_1h'] < 85.0)
@@ -2729,7 +2732,7 @@ class NostalgiaForInfinityX3(IStrategy):
                     item_buy_logic.append(dataframe['hl_pct_change_12_1h'] < 0.5)
                     item_buy_logic.append(dataframe['hl_pct_change_24_1h'] < 0.75)
                     item_buy_logic.append(dataframe['hl_pct_change_48_1h'] < 0.9)
-                    item_buy_logic.append(dataframe['num_empty_288'] < 60)
+                    item_buy_logic.append(dataframe['num_empty_288'] < allowed_empty_candles)
 
                     item_buy_logic.append(dataframe['cti_20_1h'] < 0.9)
                     item_buy_logic.append(dataframe['rsi_14_1h'] < 85.0)
@@ -3226,7 +3229,7 @@ class NostalgiaForInfinityX3(IStrategy):
                     item_buy_logic.append(dataframe['hl_pct_change_12_1h'] < 0.5)
                     item_buy_logic.append(dataframe['hl_pct_change_24_1h'] < 0.75)
                     item_buy_logic.append(dataframe['hl_pct_change_48_1h'] < 0.9)
-                    item_buy_logic.append(dataframe['num_empty_288'] < 60)
+                    item_buy_logic.append(dataframe['num_empty_288'] < allowed_empty_candles)
 
                     item_buy_logic.append(dataframe['ema_12_1h'] > dataframe['ema_200_1h'])
 
@@ -3713,7 +3716,7 @@ class NostalgiaForInfinityX3(IStrategy):
                     item_buy_logic.append(dataframe['hl_pct_change_12_1h'] < 0.5)
                     item_buy_logic.append(dataframe['hl_pct_change_24_1h'] < 0.75)
                     item_buy_logic.append(dataframe['hl_pct_change_48_1h'] < 0.9)
-                    item_buy_logic.append(dataframe['num_empty_288'] < 60)
+                    item_buy_logic.append(dataframe['num_empty_288'] < allowed_empty_candles)
 
                     item_buy_logic.append(dataframe['cti_20_1h'] < 0.9)
                     item_buy_logic.append(dataframe['rsi_14_1h'] < 85.0)
@@ -4499,7 +4502,7 @@ class NostalgiaForInfinityX3(IStrategy):
                     item_buy_logic.append(dataframe['hl_pct_change_12_1h'] < 0.5)
                     item_buy_logic.append(dataframe['hl_pct_change_24_1h'] < 0.75)
                     item_buy_logic.append(dataframe['hl_pct_change_48_1h'] < 0.9)
-                    item_buy_logic.append(dataframe['num_empty_288'] < 60)
+                    item_buy_logic.append(dataframe['num_empty_288'] < allowed_empty_candles)
 
                     item_buy_logic.append((dataframe['not_downtrend_1h'])
                                           | (dataframe['cti_20_1h'] < -0.5)
@@ -5471,7 +5474,7 @@ class NostalgiaForInfinityX3(IStrategy):
                     item_buy_logic.append(dataframe['hl_pct_change_12_1h'] < 0.5)
                     item_buy_logic.append(dataframe['hl_pct_change_24_1h'] < 0.75)
                     item_buy_logic.append(dataframe['hl_pct_change_48_1h'] < 0.9)
-                    item_buy_logic.append(dataframe['num_empty_288'] < 60)
+                    item_buy_logic.append(dataframe['num_empty_288'] < allowed_empty_candles)
 
                     item_buy_logic.append(dataframe['cti_20_1h'] < 0.5)
                     item_buy_logic.append(dataframe['cti_20_4h'] < 0.75)
@@ -6026,7 +6029,7 @@ class NostalgiaForInfinityX3(IStrategy):
                     item_buy_logic.append(dataframe['hl_pct_change_12_1h'] < 0.5)
                     item_buy_logic.append(dataframe['hl_pct_change_24_1h'] < 0.75)
                     item_buy_logic.append(dataframe['hl_pct_change_48_1h'] < 0.9)
-                    item_buy_logic.append(dataframe['num_empty_288'] < 60)
+                    item_buy_logic.append(dataframe['num_empty_288'] < allowed_empty_candles)
 
                     item_buy_logic.append(dataframe['cti_20_1h'] < 0.8)
                     item_buy_logic.append(dataframe['rsi_14_1h'] < 80.0)
@@ -6207,7 +6210,7 @@ class NostalgiaForInfinityX3(IStrategy):
                     item_buy_logic.append(dataframe['hl_pct_change_12_1h'] < 0.5)
                     item_buy_logic.append(dataframe['hl_pct_change_24_1h'] < 0.75)
                     item_buy_logic.append(dataframe['hl_pct_change_48_1h'] < 0.9)
-                    item_buy_logic.append(dataframe['num_empty_288'] < 60)
+                    item_buy_logic.append(dataframe['num_empty_288'] < allowed_empty_candles)
 
                     item_buy_logic.append(dataframe['cti_20_1h'] < 0.8)
                     item_buy_logic.append(dataframe['rsi_14_1h'] < 80.0)
@@ -6306,7 +6309,7 @@ class NostalgiaForInfinityX3(IStrategy):
                     item_buy_logic.append(dataframe['hl_pct_change_12_1h'] < 0.5)
                     item_buy_logic.append(dataframe['hl_pct_change_24_1h'] < 0.75)
                     item_buy_logic.append(dataframe['hl_pct_change_48_1h'] < 0.9)
-                    item_buy_logic.append(dataframe['num_empty_288'] < 60)
+                    item_buy_logic.append(dataframe['num_empty_288'] < allowed_empty_candles)
 
                     item_buy_logic.append(dataframe['cti_20_1h'] < 0.8)
                     item_buy_logic.append(dataframe['rsi_14_1h'] < 80.0)
@@ -6468,7 +6471,7 @@ class NostalgiaForInfinityX3(IStrategy):
                     item_buy_logic.append(dataframe['hl_pct_change_12_1h'] < 0.5)
                     item_buy_logic.append(dataframe['hl_pct_change_24_1h'] < 0.75)
                     item_buy_logic.append(dataframe['hl_pct_change_48_1h'] < 0.9)
-                    item_buy_logic.append(dataframe['num_empty_288'] < 60)
+                    item_buy_logic.append(dataframe['num_empty_288'] < allowed_empty_candles)
 
                     item_buy_logic.append(dataframe['ema_200_dec_48_1h'] == False)
                     item_buy_logic.append(dataframe['ema_200_dec_24_4h'] == False)
@@ -7988,7 +7991,7 @@ class NostalgiaForInfinityX3(IStrategy):
                     item_buy_logic.append(dataframe['hl_pct_change_12_1h'] < 0.5)
                     item_buy_logic.append(dataframe['hl_pct_change_24_1h'] < 0.75)
                     item_buy_logic.append(dataframe['hl_pct_change_48_1h'] < 0.9)
-                    item_buy_logic.append(dataframe['num_empty_288'] < 60)
+                    item_buy_logic.append(dataframe['num_empty_288'] < allowed_empty_candles)
 
                     # pump and now started dumping, still high
                     item_buy_logic.append((dataframe['change_pct_1d'] > -0.05)
@@ -8818,7 +8821,7 @@ class NostalgiaForInfinityX3(IStrategy):
                     item_buy_logic.append(dataframe['hl_pct_change_12_1h'] < 0.5)
                     item_buy_logic.append(dataframe['hl_pct_change_24_1h'] < 0.75)
                     item_buy_logic.append(dataframe['hl_pct_change_48_1h'] < 0.9)
-                    item_buy_logic.append(dataframe['num_empty_288'] < 60)
+                    item_buy_logic.append(dataframe['num_empty_288'] < allowed_empty_candles)
 
                     item_buy_logic.append(dataframe['cti_20_1h'] < 0.8)
                     item_buy_logic.append(dataframe['rsi_14_1h'] < 80.0)
@@ -9568,7 +9571,7 @@ class NostalgiaForInfinityX3(IStrategy):
                     item_buy_logic.append(dataframe['hl_pct_change_12_1h'] < 0.5)
                     item_buy_logic.append(dataframe['hl_pct_change_24_1h'] < 0.75)
                     item_buy_logic.append(dataframe['hl_pct_change_48_1h'] < 0.9)
-                    item_buy_logic.append(dataframe['num_empty_288'] < 60)
+                    item_buy_logic.append(dataframe['num_empty_288'] < allowed_empty_candles)
 
                     item_buy_logic.append(dataframe['cti_20_1h'] < 0.8)
                     item_buy_logic.append(dataframe['rsi_14_1h'] < 80.0)
