@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.142"
+        return "v13.0.146"
 
     # ROI table:
     minimal_roi = {
@@ -1345,7 +1345,7 @@ class NostalgiaForInfinityX3(IStrategy):
                             and
                             (
                                 (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
-                                or (slice_profit_entry < -0.01)
+                                or (slice_profit_entry < -0.02)
                             )
                             and
                             (
@@ -1441,6 +1441,30 @@ class NostalgiaForInfinityX3(IStrategy):
                                     and (last_candle['cti_20_1h'] < 0.5)
                                     and (last_candle['rsi_3_1h'] > 5.0)
                                     and (last_candle['rsi_3_4h'] > 5.0)
+                                )
+                                or
+                                (
+                                    (last_candle['rsi_14'] < 50.0)
+                                    and (last_candle['rsi_14_15m'] < 36.0)
+                                    and (last_candle['rsi_3'] > 5.0)
+                                    and (last_candle['rsi_14_15m'] > previous_candle['rsi_14_15m'])
+                                    and (last_candle['ema_26_15m'] > last_candle['ema_12_15m'])
+                                    and ((last_candle['ema_26_15m'] - last_candle['ema_12_15m']) > (last_candle['open_15m'] * 0.022))
+                                    and ((previous_candle['ema_26_15m'] - previous_candle['ema_12_15m']) > (last_candle['open_15m'] / 100.0))
+                                    and (last_candle['rsi_3_15m'] > 5.0)
+                                    and (last_candle['rsi_3_1h'] > 5.0)
+                                    and (last_candle['rsi_3_4h'] > 20.0)
+                                )
+                                or
+                                (
+                                    (last_candle['rsi_14'] < 32.0)
+                                    and (last_candle['rsi_3'] > 5.0)
+                                    and (last_candle['rsi_14_15m'] < 32.0)
+                                    and (last_candle['rsi_14_15m'] > previous_candle['rsi_14_15m'])
+                                    and (last_candle['rsi_3_15m'] > 5.0)
+                                    and (last_candle['cti_20_1h'] < 0.5)
+                                    and (last_candle['rsi_3_1h'] > 10.0)
+                                    and (last_candle['rsi_3_4h'] > 20.0)
                                 )
                             )
                     ):
@@ -8875,6 +8899,12 @@ class NostalgiaForInfinityX3(IStrategy):
                                           | (dataframe['ema_200_dec_48_1h'] == False)
                                           | (dataframe['ema_200_dec_24_4h'] == False)
                                           | (dataframe['ema_200_dec_4_1d'] == False))
+                    item_buy_logic.append((dataframe['cti_20_15m'] < -0.0)
+                                          | (dataframe['rsi_3'] > 20.0)
+                                          | (dataframe['rsi_14_1h'] < 40.0)
+                                          | (dataframe['cti_20_4h'] < -0.5)
+                                          | (dataframe['rsi_14_4h'] < 40.0)
+                                          | (dataframe['cti_20_1d'] < 0.5))
 
                     # Logic
                     item_buy_logic.append(dataframe['bb40_2_delta'].gt(dataframe['close'] * 0.036))
