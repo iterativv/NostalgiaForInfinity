@@ -1821,6 +1821,11 @@ class NostalgiaForInfinityX3(IStrategy):
         informative_1h['high_max_36'] = informative_1h['high'].rolling(36).max()
         informative_1h['high_max_48'] = informative_1h['high'].rolling(48).max()
 
+        # Max lows
+        informative_1h['low_min_3'] = informative_1h['low'].rolling(3).min()
+        informative_1h['low_min_12'] = informative_1h['low'].rolling(12).min()
+        informative_1h['low_min_24'] = informative_1h['low'].rolling(24).min()
+
         # Volume
         informative_1h['volume_mean_factor_12'] = informative_1h['volume'] / informative_1h['volume'].rolling(12).mean()
 
@@ -1891,6 +1896,8 @@ class NostalgiaForInfinityX3(IStrategy):
         dataframe['ema_26'] = ta.EMA(dataframe, timeperiod=26)
         dataframe['ema_50'] = ta.EMA(dataframe, timeperiod=50)
         dataframe['ema_200'] = ta.EMA(dataframe, timeperiod=200)
+
+        dataframe['ema_200_dec_24'] = ((dataframe['ema_200'].isnull()) | (dataframe['ema_200'] <= dataframe['ema_200'].shift(24)))
 
         dataframe['ema_200_pct_change_144'] = ((dataframe['ema_200'] - dataframe['ema_200'].shift(144)) / dataframe['ema_200'].shift(144))
         dataframe['ema_200_pct_change_288'] = ((dataframe['ema_200'] - dataframe['ema_200'].shift(288)) / dataframe['ema_200'].shift(288))
