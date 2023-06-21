@@ -1870,6 +1870,7 @@ class NostalgiaForInfinityX3(IStrategy):
         # EMA
         informative_15m['ema_12'] = ta.EMA(informative_15m, timeperiod=12)
         informative_15m['ema_26'] = ta.EMA(informative_15m, timeperiod=26)
+        informative_15m['ema_200'] = ta.EMA(informative_15m, timeperiod=200)
 
         informative_15m['ema_200_dec_24'] = ((informative_15m['ema_200'].isnull()) | (informative_15m['ema_200'] <= informative_15m['ema_200'].shift(24)))
 
