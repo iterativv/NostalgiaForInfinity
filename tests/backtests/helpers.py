@@ -81,7 +81,7 @@ class Backtest:
             "freqtrade",
             "backtesting",
             f"--user-data=user_data",
-            "--strategy-list=NostalgiaForInfinityX2",
+            "--strategy-list=NostalgiaForInfinityX3",
             f"--timerange={start_date}-{end_date}",
             f"--max-open-trades={max_open_trades}",
             f"--stake-amount={stake_amount}",
@@ -158,7 +158,7 @@ class BacktestResults:
 
     @_results.default
     def _set_results(self):
-        return self.raw_data["strategy"]["NostalgiaForInfinityX2"]
+        return self.raw_data["strategy"]["NostalgiaForInfinityX3"]
 
     @_stats.default
     def _set_stats(self):
