@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.178"
+        return "v13.0.180"
 
     # ROI table:
     minimal_roi = {
@@ -147,7 +147,7 @@ class NostalgiaForInfinityX3(IStrategy):
     stake_grinding_mode_multiplier_alt_2 = 1.0
     # Grinding stop thresholds
     grinding_stop_init = -0.08
-    grinding_stop_grinds = -0.08
+    grinding_stop_grinds = -0.16
     # Grinding take profit threshold
     grinding_profit_threshold = 0.016
     # Grinding stakes
@@ -7455,6 +7455,9 @@ class NostalgiaForInfinityX3(IStrategy):
                                           | (dataframe['cti_20_1d'] < 0.5)
                                           | (dataframe['rsi_14_1d'] < 70.0)
                                           | (dataframe['hl_pct_change_6_1d'] < 0.7))
+                    item_buy_logic.append((dataframe['top_wick_pct_4h'] < (abs(dataframe['change_pct_4h']) * 6.0))
+                                          | (dataframe['not_downtrend_1h'])
+                                          | (dataframe['cti_20_4h'] < -0.5))
 
                     # Logic
                     item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
@@ -8150,6 +8153,9 @@ class NostalgiaForInfinityX3(IStrategy):
                                           | (dataframe['ema_200_dec_24_4h'] == False)
                                           | (dataframe['ema_200_dec_4_1d'] == False)
                                           | (dataframe['hl_pct_change_6_1d'] < 0.5))
+                    item_buy_logic.append((dataframe['top_wick_pct_4h'] < (abs(dataframe['change_pct_4h']) * 6.0))
+                                          | (dataframe['not_downtrend_1h'])
+                                          | (dataframe['cti_20_4h'] < -0.5))
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < (dataframe['ema_16'] * 0.968))
