@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.196"
+        return "v13.0.197"
 
     # ROI table:
     minimal_roi = {
@@ -1490,18 +1490,15 @@ class NostalgiaForInfinityX3(IStrategy):
                                 (
                                     (last_candle['close'] > (last_candle['low_min_3_1h'] * 1.04))
                                     and (last_candle['close'] > (last_candle['low_min_12_1h'] * 1.08))
-                                    and (last_candle['close'] > (last_candle['low_min_24_1h'] * 1.20))
-                                    and (last_candle['cti_20'] < -0.0)
-                                    and (last_candle['rsi_3'] > 5.0)
-                                    and (last_candle['rsi_14'] > previous_candle['rsi_14'])
-                                    and (last_candle['r_14'] > previous_candle['r_14'])
+                                    and (last_candle['close'] > (last_candle['low_min_24_1h'] * 1.10))
+                                    and (previous_candle['rsi_3'] > 16.0)
+                                    and (last_candle['rsi_14'] < 46.0)
+                                    and (last_candle['ha_close'] > last_candle['ha_open'])
                                     and (last_candle['rsi_3_15m'] > 10.0)
                                     and (last_candle['cti_20_1h'] < 0.8)
-                                    and (last_candle['rsi_3_1h'] > 30.0)
-                                    and (last_candle['rsi_3_4h'] > 30.0)
+                                    and (last_candle['rsi_3_1h'] > 20.0)
+                                    and (last_candle['rsi_3_4h'] > 5.0)
                                     and (last_candle['rsi_14_4h'] < 70.0)
-                                    and (last_candle['ema_200_dec_24'] == False)
-                                    and (last_candle['ema_200_dec_24_15m'] == False)
                                     and (last_candle['ema_200_dec_48_1h'] == False)
                                 )
                                 or
