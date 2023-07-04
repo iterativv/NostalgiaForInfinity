@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.195"
+        return "v13.0.196"
 
     # ROI table:
     minimal_roi = {
@@ -1316,7 +1316,7 @@ class NostalgiaForInfinityX3(IStrategy):
                     return - sell_amount
 
             # Partial fill on init stop
-            if (count_of_entries == 1) and (count_of_exits > 0) and (filled_orders[-1].ft_order_side == "sell"):
+            if (count_of_entries == 1) and (count_of_exits > 0) and (filled_orders[-1].ft_order_side == "sell") and (filled_orders[-1].average < filled_orders[0].average):
                 sell_amount = filled_orders[-1].remaining * exit_rate
                 if (sell_amount > min_stake):
                     self.dp.send_msg(f"Grinding stop init (remaining) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%")
