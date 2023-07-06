@@ -2031,8 +2031,6 @@ class NostalgiaForInfinityX3(IStrategy):
         dataframe['close_max_24'] = dataframe['close'].rolling(24).max()
         dataframe['close_max_48'] = dataframe['close'].rolling(48).max()
 
-        dataframe['pct_close_max_48'] = (dataframe['close_max_48'] - dataframe['close']) / dataframe['close']
-
         # Close min
         dataframe['close_min_12'] = dataframe['close'].rolling(12).min()
 
