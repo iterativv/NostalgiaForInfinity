@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.206"
+        return "v13.0.207"
 
     # ROI table:
     minimal_roi = {
@@ -1541,7 +1541,7 @@ class NostalgiaForInfinityX3(IStrategy):
                                 or
                                 (
                                     (count_of_exits > 0)
-                                    and (slice_profit < -0.06)
+                                    and (slice_profit < -0.08)
                                     and (previous_candle['rsi_3'] > 16.0)
                                     and (last_candle['rsi_14'] < 36.0)
                                     and (last_candle['rsi_14'] > previous_candle['rsi_14'])
