@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.210"
+        return "v13.0.211"
 
     # ROI table:
     minimal_roi = {
@@ -1688,7 +1688,10 @@ class NostalgiaForInfinityX3(IStrategy):
         if self.config['stake_currency'] in ['USDT','BUSD','USDC','DAI','TUSD','PAX','USD','EUR','GBP']:
             btc_info_pair = f"BTC/{self.config['stake_currency']}"
         else:
-            btc_info_pair = "BTC/USDT"
+            if ('trading_mode' in self.config) and (self.config['trading_mode'] in ['futures', 'margin']):
+                btc_info_pair = "BTC/USDT:USDT"
+            else:
+                btc_info_pair = "BTC/USDT"
 
         informative_pairs.extend([(btc_info_pair, btc_info_timeframe) for btc_info_timeframe in self.btc_info_timeframes])
 
@@ -2226,7 +2229,10 @@ class NostalgiaForInfinityX3(IStrategy):
         if self.config['stake_currency'] in ['USDT','BUSD','USDC','DAI','TUSD','PAX','USD','EUR','GBP']:
             btc_info_pair = f"BTC/{self.config['stake_currency']}"
         else:
-            btc_info_pair = "BTC/USDT"
+            if ('trading_mode' in self.config) and (self.config['trading_mode'] in ['futures', 'margin']):
+                btc_info_pair = "BTC/USDT:USDT"
+            else:
+                btc_info_pair = "BTC/USDT"
 
         for btc_info_timeframe in self.btc_info_timeframes:
             btc_informative = self.btc_info_switcher(btc_info_pair, btc_info_timeframe, metadata)
