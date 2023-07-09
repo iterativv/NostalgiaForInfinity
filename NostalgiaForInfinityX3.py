@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.200"
+        return "v13.0.210"
 
     # ROI table:
     minimal_roi = {
@@ -1323,7 +1323,6 @@ class NostalgiaForInfinityX3(IStrategy):
                     return - sell_amount
 
             # Buy
-            stake_amount_threshold = slice_amount
             grinding_parts = len(self.grinding_stakes)
             grinding_thresholds = self.grinding_thresholds
             grinding_stakes = self.grinding_stakes
@@ -1337,6 +1336,8 @@ class NostalgiaForInfinityX3(IStrategy):
                     grinding_parts = len(self.grinding_stakes_alt_1)
                     grinding_thresholds = self.grinding_thresholds_alt_1
                     grinding_stakes = self.grinding_stakes_alt_1
+
+            stake_amount_threshold = slice_amount * grinding_stakes[0]
             for i in range(grinding_parts):
                 if (current_stake_amount < stake_amount_threshold):
                     if (
@@ -1390,7 +1391,7 @@ class NostalgiaForInfinityX3(IStrategy):
                                     and (last_candle['rsi_3'] > 8.0)
                                     and (last_candle['close'] < (last_candle['bb20_2_low'] * 1.0))
                                     and (last_candle['ema_12'] < (last_candle['ema_26'] * 0.996))
-                                    and (last_candle['rsi_3_15m'] > 16.0)
+                                    and (last_candle['rsi_3_15m'] > 26.0)
                                     and (last_candle['cti_20_1h'] < 0.5)
                                     and (last_candle['rsi_3_1h'] > 25.0)
                                     and (last_candle['rsi_3_4h'] > 30.0)
@@ -1399,7 +1400,7 @@ class NostalgiaForInfinityX3(IStrategy):
                                 or
                                 (
                                     (last_candle['rsi_14'] < 33.0)
-                                    and (last_candle['rsi_3'] > 5.0)
+                                    and (last_candle['rsi_3'] > 26.0)
                                     and (last_candle['ha_close'] > last_candle['ha_open'])
                                     and (last_candle['ema_12'] < (last_candle['ema_26'] * 0.998))
                                     and (last_candle['rsi_3_15m'] > 10.0)
@@ -1477,7 +1478,7 @@ class NostalgiaForInfinityX3(IStrategy):
                                 or
                                 (
                                     (last_candle['rsi_14'] < 36.0)
-                                    and (last_candle['rsi_3_15m'] > 5.0)
+                                    and (previous_candle['rsi_3_15m'] > 20.0)
                                     and (last_candle['rsi_14_15m'] < 46.0)
                                     and (last_candle['rsi_14_15m'] > previous_candle['rsi_14_15m'])
                                     and (last_candle['ema_12_15m'] < (last_candle['ema_26_15m'] * 0.998))
@@ -1519,7 +1520,7 @@ class NostalgiaForInfinityX3(IStrategy):
                                 )
                                 or
                                 (
-                                    (last_candle['rsi_14'] < 46.0)
+                                    (last_candle['rsi_14'] < 38.0)
                                     and (last_candle['rsi_3'] > 10.0)
                                     and (last_candle['rsi_3'] < 36.0)
                                     and (last_candle['ewo_50_200'] > 2.2)
@@ -1531,8 +1532,26 @@ class NostalgiaForInfinityX3(IStrategy):
                                 )
                                 or
                                 (
+                                    (last_candle['close'] > (last_candle['close_min_12'] * 1.016))
+                                    and (previous_candle['rsi_3'] > 16.0)
+                                    and (last_candle['rsi_14'] < 36.0)
+                                    and (last_candle['rsi_3_15m'] > 16.0)
+                                    and (last_candle['rsi_3_1h'] > 10.0)
+                                    and (last_candle['rsi_3_4h'] > 5.0)
+                                )
+                                or
+                                (
+                                    (last_candle['rsi_14'] < 36.0)
+                                    and (last_candle['rsi_3'] > 10.0)
+                                    and (last_candle['close'] < (last_candle['ema_26'] * 0.976))
+                                    and (last_candle['rsi_3_15m'] > 20.0)
+                                    and (last_candle['rsi_3_1h'] > 26.0)
+                                    and (last_candle['rsi_3_4h'] > 10.0)
+                                )
+                                or
+                                (
                                     (count_of_exits > 0)
-                                    and (slice_profit < -0.06)
+                                    and (slice_profit < -0.08)
                                     and (previous_candle['rsi_3'] > 16.0)
                                     and (last_candle['rsi_14'] < 36.0)
                                     and (last_candle['rsi_14'] > previous_candle['rsi_14'])
@@ -2022,7 +2041,8 @@ class NostalgiaForInfinityX3(IStrategy):
         dataframe['close_max_24'] = dataframe['close'].rolling(24).max()
         dataframe['close_max_48'] = dataframe['close'].rolling(48).max()
 
-        dataframe['pct_close_max_48'] = (dataframe['close_max_48'] - dataframe['close']) / dataframe['close']
+        # Close min
+        dataframe['close_min_12'] = dataframe['close'].rolling(12).min()
 
         # Close delta
         dataframe['close_delta'] = (dataframe['close'] - dataframe['close'].shift()).abs()
@@ -2831,6 +2851,9 @@ class NostalgiaForInfinityX3(IStrategy):
                                           | (dataframe['cti_20_4h'] < 0.5)
                                           | (dataframe['rsi_14_4h'] < 40.0)
                                           | (dataframe['cti_20_1d'] < 0.5))
+                    item_buy_logic.append((dataframe['rsi_3_1h'] > 10.0)
+                                          | (dataframe['cti_20_4h'] < 0.7)
+                                          | (dataframe['close_max_48'] < (dataframe['close'] * 1.18)))
 
                     # Logic
                     item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
