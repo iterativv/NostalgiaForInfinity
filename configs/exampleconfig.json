@@ -37,5 +37,57 @@
         "use_order_book": false,
         "order_book_top": 1,
         "price_last_balance": 0.0
-    }
+    },
+    "exchange": {
+        "name": "",
+        "key": "",
+        "password": "",
+        "secret": "",
+        "ccxt_config": {
+            "enableRateLimit": true,
+            "rateLimit": 60,
+            "options": {
+                "brokerId": null,
+                "broker": {
+                    "spot": null,
+                    "margin": null,
+                    "future": null,
+                    "delivery": null
+                },
+                "partner": {
+                    "spot": {
+                        "id": null,
+                        "key": null
+                    },
+                    "future": {
+                        "id": null,
+                        "key": null
+                    },
+                },
+            },
+        },
+        "ccxt_async_config": {
+            "enableRateLimit": true,
+            "rateLimit": 60,
+            "options": {
+                "brokerId": null,
+                "broker": {
+                    "spot": null,
+                    "margin": null,
+                    "future": null,
+                    "delivery": null
+                },
+                "partner": {
+                    "spot": {
+                        "id": null,
+                        "key": null
+                    },
+                    "future": {
+                        "id": null,
+                        "key": null
+                    },
+                },
+            },
+        },
+    },
 }
