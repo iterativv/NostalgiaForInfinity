@@ -48,12 +48,14 @@
             "rateLimit": 60,
             "options": {
                 "brokerId": null,
-                "broker": {
-                    "spot": null,
-                    "margin": null,
-                    "future": null,
-                    "delivery": null
-                },
+                // "broker": {
+                //     "spot": null,
+                //     "margin": null,
+                //     "future": null,
+                //     "delivery": null
+                //     "swap": null
+                //     "option": null
+                // },
                 "partner": {
                     "spot": {
                         "id": null,
@@ -71,12 +73,14 @@
             "rateLimit": 60,
             "options": {
                 "brokerId": null,
-                "broker": {
-                    "spot": null,
-                    "margin": null,
-                    "future": null,
-                    "delivery": null
-                },
+                // "broker": {
+                //     "spot": null,
+                //     "margin": null,
+                //     "future": null,
+                //     "delivery": null
+                //     "swap": null
+                //     "option": null
+                // },
                 "partner": {
                     "spot": {
                         "id": null,
