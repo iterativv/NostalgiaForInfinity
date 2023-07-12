@@ -56,7 +56,7 @@ warnings.simplefilter(action='ignore', category=pd.errors.PerformanceWarning)
 ##  OKX: https://www.okx.com/join/11749725931 (20% discount on trading fees)                               ##
 ##  MEXC: https://promote.mexc.com/a/nfi  (10% discount on trading fees)                                   ##
 ##  ByBit: https://partner.bybit.com/b/nfi                                                                 ##
-##  Huobi: https://www.huobi.com/en-us/v/register/double-invite/?inviter_id=11345710&invite_code=ubpt2223  ##
+##  Huobi: https://www.huobi.com/invite/en-us/1f?invite_code=ubpt2223                                      ##
 ##         (20% discount on trading fees)                                                                  ##
 ##  Bitvavo: https://account.bitvavo.com/create?a=D22103A4BC (no fees for the first € 1000)                ##
 #############################################################################################################
@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.219"
+        return "v13.0.220"
 
     # ROI table:
     minimal_roi = {
@@ -1520,15 +1520,15 @@ class NostalgiaForInfinityX3(IStrategy):
                                 )
                                 or
                                 (
-                                    (last_candle['rsi_14'] < 38.0)
+                                    (last_candle['rsi_14'] < 36.0)
                                     and (last_candle['rsi_3'] > 10.0)
                                     and (last_candle['rsi_3'] < 36.0)
-                                    and (last_candle['ewo_50_200'] > 2.2)
+                                    and (last_candle['ewo_50_200'] > 2.8)
                                     and (last_candle['close'] < (last_candle['ema_12'] * 1.014))
                                     and (last_candle['close'] < (last_candle['ema_16'] * 0.976))
                                     and (last_candle['rsi_3_15m'] > 16.0)
-                                    and (last_candle['rsi_3_1h'] > 20.0)
-                                    and (last_candle['rsi_3_4h'] > 20.0)
+                                    and (last_candle['rsi_3_1h'] > 16.0)
+                                    and (last_candle['rsi_3_4h'] > 16.0)
                                 )
                                 or
                                 (
