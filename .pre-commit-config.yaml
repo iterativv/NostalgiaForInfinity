@@ -1,7 +1,7 @@
 ---
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.1.0
+    rev: v4.4.0
     hooks:
       - id: check-merge-conflict  # Check for files that contain merge conflict strings.
       - id: trailing-whitespace   # Trims trailing whitespace.
@@ -12,10 +12,20 @@ repos:
         exclude: user_data/.*
       - id: check-merge-conflict  # Check for files that contain merge conflict strings.
       - id: check-ast             # Simply check whether files parse as valid python.
+      - id: check-yaml
+        args: [--allow-multiple-documents]
+        exclude: |
+          (?x)^(
+            .gitlab/ci/.*\.(json|yml|yaml)$|
+            .gitlab-ci.yml
+          )$
+      - id: end-of-file-fixer
 
-  # ----- Formatting ------------------------------------------------------------------------------------------------>
+
+
+  # <---- Formatting --------------------------------------------------------->
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.1.0
+    rev: v3.4.0
     hooks:
       - id: pyupgrade
         name: Rewrite Code to be Py3.7+
@@ -24,18 +34,18 @@ repos:
         exclude: user_data/.*
 
   - repo: https://github.com/asottile/reorder_python_imports
-    rev: v2.6.0
+    rev: v3.9.0
     hooks:
       - id: reorder-python-imports
         args: [
-          --py37-plus,
+          --py39-plus,
         ]
         files: (tests|.github)/.*\.py
 
   - repo: https://github.com/psf/black
-    rev: 22.3.0
+    rev: 23.3.0
     hooks:
       - id: black
         args: [-l 100]
         files: (tests|.github)/.*\.py
-  # <---- Formatting -------------------------------------------------------------------------------------------------
+# <---- Formatting --------------------------------------------------------->

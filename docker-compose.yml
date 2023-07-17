@@ -8,6 +8,7 @@ services:
     container_name: freqtrade-backtesting
     volumes:
       - "./:/testing"
+      - "./user_data/data:/testing/user_data/data"
     command: >
       python -m pytest -ra -vv -s --log-cli-level=info --artifacts-path=artifacts/ ${EXTRA_ARGS:-tests/}
     entrypoint: []
@@ -24,7 +25,7 @@ services:
       backtesting
       --datadir user_data/data/${EXCHANGE:-binance}
       --strategy-list NostalgiaForInfinityX3
-      --timerange ${TIMERANGE:-20210601-20210701}
+      --timerange ${TIMERANGE:-20230601-20230701}
       --config user_data/data/pairlists.json
       --config user_data/data/${EXCHANGE:-binance}-usdt-static.json
       --max-open-trades ${MAX_OPEN_TRADES:-5}

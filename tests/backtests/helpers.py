@@ -55,9 +55,10 @@ class ProcessResult:
 
 
 class Backtest:
-    def __init__(self, request, exchange=None):
+    def __init__(self, request, exchange=None, trading_mode=None):
         self.request = request
         self.exchange = exchange
+        self.trading_mode = trading_mode
 
     def __call__(
         self,
@@ -67,6 +68,7 @@ class Backtest:
         max_open_trades=5,
         stake_amount="unlimited",
         exchange=None,
+        trading_mode=None,
     ):
         if exchange is None:
             exchange = self.exchange
@@ -181,6 +183,7 @@ class BacktestResults:
             "profit_total_pct": self.full_stats.profit_total_pct,
             "max_drawdown": self.results.max_drawdown_account * 100,
             "trades": self.full_stats.trades,
+            "market_change": round(self.results.market_change * 100, 2),
             "winrate": round(self.full_stats.wins * 100.0 / self.full_stats.trades, 2),
         }
 

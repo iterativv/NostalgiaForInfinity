@@ -1,1 +1,1 @@
-../../NostalgiaForInfinityNextGen.py
+../../legacy/NostalgiaForInfinityNextGen.py

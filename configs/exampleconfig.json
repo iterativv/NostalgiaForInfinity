@@ -1,5 +1,5 @@
 {
-    // WARNING: This is an example configuration to use with NFIX.
+    // WARNING: This is an example configuration
     // Please use at own risk
     // For full documentation on Freqtrade configration files please visit https://www.freqtrade.io/en/stable/configuration/
     "dry_run": true,

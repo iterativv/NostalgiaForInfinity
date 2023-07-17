@@ -7,13 +7,13 @@ jobs:
   Pre-Commit:
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
-        python-version: 3.9
+        python-version: '3.10'
     - name: Install black
       run: |
         pip install black==22.3.0
@@ -29,76 +29,97 @@ jobs:
               - '**'
     - name: Set Cache Key
       run: echo "PY=$(python --version --version | sha256sum | cut -d' ' -f1)" >> $GITHUB_ENV
-    - uses: actions/cache@v2
+    - uses: actions/cache@v3
       with:
         path: ~/.cache/pre-commit
         key: pre-commit|${{ env.PY }}|${{ hashFiles('.pre-commit-config.yaml') }}
     - name: Check ALL Files On Branch
-      uses: pre-commit/action@v2.0.3
+      uses: pre-commit/action@v3.0.0
       if: github.event_name != 'pull_request'
     - name: Check Changed Files On PR
-      uses: pre-commit/action@v2.0.3
+      uses: pre-commit/action@v3.0.0
       if: github.event_name == 'pull_request'
       with:
         extra_args: --files ${{ steps.changed-files.outputs.repo_files }}
 
 
-  # Binance-Backtests:
-  #   runs-on: ubuntu-20.04
-  #   needs:
-  #     - Pre-Commit
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       timerange:
-  #         - 20210101-20210201
-  #         - 20210201-20210301
-  #         - 20210301-20210401
-  #         - 20210401-20210501
-  #         - 20210501-20210601
-  #         - 20210601-20210701
-  #         - 20210701-20210801
-  #         - 20210801-20210901
-  #         - 20210901-20211001
-  #         - 20211001-20211101
-  #         - 20211101-20211201
-  #         - 20211201-20220101
-  #         - 20220101-20220201
-  #         - 20220201-20220301
-  #         - 20220301-20220401
-  #         - 20220401-20220501
-  #         - 20220501-20220601
-  #         - 20220601-20220701
+  Binance-Backtests:
+    runs-on: ubuntu-20.04
+    needs:
+      - Pre-Commit
+    strategy:
+      fail-fast: false
+      matrix:
+        timerange:
+          # - 20210101-20210201
+          # - 20210201-20210301
+          # - 20210301-20210401
+          # - 20210401-20210501
+          # - 20210501-20210601
+          # - 20210601-20210701
+          # - 20210701-20210801
+          # - 20210801-20210901
+          # - 20210901-20211001
+          # - 20211001-20211101
+          # - 20211101-20211201
+          # - 20211201-20220101
+          # - 20220101-20220201
+          # - 20220201-20220301
+          # - 20220301-20220401
+          # - 20220401-20220501
+          # - 20220501-20220601
+          # - 20220601-20220701
+          # - 20220701-20220801
+          # - 20220801-20220901
+          # - 20220901-20221001
+          # - 20221001-20221101
+          # - 20221101-20221201
+          # - 20221201-20230101
+          # - 20230101-20230201
+          # - 20230201-20230301
+          # - 20230301-20230401
+          # - 20230401-20230501
+          - 20230501-20230601
+          - 20230601-20230701
 
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #       with:
-  #         submodules: true
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-  #     - name: Build Tests Image
-  #       run: docker-compose build tests
+      - name: Checkout historical trading data for backtests
+        env:
+          EXCHANGE: binance
+          TRADING_MODE: spot
+          TIMEFRAME: 5m
+          HELPER_TIME_FRAMES: 15m 1h 4h 1d
+        run: |
+          .github/workflows/scripts/download-necessary-exchange-market-data-for-backtests.sh
+          tree
 
-  #     - name: Run Tests
-  #       env:
-  #         EXTRA_ARGS: -p no:cacheprovider tests/backtests -k 'binance and ${{ matrix.timerange }}'
-  #       run: |
-  #         mkdir artifacts
-  #         chmod 777 artifacts
-  #         docker-compose run --rm tests
+      - name: Build Tests Image
+        run: docker-compose build tests
 
-  #     - name: List Artifacts
-  #       run: |
-  #         ls -lah artifacts/
+      - name: Run Tests
+        env:
+          EXTRA_ARGS: -p no:cacheprovider tests/backtests -k 'binance and spot and ${{ matrix.timerange }}'
+        run: |
+          mkdir artifacts
+          chmod 777 artifacts
+          docker-compose run --rm tests
 
-  #     - name: Show Backest Output
-  #       run: |
-  #         cat artifacts/backtest-output-binance-${{ matrix.timerange }}.txt
+      - name: List Artifacts
+        run: |
+          ls -lah artifacts/
 
-  #     - name: Upload Artifacts
-  #       uses: actions/upload-artifact@v2
-  #       with:
-  #         name: binance-testrun-artifacts
-  #         path: artifacts/
+      - name: Show Backest Output
+        run: |
+          cat artifacts/backtest-output-binance-${{ matrix.timerange }}.txt
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: binance-testrun-artifacts
+          path: artifacts/
 
 
   Kucoin-Backtests:
@@ -109,37 +130,56 @@ jobs:
       fail-fast: false
       matrix:
         timerange:
-          - 20210101-20210201
-          - 20210201-20210301
-          - 20210301-20210401
-          - 20210401-20210501
-          - 20210501-20210601
-          - 20210601-20210701
-          - 20210701-20210801
-          - 20210801-20210901
-          - 20210901-20211001
-          - 20211001-20211101
-          - 20211101-20211201
-          - 20211201-20220101
-          - 20220101-20220201
-          - 20220201-20220301
-          - 20220301-20220401
-          - 20220401-20220501
-          - 20220501-20220601
-          - 20220601-20220701
-          - 20220701-20220801
-          - 20220801-20220901
-          - 20220901-20221001
-          - 20221001-20221101
-          - 20221101-20221201
-          - 20221201-20230101
-          - 20230101-20230201
-          - 20230201-20230301
-          - 20230301-20230401
+          # - 20210101-20210201
+          # - 20210201-20210301
+          # - 20210301-20210401
+          # - 20210401-20210501
+          # - 20210501-20210601
+          # - 20210601-20210701
+          # - 20210701-20210801
+          # - 20210801-20210901
+          # - 20210901-20211001
+          # - 20211001-20211101
+          # - 20211101-20211201
+          # - 20211201-20220101
+          # - 20220101-20220201
+          # - 20220201-20220301
+          # - 20220301-20220401
+          # - 20220401-20220501
+          # - 20220501-20220601
+          # - 20220601-20220701
+          # - 20220701-20220801
+          # - 20220801-20220901
+          # - 20220901-20221001
+          # - 20221001-20221101
+          # - 20221101-20221201
+          # - 20221201-20230101
+          # - 20230101-20230201
+          # - 20230201-20230301
+          # - 20230301-20230401
+          # - 20230401-20230501
+          - 20230501-20230601
+          - 20230601-20230701
+
     steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: true
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Checkout historical trading data for backtests
+        env:
+          EXCHANGE: kucoin
+          TRADING_MODE: spot
+          TIMEFRAME: 5m
+          HELPER_TIME_FRAMES: 15m 1h 4h 1d
+        run: |
+          ls -lR user_data/data
+          ls -lR user_data
+          .github/workflows/scripts/download-necessary-exchange-market-data-for-backtests.sh
+          cat user_data/data/.git/info/sparse-checkout
+          du -sh user_data/data
+          tree
+
+
 
       - name: Build Tests Image
         run: docker-compose build tests
@@ -161,7 +201,7 @@ jobs:
           cat artifacts/backtest-output-kucoin-${{ matrix.timerange }}.txt
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: kucoin-testrun-artifacts
           path: artifacts/
@@ -171,31 +211,31 @@ jobs:
     runs-on: ubuntu-20.04
     needs:
       - Kucoin-Backtests
-      # - Binance-Backtests
+      - Binance-Backtests
 
     steps:
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-          python-version: 3.9
+          python-version: '3.10'
 
       - name: Install Dependencies
         run: |
           python -m pip install -r tests/ci-requirements.txt
 
-      # - name: Download Previous Binance CI Artifacts
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   run: |
-      #     python .github/workflows/scripts/download-previous-artifacts.py \
-      #       --repo=${{ github.event.repository.full_name }} \
-      #       --branch=main \
-      #       --workflow=tests.yml \
-      #       --exchange=binance \
-      #       --name=binance-testrun-artifacts downloaded-results
+      - name: Download Previous Binance CI Artifacts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python .github/workflows/scripts/download-previous-artifacts.py \
+            --repo=${{ github.event.repository.full_name }} \
+            --branch=main \
+            --workflow=tests.yml \
+            --exchange=binance \
+            --name=binance-testrun-artifacts downloaded-results
 
       - name: Download Previous Kucoin CI Artifacts
         env:
@@ -208,14 +248,14 @@ jobs:
             --exchange=kucoin \
             --name=kucoin-testrun-artifacts downloaded-results
 
-      # - name: Download Current Binance CI Artifacts
-      #   uses: actions/download-artifact@v2
-      #   with:
-      #     name: binance-testrun-artifacts
-      #     path: downloaded-results/current
+      - name: Download Current Binance CI Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: binance-testrun-artifacts
+          path: downloaded-results/current
 
       - name: Download Current Kucoin CI Artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: kucoin-testrun-artifacts
           path: downloaded-results/current
