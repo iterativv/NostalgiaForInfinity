@@ -52,11 +52,11 @@ warnings.simplefilter(action='ignore', category=pd.errors.PerformanceWarning)
 ##                                                                                                         ##
 ##  Binance: https://accounts.binance.com/en/register?ref=C68K26A9 (20% discount on trading fees)          ##
 ##  Kucoin: https://www.kucoin.com/r/af/QBSSS5J2 (20% lifetime discount on trading fees)                   ##
-##  Gate.io: https://www.gate.io/signup/UAARUlhf/20pct (20% discount on trading fees)                      ##
+##  Gate.io: https://www.gate.io/signup/UAARUlhf/20pct?ref_type=103 (20% discount on trading fees)         ##
 ##  OKX: https://www.okx.com/join/11749725931 (20% discount on trading fees)                               ##
 ##  MEXC: https://promote.mexc.com/a/nfi  (10% discount on trading fees)                                   ##
 ##  ByBit: https://partner.bybit.com/b/nfi                                                                 ##
-##  Huobi: https://www.huobi.com/en-us/v/register/double-invite/?inviter_id=11345710&invite_code=ubpt2223  ##
+##  Huobi: https://www.huobi.com/invite/en-us/1f?invite_code=ubpt2223                                      ##
 ##         (20% discount on trading fees)                                                                  ##
 ##  Bitvavo: https://account.bitvavo.com/create?a=D22103A4BC (no fees for the first € 1000)                ##
 #############################################################################################################
@@ -65,7 +65,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.631"
+        return "v12.0.634"
 
     # ROI table:
     minimal_roi = {
@@ -3088,6 +3088,8 @@ class NostalgiaForInfinityX2(IStrategy):
                                           | (dataframe['ema_200_dec_48_1h'] == False)
                                           | (dataframe['ema_200_dec_24_4h'] == False)
                                           | (dataframe['ema_200_dec_4_1d'] == False))
+                    item_buy_logic.append((dataframe['change_pct_1d'] > -0.02)
+                                          | (dataframe['cti_20_1h'] < 0.7))
 
                     # Logic
                     item_buy_logic.append(dataframe['bb40_2_delta'].gt(dataframe['close'] * 0.06))
@@ -8291,6 +8293,9 @@ class NostalgiaForInfinityX2(IStrategy):
                                           | (dataframe['cti_20_4h'] < -0.5)
                                           | (dataframe['rsi_14_4h'] < 40.0)
                                           | (dataframe['cti_20_1d'] < 0.5))
+                    item_buy_logic.append((dataframe['change_pct_4h'] > -0.03)
+                                          | (dataframe['cti_20_1h'] < -0.5)
+                                          | (dataframe['cti_20_4h'] < 0.7))
 
                     # Logic
                     item_buy_logic.append(dataframe['bb40_2_delta'].gt(dataframe['close'] * 0.036))
@@ -9989,6 +9994,12 @@ class NostalgiaForInfinityX2(IStrategy):
                                           | (dataframe['not_downtrend_4h'])
                                           | (dataframe['rsi_3_15m'] > 30.0)
                                           | (dataframe['rsi_3_1h'] > 20.0))
+                    item_buy_logic.append((dataframe['not_downtrend_1h'])
+                                          | (dataframe['not_downtrend_4h'])
+                                          | (dataframe['rsi_3_1h'] > 6.0)
+                                          | (dataframe['rsi_3_4h'] > 16.0)
+                                          | (dataframe['ema_200_dec_48_1h'] == False)
+                                          | (dataframe['ema_200_dec_24_4h'] == False))
 
                     # Logic
                     item_buy_logic.append(dataframe['bb20_2_width_1h'] > 0.132)
