@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.247"
+        return "v13.0.248"
 
     # ROI table:
     minimal_roi = {
@@ -2068,6 +2068,7 @@ class NostalgiaForInfinityX3(IStrategy):
 
         # Close min
         dataframe['close_min_12'] = dataframe['close'].rolling(12).min()
+        dataframe['close_min_24'] = dataframe['close'].rolling(24).min()
 
         # Close delta
         dataframe['close_delta'] = (dataframe['close'] - dataframe['close'].shift()).abs()
