@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.243"
+        return "v13.0.246"
 
     # ROI table:
     minimal_roi = {
@@ -1398,17 +1398,19 @@ class NostalgiaForInfinityX3(IStrategy):
                                 )
                                 or
                                 (
-                                    (last_candle['rsi_14'] < 32.0)
+                                    (last_candle['rsi_14'] < 36.0)
                                     and (last_candle['rsi_3'] > 26.0)
                                     and (last_candle['ha_close'] > last_candle['ha_open'])
                                     and (last_candle['rsi_3_15m'] > 26.0)
                                     and (last_candle['rsi_3_1h'] > 26.0)
                                     and (last_candle['rsi_3_4h'] > 26.0)
+                                    and (last_candle['ema_200_dec_24'] == False)
+                                    and (last_candle['ema_200_dec_24_15m'] == False)
+                                    and (last_candle['ema_200_dec_48_1h'] == False)
                                 )
                                 or
                                 (
-                                    (last_candle['rsi_14'] < 46.0)
-                                    and (last_candle['cti_20'] < -0.6)
+                                    (last_candle['rsi_14'] < 36.0)
                                     and (last_candle['rsi_3'] > 5.0)
                                     and (last_candle['tsi'] < -20.0)
                                     and (last_candle['tsi'] > last_candle['tsi_signal'])
@@ -1466,11 +1468,10 @@ class NostalgiaForInfinityX3(IStrategy):
                                 )
                                 or
                                 (
-                                    (last_candle['rsi_14'] < 36.0)
-                                    and (last_candle['rsi_3'] > 16.0)
-                                    and (last_candle['rsi_14_15m'] < 36.0)
+                                    (last_candle['rsi_14'] < 46.0)
+                                    and (last_candle['rsi_14_15m'] < 34.0)
                                     and (last_candle['rsi_14_15m'] > previous_candle['rsi_14_15m'])
-                                    and (last_candle['rsi_3_15m'] > 10.0)
+                                    and (last_candle['rsi_3_15m'] > 20.0)
                                     and (last_candle['rsi_3_1h'] > 26.0)
                                     and (last_candle['rsi_3_4h'] > 26.0)
                                 )
