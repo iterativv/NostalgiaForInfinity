@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.250"
+        return "v13.0.252"
 
     # ROI table:
     minimal_roi = {
@@ -1344,9 +1344,9 @@ class NostalgiaForInfinityX3(IStrategy):
                             (profit_current_stake_ratio < (min(self.grinding_stop_init, grinding_thresholds[i]) if (count_of_entries == 1 and count_of_exits == 0) else grinding_thresholds[i]))
                             and
                             (
-                                (last_candle['close_max_12'] < (last_candle['close'] * 1.1))
-                                and (last_candle['close_max_24'] < (last_candle['close'] * 1.12))
-                                and (last_candle['close_max_48'] < (last_candle['close'] * 1.16))
+                                (last_candle['close_max_12'] < (last_candle['close'] * 1.12))
+                                and (last_candle['close_max_24'] < (last_candle['close'] * 1.18))
+                                and (last_candle['close_max_48'] < (last_candle['close'] * 1.24))
                                 and (last_candle['btc_pct_close_max_72_5m'] < 0.04)
                                 and (last_candle['btc_pct_close_max_24_5m'] < 0.03)
                             )
@@ -6242,6 +6242,11 @@ class NostalgiaForInfinityX3(IStrategy):
                                           | (dataframe['ema_200_dec_24_4h'] == False)
                                           | (dataframe['ema_200_dec_4_1d'] == False)
                                           | (dataframe['close'] < (dataframe['ema_26'] * 0.93)))
+                    item_buy_logic.append((dataframe['not_downtrend_1h'])
+                                          | (dataframe['rsi_3'] > 5.0)
+                                          | (dataframe['rsi_3_15m'] > 16.0)
+                                          | (dataframe['rsi_3_1h'] > 26.0)
+                                          | (dataframe['close'] < (dataframe['ema_26'] * 0.90)))
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < (dataframe['ema_26'] * 0.94))
