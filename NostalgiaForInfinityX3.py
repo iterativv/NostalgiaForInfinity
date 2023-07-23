@@ -2333,6 +2333,113 @@ class NostalgiaForInfinityX3(IStrategy):
         is_btc_stake = self.config['stake_currency'] in self.btc_stakes
         allowed_empty_candles = 144 if is_btc_stake else 60
 
+        # Global protections
+        protections_global = [
+            # current 4h red with top wick, previous 4h red, 4h overbought
+            (
+                (dataframe['change_pct_4h'] > -0.04)
+                | (dataframe['top_wick_pct_4h'] < 0.04)
+                | (dataframe['change_pct_4h'].shift(48) > -0.04)
+                | (dataframe['cti_20_4h'] < 0.8)
+            )
+            &
+            # current 1h red, current 4h green, 4h overbought
+            (
+                (dataframe['change_pct_1h'] > -0.04)
+                | (dataframe['change_pct_4h'] < 0.08)
+                | (dataframe['cti_20_4h'] < 0.5)
+                | (dataframe['rsi_14_4h'] < 70.0)
+            )
+            &
+            # current 4h red, previous 4h green, 4h overbought
+            (
+                (dataframe['change_pct_4h'] > -0.04)
+                | (dataframe['change_pct_4h'].shift(48) < 0.04)
+                | (dataframe['cti_20_4h'] < 0.5)
+                | (dataframe['rsi_14_4h'] < 70.0)
+            )
+            &
+            # current 4h red, previous 4h red, 2nd previous 4h long green, 4h overbought
+            (
+                (dataframe['change_pct_4h'] > -0.04)
+                | (dataframe['change_pct_4h'].shift(48) > -0.04)
+                | (dataframe['change_pct_4h'].shift(96) < 0.16)
+                | (dataframe['cti_20_4h'] < 0.5)
+            )
+            &
+            # current 4h red, overbought 4h, sudden rise 4h (and now coming down)
+            (
+                (dataframe['change_pct_4h'] > -0.01)
+                | (dataframe['rsi_14_max_6_4h'] < 80.0)
+                | (dataframe['cti_20_4h'] < 0.5)
+                | (((dataframe['ema_12_4h'] - dataframe['ema_26_4h']) / dataframe['ema_26_4h']) < 0.08)
+            )
+            # current 4h red, previous 4h green with top wick, 4h overbought
+            &
+            (
+                (dataframe['change_pct_4h'] > -0.01)
+                | (dataframe['change_pct_4h'].shift(48) < 0.08)
+                | (dataframe['top_wick_pct_4h'].shift(48) < 0.08)
+                | (dataframe['cti_20_4h'] < 0.5)
+            )
+            # current 4h long red, previous 4h red, 2nd previous 4h long green, 4h overbought
+            &
+            (
+                (dataframe['change_pct_4h'] > -0.08)
+                | (dataframe['change_pct_4h'].shift(48) > -0.01)
+                | (dataframe['change_pct_4h'].shift(96) < 0.08)
+                | (dataframe['cti_20_4h'] < 0.5)
+            )
+            # current 1h red, current 4h long green with top wick, 1h overbought
+            &
+            (
+                (dataframe['change_pct_1h'] > -0.01)
+                | (dataframe['change_pct_4h'] < 0.08)
+                | (dataframe['top_wick_pct_4h'] < 0.04)
+                | (dataframe['cti_20_1h'] < 0.7)
+            )
+            # current 1h red, 1h overbought, 1d overbought, 1h descending
+            &
+            (
+                (dataframe['change_pct_1h'] > -0.04)
+                | (dataframe['cti_20_1h'] < 0.7)
+                | (dataframe['cti_20_1d'] < 0.8)
+                | (dataframe['ema_200_dec_48_1h'] == False)
+            )
+            # 1h overbought, 1d overbought, 1h descending
+            &
+            (
+                (dataframe['rsi_14_1h'] < 70.0)
+                | (dataframe['cti_20_1h'] < 0.7)
+                | (dataframe['cti_20_1d'] < 0.8)
+                | (dataframe['ema_200_dec_48_1h'] == False)
+            )
+            # current 1d green, 4h overbought, 4h descending
+            &
+            (
+                (dataframe['change_pct_1d'] < 0.08)
+                | (dataframe['rsi_14_4h'] < 70.0)
+                | (dataframe['cti_20_4h'] < 0.5)
+                | (dataframe['ema_200_dec_24_4h'] == False)
+            )
+            # current 4h red, previous 4h green, 1d overbought
+            &
+            (
+                (dataframe['change_pct_4h'] > -0.04)
+                | (dataframe['change_pct_4h'].shift(48) < 0.04)
+                | (dataframe['rsi_14_1d'] < 70.0)
+                | (dataframe['cti_20_1d'] < 0.5)
+            )
+            # 1h overbought, 4h overbought, 1d overbought
+            &
+            (
+                (dataframe['r_480_1h'] < -20.0)
+                | (dataframe['r_480_4h'] < -20.0)
+                | (dataframe['rsi_14_1d'] < 80.0)
+                | (dataframe['cti_20_1d'] < 0.85)
+            )
+        ]
+
         for buy_enable in self.buy_params:
             index = int(buy_enable.split('_')[2])
             item_buy_protection_list = [True]
@@ -2342,6 +2449,7 @@ class NostalgiaForInfinityX3(IStrategy):
                 # -----------------------------------------------------------------------------------------
                 item_buy_logic = []
                 item_buy_logic.append(reduce(lambda x, y: x & y, item_buy_protection_list))
+                item_buy_logic.append(reduce(lambda x, y: x & y, protections_global))
 
                 # Condition #1 - Long mode bull. Uptrend.
                 if index == 1:
