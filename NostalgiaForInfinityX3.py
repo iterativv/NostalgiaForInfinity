@@ -2469,7 +2469,7 @@ class NostalgiaForInfinityX3(IStrategy):
                 | (dataframe['change_pct_4h'].shift(48) > -0.0)
                 | (dataframe['cti_20_4h'] < 0.7)
             )
-            # current 1h red, 1h downtrend, 15m move down, 1h move down, 1h downtredn, 4h downtrend
+            # current 1h red, 1h downtrend, 15m move down, 1h move down, 1h downtrend, 4h downtrend
             &
             (
                 (dataframe['change_pct_1h'] > -0.01)
