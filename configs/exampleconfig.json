@@ -9,6 +9,7 @@
     "tradable_balance_ratio": 0.99,
     "fiat_display_currency": "USD",
     "force_entry_enable": true,
+    "timeframe": "5m",
     "unfilledtimeout": {
         "entry": 5,
         "exit": 20,

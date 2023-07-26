@@ -6,8 +6,6 @@ If you plan to only clone the repository to use the strategy, a regular ``git cl
 
 However, if you plan on running additional strategies or run the test suite, you need to run ``tools/download-necessary-exchange-market-data-for-backtests.sh``
 
-### Newer versions of Git
-
 ```bash
 ./tools/download-necessary-exchange-market-data-for-backtests.sh
 ```
