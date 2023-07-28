@@ -2503,12 +2503,13 @@ class NostalgiaForInfinityX3(IStrategy):
                 | (dataframe['cti_20_4h'] < 0.7)
                 | (dataframe['rsi_14_max_6_4h'] < 70.0)
             )
-            # current 1d long green, current 4h red, 1h high, 1h downtrend, 4h downtrend
+            # current 1d long green, current 4h red, 1h high, 4h high, 1h downtrend, 4h downtrend
             &
             (
                 (dataframe['change_pct_1d'] < 0.16)
                 | (dataframe['change_pct_4h'] > -0.0)
-                | (dataframe['rsi_14_1h'] < 50.0)
+                | (dataframe['rsi_14_1h'] < 46.0)
+                | (dataframe['rsi_14_4h'] < 46.0)
                 | (dataframe['ema_200_dec_48_1h'] == False)
                 | (dataframe['ema_200_dec_24_4h'] == False)
             )
