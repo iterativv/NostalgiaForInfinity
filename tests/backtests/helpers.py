@@ -76,8 +76,9 @@ class Backtest:
             raise RuntimeError(
                 f"No 'exchange' was passed when instantiating {self.__class__.__name__} or when calling it"
             )
+
         tmp_path = self.request.getfixturevalue("tmp_path")
-        exchange_config = f"user_data/data/{exchange}-usdt-static.json"
+        exchange_config = f"configs/pairlist-static-{exchange}-usdt-{trading_mode}.json"
         json_results_file = tmp_path / "backtest-results.json"
         cmdline = [
             "freqtrade",
@@ -87,8 +88,9 @@ class Backtest:
             f"--timerange={start_date}-{end_date}",
             # f"--max-open-trades={max_open_trades}",
             # f"--stake-amount={stake_amount}",
-            "--config=configs/exampleconfig.json",
-            "--config=user_data/data/pairlists.json",
+            f"--config=user_data/data/pairlists-{trading_mode}.json",
+            f"--config=configs/exampleconfig.json",
+            "--config=configs/blacklist-binance.json",
         ]
         if pairlist is None:
             cmdline.append(f"--config={exchange_config}")
@@ -124,12 +126,12 @@ class Backtest:
             shutil.copyfile(generated_results_file, generated_json_results_artifact_path)
             generated_json_ci_results_artifact_path = (
                 self.request.config.option.artifacts_path
-                / f"ci-results-{exchange}-{start_date}-{end_date}.json"
+                / f"ci-results-{exchange}-{trading_mode}-{start_date}-{end_date}.json"
             )
 
             generated_txt_results_artifact_path = (
                 self.request.config.option.artifacts_path
-                / f"backtest-output-{exchange}-{start_date}-{end_date}.txt"
+                / f"backtest-output-{exchange}-{trading_mode}-{start_date}-{end_date}.txt"
             )
             generated_txt_results_artifact_path.write_text(ret.stdout.strip())
 
