@@ -172,8 +172,6 @@ jobs:
           TIMEFRAME: 5m
           HELPER_TIME_FRAMES: 15m 1h 4h 1d
         run: |
-          ls -lR user_data/data
-          ls -lR user_data
           .github/workflows/scripts/download-necessary-exchange-market-data-for-backtests.sh
           cat user_data/data/.git/info/sparse-checkout
           du -sh user_data/data
