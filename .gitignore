@@ -137,7 +137,7 @@ user_data/data/*.json
 user_data/data/*/*.json
 user_data/data/*/*.json.gz
 user_data/backtest_results
-user_data/data
+user_data/data/
 user_data/*.json
 user_data/hyperopt_results
 user_data/hyperopts
