@@ -65,8 +65,8 @@ class Backtest:
         start_date,
         end_date,
         pairlist=None,
-        max_open_trades=5,
-        stake_amount="unlimited",
+        # max_open_trades=5,
+        # stake_amount="unlimited",
         exchange=None,
         trading_mode=None,
     ):
@@ -85,8 +85,9 @@ class Backtest:
             f"--user-data=user_data",
             "--strategy-list=NostalgiaForInfinityX3",
             f"--timerange={start_date}-{end_date}",
-            f"--max-open-trades={max_open_trades}",
-            f"--stake-amount={stake_amount}",
+            # f"--max-open-trades={max_open_trades}",
+            # f"--stake-amount={stake_amount}",
+            "--config=configs/exampleconfig.json",
             "--config=user_data/data/pairlists.json",
         ]
         if pairlist is None:
