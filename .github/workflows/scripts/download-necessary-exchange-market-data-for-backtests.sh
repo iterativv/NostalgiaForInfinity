@@ -7,26 +7,26 @@ MAIN_DATA_DIRECTORY="user_data/data"
 # EXCHANGE="binance"
 URL="https://github.com/DigiTuccar/HistoricalDataForTradeBacktest.git"
 
-ls -la user_data
-ls -la $MAIN_DATA_DIRECTORY
+# ls -la user_data
+# ls -la $MAIN_DATA_DIRECTORY
 
-if [ ! \( -e "${file}" \) ]
-then
-     echo "%ERROR: file ${file} does not exist!" >&2
-     exit 1
-elif [ ! \( -f "${file}" \) ]
-then
-     echo "%ERROR: ${file} is not a file!" >&2
-     exit 2
-elif [ ! \( -r "${file}" \) ]
-then
-     echo "%ERROR: file ${file} is not readable!" >&2
-     exit 3
-elif [ ! \( -s "${file}" \) ]
-then
-     echo "%ERROR: file ${file} is empty!" >&2
-     exit 4
-fi
+# if [ ! \( -e "${file}" \) ]
+# then
+#      echo "%ERROR: file ${file} does not exist!" >&2
+#      exit 1
+# elif [ ! \( -f "${file}" \) ]
+# then
+#      echo "%ERROR: ${file} is not a file!" >&2
+#      exit 2
+# elif [ ! \( -r "${file}" \) ]
+# then
+#      echo "%ERROR: file ${file} is not readable!" >&2
+#      exit 3
+# elif [ ! \( -s "${file}" \) ]
+# then
+#      echo "%ERROR: file ${file} is empty!" >&2
+#      exit 4
+# fi
 
 
 if [ -L $MAIN_DATA_DIRECTORY ]
