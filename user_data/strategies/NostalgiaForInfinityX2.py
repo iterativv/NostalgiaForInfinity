@@ -65,7 +65,7 @@ class NostalgiaForInfinityX2(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v12.0.632"
+        return "v12.0.635"
 
     # ROI table:
     minimal_roi = {
@@ -3088,6 +3088,8 @@ class NostalgiaForInfinityX2(IStrategy):
                                           | (dataframe['ema_200_dec_48_1h'] == False)
                                           | (dataframe['ema_200_dec_24_4h'] == False)
                                           | (dataframe['ema_200_dec_4_1d'] == False))
+                    item_buy_logic.append((dataframe['change_pct_1d'] > -0.02)
+                                          | (dataframe['cti_20_1h'] < 0.7))
 
                     # Logic
                     item_buy_logic.append(dataframe['bb40_2_delta'].gt(dataframe['close'] * 0.06))
@@ -5915,6 +5917,11 @@ class NostalgiaForInfinityX2(IStrategy):
                                           | (dataframe['ema_200_dec_24_4h'] == False)
                                           | (dataframe['ema_200_dec_4_1d'] == False)
                                           | (dataframe['close'] < (dataframe['ema_26'] * 0.93)))
+                    item_buy_logic.append((dataframe['not_downtrend_1h'])
+                                          | (dataframe['rsi_3'] > 5.0)
+                                          | (dataframe['rsi_3_15m'] > 16.0)
+                                          | (dataframe['rsi_3_1h'] > 26.0)
+                                          | (dataframe['close'] < (dataframe['ema_26'] * 0.90)))
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < (dataframe['ema_26'] * 0.94))
@@ -9992,6 +9999,12 @@ class NostalgiaForInfinityX2(IStrategy):
                                           | (dataframe['not_downtrend_4h'])
                                           | (dataframe['rsi_3_15m'] > 30.0)
                                           | (dataframe['rsi_3_1h'] > 20.0))
+                    item_buy_logic.append((dataframe['not_downtrend_1h'])
+                                          | (dataframe['not_downtrend_4h'])
+                                          | (dataframe['rsi_3_1h'] > 6.0)
+                                          | (dataframe['rsi_3_4h'] > 16.0)
+                                          | (dataframe['ema_200_dec_48_1h'] == False)
+                                          | (dataframe['ema_200_dec_24_4h'] == False))
 
                     # Logic
                     item_buy_logic.append(dataframe['bb20_2_width_1h'] > 0.132)
