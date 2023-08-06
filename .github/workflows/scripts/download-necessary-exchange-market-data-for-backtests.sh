@@ -84,15 +84,22 @@ if [[ $data_necessary_market_type == futures ]]
     EXCHANGE_MARKET_DIRECTORY=$data_necessary_exchange
 fi
 
-for pair in `cat PAIRS_FOR_DOWNLOAD.txt`
-
+while IFS= read -r pair                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ─╯
 do
-
-
-echo $pair-$data_necessary_timeframe
+echo "$pair" pair basıldı
 git -C $MAIN_DATA_DIRECTORY sparse-checkout add /$EXCHANGE_MARKET_DIRECTORY/$pair*-$data_necessary_timeframe*.feather
 
-done
+done < PAIRS_FOR_DOWNLOAD.txt
+
+# for pair in `cat PAIRS_FOR_DOWNLOAD.txt`
+
+# do
+
+
+# echo $pair-$data_necessary_timeframe
+# git -C $MAIN_DATA_DIRECTORY sparse-checkout add /$EXCHANGE_MARKET_DIRECTORY/$pair*-$data_necessary_timeframe*.feather
+
+# done
 
 done
 done
@@ -120,13 +127,20 @@ if [[ $data_necessary_market_type == futures ]]
     EXCHANGE_MARKET_DIRECTORY=$data_necessary_exchange
 fi
 
-for pair in `cat PAIRS_FOR_DOWNLOAD.txt`
+while IFS= read -r pair                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ─╯
 do
+echo "$pair" pair basıldı
+git -C $MAIN_DATA_DIRECTORY sparse-checkout add /$EXCHANGE_MARKET_DIRECTORY/$pair*-$data_necessary_timeframe*.feather
 
-echo $pair-$data_necessary_timeframe
-sudo git -C $MAIN_DATA_DIRECTORY sparse-checkout add /$EXCHANGE_MARKET_DIRECTORY/$pair*-$data_necessary_timeframe*.feather
+done < PAIRS_FOR_DOWNLOAD.txt
 
-done
+# for pair in `cat PAIRS_FOR_DOWNLOAD.txt`
+# do
+
+# echo $pair-$data_necessary_timeframe
+# sudo git -C $MAIN_DATA_DIRECTORY sparse-checkout add /$EXCHANGE_MARKET_DIRECTORY/$pair*-$data_necessary_timeframe*.feather
+
+# done
 
 done
 done
