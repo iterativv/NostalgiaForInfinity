@@ -3,7 +3,6 @@
         "name": "kucoin",
         "pair_whitelist": [
             "ADA/USDT:USDT",
-            "ALGO/USDT:USDT",
             "APE/USDT:USDT",
             "AR/USDT:USDT",
             "ATOM/USDT:USDT",
