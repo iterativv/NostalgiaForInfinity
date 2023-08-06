@@ -84,9 +84,9 @@ if [[ $data_necessary_market_type == futures ]]
     EXCHANGE_MARKET_DIRECTORY=$data_necessary_exchange
 fi
 
-while IFS= read -r pair                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ─╯
+while IFS= read -r pair
 do
-echo "$pair" pair basıldı
+echo "$pair" pair "$data_necessary_timeframe" added
 git -C $MAIN_DATA_DIRECTORY sparse-checkout add /$EXCHANGE_MARKET_DIRECTORY/$pair*-$data_necessary_timeframe*.feather
 
 done < PAIRS_FOR_DOWNLOAD.txt
@@ -127,9 +127,9 @@ if [[ $data_necessary_market_type == futures ]]
     EXCHANGE_MARKET_DIRECTORY=$data_necessary_exchange
 fi
 
-while IFS= read -r pair                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ─╯
+while IFS= read -r pair
 do
-echo "$pair" pair basıldı
+echo "$pair" pair "$data_necessary_timeframe" added
 git -C $MAIN_DATA_DIRECTORY sparse-checkout add /$EXCHANGE_MARKET_DIRECTORY/$pair*-$data_necessary_timeframe*.feather
 
 done < PAIRS_FOR_DOWNLOAD.txt
