@@ -32,9 +32,9 @@ docker-compose run --rm tests freqtrade test-pairlist -c /testing/configs/pairli
 if [ -L $MAIN_DATA_DIRECTORY ]
     then
         echo "###############################################"
-        echo $MAIN_DATA_DIRECTORY exists on your filesystem. We will delete it for Github CI Workflow
+        echo $MAIN_DATA_DIRECTORY exists on your filesyste as a link. We will delete it for Github CI Workflow
         echo "###############################################"
-        rm -rf $MAIN_DATA_DIRECTORY
+        sudo rm -rf $MAIN_DATA_DIRECTORY
     else
     echo "###############################################"
     echo $MAIN_DATA_DIRECTORY not exists on your filesystem. Necessary to download first
@@ -46,9 +46,9 @@ fi
 if [ -d $MAIN_DATA_DIRECTORY ]
     then
         echo "###############################################"
-        echo $MAIN_DATA_DIRECTORY exists on your filesystem. We will delete it for Github CI Workflow
+        echo $MAIN_DATA_DIRECTORY as a directory exists on CI WORKFLOW filesystem. We will delete it for Github CI Workflow
         echo "###############################################"
-        rm -rf $MAIN_DATA_DIRECTORY
+        sudo rm -rf $MAIN_DATA_DIRECTORY
     else
     echo "###############################################"
     echo $MAIN_DATA_DIRECTORY not exists on your filesystem. Necessary to download first
