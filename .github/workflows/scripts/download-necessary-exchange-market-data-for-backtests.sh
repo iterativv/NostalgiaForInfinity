@@ -89,8 +89,8 @@ for pair in `cat PAIRS_FOR_DOWNLOAD.txt`
 do
 
 
-echo $pair-$data_necessary_timeframe*.feather
-git -C $MAIN_DATA_DIRECTORY sparse-checkout add /$EXCHANGE_MARKET_DIRECTORY/$pair-$data_necessary_timeframe*.feather
+echo $pair-$data_necessary_timeframe
+git -C $MAIN_DATA_DIRECTORY sparse-checkout add /$EXCHANGE_MARKET_DIRECTORY/$pair*-$data_necessary_timeframe*.feather
 
 done
 
@@ -123,8 +123,8 @@ fi
 for pair in `cat PAIRS_FOR_DOWNLOAD.txt`
 do
 
-echo $pair-$data_necessary_timeframe*.feather
-git -C $MAIN_DATA_DIRECTORY sparse-checkout add /$EXCHANGE_MARKET_DIRECTORY/$pair-$data_necessary_timeframe*.feather
+echo $pair-$data_necessary_timeframe
+sudo git -C $MAIN_DATA_DIRECTORY sparse-checkout add /$EXCHANGE_MARKET_DIRECTORY/$pair*-$data_necessary_timeframe*.feather
 
 done
 
