@@ -57,7 +57,7 @@ if [ -d $MAIN_DATA_DIRECTORY ]
 fi
     git clone --filter=blob:none --no-checkout --depth 1 --sparse $URL $MAIN_DATA_DIRECTORY
     git -C $MAIN_DATA_DIRECTORY sparse-checkout reapply --no-cone
-    sudo chown -R $(id -u):$(id -g) $MAIN_DATA_DIRECTORY
+    # sudo chown -R $(id -u):$(id -g) $MAIN_DATA_DIRECTORY
 
 
 echo "Fetching necessary Timeframe Data"
