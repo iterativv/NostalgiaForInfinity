@@ -88,8 +88,8 @@ do
 
 echo $pair
 echo $pair*-$data_necessary_timeframe*.feather
-
-git -C $MAIN_DATA_DIRECTORY sparse-checkout add /$EXCHANGE_MARKET_DIRECTORY/$pair*-$data_necessary_timeframe*.feather
+echo /$EXCHANGE_MARKET_DIRECTORY/$pair*-$data_necessary_timeframe*.feather >> user_data/data/.git/info/sparse-checkout
+#git -C $MAIN_DATA_DIRECTORY sparse-checkout add /$EXCHANGE_MARKET_DIRECTORY/$pair*-$data_necessary_timeframe*.feather
 
 done
 
@@ -125,7 +125,8 @@ do
 
 echo $pair
 echo $pair*-$data_necessary_timeframe*.feather
-git -C $MAIN_DATA_DIRECTORY sparse-checkout add /$EXCHANGE_MARKET_DIRECTORY/$pair*-$data_necessary_timeframe*.feather
+echo /$EXCHANGE_MARKET_DIRECTORY/$pair*-$data_necessary_timeframe*.feather >> user_data/data/.git/info/sparse-checkout
+#git -C $MAIN_DATA_DIRECTORY sparse-checkout add /$EXCHANGE_MARKET_DIRECTORY/$pair*-$data_necessary_timeframe*.feather
 
 done
 
