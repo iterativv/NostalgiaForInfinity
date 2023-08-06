@@ -1527,7 +1527,7 @@ class NostalgiaForInfinityX3(IStrategy):
                                     (last_candle['rsi_14'] < 36.0)
                                     and (last_candle['rsi_3'] > 10.0)
                                     and (last_candle['rsi_3'] < 36.0)
-                                    and (last_candle['ewo_50_200'] > 2.8)
+                                    and (last_candle['ewo_50_200'] > 3.2)
                                     and (last_candle['close'] < (last_candle['ema_12'] * 1.014))
                                     and (last_candle['close'] < (last_candle['ema_16'] * 0.976))
                                     and (last_candle['rsi_3_15m'] > 16.0)
