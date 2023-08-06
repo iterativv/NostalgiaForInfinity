@@ -28,7 +28,7 @@ URL="https://github.com/DigiTuccar/HistoricalDataForTradeBacktest.git"
 #      exit 4
 # fi
 
-
+docker-compose run --rm tests freqtrade test-pairlist -c configs/pairlists-$data_necessary_market_type.json -c configs/pairlist-static-$data_necessary_exchange-$data_necessary_market_type-usdt.json -c configs/exampleconfig.json -1 --exchange $data_necessary_exchange -c configs/blacklist-$data_necessary_exchange.json|sed -e 's+/+_+g'>>PAIRS_FOR_DOWNLOAD.txt
 if [ -L $MAIN_DATA_DIRECTORY ]
     then
         echo "###############################################"
@@ -84,14 +84,13 @@ if [[ $data_necessary_market_type == futures ]]
     EXCHANGE_MARKET_DIRECTORY=$data_necessary_exchange
 fi
 
-for pair in `docker-compose run --rm tests freqtrade test-pairlist -c configs/pairlists-$data_necessary_market_type.json -c configs/pairlist-static-$data_necessary_exchange-$data_necessary_market_type-usdt.json -c configs/exampleconfig.json -1 --exchange $data_necessary_exchange -c configs/blacklist-$data_necessary_exchange.json|sed -e 's+/+_+g'`
+for pair in `cat PAIRS_FOR_DOWNLOAD.txt`
 
 do
 
-echo $pair
-echo $pair*-$data_necessary_timeframe*.feather
-echo /$EXCHANGE_MARKET_DIRECTORY/$pair*-$data_necessary_timeframe*.feather >> user_data/data/.git/info/sparse-checkout
-#git -C $MAIN_DATA_DIRECTORY sparse-checkout add /$EXCHANGE_MARKET_DIRECTORY/$pair*-$data_necessary_timeframe*.feather
+
+echo $pair-$data_necessary_timeframe*.feather
+git -C $MAIN_DATA_DIRECTORY sparse-checkout add /$EXCHANGE_MARKET_DIRECTORY/$pair-$data_necessary_timeframe*.feather
 
 done
 
@@ -121,14 +120,11 @@ if [[ $data_necessary_market_type == futures ]]
     EXCHANGE_MARKET_DIRECTORY=$data_necessary_exchange
 fi
 
-for pair in `docker-compose run --rm tests freqtrade test-pairlist -c configs/pairlists-$data_necessary_market_type.json -c configs/pairlist-static-$data_necessary_exchange-$data_necessary_market_type-usdt.json -c configs/exampleconfig.json -1 --exchange $data_necessary_exchange -c configs/blacklist-$data_necessary_exchange.json|sed -e 's+/+_+g'`
-
+for pair in `cat PAIRS_FOR_DOWNLOAD.txt`
 do
 
-echo $pair
-echo $pair*-$data_necessary_timeframe*.feather
-echo /$EXCHANGE_MARKET_DIRECTORY/$pair*-$data_necessary_timeframe*.feather >> user_data/data/.git/info/sparse-checkout
-#git -C $MAIN_DATA_DIRECTORY sparse-checkout add /$EXCHANGE_MARKET_DIRECTORY/$pair*-$data_necessary_timeframe*.feather
+echo $pair-$data_necessary_timeframe*.feather
+git -C $MAIN_DATA_DIRECTORY sparse-checkout add /$EXCHANGE_MARKET_DIRECTORY/$pair-$data_necessary_timeframe*.feather
 
 done
 
