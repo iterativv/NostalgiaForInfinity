@@ -152,6 +152,6 @@
     },
     "pairlists": [
         {"method": "StaticPairList"},
-        {"method": "ShuffleFilter"}
+        // {"method": "ShuffleFilter"}
     ]
 }

@@ -33,7 +33,8 @@ pwd
 ls -la $MAIN_DATA_DIRECTORY
 ls -la user_data
 ls -la $MAIN_DATA_DIRECTORY/.git/
-docker-compose run --rm tests freqtrade test-pairlist -c /testing/configs/pairlists-$TRADING_MODE.json -c /testing/configs/pairlist-static-$EXCHANGE-$TRADING_MODE-usdt.json -c /testing/configs/exampleconfig.json -1 --exchange $EXCHANGE -c /testing/configs/blacklist-$EXCHANGE.json|sed -e 's+/+_+g'>>PAIRS_FOR_DOWNLOAD.txt
+rm PAIRS_FOR_DOWNLOAD.txt
+docker run -v ".:/running_config" --rm freqtradeorg/freqtrade:stable test-pairlist -c /running_config/configs/trading_mode-$TRADING_MODE.json -c /running_config/configs/pairlist-static-$EXCHANGE-$TRADING_MODE-usdt.json -c /running_config/configs/exampleconfig.json -1 --exchange $EXCHANGE -c /running_config/configs/blacklist-$EXCHANGE.json|sed -e 's+/+_+g'>>PAIRS_FOR_DOWNLOAD.txt
 if [ -L $MAIN_DATA_DIRECTORY ]
     then
         echo "###############################################"

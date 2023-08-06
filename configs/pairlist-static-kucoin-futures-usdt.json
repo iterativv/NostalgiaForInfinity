@@ -1,6 +1,6 @@
 {
     "exchange": {
-        "name": "kucoin",
+        "name": "kucoinfutures",
         "pair_whitelist": [
             "ADA/USDT:USDT",
             "APE/USDT:USDT",
@@ -43,6 +43,6 @@
     },
     "pairlists": [
         {"method": "StaticPairList"},
-        {"method": "ShuffleFilter"}
+        // {"method": "ShuffleFilter"}
     ]
 }

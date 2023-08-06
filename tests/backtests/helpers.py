@@ -84,7 +84,7 @@ class Backtest:
             f"--user-data=user_data",
             f"--config=configs/exampleconfig.json",
             "--strategy-list=NostalgiaForInfinityX3",
-            f"--config=configs/pairlists-{trading_mode}.json",
+            f"--config=configs/trading_mode-{trading_mode}.json",
             f"--config=configs/blacklist-{exchange}.json",
             f"--timerange={start_date}-{end_date}",
             "--timeframe-detail 1m",
