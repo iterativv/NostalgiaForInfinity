@@ -131,7 +131,9 @@ def comment_results(options, results_data):
                         value = results_data[exchange]["timeranges"][timerange][key][report_name]
                         row_line += f" {value} |"
                     comment_body += f"{row_line}\n"
-            ft_output = options.path / "current" / f"backtest-output-{exchange}-{timerange}.txt"
+            ft_output = (
+                options.path / "current" / f"backtest-output-{exchange}-spot-{timerange}.txt"
+            )
             comment_body += "\n<details>\n"
             comment_body += f"<summary>Freqtrade Backest Output (click me)</summary>\n"
             comment_body += f"<pre>{ft_output.read_text().strip()}</pre>\n"

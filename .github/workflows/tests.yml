@@ -184,7 +184,7 @@ jobs:
 
       - name: Run Tests
         env:
-          EXTRA_ARGS: -p no:cacheprovider tests/backtests -k 'kucoin and ${{ matrix.timerange }}'
+          EXTRA_ARGS: -p no:cacheprovider tests/backtests -k 'kucoin and spot and ${{ matrix.timerange }}'
         run: |
           mkdir artifacts
           chmod 777 artifacts
@@ -196,7 +196,7 @@ jobs:
 
       - name: Show Backest Output
         run: |
-          cat artifacts/backtest-output-kucoin-${{ matrix.timerange }}.txt
+          cat artifacts/backtest-output-kucoin-spot-${{ matrix.timerange }}.txt
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
