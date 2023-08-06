@@ -65,8 +65,6 @@ class Backtest:
         start_date,
         end_date,
         pairlist=None,
-        # max_open_trades=5,
-        # stake_amount="unlimited",
         exchange=None,
         trading_mode=None,
     ):
@@ -78,19 +76,17 @@ class Backtest:
             )
 
         tmp_path = self.request.getfixturevalue("tmp_path")
-        exchange_config = f"configs/pairlist-static-{exchange}-usdt-{trading_mode}.json"
+        exchange_config = f"configs/pairlist-static-{exchange}-{trading_mode}-usdt.json"
         json_results_file = tmp_path / "backtest-results.json"
         cmdline = [
             "freqtrade",
             "backtesting",
             f"--user-data=user_data",
             "--strategy-list=NostalgiaForInfinityX3",
-            f"--timerange={start_date}-{end_date}",
-            # f"--max-open-trades={max_open_trades}",
-            # f"--stake-amount={stake_amount}",
+            "--config=configs/blacklist-{exchange}.json",
             f"--config=user_data/data/pairlists-{trading_mode}.json",
             f"--config=configs/exampleconfig.json",
-            "--config=configs/blacklist-binance.json",
+            f"--timerange={start_date}-{end_date}",
         ]
         if pairlist is None:
             cmdline.append(f"--config={exchange_config}")
