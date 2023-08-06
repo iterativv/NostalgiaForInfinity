@@ -39,7 +39,6 @@
             "FTM/USDT",
             "GMT/USDT",
             "GRT/USDT",
-            "KCS/USDT",
             "KSM/USDT",
             "LINK/USDT",
             "LTC/USDT",
@@ -62,11 +61,9 @@
             "SENSO/USDT",
             "SHA/USDT",
             "SHR/USDT",
-            "SHIB/USDT",
             "SNX/USDT",
             "STX/USDT",
             "SUTER/USDT",
-            "TOKO/USDT",
             "TEL/USDT",
             "TRIAS/USDT",
             "TRX/USDT",
@@ -86,6 +83,6 @@
     },
     "pairlists": [
         {"method": "StaticPairList"},
-        {"method": "ShuffleFilter"}
+        // {"method": "ShuffleFilter"}
     ]
 }
