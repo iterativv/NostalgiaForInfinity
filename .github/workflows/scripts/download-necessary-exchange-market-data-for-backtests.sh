@@ -28,7 +28,7 @@ URL="https://github.com/DigiTuccar/HistoricalDataForTradeBacktest.git"
 #      exit 4
 # fi
 
-docker-compose run --rm tests freqtrade test-pairlist -c user_data/data/pairlists-$TRADING_MODE.json -c user_data/data/pairlist-static-$EXCHANGE-$TRADING_MODE-usdt.json -c user_data/data/exampleconfig.json -1 --exchange $EXCHANGE -c user_data/data/blacklist-$TRADING_MODE.json|sed -e 's+/+_+g'>>PAIRS_FOR_DOWNLOAD.txt
+docker-compose run --rm tests freqtrade test-pairlist -c /testing/user_data/data/pairlists-$TRADING_MODE.json -c /testing/user_data/data/pairlist-static-$EXCHANGE-$TRADING_MODE-usdt.json -c /testing/user_data/data/exampleconfig.json -1 --exchange $EXCHANGE -c /testing/user_data/data/blacklist-$TRADING_MODE.json|sed -e 's+/+_+g'>>PAIRS_FOR_DOWNLOAD.txt
 if [ -L $MAIN_DATA_DIRECTORY ]
     then
         echo "###############################################"
