@@ -17,7 +17,7 @@ def exchange_fmt(value):
     params=(
         Exchange(name="binance", winrate=70, max_drawdown=20),
         Exchange(name="kucoin", winrate=70, max_drawdown=20),
-        # Exchange(name="okx", winrate=70, max_drawdown=20),
+        # Exchange(name="okx", winrate=70, max_drawdown=20), # ITS POSSIBLE TO ADD MORE EXCHANGES
     ),
     ids=exchange_fmt,
 )
