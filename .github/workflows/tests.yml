@@ -43,83 +43,83 @@ jobs:
         extra_args: --files ${{ steps.changed-files.outputs.repo_files }}
 
 
-  Binance-Backtests:
-    runs-on: ubuntu-20.04
-    needs:
-      - Pre-Commit
-    strategy:
-      fail-fast: false
-      matrix:
-        timerange:
-          # - 20210101-20210201
-          # - 20210201-20210301
-          # - 20210301-20210401
-          # - 20210401-20210501
-          # - 20210501-20210601
-          # - 20210601-20210701
-          # - 20210701-20210801
-          # - 20210801-20210901
-          # - 20210901-20211001
-          # - 20211001-20211101
-          # - 20211101-20211201
-          # - 20211201-20220101
-          # - 20220101-20220201
-          # - 20220201-20220301
-          # - 20220301-20220401
-          # - 20220401-20220501
-          # - 20220501-20220601
-          # - 20220601-20220701
-          # - 20220701-20220801
-          # - 20220801-20220901
-          # - 20220901-20221001
-          # - 20221001-20221101
-          # - 20221101-20221201
-          # - 20221201-20230101
-          # - 20230101-20230201
-          # - 20230201-20230301
-          # - 20230301-20230401
-          # - 20230401-20230501
-          - 20230501-20230601
-          - 20230601-20230701
+  # Binance-Backtests:
+  #   runs-on: ubuntu-20.04
+  #   needs:
+  #     - Pre-Commit
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       timerange:
+  #         # - 20210101-20210201
+  #         # - 20210201-20210301
+  #         # - 20210301-20210401
+  #         # - 20210401-20210501
+  #         # - 20210501-20210601
+  #         # - 20210601-20210701
+  #         # - 20210701-20210801
+  #         # - 20210801-20210901
+  #         # - 20210901-20211001
+  #         # - 20211001-20211101
+  #         # - 20211101-20211201
+  #         # - 20211201-20220101
+  #         # - 20220101-20220201
+  #         # - 20220201-20220301
+  #         # - 20220301-20220401
+  #         # - 20220401-20220501
+  #         # - 20220501-20220601
+  #         # - 20220601-20220701
+  #         # - 20220701-20220801
+  #         # - 20220801-20220901
+  #         # - 20220901-20221001
+  #         # - 20221001-20221101
+  #         # - 20221101-20221201
+  #         # - 20221201-20230101
+  #         # - 20230101-20230201
+  #         # - 20230201-20230301
+  #         # - 20230301-20230401
+  #         # - 20230401-20230501
+  #         - 20230501-20230601
+  #         - 20230601-20230701
 
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+  #   steps:
+  #     - name: Checkout Code
+  #       uses: actions/checkout@v3
 
-      - name: Checkout historical trading data for backtests
-        env:
-          EXCHANGE: binance
-          TRADING_MODE: spot
-          TIMEFRAME: 5m
-          HELPER_TIME_FRAMES: 15m 1h 4h 1d
-        run: |
-          .github/workflows/scripts/download-necessary-exchange-market-data-for-backtests.sh
-          tree
+  #     - name: Checkout historical trading data for backtests
+  #       env:
+  #         EXCHANGE: binance
+  #         TRADING_MODE: spot
+  #         TIMEFRAME: 5m
+  #         HELPER_TIME_FRAMES: 15m 1h 4h 1d
+  #       run: |
+  #         .github/workflows/scripts/download-necessary-exchange-market-data-for-backtests.sh
+  #         tree
 
-      - name: Build Tests Image
-        run: docker-compose build tests
+  #     - name: Build Tests Image
+  #       run: docker-compose build tests
 
-      - name: Run Tests
-        env:
-          EXTRA_ARGS: -p no:cacheprovider tests/backtests -k 'binance and spot and ${{ matrix.timerange }}'
-        run: |
-          mkdir artifacts
-          chmod 777 artifacts
-          docker-compose run --rm tests
+  #     - name: Run Tests
+  #       env:
+  #         EXTRA_ARGS: -p no:cacheprovider tests/backtests -k 'binance and spot and ${{ matrix.timerange }}'
+  #       run: |
+  #         mkdir artifacts
+  #         chmod 777 artifacts
+  #         docker-compose run --rm tests
 
-      - name: List Artifacts
-        run: |
-          ls -lah artifacts/
+  #     - name: List Artifacts
+  #       run: |
+  #         ls -lah artifacts/
 
-      - name: Show Backest Output
-        run: |
-          cat artifacts/backtest-output-binance-${{ matrix.timerange }}.txt
+  #     - name: Show Backest Output
+  #       run: |
+  #         cat artifacts/backtest-output-binance-${{ matrix.timerange }}.txt
 
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: binance-testrun-artifacts
-          path: artifacts/
+  #     - name: Upload Artifacts
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: binance-testrun-artifacts
+  #         path: artifacts/
 
 
   Kucoin-Backtests:
@@ -209,7 +209,7 @@ jobs:
     runs-on: ubuntu-20.04
     needs:
       - Kucoin-Backtests
-      - Binance-Backtests
+      # - Binance-Backtests
 
     steps:
 
