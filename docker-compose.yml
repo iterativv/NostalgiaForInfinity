@@ -25,8 +25,8 @@ services:
       backtesting
       --datadir user_data/data/${EXCHANGE:-binance}
       --strategy-list NostalgiaForInfinityX3
-      --timerange ${TIMERANGE:-20230601-20230701}
-      --config user_data/data/pairlists.json
-      --config user_data/data/${EXCHANGE:-binance}-usdt-static.json
-      --max-open-trades ${MAX_OPEN_TRADES:-5}
-      --stake-amount ${STAKE_AMOUNT:-unlimited}
+      --timerange ${TIMERANGE:-20230701-20230801}
+      --config configs/pairlists-static-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt.json
+      --config configs/pairlists-${TRADING_MODE:-futures}-usdt.json
+      --config configs/exampleconfig.json
+      --config configs/blacklist-${EXCHANGE:-binance}.json
