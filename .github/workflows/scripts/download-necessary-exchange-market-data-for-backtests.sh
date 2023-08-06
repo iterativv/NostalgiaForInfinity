@@ -87,6 +87,7 @@ for pair in `docker-compose run --rm tests freqtrade test-pairlist -c configs/pa
 do
 
 echo $pair
+echo $pair*-$data_necessary_timeframe*.feather
 
 git -C $MAIN_DATA_DIRECTORY sparse-checkout add /$EXCHANGE_MARKET_DIRECTORY/$pair*-$data_necessary_timeframe*.feather
 
@@ -117,7 +118,17 @@ if [[ $data_necessary_market_type == futures ]]
     else
     EXCHANGE_MARKET_DIRECTORY=$data_necessary_exchange
 fi
-git -C $MAIN_DATA_DIRECTORY sparse-checkout add /$EXCHANGE_MARKET_DIRECTORY/*-$data_necessary_timeframe*.feather
+
+for pair in `docker-compose run --rm tests freqtrade test-pairlist -c configs/pairlists-$data_necessary_market_type.json -c configs/pairlist-static-$data_necessary_exchange-$data_necessary_market_type-usdt.json -c configs/exampleconfig.json -1 --exchange $data_necessary_exchange -c configs/blacklist-$data_necessary_exchange.json|sed -e 's+/+_+g'`
+
+do
+
+echo $pair
+echo $pair*-$data_necessary_timeframe*.feather
+git -C $MAIN_DATA_DIRECTORY sparse-checkout add /$EXCHANGE_MARKET_DIRECTORY/$pair*-$data_necessary_timeframe*.feather
+
+done
+
 done
 done
 done
