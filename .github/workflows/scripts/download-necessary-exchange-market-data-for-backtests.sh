@@ -82,7 +82,7 @@ if [[ $data_necessary_market_type == futures ]]
     EXCHANGE_MARKET_DIRECTORY=$data_necessary_exchange
 fi
 
-for pair in `freqtrade test-pairlist -c configs/pairlists-$data_necessary_market_type.json -c configs/pairlist-static-$data_necessary_exchange-$data_necessary_market_type-usdt.json -c configs/exampleconfig.json -1 --exchange $data_necessary_exchange -c configs/blacklist-$data_necessary_exchange.json|sed -e 's+/+_+g'`;
+for pair in `docker-compose run --rm tests freqtrade test-pairlist -c configs/pairlists-$data_necessary_market_type.json -c configs/pairlist-static-$data_necessary_exchange-$data_necessary_market_type-usdt.json -c configs/exampleconfig.json -1 --exchange $data_necessary_exchange -c configs/blacklist-$data_necessary_exchange.json|sed -e 's+/+_+g'`;
 do
     echo $pair;
 

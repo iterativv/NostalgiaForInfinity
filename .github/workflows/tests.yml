@@ -166,6 +166,9 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      - name: Build Tests Image
+        run: docker-compose build tests
+
       - name: Checkout historical trading data for backtests
         env:
           EXCHANGE: kucoin
@@ -177,11 +180,6 @@ jobs:
           cat user_data/data/.git/info/sparse-checkout
           du -sh user_data/data
           tree
-
-
-
-      - name: Build Tests Image
-        run: docker-compose build tests
 
       - name: Run Tests
         env:
