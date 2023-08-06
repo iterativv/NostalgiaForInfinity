@@ -25,7 +25,7 @@ repos:
 
   # <---- Formatting --------------------------------------------------------->
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.4.0
+    rev: v3.10.1
     hooks:
       - id: pyupgrade
         name: Rewrite Code to be Py3.7+
@@ -34,7 +34,7 @@ repos:
         exclude: user_data/.*
 
   - repo: https://github.com/asottile/reorder_python_imports
-    rev: v3.9.0
+    rev: v3.10.0
     hooks:
       - id: reorder-python-imports
         args: [
@@ -43,7 +43,7 @@ repos:
         files: (tests|.github)/.*\.py
 
   - repo: https://github.com/psf/black
-    rev: 23.3.0
+    rev: 23.7.0
     hooks:
       - id: black
         args: [-l 100]
