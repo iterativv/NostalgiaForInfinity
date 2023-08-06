@@ -82,10 +82,10 @@ class Backtest:
             "freqtrade",
             "backtesting",
             f"--user-data=user_data",
-            "--strategy-list=NostalgiaForInfinityX3",
-            f"--config=configs/blacklist-{exchange}.json",
-            f"--config=user_data/data/pairlists-{trading_mode}.json",
             f"--config=configs/exampleconfig.json",
+            "--strategy-list=NostalgiaForInfinityX3",
+            f"--config=configs/pairlists-{trading_mode}.json",
+            f"--config=configs/blacklist-{exchange}.json",
             f"--timerange={start_date}-{end_date}",
         ]
         if pairlist is None:
