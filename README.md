@@ -4,25 +4,12 @@ Trading strategy for the [Freqtrade](https://www.freqtrade.io) crypto bot. For b
 ## Clone The Repository
 If you plan to only clone the repository to use the strategy, a regular ``git clone`` will do.
 
-However, if you plan on running additional strategies or run the test suite, you need to clone
-the repository and it's submodules.
-
-### Newer versions of Git
+However, if you plan on running additional strategies or run the test suite, you need to run ``tools/download-necessary-exchange-market-data-for-backtests.sh``
 
 ```bash
-git clone --recurse-submodules https://github.com/iterativv/NostalgiaForInfinity.git checkout-path
+./tools/download-necessary-exchange-market-data-for-backtests.sh
 ```
 
-### Older versions of Git
-
-```bash
-git clone --recursive https://github.com/iterativv/NostalgiaForInfinity.git checkout-path
-```
-
-### Existing Checkouts
-```
-git submodule update --remote --checkout
-```
 
 
 ## Change strategy

@@ -55,18 +55,18 @@ class ProcessResult:
 
 
 class Backtest:
-    def __init__(self, request, exchange=None):
+    def __init__(self, request, exchange=None, trading_mode=None):
         self.request = request
         self.exchange = exchange
+        self.trading_mode = trading_mode
 
     def __call__(
         self,
         start_date,
         end_date,
         pairlist=None,
-        max_open_trades=5,
-        stake_amount="unlimited",
         exchange=None,
+        trading_mode=None,
     ):
         if exchange is None:
             exchange = self.exchange
@@ -74,18 +74,20 @@ class Backtest:
             raise RuntimeError(
                 f"No 'exchange' was passed when instantiating {self.__class__.__name__} or when calling it"
             )
+
         tmp_path = self.request.getfixturevalue("tmp_path")
-        exchange_config = f"user_data/data/{exchange}-usdt-static.json"
+        exchange_config = f"configs/pairlist-static-{exchange}-{trading_mode}-usdt.json"
         json_results_file = tmp_path / "backtest-results.json"
         cmdline = [
             "freqtrade",
             "backtesting",
             f"--user-data=user_data",
+            f"--config=configs/exampleconfig.json",
             "--strategy-list=NostalgiaForInfinityX3",
+            f"--config=configs/trading_mode-{trading_mode}.json",
+            f"--config=configs/blacklist-{exchange}.json",
             f"--timerange={start_date}-{end_date}",
-            f"--max-open-trades={max_open_trades}",
-            f"--stake-amount={stake_amount}",
-            "--config=user_data/data/pairlists.json",
+            "--timeframe-detail=1m",
         ]
         if pairlist is None:
             cmdline.append(f"--config={exchange_config}")
@@ -121,12 +123,12 @@ class Backtest:
             shutil.copyfile(generated_results_file, generated_json_results_artifact_path)
             generated_json_ci_results_artifact_path = (
                 self.request.config.option.artifacts_path
-                / f"ci-results-{exchange}-{start_date}-{end_date}.json"
+                / f"ci-results-{exchange}-{trading_mode}-{start_date}-{end_date}.json"
             )
 
             generated_txt_results_artifact_path = (
                 self.request.config.option.artifacts_path
-                / f"backtest-output-{exchange}-{start_date}-{end_date}.txt"
+                / f"backtest-output-{exchange}-{trading_mode}-{start_date}-{end_date}.txt"
             )
             generated_txt_results_artifact_path.write_text(ret.stdout.strip())
 
@@ -181,6 +183,7 @@ class BacktestResults:
             "profit_total_pct": self.full_stats.profit_total_pct,
             "max_drawdown": self.results.max_drawdown_account * 100,
             "trades": self.full_stats.trades,
+            "market_change": round(self.results.market_change * 100, 2),
             "winrate": round(self.full_stats.wins * 100.0 / self.full_stats.trades, 2),
         }
 

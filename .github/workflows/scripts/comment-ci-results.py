@@ -92,6 +92,15 @@ def comment_results(options, results_data):
                             value = f"{round(value, 4)} %"
                         row_line += f" {value} |"
                     comment_body += f"{row_line}\n"
+                elif key == "market_change":
+                    label = "Market Change"
+                    row_line += f" {label } |"
+                    for report_name in sorted_report_names:
+                        value = results_data[exchange]["timeranges"][timerange][key][report_name]
+                        if not isinstance(value, str):
+                            value = f"{round(value, 4)} %"
+                        row_line += f" {value} |"
+                    comment_body += f"{row_line}\n"
                 elif key == "profit_total_pct":
                     label = "Profit Total"
                     row_line += f" {label } |"
@@ -122,9 +131,11 @@ def comment_results(options, results_data):
                         value = results_data[exchange]["timeranges"][timerange][key][report_name]
                         row_line += f" {value} |"
                     comment_body += f"{row_line}\n"
-            ft_output = options.path / "current" / f"backtest-output-{exchange}-{timerange}.txt"
+            ft_output = (
+                options.path / "current" / f"backtest-output-{exchange}-spot-{timerange}.txt"
+            )
             comment_body += "\n<details>\n"
-            comment_body += f"<summary>Freqtrade Backest Output (click me)</summary>\n"
+            comment_body += f"<summary>Detailed Backest Output (click to see details)</summary>\n"
             comment_body += f"<pre>{ft_output.read_text().strip()}</pre>\n"
             comment_body += "</details>\n"
             comment_body += "\n\n"
