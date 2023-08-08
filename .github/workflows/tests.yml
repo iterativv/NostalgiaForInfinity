@@ -7,7 +7,8 @@ jobs:
   Pre-Commit:
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v3
+    - name: Fetch Source Code
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
     - name: Set up Python
@@ -16,7 +17,7 @@ jobs:
         python-version: '3.10'
     - name: Install black
       run: |
-        pip install black==22.3.0
+        pip install black==23.7.0
     - id: changed-files
       name: Get Changed Files
       uses: dorny/paths-filter@v2
@@ -51,34 +52,34 @@ jobs:
   #     fail-fast: false
   #     matrix:
   #       timerange:
-  #         # - 20210101-20210201
-  #         # - 20210201-20210301
-  #         # - 20210301-20210401
-  #         # - 20210401-20210501
-  #         # - 20210501-20210601
-  #         # - 20210601-20210701
-  #         # - 20210701-20210801
-  #         # - 20210801-20210901
-  #         # - 20210901-20211001
-  #         # - 20211001-20211101
-  #         # - 20211101-20211201
-  #         # - 20211201-20220101
-  #         # - 20220101-20220201
-  #         # - 20220201-20220301
-  #         # - 20220301-20220401
-  #         # - 20220401-20220501
-  #         # - 20220501-20220601
-  #         # - 20220601-20220701
-  #         # - 20220701-20220801
-  #         # - 20220801-20220901
-  #         # - 20220901-20221001
-  #         # - 20221001-20221101
-  #         # - 20221101-20221201
-  #         # - 20221201-20230101
-  #         # - 20230101-20230201
-  #         # - 20230201-20230301
-  #         # - 20230301-20230401
-  #         # - 20230401-20230501
+  #         - 20210101-20210201
+  #         - 20210201-20210301
+  #         - 20210301-20210401
+  #         - 20210401-20210501
+  #         - 20210501-20210601
+  #         - 20210601-20210701
+  #         - 20210701-20210801
+  #         - 20210801-20210901
+  #         - 20210901-20211001
+  #         - 20211001-20211101
+  #         - 20211101-20211201
+  #         - 20211201-20220101
+  #         - 20220101-20220201
+  #         - 20220201-20220301
+  #         - 20220301-20220401
+  #         - 20220401-20220501
+  #         - 20220501-20220601
+  #         - 20220601-20220701
+  #         - 20220701-20220801
+  #         - 20220801-20220901
+  #         - 20220901-20221001
+  #         - 20221001-20221101
+  #         - 20221101-20221201
+  #         - 20221201-20230101
+  #         - 20230101-20230201
+  #         - 20230201-20230301
+  #         - 20230301-20230401
+  #         - 20230401-20230501
   #         - 20230501-20230601
   #         - 20230601-20230701
 
@@ -163,13 +164,13 @@ jobs:
           - 20230701-20230801
 
     steps:
-      - name: Checkout Code
+      - name: Fetch Source Code
         uses: actions/checkout@v3
 
       - name: Build Tests Image
         run: docker-compose build tests
 
-      - name: Checkout historical trading data for backtests
+      - name: Fetch data for backtests from https://github.com/DigiTuccar/HistoricalDataForTradeBacktest
         env:
           EXCHANGE: kucoin
           TRADING_MODE: spot
@@ -257,6 +258,17 @@ jobs:
           name: kucoin-testrun-artifacts
           path: downloaded-results/current
 
+      - name: Pre Format Backtest Results
+        run: |
+          find downloaded-results/ -type f -iname *.txt -exec sed -i 's/+/|/g' {} +
+          find downloaded-results/ -type f -iname *.txt -exec sed -i 's/=//g' {} +
+          find downloaded-results/ -type f -iname *.txt -exec sed -i 's/ BACKTESTING REPORT /\n## BACKTESTING REPORT\n/g' {} +
+          find downloaded-results/ -type f -iname *.txt -exec sed -i 's/ LEFT OPEN TRADES REPORT /\n## LEFT OPEN TRADES REPORT\n/g' {} +
+          find downloaded-results/ -type f -iname *.txt -exec sed -i 's/ ENTER TAG STATS /\n## ENTER TAG STATS\n/g' {} +
+          find downloaded-results/ -type f -iname *.txt -exec sed -i 's/ EXIT REASON STATS /\n## EXIT REASON STATS\n/g' {} +
+          find downloaded-results/ -type f -iname *.txt -exec sed -i 's/ SUMMARY METRICS /\n## SUMMARY METRICS\n/g' {} +
+          find downloaded-results/ -type f -iname *.txt -exec sed -i 's/ STRATEGY SUMMARY /\n## STRATEGY SUMMARY\n/g' {} +
+          find downloaded-results/ -type f -iname *.txt -exec sed -i 's/-|/:|/g' {} +
       - name: Show Environ
         run: |
           env
