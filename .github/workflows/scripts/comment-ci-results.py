@@ -136,7 +136,7 @@ def comment_results(options, results_data):
             )
             comment_body += "\n<details>\n"
             comment_body += f"<summary>Detailed Backest Output (click to see details)</summary>\n"
-            comment_body += f"<pre>{ft_output.read_text().strip()}</pre>\n"
+            comment_body += f"{ft_output.read_text().strip()}\n"
             comment_body += "</details>\n"
             comment_body += "\n\n"
             comment = commit.create_comment(comment_body.rstrip())
