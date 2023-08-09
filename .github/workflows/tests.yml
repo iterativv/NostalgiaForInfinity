@@ -122,7 +122,7 @@ jobs:
         with:
           cli-args: --env-file .github/workflows/scripts/ci-proxy.env run --rm tests
         env:
-            EXTRA_ARGS: -p no:cacheprovider tests/backtests -k 'binance and spot and ${{ matrix.timerange }}'
+          EXTRA_ARGS: -p no:cacheprovider tests/backtests -k 'binance and spot and ${{ matrix.timerange }}'
 
 
       - name: List Artifacts
