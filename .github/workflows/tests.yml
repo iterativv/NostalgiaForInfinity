@@ -118,14 +118,14 @@ jobs:
       #     docker compose --env-file .github/workflows/scripts/ci-proxy.env run  --rm tests
 
       - name: Run Tests
-        uses: isbang/compose-action@v1.5.1
+        uses: adrielcodeco/docker-compose-run-action@v1
         with:
-          services: tests
+          compose-file: './docker-compose.yml'
+          run-flags: -rm
+          compose-flags: --env-file .github/workflows/scripts/ci-proxy.env
+          service: tests
         env:
-          FREQTRADE__EXCHANGE__CCXT_CONFIG__AIOHTTP_PROXY: http://152.70.65.2:3128
-          FREQTRADE__EXCHANGE__CCXT_CONFIG__PROXIES__HTTP: http://152.70.65.2:3128
-          FREQTRADE__EXCHANGE__CCXT_CONFIG__PROXIES__HTTPS: http://152.70.65.2:3128
-          EXTRA_ARGS: -p no:cacheprovider tests/backtests -k 'binance and spot and ${{ matrix.timerange }}'
+            EXTRA_ARGS: -p no:cacheprovider tests/backtests -k 'binance and spot and ${{ matrix.timerange }}'
 
 
       - name: List Artifacts
