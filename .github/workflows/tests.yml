@@ -115,7 +115,7 @@ jobs:
         run: |
           mkdir artifacts
           chmod 777 artifacts
-          docker-compose run --env-file .github/workflows/scripts/ci-proxy.env --rm tests
+          docker-compose --env-file .github/workflows/scripts/ci-proxy.env run  --rm tests
 
       - name: List Artifacts
         run: |
@@ -204,7 +204,7 @@ jobs:
           env
           mkdir artifacts
           chmod 777 artifacts
-          docker-compose run --env-file .github/workflows/scripts/ci-proxy.env --rm tests
+          docker-compose --env-file .github/workflows/scripts/ci-proxy.env run --rm tests
 
       - name: List Artifacts
         run: |
