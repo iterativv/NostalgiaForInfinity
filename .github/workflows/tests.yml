@@ -118,12 +118,9 @@ jobs:
       #     docker compose --env-file .github/workflows/scripts/ci-proxy.env run  --rm tests
 
       - name: Run Tests
-        uses: adrielcodeco/docker-compose-run-action@v1
+        uses: sudo-bot/action-docker-compose@latest
         with:
-          compose-file: './docker-compose.yml'
-          run-flags: -rm
-          compose-flags: --env-file .github/workflows/scripts/ci-proxy.env
-          service: tests
+          cli-args: --env-file .github/workflows/scripts/ci-proxy.env run --rm tests
         env:
             EXTRA_ARGS: -p no:cacheprovider tests/backtests -k 'binance and spot and ${{ matrix.timerange }}'
 
