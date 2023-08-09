@@ -120,7 +120,7 @@ jobs:
       - name: Run Tests
         uses: sudo-bot/action-docker-compose@latest
         with:
-          cli-args: --env-file .github/workflows/scripts/ci-proxy.env tests
+          cli-args: --env-file .github/workflows/scripts/ci-proxy.env run --rm tests
         env:
           EXTRA_ARGS: -p no:cacheprovider tests/backtests -k 'binance and spot and ${{ matrix.timerange }}'
 
