@@ -109,13 +109,24 @@ jobs:
           du -sh user_data/data
           tree
 
+      # - name: Run Tests
+      #   env:
+      #     EXTRA_ARGS: -p no:cacheprovider tests/backtests -k 'binance and spot and ${{ matrix.timerange }}'
+      #   run: |
+      #     mkdir artifacts
+      #     chmod 777 artifacts
+      #     docker compose --env-file .github/workflows/scripts/ci-proxy.env run  --rm tests
+
       - name: Run Tests
+        uses: isbang/compose-action@v1.5.1
+        with:
+          services: tests
         env:
+          FREQTRADE__EXCHANGE__CCXT_CONFIG__AIOHTTP_PROXY: http://152.70.65.2:3128
+          FREQTRADE__EXCHANGE__CCXT_CONFIG__PROXIES__HTTP: http://152.70.65.2:3128
+          FREQTRADE__EXCHANGE__CCXT_CONFIG__PROXIES__HTTPS: http://152.70.65.2:3128
           EXTRA_ARGS: -p no:cacheprovider tests/backtests -k 'binance and spot and ${{ matrix.timerange }}'
-        run: |
-          mkdir artifacts
-          chmod 777 artifacts
-          docker compose --env-file .github/workflows/scripts/ci-proxy.env run  --rm tests
+
 
       - name: List Artifacts
         run: |
@@ -200,6 +211,9 @@ jobs:
       - name: Run Tests
         env:
           EXTRA_ARGS: -p no:cacheprovider tests/backtests -k 'kucoin and spot and ${{ matrix.timerange }}'
+          FREQTRADE__EXCHANGE__CCXT_CONFIG__AIOHTTP_PROXY: http://152.70.65.2:3128
+          FREQTRADE__EXCHANGE__CCXT_CONFIG__PROXIES__HTTP: http://152.70.65.2:3128
+          FREQTRADE__EXCHANGE__CCXT_CONFIG__PROXIES__HTTPS: http://152.70.65.2:3128
         run: |
           env
           mkdir artifacts
