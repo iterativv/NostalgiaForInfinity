@@ -80,7 +80,7 @@ jobs:
           # - 20230201-20230301
           # - 20230301-20230401
           # - 20230401-20230501
-          - 20230501-20230601
+          # - 20230501-20230601
           - 20230601-20230701
           - 20230701-20230801
 
@@ -103,6 +103,9 @@ jobs:
           TRADING_MODE: spot
           TIMEFRAME: 5m
           HELPER_TIME_FRAMES: 15m 1h 4h 1d
+          FREQTRADE__EXCHANGE__CCXT_CONFIG__AIOHTTP_PROXY: http://152.70.65.2:3128
+          FREQTRADE__EXCHANGE__CCXT_CONFIG__PROXIES__HTTP: http://152.70.65.2:3128
+          FREQTRADE__EXCHANGE__CCXT_CONFIG__PROXIES__HTTPS: http://152.70.65.2:3128
         run: |
           .github/workflows/scripts/download-necessary-exchange-market-data-for-backtests.sh
           cat user_data/data/.git/info/sparse-checkout
@@ -194,6 +197,9 @@ jobs:
           TRADING_MODE: spot
           TIMEFRAME: 5m
           HELPER_TIME_FRAMES: 1m 15m 1h 4h 1d
+          FREQTRADE__EXCHANGE__CCXT_CONFIG__AIOHTTP_PROXY: http://152.70.65.2:3128
+          FREQTRADE__EXCHANGE__CCXT_CONFIG__PROXIES__HTTP: http://152.70.65.2:3128
+          FREQTRADE__EXCHANGE__CCXT_CONFIG__PROXIES__HTTPS: http://152.70.65.2:3128
         run: |
           .github/workflows/scripts/download-necessary-exchange-market-data-for-backtests.sh
           cat user_data/data/.git/info/sparse-checkout
