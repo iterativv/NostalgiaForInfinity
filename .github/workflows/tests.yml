@@ -112,13 +112,10 @@ jobs:
       - name: Run Tests
         env:
           EXTRA_ARGS: -p no:cacheprovider tests/backtests -k 'binance and spot and ${{ matrix.timerange }}'
-          FREQTRADE__EXCHANGE__CCXT_CONFIG__AIOHTTP_PROXY: http://152.70.65.2:3128
-          FREQTRADE__EXCHANGE__CCXT_CONFIG__PROXIES__HTTP: http://152.70.65.2:3128
-          FREQTRADE__EXCHANGE__CCXT_CONFIG__PROXIES__HTTPS: http://152.70.65.2:3128
         run: |
           mkdir artifacts
           chmod 777 artifacts
-          docker-compose run --rm tests
+          docker-compose run --env .github/workflows/scripts/ci-proxy.env --rm tests
 
       - name: List Artifacts
         run: |
@@ -203,14 +200,11 @@ jobs:
       - name: Run Tests
         env:
           EXTRA_ARGS: -p no:cacheprovider tests/backtests -k 'kucoin and spot and ${{ matrix.timerange }}'
-          FREQTRADE__EXCHANGE__CCXT_CONFIG__AIOHTTP_PROXY: http://152.70.65.2:3128
-          FREQTRADE__EXCHANGE__CCXT_CONFIG__PROXIES__HTTP: http://152.70.65.2:3128
-          FREQTRADE__EXCHANGE__CCXT_CONFIG__PROXIES__HTTPS: http://152.70.65.2:3128
         run: |
           env
           mkdir artifacts
           chmod 777 artifacts
-          docker-compose run --rm tests
+          docker-compose run --env .github/workflows/scripts/ci-proxy.env --rm tests
 
       - name: List Artifacts
         run: |
