@@ -82,12 +82,22 @@ jobs:
           # - 20230401-20230501
           - 20230501-20230601
           - 20230601-20230701
+          - 20230701-20230801
 
     steps:
-      - name: Checkout Code
+      - name: Fetch Source Code
         uses: actions/checkout@v3
 
-      - name: Checkout historical trading data for backtests
+      - name: Build Tests Image
+        run: docker-compose build tests
+
+      - name: Put latest versions to strategies folder
+        run: |
+          cp NostalgiaForInfinityX.py user_data/strategies
+          cp NostalgiaForInfinityX2.py user_data/strategies
+          cp NostalgiaForInfinityX3.py user_data/strategies
+
+      - name: Fetch data for backtests from https://github.com/DigiTuccar/HistoricalDataForTradeBacktest
         env:
           EXCHANGE: binance
           TRADING_MODE: spot
@@ -95,14 +105,16 @@ jobs:
           HELPER_TIME_FRAMES: 15m 1h 4h 1d
         run: |
           .github/workflows/scripts/download-necessary-exchange-market-data-for-backtests.sh
+          cat user_data/data/.git/info/sparse-checkout
+          du -sh user_data/data
           tree
-
-      - name: Build Tests Image
-        run: docker-compose build tests
 
       - name: Run Tests
         env:
           EXTRA_ARGS: -p no:cacheprovider tests/backtests -k 'binance and spot and ${{ matrix.timerange }}'
+          FREQTRADE__EXCHANGE__CCXT_CONFIG__AIOHTTP_PROXY: http://152.70.65.2:3128
+          FREQTRADE__EXCHANGE__CCXT_CONFIG__PROXIES__HTTP: http://152.70.65.2:3128
+          FREQTRADE__EXCHANGE__CCXT_CONFIG__PROXIES__HTTPS: http://152.70.65.2:3128
         run: |
           mkdir artifacts
           chmod 777 artifacts
@@ -131,35 +143,35 @@ jobs:
       fail-fast: false
       matrix:
         timerange:
-          - 20210101-20210201
-          - 20210201-20210301
-          - 20210301-20210401
-          - 20210401-20210501
-          - 20210501-20210601
-          - 20210601-20210701
-          - 20210701-20210801
-          - 20210801-20210901
-          - 20210901-20211001
-          - 20211001-20211101
-          - 20211101-20211201
-          - 20211201-20220101
-          - 20220101-20220201
-          - 20220201-20220301
-          - 20220301-20220401
-          - 20220401-20220501
-          - 20220501-20220601
-          - 20220601-20220701
-          - 20220701-20220801
-          - 20220801-20220901
-          - 20220901-20221001
-          - 20221001-20221101
-          - 20221101-20221201
-          - 20221201-20230101
-          - 20230101-20230201
-          - 20230201-20230301
-          - 20230301-20230401
-          - 20230401-20230501
-          - 20230501-20230601
+          # - 20210101-20210201
+          # - 20210201-20210301
+          # - 20210301-20210401
+          # - 20210401-20210501
+          # - 20210501-20210601
+          # - 20210601-20210701
+          # - 20210701-20210801
+          # - 20210801-20210901
+          # - 20210901-20211001
+          # - 20211001-20211101
+          # - 20211101-20211201
+          # - 20211201-20220101
+          # - 20220101-20220201
+          # - 20220201-20220301
+          # - 20220301-20220401
+          # - 20220401-20220501
+          # - 20220501-20220601
+          # - 20220601-20220701
+          # - 20220701-20220801
+          # - 20220801-20220901
+          # - 20220901-20221001
+          # - 20221001-20221101
+          # - 20221101-20221201
+          # - 20221201-20230101
+          # - 20230101-20230201
+          # - 20230201-20230301
+          # - 20230301-20230401
+          # - 20230401-20230501
+          # - 20230501-20230601
           - 20230601-20230701
           - 20230701-20230801
 
@@ -219,7 +231,7 @@ jobs:
     runs-on: ubuntu-20.04
     needs:
       - Kucoin-Backtests
-      # - Binance-Backtests
+      - Binance-Backtests
 
     steps:
 
@@ -234,16 +246,16 @@ jobs:
         run: |
           python -m pip install -r tests/ci-requirements.txt
 
-      # - name: Download Previous Binance CI Artifacts
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   run: |
-      #     python .github/workflows/scripts/download-previous-artifacts.py \
-      #       --repo=${{ github.event.repository.full_name }} \
-      #       --branch=main \
-      #       --workflow=tests.yml \
-      #       --exchange=binance \
-      #       --name=binance-testrun-artifacts downloaded-results
+      - name: Download Previous Binance CI Artifacts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python .github/workflows/scripts/download-previous-artifacts.py \
+            --repo=${{ github.event.repository.full_name }} \
+            --branch=main \
+            --workflow=tests.yml \
+            --exchange=binance \
+            --name=binance-testrun-artifacts downloaded-results
 
       - name: Download Previous Kucoin CI Artifacts
         env:
@@ -256,11 +268,11 @@ jobs:
             --exchange=kucoin \
             --name=kucoin-testrun-artifacts downloaded-results
 
-      # - name: Download Current Binance CI Artifacts
-      #   uses: actions/download-artifact@v3
-      #   with:
-      #     name: binance-testrun-artifacts
-      #     path: downloaded-results/current
+      - name: Download Current Binance CI Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: binance-testrun-artifacts
+          path: downloaded-results/current
 
       - name: Download Current Kucoin CI Artifacts
         uses: actions/download-artifact@v3
