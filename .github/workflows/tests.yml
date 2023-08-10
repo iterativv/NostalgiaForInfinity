@@ -88,9 +88,6 @@ jobs:
       - name: Fetch Source Code
         uses: actions/checkout@v3
 
-      # - name: Build Tests Image
-      #   run: docker-compose build tests
-
       - name: Put latest versions to strategies folder
         run: |
           cp NostalgiaForInfinityX.py user_data/strategies
@@ -110,8 +107,6 @@ jobs:
           tree
 
       - name: Run Tests
-        env:
-          EXTRA_ARGS: -p no:cacheprovider tests/backtests -k 'binance and spot and ${{ matrix.timerange }}'
         run: |
           mkdir artifacts
           chmod 777 artifacts
@@ -121,9 +116,6 @@ jobs:
             ci-strategy-backtesting \
             python -m pytest -ra -vv -s --log-cli-level=info --artifacts-path=artifacts/ \
             -p no:cacheprovider tests/backtests -k 'binance and spot and ${{ matrix.timerange }}'
-
-
-
 
       - name: List Artifacts
         run: |
@@ -184,8 +176,6 @@ jobs:
       - name: Fetch Source Code
         uses: actions/checkout@v3
 
-      - name: Build Tests Image
-        run: docker-compose build tests
 
       - name: Put latest versions to strategies folder
         run: |
@@ -206,13 +196,15 @@ jobs:
           tree
 
       - name: Run Tests
-        env:
-          EXTRA_ARGS: -p no:cacheprovider tests/backtests -k 'kucoin and spot and ${{ matrix.timerange }}'
         run: |
-          env
           mkdir artifacts
           chmod 777 artifacts
-          docker compose --env-file .github/workflows/scripts/ci-proxy.env run --rm tests
+          docker build -f docker/Dockerfile.custom --no-cache -t ci-strategy-backtesting .
+          docker run -v ".:/testing" -v "./user_data/data:/testing/user_data/data" --rm \
+            -w /testing --entrypoint "" --env-file .github/workflows/scripts/ci-proxy.env \
+            ci-strategy-backtesting \
+            python -m pytest -ra -vv -s --log-cli-level=info --artifacts-path=artifacts/ \
+            -p no:cacheprovider tests/backtests -k 'kucoin and spot and ${{ matrix.timerange }}'
 
       - name: List Artifacts
         run: |
