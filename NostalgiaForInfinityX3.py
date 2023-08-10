@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.310"
+        return "v13.0.323"
 
     # ROI table:
     minimal_roi = {
@@ -1429,7 +1429,7 @@ class NostalgiaForInfinityX3(IStrategy):
                                     and (last_candle['rsi_3'] > 10.0)
                                     and (last_candle['high_max_6_1h'] > (last_candle['close'] * 1.10))
                                     and (last_candle['rsi_14'] > previous_candle['rsi_14'])
-                                    and (last_candle['rsi_3_15m'] > 16.0)
+                                    and (last_candle['rsi_3_15m'] > 20.0)
                                     and (last_candle['cti_20_1h'] < 0.5)
                                     and (last_candle['rsi_3_1h'] > 30.0)
                                     and (last_candle['rsi_3_4h'] > 30.0)
@@ -1453,7 +1453,7 @@ class NostalgiaForInfinityX3(IStrategy):
                                     and (last_candle['rsi_3'] > 5.0)
                                     and (last_candle['cci_20'] < -160.0)
                                     and (last_candle['cci_20'] > previous_candle['cci_20'])
-                                    and (last_candle['ema_12'] < (last_candle['ema_26'] * 0.998))
+                                    and (last_candle['ema_12'] < (last_candle['ema_26'] * 0.996))
                                     and (last_candle['rsi_3_15m'] > 26.0)
                                     and (last_candle['cti_20_1h'] < 0.5)
                                     and (last_candle['rsi_3_1h'] > 26.0)
@@ -1544,6 +1544,7 @@ class NostalgiaForInfinityX3(IStrategy):
                                     and (last_candle['rsi_3_15m'] > 16.0)
                                     and (last_candle['rsi_3_1h'] > 20.0)
                                     and (last_candle['rsi_3_4h'] > 20.0)
+                                    and (last_candle['not_downtrend_1h'])
                                 )
                                 or
                                 (
@@ -1639,7 +1640,7 @@ class NostalgiaForInfinityX3(IStrategy):
                                     (count_of_exits > 0)
                                     and (slice_profit_entry < -0.08)
                                     and (previous_candle['rsi_3'] > 16.0)
-                                    and (last_candle['rsi_14'] < 46.0)
+                                    and (last_candle['rsi_14'] < 40.0)
                                     and (last_candle['rsi_3'] > 16.0)
                                     and (last_candle['close'] > (last_candle['sar'] * 1.000))
                                     and (previous_candle['close'] < previous_candle['sar'])
@@ -2613,6 +2614,55 @@ class NostalgiaForInfinityX3(IStrategy):
                 | (dataframe['rsi_3_1h'] > 10.0)
                 | (dataframe['rsi_14_1d'] < 70.0)
                 | (dataframe['cti_20_1d'] < 0.8)
+            )
+            # 15m strong down move, 15m still dropping, 5m & 15m & 4h & 1d downtrend
+            &
+            (
+                (dataframe['rsi_3_15m'] > 8.0)
+                | (dataframe['cti_20_15m'] < -0.8)
+                | (dataframe['ema_200_dec_24'] == False)
+                | (dataframe['ema_200_dec_24_15m'] == False)
+                | (dataframe['ema_200_dec_24_4h'] == False)
+                | (dataframe['ema_200_dec_4_1d'] == False)
+            )
+            # 1h & 4h downtrend, 15m still dropping, 1h & 4h down move, 5m & 15m & 1h & 4h & 1d downtrend
+            &
+            (
+                (dataframe['not_downtrend_1h'])
+                | (dataframe['not_downtrend_4h'])
+                | (dataframe['cti_20_15m'] < -0.7)
+                | (dataframe['rsi_14_15m'] < 30.0)
+                | (dataframe['rsi_3_1h'] > 26.0)
+                | (dataframe['rsi_3_4h'] > 26.0)
+                | (dataframe['ema_200_dec_24'] == False)
+                | (dataframe['ema_200_dec_24_15m'] == False)
+                | (dataframe['ema_200_dec_48_1h'] == False)
+                | (dataframe['ema_200_dec_24_4h'] == False)
+                | (dataframe['ema_200_dec_4_1d'] == False)
+            )
+            # 15m & 1h & 4h downtrend, 5m & 15m strong down move, 1h & 4h still dropping, 5m & 15m & 1h downtrend
+            &
+            (
+                (dataframe['not_downtrend_15m'])
+                | (dataframe['not_downtrend_1h'])
+                | (dataframe['not_downtrend_4h'])
+                | (dataframe['rsi_3'] > 16.0)
+                | (dataframe['rsi_3_15m'] > 10.0)
+                | (dataframe['rsi_14_15m'] < 20.0)
+                | (dataframe['cti_20_1h'] < -0.8)
+                | (dataframe['cti_20_4h'] < -0.8)
+                | (dataframe['ema_200_dec_24'] == False)
+                | (dataframe['ema_200_dec_24_15m'] == False)
+                | (dataframe['ema_200_dec_48_1h'] == False)
+            )
+            # current 4h long top wick, current 1h red, 15m down move, 1h & 4h still high
+            &
+            (
+                (dataframe['top_wick_pct_4h'] < 0.08)
+                | (dataframe['change_pct_1h'] > -0.01)
+                | (dataframe['rsi_3_15m'] > 16.0)
+                | (dataframe['cti_20_1h'] < 0.5)
+                | (dataframe['cti_20_4h'] < -0.0)
             )
         ]
 
@@ -8594,6 +8644,10 @@ class NostalgiaForInfinityX3(IStrategy):
                                           | (dataframe['cti_20_1d'] < 0.7)
                                           | (((dataframe['ema_12_4h'] - dataframe['ema_26_4h']) / dataframe['ema_26_4h']) < 0.08)
                                           | (dataframe['ema_200_dec_4_1d'] == False))
+                    item_buy_logic.append((dataframe['change_pct_4h'] > -0.02)
+                                          | (dataframe['rsi_3_15m'] > 26.0)
+                                          | (dataframe['rsi_3_1h'] > 16.0)
+                                          | (dataframe['cti_20_4h'] < 0.8))
 
                     # Logic
                     item_buy_logic.append(dataframe['ewo_50_200_15m'] > 4.2)
