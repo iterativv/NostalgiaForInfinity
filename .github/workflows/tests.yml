@@ -102,7 +102,7 @@ jobs:
           EXCHANGE: binance
           TRADING_MODE: spot
           TIMEFRAME: 5m
-          HELPER_TIME_FRAMES: 15m 1h 4h 1d
+          HELPER_TIME_FRAMES: 1m 15m 1h 4h 1d
         run: |
           .github/workflows/scripts/download-necessary-exchange-market-data-for-backtests.sh
           cat user_data/data/.git/info/sparse-checkout
