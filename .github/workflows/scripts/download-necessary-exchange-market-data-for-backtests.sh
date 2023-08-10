@@ -7,34 +7,13 @@ MAIN_DATA_DIRECTORY="user_data/data"
 # EXCHANGE="binance"
 URL="https://github.com/DigiTuccar/HistoricalDataForTradeBacktest.git"
 
-# ls -la user_data
-# ls -la $MAIN_DATA_DIRECTORY
-
-# if [ ! \( -e "${file}" \) ]
-# then
-#      echo "%ERROR: file ${file} does not exist!" >&2
-#      exit 1
-# elif [ ! \( -f "${file}" \) ]
-# then
-#      echo "%ERROR: ${file} is not a file!" >&2
-#      exit 2
-# elif [ ! \( -r "${file}" \) ]
-# then
-#      echo "%ERROR: file ${file} is not readable!" >&2
-#      exit 3
-# elif [ ! \( -s "${file}" \) ]
-# then
-#      echo "%ERROR: file ${file} is empty!" >&2
-#      exit 4
-# fi
-whoami
-ls -la
-pwd
-ls -la $MAIN_DATA_DIRECTORY
-ls -la user_data
-ls -la $MAIN_DATA_DIRECTORY/.git/
 rm PAIRS_FOR_DOWNLOAD.txt
-docker run -v ".:/running_config" --rm freqtradeorg/freqtrade:stable test-pairlist -c /running_config/configs/trading_mode-$TRADING_MODE.json -c /running_config/configs/pairlist-static-$EXCHANGE-$TRADING_MODE-usdt.json -c /running_config/configs/exampleconfig.json -1 --exchange $EXCHANGE -c /running_config/configs/blacklist-$EXCHANGE.json|sed -e 's+/+_+g'>>PAIRS_FOR_DOWNLOAD.txt
+docker run -v ".:/running_config" --rm --env-file .github/workflows/scripts/ci-proxy.env \
+    freqtradeorg/freqtrade:stable test-pairlist -c /running_config/configs/trading_mode-$TRADING_MODE.json \
+    -c /running_config/configs/pairlist-static-$EXCHANGE-$TRADING_MODE-usdt.json \
+    -c /running_config/configs/exampleconfig.json -1 --exchange $EXCHANGE \
+    -c /running_config/configs/blacklist-$EXCHANGE.json|sed -e 's+/+_+g'>>PAIRS_FOR_DOWNLOAD.txt
+
 if [ -L $MAIN_DATA_DIRECTORY ]
     then
         echo "###############################################"
@@ -63,7 +42,6 @@ if [ -d $MAIN_DATA_DIRECTORY ]
 fi
     git clone --filter=blob:none --no-checkout --depth 1 --sparse $URL $MAIN_DATA_DIRECTORY
     git -C $MAIN_DATA_DIRECTORY sparse-checkout reapply --no-cone
-    # sudo chown -R $(id -u):$(id -g) $MAIN_DATA_DIRECTORY
 
 
 echo "Fetching necessary Timeframe Data"
@@ -97,16 +75,6 @@ git -C $MAIN_DATA_DIRECTORY sparse-checkout add /$EXCHANGE_MARKET_DIRECTORY/$pai
 
 done < PAIRS_FOR_DOWNLOAD.txt
 
-# for pair in `cat PAIRS_FOR_DOWNLOAD.txt`
-
-# do
-
-
-# echo $pair-$data_necessary_timeframe
-# git -C $MAIN_DATA_DIRECTORY sparse-checkout add /$EXCHANGE_MARKET_DIRECTORY/$pair*-$data_necessary_timeframe*.feather
-
-# done
-
 done
 done
 done
@@ -139,14 +107,6 @@ echo "$pair" pair "$data_necessary_timeframe" added
 git -C $MAIN_DATA_DIRECTORY sparse-checkout add /$EXCHANGE_MARKET_DIRECTORY/$pair*-$data_necessary_timeframe*.feather
 
 done < PAIRS_FOR_DOWNLOAD.txt
-
-# for pair in `cat PAIRS_FOR_DOWNLOAD.txt`
-# do
-
-# echo $pair-$data_necessary_timeframe
-# sudo git -C $MAIN_DATA_DIRECTORY sparse-checkout add /$EXCHANGE_MARKET_DIRECTORY/$pair*-$data_necessary_timeframe*.feather
-
-# done
 
 done
 done
