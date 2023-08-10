@@ -1867,6 +1867,7 @@ class NostalgiaForInfinityX3(IStrategy):
         informative_4h['rsi_3'] = ta.RSI(informative_4h, timeperiod=3, fillna=True)
         informative_4h['rsi_14'] = ta.RSI(informative_4h, timeperiod=14, fillna=True)
 
+        informative_4h['rsi_14_max_3'] = informative_4h['rsi_14'].rolling(3).max()
         informative_4h['rsi_14_max_6'] = informative_4h['rsi_14'].rolling(6).max()
 
         # EMA
