@@ -30,5 +30,5 @@ services:
       --timerange ${TIMERANGE:-20230601-20230701}
       --config configs/trading_mode-${TRADING_MODE:-spot}.json
       --config configs/exampleconfig.json
-      --config configs/pairlist-static-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt.json
+      --config configs/pairlist-backtest-static-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt.json
       --config configs/blacklist-${EXCHANGE:-binance}.json
