@@ -8,11 +8,15 @@ MAIN_DATA_DIRECTORY="user_data/data"
 URL="https://github.com/DigiTuccar/HistoricalDataForTradeBacktest.git"
 
 rm PAIRS_FOR_DOWNLOAD.txt
-docker run -v ".:/running_config" --rm --env-file .github/workflows/scripts/ci-proxy.env \
-    freqtradeorg/freqtrade:stable test-pairlist -c /running_config/configs/trading_mode-$TRADING_MODE.json \
-    -c /running_config/configs/pairlist-static-$EXCHANGE-$TRADING_MODE-usdt.json \
-    -c /running_config/configs/exampleconfig.json -1 --exchange $EXCHANGE \
-    -c /running_config/configs/blacklist-$EXCHANGE.json|sed -e 's+/+_+g'>>PAIRS_FOR_DOWNLOAD.txt
+# docker run -v ".:/running_config" --rm --env-file .github/workflows/scripts/ci-proxy.env \
+#     freqtradeorg/freqtrade:stable test-pairlist -c /running_config/configs/trading_mode-$TRADING_MODE.json \
+#     -c /running_config/configs/pairlist-static-$EXCHANGE-$TRADING_MODE-usdt.json \
+#     -c /running_config/configs/exampleconfig.json -1 --exchange $EXCHANGE \
+#     -c /running_config/configs/blacklist-$EXCHANGE.json|sed -e 's+/+_+g'>>PAIRS_FOR_DOWNLOAD.txt
+
+
+
+jq -r .exchange.pair_whitelist[] configs/pairlist-static-$EXCHANGE-$TRADING_MODE-usdt.json |sed -e 's+/+_+g'> PAIRS_FOR_DOWNLOAD.txt
 
 if [ -L $MAIN_DATA_DIRECTORY ]
     then

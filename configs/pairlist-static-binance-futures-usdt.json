@@ -150,11 +150,10 @@
             "ZEC/USDT:USDT",
             "ZEN/USDT:USDT",
             "ZIL/USDT:USDT",
-            "ZRX/USDT:USDT",
-        ],
+            "ZRX/USDT:USDT"
+        ]
     },
     "pairlists": [
-        {"method": "StaticPairList"},
-        // {"method": "ShuffleFilter"}
+        {"method": "StaticPairList"}
     ]
 }
