@@ -38,11 +38,10 @@
             "XMR/USDT:USDT",
             "XPR/USDT:USDT",
             "YFI/USDT:USDT",
-            "ZIL/USDT:USDT",
+            "ZIL/USDT:USDT"
         ]
     },
     "pairlists": [
-        {"method": "StaticPairList"},
-        // {"method": "ShuffleFilter"}
+        {"method": "StaticPairList"}
     ]
 }

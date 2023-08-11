@@ -125,11 +125,10 @@
             "ZEN/USDT",
             "ZIL/USDT",
             "ZRX/USDT",
-            "MTL/USDT",
-        ],
+            "MTL/USDT"
+        ]
     },
     "pairlists": [
-        {"method": "StaticPairList"},
-        // {"method": "ShuffleFilter"}
+        {"method": "StaticPairList"}
     ]
 }
