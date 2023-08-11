@@ -16,7 +16,7 @@ rm PAIRS_FOR_DOWNLOAD.txt
 
 
 
-jq -r .exchange.pair_whitelist[] configs/pairlist-static-$EXCHANGE-$TRADING_MODE-usdt.json > PAIRS_FOR_DOWNLOAD.txt
+jq -r .exchange.pair_whitelist[] configs/pairlist-static-$EXCHANGE-$TRADING_MODE-usdt.json |sed -e 's+/+_+g'> PAIRS_FOR_DOWNLOAD.txt
 
 if [ -L $MAIN_DATA_DIRECTORY ]
     then
