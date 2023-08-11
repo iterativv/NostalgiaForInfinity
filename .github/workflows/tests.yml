@@ -93,13 +93,11 @@ jobs:
           cp NostalgiaForInfinityX.py user_data/strategies
           cp NostalgiaForInfinityX2.py user_data/strategies
           cp NostalgiaForInfinityX3.py user_data/strategies
-          
       - name: 'Create env file'
         run: |
           echo FREQTRADE__EXCHANGE__CCXT_CONFIG__AIOHTTP_PROXY=${{ secrets.FREQTRADE_PROXY }} >> .github/workflows/scripts/ci-proxy.env
           echo FREQTRADE__EXCHANGE__CCXT_CONFIG__PROXIES__HTTP=${{ secrets.FREQTRADE_PROXY }} >> .github/workflows/scripts/ci-proxy.env
           echo FREQTRADE__EXCHANGE__CCXT_CONFIG__PROXIES__HTTPS=${{ secrets.FREQTRADE_PROXY }} >> .github/workflows/scripts/ci-proxy.env
-
       - name: Fetch data for backtests from https://github.com/DigiTuccar/HistoricalDataForTradeBacktest
         env:
           EXCHANGE: binance
