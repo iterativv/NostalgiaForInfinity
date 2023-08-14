@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.336"
+        return "v13.0.343"
 
     # ROI table:
     minimal_roi = {
@@ -1514,7 +1514,7 @@ class NostalgiaForInfinityX3(IStrategy):
                                     and (last_candle['ewo_50_200'] > 2.4)
                                     and (last_candle['rsi_14'] > previous_candle['rsi_14'])
                                     and (last_candle['close'] < (last_candle['ema_12'] * 0.998))
-                                    and (last_candle['rsi_3_15m'] > 10.0)
+                                    and (last_candle['rsi_3_15m'] > 12.0)
                                     and (last_candle['cti_20_1h'] < 0.8)
                                     and (last_candle['rsi_3_1h'] > 16.0)
                                     and (last_candle['rsi_3_4h'] > 16.0)
@@ -1562,7 +1562,7 @@ class NostalgiaForInfinityX3(IStrategy):
                                     and (last_candle['high_max_12_1h'] < (last_candle['close'] * 1.14))
                                     and (last_candle['close_max_12'] < (last_candle['close'] * 1.06))
                                     and (last_candle['rsi_3'] > 26.0)
-                                    and (last_candle['rsi_14'] < 36.0)
+                                    and (last_candle['rsi_14'] < 34.0)
                                     and (last_candle['rsi_14'] > previous_candle['rsi_14'])
                                     and (last_candle['ha_close'] > last_candle['ha_open'])
                                     and (last_candle['ema_12'] < (last_candle['ema_26'] * 0.994))
@@ -2722,6 +2722,37 @@ class NostalgiaForInfinityX3(IStrategy):
                 | (dataframe['rsi_3_1h'] > 10.0)
                 | (dataframe['ema_200_dec_24_15m'] == False)
                 | (dataframe['ema_200_dec_48_1h'] == False)
+            )
+            # currend 1d green, 4h & 1d overbought
+            &
+            (
+                (dataframe['change_pct_1d'] < 0.08)
+                | (dataframe['cti_20_4h'] < 0.9)
+                | (dataframe['rsi_14_4h'] < 75.0)
+                | (dataframe['cti_20_1d'] < 0.5)
+                | (dataframe['rsi_14_1d'] < 80.0)
+            )
+            # current 1d long red, previous 1d green, 1h & 4h downtrend, 5m & 15m & 1h downtrend
+            &
+            (
+                (dataframe['change_pct_1d'] > -0.16)
+                | (dataframe['change_pct_1d'].shift(288) < 0.08)
+                | (dataframe['not_downtrend_1h'])
+                | (dataframe['not_downtrend_4h'])
+                | (dataframe['ema_200_dec_24'] == False)
+                | (dataframe['ema_200_dec_24_15m'] == False)
+                | (dataframe['ema_200_dec_48_1h'] == False)
+            )
+            # 15m & 1h & 4h downtrend, 15m & 1h & 4h down move
+            &
+            (
+                (dataframe['not_downtrend_15m'])
+                | (dataframe['not_downtrend_1h'])
+                | (dataframe['not_downtrend_4h'])
+                | (dataframe['rsi_3_15m'] > 6.0)
+                | (dataframe['rsi_14_15m'] > 10.0)
+                | (dataframe['rsi_3_1h'] > 10.0)
+                | (dataframe['rsi_3_4h'] > 20.0)
             )
         ]
 
