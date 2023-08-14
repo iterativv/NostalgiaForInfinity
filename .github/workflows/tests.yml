@@ -305,7 +305,7 @@ jobs:
 
       - name: Show Backest Output
         run: |
-          cat artifacts/backtest-output-kucoin-spot-${{ matrix.timerange }}.txt
+          cat artifacts/backtest-output-okx-spot-${{ matrix.timerange }}.txt
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
