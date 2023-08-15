@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.355"
+        return "v13.0.358"
 
     # ROI table:
     minimal_roi = {
@@ -2834,6 +2834,14 @@ class NostalgiaForInfinityX3(IStrategy):
                 | (dataframe['rsi_3_15m'] > 20.0)
                 | (dataframe['cti_20_4h'] < 0.8)
                 | (dataframe['rsi_14_max_3_4h'] < 70.0)
+            )
+            # 15m & 1h & 4h downtrend, 15m strong down move
+            &
+            (
+                (dataframe['not_downtrend_15m'])
+                | (dataframe['not_downtrend_1h'])
+                | (dataframe['not_downtrend_4h'])
+                | (dataframe['rsi_3_15m'] > 3.0)
             )
         ]
 
@@ -10442,6 +10450,11 @@ class NostalgiaForInfinityX3(IStrategy):
                                           | (dataframe['rsi_3_15m'] > 10.0)
                                           | (dataframe['rsi_3_1h'] > 10.0)
                                           | (dataframe['ema_200_dec_4_1d'] == False))
+                    item_buy_logic.append((dataframe['top_wick_pct_4h'] < (abs(dataframe['change_pct_4h']) * 4.0))
+                                          | (dataframe['change_pct_1h'] > -0.02)
+                                          | (dataframe['cti_20_1h'] < 0.5)
+                                          | (dataframe['ema_200_dec_24_4h'] == False)
+                                          | (dataframe['ema_200_dec_4_1d'] == False))
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < (dataframe['ema_26'] * 0.938))
@@ -11381,6 +11394,12 @@ class NostalgiaForInfinityX3(IStrategy):
                                           | (dataframe['rsi_3_4h'] > 16.0)
                                           | (dataframe['ema_200_dec_48_1h'] == False)
                                           | (dataframe['ema_200_dec_24_4h'] == False))
+                    item_buy_logic.append((dataframe['rsi_3'] > 12.0)
+                                          | (dataframe['cti_20_15m'] < -0.0)
+                                          | (dataframe['rsi_14_15m'] < 36.0)
+                                          | (dataframe['cti_20_1h'] < 0.5)
+                                          | (dataframe['rsi_14_1h'] < 60.0)
+                                          | (dataframe['rsi_14_4h'] < 60.0))
 
                     # Logic
                     item_buy_logic.append(dataframe['bb20_2_width_1h'] > 0.132)
