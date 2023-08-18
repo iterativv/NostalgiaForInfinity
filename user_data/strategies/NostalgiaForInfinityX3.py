@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.366"
+        return "v13.0.371"
 
     # ROI table:
     minimal_roi = {
@@ -2892,6 +2892,36 @@ class NostalgiaForInfinityX3(IStrategy):
                 | (dataframe['ema_200_dec_24_15m'] == False)
                 | (dataframe['high_max_48_1h'] < (dataframe['close'] * 1.24))
             )
+            # 1h & 4h downtrend, 5m & 15m downmove
+            &
+            (
+                (dataframe['not_downtrend_1h'])
+                | (dataframe['not_downtrend_4h'])
+                | (dataframe['rsi_3'] > 4.0)
+                | (dataframe['rsi_3_15m'] > 20.0)
+                | (dataframe['ema_200_dec_48_1h'] == False)
+                | (dataframe['ema_200_dec_24_4h'] == False)
+            )
+            # current 1d green with top wick, 15m downtrend, 1h & 1d still high
+            &
+            (
+                (dataframe['change_pct_1d'] < 0.04)
+                | (dataframe['top_wick_pct_1d'] < 0.04)
+                | (dataframe['not_downtrend_15m'])
+                | (dataframe['rsi_3_15m'] > 16.0)
+                | (dataframe['cti_20_1h'] < 0.7)
+                | (dataframe['cti_20_1d'] < 0.7)
+            )
+            # current 1h long red, 1h downtrend, 4h still high, 4h & 1d downtrend
+            &
+            (
+                (dataframe['change_pct_1h'] > -0.08)
+                | (dataframe['not_downtrend_1h'])
+                | (dataframe['cti_20_4h'] < -0.5)
+                | (dataframe['rsi_14_4h'] < 40.0)
+                | (dataframe['ema_200_dec_24_4h'] == False)
+                | (dataframe['ema_200_dec_4_1d'] == False)
+            )
         ]
 
         for buy_enable in self.buy_params:
@@ -4462,6 +4492,17 @@ class NostalgiaForInfinityX3(IStrategy):
                                           | (dataframe['cti_20_1d'] < 0.5)
                                           | (dataframe['close_max_24'] < (dataframe['close'] * 1.1))
                                           | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.04)))
+                    item_buy_logic.append((dataframe['not_downtrend_15m'])
+                                          | (dataframe['not_downtrend_1h'])
+                                          | (dataframe['rsi_3_15m'] > 6.0)
+                                          | (dataframe['rsi_14_1d'] < 50.0)
+                                          | (dataframe['ema_200_dec_4_1d'] == False))
+                    item_buy_logic.append((dataframe['not_downtrend_1h'])
+                                          | (dataframe['not_downtrend_4h'])
+                                          | (dataframe['rsi_3_1h'] > 6.0)
+                                          | (dataframe['rsi_3_4h'] > 6.0)
+                                          | (dataframe['rsi_14_1d'] < 50.0)
+                                          | (dataframe['ema_200_dec_4_1d'] == False))
 
                     # Logic
                     item_buy_logic.append(dataframe['rsi_14'] < 36.0)
@@ -9736,6 +9777,12 @@ class NostalgiaForInfinityX3(IStrategy):
                                           | (dataframe['cti_20_4h'] < 0.5)
                                           | (dataframe['ema_200_dec_24_4h'] == False)
                                           | (dataframe['high_max_24_4h'] < (dataframe['close'] * 1.3)))
+                    item_buy_logic.append((dataframe['cti_20_15m'] < -0.0)
+                                          | (dataframe['rsi_14_1h'] < 40.0)
+                                          | (dataframe['cti_20_4h'] < -0.5)
+                                          | (dataframe['rsi_14_4h'] < 40.0)
+                                          | (dataframe['ema_200_dec_24_4h'] == False)
+                                          | (dataframe['ema_200_dec_4_1d'] == False))
 
                     # Logic
                     item_buy_logic.append(dataframe['bb40_2_delta'].gt(dataframe['close'] * 0.036))
