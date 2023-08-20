@@ -1,0 +1,46 @@
+// Binance Spot Pairs Available Since 2022
+{
+  "exchange": {
+    "name": "binance",
+    "pair_whitelist":
+    [
+"1INCH/USDT:USDT",
+"AGLD/USDT:USDT",
+"ALICE/USDT:USDT",
+"AR/USDT:USDT",
+"ATA/USDT:USDT",
+"BAKE/USDT:USDT",
+"BNX/USDT:USDT",
+"C98/USDT:USDT",
+"CELO/USDT:USDT",
+"CFX/USDT:USDT",
+"CKB/USDT:USDT",
+"DYDX/USDT:USDT",
+"ENS/USDT:USDT",
+"FLOW/USDT:USDT",
+"GALA/USDT:USDT",
+"GRT/USDT:USDT",
+"GTC/USDT:USDT",
+"ICP/USDT:USDT",
+"IDEX/USDT:USDT",
+"KLAY/USDT:USDT",
+"LINA/USDT:USDT",
+"LIT/USDT:USDT",
+"LPT/USDT:USDT",
+"MASK/USDT:USDT",
+"MINA/USDT:USDT",
+"PERP/USDT:USDT",
+"QNT/USDT:USDT",
+"RAD/USDT:USDT",
+"REEF/USDT:USDT",
+"SFP/USDT:USDT",
+"TLM/USDT:USDT",
+"TRU/USDT:USDT",
+"XVG/USDT:USDT",
+"YGG/USDT:USDT"
+    ]
+  },
+  "pairlists": [
+    {"method": "StaticPairList"}
+  ]
+}
