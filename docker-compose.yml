@@ -49,6 +49,7 @@ services:
       --config configs/exampleconfig.json --timerange 20210101-
       --config tests/backtests/pairs-available-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt-2021.json
       --disable-max-market-positions --dry-run-wallet 100000 --stake-amount 1000 --max-open-trades 100
+      --log-file user_data/logs/backtesting-with-pairs-available-from-2021-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-${STRATEGY_NAME:-NostalgiaForInfinityX3}-${STRATEGY_VERSION:-latest}.log
 
   backtesting-with-pairs-available-from-2022:
     image: freqtradeorg/freqtrade:stable
@@ -68,6 +69,7 @@ services:
       --config configs/exampleconfig.json --timerange 20220101-
       --config tests/backtests/pairs-available-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt-2022.json
       --disable-max-market-positions --dry-run-wallet 100000 --stake-amount 1000 --max-open-trades 100
+      --log-file user_data/logs/backtesting-with-pairs-available-from-2022-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-${STRATEGY_NAME:-NostalgiaForInfinityX3}-${STRATEGY_VERSION:-latest}.log
 
 
   backtesting-with-pairs-available-from-2023:
@@ -86,22 +88,7 @@ services:
         --strategy-list ${STRATEGY_NAME:-NostalgiaForInfinityX3}
         --config configs/trading_mode-${TRADING_MODE:-spot}.json
         --timeframe-detail 1m --cache none --breakdown week --export signals
-        --config configs/exampleconfig.json --timerange 20230501-
+        --config configs/exampleconfig.json --timerange 20230101-
         --config tests/backtests/pairs-available-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt-2023.json
         --disable-max-market-positions --dry-run-wallet 100000 --stake-amount 1000 --max-open-trades 100
         --log-file user_data/logs/backtesting-with-pairs-available-from-2023-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-${STRATEGY_NAME:-NostalgiaForInfinityX3}-${STRATEGY_VERSION:-latest}.log
-
-
-
-
-
-    # command: >
-    #   backtesting
-    #   --datadir /freqtrade/user_data/data/${EXCHANGE:-binance}
-    #   --strategy-list ${STRATEGY_NAME:-NostalgiaForInfinityX3}
-    #   --config configs/trading_mode-${TRADING_MODE:-spot}.json
-    #   --timeframe-detail 1m --cache none --breakdown week
-    #   --config configs/exampleconfig.json --timerange 20230101-
-    #   --config tests/backtests/pairs-available-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt-2023.json
-    #   --disable-max-market-positions --dry-run-wallet 100000 --stake-amount 1000 --max-open-trades 100
-    #   --log-file user_data/logs/backtesting-with-pairs-available-from-2023-${STRATEGY_NAME:-NostalgiaForInfinityX3}-${STRATEGY_VERSION:-latest}-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-$(`date +"%Y-%m-%d"-%H%M%S`).log
