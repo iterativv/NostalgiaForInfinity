@@ -2,8 +2,7 @@
 {
   "exchange": {
     "name": "kucoin",
-    "pair_whitelist":
-    [
+    "pair_whitelist": [
       "AAVE/USDT",
       "ADA/USDT",
       "AKRO/USDT",
@@ -74,7 +73,7 @@
       "XRP/USDT",
       "XTZ/USDT",
       "YFI/USDT",
-      "ZEC/USDT",
+      "ZEC/USDT"
     ]
   },
   "pairlists": [

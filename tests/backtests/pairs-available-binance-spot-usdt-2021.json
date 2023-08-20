@@ -1,9 +1,7 @@
-// Binance Spot Pairs Available Since 2021
 {
   "exchange": {
     "name": "binance",
-    "pair_whitelist":
-    [
+    "pair_whitelist": [
       "1INCH/USDT",
       "AAVE/USDT",
       "ADA/USDT",
@@ -160,6 +158,8 @@
     ]
   },
   "pairlists": [
-    {"method": "StaticPairList"}
+    {
+      "method": "StaticPairList"
+    }
   ]
 }
