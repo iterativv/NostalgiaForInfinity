@@ -2124,6 +2124,9 @@ class NostalgiaForInfinityX4(IStrategy):
         dataframe['tpct_change_0']   = top_percent_change(self, dataframe, 0)
         dataframe['tpct_change_2']   = top_percent_change(self, dataframe, 2)
 
+        # Candle change
+        dataframe['change_pct'] = (dataframe['close'] - dataframe['open']) / dataframe['open']
+
         # Close max
         dataframe['close_max_12'] = dataframe['close'].rolling(12).max()
         dataframe['close_max_24'] = dataframe['close'].rolling(24).max()
