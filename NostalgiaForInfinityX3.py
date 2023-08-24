@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.421"
+        return "v13.0.422"
 
     # ROI table:
     minimal_roi = {
@@ -3430,6 +3430,17 @@ class NostalgiaForInfinityX3(IStrategy):
                 | (dataframe['cti_20_1h'] < -0.0)
                 | (dataframe['cti_20_4h'] < -0.0)
                 | (dataframe['rsi_14_4h'] < 40.0)
+            )
+            # 5m downmove, 15m & 1h & 4h still high, drop in last 24 hours
+            &
+            (
+                (dataframe['rsi_3'] > 6.0)
+                | (dataframe['rsi_14_15m'] < 36.0)
+                | (dataframe['cti_20_1h'] < -0.0)
+                | (dataframe['rsi_14_1h'] < 50.0)
+                | (dataframe['cti_20_4h'] < -0.0)
+                | (dataframe['rsi_14_4h'] < 50.0)
+                | (dataframe['high_max_24_1h'] < (dataframe['close'] * 1.26))
             )
         ]
 
