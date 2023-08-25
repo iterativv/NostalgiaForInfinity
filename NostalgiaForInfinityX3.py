@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.439"
+        return "v13.0.440"
 
     # ROI table:
     minimal_roi = {
@@ -2383,23 +2383,8 @@ class NostalgiaForInfinityX3(IStrategy):
         '''
         dataframe = self.base_tf_5m_indicators(metadata, dataframe)
 
-        tok = time.perf_counter()
-        log.debug(f"[{metadata['pair']}] Populate indicators took a total of: {tok - tik:0.4f} seconds.")
-
-        return dataframe
-
-    def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        conditions = []
-        dataframe.loc[:, 'enter_tag'] = ''
-
-        # the number of free slots
-        current_free_slots = self.config["max_open_trades"] - len(LocalTrade.get_trades_proxy(is_open=True))
-        # if BTC/ETH stake
-        is_btc_stake = self.config['stake_currency'] in self.btc_stakes
-        allowed_empty_candles = 144 if is_btc_stake else 60
-
         # Global protections
-        protections_global = [
+        dataframe['protections_global'] = (
             # current 4h red with top wick, previous 4h red, 4h overbought
             (
                 (dataframe['change_pct_4h'] > -0.04)
@@ -3622,7 +3607,22 @@ class NostalgiaForInfinityX3(IStrategy):
                 | (dataframe['cti_20_1d'] < 0.5)
                 | (dataframe['rsi_14_1d'] < 50.0)
             )
-        ]
+        )
+
+        tok = time.perf_counter()
+        log.debug(f"[{metadata['pair']}] Populate indicators took a total of: {tok - tik:0.4f} seconds.")
+
+        return dataframe
+
+    def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        conditions = []
+        dataframe.loc[:, 'enter_tag'] = ''
+
+        # the number of free slots
+        current_free_slots = self.config["max_open_trades"] - len(LocalTrade.get_trades_proxy(is_open=True))
+        # if BTC/ETH stake
+        is_btc_stake = self.config['stake_currency'] in self.btc_stakes
+        allowed_empty_candles = 144 if is_btc_stake else 60
 
         for buy_enable in self.buy_params:
             index = int(buy_enable.split('_')[2])
@@ -3633,7 +3633,7 @@ class NostalgiaForInfinityX3(IStrategy):
                 # -----------------------------------------------------------------------------------------
                 item_buy_logic = []
                 item_buy_logic.append(reduce(lambda x, y: x & y, item_buy_protection_list))
-                item_buy_logic.append(reduce(lambda x, y: x & y, protections_global))
+                item_buy_logic.append(dataframe['protections_global'] == True)
 
                 # Condition #1 - Long mode bull. Uptrend.
                 if index == 1:
