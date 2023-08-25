@@ -65,7 +65,7 @@ class NostalgiaForInfinityX4(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v14.0.76"
+        return "v14.0.77"
 
     # ROI table:
     minimal_roi = {
@@ -1321,6 +1321,7 @@ class NostalgiaForInfinityX4(IStrategy):
                 if (current_stake_amount < stake_amount_threshold):
                     if (
                             (profit_current_stake_ratio < grinding_thresholds[i])
+                            and (last_candle['protections_global'] == True)
                             and
                             (
                                 (last_candle['close_max_12'] < (last_candle['close'] * 1.12))
