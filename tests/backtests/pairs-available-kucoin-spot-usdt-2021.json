@@ -76,7 +76,5 @@
       "ZEC/USDT"
     ]
   },
-  "pairlists": [
-    {"method": "StaticPairList"}
-  ]
+  "pairlists": [{ "method": "StaticPairList" }]
 }

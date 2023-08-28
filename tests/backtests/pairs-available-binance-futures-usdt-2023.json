@@ -2,35 +2,32 @@
 {
   "exchange": {
     "name": "binance",
-    "pair_whitelist":
-    [
-"ACH/USDT:USDT",
-"APE/USDT:USDT",
-"API3/USDT:USDT",
-"APT/USDT:USDT",
-"ASTR/USDT:USDT",
-"CVX/USDT:USDT",
-"FXS/USDT:USDT",
-"GAL/USDT:USDT",
-"GMT/USDT:USDT",
-"GMX/USDT:USDT",
-"HFT/USDT:USDT",
-"HOOK/USDT:USDT",
-"IMX/USDT:USDT",
-"JASMY/USDT:USDT",
-"JOE/USDT:USDT",
-"LDO/USDT:USDT",
-"LEVER/USDT:USDT",
-"OP/USDT:USDT",
-"PEOPLE/USDT:USDT",
-"PHB/USDT:USDT",
-"RNDR/USDT:USDT",
-"SPELL/USDT:USDT",
-"STG/USDT:USDT",
-"WOO/USDT:USDT",
+    "pair_whitelist": [
+      "ACH/USDT:USDT",
+      "APE/USDT:USDT",
+      "API3/USDT:USDT",
+      "APT/USDT:USDT",
+      "ASTR/USDT:USDT",
+      "CVX/USDT:USDT",
+      "FXS/USDT:USDT",
+      "GAL/USDT:USDT",
+      "GMT/USDT:USDT",
+      "GMX/USDT:USDT",
+      "HFT/USDT:USDT",
+      "HOOK/USDT:USDT",
+      "IMX/USDT:USDT",
+      "JASMY/USDT:USDT",
+      "JOE/USDT:USDT",
+      "LDO/USDT:USDT",
+      "LEVER/USDT:USDT",
+      "OP/USDT:USDT",
+      "PEOPLE/USDT:USDT",
+      "PHB/USDT:USDT",
+      "RNDR/USDT:USDT",
+      "SPELL/USDT:USDT",
+      "STG/USDT:USDT",
+      "WOO/USDT:USDT"
     ]
   },
-  "pairlists": [
-    {"method": "StaticPairList"}
-  ]
+  "pairlists": [{ "method": "StaticPairList" }]
 }

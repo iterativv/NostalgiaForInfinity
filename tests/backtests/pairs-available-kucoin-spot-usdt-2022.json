@@ -2,8 +2,7 @@
 {
   "exchange": {
     "name": "kucoin",
-    "pair_whitelist":
-    [
+    "pair_whitelist": [
       "1INCH/USDT",
       "ABBC/USDT",
       "ADX/USDT",
@@ -90,7 +89,6 @@
       "MANA/USDT",
       "MASK/USDT",
       "MATIC/USDT",
-      "MLN/USDT",
       "MNW/USDT",
       "MOVR/USDT",
       "MTL/USDT",
@@ -125,7 +123,6 @@
       "REQ/USDT",
       "RFOX/USDT",
       "RLC/USDT",
-      "RLY/USDT",
       "RMRK/USDT",
       "RNDR/USDT",
       "ROUTE/USDT",
@@ -174,7 +171,5 @@
       "ZIL/USDT"
     ]
   },
-  "pairlists": [
-    {"method": "StaticPairList"}
-  ]
+  "pairlists": [{ "method": "StaticPairList" }]
 }

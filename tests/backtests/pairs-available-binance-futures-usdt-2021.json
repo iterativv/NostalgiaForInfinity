@@ -2,8 +2,7 @@
 {
   "exchange": {
     "name": "binance",
-    "pair_whitelist":
-    [
+    "pair_whitelist": [
       "AAVE/USDT:USDT",
       "ADA/USDT:USDT",
       "ALGO/USDT:USDT",
@@ -113,7 +112,5 @@
       "ZRX/USDT:USDT"
     ]
   },
-  "pairlists": [
-    {"method": "StaticPairList"}
-  ]
+  "pairlists": [{ "method": "StaticPairList" }]
 }
