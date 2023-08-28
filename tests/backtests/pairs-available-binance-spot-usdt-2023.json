@@ -2,8 +2,7 @@
 {
   "exchange": {
     "name": "binance",
-    "pair_whitelist":
-    [
+    "pair_whitelist": [
       "ACA/USDT",
       "ACH/USDT",
       "ALPINE/USDT",
@@ -40,10 +39,8 @@
       "STG/USDT",
       "T/USDT",
       "WOO/USDT",
-      "XNO/USDT",
+      "XNO/USDT"
     ]
   },
-  "pairlists": [
-    {"method": "StaticPairList"}
-  ]
+  "pairlists": [{ "method": "StaticPairList" }]
 }

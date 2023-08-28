@@ -1,9 +1,8 @@
-// Binance Spot Pairs Available Since 2022 - 595 days
+// Binance Spot Pairs Available Since 2022
 {
   "exchange": {
     "name": "binance",
-    "pair_whitelist":
-    [
+    "pair_whitelist": [
       "ACM/USDT",
       "ADX/USDT",
       "AGLD/USDT",
@@ -113,7 +112,5 @@
       "YGG/USDT"
     ]
   },
-  "pairlists": [
-    {"method": "StaticPairList"}
-  ]
+  "pairlists": [{ "method": "StaticPairList" }]
 }

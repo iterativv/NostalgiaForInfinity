@@ -2,8 +2,7 @@
 {
   "exchange": {
     "name": "kucoin",
-    "pair_whitelist":
-    [
+    "pair_whitelist": [
       "ACA/USDT",
       "ACH/USDT",
       "ADS/USDT",
@@ -19,7 +18,6 @@
       "AZERO/USDT",
       "BFC/USDT",
       "BICO/USDT",
-      "BIFI/USDT",
       "BOBA/USDT",
       "BRISE/USDT",
       "BSW/USDT",
@@ -87,7 +85,5 @@
       "ZBC/USDT"
     ]
   },
-  "pairlists": [
-    {"method": "StaticPairList"}
-  ]
+  "pairlists": [{ "method": "StaticPairList" }]
 }
