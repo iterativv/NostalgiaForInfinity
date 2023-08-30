@@ -65,7 +65,7 @@ class NostalgiaForInfinityX4(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v14.0.95"
+        return "v14.0.96"
 
     # ROI table:
     minimal_roi = {
@@ -1768,7 +1768,10 @@ class NostalgiaForInfinityX4(IStrategy):
             informative_pairs.extend([(pair, info_timeframe) for pair in pairs])
 
         if self.config['stake_currency'] in ['USDT','BUSD','USDC','DAI','TUSD','PAX','USD','EUR','GBP']:
-            btc_info_pair = f"BTC/{self.config['stake_currency']}"
+            if ('trading_mode' in self.config) and (self.config['trading_mode'] in ['futures', 'margin']):
+                btc_info_pair = f"BTC/{self.config['stake_currency']}:{self.config['stake_currency']}"
+            else:
+                btc_info_pair = f"BTC/{self.config['stake_currency']}"
         else:
             if ('trading_mode' in self.config) and (self.config['trading_mode'] in ['futures', 'margin']):
                 btc_info_pair = "BTC/USDT:USDT"
