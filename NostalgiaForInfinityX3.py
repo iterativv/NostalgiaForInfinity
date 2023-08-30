@@ -2279,6 +2279,11 @@ class NostalgiaForInfinityX3(IStrategy):
         # EWO
         dataframe['ewo_50_200'] = ewo(dataframe, 50, 200)
 
+        # Hull Moving Average
+        dataframe['hma_70'] = pta.hma(dataframe['close'], length=70)
+
+        dataframe['hma_70_buy'] = ((dataframe['hma_70'] > dataframe['hma_70'].shift(1)) & (dataframe['hma_70'].shift(1) < dataframe['hma_70'].shift(2)))
+
         # Heiken Ashi
         heikinashi = qtpylib.heikinashi(dataframe)
         dataframe['ha_open'] = heikinashi['open']
