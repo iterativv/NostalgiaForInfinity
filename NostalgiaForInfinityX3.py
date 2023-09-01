@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.466"
+        return "v13.0.467"
 
     # ROI table:
     minimal_roi = {
@@ -155,10 +155,12 @@ class NostalgiaForInfinityX3(IStrategy):
     grinding_stakes = [0.25, 0.25, 0.25, 0.25]
     grinding_stakes_alt_1 = [0.5, 0.5, 0.5]
     grinding_stakes_alt_2 = [0.75, 0.75]
+    grinding_stakes_alt_3 = [1.0]
     # Current total profit
     grinding_thresholds = [-0.0, -0.03, -0.09, -0.12]
     grinding_thresholds_alt_1 = [-0.06, -0.12, -0.18]
     grinding_thresholds_alt_2 = [-0.08, -0.18]
+    grinding_thresholds_alt_3 = [-0.09]
 
     # Grinding mode 1
     grinding_mode_1_stop_grinds = -0.16
@@ -1349,7 +1351,11 @@ class NostalgiaForInfinityX3(IStrategy):
                 grinding_stakes = self.grinding_stakes
                 # Low stakes, on Binance mostly
                 if ((slice_amount * self.grinding_stakes[0]) < min_stake):
-                    if ((slice_amount * self.grinding_stakes_alt_1[0]) < min_stake):
+                    if ((slice_amount * self.grinding_stakes_alt_2[0]) < min_stake):
+                        grinding_parts = len(self.grinding_stakes_alt_3)
+                        grinding_thresholds = self.grinding_thresholds_alt_3
+                        grinding_stakes = self.grinding_stakes_alt_3
+                    elif ((slice_amount * self.grinding_stakes_alt_1[0]) < min_stake):
                         grinding_parts = len(self.grinding_stakes_alt_2)
                         grinding_thresholds = self.grinding_thresholds_alt_2
                         grinding_stakes = self.grinding_stakes_alt_2
