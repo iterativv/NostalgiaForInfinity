@@ -21,7 +21,6 @@
       "BEL/USDT:USDT",
       "BLZ/USDT:USDT",
       "BNB/USDT:USDT",
-      "BNT/USDT:USDT",
       "BTC/USDT:USDT",
       "CELR/USDT:USDT",
       "CHR/USDT:USDT",
@@ -73,7 +72,6 @@
       "OMG/USDT:USDT",
       "ONE/USDT:USDT",
       "ONT/USDT:USDT",
-      "OXT/USDT:USDT",
       "QTUM/USDT:USDT",
       "REN/USDT:USDT",
       "RLC/USDT:USDT",
@@ -112,5 +110,17 @@
       "ZRX/USDT:USDT"
     ]
   },
-  "pairlists": [{ "method": "StaticPairList" }]
+  "pairlists": [{ "method": "StaticPairList" }],
+  "entry_pricing": {
+    "use_order_book": true,
+    "order_book_top": 1,
+    "check_depth_of_market": {
+      "enabled": false,
+      "bids_to_ask_delta": 1
+    }
+  },
+  "exit_pricing": {
+    "use_order_book": true,
+    "order_book_top": 1
+  }
 }

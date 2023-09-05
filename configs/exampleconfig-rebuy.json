@@ -1,98 +1,98 @@
 {
-    // WARNING: This is an example configuration
-    // Please use at own risk
-    // For full documentation on Freqtrade configration files please visit https://www.freqtrade.io/en/stable/configuration/
-    "dry_run": true,
-    "max_open_trades": 6,
-    "stake_currency": "USDT",
-    "stake_amount": "unlimited",
-    "tradable_balance_ratio": 0.99,
-    "fiat_display_currency": "USD",
-    "force_entry_enable": true,
-    "position_adjustment_enable": true,
-    "unfilledtimeout": {
-        "entry": 5,
-        "exit": 20,
-        "exit_timeout_count": 0,
-        "unit": "minutes"
-        },
-    "order_types": {
-        "entry": "limit",
-        "exit": "limit",
-        "emergency_exit": "limit",
-        "force_entry": "limit",
-        "force_exit": "limit",
-        "stoploss": "limit",
-        "stoploss_on_exchange": false,
-        "stoploss_on_exchange_interval": 60
+  // WARNING: This is an example configuration
+  // Please use at own risk
+  // For full documentation on Freqtrade configration files please visit https://www.freqtrade.io/en/stable/configuration/
+  "dry_run": true,
+  "max_open_trades": 6,
+  "stake_currency": "USDT",
+  "stake_amount": "unlimited",
+  "tradable_balance_ratio": 0.99,
+  "fiat_display_currency": "USD",
+  "force_entry_enable": true,
+  "position_adjustment_enable": true,
+  "unfilledtimeout": {
+    "entry": 5,
+    "exit": 20,
+    "exit_timeout_count": 0,
+    "unit": "minutes"
+  },
+  "order_types": {
+    "entry": "limit",
+    "exit": "limit",
+    "emergency_exit": "limit",
+    "force_entry": "limit",
+    "force_exit": "limit",
+    "stoploss": "limit",
+    "stoploss_on_exchange": false,
+    "stoploss_on_exchange_interval": 60
+  },
+  "entry_pricing": {
+    "price_side": "other",
+    "use_order_book": false,
+    "order_book_top": 1,
+    "price_last_balance": 0.0,
+    "check_depth_of_market": { "enabled": false, "bids_to_ask_delta": 1 }
+  },
+  "exit_pricing": {
+    "price_side": "other",
+    "use_order_book": false,
+    "order_book_top": 1,
+    "price_last_balance": 0.0
+  },
+  "exchange": {
+    "name": "",
+    "key": "",
+    "password": "",
+    "secret": "",
+    "ccxt_config": {
+      "enableRateLimit": true,
+      "rateLimit": 60,
+      "options": {
+        "brokerId": null,
+        // "broker": {
+        //   "spot": null,
+        //   "margin": null,
+        //   "future": null,
+        //   "delivery": null,
+        //   "swap": null,
+        //   "option": null
+        // },
+        "partner": {
+          "spot": {
+            "id": null,
+            "key": null
+          },
+          "future": {
+            "id": null,
+            "key": null
+          }
+        }
+      }
     },
-    "entry_pricing": {
-        "price_side": "other",
-        "use_order_book": false,
-        "order_book_top": 1,
-        "price_last_balance": 0.0,
-        "check_depth_of_market": {"enabled": false, "bids_to_ask_delta": 1},
-    },
-    "exit_pricing": {
-        "price_side": "other",
-        "use_order_book": false,
-        "order_book_top": 1,
-        "price_last_balance": 0.0,
-    },
-    "exchange": {
-        "name": "",
-        "key": "",
-        "password": "",
-        "secret": "",
-        "ccxt_config": {
-            "enableRateLimit": true,
-            "rateLimit": 60,
-            "options": {
-                "brokerId": null,
-                // "broker": {
-                //     "spot": null,
-                //     "margin": null,
-                //     "future": null,
-                //     "delivery": null
-                //     "swap": null
-                //     "option": null
-                // },
-                "partner": {
-                    "spot": {
-                        "id": null,
-                        "key": null
-                    },
-                    "future": {
-                        "id": null,
-                        "key": null
-                    },
-                },
-            },
-        },
-        "ccxt_async_config": {
-            "enableRateLimit": true,
-            "rateLimit": 60,
-            "options": {
-                "brokerId": null,
-                // "broker": {
-                //     "spot": null,
-                //     "margin": null,
-                //     "future": null,
-                //     "delivery": null
-                //     "swap": null
-                //     "option": null
-                // },
-                "partner": {
-                    "spot": {
-                        "id": null,
-                        "key": null
-                    },
-                    "future": {
-                        "id": null,
-                        "key": null
-                    },
-                },
-            },
-        },
-    },
+    "ccxt_async_config": {
+      "enableRateLimit": true,
+      "rateLimit": 60,
+      "options": {
+        "brokerId": null,
+        // "broker": {
+        //   "spot": null,
+        //   "margin": null,
+        //   "future": null,
+        //   "delivery": null,
+        //   "swap": null,
+        //   "option": null
+        // },
+        "partner": {
+          "spot": {
+            "id": null,
+            "key": null
+          },
+          "future": {
+            "id": null,
+            "key": null
+          }
+        }
+      }
+    }
+  }
 }

@@ -1,0 +1,8 @@
+// Kucoin Spot Pairs Available Since 2017
+{
+  "exchange": {
+    "name": "kucoin",
+    "pair_whitelist": ["BTC/USDT", "ETH/USDT", "KCS/USDT", "NEO/USDT"]
+  },
+  "pairlists": [{ "method": "StaticPairList" }]
+}
