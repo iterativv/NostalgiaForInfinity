@@ -1,0 +1,23 @@
+// Kucoin Spot Pairs Available Since 2018
+{
+  "exchange": {
+    "name": "kucoin",
+    "pair_whitelist": [
+      "BSV/USDT",
+      "DASH/USDT",
+      "EOS/USDT",
+      "ETC/USDT",
+      "KAT/USDT",
+      "LTC/USDT",
+      "LYM/USDT",
+      "ONT/USDT",
+      "SNX/USDT",
+      "TEL/USDT",
+      "TRX/USDT",
+      "VET/USDT",
+      "XLM/USDT",
+      "XRP/USDT"
+    ]
+  },
+  "pairlists": [{ "method": "StaticPairList" }]
+}
