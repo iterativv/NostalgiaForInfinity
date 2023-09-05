@@ -2309,8 +2309,10 @@ class NostalgiaForInfinityX4(IStrategy):
         dataframe['ewo_50_200'] = ewo(dataframe, 50, 200)
 
         # Hull Moving Average
+        dataframe['hma_55'] = pta.hma(dataframe['close'], length=55)
         dataframe['hma_70'] = pta.hma(dataframe['close'], length=70)
 
+        dataframe['hma_55_buy'] = ((dataframe['hma_55'] > dataframe['hma_55'].shift(1)) & (dataframe['hma_55'].shift(1) < dataframe['hma_55'].shift(2)))
         dataframe['hma_70_buy'] = ((dataframe['hma_70'] > dataframe['hma_70'].shift(1)) & (dataframe['hma_70'].shift(1) < dataframe['hma_70'].shift(2)))
 
         # Heiken Ashi
