@@ -3,46 +3,44 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-
   Pre-Commit:
     runs-on: ubuntu-20.04
     steps:
-    - name: Fetch Source Code
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
-    - name: Install black
-      run: |
-        pip install black==23.7.0
-    - id: changed-files
-      name: Get Changed Files
-      uses: dorny/paths-filter@v2
-      with:
-        token: ${{ github.token }}
-        list-files: shell
-        filters: |
-          repo:
-            - added|modified:
-              - '**'
-    - name: Set Cache Key
-      run: echo "PY=$(python --version --version | sha256sum | cut -d' ' -f1)" >> $GITHUB_ENV
-    - uses: actions/cache@v3
-      with:
-        path: ~/.cache/pre-commit
-        key: pre-commit|${{ env.PY }}|${{ hashFiles('.pre-commit-config.yaml') }}
-    - name: Check ALL Files On Branch
-      uses: pre-commit/action@v3.0.0
-      if: github.event_name != 'pull_request'
-    - name: Check Changed Files On PR
-      uses: pre-commit/action@v3.0.0
-      if: github.event_name == 'pull_request'
-      with:
-        extra_args: --files ${{ steps.changed-files.outputs.repo_files }}
-
+      - name: Fetch Source Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - name: Install black
+        run: |
+          pip install black==23.7.0
+      - id: changed-files
+        name: Get Changed Files
+        uses: dorny/paths-filter@v2
+        with:
+          token: ${{ github.token }}
+          list-files: shell
+          filters: |
+            repo:
+              - added|modified:
+                - '**'
+      - name: Set Cache Key
+        run: echo "PY=$(python --version --version | sha256sum | cut -d' ' -f1)" >> $GITHUB_ENV
+      - uses: actions/cache@v3
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit|${{ env.PY }}|${{ hashFiles('.pre-commit-config.yaml') }}
+      - name: Check ALL Files On Branch
+        uses: pre-commit/action@v3.0.0
+        if: github.event_name != 'pull_request'
+      - name: Check Changed Files On PR
+        uses: pre-commit/action@v3.0.0
+        if: github.event_name == 'pull_request'
+        with:
+          extra_args: --files ${{ steps.changed-files.outputs.repo_files }}
 
   Binance-Backtests:
     runs-on: ubuntu-20.04
@@ -83,12 +81,13 @@ jobs:
           - 20230501-20230601
           - 20230601-20230701
           - 20230701-20230801
+          - 20230801-20230901
 
     steps:
       - name: Fetch Source Code
         uses: actions/checkout@v3
 
-      - name: 'Create env file'
+      - name: "Create env file"
         run: |
           echo FREQTRADE__EXCHANGE__CCXT_CONFIG__AIOHTTP_PROXY=${{ secrets.FREQTRADE_PROXY }} >> .github/workflows/scripts/ci-proxy.env
           echo FREQTRADE__EXCHANGE__CCXT_CONFIG__PROXIES__HTTP=${{ secrets.FREQTRADE_PROXY }} >> .github/workflows/scripts/ci-proxy.env
@@ -130,7 +129,6 @@ jobs:
           name: binance-testrun-artifacts
           path: artifacts/
 
-
   Kucoin-Backtests:
     runs-on: ubuntu-20.04
     needs:
@@ -170,11 +168,11 @@ jobs:
           - 20230501-20230601
           - 20230601-20230701
           - 20230701-20230801
+          - 20230801-20230901
 
     steps:
       - name: Fetch Source Code
         uses: actions/checkout@v3
-
 
       - name: Fetch data for backtests from https://github.com/DigiTuccar/HistoricalDataForTradeBacktest
         env:
@@ -212,7 +210,6 @@ jobs:
         with:
           name: kucoin-testrun-artifacts
           path: artifacts/
-
 
   # OKX-Backtests:
   #   runs-on: ubuntu-20.04
@@ -257,7 +254,6 @@ jobs:
   #   steps:
   #     - name: Fetch Source Code
   #       uses: actions/checkout@v3
-
 
   #     - name: Fetch data for backtests from https://github.com/DigiTuccar/HistoricalDataForTradeBacktest
   #       env:
@@ -304,13 +300,12 @@ jobs:
       # - OKX-Backtests
 
     steps:
-
       - uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: "3.10"
 
       - name: Install Dependencies
         run: |
