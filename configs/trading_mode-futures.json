@@ -4,15 +4,7 @@
   "dataformat_ohlcv": "feather",
   "dataformat_trades": "feather",
   "exchange": {
-    "ccxt_config": {
-      "options": {
-        "defaultType": "future"
-      },
-    },
-    "ccxt_async_config": {
-      "options": {
-        "defaultType": "future"
-      },
-    }
+    "ccxt_config": { "options": { "defaultType": "future" } },
+    "ccxt_async_config": { "options": { "defaultType": "future" } }
   }
 }
