@@ -4033,7 +4033,7 @@ class NostalgiaForInfinityX4(IStrategy):
                 | (dataframe['rsi_14_1d'] < 70.0)
                 | (dataframe['ema_200_dec_4_1d'] == False)
             )
-            # current 4h red, current 1h red, 1h & 4h downtrend, 1h & 4h downmove
+            # current 4h red, current 1h red, 1h & 4h downtrend, 1h & 4h downmove, 1h & 4h still not low enough
             &
             (
                 (dataframe['change_pct_4h'] > -0.04)
@@ -4042,6 +4042,8 @@ class NostalgiaForInfinityX4(IStrategy):
                 | (dataframe['not_downtrend_4h'])
                 | (dataframe['rsi_3_1h'] > 10.0)
                 | (dataframe['rsi_3_4h'] > 26.0)
+                | (dataframe['cti_20_1h'] < -0.5)
+                | (dataframe['rsi_14_4h'] < 40.0)
             )
         )
 
