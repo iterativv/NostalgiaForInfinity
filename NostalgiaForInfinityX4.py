@@ -65,7 +65,7 @@ class NostalgiaForInfinityX4(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v14.0.101"
+        return "v14.0.102"
 
     # ROI table:
     minimal_roi = {
@@ -1869,6 +1869,21 @@ class NostalgiaForInfinityX4(IStrategy):
                                     and (last_candle['close'] < last_candle['res3_1d'])
                                     and (last_candle['high_max_6_1d'] < (last_candle['close'] * 1.5))
                                 )
+                                or
+                                (
+                                    (last_candle['rsi_14'] < 60.0)
+                                    and (last_candle['cti_20'] < -0.0)
+                                    and (last_candle['hma_55_buy'])
+                                    and (last_candle['rsi_3_15m'] > 16.0)
+                                    and (last_candle['rsi_3_1h'] > 26.0)
+                                    and (last_candle['rsi_3_4h'] > 26.0)
+                                    and (last_candle['cti_20_1h'] < 0.8)
+                                    and (last_candle['cti_20_4h'] < 0.8)
+                                    and (last_candle['close'] < last_candle['res_hlevel_1d'])
+                                    and (last_candle['close'] > last_candle['sup_level_1d'])
+                                    and (last_candle['high_max_6_1d'] < (last_candle['close'] * 1.3))
+                                    and (last_candle['hl_pct_change_24_1h'] < 0.75)
+                                )
                             )
                     ):
                         buy_amount = slice_amount * grinding_mode_1_stakes[sub_grind_count]
@@ -2309,8 +2324,10 @@ class NostalgiaForInfinityX4(IStrategy):
         dataframe['ewo_50_200'] = ewo(dataframe, 50, 200)
 
         # Hull Moving Average
+        dataframe['hma_55'] = pta.hma(dataframe['close'], length=55)
         dataframe['hma_70'] = pta.hma(dataframe['close'], length=70)
 
+        dataframe['hma_55_buy'] = ((dataframe['hma_55'] > dataframe['hma_55'].shift(1)) & (dataframe['hma_55'].shift(1) < dataframe['hma_55'].shift(2)))
         dataframe['hma_70_buy'] = ((dataframe['hma_70'] > dataframe['hma_70'].shift(1)) & (dataframe['hma_70'].shift(1) < dataframe['hma_70'].shift(2)))
 
         # Heiken Ashi
