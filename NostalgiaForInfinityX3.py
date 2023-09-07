@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.492"
+        return "v13.0.493"
 
     # ROI table:
     minimal_roi = {
@@ -1780,6 +1780,8 @@ class NostalgiaForInfinityX3(IStrategy):
                 total_amount= 0.0
                 total_cost = 0.0
                 current_open_rate = 0.0
+                current_grind_stake = 0.0
+                current_grind_stake_profit = 0.0
                 for order in reversed(filled_orders):
                     if (order.ft_order_side == "buy")and (order is not filled_orders[0]):
                         sub_grind_count += 1
@@ -1791,6 +1793,8 @@ class NostalgiaForInfinityX3(IStrategy):
                         break
                 if (sub_grind_count > 0):
                     current_open_rate = total_cost / total_amount
+                    current_grind_stake = (total_amount * exit_rate * (1 - trade.fee_close))
+                    current_grind_stake_profit = current_grind_stake - total_cost
                 # Buy
                 if (not partial_sell) and (sub_grind_count < max_sub_grinds) and (count_of_exits > 0):
                     if (
@@ -1934,6 +1938,21 @@ class NostalgiaForInfinityX3(IStrategy):
                             sell_amount = (trade.amount * exit_rate) - (min_stake * 1.5)
                         if (sell_amount > min_stake):
                             self.dp.send_msg(f"Grinding exit [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount}| Coin amount: {total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%")
+                            return -sell_amount
+                    elif (
+                            (current_grind_stake_profit < (slice_amount * self.grinding_mode_1_stop_grinds))
+                            # temporary
+                            and
+                            (
+                                (trade.open_date_utc.replace(tzinfo=None) >= datetime(2023, 8, 28) or is_backtest)
+                                or (filled_entries[-1].order_date_utc.replace(tzinfo=None) >= datetime(2023, 8, 28) or is_backtest)
+                            )
+                    ):
+                        sell_amount = total_amount * exit_rate * 0.999
+                        if ((current_stake_amount - sell_amount) < (min_stake * 1.5)):
+                            sell_amount = (trade.amount * exit_rate) - (min_stake * 1.5)
+                        if (sell_amount > min_stake):
+                            self.dp.send_msg(f"Grinding stop exit [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%")
                             return -sell_amount
 
         return None
