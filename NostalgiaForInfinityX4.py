@@ -2046,6 +2046,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
         # Wicks
         informative_1d['top_wick_pct'] = ((informative_1d['high'] - np.maximum(informative_1d['open'], informative_1d['close'])) / np.maximum(informative_1d['open'], informative_1d['close']))
+        informative_1d['bot_wick_pct'] = abs((informative_1d['low'] - np.minimum(informative_1d['open'], informative_1d['close'])) / np.minimum(informative_1d['open'], informative_1d['close']))
 
         # Candle change
         informative_1d['change_pct'] = (informative_1d['close'] - informative_1d['open']) / informative_1d['open']
