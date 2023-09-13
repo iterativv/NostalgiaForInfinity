@@ -65,7 +65,7 @@ class NostalgiaForInfinityX4(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v14.0.161"
+        return "v14.0.162"
 
     # ROI table:
     minimal_roi = {
@@ -1374,8 +1374,8 @@ class NostalgiaForInfinityX4(IStrategy):
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {enter_tag})"
 
-        # Trades not opened by X2
-        if not any(c in (self.normal_mode_tags + self.pump_mode_tags + self.quick_mode_tags + self.rebuy_mode_tags + self.long_mode_tags) for c in enter_tags):
+        # Trades not opened by X4
+        if not any(c in (self.normal_mode_tags + self.pump_mode_tags + self.quick_mode_tags + self.rebuy_mode_tags + self.long_mode_tags + self.short_normal_mode_tags) for c in enter_tags):
             # use normal mode for such trades
             sell, signal_name = self.exit_normal(pair, current_rate, profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio, max_profit, max_loss, filled_entries, filled_exits, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
             if sell and (signal_name is not None):
