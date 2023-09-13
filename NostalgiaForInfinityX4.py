@@ -65,7 +65,7 @@ class NostalgiaForInfinityX4(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v14.0.158"
+        return "v14.0.159"
 
     # ROI table:
     minimal_roi = {
@@ -1772,9 +1772,7 @@ class NostalgiaForInfinityX4(IStrategy):
                                 (
                                     (sub_grind_count == 0)
                                     and
-                                    (profit_init_ratio < self.grinding_mode_1_thresholds[0] if
-                                     (len(filled_orders) >= 2 and filled_orders[1].ft_order_side == "sell") else
-                                     self.grinding_mode_1_thresholds[1])
+                                    (profit_init_ratio < self.grinding_mode_1_thresholds[1])
                                 )
                                 or ((0 < sub_grind_count < max_sub_grinds) and (slice_profit_entry < grinding_mode_1_sub_thresholds[sub_grind_count]))
                             )
