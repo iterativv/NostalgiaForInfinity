@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.541"
+        return "v13.0.542"
 
     # ROI table:
     minimal_roi = {
@@ -1959,8 +1959,8 @@ class NostalgiaForInfinityX3(IStrategy):
                             (grind_profit > self.grinding_mode_1_profit_threshold)
                     ):
                         sell_amount = total_amount * exit_rate
-                        if ((current_stake_amount - sell_amount) < (min_stake * 1.5)):
-                            sell_amount = (trade.amount * exit_rate) - (min_stake * 1.5)
+                        if ((current_stake_amount - sell_amount) < (min_stake * 1.7)):
+                            sell_amount = (trade.amount * exit_rate) - (min_stake * 1.7)
                         if (sell_amount > min_stake):
                             self.dp.send_msg(f"Grinding exit [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount}| Coin amount: {total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%")
                             return -sell_amount
@@ -1974,8 +1974,8 @@ class NostalgiaForInfinityX3(IStrategy):
                             )
                     ):
                         sell_amount = total_amount * exit_rate * 0.999
-                        if ((current_stake_amount - sell_amount) < (min_stake * 1.5)):
-                            sell_amount = (trade.amount * exit_rate) - (min_stake * 1.5)
+                        if ((current_stake_amount - sell_amount) < (min_stake * 1.7)):
+                            sell_amount = (trade.amount * exit_rate) - (min_stake * 1.7)
                         if (sell_amount > min_stake):
                             self.dp.send_msg(f"Grinding stop exit [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%")
                             return -sell_amount
