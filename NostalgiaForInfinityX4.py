@@ -65,7 +65,7 @@ class NostalgiaForInfinityX4(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v14.0.190"
+        return "v14.0.191"
 
     # ROI table:
     minimal_roi = {
@@ -2124,6 +2124,22 @@ class NostalgiaForInfinityX4(IStrategy):
                             sell_amount = (trade.amount * exit_rate) - (min_stake * 1.5)
                         if (sell_amount > min_stake):
                             self.dp.send_msg(f"Grinding exit [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount}| Coin amount: {total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%")
+                            return -sell_amount
+                    elif (
+                            (current_grind_stake_profit < (slice_amount * self.grinding_mode_1_stop_grinds))
+                            and (len(filled_orders) >= 2 and filled_orders[1].ft_order_side == "sell")
+                            # temporary
+                            and
+                            (
+                                (trade.open_date_utc.replace(tzinfo=None) >= datetime(2023, 8, 28) or is_backtest)
+                                or (filled_entries[-1].order_date_utc.replace(tzinfo=None) >= datetime(2023, 8, 28) or is_backtest)
+                            )
+                    ):
+                        sell_amount = total_amount * exit_rate * 0.999
+                        if ((current_stake_amount - sell_amount) < (min_stake * 1.7)):
+                            sell_amount = (trade.amount * exit_rate) - (min_stake * 1.7)
+                        if (sell_amount > min_stake):
+                            self.dp.send_msg(f"Grinding stop exit [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%")
                             return -sell_amount
 
         return None
