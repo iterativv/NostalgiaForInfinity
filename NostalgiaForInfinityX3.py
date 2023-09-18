@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.572"
+        return "v13.0.573"
 
     # ROI table:
     minimal_roi = {
@@ -11058,7 +11058,7 @@ class NostalgiaForInfinityX3(IStrategy):
                     item_buy_logic.append(dataframe['rsi_14_15m'].shift(1) < 30.0)
                     item_buy_logic.append(dataframe['rsi_14_15m'] < 30.0)
                     item_buy_logic.append(dataframe['rsi_14'] < 35.0)
-                    item_buy_logic.append(dataframe['close'] < (dataframe['ema_26_15m'] * 0.964))
+                    item_buy_logic.append(dataframe['close'] < (dataframe['ema_26_15m'] * 0.958))
 
                 # Condition #41 - Quick mode bull.
                 if index == 41:
