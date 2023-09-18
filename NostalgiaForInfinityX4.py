@@ -65,7 +65,7 @@ class NostalgiaForInfinityX4(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v14.0.203"
+        return "v14.0.204"
 
     # ROI table:
     minimal_roi = {
@@ -5130,6 +5130,31 @@ class NostalgiaForInfinityX4(IStrategy):
                 | (dataframe['ema_200_dec_48_1h'] == False)
                 | (dataframe['ema_200_dec_24_4h'] == False)
                 | (dataframe['ema_200_dec_4_1d'] == False)
+            )
+            # current 4h red, 5m & 15m downmove, 4h high, 1d overbought
+            &
+            (
+                (dataframe['change_pct_4h'] > -0.03)
+                | (dataframe['rsi_3'] > 30.0)
+                | (dataframe['rsi_3_15m'] > 16.0)
+                | (dataframe['cti_20_4h'] < 0.5)
+                | (dataframe['rsi_14_4h'] < 50.0)
+                | (dataframe['cti_20_1d'] < 0.8)
+                | (dataframe['rsi_14_1d'] < 70.0)
+            )
+            # 1d & 1h downtrend, 5m & 15m downmove, 15m & 1h & 4h still high, 1d overbought, drop in last 6 days
+            &
+            (
+                (dataframe['is_downtrend_3_1d'] == False)
+                | (dataframe['not_downtrend_1h'])
+                | (dataframe['rsi_3'] > 30.0)
+                | (dataframe['rsi_14_15m'] < 30.0)
+                | (dataframe['rsi_3_1h'] > 30.0)
+                | (dataframe['rsi_14_1h'] < 40.0)
+                | (dataframe['rsi_14_4h'] < 40.0)
+                | (dataframe['cti_20_1d'] < 0.8)
+                | (dataframe['rsi_14_1d'] < 60.0)
+                | (dataframe['high_max_6_1d'] < (dataframe['close'] * 1.26))
             )
         )
 
