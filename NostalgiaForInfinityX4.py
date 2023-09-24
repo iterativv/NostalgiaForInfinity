@@ -65,7 +65,7 @@ class NostalgiaForInfinityX4(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v14.0.245"
+        return "v14.0.246"
 
     # ROI table:
     minimal_roi = {
@@ -224,6 +224,8 @@ class NostalgiaForInfinityX4(IStrategy):
 
         # "buy_condition_81_enable": True,
         # "buy_condition_82_enable": True,
+
+        "buy_condition_101_enable": False,
     }
 
     entry_short_params = {
@@ -791,7 +793,7 @@ class NostalgiaForInfinityX4(IStrategy):
             if (0.09 >= profit_current_stake_ratio > 0.01) and (last_candle['r_14'] >= -0.1):
                 sell, signal_name = True, f'exit_{self.long_rapid_mode_name}_rpd_3'
 
-        # Stoploss doom
+        # Stoplosses
         if not sell:
             if (
                     profit_stake < -(filled_entries[0].cost * 0.06)
@@ -2637,6 +2639,7 @@ class NostalgiaForInfinityX4(IStrategy):
         dataframe['ema_200_pct_change_288'] = ((dataframe['ema_200'] - dataframe['ema_200'].shift(288)) / dataframe['ema_200'].shift(288))
 
         # SMA
+        dataframe['sma_16'] = ta.SMA(dataframe, timeperiod=16)
         dataframe['sma_50'] = ta.SMA(dataframe, timeperiod=50)
         dataframe['sma_200'] = ta.SMA(dataframe, timeperiod=200)
 
@@ -14728,6 +14731,39 @@ class NostalgiaForInfinityX4(IStrategy):
                     item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.03))
                     item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
                     item_buy_logic.append(dataframe['cti_20'] < -0.8)
+
+                # Condition #101 - Long mode rapid
+                if index == 101:
+                    # Protections
+                    item_buy_logic.append(dataframe['btc_pct_close_max_24_5m'] < 0.03)
+                    item_buy_logic.append(dataframe['btc_pct_close_max_72_5m'] < 0.03)
+                    item_buy_logic.append(dataframe['close_max_12'] < (dataframe['close'] * 1.18))
+                    item_buy_logic.append(dataframe['close_max_24'] < (dataframe['close'] * 1.2))
+                    item_buy_logic.append(dataframe['close_max_48'] < (dataframe['close'] * 1.22))
+                    item_buy_logic.append(dataframe['high_max_24_1h'] < (dataframe['close'] * 1.24))
+                    item_buy_logic.append(dataframe['high_max_48_1h'] < (dataframe['close'] * 1.26))
+                    item_buy_logic.append(dataframe['high_max_24_4h'] < (dataframe['close'] * 1.75))
+                    item_buy_logic.append(dataframe['high_max_12_1d'] < (dataframe['close'] * 1.8))
+                    item_buy_logic.append(dataframe['hl_pct_change_6_1h'] < 0.4)
+                    item_buy_logic.append(dataframe['hl_pct_change_12_1h'] < 0.5)
+                    item_buy_logic.append(dataframe['hl_pct_change_24_1h'] < 0.75)
+                    item_buy_logic.append(dataframe['hl_pct_change_48_1h'] < 0.8)
+                    item_buy_logic.append(dataframe['hl_pct_change_6_1d'] < 0.9)
+                    item_buy_logic.append(dataframe['num_empty_288'] < allowed_empty_candles)
+
+                    item_buy_logic.append(dataframe['rsi_3'] > 4.0)
+                    item_buy_logic.append(dataframe['rsi_3_15m'] > 4.0)
+                    item_buy_logic.append(dataframe['cti_20_1h'] < 0.8)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] < 80.0)
+                    item_buy_logic.append(dataframe['cti_20_4h'] < 0.8)
+                    item_buy_logic.append(dataframe['rsi_14_4h'] < 80.0)
+                    item_buy_logic.append(dataframe['cti_20_1d'] < 0.8)
+                    item_buy_logic.append(dataframe['rsi_14_1d'] < 80.0)
+
+                    # Logic
+                    item_buy_logic.append(dataframe['rsi_14'] < 30.0)
+                    item_buy_logic.append(dataframe['close'] < (dataframe['sma_16'] * 0.960))
+                    item_buy_logic.append(dataframe['cti_20'] < -0.6)
 
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
