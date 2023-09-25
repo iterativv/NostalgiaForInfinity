@@ -23,7 +23,7 @@ def transform_code(src: str):
     return pattern.sub(repl, src)
 
 
-def replace_references(source: str, references_to_replace: List[str]):
+def replace_references(source: str, references_to_replace: list[str]):
     """
     Replace references from transformed code
 
@@ -32,9 +32,7 @@ def replace_references(source: str, references_to_replace: List[str]):
     """
     modified_source = source
     for reference_to_replace in references_to_replace:
-        modified_source = modified_source.replace(
-            f"{reference_to_replace}.value", reference_to_replace
-        )
+        modified_source = modified_source.replace(f"{reference_to_replace}.value", reference_to_replace)
     return modified_source
 
 
@@ -48,10 +46,7 @@ def replace_all_references(strategy: IStrategy, source: str):
     new_source = replace_references(new_source, sell_params)
 
     print("Replacing 'references' of 'buy_protection_params' hyperopting params...")
-    new_source = re.sub(
-      r"(global_buy_protection_params\[([\"\'])[\w\_]+\2\]).value"
-      , r'\1',
-      new_source)
+    new_source = re.sub(r"(global_buy_protection_params\[([\"\'])[\w\_]+\2\]).value", r"\1", new_source)
 
     return new_source
 

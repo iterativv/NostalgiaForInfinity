@@ -2,7 +2,12 @@
 {
   "exchange": {
     "name": "binance",
-    "pair_whitelist": ["BTC/USDT:USDT", "ETH/USDT:USDT", "BCH/USDT:USDT", "BNB/USDT:USDT"]
+    "pair_whitelist": [
+      "BTC/USDT:USDT",
+      "ETH/USDT:USDT",
+      "BCH/USDT:USDT",
+      "BNB/USDT:USDT"
+    ]
   },
   "pairlists": [{ "method": "StaticPairList" }],
   "entry_pricing": {
