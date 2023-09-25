@@ -83,7 +83,7 @@ class Backtest:
             "backtesting",
             f"--user-data=user_data",
             f"--config=configs/exampleconfig.json",
-            "--strategy-list=NostalgiaForInfinityX3",
+            "--strategy-list=NostalgiaForInfinityX4",
             f"--config=configs/trading_mode-{trading_mode}.json",
             f"--config=configs/blacklist-{exchange}.json",
             f"--timerange={start_date}-{end_date}",
@@ -160,7 +160,7 @@ class BacktestResults:
 
     @_results.default
     def _set_results(self):
-        return self.raw_data["strategy"]["NostalgiaForInfinityX3"]
+        return self.raw_data["strategy"]["NostalgiaForInfinityX4"]
 
     @_stats.default
     def _set_stats(self):
