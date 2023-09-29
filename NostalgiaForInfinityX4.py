@@ -65,7 +65,7 @@ class NostalgiaForInfinityX4(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v14.0.266"
+        return "v14.0.267"
 
     # ROI table:
     minimal_roi = {
@@ -190,7 +190,7 @@ class NostalgiaForInfinityX4(IStrategy):
     profit_max_thresholds = [0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.05, 0.05]
 
     # Max allowed buy "slippage", how high to buy on the candle
-    max_slippage = 0.01
+    max_slippage = 0.026
 
     # BTC/ETH stakes
     btc_stakes = ['BTC','ETH']
