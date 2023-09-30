@@ -65,7 +65,7 @@ class NostalgiaForInfinityX4(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v14.0.271"
+        return "v14.0.272"
 
     # ROI table:
     minimal_roi = {
@@ -11947,6 +11947,11 @@ class NostalgiaForInfinityX4(IStrategy):
                     item_buy_logic.append(dataframe['close_max_48'] < (dataframe['close'] * 1.3))
                     item_buy_logic.append(dataframe['high_max_24_1h'] < (dataframe['close'] * 1.4))
                     item_buy_logic.append(dataframe['high_max_24_4h'] < (dataframe['close'] * 1.5))
+                    item_buy_logic.append(dataframe['hl_pct_change_6_1h'] < 0.5)
+                    item_buy_logic.append(dataframe['hl_pct_change_12_1h'] < 0.6)
+                    item_buy_logic.append(dataframe['hl_pct_change_24_1h'] < 0.75)
+                    item_buy_logic.append(dataframe['hl_pct_change_48_1h'] < 0.8)
+                    item_buy_logic.append(dataframe['hl_pct_change_6_1d'] < 1.5)
                     item_buy_logic.append(dataframe['num_empty_288'] < allowed_empty_candles)
 
                     item_buy_logic.append((dataframe['not_downtrend_1h'])
@@ -12001,6 +12006,7 @@ class NostalgiaForInfinityX4(IStrategy):
                     item_buy_logic.append(dataframe['rsi_14_15m'].shift(1) < 30.0)
                     item_buy_logic.append(dataframe['rsi_14_15m'] < 30.0)
                     item_buy_logic.append(dataframe['rsi_14'] < 35.0)
+                    item_buy_logic.append(dataframe['cti_20'] < -0.8)
                     item_buy_logic.append(dataframe['close'] < (dataframe['ema_26_15m'] * 0.958))
 
                 # Condition #41 - Quick mode bull.
