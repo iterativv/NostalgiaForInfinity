@@ -1,0 +1,47 @@
+// Binance Spot Pairs Available Since 2022
+{
+  "exchange": {
+    "name": "binance",
+    "pair_whitelist": [
+      "ACA/USDT",
+      "ACH/USDT",
+      "ALPINE/USDT",
+      "APE/USDT",
+      "API3/USDT",
+      "APT/USDT",
+      "ASTR/USDT",
+      "BIFI/USDT",
+      "BSW/USDT",
+      "BTTC/USDT",
+      "EPX/USDT",
+      "GAL/USDT",
+      "GLMR/USDT",
+      "GMT/USDT",
+      "GMX/USDT",
+      "HFT/USDT",
+      "HOOK/USDT",
+      "IMX/USDT",
+      "KDA/USDT",
+      "LDO/USDT",
+      "LEVER/USDT",
+      "LOKA/USDT",
+      "LUNC/USDT",
+      "MAGIC/USDT",
+      "MOB/USDT",
+      "MULTI/USDT",
+      "NEXO/USDT",
+      "OP/USDT",
+      "OSMO/USDT",
+      "PHB/USDT",
+      "POLYX/USDT",
+      "REI/USDT",
+      "SCRT/USDT",
+      "STEEM/USDT",
+      "STG/USDT",
+      "T/USDT",
+      "WOO/USDT",
+      "XNO/USDT"
+    ]
+  },
+  "pairlists": [{ "method": "StaticPairList" }]
+}

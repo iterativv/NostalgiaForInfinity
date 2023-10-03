@@ -3,3 +3,8 @@ pandas-ta
 pytest
 pytest-mock
 pytest-subtests
+pytest-xdist
+ast_comments
+docxtpl
+pytest-md
+pytest-pretty

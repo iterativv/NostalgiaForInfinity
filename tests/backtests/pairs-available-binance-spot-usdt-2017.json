@@ -1,0 +1,14 @@
+// Binance Spot Pairs Available Since 2017
+{
+  "exchange": {
+    "name": "binance",
+    "pair_whitelist": [
+      "BTC/USDT",
+      "ETH/USDT",
+      "BNB/USDT",
+      "LTC/USDT",
+      "NEO/USDT"
+    ]
+  },
+  "pairlists": [{ "method": "StaticPairList" }]
+}

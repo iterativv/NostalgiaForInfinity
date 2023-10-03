@@ -1,0 +1,43 @@
+// Binance Futures Pairs Available Since 2022
+{
+  "exchange": {
+    "name": "binance",
+    "pair_whitelist": [
+      "APE/USDT:USDT",
+      "API3/USDT:USDT",
+      "APT/USDT:USDT",
+      "BLUEBIRD/USDT:USDT",
+      "BNX/USDT:USDT",
+      "CVX/USDT:USDT",
+      "DAR/USDT:USDT",
+      "DUSK/USDT:USDT",
+      "FLOW/USDT:USDT",
+      "FOOTBALL/USDT:USDT",
+      "GAL/USDT:USDT",
+      "GMT/USDT:USDT",
+      "ICP/USDT:USDT",
+      "IMX/USDT:USDT",
+      "INJ/USDT:USDT",
+      "JASMY/USDT:USDT",
+      "LDO/USDT:USDT",
+      "OP/USDT:USDT",
+      "QNT/USDT:USDT",
+      "SPELL/USDT:USDT",
+      "STG/USDT:USDT",
+      "WOO/USDT:USDT"
+    ]
+  },
+  "pairlists": [{ "method": "StaticPairList" }],
+  "entry_pricing": {
+    "use_order_book": true,
+    "order_book_top": 1,
+    "check_depth_of_market": {
+      "enabled": false,
+      "bids_to_ask_delta": 1
+    }
+  },
+  "exit_pricing": {
+    "use_order_book": true,
+    "order_book_top": 1
+  }
+}

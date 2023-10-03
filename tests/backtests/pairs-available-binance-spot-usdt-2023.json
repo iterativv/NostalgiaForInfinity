@@ -1,0 +1,46 @@
+// Binance Spot Pairs Available Since 2023
+{
+  "exchange": {
+    "name": "binance",
+    "pair_whitelist": [
+      "AERGO/USDT",
+      "AGIX/USDT",
+      "AMB/USDT",
+      "ARB/USDT",
+      "ARKM/USDT",
+      "AST/USDT",
+      "BETH/USDT",
+      "COMBO/USDT",
+      "CYBER/USDT",
+      "EDU/USDT",
+      "FLOKI/USDT",
+      "GAS/USDT",
+      "GLM/USDT",
+      "GNS/USDT",
+      "HIFI/USDT",
+      "ID/USDT",
+      "LOOM/USDT",
+      "LQTY/USDT",
+      "MAV/USDT",
+      "OAX/USDT",
+      "PENDLE/USDT",
+      "PEPE/USDT",
+      "PROM/USDT",
+      "PROS/USDT",
+      "QKC/USDT",
+      "RDNT/USDT",
+      "RPL/USDT",
+      "SEI/USDT",
+      "SNT/USDT",
+      "SSV/USDT",
+      "SUI/USDT",
+      "SYN/USDT",
+      "UFT/USDT",
+      "VIB/USDT",
+      "WBETH/USDT",
+      "WBTC/USDT",
+      "WLD/USDT"
+    ]
+  },
+  "pairlists": [{ "method": "StaticPairList" }]
+}

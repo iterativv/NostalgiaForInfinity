@@ -1,0 +1,5 @@
+{
+  "trading_mode": "spot",
+  "dataformat_ohlcv": "feather",
+  "dataformat_trades": "feather"
+}

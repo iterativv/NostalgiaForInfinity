@@ -1,0 +1,67 @@
+// Binance Futures Pairs Available Since 2021
+{
+  "exchange": {
+    "name": "binance",
+    "pair_whitelist": [
+      "ALICE/USDT:USDT",
+      "ANKR/USDT:USDT",
+      "ANT/USDT:USDT",
+      "AR/USDT:USDT",
+      "ARPA/USDT:USDT",
+      "ATA/USDT:USDT",
+      "AUDIO/USDT:USDT",
+      "BAKE/USDT:USDT",
+      "BTCDOM/USDT:USDT",
+      "C98/USDT:USDT",
+      "CELO/USDT:USDT",
+      "CELR/USDT:USDT",
+      "CHR/USDT:USDT",
+      "CHZ/USDT:USDT",
+      "COTI/USDT:USDT",
+      "CTSI/USDT:USDT",
+      "DENT/USDT:USDT",
+      "DGB/USDT:USDT",
+      "DYDX/USDT:USDT",
+      "ENS/USDT:USDT",
+      "GALA/USDT:USDT",
+      "GTC/USDT:USDT",
+      "HBAR/USDT:USDT",
+      "HOT/USDT:USDT",
+      "ICP/USDT:USDT",
+      "IOTX/USDT:USDT",
+      "KLAY/USDT:USDT",
+      "LINA/USDT:USDT",
+      "LIT/USDT:USDT",
+      "LPT/USDT:USDT",
+      "MANA/USDT:USDT",
+      "MASK/USDT:USDT",
+      "MTL/USDT:USDT",
+      "NKN/USDT:USDT",
+      "OGN/USDT:USDT",
+      "ONE/USDT:USDT",
+      "PEOPLE/USDT:USDT",
+      "REEF/USDT:USDT",
+      "ROSE/USDT:USDT",
+      "RVN/USDT:USDT",
+      "SAND/USDT:USDT",
+      "SFP/USDT:USDT",
+      "STMX/USDT:USDT",
+      "TLM/USDT:USDT",
+      "UNFI/USDT:USDT",
+      "XEM/USDT:USDT"
+    ]
+  },
+  "pairlists": [{ "method": "StaticPairList" }],
+  "entry_pricing": {
+    "use_order_book": true,
+    "order_book_top": 1,
+    "check_depth_of_market": {
+      "enabled": false,
+      "bids_to_ask_delta": 1
+    }
+  },
+  "exit_pricing": {
+    "use_order_book": true,
+    "order_book_top": 1
+  }
+}

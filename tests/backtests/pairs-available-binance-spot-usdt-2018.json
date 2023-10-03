@@ -1,0 +1,21 @@
+// Binance Spot Pairs Available Since 2018
+{
+  "exchange": {
+    "name": "binance",
+    "pair_whitelist": [
+      "ADA/USDT",
+      "EOS/USDT",
+      "ETC/USDT",
+      "ICX/USDT",
+      "IOTA/USDT",
+      "NULS/USDT",
+      "ONT/USDT",
+      "QTUM/USDT",
+      "TRX/USDT",
+      "VET/USDT",
+      "XLM/USDT",
+      "XRP/USDT"
+    ]
+  },
+  "pairlists": [{ "method": "StaticPairList" }]
+}
