@@ -65,7 +65,7 @@ class NostalgiaForInfinityX4(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v14.0.290"
+        return "v14.0.291"
 
     # ROI table:
     minimal_roi = {
@@ -1614,7 +1614,7 @@ class NostalgiaForInfinityX4(IStrategy):
             current_stake_amount = trade.amount * current_rate
 
             current_grind_mode = self.grinding_mode
-            if ((current_grind_mode == 1) and ((slice_amount * self.grinding_mode_1_stakes_alt_2[0]) < min_stake)):
+            if ((current_grind_mode == 1) and ((slice_amount * self.grinding_mode_1_stakes_alt_3[0]) < min_stake)):
                 current_grind_mode = 0
 
             # mode 0
