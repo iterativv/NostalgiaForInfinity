@@ -2361,6 +2361,7 @@ class NostalgiaForInfinityX4(IStrategy):
         # Indicators
         # -----------------------------------------------------------------------------------------
         # RSI
+        informative_1d['rsi_3'] = ta.RSI(informative_1d, timeperiod=3, fillna=True)
         informative_1d['rsi_14'] = ta.RSI(informative_1d, timeperiod=14)
 
         # EMA
