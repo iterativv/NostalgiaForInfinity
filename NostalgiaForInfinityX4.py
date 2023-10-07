@@ -65,7 +65,7 @@ class NostalgiaForInfinityX4(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v14.0.292"
+        return "v14.0.293"
 
     # ROI table:
     minimal_roi = {
@@ -864,7 +864,7 @@ class NostalgiaForInfinityX4(IStrategy):
                     return True, f"{signal_name}"
         else:
             if (
-                    (profit_current_stake_ratio >= 0.03)
+                    (profit_current_stake_ratio >= 0.01)
             ):
                 previous_profit = None
                 if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
