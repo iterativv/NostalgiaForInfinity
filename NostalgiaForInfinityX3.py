@@ -2238,6 +2238,8 @@ class NostalgiaForInfinityX3(IStrategy):
         informative_1d['sup_level'] = Series(np.where(sup_series, np.where(informative_1d['close'] < informative_1d['open'], informative_1d['close'], informative_1d['open']), float('NaN'))).ffill()
 
         # Downtrend checks
+        informative_1d['not_downtrend'] = ((informative_1d['close'] > informative_1d['close'].shift(2)) | (informative_1d['rsi_14'] > 50.0))
+
         informative_1d['is_downtrend_3'] = ((informative_1d['close'] < informative_1d['open']) & (informative_1d['close'].shift(1) < informative_1d['open'].shift(1)) & (informative_1d['close'].shift(2) < informative_1d['open'].shift(2)))
 
         informative_1d['is_downtrend_5'] = ((informative_1d['close'] < informative_1d['open']) & (informative_1d['close'].shift(1) < informative_1d['open'].shift(1)) & (informative_1d['close'].shift(2) < informative_1d['open'].shift(2)) & (informative_1d['close'].shift(3) < informative_1d['open'].shift(3)) & (informative_1d['close'].shift(4) < informative_1d['open'].shift(4)))
