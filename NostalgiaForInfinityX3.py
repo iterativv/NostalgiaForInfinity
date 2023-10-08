@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.647"
+        return "v13.0.648"
 
     # ROI table:
     minimal_roi = {
@@ -5916,6 +5916,41 @@ class NostalgiaForInfinityX3(IStrategy):
                 | (dataframe['cti_20_1d'] < 0.8)
                 | (dataframe['rsi_14_1d'] < 60.0)
                 | (dataframe['high_max_12_1d'] < (dataframe['close'] * 0.9))
+            )
+            # 1h downtrend, 5m downmove, 1h & 4h low, 1h & 4h & 1d downtrend
+            &
+            (
+                (dataframe['not_downtrend_1h'])
+                | (dataframe['rsi_3'] > 10.0)
+                | (dataframe['r_480_1h'] > -70.0)
+                | (dataframe['r_480_4h'] > -85.0)
+                | (dataframe['ema_200_dec_48_1h'] == False)
+                | (dataframe['ema_200_dec_24_4h'] == False)
+                | (dataframe['ema_200_dec_4_1d'] == False)
+            )
+            # 1h downtrend, 5m & 15m & 1h & 4h downmove, 4h very low, 4h & 1d downtrend
+            &
+            (
+                (dataframe['not_downtrend_1h'])
+                | (dataframe['rsi_3'] > 16.0)
+                | (dataframe['rsi_3_15m'] > 26.0)
+                | (dataframe['rsi_3_1h'] > 36.0)
+                | (dataframe['rsi_3_4h'] > 36.0)
+                | (dataframe['r_480_4h'] > -95.0)
+                | (dataframe['ema_200_dec_24_4h'] == False)
+                | (dataframe['ema_200_dec_4_1d'] == False)
+            )
+            # 1h downtrend, 5m & 1h downmove, 15m still high, 1h & 4h low, 4h & 1d downtrend
+            &
+            (
+                (dataframe['not_downtrend_1h'])
+                | (dataframe['rsi_3'] > 10.0)
+                | (dataframe['rsi_3_1h'] > 36.0)
+                | (dataframe['rsi_14_15m'] < 40.0)
+                | (dataframe['r_480_1h'] > -75.0)
+                | (dataframe['r_480_4h'] > -90.0)
+                | (dataframe['ema_200_dec_24_4h'] == False)
+                | (dataframe['ema_200_dec_4_1d'] == False)
             )
         )
 
