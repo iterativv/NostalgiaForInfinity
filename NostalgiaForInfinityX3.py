@@ -1433,10 +1433,12 @@ class NostalgiaForInfinityX3(IStrategy):
                 if ('bid' in ticker) and ('ask' in ticker):
                     if (trade.is_short):
                         if (self.config['exit_pricing']['price_side'] in ["ask", "other"]):
-                            exit_rate = ticker['ask']
+                            if (ticker['ask'] is not None):
+                                exit_rate = ticker['ask']
                     else:
                         if (self.config['exit_pricing']['price_side'] in ["bid", "other"]):
-                            exit_rate = ticker['bid']
+                            if (ticker['bid'] is not None):
+                                exit_rate = ticker['bid']
 
             profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = self.calc_total_profit(trade, filled_entries, filled_exits, exit_rate)
 
