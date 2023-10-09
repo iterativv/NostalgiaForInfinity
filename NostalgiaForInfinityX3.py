@@ -130,6 +130,9 @@ class NostalgiaForInfinityX3(IStrategy):
     long_mode_name = "long"
     long_rapid_mode_name = "long_rapid"
 
+    # Futures/margin
+    is_futures_mode = False
+
     # Stop thesholds. 0: Doom Bull, 1: Doom Bear, 2: u_e Bull, 3: u_e Bear, 4: u_e mins Bull, 5: u_e mins Bear.
     # 6: u_e ema % Bull, 7: u_e ema % Bear, 8: u_e RSI diff Bull, 9: u_e RSI diff Bear.
     # 10: enable Doom Bull, 11: enable Doom Bear, 12: enable u_e Bull, 13: enable u_e Bear.
@@ -295,6 +298,9 @@ class NostalgiaForInfinityX3(IStrategy):
             self.startup_candle_count = 710
         elif self.config["exchange"]["name"] in ["bybit"]:
             self.startup_candle_count = 199
+
+        if ('trading_mode' in self.config) and (self.config['trading_mode'] in ['futures', 'margin']):
+            self.is_futures_mode = True
 
         # If the cached data hasn't changed, it's a no-op
         self.target_profit_cache.save()
