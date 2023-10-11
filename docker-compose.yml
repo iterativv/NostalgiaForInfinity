@@ -27,7 +27,7 @@ services:
       --datadir /freqtrade/user_data/data/${EXCHANGE:-binance}
       --strategy-list ${STRATEGY_NAME:-NostalgiaForInfinityX4}
       --config configs/trading_mode-${TRADING_MODE:-spot}.json
-      --timeframe-detail 1m --cache none --breakdown week
+      --timeframe-detail 1m --cache none --breakdown week --export signals
       --config configs/exampleconfig.json --timerange ${TIMERANGE:-20230601-20230701}
       --config configs/pairlist-backtest-static-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt.json
       --config configs/blacklist-${EXCHANGE:-binance}.json
@@ -62,7 +62,7 @@ services:
     command: >
       backtesting
       --datadir /freqtrade/user_data/data/${EXCHANGE:-binance}
-      --strategy-list NostalgiaForInfinityX4
+      --strategy-list ${STRATEGY_NAME:-NostalgiaForInfinityX4}
       --config configs/trading_mode-${TRADING_MODE:-spot}.json
       --timeframe-detail 1m --cache none --breakdown week
       --config configs/exampleconfig.json --timerange 20210101-
