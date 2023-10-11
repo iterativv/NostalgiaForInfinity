@@ -1,0 +1,55 @@
+// Okx Futures Pairs Available Since 2021
+{
+  "exchange": {
+    "name": "okx",
+    "pair_whitelist": [
+      "AGLD/USDT:USDT",
+      "ALPHA/USDT:USDT",
+      "AXS/USDT:USDT",
+      "BADGER/USDT:USDT",
+      "BICO/USDT:USDT",
+      "CELO/USDT:USDT",
+      "CFX/USDT:USDT",
+      "CHZ/USDT:USDT",
+      "CRO/USDT:USDT",
+      "CSPR/USDT:USDT",
+      "DORA/USDT:USDT",
+      "DYDX/USDT:USDT",
+      "ENJ/USDT:USDT",
+      "ENS/USDT:USDT",
+      "FTM/USDT:USDT",
+      "GALA/USDT:USDT",
+      "GODS/USDT:USDT",
+      "ICP/USDT:USDT",
+      "IMX/USDT:USDT",
+      "KISHU/USDT:USDT",
+      "LPT/USDT:USDT",
+      "MANA/USDT:USDT",
+      "MASK/USDT:USDT",
+      "MATIC/USDT:USDT",
+      "MINA/USDT:USDT",
+      "NFT/USDT:USDT",
+      "PEOPLE/USDT:USDT",
+      "PERP/USDT:USDT",
+      "RVN/USDT:USDT",
+      "SAND/USDT:USDT",
+      "SHIB/USDT:USDT",
+      "SLP/USDT:USDT",
+      "SOL/USDT:USDT",
+      "STARL/USDT:USDT",
+      "XCH/USDT:USDT",
+      "YGG/USDT:USDT"
+    ],
+    "ccxt_config": {
+      "enableRateLimit": true,
+      "rateLimit": 600,
+      "timeout": 60000
+    },
+    "ccxt_async_config": {
+      "enableRateLimit": true,
+      "rateLimit": 600,
+      "timeout": 60000
+    }
+  },
+  "pairlists": [{ "method": "StaticPairList" }]
+}
