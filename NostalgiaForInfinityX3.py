@@ -6197,14 +6197,13 @@ class NostalgiaForInfinityX3(IStrategy):
             &
             (
                 (dataframe['not_downtrend_1h'])
-                | (dataframe['close'] > dataframe['bb20_2_low_15m'])
-                | (dataframe['close'] > dataframe['bb20_2_low_1h'])
-                | (dataframe['close'] > dataframe['sup_level_4h'])
-                | (dataframe['close'] > dataframe['sup_level_1d'])
+                | (dataframe['rsi_3_15m'] > 36.0)
                 | (dataframe['rsi_3_1h'] > 16.0)
                 | (dataframe['cti_20_1h'] < 0.5)
                 | (dataframe['rsi_14_1h'] < 36.0)
+                | (dataframe['cti_20_4h'] < -0.8)
                 | (dataframe['rsi_14_4h'] < 46.0)
+                | (dataframe['cti_20_1d'] < 0.5)
                 | (dataframe['rsi_14_1d'] < 46.0)
                 | (dataframe['ema_200_dec_48_1h'] == False)
             )
