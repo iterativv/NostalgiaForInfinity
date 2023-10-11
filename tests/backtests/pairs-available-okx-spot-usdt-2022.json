@@ -1,0 +1,34 @@
+// Okx Futures Pairs Available Since 2022
+{
+  "exchange": {
+    "name": "okx",
+    "pair_whitelist": [
+      "APE/USDT",
+      "APT/USDT",
+      "ASTR/USDT",
+      "AZY/USDT",
+      "BNB/USDT",
+      "ETHW/USDT",
+      "FITFI/USDT",
+      "GEAR/USDT",
+      "KCAL/USDT",
+      "LUNA/USDT",
+      "ONE/USDT",
+      "OP/USDT",
+      "RON/USDT",
+      "TON/USDT",
+      "ZBC/USDT"
+    ],
+    "ccxt_config": {
+      "enableRateLimit": true,
+      "rateLimit": 600,
+      "timeout": 60000
+    },
+    "ccxt_async_config": {
+      "enableRateLimit": true,
+      "rateLimit": 600,
+      "timeout": 60000
+    }
+  },
+  "pairlists": [{ "method": "StaticPairList" }]
+}
