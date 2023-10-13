@@ -231,7 +231,7 @@ class NostalgiaForInfinityX4(IStrategy):
         # "buy_condition_82_enable": True,
 
         "buy_condition_101_enable": True,
-        "buy_condition_102_enable": False,
+        "buy_condition_102_enable": True,
     }
 
     entry_short_params = {
