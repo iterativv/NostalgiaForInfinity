@@ -138,6 +138,7 @@ class NostalgiaForInfinityX4(IStrategy):
     short_normal_mode_name = "short_normal"
 
     is_futures_mode = False
+    futures_mode_leverage = 5.0
 
     # Stop thesholds. 0: Doom Bull, 1: Doom Bear, 2: u_e Bull, 3: u_e Bear, 4: u_e mins Bull, 5: u_e mins Bear.
     # 6: u_e ema % Bull, 7: u_e ema % Bear, 8: u_e RSI diff Bull, 9: u_e RSI diff Bear.
@@ -15695,7 +15696,7 @@ class NostalgiaForInfinityX4(IStrategy):
                  proposed_leverage: float, max_leverage: float, entry_tag: Optional[str], side: str,
                  **kwargs) -> float:
 
-        return 5.0
+        return self.futures_mode_leverage
 
     def _set_profit_target(self, pair: str, sell_reason: str, rate: float, current_profit: float, current_time: datetime):
         self.target_profit_cache.data[pair] = {
