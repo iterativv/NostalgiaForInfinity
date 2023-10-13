@@ -1,0 +1,26 @@
+// Okx Futures Pairs Available Since 2023
+{
+  "exchange": {
+    "name": "okx",
+    "pair_whitelist": [
+      "ARB/USDT",
+      "BLUR/USDT",
+      "BONE/USDT",
+      "CORE/USDT",
+      "GMX/USDT",
+      "ORDI/USDT",
+      "SUI/USDT"
+    ],
+    "ccxt_config": {
+      "enableRateLimit": true,
+      "rateLimit": 600,
+      "timeout": 60000
+    },
+    "ccxt_async_config": {
+      "enableRateLimit": true,
+      "rateLimit": 600,
+      "timeout": 60000
+    }
+  },
+  "pairlists": [{ "method": "StaticPairList" }]
+}

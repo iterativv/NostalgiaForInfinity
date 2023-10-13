@@ -1,0 +1,57 @@
+// Okx Futures Pairs Available Since 2020
+{
+  "exchange": {
+    "name": "okx",
+    "pair_whitelist": [
+      "AAVE/USDT",
+      "ADA/USDT",
+      "ALGO/USDT",
+      "API3/USDT",
+      "AVAX/USDT",
+      "BCH/USDT",
+      "BNT/USDT",
+      "BSV/USDT",
+      "BTC/USDT",
+      "BTM/USDT",
+      "CELO/USDT",
+      "COMP/USDT",
+      "CRV/USDT",
+      "CTC/USDT",
+      "CVP/USDT",
+      "DASH/USDT",
+      "DOT/USDT",
+      "ETC/USDT",
+      "FIL/USDT",
+      "FTM/USDT",
+      "GRT/USDT",
+      "HBAR/USDT",
+      "LINK/USDT",
+      "LTC/USDT",
+      "MKR/USDT",
+      "MXT/USDT",
+      "NEAR/USDT",
+      "OKB/USDT",
+      "OMG/USDT",
+      "SNT/USDT",
+      "SNX/USDT",
+      "SOL/USDT",
+      "SUSHI/USDT",
+      "TRX/USDT",
+      "UNI/USDT",
+      "WXT/USDT",
+      "XLM/USDT",
+      "XRP/USDT"
+    ],
+    "ccxt_config": {
+      "enableRateLimit": true,
+      "rateLimit": 600,
+      "timeout": 60000
+    },
+    "ccxt_async_config": {
+      "enableRateLimit": true,
+      "rateLimit": 600,
+      "timeout": 60000
+    }
+  },
+  "pairlists": [{ "method": "StaticPairList" }]
+}

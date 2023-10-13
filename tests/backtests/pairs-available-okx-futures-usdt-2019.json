@@ -1,0 +1,23 @@
+// Okx Futures Pairs Available Since 2019
+{
+  "exchange": {
+    "name": "okx",
+    "pair_whitelist": [
+      "BTC/USDT:USDT",
+      "ETH/USDT:USDT",
+      "LTC/USDT:USDT",
+      "XRP/USDT:USDT"
+    ],
+    "ccxt_config": {
+      "enableRateLimit": true,
+      "rateLimit": 600,
+      "timeout": 60000
+    },
+    "ccxt_async_config": {
+      "enableRateLimit": true,
+      "rateLimit": 600,
+      "timeout": 60000
+    }
+  },
+  "pairlists": [{ "method": "StaticPairList" }]
+}

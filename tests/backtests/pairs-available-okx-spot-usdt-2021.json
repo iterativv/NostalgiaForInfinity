@@ -1,0 +1,40 @@
+// Okx Futures Pairs Available Since 2021
+{
+  "exchange": {
+    "name": "okx",
+    "pair_whitelist": [
+      "AGLD/USDT",
+      "BADGER/USDT",
+      "CFX/USDT",
+      "CSPR/USDT",
+      "DYDX/USDT",
+      "GALA/USDT",
+      "GF/USDT",
+      "KONO/USDT",
+      "LAT/USDT",
+      "LPT/USDT",
+      "MASK/USDT",
+      "MATIC/USDT",
+      "PEOPLE/USDT",
+      "PHA/USDT",
+      "SAND/USDT",
+      "SIS/USDT",
+      "STX/USDT",
+      "SUN/USDT",
+      "WNCG/USDT",
+      "XCH/USDT",
+      "YGG/USDT"
+    ],
+    "ccxt_config": {
+      "enableRateLimit": true,
+      "rateLimit": 600,
+      "timeout": 60000
+    },
+    "ccxt_async_config": {
+      "enableRateLimit": true,
+      "rateLimit": 600,
+      "timeout": 60000
+    }
+  },
+  "pairlists": [{ "method": "StaticPairList" }]
+}

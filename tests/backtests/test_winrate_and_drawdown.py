@@ -109,37 +109,38 @@ def timerange_fmt(value):
         Timerange("20230601", "20230701"),
         Timerange("20230701", "20230801"),
         Timerange("20230801", "20230901"),
-        # # # ADD NEW MONTHS HERE
-        # # Quarterly Test Periods
-        # # #
-        # # 2021 Quarterly Test Periods
-        # # #
-        Timerange("20210101", "20210401"),
-        Timerange("20210401", "20210701"),
-        Timerange("20210701", "20211001"),
-        Timerange("20211001", "20220101"),
-        # # #
-        # # 2022 Quarterly Test Periods
-        # # #
-        Timerange("20220101", "20220401"),
-        Timerange("20220401", "20220701"),
-        Timerange("20220701", "20221001"),
-        Timerange("20221001", "20230101"),
-        # # #
-        # # 2023 Quarterly Test Periods
-        # # #
-        Timerange("20230101", "20230401"),
-        Timerange("20230401", "20230701"),
-        Timerange("20230701", "20231001"),
-        # Timerange("20231001", "20240101"),
-        # # # ADD NEW QUARTER PERIODS HERE
-        # # Yearly Test Periods
-        Timerange("20220101", "20230101"),
-        Timerange("20210101", "20220101"),
-        Timerange("20200101", "20210101"),
-        Timerange("20190101", "20200101"),
-        Timerange("20180101", "20190101"),
-        Timerange("20170101", "20180101"),
+        Timerange("20230901", "20231001"),
+        # # # # ADD NEW MONTHS HERE
+        # # # Quarterly Test Periods
+        # # # #
+        # # # 2021 Quarterly Test Periods
+        # # # #
+        # Timerange("20210101", "20210401"),
+        # Timerange("20210401", "20210701"),
+        # Timerange("20210701", "20211001"),
+        # Timerange("20211001", "20220101"),
+        # # # #
+        # # # 2022 Quarterly Test Periods
+        # # # #
+        # Timerange("20220101", "20220401"),
+        # Timerange("20220401", "20220701"),
+        # Timerange("20220701", "20221001"),
+        # Timerange("20221001", "20230101"),
+        # # # #
+        # # # 2023 Quarterly Test Periods
+        # # # #
+        # Timerange("20230101", "20230401"),
+        # Timerange("20230401", "20230701"),
+        # Timerange("20230701", "20231001"),
+        # # Timerange("20231001", "20240101"),
+        # # # # ADD NEW QUARTER PERIODS HERE
+        # # # Yearly Test Periods
+        # Timerange("20220101", "20230101"),
+        # Timerange("20210101", "20220101"),
+        # Timerange("20200101", "20210101"),
+        # Timerange("20190101", "20200101"),
+        # Timerange("20180101", "20190101"),
+        # Timerange("20170101", "20180101"),
     ),
     ids=timerange_fmt,
 )
