@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.683"
+        return "v13.0.684"
 
     # ROI table:
     minimal_roi = {
@@ -796,7 +796,8 @@ class NostalgiaForInfinityX3(IStrategy):
         # Stoplosses
         if not sell:
             if (
-                    profit_stake < -(filled_entries[0].cost * 0.06)
+                    self.is_futures_mode is False
+                    and profit_stake < -(filled_entries[0].cost * 0.06)
                     and (last_candle['close'] < last_candle['ema_200'])
                     and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < 0.024)
                     and last_candle['rsi_14'] > previous_candle_1['rsi_14']
@@ -807,7 +808,7 @@ class NostalgiaForInfinityX3(IStrategy):
                 sell, signal_name = True, f'exit_{self.long_rapid_mode_name}_stoploss_u_e'
 
             if (
-                    profit_stake < -(filled_entries[0].cost * 0.30)
+                    profit_stake < -(filled_entries[0].cost * (0.07 if self.is_futures_mode else 0.3))
             ):
                 sell, signal_name = True, f'exit_{self.long_rapid_mode_name}_stoploss_doom'
 
