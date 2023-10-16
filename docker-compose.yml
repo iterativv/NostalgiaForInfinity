@@ -64,6 +64,10 @@ services:
           --config configs/exampleconfig.json --timerange ${TIMERANGE:-20230101-} \
           --config configs/pairlist-backtest-static-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt.json \
           --config configs/blacklist-${EXCHANGE:-binance}.json
+        freqtrade backtesting-show \
+          --config configs/exampleconfig.json --breakdown week \
+          --config configs/pairlist-backtest-static-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt.json \
+          > user_data/backtest_results/${STRATEGY_NAME:-NostalgiaForInfinityX4}-${STRATEGY_VERSION:-latest}-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-${TIMERANGE:-20230101-}.txt
 
   plot-dataframe:
     image: freqtradeorg/freqtrade:stable_plot
@@ -112,6 +116,10 @@ services:
         freqtrade backtesting-analysis \
           --config configs/exampleconfig.json --timerange ${TIMERANGE:-20210101-} \
           --config tests/backtests/pairs-available-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt-2021.json
+        freqtrade backtesting-show \
+          --config configs/exampleconfig.json --breakdown week \
+          --config configs/pairlist-backtest-static-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt.json \
+          > user_data/backtest_results/${STRATEGY_NAME:-NostalgiaForInfinityX4}-${STRATEGY_VERSION:-latest}-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-${TIMERANGE:-20230101-}.txt
 
   backtesting-pairs-since-2022:
     image: freqtradeorg/freqtrade:stable
@@ -141,6 +149,10 @@ services:
         freqtrade backtesting-analysis \
           --config configs/exampleconfig.json --timerange ${TIMERANGE:-20220101-} \
           --config tests/backtests/pairs-available-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt-2022.json
+        freqtrade backtesting-show \
+          --config configs/exampleconfig.json --breakdown week \
+          --config configs/pairlist-backtest-static-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt.json \
+          > user_data/backtest_results/${STRATEGY_NAME:-NostalgiaForInfinityX4}-${STRATEGY_VERSION:-latest}-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-${TIMERANGE:-20230101-}.txt
 
   backtesting-pairs-since-2023:
     image: freqtradeorg/freqtrade:stable
@@ -170,3 +182,7 @@ services:
         freqtrade backtesting-analysis \
           --config configs/exampleconfig.json --timerange ${TIMERANGE:-20230101-} \
           --config tests/backtests/pairs-available-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt-2023.json
+        freqtrade backtesting-show \
+          --config configs/exampleconfig.json --breakdown week \
+          --config configs/pairlist-backtest-static-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt.json \
+          > user_data/backtest_results/${STRATEGY_NAME:-NostalgiaForInfinityX4}-${STRATEGY_VERSION:-latest}-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-${TIMERANGE:-20230101-}.txt
