@@ -65,7 +65,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.696"
+        return "v13.0.697"
 
     # ROI table:
     minimal_roi = {
@@ -140,6 +140,7 @@ class NostalgiaForInfinityX3(IStrategy):
     stop_thresholds = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 24.0, 24.0, False, False, True, True]
     # Based on the the first entry (regardless of rebuys)
     stop_threshold = 0.5
+    stop_threshold_futures = 0.07
 
     # Rebuy mode minimum number of free slots
     rebuy_mode_min_free_slots = 2
@@ -1235,6 +1236,14 @@ class NostalgiaForInfinityX3(IStrategy):
                 profit_stake < -(filled_entries[0].cost * self.stop_threshold)
                 # temporary
                 and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2023, 6, 13) or is_backtest)
+        ):
+            return True, f'exit_{mode_name}_stoploss'
+
+        if (
+                self.is_futures_mode is True
+                and profit_stake < -(filled_entries[0].cost * self.stop_threshold_futures)
+                # temporary
+                and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2023, 10, 17) or is_backtest)
         ):
             return True, f'exit_{mode_name}_stoploss'
 
