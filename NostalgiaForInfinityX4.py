@@ -56,8 +56,8 @@ warnings.simplefilter(action='ignore', category=pd.errors.PerformanceWarning)
 ##  OKX: https://www.okx.com/join/11749725931 (20% discount on trading fees)                               ##
 ##  MEXC: https://promote.mexc.com/a/nfi  (10% discount on trading fees)                                   ##
 ##  ByBit: https://partner.bybit.com/b/nfi                                                                 ##
-##  Huobi: https://www.huobi.com/invite/en-us/1f?invite_code=ubpt2223                                      ##
-##         (20% discount on trading fees)                                                                  ##
+##  HTX: https://www.htx.com/invite/en-us/1f?invite_code=ubpt2223                                          ##
+##         (Welcome Bonus worth 241 USDT upon completion of a deposit and trade)                           ##
 ##  Bitvavo: https://account.bitvavo.com/create?a=D22103A4BC (no fees for the first € 1000)                ##
 #############################################################################################################
 
