@@ -65,7 +65,7 @@ class NostalgiaForInfinityX4(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v14.0.367"
+        return "v14.0.368"
 
     # ROI table:
     minimal_roi = {
@@ -16011,21 +16011,17 @@ class NostalgiaForInfinityX4(IStrategy):
                     item_buy_logic.append(dataframe['hl_pct_change_6_1d'] < 1.9)
                     item_buy_logic.append(dataframe['num_empty_288'] < allowed_empty_candles)
 
-                    item_buy_logic.append(dataframe['rsi_3'] > 6.0)
-                    item_buy_logic.append(dataframe['rsi_3_15m'] > 16.0)
-                    item_buy_logic.append(dataframe['rsi_3_1h'] > 4.0)
-                    item_buy_logic.append(dataframe['rsi_3_4h'] > 4.0)
-                    item_buy_logic.append(dataframe['rsi_3_1d'] > 4.0)
-                    item_buy_logic.append(dataframe['cti_20_15m'] < 0.9)
-                    item_buy_logic.append(dataframe['cti_20_1h'] < 0.8)
-                    item_buy_logic.append(dataframe['rsi_14_1h'] < 80.0)
-                    item_buy_logic.append(dataframe['cti_20_4h'] < 0.8)
-                    item_buy_logic.append(dataframe['rsi_14_4h'] < 80.0)
+                    item_buy_logic.append(dataframe['rsi_3'] > 16.0)
+                    item_buy_logic.append(dataframe['rsi_3_15m'] > 10.0)
+                    item_buy_logic.append(dataframe['close'] > dataframe['sup_level_4h'])
+                    item_buy_logic.append(dataframe['close'] < dataframe['res_hlevel_4h'])
+                    item_buy_logic.append(dataframe['close'] > dataframe['sup_level_1d'])
+                    item_buy_logic.append(dataframe['close'] < dataframe['res_hlevel_1d'])
 
                     # Logic
-                    item_buy_logic.append(dataframe['rsi_14'] > 33.0)
-                    item_buy_logic.append(dataframe['cti_20'] < -0.8)
-                    item_buy_logic.append(dataframe['close'] < (dataframe['sma_16'] * 0.972))
+                    item_buy_logic.append(dataframe['rsi_3'] < 46.0)
+                    item_buy_logic.append(dataframe['rsi_14'] > 30.0)
+                    item_buy_logic.append(dataframe['close'] < (dataframe['sma_16'] * 0.978))
 
                 # Condition #104 - Long mode rapid
                 if index == 104:
