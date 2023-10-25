@@ -65,7 +65,7 @@ class NostalgiaForInfinityX4(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v14.0.368"
+        return "v14.0.369"
 
     # ROI table:
     minimal_roi = {
@@ -16022,6 +16022,7 @@ class NostalgiaForInfinityX4(IStrategy):
                     item_buy_logic.append(dataframe['rsi_3'] < 46.0)
                     item_buy_logic.append(dataframe['rsi_14'] > 30.0)
                     item_buy_logic.append(dataframe['close'] < (dataframe['sma_16'] * 0.978))
+                    item_buy_logic.append(dataframe['close'] < (dataframe['ema_26'] * 0.976))
 
                 # Condition #104 - Long mode rapid
                 if index == 104:
