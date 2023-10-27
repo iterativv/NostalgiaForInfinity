@@ -1,0 +1,44 @@
+// Gateio Spot Pairs Available Since 2019
+{
+  "exchange": {
+    "name": "gateio",
+    "pair_whitelist": [
+      "XEM/USDT",
+      "GRIN/USDT",
+      "BEAM/USDT",
+      "BTT/USDT",
+      "ONG/USDT",
+      "TFUEL/USDT",
+      "CELR/USDT",
+      "OAX/USDT",
+      "NBOT/USDT",
+      "GT/USDT",
+      "ATOM/USDT",
+      "CNNS/USDT",
+      "DREP/USDT",
+      "BKC/USDT",
+      "MBL/USDT",
+      "GMAT/USDT",
+      "LAMB/USDT",
+      "MIX/USDT",
+      "LEO/USDT",
+      "WICC/USDT",
+      "ALGO/USDT",
+      "SERO/USDT",
+      "VIDY/USDT",
+      "ARPA/USDT",
+      "KGC/USDT",
+      "FTM/USDT",
+      "ONE/USDT",
+      "DILI/USDT",
+      "COS/USDT",
+      "CRO/USDT",
+      "ALY/USDT",
+      "WIN/USDT",
+      "MTV/USDT",
+      "CKB/USDT",
+      "PI/USDT"
+    ]
+  },
+  "pairlists": [{ "method": "StaticPairList" }]
+}
