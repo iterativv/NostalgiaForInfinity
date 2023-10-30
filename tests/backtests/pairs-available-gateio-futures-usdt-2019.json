@@ -1,0 +1,22 @@
+// Gateio Futures Pairs Available Since 2019
+{
+  "exchange": {
+    "name": "gateio",
+    "pair_whitelist": [
+      "ALGO/USDT:USDT",
+      "ATOM/USDT:USDT",
+      "BCH/USDT:USDT",
+      "BNB/USDT:USDT",
+      "BSV/USDT:USDT",
+      "BTC/USDT:USDT",
+      "EOS/USDT:USDT",
+      "ETH/USDT:USDT",
+      "HT/USDT:USDT",
+      "LTC/USDT:USDT",
+      "TRX/USDT:USDT",
+      "XRP/USDT:USDT",
+      "XTZ/USDT:USDT"
+    ]
+  },
+  "pairlists": [{ "method": "StaticPairList" }]
+}
