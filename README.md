@@ -16,7 +16,7 @@ However, if you plan on running additional strategies or run the test suite, you
 
 Add strategies to the [user_data/strategies](user_data/strategies) folder and also in the [docker-compose.yml](docker-compose.yml) file at `strategy-list` add your strategy in the list.
 
-[Additional Information : NFINext is a older strategy on 5m tf , NFI-NG is a 15m tf stategy abandoned mid development , NFIX is the currently developed strategy (a rework of NG on 5m tf)]
+[Additional Information : NFINext is a older strategy on 5m tf , NFI-NG is a 15m tf strategy abandoned mid development , NFIX is the currently developed strategy (a rework of NG on 5m tf)]
 
 ## General Recommendations
 
