@@ -16,7 +16,7 @@ However, if you plan on running additional strategies or run the test suite, you
 
 Add strategies to the [user_data/strategies](user_data/strategies) folder and also in the [docker-compose.yml](docker-compose.yml) file at `strategy-list` add your strategy in the list.
 
-[Additional Information : NFINext is a older strategy on 5m tf , NFI-NG is a 15m tf stategy abandoned mid development , NFIX is the currently developed strategy (a rework of NG on 5m tf)]
+[Additional Information : NFINext is a older strategy on 5m tf , NFI-NG is a 15m tf strategy abandoned mid development , NFIX is the currently developed strategy (a rework of NG on 5m tf)]
 
 ## General Recommendations
 
@@ -87,6 +87,7 @@ If you like to help, you can also use the following links to sign up to various 
 - OKX: https://www.okx.com/join/11749725931 (20% discount on trading fees)
 - MEXC: https://promote.mexc.com/a/nfi (10% discount on trading fees)
 - ByBit: https://partner.bybit.com/b/nfi
+- Bitget: https://bonus.bitget.com/nfi (lifetime 20% rebate all & 10% discount on spot fees)
 - HTX: https://www.htx.com/invite/en-us/1f?invite_code=ubpt2223 (Welcome Bonus worth 241 USDT upon completion of a deposit and trade)
 - Bitvavo: https://account.bitvavo.com/create?a=D22103A4BC (no fees for the first € 1000)
 
