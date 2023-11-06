@@ -7409,10 +7409,10 @@ class NostalgiaForInfinityX4(IStrategy):
                 | (dataframe['ema_200_dec_24_4h'] == False)
                 | (dataframe['ema_200_dec_4_1d'] == False)
             )
-            # current 1h red, 15m downtrend, 5m & 15m downmove, 15m & 1h & 4h still high, 24h downtrend
+            # current 1h green, 15m downtrend, 5m & 15m downmove, 15m & 1h & 4h still high, 24h downtrend
             &
             (
-                (dataframe['change_pct_1h'] < -0.0)
+                (dataframe['change_pct_1h'] < 0.0)
                 | (dataframe['not_downtrend_15m'])
                 | (dataframe['rsi_3'] > 30.0)
                 | (dataframe['rsi_3_15m'] > 20.0)
