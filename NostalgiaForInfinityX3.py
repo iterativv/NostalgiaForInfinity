@@ -66,7 +66,7 @@ class NostalgiaForInfinityX3(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v13.0.768"
+        return "v13.0.769"
 
     # ROI table:
     minimal_roi = {
@@ -141,8 +141,8 @@ class NostalgiaForInfinityX3(IStrategy):
     stop_thresholds = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 24.0, 24.0, False, False, True, True]
     # Based on the the first entry (regardless of rebuys)
     stop_threshold = 0.5
-    stop_threshold_futures = 0.07
-    stop_threshold_futures_rapid = 0.07
+    stop_threshold_futures = 0.10
+    stop_threshold_futures_rapid = 0.10
     stop_threshold_spot_rapid = 0.20
 
     # Rebuy mode minimum number of free slots
