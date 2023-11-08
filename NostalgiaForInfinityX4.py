@@ -66,7 +66,7 @@ class NostalgiaForInfinityX4(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v14.0.421"
+        return "v14.0.422"
 
     # ROI table:
     minimal_roi = {
@@ -148,6 +148,8 @@ class NostalgiaForInfinityX4(IStrategy):
     # Based on the the first entry (regardless of rebuys)
     stop_threshold = 0.5
     stop_threshold_futures = 0.07
+    stop_threshold_futures_rapid = 0.07
+    stop_threshold_spot_rapid = 0.20
 
     # Rebuy mode minimum number of free slots
     rebuy_mode_min_free_slots = 2
@@ -809,7 +811,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
         # Stoplosses
             if (
-                    profit_stake < -(filled_entries[0].cost * (0.07 if self.is_futures_mode else 0.2))
+                    profit_stake < -(filled_entries[0].cost * (self.stop_threshold_futures_rapid if self.is_futures_mode else self.stop_threshold_spot_rapid))
             ):
                 sell, signal_name = True, f'exit_{self.long_rapid_mode_name}_stoploss_doom'
 
