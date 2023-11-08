@@ -3,6 +3,8 @@
   // Please use at own risk
   // For full documentation on Freqtrade configration files please visit https://www.freqtrade.io/en/stable/configuration/
   "dry_run": true,
+  "dry_run_wallet": 10000,
+  "grinding_enable": true,
   "max_open_trades": 6,
   "stake_currency": "USDT",
   "stake_amount": "unlimited",
@@ -11,7 +13,7 @@
   "force_entry_enable": true,
   "timeframe": "5m",
   "unfilledtimeout": {
-    "entry": 5,
+    "entry": 20,
     "exit": 20,
     "exit_timeout_count": 0,
     "unit": "minutes"
@@ -24,7 +26,8 @@
     "force_exit": "limit",
     "stoploss": "limit",
     "stoploss_on_exchange": false,
-    "stoploss_on_exchange_interval": 60
+    "stoploss_on_exchange_interval": 60,
+    "stoploss_on_exchange_limit_ratio": 0.99
   },
   "entry_pricing": {
     "price_side": "other",
