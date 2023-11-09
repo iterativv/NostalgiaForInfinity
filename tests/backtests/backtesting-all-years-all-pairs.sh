@@ -17,6 +17,10 @@
 # export FREQTRADE__EXCHANGE_CONFIG__CCXT_CONFIG__PROXIES__HTTP=http://123.45.67.89:3128
 # export FREQTRADE__EXCHANGE_CONFIG__CCXT_CONFIG__PROXIES__HTTPS=http://123.45.67.89:3128
 
+# if you get binance connection errors when you are testing you can run this
+# export FREQTRADE__EXCHANGE__CCXT_CONFIG__RATELIMIT=400
+
+
 
 # If you need to change settings before run you can set environment variables like this
 
@@ -72,14 +76,18 @@ fi
 
 
 for START_YEAR in {2023..2017};
-do
-# Time Range Config
-TIMERANGE_CONFIG=""
-if [ -z "${TIMERANGE}" ]; then
-  TIMERANGE_CONFIG="$START_YEAR""0101-"
-else
- TIMERANGE_CONFIG="${TIMERANGE}"
-fi
+  do
+    # Time Range Config
+    TIMERANGE_CONFIG=""
+    if [ -z "${TIMERANGE}" ]; then
+      TIMERANGE_CONFIG="$START_YEAR""0101-"
+    else
+      TIMERANGE_CONFIG="${TIMERANGE}"
+    fi
+
+    EXCHANGE_CONFIG_FILE=tests/backtests/pairs-available-$EXCHANGE_CONFIG-$TRADING_MODE_CONFIG-usdt-$START_YEAR.json
+    if [ -f "$EXCHANGE_CONFIG_FILE" ]; then
+
       echo " "
       echo " "
       echo "======================================================================================================"
@@ -139,4 +147,5 @@ fi
             --config configs/trading_mode-$TRADING_MODE_CONFIG.json \
             --config configs/exampleconfig.json \
             -c tests/backtests/pairs-available-$EXCHANGE_CONFIG-$TRADING_MODE_CONFIG-usdt-$START_YEAR.json ;
+    fi
 done
