@@ -38,6 +38,7 @@
 
 
 export STRATEGY_NAME=NostalgiaForInfinityX4
+export STRATEGY_VERSION=`grep version $STRATEGY_NAME.py  -A 1|grep return|cut -d '"' -f 2|sed "s/\.//g"`
 
 echo "######    "
 echo "######    "
