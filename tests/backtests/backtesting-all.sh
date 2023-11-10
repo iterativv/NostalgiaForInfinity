@@ -39,6 +39,10 @@
 
 export STRATEGY_NAME=NostalgiaForInfinityX4
 
+echo "######    "
+echo "######    "
+echo "######    "
+echo "######    "
 echo "#################################################################################"
 echo "#################################################################################"
 echo "######    "
@@ -61,7 +65,10 @@ export TRADING_MODE=futures
 export EXCHANGE=binance
 ./tests/backtests/backtesting-all-years-all-pairs.sh
 
-
+echo "######    "
+echo "######    "
+echo "######    "
+echo "######    "
 echo "#################################################################################"
 echo "#################################################################################"
 echo "######    "
@@ -83,7 +90,10 @@ export TRADING_MODE=spot
 export EXCHANGE=binance
 ./tests/backtests/backtesting-all-years-all-pairs.sh
 
-
+echo "######    "
+echo "######    "
+echo "######    "
+echo "######    "
 echo "#################################################################################"
 echo "#################################################################################"
 echo "######    "
@@ -105,7 +115,10 @@ echo "######    "
 export EXCHANGE=kucoin
 ./tests/backtests/backtesting-all-years-all-pairs.sh
 
-
+echo "######    "
+echo "######    "
+echo "######    "
+echo "######    "
 echo "#################################################################################"
 echo "#################################################################################"
 echo "######    "
@@ -128,7 +141,10 @@ export TRADING_MODE=futures
 export EXCHANGE=okx
 ./tests/backtests/backtesting-all-years-all-pairs.sh
 
-
+echo "######    "
+echo "######    "
+echo "######    "
+echo "######    "
 echo "#################################################################################"
 echo "#################################################################################"
 echo "######    "
@@ -157,6 +173,10 @@ export TRADING_MODE=spot
 export EXCHANGE=okx
 ./tests/backtests/backtesting-all-years-all-pairs.sh
 
+echo "######    "
+echo "######    "
+echo "######    "
+echo "######    "
 echo "#################################################################################"
 echo "#################################################################################"
 echo "######    "
@@ -180,6 +200,10 @@ export TRADING_MODE=spot
 export EXCHANGE=gateio
 ./tests/backtests/backtesting-all-years-all-pairs.sh
 
+echo "######    "
+echo "######    "
+echo "######    "
+echo "######    "
 echo "#################################################################################"
 echo "#################################################################################"
 echo "######    "
@@ -203,6 +227,10 @@ export EXCHANGE=gateio
 ./tests/backtests/backtesting-all-years-all-pairs.sh
 
 
+echo "######    "
+echo "######    "
+echo "######    "
+echo "######    "
 echo "#################################################################################"
 echo "#################################################################################"
 echo "######    "
@@ -286,7 +314,10 @@ export TRADING_MODE=futures
 export EXCHANGE=binance
 ./tests/backtests/backtesting-for-hunting-bad-buys.sh
 
-
+echo "######    "
+echo "######    "
+echo "######    "
+echo "######    "
 echo "#################################################################################"
 echo "#################################################################################"
 echo "######    "
@@ -311,7 +342,10 @@ export TRADING_MODE=spot
 export EXCHANGE=binance
 ./tests/backtests/backtesting-for-hunting-bad-buys.sh
 
-
+echo "######    "
+echo "######    "
+echo "######    "
+echo "######    "
 echo "#################################################################################"
 echo "#################################################################################"
 echo "######    "
@@ -334,7 +368,10 @@ export EXCHANGE=kucoin
 ./tests/backtests/backtesting-for-hunting-bad-buys.sh
 
 
-
+echo "######    "
+echo "######    "
+echo "######    "
+echo "######    "
 echo "#################################################################################"
 echo "#################################################################################"
 echo "######    "
@@ -357,7 +394,10 @@ export TRADING_MODE=futures
 export EXCHANGE=okx
 ./tests/backtests/backtesting-for-hunting-bad-buys.sh
 
-
+echo "######    "
+echo "######    "
+echo "######    "
+echo "######    "
 echo "#################################################################################"
 echo "#################################################################################"
 echo "######    "
@@ -380,6 +420,10 @@ export TRADING_MODE=spot
 export EXCHANGE=okx
 ./tests/backtests/backtesting-for-hunting-bad-buys.sh
 
+echo "######    "
+echo "######    "
+echo "######    "
+echo "######    "
 echo "#################################################################################"
 echo "#################################################################################"
 echo "######    "
@@ -403,6 +447,10 @@ export TRADING_MODE=spot
 export EXCHANGE=gateio
 ./tests/backtests/backtesting-for-hunting-bad-buys.sh
 
+echo "######    "
+echo "######    "
+echo "######    "
+echo "######    "
 echo "#################################################################################"
 echo "#################################################################################"
 echo "######    "
