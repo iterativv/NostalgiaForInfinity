@@ -92,7 +92,7 @@ jobs:
           echo FREQTRADE__EXCHANGE__CCXT_CONFIG__AIOHTTP_PROXY=${{ secrets.FREQTRADE_PROXY }} >> .github/workflows/scripts/ci-proxy.env
           echo FREQTRADE__EXCHANGE__CCXT_CONFIG__PROXIES__HTTP=${{ secrets.FREQTRADE_PROXY }} >> .github/workflows/scripts/ci-proxy.env
           echo FREQTRADE__EXCHANGE__CCXT_CONFIG__PROXIES__HTTPS=${{ secrets.FREQTRADE_PROXY }} >> .github/workflows/scripts/ci-proxy.env
-          echo FREQTRADE__EXCHANGE__CCXT_CONFIG__RATELIMIT=400 >> .github/workflows/scripts/ci-proxy.env
+          echo FREQTRADE__EXCHANGE__CCXT_CONFIG__RATELIMIT=4000 >> .github/workflows/scripts/ci-proxy.env
       - name: Fetch data for backtests from https://github.com/DigiTuccar/HistoricalDataForTradeBacktest
         env:
           EXCHANGE: binance
