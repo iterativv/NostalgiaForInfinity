@@ -46,9 +46,7 @@ def comment_results(options, results_data):
 
     for exchange in sorted(results_data):
         exchanges.add(exchange)
-        sorted_report_names = list(
-            reversed(sorted(results_data[exchange]["names"], key=sort_report_names))
-        )
+        sorted_report_names = list(reversed(sorted(results_data[exchange]["names"], key=sort_report_names)))
         for timerange in results_data[exchange]["timeranges"]:
             comment_body = f"## {exchange.capitalize()} - {timerange}\n\n"
             report_table_header_1 = f"| "
@@ -131,9 +129,7 @@ def comment_results(options, results_data):
                         value = results_data[exchange]["timeranges"][timerange][key][report_name]
                         row_line += f" {value} |"
                     comment_body += f"{row_line}\n"
-            ft_output = (
-                options.path / "current" / f"backtest-output-{exchange}-spot-{timerange}.txt"
-            )
+            ft_output = options.path / "current" / f"backtest-output-{exchange}-spot-{timerange}.txt"
             comment_body += "\n<details>\n"
             comment_body += f"<summary>Detailed Backest Output (click to see details)</summary>\n"
             comment_body += f"{ft_output.read_text().strip()}\n"
@@ -149,9 +145,7 @@ def comment_results(options, results_data):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--repo", required=True, help="The Organization Repository")
-    parser.add_argument(
-        "path", metavar="PATH", type=pathlib.Path, help="Path where artifacts are extracted"
-    )
+    parser.add_argument("path", metavar="PATH", type=pathlib.Path, help="Path where artifacts are extracted")
 
     if not os.environ.get("GITHUB_TOKEN"):
         parser.exit(status=1, message="GITHUB_TOKEN environment variable not set")

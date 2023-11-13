@@ -1,5 +1,4 @@
 # fmt: off
-from freqtrade.strategy import DecimalParameter
 from freqtrade.strategy.interface import IStrategy
 from pandas.core.frame import DataFrame
 
