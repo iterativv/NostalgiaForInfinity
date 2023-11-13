@@ -1,0 +1,40 @@
+# http://editorconfig.org
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{py,rst,ini}]
+indent_style = space
+indent_size = 2
+max_line_length = 119
+
+[*.{html,css,scss,json,yml,xml}]
+indent_style = space
+indent_size = 2
+
+[*.md]
+trim_trailing_whitespace = false
+
+[Makefile]
+indent_style = tab
+
+[.gitmodules]
+indent_style = tab
+indent_size = 4
+
+[docker-compose{,.*}.{yaml,yml}]
+indent_style = space
+indent_size = 2
+
+[Dockerfile]
+indent_style = tab
+indent_size = 4
+
+[nginx.conf]
+indent_style = space
+indent_size = 2
