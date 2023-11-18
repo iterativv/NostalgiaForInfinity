@@ -1,0 +1,39 @@
+{
+  "exchange": {
+    "name": "binance",
+    "pair_whitelist": [
+      "ACH/USDT",
+      "ACM/USDT",
+      "ATOM/USDT",
+      "CITY/USDT",
+      "CLV/USDT",
+      "COS/USDT",
+      "COTI/USDT",
+      "ENJ/USDT",
+      "FET/USDT",
+      "HBAR/USDT",
+      "HOOK/USDT",
+      "ICX/USDT",
+      "ID/USDT",
+      "IOST/USDT",
+      "LEVER/USDT",
+      "LRC/USDT",
+      "LTC/USDT",
+      "LUNC/USDT",
+      "NEO/USDT",
+      "ORN/USDT",
+      "PERL/USDT",
+      "STG/USDT",
+      "TOMO/USDT",
+      "TROY/USDT",
+      "WING/USDT",
+      "WNXM/USDT",
+      "XNO/USDT"
+    ]
+  },
+  "pairlists": [
+    {
+      "method": "StaticPairList"
+    }
+  ]
+}
