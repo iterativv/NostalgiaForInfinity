@@ -10,7 +10,7 @@ import pandas_ta as pta
 from freqtrade.strategy.interface import IStrategy
 from freqtrade.strategy import merge_informative_pair
 from pandas import DataFrame, Series
-from functools import reduce, partial
+from functools import reduce
 from freqtrade.persistence import Trade, LocalTrade
 from datetime import datetime, timedelta
 import time
