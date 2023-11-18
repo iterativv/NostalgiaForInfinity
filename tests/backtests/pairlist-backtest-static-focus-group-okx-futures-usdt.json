@@ -1,0 +1,40 @@
+{
+  "exchange": {
+    "name": "okx",
+    "pair_whitelist": [
+      "ADA/USDT:USDT",
+      "ANT/USDT:USDT",
+      "BCH/USDT:USDT",
+      "CSPR/USDT:USDT",
+      "CVC/USDT:USDT",
+      "DASH/USDT:USDT",
+      "DOGE/USDT:USDT",
+      "DYDX/USDT:USDT",
+      "FITFI/USDT:USDT",
+      "GFT/USDT:USDT",
+      "ICP/USDT:USDT",
+      "IOST/USDT:USDT",
+      "LOOKS/USDT:USDT",
+      "LPT/USDT:USDT",
+      "LUNA/USDT:USDT",
+      "LUNC/USDT:USDT",
+      "MANA/USDT:USDT",
+      "MASK/USDT:USDT",
+      "NEO/USDT:USDT",
+      "OMG/USDT:USDT",
+      "PEOPLE/USDT:USDT",
+      "PERP/USDT:USDT",
+      "RSR/USDT:USDT",
+      "RVN/USDT:USDT",
+      "STARL/USDT:USDT",
+      "STORJ/USDT:USDT",
+      "TRB/USDT:USDT",
+      "UMA/USDT:USDT",
+      "XLM/USDT:USDT",
+      "YFII/USDT:USDT",
+      "ZEC/USDT:USDT",
+      "ZEN/USDT:USDT"
+    ]
+  },
+  "pairlists": [{ "method": "StaticPairList" }]
+}
