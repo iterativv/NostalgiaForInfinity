@@ -1,0 +1,16 @@
+{
+  "exchange": {
+    "name": "okx",
+    "pair_whitelist": [
+      "API3/USDT",
+      "OKB/USDT",
+      "ONE/USDT",
+      "PEOPLE/USDT",
+      "SNX/USDT",
+      "WNCG/USDT",
+      "YGG/USDT",
+      "ZBC/USDT"
+    ]
+  },
+  "pairlists": [{ "method": "StaticPairList" }]
+}

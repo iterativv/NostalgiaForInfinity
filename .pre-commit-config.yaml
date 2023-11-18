@@ -1,17 +1,24 @@
 ---
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v4.5.0
     hooks:
-      - id: check-merge-conflict  # Check for files that contain merge conflict strings.
-      - id: trailing-whitespace   # Trims trailing whitespace.
+      - id: check-added-large-files
+        args: [--maxkb=10240]
+      - id: check-case-conflict
+      - id: check-executables-have-shebangs
+      - id: check-symlinks
+      - id: check-vcs-permalinks
+      - id: destroyed-symlinks
+      - id: detect-private-key
+      - id: trailing-whitespace # Trims trailing whitespace.
         args: [--markdown-linebreak-ext=md]
-      - id: mixed-line-ending     # Replaces or checks mixed line ending.
+      - id: mixed-line-ending # Replaces or checks mixed line ending.
         args: [--fix=lf]
-      - id: end-of-file-fixer     # Makes sure files end in a newline and only a newline.
+      - id: end-of-file-fixer # Makes sure files end in a newline and only a newline.
         exclude: user_data/.*
-      - id: check-merge-conflict  # Check for files that contain merge conflict strings.
-      - id: check-ast             # Simply check whether files parse as valid python.
+      - id: check-merge-conflict # Check for files that contain merge conflict strings.
+      - id: check-ast # Simply check whether files parse as valid python.
       - id: check-yaml
         args: [--allow-multiple-documents]
         exclude: |
@@ -20,32 +27,41 @@ repos:
             .gitlab-ci.yml
           )$
       - id: end-of-file-fixer
+      - id: fix-byte-order-marker
 
-
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version.
+    rev: v0.1.6
+    hooks:
+      # Run the linter.
+      - id: ruff
+        types_or: [python, pyi, jupyter]
+        args: [--fix]
+      # Run the formatter.
+      - id: ruff-format
+        types_or: [python, pyi, jupyter]
 
   # <---- Formatting --------------------------------------------------------->
-  - repo: https://github.com/asottile/pyupgrade
-    rev: v3.10.1
-    hooks:
-      - id: pyupgrade
-        name: Rewrite Code to be Py3.7+
-        args: [--py37-plus]
-        files: tests/.*\.py
-        exclude: user_data/.*
+  # - repo: https://github.com/asottile/pyupgrade
+  #   rev: v3.15.0
+  #   hooks:
+  #     - id: pyupgrade
+  #       name: Rewrite Code to be Py3.11+
+  #       args: [--py311-plus]
+  #       files: tests/.*\.py
+  #       exclude: user_data/.*
 
-  - repo: https://github.com/asottile/reorder_python_imports
-    rev: v3.10.0
-    hooks:
-      - id: reorder-python-imports
-        args: [
-          --py39-plus,
-        ]
-        files: (tests|.github)/.*\.py
+  # - repo: https://github.com/asottile/reorder_python_imports
+  #   rev: v3.12.0
+  #   hooks:
+  #     - id: reorder-python-imports
+  #       args: [--py311-plus]
+  #       files: (tests|.github)/.*\.py
 
-  - repo: https://github.com/psf/black
-    rev: 23.7.0
-    hooks:
-      - id: black
-        args: [-l 100]
-        files: (tests|.github)/.*\.py
+  # - repo: https://github.com/psf/black
+  #   rev: 23.11.0
+  #   hooks:
+  #     - id: black
+  #       args: [-l 119]
+  #       files: (tests|.github)/.*\.py
 # <---- Formatting --------------------------------------------------------->

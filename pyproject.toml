@@ -1,0 +1,98 @@
+[project]
+name = "NostalgiaForInfinity"
+description = "Trading strategy for the Freqtrade crypto bot"
+homepage = "https://github.com/iterativv/NostalgiaForInfinity"
+dependencies = ["freqtrade"]
+readme = "README.md"
+requires-python = ">=3.11"
+
+
+[tool.black]
+line-length = 119
+target-version = ["py311"]
+exclude = '''
+  /(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  )/
+  '''
+
+[tool.isort]
+atomic = true
+profile = "black"
+line_length = 119
+skip_gitignore = true
+multi_line_output=0
+lines_after_imports=2
+skip_glob = ["**/.env*", "**/env/*", "**/.venv/*", "**/docs/*", "**/user_data/*"]
+
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
+[tool.flake8]
+max-line-length = 119
+extend-ignore = ["D203", "E203", "E251", "E266", "E302", "E305", "E401", "E402", "E501", "F401", "F403", "W503", "E712" , "E713"]
+exclude = [".git", "__pycache__", "dist"]
+max-complexity = 12
+
+
+
+
+[tool.ruff]
+line-length = 119
+indent-width = 2
+target-version = "py311"
+fix = true
+
+
+
+[tool.ruff.mccabe]
+max-complexity = 12
+
+
+[tool.ruff.lint]
+# 1. Enable flake8-bugbear (`B`) rules, in addition to the defaults.
+select = ["E4", "E9", "F", "B", "Q"]
+
+
+# 3. Avoid trying to fix flake8-bugbear (`B`) violations.
+unfixable = ["B","E"]
+
+
+ignore = [
+  ### Intentionally disabled
+
+  ### TODO: Enable gradually
+  "F821", # Undefined name
+  "F841", # Local variable is assigned to but never used
+
+]
+
+exclude = [
+  "user_data/*",
+  # exclude asv benchmark environments from linting
+  "env",
+]
+
+
+extend-ignore = [
+  # "E241",  # Multiple spaces after comma
+  # "E272",  # Multiple spaces before keyword
+  # "E221",  # Multiple spaces before operator
+]
+
+
+
+[tool.ruff.format]
+# 5. Use single quotes for non-triple-quoted strings.
+quote-style = "double"
+
+[tool.ruff.lint.flake8-quotes]
+docstring-quotes = "double"
