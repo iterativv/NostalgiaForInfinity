@@ -8,15 +8,14 @@ import talib.abstract as ta
 import pandas as pd
 from freqtrade.strategy.interface import IStrategy
 from freqtrade.strategy import merge_informative_pair, timeframe_to_minutes
-from freqtrade.exchange import timeframe_to_prev_date
-from pandas import DataFrame, Series, concat
+from pandas import DataFrame, Series
 from functools import reduce
 import math
-from typing import Dict, Optional
+from typing import Optional
 from freqtrade.persistence import Trade, LocalTrade
 from datetime import datetime, timedelta
 from technical.util import resample_to_interval, resampled_merge
-from technical.indicators import RMI, zema, VIDYA, ichimoku
+from technical.indicators import RMI
 import time
 import warnings
 import re
