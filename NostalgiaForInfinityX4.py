@@ -66,7 +66,7 @@ class NostalgiaForInfinityX4(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v14.0.456"
+        return "v14.0.467"
 
     # ROI table:
     minimal_roi = {
@@ -117,8 +117,8 @@ class NostalgiaForInfinityX4(IStrategy):
     pump_mode_tags = ['21', '22', '23']
     # Quick mode tags
     quick_mode_tags = ['41', '42', '43', '44']
-    # Rebuy mode tags
-    rebuy_mode_tags = ['61']
+    # Long rebuy mode tags
+    long_rebuy_mode_tags = ['61']
     # Long mode tags
     long_mode_tags = ['81', '82']
     # Long rapid mode tags
@@ -127,7 +127,7 @@ class NostalgiaForInfinityX4(IStrategy):
     normal_mode_name = "normal"
     pump_mode_name = "pump"
     quick_mode_name = "quick"
-    rebuy_mode_name = "rebuy"
+    long_rebuy_mode_name = "long_rebuy"
     long_mode_name = "long"
     long_rapid_mode_name = "long_rapid"
 
@@ -150,6 +150,8 @@ class NostalgiaForInfinityX4(IStrategy):
     stop_threshold_futures = 0.10
     stop_threshold_futures_rapid = 0.10
     stop_threshold_spot_rapid = 0.35
+    stop_threshold_futures_rebuy = 0.9
+    stop_threshold_spot_rebuy = 1.0
 
     # Rebuy mode minimum number of free slots
     rebuy_mode_min_free_slots = 2
@@ -190,10 +192,11 @@ class NostalgiaForInfinityX4(IStrategy):
     grinding_mode_1_stakes_alt_3 = [0.35, 0.35, 0.35]
     grinding_mode_1_sub_thresholds_alt_3 = [-0.06, -0.075, -0.1]
 
-    stake_rebuy_mode_multiplier = 0.33
-    pa_rebuy_mode_max = 2
-    pa_rebuy_mode_pcts = (-0.02, -0.04, -0.04)
-    pa_rebuy_mode_multi = (1.0, 1.0, 1.0)
+    # Rebuy mode
+    rebuy_mode_stake_multiplier = 0.2
+    rebuy_mode_max = 3
+    rebuy_mode_stakes = [2.0, 4.0, 8.0]
+    rebuy_mode_thresholds = [-0.06, -0.08, -0.10]
 
     # Profit max thresholds
     profit_max_thresholds = [0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.05, 0.05]
@@ -229,7 +232,7 @@ class NostalgiaForInfinityX4(IStrategy):
         "buy_condition_43_enable": True,
         "buy_condition_44_enable": True,
 
-        # "buy_condition_61_enable": True,
+        "buy_condition_61_enable": False,
 
         # "buy_condition_81_enable": True,
         # "buy_condition_82_enable": True,
@@ -600,7 +603,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
         return False, None
 
-    def exit_rebuy(self, pair: str, current_rate: float,
+    def long_exit_rebuy(self, pair: str, current_rate: float,
                     profit_stake: float, profit_ratio: float, profit_current_stake_ratio: float, profit_init_ratio: float,
                     max_profit: float, max_loss: float,
                     filled_entries, filled_exits,
@@ -609,19 +612,22 @@ class NostalgiaForInfinityX4(IStrategy):
         sell = False
 
         # Original sell signals
-        sell, signal_name = self.exit_signals(self.rebuy_mode_name, profit_current_stake_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+        sell, signal_name = self.exit_signals(self.long_rebuy_mode_name, profit_current_stake_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Main sell signals
         if not sell:
-            sell, signal_name = self.exit_main(self.rebuy_mode_name, profit_current_stake_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_main(self.long_rebuy_mode_name, profit_current_stake_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Williams %R based sells
         if not sell:
-            sell, signal_name = self.exit_r(self.rebuy_mode_name, profit_current_stake_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            sell, signal_name = self.exit_r(self.long_rebuy_mode_name, profit_current_stake_ratio, max_profit, max_loss, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
 
         # Stoplosses
         if not sell:
-            sell, signal_name = self.exit_stoploss(self.rebuy_mode_name, current_rate, profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio, max_profit, max_loss, filled_entries, filled_exits, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+            if (
+                    profit_stake < -(filled_entries[0].cost * (self.stop_threshold_futures_rebuy if self.is_futures_mode else self.stop_threshold_spot_rebuy))
+            ):
+                sell, signal_name = True, f'exit_{self.long_rebuy_mode_name}_stoploss_doom'
 
         # Profit Target Signal
         # Check if pair exist on target_profit_cache
@@ -631,21 +637,21 @@ class NostalgiaForInfinityX4(IStrategy):
             previous_sell_reason = self.target_profit_cache.data[pair]['sell_reason']
             previous_time_profit_reached = datetime.fromisoformat(self.target_profit_cache.data[pair]['time_profit_reached'])
 
-            sell_max, signal_name_max = self.exit_profit_target(self.rebuy_mode_name, pair, trade, current_time, current_rate,
+            sell_max, signal_name_max = self.exit_profit_target(self.long_rebuy_mode_name, pair, trade, current_time, current_rate,
                                                                 profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio,
                                                                 last_candle, previous_candle_1,
                                                                 previous_rate, previous_profit, previous_sell_reason,
                                                                 previous_time_profit_reached, enter_tags)
             if sell_max and signal_name_max is not None:
                 return True, f"{signal_name_max}_m"
-            if (previous_sell_reason in [f"exit_{self.rebuy_mode_name}_stoploss_u_e"]):
+            if (previous_sell_reason in [f"exit_{self.long_rebuy_mode_name}_stoploss_u_e"]):
                 if (profit_ratio > (previous_profit + 0.005)):
-                    mark_pair, mark_signal = self.mark_profit_target(self.rebuy_mode_name, pair, True, previous_sell_reason, trade, current_time, current_rate, profit_ratio, last_candle, previous_candle_1)
+                    mark_pair, mark_signal = self.mark_profit_target(self.long_rebuy_mode_name, pair, True, previous_sell_reason, trade, current_time, current_rate, profit_ratio, last_candle, previous_candle_1)
                     if mark_pair:
                         self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
-            elif (profit_current_stake_ratio > (previous_profit + 0.005)) and (previous_sell_reason not in [f"exit_{self.rebuy_mode_name}_stoploss_doom"]):
+            elif (profit_current_stake_ratio > (previous_profit + 0.005)) and (previous_sell_reason not in [f"exit_{self.long_rebuy_mode_name}_stoploss_doom"]):
                 # Update the target, raise it.
-                mark_pair, mark_signal = self.mark_profit_target(self.rebuy_mode_name, pair, True, previous_sell_reason, trade, current_time, current_rate, profit_current_stake_ratio, last_candle, previous_candle_1)
+                mark_pair, mark_signal = self.mark_profit_target(self.long_rebuy_mode_name, pair, True, previous_sell_reason, trade, current_time, current_rate, profit_current_stake_ratio, last_candle, previous_candle_1)
                 if mark_pair:
                     self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
 
@@ -654,8 +660,8 @@ class NostalgiaForInfinityX4(IStrategy):
             previous_profit = None
             if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
                 previous_profit = self.target_profit_cache.data[pair]['profit']
-            if (signal_name in [f"exit_{self.rebuy_mode_name}_stoploss_doom", f"exit_{self.rebuy_mode_name}_stoploss_u_e"]):
-                mark_pair, mark_signal = self.mark_profit_target(self.rebuy_mode_name, pair, sell, signal_name, trade, current_time, current_rate, profit_ratio, last_candle, previous_candle_1)
+            if (signal_name in [f"exit_{self.long_rebuy_mode_name}_stoploss_doom", f"exit_{self.long_rebuy_mode_name}_stoploss_u_e"]):
+                mark_pair, mark_signal = self.mark_profit_target(self.long_rebuy_mode_name, pair, sell, signal_name, trade, current_time, current_rate, profit_ratio, last_candle, previous_candle_1)
                 if mark_pair:
                     self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
                 else:
@@ -665,7 +671,7 @@ class NostalgiaForInfinityX4(IStrategy):
                     (previous_profit is None)
                     or (previous_profit < profit_current_stake_ratio)
             ):
-                mark_pair, mark_signal = self.mark_profit_target(self.rebuy_mode_name, pair, sell, signal_name, trade, current_time, current_rate, profit_current_stake_ratio, last_candle, previous_candle_1)
+                mark_pair, mark_signal = self.mark_profit_target(self.long_rebuy_mode_name, pair, sell, signal_name, trade, current_time, current_rate, profit_current_stake_ratio, last_candle, previous_candle_1)
                 if mark_pair:
                     self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
                 else:
@@ -679,10 +685,10 @@ class NostalgiaForInfinityX4(IStrategy):
                 if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
                     previous_profit = self.target_profit_cache.data[pair]['profit']
                 if (previous_profit is None) or (previous_profit < profit_current_stake_ratio):
-                    mark_signal = f"exit_profit_{self.rebuy_mode_name}_max"
+                    mark_signal = f"exit_profit_{self.long_rebuy_mode_name}_max"
                     self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
 
-        if (signal_name not in [f"exit_profit_{self.rebuy_mode_name}_max", f"exit_{self.rebuy_mode_name}_stoploss_doom", f"exit_{self.rebuy_mode_name}_stoploss_u_e"]):
+        if (signal_name not in [f"exit_profit_{self.long_rebuy_mode_name}_max"]):
             if sell and (signal_name is not None):
                 return True, f"{signal_name}"
 
@@ -1490,9 +1496,9 @@ class NostalgiaForInfinityX4(IStrategy):
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {enter_tag})"
 
-        # Rebuy mode
-        if all(c in self.rebuy_mode_tags for c in enter_tags):
-            sell, signal_name = self.exit_rebuy(pair, current_rate, profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio, max_profit, max_loss, filled_entries, filled_exits, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
+        # Long Rebuy mode
+        if all(c in self.long_rebuy_mode_tags for c in enter_tags):
+            sell, signal_name = self.long_exit_rebuy(pair, current_rate, profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio, max_profit, max_loss, filled_entries, filled_exits, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
             if sell and (signal_name is not None):
                 return f"{signal_name} ( {enter_tag})"
 
@@ -1515,7 +1521,7 @@ class NostalgiaForInfinityX4(IStrategy):
                 return f"{signal_name} ( {enter_tag})"
 
         # Trades not opened by X4
-        if not any(c in (self.normal_mode_tags + self.pump_mode_tags + self.quick_mode_tags + self.rebuy_mode_tags + self.long_mode_tags + self.long_rapid_mode_tags + self.short_normal_mode_tags) for c in enter_tags):
+        if not any(c in (self.normal_mode_tags + self.pump_mode_tags + self.quick_mode_tags + self.long_rebuy_mode_tags + self.long_mode_tags + self.long_rapid_mode_tags + self.short_normal_mode_tags) for c in enter_tags):
             # use normal mode for such trades
             sell, signal_name = self.exit_normal(pair, current_rate, profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio, max_profit, max_loss, filled_entries, filled_exits, last_candle, previous_candle_1, previous_candle_2, previous_candle_3, previous_candle_4, previous_candle_5, trade, current_time, enter_tags)
             if sell and (signal_name is not None):
@@ -1539,8 +1545,8 @@ class NostalgiaForInfinityX4(IStrategy):
                         stake =  proposed_stake * self.stake_grinding_mode_multiplier_alt_2
                     return stake
             # Rebuy mode
-            if all(c in self.rebuy_mode_tags for c in enter_tags):
-                return proposed_stake * self.stake_rebuy_mode_multiplier
+            if all(c in self.long_rebuy_mode_tags for c in enter_tags):
+                return proposed_stake * self.rebuy_mode_stake_multiplier
 
         return proposed_stake
 
@@ -1560,7 +1566,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
         # Grinding
         if (any(c in (self.normal_mode_tags + self.pump_mode_tags  + self.quick_mode_tags + self.long_mode_tags + self.long_rapid_mode_tags) for c in enter_tags)
-            or not any(c in (self.normal_mode_tags + self.pump_mode_tags + self.quick_mode_tags + self.rebuy_mode_tags + self.long_mode_tags + self.long_rapid_mode_tags) for c in enter_tags)):
+            or not any(c in (self.normal_mode_tags + self.pump_mode_tags + self.quick_mode_tags + self.long_rebuy_mode_tags + self.long_mode_tags + self.long_rapid_mode_tags) for c in enter_tags)):
             return self.grind_adjust_trade_position(trade, current_time,
                                                          current_rate, current_profit,
                                                          min_stake, max_stake,
@@ -1569,7 +1575,7 @@ class NostalgiaForInfinityX4(IStrategy):
                                                          )
 
         # Rebuy mode
-        if all(c in self.rebuy_mode_tags for c in enter_tags):
+        if all(c in self.long_rebuy_mode_tags for c in enter_tags):
             return self.rebuy_adjust_trade_position(trade, current_time,
                                                          current_rate, current_profit,
                                                          min_stake, max_stake,
@@ -1635,8 +1641,8 @@ class NostalgiaForInfinityX4(IStrategy):
                 grinding_thresholds = self.grinding_thresholds
                 grinding_stakes = self.grinding_stakes
                 # Low stakes, on Binance mostly
-                if ((slice_amount * self.grinding_stakes[0]) < min_stake):
-                    if ((slice_amount * self.grinding_stakes_alt_1[0]) < min_stake):
+                if ((slice_amount * self.grinding_stakes[0] / (self.futures_mode_leverage if self.is_futures_mode else 1.0)) < min_stake):
+                    if ((slice_amount * self.grinding_stakes_alt_1[0] / (self.futures_mode_leverage if self.is_futures_mode else 1.0)) < min_stake):
                         grinding_parts = len(self.grinding_stakes_alt_2)
                         grinding_thresholds = self.grinding_thresholds_alt_2
                         grinding_stakes = self.grinding_stakes_alt_2
@@ -1973,7 +1979,7 @@ class NostalgiaForInfinityX4(IStrategy):
                                     )
                                 )
                         ):
-                            buy_amount = slice_amount * grinding_stakes[i]
+                            buy_amount = slice_amount * grinding_stakes[i] / (self.futures_mode_leverage if self.is_futures_mode else 1.0)
                             if (buy_amount > max_stake):
                                 buy_amount = max_stake
                             if (buy_amount < min_stake):
@@ -1987,7 +1993,7 @@ class NostalgiaForInfinityX4(IStrategy):
                 if (count_of_entries > 1):
                     count_of_full_exits = 0
                     for exit_order in filled_exits:
-                        if ((exit_order.remaining * exit_rate) < min_stake):
+                        if ((exit_order.remaining * exit_rate / (self.futures_mode_leverage if self.is_futures_mode else 1.0)) < min_stake):
                             count_of_full_exits += 1
                     num_buys = 0
                     num_sells = 0
@@ -1995,11 +2001,11 @@ class NostalgiaForInfinityX4(IStrategy):
                         if (order.ft_order_side == "buy"):
                             num_buys += 1
                         elif (order.ft_order_side == "sell"):
-                            if ((order.remaining * exit_rate) < min_stake):
+                            if ((order.remaining * exit_rate / (self.futures_mode_leverage if self.is_futures_mode else 1.0)) < min_stake):
                                 num_sells += 1
                         # patial fills on exits
                         if (num_buys == num_sells) and (order.ft_order_side == "sell"):
-                            sell_amount = order.remaining * exit_rate
+                            sell_amount = order.remaining * exit_rate / (self.futures_mode_leverage if self.is_futures_mode else 1.0)
                             grind_profit = (exit_rate - order.average) / order.average
                             if (sell_amount > min_stake):
                                 # Test if it's the last exit. Normal exit with partial fill
@@ -2018,9 +2024,9 @@ class NostalgiaForInfinityX4(IStrategy):
                             if (
                                     (grind_profit > self.grinding_profit_threshold)
                             ):
-                                sell_amount = buy_order.filled * exit_rate
+                                sell_amount = buy_order.filled * exit_rate / (self.futures_mode_leverage if self.is_futures_mode else 1.0)
                                 if ((current_stake_amount - sell_amount) < (min_stake * 1.7)):
-                                    sell_amount = (trade.amount * exit_rate) - (min_stake * 1.7)
+                                    sell_amount = (trade.amount * exit_rate / (self.futures_mode_leverage if self.is_futures_mode else 1.0)) - (min_stake * 1.7)
                                 if (sell_amount > min_stake):
                                     self.dp.send_msg(f"Grinding exit [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount}| Coin amount: {buy_order.filled} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%")
                                     return -sell_amount
@@ -2047,12 +2053,12 @@ class NostalgiaForInfinityX4(IStrategy):
                 grinding_mode_1_stakes = self.grinding_mode_1_stakes
                 grinding_mode_1_sub_thresholds = self.grinding_mode_1_sub_thresholds
                 # Low stakes, on Binance mostly
-                if ((slice_amount * self.grinding_mode_1_stakes[0]) < min_stake):
-                    if ((slice_amount * self.grinding_mode_1_stakes_alt_2[0]) < min_stake):
+                if ((slice_amount * self.grinding_mode_1_stakes[0] / (self.futures_mode_leverage if self.is_futures_mode else 1.0)) < min_stake):
+                    if ((slice_amount * self.grinding_mode_1_stakes_alt_2[0] / (self.futures_mode_leverage if self.is_futures_mode else 1.0)) < min_stake):
                         max_sub_grinds = len(self.grinding_mode_1_stakes_alt_3)
                         grinding_mode_1_stakes = self.grinding_mode_1_stakes_alt_3
                         grinding_mode_1_sub_thresholds = self.grinding_mode_1_sub_thresholds_alt_3
-                    elif ((slice_amount * self.grinding_mode_1_stakes_alt_1[0]) < min_stake):
+                    elif ((slice_amount * self.grinding_mode_1_stakes_alt_1[0] / (self.futures_mode_leverage if self.is_futures_mode else 1.0)) < min_stake):
                         max_sub_grinds = len(self.grinding_mode_1_stakes_alt_2)
                         grinding_mode_1_stakes = self.grinding_mode_1_stakes_alt_2
                         grinding_mode_1_sub_thresholds = self.grinding_mode_1_sub_thresholds_alt_2
@@ -2073,7 +2079,7 @@ class NostalgiaForInfinityX4(IStrategy):
                         total_amount += order.filled
                         total_cost += order.filled * order.average
                     elif (order.ft_order_side == "sell"):
-                        if ((order.remaining * exit_rate) > min_stake):
+                        if ((order.remaining * exit_rate / (self.futures_mode_leverage if self.is_futures_mode else 1.0)) > min_stake):
                             partial_sell = True
                         break
                 if (sub_grind_count > 0):
@@ -2243,7 +2249,7 @@ class NostalgiaForInfinityX4(IStrategy):
                                 )
                             )
                     ):
-                        buy_amount = slice_amount * grinding_mode_1_stakes[sub_grind_count]
+                        buy_amount = slice_amount * grinding_mode_1_stakes[sub_grind_count] / (self.futures_mode_leverage if self.is_futures_mode else 1.0)
                         if (buy_amount > max_stake):
                             buy_amount = max_stake
                         if (buy_amount < min_stake):
@@ -2256,7 +2262,7 @@ class NostalgiaForInfinityX4(IStrategy):
                 # Sell remaining if partial fill on exit
                 if partial_sell:
                     order = filled_exits[-1]
-                    sell_amount = order.remaining * exit_rate
+                    sell_amount = order.remaining * exit_rate / (self.futures_mode_leverage if self.is_futures_mode else 1.0)
                     grind_profit = (exit_rate - order.average) / order.average
                     if (sell_amount > min_stake):
                         # Test if it's the last exit. Normal exit with partial fill
@@ -2270,7 +2276,7 @@ class NostalgiaForInfinityX4(IStrategy):
                     if (
                             (grind_profit > self.grinding_mode_1_profit_threshold)
                     ):
-                        sell_amount = total_amount * exit_rate
+                        sell_amount = total_amount * exit_rate / (self.futures_mode_leverage if self.is_futures_mode else 1.0)
                         if ((current_stake_amount - sell_amount) < (min_stake * 1.5)):
                             sell_amount = (trade.amount * exit_rate) - (min_stake * 1.5)
                         if (sell_amount > min_stake):
@@ -2286,9 +2292,9 @@ class NostalgiaForInfinityX4(IStrategy):
                                 or (filled_entries[-1].order_date_utc.replace(tzinfo=None) >= datetime(2023, 8, 28) or is_backtest)
                             )
                     ):
-                        sell_amount = total_amount * exit_rate * 0.999
+                        sell_amount = total_amount * exit_rate / (self.futures_mode_leverage if self.is_futures_mode else 1.0) * 0.999
                         if ((current_stake_amount - sell_amount) < (min_stake * 1.7)):
-                            sell_amount = (trade.amount * exit_rate) - (min_stake * 1.7)
+                            sell_amount = (trade.amount * exit_rate / (self.futures_mode_leverage if self.is_futures_mode else 1.0)) - (min_stake * 1.7)
                         if (sell_amount > min_stake):
                             self.dp.send_msg(f"Grinding stop exit [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%")
                             return -sell_amount
@@ -2316,27 +2322,87 @@ class NostalgiaForInfinityX4(IStrategy):
         if (count_of_entries == 0):
             return None
 
+        exit_rate = current_rate
+        if self.dp.runmode.value in ('live', 'dry_run'):
+            ticker = self.dp.ticker(trade.pair)
+            if ('bid' in ticker) and ('ask' in ticker):
+                if (trade.is_short):
+                    if (self.config['exit_pricing']['price_side'] in ["ask", "other"]):
+                        if (ticker['ask'] is not None):
+                            exit_rate = ticker['ask']
+                else:
+                    if (self.config['exit_pricing']['price_side'] in ["bid", "other"]):
+                        if (ticker['bid'] is not None):
+                            exit_rate = ticker['bid']
+
+        profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = self.calc_total_profit(trade, filled_entries, filled_exits, exit_rate)
+
+        slice_amount = filled_entries[0].cost
+        slice_profit = (exit_rate - filled_orders[-1].average) / filled_orders[-1].average
+        slice_profit_entry = (exit_rate - filled_entries[-1].average) / filled_entries[-1].average
+        slice_profit_exit = ((exit_rate - filled_exits[-1].average) / filled_exits[-1].average) if count_of_exits > 0 else 0.0
+
+        current_stake_amount = trade.amount * current_rate
+
         is_rebuy = False
 
-        if (0 < count_of_entries <= self.pa_rebuy_mode_max):
+        max_sub_grinds = len(self.rebuy_mode_stakes)
+        rebuy_mode_stakes = self.rebuy_mode_stakes
+        rebuy_mode_sub_thresholds = self.rebuy_mode_thresholds
+        partial_sell = False
+        sub_grind_count = 0
+        total_amount= 0.0
+        total_cost = 0.0
+        current_open_rate = 0.0
+        current_grind_stake = 0.0
+        current_grind_stake_profit = 0.0
+        for order in reversed(filled_orders):
+            if (order.ft_order_side == "buy")and (order is not filled_orders[0]):
+                sub_grind_count += 1
+                total_amount += order.filled
+                total_cost += order.filled * order.average
+            elif (order.ft_order_side == "sell"):
+                if ((order.remaining * exit_rate / (self.futures_mode_leverage if self.is_futures_mode else 1.0)) > min_stake):
+                    partial_sell = True
+                break
+        if (sub_grind_count > 0):
+            current_open_rate = total_cost / total_amount
+            current_grind_stake = (total_amount * exit_rate * (1 - trade.fee_close))
+            current_grind_stake_profit = current_grind_stake - total_cost
+
+        if (not partial_sell) and (sub_grind_count < max_sub_grinds):
             if (
-                    (current_profit < self.pa_rebuy_mode_pcts[count_of_entries - 1])
-                    and (
+                    (
+                        (0 <= sub_grind_count < max_sub_grinds) and (slice_profit_entry < rebuy_mode_sub_thresholds[sub_grind_count])
+                    )
+                    and (last_candle['protections_global'] == True)
+                    and
+                    (
+                        (last_candle['close_max_12'] < (last_candle['close'] * 1.12))
+                        and (last_candle['close_max_24'] < (last_candle['close'] * 1.18))
+                        and (last_candle['close_max_48'] < (last_candle['close'] * 1.24))
+                        and (last_candle['btc_pct_close_max_72_5m'] < 0.02)
+                        and (last_candle['btc_pct_close_max_24_5m'] < 0.02)
+                    )
+                    and
+                    (
                         (last_candle['rsi_3'] > 10.0)
-                        and (last_candle['rsi_14'] < 40.0)
+                        and (last_candle['rsi_3_15m'] > 10.0)
                         and (last_candle['rsi_3_1h'] > 10.0)
-                        and (last_candle['close_max_48'] < (last_candle['close'] * 1.1))
-                        and (last_candle['btc_pct_close_max_72_5m'] < 0.03)
+                        and (last_candle['rsi_3_4h'] > 10.0)
+                        and (last_candle['rsi_14'] < 46.0)
                     )
             ):
-                is_rebuy = True
-
-        if is_rebuy:
-            # This returns first order stake size
-            stake_amount = filled_entries[0].cost
-            print('rebuying..')
-            stake_amount = stake_amount * self.pa_rebuy_mode_multi[count_of_entries - 1]
-            return stake_amount
+                # print("HELLO")
+                buy_amount = slice_amount * rebuy_mode_stakes[sub_grind_count] / (self.futures_mode_leverage if self.is_futures_mode else 1.0)
+                if (buy_amount > max_stake):
+                    buy_amount = max_stake
+                if (buy_amount < min_stake):
+                    return None
+                if (buy_amount < (min_stake * 1.5)):
+                    buy_amount = min_stake * 1.5
+                self.dp.send_msg(f"Rebuy [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%")
+                return buy_amount
 
         return None
 
@@ -8054,6 +8120,134 @@ class NostalgiaForInfinityX4(IStrategy):
                 | (dataframe['rsi_14_4h'] < 40.0)
                 | (dataframe['cti_20_1d'] < 0.8)
                 | (dataframe['rsi_14_1d'] < 50.0)
+            )
+            # current 4h & current 1h green, 15m downmove, 15m & 1h & 4h still high, 1h & 4h downtrend
+            &
+            (
+                (dataframe['change_pct_4h'] < 0.04)
+                | (dataframe['change_pct_1h'] < 0.01)
+                | (dataframe['rsi_3_15m'] > 20.0)
+                | (dataframe['cti_20_15m'] < 0.5)
+                | (dataframe['rsi_14_15m'] < 36.0)
+                | (dataframe['rsi_14_1h'] < 50.0)
+                | (dataframe['cti_20_4h'] < -0.0)
+                | (dataframe['rsi_14_4h'] < 40.0)
+                | (dataframe['ema_200_dec_48_1h'] == False)
+                | (dataframe['ema_200_dec_24_4h'] == False)
+            )
+            # current 1h red, 5m downmove, 15m & 1h & 4h high
+            &
+            (
+                (dataframe['change_pct_1h'] > -0.01)
+                | (dataframe['rsi_3'] > 16.0)
+                | (dataframe['rsi_14_15m'] < 36.0)
+                | (dataframe['cti_20_1h'] < 0.5)
+                | (dataframe['rsi_14_1h'] < 46.0)
+                | (dataframe['cti_20_4h'] < 0.8)
+                | (dataframe['rsi_14_4h'] < 60.0)
+                | (dataframe['close'] > dataframe['bb20_2_low_15m'])
+                | (dataframe['close'] < dataframe['res_hlevel_1h'])
+            )
+            # current 4h red, 1h downtrend, 5m & 15m downmove, 15m & 1h & 4h & 1d still high
+            &
+            (
+                (dataframe['change_pct_4h'] > -0.01)
+                | (dataframe['not_downtrend_1h'])
+                | (dataframe['rsi_3'] > 20.0)
+                | (dataframe['rsi_3_15m'] > 26.0)
+                | (dataframe['rsi_14_15m'] < 30.0)
+                | (dataframe['rsi_14_1h'] < 36.0)
+                | (dataframe['cti_20_4h'] < 0.5)
+                | (dataframe['rsi_14_4h'] < 46.0)
+                | (dataframe['cti_20_1d'] < 0.5)
+                | (dataframe['rsi_14_1d'] < 50.0)
+                | (dataframe['close'] > dataframe['bb20_2_low_15m'])
+                | (dataframe['close'] > dataframe['bb20_2_low_1h'])
+            )
+            # current 1d green, 1h downtrend, 5m & 15m downmove, 4h & 1d overbought
+            &
+            (
+                (dataframe['change_pct_1d'] < 0.06)
+                | (dataframe['not_downtrend_1h'])
+                | (dataframe['rsi_3'] > 30.0)
+                | (dataframe['rsi_3_1h'] > 30.0)
+                | (dataframe['rsi_14_15m'] < 36.0)
+                | (dataframe['cti_20_4h'] < 0.5)
+                | (dataframe['rsi_14_4h'] < 46.0)
+                | (dataframe['cti_20_1d'] < 0.8)
+                | (dataframe['rsi_14_1d'] < 70.0)
+            )
+            # 15m & 1h & 4h downtrend, 15m downmove, 15m still high, 1d overbought, 1h & 1d downtrend
+            &
+            (
+                (dataframe['not_downtrend_15m'])
+                | (dataframe['not_downtrend_1h'])
+                | (dataframe['not_downtrend_4h'])
+                | (dataframe['rsi_3_15m'] > 20.0)
+                | (dataframe['rsi_14_15m'] < 30.0)
+                | (dataframe['cti_20_1d'] < 0.7)
+                | (dataframe['rsi_14_1d'] < 50.0)
+                | (dataframe['close'] > dataframe['bb20_2_low_15m'])
+                | (dataframe['close'] > dataframe['bb20_2_low_1h'])
+                | (dataframe['ema_200_dec_48_1h'] == False)
+                | (dataframe['ema_200_dec_4_1d'] == False)
+            )
+            # 1d downtrend, 5m & 15m downmove, 15m & 1h & 4h still high, 1h & 4h downtrend
+            &
+            (
+                (dataframe['not_downtrend_1d'])
+                | (dataframe['rsi_3'] > 10.0)
+                | (dataframe['rsi_3_15m'] > 30.0)
+                | (dataframe['rsi_14_15m'] < 36.0)
+                | (dataframe['cti_20_1h'] < 0.5)
+                | (dataframe['rsi_14_1h'] < 46.0)
+                | (dataframe['rsi_14_4h'] < 46.0)
+                | (dataframe['close'] > dataframe['bb20_2_low_15m'])
+                | (dataframe['ema_200_dec_48_1h'] == False)
+                | (dataframe['ema_200_dec_24_4h'] == False)
+            )
+            # 15m & 1h & 4h & 1d downtrend, 15m downmove, 15m & 1h & 4h & 1d still high, 1h & 1d downtrend
+            &
+            (
+                (dataframe['not_downtrend_15m'])
+                | (dataframe['not_downtrend_1h'])
+                | (dataframe['not_downtrend_4h'])
+                | (dataframe['not_downtrend_1d'])
+                | (dataframe['rsi_3_15m'] > 26.0)
+                | (dataframe['rsi_14_15m'] < 30.0)
+                | (dataframe['rsi_14_1h'] < 30.0)
+                | (dataframe['rsi_14_4h'] < 30.0)
+                | (dataframe['rsi_14_1d'] < 30.0)
+                | (dataframe['close'] > dataframe['bb20_2_low_15m'])
+                | (dataframe['close'] > dataframe['bb20_2_low_1h'])
+                | (dataframe['ema_200_dec_48_1h'] == False)
+                | (dataframe['ema_200_dec_4_1d'] == False)
+            )
+            # current 1d red, 1d downtrend, 5m downmove, 15m still high, 1h & 4h downtrend
+            &
+            (
+                (dataframe['change_pct_1d'] > -0.08)
+                | (dataframe['not_downtrend_1d'])
+                | (dataframe['rsi_3'] > 10.0)
+                | (dataframe['rsi_14_15m'] < 36.0)
+                | (dataframe['close'] > dataframe['bb20_2_low_15m'])
+                | (dataframe['ema_200_dec_48_1h'] == False)
+                | (dataframe['ema_200_dec_24_4h'] == False)
+            )
+            # 15m & 4h & 1d downtrend, 5m & 15m & 4h & 1d downmove, 1d still high, 1h downtrend
+            &
+            (
+                (dataframe['not_downtrend_15m'])
+                | (dataframe['not_downtrend_4h'])
+                | (dataframe['not_downtrend_1d'])
+                | (dataframe['rsi_3'] > 20.0)
+                | (dataframe['rsi_3_15m'] > 26.0)
+                | (dataframe['rsi_3_4h'] > 20.0)
+                | (dataframe['rsi_3_1d'] > 20.0)
+                | (dataframe['cti_20_1d'] < -0.7)
+                | (dataframe['close'] > dataframe['bb20_2_low_15m'])
+                | (dataframe['close'] > dataframe['bb20_2_low_1h'])
+                | (dataframe['ema_200_dec_48_1h'] == False)
             )
         )
 
@@ -16668,150 +16862,37 @@ class NostalgiaForInfinityX4(IStrategy):
                     item_buy_logic.append(dataframe['cti_20'] < -0.8)
                     item_buy_logic.append(dataframe['r_14'] < -90.0)
 
-                # Condition #61 - Rebuy mode bull.
+                # Condition #61 - Rebuy mode (Long).
                 if index == 61:
                     # Protections
                     item_buy_logic.append(current_free_slots >= self.rebuy_mode_min_free_slots)
                     item_buy_logic.append(dataframe['btc_pct_close_max_24_5m'] < 0.03)
                     item_buy_logic.append(dataframe['btc_pct_close_max_72_5m'] < 0.03)
-                    item_buy_logic.append(dataframe['close_max_12'] < (dataframe['close'] * 1.12))
-                    item_buy_logic.append(dataframe['close_max_24'] < (dataframe['close'] * 1.16))
-                    item_buy_logic.append(dataframe['close_max_48'] < (dataframe['close'] * 1.2))
-                    item_buy_logic.append(dataframe['high_max_6_1h'] < (dataframe['close'] * 1.24))
-                    item_buy_logic.append(dataframe['high_max_12_1h'] < (dataframe['close'] * 1.3))
-                    item_buy_logic.append(dataframe['high_max_24_1h'] < (dataframe['close'] * 1.36))
-                    item_buy_logic.append(dataframe['hl_pct_change_24_1h'] < 0.5)
-                    item_buy_logic.append(dataframe['hl_pct_change_48_1h'] < 0.75)
+                    item_buy_logic.append(dataframe['close_max_12'] < (dataframe['close'] * 1.2))
+                    item_buy_logic.append(dataframe['close_max_24'] < (dataframe['close'] * 1.24))
+                    item_buy_logic.append(dataframe['close_max_48'] < (dataframe['close'] * 1.3))
+                    item_buy_logic.append(dataframe['high_max_24_1h'] < (dataframe['close'] * 1.5))
+                    item_buy_logic.append(dataframe['high_max_24_4h'] < (dataframe['close'] * 1.75))
+                    item_buy_logic.append(dataframe['hl_pct_change_6_1h'] < 0.4)
+                    item_buy_logic.append(dataframe['hl_pct_change_12_1h'] < 0.5)
+                    item_buy_logic.append(dataframe['hl_pct_change_24_1h'] < 0.75)
+                    item_buy_logic.append(dataframe['hl_pct_change_48_1h'] < 0.9)
 
-                    item_buy_logic.append(dataframe['cti_20_1h'] < 0.95)
-                    item_buy_logic.append(dataframe['cti_20_4h'] < 0.95)
-                    item_buy_logic.append(dataframe['rsi_14_1h'] < 85.0)
-                    item_buy_logic.append(dataframe['rsi_14_4h'] < 85.0)
-                    item_buy_logic.append(dataframe['rsi_14_1d'] < 85.0)
-                    item_buy_logic.append(dataframe['r_14_1h'] < -25.0)
-                    item_buy_logic.append(dataframe['r_14_4h'] < -25.0)
-
-                    item_buy_logic.append(dataframe['pct_change_high_max_6_24_1h'] > -0.3)
-                    item_buy_logic.append(dataframe['pct_change_high_max_3_12_4h'] > -0.4)
-
-                    item_buy_logic.append(protections_global_1)
-                    item_buy_logic.append(protections_global_2)
-                    item_buy_logic.append(protections_global_3)
-                    item_buy_logic.append(protections_global_4)
-                    item_buy_logic.append(protections_global_5)
-                    item_buy_logic.append(protections_global_6)
-                    item_buy_logic.append(protections_global_7)
-                    item_buy_logic.append(protections_global_8)
-                    item_buy_logic.append(protections_global_9)
-                    item_buy_logic.append(protections_global_10)
-
-                    item_buy_logic.append(dataframe['not_downtrend_15m'])
-                    # current 1h downtrend, downtrend 4h
-                    item_buy_logic.append((dataframe['not_downtrend_1h'])
-                                          | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(288))
-                                          | (dataframe['ema_200_dec_24_4h'] == False))
-                    # current 1h red, overbought 1h, downtrend 1h, downtrend 1h, drop last 2h
-                    item_buy_logic.append((dataframe['change_pct_1h'] > -0.04)
-                                          | (dataframe['cti_20_1h'] < 0.85)
-                                          | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(288))
-                                          | (dataframe['ema_200_dec_24_4h'] == False)
-                                          | (dataframe['close_max_24'] < (dataframe['close'] * 1.1)))
-                    # current 1d green, overbought 1d
-                    item_buy_logic.append((dataframe['change_pct_1d'] < 0.16)
-                                          | (dataframe['cti_20_1d'] < 0.5))
-                    # current 1d long relative top wick, overbought 1d, current 4h red, drop last 4h
-                    item_buy_logic.append((dataframe['top_wick_pct_1d'] < (abs(dataframe['change_pct_1d']) * 5.0))
-                                          | (dataframe['cti_20_1d'] < 0.5)
-                                          | (dataframe['change_pct_4h'] > -0.04)
-                                          | (dataframe['close_max_48'] < (dataframe['close'] * 1.1)))
-                    # downtrend 1d, overbought 1d, drop in last 2h
-                    item_buy_logic.append((dataframe['is_downtrend_3_1d'] == False)
-                                          | (dataframe['cti_20_1d'] < 0.5)
-                                          | (dataframe['close_max_24'] < (dataframe['close'] * 1.1)))
-                    # current 1d red with top wick, overbought 1d, drop in last 2h
-                    item_buy_logic.append((dataframe['change_pct_1d'] > -0.02)
-                                          | (dataframe['top_wick_pct_1d'] < 0.02)
-                                          | (dataframe['cti_20_1d'] < 0.85)
-                                          | (dataframe['close_max_24'] < (dataframe['close'] * 1.1)))
-                    # current 1d green with top wick, downtrend 4h, overbought 4h, drop in last 2h
-                    item_buy_logic.append((dataframe['change_pct_1d'] < 0.06)
-                                          | (dataframe['top_wick_pct_1d'] < 0.06)
-                                          | (dataframe['is_downtrend_3_4h'] == False)
-                                          | (dataframe['cti_20_4h'] < 0.5)
-                                          | (dataframe['close_max_24'] < (dataframe['close'] * 1.1)))
-                    # current 1h red, overbought 1h, drop in last 2h
-                    item_buy_logic.append((dataframe['change_pct_1h'] > -0.02)
-                                          | (dataframe['cti_20_1h'] < 0.5)
-                                          | (dataframe['close_max_24'] < (dataframe['close'] * 1.1)))
-                    # current 4h grered, previous 4h green, overbought 1h, downtrend 1h, downtrend 4h
-                    item_buy_logic.append((dataframe['change_pct_4h'] > -0.04)
-                                          | (dataframe['change_pct_4h'].shift(48) < 0.04)
-                                          | (dataframe['cti_20_1h'] < 0.85)
-                                          | (dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(288))
-                                          | (dataframe['ema_200_dec_24_4h'] == False))
-                    # current 4h red, downtrend 1h, downtrend 4h, drop in last 2h
-                    item_buy_logic.append((dataframe['change_pct_4h'] > -0.04)
-                                          | (dataframe['not_downtrend_1h'])
-                                          | (dataframe['ema_200_dec_24_4h'] == False)
-                                          | (dataframe['close_max_24'] < (dataframe['close'] * 1.08)))
-                    # current 1d long red, overbought 1d, drop in last 2h
-                    item_buy_logic.append((dataframe['change_pct_1d'] > -0.16)
-                                          | (dataframe['cti_20_1d'] < 0.5)
-                                          | (dataframe['close_max_24'] < (dataframe['close'] * 1.1)))
-                    # current 1d relative long top wick, overbought 1d, drop in last 2h
-                    item_buy_logic.append((dataframe['top_wick_pct_1d'] < (abs(dataframe['change_pct_1d']) * 2.0))
-                                          | (dataframe['cti_20_1d'] < 0.85)
-                                          | (dataframe['rsi_14_1d'] < 70.0)
-                                          | (dataframe['close_max_24'] < (dataframe['close'] * 1.1)))
-                    # current and previous 1d red, overbought 1d
-                    item_buy_logic.append((dataframe['change_pct_1d'] > -0.0)
-                                          | (dataframe['change_pct_1d'].shift(288) > -0.0)
-                                          | (dataframe['cti_20_1d'] < 0.85))
-                    # downtrend 1d, overbought 1d
-                    item_buy_logic.append((dataframe['is_downtrend_3_1d'] == False)
-                                          | (dataframe['cti_20_1d'] < 0.5))
-                    # overbought 1d
-                    item_buy_logic.append((dataframe['cti_20_1d'] < 0.9)
-                                          | (dataframe['rsi_14_1d'] < 80.0))
-                    item_buy_logic.append((dataframe['not_downtrend_1h'])
-                                          | (dataframe['cti_20_1h'] < -0.5)
-                                          | (dataframe['cti_20_4h'] < -0.0)
-                                          | (dataframe['cti_20_1d'] < -0.5)
-                                          | (dataframe['ema_200_dec_4_1d'] == False)
-                                          | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.03)))
-                    item_buy_logic.append((dataframe['cti_20_15m'] < -0.5)
-                                          | (dataframe['cti_20_1h'] < -0.5)
-                                          | (dataframe['cti_20_4h'] < -0.0)
-                                          | (dataframe['cti_20_1d'] < 0.75)
-                                          | (dataframe['rsi_14_1d'] < 70.0))
-                    # XAVA
-                    item_buy_logic.append((dataframe['cti_20_15m'] < -0.5)
-                                          | (dataframe['rsi_3_15m'] > 25.0)
-                                          | (dataframe['cti_20_1h'] < -0.0)
-                                          | (dataframe['cti_20_1d'] < -0.5)
-                                          | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.02)))
-                    item_buy_logic.append((dataframe['not_downtrend_1h'])
-                                          | (dataframe['cti_20_15m'] < -0.8)
-                                          | (dataframe['rsi_3_15m'] > 10.0)
-                                          | (dataframe['cti_20_1h'] < -0.8)
-                                          | (dataframe['rsi_3_1h'] > 10.0)
-                                          | (dataframe['cti_20_4h'] < -0.0)
-                                          | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.03)))
-                    item_buy_logic.append((dataframe['not_downtrend_1h'])
-                                          | (dataframe['not_downtrend_4h'])
-                                          | (dataframe['rsi_14_15m'] < 30.0)
-                                          | (dataframe['cti_20_1h'] < -0.8)
-                                          | (dataframe['rsi_3_1h'] > 10.0)
-                                          | (dataframe['cti_20_4h'] < 0.5)
-                                          | (dataframe['cti_20_1d'] < -0.5)
-                                          | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.03)))
+                    item_buy_logic.append(dataframe['rsi_3_15m'] > 6.0)
+                    item_buy_logic.append(dataframe['rsi_3_1h'] > 6.0)
+                    item_buy_logic.append(dataframe['rsi_3_4h'] > 6.0)
+                    item_buy_logic.append(dataframe['cti_20_15m'] < 0.9)
+                    item_buy_logic.append(dataframe['cti_20_1h'] < 0.9)
+                    item_buy_logic.append(dataframe['cti_20_4h'] < 0.9)
+                    item_buy_logic.append(dataframe['cti_20_1d'] < 0.9)
 
                     # Logic
-                    item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
-                    item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.016))
-                    item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
-                    item_buy_logic.append(dataframe['close_delta'] > dataframe['close'] * 12.0 / 1000)
-                    item_buy_logic.append(dataframe['rsi_14'] < 30.0)
+                    item_buy_logic.append(dataframe['rsi_14'] < 40.0)
+                    item_buy_logic.append(dataframe['bb40_2_delta'].gt(dataframe['close'] * 0.03))
+                    item_buy_logic.append(dataframe['close_delta'].gt(dataframe['close'] * 0.014))
+                    item_buy_logic.append(dataframe['bb40_2_tail'].lt(dataframe['bb40_2_delta'] * 0.4))
+                    item_buy_logic.append(dataframe['close'].lt(dataframe['bb40_2_low'].shift()))
+                    item_buy_logic.append(dataframe['close'].le(dataframe['close'].shift()))
 
                 # Condition #81 - Long mode bull.
                 if index == 81:
