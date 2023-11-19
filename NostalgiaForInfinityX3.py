@@ -67,7 +67,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.0.815"
+    return "v13.0.816"
 
   # ROI table:
   minimal_roi = {
@@ -2203,9 +2203,12 @@ class NostalgiaForInfinityX3(IStrategy):
       total_profit += exit_stake
     current_stake = trade.amount * exit_rate * (1 - trade.fee_close)
     total_profit += current_stake
-    total_profit_ratio = total_profit / total_stake
-    current_profit_ratio = total_profit / current_stake
-    init_profit_ratio = total_profit / filled_entries[0].cost
+    total_profit_ratio = (total_profit / total_stake
+                          * (self.futures_mode_leverage if self.is_futures_mode else 1.0))
+    current_profit_ratio = (total_profit / current_stake
+                            * (self.futures_mode_leverage if self.is_futures_mode else 1.0))
+    init_profit_ratio = (total_profit / filled_entries[0].cost
+                         * (self.futures_mode_leverage if self.is_futures_mode else 1.0))
     return total_profit, total_profit_ratio, current_profit_ratio, init_profit_ratio
 
   def custom_exit(
@@ -2601,7 +2604,7 @@ class NostalgiaForInfinityX3(IStrategy):
 
       # Stop init buy
       if (
-        (profit_current_stake_ratio < self.grinding_stop_init)
+        (profit_current_stake_ratio < (self.grinding_stop_init * (self.futures_mode_leverage if self.is_futures_mode else 1.0)))
         and (count_of_entries == 1)
         and (count_of_exits == 0)
         # temporary
@@ -2673,11 +2676,11 @@ class NostalgiaForInfinityX3(IStrategy):
             if (
               (
                 profit_init_ratio
-                < (
+                < ((
                   min(self.grinding_stop_init, grinding_thresholds[i])
                   if (count_of_entries == 1 and count_of_exits == 0)
                   else grinding_thresholds[i]
-                )
+                ) * (self.futures_mode_leverage if self.is_futures_mode else 1.0))
               )
               and (last_candle["protections_global"] == True)
               and (
@@ -3118,7 +3121,9 @@ class NostalgiaForInfinityX3(IStrategy):
         if (not partial_sell) and (sub_grind_count < max_sub_grinds) and (count_of_exits > 0):
           if (
             (
-              ((sub_grind_count == 0) and (profit_init_ratio < grinding_mode_1_sub_thresholds[0]))
+              ((sub_grind_count == 0)
+               and (profit_init_ratio < (self.grinding_mode_1_thresholds[1]
+                                       * (self.futures_mode_leverage if self.is_futures_mode else 1.0))))
               or (
                 (0 < sub_grind_count < max_sub_grinds)
                 and (slice_profit_entry < grinding_mode_1_sub_thresholds[sub_grind_count])
