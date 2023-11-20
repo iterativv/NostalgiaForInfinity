@@ -9372,6 +9372,16 @@ class NostalgiaForInfinityX4(IStrategy):
       )
     )
 
+    # Global protections
+    dataframe["protections_long_rebuy"] = (
+      # 1h & 4h downtrend, 15m & 1h & 4h downmove
+      (dataframe["not_downtrend_1h"])
+      | (dataframe["not_downtrend_4h"])
+      | (dataframe["rsi_3_15m"] > 20.0)
+      | (dataframe["rsi_3_1h"] > 36.0)
+      | (dataframe["rsi_3_4h"] > 20.0)
+    )
+
     tok = time.perf_counter()
     log.debug(f"[{metadata['pair']}] Populate indicators took a total of: {tok - tik:0.4f} seconds.")
 
