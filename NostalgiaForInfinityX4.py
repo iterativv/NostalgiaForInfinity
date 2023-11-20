@@ -3678,8 +3678,8 @@ class NostalgiaForInfinityX4(IStrategy):
           (last_candle["close_max_12"] < (last_candle["close"] * 1.12))
           and (last_candle["close_max_24"] < (last_candle["close"] * 1.18))
           and (last_candle["close_max_48"] < (last_candle["close"] * 1.24))
-          and (last_candle["btc_pct_close_max_72_5m"] < 0.02)
-          and (last_candle["btc_pct_close_max_24_5m"] < 0.02)
+          and (last_candle["btc_pct_close_max_72_5m"] < 0.03)
+          and (last_candle["btc_pct_close_max_24_5m"] < 0.03)
         )
         and (
           (last_candle["rsi_3"] > 10.0)
