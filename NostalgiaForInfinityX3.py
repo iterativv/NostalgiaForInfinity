@@ -67,7 +67,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.0.822"
+    return "v13.0.823"
 
   # ROI table:
   minimal_roi = {
@@ -142,8 +142,8 @@ class NostalgiaForInfinityX3(IStrategy):
   stop_thresholds = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 24.0, 24.0, False, False, True, True]
   # Based on the the first entry (regardless of rebuys)
   stop_threshold = 0.5
-  stop_threshold_futures = 0.10
-  stop_threshold_futures_rapid = 0.10
+  stop_threshold_futures = 0.50
+  stop_threshold_futures_rapid = 0.50
   stop_threshold_spot_rapid = 0.35
 
   # Rebuy mode minimum number of free slots
@@ -1568,6 +1568,7 @@ class NostalgiaForInfinityX3(IStrategy):
       if profit_stake < -(
         filled_entries[0].cost
         * (self.stop_threshold_futures_rapid if self.is_futures_mode else self.stop_threshold_spot_rapid)
+        / (self.futures_mode_leverage if self.is_futures_mode else 1.0)
       ):
         sell, signal_name = True, f"exit_{self.long_rapid_mode_name}_stoploss_doom"
 
@@ -2164,7 +2165,8 @@ class NostalgiaForInfinityX3(IStrategy):
     is_backtest = self.dp.runmode.value == "backtest"
     # Stoploss doom
     if (
-      profit_stake < -(filled_entries[0].cost * self.stop_threshold)
+      profit_stake
+      < -(filled_entries[0].cost * self.stop_threshold / (self.futures_mode_leverage if self.is_futures_mode else 1.0))
       # temporary
       and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2023, 6, 13) or is_backtest)
     ):
@@ -2172,7 +2174,12 @@ class NostalgiaForInfinityX3(IStrategy):
 
     if (
       self.is_futures_mode is True
-      and profit_stake < -(filled_entries[0].cost * self.stop_threshold_futures)
+      and profit_stake
+      < -(
+        filled_entries[0].cost
+        * self.stop_threshold_futures
+        / (self.futures_mode_leverage if self.is_futures_mode else 1.0)
+      )
       # temporary
       and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2023, 10, 17) or is_backtest)
     ):
