@@ -3689,7 +3689,6 @@ class NostalgiaForInfinityX4(IStrategy):
           and (last_candle["rsi_14"] < 46.0)
         )
       ):
-        # print("HELLO")
         buy_amount = (
           slice_amount
           * rebuy_mode_stakes[sub_grind_count]
