@@ -20349,6 +20349,7 @@ class NostalgiaForInfinityX4(IStrategy):
         if index == 61:
           # Protections
           item_buy_logic.append(current_free_slots >= self.rebuy_mode_min_free_slots)
+          item_buy_logic.append(dataframe["protections_long_rebuy"] == True)
           item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
           item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
           item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
