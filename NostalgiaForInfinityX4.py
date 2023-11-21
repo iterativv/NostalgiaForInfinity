@@ -20829,7 +20829,7 @@ class NostalgiaForInfinityX4(IStrategy):
           item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
 
           # Logic
-          item_buy_logic.append(dataframe["rsi_14"] < 50.0)
+          item_buy_logic.append(dataframe["rsi_14"] < 46.0)
           item_buy_logic.append(dataframe["ema_26"] > dataframe["ema_12"])
           item_buy_logic.append((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.016))
           item_buy_logic.append(
