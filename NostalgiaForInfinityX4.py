@@ -20797,6 +20797,7 @@ class NostalgiaForInfinityX4(IStrategy):
           item_buy_logic.append(dataframe["rsi_14_4h"] < 80.0)
 
           # Logic
+          item_buy_logic.append(dataframe["rsi_3"] < 50.0)
           item_buy_logic.append(dataframe["rsi_14"] > 30.0)
           item_buy_logic.append(dataframe["rsi_14"] < 40.0)
           item_buy_logic.append(dataframe["ha_close"] > dataframe["ha_open"])
