@@ -67,7 +67,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.0.835"
+    return "v13.0.836"
 
   # ROI table:
   minimal_roi = {
@@ -9206,11 +9206,24 @@ class NostalgiaForInfinityX3(IStrategy):
     # Global protections
     dataframe["protections_long_rebuy"] = (
       # 1h & 4h downtrend, 15m & 1h & 4h downmove
-      (dataframe["not_downtrend_1h"])
-      | (dataframe["not_downtrend_4h"])
-      | (dataframe["rsi_3_15m"] > 20.0)
-      | (dataframe["rsi_3_1h"] > 36.0)
-      | (dataframe["rsi_3_4h"] > 20.0)
+      (
+        (dataframe["not_downtrend_1h"])
+        | (dataframe["not_downtrend_4h"])
+        | (dataframe["rsi_3_15m"] > 20.0)
+        | (dataframe["rsi_3_1h"] > 36.0)
+        | (dataframe["rsi_3_4h"] > 20.0)
+      )
+      # current 1d red, 5m & 15m downmove, 1h & 4h & 1d still high, pump in last 6 days
+      & (
+        (dataframe["change_pct_1d"] > -0.01)
+        | (dataframe["rsi_3"] > 10.0)
+        | (dataframe["rsi_3_15m"] > 26.0)
+        | (dataframe["rsi_14_1h"] < 40.0)
+        | (dataframe["rsi_14_4h"] < 40.0)
+        | (dataframe["cti_20_1d"] < 0.5)
+        | (dataframe["rsi_14_1d"] < 50.0)
+        | (dataframe["hl_pct_change_6_1d"] < 0.5)
+      )
     )
 
     tok = time.perf_counter()
