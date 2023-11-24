@@ -177,7 +177,7 @@ class NostalgiaForInfinityX3(IStrategy):
   # Grinding mode 1
   grinding_mode_1_stop_grinds = -0.16
   grinding_mode_1_profit_threshold = 0.018
-  grinding_mode_1_thresholds = [-0.0]
+  grinding_mode_1_thresholds = [-0.0, -0.06]
   grinding_mode_1_stakes = [0.2, 0.2, 0.2, 0.2, 0.2]
   grinding_mode_1_sub_thresholds = [-0.0, -0.04, -0.045, -0.05, -0.055]
   grinding_mode_1_stakes_alt_1 = [0.25, 0.25, 0.25, 0.25]
