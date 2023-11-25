@@ -67,7 +67,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.0.843"
+    return "v13.0.847"
 
   # ROI table:
   minimal_roi = {
@@ -9265,6 +9265,55 @@ class NostalgiaForInfinityX3(IStrategy):
         | (dataframe["rsi_14_1d"] < 60.0)
         | (dataframe["r_480_4h"] < -20.0)
         | (dataframe["close"] > dataframe["sup_level_1h"])
+      )
+      # current 1d green, 5m & 15m downmove, 1h & 4h & 1d high, 1h downtrend
+      & (
+        (dataframe["change_pct_1d"] < 0.04)
+        | (dataframe["rsi_3"] > 26.0)
+        | (dataframe["rsi_3_15m"] > 36.0)
+        | (dataframe["rsi_14_15m"] < 50.0)
+        | (dataframe["rsi_14_1h"] < 60.0)
+        | (dataframe["rsi_14_4h"] < 50.0)
+        | (dataframe["rsi_14_1d"] < 46.0)
+        | (dataframe["ema_200_dec_48_1h"] == False)
+      )
+      # current 1d green, 5m downmove, 5m & 1h & 4h & 1d high
+      & (
+        (dataframe["change_pct_1d"] < 0.04)
+        | (dataframe["rsi_3"] > 10.0)
+        | (dataframe["rsi_14_15m"] < 40.0)
+        | (dataframe["cti_20_1h"] < 0.5)
+        | (dataframe["rsi_14_1h"] < 50.0)
+        | (dataframe["rsi_14_4h"] < 50.0)
+        | (dataframe["cti_20_1d"] < 0.5)
+        | (dataframe["rsi_14_1d"] < 46.0)
+      )
+      # 1h downtrend, 1h & 4h downmove, 15m & 1h & 4h & 1d still high
+      & (
+        (dataframe["not_downtrend_1h"])
+        | (dataframe["rsi_3_1h"] > 26.0)
+        | (dataframe["rsi_3_4h"] > 26.0)
+        | (dataframe["rsi_14_15m"] < 30.0)
+        | (dataframe["rsi_14_1h"] < 36.0)
+        | (dataframe["cti_20_4h"] < 0.5)
+        | (dataframe["rsi_14_4h"] < 46.0)
+        | (dataframe["cti_20_1d"] < 0.5)
+        | (dataframe["rsi_14_1d"] < 46.0)
+        | (dataframe["close"] > dataframe["sup_level_1h"])
+      )
+      # 1h & 4h & 1d downtrend, 5m & 1h dowmove, 15m stil high, 1h & 4h low, 1h & 4h downtrend
+      & (
+        (dataframe["not_downtrend_1h"])
+        | (dataframe["not_downtrend_4h"])
+        | (dataframe["not_downtrend_1d"])
+        | (dataframe["rsi_3"] > 30.0)
+        | (dataframe["rsi_3_1h"] > 26.0)
+        | (dataframe["rsi_14_15m"] < 36.0)
+        | (dataframe["r_480_1h"] > -75.0)
+        | (dataframe["r_480_4h"] > -90.0)
+        | (dataframe["close"] > dataframe["sup_level_1h"])
+        | (dataframe["ema_200_dec_48_1h"] == False)
+        | (dataframe["ema_200_dec_24_4h"] == False)
       )
     )
 
