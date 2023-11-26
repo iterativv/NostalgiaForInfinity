@@ -3,11 +3,21 @@
     "name": "okx",
     "pair_whitelist": [
       "API3/USDT",
+      "ARB/USDT",
+      "BADGER/USDT",
+      "BNB/USDT",
+      "BTC/USDT",
+      "CFX/USDT",
+      "CORE/USDT",
+      "GMX/USDT",
       "OKB/USDT",
       "ONE/USDT",
       "PEOPLE/USDT",
+      "PHA/USDT",
+      "SIS/USDT",
       "SNX/USDT",
       "WNCG/USDT",
+      "XRP/USDT",
       "YGG/USDT",
       "ZBC/USDT"
     ]
