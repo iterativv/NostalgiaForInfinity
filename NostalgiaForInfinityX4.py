@@ -2836,7 +2836,7 @@ class NostalgiaForInfinityX4(IStrategy):
       )
       for c in enter_tags
     ):
-      return self.grind_adjust_trade_position(
+      return self.long_grind_adjust_trade_position(
         trade,
         current_time,
         current_rate,
@@ -2866,7 +2866,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     return None
 
-  def grind_adjust_trade_position(
+  def long_grind_adjust_trade_position(
     self,
     trade: Trade,
     current_time: datetime,
