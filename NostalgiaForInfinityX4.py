@@ -2851,7 +2851,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # Rebuy mode
     if all(c in self.long_rebuy_mode_tags for c in enter_tags):
-      return self.rebuy_adjust_trade_position(
+      return self.long_rebuy_adjust_trade_position(
         trade,
         current_time,
         current_rate,
@@ -3597,7 +3597,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     return None
 
-  def rebuy_adjust_trade_position(
+  def long_rebuy_adjust_trade_position(
     self,
     trade: Trade,
     current_time: datetime,
