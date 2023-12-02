@@ -67,7 +67,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.0.558"
+    return "v14.0.559"
 
   # ROI table:
   minimal_roi = {
@@ -232,14 +232,14 @@ class NostalgiaForInfinityX4(IStrategy):
     "buy_condition_42_enable": True,
     "buy_condition_43_enable": True,
     "buy_condition_44_enable": True,
-    "buy_condition_61_enable": False,
+    "buy_condition_61_enable": True,
     # "buy_condition_81_enable": True,
     # "buy_condition_82_enable": True,
     "buy_condition_101_enable": True,
     "buy_condition_102_enable": True,
     "buy_condition_103_enable": True,
-    "buy_condition_104_enable": False,
-    "buy_condition_105_enable": False,
+    "buy_condition_104_enable": True,
+    "buy_condition_105_enable": True,
   }
 
   entry_short_params = {
