@@ -3026,7 +3026,9 @@ class NostalgiaForInfinityX3(IStrategy):
                 num_sells += 1
             # patial fills on exits
             if (num_buys == num_sells) and (order.ft_order_side == "sell"):
-              sell_amount = order.safe_remaining * exit_rate / (self.futures_mode_leverage if self.is_futures_mode else 1.0)
+              sell_amount = (
+                order.safe_remaining * exit_rate / (self.futures_mode_leverage if self.is_futures_mode else 1.0)
+              )
               grind_profit = (exit_rate - order.safe_price) / order.safe_price
               if sell_amount > min_stake:
                 # Test if it's the last exit. Normal exit with partial fill
@@ -3067,7 +3069,10 @@ class NostalgiaForInfinityX3(IStrategy):
                 )
               ):
                 sell_amount = (
-                  buy_order.safe_filled * exit_rate / (self.futures_mode_leverage if self.is_futures_mode else 1.0) * 0.999
+                  buy_order.safe_filled
+                  * exit_rate
+                  / (self.futures_mode_leverage if self.is_futures_mode else 1.0)
+                  * 0.999
                 )
                 if (current_stake_amount - sell_amount) < (min_stake * 1.5):
                   sell_amount = (trade.amount * exit_rate) - (min_stake * 1.5)
@@ -3288,7 +3293,9 @@ class NostalgiaForInfinityX3(IStrategy):
         # Sell remaining if partial fill on exit
         if partial_sell:
           order = filled_exits[-1]
-          sell_amount = order.safe_remaining * exit_rate / (self.futures_mode_leverage if self.is_futures_mode else 1.0)
+          sell_amount = (
+            order.safe_remaining * exit_rate / (self.futures_mode_leverage if self.is_futures_mode else 1.0)
+          )
           grind_profit = (exit_rate - order.safe_price) / order.safe_price
           if sell_amount > min_stake:
             # Test if it's the last exit. Normal exit with partial fill
