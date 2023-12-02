@@ -195,6 +195,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
   # Rebuy mode
   rebuy_mode_stake_multiplier = 0.2
+  rebuy_mode_stake_multiplier_alt = 0.3
   rebuy_mode_max = 3
   rebuy_mode_stakes = [2.0, 4.0, 8.0]
   rebuy_mode_thresholds = [-0.06, -0.08, -0.10]
@@ -2787,7 +2788,11 @@ class NostalgiaForInfinityX4(IStrategy):
           return stake
       # Rebuy mode
       if all(c in self.long_rebuy_mode_tags for c in enter_tags):
-        return proposed_stake * self.rebuy_mode_stake_multiplier
+        stake_multiplier = self.rebuy_mode_stake_multiplier
+        # Low stakes, on Binance mostly
+        if (proposed_stake * self.rebuy_mode_stake_multiplier) < min_stake:
+          stake_multiplier = self.rebuy_mode_stake_multiplier_alt
+        return proposed_stake * stake_multiplier
 
     return proposed_stake
 
