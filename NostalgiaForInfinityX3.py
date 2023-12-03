@@ -118,8 +118,8 @@ class NostalgiaForInfinityX3(IStrategy):
   pump_mode_tags = ["21", "22", "23"]
   # Quick mode tags
   quick_mode_tags = ["41", "42", "43", "44"]
-  # Rebuy mode tags
-  rebuy_mode_tags = ["61"]
+  # Long rebuy mode tags
+  long_rebuy_mode_tags = ["61"]
   # Long mode tags
   long_mode_tags = ["81", "82"]
   # Long rapid mode tags
@@ -128,7 +128,7 @@ class NostalgiaForInfinityX3(IStrategy):
   normal_mode_name = "normal"
   pump_mode_name = "pump"
   quick_mode_name = "quick"
-  rebuy_mode_name = "rebuy"
+  long_rebuy_mode_name = "long_rebuy"
   long_mode_name = "long"
   long_rapid_mode_name = "long_rapid"
 
@@ -187,10 +187,12 @@ class NostalgiaForInfinityX3(IStrategy):
   grinding_mode_1_stakes_alt_3 = [0.35, 0.35, 0.35]
   grinding_mode_1_sub_thresholds_alt_3 = [-0.06, -0.075, -0.1]
 
-  stake_rebuy_mode_multiplier = 0.33
-  pa_rebuy_mode_max = 2
-  pa_rebuy_mode_pcts = (-0.02, -0.04, -0.04)
-  pa_rebuy_mode_multi = (1.0, 1.0, 1.0)
+  # Rebuy mode
+  rebuy_mode_stake_multiplier = 0.2
+  rebuy_mode_stake_multiplier_alt = 0.3
+  rebuy_mode_max = 3
+  rebuy_mode_stakes = [2.0, 4.0, 8.0]
+  rebuy_mode_thresholds = [-0.06, -0.08, -0.10]
 
   # Profit max thresholds
   profit_max_thresholds = [0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.05, 0.05]
@@ -1004,7 +1006,7 @@ class NostalgiaForInfinityX3(IStrategy):
 
     return False, None
 
-  def exit_rebuy(
+  def long_exit_rebuy(
     self,
     pair: str,
     current_rate: float,
@@ -1030,7 +1032,7 @@ class NostalgiaForInfinityX3(IStrategy):
 
     # Original sell signals
     sell, signal_name = self.exit_signals(
-      self.rebuy_mode_name,
+      self.long_rebuy_mode_name,
       profit_current_stake_ratio,
       max_profit,
       max_loss,
@@ -1048,7 +1050,7 @@ class NostalgiaForInfinityX3(IStrategy):
     # Main sell signals
     if not sell:
       sell, signal_name = self.exit_main(
-        self.rebuy_mode_name,
+        self.long_rebuy_mode_name,
         profit_current_stake_ratio,
         max_profit,
         max_loss,
@@ -1066,7 +1068,7 @@ class NostalgiaForInfinityX3(IStrategy):
     # Williams %R based sells
     if not sell:
       sell, signal_name = self.exit_r(
-        self.rebuy_mode_name,
+        self.long_rebuy_mode_name,
         profit_current_stake_ratio,
         max_profit,
         max_loss,
@@ -1083,27 +1085,12 @@ class NostalgiaForInfinityX3(IStrategy):
 
     # Stoplosses
     if not sell:
-      sell, signal_name = self.exit_stoploss(
-        self.rebuy_mode_name,
-        current_rate,
-        profit_stake,
-        profit_ratio,
-        profit_current_stake_ratio,
-        profit_init_ratio,
-        max_profit,
-        max_loss,
-        filled_entries,
-        filled_exits,
-        last_candle,
-        previous_candle_1,
-        previous_candle_2,
-        previous_candle_3,
-        previous_candle_4,
-        previous_candle_5,
-        trade,
-        current_time,
-        enter_tags,
-      )
+      if profit_stake < -(
+        filled_entries[0].cost
+        * (self.stop_threshold_futures_rebuy if self.is_futures_mode else self.stop_threshold_spot_rebuy)
+        / (self.futures_mode_leverage if self.is_futures_mode else 1.0)
+      ):
+        sell, signal_name = True, f"exit_{self.long_rebuy_mode_name}_stoploss_doom"
 
     # Profit Target Signal
     # Check if pair exist on target_profit_cache
@@ -1114,7 +1101,7 @@ class NostalgiaForInfinityX3(IStrategy):
       previous_time_profit_reached = datetime.fromisoformat(self.target_profit_cache.data[pair]["time_profit_reached"])
 
       sell_max, signal_name_max = self.exit_profit_target(
-        self.rebuy_mode_name,
+        self.long_rebuy_mode_name,
         pair,
         trade,
         current_time,
@@ -1133,10 +1120,10 @@ class NostalgiaForInfinityX3(IStrategy):
       )
       if sell_max and signal_name_max is not None:
         return True, f"{signal_name_max}_m"
-      if previous_sell_reason in [f"exit_{self.rebuy_mode_name}_stoploss_u_e"]:
+      if previous_sell_reason in [f"exit_{self.long_rebuy_mode_name}_stoploss_u_e"]:
         if profit_ratio > (previous_profit + 0.005):
           mark_pair, mark_signal = self.mark_profit_target(
-            self.rebuy_mode_name,
+            self.long_rebuy_mode_name,
             pair,
             True,
             previous_sell_reason,
@@ -1150,11 +1137,11 @@ class NostalgiaForInfinityX3(IStrategy):
           if mark_pair:
             self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
       elif (profit_current_stake_ratio > (previous_profit + 0.005)) and (
-        previous_sell_reason not in [f"exit_{self.rebuy_mode_name}_stoploss_doom"]
+        previous_sell_reason not in [f"exit_{self.long_rebuy_mode_name}_stoploss_doom"]
       ):
         # Update the target, raise it.
         mark_pair, mark_signal = self.mark_profit_target(
-          self.rebuy_mode_name,
+          self.long_rebuy_mode_name,
           pair,
           True,
           previous_sell_reason,
@@ -1173,9 +1160,12 @@ class NostalgiaForInfinityX3(IStrategy):
       previous_profit = None
       if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
         previous_profit = self.target_profit_cache.data[pair]["profit"]
-      if signal_name in [f"exit_{self.rebuy_mode_name}_stoploss_doom", f"exit_{self.rebuy_mode_name}_stoploss_u_e"]:
+      if signal_name in [
+        f"exit_{self.long_rebuy_mode_name}_stoploss_doom",
+        f"exit_{self.long_rebuy_mode_name}_stoploss_u_e",
+      ]:
         mark_pair, mark_signal = self.mark_profit_target(
-          self.rebuy_mode_name,
+          self.long_rebuy_mode_name,
           pair,
           sell,
           signal_name,
@@ -1193,7 +1183,7 @@ class NostalgiaForInfinityX3(IStrategy):
           return True, f"{signal_name}"
       elif (previous_profit is None) or (previous_profit < profit_current_stake_ratio):
         mark_pair, mark_signal = self.mark_profit_target(
-          self.rebuy_mode_name,
+          self.long_rebuy_mode_name,
           pair,
           sell,
           signal_name,
@@ -1215,14 +1205,10 @@ class NostalgiaForInfinityX3(IStrategy):
         if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
           previous_profit = self.target_profit_cache.data[pair]["profit"]
         if (previous_profit is None) or (previous_profit < profit_current_stake_ratio):
-          mark_signal = f"exit_profit_{self.rebuy_mode_name}_max"
+          mark_signal = f"exit_profit_{self.long_rebuy_mode_name}_max"
           self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
 
-    if signal_name not in [
-      f"exit_profit_{self.rebuy_mode_name}_max",
-      f"exit_{self.rebuy_mode_name}_stoploss_doom",
-      f"exit_{self.rebuy_mode_name}_stoploss_u_e",
-    ]:
+    if signal_name not in [f"exit_profit_{self.long_rebuy_mode_name}_max"]:
       if sell and (signal_name is not None):
         return True, f"{signal_name}"
 
@@ -2332,9 +2318,9 @@ class NostalgiaForInfinityX3(IStrategy):
       if sell and (signal_name is not None):
         return f"{signal_name} ( {enter_tag})"
 
-    # Rebuy mode
-    if all(c in self.rebuy_mode_tags for c in enter_tags):
-      sell, signal_name = self.exit_rebuy(
+    # Long Rebuy mode
+    if all(c in self.long_rebuy_mode_tags for c in enter_tags):
+      sell, signal_name = self.long_exit_rebuy(
         pair,
         current_rate,
         profit_stake,
@@ -2410,14 +2396,14 @@ class NostalgiaForInfinityX3(IStrategy):
       if sell and (signal_name is not None):
         return f"{signal_name} ( {enter_tag})"
 
-    # Trades not opened by X2
+    # Trades not opened by X3
     if not any(
       c
       in (
         self.normal_mode_tags
         + self.pump_mode_tags
         + self.quick_mode_tags
-        + self.rebuy_mode_tags
+        + self.long_rebuy_mode_tags
         + self.long_mode_tags
         + self.long_rapid_mode_tags
       )
@@ -2478,7 +2464,7 @@ class NostalgiaForInfinityX3(IStrategy):
             stake = proposed_stake * self.stake_grinding_mode_multiplier_alt_2
           return stake
       # Rebuy mode
-      if all(c in self.rebuy_mode_tags for c in enter_tags):
+      if all(c in self.long_rebuy_mode_tags for c in enter_tags):
         return proposed_stake * self.stake_rebuy_mode_multiplier
 
     return proposed_stake
@@ -2507,7 +2493,14 @@ class NostalgiaForInfinityX3(IStrategy):
 
     # Grinding
     if any(
-      c in (self.normal_mode_tags + self.pump_mode_tags + self.quick_mode_tags + self.long_mode_tags)
+      c
+      in (
+        self.normal_mode_tags
+        + self.pump_mode_tags
+        + self.quick_mode_tags
+        + self.long_mode_tags
+        + self.long_rapid_mode_tags
+      )
       for c in enter_tags
     ) or not any(
       c
@@ -2515,7 +2508,7 @@ class NostalgiaForInfinityX3(IStrategy):
         self.normal_mode_tags
         + self.pump_mode_tags
         + self.quick_mode_tags
-        + self.rebuy_mode_tags
+        + self.long_rebuy_mode_tags
         + self.long_mode_tags
         + self.long_rapid_mode_tags
       )
@@ -2534,9 +2527,9 @@ class NostalgiaForInfinityX3(IStrategy):
         current_exit_profit,
       )
 
-    # Rebuy mode
-    if all(c in self.rebuy_mode_tags for c in enter_tags):
-      return self.rebuy_adjust_trade_position(
+    # Rebuy mode (Long)
+    if all(c in self.long_rebuy_mode_tags for c in enter_tags):
+      return self.long_rebuy_adjust_trade_position(
         trade,
         current_time,
         current_rate,
@@ -3340,7 +3333,7 @@ class NostalgiaForInfinityX3(IStrategy):
 
     return None
 
-  def rebuy_adjust_trade_position(
+  def long_rebuy_adjust_trade_position(
     self,
     trade: Trade,
     current_time: datetime,
@@ -3369,24 +3362,94 @@ class NostalgiaForInfinityX3(IStrategy):
     if count_of_entries == 0:
       return None
 
+    exit_rate = current_rate
+    if self.dp.runmode.value in ("live", "dry_run"):
+      ticker = self.dp.ticker(trade.pair)
+      if ("bid" in ticker) and ("ask" in ticker):
+        if trade.is_short:
+          if self.config["exit_pricing"]["price_side"] in ["ask", "other"]:
+            if ticker["ask"] is not None:
+              exit_rate = ticker["ask"]
+        else:
+          if self.config["exit_pricing"]["price_side"] in ["bid", "other"]:
+            if ticker["bid"] is not None:
+              exit_rate = ticker["bid"]
+
+    profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = self.calc_total_profit(
+      trade, filled_entries, filled_exits, exit_rate
+    )
+
+    slice_amount = filled_entries[0].cost
+    slice_profit = (exit_rate - filled_orders[-1].safe_price) / filled_orders[-1].safe_price
+    slice_profit_entry = (exit_rate - filled_entries[-1].safe_price) / filled_entries[-1].safe_price
+    slice_profit_exit = (
+      ((exit_rate - filled_exits[-1].safe_price) / filled_exits[-1].safe_price) if count_of_exits > 0 else 0.0
+    )
+
+    current_stake_amount = trade.amount * current_rate
+
     is_rebuy = False
 
-    if 0 < count_of_entries <= self.pa_rebuy_mode_max:
-      if (current_profit < self.pa_rebuy_mode_pcts[count_of_entries - 1]) and (
-        (last_candle["rsi_3"] > 10.0)
-        and (last_candle["rsi_14"] < 40.0)
-        and (last_candle["rsi_3_1h"] > 10.0)
-        and (last_candle["close_max_48"] < (last_candle["close"] * 1.1))
-        and (last_candle["btc_pct_close_max_72_5m"] < 0.03)
-      ):
-        is_rebuy = True
+    max_sub_grinds = len(self.rebuy_mode_stakes)
+    rebuy_mode_stakes = self.rebuy_mode_stakes
+    rebuy_mode_sub_thresholds = self.rebuy_mode_thresholds
+    partial_sell = False
+    sub_grind_count = 0
+    total_amount = 0.0
+    total_cost = 0.0
+    current_open_rate = 0.0
+    current_grind_stake = 0.0
+    current_grind_stake_profit = 0.0
+    for order in reversed(filled_orders):
+      if (order.ft_order_side == "buy") and (order is not filled_orders[0]):
+        sub_grind_count += 1
+        total_amount += order.safe_filled
+        total_cost += order.safe_filled * order.safe_price
+      elif order.ft_order_side == "sell":
+        if (
+          order.safe_remaining * exit_rate / (self.futures_mode_leverage if self.is_futures_mode else 1.0)
+        ) > min_stake:
+          partial_sell = True
+        break
+    if sub_grind_count > 0:
+      current_open_rate = total_cost / total_amount
+      current_grind_stake = total_amount * exit_rate * (1 - trade.fee_close)
+      current_grind_stake_profit = current_grind_stake - total_cost
 
-    if is_rebuy:
-      # This returns first order stake size
-      stake_amount = filled_entries[0].cost
-      print("rebuying..")
-      stake_amount = stake_amount * self.pa_rebuy_mode_multi[count_of_entries - 1]
-      return stake_amount
+    if (not partial_sell) and (sub_grind_count < max_sub_grinds):
+      if (
+        ((0 <= sub_grind_count < max_sub_grinds) and (slice_profit_entry < rebuy_mode_sub_thresholds[sub_grind_count]))
+        and (last_candle["protections_long_global"] == True)
+        and (
+          (last_candle["close_max_12"] < (last_candle["close"] * 1.12))
+          and (last_candle["close_max_24"] < (last_candle["close"] * 1.18))
+          and (last_candle["close_max_48"] < (last_candle["close"] * 1.24))
+          and (last_candle["btc_pct_close_max_72_5m"] < 0.03)
+          and (last_candle["btc_pct_close_max_24_5m"] < 0.03)
+        )
+        and (
+          (last_candle["rsi_3"] > 10.0)
+          and (last_candle["rsi_3_15m"] > 10.0)
+          and (last_candle["rsi_3_1h"] > 10.0)
+          and (last_candle["rsi_3_4h"] > 10.0)
+          and (last_candle["rsi_14"] < 46.0)
+        )
+      ):
+        buy_amount = (
+          slice_amount
+          * rebuy_mode_stakes[sub_grind_count]
+          / (self.futures_mode_leverage if self.is_futures_mode else 1.0)
+        )
+        if buy_amount > max_stake:
+          buy_amount = max_stake
+        if buy_amount < min_stake:
+          return None
+        if buy_amount < (min_stake * 1.5):
+          buy_amount = min_stake * 1.5
+        self.dp.send_msg(
+          f"Rebuy [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        )
+        return buy_amount
 
     return None
 
