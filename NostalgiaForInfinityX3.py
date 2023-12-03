@@ -2694,7 +2694,7 @@ class NostalgiaForInfinityX3(IStrategy):
                   * (self.futures_mode_leverage if self.is_futures_mode else 1.0)
                 )
               )
-              and (last_candle["protections_global"] == True)
+              and (last_candle["protections_long_global"] == True)
               and (
                 (last_candle["close_max_12"] < (last_candle["close"] * 1.12))
                 and (last_candle["close_max_24"] < (last_candle["close"] * 1.18))
@@ -3152,7 +3152,7 @@ class NostalgiaForInfinityX3(IStrategy):
                 and (slice_profit_entry < grinding_mode_1_sub_thresholds[sub_grind_count])
               )
             )
-            and (last_candle["protections_global"] == True)
+            and (last_candle["protections_long_global"] == True)
             and (
               (last_candle["close_max_12"] < (last_candle["close"] * 1.12))
               and (last_candle["close_max_24"] < (last_candle["close"] * 1.18))
@@ -4135,7 +4135,7 @@ class NostalgiaForInfinityX3(IStrategy):
     dataframe = self.base_tf_5m_indicators(metadata, dataframe)
 
     # Global protections
-    dataframe["protections_global"] = (
+    dataframe["protections_long_global"] = (
       # current 4h red with top wick, previous 4h red, 4h overbought
       (
         (dataframe["change_pct_4h"] > -0.04)
@@ -10130,7 +10130,7 @@ class NostalgiaForInfinityX3(IStrategy):
         # -----------------------------------------------------------------------------------------
         item_buy_logic = []
         item_buy_logic.append(reduce(lambda x, y: x & y, item_buy_protection_list))
-        item_buy_logic.append(dataframe["protections_global"] == True)
+        item_buy_logic.append(dataframe["protections_long_global"] == True)
 
         # Condition #1 - Long mode bull. Uptrend.
         if index == 1:
