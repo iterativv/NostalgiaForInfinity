@@ -2964,7 +2964,7 @@ class NostalgiaForInfinityX4(IStrategy):
                 profit_current_stake_ratio
                 < (grinding_thresholds[i] * (self.futures_mode_leverage if self.is_futures_mode else 1.0))
               )
-              and (last_candle["protections_global"] == True)
+              and (last_candle["protections_long_global"] == True)
               and (
                 (last_candle["close_max_12"] < (last_candle["close"] * 1.12))
                 and (last_candle["close_max_24"] < (last_candle["close"] * 1.18))
@@ -3418,7 +3418,7 @@ class NostalgiaForInfinityX4(IStrategy):
                 and (slice_profit_entry < grinding_mode_1_sub_thresholds[sub_grind_count])
               )
             )
-            and (last_candle["protections_global"] == True)
+            and (last_candle["protections_long_global"] == True)
             and (
               (last_candle["close_max_12"] < (last_candle["close"] * 1.12))
               and (last_candle["close_max_24"] < (last_candle["close"] * 1.18))
@@ -3693,7 +3693,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if (not partial_sell) and (sub_grind_count < max_sub_grinds):
       if (
         ((0 <= sub_grind_count < max_sub_grinds) and (slice_profit_entry < rebuy_mode_sub_thresholds[sub_grind_count]))
-        and (last_candle["protections_global"] == True)
+        and (last_candle["protections_long_global"] == True)
         and (
           (last_candle["close_max_12"] < (last_candle["close"] * 1.12))
           and (last_candle["close_max_24"] < (last_candle["close"] * 1.18))
@@ -4473,7 +4473,7 @@ class NostalgiaForInfinityX4(IStrategy):
     dataframe = self.base_tf_5m_indicators(metadata, dataframe)
 
     # Global protections
-    dataframe["protections_global"] = (
+    dataframe["protections_long_global"] = (
       # current 4h red with top wick, previous 4h red, 4h overbought
       (
         (dataframe["change_pct_4h"] > -0.04)
@@ -10467,7 +10467,7 @@ class NostalgiaForInfinityX4(IStrategy):
         # -----------------------------------------------------------------------------------------
         item_buy_logic = []
         item_buy_logic.append(reduce(lambda x, y: x & y, item_buy_protection_list))
-        item_buy_logic.append(dataframe["protections_global"] == True)
+        item_buy_logic.append(dataframe["protections_long_global"] == True)
 
         # Condition #1 - Long mode bull. Uptrend.
         if index == 1:
