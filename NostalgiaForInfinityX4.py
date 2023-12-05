@@ -3589,7 +3589,7 @@ class NostalgiaForInfinityX4(IStrategy):
               return -sell_amount
           elif (
             (current_grind_stake_profit < (slice_amount * self.grinding_mode_1_stop_grinds))
-            and (len(filled_orders) >= 2 and filled_orders[1].ft_order_side == "sell")
+            and is_x3_trade
             # temporary
             and (
               (trade.open_date_utc.replace(tzinfo=None) >= datetime(2023, 8, 28) or is_backtest)
