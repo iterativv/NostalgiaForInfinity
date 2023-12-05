@@ -67,7 +67,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.0.922"
+    return "v13.0.923"
 
   # ROI table:
   minimal_roi = {
@@ -2650,6 +2650,8 @@ class NostalgiaForInfinityX3(IStrategy):
       if (current_grind_mode == 1) and ((slice_amount * self.grinding_mode_1_stakes_alt_3[0]) < min_stake):
         current_grind_mode = 0
 
+      is_x3_trade = len(filled_orders) >= 2 and filled_orders[1].ft_order_side == "sell"
+
       # mode 0
       if current_grind_mode == 0:
         # Buy
@@ -3145,7 +3147,8 @@ class NostalgiaForInfinityX3(IStrategy):
                 and (
                   profit_init_ratio
                   < (
-                    self.grinding_mode_1_thresholds[1] * (self.futures_mode_leverage if self.is_futures_mode else 1.0)
+                    (0.0 if is_x3_trade else grinding_mode_1_sub_thresholds[0])
+                    * (self.futures_mode_leverage if self.is_futures_mode else 1.0)
                   )
                 )
               )
