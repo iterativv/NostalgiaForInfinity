@@ -67,7 +67,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.0.942"
+    return "v13.0.943"
 
   # ROI table:
   minimal_roi = {
@@ -1752,27 +1752,32 @@ class NostalgiaForInfinityX3(IStrategy):
         # profit is under the threshold, cancel it
         self._remove_profit_target(pair)
         return False, None
-      if 0.001 <= profit_current_stake_ratio < 0.01:
-        if profit_current_stake_ratio < (previous_profit - 0.01):
-          return True, previous_sell_reason
-      elif 0.01 <= profit_current_stake_ratio < 0.02:
-        if profit_current_stake_ratio < (previous_profit - 0.02):
-          return True, previous_sell_reason
-      elif 0.02 <= profit_current_stake_ratio < 0.03:
-        if profit_current_stake_ratio < (previous_profit - 0.025):
-          return True, previous_sell_reason
-      elif 0.03 <= profit_current_stake_ratio < 0.05:
-        if profit_current_stake_ratio < (previous_profit - 0.03):
-          return True, previous_sell_reason
-      elif 0.05 <= profit_current_stake_ratio < 0.08:
-        if profit_current_stake_ratio < (previous_profit - 0.035):
-          return True, previous_sell_reason
-      elif 0.08 <= profit_current_stake_ratio < 0.12:
-        if profit_current_stake_ratio < (previous_profit - 0.04):
-          return True, previous_sell_reason
-      elif 0.12 <= profit_current_stake_ratio:
-        if profit_current_stake_ratio < (previous_profit - 0.045):
-          return True, previous_sell_reason
+      if self.is_futures_mode:
+        if 0.01 <= profit_current_stake_ratio < 0.03:
+          if profit_current_stake_ratio < (previous_profit * 0.5):
+            return True, previous_sell_reason
+        elif 0.03 <= profit_current_stake_ratio < 0.08:
+          if profit_current_stake_ratio < (previous_profit * 0.55):
+            return True, previous_sell_reason
+        elif 0.08 <= profit_current_stake_ratio < 0.16:
+          if profit_current_stake_ratio < (previous_profit * 0.6):
+            return True, previous_sell_reason
+        elif 0.16 <= profit_current_stake_ratio:
+          if profit_current_stake_ratio < (previous_profit * 0.7):
+            return True, previous_sell_reason
+      else:
+        if 0.01 <= profit_current_stake_ratio < 0.03:
+          if profit_current_stake_ratio < (previous_profit * 0.6):
+            return True, previous_sell_reason
+        elif 0.03 <= profit_current_stake_ratio < 0.08:
+          if profit_current_stake_ratio < (previous_profit * 0.65):
+            return True, previous_sell_reason
+        elif 0.08 <= profit_current_stake_ratio < 0.16:
+          if profit_current_stake_ratio < (previous_profit * 0.7):
+            return True, previous_sell_reason
+        elif 0.16 <= profit_current_stake_ratio:
+          if profit_current_stake_ratio < (previous_profit * 0.75):
+            return True, previous_sell_reason
     else:
       return False, None
 
