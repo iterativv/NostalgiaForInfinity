@@ -67,7 +67,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.0.608"
+    return "v14.0.609"
 
   # ROI table:
   minimal_roi = {
@@ -422,6 +422,24 @@ class NostalgiaForInfinityX4(IStrategy):
         enter_tags,
       )
 
+    # Downtrend/descending based sells
+    if not sell:
+      sell, signal_name = self.exit_long_dec(
+        self.normal_mode_name,
+        profit_current_stake_ratio,
+        max_profit,
+        max_loss,
+        last_candle,
+        previous_candle_1,
+        previous_candle_2,
+        previous_candle_3,
+        previous_candle_4,
+        previous_candle_5,
+        trade,
+        current_time,
+        enter_tags,
+      )
+
     # Stoplosses
     if not sell:
       sell, signal_name = self.exit_stoploss(
@@ -635,6 +653,24 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.exit_r(
         self.pump_mode_name,
+        profit_current_stake_ratio,
+        max_profit,
+        max_loss,
+        last_candle,
+        previous_candle_1,
+        previous_candle_2,
+        previous_candle_3,
+        previous_candle_4,
+        previous_candle_5,
+        trade,
+        current_time,
+        enter_tags,
+      )
+
+    # Downtrend/descending based sells
+    if not sell:
+      sell, signal_name = self.exit_long_dec(
+        self.normal_mode_name,
         profit_current_stake_ratio,
         max_profit,
         max_loss,
@@ -876,6 +912,24 @@ class NostalgiaForInfinityX4(IStrategy):
         enter_tags,
       )
 
+    # Downtrend/descending based sells
+    if not sell:
+      sell, signal_name = self.exit_long_dec(
+        self.normal_mode_name,
+        profit_current_stake_ratio,
+        max_profit,
+        max_loss,
+        last_candle,
+        previous_candle_1,
+        previous_candle_2,
+        previous_candle_3,
+        previous_candle_4,
+        previous_candle_5,
+        trade,
+        current_time,
+        enter_tags,
+      )
+
     # Stoplosses
     if not sell:
       sell, signal_name = self.exit_stoploss(
@@ -1100,6 +1154,24 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.exit_r(
         self.long_rebuy_mode_name,
+        profit_current_stake_ratio,
+        max_profit,
+        max_loss,
+        last_candle,
+        previous_candle_1,
+        previous_candle_2,
+        previous_candle_3,
+        previous_candle_4,
+        previous_candle_5,
+        trade,
+        current_time,
+        enter_tags,
+      )
+
+    # Downtrend/descending based sells
+    if not sell:
+      sell, signal_name = self.exit_long_dec(
+        self.normal_mode_name,
         profit_current_stake_ratio,
         max_profit,
         max_loss,
@@ -1534,6 +1606,24 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.exit_r(
         self.long_rapid_mode_name,
+        profit_current_stake_ratio,
+        max_profit,
+        max_loss,
+        last_candle,
+        previous_candle_1,
+        previous_candle_2,
+        previous_candle_3,
+        previous_candle_4,
+        previous_candle_5,
+        trade,
+        current_time,
+        enter_tags,
+      )
+
+    # Downtrend/descending based sells
+    if not sell:
+      sell, signal_name = self.exit_long_dec(
+        self.normal_mode_name,
         profit_current_stake_ratio,
         max_profit,
         max_loss,
@@ -2161,6 +2251,129 @@ class NostalgiaForInfinityX4(IStrategy):
         return True, f"exit_{mode_name}_w_12_4"
       elif (last_candle["r_14"] >= -0.1) and (last_candle["cti_20"] > 0.95):
         return True, f"exit_{mode_name}_w_12_5"
+
+    return False, None
+
+  def exit_long_dec(
+    self,
+    mode_name: str,
+    current_profit: float,
+    max_profit: float,
+    max_loss: float,
+    last_candle,
+    previous_candle_1,
+    previous_candle_2,
+    previous_candle_3,
+    previous_candle_4,
+    previous_candle_5,
+    trade: "Trade",
+    current_time: "datetime",
+    buy_tag,
+  ) -> tuple:
+    if 0.01 > current_profit >= 0.001:
+      if (
+        (last_candle["r_14"] > -1.0)
+        and (last_candle["rsi_14"] > 70.0)
+        and (last_candle["not_downtrend_1h"] == False)
+        and (last_candle["change_pct_4h"] < -0.03)
+      ):
+        return True, f"exit_{mode_name}_d_0_1"
+    elif 0.02 > current_profit >= 0.01:
+      if (
+        (last_candle["r_14"] > -10.0)
+        and (last_candle["rsi_14"] > 66.0)
+        and (last_candle["not_downtrend_1h"] == False)
+        and (last_candle["change_pct_4h"] < -0.03)
+      ):
+        return True, f"exit_{mode_name}_d_1_1"
+    elif 0.03 > current_profit >= 0.02:
+      if (
+        (last_candle["r_14"] > -16.0)
+        and (last_candle["rsi_14"] > 56.0)
+        and (last_candle["not_downtrend_1h"] == False)
+        and (last_candle["change_pct_4h"] < -0.03)
+      ):
+        return True, f"exit_{mode_name}_d_2_1"
+    elif 0.04 > current_profit >= 0.03:
+      if (
+        (last_candle["r_14"] > -16.0)
+        and (last_candle["rsi_14"] > 54.0)
+        and (last_candle["not_downtrend_1h"] == False)
+        and (last_candle["change_pct_4h"] < -0.03)
+      ):
+        return True, f"exit_{mode_name}_d_3_1"
+    elif 0.05 > current_profit >= 0.04:
+      if (
+        (last_candle["r_14"] > -16.0)
+        and (last_candle["rsi_14"] > 52.0)
+        and (last_candle["not_downtrend_1h"] == False)
+        and (last_candle["change_pct_4h"] < -0.03)
+      ):
+        return True, f"exit_{mode_name}_d_4_1"
+    elif 0.06 > current_profit >= 0.05:
+      if (
+        (last_candle["r_14"] > -16.0)
+        and (last_candle["rsi_14"] > 50.0)
+        and (last_candle["not_downtrend_1h"] == False)
+        and (last_candle["change_pct_4h"] < -0.03)
+      ):
+        return True, f"exit_{mode_name}_d_5_1"
+    elif 0.07 > current_profit >= 0.06:
+      if (
+        (last_candle["r_14"] > -16.0)
+        and (last_candle["rsi_14"] > 50.0)
+        and (last_candle["not_downtrend_1h"] == False)
+        and (last_candle["change_pct_4h"] < -0.03)
+      ):
+        return True, f"exit_{mode_name}_d_6_1"
+    elif 0.08 > current_profit >= 0.07:
+      if (
+        (last_candle["r_14"] > -16.0)
+        and (last_candle["rsi_14"] > 50.0)
+        and (last_candle["not_downtrend_1h"] == False)
+        and (last_candle["change_pct_4h"] < -0.03)
+      ):
+        return True, f"exit_{mode_name}_d_7_1"
+    elif 0.09 > current_profit >= 0.08:
+      if (
+        (last_candle["r_14"] > -16.0)
+        and (last_candle["rsi_14"] > 50.0)
+        and (last_candle["not_downtrend_1h"] == False)
+        and (last_candle["change_pct_4h"] < -0.03)
+      ):
+        return True, f"exit_{mode_name}_d_8_1"
+    elif 0.1 > current_profit >= 0.09:
+      if (
+        (last_candle["r_14"] > -16.0)
+        and (last_candle["rsi_14"] > 52.0)
+        and (last_candle["not_downtrend_1h"] == False)
+        and (last_candle["change_pct_4h"] < -0.03)
+      ):
+        return True, f"exit_{mode_name}_d_9_1"
+    elif 0.12 > current_profit >= 0.1:
+      if (
+        (last_candle["r_14"] > -16.0)
+        and (last_candle["rsi_14"] > 54.0)
+        and (last_candle["not_downtrend_1h"] == False)
+        and (last_candle["change_pct_4h"] < -0.03)
+      ):
+        return True, f"exit_{mode_name}_d_10_1"
+    elif 0.2 > current_profit >= 0.12:
+      if (
+        (last_candle["r_14"] > -16.0)
+        and (last_candle["rsi_14"] > 56.0)
+        and (last_candle["not_downtrend_1h"] == False)
+        and (last_candle["change_pct_4h"] < -0.03)
+      ):
+        return True, f"exit_{mode_name}_d_11_1"
+    elif current_profit >= 0.2:
+      if (
+        (last_candle["r_14"] > -10.0)
+        and (last_candle["rsi_14"] > 66.0)
+        and (last_candle["not_downtrend_1h"] == False)
+        and (last_candle["change_pct_4h"] < -0.03)
+      ):
+        return True, f"exit_{mode_name}_d_12_1"
 
     return False, None
 
