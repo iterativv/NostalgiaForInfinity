@@ -67,7 +67,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.0.950"
+    return "v13.0.951"
 
   # ROI table:
   minimal_roi = {
@@ -3537,6 +3537,10 @@ class NostalgiaForInfinityX3(IStrategy):
           sell_amount = (
             order.safe_remaining * exit_rate / (self.futures_mode_leverage if self.is_futures_mode else 1.0)
           )
+          if (current_stake_amount - sell_amount) < (min_stake * 1.7):
+            sell_amount = (
+              trade.amount * exit_rate / (self.futures_mode_leverage if self.is_futures_mode else 1.0)
+            ) - (min_stake * 1.7)
           grind_profit = (exit_rate - order.safe_price) / order.safe_price
           if sell_amount > min_stake:
             # Test if it's the last exit. Normal exit with partial fill
