@@ -67,7 +67,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.0.947"
+    return "v13.0.948"
 
   # ROI table:
   minimal_roi = {
@@ -188,6 +188,8 @@ class NostalgiaForInfinityX3(IStrategy):
   grinding_mode_1_sub_thresholds_alt_2 = [-0.0, -0.06, -0.08, -0.1]
   grinding_mode_1_stakes_alt_3 = [0.35, 0.35, 0.35]
   grinding_mode_1_sub_thresholds_alt_3 = [-0.06, -0.075, -0.1]
+  grinding_mode_1_stakes_alt_4 = [0.45, 0.45, 0.45]
+  grinding_mode_1_sub_thresholds_alt_4 = [-0.06, -0.08, -0.11]
 
   # Rebuy mode
   rebuy_mode_stake_multiplier = 0.2
@@ -2653,7 +2655,14 @@ class NostalgiaForInfinityX3(IStrategy):
           return -sell_amount
 
       current_grind_mode = self.grinding_mode
-      if (current_grind_mode == 1) and ((slice_amount * self.grinding_mode_1_stakes_alt_3[0]) < min_stake):
+      if (current_grind_mode == 1) and (
+        (
+          slice_amount
+          * self.grinding_mode_1_stakes_alt_4[0]
+          / (self.futures_mode_leverage if self.is_futures_mode else 1.0)
+        )
+        < min_stake
+      ):
         current_grind_mode = 0
 
       is_x3_trade = len(filled_orders) >= 2 and filled_orders[1].ft_order_side == "sell"
@@ -3104,6 +3113,14 @@ class NostalgiaForInfinityX3(IStrategy):
         ) < min_stake:
           if (
             slice_amount
+            * self.grinding_mode_1_stakes_alt_3[0]
+            / (self.futures_mode_leverage if self.is_futures_mode else 1.0)
+          ) < min_stake:
+            max_sub_grinds = len(self.grinding_mode_1_stakes_alt_4)
+            grinding_mode_1_stakes = self.grinding_mode_1_stakes_alt_4
+            grinding_mode_1_sub_thresholds = self.grinding_mode_1_sub_thresholds_alt_4
+          elif (
+            slice_amount
             * self.grinding_mode_1_stakes_alt_2[0]
             / (self.futures_mode_leverage if self.is_futures_mode else 1.0)
           ) < min_stake:
@@ -3408,9 +3425,7 @@ class NostalgiaForInfinityX3(IStrategy):
 
     is_rebuy = False
 
-    rebuy_mode_stakes = (
-      self.rebuy_mode_stakes_futures if self.is_futures_mode else self.rebuy_mode_stakes_spot
-    )
+    rebuy_mode_stakes = self.rebuy_mode_stakes_futures if self.is_futures_mode else self.rebuy_mode_stakes_spot
     max_sub_grinds = len(rebuy_mode_stakes)
     rebuy_mode_sub_thresholds = (
       self.rebuy_mode_thresholds_futures if self.is_futures_mode else self.rebuy_mode_thresholds_spot
