@@ -151,7 +151,7 @@ class NostalgiaForInfinityX4(IStrategy):
   stop_threshold = 0.5
   stop_threshold_futures = 0.50
   stop_threshold_futures_rapid = 0.50
-  stop_threshold_spot_rapid = 0.35
+  stop_threshold_spot_rapid = 0.50
   stop_threshold_futures_rebuy = 0.9
   stop_threshold_spot_rebuy = 0.9
 
