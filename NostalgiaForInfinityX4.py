@@ -4251,6 +4251,9 @@ class NostalgiaForInfinityX4(IStrategy):
     # SAR
     informative_1h["sar"] = ta.SAR(informative_1h)
 
+    # ZL MA
+    informative_1h["zlma_50"] = pta.zlma(informative_1h["close"], length=50, matype="linreg", offset=0)
+
     # S/R
     res_series = (
       informative_1h["high"].rolling(window=5, center=True).apply(lambda row: is_resistance(row), raw=True).shift(2)
