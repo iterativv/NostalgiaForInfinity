@@ -3960,6 +3960,13 @@ class NostalgiaForInfinityX3(IStrategy):
     informative_1h["sma_100"] = ta.SMA(informative_1h, timeperiod=100)
     informative_1h["sma_200"] = ta.SMA(informative_1h, timeperiod=200)
 
+    # ZL MA
+    informative_1h["zlma_50"] = pta.zlma(informative_1h["close"], length=50, matype="linreg", offset=0)
+
+    informative_1h["zlma_50_dec"] = (informative_1h["zlma_50"].isnull()) | (
+      informative_1h["zlma_50"] <= informative_1h["zlma_50"].shift(1)
+    )
+
     # BB
     bollinger = qtpylib.bollinger_bands(qtpylib.typical_price(informative_1h), window=20, stds=2)
     informative_1h["bb20_2_low"] = bollinger["lower"]
@@ -3981,9 +3988,6 @@ class NostalgiaForInfinityX3(IStrategy):
 
     # SAR
     informative_1h["sar"] = ta.SAR(informative_1h)
-
-    # ZL MA
-    informative_1h["zlma_50"] = pta.zlma(informative_1h["close"], length=50, matype="linreg", offset=0)
 
     # S/R
     res_series = (
@@ -4090,6 +4094,13 @@ class NostalgiaForInfinityX3(IStrategy):
 
     # SMA
     informative_15m["sma_200"] = ta.SMA(informative_15m, timeperiod=200)
+
+    # ZL MA
+    informative_15m["zlma_50"] = pta.zlma(informative_15m["close"], length=50, matype="linreg", offset=0)
+
+    informative_15m["zlma_50_dec"] = (informative_15m["zlma_50"].isnull()) | (
+      informative_15m["zlma_50"] <= informative_15m["zlma_50"].shift(1)
+    )
 
     # BB - 20 STD2
     bollinger = qtpylib.bollinger_bands(qtpylib.typical_price(informative_15m), window=20, stds=2)
