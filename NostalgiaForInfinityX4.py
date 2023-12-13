@@ -67,7 +67,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.0.631"
+    return "v14.0.632"
 
   # ROI table:
   minimal_roi = {
@@ -203,10 +203,46 @@ class NostalgiaForInfinityX4(IStrategy):
   grinding_mode_2_stop_grinds_futures = -0.16
   grinding_mode_2_profit_threshold_spot = 0.018
   grinding_mode_2_profit_threshold_futures = 0.018
-  grinding_mode_2_stakes_spot = [0.2, 0.2, 0.2, 0.2, 0.2]
-  grinding_mode_2_stakes_futures = [0.2, 0.2, 0.2, 0.2, 0.2]
-  grinding_mode_2_sub_thresholds_spot = [-0.0, -0.04, -0.05, -0.06, -0.07, -0.08]
-  grinding_mode_2_sub_thresholds_futures = [-0.0, -0.04, -0.05, -0.06, -0.07, -0.08]
+  grinding_mode_2_stakes_spot = [
+    [0.2, 0.2, 0.2, 0.2, 0.2],
+    [0.25, 0.25, 0.25, 0.25, 0.25],
+    [0.3, 0.3, 0.3, 0.3],
+    [0.35, 0.35, 0.35, 0.35],
+    [0.4, 0.4, 0.4],
+    [0.45, 0.45, 0.45],
+    [0.5, 0.5, 0.5],
+    [0.75, 0.75],
+  ]
+  grinding_mode_2_stakes_futures = [
+    [0.2, 0.2, 0.2, 0.2, 0.2],
+    [0.25, 0.25, 0.25, 0.25, 0.25],
+    [0.3, 0.3, 0.3, 0.3],
+    [0.35, 0.35, 0.35, 0.35],
+    [0.4, 0.4, 0.4],
+    [0.45, 0.45, 0.45],
+    [0.5, 0.5, 0.5],
+    [0.75, 0.75],
+  ]
+  grinding_mode_2_sub_thresholds_spot = [
+    [-0.0, -0.04, -0.05, -0.06, -0.07, -0.08],
+    [-0.0, -0.04, -0.05, -0.06, -0.07, -0.08],
+    [-0.0, -0.05, -0.06, -0.07, -0.08],
+    [-0.0, -0.05, -0.07, -0.09, -0.1],
+    [-0.0, -0.06, -0.08, -0.1],
+    [-0.0, -0.06, -0.08, -0.1],
+    [-0.0, -0.06, -0.08, -0.1],
+    [-0.0, -0.06, -0.09],
+  ]
+  grinding_mode_2_sub_thresholds_futures = [
+    [-0.0, -0.04, -0.05, -0.06, -0.07, -0.08],
+    [-0.0, -0.04, -0.05, -0.06, -0.07, -0.08],
+    [-0.0, -0.05, -0.06, -0.07, -0.08],
+    [-0.0, -0.05, -0.07, -0.09, -0.1],
+    [-0.0, -0.06, -0.08, -0.1],
+    [-0.0, -0.06, -0.08, -0.1],
+    [-0.0, -0.06, -0.08, -0.1],
+    [-0.0, -0.06, -0.09],
+  ]
 
   # Rebuy mode
   rebuy_mode_stake_multiplier = 0.2
@@ -3866,29 +3902,33 @@ class NostalgiaForInfinityX4(IStrategy):
 
       # mode 2
       elif current_grind_mode == 2:
-        max_sub_grinds = len(
+        max_sub_grinds = 0
+        grinding_mode_2_stakes = []
+        grinding_mode_2_sub_thresholds = []
+        for i, item in enumerate(
           self.grinding_mode_2_stakes_futures if self.is_futures_mode else self.grinding_mode_2_stakes_spot
-        )
-        grinding_mode_2_stakes = (
-          self.grinding_mode_2_stakes_futures if self.is_futures_mode else self.grinding_mode_2_stakes_spot
-        )
-        grinding_mode_2_sub_thresholds = (
-          self.grinding_mode_2_sub_thresholds_futures
+        ):
+          if (slice_amount * item[0] / (self.futures_mode_leverage if self.is_futures_mode else 1.0)) > min_stake:
+            grinding_mode_2_stakes = item
+            grinding_mode_2_sub_thresholds = (
+              self.grinding_mode_2_sub_thresholds_futures[i]
+              if self.is_futures_mode
+              else self.grinding_mode_2_sub_thresholds_spot[i]
+            )
+            max_sub_grinds = len(grinding_mode_2_stakes)
+            break
+        grinding_mode_2_stop_init_grinds = (
+          self.grinding_mode_2_stop_init_grinds_futures
           if self.is_futures_mode
-          else self.grinding_mode_2_sub_thresholds_spot
+          else self.grinding_mode_2_stop_init_grinds_spot
+        )
+        grinding_mode_2_stop_grinds = (
+          self.grinding_mode_2_stop_grinds_futures if self.is_futures_mode else self.grinding_mode_2_stop_grinds_spot
         )
         grinding_mode_2_profit_threshold = (
           self.grinding_mode_2_profit_threshold_futures
           if self.is_futures_mode
           else self.grinding_mode_2_profit_threshold_spot
-        )
-        grinding_mode_2_stop_grinds = (
-          self.grinding_mode_2_stop_grinds_futures if self.is_futures_mode else self.grinding_mode_2_stop_grinds_spot
-        )
-        grinding_mode_2_stop_init_grinds = (
-          self.grinding_mode_2_stop_init_grinds_futures
-          if self.is_futures_mode
-          else self.grinding_mode_2_stop_init_grinds_spot
         )
         partial_sell = False
         is_sell_found = False
