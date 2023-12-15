@@ -2763,11 +2763,9 @@ class NostalgiaForInfinityX4(IStrategy):
       total_profit += exit_stake
     current_stake = trade.amount * exit_rate * (1 - trade.fee_close)
     total_profit += current_stake
-    total_profit_ratio = total_profit / total_stake * (self.futures_mode_leverage if self.is_futures_mode else 1.0)
-    current_profit_ratio = total_profit / current_stake * (self.futures_mode_leverage if self.is_futures_mode else 1.0)
-    init_profit_ratio = (
-      total_profit / filled_entries[0].cost * (self.futures_mode_leverage if self.is_futures_mode else 1.0)
-    )
+    total_profit_ratio = total_profit / total_stake
+    current_profit_ratio = total_profit / current_stake
+    init_profit_ratio = total_profit / filled_entries[0].cost
     return total_profit, total_profit_ratio, current_profit_ratio, init_profit_ratio
 
   def custom_exit(
