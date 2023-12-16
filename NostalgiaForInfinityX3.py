@@ -67,7 +67,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.0.985"
+    return "v13.0.986"
 
   # ROI table:
   minimal_roi = {
@@ -3669,6 +3669,7 @@ class NostalgiaForInfinityX3(IStrategy):
                 and (last_candle["rsi_3_4h"] > 20.0)
                 and (last_candle["rsi_14"] < 46.0)
                 and (last_candle["ha_close"] > last_candle["ha_open"])
+                and (last_candle['ema_12'] < (last_candle['ema_26'] * 0.990))
                 and (last_candle["cti_20_1h"] < 0.8)
                 and (last_candle["rsi_14_1h"] < 80.0)
               )
@@ -3686,6 +3687,8 @@ class NostalgiaForInfinityX3(IStrategy):
                 and (last_candle["ema_26"] > last_candle["ema_12"])
                 and ((last_candle["ema_26"] - last_candle["ema_12"]) > (last_candle["open"] * 0.010))
                 and ((previous_candle["ema_26"] - previous_candle["ema_12"]) > (last_candle["open"] / 100.0))
+                and (last_candle["rsi_3_1h"] > 20.0)
+                and (last_candle["rsi_3_4h"] > 20.0)
                 and (last_candle["cti_20_1h"] < 0.8)
                 and (last_candle["rsi_14_1h"] < 80.0)
               )
@@ -3719,8 +3722,8 @@ class NostalgiaForInfinityX3(IStrategy):
                   (previous_candle["ema_26_15m"] - previous_candle["ema_12_15m"]) > (last_candle["open_15m"] / 100.0)
                 )
                 and (last_candle["rsi_3_15m"] > 10.0)
-                and (last_candle["rsi_3_1h"] > 16.0)
-                and (last_candle["rsi_3_4h"] > 16.0)
+                and (last_candle["rsi_3_1h"] > 26.0)
+                and (last_candle["rsi_3_4h"] > 26.0)
                 and (last_candle["cti_20_1h"] < 0.8)
                 and (last_candle["rsi_14_1h"] < 80.0)
               )
@@ -3729,7 +3732,7 @@ class NostalgiaForInfinityX3(IStrategy):
                 and (last_candle["rsi_3"] > 4.0)
                 and (last_candle["rsi_3"] < 46.0)
                 and (last_candle["rsi_14"] < previous_candle["rsi_14"])
-                and (last_candle["close"] < (last_candle["sma_16"] * 0.988))
+                and (last_candle["close"] < (last_candle["sma_16"] * 0.982))
                 and (last_candle["cti_20"] < -0.6)
                 and (last_candle["rsi_3_1h"] > 20.0)
                 and (last_candle["rsi_3_4h"] > 20.0)
