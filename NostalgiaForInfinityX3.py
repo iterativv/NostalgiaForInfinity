@@ -142,9 +142,9 @@ class NostalgiaForInfinityX3(IStrategy):
   stop_thresholds = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 24.0, 24.0, False, False, True, True]
   # Based on the the first entry (regardless of rebuys)
   stop_threshold = 0.5
-  stop_threshold_futures = 0.50
-  stop_threshold_futures_rapid = 0.50
-  stop_threshold_spot_rapid = 0.50
+  stop_threshold_futures = 1.0
+  stop_threshold_futures_rapid = 1.0
+  stop_threshold_spot_rapid = 1.0
   stop_threshold_futures_rebuy = 0.9
   stop_threshold_spot_rebuy = 0.9
 
@@ -156,7 +156,7 @@ class NostalgiaForInfinityX3(IStrategy):
 
   # Grinding feature
   grinding_enable = True
-  grinding_mode = 1
+  grinding_mode = 2
   stake_grinding_mode_multiplier = 1.0
   stake_grinding_mode_multiplier_alt_1 = 1.0
   stake_grinding_mode_multiplier_alt_2 = 1.0
@@ -2431,7 +2431,8 @@ class NostalgiaForInfinityX3(IStrategy):
     is_backtest = self.dp.runmode.value == "backtest"
     # Stoploss doom
     if (
-      profit_stake
+      self.is_futures_mode is False
+      and profit_stake
       < -(filled_entries[0].cost * self.stop_threshold / (trade.leverage if self.is_futures_mode else 1.0))
       # temporary
       and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2023, 6, 13) or is_backtest)
