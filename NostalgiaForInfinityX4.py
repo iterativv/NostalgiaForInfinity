@@ -149,9 +149,9 @@ class NostalgiaForInfinityX4(IStrategy):
   stop_thresholds = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 24.0, 24.0, False, False, True, True]
   # Based on the the first entry (regardless of rebuys)
   stop_threshold = 0.5
-  stop_threshold_futures = 0.50
-  stop_threshold_futures_rapid = 0.50
-  stop_threshold_spot_rapid = 0.50
+  stop_threshold_futures = 1.0
+  stop_threshold_futures_rapid = 1.0
+  stop_threshold_spot_rapid = 1.0
   stop_threshold_futures_rebuy = 0.9
   stop_threshold_spot_rebuy = 0.9
 
@@ -386,6 +386,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     if ("trading_mode" in self.config) and (self.config["trading_mode"] in ["futures", "margin"]):
       self.is_futures_mode = True
+      self.grinding_mode = 2
 
     # If the cached data hasn't changed, it's a no-op
     self.target_profit_cache.save()
@@ -2456,7 +2457,8 @@ class NostalgiaForInfinityX4(IStrategy):
     is_backtest = self.dp.runmode.value == "backtest"
     # Stoploss doom
     if (
-      profit_stake
+      self.is_futures_mode is False
+      and profit_stake
       < -(filled_entries[0].cost * self.stop_threshold / (trade.leverage if self.is_futures_mode else 1.0))
       # temporary
       and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2023, 6, 13) or is_backtest)
