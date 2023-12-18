@@ -200,7 +200,7 @@ class NostalgiaForInfinityX4(IStrategy):
   grinding_mode_2_stop_init_grinds_spot = -0.20
   grinding_mode_2_stop_grinds_spot = -0.16
   grinding_mode_2_stop_init_grinds_futures = -0.50
-  grinding_mode_2_stop_grinds_futures = -0.16
+  grinding_mode_2_stop_grinds_futures = -0.26
   grinding_mode_2_profit_threshold_spot = 0.018
   grinding_mode_2_profit_threshold_futures = 0.018
   grinding_mode_2_stakes_spot = [
