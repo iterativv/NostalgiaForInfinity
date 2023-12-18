@@ -67,7 +67,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.0.995"
+    return "v13.0.996"
 
   # ROI table:
   minimal_roi = {
@@ -323,6 +323,8 @@ class NostalgiaForInfinityX3(IStrategy):
       self.profit_max_thresholds = self.config["profit_max_thresholds"]
     if "grinding_enable" in self.config:
       self.grinding_enable = self.config["grinding_enable"]
+    if "grinding_mode" in self.config:
+      self.grinding_mode = self.config["grinding_mode"]
     if "grinding_mode" in self.config:
       self.grinding_mode = self.config["grinding_mode"]
     if "grinding_stakes" in self.config:
