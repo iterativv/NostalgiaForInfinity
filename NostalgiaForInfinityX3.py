@@ -67,7 +67,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.0.994"
+    return "v13.0.995"
 
   # ROI table:
   minimal_roi = {
@@ -161,7 +161,7 @@ class NostalgiaForInfinityX3(IStrategy):
   stake_grinding_mode_multiplier_alt_1 = 1.0
   stake_grinding_mode_multiplier_alt_2 = 1.0
   # Grinding stop thresholds
-  grinding_stop_init = -0.18
+  grinding_stop_init = -0.20
   grinding_stop_grinds = -0.16
   # Grinding take profit threshold
   grinding_profit_threshold = 0.012
