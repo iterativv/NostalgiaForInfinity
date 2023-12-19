@@ -67,7 +67,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.0.662"
+    return "v14.0.663"
 
   # ROI table:
   minimal_roi = {
@@ -163,7 +163,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
   # Grinding feature
   grinding_enable = True
-  grinding_mode = 1
+  grinding_mode = 2
   stake_grinding_mode_multiplier = 1.0
   stake_grinding_mode_multiplier_alt_1 = 1.0
   stake_grinding_mode_multiplier_alt_2 = 1.0
@@ -388,7 +388,6 @@ class NostalgiaForInfinityX4(IStrategy):
 
     if ("trading_mode" in self.config) and (self.config["trading_mode"] in ["futures", "margin"]):
       self.is_futures_mode = True
-      self.grinding_mode = 2
 
     # If the cached data hasn't changed, it's a no-op
     self.target_profit_cache.save()
