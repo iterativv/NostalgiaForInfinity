@@ -67,7 +67,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.0.664"
+    return "v14.0.665"
 
   # ROI table:
   minimal_roi = {
@@ -251,7 +251,7 @@ class NostalgiaForInfinityX4(IStrategy):
   rebuy_mode_stakes_spot = [1.0, 2.0, 4.0]
   rebuy_mode_stakes_futures = [1.0, 2.0, 4.0]
   rebuy_mode_thresholds_spot = [-0.06, -0.08, -0.10]
-  rebuy_mode_thresholds_futures = [-0.03, -0.04, -0.06]
+  rebuy_mode_thresholds_futures = [-0.03, -0.06, -0.08]
 
   # Profit max thresholds
   profit_max_thresholds = [0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.05, 0.05]
