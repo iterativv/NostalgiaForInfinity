@@ -67,7 +67,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.0.1012"
+    return "v13.0.1013"
 
   # ROI table:
   minimal_roi = {
@@ -3891,8 +3891,6 @@ class NostalgiaForInfinityX3(IStrategy):
               buy_amount = max_stake
             if buy_amount < min_stake:
               return None
-            if buy_amount < (min_stake * 1.5):
-              buy_amount = min_stake * 1.5
             self.dp.send_msg(
               f"Grinding entry [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
             )
@@ -3902,9 +3900,9 @@ class NostalgiaForInfinityX3(IStrategy):
         if partial_sell:
           order = filled_exits[-1]
           sell_amount = order.safe_remaining * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)
-          if (current_stake_amount - sell_amount) < (min_stake * 1.7):
+          if (current_stake_amount - sell_amount) < (min_stake * 1.5):
             sell_amount = (trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) - (
-              min_stake * 1.7
+              min_stake * 1.5
             )
           grind_profit = (exit_rate - order.safe_price) / order.safe_price
           if sell_amount > min_stake:
@@ -3954,10 +3952,10 @@ class NostalgiaForInfinityX3(IStrategy):
             * 0.999
           )
           if (current_stake_amount / (trade.leverage if self.is_futures_mode else 1.0) - sell_amount) < (
-            min_stake * 1.7
+            min_stake * 1.5
           ):
             sell_amount = (trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) - (
-              min_stake * 1.7
+              min_stake * 1.5
             )
           if sell_amount > min_stake:
             grind_profit = ((exit_rate - current_open_rate) / current_open_rate) if is_sell_found else profit_ratio
