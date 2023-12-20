@@ -67,7 +67,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.0.673"
+    return "v14.0.674"
 
   # ROI table:
   minimal_roi = {
@@ -12337,11 +12337,11 @@ class NostalgiaForInfinityX4(IStrategy):
         # -----------------------------------------------------------------------------------------
         item_buy_logic = []
         item_buy_logic.append(reduce(lambda x, y: x & y, item_buy_protection_list))
-        item_buy_logic.append(dataframe["protections_long_global"] == True)
 
         # Condition #1 - Long mode bull. Uptrend.
         if index == 1:
           # Protections
+          item_buy_logic.append(dataframe["protections_long_global"] == True)
           item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
           item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
           item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
@@ -13072,6 +13072,7 @@ class NostalgiaForInfinityX4(IStrategy):
         # Condition #2 - Normal mode bull.
         if index == 2:
           # Protections
+          item_buy_logic.append(dataframe["protections_long_global"] == True)
           item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
           item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
           item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.16))
@@ -13708,6 +13709,7 @@ class NostalgiaForInfinityX4(IStrategy):
         # Condition #3 - Normal mode bull.
         if index == 3:
           # Protections
+          item_buy_logic.append(dataframe["protections_long_global"] == True)
           item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
           item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
           item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
@@ -14346,6 +14348,7 @@ class NostalgiaForInfinityX4(IStrategy):
         # Condition #4 - Normal mode bull.
         if index == 4:
           # Protections
+          item_buy_logic.append(dataframe["protections_long_global"] == True)
           item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
           item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
           item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
@@ -15349,6 +15352,7 @@ class NostalgiaForInfinityX4(IStrategy):
         # Condition #5 - Normal mode bull.
         if index == 5:
           # Protections
+          item_buy_logic.append(dataframe["protections_long_global"] == True)
           item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
           item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
           item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
@@ -16576,6 +16580,7 @@ class NostalgiaForInfinityX4(IStrategy):
         # Condition #6 - Normal mode bull.
         if index == 6:
           # Protections
+          item_buy_logic.append(dataframe["protections_long_global"] == True)
           item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
           item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
           item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
@@ -17296,6 +17301,8 @@ class NostalgiaForInfinityX4(IStrategy):
 
         # Condition #7 Normal mode.
         if index == 7:
+          # Protections
+          item_buy_logic.append(dataframe["protections_long_global"] == True)
           item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
           item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
           item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
@@ -17545,6 +17552,7 @@ class NostalgiaForInfinityX4(IStrategy):
         # Condition #8 Normal mode.
         if index == 8:
           # Protections
+          item_buy_logic.append(dataframe["protections_long_global"] == True)
           item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
           item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
           item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
@@ -17684,6 +17692,7 @@ class NostalgiaForInfinityX4(IStrategy):
         # Condition #9 - Normal mode.
         if index == 9:
           # Protections
+          item_buy_logic.append(dataframe["protections_long_global"] == True)
           item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
           item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
           item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
@@ -17890,6 +17899,7 @@ class NostalgiaForInfinityX4(IStrategy):
         # Condition #21 - Pump mode bull.
         if index == 21:
           # Protections
+          item_buy_logic.append(dataframe["protections_long_global"] == True)
           item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
           item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
           item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.16))
@@ -18965,6 +18975,7 @@ class NostalgiaForInfinityX4(IStrategy):
         # Condition #22 - Pump mode bull.
         if index == 22:
           # Protections
+          item_buy_logic.append(dataframe["protections_long_global"] == True)
           item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
           item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
           item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
@@ -19858,6 +19869,7 @@ class NostalgiaForInfinityX4(IStrategy):
         # Condition #23 - Pump mode.
         if index == 23:
           # Protections
+          item_buy_logic.append(dataframe["protections_long_global"] == True)
           item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
           item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
           item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
@@ -19957,6 +19969,7 @@ class NostalgiaForInfinityX4(IStrategy):
         # Condition #41 - Quick mode bull.
         if index == 41:
           # Protections
+          item_buy_logic.append(dataframe["protections_long_global"] == True)
           item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
           item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
           item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
@@ -21072,6 +21085,7 @@ class NostalgiaForInfinityX4(IStrategy):
         # Condition #42 - Quick mode bull.
         if index == 42:
           # Protections
+          item_buy_logic.append(dataframe["protections_long_global"] == True)
           item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
           item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
           item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
@@ -21666,6 +21680,7 @@ class NostalgiaForInfinityX4(IStrategy):
         # Condition #43 - Quick mode bull.
         if index == 43:
           # Protections
+          item_buy_logic.append(dataframe["protections_long_global"] == True)
           item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
           item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
           item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
@@ -22043,6 +22058,7 @@ class NostalgiaForInfinityX4(IStrategy):
         # Condition #44 - Quick mode bull.
         if index == 44:
           # Protections
+          item_buy_logic.append(dataframe["protections_long_global"] == True)
           item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
           item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
           item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
@@ -23280,8 +23296,9 @@ class NostalgiaForInfinityX4(IStrategy):
         # Condition #61 - Rebuy mode (Long).
         if index == 61:
           # Protections
-          item_buy_logic.append(current_free_slots >= self.rebuy_mode_min_free_slots)
+          item_buy_logic.append(dataframe["protections_long_global"] == True)
           item_buy_logic.append(dataframe["protections_long_rebuy"] == True)
+          item_buy_logic.append(current_free_slots >= self.rebuy_mode_min_free_slots)
           item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
           item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
           item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
@@ -23313,6 +23330,7 @@ class NostalgiaForInfinityX4(IStrategy):
         # Condition #81 - Long mode bull.
         if index == 81:
           # Protections
+          item_buy_logic.append(dataframe["protections_long_global"] == True)
           item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
           item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
           item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.12))
@@ -23418,6 +23436,7 @@ class NostalgiaForInfinityX4(IStrategy):
         # Condition #82 - Long mode bull.
         if index == 82:
           # Protections
+          item_buy_logic.append(dataframe["protections_long_global"] == True)
           item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
           item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
           item_buy_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.2))
@@ -23575,6 +23594,7 @@ class NostalgiaForInfinityX4(IStrategy):
         # Condition #101 - Long mode rapid
         if index == 101:
           # Protections
+          item_buy_logic.append(dataframe["protections_long_global"] == True)
           item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
           item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
           item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.18))
@@ -23609,6 +23629,7 @@ class NostalgiaForInfinityX4(IStrategy):
         # Condition #102 - Long mode rapid
         if index == 102:
           # Protections
+          item_buy_logic.append(dataframe["protections_long_global"] == True)
           item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
           item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
           item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.18))
@@ -23644,6 +23665,7 @@ class NostalgiaForInfinityX4(IStrategy):
         # Condition #103 - Long mode rapid
         if index == 103:
           # Protections
+          item_buy_logic.append(dataframe["protections_long_global"] == True)
           item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
           item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
           item_buy_logic.append(dataframe["high_max_12_1d"] < (dataframe["close"] * 1.6))
@@ -23669,6 +23691,7 @@ class NostalgiaForInfinityX4(IStrategy):
         # Condition #104 - Long mode rapid
         if index == 104:
           # Protections
+          item_buy_logic.append(dataframe["protections_long_global"] == True)
           item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
           item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
           item_buy_logic.append(dataframe["high_max_12_1d"] < (dataframe["close"] * 1.6))
@@ -23702,6 +23725,7 @@ class NostalgiaForInfinityX4(IStrategy):
         # Condition #105 - Long mode rapid
         if index == 105:
           # Protections
+          item_buy_logic.append(dataframe["protections_long_global"] == True)
           item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
           item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
           item_buy_logic.append(dataframe["high_max_12_1d"] < (dataframe["close"] * 1.6))
