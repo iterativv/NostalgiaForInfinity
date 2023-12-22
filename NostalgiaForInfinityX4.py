@@ -67,7 +67,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.0.675"
+    return "v14.0.676"
 
   # ROI table:
   minimal_roi = {
@@ -140,7 +140,7 @@ class NostalgiaForInfinityX4(IStrategy):
   short_normal_mode_name = "short_normal"
 
   is_futures_mode = False
-  futures_mode_leverage = 5.0
+  futures_mode_leverage = 3.0
   futures_mode_leverage_rebuy_mode = 3.0
 
   # Stop thesholds. 0: Doom Bull, 1: Doom Bear, 2: u_e Bull, 3: u_e Bear, 4: u_e mins Bull, 5: u_e mins Bear.
