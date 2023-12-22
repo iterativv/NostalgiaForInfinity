@@ -67,7 +67,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.0.1018"
+    return "v13.0.1019"
 
   # ROI table:
   minimal_roi = {
@@ -117,7 +117,7 @@ class NostalgiaForInfinityX3(IStrategy):
   # Pump mode tags
   pump_mode_tags = ["21", "22", "23"]
   # Quick mode tags
-  quick_mode_tags = ["41", "42", "43", "44"]
+  quick_mode_tags = ["41", "42", "43", "44", "45"]
   # Long rebuy mode tags
   long_rebuy_mode_tags = ["61"]
   # Long mode tags
@@ -279,6 +279,7 @@ class NostalgiaForInfinityX3(IStrategy):
     "buy_condition_42_enable": True,
     "buy_condition_43_enable": True,
     "buy_condition_44_enable": True,
+    "buy_condition_45_enable": False,
     "buy_condition_61_enable": True,
     # "buy_condition_81_enable": True,
     # "buy_condition_82_enable": True,
@@ -23016,6 +23017,31 @@ class NostalgiaForInfinityX3(IStrategy):
           item_buy_logic.append(dataframe["bb20_2_width_1h"] > 0.132)
           item_buy_logic.append(dataframe["cti_20"] < -0.8)
           item_buy_logic.append(dataframe["r_14"] < -90.0)
+
+        # Condition #45 - Quick mode (Long).
+        if index == 45:
+          # Protections
+          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+
+          item_buy_logic.append(dataframe["rsi_3"] > 6.0)
+          item_buy_logic.append(dataframe["rsi_3"] < 46.0)
+          item_buy_logic.append(dataframe["rsi_3_15m"] > 26.0)
+          item_buy_logic.append(dataframe["rsi_3_1h"] > 26.0)
+          item_buy_logic.append(dataframe["rsi_3_4h"] > 26.0)
+          item_buy_logic.append(dataframe["cti_20_1h"] < 0.9)
+          item_buy_logic.append(dataframe["rsi_14_1h"] < 80.0)
+          item_buy_logic.append(dataframe["cti_20_4h"] < 0.9)
+          item_buy_logic.append(dataframe["rsi_14_4h"] < 80.0)
+          item_buy_logic.append(dataframe["cti_20_1d"] < 0.9)
+          item_buy_logic.append(dataframe["rsi_14_1d"] < 80.0)
+
+          # Logic
+          item_buy_logic.append(dataframe["rsi_14"] < 40.0)
+          item_buy_logic.append(dataframe["rsi_20"] < dataframe["rsi_20"].shift(1))
+          item_buy_logic.append(dataframe["cti_20"] < -0.70)
+          item_buy_logic.append(dataframe["close"] < (dataframe["sma_16"] * 0.978))
 
         # Condition #61 - Rebuy mode (Long).
         if index == 61:
