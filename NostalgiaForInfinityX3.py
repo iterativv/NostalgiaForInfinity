@@ -4522,6 +4522,7 @@ class NostalgiaForInfinityX3(IStrategy):
     # RSI
     dataframe["rsi_3"] = ta.RSI(dataframe, timeperiod=3)
     dataframe["rsi_14"] = ta.RSI(dataframe, timeperiod=14)
+    dataframe["rsi_20"] = ta.RSI(dataframe, timeperiod=20)
 
     # EMA
     dataframe["ema_12"] = ta.EMA(dataframe, timeperiod=12)
