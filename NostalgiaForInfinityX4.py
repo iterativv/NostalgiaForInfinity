@@ -9,6 +9,7 @@ import pandas as pd
 import pandas_ta as pta
 from freqtrade.strategy.interface import IStrategy
 from freqtrade.strategy import merge_informative_pair
+from freqtrade.strategy import DecimalParameter, IntParameter
 from pandas import DataFrame, Series
 from functools import reduce
 from freqtrade.persistence import Trade, LocalTrade
@@ -67,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.0.684"
+    return "v14.0.685"
 
   # ROI table:
   minimal_roi = {
@@ -303,6 +304,27 @@ class NostalgiaForInfinityX4(IStrategy):
 
   buy_protection_params = {}
 
+  #############################################################
+  hyperopt_flags = {
+    "optimize_entry_54": True
+  }
+
+  entry_54_rsi_3_min = DecimalParameter(00.0, 30.0, default=6.0, decimals=0, space='buy', optimize=hyperopt_flags["optimize_entry_54"])
+  entry_54_rsi_3_max = DecimalParameter(30.0, 60.0, default=46.0, decimals=0, space='buy', optimize=hyperopt_flags["optimize_entry_54"])
+  entry_54_rsi_3_15m_min = DecimalParameter(00.0, 30.0, default=16.0, decimals=0, space='buy', optimize=hyperopt_flags["optimize_entry_54"])
+  entry_54_rsi_3_1h_min = DecimalParameter(00.0, 30.0, default=16.0, decimals=0, space='buy', optimize=hyperopt_flags["optimize_entry_54"])
+  entry_54_rsi_3_4h_min = DecimalParameter(00.0, 30.0, default=16.0, decimals=0, space='buy', optimize=hyperopt_flags["optimize_entry_54"])
+  entry_54_rsi_3_1d_min = DecimalParameter(00.0, 30.0, default=6.0, decimals=0, space='buy', optimize=hyperopt_flags["optimize_entry_54"])
+  entry_54_cti_20_1h_max = DecimalParameter(0.0, 0.99, default=0.9, decimals=2, space='buy', optimize=hyperopt_flags["optimize_entry_54"])
+  entry_54_rsi_14_1h_max = DecimalParameter(50.0, 90.0, default=80.0, decimals=0, space='buy', optimize=hyperopt_flags["optimize_entry_54"])
+  entry_54_cti_20_4h_max = DecimalParameter(0.0, 0.99, default=0.9, decimals=2, space='buy', optimize=hyperopt_flags["optimize_entry_54"])
+  entry_54_rsi_14_4h_max = DecimalParameter(50.0, 90.0, default=80.0, decimals=0, space='buy', optimize=hyperopt_flags["optimize_entry_54"])
+  entry_54_cti_20_1d_max = DecimalParameter(0.0, 0.99, default=0.9, decimals=2, space='buy', optimize=hyperopt_flags["optimize_entry_54"])
+  entry_54_rsi_14_1d_max = DecimalParameter(50.0, 90.0, default=80.0, decimals=0, space='buy', optimize=hyperopt_flags["optimize_entry_54"])
+  entry_54_rsi_14_min = DecimalParameter(10.0, 40.0, default=30.0, decimals=0, space='buy', optimize=hyperopt_flags["optimize_entry_54"])
+  entry_54_rsi_14_max = DecimalParameter(20.0, 60.0, default=46.0, decimals=0, space='buy', optimize=hyperopt_flags["optimize_entry_54"])
+  entry_54_cti_20_max = DecimalParameter(-0.99, -0.50, default=-0.70, decimals=2, space='buy', optimize=hyperopt_flags["optimize_entry_54"])
+  entry_54_sma_offset = DecimalParameter(0.940, 0.999, default=0.972, decimals=3, space='buy', optimize=hyperopt_flags["optimize_entry_54"])
   #############################################################
   # CACHES
 
@@ -23355,31 +23377,25 @@ class NostalgiaForInfinityX4(IStrategy):
           item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
           item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["rsi_3"] > 6.0)
-          item_buy_logic.append(dataframe["rsi_3"] < 46.0)
-          item_buy_logic.append(dataframe["rsi_3_15m"] > 26.0)
-          item_buy_logic.append(dataframe["rsi_3_1h"] > 26.0)
-          item_buy_logic.append(dataframe["rsi_3_4h"] > 26.0)
-          item_buy_logic.append(dataframe["cti_20_1h"] < 0.9)
-          item_buy_logic.append(dataframe["rsi_14_1h"] < 80.0)
-          item_buy_logic.append(dataframe["cti_20_4h"] < 0.9)
-          item_buy_logic.append(dataframe["rsi_14_4h"] < 80.0)
-          item_buy_logic.append(dataframe["cti_20_1d"] < 0.9)
-          item_buy_logic.append(dataframe["rsi_14_1d"] < 80.0)
-
-          item_buy_logic.append(
-            (dataframe["change_pct_1h"] > -0.00)
-            | (dataframe["cti_20_1h"] < 0.5)
-            | (dataframe["rsi_14_1h"] < 50.0)
-            | (dataframe["cti_20_4h"] < 0.5)
-            | (dataframe["rsi_14_4h"] < 50.0)
-          )
+          item_buy_logic.append(dataframe["rsi_3"] > self.entry_54_rsi_3_min.value)
+          item_buy_logic.append(dataframe["rsi_3"] < self.entry_54_rsi_3_max.value)
+          item_buy_logic.append(dataframe["rsi_3_15m"] > self.entry_54_rsi_3_15m_min.value)
+          item_buy_logic.append(dataframe["rsi_3_1h"] > self.entry_54_rsi_3_1h_min.value)
+          item_buy_logic.append(dataframe["rsi_3_4h"] > self.entry_54_rsi_3_4h_min.value)
+          item_buy_logic.append(dataframe["rsi_3_1d"] > self.entry_54_rsi_3_1d_min.value)
+          item_buy_logic.append(dataframe["cti_20_1h"] < self.entry_54_cti_20_1h_max.value)
+          item_buy_logic.append(dataframe["rsi_14_1h"] < self.entry_54_rsi_14_1h_max.value)
+          item_buy_logic.append(dataframe["cti_20_4h"] < self.entry_54_cti_20_4h_max.value)
+          item_buy_logic.append(dataframe["rsi_14_4h"] < self.entry_54_rsi_14_4h_max.value)
+          item_buy_logic.append(dataframe["cti_20_1d"] < self.entry_54_cti_20_1d_max.value)
+          item_buy_logic.append(dataframe["rsi_14_1d"] < self.entry_54_rsi_14_1d_max.value)
 
           # Logic
-          item_buy_logic.append(dataframe["rsi_14"] < 40.0)
+          item_buy_logic.append(dataframe["rsi_14"] > self.entry_54_rsi_14_min.value)
+          item_buy_logic.append(dataframe["rsi_14"] < self.entry_54_rsi_14_max.value)
           item_buy_logic.append(dataframe["rsi_20"] < dataframe["rsi_20"].shift(1))
-          item_buy_logic.append(dataframe["cti_20"] < -0.70)
-          item_buy_logic.append(dataframe["close"] < (dataframe["sma_16"] * 0.978))
+          item_buy_logic.append(dataframe["cti_20"] < self.entry_54_cti_20_max.value)
+          item_buy_logic.append(dataframe["close"] < (dataframe["sma_16"] * self.entry_54_sma_offset.value))
 
         # Condition #61 - Rebuy mode (Long).
         if index == 61:
