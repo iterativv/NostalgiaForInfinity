@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.0.685"
+    return "v14.0.686"
 
   # ROI table:
   minimal_roi = {
@@ -305,26 +305,56 @@ class NostalgiaForInfinityX4(IStrategy):
   buy_protection_params = {}
 
   #############################################################
-  hyperopt_flags = {
-    "optimize_entry_54": True
-  }
+  hyperopt_flags = {"optimize_entry_54": True}
 
-  entry_54_rsi_3_min = DecimalParameter(00.0, 30.0, default=6.0, decimals=0, space='buy', optimize=hyperopt_flags["optimize_entry_54"])
-  entry_54_rsi_3_max = DecimalParameter(30.0, 60.0, default=46.0, decimals=0, space='buy', optimize=hyperopt_flags["optimize_entry_54"])
-  entry_54_rsi_3_15m_min = DecimalParameter(00.0, 30.0, default=16.0, decimals=0, space='buy', optimize=hyperopt_flags["optimize_entry_54"])
-  entry_54_rsi_3_1h_min = DecimalParameter(00.0, 30.0, default=16.0, decimals=0, space='buy', optimize=hyperopt_flags["optimize_entry_54"])
-  entry_54_rsi_3_4h_min = DecimalParameter(00.0, 30.0, default=16.0, decimals=0, space='buy', optimize=hyperopt_flags["optimize_entry_54"])
-  entry_54_rsi_3_1d_min = DecimalParameter(00.0, 30.0, default=6.0, decimals=0, space='buy', optimize=hyperopt_flags["optimize_entry_54"])
-  entry_54_cti_20_1h_max = DecimalParameter(0.0, 0.99, default=0.9, decimals=2, space='buy', optimize=hyperopt_flags["optimize_entry_54"])
-  entry_54_rsi_14_1h_max = DecimalParameter(50.0, 90.0, default=80.0, decimals=0, space='buy', optimize=hyperopt_flags["optimize_entry_54"])
-  entry_54_cti_20_4h_max = DecimalParameter(0.0, 0.99, default=0.9, decimals=2, space='buy', optimize=hyperopt_flags["optimize_entry_54"])
-  entry_54_rsi_14_4h_max = DecimalParameter(50.0, 90.0, default=80.0, decimals=0, space='buy', optimize=hyperopt_flags["optimize_entry_54"])
-  entry_54_cti_20_1d_max = DecimalParameter(0.0, 0.99, default=0.9, decimals=2, space='buy', optimize=hyperopt_flags["optimize_entry_54"])
-  entry_54_rsi_14_1d_max = DecimalParameter(50.0, 90.0, default=80.0, decimals=0, space='buy', optimize=hyperopt_flags["optimize_entry_54"])
-  entry_54_rsi_14_min = DecimalParameter(10.0, 40.0, default=30.0, decimals=0, space='buy', optimize=hyperopt_flags["optimize_entry_54"])
-  entry_54_rsi_14_max = DecimalParameter(20.0, 60.0, default=46.0, decimals=0, space='buy', optimize=hyperopt_flags["optimize_entry_54"])
-  entry_54_cti_20_max = DecimalParameter(-0.99, -0.50, default=-0.70, decimals=2, space='buy', optimize=hyperopt_flags["optimize_entry_54"])
-  entry_54_sma_offset = DecimalParameter(0.940, 0.999, default=0.972, decimals=3, space='buy', optimize=hyperopt_flags["optimize_entry_54"])
+  entry_54_rsi_3_min = DecimalParameter(
+    00.0, 30.0, default=6.0, decimals=0, space="buy", optimize=hyperopt_flags["optimize_entry_54"]
+  )
+  entry_54_rsi_3_max = DecimalParameter(
+    30.0, 60.0, default=46.0, decimals=0, space="buy", optimize=hyperopt_flags["optimize_entry_54"]
+  )
+  entry_54_rsi_3_15m_min = DecimalParameter(
+    00.0, 30.0, default=16.0, decimals=0, space="buy", optimize=hyperopt_flags["optimize_entry_54"]
+  )
+  entry_54_rsi_3_1h_min = DecimalParameter(
+    00.0, 30.0, default=16.0, decimals=0, space="buy", optimize=hyperopt_flags["optimize_entry_54"]
+  )
+  entry_54_rsi_3_4h_min = DecimalParameter(
+    00.0, 30.0, default=16.0, decimals=0, space="buy", optimize=hyperopt_flags["optimize_entry_54"]
+  )
+  entry_54_rsi_3_1d_min = DecimalParameter(
+    00.0, 30.0, default=6.0, decimals=0, space="buy", optimize=hyperopt_flags["optimize_entry_54"]
+  )
+  entry_54_cti_20_1h_max = DecimalParameter(
+    0.0, 0.99, default=0.9, decimals=2, space="buy", optimize=hyperopt_flags["optimize_entry_54"]
+  )
+  entry_54_rsi_14_1h_max = DecimalParameter(
+    50.0, 90.0, default=80.0, decimals=0, space="buy", optimize=hyperopt_flags["optimize_entry_54"]
+  )
+  entry_54_cti_20_4h_max = DecimalParameter(
+    0.0, 0.99, default=0.9, decimals=2, space="buy", optimize=hyperopt_flags["optimize_entry_54"]
+  )
+  entry_54_rsi_14_4h_max = DecimalParameter(
+    50.0, 90.0, default=80.0, decimals=0, space="buy", optimize=hyperopt_flags["optimize_entry_54"]
+  )
+  entry_54_cti_20_1d_max = DecimalParameter(
+    0.0, 0.99, default=0.9, decimals=2, space="buy", optimize=hyperopt_flags["optimize_entry_54"]
+  )
+  entry_54_rsi_14_1d_max = DecimalParameter(
+    50.0, 90.0, default=80.0, decimals=0, space="buy", optimize=hyperopt_flags["optimize_entry_54"]
+  )
+  entry_54_rsi_14_min = DecimalParameter(
+    10.0, 40.0, default=30.0, decimals=0, space="buy", optimize=hyperopt_flags["optimize_entry_54"]
+  )
+  entry_54_rsi_14_max = DecimalParameter(
+    20.0, 60.0, default=46.0, decimals=0, space="buy", optimize=hyperopt_flags["optimize_entry_54"]
+  )
+  entry_54_cti_20_max = DecimalParameter(
+    -0.99, -0.50, default=-0.70, decimals=2, space="buy", optimize=hyperopt_flags["optimize_entry_54"]
+  )
+  entry_54_sma_offset = DecimalParameter(
+    0.940, 0.999, default=0.972, decimals=3, space="buy", optimize=hyperopt_flags["optimize_entry_54"]
+  )
   #############################################################
   # CACHES
 
@@ -4266,12 +4296,7 @@ class NostalgiaForInfinityX4(IStrategy):
             or (filled_entries[-1].order_date_utc.replace(tzinfo=None) >= datetime(2023, 8, 28) or is_backtest)
           )
         ):
-          sell_amount = (
-            (total_amount if is_sell_found else trade.amount)
-            * exit_rate
-            / (trade.leverage if self.is_futures_mode else 1.0)
-            * 0.999
-          )
+          sell_amount = trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0) * 0.999
           if (current_stake_amount / (trade.leverage if self.is_futures_mode else 1.0) - sell_amount) < (
             min_stake * 1.5
           ):
