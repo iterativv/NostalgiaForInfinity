@@ -67,7 +67,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.0.682"
+    return "v14.0.683"
 
   # ROI table:
   minimal_roi = {
@@ -4212,13 +4212,30 @@ class NostalgiaForInfinityX4(IStrategy):
         if (
           (
             (
-              current_grind_stake_profit
-              < (slice_amount * grinding_mode_2_stop_grinds / (trade.leverage if self.is_futures_mode else 1.0))
+              (
+                current_grind_stake_profit
+                < (slice_amount * grinding_mode_2_stop_grinds / (trade.leverage if self.is_futures_mode else 1.0))
+              )
+              if is_sell_found
+              else (
+                profit_stake
+                < (slice_amount * grinding_mode_2_stop_init_grinds / (trade.leverage if self.is_futures_mode else 1.0))
+              )
             )
-            if is_sell_found
-            else (
-              profit_stake
-              < (slice_amount * grinding_mode_2_stop_init_grinds / (trade.leverage if self.is_futures_mode else 1.0))
+            or (
+              (
+                profit_stake
+                < (slice_amount * grinding_mode_2_stop_init_grinds / (trade.leverage if self.is_futures_mode else 1.0))
+              )
+              and (
+                (
+                  (trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0))
+                  - (total_amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0))
+                )
+                > (min_stake * 3.0)
+              )
+              # temporary
+              and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2023, 12, 19) or is_backtest)
             )
           )
           # temporary
@@ -4240,7 +4257,9 @@ class NostalgiaForInfinityX4(IStrategy):
               min_stake * 1.5
             )
           if sell_amount > min_stake:
-            grind_profit = ((exit_rate - current_open_rate) / current_open_rate) if is_sell_found else profit_ratio
+            grind_profit = 0.0
+            if current_open_rate > 0.0:
+              grind_profit = ((exit_rate - current_open_rate) / current_open_rate) if is_sell_found else profit_ratio
             self.dp.send_msg(
               f"Grinding stop exit [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
             )
