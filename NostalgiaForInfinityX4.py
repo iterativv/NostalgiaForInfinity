@@ -266,7 +266,7 @@ class NostalgiaForInfinityX4(IStrategy):
   #############################################################
   # Buy side configuration
 
-  buy_params = {
+  entry_long_params = {
     # Enable/Disable conditions
     # -------------------------------------------------------
     "buy_condition_1_enable": True,
@@ -12431,10 +12431,10 @@ class NostalgiaForInfinityX4(IStrategy):
     is_btc_stake = self.config["stake_currency"] in self.btc_stakes
     allowed_empty_candles = 144 if is_btc_stake else 60
 
-    for buy_enable in self.buy_params:
+    for buy_enable in self.entry_long_params:
       index = int(buy_enable.split("_")[2])
       item_buy_protection_list = [True]
-      if self.buy_params[f"{buy_enable}"]:
+      if self.entry_long_params[f"{buy_enable}"]:
         # Buy conditions
         # -----------------------------------------------------------------------------------------
         item_buy_logic = []
