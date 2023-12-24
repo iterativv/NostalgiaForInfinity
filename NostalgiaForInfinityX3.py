@@ -9,7 +9,7 @@ import pandas as pd
 import pandas_ta as pta
 from freqtrade.strategy.interface import IStrategy
 from freqtrade.strategy import merge_informative_pair
-from freqtrade.strategy import DecimalParameter, IntParameter
+from freqtrade.strategy import DecimalParameter, IntParameter, CategoricalParameter
 from pandas import DataFrame, Series
 from functools import reduce
 from freqtrade.persistence import Trade, LocalTrade
@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.0.1027"
+    return "v13.0.1028"
 
   # ROI table:
   minimal_roi = {
@@ -296,6 +296,54 @@ class NostalgiaForInfinityX3(IStrategy):
   #############################################################
   hyperopt_flags = {"optimize_entry_45": True}
 
+  entry_45_close_max_12 = DecimalParameter(
+    00.50, 0.95, default=0.75, decimals=2, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
+  )
+  entry_45_close_max_24 = DecimalParameter(
+    00.50, 0.95, default=0.65, decimals=2, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
+  )
+  entry_45_close_max_48 = DecimalParameter(
+    00.50, 0.95, default=0.60, decimals=2, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
+  )
+  entry_45_high_max_24_1h = DecimalParameter(
+    00.40, 0.95, default=0.55, decimals=2, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
+  )
+  entry_45_high_max_24_4h = DecimalParameter(
+    00.40, 0.95, default=0.5, decimals=2, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
+  )
+  entry_45_high_max_6_1d = DecimalParameter(
+    00.30, 0.95, default=0.45, decimals=2, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
+  )
+  entry_45_hl_pct_change_6_1h = DecimalParameter(
+    00.30, 0.90, default=0.5, decimals=2, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
+  )
+  entry_45_hl_pct_change_12_1h = DecimalParameter(
+    00.40, 1.00, default=0.75, decimals=2, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
+  )
+  entry_45_hl_pct_change_24_1h = DecimalParameter(
+    00.50, 1.20, default=0.90, decimals=2, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
+  )
+  entry_45_hl_pct_change_48_1h = DecimalParameter(
+    00.60, 1.60, default=1.00, decimals=2, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
+  )
+  sup_level_1h_enabled = CategoricalParameter(
+    [True, False], default=False, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
+  )
+  res_level_1h_enabled = CategoricalParameter(
+    [True, False], default=False, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
+  )
+  sup_level_4h_enabled = CategoricalParameter(
+    [True, False], default=False, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
+  )
+  res_level_4h_enabled = CategoricalParameter(
+    [True, False], default=False, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
+  )
+  sup_level_1d_enabled = CategoricalParameter(
+    [True, False], default=False, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
+  )
+  res_level_1d_enabled = CategoricalParameter(
+    [True, False], default=False, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
+  )
   entry_45_rsi_3_min = DecimalParameter(
     00.0, 30.0, default=6.0, decimals=0, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
   )
@@ -23121,6 +23169,20 @@ class NostalgiaForInfinityX3(IStrategy):
           # Protections
           item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
           item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_45_close_max_12.value))
+          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_45_close_max_24.value))
+          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_45_close_max_48.value))
+          item_buy_logic.append(
+            dataframe["close"] > (dataframe["high_max_24_1h"] * self.entry_45_high_max_24_1h.value)
+          )
+          item_buy_logic.append(
+            dataframe["close"] > (dataframe["high_max_24_4h"] * self.entry_45_high_max_24_4h.value)
+          )
+          item_buy_logic.append(dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_45_high_max_6_1d.value))
+          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_45_hl_pct_change_6_1h.value)
+          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_45_hl_pct_change_12_1h.value)
+          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_45_hl_pct_change_24_1h.value)
+          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_45_hl_pct_change_48_1h.value)
           item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
           item_buy_logic.append(dataframe["rsi_3"] > self.entry_45_rsi_3_min.value)
@@ -23135,6 +23197,19 @@ class NostalgiaForInfinityX3(IStrategy):
           item_buy_logic.append(dataframe["rsi_14_4h"] < self.entry_45_rsi_14_4h_max.value)
           item_buy_logic.append(dataframe["cti_20_1d"] < self.entry_45_cti_20_1d_max.value)
           item_buy_logic.append(dataframe["rsi_14_1d"] < self.entry_45_rsi_14_1d_max.value)
+
+          if self.sup_level_1h_enabled.value:
+            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
+          if self.res_level_1h_enabled.value:
+            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+          if self.sup_level_4h_enabled.value:
+            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
+          if self.res_level_4h_enabled.value:
+            item_buy_logic.append(dataframe["close"] < dataframe["res_level_4h"])
+          if self.sup_level_1d_enabled.value:
+            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
+          if self.res_level_1d_enabled.value:
+            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
 
           # Logic
           item_buy_logic.append(dataframe["rsi_14"] > self.entry_45_rsi_14_min.value)
