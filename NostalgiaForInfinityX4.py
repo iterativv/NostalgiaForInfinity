@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.0.695"
+    return "v14.0.696"
 
   # ROI table:
   minimal_roi = {
@@ -1991,7 +1991,7 @@ class NostalgiaForInfinityX4(IStrategy):
     previous_time_profit_reached,
     enter_tags,
   ) -> tuple:
-    if previous_sell_reason in [f"exit_{mode_name}_stoploss_doom"]:
+    if previous_sell_reason in [f"exit_{mode_name}_stoploss_doom", f"exit_{mode_name}_stoploss"]:
       if profit_ratio > 0.04:
         # profit is over the threshold, don't exit
         self._remove_profit_target(pair)
@@ -2021,16 +2021,16 @@ class NostalgiaForInfinityX4(IStrategy):
         self._remove_profit_target(pair)
         return False, None
       if self.is_futures_mode:
-        if 0.001 <= profit_current_stake_ratio < 0.01:
+        if 0.01 <= profit_current_stake_ratio < 0.02:
           if profit_current_stake_ratio < (previous_profit * 0.5):
             return True, previous_sell_reason
-        elif 0.01 <= profit_current_stake_ratio < 0.02:
+        elif 0.02 <= profit_current_stake_ratio < 0.03:
           if profit_current_stake_ratio < (previous_profit * 0.6):
             return True, previous_sell_reason
-        elif 0.02 <= profit_current_stake_ratio < 0.03:
+        elif 0.03 <= profit_current_stake_ratio < 0.04:
           if profit_current_stake_ratio < (previous_profit * 0.7):
             return True, previous_sell_reason
-        elif 0.03 <= profit_current_stake_ratio < 0.08:
+        elif 0.04 <= profit_current_stake_ratio < 0.08:
           if profit_current_stake_ratio < (previous_profit * 0.8):
             return True, previous_sell_reason
         elif 0.08 <= profit_current_stake_ratio < 0.16:
