@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.0.697"
+    return "v14.0.698"
 
   # ROI table:
   minimal_roi = {
@@ -2575,6 +2575,16 @@ class NostalgiaForInfinityX4(IStrategy):
         and (last_candle["change_pct_4h"] < -0.03)
       ):
         return True, f"exit_{mode_name}_d_0_2"
+      elif (
+        (last_candle["r_14"] >= -1.0)
+        and (last_candle["rsi_14_15m"] <= 50.0)
+        and (last_candle["rsi_14_4h"] >= 50.0)
+        and (last_candle["cti_20_1d"] >= 0.50)
+        and (last_candle["rsi_14_1d"] >= 70.0)
+        and (last_candle["change_pct_4h"] <= -0.02)
+        and (last_candle["not_downtrend_1h"] == False)
+      ):
+        return True, f"exit_{mode_name}_d_0_3"
     elif 0.02 > current_profit >= 0.01:
       if (
         (last_candle["r_14"] > -10.0)
@@ -2593,6 +2603,16 @@ class NostalgiaForInfinityX4(IStrategy):
         and (last_candle["change_pct_4h"] < -0.03)
       ):
         return True, f"exit_{mode_name}_d_1_2"
+      elif (
+        (last_candle["r_14"] >= -30.0)
+        and (last_candle["rsi_14_15m"] <= 50.0)
+        and (last_candle["rsi_14_4h"] >= 50.0)
+        and (last_candle["cti_20_1d"] >= 0.50)
+        and (last_candle["rsi_14_1d"] >= 70.0)
+        and (last_candle["change_pct_4h"] <= -0.02)
+        and (last_candle["not_downtrend_1h"] == False)
+      ):
+        return True, f"exit_{mode_name}_d_1_3"
     elif 0.03 > current_profit >= 0.02:
       if (
         (last_candle["r_14"] > -16.0)
@@ -2611,6 +2631,16 @@ class NostalgiaForInfinityX4(IStrategy):
         and (last_candle["change_pct_4h"] < -0.03)
       ):
         return True, f"exit_{mode_name}_d_2_2"
+      elif (
+        (last_candle["r_14"] >= -30.0)
+        and (last_candle["rsi_14_15m"] <= 50.0)
+        and (last_candle["rsi_14_4h"] >= 50.0)
+        and (last_candle["cti_20_1d"] >= 0.50)
+        and (last_candle["rsi_14_1d"] >= 70.0)
+        and (last_candle["change_pct_4h"] <= -0.02)
+        and (last_candle["not_downtrend_1h"] == False)
+      ):
+        return True, f"exit_{mode_name}_d_2_3"
     elif 0.04 > current_profit >= 0.03:
       if (
         (last_candle["r_14"] > -16.0)
@@ -2629,6 +2659,16 @@ class NostalgiaForInfinityX4(IStrategy):
         and (last_candle["change_pct_4h"] < -0.03)
       ):
         return True, f"exit_{mode_name}_d_3_2"
+      elif (
+        (last_candle["r_14"] >= -30.0)
+        and (last_candle["rsi_14_15m"] <= 50.0)
+        and (last_candle["rsi_14_4h"] >= 50.0)
+        and (last_candle["cti_20_1d"] >= 0.50)
+        and (last_candle["rsi_14_1d"] >= 70.0)
+        and (last_candle["change_pct_4h"] <= -0.02)
+        and (last_candle["not_downtrend_1h"] == False)
+      ):
+        return True, f"exit_{mode_name}_d_3_3"
     elif 0.05 > current_profit >= 0.04:
       if (
         (last_candle["r_14"] > -16.0)
@@ -2647,6 +2687,16 @@ class NostalgiaForInfinityX4(IStrategy):
         and (last_candle["change_pct_4h"] < -0.03)
       ):
         return True, f"exit_{mode_name}_d_4_2"
+      elif (
+        (last_candle["r_14"] >= -30.0)
+        and (last_candle["rsi_14_15m"] <= 50.0)
+        and (last_candle["rsi_14_4h"] >= 50.0)
+        and (last_candle["cti_20_1d"] >= 0.50)
+        and (last_candle["rsi_14_1d"] >= 70.0)
+        and (last_candle["change_pct_4h"] <= -0.02)
+        and (last_candle["not_downtrend_1h"] == False)
+      ):
+        return True, f"exit_{mode_name}_d_4_3"
     elif 0.06 > current_profit >= 0.05:
       if (
         (last_candle["r_14"] > -16.0)
@@ -2665,6 +2715,16 @@ class NostalgiaForInfinityX4(IStrategy):
         and (last_candle["change_pct_4h"] < -0.03)
       ):
         return True, f"exit_{mode_name}_d_5_2"
+      elif (
+        (last_candle["r_14"] >= -1.0)
+        and (last_candle["rsi_14_15m"] <= 50.0)
+        and (last_candle["rsi_14_4h"] >= 50.0)
+        and (last_candle["cti_20_1d"] >= 0.50)
+        and (last_candle["rsi_14_1d"] >= 70.0)
+        and (last_candle["change_pct_4h"] <= -0.02)
+        and (last_candle["not_downtrend_1h"] == False)
+      ):
+        return True, f"exit_{mode_name}_d_5_3"
     elif 0.07 > current_profit >= 0.06:
       if (
         (last_candle["r_14"] > -16.0)
@@ -2683,6 +2743,16 @@ class NostalgiaForInfinityX4(IStrategy):
         and (last_candle["change_pct_4h"] < -0.03)
       ):
         return True, f"exit_{mode_name}_d_6_2"
+      elif (
+        (last_candle["r_14"] >= -1.0)
+        and (last_candle["rsi_14_15m"] <= 50.0)
+        and (last_candle["rsi_14_4h"] >= 50.0)
+        and (last_candle["cti_20_1d"] >= 0.50)
+        and (last_candle["rsi_14_1d"] >= 70.0)
+        and (last_candle["change_pct_4h"] <= -0.02)
+        and (last_candle["not_downtrend_1h"] == False)
+      ):
+        return True, f"exit_{mode_name}_d_6_3"
     elif 0.08 > current_profit >= 0.07:
       if (
         (last_candle["r_14"] > -16.0)
@@ -2701,6 +2771,16 @@ class NostalgiaForInfinityX4(IStrategy):
         and (last_candle["change_pct_4h"] < -0.03)
       ):
         return True, f"exit_{mode_name}_d_7_2"
+      elif (
+        (last_candle["r_14"] >= -1.0)
+        and (last_candle["rsi_14_15m"] <= 50.0)
+        and (last_candle["rsi_14_4h"] >= 50.0)
+        and (last_candle["cti_20_1d"] >= 0.50)
+        and (last_candle["rsi_14_1d"] >= 70.0)
+        and (last_candle["change_pct_4h"] <= -0.02)
+        and (last_candle["not_downtrend_1h"] == False)
+      ):
+        return True, f"exit_{mode_name}_d_7_3"
     elif 0.09 > current_profit >= 0.08:
       if (
         (last_candle["r_14"] > -16.0)
@@ -2719,6 +2799,16 @@ class NostalgiaForInfinityX4(IStrategy):
         and (last_candle["change_pct_4h"] < -0.03)
       ):
         return True, f"exit_{mode_name}_d_8_2"
+      elif (
+        (last_candle["r_14"] >= -1.0)
+        and (last_candle["rsi_14_15m"] <= 50.0)
+        and (last_candle["rsi_14_4h"] >= 50.0)
+        and (last_candle["cti_20_1d"] >= 0.50)
+        and (last_candle["rsi_14_1d"] >= 70.0)
+        and (last_candle["change_pct_4h"] <= -0.02)
+        and (last_candle["not_downtrend_1h"] == False)
+      ):
+        return True, f"exit_{mode_name}_d_8_3"
     elif 0.1 > current_profit >= 0.09:
       if (
         (last_candle["r_14"] > -16.0)
@@ -2737,6 +2827,16 @@ class NostalgiaForInfinityX4(IStrategy):
         and (last_candle["change_pct_4h"] < -0.03)
       ):
         return True, f"exit_{mode_name}_d_9_2"
+      elif (
+        (last_candle["r_14"] >= -1.0)
+        and (last_candle["rsi_14_15m"] <= 50.0)
+        and (last_candle["rsi_14_4h"] >= 50.0)
+        and (last_candle["cti_20_1d"] >= 0.50)
+        and (last_candle["rsi_14_1d"] >= 70.0)
+        and (last_candle["change_pct_4h"] <= -0.02)
+        and (last_candle["not_downtrend_1h"] == False)
+      ):
+        return True, f"exit_{mode_name}_d_9_3"
     elif 0.12 > current_profit >= 0.1:
       if (
         (last_candle["r_14"] > -16.0)
@@ -2755,6 +2855,16 @@ class NostalgiaForInfinityX4(IStrategy):
         and (last_candle["change_pct_4h"] < -0.03)
       ):
         return True, f"exit_{mode_name}_d_10_2"
+      elif (
+        (last_candle["r_14"] >= -1.0)
+        and (last_candle["rsi_14_15m"] <= 50.0)
+        and (last_candle["rsi_14_4h"] >= 50.0)
+        and (last_candle["cti_20_1d"] >= 0.50)
+        and (last_candle["rsi_14_1d"] >= 70.0)
+        and (last_candle["change_pct_4h"] <= -0.02)
+        and (last_candle["not_downtrend_1h"] == False)
+      ):
+        return True, f"exit_{mode_name}_d_10_3"
     elif 0.2 > current_profit >= 0.12:
       if (
         (last_candle["r_14"] > -16.0)
@@ -2773,6 +2883,16 @@ class NostalgiaForInfinityX4(IStrategy):
         and (last_candle["change_pct_4h"] < -0.03)
       ):
         return True, f"exit_{mode_name}_d_11_2"
+      elif (
+        (last_candle["r_14"] >= -1.0)
+        and (last_candle["rsi_14_15m"] <= 50.0)
+        and (last_candle["rsi_14_4h"] >= 50.0)
+        and (last_candle["cti_20_1d"] >= 0.50)
+        and (last_candle["rsi_14_1d"] >= 70.0)
+        and (last_candle["change_pct_4h"] <= -0.02)
+        and (last_candle["not_downtrend_1h"] == False)
+      ):
+        return True, f"exit_{mode_name}_d_11_3"
     elif current_profit >= 0.2:
       if (
         (last_candle["r_14"] > -10.0)
@@ -2791,6 +2911,16 @@ class NostalgiaForInfinityX4(IStrategy):
         and (last_candle["change_pct_4h"] < -0.03)
       ):
         return True, f"exit_{mode_name}_d_12_2"
+      elif (
+        (last_candle["r_14"] >= -1.0)
+        and (last_candle["rsi_14_15m"] <= 50.0)
+        and (last_candle["rsi_14_4h"] >= 50.0)
+        and (last_candle["cti_20_1d"] >= 0.50)
+        and (last_candle["rsi_14_1d"] >= 70.0)
+        and (last_candle["change_pct_4h"] <= -0.02)
+        and (last_candle["not_downtrend_1h"] == False)
+      ):
+        return True, f"exit_{mode_name}_d_12_3"
 
     return False, None
 
