@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.0.1044"
+    return "v13.0.1045"
 
   # ROI table:
   minimal_roi = {
@@ -4767,10 +4767,11 @@ class NostalgiaForInfinityX3(IStrategy):
       if (
         ((0 <= sub_grind_count < max_sub_grinds) and (slice_profit_entry < rebuy_mode_sub_thresholds[sub_grind_count]))
         and (last_candle["protections_long_global"] == True)
+        and (last_candle["protections_long_rebuy"] == True)
         and (
-          (last_candle["close_max_12"] < (last_candle["close"] * 1.12))
-          and (last_candle["close_max_24"] < (last_candle["close"] * 1.18))
-          and (last_candle["close_max_48"] < (last_candle["close"] * 1.24))
+          (last_candle["close_max_12"] < (last_candle["close"] * 1.14))
+          and (last_candle["close_max_24"] < (last_candle["close"] * 1.20))
+          and (last_candle["close_max_48"] < (last_candle["close"] * 1.26))
           and (last_candle["btc_pct_close_max_72_5m"] < 0.03)
           and (last_candle["btc_pct_close_max_24_5m"] < 0.03)
         )
