@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.0.700"
+    return "v14.0.701"
 
   # ROI table:
   minimal_roi = {
@@ -305,6 +305,42 @@ class NostalgiaForInfinityX4(IStrategy):
   buy_protection_params = {}
 
   #############################################################
+  # Buy hyperspace params:
+  buy_params = {
+    "entry_45_close_max_12": 0.76,
+    "entry_45_close_max_24": 0.88,
+    "entry_45_close_max_48": 0.82,
+    "entry_45_cti_20_1d_max": 0.6,
+    "entry_45_cti_20_1h_max": 0.92,
+    "entry_45_cti_20_4h_max": 0.88,
+    "entry_45_cti_20_max": -0.54,
+    "entry_45_high_max_24_1h": 0.83,
+    "entry_45_high_max_24_4h": 0.86,
+    "entry_45_high_max_6_1d": 0.47,
+    "entry_45_hl_pct_change_12_1h": 0.87,
+    "entry_45_hl_pct_change_24_1h": 0.61,
+    "entry_45_hl_pct_change_48_1h": 1.37,
+    "entry_45_hl_pct_change_6_1h": 0.56,
+    "entry_45_rsi_14_1d_max": 64.0,
+    "entry_45_rsi_14_1h_max": 89.0,
+    "entry_45_rsi_14_4h_max": 80.0,
+    "entry_45_rsi_14_max": 43.0,
+    "entry_45_rsi_14_min": 25.0,
+    "entry_45_rsi_3_15m_min": 16.0,
+    "entry_45_rsi_3_1d_min": 5.0,
+    "entry_45_rsi_3_1h_min": 9.0,
+    "entry_45_rsi_3_4h_min": 2.0,
+    "entry_45_rsi_3_max": 34.0,
+    "entry_45_rsi_3_min": 7.0,
+    "entry_45_sma_offset": 0.980,
+    "entry_45_res_level_1d_enabled": False,
+    "entry_45_res_level_1h_enabled": False,
+    "entry_45_res_level_4h_enabled": False,
+    "entry_45_sup_level_1d_enabled": False,
+    "entry_45_sup_level_1h_enabled": True,
+    "entry_45_sup_level_4h_enabled": True,
+  }
+
   hyperopt_flags = {"optimize_entry_45": True}
 
   entry_45_close_max_12 = DecimalParameter(
@@ -337,22 +373,22 @@ class NostalgiaForInfinityX4(IStrategy):
   entry_45_hl_pct_change_48_1h = DecimalParameter(
     00.60, 1.60, default=1.00, decimals=2, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
   )
-  sup_level_1h_enabled = CategoricalParameter(
+  entry_45_sup_level_1h_enabled = CategoricalParameter(
     [True, False], default=False, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
   )
-  res_level_1h_enabled = CategoricalParameter(
+  entry_45_res_level_1h_enabled = CategoricalParameter(
     [True, False], default=False, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
   )
-  sup_level_4h_enabled = CategoricalParameter(
+  entry_45_sup_level_4h_enabled = CategoricalParameter(
     [True, False], default=False, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
   )
-  res_level_4h_enabled = CategoricalParameter(
+  entry_45_res_level_4h_enabled = CategoricalParameter(
     [True, False], default=False, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
   )
-  sup_level_1d_enabled = CategoricalParameter(
+  entry_45_sup_level_1d_enabled = CategoricalParameter(
     [True, False], default=False, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
   )
-  res_level_1d_enabled = CategoricalParameter(
+  entry_45_res_level_1d_enabled = CategoricalParameter(
     [True, False], default=False, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
   )
   entry_45_rsi_3_min = DecimalParameter(
@@ -22148,17 +22184,17 @@ class NostalgiaForInfinityX4(IStrategy):
           item_buy_logic.append(dataframe["cti_20_1d"] < self.entry_45_cti_20_1d_max.value)
           item_buy_logic.append(dataframe["rsi_14_1d"] < self.entry_45_rsi_14_1d_max.value)
 
-          if self.sup_level_1h_enabled.value:
+          if self.entry_45_sup_level_1h_enabled.value:
             item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
-          if self.res_level_1h_enabled.value:
+          if self.entry_45_res_level_1h_enabled.value:
             item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
-          if self.sup_level_4h_enabled.value:
+          if self.entry_45_sup_level_4h_enabled.value:
             item_buy_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
-          if self.res_level_4h_enabled.value:
+          if self.entry_45_res_level_4h_enabled.value:
             item_buy_logic.append(dataframe["close"] < dataframe["res_level_4h"])
-          if self.sup_level_1d_enabled.value:
+          if self.entry_45_sup_level_1d_enabled.value:
             item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
-          if self.res_level_1d_enabled.value:
+          if self.entry_45_res_level_1d_enabled.value:
             item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
 
           # Logic
