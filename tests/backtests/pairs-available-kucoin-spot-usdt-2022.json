@@ -3,7 +3,6 @@
   "exchange": {
     "name": "kucoin",
     "pair_whitelist": [
-      "ACA/USDT",
       "ACH/USDT",
       "ACQ/USDT",
       "ACT/USDT",
