@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.0.1047"
+    return "v13.0.1048"
 
   # ROI table:
   minimal_roi = {
@@ -426,7 +426,7 @@ class NostalgiaForInfinityX3(IStrategy):
     -0.99, -0.50, default=-0.70, decimals=2, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
   )
   entry_45_sma_offset = DecimalParameter(
-    0.940, 0.999, default=0.972, decimals=3, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
+    0.940, 0.984, default=0.972, decimals=3, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
   )
   #############################################################
   # CACHES
