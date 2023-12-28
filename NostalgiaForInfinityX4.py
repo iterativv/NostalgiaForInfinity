@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.0.707"
+    return "v14.0.708"
 
   # ROI table:
   minimal_roi = {
@@ -308,31 +308,31 @@ class NostalgiaForInfinityX4(IStrategy):
   # Buy hyperspace params:
   buy_params = {
     "entry_45_close_max_12": 0.76,
-    "entry_45_close_max_24": 0.88,
-    "entry_45_close_max_48": 0.82,
-    "entry_45_cti_20_1d_max": 0.6,
+    "entry_45_close_max_24": 0.78,
+    "entry_45_close_max_48": 0.80,
+    "entry_45_cti_20_1d_max": 0.92,
     "entry_45_cti_20_1h_max": 0.92,
-    "entry_45_cti_20_4h_max": 0.88,
+    "entry_45_cti_20_4h_max": 0.92,
     "entry_45_cti_20_max": -0.54,
-    "entry_45_high_max_24_1h": 0.83,
+    "entry_45_high_max_24_1h": 0.82,
     "entry_45_high_max_24_4h": 0.86,
-    "entry_45_high_max_6_1d": 0.47,
-    "entry_45_hl_pct_change_12_1h": 0.87,
-    "entry_45_hl_pct_change_24_1h": 0.61,
-    "entry_45_hl_pct_change_48_1h": 1.37,
+    "entry_45_high_max_6_1d": 0.90,
+    "entry_45_hl_pct_change_12_1h": 0.86,
+    "entry_45_hl_pct_change_24_1h": 0.90,
+    "entry_45_hl_pct_change_48_1h": 1.36,
     "entry_45_hl_pct_change_6_1h": 0.56,
-    "entry_45_rsi_14_1d_max": 64.0,
-    "entry_45_rsi_14_1h_max": 89.0,
+    "entry_45_rsi_14_1d_max": 80.0,
+    "entry_45_rsi_14_1h_max": 80.0,
     "entry_45_rsi_14_4h_max": 80.0,
-    "entry_45_rsi_14_max": 43.0,
-    "entry_45_rsi_14_min": 25.0,
-    "entry_45_rsi_3_15m_min": 16.0,
-    "entry_45_rsi_3_1d_min": 5.0,
-    "entry_45_rsi_3_1h_min": 9.0,
+    "entry_45_rsi_14_max": 46.0,
+    "entry_45_rsi_14_min": 26.0,
+    "entry_45_rsi_3_15m_min": 2.0,
+    "entry_45_rsi_3_1d_min": 2.0,
+    "entry_45_rsi_3_1h_min": 2.0,
     "entry_45_rsi_3_4h_min": 2.0,
-    "entry_45_rsi_3_max": 34.0,
-    "entry_45_rsi_3_min": 7.0,
-    "entry_45_sma_offset": 0.980,
+    "entry_45_rsi_3_max": 46.0,
+    "entry_45_rsi_3_min": 2.0,
+    "entry_45_sma_offset": 0.960,
     "entry_45_res_level_1d_enabled": False,
     "entry_45_res_level_1h_enabled": False,
     "entry_45_res_level_4h_enabled": False,
