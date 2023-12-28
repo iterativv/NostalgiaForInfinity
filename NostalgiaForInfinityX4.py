@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.0.708"
+    return "v14.0.709"
 
   # ROI table:
   minimal_roi = {
@@ -341,104 +341,38 @@ class NostalgiaForInfinityX4(IStrategy):
     "entry_45_sup_level_4h_enabled": True,
   }
 
-  hyperopt_flags = {"optimize_entry_45": True}
-
-  entry_45_close_max_12 = DecimalParameter(
-    00.50, 0.95, default=0.75, decimals=2, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
-  )
-  entry_45_close_max_24 = DecimalParameter(
-    00.50, 0.95, default=0.65, decimals=2, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
-  )
-  entry_45_close_max_48 = DecimalParameter(
-    00.50, 0.95, default=0.60, decimals=2, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
-  )
-  entry_45_high_max_24_1h = DecimalParameter(
-    00.40, 0.95, default=0.55, decimals=2, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
-  )
-  entry_45_high_max_24_4h = DecimalParameter(
-    00.40, 0.95, default=0.5, decimals=2, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
-  )
-  entry_45_high_max_6_1d = DecimalParameter(
-    00.30, 0.95, default=0.45, decimals=2, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
-  )
-  entry_45_hl_pct_change_6_1h = DecimalParameter(
-    00.30, 0.90, default=0.5, decimals=2, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
-  )
-  entry_45_hl_pct_change_12_1h = DecimalParameter(
-    00.40, 1.00, default=0.75, decimals=2, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
-  )
-  entry_45_hl_pct_change_24_1h = DecimalParameter(
-    00.50, 1.20, default=0.90, decimals=2, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
-  )
-  entry_45_hl_pct_change_48_1h = DecimalParameter(
-    00.60, 1.60, default=1.00, decimals=2, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
-  )
-  entry_45_sup_level_1h_enabled = CategoricalParameter(
-    [True, False], default=False, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
-  )
-  entry_45_res_level_1h_enabled = CategoricalParameter(
-    [True, False], default=False, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
-  )
-  entry_45_sup_level_4h_enabled = CategoricalParameter(
-    [True, False], default=False, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
-  )
-  entry_45_res_level_4h_enabled = CategoricalParameter(
-    [True, False], default=False, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
-  )
-  entry_45_sup_level_1d_enabled = CategoricalParameter(
-    [True, False], default=False, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
-  )
-  entry_45_res_level_1d_enabled = CategoricalParameter(
-    [True, False], default=False, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
-  )
-  entry_45_rsi_3_min = DecimalParameter(
-    00.0, 30.0, default=6.0, decimals=0, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
-  )
-  entry_45_rsi_3_max = DecimalParameter(
-    30.0, 60.0, default=46.0, decimals=0, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
-  )
-  entry_45_rsi_3_15m_min = DecimalParameter(
-    00.0, 30.0, default=16.0, decimals=0, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
-  )
-  entry_45_rsi_3_1h_min = DecimalParameter(
-    00.0, 30.0, default=16.0, decimals=0, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
-  )
-  entry_45_rsi_3_4h_min = DecimalParameter(
-    00.0, 30.0, default=16.0, decimals=0, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
-  )
-  entry_45_rsi_3_1d_min = DecimalParameter(
-    00.0, 30.0, default=6.0, decimals=0, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
-  )
-  entry_45_cti_20_1h_max = DecimalParameter(
-    0.0, 0.99, default=0.9, decimals=2, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
-  )
-  entry_45_rsi_14_1h_max = DecimalParameter(
-    50.0, 90.0, default=80.0, decimals=0, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
-  )
-  entry_45_cti_20_4h_max = DecimalParameter(
-    0.0, 0.99, default=0.9, decimals=2, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
-  )
-  entry_45_rsi_14_4h_max = DecimalParameter(
-    50.0, 90.0, default=80.0, decimals=0, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
-  )
-  entry_45_cti_20_1d_max = DecimalParameter(
-    0.0, 0.99, default=0.9, decimals=2, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
-  )
-  entry_45_rsi_14_1d_max = DecimalParameter(
-    50.0, 90.0, default=80.0, decimals=0, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
-  )
-  entry_45_rsi_14_min = DecimalParameter(
-    10.0, 40.0, default=30.0, decimals=0, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
-  )
-  entry_45_rsi_14_max = DecimalParameter(
-    20.0, 60.0, default=46.0, decimals=0, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
-  )
-  entry_45_cti_20_max = DecimalParameter(
-    -0.99, -0.50, default=-0.70, decimals=2, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
-  )
-  entry_45_sma_offset = DecimalParameter(
-    0.940, 0.984, default=0.972, decimals=3, space="buy", optimize=hyperopt_flags["optimize_entry_45"]
-  )
+  entry_45_close_max_12 = DecimalParameter(00.50, 0.95, default=0.75, decimals=2, space="buy", optimize=True)
+  entry_45_close_max_24 = DecimalParameter(00.50, 0.95, default=0.65, decimals=2, space="buy", optimize=True)
+  entry_45_close_max_48 = DecimalParameter(00.50, 0.95, default=0.60, decimals=2, space="buy", optimize=True)
+  entry_45_high_max_24_1h = DecimalParameter(00.40, 0.95, default=0.55, decimals=2, space="buy", optimize=True)
+  entry_45_high_max_24_4h = DecimalParameter(00.40, 0.95, default=0.5, decimals=2, space="buy", optimize=True)
+  entry_45_high_max_6_1d = DecimalParameter(00.30, 0.95, default=0.45, decimals=2, space="buy", optimize=True)
+  entry_45_hl_pct_change_6_1h = DecimalParameter(00.30, 0.90, default=0.5, decimals=2, space="buy", optimize=True)
+  entry_45_hl_pct_change_12_1h = DecimalParameter(00.40, 1.00, default=0.75, decimals=2, space="buy", optimize=True)
+  entry_45_hl_pct_change_24_1h = DecimalParameter(00.50, 1.20, default=0.90, decimals=2, space="buy", optimize=True)
+  entry_45_hl_pct_change_48_1h = DecimalParameter(00.60, 1.60, default=1.00, decimals=2, space="buy", optimize=True)
+  entry_45_sup_level_1h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=True)
+  entry_45_res_level_1h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=True)
+  entry_45_sup_level_4h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=True)
+  entry_45_res_level_4h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=True)
+  entry_45_sup_level_1d_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=True)
+  entry_45_res_level_1d_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=True)
+  entry_45_rsi_3_min = DecimalParameter(00.0, 30.0, default=6.0, decimals=0, space="buy", optimize=True)
+  entry_45_rsi_3_max = DecimalParameter(30.0, 60.0, default=46.0, decimals=0, space="buy", optimize=True)
+  entry_45_rsi_3_15m_min = DecimalParameter(00.0, 30.0, default=16.0, decimals=0, space="buy", optimize=True)
+  entry_45_rsi_3_1h_min = DecimalParameter(00.0, 30.0, default=16.0, decimals=0, space="buy", optimize=True)
+  entry_45_rsi_3_4h_min = DecimalParameter(00.0, 30.0, default=16.0, decimals=0, space="buy", optimize=True)
+  entry_45_rsi_3_1d_min = DecimalParameter(00.0, 30.0, default=6.0, decimals=0, space="buy", optimize=True)
+  entry_45_cti_20_1h_max = DecimalParameter(0.0, 0.99, default=0.9, decimals=2, space="buy", optimize=True)
+  entry_45_rsi_14_1h_max = DecimalParameter(50.0, 90.0, default=80.0, decimals=0, space="buy", optimize=True)
+  entry_45_cti_20_4h_max = DecimalParameter(0.0, 0.99, default=0.9, decimals=2, space="buy", optimize=True)
+  entry_45_rsi_14_4h_max = DecimalParameter(50.0, 90.0, default=80.0, decimals=0, space="buy", optimize=True)
+  entry_45_cti_20_1d_max = DecimalParameter(0.0, 0.99, default=0.9, decimals=2, space="buy", optimize=True)
+  entry_45_rsi_14_1d_max = DecimalParameter(50.0, 90.0, default=80.0, decimals=0, space="buy", optimize=True)
+  entry_45_rsi_14_min = DecimalParameter(10.0, 40.0, default=30.0, decimals=0, space="buy", optimize=True)
+  entry_45_rsi_14_max = DecimalParameter(20.0, 60.0, default=46.0, decimals=0, space="buy", optimize=True)
+  entry_45_cti_20_max = DecimalParameter(-0.99, -0.50, default=-0.70, decimals=2, space="buy", optimize=True)
+  entry_45_sma_offset = DecimalParameter(0.940, 0.984, default=0.972, decimals=3, space="buy", optimize=True)
   #############################################################
   # CACHES
 
