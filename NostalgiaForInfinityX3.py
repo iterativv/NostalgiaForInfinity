@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.0.1054"
+    return "v13.0.1055"
 
   # ROI table:
   minimal_roi = {
@@ -4865,8 +4865,6 @@ class NostalgiaForInfinityX3(IStrategy):
         )
         if buy_amount > max_stake:
           buy_amount = max_stake
-        if buy_amount < min_stake:
-          return None
         if buy_amount < (min_stake * 1.5):
           buy_amount = min_stake * 1.5
         self.dp.send_msg(
