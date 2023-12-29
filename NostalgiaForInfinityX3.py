@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.0.1050"
+    return "v13.0.1051"
 
   # ROI table:
   minimal_roi = {
@@ -296,32 +296,32 @@ class NostalgiaForInfinityX3(IStrategy):
   #############################################################
   # Buy hyperspace params:
   buy_params = {
-    "entry_45_close_max_12": 0.76,
-    "entry_45_close_max_24": 0.78,
+    "entry_45_close_max_12": 0.88,
+    "entry_45_close_max_24": 0.84,
     "entry_45_close_max_48": 0.80,
     "entry_45_cti_20_1d_max": 0.92,
     "entry_45_cti_20_1h_max": 0.92,
     "entry_45_cti_20_4h_max": 0.92,
     "entry_45_cti_20_max": -0.54,
-    "entry_45_high_max_24_1h": 0.82,
-    "entry_45_high_max_24_4h": 0.86,
-    "entry_45_high_max_6_1d": 0.90,
+    "entry_45_high_max_24_1h": 0.70,
+    "entry_45_high_max_24_4h": 0.66,
+    "entry_45_high_max_6_1d": 0.60,
     "entry_45_hl_pct_change_12_1h": 0.86,
     "entry_45_hl_pct_change_24_1h": 0.90,
     "entry_45_hl_pct_change_48_1h": 1.36,
     "entry_45_hl_pct_change_6_1h": 0.56,
-    "entry_45_rsi_14_1d_max": 80.0,
+    "entry_45_rsi_14_1d_max": 75.0,
     "entry_45_rsi_14_1h_max": 80.0,
-    "entry_45_rsi_14_4h_max": 80.0,
-    "entry_45_rsi_14_max": 46.0,
+    "entry_45_rsi_14_4h_max": 75.0,
+    "entry_45_rsi_14_max": 40.0,
     "entry_45_rsi_14_min": 26.0,
     "entry_45_rsi_3_15m_min": 2.0,
-    "entry_45_rsi_3_1d_min": 2.0,
-    "entry_45_rsi_3_1h_min": 2.0,
-    "entry_45_rsi_3_4h_min": 2.0,
+    "entry_45_rsi_3_1d_min": 6.0,
+    "entry_45_rsi_3_1h_min": 6.0,
+    "entry_45_rsi_3_4h_min": 6.0,
     "entry_45_rsi_3_max": 46.0,
     "entry_45_rsi_3_min": 2.0,
-    "entry_45_sma_offset": 0.960,
+    "entry_45_sma_offset": 0.954,
     "entry_45_res_level_1d_enabled": False,
     "entry_45_res_level_1h_enabled": False,
     "entry_45_res_level_4h_enabled": False,
@@ -21871,6 +21871,12 @@ class NostalgiaForInfinityX3(IStrategy):
             item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
           if self.entry_45_res_level_1d_enabled.value:
             item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+
+          item_buy_logic.append(
+            (dataframe["change_pct_4h"] < 0.12)
+            | (dataframe["top_wick_pct_4h"] < 0.12)
+            | (dataframe["rsi_14_1h"] < 70.0)
+          )
 
           # Logic
           item_buy_logic.append(dataframe["rsi_14"] > self.entry_45_rsi_14_min.value)
