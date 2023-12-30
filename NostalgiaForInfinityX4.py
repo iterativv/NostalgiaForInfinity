@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.0.723"
+    return "v14.0.724"
 
   # ROI table:
   minimal_roi = {
@@ -4398,934 +4398,261 @@ class NostalgiaForInfinityX4(IStrategy):
 
       current_stake_amount = trade.amount * current_rate
 
-      current_grind_mode = self.grinding_mode
-      if (current_grind_mode == 1) and (
-        (slice_amount * self.grinding_mode_1_stakes_alt_4[0] / (trade.leverage if self.is_futures_mode else 1.0))
-        < min_stake
+      max_sub_grinds = 0
+      grinding_mode_2_stakes = []
+      grinding_mode_2_sub_thresholds = []
+      for i, item in enumerate(
+        self.grinding_mode_2_stakes_futures if self.is_futures_mode else self.grinding_mode_2_stakes_spot
       ):
-        current_grind_mode = 0
+        if (slice_amount * item[0] / (trade.leverage if self.is_futures_mode else 1.0)) > min_stake:
+          grinding_mode_2_stakes = item
+          grinding_mode_2_sub_thresholds = (
+            self.grinding_mode_2_sub_thresholds_futures[i]
+            if self.is_futures_mode
+            else self.grinding_mode_2_sub_thresholds_spot[i]
+          )
+          max_sub_grinds = len(grinding_mode_2_stakes)
+          break
+      grinding_mode_2_stop_init_grinds = (
+        self.grinding_mode_2_stop_init_grinds_futures
+        if self.is_futures_mode
+        else self.grinding_mode_2_stop_init_grinds_spot
+      )
+      grinding_mode_2_stop_grinds = (
+        self.grinding_mode_2_stop_grinds_futures if self.is_futures_mode else self.grinding_mode_2_stop_grinds_spot
+      )
+      grinding_mode_2_profit_threshold = (
+        self.grinding_mode_2_profit_threshold_futures
+        if self.is_futures_mode
+        else self.grinding_mode_2_profit_threshold_spot
+      )
+      partial_sell = False
+      is_sell_found = False
+      sub_grind_count = 0
+      total_amount = 0.0
+      total_cost = 0.0
+      current_open_rate = 0.0
+      current_grind_stake = 0.0
+      current_grind_stake_profit = 0.0
+      for order in reversed(filled_orders):
+        if (order.ft_order_side == "buy") and (order is not filled_orders[0]):
+          sub_grind_count += 1
+          total_amount += order.safe_filled
+          total_cost += order.safe_filled * order.safe_price
+        elif order.ft_order_side == "sell":
+          is_sell_found = True
+          if (order.safe_remaining * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) > min_stake:
+            partial_sell = True
+          break
+      if sub_grind_count > 0:
+        current_open_rate = total_cost / total_amount
+        current_grind_stake = total_amount * exit_rate * (1 - trade.fee_close)
+        current_grind_stake_profit = current_grind_stake - total_cost
 
-      is_x3_trade = len(filled_orders) >= 2 and filled_orders[1].ft_order_side == "sell"
-
-      # mode 0
-      if current_grind_mode == 0:
-        # Buy
-        grinding_parts = len(self.grinding_stakes)
-        grinding_thresholds = self.grinding_thresholds
-        grinding_stakes = self.grinding_stakes
-        # Low stakes, on Binance mostly
-        if (slice_amount * self.grinding_stakes[0] / (trade.leverage if self.is_futures_mode else 1.0)) < min_stake:
-          if (
-            slice_amount * self.grinding_stakes_alt_1[0] / (trade.leverage if self.is_futures_mode else 1.0)
-          ) < min_stake:
-            grinding_parts = len(self.grinding_stakes_alt_2)
-            grinding_thresholds = self.grinding_thresholds_alt_2
-            grinding_stakes = self.grinding_stakes_alt_2
-          else:
-            grinding_parts = len(self.grinding_stakes_alt_1)
-            grinding_thresholds = self.grinding_thresholds_alt_1
-            grinding_stakes = self.grinding_stakes_alt_1
-
-        stake_amount_threshold = slice_amount * grinding_stakes[0]
-        for i in range(grinding_parts):
-          if current_stake_amount < stake_amount_threshold:
-            if (
-              (
-                profit_current_stake_ratio
-                < (
-                  (0.0 if (i == 0 and is_x3_trade) else grinding_thresholds[i])
-                  * (trade.leverage if self.is_futures_mode else 1.0)
-                )
-              )
-              and (last_candle["protections_long_global"] == True)
-              and (
-                (last_candle["close_max_12"] < (last_candle["close"] * 1.12))
-                and (last_candle["close_max_24"] < (last_candle["close"] * 1.18))
-                and (last_candle["close_max_48"] < (last_candle["close"] * 1.24))
-                and (last_candle["btc_pct_close_max_72_5m"] < 0.04)
-                and (last_candle["btc_pct_close_max_24_5m"] < 0.03)
-              )
-              and (
-                (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
-                or (slice_profit_entry < -0.02)
-              )
-              and (
-                (
-                  (last_candle["enter_long"] == True)
-                  and (current_time - timedelta(minutes=30) > filled_entries[-1].order_filled_utc)
-                  and (slice_profit_entry < -0.06)
-                )
-                or (
-                  (last_candle["rsi_14"] < 36.0)
-                  and (last_candle["r_14"] < -90.0)
-                  and (previous_candle["rsi_3"] > 16.0)
-                  and (last_candle["ema_26"] > last_candle["ema_12"])
-                  and ((last_candle["ema_26"] - last_candle["ema_12"]) > (last_candle["open"] * 0.012))
-                  and ((previous_candle["ema_26"] - previous_candle["ema_12"]) > (last_candle["open"] / 100.0))
-                  and (last_candle["rsi_3_15m"] > 26.0)
-                  and (last_candle["rsi_3_1h"] > 26.0)
-                  and (last_candle["rsi_3_4h"] > 26.0)
-                )
-                or (
-                  (last_candle["rsi_14"] < 32.0)
-                  and (last_candle["rsi_14"] > previous_candle["rsi_14"])
-                  and (previous_candle["rsi_3"] > 16.0)
-                  and (last_candle["rsi_3_15m"] > 26.0)
-                  and (last_candle["cti_20_1h"] < 0.7)
-                  and (last_candle["rsi_3_1h"] > 26.0)
-                  and (last_candle["rsi_3_4h"] > 20.0)
-                  and (last_candle["ema_200_dec_24"] == False)
-                )
-                or (
-                  (last_candle["rsi_14"] < 36.0)
-                  and (last_candle["rsi_3"] > 8.0)
-                  and (last_candle["close"] < (last_candle["bb20_2_low"] * 1.0))
-                  and (last_candle["ema_12"] < (last_candle["ema_26"] * 0.990))
-                  and (last_candle["rsi_3_15m"] > 26.0)
-                  and (last_candle["cti_20_1h"] < 0.5)
-                  and (last_candle["rsi_3_1h"] > 25.0)
-                  and (last_candle["rsi_3_4h"] > 30.0)
-                  and (last_candle["rsi_14_4h"] < 70.0)
-                )
-                or (
-                  (last_candle["rsi_14"] < 35.0)
-                  and (last_candle["rsi_3"] > 26.0)
-                  and (last_candle["ha_close"] > last_candle["ha_open"])
-                  and (last_candle["rsi_3_15m"] > 26.0)
-                  and (last_candle["cti_20_1h"] < 0.8)
-                  and (last_candle["rsi_3_1h"] > 26.0)
-                  and (last_candle["cti_20_4h"] < 0.8)
-                  and (last_candle["rsi_3_4h"] > 26.0)
-                  and (last_candle["ema_200_dec_24"] == False)
-                  and (last_candle["ema_200_dec_24_15m"] == False)
-                  and (last_candle["ema_200_dec_48_1h"] == False)
-                )
-                or (
-                  (last_candle["rsi_14"] < 36.0)
-                  and (last_candle["rsi_3"] > 5.0)
-                  and (last_candle["tsi"] < -20.0)
-                  and (last_candle["tsi"] > last_candle["tsi_signal"])
-                  and (previous_candle["tsi"] < previous_candle["tsi_signal"])
-                  and (last_candle["rsi_3_15m"] > 5.0)
-                  and (last_candle["rsi_3_1h"] > 30.0)
-                  and (last_candle["rsi_3_4h"] > 30.0)
-                )
-                or (
-                  (last_candle["rsi_14"] < 35.0)
-                  and (last_candle["rsi_3"] > 10.0)
-                  and (last_candle["high_max_6_1h"] > (last_candle["close"] * 1.10))
-                  and (last_candle["rsi_14"] > previous_candle["rsi_14"])
-                  and (last_candle["rsi_3_15m"] > 20.0)
-                  and (last_candle["cti_20_1h"] < 0.5)
-                  and (last_candle["rsi_3_1h"] > 30.0)
-                  and (last_candle["rsi_3_4h"] > 30.0)
-                )
-                or (
-                  (last_candle["rsi_14"] < 36.0)
-                  and (last_candle["close"] > (last_candle["sar"] * 1.000))
-                  and (previous_candle["close"] < previous_candle["sar"])
-                  and (last_candle["rsi_3_15m"] > 20.0)
-                  and (last_candle["cti_20_1h"] < 0.8)
-                  and (last_candle["rsi_3_1h"] > 26.0)
-                  and (last_candle["rsi_3_4h"] > 26.0)
-                  and (last_candle["ema_200_dec_24"] == False)
-                  and (last_candle["ema_200_dec_24_15m"] == False)
-                )
-                or (
-                  (last_candle["rsi_14"] < 36.0)
-                  and (last_candle["cti_20"] < -0.5)
-                  and (last_candle["rsi_3"] > 5.0)
-                  and (last_candle["cci_20"] < -160.0)
-                  and (last_candle["cci_20"] > previous_candle["cci_20"])
-                  and (last_candle["ema_12"] < (last_candle["ema_26"] * 0.996))
-                  and (last_candle["rsi_3_15m"] > 26.0)
-                  and (last_candle["cti_20_1h"] < 0.5)
-                  and (last_candle["rsi_3_1h"] > 26.0)
-                  and (last_candle["rsi_3_4h"] > 26.0)
-                )
-                or (
-                  (last_candle["rsi_14"] < 36.0)
-                  and (last_candle["rsi_14_15m"] < 36.0)
-                  and (last_candle["rsi_3"] > 5.0)
-                  and (last_candle["ema_26_15m"] > last_candle["ema_12_15m"])
-                  and ((last_candle["ema_26_15m"] - last_candle["ema_12_15m"]) > (last_candle["open_15m"] * 0.012))
-                  and (
-                    (previous_candle["ema_26_15m"] - previous_candle["ema_12_15m"]) > (last_candle["open_15m"] / 100.0)
-                  )
-                  and (last_candle["rsi_3_15m"] > 10.0)
-                  and (last_candle["cti_20_1h"] < 0.8)
-                  and (last_candle["rsi_3_1h"] > 30.0)
-                  and (last_candle["rsi_3_4h"] > 30.0)
-                )
-                or (
-                  (last_candle["rsi_14"] < 46.0)
-                  and (last_candle["rsi_14_15m"] < 34.0)
-                  and (last_candle["rsi_14_15m"] > previous_candle["rsi_14_15m"])
-                  and (last_candle["rsi_3_15m"] > 20.0)
-                  and (last_candle["rsi_3_1h"] > 26.0)
-                  and (last_candle["rsi_3_4h"] > 26.0)
-                  and (last_candle["not_downtrend_1h"])
-                )
-                or (
-                  (last_candle["rsi_14"] < 34.0)
-                  and (previous_candle["rsi_3_15m"] > 20.0)
-                  and (last_candle["rsi_14_15m"] < 40.0)
-                  and (last_candle["rsi_14_15m"] > previous_candle["rsi_14_15m"])
-                  and (last_candle["ema_12_15m"] < (last_candle["ema_26_15m"] * 0.998))
-                  and (last_candle["rsi_3_15m"] > 10.0)
-                  and (last_candle["cti_20_1h"] < 0.5)
-                  and (last_candle["rsi_3_1h"] > 20.0)
-                  and (last_candle["rsi_3_4h"] > 20.0)
-                )
-                or (
-                  (last_candle["close"] > (last_candle["low_min_3_1h"] * 1.04))
-                  and (last_candle["close"] > (last_candle["low_min_12_1h"] * 1.08))
-                  and (last_candle["close"] > (last_candle["low_min_24_1h"] * 1.18))
-                  and (previous_candle["rsi_3"] > 16.0)
-                  and (last_candle["rsi_14"] < 42.0)
-                  and (last_candle["ha_close"] > last_candle["ha_open"])
-                  and (last_candle["rsi_3_15m"] > 10.0)
-                  and (last_candle["rsi_3_1h"] > 20.0)
-                  and (last_candle["rsi_3_4h"] > 5.0)
-                  and (last_candle["rsi_14_4h"] < 66.0)
-                  and (last_candle["ema_200_dec_48_1h"] == False)
-                )
-                or (
-                  (last_candle["rsi_14"] < 36.0)
-                  and (last_candle["ewo_50_200"] > 2.4)
-                  and (last_candle["rsi_14"] > previous_candle["rsi_14"])
-                  and (last_candle["close"] < (last_candle["ema_12"] * 0.998))
-                  and (last_candle["rsi_3_15m"] > 12.0)
-                  and (last_candle["cti_20_1h"] < 0.8)
-                  and (last_candle["rsi_3_1h"] > 16.0)
-                  and (last_candle["rsi_3_4h"] > 16.0)
-                  and (last_candle["rsi_14_4h"] < 66.0)
-                  and (last_candle["ema_200_dec_24"] == False)
-                  and (last_candle["ema_200_dec_24_15m"] == False)
-                  and (last_candle["ema_200_dec_48_1h"] == False)
-                )
-                or (
-                  (last_candle["rsi_14"] < 36.0)
-                  and (last_candle["rsi_3"] > 10.0)
-                  and (last_candle["rsi_3"] < 36.0)
-                  and (last_candle["ewo_50_200"] > 3.2)
-                  and (last_candle["close"] < (last_candle["ema_12"] * 1.014))
-                  and (last_candle["close"] < (last_candle["ema_16"] * 0.976))
-                  and (last_candle["rsi_3_15m"] > 16.0)
-                  and (last_candle["cti_20_1h"] < 0.7)
-                  and (last_candle["rsi_3_1h"] > 16.0)
-                  and (last_candle["rsi_3_4h"] > 16.0)
-                )
-                or (
-                  (last_candle["close"] > (last_candle["close_min_12"] * 1.034))
-                  and (previous_candle["rsi_3"] > 10.0)
-                  and (last_candle["rsi_14"] < 46.0)
-                  and (last_candle["rsi_3_15m"] > 16.0)
-                  and (last_candle["rsi_3_1h"] > 20.0)
-                  and (last_candle["rsi_3_4h"] > 20.0)
-                  and (last_candle["not_downtrend_1h"])
-                )
-                or (
-                  (last_candle["rsi_14"] < 34.0)
-                  and (last_candle["rsi_3"] > 14.0)
-                  and (last_candle["close"] < (last_candle["ema_26"] * 0.968))
-                  and (last_candle["rsi_3_15m"] > 26.0)
-                  and (last_candle["rsi_3_1h"] > 26.0)
-                  and (last_candle["cti_20_4h"] < 0.8)
-                  and (last_candle["rsi_3_4h"] > 26.0)
-                )
-                or (
-                  (last_candle["high_max_24_1h"] < (last_candle["close"] * 1.18))
-                  and (last_candle["high_max_12_1h"] < (last_candle["close"] * 1.14))
-                  and (last_candle["close_max_12"] < (last_candle["close"] * 1.06))
-                  and (last_candle["rsi_3"] > 26.0)
-                  and (last_candle["rsi_14"] < 34.0)
-                  and (last_candle["rsi_14"] > previous_candle["rsi_14"])
-                  and (last_candle["ha_close"] > last_candle["ha_open"])
-                  and (last_candle["ema_12"] < (last_candle["ema_26"] * 0.994))
-                  and (last_candle["rsi_3_15m"] > 26.0)
-                  and (last_candle["cti_20_1h"] < 0.8)
-                  and (last_candle["rsi_3_1h"] > 26.0)
-                  and (last_candle["rsi_3_4h"] > 26.0)
-                )
-                or (
-                  (last_candle["close"] > (last_candle["close_min_12"] * 1.04))
-                  and (last_candle["close"] > (last_candle["close_min_24"] * 1.08))
-                  and (previous_candle["close"] < previous_candle["ema_200"])
-                  and (last_candle["close"] > last_candle["ema_200"])
-                  and (last_candle["rsi_14"] < 56.0)
-                  and (last_candle["ema_200_dec_24_15m"] == False)
-                  and (last_candle["ema_200_dec_48_1h"] == False)
-                )
-                or (
-                  (last_candle["rsi_14"] < 36.0)
-                  and (last_candle["rsi_3"] > 20.0)
-                  and (last_candle["close"] > (last_candle["ema_200"] * 1.0))
-                  and (last_candle["close"] < (last_candle["ema_200"] * 1.05))
-                  and (last_candle["rsi_3_15m"] > 26.0)
-                  and (last_candle["cti_20_1h"] < 0.7)
-                  and (last_candle["rsi_3_1h"] > 26.0)
-                  and (last_candle["rsi_3_4h"] > 26.0)
-                  and (last_candle["ema_200_dec_24_15m"] == False)
-                  and (last_candle["ema_200_dec_48_1h"] == False)
-                )
-                or (
-                  (last_candle["rsi_14"] < 30.0)
-                  and (last_candle["rsi_3"] > 12.0)
-                  and (last_candle["rsi_14"] > previous_candle["rsi_14"])
-                  and (last_candle["rsi_3_15m"] > 14.0)
-                  and (last_candle["rsi_3_1h"] > 26.0)
-                  and (last_candle["cti_20_4h"] < 0.7)
-                  and (last_candle["rsi_3_4h"] > 26.0)
-                  and (last_candle["ema_200_dec_24_15m"] == False)
-                  and (last_candle["ema_200_dec_48_1h"] == False)
-                )
-                or (
-                  (last_candle["rsi_14"] < 46.0)
-                  and (previous_candle["rsi_3"] > 12.0)
-                  and (last_candle["rsi_3"] > 12.0)
-                  and (last_candle["rsi_14"] > previous_candle["rsi_14"])
-                  and (last_candle["ha_close"] > last_candle["ha_open"])
-                  and (last_candle["rsi_3_15m"] > 26.0)
-                  and (last_candle["cti_20_1h"] < 0.5)
-                  and (last_candle["rsi_3_1h"] > 26.0)
-                  and (last_candle["rsi_3_4h"] > 26.0)
-                  and (last_candle["close"] > (last_candle["low_min_24_1h"] * 1.20))
-                  and (last_candle["close"] > (last_candle["close_min_24"] * 1.04))
-                  and (last_candle["ema_200_dec_24"] == False)
-                )
-                or (
-                  (count_of_exits > 0)
-                  and (slice_profit < -0.08)
-                  and (previous_candle["rsi_3"] > 16.0)
-                  and (last_candle["rsi_14"] < 35.0)
-                  and (last_candle["rsi_14"] > previous_candle["rsi_14"])
-                  and (last_candle["ha_close"] > last_candle["ha_open"])
-                  and (last_candle["rsi_3"] > 10.0)
-                  and (last_candle["rsi_3_15m"] > 16.0)
-                  and (last_candle["cti_20_1h"] < 0.5)
-                  and (last_candle["rsi_3_1h"] > 30.0)
-                  and (last_candle["rsi_3_4h"] > 30.0)
-                )
-                or (
-                  (count_of_exits > 0)
-                  and (slice_profit_entry < -0.08)
-                  and (previous_candle["rsi_3"] > 16.0)
-                  and (last_candle["rsi_14"] < 38.0)
-                  and (last_candle["rsi_3"] > 16.0)
-                  and (last_candle["close"] > (last_candle["sar"] * 1.000))
-                  and (previous_candle["close"] < previous_candle["sar"])
-                  and (last_candle["rsi_3_15m"] > 16.0)
-                  and (last_candle["cti_20_1h"] < 0.5)
-                  and (last_candle["rsi_3_1h"] > 30.0)
-                  and (last_candle["rsi_3_4h"] > 30.0)
-                )
-                or (
-                  (count_of_exits > 0)
-                  and (slice_profit_entry < -0.04)
-                  and (previous_candle["rsi_3"] > 10.0)
-                  and (last_candle["rsi_14"] < 32.0)
-                  and (last_candle["rsi_3"] > 10.0)
-                  and (last_candle["rsi_14"] > previous_candle["rsi_14"])
-                  and (last_candle["rsi_3_15m"] > 10.0)
-                  and (last_candle["cti_20_1h"] < -0.5)
-                  and (last_candle["rsi_3_1h"] > 26.0)
-                  and (last_candle["cti_20_4h"] < -0.5)
-                  and (last_candle["rsi_3_4h"] > 26.0)
-                )
-              )
-            ):
-              buy_amount = slice_amount * grinding_stakes[i] / (trade.leverage if self.is_futures_mode else 1.0)
-              if buy_amount > max_stake:
-                buy_amount = max_stake
-              if buy_amount < min_stake:
-                return None
-              self.dp.send_msg(
-                f"Grinding entry [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
-              )
-              return buy_amount
-          stake_amount_threshold += slice_amount * grinding_stakes[i]
-
-        # Sell
-
-        if count_of_entries > 1:
-          count_of_full_exits = 0
-          for exit_order in filled_exits:
-            if (exit_order.safe_remaining * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) < min_stake:
-              count_of_full_exits += 1
-          num_buys = 0
-          num_sells = 0
-          for order in reversed(filled_orders):
-            if order.ft_order_side == "buy":
-              num_buys += 1
-            elif order.ft_order_side == "sell":
-              if (order.safe_remaining * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) < min_stake:
-                num_sells += 1
-            # patial fills on exits
-            if (num_buys == num_sells) and (order.ft_order_side == "sell"):
-              sell_amount = order.safe_remaining * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)
-              grind_profit = (exit_rate - order.safe_price) / order.safe_price
-              if sell_amount > min_stake:
-                # Test if it's the last exit. Normal exit with partial fill
-                if (trade.stake_amount - sell_amount) > min_stake:
-                  if grind_profit > 0.01:
-                    self.dp.send_msg(
-                      f"Grinding exit (remaining) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {order.safe_remaining} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
-                    )
-                    return -sell_amount
-                  else:
-                    # Current order is sell partial fill
-                    return None
-            elif (
-              (count_of_entries > (count_of_full_exits + 1))
-              and (order is not filled_orders[0])
-              and (num_buys > num_sells)
-              and (order.ft_order_side == "buy")
-            ):
-              buy_order = order
-              grind_profit = (exit_rate - buy_order.safe_price) / buy_order.safe_price
-              if grind_profit > self.grinding_profit_threshold:
-                sell_amount = buy_order.safe_filled * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)
-                if (current_stake_amount - sell_amount) < (min_stake * 1.7):
-                  sell_amount = (trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) - (
-                    min_stake * 1.7
-                  )
-                if sell_amount > min_stake:
-                  self.dp.send_msg(
-                    f"Grinding exit [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount}| Coin amount: {buy_order.safe_filled} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
-                  )
-                  return -sell_amount
-              # elif (
-              #         (grind_profit < self.grinding_stop_grinds)
-              #         # temporary
-              #         and
-              #         (
-              #             (trade.open_date_utc.replace(tzinfo=None) >= datetime(2023, 5, 17) or is_backtest)
-              #             or (buy_order.order_date_utc.replace(tzinfo=None) >= datetime(2023, 5, 27) or is_backtest)
-              #         )
-              # ):
-              #     sell_amount = buy_order.safe_filled * exit_rate * 0.999
-              #     if ((current_stake_amount - sell_amount) < (min_stake * 1.7)):
-              #         sell_amount = (trade.amount * exit_rate) - (min_stake * 1.7)
-              #     if (sell_amount > min_stake):
-              #         self.dp.send_msg(f"Grinding stop exit [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount}| Coin amount: {buy_order.safe_filled} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%")
-              #         return -sell_amount
-              break
-
-      # mode 1
-      elif current_grind_mode == 1:
-        max_sub_grinds = len(self.grinding_mode_1_stakes)
-        grinding_mode_1_stakes = self.grinding_mode_1_stakes
-        grinding_mode_1_sub_thresholds = self.grinding_mode_1_sub_thresholds
-        # Low stakes, on Binance mostly
-        if (
-          slice_amount * self.grinding_mode_1_stakes[0] / (trade.leverage if self.is_futures_mode else 1.0)
-        ) < min_stake:
-          if (
-            slice_amount * self.grinding_mode_1_stakes_alt_3[0] / (trade.leverage if self.is_futures_mode else 1.0)
-          ) < min_stake:
-            max_sub_grinds = len(self.grinding_mode_1_stakes_alt_4)
-            grinding_mode_1_stakes = self.grinding_mode_1_stakes_alt_4
-            grinding_mode_1_sub_thresholds = self.grinding_mode_1_sub_thresholds_alt_4
-          elif (
-            slice_amount * self.grinding_mode_1_stakes_alt_2[0] / (trade.leverage if self.is_futures_mode else 1.0)
-          ) < min_stake:
-            max_sub_grinds = len(self.grinding_mode_1_stakes_alt_3)
-            grinding_mode_1_stakes = self.grinding_mode_1_stakes_alt_3
-            grinding_mode_1_sub_thresholds = self.grinding_mode_1_sub_thresholds_alt_3
-          elif (
-            slice_amount * self.grinding_mode_1_stakes_alt_1[0] / (trade.leverage if self.is_futures_mode else 1.0)
-          ) < min_stake:
-            max_sub_grinds = len(self.grinding_mode_1_stakes_alt_2)
-            grinding_mode_1_stakes = self.grinding_mode_1_stakes_alt_2
-            grinding_mode_1_sub_thresholds = self.grinding_mode_1_sub_thresholds_alt_2
-          else:
-            max_sub_grinds = len(self.grinding_mode_1_stakes_alt_1)
-            grinding_mode_1_stakes = self.grinding_mode_1_stakes_alt_1
-            grinding_mode_1_sub_thresholds = self.grinding_mode_1_sub_thresholds_alt_1
-        partial_sell = False
-        sub_grind_count = 0
-        total_amount = 0.0
-        total_cost = 0.0
-        current_open_rate = 0.0
-        current_grind_stake = 0.0
-        current_grind_stake_profit = 0.0
-        for order in reversed(filled_orders):
-          if (order.ft_order_side == "buy") and (order is not filled_orders[0]):
-            sub_grind_count += 1
-            total_amount += order.safe_filled
-            total_cost += order.safe_filled * order.safe_price
-          elif order.ft_order_side == "sell":
-            if (order.safe_remaining * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) > min_stake:
-              partial_sell = True
-            break
-        if sub_grind_count > 0:
-          current_open_rate = total_cost / total_amount
-          current_grind_stake = total_amount * exit_rate * (1 - trade.fee_close)
-          current_grind_stake_profit = current_grind_stake - total_cost
-        # Buy
-        if (not partial_sell) and (sub_grind_count < max_sub_grinds):
-          if (
-            (
-              (
-                (sub_grind_count == 0)
-                and (
-                  profit_init_ratio
-                  < (
-                    (0.0 if is_x3_trade else grinding_mode_1_sub_thresholds[0])
-                    * (trade.leverage if self.is_futures_mode else 1.0)
-                  )
-                )
-              )
-              or (
-                (0 < sub_grind_count < max_sub_grinds)
-                and (slice_profit_entry < grinding_mode_1_sub_thresholds[sub_grind_count])
-              )
-            )
-            and (last_candle["protections_long_global"] == True)
-            and (
-              (last_candle["close_max_12"] < (last_candle["close"] * 1.12))
-              and (last_candle["close_max_24"] < (last_candle["close"] * 1.18))
-              and (last_candle["close_max_48"] < (last_candle["close"] * 1.24))
-              and (last_candle["btc_pct_close_max_72_5m"] < 0.04)
-              and (last_candle["btc_pct_close_max_24_5m"] < 0.03)
-            )
-            and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
-            and (
-              (last_candle["enter_long"] == True)
-              or (
-                (last_candle["rsi_14"] < 36.0)
-                and (previous_candle["rsi_3"] > 6.0)
-                and (last_candle["ema_26"] > last_candle["ema_12"])
-                and ((last_candle["ema_26"] - last_candle["ema_12"]) > (last_candle["open"] * 0.010))
-                and ((previous_candle["ema_26"] - previous_candle["ema_12"]) > (last_candle["open"] / 100.0))
-                and (last_candle["rsi_3_15m"] > 6.0)
-                and (last_candle["rsi_3_1h"] > 12.0)
-                and (last_candle["rsi_3_4h"] > 12.0)
-                and (
-                  (last_candle["cti_20_4h"] < 0.5)
-                  or (last_candle["rsi_14_4h"] < 50.0)
-                  or (last_candle["ema_200_dec_24_4h"] == False)
-                )
-                and ((last_candle["cti_20_1d"] < 0.8) or (last_candle["rsi_14_1d"] < 60.0))
-                and (
-                  (last_candle["cti_20_1d"] < 0.5)
-                  or (last_candle["rsi_14_1d"] < 50.0)
-                  or (last_candle["ema_200_dec_4_1d"] == False)
-                )
-                and (last_candle["high_max_6_1d"] < (last_candle["close"] * 1.7))
-              )
-              or (
-                (last_candle["rsi_14"] < 36.0)
-                and (last_candle["rsi_3"] > 8.0)
-                and (last_candle["rsi_14"] > previous_candle["rsi_14"])
-                and (last_candle["ema_12"] < (last_candle["ema_26"] * 0.992))
-                and (last_candle["rsi_3_15m"] > 8.0)
-                and (last_candle["rsi_3_1h"] > 26.0)
-                and (last_candle["rsi_3_4h"] > 26.0)
-                and ((last_candle["cti_20_1d"] < 0.8) or (last_candle["rsi_14_1d"] < 60.0))
-              )
-              or (
-                (previous_candle["rsi_3"] > 16.0)
-                and (last_candle["rsi_3"] > 12.0)
-                and (last_candle["rsi_14"] < 36.0)
-                and (last_candle["rsi_14"] > previous_candle["rsi_14"])
-                and (last_candle["ha_close"] > last_candle["ha_open"])
-                and (last_candle["rsi_3_15m"] > 16.0)
-                and (last_candle["rsi_3_1h"] > 26.0)
-                and (last_candle["rsi_3_4h"] > 26.0)
-                and (last_candle["cti_20_1h"] < 0.9)
-                and (last_candle["cti_20_4h"] < 0.9)
-                and (last_candle["cti_20_1d"] < 0.9)
-              )
-              or (
-                (last_candle["rsi_14"] < 60.0)
-                and (last_candle["hma_70_buy"])
-                and (last_candle["ema_12"] < last_candle["ema_26"])
-                and (last_candle["rsi_3_15m"] > 26.0)
-                and (last_candle["rsi_3_1h"] > 26.0)
-                and (last_candle["rsi_3_4h"] > 26.0)
-                and (last_candle["cti_20_1h"] < 0.9)
-                and (last_candle["cti_20_4h"] < 0.9)
-                and (last_candle["cti_20_1d"] < 0.9)
-                and (
-                  (last_candle["cti_20_4h"] < 0.5)
-                  or (last_candle["rsi_14_4h"] < 50.0)
-                  or (last_candle["ema_200_dec_24_4h"] == False)
-                )
-                and ((last_candle["cti_20_1d"] < 0.8) or (last_candle["rsi_14_1d"] < 60.0))
-                and (
-                  (last_candle["cti_20_1d"] < 0.5)
-                  or (last_candle["rsi_14_1d"] < 50.0)
-                  or (last_candle["ema_200_dec_4_1d"] == False)
-                )
-                and (last_candle["close"] > last_candle["sup_level_1d"])
-                and (last_candle["close"] < last_candle["res_hlevel_1d"])
-              )
-              or (
-                (last_candle["rsi_14"] < 36.0)
-                and (last_candle["rsi_3"] > 16.0)
-                and (last_candle["change_pct"] > -0.01)
-                and (last_candle["close"] < (last_candle["ema_26"] * 0.986))
-                and (last_candle["rsi_3_15m"] > 16.0)
-                and (last_candle["rsi_3_1h"] > 16.0)
-                and (last_candle["rsi_3_4h"] > 16.0)
-                and (last_candle["close"] < last_candle["res_hlevel_1d"])
-                and (last_candle["close"] > last_candle["sup_level_1d"])
-                and (last_candle["high_max_6_1d"] < (last_candle["close"] * 1.5))
-                and (last_candle["hl_pct_change_24_1h"] < 0.75)
-              )
-              or (
-                (last_candle["rsi_14"] < 46.0)
-                and (previous_candle["rsi_3"] > 6.0)
-                and (last_candle["bb20_2_width_1h"] > 0.132)
-                and (last_candle["cti_20"] < -0.85)
-                and (last_candle["r_14"] < -50.0)
-                and (last_candle["rsi_3_15m"] > 16.0)
-                and (last_candle["rsi_3_1h"] > 16.0)
-                and (last_candle["rsi_3_4h"] > 16.0)
-                and (last_candle["close"] < last_candle["res3_1d"])
-                and (last_candle["high_max_6_1d"] < (last_candle["close"] * 1.5))
-              )
-              or (
-                (last_candle["rsi_14"] < 60.0)
-                and (last_candle["cti_20"] < -0.0)
-                and (last_candle["hma_55_buy"])
-                and (last_candle["rsi_3_15m"] > 16.0)
-                and (last_candle["rsi_3_1h"] > 26.0)
-                and (last_candle["rsi_3_4h"] > 26.0)
-                and (last_candle["cti_20_15m"] < 0.8)
-                and (last_candle["cti_20_1h"] < 0.8)
-                and (last_candle["cti_20_4h"] < 0.8)
-                and (last_candle["close"] < last_candle["res_hlevel_1d"])
-                and (last_candle["close"] > last_candle["sup_level_1d"])
-                and (last_candle["high_max_6_1d"] < (last_candle["close"] * 1.3))
-                and (last_candle["hl_pct_change_24_1h"] < 0.75)
-              )
-            )
-          ):
-            buy_amount = (
-              slice_amount
-              * grinding_mode_1_stakes[sub_grind_count]
-              / (trade.leverage if self.is_futures_mode else 1.0)
-            )
-            if buy_amount > max_stake:
-              buy_amount = max_stake
-            if buy_amount < min_stake:
-              return None
-            if buy_amount < (min_stake * 1.5):
-              buy_amount = min_stake * 1.5
-            self.dp.send_msg(
-              f"Grinding entry [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
-            )
-            return buy_amount
-
-        # Sell remaining if partial fill on exit
-        if partial_sell:
-          order = filled_exits[-1]
-          sell_amount = order.safe_remaining * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)
-          if (current_stake_amount - sell_amount) < (min_stake * 1.7):
-            sell_amount = (trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) - (
-              min_stake * 1.7
-            )
-          grind_profit = (exit_rate - order.safe_price) / order.safe_price
-          if sell_amount > min_stake:
-            # Test if it's the last exit. Normal exit with partial fill
-            if (trade.stake_amount - sell_amount) > min_stake:
-              self.dp.send_msg(
-                f"Grinding exit (remaining) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {order.safe_remaining} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
-              )
-              return -sell_amount
-
-        # Sell
-        elif sub_grind_count > 0:
-          grind_profit = (exit_rate - current_open_rate) / current_open_rate
-          if grind_profit > self.grinding_mode_1_profit_threshold:
-            sell_amount = total_amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)
-            if (current_stake_amount - sell_amount) < (min_stake * 1.5):
-              sell_amount = (trade.amount * exit_rate) - (min_stake * 1.5)
-            if sell_amount > min_stake:
-              self.dp.send_msg(
-                f"Grinding exit [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount}| Coin amount: {total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
-              )
-              return -sell_amount
-          elif (
-            (current_grind_stake_profit < (slice_amount * self.grinding_mode_1_stop_grinds))
-            and is_x3_trade
-            # temporary
-            and (
-              (trade.open_date_utc.replace(tzinfo=None) >= datetime(2023, 8, 28) or is_backtest)
-              or (filled_entries[-1].order_date_utc.replace(tzinfo=None) >= datetime(2023, 8, 28) or is_backtest)
-            )
-          ):
-            sell_amount = total_amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0) * 0.999
-            if (current_stake_amount - sell_amount) < (min_stake * 1.7):
-              sell_amount = (trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) - (
-                min_stake * 1.7
-              )
-            if sell_amount > min_stake:
-              self.dp.send_msg(
-                f"Grinding stop exit [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
-              )
-              return -sell_amount
-
-      # mode 2
-      elif current_grind_mode == 2:
-        max_sub_grinds = 0
-        grinding_mode_2_stakes = []
-        grinding_mode_2_sub_thresholds = []
-        for i, item in enumerate(
-          self.grinding_mode_2_stakes_futures if self.is_futures_mode else self.grinding_mode_2_stakes_spot
-        ):
-          if (slice_amount * item[0] / (trade.leverage if self.is_futures_mode else 1.0)) > min_stake:
-            grinding_mode_2_stakes = item
-            grinding_mode_2_sub_thresholds = (
-              self.grinding_mode_2_sub_thresholds_futures[i]
-              if self.is_futures_mode
-              else self.grinding_mode_2_sub_thresholds_spot[i]
-            )
-            max_sub_grinds = len(grinding_mode_2_stakes)
-            break
-        grinding_mode_2_stop_init_grinds = (
-          self.grinding_mode_2_stop_init_grinds_futures
-          if self.is_futures_mode
-          else self.grinding_mode_2_stop_init_grinds_spot
-        )
-        grinding_mode_2_stop_grinds = (
-          self.grinding_mode_2_stop_grinds_futures if self.is_futures_mode else self.grinding_mode_2_stop_grinds_spot
-        )
-        grinding_mode_2_profit_threshold = (
-          self.grinding_mode_2_profit_threshold_futures
-          if self.is_futures_mode
-          else self.grinding_mode_2_profit_threshold_spot
-        )
-        partial_sell = False
-        is_sell_found = False
-        sub_grind_count = 0
-        total_amount = 0.0
-        total_cost = 0.0
-        current_open_rate = 0.0
-        current_grind_stake = 0.0
-        current_grind_stake_profit = 0.0
-        for order in reversed(filled_orders):
-          if (order.ft_order_side == "buy") and (order is not filled_orders[0]):
-            sub_grind_count += 1
-            total_amount += order.safe_filled
-            total_cost += order.safe_filled * order.safe_price
-          elif order.ft_order_side == "sell":
-            is_sell_found = True
-            if (order.safe_remaining * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) > min_stake:
-              partial_sell = True
-            break
-        if sub_grind_count > 0:
-          current_open_rate = total_cost / total_amount
-          current_grind_stake = total_amount * exit_rate * (1 - trade.fee_close)
-          current_grind_stake_profit = current_grind_stake - total_cost
-
-        # Buy
-        if (not partial_sell) and (sub_grind_count < max_sub_grinds):
-          if (
-            (
-              (slice_profit_entry if (sub_grind_count > 0) else profit_init_ratio)
-              < grinding_mode_2_sub_thresholds[sub_grind_count + (0 if is_sell_found else 1)]
-            )
-            and (last_candle["protections_long_global"] == True)
-            and (last_candle["protections_long_rebuy"] == True)
-            and (
-              (last_candle["close_max_12"] < (last_candle["close"] * 1.12))
-              and (last_candle["close_max_24"] < (last_candle["close"] * 1.18))
-              and (last_candle["close_max_48"] < (last_candle["close"] * 1.24))
-              and (last_candle["btc_pct_close_max_72_5m"] < 0.03)
-              and (last_candle["btc_pct_close_max_24_5m"] < 0.03)
-            )
-            and (
-              (last_candle["enter_long"] == True)
-              or (
-                (last_candle["rsi_3"] > 10.0)
-                and (last_candle["rsi_3_15m"] > 20.0)
-                and (last_candle["rsi_3_1h"] > 20.0)
-                and (last_candle["rsi_3_4h"] > 20.0)
-                and (last_candle["rsi_14"] < 46.0)
-                and (last_candle["ha_close"] > last_candle["ha_open"])
-                and (last_candle["ema_12"] < (last_candle["ema_26"] * 0.990))
-                and (last_candle["cti_20_1h"] < 0.8)
-                and (last_candle["rsi_14_1h"] < 80.0)
-              )
-              or (
-                (last_candle["rsi_14"] < 36.0)
-                and (last_candle["close"] < (last_candle["sma_16"] * 0.998))
-                and (last_candle["rsi_3"] > 16.0)
-                and (last_candle["rsi_3_15m"] > 26.0)
-                and (last_candle["rsi_3_1h"] > 26.0)
-                and (last_candle["rsi_3_4h"] > 26.0)
-              )
-              or (
-                (last_candle["rsi_14"] < 36.0)
-                and (previous_candle["rsi_3"] > 6.0)
-                and (last_candle["ema_26"] > last_candle["ema_12"])
-                and ((last_candle["ema_26"] - last_candle["ema_12"]) > (last_candle["open"] * 0.010))
-                and ((previous_candle["ema_26"] - previous_candle["ema_12"]) > (last_candle["open"] / 100.0))
-                and (last_candle["rsi_3_1h"] > 20.0)
-                and (last_candle["rsi_3_4h"] > 20.0)
-                and (last_candle["cti_20_1h"] < 0.8)
-                and (last_candle["rsi_14_1h"] < 80.0)
-              )
-              or (
-                (last_candle["rsi_14"] > 30.0)
-                and (last_candle["rsi_14"] < 60.0)
-                and (last_candle["hma_70_buy"])
-                and (last_candle["close"] > last_candle["zlma_50_1h"])
-                and (last_candle["ema_26"] > last_candle["ema_12"])
-                and (last_candle["cti_20_15m"] < 0.5)
-                and (last_candle["rsi_14_15m"] < 50.0)
-                and (last_candle["cti_20_1h"] < 0.8)
-                and (last_candle["rsi_14_1h"] < 80.0)
-              )
-              or (
-                (last_candle["rsi_3"] > 10.0)
-                and (last_candle["rsi_3_15m"] > 20.0)
-                and (last_candle["rsi_3_1h"] > 20.0)
-                and (last_candle["rsi_3_4h"] > 20.0)
-                and (last_candle["rsi_14"] < 36.0)
-                and (last_candle["zlma_50_dec_15m"] == False)
-                and (last_candle["zlma_50_dec_1h"] == False)
-              )
-              or (
-                (last_candle["rsi_14"] < 40.0)
-                and (last_candle["rsi_14_15m"] < 40.0)
-                and (last_candle["rsi_3"] > 6.0)
-                and (last_candle["ema_26_15m"] > last_candle["ema_12_15m"])
-                and ((last_candle["ema_26_15m"] - last_candle["ema_12_15m"]) > (last_candle["open_15m"] * 0.006))
-                and (
-                  (previous_candle["ema_26_15m"] - previous_candle["ema_12_15m"]) > (last_candle["open_15m"] / 100.0)
-                )
-                and (last_candle["rsi_3_15m"] > 10.0)
-                and (last_candle["rsi_3_1h"] > 26.0)
-                and (last_candle["rsi_3_4h"] > 26.0)
-                and (last_candle["cti_20_1h"] < 0.8)
-                and (last_candle["rsi_14_1h"] < 80.0)
-              )
-              or (
-                (last_candle["rsi_14"] > 35.0)
-                and (last_candle["rsi_3"] > 4.0)
-                and (last_candle["rsi_3"] < 46.0)
-                and (last_candle["rsi_14"] < previous_candle["rsi_14"])
-                and (last_candle["close"] < (last_candle["sma_16"] * 0.982))
-                and (last_candle["cti_20"] < -0.6)
-                and (last_candle["rsi_3_1h"] > 20.0)
-                and (last_candle["rsi_3_4h"] > 20.0)
-              )
-              or (
-                (last_candle["rsi_3"] > 12.0)
-                and (last_candle["rsi_3_15m"] > 26.0)
-                and (last_candle["rsi_3_1h"] > 26.0)
-                and (last_candle["rsi_3_4h"] > 26.0)
-                and (last_candle["rsi_14"] < 40.0)
-                and (last_candle["cti_20_1h"] < 0.8)
-                and (last_candle["rsi_14_1h"] < 80.0)
-                and (last_candle["cti_20_4h"] < 0.8)
-                and (last_candle["rsi_14_4h"] < 80.0)
-                and (last_candle["ema_200_dec_48_1h"] == False)
-              )
-            )
-          ):
-            buy_amount = (
-              slice_amount
-              * grinding_mode_2_stakes[sub_grind_count]
-              / (trade.leverage if self.is_futures_mode else 1.0)
-            )
-            if buy_amount > max_stake:
-              buy_amount = max_stake
-            if buy_amount < min_stake:
-              return None
-            if buy_amount < (min_stake * 1.5):
-              buy_amount = min_stake * 1.5
-            self.dp.send_msg(
-              f"Grinding entry [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
-            )
-            return buy_amount
-
-        # Sell remaining if partial fill on exit
-        if partial_sell:
-          order = filled_exits[-1]
-          sell_amount = order.safe_remaining * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)
-          if (current_stake_amount - sell_amount) < (min_stake * 1.5):
-            sell_amount = (trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) - (
-              min_stake * 1.5
-            )
-          grind_profit = (exit_rate - order.safe_price) / order.safe_price
-          if sell_amount > min_stake:
-            # Test if it's the last exit. Normal exit with partial fill
-            if (trade.stake_amount - sell_amount) > min_stake:
-              self.dp.send_msg(
-                f"Grinding exit (remaining) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {order.safe_remaining} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
-              )
-              return -sell_amount
-
-        # Sell
-        elif sub_grind_count > 0:
-          grind_profit = (exit_rate - current_open_rate) / current_open_rate
-          if grind_profit > grinding_mode_2_profit_threshold:
-            sell_amount = total_amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)
-            if (current_stake_amount - sell_amount) < (min_stake * 1.5):
-              sell_amount = (trade.amount * exit_rate) - (min_stake * 1.5)
-            if sell_amount > min_stake:
-              self.dp.send_msg(
-                f"Grinding exit [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount}| Coin amount: {total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
-              )
-              return -sell_amount
-
-        # Grind stop
+      # Buy
+      if (not partial_sell) and (sub_grind_count < max_sub_grinds):
         if (
           (
-            (
-              (
-                current_grind_stake_profit
-                < (slice_amount * grinding_mode_2_stop_grinds / (trade.leverage if self.is_futures_mode else 1.0))
-              )
-              if is_sell_found
-              else (
-                profit_stake
-                < (slice_amount * grinding_mode_2_stop_init_grinds / (trade.leverage if self.is_futures_mode else 1.0))
-              )
+            (slice_profit_entry if (sub_grind_count > 0) else profit_init_ratio)
+            < grinding_mode_2_sub_thresholds[sub_grind_count + (0 if is_sell_found else 1)]
+          )
+          and (last_candle["protections_long_global"] == True)
+          and (last_candle["protections_long_rebuy"] == True)
+          and (
+            (last_candle["close_max_12"] < (last_candle["close"] * 1.12))
+            and (last_candle["close_max_24"] < (last_candle["close"] * 1.18))
+            and (last_candle["close_max_48"] < (last_candle["close"] * 1.24))
+            and (last_candle["btc_pct_close_max_72_5m"] < 0.03)
+            and (last_candle["btc_pct_close_max_24_5m"] < 0.03)
+          )
+          and (
+            (last_candle["enter_long"] == True)
+            or (
+              (last_candle["rsi_3"] > 10.0)
+              and (last_candle["rsi_3_15m"] > 20.0)
+              and (last_candle["rsi_3_1h"] > 20.0)
+              and (last_candle["rsi_3_4h"] > 20.0)
+              and (last_candle["rsi_14"] < 46.0)
+              and (last_candle["ha_close"] > last_candle["ha_open"])
+              and (last_candle["ema_12"] < (last_candle["ema_26"] * 0.990))
+              and (last_candle["cti_20_1h"] < 0.8)
+              and (last_candle["rsi_14_1h"] < 80.0)
             )
             or (
-              (
-                profit_stake
-                < (slice_amount * grinding_mode_2_stop_init_grinds / (trade.leverage if self.is_futures_mode else 1.0))
-              )
-              and (
-                (
-                  (trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0))
-                  - (total_amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0))
-                )
-                > (min_stake * 3.0)
-              )
-              # temporary
-              and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2023, 12, 19) or is_backtest)
+              (last_candle["rsi_14"] < 36.0)
+              and (last_candle["close"] < (last_candle["sma_16"] * 0.998))
+              and (last_candle["rsi_3"] > 16.0)
+              and (last_candle["rsi_3_15m"] > 26.0)
+              and (last_candle["rsi_3_1h"] > 26.0)
+              and (last_candle["rsi_3_4h"] > 26.0)
             )
-          )
-          # temporary
-          and (
-            (trade.open_date_utc.replace(tzinfo=None) >= datetime(2023, 8, 28) or is_backtest)
-            or (filled_entries[-1].order_date_utc.replace(tzinfo=None) >= datetime(2023, 8, 28) or is_backtest)
+            or (
+              (last_candle["rsi_14"] < 36.0)
+              and (previous_candle["rsi_3"] > 6.0)
+              and (last_candle["ema_26"] > last_candle["ema_12"])
+              and ((last_candle["ema_26"] - last_candle["ema_12"]) > (last_candle["open"] * 0.010))
+              and ((previous_candle["ema_26"] - previous_candle["ema_12"]) > (last_candle["open"] / 100.0))
+              and (last_candle["rsi_3_1h"] > 20.0)
+              and (last_candle["rsi_3_4h"] > 20.0)
+              and (last_candle["cti_20_1h"] < 0.8)
+              and (last_candle["rsi_14_1h"] < 80.0)
+            )
+            or (
+              (last_candle["rsi_14"] > 30.0)
+              and (last_candle["rsi_14"] < 60.0)
+              and (last_candle["hma_70_buy"])
+              and (last_candle["close"] > last_candle["zlma_50_1h"])
+              and (last_candle["ema_26"] > last_candle["ema_12"])
+              and (last_candle["cti_20_15m"] < 0.5)
+              and (last_candle["rsi_14_15m"] < 50.0)
+              and (last_candle["cti_20_1h"] < 0.8)
+              and (last_candle["rsi_14_1h"] < 80.0)
+            )
+            or (
+              (last_candle["rsi_3"] > 10.0)
+              and (last_candle["rsi_3_15m"] > 20.0)
+              and (last_candle["rsi_3_1h"] > 20.0)
+              and (last_candle["rsi_3_4h"] > 20.0)
+              and (last_candle["rsi_14"] < 36.0)
+              and (last_candle["zlma_50_dec_15m"] == False)
+              and (last_candle["zlma_50_dec_1h"] == False)
+            )
+            or (
+              (last_candle["rsi_14"] < 40.0)
+              and (last_candle["rsi_14_15m"] < 40.0)
+              and (last_candle["rsi_3"] > 6.0)
+              and (last_candle["ema_26_15m"] > last_candle["ema_12_15m"])
+              and ((last_candle["ema_26_15m"] - last_candle["ema_12_15m"]) > (last_candle["open_15m"] * 0.006))
+              and (
+                (previous_candle["ema_26_15m"] - previous_candle["ema_12_15m"]) > (last_candle["open_15m"] / 100.0)
+              )
+              and (last_candle["rsi_3_15m"] > 10.0)
+              and (last_candle["rsi_3_1h"] > 26.0)
+              and (last_candle["rsi_3_4h"] > 26.0)
+              and (last_candle["cti_20_1h"] < 0.8)
+              and (last_candle["rsi_14_1h"] < 80.0)
+            )
+            or (
+              (last_candle["rsi_14"] > 35.0)
+              and (last_candle["rsi_3"] > 4.0)
+              and (last_candle["rsi_3"] < 46.0)
+              and (last_candle["rsi_14"] < previous_candle["rsi_14"])
+              and (last_candle["close"] < (last_candle["sma_16"] * 0.982))
+              and (last_candle["cti_20"] < -0.6)
+              and (last_candle["rsi_3_1h"] > 20.0)
+              and (last_candle["rsi_3_4h"] > 20.0)
+            )
+            or (
+              (last_candle["rsi_3"] > 12.0)
+              and (last_candle["rsi_3_15m"] > 26.0)
+              and (last_candle["rsi_3_1h"] > 26.0)
+              and (last_candle["rsi_3_4h"] > 26.0)
+              and (last_candle["rsi_14"] < 40.0)
+              and (last_candle["cti_20_1h"] < 0.8)
+              and (last_candle["rsi_14_1h"] < 80.0)
+              and (last_candle["cti_20_4h"] < 0.8)
+              and (last_candle["rsi_14_4h"] < 80.0)
+              and (last_candle["ema_200_dec_48_1h"] == False)
+            )
           )
         ):
-          sell_amount = trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0) * 0.999
-          if (current_stake_amount / (trade.leverage if self.is_futures_mode else 1.0) - sell_amount) < (
+          buy_amount = (
+            slice_amount
+            * grinding_mode_2_stakes[sub_grind_count]
+            / (trade.leverage if self.is_futures_mode else 1.0)
+          )
+          if buy_amount > max_stake:
+            buy_amount = max_stake
+          if buy_amount < min_stake:
+            return None
+          if buy_amount < (min_stake * 1.5):
+            buy_amount = min_stake * 1.5
+          self.dp.send_msg(
+            f"Grinding entry [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          )
+          return buy_amount
+
+      # Sell remaining if partial fill on exit
+      if partial_sell:
+        order = filled_exits[-1]
+        sell_amount = order.safe_remaining * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)
+        if (current_stake_amount - sell_amount) < (min_stake * 1.5):
+          sell_amount = (trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) - (
             min_stake * 1.5
-          ):
-            sell_amount = (trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) - (
-              min_stake * 1.5
-            )
-          if sell_amount > min_stake:
-            grind_profit = 0.0
-            if current_open_rate > 0.0:
-              grind_profit = ((exit_rate - current_open_rate) / current_open_rate) if is_sell_found else profit_ratio
+          )
+        grind_profit = (exit_rate - order.safe_price) / order.safe_price
+        if sell_amount > min_stake:
+          # Test if it's the last exit. Normal exit with partial fill
+          if (trade.stake_amount - sell_amount) > min_stake:
             self.dp.send_msg(
-              f"Grinding stop exit [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
+              f"Grinding exit (remaining) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {order.safe_remaining} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
             )
             return -sell_amount
+
+      # Sell
+      elif sub_grind_count > 0:
+        grind_profit = (exit_rate - current_open_rate) / current_open_rate
+        if grind_profit > grinding_mode_2_profit_threshold:
+          sell_amount = total_amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)
+          if (current_stake_amount - sell_amount) < (min_stake * 1.5):
+            sell_amount = (trade.amount * exit_rate) - (min_stake * 1.5)
+          if sell_amount > min_stake:
+            self.dp.send_msg(
+              f"Grinding exit [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount}| Coin amount: {total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
+            )
+            return -sell_amount
+
+      # Grind stop
+      if (
+        (
+          (
+            (
+              current_grind_stake_profit
+              < (slice_amount * grinding_mode_2_stop_grinds / (trade.leverage if self.is_futures_mode else 1.0))
+            )
+            if is_sell_found
+            else (
+              profit_stake
+              < (slice_amount * grinding_mode_2_stop_init_grinds / (trade.leverage if self.is_futures_mode else 1.0))
+            )
+          )
+          or (
+            (
+              profit_stake
+              < (slice_amount * grinding_mode_2_stop_init_grinds / (trade.leverage if self.is_futures_mode else 1.0))
+            )
+            and (
+              (
+                (trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0))
+                - (total_amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0))
+              )
+              > (min_stake * 3.0)
+            )
+            # temporary
+            and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2023, 12, 19) or is_backtest)
+          )
+        )
+        # temporary
+        and (
+          (trade.open_date_utc.replace(tzinfo=None) >= datetime(2023, 8, 28) or is_backtest)
+          or (filled_entries[-1].order_date_utc.replace(tzinfo=None) >= datetime(2023, 8, 28) or is_backtest)
+        )
+      ):
+        sell_amount = trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0) * 0.999
+        if (current_stake_amount / (trade.leverage if self.is_futures_mode else 1.0) - sell_amount) < (
+          min_stake * 1.5
+        ):
+          sell_amount = (trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) - (
+            min_stake * 1.5
+          )
+        if sell_amount > min_stake:
+          grind_profit = 0.0
+          if current_open_rate > 0.0:
+            grind_profit = ((exit_rate - current_open_rate) / current_open_rate) if is_sell_found else profit_ratio
+          self.dp.send_msg(
+            f"Grinding stop exit [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
+          )
+          return -sell_amount
 
     return None
 
