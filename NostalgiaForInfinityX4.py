@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.0.722"
+    return "v14.0.723"
 
   # ROI table:
   minimal_roi = {
@@ -3958,6 +3958,11 @@ class NostalgiaForInfinityX4(IStrategy):
       exit_stake = exit.safe_filled * exit.safe_price * (1 - trade.fee_close)
       total_profit += exit_stake
     current_stake = trade.amount * exit_rate * (1 - trade.fee_close)
+    if self.is_futures_mode:
+      if trade.is_short:
+        current_stake -= trade.funding_fees
+      else:
+        current_stake += trade.funding_fees
     total_profit += current_stake
     total_profit_ratio = total_profit / total_stake
     current_profit_ratio = total_profit / current_stake
