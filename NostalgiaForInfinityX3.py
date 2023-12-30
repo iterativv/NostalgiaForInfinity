@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.0.1062"
+    return "v13.0.1063"
 
   # ROI table:
   minimal_roi = {
@@ -320,8 +320,8 @@ class NostalgiaForInfinityX3(IStrategy):
     "entry_45_rsi_3_1h_min": 6.0,
     "entry_45_rsi_3_4h_min": 6.0,
     "entry_45_rsi_3_max": 46.0,
-    "entry_45_rsi_3_min": 2.0,
-    "entry_45_sma_offset": 0.954,
+    "entry_45_rsi_3_min": 5.0,
+    "entry_45_sma_offset": 0.952,
     "entry_45_res_level_1d_enabled": False,
     "entry_45_res_level_1h_enabled": False,
     "entry_45_res_level_4h_enabled": False,
@@ -358,6 +358,8 @@ class NostalgiaForInfinityX3(IStrategy):
   entry_45_rsi_14_4h_max = DecimalParameter(50.0, 90.0, default=80.0, decimals=0, space="buy", optimize=True)
   entry_45_cti_20_1d_max = DecimalParameter(0.0, 0.99, default=0.9, decimals=2, space="buy", optimize=True)
   entry_45_rsi_14_1d_max = DecimalParameter(50.0, 90.0, default=80.0, decimals=0, space="buy", optimize=True)
+  entry_45_r_480_1h_max = DecimalParameter(-40.0, -0.0, default=-6.0, decimals=0, space="buy", optimize=True)
+  entry_45_r_480_4h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=True)
   entry_45_rsi_14_min = DecimalParameter(10.0, 40.0, default=30.0, decimals=0, space="buy", optimize=True)
   entry_45_rsi_14_max = DecimalParameter(20.0, 60.0, default=46.0, decimals=0, space="buy", optimize=True)
   entry_45_cti_20_max = DecimalParameter(-0.99, -0.50, default=-0.70, decimals=2, space="buy", optimize=True)
@@ -22352,6 +22354,8 @@ class NostalgiaForInfinityX3(IStrategy):
           item_buy_logic.append(dataframe["rsi_14_4h"] < self.entry_45_rsi_14_4h_max.value)
           item_buy_logic.append(dataframe["cti_20_1d"] < self.entry_45_cti_20_1d_max.value)
           item_buy_logic.append(dataframe["rsi_14_1d"] < self.entry_45_rsi_14_1d_max.value)
+          item_buy_logic.append(dataframe["r_480_1h"] < self.entry_45_r_480_1h_max.value)
+          item_buy_logic.append(dataframe["r_480_4h"] < self.entry_45_r_480_1h_max.value)
 
           if self.entry_45_sup_level_1h_enabled.value:
             item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
@@ -22370,6 +22374,11 @@ class NostalgiaForInfinityX3(IStrategy):
             (dataframe["change_pct_4h"] < 0.12)
             | (dataframe["top_wick_pct_4h"] < 0.12)
             | (dataframe["rsi_14_1h"] < 70.0)
+          )
+          item_buy_logic.append(
+            (dataframe["change_pct_1h"] > -0.04)
+            | (dataframe["change_pct_1h"].shift(12) < 0.04)
+            | (dataframe["cti_20_4h"] < 0.8)
           )
 
           # Logic
