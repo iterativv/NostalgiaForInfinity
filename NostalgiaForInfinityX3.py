@@ -4203,9 +4203,7 @@ class NostalgiaForInfinityX3(IStrategy):
               and (last_candle["rsi_3"] > 6.0)
               and (last_candle["ema_26_15m"] > last_candle["ema_12_15m"])
               and ((last_candle["ema_26_15m"] - last_candle["ema_12_15m"]) > (last_candle["open_15m"] * 0.006))
-              and (
-                (previous_candle["ema_26_15m"] - previous_candle["ema_12_15m"]) > (last_candle["open_15m"] / 100.0)
-              )
+              and ((previous_candle["ema_26_15m"] - previous_candle["ema_12_15m"]) > (last_candle["open_15m"] / 100.0))
               and (last_candle["rsi_3_15m"] > 10.0)
               and (last_candle["rsi_3_1h"] > 26.0)
               and (last_candle["rsi_3_4h"] > 26.0)
@@ -4237,9 +4235,7 @@ class NostalgiaForInfinityX3(IStrategy):
           )
         ):
           buy_amount = (
-            slice_amount
-            * grinding_mode_2_stakes[sub_grind_count]
-            / (trade.leverage if self.is_futures_mode else 1.0)
+            slice_amount * grinding_mode_2_stakes[sub_grind_count] / (trade.leverage if self.is_futures_mode else 1.0)
           )
           if buy_amount > max_stake:
             buy_amount = max_stake
