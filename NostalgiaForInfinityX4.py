@@ -13,7 +13,7 @@ from freqtrade.strategy import DecimalParameter, CategoricalParameter
 from pandas import DataFrame, Series
 from functools import reduce
 from freqtrade.persistence import Trade, LocalTrade
-from datetime import datetime, timedelta
+from datetime import datetime
 import time
 from typing import Optional
 import warnings
@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.0.724"
+    return "v14.0.725"
 
   # ROI table:
   minimal_roi = {
