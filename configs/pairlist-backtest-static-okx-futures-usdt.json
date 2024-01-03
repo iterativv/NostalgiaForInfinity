@@ -39,7 +39,6 @@
       "CRV/USDT:USDT",
       "CSPR/USDT:USDT",
       "CVC/USDT:USDT",
-      "DASH/USDT:USDT",
       "DOGE/USDT:USDT",
       "DOT/USDT:USDT",
       "DYDX/USDT:USDT",
@@ -121,13 +120,11 @@
       "WOO/USDT:USDT",
       "XCH/USDT:USDT",
       "XLM/USDT:USDT",
-      "XMR/USDT:USDT",
       "XRP/USDT:USDT",
       "XTZ/USDT:USDT",
       "YFI/USDT:USDT",
       "YFII/USDT:USDT",
       "YGG/USDT:USDT",
-      "ZEC/USDT:USDT",
       "ZIL/USDT:USDT",
       "ZRX/USDT:USDT"
     ]
