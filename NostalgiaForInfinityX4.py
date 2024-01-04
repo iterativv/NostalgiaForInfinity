@@ -12691,6 +12691,45 @@ class NostalgiaForInfinityX4(IStrategy):
       )
     )
 
+    dataframe["global_protections_long_pump"] = (
+      ((dataframe["change_pct_4h"] < 0.12) | (dataframe["top_wick_pct_4h"] < 0.12) | (dataframe["rsi_14_1h"] < 70.0))
+      & (
+        (dataframe["change_pct_1h"] > -0.04)
+        | (dataframe["change_pct_1h"].shift(12) < 0.04)
+        | (dataframe["cti_20_4h"] < 0.8)
+      )
+      & (
+        (dataframe["change_pct_4h"] > -0.08)
+        | (dataframe["change_pct_4h"].shift(48) < 0.08)
+        | (dataframe["rsi_14_4h"].shift(48) < 70.0)
+      )
+      & (
+        (dataframe["change_pct_1h"] > -0.04)
+        | (dataframe["change_pct_1h"].shift(12) < 0.01)
+        | (dataframe["cti_20_1h"] < 0.8)
+        | (dataframe["rsi_14_1h"].shift(12) < 70.0)
+      )
+      & (
+        (dataframe["change_pct_1h"].shift(12) > -0.04)
+        | (dataframe["change_pct_1h"].shift(24) < 0.02)
+        | (dataframe["rsi_14_1h"].shift(24) < 70.0)
+      )
+      & (
+        (dataframe["change_pct_1d"] > -0.02)
+        | (dataframe["change_pct_1d"].shift(288) > -0.02)
+        | (dataframe["not_downtrend_4h"])
+        | (dataframe["cti_20_1d"] < 0.8)
+      )
+    )
+
+    dataframe["global_protections_long_dump"] = (
+      (dataframe["change_pct_4h"] > -0.02)
+      | (dataframe["change_pct_4h"].shift(48) < 0.02)
+      | (dataframe["not_downtrend_1h"])
+      | (dataframe["ema_200_dec_48_1h"] == False)
+      | (dataframe["ema_200_dec_24_4h"] == False)
+    )
+
     # Global protections
     dataframe["protections_long_rebuy"] = (
       # 1h & 4h downtrend, 15m & 1h & 4h downmove
