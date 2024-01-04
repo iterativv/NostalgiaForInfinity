@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.0.728"
+    return "v14.0.729"
 
   # ROI table:
   minimal_roi = {
@@ -21970,6 +21970,8 @@ class NostalgiaForInfinityX4(IStrategy):
         # Condition #45 - Quick mode (Long).
         if index == 45:
           # Protections
+          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
+          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
           item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
           item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
           item_buy_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_45_close_max_12.value))
@@ -22015,28 +22017,6 @@ class NostalgiaForInfinityX4(IStrategy):
             item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
           if self.entry_45_res_level_1d_enabled.value:
             item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
-
-          item_buy_logic.append(
-            (dataframe["change_pct_4h"] < 0.12)
-            | (dataframe["top_wick_pct_4h"] < 0.12)
-            | (dataframe["rsi_14_1h"] < 70.0)
-          )
-          item_buy_logic.append(
-            (dataframe["change_pct_1h"] > -0.04)
-            | (dataframe["change_pct_1h"].shift(12) < 0.04)
-            | (dataframe["cti_20_4h"] < 0.8)
-          )
-          item_buy_logic.append(
-            (dataframe["change_pct_4h"] > -0.08)
-            | (dataframe["change_pct_4h"].shift(48) < 0.08)
-            | (dataframe["rsi_14_4h"].shift(48) < 70.0)
-          )
-          item_buy_logic.append(
-            (dataframe["change_pct_1h"] > -0.04)
-            | (dataframe["change_pct_1h"].shift(12) < 0.01)
-            | (dataframe["cti_20_1h"] < 0.8)
-            | (dataframe["rsi_14_1h"].shift(12) < 70.0)
-          )
 
           # Logic
           item_buy_logic.append(dataframe["rsi_14"] > self.entry_45_rsi_14_min.value)
