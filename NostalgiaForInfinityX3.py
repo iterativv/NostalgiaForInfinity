@@ -4731,6 +4731,21 @@ class NostalgiaForInfinityX3(IStrategy):
     # SAR
     informative_1h["sar"] = ta.SAR(informative_1h)
 
+    # EverGet ChandelierExit
+    high = informative_1h["high"]
+    low = informative_1h["low"]
+    close = informative_1h["close"]
+    chandelier_atr = ta.ATR(high, low, close, 22) * 3.0
+    long_stop = (high.rolling(22).max() if True else high.rolling(22).apply(lambda x: x[:-1].max())) - chandelier_atr
+    long_stop_prev = long_stop.shift(1).fillna(long_stop)
+    long_stop = close.shift(1).where(close.shift(1) > long_stop_prev, long_stop)
+    short_stop = (low.rolling(22).min() if True else low.rolling(22).apply(lambda x: x[:-1].min())) + chandelier_atr
+    short_stop_prev = short_stop.shift(1).fillna(short_stop)
+    short_stop = close.shift(1).where(close.shift(1) < short_stop_prev, short_stop)
+    informative_1h["chandelier_dir"] = 1
+    informative_1h.loc[informative_1h["close"] <= long_stop_prev, "chandelier_dir"] = -1
+    informative_1h.loc[informative_1h["close"] > short_stop_prev, "chandelier_dir"] = 1
+
     # S/R
     res_series = (
       informative_1h["high"].rolling(window=5, center=True).apply(lambda row: is_resistance(row), raw=True).shift(2)
