@@ -12544,11 +12544,19 @@ class NostalgiaForInfinityX3(IStrategy):
     )
 
     dataframe["global_protections_long_dump"] = (
-      (dataframe["change_pct_4h"] > -0.02)
-      | (dataframe["change_pct_4h"].shift(48) < 0.02)
-      | (dataframe["not_downtrend_1h"])
-      | (dataframe["ema_200_dec_48_1h"] == False)
-      | (dataframe["ema_200_dec_24_4h"] == False)
+      (
+        (dataframe["change_pct_4h"] > -0.02)
+        | (dataframe["change_pct_4h"].shift(48) < 0.02)
+        | (dataframe["not_downtrend_1h"])
+        | (dataframe["ema_200_dec_48_1h"] == False)
+        | (dataframe["ema_200_dec_24_4h"] == False)
+      )
+      & (
+        (dataframe["change_pct_4h"] > -0.02)
+        | (dataframe["change_pct_4h"].shift(48) < 0.04)
+        | (dataframe["cti_20_4h"] < 0.7)
+        | (dataframe["ema_200_dec_24_4h"] == False)
+      )
     )
 
     # Global protections
