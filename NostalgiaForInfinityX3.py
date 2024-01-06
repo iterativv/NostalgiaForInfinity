@@ -12560,6 +12560,7 @@ class NostalgiaForInfinityX3(IStrategy):
       & (
         (dataframe["change_pct_1d"] > -0.12)
         | (dataframe["cti_20_1d"] < 0.7)
+        | (dataframe["ema_200_dec_48_1h"] == False)
       )
     )
 
