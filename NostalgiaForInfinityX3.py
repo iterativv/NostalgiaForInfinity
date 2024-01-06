@@ -12469,6 +12469,12 @@ class NostalgiaForInfinityX3(IStrategy):
         | (dataframe["not_downtrend_4h"])
         | (dataframe["cti_20_1d"] < 0.8)
       )
+      & (
+        (dataframe["change_pct_4h"] > -0.02)
+        | (dataframe["change_pct_4h"].shift(48) < 0.02)
+        | (dataframe["cti_20_4h"].shift(48) < 0.8)
+        | (dataframe["rsi_14_4h"].shift(48) < 80.0)
+      )
     )
 
     dataframe["global_protections_long_dump"] = (
