@@ -12557,6 +12557,10 @@ class NostalgiaForInfinityX3(IStrategy):
         | (dataframe["cti_20_4h"] < 0.7)
         | (dataframe["ema_200_dec_24_4h"] == False)
       )
+      & (
+        (dataframe["change_pct_1d"] > -0.12)
+        | (dataframe["cti_20_1d"] < 0.7)
+      )
     )
 
     # Global protections
