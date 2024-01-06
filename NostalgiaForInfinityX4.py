@@ -12888,6 +12888,23 @@ class NostalgiaForInfinityX4(IStrategy):
         | (dataframe["cti_20_1d"] < 0.7)
         | (dataframe["ema_200_dec_48_1h"] == False)
       )
+      & (
+        (dataframe["not_downtrend_1h"])
+        | (dataframe["not_downtrend_4h"])
+        | (dataframe["r_480_1h"] > -90.0)
+        | (dataframe["r_480_4h"] > -90.0)
+        | (dataframe["ema_200_dec_48_1h"] == False)
+        | (dataframe["ema_200_dec_24_4h"] == False)
+        | (dataframe["ema_200_dec_4_1d"] == False)
+      )
+      & (
+        (dataframe["change_pct_1h"] > -0.04)
+        | (dataframe["change_pct_1h"].shift(12) < 0.04)
+        | (dataframe["r_480_1h"] > -90.0)
+        | (dataframe["r_480_4h"] > -90.0)
+        | (dataframe["ema_200_dec_48_1h"] == False)
+        | (dataframe["ema_200_dec_24_4h"] == False)
+      )
     )
 
     # Global protections
