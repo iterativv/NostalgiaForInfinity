@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.0.1084"
+    return "v13.0.1085"
 
   # ROI table:
   minimal_roi = {
@@ -462,9 +462,15 @@ class NostalgiaForInfinityX3(IStrategy):
   entry_103_res_level_4h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
   entry_103_sup_level_1d_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
   entry_103_res_level_1d_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
-  entry_103_ema_200_not_dec_1h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
-  entry_103_ema_200_not_dec_4h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
-  entry_103_ema_200_not_dec_1d_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
+  entry_103_ema_200_not_dec_1h_enabled = CategoricalParameter(
+    [True, False], default=False, space="buy", optimize=False
+  )
+  entry_103_ema_200_not_dec_4h_enabled = CategoricalParameter(
+    [True, False], default=False, space="buy", optimize=False
+  )
+  entry_103_ema_200_not_dec_1d_enabled = CategoricalParameter(
+    [True, False], default=False, space="buy", optimize=False
+  )
   entry_103_not_downtrend_15m_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
   entry_103_not_downtrend_1h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
   entry_103_not_downtrend_4h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
