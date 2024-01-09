@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.0.1093"
+    return "v13.0.1094"
 
   # ROI table:
   minimal_roi = {
@@ -419,17 +419,17 @@ class NostalgiaForInfinityX3(IStrategy):
   entry_102_res_level_1h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=True)
   entry_102_sup_level_4h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=True)
   entry_102_res_level_4h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=True)
-  entry_102_sup_level_1d_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=True)
+  entry_102_sup_level_1d_enabled = CategoricalParameter([True, False], default=True, space="buy", optimize=True)
   entry_102_res_level_1d_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=True)
   entry_102_ema_200_not_dec_1h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=True)
   entry_102_ema_200_not_dec_4h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=True)
   entry_102_ema_200_not_dec_1d_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=True)
-  entry_102_not_downtrend_15m_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=True)
+  entry_102_not_downtrend_15m_enabled = CategoricalParameter([True, False], default=True, space="buy", optimize=True)
   entry_102_not_downtrend_1h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=True)
-  entry_102_not_downtrend_4h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=True)
+  entry_102_not_downtrend_4h_enabled = CategoricalParameter([True, False], default=True, space="buy", optimize=True)
   entry_102_not_downtrend_1d_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=True)
   entry_102_rsi_3_min = DecimalParameter(00.0, 30.0, default=6.0, decimals=0, space="buy", optimize=True)
-  entry_102_rsi_3_max = DecimalParameter(30.0, 70.0, default=70.0, decimals=0, space="buy", optimize=True)
+  entry_102_rsi_3_max = DecimalParameter(30.0, 70.0, default=30.0, decimals=0, space="buy", optimize=True)
   entry_102_rsi_3_15m_min = DecimalParameter(00.0, 30.0, default=12.0, decimals=0, space="buy", optimize=True)
   entry_102_rsi_3_1h_min = DecimalParameter(00.0, 30.0, default=12.0, decimals=0, space="buy", optimize=True)
   entry_102_rsi_3_4h_min = DecimalParameter(00.0, 30.0, default=12.0, decimals=0, space="buy", optimize=True)
@@ -440,11 +440,11 @@ class NostalgiaForInfinityX3(IStrategy):
   entry_102_rsi_14_4h_max = DecimalParameter(50.0, 90.0, default=80.0, decimals=0, space="buy", optimize=True)
   entry_102_cti_20_1d_max = DecimalParameter(0.0, 0.99, default=0.9, decimals=2, space="buy", optimize=True)
   entry_102_rsi_14_1d_max = DecimalParameter(50.0, 90.0, default=80.0, decimals=0, space="buy", optimize=True)
-  entry_102_r_480_1h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=True)
+  entry_102_r_480_1h_max = DecimalParameter(-40.0, -0.0, default=-10.0, decimals=0, space="buy", optimize=True)
   entry_102_r_480_4h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=True)
-  entry_102_rsi_14_max = DecimalParameter(20.0, 60.0, default=36.0, decimals=0, space="buy", optimize=True)
-  entry_102_ema_offset = DecimalParameter(0.940, 0.984, default=0.962, decimals=3, space="buy", optimize=True)
-  entry_102_bb_offset = DecimalParameter(0.970, 1.010, default=0.996, decimals=3, space="buy", optimize=True)
+  entry_102_rsi_14_max = DecimalParameter(20.0, 60.0, default=46.0, decimals=0, space="buy", optimize=True)
+  entry_102_ema_offset = DecimalParameter(0.940, 0.984, default=0.966, decimals=3, space="buy", optimize=True)
+  entry_102_bb_offset = DecimalParameter(0.970, 1.010, default=0.999, decimals=3, space="buy", optimize=True)
 
   entry_103_close_max_12 = DecimalParameter(00.50, 0.95, default=0.80, decimals=2, space="buy", optimize=False)
   entry_103_close_max_24 = DecimalParameter(00.50, 0.95, default=0.75, decimals=2, space="buy", optimize=False)
