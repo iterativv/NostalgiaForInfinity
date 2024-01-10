@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.0.759"
+    return "v14.0.760"
 
   # ROI table:
   minimal_roi = {
@@ -762,7 +762,7 @@ class NostalgiaForInfinityX4(IStrategy):
           )
           if mark_pair:
             self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
-      elif (profit_current_stake_ratio > (previous_profit + 0.005)) and (
+      elif (profit_current_stake_ratio > (previous_profit + 0.001)) and (
         previous_sell_reason not in [f"exit_{self.normal_mode_name}_stoploss_doom"]
       ):
         # Update the target, raise it.
@@ -1007,7 +1007,7 @@ class NostalgiaForInfinityX4(IStrategy):
           )
           if mark_pair:
             self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
-      elif (profit_current_stake_ratio > (previous_profit + 0.005)) and (
+      elif (profit_current_stake_ratio > (previous_profit + 0.001)) and (
         previous_sell_reason not in [f"exit_{self.pump_mode_name}_stoploss_doom"]
       ):
         # Update the target, raise it.
@@ -1263,7 +1263,7 @@ class NostalgiaForInfinityX4(IStrategy):
           )
           if mark_pair:
             self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
-      elif (profit_current_stake_ratio > (previous_profit + 0.005)) and (
+      elif (profit_current_stake_ratio > (previous_profit + 0.001)) and (
         previous_sell_reason not in [f"exit_{self.quick_mode_name}_stoploss_doom"]
       ):
         # Update the target, raise it.
@@ -1493,7 +1493,7 @@ class NostalgiaForInfinityX4(IStrategy):
           )
           if mark_pair:
             self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
-      elif (profit_current_stake_ratio > (previous_profit + 0.005)) and (
+      elif (profit_current_stake_ratio > (previous_profit + 0.001)) and (
         previous_sell_reason not in [f"exit_{self.long_rebuy_mode_name}_stoploss_doom"]
       ):
         # Update the target, raise it.
@@ -1715,7 +1715,7 @@ class NostalgiaForInfinityX4(IStrategy):
           )
           if mark_pair:
             self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
-      elif (profit_current_stake_ratio > (previous_profit + 0.005)) and (
+      elif (profit_current_stake_ratio > (previous_profit + 0.001)) and (
         previous_sell_reason not in [f"exit_{self.long_mode_name}_stoploss_doom"]
       ):
         # Update the target, raise it.
@@ -1979,7 +1979,7 @@ class NostalgiaForInfinityX4(IStrategy):
           )
           if mark_pair:
             self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
-      elif (profit_current_stake_ratio > (previous_profit + 0.005)) and (
+      elif (profit_current_stake_ratio > (previous_profit + 0.001)) and (
         previous_sell_reason not in [f"exit_{self.long_rapid_mode_name}_stoploss_doom"]
       ):
         # Update the target, raise it.
@@ -3896,7 +3896,7 @@ class NostalgiaForInfinityX4(IStrategy):
           )
           if mark_pair:
             self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
-      elif (profit_current_stake_ratio > (previous_profit + 0.005)) and (
+      elif (profit_current_stake_ratio > (previous_profit + 0.001)) and (
         previous_sell_reason not in [f"exit_{self.short_normal_mode_name}_stoploss_doom"]
       ):
         # Update the target, raise it.
