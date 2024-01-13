@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.0.1122"
+    return "v13.0.1123"
 
   # ROI table:
   minimal_roi = {
@@ -508,7 +508,7 @@ class NostalgiaForInfinityX3(IStrategy):
   entry_104_sup_level_1h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
   entry_104_res_level_1h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
   entry_104_sup_level_4h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
-  entry_104_res_level_4h_enabled = CategoricalParameter([True, False], default=True, space="buy", optimize=False)
+  entry_104_res_level_4h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
   entry_104_sup_level_1d_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
   entry_104_res_level_1d_enabled = CategoricalParameter([True, False], default=True, space="buy", optimize=False)
   entry_104_ema_200_not_dec_1h_enabled = CategoricalParameter([True, False], default=True, space="buy", optimize=False)
@@ -518,16 +518,16 @@ class NostalgiaForInfinityX3(IStrategy):
   entry_104_ema_200_not_dec_1d_enabled = CategoricalParameter(
     [True, False], default=False, space="buy", optimize=False
   )
-  entry_104_not_downtrend_15m_enabled = CategoricalParameter([True, False], default=True, space="buy", optimize=False)
+  entry_104_not_downtrend_15m_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
   entry_104_not_downtrend_1h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
   entry_104_not_downtrend_4h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
   entry_104_not_downtrend_1d_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
-  entry_104_rsi_3_min = DecimalParameter(00.0, 30.0, default=4.0, decimals=0, space="buy", optimize=False)
+  entry_104_rsi_3_min = DecimalParameter(00.0, 30.0, default=6.0, decimals=0, space="buy", optimize=False)
   entry_104_rsi_3_max = DecimalParameter(30.0, 70.0, default=46.0, decimals=0, space="buy", optimize=False)
-  entry_104_rsi_3_15m_min = DecimalParameter(00.0, 36.0, default=4.0, decimals=0, space="buy", optimize=False)
+  entry_104_rsi_3_15m_min = DecimalParameter(00.0, 36.0, default=6.0, decimals=0, space="buy", optimize=False)
   entry_104_rsi_3_1h_min = DecimalParameter(00.0, 36.0, default=8.0, decimals=0, space="buy", optimize=False)
   entry_104_rsi_3_4h_min = DecimalParameter(00.0, 36.0, default=8.0, decimals=0, space="buy", optimize=False)
-  entry_104_rsi_3_1d_min = DecimalParameter(00.0, 30.0, default=30.0, decimals=0, space="buy", optimize=False)
+  entry_104_rsi_3_1d_min = DecimalParameter(00.0, 30.0, default=8.0, decimals=0, space="buy", optimize=False)
   entry_104_cti_20_1h_max = DecimalParameter(0.0, 0.99, default=0.80, decimals=2, space="buy", optimize=False)
   entry_104_rsi_14_1h_max = DecimalParameter(50.0, 90.0, default=70.0, decimals=0, space="buy", optimize=False)
   entry_104_cti_20_4h_max = DecimalParameter(0.0, 0.99, default=0.95, decimals=2, space="buy", optimize=False)
@@ -540,7 +540,7 @@ class NostalgiaForInfinityX3(IStrategy):
   entry_104_r_480_4h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=False)
   entry_104_rsi_14_min = DecimalParameter(20.0, 60.0, default=30.0, decimals=0, space="buy", optimize=False)
   entry_104_rsi_14_max = DecimalParameter(20.0, 60.0, default=46.0, decimals=0, space="buy", optimize=False)
-  entry_104_sma_offset = DecimalParameter(0.940, 0.984, default=0.962, decimals=3, space="buy", optimize=False)
+  entry_104_sma_offset = DecimalParameter(0.940, 0.984, default=0.958, decimals=3, space="buy", optimize=False)
 
   #############################################################
   # CACHES
