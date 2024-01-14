@@ -432,9 +432,15 @@ class NostalgiaForInfinityX4(IStrategy):
   entry_102_res_level_4h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
   entry_102_sup_level_1d_enabled = CategoricalParameter([True, False], default=True, space="buy", optimize=False)
   entry_102_res_level_1d_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
-  entry_102_ema_200_not_dec_1h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
-  entry_102_ema_200_not_dec_4h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
-  entry_102_ema_200_not_dec_1d_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
+  entry_102_ema_200_not_dec_1h_enabled = CategoricalParameter(
+    [True, False], default=False, space="buy", optimize=False
+  )
+  entry_102_ema_200_not_dec_4h_enabled = CategoricalParameter(
+    [True, False], default=False, space="buy", optimize=False
+  )
+  entry_102_ema_200_not_dec_1d_enabled = CategoricalParameter(
+    [True, False], default=False, space="buy", optimize=False
+  )
   entry_102_not_downtrend_15m_enabled = CategoricalParameter([True, False], default=True, space="buy", optimize=False)
   entry_102_not_downtrend_1h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
   entry_102_not_downtrend_4h_enabled = CategoricalParameter([True, False], default=True, space="buy", optimize=False)
@@ -523,12 +529,8 @@ class NostalgiaForInfinityX4(IStrategy):
   entry_104_sup_level_1d_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=True)
   entry_104_res_level_1d_enabled = CategoricalParameter([True, False], default=True, space="buy", optimize=True)
   entry_104_ema_200_not_dec_1h_enabled = CategoricalParameter([True, False], default=True, space="buy", optimize=True)
-  entry_104_ema_200_not_dec_4h_enabled = CategoricalParameter(
-    [True, False], default=False, space="buy", optimize=True
-  )
-  entry_104_ema_200_not_dec_1d_enabled = CategoricalParameter(
-    [True, False], default=False, space="buy", optimize=True
-  )
+  entry_104_ema_200_not_dec_4h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=True)
+  entry_104_ema_200_not_dec_1d_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=True)
   entry_104_not_downtrend_15m_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=True)
   entry_104_not_downtrend_1h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=True)
   entry_104_not_downtrend_4h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=True)
