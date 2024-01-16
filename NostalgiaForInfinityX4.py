@@ -14149,7 +14149,7 @@ class NostalgiaForInfinityX4(IStrategy):
       & (
         (dataframe["rsi_3"] > 16.0)
         | (dataframe["rsi_14_4h"] < 50.0)
-        | (dataframe["r_480_4h"] > -85.0)
+        | (dataframe["r_480_1h"] > -85.0)
         | (dataframe["r_480_4h"] > -90.0)
         | (dataframe["ema_200_dec_48_1h"] == False)
         | (dataframe["ema_200_dec_24_4h"] == False)
