@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.0.794"
+    return "v14.0.795"
 
   # ROI table:
   minimal_roi = {
@@ -416,7 +416,7 @@ class NostalgiaForInfinityX4(IStrategy):
   entry_46_r_480_4h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=False)
   entry_46_rsi_14_max = DecimalParameter(20.0, 60.0, default=60.0, decimals=0, space="buy", optimize=False)
 
-  entry_102_close_max_12 = DecimalParameter(00.50, 0.95, default=0.80, decimals=2, space="buy", optimize=False)
+  entry_102_close_max_12 = DecimalParameter(00.50, 0.95, default=0.92, decimals=2, space="buy", optimize=False)
   entry_102_close_max_24 = DecimalParameter(00.50, 0.95, default=0.75, decimals=2, space="buy", optimize=False)
   entry_102_close_max_48 = DecimalParameter(00.50, 0.95, default=0.70, decimals=2, space="buy", optimize=False)
   entry_102_high_max_24_1h = DecimalParameter(00.40, 0.95, default=0.65, decimals=2, space="buy", optimize=False)
