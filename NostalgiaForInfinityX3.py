@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.0.1148"
+    return "v13.0.1149"
 
   # ROI table:
   minimal_roi = {
@@ -14003,6 +14003,30 @@ class NostalgiaForInfinityX3(IStrategy):
         | (dataframe["rsi_3_15m"] > 16.0)
         | (dataframe["rsi_14_4h"].shift(48) < 70.0)
         | (dataframe["close"] < dataframe["res_hlevel_4h"])
+        | (dataframe["close"] < dataframe["res_hlevel_1d"])
+      )
+      & (
+        (dataframe["change_pct_1d"] < 0.16)
+        | (dataframe["top_wick_pct_1d"] < 0.08)
+        | (dataframe["change_pct_4h"] < 0.06)
+        | (dataframe["top_wick_pct_4h"] < 0.06)
+        | (dataframe["change_pct_1h"] > -0.01)
+        | (dataframe["rsi_3"] > 20.0)
+        | (dataframe["rsi_14_1h"] < 50.0)
+        | (dataframe["rsi_14_4h"] < 50.0)
+        | (dataframe["cti_20_1d"] < 0.8)
+        | (dataframe["rsi_14_1d"] < 60.0)
+        | (dataframe["close"] < dataframe["res_hlevel_1d"])
+      )
+      & (
+        (dataframe["change_pct_1d"] > -0.01)
+        | (dataframe["change_pct_1d"].shift(288) > -0.04)
+        | (dataframe["top_wick_pct_1d"].shift(288) < 0.04)
+        | (dataframe["change_pct_1d"].shift(576) < 0.16)
+        | (dataframe["top_wick_pct_1d"].shift(576) < 0.08)
+        | (dataframe["rsi_14_4h"] < 50.0)
+        | (dataframe["cti_20_1d"] < 0.8)
+        | (dataframe["rsi_14_1d"] < 50.0)
         | (dataframe["close"] < dataframe["res_hlevel_1d"])
       )
     )
