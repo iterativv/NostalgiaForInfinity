@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.0.1145"
+    return "v13.0.1146"
 
   # ROI table:
   minimal_roi = {
@@ -322,7 +322,7 @@ class NostalgiaForInfinityX3(IStrategy):
     "entry_45_rsi_3_4h_min": 6.0,
     "entry_45_rsi_3_max": 46.0,
     "entry_45_rsi_3_min": 5.0,
-    "entry_45_sma_offset": 0.956,
+    "entry_45_sma_offset": 0.954,
     "entry_45_res_level_1d_enabled": False,
     "entry_45_res_level_1h_enabled": False,
     "entry_45_res_level_4h_enabled": False,
