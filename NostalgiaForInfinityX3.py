@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.0.1153"
+    return "v13.1.0"
 
   # ROI table:
   minimal_roi = {
