@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.3"
+    return "v13.1.4"
 
   # ROI table:
   minimal_roi = {
@@ -347,8 +347,8 @@ class NostalgiaForInfinityX3(IStrategy):
   entry_24_sup_level_4h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
   entry_24_res_level_4h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
   entry_24_sup_level_1d_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
-  entry_24_res_level_1d_enabled = CategoricalParameter([True, False], default=True, space="buy", optimize=False)
-  entry_24_ema_200_not_dec_1h_enabled = CategoricalParameter([True, False], default=True, space="buy", optimize=False)
+  entry_24_res_level_1d_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
+  entry_24_ema_200_not_dec_1h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
   entry_24_ema_200_not_dec_4h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
   entry_24_ema_200_not_dec_1d_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
   entry_24_not_downtrend_15m_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
@@ -375,8 +375,8 @@ class NostalgiaForInfinityX3(IStrategy):
   entry_24_rsi_14_max = DecimalParameter(20.0, 60.0, default=46.0, decimals=0, space="buy", optimize=False)
   entry_24_cti_20_max = DecimalParameter(-0.99, -0.60, default=-0.85, decimals=2, space="buy", optimize=False)
   entry_24_r_14_max = DecimalParameter(-100.0, 80.0, default=-97.0, decimals=0, space="buy", optimize=False)
-  entry_24_ewo_50_200_min = DecimalParameter(2.0, 10.0, default=2.4, decimals=1, space="buy", optimize=False)
-  entry_24_ewo_50_200_max = DecimalParameter(8.0, 20.0, default=11.2, decimals=1, space="buy", optimize=False)
+  entry_24_ewo_50_200_min = DecimalParameter(2.0, 10.0, default=5.2, decimals=1, space="buy", optimize=False)
+  entry_24_ewo_50_200_max = DecimalParameter(8.0, 20.0, default=16.0, decimals=1, space="buy", optimize=False)
   entry_24_sma_offset = DecimalParameter(0.960, 0.999, default=0.984, decimals=3, space="buy", optimize=False)
 
   entry_45_close_max_12 = DecimalParameter(00.50, 0.95, default=0.75, decimals=2, space="buy", optimize=False)
