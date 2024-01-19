@@ -6894,6 +6894,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # SMA
     dataframe["sma_16"] = ta.SMA(dataframe, timeperiod=16)
     dataframe["sma_50"] = ta.SMA(dataframe, timeperiod=50)
+    dataframe["sma_75"] = ta.SMA(dataframe, timeperiod=75)
     dataframe["sma_200"] = ta.SMA(dataframe, timeperiod=200)
 
     # BB 20 - STD2
