@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.2"
+    return "v14.1.3"
 
   # ROI table:
   minimal_roi = {
@@ -360,12 +360,8 @@ class NostalgiaForInfinityX4(IStrategy):
   entry_24_sup_level_1d_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
   entry_24_res_level_1d_enabled = CategoricalParameter([True, False], default=True, space="buy", optimize=False)
   entry_24_ema_200_not_dec_1h_enabled = CategoricalParameter([True, False], default=True, space="buy", optimize=False)
-  entry_24_ema_200_not_dec_4h_enabled = CategoricalParameter(
-    [True, False], default=False, space="buy", optimize=False
-  )
-  entry_24_ema_200_not_dec_1d_enabled = CategoricalParameter(
-    [True, False], default=False, space="buy", optimize=False
-  )
+  entry_24_ema_200_not_dec_4h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
+  entry_24_ema_200_not_dec_1d_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
   entry_24_not_downtrend_15m_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
   entry_24_not_downtrend_1h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
   entry_24_not_downtrend_4h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
