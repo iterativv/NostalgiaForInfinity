@@ -1023,7 +1023,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Downtrend/descending based sells
     if not sell:
       sell, signal_name = self.exit_long_dec(
-        self.normal_mode_name,
+        self.pump_mode_name,
         profit_current_stake_ratio,
         max_profit,
         max_loss,
@@ -1268,7 +1268,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Downtrend/descending based sells
     if not sell:
       sell, signal_name = self.exit_long_dec(
-        self.normal_mode_name,
+        self.quick_mode_name,
         profit_current_stake_ratio,
         max_profit,
         max_loss,
@@ -1524,7 +1524,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Downtrend/descending based sells
     if not sell:
       sell, signal_name = self.exit_long_dec(
-        self.normal_mode_name,
+        self.long_rebuy_mode_name,
         profit_current_stake_ratio,
         max_profit,
         max_loss,
@@ -1976,7 +1976,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Downtrend/descending based sells
     if not sell:
       sell, signal_name = self.exit_long_dec(
-        self.normal_mode_name,
+        self.long_rapid_mode_name,
         profit_current_stake_ratio,
         max_profit,
         max_loss,
