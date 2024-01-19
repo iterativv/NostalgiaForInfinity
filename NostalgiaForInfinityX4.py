@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.4"
+    return "v14.1.5"
 
   # ROI table:
   minimal_roi = {
@@ -154,7 +154,7 @@ class NostalgiaForInfinityX4(IStrategy):
   stop_threshold_futures_rapid = 0.50
   stop_threshold_spot_rapid = 0.80
   stop_threshold_futures_rebuy = 0.9
-  stop_threshold_spot_rebuy = 0.9
+  stop_threshold_spot_rebuy = 3.9
 
   # Rebuy mode minimum number of free slots
   rebuy_mode_min_free_slots = 2
@@ -249,6 +249,8 @@ class NostalgiaForInfinityX4(IStrategy):
   rebuy_mode_stake_multiplier = 0.2
   rebuy_mode_stake_multiplier_alt = 0.3
   rebuy_mode_max = 3
+  rebuy_mode_derisk_spot = -0.9
+  rebuy_mode_derisk_futures = -2.0
   rebuy_mode_stakes_spot = [1.0, 2.0, 4.0]
   rebuy_mode_stakes_futures = [1.0, 2.0, 4.0]
   rebuy_mode_thresholds_spot = [-0.06, -0.08, -0.10]
@@ -5982,6 +5984,7 @@ class NostalgiaForInfinityX4(IStrategy):
     ):
       return self.long_grind_adjust_trade_position(
         trade,
+        enter_tags,
         current_time,
         current_rate,
         current_profit,
@@ -5997,6 +6000,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if all(c in self.long_rebuy_mode_tags for c in enter_tags):
       return self.long_rebuy_adjust_trade_position(
         trade,
+        enter_tags,
         current_time,
         current_rate,
         current_profit,
@@ -6013,6 +6017,7 @@ class NostalgiaForInfinityX4(IStrategy):
   def long_grind_adjust_trade_position(
     self,
     trade: Trade,
+    enter_tags,
     current_time: datetime,
     current_rate: float,
     current_profit: float,
@@ -6066,6 +6071,10 @@ class NostalgiaForInfinityX4(IStrategy):
       )
 
       current_stake_amount = trade.amount * current_rate
+
+      # Rebuy mode
+      if all(c in self.long_rebuy_mode_tags for c in enter_tags):
+        slice_amount /= self.rebuy_mode_stake_multiplier
 
       max_sub_grinds = 0
       grinding_mode_2_stakes = []
@@ -6353,6 +6362,7 @@ class NostalgiaForInfinityX4(IStrategy):
   def long_rebuy_adjust_trade_position(
     self,
     trade: Trade,
+    enter_tags,
     current_time: datetime,
     current_rate: float,
     current_profit: float,
@@ -6378,6 +6388,22 @@ class NostalgiaForInfinityX4(IStrategy):
 
     if count_of_entries == 0:
       return None
+
+    # The first exit is de-risk (providing the trade is still open)
+    if count_of_exits > 0:
+      return self.long_grind_adjust_trade_position(
+        trade,
+        enter_tags,
+        current_time,
+        current_rate,
+        current_profit,
+        min_stake,
+        max_stake,
+        current_entry_rate,
+        current_exit_rate,
+        current_entry_profit,
+        current_exit_profit,
+      )
 
     exit_rate = current_rate
     if self.dp.runmode.value in ("live", "dry_run"):
@@ -6464,6 +6490,25 @@ class NostalgiaForInfinityX4(IStrategy):
           f"Rebuy [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         return buy_amount
+
+      if profit_stake < (
+        slice_amount
+        * (self.rebuy_mode_derisk_futures if self.is_futures_mode else self.rebuy_mode_derisk_spot)
+        / (trade.leverage if self.is_futures_mode else 1.0)
+      ):
+        sell_amount = trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0) * 0.999
+        if (current_stake_amount / (trade.leverage if self.is_futures_mode else 1.0) - sell_amount) < (
+          min_stake * 1.5
+        ):
+          sell_amount = (trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) - (
+            min_stake * 1.5
+          )
+        if sell_amount > min_stake:
+          grind_profit = 0.0
+          self.dp.send_msg(
+            f"Rebuy de-risk [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          )
+          return -sell_amount
 
     return None
 
