@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.6"
+    return "v13.1.7"
 
   # ROI table:
   minimal_roi = {
@@ -298,42 +298,6 @@ class NostalgiaForInfinityX3(IStrategy):
   buy_protection_params = {}
 
   #############################################################
-  # Buy hyperspace params:
-  buy_params = {
-    "entry_45_close_max_12": 0.88,
-    "entry_45_close_max_24": 0.84,
-    "entry_45_close_max_48": 0.80,
-    "entry_45_cti_20_1d_max": 0.92,
-    "entry_45_cti_20_1h_max": 0.92,
-    "entry_45_cti_20_4h_max": 0.92,
-    "entry_45_cti_20_max": -0.54,
-    "entry_45_high_max_24_1h": 0.70,
-    "entry_45_high_max_24_4h": 0.66,
-    "entry_45_high_max_6_1d": 0.60,
-    "entry_45_hl_pct_change_12_1h": 0.86,
-    "entry_45_hl_pct_change_24_1h": 0.90,
-    "entry_45_hl_pct_change_48_1h": 1.36,
-    "entry_45_hl_pct_change_6_1h": 0.56,
-    "entry_45_rsi_14_1d_max": 75.0,
-    "entry_45_rsi_14_1h_max": 80.0,
-    "entry_45_rsi_14_4h_max": 75.0,
-    "entry_45_rsi_14_max": 40.0,
-    "entry_45_rsi_14_min": 26.0,
-    "entry_45_rsi_3_15m_min": 6.0,
-    "entry_45_rsi_3_1d_min": 6.0,
-    "entry_45_rsi_3_1h_min": 6.0,
-    "entry_45_rsi_3_4h_min": 6.0,
-    "entry_45_rsi_3_max": 46.0,
-    "entry_45_rsi_3_min": 5.0,
-    "entry_45_sma_offset": 0.954,
-    "entry_45_res_level_1d_enabled": False,
-    "entry_45_res_level_1h_enabled": False,
-    "entry_45_res_level_4h_enabled": False,
-    "entry_45_sup_level_1d_enabled": False,
-    "entry_45_sup_level_1h_enabled": True,
-    "entry_45_sup_level_4h_enabled": True,
-  }
-
   entry_24_close_max_12 = DecimalParameter(00.50, 0.95, default=0.80, decimals=2, space="buy", optimize=False)
   entry_24_close_max_24 = DecimalParameter(00.50, 0.95, default=0.75, decimals=2, space="buy", optimize=False)
   entry_24_close_max_48 = DecimalParameter(00.50, 0.95, default=0.70, decimals=2, space="buy", optimize=False)
@@ -413,7 +377,7 @@ class NostalgiaForInfinityX3(IStrategy):
   entry_45_r_480_4h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=False)
   entry_45_rsi_14_min = DecimalParameter(10.0, 40.0, default=26.0, decimals=0, space="buy", optimize=False)
   entry_45_rsi_14_max = DecimalParameter(20.0, 60.0, default=40.0, decimals=0, space="buy", optimize=False)
-  entry_45_cti_20_max = DecimalParameter(-0.99, -0.50, default=-0.70, decimals=2, space="buy", optimize=False)
+  entry_45_cti_20_max = DecimalParameter(-0.99, -0.50, default=-0.54, decimals=2, space="buy", optimize=False)
   entry_45_sma_offset = DecimalParameter(0.940, 0.984, default=0.954, decimals=3, space="buy", optimize=False)
 
   entry_46_close_max_12 = DecimalParameter(00.50, 0.95, default=0.80, decimals=2, space="buy", optimize=False)
