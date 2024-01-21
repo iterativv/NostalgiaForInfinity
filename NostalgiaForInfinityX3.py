@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.12"
+    return "v13.1.13"
 
   # ROI table:
   minimal_roi = {
@@ -5958,6 +5958,7 @@ class NostalgiaForInfinityX3(IStrategy):
       )
 
       current_stake_amount = trade.amount * current_rate
+      is_derisk = trade.amount < filled_entries[0].safe_filled
 
       # Rebuy mode
       if all(c in self.long_rebuy_mode_tags for c in enter_tags):
@@ -6018,7 +6019,7 @@ class NostalgiaForInfinityX3(IStrategy):
       if (not partial_sell) and (sub_grind_count < max_sub_grinds):
         if (
           (slice_profit_entry if (sub_grind_count > 0) else profit_init_ratio)
-          < grinding_mode_2_sub_thresholds[sub_grind_count + (0 if is_sell_found else 1)]
+          < grinding_mode_2_sub_thresholds[sub_grind_count + (0 if is_derisk else 1)]
         ) and self.long_grind_buy(last_candle, previous_candle):
           buy_amount = (
             slice_amount * grinding_mode_2_stakes[sub_grind_count] / (trade.leverage if self.is_futures_mode else 1.0)
