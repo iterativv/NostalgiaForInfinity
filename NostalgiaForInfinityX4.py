@@ -7177,6 +7177,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # EMA
     dataframe["ema_12"] = ta.EMA(dataframe, timeperiod=12)
     dataframe["ema_16"] = ta.EMA(dataframe, timeperiod=16)
+    dataframe["ema_20"] = ta.EMA(dataframe, timeperiod=20)
     dataframe["ema_26"] = ta.EMA(dataframe, timeperiod=26)
     dataframe["ema_50"] = ta.EMA(dataframe, timeperiod=50)
     dataframe["ema_200"] = ta.EMA(dataframe, timeperiod=200)
