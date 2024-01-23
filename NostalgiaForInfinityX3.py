@@ -24704,7 +24704,7 @@ class NostalgiaForInfinityX3(IStrategy):
           item_buy_logic.append(dataframe["cti_20_1d"] < self.entry_102_cti_20_1d_max.value)
           item_buy_logic.append(dataframe["rsi_14_1d"] < self.entry_102_rsi_14_1d_max.value)
           item_buy_logic.append(dataframe["r_480_1h"] < self.entry_102_r_480_1h_max.value)
-          item_buy_logic.append(dataframe["r_480_4h"] < self.entry_102_r_480_1h_max.value)
+          item_buy_logic.append(dataframe["r_480_4h"] < self.entry_102_r_480_4h_max.value)
 
           if self.entry_102_sup_level_1h_enabled.value:
             item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
