@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.21"
+    return "v14.1.22"
 
   # ROI table:
   minimal_roi = {
@@ -551,14 +551,14 @@ class NostalgiaForInfinityX4(IStrategy):
   entry_103_cti_20_4h_max = DecimalParameter(0.0, 0.99, default=0.95, decimals=2, space="buy", optimize=True)
   entry_103_rsi_14_4h_max = DecimalParameter(50.0, 90.0, default=85.0, decimals=0, space="buy", optimize=True)
   entry_103_cti_20_1d_max = DecimalParameter(0.0, 0.99, default=0.95, decimals=2, space="buy", optimize=True)
-  entry_103_rsi_14_1d_max = DecimalParameter(50.0, 90.0, default=75.0, decimals=0, space="buy", optimize=True)
-  entry_103_r_14_1h_max = DecimalParameter(-40.0, -0.0, default=-30.0, decimals=0, space="buy", optimize=True)
-  entry_103_r_14_4h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=True)
-  entry_103_r_480_1h_max = DecimalParameter(-40.0, -0.0, default=-2.0, decimals=0, space="buy", optimize=True)
-  entry_103_r_480_4h_max = DecimalParameter(-40.0, -0.0, default=-2.0, decimals=0, space="buy", optimize=True)
+  entry_103_rsi_14_1d_max = DecimalParameter(50.0, 90.0, default=85.0, decimals=0, space="buy", optimize=True)
+  entry_103_r_14_1h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=True)
+  entry_103_r_14_4h_max = DecimalParameter(-40.0, -0.0, default=-5.0, decimals=0, space="buy", optimize=True)
+  entry_103_r_480_1h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=True)
+  entry_103_r_480_4h_max = DecimalParameter(-40.0, -0.0, default=-20.0, decimals=0, space="buy", optimize=True)
   entry_103_rsi_14_min = DecimalParameter(20.0, 60.0, default=22.0, decimals=0, space="buy", optimize=True)
   entry_103_sma_offset = DecimalParameter(0.930, 0.972, default=0.960, decimals=3, space="buy", optimize=True)
-  entry_103_bb_offset = DecimalParameter(0.970, 1.010, default=0.954, decimals=3, space="buy", optimize=True)
+  entry_103_bb_offset = DecimalParameter(0.940, 1.010, default=0.954, decimals=3, space="buy", optimize=True)
 
   entry_104_close_max_12 = DecimalParameter(00.50, 0.95, default=0.80, decimals=2, space="buy", optimize=False)
   entry_104_close_max_24 = DecimalParameter(00.50, 0.95, default=0.75, decimals=2, space="buy", optimize=False)
