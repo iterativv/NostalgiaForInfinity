@@ -455,7 +455,9 @@ class NostalgiaForInfinityX3(IStrategy):
   entry_46_rsi_14_4h_max = DecimalParameter(50.0, 90.0, default=80.0, decimals=0, space="buy", optimize=False)
   entry_46_cti_20_1d_max = DecimalParameter(0.0, 0.99, default=0.9, decimals=2, space="buy", optimize=False)
   entry_46_rsi_14_1d_max = DecimalParameter(50.0, 90.0, default=80.0, decimals=0, space="buy", optimize=False)
-  entry_46_r_480_1h_max = DecimalParameter(-40.0, -0.0, default=-6.0, decimals=0, space="buy", optimize=False)
+  entry_46_r_14_1h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=True)
+  entry_46_r_14_4h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=True)
+  entry_46_r_480_1h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=False)
   entry_46_r_480_4h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=False)
   entry_46_rsi_14_max = DecimalParameter(20.0, 60.0, default=60.0, decimals=0, space="buy", optimize=False)
 
@@ -24258,8 +24260,10 @@ class NostalgiaForInfinityX3(IStrategy):
           item_buy_logic.append(dataframe["rsi_14_4h"] < self.entry_46_rsi_14_4h_max.value)
           item_buy_logic.append(dataframe["cti_20_1d"] < self.entry_46_cti_20_1d_max.value)
           item_buy_logic.append(dataframe["rsi_14_1d"] < self.entry_46_rsi_14_1d_max.value)
-          item_buy_logic.append(dataframe["r_480_1h"] < self.entry_46_r_480_1h_max.value)
-          item_buy_logic.append(dataframe["r_480_4h"] < self.entry_46_r_480_1h_max.value)
+          item_buy_logic.append(dataframe["r_14_1h"] <= self.entry_46_r_14_1h_max.value)
+          item_buy_logic.append(dataframe["r_14_4h"] <= self.entry_46_r_14_4h_max.value)
+          item_buy_logic.append(dataframe["r_480_1h"] <= self.entry_46_r_480_1h_max.value)
+          item_buy_logic.append(dataframe["r_480_4h"] <= self.entry_46_r_480_4h_max.value)
 
           if self.entry_46_sup_level_1h_enabled.value:
             item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
