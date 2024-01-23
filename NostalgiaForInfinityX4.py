@@ -13,7 +13,7 @@ from freqtrade.strategy import DecimalParameter, CategoricalParameter
 from pandas import DataFrame, Series
 from functools import reduce
 from freqtrade.persistence import Trade, LocalTrade
-from datetime import datetime
+from datetime import datetime, timedelta
 import time
 from typing import Optional
 import warnings
@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.20"
+    return "v14.1.21"
 
   # ROI table:
   minimal_roi = {
@@ -6382,9 +6382,13 @@ class NostalgiaForInfinityX4(IStrategy):
       # Buy
       if (not partial_sell) and (sub_grind_count < max_sub_grinds):
         if (
-          (slice_profit_entry if (sub_grind_count > 0) else profit_init_ratio)
-          < grinding_mode_2_sub_thresholds[sub_grind_count + (0 if is_derisk else 1)]
-        ) and self.long_grind_buy(last_candle, previous_candle):
+          (
+            (slice_profit_entry if (sub_grind_count > 0) else profit_init_ratio)
+            < grinding_mode_2_sub_thresholds[sub_grind_count + (0 if is_derisk else 1)]
+          )
+          and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
+          and self.long_grind_buy(last_candle, previous_candle)
+        ):
           buy_amount = (
             slice_amount * grinding_mode_2_stakes[sub_grind_count] / (trade.leverage if self.is_futures_mode else 1.0)
           )
