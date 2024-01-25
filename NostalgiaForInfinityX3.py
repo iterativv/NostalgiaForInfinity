@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.46"
+    return "v13.1.47"
 
   # ROI table:
   minimal_roi = {
@@ -295,6 +295,50 @@ class NostalgiaForInfinityX3(IStrategy):
   buy_protection_params = {}
 
   #############################################################
+  # Buy hyperspace params:
+  buy_params = {
+    "entry_46_close_max_12": 0.88,
+    "entry_46_close_max_24": 0.84,
+    "entry_46_close_max_48": 0.78,
+    "entry_46_cti_20_1d_max": 0.90,
+    "entry_46_cti_20_1h_max": 0.70,
+    "entry_46_cti_20_4h_max": 0.80,
+    "entry_46_ema_200_not_dec_1d_enabled": False,
+    "entry_46_ema_200_not_dec_1h_enabled": False,
+    "entry_46_ema_200_not_dec_4h_enabled": False,
+    "entry_46_high_max_24_1h": 0.75,
+    "entry_46_high_max_24_4h": 0.65,
+    "entry_46_high_max_6_1d": 0.6,
+    "entry_46_hl_pct_change_12_1h": 0.64,
+    "entry_46_hl_pct_change_24_1h": 0.94,
+    "entry_46_hl_pct_change_48_1h": 0.96,
+    "entry_46_hl_pct_change_6_1h": 0.34,
+    "entry_46_not_downtrend_15m_enabled": True,
+    "entry_46_not_downtrend_1d_enabled": False,
+    "entry_46_not_downtrend_1h_enabled": False,
+    "entry_46_not_downtrend_4h_enabled": False,
+    "entry_46_r_14_1h_max": -10.0,
+    "entry_46_r_14_4h_max": -10.0,
+    "entry_46_r_480_1h_max": -20.0,
+    "entry_46_r_480_4h_max": -20.0,
+    "entry_46_res_level_1d_enabled": False,
+    "entry_46_res_level_1h_enabled": True,
+    "entry_46_res_level_4h_enabled": True,
+    "entry_46_rsi_14_1d_max": 85.0,
+    "entry_46_rsi_14_1h_max": 70.0,
+    "entry_46_rsi_14_4h_max": 70.0,
+    "entry_46_rsi_14_max": 40.0,
+    "entry_46_rsi_3_15m_min": 16.0,
+    "entry_46_rsi_3_1d_min": 2.0,
+    "entry_46_rsi_3_1h_min": 10.0,
+    "entry_46_rsi_3_4h_min": 10.0,
+    "entry_46_rsi_3_max": 60.0,
+    "entry_46_rsi_3_min": 16.0,
+    "entry_46_sup_level_1d_enabled": False,
+    "entry_46_sup_level_1h_enabled": False,
+    "entry_46_sup_level_4h_enabled": False,
+  }
+
   entry_10_close_max_12 = DecimalParameter(00.50, 0.95, default=0.80, decimals=2, space="buy", optimize=False)
   entry_10_close_max_24 = DecimalParameter(00.50, 0.95, default=0.75, decimals=2, space="buy", optimize=False)
   entry_10_close_max_48 = DecimalParameter(00.50, 0.95, default=0.70, decimals=2, space="buy", optimize=False)
@@ -455,9 +499,13 @@ class NostalgiaForInfinityX3(IStrategy):
   entry_46_rsi_14_4h_max = DecimalParameter(50.0, 90.0, default=80.0, decimals=0, space="buy", optimize=True)
   entry_46_cti_20_1d_max = DecimalParameter(0.0, 0.99, default=0.9, decimals=2, space="buy", optimize=True)
   entry_46_rsi_14_1d_max = DecimalParameter(50.0, 90.0, default=80.0, decimals=0, space="buy", optimize=True)
+  entry_46_r_14_1h_min = DecimalParameter(-100.0, -70.0, default=-100.0, decimals=0, space="buy", optimize=False)
   entry_46_r_14_1h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=True)
+  entry_46_r_14_4h_min = DecimalParameter(-100.0, -70.0, default=-100.0, decimals=0, space="buy", optimize=False)
   entry_46_r_14_4h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=True)
+  entry_46_r_480_1h_min = DecimalParameter(-100.0, -70.0, default=-100.0, decimals=0, space="buy", optimize=False)
   entry_46_r_480_1h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=True)
+  entry_46_r_480_4h_min = DecimalParameter(-100.0, -70.0, default=-100.0, decimals=0, space="buy", optimize=False)
   entry_46_r_480_4h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=True)
   entry_46_rsi_14_max = DecimalParameter(20.0, 60.0, default=60.0, decimals=0, space="buy", optimize=True)
 
@@ -24680,9 +24728,13 @@ class NostalgiaForInfinityX3(IStrategy):
           item_buy_logic.append(dataframe["rsi_14_4h"] < self.entry_46_rsi_14_4h_max.value)
           item_buy_logic.append(dataframe["cti_20_1d"] < self.entry_46_cti_20_1d_max.value)
           item_buy_logic.append(dataframe["rsi_14_1d"] < self.entry_46_rsi_14_1d_max.value)
+          item_buy_logic.append(dataframe["r_14_1h"] >= self.entry_46_r_14_1h_min.value)
           item_buy_logic.append(dataframe["r_14_1h"] <= self.entry_46_r_14_1h_max.value)
+          item_buy_logic.append(dataframe["r_14_4h"] >= self.entry_46_r_14_4h_min.value)
           item_buy_logic.append(dataframe["r_14_4h"] <= self.entry_46_r_14_4h_max.value)
+          item_buy_logic.append(dataframe["r_480_1h"] >= self.entry_46_r_480_1h_min.value)
           item_buy_logic.append(dataframe["r_480_1h"] <= self.entry_46_r_480_1h_max.value)
+          item_buy_logic.append(dataframe["r_480_4h"] >= self.entry_46_r_480_4h_min.value)
           item_buy_logic.append(dataframe["r_480_4h"] <= self.entry_46_r_480_4h_max.value)
 
           if self.entry_46_sup_level_1h_enabled.value:
