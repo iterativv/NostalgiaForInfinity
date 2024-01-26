@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.52"
+    return "v14.1.53"
 
   # ROI table:
   minimal_roi = {
@@ -699,30 +699,10 @@ class NostalgiaForInfinityX4(IStrategy):
       "sell_profit_only" in self.config and self.config["sell_profit_only"]
     ):
       self.exit_profit_only = True
-    if "stop_threshold" in self.config:
-      self.stop_threshold = self.config["stop_threshold"]
-    if "profit_max_thresholds" in self.config:
-      self.profit_max_thresholds = self.config["profit_max_thresholds"]
-    if "grinding_enable" in self.config:
-      self.grinding_enable = self.config["grinding_enable"]
-    if "grinding_mode" in self.config:
-      self.grinding_mode = self.config["grinding_mode"]
-    if "grinding_stakes" in self.config:
-      self.grinding_stakes = self.config["grinding_stakes"]
-    if "grinding_thresholds" in self.config:
-      self.grinding_thresholds = self.config["grinding_thresholds"]
-    if "grinding_stakes_alt_1" in self.config:
-      self.grinding_stakes_alt_1 = self.config["grinding_stakes_alt_1"]
-    if "grinding_thresholds_alt_1" in self.config:
-      self.grinding_thresholds_alt_1 = self.config["grinding_thresholds_alt_1"]
-    if "grinding_stakes_alt_2" in self.config:
-      self.grinding_stakes_alt_2 = self.config["grinding_stakes_alt_2"]
-    if "grinding_thresholds_alt_2" in self.config:
-      self.grinding_thresholds_alt_2 = self.config["grinding_thresholds_alt_2"]
-    if "grinding_stop_init" in self.config:
-      self.grinding_stop_init = self.config["grinding_stop_init"]
-    if "grinding_stop_grinds" in self.config:
-      self.grinding_stop_grinds = self.config["grinding_stop_grinds"]
+    if "grinding_mode_2_derisk_spot" in self.config:
+      self.grinding_mode_2_derisk_spot = self.config["grinding_mode_2_derisk_spot"]
+    if "grinding_mode_2_stop_grinds_spot" in self.config:
+      self.grinding_mode_2_stop_grinds_spot = self.config["grinding_mode_2_stop_grinds_spot"]
     if "grinding_profit_threshold" in self.config:
       self.grinding_profit_threshold = self.config["grinding_profit_threshold"]
     if "max_slippage" in self.config:
