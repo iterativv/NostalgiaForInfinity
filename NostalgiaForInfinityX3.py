@@ -68,12 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.53"
-
-  # ROI table:
-  minimal_roi = {
-    "0": 100.0,
-  }
+    return "v13.1.54"
 
   stoploss = -0.99
 
