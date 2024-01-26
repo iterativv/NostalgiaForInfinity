@@ -198,9 +198,9 @@ class NostalgiaForInfinityX4(IStrategy):
   grinding_mode_1_sub_thresholds_alt_4 = [-0.06, -0.08, -0.11]
 
   # Grinding mode 2
-  grinding_mode_2_stop_init_grinds_spot = -0.20
+  grinding_mode_2_derisk_spot = -0.20
   grinding_mode_2_stop_grinds_spot = -0.16
-  grinding_mode_2_stop_init_grinds_futures = -0.50
+  grinding_mode_2_derisk_futures = -0.50
   grinding_mode_2_stop_grinds_futures = -0.26
   grinding_mode_2_profit_threshold_spot = 0.018
   grinding_mode_2_profit_threshold_futures = 0.018
@@ -6664,10 +6664,10 @@ class NostalgiaForInfinityX4(IStrategy):
           )
           max_sub_grinds = len(grinding_mode_2_stakes)
           break
-      grinding_mode_2_stop_init_grinds = (
-        self.grinding_mode_2_stop_init_grinds_futures
+      grinding_mode_2_derisk = (
+        self.grinding_mode_2_derisk_futures
         if self.is_futures_mode
-        else self.grinding_mode_2_stop_init_grinds_spot
+        else self.grinding_mode_2_derisk_spot
       )
       grinding_mode_2_stop_grinds = (
         self.grinding_mode_2_stop_grinds_futures if self.is_futures_mode else self.grinding_mode_2_stop_grinds_spot
@@ -6765,13 +6765,13 @@ class NostalgiaForInfinityX4(IStrategy):
             if is_sell_found
             else (
               profit_stake
-              < (slice_amount * grinding_mode_2_stop_init_grinds / (trade.leverage if self.is_futures_mode else 1.0))
+              < (slice_amount * grinding_mode_2_derisk / (trade.leverage if self.is_futures_mode else 1.0))
             )
           )
           or (
             (
               profit_stake
-              < (slice_amount * grinding_mode_2_stop_init_grinds / (trade.leverage if self.is_futures_mode else 1.0))
+              < (slice_amount * grinding_mode_2_derisk / (trade.leverage if self.is_futures_mode else 1.0))
             )
             and (
               (
