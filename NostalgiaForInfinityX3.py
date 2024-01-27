@@ -6318,9 +6318,7 @@ class NostalgiaForInfinityX3(IStrategy):
           max_sub_grinds = len(grinding_mode_2_stakes)
           break
       grinding_mode_2_derisk = (
-        self.grinding_mode_2_derisk_futures
-        if self.is_futures_mode
-        else self.grinding_mode_2_derisk_spot
+        self.grinding_mode_2_derisk_futures if self.is_futures_mode else self.grinding_mode_2_derisk_spot
       )
       grinding_mode_2_stop_grinds = (
         self.grinding_mode_2_stop_grinds_futures if self.is_futures_mode else self.grinding_mode_2_stop_grinds_spot
