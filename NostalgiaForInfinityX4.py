@@ -369,8 +369,12 @@ class NostalgiaForInfinityX4(IStrategy):
   entry_11_not_downtrend_1h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
   entry_11_not_downtrend_4h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
   entry_11_not_downtrend_1d_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
-  entry_11_ema_100_over_ema_200_enabled = CategoricalParameter([True, False], default=True, space="buy", optimize=False)
-  entry_11_ema_12_1h_over_ema_200_1h_enabled = CategoricalParameter([True, False], default=True, space="buy", optimize=False)
+  entry_11_ema_100_over_ema_200_enabled = CategoricalParameter(
+    [True, False], default=True, space="buy", optimize=False
+  )
+  entry_11_ema_12_1h_over_ema_200_1h_enabled = CategoricalParameter(
+    [True, False], default=True, space="buy", optimize=False
+  )
   entry_11_rsi_3_min = DecimalParameter(00.0, 30.0, default=2.0, decimals=0, space="buy", optimize=False)
   entry_11_rsi_3_max = DecimalParameter(30.0, 70.0, default=46.0, decimals=0, space="buy", optimize=False)
   entry_11_rsi_3_15m_min = DecimalParameter(00.0, 36.0, default=2.0, decimals=0, space="buy", optimize=False)
