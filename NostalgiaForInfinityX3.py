@@ -7134,6 +7134,7 @@ class NostalgiaForInfinityX3(IStrategy):
     dataframe["ema_20"] = ta.EMA(dataframe, timeperiod=20)
     dataframe["ema_26"] = ta.EMA(dataframe, timeperiod=26)
     dataframe["ema_50"] = ta.EMA(dataframe, timeperiod=50)
+    dataframe["ema_100"] = ta.EMA(dataframe, timeperiod=100)
     dataframe["ema_200"] = ta.EMA(dataframe, timeperiod=200)
 
     dataframe["ema_200_dec_24"] = (dataframe["ema_200"].isnull()) | (
@@ -7149,6 +7150,7 @@ class NostalgiaForInfinityX3(IStrategy):
 
     # SMA
     dataframe["sma_16"] = ta.SMA(dataframe, timeperiod=16)
+    dataframe["sma_30"] = ta.SMA(dataframe, timeperiod=30)
     dataframe["sma_50"] = ta.SMA(dataframe, timeperiod=50)
     dataframe["sma_75"] = ta.SMA(dataframe, timeperiod=75)
     dataframe["sma_200"] = ta.SMA(dataframe, timeperiod=200)
