@@ -26062,7 +26062,10 @@ class Cache:
 
   @staticmethod
   def rapidjson_load_kwargs():
-    return {"number_mode": rapidjson.NM_NATIVE}
+    return {
+    "number_mode": rapidjson.NM_NATIVE,
+    "parse_mode": rapidjson.PM_COMMENTS | rapidjson.PM_TRAILING_COMMAS
+    }
 
   @staticmethod
   def rapidjson_dump_kwargs():
@@ -26103,6 +26106,7 @@ class HoldsCache(Cache):
   def rapidjson_load_kwargs():
     return {
       "number_mode": rapidjson.NM_NATIVE,
+      "parse_mode": rapidjson.PM_COMMENTS | rapidjson.PM_TRAILING_COMMAS,
       "object_hook": HoldsCache._object_hook,
     }
 
