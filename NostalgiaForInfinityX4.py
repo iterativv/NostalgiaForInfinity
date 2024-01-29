@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.64"
+    return "v14.1.65"
 
   stoploss = -0.99
 
@@ -723,6 +723,7 @@ class NostalgiaForInfinityX4(IStrategy):
           + "-"
           + self.config["stake_currency"]
           + ("-(backtest)" if (self.config["runmode"].value == "backtest") else "")
+          + ("-(hyperopt)" if (self.config["runmode"].value == "hyperopt") else "")
           + ".json"
         )
       )
@@ -5872,7 +5873,7 @@ class NostalgiaForInfinityX4(IStrategy):
     current_time: "datetime",
     buy_tag,
   ) -> tuple:
-    is_backtest = self.dp.runmode.value == "backtest"
+    is_backtest = self.dp.runmode.value in ["backtest", "hyperopt"]
     # Stoploss doom
     if (
       self.is_futures_mode is False
@@ -6584,7 +6585,7 @@ class NostalgiaForInfinityX4(IStrategy):
     current_exit_profit: float,
     **kwargs,
   ) -> Optional[float]:
-    is_backtest = self.dp.runmode.value == "backtest"
+    is_backtest = self.dp.runmode.value in ["backtest", "hyperopt"]
     if self.grinding_enable:
       dataframe, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
       if len(dataframe) < 2:
