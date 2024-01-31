@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.69"
+    return "v14.1.70"
 
   stoploss = -0.99
 
@@ -193,7 +193,7 @@ class NostalgiaForInfinityX4(IStrategy):
   grinding_mode_1_sub_thresholds_alt_4 = [-0.06, -0.08, -0.11]
 
   # Grinding mode 2
-  grinding_mode_2_derisk_spot = -0.20
+  grinding_mode_2_derisk_spot = -0.40
   grinding_mode_2_stop_grinds_spot = -0.16
   grinding_mode_2_derisk_futures = -0.50
   grinding_mode_2_stop_grinds_futures = -0.26
@@ -692,9 +692,15 @@ class NostalgiaForInfinityX4(IStrategy):
   entry_106_res_level_4h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
   entry_106_sup_level_1d_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
   entry_106_res_level_1d_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
-  entry_106_ema_200_not_dec_1h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
-  entry_106_ema_200_not_dec_4h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
-  entry_106_ema_200_not_dec_1d_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
+  entry_106_ema_200_not_dec_1h_enabled = CategoricalParameter(
+    [True, False], default=False, space="buy", optimize=False
+  )
+  entry_106_ema_200_not_dec_4h_enabled = CategoricalParameter(
+    [True, False], default=False, space="buy", optimize=False
+  )
+  entry_106_ema_200_not_dec_1d_enabled = CategoricalParameter(
+    [True, False], default=False, space="buy", optimize=False
+  )
   entry_106_not_downtrend_15m_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
   entry_106_not_downtrend_1h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
   entry_106_not_downtrend_4h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
@@ -26499,10 +26505,7 @@ class Cache:
 
   @staticmethod
   def rapidjson_load_kwargs():
-    return {
-    "number_mode": rapidjson.NM_NATIVE,
-    "parse_mode": rapidjson.PM_COMMENTS | rapidjson.PM_TRAILING_COMMAS
-    }
+    return {"number_mode": rapidjson.NM_NATIVE, "parse_mode": rapidjson.PM_COMMENTS | rapidjson.PM_TRAILING_COMMAS}
 
   @staticmethod
   def rapidjson_dump_kwargs():
