@@ -7038,6 +7038,8 @@ class NostalgiaForInfinityX3(IStrategy):
     informative_1d["rsi_3"] = ta.RSI(informative_1d, timeperiod=3, fillna=True)
     informative_1d["rsi_14"] = ta.RSI(informative_1d, timeperiod=14)
 
+    informative_1d["rsi_14_max_6"] = informative_1d["rsi_14"].rolling(6).max()
+
     # EMA
     informative_1d["ema_200"] = ta.EMA(informative_1d, timeperiod=200)
 
