@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.83"
+    return "v14.1.84"
 
   stoploss = -0.99
 
@@ -218,22 +218,22 @@ class NostalgiaForInfinityX4(IStrategy):
     [0.75, 0.75],
   ]
   grinding_mode_2_sub_thresholds_spot = [
-    [-0.0, -0.04, -0.06, -0.08, -0.10, -0.12],
-    [-0.0, -0.05, -0.06, -0.08, -0.10],
-    [-0.0, -0.05, -0.08, -0.10, -0.12],
-    [-0.0, -0.06, -0.08, -0.10],
-    [-0.0, -0.06, -0.08, -0.10],
-    [-0.0, -0.06, -0.08, -0.10],
-    [-0.0, -0.06, -0.10],
+    [-0.06, -0.07, -0.08, -0.10, -0.12],
+    [-0.06, -0.07, -0.08, -0.10],
+    [-0.06, -0.08, -0.10, -0.12],
+    [-0.06, -0.08, -0.10],
+    [-0.06, -0.08, -0.10],
+    [-0.06, -0.08, -0.10],
+    [-0.06, -0.10],
   ]
   grinding_mode_2_sub_thresholds_futures = [
-    [-0.0, -0.04, -0.06, -0.08, -0.10, -0.12],
-    [-0.0, -0.05, -0.06, -0.08, -0.10],
-    [-0.0, -0.05, -0.08, -0.10, -0.12],
-    [-0.0, -0.06, -0.08, -0.10],
-    [-0.0, -0.06, -0.08, -0.10],
-    [-0.0, -0.06, -0.08, -0.10],
-    [-0.0, -0.06, -0.10],
+    [-0.06, -0.07, -0.08, -0.10, -0.12],
+    [-0.06, -0.07, -0.08, -0.10],
+    [-0.06, -0.08, -0.10, -0.12],
+    [-0.06, -0.08, -0.10],
+    [-0.06, -0.08, -0.10],
+    [-0.06, -0.08, -0.10],
+    [-0.06, -0.10],
   ]
 
   # Rebuy mode
@@ -7148,7 +7148,7 @@ class NostalgiaForInfinityX4(IStrategy):
         if (
           (
             (slice_profit_entry if (sub_grind_count > 0) else profit_init_ratio)
-            < grinding_mode_2_sub_thresholds[sub_grind_count + (0 if is_derisk else 1)]
+            < (0.0 if is_derisk else grinding_mode_2_sub_thresholds[sub_grind_count])
           )
           and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
           and self.long_grind_buy(last_candle, previous_candle)
