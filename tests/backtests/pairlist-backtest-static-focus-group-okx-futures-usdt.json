@@ -73,7 +73,6 @@
       // "XMR/USDT:USDT",
       "YFII/USDT:USDT",
       // "ZEC/USDT:USDT",
-      // "ZEN/USDT:USDT"
     ]
   },
   "pairlists": [{ "method": "StaticPairList" }]

@@ -85,8 +85,7 @@
       "WSB/USDT",
       "XCH/USDT",
       "XEC/USDT",
-      "YGG/USDT",
-      "ZKS/USDT"
+      "YGG/USDT"
     ],
     "ccxt_config": {
       "enableRateLimit": true,
