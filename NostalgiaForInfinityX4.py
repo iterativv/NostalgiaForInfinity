@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.98"
+    return "v14.1.99"
 
   stoploss = -0.99
 
@@ -7519,7 +7519,9 @@ class NostalgiaForInfinityX4(IStrategy):
         if grind_profit > grinding_mode_2_profit_threshold:
           sell_amount = total_amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)
           if (current_stake_amount - sell_amount) < (min_stake * 1.5):
-            sell_amount = (trade.amount * exit_rate) - (min_stake * 1.5)
+            sell_amount = (trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) - (
+              min_stake * 1.5
+            )
           if sell_amount > min_stake:
             self.dp.send_msg(
               f"Grinding exit [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount} {self.config['stake_currency']})"
