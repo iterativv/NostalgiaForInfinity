@@ -7,13 +7,13 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Fetch Source Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 10
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: "3.11"
       - name: Install black
         run: |
           pip install black==23.7.0
@@ -82,10 +82,14 @@ jobs:
           - 20230601-20230701
           - 20230701-20230801
           - 20230801-20230901
+          - 20230901-20231001
+          - 20231001-20231101
+          - 20231101-20231201
+          - 20231201-20240101
 
     steps:
       - name: Fetch Source Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: "Create env file"
         run: |
@@ -125,7 +129,7 @@ jobs:
           cat artifacts/backtest-output-binance-spot-${{ matrix.timerange }}.txt
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: binance-testrun-artifacts
           path: artifacts/
@@ -170,10 +174,14 @@ jobs:
           - 20230601-20230701
           - 20230701-20230801
           - 20230801-20230901
+          - 20230901-20231001
+          - 20231001-20231101
+          - 20231101-20231201
+          - 20231201-20240101
 
     steps:
       - name: Fetch Source Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Fetch data for backtests from https://github.com/DigiTuccar/HistoricalDataForTradeBacktest
         env:
@@ -207,7 +215,7 @@ jobs:
           cat artifacts/backtest-output-kucoin-spot-${{ matrix.timerange }}.txt
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: kucoin-testrun-artifacts
           path: artifacts/
@@ -254,7 +262,7 @@ jobs:
 
   #   steps:
   #     - name: Fetch Source Code
-  #       uses: actions/checkout@v3
+  #       uses: actions/checkout@v4
 
   #     - name: Fetch data for backtests from https://github.com/DigiTuccar/HistoricalDataForTradeBacktest
   #       env:
@@ -288,7 +296,7 @@ jobs:
   #         cat artifacts/backtest-output-okx-spot-${{ matrix.timerange }}.txt
 
   #     - name: Upload Artifacts
-  #       uses: actions/upload-artifact@v3
+  #       uses: actions/upload-artifact@v4
   #       with:
   #         name: okx-testrun-artifacts
   #         path: artifacts/
@@ -301,12 +309,12 @@ jobs:
       # - OKX-Backtests
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: "3.11"
 
       - name: Install Dependencies
         run: |
