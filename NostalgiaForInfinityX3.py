@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.102"
+    return "v13.1.103"
 
   stoploss = -0.99
 
@@ -322,7 +322,7 @@ class NostalgiaForInfinityX3(IStrategy):
   entry_10_not_downtrend_1h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
   entry_10_not_downtrend_4h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
   entry_10_not_downtrend_1d_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
-  entry_10_rsi_3_min = DecimalParameter(00.0, 30.0, default=2.0, decimals=0, space="buy", optimize=False)
+  entry_10_rsi_3_min = DecimalParameter(00.0, 30.0, default=4.0, decimals=0, space="buy", optimize=False)
   entry_10_rsi_3_max = DecimalParameter(30.0, 70.0, default=46.0, decimals=0, space="buy", optimize=False)
   entry_10_rsi_3_15m_min = DecimalParameter(00.0, 36.0, default=12.0, decimals=0, space="buy", optimize=False)
   entry_10_rsi_3_1h_min = DecimalParameter(00.0, 36.0, default=8.0, decimals=0, space="buy", optimize=False)
@@ -338,9 +338,9 @@ class NostalgiaForInfinityX3(IStrategy):
   entry_10_r_14_4h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=False)
   entry_10_r_480_1h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=False)
   entry_10_r_480_4h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=False)
-  entry_10_rsi_14_max = DecimalParameter(20.0, 60.0, default=28.0, decimals=0, space="buy", optimize=False)
-  entry_10_ema_offset = DecimalParameter(0.940, 0.972, default=0.958, decimals=3, space="buy", optimize=False)
-  entry_10_ema_open_offset = DecimalParameter(0.0100, 0.0400, default=0.0238, decimals=4, space="buy", optimize=False)
+  entry_10_rsi_14_max = DecimalParameter(20.0, 60.0, default=32.0, decimals=0, space="buy", optimize=False)
+  entry_10_ema_offset = DecimalParameter(0.940, 0.972, default=0.956, decimals=3, space="buy", optimize=False)
+  entry_10_ema_open_offset = DecimalParameter(0.0100, 0.0400, default=0.0200, decimals=4, space="buy", optimize=False)
 
   entry_11_close_max_12 = DecimalParameter(00.50, 0.95, default=0.80, decimals=2, space="buy", optimize=False)
   entry_11_close_max_24 = DecimalParameter(00.50, 0.95, default=0.75, decimals=2, space="buy", optimize=False)
