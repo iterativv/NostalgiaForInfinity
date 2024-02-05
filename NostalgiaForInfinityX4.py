@@ -7695,7 +7695,7 @@ class NostalgiaForInfinityX4(IStrategy):
             )
           if sell_amount > min_stake:
             self.dp.send_msg(
-              f"Grinding exit [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount} {self.config['stake_currency']})"
+              f"Grinding exit [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']})"
             )
             return -sell_amount
 
