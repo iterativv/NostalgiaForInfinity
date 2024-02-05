@@ -7631,7 +7631,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
       if not all(c in self.long_rebuy_mode_tags for c in enter_tags):
         # First entry is lower now, therefore the grinds must adjust
-        if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 2, 5) or is_backtest):
+        if trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 2, 5) or is_backtest:
           slice_amount /= self.regular_mode_stake_multiplier
 
       max_sub_grinds = 0
