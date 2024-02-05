@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.104"
+    return "v13.1.105"
 
   stoploss = -0.99
 
@@ -7499,9 +7499,9 @@ class NostalgiaForInfinityX3(IStrategy):
           (last_candle["rsi_14"] < 36.0)
           and (last_candle["close"] < (last_candle["sma_16"] * 0.998))
           and (last_candle["rsi_3"] > 16.0)
-          and (last_candle["rsi_3_15m"] > 26.0)
-          and (last_candle["rsi_3_1h"] > 26.0)
-          and (last_candle["rsi_3_4h"] > 26.0)
+          and (last_candle["rsi_3_15m"] > 30.0)
+          and (last_candle["rsi_3_1h"] > 30.0)
+          and (last_candle["rsi_3_4h"] > 30.0)
         )
         or (
           (last_candle["rsi_14"] < 36.0)
@@ -7520,6 +7520,7 @@ class NostalgiaForInfinityX3(IStrategy):
           and (last_candle["hma_70_buy"])
           and (last_candle["close"] > last_candle["zlma_50_1h"])
           and (last_candle["ema_26"] > last_candle["ema_12"])
+          and (last_candle["close"] < (last_candle["high_max_12_1h"] * 0.90))
           and (last_candle["cti_20_15m"] < 0.5)
           and (last_candle["rsi_14_15m"] < 50.0)
           and (last_candle["cti_20_1h"] < 0.8)
@@ -7556,6 +7557,7 @@ class NostalgiaForInfinityX3(IStrategy):
           and (last_candle["cti_20"] < -0.6)
           and (last_candle["rsi_3_1h"] > 20.0)
           and (last_candle["rsi_3_4h"] > 20.0)
+          and (last_candle["not_downtrend_1d"] == True)
         )
         or (
           (last_candle["rsi_3"] > 12.0)
@@ -7563,6 +7565,7 @@ class NostalgiaForInfinityX3(IStrategy):
           and (last_candle["rsi_3_1h"] > 26.0)
           and (last_candle["rsi_3_4h"] > 26.0)
           and (last_candle["rsi_14"] < 40.0)
+          and (last_candle["ema_12"] < (last_candle["ema_26"] * 0.994))
           and (last_candle["cti_20_1h"] < 0.8)
           and (last_candle["rsi_14_1h"] < 80.0)
           and (last_candle["cti_20_4h"] < 0.8)
@@ -7572,6 +7575,7 @@ class NostalgiaForInfinityX3(IStrategy):
       )
     ):
       return True
+
     return False
 
   def long_adjust_trade_position_no_derisk(
