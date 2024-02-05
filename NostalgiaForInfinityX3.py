@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.103"
+    return "v13.1.104"
 
   stoploss = -0.99
 
@@ -137,10 +137,10 @@ class NostalgiaForInfinityX3(IStrategy):
   # 10: enable Doom Bull, 11: enable Doom Bear, 12: enable u_e Bull, 13: enable u_e Bear.
   stop_thresholds = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 24.0, 24.0, False, False, True, True]
   # Based on the the first entry (regardless of rebuys)
-  stop_threshold = 0.80
-  stop_threshold_futures = 2.0
-  stop_threshold_futures_rapid = 2.0
-  stop_threshold_spot_rapid = 0.80
+  stop_threshold = 1.60
+  stop_threshold_futures = 4.0
+  stop_threshold_futures_rapid = 4.0
+  stop_threshold_spot_rapid = 1.60
   stop_threshold_futures_rebuy = 0.9
   stop_threshold_spot_rebuy = 3.9
 
@@ -230,6 +230,17 @@ class NostalgiaForInfinityX3(IStrategy):
     [-0.06, -0.08, -0.10],
     [-0.06, -0.10],
   ]
+
+  # Non rebuy modes
+  regular_mode_stake_multiplier = 0.5
+  regular_mode_stake_multiplier_alt = 0.75
+  regular_mode_max = 3
+  regular_mode_derisk_spot = -1.6
+  regular_mode_derisk_futures = -1.6
+  regular_mode_stakes_spot = [1.0, 1.0, 1.0]
+  regular_mode_stakes_futures = [1.0, 1.0, 1.0]
+  regular_mode_thresholds_spot = [-0.06, -0.07, -0.08]
+  regular_mode_thresholds_futures = [-0.06, -0.07, -0.08]
 
   # Rebuy mode
   rebuy_mode_stake_multiplier = 0.2
@@ -7112,24 +7123,18 @@ class NostalgiaForInfinityX3(IStrategy):
   ) -> float:
     if self.position_adjustment_enable == True:
       enter_tags = entry_tag.split()
-      # For grinding
-      if self.grinding_enable:
-        if any(
-          c in (self.normal_mode_tags + self.pump_mode_tags + self.quick_mode_tags + self.long_mode_tags)
-          for c in enter_tags
-        ):
-          stake = proposed_stake * self.stake_grinding_mode_multiplier
-          if stake < min_stake:
-            stake = proposed_stake * self.stake_grinding_mode_multiplier_alt_1
-          if stake < min_stake:
-            stake = proposed_stake * self.stake_grinding_mode_multiplier_alt_2
-          return stake
       # Rebuy mode
       if all(c in self.long_rebuy_mode_tags for c in enter_tags):
         stake_multiplier = self.rebuy_mode_stake_multiplier
         # Low stakes, on Binance mostly
         if (proposed_stake * self.rebuy_mode_stake_multiplier) < min_stake:
           stake_multiplier = self.rebuy_mode_stake_multiplier_alt
+        return proposed_stake * stake_multiplier
+      else:
+        stake_multiplier = self.regular_mode_stake_multiplier
+        # Low stakes, on Binance mostly
+        if (proposed_stake * self.regular_mode_stake_multiplier) < min_stake:
+          stake_multiplier = self.regular_mode_stake_multiplier_alt
         return proposed_stake * stake_multiplier
 
     return proposed_stake
@@ -7273,6 +7278,39 @@ class NostalgiaForInfinityX3(IStrategy):
       # Rebuy mode
       if all(c in self.long_rebuy_mode_tags for c in enter_tags):
         slice_amount /= self.rebuy_mode_stake_multiplier
+      elif count_of_exits == 0:
+        # rebuy_stake = None
+        rebuy_stake = self.long_adjust_trade_position_no_derisk(
+          trade,
+          enter_tags,
+          current_time,
+          current_rate,
+          current_profit,
+          min_stake,
+          max_stake,
+          current_entry_rate,
+          current_exit_rate,
+          current_entry_profit,
+          current_exit_profit,
+          filled_orders,
+          filled_entries,
+          filled_exits,
+          exit_rate,
+          slice_amount,
+          slice_profit_entry,
+          profit_ratio,
+          profit_stake,
+          current_stake_amount,
+        )
+        if rebuy_stake is not None:
+          return rebuy_stake
+        elif count_of_exits == 0:
+          return None
+
+      if not all(c in self.long_rebuy_mode_tags for c in enter_tags):
+        # First entry is lower now, therefore the grinds must adjust
+        if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 2, 5) or is_backtest):
+          slice_amount /= self.regular_mode_stake_multiplier
 
       max_sub_grinds = 0
       grinding_mode_2_stakes = []
@@ -7535,6 +7573,100 @@ class NostalgiaForInfinityX3(IStrategy):
     ):
       return True
     return False
+
+  def long_adjust_trade_position_no_derisk(
+    self,
+    trade: Trade,
+    enter_tags,
+    current_time: datetime,
+    current_rate: float,
+    current_profit: float,
+    min_stake: Optional[float],
+    max_stake: float,
+    current_entry_rate: float,
+    current_exit_rate: float,
+    current_entry_profit: float,
+    current_exit_profit: float,
+    filled_orders: "Orders",
+    filled_entries: "Orders",
+    filled_exits: "Orders",
+    exit_rate: float,
+    slice_amount: float,
+    slice_profit_entry: float,
+    profit_ratio: float,
+    profit_stake: float,
+    current_stake_amount: float,
+    **kwargs,
+  ) -> Optional[float]:
+    regular_mode_stakes = self.regular_mode_stakes_futures if self.is_futures_mode else self.regular_mode_stakes_spot
+    max_sub_grinds = len(regular_mode_stakes)
+    regular_mode_sub_thresholds = (
+      self.regular_mode_thresholds_futures if self.is_futures_mode else self.regular_mode_thresholds_spot
+    )
+
+    partial_sell = False
+    sub_grind_count = 0
+    total_amount = 0.0
+    total_cost = 0.0
+    current_open_rate = 0.0
+    current_grind_stake = 0.0
+    current_grind_stake_profit = 0.0
+    for order in reversed(filled_orders):
+      if (order.ft_order_side == "buy") and (order is not filled_orders[0]):
+        sub_grind_count += 1
+        total_amount += order.safe_filled
+        total_cost += order.safe_filled * order.safe_price
+      elif order.ft_order_side == "sell":
+        if (order.safe_remaining * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) > min_stake:
+          partial_sell = True
+        break
+    if sub_grind_count > 0:
+      current_open_rate = total_cost / total_amount
+      current_grind_stake = total_amount * exit_rate * (1 - trade.fee_close)
+      current_grind_stake_profit = current_grind_stake - total_cost
+
+    if (not partial_sell) and (sub_grind_count < max_sub_grinds):
+      if (0 <= sub_grind_count < max_sub_grinds) and (
+        slice_profit_entry < regular_mode_sub_thresholds[sub_grind_count]
+      ):
+        buy_amount = (
+          slice_amount * regular_mode_stakes[sub_grind_count] / (trade.leverage if self.is_futures_mode else 1.0)
+        )
+        if buy_amount > max_stake:
+          buy_amount = max_stake
+        if buy_amount < (min_stake * 1.5):
+          buy_amount = min_stake * 1.5
+        self.dp.send_msg(
+          f"Rebuy [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        )
+        print(
+          f"Rebuy [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        )
+        return buy_amount
+
+      if profit_stake < (
+        slice_amount
+        * (self.regular_mode_derisk_futures if self.is_futures_mode else self.regular_mode_derisk_spot)
+        / (trade.leverage if self.is_futures_mode else 1.0)
+      ):
+        sell_amount = trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0) * 0.999
+        if (current_stake_amount / (trade.leverage if self.is_futures_mode else 1.0) - sell_amount) < (
+          min_stake * 1.5
+        ):
+          sell_amount = (trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) - (
+            min_stake * 1.5
+          )
+        if sell_amount > min_stake:
+          grind_profit = 0.0
+          self.dp.send_msg(
+            f"Rebuy de-risk [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          )
+          print(
+            f"Rebuy de-risk [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          )
+          return -sell_amount
+
+    return None
 
   def long_rebuy_adjust_trade_position(
     self,
