@@ -7677,7 +7677,6 @@ class NostalgiaForInfinityX3(IStrategy):
       * (self.regular_mode_derisk_futures if self.is_futures_mode else self.regular_mode_derisk_spot)
       / (trade.leverage if self.is_futures_mode else 1.0)
     ):
-      print("HELLO")
       sell_amount = trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0) * 0.999
       if (current_stake_amount / (trade.leverage if self.is_futures_mode else 1.0) - sell_amount) < (
         min_stake * 1.5
