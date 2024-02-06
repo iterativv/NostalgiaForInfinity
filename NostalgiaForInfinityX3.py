@@ -235,7 +235,7 @@ class NostalgiaForInfinityX3(IStrategy):
   regular_mode_stake_multiplier = 0.5
   regular_mode_stake_multiplier_alt = 0.75
   regular_mode_max = 3
-  regular_mode_derisk_spot = -1.6
+  regular_mode_derisk_spot = -0.8
   regular_mode_derisk_futures = -1.6
   regular_mode_stakes_spot = [1.0, 1.0, 1.0]
   regular_mode_stakes_futures = [1.0, 1.0, 1.0]
