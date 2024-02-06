@@ -8000,9 +8000,7 @@ class NostalgiaForInfinityX4(IStrategy):
       / (trade.leverage if self.is_futures_mode else 1.0)
     ):
       sell_amount = trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0) * 0.999
-      if (current_stake_amount / (trade.leverage if self.is_futures_mode else 1.0) - sell_amount) < (
-        min_stake * 1.5
-      ):
+      if (current_stake_amount / (trade.leverage if self.is_futures_mode else 1.0) - sell_amount) < (min_stake * 1.5):
         sell_amount = (trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) - (
           min_stake * 1.5
         )
