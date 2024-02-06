@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.105"
+    return "v14.1.106"
 
   stoploss = -0.99
 
@@ -7840,8 +7840,6 @@ class NostalgiaForInfinityX4(IStrategy):
           (last_candle["rsi_14"] > 30.0)
           and (last_candle["rsi_14"] < 60.0)
           and (last_candle["hma_70_buy"])
-          and (last_candle["close"] > last_candle["zlma_50_1h"])
-          and (last_candle["ema_26"] > last_candle["ema_12"])
           and (last_candle["close"] < (last_candle["high_max_12_1h"] * 0.90))
           and (last_candle["cti_20_15m"] < 0.5)
           and (last_candle["rsi_14_15m"] < 50.0)
@@ -7893,6 +7891,17 @@ class NostalgiaForInfinityX4(IStrategy):
           and (last_candle["cti_20_4h"] < 0.8)
           and (last_candle["rsi_14_4h"] < 80.0)
           and (last_candle["ema_200_dec_48_1h"] == False)
+        )
+        or (
+          (last_candle["rsi_14"] < 60.0)
+          and (last_candle["hma_55_buy"])
+          and (last_candle["rsi_3_1h"] > 4.0)
+          and (last_candle["rsi_3_4h"] > 4.0)
+          and (last_candle["cti_20_15m"] < 0.8)
+          and (last_candle["cti_20_1h"] < 0.8)
+          and (last_candle["cti_20_4h"] < 0.8)
+          and (last_candle["rsi_14_1h"] < 80.0)
+          and (last_candle["close"] < (last_candle["high_max_12_1h"] * 0.90))
         )
       )
     ):
