@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.117"
+    return "v13.1.118"
 
   stoploss = -0.99
 
@@ -292,6 +292,7 @@ class NostalgiaForInfinityX3(IStrategy):
     "buy_condition_45_enable": True,
     "buy_condition_46_enable": False,
     "buy_condition_47_enable": False,
+    "buy_condition_48_enable": False,
     "buy_condition_61_enable": True,
     # "buy_condition_81_enable": True,
     # "buy_condition_82_enable": True,
@@ -684,6 +685,57 @@ class NostalgiaForInfinityX3(IStrategy):
   entry_47_rsi_20_max = DecimalParameter(26.0, 60.0, default=60.0, decimals=0, space="buy", optimize=False)
   entry_47_cti_20_max = DecimalParameter(-0.8, 0.8, default=-0.5, decimals=1, space="buy", optimize=False)
   entry_47_high_max_12_1h_max = DecimalParameter(00.70, 0.95, default=0.90, decimals=2, space="buy", optimize=False)
+
+  entry_48_close_max_12 = DecimalParameter(00.50, 0.95, default=0.80, decimals=2, space="buy", optimize=False)
+  entry_48_close_max_24 = DecimalParameter(00.50, 0.95, default=0.75, decimals=2, space="buy", optimize=False)
+  entry_48_close_max_48 = DecimalParameter(00.50, 0.95, default=0.70, decimals=2, space="buy", optimize=False)
+  entry_48_high_max_24_1h = DecimalParameter(00.40, 0.95, default=0.60, decimals=2, space="buy", optimize=False)
+  entry_48_high_max_24_4h = DecimalParameter(00.40, 0.95, default=0.50, decimals=2, space="buy", optimize=False)
+  entry_48_high_max_6_1d = DecimalParameter(00.30, 0.95, default=0.45, decimals=2, space="buy", optimize=False)
+  entry_48_hl_pct_change_6_1h = DecimalParameter(00.30, 0.90, default=0.5, decimals=2, space="buy", optimize=False)
+  entry_48_hl_pct_change_12_1h = DecimalParameter(00.40, 1.00, default=0.75, decimals=2, space="buy", optimize=False)
+  entry_48_hl_pct_change_24_1h = DecimalParameter(00.50, 1.20, default=0.90, decimals=2, space="buy", optimize=False)
+  entry_48_hl_pct_change_48_1h = DecimalParameter(00.60, 1.60, default=1.00, decimals=2, space="buy", optimize=False)
+  entry_48_sup_level_1h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
+  entry_48_res_level_1h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
+  entry_48_sup_level_4h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
+  entry_48_res_level_4h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
+  entry_48_sup_level_1d_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
+  entry_48_res_level_1d_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
+  entry_48_ema_200_not_dec_1h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
+  entry_48_ema_200_not_dec_4h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
+  entry_48_ema_200_not_dec_1d_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
+  entry_48_not_downtrend_15m_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
+  entry_48_not_downtrend_1h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
+  entry_48_not_downtrend_4h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
+  entry_48_not_downtrend_1d_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
+  entry_48_ema_50_1h_over_ema_200_1h_enabled = CategoricalParameter(
+    [True, False], default=True, space="buy", optimize=True
+  )
+  entry_48_rsi_3_min = DecimalParameter(00.0, 30.0, default=6.0, decimals=0, space="buy", optimize=False)
+  entry_48_rsi_3_max = DecimalParameter(30.0, 60.0, default=60.0, decimals=0, space="buy", optimize=False)
+  entry_48_rsi_3_15m_min = DecimalParameter(00.0, 30.0, default=6.0, decimals=0, space="buy", optimize=False)
+  entry_48_rsi_3_1h_min = DecimalParameter(00.0, 30.0, default=10.0, decimals=0, space="buy", optimize=False)
+  entry_48_rsi_3_4h_min = DecimalParameter(00.0, 30.0, default=10.0, decimals=0, space="buy", optimize=False)
+  entry_48_rsi_3_1d_min = DecimalParameter(00.0, 30.0, default=10.0, decimals=0, space="buy", optimize=False)
+  entry_48_cti_20_1h_max = DecimalParameter(0.0, 0.99, default=0.9, decimals=2, space="buy", optimize=False)
+  entry_48_rsi_14_1h_max = DecimalParameter(50.0, 90.0, default=80.0, decimals=0, space="buy", optimize=False)
+  entry_48_cti_20_4h_max = DecimalParameter(0.0, 0.99, default=0.9, decimals=2, space="buy", optimize=False)
+  entry_48_rsi_14_4h_max = DecimalParameter(50.0, 90.0, default=80.0, decimals=0, space="buy", optimize=False)
+  entry_48_cti_20_1d_max = DecimalParameter(0.0, 0.99, default=0.9, decimals=2, space="buy", optimize=False)
+  entry_48_rsi_14_1d_max = DecimalParameter(50.0, 90.0, default=80.0, decimals=0, space="buy", optimize=False)
+  entry_48_r_14_1h_min = DecimalParameter(-100.0, -70.0, default=-100.0, decimals=0, space="buy", optimize=False)
+  entry_48_r_14_1h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=False)
+  entry_48_r_14_4h_min = DecimalParameter(-100.0, -70.0, default=-100.0, decimals=0, space="buy", optimize=False)
+  entry_48_r_14_4h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=False)
+  entry_48_r_480_1h_min = DecimalParameter(-100.0, -70.0, default=-100.0, decimals=0, space="buy", optimize=False)
+  entry_48_r_480_1h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=False)
+  entry_48_r_480_4h_min = DecimalParameter(-100.0, -70.0, default=-100.0, decimals=0, space="buy", optimize=False)
+  entry_48_r_480_4h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=False)
+  entry_48_rsi_14_max = DecimalParameter(26.0, 50.0, default=38.0, decimals=0, space="buy", optimize=False)
+  entry_48_cci_20_max = DecimalParameter(-180.0, -80.0, default=-100.0, decimals=0, space="buy", optimize=False)
+  entry_48_sma_offset = DecimalParameter(0.940, 0.978, default=0.956, decimals=3, space="buy", optimize=False)
+  entry_48_inc_min = DecimalParameter(0.01, 0.04, default=0.022, decimals=3, space="buy", optimize=False)
 
   entry_102_close_max_12 = DecimalParameter(00.50, 0.95, default=0.92, decimals=2, space="buy", optimize=False)
   entry_102_close_max_24 = DecimalParameter(00.50, 0.95, default=0.75, decimals=2, space="buy", optimize=False)
@@ -8461,6 +8513,10 @@ class NostalgiaForInfinityX3(IStrategy):
     dataframe["close_max_12"] = dataframe["close"].rolling(12).max()
     dataframe["close_max_24"] = dataframe["close"].rolling(24).max()
     dataframe["close_max_48"] = dataframe["close"].rolling(48).max()
+
+    # Open min
+    dataframe["open_min_6"] = dataframe["open"].rolling(6).min()
+    dataframe["open_min_12"] = dataframe["open"].rolling(12).min()
 
     # Close min
     dataframe["close_min_12"] = dataframe["close"].rolling(12).min()
@@ -26446,6 +26502,85 @@ class NostalgiaForInfinityX3(IStrategy):
           item_buy_logic.append(
             dataframe["close"] < (dataframe["high_max_12_1h"] * self.entry_47_high_max_12_1h_max.value)
           )
+
+        # Condition #48 - Quick mode (Long).
+        if index == 48:
+          # Protections
+          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
+          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
+          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_48_close_max_12.value))
+          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_48_close_max_24.value))
+          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_48_close_max_48.value))
+          item_buy_logic.append(
+            dataframe["close"] > (dataframe["high_max_24_1h"] * self.entry_48_high_max_24_1h.value)
+          )
+          item_buy_logic.append(
+            dataframe["close"] > (dataframe["high_max_24_4h"] * self.entry_48_high_max_24_4h.value)
+          )
+          item_buy_logic.append(dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_48_high_max_6_1d.value))
+          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_48_hl_pct_change_6_1h.value)
+          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_48_hl_pct_change_12_1h.value)
+          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_48_hl_pct_change_24_1h.value)
+          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_48_hl_pct_change_48_1h.value)
+          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+
+          item_buy_logic.append(dataframe["rsi_3"] > self.entry_48_rsi_3_min.value)
+          item_buy_logic.append(dataframe["rsi_3"] < self.entry_48_rsi_3_max.value)
+          item_buy_logic.append(dataframe["rsi_3_15m"] > self.entry_48_rsi_3_15m_min.value)
+          item_buy_logic.append(dataframe["rsi_3_1h"] > self.entry_48_rsi_3_1h_min.value)
+          item_buy_logic.append(dataframe["rsi_3_4h"] > self.entry_48_rsi_3_4h_min.value)
+          item_buy_logic.append(dataframe["rsi_3_1d"] > self.entry_48_rsi_3_1d_min.value)
+          item_buy_logic.append(dataframe["cti_20_1h"] < self.entry_48_cti_20_1h_max.value)
+          item_buy_logic.append(dataframe["rsi_14_1h"] < self.entry_48_rsi_14_1h_max.value)
+          item_buy_logic.append(dataframe["cti_20_4h"] < self.entry_48_cti_20_4h_max.value)
+          item_buy_logic.append(dataframe["rsi_14_4h"] < self.entry_48_rsi_14_4h_max.value)
+          item_buy_logic.append(dataframe["cti_20_1d"] < self.entry_48_cti_20_1d_max.value)
+          item_buy_logic.append(dataframe["rsi_14_1d"] < self.entry_48_rsi_14_1d_max.value)
+          item_buy_logic.append(dataframe["r_14_1h"] >= self.entry_48_r_14_1h_min.value)
+          item_buy_logic.append(dataframe["r_14_1h"] <= self.entry_48_r_14_1h_max.value)
+          item_buy_logic.append(dataframe["r_14_4h"] >= self.entry_48_r_14_4h_min.value)
+          item_buy_logic.append(dataframe["r_14_4h"] <= self.entry_48_r_14_4h_max.value)
+          item_buy_logic.append(dataframe["r_480_1h"] >= self.entry_48_r_480_1h_min.value)
+          item_buy_logic.append(dataframe["r_480_1h"] <= self.entry_48_r_480_1h_max.value)
+          item_buy_logic.append(dataframe["r_480_4h"] >= self.entry_48_r_480_4h_min.value)
+          item_buy_logic.append(dataframe["r_480_4h"] <= self.entry_48_r_480_4h_max.value)
+
+          if self.entry_48_sup_level_1h_enabled.value:
+            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
+          if self.entry_48_res_level_1h_enabled.value:
+            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+          if self.entry_48_sup_level_4h_enabled.value:
+            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
+          if self.entry_48_res_level_4h_enabled.value:
+            item_buy_logic.append(dataframe["close"] < dataframe["res_level_4h"])
+          if self.entry_48_sup_level_1d_enabled.value:
+            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
+          if self.entry_48_res_level_1d_enabled.value:
+            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+          if self.entry_48_ema_200_not_dec_1h_enabled.value:
+            item_buy_logic.append(dataframe["ema_200_dec_48_1h"] == False)
+          if self.entry_48_ema_200_not_dec_4h_enabled.value:
+            item_buy_logic.append(dataframe["ema_200_dec_24_4h"] == False)
+          if self.entry_48_ema_200_not_dec_1d_enabled.value:
+            item_buy_logic.append(dataframe["ema_200_dec_4_1d"] == False)
+          if self.entry_48_not_downtrend_15m_enabled.value:
+            item_buy_logic.append(dataframe["not_downtrend_15m"])
+          if self.entry_48_not_downtrend_1h_enabled.value:
+            item_buy_logic.append(dataframe["not_downtrend_1h"])
+          if self.entry_48_not_downtrend_4h_enabled.value:
+            item_buy_logic.append(dataframe["not_downtrend_4h"])
+          if self.entry_48_not_downtrend_1d_enabled.value:
+            item_buy_logic.append(dataframe["not_downtrend_1d"])
+          if self.entry_48_ema_50_1h_over_ema_200_1h_enabled.value:
+            item_buy_logic.append(dataframe["ema_50_1h"] > dataframe["ema_200_1h"])
+
+          # Logic
+          item_buy_logic.append(dataframe["rsi_14"] < self.entry_48_rsi_14_max.value)
+          item_buy_logic.append(dataframe["cci_20"] < self.entry_48_cci_20_max.value)
+          item_buy_logic.append(dataframe["close"] < (dataframe["sma_30"] * self.entry_48_sma_offset.value))
+          item_buy_logic.append(((dataframe["close"] - dataframe["open_min_6"]) / dataframe["open_min_6"]) > self.entry_48_inc_min.value)
 
         # Condition #61 - Rebuy mode (Long).
         if index == 61:
