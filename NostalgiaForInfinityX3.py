@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.118"
+    return "v13.1.119"
 
   stoploss = -0.99
 
@@ -2993,7 +2993,7 @@ class NostalgiaForInfinityX3(IStrategy):
     buy_tag,
   ) -> tuple:
     if 0.01 > current_profit >= 0.001:
-      if (last_candle["r_480"] > -0.1) and (last_candle["r_14"] >= -1.0):
+      if (last_candle["r_480"] > -0.1) and (last_candle["r_14"] >= -1.0) and (last_candle["rsi_14"] > 75.0):
         return True, f"exit_{mode_name}_w_0_1"
       elif (last_candle["r_14"] >= -1.0) and (last_candle["rsi_14"] > 82.0):
         return True, f"exit_{mode_name}_w_0_2"
@@ -26580,7 +26580,9 @@ class NostalgiaForInfinityX3(IStrategy):
           item_buy_logic.append(dataframe["rsi_14"] < self.entry_48_rsi_14_max.value)
           item_buy_logic.append(dataframe["cci_20"] < self.entry_48_cci_20_max.value)
           item_buy_logic.append(dataframe["close"] < (dataframe["sma_30"] * self.entry_48_sma_offset.value))
-          item_buy_logic.append(((dataframe["close"] - dataframe["open_min_6"]) / dataframe["open_min_6"]) > self.entry_48_inc_min.value)
+          item_buy_logic.append(
+            ((dataframe["close"] - dataframe["open_min_6"]) / dataframe["open_min_6"]) > self.entry_48_inc_min.value
+          )
 
         # Condition #61 - Rebuy mode (Long).
         if index == 61:
