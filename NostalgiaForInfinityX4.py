@@ -8612,6 +8612,9 @@ class NostalgiaForInfinityX4(IStrategy):
     # SAR
     informative_1h["sar"] = ta.SAR(informative_1h)
 
+    # EWO
+    informative_1h["ewo_50_200"] = ewo(informative_1h, 50, 200)
+
     # EverGet ChandelierExit
     high = informative_1h["high"]
     low = informative_1h["low"]
