@@ -8234,6 +8234,8 @@ class NostalgiaForInfinityX3(IStrategy):
     informative_1h["cti_20"] = pta.cti(informative_1h["close"], length=20)
     informative_1h["cti_40"] = pta.cti(informative_1h["close"], length=40)
 
+    informative_1h["cti_20_dec_3"] = informative_1h["cti_20"] < informative_1h["cti_20"].shift(3)
+
     # SAR
     informative_1h["sar"] = ta.SAR(informative_1h)
 
