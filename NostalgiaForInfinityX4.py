@@ -562,7 +562,7 @@ class NostalgiaForInfinityX4(IStrategy):
   entry_25_r_480_1h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=False)
   entry_25_r_480_4h_min = DecimalParameter(-100.0, -70.0, default=-100.0, decimals=0, space="buy", optimize=False)
   entry_25_r_480_4h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=False)
-  entry_25_rsi_14_max = DecimalParameter(20.0, 46.0, default=32.0, decimals=0, space="buy", optimize=True)
+  entry_25_rsi_14_max = DecimalParameter(20.0, 46.0, default=46.0, decimals=0, space="buy", optimize=True)
   entry_25_cti_20_max = DecimalParameter(-0.9, 0.0, default=-0.9, decimals=1, space="buy", optimize=False)
   entry_25_ewo_50_200_min = DecimalParameter(1.0, 8.0, default=2.0, decimals=1, space="buy", optimize=True)
   entry_25_sma_offset = DecimalParameter(0.920, 0.950, default=0.944, decimals=3, space="buy", optimize=True)
@@ -23326,7 +23326,7 @@ class NostalgiaForInfinityX4(IStrategy):
             item_buy_logic.append(dataframe["not_downtrend_1d"])
 
           # Logic
-          item_buy_logic.append(dataframe["rsi_14"] < self.entry_24_rsi_14_max.value)
+          item_buy_logic.append(dataframe["rsi_14"] < self.entry_25_rsi_14_max.value)
           item_buy_logic.append(dataframe["cti_20"] < self.entry_25_cti_20_max.value)
           item_buy_logic.append(dataframe["ewo_50_200"] > self.entry_25_ewo_50_200_min.value)
           item_buy_logic.append(dataframe["close"] < (dataframe["sma_30"] * self.entry_25_sma_offset.value))
