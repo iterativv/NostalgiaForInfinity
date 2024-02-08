@@ -93,7 +93,7 @@ If you like to help, you can also use the following links to sign up to various 
 
 ### Discord Link
 
-This is where we chat, hangout and contribute as a community
+This is where we chat, hangout and contribute as a community (both links is the same server)
 
 - [Discord](https://discord.gg/DeAmv3btxQ)
 - [Discord](https://discord.gg/nzVeNvZsQq)
