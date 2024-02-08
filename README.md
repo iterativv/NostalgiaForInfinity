@@ -96,3 +96,4 @@ If you like to help, you can also use the following links to sign up to various 
 This is where we chat, hangout and contribute as a community
 
 - [Discord](https://discord.gg/DeAmv3btxQ)
+- [Discord](https://discord.gg/nzVeNvZsQq)
