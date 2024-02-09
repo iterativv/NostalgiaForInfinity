@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.125"
+    return "v13.1.126"
 
   stoploss = -0.99
 
@@ -1062,12 +1062,12 @@ class NostalgiaForInfinityX3(IStrategy):
   entry_106_not_downtrend_1h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
   entry_106_not_downtrend_4h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
   entry_106_not_downtrend_1d_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
-  entry_106_rsi_3_min = DecimalParameter(00.0, 30.0, default=6.0, decimals=0, space="buy", optimize=False)
+  entry_106_rsi_3_min = DecimalParameter(00.0, 30.0, default=2.0, decimals=0, space="buy", optimize=False)
   entry_106_rsi_3_max = DecimalParameter(30.0, 60.0, default=60.0, decimals=0, space="buy", optimize=False)
-  entry_106_rsi_3_15m_min = DecimalParameter(00.0, 30.0, default=10.0, decimals=0, space="buy", optimize=False)
-  entry_106_rsi_3_1h_min = DecimalParameter(00.0, 30.0, default=10.0, decimals=0, space="buy", optimize=False)
-  entry_106_rsi_3_4h_min = DecimalParameter(00.0, 30.0, default=10.0, decimals=0, space="buy", optimize=False)
-  entry_106_rsi_3_1d_min = DecimalParameter(00.0, 30.0, default=10.0, decimals=0, space="buy", optimize=False)
+  entry_106_rsi_3_15m_min = DecimalParameter(00.0, 30.0, default=2.0, decimals=0, space="buy", optimize=False)
+  entry_106_rsi_3_1h_min = DecimalParameter(00.0, 30.0, default=6.0, decimals=0, space="buy", optimize=False)
+  entry_106_rsi_3_4h_min = DecimalParameter(00.0, 30.0, default=6.0, decimals=0, space="buy", optimize=False)
+  entry_106_rsi_3_1d_min = DecimalParameter(00.0, 30.0, default=6.0, decimals=0, space="buy", optimize=False)
   entry_106_cti_20_1h_max = DecimalParameter(0.0, 0.99, default=0.9, decimals=2, space="buy", optimize=False)
   entry_106_rsi_14_1h_max = DecimalParameter(50.0, 90.0, default=80.0, decimals=0, space="buy", optimize=False)
   entry_106_cti_20_4h_max = DecimalParameter(0.0, 0.99, default=0.9, decimals=2, space="buy", optimize=False)
