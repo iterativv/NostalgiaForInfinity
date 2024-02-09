@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.127"
+    return "v13.1.128"
 
   stoploss = -0.99
 
@@ -8633,6 +8633,9 @@ class NostalgiaForInfinityX3(IStrategy):
     dataframe["hma_70_buy"] = (dataframe["hma_70"] > dataframe["hma_70"].shift(1)) & (
       dataframe["hma_70"].shift(1) < dataframe["hma_70"].shift(2)
     )
+
+    # ZL MA
+    dataframe["zlma_50"] = pta.zlma(dataframe["close"], length=50, matype="linreg", offset=0)
 
     # EverGet ChandelierExit
     high = dataframe["high"]
