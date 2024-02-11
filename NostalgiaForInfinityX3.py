@@ -4793,7 +4793,7 @@ class NostalgiaForInfinityX3(IStrategy):
         return True, f"exit_{mode_name}_d_0_20"
       elif (
         (last_candle["r_14"] >= -1.0)
-        and (last_candle["rsi_14"] >= 50.0)
+        and (last_candle["rsi_14"] >= 70.0)
         and (last_candle["cti_20_dec_3_1d"] == True)
         and (last_candle["not_downtrend_1h"] == False)
         and (last_candle["ema_200_dec_48_1h"] == True)
@@ -4802,7 +4802,7 @@ class NostalgiaForInfinityX3(IStrategy):
         return True, f"exit_{mode_name}_d_0_21"
       elif (
         (last_candle["r_14"] >= -1.0)
-        and (last_candle["rsi_14"] >= 50.0)
+        and (last_candle["rsi_14"] >= 70.0)
         and (last_candle["rsi_14_max_6_4h"] >= 70.0)
         and (last_candle["change_pct_4h"] < -0.01)
         and (last_candle["not_downtrend_4h"] == False)
