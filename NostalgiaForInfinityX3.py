@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.135"
+    return "v13.1.136"
 
   stoploss = -0.99
 
@@ -7854,8 +7854,8 @@ class NostalgiaForInfinityX3(IStrategy):
             (slice_profit_entry if (sub_grind_count > 0) else profit_init_ratio)
             < (0.0 if (is_derisk and sub_grind_count == 0) else grinding_mode_2_sub_thresholds[sub_grind_count])
           )
-          and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
-          and self.long_grind_buy(last_candle, previous_candle)
+          and ((current_time - timedelta(hours=6) > filled_entries[-1].order_filled_utc) or (slice_profit < -0.04))
+          and self.long_grind_buy(last_candle, previous_candle, slice_profit)
         ):
           buy_amount = (
             slice_amount * grinding_mode_2_stakes[sub_grind_count] / (trade.leverage if self.is_futures_mode else 1.0)
@@ -7955,7 +7955,7 @@ class NostalgiaForInfinityX3(IStrategy):
 
     return None
 
-  def long_grind_buy(self, last_candle: Series, previous_candle: Series) -> float:
+  def long_grind_buy(self, last_candle: Series, previous_candle: Series, slice_profit: float) -> float:
     if (
       (last_candle["protections_long_global"] == True)
       and (last_candle["protections_long_rebuy"] == True)
@@ -8081,6 +8081,16 @@ class NostalgiaForInfinityX3(IStrategy):
           and (last_candle["rsi_14_4h"] < 80.0)
           and (last_candle["r_14_1h"] > -80.0)
           and (last_candle["ema_12"] < (last_candle["ema_26"] * 0.995))
+        )
+        or (
+          (last_candle["rsi_3"] > 12.0)
+          and (last_candle["rsi_3_15m"] > 30.0)
+          and (last_candle["rsi_3_1h"] > 30.0)
+          and (last_candle["rsi_3_4h"] > 30.0)
+          and (last_candle["rsi_14"] < 46.0)
+          and (last_candle["not_downtrend_1h"] == True)
+          and (last_candle["not_downtrend_4h"] == True)
+          and (last_candle["not_downtrend_1d"] == True)
         )
       )
     ):
