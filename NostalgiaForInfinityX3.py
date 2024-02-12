@@ -8369,7 +8369,7 @@ class NostalgiaForInfinityX3(IStrategy):
     for info_timeframe in self.info_timeframes:
       informative_pairs.extend([(pair, info_timeframe) for pair in pairs])
 
-    if self.config["stake_currency"] in ["USDT", "BUSD", "USDC", "DAI", "TUSD", "PAX", "USD", "EUR", "GBP"]:
+    if self.config["stake_currency"] in ["USDT", "BUSD", "USDC", "DAI", "TUSD", "FDUSD", "PAX", "USD", "EUR", "GBP", "TRY"]:
       if ("trading_mode" in self.config) and (self.config["trading_mode"] in ["futures", "margin"]):
         btc_info_pair = f"BTC/{self.config['stake_currency']}:{self.config['stake_currency']}"
       else:
