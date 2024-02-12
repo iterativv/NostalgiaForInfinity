@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.141"
+    return "v13.1.142"
 
   stoploss = -0.99
 
@@ -8176,6 +8176,8 @@ class NostalgiaForInfinityX3(IStrategy):
           buy_amount = max_stake
         if buy_amount < (min_stake * 1.5):
           buy_amount = min_stake * 1.5
+        if buy_amount > max_stake:
+          return None
         self.dp.send_msg(
           f"Rebuy [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
