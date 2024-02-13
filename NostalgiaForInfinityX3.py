@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.146"
+    return "v13.1.147"
 
   stoploss = -0.99
 
@@ -7778,6 +7778,8 @@ class NostalgiaForInfinityX3(IStrategy):
           current_exit_rate,
           current_entry_profit,
           current_exit_profit,
+          last_candle,
+          previous_candle,
           filled_orders,
           filled_entries,
           filled_exits,
@@ -8127,6 +8129,8 @@ class NostalgiaForInfinityX3(IStrategy):
     current_exit_rate: float,
     current_entry_profit: float,
     current_exit_profit: float,
+    last_candle: Series,
+    previous_candle: Series,
     filled_orders: "Orders",
     filled_entries: "Orders",
     filled_exits: "Orders",
@@ -8166,8 +8170,28 @@ class NostalgiaForInfinityX3(IStrategy):
       current_grind_stake_profit = current_grind_stake - total_cost
 
     if (not partial_sell) and (sub_grind_count < max_sub_grinds):
-      if (0 <= sub_grind_count < max_sub_grinds) and (
-        slice_profit_entry < regular_mode_sub_thresholds[sub_grind_count]
+      if (
+        (0 <= sub_grind_count < max_sub_grinds)
+        and (slice_profit_entry < regular_mode_sub_thresholds[sub_grind_count])
+        and (
+          (last_candle["protections_long_rebuy"] == True)
+          and (last_candle["global_protections_long_pump"] == True)
+          and (last_candle["global_protections_long_dump"] == True)
+        )
+        and (
+          (last_candle["close"] > (last_candle["close_max_12"] * 0.88))
+          and (last_candle["close"] > (last_candle["close_max_24"] * 0.82))
+          and (last_candle["close"] > (last_candle["close_max_48"] * 0.76))
+          and (last_candle["btc_pct_close_max_72_5m"] < 0.03)
+          and (last_candle["btc_pct_close_max_24_5m"] < 0.03)
+        )
+        and (
+          (last_candle["rsi_3"] > 10.0)
+          and (last_candle["rsi_3_15m"] > 10.0)
+          and (last_candle["rsi_3_1h"] > 10.0)
+          and (last_candle["rsi_3_4h"] > 10.0)
+          and (last_candle["rsi_14"] < 50.0)
+        )
       ):
         buy_amount = (
           slice_amount * regular_mode_stakes[sub_grind_count] / (trade.leverage if self.is_futures_mode else 1.0)
