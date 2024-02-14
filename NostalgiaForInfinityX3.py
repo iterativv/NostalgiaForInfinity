@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.158"
+    return "v13.1.159"
 
   stoploss = -0.99
 
@@ -389,7 +389,7 @@ class NostalgiaForInfinityX3(IStrategy):
   )
   entry_11_rsi_3_min = DecimalParameter(00.0, 30.0, default=2.0, decimals=0, space="buy", optimize=False)
   entry_11_rsi_3_max = DecimalParameter(30.0, 70.0, default=46.0, decimals=0, space="buy", optimize=False)
-  entry_11_rsi_3_15m_min = DecimalParameter(00.0, 36.0, default=2.0, decimals=0, space="buy", optimize=False)
+  entry_11_rsi_3_15m_min = DecimalParameter(00.0, 36.0, default=4.0, decimals=0, space="buy", optimize=False)
   entry_11_rsi_3_1h_min = DecimalParameter(00.0, 36.0, default=8.0, decimals=0, space="buy", optimize=False)
   entry_11_rsi_3_4h_min = DecimalParameter(00.0, 36.0, default=8.0, decimals=0, space="buy", optimize=False)
   entry_11_rsi_3_1d_min = DecimalParameter(00.0, 30.0, default=8.0, decimals=0, space="buy", optimize=False)
@@ -404,8 +404,8 @@ class NostalgiaForInfinityX3(IStrategy):
   entry_11_r_480_1h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=False)
   entry_11_r_480_4h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=False)
   entry_11_rsi_14_max = DecimalParameter(20.0, 60.0, default=45.0, decimals=0, space="buy", optimize=False)
-  entry_11_cti_20_max = DecimalParameter(-0.99, -0.60, default=-0.75, decimals=2, space="buy", optimize=False)
-  entry_11_ema_open_offset = DecimalParameter(0.0200, 0.0400, default=0.0320, decimals=4, space="buy", optimize=False)
+  entry_11_cti_20_max = DecimalParameter(-0.99, -0.60, default=-0.50, decimals=2, space="buy", optimize=False)
+  entry_11_ema_open_offset = DecimalParameter(0.0200, 0.0400, default=0.0260, decimals=4, space="buy", optimize=False)
   entry_11_sma_offset = DecimalParameter(0.940, 0.988, default=0.978, decimals=3, space="buy", optimize=False)
 
   entry_12_close_max_12 = DecimalParameter(00.50, 0.95, default=0.80, decimals=2, space="buy", optimize=False)
