@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.156"
+    return "v13.1.157"
 
   stoploss = -0.99
 
@@ -7858,7 +7858,7 @@ class NostalgiaForInfinityX3(IStrategy):
             < (0.0 if (is_derisk and sub_grind_count == 0) else grinding_mode_2_sub_thresholds[sub_grind_count])
           )
           and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
-          and ((current_time - timedelta(hours=12) > filled_entries[-1].order_filled_utc) or (slice_profit < -0.06))
+          and ((current_time - timedelta(hours=12) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.06))
           and self.long_grind_buy(last_candle, previous_candle, slice_profit)
         ):
           buy_amount = (
