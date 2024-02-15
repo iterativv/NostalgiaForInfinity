@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.161"
+    return "v13.1.162"
 
   stoploss = -0.99
 
@@ -665,10 +665,10 @@ class NostalgiaForInfinityX3(IStrategy):
   entry_46_not_downtrend_1d_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
   entry_46_rsi_3_min = DecimalParameter(00.0, 30.0, default=6.0, decimals=0, space="buy", optimize=False)
   entry_46_rsi_3_max = DecimalParameter(30.0, 60.0, default=60.0, decimals=0, space="buy", optimize=False)
-  entry_46_rsi_3_15m_min = DecimalParameter(00.0, 30.0, default=10.0, decimals=0, space="buy", optimize=False)
-  entry_46_rsi_3_1h_min = DecimalParameter(00.0, 30.0, default=10.0, decimals=0, space="buy", optimize=False)
-  entry_46_rsi_3_4h_min = DecimalParameter(00.0, 30.0, default=10.0, decimals=0, space="buy", optimize=False)
-  entry_46_rsi_3_1d_min = DecimalParameter(00.0, 30.0, default=6.0, decimals=0, space="buy", optimize=False)
+  entry_46_rsi_3_15m_min = DecimalParameter(00.0, 30.0, default=20.0, decimals=0, space="buy", optimize=False)
+  entry_46_rsi_3_1h_min = DecimalParameter(00.0, 30.0, default=20.0, decimals=0, space="buy", optimize=False)
+  entry_46_rsi_3_4h_min = DecimalParameter(00.0, 30.0, default=20.0, decimals=0, space="buy", optimize=False)
+  entry_46_rsi_3_1d_min = DecimalParameter(00.0, 30.0, default=20.0, decimals=0, space="buy", optimize=False)
   entry_46_cti_20_1h_max = DecimalParameter(0.0, 0.99, default=0.9, decimals=2, space="buy", optimize=False)
   entry_46_rsi_14_1h_max = DecimalParameter(50.0, 90.0, default=80.0, decimals=0, space="buy", optimize=False)
   entry_46_cti_20_4h_max = DecimalParameter(0.0, 0.99, default=0.9, decimals=2, space="buy", optimize=False)
@@ -684,7 +684,6 @@ class NostalgiaForInfinityX3(IStrategy):
   entry_46_r_480_4h_min = DecimalParameter(-100.0, -70.0, default=-100.0, decimals=0, space="buy", optimize=False)
   entry_46_r_480_4h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=False)
   entry_46_rsi_14_max = DecimalParameter(26.0, 60.0, default=60.0, decimals=0, space="buy", optimize=False)
-  entry_46_cti_20_max = DecimalParameter(-0.8, 0.8, default=-0.5, decimals=1, space="buy", optimize=False)
 
   entry_47_close_max_12 = DecimalParameter(00.50, 0.95, default=0.80, decimals=2, space="buy", optimize=False)
   entry_47_close_max_24 = DecimalParameter(00.50, 0.95, default=0.75, decimals=2, space="buy", optimize=False)
@@ -27068,7 +27067,6 @@ class NostalgiaForInfinityX3(IStrategy):
 
           # Logic
           item_buy_logic.append(dataframe["rsi_14"] < self.entry_46_rsi_14_max.value)
-          item_buy_logic.append(dataframe["cti_20"] < self.entry_46_cti_20_max.value)
           item_buy_logic.append(dataframe["chandelier_dir_1h"].shift(1) < -0)
           item_buy_logic.append(dataframe["chandelier_dir_1h"] > 0)
           item_buy_logic.append(dataframe["close"] > dataframe["zlma_50_1h"])
