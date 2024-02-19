@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.188"
+    return "v14.1.189"
 
   stoploss = -0.99
 
@@ -237,15 +237,21 @@ class NostalgiaForInfinityX4(IStrategy):
   ]
 
   # Non rebuy modes
-  regular_mode_stake_multiplier = 0.5
-  regular_mode_stake_multiplier_alt = 0.75
-  regular_mode_max = 3
-  regular_mode_derisk_spot = -0.8
-  regular_mode_derisk_futures = -1.6
-  regular_mode_stakes_spot = [1.0, 1.0, 1.0]
-  regular_mode_stakes_futures = [1.0, 1.0, 1.0]
-  regular_mode_thresholds_spot = [-0.12, -0.12, -0.12]
-  regular_mode_thresholds_futures = [-0.12, -0.12, -0.12]
+  regular_mode_stake_multiplier_spot = [0.2, 0.25, 0.3, 0.35, 0.4, 0.5, 0.75]
+  regular_mode_rebuy_stakes_spot = [1.0, 1.0, 1.0, 1.0, 1.0]
+  regular_mode_grind_1_stakes_spot = [1.0, 1.0, 1.0, 1.0, 1.0]
+  regular_mode_rebuy_thresholds_spot = [-0.12, -0.12, -0.12, -0.12, -0.12]
+  regular_mode_grind_1_thresholds_spot = [-0.03, -0.12, -0.12, -0.12, -0.12, -0.12]
+  regular_mode_grind_1_profit_threshold_spot = 0.018
+  regular_mode_derisk_spot = -1.25
+
+  regular_mode_stake_multiplier_futures = [0.2, 0.25, 0.3, 0.35, 0.4, 0.5, 0.75]
+  regular_mode_rebuy_stakes_futures = [1.0, 1.0, 1.0, 1.0, 1.0]
+  regular_mode_grind_1_stakes_futures = [1.0, 1.0, 1.0, 1.0, 1.0]
+  regular_mode_rebuy_thresholds_futures = [-0.12, -0.12, -0.12, -0.12, -0.12]
+  regular_mode_grind_1_thresholds_futures = [-0.03, -0.12, -0.12, -0.12, -0.12, -0.12]
+  regular_mode_grind_1_profit_threshold_futures = 0.018
+  regular_mode_derisk_futures = -3.75
 
   # Rebuy mode
   rebuy_mode_stake_multiplier = 0.2
@@ -8433,11 +8439,14 @@ class NostalgiaForInfinityX4(IStrategy):
           stake_multiplier = self.rebuy_mode_stake_multiplier_alt
         return proposed_stake * stake_multiplier
       else:
-        stake_multiplier = self.regular_mode_stake_multiplier
-        # Low stakes, on Binance mostly
-        if (proposed_stake * self.regular_mode_stake_multiplier) < min_stake:
-          stake_multiplier = self.regular_mode_stake_multiplier_alt
-        return proposed_stake * stake_multiplier
+        for i, item in enumerate(
+          self.regular_mode_stake_multiplier_futures
+          if self.is_futures_mode
+          else self.regular_mode_stake_multiplier_spot
+        ):
+          if (proposed_stake * item / (trade.leverage if self.is_futures_mode else 1.0)) > min_stake:
+            stake_multiplier = item
+            return proposed_stake * stake_multiplier
 
     return proposed_stake
 
@@ -8454,7 +8463,7 @@ class NostalgiaForInfinityX4(IStrategy):
     current_entry_profit: float,
     current_exit_profit: float,
     **kwargs,
-  ) -> Optional[float]:
+  ):
     if self.position_adjustment_enable == False:
       return None
 
@@ -8532,7 +8541,7 @@ class NostalgiaForInfinityX4(IStrategy):
     current_entry_profit: float,
     current_exit_profit: float,
     **kwargs,
-  ) -> Optional[float]:
+  ):
     is_backtest = self.dp.runmode.value in ["backtest", "hyperopt"]
     if self.grinding_enable:
       dataframe, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
@@ -8549,6 +8558,12 @@ class NostalgiaForInfinityX4(IStrategy):
 
       if count_of_entries == 0:
         return None
+
+      if len(filled_orders) < 1:
+        return None
+      has_order_tags = False
+      if hasattr(filled_orders[0], "ft_order_tag"):
+        has_order_tags = True
 
       exit_rate = current_rate
       if self.dp.runmode.value in ("live", "dry_run"):
@@ -8576,13 +8591,13 @@ class NostalgiaForInfinityX4(IStrategy):
 
       current_stake_amount = trade.amount * current_rate
       is_derisk = trade.amount < filled_entries[0].safe_filled
+      is_derisk_calc = False
 
       # Rebuy mode
       if all(c in self.long_rebuy_mode_tags for c in enter_tags):
         slice_amount /= self.rebuy_mode_stake_multiplier
-      elif count_of_exits == 0:
-        # rebuy_stake = None
-        rebuy_stake = self.long_adjust_trade_position_no_derisk(
+      elif not is_derisk and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 2, 5) or is_backtest):
+        rebuy_stake, order_tag, is_derisk_calc = self.long_adjust_trade_position_no_derisk(
           trade,
           enter_tags,
           current_time,
@@ -8602,19 +8617,31 @@ class NostalgiaForInfinityX4(IStrategy):
           exit_rate,
           slice_amount,
           slice_profit_entry,
+          slice_profit,
           profit_ratio,
           profit_stake,
+          profit_init_ratio,
           current_stake_amount,
+          has_order_tags,
         )
         if rebuy_stake is not None:
-          return rebuy_stake
+          if has_order_tags:
+            return rebuy_stake, order_tag
+          else:
+            return rebuy_stake
         elif count_of_exits == 0:
+          return None
+        elif not is_derisk_calc:
           return None
 
       if not all(c in self.long_rebuy_mode_tags for c in enter_tags):
         # First entry is lower now, therefore the grinds must adjust
         if trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 2, 5) or is_backtest:
-          slice_amount /= self.regular_mode_stake_multiplier
+          slice_amount /= (
+            self.regular_mode_stake_multiplier_futures[0]
+            if self.is_futures_mode
+            else self.regular_mode_stake_multiplier_spot[0]
+          )
 
       max_sub_grinds = 0
       grinding_mode_2_stakes = []
@@ -8954,42 +8981,163 @@ class NostalgiaForInfinityX4(IStrategy):
     exit_rate: float,
     slice_amount: float,
     slice_profit_entry: float,
+    slice_profit: float,
     profit_ratio: float,
     profit_stake: float,
+    profit_init_ratio: float,
     current_stake_amount: float,
+    has_order_tags: bool,
     **kwargs,
-  ) -> Optional[float]:
-    regular_mode_stakes = self.regular_mode_stakes_futures if self.is_futures_mode else self.regular_mode_stakes_spot
-    max_sub_grinds = len(regular_mode_stakes)
-    regular_mode_sub_thresholds = (
-      self.regular_mode_thresholds_futures if self.is_futures_mode else self.regular_mode_thresholds_spot
+  ) -> tuple[Optional[float], str, bool]:
+    regular_mode_rebuy_stakes = (
+      self.regular_mode_rebuy_stakes_futures if self.is_futures_mode else self.regular_mode_rebuy_stakes_spot
+    )
+    max_rebuy_sub_grinds = len(regular_mode_rebuy_stakes)
+    regular_mode_rebuy_sub_thresholds = (
+      self.regular_mode_rebuy_thresholds_futures if self.is_futures_mode else self.regular_mode_rebuy_thresholds_spot
+    )
+    regular_mode_grind_1_stakes = (
+      self.regular_mode_grind_1_stakes_futures if self.is_futures_mode else self.regular_mode_grind_1_stakes_spot
+    )
+    max_grind_1_sub_grinds = len(regular_mode_grind_1_stakes)
+    regular_mode_grind_1_sub_thresholds = (
+      self.regular_mode_grind_1_thresholds_futures
+      if self.is_futures_mode
+      else self.regular_mode_grind_1_thresholds_spot
+    )
+    regular_mode_grind_1_profit_threshold = (
+      self.regular_mode_grind_1_profit_threshold_futures
+      if self.is_futures_mode
+      else self.regular_mode_grind_1_profit_threshold_spot
     )
 
     partial_sell = False
-    sub_grind_count = 0
-    total_amount = 0.0
-    total_cost = 0.0
-    current_open_rate = 0.0
-    current_grind_stake = 0.0
-    current_grind_stake_profit = 0.0
+    is_derisk = False
+    rebuy_sub_grind_count = 0
+    rebuy_total_amount = 0.0
+    rebuy_total_cost = 0.0
+    rebuy_current_open_rate = 0.0
+    rebuy_current_grind_stake = 0.0
+    rebuy_current_grind_stake_profit = 0.0
+    rebuy_is_sell_found = False
+    rebuy_found = False
+    rebuy_buy_orders = []
+    rebuy_distance_ratio = 0.0
+    grind_1_sub_grind_count = 0
+    grind_1_total_amount = 0.0
+    grind_1_total_cost = 0.0
+    grind_1_current_open_rate = 0.0
+    grind_1_current_grind_stake = 0.0
+    grind_1_current_grind_stake_profit = 0.0
+    grind_1_is_sell_found = False
+    grind_1_found = False
+    grind_1_buy_orders = []
+    grind_1_distance_ratio = 0.0
     for order in reversed(filled_orders):
       if (order.ft_order_side == "buy") and (order is not filled_orders[0]):
-        sub_grind_count += 1
-        total_amount += order.safe_filled
-        total_cost += order.safe_filled * order.safe_price
+        order_tag = ""
+        if has_order_tags:
+          if order.ft_order_tag is not None:
+            order_tag = order.ft_order_tag
+            if order.ft_order_tag == "g1":
+              order_tag = "g1"
+            elif order.ft_order_tag == "r":
+              order_tag = "r"
+        if not grind_1_is_sell_found and order_tag == "g1":
+          grind_1_sub_grind_count += 1
+          grind_1_total_amount += order.safe_filled
+          grind_1_total_cost += order.safe_filled * order.safe_price
+          grind_1_buy_orders.append(order.id)
+          if not grind_1_found:
+            grind_1_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
+            grind_1_found = True
+        elif not rebuy_is_sell_found:
+          rebuy_sub_grind_count += 1
+          rebuy_total_amount += order.safe_filled
+          rebuy_total_cost += order.safe_filled * order.safe_price
+          rebuy_buy_orders.append(order.id)
+          if not rebuy_found:
+            rebuy_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
+            rebuy_found = True
       elif order.ft_order_side == "sell":
         if (order.safe_remaining * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) > min_stake:
           partial_sell = True
-        break
-    if sub_grind_count > 0:
-      current_open_rate = total_cost / total_amount
-      current_grind_stake = total_amount * exit_rate * (1 - trade.fee_close)
-      current_grind_stake_profit = current_grind_stake - total_cost
+          break
+        order_tag = ""
+        if has_order_tags:
+          if order.ft_order_tag is not None:
+            sell_order_tag = order.ft_order_tag
+            order_mode = sell_order_tag.split(" ", 1)
+            if len(order_mode) > 0:
+              if order_mode[0] == "g1":
+                order_tag = "g1"
+              elif order_mode[0] == "d":
+                order_tag = "d"
+              elif order_mode[0] == "r":
+                order_tag = "r"
+        if order_tag == "g1":
+          grind_1_is_sell_found = True
+        elif order_tag == "d":
+          is_derisk = True
+          grind_1_is_sell_found = True
+          rebuy_is_sell_found = True
+        else:
+          rebuy_is_sell_found = True
+        if not is_derisk:
+          start_amount = filled_orders[0].safe_filled
+          current_amount = 0.0
+          for order2 in filled_orders:
+            if order2.ft_order_side == "buy":
+              current_amount += order2.safe_filled
+            if order2.ft_order_side == "sell":
+              current_amount -= order2.safe_filled
+            if order2 is order:
+              if current_amount < start_amount:
+                is_derisk = True
+        # found sells for all modes
+        if rebuy_is_sell_found and grind_1_is_sell_found:
+          break
 
-    if (not partial_sell) and (sub_grind_count < max_sub_grinds):
+    # The trade already de-risked
+    if is_derisk:
+      return None, "", is_derisk
+    if not has_order_tags and len(filled_exits) > 0:
+      return None, "", is_derisk
+
+    if rebuy_sub_grind_count > 0:
+      rebuy_current_open_rate = rebuy_total_cost / rebuy_total_amount
+      rebuy_current_grind_stake = rebuy_total_amount * exit_rate * (1 - trade.fee_close)
+      rebuy_current_grind_stake_profit = rebuy_current_grind_stake - rebuy_total_cost
+    if grind_1_sub_grind_count > 0:
+      grind_1_current_open_rate = grind_1_total_cost / grind_1_total_amount
+      grind_1_current_grind_stake = grind_1_total_amount * exit_rate * (1 - trade.fee_close)
+      grind_1_current_grind_stake_profit = grind_1_current_grind_stake - grind_1_total_cost
+
+    # Sell remaining if partial fill on exit
+    if partial_sell:
+      order = filled_exits[-1]
+      sell_amount = order.safe_remaining * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)
+      if (current_stake_amount - sell_amount) < (min_stake * 1.5):
+        sell_amount = (trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) - (
+          min_stake * 1.5
+        )
+      if sell_amount > min_stake:
+        # Test if it's the last exit. Normal exit with partial fill
+        if (trade.stake_amount - sell_amount) > min_stake:
+          self.dp.send_msg(
+            f"Exit (remaining) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {order.safe_remaining} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          )
+          order_tag = "p"
+          if has_order_tags:
+            if order.ft_order_tag is not None:
+              order_tag = order.ft_order_tag
+          return -sell_amount, order_tag, is_derisk
+
+    # Rebuy
+    if (not partial_sell) and (not rebuy_is_sell_found) and (rebuy_sub_grind_count < max_rebuy_sub_grinds):
       if (
-        (0 <= sub_grind_count < max_sub_grinds)
-        and (slice_profit_entry < regular_mode_sub_thresholds[sub_grind_count])
+        (0 <= rebuy_sub_grind_count < max_rebuy_sub_grinds)
+        and (slice_profit_entry < regular_mode_rebuy_sub_thresholds[rebuy_sub_grind_count])
         and (
           (last_candle["protections_long_rebuy"] == True)
           and (last_candle["global_protections_long_pump"] == True)
@@ -9011,22 +9159,77 @@ class NostalgiaForInfinityX4(IStrategy):
         )
       ):
         buy_amount = (
-          slice_amount * regular_mode_stakes[sub_grind_count] / (trade.leverage if self.is_futures_mode else 1.0)
+          slice_amount
+          * regular_mode_rebuy_stakes[rebuy_sub_grind_count]
+          / (trade.leverage if self.is_futures_mode else 1.0)
         )
         if buy_amount > max_stake:
           buy_amount = max_stake
         if buy_amount < (min_stake * 1.5):
           buy_amount = min_stake * 1.5
         if buy_amount > max_stake:
-          return None
+          return None, "", is_derisk
         self.dp.send_msg(
-          f"Rebuy [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"Rebuy (r) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         log.info(
-          f"Rebuy [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"Rebuy (r) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
-        return buy_amount
+        order_tag = "r"
+        return buy_amount, order_tag, is_derisk
 
+    # Gringing g1
+    # Grinding entry
+    if has_order_tags and (not partial_sell) and (grind_1_sub_grind_count < max_grind_1_sub_grinds):
+      if (
+        (
+          (grind_1_distance_ratio if (grind_1_sub_grind_count > 0) else profit_init_ratio)
+          < (regular_mode_grind_1_sub_thresholds[grind_1_sub_grind_count])
+        )
+        and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
+        and ((current_time - timedelta(hours=12) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.06))
+        and self.long_grind_buy(last_candle, previous_candle, slice_profit)
+      ):
+        buy_amount = (
+          slice_amount
+          * regular_mode_grind_1_stakes[grind_1_sub_grind_count]
+          / (trade.leverage if self.is_futures_mode else 1.0)
+        )
+        if buy_amount < (min_stake * 1.5):
+          buy_amount = min_stake * 1.5
+        if buy_amount > max_stake:
+          return None, "", is_derisk
+        self.dp.send_msg(
+          f"Grinding entry (g1) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        )
+        log.info(
+          f"Grinding entry (g1) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        )
+        order_tag = "g1"
+        return buy_amount, order_tag, is_derisk
+
+    # Grinding Exit
+    if has_order_tags and grind_1_sub_grind_count > 0:
+      grind_profit = (exit_rate - grind_1_current_open_rate) / grind_1_current_open_rate
+      if grind_profit > regular_mode_grind_1_profit_threshold:
+        sell_amount = grind_1_total_amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)
+        if (current_stake_amount - sell_amount) < (min_stake * 1.5):
+          sell_amount = (trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) - (
+            min_stake * 1.5
+          )
+        if sell_amount > min_stake:
+          self.dp.send_msg(
+            f"Grinding exit (g1) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']})"
+          )
+          log.info(
+            f"Grinding exit (g1) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']})"
+          )
+          order_tag = "g1"
+          for grind_entry_id in grind_1_buy_orders:
+            order_tag += " " + str(grind_entry_id)
+          return -sell_amount, order_tag, is_derisk
+
+    # De-risk
     if profit_stake < (
       slice_amount
       * (self.regular_mode_derisk_futures if self.is_futures_mode else self.regular_mode_derisk_spot)
@@ -9045,9 +9248,9 @@ class NostalgiaForInfinityX4(IStrategy):
         log.info(
           f"Rebuy de-risk [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
-        return -sell_amount
+        return -sell_amount, "d", is_derisk
 
-    return None
+    return None, "", is_derisk
 
   def long_rebuy_adjust_trade_position(
     self,
