@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.189"
+    return "v13.1.190"
 
   stoploss = -0.99
 
@@ -137,10 +137,10 @@ class NostalgiaForInfinityX3(IStrategy):
   # 10: enable Doom Bull, 11: enable Doom Bear, 12: enable u_e Bull, 13: enable u_e Bear.
   stop_thresholds = [-0.2, -0.2, -0.025, -0.025, 720, 720, 0.016, 0.016, 24.0, 24.0, False, False, True, True]
   # Based on the the first entry (regardless of rebuys)
-  stop_threshold = 1.60
-  stop_threshold_futures = 4.0
-  stop_threshold_futures_rapid = 4.0
-  stop_threshold_spot_rapid = 1.60
+  stop_threshold = 4.0
+  stop_threshold_futures = 12.0
+  stop_threshold_futures_rapid = 12.0
+  stop_threshold_spot_rapid = 4.0
   stop_threshold_futures_rebuy = 0.9
   stop_threshold_spot_rebuy = 3.9
 
