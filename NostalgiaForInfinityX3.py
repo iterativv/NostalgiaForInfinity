@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.187"
+    return "v13.1.188"
 
   stoploss = -0.99
 
@@ -3148,9 +3148,9 @@ class NostalgiaForInfinityX3(IStrategy):
         return True, f"exit_{mode_name}_w_0_2"
       elif (last_candle["r_14"] >= -1.0) and (last_candle["rsi_14"] < 40.0):
         return True, f"exit_{mode_name}_w_0_3"
-      elif (last_candle["r_14"] >= -5.0) and (last_candle["rsi_14"] > 75.0) and (last_candle["r_480_1h"] > -25.0):
+      elif (last_candle["r_14"] >= -1.0) and (last_candle["rsi_14"] > 78.0) and (last_candle["r_480_1h"] > -20.0):
         return True, f"exit_{mode_name}_w_0_4"
-      elif (last_candle["r_14"] >= -1.0) and (last_candle["cti_20"] > 0.97):
+      elif (last_candle["r_14"] >= -1.0) and (last_candle["rsi_14"] > 75.0) and (last_candle["cti_20"] > 0.97):
         return True, f"exit_{mode_name}_w_0_5"
       elif (
         (last_candle["r_14"] >= -1.0)
