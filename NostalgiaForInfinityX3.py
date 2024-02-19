@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.191"
+    return "v13.1.192"
 
   stoploss = -0.99
 
@@ -1379,6 +1379,8 @@ class NostalgiaForInfinityX3(IStrategy):
       self.startup_candle_count = 710
     elif self.config["exchange"]["name"] in ["bybit"]:
       self.startup_candle_count = 199
+    elif self.config["exchange"]["name"] in ["bitget"]:
+      self.startup_candle_count = 499
 
     if ("trading_mode" in self.config) and (self.config["trading_mode"] in ["futures", "margin"]):
       self.is_futures_mode = True
