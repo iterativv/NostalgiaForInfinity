@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.192"
+    return "v13.1.193"
 
   stoploss = -0.99
 
@@ -8124,7 +8124,7 @@ class NostalgiaForInfinityX3(IStrategy):
           if self.is_futures_mode
           else self.regular_mode_stake_multiplier_spot
         ):
-          if (proposed_stake * item / (trade.leverage if self.is_futures_mode else 1.0)) > min_stake:
+          if (proposed_stake * item) > min_stake:
             stake_multiplier = item
             return proposed_stake * stake_multiplier
 
