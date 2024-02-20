@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.196"
+    return "v14.1.197"
 
   stoploss = -0.99
 
@@ -8592,7 +8592,7 @@ class NostalgiaForInfinityX4(IStrategy):
       )
 
       current_stake_amount = trade.amount * current_rate
-      is_derisk = trade.amount < filled_entries[0].safe_filled
+      is_derisk = trade.amount < (filled_entries[0].safe_filled * 0.99)
       is_derisk_calc = False
 
       # Rebuy mode
@@ -9094,7 +9094,7 @@ class NostalgiaForInfinityX4(IStrategy):
             if order2.ft_order_side == "sell":
               current_amount -= order2.safe_filled
             if order2 is order:
-              if current_amount < start_amount:
+              if current_amount < (start_amount * 0.99):
                 is_derisk = True
         # found sells for all modes
         if rebuy_is_sell_found and grind_1_is_sell_found:
