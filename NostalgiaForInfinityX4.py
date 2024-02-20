@@ -9191,9 +9191,7 @@ class NostalgiaForInfinityX4(IStrategy):
         and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
         and ((current_time - timedelta(hours=12) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.06))
         and (
-          (last_candle["rsi_3_15m"] > 20.0)
-          and (last_candle["rsi_3_1h"] > 26.0)
-          and (last_candle["rsi_3_4h"] > 26.0)
+          (last_candle["rsi_3_15m"] > 20.0) and (last_candle["rsi_3_1h"] > 26.0) and (last_candle["rsi_3_4h"] > 26.0)
         )
         and self.long_grind_buy(last_candle, previous_candle, slice_profit)
       ):
