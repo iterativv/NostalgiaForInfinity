@@ -8119,7 +8119,7 @@ class NostalgiaForInfinityX3(IStrategy):
           stake_multiplier = self.rebuy_mode_stake_multiplier_alt
         return proposed_stake * stake_multiplier
       else:
-        for i, item in enumerate(
+        for _, item in enumerate(
           self.regular_mode_stake_multiplier_futures
           if self.is_futures_mode
           else self.regular_mode_stake_multiplier_spot
