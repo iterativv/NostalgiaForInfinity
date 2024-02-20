@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.203"
+    return "v13.1.204"
 
   stoploss = -0.99
 
@@ -141,8 +141,8 @@ class NostalgiaForInfinityX3(IStrategy):
   stop_threshold_futures = 12.0
   stop_threshold_futures_rapid = 12.0
   stop_threshold_spot_rapid = 4.0
-  stop_threshold_futures_rebuy = 0.9
-  stop_threshold_spot_rebuy = 3.9
+  stop_threshold_spot_rebuy = 0.9
+  stop_threshold_futures_rebuy = 3.9
 
   # Rebuy mode minimum number of free slots
   rebuy_mode_min_free_slots = 2
