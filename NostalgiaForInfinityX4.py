@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.204"
+    return "v14.1.205"
 
   stoploss = -0.99
 
@@ -9140,6 +9140,10 @@ class NostalgiaForInfinityX4(IStrategy):
       if (
         (0 <= rebuy_sub_grind_count < max_rebuy_sub_grinds)
         and (slice_profit_entry < regular_mode_rebuy_sub_thresholds[rebuy_sub_grind_count])
+        and (
+          (rebuy_distance_ratio if (rebuy_sub_grind_count > 0) else profit_init_ratio)
+          < (regular_mode_rebuy_sub_thresholds[rebuy_sub_grind_count])
+        )
         and (
           (last_candle["protections_long_rebuy"] == True)
           and (last_candle["global_protections_long_pump"] == True)
