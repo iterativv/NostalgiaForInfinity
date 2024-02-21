@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.210"
+    return "v14.1.211"
 
   stoploss = -0.99
 
@@ -8771,7 +8771,7 @@ class NostalgiaForInfinityX4(IStrategy):
         elif order_tag in ["p", "r", "d", "dd0"]:
           grind_1_is_sell_found = True
           grind_2_is_sell_found = True
-        elif order_tag not in ["g1", "g2", "gd2", "gd3"]:
+        elif order_tag not in ["g1", "g2", "gd2", "gd3", "dd2", "dd3"]:
           grind_1_is_sell_found = True
         # found sells for all modes
         if grind_1_is_sell_found and grind_2_is_sell_found:
