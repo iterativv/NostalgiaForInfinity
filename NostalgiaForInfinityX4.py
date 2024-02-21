@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.209"
+    return "v14.1.210"
 
   stoploss = -0.99
 
@@ -226,6 +226,8 @@ class NostalgiaForInfinityX4(IStrategy):
 
   # Non rebuy modes
   regular_mode_stake_multiplier_spot = [0.5, 0.75]
+  regular_mode_stake_multiplier_futures = [0.5, 0.75]
+
   regular_mode_rebuy_stakes_spot = [
     [0.50, 0.50, 0.50, 0.50, 0.50],
     [0.75, 0.75, 0.75, 0.75],
