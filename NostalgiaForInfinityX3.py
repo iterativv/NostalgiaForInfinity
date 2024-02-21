@@ -8700,7 +8700,11 @@ class NostalgiaForInfinityX3(IStrategy):
         and (
           (
             (trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0))
-            - ((grind_1_total_amount + grind_2_total_amount) * exit_rate / (trade.leverage if self.is_futures_mode else 1.0))
+            - (
+              (grind_1_total_amount + grind_2_total_amount)
+              * exit_rate
+              / (trade.leverage if self.is_futures_mode else 1.0)
+            )
           )
           > (min_stake * 3.0)
         )
