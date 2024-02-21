@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.206"
+    return "v13.1.207"
 
   stoploss = -0.99
 
@@ -232,19 +232,50 @@ class NostalgiaForInfinityX3(IStrategy):
   ]
 
   # Non rebuy modes
-  regular_mode_stake_multiplier_spot = [0.3, 0.35, 0.4, 0.5, 0.75]
-  regular_mode_rebuy_stakes_spot = [1.0, 1.0, 1.0, 1.0, 1.0]
-  regular_mode_grind_1_stakes_spot = [1.0, 1.0, 1.0, 1.0, 1.0]
-  regular_mode_rebuy_thresholds_spot = [-0.12, -0.12, -0.12, -0.12, -0.12]
-  regular_mode_grind_1_thresholds_spot = [-0.03, -0.12, -0.12, -0.12, -0.12, -0.12]
+  regular_mode_stake_multiplier_spot = [0.5, 0.75]
+  regular_mode_rebuy_stakes_spot = [
+    [0.50, 0.50, 0.50, 0.50, 0.50],
+    [0.75, 0.75, 0.75, 0.75],
+    [1.0, 1.0, 1.0],
+  ]
+  regular_mode_grind_1_stakes_spot = [
+    [0.50, 0.50, 0.50, 0.50, 0.50],
+    [0.75, 0.75, 0.75, 0.75],
+    [1.0, 1.0, 1.0],
+  ]
+  regular_mode_rebuy_thresholds_spot = [
+    [-0.12, -0.12, -0.12, -0.12, -0.12],
+    [-0.12, -0.12, -0.12, -0.12],
+    [-0.12, -0.12, -0.12],
+  ]
+  regular_mode_grind_1_thresholds_spot = [
+    [-0.03, -0.12, -0.12, -0.12, -0.12, -0.12],
+    [-0.03, -0.12, -0.12, -0.12, -0.12],
+    [-0.03, -0.12, -0.12, -0.12],
+  ]
   regular_mode_grind_1_profit_threshold_spot = 0.018
   regular_mode_derisk_spot = -1.25
 
-  regular_mode_stake_multiplier_futures = [0.3, 0.35, 0.4, 0.5, 0.75]
-  regular_mode_rebuy_stakes_futures = [1.0, 1.0, 1.0, 1.0, 1.0]
-  regular_mode_grind_1_stakes_futures = [1.0, 1.0, 1.0, 1.0, 1.0]
-  regular_mode_rebuy_thresholds_futures = [-0.12, -0.12, -0.12, -0.12, -0.12]
-  regular_mode_grind_1_thresholds_futures = [-0.03, -0.12, -0.12, -0.12, -0.12, -0.12]
+  regular_mode_rebuy_stakes_futures = [
+    [0.50, 0.50, 0.50, 0.50, 0.50],
+    [0.75, 0.75, 0.75, 0.75],
+    [1.0, 1.0, 1.0],
+  ]
+  regular_mode_grind_1_stakes_futures = [
+    [0.50, 0.50, 0.50, 0.50, 0.50],
+    [0.75, 0.75, 0.75, 0.75],
+    [1.0, 1.0, 1.0],
+  ]
+  regular_mode_rebuy_thresholds_futures = [
+    [-0.12, -0.12, -0.12, -0.12, -0.12],
+    [-0.12, -0.12, -0.12, -0.12],
+    [-0.12, -0.12, -0.12],
+  ]
+  regular_mode_grind_1_thresholds_futures = [
+    [-0.03, -0.12, -0.12, -0.12, -0.12, -0.12],
+    [-0.03, -0.12, -0.12, -0.12, -0.12],
+    [-0.03, -0.12, -0.12, -0.12],
+  ]
   regular_mode_grind_1_profit_threshold_futures = 0.018
   regular_mode_derisk_futures = -3.75
 
@@ -8669,22 +8700,36 @@ class NostalgiaForInfinityX3(IStrategy):
     has_order_tags: bool,
     **kwargs,
   ) -> tuple[Optional[float], str, bool]:
-    regular_mode_rebuy_stakes = (
+    max_rebuy_sub_grinds = 0
+    regular_mode_rebuy_stakes = []
+    regular_mode_rebuy_sub_thresholds = []
+    for i, item in enumerate(
       self.regular_mode_rebuy_stakes_futures if self.is_futures_mode else self.regular_mode_rebuy_stakes_spot
-    )
-    max_rebuy_sub_grinds = len(regular_mode_rebuy_stakes)
-    regular_mode_rebuy_sub_thresholds = (
-      self.regular_mode_rebuy_thresholds_futures if self.is_futures_mode else self.regular_mode_rebuy_thresholds_spot
-    )
-    regular_mode_grind_1_stakes = (
+    ):
+      if (slice_amount * item[0] / (trade.leverage if self.is_futures_mode else 1.0)) > min_stake:
+        regular_mode_rebuy_stakes = item
+        regular_mode_rebuy_sub_thresholds = (
+          self.regular_mode_rebuy_thresholds_futures[i]
+          if self.is_futures_mode
+          else self.regular_mode_rebuy_thresholds_spot[i]
+        )
+        max_rebuy_sub_grinds = len(regular_mode_rebuy_stakes)
+        break
+    max_grind_1_sub_grinds = 0
+    regular_mode_grind_1_stakes = []
+    regular_mode_grind_1_sub_thresholds = []
+    for i, item in enumerate(
       self.regular_mode_grind_1_stakes_futures if self.is_futures_mode else self.regular_mode_grind_1_stakes_spot
-    )
-    max_grind_1_sub_grinds = len(regular_mode_grind_1_stakes)
-    regular_mode_grind_1_sub_thresholds = (
-      self.regular_mode_grind_1_thresholds_futures
-      if self.is_futures_mode
-      else self.regular_mode_grind_1_thresholds_spot
-    )
+    ):
+      if (slice_amount * item[0] / (trade.leverage if self.is_futures_mode else 1.0)) > min_stake:
+        regular_mode_grind_1_stakes = item
+        regular_mode_grind_1_sub_thresholds = (
+          self.regular_mode_grind_1_thresholds_futures[i]
+          if self.is_futures_mode
+          else self.regular_mode_grind_1_thresholds_spot[i]
+        )
+        max_grind_1_sub_grinds = len(regular_mode_grind_1_stakes)
+        break
     regular_mode_grind_1_profit_threshold = (
       self.regular_mode_grind_1_profit_threshold_futures
       if self.is_futures_mode
@@ -8719,10 +8764,6 @@ class NostalgiaForInfinityX3(IStrategy):
         if has_order_tags:
           if order.ft_order_tag is not None:
             order_tag = order.ft_order_tag
-            if order.ft_order_tag == "g1":
-              order_tag = "g1"
-            elif order.ft_order_tag == "r":
-              order_tag = "r"
         if not grind_1_is_sell_found and order_tag == "g1":
           grind_1_sub_grind_count += 1
           grind_1_total_amount += order.safe_filled
@@ -8731,7 +8772,7 @@ class NostalgiaForInfinityX3(IStrategy):
           if not grind_1_found:
             grind_1_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
             grind_1_found = True
-        elif not rebuy_is_sell_found:
+        elif not rebuy_is_sell_found and order_tag not in ["g1", "g2", "gd1", "gd2", "gd3"]:
           rebuy_sub_grind_count += 1
           rebuy_total_amount += order.safe_filled
           rebuy_total_cost += order.safe_filled * order.safe_price
@@ -8749,19 +8790,14 @@ class NostalgiaForInfinityX3(IStrategy):
             sell_order_tag = order.ft_order_tag
             order_mode = sell_order_tag.split(" ", 1)
             if len(order_mode) > 0:
-              if order_mode[0] == "g1":
-                order_tag = "g1"
-              elif order_mode[0] == "d":
-                order_tag = "d"
-              elif order_mode[0] == "r":
-                order_tag = "r"
+              order_tag = order_mode[0]
         if order_tag == "g1":
           grind_1_is_sell_found = True
-        elif order_tag == "d":
+        elif order_tag in ["d", "dd0"]:
           is_derisk = True
           grind_1_is_sell_found = True
           rebuy_is_sell_found = True
-        else:
+        elif order_tag not in ["p", "g1", "g2", "gd1", "gd2", "gd3"]:
           rebuy_is_sell_found = True
         if not is_derisk:
           start_amount = filled_orders[0].safe_filled
@@ -8822,6 +8858,8 @@ class NostalgiaForInfinityX3(IStrategy):
           (rebuy_distance_ratio if (rebuy_sub_grind_count > 0) else profit_init_ratio)
           < (regular_mode_rebuy_sub_thresholds[rebuy_sub_grind_count])
         )
+        and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
+        and ((current_time - timedelta(hours=12) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.06))
         and (
           (last_candle["protections_long_rebuy"] == True)
           and (last_candle["global_protections_long_pump"] == True)
@@ -8831,6 +8869,7 @@ class NostalgiaForInfinityX3(IStrategy):
           (last_candle["close"] > (last_candle["close_max_12"] * 0.92))
           and (last_candle["close"] > (last_candle["close_max_24"] * 0.90))
           and (last_candle["close"] > (last_candle["close_max_48"] * 0.88))
+          and (last_candle["close"] > (last_candle["high_max_6_1d"] * 0.86))
           and (last_candle["btc_pct_close_max_72_5m"] < 0.03)
           and (last_candle["btc_pct_close_max_24_5m"] < 0.03)
         )
@@ -8874,6 +8913,12 @@ class NostalgiaForInfinityX3(IStrategy):
         and ((current_time - timedelta(hours=12) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.06))
         and (
           (last_candle["rsi_3_15m"] > 20.0) and (last_candle["rsi_3_1h"] > 26.0) and (last_candle["rsi_3_4h"] > 26.0)
+        )
+        and (
+          (last_candle["close"] > (last_candle["close_max_12"] * 0.92))
+          and (last_candle["close"] > (last_candle["close_max_24"] * 0.90))
+          and (last_candle["close"] > (last_candle["close_max_48"] * 0.88))
+          and (last_candle["close"] > (last_candle["high_max_6_1d"] * 0.86))
         )
         and self.long_grind_buy(last_candle, previous_candle, slice_profit)
       ):
