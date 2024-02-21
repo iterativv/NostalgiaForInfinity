@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.212"
+    return "v14.1.213"
 
   stoploss = -0.99
 
@@ -1397,12 +1397,10 @@ class NostalgiaForInfinityX4(IStrategy):
       "sell_profit_only" in self.config and self.config["sell_profit_only"]
     ):
       self.exit_profit_only = True
-    if "grinding_mode_2_derisk_spot" in self.config:
-      self.grinding_mode_2_derisk_spot = self.config["grinding_mode_2_derisk_spot"]
-    if "grinding_mode_2_stop_grinds_spot" in self.config:
-      self.grinding_mode_2_stop_grinds_spot = self.config["grinding_mode_2_stop_grinds_spot"]
-    if "grinding_profit_threshold" in self.config:
-      self.grinding_profit_threshold = self.config["grinding_profit_threshold"]
+    if "regular_mode_stake_multiplier_spot" in self.config:
+      self.regular_mode_stake_multiplier_spot = self.config["regular_mode_stake_multiplier_spot"]
+    if "regular_mode_stake_multiplier_futures" in self.config:
+      self.regular_mode_stake_multiplier_futures = self.config["regular_mode_stake_multiplier_futures"]
     if "max_slippage" in self.config:
       self.max_slippage = self.config["max_slippage"]
     if self.target_profit_cache is None:
