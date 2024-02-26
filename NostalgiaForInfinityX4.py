@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.247"
+    return "v14.1.248"
 
   stoploss = -0.99
 
@@ -639,10 +639,10 @@ class NostalgiaForInfinityX4(IStrategy):
   entry_25_not_downtrend_1d_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
   entry_25_rsi_3_min = DecimalParameter(00.0, 30.0, default=2.0, decimals=0, space="buy", optimize=False)
   entry_25_rsi_3_max = DecimalParameter(30.0, 60.0, default=60.0, decimals=0, space="buy", optimize=False)
-  entry_25_rsi_3_15m_min = DecimalParameter(00.0, 30.0, default=6.0, decimals=0, space="buy", optimize=False)
-  entry_25_rsi_3_1h_min = DecimalParameter(00.0, 30.0, default=6.0, decimals=0, space="buy", optimize=False)
-  entry_25_rsi_3_4h_min = DecimalParameter(00.0, 30.0, default=6.0, decimals=0, space="buy", optimize=False)
-  entry_25_rsi_3_1d_min = DecimalParameter(00.0, 30.0, default=6.0, decimals=0, space="buy", optimize=False)
+  entry_25_rsi_3_15m_min = DecimalParameter(00.0, 30.0, default=8.0, decimals=0, space="buy", optimize=False)
+  entry_25_rsi_3_1h_min = DecimalParameter(00.0, 30.0, default=8.0, decimals=0, space="buy", optimize=False)
+  entry_25_rsi_3_4h_min = DecimalParameter(00.0, 30.0, default=8.0, decimals=0, space="buy", optimize=False)
+  entry_25_rsi_3_1d_min = DecimalParameter(00.0, 30.0, default=8.0, decimals=0, space="buy", optimize=False)
   entry_25_cti_20_1h_max = DecimalParameter(0.0, 0.99, default=0.95, decimals=2, space="buy", optimize=False)
   entry_25_rsi_14_1h_max = DecimalParameter(50.0, 90.0, default=90.0, decimals=0, space="buy", optimize=False)
   entry_25_cti_20_4h_max = DecimalParameter(0.0, 0.99, default=0.95, decimals=2, space="buy", optimize=False)
