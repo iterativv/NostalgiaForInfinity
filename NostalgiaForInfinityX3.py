@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.252"
+    return "v13.1.253"
 
   stoploss = -0.99
 
@@ -9499,7 +9499,7 @@ class NostalgiaForInfinityX3(IStrategy):
           f"Grinding entry (g1) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_1_current_grind_stake_profit} {self.config['stake_currency']})"
         )
         log.info(
-          f"Grinding entry (g1) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"Grinding entry (g1) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_1_current_grind_stake_profit} {self.config['stake_currency']})"
         )
         order_tag = "g1"
         return buy_amount, order_tag, is_derisk
@@ -9556,11 +9556,16 @@ class NostalgiaForInfinityX3(IStrategy):
           buy_amount = min_stake * 1.5
         if buy_amount > max_stake:
           return None, "", is_derisk
+        grind_profit = 0.0
+        grind_profit_stake = 0.0
+        if grind_2_sub_grind_count > 0:
+          grind_profit = (exit_rate - grind_2_current_open_rate) / grind_2_current_open_rate
+          grind_profit_stake = grind_2_current_grind_stake_profit
         self.dp.send_msg(
-          f"Grinding entry (g2) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"Grinding entry (g2) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_2_current_grind_stake_profit} {self.config['stake_currency']})"
         )
         log.info(
-          f"Grinding entry (g2) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"Grinding entry (g2) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_2_current_grind_stake_profit} {self.config['stake_currency']})"
         )
         order_tag = "g2"
         return buy_amount, order_tag, is_derisk
@@ -9618,11 +9623,16 @@ class NostalgiaForInfinityX3(IStrategy):
           buy_amount = min_stake * 1.5
         if buy_amount > max_stake:
           return None, "", is_derisk
+        grind_profit = 0.0
+        grind_profit_stake = 0.0
+        if grind_3_sub_grind_count > 0:
+          grind_profit = (exit_rate - grind_3_current_open_rate) / grind_3_current_open_rate
+          grind_profit_stake = grind_3_current_grind_stake_profit
         self.dp.send_msg(
-          f"Grinding entry (g3) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"Grinding entry (g3) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_3_current_grind_stake_profit} {self.config['stake_currency']})"
         )
         log.info(
-          f"Grinding entry (g3) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"Grinding entry (g3) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_3_current_grind_stake_profit} {self.config['stake_currency']})"
         )
         order_tag = "g3"
         return buy_amount, order_tag, is_derisk
