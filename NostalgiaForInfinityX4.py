@@ -210,8 +210,10 @@ class NostalgiaForInfinityX4(IStrategy):
   grind_2_profit_threshold_spot = 0.018
   grind_2_stakes_spot = [
     [0.10, 0.15, 0.20, 0.25, 0.30],
+    [0.15, 0.20, 0.25, 0.30, 0.35],
   ]
   grind_2_sub_thresholds_spot = [
+    [-0.08, -0.10, -0.12, -0.14, -0.16],
     [-0.08, -0.10, -0.12, -0.14, -0.16],
   ]
 
@@ -219,16 +221,18 @@ class NostalgiaForInfinityX4(IStrategy):
   grind_2_profit_threshold_futures = 0.018
   grind_2_stakes_futures = [
     [0.10, 0.15, 0.20, 0.25, 0.30],
+    [0.15, 0.20, 0.25, 0.30, 0.35],
   ]
   grind_2_sub_thresholds_futures = [
+    [-0.08, -0.10, -0.12, -0.14, -0.16],
     [-0.08, -0.10, -0.12, -0.14, -0.16],
   ]
 
   grind_3_stop_grinds_spot = -0.10
   grind_3_profit_threshold_spot = 0.018
   grind_3_stakes_spot = [
-    [0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05],
     [0.10, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10],
+    [0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15],
   ]
   grind_3_sub_thresholds_spot = [
     [-0.08, -0.08, -0.08, -0.08, -0.08, -0.08, -0.08, -0.08, -0.08, -0.08],
@@ -238,8 +242,8 @@ class NostalgiaForInfinityX4(IStrategy):
   grind_3_stop_grinds_futures = -0.30
   grind_3_profit_threshold_futures = 0.018
   grind_3_stakes_futures = [
-    [0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05],
     [0.10, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10],
+    [0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15],
   ]
   grind_3_sub_thresholds_futures = [
     [-0.08, -0.08, -0.08, -0.08, -0.08, -0.08, -0.08, -0.08, -0.08, -0.08],
@@ -285,8 +289,8 @@ class NostalgiaForInfinityX4(IStrategy):
   ]
   regular_mode_grind_2_profit_threshold_spot = 0.018
   regular_mode_grind_3_stakes_spot = [
-    [0.10, 0.10, 0.10, 0.10, 0.10, 0.10],
     [0.20, 0.20, 0.20, 0.20, 0.20, 0.20],
+    [0.30, 0.30, 0.30, 0.30, 0.30, 0.30],
   ]
   regular_mode_grind_3_thresholds_spot = [
     [-0.03, -0.08, -0.10, -0.12, -0.14, -0.16],
@@ -321,8 +325,8 @@ class NostalgiaForInfinityX4(IStrategy):
   ]
   regular_mode_grind_1_profit_threshold_futures = 0.018
   regular_mode_grind_2_stakes_futures = [
-    [0.10, 0.15, 0.20, 0.25, 0.30],
     [0.15, 0.20, 0.25, 0.30, 0.35],
+    [0.20, 0.25, 0.30, 0.45, 0.50],
   ]
   regular_mode_grind_2_thresholds_futures = [
     [-0.04, -0.08, -0.10, -0.12, -0.14, -0.16],
@@ -330,8 +334,8 @@ class NostalgiaForInfinityX4(IStrategy):
   ]
   regular_mode_grind_2_profit_threshold_futures = 0.018
   regular_mode_grind_3_stakes_futures = [
-    [0.10, 0.10, 0.10, 0.10, 0.10, 0.10],
     [0.20, 0.20, 0.20, 0.20, 0.20, 0.20],
+    [0.30, 0.30, 0.30, 0.30, 0.30, 0.30],
   ]
   regular_mode_grind_3_thresholds_futures = [
     [-0.03, -0.08, -0.10, -0.12, -0.14, -0.16],
