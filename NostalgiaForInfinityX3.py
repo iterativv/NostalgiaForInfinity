@@ -879,7 +879,7 @@ class NostalgiaForInfinityX3(IStrategy):
   entry_48_r_480_4h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=False)
   entry_48_rsi_14_max = DecimalParameter(26.0, 50.0, default=38.0, decimals=0, space="buy", optimize=False)
   entry_48_cci_20_max = DecimalParameter(-180.0, -80.0, default=-100.0, decimals=0, space="buy", optimize=False)
-  entry_48_sma_offset = DecimalParameter(0.940, 0.978, default=0.956, decimals=3, space="buy", optimize=False)
+  entry_48_sma_offset = DecimalParameter(0.940, 0.978, default=0.962, decimals=3, space="buy", optimize=False)
   entry_48_inc_min = DecimalParameter(0.01, 0.04, default=0.022, decimals=3, space="buy", optimize=False)
 
   entry_49_close_max_12 = DecimalParameter(00.50, 0.95, default=0.88, decimals=2, space="buy", optimize=False)
