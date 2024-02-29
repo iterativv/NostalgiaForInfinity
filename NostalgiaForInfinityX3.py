@@ -23332,6 +23332,12 @@ class NostalgiaForInfinityX3(IStrategy):
           item_buy_logic.append(dataframe["close"] < (dataframe["res3_1d"] * 1.6))
           item_buy_protection_list.append(dataframe["sma_200_1h"] > dataframe["sma_200_1h"].shift(48))
 
+          item_buy_logic.append(
+            (dataframe["r_480_4h"] > -75.0)
+            | (dataframe["ema_200_dec_24_4h"] == False)
+            | (dataframe["ema_200_dec_4_1d"] == False)
+          )
+
           # Logic
           item_buy_logic.append(dataframe["ema_26"] > dataframe["ema_12"])
           item_buy_logic.append((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.0145))
