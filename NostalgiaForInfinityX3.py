@@ -8477,7 +8477,7 @@ class NostalgiaForInfinityX3(IStrategy):
     )
 
     current_stake_amount = trade.amount * current_rate
-    is_derisk = trade.amount < (filled_entries[0].safe_filled * 0.99)
+    is_derisk = trade.amount < (filled_entries[0].safe_filled * 0.95)
     is_derisk_calc = False
 
     # Rebuy mode
