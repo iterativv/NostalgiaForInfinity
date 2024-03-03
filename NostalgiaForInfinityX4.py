@@ -413,7 +413,7 @@ class NostalgiaForInfinityX4(IStrategy):
     "buy_condition_46_enable": True,
     "buy_condition_47_enable": True,
     "buy_condition_48_enable": True,
-    "buy_condition_49_enable": False,
+    "buy_condition_49_enable": True,
     "buy_condition_50_enable": False,
     "buy_condition_61_enable": True,
     # "buy_condition_81_enable": True,
@@ -9915,7 +9915,7 @@ class NostalgiaForInfinityX4(IStrategy):
           f"Rebuy (r) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         log.info(
-          f"Rebuy (r) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"Rebuy (r) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         order_tag = "r"
         return buy_amount, order_tag, is_derisk
