@@ -23812,9 +23812,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
           item_buy_logic.append(
-            (dataframe["not_downtrend_1h"])
-            | (dataframe["rsi_14_4h"] < 70.0)
-            | (dataframe["r_480_4h"] < -30.0)
+            (dataframe["not_downtrend_1h"]) | (dataframe["rsi_14_4h"] < 70.0) | (dataframe["r_480_4h"] < -30.0)
           )
 
           # Logic
