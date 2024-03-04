@@ -19838,151 +19838,151 @@ class NostalgiaForInfinityX4(IStrategy):
       if self.long_entry_signal_params[f"{enabled_long_entry_signal}"]:
         # Long Entry Conditions Starts Here
         # -----------------------------------------------------------------------------------------
-        item_buy_logic = []
-        item_buy_logic.append(reduce(lambda x, y: x & y, item_buy_protection_list))
+        long_entry_logic = []
+        long_entry_logic.append(reduce(lambda x, y: x & y, item_buy_protection_list))
 
         # Condition #1 - Long mode bull. Uptrend.
         if index == 1:
           # Protections
-          item_buy_logic.append(dataframe["protections_long_global"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
-          item_buy_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.24))
-          item_buy_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.3))
-          item_buy_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.5))
-          item_buy_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.75))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < 0.4)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < 0.5)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < 0.75)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < 0.9)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(dataframe["protections_long_global"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
+          long_entry_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.24))
+          long_entry_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.3))
+          long_entry_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.5))
+          long_entry_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.75))
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < 0.4)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < 0.5)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < 0.75)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < 0.9)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["cti_20_1h"] < 0.9)
-          item_buy_logic.append(dataframe["rsi_14_1h"] < 85.0)
-          item_buy_logic.append(dataframe["cti_20_4h"] < 0.9)
-          item_buy_logic.append(dataframe["rsi_14_4h"] < 85.0)
-          item_buy_logic.append(dataframe["cti_20_1d"] < 0.9)
-          item_buy_logic.append(dataframe["rsi_14_1d"] < 85.0)
-          item_buy_logic.append(dataframe["r_14_1h"] < -25.0)
-          item_buy_logic.append(dataframe["r_14_4h"] < -25.0)
+          long_entry_logic.append(dataframe["cti_20_1h"] < 0.9)
+          long_entry_logic.append(dataframe["rsi_14_1h"] < 85.0)
+          long_entry_logic.append(dataframe["cti_20_4h"] < 0.9)
+          long_entry_logic.append(dataframe["rsi_14_4h"] < 85.0)
+          long_entry_logic.append(dataframe["cti_20_1d"] < 0.9)
+          long_entry_logic.append(dataframe["rsi_14_1d"] < 85.0)
+          long_entry_logic.append(dataframe["r_14_1h"] < -25.0)
+          long_entry_logic.append(dataframe["r_14_4h"] < -25.0)
 
           # Logic
-          item_buy_logic.append(dataframe["ema_26"] > dataframe["ema_12"])
-          item_buy_logic.append((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.02))
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["ema_26"] > dataframe["ema_12"])
+          long_entry_logic.append((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.02))
+          long_entry_logic.append(
             (dataframe["ema_26"].shift() - dataframe["ema_12"].shift()) > (dataframe["open"] / 100)
           )
-          item_buy_logic.append(dataframe["close"] < (dataframe["bb20_2_low"] * 0.999))
+          long_entry_logic.append(dataframe["close"] < (dataframe["bb20_2_low"] * 0.999))
 
         # Condition #2 - Normal mode bull.
         if index == 2:
           # Protections
-          item_buy_logic.append(dataframe["protections_long_global"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.16))
-          item_buy_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.24))
-          item_buy_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.3))
-          item_buy_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.5))
-          item_buy_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.75))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < 0.4)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < 0.5)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < 0.75)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < 0.9)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(dataframe["protections_long_global"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.16))
+          long_entry_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.24))
+          long_entry_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.3))
+          long_entry_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.5))
+          long_entry_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.75))
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < 0.4)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < 0.5)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < 0.75)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < 0.9)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["cti_20_1h"] < 0.9)
-          item_buy_logic.append(dataframe["rsi_14_1h"] < 85.0)
-          item_buy_logic.append(dataframe["cti_20_4h"] < 0.9)
-          item_buy_logic.append(dataframe["rsi_14_4h"] < 85.0)
-          item_buy_logic.append(dataframe["cti_20_1d"] < 0.9)
-          item_buy_logic.append(dataframe["rsi_14_1d"] < 85.0)
-          item_buy_logic.append(dataframe["r_14_1h"] < -25.0)
-          item_buy_logic.append(dataframe["r_14_4h"] < -25.0)
+          long_entry_logic.append(dataframe["cti_20_1h"] < 0.9)
+          long_entry_logic.append(dataframe["rsi_14_1h"] < 85.0)
+          long_entry_logic.append(dataframe["cti_20_4h"] < 0.9)
+          long_entry_logic.append(dataframe["rsi_14_4h"] < 85.0)
+          long_entry_logic.append(dataframe["cti_20_1d"] < 0.9)
+          long_entry_logic.append(dataframe["rsi_14_1d"] < 85.0)
+          long_entry_logic.append(dataframe["r_14_1h"] < -25.0)
+          long_entry_logic.append(dataframe["r_14_4h"] < -25.0)
 
-          item_buy_logic.append(
+          long_entry_logic.append(
             ((dataframe["not_downtrend_1h"]) & (dataframe["not_downtrend_4h"]))
             | (dataframe["high_max_24_4h"] < (dataframe["close"] * 1.5))
           )
 
           # Logic
-          item_buy_logic.append(dataframe["bb40_2_delta"].gt(dataframe["close"] * 0.06))
-          item_buy_logic.append(dataframe["close_delta"].gt(dataframe["close"] * 0.02))
-          item_buy_logic.append(dataframe["bb40_2_tail"].lt(dataframe["bb40_2_delta"] * 0.2))
-          item_buy_logic.append(dataframe["close"].lt(dataframe["bb40_2_low"].shift()))
-          item_buy_logic.append(dataframe["close"].le(dataframe["close"].shift()))
+          long_entry_logic.append(dataframe["bb40_2_delta"].gt(dataframe["close"] * 0.06))
+          long_entry_logic.append(dataframe["close_delta"].gt(dataframe["close"] * 0.02))
+          long_entry_logic.append(dataframe["bb40_2_tail"].lt(dataframe["bb40_2_delta"] * 0.2))
+          long_entry_logic.append(dataframe["close"].lt(dataframe["bb40_2_low"].shift()))
+          long_entry_logic.append(dataframe["close"].le(dataframe["close"].shift()))
 
         # Condition #3 - Normal mode bull.
         if index == 3:
           # Protections
-          item_buy_logic.append(dataframe["protections_long_global"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
-          item_buy_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.24))
-          item_buy_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.26))
-          item_buy_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.5))
-          item_buy_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.75))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < 0.4)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < 0.5)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < 0.75)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < 0.9)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(dataframe["protections_long_global"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
+          long_entry_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.24))
+          long_entry_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.26))
+          long_entry_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.5))
+          long_entry_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.75))
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < 0.4)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < 0.5)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < 0.75)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < 0.9)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["ema_12_1h"] > dataframe["ema_200_1h"])
+          long_entry_logic.append(dataframe["ema_12_1h"] > dataframe["ema_200_1h"])
 
-          item_buy_logic.append(dataframe["ema_12_4h"] > dataframe["ema_200_4h"])
+          long_entry_logic.append(dataframe["ema_12_4h"] > dataframe["ema_200_4h"])
 
-          item_buy_logic.append(dataframe["rsi_3_15m"] > 16.0)
-          item_buy_logic.append(dataframe["rsi_3_1h"] > 6.0)
-          item_buy_logic.append(dataframe["rsi_3_4h"] > 6.0)
-          item_buy_logic.append(dataframe["rsi_14_4h"] < 70.0)
-          item_buy_logic.append(dataframe["rsi_14_1d"] < 85.0)
+          long_entry_logic.append(dataframe["rsi_3_15m"] > 16.0)
+          long_entry_logic.append(dataframe["rsi_3_1h"] > 6.0)
+          long_entry_logic.append(dataframe["rsi_3_4h"] > 6.0)
+          long_entry_logic.append(dataframe["rsi_14_4h"] < 70.0)
+          long_entry_logic.append(dataframe["rsi_14_1d"] < 85.0)
 
-          item_buy_logic.append((dataframe["change_pct_4h"] > -0.04) | (dataframe["change_pct_4h"].shift(48) < 0.04))
-          item_buy_logic.append(
+          long_entry_logic.append((dataframe["change_pct_4h"] > -0.04) | (dataframe["change_pct_4h"].shift(48) < 0.04))
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"]) | (dataframe["cti_20_1d"] < 0.85) | (dataframe["r_480_4h"] < -30.0)
           )
 
           # Logic
-          item_buy_logic.append(dataframe["rsi_14"] < 36.0)
-          item_buy_logic.append(dataframe["ha_close"] > dataframe["ha_open"])
-          item_buy_logic.append((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.020))
+          long_entry_logic.append(dataframe["rsi_14"] < 36.0)
+          long_entry_logic.append(dataframe["ha_close"] > dataframe["ha_open"])
+          long_entry_logic.append((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.020))
 
         # Condition #4 - Normal mode bull.
         if index == 4:
           # Protections
-          item_buy_logic.append(dataframe["protections_long_global"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
-          item_buy_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.24))
-          item_buy_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.3))
-          item_buy_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.5))
-          item_buy_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.75))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < 0.4)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < 0.5)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < 0.75)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < 0.9)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(dataframe["protections_long_global"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
+          long_entry_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.24))
+          long_entry_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.3))
+          long_entry_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.5))
+          long_entry_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.75))
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < 0.4)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < 0.5)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < 0.75)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < 0.9)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["cti_20_1h"] < 0.9)
-          item_buy_logic.append(dataframe["rsi_14_1h"] < 85.0)
-          item_buy_logic.append(dataframe["cti_20_4h"] < 0.9)
-          item_buy_logic.append(dataframe["rsi_14_4h"] < 85.0)
-          item_buy_logic.append(dataframe["cti_20_1d"] < 0.9)
-          item_buy_logic.append(dataframe["rsi_14_1d"] < 85.0)
+          long_entry_logic.append(dataframe["cti_20_1h"] < 0.9)
+          long_entry_logic.append(dataframe["rsi_14_1h"] < 85.0)
+          long_entry_logic.append(dataframe["cti_20_4h"] < 0.9)
+          long_entry_logic.append(dataframe["rsi_14_4h"] < 85.0)
+          long_entry_logic.append(dataframe["cti_20_1d"] < 0.9)
+          long_entry_logic.append(dataframe["rsi_14_1d"] < 85.0)
 
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -19992,7 +19992,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_1h"] < -0.5)
             | (dataframe["cti_20_4h"] < 0.5)
@@ -20000,7 +20000,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["high_max_48_1h"] < (dataframe["close"] * 1.5))
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -20009,7 +20009,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -20019,7 +20019,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -20030,7 +20030,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.75)
@@ -20042,7 +20042,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -20055,7 +20055,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_1h"] > 20.0)
@@ -20066,7 +20066,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
           # BNX
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_1h"] > 30.0)
@@ -20075,7 +20075,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -20086,7 +20086,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -20096,7 +20096,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_3_15m"] > 30.0)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.75)
@@ -20105,7 +20105,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -20116,7 +20116,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["rsi_3_15m"] > 30.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -20125,7 +20125,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -20135,7 +20135,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -20146,7 +20146,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -20156,7 +20156,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -20167,7 +20167,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.9)
@@ -20179,7 +20179,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
             | (dataframe["high_max_48_1h"] < (dataframe["close"] * 1.5))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -20191,7 +20191,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
             | (dataframe["high_max_48_1h"] < (dataframe["close"] * 1.5))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 15.0)
@@ -20202,7 +20202,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
             | (dataframe["high_max_48_1h"] < (dataframe["close"] * 1.5))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["is_downtrend_3_1h"] == False)
             | (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -20211,7 +20211,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -20221,7 +20221,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.8)
@@ -20232,7 +20232,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -20242,7 +20242,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -20252,7 +20252,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -20263,7 +20263,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.75)
@@ -20274,7 +20274,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["high_max_48_1h"] < (dataframe["close"] * 1.5))
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -20285,7 +20285,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -20296,7 +20296,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -20305,7 +20305,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.8)
@@ -20316,7 +20316,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 30.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -20327,7 +20327,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["high_max_48_1h"] < (dataframe["close"] * 1.5))
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -20336,7 +20336,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -20347,7 +20347,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.75)
@@ -20357,7 +20357,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -20368,7 +20368,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -20378,7 +20378,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_1d"] < 70.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -20388,7 +20388,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -20397,7 +20397,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
@@ -20408,7 +20408,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -20417,7 +20417,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
@@ -20427,7 +20427,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.8)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 10.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -20436,7 +20436,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -20448,7 +20448,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.0)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -20457,7 +20457,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -20468,7 +20468,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 30.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -20478,7 +20478,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -20488,7 +20488,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 30.0)
@@ -20498,7 +20498,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -20507,7 +20507,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -20516,7 +20516,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -20525,7 +20525,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_1d"] < 70.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -20536,7 +20536,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
@@ -20545,7 +20545,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -20555,7 +20555,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -20565,7 +20565,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -20573,7 +20573,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["high_max_48_1h"] < (dataframe["close"] * 1.3))
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -20582,7 +20582,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.75)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.0)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -20591,7 +20591,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 16.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -20599,7 +20599,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < 0.5)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -20608,7 +20608,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_4h"] < 70.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -20618,7 +20618,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -20627,7 +20627,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -20636,7 +20636,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.8)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 30.0)
@@ -20646,7 +20646,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
@@ -20656,7 +20656,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 10.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -20666,11 +20666,11 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             ((dataframe["not_downtrend_1h"]) & (dataframe["not_downtrend_4h"]))
             | (dataframe["high_max_24_4h"] < (dataframe["close"] * 1.5))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.0)
@@ -20681,7 +20681,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -20691,7 +20691,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -20701,7 +20701,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.8)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -20709,7 +20709,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -20718,7 +20718,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.5)
@@ -20727,7 +20727,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -20737,7 +20737,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -20748,7 +20748,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -20758,7 +20758,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -20769,7 +20769,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_3_15m"] > 10.0)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -20779,7 +20779,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -20789,7 +20789,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -20800,12 +20800,12 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["top_wick_pct_1d"] < (abs(dataframe["change_pct_1d"]) * 8.0))
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["rsi_14_1d"] < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
@@ -20815,14 +20815,14 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"].shift(48) < 0.02)
             | (dataframe["change_pct_4h"] > -0.02)
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["rsi_14_4h"].shift(48) < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 30.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -20830,7 +20830,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 8.0)
             | (dataframe["cti_20_4h"] < -0.0)
@@ -20839,14 +20839,14 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.06)
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["high_max_6_1h"] < (dataframe["close"] * 1.25))
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["is_downtrend_3_4h"] == False)
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.9)
@@ -20855,7 +20855,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -20863,13 +20863,13 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] < 0.04)
             | (dataframe["top_wick_pct_4h"] < 0.04)
             | (dataframe["ema_200_dec_48_1h"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["r_480_1h"] > -90.0)
             | (dataframe["r_480_4h"] > -90.0)
@@ -20877,7 +20877,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.0)
             | (dataframe["rsi_14_1h"] < 40.0)
@@ -20886,7 +20886,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_4h"] < 70.0)
             | (dataframe["rsi_14_1d"] < 50.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -20895,7 +20895,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -20906,14 +20906,14 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_3_1h"] > 25.0)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["hl_pct_change_24_1h"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.06)
             | (dataframe["top_wick_pct_1d"] < 0.06)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -20921,13 +20921,13 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.01)
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["rsi_14_1d"] < 70.0)
             | (dataframe["hl_pct_change_6_1d"] < 0.7)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.01)
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -20935,7 +20935,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_3_4h"] > 10.0)
             | (dataframe["cti_20_1d"] < -0.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] < 0.06)
             | (dataframe["top_wick_pct_1d"] < 0.06)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -20944,7 +20944,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_4h"] < 40.0)
             | (dataframe["cti_20_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -20955,33 +20955,33 @@ class NostalgiaForInfinityX4(IStrategy):
           )
 
           # Logic
-          item_buy_logic.append(dataframe["ema_26"] > dataframe["ema_12"])
-          item_buy_logic.append((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.018))
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["ema_26"] > dataframe["ema_12"])
+          long_entry_logic.append((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.018))
+          long_entry_logic.append(
             (dataframe["ema_26"].shift() - dataframe["ema_12"].shift()) > (dataframe["open"] / 100)
           )
-          item_buy_logic.append(dataframe["close"] < (dataframe["bb20_2_low"] * 0.996))
+          long_entry_logic.append(dataframe["close"] < (dataframe["bb20_2_low"] * 0.996))
 
         # Condition #5 - Normal mode bull.
         if index == 5:
           # Protections
-          item_buy_logic.append(dataframe["protections_long_global"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
-          item_buy_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.24))
-          item_buy_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.3))
-          item_buy_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.5))
-          item_buy_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.75))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < 0.4)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < 0.5)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < 0.75)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < 0.9)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(dataframe["protections_long_global"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
+          long_entry_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.24))
+          long_entry_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.3))
+          long_entry_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.5))
+          long_entry_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.75))
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < 0.4)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < 0.5)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < 0.75)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < 0.9)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_1h"] < -0.5)
             | (dataframe["rsi_3_1h"] > 10.0)
@@ -20990,7 +20990,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -21000,7 +21000,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -21011,7 +21011,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -21022,7 +21022,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] < 0.32)
             | (dataframe["top_wick_pct_4h"] < 0.16)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -21032,7 +21032,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -21042,7 +21042,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_1d"] < 70.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.06))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -21051,7 +21051,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 30.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -21061,7 +21061,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -21071,7 +21071,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_1d"] < 70.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.06))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -21080,7 +21080,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_1d"] < 70.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
@@ -21092,7 +21092,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 10.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -21101,7 +21101,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_1d"] < 70.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -21112,7 +21112,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["cti_20_1h"] < -0.0)
             | (dataframe["cti_20_4h"] < -0.0)
@@ -21121,7 +21121,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.06))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -21132,7 +21132,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 30.0)
@@ -21142,7 +21142,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -21153,7 +21153,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.75)
@@ -21166,7 +21166,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.06))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -21177,7 +21177,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_1d"] < 70.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["cti_20_1h"] < -0.8)
@@ -21186,7 +21186,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.06))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_1h"] < -0.8)
             | (dataframe["rsi_3_1h"] > 25.0)
@@ -21194,7 +21194,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.75)
             | (dataframe["high_max_48_1h"] < (dataframe["close"] * 1.3))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -21205,7 +21205,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -21215,7 +21215,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.75)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -21224,7 +21224,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_1d"] < 70.0)
             | (dataframe["high_max_48_1h"] < (dataframe["close"] * 1.5))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["cti_20_1h"] < -0.0)
@@ -21232,7 +21232,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -21242,7 +21242,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.75)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -21250,7 +21250,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.9)
@@ -21260,7 +21260,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_1h"] < -0.5)
             | (dataframe["rsi_3_1h"] > 30.0)
@@ -21269,14 +21269,14 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_1d"] < 70.0)
             | (dataframe["high_max_24_1h"] < (dataframe["close"] * 1.5))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_1h"] < 0.8)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["cti_20_1d"] < -0.0)
             | (dataframe["rsi_14_1d"] < 70.0)
             | (dataframe["high_max_24_1h"] < (dataframe["close"] * 1.5))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["ema_200_dec_48_1h"] == False)
@@ -21284,7 +21284,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 10.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -21293,7 +21293,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.06))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.75)
@@ -21303,7 +21303,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.8)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["cti_20_4h"] < -0.0)
             | (dataframe["cti_20_1d"] < -0.8)
@@ -21312,7 +21312,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -21321,7 +21321,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_3_15m"] > 10.0)
             | (dataframe["cti_20_1h"] < -0.8)
             | (dataframe["cti_20_4h"] < 0.5)
@@ -21330,7 +21330,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -21341,7 +21341,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_1d"] < 70.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -21352,7 +21352,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -21362,7 +21362,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -21372,7 +21372,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.06))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["cti_20_4h"] < 0.5)
@@ -21381,7 +21381,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -21391,7 +21391,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -21402,7 +21402,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.06))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -21411,7 +21411,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -21422,7 +21422,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_1d"] < 70.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_1h"] > 20.0)
             | (dataframe["cti_20_4h"] < -0.9)
@@ -21432,7 +21432,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["high_max_24_1h"] < (dataframe["close"] * 1.5))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -21443,7 +21443,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["high_max_24_1h"] < (dataframe["close"] * 1.5))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["cti_20_1h"] < -0.8)
@@ -21454,7 +21454,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["high_max_24_1h"] < (dataframe["close"] * 1.5))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -21464,7 +21464,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["high_max_24_1h"] < (dataframe["close"] * 1.25))
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.06))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["cti_20_1h"] < -0.8)
@@ -21474,7 +21474,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["high_max_24_1h"] < (dataframe["close"] * 1.25))
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.0)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.75)
@@ -21485,7 +21485,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["high_max_24_1h"] < (dataframe["close"] * 1.25))
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.06))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -21496,7 +21496,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["high_max_24_1h"] < (dataframe["close"] * 1.25))
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.08))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_14_15m"] < 20.0)
             | (dataframe["cti_20_1h"] < -0.75)
@@ -21507,7 +21507,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["high_max_24_1h"] < (dataframe["close"] * 1.25))
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.08))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 30.0)
@@ -21517,7 +21517,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 10.0)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -21525,7 +21525,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.07))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -21536,7 +21536,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 30.0)
@@ -21547,7 +21547,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -21557,7 +21557,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["high_max_24_1h"] < (dataframe["close"] * 1.25))
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.08))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.0)
@@ -21568,7 +21568,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.75)
@@ -21580,7 +21580,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.09))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -21590,7 +21590,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["high_max_24_1h"] < (dataframe["close"] * 1.25))
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.1))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -21600,7 +21600,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
@@ -21611,7 +21611,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 16.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -21621,7 +21621,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.09))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 30.0)
@@ -21632,7 +21632,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_1d"] < 70.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 10.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -21640,7 +21640,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -21650,7 +21650,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -21658,7 +21658,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_14_15m"] < 20.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -21666,7 +21666,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -21675,7 +21675,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -21686,7 +21686,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -21694,7 +21694,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -21702,7 +21702,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["cti_20_1d"] < -0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 30.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -21712,7 +21712,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.8)
@@ -21721,7 +21721,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.9)
@@ -21730,7 +21730,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.0)
             | (dataframe["cti_20_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -21740,7 +21740,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_1d"] < 70.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.06))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.9)
@@ -21751,7 +21751,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -21761,7 +21761,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -21771,7 +21771,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.5)
             | (dataframe["cti_20_1d"] < -0.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["rsi_3_15m"] > 10.0)
             | (dataframe["cti_20_1h"] < 0.75)
@@ -21780,7 +21780,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.75)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["is_downtrend_3_1h"] == False)
             | (dataframe["rsi_3_15m"] > 10.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -21788,7 +21788,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -21798,7 +21798,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -21808,7 +21808,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -21816,7 +21816,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.75)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.06))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["cti_20_1h"] < -0.8)
@@ -21826,7 +21826,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.07))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -21836,7 +21836,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["cti_20_1h"] < -0.0)
@@ -21845,7 +21845,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -21857,11 +21857,11 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             ((dataframe["not_downtrend_1h"]) & (dataframe["not_downtrend_4h"]))
             | (dataframe["high_max_24_4h"] < (dataframe["close"] * 1.5))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_14_15m"] < 20.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -21870,7 +21870,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["close_max_24"] < (dataframe["close"] * 1.2))
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.09))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_14_15m"] < 20.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -21880,7 +21880,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_14_15m"] < 20.0)
             | (dataframe["cti_20_1h"] < -0.0)
@@ -21889,7 +21889,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.8)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -21898,7 +21898,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_1h"] < -0.9)
             | (dataframe["rsi_3_1h"] > 10.0)
@@ -21907,7 +21907,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.8)
@@ -21918,14 +21918,14 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["close_max_48"] < (dataframe["close"] * 1.2))
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 30.0)
@@ -21934,7 +21934,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -21945,7 +21945,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["cti_20_1h"] < -0.8)
             | (dataframe["cti_20_4h"] < 0.75)
@@ -21953,7 +21953,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -21964,7 +21964,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 30.0)
@@ -21976,7 +21976,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -21986,7 +21986,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -21997,12 +21997,12 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["hl_pct_change_24_1h"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["top_wick_pct_1d"] < (abs(dataframe["change_pct_1d"]) * 8.0))
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["rsi_14_1d"] < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -22012,14 +22012,14 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_1d"] < 70.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"].shift(48) < 0.06)
             | (dataframe["change_pct_4h"] > -0.06)
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["rsi_14_4h"].shift(48) < 80.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -22029,7 +22029,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["close_max_24"] < (dataframe["close"] * 1.18))
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.08))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] < 0.1)
             | (dataframe["top_wick_pct_4h"] < 0.03)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -22037,7 +22037,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -22048,7 +22048,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close_max_12"] < (dataframe["close"] * 1.12))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -22059,14 +22059,14 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] < 0.16)
             | (dataframe["top_wick_pct_4h"] < 0.08)
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close_max_24"] < (dataframe["close"] * 1.12))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 8.0)
@@ -22076,13 +22076,13 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] < 0.1)
             | (dataframe["top_wick_pct_1d"] < 0.1)
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["rsi_14_1d"] < 80.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_1h"] > 25.0)
@@ -22092,7 +22092,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_14_15m"] < 20.0)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_3_1h"] > 25.0)
@@ -22100,19 +22100,19 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close_max_48"] < (dataframe["close"] * 1.3))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_3"] > 10.0)
             | (dataframe["rsi_3_15m"] > 16.0)
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] < 0.08)
             | (dataframe["rsi_14_4h"] < 70.0)
             | (dataframe["close_max_48"] < (dataframe["close"] * 1.24))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -22121,7 +22121,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.08)
             | (dataframe["top_wick_pct_1d"] < 0.08)
             | (dataframe["r_480_1h"] > -90.0)
@@ -22130,7 +22130,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["r_480_1h"] > -90.0)
@@ -22139,7 +22139,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] > -0.02)
             | (dataframe["top_wick_pct_4h"] < 0.02)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -22148,20 +22148,20 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_4h"] < 40.0)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.03)
             | (dataframe["rsi_14_4h"] < 40.0)
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["rsi_14_1d"] < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.01)
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_1d"] < 0.7)
             | (dataframe["rsi_14_1d"] < 60.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.06)
             | (dataframe["top_wick_pct_1d"] < 0.06)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -22169,13 +22169,13 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.01)
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["rsi_14_1d"] < 70.0)
             | (dataframe["hl_pct_change_6_1d"] < 0.7)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["cti_20_1h"] < -0.5)
             | (dataframe["cti_20_4h"] < -0.5)
@@ -22185,48 +22185,48 @@ class NostalgiaForInfinityX4(IStrategy):
           )
 
           # Logic
-          item_buy_logic.append(dataframe["ema_26"] > dataframe["ema_12"])
-          item_buy_logic.append((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["ema_26"] > dataframe["ema_12"])
+          long_entry_logic.append((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
+          long_entry_logic.append(
             (dataframe["ema_26"].shift() - dataframe["ema_12"].shift()) > (dataframe["open"] / 100)
           )
-          item_buy_logic.append(dataframe["rsi_14"] < 36.0)
+          long_entry_logic.append(dataframe["rsi_14"] < 36.0)
 
         # Condition #6 - Normal mode bull.
         if index == 6:
           # Protections
-          item_buy_logic.append(dataframe["protections_long_global"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
-          item_buy_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.24))
-          item_buy_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.3))
-          item_buy_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.5))
-          item_buy_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.75))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < 0.4)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < 0.5)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < 0.75)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < 0.9)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(dataframe["protections_long_global"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
+          long_entry_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.24))
+          long_entry_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.3))
+          long_entry_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.5))
+          long_entry_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.75))
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < 0.4)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < 0.5)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < 0.75)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < 0.9)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["cti_20_1h"] < 0.5)
-          item_buy_logic.append(dataframe["cti_20_4h"] < 0.75)
-          item_buy_logic.append(dataframe["rsi_14_4h"] < 85.0)
+          long_entry_logic.append(dataframe["cti_20_1h"] < 0.5)
+          long_entry_logic.append(dataframe["cti_20_4h"] < 0.75)
+          long_entry_logic.append(dataframe["rsi_14_4h"] < 85.0)
 
-          item_buy_logic.append(
+          long_entry_logic.append(
             ((dataframe["not_downtrend_1h"]) & (dataframe["not_downtrend_4h"]))
             | (dataframe["high_max_24_4h"] < (dataframe["close"] * 1.5))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.02)
             | (dataframe["top_wick_pct_1d"] < 0.06)
             | (dataframe["change_pct_1d"].shift(288) < 0.02)
             | (dataframe["cti_20_1d"] < 0.8)
             | (dataframe["rsi_14_1d"] < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -22236,7 +22236,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -22245,7 +22245,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.93))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.75)
@@ -22254,7 +22254,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.88))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -22264,7 +22264,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.93))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["ema_200_dec_48_1h"] == False)
@@ -22273,7 +22273,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["close"] < (dataframe["ema_26"] * 0.9))
             | (dataframe["rsi_3"] > 20.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.8)
@@ -22284,7 +22284,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.91))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -22293,7 +22293,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.93))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.75)
@@ -22304,7 +22304,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.93))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -22315,7 +22315,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.93))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.8)
@@ -22325,7 +22325,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.91))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -22337,7 +22337,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.9))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
@@ -22348,7 +22348,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.5)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.91))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -22356,7 +22356,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.5)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.93))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -22367,7 +22367,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.92))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -22379,7 +22379,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.93))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 30.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -22388,7 +22388,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.9))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -22397,7 +22397,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.9))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -22406,7 +22406,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.5)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.92))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -22415,7 +22415,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.8)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.9))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -22424,7 +22424,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.93))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -22436,7 +22436,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["close_max_12"] < (dataframe["close"] * 1.12))
             | (dataframe["close"] < (dataframe["ema_26"] * 0.88))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.0)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -22445,7 +22445,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["close_max_12"] < (dataframe["close"] * 1.12))
             | (dataframe["close"] < (dataframe["ema_26"] * 0.88))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -22454,7 +22454,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["close_max_12"] < (dataframe["close"] * 1.16))
             | (dataframe["close"] < (dataframe["ema_26"] * 0.9))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -22464,7 +22464,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["close_max_12"] < (dataframe["close"] * 1.12))
             | (dataframe["close"] < (dataframe["ema_26"] * 0.88))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 30.0)
@@ -22473,7 +22473,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["close_max_12"] < (dataframe["close"] * 1.12))
             | (dataframe["close"] < (dataframe["ema_26"] * 0.92))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_14_15m"] < 20.0)
             | (dataframe["cti_20_4h"] < -0.5)
@@ -22482,7 +22482,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.88))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -22491,14 +22491,14 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.93))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 5.0)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.89))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -22507,7 +22507,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.93))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
@@ -22517,7 +22517,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.93))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -22526,7 +22526,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.91))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -22537,7 +22537,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.92))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -22546,7 +22546,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.8)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.92))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.0)
             | (dataframe["rsi_14_15m"] < 20.0)
             | (dataframe["cti_20_1h"] < -0.8)
@@ -22555,7 +22555,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["close_max_12"] < (dataframe["close"] * 1.12))
             | (dataframe["close"] < (dataframe["ema_26"] * 0.88))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.8)
@@ -22565,7 +22565,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.88))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -22575,7 +22575,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.8)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.91))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.0)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.0)
@@ -22584,7 +22584,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.93))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -22595,7 +22595,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.92))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -22605,7 +22605,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.93))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -22614,7 +22614,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.93))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.75)
@@ -22625,7 +22625,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.8)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.91))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -22636,7 +22636,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.8)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.88))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -22646,7 +22646,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["close_max_48"] < (dataframe["close"] * 1.26))
             | (dataframe["close"] < (dataframe["ema_26"] * 0.86))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.0)
             | (dataframe["rsi_3_15m"] > 10.0)
             | (dataframe["cti_20_1h"] < -0.0)
@@ -22656,7 +22656,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.91))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 10.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -22666,7 +22666,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.91))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.75)
@@ -22676,7 +22676,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.9))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -22685,7 +22685,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.0)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.91))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.5)
@@ -22693,7 +22693,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.91))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -22703,7 +22703,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.93))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 30.0)
             | (dataframe["rsi_3_1h"] > 25.0)
@@ -22712,7 +22712,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.88))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -22721,7 +22721,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.8)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.93))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_14_15m"] < 20.0)
             | (dataframe["cti_20_1h"] < -0.8)
@@ -22731,7 +22731,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.9))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_1h"] > 20.0)
@@ -22740,7 +22740,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["high_max_24_1h"] < (dataframe["close"] * 1.3))
             | (dataframe["close"] < (dataframe["ema_26"] * 0.88))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.9)
@@ -22751,7 +22751,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.92))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.0)
@@ -22761,12 +22761,12 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["close_max_12"] < (dataframe["close"] * 1.12))
             | (dataframe["close"] < (dataframe["ema_26"] * 0.92))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["top_wick_pct_1d"] < (abs(dataframe["change_pct_1d"]) * 8.0))
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["rsi_14_1d"] < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -22776,7 +22776,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.92))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
@@ -22787,7 +22787,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["close_max_24"] < (dataframe["close"] * 1.1))
             | (dataframe["close"] < (dataframe["ema_26"] * 0.88))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] < 0.1)
             | (dataframe["top_wick_pct_1d"] < 0.1)
             | (dataframe["not_downtrend_15m"])
@@ -22797,7 +22797,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -22807,10 +22807,10 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.91))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_3"] > 20.0) | (dataframe["rsi_3_15m"] > 20.0) | (dataframe["cti_20_1d"] < 0.8)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 30.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -22820,7 +22820,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.88))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -22831,7 +22831,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.88))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["top_wick_pct_1d"] < (abs(dataframe["change_pct_1d"]) * 4.0))
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_1h"] < -0.8)
@@ -22839,7 +22839,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.91))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.08)
             | (dataframe["top_wick_pct_1d"] < 0.08)
             | (dataframe["r_480_1h"] > -90.0)
@@ -22848,7 +22848,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_15m"] > 30.0)
@@ -22859,12 +22859,12 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["rsi_3_15m"] > 3.0)
             | (dataframe["high_max_12_1d"] < (dataframe["close"] * 1.5))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_15m"] > 10.0)
             | (dataframe["r_480_1h"] > -90.0)
@@ -22873,13 +22873,13 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.01)
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["rsi_14_1d"] < 70.0)
             | (dataframe["hl_pct_change_6_1d"] < 0.7)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.01)
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -22887,7 +22887,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_3_4h"] > 10.0)
             | (dataframe["cti_20_1d"] < -0.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_1h"] > 10.0)
@@ -22896,7 +22896,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_3"] > 5.0)
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["ema_200_dec_48_1h"] == False)
@@ -22904,7 +22904,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.93))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3"] > 5.0)
             | (dataframe["rsi_3_15m"] > 16.0)
@@ -22913,54 +22913,54 @@ class NostalgiaForInfinityX4(IStrategy):
           )
 
           # Logic
-          item_buy_logic.append(dataframe["close"] < (dataframe["ema_26"] * 0.94))
-          item_buy_logic.append(dataframe["close"] < (dataframe["bb20_2_low"] * 0.996))
+          long_entry_logic.append(dataframe["close"] < (dataframe["ema_26"] * 0.94))
+          long_entry_logic.append(dataframe["close"] < (dataframe["bb20_2_low"] * 0.996))
 
         # Condition #7 Normal mode.
         if index == 7:
           # Protections
-          item_buy_logic.append(dataframe["protections_long_global"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
-          item_buy_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.24))
-          item_buy_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.3))
-          item_buy_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.5))
-          item_buy_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.75))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < 0.4)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < 0.5)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < 0.75)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < 0.9)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(dataframe["protections_long_global"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
+          long_entry_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.24))
+          long_entry_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.3))
+          long_entry_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.5))
+          long_entry_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.75))
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < 0.4)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < 0.5)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < 0.75)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < 0.9)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["cti_20_1h"] < 0.8)
-          item_buy_logic.append(dataframe["rsi_14_1h"] < 80.0)
-          item_buy_logic.append(dataframe["cti_20_4h"] < 0.8)
-          item_buy_logic.append(dataframe["rsi_14_4h"] < 80.0)
-          item_buy_logic.append(dataframe["cti_20_1d"] < 0.8)
-          item_buy_logic.append(dataframe["rsi_14_1d"] < 80.0)
+          long_entry_logic.append(dataframe["cti_20_1h"] < 0.8)
+          long_entry_logic.append(dataframe["rsi_14_1h"] < 80.0)
+          long_entry_logic.append(dataframe["cti_20_4h"] < 0.8)
+          long_entry_logic.append(dataframe["rsi_14_4h"] < 80.0)
+          long_entry_logic.append(dataframe["cti_20_1d"] < 0.8)
+          long_entry_logic.append(dataframe["rsi_14_1d"] < 80.0)
 
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] < 0.04)
             | (dataframe["top_wick_pct_4h"] < 0.04)
             | (dataframe["ema_200_dec_48_1h"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] < 0.04)
             | (dataframe["top_wick_pct_4h"] < 0.04)
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -22968,14 +22968,14 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.0)
             | (dataframe["ema_200_dec_48_1h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["is_downtrend_3_1d"] == False)
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -22983,19 +22983,19 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] < 0.08)
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["cti_20_4h"] < -0.0)
             | (dataframe["rsi_14_4h"] < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] < 0.08)
             | (dataframe["cti_20_1h"] < -0.0)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["rsi_14_4h"] < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -23004,7 +23004,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] < 0.1)
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["rsi_14_1h"] < 40.0)
@@ -23013,7 +23013,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["rsi_14_1d"] < 50.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["cti_20_1h"] < -0.5)
             | (dataframe["rsi_14_1h"] < 40.0)
@@ -23022,7 +23022,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -23032,7 +23032,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_4h"] < 40.0)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -23041,7 +23041,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_4h"] < 40.0)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 10.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -23051,13 +23051,13 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_4h"] < 40.0)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.08)
             | (dataframe["change_pct_1d"].shift(288) < 0.08)
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["rsi_14_1d"].shift(288) < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -23067,7 +23067,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_4h"] < 40.0)
             | (dataframe["rsi_14_1d"] < 40.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.08)
             | (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -23076,7 +23076,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_1h"] < 40.0)
             | (dataframe["rsi_14_4h"] < 40.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -23089,7 +23089,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_1d"] < 40.0)
             | (dataframe["ema_200_dec_48_1h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -23101,7 +23101,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | (dataframe["rsi_14_1d"] < 40.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["rsi_3_15m"] > 10.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -23112,7 +23112,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["rsi_14_1d"] < 50.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["rsi_14_1h"] < 40.0)
@@ -23121,13 +23121,13 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["top_wick_pct_4h"] < (abs(dataframe["change_pct_4h"]) * 2.0))
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["r_480_4h"] > -90.0)
@@ -23135,27 +23135,27 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_3"] > 20.0)
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["cti_20_1h"] < -0.5)
             | (dataframe["cti_20_4h"] < -0.5)
             | (dataframe["rsi_14"] > dataframe["rsi_14"].shift(1).rolling(6).min())
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_3"] > 10.0)
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["ema_200_dec_24_15m"] == False)
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_3"] > 6.0)
             | (dataframe["rsi_14_15m"] < 46.0)
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_3"] > 10.0)
             | (dataframe["rsi_14_15m"] < 46.0)
             | (dataframe["cti_20_1h"] < -0.7)
@@ -23164,37 +23164,37 @@ class NostalgiaForInfinityX4(IStrategy):
           )
 
           # Logic
-          item_buy_logic.append(dataframe["close"] < (dataframe["ema_16"] * 0.974))
-          item_buy_logic.append(dataframe["ewo_50_200"] > 2.0)
-          item_buy_logic.append(dataframe["rsi_14"] < 30.0)
+          long_entry_logic.append(dataframe["close"] < (dataframe["ema_16"] * 0.974))
+          long_entry_logic.append(dataframe["ewo_50_200"] > 2.0)
+          long_entry_logic.append(dataframe["rsi_14"] < 30.0)
 
         # Condition #8 Normal mode.
         if index == 8:
           # Protections
-          item_buy_logic.append(dataframe["protections_long_global"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
-          item_buy_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.24))
-          item_buy_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.3))
-          item_buy_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.5))
-          item_buy_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.75))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < 0.4)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < 0.5)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < 0.75)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < 0.9)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(dataframe["protections_long_global"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
+          long_entry_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.24))
+          long_entry_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.3))
+          long_entry_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.5))
+          long_entry_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.75))
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < 0.4)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < 0.5)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < 0.75)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < 0.9)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["cti_20_1h"] < 0.8)
-          item_buy_logic.append(dataframe["rsi_14_1h"] < 80.0)
-          item_buy_logic.append(dataframe["cti_20_4h"] < 0.8)
-          item_buy_logic.append(dataframe["rsi_14_4h"] < 80.0)
-          item_buy_logic.append(dataframe["cti_20_1d"] < 0.8)
-          item_buy_logic.append(dataframe["rsi_14_1d"] < 80.0)
+          long_entry_logic.append(dataframe["cti_20_1h"] < 0.8)
+          long_entry_logic.append(dataframe["rsi_14_1h"] < 80.0)
+          long_entry_logic.append(dataframe["cti_20_4h"] < 0.8)
+          long_entry_logic.append(dataframe["rsi_14_4h"] < 80.0)
+          long_entry_logic.append(dataframe["cti_20_1d"] < 0.8)
+          long_entry_logic.append(dataframe["rsi_14_1d"] < 80.0)
 
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_1h"] > 10.0)
@@ -23205,7 +23205,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.5)
@@ -23216,14 +23216,14 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] < 0.04)
             | (dataframe["top_wick_pct_1d"] < 0.04)
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_1h"] > 20.0)
             | (dataframe["cti_20_4h"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_15m"] > 4.0)
@@ -23236,7 +23236,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -23246,7 +23246,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_1d"] < 50.0)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -23258,7 +23258,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -23269,7 +23269,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_1h"] > 25.0)
@@ -23280,7 +23280,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_1h"] > 10.0)
@@ -23288,7 +23288,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -23297,7 +23297,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["is_downtrend_3_4h"] == False)
             | (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
@@ -23306,47 +23306,47 @@ class NostalgiaForInfinityX4(IStrategy):
           )
 
           # Logic
-          item_buy_logic.append(dataframe["close"] < (dataframe["ema_16"] * 0.944))
-          item_buy_logic.append(dataframe["ewo_50_200"] < -4.0)
-          item_buy_logic.append(dataframe["rsi_14"] < 30.0)
+          long_entry_logic.append(dataframe["close"] < (dataframe["ema_16"] * 0.944))
+          long_entry_logic.append(dataframe["ewo_50_200"] < -4.0)
+          long_entry_logic.append(dataframe["rsi_14"] < 30.0)
 
         # Condition #9 - Normal mode.
         if index == 9:
           # Protections
-          item_buy_logic.append(dataframe["protections_long_global"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
-          item_buy_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.24))
-          item_buy_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.3))
-          item_buy_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.4))
-          item_buy_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.5))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < 0.4)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < 0.5)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < 0.75)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < 0.9)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(dataframe["protections_long_global"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
+          long_entry_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.24))
+          long_entry_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.3))
+          long_entry_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.4))
+          long_entry_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.5))
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < 0.4)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < 0.5)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < 0.75)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < 0.9)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["cti_20_1h"] < 0.8)
-          item_buy_logic.append(dataframe["rsi_14_1h"] < 80.0)
-          item_buy_logic.append(dataframe["cti_20_4h"] < 0.8)
-          item_buy_logic.append(dataframe["rsi_14_4h"] < 80.0)
-          item_buy_logic.append(dataframe["cti_20_1d"] < 0.8)
-          item_buy_logic.append(dataframe["rsi_14_1d"] < 80.0)
+          long_entry_logic.append(dataframe["cti_20_1h"] < 0.8)
+          long_entry_logic.append(dataframe["rsi_14_1h"] < 80.0)
+          long_entry_logic.append(dataframe["cti_20_4h"] < 0.8)
+          long_entry_logic.append(dataframe["rsi_14_4h"] < 80.0)
+          long_entry_logic.append(dataframe["cti_20_1d"] < 0.8)
+          long_entry_logic.append(dataframe["rsi_14_1d"] < 80.0)
 
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_4h"] < 0.5) | (dataframe["high_max_6_1h"] < (dataframe["close"] * 1.1))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_14_4h"] < 40.0) | (dataframe["high_max_6_1h"] < (dataframe["close"] * 1.1))
           )
-          item_buy_logic.append((dataframe["change_pct_4h"] > -0.06) | (dataframe["cti_20_4h"] < 0.5))
-          item_buy_logic.append((dataframe["change_pct_4h"] > -0.06) | (dataframe["rsi_14_4h"] < 40.0))
-          item_buy_logic.append((dataframe["is_downtrend_3_4h"] == False) | (dataframe["cti_20_4h"] < 0.5))
-          item_buy_logic.append((dataframe["is_downtrend_3_4h"] == False) | (dataframe["rsi_14_4h"] < 40.0))
-          item_buy_logic.append(
+          long_entry_logic.append((dataframe["change_pct_4h"] > -0.06) | (dataframe["cti_20_4h"] < 0.5))
+          long_entry_logic.append((dataframe["change_pct_4h"] > -0.06) | (dataframe["rsi_14_4h"] < 40.0))
+          long_entry_logic.append((dataframe["is_downtrend_3_4h"] == False) | (dataframe["cti_20_4h"] < 0.5))
+          long_entry_logic.append((dataframe["is_downtrend_3_4h"] == False) | (dataframe["rsi_14_4h"] < 40.0))
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -23356,7 +23356,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_15m"] > 30.0)
@@ -23366,7 +23366,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_15m"] > 30.0)
@@ -23376,7 +23376,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -23385,7 +23385,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_3_4h"] > 20.0)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -23395,7 +23395,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["is_downtrend_3_1d"] == False)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["cti_20_1h"] < -0.8)
@@ -23404,7 +23404,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_1d"] < 40.0)
             | (dataframe["ema_200_dec_48_1h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -23414,7 +23414,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | (dataframe["rsi_14_1d"] < 40.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -23425,7 +23425,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -23434,7 +23434,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["r_480_1h"] > -90.0)
@@ -23444,7 +23444,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_1h"] > 20.0)
             | (dataframe["r_480_1h"] > -90.0)
@@ -23453,7 +23453,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_15m"] > 5.0)
@@ -23462,7 +23462,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -23471,7 +23471,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -23480,7 +23480,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26_15m"] - dataframe["ema_12_15m"]) > (dataframe["open_15m"] * 0.030))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_15m"] > 30.0)
@@ -23490,7 +23490,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26_15m"] - dataframe["ema_12_15m"]) > (dataframe["open_15m"] * 0.030))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.01)
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -23498,332 +23498,340 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_3_4h"] > 10.0)
             | (dataframe["cti_20_1d"] < -0.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_1h"] > 20.0)
             | (dataframe["high_max_6_1d"] < (dataframe["close"] * 1.5))
             | ((dataframe["ema_26_15m"] - dataframe["ema_12_15m"]) > (dataframe["open_15m"] * 0.040))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["is_downtrend_3_1d"] == False)
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_1d"] < 0.5)
           )
 
           # Logic
-          item_buy_logic.append(dataframe["ema_26_15m"] > dataframe["ema_12_15m"])
-          item_buy_logic.append((dataframe["ema_26_15m"] - dataframe["ema_12_15m"]) > (dataframe["open_15m"] * 0.020))
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["ema_26_15m"] > dataframe["ema_12_15m"])
+          long_entry_logic.append(
+            (dataframe["ema_26_15m"] - dataframe["ema_12_15m"]) > (dataframe["open_15m"] * 0.020)
+          )
+          long_entry_logic.append(
             (dataframe["ema_26_15m"].shift(3) - dataframe["ema_12_15m"].shift(3)) > (dataframe["open_15m"] / 100.0)
           )
-          item_buy_logic.append(dataframe["close_15m"] < (dataframe["bb20_2_low_15m"] * 0.99))
+          long_entry_logic.append(dataframe["close_15m"] < (dataframe["bb20_2_low_15m"] * 0.99))
 
         # Condition #10 - Normal mode (Long)
         if index == 10:
           # Protections
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_10_close_max_12.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_10_close_max_24.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_10_close_max_48.value))
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_10_close_max_12.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_10_close_max_24.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_10_close_max_48.value))
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_1h"] * self.entry_10_high_max_24_1h.value)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_4h"] * self.entry_10_high_max_24_4h.value)
           )
-          item_buy_logic.append(dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_10_high_max_6_1d.value))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_10_hl_pct_change_6_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_10_hl_pct_change_12_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_10_hl_pct_change_24_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_10_hl_pct_change_48_1h.value)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(
+            dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_10_high_max_6_1d.value)
+          )
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_10_hl_pct_change_6_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_10_hl_pct_change_12_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_10_hl_pct_change_24_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_10_hl_pct_change_48_1h.value)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["rsi_3"] >= self.entry_10_rsi_3_min.value)
-          item_buy_logic.append(dataframe["rsi_3"] <= self.entry_10_rsi_3_max.value)
-          item_buy_logic.append(dataframe["rsi_3_15m"] >= self.entry_10_rsi_3_15m_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1h"] >= self.entry_10_rsi_3_1h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_4h"] >= self.entry_10_rsi_3_4h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1d"] >= self.entry_10_rsi_3_1d_min.value)
-          item_buy_logic.append(dataframe["cti_20_1h"] <= self.entry_10_cti_20_1h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1h"] <= self.entry_10_rsi_14_1h_max.value)
-          item_buy_logic.append(dataframe["cti_20_4h"] <= self.entry_10_cti_20_4h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_4h"] <= self.entry_10_rsi_14_4h_max.value)
-          item_buy_logic.append(dataframe["cti_20_1d"] <= self.entry_10_cti_20_1d_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1d"] <= self.entry_10_rsi_14_1d_max.value)
-          item_buy_logic.append(dataframe["r_14_1h"] <= self.entry_10_r_14_1h_max.value)
-          item_buy_logic.append(dataframe["r_14_4h"] <= self.entry_10_r_14_1h_max.value)
-          item_buy_logic.append(dataframe["r_480_1h"] <= self.entry_10_r_480_1h_max.value)
-          item_buy_logic.append(dataframe["r_480_4h"] <= self.entry_10_r_480_1h_max.value)
+          long_entry_logic.append(dataframe["rsi_3"] >= self.entry_10_rsi_3_min.value)
+          long_entry_logic.append(dataframe["rsi_3"] <= self.entry_10_rsi_3_max.value)
+          long_entry_logic.append(dataframe["rsi_3_15m"] >= self.entry_10_rsi_3_15m_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1h"] >= self.entry_10_rsi_3_1h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_4h"] >= self.entry_10_rsi_3_4h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1d"] >= self.entry_10_rsi_3_1d_min.value)
+          long_entry_logic.append(dataframe["cti_20_1h"] <= self.entry_10_cti_20_1h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1h"] <= self.entry_10_rsi_14_1h_max.value)
+          long_entry_logic.append(dataframe["cti_20_4h"] <= self.entry_10_cti_20_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_4h"] <= self.entry_10_rsi_14_4h_max.value)
+          long_entry_logic.append(dataframe["cti_20_1d"] <= self.entry_10_cti_20_1d_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1d"] <= self.entry_10_rsi_14_1d_max.value)
+          long_entry_logic.append(dataframe["r_14_1h"] <= self.entry_10_r_14_1h_max.value)
+          long_entry_logic.append(dataframe["r_14_4h"] <= self.entry_10_r_14_1h_max.value)
+          long_entry_logic.append(dataframe["r_480_1h"] <= self.entry_10_r_480_1h_max.value)
+          long_entry_logic.append(dataframe["r_480_4h"] <= self.entry_10_r_480_1h_max.value)
 
           if self.entry_10_sup_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
           if self.entry_10_res_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_10_sup_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
           if self.entry_10_res_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_4h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_4h"])
           if self.entry_10_sup_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
           if self.entry_10_res_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_10_ema_200_not_dec_1h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_48_1h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_48_1h"] == False)
           if self.entry_10_ema_200_not_dec_4h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_10_4h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_10_4h"] == False)
           if self.entry_10_ema_200_not_dec_1d_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_4_1d"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_4_1d"] == False)
           if self.entry_10_not_downtrend_15m_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_15m"])
+            long_entry_logic.append(dataframe["not_downtrend_15m"])
           if self.entry_10_not_downtrend_1h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1h"])
+            long_entry_logic.append(dataframe["not_downtrend_1h"])
           if self.entry_10_not_downtrend_4h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_4h"])
+            long_entry_logic.append(dataframe["not_downtrend_4h"])
           if self.entry_10_not_downtrend_1d_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1d"])
+            long_entry_logic.append(dataframe["not_downtrend_1d"])
 
           # Logic
-          item_buy_logic.append(dataframe["rsi_14"] < self.entry_10_rsi_14_max.value)
-          item_buy_logic.append(dataframe["ema_26"] > dataframe["ema_12"])
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["rsi_14"] < self.entry_10_rsi_14_max.value)
+          long_entry_logic.append(dataframe["ema_26"] > dataframe["ema_12"])
+          long_entry_logic.append(
             (dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * self.entry_10_ema_open_offset.value)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["ema_26"].shift() - dataframe["ema_12"].shift()) > (dataframe["open"] / 100.0)
           )
-          item_buy_logic.append(dataframe["close"] < (dataframe["ema_20"] * self.entry_10_ema_offset.value))
+          long_entry_logic.append(dataframe["close"] < (dataframe["ema_20"] * self.entry_10_ema_offset.value))
 
         # Condition #11 - Normal mode (Long)
         if index == 11:
           # Protections
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_11_close_max_12.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_11_close_max_24.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_11_close_max_48.value))
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_11_close_max_12.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_11_close_max_24.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_11_close_max_48.value))
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_1h"] * self.entry_11_high_max_24_1h.value)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_4h"] * self.entry_11_high_max_24_4h.value)
           )
-          item_buy_logic.append(dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_11_high_max_6_1d.value))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_11_hl_pct_change_6_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_11_hl_pct_change_12_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_11_hl_pct_change_24_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_11_hl_pct_change_48_1h.value)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(
+            dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_11_high_max_6_1d.value)
+          )
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_11_hl_pct_change_6_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_11_hl_pct_change_12_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_11_hl_pct_change_24_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_11_hl_pct_change_48_1h.value)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["rsi_3"] >= self.entry_11_rsi_3_min.value)
-          item_buy_logic.append(dataframe["rsi_3"] <= self.entry_11_rsi_3_max.value)
-          item_buy_logic.append(dataframe["rsi_3_15m"] >= self.entry_11_rsi_3_15m_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1h"] >= self.entry_11_rsi_3_1h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_4h"] >= self.entry_11_rsi_3_4h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1d"] >= self.entry_11_rsi_3_1d_min.value)
-          item_buy_logic.append(dataframe["cti_20_1h"] <= self.entry_11_cti_20_1h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1h"] <= self.entry_11_rsi_14_1h_max.value)
-          item_buy_logic.append(dataframe["cti_20_4h"] <= self.entry_11_cti_20_4h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_4h"] <= self.entry_11_rsi_14_4h_max.value)
-          item_buy_logic.append(dataframe["cti_20_1d"] <= self.entry_11_cti_20_1d_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1d"] <= self.entry_11_rsi_14_1d_max.value)
-          item_buy_logic.append(dataframe["r_14_1h"] <= self.entry_11_r_14_1h_max.value)
-          item_buy_logic.append(dataframe["r_14_4h"] <= self.entry_11_r_14_1h_max.value)
-          item_buy_logic.append(dataframe["r_480_1h"] <= self.entry_11_r_480_1h_max.value)
-          item_buy_logic.append(dataframe["r_480_4h"] <= self.entry_11_r_480_1h_max.value)
+          long_entry_logic.append(dataframe["rsi_3"] >= self.entry_11_rsi_3_min.value)
+          long_entry_logic.append(dataframe["rsi_3"] <= self.entry_11_rsi_3_max.value)
+          long_entry_logic.append(dataframe["rsi_3_15m"] >= self.entry_11_rsi_3_15m_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1h"] >= self.entry_11_rsi_3_1h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_4h"] >= self.entry_11_rsi_3_4h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1d"] >= self.entry_11_rsi_3_1d_min.value)
+          long_entry_logic.append(dataframe["cti_20_1h"] <= self.entry_11_cti_20_1h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1h"] <= self.entry_11_rsi_14_1h_max.value)
+          long_entry_logic.append(dataframe["cti_20_4h"] <= self.entry_11_cti_20_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_4h"] <= self.entry_11_rsi_14_4h_max.value)
+          long_entry_logic.append(dataframe["cti_20_1d"] <= self.entry_11_cti_20_1d_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1d"] <= self.entry_11_rsi_14_1d_max.value)
+          long_entry_logic.append(dataframe["r_14_1h"] <= self.entry_11_r_14_1h_max.value)
+          long_entry_logic.append(dataframe["r_14_4h"] <= self.entry_11_r_14_1h_max.value)
+          long_entry_logic.append(dataframe["r_480_1h"] <= self.entry_11_r_480_1h_max.value)
+          long_entry_logic.append(dataframe["r_480_4h"] <= self.entry_11_r_480_1h_max.value)
 
           if self.entry_11_sup_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
           if self.entry_11_res_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_11_sup_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
           if self.entry_11_res_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_4h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_4h"])
           if self.entry_11_sup_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
           if self.entry_11_res_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_11_ema_200_not_dec_1h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_48_1h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_48_1h"] == False)
           if self.entry_11_ema_200_not_dec_4h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_24_4h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_24_4h"] == False)
           if self.entry_11_ema_200_not_dec_1d_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_4_1d"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_4_1d"] == False)
           if self.entry_11_not_downtrend_15m_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_15m"])
+            long_entry_logic.append(dataframe["not_downtrend_15m"])
           if self.entry_11_not_downtrend_1h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1h"])
+            long_entry_logic.append(dataframe["not_downtrend_1h"])
           if self.entry_11_not_downtrend_4h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_4h"])
+            long_entry_logic.append(dataframe["not_downtrend_4h"])
           if self.entry_11_not_downtrend_1d_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1d"])
+            long_entry_logic.append(dataframe["not_downtrend_1d"])
           if self.entry_11_ema_100_over_ema_200_enabled.value:
-            item_buy_logic.append(dataframe["ema_100"] > dataframe["ema_200"])
+            long_entry_logic.append(dataframe["ema_100"] > dataframe["ema_200"])
           if self.entry_11_ema_12_1h_over_ema_200_1h_enabled.value:
-            item_buy_logic.append(dataframe["ema_12_1h"] > dataframe["ema_200_1h"])
+            long_entry_logic.append(dataframe["ema_12_1h"] > dataframe["ema_200_1h"])
 
           # Logic
-          item_buy_logic.append(dataframe["rsi_14"] < self.entry_11_rsi_14_max.value)
-          item_buy_logic.append(dataframe["cti_20"] < self.entry_11_cti_20_max.value)
-          item_buy_logic.append(dataframe["ema_26"] > dataframe["ema_12"])
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["rsi_14"] < self.entry_11_rsi_14_max.value)
+          long_entry_logic.append(dataframe["cti_20"] < self.entry_11_cti_20_max.value)
+          long_entry_logic.append(dataframe["ema_26"] > dataframe["ema_12"])
+          long_entry_logic.append(
             (dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * self.entry_11_ema_open_offset.value)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["ema_26"].shift() - dataframe["ema_12"].shift()) > (dataframe["open"] / 100.0)
           )
-          item_buy_logic.append(dataframe["close"] < (dataframe["sma_30"] * self.entry_11_sma_offset.value))
+          long_entry_logic.append(dataframe["close"] < (dataframe["sma_30"] * self.entry_11_sma_offset.value))
 
         # Condition #12 - Normal mode (Long)
         if index == 12:
           # Protections
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_12_close_max_12.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_12_close_max_24.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_12_close_max_48.value))
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_12_close_max_12.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_12_close_max_24.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_12_close_max_48.value))
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_1h"] * self.entry_12_high_max_24_1h.value)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_4h"] * self.entry_12_high_max_24_4h.value)
           )
-          item_buy_logic.append(dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_12_high_max_6_1d.value))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_12_hl_pct_change_6_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_12_hl_pct_change_12_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_12_hl_pct_change_24_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_12_hl_pct_change_48_1h.value)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(
+            dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_12_high_max_6_1d.value)
+          )
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_12_hl_pct_change_6_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_12_hl_pct_change_12_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_12_hl_pct_change_24_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_12_hl_pct_change_48_1h.value)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["rsi_3"] >= self.entry_12_rsi_3_min.value)
-          item_buy_logic.append(dataframe["rsi_3"] <= self.entry_12_rsi_3_max.value)
-          item_buy_logic.append(dataframe["rsi_3_15m"] >= self.entry_12_rsi_3_15m_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1h"] >= self.entry_12_rsi_3_1h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_4h"] >= self.entry_12_rsi_3_4h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1d"] >= self.entry_12_rsi_3_1d_min.value)
-          item_buy_logic.append(dataframe["cti_20_1h"] <= self.entry_12_cti_20_1h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1h"] <= self.entry_12_rsi_14_1h_max.value)
-          item_buy_logic.append(dataframe["cti_20_4h"] <= self.entry_12_cti_20_4h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_4h"] <= self.entry_12_rsi_14_4h_max.value)
-          item_buy_logic.append(dataframe["cti_20_1d"] <= self.entry_12_cti_20_1d_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1d"] <= self.entry_12_rsi_14_1d_max.value)
-          item_buy_logic.append(dataframe["r_14_1h"] >= self.entry_12_r_14_1h_min.value)
-          item_buy_logic.append(dataframe["r_14_1h"] <= self.entry_12_r_14_1h_max.value)
-          item_buy_logic.append(dataframe["r_14_4h"] >= self.entry_12_r_14_4h_min.value)
-          item_buy_logic.append(dataframe["r_14_4h"] <= self.entry_12_r_14_4h_max.value)
-          item_buy_logic.append(dataframe["r_480_1h"] >= self.entry_12_r_480_1h_min.value)
-          item_buy_logic.append(dataframe["r_480_1h"] <= self.entry_12_r_480_1h_max.value)
-          item_buy_logic.append(dataframe["r_480_4h"] >= self.entry_12_r_480_4h_min.value)
-          item_buy_logic.append(dataframe["r_480_4h"] <= self.entry_12_r_480_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_3"] >= self.entry_12_rsi_3_min.value)
+          long_entry_logic.append(dataframe["rsi_3"] <= self.entry_12_rsi_3_max.value)
+          long_entry_logic.append(dataframe["rsi_3_15m"] >= self.entry_12_rsi_3_15m_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1h"] >= self.entry_12_rsi_3_1h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_4h"] >= self.entry_12_rsi_3_4h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1d"] >= self.entry_12_rsi_3_1d_min.value)
+          long_entry_logic.append(dataframe["cti_20_1h"] <= self.entry_12_cti_20_1h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1h"] <= self.entry_12_rsi_14_1h_max.value)
+          long_entry_logic.append(dataframe["cti_20_4h"] <= self.entry_12_cti_20_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_4h"] <= self.entry_12_rsi_14_4h_max.value)
+          long_entry_logic.append(dataframe["cti_20_1d"] <= self.entry_12_cti_20_1d_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1d"] <= self.entry_12_rsi_14_1d_max.value)
+          long_entry_logic.append(dataframe["r_14_1h"] >= self.entry_12_r_14_1h_min.value)
+          long_entry_logic.append(dataframe["r_14_1h"] <= self.entry_12_r_14_1h_max.value)
+          long_entry_logic.append(dataframe["r_14_4h"] >= self.entry_12_r_14_4h_min.value)
+          long_entry_logic.append(dataframe["r_14_4h"] <= self.entry_12_r_14_4h_max.value)
+          long_entry_logic.append(dataframe["r_480_1h"] >= self.entry_12_r_480_1h_min.value)
+          long_entry_logic.append(dataframe["r_480_1h"] <= self.entry_12_r_480_1h_max.value)
+          long_entry_logic.append(dataframe["r_480_4h"] >= self.entry_12_r_480_4h_min.value)
+          long_entry_logic.append(dataframe["r_480_4h"] <= self.entry_12_r_480_4h_max.value)
 
           if self.entry_12_sup_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
           if self.entry_12_res_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_12_sup_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
           if self.entry_12_res_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_4h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_4h"])
           if self.entry_12_sup_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
           if self.entry_12_res_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_12_ema_200_not_dec_1h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_48_1h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_48_1h"] == False)
           if self.entry_12_ema_200_not_dec_4h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_24_4h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_24_4h"] == False)
           if self.entry_12_ema_200_not_dec_1d_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_4_1d"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_4_1d"] == False)
           if self.entry_12_not_downtrend_15m_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_15m"])
+            long_entry_logic.append(dataframe["not_downtrend_15m"])
           if self.entry_12_not_downtrend_1h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1h"])
+            long_entry_logic.append(dataframe["not_downtrend_1h"])
           if self.entry_12_not_downtrend_4h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_4h"])
+            long_entry_logic.append(dataframe["not_downtrend_4h"])
           if self.entry_12_not_downtrend_1d_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1d"])
+            long_entry_logic.append(dataframe["not_downtrend_1d"])
           # if self.entry_12_ema_50_over_ema_200_enabled.value:
-          #   item_buy_logic.append(dataframe["ema_50"] > dataframe["ema_200"])
+          #   long_entry_logic.append(dataframe["ema_50"] > dataframe["ema_200"])
           if self.entry_12_ema_50_1h_over_ema_200_1h_enabled.value:
-            item_buy_logic.append(dataframe["ema_50_1h"] > dataframe["ema_200_1h"])
+            long_entry_logic.append(dataframe["ema_50_1h"] > dataframe["ema_200_1h"])
 
           # Logic
-          # item_buy_logic.append(dataframe["rsi_14"] > self.entry_12_rsi_14_min.value)
-          # item_buy_logic.append(dataframe["rsi_14"] < self.entry_12_rsi_14_max.value)
-          # item_buy_logic.append(dataframe["cti_20"] < self.entry_12_cti_20_max.value)
-          item_buy_logic.append(dataframe["r_14"] < self.entry_12_r_14_max.value)
-          item_buy_logic.append(dataframe["close"] < (dataframe["bb20_2_low"] * self.entry_12_bb_offset.value))
-          item_buy_logic.append(dataframe["close"] < (dataframe["sma_30"] * self.entry_12_sma_offset.value))
+          # long_entry_logic.append(dataframe["rsi_14"] > self.entry_12_rsi_14_min.value)
+          # long_entry_logic.append(dataframe["rsi_14"] < self.entry_12_rsi_14_max.value)
+          # long_entry_logic.append(dataframe["cti_20"] < self.entry_12_cti_20_max.value)
+          long_entry_logic.append(dataframe["r_14"] < self.entry_12_r_14_max.value)
+          long_entry_logic.append(dataframe["close"] < (dataframe["bb20_2_low"] * self.entry_12_bb_offset.value))
+          long_entry_logic.append(dataframe["close"] < (dataframe["sma_30"] * self.entry_12_sma_offset.value))
 
         # Condition #13 - Normal mode (Long)
         if index == 13:
           # Protections
-          # item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          # item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.06)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.06)
-          # item_buy_logic.append(dataframe["tpct_change_0"] > 0.032)
-          # item_buy_logic.append(dataframe["tpct_change_2"] > 0.06)
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_12"] * 0.84))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_24"] * 0.80))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_48"] * 0.75))
-          item_buy_logic.append(dataframe["close"] > (dataframe["high_max_24_1h"] * 0.60))
-          # item_buy_logic.append(dataframe["close"] > (dataframe["high_max_24_4h"] * 0.50))
-          # item_buy_logic.append(dataframe["close"] > (dataframe["high_max_6_1d"] * 0.50))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < 0.50)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < 0.60)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < 0.70)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < 0.80)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          # long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          # long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.06)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.06)
+          # long_entry_logic.append(dataframe["tpct_change_0"] > 0.032)
+          # long_entry_logic.append(dataframe["tpct_change_2"] > 0.06)
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_12"] * 0.84))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_24"] * 0.80))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_48"] * 0.75))
+          long_entry_logic.append(dataframe["close"] > (dataframe["high_max_24_1h"] * 0.60))
+          # long_entry_logic.append(dataframe["close"] > (dataframe["high_max_24_4h"] * 0.50))
+          # long_entry_logic.append(dataframe["close"] > (dataframe["high_max_6_1d"] * 0.50))
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < 0.50)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < 0.60)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < 0.70)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < 0.80)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["rsi_3"] >= 6.0)
-          item_buy_logic.append(dataframe["rsi_3"] <= 50.0)
-          item_buy_logic.append(dataframe["rsi_3_15m"] >= 6.0)
-          item_buy_logic.append(dataframe["rsi_3_1h"] >= 6.0)
-          item_buy_logic.append(dataframe["rsi_3_4h"] >= 8.0)
-          item_buy_logic.append(dataframe["rsi_3_1d"] >= 8.0)
-          item_buy_logic.append(dataframe["cti_20_1h"] <= 0.90)
-          item_buy_logic.append(dataframe["rsi_14_1h"] <= 80.0)
-          item_buy_logic.append(dataframe["cti_20_4h"] <= 0.90)
-          item_buy_logic.append(dataframe["rsi_14_4h"] <= 80.0)
-          item_buy_logic.append(dataframe["cti_20_1d"] <= 0.90)
-          item_buy_logic.append(dataframe["rsi_14_1d"] <= 80.0)
-          # item_buy_logic.append(dataframe["r_14_1h"] >= -100.0)
-          # item_buy_logic.append(dataframe["r_14_1h"] <= -0.0)
-          # item_buy_logic.append(dataframe["r_14_4h"] >= -100.0)
-          # item_buy_logic.append(dataframe["r_14_4h"] <= -0.0)
-          # item_buy_logic.append(dataframe["r_480_1h"] >= -100.0)
-          # item_buy_logic.append(dataframe["r_480_1h"] <= -0.0)
-          # item_buy_logic.append(dataframe["r_480_4h"] >= -100.0)
-          # item_buy_logic.append(dataframe["r_480_4h"] <= -0.0)
+          long_entry_logic.append(dataframe["rsi_3"] >= 6.0)
+          long_entry_logic.append(dataframe["rsi_3"] <= 50.0)
+          long_entry_logic.append(dataframe["rsi_3_15m"] >= 6.0)
+          long_entry_logic.append(dataframe["rsi_3_1h"] >= 6.0)
+          long_entry_logic.append(dataframe["rsi_3_4h"] >= 8.0)
+          long_entry_logic.append(dataframe["rsi_3_1d"] >= 8.0)
+          long_entry_logic.append(dataframe["cti_20_1h"] <= 0.90)
+          long_entry_logic.append(dataframe["rsi_14_1h"] <= 80.0)
+          long_entry_logic.append(dataframe["cti_20_4h"] <= 0.90)
+          long_entry_logic.append(dataframe["rsi_14_4h"] <= 80.0)
+          long_entry_logic.append(dataframe["cti_20_1d"] <= 0.90)
+          long_entry_logic.append(dataframe["rsi_14_1d"] <= 80.0)
+          # long_entry_logic.append(dataframe["r_14_1h"] >= -100.0)
+          # long_entry_logic.append(dataframe["r_14_1h"] <= -0.0)
+          # long_entry_logic.append(dataframe["r_14_4h"] >= -100.0)
+          # long_entry_logic.append(dataframe["r_14_4h"] <= -0.0)
+          # long_entry_logic.append(dataframe["r_480_1h"] >= -100.0)
+          # long_entry_logic.append(dataframe["r_480_1h"] <= -0.0)
+          # long_entry_logic.append(dataframe["r_480_4h"] >= -100.0)
+          # long_entry_logic.append(dataframe["r_480_4h"] <= -0.0)
 
-          item_buy_logic.append(dataframe["close"] > (dataframe["sup_level_1h"] * 0.8))
-          item_buy_logic.append(dataframe["close"] < (dataframe["res3_1d"] * 1.6))
+          long_entry_logic.append(dataframe["close"] > (dataframe["sup_level_1h"] * 0.8))
+          long_entry_logic.append(dataframe["close"] < (dataframe["res3_1d"] * 1.6))
           item_buy_protection_list.append(dataframe["sma_200_1h"] > dataframe["sma_200_1h"].shift(48))
 
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["r_480_4h"] > -75.0)
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"]) | (dataframe["rsi_14_4h"] < 70.0) | (dataframe["r_480_4h"] < -30.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["rsi_3"] > 16.0)
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_3_1h"] > 20.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3"] > 16.0)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -23831,38 +23839,38 @@ class NostalgiaForInfinityX4(IStrategy):
           )
 
           # Logic
-          item_buy_logic.append(dataframe["ema_26"] > dataframe["ema_12"])
-          item_buy_logic.append((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.0145))
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["ema_26"] > dataframe["ema_12"])
+          long_entry_logic.append((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.0145))
+          long_entry_logic.append(
             (dataframe["ema_26"].shift() - dataframe["ema_12"].shift()) > (dataframe["open"] / 100)
           )
-          item_buy_logic.append(dataframe["close"] < (dataframe["bb20_2_low"] * 0.994))
+          long_entry_logic.append(dataframe["close"] < (dataframe["bb20_2_low"] * 0.994))
 
         # Condition #21 - Pump mode bull.
         if index == 21:
           # Protections
-          item_buy_logic.append(dataframe["protections_long_global"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.16))
-          item_buy_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.24))
-          item_buy_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.3))
-          item_buy_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.5))
-          item_buy_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.75))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < 0.4)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < 0.5)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < 0.75)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < 0.9)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(dataframe["protections_long_global"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.16))
+          long_entry_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.24))
+          long_entry_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.3))
+          long_entry_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.5))
+          long_entry_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.75))
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < 0.4)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < 0.5)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < 0.75)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < 0.9)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["rsi_3_15m"] > 1.0)
+          long_entry_logic.append(dataframe["rsi_3_15m"] > 1.0)
 
-          item_buy_logic.append(dataframe["ema_200_dec_48_1h"] == False)
-          item_buy_logic.append(dataframe["ema_200_dec_24_4h"] == False)
+          long_entry_logic.append(dataframe["ema_200_dec_48_1h"] == False)
+          long_entry_logic.append(dataframe["ema_200_dec_24_4h"] == False)
 
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -23871,7 +23879,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["cti_20_1h"] < -0.8)
@@ -23880,7 +23888,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_1h"] > 25.0)
@@ -23888,7 +23896,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -23898,7 +23906,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -23907,7 +23915,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.75)
@@ -23917,7 +23925,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.8)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_1h"] < -0.8)
             | (dataframe["rsi_3_1h"] > 10.0)
@@ -23925,7 +23933,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_1h"] < -0.5)
             | (dataframe["rsi_3_1h"] > 10.0)
@@ -23934,7 +23942,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -23945,7 +23953,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -23956,7 +23964,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_1h"] < -0.5)
@@ -23966,7 +23974,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_1h"] < -0.5)
@@ -23975,7 +23983,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -23986,7 +23994,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["cti_20_1h"] < -0.8)
@@ -23996,7 +24004,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.0)
@@ -24005,7 +24013,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -24014,7 +24022,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["cti_20_1h"] < -0.0)
@@ -24024,7 +24032,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["cti_20_1h"] < -0.0)
@@ -24034,7 +24042,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -24045,7 +24053,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 30.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -24055,7 +24063,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -24066,7 +24074,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -24076,7 +24084,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["cti_20_1h"] < -0.0)
@@ -24085,7 +24093,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.8)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_14_15m"] < 20.0)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -24093,7 +24101,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["cti_20_4h"] < -0.8)
@@ -24101,7 +24109,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -24109,7 +24117,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -24118,14 +24126,14 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.06))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_14_15m"] < 20.0)
             | (dataframe["cti_20_1h"] < -0.8)
             | (dataframe["cti_20_4h"] < 0.5)
@@ -24134,7 +24142,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 10.0)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -24142,7 +24150,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 30.0)
             | (dataframe["rsi_3_1h"] > 30.0)
@@ -24152,7 +24160,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -24162,7 +24170,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -24173,7 +24181,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_1d"] < 70.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -24183,7 +24191,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_1d"] < 70.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_1h"] < -0.8)
             | (dataframe["rsi_3_1h"] > 25.0)
@@ -24192,7 +24200,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_1d"] < 70.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -24203,7 +24211,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_1d"] < 70.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -24213,7 +24221,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.75)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -24223,7 +24231,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_1d"] < 70.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -24233,7 +24241,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_1d"] < 70.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -24243,7 +24251,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.75)
@@ -24251,21 +24259,21 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.06))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["cti_20_1h"] < 0.75)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["cti_20_1d"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["cti_20_4h"] < 0.75)
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["rsi_14_1d"] < 70.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -24273,7 +24281,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -24282,7 +24290,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.75)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -24291,21 +24299,21 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_1h"] > 20.0)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["cti_20_1d"] < 0.75)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["cti_20_1h"] < -0.5)
             | (dataframe["cti_20_4h"] < 0.75)
             | (dataframe["cti_20_1d"] < -0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -24313,7 +24321,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -24322,7 +24330,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -24330,7 +24338,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.8)
@@ -24340,7 +24348,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -24349,7 +24357,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -24358,7 +24366,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["rsi_3_15m"] > 10.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -24367,7 +24375,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.0)
@@ -24376,7 +24384,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
           # CHZ
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -24385,14 +24393,14 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.8)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_1h"] > 10.0)
             | (dataframe["cti_20_4h"] < -0.0)
             | (dataframe["cti_20_1d"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_3_1h"] > 25.0)
@@ -24400,7 +24408,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -24408,7 +24416,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -24416,7 +24424,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -24425,7 +24433,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.8)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 30.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -24434,7 +24442,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -24443,7 +24451,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_1h"] < -0.8)
@@ -24452,7 +24460,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_14_15m"] < 20.0)
             | (dataframe["cti_20_4h"] < 0.5)
@@ -24460,7 +24468,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["rsi_3_1h"] > 30.0)
@@ -24468,7 +24476,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -24477,7 +24485,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -24485,7 +24493,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < 0.75)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -24493,7 +24501,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.75)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -24502,7 +24510,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.75)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -24512,7 +24520,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.9)
@@ -24520,7 +24528,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.75)
@@ -24528,14 +24536,14 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.75)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.5)
             | (dataframe["cti_20_4h"] < 0.8)
             | (dataframe["cti_20_1d"] < -0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 30.0)
@@ -24545,7 +24553,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_3_15m"] > 30.0)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.75)
@@ -24553,7 +24561,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -24562,7 +24570,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -24571,7 +24579,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -24580,7 +24588,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -24589,7 +24597,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -24598,7 +24606,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -24606,7 +24614,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.75)
@@ -24614,7 +24622,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.8)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] < 0.08)
             | (dataframe["top_wick_pct_4h"] < 0.08)
             | (dataframe["cti_20_15m"] < -0.8)
@@ -24623,7 +24631,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -24633,7 +24641,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.75)
@@ -24641,7 +24649,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -24651,7 +24659,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_1h"] < -0.5)
             | (dataframe["rsi_3_1h"] > 25.0)
@@ -24659,7 +24667,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 30.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -24668,7 +24676,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -24676,7 +24684,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -24686,7 +24694,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.8)
@@ -24694,7 +24702,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -24705,7 +24713,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.8)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 10.0)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -24713,21 +24721,21 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_14_15m"] > 30.0)
             | (dataframe["cti_20_1h"] < -0.9)
             | (dataframe["cti_20_4h"] < 0.8)
             | (dataframe["cti_20_1d"] < -0.75)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_14_15m"] < 10.0)
             | (dataframe["rsi_14_1h"] < 10.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -24736,7 +24744,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_1h"] > 10.0)
@@ -24745,7 +24753,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.07))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 30.0)
@@ -24754,7 +24762,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["cti_20_1h"] < -0.8)
             | (dataframe["cti_20_4h"] < 0.75)
@@ -24762,7 +24770,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -24772,7 +24780,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.06)
             | (dataframe["change_pct_1d"].shift(288) > -0.06)
             | (dataframe["not_downtrend_1h"])
@@ -24781,7 +24789,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 10.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -24790,7 +24798,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.75)
             | (dataframe["close"] < (dataframe["ema_200_4h"] * 1.1))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -24801,12 +24809,12 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["hl_pct_change_24_1h"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["top_wick_pct_1d"] < (abs(dataframe["change_pct_1d"]) * 8.0))
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["rsi_14_1d"] < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -24816,22 +24824,22 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_1d"] < 70.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"].shift(288) < 0.02)
             | (dataframe["change_pct_1d"] > -0.06)
             | (dataframe["cti_20_1d"] < 0.85)
             | (dataframe["rsi_14_1d"].shift(288) < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_3"] > 20.0) | (dataframe["rsi_3_15m"] > 20.0) | (dataframe["cti_20_1d"] < 0.8)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["is_downtrend_3_1d"] == False)
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["high_max_6_1d"] < (dataframe["close"] * 1.8))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_1h"] < -0.5)
             | (dataframe["cti_20_4h"] < -0.0)
@@ -24839,7 +24847,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_1d"] < 65.0)
             | (dataframe["high_max_6_1h"] < (dataframe["close"] * 1.3))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["is_downtrend_3_1h"] == False)
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["cti_20_4h"] < -0.0)
@@ -24847,13 +24855,13 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_1d"] < 65.0)
             | (dataframe["high_max_6_1h"] < (dataframe["close"] * 1.25))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] > -0.02)
             | (dataframe["cti_20_4h"] < 0.85)
             | (dataframe["cti_20_4h"].shift(48) < 0.85)
             | (dataframe["rsi_14_4h"].shift(48) < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.0)
             | (dataframe["rsi_14_1h"] < 40.0)
@@ -24862,7 +24870,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_4h"] < 70.0)
             | (dataframe["rsi_14_1d"] < 50.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_3_1h"] > 20.0)
@@ -24873,7 +24881,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_1d"] < 30.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -24882,7 +24890,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_4h"] < 40.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_14_15m"] < 20.0)
             | (dataframe["rsi_3_1h"] > 25.0)
@@ -24891,64 +24899,64 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.01)
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_1d"] < 0.7)
             | (dataframe["rsi_14_1d"] < 60.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.01)
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["rsi_14_1d"] < 70.0)
             | (dataframe["hl_pct_change_6_1d"] < 0.7)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["top_wick_pct_4h"] < (abs(dataframe["change_pct_4h"]) * 6.0))
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_4h"] < -0.5)
           )
 
           # Logic
-          item_buy_logic.append(dataframe["ema_26"] > dataframe["ema_12"])
-          item_buy_logic.append((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.016))
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["ema_26"] > dataframe["ema_12"])
+          long_entry_logic.append((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.016))
+          long_entry_logic.append(
             (dataframe["ema_26"].shift() - dataframe["ema_12"].shift()) > (dataframe["open"] / 100)
           )
-          item_buy_logic.append(dataframe["rsi_14"] < 36.0)
+          long_entry_logic.append(dataframe["rsi_14"] < 36.0)
 
         # Condition #22 - Pump mode bull.
         if index == 22:
           # Protections
-          item_buy_logic.append(dataframe["protections_long_global"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
-          item_buy_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.24))
-          item_buy_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.3))
-          item_buy_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.5))
-          item_buy_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.75))
+          long_entry_logic.append(dataframe["protections_long_global"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
+          long_entry_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.24))
+          long_entry_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.3))
+          long_entry_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.5))
+          long_entry_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.75))
 
-          item_buy_logic.append(dataframe["rsi_14_1h"] < 85.0)
-          item_buy_logic.append(dataframe["cti_20_4h"] < 0.9)
-          item_buy_logic.append(dataframe["rsi_14_4h"] < 85.0)
-          item_buy_logic.append(dataframe["rsi_14_1d"] < 85.0)
+          long_entry_logic.append(dataframe["rsi_14_1h"] < 85.0)
+          long_entry_logic.append(dataframe["cti_20_4h"] < 0.9)
+          long_entry_logic.append(dataframe["rsi_14_4h"] < 85.0)
+          long_entry_logic.append(dataframe["rsi_14_1d"] < 85.0)
 
-          item_buy_logic.append(dataframe["ema_200_1h"] > dataframe["ema_200_1h"].shift(96))
-          item_buy_logic.append(dataframe["ema_200_dec_48_1h"] == False)
-          item_buy_logic.append(dataframe["sma_200_1h"] > dataframe["sma_200_1h"].shift(24))
+          long_entry_logic.append(dataframe["ema_200_1h"] > dataframe["ema_200_1h"].shift(96))
+          long_entry_logic.append(dataframe["ema_200_dec_48_1h"] == False)
+          long_entry_logic.append(dataframe["sma_200_1h"] > dataframe["sma_200_1h"].shift(24))
 
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.02)
             | (dataframe["top_wick_pct_1d"] < 0.06)
             | (dataframe["change_pct_1d"].shift(288) < 0.02)
             | (dataframe["cti_20_1d"] < 0.8)
             | (dataframe["rsi_14_1d"] < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -24958,7 +24966,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.96))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -24968,7 +24976,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.96))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -24978,7 +24986,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.96))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 30.0)
             | (dataframe["cti_20_1h"] < -0.8)
@@ -24987,7 +24995,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.96))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["cti_20_1h"] < -0.8)
@@ -24997,7 +25005,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.95))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -25007,7 +25015,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.95))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -25016,7 +25024,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.96))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -25025,7 +25033,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.96))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
@@ -25036,7 +25044,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.96))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
@@ -25046,7 +25054,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.96))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -25055,7 +25063,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.96))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.9)
@@ -25065,7 +25073,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.95))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -25075,7 +25083,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.8)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.95))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -25084,7 +25092,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.96))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -25094,7 +25102,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.94))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
@@ -25104,7 +25112,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.92))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -25114,7 +25122,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.94))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.0)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.75)
@@ -25123,7 +25131,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.96))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -25131,7 +25139,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.96))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["cti_20_1h"] < -0.75)
@@ -25140,7 +25148,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.94))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -25149,7 +25157,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.96))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -25160,7 +25168,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.96))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -25170,7 +25178,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.95))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 30.0)
@@ -25180,7 +25188,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.95))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -25188,7 +25196,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.96))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -25198,7 +25206,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.92))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.0)
@@ -25208,7 +25216,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.93))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < 0.5)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.0)
@@ -25216,7 +25224,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.95))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 30.0)
             | (dataframe["cti_20_1h"] < -0.0)
@@ -25224,7 +25232,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.96))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -25234,7 +25242,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.94))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -25244,7 +25252,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.96))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.0)
             | (dataframe["rsi_3_15m"] > 30.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -25254,7 +25262,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.95))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -25264,7 +25272,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.95))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -25274,7 +25282,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.8)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.95))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -25285,7 +25293,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.93))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -25295,7 +25303,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.96))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.0)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -25305,7 +25313,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.95))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -25315,7 +25323,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.92))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -25324,7 +25332,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.95))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.0)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -25333,7 +25341,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.75)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.95))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_14_15m"] < 20.0)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -25342,7 +25350,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.94))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -25352,7 +25360,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.9))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -25361,7 +25369,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.96))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -25369,7 +25377,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.0)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.96))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -25378,7 +25386,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.95))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 30.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -25387,7 +25395,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.94))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -25395,7 +25403,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.96))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -25403,7 +25411,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.94))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -25413,7 +25421,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.93))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.0)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -25421,7 +25429,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.95))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -25429,7 +25437,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.93))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -25437,7 +25445,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.96))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.0)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -25445,7 +25453,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.94))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -25454,7 +25462,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.0)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.93))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -25462,7 +25470,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.0)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.96))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.75)
@@ -25471,7 +25479,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.94))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.0)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.8)
@@ -25479,14 +25487,14 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.95))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_1h"] < -0.5)
             | (dataframe["rsi_3_1h"] > 25.0)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.96))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -25494,14 +25502,14 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.95))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 10.0)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.95))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -25509,7 +25517,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.95))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -25517,7 +25525,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.94))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -25525,7 +25533,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.8)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.95))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -25534,7 +25542,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.96))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -25544,7 +25552,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.96))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -25552,7 +25560,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.96))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -25560,7 +25568,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.96))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < 0.5)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.0)
@@ -25568,7 +25576,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.92))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -25577,7 +25585,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.96))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -25586,7 +25594,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.93))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
@@ -25595,7 +25603,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_3_1h"] > 20.0)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.96))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 30.0)
@@ -25604,7 +25612,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.8)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.94))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.75)
@@ -25613,14 +25621,14 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1h"] < -0.9)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.96))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["rsi_3_15m"] > 10.0)
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.95))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -25629,7 +25637,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.75)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.95))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -25638,7 +25646,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.93))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -25646,14 +25654,14 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.95))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_1h"] > 20.0)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.92))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.0)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.75)
@@ -25662,7 +25670,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.93))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.75)
@@ -25672,7 +25680,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.95))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 30.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -25683,7 +25691,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.94))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["cti_20_1h"] < -0.8)
@@ -25692,7 +25700,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.96))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -25703,12 +25711,12 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.92))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["top_wick_pct_1d"] < (abs(dataframe["change_pct_1d"]) * 8.0))
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["rsi_14_1d"] < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -25718,7 +25726,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_1d"] < 70.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] < 0.1)
             | (dataframe["top_wick_pct_4h"] < 0.03)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -25726,45 +25734,45 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.05) | (dataframe["cti_20_1d"] < 0.8) | (dataframe["rsi_14_1d"] < 65.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_3"] > 20.0) | (dataframe["rsi_3_15m"] > 20.0) | (dataframe["cti_20_1d"] < 0.8)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["high_max_24_4h"] < (dataframe["close"] * 1.5))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_4h"] < 0.8)
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_4h"] < 0.5) | (dataframe["rsi_14_4h"] < 70.0) | (dataframe["rsi_14_1d"] < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.03)
             | (dataframe["rsi_14_4h"] < 40.0)
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["rsi_14_1d"] < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] > -0.06)
             | (dataframe["change_pct_4h"].shift(48) < 0.06)
             | (dataframe["cti_20_4h"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_3_1h"] > 25.0)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["hl_pct_change_24_1h"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] > -0.02)
             | (dataframe["rsi_14_1h"] < 40.0)
             | (dataframe["cti_20_4h"] < 0.5)
@@ -25772,7 +25780,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.94))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["rsi_14_1h"] < 40.0)
             | (dataframe["cti_20_4h"] < 0.5)
@@ -25781,13 +25789,13 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_16"] * 0.93))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.01)
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["rsi_14_1d"] < 70.0)
             | (dataframe["hl_pct_change_6_1d"] < 0.7)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -25795,7 +25803,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["close_max_24"] < (dataframe["close"] * 1.1))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["cti_20_4h"] < 0.5)
@@ -25803,105 +25811,105 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["hl_pct_change_6_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["top_wick_pct_4h"] < (abs(dataframe["change_pct_4h"]) * 6.0))
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_4h"] < -0.5)
           )
 
           # Logic
-          item_buy_logic.append(dataframe["close"] < (dataframe["ema_16"] * 0.968))
-          item_buy_logic.append(dataframe["cti_20"] < -0.9)
-          item_buy_logic.append(dataframe["rsi_14"] < 50.0)
+          long_entry_logic.append(dataframe["close"] < (dataframe["ema_16"] * 0.968))
+          long_entry_logic.append(dataframe["cti_20"] < -0.9)
+          long_entry_logic.append(dataframe["rsi_14"] < 50.0)
 
         # Condition #23 - Pump mode.
         if index == 23:
           # Protections
-          item_buy_logic.append(dataframe["protections_long_global"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
-          item_buy_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.24))
-          item_buy_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.3))
-          item_buy_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.4))
-          item_buy_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.5))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < 0.5)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < 0.6)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < 0.75)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < 0.8)
-          item_buy_logic.append(dataframe["hl_pct_change_6_1d"] < 1.5)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(dataframe["protections_long_global"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
+          long_entry_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.24))
+          long_entry_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.3))
+          long_entry_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.4))
+          long_entry_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.5))
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < 0.5)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < 0.6)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < 0.75)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < 0.8)
+          long_entry_logic.append(dataframe["hl_pct_change_6_1d"] < 1.5)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["cti_20_4h"] < 0.8)
-          item_buy_logic.append(dataframe["rsi_14_4h"] < 80.0)
+          long_entry_logic.append(dataframe["cti_20_4h"] < 0.8)
+          long_entry_logic.append(dataframe["rsi_14_4h"] < 80.0)
 
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 12.0)
             | (dataframe["rsi_3_1h"] > 12.0)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] > -0.0)
             | (dataframe["change_pct_4h"].shift(48) < 0.02)
             | (dataframe["cti_20_4h"] < 0.8)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1h"] > -0.02)
             | (dataframe["change_pct_4h"] > -0.02)
             | (dataframe["change_pct_4h"].shift(48) < 0.02)
             | (dataframe["cti_20_1h"] < 0.8)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] > -0.0)
             | (dataframe["top_wick_pct_4h"] < (abs(dataframe["change_pct_4h"]) * 6.0))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["cti_20_1d"] < 0.8)
             | (dataframe["rsi_14_1d"] < 80.0)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] > -0.08)
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_4h"] < 0.7)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1h"] > -0.02)
             | (dataframe["rsi_3_1h"] > 10.0)
             | (dataframe["cti_20_4h"] < 0.7)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] > -0.0)
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["cti_20_4h"] < 0.7)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1h"] > -0.0)
             | (dataframe["rsi_3_15m"] > 6.0)
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] > -0.0)
             | (dataframe["rsi_3_15m"] > 5.0)
             | (dataframe["cti_20_4h"] < 0.7)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["cti_20_1d"] < 0.7)
             | (((dataframe["ema_12_4h"] - dataframe["ema_26_4h"]) / dataframe["ema_26_4h"]) < 0.08)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] > -0.02)
             | (dataframe["rsi_3_15m"] > 26.0)
             | (dataframe["rsi_3_1h"] > 16.0)
@@ -25909,317 +25917,323 @@ class NostalgiaForInfinityX4(IStrategy):
           )
 
           # Logic
-          item_buy_logic.append(dataframe["ewo_50_200_15m"] > 4.2)
-          item_buy_logic.append(dataframe["rsi_14_15m"].shift(1) < 30.0)
-          item_buy_logic.append(dataframe["rsi_14_15m"] < 30.0)
-          item_buy_logic.append(dataframe["rsi_14"] < 35.0)
-          item_buy_logic.append(dataframe["cti_20"] < -0.8)
-          item_buy_logic.append(dataframe["close"] < (dataframe["ema_26_15m"] * 0.958))
+          long_entry_logic.append(dataframe["ewo_50_200_15m"] > 4.2)
+          long_entry_logic.append(dataframe["rsi_14_15m"].shift(1) < 30.0)
+          long_entry_logic.append(dataframe["rsi_14_15m"] < 30.0)
+          long_entry_logic.append(dataframe["rsi_14"] < 35.0)
+          long_entry_logic.append(dataframe["cti_20"] < -0.8)
+          long_entry_logic.append(dataframe["close"] < (dataframe["ema_26_15m"] * 0.958))
 
         # Condition #24 - Pump mode (Long)
         if index == 24:
           # Protections
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_24_close_max_12.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_24_close_max_24.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_24_close_max_48.value))
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_24_close_max_12.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_24_close_max_24.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_24_close_max_48.value))
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_1h"] * self.entry_24_high_max_24_1h.value)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_4h"] * self.entry_24_high_max_24_4h.value)
           )
-          item_buy_logic.append(dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_24_high_max_6_1d.value))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_24_hl_pct_change_6_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_24_hl_pct_change_12_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_24_hl_pct_change_24_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_24_hl_pct_change_48_1h.value)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(
+            dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_24_high_max_6_1d.value)
+          )
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_24_hl_pct_change_6_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_24_hl_pct_change_12_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_24_hl_pct_change_24_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_24_hl_pct_change_48_1h.value)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["rsi_3"] >= self.entry_24_rsi_3_min.value)
-          item_buy_logic.append(dataframe["rsi_3"] <= self.entry_24_rsi_3_max.value)
-          item_buy_logic.append(dataframe["rsi_3_15m"] >= self.entry_24_rsi_3_15m_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1h"] >= self.entry_24_rsi_3_1h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_4h"] >= self.entry_24_rsi_3_4h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1d"] >= self.entry_24_rsi_3_1d_min.value)
-          item_buy_logic.append(dataframe["cti_20_1h"] <= self.entry_24_cti_20_1h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1h"] <= self.entry_24_rsi_14_1h_max.value)
-          item_buy_logic.append(dataframe["cti_20_4h"] <= self.entry_24_cti_20_4h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_4h"] <= self.entry_24_rsi_14_4h_max.value)
-          item_buy_logic.append(dataframe["cti_20_1d"] <= self.entry_24_cti_20_1d_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1d"] <= self.entry_24_rsi_14_1d_max.value)
-          item_buy_logic.append(dataframe["r_14_1h"] <= self.entry_24_r_14_1h_max.value)
-          item_buy_logic.append(dataframe["r_14_4h"] <= self.entry_24_r_14_1h_max.value)
-          item_buy_logic.append(dataframe["r_480_1h"] <= self.entry_24_r_480_1h_max.value)
-          item_buy_logic.append(dataframe["r_480_4h"] <= self.entry_24_r_480_1h_max.value)
+          long_entry_logic.append(dataframe["rsi_3"] >= self.entry_24_rsi_3_min.value)
+          long_entry_logic.append(dataframe["rsi_3"] <= self.entry_24_rsi_3_max.value)
+          long_entry_logic.append(dataframe["rsi_3_15m"] >= self.entry_24_rsi_3_15m_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1h"] >= self.entry_24_rsi_3_1h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_4h"] >= self.entry_24_rsi_3_4h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1d"] >= self.entry_24_rsi_3_1d_min.value)
+          long_entry_logic.append(dataframe["cti_20_1h"] <= self.entry_24_cti_20_1h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1h"] <= self.entry_24_rsi_14_1h_max.value)
+          long_entry_logic.append(dataframe["cti_20_4h"] <= self.entry_24_cti_20_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_4h"] <= self.entry_24_rsi_14_4h_max.value)
+          long_entry_logic.append(dataframe["cti_20_1d"] <= self.entry_24_cti_20_1d_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1d"] <= self.entry_24_rsi_14_1d_max.value)
+          long_entry_logic.append(dataframe["r_14_1h"] <= self.entry_24_r_14_1h_max.value)
+          long_entry_logic.append(dataframe["r_14_4h"] <= self.entry_24_r_14_1h_max.value)
+          long_entry_logic.append(dataframe["r_480_1h"] <= self.entry_24_r_480_1h_max.value)
+          long_entry_logic.append(dataframe["r_480_4h"] <= self.entry_24_r_480_1h_max.value)
 
           if self.entry_24_sup_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
           if self.entry_24_res_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_24_sup_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
           if self.entry_24_res_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_4h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_4h"])
           if self.entry_24_sup_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
           if self.entry_24_res_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_24_ema_200_not_dec_1h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_48_1h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_48_1h"] == False)
           if self.entry_24_ema_200_not_dec_4h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_24_4h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_24_4h"] == False)
           if self.entry_24_ema_200_not_dec_1d_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_4_1d"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_4_1d"] == False)
           if self.entry_24_not_downtrend_15m_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_15m"])
+            long_entry_logic.append(dataframe["not_downtrend_15m"])
           if self.entry_24_not_downtrend_1h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1h"])
+            long_entry_logic.append(dataframe["not_downtrend_1h"])
           if self.entry_24_not_downtrend_4h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_4h"])
+            long_entry_logic.append(dataframe["not_downtrend_4h"])
           if self.entry_24_not_downtrend_1d_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1d"])
+            long_entry_logic.append(dataframe["not_downtrend_1d"])
           if self.entry_24_ema_50_over_ema_200_enabled.value:
-            item_buy_logic.append(dataframe["ema_50"] > dataframe["ema_200"])
+            long_entry_logic.append(dataframe["ema_50"] > dataframe["ema_200"])
           if self.entry_24_ema_12_1h_over_ema_200_1h_enabled.value:
-            item_buy_logic.append(dataframe["ema_12_1h"] > dataframe["ema_200_1h"])
+            long_entry_logic.append(dataframe["ema_12_1h"] > dataframe["ema_200_1h"])
 
           # Logic
-          item_buy_logic.append(dataframe["rsi_14"] > self.entry_24_rsi_14_min.value)
-          item_buy_logic.append(dataframe["rsi_14"] < self.entry_24_rsi_14_max.value)
-          item_buy_logic.append(dataframe["cti_20"] < self.entry_24_cti_20_max.value)
-          item_buy_logic.append(dataframe["r_14"] < self.entry_24_r_14_max.value)
-          item_buy_logic.append(dataframe["ewo_50_200"] > self.entry_24_ewo_50_200_min.value)
-          item_buy_logic.append(dataframe["ewo_50_200"] < self.entry_24_ewo_50_200_max.value)
-          item_buy_logic.append(dataframe["close"] < (dataframe["sma_75"] * self.entry_24_sma_offset.value))
+          long_entry_logic.append(dataframe["rsi_14"] > self.entry_24_rsi_14_min.value)
+          long_entry_logic.append(dataframe["rsi_14"] < self.entry_24_rsi_14_max.value)
+          long_entry_logic.append(dataframe["cti_20"] < self.entry_24_cti_20_max.value)
+          long_entry_logic.append(dataframe["r_14"] < self.entry_24_r_14_max.value)
+          long_entry_logic.append(dataframe["ewo_50_200"] > self.entry_24_ewo_50_200_min.value)
+          long_entry_logic.append(dataframe["ewo_50_200"] < self.entry_24_ewo_50_200_max.value)
+          long_entry_logic.append(dataframe["close"] < (dataframe["sma_75"] * self.entry_24_sma_offset.value))
 
         # Condition #25 - Pump mode (Long).
         if index == 25:
           # Protections
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_25_close_max_12.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_25_close_max_24.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_25_close_max_48.value))
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_25_close_max_12.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_25_close_max_24.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_25_close_max_48.value))
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_1h"] * self.entry_25_high_max_24_1h.value)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_4h"] * self.entry_25_high_max_24_4h.value)
           )
-          item_buy_logic.append(dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_25_high_max_6_1d.value))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_25_hl_pct_change_6_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_25_hl_pct_change_12_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_25_hl_pct_change_24_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_25_hl_pct_change_48_1h.value)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(
+            dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_25_high_max_6_1d.value)
+          )
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_25_hl_pct_change_6_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_25_hl_pct_change_12_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_25_hl_pct_change_24_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_25_hl_pct_change_48_1h.value)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["rsi_3"] > self.entry_25_rsi_3_min.value)
-          item_buy_logic.append(dataframe["rsi_3"] < self.entry_25_rsi_3_max.value)
-          item_buy_logic.append(dataframe["rsi_3_15m"] > self.entry_25_rsi_3_15m_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1h"] > self.entry_25_rsi_3_1h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_4h"] > self.entry_25_rsi_3_4h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1d"] > self.entry_25_rsi_3_1d_min.value)
-          item_buy_logic.append(dataframe["cti_20_1h"] < self.entry_25_cti_20_1h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1h"] < self.entry_25_rsi_14_1h_max.value)
-          item_buy_logic.append(dataframe["cti_20_4h"] < self.entry_25_cti_20_4h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_4h"] < self.entry_25_rsi_14_4h_max.value)
-          item_buy_logic.append(dataframe["cti_20_1d"] < self.entry_25_cti_20_1d_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1d"] < self.entry_25_rsi_14_1d_max.value)
-          item_buy_logic.append(dataframe["r_14_1h"] >= self.entry_25_r_14_1h_min.value)
-          item_buy_logic.append(dataframe["r_14_1h"] <= self.entry_25_r_14_1h_max.value)
-          item_buy_logic.append(dataframe["r_14_4h"] >= self.entry_25_r_14_4h_min.value)
-          item_buy_logic.append(dataframe["r_14_4h"] <= self.entry_25_r_14_4h_max.value)
-          item_buy_logic.append(dataframe["r_480_1h"] >= self.entry_25_r_480_1h_min.value)
-          item_buy_logic.append(dataframe["r_480_1h"] <= self.entry_25_r_480_1h_max.value)
-          item_buy_logic.append(dataframe["r_480_4h"] >= self.entry_25_r_480_4h_min.value)
-          item_buy_logic.append(dataframe["r_480_4h"] <= self.entry_25_r_480_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_3"] > self.entry_25_rsi_3_min.value)
+          long_entry_logic.append(dataframe["rsi_3"] < self.entry_25_rsi_3_max.value)
+          long_entry_logic.append(dataframe["rsi_3_15m"] > self.entry_25_rsi_3_15m_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1h"] > self.entry_25_rsi_3_1h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_4h"] > self.entry_25_rsi_3_4h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1d"] > self.entry_25_rsi_3_1d_min.value)
+          long_entry_logic.append(dataframe["cti_20_1h"] < self.entry_25_cti_20_1h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1h"] < self.entry_25_rsi_14_1h_max.value)
+          long_entry_logic.append(dataframe["cti_20_4h"] < self.entry_25_cti_20_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_4h"] < self.entry_25_rsi_14_4h_max.value)
+          long_entry_logic.append(dataframe["cti_20_1d"] < self.entry_25_cti_20_1d_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1d"] < self.entry_25_rsi_14_1d_max.value)
+          long_entry_logic.append(dataframe["r_14_1h"] >= self.entry_25_r_14_1h_min.value)
+          long_entry_logic.append(dataframe["r_14_1h"] <= self.entry_25_r_14_1h_max.value)
+          long_entry_logic.append(dataframe["r_14_4h"] >= self.entry_25_r_14_4h_min.value)
+          long_entry_logic.append(dataframe["r_14_4h"] <= self.entry_25_r_14_4h_max.value)
+          long_entry_logic.append(dataframe["r_480_1h"] >= self.entry_25_r_480_1h_min.value)
+          long_entry_logic.append(dataframe["r_480_1h"] <= self.entry_25_r_480_1h_max.value)
+          long_entry_logic.append(dataframe["r_480_4h"] >= self.entry_25_r_480_4h_min.value)
+          long_entry_logic.append(dataframe["r_480_4h"] <= self.entry_25_r_480_4h_max.value)
 
           if self.entry_25_sup_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
           if self.entry_25_res_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_25_sup_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
           if self.entry_25_res_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_4h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_4h"])
           if self.entry_25_sup_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
           if self.entry_25_res_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_25_ema_200_not_dec_1h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_48_1h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_48_1h"] == False)
           if self.entry_25_ema_200_not_dec_4h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_24_4h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_24_4h"] == False)
           if self.entry_25_ema_200_not_dec_1d_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_4_1d"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_4_1d"] == False)
           if self.entry_25_not_downtrend_15m_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_15m"])
+            long_entry_logic.append(dataframe["not_downtrend_15m"])
           if self.entry_25_not_downtrend_1h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1h"])
+            long_entry_logic.append(dataframe["not_downtrend_1h"])
           if self.entry_25_not_downtrend_4h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_4h"])
+            long_entry_logic.append(dataframe["not_downtrend_4h"])
           if self.entry_25_not_downtrend_1d_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1d"])
+            long_entry_logic.append(dataframe["not_downtrend_1d"])
 
-          item_buy_logic.append((dataframe["r_480_4h"] > -70.0) | (dataframe["ema_200_dec_24_4h"] == False))
+          long_entry_logic.append((dataframe["r_480_4h"] > -70.0) | (dataframe["ema_200_dec_24_4h"] == False))
 
           # Logic
-          item_buy_logic.append(dataframe["rsi_14"] < self.entry_25_rsi_14_max.value)
-          item_buy_logic.append(dataframe["cti_20"] < self.entry_25_cti_20_max.value)
-          item_buy_logic.append(dataframe["ewo_50_200"] > self.entry_25_ewo_50_200_min.value)
-          item_buy_logic.append(dataframe["close"] < (dataframe["sma_30"] * self.entry_25_sma_offset.value))
+          long_entry_logic.append(dataframe["rsi_14"] < self.entry_25_rsi_14_max.value)
+          long_entry_logic.append(dataframe["cti_20"] < self.entry_25_cti_20_max.value)
+          long_entry_logic.append(dataframe["ewo_50_200"] > self.entry_25_ewo_50_200_min.value)
+          long_entry_logic.append(dataframe["close"] < (dataframe["sma_30"] * self.entry_25_sma_offset.value))
 
         # Condition #26 - Pump mode (Long).
         if index == 26:
           # Protections
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_26_close_max_12.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_26_close_max_24.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_26_close_max_48.value))
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_26_close_max_12.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_26_close_max_24.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_26_close_max_48.value))
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_1h"] * self.entry_26_high_max_24_1h.value)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_4h"] * self.entry_26_high_max_24_4h.value)
           )
-          item_buy_logic.append(dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_26_high_max_6_1d.value))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_26_hl_pct_change_6_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_26_hl_pct_change_12_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_26_hl_pct_change_24_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_26_hl_pct_change_48_1h.value)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(
+            dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_26_high_max_6_1d.value)
+          )
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_26_hl_pct_change_6_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_26_hl_pct_change_12_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_26_hl_pct_change_24_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_26_hl_pct_change_48_1h.value)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["rsi_3"] > self.entry_26_rsi_3_min.value)
-          item_buy_logic.append(dataframe["rsi_3"] < self.entry_26_rsi_3_max.value)
-          item_buy_logic.append(dataframe["rsi_3_15m"] > self.entry_26_rsi_3_15m_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1h"] > self.entry_26_rsi_3_1h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_4h"] > self.entry_26_rsi_3_4h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1d"] > self.entry_26_rsi_3_1d_min.value)
-          item_buy_logic.append(dataframe["cti_20_1h"] < self.entry_26_cti_20_1h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1h"] < self.entry_26_rsi_14_1h_max.value)
-          item_buy_logic.append(dataframe["cti_20_4h"] < self.entry_26_cti_20_4h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_4h"] < self.entry_26_rsi_14_4h_max.value)
-          item_buy_logic.append(dataframe["cti_20_1d"] < self.entry_26_cti_20_1d_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1d"] < self.entry_26_rsi_14_1d_max.value)
-          item_buy_logic.append(dataframe["r_14_1h"] >= self.entry_26_r_14_1h_min.value)
-          item_buy_logic.append(dataframe["r_14_1h"] <= self.entry_26_r_14_1h_max.value)
-          item_buy_logic.append(dataframe["r_14_4h"] >= self.entry_26_r_14_4h_min.value)
-          item_buy_logic.append(dataframe["r_14_4h"] <= self.entry_26_r_14_4h_max.value)
-          item_buy_logic.append(dataframe["r_480_1h"] >= self.entry_26_r_480_1h_min.value)
-          item_buy_logic.append(dataframe["r_480_1h"] <= self.entry_26_r_480_1h_max.value)
-          item_buy_logic.append(dataframe["r_480_4h"] >= self.entry_26_r_480_4h_min.value)
-          item_buy_logic.append(dataframe["r_480_4h"] <= self.entry_26_r_480_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_3"] > self.entry_26_rsi_3_min.value)
+          long_entry_logic.append(dataframe["rsi_3"] < self.entry_26_rsi_3_max.value)
+          long_entry_logic.append(dataframe["rsi_3_15m"] > self.entry_26_rsi_3_15m_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1h"] > self.entry_26_rsi_3_1h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_4h"] > self.entry_26_rsi_3_4h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1d"] > self.entry_26_rsi_3_1d_min.value)
+          long_entry_logic.append(dataframe["cti_20_1h"] < self.entry_26_cti_20_1h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1h"] < self.entry_26_rsi_14_1h_max.value)
+          long_entry_logic.append(dataframe["cti_20_4h"] < self.entry_26_cti_20_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_4h"] < self.entry_26_rsi_14_4h_max.value)
+          long_entry_logic.append(dataframe["cti_20_1d"] < self.entry_26_cti_20_1d_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1d"] < self.entry_26_rsi_14_1d_max.value)
+          long_entry_logic.append(dataframe["r_14_1h"] >= self.entry_26_r_14_1h_min.value)
+          long_entry_logic.append(dataframe["r_14_1h"] <= self.entry_26_r_14_1h_max.value)
+          long_entry_logic.append(dataframe["r_14_4h"] >= self.entry_26_r_14_4h_min.value)
+          long_entry_logic.append(dataframe["r_14_4h"] <= self.entry_26_r_14_4h_max.value)
+          long_entry_logic.append(dataframe["r_480_1h"] >= self.entry_26_r_480_1h_min.value)
+          long_entry_logic.append(dataframe["r_480_1h"] <= self.entry_26_r_480_1h_max.value)
+          long_entry_logic.append(dataframe["r_480_4h"] >= self.entry_26_r_480_4h_min.value)
+          long_entry_logic.append(dataframe["r_480_4h"] <= self.entry_26_r_480_4h_max.value)
 
           if self.entry_26_sup_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
           if self.entry_26_res_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_26_sup_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
           if self.entry_26_res_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_4h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_4h"])
           if self.entry_26_sup_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
           if self.entry_26_res_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_26_ema_200_not_dec_1h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_48_1h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_48_1h"] == False)
           if self.entry_26_ema_200_not_dec_4h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_24_4h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_24_4h"] == False)
           if self.entry_26_ema_200_not_dec_1d_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_4_1d"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_4_1d"] == False)
           if self.entry_26_not_downtrend_15m_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_15m"])
+            long_entry_logic.append(dataframe["not_downtrend_15m"])
           if self.entry_26_not_downtrend_1h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1h"])
+            long_entry_logic.append(dataframe["not_downtrend_1h"])
           if self.entry_26_not_downtrend_4h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_4h"])
+            long_entry_logic.append(dataframe["not_downtrend_4h"])
           if self.entry_26_not_downtrend_1d_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1d"])
-          item_buy_logic.append(dataframe["ema_200_1h"] > dataframe["ema_200_1h"].shift(12))
-          item_buy_logic.append(dataframe["ema_200_1h"].shift(12) > dataframe["ema_200_1h"].shift(24))
+            long_entry_logic.append(dataframe["not_downtrend_1d"])
+          long_entry_logic.append(dataframe["ema_200_1h"] > dataframe["ema_200_1h"].shift(12))
+          long_entry_logic.append(dataframe["ema_200_1h"].shift(12) > dataframe["ema_200_1h"].shift(24))
 
           # Logic
-          item_buy_logic.append(dataframe["close"] < (dataframe["bb20_2_low"] * self.entry_26_bb_offset.value))
-          item_buy_logic.append(dataframe["ewo_50_200_1h"] > self.entry_26_ewo_50_200_1h_min.value)
-          item_buy_logic.append(dataframe["ema_26"] > dataframe["ema_12"])
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["close"] < (dataframe["bb20_2_low"] * self.entry_26_bb_offset.value))
+          long_entry_logic.append(dataframe["ewo_50_200_1h"] > self.entry_26_ewo_50_200_1h_min.value)
+          long_entry_logic.append(dataframe["ema_26"] > dataframe["ema_12"])
+          long_entry_logic.append(
             (dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * self.entry_26_ema_open_offset.value)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["ema_26"].shift() - dataframe["ema_12"].shift()) > (dataframe["open"] / 100.0)
           )
 
         # Condition #41 - Quick mode bull.
         if index == 41:
           # Protections
-          item_buy_logic.append(dataframe["protections_long_global"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
-          item_buy_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.24))
-          item_buy_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.3))
-          item_buy_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.5))
-          item_buy_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.75))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < 0.4)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < 0.5)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < 0.75)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < 0.9)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(dataframe["protections_long_global"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
+          long_entry_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.24))
+          long_entry_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.3))
+          long_entry_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.5))
+          long_entry_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.75))
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < 0.4)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < 0.5)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < 0.75)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < 0.9)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
           # pump and now started dumping, still high
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.05)
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["rsi_14_1d"] < 70.0)
             | (dataframe["hl_pct_change_48_1h"] < 0.4)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] < 0.16)
             | (dataframe["top_wick_pct_1d"] < 0.1)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["rsi_14_1d"] < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] < 0.06)
             | (dataframe["top_wick_pct_4h"] < 0.06)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["rsi_14_4h"] < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.02)
             | (dataframe["top_wick_pct_1d"] < 0.06)
             | (dataframe["change_pct_1d"].shift(288) < 0.12)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["cti_20_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] > -0.06)
             | (dataframe["change_pct_4h"].shift(48) < 0.06)
             | (dataframe["cti_20_4h"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] > -0.02)
             | (dataframe["cti_20_4h"] < 0.85)
             | (dataframe["cti_20_4h"].shift(48) < 0.85)
             | (dataframe["rsi_14_4h"].shift(48) < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_4h"] < 0.5) | (dataframe["cti_20_1d"] < 0.9) | (dataframe["rsi_14_1d"] < 75.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -26228,7 +26242,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -26236,7 +26250,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.0)
             | (dataframe["cti_20_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -26245,7 +26259,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -26253,7 +26267,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_3_1h"] > 10.0)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_1h"] > 10.0)
@@ -26261,7 +26275,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 30.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -26270,7 +26284,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.5)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -26281,7 +26295,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.8)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.8)
@@ -26290,7 +26304,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -26300,7 +26314,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -26310,7 +26324,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.8)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -26320,7 +26334,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -26329,7 +26343,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.0)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -26339,7 +26353,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -26349,7 +26363,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.0)
             | (dataframe["rsi_3_15m"] > 30.0)
@@ -26358,7 +26372,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.75)
             | (dataframe["cti_20_1d"] < -0.8)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -26367,7 +26381,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.5)
@@ -26376,7 +26390,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.0)
             | (dataframe["cti_20_1d"] < -0.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -26384,7 +26398,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.8)
             | (dataframe["cti_20_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -26392,7 +26406,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.75)
@@ -26401,7 +26415,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.8)
             | (dataframe["cti_20_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.8)
@@ -26412,7 +26426,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -26421,7 +26435,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.8)
@@ -26430,7 +26444,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -26440,7 +26454,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.8)
@@ -26448,7 +26462,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_3_1h"] > 30.0)
             | (dataframe["cti_20_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -26458,7 +26472,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 30.0)
@@ -26467,7 +26481,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -26476,7 +26490,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -26485,7 +26499,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -26495,7 +26509,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 30.0)
@@ -26504,7 +26518,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.5)
             | (dataframe["cti_20_1d"] < 0.75)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -26513,14 +26527,14 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.5)
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["ema_200_dec_48_1h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -26530,7 +26544,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -26539,7 +26553,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -26547,7 +26561,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
@@ -26557,14 +26571,14 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.0)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < 0.5)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.5)
             | (dataframe["cti_20_4h"] < 0.75)
             | (dataframe["cti_20_1d"] < -0.75)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.75)
@@ -26575,7 +26589,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -26584,7 +26598,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.0)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.8)
@@ -26593,7 +26607,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
@@ -26604,7 +26618,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -26614,7 +26628,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -26622,7 +26636,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["cti_20_1d"] < -0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.8)
@@ -26631,7 +26645,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.0)
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -26639,7 +26653,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["cti_20_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -26648,7 +26662,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.0)
@@ -26656,7 +26670,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.9)
@@ -26666,7 +26680,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.0)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.0)
@@ -26674,7 +26688,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | (dataframe["ema_200_dec_48_1h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.0)
@@ -26683,7 +26697,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.0)
@@ -26691,7 +26705,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.0)
             | (dataframe["cti_20_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -26700,7 +26714,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["r_14_4h"] < -30.0)
             | (dataframe["cti_20_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.0)
@@ -26708,7 +26722,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
@@ -26718,7 +26732,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_3_1h"] > 20.0)
             | (dataframe["cti_20_4h"] < -0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -26727,14 +26741,14 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_3_1h"] > 30.0)
             | (dataframe["cti_20_4h"] < -0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 10.0)
             | (dataframe["cti_20_1h"] < -0.5)
             | (dataframe["rsi_3_1h"] > 10.0)
             | (dataframe["cti_20_4h"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -26742,7 +26756,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.5)
             | (dataframe["cti_20_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < 0.5)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_4h"] < -0.8)
@@ -26750,7 +26764,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -26758,13 +26772,13 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.0)
             | (dataframe["cti_20_1d"] < -0.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -26773,7 +26787,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -26781,7 +26795,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -26790,7 +26804,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -26798,7 +26812,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -26807,7 +26821,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | (dataframe["ema_200_dec_48_1h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -26816,7 +26830,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -26824,7 +26838,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_4h"] < 70.0)
             | (dataframe["cti_20_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -26832,7 +26846,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["hl_pct_change_48_1h"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -26840,7 +26854,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.8)
             | (dataframe["cti_20_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.0)
@@ -26849,7 +26863,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.8)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -26857,7 +26871,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.0)
             | (dataframe["rsi_14_4h"] < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 30.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -26865,7 +26879,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["rsi_14_4h"] < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 30.0)
@@ -26875,7 +26889,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.5)
             | (dataframe["ema_200_dec_48_1h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -26883,7 +26897,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["cti_20_4h"] < -0.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -26892,7 +26906,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 30.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -26901,7 +26915,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["cti_20_1d"] < -0.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -26910,7 +26924,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_3_1h"] > 25.0)
             | (dataframe["cti_20_4h"] < -0.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -26918,7 +26932,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.8)
             | (dataframe["cti_20_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
@@ -26928,7 +26942,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_3_1h"] > 25.0)
             | (dataframe["ema_200_dec_48_1h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.9)
@@ -26938,7 +26952,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -26947,7 +26961,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.5)
             | (dataframe["cti_20_1d"] < -0.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.75)
@@ -26956,7 +26970,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["high_max_48_1h"] < (dataframe["close"] * 1.3))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -26965,7 +26979,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.8)
             | (dataframe["high_max_48_1h"] < (dataframe["close"] * 1.3))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -26973,21 +26987,21 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.0)
             | (dataframe["cti_20_1d"] < 0.75)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.75)
             | (dataframe["rsi_3_1h"] > 25.0)
             | (dataframe["cti_20_4h"] < -0.8)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.75)
             | (dataframe["rsi_3_1h"] > 25.0)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["cti_20_1d"] < -0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -26995,21 +27009,21 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | (dataframe["ema_200_dec_48_1h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.8)
             | (dataframe["cti_20_4h"] < -0.0)
             | (dataframe["cti_20_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < 0.5)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.8)
             | (dataframe["cti_20_4h"] < 0.8)
             | (dataframe["cti_20_1d"] < -0.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -27017,7 +27031,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_3_1h"] > 10.0)
             | (dataframe["cti_20_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 30.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -27025,7 +27039,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 30.0)
@@ -27034,7 +27048,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -27043,7 +27057,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["ema_200_dec_48_1h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -27052,7 +27066,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.9)
@@ -27062,7 +27076,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
@@ -27072,7 +27086,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | (dataframe["ema_200_dec_48_1h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -27082,7 +27096,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close_max_12"] < (dataframe["close"] * 1.12))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -27091,7 +27105,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.5)
             | (dataframe["cti_20_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.06)
             | (dataframe["change_pct_1d"].shift(288) > -0.06)
             | (dataframe["not_downtrend_1h"])
@@ -27101,7 +27115,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.8)
             | (dataframe["cti_20_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 10.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -27110,7 +27124,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.75)
             | (dataframe["close"] < (dataframe["ema_200_4h"] * 1.1))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -27119,7 +27133,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.75)
             | (dataframe["ema_200_dec_48_1h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_14_15m"] < 20.0)
             | (dataframe["cti_20_1h"] < -0.0)
@@ -27129,7 +27143,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_14_15m"] < 20.0)
             | (dataframe["cti_20_1h"] < -0.8)
@@ -27138,7 +27152,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -27148,18 +27162,18 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["is_downtrend_3_1d"] == False)
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["high_max_6_1d"] < (dataframe["close"] * 1.8))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["high_max_24_4h"] < (dataframe["close"] * 1.5))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["is_downtrend_3_4h"] == False)
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.9)
@@ -27167,12 +27181,12 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.7)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_4h"] < 0.8)
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -27182,7 +27196,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] < 0.06)
             | (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -27192,7 +27206,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["rsi_14_1d"] < 40.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["rsi_14_1h"] < 40.0)
             | (dataframe["cti_20_4h"] < 0.5)
@@ -27200,7 +27214,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["rsi_14_1d"] < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["rsi_3_1h"] > 25.0)
@@ -27209,7 +27223,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_4h"] < 40.0)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 30.0)
             | (dataframe["rsi_3_1h"] > 30.0)
@@ -27219,13 +27233,13 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.01)
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["rsi_14_1d"] < 70.0)
             | (dataframe["hl_pct_change_6_1d"] < 0.7)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_3_1h"] > 20.0)
@@ -27234,7 +27248,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_1h"] > 10.0)
@@ -27243,7 +27257,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.0)
             | (dataframe["rsi_3"] > 20.0)
             | (dataframe["rsi_14_1h"] < 40.0)
@@ -27251,16 +27265,16 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_4h"] < 40.0)
             | (dataframe["cti_20_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] > -0.03) | (dataframe["cti_20_1h"] < -0.5) | (dataframe["cti_20_4h"] < 0.7)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["high_max_24_4h"] < (dataframe["close"] * 1.3))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.0)
             | (dataframe["rsi_14_1h"] < 40.0)
             | (dataframe["cti_20_4h"] < -0.5)
@@ -27270,69 +27284,69 @@ class NostalgiaForInfinityX4(IStrategy):
           )
 
           # Logic
-          item_buy_logic.append(dataframe["bb40_2_delta"].gt(dataframe["close"] * 0.036))
-          item_buy_logic.append(dataframe["close_delta"].gt(dataframe["close"] * 0.02))
-          item_buy_logic.append(dataframe["bb40_2_tail"].lt(dataframe["bb40_2_delta"] * 0.4))
-          item_buy_logic.append(dataframe["close"].lt(dataframe["bb40_2_low"].shift()))
-          item_buy_logic.append(dataframe["close"].le(dataframe["close"].shift()))
-          item_buy_logic.append(dataframe["rsi_14"] < 36.0)
+          long_entry_logic.append(dataframe["bb40_2_delta"].gt(dataframe["close"] * 0.036))
+          long_entry_logic.append(dataframe["close_delta"].gt(dataframe["close"] * 0.02))
+          long_entry_logic.append(dataframe["bb40_2_tail"].lt(dataframe["bb40_2_delta"] * 0.4))
+          long_entry_logic.append(dataframe["close"].lt(dataframe["bb40_2_low"].shift()))
+          long_entry_logic.append(dataframe["close"].le(dataframe["close"].shift()))
+          long_entry_logic.append(dataframe["rsi_14"] < 36.0)
 
         # Condition #42 - Quick mode bull.
         if index == 42:
           # Protections
-          item_buy_logic.append(dataframe["protections_long_global"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
-          item_buy_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.24))
-          item_buy_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.3))
-          item_buy_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.5))
-          item_buy_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.75))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < 0.4)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < 0.5)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < 0.75)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < 0.9)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(dataframe["protections_long_global"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
+          long_entry_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.24))
+          long_entry_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.3))
+          long_entry_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.5))
+          long_entry_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.75))
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < 0.4)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < 0.5)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < 0.75)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < 0.9)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["cti_20_1h"] < 0.8)
-          item_buy_logic.append(dataframe["rsi_14_1h"] < 80.0)
-          item_buy_logic.append(dataframe["cti_20_4h"] < 0.8)
-          item_buy_logic.append(dataframe["rsi_14_4h"] < 80.0)
+          long_entry_logic.append(dataframe["cti_20_1h"] < 0.8)
+          long_entry_logic.append(dataframe["rsi_14_1h"] < 80.0)
+          long_entry_logic.append(dataframe["cti_20_4h"] < 0.8)
+          long_entry_logic.append(dataframe["rsi_14_4h"] < 80.0)
 
-          item_buy_logic.append(
+          long_entry_logic.append(
             ((dataframe["not_downtrend_1h"]) & (dataframe["not_downtrend_4h"]))
             | (dataframe["high_max_24_4h"] < (dataframe["close"] * 1.5))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["top_wick_pct_4h"] < (abs(dataframe["change_pct_4h"]) * 5.0))
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["cti_20_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["top_wick_pct_4h"] < (abs(dataframe["change_pct_4h"]) * 5.0))
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["rsi_14_4h"] < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] < 0.1)
             | (dataframe["top_wick_pct_1d"] < 0.05)
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["rsi_14_1d"] < 80.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"].shift(48) < 0.1)
             | (dataframe["change_pct_4h"] > -0.04)
             | (dataframe["cti_20_4h"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["top_wick_pct_1d"] < (abs(dataframe["change_pct_1d"]) * 2.0))
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["rsi_14_1d"] < 80.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -27343,7 +27357,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.8)
@@ -27352,7 +27366,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -27361,7 +27375,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -27371,7 +27385,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -27382,7 +27396,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.75)
@@ -27394,7 +27408,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -27406,7 +27420,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -27416,7 +27430,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -27427,7 +27441,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -27436,7 +27450,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.75)
@@ -27446,7 +27460,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -27457,7 +27471,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -27467,7 +27481,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -27478,7 +27492,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_1h"] < -0.5)
@@ -27486,7 +27500,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
@@ -27496,7 +27510,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -27505,7 +27519,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.05))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.16)
             | (dataframe["cti_20_15m"] < -0.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -27514,7 +27528,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_1h"] > 20.0)
@@ -27524,7 +27538,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.75)
@@ -27535,7 +27549,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["cti_20_1h"] < -0.8)
@@ -27545,7 +27559,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -27557,7 +27571,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -27567,7 +27581,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -27576,7 +27590,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -27586,7 +27600,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -27595,7 +27609,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["rsi_3_15m"] > 10.0)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -27604,7 +27618,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -27612,7 +27626,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 10.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -27621,7 +27635,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -27631,7 +27645,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -27640,7 +27654,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_3_1h"] > 10.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.8)
@@ -27651,7 +27665,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -27660,7 +27674,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -27671,7 +27685,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -27680,7 +27694,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.8)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -27690,7 +27704,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
@@ -27699,7 +27713,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_3_1h"] > 25.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.8)
@@ -27708,7 +27722,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -27719,7 +27733,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -27729,7 +27743,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -27738,7 +27752,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.75)
@@ -27747,7 +27761,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -27756,7 +27770,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -27765,7 +27779,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 10.0)
             | (dataframe["cti_20_1h"] < -0.8)
@@ -27774,7 +27788,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -27783,7 +27797,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -27793,7 +27807,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
@@ -27804,10 +27818,10 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["close_max_24"] < (dataframe["close"] * 1.1))
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_3"] > 20.0) | (dataframe["rsi_3_15m"] > 20.0) | (dataframe["cti_20_1d"] < 0.8)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 8.0)
             | (dataframe["cti_20_4h"] < -0.0)
@@ -27816,7 +27830,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["top_wick_pct_1d"] < (abs(dataframe["change_pct_1d"]) * 4.0))
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_1h"] < -0.8)
@@ -27824,24 +27838,24 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] < 0.04)
             | (dataframe["top_wick_pct_4h"] < 0.04)
             | (dataframe["ema_200_dec_48_1h"] == False)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["rsi_3_15m"] > 3.0)
             | (dataframe["high_max_12_1d"] < (dataframe["close"] * 1.5))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.03)
             | (dataframe["rsi_14_4h"] < 40.0)
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["rsi_14_1d"] < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.06)
             | (dataframe["top_wick_pct_1d"] < 0.06)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -27849,13 +27863,13 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.01)
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["rsi_14_1d"] < 70.0)
             | (dataframe["hl_pct_change_6_1d"] < 0.7)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] < 0.06)
             | (dataframe["top_wick_pct_1d"] < 0.06)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -27866,87 +27880,87 @@ class NostalgiaForInfinityX4(IStrategy):
           )
 
           # Logic
-          item_buy_logic.append(dataframe["ema_26"] > dataframe["ema_12"])
-          item_buy_logic.append((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.018))
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["ema_26"] > dataframe["ema_12"])
+          long_entry_logic.append((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.018))
+          long_entry_logic.append(
             (dataframe["ema_26"].shift() - dataframe["ema_12"].shift()) > (dataframe["open"] / 100)
           )
-          item_buy_logic.append(dataframe["close"] < (dataframe["bb20_2_low"] * 0.996))
-          item_buy_logic.append(dataframe["rsi_14"] < 40.0)
+          long_entry_logic.append(dataframe["close"] < (dataframe["bb20_2_low"] * 0.996))
+          long_entry_logic.append(dataframe["rsi_14"] < 40.0)
 
         # Condition #43 - Quick mode bull.
         if index == 43:
           # Protections
-          item_buy_logic.append(dataframe["protections_long_global"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
-          item_buy_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.24))
-          item_buy_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.3))
-          item_buy_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.5))
-          item_buy_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.75))
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < 0.5)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < 0.75)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < 0.9)
+          long_entry_logic.append(dataframe["protections_long_global"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
+          long_entry_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.24))
+          long_entry_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.3))
+          long_entry_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.5))
+          long_entry_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.75))
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < 0.5)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < 0.75)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < 0.9)
 
-          item_buy_logic.append(dataframe["cti_20_1h"] < 0.8)
-          item_buy_logic.append(dataframe["rsi_14_1h"] < 80.0)
-          item_buy_logic.append(dataframe["cti_20_4h"] < 0.8)
-          item_buy_logic.append(dataframe["rsi_14_4h"] < 80.0)
+          long_entry_logic.append(dataframe["cti_20_1h"] < 0.8)
+          long_entry_logic.append(dataframe["rsi_14_1h"] < 80.0)
+          long_entry_logic.append(dataframe["cti_20_4h"] < 0.8)
+          long_entry_logic.append(dataframe["rsi_14_4h"] < 80.0)
 
-          item_buy_logic.append(
+          long_entry_logic.append(
             ((dataframe["not_downtrend_1h"]) & (dataframe["not_downtrend_4h"]))
             | (dataframe["high_max_24_4h"] < (dataframe["close"] * 1.5))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["top_wick_pct_4h"] < (abs(dataframe["change_pct_4h"]) * 5.0))
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["cti_20_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["top_wick_pct_4h"] < (abs(dataframe["change_pct_4h"]) * 5.0))
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["rsi_14_4h"] < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] < 0.1)
             | (dataframe["top_wick_pct_4h"] < 0.05)
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["rsi_14_4h"] < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] < 0.16)
             | (dataframe["top_wick_pct_4h"] < 0.08)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.06)
             | (dataframe["change_pct_1d"].shift(288) < 0.1)
             | (dataframe["top_wick_pct_1d"].shift(288) < 0.1)
             | (dataframe["cti_20_1d"].shift(288) < 0.8)
             | (dataframe["rsi_14_1d"].shift(288) < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] < 0.1)
             | (dataframe["top_wick_pct_1d"] < 0.05)
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["rsi_14_1d"] < 80.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"].shift(48) < 0.1)
             | (dataframe["change_pct_4h"] > -0.04)
             | (dataframe["cti_20_4h"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["top_wick_pct_1d"] < (abs(dataframe["change_pct_1d"]) * 2.0))
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["rsi_14_1d"] < 80.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.75)
@@ -27957,7 +27971,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.93))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -27966,7 +27980,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.93))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -27976,7 +27990,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.92))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -27987,7 +28001,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.93))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
@@ -27997,7 +28011,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.93))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.5)
@@ -28007,7 +28021,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.8)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.93))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.8)
@@ -28017,7 +28031,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.93))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -28028,7 +28042,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.93))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 10.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -28037,7 +28051,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["close_max_24"] < (dataframe["close"] * 1.12))
             | (dataframe["close"] < (dataframe["ema_26"] * 0.91))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["rsi_3_15m"] > 10.0)
             | (dataframe["cti_20_1h"] < -0.0)
@@ -28046,7 +28060,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.93))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -28056,7 +28070,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.9))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.75)
@@ -28068,7 +28082,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.91))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
@@ -28081,7 +28095,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.92))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
@@ -28093,7 +28107,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.92))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -28102,7 +28116,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["close_max_12"] < (dataframe["close"] * 1.1))
             | (dataframe["close"] < (dataframe["ema_26"] * 0.89))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -28114,7 +28128,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.92))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] < 0.16)
             | (dataframe["cti_20_15m"] < -0.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -28122,7 +28136,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.0)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.92))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -28133,7 +28147,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.91))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.75)
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -28143,7 +28157,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.92))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] < 0.1)
             | (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.5)
@@ -28153,7 +28167,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.92))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -28163,7 +28177,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.93))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -28174,7 +28188,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.92))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
@@ -28184,7 +28198,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.91))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 30.0)
@@ -28195,7 +28209,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.92))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -28206,7 +28220,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.92))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -28215,24 +28229,24 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["close"] < (dataframe["ema_26"] * 0.88))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_3"] > 20.0) | (dataframe["rsi_3_15m"] > 20.0) | (dataframe["cti_20_1d"] < 0.8)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_3"] > 10.0)
             | (dataframe["rsi_3_15m"] > 16.0)
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["is_downtrend_3_1d"] == False)
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -28241,7 +28255,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_3_1h"] > 10.0)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["top_wick_pct_4h"] < (abs(dataframe["change_pct_4h"]) * 4.0))
             | (dataframe["change_pct_1h"] > -0.02)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -28250,153 +28264,153 @@ class NostalgiaForInfinityX4(IStrategy):
           )
 
           # Logic
-          item_buy_logic.append(dataframe["close"] < (dataframe["ema_26"] * 0.938))
-          item_buy_logic.append(dataframe["cti_20"] < -0.75)
-          item_buy_logic.append(dataframe["r_14"] < -94.0)
+          long_entry_logic.append(dataframe["close"] < (dataframe["ema_26"] * 0.938))
+          long_entry_logic.append(dataframe["cti_20"] < -0.75)
+          long_entry_logic.append(dataframe["r_14"] < -94.0)
 
         # Condition #44 - Quick mode bull.
         if index == 44:
           # Protections
-          item_buy_logic.append(dataframe["protections_long_global"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
-          item_buy_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.24))
-          item_buy_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.3))
-          item_buy_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.5))
-          item_buy_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.75))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < 0.4)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < 0.5)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < 0.75)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < 0.9)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(dataframe["protections_long_global"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
+          long_entry_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.24))
+          long_entry_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.3))
+          long_entry_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.5))
+          long_entry_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.75))
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < 0.4)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < 0.5)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < 0.75)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < 0.9)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["cti_20_1h"] < 0.8)
-          item_buy_logic.append(dataframe["rsi_14_1h"] < 80.0)
-          item_buy_logic.append(dataframe["cti_20_4h"] < 0.8)
-          item_buy_logic.append(dataframe["rsi_14_4h"] < 80.0)
+          long_entry_logic.append(dataframe["cti_20_1h"] < 0.8)
+          long_entry_logic.append(dataframe["rsi_14_1h"] < 80.0)
+          long_entry_logic.append(dataframe["cti_20_4h"] < 0.8)
+          long_entry_logic.append(dataframe["rsi_14_4h"] < 80.0)
 
-          item_buy_logic.append(dataframe["close_max_48"] > (dataframe["close"] * 1.1))
+          long_entry_logic.append(dataframe["close_max_48"] > (dataframe["close"] * 1.1))
 
           # pump and now started dumping, still high
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.05)
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["rsi_14_1d"] < 70.0)
             | (dataframe["hl_pct_change_48_1h"] < 0.4)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] < 0.1)
             | (dataframe["top_wick_pct_1d"] < 0.1)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["rsi_14_1d"] < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] < 0.06)
             | (dataframe["top_wick_pct_4h"] < 0.06)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["rsi_14_4h"] < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.02)
             | (dataframe["top_wick_pct_1d"] < 0.06)
             | (dataframe["change_pct_1d"].shift(288) < 0.12)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["cti_20_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] > -0.06)
             | (dataframe["change_pct_4h"].shift(48) < 0.06)
             | (dataframe["cti_20_4h"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] > -0.02)
             | (dataframe["cti_20_4h"] < 0.85)
             | (dataframe["cti_20_4h"].shift(48) < 0.85)
             | (dataframe["rsi_14_4h"].shift(48) < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["top_wick_pct_4h"] < (abs(dataframe["change_pct_4h"]) * 5.0))
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["cti_20_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["top_wick_pct_4h"] < (abs(dataframe["change_pct_4h"]) * 5.0))
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["rsi_14_4h"] < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] < 0.1)
             | (dataframe["top_wick_pct_1d"] < 0.05)
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["rsi_14_1d"] < 80.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"].shift(48) < 0.1)
             | (dataframe["change_pct_4h"] > -0.04)
             | (dataframe["cti_20_4h"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["top_wick_pct_1d"] < (abs(dataframe["change_pct_1d"]) * 2.0))
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["rsi_14_1d"] < 80.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] < 0.16)
             | (dataframe["top_wick_pct_4h"] < 0.08)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.06)
             | (dataframe["change_pct_1d"].shift(288) < 0.1)
             | (dataframe["top_wick_pct_1d"].shift(288) < 0.1)
             | (dataframe["cti_20_1d"].shift(288) < 0.8)
             | (dataframe["rsi_14_1d"].shift(288) < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.1)
             | (dataframe["change_pct_1d"].shift(288) < 0.1)
             | (dataframe["cti_20_1d"].shift(288) < 0.5)
             | (dataframe["rsi_14_1d"].shift(288) < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] < 0.1)
             | (dataframe["top_wick_pct_1d"] < 0.05)
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["rsi_14_1d"] < 80.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] < 0.2)
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["rsi_14_4h"] < 70.0)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] > -0.06)
             | (dataframe["top_wick_pct_4h"] < 0.06)
             | (dataframe["change_pct_4h"].shift(48) < 0.01)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["rsi_14_4h"].shift(48) < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["top_wick_pct_1h"] < (abs(dataframe["change_pct_1h"]) * 3.0))
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] < 0.04)
             | (dataframe["top_wick_pct_4h"] < 0.06)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["rsi_14_4h"] < 70.0)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.0)
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -28405,7 +28419,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.8)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["rsi_3_15m"] > 10.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -28415,7 +28429,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -28425,7 +28439,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -28435,7 +28449,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] < 0.06)
             | (dataframe["top_wick_pct_4h"] < 0.06)
             | (dataframe["cti_20_15m"] < -0.5)
@@ -28445,7 +28459,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -28453,7 +28467,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_3_1h"] > 25.0)
             | (dataframe["cti_20_4h"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 30.0)
@@ -28464,7 +28478,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -28473,7 +28487,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
@@ -28484,7 +28498,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -28495,7 +28509,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] < 0.06)
             | (dataframe["top_wick_pct_4h"] < 0.06)
             | (dataframe["cti_20_15m"] < -0.8)
@@ -28505,7 +28519,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1h"] > -0.08)
             | (dataframe["change_pct_1h"].shift(12) < 0.08)
             | (dataframe["cti_20_15m"] < -0.8)
@@ -28513,7 +28527,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] < 0.06)
             | (dataframe["top_wick_pct_4h"] < 0.06)
             | (dataframe["cti_20_15m"] < -0.5)
@@ -28522,7 +28536,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1h"] < -0.5)
             | (dataframe["cti_20_4h"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -28530,7 +28544,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -28538,7 +28552,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] < 0.1)
             | (dataframe["top_wick_pct_4h"] < 0.06)
             | (dataframe["cti_20_15m"] < -0.0)
@@ -28547,7 +28561,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -28556,12 +28570,12 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] < 0.04)
             | (dataframe["top_wick_pct_4h"] < (abs(dataframe["change_pct_4h"]) * 4.0))
             | (dataframe["cti_20_4h"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.9)
@@ -28572,7 +28586,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -28581,7 +28595,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.5)
             | (dataframe["cti_20_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -28592,7 +28606,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] < 0.08)
             | (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -28600,7 +28614,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | (dataframe["ema_200_dec_48_1h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] < 0.05)
             | (dataframe["top_wick_pct_1d"] < 0.05)
             | (dataframe["not_downtrend_15m"])
@@ -28610,7 +28624,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.5)
             | (dataframe["cti_20_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 30.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -28618,7 +28632,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -28627,7 +28641,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -28637,7 +28651,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -28647,7 +28661,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["is_downtrend_3_4h"] == False)
@@ -28656,7 +28670,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 30.0)
@@ -28666,7 +28680,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 10.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -28675,7 +28689,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.75)
             | (dataframe["close"] < (dataframe["ema_200_4h"] * 1.1))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -28686,7 +28700,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -28696,7 +28710,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["is_downtrend_3_1h"] == False)
             | (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -28705,7 +28719,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -28715,7 +28729,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["top_wick_pct_4h"] < (abs(dataframe["change_pct_4h"]) * 2.0))
             | (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -28724,7 +28738,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -28735,7 +28749,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.0)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.0)
@@ -28745,7 +28759,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] < 0.1)
             | (dataframe["top_wick_pct_4h"] < 0.03)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -28753,7 +28767,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] < 0.04)
             | (dataframe["top_wick_pct_1d"] < 0.04)
             | (dataframe["cti_20_15m"] < -0.9)
@@ -28763,7 +28777,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 30.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -28774,7 +28788,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -28784,7 +28798,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -28793,7 +28807,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -28801,7 +28815,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.8)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 30.0)
@@ -28812,7 +28826,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1h"] > -0.03)
             | (dataframe["change_pct_1h"].shift(12) < 0.03)
             | (dataframe["cti_20_15m"] < -0.0)
@@ -28823,7 +28837,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -28833,7 +28847,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.8)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -28842,7 +28856,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["top_wick_pct_4h"] < (abs(dataframe["change_pct_4h"]) * 2.0))
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["rsi_3_1h"] > 30.0)
@@ -28850,13 +28864,13 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.5)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_1h"] < 0.5) | (dataframe["cti_20_4h"] < 0.5) | (dataframe["rsi_14_4h"] < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] > -0.06) | (dataframe["cti_20_1h"] < 0.5) | (dataframe["cti_20_4h"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"].shift(48) < 0.04)
             | (dataframe["top_wick_pct_4h"].shift(48) < 0.04)
             | (dataframe["change_pct_4h"] > -0.02)
@@ -28864,20 +28878,20 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_3_1h"] > 25.0)
             | (dataframe["cti_20_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_3_1h"] > 20.0)
             | (dataframe["cti_20_4h"] < -0.0)
             | (dataframe["cti_20_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.06)
             | (dataframe["change_pct_1d"].shift(288) < 0.06)
             | (dataframe["cti_20_1d"].shift(288) < 0.8)
             | (dataframe["rsi_14_1d"].shift(288) < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["cti_20_1h"] < -0.0)
@@ -28886,7 +28900,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.0)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -28895,7 +28909,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.5)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] < 0.04)
             | (dataframe["top_wick_pct_4h"] < 0.04)
             | (dataframe["not_downtrend_1h"])
@@ -28903,14 +28917,14 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["rsi_14_4h"] < 50.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] < 0.16)
             | (dataframe["top_wick_pct_1d"] < 0.16)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] < 0.16)
             | (dataframe["top_wick_pct_1d"] < 0.16)
             | (dataframe["cti_20_15m"] < -0.5)
@@ -28919,21 +28933,21 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.0)
             | (dataframe["cti_20_1d"] < -0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] < 0.16)
             | (dataframe["top_wick_pct_1d"] < 0.16)
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_4h"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] < 0.1)
             | (dataframe["top_wick_pct_4h"] < 0.1)
             | (dataframe["cti_20_1h"] < -0.5)
             | (dataframe["cti_20_4h"] < -0.5)
             | (dataframe["rsi_14_4h"] < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -28942,7 +28956,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.9)
             | (dataframe["cti_20_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.8)
@@ -28950,7 +28964,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_3_1h"] > 10.0)
             | (dataframe["cti_20_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -28959,7 +28973,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["top_wick_pct_1d"] < (abs(dataframe["change_pct_1d"]) * 4.0))
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -28967,7 +28981,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] < 0.08)
             | (dataframe["top_wick_pct_4h"] < 0.04)
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -28975,7 +28989,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -28984,7 +28998,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["high_max_24_4h"] < (dataframe["close"] * 1.5))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -28992,7 +29006,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["cti_20_4h"] < -0.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1h"] > -0.02)
             | (dataframe["change_pct_1h"].shift(12) < 0.04)
             | (dataframe["top_wick_pct_1h"].shift(12) < 0.04)
@@ -29000,7 +29014,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 10.0)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -29009,28 +29023,28 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["bb20_2_width_1h"] > 0.18)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_1h"] > 5.0)
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] < 0.26)
             | (dataframe["top_wick_pct_1d"] < 0.06)
             | (dataframe["cti_20_1h"] < -0.5)
             | (dataframe["cti_20_4h"] < -0.5)
             | (dataframe["cti_20_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["is_downtrend_3_1d"] == False)
             | (dataframe["not_downtrend_15m"])
             | (dataframe["rsi_3_15m"] > 10.0)
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["high_max_24_4h"] < (dataframe["close"] * 1.5))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1h"] > -0.06)
             | (dataframe["change_pct_1h"].shift(12) < 0.06)
             | (dataframe["cti_20_15m"] < -0.5)
@@ -29039,12 +29053,12 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["top_wick_pct_1d"] < (abs(dataframe["change_pct_1d"]) * 3.0))
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["cti_20_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 25.0)
@@ -29053,21 +29067,21 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.5)
             | (dataframe["ema_200_dec_48_1h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.8)
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["ema_200_dec_48_1h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.8)
             | (dataframe["cti_20_1d"] < 0.8)
             | (dataframe["rsi_14_1d"] < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -29075,7 +29089,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -29083,14 +29097,14 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["bb20_2_width_1h"] > 0.18)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.0)
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["bb20_2_width_1h"] > 0.2)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] < 0.2)
             | (dataframe["top_wick_pct_1d"] < 0.05)
             | (dataframe["cti_20_15m"] < -0.5)
@@ -29098,7 +29112,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1d"] < -0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -29107,13 +29121,13 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["bb20_2_width_1h"] > 0.17)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] < 0.25)
             | (dataframe["top_wick_pct_1d"] < 0.2)
             | (dataframe["cti_20_1h"] < -0.5)
             | (dataframe["cti_20_4h"] < -0.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -29122,7 +29136,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["r_14"] < -96.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 30.0)
             | (dataframe["cti_20_1h"] < -0.8)
@@ -29130,7 +29144,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -29138,7 +29152,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["bb20_2_width_1h"] > 0.16)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] < 0.05)
             | (dataframe["top_wick_pct_4h"] < 0.05)
             | (dataframe["cti_20_15m"] < -0.5)
@@ -29147,7 +29161,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < -0.0)
             | (dataframe["bb20_2_width_1h"] > 0.22)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] < 0.1)
             | (dataframe["top_wick_pct_1d"] < 0.06)
             | (dataframe["cti_20_15m"] < -0.8)
@@ -29156,13 +29170,13 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.0)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["cti_20_4h"] < -0.8)
             | (dataframe["cti_20_1d"] < 0.8)
             | (dataframe["rsi_14_1d"] < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -29171,14 +29185,14 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["bb20_2_width_1h"] > 0.17)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["rsi_3_15m"] > 10.0)
             | (dataframe["cti_20_1h"] < -0.5)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["is_downtrend_3_1d"] == False)
@@ -29188,7 +29202,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["bb20_2_width_1h"] > 0.18)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_14_15m"] < 20.0)
             | (dataframe["rsi_3_1h"] > 20.0)
@@ -29196,7 +29210,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.0)
             | (dataframe["bb20_2_width_1h"] > 0.16)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -29204,19 +29218,19 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["bb20_2_width_1h"] > 0.19)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_3_15m"] > 30.0)
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"].shift(48) < 0.06)
             | (dataframe["change_pct_4h"] > -0.06)
             | (dataframe["cti_20_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["cti_20_1h"] < -0.0)
@@ -29225,7 +29239,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["bb20_2_width_1h"] > 0.23)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -29234,7 +29248,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_4h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -29244,7 +29258,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["rsi_3_15m"] > 20.0)
             | (dataframe["r_480_4h"] > -90.0)
@@ -29252,13 +29266,13 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_1h"] > 20.0)
             | (dataframe["cti_20_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
@@ -29266,7 +29280,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["high_max_24_4h"] < (dataframe["close"] * 1.5))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_15m"] > 20.0)
@@ -29277,7 +29291,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_4h"] < 0.5)
@@ -29285,7 +29299,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["bb20_2_width_1h"] > 0.22)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -29294,7 +29308,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["bb20_2_width_1h"] > 0.22)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"].shift(48) < 0.16)
             | (dataframe["top_wick_pct_4h"].shift(48) < 0.04)
             | (dataframe["change_pct_4h"] > -0.02)
@@ -29304,12 +29318,12 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["is_downtrend_3_1d"] == False)
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["high_max_6_1d"] < (dataframe["close"] * 1.8))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["top_wick_pct_4h"] < (abs(dataframe["change_pct_4h"]) * 2.0))
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -29318,7 +29332,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["rsi_3_1h"] > 25.0)
@@ -29327,27 +29341,27 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["bb20_2_width_1h"] > 0.25)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_3"] > 10.0)
             | (dataframe["rsi_3_15m"] > 16.0)
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["top_wick_pct_1h"] < (abs(dataframe["change_pct_1h"]) * 4.0))
             | (dataframe["rsi_14_1h"] < 70.0)
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["is_downtrend_3_1d"] == False)
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_1h"] > 30.0)
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["high_max_48_1h"] < (dataframe["close"] * 1.25))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["is_downtrend_3_1d"] == False)
             | (dataframe["r_480_1h"] > -90.0)
             | (dataframe["r_480_4h"] > -90.0)
@@ -29355,7 +29369,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.04)
             | (dataframe["top_wick_pct_1d"] < 0.04)
             | (dataframe["not_downtrend_1h"])
@@ -29364,7 +29378,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -29374,7 +29388,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.0)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < -0.5)
@@ -29384,7 +29398,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_14_15m"] < 30.0)
@@ -29395,7 +29409,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_14_15m"] < 20.0)
@@ -29406,13 +29420,13 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] > -0.02)
             | (dataframe["top_wick_pct_4h"] < 0.02)
             | (dataframe["cti_20_4h"].shift(48) < 0.5)
             | (dataframe["rsi_14_4h"].shift(48) < 70.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["rsi_14_15m"] < 30.0)
             | (dataframe["cti_20_1h"] < 0.5)
@@ -29421,42 +29435,42 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] < 0.06)
             | (dataframe["top_wick_pct_4h"] < 0.06)
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["rsi_14_4h"] < 60.0)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["top_wick_pct_4h"] < (abs(dataframe["change_pct_4h"]) * 2.0))
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["cti_20_4h"] < -0.0)
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["top_wick_pct_4h"] < (abs(dataframe["change_pct_4h"]) * 4.0))
             | (dataframe["rsi_14_1h"] < 40.0)
             | (dataframe["rsi_14_4h"] < 40.0)
             | (dataframe["rsi_14_1d"] < 40.0)
             | (dataframe["cti_20_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] < 0.06)
             | (dataframe["top_wick_pct_4h"] < 0.06)
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] > -0.02)
             | (dataframe["top_wick_pct_4h"] < 0.02)
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_3_15m"] > 25.0)
             | (dataframe["cti_20_4h"] < 0.5)
@@ -29464,7 +29478,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_4_1d"] == False)
             | (dataframe["hl_pct_change_6_1d"] < 0.5)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["is_downtrend_3_4h"] == False)
             | (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
@@ -29472,7 +29486,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["rsi_3_15m"] > 30.0)
             | (dataframe["rsi_3_1h"] > 20.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_1h"] > 6.0)
@@ -29480,7 +29494,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_3"] > 12.0)
             | (dataframe["cti_20_15m"] < -0.0)
             | (dataframe["rsi_14_15m"] < 36.0)
@@ -29490,140 +29504,144 @@ class NostalgiaForInfinityX4(IStrategy):
           )
 
           # Logic
-          item_buy_logic.append(dataframe["bb20_2_width_1h"] > 0.132)
-          item_buy_logic.append(dataframe["cti_20"] < -0.8)
-          item_buy_logic.append(dataframe["r_14"] < -90.0)
+          long_entry_logic.append(dataframe["bb20_2_width_1h"] > 0.132)
+          long_entry_logic.append(dataframe["cti_20"] < -0.8)
+          long_entry_logic.append(dataframe["r_14"] < -90.0)
 
         # Condition #45 - Quick mode (Long).
         if index == 45:
           # Protections
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_45_close_max_12.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_45_close_max_24.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_45_close_max_48.value))
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_45_close_max_12.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_45_close_max_24.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_45_close_max_48.value))
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_1h"] * self.entry_45_high_max_24_1h.value)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_4h"] * self.entry_45_high_max_24_4h.value)
           )
-          item_buy_logic.append(dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_45_high_max_6_1d.value))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_45_hl_pct_change_6_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_45_hl_pct_change_12_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_45_hl_pct_change_24_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_45_hl_pct_change_48_1h.value)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(
+            dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_45_high_max_6_1d.value)
+          )
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_45_hl_pct_change_6_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_45_hl_pct_change_12_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_45_hl_pct_change_24_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_45_hl_pct_change_48_1h.value)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["rsi_3"] > self.entry_45_rsi_3_min.value)
-          item_buy_logic.append(dataframe["rsi_3"] < self.entry_45_rsi_3_max.value)
-          item_buy_logic.append(dataframe["rsi_3_15m"] > self.entry_45_rsi_3_15m_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1h"] > self.entry_45_rsi_3_1h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_4h"] > self.entry_45_rsi_3_4h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1d"] > self.entry_45_rsi_3_1d_min.value)
-          item_buy_logic.append(dataframe["cti_20_1h"] < self.entry_45_cti_20_1h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1h"] < self.entry_45_rsi_14_1h_max.value)
-          item_buy_logic.append(dataframe["cti_20_4h"] < self.entry_45_cti_20_4h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_4h"] < self.entry_45_rsi_14_4h_max.value)
-          item_buy_logic.append(dataframe["cti_20_1d"] < self.entry_45_cti_20_1d_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1d"] < self.entry_45_rsi_14_1d_max.value)
-          item_buy_logic.append(dataframe["r_480_1h"] < self.entry_45_r_480_1h_max.value)
-          item_buy_logic.append(dataframe["r_480_4h"] < self.entry_45_r_480_1h_max.value)
+          long_entry_logic.append(dataframe["rsi_3"] > self.entry_45_rsi_3_min.value)
+          long_entry_logic.append(dataframe["rsi_3"] < self.entry_45_rsi_3_max.value)
+          long_entry_logic.append(dataframe["rsi_3_15m"] > self.entry_45_rsi_3_15m_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1h"] > self.entry_45_rsi_3_1h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_4h"] > self.entry_45_rsi_3_4h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1d"] > self.entry_45_rsi_3_1d_min.value)
+          long_entry_logic.append(dataframe["cti_20_1h"] < self.entry_45_cti_20_1h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1h"] < self.entry_45_rsi_14_1h_max.value)
+          long_entry_logic.append(dataframe["cti_20_4h"] < self.entry_45_cti_20_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_4h"] < self.entry_45_rsi_14_4h_max.value)
+          long_entry_logic.append(dataframe["cti_20_1d"] < self.entry_45_cti_20_1d_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1d"] < self.entry_45_rsi_14_1d_max.value)
+          long_entry_logic.append(dataframe["r_480_1h"] < self.entry_45_r_480_1h_max.value)
+          long_entry_logic.append(dataframe["r_480_4h"] < self.entry_45_r_480_1h_max.value)
 
           if self.entry_45_sup_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
           if self.entry_45_res_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_45_sup_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
           if self.entry_45_res_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_4h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_4h"])
           if self.entry_45_sup_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
           if self.entry_45_res_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
 
           # Logic
-          item_buy_logic.append(dataframe["rsi_14"] > self.entry_45_rsi_14_min.value)
-          item_buy_logic.append(dataframe["rsi_14"] < self.entry_45_rsi_14_max.value)
-          item_buy_logic.append(dataframe["rsi_20"] < dataframe["rsi_20"].shift(1))
-          item_buy_logic.append(dataframe["cti_20"] < self.entry_45_cti_20_max.value)
-          item_buy_logic.append(dataframe["close"] < (dataframe["sma_16"] * self.entry_45_sma_offset.value))
+          long_entry_logic.append(dataframe["rsi_14"] > self.entry_45_rsi_14_min.value)
+          long_entry_logic.append(dataframe["rsi_14"] < self.entry_45_rsi_14_max.value)
+          long_entry_logic.append(dataframe["rsi_20"] < dataframe["rsi_20"].shift(1))
+          long_entry_logic.append(dataframe["cti_20"] < self.entry_45_cti_20_max.value)
+          long_entry_logic.append(dataframe["close"] < (dataframe["sma_16"] * self.entry_45_sma_offset.value))
 
         # Condition #46 - Quick mode (Long).
         if index == 46:
           # Protections
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_46_close_max_12.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_46_close_max_24.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_46_close_max_48.value))
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_46_close_max_12.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_46_close_max_24.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_46_close_max_48.value))
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_1h"] * self.entry_46_high_max_24_1h.value)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_4h"] * self.entry_46_high_max_24_4h.value)
           )
-          item_buy_logic.append(dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_46_high_max_6_1d.value))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_46_hl_pct_change_6_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_46_hl_pct_change_12_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_46_hl_pct_change_24_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_46_hl_pct_change_48_1h.value)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(
+            dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_46_high_max_6_1d.value)
+          )
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_46_hl_pct_change_6_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_46_hl_pct_change_12_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_46_hl_pct_change_24_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_46_hl_pct_change_48_1h.value)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["rsi_3"] > self.entry_46_rsi_3_min.value)
-          item_buy_logic.append(dataframe["rsi_3"] < self.entry_46_rsi_3_max.value)
-          item_buy_logic.append(dataframe["rsi_3_15m"] > self.entry_46_rsi_3_15m_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1h"] > self.entry_46_rsi_3_1h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_4h"] > self.entry_46_rsi_3_4h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1d"] > self.entry_46_rsi_3_1d_min.value)
-          item_buy_logic.append(dataframe["cti_20_1h"] < self.entry_46_cti_20_1h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1h"] < self.entry_46_rsi_14_1h_max.value)
-          item_buy_logic.append(dataframe["cti_20_4h"] < self.entry_46_cti_20_4h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_4h"] < self.entry_46_rsi_14_4h_max.value)
-          item_buy_logic.append(dataframe["cti_20_1d"] < self.entry_46_cti_20_1d_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1d"] < self.entry_46_rsi_14_1d_max.value)
-          item_buy_logic.append(dataframe["r_14_1h"] >= self.entry_46_r_14_1h_min.value)
-          item_buy_logic.append(dataframe["r_14_1h"] <= self.entry_46_r_14_1h_max.value)
-          item_buy_logic.append(dataframe["r_14_4h"] >= self.entry_46_r_14_4h_min.value)
-          item_buy_logic.append(dataframe["r_14_4h"] <= self.entry_46_r_14_4h_max.value)
-          item_buy_logic.append(dataframe["r_480_1h"] >= self.entry_46_r_480_1h_min.value)
-          item_buy_logic.append(dataframe["r_480_1h"] <= self.entry_46_r_480_1h_max.value)
-          item_buy_logic.append(dataframe["r_480_4h"] >= self.entry_46_r_480_4h_min.value)
-          item_buy_logic.append(dataframe["r_480_4h"] <= self.entry_46_r_480_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_3"] > self.entry_46_rsi_3_min.value)
+          long_entry_logic.append(dataframe["rsi_3"] < self.entry_46_rsi_3_max.value)
+          long_entry_logic.append(dataframe["rsi_3_15m"] > self.entry_46_rsi_3_15m_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1h"] > self.entry_46_rsi_3_1h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_4h"] > self.entry_46_rsi_3_4h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1d"] > self.entry_46_rsi_3_1d_min.value)
+          long_entry_logic.append(dataframe["cti_20_1h"] < self.entry_46_cti_20_1h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1h"] < self.entry_46_rsi_14_1h_max.value)
+          long_entry_logic.append(dataframe["cti_20_4h"] < self.entry_46_cti_20_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_4h"] < self.entry_46_rsi_14_4h_max.value)
+          long_entry_logic.append(dataframe["cti_20_1d"] < self.entry_46_cti_20_1d_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1d"] < self.entry_46_rsi_14_1d_max.value)
+          long_entry_logic.append(dataframe["r_14_1h"] >= self.entry_46_r_14_1h_min.value)
+          long_entry_logic.append(dataframe["r_14_1h"] <= self.entry_46_r_14_1h_max.value)
+          long_entry_logic.append(dataframe["r_14_4h"] >= self.entry_46_r_14_4h_min.value)
+          long_entry_logic.append(dataframe["r_14_4h"] <= self.entry_46_r_14_4h_max.value)
+          long_entry_logic.append(dataframe["r_480_1h"] >= self.entry_46_r_480_1h_min.value)
+          long_entry_logic.append(dataframe["r_480_1h"] <= self.entry_46_r_480_1h_max.value)
+          long_entry_logic.append(dataframe["r_480_4h"] >= self.entry_46_r_480_4h_min.value)
+          long_entry_logic.append(dataframe["r_480_4h"] <= self.entry_46_r_480_4h_max.value)
 
           if self.entry_46_sup_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
           if self.entry_46_res_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_46_sup_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
           if self.entry_46_res_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_4h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_4h"])
           if self.entry_46_sup_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
           if self.entry_46_res_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_46_ema_200_not_dec_1h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_48_1h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_48_1h"] == False)
           if self.entry_46_ema_200_not_dec_4h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_24_4h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_24_4h"] == False)
           if self.entry_46_ema_200_not_dec_1d_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_4_1d"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_4_1d"] == False)
           if self.entry_46_not_downtrend_15m_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_15m"])
+            long_entry_logic.append(dataframe["not_downtrend_15m"])
           if self.entry_46_not_downtrend_1h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1h"])
+            long_entry_logic.append(dataframe["not_downtrend_1h"])
           if self.entry_46_not_downtrend_4h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_4h"])
+            long_entry_logic.append(dataframe["not_downtrend_4h"])
           if self.entry_46_not_downtrend_1d_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1d"])
+            long_entry_logic.append(dataframe["not_downtrend_1d"])
 
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["r_480_1h"] > -70.0)
             | (dataframe["r_480_4h"] > -80.0)
@@ -29633,14 +29651,14 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_24_4h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_1d"] < 0.75)
             | (dataframe["rsi_14_1d"] < 40.0)
             | (dataframe["r_480_4h"] > -75.0)
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["r_480_1h"] > -80.0)
             | (dataframe["close"] > dataframe["sup_level_4h"])
@@ -29649,13 +29667,13 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_1d"] < 0.8)
             | (dataframe["rsi_14_1d"] < 50.0)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["r_480_1h"] > -80.0)
             | (dataframe["r_480_4h"] > -60.0)
             | (dataframe["close"] > dataframe["sup_level_4h"])
@@ -29664,21 +29682,21 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["r_480_1h"] > -80.0)
             | (dataframe["r_480_4h"] > -70.0)
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["close"] > dataframe["sup_level_1h"])
             | (dataframe["close"] > dataframe["sup_level_4h"])
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["close"] > (dataframe["high_max_6_1d"] * 0.80))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_4h"] < 0.75)
             | (dataframe["rsi_14_4h"] < 60.0)
             | (dataframe["close"] < dataframe["res_hlevel_1h"])
@@ -29686,7 +29704,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["rsi_14_1d"] < 40.0)
             | (dataframe["r_480_1h"] > -70.0)
@@ -29695,7 +29713,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["close"] > dataframe["sup_level_1d"])
             | (dataframe["ema_200_dec_48_1h"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.03)
             | (dataframe["change_pct_1d"].shift(288) < 0.03)
             | (dataframe["cti_20_1d"] < 0.7)
@@ -29703,21 +29721,21 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["r_480_4h"] > -70.0)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["r_480_4h"] < -25.0)
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["rsi_14_1d"] < 50.0)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["r_480_1h"] < -30.0)
             | (dataframe["r_480_4h"] < -25.0)
             | (dataframe["rsi_14_1d"] < 60.0)
             | (dataframe["rsi_14_max_6_1d"] < 70.0)
             | (dataframe["close"] > dataframe["sup_level_4h"])
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["r_480_1h"] < -35.0)
             | (dataframe["r_480_4h"] < -25.0)
             | (dataframe["rsi_14_1d"] < 50.0)
@@ -29728,91 +29746,93 @@ class NostalgiaForInfinityX4(IStrategy):
           )
 
           # Logic
-          item_buy_logic.append(dataframe["rsi_14"] < self.entry_46_rsi_14_max.value)
-          item_buy_logic.append(dataframe["chandelier_dir_1h"].shift(1) < -0)
-          item_buy_logic.append(dataframe["chandelier_dir_1h"] > 0)
-          item_buy_logic.append(dataframe["close"] > dataframe["zlma_50_1h"])
-          item_buy_logic.append(dataframe["ema_12"] < dataframe["ema_26"])
+          long_entry_logic.append(dataframe["rsi_14"] < self.entry_46_rsi_14_max.value)
+          long_entry_logic.append(dataframe["chandelier_dir_1h"].shift(1) < -0)
+          long_entry_logic.append(dataframe["chandelier_dir_1h"] > 0)
+          long_entry_logic.append(dataframe["close"] > dataframe["zlma_50_1h"])
+          long_entry_logic.append(dataframe["ema_12"] < dataframe["ema_26"])
 
         # Condition #47 - Quick mode (Long).
         if index == 47:
           # Protections
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_47_close_max_12.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_47_close_max_24.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_47_close_max_48.value))
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_47_close_max_12.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_47_close_max_24.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_47_close_max_48.value))
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_1h"] * self.entry_47_high_max_24_1h.value)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_4h"] * self.entry_47_high_max_24_4h.value)
           )
-          item_buy_logic.append(dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_47_high_max_6_1d.value))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_47_hl_pct_change_6_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_47_hl_pct_change_12_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_47_hl_pct_change_24_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_47_hl_pct_change_48_1h.value)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(
+            dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_47_high_max_6_1d.value)
+          )
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_47_hl_pct_change_6_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_47_hl_pct_change_12_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_47_hl_pct_change_24_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_47_hl_pct_change_48_1h.value)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["rsi_3"] > self.entry_47_rsi_3_min.value)
-          item_buy_logic.append(dataframe["rsi_3"] < self.entry_47_rsi_3_max.value)
-          item_buy_logic.append(dataframe["rsi_3_15m"] > self.entry_47_rsi_3_15m_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1h"] > self.entry_47_rsi_3_1h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_4h"] > self.entry_47_rsi_3_4h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1d"] > self.entry_47_rsi_3_1d_min.value)
-          item_buy_logic.append(dataframe["cti_20_1h"] < self.entry_47_cti_20_1h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1h"] < self.entry_47_rsi_14_1h_max.value)
-          item_buy_logic.append(dataframe["cti_20_4h"] < self.entry_47_cti_20_4h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_4h"] < self.entry_47_rsi_14_4h_max.value)
-          item_buy_logic.append(dataframe["cti_20_1d"] < self.entry_47_cti_20_1d_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1d"] < self.entry_47_rsi_14_1d_max.value)
-          item_buy_logic.append(dataframe["r_14_1h"] >= self.entry_47_r_14_1h_min.value)
-          item_buy_logic.append(dataframe["r_14_1h"] <= self.entry_47_r_14_1h_max.value)
-          item_buy_logic.append(dataframe["r_14_4h"] >= self.entry_47_r_14_4h_min.value)
-          item_buy_logic.append(dataframe["r_14_4h"] <= self.entry_47_r_14_4h_max.value)
-          item_buy_logic.append(dataframe["r_480_1h"] >= self.entry_47_r_480_1h_min.value)
-          item_buy_logic.append(dataframe["r_480_1h"] <= self.entry_47_r_480_1h_max.value)
-          item_buy_logic.append(dataframe["r_480_4h"] >= self.entry_47_r_480_4h_min.value)
-          item_buy_logic.append(dataframe["r_480_4h"] <= self.entry_47_r_480_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_3"] > self.entry_47_rsi_3_min.value)
+          long_entry_logic.append(dataframe["rsi_3"] < self.entry_47_rsi_3_max.value)
+          long_entry_logic.append(dataframe["rsi_3_15m"] > self.entry_47_rsi_3_15m_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1h"] > self.entry_47_rsi_3_1h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_4h"] > self.entry_47_rsi_3_4h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1d"] > self.entry_47_rsi_3_1d_min.value)
+          long_entry_logic.append(dataframe["cti_20_1h"] < self.entry_47_cti_20_1h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1h"] < self.entry_47_rsi_14_1h_max.value)
+          long_entry_logic.append(dataframe["cti_20_4h"] < self.entry_47_cti_20_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_4h"] < self.entry_47_rsi_14_4h_max.value)
+          long_entry_logic.append(dataframe["cti_20_1d"] < self.entry_47_cti_20_1d_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1d"] < self.entry_47_rsi_14_1d_max.value)
+          long_entry_logic.append(dataframe["r_14_1h"] >= self.entry_47_r_14_1h_min.value)
+          long_entry_logic.append(dataframe["r_14_1h"] <= self.entry_47_r_14_1h_max.value)
+          long_entry_logic.append(dataframe["r_14_4h"] >= self.entry_47_r_14_4h_min.value)
+          long_entry_logic.append(dataframe["r_14_4h"] <= self.entry_47_r_14_4h_max.value)
+          long_entry_logic.append(dataframe["r_480_1h"] >= self.entry_47_r_480_1h_min.value)
+          long_entry_logic.append(dataframe["r_480_1h"] <= self.entry_47_r_480_1h_max.value)
+          long_entry_logic.append(dataframe["r_480_4h"] >= self.entry_47_r_480_4h_min.value)
+          long_entry_logic.append(dataframe["r_480_4h"] <= self.entry_47_r_480_4h_max.value)
 
           if self.entry_47_sup_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
           if self.entry_47_res_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_47_sup_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
           if self.entry_47_res_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_4h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_4h"])
           if self.entry_47_sup_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
           if self.entry_47_res_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_47_ema_200_not_dec_1h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_48_1h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_48_1h"] == False)
           if self.entry_47_ema_200_not_dec_4h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_24_4h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_24_4h"] == False)
           if self.entry_47_ema_200_not_dec_1d_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_4_1d"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_4_1d"] == False)
           if self.entry_47_not_downtrend_15m_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_15m"])
+            long_entry_logic.append(dataframe["not_downtrend_15m"])
           if self.entry_47_not_downtrend_1h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1h"])
+            long_entry_logic.append(dataframe["not_downtrend_1h"])
           if self.entry_47_not_downtrend_4h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_4h"])
+            long_entry_logic.append(dataframe["not_downtrend_4h"])
           if self.entry_47_not_downtrend_1d_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1d"])
+            long_entry_logic.append(dataframe["not_downtrend_1d"])
 
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1d"])
             | (dataframe["r_480_1h"] > -80.0)
             | (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["close"] > (dataframe["high_max_6_1d"] * 0.75))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3_1h"] > 30.0)
@@ -29820,12 +29840,12 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["close"] > dataframe["sup_level_1h"])
             | (dataframe["close"] > (dataframe["high_max_6_1d"] * 0.80))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["ema_200_dec_48_1h"] == False)
             | (dataframe["close"] > (dataframe["high_max_6_1d"] * 0.70))
             | (dataframe["close"] > (dataframe["high_max_12_1d"] * 0.60))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["rsi_14_4h"] < 70.0)
             | (dataframe["close"] < dataframe["res_hlevel_4h"])
@@ -29833,296 +29853,302 @@ class NostalgiaForInfinityX4(IStrategy):
           )
 
           # Logic
-          item_buy_logic.append(dataframe["rsi_14"] > self.entry_47_rsi_14_min.value)
-          item_buy_logic.append(dataframe["rsi_14"] < self.entry_47_rsi_14_max.value)
-          item_buy_logic.append(dataframe["rsi_20"] > self.entry_47_rsi_20_min.value)
-          item_buy_logic.append(dataframe["rsi_20"] < self.entry_47_rsi_20_max.value)
-          item_buy_logic.append(dataframe["cti_20"] < self.entry_47_cti_20_max.value)
-          item_buy_logic.append(dataframe["chandelier_dir"].shift(1) < -0)
-          item_buy_logic.append(dataframe["chandelier_dir"] > 0)
-          item_buy_logic.append(dataframe["ema_12"] < (dataframe["ema_26"] * self.entry_47_ema_offset.value))
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["rsi_14"] > self.entry_47_rsi_14_min.value)
+          long_entry_logic.append(dataframe["rsi_14"] < self.entry_47_rsi_14_max.value)
+          long_entry_logic.append(dataframe["rsi_20"] > self.entry_47_rsi_20_min.value)
+          long_entry_logic.append(dataframe["rsi_20"] < self.entry_47_rsi_20_max.value)
+          long_entry_logic.append(dataframe["cti_20"] < self.entry_47_cti_20_max.value)
+          long_entry_logic.append(dataframe["chandelier_dir"].shift(1) < -0)
+          long_entry_logic.append(dataframe["chandelier_dir"] > 0)
+          long_entry_logic.append(dataframe["ema_12"] < (dataframe["ema_26"] * self.entry_47_ema_offset.value))
+          long_entry_logic.append(
             dataframe["close"] < (dataframe["high_max_12_1h"] * self.entry_47_high_max_12_1h_max.value)
           )
 
         # Condition #48 - Quick mode (Long).
         if index == 48:
           # Protections
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_48_close_max_12.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_48_close_max_24.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_48_close_max_48.value))
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_48_close_max_12.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_48_close_max_24.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_48_close_max_48.value))
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_1h"] * self.entry_48_high_max_24_1h.value)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_4h"] * self.entry_48_high_max_24_4h.value)
           )
-          item_buy_logic.append(dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_48_high_max_6_1d.value))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_48_hl_pct_change_6_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_48_hl_pct_change_12_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_48_hl_pct_change_24_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_48_hl_pct_change_48_1h.value)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(
+            dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_48_high_max_6_1d.value)
+          )
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_48_hl_pct_change_6_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_48_hl_pct_change_12_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_48_hl_pct_change_24_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_48_hl_pct_change_48_1h.value)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["rsi_3"] > self.entry_48_rsi_3_min.value)
-          item_buy_logic.append(dataframe["rsi_3"] < self.entry_48_rsi_3_max.value)
-          item_buy_logic.append(dataframe["rsi_3_15m"] > self.entry_48_rsi_3_15m_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1h"] > self.entry_48_rsi_3_1h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_4h"] > self.entry_48_rsi_3_4h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1d"] > self.entry_48_rsi_3_1d_min.value)
-          item_buy_logic.append(dataframe["cti_20_1h"] < self.entry_48_cti_20_1h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1h"] < self.entry_48_rsi_14_1h_max.value)
-          item_buy_logic.append(dataframe["cti_20_4h"] < self.entry_48_cti_20_4h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_4h"] < self.entry_48_rsi_14_4h_max.value)
-          item_buy_logic.append(dataframe["cti_20_1d"] < self.entry_48_cti_20_1d_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1d"] < self.entry_48_rsi_14_1d_max.value)
-          item_buy_logic.append(dataframe["r_14_1h"] >= self.entry_48_r_14_1h_min.value)
-          item_buy_logic.append(dataframe["r_14_1h"] <= self.entry_48_r_14_1h_max.value)
-          item_buy_logic.append(dataframe["r_14_4h"] >= self.entry_48_r_14_4h_min.value)
-          item_buy_logic.append(dataframe["r_14_4h"] <= self.entry_48_r_14_4h_max.value)
-          item_buy_logic.append(dataframe["r_480_1h"] >= self.entry_48_r_480_1h_min.value)
-          item_buy_logic.append(dataframe["r_480_1h"] <= self.entry_48_r_480_1h_max.value)
-          item_buy_logic.append(dataframe["r_480_4h"] >= self.entry_48_r_480_4h_min.value)
-          item_buy_logic.append(dataframe["r_480_4h"] <= self.entry_48_r_480_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_3"] > self.entry_48_rsi_3_min.value)
+          long_entry_logic.append(dataframe["rsi_3"] < self.entry_48_rsi_3_max.value)
+          long_entry_logic.append(dataframe["rsi_3_15m"] > self.entry_48_rsi_3_15m_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1h"] > self.entry_48_rsi_3_1h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_4h"] > self.entry_48_rsi_3_4h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1d"] > self.entry_48_rsi_3_1d_min.value)
+          long_entry_logic.append(dataframe["cti_20_1h"] < self.entry_48_cti_20_1h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1h"] < self.entry_48_rsi_14_1h_max.value)
+          long_entry_logic.append(dataframe["cti_20_4h"] < self.entry_48_cti_20_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_4h"] < self.entry_48_rsi_14_4h_max.value)
+          long_entry_logic.append(dataframe["cti_20_1d"] < self.entry_48_cti_20_1d_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1d"] < self.entry_48_rsi_14_1d_max.value)
+          long_entry_logic.append(dataframe["r_14_1h"] >= self.entry_48_r_14_1h_min.value)
+          long_entry_logic.append(dataframe["r_14_1h"] <= self.entry_48_r_14_1h_max.value)
+          long_entry_logic.append(dataframe["r_14_4h"] >= self.entry_48_r_14_4h_min.value)
+          long_entry_logic.append(dataframe["r_14_4h"] <= self.entry_48_r_14_4h_max.value)
+          long_entry_logic.append(dataframe["r_480_1h"] >= self.entry_48_r_480_1h_min.value)
+          long_entry_logic.append(dataframe["r_480_1h"] <= self.entry_48_r_480_1h_max.value)
+          long_entry_logic.append(dataframe["r_480_4h"] >= self.entry_48_r_480_4h_min.value)
+          long_entry_logic.append(dataframe["r_480_4h"] <= self.entry_48_r_480_4h_max.value)
 
           if self.entry_48_sup_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
           if self.entry_48_res_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_48_sup_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
           if self.entry_48_res_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_4h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_4h"])
           if self.entry_48_sup_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
           if self.entry_48_res_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_48_ema_200_not_dec_1h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_48_1h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_48_1h"] == False)
           if self.entry_48_ema_200_not_dec_4h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_24_4h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_24_4h"] == False)
           if self.entry_48_ema_200_not_dec_1d_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_4_1d"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_4_1d"] == False)
           if self.entry_48_not_downtrend_15m_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_15m"])
+            long_entry_logic.append(dataframe["not_downtrend_15m"])
           if self.entry_48_not_downtrend_1h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1h"])
+            long_entry_logic.append(dataframe["not_downtrend_1h"])
           if self.entry_48_not_downtrend_4h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_4h"])
+            long_entry_logic.append(dataframe["not_downtrend_4h"])
           if self.entry_48_not_downtrend_1d_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1d"])
+            long_entry_logic.append(dataframe["not_downtrend_1d"])
           if self.entry_48_ema_50_1h_over_ema_200_1h_enabled.value:
-            item_buy_logic.append(dataframe["ema_50_1h"] > dataframe["ema_200_1h"])
+            long_entry_logic.append(dataframe["ema_50_1h"] > dataframe["ema_200_1h"])
 
           # Logic
-          item_buy_logic.append(dataframe["rsi_14"] < self.entry_48_rsi_14_max.value)
-          item_buy_logic.append(dataframe["cci_20"] < self.entry_48_cci_20_max.value)
-          item_buy_logic.append(dataframe["close"] < (dataframe["sma_30"] * self.entry_48_sma_offset.value))
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["rsi_14"] < self.entry_48_rsi_14_max.value)
+          long_entry_logic.append(dataframe["cci_20"] < self.entry_48_cci_20_max.value)
+          long_entry_logic.append(dataframe["close"] < (dataframe["sma_30"] * self.entry_48_sma_offset.value))
+          long_entry_logic.append(
             ((dataframe["close"] - dataframe["open_min_6"]) / dataframe["open_min_6"]) > self.entry_48_inc_min.value
           )
 
         # Condition #49 - Quick mode (Long).
         if index == 49:
           # Protections
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_49_close_max_12.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_49_close_max_24.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_49_close_max_48.value))
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_49_close_max_12.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_49_close_max_24.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_49_close_max_48.value))
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_1h"] * self.entry_49_high_max_24_1h.value)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_4h"] * self.entry_49_high_max_24_4h.value)
           )
-          item_buy_logic.append(dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_49_high_max_6_1d.value))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_49_hl_pct_change_6_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_49_hl_pct_change_12_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_49_hl_pct_change_24_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_49_hl_pct_change_48_1h.value)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(
+            dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_49_high_max_6_1d.value)
+          )
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_49_hl_pct_change_6_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_49_hl_pct_change_12_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_49_hl_pct_change_24_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_49_hl_pct_change_48_1h.value)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["rsi_3"] > self.entry_49_rsi_3_min.value)
-          item_buy_logic.append(dataframe["rsi_3"] < self.entry_49_rsi_3_max.value)
-          item_buy_logic.append(dataframe["rsi_3_15m"] > self.entry_49_rsi_3_15m_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1h"] > self.entry_49_rsi_3_1h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_4h"] > self.entry_49_rsi_3_4h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1d"] > self.entry_49_rsi_3_1d_min.value)
-          item_buy_logic.append(dataframe["cti_20_1h"] < self.entry_49_cti_20_1h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1h"] < self.entry_49_rsi_14_1h_max.value)
-          item_buy_logic.append(dataframe["cti_20_4h"] < self.entry_49_cti_20_4h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_4h"] < self.entry_49_rsi_14_4h_max.value)
-          item_buy_logic.append(dataframe["cti_20_1d"] < self.entry_49_cti_20_1d_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1d"] < self.entry_49_rsi_14_1d_max.value)
-          item_buy_logic.append(dataframe["r_14_1h"] >= self.entry_49_r_14_1h_min.value)
-          item_buy_logic.append(dataframe["r_14_1h"] <= self.entry_49_r_14_1h_max.value)
-          item_buy_logic.append(dataframe["r_14_4h"] >= self.entry_49_r_14_4h_min.value)
-          item_buy_logic.append(dataframe["r_14_4h"] <= self.entry_49_r_14_4h_max.value)
-          item_buy_logic.append(dataframe["r_480_1h"] >= self.entry_49_r_480_1h_min.value)
-          item_buy_logic.append(dataframe["r_480_1h"] <= self.entry_49_r_480_1h_max.value)
-          item_buy_logic.append(dataframe["r_480_4h"] >= self.entry_49_r_480_4h_min.value)
-          item_buy_logic.append(dataframe["r_480_4h"] <= self.entry_49_r_480_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_3"] > self.entry_49_rsi_3_min.value)
+          long_entry_logic.append(dataframe["rsi_3"] < self.entry_49_rsi_3_max.value)
+          long_entry_logic.append(dataframe["rsi_3_15m"] > self.entry_49_rsi_3_15m_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1h"] > self.entry_49_rsi_3_1h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_4h"] > self.entry_49_rsi_3_4h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1d"] > self.entry_49_rsi_3_1d_min.value)
+          long_entry_logic.append(dataframe["cti_20_1h"] < self.entry_49_cti_20_1h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1h"] < self.entry_49_rsi_14_1h_max.value)
+          long_entry_logic.append(dataframe["cti_20_4h"] < self.entry_49_cti_20_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_4h"] < self.entry_49_rsi_14_4h_max.value)
+          long_entry_logic.append(dataframe["cti_20_1d"] < self.entry_49_cti_20_1d_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1d"] < self.entry_49_rsi_14_1d_max.value)
+          long_entry_logic.append(dataframe["r_14_1h"] >= self.entry_49_r_14_1h_min.value)
+          long_entry_logic.append(dataframe["r_14_1h"] <= self.entry_49_r_14_1h_max.value)
+          long_entry_logic.append(dataframe["r_14_4h"] >= self.entry_49_r_14_4h_min.value)
+          long_entry_logic.append(dataframe["r_14_4h"] <= self.entry_49_r_14_4h_max.value)
+          long_entry_logic.append(dataframe["r_480_1h"] >= self.entry_49_r_480_1h_min.value)
+          long_entry_logic.append(dataframe["r_480_1h"] <= self.entry_49_r_480_1h_max.value)
+          long_entry_logic.append(dataframe["r_480_4h"] >= self.entry_49_r_480_4h_min.value)
+          long_entry_logic.append(dataframe["r_480_4h"] <= self.entry_49_r_480_4h_max.value)
 
           if self.entry_49_sup_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
           if self.entry_49_res_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_49_sup_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
           if self.entry_49_res_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_4h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_4h"])
           if self.entry_49_sup_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
           if self.entry_49_res_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_49_ema_200_not_dec_1h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_48_1h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_48_1h"] == False)
           if self.entry_49_ema_200_not_dec_4h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_24_4h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_24_4h"] == False)
           if self.entry_49_ema_200_not_dec_1d_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_4_1d"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_4_1d"] == False)
           if self.entry_49_not_downtrend_15m_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_15m"])
+            long_entry_logic.append(dataframe["not_downtrend_15m"])
           if self.entry_49_not_downtrend_1h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1h"])
+            long_entry_logic.append(dataframe["not_downtrend_1h"])
           if self.entry_49_not_downtrend_4h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_4h"])
+            long_entry_logic.append(dataframe["not_downtrend_4h"])
           if self.entry_49_not_downtrend_1d_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1d"])
+            long_entry_logic.append(dataframe["not_downtrend_1d"])
           if self.entry_49_ema_12_1h_over_ema_200_1h_enabled.value:
-            item_buy_logic.append(dataframe["ema_12_1h"] > dataframe["ema_200_1h"])
+            long_entry_logic.append(dataframe["ema_12_1h"] > dataframe["ema_200_1h"])
 
           # Logic
-          item_buy_logic.append(dataframe["rsi_14"] < self.entry_49_rsi_14_max.value)
-          # item_buy_logic.append(dataframe["r_14"] < self.entry_49_r_14_max.value)
-          # item_buy_logic.append(dataframe["cci_20"] < self.entry_49_cci_20_max.value)
-          # item_buy_logic.append(dataframe["close"] < (dataframe["sma_30"] * self.entry_49_sma_offset.value))
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["rsi_14"] < self.entry_49_rsi_14_max.value)
+          # long_entry_logic.append(dataframe["r_14"] < self.entry_49_r_14_max.value)
+          # long_entry_logic.append(dataframe["cci_20"] < self.entry_49_cci_20_max.value)
+          # long_entry_logic.append(dataframe["close"] < (dataframe["sma_30"] * self.entry_49_sma_offset.value))
+          long_entry_logic.append(
             ((dataframe["close"] - dataframe["open_min_12"]) / dataframe["open_min_12"]) > self.entry_49_inc_min.value
           )
 
         # Condition #50 - Quick mode (Long)
         if index == 50:
           # Protections
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_50_close_max_12.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_50_close_max_24.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_50_close_max_48.value))
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_50_close_max_12.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_50_close_max_24.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_50_close_max_48.value))
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_1h"] * self.entry_50_high_max_24_1h.value)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_4h"] * self.entry_50_high_max_24_4h.value)
           )
-          item_buy_logic.append(dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_50_high_max_6_1d.value))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_50_hl_pct_change_6_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_50_hl_pct_change_12_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_50_hl_pct_change_24_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_50_hl_pct_change_48_1h.value)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(
+            dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_50_high_max_6_1d.value)
+          )
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_50_hl_pct_change_6_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_50_hl_pct_change_12_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_50_hl_pct_change_24_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_50_hl_pct_change_48_1h.value)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["rsi_3"] >= self.entry_50_rsi_3_min.value)
-          item_buy_logic.append(dataframe["rsi_3"] <= self.entry_50_rsi_3_max.value)
-          item_buy_logic.append(dataframe["rsi_3_15m"] >= self.entry_50_rsi_3_15m_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1h"] >= self.entry_50_rsi_3_1h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_4h"] >= self.entry_50_rsi_3_4h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1d"] >= self.entry_50_rsi_3_1d_min.value)
-          item_buy_logic.append(dataframe["cti_20_1h"] <= self.entry_50_cti_20_1h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1h"] <= self.entry_50_rsi_14_1h_max.value)
-          item_buy_logic.append(dataframe["cti_20_4h"] <= self.entry_50_cti_20_4h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_4h"] <= self.entry_50_rsi_14_4h_max.value)
-          item_buy_logic.append(dataframe["cti_20_1d"] <= self.entry_50_cti_20_1d_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1d"] <= self.entry_50_rsi_14_1d_max.value)
-          item_buy_logic.append(dataframe["r_14_1h"] >= self.entry_50_r_14_1h_min.value)
-          item_buy_logic.append(dataframe["r_14_1h"] <= self.entry_50_r_14_1h_max.value)
-          item_buy_logic.append(dataframe["r_14_4h"] >= self.entry_50_r_14_4h_min.value)
-          item_buy_logic.append(dataframe["r_14_4h"] <= self.entry_50_r_14_4h_max.value)
-          item_buy_logic.append(dataframe["r_480_1h"] >= self.entry_50_r_480_1h_min.value)
-          item_buy_logic.append(dataframe["r_480_1h"] <= self.entry_50_r_480_1h_max.value)
-          item_buy_logic.append(dataframe["r_480_4h"] >= self.entry_50_r_480_4h_min.value)
-          item_buy_logic.append(dataframe["r_480_4h"] <= self.entry_50_r_480_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_3"] >= self.entry_50_rsi_3_min.value)
+          long_entry_logic.append(dataframe["rsi_3"] <= self.entry_50_rsi_3_max.value)
+          long_entry_logic.append(dataframe["rsi_3_15m"] >= self.entry_50_rsi_3_15m_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1h"] >= self.entry_50_rsi_3_1h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_4h"] >= self.entry_50_rsi_3_4h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1d"] >= self.entry_50_rsi_3_1d_min.value)
+          long_entry_logic.append(dataframe["cti_20_1h"] <= self.entry_50_cti_20_1h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1h"] <= self.entry_50_rsi_14_1h_max.value)
+          long_entry_logic.append(dataframe["cti_20_4h"] <= self.entry_50_cti_20_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_4h"] <= self.entry_50_rsi_14_4h_max.value)
+          long_entry_logic.append(dataframe["cti_20_1d"] <= self.entry_50_cti_20_1d_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1d"] <= self.entry_50_rsi_14_1d_max.value)
+          long_entry_logic.append(dataframe["r_14_1h"] >= self.entry_50_r_14_1h_min.value)
+          long_entry_logic.append(dataframe["r_14_1h"] <= self.entry_50_r_14_1h_max.value)
+          long_entry_logic.append(dataframe["r_14_4h"] >= self.entry_50_r_14_4h_min.value)
+          long_entry_logic.append(dataframe["r_14_4h"] <= self.entry_50_r_14_4h_max.value)
+          long_entry_logic.append(dataframe["r_480_1h"] >= self.entry_50_r_480_1h_min.value)
+          long_entry_logic.append(dataframe["r_480_1h"] <= self.entry_50_r_480_1h_max.value)
+          long_entry_logic.append(dataframe["r_480_4h"] >= self.entry_50_r_480_4h_min.value)
+          long_entry_logic.append(dataframe["r_480_4h"] <= self.entry_50_r_480_4h_max.value)
 
           if self.entry_50_sup_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
           if self.entry_50_res_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_50_sup_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
           if self.entry_50_res_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_4h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_4h"])
           if self.entry_50_sup_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
           if self.entry_50_res_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_50_ema_200_not_dec_1h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_48_1h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_48_1h"] == False)
           if self.entry_50_ema_200_not_dec_4h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_24_4h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_24_4h"] == False)
           if self.entry_50_ema_200_not_dec_1d_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_4_1d"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_4_1d"] == False)
           if self.entry_50_not_downtrend_15m_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_15m"])
+            long_entry_logic.append(dataframe["not_downtrend_15m"])
           if self.entry_50_not_downtrend_1h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1h"])
+            long_entry_logic.append(dataframe["not_downtrend_1h"])
           if self.entry_50_not_downtrend_4h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_4h"])
+            long_entry_logic.append(dataframe["not_downtrend_4h"])
           if self.entry_50_not_downtrend_1d_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1d"])
+            long_entry_logic.append(dataframe["not_downtrend_1d"])
           if self.entry_50_ema_12_1h_over_ema_200_1h_enabled.value:
-            item_buy_logic.append(dataframe["ema_12_1h"] > dataframe["ema_200_1h"])
+            long_entry_logic.append(dataframe["ema_12_1h"] > dataframe["ema_200_1h"])
 
           # Logic
-          item_buy_logic.append(dataframe["close"] < (dataframe["bb20_2_low"] * self.entry_50_bb_offset.value))
-          item_buy_logic.append(dataframe["ema_26"] > dataframe["ema_12"])
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["close"] < (dataframe["bb20_2_low"] * self.entry_50_bb_offset.value))
+          long_entry_logic.append(dataframe["ema_26"] > dataframe["ema_12"])
+          long_entry_logic.append(
             (dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * self.entry_50_ema_open_offset.value)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["ema_26"].shift() - dataframe["ema_12"].shift()) > (dataframe["open"] / 100.0)
           )
 
         # Condition #61 - Rebuy mode (Long).
         if index == 61:
           # Protections
-          item_buy_logic.append(dataframe["protections_long_global"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["protections_long_rebuy"] == True)
-          item_buy_logic.append(current_free_slots >= self.rebuy_mode_min_free_slots)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
-          item_buy_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.24))
-          item_buy_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.3))
-          item_buy_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.5))
-          item_buy_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.75))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < 0.4)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < 0.5)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < 0.75)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < 0.9)
+          long_entry_logic.append(dataframe["protections_long_global"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["protections_long_rebuy"] == True)
+          long_entry_logic.append(current_free_slots >= self.rebuy_mode_min_free_slots)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.2))
+          long_entry_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.24))
+          long_entry_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.3))
+          long_entry_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.5))
+          long_entry_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.75))
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < 0.4)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < 0.5)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < 0.75)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < 0.9)
 
-          item_buy_logic.append(dataframe["rsi_3_15m"] > 6.0)
-          item_buy_logic.append(dataframe["rsi_3_1h"] > 6.0)
-          item_buy_logic.append(dataframe["rsi_3_4h"] > 6.0)
-          item_buy_logic.append(dataframe["cti_20_15m"] < 0.9)
-          item_buy_logic.append(dataframe["cti_20_1h"] < 0.9)
-          item_buy_logic.append(dataframe["cti_20_4h"] < 0.9)
-          item_buy_logic.append(dataframe["cti_20_1d"] < 0.9)
+          long_entry_logic.append(dataframe["rsi_3_15m"] > 6.0)
+          long_entry_logic.append(dataframe["rsi_3_1h"] > 6.0)
+          long_entry_logic.append(dataframe["rsi_3_4h"] > 6.0)
+          long_entry_logic.append(dataframe["cti_20_15m"] < 0.9)
+          long_entry_logic.append(dataframe["cti_20_1h"] < 0.9)
+          long_entry_logic.append(dataframe["cti_20_4h"] < 0.9)
+          long_entry_logic.append(dataframe["cti_20_1d"] < 0.9)
 
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1h"] > -0.01) | (dataframe["cti_20_1h"] < 0.7) | (dataframe["rsi_14_1h"] < 50.0)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["rsi_3"] > 16.0)
@@ -30130,105 +30156,105 @@ class NostalgiaForInfinityX4(IStrategy):
           )
 
           # Logic
-          item_buy_logic.append(dataframe["rsi_14"] < 40.0)
-          item_buy_logic.append(dataframe["bb40_2_delta"].gt(dataframe["close"] * 0.03))
-          item_buy_logic.append(dataframe["close_delta"].gt(dataframe["close"] * 0.018))
-          item_buy_logic.append(dataframe["bb40_2_tail"].lt(dataframe["bb40_2_delta"] * 0.4))
-          item_buy_logic.append(dataframe["close"].lt(dataframe["bb40_2_low"].shift()))
-          item_buy_logic.append(dataframe["close"].le(dataframe["close"].shift()))
+          long_entry_logic.append(dataframe["rsi_14"] < 40.0)
+          long_entry_logic.append(dataframe["bb40_2_delta"].gt(dataframe["close"] * 0.03))
+          long_entry_logic.append(dataframe["close_delta"].gt(dataframe["close"] * 0.018))
+          long_entry_logic.append(dataframe["bb40_2_tail"].lt(dataframe["bb40_2_delta"] * 0.4))
+          long_entry_logic.append(dataframe["close"].lt(dataframe["bb40_2_low"].shift()))
+          long_entry_logic.append(dataframe["close"].le(dataframe["close"].shift()))
 
         # Condition #81 - Long mode bull.
         if index == 81:
           # Protections
-          item_buy_logic.append(dataframe["protections_long_global"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.12))
-          item_buy_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.16))
-          item_buy_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.2))
-          item_buy_logic.append(dataframe["high_max_6_1h"] < (dataframe["close"] * 1.24))
+          long_entry_logic.append(dataframe["protections_long_global"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.12))
+          long_entry_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.16))
+          long_entry_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.2))
+          long_entry_logic.append(dataframe["high_max_6_1h"] < (dataframe["close"] * 1.24))
 
-          item_buy_logic.append(dataframe["cti_20_1h"] < 0.95)
-          item_buy_logic.append(dataframe["cti_20_4h"] < 0.95)
-          item_buy_logic.append(dataframe["rsi_14_1h"] < 85.0)
-          item_buy_logic.append(dataframe["rsi_14_4h"] < 85.0)
-          item_buy_logic.append(dataframe["rsi_14_1d"] < 85.0)
-          item_buy_logic.append(dataframe["r_14_1h"] < -25.0)
-          item_buy_logic.append(dataframe["r_14_4h"] < -25.0)
+          long_entry_logic.append(dataframe["cti_20_1h"] < 0.95)
+          long_entry_logic.append(dataframe["cti_20_4h"] < 0.95)
+          long_entry_logic.append(dataframe["rsi_14_1h"] < 85.0)
+          long_entry_logic.append(dataframe["rsi_14_4h"] < 85.0)
+          long_entry_logic.append(dataframe["rsi_14_1d"] < 85.0)
+          long_entry_logic.append(dataframe["r_14_1h"] < -25.0)
+          long_entry_logic.append(dataframe["r_14_4h"] < -25.0)
 
-          item_buy_logic.append(dataframe["pct_change_high_max_6_24_1h"] > -0.3)
-          item_buy_logic.append(dataframe["pct_change_high_max_3_12_4h"] > -0.4)
+          long_entry_logic.append(dataframe["pct_change_high_max_6_24_1h"] > -0.3)
+          long_entry_logic.append(dataframe["pct_change_high_max_3_12_4h"] > -0.4)
 
-          item_buy_logic.append(dataframe["not_downtrend_15m"])
+          long_entry_logic.append(dataframe["not_downtrend_15m"])
 
           # current 4h relative long top wick, overbought 1h, downtrend 1h, downtrend 4h
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["top_wick_pct_4h"] < (abs(dataframe["change_pct_4h"]) * 2.0))
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["ema_200_1h"] > dataframe["ema_200_1h"].shift(288))
             | (dataframe["ema_200_4h"] > dataframe["ema_200_4h"].shift(576))
           )
           # current 4h relative long top wick, overbought 1d
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["top_wick_pct_4h"] < (abs(dataframe["change_pct_4h"]) * 6.0)) | (dataframe["cti_20_1d"] < 0.5)
           )
           # current 4h relative long top wick, overbought 1h, downtrend 1h
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["top_wick_pct_4h"] < (abs(dataframe["change_pct_4h"]) * 2.0))
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["not_downtrend_1h"])
           )
           # big drop in last 48h, downtrend 1h
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["high_max_48_1h"] < (dataframe["close"] * 1.5)) | (dataframe["not_downtrend_1h"])
           )
           # downtrend 1h, downtrend 4h, drop in last 2h
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["not_downtrend_4h"])
             | (dataframe["close_max_24"] < (dataframe["close"] * 1.1))
           )
           # downtrend 1h, overbought 1h
-          item_buy_logic.append((dataframe["not_downtrend_1h"]) | (dataframe["cti_20_1h"] < 0.5))
+          long_entry_logic.append((dataframe["not_downtrend_1h"]) | (dataframe["cti_20_1h"] < 0.5))
           # downtrend 1h, overbought 4h
-          item_buy_logic.append((dataframe["not_downtrend_1h"]) | (dataframe["cti_20_4h"] < 0.5))
+          long_entry_logic.append((dataframe["not_downtrend_1h"]) | (dataframe["cti_20_4h"] < 0.5))
           # downtrend 1h, downtrend 4h, overbought 1d
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"]) | (dataframe["not_downtrend_4h"]) | (dataframe["cti_20_1d"] < 0.5)
           )
           # downtrend 1d, overbought 1d
-          item_buy_logic.append((dataframe["is_downtrend_3_1d"] == False) | (dataframe["cti_20_1d"] < 0.5))
+          long_entry_logic.append((dataframe["is_downtrend_3_1d"] == False) | (dataframe["cti_20_1d"] < 0.5))
           # downtrend 1d, downtrend 1h
-          item_buy_logic.append((dataframe["is_downtrend_3_1d"] == False) | (dataframe["not_downtrend_1h"]))
+          long_entry_logic.append((dataframe["is_downtrend_3_1d"] == False) | (dataframe["not_downtrend_1h"]))
           # current 4h red, previous 4h green, overbought 4h
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] > -0.06)
             | (dataframe["change_pct_4h"].shift(48) < 0.06)
             | (dataframe["cti_20_4h"] < 0.5)
           )
           # current 1d long green with long top wick
-          item_buy_logic.append((dataframe["change_pct_1d"] < 0.12) | (dataframe["top_wick_pct_1d"] < 0.12))
+          long_entry_logic.append((dataframe["change_pct_1d"] < 0.12) | (dataframe["top_wick_pct_1d"] < 0.12))
           # current 1d long 1d with top wick, overbought 1d, downtrend 1h
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] < 0.2)
             | (dataframe["top_wick_pct_1d"] < 0.04)
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["not_downtrend_1h"])
           )
           # current 1d long red, overbought 1d, downtrend 1h
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.1) | (dataframe["cti_20_1d"] < 0.5) | (dataframe["not_downtrend_1h"])
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.5)
             | (dataframe["cti_20_1h"] < 0.5)
             | (dataframe["cti_20_4h"] < -0.0)
             | (dataframe["cti_20_1d"] < 0.75)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.0)
             | (dataframe["cti_20_1h"] < -0.0)
             | (dataframe["cti_20_4h"] < -0.0)
@@ -30238,59 +30264,59 @@ class NostalgiaForInfinityX4(IStrategy):
           )
 
           # Logic
-          item_buy_logic.append(dataframe["bb40_2_delta"].gt(dataframe["close"] * 0.052))
-          item_buy_logic.append(dataframe["close_delta"].gt(dataframe["close"] * 0.024))
-          item_buy_logic.append(dataframe["bb40_2_tail"].lt(dataframe["bb40_2_delta"] * 0.2))
-          item_buy_logic.append(dataframe["close"].lt(dataframe["bb40_2_low"].shift()))
-          item_buy_logic.append(dataframe["close"].le(dataframe["close"].shift()))
-          item_buy_logic.append(dataframe["rsi_14"] < 30.0)
+          long_entry_logic.append(dataframe["bb40_2_delta"].gt(dataframe["close"] * 0.052))
+          long_entry_logic.append(dataframe["close_delta"].gt(dataframe["close"] * 0.024))
+          long_entry_logic.append(dataframe["bb40_2_tail"].lt(dataframe["bb40_2_delta"] * 0.2))
+          long_entry_logic.append(dataframe["close"].lt(dataframe["bb40_2_low"].shift()))
+          long_entry_logic.append(dataframe["close"].le(dataframe["close"].shift()))
+          long_entry_logic.append(dataframe["rsi_14"] < 30.0)
 
         # Condition #82 - Long mode bull.
         if index == 82:
           # Protections
-          item_buy_logic.append(dataframe["protections_long_global"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.2))
-          item_buy_logic.append(dataframe["high_max_12_1h"] < (dataframe["close"] * 1.3))
+          long_entry_logic.append(dataframe["protections_long_global"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.2))
+          long_entry_logic.append(dataframe["high_max_12_1h"] < (dataframe["close"] * 1.3))
 
-          item_buy_logic.append(dataframe["ema_50_1h"] > dataframe["ema_200_1h"])
-          item_buy_logic.append(dataframe["sma_50_1h"] > dataframe["sma_200_1h"])
+          long_entry_logic.append(dataframe["ema_50_1h"] > dataframe["ema_200_1h"])
+          long_entry_logic.append(dataframe["sma_50_1h"] > dataframe["sma_200_1h"])
 
-          item_buy_logic.append(dataframe["ema_50_4h"] > dataframe["ema_200_4h"])
-          item_buy_logic.append(dataframe["sma_50_4h"] > dataframe["sma_200_4h"])
+          long_entry_logic.append(dataframe["ema_50_4h"] > dataframe["ema_200_4h"])
+          long_entry_logic.append(dataframe["sma_50_4h"] > dataframe["sma_200_4h"])
 
-          item_buy_logic.append(dataframe["rsi_14_4h"] < 85.0)
-          item_buy_logic.append(dataframe["rsi_14_1d"] < 85.0)
-          item_buy_logic.append(dataframe["r_480_4h"] < -10.0)
+          long_entry_logic.append(dataframe["rsi_14_4h"] < 85.0)
+          long_entry_logic.append(dataframe["rsi_14_1d"] < 85.0)
+          long_entry_logic.append(dataframe["r_480_4h"] < -10.0)
 
           # current 1d long green with long top wick
-          item_buy_logic.append((dataframe["change_pct_1d"] < 0.12) | (dataframe["top_wick_pct_1d"] < 0.12))
+          long_entry_logic.append((dataframe["change_pct_1d"] < 0.12) | (dataframe["top_wick_pct_1d"] < 0.12))
           # overbought 1d, overbought 4h, downtrend 1h, drop in last 2h
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["rsi_14_1d"] < 70.0)
             | (dataframe["rsi_14_4h"] < 70.0)
             | (dataframe["not_downtrend_1h"])
             | (dataframe["close_max_24"] < (dataframe["close"] * 1.1))
           )
           # current 4h red, downtrend 1h, overbought 4h, drop in last 2h
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] > -0.06)
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_4h"] < 0.5)
             | (dataframe["close_max_24"] < (dataframe["close"] * 1.1))
           )
           # current 4h long red, downtrend 1h, overbought 1d, drop in last 2h
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] > -0.12)
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_1d"] < 0.8)
             | (dataframe["close_max_24"] < (dataframe["close"] * 1.1))
           )
           # current 1d red, overbought 1d, downtrend 1h, downtrend 4h, drop in last 2h
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.12)
             | (dataframe["cti_20_1d"] < 0.85)
             | (dataframe["not_downtrend_1h"])
@@ -30298,7 +30324,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["close_max_24"] < (dataframe["close"] * 1.1))
           )
           # current 1d red, overbought 1d, downtrend 1h, current 4h red, previous 4h green with top wick
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.08)
             | (dataframe["cti_20_1d"] < 0.85)
             | (dataframe["not_downtrend_1h"])
@@ -30307,61 +30333,61 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["top_wick_pct_4h"].shift(48) < 0.04)
           )
           # current 1d long red with long top wick, overbought 1d, drop in last 2h
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.12)
             | (dataframe["top_wick_pct_1d"] < 0.12)
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["close_max_24"] < (dataframe["close"] * 1.1))
           )
           # current 1d long red, overbought 1d, drop in last 2h
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.16)
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["close_max_24"] < (dataframe["close"] * 1.1))
           )
           # current 4h red with top wick, overbought 1d
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] > -0.04)
             | (dataframe["top_wick_pct_4h"] < 0.04)
             | (dataframe["cti_20_1d"] < 0.85)
           )
           # current 4h green with top wick, overbought 4h
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] < 0.04)
             | (dataframe["top_wick_pct_4h"] < 0.04)
             | (dataframe["rsi_14_4h"] < 70.0)
           )
           # current 4h red, downtrend 1h, overbought 1d
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_4h"] > -0.04) | (dataframe["not_downtrend_1h"]) | (dataframe["cti_20_1d"] < 0.5)
           )
           # current 1d long relative top wick, overbought 1d, drop in last 2h
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["top_wick_pct_1d"] < (abs(dataframe["change_pct_1d"]) * 4.0))
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["close_max_24"] < (dataframe["close"] * 1.1))
           )
           # current 4h relative long top wick, overbought 1d, drop in last 2h
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["top_wick_pct_4h"] < (abs(dataframe["change_pct_4h"]) * 4.0))
             | (dataframe["cti_20_1d"] < 0.85)
             | (dataframe["rsi_14_1d"] < 50.0)
             | (dataframe["close_max_24"] < (dataframe["close"] * 1.1))
           )
           # current and previous 1d red, overbought 1d, drop in last 2h
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] > -0.04)
             | (dataframe["change_pct_1d"].shift(288) > -0.04)
             | (dataframe["cti_20_1d"] < 0.5)
             | (dataframe["close_max_24"] < (dataframe["close"] * 1.1))
           )
           # current 4h long green, overbought 4h, drop in last 2h
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["change_pct_1d"] < 0.08)
             | (dataframe["rsi_14_4h"] < 70.0)
             | (dataframe["close_max_24"] < (dataframe["close"] * 1.1))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_15m"])
             | (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_1h"] < -0.5)
@@ -30370,7 +30396,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["ema_200_dec_24_4h"] == False)
             | (dataframe["ema_200_dec_4_1d"] == False)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.8)
             | (dataframe["rsi_3_15m"] > 10.0)
@@ -30379,7 +30405,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["not_downtrend_1h"])
             | (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["rsi_3_15m"] > 30.0)
@@ -30388,7 +30414,7 @@ class NostalgiaForInfinityX4(IStrategy):
             | (dataframe["cti_20_4h"] < -0.0)
             | ((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.04))
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["cti_20_15m"] < -0.9)
             | (dataframe["cti_20_1h"] < -0.8)
             | (dataframe["cti_20_4h"] < 0.75)
@@ -30398,720 +30424,736 @@ class NostalgiaForInfinityX4(IStrategy):
           )
 
           # Logic
-          item_buy_logic.append(dataframe["ema_26"] > dataframe["ema_12"])
-          item_buy_logic.append((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["ema_26"] > dataframe["ema_12"])
+          long_entry_logic.append((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.03))
+          long_entry_logic.append(
             (dataframe["ema_26"].shift() - dataframe["ema_12"].shift()) > (dataframe["open"] / 100)
           )
-          item_buy_logic.append(dataframe["cti_20"] < -0.8)
+          long_entry_logic.append(dataframe["cti_20"] < -0.8)
 
         # Condition #101 - Long mode rapid
         if index == 101:
           # Protections
-          item_buy_logic.append(dataframe["protections_long_global"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.18))
-          item_buy_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.2))
-          item_buy_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.22))
-          item_buy_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.24))
-          item_buy_logic.append(dataframe["high_max_48_1h"] < (dataframe["close"] * 1.26))
-          item_buy_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.5))
-          item_buy_logic.append(dataframe["high_max_12_1d"] < (dataframe["close"] * 1.6))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < 0.4)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < 0.5)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < 0.75)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < 0.8)
-          item_buy_logic.append(dataframe["hl_pct_change_6_1d"] < 0.9)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(dataframe["protections_long_global"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close_max_12"] < (dataframe["close"] * 1.18))
+          long_entry_logic.append(dataframe["close_max_24"] < (dataframe["close"] * 1.2))
+          long_entry_logic.append(dataframe["close_max_48"] < (dataframe["close"] * 1.22))
+          long_entry_logic.append(dataframe["high_max_24_1h"] < (dataframe["close"] * 1.24))
+          long_entry_logic.append(dataframe["high_max_48_1h"] < (dataframe["close"] * 1.26))
+          long_entry_logic.append(dataframe["high_max_24_4h"] < (dataframe["close"] * 1.5))
+          long_entry_logic.append(dataframe["high_max_12_1d"] < (dataframe["close"] * 1.6))
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < 0.4)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < 0.5)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < 0.75)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < 0.8)
+          long_entry_logic.append(dataframe["hl_pct_change_6_1d"] < 0.9)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["rsi_3"] > 4.0)
-          item_buy_logic.append(dataframe["rsi_3_15m"] > 6.0)
-          item_buy_logic.append(dataframe["cti_20_1h"] < 0.8)
-          item_buy_logic.append(dataframe["rsi_14_1h"] < 80.0)
-          item_buy_logic.append(dataframe["cti_20_4h"] < 0.8)
-          item_buy_logic.append(dataframe["rsi_14_4h"] < 80.0)
-          item_buy_logic.append(dataframe["cti_20_1d"] < 0.8)
-          item_buy_logic.append(dataframe["rsi_14_1d"] < 80.0)
+          long_entry_logic.append(dataframe["rsi_3"] > 4.0)
+          long_entry_logic.append(dataframe["rsi_3_15m"] > 6.0)
+          long_entry_logic.append(dataframe["cti_20_1h"] < 0.8)
+          long_entry_logic.append(dataframe["rsi_14_1h"] < 80.0)
+          long_entry_logic.append(dataframe["cti_20_4h"] < 0.8)
+          long_entry_logic.append(dataframe["rsi_14_4h"] < 80.0)
+          long_entry_logic.append(dataframe["cti_20_1d"] < 0.8)
+          long_entry_logic.append(dataframe["rsi_14_1d"] < 80.0)
 
           # Logic
-          item_buy_logic.append(dataframe["rsi_14"] < 36.0)
-          item_buy_logic.append(dataframe["rsi_14"] < dataframe["rsi_14"].shift(1))
-          item_buy_logic.append(dataframe["close"] < (dataframe["sma_16"] * 0.956))
-          item_buy_logic.append(dataframe["cti_20_15m"] < -0.5)
+          long_entry_logic.append(dataframe["rsi_14"] < 36.0)
+          long_entry_logic.append(dataframe["rsi_14"] < dataframe["rsi_14"].shift(1))
+          long_entry_logic.append(dataframe["close"] < (dataframe["sma_16"] * 0.956))
+          long_entry_logic.append(dataframe["cti_20_15m"] < -0.5)
 
         # Condition #102 - Long mode rapid
         if index == 102:
           # Protections
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_102_close_max_12.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_102_close_max_24.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_102_close_max_48.value))
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_102_close_max_12.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_102_close_max_24.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_102_close_max_48.value))
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_1h"] * self.entry_102_high_max_24_1h.value)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_4h"] * self.entry_102_high_max_24_4h.value)
           )
-          item_buy_logic.append(dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_102_high_max_6_1d.value))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_102_hl_pct_change_6_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_102_hl_pct_change_12_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_102_hl_pct_change_24_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_102_hl_pct_change_48_1h.value)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(
+            dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_102_high_max_6_1d.value)
+          )
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_102_hl_pct_change_6_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_102_hl_pct_change_12_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_102_hl_pct_change_24_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_102_hl_pct_change_48_1h.value)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["rsi_3"] > self.entry_102_rsi_3_min.value)
-          item_buy_logic.append(dataframe["rsi_3"] < self.entry_102_rsi_3_max.value)
-          item_buy_logic.append(dataframe["rsi_3_15m"] > self.entry_102_rsi_3_15m_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1h"] > self.entry_102_rsi_3_1h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_4h"] > self.entry_102_rsi_3_4h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1d"] > self.entry_102_rsi_3_1d_min.value)
-          item_buy_logic.append(dataframe["cti_20_1h"] < self.entry_102_cti_20_1h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1h"] < self.entry_102_rsi_14_1h_max.value)
-          item_buy_logic.append(dataframe["cti_20_4h"] < self.entry_102_cti_20_4h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_4h"] < self.entry_102_rsi_14_4h_max.value)
-          item_buy_logic.append(dataframe["cti_20_1d"] < self.entry_102_cti_20_1d_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1d"] < self.entry_102_rsi_14_1d_max.value)
-          item_buy_logic.append(dataframe["r_480_1h"] < self.entry_102_r_480_1h_max.value)
-          item_buy_logic.append(dataframe["r_480_4h"] < self.entry_102_r_480_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_3"] > self.entry_102_rsi_3_min.value)
+          long_entry_logic.append(dataframe["rsi_3"] < self.entry_102_rsi_3_max.value)
+          long_entry_logic.append(dataframe["rsi_3_15m"] > self.entry_102_rsi_3_15m_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1h"] > self.entry_102_rsi_3_1h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_4h"] > self.entry_102_rsi_3_4h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1d"] > self.entry_102_rsi_3_1d_min.value)
+          long_entry_logic.append(dataframe["cti_20_1h"] < self.entry_102_cti_20_1h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1h"] < self.entry_102_rsi_14_1h_max.value)
+          long_entry_logic.append(dataframe["cti_20_4h"] < self.entry_102_cti_20_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_4h"] < self.entry_102_rsi_14_4h_max.value)
+          long_entry_logic.append(dataframe["cti_20_1d"] < self.entry_102_cti_20_1d_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1d"] < self.entry_102_rsi_14_1d_max.value)
+          long_entry_logic.append(dataframe["r_480_1h"] < self.entry_102_r_480_1h_max.value)
+          long_entry_logic.append(dataframe["r_480_4h"] < self.entry_102_r_480_4h_max.value)
 
           if self.entry_102_sup_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
           if self.entry_102_res_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_102_sup_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
           if self.entry_102_res_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_4h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_4h"])
           if self.entry_102_sup_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
           if self.entry_102_res_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_102_ema_200_not_dec_1h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_48_1h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_48_1h"] == False)
           if self.entry_102_ema_200_not_dec_4h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_24_4h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_24_4h"] == False)
           if self.entry_102_ema_200_not_dec_1d_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_4_1d"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_4_1d"] == False)
           if self.entry_102_not_downtrend_15m_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_15m"])
+            long_entry_logic.append(dataframe["not_downtrend_15m"])
           if self.entry_102_not_downtrend_1h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1h"])
+            long_entry_logic.append(dataframe["not_downtrend_1h"])
           if self.entry_102_not_downtrend_4h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_4h"])
+            long_entry_logic.append(dataframe["not_downtrend_4h"])
           if self.entry_102_not_downtrend_1d_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1d"])
+            long_entry_logic.append(dataframe["not_downtrend_1d"])
 
           # Logic
-          item_buy_logic.append(dataframe["rsi_14"] < self.entry_46_rsi_14_max.value)
-          item_buy_logic.append(dataframe["close"] < (dataframe["ema_16"] * self.entry_102_ema_offset.value))
-          item_buy_logic.append(dataframe["close"] < (dataframe["bb20_2_low"] * self.entry_102_bb_offset.value))
+          long_entry_logic.append(dataframe["rsi_14"] < self.entry_46_rsi_14_max.value)
+          long_entry_logic.append(dataframe["close"] < (dataframe["ema_16"] * self.entry_102_ema_offset.value))
+          long_entry_logic.append(dataframe["close"] < (dataframe["bb20_2_low"] * self.entry_102_bb_offset.value))
 
         # Condition #103 - Long mode rapid
         if index == 103:
           # Protections
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_103_close_max_12.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_103_close_max_24.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_103_close_max_48.value))
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_103_close_max_12.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_103_close_max_24.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_103_close_max_48.value))
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_1h"] * self.entry_103_high_max_24_1h.value)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_4h"] * self.entry_103_high_max_24_4h.value)
           )
-          item_buy_logic.append(dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_103_high_max_6_1d.value))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_103_hl_pct_change_6_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_103_hl_pct_change_12_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_103_hl_pct_change_24_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_103_hl_pct_change_48_1h.value)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(
+            dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_103_high_max_6_1d.value)
+          )
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_103_hl_pct_change_6_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_103_hl_pct_change_12_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_103_hl_pct_change_24_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_103_hl_pct_change_48_1h.value)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["rsi_3"] > self.entry_103_rsi_3_min.value)
-          item_buy_logic.append(dataframe["rsi_3"] < self.entry_103_rsi_3_max.value)
-          item_buy_logic.append(dataframe["rsi_3_15m"] > self.entry_103_rsi_3_15m_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1h"] > self.entry_103_rsi_3_1h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_4h"] > self.entry_103_rsi_3_4h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1d"] > self.entry_103_rsi_3_1d_min.value)
-          item_buy_logic.append(dataframe["cti_20_1h"] < self.entry_103_cti_20_1h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1h"] < self.entry_103_rsi_14_1h_max.value)
-          item_buy_logic.append(dataframe["cti_20_4h"] < self.entry_103_cti_20_4h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_4h"] < self.entry_103_rsi_14_4h_max.value)
-          item_buy_logic.append(dataframe["cti_20_1d"] < self.entry_103_cti_20_1d_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1d"] < self.entry_103_rsi_14_1d_max.value)
-          item_buy_logic.append(dataframe["r_14_1h"] >= self.entry_103_r_14_1h_min.value)
-          item_buy_logic.append(dataframe["r_14_1h"] <= self.entry_103_r_14_1h_max.value)
-          item_buy_logic.append(dataframe["r_14_4h"] >= self.entry_103_r_14_4h_min.value)
-          item_buy_logic.append(dataframe["r_14_4h"] <= self.entry_103_r_14_4h_max.value)
-          item_buy_logic.append(dataframe["r_480_1h"] >= self.entry_103_r_480_1h_min.value)
-          item_buy_logic.append(dataframe["r_480_1h"] <= self.entry_103_r_480_1h_max.value)
-          item_buy_logic.append(dataframe["r_480_4h"] >= self.entry_103_r_480_4h_min.value)
-          item_buy_logic.append(dataframe["r_480_4h"] <= self.entry_103_r_480_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_3"] > self.entry_103_rsi_3_min.value)
+          long_entry_logic.append(dataframe["rsi_3"] < self.entry_103_rsi_3_max.value)
+          long_entry_logic.append(dataframe["rsi_3_15m"] > self.entry_103_rsi_3_15m_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1h"] > self.entry_103_rsi_3_1h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_4h"] > self.entry_103_rsi_3_4h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1d"] > self.entry_103_rsi_3_1d_min.value)
+          long_entry_logic.append(dataframe["cti_20_1h"] < self.entry_103_cti_20_1h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1h"] < self.entry_103_rsi_14_1h_max.value)
+          long_entry_logic.append(dataframe["cti_20_4h"] < self.entry_103_cti_20_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_4h"] < self.entry_103_rsi_14_4h_max.value)
+          long_entry_logic.append(dataframe["cti_20_1d"] < self.entry_103_cti_20_1d_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1d"] < self.entry_103_rsi_14_1d_max.value)
+          long_entry_logic.append(dataframe["r_14_1h"] >= self.entry_103_r_14_1h_min.value)
+          long_entry_logic.append(dataframe["r_14_1h"] <= self.entry_103_r_14_1h_max.value)
+          long_entry_logic.append(dataframe["r_14_4h"] >= self.entry_103_r_14_4h_min.value)
+          long_entry_logic.append(dataframe["r_14_4h"] <= self.entry_103_r_14_4h_max.value)
+          long_entry_logic.append(dataframe["r_480_1h"] >= self.entry_103_r_480_1h_min.value)
+          long_entry_logic.append(dataframe["r_480_1h"] <= self.entry_103_r_480_1h_max.value)
+          long_entry_logic.append(dataframe["r_480_4h"] >= self.entry_103_r_480_4h_min.value)
+          long_entry_logic.append(dataframe["r_480_4h"] <= self.entry_103_r_480_4h_max.value)
 
           if self.entry_103_sup_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
           if self.entry_103_res_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_103_sup_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
           if self.entry_103_res_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_4h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_4h"])
           if self.entry_103_sup_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
           if self.entry_103_res_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_103_ema_200_not_dec_1h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_48_1h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_48_1h"] == False)
           if self.entry_103_ema_200_not_dec_4h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_24_4h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_24_4h"] == False)
           if self.entry_103_ema_200_not_dec_1d_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_4_1d"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_4_1d"] == False)
           if self.entry_103_not_downtrend_15m_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_15m"])
+            long_entry_logic.append(dataframe["not_downtrend_15m"])
           if self.entry_103_not_downtrend_1h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1h"])
+            long_entry_logic.append(dataframe["not_downtrend_1h"])
           if self.entry_103_not_downtrend_4h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_4h"])
+            long_entry_logic.append(dataframe["not_downtrend_4h"])
           if self.entry_103_not_downtrend_1d_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1d"])
+            long_entry_logic.append(dataframe["not_downtrend_1d"])
 
           # Logic
-          item_buy_logic.append(dataframe["rsi_14"] > self.entry_103_rsi_14_min.value)
-          item_buy_logic.append(dataframe["close"] < (dataframe["sma_16"] * self.entry_103_sma_offset.value))
-          item_buy_logic.append(dataframe["close"] < (dataframe["bb20_2_mid"] * self.entry_103_bb_offset.value))
+          long_entry_logic.append(dataframe["rsi_14"] > self.entry_103_rsi_14_min.value)
+          long_entry_logic.append(dataframe["close"] < (dataframe["sma_16"] * self.entry_103_sma_offset.value))
+          long_entry_logic.append(dataframe["close"] < (dataframe["bb20_2_mid"] * self.entry_103_bb_offset.value))
 
         # Condition #104 - Long mode rapid
         if index == 104:
           # Protections
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_104_close_max_12.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_104_close_max_24.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_104_close_max_48.value))
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_104_close_max_12.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_104_close_max_24.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_104_close_max_48.value))
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_1h"] * self.entry_104_high_max_24_1h.value)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_4h"] * self.entry_104_high_max_24_4h.value)
           )
-          item_buy_logic.append(dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_104_high_max_6_1d.value))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_104_hl_pct_change_6_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_104_hl_pct_change_12_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_104_hl_pct_change_24_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_104_hl_pct_change_48_1h.value)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(
+            dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_104_high_max_6_1d.value)
+          )
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_104_hl_pct_change_6_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_104_hl_pct_change_12_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_104_hl_pct_change_24_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_104_hl_pct_change_48_1h.value)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["rsi_3"] > self.entry_104_rsi_3_min.value)
-          item_buy_logic.append(dataframe["rsi_3"] < self.entry_104_rsi_3_max.value)
-          item_buy_logic.append(dataframe["rsi_3_15m"] > self.entry_104_rsi_3_15m_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1h"] > self.entry_104_rsi_3_1h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_4h"] > self.entry_104_rsi_3_4h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1d"] > self.entry_104_rsi_3_1d_min.value)
-          item_buy_logic.append(dataframe["cti_20_1h"] < self.entry_104_cti_20_1h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1h"] < self.entry_104_rsi_14_1h_max.value)
-          item_buy_logic.append(dataframe["cti_20_4h"] < self.entry_104_cti_20_4h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_4h"] < self.entry_104_rsi_14_4h_max.value)
-          item_buy_logic.append(dataframe["cti_20_1d"] < self.entry_104_cti_20_1d_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1d"] < self.entry_104_rsi_14_1d_max.value)
-          item_buy_logic.append(dataframe["r_14_1h"] <= self.entry_104_r_14_1h_max.value)
-          item_buy_logic.append(dataframe["r_14_4h"] <= self.entry_104_r_14_4h_max.value)
-          item_buy_logic.append(dataframe["r_480_1h"] <= self.entry_104_r_480_1h_max.value)
-          item_buy_logic.append(dataframe["r_480_4h"] <= self.entry_104_r_480_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_3"] > self.entry_104_rsi_3_min.value)
+          long_entry_logic.append(dataframe["rsi_3"] < self.entry_104_rsi_3_max.value)
+          long_entry_logic.append(dataframe["rsi_3_15m"] > self.entry_104_rsi_3_15m_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1h"] > self.entry_104_rsi_3_1h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_4h"] > self.entry_104_rsi_3_4h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1d"] > self.entry_104_rsi_3_1d_min.value)
+          long_entry_logic.append(dataframe["cti_20_1h"] < self.entry_104_cti_20_1h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1h"] < self.entry_104_rsi_14_1h_max.value)
+          long_entry_logic.append(dataframe["cti_20_4h"] < self.entry_104_cti_20_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_4h"] < self.entry_104_rsi_14_4h_max.value)
+          long_entry_logic.append(dataframe["cti_20_1d"] < self.entry_104_cti_20_1d_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1d"] < self.entry_104_rsi_14_1d_max.value)
+          long_entry_logic.append(dataframe["r_14_1h"] <= self.entry_104_r_14_1h_max.value)
+          long_entry_logic.append(dataframe["r_14_4h"] <= self.entry_104_r_14_4h_max.value)
+          long_entry_logic.append(dataframe["r_480_1h"] <= self.entry_104_r_480_1h_max.value)
+          long_entry_logic.append(dataframe["r_480_4h"] <= self.entry_104_r_480_4h_max.value)
 
           if self.entry_104_sup_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
           if self.entry_104_res_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_104_sup_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
           if self.entry_104_res_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_4h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_4h"])
           if self.entry_104_sup_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
           if self.entry_104_res_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_104_ema_200_not_dec_1h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_48_1h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_48_1h"] == False)
           if self.entry_104_ema_200_not_dec_4h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_24_4h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_24_4h"] == False)
           if self.entry_104_ema_200_not_dec_1d_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_4_1d"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_4_1d"] == False)
           if self.entry_104_not_downtrend_15m_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_15m"])
+            long_entry_logic.append(dataframe["not_downtrend_15m"])
           if self.entry_104_not_downtrend_1h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1h"])
+            long_entry_logic.append(dataframe["not_downtrend_1h"])
           if self.entry_104_not_downtrend_4h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_4h"])
+            long_entry_logic.append(dataframe["not_downtrend_4h"])
           if self.entry_104_not_downtrend_1d_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1d"])
+            long_entry_logic.append(dataframe["not_downtrend_1d"])
 
           # Logic
-          item_buy_logic.append(dataframe["rsi_14"] > self.entry_104_rsi_14_min.value)
-          item_buy_logic.append(dataframe["rsi_14"] < self.entry_104_rsi_14_max.value)
-          item_buy_logic.append(dataframe["close"] < (dataframe["sma_16"] * self.entry_104_sma_offset.value))
+          long_entry_logic.append(dataframe["rsi_14"] > self.entry_104_rsi_14_min.value)
+          long_entry_logic.append(dataframe["rsi_14"] < self.entry_104_rsi_14_max.value)
+          long_entry_logic.append(dataframe["close"] < (dataframe["sma_16"] * self.entry_104_sma_offset.value))
 
         # Condition #105 - Long mode rapid
         if index == 105:
           # Protections
-          item_buy_logic.append(dataframe["protections_long_global"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["high_max_12_1d"] < (dataframe["close"] * 1.6))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < 0.5)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < 0.75)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < 0.8)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < 0.9)
-          item_buy_logic.append(dataframe["hl_pct_change_6_1d"] < 1.9)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(dataframe["protections_long_global"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["high_max_12_1d"] < (dataframe["close"] * 1.6))
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < 0.5)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < 0.75)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < 0.8)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < 0.9)
+          long_entry_logic.append(dataframe["hl_pct_change_6_1d"] < 1.9)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["rsi_3"] > 6.0)
-          item_buy_logic.append(dataframe["rsi_3_15m"] > 6.0)
-          item_buy_logic.append(dataframe["rsi_3_1h"] > 6.0)
-          item_buy_logic.append(dataframe["rsi_3_4h"] > 6.0)
-          item_buy_logic.append(dataframe["cti_20_1h"] < 0.8)
-          item_buy_logic.append(dataframe["rsi_14_1h"] < 80.0)
-          item_buy_logic.append(dataframe["cti_20_4h"] < 0.9)
-          item_buy_logic.append(dataframe["rsi_14_4h"] < 80.0)
-          item_buy_logic.append(dataframe["cti_20_1d"] < 0.8)
-          item_buy_logic.append(dataframe["rsi_14_1d"] < 80.0)
-          item_buy_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
-          item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
+          long_entry_logic.append(dataframe["rsi_3"] > 6.0)
+          long_entry_logic.append(dataframe["rsi_3_15m"] > 6.0)
+          long_entry_logic.append(dataframe["rsi_3_1h"] > 6.0)
+          long_entry_logic.append(dataframe["rsi_3_4h"] > 6.0)
+          long_entry_logic.append(dataframe["cti_20_1h"] < 0.8)
+          long_entry_logic.append(dataframe["rsi_14_1h"] < 80.0)
+          long_entry_logic.append(dataframe["cti_20_4h"] < 0.9)
+          long_entry_logic.append(dataframe["rsi_14_4h"] < 80.0)
+          long_entry_logic.append(dataframe["cti_20_1d"] < 0.8)
+          long_entry_logic.append(dataframe["rsi_14_1d"] < 80.0)
+          long_entry_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
+          long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
 
           # Logic
-          item_buy_logic.append(dataframe["rsi_3"] < 60.0)
-          item_buy_logic.append(dataframe["rsi_14"] < 46.0)
-          item_buy_logic.append(dataframe["ema_26"] > dataframe["ema_12"])
-          item_buy_logic.append((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.018))
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["rsi_3"] < 60.0)
+          long_entry_logic.append(dataframe["rsi_14"] < 46.0)
+          long_entry_logic.append(dataframe["ema_26"] > dataframe["ema_12"])
+          long_entry_logic.append((dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * 0.018))
+          long_entry_logic.append(
             (dataframe["ema_26"].shift() - dataframe["ema_12"].shift()) > (dataframe["open"] / 100)
           )
 
         # Condition #106 - Rapid mode (Long).
         if index == 106:
           # Protections
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_106_close_max_12.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_106_close_max_24.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_106_close_max_48.value))
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_106_close_max_12.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_106_close_max_24.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_106_close_max_48.value))
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_1h"] * self.entry_106_high_max_24_1h.value)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_4h"] * self.entry_106_high_max_24_4h.value)
           )
-          item_buy_logic.append(dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_106_high_max_6_1d.value))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_106_hl_pct_change_6_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_106_hl_pct_change_12_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_106_hl_pct_change_24_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_106_hl_pct_change_48_1h.value)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(
+            dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_106_high_max_6_1d.value)
+          )
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_106_hl_pct_change_6_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_106_hl_pct_change_12_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_106_hl_pct_change_24_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_106_hl_pct_change_48_1h.value)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["rsi_3"] > self.entry_106_rsi_3_min.value)
-          item_buy_logic.append(dataframe["rsi_3"] < self.entry_106_rsi_3_max.value)
-          item_buy_logic.append(dataframe["rsi_3_15m"] > self.entry_106_rsi_3_15m_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1h"] > self.entry_106_rsi_3_1h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_4h"] > self.entry_106_rsi_3_4h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1d"] > self.entry_106_rsi_3_1d_min.value)
-          item_buy_logic.append(dataframe["cti_20_1h"] < self.entry_106_cti_20_1h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1h"] < self.entry_106_rsi_14_1h_max.value)
-          item_buy_logic.append(dataframe["cti_20_4h"] < self.entry_106_cti_20_4h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_4h"] < self.entry_106_rsi_14_4h_max.value)
-          item_buy_logic.append(dataframe["cti_20_1d"] < self.entry_106_cti_20_1d_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1d"] < self.entry_106_rsi_14_1d_max.value)
-          item_buy_logic.append(dataframe["r_14_1h"] >= self.entry_106_r_14_1h_min.value)
-          item_buy_logic.append(dataframe["r_14_1h"] <= self.entry_106_r_14_1h_max.value)
-          item_buy_logic.append(dataframe["r_14_4h"] >= self.entry_106_r_14_4h_min.value)
-          item_buy_logic.append(dataframe["r_14_4h"] <= self.entry_106_r_14_4h_max.value)
-          item_buy_logic.append(dataframe["r_480_1h"] >= self.entry_106_r_480_1h_min.value)
-          item_buy_logic.append(dataframe["r_480_1h"] <= self.entry_106_r_480_1h_max.value)
-          item_buy_logic.append(dataframe["r_480_4h"] >= self.entry_106_r_480_4h_min.value)
-          item_buy_logic.append(dataframe["r_480_4h"] <= self.entry_106_r_480_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_3"] > self.entry_106_rsi_3_min.value)
+          long_entry_logic.append(dataframe["rsi_3"] < self.entry_106_rsi_3_max.value)
+          long_entry_logic.append(dataframe["rsi_3_15m"] > self.entry_106_rsi_3_15m_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1h"] > self.entry_106_rsi_3_1h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_4h"] > self.entry_106_rsi_3_4h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1d"] > self.entry_106_rsi_3_1d_min.value)
+          long_entry_logic.append(dataframe["cti_20_1h"] < self.entry_106_cti_20_1h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1h"] < self.entry_106_rsi_14_1h_max.value)
+          long_entry_logic.append(dataframe["cti_20_4h"] < self.entry_106_cti_20_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_4h"] < self.entry_106_rsi_14_4h_max.value)
+          long_entry_logic.append(dataframe["cti_20_1d"] < self.entry_106_cti_20_1d_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1d"] < self.entry_106_rsi_14_1d_max.value)
+          long_entry_logic.append(dataframe["r_14_1h"] >= self.entry_106_r_14_1h_min.value)
+          long_entry_logic.append(dataframe["r_14_1h"] <= self.entry_106_r_14_1h_max.value)
+          long_entry_logic.append(dataframe["r_14_4h"] >= self.entry_106_r_14_4h_min.value)
+          long_entry_logic.append(dataframe["r_14_4h"] <= self.entry_106_r_14_4h_max.value)
+          long_entry_logic.append(dataframe["r_480_1h"] >= self.entry_106_r_480_1h_min.value)
+          long_entry_logic.append(dataframe["r_480_1h"] <= self.entry_106_r_480_1h_max.value)
+          long_entry_logic.append(dataframe["r_480_4h"] >= self.entry_106_r_480_4h_min.value)
+          long_entry_logic.append(dataframe["r_480_4h"] <= self.entry_106_r_480_4h_max.value)
 
           if self.entry_106_sup_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
           if self.entry_106_res_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_106_sup_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
           if self.entry_106_res_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_4h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_4h"])
           if self.entry_106_sup_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
           if self.entry_106_res_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_106_ema_200_not_dec_1h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_48_1h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_48_1h"] == False)
           if self.entry_106_ema_200_not_dec_4h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_24_4h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_24_4h"] == False)
           if self.entry_106_ema_200_not_dec_1d_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_4_1d"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_4_1d"] == False)
           if self.entry_106_not_downtrend_15m_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_15m"])
+            long_entry_logic.append(dataframe["not_downtrend_15m"])
           if self.entry_106_not_downtrend_1h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1h"])
+            long_entry_logic.append(dataframe["not_downtrend_1h"])
           if self.entry_106_not_downtrend_4h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_4h"])
+            long_entry_logic.append(dataframe["not_downtrend_4h"])
           if self.entry_106_not_downtrend_1d_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1d"])
+            long_entry_logic.append(dataframe["not_downtrend_1d"])
 
           # Logic
-          item_buy_logic.append(dataframe["cti_20"] < self.entry_106_cti_20_max.value)
-          item_buy_logic.append(dataframe["ewo_50_200"] < self.entry_106_ewo_50_200_max.value)
-          item_buy_logic.append(dataframe["close"] < (dataframe["sma_30"] * self.entry_106_sma_offset.value))
+          long_entry_logic.append(dataframe["cti_20"] < self.entry_106_cti_20_max.value)
+          long_entry_logic.append(dataframe["ewo_50_200"] < self.entry_106_ewo_50_200_max.value)
+          long_entry_logic.append(dataframe["close"] < (dataframe["sma_30"] * self.entry_106_sma_offset.value))
 
         # Condition #107 - Rapid mode (Long)
         if index == 107:
           # Protections
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_107_close_max_12.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_107_close_max_24.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_107_close_max_48.value))
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_107_close_max_12.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_107_close_max_24.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_107_close_max_48.value))
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_1h"] * self.entry_107_high_max_24_1h.value)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_4h"] * self.entry_107_high_max_24_4h.value)
           )
-          item_buy_logic.append(dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_107_high_max_6_1d.value))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_107_hl_pct_change_6_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_107_hl_pct_change_12_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_107_hl_pct_change_24_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_107_hl_pct_change_48_1h.value)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(
+            dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_107_high_max_6_1d.value)
+          )
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_107_hl_pct_change_6_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_107_hl_pct_change_12_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_107_hl_pct_change_24_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_107_hl_pct_change_48_1h.value)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["rsi_3"] >= self.entry_107_rsi_3_min.value)
-          item_buy_logic.append(dataframe["rsi_3"] <= self.entry_107_rsi_3_max.value)
-          item_buy_logic.append(dataframe["rsi_3_15m"] >= self.entry_107_rsi_3_15m_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1h"] >= self.entry_107_rsi_3_1h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_4h"] >= self.entry_107_rsi_3_4h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1d"] >= self.entry_107_rsi_3_1d_min.value)
-          item_buy_logic.append(dataframe["cti_20_1h"] >= self.entry_107_cti_20_1h_min.value)
-          item_buy_logic.append(dataframe["cti_20_1h"] <= self.entry_107_cti_20_1h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1h"] <= self.entry_107_rsi_14_1h_max.value)
-          item_buy_logic.append(dataframe["cti_20_4h"] <= self.entry_107_cti_20_4h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_4h"] <= self.entry_107_rsi_14_4h_max.value)
-          item_buy_logic.append(dataframe["cti_20_1d"] <= self.entry_107_cti_20_1d_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1d"] <= self.entry_107_rsi_14_1d_max.value)
-          item_buy_logic.append(dataframe["r_14_1h"] >= self.entry_107_r_14_1h_min.value)
-          item_buy_logic.append(dataframe["r_14_1h"] <= self.entry_107_r_14_1h_max.value)
-          item_buy_logic.append(dataframe["r_14_4h"] >= self.entry_107_r_14_4h_min.value)
-          item_buy_logic.append(dataframe["r_14_4h"] <= self.entry_107_r_14_4h_max.value)
-          item_buy_logic.append(dataframe["r_480_1h"] >= self.entry_107_r_480_1h_min.value)
-          item_buy_logic.append(dataframe["r_480_1h"] <= self.entry_107_r_480_1h_max.value)
-          item_buy_logic.append(dataframe["r_480_4h"] >= self.entry_107_r_480_4h_min.value)
-          item_buy_logic.append(dataframe["r_480_4h"] <= self.entry_107_r_480_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_3"] >= self.entry_107_rsi_3_min.value)
+          long_entry_logic.append(dataframe["rsi_3"] <= self.entry_107_rsi_3_max.value)
+          long_entry_logic.append(dataframe["rsi_3_15m"] >= self.entry_107_rsi_3_15m_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1h"] >= self.entry_107_rsi_3_1h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_4h"] >= self.entry_107_rsi_3_4h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1d"] >= self.entry_107_rsi_3_1d_min.value)
+          long_entry_logic.append(dataframe["cti_20_1h"] >= self.entry_107_cti_20_1h_min.value)
+          long_entry_logic.append(dataframe["cti_20_1h"] <= self.entry_107_cti_20_1h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1h"] <= self.entry_107_rsi_14_1h_max.value)
+          long_entry_logic.append(dataframe["cti_20_4h"] <= self.entry_107_cti_20_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_4h"] <= self.entry_107_rsi_14_4h_max.value)
+          long_entry_logic.append(dataframe["cti_20_1d"] <= self.entry_107_cti_20_1d_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1d"] <= self.entry_107_rsi_14_1d_max.value)
+          long_entry_logic.append(dataframe["r_14_1h"] >= self.entry_107_r_14_1h_min.value)
+          long_entry_logic.append(dataframe["r_14_1h"] <= self.entry_107_r_14_1h_max.value)
+          long_entry_logic.append(dataframe["r_14_4h"] >= self.entry_107_r_14_4h_min.value)
+          long_entry_logic.append(dataframe["r_14_4h"] <= self.entry_107_r_14_4h_max.value)
+          long_entry_logic.append(dataframe["r_480_1h"] >= self.entry_107_r_480_1h_min.value)
+          long_entry_logic.append(dataframe["r_480_1h"] <= self.entry_107_r_480_1h_max.value)
+          long_entry_logic.append(dataframe["r_480_4h"] >= self.entry_107_r_480_4h_min.value)
+          long_entry_logic.append(dataframe["r_480_4h"] <= self.entry_107_r_480_4h_max.value)
 
           if self.entry_107_sup_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
           if self.entry_107_res_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_107_sup_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
           if self.entry_107_res_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_4h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_4h"])
           if self.entry_107_sup_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
           if self.entry_107_res_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_107_ema_200_not_dec_1h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_48_1h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_48_1h"] == False)
           if self.entry_107_ema_200_not_dec_4h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_24_4h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_24_4h"] == False)
           if self.entry_107_ema_200_not_dec_1d_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_4_1d"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_4_1d"] == False)
           if self.entry_107_not_downtrend_15m_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_15m"])
+            long_entry_logic.append(dataframe["not_downtrend_15m"])
           if self.entry_107_not_downtrend_1h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1h"])
+            long_entry_logic.append(dataframe["not_downtrend_1h"])
           if self.entry_107_not_downtrend_4h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_4h"])
+            long_entry_logic.append(dataframe["not_downtrend_4h"])
           if self.entry_107_not_downtrend_1d_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1d"])
-          item_buy_logic.append(dataframe["ema_200_1h"] > dataframe["ema_200_1h"].shift(12))
-          item_buy_logic.append(dataframe["ema_200_1h"].shift(12) > dataframe["ema_200_1h"].shift(24))
+            long_entry_logic.append(dataframe["not_downtrend_1d"])
+          long_entry_logic.append(dataframe["ema_200_1h"] > dataframe["ema_200_1h"].shift(12))
+          long_entry_logic.append(dataframe["ema_200_1h"].shift(12) > dataframe["ema_200_1h"].shift(24))
 
           # Logic
-          item_buy_logic.append(dataframe["bb40_2_low"].shift().gt(0.0))
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["bb40_2_low"].shift().gt(0.0))
+          long_entry_logic.append(
             dataframe["bb40_2_delta"].gt(dataframe["close"] * self.entry_107_bb40_bbdelta_close.value)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             dataframe["close_delta"].gt(dataframe["close"] * self.entry_107_bb40_closedelta_close.value)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             dataframe["bb40_2_tail"].lt(dataframe["bb40_2_delta"] * self.entry_107_bb40_tail_bbdelta.value)
           )
-          item_buy_logic.append(dataframe["close"].lt(dataframe["bb40_2_low"].shift()))
-          item_buy_logic.append(dataframe["close"].le(dataframe["close"].shift()))
-          item_buy_logic.append(dataframe["cti_20"] < self.entry_107_cti_20_max.value)
-          item_buy_logic.append(dataframe["r_480"] > self.entry_107_r_480_min.value)
+          long_entry_logic.append(dataframe["close"].lt(dataframe["bb40_2_low"].shift()))
+          long_entry_logic.append(dataframe["close"].le(dataframe["close"].shift()))
+          long_entry_logic.append(dataframe["cti_20"] < self.entry_107_cti_20_max.value)
+          long_entry_logic.append(dataframe["r_480"] > self.entry_107_r_480_min.value)
 
         # Condition #108 - Rapid mode (Long)
         if index == 108:
           # Protections
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_108_close_max_12.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_108_close_max_24.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_108_close_max_48.value))
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_108_close_max_12.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_108_close_max_24.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_108_close_max_48.value))
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_1h"] * self.entry_108_high_max_24_1h.value)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_4h"] * self.entry_108_high_max_24_4h.value)
           )
-          item_buy_logic.append(dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_108_high_max_6_1d.value))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_108_hl_pct_change_6_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_108_hl_pct_change_12_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_108_hl_pct_change_24_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_108_hl_pct_change_48_1h.value)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(
+            dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_108_high_max_6_1d.value)
+          )
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_108_hl_pct_change_6_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_108_hl_pct_change_12_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_108_hl_pct_change_24_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_108_hl_pct_change_48_1h.value)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["rsi_3"] >= self.entry_108_rsi_3_min.value)
-          item_buy_logic.append(dataframe["rsi_3"] <= self.entry_108_rsi_3_max.value)
-          item_buy_logic.append(dataframe["rsi_3_15m"] >= self.entry_108_rsi_3_15m_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1h"] >= self.entry_108_rsi_3_1h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_4h"] >= self.entry_108_rsi_3_4h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1d"] >= self.entry_108_rsi_3_1d_min.value)
-          item_buy_logic.append(dataframe["cti_20_1h"] >= self.entry_108_cti_20_1h_min.value)
-          item_buy_logic.append(dataframe["cti_20_1h"] <= self.entry_108_cti_20_1h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1h"] <= self.entry_108_rsi_14_1h_max.value)
-          item_buy_logic.append(dataframe["cti_20_4h"] <= self.entry_108_cti_20_4h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_4h"] <= self.entry_108_rsi_14_4h_max.value)
-          item_buy_logic.append(dataframe["cti_20_1d"] <= self.entry_108_cti_20_1d_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1d"] <= self.entry_108_rsi_14_1d_max.value)
-          item_buy_logic.append(dataframe["r_14_1h"] >= self.entry_108_r_14_1h_min.value)
-          item_buy_logic.append(dataframe["r_14_1h"] <= self.entry_108_r_14_1h_max.value)
-          item_buy_logic.append(dataframe["r_14_4h"] >= self.entry_108_r_14_4h_min.value)
-          item_buy_logic.append(dataframe["r_14_4h"] <= self.entry_108_r_14_4h_max.value)
-          item_buy_logic.append(dataframe["r_480_1h"] >= self.entry_108_r_480_1h_min.value)
-          item_buy_logic.append(dataframe["r_480_1h"] <= self.entry_108_r_480_1h_max.value)
-          item_buy_logic.append(dataframe["r_480_4h"] >= self.entry_108_r_480_4h_min.value)
-          item_buy_logic.append(dataframe["r_480_4h"] <= self.entry_108_r_480_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_3"] >= self.entry_108_rsi_3_min.value)
+          long_entry_logic.append(dataframe["rsi_3"] <= self.entry_108_rsi_3_max.value)
+          long_entry_logic.append(dataframe["rsi_3_15m"] >= self.entry_108_rsi_3_15m_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1h"] >= self.entry_108_rsi_3_1h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_4h"] >= self.entry_108_rsi_3_4h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1d"] >= self.entry_108_rsi_3_1d_min.value)
+          long_entry_logic.append(dataframe["cti_20_1h"] >= self.entry_108_cti_20_1h_min.value)
+          long_entry_logic.append(dataframe["cti_20_1h"] <= self.entry_108_cti_20_1h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1h"] <= self.entry_108_rsi_14_1h_max.value)
+          long_entry_logic.append(dataframe["cti_20_4h"] <= self.entry_108_cti_20_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_4h"] <= self.entry_108_rsi_14_4h_max.value)
+          long_entry_logic.append(dataframe["cti_20_1d"] <= self.entry_108_cti_20_1d_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1d"] <= self.entry_108_rsi_14_1d_max.value)
+          long_entry_logic.append(dataframe["r_14_1h"] >= self.entry_108_r_14_1h_min.value)
+          long_entry_logic.append(dataframe["r_14_1h"] <= self.entry_108_r_14_1h_max.value)
+          long_entry_logic.append(dataframe["r_14_4h"] >= self.entry_108_r_14_4h_min.value)
+          long_entry_logic.append(dataframe["r_14_4h"] <= self.entry_108_r_14_4h_max.value)
+          long_entry_logic.append(dataframe["r_480_1h"] >= self.entry_108_r_480_1h_min.value)
+          long_entry_logic.append(dataframe["r_480_1h"] <= self.entry_108_r_480_1h_max.value)
+          long_entry_logic.append(dataframe["r_480_4h"] >= self.entry_108_r_480_4h_min.value)
+          long_entry_logic.append(dataframe["r_480_4h"] <= self.entry_108_r_480_4h_max.value)
 
           if self.entry_108_sup_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
           if self.entry_108_res_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_108_sup_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
           if self.entry_108_res_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_4h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_4h"])
           if self.entry_108_sup_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
           if self.entry_108_res_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_108_ema_200_not_dec_1h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_48_1h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_48_1h"] == False)
           if self.entry_108_ema_200_not_dec_4h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_24_4h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_24_4h"] == False)
           if self.entry_108_ema_200_not_dec_1d_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_4_1d"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_4_1d"] == False)
           if self.entry_108_not_downtrend_15m_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_15m"])
+            long_entry_logic.append(dataframe["not_downtrend_15m"])
           if self.entry_108_not_downtrend_1h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1h"])
+            long_entry_logic.append(dataframe["not_downtrend_1h"])
           if self.entry_108_not_downtrend_4h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_4h"])
+            long_entry_logic.append(dataframe["not_downtrend_4h"])
           if self.entry_108_not_downtrend_1d_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1d"])
+            long_entry_logic.append(dataframe["not_downtrend_1d"])
 
           # Logic
-          item_buy_logic.append(dataframe["rsi_14"] > self.entry_108_rsi_14_min.value)
-          item_buy_logic.append(dataframe["cti_20"] < self.entry_108_cti_20_max.value)
-          item_buy_logic.append(dataframe["r_14"] < self.entry_108_r_14_max.value)
-          item_buy_logic.append(dataframe["r_14"].shift(1) < self.entry_108_r_14_max.value)
-          item_buy_logic.append(dataframe["close"] < (dataframe["bb20_2_low"] * self.entry_108_bb_offset.value))
-          item_buy_logic.append(dataframe["ema_26"] > dataframe["ema_12"])
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["rsi_14"] > self.entry_108_rsi_14_min.value)
+          long_entry_logic.append(dataframe["cti_20"] < self.entry_108_cti_20_max.value)
+          long_entry_logic.append(dataframe["r_14"] < self.entry_108_r_14_max.value)
+          long_entry_logic.append(dataframe["r_14"].shift(1) < self.entry_108_r_14_max.value)
+          long_entry_logic.append(dataframe["close"] < (dataframe["bb20_2_low"] * self.entry_108_bb_offset.value))
+          long_entry_logic.append(dataframe["ema_26"] > dataframe["ema_12"])
+          long_entry_logic.append(
             (dataframe["ema_26"] - dataframe["ema_12"]) > (dataframe["open"] * self.entry_108_ema_open_offset.value)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             (dataframe["ema_26"].shift() - dataframe["ema_12"].shift()) > (dataframe["open"] / 100.0)
           )
 
         # Condition #109 - Rapid mode (Long)
         if index == 109:
           # Protections
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_109_close_max_12.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_109_close_max_24.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_109_close_max_48.value))
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_109_close_max_12.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_109_close_max_24.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_109_close_max_48.value))
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_1h"] * self.entry_109_high_max_24_1h.value)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_4h"] * self.entry_109_high_max_24_4h.value)
           )
-          item_buy_logic.append(dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_109_high_max_6_1d.value))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_109_hl_pct_change_6_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_109_hl_pct_change_12_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_109_hl_pct_change_24_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_109_hl_pct_change_48_1h.value)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(
+            dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_109_high_max_6_1d.value)
+          )
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_109_hl_pct_change_6_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_109_hl_pct_change_12_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_109_hl_pct_change_24_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_109_hl_pct_change_48_1h.value)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["rsi_3"] >= self.entry_109_rsi_3_min.value)
-          item_buy_logic.append(dataframe["rsi_3"] <= self.entry_109_rsi_3_max.value)
-          item_buy_logic.append(dataframe["rsi_3_15m"] >= self.entry_109_rsi_3_15m_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1h"] >= self.entry_109_rsi_3_1h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_4h"] >= self.entry_109_rsi_3_4h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1d"] >= self.entry_109_rsi_3_1d_min.value)
-          item_buy_logic.append(dataframe["cti_20_1h"] >= self.entry_109_cti_20_1h_min.value)
-          item_buy_logic.append(dataframe["cti_20_1h"] <= self.entry_109_cti_20_1h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1h"] <= self.entry_109_rsi_14_1h_max.value)
-          item_buy_logic.append(dataframe["cti_20_4h"] <= self.entry_109_cti_20_4h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_4h"] <= self.entry_109_rsi_14_4h_max.value)
-          item_buy_logic.append(dataframe["cti_20_1d"] <= self.entry_109_cti_20_1d_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1d"] <= self.entry_109_rsi_14_1d_max.value)
-          item_buy_logic.append(dataframe["r_14_1h"] >= self.entry_109_r_14_1h_min.value)
-          item_buy_logic.append(dataframe["r_14_1h"] <= self.entry_109_r_14_1h_max.value)
-          item_buy_logic.append(dataframe["r_14_4h"] >= self.entry_109_r_14_4h_min.value)
-          item_buy_logic.append(dataframe["r_14_4h"] <= self.entry_109_r_14_4h_max.value)
-          item_buy_logic.append(dataframe["r_480_1h"] >= self.entry_109_r_480_1h_min.value)
-          item_buy_logic.append(dataframe["r_480_1h"] <= self.entry_109_r_480_1h_max.value)
-          item_buy_logic.append(dataframe["r_480_4h"] >= self.entry_109_r_480_4h_min.value)
-          item_buy_logic.append(dataframe["r_480_4h"] <= self.entry_109_r_480_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_3"] >= self.entry_109_rsi_3_min.value)
+          long_entry_logic.append(dataframe["rsi_3"] <= self.entry_109_rsi_3_max.value)
+          long_entry_logic.append(dataframe["rsi_3_15m"] >= self.entry_109_rsi_3_15m_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1h"] >= self.entry_109_rsi_3_1h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_4h"] >= self.entry_109_rsi_3_4h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1d"] >= self.entry_109_rsi_3_1d_min.value)
+          long_entry_logic.append(dataframe["cti_20_1h"] >= self.entry_109_cti_20_1h_min.value)
+          long_entry_logic.append(dataframe["cti_20_1h"] <= self.entry_109_cti_20_1h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1h"] <= self.entry_109_rsi_14_1h_max.value)
+          long_entry_logic.append(dataframe["cti_20_4h"] <= self.entry_109_cti_20_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_4h"] <= self.entry_109_rsi_14_4h_max.value)
+          long_entry_logic.append(dataframe["cti_20_1d"] <= self.entry_109_cti_20_1d_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1d"] <= self.entry_109_rsi_14_1d_max.value)
+          long_entry_logic.append(dataframe["r_14_1h"] >= self.entry_109_r_14_1h_min.value)
+          long_entry_logic.append(dataframe["r_14_1h"] <= self.entry_109_r_14_1h_max.value)
+          long_entry_logic.append(dataframe["r_14_4h"] >= self.entry_109_r_14_4h_min.value)
+          long_entry_logic.append(dataframe["r_14_4h"] <= self.entry_109_r_14_4h_max.value)
+          long_entry_logic.append(dataframe["r_480_1h"] >= self.entry_109_r_480_1h_min.value)
+          long_entry_logic.append(dataframe["r_480_1h"] <= self.entry_109_r_480_1h_max.value)
+          long_entry_logic.append(dataframe["r_480_4h"] >= self.entry_109_r_480_4h_min.value)
+          long_entry_logic.append(dataframe["r_480_4h"] <= self.entry_109_r_480_4h_max.value)
 
           if self.entry_109_sup_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
           if self.entry_109_res_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_109_sup_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
           if self.entry_109_res_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_4h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_4h"])
           if self.entry_109_sup_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
           if self.entry_109_res_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_109_ema_200_not_dec_1h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_48_1h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_48_1h"] == False)
           if self.entry_109_ema_200_not_dec_4h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_24_4h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_24_4h"] == False)
           if self.entry_109_ema_200_not_dec_1d_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_4_1d"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_4_1d"] == False)
           if self.entry_109_not_downtrend_15m_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_15m"])
+            long_entry_logic.append(dataframe["not_downtrend_15m"])
           if self.entry_109_not_downtrend_1h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1h"])
+            long_entry_logic.append(dataframe["not_downtrend_1h"])
           if self.entry_109_not_downtrend_4h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_4h"])
+            long_entry_logic.append(dataframe["not_downtrend_4h"])
           if self.entry_109_not_downtrend_1d_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1d"])
+            long_entry_logic.append(dataframe["not_downtrend_1d"])
           if self.entry_109_ema_50_over_ema_200_enabled.value:
-            item_buy_logic.append(dataframe["ema_50"] > dataframe["ema_200"])
+            long_entry_logic.append(dataframe["ema_50"] > dataframe["ema_200"])
           if self.entry_109_ema_100_over_ema_200_enabled.value:
-            item_buy_logic.append(dataframe["ema_100"] > dataframe["ema_200"])
+            long_entry_logic.append(dataframe["ema_100"] > dataframe["ema_200"])
 
           # Logic
-          item_buy_logic.append(dataframe["cti_20"] < self.entry_109_cti_20_max.value)
-          item_buy_logic.append(dataframe["r_14"] < self.entry_109_r_14_max.value)
-          item_buy_logic.append(dataframe["close"] < (dataframe["bb20_2_low"] * self.entry_109_bb_offset.value))
-          item_buy_logic.append(dataframe["close"] < (dataframe["ema_20"] * self.entry_109_ema_offset.value))
+          long_entry_logic.append(dataframe["cti_20"] < self.entry_109_cti_20_max.value)
+          long_entry_logic.append(dataframe["r_14"] < self.entry_109_r_14_max.value)
+          long_entry_logic.append(dataframe["close"] < (dataframe["bb20_2_low"] * self.entry_109_bb_offset.value))
+          long_entry_logic.append(dataframe["close"] < (dataframe["ema_20"] * self.entry_109_ema_offset.value))
 
         # Condition #110 - Rapid mode (Long).
         if index == 110:
           # Protections
-          item_buy_logic.append(dataframe["global_protections_long_pump"] == True)
-          item_buy_logic.append(dataframe["global_protections_long_dump"] == True)
-          item_buy_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
-          item_buy_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_110_close_max_12.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_110_close_max_24.value))
-          item_buy_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_110_close_max_48.value))
-          item_buy_logic.append(
+          long_entry_logic.append(dataframe["global_protections_long_pump"] == True)
+          long_entry_logic.append(dataframe["global_protections_long_dump"] == True)
+          long_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_12"] * self.entry_110_close_max_12.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_24"] * self.entry_110_close_max_24.value))
+          long_entry_logic.append(dataframe["close"] > (dataframe["close_max_48"] * self.entry_110_close_max_48.value))
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_1h"] * self.entry_110_high_max_24_1h.value)
           )
-          item_buy_logic.append(
+          long_entry_logic.append(
             dataframe["close"] > (dataframe["high_max_24_4h"] * self.entry_110_high_max_24_4h.value)
           )
-          item_buy_logic.append(dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_110_high_max_6_1d.value))
-          item_buy_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_110_hl_pct_change_6_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_110_hl_pct_change_12_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_110_hl_pct_change_24_1h.value)
-          item_buy_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_110_hl_pct_change_48_1h.value)
-          item_buy_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
+          long_entry_logic.append(
+            dataframe["close"] > (dataframe["high_max_6_1d"] * self.entry_110_high_max_6_1d.value)
+          )
+          long_entry_logic.append(dataframe["hl_pct_change_6_1h"] < self.entry_110_hl_pct_change_6_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_12_1h"] < self.entry_110_hl_pct_change_12_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_24_1h"] < self.entry_110_hl_pct_change_24_1h.value)
+          long_entry_logic.append(dataframe["hl_pct_change_48_1h"] < self.entry_110_hl_pct_change_48_1h.value)
+          long_entry_logic.append(dataframe["num_empty_288"] < allowed_empty_candles)
 
-          item_buy_logic.append(dataframe["rsi_3"] > self.entry_110_rsi_3_min.value)
-          item_buy_logic.append(dataframe["rsi_3"] < self.entry_110_rsi_3_max.value)
-          item_buy_logic.append(dataframe["rsi_3_15m"] > self.entry_110_rsi_3_15m_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1h"] > self.entry_110_rsi_3_1h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_4h"] > self.entry_110_rsi_3_4h_min.value)
-          item_buy_logic.append(dataframe["rsi_3_1d"] > self.entry_110_rsi_3_1d_min.value)
-          item_buy_logic.append(dataframe["cti_20_1h"] < self.entry_110_cti_20_1h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1h"] < self.entry_110_rsi_14_1h_max.value)
-          item_buy_logic.append(dataframe["cti_20_4h"] < self.entry_110_cti_20_4h_max.value)
-          item_buy_logic.append(dataframe["rsi_14_4h"] < self.entry_110_rsi_14_4h_max.value)
-          item_buy_logic.append(dataframe["cti_20_1d"] < self.entry_110_cti_20_1d_max.value)
-          item_buy_logic.append(dataframe["rsi_14_1d"] < self.entry_110_rsi_14_1d_max.value)
-          item_buy_logic.append(dataframe["r_14_1h"] >= self.entry_110_r_14_1h_min.value)
-          item_buy_logic.append(dataframe["r_14_1h"] <= self.entry_110_r_14_1h_max.value)
-          item_buy_logic.append(dataframe["r_14_4h"] >= self.entry_110_r_14_4h_min.value)
-          item_buy_logic.append(dataframe["r_14_4h"] <= self.entry_110_r_14_4h_max.value)
-          item_buy_logic.append(dataframe["r_480_1h"] >= self.entry_110_r_480_1h_min.value)
-          item_buy_logic.append(dataframe["r_480_1h"] <= self.entry_110_r_480_1h_max.value)
-          item_buy_logic.append(dataframe["r_480_4h"] >= self.entry_110_r_480_4h_min.value)
-          item_buy_logic.append(dataframe["r_480_4h"] <= self.entry_110_r_480_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_3"] > self.entry_110_rsi_3_min.value)
+          long_entry_logic.append(dataframe["rsi_3"] < self.entry_110_rsi_3_max.value)
+          long_entry_logic.append(dataframe["rsi_3_15m"] > self.entry_110_rsi_3_15m_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1h"] > self.entry_110_rsi_3_1h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_4h"] > self.entry_110_rsi_3_4h_min.value)
+          long_entry_logic.append(dataframe["rsi_3_1d"] > self.entry_110_rsi_3_1d_min.value)
+          long_entry_logic.append(dataframe["cti_20_1h"] < self.entry_110_cti_20_1h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1h"] < self.entry_110_rsi_14_1h_max.value)
+          long_entry_logic.append(dataframe["cti_20_4h"] < self.entry_110_cti_20_4h_max.value)
+          long_entry_logic.append(dataframe["rsi_14_4h"] < self.entry_110_rsi_14_4h_max.value)
+          long_entry_logic.append(dataframe["cti_20_1d"] < self.entry_110_cti_20_1d_max.value)
+          long_entry_logic.append(dataframe["rsi_14_1d"] < self.entry_110_rsi_14_1d_max.value)
+          long_entry_logic.append(dataframe["r_14_1h"] >= self.entry_110_r_14_1h_min.value)
+          long_entry_logic.append(dataframe["r_14_1h"] <= self.entry_110_r_14_1h_max.value)
+          long_entry_logic.append(dataframe["r_14_4h"] >= self.entry_110_r_14_4h_min.value)
+          long_entry_logic.append(dataframe["r_14_4h"] <= self.entry_110_r_14_4h_max.value)
+          long_entry_logic.append(dataframe["r_480_1h"] >= self.entry_110_r_480_1h_min.value)
+          long_entry_logic.append(dataframe["r_480_1h"] <= self.entry_110_r_480_1h_max.value)
+          long_entry_logic.append(dataframe["r_480_4h"] >= self.entry_110_r_480_4h_min.value)
+          long_entry_logic.append(dataframe["r_480_4h"] <= self.entry_110_r_480_4h_max.value)
 
           if self.entry_110_sup_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1h"])
           if self.entry_110_res_level_1h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_110_sup_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_4h"])
           if self.entry_110_res_level_4h_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_4h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_4h"])
           if self.entry_110_sup_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
+            long_entry_logic.append(dataframe["close"] > dataframe["sup_level_1d"])
           if self.entry_110_res_level_1d_enabled.value:
-            item_buy_logic.append(dataframe["close"] < dataframe["res_level_1h"])
+            long_entry_logic.append(dataframe["close"] < dataframe["res_level_1h"])
           if self.entry_110_ema_200_not_dec_1h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_48_1h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_48_1h"] == False)
           if self.entry_110_ema_200_not_dec_4h_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_24_4h"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_24_4h"] == False)
           if self.entry_110_ema_200_not_dec_1d_enabled.value:
-            item_buy_logic.append(dataframe["ema_200_dec_4_1d"] == False)
+            long_entry_logic.append(dataframe["ema_200_dec_4_1d"] == False)
           if self.entry_110_not_downtrend_15m_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_15m"])
+            long_entry_logic.append(dataframe["not_downtrend_15m"])
           if self.entry_110_not_downtrend_1h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1h"])
+            long_entry_logic.append(dataframe["not_downtrend_1h"])
           if self.entry_110_not_downtrend_4h_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_4h"])
+            long_entry_logic.append(dataframe["not_downtrend_4h"])
           if self.entry_110_not_downtrend_1d_enabled.value:
-            item_buy_logic.append(dataframe["not_downtrend_1d"])
+            long_entry_logic.append(dataframe["not_downtrend_1d"])
 
           # Logic
-          item_buy_logic.append(dataframe["cti_20"] < self.entry_110_cti_20_max.value)
-          item_buy_logic.append(dataframe["ewo_50_200"] < self.entry_110_ewo_50_200_max.value)
-          item_buy_logic.append(dataframe["close"] < (dataframe["ema_20"] * self.entry_110_ema_offset.value))
+          long_entry_logic.append(dataframe["cti_20"] < self.entry_110_cti_20_max.value)
+          long_entry_logic.append(dataframe["ewo_50_200"] < self.entry_110_ewo_50_200_max.value)
+          long_entry_logic.append(dataframe["close"] < (dataframe["ema_20"] * self.entry_110_ema_offset.value))
 
         # Long Entry Conditions Ends Here
 
-        item_buy_logic.append(dataframe["volume"] > 0)
-        item_long_entry = reduce(lambda x, y: x & y, item_buy_logic)
+        long_entry_logic.append(dataframe["volume"] > 0)
+        item_long_entry = reduce(lambda x, y: x & y, long_entry_logic)
         dataframe.loc[item_long_entry, "enter_tag"] += f"{index} "
         long_entry_conditions.append(item_long_entry)
         dataframe.loc[:, "enter_long"] = item_long_entry
