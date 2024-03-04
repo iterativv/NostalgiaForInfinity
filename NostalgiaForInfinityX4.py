@@ -1611,7 +1611,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # Stoplosses
     if not sell:
-      sell, signal_name = self.exit_stoploss(
+      sell, signal_name = self.long_exit_stoploss(
         self.long_normal_mode_name,
         current_rate,
         profit_stake,
@@ -1856,7 +1856,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # Stoplosses
     if not sell:
-      sell, signal_name = self.exit_stoploss(
+      sell, signal_name = self.long_exit_stoploss(
         self.long_pump_mode_name,
         current_rate,
         profit_stake,
@@ -2101,7 +2101,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # Stoplosses
     if not sell:
-      sell, signal_name = self.exit_stoploss(
+      sell, signal_name = self.long_exit_stoploss(
         self.long_quick_mode_name,
         current_rate,
         profit_stake,
@@ -2565,7 +2565,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # Stoplosses
     if not sell:
-      sell, signal_name = self.exit_stoploss(
+      sell, signal_name = self.long_exit_stoploss(
         self.long_mode_name,
         current_rate,
         profit_stake,
@@ -2809,7 +2809,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # Stoplosses
     if not sell:
-      sell, signal_name = self.exit_stoploss(
+      sell, signal_name = self.long_exit_stoploss(
         self.long_rapid_mode_name,
         current_rate,
         profit_stake,
@@ -8037,7 +8037,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     return False, None
 
-  def exit_stoploss(
+  def long_exit_stoploss(
     self,
     mode_name: str,
     current_rate: float,
