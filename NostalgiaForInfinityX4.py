@@ -131,7 +131,7 @@ class NostalgiaForInfinityX4(IStrategy):
   # Shorting
 
   # Short normal mode tags
-  short_normal_mode_tags = ["500"]
+  short_normal_mode_tags = ["500", "501"]
 
   short_normal_mode_name = "short_normal"
 
@@ -383,57 +383,58 @@ class NostalgiaForInfinityX4(IStrategy):
   #############################################################
   # Buy side configuration
 
-  entry_long_params = {
+  long_entry_signal_params = {
     # Enable/Disable conditions
     # -------------------------------------------------------
-    "buy_condition_1_enable": True,
-    "buy_condition_2_enable": True,
-    "buy_condition_3_enable": True,
-    "buy_condition_4_enable": True,
-    "buy_condition_5_enable": True,
-    "buy_condition_6_enable": True,
-    "buy_condition_7_enable": True,
-    "buy_condition_8_enable": True,
-    "buy_condition_9_enable": True,
-    "buy_condition_10_enable": True,
-    "buy_condition_11_enable": True,
-    "buy_condition_12_enable": True,
-    "buy_condition_13_enable": False,
-    "buy_condition_21_enable": True,
-    "buy_condition_22_enable": True,
-    "buy_condition_23_enable": True,
-    "buy_condition_24_enable": True,
-    "buy_condition_25_enable": True,
-    "buy_condition_26_enable": False,
-    "buy_condition_41_enable": True,
-    "buy_condition_42_enable": True,
-    "buy_condition_43_enable": True,
-    "buy_condition_44_enable": True,
-    "buy_condition_45_enable": True,
-    "buy_condition_46_enable": True,
-    "buy_condition_47_enable": True,
-    "buy_condition_48_enable": True,
-    "buy_condition_49_enable": True,
-    "buy_condition_50_enable": False,
-    "buy_condition_61_enable": True,
-    # "buy_condition_81_enable": True,
-    # "buy_condition_82_enable": True,
-    "buy_condition_101_enable": True,
-    "buy_condition_102_enable": True,
-    "buy_condition_103_enable": True,
-    "buy_condition_104_enable": True,
-    "buy_condition_105_enable": True,
-    "buy_condition_106_enable": True,
-    "buy_condition_107_enable": False,
-    "buy_condition_108_enable": False,
-    "buy_condition_109_enable": False,
-    "buy_condition_110_enable": False,
+    "long_entry_condition_1_enable": True,
+    "long_entry_condition_2_enable": True,
+    "long_entry_condition_3_enable": True,
+    "long_entry_condition_4_enable": True,
+    "long_entry_condition_5_enable": True,
+    "long_entry_condition_6_enable": True,
+    "long_entry_condition_7_enable": True,
+    "long_entry_condition_8_enable": True,
+    "long_entry_condition_9_enable": True,
+    "long_entry_condition_10_enable": True,
+    "long_entry_condition_11_enable": True,
+    "long_entry_condition_12_enable": True,
+    "long_entry_condition_13_enable": False,
+    "long_entry_condition_21_enable": True,
+    "long_entry_condition_22_enable": True,
+    "long_entry_condition_23_enable": True,
+    "long_entry_condition_24_enable": True,
+    "long_entry_condition_25_enable": True,
+    "long_entry_condition_26_enable": False,
+    "long_entry_condition_41_enable": True,
+    "long_entry_condition_42_enable": True,
+    "long_entry_condition_43_enable": True,
+    "long_entry_condition_44_enable": True,
+    "long_entry_condition_45_enable": True,
+    "long_entry_condition_46_enable": True,
+    "long_entry_condition_47_enable": True,
+    "long_entry_condition_48_enable": True,
+    "long_entry_condition_49_enable": True,
+    "long_entry_condition_50_enable": False,
+    "long_entry_condition_61_enable": True,
+    # "long_entry_condition_81_enable": True,
+    # "long_entry_condition_82_enable": True,
+    "long_entry_condition_101_enable": True,
+    "long_entry_condition_102_enable": True,
+    "long_entry_condition_103_enable": True,
+    "long_entry_condition_104_enable": True,
+    "long_entry_condition_105_enable": True,
+    "long_entry_condition_106_enable": True,
+    "long_entry_condition_107_enable": False,
+    "long_entry_condition_108_enable": False,
+    "long_entry_condition_109_enable": False,
+    "long_entry_condition_110_enable": False,
   }
 
-  entry_short_params = {
+  short_entry_signal_params = {
     # Enable/Disable conditions
     # -------------------------------------------------------
-    "entry_condition_500_enable": False,
+    "short_entry_condition_500_enable": False,
+    "short_entry_condition_501_enable": False,
   }
 
   buy_protection_params = {}
@@ -19820,7 +19821,9 @@ class NostalgiaForInfinityX4(IStrategy):
     return dataframe
 
   def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-    conditions = []
+    long_entry_conditions = []
+    short_entry_conditions = []
+
     dataframe.loc[:, "enter_tag"] = ""
 
     # the number of free slots
@@ -19829,11 +19832,11 @@ class NostalgiaForInfinityX4(IStrategy):
     is_btc_stake = self.config["stake_currency"] in self.btc_stakes
     allowed_empty_candles = 144 if is_btc_stake else 60
 
-    for buy_enable in self.entry_long_params:
-      index = int(buy_enable.split("_")[2])
+    for enabled_long_entry_signal in self.long_entry_signal_params:
+      index = int(enabled_long_entry_signal.split("_")[3])
       item_buy_protection_list = [True]
-      if self.entry_long_params[f"{buy_enable}"]:
-        # Buy conditions
+      if self.long_entry_signal_params[f"{enabled_long_entry_signal}"]:
+        # Long Entry Conditions Starts Here
         # -----------------------------------------------------------------------------------------
         item_buy_logic = []
         item_buy_logic.append(reduce(lambda x, y: x & y, item_buy_protection_list))
@@ -31105,14 +31108,58 @@ class NostalgiaForInfinityX4(IStrategy):
           item_buy_logic.append(dataframe["ewo_50_200"] < self.entry_110_ewo_50_200_max.value)
           item_buy_logic.append(dataframe["close"] < (dataframe["ema_20"] * self.entry_110_ema_offset.value))
 
-        item_buy_logic.append(dataframe["volume"] > 0)
-        item_buy = reduce(lambda x, y: x & y, item_buy_logic)
-        dataframe.loc[item_buy, "enter_tag"] += f"{index} "
-        conditions.append(item_buy)
-        dataframe.loc[:, "enter_long"] = item_buy
+        # Long Entry Conditions Ends Here
 
-    if conditions:
-      dataframe.loc[:, "enter_long"] = reduce(lambda x, y: x | y, conditions)
+        item_buy_logic.append(dataframe["volume"] > 0)
+        item_long_entry = reduce(lambda x, y: x & y, item_buy_logic)
+        dataframe.loc[item_long_entry, "enter_tag"] += f"{index} "
+        long_entry_conditions.append(item_long_entry)
+        dataframe.loc[:, "enter_long"] = item_long_entry
+
+    if long_entry_conditions:
+      dataframe.loc[:, "enter_long"] = reduce(lambda x, y: x | y, long_entry_conditions)
+
+    for enabled_short_entry_signal in self.short_entry_signal_params:
+      short_index = int(enabled_short_entry_signal.split("_")[3])
+      item_short_buy_protection_list = [True]
+      if self.short_entry_signal_params[f"{enabled_short_entry_signal}"]:
+        # Short Entry Conditions Starts Here
+        # -----------------------------------------------------------------------------------------
+        short_entry_logic = []
+        short_entry_logic.append(reduce(lambda x, y: x & y, item_short_buy_protection_list))
+
+        # Condition #500 - Rapid mode (Short).
+        if short_index == 500:
+          # Protections
+          # short_entry_logic.append(dataframe["global_protections_long_pump"] == False)
+          # short_entry_logic.append(dataframe["global_protections_long_dump"] == False)
+          # short_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          # short_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+
+          # Logic
+          short_entry_logic.append(dataframe["buy_short"] > 0)
+
+        # Condition #500 - Rapid mode (Short).
+        if short_index == 501:
+          # Protections
+          # short_entry_logic.append(dataframe["global_protections_long_pump"] == False)
+          # short_entry_logic.append(dataframe["global_protections_long_dump"] == False)
+          # short_entry_logic.append(dataframe["btc_pct_close_max_24_5m"] < 0.03)
+          # short_entry_logic.append(dataframe["btc_pct_close_max_72_5m"] < 0.03)
+
+          # Logic
+          short_entry_logic.append(dataframe["buy_short2"] > 0)
+
+        # Short Entry Conditions Ends Here
+
+        short_entry_logic.append(dataframe["volume"] > 0)
+        item_short_entry = reduce(lambda x, y: x & y, short_entry_logic)
+        dataframe.loc[item_short_entry, "enter_tag"] += f"{short_index} "
+        short_entry_conditions.append(item_short_entry)
+        dataframe.loc[:, "enter_short"] = item_short_entry
+
+    if short_entry_conditions:
+      dataframe.loc[:, "enter_short"] = reduce(lambda x, y: x | y, short_entry_conditions)
 
     return dataframe
 
