@@ -1575,7 +1575,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # Williams %R based sells
     if not sell:
-      sell, signal_name = self.exit_r(
+      sell, signal_name = self.long_exit_williams_r(
         self.long_normal_mode_name,
         profit_current_stake_ratio,
         max_profit,
@@ -1820,7 +1820,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # Williams %R based sells
     if not sell:
-      sell, signal_name = self.exit_r(
+      sell, signal_name = self.long_exit_williams_r(
         self.long_pump_mode_name,
         profit_current_stake_ratio,
         max_profit,
@@ -2065,7 +2065,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # Williams %R based sells
     if not sell:
-      sell, signal_name = self.exit_r(
+      sell, signal_name = self.long_exit_williams_r(
         self.long_quick_mode_name,
         profit_current_stake_ratio,
         max_profit,
@@ -2321,7 +2321,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # Williams %R based sells
     if not sell:
-      sell, signal_name = self.exit_r(
+      sell, signal_name = self.long_exit_williams_r(
         self.long_rebuy_mode_name,
         profit_current_stake_ratio,
         max_profit,
@@ -2547,7 +2547,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # Williams %R based sells
     if not sell:
-      sell, signal_name = self.exit_r(
+      sell, signal_name = self.long_exit_williams_r(
         self.long_mode_name,
         profit_current_stake_ratio,
         max_profit,
@@ -2773,7 +2773,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # Williams %R based sells
     if not sell:
-      sell, signal_name = self.exit_r(
+      sell, signal_name = self.long_exit_williams_r(
         self.long_rapid_mode_name,
         profit_current_stake_ratio,
         max_profit,
@@ -3267,7 +3267,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     return False, None
 
-  def exit_r(
+  def long_exit_williams_r(
     self,
     mode_name: str,
     current_profit: float,
