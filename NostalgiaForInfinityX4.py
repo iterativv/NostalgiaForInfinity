@@ -8081,7 +8081,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     return False, None
 
-  def exit_short_normal(
+  def short_exit_normal(
     self,
     pair: str,
     current_rate: float,
@@ -8106,7 +8106,7 @@ class NostalgiaForInfinityX4(IStrategy):
     sell = False
 
     # Original sell signals
-    sell, signal_name = self.exit_short_signals(
+    sell, signal_name = self.short_exit_signals(
       self.short_normal_mode_name,
       profit_current_stake_ratio,
       max_profit,
@@ -8260,7 +8260,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     return False, None
 
-  def exit_short_signals(
+  def short_exit_signals(
     self,
     mode_name: str,
     current_profit: float,
@@ -8580,7 +8580,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # Short normal mode
     if any(c in self.short_normal_mode_tags for c in enter_tags):
-      sell, signal_name = self.exit_short_normal(
+      sell, signal_name = self.short_exit_normal(
         pair,
         current_rate,
         profit_stake,
