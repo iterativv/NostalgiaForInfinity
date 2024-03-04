@@ -1514,7 +1514,7 @@ class NostalgiaForInfinityX4(IStrategy):
   def get_ticker_indicator(self):
     return int(self.timeframe[:-1])
 
-  def exit_normal(
+  def exit_long_normal(
     self,
     pair: str,
     current_rate: float,
@@ -8424,7 +8424,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # Normal mode
     if any(c in self.normal_mode_tags for c in enter_tags):
-      sell, signal_name = self.exit_normal(
+      sell, signal_name = self.exit_long_normal(
         pair,
         current_rate,
         profit_stake,
@@ -8619,7 +8619,7 @@ class NostalgiaForInfinityX4(IStrategy):
       for c in enter_tags
     ):
       # use normal mode for such trades
-      sell, signal_name = self.exit_normal(
+      sell, signal_name = self.exit_long_normal(
         pair,
         current_rate,
         profit_stake,
