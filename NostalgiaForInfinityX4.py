@@ -1514,7 +1514,7 @@ class NostalgiaForInfinityX4(IStrategy):
   def get_ticker_indicator(self):
     return int(self.timeframe[:-1])
 
-  def exit_long_normal(
+  def long_exit_normal(
     self,
     pair: str,
     current_rate: float,
@@ -1539,7 +1539,7 @@ class NostalgiaForInfinityX4(IStrategy):
     sell = False
 
     # Original sell signals
-    sell, signal_name = self.exit_signals(
+    sell, signal_name = self.long_exit_signals(
       self.long_normal_mode_name,
       profit_current_stake_ratio,
       max_profit,
@@ -1557,7 +1557,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # Main sell signals
     if not sell:
-      sell, signal_name = self.exit_main(
+      sell, signal_name = self.long_exit_main(
         self.long_normal_mode_name,
         profit_current_stake_ratio,
         max_profit,
@@ -1593,7 +1593,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # Downtrend/descending based sells
     if not sell:
-      sell, signal_name = self.exit_long_dec(
+      sell, signal_name = self.long_exit_dec(
         self.long_normal_mode_name,
         profit_current_stake_ratio,
         max_profit,
@@ -1759,7 +1759,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     return False, None
 
-  def exit_pump(
+  def long_exit_pump(
     self,
     pair: str,
     current_rate: float,
@@ -1784,7 +1784,7 @@ class NostalgiaForInfinityX4(IStrategy):
     sell = False
 
     # Original sell signals
-    sell, signal_name = self.exit_signals(
+    sell, signal_name = self.long_exit_signals(
       self.long_pump_mode_name,
       profit_current_stake_ratio,
       max_profit,
@@ -1802,7 +1802,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # Main sell signals
     if not sell:
-      sell, signal_name = self.exit_main(
+      sell, signal_name = self.long_exit_main(
         self.long_pump_mode_name,
         profit_current_stake_ratio,
         max_profit,
@@ -1838,7 +1838,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # Downtrend/descending based sells
     if not sell:
-      sell, signal_name = self.exit_long_dec(
+      sell, signal_name = self.long_exit_dec(
         self.long_pump_mode_name,
         profit_current_stake_ratio,
         max_profit,
@@ -2029,7 +2029,7 @@ class NostalgiaForInfinityX4(IStrategy):
     sell = False
 
     # Original sell signals
-    sell, signal_name = self.exit_signals(
+    sell, signal_name = self.long_exit_signals(
       self.long_quick_mode_name,
       profit_current_stake_ratio,
       max_profit,
@@ -2047,7 +2047,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # Main sell signals
     if not sell:
-      sell, signal_name = self.exit_main(
+      sell, signal_name = self.long_exit_main(
         self.long_quick_mode_name,
         profit_current_stake_ratio,
         max_profit,
@@ -2083,7 +2083,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # Downtrend/descending based sells
     if not sell:
-      sell, signal_name = self.exit_long_dec(
+      sell, signal_name = self.long_exit_dec(
         self.long_quick_mode_name,
         profit_current_stake_ratio,
         max_profit,
@@ -2285,7 +2285,7 @@ class NostalgiaForInfinityX4(IStrategy):
     sell = False
 
     # Original sell signals
-    sell, signal_name = self.exit_signals(
+    sell, signal_name = self.long_exit_signals(
       self.long_rebuy_mode_name,
       profit_current_stake_ratio,
       max_profit,
@@ -2303,7 +2303,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # Main sell signals
     if not sell:
-      sell, signal_name = self.exit_main(
+      sell, signal_name = self.long_exit_main(
         self.long_rebuy_mode_name,
         profit_current_stake_ratio,
         max_profit,
@@ -2339,7 +2339,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # Downtrend/descending based sells
     if not sell:
-      sell, signal_name = self.exit_long_dec(
+      sell, signal_name = self.long_exit_dec(
         self.long_rebuy_mode_name,
         profit_current_stake_ratio,
         max_profit,
@@ -2486,7 +2486,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     return False, None
 
-  def exit_long(
+  def long_exit_high_profit(
     self,
     pair: str,
     current_rate: float,
@@ -2511,7 +2511,7 @@ class NostalgiaForInfinityX4(IStrategy):
     sell = False
 
     # Original sell signals
-    sell, signal_name = self.exit_signals(
+    sell, signal_name = self.long_exit_signals(
       self.long_mode_name,
       profit_current_stake_ratio,
       max_profit,
@@ -2529,7 +2529,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # Main sell signals
     if not sell:
-      sell, signal_name = self.exit_main(
+      sell, signal_name = self.long_exit_main(
         self.long_mode_name,
         profit_current_stake_ratio,
         max_profit,
@@ -2737,7 +2737,7 @@ class NostalgiaForInfinityX4(IStrategy):
     sell = False
 
     # Original sell signals
-    sell, signal_name = self.exit_signals(
+    sell, signal_name = self.long_exit_signals(
       self.long_rapid_mode_name,
       profit_current_stake_ratio,
       max_profit,
@@ -2755,7 +2755,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # Main sell signals
     if not sell:
-      sell, signal_name = self.exit_main(
+      sell, signal_name = self.long_exit_main(
         self.long_rapid_mode_name,
         profit_current_stake_ratio,
         max_profit,
@@ -2791,7 +2791,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # Downtrend/descending based sells
     if not sell:
-      sell, signal_name = self.exit_long_dec(
+      sell, signal_name = self.long_exit_dec(
         self.long_rapid_mode_name,
         profit_current_stake_ratio,
         max_profit,
@@ -3075,7 +3075,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     return False, None
 
-  def exit_signals(
+  def long_exit_signals(
     self,
     mode_name: str,
     current_profit: float,
@@ -3168,7 +3168,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     return False, None
 
-  def exit_main(
+  def long_exit_main(
     self,
     mode_name: str,
     current_profit: float,
@@ -5236,7 +5236,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     return False, None
 
-  def exit_long_dec(
+  def long_exit_dec(
     self,
     mode_name: str,
     current_profit: float,
@@ -8424,7 +8424,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # Normal mode
     if any(c in self.long_normal_mode_tags for c in enter_tags):
-      sell, signal_name = self.exit_long_normal(
+      sell, signal_name = self.long_exit_normal(
         pair,
         current_rate,
         profit_stake,
@@ -8450,7 +8450,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # Pump mode
     if any(c in self.long_pump_mode_tags for c in enter_tags):
-      sell, signal_name = self.exit_pump(
+      sell, signal_name = self.long_exit_pump(
         pair,
         current_rate,
         profit_stake,
@@ -8528,7 +8528,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # Long mode
     if any(c in self.long_mode_tags for c in enter_tags):
-      sell, signal_name = self.exit_long(
+      sell, signal_name = self.long_exit_high_profit(
         pair,
         current_rate,
         profit_stake,
@@ -8619,7 +8619,7 @@ class NostalgiaForInfinityX4(IStrategy):
       for c in enter_tags
     ):
       # use normal mode for such trades
-      sell, signal_name = self.exit_long_normal(
+      sell, signal_name = self.long_exit_normal(
         pair,
         current_rate,
         profit_stake,
