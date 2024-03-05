@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.290"
+    return "v14.1.295"
 
   stoploss = -0.99
 
@@ -286,6 +286,8 @@ class NostalgiaForInfinityX4(IStrategy):
   regular_mode_rebuy_thresholds_spot = [
     [-0.12, -0.12, -0.12, -0.12, -0.12],
     [-0.12, -0.12, -0.12, -0.12, -0.12],
+    [-0.12, -0.12, -0.12, -0.12, -0.12],
+    [-0.12, -0.12, -0.12, -0.12, -0.12],
     [-0.12, -0.12, -0.12, -0.12],
     [-0.12, -0.12, -0.12],
   ]
@@ -327,12 +329,16 @@ class NostalgiaForInfinityX4(IStrategy):
   regular_mode_derisk_spot = -0.80
 
   regular_mode_rebuy_stakes_futures = [
+    [0.20, 0.20, 0.20, 0.20, 0.20],
+    [0.30, 0.30, 0.30, 0.30, 0.30],
     [0.40, 0.40, 0.40, 0.40, 0.40],
     [0.50, 0.50, 0.50, 0.50, 0.50],
     [0.75, 0.75, 0.75, 0.75],
     [1.0, 1.0, 1.0],
   ]
   regular_mode_rebuy_thresholds_futures = [
+    [-0.12, -0.12, -0.12, -0.12, -0.12],
+    [-0.12, -0.12, -0.12, -0.12, -0.12],
     [-0.12, -0.12, -0.12, -0.12, -0.12],
     [-0.12, -0.12, -0.12, -0.12, -0.12],
     [-0.12, -0.12, -0.12, -0.12],
@@ -9610,23 +9616,23 @@ class NostalgiaForInfinityX4(IStrategy):
         if current_profit > 0.01:
           return True, f"exit_{mode_name}_3_2_1"
 
-    # Sell signal 4
-    elif (last_candle["rsi_14"] < 20.0) and (last_candle["rsi_14_1h"] < 22.0):
-      if last_candle["close"] < last_candle["ema_200"]:
-        if current_profit > 0.01:
-          return True, f"exit_{mode_name}_4_1_1"
-      else:
-        if current_profit > 0.01:
-          return True, f"exit_{mode_name}_4_2_1"
+    # # Sell signal 4
+    # elif (last_candle["rsi_14"] < 20.0) and (last_candle["rsi_14_1h"] < 22.0):
+    #   if last_candle["close"] < last_candle["ema_200"]:
+    #     if current_profit > 0.01:
+    #       return True, f"exit_{mode_name}_4_1_1"
+    #   else:
+    #     if current_profit > 0.01:
+    #       return True, f"exit_{mode_name}_4_2_1"
 
-    # Sell signal 6
-    elif (
-      (last_candle["close"] > last_candle["ema_200"])
-      and (last_candle["close"] < last_candle["ema_50"])
-      and (last_candle["rsi_14"] < 21.0)
-    ):
-      if current_profit > 0.01:
-        return True, f"exit_{mode_name}_6_1"
+    # # Sell signal 6
+    # elif (
+    #   (last_candle["close"] > last_candle["ema_200"])
+    #   and (last_candle["close"] < last_candle["ema_50"])
+    #   and (last_candle["rsi_14"] < 21.0)
+    # ):
+    #   if current_profit > 0.01:
+    #     return True, f"exit_{mode_name}_6_1"
 
     # # Sell signal 7
     # elif (last_candle["rsi_14_1h"] < 21.0) and (last_candle["crossed_below_ema_12_26"]):
@@ -9637,14 +9643,14 @@ class NostalgiaForInfinityX4(IStrategy):
     #     if current_profit > 0.01:
     #       return True, f"exit_{mode_name}_7_2_1"
 
-    # Sell signal 8
-    elif last_candle["close"] < last_candle["bb20_2_low_1h"] * 1.08:
-      if last_candle["close"] < last_candle["ema_200"]:
-        if current_profit > 0.01:
-          return True, f"exit_{mode_name}_8_1_1"
-      else:
-        if current_profit > 0.01:
-          return True, f"exit_{mode_name}_8_2_1"
+    # # Sell signal 8
+    # elif last_candle["close"] < last_candle["bb20_2_low_1h"] * 1.08:
+    #   if last_candle["close"] < last_candle["ema_200"]:
+    #     if current_profit > 0.01:
+    #       return True, f"exit_{mode_name}_8_1_1"
+    #   else:
+    #     if current_profit > 0.01:
+    #       return True, f"exit_{mode_name}_8_2_1"
 
     return False, None
 
@@ -16769,6 +16775,9 @@ class NostalgiaForInfinityX4(IStrategy):
     informative_1d["high_max_6"] = informative_1d["high"].rolling(6).max()
     informative_1d["high_max_12"] = informative_1d["high"].rolling(12).max()
 
+    # Max lows
+    informative_1d["low_max_6"] = informative_1d["low"].rolling(6).min()
+
     # Performance logging
     # -----------------------------------------------------------------------------------------
     tok = time.perf_counter()
@@ -17020,9 +17029,10 @@ class NostalgiaForInfinityX4(IStrategy):
     informative_1h["high_max_48"] = informative_1h["high"].rolling(48).max()
 
     # Max lows
-    informative_1h["low_min_3"] = informative_1h["low"].rolling(3).min()
-    informative_1h["low_min_12"] = informative_1h["low"].rolling(12).min()
-    informative_1h["low_min_24"] = informative_1h["low"].rolling(24).min()
+    informative_1h["low_max_3"] = informative_1h["low"].rolling(3).min()
+    informative_1h["low_max_12"] = informative_1h["low"].rolling(12).min()
+    informative_1h["low_max_24"] = informative_1h["low"].rolling(24).min()
+    informative_1h["low_max_48"] = informative_1h["low"].rolling(48).min()
 
     # Volume
     informative_1h["volume_mean_factor_12"] = informative_1h["volume"] / informative_1h["volume"].rolling(12).mean()
@@ -25312,6 +25322,17 @@ class NostalgiaForInfinityX4(IStrategy):
         | (df["close"] > df["sup_level_1h"])
         | (df["close"] > (df["high_max_12_1h"] * 0.85))
       )
+      & (
+        (df["change_pct_4h"] > -0.02)
+        | (df["not_downtrend_1h"])
+        | (df["cti_20_4h"] < 0.7)
+        | (df["rsi_14_4h"] < 60.0)
+        | (df["cti_20_1d"] < 0.7)
+        | (df["rsi_14_1d"] < 70.0)
+        | (df["r_480_1h"] < -20.0)
+        | (df["r_480_4h"] < -20.0)
+        | (df["hl_pct_change_6_1d"] < 1.6)
+      )
     )
 
     df["global_protections_long_dump"] = (
@@ -30052,6 +30073,9 @@ class NostalgiaForInfinityX4(IStrategy):
             | (df["close"] > (df["high_max_6_1d"] * 0.84))
           )
           long_entry_logic.append((df["not_downtrend_1h"]) | (df["rsi_3_15m"] > 16.0) | (df["rsi_14_1d"] < 70.0))
+          long_entry_logic.append(
+            (df["not_downtrend_1h"]) | (df["rsi_3"] > 16.0) | (df["rsi_3_15m"] > 30.0) | (df["rsi_14_1d"] < 70.0)
+          )
 
           # Logic
           long_entry_logic.append(df["ema_26"] > df["ema_12"])
@@ -35858,6 +35882,14 @@ class NostalgiaForInfinityX4(IStrategy):
             | (df["rsi_14_max_6_1d"] < 70.0)
             | (df["close"] < df["res_hlevel_1h"])
             | (df["close"] < df["res_hlevel_4h"])
+            | (df["ema_200_dec_4_1d"] == False)
+          )
+          long_entry_logic.append(
+            (df["not_downtrend_1h"])
+            | (df["close"] > df["sup_level_1h"])
+            | (df["close"] > df["sup_level_4h"])
+            | (df["close"] > df["sup_level_1d"])
+            | (df["ema_200_dec_48_1h"] == False)
             | (df["ema_200_dec_4_1d"] == False)
           )
 
