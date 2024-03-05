@@ -108,11 +108,11 @@ class NostalgiaForInfinityX4(IStrategy):
   # Number of candles the strategy requires before producing valid signals
   startup_candle_count: int = 800
 
-  # Normal mode tags
+  # Long Normal mode tags
   long_normal_mode_tags = ["force_entry", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"]
-  # Pump mode tags
+  # Long Pump mode tags
   long_pump_mode_tags = ["21", "22", "23", "24", "25", "26"]
-  # Quick mode tags
+  # Long Quick mode tags
   long_quick_mode_tags = ["41", "42", "43", "44", "45", "46", "47", "48", "49", "50"]
   # Long rebuy mode tags
   long_rebuy_mode_tags = ["61"]
@@ -132,6 +132,16 @@ class NostalgiaForInfinityX4(IStrategy):
 
   # Short normal mode tags
   short_normal_mode_tags = ["500", "501"]
+  # Short Pump mode tags
+  short_pump_mode_tags = ["521", "522", "523", "524", "525", "526"]
+  # Short Quick mode tags
+  short_quick_mode_tags = ["541", "542", "543", "544", "545", "546", "547", "548", "549", "550"]
+  # Short rebuy mode tags
+  short_rebuy_mode_tags = ["561"]
+  # Short mode tags
+  short_mode_tags = ["581", "582"]
+  # Short rapid mode tags
+  short_rapid_mode_tags = ["601", "602", "603", "604", "605", "606", "607", "608", "609", "610"]
 
   short_normal_mode_name = "short_normal"
 
