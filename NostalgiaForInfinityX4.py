@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.295"
+    return "v14.1.296"
 
   stoploss = -0.99
 
@@ -29996,18 +29996,12 @@ class NostalgiaForInfinityX4(IStrategy):
         # Condition #13 - Normal mode (Long)
         if index == 13:
           # Protections
-          # long_entry_logic.append(df["global_protections_long_pump"] == True)
-          # long_entry_logic.append(df["global_protections_long_dump"] == True)
           long_entry_logic.append(df["btc_pct_close_max_24_5m"] < 0.06)
           long_entry_logic.append(df["btc_pct_close_max_72_5m"] < 0.06)
-          # long_entry_logic.append(df["tpct_change_0"] > 0.032)
-          # long_entry_logic.append(df["tpct_change_2"] > 0.06)
           long_entry_logic.append(df["close"] > (df["close_max_12"] * 0.84))
           long_entry_logic.append(df["close"] > (df["close_max_24"] * 0.80))
           long_entry_logic.append(df["close"] > (df["close_max_48"] * 0.75))
           long_entry_logic.append(df["close"] > (df["high_max_24_1h"] * 0.60))
-          # long_entry_logic.append(df["close"] > (df["high_max_24_4h"] * 0.50))
-          # long_entry_logic.append(df["close"] > (df["high_max_6_1d"] * 0.50))
           long_entry_logic.append(df["hl_pct_change_6_1h"] < 0.50)
           long_entry_logic.append(df["hl_pct_change_12_1h"] < 0.60)
           long_entry_logic.append(df["hl_pct_change_24_1h"] < 0.70)
@@ -30026,14 +30020,6 @@ class NostalgiaForInfinityX4(IStrategy):
           long_entry_logic.append(df["rsi_14_4h"] <= 80.0)
           long_entry_logic.append(df["cti_20_1d"] <= 0.90)
           long_entry_logic.append(df["rsi_14_1d"] <= 80.0)
-          # long_entry_logic.append(df["r_14_1h"] >= -100.0)
-          # long_entry_logic.append(df["r_14_1h"] <= -0.0)
-          # long_entry_logic.append(df["r_14_4h"] >= -100.0)
-          # long_entry_logic.append(df["r_14_4h"] <= -0.0)
-          # long_entry_logic.append(df["r_480_1h"] >= -100.0)
-          # long_entry_logic.append(df["r_480_1h"] <= -0.0)
-          # long_entry_logic.append(df["r_480_4h"] >= -100.0)
-          # long_entry_logic.append(df["r_480_4h"] <= -0.0)
 
           long_entry_logic.append(df["close"] > (df["sup_level_1h"] * 0.8))
           long_entry_logic.append(df["close"] < (df["res3_1d"] * 1.6))
