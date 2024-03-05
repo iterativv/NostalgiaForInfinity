@@ -36,9 +36,8 @@
 # If you reading this and searching for more you should see
 # https://github.com/DigiTuccar
 
-
 export STRATEGY_NAME=NostalgiaForInfinityX4
-export STRATEGY_VERSION=`grep version $STRATEGY_NAME.py  -A 1|grep return|cut -d '"' -f 2|sed "s/\.//g"`
+export STRATEGY_VERSION=$(grep version $STRATEGY_NAME.py -A 1 | grep return | cut -d '"' -f 2 | sed "s/\.//g")
 
 echo "######    "
 echo "######    "
@@ -168,8 +167,6 @@ export TRADING_MODE=spot
 export EXCHANGE=okx
 ./tests/backtests/backtesting-all-years-all-pairs.sh
 
-
-
 export TRADING_MODE=spot
 export EXCHANGE=okx
 ./tests/backtests/backtesting-all-years-all-pairs.sh
@@ -195,7 +192,6 @@ echo "######   #     # #    #   #   #       #  #    #                 #     # # 
 echo "######    #####  #    #   #   ###### ###  ####                   #####  #       ####    #   "
 echo "######    "
 echo "######    "
-
 
 export TRADING_MODE=spot
 export EXCHANGE=gateio
@@ -226,7 +222,6 @@ echo "######    "
 export TRADING_MODE=futures
 export EXCHANGE=gateio
 ./tests/backtests/backtesting-all-years-all-pairs.sh
-
 
 echo "######    "
 echo "######    "
@@ -368,7 +363,6 @@ echo "######    "
 export EXCHANGE=kucoin
 ./tests/backtests/backtesting-for-hunting-bad-buys.sh
 
-
 echo "######    "
 echo "######    "
 echo "######    "
@@ -442,7 +436,6 @@ echo "######   #     # #    #   #   #       #  #    #                 #     # # 
 echo "######    #####  #    #   #   ###### ###  ####                   #####  #       ####    #   "
 echo "######    "
 echo "######    "
-
 
 export TRADING_MODE=spot
 export EXCHANGE=gateio
