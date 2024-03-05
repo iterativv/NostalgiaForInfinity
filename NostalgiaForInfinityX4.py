@@ -14616,7 +14616,7 @@ class NostalgiaForInfinityX4(IStrategy):
         max_profit = (trade.max_rate - initial_entry.average) / initial_entry.average
         max_loss = (initial_entry.average - trade.min_rate) / trade.min_rate
 
-    # Normal mode
+    # Long Normal mode
     if any(c in self.long_normal_mode_tags for c in enter_tags):
       sell, signal_name = self.long_exit_normal(
         pair,
@@ -14642,7 +14642,7 @@ class NostalgiaForInfinityX4(IStrategy):
       if sell and (signal_name is not None):
         return f"{signal_name} ( {enter_tag})"
 
-    # Pump mode
+    # Long Pump mode
     if any(c in self.long_pump_mode_tags for c in enter_tags):
       sell, signal_name = self.long_exit_pump(
         pair,
@@ -14668,7 +14668,7 @@ class NostalgiaForInfinityX4(IStrategy):
       if sell and (signal_name is not None):
         return f"{signal_name} ( {enter_tag})"
 
-    # Quick mode
+    # Long Quick mode
     if any(c in self.long_quick_mode_tags for c in enter_tags):
       sell, signal_name = self.long_exit_quick(
         pair,
@@ -14720,7 +14720,7 @@ class NostalgiaForInfinityX4(IStrategy):
       if sell and (signal_name is not None):
         return f"{signal_name} ( {enter_tag})"
 
-    # Long mode
+    # Long high profit mode
     if any(c in self.long_mode_tags for c in enter_tags):
       sell, signal_name = self.long_exit_high_profit(
         pair,
@@ -14775,6 +14775,136 @@ class NostalgiaForInfinityX4(IStrategy):
     # Short normal mode
     if any(c in self.short_normal_mode_tags for c in enter_tags):
       sell, signal_name = self.short_exit_normal(
+        pair,
+        current_rate,
+        profit_stake,
+        profit_ratio,
+        profit_current_stake_ratio,
+        profit_init_ratio,
+        max_profit,
+        max_loss,
+        filled_entries,
+        filled_exits,
+        last_candle,
+        previous_candle_1,
+        previous_candle_2,
+        previous_candle_3,
+        previous_candle_4,
+        previous_candle_5,
+        trade,
+        current_time,
+        enter_tags,
+      )
+      if sell and (signal_name is not None):
+        return f"{signal_name} ( {enter_tag})"
+
+    # Short Pump mode
+    if any(c in self.short_pump_mode_tags for c in enter_tags):
+      sell, signal_name = self.short_exit_pump(
+        pair,
+        current_rate,
+        profit_stake,
+        profit_ratio,
+        profit_current_stake_ratio,
+        profit_init_ratio,
+        max_profit,
+        max_loss,
+        filled_entries,
+        filled_exits,
+        last_candle,
+        previous_candle_1,
+        previous_candle_2,
+        previous_candle_3,
+        previous_candle_4,
+        previous_candle_5,
+        trade,
+        current_time,
+        enter_tags,
+      )
+      if sell and (signal_name is not None):
+        return f"{signal_name} ( {enter_tag})"
+
+    # Short Quick mode
+    if any(c in self.short_quick_mode_tags for c in enter_tags):
+      sell, signal_name = self.short_exit_quick(
+        pair,
+        current_rate,
+        profit_stake,
+        profit_ratio,
+        profit_current_stake_ratio,
+        profit_init_ratio,
+        max_profit,
+        max_loss,
+        filled_entries,
+        filled_exits,
+        last_candle,
+        previous_candle_1,
+        previous_candle_2,
+        previous_candle_3,
+        previous_candle_4,
+        previous_candle_5,
+        trade,
+        current_time,
+        enter_tags,
+      )
+      if sell and (signal_name is not None):
+        return f"{signal_name} ( {enter_tag})"
+
+    # Short Rebuy mode
+    if all(c in self.short_rebuy_mode_tags for c in enter_tags):
+      sell, signal_name = self.short_exit_rebuy(
+        pair,
+        current_rate,
+        profit_stake,
+        profit_ratio,
+        profit_current_stake_ratio,
+        profit_init_ratio,
+        max_profit,
+        max_loss,
+        filled_entries,
+        filled_exits,
+        last_candle,
+        previous_candle_1,
+        previous_candle_2,
+        previous_candle_3,
+        previous_candle_4,
+        previous_candle_5,
+        trade,
+        current_time,
+        enter_tags,
+      )
+      if sell and (signal_name is not None):
+        return f"{signal_name} ( {enter_tag})"
+
+    # Short high profit mode
+    if any(c in self.short_mode_tags for c in enter_tags):
+      sell, signal_name = self.short_exit_high_profit(
+        pair,
+        current_rate,
+        profit_stake,
+        profit_ratio,
+        profit_current_stake_ratio,
+        profit_init_ratio,
+        max_profit,
+        max_loss,
+        filled_entries,
+        filled_exits,
+        last_candle,
+        previous_candle_1,
+        previous_candle_2,
+        previous_candle_3,
+        previous_candle_4,
+        previous_candle_5,
+        trade,
+        current_time,
+        enter_tags,
+      )
+      if sell and (signal_name is not None):
+        return f"{signal_name} ( {enter_tag})"
+
+    # Short rapid mode
+    if any(c in self.short_rapid_mode_tags for c in enter_tags):
+      sell, signal_name = self.short_exit_rapid(
         pair,
         current_rate,
         profit_stake,
