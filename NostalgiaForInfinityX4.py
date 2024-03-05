@@ -2004,7 +2004,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     return False, None
 
-  def exit_quick(
+  def long_exit_quick(
     self,
     pair: str,
     current_rate: float,
@@ -8476,7 +8476,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # Quick mode
     if any(c in self.long_quick_mode_tags for c in enter_tags):
-      sell, signal_name = self.exit_quick(
+      sell, signal_name = self.long_exit_quick(
         pair,
         current_rate,
         profit_stake,
