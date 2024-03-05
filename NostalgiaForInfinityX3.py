@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.292"
+    return "v13.1.293"
 
   stoploss = -0.99
 
@@ -256,12 +256,16 @@ class NostalgiaForInfinityX3(IStrategy):
   regular_mode_stake_multiplier_futures = [0.5, 0.75]
 
   regular_mode_rebuy_stakes_spot = [
+    [0.20, 0.20, 0.20, 0.20, 0.20],
+    [0.30, 0.30, 0.30, 0.30, 0.30],
     [0.40, 0.40, 0.40, 0.40, 0.40],
     [0.50, 0.50, 0.50, 0.50, 0.50],
     [0.75, 0.75, 0.75, 0.75],
     [1.0, 1.0, 1.0],
   ]
   regular_mode_rebuy_thresholds_spot = [
+    [-0.12, -0.12, -0.12, -0.12, -0.12],
+    [-0.12, -0.12, -0.12, -0.12, -0.12],
     [-0.12, -0.12, -0.12, -0.12, -0.12],
     [-0.12, -0.12, -0.12, -0.12, -0.12],
     [-0.12, -0.12, -0.12, -0.12],
@@ -305,12 +309,16 @@ class NostalgiaForInfinityX3(IStrategy):
   regular_mode_derisk_spot = -0.80
 
   regular_mode_rebuy_stakes_futures = [
+    [0.20, 0.20, 0.20, 0.20, 0.20],
+    [0.30, 0.30, 0.30, 0.30, 0.30],
     [0.40, 0.40, 0.40, 0.40, 0.40],
     [0.50, 0.50, 0.50, 0.50, 0.50],
     [0.75, 0.75, 0.75, 0.75],
     [1.0, 1.0, 1.0],
   ]
   regular_mode_rebuy_thresholds_futures = [
+    [-0.12, -0.12, -0.12, -0.12, -0.12],
+    [-0.12, -0.12, -0.12, -0.12, -0.12],
     [-0.12, -0.12, -0.12, -0.12, -0.12],
     [-0.12, -0.12, -0.12, -0.12, -0.12],
     [-0.12, -0.12, -0.12, -0.12],
