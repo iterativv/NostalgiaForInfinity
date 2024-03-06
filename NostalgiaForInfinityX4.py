@@ -3051,7 +3051,7 @@ class NostalgiaForInfinityX4(IStrategy):
     enter_tags,
   ) -> tuple:
     if len(filled_exits) > 100 and profit_init_ratio > 1.0:
-        return True, f"exit_{self.long_grind_mode_name}_g"
+      return True, f"exit_{self.long_grind_mode_name}_g"
     return False, None
 
   def mark_profit_target(
