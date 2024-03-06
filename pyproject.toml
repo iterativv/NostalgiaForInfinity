@@ -28,8 +28,8 @@ atomic = true
 profile = "black"
 line_length = 119
 skip_gitignore = true
-multi_line_output=0
-lines_after_imports=2
+multi_line_output = 0
+lines_after_imports = 2
 skip_glob = ["**/.env*", "**/env/*", "**/.venv/*", "**/docs/*", "**/user_data/*"]
 
 
@@ -38,18 +38,20 @@ asyncio_mode = "auto"
 
 [tool.flake8]
 max-line-length = 119
-extend-ignore = ["D203", "E203", "E251", "E266", "E302", "E305", "E401", "E402", "E501", "F401", "F403", "W503", "E712" , "E713"]
+extend-ignore = ["D203", "E203", "E251", "E266", "E302", "E305", "E401", "E402", "E501", "F401", "F403", "W503", "E712", "E713"]
 exclude = [".git", "__pycache__", "dist"]
 max-complexity = 12
 
 
 
-
 [tool.ruff]
+# Same as Black.
 line-length = 119
 indent-width = 2
 target-version = "py311"
 fix = true
+extend-exclude = [".env", ".venv"]
+
 
 
 
