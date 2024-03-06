@@ -12,7 +12,7 @@ from freqtrade.strategy import merge_informative_pair
 from freqtrade.strategy import DecimalParameter, CategoricalParameter
 from pandas import DataFrame, Series
 from functools import reduce
-from freqtrade.persistence import Trade, LocalTrade
+from freqtrade.persistence import Trade
 from datetime import datetime, timedelta
 import time
 from typing import Optional
@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.300"
+    return "v14.1.301"
 
   stoploss = -0.99
 
