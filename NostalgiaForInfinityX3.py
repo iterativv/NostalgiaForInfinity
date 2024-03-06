@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.299"
+    return "v13.1.300"
 
   stoploss = -0.99
 
@@ -26309,8 +26309,21 @@ class NostalgiaForInfinityX3(IStrategy):
 
     df.loc[:, "enter_tag"] = ""
 
+    is_backtest = self.dp.runmode.value in ["backtest", "hyperopt", "plot"]
     # the number of free slots
-    current_free_slots = self.config["max_open_trades"] - LocalTrade.get_open_trade_count()
+    current_free_slots = self.config["max_open_trades"]
+    if not is_backtest:
+      current_free_slots = self.config["max_open_trades"] - Trade.get_open_trade_count()
+    # Grind mode
+    num_open_grind_mode = 0
+    is_pair_grind_mode = metadata["pair"].split("/")[0] in self.grind_mode_coins
+    if not is_backtest:
+      open_trades = Trade.get_trades_proxy(is_open=True)
+      for open_trade in open_trades:
+        enter_tag = open_trade.enter_tag
+        enter_tags = enter_tag.split()
+        if all(c in self.long_grind_mode_tags for c in enter_tags):
+          num_open_grind_mode += 1
     # if BTC/ETH stake
     is_btc_stake = self.config["stake_currency"] in self.btc_stakes
     allowed_empty_candles = 144 if is_btc_stake else 60
@@ -37380,6 +37393,8 @@ class NostalgiaForInfinityX3(IStrategy):
         # Condition #120 - Grind mode (Long).
         if index == 120:
           # Protections
+          long_entry_logic.append(num_open_grind_mode < self.grind_mode_max_slots)
+          long_entry_logic.append(is_pair_grind_mode)
           long_entry_logic.append(df["global_protections_long_pump"] == True)
           long_entry_logic.append(df["global_protections_long_dump"] == True)
           long_entry_logic.append(df["protections_long_rebuy"] == True)
@@ -37502,7 +37517,7 @@ class NostalgiaForInfinityX3(IStrategy):
       is_pair_grind_mode = pair.split("/")[0] in self.grind_mode_coins
       if is_pair_grind_mode:
         num_open_grind_mode = 0
-        open_trades = LocalTrade.get_trades_proxy(is_open=True)
+        open_trades = Trade.get_trades_proxy(is_open=True)
         for open_trade in open_trades:
           enter_tag = open_trade.enter_tag
           enter_tags = enter_tag.split()
