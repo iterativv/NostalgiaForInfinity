@@ -15508,6 +15508,9 @@ class NostalgiaForInfinityX4(IStrategy):
               order_mode = sell_order_tag.split(" ", 1)
               if len(order_mode) > 0:
                 order_tag = order_mode[0]
+          else:
+            # no order tag support, assume the first exit is for the first buy
+            is_first_entry_exit_found = True
           if order_tag in ["gm0", "gmd0"]:
             is_first_entry_exit_found = True
             break
