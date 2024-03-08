@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.309"
+    return "v13.1.310"
 
   stoploss = -0.99
 
@@ -16424,10 +16424,10 @@ class NostalgiaForInfinityX3(IStrategy):
           for order2 in filled_orders:
             if order2.ft_order_side == "buy":
               current_amount += order2.safe_filled
-            if order2.ft_order_side == "sell":
+            elif order2.ft_order_side == "sell":
               current_amount -= order2.safe_filled
             if order2 is order:
-              if current_amount < (start_amount * 0.99):
+              if current_amount < (start_amount * 0.95):
                 is_derisk = True
         # found sells for all modes
         if rebuy_is_sell_found and grind_1_is_sell_found and grind_2_is_sell_found and grind_3_is_sell_found:
