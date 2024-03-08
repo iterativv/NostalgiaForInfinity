@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.305"
+    return "v13.1.306"
 
   stoploss = -0.99
 
@@ -26333,9 +26333,10 @@ class NostalgiaForInfinityX3(IStrategy):
       open_trades = Trade.get_trades_proxy(is_open=True)
       for open_trade in open_trades:
         enter_tag = open_trade.enter_tag
-        enter_tags = enter_tag.split()
-        if all(c in self.long_grind_mode_tags for c in enter_tags):
-          num_open_grind_mode += 1
+        if enter_tag is not None:
+          enter_tags = enter_tag.split()
+          if all(c in self.long_grind_mode_tags for c in enter_tags):
+            num_open_grind_mode += 1
     # if BTC/ETH stake
     is_btc_stake = self.config["stake_currency"] in self.btc_stakes
     allowed_empty_candles = 144 if is_btc_stake else 60
