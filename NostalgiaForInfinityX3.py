@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.315"
+    return "v13.1.316"
 
   stoploss = -0.99
 
@@ -15705,6 +15705,10 @@ class NostalgiaForInfinityX3(IStrategy):
       grind_4_current_grind_stake = grind_4_total_amount * exit_rate * (1 - trade.fee_close)
       grind_4_current_grind_stake_profit = grind_4_current_grind_stake - grind_4_total_cost
 
+    num_open_grinds = (
+      grind_1_sub_grind_count + grind_2_sub_grind_count + grind_3_sub_grind_count + grind_4_sub_grind_count
+    )
+
     # Sell remaining if partial fill on exit
     if partial_sell:
       order = filled_exits[-1]
@@ -15820,6 +15824,11 @@ class NostalgiaForInfinityX3(IStrategy):
         )
         and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
         and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
+        and (
+          (num_open_grinds == 0)
+          or (current_time - timedelta(hours=24) > filled_orders[-1].order_filled_utc)
+          or (slice_profit < -0.06)
+        )
         and (
           (last_candle["protections_long_rebuy"] == True)
           and (last_candle["global_protections_long_pump"] == True)
@@ -15941,6 +15950,11 @@ class NostalgiaForInfinityX3(IStrategy):
         )
         and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
         and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
+        and (
+          (num_open_grinds == 0)
+          or (current_time - timedelta(hours=24) > filled_orders[-1].order_filled_utc)
+          or (slice_profit < -0.06)
+        )
         and (
           (last_candle["protections_long_rebuy"] == True)
           and (last_candle["global_protections_long_pump"] == True)
@@ -16069,6 +16083,11 @@ class NostalgiaForInfinityX3(IStrategy):
         and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
         and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
         and (
+          (num_open_grinds == 0)
+          or (current_time - timedelta(hours=24) > filled_orders[-1].order_filled_utc)
+          or (slice_profit < -0.06)
+        )
+        and (
           (last_candle["protections_long_rebuy"] == True)
           and (last_candle["global_protections_long_pump"] == True)
           and (last_candle["global_protections_long_dump"] == True)
@@ -16193,6 +16212,11 @@ class NostalgiaForInfinityX3(IStrategy):
         )
         and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
         and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
+        and (
+          (num_open_grinds == 0)
+          or (current_time - timedelta(hours=24) > filled_orders[-1].order_filled_utc)
+          or (slice_profit < -0.06)
+        )
         and (
           (last_candle["protections_long_rebuy"] == True)
           and (last_candle["global_protections_long_pump"] == True)
@@ -16819,6 +16843,10 @@ class NostalgiaForInfinityX3(IStrategy):
       grind_4_current_grind_stake = grind_4_total_amount * exit_rate * (1 - trade.fee_close)
       grind_4_current_grind_stake_profit = grind_4_current_grind_stake - grind_4_total_cost
 
+    num_open_grinds = (
+      grind_1_sub_grind_count + grind_2_sub_grind_count + grind_3_sub_grind_count + grind_4_sub_grind_count
+    )
+
     # Sell remaining if partial fill on exit
     if partial_sell:
       order = filled_exits[-1]
@@ -16906,6 +16934,11 @@ class NostalgiaForInfinityX3(IStrategy):
         and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
         and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
         and (
+          (num_open_grinds == 0)
+          or (current_time - timedelta(hours=24) > filled_orders[-1].order_filled_utc)
+          or (slice_profit < -0.06)
+        )
+        and (
           (last_candle["protections_long_rebuy"] == True)
           and (last_candle["global_protections_long_pump"] == True)
           and (last_candle["global_protections_long_dump"] == True)
@@ -16976,6 +17009,11 @@ class NostalgiaForInfinityX3(IStrategy):
         )
         and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
         and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
+        and (
+          (num_open_grinds == 0)
+          or (current_time - timedelta(hours=24) > filled_orders[-1].order_filled_utc)
+          or (slice_profit < -0.06)
+        )
         and (
           (last_candle["protections_long_rebuy"] == True)
           and (last_candle["global_protections_long_pump"] == True)
@@ -17048,6 +17086,11 @@ class NostalgiaForInfinityX3(IStrategy):
         and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
         and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
         and (
+          (num_open_grinds == 0)
+          or (current_time - timedelta(hours=24) > filled_orders[-1].order_filled_utc)
+          or (slice_profit < -0.06)
+        )
+        and (
           (last_candle["protections_long_rebuy"] == True)
           and (last_candle["global_protections_long_pump"] == True)
           and (last_candle["global_protections_long_dump"] == True)
@@ -17119,6 +17162,11 @@ class NostalgiaForInfinityX3(IStrategy):
         )
         and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
         and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
+        and (
+          (num_open_grinds == 0)
+          or (current_time - timedelta(hours=24) > filled_orders[-1].order_filled_utc)
+          or (slice_profit < -0.06)
+        )
         and (
           (last_candle["protections_long_rebuy"] == True)
           and (last_candle["global_protections_long_pump"] == True)
