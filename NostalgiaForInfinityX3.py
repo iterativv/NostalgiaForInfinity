@@ -156,6 +156,7 @@ class NostalgiaForInfinityX3(IStrategy):
   is_futures_mode = False
   futures_mode_leverage = 3.0
   futures_mode_leverage_rebuy_mode = 3.0
+  futures_mode_leverage_grind_mode = 5.0
 
   # Stop thresholds. 0: Doom Bull, 1: Doom Bear, 2: u_e Bull, 3: u_e Bear, 4: u_e mins Bull, 5: u_e mins Bear.
   # 6: u_e ema % Bull, 7: u_e ema % Bear, 8: u_e RSI diff Bull, 9: u_e RSI diff Bear.
@@ -38223,6 +38224,8 @@ class NostalgiaForInfinityX3(IStrategy):
     enter_tags = entry_tag.split()
     if all(c in self.long_rebuy_mode_tags for c in enter_tags):
       return self.futures_mode_leverage_rebuy_mode
+    elif all(c in self.long_grind_mode_tags for c in enter_tags):
+      return self.futures_mode_leverage_grind_mode
     return self.futures_mode_leverage
 
   def _set_profit_target(
