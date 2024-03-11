@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.324"
+    return "v14.1.325"
 
   stoploss = -0.99
 
@@ -37057,6 +37057,14 @@ class NostalgiaForInfinityX4(IStrategy):
             long_entry_logic.append(df["not_downtrend_1d"])
           if self.entry_50_ema_12_1h_over_ema_200_1h_enabled.value:
             long_entry_logic.append(df["ema_12_1h"] > df["ema_200_1h"])
+
+          long_entry_logic.append(
+            (df["not_downtrend_15m"])
+            | (df["rsi_14"] > df["rsi_14"].shift(12))
+            | (df["rsi_14_15m"] > df["rsi_14_15m"].shift(12))
+            | (df["rsi_3"] > 12.0)
+            | (df["rsi_3_15m"] > 4.0)
+          )
 
           # Logic
           long_entry_logic.append(df["close"] < (df["bb20_2_low"] * self.entry_50_bb_offset.value))
