@@ -612,6 +612,9 @@ class NostalgiaForInfinityX3(IStrategy):
     "FIL",
     "ATOM",
     "GRT",
+    "LINK",
+    "VET",
+    "THETA",
   ]
 
   # Profit max thresholds
