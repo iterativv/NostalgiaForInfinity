@@ -615,6 +615,9 @@ class NostalgiaForInfinityX4(IStrategy):
     "LINK",
     "VET",
     "THETA",
+    "EOS",
+    "LRC",
+    "QTUM",
   ]
 
   # Profit max thresholds
