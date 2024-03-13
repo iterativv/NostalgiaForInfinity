@@ -10,7 +10,7 @@ services:
       - "./:/testing"
       - "./user_data/data:/testing/user_data/data"
     command: >
-      python -m pytest -n auto -ra -vv -s --log-cli-level=info --artifacts-path=artifacts/ ${EXTRA_ARGS:-tests/}
+      python -m pytest -s --log-cli-level=info --artifacts-path=artifacts/ ${EXTRA_ARGS:-tests/}
     entrypoint: []
     working_dir: /testing
 
@@ -87,6 +87,23 @@ services:
       --config configs/blacklist-${EXCHANGE:-binance}.json
       --indicators1 ema_200
       --indicators2 rsi_14 cti_20
+
+  plot-profit:
+    image: freqtradeorg/freqtrade:stable_plot
+    container_name: ${EXCHANGE:-binance}-${TRADING_MODE:-spot}-plot-profit
+    volumes:
+      - "./user_data:/freqtrade/user_data"
+      - "./user_data/data:/freqtrade/user_data/data"
+      - "./configs:/freqtrade/configs"
+      - "./${STRATEGY_NAME:-NostalgiaForInfinityX4}.py:/freqtrade/${STRATEGY_NAME:-NostalgiaForInfinityX4}.py"
+    command: >
+      plot-profit
+      --datadir /freqtrade/user_data/data/${EXCHANGE:-binance}
+      --strategy ${STRATEGY_NAME:-NostalgiaForInfinityX4}
+      --config configs/trading_mode-${TRADING_MODE:-spot}.json
+      --config configs/exampleconfig.json --timerange ${TIMERANGE:-20230701-20231001}
+      --config configs/pairlist-backtest-static-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt.json
+      --config configs/blacklist-${EXCHANGE:-binance}.json
 
   backtesting-pairs-since-2017:
     image: freqtradeorg/freqtrade:stable
