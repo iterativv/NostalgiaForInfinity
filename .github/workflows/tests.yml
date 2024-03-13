@@ -114,7 +114,9 @@ jobs:
           mkdir artifacts
           chmod 777 artifacts
           docker build -f docker/Dockerfile.custom --no-cache -t ci-strategy-backtesting .
-          docker run -v ".:/testing" -v "./user_data/data:/testing/user_data/data" --rm \
+          docker run -v ".:/testing" -v "./user_data/data:/testing/user_data/data" \
+            -v "./user_data/logs:/testing/user_data/logs" \
+            -v "./user_data/backtest_results:/testing/user_data/backtest_results" --rm \
             -w /testing --entrypoint "" --env-file .github/workflows/scripts/ci-proxy.env \
             ci-strategy-backtesting \
             python -m pytest -ra -vv -s --log-cli-level=info --artifacts-path=artifacts/ \
