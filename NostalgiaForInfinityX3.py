@@ -15799,7 +15799,7 @@ class NostalgiaForInfinityX3(IStrategy):
           grind_3_is_sell_found = True
         elif order_tag in ["gd2", "dd2"]:
           grind_2_is_sell_found = True
-        elif order_tag in ["p", "r", "d", "dd0"]:
+        elif order_tag in ["p", "r", "d", "dd0", "partial_exit", ""]:
           grind_1_is_sell_found = True
           grind_2_is_sell_found = True
           grind_3_is_sell_found = True
