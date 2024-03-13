@@ -86,6 +86,8 @@ class Backtest:
       f"--config=configs/blacklist-{exchange}.json",
       f"--timerange={start_date}-{end_date}",
       "--timeframe-detail=1m",
+      "--export=signals",
+      f"--log-file=user_data/logs/backtesting-{exchange}-{trading_mode}-{start_date}-{end_date}.log",
     ]
     if pairlist is None:
       cmdline.append(f"--config={exchange_config}")
