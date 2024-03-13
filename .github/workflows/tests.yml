@@ -84,8 +84,10 @@ jobs:
           - 20230801-20230901
           - 20230901-20231001
           - 20231001-20231101
-          # - 20231101-20231201
-          # - 20231201-20240101
+          - 20231101-20231201
+          - 20231201-20240101
+          - 20240101-20240201
+          - 20240201-20240301
 
     steps:
       - name: Fetch Source Code
@@ -180,8 +182,10 @@ jobs:
           - 20230801-20230901
           - 20230901-20231001
           - 20231001-20231101
-          # - 20231101-20231201
-          # - 20231201-20240101
+          - 20231101-20231201
+          - 20231201-20240101
+          - 20240101-20240201
+          - 20240201-20240301
 
     steps:
       - name: Fetch Source Code
@@ -203,6 +207,8 @@ jobs:
         run: |
           mkdir artifacts
           chmod 777 artifacts
+          chmod 777 ./user_data/backtest_results
+          chmod 777 ./user_data/logs
           docker build -f docker/Dockerfile.custom --no-cache -t ci-strategy-backtesting .
           docker run -v ".:/testing" -v "./user_data/data:/testing/user_data/data" --rm \
             -w /testing --entrypoint "" --env-file .github/workflows/scripts/ci-proxy.env \
