@@ -113,6 +113,8 @@ jobs:
         run: |
           mkdir artifacts
           chmod 777 artifacts
+          chmod 777 ./user_data/backtest_results
+          chmod 777 ./user_data/logs
           docker build -f docker/Dockerfile.custom --no-cache -t ci-strategy-backtesting .
           docker run -v ".:/testing" -v "./user_data/data:/testing/user_data/data" \
             -v "./user_data/logs:/testing/user_data/logs" \
