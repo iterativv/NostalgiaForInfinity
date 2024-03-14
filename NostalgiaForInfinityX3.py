@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.343"
+    return "v13.1.344"
 
   stoploss = -0.99
 
@@ -38226,8 +38226,11 @@ class NostalgiaForInfinityX3(IStrategy):
           long_entry_logic.append(df["btc_pct_close_max_72_5m"] < 0.06)
           long_entry_logic.append(df["close"] > (df["close_max_12"] * 0.94))
           long_entry_logic.append(df["close"] > (df["close_max_24"] * 0.92))
-          long_entry_logic.append(df["close"] > (df["close_max_48"] * 0.88))
-          long_entry_logic.append(df["close"] > (df["high_max_24_1h"] * 0.84))
+          long_entry_logic.append(df["close"] > (df["close_max_48"] * 0.90))
+          long_entry_logic.append(df["close"] > (df["high_max_12_1h"] * 0.88))
+          long_entry_logic.append(df["close"] > (df["high_max_24_1h"] * 0.86))
+          long_entry_logic.append(df["close"] > (df["high_max_6_1d"] * 0.84))
+          long_entry_logic.append(df["close"] > (df["high_max_12_1d"] * 0.80))
           long_entry_logic.append(df["hl_pct_change_6_1h"] < 0.30)
           long_entry_logic.append(df["hl_pct_change_12_1h"] < 0.40)
           long_entry_logic.append(df["hl_pct_change_24_1h"] < 0.50)
@@ -38236,21 +38239,23 @@ class NostalgiaForInfinityX3(IStrategy):
 
           long_entry_logic.append(df["rsi_3"] >= 12.0)
           long_entry_logic.append(df["rsi_3"] <= 50.0)
-          long_entry_logic.append(df["rsi_3_15m"] >= 26.0)
+          long_entry_logic.append(df["rsi_3_15m"] >= 30.0)
           long_entry_logic.append(df["rsi_3_1h"] >= 30.0)
           long_entry_logic.append(df["rsi_3_4h"] >= 30.0)
-          long_entry_logic.append(df["rsi_3_1d"] >= 10.0)
-          long_entry_logic.append(df["cti_20_1h"] <= 0.80)
+          long_entry_logic.append(df["rsi_3_1d"] >= 30.0)
+          long_entry_logic.append(df["cti_20_1h"] <= 0.70)
           long_entry_logic.append(df["rsi_14_1h"] <= 70.0)
-          long_entry_logic.append(df["cti_20_4h"] <= 0.80)
+          long_entry_logic.append(df["cti_20_4h"] <= 0.70)
           long_entry_logic.append(df["rsi_14_4h"] <= 70.0)
-          long_entry_logic.append(df["cti_20_1d"] <= 0.80)
+          long_entry_logic.append(df["cti_20_1d"] <= 0.70)
           long_entry_logic.append(df["rsi_14_1d"] <= 70.0)
 
           long_entry_logic.append(df["ema_200_dec_4_1d"] == False)
 
           # Logic
           long_entry_logic.append(df["rsi_14"] < 46.0)
+          long_entry_logic.append(df["ema_12"] < df["ema_26"])
+          long_entry_logic.append(df["ha_close"] > df["ha_open"])
 
         # Long Entry Conditions Ends Here
 
