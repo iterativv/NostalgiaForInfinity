@@ -142,10 +142,12 @@ user_data/data/*/*.json
 user_data/data/*/*.json.gz
 user_data/data
 user_data/data/
-user_data/backtest_results
+user_data/backtest_results/*
+!user_data/backtest_results/.gitkeep
 user_data/hyperopt_results
 user_data/hyperopts
-user_data/logs
+user_data/logs/*
+!user_data/logs/.gitkeep
 user_data/notebooks
 user_data/plot
 user_data/freqaimodels
