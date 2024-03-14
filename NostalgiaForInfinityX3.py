@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.340"
+    return "v13.1.341"
 
   stoploss = -0.99
 
@@ -16024,7 +16024,7 @@ class NostalgiaForInfinityX3(IStrategy):
           grind_1_current_grind_stake_profit
           < (slice_amount * grind_1_stop_grinds / (trade.leverage if self.is_futures_mode else 1.0))
         )
-        and (is_derisk or is_derisk_calc)
+        and (is_derisk or is_derisk_calc or is_grind_mode)
       )
       # temporary
       and (
@@ -16156,7 +16156,7 @@ class NostalgiaForInfinityX3(IStrategy):
           grind_2_current_grind_stake_profit
           < (slice_amount * grind_2_stop_grinds / (trade.leverage if self.is_futures_mode else 1.0))
         )
-        and (is_derisk or is_derisk_calc)
+        and (is_derisk or is_derisk_calc or is_grind_mode)
       )
       # temporary
       and (
@@ -16288,7 +16288,7 @@ class NostalgiaForInfinityX3(IStrategy):
           grind_3_current_grind_stake_profit
           < (slice_amount * grind_3_stop_grinds / (trade.leverage if self.is_futures_mode else 1.0))
         )
-        and (is_derisk or is_derisk_calc)
+        and (is_derisk or is_derisk_calc or is_grind_mode)
       )
       # temporary
       and (
@@ -16420,7 +16420,7 @@ class NostalgiaForInfinityX3(IStrategy):
           grind_4_current_grind_stake_profit
           < (slice_amount * grind_4_stop_grinds / (trade.leverage if self.is_futures_mode else 1.0))
         )
-        and (is_derisk or is_derisk_calc)
+        and (is_derisk or is_derisk_calc or is_grind_mode)
       )
       # temporary
       and (
