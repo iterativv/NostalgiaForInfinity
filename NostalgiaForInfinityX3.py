@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.344"
+    return "v13.1.345"
 
   stoploss = -0.99
 
@@ -156,7 +156,7 @@ class NostalgiaForInfinityX3(IStrategy):
   is_futures_mode = False
   futures_mode_leverage = 3.0
   futures_mode_leverage_rebuy_mode = 3.0
-  futures_mode_leverage_grind_mode = 5.0
+  futures_mode_leverage_grind_mode = 3.0
 
   # Stop thresholds. 0: Doom Bull, 1: Doom Bear, 2: u_e Bull, 3: u_e Bear, 4: u_e mins Bull, 5: u_e mins Bear.
   # 6: u_e ema % Bull, 7: u_e ema % Bear, 8: u_e RSI diff Bull, 9: u_e RSI diff Bear.
