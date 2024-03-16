@@ -16492,7 +16492,7 @@ class NostalgiaForInfinityX4(IStrategy):
           f"De-risk (dd0) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         order_tag = "dd0"
-        for grind_entry_id in grind_1_buy_orders:
+        for grind_entry_id in grind_1_buy_orders + grind_2_buy_orders + grind_3_buy_orders + grind_4_buy_orders:
           order_tag += " " + str(grind_entry_id)
         if has_order_tags:
           return -sell_amount, order_tag
