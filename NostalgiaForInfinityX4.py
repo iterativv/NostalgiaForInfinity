@@ -17377,10 +17377,10 @@ class NostalgiaForInfinityX4(IStrategy):
       if sell_amount > min_stake:
         grind_profit = 0.0
         self.dp.send_msg(
-          f"Rebuy de-risk [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"De-risk [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         log.info(
-          f"Rebuy de-risk [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"De-risk [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         return -sell_amount, "d", is_derisk
 
