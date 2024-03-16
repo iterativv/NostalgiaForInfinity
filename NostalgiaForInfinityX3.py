@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.344"
+    return "v13.1.352"
 
   stoploss = -0.99
 
@@ -156,7 +156,7 @@ class NostalgiaForInfinityX3(IStrategy):
   is_futures_mode = False
   futures_mode_leverage = 3.0
   futures_mode_leverage_rebuy_mode = 3.0
-  futures_mode_leverage_grind_mode = 5.0
+  futures_mode_leverage_grind_mode = 3.0
 
   # Stop thresholds. 0: Doom Bull, 1: Doom Bear, 2: u_e Bull, 3: u_e Bear, 4: u_e mins Bull, 5: u_e mins Bear.
   # 6: u_e ema % Bull, 7: u_e ema % Bear, 8: u_e RSI diff Bull, 9: u_e RSI diff Bear.
@@ -16492,7 +16492,7 @@ class NostalgiaForInfinityX3(IStrategy):
           f"De-risk (dd0) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         order_tag = "dd0"
-        for grind_entry_id in grind_1_buy_orders:
+        for grind_entry_id in grind_1_buy_orders + grind_2_buy_orders + grind_3_buy_orders + grind_4_buy_orders:
           order_tag += " " + str(grind_entry_id)
         if has_order_tags:
           return -sell_amount, order_tag
@@ -17377,10 +17377,10 @@ class NostalgiaForInfinityX3(IStrategy):
       if sell_amount > min_stake:
         grind_profit = 0.0
         self.dp.send_msg(
-          f"Rebuy de-risk [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"De-risk [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         log.info(
-          f"Rebuy de-risk [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"De-risk [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         return -sell_amount, "d", is_derisk
 
@@ -26249,6 +26249,24 @@ class NostalgiaForInfinityX3(IStrategy):
         | (df["r_480_1h"] < -25.0)
         | (df["r_480_4h"] < -15.0)
       )
+      & (
+        (df["change_pct_4h"] > -0.02)
+        | (df["change_pct_1h"] > -0.01)
+        | (df["not_downtrend_1h"])
+        | (df["cti_20_4h"] < 0.5)
+        | (df["rsi_14_4h"] < 50.0)
+        | (df["rsi_14_max_6_4h"] < 70.0)
+      )
+      & (
+        (df["change_pct_1h"] > -0.02)
+        | (df["not_downtrend_1h"])
+        | (df["rsi_14"] > df["rsi_14"].shift(12))
+        | (df["rsi_14_15m"] > df["rsi_14_15m"].shift(12))
+        | (df["cti_20_4h"] < 0.5)
+        | (df["rsi_14_4h"] < 60.0)
+        | (df["r_480_1h"] < -25.0)
+        | (df["r_480_4h"] < -10.0)
+      )
     )
 
     df["global_protections_long_dump"] = (
@@ -26917,6 +26935,35 @@ class NostalgiaForInfinityX3(IStrategy):
         | (df["ema_200_dec_24_4h"] == False)
         | (df["ema_200_dec_4_1d"] == False)
       )
+      & (
+        (df["change_pct_1h"] > -0.01)
+        | (df["rsi_14"] > df["rsi_14"].shift(12))
+        | (df["rsi_14_15m"] > df["rsi_14_15m"].shift(12))
+        | (df["cti_20_4h"] < 0.5)
+        | (df["rsi_14_4h"] < 50.0)
+        | (df["rsi_14_max_6_4h"] < 70.0)
+        | (df["ema_200_dec_24_4h"] == False)
+        | (df["ema_200_dec_4_1d"] == False)
+      )
+      & (
+        (df["not_downtrend_1h"])
+        | (df["rsi_14"] > df["rsi_14"].shift(12))
+        | (df["rsi_14_15m"] > df["rsi_14_15m"].shift(12))
+        | (df["cti_20_4h"] < 0.5)
+        | (df["rsi_14_4h"] < 60.0)
+        | (df["rsi_14_max_6_4h"] < 70.0)
+        | (df["ema_200_dec_4_1d"] == False)
+      )
+      & (
+        (df["change_pct_1h"] > -0.02)
+        | (df["rsi_14"] > df["rsi_14"].shift(12))
+        | (df["rsi_14_15m"] > df["rsi_14_15m"].shift(12))
+        | (df["cti_20_4h"] < 0.5)
+        | (df["rsi_14_4h"] < 70.0)
+        | (df["close"] > df["sup_level_1h"])
+        | (df["close"] < df["res_hlevel_4h"])
+        | (df["ema_200_dec_4_1d"] == False)
+      )
     )
 
     # Global protections
@@ -27074,6 +27121,15 @@ class NostalgiaForInfinityX3(IStrategy):
         | (df["close"] > df["sup_level_1h"])
         | (df["close"] > df["sup_level_4h"])
         | (df["ema_200_dec_4_1d"] == False)
+      )
+      & (
+        (df["not_downtrend_1h"])
+        | (df["rsi_14"] > df["rsi_14"].shift(12))
+        | (df["rsi_14_15m"] > df["rsi_14_15m"].shift(12))
+        | (df["rsi_3"] > 10.0)
+        | (df["rsi_3_15m"] > 30.0)
+        | (df["close"] > df["sup_level_1h"])
+        | (df["close"] > df["sup_level_4h"])
       )
     )
 
@@ -36913,6 +36969,14 @@ class NostalgiaForInfinityX3(IStrategy):
             | (df["rsi_14_max_6_1d"] < 70.0)
             | (df["r_480_1h"] < -40.0)
             | (df["r_480_4h"] < -30.0)
+          )
+          long_entry_logic.append(
+            (df["not_downtrend_1h"])
+            | (df["rsi_14_4h"] < 40.0)
+            | (df["cti_20_1d"] < 0.5)
+            | (df["rsi_14_1d"] < 40.0)
+            | (df["r_480_4h"] < -35.0)
+            | (df["close"] > df["sup_level_4h"])
           )
 
           # Logic
