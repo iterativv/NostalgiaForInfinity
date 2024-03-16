@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.355"
+    return "v13.1.356"
 
   stoploss = -0.99
 
@@ -38424,7 +38424,8 @@ class NostalgiaForInfinityX3(IStrategy):
     df = df.iloc[-1].squeeze()
 
     # Grind mode
-    if not self.config["runmode"].value in ("live", "dry_run"):
+    is_backtest = self.dp.runmode.value in ["backtest", "hyperopt", "plot"]
+    if is_backtest:
       entry_tags = entry_tag.split()
       if all(c in self.long_grind_mode_tags for c in entry_tags):
         is_pair_grind_mode = pair.split("/")[0] in self.grind_mode_coins
