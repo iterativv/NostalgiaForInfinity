@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.352"
+    return "v14.1.356"
 
   stoploss = -0.99
 
@@ -26964,6 +26964,25 @@ class NostalgiaForInfinityX4(IStrategy):
         | (df["close"] < df["res_hlevel_4h"])
         | (df["ema_200_dec_4_1d"] == False)
       )
+      & (
+        (df["change_pct_4h"] > -0.02)
+        | (df["rsi_14"] > df["rsi_14"].shift(12))
+        | (df["rsi_14_15m"] > df["rsi_14_15m"].shift(12))
+        | (df["cti_20_4h"] < 0.5)
+        | (df["rsi_14_4h"] < 60.0)
+        | (df["rsi_14_max_6_4h"] < 70.0)
+        | (df["ema_200_dec_24_4h"] == False)
+        | (df["ema_200_dec_4_1d"] == False)
+      )
+      & (
+        (df["change_pct_4h"] > -0.03)
+        | (df["change_pct_4h"].shift(48) < 0.03)
+        | (df["not_downtrend_1h"])
+        | (df["rsi_14_15m"] > df["rsi_14_15m"].shift(12))
+        | (df["r_480_4h"] > -70.0)
+        | (df["ema_200_dec_24_4h"] == False)
+        | (df["ema_200_dec_4_1d"] == False)
+      )
     )
 
     # Global protections
@@ -38405,23 +38424,25 @@ class NostalgiaForInfinityX4(IStrategy):
     df = df.iloc[-1].squeeze()
 
     # Grind mode
-    entry_tags = entry_tag.split()
-    if all(c in self.long_grind_mode_tags for c in entry_tags):
-      is_pair_grind_mode = pair.split("/")[0] in self.grind_mode_coins
-      if is_pair_grind_mode:
-        num_open_grind_mode = 0
-        open_trades = Trade.get_trades_proxy(is_open=True)
-        for open_trade in open_trades:
-          enter_tag = open_trade.enter_tag
-          enter_tags = enter_tag.split()
-          if all(c in self.long_grind_mode_tags for c in enter_tags):
-            num_open_grind_mode += 1
-        if num_open_grind_mode >= self.grind_mode_max_slots:
-          # Reached the limit of grind mode open trades
+    is_backtest = self.dp.runmode.value in ["backtest", "hyperopt", "plot"]
+    if is_backtest:
+      entry_tags = entry_tag.split()
+      if all(c in self.long_grind_mode_tags for c in entry_tags):
+        is_pair_grind_mode = pair.split("/")[0] in self.grind_mode_coins
+        if is_pair_grind_mode:
+          num_open_grind_mode = 0
+          open_trades = Trade.get_trades_proxy(is_open=True)
+          for open_trade in open_trades:
+            enter_tag = open_trade.enter_tag
+            enter_tags = enter_tag.split()
+            if all(c in self.long_grind_mode_tags for c in enter_tags):
+              num_open_grind_mode += 1
+          if num_open_grind_mode >= self.grind_mode_max_slots:
+            # Reached the limit of grind mode open trades
+            return False
+        else:
+          # The pair is not in the list of grind mode allowed
           return False
-      else:
-        # The pair is not in the list of grind mode allowed
-        return False
 
     if rate > df["close"]:
       slippage = (rate / df["close"]) - 1.0
