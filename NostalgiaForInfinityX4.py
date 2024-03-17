@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.359"
+    return "v14.1.360"
 
   stoploss = -0.99
 
@@ -5816,7 +5816,7 @@ class NostalgiaForInfinityX4(IStrategy):
       ):
         return True, f"exit_{mode_name}_d_0_19"
       elif (
-        (last_candle["r_14"] >= -2.0)
+        (last_candle["r_14"] >= -1.0)
         and (last_candle["rsi_14"] >= 60.0)
         and (last_candle["rsi_14_max_6_1d"] >= 70.0)
         and (last_candle["cti_20_dec_3_1d"] == True)
