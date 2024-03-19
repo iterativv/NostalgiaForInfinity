@@ -16,7 +16,7 @@ def exchange_fmt(value):
   scope="session",
   params=(
     Exchange(name="binance", winrate=50, max_drawdown=25),
-    Exchange(name="kucoin", winrate=50, max_drawdown=25),
+    Exchange(name="kucoin", winrate=35, max_drawdown=25),
     # Exchange(name="okx", winrate=70, max_drawdown=20),
     # ITS POSSIBLE TO ADD MORE EXCHANGES and MARKETS (SPOT FUTURES MARGIN)
   ),
