@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.373"
+    return "v13.1.374"
 
   stoploss = -0.99
 
@@ -17521,7 +17521,7 @@ class NostalgiaForInfinityX3(IStrategy):
       slice_amount
       * (
         (self.regular_mode_derisk_futures if self.is_futures_mode else self.regular_mode_derisk_spot)
-        if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 3, 20) or is_backtest)
+        if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 3, 19) or is_backtest)
         else (self.regular_mode_derisk_futures_old if self.is_futures_mode else self.regular_mode_derisk_spot_old)
       )
       / (trade.leverage if self.is_futures_mode else 1.0)
