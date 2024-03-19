@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.363"
+    return "v13.1.377"
 
   stoploss = -0.99
 
@@ -376,10 +376,11 @@ class NostalgiaForInfinityX3(IStrategy):
   ]
 
   # Non rebuy modes
-  regular_mode_stake_multiplier_spot = [0.5, 0.75]
-  regular_mode_stake_multiplier_futures = [0.5, 0.75]
+  regular_mode_stake_multiplier_spot = [1.0]
+  regular_mode_stake_multiplier_futures = [1.0]
 
   regular_mode_rebuy_stakes_spot = [
+    [0.10, 0.10, 0.10, 0.10, 0.10],
     [0.20, 0.20, 0.20, 0.20, 0.20],
     [0.30, 0.30, 0.30, 0.30, 0.30],
     [0.40, 0.40, 0.40, 0.40, 0.40],
@@ -392,10 +393,12 @@ class NostalgiaForInfinityX3(IStrategy):
     [-0.12, -0.14, -0.16, -0.18, -0.20],
     [-0.12, -0.14, -0.16, -0.18, -0.20],
     [-0.12, -0.14, -0.16, -0.18, -0.20],
+    [-0.12, -0.14, -0.16, -0.18, -0.20],
     [-0.12, -0.14, -0.16, -0.18],
     [-0.12, -0.14, -0.16],
   ]
   regular_mode_grind_1_stakes_spot = [
+    [0.20, 0.20, 0.20, 0.20, 0.20],
     [0.40, 0.40, 0.40, 0.40, 0.40],
     [0.50, 0.50, 0.50, 0.50, 0.50],
     [0.75, 0.75, 0.75, 0.75],
@@ -404,11 +407,13 @@ class NostalgiaForInfinityX3(IStrategy):
   regular_mode_grind_1_thresholds_spot = [
     [-0.06, -0.12, -0.14, -0.16, -0.18, -0.20],
     [-0.06, -0.12, -0.14, -0.16, -0.18, -0.20],
+    [-0.06, -0.12, -0.14, -0.16, -0.18, -0.20],
     [-0.06, -0.12, -0.14, -0.16, -0.18],
     [-0.06, -0.12, -0.14, -0.16],
   ]
   regular_mode_grind_1_profit_threshold_spot = 0.018
   regular_mode_grind_2_stakes_spot = [
+    [0.10, 0.15, 0.20, 0.25, 0.30],
     [0.15, 0.20, 0.25, 0.30, 0.35],
     [0.20, 0.25, 0.30, 0.35, 0.40],
     [0.30, 0.35, 0.40, 0.45, 0.50],
@@ -427,9 +432,11 @@ class NostalgiaForInfinityX3(IStrategy):
     [-0.04, -0.10, -0.12, -0.14, -0.16, -0.18],
     [-0.04, -0.10, -0.12, -0.14, -0.16, -0.18],
     [-0.04, -0.10, -0.12, -0.14, -0.16, -0.18],
+    [-0.04, -0.10, -0.12, -0.14, -0.16, -0.18],
   ]
   regular_mode_grind_2_profit_threshold_spot = 0.018
   regular_mode_grind_3_stakes_spot = [
+    [0.10, 0.10, 0.10, 0.10, 0.10, 0.10],
     [0.20, 0.20, 0.20, 0.20, 0.20, 0.20],
     [0.30, 0.30, 0.30, 0.30, 0.30, 0.30],
     [0.40, 0.40, 0.40, 0.40, 0.40, 0.40],
@@ -448,9 +455,11 @@ class NostalgiaForInfinityX3(IStrategy):
     [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
     [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
     [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
+    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
   ]
   regular_mode_grind_3_profit_threshold_spot = 0.018
   regular_mode_grind_4_stakes_spot = [
+    [0.10, 0.10, 0.10, 0.10, 0.10, 0.10],
     [0.20, 0.20, 0.20, 0.20, 0.20, 0.20],
     [0.30, 0.30, 0.30, 0.30, 0.30, 0.30],
     [0.40, 0.40, 0.40, 0.40, 0.40, 0.40],
@@ -469,11 +478,14 @@ class NostalgiaForInfinityX3(IStrategy):
     [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
     [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
     [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
+    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
   ]
   regular_mode_grind_4_profit_threshold_spot = 0.018
-  regular_mode_derisk_spot = -0.80
+  regular_mode_derisk_spot = -0.16
+  regular_mode_derisk_spot_old = -0.80
 
   regular_mode_rebuy_stakes_futures = [
+    [0.10, 0.10, 0.10, 0.10, 0.10],
     [0.20, 0.20, 0.20, 0.20, 0.20],
     [0.30, 0.30, 0.30, 0.30, 0.30],
     [0.40, 0.40, 0.40, 0.40, 0.40],
@@ -486,10 +498,12 @@ class NostalgiaForInfinityX3(IStrategy):
     [-0.12, -0.14, -0.16, -0.18, -0.20],
     [-0.12, -0.14, -0.16, -0.18, -0.20],
     [-0.12, -0.14, -0.16, -0.18, -0.20],
+    [-0.12, -0.14, -0.16, -0.18, -0.20],
     [-0.12, -0.14, -0.16, -0.18],
     [-0.12, -0.14, -0.16],
   ]
   regular_mode_grind_1_stakes_futures = [
+    [0.20, 0.20, 0.20, 0.20, 0.20],
     [0.40, 0.40, 0.40, 0.40, 0.40],
     [0.50, 0.50, 0.50, 0.50, 0.50],
     [0.75, 0.75, 0.75, 0.75],
@@ -498,11 +512,13 @@ class NostalgiaForInfinityX3(IStrategy):
   regular_mode_grind_1_thresholds_futures = [
     [-0.06, -0.12, -0.14, -0.16, -0.18, -0.20],
     [-0.06, -0.12, -0.14, -0.16, -0.18, -0.20],
+    [-0.06, -0.12, -0.14, -0.16, -0.18, -0.20],
     [-0.06, -0.12, -0.14, -0.16, -0.18],
     [-0.06, -0.12, -0.14, -0.16],
   ]
   regular_mode_grind_1_profit_threshold_futures = 0.018
   regular_mode_grind_2_stakes_futures = [
+    [0.10, 0.15, 0.20, 0.25, 0.30],
     [0.15, 0.20, 0.25, 0.30, 0.35],
     [0.20, 0.25, 0.30, 0.35, 0.40],
     [0.30, 0.35, 0.40, 0.45, 0.50],
@@ -521,9 +537,11 @@ class NostalgiaForInfinityX3(IStrategy):
     [-0.04, -0.10, -0.12, -0.14, -0.16, -0.18],
     [-0.04, -0.10, -0.12, -0.14, -0.16, -0.18],
     [-0.04, -0.10, -0.12, -0.14, -0.16, -0.18],
+    [-0.04, -0.10, -0.12, -0.14, -0.16, -0.18],
   ]
   regular_mode_grind_2_profit_threshold_futures = 0.018
   regular_mode_grind_3_stakes_futures = [
+    [0.10, 0.10, 0.10, 0.10, 0.10, 0.10],
     [0.20, 0.20, 0.20, 0.20, 0.20, 0.20],
     [0.30, 0.30, 0.30, 0.30, 0.30, 0.30],
     [0.40, 0.40, 0.40, 0.40, 0.40, 0.40],
@@ -542,9 +560,11 @@ class NostalgiaForInfinityX3(IStrategy):
     [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
     [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
     [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
+    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
   ]
   regular_mode_grind_3_profit_threshold_futures = 0.018
   regular_mode_grind_4_stakes_futures = [
+    [0.10, 0.10, 0.10, 0.10, 0.10, 0.10],
     [0.20, 0.20, 0.20, 0.20, 0.20, 0.20],
     [0.30, 0.30, 0.30, 0.30, 0.30, 0.30],
     [0.40, 0.40, 0.40, 0.40, 0.40, 0.40],
@@ -563,9 +583,11 @@ class NostalgiaForInfinityX3(IStrategy):
     [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
     [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
     [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
+    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
   ]
   regular_mode_grind_4_profit_threshold_futures = 0.018
-  regular_mode_derisk_futures = -2.40
+  regular_mode_derisk_futures = -0.48
+  regular_mode_derisk_futures_old = -2.40
 
   # Rebuy mode
   rebuy_mode_stake_multiplier = 0.2
@@ -673,7 +695,7 @@ class NostalgiaForInfinityX3(IStrategy):
     "long_entry_condition_104_enable": True,
     "long_entry_condition_105_enable": True,
     "long_entry_condition_106_enable": True,
-    "long_entry_condition_107_enable": False,
+    "long_entry_condition_107_enable": True,
     "long_entry_condition_108_enable": False,
     "long_entry_condition_109_enable": False,
     "long_entry_condition_110_enable": False,
@@ -16819,6 +16841,7 @@ class NostalgiaForInfinityX3(IStrategy):
     has_order_tags: bool,
     **kwargs,
   ) -> tuple[Optional[float], str, bool]:
+    is_backtest = self.dp.runmode.value in ["backtest", "hyperopt"]
     max_rebuy_sub_grinds = 0
     regular_mode_rebuy_stakes = []
     regular_mode_rebuy_sub_thresholds = []
@@ -17496,7 +17519,11 @@ class NostalgiaForInfinityX3(IStrategy):
     # De-risk
     if profit_stake < (
       slice_amount
-      * (self.regular_mode_derisk_futures if self.is_futures_mode else self.regular_mode_derisk_spot)
+      * (
+        (self.regular_mode_derisk_futures if self.is_futures_mode else self.regular_mode_derisk_spot)
+        if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 3, 19) or is_backtest)
+        else (self.regular_mode_derisk_futures_old if self.is_futures_mode else self.regular_mode_derisk_spot_old)
+      )
       / (trade.leverage if self.is_futures_mode else 1.0)
     ):
       sell_amount = trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0) * 0.999
@@ -26397,6 +26424,29 @@ class NostalgiaForInfinityX3(IStrategy):
         | (df["r_480_1h"] < -25.0)
         | (df["r_480_4h"] < -10.0)
       )
+      & (
+        (df["change_pct_4h"] > -0.01)
+        | (df["not_downtrend_1h"])
+        | (df["rsi_14"] > df["rsi_14"].shift(12))
+        | (df["rsi_14_15m"] > df["rsi_14_15m"].shift(12))
+        | (df["rsi_3_15m"] > 20.0)
+        | (df["cti_20_1d"] < 0.8)
+        | (df["rsi_14_1d"] < 70.0)
+        | (df["r_480_4h"] < -35.0)
+        | (df["hl_pct_change_6_1d"] < 1.0)
+      )
+      & (
+        (df["change_pct_1d"] < 0.02)
+        | (df["top_wick_pct_1d"] < 0.06)
+        | (df["change_pct_4h"] > -0.00)
+        | (df["top_wick_pct_4h"] < 0.06)
+        | (df["change_pct_4h"].shift(48) < 0.02)
+        | (df["cti_20_4h"] < 0.5)
+        | (df["rsi_14_4h"] < 60.0)
+        | (df["cti_20_1d"] < 0.5)
+        | (df["rsi_14_1d"] < 60.0)
+        | (df["rsi_14_4h"].shift(48) < 70.0)
+      )
     )
 
     df["global_protections_long_dump"] = (
@@ -27138,6 +27188,7 @@ class NostalgiaForInfinityX3(IStrategy):
       & (
         (df["change_pct_4h"] < 0.02)
         | (df["top_wick_pct_4h"] < 0.02)
+        | (df["change_pct_1h"] > -0.01)
         | (df["not_downtrend_1h"])
         | (df["rsi_14_15m"] > df["rsi_14_15m"].shift(12))
         | (df["rsi_3_15m"] > 30.0)
@@ -27147,6 +27198,43 @@ class NostalgiaForInfinityX3(IStrategy):
         | (df["close"] > df["sup_level_1h"])
         | (df["close"] > df["sup_level_4h"])
         | (df["close"] < df["res_hlevel_1d"])
+      )
+      & (
+        (df["not_downtrend_1h"])
+        | (df["rsi_14"] > df["rsi_14"].shift(12))
+        | (df["rsi_14_15m"] > df["rsi_14_15m"].shift(12))
+        | (df["rsi_3_15m"] > 26.0)
+        | (df["rsi_3_1h"] > 26.0)
+        | (df["cti_20_4h"] < 0.5)
+        | (df["rsi_14_4h"] < 50.0)
+        | (df["r_480_4h"] > -85.0)
+        | (df["close"] > df["sup_level_1h"])
+        | (df["ema_200_dec_48_1h"] == False)
+        | (df["ema_200_dec_24_4h"] == False)
+      )
+      & (
+        (df["not_downtrend_15m"])
+        | (df["rsi_14"] > df["rsi_14"].shift(12))
+        | (df["rsi_14_15m"] > df["rsi_14_15m"].shift(12))
+        | (df["rsi_3_15m"] > 30.0)
+        | (df["cti_20_4h"] < 0.5)
+        | (df["rsi_14_4h"] < 50.0)
+        | (df["rsi_14_max_6_4h"] < 70.0)
+        | (df["r_480_4h"] > -80.0)
+        | (df["close"] > df["sup_level_1h"])
+      )
+      & (
+        (df["change_pct_1d"] < 0.10)
+        | (df["rsi_14"] > df["rsi_14"].shift(12))
+        | (df["rsi_14_15m"] > df["rsi_14_15m"].shift(12))
+        | (df["rsi_14_1h"] < 40.0)
+        | (df["rsi_14_4h"] < 40.0)
+        | (df["cti_20_1d"] < 0.7)
+        | (df["rsi_14_1d"] < 50.0)
+        | (df["rsi_14_max_6_1d"] < 70.0)
+        | (df["r_480_4h"] > -75.0)
+        | (df["close"] > df["sup_level_4h"])
+        | (df["close"] > (df["high_max_6_1d"] * 0.65))
       )
     )
 
@@ -37160,6 +37248,32 @@ class NostalgiaForInfinityX3(IStrategy):
             | (df["cti_20_1d"] < 0.5)
             | (df["rsi_14_1d"] < 40.0)
             | (df["r_480_4h"] < -35.0)
+            | (df["close"] > df["sup_level_4h"])
+          )
+          long_entry_logic.append(
+            (df["change_pct_4h"] > -0.01)
+            | (df["change_pct_4h"].shift(48) < 0.03)
+            | (df["rsi_14_1h"] < 40.0)
+            | (df["rsi_14_4h"] < 40.0)
+            | (df["rsi_14_1d"] < 40.0)
+            | (df["r_480_1h"] > -75.0)
+            | (df["r_480_4h"] > -75.0)
+            | (df["ema_200_dec_48_1h"] == False)
+            | (df["ema_200_dec_4_1d"] == False)
+          )
+          long_entry_logic.append(
+            (df["not_downtrend_4h"])
+            | (df["rsi_14_1h"] < 40.0)
+            | (df["rsi_14_4h"] < 40.0)
+            | (df["rsi_14_1d"] < 50.0)
+            | (df["close"] > (df["high_max_12_1d"] * 0.60))
+          )
+          long_entry_logic.append(
+            (df["not_downtrend_1h"])
+            | (df["not_downtrend_4h"])
+            | (df["rsi_14_1h"] < 40.0)
+            | (df["rsi_14_4h"] < 40.0)
+            | (df["close"] > df["sup_level_1h"])
             | (df["close"] > df["sup_level_4h"])
           )
 
