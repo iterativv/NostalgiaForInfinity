@@ -1778,6 +1778,8 @@ class NostalgiaForInfinityX4(IStrategy):
       self.startup_candle_count = 199
     elif self.config["exchange"]["name"] in ["bitget"]:
       self.startup_candle_count = 499
+    elif self.config["exchange"]["name"] in ["bingx"]:
+      self.startup_candle_count = 499
 
     if ("trading_mode" in self.config) and (self.config["trading_mode"] in ["futures", "margin"]):
       self.is_futures_mode = True
