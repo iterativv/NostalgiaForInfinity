@@ -481,7 +481,7 @@ class NostalgiaForInfinityX4(IStrategy):
     [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
   ]
   regular_mode_grind_4_profit_threshold_spot = 0.018
-  regular_mode_derisk_spot = -0.16
+  regular_mode_derisk_spot = -0.20
   regular_mode_derisk_spot_old = -0.80
 
   regular_mode_rebuy_stakes_futures = [
@@ -586,7 +586,7 @@ class NostalgiaForInfinityX4(IStrategy):
     [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
   ]
   regular_mode_grind_4_profit_threshold_futures = 0.018
-  regular_mode_derisk_futures = -0.48
+  regular_mode_derisk_futures = -0.60
   regular_mode_derisk_futures_old = -2.40
 
   # Rebuy mode
