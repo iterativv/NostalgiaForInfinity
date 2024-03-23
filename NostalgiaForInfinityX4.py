@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.407"
+    return "v14.1.408"
 
   stoploss = -0.99
 
@@ -17463,11 +17463,11 @@ class NostalgiaForInfinityX4(IStrategy):
         and (
           (last_candle["enter_long"] == True)
           or (
-            (last_candle["rsi_3"] > 12.0)
-            and (last_candle["rsi_3_15m"] > 20.0)
-            and (last_candle["rsi_3_1h"] > 26.0)
-            and (last_candle["rsi_3_4h"] > 26.0)
-            and (last_candle["rsi_14"] < 50.0)
+            (last_candle["rsi_3"] > 30.0)
+            and (last_candle["rsi_3_15m"] > 30.0)
+            and (last_candle["rsi_3_1h"] > 30.0)
+            and (last_candle["rsi_3_4h"] > 30.0)
+            and (last_candle["rsi_14"] < 42.0)
           )
         )
       ):
@@ -17512,9 +17512,6 @@ class NostalgiaForInfinityX4(IStrategy):
           and (last_candle["global_protections_long_dump"] == True)
         )
         and (
-          (last_candle["rsi_3_15m"] > 20.0) and (last_candle["rsi_3_1h"] > 26.0) and (last_candle["rsi_3_4h"] > 26.0)
-        )
-        and (
           (last_candle["close"] > (last_candle["close_max_12"] * 0.94))
           and (last_candle["close"] > (last_candle["close_max_24"] * 0.92))
           and (last_candle["close"] > (last_candle["close_max_48"] * 0.90))
@@ -17523,7 +17520,13 @@ class NostalgiaForInfinityX4(IStrategy):
           and (last_candle["close"] > (last_candle["high_max_6_1d"] * 0.80))
           and (last_candle["close"] > (last_candle["high_max_12_1d"] * 0.76))
         )
-        and self.long_grind_buy(last_candle, previous_candle, slice_profit)
+        and (
+          (last_candle["rsi_3"] > 30.0)
+          and (last_candle["rsi_3_15m"] > 30.0)
+          and (last_candle["rsi_3_1h"] > 30.0)
+          and (last_candle["rsi_3_4h"] > 30.0)
+          and (last_candle["rsi_14"] < 42.0)
+        )
       ):
         buy_amount = (
           slice_amount
@@ -17590,9 +17593,6 @@ class NostalgiaForInfinityX4(IStrategy):
           and (last_candle["global_protections_long_dump"] == True)
         )
         and (
-          (last_candle["rsi_3_15m"] > 20.0) and (last_candle["rsi_3_1h"] > 26.0) and (last_candle["rsi_3_4h"] > 26.0)
-        )
-        and (
           (last_candle["close"] > (last_candle["close_max_12"] * 0.94))
           and (last_candle["close"] > (last_candle["close_max_24"] * 0.92))
           and (last_candle["close"] > (last_candle["close_max_48"] * 0.90))
@@ -17601,7 +17601,13 @@ class NostalgiaForInfinityX4(IStrategy):
           and (last_candle["close"] > (last_candle["high_max_6_1d"] * 0.80))
           and (last_candle["close"] > (last_candle["high_max_12_1d"] * 0.76))
         )
-        and self.long_grind_buy(last_candle, previous_candle, slice_profit)
+        and (
+          (last_candle["rsi_3"] > 30.0)
+          and (last_candle["rsi_3_15m"] > 30.0)
+          and (last_candle["rsi_3_1h"] > 30.0)
+          and (last_candle["rsi_3_4h"] > 30.0)
+          and (last_candle["rsi_14"] < 42.0)
+        )
       ):
         buy_amount = (
           slice_amount
@@ -17681,7 +17687,7 @@ class NostalgiaForInfinityX4(IStrategy):
           and (last_candle["rsi_3_15m"] > 30.0)
           and (last_candle["rsi_3_1h"] > 30.0)
           and (last_candle["rsi_3_4h"] > 30.0)
-          and (last_candle["rsi_14"] < 40.0)
+          and (last_candle["rsi_14"] < 42.0)
         )
       ):
         buy_amount = (
@@ -17762,7 +17768,7 @@ class NostalgiaForInfinityX4(IStrategy):
           and (last_candle["rsi_3_15m"] > 30.0)
           and (last_candle["rsi_3_1h"] > 30.0)
           and (last_candle["rsi_3_4h"] > 30.0)
-          and (last_candle["rsi_14"] < 40.0)
+          and (last_candle["rsi_14"] < 42.0)
         )
       ):
         buy_amount = (
