@@ -690,6 +690,7 @@ class NostalgiaForInfinityX3(IStrategy):
     "EOS",
     "LRC",
     "QTUM",
+    "CELR",
   ]
 
   # Profit max thresholds
