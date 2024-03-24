@@ -39181,7 +39181,7 @@ class NostalgiaForInfinityX4(IStrategy):
           long_entry_logic.append(df["ema_200_dec_4_1d"] == False)
 
           # Logic
-          long_entry_logic.append(df["rsi_14"] < 42.0)
+          long_entry_logic.append(df["rsi_14"] < 40.0)
           long_entry_logic.append(df["ema_12"] < df["ema_26"])
           long_entry_logic.append(df["ha_close"] > df["ha_open"])
 
