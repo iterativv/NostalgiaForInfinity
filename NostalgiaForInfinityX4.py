@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.414"
+    return "v14.1.415"
 
   stoploss = -0.99
 
@@ -34104,6 +34104,7 @@ class NostalgiaForInfinityX4(IStrategy):
         # Condition #25 - Pump mode (Long).
         if index == 25:
           # Protections
+          long_entry_logic.append(df["protections_long_global"] == True)
           long_entry_logic.append(df["global_protections_long_pump"] == True)
           long_entry_logic.append(df["global_protections_long_dump"] == True)
           long_entry_logic.append(df["btc_pct_close_max_24_5m"] < 0.03)
