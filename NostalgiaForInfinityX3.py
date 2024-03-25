@@ -18267,8 +18267,8 @@ class NostalgiaForInfinityX3(IStrategy):
     # Indicators
     # -----------------------------------------------------------------------------------------
     # RSI
-    informative_1h["rsi_3"] = pta.rsi(informative_1h["close"], length=3)
-    informative_1h["rsi_14"] = pta.rsi(informative_1h["close"], length=14)
+    informative_1h["rsi_3"] = pta.rsi(informative_1h["close"], length=3, fillna=0.0)
+    informative_1h["rsi_14"] = pta.rsi(informative_1h["close"], length=14, fillna=0.0)
 
     # EMA
     informative_1h["ema_12"] = ta.EMA(informative_1h, timeperiod=12)
