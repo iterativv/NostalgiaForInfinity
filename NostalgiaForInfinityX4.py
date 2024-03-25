@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.416"
+    return "v14.1.417"
 
   stoploss = -0.99
 
@@ -17080,7 +17080,7 @@ class NostalgiaForInfinityX4(IStrategy):
           and (last_candle["rsi_3_15m"] > 30.0)
           and (last_candle["rsi_3_1h"] > 30.0)
           and (last_candle["rsi_3_4h"] > 30.0)
-          and (last_candle["rsi_14"] < 46.0)
+          and (last_candle["rsi_14"] < 42.0)
           and (last_candle["rsi_14_1d"] < 70.0)
           and (last_candle["close"] > last_candle["sup_level_1h"])
           and (last_candle["close"] > last_candle["sup_level_4h"])
@@ -18267,8 +18267,8 @@ class NostalgiaForInfinityX4(IStrategy):
     # Indicators
     # -----------------------------------------------------------------------------------------
     # RSI
-    informative_4h["rsi_3"] = pta.rsi(informative_4h["close"], length=3, fillna=0.0)
-    informative_4h["rsi_14"] = pta.rsi(informative_4h["close"], length=14, fillna=0.0)
+    informative_1h["rsi_3"] = pta.rsi(informative_1h["close"], length=3)
+    informative_1h["rsi_14"] = pta.rsi(informative_1h["close"], length=14)
 
     # EMA
     informative_1h["ema_12"] = ta.EMA(informative_1h, timeperiod=12)
