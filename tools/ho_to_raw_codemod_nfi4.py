@@ -1,5 +1,5 @@
-import ast, re
-
+import ast
+import re
 from freqtrade.configuration import Configuration
 from freqtrade.resolvers import StrategyResolver
 from freqtrade.strategy.interface import IStrategy
