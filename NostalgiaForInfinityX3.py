@@ -18066,8 +18066,8 @@ class NostalgiaForInfinityX3(IStrategy):
     # Indicators
     # -----------------------------------------------------------------------------------------
     # RSI
-    informative_1d["rsi_3"] = pta.rsi(informative_1d["close"], length=3)
-    informative_1d["rsi_14"] = pta.rsi(informative_1d["close"], length=14)
+    informative_1d["rsi_3"] = pta.rsi(informative_1d["close"], length=3, fillna=0.0)
+    informative_1d["rsi_14"] = pta.rsi(informative_1d["close"], length=14, fillna=0.0)
 
     informative_1d["rsi_14_max_6"] = informative_1d["rsi_14"].rolling(6).max()
 
@@ -18167,8 +18167,8 @@ class NostalgiaForInfinityX3(IStrategy):
     # Indicators
     # -----------------------------------------------------------------------------------------
     # RSI
-    informative_4h["rsi_3"] = pta.rsi(informative_4h["close"], length=3)
-    informative_4h["rsi_14"] = pta.rsi(informative_4h["close"], length=14)
+    informative_4h["rsi_3"] = pta.rsi(informative_4h["close"], length=3, fillna=0.0)
+    informative_4h["rsi_14"] = pta.rsi(informative_4h["close"], length=14, fillna=0.0)
 
     informative_4h["rsi_14_max_3"] = informative_4h["rsi_14"].rolling(3).max()
     informative_4h["rsi_14_max_6"] = informative_4h["rsi_14"].rolling(6).max()
