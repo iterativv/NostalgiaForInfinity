@@ -1578,7 +1578,7 @@ class NostalgiaForInfinityX4(IStrategy):
   entry_106_r_480_4h_min = DecimalParameter(-100.0, -70.0, default=-100.0, decimals=0, space="buy", optimize=False)
   entry_106_r_480_4h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=False)
   entry_106_cti_20_max = DecimalParameter(-0.9, 0.0, default=-0.7, decimals=1, space="buy", optimize=False)
-  entry_106_ewo_50_200_max = DecimalParameter(-2.0, -10.0, default=-8.0, decimals=1, space="buy", optimize=True)
+  entry_106_ewo_50_200_max = DecimalParameter(-10.0, -2.0, default=-8.0, decimals=1, space="buy", optimize=True)
   entry_106_sma_offset = DecimalParameter(0.980, 0.999, default=0.986, decimals=3, space="buy", optimize=True)
 
   entry_107_close_max_12 = DecimalParameter(00.50, 0.95, default=0.80, decimals=2, space="buy", optimize=False)
@@ -1806,7 +1806,7 @@ class NostalgiaForInfinityX4(IStrategy):
   entry_110_r_480_4h_min = DecimalParameter(-100.0, -70.0, default=-100.0, decimals=0, space="buy", optimize=False)
   entry_110_r_480_4h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=False)
   entry_110_cti_20_max = DecimalParameter(-0.99, -0.50, default=-0.95, decimals=1, space="buy", optimize=False)
-  entry_110_ewo_50_200_max = DecimalParameter(-2.0, -10.0, default=-3.0, decimals=1, space="buy", optimize=True)
+  entry_110_ewo_50_200_max = DecimalParameter(-10.0, -2.0, default=-3.0, decimals=1, space="buy", optimize=True)
   entry_110_ema_offset = DecimalParameter(0.980, 0.999, default=0.994, decimals=3, space="buy", optimize=True)
 
   #############################################################
