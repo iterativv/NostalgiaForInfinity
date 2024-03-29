@@ -1848,6 +1848,8 @@ class NostalgiaForInfinityX4(IStrategy):
       self.regular_mode_derisk_spot = self.config["regular_mode_derisk_spot"]
     if "regular_mode_derisk_futures" in self.config:
       self.regular_mode_derisk_futures = self.config["regular_mode_derisk_futures"]
+    if "grind_mode_max_slots" in self.config:
+      self.grind_mode_max_slots = self.config["grind_mode_max_slots"]
     if "grind_mode_coins" in self.config:
       self.grind_mode_coins = self.config["grind_mode_coins"]
     if "max_slippage" in self.config:
