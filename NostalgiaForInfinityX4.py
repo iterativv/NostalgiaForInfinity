@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.471"
+    return "v14.1.472"
 
   stoploss = -0.99
 
@@ -1044,14 +1044,14 @@ class NostalgiaForInfinityX4(IStrategy):
   entry_25_r_14_1h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=False)
   entry_25_r_14_4h_min = DecimalParameter(-100.0, -70.0, default=-100.0, decimals=0, space="buy", optimize=False)
   entry_25_r_14_4h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=False)
-  entry_25_r_480_1h_min = DecimalParameter(-100.0, -70.0, default=-100.0, decimals=0, space="buy", optimize=False)
+  entry_25_r_480_1h_min = DecimalParameter(-100.0, -70.0, default=-70.0, decimals=0, space="buy", optimize=False)
   entry_25_r_480_1h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=False)
-  entry_25_r_480_4h_min = DecimalParameter(-100.0, -70.0, default=-100.0, decimals=0, space="buy", optimize=False)
+  entry_25_r_480_4h_min = DecimalParameter(-100.0, -70.0, default=-70.0, decimals=0, space="buy", optimize=False)
   entry_25_r_480_4h_max = DecimalParameter(-40.0, -0.0, default=-20.0, decimals=0, space="buy", optimize=False)
   entry_25_rsi_14_max = DecimalParameter(20.0, 46.0, default=46.0, decimals=0, space="buy", optimize=False)
   entry_25_cti_20_max = DecimalParameter(-0.9, 0.0, default=-0.9, decimals=1, space="buy", optimize=False)
   entry_25_ewo_50_200_min = DecimalParameter(1.0, 8.0, default=2.6, decimals=1, space="buy", optimize=False)
-  entry_25_sma_offset = DecimalParameter(0.920, 0.950, default=0.942, decimals=3, space="buy", optimize=False)
+  entry_25_sma_offset = DecimalParameter(0.920, 0.950, default=0.948, decimals=3, space="buy", optimize=False)
 
   entry_26_close_max_12 = DecimalParameter(00.50, 0.95, default=0.80, decimals=2, space="buy", optimize=False)
   entry_26_close_max_24 = DecimalParameter(00.50, 0.95, default=0.75, decimals=2, space="buy", optimize=False)
