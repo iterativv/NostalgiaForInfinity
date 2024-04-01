@@ -18709,6 +18709,10 @@ class NostalgiaForInfinityX4(IStrategy):
     # Candle change
     informative_4h["change_pct"] = (informative_4h["close"] - informative_4h["open"]) / informative_4h["open"]
 
+    informative_4h["change_pct_min_3"] = informative_4h["change_pct"].rolling(3).min()
+
+    informative_4h["change_pct_max_3"] = informative_4h["change_pct"].rolling(3).max()
+
     # Max highs
     informative_4h["high_max_3"] = informative_4h["high"].rolling(3).max()
     informative_4h["high_max_12"] = informative_4h["high"].rolling(12).max()
