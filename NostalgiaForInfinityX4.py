@@ -17237,8 +17237,6 @@ class NostalgiaForInfinityX4(IStrategy):
         sell_amount = (trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) - (
           min_stake * 1.7
         )
-      if (trade.stake_amount - sell_amount) < (min_stake * 1.55):
-        sell_amount = trade.stake_amount - (min_stake * 1.55)
       if sell_amount > min_stake:
         self.dp.send_msg(
           f"De-risk (dd0) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
@@ -18331,8 +18329,6 @@ class NostalgiaForInfinityX4(IStrategy):
         sell_amount = (trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) - (
           min_stake * 1.7
         )
-      if (trade.stake_amount - sell_amount) < (min_stake * 1.55):
-        sell_amount = trade.stake_amount - (min_stake * 1.55)
       if sell_amount > min_stake:
         grind_profit = 0.0
         self.dp.send_msg(
