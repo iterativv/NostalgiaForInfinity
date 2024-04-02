@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.491"
+    return "v14.1.492"
 
   stoploss = -0.99
 
@@ -109,7 +109,7 @@ class NostalgiaForInfinityX4(IStrategy):
   startup_candle_count: int = 800
 
   # Long Normal mode tags
-  long_normal_mode_tags = ["force_entry", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"]
+  long_normal_mode_tags = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"]
   # Long Pump mode tags
   long_pump_mode_tags = ["21", "22", "23", "24", "25", "26"]
   # Long Quick mode tags
@@ -145,6 +145,8 @@ class NostalgiaForInfinityX4(IStrategy):
   short_mode_tags = ["581", "582"]
   # Short rapid mode tags
   short_rapid_mode_tags = ["601", "602", "603", "604", "605", "606", "607", "608", "609", "610"]
+  # Short grind mode tags
+  short_grind_mode_tags = ["620"]
 
   short_normal_mode_name = "short_normal"
   short_pump_mode_name = "short_pump"
@@ -15854,6 +15856,47 @@ class NostalgiaForInfinityX4(IStrategy):
     ):
       # use normal mode for such trades
       sell, signal_name = self.long_exit_normal(
+        pair,
+        current_rate,
+        profit_stake,
+        profit_ratio,
+        profit_current_stake_ratio,
+        profit_init_ratio,
+        max_profit,
+        max_loss,
+        filled_entries,
+        filled_exits,
+        last_candle,
+        previous_candle_1,
+        previous_candle_2,
+        previous_candle_3,
+        previous_candle_4,
+        previous_candle_5,
+        trade,
+        current_time,
+        enter_tags,
+      )
+      if sell and (signal_name is not None):
+        return f"{signal_name} ( {enter_tag})"
+
+    # Trades not opened by X4
+    if trade.is_short and (
+      not any(
+        c
+        in (
+          self.short_normal_mode_tags
+          + self.short_pump_mode_tags
+          + self.short_quick_mode_tags
+          + self.short_rebuy_mode_tags
+          + self.short_mode_tags
+          + self.short_rapid_mode_tags
+          + self.short_grind_mode_tags
+        )
+        for c in enter_tags
+      )
+    ):
+      # use normal mode for such trades
+      sell, signal_name = self.short_exit_normal(
         pair,
         current_rate,
         profit_stake,
