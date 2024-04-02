@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.490"
+    return "v13.1.491"
 
   stoploss = -0.99
 
@@ -15436,17 +15436,26 @@ class NostalgiaForInfinityX3(IStrategy):
     for entry in filled_entries:
       entry_stake = entry.safe_filled * entry.safe_price * (1 + trade.fee_open)
       total_stake += entry_stake
-      total_profit -= entry_stake
+      if trade.is_short:
+        total_profit += entry_stake
+      else:
+        total_profit -= entry_stake
     for exit in filled_exits:
       exit_stake = exit.safe_filled * exit.safe_price * (1 - trade.fee_close)
-      total_profit += exit_stake
+      if trade.is_short:
+        total_profit -= exit_stake
+      else:
+        total_profit += exit_stake
     current_stake = trade.amount * exit_rate * (1 - trade.fee_close)
     if self.is_futures_mode:
       if trade.is_short:
         current_stake -= trade.funding_fees
       else:
         current_stake += trade.funding_fees
-    total_profit += current_stake
+    if trade.is_short:
+      total_profit -= current_stake
+    else:
+      total_profit += current_stake
     total_profit_ratio = total_profit / total_stake
     current_profit_ratio = total_profit / current_stake
     init_profit_ratio = total_profit / filled_entries[0].cost
