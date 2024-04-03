@@ -18731,8 +18731,12 @@ class NostalgiaForInfinityX4(IStrategy):
     )
 
     # SMA
-    informative_4h["sma_50"] = ta.SMA(informative_4h, timeperiod=50)
-    informative_4h["sma_200"] = ta.SMA(informative_4h, timeperiod=200)
+    informative_4h["sma_50"] = pta.sma(informative_4h["close"], length=50)
+    informative_4h["sma_200"] = pta.sma(informative_4h["close"], length=200)
+
+    informative_4h["sma_200_dec_48"] = (informative_4h["sma_200"].isnull()) | (
+      informative_4h["sma_200"] <= informative_4h["sma_200"].shift(48)
+    )
 
     # ZL MA
     informative_4h["zlma_50"] = pta.zlma(informative_4h["close"], length=50, mamode="ema", offset=0, fillna=0.0)
@@ -18838,8 +18842,12 @@ class NostalgiaForInfinityX4(IStrategy):
     )
 
     # SMA
-    informative_1h["sma_50"] = ta.SMA(informative_1h, timeperiod=50)
-    informative_1h["sma_200"] = ta.SMA(informative_1h, timeperiod=200)
+    informative_1h["sma_50"] = pta.sma(informative_1h["close"], length=50)
+    informative_1h["sma_200"] = pta.sma(informative_1h["close"], length=200)
+
+    informative_1h["sma_200_dec_48"] = (informative_1h["sma_200"].isnull()) | (
+      informative_1h["sma_200"] <= informative_1h["sma_200"].shift(48)
+    )
 
     # ZL MA
     informative_1h["zlma_50"] = pta.zlma(informative_1h["close"], length=50, mamode="ema", offset=0, fillna=0.0)
