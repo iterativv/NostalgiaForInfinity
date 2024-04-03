@@ -18712,6 +18712,14 @@ class NostalgiaForInfinityX3(IStrategy):
     informative_4h["sma_50"] = ta.SMA(informative_4h, timeperiod=50)
     informative_4h["sma_200"] = ta.SMA(informative_4h, timeperiod=200)
 
+    # ZL MA
+    informative_4h["zlma_50"] = pta.zlma(informative_4h["close"], length=50, mamode="ema", offset=0)
+    informative_4h.fillna({"zlma_50": 0.0}, inplace=True)
+
+    informative_4h["zlma_50_dec"] = (informative_4h["zlma_50"].isnull()) | (
+      informative_4h["zlma_50"] <= informative_4h["zlma_50"].shift(1)
+    )
+
     # Williams %R
     informative_4h["r_14"] = williams_r(informative_4h, period=14)
     informative_4h["r_480"] = williams_r(informative_4h, period=480)
