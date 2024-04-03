@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.496"
+    return "v13.1.497"
 
   stoploss = -0.99
 
@@ -16600,7 +16600,9 @@ class NostalgiaForInfinityX3(IStrategy):
             and (last_candle["rsi_3_15m"] > 30.0)
             and (last_candle["rsi_3_1h"] > 30.0)
             and (last_candle["rsi_3_4h"] > 30.0)
-            and (last_candle["rsi_14"] < 42.0)
+            and (last_candle["rsi_14"] < 46.0)
+            and (last_candle["zlma_50_dec_1h"] == False)
+            and (last_candle["zlma_50_dec_4h"] == False)
           )
         )
       ):
@@ -16739,7 +16741,9 @@ class NostalgiaForInfinityX3(IStrategy):
             and (last_candle["rsi_3_15m"] > 30.0)
             and (last_candle["rsi_3_1h"] > 30.0)
             and (last_candle["rsi_3_4h"] > 30.0)
-            and (last_candle["rsi_14"] < 42.0)
+            and (last_candle["rsi_14"] < 46.0)
+            and (last_candle["zlma_50_dec_1h"] == False)
+            and (last_candle["zlma_50_dec_4h"] == False)
           )
         )
       ):
@@ -16878,7 +16882,9 @@ class NostalgiaForInfinityX3(IStrategy):
             and (last_candle["rsi_3_15m"] > 30.0)
             and (last_candle["rsi_3_1h"] > 30.0)
             and (last_candle["rsi_3_4h"] > 30.0)
-            and (last_candle["rsi_14"] < 42.0)
+            and (last_candle["rsi_14"] < 46.0)
+            and (last_candle["zlma_50_dec_1h"] == False)
+            and (last_candle["zlma_50_dec_4h"] == False)
           )
         )
       ):
@@ -17017,7 +17023,9 @@ class NostalgiaForInfinityX3(IStrategy):
             and (last_candle["rsi_3_15m"] > 30.0)
             and (last_candle["rsi_3_1h"] > 30.0)
             and (last_candle["rsi_3_4h"] > 30.0)
-            and (last_candle["rsi_14"] < 42.0)
+            and (last_candle["rsi_14"] < 46.0)
+            and (last_candle["zlma_50_dec_1h"] == False)
+            and (last_candle["zlma_50_dec_4h"] == False)
           )
         )
       ):
@@ -17156,7 +17164,9 @@ class NostalgiaForInfinityX3(IStrategy):
             and (last_candle["rsi_3_15m"] > 30.0)
             and (last_candle["rsi_3_1h"] > 30.0)
             and (last_candle["rsi_3_4h"] > 30.0)
-            and (last_candle["rsi_14"] < 42.0)
+            and (last_candle["rsi_14"] < 46.0)
+            and (last_candle["zlma_50_dec_1h"] == False)
+            and (last_candle["zlma_50_dec_4h"] == False)
           )
         )
       ):
@@ -17336,7 +17346,7 @@ class NostalgiaForInfinityX3(IStrategy):
         )
         or (
           (last_candle["rsi_14"] < 36.0)
-          and (last_candle["close"] < (last_candle["sma_16"] * 0.998))
+          and (last_candle["close"] < (last_candle["sma_16"] * 0.994))
           and (last_candle["rsi_3"] > 16.0)
           and (last_candle["rsi_3_15m"] > 30.0)
           and (last_candle["rsi_3_1h"] > 30.0)
@@ -17364,7 +17374,7 @@ class NostalgiaForInfinityX3(IStrategy):
           and (last_candle["rsi_14_1h"] < 80.0)
         )
         or (
-          (last_candle["rsi_3"] > 10.0)
+          (last_candle["rsi_3"] > 12.0)
           and (last_candle["rsi_3_15m"] > 20.0)
           and (last_candle["rsi_3_1h"] > 20.0)
           and (last_candle["rsi_3_4h"] > 20.0)
@@ -17440,7 +17450,7 @@ class NostalgiaForInfinityX3(IStrategy):
           and (last_candle["rsi_3_15m"] > 30.0)
           and (last_candle["rsi_3_1h"] > 30.0)
           and (last_candle["rsi_3_4h"] > 30.0)
-          and (last_candle["rsi_14"] < 42.0)
+          and (last_candle["rsi_14"] < 40.0)
           and (last_candle["rsi_14_1d"] < 70.0)
           and (last_candle["close"] > last_candle["sup_level_1h"])
           and (last_candle["close"] > last_candle["sup_level_4h"])
@@ -17454,7 +17464,7 @@ class NostalgiaForInfinityX3(IStrategy):
           and (last_candle["rsi_3_15m"] > 30.0)
           and (last_candle["rsi_3_1h"] > 30.0)
           and (last_candle["rsi_3_4h"] > 30.0)
-          and (last_candle["rsi_14"] < 44.0)
+          and (last_candle["rsi_14"] < 40.0)
           and (last_candle["ha_close"] > last_candle["ha_open"])
           and (last_candle["close"] < last_candle["res_hlevel_4h"])
           and (last_candle["close"] > last_candle["sup_level_4h"])
@@ -17469,7 +17479,7 @@ class NostalgiaForInfinityX3(IStrategy):
           and (last_candle["rsi_3_15m"] > 30.0)
           and (last_candle["rsi_3_1h"] > 30.0)
           and (last_candle["rsi_3_4h"] > 30.0)
-          and (last_candle["rsi_14"] < 60.0)
+          and (last_candle["rsi_14"] < 46.0)
           and (previous_candle["chandelier_dir"] < -0)
           and (last_candle["chandelier_dir"] > 0)
           and (last_candle["close"] < last_candle["res_hlevel_4h"])
@@ -17912,7 +17922,9 @@ class NostalgiaForInfinityX3(IStrategy):
             and (last_candle["rsi_3_15m"] > 30.0)
             and (last_candle["rsi_3_1h"] > 30.0)
             and (last_candle["rsi_3_4h"] > 30.0)
-            and (last_candle["rsi_14"] < 42.0)
+            and (last_candle["rsi_14"] < 46.0)
+            and (last_candle["zlma_50_dec_1h"] == False)
+            and (last_candle["zlma_50_dec_4h"] == False)
           )
         )
       ):
@@ -17972,7 +17984,9 @@ class NostalgiaForInfinityX3(IStrategy):
             and (last_candle["rsi_3_15m"] > 30.0)
             and (last_candle["rsi_3_1h"] > 30.0)
             and (last_candle["rsi_3_4h"] > 30.0)
-            and (last_candle["rsi_14"] < 42.0)
+            and (last_candle["rsi_14"] < 46.0)
+            and (last_candle["zlma_50_dec_1h"] == False)
+            and (last_candle["zlma_50_dec_4h"] == False)
           )
         )
       ):
@@ -18058,7 +18072,9 @@ class NostalgiaForInfinityX3(IStrategy):
             and (last_candle["rsi_3_15m"] > 30.0)
             and (last_candle["rsi_3_1h"] > 30.0)
             and (last_candle["rsi_3_4h"] > 30.0)
-            and (last_candle["rsi_14"] < 42.0)
+            and (last_candle["rsi_14"] < 46.0)
+            and (last_candle["zlma_50_dec_1h"] == False)
+            and (last_candle["zlma_50_dec_4h"] == False)
           )
         )
       ):
@@ -18144,7 +18160,9 @@ class NostalgiaForInfinityX3(IStrategy):
             and (last_candle["rsi_3_15m"] > 30.0)
             and (last_candle["rsi_3_1h"] > 30.0)
             and (last_candle["rsi_3_4h"] > 30.0)
-            and (last_candle["rsi_14"] < 42.0)
+            and (last_candle["rsi_14"] < 46.0)
+            and (last_candle["zlma_50_dec_1h"] == False)
+            and (last_candle["zlma_50_dec_4h"] == False)
           )
         )
       ):
@@ -18230,7 +18248,9 @@ class NostalgiaForInfinityX3(IStrategy):
             and (last_candle["rsi_3_15m"] > 30.0)
             and (last_candle["rsi_3_1h"] > 30.0)
             and (last_candle["rsi_3_4h"] > 30.0)
-            and (last_candle["rsi_14"] < 42.0)
+            and (last_candle["rsi_14"] < 46.0)
+            and (last_candle["zlma_50_dec_1h"] == False)
+            and (last_candle["zlma_50_dec_4h"] == False)
           )
         )
       ):
@@ -18316,7 +18336,9 @@ class NostalgiaForInfinityX3(IStrategy):
             and (last_candle["rsi_3_15m"] > 30.0)
             and (last_candle["rsi_3_1h"] > 30.0)
             and (last_candle["rsi_3_4h"] > 30.0)
-            and (last_candle["rsi_14"] < 42.0)
+            and (last_candle["rsi_14"] < 46.0)
+            and (last_candle["zlma_50_dec_1h"] == False)
+            and (last_candle["zlma_50_dec_4h"] == False)
           )
         )
       ):
