@@ -18813,7 +18813,7 @@ class NostalgiaForInfinityX3(IStrategy):
     informative_1h["sma_200"] = ta.SMA(informative_1h, timeperiod=200)
 
     # ZL MA
-    informative_1h["zlma_50"] = pta.zlma(informative_1h["close"], length=50, matype="linreg", offset=0)
+    informative_1h["zlma_50"] = pta.zlma(informative_1h["close"], length=50, mamode="ema", offset=0)
     informative_1h.fillna({"zlma_50": 0.0}, inplace=True)
 
     informative_1h["zlma_50_dec"] = (informative_1h["zlma_50"].isnull()) | (
@@ -19051,7 +19051,7 @@ class NostalgiaForInfinityX3(IStrategy):
     df["hma_70_buy"] = (df["hma_70"] > df["hma_70"].shift(1)) & (df["hma_70"].shift(1) < df["hma_70"].shift(2))
 
     # ZL MA
-    df["zlma_50"] = pta.zlma(df["close"], length=50, matype="linreg", offset=0)
+    df["zlma_50"] = pta.zlma(df["close"], length=50, mamode="ema", offset=0)
 
     # EverGet ChandelierExit
     high = df["high"]
