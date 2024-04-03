@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.498"
+    return "v14.1.499"
 
   stoploss = -0.99
 
@@ -18740,6 +18740,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # ZL MA
     informative_4h["zlma_50"] = pta.zlma(informative_4h["close"], length=50, mamode="ema", offset=0, fillna=0.0)
+    informative_4h.fillna({"zlma_50": 0.0}, inplace=True)
 
     informative_4h["zlma_50_dec"] = (informative_4h["zlma_50"].isnull()) | (
       informative_4h["zlma_50"] <= informative_4h["zlma_50"].shift(1)
@@ -18851,6 +18852,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # ZL MA
     informative_1h["zlma_50"] = pta.zlma(informative_1h["close"], length=50, mamode="ema", offset=0, fillna=0.0)
+    informative_1h.fillna({"zlma_50": 0.0}, inplace=True)
 
     informative_1h["zlma_50_dec"] = (informative_1h["zlma_50"].isnull()) | (
       informative_1h["zlma_50"] <= informative_1h["zlma_50"].shift(1)
