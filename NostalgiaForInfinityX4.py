@@ -786,7 +786,7 @@ class NostalgiaForInfinityX4(IStrategy):
     "long_entry_condition_49_enable": True,
     "long_entry_condition_50_enable": True,
     "long_entry_condition_61_enable": True,
-    # "long_entry_condition_81_enable": True,
+    "long_entry_condition_81_enable": False,
     # "long_entry_condition_82_enable": True,
     "long_entry_condition_101_enable": True,
     "long_entry_condition_102_enable": True,
@@ -39528,101 +39528,45 @@ class NostalgiaForInfinityX4(IStrategy):
           long_entry_logic.append(df["close"].lt(df["bb40_2_low"].shift()))
           long_entry_logic.append(df["close"].le(df["close"].shift()))
 
-        # Condition #81 - Long mode bull.
+        # Condition #81 - High profit mode (log)
         if index == 81:
           # Protections
           long_entry_logic.append(df["protections_long_global"] == True)
           long_entry_logic.append(df["global_protections_long_pump"] == True)
           long_entry_logic.append(df["global_protections_long_dump"] == True)
-          long_entry_logic.append(df["btc_pct_close_max_24_5m"] < 0.03)
-          long_entry_logic.append(df["btc_pct_close_max_72_5m"] < 0.03)
-          long_entry_logic.append(df["close_max_12"] < (df["close"] * 1.12))
-          long_entry_logic.append(df["close_max_24"] < (df["close"] * 1.16))
-          long_entry_logic.append(df["close_max_48"] < (df["close"] * 1.2))
-          long_entry_logic.append(df["high_max_6_1h"] < (df["close"] * 1.24))
+          long_entry_logic.append(df["btc_pct_close_max_24_5m"] < 0.06)
+          long_entry_logic.append(df["btc_pct_close_max_72_5m"] < 0.06)
+          long_entry_logic.append(df["close"] > (df["close_max_12"] * 0.80))
+          long_entry_logic.append(df["close"] > (df["close_max_24"] * 0.78))
+          long_entry_logic.append(df["close"] > (df["close_max_48"] * 0.76))
+          long_entry_logic.append(df["close"] > (df["high_max_12_1h"] * 0.74))
+          long_entry_logic.append(df["close"] > (df["high_max_24_1h"] * 0.72))
+          long_entry_logic.append(df["hl_pct_change_6_1h"] < 0.60)
+          long_entry_logic.append(df["hl_pct_change_12_1h"] < 0.70)
+          long_entry_logic.append(df["hl_pct_change_24_1h"] < 0.80)
+          long_entry_logic.append(df["hl_pct_change_48_1h"] < 0.90)
+          long_entry_logic.append(df["num_empty_288"] < allowed_empty_candles)
 
-          long_entry_logic.append(df["cti_20_1h"] < 0.95)
-          long_entry_logic.append(df["cti_20_4h"] < 0.95)
-          long_entry_logic.append(df["rsi_14_1h"] < 85.0)
-          long_entry_logic.append(df["rsi_14_4h"] < 85.0)
-          long_entry_logic.append(df["rsi_14_1d"] < 85.0)
-          long_entry_logic.append(df["r_14_1h"] < -25.0)
-          long_entry_logic.append(df["r_14_4h"] < -25.0)
-
-          long_entry_logic.append(df["pct_change_high_max_6_24_1h"] > -0.3)
-          long_entry_logic.append(df["pct_change_high_max_3_12_4h"] > -0.4)
-
-          long_entry_logic.append(df["not_downtrend_15m"])
-
-          # current 4h relative long top wick, overbought 1h, downtrend 1h, downtrend 4h
-          long_entry_logic.append(
-            (df["top_wick_pct_4h"] < (abs(df["change_pct_4h"]) * 2.0))
-            | (df["cti_20_1h"] < 0.5)
-            | (df["ema_200_1h"] > df["ema_200_1h"].shift(288))
-            | (df["ema_200_4h"] > df["ema_200_4h"].shift(576))
-          )
-          # current 4h relative long top wick, overbought 1d
-          long_entry_logic.append((df["top_wick_pct_4h"] < (abs(df["change_pct_4h"]) * 6.0)) | (df["cti_20_1d"] < 0.5))
-          # current 4h relative long top wick, overbought 1h, downtrend 1h
-          long_entry_logic.append(
-            (df["top_wick_pct_4h"] < (abs(df["change_pct_4h"]) * 2.0))
-            | (df["cti_20_1h"] < 0.5)
-            | (df["not_downtrend_1h"])
-          )
-          # big drop in last 48h, downtrend 1h
-          long_entry_logic.append((df["high_max_48_1h"] < (df["close"] * 1.5)) | (df["not_downtrend_1h"]))
-          # downtrend 1h, downtrend 4h, drop in last 2h
-          long_entry_logic.append(
-            (df["not_downtrend_1h"]) | (df["not_downtrend_4h"]) | (df["close_max_24"] < (df["close"] * 1.1))
-          )
-          # downtrend 1h, overbought 1h
-          long_entry_logic.append((df["not_downtrend_1h"]) | (df["cti_20_1h"] < 0.5))
-          # downtrend 1h, overbought 4h
-          long_entry_logic.append((df["not_downtrend_1h"]) | (df["cti_20_4h"] < 0.5))
-          # downtrend 1h, downtrend 4h, overbought 1d
-          long_entry_logic.append((df["not_downtrend_1h"]) | (df["not_downtrend_4h"]) | (df["cti_20_1d"] < 0.5))
-          # downtrend 1d, overbought 1d
-          long_entry_logic.append((df["is_downtrend_3_1d"] == False) | (df["cti_20_1d"] < 0.5))
-          # downtrend 1d, downtrend 1h
-          long_entry_logic.append((df["is_downtrend_3_1d"] == False) | (df["not_downtrend_1h"]))
-          # current 4h red, previous 4h green, overbought 4h
-          long_entry_logic.append(
-            (df["change_pct_4h"] > -0.06) | (df["change_pct_4h"].shift(48) < 0.06) | (df["cti_20_4h"] < 0.5)
-          )
-          # current 1d long green with long top wick
-          long_entry_logic.append((df["change_pct_1d"] < 0.12) | (df["top_wick_pct_1d"] < 0.12))
-          # current 1d long 1d with top wick, overbought 1d, downtrend 1h
-          long_entry_logic.append(
-            (df["change_pct_1d"] < 0.2)
-            | (df["top_wick_pct_1d"] < 0.04)
-            | (df["cti_20_1d"] < 0.5)
-            | (df["not_downtrend_1h"])
-          )
-          # current 1d long red, overbought 1d, downtrend 1h
-          long_entry_logic.append((df["change_pct_1d"] > -0.1) | (df["cti_20_1d"] < 0.5) | (df["not_downtrend_1h"]))
-          long_entry_logic.append(
-            (df["cti_20_15m"] < -0.5)
-            | (df["cti_20_1h"] < 0.5)
-            | (df["cti_20_4h"] < -0.0)
-            | (df["cti_20_1d"] < 0.75)
-            | (df["ema_200_dec_4_1d"] == False)
-          )
-          long_entry_logic.append(
-            (df["cti_20_15m"] < -0.0)
-            | (df["cti_20_1h"] < -0.0)
-            | (df["cti_20_4h"] < -0.0)
-            | (df["ema_200_dec_48_1h"] == False)
-            | (df["ema_200_dec_24_4h"] == False)
-            | (df["ema_200_dec_4_1d"] == False)
-          )
+          long_entry_logic.append(df["rsi_3"] >= 8.0)
+          long_entry_logic.append(df["rsi_3"] <= 50.0)
+          long_entry_logic.append(df["rsi_3_15m"] >= 8.0)
+          long_entry_logic.append(df["rsi_3_1h"] >= 10.0)
+          long_entry_logic.append(df["rsi_3_4h"] >= 10.0)
+          long_entry_logic.append(df["rsi_3_1d"] >= 10.0)
+          long_entry_logic.append(df["cti_20_1h"] <= 0.90)
+          long_entry_logic.append(df["rsi_14_1h"] <= 60.0)
+          long_entry_logic.append(df["cti_20_4h"] <= 0.90)
+          long_entry_logic.append(df["rsi_14_4h"] <= 60.0)
+          long_entry_logic.append(df["cti_20_1d"] <= 0.90)
+          long_entry_logic.append(df["rsi_14_1d"] <= 70.0)
 
           # Logic
-          long_entry_logic.append(df["bb40_2_delta"].gt(df["close"] * 0.052))
-          long_entry_logic.append(df["close_delta"].gt(df["close"] * 0.024))
-          long_entry_logic.append(df["bb40_2_tail"].lt(df["bb40_2_delta"] * 0.2))
+          long_entry_logic.append(df["rsi_14"] < 36.0)
+          long_entry_logic.append(df["bb40_2_delta"].gt(df["close"] * 0.025))
+          long_entry_logic.append(df["close_delta"].gt(df["close"] * 0.02))
+          long_entry_logic.append(df["bb40_2_tail"].lt(df["bb40_2_delta"] * 0.4))
           long_entry_logic.append(df["close"].lt(df["bb40_2_low"].shift()))
           long_entry_logic.append(df["close"].le(df["close"].shift()))
-          long_entry_logic.append(df["rsi_14"] < 30.0)
 
         # Condition #82 - Long mode bull.
         if index == 82:
