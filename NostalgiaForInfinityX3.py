@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.499"
+    return "v13.1.500"
 
   stoploss = -0.99
 
@@ -18731,11 +18731,13 @@ class NostalgiaForInfinityX3(IStrategy):
     )
 
     # SMA
-    informative_4h["sma_50"] = pta.sma(informative_4h["close"], length=50)
-    informative_4h["sma_200"] = pta.sma(informative_4h["close"], length=200)
+    informative_4h["sma_50"] = pta.sma(informative_4h["close"], length=50, fillna=0.0)
+    informative_4h["sma_200"] = pta.sma(informative_4h["close"], length=200, fillna=0.0)
 
-    informative_4h["sma_200_dec_48"] = (informative_4h["sma_200"].isnull()) | (
-      informative_4h["sma_200"] <= informative_4h["sma_200"].shift(48)
+    informative_4h["sma_200_dec_48"] = (
+      (informative_4h["sma_200"].isnull())
+      | (informative_4h["sma_200"].eq(0.0))
+      | (informative_4h["sma_200"] <= informative_4h["sma_200"].shift(48))
     )
 
     # ZL MA
@@ -18843,11 +18845,13 @@ class NostalgiaForInfinityX3(IStrategy):
     )
 
     # SMA
-    informative_1h["sma_50"] = pta.sma(informative_1h["close"], length=50)
-    informative_1h["sma_200"] = pta.sma(informative_1h["close"], length=200)
+    informative_1h["sma_50"] = pta.sma(informative_1h["close"], length=50, fillna=0.0)
+    informative_1h["sma_200"] = pta.sma(informative_1h["close"], length=200, fillna=0.0)
 
-    informative_1h["sma_200_dec_48"] = (informative_1h["sma_200"].isnull()) | (
-      informative_1h["sma_200"] <= informative_1h["sma_200"].shift(48)
+    informative_1h["sma_200_dec_48"] = (
+      (informative_1h["sma_200"].isnull())
+      | (informative_1h["sma_200"].eq(0.0))
+      | (informative_1h["sma_200"] <= informative_1h["sma_200"].shift(48))
     )
 
     # ZL MA
