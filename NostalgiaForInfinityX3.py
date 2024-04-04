@@ -18748,7 +18748,6 @@ class NostalgiaForInfinityX3(IStrategy):
 
     # ZL MA
     informative_4h["zlma_50"] = pta.zlma(informative_4h["close"], length=50, mamode="ema", offset=0, fillna=0.0)
-    informative_4h.fillna({"zlma_50": 0.0}, inplace=True)
 
     informative_4h["zlma_50_dec"] = (informative_4h["zlma_50"].isnull()) | (
       informative_4h["zlma_50"] <= informative_4h["zlma_50"].shift(1)
@@ -18862,7 +18861,6 @@ class NostalgiaForInfinityX3(IStrategy):
 
     # ZL MA
     informative_1h["zlma_50"] = pta.zlma(informative_1h["close"], length=50, mamode="ema", offset=0, fillna=0.0)
-    informative_1h.fillna({"zlma_50": 0.0}, inplace=True)
 
     informative_1h["zlma_50_dec"] = (informative_1h["zlma_50"].isnull()) | (
       informative_1h["zlma_50"] <= informative_1h["zlma_50"].shift(1)
