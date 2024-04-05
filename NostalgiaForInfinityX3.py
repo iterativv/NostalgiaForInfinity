@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.508"
+    return "v13.1.509"
 
   stoploss = -0.99
 
@@ -17332,11 +17332,11 @@ class NostalgiaForInfinityX3(IStrategy):
           and (last_candle["global_protections_long_dump"] == True)
         )
         and (
-          (last_candle["close"] > (last_candle["close_max_12"] * 0.96))
-          and (last_candle["close"] > (last_candle["close_max_24"] * 0.94))
-          and (last_candle["close"] > (last_candle["close_max_48"] * 0.92))
-          and (last_candle["close"] > (last_candle["high_max_24_1h"] * 0.90))
-          and (last_candle["close"] > (last_candle["high_max_48_1h"] * 0.88))
+          (last_candle["close"] > (last_candle["close_max_12"] * 0.94))
+          and (last_candle["close"] > (last_candle["close_max_24"] * 0.92))
+          and (last_candle["close"] > (last_candle["close_max_48"] * 0.90))
+          and (last_candle["close"] > (last_candle["high_max_24_1h"] * 0.88))
+          and (last_candle["close"] > (last_candle["high_max_48_1h"] * 0.86))
           and (last_candle["close"] > (last_candle["high_max_6_1d"] * 0.84))
           and (last_candle["close"] > (last_candle["high_max_12_1d"] * 0.82))
         )
@@ -17345,6 +17345,9 @@ class NostalgiaForInfinityX3(IStrategy):
           and (last_candle["rsi_3_15m"] > 30.0)
           and (last_candle["rsi_3_1h"] > 30.0)
           and (last_candle["rsi_3_4h"] > 30.0)
+          and (last_candle["rsi_14"] < 46.0)
+          and (last_candle["zlma_50_dec_1h"] == False)
+          and (last_candle["zlma_50_dec_4h"] == False)
         )
       ):
         buy_amount = derisk_1_order.safe_filled * derisk_1_order.safe_price
