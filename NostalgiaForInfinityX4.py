@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.504"
+    return "v14.1.505"
 
   stoploss = -0.99
 
@@ -556,6 +556,8 @@ class NostalgiaForInfinityX4(IStrategy):
     [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
   ]
   regular_mode_grind_5_profit_threshold_spot = 0.048
+  regular_mode_derisk_1_spot = -0.06
+  regular_mode_derisk_1_reentry_spot = -0.06
   regular_mode_derisk_spot = -0.40
   regular_mode_derisk_spot_old = -0.80
 
@@ -684,6 +686,8 @@ class NostalgiaForInfinityX4(IStrategy):
     [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
   ]
   regular_mode_grind_5_profit_threshold_futures = 0.048
+  regular_mode_derisk_1_futures = -0.18
+  regular_mode_derisk_1_reentry_futures = -0.06  # without leverage
   regular_mode_derisk_futures = -0.60
   regular_mode_derisk_futures_old = -2.40
 
@@ -16252,6 +16256,21 @@ class NostalgiaForInfinityX4(IStrategy):
     )
 
     partial_sell = False
+    is_derisk_found = False  # d de-risk
+    is_derisk_1 = False
+    is_derisk_1_found = False  # d1 de-risk exit
+    derisk_1_order = None
+    derisk_1_reentry_order = None
+    derisk_1_sub_grind_count = 0
+    derisk_1_total_amount = 0.0
+    derisk_1_total_cost = 0.0
+    derisk_1_current_open_rate = 0.0
+    derisk_1_current_grind_stake = 0.0
+    derisk_1_current_grind_stake_profit = 0.0
+    derisk_1_is_sell_found = False
+    derisk_1_reentry_found = False
+    derisk_1_buy_orders = []
+    derisk_1_distance_ratio = 0.0
     grind_1_sub_grind_count = 0
     grind_1_total_amount = 0.0
     grind_1_total_cost = 0.0
@@ -16308,7 +16327,16 @@ class NostalgiaForInfinityX4(IStrategy):
         if has_order_tags:
           if order.ft_order_tag is not None:
             order_tag = order.ft_order_tag
-        if not grind_5_is_sell_found and order_tag == "gd5":
+        if not is_derisk_1 and order_tag == "d1":
+          derisk_1_sub_grind_count += 1
+          derisk_1_total_amount += order.safe_filled
+          derisk_1_total_cost += order.safe_filled * order.safe_price
+          derisk_1_buy_orders.append(order.id)
+          if not derisk_1_reentry_found and not is_derisk_1:
+            derisk_1_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
+            derisk_1_reentry_found = True
+            derisk_1_reentry_order = order
+        elif not grind_5_is_sell_found and order_tag == "gd5":
           grind_5_sub_grind_count += 1
           grind_5_total_amount += order.safe_filled
           grind_5_total_cost += order.safe_filled * order.safe_price
@@ -16342,6 +16370,7 @@ class NostalgiaForInfinityX4(IStrategy):
             grind_2_found = True
         elif not grind_1_is_sell_found and order_tag not in [
           "r",
+          "d1",
           "g1",
           "g2",
           "g3",
@@ -16380,7 +16409,14 @@ class NostalgiaForInfinityX4(IStrategy):
           grind_3_is_sell_found = True
         elif order_tag in ["gd2", "dd2"]:
           grind_2_is_sell_found = True
+        elif order_tag in ["d1"]:
+          if not is_derisk_1_found:
+            is_derisk_1_found = True
+            is_derisk_1 = True
+            derisk_1_order = order
         elif order_tag in ["p", "r", "d", "dd0", "partial_exit", ""]:
+          if order_tag in ["d"]:
+            is_derisk_found = True
           grind_1_is_sell_found = True
           grind_2_is_sell_found = True
           grind_3_is_sell_found = True
@@ -16405,15 +16441,19 @@ class NostalgiaForInfinityX4(IStrategy):
         ]:
           grind_1_is_sell_found = True
         # found sells for all modes
-        if (
-          grind_1_is_sell_found
-          and grind_2_is_sell_found
-          and grind_3_is_sell_found
-          and grind_4_is_sell_found
-          and grind_5_is_sell_found
-        ):
-          break
+        # if (
+        #   grind_1_is_sell_found
+        #   and grind_2_is_sell_found
+        #   and grind_3_is_sell_found
+        #   and grind_4_is_sell_found
+        #   and grind_5_is_sell_found
+        # ):
+        #   break
 
+    if derisk_1_sub_grind_count > 0:
+      derisk_1_current_open_rate = derisk_1_total_cost / derisk_1_total_amount
+      derisk_1_current_grind_stake = derisk_1_total_amount * exit_rate * (1 - trade.fee_close)
+      derisk_1_current_grind_stake_profit = derisk_1_current_grind_stake - derisk_1_total_cost
     if grind_1_sub_grind_count > 0:
       grind_1_current_open_rate = grind_1_total_cost / grind_1_total_amount
       grind_1_current_grind_stake = grind_1_total_amount * exit_rate * (1 - trade.fee_close)
@@ -17264,6 +17304,130 @@ class NostalgiaForInfinityX4(IStrategy):
         else:
           return -sell_amount
 
+    # De-risk 1 reentry
+    if (
+      is_derisk_1
+      and not derisk_1_reentry_found
+      and derisk_1_order is not None
+      and (
+        ((current_rate - derisk_1_order.safe_price) / derisk_1_order.safe_price)
+        < (
+          self.regular_mode_derisk_1_reentry_futures
+          if self.is_futures_mode
+          else self.regular_mode_derisk_1_reentry_spot
+        )
+      )
+    ):
+      if (
+        (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
+        and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
+        and (
+          (num_open_grinds == 0)
+          or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
+          or (slice_profit < -0.06)
+        )
+        and (
+          (last_candle["protections_long_rebuy"] == True)
+          and (last_candle["global_protections_long_pump"] == True)
+          and (last_candle["global_protections_long_dump"] == True)
+        )
+        and (
+          (last_candle["close"] > (last_candle["close_max_12"] * 0.96))
+          and (last_candle["close"] > (last_candle["close_max_24"] * 0.94))
+          and (last_candle["close"] > (last_candle["close_max_48"] * 0.92))
+          and (last_candle["close"] > (last_candle["high_max_24_1h"] * 0.90))
+          and (last_candle["close"] > (last_candle["high_max_48_1h"] * 0.88))
+          and (last_candle["close"] > (last_candle["high_max_12_1d"] * 0.82))
+        )
+        and (
+          (last_candle["rsi_3"] > 30.0)
+          and (last_candle["rsi_3_15m"] > 30.0)
+          and (last_candle["rsi_3_1h"] > 30.0)
+          and (last_candle["rsi_3_4h"] > 30.0)
+        )
+      ):
+        buy_amount = derisk_1_order.safe_filled * derisk_1_order.safe_price
+        if buy_amount < (min_stake * 1.5):
+          buy_amount = min_stake * 1.5
+        if buy_amount > max_stake:
+          return None
+        grind_profit = 0.0
+        grind_profit_stake = 0.0
+        if derisk_1_sub_grind_count > 0:
+          grind_profit = (exit_rate - derisk_1_current_open_rate) / derisk_1_current_open_rate
+          grind_profit_stake = derisk_1_current_grind_stake_profit
+        self.dp.send_msg(
+          f"Re-entry (d1) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({derisk_1_current_grind_stake_profit} {self.config['stake_currency']})"
+        )
+        log.info(
+          f"Re-entry (d1) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({derisk_1_current_grind_stake_profit} {self.config['stake_currency']})"
+        )
+        order_tag = "d1"
+        if has_order_tags:
+          return buy_amount, order_tag
+        else:
+          return buy_amount
+
+    # De-risk level 1
+    if (
+      has_order_tags
+      # and not is_derisk_1
+      and derisk_1_reentry_found
+      and derisk_1_reentry_order is not None
+      # and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 4, 5) or is_backtest)
+      and derisk_1_distance_ratio
+      < (
+        (self.regular_mode_derisk_1_futures if self.is_futures_mode else self.regular_mode_derisk_1_spot)
+        / (trade.leverage if self.is_futures_mode else 1.0)
+      )
+    ):
+      sell_amount = (
+        derisk_1_reentry_order.safe_filled * exit_rate / (trade.leverage if self.is_futures_mode else 1.0) * 0.999
+      )
+      if (current_stake_amount / (trade.leverage if self.is_futures_mode else 1.0) - sell_amount) < (min_stake * 1.7):
+        sell_amount = (trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) - (
+          min_stake * 1.7
+        )
+      if sell_amount > min_stake:
+        grind_profit = 0.0
+        self.dp.send_msg(
+          f"De-risk (d1) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        )
+        log.info(
+          f"De-risk (d1) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        )
+        return -sell_amount, "d1"
+
+    # De-risk
+    if (
+      not is_derisk_found
+      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 2, 5) or is_backtest)
+      and profit_stake
+      < (
+        slice_amount
+        * (
+          (self.regular_mode_derisk_futures if self.is_futures_mode else self.regular_mode_derisk_spot)
+          if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 4, 5) or is_backtest)
+          else (self.regular_mode_derisk_futures_old if self.is_futures_mode else self.regular_mode_derisk_spot_old)
+        )
+        / (trade.leverage if self.is_futures_mode else 1.0)
+      )
+    ):
+      sell_amount = trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0) * 0.999
+      if (current_stake_amount / (trade.leverage if self.is_futures_mode else 1.0) - sell_amount) < (min_stake * 1.7):
+        sell_amount = (trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) - (
+          min_stake * 1.7
+        )
+      if sell_amount > min_stake:
+        grind_profit = 0.0
+        self.dp.send_msg(
+          f"De-risk [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        )
+        log.info(
+          f"De-risk [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        )
+        return -sell_amount, "d", is_derisk
+
     # De-risk
     if (
       (
@@ -17273,7 +17437,8 @@ class NostalgiaForInfinityX4(IStrategy):
             (trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0))
             - (
               (
-                grind_1_total_amount
+                derisk_1_total_amount
+                + grind_1_total_amount
                 + grind_2_total_amount
                 + grind_3_total_amount
                 + grind_4_total_amount
@@ -17645,6 +17810,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     partial_sell = False
     is_derisk = False
+    is_derisk_1 = False
     rebuy_sub_grind_count = 0
     rebuy_total_amount = 0.0
     rebuy_total_cost = 0.0
@@ -17793,8 +17959,10 @@ class NostalgiaForInfinityX4(IStrategy):
           grind_4_is_sell_found = True
         elif order_tag == "g5":
           grind_5_is_sell_found = True
-        elif order_tag in ["d", "dd0", "dd1", "dd2", "dd3", "dd4", "dd5"]:
+        elif order_tag in ["d", "d1", "dd0", "dd1", "dd2", "dd3", "dd4", "dd5"]:
           is_derisk = True
+          if order_tag in ["d1"]:
+            is_derisk_1 = True
           grind_1_is_sell_found = True
           grind_2_is_sell_found = True
           grind_3_is_sell_found = True
@@ -18418,6 +18586,33 @@ class NostalgiaForInfinityX4(IStrategy):
           f"De-risk [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         return -sell_amount, "d", is_derisk
+
+    # De-risk level 1
+    if (
+      has_order_tags
+      and not is_derisk_1
+      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 4, 6) or is_backtest)
+      and profit_stake
+      < (
+        slice_amount
+        * (self.regular_mode_derisk_1_futures if self.is_futures_mode else self.regular_mode_derisk_1_spot)
+        / (trade.leverage if self.is_futures_mode else 1.0)
+      )
+    ):
+      sell_amount = trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0) * 0.999
+      if (current_stake_amount / (trade.leverage if self.is_futures_mode else 1.0) - sell_amount) < (min_stake * 1.7):
+        sell_amount = (trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) - (
+          min_stake * 1.7
+        )
+      if sell_amount > min_stake:
+        grind_profit = 0.0
+        self.dp.send_msg(
+          f"De-risk (d1) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        )
+        log.info(
+          f"De-risk (d1) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        )
+        return -sell_amount, "d1", is_derisk
 
     return None, "", is_derisk
 
