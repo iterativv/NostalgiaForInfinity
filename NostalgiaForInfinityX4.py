@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.506"
+    return "v14.1.507"
 
   stoploss = -0.99
 
@@ -3596,7 +3596,7 @@ class NostalgiaForInfinityX4(IStrategy):
     current_time: "datetime",
     buy_tag,
   ) -> tuple:
-    if last_candle["close"] > last_candle["sma_200_1h"]:
+    if last_candle["close"] > last_candle["sma_200"]:
       if 0.01 > current_profit >= 0.001:
         if last_candle["rsi_14"] < 10.0:
           return True, f"exit_{mode_name}_o_0"
