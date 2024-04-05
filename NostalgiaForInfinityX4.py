@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.505"
+    return "v14.1.506"
 
   stoploss = -0.99
 
@@ -17337,6 +17337,7 @@ class NostalgiaForInfinityX4(IStrategy):
           and (last_candle["close"] > (last_candle["close_max_48"] * 0.92))
           and (last_candle["close"] > (last_candle["high_max_24_1h"] * 0.90))
           and (last_candle["close"] > (last_candle["high_max_48_1h"] * 0.88))
+          and (last_candle["close"] > (last_candle["high_max_6_1d"] * 0.84))
           and (last_candle["close"] > (last_candle["high_max_12_1d"] * 0.82))
         )
         and (
@@ -18591,7 +18592,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if (
       has_order_tags
       and not is_derisk_1
-      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 4, 6) or is_backtest)
+      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 4, 5) or is_backtest)
       and profit_stake
       < (
         slice_amount
