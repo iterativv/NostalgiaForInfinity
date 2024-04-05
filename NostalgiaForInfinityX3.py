@@ -19200,7 +19200,7 @@ class NostalgiaForInfinityX3(IStrategy):
     informative_15m["sma_200"] = ta.SMA(informative_15m, timeperiod=200)
 
     # ZL MA
-    informative_15m["zlma_50"] = pta.zlma(informative_15m["close"], length=50, matype="linreg", offset=0)
+    informative_15m["zlma_50"] = pta.zlma(informative_15m["close"], length=50, mamode="ema", offset=0)
 
     informative_15m["zlma_50_dec"] = (informative_15m["zlma_50"].isnull()) | (
       informative_15m["zlma_50"] <= informative_15m["zlma_50"].shift(1)
