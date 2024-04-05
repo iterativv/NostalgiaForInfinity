@@ -10528,7 +10528,7 @@ class NostalgiaForInfinityX4(IStrategy):
     current_time: "datetime",
     buy_tag,
   ) -> tuple:
-    if last_candle["close"] < last_candle["sma_200_1h"]:
+    if last_candle["close"] < last_candle["sma_200"]:
       if 0.01 > current_profit >= 0.001:
         if last_candle["rsi_14"] > 90.0:
           return True, f"exit_{mode_name}_o_0"
@@ -10568,7 +10568,7 @@ class NostalgiaForInfinityX4(IStrategy):
       elif current_profit >= 0.2:
         if last_candle["rsi_14"] > 58.0:
           return True, f"exit_{mode_name}_o_12"
-    elif last_candle["close"] > last_candle["sma_200_1h"]:
+    elif last_candle["close"] > last_candle["sma_200"]:
       if 0.01 > current_profit >= 0.001:
         if last_candle["rsi_14"] > 88.0:
           return True, f"exit_{mode_name}_u_0"
