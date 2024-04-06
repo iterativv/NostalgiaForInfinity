@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.520"
+    return "v14.1.521"
 
   stoploss = -0.99
 
@@ -16282,7 +16282,7 @@ class NostalgiaForInfinityX4(IStrategy):
     )
     if (slice_amount * grind_derisk_1_stakes[0] / (trade.leverage if self.is_futures_mode else 1.0)) < min_stake:
       multi = slice_amount / min_stake
-      for i, item in enumerate(grind_derisk_1_stakes):
+      for i, _ in enumerate(grind_derisk_1_stakes):
         grind_derisk_1_stakes[i] *= multi
     grind_derisk_1_max_sub_grinds = len(grind_derisk_1_stakes)
     grind_derisk_1_stop_grinds = (
