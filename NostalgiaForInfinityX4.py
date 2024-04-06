@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.517"
+    return "v14.1.518"
 
   stoploss = -0.99
 
@@ -16604,14 +16604,8 @@ class NostalgiaForInfinityX4(IStrategy):
     if (not partial_sell) and (grind_1_sub_grind_count < grind_1_max_sub_grinds):
       if (
         (
-          (
-            (grind_1_distance_ratio if (grind_1_sub_grind_count > 0) else profit_init_ratio)
-            < (
-              0.0
-              if ((is_derisk or is_derisk_calc) and grind_1_sub_grind_count == 0)
-              else grind_1_sub_thresholds[grind_1_sub_grind_count]
-            )
-          )
+          ((grind_1_sub_grind_count > 0) and grind_1_distance_ratio < grind_1_sub_thresholds[grind_1_sub_grind_count])
+          or ((is_derisk or is_derisk_calc) and grind_1_sub_grind_count == 0)
           or (is_grind_mode and grind_1_sub_grind_count == 0)
         )
         and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
@@ -16636,11 +16630,12 @@ class NostalgiaForInfinityX4(IStrategy):
         and (
           is_long_grind_buy
           or (
-            (last_candle["rsi_3"] > 30.0)
+            (last_candle["rsi_3"] > 20.0)
             and (last_candle["rsi_3_15m"] > 30.0)
             and (last_candle["rsi_3_1h"] > 30.0)
             and (last_candle["rsi_3_4h"] > 30.0)
             and (last_candle["rsi_14"] < 42.0)
+            and (last_candle["zlma_50_dec_15m"] == False)
             and (last_candle["zlma_50_dec_1h"] == False)
             and (last_candle["zlma_50_dec_4h"] == False)
           )
@@ -16745,14 +16740,8 @@ class NostalgiaForInfinityX4(IStrategy):
     if has_order_tags and (not partial_sell) and (grind_2_sub_grind_count < grind_2_max_sub_grinds):
       if (
         (
-          (
-            (grind_2_distance_ratio if (grind_2_sub_grind_count > 0) else profit_init_ratio)
-            < (
-              0.0
-              if ((is_derisk or is_derisk_calc) and grind_2_sub_grind_count == 0)
-              else grind_2_sub_thresholds[grind_2_sub_grind_count]
-            )
-          )
+          ((grind_2_sub_grind_count > 0) and grind_2_distance_ratio < grind_2_sub_thresholds[grind_2_sub_grind_count])
+          or ((is_derisk or is_derisk_calc) and grind_2_sub_grind_count == 0)
           or (is_grind_mode and grind_2_sub_grind_count == 0)
         )
         and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
@@ -16777,11 +16766,12 @@ class NostalgiaForInfinityX4(IStrategy):
         and (
           is_long_grind_buy
           or (
-            (last_candle["rsi_3"] > 30.0)
+            (last_candle["rsi_3"] > 20.0)
             and (last_candle["rsi_3_15m"] > 30.0)
             and (last_candle["rsi_3_1h"] > 30.0)
             and (last_candle["rsi_3_4h"] > 30.0)
             and (last_candle["rsi_14"] < 42.0)
+            and (last_candle["zlma_50_dec_15m"] == False)
             and (last_candle["zlma_50_dec_1h"] == False)
             and (last_candle["zlma_50_dec_4h"] == False)
           )
@@ -16886,14 +16876,8 @@ class NostalgiaForInfinityX4(IStrategy):
     if has_order_tags and (not partial_sell) and (grind_3_sub_grind_count < grind_3_max_sub_grinds):
       if (
         (
-          (
-            (grind_3_distance_ratio if (grind_3_sub_grind_count > 0) else profit_init_ratio)
-            < (
-              0.0
-              if ((is_derisk or is_derisk_calc) and grind_3_sub_grind_count == 0)
-              else grind_3_sub_thresholds[grind_3_sub_grind_count]
-            )
-          )
+          ((grind_3_sub_grind_count > 0) and grind_3_distance_ratio < grind_3_sub_thresholds[grind_3_sub_grind_count])
+          or ((is_derisk or is_derisk_calc) and grind_3_sub_grind_count == 0)
           or (is_grind_mode and grind_3_sub_grind_count == 0)
         )
         and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
@@ -16918,11 +16902,12 @@ class NostalgiaForInfinityX4(IStrategy):
         and (
           is_long_grind_buy
           or (
-            (last_candle["rsi_3"] > 30.0)
+            (last_candle["rsi_3"] > 20.0)
             and (last_candle["rsi_3_15m"] > 30.0)
             and (last_candle["rsi_3_1h"] > 30.0)
             and (last_candle["rsi_3_4h"] > 30.0)
             and (last_candle["rsi_14"] < 42.0)
+            and (last_candle["zlma_50_dec_15m"] == False)
             and (last_candle["zlma_50_dec_1h"] == False)
             and (last_candle["zlma_50_dec_4h"] == False)
           )
@@ -17027,14 +17012,8 @@ class NostalgiaForInfinityX4(IStrategy):
     if has_order_tags and (not partial_sell) and (grind_4_sub_grind_count < grind_4_max_sub_grinds):
       if (
         (
-          (
-            (grind_4_distance_ratio if (grind_4_sub_grind_count > 0) else profit_init_ratio)
-            < (
-              0.0
-              if ((is_derisk or is_derisk_calc) and grind_4_sub_grind_count == 0)
-              else grind_4_sub_thresholds[grind_4_sub_grind_count]
-            )
-          )
+          ((grind_4_sub_grind_count > 0) and grind_4_distance_ratio < grind_4_sub_thresholds[grind_4_sub_grind_count])
+          or ((is_derisk or is_derisk_calc) and grind_4_sub_grind_count == 0)
           or (is_grind_mode and grind_4_sub_grind_count == 0)
         )
         and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
@@ -17059,11 +17038,12 @@ class NostalgiaForInfinityX4(IStrategy):
         and (
           is_long_grind_buy
           or (
-            (last_candle["rsi_3"] > 30.0)
+            (last_candle["rsi_3"] > 20.0)
             and (last_candle["rsi_3_15m"] > 30.0)
             and (last_candle["rsi_3_1h"] > 30.0)
             and (last_candle["rsi_3_4h"] > 30.0)
             and (last_candle["rsi_14"] < 42.0)
+            and (last_candle["zlma_50_dec_15m"] == False)
             and (last_candle["zlma_50_dec_1h"] == False)
             and (last_candle["zlma_50_dec_4h"] == False)
           )
@@ -17168,14 +17148,8 @@ class NostalgiaForInfinityX4(IStrategy):
     if has_order_tags and (not partial_sell) and (grind_5_sub_grind_count < grind_5_max_sub_grinds):
       if (
         (
-          (
-            (grind_5_distance_ratio if (grind_5_sub_grind_count > 0) else profit_init_ratio)
-            < (
-              0.0
-              if ((is_derisk or is_derisk_calc) and grind_5_sub_grind_count == 0)
-              else grind_5_sub_thresholds[grind_5_sub_grind_count]
-            )
-          )
+          ((grind_5_sub_grind_count > 0) and grind_5_distance_ratio < grind_5_sub_thresholds[grind_5_sub_grind_count])
+          or ((is_derisk or is_derisk_calc) and grind_5_sub_grind_count == 0)
           or (is_grind_mode and grind_5_sub_grind_count == 0)
         )
         and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
@@ -17200,11 +17174,12 @@ class NostalgiaForInfinityX4(IStrategy):
         and (
           is_long_grind_buy
           or (
-            (last_candle["rsi_3"] > 30.0)
+            (last_candle["rsi_3"] > 20.0)
             and (last_candle["rsi_3_15m"] > 30.0)
             and (last_candle["rsi_3_1h"] > 30.0)
             and (last_candle["rsi_3_4h"] > 30.0)
             and (last_candle["rsi_14"] < 42.0)
+            and (last_candle["zlma_50_dec_15m"] == False)
             and (last_candle["zlma_50_dec_1h"] == False)
             and (last_candle["zlma_50_dec_4h"] == False)
           )
