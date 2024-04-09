@@ -19144,7 +19144,6 @@ class NostalgiaForInfinityX4(IStrategy):
     informative_4h["ema_12"] = ta.EMA(informative_4h, timeperiod=12)
     informative_4h["ema_26"] = ta.EMA(informative_4h, timeperiod=26)
     informative_4h["ema_50"] = ta.EMA(informative_4h, timeperiod=50)
-    informative_4h["ema_100"] = ta.EMA(informative_4h, timeperiod=100)
     informative_4h["ema_200"] = ta.EMA(informative_4h, timeperiod=200)
 
     informative_4h["ema_200_dec_24"] = (informative_4h["ema_200"].isnull()) | (
@@ -19267,7 +19266,6 @@ class NostalgiaForInfinityX4(IStrategy):
     informative_1h["ema_12"] = ta.EMA(informative_1h, timeperiod=12)
     informative_1h["ema_26"] = ta.EMA(informative_1h, timeperiod=26)
     informative_1h["ema_50"] = ta.EMA(informative_1h, timeperiod=50)
-    informative_1h["ema_100"] = ta.EMA(informative_1h, timeperiod=100)
     informative_1h["ema_200"] = ta.EMA(informative_1h, timeperiod=200)
 
     informative_1h["ema_200_dec_48"] = (informative_1h["ema_200"].isnull()) | (
@@ -19384,7 +19382,6 @@ class NostalgiaForInfinityX4(IStrategy):
     informative_1h["change_pct"] = (informative_1h["close"] - informative_1h["open"]) / informative_1h["open"]
 
     # Max highs
-    informative_1h["high_max_3"] = informative_1h["high"].rolling(3).max()
     informative_1h["high_max_6"] = informative_1h["high"].rolling(6).max()
     informative_1h["high_max_12"] = informative_1h["high"].rolling(12).max()
     informative_1h["high_max_24"] = informative_1h["high"].rolling(24).max()
@@ -19468,6 +19465,57 @@ class NostalgiaForInfinityX4(IStrategy):
     tik = time.perf_counter()
 
     # Indicators
+    # base_tf_5m_indicators_pandas_ta = pta.Strategy(
+    # name="base_tf_5m_indicators_pandas_ta",
+    # ta=[
+    # # RSI
+    # {"kind": "rsi", "length": 3},
+    # {"kind": "rsi", "length": 14},
+    # {"kind": "rsi", "length": 20},
+
+    # # EMA
+    # {"kind": "ema", "length": 12},
+    # {"kind": "ema", "length": 16},
+    # {"kind": "ema", "length": 20},
+    # {"kind": "ema", "length": 26},
+    # {"kind": "ema", "length": 50},
+    # {"kind": "ema", "length": 100},
+    # {"kind": "ema", "length": 200},
+
+    # # SMA
+    # {"kind": "sma", "length": 16},
+    # {"kind": "sma", "length": 30},
+    # {"kind": "sma", "length": 75},
+    # {"kind": "sma", "length": 200},
+
+    # # BB 20 - STD2
+    # {"kind": "bbands", "length": 20}
+
+    # # BB 40 - STD2
+    # {"kind": "bbands", "length": 40}
+
+    # # Williams %R
+    # {"kind": "willr", "length": 14},
+    # {"kind": "willr", "length": 480},
+
+    # # CTI
+    # {"kind": "cti", "length": 20},
+
+    # # CCI
+    # {"kind": "cci", "length": 20},
+
+    # # Hull Moving Average
+    # {"kind": "hma", "length": 55},
+    # {"kind": "hma", "length": 70},
+
+    # # ZL MA
+    # {"kind": "zlma", "length": 50, "mamode":"linreg"},
+
+    # # Heiken Ashi
+    # {"kind": "ha"},
+    #       ]
+    # )
+
     # -----------------------------------------------------------------------------------------
     # RSI
     df["rsi_3"] = pta.rsi(df["close"], length=3)
