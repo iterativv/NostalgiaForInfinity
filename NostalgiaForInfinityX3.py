@@ -19400,10 +19400,10 @@ class NostalgiaForInfinityX3(IStrategy):
 
     # Williams %R
     informative_4h["r_14"] = pta.willr(
-      informative_4h["high"], informative_4h["low"], informative_4h["close"], lenght=14
+      informative_4h["high"], informative_4h["low"], informative_4h["close"], length=14
     )
     informative_4h["r_480"] = pta.willr(
-      informative_4h["high"], informative_4h["low"], informative_4h["close"], lenght=480
+      informative_4h["high"], informative_4h["low"], informative_4h["close"], length=480
     )
 
     # CTI
@@ -19533,10 +19533,10 @@ class NostalgiaForInfinityX3(IStrategy):
 
     # Williams %R
     informative_1h["r_14"] = pta.willr(
-      informative_1h["high"], informative_1h["low"], informative_1h["close"], lenght=14
+      informative_1h["high"], informative_1h["low"], informative_1h["close"], length=14
     )
     informative_1h["r_480"] = pta.willr(
-      informative_1h["high"], informative_1h["low"], informative_1h["close"], lenght=480
+      informative_1h["high"], informative_1h["low"], informative_1h["close"], length=480
     )
 
     # CTI
@@ -19736,8 +19736,8 @@ class NostalgiaForInfinityX3(IStrategy):
     df["bb40_2_tail"] = (df["close"] - df["bb40_2_low"]).abs()
 
     # Williams %R
-    df["r_14"] = pta.willr(df["high"], df["low"], df["close"], lenght=14)
-    df["r_480"] = pta.willr(df["high"], df["low"], df["close"], lenght=480)
+    df["r_14"] = pta.willr(df["high"], df["low"], df["close"], length=14)
+    df["r_480"] = pta.willr(df["high"], df["low"], df["close"], length=480)
 
     # CTI
     df["cti_20"] = pta.cti(df["close"], length=20)
