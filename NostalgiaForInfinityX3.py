@@ -19171,8 +19171,12 @@ class NostalgiaForInfinityX3(IStrategy):
     )
 
     # Williams %R
-    informative_4h["r_14"] = williams_r(informative_4h, period=14)
-    informative_4h["r_480"] = williams_r(informative_4h, period=480)
+    informative_4h["r_14"] = pta.willr(
+      informative_4h["high"], informative_4h["low"], informative_4h["close"], lenght=14
+    )
+    informative_4h["r_480"] = pta.willr(
+      informative_4h["high"], informative_4h["low"], informative_4h["close"], lenght=480
+    )
 
     # CTI
     informative_4h["cti_20"] = pta.cti(informative_4h["close"], length=20)
@@ -19215,6 +19219,10 @@ class NostalgiaForInfinityX3(IStrategy):
     informative_4h["top_wick_pct"] = (
       informative_4h["high"] - np.maximum(informative_4h["open"], informative_4h["close"])
     ) / np.maximum(informative_4h["open"], informative_4h["close"])
+    informative_4h["bot_wick_pct"] = abs(
+      (informative_4h["low"] - np.minimum(informative_4h["open"], informative_4h["close"]))
+      / np.minimum(informative_4h["open"], informative_4h["close"])
+    )
 
     # Candle change
     informative_4h["change_pct"] = (informative_4h["close"] - informative_4h["open"]) / informative_4h["open"]
@@ -19296,8 +19304,12 @@ class NostalgiaForInfinityX3(IStrategy):
     ]
 
     # Williams %R
-    informative_1h["r_14"] = williams_r(informative_1h, period=14)
-    informative_1h["r_480"] = williams_r(informative_1h, period=480)
+    informative_1h["r_14"] = pta.willr(
+      informative_1h["high"], informative_1h["low"], informative_1h["close"], lenght=14
+    )
+    informative_1h["r_480"] = pta.willr(
+      informative_1h["high"], informative_1h["low"], informative_1h["close"], lenght=480
+    )
 
     # CTI
     informative_1h["cti_20"] = pta.cti(informative_1h["close"], length=20)
@@ -19496,8 +19508,8 @@ class NostalgiaForInfinityX3(IStrategy):
     df["bb40_2_tail"] = (df["close"] - df["bb40_2_low"]).abs()
 
     # Williams %R
-    df["r_14"] = williams_r(df, period=14)
-    df["r_480"] = williams_r(df, period=480)
+    df["r_14"] = pta.willr(df["high"], df["low"], df["close"], lenght=14)
+    df["r_480"] = pta.willr(df["high"], df["low"], df["close"], lenght=480)
 
     # CTI
     df["cti_20"] = pta.cti(df["close"], length=20)
@@ -41539,108 +41551,6 @@ def ewo(df, ema1_length=5, ema2_length=35):
   ema2 = ta.EMA(df, timeperiod=ema2_length)
   emadiff = (ema1 - ema2) / df["close"] * 100.0
   return emadiff
-
-
-# Chaikin Money Flow
-def chaikin_money_flow(df, n=20, fillna=False) -> Series:
-  """Chaikin Money Flow (CMF)
-  It measures the amount of Money Flow Volume over a specific period.
-  http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:chaikin_money_flow_cmf
-  Args:
-      df(pandas.Dataframe): df containing ohlcv
-      n(int): n period.
-      fillna(bool): if True, fill nan values.
-  Returns:
-      pandas.Series: New feature generated.
-  """
-  mfv = ((df["close"] - df["low"]) - (df["high"] - df["close"])) / (df["high"] - df["low"])
-  mfv = mfv.fillna(0.0)  # float division by zero
-  mfv *= df["volume"]
-  cmf = mfv.rolling(n, min_periods=0).sum() / df["volume"].rolling(n, min_periods=0).sum()
-  if fillna:
-    cmf = cmf.replace([np.inf, -np.inf], np.nan).fillna(0)
-  return Series(cmf, name="cmf")
-
-
-# Williams %R
-def williams_r(df: DataFrame, period: int = 14) -> Series:
-  """Williams %R, or just %R, is a technical analysis oscillator showing the current closing price in relation to the high and low
-  of the past N days (for a given N). It was developed by a publisher and promoter of trading materials, Larry Williams.
-  Its purpose is to tell whether a stock or commodity market is trading near the high or the low, or somewhere in between,
-  of its recent trading range.
-  The oscillator is on a negative scale, from −100 (lowest) up to 0 (highest).
-  """
-
-  highest_high = df["high"].rolling(center=False, window=period).max()
-  lowest_low = df["low"].rolling(center=False, window=period).min()
-
-  WR = Series(
-    (highest_high - df["close"]) / (highest_high - lowest_low),
-    name=f"{period} Williams %R",
-  )
-
-  return WR * -100
-
-
-def williams_fractals(df: pd.DataFrame, period: int = 2) -> tuple:
-  """Williams Fractals implementation
-
-  :param df: OHLC data
-  :param period: number of lower (or higher) points on each side of a high (or low)
-  :return: tuple of boolean Series (bearish, bullish) where True marks a fractal pattern
-  """
-
-  window = 2 * period + 1
-
-  bears = df["high"].rolling(window, center=True).apply(lambda x: x[period] == max(x), raw=True)
-  bulls = df["low"].rolling(window, center=True).apply(lambda x: x[period] == min(x), raw=True)
-
-  return bears, bulls
-
-
-# Volume Weighted Moving Average
-def vwma(df: DataFrame, length: int = 10):
-  """Indicator: Volume Weighted Moving Average (VWMA)"""
-  # Calculate Result
-  pv = df["close"] * df["volume"]
-  vwma = Series(ta.SMA(pv, timeperiod=length) / ta.SMA(df["volume"], timeperiod=length))
-  vwma = vwma.fillna(0, inplace=True)
-  return vwma
-
-
-# Exponential moving average of a volume weighted simple moving average
-def ema_vwma_osc(df, len_slow_ma):
-  slow_ema = Series(ta.EMA(vwma(df, len_slow_ma), len_slow_ma))
-  return ((slow_ema - slow_ema.shift(1)) / slow_ema.shift(1)) * 100
-
-
-def t3_average(df, length=5):
-  """
-  T3 Average by HPotter on Tradingview
-  https://www.tradingview.com/script/qzoC9H1I-T3-Average/
-  """
-  df = df.copy()
-
-  df["xe1"] = ta.EMA(df["close"], timeperiod=length)
-  df["xe1"].fillna(0, inplace=True)
-  df["xe2"] = ta.EMA(df["xe1"], timeperiod=length)
-  df["xe2"].fillna(0, inplace=True)
-  df["xe3"] = ta.EMA(df["xe2"], timeperiod=length)
-  df["xe3"].fillna(0, inplace=True)
-  df["xe4"] = ta.EMA(df["xe3"], timeperiod=length)
-  df["xe4"].fillna(0, inplace=True)
-  df["xe5"] = ta.EMA(df["xe4"], timeperiod=length)
-  df["xe5"].fillna(0, inplace=True)
-  df["xe6"] = ta.EMA(df["xe5"], timeperiod=length)
-  df["xe6"].fillna(0, inplace=True)
-  b = 0.7
-  c1 = -b * b * b
-  c2 = 3 * b * b + 3 * b * b * b
-  c3 = -6 * b * b - 3 * b - 3 * b * b * b
-  c4 = 1 + 3 * b + b * b * b + 3 * b * b
-  df["T3Average"] = c1 * df["xe6"] + c2 * df["xe5"] + c3 * df["xe4"] + c4 * df["xe3"]
-
-  return df["T3Average"]
 
 
 # Pivot Points - 3 variants - daily recommended
