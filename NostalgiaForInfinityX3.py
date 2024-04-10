@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.563"
+    return "v13.1.564"
 
   stoploss = -0.99
 
@@ -15457,31 +15457,38 @@ class NostalgiaForInfinityX3(IStrategy):
     :param exit_rate: The exit rate.
     :return tuple: The total profit in stake, ratio, ratio based on current stake, and ratio based on the first entry stake.
     """
+    total_amount = 0.0
     total_stake = 0.0
     total_profit = 0.0
-    for entry in filled_entries:
-      entry_stake = entry.safe_filled * entry.safe_price * (1 + trade.fee_open)
-      total_stake += entry_stake
+    current_stake = 0.0
+    for entry_order in filled_entries:
       if trade.is_short:
+        entry_stake = entry_order.safe_filled * entry_order.safe_price * (1 - trade.fee_open)
+        total_amount += entry_order.safe_filled
+        total_stake += entry_stake
         total_profit += entry_stake
       else:
+        entry_stake = entry_order.safe_filled * entry_order.safe_price * (1 + trade.fee_open)
+        total_amount += entry_order.safe_filled
+        total_stake += entry_stake
         total_profit -= entry_stake
-    for exit in filled_exits:
-      exit_stake = exit.safe_filled * exit.safe_price * (1 - trade.fee_close)
+    for exit_order in filled_exits:
       if trade.is_short:
+        exit_stake = exit_order.safe_filled * exit_order.safe_price * (1 + trade.fee_close)
+        total_amount -= exit_order.safe_filled
         total_profit -= exit_stake
       else:
+        exit_stake = exit_order.safe_filled * exit_order.safe_price * (1 - trade.fee_close)
+        total_amount -= exit_order.safe_filled
         total_profit += exit_stake
-    current_stake = trade.amount * exit_rate * (1 - trade.fee_close)
-    if self.is_futures_mode:
-      if trade.is_short:
-        current_stake -= trade.funding_fees
-      else:
-        current_stake += trade.funding_fees
     if trade.is_short:
+      current_stake = total_amount * exit_rate * (1 + trade.fee_close)
       total_profit -= current_stake
     else:
+      current_stake = total_amount * exit_rate * (1 - trade.fee_close)
       total_profit += current_stake
+    if self.is_futures_mode:
+      total_profit += trade.funding_fees
     total_profit_ratio = total_profit / total_stake
     current_profit_ratio = total_profit / current_stake
     init_profit_ratio = total_profit / filled_entries[0].cost
