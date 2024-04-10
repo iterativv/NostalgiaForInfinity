@@ -11098,7 +11098,7 @@ class NostalgiaForInfinityX3(IStrategy):
       ):
         return True, f"exit_{mode_name}_w_2_20"
     elif 0.04 > current_profit >= 0.03:
-      if last_candle["r_480"] < -0.96:
+      if last_candle["r_480"] < -99.6:
         return True, f"exit_{mode_name}_w_3_1"
       elif (last_candle["r_14"] <= -99.0) and (last_candle["rsi_14"] < 24.0):
         return True, f"exit_{mode_name}_w_3_2"
