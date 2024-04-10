@@ -20091,7 +20091,9 @@ class NostalgiaForInfinityX4(IStrategy):
         """
     df = self.base_tf_5m_indicators(metadata, df)
 
-    df.fillna({"zlma_50_1h": 0.0}, inplace=True)
+    df["zlma_50_1h"].infer_objects(copy=False).bfill()
+    df["cti_20_1d"].infer_objects(copy=False).bfill()
+    df["r_480_4h"].infer_objects(copy=False).bfill()
 
     # Global protections
     df["protections_long_global"] = (
