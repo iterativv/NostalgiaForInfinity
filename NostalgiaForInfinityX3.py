@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.553"
+    return "v13.1.554"
 
   stoploss = -0.99
 
@@ -20045,7 +20045,7 @@ class NostalgiaForInfinityX3(IStrategy):
         """
     df = self.base_tf_5m_indicators(metadata, df)
 
-    df["zlma_50_1h"].infer_objects(copy=False).bfill()
+    df.fillna({"zlma_50_1h": 0.0}, inplace=True)
     df["cti_20_1d"].infer_objects(copy=False).bfill()
     df["r_480_4h"].infer_objects(copy=False).bfill()
 
