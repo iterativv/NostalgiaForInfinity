@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.586"
+    return "v14.1.587"
 
   stoploss = -0.99
 
@@ -16881,13 +16881,9 @@ class NostalgiaForInfinityX4(IStrategy):
           (
             (grind_2_derisk_1_sub_grind_count == 0)
             and (
-              (last_candle["close"] < last_candle["res_hlevel_4h"])
-              and (last_candle["close"] > last_candle["sup_level_4h"])
-            )
-            and (
               is_long_grind_buy
               or (
-                (last_candle["rsi_3"] > 10.0)
+                (last_candle["rsi_3"] > 16.0)
                 and (last_candle["rsi_3_15m"] > 16.0)
                 and (last_candle["rsi_3_1h"] > 20.0)
                 and (last_candle["rsi_3_4h"] > 20.0)
