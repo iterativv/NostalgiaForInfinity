@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.583"
+    return "v14.1.584"
 
   stoploss = -0.99
 
@@ -3404,7 +3404,7 @@ class NostalgiaForInfinityX4(IStrategy):
     current_time: "datetime",
     enter_tags,
   ) -> tuple:
-    if len(filled_exits) > 100 and profit_init_ratio > 1.0:
+    if len(filled_exits) > 30 and profit_init_ratio > 1.0:
       return True, f"exit_{self.long_grind_mode_name}_g"
     return False, None
 
