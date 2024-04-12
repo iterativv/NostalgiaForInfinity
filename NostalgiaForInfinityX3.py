@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.582"
+    return "v13.1.583"
 
   stoploss = -0.99
 
@@ -1253,7 +1253,7 @@ class NostalgiaForInfinityX3(IStrategy):
   entry_47_rsi_14_max = DecimalParameter(26.0, 60.0, default=60.0, decimals=0, space="buy", optimize=False)
   entry_47_rsi_20_min = DecimalParameter(20.0, 40.0, default=24.0, decimals=0, space="buy", optimize=False)
   entry_47_rsi_20_max = DecimalParameter(26.0, 60.0, default=60.0, decimals=0, space="buy", optimize=False)
-  entry_47_cti_20_max = DecimalParameter(-0.8, 0.8, default=-0.5, decimals=1, space="buy", optimize=False)
+  entry_47_cti_20_max = DecimalParameter(-0.8, 0.8, default=-0.7, decimals=1, space="buy", optimize=False)
   entry_47_ema_offset = DecimalParameter(0.980, 0.999, default=0.994, decimals=3, space="buy", optimize=False)
   entry_47_high_max_12_1h_max = DecimalParameter(00.70, 0.95, default=0.88, decimals=2, space="buy", optimize=False)
 
