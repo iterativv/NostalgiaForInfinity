@@ -1870,8 +1870,12 @@ class NostalgiaForInfinityX3(IStrategy):
       self.regular_mode_stake_multiplier_spot = self.config["regular_mode_stake_multiplier_spot"]
     if "regular_mode_stake_multiplier_futures" in self.config:
       self.regular_mode_stake_multiplier_futures = self.config["regular_mode_stake_multiplier_futures"]
+    if "regular_mode_derisk_1_spot" in self.config:
+      self.regular_mode_derisk_1_spot = self.config["regular_mode_derisk_1_spot"]
     if "regular_mode_derisk_spot" in self.config:
       self.regular_mode_derisk_spot = self.config["regular_mode_derisk_spot"]
+    if "regular_mode_derisk_1_futures" in self.config:
+      self.regular_mode_derisk_1_futures = self.config["regular_mode_derisk_1_futures"]
     if "regular_mode_derisk_futures" in self.config:
       self.regular_mode_derisk_futures = self.config["regular_mode_derisk_futures"]
     if "grind_mode_max_slots" in self.config:
