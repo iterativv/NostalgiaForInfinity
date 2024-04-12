@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.581"
+    return "v14.1.582"
 
   stoploss = -0.99
 
@@ -1951,7 +1951,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Original sell signals
     sell, signal_name = self.long_exit_signals(
       self.long_normal_mode_name,
-      profit_current_stake_ratio,
+      profit_init_ratio,
       max_profit,
       max_loss,
       last_candle,
@@ -1969,7 +1969,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.long_exit_main(
         self.long_normal_mode_name,
-        profit_current_stake_ratio,
+        profit_init_ratio,
         max_profit,
         max_loss,
         last_candle,
@@ -1987,7 +1987,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.long_exit_williams_r(
         self.long_normal_mode_name,
-        profit_current_stake_ratio,
+        profit_init_ratio,
         max_profit,
         max_loss,
         last_candle,
@@ -2005,7 +2005,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.long_exit_dec(
         self.long_normal_mode_name,
-        profit_current_stake_ratio,
+        profit_init_ratio,
         max_profit,
         max_loss,
         last_candle,
@@ -2087,7 +2087,7 @@ class NostalgiaForInfinityX4(IStrategy):
           )
           if mark_pair:
             self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
-      elif (profit_current_stake_ratio > (previous_profit + 0.001)) and (
+      elif (profit_init_ratio > (previous_profit + 0.001)) and (
         previous_sell_reason not in [f"exit_{self.long_normal_mode_name}_stoploss_doom"]
       ):
         # Update the target, raise it.
@@ -2099,12 +2099,12 @@ class NostalgiaForInfinityX4(IStrategy):
           trade,
           current_time,
           current_rate,
-          profit_current_stake_ratio,
+          profit_init_ratio,
           last_candle,
           previous_candle_1,
         )
         if mark_pair:
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
 
     # Add the pair to the list, if a sell triggered and conditions met
     if sell and signal_name is not None:
@@ -2132,7 +2132,7 @@ class NostalgiaForInfinityX4(IStrategy):
         else:
           # Just sell it, without maximize
           return True, f"{signal_name}"
-      elif (previous_profit is None) or (previous_profit < profit_current_stake_ratio):
+      elif (previous_profit is None) or (previous_profit < profit_init_ratio):
         mark_pair, mark_signal = self.mark_profit_target(
           self.long_normal_mode_name,
           pair,
@@ -2141,23 +2141,23 @@ class NostalgiaForInfinityX4(IStrategy):
           trade,
           current_time,
           current_rate,
-          profit_current_stake_ratio,
+          profit_init_ratio,
           last_candle,
           previous_candle_1,
         )
         if mark_pair:
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
         else:
           # Just sell it, without maximize
           return True, f"{signal_name}"
     else:
-      if profit_current_stake_ratio >= self.profit_max_thresholds[0]:
+      if profit_init_ratio >= self.profit_max_thresholds[0]:
         previous_profit = None
         if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
           previous_profit = self.target_profit_cache.data[pair]["profit"]
-        if (previous_profit is None) or (previous_profit < profit_current_stake_ratio):
+        if (previous_profit is None) or (previous_profit < profit_init_ratio):
           mark_signal = f"exit_profit_{self.long_normal_mode_name}_max"
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
 
     if signal_name not in [
       f"exit_profit_{self.long_normal_mode_name}_max",
@@ -2196,7 +2196,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Original sell signals
     sell, signal_name = self.long_exit_signals(
       self.long_pump_mode_name,
-      profit_current_stake_ratio,
+      profit_init_ratio,
       max_profit,
       max_loss,
       last_candle,
@@ -2214,7 +2214,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.long_exit_main(
         self.long_pump_mode_name,
-        profit_current_stake_ratio,
+        profit_init_ratio,
         max_profit,
         max_loss,
         last_candle,
@@ -2232,7 +2232,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.long_exit_williams_r(
         self.long_pump_mode_name,
-        profit_current_stake_ratio,
+        profit_init_ratio,
         max_profit,
         max_loss,
         last_candle,
@@ -2250,7 +2250,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.long_exit_dec(
         self.long_pump_mode_name,
-        profit_current_stake_ratio,
+        profit_init_ratio,
         max_profit,
         max_loss,
         last_candle,
@@ -2332,7 +2332,7 @@ class NostalgiaForInfinityX4(IStrategy):
           )
           if mark_pair:
             self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
-      elif (profit_current_stake_ratio > (previous_profit + 0.001)) and (
+      elif (profit_init_ratio > (previous_profit + 0.001)) and (
         previous_sell_reason not in [f"exit_{self.long_pump_mode_name}_stoploss_doom"]
       ):
         # Update the target, raise it.
@@ -2344,12 +2344,12 @@ class NostalgiaForInfinityX4(IStrategy):
           trade,
           current_time,
           current_rate,
-          profit_current_stake_ratio,
+          profit_init_ratio,
           last_candle,
           previous_candle_1,
         )
         if mark_pair:
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
 
     # Add the pair to the list, if a sell triggered and conditions met
     if sell and signal_name is not None:
@@ -2377,7 +2377,7 @@ class NostalgiaForInfinityX4(IStrategy):
         else:
           # Just sell it, without maximize
           return True, f"{signal_name}"
-      elif (previous_profit is None) or (previous_profit < profit_current_stake_ratio):
+      elif (previous_profit is None) or (previous_profit < profit_init_ratio):
         mark_pair, mark_signal = self.mark_profit_target(
           self.long_pump_mode_name,
           pair,
@@ -2386,23 +2386,23 @@ class NostalgiaForInfinityX4(IStrategy):
           trade,
           current_time,
           current_rate,
-          profit_current_stake_ratio,
+          profit_init_ratio,
           last_candle,
           previous_candle_1,
         )
         if mark_pair:
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
         else:
           # Just sell it, without maximize
           return True, f"{signal_name}"
     else:
-      if profit_current_stake_ratio >= self.profit_max_thresholds[2]:
+      if profit_init_ratio >= self.profit_max_thresholds[2]:
         previous_profit = None
         if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
           previous_profit = self.target_profit_cache.data[pair]["profit"]
-        if (previous_profit is None) or (previous_profit < profit_current_stake_ratio):
+        if (previous_profit is None) or (previous_profit < profit_init_ratio):
           mark_signal = f"exit_profit_{self.long_pump_mode_name}_max"
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
 
     if signal_name not in [
       f"exit_profit_{self.long_pump_mode_name}_max",
@@ -2441,7 +2441,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Original sell signals
     sell, signal_name = self.long_exit_signals(
       self.long_quick_mode_name,
-      profit_current_stake_ratio,
+      profit_init_ratio,
       max_profit,
       max_loss,
       last_candle,
@@ -2459,7 +2459,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.long_exit_main(
         self.long_quick_mode_name,
-        profit_current_stake_ratio,
+        profit_init_ratio,
         max_profit,
         max_loss,
         last_candle,
@@ -2477,7 +2477,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.long_exit_williams_r(
         self.long_quick_mode_name,
-        profit_current_stake_ratio,
+        profit_init_ratio,
         max_profit,
         max_loss,
         last_candle,
@@ -2495,7 +2495,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.long_exit_dec(
         self.long_quick_mode_name,
-        profit_current_stake_ratio,
+        profit_init_ratio,
         max_profit,
         max_loss,
         last_candle,
@@ -2535,13 +2535,13 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # Extra sell logic
     if not sell:
-      if (0.09 >= profit_current_stake_ratio > 0.02) and (last_candle["rsi_14"] > 78.0):
+      if (0.09 >= profit_init_ratio > 0.02) and (last_candle["rsi_14"] > 78.0):
         sell, signal_name = True, f"exit_{self.long_quick_mode_name}_q_1"
 
-      if (0.09 >= profit_current_stake_ratio > 0.02) and (last_candle["cti_20"] > 0.95):
+      if (0.09 >= profit_init_ratio > 0.02) and (last_candle["cti_20"] > 0.95):
         sell, signal_name = True, f"exit_{self.long_quick_mode_name}_q_2"
 
-      if (0.09 >= profit_current_stake_ratio > 0.02) and (last_candle["r_14"] >= -0.1):
+      if (0.09 >= profit_init_ratio > 0.02) and (last_candle["r_14"] >= -0.1):
         sell, signal_name = True, f"exit_{self.long_quick_mode_name}_q_3"
 
     # Profit Target Signal
@@ -2588,7 +2588,7 @@ class NostalgiaForInfinityX4(IStrategy):
           )
           if mark_pair:
             self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
-      elif (profit_current_stake_ratio > (previous_profit + 0.001)) and (
+      elif (profit_init_ratio > (previous_profit + 0.001)) and (
         previous_sell_reason not in [f"exit_{self.long_quick_mode_name}_stoploss_doom"]
       ):
         # Update the target, raise it.
@@ -2600,12 +2600,12 @@ class NostalgiaForInfinityX4(IStrategy):
           trade,
           current_time,
           current_rate,
-          profit_current_stake_ratio,
+          profit_init_ratio,
           last_candle,
           previous_candle_1,
         )
         if mark_pair:
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
 
     # Add the pair to the list, if a sell triggered and conditions met
     if sell and signal_name is not None:
@@ -2633,7 +2633,7 @@ class NostalgiaForInfinityX4(IStrategy):
         else:
           # Just sell it, without maximize
           return True, f"{signal_name}"
-      elif (previous_profit is None) or (previous_profit < profit_current_stake_ratio):
+      elif (previous_profit is None) or (previous_profit < profit_init_ratio):
         mark_pair, mark_signal = self.mark_profit_target(
           self.long_quick_mode_name,
           pair,
@@ -2642,23 +2642,23 @@ class NostalgiaForInfinityX4(IStrategy):
           trade,
           current_time,
           current_rate,
-          profit_current_stake_ratio,
+          profit_init_ratio,
           last_candle,
           previous_candle_1,
         )
         if mark_pair:
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
         else:
           # Just sell it, without maximize
           return True, f"{signal_name}"
     else:
-      if profit_current_stake_ratio >= self.profit_max_thresholds[4]:
+      if profit_init_ratio >= self.profit_max_thresholds[4]:
         previous_profit = None
         if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
           previous_profit = self.target_profit_cache.data[pair]["profit"]
-        if (previous_profit is None) or (previous_profit < profit_current_stake_ratio):
+        if (previous_profit is None) or (previous_profit < profit_init_ratio):
           mark_signal = f"exit_profit_{self.long_quick_mode_name}_max"
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
 
     if signal_name not in [
       f"exit_profit_{self.long_quick_mode_name}_max",
@@ -2697,7 +2697,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Original sell signals
     sell, signal_name = self.long_exit_signals(
       self.long_rebuy_mode_name,
-      profit_current_stake_ratio,
+      profit_init_ratio,
       max_profit,
       max_loss,
       last_candle,
@@ -2715,7 +2715,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.long_exit_main(
         self.long_rebuy_mode_name,
-        profit_current_stake_ratio,
+        profit_init_ratio,
         max_profit,
         max_loss,
         last_candle,
@@ -2733,7 +2733,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.long_exit_williams_r(
         self.long_rebuy_mode_name,
-        profit_current_stake_ratio,
+        profit_init_ratio,
         max_profit,
         max_loss,
         last_candle,
@@ -2751,7 +2751,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.long_exit_dec(
         self.long_rebuy_mode_name,
-        profit_current_stake_ratio,
+        profit_init_ratio,
         max_profit,
         max_loss,
         last_candle,
@@ -2818,7 +2818,7 @@ class NostalgiaForInfinityX4(IStrategy):
           )
           if mark_pair:
             self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
-      elif (profit_current_stake_ratio > (previous_profit + 0.001)) and (
+      elif (profit_init_ratio > (previous_profit + 0.001)) and (
         previous_sell_reason not in [f"exit_{self.long_rebuy_mode_name}_stoploss_doom"]
       ):
         # Update the target, raise it.
@@ -2830,12 +2830,12 @@ class NostalgiaForInfinityX4(IStrategy):
           trade,
           current_time,
           current_rate,
-          profit_current_stake_ratio,
+          profit_init_ratio,
           last_candle,
           previous_candle_1,
         )
         if mark_pair:
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
 
     # Add the pair to the list, if a sell triggered and conditions met
     if sell and signal_name is not None:
@@ -2863,7 +2863,7 @@ class NostalgiaForInfinityX4(IStrategy):
         else:
           # Just sell it, without maximize
           return True, f"{signal_name}"
-      elif (previous_profit is None) or (previous_profit < profit_current_stake_ratio):
+      elif (previous_profit is None) or (previous_profit < profit_init_ratio):
         mark_pair, mark_signal = self.mark_profit_target(
           self.long_rebuy_mode_name,
           pair,
@@ -2872,23 +2872,23 @@ class NostalgiaForInfinityX4(IStrategy):
           trade,
           current_time,
           current_rate,
-          profit_current_stake_ratio,
+          profit_init_ratio,
           last_candle,
           previous_candle_1,
         )
         if mark_pair:
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
         else:
           # Just sell it, without maximize
           return True, f"{signal_name}"
     else:
-      if profit_current_stake_ratio >= self.profit_max_thresholds[6]:
+      if profit_init_ratio >= self.profit_max_thresholds[6]:
         previous_profit = None
         if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
           previous_profit = self.target_profit_cache.data[pair]["profit"]
-        if (previous_profit is None) or (previous_profit < profit_current_stake_ratio):
+        if (previous_profit is None) or (previous_profit < profit_init_ratio):
           mark_signal = f"exit_profit_{self.long_rebuy_mode_name}_max"
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
 
     if signal_name not in [f"exit_profit_{self.long_rebuy_mode_name}_max"]:
       if sell and (signal_name is not None):
@@ -2923,7 +2923,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Original sell signals
     sell, signal_name = self.long_exit_signals(
       self.long_high_profit_mode_name,
-      profit_current_stake_ratio,
+      profit_init_ratio,
       max_profit,
       max_loss,
       last_candle,
@@ -2941,7 +2941,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.long_exit_main(
         self.long_high_profit_mode_name,
-        profit_current_stake_ratio,
+        profit_init_ratio,
         max_profit,
         max_loss,
         last_candle,
@@ -2959,7 +2959,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.long_exit_williams_r(
         self.long_high_profit_mode_name,
-        profit_current_stake_ratio,
+        profit_init_ratio,
         max_profit,
         max_loss,
         last_candle,
@@ -3040,7 +3040,7 @@ class NostalgiaForInfinityX4(IStrategy):
           )
           if mark_pair:
             self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
-      elif (profit_current_stake_ratio > (previous_profit + 0.001)) and (
+      elif (profit_init_ratio > (previous_profit + 0.001)) and (
         previous_sell_reason not in [f"exit_{self.long_high_profit_mode_name}_stoploss_doom"]
       ):
         # Update the target, raise it.
@@ -3052,12 +3052,12 @@ class NostalgiaForInfinityX4(IStrategy):
           trade,
           current_time,
           current_rate,
-          profit_current_stake_ratio,
+          profit_init_ratio,
           last_candle,
           previous_candle_1,
         )
         if mark_pair:
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
 
     # Add the pair to the list, if a sell triggered and conditions met
     if sell and signal_name is not None:
@@ -3085,7 +3085,7 @@ class NostalgiaForInfinityX4(IStrategy):
         else:
           # Just sell it, without maximize
           return True, f"{signal_name}"
-      elif (previous_profit is None) or (previous_profit < profit_current_stake_ratio):
+      elif (previous_profit is None) or (previous_profit < profit_init_ratio):
         mark_pair, mark_signal = self.mark_profit_target(
           self.long_high_profit_mode_name,
           pair,
@@ -3094,23 +3094,23 @@ class NostalgiaForInfinityX4(IStrategy):
           trade,
           current_time,
           current_rate,
-          profit_current_stake_ratio,
+          profit_init_ratio,
           last_candle,
           previous_candle_1,
         )
         if mark_pair:
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
         else:
           # Just sell it, without maximize
           return True, f"{signal_name}"
     else:
-      if profit_current_stake_ratio >= self.profit_max_thresholds[8]:
+      if profit_init_ratio >= self.profit_max_thresholds[8]:
         previous_profit = None
         if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
           previous_profit = self.target_profit_cache.data[pair]["profit"]
-        if (previous_profit is None) or (previous_profit < profit_current_stake_ratio):
+        if (previous_profit is None) or (previous_profit < profit_init_ratio):
           mark_signal = f"exit_profit_{self.long_high_profit_mode_name}_max"
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
 
     if signal_name not in [
       f"exit_profit_{self.long_high_profit_mode_name}_max",
@@ -3149,7 +3149,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Original sell signals
     sell, signal_name = self.long_exit_signals(
       self.long_rapid_mode_name,
-      profit_current_stake_ratio,
+      profit_init_ratio,
       max_profit,
       max_loss,
       last_candle,
@@ -3167,7 +3167,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.long_exit_main(
         self.long_rapid_mode_name,
-        profit_current_stake_ratio,
+        profit_init_ratio,
         max_profit,
         max_loss,
         last_candle,
@@ -3185,7 +3185,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.long_exit_williams_r(
         self.long_rapid_mode_name,
-        profit_current_stake_ratio,
+        profit_init_ratio,
         max_profit,
         max_loss,
         last_candle,
@@ -3203,7 +3203,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.long_exit_dec(
         self.long_rapid_mode_name,
-        profit_current_stake_ratio,
+        profit_init_ratio,
         max_profit,
         max_loss,
         last_candle,
@@ -3243,13 +3243,13 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # Extra sell logic
     if not sell:
-      if (0.09 >= profit_current_stake_ratio > 0.01) and (last_candle["rsi_14"] > 78.0):
+      if (0.09 >= profit_init_ratio > 0.01) and (last_candle["rsi_14"] > 78.0):
         sell, signal_name = True, f"exit_{self.long_rapid_mode_name}_rpd_1"
 
-      if (0.09 >= profit_current_stake_ratio > 0.01) and (last_candle["cti_20"] > 0.95):
+      if (0.09 >= profit_init_ratio > 0.01) and (last_candle["cti_20"] > 0.95):
         sell, signal_name = True, f"exit_{self.long_rapid_mode_name}_rpd_2"
 
-      if (0.09 >= profit_current_stake_ratio > 0.01) and (last_candle["r_14"] >= -0.1):
+      if (0.09 >= profit_init_ratio > 0.01) and (last_candle["r_14"] >= -0.1):
         sell, signal_name = True, f"exit_{self.long_rapid_mode_name}_rpd_3"
 
       # Stoplosses
@@ -3304,7 +3304,7 @@ class NostalgiaForInfinityX4(IStrategy):
           )
           if mark_pair:
             self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
-      elif (profit_current_stake_ratio > (previous_profit + 0.001)) and (
+      elif (profit_init_ratio > (previous_profit + 0.001)) and (
         previous_sell_reason not in [f"exit_{self.long_rapid_mode_name}_stoploss_doom"]
       ):
         # Update the target, raise it.
@@ -3316,12 +3316,12 @@ class NostalgiaForInfinityX4(IStrategy):
           trade,
           current_time,
           current_rate,
-          profit_current_stake_ratio,
+          profit_init_ratio,
           last_candle,
           previous_candle_1,
         )
         if mark_pair:
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
 
     # Add the pair to the list, if a sell triggered and conditions met
     if sell and signal_name is not None:
@@ -3349,7 +3349,7 @@ class NostalgiaForInfinityX4(IStrategy):
         else:
           # Just sell it, without maximize
           return True, f"{signal_name}"
-      elif (previous_profit is None) or (previous_profit < profit_current_stake_ratio):
+      elif (previous_profit is None) or (previous_profit < profit_init_ratio):
         mark_pair, mark_signal = self.mark_profit_target(
           self.long_rapid_mode_name,
           pair,
@@ -3358,23 +3358,23 @@ class NostalgiaForInfinityX4(IStrategy):
           trade,
           current_time,
           current_rate,
-          profit_current_stake_ratio,
+          profit_init_ratio,
           last_candle,
           previous_candle_1,
         )
         if mark_pair:
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
         else:
           # Just sell it, without maximize
           return True, f"{signal_name}"
     else:
-      if profit_current_stake_ratio >= 0.01:
+      if profit_init_ratio >= 0.01:
         previous_profit = None
         if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
           previous_profit = self.target_profit_cache.data[pair]["profit"]
-        if (previous_profit is None) or (previous_profit < profit_current_stake_ratio):
+        if (previous_profit is None) or (previous_profit < profit_init_ratio):
           mark_signal = f"exit_profit_{self.long_rapid_mode_name}_max"
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
 
     if signal_name not in [f"exit_profit_{self.long_rapid_mode_name}_max"]:
       if sell and (signal_name is not None):
@@ -3470,41 +3470,41 @@ class NostalgiaForInfinityX4(IStrategy):
       if profit_ratio < (previous_profit - (0.20 if trade.realized_profit == 0.0 else 0.26)):
         return True, previous_sell_reason
     elif previous_sell_reason in [f"exit_profit_{mode_name}_max"]:
-      if profit_current_stake_ratio < -0.08:
+      if profit_init_ratio < -0.08:
         # profit is under the threshold, cancel it
         self._remove_profit_target(pair)
         return False, None
       if self.is_futures_mode:
-        if 0.01 <= profit_current_stake_ratio < 0.02:
-          if profit_current_stake_ratio < (previous_profit * 0.5):
+        if 0.01 <= profit_init_ratio < 0.02:
+          if profit_init_ratio < (previous_profit * 0.5):
             return True, previous_sell_reason
-        elif 0.02 <= profit_current_stake_ratio < 0.03:
-          if profit_current_stake_ratio < (previous_profit * 0.6):
+        elif 0.02 <= profit_init_ratio < 0.03:
+          if profit_init_ratio < (previous_profit * 0.6):
             return True, previous_sell_reason
-        elif 0.03 <= profit_current_stake_ratio < 0.04:
-          if profit_current_stake_ratio < (previous_profit * 0.7):
+        elif 0.03 <= profit_init_ratio < 0.04:
+          if profit_init_ratio < (previous_profit * 0.7):
             return True, previous_sell_reason
-        elif 0.04 <= profit_current_stake_ratio < 0.08:
-          if profit_current_stake_ratio < (previous_profit * 0.8):
+        elif 0.04 <= profit_init_ratio < 0.08:
+          if profit_init_ratio < (previous_profit * 0.8):
             return True, previous_sell_reason
-        elif 0.08 <= profit_current_stake_ratio < 0.16:
-          if profit_current_stake_ratio < (previous_profit * 0.9):
+        elif 0.08 <= profit_init_ratio < 0.16:
+          if profit_init_ratio < (previous_profit * 0.9):
             return True, previous_sell_reason
-        elif 0.16 <= profit_current_stake_ratio:
-          if profit_current_stake_ratio < (previous_profit * 0.95):
+        elif 0.16 <= profit_init_ratio:
+          if profit_init_ratio < (previous_profit * 0.95):
             return True, previous_sell_reason
       else:
-        if 0.01 <= profit_current_stake_ratio < 0.03:
-          if profit_current_stake_ratio < (previous_profit * 0.6):
+        if 0.01 <= profit_init_ratio < 0.03:
+          if profit_init_ratio < (previous_profit * 0.6):
             return True, previous_sell_reason
-        elif 0.03 <= profit_current_stake_ratio < 0.08:
-          if profit_current_stake_ratio < (previous_profit * 0.65):
+        elif 0.03 <= profit_init_ratio < 0.08:
+          if profit_init_ratio < (previous_profit * 0.65):
             return True, previous_sell_reason
-        elif 0.08 <= profit_current_stake_ratio < 0.16:
-          if profit_current_stake_ratio < (previous_profit * 0.7):
+        elif 0.08 <= profit_init_ratio < 0.16:
+          if profit_init_ratio < (previous_profit * 0.7):
             return True, previous_sell_reason
-        elif 0.16 <= profit_current_stake_ratio:
-          if profit_current_stake_ratio < (previous_profit * 0.75):
+        elif 0.16 <= profit_init_ratio:
+          if profit_init_ratio < (previous_profit * 0.75):
             return True, previous_sell_reason
     else:
       return False, None
@@ -9012,7 +9012,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Original sell signals
     sell, signal_name = self.short_exit_signals(
       self.short_normal_mode_name,
-      profit_current_stake_ratio,
+      profit_init_ratio,
       max_profit,
       max_loss,
       last_candle,
@@ -9030,7 +9030,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.short_exit_main(
         self.short_normal_mode_name,
-        profit_current_stake_ratio,
+        profit_init_ratio,
         max_profit,
         max_loss,
         last_candle,
@@ -9048,7 +9048,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.short_exit_williams_r(
         self.short_normal_mode_name,
-        profit_current_stake_ratio,
+        profit_init_ratio,
         max_profit,
         max_loss,
         last_candle,
@@ -9066,7 +9066,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.short_exit_dec(
         self.short_normal_mode_name,
-        profit_current_stake_ratio,
+        profit_init_ratio,
         max_profit,
         max_loss,
         last_candle,
@@ -9148,7 +9148,7 @@ class NostalgiaForInfinityX4(IStrategy):
           )
           if mark_pair:
             self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
-      elif (profit_current_stake_ratio > (previous_profit + 0.001)) and (
+      elif (profit_init_ratio > (previous_profit + 0.001)) and (
         previous_sell_reason not in [f"exit_{self.short_normal_mode_name}_stoploss_doom"]
       ):
         # Update the target, raise it.
@@ -9160,12 +9160,12 @@ class NostalgiaForInfinityX4(IStrategy):
           trade,
           current_time,
           current_rate,
-          profit_current_stake_ratio,
+          profit_init_ratio,
           last_candle,
           previous_candle_1,
         )
         if mark_pair:
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
 
     # Add the pair to the list, if a sell triggered and conditions met
     if sell and signal_name is not None:
@@ -9193,7 +9193,7 @@ class NostalgiaForInfinityX4(IStrategy):
         else:
           # Just sell it, without maximize
           return True, f"{signal_name}"
-      elif (previous_profit is None) or (previous_profit < profit_current_stake_ratio):
+      elif (previous_profit is None) or (previous_profit < profit_init_ratio):
         mark_pair, mark_signal = self.mark_profit_target(
           self.short_normal_mode_name,
           pair,
@@ -9202,23 +9202,23 @@ class NostalgiaForInfinityX4(IStrategy):
           trade,
           current_time,
           current_rate,
-          profit_current_stake_ratio,
+          profit_init_ratio,
           last_candle,
           previous_candle_1,
         )
         if mark_pair:
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
         else:
           # Just sell it, without maximize
           return True, f"{signal_name}"
     else:
-      if profit_current_stake_ratio >= self.profit_max_thresholds[0]:
+      if profit_init_ratio >= self.profit_max_thresholds[0]:
         previous_profit = None
         if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
           previous_profit = self.target_profit_cache.data[pair]["profit"]
-        if (previous_profit is None) or (previous_profit < profit_current_stake_ratio):
+        if (previous_profit is None) or (previous_profit < profit_init_ratio):
           mark_signal = f"exit_profit_{self.short_normal_mode_name}_max"
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
 
     if signal_name not in [
       f"exit_profit_{self.short_normal_mode_name}_max",
@@ -9257,7 +9257,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Original sell signals
     sell, signal_name = self.short_exit_signals(
       self.short_pump_mode_name,
-      profit_current_stake_ratio,
+      profit_init_ratio,
       max_profit,
       max_loss,
       last_candle,
@@ -9275,7 +9275,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.short_exit_main(
         self.short_pump_mode_name,
-        profit_current_stake_ratio,
+        profit_init_ratio,
         max_profit,
         max_loss,
         last_candle,
@@ -9293,7 +9293,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.short_exit_williams_r(
         self.short_pump_mode_name,
-        profit_current_stake_ratio,
+        profit_init_ratio,
         max_profit,
         max_loss,
         last_candle,
@@ -9311,7 +9311,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.short_exit_dec(
         self.short_pump_mode_name,
-        profit_current_stake_ratio,
+        profit_init_ratio,
         max_profit,
         max_loss,
         last_candle,
@@ -9393,7 +9393,7 @@ class NostalgiaForInfinityX4(IStrategy):
           )
           if mark_pair:
             self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
-      elif (profit_current_stake_ratio > (previous_profit + 0.001)) and (
+      elif (profit_init_ratio > (previous_profit + 0.001)) and (
         previous_sell_reason not in [f"exit_{self.short_pump_mode_name}_stoploss_doom"]
       ):
         # Update the target, raise it.
@@ -9405,12 +9405,12 @@ class NostalgiaForInfinityX4(IStrategy):
           trade,
           current_time,
           current_rate,
-          profit_current_stake_ratio,
+          profit_init_ratio,
           last_candle,
           previous_candle_1,
         )
         if mark_pair:
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
 
     # Add the pair to the list, if a sell triggered and conditions met
     if sell and signal_name is not None:
@@ -9438,7 +9438,7 @@ class NostalgiaForInfinityX4(IStrategy):
         else:
           # Just sell it, without maximize
           return True, f"{signal_name}"
-      elif (previous_profit is None) or (previous_profit < profit_current_stake_ratio):
+      elif (previous_profit is None) or (previous_profit < profit_init_ratio):
         mark_pair, mark_signal = self.mark_profit_target(
           self.short_pump_mode_name,
           pair,
@@ -9447,23 +9447,23 @@ class NostalgiaForInfinityX4(IStrategy):
           trade,
           current_time,
           current_rate,
-          profit_current_stake_ratio,
+          profit_init_ratio,
           last_candle,
           previous_candle_1,
         )
         if mark_pair:
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
         else:
           # Just sell it, without maximize
           return True, f"{signal_name}"
     else:
-      if profit_current_stake_ratio >= self.profit_max_thresholds[2]:
+      if profit_init_ratio >= self.profit_max_thresholds[2]:
         previous_profit = None
         if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
           previous_profit = self.target_profit_cache.data[pair]["profit"]
-        if (previous_profit is None) or (previous_profit < profit_current_stake_ratio):
+        if (previous_profit is None) or (previous_profit < profit_init_ratio):
           mark_signal = f"exit_profit_{self.short_pump_mode_name}_max"
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
 
     if signal_name not in [
       f"exit_profit_{self.short_pump_mode_name}_max",
@@ -9502,7 +9502,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Original sell signals
     sell, signal_name = self.short_exit_signals(
       self.short_quick_mode_name,
-      profit_current_stake_ratio,
+      profit_init_ratio,
       max_profit,
       max_loss,
       last_candle,
@@ -9520,7 +9520,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.short_exit_main(
         self.short_quick_mode_name,
-        profit_current_stake_ratio,
+        profit_init_ratio,
         max_profit,
         max_loss,
         last_candle,
@@ -9538,7 +9538,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.short_exit_williams_r(
         self.short_quick_mode_name,
-        profit_current_stake_ratio,
+        profit_init_ratio,
         max_profit,
         max_loss,
         last_candle,
@@ -9556,7 +9556,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.short_exit_dec(
         self.short_quick_mode_name,
-        profit_current_stake_ratio,
+        profit_init_ratio,
         max_profit,
         max_loss,
         last_candle,
@@ -9596,13 +9596,13 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # Extra sell logic
     if not sell:
-      if (0.09 >= profit_current_stake_ratio > 0.02) and (last_candle["rsi_14"] < 22.0):
+      if (0.09 >= profit_init_ratio > 0.02) and (last_candle["rsi_14"] < 22.0):
         sell, signal_name = True, f"exit_{self.short_quick_mode_name}_q_1"
 
-      if (0.09 >= profit_current_stake_ratio > 0.02) and (last_candle["cti_20"] < -0.95):
+      if (0.09 >= profit_init_ratio > 0.02) and (last_candle["cti_20"] < -0.95):
         sell, signal_name = True, f"exit_{self.short_quick_mode_name}_q_2"
 
-      if (0.09 >= profit_current_stake_ratio > 0.02) and (last_candle["r_14"] <= -0.99):
+      if (0.09 >= profit_init_ratio > 0.02) and (last_candle["r_14"] <= -0.99):
         sell, signal_name = True, f"exit_{self.short_quick_mode_name}_q_3"
 
     # Profit Target Signal
@@ -9649,7 +9649,7 @@ class NostalgiaForInfinityX4(IStrategy):
           )
           if mark_pair:
             self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
-      elif (profit_current_stake_ratio > (previous_profit + 0.001)) and (
+      elif (profit_init_ratio > (previous_profit + 0.001)) and (
         previous_sell_reason not in [f"exit_{self.short_quick_mode_name}_stoploss_doom"]
       ):
         # Update the target, raise it.
@@ -9661,12 +9661,12 @@ class NostalgiaForInfinityX4(IStrategy):
           trade,
           current_time,
           current_rate,
-          profit_current_stake_ratio,
+          profit_init_ratio,
           last_candle,
           previous_candle_1,
         )
         if mark_pair:
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
 
     # Add the pair to the list, if a sell triggered and conditions met
     if sell and signal_name is not None:
@@ -9694,7 +9694,7 @@ class NostalgiaForInfinityX4(IStrategy):
         else:
           # Just sell it, without maximize
           return True, f"{signal_name}"
-      elif (previous_profit is None) or (previous_profit < profit_current_stake_ratio):
+      elif (previous_profit is None) or (previous_profit < profit_init_ratio):
         mark_pair, mark_signal = self.mark_profit_target(
           self.short_quick_mode_name,
           pair,
@@ -9703,23 +9703,23 @@ class NostalgiaForInfinityX4(IStrategy):
           trade,
           current_time,
           current_rate,
-          profit_current_stake_ratio,
+          profit_init_ratio,
           last_candle,
           previous_candle_1,
         )
         if mark_pair:
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
         else:
           # Just sell it, without maximize
           return True, f"{signal_name}"
     else:
-      if profit_current_stake_ratio >= self.profit_max_thresholds[4]:
+      if profit_init_ratio >= self.profit_max_thresholds[4]:
         previous_profit = None
         if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
           previous_profit = self.target_profit_cache.data[pair]["profit"]
-        if (previous_profit is None) or (previous_profit < profit_current_stake_ratio):
+        if (previous_profit is None) or (previous_profit < profit_init_ratio):
           mark_signal = f"exit_profit_{self.short_quick_mode_name}_max"
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
 
     if signal_name not in [
       f"exit_profit_{self.short_quick_mode_name}_max",
@@ -9758,7 +9758,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Original sell signals
     sell, signal_name = self.short_exit_signals(
       self.short_rebuy_mode_name,
-      profit_current_stake_ratio,
+      profit_init_ratio,
       max_profit,
       max_loss,
       last_candle,
@@ -9776,7 +9776,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.short_exit_main(
         self.short_rebuy_mode_name,
-        profit_current_stake_ratio,
+        profit_init_ratio,
         max_profit,
         max_loss,
         last_candle,
@@ -9794,7 +9794,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.short_exit_williams_r(
         self.short_rebuy_mode_name,
-        profit_current_stake_ratio,
+        profit_init_ratio,
         max_profit,
         max_loss,
         last_candle,
@@ -9812,7 +9812,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.short_exit_dec(
         self.short_rebuy_mode_name,
-        profit_current_stake_ratio,
+        profit_init_ratio,
         max_profit,
         max_loss,
         last_candle,
@@ -9879,7 +9879,7 @@ class NostalgiaForInfinityX4(IStrategy):
           )
           if mark_pair:
             self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
-      elif (profit_current_stake_ratio > (previous_profit + 0.001)) and (
+      elif (profit_init_ratio > (previous_profit + 0.001)) and (
         previous_sell_reason not in [f"exit_{self.short_rebuy_mode_name}_stoploss_doom"]
       ):
         # Update the target, raise it.
@@ -9891,12 +9891,12 @@ class NostalgiaForInfinityX4(IStrategy):
           trade,
           current_time,
           current_rate,
-          profit_current_stake_ratio,
+          profit_init_ratio,
           last_candle,
           previous_candle_1,
         )
         if mark_pair:
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
 
     # Add the pair to the list, if a sell triggered and conditions met
     if sell and signal_name is not None:
@@ -9924,7 +9924,7 @@ class NostalgiaForInfinityX4(IStrategy):
         else:
           # Just sell it, without maximize
           return True, f"{signal_name}"
-      elif (previous_profit is None) or (previous_profit < profit_current_stake_ratio):
+      elif (previous_profit is None) or (previous_profit < profit_init_ratio):
         mark_pair, mark_signal = self.mark_profit_target(
           self.short_rebuy_mode_name,
           pair,
@@ -9933,23 +9933,23 @@ class NostalgiaForInfinityX4(IStrategy):
           trade,
           current_time,
           current_rate,
-          profit_current_stake_ratio,
+          profit_init_ratio,
           last_candle,
           previous_candle_1,
         )
         if mark_pair:
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
         else:
           # Just sell it, without maximize
           return True, f"{signal_name}"
     else:
-      if profit_current_stake_ratio >= self.profit_max_thresholds[6]:
+      if profit_init_ratio >= self.profit_max_thresholds[6]:
         previous_profit = None
         if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
           previous_profit = self.target_profit_cache.data[pair]["profit"]
-        if (previous_profit is None) or (previous_profit < profit_current_stake_ratio):
+        if (previous_profit is None) or (previous_profit < profit_init_ratio):
           mark_signal = f"exit_profit_{self.short_rebuy_mode_name}_max"
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
 
     if signal_name not in [f"exit_profit_{self.short_rebuy_mode_name}_max"]:
       if sell and (signal_name is not None):
@@ -9984,7 +9984,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Original sell signals
     sell, signal_name = self.short_exit_signals(
       self.short_mode_name,
-      profit_current_stake_ratio,
+      profit_init_ratio,
       max_profit,
       max_loss,
       last_candle,
@@ -10002,7 +10002,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.short_exit_main(
         self.short_mode_name,
-        profit_current_stake_ratio,
+        profit_init_ratio,
         max_profit,
         max_loss,
         last_candle,
@@ -10020,7 +10020,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.short_exit_williams_r(
         self.short_mode_name,
-        profit_current_stake_ratio,
+        profit_init_ratio,
         max_profit,
         max_loss,
         last_candle,
@@ -10101,7 +10101,7 @@ class NostalgiaForInfinityX4(IStrategy):
           )
           if mark_pair:
             self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
-      elif (profit_current_stake_ratio > (previous_profit + 0.001)) and (
+      elif (profit_init_ratio > (previous_profit + 0.001)) and (
         previous_sell_reason not in [f"exit_{self.short_mode_name}_stoploss_doom"]
       ):
         # Update the target, raise it.
@@ -10113,12 +10113,12 @@ class NostalgiaForInfinityX4(IStrategy):
           trade,
           current_time,
           current_rate,
-          profit_current_stake_ratio,
+          profit_init_ratio,
           last_candle,
           previous_candle_1,
         )
         if mark_pair:
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
 
     # Add the pair to the list, if a sell triggered and conditions met
     if sell and signal_name is not None:
@@ -10146,7 +10146,7 @@ class NostalgiaForInfinityX4(IStrategy):
         else:
           # Just sell it, without maximize
           return True, f"{signal_name}"
-      elif (previous_profit is None) or (previous_profit < profit_current_stake_ratio):
+      elif (previous_profit is None) or (previous_profit < profit_init_ratio):
         mark_pair, mark_signal = self.mark_profit_target(
           self.short_mode_name,
           pair,
@@ -10155,23 +10155,23 @@ class NostalgiaForInfinityX4(IStrategy):
           trade,
           current_time,
           current_rate,
-          profit_current_stake_ratio,
+          profit_init_ratio,
           last_candle,
           previous_candle_1,
         )
         if mark_pair:
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
         else:
           # Just sell it, without maximize
           return True, f"{signal_name}"
     else:
-      if profit_current_stake_ratio >= self.profit_max_thresholds[8]:
+      if profit_init_ratio >= self.profit_max_thresholds[8]:
         previous_profit = None
         if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
           previous_profit = self.target_profit_cache.data[pair]["profit"]
-        if (previous_profit is None) or (previous_profit < profit_current_stake_ratio):
+        if (previous_profit is None) or (previous_profit < profit_init_ratio):
           mark_signal = f"exit_profit_{self.short_mode_name}_max"
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
 
     if signal_name not in [
       f"exit_profit_{self.short_mode_name}_max",
@@ -10210,7 +10210,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Original sell signals
     sell, signal_name = self.short_exit_signals(
       self.short_rapid_mode_name,
-      profit_current_stake_ratio,
+      profit_init_ratio,
       max_profit,
       max_loss,
       last_candle,
@@ -10228,7 +10228,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.short_exit_main(
         self.short_rapid_mode_name,
-        profit_current_stake_ratio,
+        profit_init_ratio,
         max_profit,
         max_loss,
         last_candle,
@@ -10246,7 +10246,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.short_exit_williams_r(
         self.short_rapid_mode_name,
-        profit_current_stake_ratio,
+        profit_init_ratio,
         max_profit,
         max_loss,
         last_candle,
@@ -10264,7 +10264,7 @@ class NostalgiaForInfinityX4(IStrategy):
     if not sell:
       sell, signal_name = self.short_exit_dec(
         self.short_rapid_mode_name,
-        profit_current_stake_ratio,
+        profit_init_ratio,
         max_profit,
         max_loss,
         last_candle,
@@ -10304,13 +10304,13 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # Extra sell logic
     if not sell:
-      if (0.09 >= profit_current_stake_ratio > 0.01) and (last_candle["rsi_14"] < 22.0):
+      if (0.09 >= profit_init_ratio > 0.01) and (last_candle["rsi_14"] < 22.0):
         sell, signal_name = True, f"exit_{self.short_rapid_mode_name}_rpd_1"
 
-      if (0.09 >= profit_current_stake_ratio > 0.01) and (last_candle["cti_20"] < -0.95):
+      if (0.09 >= profit_init_ratio > 0.01) and (last_candle["cti_20"] < -0.95):
         sell, signal_name = True, f"exit_{self.short_rapid_mode_name}_rpd_2"
 
-      if (0.09 >= profit_current_stake_ratio > 0.01) and (last_candle["r_14"] <= -0.99):
+      if (0.09 >= profit_init_ratio > 0.01) and (last_candle["r_14"] <= -0.99):
         sell, signal_name = True, f"exit_{self.short_rapid_mode_name}_rpd_3"
 
       # Stoplosses
@@ -10365,7 +10365,7 @@ class NostalgiaForInfinityX4(IStrategy):
           )
           if mark_pair:
             self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
-      elif (profit_current_stake_ratio > (previous_profit + 0.001)) and (
+      elif (profit_init_ratio > (previous_profit + 0.001)) and (
         previous_sell_reason not in [f"exit_{self.short_rapid_mode_name}_stoploss_doom"]
       ):
         # Update the target, raise it.
@@ -10377,12 +10377,12 @@ class NostalgiaForInfinityX4(IStrategy):
           trade,
           current_time,
           current_rate,
-          profit_current_stake_ratio,
+          profit_init_ratio,
           last_candle,
           previous_candle_1,
         )
         if mark_pair:
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
 
     # Add the pair to the list, if a sell triggered and conditions met
     if sell and signal_name is not None:
@@ -10410,7 +10410,7 @@ class NostalgiaForInfinityX4(IStrategy):
         else:
           # Just sell it, without maximize
           return True, f"{signal_name}"
-      elif (previous_profit is None) or (previous_profit < profit_current_stake_ratio):
+      elif (previous_profit is None) or (previous_profit < profit_init_ratio):
         mark_pair, mark_signal = self.mark_profit_target(
           self.short_rapid_mode_name,
           pair,
@@ -10419,23 +10419,23 @@ class NostalgiaForInfinityX4(IStrategy):
           trade,
           current_time,
           current_rate,
-          profit_current_stake_ratio,
+          profit_init_ratio,
           last_candle,
           previous_candle_1,
         )
         if mark_pair:
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
         else:
           # Just sell it, without maximize
           return True, f"{signal_name}"
     else:
-      if profit_current_stake_ratio >= 0.01:
+      if profit_init_ratio >= 0.01:
         previous_profit = None
         if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
           previous_profit = self.target_profit_cache.data[pair]["profit"]
-        if (previous_profit is None) or (previous_profit < profit_current_stake_ratio):
+        if (previous_profit is None) or (previous_profit < profit_init_ratio):
           mark_signal = f"exit_profit_{self.short_rapid_mode_name}_max"
-          self._set_profit_target(pair, mark_signal, current_rate, profit_current_stake_ratio, current_time)
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
 
     if signal_name not in [f"exit_profit_{self.short_rapid_mode_name}_max"]:
       if sell and (signal_name is not None):
