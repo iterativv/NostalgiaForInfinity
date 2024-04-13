@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.587"
+    return "v13.1.589"
 
   stoploss = -0.99
 
@@ -19962,8 +19962,8 @@ class NostalgiaForInfinityX3(IStrategy):
     df = self.base_tf_5m_indicators(metadata, df)
 
     df.fillna({"zlma_50_1h": 0.0}, inplace=True)
-    df["cti_20_1d"].infer_objects(copy=False).bfill()
-    df["r_480_4h"].infer_objects(copy=False).bfill()
+    df.fillna({"cti_20_1d": 0.0}, inplace=True)
+    df.fillna({"r_480_4h": -50.0}, inplace=True)
 
     # Global protections
     df["protections_long_global"] = (
@@ -28455,6 +28455,16 @@ class NostalgiaForInfinityX3(IStrategy):
         | (df["r_480_4h"] < -25.0)
         | (df["close"] < df["res_hlevel_4h"])
         | (((df["close"] - df["low_min_48_1h"]) / df["low_min_48_1h"]) < (df["hl_pct_change_48_1h"] * 0.38))
+      )
+      & (
+        (df["change_pct_4h"] > -0.04)
+        | (df["change_pct_4h"].shift(48) < 0.02)
+        | (df["change_pct_1h"] > -0.01)
+        | (df["not_downtrend_1h"])
+        | (df["rsi_3_1h"] > 16.0)
+        | (df["r_480_4h"] < -25.0)
+        | (df["close"] > df["sup_level_1h"])
+        | (df["close"] > df["sup_level_4h"])
       )
     )
 
