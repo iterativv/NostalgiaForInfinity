@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.593"
+    return "v14.1.594"
 
   stoploss = -0.99
 
@@ -17745,7 +17745,7 @@ class NostalgiaForInfinityX4(IStrategy):
         / (trade.leverage if self.is_futures_mode else 1.0)
       )
     ):
-      sell_amount = derisk_1_reentry_order * exit_rate / trade.leverage
+      sell_amount = derisk_1_reentry_order.safe_filled * exit_rate / trade.leverage
       if (current_stake_amount - sell_amount) < (min_stake * 1.55):
         sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
       ft_sell_amount = sell_amount * (trade.stake_amount / trade.amount) / exit_rate
