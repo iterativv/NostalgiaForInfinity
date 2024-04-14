@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.594"
+    return "v13.1.595"
 
   stoploss = -0.99
 
@@ -19964,6 +19964,7 @@ class NostalgiaForInfinityX3(IStrategy):
     df.fillna({"zlma_50_1h": 0.0}, inplace=True)
     df.fillna({"cti_20_1d": 0.0}, inplace=True)
     df["r_480_4h"] = df["r_480_4h"].astype(np.float64).replace(to_replace=[np.nan, None], value=(-50.0))
+    df["rsi_14_1d"] = df["rsi_14_1d"].astype(np.float64).replace(to_replace=[np.nan, None], value=(50.0))
 
     # Global protections
     df["protections_long_global"] = (
