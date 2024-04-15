@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.600"
+    return "v13.1.601"
 
   stoploss = -0.99
 
@@ -256,8 +256,8 @@ class NostalgiaForInfinityX3(IStrategy):
   grind_2_derisk_1_sub_thresholds_futures = [-0.10, -0.11, -0.12]
 
   # Non rebuy modes
-  regular_mode_stake_multiplier_spot = [1.0]
-  regular_mode_stake_multiplier_futures = [1.0]
+  regular_mode_stake_multiplier_spot = [0.5]
+  regular_mode_stake_multiplier_futures = [0.5]
 
   regular_mode_rebuy_stakes_spot = [
     [0.10, 0.10, 0.10, 0.10, 0.10],
@@ -384,10 +384,11 @@ class NostalgiaForInfinityX3(IStrategy):
     [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
   ]
   regular_mode_grind_5_profit_threshold_spot = 0.048
-  regular_mode_derisk_1_spot = -0.16
+  regular_mode_derisk_1_spot = -0.80
+  regular_mode_derisk_1_spot_old = -0.16
   regular_mode_derisk_1_reentry_spot = -0.08
-  regular_mode_derisk_spot = -0.40
-  regular_mode_derisk_spot_old = -0.80
+  regular_mode_derisk_spot = -1.60
+  regular_mode_derisk_spot_old = -0.40
 
   regular_mode_rebuy_stakes_futures = [
     [0.10, 0.10, 0.10, 0.10, 0.10],
@@ -514,10 +515,11 @@ class NostalgiaForInfinityX3(IStrategy):
     [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
   ]
   regular_mode_grind_5_profit_threshold_futures = 0.048
-  regular_mode_derisk_1_futures = -0.48
+  regular_mode_derisk_1_futures = -2.40
+  regular_mode_derisk_1_futures_old = -0.48
   regular_mode_derisk_1_reentry_futures = -0.08  # without leverage
-  regular_mode_derisk_futures = -0.60
-  regular_mode_derisk_futures_old = -2.40
+  regular_mode_derisk_futures = -3.20
+  regular_mode_derisk_futures_old = -0.80
 
   # Rebuy mode
   rebuy_mode_stake_multiplier = 0.2
@@ -2413,14 +2415,15 @@ class NostalgiaForInfinityX3(IStrategy):
             stake_multiplier = item
             return proposed_stake * stake_multiplier
       else:
-        for _, item in enumerate(
-          self.regular_mode_stake_multiplier_futures
+        stake_multiplier = (
+          self.regular_mode_stake_multiplier_futures[0]
           if self.is_futures_mode
-          else self.regular_mode_stake_multiplier_spot
-        ):
-          if (proposed_stake * item) > min_stake:
-            stake_multiplier = item
-            return proposed_stake * stake_multiplier
+          else self.regular_mode_stake_multiplier_spot[0]
+        )
+        if (proposed_stake * stake_multiplier) > min_stake:
+          return proposed_stake * stake_multiplier
+        else:
+          return min_stake
 
     return proposed_stake
 
@@ -32693,7 +32696,7 @@ class NostalgiaForInfinityX3(IStrategy):
 
     if not is_rebuy_mode and not is_grind_mode:
       # First entry is lower now, therefore the grinds must adjust
-      if trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 2, 5) or is_backtest:
+      if trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 4, 16) or is_backtest:
         slice_amount /= (
           self.regular_mode_stake_multiplier_futures[0]
           if self.is_futures_mode
@@ -34315,7 +34318,7 @@ class NostalgiaForInfinityX3(IStrategy):
       # and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 4, 5) or is_backtest)
       and derisk_1_distance_ratio
       < (
-        (self.regular_mode_derisk_1_futures if self.is_futures_mode else self.regular_mode_derisk_1_spot)
+        (self.regular_mode_derisk_1_reentry_futures if self.is_futures_mode else self.regular_mode_derisk_1_reentry_spot)
         / (trade.leverage if self.is_futures_mode else 1.0)
       )
     ):
@@ -34342,7 +34345,7 @@ class NostalgiaForInfinityX3(IStrategy):
         slice_amount
         * (
           (self.regular_mode_derisk_futures if self.is_futures_mode else self.regular_mode_derisk_spot)
-          if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 4, 5) or is_backtest)
+          if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 4, 16) or is_backtest)
           else (self.regular_mode_derisk_futures_old if self.is_futures_mode else self.regular_mode_derisk_spot_old)
         )
         / (trade.leverage if self.is_futures_mode else 1.0)
@@ -35542,8 +35545,11 @@ class NostalgiaForInfinityX3(IStrategy):
       and profit_stake
       < (
         slice_amount
-        * (self.regular_mode_derisk_1_futures if self.is_futures_mode else self.regular_mode_derisk_1_spot)
-        / (trade.leverage if self.is_futures_mode else 1.0)
+        * (
+          (self.regular_mode_derisk_1_futures if self.is_futures_mode else self.regular_mode_derisk_1_spot)
+          if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 4, 16) or is_backtest)
+          else (self.regular_mode_derisk_1_futures_old if self.is_futures_mode else self.regular_mode_derisk_1_spot_old)
+        )
       )
     ):
       sell_amount = trade.amount * exit_rate / trade.leverage - (min_stake * 1.55)
