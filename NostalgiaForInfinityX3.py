@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.603"
+    return "v13.1.604"
 
   stoploss = -0.99
 
@@ -259,130 +259,22 @@ class NostalgiaForInfinityX3(IStrategy):
   regular_mode_stake_multiplier_spot = [0.5]
   regular_mode_stake_multiplier_futures = [0.5]
 
-  regular_mode_rebuy_stakes_spot = [
-    [0.10, 0.10, 0.10, 0.10, 0.10],
-    [0.20, 0.20, 0.20, 0.20, 0.20],
-    [0.30, 0.30, 0.30, 0.30, 0.30],
-    [0.40, 0.40, 0.40, 0.40, 0.40],
-    [0.50, 0.50, 0.50, 0.50, 0.50],
-    [0.75, 0.75, 0.75, 0.75],
-    [1.0, 1.0, 1.0],
-  ]
-  regular_mode_rebuy_thresholds_spot = [
-    [-0.12, -0.14, -0.16, -0.18, -0.20],
-    [-0.12, -0.14, -0.16, -0.18, -0.20],
-    [-0.12, -0.14, -0.16, -0.18, -0.20],
-    [-0.12, -0.14, -0.16, -0.18, -0.20],
-    [-0.12, -0.14, -0.16, -0.18, -0.20],
-    [-0.12, -0.14, -0.16, -0.18],
-    [-0.12, -0.14, -0.16],
-  ]
-  regular_mode_grind_1_stakes_spot = [
-    [0.20, 0.20, 0.20, 0.20, 0.20],
-    [0.40, 0.40, 0.40, 0.40, 0.40],
-    [0.50, 0.50, 0.50, 0.50, 0.50],
-    [0.75, 0.75, 0.75, 0.75],
-    [1.0, 1.0, 1.0],
-  ]
-  regular_mode_grind_1_thresholds_spot = [
-    [-0.06, -0.12, -0.14, -0.16, -0.18, -0.20],
-    [-0.06, -0.12, -0.14, -0.16, -0.18, -0.20],
-    [-0.06, -0.12, -0.14, -0.16, -0.18, -0.20],
-    [-0.06, -0.12, -0.14, -0.16, -0.18],
-    [-0.06, -0.12, -0.14, -0.16],
-  ]
+  regular_mode_rebuy_stakes_spot = [0.10, 0.10, 0.10]
+  regular_mode_rebuy_thresholds_spot = [-0.12, -0.14, -0.16]
+  regular_mode_grind_1_stakes_spot = [0.20, 0.20, 0.20]
+  regular_mode_grind_1_thresholds_spot = [-0.06, -0.12, -0.14]
   regular_mode_grind_1_profit_threshold_spot = 0.018
-  regular_mode_grind_2_stakes_spot = [
-    [0.10, 0.15, 0.20, 0.25, 0.30],
-    [0.15, 0.20, 0.25, 0.30, 0.35],
-    [0.20, 0.25, 0.30, 0.35, 0.40],
-    [0.30, 0.35, 0.40, 0.45, 0.50],
-    [0.40, 0.45, 0.50, 0.55, 0.60],
-    [0.50, 0.55, 0.60, 0.65, 0.70],
-    [0.60, 0.65, 0.70, 0.75, 0.80],
-    [0.70, 0.75, 0.80, 0.85, 0.90],
-    [0.80, 0.85, 0.90, 0.95, 1.00],
-  ]
-  regular_mode_grind_2_thresholds_spot = [
-    [-0.04, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.04, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.04, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.04, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.04, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.04, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.04, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.04, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.04, -0.10, -0.12, -0.14, -0.16, -0.18],
-  ]
+  regular_mode_grind_2_stakes_spot = [0.10, 0.15, 0.20]
+  regular_mode_grind_2_thresholds_spot = [-0.04, -0.10, -0.12]
   regular_mode_grind_2_profit_threshold_spot = 0.018
-  regular_mode_grind_3_stakes_spot = [
-    [0.10, 0.10, 0.10, 0.10, 0.10, 0.10],
-    [0.20, 0.20, 0.20, 0.20, 0.20, 0.20],
-    [0.30, 0.30, 0.30, 0.30, 0.30, 0.30],
-    [0.40, 0.40, 0.40, 0.40, 0.40, 0.40],
-    [0.50, 0.50, 0.50, 0.50, 0.50, 0.50],
-    [0.60, 0.60, 0.60, 0.60, 0.60, 0.60],
-    [0.70, 0.70, 0.70, 0.70, 0.70, 0.70],
-    [0.80, 0.80, 0.80, 0.80, 0.80, 0.80],
-    [0.90, 0.90, 0.90, 0.90, 0.90, 0.90],
-  ]
-  regular_mode_grind_3_thresholds_spot = [
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-  ]
+  regular_mode_grind_3_stakes_spot = [0.10, 0.10, 0.10]
+  regular_mode_grind_3_thresholds_spot = [-0.03, -0.10, -0.12]
   regular_mode_grind_3_profit_threshold_spot = 0.018
-  regular_mode_grind_4_stakes_spot = [
-    [0.10, 0.10, 0.10, 0.10, 0.10, 0.10],
-    [0.20, 0.20, 0.20, 0.20, 0.20, 0.20],
-    [0.30, 0.30, 0.30, 0.30, 0.30, 0.30],
-    [0.40, 0.40, 0.40, 0.40, 0.40, 0.40],
-    [0.50, 0.50, 0.50, 0.50, 0.50, 0.50],
-    [0.60, 0.60, 0.60, 0.60, 0.60, 0.60],
-    [0.70, 0.70, 0.70, 0.70, 0.70, 0.70],
-    [0.80, 0.80, 0.80, 0.80, 0.80, 0.80],
-    [0.90, 0.90, 0.90, 0.90, 0.90, 0.90],
-  ]
-  regular_mode_grind_4_thresholds_spot = [
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-  ]
+  regular_mode_grind_4_stakes_spot = [0.10, 0.10, 0.10]
+  regular_mode_grind_4_thresholds_spot = [-0.03, -0.10, -0.12]
   regular_mode_grind_4_profit_threshold_spot = 0.018
-  regular_mode_grind_5_stakes_spot = [
-    [0.10, 0.10, 0.10, 0.10, 0.10, 0.10],
-    [0.20, 0.20, 0.20, 0.20, 0.20, 0.20],
-    [0.30, 0.30, 0.30, 0.30, 0.30, 0.30],
-    [0.40, 0.40, 0.40, 0.40, 0.40, 0.40],
-    [0.50, 0.50, 0.50, 0.50, 0.50, 0.50],
-    [0.60, 0.60, 0.60, 0.60, 0.60, 0.60],
-    [0.70, 0.70, 0.70, 0.70, 0.70, 0.70],
-    [0.80, 0.80, 0.80, 0.80, 0.80, 0.80],
-    [0.90, 0.90, 0.90, 0.90, 0.90, 0.90],
-  ]
-  regular_mode_grind_5_thresholds_spot = [
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-  ]
+  regular_mode_grind_5_stakes_spot = [0.10, 0.10, 0.10]
+  regular_mode_grind_5_thresholds_spot = [-0.03, -0.10, -0.12]
   regular_mode_grind_5_profit_threshold_spot = 0.048
   regular_mode_derisk_1_spot = -0.80
   regular_mode_derisk_1_spot_old = -0.16
@@ -390,130 +282,22 @@ class NostalgiaForInfinityX3(IStrategy):
   regular_mode_derisk_spot = -1.60
   regular_mode_derisk_spot_old = -0.40
 
-  regular_mode_rebuy_stakes_futures = [
-    [0.10, 0.10, 0.10, 0.10, 0.10],
-    [0.20, 0.20, 0.20, 0.20, 0.20],
-    [0.30, 0.30, 0.30, 0.30, 0.30],
-    [0.40, 0.40, 0.40, 0.40, 0.40],
-    [0.50, 0.50, 0.50, 0.50, 0.50],
-    [0.75, 0.75, 0.75, 0.75],
-    [1.0, 1.0, 1.0],
-  ]
-  regular_mode_rebuy_thresholds_futures = [
-    [-0.12, -0.14, -0.16, -0.18, -0.20],
-    [-0.12, -0.14, -0.16, -0.18, -0.20],
-    [-0.12, -0.14, -0.16, -0.18, -0.20],
-    [-0.12, -0.14, -0.16, -0.18, -0.20],
-    [-0.12, -0.14, -0.16, -0.18, -0.20],
-    [-0.12, -0.14, -0.16, -0.18],
-    [-0.12, -0.14, -0.16],
-  ]
-  regular_mode_grind_1_stakes_futures = [
-    [0.20, 0.20, 0.20, 0.20, 0.20],
-    [0.40, 0.40, 0.40, 0.40, 0.40],
-    [0.50, 0.50, 0.50, 0.50, 0.50],
-    [0.75, 0.75, 0.75, 0.75],
-    [1.0, 1.0, 1.0],
-  ]
-  regular_mode_grind_1_thresholds_futures = [
-    [-0.06, -0.12, -0.14, -0.16, -0.18, -0.20],
-    [-0.06, -0.12, -0.14, -0.16, -0.18, -0.20],
-    [-0.06, -0.12, -0.14, -0.16, -0.18, -0.20],
-    [-0.06, -0.12, -0.14, -0.16, -0.18],
-    [-0.06, -0.12, -0.14, -0.16],
-  ]
+  regular_mode_rebuy_stakes_futures = [0.10, 0.10, 0.10]
+  regular_mode_rebuy_thresholds_futures = [-0.12, -0.14, -0.16]
+  regular_mode_grind_1_stakes_futures = [0.20, 0.20, 0.20]
+  regular_mode_grind_1_thresholds_futures = [-0.06, -0.12, -0.14]
   regular_mode_grind_1_profit_threshold_futures = 0.018
-  regular_mode_grind_2_stakes_futures = [
-    [0.10, 0.15, 0.20, 0.25, 0.30],
-    [0.15, 0.20, 0.25, 0.30, 0.35],
-    [0.20, 0.25, 0.30, 0.35, 0.40],
-    [0.30, 0.35, 0.40, 0.45, 0.50],
-    [0.40, 0.45, 0.50, 0.55, 0.60],
-    [0.50, 0.55, 0.60, 0.65, 0.70],
-    [0.60, 0.65, 0.70, 0.75, 0.80],
-    [0.70, 0.75, 0.80, 0.85, 0.90],
-    [0.80, 0.85, 0.90, 0.95, 1.00],
-  ]
-  regular_mode_grind_2_thresholds_futures = [
-    [-0.04, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.04, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.04, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.04, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.04, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.04, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.04, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.04, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.04, -0.10, -0.12, -0.14, -0.16, -0.18],
-  ]
+  regular_mode_grind_2_stakes_futures = [0.10, 0.15, 0.20]
+  regular_mode_grind_2_thresholds_futures = [-0.04, -0.10, -0.12]
   regular_mode_grind_2_profit_threshold_futures = 0.018
-  regular_mode_grind_3_stakes_futures = [
-    [0.10, 0.10, 0.10, 0.10, 0.10, 0.10],
-    [0.20, 0.20, 0.20, 0.20, 0.20, 0.20],
-    [0.30, 0.30, 0.30, 0.30, 0.30, 0.30],
-    [0.40, 0.40, 0.40, 0.40, 0.40, 0.40],
-    [0.50, 0.50, 0.50, 0.50, 0.50, 0.50],
-    [0.60, 0.60, 0.60, 0.60, 0.60, 0.60],
-    [0.70, 0.70, 0.70, 0.70, 0.70, 0.70],
-    [0.80, 0.80, 0.80, 0.80, 0.80, 0.80],
-    [0.90, 0.90, 0.90, 0.90, 0.90, 0.90],
-  ]
-  regular_mode_grind_3_thresholds_futures = [
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-  ]
+  regular_mode_grind_3_stakes_futures = [0.10, 0.10, 0.10]
+  regular_mode_grind_3_thresholds_futures = [-0.03, -0.10, -0.12]
   regular_mode_grind_3_profit_threshold_futures = 0.018
-  regular_mode_grind_4_stakes_futures = [
-    [0.10, 0.10, 0.10, 0.10, 0.10, 0.10],
-    [0.20, 0.20, 0.20, 0.20, 0.20, 0.20],
-    [0.30, 0.30, 0.30, 0.30, 0.30, 0.30],
-    [0.40, 0.40, 0.40, 0.40, 0.40, 0.40],
-    [0.50, 0.50, 0.50, 0.50, 0.50, 0.50],
-    [0.60, 0.60, 0.60, 0.60, 0.60, 0.60],
-    [0.70, 0.70, 0.70, 0.70, 0.70, 0.70],
-    [0.80, 0.80, 0.80, 0.80, 0.80, 0.80],
-    [0.90, 0.90, 0.90, 0.90, 0.90, 0.90],
-  ]
-  regular_mode_grind_4_thresholds_futures = [
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-  ]
+  regular_mode_grind_4_stakes_futures = [0.10, 0.10, 0.10]
+  regular_mode_grind_4_thresholds_futures = [-0.03, -0.10, -0.12]
   regular_mode_grind_4_profit_threshold_futures = 0.018
-  regular_mode_grind_5_stakes_futures = [
-    [0.10, 0.10, 0.10, 0.10, 0.10, 0.10],
-    [0.20, 0.20, 0.20, 0.20, 0.20, 0.20],
-    [0.30, 0.30, 0.30, 0.30, 0.30, 0.30],
-    [0.40, 0.40, 0.40, 0.40, 0.40, 0.40],
-    [0.50, 0.50, 0.50, 0.50, 0.50, 0.50],
-    [0.60, 0.60, 0.60, 0.60, 0.60, 0.60],
-    [0.70, 0.70, 0.70, 0.70, 0.70, 0.70],
-    [0.80, 0.80, 0.80, 0.80, 0.80, 0.80],
-    [0.90, 0.90, 0.90, 0.90, 0.90, 0.90],
-  ]
-  regular_mode_grind_5_thresholds_futures = [
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-    [-0.03, -0.10, -0.12, -0.14, -0.16, -0.18],
-  ]
+  regular_mode_grind_5_stakes_futures = [0.10, 0.10, 0.10]
+  regular_mode_grind_5_thresholds_futures = [-0.03, -0.10, -0.12]
   regular_mode_grind_5_profit_threshold_futures = 0.048
   regular_mode_derisk_1_futures = -2.40
   regular_mode_derisk_1_futures_old = -0.48
@@ -34659,36 +34443,38 @@ class NostalgiaForInfinityX3(IStrategy):
     **kwargs,
   ) -> tuple[Optional[float], str, bool]:
     is_backtest = self.dp.runmode.value in ["backtest", "hyperopt"]
+
     max_rebuy_sub_grinds = 0
-    regular_mode_rebuy_stakes = []
-    regular_mode_rebuy_sub_thresholds = []
-    for i, item in enumerate(
-      self.regular_mode_rebuy_stakes_futures if self.is_futures_mode else self.regular_mode_rebuy_stakes_spot
-    ):
-      if (slice_amount * item[0] / (trade.leverage if self.is_futures_mode else 1.0)) > min_stake:
-        regular_mode_rebuy_stakes = item
-        regular_mode_rebuy_sub_thresholds = (
-          self.regular_mode_rebuy_thresholds_futures[i]
-          if self.is_futures_mode
-          else self.regular_mode_rebuy_thresholds_spot[i]
-        )
-        max_rebuy_sub_grinds = len(regular_mode_rebuy_stakes)
-        break
+    regular_mode_rebuy_stakes = (
+      self.regular_mode_rebuy_stakes_futures.copy()
+      if self.is_futures_mode
+      else self.regular_mode_rebuy_stakes_spot.copy()
+    )
+    regular_mode_rebuy_sub_thresholds = (
+      self.regular_mode_rebuy_thresholds_futures if self.is_futures_mode else self.regular_mode_rebuy_thresholds_spot
+    )
+    if (slice_amount * regular_mode_rebuy_stakes[0] / trade.leverage) < min_stake:
+      multi = slice_amount / min_stake
+      for i, _ in enumerate(regular_mode_rebuy_stakes):
+        regular_mode_rebuy_stakes[i] *= multi
+    max_rebuy_sub_grinds = len(regular_mode_rebuy_stakes)
+
     max_grind_1_sub_grinds = 0
-    regular_mode_grind_1_stakes = []
-    regular_mode_grind_1_sub_thresholds = []
-    for i, item in enumerate(
-      self.regular_mode_grind_1_stakes_futures if self.is_futures_mode else self.regular_mode_grind_1_stakes_spot
-    ):
-      if (slice_amount * item[0] / (trade.leverage if self.is_futures_mode else 1.0)) > min_stake:
-        regular_mode_grind_1_stakes = item
-        regular_mode_grind_1_sub_thresholds = (
-          self.regular_mode_grind_1_thresholds_futures[i]
-          if self.is_futures_mode
-          else self.regular_mode_grind_1_thresholds_spot[i]
-        )
-        max_grind_1_sub_grinds = len(regular_mode_grind_1_stakes)
-        break
+    regular_mode_grind_1_stakes = (
+      self.regular_mode_grind_1_stakes_futures.copy()
+      if self.is_futures_mode
+      else self.regular_mode_grind_1_stakes_spot.copy()
+    )
+    regular_mode_grind_1_sub_thresholds = (
+      self.regular_mode_grind_1_thresholds_futures
+      if self.is_futures_mode
+      else self.regular_mode_grind_1_thresholds_spot
+    )
+    if (slice_amount * regular_mode_grind_1_stakes[0] / trade.leverage) < min_stake:
+      multi = slice_amount / min_stake
+      for i, _ in enumerate(regular_mode_grind_1_stakes):
+        regular_mode_grind_1_stakes[i] *= multi
+    max_grind_1_sub_grinds = len(regular_mode_grind_1_stakes)
     regular_mode_grind_1_profit_threshold = (
       self.regular_mode_grind_1_profit_threshold_futures
       if self.is_futures_mode
@@ -34696,20 +34482,21 @@ class NostalgiaForInfinityX3(IStrategy):
     )
 
     max_grind_2_sub_grinds = 0
-    regular_mode_grind_2_stakes = []
-    regular_mode_grind_2_sub_thresholds = []
-    for i, item in enumerate(
-      self.regular_mode_grind_2_stakes_futures if self.is_futures_mode else self.regular_mode_grind_2_stakes_spot
-    ):
-      if (slice_amount * item[0] / (trade.leverage if self.is_futures_mode else 1.0)) > min_stake:
-        regular_mode_grind_2_stakes = item
-        regular_mode_grind_2_sub_thresholds = (
-          self.regular_mode_grind_2_thresholds_futures[i]
-          if self.is_futures_mode
-          else self.regular_mode_grind_2_thresholds_spot[i]
-        )
-        max_grind_2_sub_grinds = len(regular_mode_grind_2_stakes)
-        break
+    regular_mode_grind_2_stakes = (
+      self.regular_mode_grind_2_stakes_futures.copy()
+      if self.is_futures_mode
+      else self.regular_mode_grind_2_stakes_spot.copy()
+    )
+    regular_mode_grind_2_sub_thresholds = (
+      self.regular_mode_grind_2_thresholds_futures
+      if self.is_futures_mode
+      else self.regular_mode_grind_2_thresholds_spot
+    )
+    if (slice_amount * regular_mode_grind_2_stakes[0] / trade.leverage) < min_stake:
+      multi = slice_amount / min_stake
+      for i, _ in enumerate(regular_mode_grind_2_stakes):
+        regular_mode_grind_2_stakes[i] *= multi
+    max_grind_2_sub_grinds = len(regular_mode_grind_2_stakes)
     regular_mode_grind_2_profit_threshold = (
       self.regular_mode_grind_2_profit_threshold_futures
       if self.is_futures_mode
@@ -34717,20 +34504,21 @@ class NostalgiaForInfinityX3(IStrategy):
     )
 
     max_grind_3_sub_grinds = 0
-    regular_mode_grind_3_stakes = []
-    regular_mode_grind_3_sub_thresholds = []
-    for i, item in enumerate(
-      self.regular_mode_grind_3_stakes_futures if self.is_futures_mode else self.regular_mode_grind_3_stakes_spot
-    ):
-      if (slice_amount * item[0] / (trade.leverage if self.is_futures_mode else 1.0)) > min_stake:
-        regular_mode_grind_3_stakes = item
-        regular_mode_grind_3_sub_thresholds = (
-          self.regular_mode_grind_3_thresholds_futures[i]
-          if self.is_futures_mode
-          else self.regular_mode_grind_3_thresholds_spot[i]
-        )
-        max_grind_3_sub_grinds = len(regular_mode_grind_3_stakes)
-        break
+    regular_mode_grind_3_stakes = (
+      self.regular_mode_grind_3_stakes_futures.copy()
+      if self.is_futures_mode
+      else self.regular_mode_grind_3_stakes_spot.copy()
+    )
+    regular_mode_grind_3_sub_thresholds = (
+      self.regular_mode_grind_3_thresholds_futures
+      if self.is_futures_mode
+      else self.regular_mode_grind_3_thresholds_spot
+    )
+    if (slice_amount * regular_mode_grind_3_stakes[0] / trade.leverage) < min_stake:
+      multi = slice_amount / min_stake
+      for i, _ in enumerate(regular_mode_grind_3_stakes):
+        regular_mode_grind_3_stakes[i] *= multi
+    max_grind_3_sub_grinds = len(regular_mode_grind_3_stakes)
     regular_mode_grind_3_profit_threshold = (
       self.regular_mode_grind_3_profit_threshold_futures
       if self.is_futures_mode
@@ -34738,20 +34526,21 @@ class NostalgiaForInfinityX3(IStrategy):
     )
 
     max_grind_4_sub_grinds = 0
-    regular_mode_grind_4_stakes = []
-    regular_mode_grind_4_sub_thresholds = []
-    for i, item in enumerate(
-      self.regular_mode_grind_4_stakes_futures if self.is_futures_mode else self.regular_mode_grind_4_stakes_spot
-    ):
-      if (slice_amount * item[0] / (trade.leverage if self.is_futures_mode else 1.0)) > min_stake:
-        regular_mode_grind_4_stakes = item
-        regular_mode_grind_4_sub_thresholds = (
-          self.regular_mode_grind_4_thresholds_futures[i]
-          if self.is_futures_mode
-          else self.regular_mode_grind_4_thresholds_spot[i]
-        )
-        max_grind_4_sub_grinds = len(regular_mode_grind_4_stakes)
-        break
+    regular_mode_grind_4_stakes = (
+      self.regular_mode_grind_4_stakes_futures.copy()
+      if self.is_futures_mode
+      else self.regular_mode_grind_4_stakes_spot.copy()
+    )
+    regular_mode_grind_4_sub_thresholds = (
+      self.regular_mode_grind_4_thresholds_futures
+      if self.is_futures_mode
+      else self.regular_mode_grind_4_thresholds_spot
+    )
+    if (slice_amount * regular_mode_grind_4_stakes[0] / trade.leverage) < min_stake:
+      multi = slice_amount / min_stake
+      for i, _ in enumerate(regular_mode_grind_4_stakes):
+        regular_mode_grind_4_stakes[i] *= multi
+    max_grind_4_sub_grinds = len(regular_mode_grind_4_stakes)
     regular_mode_grind_4_profit_threshold = (
       self.regular_mode_grind_4_profit_threshold_futures
       if self.is_futures_mode
@@ -34759,20 +34548,21 @@ class NostalgiaForInfinityX3(IStrategy):
     )
 
     max_grind_5_sub_grinds = 0
-    regular_mode_grind_5_stakes = []
-    regular_mode_grind_5_sub_thresholds = []
-    for i, item in enumerate(
-      self.regular_mode_grind_5_stakes_futures if self.is_futures_mode else self.regular_mode_grind_5_stakes_spot
-    ):
-      if (slice_amount * item[0] / (trade.leverage if self.is_futures_mode else 1.0)) > min_stake:
-        regular_mode_grind_5_stakes = item
-        regular_mode_grind_5_sub_thresholds = (
-          self.regular_mode_grind_5_thresholds_futures[i]
-          if self.is_futures_mode
-          else self.regular_mode_grind_5_thresholds_spot[i]
-        )
-        max_grind_5_sub_grinds = len(regular_mode_grind_5_stakes)
-        break
+    regular_mode_grind_5_stakes = (
+      self.regular_mode_grind_5_stakes_futures.copy()
+      if self.is_futures_mode
+      else self.regular_mode_grind_5_stakes_spot.copy()
+    )
+    regular_mode_grind_5_sub_thresholds = (
+      self.regular_mode_grind_5_thresholds_futures
+      if self.is_futures_mode
+      else self.regular_mode_grind_5_thresholds_spot
+    )
+    if (slice_amount * regular_mode_grind_5_stakes[0] / trade.leverage) < min_stake:
+      multi = slice_amount / min_stake
+      for i, _ in enumerate(regular_mode_grind_5_stakes):
+        regular_mode_grind_5_stakes[i] *= multi
+    max_grind_5_sub_grinds = len(regular_mode_grind_5_stakes)
     regular_mode_grind_5_profit_threshold = (
       self.regular_mode_grind_5_profit_threshold_futures
       if self.is_futures_mode
