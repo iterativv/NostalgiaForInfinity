@@ -1703,6 +1703,10 @@ class NostalgiaForInfinityX4(IStrategy):
       "sell_profit_only" in self.config and self.config["sell_profit_only"]
     ):
       self.exit_profit_only = True
+    if "stop_threshold_spot" in self.config:
+      self.stop_threshold = self.config["stop_threshold_spot"]
+    if "stop_threshold_futures" in self.config:
+      self.stop_threshold_futures = self.config["stop_threshold_futures"]
     if "regular_mode_stake_multiplier_spot" in self.config:
       self.regular_mode_stake_multiplier_spot = self.config["regular_mode_stake_multiplier_spot"]
     if "regular_mode_stake_multiplier_futures" in self.config:
