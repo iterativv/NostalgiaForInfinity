@@ -34318,7 +34318,11 @@ class NostalgiaForInfinityX3(IStrategy):
       # and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 4, 5) or is_backtest)
       and derisk_1_distance_ratio
       < (
-        (self.regular_mode_derisk_1_reentry_futures if self.is_futures_mode else self.regular_mode_derisk_1_reentry_spot)
+        (
+          self.regular_mode_derisk_1_reentry_futures
+          if self.is_futures_mode
+          else self.regular_mode_derisk_1_reentry_spot
+        )
         / (trade.leverage if self.is_futures_mode else 1.0)
       )
     ):
@@ -35548,7 +35552,9 @@ class NostalgiaForInfinityX3(IStrategy):
         * (
           (self.regular_mode_derisk_1_futures if self.is_futures_mode else self.regular_mode_derisk_1_spot)
           if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 4, 16) or is_backtest)
-          else (self.regular_mode_derisk_1_futures_old if self.is_futures_mode else self.regular_mode_derisk_1_spot_old)
+          else (
+            self.regular_mode_derisk_1_futures_old if self.is_futures_mode else self.regular_mode_derisk_1_spot_old
+          )
         )
       )
     ):
