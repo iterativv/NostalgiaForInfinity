@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.601"
+    return "v13.1.602"
 
   stoploss = -0.99
 
@@ -1709,12 +1709,20 @@ class NostalgiaForInfinityX3(IStrategy):
       self.regular_mode_stake_multiplier_futures = self.config["regular_mode_stake_multiplier_futures"]
     if "regular_mode_derisk_1_spot" in self.config:
       self.regular_mode_derisk_1_spot = self.config["regular_mode_derisk_1_spot"]
+    if "regular_mode_derisk_1_spot_old" in self.config:
+      self.regular_mode_derisk_1_spot_old = self.config["regular_mode_derisk_1_spot_old"]
     if "regular_mode_derisk_spot" in self.config:
       self.regular_mode_derisk_spot = self.config["regular_mode_derisk_spot"]
+    if "regular_mode_derisk_spot_old" in self.config:
+      self.regular_mode_derisk_spot_old = self.config["regular_mode_derisk_spot_old"]
     if "regular_mode_derisk_1_futures" in self.config:
       self.regular_mode_derisk_1_futures = self.config["regular_mode_derisk_1_futures"]
+    if "regular_mode_derisk_1_futures_old" in self.config:
+      self.regular_mode_derisk_1_futures_old = self.config["regular_mode_derisk_1_futures_old"]
     if "regular_mode_derisk_futures" in self.config:
       self.regular_mode_derisk_futures = self.config["regular_mode_derisk_futures"]
+    if "regular_mode_derisk_futures_old" in self.config:
+      self.regular_mode_derisk_futures_old = self.config["regular_mode_derisk_futures_old"]
     if "grind_mode_max_slots" in self.config:
       self.grind_mode_max_slots = self.config["grind_mode_max_slots"]
     if "grind_mode_coins" in self.config:
