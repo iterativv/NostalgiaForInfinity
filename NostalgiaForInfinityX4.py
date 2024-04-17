@@ -2958,6 +2958,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Close min
     df["close_min_12"] = df["close"].rolling(12).min()
     df["close_min_24"] = df["close"].rolling(24).min()
+    df["close_min_48"] = df["close"].rolling(48).min()
 
     # Close delta
     df["close_delta"] = (df["close"] - df["close"].shift()).abs()
@@ -3106,6 +3107,13 @@ class NostalgiaForInfinityX4(IStrategy):
 
     btc_info_5m["pct_close_max_24"] = (btc_info_5m["close_max_24"] - btc_info_5m["close"]) / btc_info_5m["close"]
     btc_info_5m["pct_close_max_72"] = (btc_info_5m["close_max_72"] - btc_info_5m["close"]) / btc_info_5m["close"]
+
+    # Close min
+    btc_info_5m["close_min_24"] = btc_info_5m["close"].rolling(24).min()
+    btc_info_5m["close_min_72"] = btc_info_5m["close"].rolling(72).min()
+
+    btc_info_5m["pct_close_min_24"] = (btc_info_5m["close_min_24"] - btc_info_5m["close"]) / btc_info_5m["close"]
+    btc_info_5m["pct_close_min_72"] = (btc_info_5m["close_min_72"] - btc_info_5m["close"]) / btc_info_5m["close"]
 
     # Add prefix
     # -----------------------------------------------------------------------------------------
@@ -13347,6 +13355,11 @@ class NostalgiaForInfinityX4(IStrategy):
         | (df["close"] > df["sup_level_4h"])
       )
     )
+
+    df["protections_short_global"] = True
+    df["global_protections_short_pump"] = True
+    df["global_protections_short_dump"] = True
+    df["protections_short_rebuy"] = True
 
     tok = time.perf_counter()
     log.debug(f"[{metadata['pair']}] Populate indicators took a total of: {tok - tik:0.4f} seconds.")
