@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.607"
+    return "v13.1.608"
 
   stoploss = -0.99
 
@@ -34243,64 +34243,64 @@ class NostalgiaForInfinityX3(IStrategy):
         return -ft_sell_amount, "d", is_derisk
 
     # De-risk
-    if (
-      (
-        (profit_stake < (slice_amount * grind_derisk / (trade.leverage if self.is_futures_mode else 1.0)))
-        and (
-          (
-            (trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0))
-            - (
-              (
-                derisk_1_total_amount
-                + grind_1_derisk_1_total_amount
-                + grind_2_derisk_1_total_amount
-                + grind_1_total_amount
-                + grind_2_total_amount
-                + grind_3_total_amount
-                + grind_4_total_amount
-                + grind_5_total_amount
-              )
-              * exit_rate
-              / (trade.leverage if self.is_futures_mode else 1.0)
-            )
-          )
-          > (min_stake * 3.0)
-        )
-        # temporary
-        and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2023, 12, 19) or is_backtest)
-      )
-      # temporary
-      and (
-        (trade.open_date_utc.replace(tzinfo=None) >= datetime(2023, 8, 28) or is_backtest)
-        or (filled_entries[-1].order_date_utc.replace(tzinfo=None) >= datetime(2023, 8, 28) or is_backtest)
-      )
-    ):
-      sell_amount = trade.amount * exit_rate / trade.leverage
-      if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
-        sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
-      ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
-      if sell_amount > min_stake and ft_sell_amount > min_stake:
-        self.dp.send_msg(
-          f"De-risk (dd0) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
-        )
-        log.info(
-          f"De-risk (dd0) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
-        )
-        order_tag = "dd0"
-        for grind_entry_id in (
-          grind_1_buy_orders
-          + grind_2_buy_orders
-          + grind_3_buy_orders
-          + grind_4_buy_orders
-          + grind_5_buy_orders
-          + grind_1_derisk_1_buy_orders
-          + grind_2_derisk_1_buy_orders
-        ):
-          order_tag += " " + str(grind_entry_id)
-        if has_order_tags:
-          return -ft_sell_amount, order_tag
-        else:
-          return -ft_sell_amount
+    # if (
+    #   (
+    #     (profit_stake < (slice_amount * grind_derisk / (trade.leverage if self.is_futures_mode else 1.0)))
+    #     and (
+    #       (
+    #         (trade.amount * exit_rate / (trade.leverage if self.is_futures_mode else 1.0))
+    #         - (
+    #           (
+    #             derisk_1_total_amount
+    #             + grind_1_derisk_1_total_amount
+    #             + grind_2_derisk_1_total_amount
+    #             + grind_1_total_amount
+    #             + grind_2_total_amount
+    #             + grind_3_total_amount
+    #             + grind_4_total_amount
+    #             + grind_5_total_amount
+    #           )
+    #           * exit_rate
+    #           / (trade.leverage if self.is_futures_mode else 1.0)
+    #         )
+    #       )
+    #       > (min_stake * 3.0)
+    #     )
+    #     # temporary
+    #     and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2023, 12, 19) or is_backtest)
+    #   )
+    #   # temporary
+    #   and (
+    #     (trade.open_date_utc.replace(tzinfo=None) >= datetime(2023, 8, 28) or is_backtest)
+    #     or (filled_entries[-1].order_date_utc.replace(tzinfo=None) >= datetime(2023, 8, 28) or is_backtest)
+    #   )
+    # ):
+    #   sell_amount = trade.amount * exit_rate / trade.leverage
+    #   if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
+    #     sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
+    #   ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
+    #   if sell_amount > min_stake and ft_sell_amount > min_stake:
+    #     self.dp.send_msg(
+    #       f"De-risk (dd0) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+    #     )
+    #     log.info(
+    #       f"De-risk (dd0) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+    #     )
+    #     order_tag = "dd0"
+    #     for grind_entry_id in (
+    #       grind_1_buy_orders
+    #       + grind_2_buy_orders
+    #       + grind_3_buy_orders
+    #       + grind_4_buy_orders
+    #       + grind_5_buy_orders
+    #       + grind_1_derisk_1_buy_orders
+    #       + grind_2_derisk_1_buy_orders
+    #     ):
+    #       order_tag += " " + str(grind_entry_id)
+    #     if has_order_tags:
+    #       return -ft_sell_amount, order_tag
+    #     else:
+    #       return -ft_sell_amount
 
     return None
 
