@@ -2450,6 +2450,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     # Max lows
     informative_1d["low_min_6"] = informative_1d["low"].rolling(6).min()
+    informative_1d["low_min_12"] = informative_1d["low"].rolling(12).min()
 
     # Performance logging
     # -----------------------------------------------------------------------------------------
