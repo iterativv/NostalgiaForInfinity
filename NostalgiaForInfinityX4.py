@@ -35428,6 +35428,7 @@ class NostalgiaForInfinityX4(IStrategy):
                 and (last_candle["rsi_14"] < 36.0)
                 and (last_candle["zlma_50_dec_1h"] == False)
                 and (last_candle["zlma_50_dec_4h"] == False)
+                and (last_candle["close"] < (last_candle["ema_26"] * 0.988))
               )
             )
           )
