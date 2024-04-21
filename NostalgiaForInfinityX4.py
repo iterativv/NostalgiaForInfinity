@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.618"
+    return "v14.1.619"
 
   stoploss = -0.99
 
@@ -32909,7 +32909,10 @@ class NostalgiaForInfinityX4(IStrategy):
             grind_1_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
             grind_1_found = True
       elif order.ft_order_side == "sell":
-        if (order.safe_remaining * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) > min_stake:
+        if (
+          order is filled_exits[-1]
+          and (order.safe_remaining * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) > min_stake
+        ):
           partial_sell = True
           break
         order_tag = ""
@@ -34919,7 +34922,10 @@ class NostalgiaForInfinityX4(IStrategy):
             rebuy_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
             rebuy_found = True
       elif order.ft_order_side == "sell":
-        if (order.safe_remaining * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) > min_stake:
+        if (
+          order is filled_exits[-1]
+          and (order.safe_remaining * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) > min_stake
+        ):
           partial_sell = True
           break
         order_tag = ""
@@ -43414,7 +43420,10 @@ class NostalgiaForInfinityX4(IStrategy):
             grind_1_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
             grind_1_found = True
       elif order.ft_order_side == "buy":
-        if (order.safe_remaining * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) > min_stake:
+        if (
+          order is filled_exits[-1]
+          and (order.safe_remaining * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) > min_stake
+        ):
           partial_sell = True
           break
         order_tag = ""
@@ -45405,7 +45414,10 @@ class NostalgiaForInfinityX4(IStrategy):
             rebuy_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
             rebuy_found = True
       elif order.ft_order_side == "buy":
-        if (order.safe_remaining * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) > min_stake:
+        if (
+          order is filled_exits[-1]
+          and (order.safe_remaining * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) > min_stake
+        ):
           partial_sell = True
           break
         order_tag = ""
