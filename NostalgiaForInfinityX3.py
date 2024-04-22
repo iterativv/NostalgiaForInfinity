@@ -17535,7 +17535,7 @@ class NostalgiaForInfinityX3(IStrategy):
           if self.entry_10_ema_200_not_dec_1h_enabled.value:
             long_entry_logic.append(df["ema_200_dec_48_1h"] == False)
           if self.entry_10_ema_200_not_dec_4h_enabled.value:
-            long_entry_logic.append(df["ema_200_dec_10_4h"] == False)
+            long_entry_logic.append(df["ema_200_dec_24_4h"] == False)
           if self.entry_10_ema_200_not_dec_1d_enabled.value:
             long_entry_logic.append(df["ema_200_dec_4_1d"] == False)
           if self.entry_10_not_downtrend_15m_enabled.value:
