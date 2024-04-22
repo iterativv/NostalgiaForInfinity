@@ -32475,7 +32475,7 @@ class NostalgiaForInfinityX3(IStrategy):
       and profit_stake
       < -(filled_entries[0].cost * self.stop_threshold / (trade.leverage if self.is_futures_mode else 1.0))
       # temporary
-      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2023, 6, 13) or is_backtest)
+      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 4, 1) or is_backtest)
     ):
       return True, f"exit_{mode_name}_stoploss"
 
