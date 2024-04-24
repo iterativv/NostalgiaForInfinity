@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.625"
+    return "v14.1.626"
 
   stoploss = -0.99
 
@@ -24559,23 +24559,24 @@ class NostalgiaForInfinityX4(IStrategy):
           long_entry_logic.append(df["hl_pct_change_48_1h"] < 0.90)
           long_entry_logic.append(df["num_empty_288"] < allowed_empty_candles)
 
-          long_entry_logic.append(df["rsi_3"] >= 8.0)
+          long_entry_logic.append(df["rsi_3"] >= 6.0)
           long_entry_logic.append(df["rsi_3"] <= 50.0)
-          long_entry_logic.append(df["rsi_3_15m"] >= 8.0)
+          long_entry_logic.append(df["rsi_3_15m"] >= 10.0)
           long_entry_logic.append(df["rsi_3_1h"] >= 10.0)
           long_entry_logic.append(df["rsi_3_4h"] >= 10.0)
-          long_entry_logic.append(df["rsi_3_1d"] >= 10.0)
           long_entry_logic.append(df["cti_20_1h"] <= 0.90)
-          long_entry_logic.append(df["rsi_14_1h"] <= 60.0)
+          long_entry_logic.append(df["rsi_14_1h"] <= 80.0)
           long_entry_logic.append(df["cti_20_4h"] <= 0.90)
-          long_entry_logic.append(df["rsi_14_4h"] <= 60.0)
+          long_entry_logic.append(df["rsi_14_4h"] <= 80.0)
           long_entry_logic.append(df["cti_20_1d"] <= 0.90)
-          long_entry_logic.append(df["rsi_14_1d"] <= 70.0)
+          long_entry_logic.append(df["rsi_14_1d"] <= 80.0)
+
+          long_entry_logic.append(df["ema_200_dec_48_1h"] == False)
 
           # Logic
-          long_entry_logic.append(df["rsi_14"] < 36.0)
-          long_entry_logic.append(df["bb40_2_delta"].gt(df["close"] * 0.025))
-          long_entry_logic.append(df["close_delta"].gt(df["close"] * 0.02))
+          long_entry_logic.append(df["rsi_14"] < 32.0)
+          long_entry_logic.append(df["bb40_2_delta"].gt(df["close"] * 0.034))
+          long_entry_logic.append(df["close_delta"].gt(df["close"] * 0.012))
           long_entry_logic.append(df["bb40_2_tail"].lt(df["bb40_2_delta"] * 0.4))
           long_entry_logic.append(df["close"].lt(df["bb40_2_low"].shift()))
           long_entry_logic.append(df["close"].le(df["close"].shift()))
