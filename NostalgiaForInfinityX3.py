@@ -46363,9 +46363,9 @@ class NostalgiaForInfinityX3(IStrategy):
         * (self.rebuy_mode_derisk_futures if self.is_futures_mode else self.rebuy_mode_derisk_spot)
         / (trade.leverage if self.is_futures_mode else 1.0)
       ):
-      sell_amount = trade.amount * exit_rate / trade.leverage - (min_stake * 1.55)
-      ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
-      if sell_amount > min_stake and ft_sell_amount > min_stake:
+        sell_amount = trade.amount * exit_rate / trade.leverage - (min_stake * 1.55)
+        ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
+        if sell_amount > min_stake and ft_sell_amount > min_stake:
           self.dp.send_msg(
             f"Rebuy de-risk (d1) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
           )
