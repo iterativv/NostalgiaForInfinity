@@ -169,8 +169,8 @@ class NostalgiaForInfinityX3(IStrategy):
   stop_threshold_futures = 12.0
   stop_threshold_futures_rapid = 12.0
   stop_threshold_spot_rapid = 4.0
-  stop_threshold_spot_rebuy = 0.9
-  stop_threshold_futures_rebuy = 3.9
+  stop_threshold_spot_rebuy = 2.0
+  stop_threshold_futures_rebuy = 4.0
 
   # Rebuy mode minimum number of free slots
   rebuy_mode_min_free_slots = 2
