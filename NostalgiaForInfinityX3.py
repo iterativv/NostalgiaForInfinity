@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.628"
+    return "v13.1.629"
 
   stoploss = -0.99
 
@@ -13330,6 +13330,29 @@ class NostalgiaForInfinityX3(IStrategy):
         | (df["rsi_14_4h"] < 50.0)
         | (df["r_480_1h"] > -65.0)
         | (df["close"] > df["sup_level_1h"])
+        | (df["ema_200_dec_24_4h"] == False)
+      )
+      & (
+        (df["change_pct_4h"] < 0.08)
+        | (df["not_downtrend_1h"])
+        | (df["rsi_14_max_6_1h"] < 70.0)
+        | (df["rsi_14_4h"] < 60.0)
+        | (df["ema_200_dec_24_4h"] == False)
+      )
+      & (
+        (df["change_pct_4h"] < 0.08)
+        | (df["change_pct_1h"] > -0.04)
+        | (df["change_pct_1h"].shift(12) < 0.04)
+        | (df["rsi_14_1h"].shift(12) < 70.0)
+        | (df["rsi_14_4h"] < 60.0)
+        | (df["ema_200_dec_24_4h"] == False)
+      )
+      & (
+        (df["change_pct_4h"] > -0.08)
+        | (df["change_pct_4h"].shift(48) < 0.08)
+        | (df["not_downtrend_1h"])
+        | (df["not_downtrend_4h"])
+        | (df["rsi_14_max_6_1h"] < 70.0)
         | (df["ema_200_dec_24_4h"] == False)
       )
     )
