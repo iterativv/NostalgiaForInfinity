@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.629"
+    return "v14.1.630"
 
   stoploss = -0.99
 
@@ -32966,6 +32966,7 @@ class NostalgiaForInfinityX4(IStrategy):
         elif order_tag in ["p", "r", "d", "dd0", "partial_exit", ""]:
           if order_tag in ["d"]:
             is_derisk_found = True
+            is_derisk = True
           grind_1_is_sell_found = True
           grind_2_is_sell_found = True
           grind_3_is_sell_found = True
@@ -34414,7 +34415,6 @@ class NostalgiaForInfinityX4(IStrategy):
         else:
           return -ft_sell_amount
 
-
     # De-risk 1 reentry
     if (
       is_derisk_1
@@ -35149,7 +35149,7 @@ class NostalgiaForInfinityX4(IStrategy):
           grind_4_is_sell_found = True
         elif order_tag in ["g5", "sg5"]:
           grind_5_is_sell_found = True
-        elif order_tag in ["d", "d1", "dd0", "ddl1", "ddl2", "dd1", "dd2", "dd3", "dd4", "dd5"]:
+        elif order_tag in ["d", "d1", "dd0", "ddl1", "ddl2", "dd1", "dd2", "dd3", "dd4", "dd5", "dd6"]:
           is_derisk = True
           if order_tag in ["d1"]:
             is_derisk_1 = True
