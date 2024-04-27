@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.631"
+    return "v14.1.632"
 
   stoploss = -0.99
 
@@ -25481,16 +25481,23 @@ class NostalgiaForInfinityX4(IStrategy):
         short_entry_logic = []
         short_entry_logic.append(reduce(lambda x, y: x & y, item_short_buy_protection_list))
 
-        # Condition #500 - Rapid mode (Short).
+        # Condition #500 - Normal mode (Short).
         if short_index == 500:
           # Protections
-          # short_entry_logic.append(df["global_protections_long_pump"] == False)
-          # short_entry_logic.append(df["global_protections_long_dump"] == False)
-          # short_entry_logic.append(df["btc_pct_close_max_24_5m"] < 0.03)
-          # short_entry_logic.append(df["btc_pct_close_max_72_5m"] < 0.03)
+          short_entry_logic.append(df["protections_short_global"] == True)
+          short_entry_logic.append(df["global_protections_short_pump"] == True)
+          short_entry_logic.append(df["global_protections_short_dump"] == True)
+          short_entry_logic.append(df["num_empty_288"] < allowed_empty_candles)
+
+          short_entry_logic.append(df["rsi_3_15m"] <= 96.0)
+          short_entry_logic.append(df["rsi_3_1h"] <= 96.0)
 
           # Logic
-          short_entry_logic.append(df["buy_short"] > 0)
+          short_entry_logic.append(df["ema_12"] > df["ema_26"])
+          short_entry_logic.append((df["ema_12"] - df["ema_26"]) > (df["open"] * 0.028))
+          short_entry_logic.append((df["ema_12"] - df["ema_26"]) > (df["open"] / 100.0))
+          short_entry_logic.append(df["close"] > (df["bb20_2_upp"] * 1.012))
+          short_entry_logic.append(df["rsi_14"] > 64.0)
 
         # Condition #500 - Rapid mode (Short).
         if short_index == 501:
