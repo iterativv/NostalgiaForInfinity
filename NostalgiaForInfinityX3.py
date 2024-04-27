@@ -113,7 +113,7 @@ class NostalgiaForInfinityX3(IStrategy):
   # Long Pump mode tags
   long_pump_mode_tags = ["21", "22", "23", "24", "25", "26"]
   # Long Quick mode tags
-  long_quick_mode_tags = ["41", "42", "43", "44", "45", "46", "47", "48", "49", "50"]
+  long_quick_mode_tags = ["41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51"]
   # Long rebuy mode tags
   long_rebuy_mode_tags = ["61"]
   # Long high profit mode tags
@@ -424,6 +424,7 @@ class NostalgiaForInfinityX3(IStrategy):
     "long_entry_condition_48_enable": True,
     "long_entry_condition_49_enable": True,
     "long_entry_condition_50_enable": True,
+    "long_entry_condition_51_enable": False,
     "long_entry_condition_61_enable": True,
     "long_entry_condition_81_enable": False,
     "long_entry_condition_82_enable": False,
@@ -24543,6 +24544,44 @@ class NostalgiaForInfinityX3(IStrategy):
           long_entry_logic.append(df["ema_26"] > df["ema_12"])
           long_entry_logic.append((df["ema_26"] - df["ema_12"]) > (df["open"] * self.entry_50_ema_open_offset.value))
           long_entry_logic.append((df["ema_26"].shift() - df["ema_12"].shift()) > (df["open"] / 100.0))
+
+        # Condition #51 - Quick mode (Long).
+        if index == 51:
+          # Protections
+          long_entry_logic.append(df["protections_long_global"] == True)
+          long_entry_logic.append(df["global_protections_long_pump"] == True)
+          long_entry_logic.append(df["global_protections_long_dump"] == True)
+          long_entry_logic.append(df["btc_pct_close_max_24_5m"] < 0.03)
+          long_entry_logic.append(df["btc_pct_close_max_72_5m"] < 0.03)
+          long_entry_logic.append(df["close"] > (df["close_max_12"] * 0.94))
+          long_entry_logic.append(df["close"] > (df["close_max_24"] * 0.92))
+          long_entry_logic.append(df["close"] > (df["close_max_48"] * 0.90))
+          long_entry_logic.append(df["close"] > (df["high_max_24_1h"] * 0.88))
+          long_entry_logic.append(df["close"] > (df["high_max_48_1h"] * 0.86))
+          long_entry_logic.append(df["hl_pct_change_6_1h"] < 0.60)
+          long_entry_logic.append(df["hl_pct_change_12_1h"] < 0.70)
+          long_entry_logic.append(df["hl_pct_change_24_1h"] < 0.80)
+          long_entry_logic.append(df["hl_pct_change_48_1h"] < 0.90)
+          long_entry_logic.append(df["num_empty_288"] < allowed_empty_candles)
+
+          long_entry_logic.append(df["rsi_3"] >= 6.0)
+          long_entry_logic.append(df["rsi_3"] <= 50.0)
+          long_entry_logic.append(df["rsi_3_15m"] >= 10.0)
+          long_entry_logic.append(df["rsi_3_1h"] >= 10.0)
+          long_entry_logic.append(df["rsi_3_4h"] >= 10.0)
+          # long_entry_logic.append(df["rsi_3_1d"] >= 10.0)
+          long_entry_logic.append(df["cti_20_1h"] <= 0.90)
+          long_entry_logic.append(df["rsi_14_1h"] <= 80.0)
+          long_entry_logic.append(df["cti_20_4h"] <= 0.90)
+          long_entry_logic.append(df["rsi_14_4h"] <= 80.0)
+          long_entry_logic.append(df["cti_20_1d"] <= 0.90)
+          long_entry_logic.append(df["rsi_14_1d"] <= 80.0)
+
+          long_entry_logic.append(df["zlma_50_dec_1h"] == False)
+
+          # Logic
+          long_entry_logic.append(df["rsi_14"] < 32.0)
+          long_entry_logic.append(df["close"] < (df["ema_26"] * 0.974))  # 0.974
 
         # Condition #61 - Rebuy mode (Long).
         if index == 61:
