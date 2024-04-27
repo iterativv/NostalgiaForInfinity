@@ -445,7 +445,7 @@ class NostalgiaForInfinityX3(IStrategy):
   short_entry_signal_params = {
     # Enable/Disable conditions
     # -------------------------------------------------------
-    "short_entry_condition_500_enable": False,
+    "short_entry_condition_500_enable": True,
     "short_entry_condition_501_enable": False,
   }
 
