@@ -2216,10 +2216,13 @@ class NostalgiaForInfinityX3(IStrategy):
     side: str,
     **kwargs,
   ) -> float:
-    if self.position_adjustment_enable == True:
-      enter_tags = entry_tag.split()
+    enter_tags = entry_tag.split()
+    if side == "long":
       # Rebuy mode
-      if all(c in self.long_rebuy_mode_tags for c in enter_tags):
+      if all(c in self.long_rebuy_mode_tags for c in enter_tags) or (
+        any(c in self.long_rebuy_mode_tags for c in enter_tags)
+        and all(c in (self.long_rebuy_mode_tags + self.long_grind_mode_tags) for c in enter_tags)
+      ):
         stake_multiplier = self.rebuy_mode_stake_multiplier
         # Low stakes, on Binance mostly
         if (proposed_stake * self.rebuy_mode_stake_multiplier) < min_stake:
@@ -2227,6 +2230,35 @@ class NostalgiaForInfinityX3(IStrategy):
         return proposed_stake * stake_multiplier
       # Grind mode
       elif all(c in self.long_grind_mode_tags for c in enter_tags):
+        for _, item in enumerate(
+          self.grind_mode_stake_multiplier_futures if self.is_futures_mode else self.grind_mode_stake_multiplier_spot
+        ):
+          if (proposed_stake * item) > min_stake:
+            stake_multiplier = item
+            return proposed_stake * stake_multiplier
+      else:
+        stake_multiplier = (
+          self.regular_mode_stake_multiplier_futures[0]
+          if self.is_futures_mode
+          else self.regular_mode_stake_multiplier_spot[0]
+        )
+        if (proposed_stake * stake_multiplier) > min_stake:
+          return proposed_stake * stake_multiplier
+        else:
+          return min_stake
+    else:
+      # Rebuy mode
+      if all(c in self.short_rebuy_mode_tags for c in enter_tags) or (
+        any(c in self.short_rebuy_mode_tags for c in enter_tags)
+        and all(c in (self.short_rebuy_mode_tags + self.short_grind_mode_tags) for c in enter_tags)
+      ):
+        stake_multiplier = self.rebuy_mode_stake_multiplier
+        # Low stakes, on Binance mostly
+        if (proposed_stake * self.rebuy_mode_stake_multiplier) < min_stake:
+          stake_multiplier = self.rebuy_mode_stake_multiplier_alt
+        return proposed_stake * stake_multiplier
+      # Grind mode
+      elif all(c in self.short_grind_mode_tags for c in enter_tags):
         for _, item in enumerate(
           self.grind_mode_stake_multiplier_futures if self.is_futures_mode else self.grind_mode_stake_multiplier_spot
         ):
@@ -2270,8 +2302,30 @@ class NostalgiaForInfinityX3(IStrategy):
       enter_tag = trade.enter_tag
     enter_tags = enter_tag.split()
 
-    # Grinding
+    # Rebuy mode
     if not trade.is_short and (
+      all(c in self.long_rebuy_mode_tags for c in enter_tags)
+      or (
+        any(c in self.long_rebuy_mode_tags for c in enter_tags)
+        and all(c in (self.long_rebuy_mode_tags + self.long_grind_mode_tags) for c in enter_tags)
+      )
+    ):
+      return self.long_rebuy_adjust_trade_position(
+        trade,
+        enter_tags,
+        current_time,
+        current_rate,
+        current_profit,
+        min_stake,
+        max_stake,
+        current_entry_rate,
+        current_exit_rate,
+        current_entry_profit,
+        current_exit_profit,
+      )
+
+    # Grinding
+    elif not trade.is_short and (
       any(
         c
         in (
@@ -2312,7 +2366,7 @@ class NostalgiaForInfinityX3(IStrategy):
         current_exit_profit,
       )
 
-    if trade.is_short and (
+    elif trade.is_short and (
       any(
         c
         in (
@@ -2340,22 +2394,6 @@ class NostalgiaForInfinityX3(IStrategy):
       )
     ):
       return self.short_grind_adjust_trade_position(
-        trade,
-        enter_tags,
-        current_time,
-        current_rate,
-        current_profit,
-        min_stake,
-        max_stake,
-        current_entry_rate,
-        current_exit_rate,
-        current_entry_profit,
-        current_exit_profit,
-      )
-
-    # Rebuy mode
-    if all(c in self.long_rebuy_mode_tags for c in enter_tags):
-      return self.long_rebuy_adjust_trade_position(
         trade,
         enter_tags,
         current_time,
@@ -32621,7 +32659,10 @@ class NostalgiaForInfinityX3(IStrategy):
     current_stake_amount = trade.amount * current_rate
     is_derisk = trade.amount < (filled_entries[0].safe_filled * 0.95)
     is_derisk_calc = False
-    is_rebuy_mode = all(c in self.long_rebuy_mode_tags for c in enter_tags)
+    is_rebuy_mode = all(c in self.long_rebuy_mode_tags for c in enter_tags) or (
+      any(c in self.long_rebuy_mode_tags for c in enter_tags)
+      and all(c in (self.long_rebuy_mode_tags + self.long_grind_mode_tags) for c in enter_tags)
+    )
     is_grind_mode = all(c in self.long_grind_mode_tags for c in enter_tags)
 
     # Rebuy mode
@@ -43378,7 +43419,10 @@ class NostalgiaForInfinityX3(IStrategy):
     current_stake_amount = trade.amount * current_rate
     is_derisk = trade.amount < (filled_entries[0].safe_filled * 0.95)
     is_derisk_calc = False
-    is_rebuy_mode = all(c in self.short_rebuy_mode_tags for c in enter_tags)
+    is_rebuy_mode = all(c in self.short_rebuy_mode_tags for c in enter_tags) or (
+      any(c in self.short_rebuy_mode_tags for c in enter_tags)
+      and all(c in (self.short_rebuy_mode_tags + self.short_grind_mode_tags) for c in enter_tags)
+    )
     is_grind_mode = all(c in self.short_grind_mode_tags for c in enter_tags)
 
     # Rebuy mode
