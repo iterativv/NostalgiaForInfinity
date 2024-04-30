@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   Pre-Commit:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Fetch Source Code
         uses: actions/checkout@v4
@@ -43,7 +43,7 @@ jobs:
           extra_args: --files ${{ steps.changed-files.outputs.repo_files }}
 
   Binance-Backtests:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs:
       - Pre-Commit
     strategy:
@@ -141,7 +141,7 @@ jobs:
           path: artifacts/
 
   Kucoin-Backtests:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs:
       - Pre-Commit
     strategy:
@@ -231,7 +231,7 @@ jobs:
           path: artifacts/
 
   # OKX-Backtests:
-  #   runs-on: ubuntu-20.04
+  #   runs-on: ubuntu-latest
   #   needs:
   #     - Pre-Commit
   #   strategy:
@@ -312,7 +312,7 @@ jobs:
   #         path: artifacts/
 
   Backest-CI-Stats:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs:
       - Kucoin-Backtests
       - Binance-Backtests
