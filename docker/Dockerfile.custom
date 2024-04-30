@@ -1,5 +1,5 @@
 ARG sourceimage=freqtradeorg/freqtrade
-ARG sourcetag=stable
+ARG sourcetag=develop
 FROM ${sourceimage}:${sourcetag}
 USER root
 
