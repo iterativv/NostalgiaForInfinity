@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.657"
+    return "v14.1.658"
 
   stoploss = -0.99
 
@@ -3308,6 +3308,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
     df["zlma_50_1h"] = df["zlma_50_1h"].astype(np.float64).replace(to_replace=[np.nan, None], value=(0.0))
     df["cti_20_1d"] = df["cti_20_1d"].astype(np.float64).replace(to_replace=[np.nan, None], value=(0.0))
+    df["r_480_1h"] = df["r_480_1h"].astype(np.float64).replace(to_replace=[np.nan, None], value=(-50.0))
     df["r_480_4h"] = df["r_480_4h"].astype(np.float64).replace(to_replace=[np.nan, None], value=(-50.0))
     df["rsi_14_1d"] = df["rsi_14_1d"].astype(np.float64).replace(to_replace=[np.nan, None], value=(50.0))
 
