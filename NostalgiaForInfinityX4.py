@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.655"
+    return "v14.1.656"
 
   stoploss = -0.99
 
@@ -36604,10 +36604,14 @@ class NostalgiaForInfinityX4(IStrategy):
         ((0 <= sub_grind_count < max_sub_grinds) and (slice_profit_entry < rebuy_mode_sub_thresholds[sub_grind_count]))
         and (last_candle["protections_long_global"] == True)
         and (last_candle["protections_long_rebuy"] == True)
+        and (last_candle["global_protections_long_pump"] == True)
+        and (last_candle["global_protections_long_dump"] == True)
         and (
-          (last_candle["close_max_12"] < (last_candle["close"] * 1.14))
-          and (last_candle["close_max_24"] < (last_candle["close"] * 1.20))
-          and (last_candle["close_max_48"] < (last_candle["close"] * 1.26))
+          (last_candle["close"] > (last_candle["close_max_12"] * 0.94))
+          and (last_candle["close"] > (last_candle["close_max_24"] * 0.92))
+          and (last_candle["close"] > (last_candle["close_max_48"] * 0.90))
+          and (last_candle["close"] > (last_candle["high_max_24_1h"] * 0.88))
+          and (last_candle["close"] > (last_candle["high_max_48_1h"] * 0.86))
           and (last_candle["btc_pct_close_max_72_5m"] < 0.03)
           and (last_candle["btc_pct_close_max_24_5m"] < 0.03)
         )
@@ -36616,7 +36620,8 @@ class NostalgiaForInfinityX4(IStrategy):
           and (last_candle["rsi_3_15m"] > 10.0)
           and (last_candle["rsi_3_1h"] > 10.0)
           and (last_candle["rsi_3_4h"] > 10.0)
-          and (last_candle["rsi_14"] < 46.0)
+          and (last_candle["rsi_14"] < 36.0)
+          and (last_candle["close"] < (last_candle["ema_26"] * 0.988))
         )
       ):
         buy_amount = (
@@ -47160,10 +47165,14 @@ class NostalgiaForInfinityX4(IStrategy):
         ((0 <= sub_grind_count < max_sub_grinds) and (slice_profit_entry < rebuy_mode_sub_thresholds[sub_grind_count]))
         and (last_candle["protections_short_global"] == True)
         and (last_candle["protections_short_rebuy"] == True)
+        and (last_candle["global_protections_short_pump"] == True)
+        and (last_candle["global_protections_short_dump"] == True)
         and (
-          (last_candle["close_min_12"] > (last_candle["close"] * 0.96))
-          and (last_candle["close_min_24"] > (last_candle["close"] * 0.80))
-          and (last_candle["close_min_48"] > (last_candle["close"] * 0.74))
+          (last_candle["close"] > (last_candle["close_min_12"] * 0.94))
+          and (last_candle["close"] > (last_candle["close_min_24"] * 0.92))
+          and (last_candle["close"] > (last_candle["close_min_48"] * 0.90))
+          and (last_candle["close"] > (last_candle["low_min_24_1h"] * 0.88))
+          and (last_candle["close"] > (last_candle["low_min_48_1h"] * 0.86))
           and (last_candle["btc_pct_close_min_72_5m"] > 0.03)
           and (last_candle["btc_pct_close_min_24_5m"] > 0.03)
         )
@@ -47172,7 +47181,8 @@ class NostalgiaForInfinityX4(IStrategy):
           and (last_candle["rsi_3_15m"] < 90.0)
           and (last_candle["rsi_3_1h"] < 90.0)
           and (last_candle["rsi_3_4h"] < 90.0)
-          and (last_candle["rsi_14"] > 54.0)
+          and (last_candle["rsi_14"] > 64.0)
+          and (last_candle["close"] > (last_candle["ema_26"] * 1.012))
         )
       ):
         buy_amount = (
