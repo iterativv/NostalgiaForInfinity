@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.680"
+    return "v13.1.681"
 
   stoploss = -0.99
 
@@ -45943,11 +45943,11 @@ class NostalgiaForInfinityX3(IStrategy):
       and (last_candle["global_protections_short_pump"] == True)
       and (last_candle["global_protections_short_dump"] == True)
       and (
-        (last_candle["close"] > (last_candle["close_min_12"] * 0.88))
-        and (last_candle["close"] > (last_candle["close_min_24"] * 0.82))
-        and (last_candle["close"] > (last_candle["close_min_48"] * 0.76))
-        and (last_candle["btc_pct_close_min_72_5m"] < 0.03)
-        and (last_candle["btc_pct_close_min_24_5m"] < 0.03)
+        (last_candle["close"] < (last_candle["close_min_12"] * 1.12))
+        and (last_candle["close"] < (last_candle["close_min_24"] * 1.18))
+        and (last_candle["close"] < (last_candle["close_min_48"] * 1.24))
+        and (last_candle["btc_pct_close_min_72_5m"] < -0.03)
+        and (last_candle["btc_pct_close_min_24_5m"] < -0.03)
       )
       and (
         (last_candle["enter_short"] == True)
