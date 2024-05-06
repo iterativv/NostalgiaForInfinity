@@ -25089,9 +25089,7 @@ class NostalgiaForInfinityX4(IStrategy):
           long_entry_logic.append(df["close"] > df["ema_200_1h"])
 
           long_entry_logic.append(
-            (df["change_pct_1h"] > -0.01)
-            | (df["ema_200_dec_24_4h"] == False)
-            | (df["ema_200_dec_4_1d"] == False)
+            (df["change_pct_1h"] > -0.01) | (df["ema_200_dec_24_4h"] == False) | (df["ema_200_dec_4_1d"] == False)
           )
 
           # Logic
