@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.677"
+    return "v13.1.678"
 
   stoploss = -0.99
 
@@ -185,62 +185,62 @@ class NostalgiaForInfinityX3(IStrategy):
   grind_derisk_spot = -0.40
   grind_derisk_futures = -0.50
 
-  grind_1_stop_grinds_spot = -0.30
+  grind_1_stop_grinds_spot = -0.50
   grind_1_profit_threshold_spot = 0.018
   grind_1_stakes_spot = [0.20, 0.20, 0.20]
   grind_1_sub_thresholds_spot = [-0.10, -0.11, -0.12]
 
-  grind_1_stop_grinds_futures = -0.30
+  grind_1_stop_grinds_futures = -0.50
   grind_1_profit_threshold_futures = 0.018
   grind_1_stakes_futures = [0.20, 0.20, 0.20]
   grind_1_sub_thresholds_futures = [-0.10, -0.11, -0.12]
 
-  grind_2_stop_grinds_spot = -0.30
+  grind_2_stop_grinds_spot = -0.50
   grind_2_profit_threshold_spot = 0.018
   grind_2_stakes_spot = [0.15, 0.25, 0.30]
   grind_2_sub_thresholds_spot = [-0.10, -0.11, -0.12]
 
-  grind_2_stop_grinds_futures = -0.30
+  grind_2_stop_grinds_futures = -0.50
   grind_2_profit_threshold_futures = 0.018
   grind_2_stakes_futures = [0.15, 0.25, 0.30]
   grind_2_sub_thresholds_futures = [-0.10, -0.11, -0.12]
 
-  grind_3_stop_grinds_spot = -0.30
+  grind_3_stop_grinds_spot = -0.50
   grind_3_profit_threshold_spot = 0.018
   grind_3_stakes_spot = [0.10, 0.10, 0.10]
   grind_3_sub_thresholds_spot = [-0.10, -0.11, -0.12]
 
-  grind_3_stop_grinds_futures = -0.30
+  grind_3_stop_grinds_futures = -0.50
   grind_3_profit_threshold_futures = 0.018
   grind_3_stakes_futures = [0.10, 0.10, 0.10]
   grind_3_sub_thresholds_futures = [-0.10, -0.11, -0.12]
 
-  grind_4_stop_grinds_spot = -0.30
+  grind_4_stop_grinds_spot = -0.50
   grind_4_profit_threshold_spot = 0.018
   grind_4_stakes_spot = [0.10, 0.10, 0.10]
   grind_4_sub_thresholds_spot = [-0.10, -0.11, -0.12]
 
-  grind_4_stop_grinds_futures = -0.30
+  grind_4_stop_grinds_futures = -0.50
   grind_4_profit_threshold_futures = 0.018
   grind_4_stakes_futures = [0.10, 0.10, 0.10]
   grind_4_sub_thresholds_futures = [-0.10, -0.11, -0.12]
 
-  grind_5_stop_grinds_spot = -0.30
+  grind_5_stop_grinds_spot = -0.50
   grind_5_profit_threshold_spot = 0.048
   grind_5_stakes_spot = [0.10, 0.10, 0.10]
   grind_5_sub_thresholds_spot = [-0.10, -0.11, -0.12]
 
-  grind_5_stop_grinds_futures = -0.30
+  grind_5_stop_grinds_futures = -0.50
   grind_5_profit_threshold_futures = 0.048
   grind_5_stakes_futures = [0.10, 0.10, 0.10]
   grind_5_sub_thresholds_futures = [-0.10, -0.11, -0.12]
 
-  grind_6_stop_grinds_spot = -0.30
+  grind_6_stop_grinds_spot = -0.50
   grind_6_profit_threshold_spot = 0.018
   grind_6_stakes_spot = [0.05, 0.06, 0.07, 0.08, 0.09]
   grind_6_sub_thresholds_spot = [-0.05, -0.06, -0.07, -0.08, -0.09]
 
-  grind_6_stop_grinds_futures = -0.30
+  grind_6_stop_grinds_futures = -0.50
   grind_6_profit_threshold_futures = 0.018
   grind_6_stakes_futures = [0.05, 0.06, 0.07, 0.08, 0.09]
   grind_6_sub_thresholds_futures = [-0.05, -0.06, -0.07, -0.08, -0.09]
@@ -255,12 +255,12 @@ class NostalgiaForInfinityX3(IStrategy):
   grind_1_derisk_1_stakes_futures = [0.50]
   grind_1_derisk_1_sub_thresholds_futures = [-0.10]
 
-  grind_2_derisk_1_stop_grinds_spot = -0.30
+  grind_2_derisk_1_stop_grinds_spot = -0.50
   grind_2_derisk_1_profit_threshold_spot = 0.018
   grind_2_derisk_1_stakes_spot = [0.15, 0.20, 0.25]
   grind_2_derisk_1_sub_thresholds_spot = [-0.10, -0.11, -0.12]
 
-  grind_2_derisk_1_stop_grinds_futures = -0.30
+  grind_2_derisk_1_stop_grinds_futures = -0.50
   grind_2_derisk_1_profit_threshold_futures = 0.018
   grind_2_derisk_1_stakes_futures = [0.15, 0.20, 0.25]
   grind_2_derisk_1_sub_thresholds_futures = [-0.10, -0.11, -0.12]
@@ -280,15 +280,15 @@ class NostalgiaForInfinityX3(IStrategy):
   regular_mode_grind_2_thresholds_spot = [-0.04, -0.10, -0.12]
   regular_mode_grind_2_stop_grinds_spot = -0.20
   regular_mode_grind_2_profit_threshold_spot = 0.018
-  regular_mode_grind_3_stakes_spot = [0.10, 0.10, 0.10]
+  regular_mode_grind_3_stakes_spot = [0.12, 0.13, 0.14]
   regular_mode_grind_3_thresholds_spot = [-0.03, -0.10, -0.12]
   regular_mode_grind_3_stop_grinds_spot = -0.20
   regular_mode_grind_3_profit_threshold_spot = 0.018
-  regular_mode_grind_4_stakes_spot = [0.10, 0.10, 0.10]
+  regular_mode_grind_4_stakes_spot = [0.12, 0.13, 0.14]
   regular_mode_grind_4_thresholds_spot = [-0.03, -0.10, -0.12]
   regular_mode_grind_4_stop_grinds_spot = -0.20
   regular_mode_grind_4_profit_threshold_spot = 0.018
-  regular_mode_grind_5_stakes_spot = [0.10, 0.10, 0.10]
+  regular_mode_grind_5_stakes_spot = [0.12, 0.13, 0.14]
   regular_mode_grind_5_thresholds_spot = [-0.03, -0.10, -0.12]
   regular_mode_grind_5_stop_grinds_spot = -0.20
   regular_mode_grind_5_profit_threshold_spot = 0.048
@@ -308,15 +308,15 @@ class NostalgiaForInfinityX3(IStrategy):
   regular_mode_grind_2_thresholds_futures = [-0.04, -0.10, -0.12]
   regular_mode_grind_2_stop_grinds_futures = -0.20
   regular_mode_grind_2_profit_threshold_futures = 0.018
-  regular_mode_grind_3_stakes_futures = [0.10, 0.10, 0.10]
+  regular_mode_grind_3_stakes_futures = [0.12, 0.13, 0.14]
   regular_mode_grind_3_thresholds_futures = [-0.03, -0.10, -0.12]
   regular_mode_grind_3_stop_grinds_futures = -0.20
   regular_mode_grind_3_profit_threshold_futures = 0.018
-  regular_mode_grind_4_stakes_futures = [0.10, 0.10, 0.10]
+  regular_mode_grind_4_stakes_futures = [0.12, 0.13, 0.14]
   regular_mode_grind_4_thresholds_futures = [-0.03, -0.10, -0.12]
   regular_mode_grind_4_stop_grinds_futures = -0.20
   regular_mode_grind_4_profit_threshold_futures = 0.018
-  regular_mode_grind_5_stakes_futures = [0.10, 0.10, 0.10]
+  regular_mode_grind_5_stakes_futures = [0.12, 0.13, 0.14]
   regular_mode_grind_5_thresholds_futures = [-0.03, -0.10, -0.12]
   regular_mode_grind_5_stop_grinds_futures = -0.20
   regular_mode_grind_5_profit_threshold_futures = 0.048
@@ -36292,7 +36292,7 @@ class NostalgiaForInfinityX3(IStrategy):
             (slice_profit < -0.06)
             and (last_candle["rsi_3"] > 10.0)
             and (last_candle["rsi_3_15m"] > 10.0)
-            and (last_candle["rsi_14"] > 28.0)
+            # and (last_candle["rsi_14"] > 28.0)
             and (last_candle["rsi_14"] < 36.0)
             and (last_candle["close"] < (last_candle["ema_26"] * 0.988))
           )
@@ -36425,7 +36425,7 @@ class NostalgiaForInfinityX3(IStrategy):
             (slice_profit < -0.06)
             and (last_candle["rsi_3"] > 10.0)
             and (last_candle["rsi_3_15m"] > 10.0)
-            and (last_candle["rsi_14"] > 28.0)
+            # and (last_candle["rsi_14"] > 28.0)
             and (last_candle["rsi_14"] < 36.0)
             and (last_candle["close"] < (last_candle["ema_26"] * 0.988))
           )
@@ -36558,7 +36558,7 @@ class NostalgiaForInfinityX3(IStrategy):
             (slice_profit < -0.06)
             and (last_candle["rsi_3"] > 10.0)
             and (last_candle["rsi_3_15m"] > 10.0)
-            and (last_candle["rsi_14"] > 28.0)
+            # and (last_candle["rsi_14"] > 28.0)
             and (last_candle["rsi_14"] < 36.0)
             and (last_candle["close"] < (last_candle["ema_26"] * 0.988))
           )
@@ -46959,7 +46959,7 @@ class NostalgiaForInfinityX3(IStrategy):
             (slice_profit > 0.06)
             and (last_candle["rsi_3"] < 90.0)
             and (last_candle["rsi_3_15m"] < 90.0)
-            and (last_candle["rsi_14"] < 72.0)
+            # and (last_candle["rsi_14"] < 72.0)
             and (last_candle["rsi_14"] > 64.0)
             and (last_candle["close"] > (last_candle["ema_26"] * 1.012))
           )
@@ -47059,7 +47059,7 @@ class NostalgiaForInfinityX3(IStrategy):
             (slice_profit > 0.06)
             and (last_candle["rsi_3"] < 90.0)
             and (last_candle["rsi_3_15m"] < 90.0)
-            and (last_candle["rsi_14"] < 72.0)
+            # and (last_candle["rsi_14"] < 72.0)
             and (last_candle["rsi_14"] > 64.0)
             and (last_candle["close"] > (last_candle["ema_26"] * 1.012))
           )
@@ -47159,7 +47159,7 @@ class NostalgiaForInfinityX3(IStrategy):
             (slice_profit > 0.06)
             and (last_candle["rsi_3"] < 90.0)
             and (last_candle["rsi_3_15m"] < 90.0)
-            and (last_candle["rsi_14"] < 72.0)
+            # and (last_candle["rsi_14"] < 72.0)
             and (last_candle["rsi_14"] > 64.0)
             and (last_candle["close"] > (last_candle["ema_26"] * 1.012))
           )
