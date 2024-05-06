@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.675"
+    return "v14.1.676"
 
   stoploss = -0.99
 
@@ -13759,6 +13759,20 @@ class NostalgiaForInfinityX4(IStrategy):
         | (df["close"] > df["sup_level_1h"])
         | (df["close"] > df["sup_level_4h"])
         | (df["ema_200_dec_24_4h"] == False)
+        | (df["ema_200_dec_4_1d"] == False)
+      )
+      & (
+        (df["change_pct_4h"] > -0.02)
+        | (df["change_pct_4h"].shift(48) < 0.02)
+        | (df["rsi_14"] > df["rsi_14"].shift(12))
+        | (df["rsi_14_15m"] > df["rsi_14_15m"].shift(12))
+        | (df["rsi_14_15m"] < 36.0)
+        | (df["rsi_14_1h"] < 46.0)
+        | (df["rsi_14_4h"] < 50.0)
+        | (df["rsi_14_1d"] < 50.0)
+        | (df["r_480_1h"] < -30.0)
+        | (df["r_480_4h"] > -65.0)
+        | (df["close"] > df["sup_level_4h"])
         | (df["ema_200_dec_4_1d"] == False)
       )
     )
