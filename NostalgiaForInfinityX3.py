@@ -185,62 +185,62 @@ class NostalgiaForInfinityX3(IStrategy):
   grind_derisk_spot = -0.40
   grind_derisk_futures = -0.50
 
-  grind_1_stop_grinds_spot = -0.50
+  grind_1_stop_grinds_spot = -0.70
   grind_1_profit_threshold_spot = 0.018
   grind_1_stakes_spot = [0.20, 0.20, 0.20]
   grind_1_sub_thresholds_spot = [-0.10, -0.11, -0.12]
 
-  grind_1_stop_grinds_futures = -0.50
+  grind_1_stop_grinds_futures = -0.70
   grind_1_profit_threshold_futures = 0.018
   grind_1_stakes_futures = [0.20, 0.20, 0.20]
   grind_1_sub_thresholds_futures = [-0.10, -0.11, -0.12]
 
-  grind_2_stop_grinds_spot = -0.50
+  grind_2_stop_grinds_spot = -0.70
   grind_2_profit_threshold_spot = 0.018
   grind_2_stakes_spot = [0.15, 0.25, 0.30]
   grind_2_sub_thresholds_spot = [-0.10, -0.11, -0.12]
 
-  grind_2_stop_grinds_futures = -0.50
+  grind_2_stop_grinds_futures = -0.70
   grind_2_profit_threshold_futures = 0.018
   grind_2_stakes_futures = [0.15, 0.25, 0.30]
   grind_2_sub_thresholds_futures = [-0.10, -0.11, -0.12]
 
-  grind_3_stop_grinds_spot = -0.50
+  grind_3_stop_grinds_spot = -0.70
   grind_3_profit_threshold_spot = 0.018
   grind_3_stakes_spot = [0.10, 0.10, 0.10]
   grind_3_sub_thresholds_spot = [-0.10, -0.11, -0.12]
 
-  grind_3_stop_grinds_futures = -0.50
+  grind_3_stop_grinds_futures = -0.70
   grind_3_profit_threshold_futures = 0.018
   grind_3_stakes_futures = [0.10, 0.10, 0.10]
   grind_3_sub_thresholds_futures = [-0.10, -0.11, -0.12]
 
-  grind_4_stop_grinds_spot = -0.50
+  grind_4_stop_grinds_spot = -0.70
   grind_4_profit_threshold_spot = 0.018
   grind_4_stakes_spot = [0.10, 0.10, 0.10]
   grind_4_sub_thresholds_spot = [-0.10, -0.11, -0.12]
 
-  grind_4_stop_grinds_futures = -0.50
+  grind_4_stop_grinds_futures = -0.70
   grind_4_profit_threshold_futures = 0.018
   grind_4_stakes_futures = [0.10, 0.10, 0.10]
   grind_4_sub_thresholds_futures = [-0.10, -0.11, -0.12]
 
-  grind_5_stop_grinds_spot = -0.50
+  grind_5_stop_grinds_spot = -0.70
   grind_5_profit_threshold_spot = 0.048
   grind_5_stakes_spot = [0.10, 0.10, 0.10]
   grind_5_sub_thresholds_spot = [-0.10, -0.11, -0.12]
 
-  grind_5_stop_grinds_futures = -0.50
+  grind_5_stop_grinds_futures = -0.70
   grind_5_profit_threshold_futures = 0.048
   grind_5_stakes_futures = [0.10, 0.10, 0.10]
   grind_5_sub_thresholds_futures = [-0.10, -0.11, -0.12]
 
-  grind_6_stop_grinds_spot = -0.50
+  grind_6_stop_grinds_spot = -0.70
   grind_6_profit_threshold_spot = 0.018
   grind_6_stakes_spot = [0.05, 0.06, 0.07, 0.08, 0.09]
   grind_6_sub_thresholds_spot = [-0.05, -0.06, -0.07, -0.08, -0.09]
 
-  grind_6_stop_grinds_futures = -0.50
+  grind_6_stop_grinds_futures = -0.70
   grind_6_profit_threshold_futures = 0.018
   grind_6_stakes_futures = [0.05, 0.06, 0.07, 0.08, 0.09]
   grind_6_sub_thresholds_futures = [-0.05, -0.06, -0.07, -0.08, -0.09]
@@ -255,12 +255,12 @@ class NostalgiaForInfinityX3(IStrategy):
   grind_1_derisk_1_stakes_futures = [0.50]
   grind_1_derisk_1_sub_thresholds_futures = [-0.10]
 
-  grind_2_derisk_1_stop_grinds_spot = -0.50
+  grind_2_derisk_1_stop_grinds_spot = -0.70
   grind_2_derisk_1_profit_threshold_spot = 0.018
   grind_2_derisk_1_stakes_spot = [0.15, 0.20, 0.25]
   grind_2_derisk_1_sub_thresholds_spot = [-0.10, -0.11, -0.12]
 
-  grind_2_derisk_1_stop_grinds_futures = -0.50
+  grind_2_derisk_1_stop_grinds_futures = -0.70
   grind_2_derisk_1_profit_threshold_futures = 0.018
   grind_2_derisk_1_stakes_futures = [0.15, 0.20, 0.25]
   grind_2_derisk_1_sub_thresholds_futures = [-0.10, -0.11, -0.12]
