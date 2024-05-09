@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.692"
+    return "v13.1.693"
 
   stoploss = -0.99
 
@@ -1473,6 +1473,60 @@ class NostalgiaForInfinityX3(IStrategy):
       self.regular_mode_derisk_futures = self.config["regular_mode_derisk_futures"]
     if "regular_mode_derisk_futures_old" in self.config:
       self.regular_mode_derisk_futures_old = self.config["regular_mode_derisk_futures_old"]
+
+    if "grind_1_profit_threshold_spot" in self.config:
+      self.grind_1_profit_threshold_spot = self.config["grind_1_profit_threshold_spot"]
+    if "grind_1_profit_threshold_futures" in self.config:
+      self.grind_1_profit_threshold_futures = self.config["grind_1_profit_threshold_futures"]
+    if "grind_2_profit_threshold_spot" in self.config:
+      self.grind_2_profit_threshold_spot = self.config["grind_2_profit_threshold_spot"]
+    if "grind_2_profit_threshold_futures" in self.config:
+      self.grind_2_profit_threshold_futures = self.config["grind_2_profit_threshold_futures"]
+    if "grind_3_profit_threshold_spot" in self.config:
+      self.grind_3_profit_threshold_spot = self.config["grind_3_profit_threshold_spot"]
+    if "grind_3_profit_threshold_futures" in self.config:
+      self.grind_3_profit_threshold_futures = self.config["grind_3_profit_threshold_futures"]
+    if "grind_4_profit_threshold_spot" in self.config:
+      self.grind_4_profit_threshold_spot = self.config["grind_4_profit_threshold_spot"]
+    if "grind_4_profit_threshold_futures" in self.config:
+      self.grind_4_profit_threshold_futures = self.config["grind_4_profit_threshold_futures"]
+    if "grind_5_profit_threshold_spot" in self.config:
+      self.grind_5_profit_threshold_spot = self.config["grind_5_profit_threshold_spot"]
+    if "grind_5_profit_threshold_futures" in self.config:
+      self.grind_5_profit_threshold_futures = self.config["grind_5_profit_threshold_futures"]
+    if "grind_6_profit_threshold_spot" in self.config:
+      self.grind_6_profit_threshold_spot = self.config["grind_6_profit_threshold_spot"]
+    if "grind_6_profit_threshold_futures" in self.config:
+      self.grind_6_profit_threshold_futures = self.config["grind_6_profit_threshold_futures"]
+    if "grind_1_derisk_1_profit_threshold_spot" in self.config:
+      self.grind_1_derisk_1_profit_threshold_spot = self.config["grind_1_derisk_1_profit_threshold_spot"]
+    if "grind_1_derisk_1_profit_threshold_futures" in self.config:
+      self.grind_1_derisk_1_profit_threshold_futures = self.config["grind_1_derisk_1_profit_threshold_futures"]
+    if "grind_2_derisk_1_profit_threshold_spot" in self.config:
+      self.grind_2_derisk_1_profit_threshold_spot = self.config["grind_2_derisk_1_profit_threshold_spot"]
+    if "grind_2_derisk_1_profit_threshold_futures" in self.config:
+      self.grind_2_derisk_1_profit_threshold_futures = self.config["grind_2_derisk_1_profit_threshold_futures"]
+    if "regular_mode_grind_1_profit_threshold_spot" in self.config:
+      self.regular_mode_grind_1_profit_threshold_spot = self.config["regular_mode_grind_1_profit_threshold_spot"]
+    if "regular_mode_grind_1_profit_threshold_futures" in self.config:
+      self.regular_mode_grind_1_profit_threshold_futures = self.config["regular_mode_grind_1_profit_threshold_futures"]
+    if "regular_mode_grind_2_profit_threshold_spot" in self.config:
+      self.regular_mode_grind_2_profit_threshold_spot = self.config["regular_mode_grind_2_profit_threshold_spot"]
+    if "regular_mode_grind_2_profit_threshold_futures" in self.config:
+      self.regular_mode_grind_2_profit_threshold_futures = self.config["regular_mode_grind_2_profit_threshold_futures"]
+    if "regular_mode_grind_3_profit_threshold_spot" in self.config:
+      self.regular_mode_grind_3_profit_threshold_spot = self.config["regular_mode_grind_3_profit_threshold_spot"]
+    if "regular_mode_grind_3_profit_threshold_futures" in self.config:
+      self.regular_mode_grind_3_profit_threshold_futures = self.config["regular_mode_grind_3_profit_threshold_futures"]
+    if "regular_mode_grind_4_profit_threshold_spot" in self.config:
+      self.regular_mode_grind_4_profit_threshold_spot = self.config["regular_mode_grind_4_profit_threshold_spot"]
+    if "regular_mode_grind_4_profit_threshold_futures" in self.config:
+      self.regular_mode_grind_4_profit_threshold_futures = self.config["regular_mode_grind_4_profit_threshold_futures"]
+    if "regular_mode_grind_5_profit_threshold_spot" in self.config:
+      self.regular_mode_grind_5_profit_threshold_spot = self.config["regular_mode_grind_5_profit_threshold_spot"]
+    if "regular_mode_grind_5_profit_threshold_futures" in self.config:
+      self.regular_mode_grind_5_profit_threshold_futures = self.config["regular_mode_grind_5_profit_threshold_futures"]
+
     if "grind_mode_max_slots" in self.config:
       self.grind_mode_max_slots = self.config["grind_mode_max_slots"]
     if "grind_mode_coins" in self.config:
