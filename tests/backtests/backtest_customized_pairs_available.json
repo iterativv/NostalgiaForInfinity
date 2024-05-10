@@ -1,0 +1,14 @@
+{
+    "exchange": {
+      "name": "binance",
+      "pair_whitelist": [
+        "NTRN/USDT",
+        "OAX/USDT",
+        "WLD/USDT",
+        "GFT/USDT",
+        "HIFI/USDT"
+      ]
+    },
+    "pairlists": [{ "method": "StaticPairList" }]
+  }
+  

@@ -137,7 +137,7 @@ user_data/data/*.json
 # Don't commit candle data
 user_data/data/*.json
 
-user_data/*.json
+
 user_data/data/*/*.json
 user_data/data/*/*.json.gz
 user_data/data

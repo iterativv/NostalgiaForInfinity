@@ -1,0 +1,191 @@
+{
+  // WARNING: This is an example configuration
+  // Please use at own risk
+  // For full documentation on Freqtrade configration files please visit https://www.freqtrade.io/en/stable/configuration/
+  "dry_run": true,
+  "dry_run_wallet": 10000,
+  "grinding_enable": true,
+  "max_open_trades": 6,
+  "stake_currency": "USDT",
+  "stake_amount": "unlimited",
+  "tradable_balance_ratio": 0.99,
+  "fiat_display_currency": "USD",
+  "force_entry_enable": true,
+  "initial_state": "running",
+  "timeframe": "5m",
+  "unfilledtimeout": {
+    "entry": 20,
+    "exit": 20,
+    "exit_timeout_count": 0,
+    "unit": "minutes"
+  },
+  "order_types": {
+    "entry": "limit",
+    "exit": "limit",
+    "emergency_exit": "limit",
+    "force_entry": "limit",
+    "force_exit": "limit",
+    "stoploss": "limit",
+    "stoploss_on_exchange": false,
+    "stoploss_on_exchange_interval": 60,
+    "stoploss_on_exchange_limit_ratio": 0.99
+  },
+  "entry_pricing": {
+    "price_side": "other",
+    "use_order_book": false,
+    "order_book_top": 1,
+    "price_last_balance": 0,
+    "check_depth_of_market": {
+      "enabled": false,
+      "bids_to_ask_delta": 1
+    }
+  },
+  "exit_pricing": {
+    "price_side": "other",
+    "use_order_book": false,
+    "order_book_top": 1,
+    "price_last_balance": 0
+  },
+  "exchange": {
+    "name": "binance",
+    "key": "",
+    "password": "",
+    "secret": "",
+    "pair_whitelist": [
+            "AERGO/USDT",
+            "AEUR/USDT",
+            "AGIX/USDT",
+            "AMB/USDT",
+            "ARB/USDT",
+            "ARK/USDT",
+            "ARKM/USDT",
+            "AST/USDT",
+            "BEAMX/USDT",
+            "BETH/USDT",
+            "BLUR/USDT",
+            "COMBO/USDT",
+            "CREAM/USDT",
+            "CYBER/USDT",
+            "EDU/USDT",
+            "FLOKI/USDT",
+            "GAS/USDT",
+            "GFT/USDT",
+            "GLM/USDT",
+            "GNS/USDT",
+            "HIFI/USDT",
+            "ID/USDT",
+            "IQ/USDT",
+            "JTO/USDT",
+            "LOOM/USDT",
+            "LQTY/USDT",
+            "MAV/USDT",
+            "MEME/USDT",
+            "NTRN/USDT",
+            "OAX/USDT",
+            "ORDI/USDT",
+            "PENDLE/USDT",
+            "PEPE/USDT",
+            "PIVX/USDT",
+            "PROM/USDT",
+            "PROS/USDT",
+            "QKC/USDT",
+            "RDNT/USDT",
+            "RPL/USDT",
+            "SEI/USDT",
+            "SNT/USDT",
+            "SSV/USDT",
+            "SUI/USDT",
+            "SYN/USDT",
+            "TIA/USDT",
+            "UFT/USDT",
+            "VANRY/USDT",
+            "VIB/USDT",
+            "VIC/USDT",
+            "WBETH/USDT",
+            "WBTC/USDT",
+            "WLD/USDT",
+            "TRB/USDT",
+            "FET/USDT",
+            "ADA/USDT",
+            "BSW/USDT",
+            "ALT/USDT",
+            "STRAX/USDT",
+            "GMT/USDT"
+          ],
+    "ccxt_config": {
+      "enableRateLimit": true,
+      "rateLimit": 60,
+      "options": {
+        "brokerId": null,
+        // "broker": {
+        //   "spot": null,
+        //   "margin": null,
+        //   "future": null,
+        //   "delivery": null,
+        //   "swap": null,
+        //   "option": null
+        // },
+        "partner": {
+          "spot": {
+            "id": null,
+            "key": null
+          },
+          "future": {
+            "id": null,
+            "key": null
+          }
+        }
+      }
+    },
+    "ccxt_async_config": {
+      "enableRateLimit": true,
+      "rateLimit": 60,
+      "options": {
+        "brokerId": null,
+        // "broker": {
+        //   "spot": null,
+        //   "margin": null,
+        //   "future": null,
+        //   "delivery": null,
+        //   "swap": null,
+        //   "option": null
+        // },
+        "partner": {
+          "spot": {
+            "id": null,
+            "key": null
+          },
+          "future": {
+            "id": null,
+            "key": null
+          }
+        }
+      }
+    }
+  },
+  "pairlists": [
+    {
+        "method": "StaticPairList",
+        "number_assets": 20,
+        "sort_key": "quoteVolume",
+        "min_value": 0,
+        "refresh_period": 1800
+    }
+  ],
+  "api_server": {
+    "enabled": true,
+    "listen_ip_address": "0.0.0.0",
+    "listen_port": 8080,
+    "verbosity": "error",
+    "enable_openapi": false,
+    "jwt_secret_key": "89825acd416039ab9ff827035d0826f5a891cb3f4c69eb9bc2a1b2e0cbcde1b1",
+    "ws_token": "a8PKF1yAX6CvZZtj9JRUwor-SEe_nxgahA",
+    "CORS_origins": [],
+    "username": "radouanesaid512",
+    "password": "123456"
+  },
+  "bot_name": "radouanesaid512",
+  "internals": {
+    "process_throttle_secs": 5
+  }
+}
