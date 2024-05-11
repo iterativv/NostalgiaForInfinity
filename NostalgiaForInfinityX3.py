@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.700"
+    return "v13.1.701"
 
   stoploss = -0.99
 
@@ -1337,59 +1337,6 @@ class NostalgiaForInfinityX3(IStrategy):
   entry_108_r_14_max = DecimalParameter(-100.0, 80.0, default=-90.0, decimals=0, space="buy", optimize=False)
   entry_108_bb_offset = DecimalParameter(0.970, 0.999, default=0.999, decimals=3, space="buy", optimize=False)
   entry_108_ema_open_offset = DecimalParameter(0.0100, 0.0400, default=0.0200, decimals=4, space="buy", optimize=False)
-
-  entry_110_close_max_12 = DecimalParameter(00.50, 0.95, default=0.80, decimals=2, space="buy", optimize=False)
-  entry_110_close_max_24 = DecimalParameter(00.50, 0.95, default=0.75, decimals=2, space="buy", optimize=False)
-  entry_110_close_max_48 = DecimalParameter(00.50, 0.95, default=0.70, decimals=2, space="buy", optimize=False)
-  entry_110_high_max_24_1h = DecimalParameter(00.40, 0.90, default=0.65, decimals=2, space="buy", optimize=False)
-  entry_110_high_max_24_4h = DecimalParameter(00.40, 0.85, default=0.60, decimals=2, space="buy", optimize=False)
-  entry_110_high_max_6_1d = DecimalParameter(00.30, 0.80, default=0.55, decimals=2, space="buy", optimize=False)
-  entry_110_hl_pct_change_6_1h = DecimalParameter(00.30, 0.90, default=0.5, decimals=2, space="buy", optimize=False)
-  entry_110_hl_pct_change_12_1h = DecimalParameter(00.40, 1.00, default=0.75, decimals=2, space="buy", optimize=False)
-  entry_110_hl_pct_change_24_1h = DecimalParameter(00.50, 1.20, default=0.90, decimals=2, space="buy", optimize=False)
-  entry_110_hl_pct_change_48_1h = DecimalParameter(00.60, 1.60, default=1.00, decimals=2, space="buy", optimize=False)
-  entry_110_sup_level_1h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
-  entry_110_res_level_1h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
-  entry_110_sup_level_4h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
-  entry_110_res_level_4h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
-  entry_110_sup_level_1d_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
-  entry_110_res_level_1d_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
-  entry_110_ema_200_not_dec_1h_enabled = CategoricalParameter(
-    [True, False], default=False, space="buy", optimize=False
-  )
-  entry_110_ema_200_not_dec_4h_enabled = CategoricalParameter(
-    [True, False], default=False, space="buy", optimize=False
-  )
-  entry_110_ema_200_not_dec_1d_enabled = CategoricalParameter(
-    [True, False], default=False, space="buy", optimize=False
-  )
-  entry_110_not_downtrend_15m_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
-  entry_110_not_downtrend_1h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
-  entry_110_not_downtrend_4h_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
-  entry_110_not_downtrend_1d_enabled = CategoricalParameter([True, False], default=False, space="buy", optimize=False)
-  entry_110_rsi_3_min = DecimalParameter(00.0, 30.0, default=2.0, decimals=0, space="buy", optimize=False)
-  entry_110_rsi_3_max = DecimalParameter(30.0, 60.0, default=60.0, decimals=0, space="buy", optimize=False)
-  entry_110_rsi_3_15m_min = DecimalParameter(00.0, 30.0, default=8.0, decimals=0, space="buy", optimize=False)
-  entry_110_rsi_3_1h_min = DecimalParameter(00.0, 30.0, default=16.0, decimals=0, space="buy", optimize=False)
-  entry_110_rsi_3_4h_min = DecimalParameter(00.0, 30.0, default=10.0, decimals=0, space="buy", optimize=False)
-  entry_110_rsi_3_1d_min = DecimalParameter(00.0, 30.0, default=10.0, decimals=0, space="buy", optimize=False)
-  entry_110_cti_20_1h_max = DecimalParameter(0.0, 0.99, default=0.9, decimals=2, space="buy", optimize=False)
-  entry_110_rsi_14_1h_max = DecimalParameter(50.0, 90.0, default=80.0, decimals=0, space="buy", optimize=False)
-  entry_110_cti_20_4h_max = DecimalParameter(0.0, 0.99, default=0.9, decimals=2, space="buy", optimize=False)
-  entry_110_rsi_14_4h_max = DecimalParameter(50.0, 90.0, default=80.0, decimals=0, space="buy", optimize=False)
-  entry_110_cti_20_1d_max = DecimalParameter(0.0, 0.99, default=0.9, decimals=2, space="buy", optimize=False)
-  entry_110_rsi_14_1d_max = DecimalParameter(50.0, 90.0, default=80.0, decimals=0, space="buy", optimize=False)
-  entry_110_r_14_1h_min = DecimalParameter(-100.0, -70.0, default=-100.0, decimals=0, space="buy", optimize=False)
-  entry_110_r_14_1h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=False)
-  entry_110_r_14_4h_min = DecimalParameter(-100.0, -70.0, default=-100.0, decimals=0, space="buy", optimize=False)
-  entry_110_r_14_4h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=False)
-  entry_110_r_480_1h_min = DecimalParameter(-100.0, -70.0, default=-100.0, decimals=0, space="buy", optimize=False)
-  entry_110_r_480_1h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=False)
-  entry_110_r_480_4h_min = DecimalParameter(-100.0, -70.0, default=-100.0, decimals=0, space="buy", optimize=False)
-  entry_110_r_480_4h_max = DecimalParameter(-40.0, -0.0, default=-0.0, decimals=0, space="buy", optimize=False)
-  entry_110_cti_20_max = DecimalParameter(-0.99, -0.50, default=-0.95, decimals=1, space="buy", optimize=False)
-  entry_110_ewo_50_200_max = DecimalParameter(-10.0, -2.0, default=-3.0, decimals=1, space="buy", optimize=True)
-  entry_110_ema_offset = DecimalParameter(0.980, 0.999, default=0.994, decimals=3, space="buy", optimize=True)
 
   #############################################################
   # CACHES
@@ -25985,70 +25932,26 @@ class NostalgiaForInfinityX3(IStrategy):
           long_entry_logic.append(df["global_protections_long_dump"] == True)
           long_entry_logic.append(df["btc_pct_close_max_24_5m"] < 0.03)
           long_entry_logic.append(df["btc_pct_close_max_72_5m"] < 0.03)
-          long_entry_logic.append(df["close"] > (df["close_max_12"] * self.entry_110_close_max_12.value))
-          long_entry_logic.append(df["close"] > (df["close_max_24"] * self.entry_110_close_max_24.value))
-          long_entry_logic.append(df["close"] > (df["close_max_48"] * self.entry_110_close_max_48.value))
-          long_entry_logic.append(df["close"] > (df["high_max_24_1h"] * self.entry_110_high_max_24_1h.value))
-          long_entry_logic.append(df["close"] > (df["high_max_24_4h"] * self.entry_110_high_max_24_4h.value))
-          long_entry_logic.append(df["close"] > (df["high_max_6_1d"] * self.entry_110_high_max_6_1d.value))
-          long_entry_logic.append(df["hl_pct_change_6_1h"] < self.entry_110_hl_pct_change_6_1h.value)
-          long_entry_logic.append(df["hl_pct_change_12_1h"] < self.entry_110_hl_pct_change_12_1h.value)
-          long_entry_logic.append(df["hl_pct_change_24_1h"] < self.entry_110_hl_pct_change_24_1h.value)
-          long_entry_logic.append(df["hl_pct_change_48_1h"] < self.entry_110_hl_pct_change_48_1h.value)
+          long_entry_logic.append(df["close"] > (df["close_max_12"] * 0.84))
+          long_entry_logic.append(df["close"] > (df["close_max_24"] * 0.80))
+          long_entry_logic.append(df["close"] > (df["close_max_48"] * 0.76))
+          long_entry_logic.append(df["close"] > (df["high_max_24_1h"] * 0.70))
+          long_entry_logic.append(df["close"] > (df["high_max_24_4h"] * 0.66))
+          long_entry_logic.append(df["close"] > (df["high_max_6_1d"] * 0.60))
+          long_entry_logic.append(df["hl_pct_change_6_1h"] < 0.60)
+          long_entry_logic.append(df["hl_pct_change_12_1h"] < 0.70)
+          long_entry_logic.append(df["hl_pct_change_24_1h"] < 0.80)
+          long_entry_logic.append(df["hl_pct_change_48_1h"] < 0.90)
           long_entry_logic.append(df["num_empty_288"] < allowed_empty_candles)
 
-          long_entry_logic.append(df["rsi_3"] > self.entry_110_rsi_3_min.value)
-          long_entry_logic.append(df["rsi_3"] < self.entry_110_rsi_3_max.value)
-          long_entry_logic.append(df["rsi_3_15m"] > self.entry_110_rsi_3_15m_min.value)
-          long_entry_logic.append(df["rsi_3_1h"] > self.entry_110_rsi_3_1h_min.value)
-          long_entry_logic.append(df["rsi_3_4h"] > self.entry_110_rsi_3_4h_min.value)
-          long_entry_logic.append(df["rsi_3_1d"] > self.entry_110_rsi_3_1d_min.value)
-          long_entry_logic.append(df["cti_20_1h"] < self.entry_110_cti_20_1h_max.value)
-          long_entry_logic.append(df["rsi_14_1h"] < self.entry_110_rsi_14_1h_max.value)
-          long_entry_logic.append(df["cti_20_4h"] < self.entry_110_cti_20_4h_max.value)
-          long_entry_logic.append(df["rsi_14_4h"] < self.entry_110_rsi_14_4h_max.value)
-          long_entry_logic.append(df["cti_20_1d"] < self.entry_110_cti_20_1d_max.value)
-          long_entry_logic.append(df["rsi_14_1d"] < self.entry_110_rsi_14_1d_max.value)
-          long_entry_logic.append(df["r_14_1h"] >= self.entry_110_r_14_1h_min.value)
-          long_entry_logic.append(df["r_14_1h"] <= self.entry_110_r_14_1h_max.value)
-          long_entry_logic.append(df["r_14_4h"] >= self.entry_110_r_14_4h_min.value)
-          long_entry_logic.append(df["r_14_4h"] <= self.entry_110_r_14_4h_max.value)
-          long_entry_logic.append(df["r_480_1h"] >= self.entry_110_r_480_1h_min.value)
-          long_entry_logic.append(df["r_480_1h"] <= self.entry_110_r_480_1h_max.value)
-          long_entry_logic.append(df["r_480_4h"] >= self.entry_110_r_480_4h_min.value)
-          long_entry_logic.append(df["r_480_4h"] <= self.entry_110_r_480_4h_max.value)
-
-          if self.entry_110_sup_level_1h_enabled.value:
-            long_entry_logic.append(df["close"] > df["sup_level_1h"])
-          if self.entry_110_res_level_1h_enabled.value:
-            long_entry_logic.append(df["close"] < df["res_level_1h"])
-          if self.entry_110_sup_level_4h_enabled.value:
-            long_entry_logic.append(df["close"] > df["sup_level_4h"])
-          if self.entry_110_res_level_4h_enabled.value:
-            long_entry_logic.append(df["close"] < df["res_level_4h"])
-          if self.entry_110_sup_level_1d_enabled.value:
-            long_entry_logic.append(df["close"] > df["sup_level_1d"])
-          if self.entry_110_res_level_1d_enabled.value:
-            long_entry_logic.append(df["close"] < df["res_level_1h"])
-          if self.entry_110_ema_200_not_dec_1h_enabled.value:
-            long_entry_logic.append(df["ema_200_dec_48_1h"] == False)
-          if self.entry_110_ema_200_not_dec_4h_enabled.value:
-            long_entry_logic.append(df["ema_200_dec_24_4h"] == False)
-          if self.entry_110_ema_200_not_dec_1d_enabled.value:
-            long_entry_logic.append(df["ema_200_dec_4_1d"] == False)
-          if self.entry_110_not_downtrend_15m_enabled.value:
-            long_entry_logic.append(df["not_downtrend_15m"])
-          if self.entry_110_not_downtrend_1h_enabled.value:
-            long_entry_logic.append(df["not_downtrend_1h"])
-          if self.entry_110_not_downtrend_4h_enabled.value:
-            long_entry_logic.append(df["not_downtrend_4h"])
-          if self.entry_110_not_downtrend_1d_enabled.value:
-            long_entry_logic.append(df["not_downtrend_1d"])
+          long_entry_logic.append(df["rsi_3"] > 2.0)
+          long_entry_logic.append(df["rsi_3"] < 60.0)
+          long_entry_logic.append(df["rsi_3_15m"] > 8.0)
 
           # Logic
-          long_entry_logic.append(df["cti_20"] < self.entry_110_cti_20_max.value)
-          long_entry_logic.append(df["ewo_50_200"] < self.entry_110_ewo_50_200_max.value)
-          long_entry_logic.append(df["close"] < (df["ema_20"] * self.entry_110_ema_offset.value))
+          long_entry_logic.append(df["rsi_14"] < 36.0)
+          long_entry_logic.append(df["ewo_50_200"] < -4.0)
+          long_entry_logic.append(df["close"] < (df["ema_20"] * 0.968))
 
         # Condition #120 - Grind mode (Long).
         if index == 120:
