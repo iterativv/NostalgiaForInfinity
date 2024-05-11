@@ -1474,6 +1474,13 @@ class NostalgiaForInfinityX4(IStrategy):
     if "regular_mode_derisk_futures_old" in self.config:
       self.regular_mode_derisk_futures_old = self.config["regular_mode_derisk_futures_old"]
 
+    if "futures_mode_leverage" in self.config:
+      self.futures_mode_leverage = self.config["futures_mode_leverage"]
+    if "futures_mode_leverage_rebuy_mode" in self.config:
+      self.futures_mode_leverage_rebuy_mode = self.config["futures_mode_leverage_rebuy_mode"]
+    if "futures_mode_leverage_grind_mode" in self.config:
+      self.futures_mode_leverage_grind_mode = self.config["futures_mode_leverage_grind_mode"]
+
     if "grind_1_profit_threshold_spot" in self.config:
       self.grind_1_profit_threshold_spot = self.config["grind_1_profit_threshold_spot"]
     if "grind_1_profit_threshold_futures" in self.config:
