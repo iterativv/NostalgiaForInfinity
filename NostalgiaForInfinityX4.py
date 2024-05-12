@@ -25947,11 +25947,15 @@ class NostalgiaForInfinityX4(IStrategy):
           long_entry_logic.append(df["rsi_3"] > 2.0)
           long_entry_logic.append(df["rsi_3"] < 60.0)
           long_entry_logic.append(df["rsi_3_15m"] > 8.0)
+          long_entry_logic.append(df["rsi_3_1h"] > 12.0)
+          long_entry_logic.append(df["rsi_3_4h"] > 12.0)
+          long_entry_logic.append(df["rsi_3_1d"] > 12.0)
 
           # Logic
           long_entry_logic.append(df["rsi_14"] < 36.0)
-          long_entry_logic.append(df["ewo_50_200"] < -4.0)
-          long_entry_logic.append(df["close"] < (df["ema_20"] * 0.968))
+          long_entry_logic.append(df["cti_20"] < -0.75)
+          long_entry_logic.append(df["ewo_50_200"] < -6.0)
+          long_entry_logic.append(df["close"] < (df["ema_20"] * 0.988))
 
         # Condition #120 - Grind mode (Long).
         if index == 120:
