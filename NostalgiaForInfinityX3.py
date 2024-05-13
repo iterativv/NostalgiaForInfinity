@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.705"
+    return "v13.1.706"
 
   stoploss = -0.99
 
@@ -344,7 +344,7 @@ class NostalgiaForInfinityX3(IStrategy):
   grind_mode_first_entry_profit_threshold_futures = 0.018
   grind_mode_first_entry_stop_threshold_spot = -0.20
   grind_mode_first_entry_stop_threshold_futures = -0.20
-  grind_mode_max_slots = 2
+  grind_mode_max_slots = 1
   grind_mode_coins = [
     "MATIC",
     "ADA",
