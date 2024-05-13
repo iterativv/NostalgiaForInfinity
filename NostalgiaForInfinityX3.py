@@ -27656,7 +27656,7 @@ class NostalgiaForInfinityX3(IStrategy):
     current_time: "datetime",
     enter_tags,
   ) -> tuple:
-    if len(filled_exits) > 30 and profit_init_ratio > 1.0:
+    if profit_init_ratio > 1.0:
       return True, f"exit_{self.long_grind_mode_name}_g"
     return False, None
 
