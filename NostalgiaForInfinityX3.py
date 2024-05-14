@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.713"
+    return "v13.1.714"
 
   stoploss = -0.99
 
@@ -34433,6 +34433,37 @@ class NostalgiaForInfinityX3(IStrategy):
         else:
           return buy_amount
 
+    if (
+      self.is_futures_mode
+      and has_order_tags
+      and (not partial_sell)
+      and slice_profit < (-0.7 / trade.leverage)
+      and (is_derisk or is_derisk_calc or is_grind_mode)
+    ):
+      buy_amount = (
+        slice_amount * grind_1_stakes[grind_1_sub_grind_count] / (trade.leverage if self.is_futures_mode else 1.0)
+      )
+      if buy_amount < (min_stake * 1.5):
+        buy_amount = min_stake * 1.5
+      if buy_amount > max_stake:
+        return None
+      grind_profit = 0.0
+      grind_profit_stake = 0.0
+      if grind_1_sub_grind_count > 0:
+        grind_profit = (exit_rate - grind_1_current_open_rate) / grind_1_current_open_rate
+        grind_profit_stake = grind_1_current_grind_stake_profit
+      self.dp.send_msg(
+        f"Grinding entry (gd1) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_1_current_grind_stake_profit} {self.config['stake_currency']})"
+      )
+      log.info(
+        f"Grinding entry (gd1) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_1_current_grind_stake_profit} {self.config['stake_currency']})"
+      )
+      order_tag = "gd1"
+      if has_order_tags:
+        return buy_amount, order_tag
+      else:
+        return buy_amount
+
     # Sell
     if grind_1_sub_grind_count > 0:
       grind_profit = (exit_rate - grind_1_current_open_rate) / grind_1_current_open_rate
@@ -36287,6 +36318,30 @@ class NostalgiaForInfinityX3(IStrategy):
         )
         order_tag = "g1"
         return buy_amount, order_tag, is_derisk
+
+    if self.is_futures_mode and has_order_tags and (not partial_sell) and slice_profit < (-0.7 / trade.leverage):
+      buy_amount = (
+        slice_amount
+        * regular_mode_grind_1_stakes[grind_1_sub_grind_count]
+        / (trade.leverage if self.is_futures_mode else 1.0)
+      )
+      if buy_amount < (min_stake * 1.5):
+        buy_amount = min_stake * 1.5
+      if buy_amount > max_stake:
+        return None, "", is_derisk
+      grind_profit = 0.0
+      grind_profit_stake = 0.0
+      if grind_1_sub_grind_count > 0:
+        grind_profit = (exit_rate - grind_1_current_open_rate) / grind_1_current_open_rate
+        grind_profit_stake = grind_1_current_grind_stake_profit
+      self.dp.send_msg(
+        f"Grinding entry (g1) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_1_current_grind_stake_profit} {self.config['stake_currency']})"
+      )
+      log.info(
+        f"Grinding entry (g1) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_1_current_grind_stake_profit} {self.config['stake_currency']})"
+      )
+      order_tag = "g1"
+      return buy_amount, order_tag, is_derisk
 
     # Grinding Exit
     if has_order_tags and grind_1_sub_grind_count > 0:
@@ -45152,7 +45207,7 @@ class NostalgiaForInfinityX3(IStrategy):
             )
           )
           or (
-            (slice_profit < 0.06)
+            (slice_profit > 0.06)
             and (last_candle["rsi_3"] < 90.0)
             and (last_candle["rsi_3_15m"] < 90.0)
             and (last_candle["rsi_14"] < 72.0)
@@ -45184,6 +45239,37 @@ class NostalgiaForInfinityX3(IStrategy):
           return buy_amount, order_tag
         else:
           return buy_amount
+
+    if (
+      self.is_futures_mode
+      and has_order_tags
+      and (not partial_sell)
+      and slice_profit > (0.7 / trade.leverage)
+      and (is_derisk or is_derisk_calc or is_grind_mode)
+    ):
+      buy_amount = (
+        slice_amount * grind_1_stakes[grind_1_sub_grind_count] / (trade.leverage if self.is_futures_mode else 1.0)
+      )
+      if buy_amount < (min_stake * 1.5):
+        buy_amount = min_stake * 1.5
+      if buy_amount > max_stake:
+        return None
+      grind_profit = 0.0
+      grind_profit_stake = 0.0
+      if grind_1_sub_grind_count > 0:
+        grind_profit = -(exit_rate - grind_1_current_open_rate) / grind_1_current_open_rate
+        grind_profit_stake = grind_1_current_grind_stake_profit
+      self.dp.send_msg(
+        f"Grinding entry (gd1) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_1_current_grind_stake_profit} {self.config['stake_currency']})"
+      )
+      log.info(
+        f"Grinding entry (gd1) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_1_current_grind_stake_profit} {self.config['stake_currency']})"
+      )
+      order_tag = "gd1"
+      if has_order_tags:
+        return buy_amount, order_tag
+      else:
+        return buy_amount
 
     # Sell
     if grind_1_sub_grind_count > 0:
@@ -45314,7 +45400,7 @@ class NostalgiaForInfinityX3(IStrategy):
             )
           )
           or (
-            (slice_profit < 0.06)
+            (slice_profit > 0.06)
             and (last_candle["rsi_3"] < 90.0)
             and (last_candle["rsi_3_15m"] < 90.0)
             and (last_candle["rsi_14"] < 72.0)
@@ -45476,7 +45562,7 @@ class NostalgiaForInfinityX3(IStrategy):
             )
           )
           or (
-            (slice_profit < 0.06)
+            (slice_profit > 0.06)
             and (last_candle["rsi_3"] < 90.0)
             and (last_candle["rsi_3_15m"] < 90.0)
             and (last_candle["rsi_14"] < 72.0)
@@ -45638,7 +45724,7 @@ class NostalgiaForInfinityX3(IStrategy):
             )
           )
           or (
-            (slice_profit < 0.06)
+            (slice_profit > 0.06)
             and (last_candle["rsi_3"] < 90.0)
             and (last_candle["rsi_3_15m"] < 90.0)
             and (last_candle["rsi_14"] < 72.0)
@@ -45800,7 +45886,7 @@ class NostalgiaForInfinityX3(IStrategy):
             )
           )
           or (
-            (slice_profit < 0.06)
+            (slice_profit > 0.06)
             and (last_candle["rsi_3"] < 90.0)
             and (last_candle["rsi_3_15m"] < 90.0)
             and (last_candle["rsi_14"] < 72.0)
@@ -45962,7 +46048,7 @@ class NostalgiaForInfinityX3(IStrategy):
             )
           )
           or (
-            (slice_profit < 0.06)
+            (slice_profit > 0.06)
             and (last_candle["rsi_3"] < 90.0)
             and (last_candle["rsi_3_15m"] < 90.0)
             and (last_candle["rsi_14"] < 72.0)
