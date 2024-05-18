@@ -34,6 +34,6 @@
       "number_assets": 75,
       "sort_key": "quoteVolume"
     },
-    { "method": "ShuffleFilter" }
+    // { "method": "ShuffleFilter" }
   ]
 }
