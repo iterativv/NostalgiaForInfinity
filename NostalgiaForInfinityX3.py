@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.736"
+    return "v13.1.737"
 
   stoploss = -0.99
 
@@ -25408,6 +25408,8 @@ class NostalgiaForInfinityX3(IStrategy):
         # Condition #52 - Quick mode (Long).
         if index == 52:
           # Protections
+          long_entry_logic.append(df["global_protections_long_pump"] == True)
+          long_entry_logic.append(df["global_protections_long_dump"] == True)
           long_entry_logic.append(df["hl_pct_change_6_1h"] < 0.60)
           long_entry_logic.append(df["hl_pct_change_12_1h"] < 0.70)
           long_entry_logic.append(df["hl_pct_change_24_1h"] < 0.80)
