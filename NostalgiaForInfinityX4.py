@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.754"
+    return "v14.1.755"
 
   stoploss = -0.99
 
@@ -15071,7 +15071,7 @@ class NostalgiaForInfinityX4(IStrategy):
           long_entry_logic.append(df["ewo_50_200"] > 2.0)
           long_entry_logic.append(df["rsi_14"] < 30.0)
 
-        # Condition #8 Normal mode.
+        # Condition #8 Normal mode (Long).
         if index == 8:
           # Protections
           long_entry_logic.append(df["protections_long_global"] == True)
@@ -15079,11 +15079,11 @@ class NostalgiaForInfinityX4(IStrategy):
           long_entry_logic.append(df["global_protections_long_dump"] == True)
           long_entry_logic.append(df["btc_pct_close_max_24_5m"] < 0.03)
           long_entry_logic.append(df["btc_pct_close_max_72_5m"] < 0.03)
-          long_entry_logic.append(df["close_max_12"] < (df["close"] * 1.2))
-          long_entry_logic.append(df["close_max_24"] < (df["close"] * 1.24))
-          long_entry_logic.append(df["close_max_48"] < (df["close"] * 1.3))
-          long_entry_logic.append(df["high_max_24_1h"] < (df["close"] * 1.5))
-          long_entry_logic.append(df["high_max_24_4h"] < (df["close"] * 1.75))
+          long_entry_logic.append(df["close"] > (df["close_max_12"] * 0.82))
+          long_entry_logic.append(df["close"] > (df["close_max_24"] * 0.80))
+          long_entry_logic.append(df["close"] > (df["close_max_48"] * 0.72))
+          long_entry_logic.append(df["close"] > (df["high_max_24_1h"] * 0.60))
+          long_entry_logic.append(df["close"] > (df["high_max_24_4h"] * 0.50))
           long_entry_logic.append(df["hl_pct_change_6_1h"] < 0.4)
           long_entry_logic.append(df["hl_pct_change_12_1h"] < 0.5)
           long_entry_logic.append(df["hl_pct_change_24_1h"] < 0.75)
@@ -15096,117 +15096,6 @@ class NostalgiaForInfinityX4(IStrategy):
           long_entry_logic.append(df["rsi_14_4h"] < 80.0)
           long_entry_logic.append(df["cti_20_1d"] < 0.8)
           long_entry_logic.append(df["rsi_14_1d"] < 80.0)
-
-          long_entry_logic.append(
-            (df["not_downtrend_1h"])
-            | (df["not_downtrend_4h"])
-            | (df["rsi_3_1h"] > 10.0)
-            | (df["r_14_1h"] > -95.0)
-            | (df["r_480_1h"] > -90.0)
-            | (df["r_480_4h"] > -90.0)
-            | (df["ema_200_dec_48_1h"] == False)
-            | (df["ema_200_dec_24_4h"] == False)
-            | (df["ema_200_dec_4_1d"] == False)
-          )
-          long_entry_logic.append(
-            (df["not_downtrend_1h"])
-            | (df["not_downtrend_4h"])
-            | (df["cti_20_15m"] < -0.5)
-            | (df["rsi_14_15m"] < 20.0)
-            | (df["r_480_1h"] > -90.0)
-            | (df["r_480_4h"] > -90.0)
-            | (df["ema_200_dec_48_1h"] == False)
-            | (df["ema_200_dec_24_4h"] == False)
-            | (df["ema_200_dec_4_1d"] == False)
-          )
-          long_entry_logic.append(
-            (df["change_pct_1d"] < 0.04)
-            | (df["top_wick_pct_1d"] < 0.04)
-            | (df["not_downtrend_1h"])
-            | (df["rsi_3_1h"] > 20.0)
-            | (df["cti_20_4h"] < 0.5)
-          )
-          long_entry_logic.append(
-            (df["not_downtrend_1h"])
-            | (df["not_downtrend_4h"])
-            | (df["rsi_3_15m"] > 4.0)
-            | (df["rsi_3_1h"] > 25.0)
-            | (df["rsi_14_1h"] < 20.0)
-            | (df["r_480_1h"] > -90.0)
-            | (df["rsi_14_4h"] < 20.0)
-            | (df["r_480_4h"] > -90.0)
-            | (df["ema_200_dec_48_1h"] == False)
-            | (df["ema_200_dec_24_4h"] == False)
-            | (df["ema_200_dec_4_1d"] == False)
-          )
-          long_entry_logic.append(
-            (df["not_downtrend_1h"])
-            | (df["not_downtrend_4h"])
-            | (df["rsi_3_15m"] > 10.0)
-            | (df["rsi_14_1h"] < 20.0)
-            | (df["rsi_3_1h"] > 30.0)
-            | (df["rsi_14_4h"] < 30.0)
-            | (df["rsi_14_1d"] < 50.0)
-            | (df["ema_200_dec_4_1d"] == False)
-          )
-          long_entry_logic.append(
-            (df["not_downtrend_1h"])
-            | (df["not_downtrend_4h"])
-            | (df["rsi_3_15m"] > 25.0)
-            | (df["rsi_3_1h"] > 10.0)
-            | (df["r_480_1h"] > -90.0)
-            | (df["rsi_3_4h"] > 20.0)
-            | (df["r_480_4h"] > -90.0)
-            | (df["ema_200_dec_48_1h"] == False)
-            | (df["ema_200_dec_24_4h"] == False)
-            | (df["ema_200_dec_4_1d"] == False)
-          )
-          long_entry_logic.append(
-            (df["not_downtrend_1h"])
-            | (df["not_downtrend_4h"])
-            | (df["rsi_14_15m"] < 30.0)
-            | (df["r_480_1h"] > -90.0)
-            | (df["rsi_3_4h"] > 10.0)
-            | (df["r_480_4h"] > -90.0)
-            | (df["ema_200_dec_48_1h"] == False)
-            | (df["ema_200_dec_24_4h"] == False)
-            | (df["ema_200_dec_4_1d"] == False)
-          )
-          long_entry_logic.append(
-            (df["not_downtrend_1h"])
-            | (df["not_downtrend_4h"])
-            | (df["rsi_3_1h"] > 25.0)
-            | (df["r_480_1h"] > -90.0)
-            | (df["rsi_3_4h"] > 10.0)
-            | (df["r_480_4h"] > -90.0)
-            | (df["ema_200_dec_48_1h"] == False)
-            | (df["ema_200_dec_24_4h"] == False)
-            | (df["ema_200_dec_4_1d"] == False)
-          )
-          long_entry_logic.append(
-            (df["not_downtrend_1h"])
-            | (df["not_downtrend_4h"])
-            | (df["rsi_3_1h"] > 10.0)
-            | (df["rsi_3_4h"] > 10.0)
-            | (df["cti_20_1d"] < 0.5)
-            | (df["ema_200_dec_4_1d"] == False)
-          )
-          long_entry_logic.append(
-            (df["not_downtrend_15m"])
-            | (df["not_downtrend_1h"])
-            | (df["not_downtrend_4h"])
-            | (df["rsi_3_15m"] > 10.0)
-            | (df["rsi_3_1h"] > 10.0)
-            | (df["ema_200_dec_48_1h"] == False)
-            | (df["ema_200_dec_4_1d"] == False)
-          )
-          long_entry_logic.append(
-            (df["is_downtrend_3_4h"] == False)
-            | (df["not_downtrend_15m"])
-            | (df["not_downtrend_1h"])
-            | (df["not_downtrend_4h"])
-            | (df["rsi_3_4h"] > 10.0)
-          )
 
           # Logic
           long_entry_logic.append(df["close"] < (df["ema_16"] * 0.944))
