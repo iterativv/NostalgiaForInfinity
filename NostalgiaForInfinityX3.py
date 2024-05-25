@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.763"
+    return "v13.1.764"
 
   stoploss = -0.99
 
@@ -30630,7 +30630,7 @@ class NostalgiaForInfinityX3(IStrategy):
             is_derisk_1_found = True
             is_derisk_1 = True
             derisk_1_order = order
-        elif order_tag in ["p", "r", "d", "dd0", "partial_exit", ""]:
+        elif order_tag in ["p", "r", "d", "dd0", "partial_exit", "force_exit", ""]:
           if order_tag in ["d"]:
             is_derisk_found = True
             is_derisk = True
@@ -41556,7 +41556,7 @@ class NostalgiaForInfinityX3(IStrategy):
             is_derisk_1_found = True
             is_derisk_1 = True
             derisk_1_order = order
-        elif order_tag in ["p", "r", "d", "dd0", "partial_exit", ""]:
+        elif order_tag in ["p", "r", "d", "dd0", "partial_exit", "force_exit", ""]:
           if order_tag in ["d"]:
             is_derisk_found = True
             is_derisk = True
