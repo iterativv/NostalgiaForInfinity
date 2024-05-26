@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.765"
+    return "v13.1.766"
 
   stoploss = -0.99
 
@@ -32117,7 +32117,13 @@ class NostalgiaForInfinityX3(IStrategy):
         order_tag = "g1"
         return buy_amount, order_tag, is_derisk
 
-    if self.is_futures_mode and has_order_tags and (not partial_sell) and slice_profit < (-0.65 / trade.leverage):
+    if (
+      self.is_futures_mode
+      and has_order_tags
+      and (not partial_sell)
+      and slice_profit < (-0.65 / trade.leverage)
+      and (grind_1_sub_grind_count < max_grind_1_sub_grinds)
+    ):
       buy_amount = (
         slice_amount
         * regular_mode_grind_1_stakes[grind_1_sub_grind_count]
@@ -43018,7 +43024,13 @@ class NostalgiaForInfinityX3(IStrategy):
         order_tag = "g1"
         return buy_amount, order_tag, is_derisk
 
-    if self.is_futures_mode and has_order_tags and (not partial_sell) and slice_profit > (0.65 / trade.leverage):
+    if (
+      self.is_futures_mode
+      and has_order_tags
+      and (not partial_sell)
+      and slice_profit > (0.65 / trade.leverage)
+      and (grind_1_sub_grind_count < max_grind_1_sub_grinds)
+    ):
       buy_amount = (
         slice_amount
         * regular_mode_grind_1_stakes[grind_1_sub_grind_count]
