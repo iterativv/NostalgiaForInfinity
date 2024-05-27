@@ -6,7 +6,8 @@
       "sort_key": "quoteVolume",
       "refresh_period": 1800
     },
-    { "method": "AgeFilter", "min_days_listed": 3 },
+    { "method": "FullTradesFilter" },
+    { "method": "AgeFilter", "min_days_listed": 28 },
     {
       "method": "PriceFilter",
       "low_price_ratio": 0.01
@@ -15,12 +16,12 @@
       "method": "SpreadFilter",
       "max_spread_ratio": 0.0075
     },
-    {
-      "method": "RangeStabilityFilter",
-      "lookback_days": 3,
-      "min_rate_of_change": 0.03,
-      "refresh_period": 1800
-    },
+    // {
+    //   "method": "RangeStabilityFilter",
+    //   "lookback_days": 3,
+    //   "min_rate_of_change": 0.03,
+    //   "refresh_period": 1800
+    // },
     // {
     //   "method": "VolatilityFilter",
     //   "lookback_days": 3,
@@ -33,6 +34,6 @@
       "number_assets": 75,
       "sort_key": "quoteVolume"
     },
-    { "method": "ShuffleFilter" }
+    // { "method": "ShuffleFilter" }
   ]
 }
