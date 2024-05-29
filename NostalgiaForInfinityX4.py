@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.777"
+    return "v14.1.778"
 
   stoploss = -0.99
 
@@ -181,6 +181,9 @@ class NostalgiaForInfinityX4(IStrategy):
   # Grinding feature
   grinding_enable = True
 
+  # Grinding feature
+  grinding_enable = True
+
   # Grinding
   grind_derisk_spot = -0.40
   grind_derisk_futures = -0.50
@@ -245,24 +248,24 @@ class NostalgiaForInfinityX4(IStrategy):
   grind_6_stakes_futures = [0.05, 0.06, 0.07, 0.08, 0.09]
   grind_6_sub_thresholds_futures = [-0.05, -0.06, -0.07, -0.08, -0.09]
 
-  grind_1_derisk_1_stop_grinds_spot = -0.10
+  grind_1_derisk_1_stop_grinds_spot = -0.70
   grind_1_derisk_1_profit_threshold_spot = 0.018
-  grind_1_derisk_1_stakes_spot = [0.50]
+  grind_1_derisk_1_stakes_spot = [0.25, 0.30, 0.35]
   grind_1_derisk_1_sub_thresholds_spot = [-0.10]
 
-  grind_1_derisk_1_stop_grinds_futures = -0.10
+  grind_1_derisk_1_stop_grinds_futures = -0.70
   grind_1_derisk_1_profit_threshold_futures = 0.018
-  grind_1_derisk_1_stakes_futures = [0.50]
+  grind_1_derisk_1_stakes_futures = [0.25, 0.30, 0.35]
   grind_1_derisk_1_sub_thresholds_futures = [-0.10]
 
   grind_2_derisk_1_stop_grinds_spot = -0.70
   grind_2_derisk_1_profit_threshold_spot = 0.018
-  grind_2_derisk_1_stakes_spot = [0.15, 0.20, 0.25]
+  grind_2_derisk_1_stakes_spot = [0.16, 0.22, 0.28]
   grind_2_derisk_1_sub_thresholds_spot = [-0.10, -0.11, -0.12]
 
   grind_2_derisk_1_stop_grinds_futures = -0.70
   grind_2_derisk_1_profit_threshold_futures = 0.018
-  grind_2_derisk_1_stakes_futures = [0.15, 0.20, 0.25]
+  grind_2_derisk_1_stakes_futures = [0.16, 0.22, 0.28]
   grind_2_derisk_1_sub_thresholds_futures = [-0.10, -0.11, -0.12]
 
   # Non rebuy modes
