@@ -293,10 +293,10 @@ class NostalgiaForInfinityX3(IStrategy):
   regular_mode_grind_5_stop_grinds_spot = -0.20
   regular_mode_grind_5_profit_threshold_spot = 0.048
   regular_mode_derisk_1_spot = -0.80
-  regular_mode_derisk_1_spot_old = -0.16
+  regular_mode_derisk_1_spot_old = -0.80
   regular_mode_derisk_1_reentry_spot = -0.08
   regular_mode_derisk_spot = -1.60
-  regular_mode_derisk_spot_old = -0.40
+  regular_mode_derisk_spot_old = -1.60
 
   regular_mode_rebuy_stakes_futures = [0.10, 0.10, 0.10]
   regular_mode_rebuy_thresholds_futures = [-0.12, -0.14, -0.16]
@@ -321,10 +321,10 @@ class NostalgiaForInfinityX3(IStrategy):
   regular_mode_grind_5_stop_grinds_futures = -0.20
   regular_mode_grind_5_profit_threshold_futures = 0.048
   regular_mode_derisk_1_futures = -2.40
-  regular_mode_derisk_1_futures_old = -0.48
+  regular_mode_derisk_1_futures_old = -2.40
   regular_mode_derisk_1_reentry_futures = -0.08  # without leverage
   regular_mode_derisk_futures = -3.20
-  regular_mode_derisk_futures_old = -0.80
+  regular_mode_derisk_futures_old = -3.20
 
   # Rebuy mode
   rebuy_mode_stake_multiplier = 0.2
