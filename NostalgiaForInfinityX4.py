@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.780"
+    return "v14.1.781"
 
   stoploss = -0.99
 
@@ -14217,6 +14217,19 @@ class NostalgiaForInfinityX4(IStrategy):
         | (df["close"] > df["sup_level_1d"])
         | (df["ema_200_dec_48_1h"] == False)
       )
+      & (
+        (df["not_downtrend_1d"])
+        | (df["rsi_14"] > df["rsi_14"].shift(12))
+        | (df["rsi_3"] > 10.0)
+        | (df["rsi_3_1d"] > 26.0)
+        | (df["rsi_14_15m"] < 50.0)
+        | (df["rsi_14_1h"] < 50.0)
+        | (df["r_480_1h"] > -85.0)
+        | (df["close"] > df["sup_level_1h"])
+        | (df["close"] > df["sup_level_4h"])
+        | (df["close"] > df["sup_level_1d"])
+        | (df["ema_200_dec_48_1h"] == False)
+      )
     )
 
     # Global protections
@@ -14399,30 +14412,27 @@ class NostalgiaForInfinityX4(IStrategy):
 
     df["protections_short_global"] = True
     df["global_protections_short_pump"] = (
-      (
-        (df["change_pct_4h"] < 0.04)
-        | (df["rsi_14"] < df["rsi_14"].shift(12))
-        | (df["rsi_14_15m"] < df["rsi_14_15m"].shift(12))
-        | (df["rsi_3"] < 96.0)
-        | (df["rsi_3_15m"] < 90.0)
-        | (df["r_480_1h"] < -20.0)
-        | (df["close"] < df["res_hlevel_1h"])
-        | (df["close"] < df["res_hlevel_4h"])
-        | (df["ema_200_dec_48_1h"] == True)
-        | (df["hl_pct_change_6_1d"] < 0.5)
-      )
-      & (
-        (df["change_pct_1h"] < 0.02)
-        | (df["rsi_14"] < df["rsi_14"].shift(12))
-        | (df["rsi_14_15m"] < df["rsi_14_15m"].shift(12))
-        | (df["rsi_3"] < 94.0)
-        | (df["rsi_3_15m"] < 86.0)
-        | (df["r_480_1h"] < -10.0)
-        | (df["close"] < df["res_hlevel_1h"])
-        | (df["close"] < df["res_hlevel_4h"])
-        | (df["ema_200_dec_48_1h"] == True)
-        | (df["hl_pct_change_6_1d"] < 1.2)
-      )
+      (df["change_pct_4h"] < 0.04)
+      | (df["rsi_14"] < df["rsi_14"].shift(12))
+      | (df["rsi_14_15m"] < df["rsi_14_15m"].shift(12))
+      | (df["rsi_3"] < 96.0)
+      | (df["rsi_3_15m"] < 90.0)
+      | (df["r_480_1h"] < -20.0)
+      | (df["close"] < df["res_hlevel_1h"])
+      | (df["close"] < df["res_hlevel_4h"])
+      | (df["ema_200_dec_48_1h"] == True)
+      | (df["hl_pct_change_6_1d"] < 0.5)
+    ) & (
+      (df["change_pct_1h"] < 0.02)
+      | (df["rsi_14"] < df["rsi_14"].shift(12))
+      | (df["rsi_14_15m"] < df["rsi_14_15m"].shift(12))
+      | (df["rsi_3"] < 94.0)
+      | (df["rsi_3_15m"] < 86.0)
+      | (df["r_480_1h"] < -10.0)
+      | (df["close"] < df["res_hlevel_1h"])
+      | (df["close"] < df["res_hlevel_4h"])
+      | (df["ema_200_dec_48_1h"] == True)
+      | (df["hl_pct_change_6_1d"] < 1.2)
     )
     df["global_protections_short_dump"] = True
     df["protections_short_rebuy"] = True
