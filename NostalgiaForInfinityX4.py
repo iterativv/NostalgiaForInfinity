@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.793"
+    return "v14.1.794"
 
   stoploss = -0.99
 
@@ -21215,6 +21215,8 @@ class NostalgiaForInfinityX4(IStrategy):
           short_entry_logic.append(df["protections_short_global"] == True)
           short_entry_logic.append(df["global_protections_short_pump"] == True)
           short_entry_logic.append(df["global_protections_short_dump"] == True)
+          short_entry_logic.append(df["hl_pct_change_6_1h"] < 0.90)
+          short_entry_logic.append(df["hl_pct_change_12_1h"] < 1.00)
           short_entry_logic.append(df["num_empty_288"] < allowed_empty_candles)
 
           short_entry_logic.append(df["rsi_3_15m"] <= 96.0)
