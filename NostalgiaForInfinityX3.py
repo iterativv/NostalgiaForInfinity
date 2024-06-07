@@ -14889,6 +14889,7 @@ class NostalgiaForInfinityX3(IStrategy):
     time_in_force: str,
     current_time: datetime,
     entry_tag: Optional[str],
+    side: str,
     **kwargs,
   ) -> bool:
     # allow force entries
@@ -14921,10 +14922,10 @@ class NostalgiaForInfinityX3(IStrategy):
         # The pair is not in the list of grind mode allowed
         return False
 
-    if rate > df["close"]:
+    if ("side" == "long" and rate > df["close"]) or ("side" == "short" and rate < df["close"]):
       slippage = (rate / df["close"]) - 1.0
 
-      if slippage < self.max_slippage:
+      if ("side" == "long" and slippage < self.max_slippage) or ("side" == "short" and slippage > -self.max_slippage):
         return True
       else:
         log.warning(f"Cancelling buy for {pair} due to slippage {(slippage * 100.0):.2f}%")
