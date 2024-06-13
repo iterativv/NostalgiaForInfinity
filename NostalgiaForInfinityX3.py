@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.834"
+    return "v13.1.835"
 
   stoploss = -0.99
 
@@ -3112,6 +3112,7 @@ class NostalgiaForInfinityX3(IStrategy):
     df = self.base_tf_5m_indicators(metadata, df)
 
     df["zlma_50_1h"] = df["zlma_50_1h"].astype(np.float64).replace(to_replace=[np.nan, None], value=(0.0))
+    df["zlma_50_4h"] = df["zlma_50_4h"].astype(np.float64).replace(to_replace=[np.nan, None], value=(0.0))
     df["cti_20_1d"] = df["cti_20_1d"].astype(np.float64).replace(to_replace=[np.nan, None], value=(0.0))
     df["r_480_1h"] = df["r_480_1h"].astype(np.float64).replace(to_replace=[np.nan, None], value=(-50.0))
     df["r_480_4h"] = df["r_480_4h"].astype(np.float64).replace(to_replace=[np.nan, None], value=(-50.0))
