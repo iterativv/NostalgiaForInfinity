@@ -342,8 +342,8 @@ class NostalgiaForInfinityX3(IStrategy):
   grind_mode_stake_multiplier_futures = [0.20, 0.30, 0.40, 0.50]
   grind_mode_first_entry_profit_threshold_spot = 0.018
   grind_mode_first_entry_profit_threshold_futures = 0.018
-  grind_mode_first_entry_stop_threshold_spot = -0.20
-  grind_mode_first_entry_stop_threshold_futures = -0.20
+  grind_mode_first_entry_stop_threshold_spot = -0.30
+  grind_mode_first_entry_stop_threshold_futures = -0.30
   grind_mode_max_slots = 1
   grind_mode_coins = [
     "MATIC",
