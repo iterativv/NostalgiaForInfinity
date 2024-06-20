@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.855"
+    return "v14.1.856"
 
   stoploss = -0.99
 
@@ -88,7 +88,7 @@ class NostalgiaForInfinityX4(IStrategy):
   btc_info_timeframes = ["5m", "15m", "1h", "4h", "1d"]
 
   # Backtest Age Filter emulation
-  has_bt_agefilter = False
+  has_bt_agefilter = True
   bt_min_age_days = 3
 
   # Exchange Downtime protection
@@ -15574,6 +15574,12 @@ class NostalgiaForInfinityX4(IStrategy):
     for enabled_long_entry_signal in self.long_entry_signal_params:
       index = int(enabled_long_entry_signal.split("_")[3])
       item_buy_protection_list = [True]
+      if not self.config["runmode"].value in ("live", "dry_run"):
+          if self.has_bt_agefilter:
+            item_buy_protection_list.append(df["bt_agefilter_ok"])
+      else:
+        if self.has_downtime_protection:
+          item_buy_protection_list.append(df["live_data_ok"])
       if self.long_entry_signal_params[f"{enabled_long_entry_signal}"]:
         # Long Entry Conditions Starts Here
         # -----------------------------------------------------------------------------------------
@@ -21965,6 +21971,12 @@ class NostalgiaForInfinityX4(IStrategy):
     for enabled_short_entry_signal in self.short_entry_signal_params:
       short_index = int(enabled_short_entry_signal.split("_")[3])
       item_short_buy_protection_list = [True]
+      if not self.config["runmode"].value in ("live", "dry_run"):
+          if self.has_bt_agefilter:
+            item_short_buy_protection_list.append(df["bt_agefilter_ok"])
+      else:
+        if self.has_downtime_protection:
+          item_short_buy_protection_list.append(df["live_data_ok"])
       if self.short_entry_signal_params[f"{enabled_short_entry_signal}"]:
         # Short Entry Conditions Starts Here
         # -----------------------------------------------------------------------------------------
