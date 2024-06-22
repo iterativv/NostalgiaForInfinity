@@ -7,7 +7,6 @@
       "AMB/USDT:USDT",
       "AMP/USDT:USDT",
       "ARB/USDT:USDT",
-      "ARDR/USDT:USDT",
       "ARK/USDT:USDT",
       "ARKM/USDT:USDT",
       "AURORA/USDT:USDT",
@@ -51,7 +50,6 @@
       "MBL/USDT:USDT",
       "MDT/USDT:USDT",
       "MEME/USDT:USDT",
-      "MOVEZ/USDT:USDT",
       "NEO/USDT:USDT",
       "NMR/USDT:USDT",
       "NTRN/USDT:USDT",
@@ -64,7 +62,6 @@
       "PENDLE/USDT:USDT",
       "PEPE/USDT:USDT",
       "PHB/USDT:USDT",
-      "POGAI/USDT:USDT",
       "POLYX/USDT:USDT",
       "POND/USDT:USDT",
       "POWR/USDT:USDT",
@@ -78,7 +75,6 @@
       "STARL/USDT:USDT",
       "STEEM/USDT:USDT",
       "STPT/USDT:USDT",
-      "STRAX/USDT:USDT",
       "SUI/USDT:USDT",
       "SUPER/USDT:USDT",
       "SYN/USDT:USDT",
@@ -91,15 +87,12 @@
       "USDC/USDT:USDT",
       "VELO/USDT:USDT",
       "VOXEL/USDT:USDT",
-      "VRTX/USDT:USDT",
       "WLD/USDT:USDT",
       "WOJAK/USDT:USDT",
-      "WSM/USDT:USDT",
       "XEN/USDT:USDT",
       "XNO/USDT:USDT",
       "XRD/USDT:USDT",
-      "XVG/USDT:USDT",
-      "ZTX/USDT:USDT"
+      "XVG/USDT:USDT"
     ]
   },
   "pairlists": [{ "method": "StaticPairList" }]

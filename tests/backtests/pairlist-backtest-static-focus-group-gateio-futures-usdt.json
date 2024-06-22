@@ -49,7 +49,6 @@
       // "ANT/USDT:USDT",
       // "API3/USDT:USDT",
       // "ARB/USDT:USDT",
-      // "ARDR/USDT:USDT",
       // "ARK/USDT:USDT",
       // "ARKM/USDT:USDT",
       "ARPA/USDT:USDT",
@@ -83,7 +82,6 @@
       "FITFI/USDT:USDT",
       "FRONT/USDT:USDT",
       // "GAL/USDT:USDT",
-      "GARI/USDT:USDT",
       // "GAS/USDT:USDT",
       // "GFT/USDT:USDT",
       // "GLM/USDT:USDT",
@@ -111,7 +109,6 @@
       // "MATIC/USDT:USDT",
       // "MAV/USDT:USDT",
       "MBABYDOGE/USDT:USDT",
-      // "MOVEZ/USDT:USDT",
       // "NEO/USDT:USDT",
       // "NMR/USDT:USDT",
       // "NTRN/USDT:USDT",
@@ -120,7 +117,6 @@
       // "OXT/USDT:USDT",
       // "PENDLE/USDT:USDT",
       // "PEOPLE/USDT:USDT",
-      // "POGAI/USDT:USDT",
       // "POWR/USDT:USDT",
       // "QNT/USDT:USDT",
       // "QTUM/USDT:USDT",
@@ -137,7 +133,6 @@
       // "STMX/USDT:USDT",
       "STORJ/USDT:USDT",
       // "STPT/USDT:USDT",
-      // "STRAX/USDT:USDT",
       // "SUI/USDT:USDT",
       // "SUSHI/USDT:USDT",
       // "TON/USDT:USDT",
@@ -149,13 +144,11 @@
       "VRA/USDT:USDT",
       // "WAVES/USDT:USDT",
       // "WLD/USDT:USDT",
-      // "WSM/USDT:USDT",
       // "XRP/USDT:USDT",
       "XTZ/USDT:USDT",
       "YGG/USDT:USDT"
       // "ZEN/USDT:USDT",
       // "ZRX/USDT:USDT",
-      // "ZTX/USDT:USDT"
     ]
   },
   "pairlists": [
