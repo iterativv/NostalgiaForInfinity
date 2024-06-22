@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.859"
+    return "v13.1.860"
 
   stoploss = -0.99
 
@@ -15591,8 +15591,8 @@ class NostalgiaForInfinityX3(IStrategy):
       index = int(enabled_long_entry_signal.split("_")[3])
       item_buy_protection_list = [True]
       if not self.config["runmode"].value in ("live", "dry_run"):
-          if self.has_bt_agefilter:
-            item_buy_protection_list.append(df["bt_agefilter_ok"])
+        if self.has_bt_agefilter:
+          item_buy_protection_list.append(df["bt_agefilter_ok"])
       else:
         if self.has_downtime_protection:
           item_buy_protection_list.append(df["live_data_ok"])
@@ -22002,8 +22002,8 @@ class NostalgiaForInfinityX3(IStrategy):
       short_index = int(enabled_short_entry_signal.split("_")[3])
       item_short_buy_protection_list = [True]
       if not self.config["runmode"].value in ("live", "dry_run"):
-          if self.has_bt_agefilter:
-            item_short_buy_protection_list.append(df["bt_agefilter_ok"])
+        if self.has_bt_agefilter:
+          item_short_buy_protection_list.append(df["bt_agefilter_ok"])
       else:
         if self.has_downtime_protection:
           item_short_buy_protection_list.append(df["live_data_ok"])
