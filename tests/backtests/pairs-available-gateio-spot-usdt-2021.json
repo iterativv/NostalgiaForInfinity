@@ -68,7 +68,6 @@
       "DENT/USDT",
       "DEXE/USDT",
       "DFL/USDT",
-      "DG/USDT",
       "DHV/USDT",
       "DIGG/USDT",
       "DIS/USDT",
@@ -221,13 +220,11 @@
       "TOOLS/USDT",
       "TPT/USDT",
       "TRIBE/USDT",
-      "TSHP/USDT",
       "TVK/USDT",
       "UDO/USDT",
       "UFT/USDT",
       "UMB/USDT",
       "UNCX/USDT",
-      "UNISTAKE/USDT",
       "UNN/USDT",
       "UOS/USDT",
       "UTK/USDT",
@@ -241,15 +238,12 @@
       "WXT/USDT",
       "XCUR/USDT",
       "XED/USDT",
-      "XEND/USDT",
-      "XOR/USDT",
       "XVS/USDT",
       "XYM/USDT",
       "YFDAI/USDT",
       "YIELD/USDT",
       "ZCN/USDT",
-      "ZEE/USDT",
-      "ZKS/USDT"
+      "ZEE/USDT"
     ]
   },
   "pairlists": [{ "method": "StaticPairList" }]
