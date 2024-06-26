@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.860"
+    return "v14.1.861"
 
   stoploss = -0.99
 
@@ -171,6 +171,10 @@ class NostalgiaForInfinityX4(IStrategy):
   stop_threshold_spot_rapid = 4.0
   stop_threshold_spot_rebuy = 2.0
   stop_threshold_futures_rebuy = 4.0
+
+  # user specified fees to be used for profit calculations
+  custom_fee_open_rate = None
+  custom_fee_close_rate = None
 
   # Rebuy mode minimum number of free slots
   rebuy_mode_min_free_slots = 2
@@ -1279,6 +1283,11 @@ class NostalgiaForInfinityX4(IStrategy):
     if "regular_mode_derisk_futures_old" in self.config:
       self.regular_mode_derisk_futures_old = self.config["regular_mode_derisk_futures_old"]
 
+    if "custom_fee_open_rate" in self.config:
+      self.custom_fee_open_rate = self.config["custom_fee_open_rate"]
+    if "custom_fee_close_rate" in self.config:
+      self.custom_fee_close_rate = self.config["custom_fee_close_rate"]
+
     if "futures_mode_leverage" in self.config:
       self.futures_mode_leverage = self.config["futures_mode_leverage"]
     if "futures_mode_leverage_rebuy_mode" in self.config:
@@ -1508,35 +1517,38 @@ class NostalgiaForInfinityX4(IStrategy):
     :param exit_rate: The exit rate.
     :return tuple: The total profit in stake, ratio, ratio based on current stake, and ratio based on the first entry stake.
     """
+    fee_open_rate = trade.fee_open if self.custom_fee_open_rate is None else self.custom_fee_open_rate
+    fee_close_rate = trade.fee_close if self.custom_fee_close_rate is None else self.custom_fee_close_rate
+
     total_amount = 0.0
     total_stake = 0.0
     total_profit = 0.0
     current_stake = 0.0
     for entry_order in filled_entries:
       if trade.is_short:
-        entry_stake = entry_order.safe_filled * entry_order.safe_price * (1 - trade.fee_open)
+        entry_stake = entry_order.safe_filled * entry_order.safe_price * (1 - fee_open_rate)
         total_amount += entry_order.safe_filled
         total_stake += entry_stake
         total_profit += entry_stake
       else:
-        entry_stake = entry_order.safe_filled * entry_order.safe_price * (1 + trade.fee_open)
+        entry_stake = entry_order.safe_filled * entry_order.safe_price * (1 + fee_open_rate)
         total_amount += entry_order.safe_filled
         total_stake += entry_stake
         total_profit -= entry_stake
     for exit_order in filled_exits:
       if trade.is_short:
-        exit_stake = exit_order.safe_filled * exit_order.safe_price * (1 + trade.fee_close)
+        exit_stake = exit_order.safe_filled * exit_order.safe_price * (1 + fee_close_rate)
         total_amount -= exit_order.safe_filled
         total_profit -= exit_stake
       else:
-        exit_stake = exit_order.safe_filled * exit_order.safe_price * (1 - trade.fee_close)
+        exit_stake = exit_order.safe_filled * exit_order.safe_price * (1 - fee_close_rate)
         total_amount -= exit_order.safe_filled
         total_profit += exit_stake
     if trade.is_short:
-      current_stake = total_amount * exit_rate * (1 + trade.fee_close)
+      current_stake = total_amount * exit_rate * (1 + fee_close_rate)
       total_profit -= current_stake
     else:
-      current_stake = total_amount * exit_rate * (1 - trade.fee_close)
+      current_stake = total_amount * exit_rate * (1 - fee_close_rate)
       total_profit += current_stake
     if self.is_futures_mode:
       total_profit += trade.funding_fees
@@ -29278,6 +29290,9 @@ class NostalgiaForInfinityX4(IStrategy):
     )
     is_grind_mode = all(c in self.long_grind_mode_tags for c in enter_tags)
 
+    fee_open_rate = trade.fee_open if self.custom_fee_open_rate is None else self.custom_fee_open_rate
+    fee_close_rate = trade.fee_close if self.custom_fee_close_rate is None else self.custom_fee_close_rate
+
     # Rebuy mode
     if is_rebuy_mode:
       slice_amount /= self.rebuy_mode_stake_multiplier
@@ -29841,9 +29856,9 @@ class NostalgiaForInfinityX4(IStrategy):
         first_entry_distance_ratio = (exit_rate - first_entry.safe_price) / first_entry.safe_price
         # First entry exit
         if first_entry_distance_ratio > (
-          self.grind_mode_first_entry_profit_threshold_spot
+          (self.grind_mode_first_entry_profit_threshold_spot + fee_open_rate + fee_close_rate)
           if self.is_futures_mode
-          else self.grind_mode_first_entry_profit_threshold_spot
+          else (self.grind_mode_first_entry_profit_threshold_spot + fee_open_rate + fee_close_rate)
         ):
           sell_amount = first_entry.safe_filled * exit_rate / trade.leverage
           if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
@@ -29983,7 +29998,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Sell
     if grind_1_derisk_1_sub_grind_count > 0:
       grind_profit = (exit_rate - grind_1_derisk_1_current_open_rate) / grind_1_derisk_1_current_open_rate
-      if grind_profit > grind_1_derisk_1_profit_threshold:
+      if grind_profit > (grind_1_derisk_1_profit_threshold + fee_open_rate + fee_close_rate):
         sell_amount = grind_1_derisk_1_total_amount * exit_rate / trade.leverage
         if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
           sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -30130,7 +30145,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Sell
     if grind_2_derisk_1_sub_grind_count > 0:
       grind_profit = (exit_rate - grind_2_derisk_1_current_open_rate) / grind_2_derisk_1_current_open_rate
-      if grind_profit > grind_2_derisk_1_profit_threshold:
+      if grind_profit > (grind_2_derisk_1_profit_threshold + fee_open_rate + fee_close_rate):
         sell_amount = grind_2_derisk_1_total_amount * exit_rate / trade.leverage
         if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
           sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -30330,7 +30345,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Sell
     if grind_1_sub_grind_count > 0:
       grind_profit = (exit_rate - grind_1_current_open_rate) / grind_1_current_open_rate
-      if grind_profit > grind_1_profit_threshold:
+      if grind_profit > (grind_1_profit_threshold + fee_open_rate + fee_close_rate):
         sell_amount = grind_1_total_amount * exit_rate / trade.leverage
         if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
           sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -30503,7 +30518,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Sell
     if grind_2_sub_grind_count > 0:
       grind_profit = (exit_rate - grind_2_current_open_rate) / grind_2_current_open_rate
-      if grind_profit > grind_2_profit_threshold:
+      if grind_profit > (grind_2_profit_threshold + fee_open_rate + fee_close_rate):
         sell_amount = grind_2_total_amount * exit_rate / trade.leverage
         if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
           sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -30676,7 +30691,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Sell
     if grind_3_sub_grind_count > 0:
       grind_profit = (exit_rate - grind_3_current_open_rate) / grind_3_current_open_rate
-      if grind_profit > grind_3_profit_threshold:
+      if grind_profit > (grind_3_profit_threshold + fee_open_rate + fee_close_rate):
         sell_amount = grind_3_total_amount * exit_rate / trade.leverage
         if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
           sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -30849,7 +30864,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Sell
     if grind_4_sub_grind_count > 0:
       grind_profit = (exit_rate - grind_4_current_open_rate) / grind_4_current_open_rate
-      if grind_profit > grind_4_profit_threshold:
+      if grind_profit > (grind_4_profit_threshold + fee_open_rate + fee_close_rate):
         sell_amount = grind_4_total_amount * exit_rate / trade.leverage
         if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
           sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -31022,7 +31037,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Sell
     if grind_5_sub_grind_count > 0:
       grind_profit = (exit_rate - grind_5_current_open_rate) / grind_5_current_open_rate
-      if grind_profit > grind_5_profit_threshold:
+      if grind_profit > (grind_5_profit_threshold + fee_open_rate + fee_close_rate):
         sell_amount = grind_5_total_amount * exit_rate / trade.leverage
         if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
           sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -31195,7 +31210,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Sell
     if grind_6_sub_grind_count > 0:
       grind_profit = (exit_rate - grind_6_current_open_rate) / grind_6_current_open_rate
-      if grind_profit > grind_6_profit_threshold:
+      if grind_profit > (grind_6_profit_threshold + fee_open_rate + fee_close_rate):
         sell_amount = grind_6_total_amount * exit_rate / trade.leverage
         if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
           sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -32087,6 +32102,9 @@ class NostalgiaForInfinityX4(IStrategy):
       + grind_5_sub_grind_count
     )
 
+    fee_open_rate = trade.fee_open if self.custom_fee_open_rate is None else self.custom_fee_open_rate
+    fee_close_rate = trade.fee_close if self.custom_fee_close_rate is None else self.custom_fee_close_rate
+
     # Sell remaining if partial fill on exit
     if partial_sell:
       order = filled_exits[-1]
@@ -32292,7 +32310,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Grinding Exit
     if has_order_tags and grind_1_sub_grind_count > 0:
       grind_profit = (exit_rate - grind_1_current_open_rate) / grind_1_current_open_rate
-      if grind_profit > regular_mode_grind_1_profit_threshold:
+      if grind_profit > (regular_mode_grind_1_profit_threshold + fee_open_rate + fee_close_rate):
         sell_amount = grind_1_total_amount * exit_rate / trade.leverage
         if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
           sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -32436,7 +32454,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Grinding Exit
     if has_order_tags and grind_2_sub_grind_count > 0:
       grind_profit = (exit_rate - grind_2_current_open_rate) / grind_2_current_open_rate
-      if grind_profit > regular_mode_grind_2_profit_threshold:
+      if grind_profit > (regular_mode_grind_2_profit_threshold + fee_open_rate + fee_close_rate):
         sell_amount = grind_2_total_amount * exit_rate / trade.leverage
         if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
           sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -32579,7 +32597,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Grinding Exit
     if has_order_tags and grind_3_sub_grind_count > 0:
       grind_profit = (exit_rate - grind_3_current_open_rate) / grind_3_current_open_rate
-      if grind_profit > regular_mode_grind_3_profit_threshold:
+      if grind_profit > (regular_mode_grind_3_profit_threshold + fee_open_rate + fee_close_rate):
         sell_amount = grind_3_total_amount * exit_rate / trade.leverage
         if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
           sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -32722,7 +32740,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Grinding Exit
     if has_order_tags and grind_4_sub_grind_count > 0:
       grind_profit = (exit_rate - grind_4_current_open_rate) / grind_4_current_open_rate
-      if grind_profit > regular_mode_grind_4_profit_threshold:
+      if grind_profit > (regular_mode_grind_4_profit_threshold + fee_open_rate + fee_close_rate):
         sell_amount = grind_4_total_amount * exit_rate / trade.leverage
         if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
           sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -32865,7 +32883,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Grinding Exit
     if has_order_tags and grind_5_sub_grind_count > 0:
       grind_profit = (exit_rate - grind_5_current_open_rate) / grind_5_current_open_rate
-      if grind_profit > regular_mode_grind_5_profit_threshold:
+      if grind_profit > (regular_mode_grind_5_profit_threshold + fee_open_rate + fee_close_rate):
         sell_amount = grind_5_total_amount * exit_rate / trade.leverage
         if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
           sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -40243,6 +40261,9 @@ class NostalgiaForInfinityX4(IStrategy):
     )
     is_grind_mode = all(c in self.short_grind_mode_tags for c in enter_tags)
 
+    fee_open_rate = trade.fee_open if self.custom_fee_open_rate is None else self.custom_fee_open_rate
+    fee_close_rate = trade.fee_close if self.custom_fee_close_rate is None else self.custom_fee_close_rate
+
     # Rebuy mode
     if is_rebuy_mode:
       slice_amount /= self.rebuy_mode_stake_multiplier
@@ -40793,9 +40814,9 @@ class NostalgiaForInfinityX4(IStrategy):
         first_entry_distance_ratio = -(exit_rate - first_entry.safe_price) / first_entry.safe_price
         # First entry exit
         if first_entry_distance_ratio > (
-          self.grind_mode_first_entry_profit_threshold_spot
+          (self.grind_mode_first_entry_profit_threshold_spot + fee_open_rate + fee_close_rate)
           if self.is_futures_mode
-          else self.grind_mode_first_entry_profit_threshold_spot
+          else (self.grind_mode_first_entry_profit_threshold_spot + fee_open_rate + fee_close_rate)
         ):
           sell_amount = first_entry.safe_filled * exit_rate / trade.leverage
           if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
@@ -40935,7 +40956,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Sell
     if grind_1_derisk_1_sub_grind_count > 0:
       grind_profit = -(exit_rate - grind_1_derisk_1_current_open_rate) / grind_1_derisk_1_current_open_rate
-      if grind_profit > grind_1_derisk_1_profit_threshold:
+      if grind_profit > (grind_1_derisk_1_profit_threshold + fee_open_rate + fee_close_rate):
         sell_amount = grind_1_derisk_1_total_amount * exit_rate / trade.leverage
         if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
           sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -41082,7 +41103,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Sell
     if grind_2_derisk_1_sub_grind_count > 0:
       grind_profit = -(exit_rate - grind_2_derisk_1_current_open_rate) / grind_2_derisk_1_current_open_rate
-      if grind_profit > grind_2_derisk_1_profit_threshold:
+      if grind_profit > (grind_2_derisk_1_profit_threshold + fee_open_rate + fee_close_rate):
         sell_amount = grind_2_derisk_1_total_amount * exit_rate / trade.leverage
         if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
           sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -41279,7 +41300,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Sell
     if grind_1_sub_grind_count > 0:
       grind_profit = -(exit_rate - grind_1_current_open_rate) / grind_1_current_open_rate
-      if grind_profit > grind_1_profit_threshold:
+      if grind_profit > (grind_1_profit_threshold + fee_open_rate + fee_close_rate):
         sell_amount = grind_1_total_amount * exit_rate / trade.leverage
         if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
           sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -41449,7 +41470,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Sell
     if grind_2_sub_grind_count > 0:
       grind_profit = -(exit_rate - grind_2_current_open_rate) / grind_2_current_open_rate
-      if grind_profit > grind_2_profit_threshold:
+      if grind_profit > (grind_2_profit_threshold + fee_open_rate + fee_close_rate):
         sell_amount = grind_2_total_amount * exit_rate / trade.leverage
         if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
           sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -41619,7 +41640,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Sell
     if grind_3_sub_grind_count > 0:
       grind_profit = -(exit_rate - grind_3_current_open_rate) / grind_3_current_open_rate
-      if grind_profit > grind_3_profit_threshold:
+      if grind_profit > (grind_3_profit_threshold + fee_open_rate + fee_close_rate):
         sell_amount = grind_3_total_amount * exit_rate / trade.leverage
         if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
           sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -41789,7 +41810,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Sell
     if grind_4_sub_grind_count > 0:
       grind_profit = -(exit_rate - grind_4_current_open_rate) / grind_4_current_open_rate
-      if grind_profit > grind_4_profit_threshold:
+      if grind_profit > (grind_4_profit_threshold + fee_open_rate + fee_close_rate):
         sell_amount = grind_4_total_amount * exit_rate / trade.leverage
         if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
           sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -41959,7 +41980,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Sell
     if grind_5_sub_grind_count > 0:
       grind_profit = -(exit_rate - grind_5_current_open_rate) / grind_5_current_open_rate
-      if grind_profit > grind_5_profit_threshold:
+      if grind_profit > (grind_5_profit_threshold + fee_open_rate + fee_close_rate):
         sell_amount = grind_5_total_amount * exit_rate / trade.leverage
         if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
           sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -42129,7 +42150,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Sell
     if grind_6_sub_grind_count > 0:
       grind_profit = -(exit_rate - grind_6_current_open_rate) / grind_6_current_open_rate
-      if grind_profit > grind_6_profit_threshold:
+      if grind_profit > (grind_6_profit_threshold + fee_open_rate + fee_close_rate):
         sell_amount = grind_6_total_amount * exit_rate / trade.leverage
         if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
           sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -43005,6 +43026,9 @@ class NostalgiaForInfinityX4(IStrategy):
       + grind_5_sub_grind_count
     )
 
+    fee_open_rate = trade.fee_open if self.custom_fee_open_rate is None else self.custom_fee_open_rate
+    fee_close_rate = trade.fee_close if self.custom_fee_close_rate is None else self.custom_fee_close_rate
+
     # Sell remaining if partial fill on exit
     if partial_sell:
       order = filled_exits[-1]
@@ -43206,7 +43230,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Grinding Exit
     if has_order_tags and grind_1_sub_grind_count > 0:
       grind_profit = -(exit_rate - grind_1_current_open_rate) / grind_1_current_open_rate
-      if grind_profit > regular_mode_grind_1_profit_threshold:
+      if grind_profit > (regular_mode_grind_1_profit_threshold + fee_open_rate + fee_close_rate):
         sell_amount = grind_1_total_amount * exit_rate / trade.leverage
         if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
           sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -43314,7 +43338,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Grinding Exit
     if has_order_tags and grind_2_sub_grind_count > 0:
       grind_profit = -(exit_rate - grind_2_current_open_rate) / grind_2_current_open_rate
-      if grind_profit > regular_mode_grind_2_profit_threshold:
+      if grind_profit > (regular_mode_grind_2_profit_threshold + fee_open_rate + fee_close_rate):
         sell_amount = grind_2_total_amount * exit_rate / trade.leverage
         if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
           sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -43422,7 +43446,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Grinding Exit
     if has_order_tags and grind_3_sub_grind_count > 0:
       grind_profit = -(exit_rate - grind_3_current_open_rate) / grind_3_current_open_rate
-      if grind_profit > regular_mode_grind_3_profit_threshold:
+      if grind_profit > (regular_mode_grind_3_profit_threshold + fee_open_rate + fee_close_rate):
         sell_amount = grind_3_total_amount * exit_rate / trade.leverage
         if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
           sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -43530,7 +43554,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Grinding Exit
     if has_order_tags and grind_4_sub_grind_count > 0:
       grind_profit = -(exit_rate - grind_4_current_open_rate) / grind_4_current_open_rate
-      if grind_profit > regular_mode_grind_4_profit_threshold:
+      if grind_profit > (regular_mode_grind_4_profit_threshold + fee_open_rate + fee_close_rate):
         sell_amount = grind_4_total_amount * exit_rate / trade.leverage
         if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
           sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -43638,7 +43662,7 @@ class NostalgiaForInfinityX4(IStrategy):
     # Grinding Exit
     if has_order_tags and grind_5_sub_grind_count > 0:
       grind_profit = -(exit_rate - grind_5_current_open_rate) / grind_5_current_open_rate
-      if grind_profit > regular_mode_grind_5_profit_threshold:
+      if grind_profit > (regular_mode_grind_5_profit_threshold + fee_open_rate + fee_close_rate):
         sell_amount = grind_5_total_amount * exit_rate / trade.leverage
         if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
           sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
