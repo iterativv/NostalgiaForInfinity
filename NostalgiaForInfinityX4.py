@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.864"
+    return "v14.1.865"
 
   stoploss = -0.99
 
@@ -32228,7 +32228,7 @@ class NostalgiaForInfinityX4(IStrategy):
         order_tag = "r"
         return buy_amount, order_tag, is_derisk
 
-    # Gringing g1
+    # Grinding g1
     # Grinding entry
     if has_order_tags and (not partial_sell) and (grind_1_sub_grind_count < max_grind_1_sub_grinds):
       if (
@@ -32402,7 +32402,7 @@ class NostalgiaForInfinityX4(IStrategy):
           order_tag += " " + str(grind_entry_id)
         return -ft_sell_amount, order_tag, is_derisk
 
-    # Gringing g2
+    # Grinding g2
     # Grinding entry
     if has_order_tags and (not partial_sell) and (grind_2_sub_grind_count < max_grind_2_sub_grinds):
       if (
@@ -32546,7 +32546,7 @@ class NostalgiaForInfinityX4(IStrategy):
           order_tag += " " + str(grind_entry_id)
         return -ft_sell_amount, order_tag, is_derisk
 
-    # Gringing g3
+    # Grinding g3
     # Grinding entry
     if has_order_tags and (not partial_sell) and (grind_3_sub_grind_count < max_grind_3_sub_grinds):
       if (
@@ -32610,6 +32610,15 @@ class NostalgiaForInfinityX4(IStrategy):
             # and (last_candle["rsi_14"] > 28.0)
             and (last_candle["rsi_14"] < 36.0)
             and (last_candle["close"] < (last_candle["ema_26"] * 0.988))
+          )
+          or (
+            (num_open_grinds == 0)
+            and (last_candle["rsi_3"] > 12.0)
+            and (last_candle["rsi_3_15m"] > 16.0)
+            and (last_candle["rsi_3_1h"] > 16.0)
+            and (last_candle["rsi_3_4h"] > 16.0)
+            and (previous_candle["chandelier_dir"] < -0)
+            and (last_candle["chandelier_dir"] > 0)
           )
         )
       ):
@@ -32689,7 +32698,7 @@ class NostalgiaForInfinityX4(IStrategy):
           order_tag += " " + str(grind_entry_id)
         return -ft_sell_amount, order_tag, is_derisk
 
-    # Gringing g4
+    # Grinding g4
     # Grinding entry
     if has_order_tags and (not partial_sell) and (grind_4_sub_grind_count < max_grind_4_sub_grinds):
       if (
@@ -32832,7 +32841,7 @@ class NostalgiaForInfinityX4(IStrategy):
           order_tag += " " + str(grind_entry_id)
         return -ft_sell_amount, order_tag, is_derisk
 
-    # Gringing g5
+    # Grinding g5
     # Grinding entry
     if has_order_tags and (not partial_sell) and (grind_5_sub_grind_count < max_grind_5_sub_grinds):
       if (
@@ -43151,7 +43160,7 @@ class NostalgiaForInfinityX4(IStrategy):
         order_tag = "r"
         return buy_amount, order_tag, is_derisk
 
-    # Gringing g1
+    # Grinding g1
     # Grinding entry
     if has_order_tags and (not partial_sell) and (grind_1_sub_grind_count < max_grind_1_sub_grinds):
       if (
@@ -43289,7 +43298,7 @@ class NostalgiaForInfinityX4(IStrategy):
             order_tag += " " + str(grind_entry_id)
           return -ft_sell_amount, order_tag, is_derisk
 
-    # Gringing g2
+    # Grinding g2
     # Grinding entry
     if has_order_tags and (not partial_sell) and (grind_2_sub_grind_count < max_grind_2_sub_grinds):
       if (
@@ -43397,7 +43406,7 @@ class NostalgiaForInfinityX4(IStrategy):
             order_tag += " " + str(grind_entry_id)
           return -ft_sell_amount, order_tag, is_derisk
 
-    # Gringing g3
+    # Grinding g3
     # Grinding entry
     if has_order_tags and (not partial_sell) and (grind_3_sub_grind_count < max_grind_3_sub_grinds):
       if (
@@ -43460,6 +43469,15 @@ class NostalgiaForInfinityX4(IStrategy):
             and (last_candle["rsi_14"] > 64.0)
             and (last_candle["close"] > (last_candle["ema_26"] * 1.012))
           )
+          or (
+            (num_open_grinds == 0)
+            and (last_candle["rsi_3"] < 88.0)
+            and (last_candle["rsi_3_15m"] < 84.0)
+            and (last_candle["rsi_3_1h"] < 84.0)
+            and (last_candle["rsi_3_4h"] < 84.0)
+            and (previous_candle["chandelier_dir"] > 0)
+            and (last_candle["chandelier_dir"] < -0)
+          )
         )
       ):
         buy_amount = (
@@ -43505,7 +43523,7 @@ class NostalgiaForInfinityX4(IStrategy):
             order_tag += " " + str(grind_entry_id)
           return -ft_sell_amount, order_tag, is_derisk
 
-    # Gringing g4
+    # Grinding g4
     # Grinding entry
     if has_order_tags and (not partial_sell) and (grind_4_sub_grind_count < max_grind_4_sub_grinds):
       if (
@@ -43613,7 +43631,7 @@ class NostalgiaForInfinityX4(IStrategy):
             order_tag += " " + str(grind_entry_id)
           return -ft_sell_amount, order_tag, is_derisk
 
-    # Gringing g5
+    # Grinding g5
     # Grinding entry
     if has_order_tags and (not partial_sell) and (grind_5_sub_grind_count < max_grind_5_sub_grinds):
       if (
