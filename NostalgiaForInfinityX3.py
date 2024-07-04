@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.873"
+    return "v13.1.874"
 
   stoploss = -0.99
 
@@ -21418,6 +21418,16 @@ class NostalgiaForInfinityX3(IStrategy):
             | (df["rsi_14_4h"] < 50.0)
             | (df["r_480_1h"] < -35.0)
             | (df["ema_200_dec_4_1d"] == False)
+          )
+          long_entry_logic.append(
+            (df["rsi_14"] > df["rsi_14"].shift(12))
+            | (df["rsi_14_15m"] > df["rsi_14_15m"].shift(12))
+            | (df["rsi_14_15m"] < 40.0)
+            | (df["rsi_14_1h"] < 60.0)
+            | (df["rsi_14_4h"] < 60.0)
+            | (df["r_14_1h"] < -25.0)
+            | (df["r_14_4h"] < -25.0)
+            | (df["ema_200_dec_24_4h"] == False)
           )
 
           # Logic
