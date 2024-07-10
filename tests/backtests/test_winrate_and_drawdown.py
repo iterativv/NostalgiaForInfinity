@@ -118,6 +118,10 @@ def timerange_fmt(value):
     # # #
     Timerange("20240101", "20240201"),
     Timerange("20240201", "20240301"),
+    Timerange("20240301", "20240401"),
+    Timerange("20240401", "20240501"),
+    Timerange("20240501", "20240601"),
+    Timerange("20240601", "20240701"),
     # # # # ADD NEW MONTHS HERE
     # # # Quarterly Test Periods
     # # # #
