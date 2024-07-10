@@ -3,13 +3,11 @@
   "exchange": {
     "name": "kucoin",
     "pair_whitelist": [
-      "1EARTH/USDT",
       "ABBC/USDT",
       "ACE/USDT",
       "ADS/USDT",
       "ADX/USDT",
       "AERGO/USDT",
-      "AGIX/USDT",
       "AGLD/USDT",
       "AI/USDT",
       "AIOZ/USDT",
@@ -41,7 +39,6 @@
       "CIRUS/USDT",
       "CLV/USDT",
       "CPOOL/USDT",
-      "CQT/USDT",
       "CREAM/USDT",
       "CREDI/USDT",
       "CRV/USDT",
