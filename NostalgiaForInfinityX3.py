@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.1.886"
+    return "v13.1.887"
 
   stoploss = -0.99
 
@@ -33235,6 +33235,7 @@ class NostalgiaForInfinityX3(IStrategy):
             self.regular_mode_derisk_1_futures_old if self.is_futures_mode else self.regular_mode_derisk_1_spot_old
           )
         )
+        / (trade.leverage if self.is_futures_mode else 1.0)
       )
     ):
       sell_amount = trade.amount * exit_rate / trade.leverage - (min_stake * 1.55)
