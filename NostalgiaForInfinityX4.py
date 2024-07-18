@@ -68,7 +68,7 @@ class NostalgiaForInfinityX4(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v14.1.887"
+    return "v14.1.888"
 
   stoploss = -0.99
 
@@ -412,7 +412,7 @@ class NostalgiaForInfinityX4(IStrategy):
     "long_entry_condition_11_enable": True,
     "long_entry_condition_12_enable": True,
     "long_entry_condition_13_enable": True,
-    "long_entry_condition_14_enable": False,
+    "long_entry_condition_14_enable": True,
     "long_entry_condition_21_enable": True,
     "long_entry_condition_22_enable": True,
     "long_entry_condition_23_enable": True,
