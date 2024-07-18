@@ -21301,7 +21301,7 @@ class NostalgiaForInfinityX4(IStrategy):
 
           # Logic
           long_entry_logic.append(df["rsi_14"] < 32.0)
-          long_entry_logic.append(df["close"] < (df["ema_26"] * 0.972))
+          long_entry_logic.append(df["close"] < (df["ema_26"] * 0.970))
 
         # Condition #52 - Quick mode (Long).
         if index == 52:
