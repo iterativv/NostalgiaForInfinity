@@ -109,7 +109,7 @@ class NostalgiaForInfinityX3(IStrategy):
   startup_candle_count: int = 800
 
   # Long Normal mode tags
-  long_normal_mode_tags = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"]
+  long_normal_mode_tags = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"]
   # Long Pump mode tags
   long_pump_mode_tags = ["21", "22", "23", "24", "25", "26"]
   # Long Quick mode tags
@@ -412,6 +412,7 @@ class NostalgiaForInfinityX3(IStrategy):
     "long_entry_condition_11_enable": True,
     "long_entry_condition_12_enable": True,
     "long_entry_condition_13_enable": True,
+    "long_entry_condition_14_enable": False,
     "long_entry_condition_21_enable": True,
     "long_entry_condition_22_enable": True,
     "long_entry_condition_23_enable": True,
@@ -16565,6 +16566,24 @@ class NostalgiaForInfinityX3(IStrategy):
           long_entry_logic.append((df["ema_26"] - df["ema_12"]) > (df["open"] * 0.0150))
           long_entry_logic.append((df["ema_26"].shift() - df["ema_12"].shift()) > (df["open"] / 100))
           long_entry_logic.append(df["close"] < (df["bb20_2_low"] * 0.994))
+
+        # Condition #14 - Normal mode (Long)
+        if index == 14:
+          # Protections
+          long_entry_logic.append(df["num_empty_288"] < allowed_empty_candles)
+
+          long_entry_logic.append(df["rsi_3"] >= 0.0)
+          long_entry_logic.append(df["rsi_3"] <= 46.0)
+          long_entry_logic.append(df["rsi_3_15m"] >= 8.0)
+          long_entry_logic.append(df["rsi_3_1h"] >= 12.0)
+          long_entry_logic.append(df["rsi_3_4h"] >= 12.0)
+          long_entry_logic.append(df["r_14_4h"] < -16.0)
+
+          # Logic
+          long_entry_logic.append(df["cti_20"] < -0.75)
+          long_entry_logic.append(df["r_14"] < -90.0)
+          long_entry_logic.append(df["close"] < (df["ema_20"] * 0.962))
+          long_entry_logic.append(df["close_15m"] < (df["ema_12_15m"] * 0.982))
 
         # Condition #21 - Pump mode (Long).
         if index == 21:
