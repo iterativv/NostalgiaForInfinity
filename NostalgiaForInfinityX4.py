@@ -16675,6 +16675,15 @@ class NostalgiaForInfinityX4(IStrategy):
             | (df["ema_200_dec_24_4h"] == False)
             | (df["ema_200_dec_4_1d"] == False)
           )
+          long_entry_logic.append(
+            (df["rsi_3"] > 16.0)
+            | (df["rsi_3_15m"] > 30.0)
+            | (df["rsi_14_1h"] < 60.0)
+            | (df["rsi_14_4h"] < 65.0)
+            | (df["rsi_14_1d"] < 65.0)
+            | (df["r_480_1h"] < -35.0)
+            | (df["ema_200_dec_4_1d"] == False)
+          )
 
           # Logic
           long_entry_logic.append(df["cti_20"] < -0.75)
