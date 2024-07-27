@@ -15335,6 +15335,20 @@ class NostalgiaForInfinityX4(IStrategy):
         | (df["sma_200_dec_48_1h"] == False)
         | (df["ema_200_dec_48_1h"] == False)
       )
+      & (
+        (df["change_pct_1d"] > -0.04)
+        | (df["top_wick_pct_1d"] < 0.04)
+        | (df["change_pct_1d"].shift(288) < 0.24)
+        | (df["not_downtrend_1h"])
+        | (df["rsi_3"] > 20.0)
+        | (df["rsi_3_15m"] > 20.0)
+        | (df["rsi_14_15m"] < 36.0)
+        | (df["rsi_14_1h"] < 40.0)
+        | (df["rsi_14_4h"] < 40.0)
+        | (df["r_480_1h"] > -65.0)
+        | (df["sma_200_dec_48_1h"] == False)
+        | (df["ema_200_dec_48_1h"] == False)
+      )
     )
 
     # Global protections
