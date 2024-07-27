@@ -15660,6 +15660,18 @@ class NostalgiaForInfinityX3(IStrategy):
         | (df["close"] < df["res_hlevel_1h"])
         | (df["close"] < df["res_hlevel_4h"])
       )
+      & (
+        (df["change_pct_1d"] < 0.08)
+        | (df["change_pct_4h"] < 0.01)
+        | (df["change_pct_1h"] < 0.01)
+        | (df["rsi_14"] < df["rsi_14"].shift(12))
+        | (df["rsi_14_15m"] < df["rsi_14_15m"].shift(12))
+        | (df["rsi_3_15m"] < 90.0)
+        | (df["rsi_3_1h"] < 85.0)
+        | (df["rsi_3_4h"] < 70.0)
+        | (df["close"] < df["res_hlevel_4h"])
+        | (df["close"] < df["res_hlevel_1d"])
+      )
     )
 
     df["global_protections_short_dump"] = (
