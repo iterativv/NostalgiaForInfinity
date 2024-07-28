@@ -15767,6 +15767,13 @@ class NostalgiaForInfinityX4(IStrategy):
         | (df["r_480_4h"] > -75.0)
         | (df["close"] > (df["high_max_6_1d"] * 0.60))
       )
+      & (
+        (df["change_pct_1d"] > -0.04)
+        | (df["change_pct_4h"] < 0.08)
+        | (df["change_pct_1h"] < 0.04)
+        | (df["not_downtrend_1d"])
+        | (df["rsi_3_15m"] < 90.0)
+      )
     )
 
     df["protections_short_rebuy"] = True
