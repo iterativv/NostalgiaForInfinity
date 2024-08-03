@@ -11,9 +11,9 @@ jobs:
         with:
           fetch-depth: 10
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.12"
       - name: Install black
         run: |
           pip install black==23.7.0
@@ -121,9 +121,10 @@ jobs:
           chmod 777 artifacts
           chmod 777 ./user_data/backtest_results
           chmod 777 ./user_data/logs
+          export COLUMNS=240
           docker build -f docker/Dockerfile.custom --no-cache -t ci-strategy-backtesting .
           docker run -v ".:/testing" -v "./user_data/data:/testing/user_data/data" \
-            -v "./user_data/logs:/testing/user_data/logs" \
+            -v "./user_data/logs:/testing/user_data/logs" -e "COLUMNS=240" \
             -v "./user_data/backtest_results:/testing/user_data/backtest_results" --rm \
             -w /testing --entrypoint "" --env-file .github/workflows/scripts/ci-proxy.env \
             ci-strategy-backtesting \
@@ -217,9 +218,10 @@ jobs:
           chmod 777 artifacts
           chmod 777 ./user_data/backtest_results
           chmod 777 ./user_data/logs
+          export COLUMNS=240
           docker build -f docker/Dockerfile.custom --no-cache -t ci-strategy-backtesting .
           docker run -v ".:/testing" -v "./user_data/data:/testing/user_data/data" --rm \
-            -w /testing --entrypoint "" --env-file .github/workflows/scripts/ci-proxy.env \
+            -w /testing --entrypoint "" -e "COLUMNS=240" --env-file .github/workflows/scripts/ci-proxy.env \
             ci-strategy-backtesting \
             python -m pytest -ra -vv -s --log-cli-level=info --artifacts-path=artifacts/ \
             -p no:cacheprovider tests/backtests -k 'kucoin and spot and ${{ matrix.timerange }}'
@@ -330,9 +332,9 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.12"
 
       - name: Install Dependencies
         run: |
@@ -391,15 +393,20 @@ jobs:
 
       - name: Pre Format Backtest Results
         run: |
-          find downloaded-results/ -type f -iname *.txt -exec sed -i 's/+/|/g' {} +
-          find downloaded-results/ -type f -iname *.txt -exec sed -i 's/=//g' {} +
-          find downloaded-results/ -type f -iname *.txt -exec sed -i 's/ BACKTESTING REPORT /\n## BACKTESTING REPORT\n/g' {} +
-          find downloaded-results/ -type f -iname *.txt -exec sed -i 's/ LEFT OPEN TRADES REPORT /\n## LEFT OPEN TRADES REPORT\n/g' {} +
-          find downloaded-results/ -type f -iname *.txt -exec sed -i 's/ ENTER TAG STATS /\n## ENTER TAG STATS\n/g' {} +
-          find downloaded-results/ -type f -iname *.txt -exec sed -i 's/ EXIT REASON STATS /\n## EXIT REASON STATS\n/g' {} +
-          find downloaded-results/ -type f -iname *.txt -exec sed -i 's/ SUMMARY METRICS /\n## SUMMARY METRICS\n/g' {} +
-          find downloaded-results/ -type f -iname *.txt -exec sed -i 's/ STRATEGY SUMMARY /\n## STRATEGY SUMMARY\n/g' {} +
-          find downloaded-results/ -type f -iname *.txt -exec sed -i 's/-|/:|/g' {} +
+          find downloaded-results/ -type f -iname *.txt -exec sed -i 's/└.*┘//g' {} +
+          find downloaded-results/ -type f -iname *.txt -exec sed -i 's/┏.*┓//g' {} +
+          find downloaded-results/ -type f -iname *.txt -exec sed -i 's/┡/|/g' {} +
+          find downloaded-results/ -type f -iname *.txt -exec sed -i 's/┃/|/g' {} +
+          find downloaded-results/ -type f -iname *.txt -exec sed -i 's/╇/:|/g' {} +
+          find downloaded-results/ -type f -iname *.txt -exec sed -i 's/━/-/g' {} +
+          find downloaded-results/ -type f -iname *.txt -exec sed -i 's/│/|/g' {} +
+          find downloaded-results/ -type f -iname *.txt -exec sed -i 's/┩/:|/g' {} +
+          find downloaded-results/ -type f -iname *.txt -exec sed -i 's/BACKTESTING REPORT/\n## BACKTESTING REPORT\n/g' {} +
+          find downloaded-results/ -type f -iname *.txt -exec sed -i 's/LEFT OPEN TRADES REPORT/\n## LEFT OPEN TRADES REPORT\n/g' {} +
+          find downloaded-results/ -type f -iname *.txt -exec sed -i 's/ENTER TAG STATS/\n## ENTER TAG STATS\n/g' {} +
+          find downloaded-results/ -type f -iname *.txt -exec sed -i 's/EXIT REASON STATS/\n## EXIT REASON STATS\n/g' {} +
+          find downloaded-results/ -type f -iname *.txt -exec sed -i 's/SUMMARY METRICS/\n## SUMMARY METRICS\n/g' {} +
+          find downloaded-results/ -type f -iname *.txt -exec sed -i 's/STRATEGY SUMMARY/\n## STRATEGY SUMMARY\n/g' {} +
       - name: Show Environ
         run: |
           env
