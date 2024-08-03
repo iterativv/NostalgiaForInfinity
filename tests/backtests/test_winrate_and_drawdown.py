@@ -15,8 +15,8 @@ def exchange_fmt(value):
 @pytest.fixture(
   scope="session",
   params=(
-    Exchange(name="binance", winrate=50, max_drawdown=25),
-    Exchange(name="kucoin", winrate=35, max_drawdown=25),
+    Exchange(name="binance", winrate=70, max_drawdown=25),
+    Exchange(name="kucoin", winrate=70, max_drawdown=25),
     # Exchange(name="okx", winrate=70, max_drawdown=20),
     # ITS POSSIBLE TO ADD MORE EXCHANGES and MARKETS (SPOT FUTURES MARGIN)
   ),
@@ -68,6 +68,21 @@ def timerange_fmt(value):
 @pytest.fixture(
   params=(
     # # Monthly Test Periods
+    # # #
+    # # 2020 Monthly Test Periods
+    # # #
+    Timerange("20200101", "20200201"),
+    Timerange("20200201", "20200301"),
+    Timerange("20200301", "20200401"),
+    Timerange("20200401", "20200501"),
+    Timerange("20200501", "20200601"),
+    Timerange("20200601", "20200701"),
+    Timerange("20200701", "20200801"),
+    Timerange("20200801", "20200901"),
+    Timerange("20200901", "20201001"),
+    Timerange("20201001", "20201101"),
+    Timerange("20201101", "20201201"),
+    Timerange("20201201", "20210101"),
     # # #
     # # 2021 Monthly Test Periods
     # # #
@@ -122,37 +137,38 @@ def timerange_fmt(value):
     Timerange("20240401", "20240501"),
     Timerange("20240501", "20240601"),
     Timerange("20240601", "20240701"),
-    # # # # ADD NEW MONTHS HERE
-    # # # Quarterly Test Periods
-    # # # #
-    # # # 2021 Quarterly Test Periods
-    # # # #
-    # Timerange("20210101", "20210401"),
-    # Timerange("20210401", "20210701"),
-    # Timerange("20210701", "20211001"),
-    # Timerange("20211001", "20220101"),
-    # # # #
-    # # # 2022 Quarterly Test Periods
-    # # # #
-    # Timerange("20220101", "20220401"),
-    # Timerange("20220401", "20220701"),
-    # Timerange("20220701", "20221001"),
-    # Timerange("20221001", "20230101"),
-    # # # #
-    # # # 2023 Quarterly Test Periods
-    # # # #
-    # Timerange("20230101", "20230401"),
-    # Timerange("20230401", "20230701"),
-    # Timerange("20230701", "20231001"),
-    # Timerange("20231001", "20240101"),
-    # # # # ADD NEW QUARTER PERIODS HERE
-    # # # Yearly Test Periods
-    # Timerange("20220101", "20230101"),
-    # Timerange("20210101", "20220101"),
-    # Timerange("20200101", "20210101"),
-    # Timerange("20190101", "20200101"),
-    # Timerange("20180101", "20190101"),
-    # Timerange("20170101", "20180101"),
+    # # # ADD NEW MONTHS HERE
+    # # Quarterly Test Periods
+    # # #
+    # # 2021 Quarterly Test Periods
+    # # #
+    Timerange("20210101", "20210401"),
+    Timerange("20210401", "20210701"),
+    Timerange("20210701", "20211001"),
+    Timerange("20211001", "20220101"),
+    # # #
+    # # 2022 Quarterly Test Periods
+    # # #
+    Timerange("20220101", "20220401"),
+    Timerange("20220401", "20220701"),
+    Timerange("20220701", "20221001"),
+    Timerange("20221001", "20230101"),
+    # # #
+    # # 2023 Quarterly Test Periods
+    # # #
+    Timerange("20230101", "20230401"),
+    Timerange("20230401", "20230701"),
+    Timerange("20230701", "20231001"),
+    Timerange("20231001", "20240101"),
+    # # # ADD NEW QUARTER PERIODS HERE
+    # # Yearly Test Periods
+    Timerange("20230101", "20240101"),
+    Timerange("20220101", "20230101"),
+    Timerange("20210101", "20220101"),
+    Timerange("20200101", "20210101"),
+    Timerange("20190101", "20200101"),
+    Timerange("20180101", "20190101"),
+    Timerange("20170101", "20180101"),
   ),
   ids=timerange_fmt,
 )
@@ -164,51 +180,34 @@ def timerange(request):
 def deviations():
   return {
     "binance": {
-      ("20210101", "20210201"): {"max_drawdown": 25, "winrate": 50},
-      # ("20210201", "20210301"): {"max_drawdown": 35, "winrate": 50},
-      ("20210301", "20210401"): {"max_drawdown": 25, "winrate": 50},
-      ("20210401", "20210501"): {"max_drawdown": 25, "winrate": 50},
-      # ("20210501", "20210601"): {"max_drawdown": 35, "winrate": 50},
-      ("20210601", "20210701"): {"max_drawdown": 25, "winrate": 50},
-      ("20210701", "20210801"): {"max_drawdown": 25, "winrate": 50},
-      ("20210801", "20210901"): {"max_drawdown": 25, "winrate": 50},
-      ("20210901", "20211001"): {"max_drawdown": 25, "winrate": 50},
-      ("20211001", "20211101"): {"max_drawdown": 25, "winrate": 50},
-      ("20211201", "20220101"): {"max_drawdown": 25, "winrate": 50},
-      ("20220301", "20220401"): {"max_drawdown": 25, "winrate": 50},
+      ("20210101", "20210201"): {"max_drawdown": 25, "winrate": 70},
+      # ("20210201", "20210301"): {"max_drawdown": 35, "winrate": 70},
+      ("20210301", "20210401"): {"max_drawdown": 25, "winrate": 70},
+      ("20210401", "20210501"): {"max_drawdown": 25, "winrate": 70},
+      # ("20210501", "20210601"): {"max_drawdown": 35, "winrate": 70},
+      ("20210601", "20210701"): {"max_drawdown": 25, "winrate": 70},
+      ("20210701", "20210801"): {"max_drawdown": 25, "winrate": 70},
+      ("20210801", "20210901"): {"max_drawdown": 25, "winrate": 70},
+      ("20210901", "20211001"): {"max_drawdown": 25, "winrate": 70},
+      ("20211001", "20211101"): {"max_drawdown": 25, "winrate": 70},
+      ("20211201", "20220101"): {"max_drawdown": 25, "winrate": 70},
+      ("20220301", "20220401"): {"max_drawdown": 25, "winrate": 70},
     },
     "kucoin": {
-      ("20210201", "20210301"): {"max_drawdown": 25, "winrate": 50},
-      ("20210301", "20210401"): {"max_drawdown": 25, "winrate": 50},
-      # ("20210401", "20210501"): {"max_drawdown": 30, "winrate": 50},
-      # ("20210501", "20210601"): {"max_drawdown": 30, "winrate": 50},
-      ("20210601", "20210701"): {"max_drawdown": 25, "winrate": 50},
-      ("20210701", "20210801"): {"max_drawdown": 25, "winrate": 50},
-      ("20210801", "20210901"): {"max_drawdown": 25, "winrate": 50},
-      ("20210901", "20211001"): {"max_drawdown": 25, "winrate": 50},
-      ("20211001", "20211101"): {"max_drawdown": 25, "winrate": 50},
-      ("20220101", "20220201"): {"max_drawdown": 25, "winrate": 50},
-      ("20220401", "20220501"): {"max_drawdown": 25, "winrate": 50},
-      ("20220601", "20220701"): {"max_drawdown": 25, "winrate": 50},
-      ("20211201", "20220101"): {"max_drawdown": 25, "winrate": 50},
-      ("20211101", "20211201"): {"max_drawdown": 25, "winrate": 50},
-      ("20230801", "20230901"): {"max_drawdown": 25, "winrate": 35},
-    },
-    "okx": {
-      ("20210201", "20210301"): {"max_drawdown": 25, "winrate": 50},
-      ("20210301", "20210401"): {"max_drawdown": 25, "winrate": 50},
-      # ("20210401", "20210501"): {"max_drawdown": 30, "winrate": 50},
-      # ("20210501", "20210601"): {"max_drawdown": 30, "winrate": 50},
-      ("20210601", "20210701"): {"max_drawdown": 25, "winrate": 50},
-      ("20210701", "20210801"): {"max_drawdown": 25, "winrate": 50},
-      ("20210801", "20210901"): {"max_drawdown": 25, "winrate": 50},
-      ("20210901", "20211001"): {"max_drawdown": 25, "winrate": 50},
-      ("20211001", "20211101"): {"max_drawdown": 25, "winrate": 50},
-      ("20220101", "20220201"): {"max_drawdown": 25, "winrate": 50},
-      ("20220401", "20220501"): {"max_drawdown": 25, "winrate": 50},
-      ("20220601", "20220701"): {"max_drawdown": 25, "winrate": 50},
-      ("20211201", "20220101"): {"max_drawdown": 25, "winrate": 50},
-      ("20211101", "20211201"): {"max_drawdown": 25, "winrate": 50},
+      ("20210201", "20210301"): {"max_drawdown": 25, "winrate": 70},
+      ("20210301", "20210401"): {"max_drawdown": 25, "winrate": 70},
+      # ("20210401", "20210501"): {"max_drawdown": 30, "winrate": 70},
+      # ("20210501", "20210601"): {"max_drawdown": 30, "winrate": 70},
+      ("20210601", "20210701"): {"max_drawdown": 25, "winrate": 70},
+      ("20210701", "20210801"): {"max_drawdown": 25, "winrate": 70},
+      ("20210801", "20210901"): {"max_drawdown": 25, "winrate": 70},
+      ("20210901", "20211001"): {"max_drawdown": 25, "winrate": 70},
+      ("20211001", "20211101"): {"max_drawdown": 25, "winrate": 70},
+      ("20220101", "20220201"): {"max_drawdown": 25, "winrate": 70},
+      ("20220401", "20220501"): {"max_drawdown": 25, "winrate": 70},
+      ("20220601", "20220701"): {"max_drawdown": 25, "winrate": 70},
+      ("20211201", "20220101"): {"max_drawdown": 25, "winrate": 70},
+      ("20211101", "20211201"): {"max_drawdown": 25, "winrate": 70},
     },
   }
 
