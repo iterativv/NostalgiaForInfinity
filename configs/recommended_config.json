@@ -13,6 +13,6 @@
     "../configs/pairlist-volume-binance-usdt.json",
     "../configs/blacklist-binance.json",
     "../configs/exampleconfig.json",
-    "config-private.json"
+    "../configs/exampleconfig_secret.json"
   ]
 }
