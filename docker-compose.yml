@@ -16,6 +16,9 @@ services:
     ports:
       - "${FREQTRADE__API_SERVER__LISTEN_PORT:-8080}:${FREQTRADE__API_SERVER__LISTEN_PORT:-8080}"
     # Default command used when running `docker compose up`
+    env_file:
+      - path: .env
+        required: false # default true
     command: >
       trade
       --db-url sqlite:////freqtrade/user_data/${FREQTRADE__BOT_NAME:-Example_Test_Account}_${FREQTRADE__EXCHANGE__NAME:-binance}_${FREQTRADE__TRADING_MODE:-futures}-tradesv3.sqlite
