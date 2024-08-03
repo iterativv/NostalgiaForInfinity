@@ -75,8 +75,7 @@
       "XCH/USDT",
       "XLM/USDT",
       "XRP/USDT",
-      "YGG/USDT",
-      "ZBC/USDT"
+      "YGG/USDT"
     ]
   },
   "pairlists": [{ "method": "StaticPairList" }]

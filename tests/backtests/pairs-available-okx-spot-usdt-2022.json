@@ -59,8 +59,7 @@
       "WAXP/USDT",
       "XAUT/USDT",
       "XETA/USDT",
-      "XNO/USDT",
-      "ZBC/USDT"
+      "XNO/USDT"
     ],
     "ccxt_config": {
       "enableRateLimit": true,
