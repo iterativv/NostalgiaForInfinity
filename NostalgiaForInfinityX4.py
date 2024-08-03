@@ -16190,6 +16190,21 @@ class NostalgiaForInfinityX4(IStrategy):
         | (df["close"] > df["sup_level_4h"])
         | (df["close"] > df["sup_level_1d"])
       )
+      & (
+        (df["change_pct_4h"] > -0.02)
+        | (df["bot_wick_pct_4h"] < 0.04)
+        | (df["not_downtrend_1d"])
+        | (df["rsi_3"] < 85.0)
+        | (df["rsi_3_15m"] < 80.0)
+        | (df["rsi_14"] > 80.0)
+        | (df["rsi_14_15m"] > 65.0)
+        | (df["rsi_14_1h"] > 50.0)
+        | (df["rsi_14_4h"] > 45.0)
+        | (df["rsi_14_1d"] > 35.0)
+        | (df["r_480_1h"] > -85.0)
+        | (df["close"] > df["sup_level_4h"])
+        | (df["close"] > df["sup_level_1d"])
+      )
     )
 
     df["protections_short_rebuy"] = True
