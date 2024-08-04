@@ -405,6 +405,7 @@ jobs:
           find downloaded-results/ -type f -iname *.txt -exec sed -i 's/LEFT OPEN TRADES REPORT/\n## LEFT OPEN TRADES REPORT\n/g' {} +
           find downloaded-results/ -type f -iname *.txt -exec sed -i 's/ENTER TAG STATS/\n## ENTER TAG STATS\n/g' {} +
           find downloaded-results/ -type f -iname *.txt -exec sed -i 's/EXIT REASON STATS/\n## EXIT REASON STATS\n/g' {} +
+          find downloaded-results/ -type f -iname *.txt -exec sed -i 's/MIXED TAG STATS/\n## MIXED TAG STATS\n/g' {} +
           find downloaded-results/ -type f -iname *.txt -exec sed -i 's/SUMMARY METRICS/\n## SUMMARY METRICS\n/g' {} +
           find downloaded-results/ -type f -iname *.txt -exec sed -i 's/STRATEGY SUMMARY/\n## STRATEGY SUMMARY\n/g' {} +
       - name: Show Environ
