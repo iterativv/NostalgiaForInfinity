@@ -32,9 +32,8 @@
       // "SIS/USDT",
       "SNX/USDT",
       "WNCG/USDT",
-      // "XRP/USDT",
-      // "YGG/USDT",
-      "ZBC/USDT"
+      "XRP/USDT",
+      "YGG/USDT"
     ]
   },
   "pairlists": [{ "method": "StaticPairList" }]

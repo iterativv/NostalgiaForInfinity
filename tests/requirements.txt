@@ -1,3 +1,5 @@
+# freqtrade==2024.5
+# freqtrade @ git+https://github.com/freqtrade/freqtrade@releases/tag/2024.5
 freqtrade
 pandas-ta
 pytest
@@ -8,3 +10,4 @@ ast_comments
 docxtpl
 pytest-md
 pytest-pretty
+numba
