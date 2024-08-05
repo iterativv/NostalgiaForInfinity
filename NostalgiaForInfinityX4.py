@@ -15483,6 +15483,20 @@ class NostalgiaForInfinityX4(IStrategy):
         | (df["close"] > df["sup_level_4h"])
         | (df["close"] > df["sup_level_1d"])
       )
+      & (
+        (df["change_pct_1d"] > -0.08)
+        | (df["not_downtrend_1h"])
+        | (df["not_downtrend_1d"])
+        | (df["rsi_3"] > 30.0)
+        | (df["rsi_3_1h"] > 36.0)
+        | (df["rsi_3_1d"] > 36.0)
+        | (df["rsi_14_15m"] < 36.0)
+        | (df["rsi_14_1d"] < 40.0)
+        | (df["r_480_1h"] > -85.0)
+        | (df["close"] > df["sup_level_1h"])
+        | (df["close"] > df["sup_level_4h"])
+        | (df["close"] > df["sup_level_1d"])
+      )
     )
 
     # Global protections
