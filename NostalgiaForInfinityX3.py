@@ -17857,6 +17857,20 @@ class NostalgiaForInfinityX3(IStrategy):
             | (df["rsi_14_4h"] < 50.0)
             | (df["rsi_14_1d"] < 50.0)
           )
+          long_entry_logic.append(
+            (df["not_downtrend_1h"])
+            | (df["not_downtrend_4h"])
+            | (df["not_downtrend_1d"])
+            | (df["rsi_3"] > 20.0)
+            | (df["rsi_3_15m"] > 30.0)
+            | (df["rsi_3_1h"] > 30.0)
+            | (df["rsi_3_1h"] > 30.0)
+            | (df["rsi_3_1d"] > 16.0)
+            | (df["r_480_1h"] > -85.0)
+            | (df["close"] > df["sup_level_1h"])
+            | (df["close"] > df["sup_level_4h"])
+            | (df["close"] > df["sup_level_1d"])
+          )
 
           # Logic
           long_entry_logic.append(df["cti_20"] < -0.75)
