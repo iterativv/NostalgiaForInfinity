@@ -15548,6 +15548,19 @@ class NostalgiaForInfinityX3(IStrategy):
         | (df["ema_200_dec_24_4h"] == False)
         | (df["ema_200_dec_4_1d"] == False)
       )
+      & (
+        (df["change_pct"].rolling(12).min() > -0.08)
+        | (df["not_downtrend_1h"])
+        | (df["not_downtrend_4h"])
+        | (df["rsi_3_1h"] > 16.0)
+        | (df["rsi_3_4h"] > 26.0)
+        | (df["rsi_14_1h"] < 30.0)
+        | (df["rsi_14_4h"] < 36.0)
+        | (df["rsi_14_1d"] < 50.0)
+        | (df["close"] > df["sup_level_1h"])
+        | (df["close"] > df["sup_level_4h"])
+        | (df["close"] > df["sup_level_1d"])
+      )
     )
 
     # Global protections
