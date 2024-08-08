@@ -16439,6 +16439,18 @@ class NostalgiaForInfinityX3(IStrategy):
         | (df["close"] > df["sup_level_1d"])
         | (df["close"] > (df["high_max_6_1d"] * 0.55))
       )
+      & (
+        (df["change_pct_1d"] > -0.12)
+        | (df["change_pct_4h"] < 0.08)
+        | (df["change_pct_1h"] < 0.02)
+        | (df["rsi_3"] < 80.0)
+        | (df["rsi_3_15m"] < 80.0)
+        | (df["rsi_14"] > 80.0)
+        | (df["rsi_14_15m"] > 80.0)
+        | (df["rsi_14_1h"] > 65.0)
+        | (df["rsi_14_4h"] > 55.0)
+        | (df["rsi_14_1d"] > 50.0)
+      )
     )
 
     df["protections_short_rebuy"] = True
