@@ -68,7 +68,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.0.2"
+    return "v15.0.3"
 
   stoploss = -0.99
 
@@ -1729,7 +1729,7 @@ class NostalgiaForInfinityX5(IStrategy):
         {"kind": "aroon"},
       ],
     )
-    informative_1d.ta.study(informative_1d_indicators_pandas_ta)
+    informative_1d.ta.study(informative_1d_indicators_pandas_ta, cores=0)
 
     # Performance logging
     # -----------------------------------------------------------------------------------------
@@ -1789,7 +1789,7 @@ class NostalgiaForInfinityX5(IStrategy):
         {"kind": "ao"},
       ],
     )
-    informative_4h.ta.study(informative_4h_indicators_pandas_ta)
+    informative_4h.ta.study(informative_4h_indicators_pandas_ta, cores=0)
 
     # Performance logging
     # -----------------------------------------------------------------------------------------
@@ -1849,7 +1849,7 @@ class NostalgiaForInfinityX5(IStrategy):
         {"kind": "ao"},
       ],
     )
-    informative_1h.ta.study(informative_1h_indicators_pandas_ta)
+    informative_1h.ta.study(informative_1h_indicators_pandas_ta, cores=0)
 
     # Performance logging
     # -----------------------------------------------------------------------------------------
@@ -1904,7 +1904,7 @@ class NostalgiaForInfinityX5(IStrategy):
         {"kind": "ao"},
       ],
     )
-    informative_15m.ta.study(informative_15m_indicators_pandas_ta)
+    informative_15m.ta.study(informative_15m_indicators_pandas_ta, cores=0)
 
     # Performance logging
     # -----------------------------------------------------------------------------------------
@@ -1980,7 +1980,7 @@ class NostalgiaForInfinityX5(IStrategy):
         {"kind": "obv"},
       ],
     )
-    df.ta.study(base_tf_5m_indicators_pandas_ta, verbose=True)
+    df.ta.study(base_tf_5m_indicators_pandas_ta, cores=0)
 
     # -----------------------------------------------------------------------------------------
 
@@ -2041,7 +2041,7 @@ class NostalgiaForInfinityX5(IStrategy):
         # {"kind": "sma", "length": 16},
       ],
     )
-    btc_info_1d.ta.study(btc_info_1d_indicators_pandas_ta)
+    btc_info_1d.ta.study(btc_info_1d_indicators_pandas_ta, cores=0)
 
     # Add prefix
     # -----------------------------------------------------------------------------------------
