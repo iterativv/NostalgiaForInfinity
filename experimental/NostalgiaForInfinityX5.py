@@ -68,7 +68,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.0.0"
+    return "v15.0.1"
 
   stoploss = -0.99
 
@@ -1980,7 +1980,7 @@ class NostalgiaForInfinityX5(IStrategy):
         {"kind": "obv"},
       ],
     )
-    df.ta.study(base_tf_5m_indicators_pandas_ta)
+    df.ta.study(base_tf_5m_indicators_pandas_ta, verbose=True)
 
     # -----------------------------------------------------------------------------------------
 
