@@ -68,7 +68,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.0.6"
+    return "v15.0.7"
 
   stoploss = -0.99
 
@@ -1581,40 +1581,51 @@ class NostalgiaForInfinityX5(IStrategy):
 
     # Indicators
     # -----------------------------------------------------------------------------------------
-    informative_1d_indicators_pandas_ta = pta.Strategy(
-      name="informative_1d_indicators_pandas_ta",
-      ta=[
-        # RSI
-        {"kind": "rsi", "length": 3},
-        {"kind": "rsi", "length": 14},
-        # {"kind": "rsi", "length": 20},
-        # EMA
-        # {"kind": "ema", "length": 12},
-        # {"kind": "ema", "length": 16},
-        # {"kind": "ema", "length": 20},
-        # {"kind": "ema", "length": 26},
-        # {"kind": "ema", "length": 50},
-        # {"kind": "ema", "length": 100},
-        # {"kind": "ema", "length": 200},
-        # SMA
-        # {"kind": "sma", "length": 16},
-        # MFI
-        {"kind": "mfi"},
-        # CMF
-        {"kind": "cmf"},
-        # Williams %R
-        {"kind": "willr", "length": 14},
-        # STOCHRSI
-        {"kind": "stochrsi"},
-        # KST
-        {"kind": "kst"},
-        # ROC
-        {"kind": "roc"},
-        # AROON
-        {"kind": "aroon"},
-      ],
+    # informative_1d_indicators_pandas_ta = pta.Strategy(
+    #   name="informative_1d_indicators_pandas_ta",
+    #   ta=[
+    #     # RSI
+    #     {"kind": "rsi", "length": 3},
+    #     {"kind": "rsi", "length": 14},
+    #     # {"kind": "rsi", "length": 20},
+    #     # EMA
+    #     # {"kind": "ema", "length": 12},
+    #     # {"kind": "ema", "length": 16},
+    #     # {"kind": "ema", "length": 20},
+    #     # {"kind": "ema", "length": 26},
+    #     # {"kind": "ema", "length": 50},
+    #     # {"kind": "ema", "length": 100},
+    #     # {"kind": "ema", "length": 200},
+    #     # SMA
+    #     # {"kind": "sma", "length": 16},
+    #     # MFI
+    #     {"kind": "mfi"},
+    #     # CMF
+    #     {"kind": "cmf"},
+    #     # Williams %R
+    #     {"kind": "willr", "length": 14},
+    #     # STOCHRSI
+    #     {"kind": "stochrsi"},
+    #     # KST
+    #     {"kind": "kst"},
+    #     # ROC
+    #     {"kind": "roc"},
+    #     # AROON
+    #     {"kind": "aroon"},
+    #   ],
+    # )
+    # informative_1d.ta.study(informative_1d_indicators_pandas_ta, cores=self.num_cores_indicators_calc)
+    # RSI
+    informative_1d = informative_1d.join(pta.rsi(informative_1d["close"], length=3))
+    informative_1d = informative_1d.join(pta.rsi(informative_1d["close"], length=14))
+    # BB 20 - STD2
+    informative_1d = informative_1d.join(pta.bbands(informative_1d["close"], length=20))
+    # CTI
+    informative_1d = informative_1d.join(pta.cti(informative_1d["close"], length=20))
+    # Williams %R
+    informative_1d = informative_1d.join(
+      pta.willr(informative_1d["high"], informative_1d["low"], informative_1d["close"], length=14)
     )
-    informative_1d.ta.study(informative_1d_indicators_pandas_ta, cores=self.num_cores_indicators_calc)
 
     # Performance logging
     # -----------------------------------------------------------------------------------------
@@ -1633,48 +1644,66 @@ class NostalgiaForInfinityX5(IStrategy):
 
     # Indicators
     # -----------------------------------------------------------------------------------------
-    informative_4h_indicators_pandas_ta = pta.Strategy(
-      name="informative_4h_indicators_pandas_ta",
-      ta=[
-        # RSI
-        {"kind": "rsi", "length": 3},
-        {"kind": "rsi", "length": 14},
-        # {"kind": "rsi", "length": 20},
-        # EMA
-        {"kind": "ema", "length": 12},
-        # {"kind": "ema", "length": 16},
-        # {"kind": "ema", "length": 20},
-        {"kind": "ema", "length": 26},
-        # {"kind": "ema", "length": 50},
-        # {"kind": "ema", "length": 100},
-        {"kind": "ema", "length": 200},
-        # SMA
-        # {"kind": "sma", "length": 16},
-        # BB 20 - STD2
-        {"kind": "bbands", "length": 20},
-        # MFI
-        {"kind": "mfi"},
-        # CMF
-        {"kind": "cmf"},
-        # Williams %R
-        {"kind": "willr", "length": 14},
-        # CTI
-        {"kind": "cti", "length": 20},
-        # STOCHRSI
-        {"kind": "stochrsi"},
-        # KST
-        {"kind": "kst"},
-        # ROC
-        {"kind": "roc"},
-        # AROON
-        {"kind": "aroon"},
-        # UO
-        {"kind": "uo"},
-        # AO
-        {"kind": "ao"},
-      ],
+    # informative_4h_indicators_pandas_ta = pta.Strategy(
+    #   name="informative_4h_indicators_pandas_ta",
+    #   ta=[
+    #     # RSI
+    #     {"kind": "rsi", "length": 3},
+    #     {"kind": "rsi", "length": 14},
+    #     # {"kind": "rsi", "length": 20},
+    #     # EMA
+    #     {"kind": "ema", "length": 12},
+    #     # {"kind": "ema", "length": 16},
+    #     # {"kind": "ema", "length": 20},
+    #     {"kind": "ema", "length": 26},
+    #     # {"kind": "ema", "length": 50},
+    #     # {"kind": "ema", "length": 100},
+    #     {"kind": "ema", "length": 200},
+    #     # SMA
+    #     # {"kind": "sma", "length": 16},
+    #     # BB 20 - STD2
+    #     {"kind": "bbands", "length": 20},
+    #     # MFI
+    #     {"kind": "mfi"},
+    #     # CMF
+    #     {"kind": "cmf"},
+    #     # Williams %R
+    #     {"kind": "willr", "length": 14},
+    #     # CTI
+    #     {"kind": "cti", "length": 20},
+    #     # STOCHRSI
+    #     {"kind": "stochrsi"},
+    #     # KST
+    #     {"kind": "kst"},
+    #     # ROC
+    #     {"kind": "roc"},
+    #     # AROON
+    #     {"kind": "aroon"},
+    #     # UO
+    #     {"kind": "uo"},
+    #     # AO
+    #     {"kind": "ao"},
+    #   ],
+    # )
+    # informative_4h.ta.study(informative_4h_indicators_pandas_ta, cores=self.num_cores_indicators_calc)
+    # RSI
+    informative_4h = informative_4h.join(pta.rsi(informative_4h["close"], length=3))
+    informative_4h = informative_4h.join(pta.rsi(informative_4h["close"], length=14))
+    # EMA
+    informative_4h = informative_4h.join(pta.ema(informative_4h["close"], length=12))
+    informative_4h = informative_4h.join(pta.ema(informative_4h["close"], length=200))
+    # BB 20 - STD2
+    informative_4h = informative_4h.join(pta.bbands(informative_4h["close"], length=20))
+    # CTI
+    informative_4h = informative_4h.join(pta.cti(informative_4h["close"], length=20))
+    # Williams %R
+    informative_4h = informative_4h.join(
+      pta.willr(informative_4h["high"], informative_4h["low"], informative_4h["close"], length=14)
     )
-    informative_4h.ta.study(informative_4h_indicators_pandas_ta, cores=self.num_cores_indicators_calc)
+    # AROON
+    informative_4h = informative_4h.join(pta.aroon(informative_4h["high"], informative_4h["low"], length=14))
+    # KST
+    informative_4h = informative_4h.join(pta.kst(informative_4h["close"]))
 
     # Performance logging
     # -----------------------------------------------------------------------------------------
@@ -1693,48 +1722,66 @@ class NostalgiaForInfinityX5(IStrategy):
 
     # Indicators
     # -----------------------------------------------------------------------------------------
-    informative_1h_indicators_pandas_ta = pta.Strategy(
-      name="informative_1h_indicators_pandas_ta",
-      ta=[
-        # RSI
-        {"kind": "rsi", "length": 3},
-        {"kind": "rsi", "length": 14},
-        # {"kind": "rsi", "length": 20},
-        # EMA
-        {"kind": "ema", "length": 12},
-        # {"kind": "ema", "length": 16},
-        {"kind": "ema", "length": 20},
-        {"kind": "ema", "length": 26},
-        # {"kind": "ema", "length": 50},
-        # {"kind": "ema", "length": 100},
-        {"kind": "ema", "length": 200},
-        # SMA
-        # {"kind": "sma", "length": 16},
-        # BB 20 - STD2
-        {"kind": "bbands", "length": 20},
-        # MFI
-        {"kind": "mfi"},
-        # CMF
-        {"kind": "cmf"},
-        # Williams %R
-        {"kind": "willr", "length": 14},
-        # CTI
-        {"kind": "cti", "length": 20},
-        # STOCHRSI
-        {"kind": "stochrsi"},
-        # KST
-        {"kind": "kst"},
-        # ROC
-        {"kind": "roc"},
-        # AROON
-        {"kind": "aroon"},
-        # UO
-        {"kind": "uo"},
-        # AO
-        {"kind": "ao"},
-      ],
+    # informative_1h_indicators_pandas_ta = pta.Strategy(
+    #   name="informative_1h_indicators_pandas_ta",
+    #   ta=[
+    #     # RSI
+    #     {"kind": "rsi", "length": 3},
+    #     {"kind": "rsi", "length": 14},
+    #     # {"kind": "rsi", "length": 20},
+    #     # EMA
+    #     {"kind": "ema", "length": 12},
+    #     # {"kind": "ema", "length": 16},
+    #     {"kind": "ema", "length": 20},
+    #     {"kind": "ema", "length": 26},
+    #     # {"kind": "ema", "length": 50},
+    #     # {"kind": "ema", "length": 100},
+    #     {"kind": "ema", "length": 200},
+    #     # SMA
+    #     # {"kind": "sma", "length": 16},
+    #     # BB 20 - STD2
+    #     {"kind": "bbands", "length": 20},
+    #     # MFI
+    #     {"kind": "mfi"},
+    #     # CMF
+    #     {"kind": "cmf"},
+    #     # Williams %R
+    #     {"kind": "willr", "length": 14},
+    #     # CTI
+    #     {"kind": "cti", "length": 20},
+    #     # STOCHRSI
+    #     {"kind": "stochrsi"},
+    #     # KST
+    #     {"kind": "kst"},
+    #     # ROC
+    #     {"kind": "roc"},
+    #     # AROON
+    #     {"kind": "aroon"},
+    #     # UO
+    #     {"kind": "uo"},
+    #     # AO
+    #     {"kind": "ao"},
+    #   ],
+    # )
+    # informative_1h.ta.study(informative_1h_indicators_pandas_ta, cores=self.num_cores_indicators_calc)
+    # RSI
+    informative_1h = informative_1h.join(pta.rsi(informative_1h["close"], length=3))
+    informative_1h = informative_1h.join(pta.rsi(informative_1h["close"], length=14))
+    # EMA
+    informative_1h = informative_1h.join(pta.ema(informative_1h["close"], length=12))
+    informative_1h = informative_1h.join(pta.ema(informative_1h["close"], length=200))
+    # BB 20 - STD2
+    informative_1h = informative_1h.join(pta.bbands(informative_1h["close"], length=20))
+    # CTI
+    informative_1h = informative_1h.join(pta.cti(informative_1h["close"], length=20))
+    # Williams %R
+    informative_1h = informative_1h.join(
+      pta.willr(informative_1h["high"], informative_1h["low"], informative_1h["close"], length=14)
     )
-    informative_1h.ta.study(informative_1h_indicators_pandas_ta, cores=self.num_cores_indicators_calc)
+    # AROON
+    informative_1h = informative_1h.join(pta.aroon(informative_1h["high"], informative_1h["low"], length=14))
+    # KST
+    informative_1h = informative_1h.join(pta.kst(informative_1h["close"]))
 
     # Performance logging
     # -----------------------------------------------------------------------------------------
@@ -1754,42 +1801,47 @@ class NostalgiaForInfinityX5(IStrategy):
 
     # Indicators
     # -----------------------------------------------------------------------------------------
-    informative_15m_indicators_pandas_ta = pta.Strategy(
-      name="informative_15m_indicators_pandas_ta",
-      ta=[
-        # RSI
-        {"kind": "rsi", "length": 3},
-        {"kind": "rsi", "length": 14},
-        # {"kind": "rsi", "length": 20},
-        # EMA
-        {"kind": "ema", "length": 12},
-        # {"kind": "ema", "length": 16},
-        # {"kind": "ema", "length": 20},
-        # {"kind": "ema", "length": 26},
-        # {"kind": "ema", "length": 50},
-        # {"kind": "ema", "length": 100},
-        # {"kind": "ema", "length": 200},
-        # SMA
-        # {"kind": "sma", "length": 16},
-        # BB 20 - STD2
-        {"kind": "bbands", "length": 20},
-        # Williams %R
-        {"kind": "willr", "length": 14},
-        # CTI
-        {"kind": "cti", "length": 20},
-        # STOCHRSI
-        {"kind": "stochrsi"},
-        # ROC
-        {"kind": "roc"},
-        # AROON
-        {"kind": "aroon"},
-        # UO
-        {"kind": "uo"},
-        # AO
-        {"kind": "ao"},
-      ],
-    )
-    informative_15m.ta.study(informative_15m_indicators_pandas_ta, cores=self.num_cores_indicators_calc)
+    # informative_15m_indicators_pandas_ta = pta.Strategy(
+    #   name="informative_15m_indicators_pandas_ta",
+    #   ta=[
+    #     # RSI
+    #     {"kind": "rsi", "length": 3},
+    #     {"kind": "rsi", "length": 14},
+    #     # {"kind": "rsi", "length": 20},
+    #     # EMA
+    #     {"kind": "ema", "length": 12},
+    #     # {"kind": "ema", "length": 16},
+    #     # {"kind": "ema", "length": 20},
+    #     # {"kind": "ema", "length": 26},
+    #     # {"kind": "ema", "length": 50},
+    #     # {"kind": "ema", "length": 100},
+    #     # {"kind": "ema", "length": 200},
+    #     # SMA
+    #     # {"kind": "sma", "length": 16},
+    #     # BB 20 - STD2
+    #     {"kind": "bbands", "length": 20},
+    #     # Williams %R
+    #     {"kind": "willr", "length": 14},
+    #     # CTI
+    #     {"kind": "cti", "length": 20},
+    #     # STOCHRSI
+    #     {"kind": "stochrsi"},
+    #     # ROC
+    #     {"kind": "roc"},
+    #     # AROON
+    #     {"kind": "aroon"},
+    #     # UO
+    #     {"kind": "uo"},
+    #     # AO
+    #     {"kind": "ao"},
+    #   ],
+    # )
+    # informative_15m.ta.study(informative_15m_indicators_pandas_ta, cores=self.num_cores_indicators_calc)
+    # RSI
+    informative_15m = informative_15m.join(pta.rsi(informative_15m["close"], length=3))
+    informative_15m = informative_15m.join(pta.rsi(informative_15m["close"], length=14))
+    # AROON
+    informative_15m = informative_15m.join(pta.aroon(informative_15m["high"], informative_15m["low"], length=14))
 
     # Performance logging
     # -----------------------------------------------------------------------------------------
@@ -1804,68 +1856,100 @@ class NostalgiaForInfinityX5(IStrategy):
     tik = time.perf_counter()
 
     # Indicators
-    base_tf_5m_indicators_pandas_ta = pta.Strategy(
-      name="base_tf_5m_indicators_pandas_ta",
-      ta=[
-        # RSI
-        {"kind": "rsi", "length": 3},
-        {"kind": "rsi", "length": 4},
-        {"kind": "rsi", "length": 14},
-        {"kind": "rsi", "length": 20},
-        # EMA
-        {"kind": "ema", "length": 3},
-        {"kind": "ema", "length": 9},
-        {"kind": "ema", "length": 12},
-        {"kind": "ema", "length": 16},
-        {"kind": "ema", "length": 20},
-        {"kind": "ema", "length": 26},
-        {"kind": "ema", "length": 50},
-        {"kind": "ema", "length": 100},
-        {"kind": "ema", "length": 200},
-        # SMA
-        {"kind": "sma", "length": 16},
-        {"kind": "sma", "length": 30},
-        {"kind": "sma", "length": 75},
-        {"kind": "sma", "length": 200},
-        # BB 20 - STD2
-        {"kind": "bbands", "length": 20},
-        # BB 40 - STD2
-        {"kind": "bbands", "length": 40},
-        # Williams %R
-        {"kind": "willr", "length": 14},
-        {"kind": "willr", "length": 480},
-        # CTI
-        {"kind": "cti", "length": 20},
-        # MFI
-        {"kind": "mfi"},
-        # CMF
-        {"kind": "cmf"},
-        # CCI
-        {"kind": "cci", "length": 20},
-        # Hull Moving Average
-        {"kind": "hma", "length": 55},
-        {"kind": "hma", "length": 70},
-        # ZL MA
-        # {"kind": "zlma", "length": 50, "mamode":"linreg"},
-        # Heiken Ashi
-        # {"kind": "ha"},
-        # STOCHRSI
-        {"kind": "stochrsi"},
-        # KST
-        {"kind": "kst"},
-        # ROC
-        {"kind": "roc"},
-        # AROON
-        {"kind": "aroon"},
-        # UO
-        {"kind": "uo"},
-        # AO
-        {"kind": "ao"},
-        # OBV
-        {"kind": "obv"},
-      ],
-    )
-    df.ta.study(base_tf_5m_indicators_pandas_ta, cores=self.num_cores_indicators_calc)
+    # base_tf_5m_indicators_pandas_ta = pta.Strategy(
+    #   name="base_tf_5m_indicators_pandas_ta",
+    #   ta=[
+    #     # RSI
+    #     {"kind": "rsi", "length": 3},
+    #     {"kind": "rsi", "length": 4},
+    #     {"kind": "rsi", "length": 14},
+    #     {"kind": "rsi", "length": 20},
+    #     # EMA
+    #     {"kind": "ema", "length": 3},
+    #     {"kind": "ema", "length": 9},
+    #     {"kind": "ema", "length": 12},
+    #     {"kind": "ema", "length": 16},
+    #     {"kind": "ema", "length": 20},
+    #     {"kind": "ema", "length": 26},
+    #     {"kind": "ema", "length": 50},
+    #     {"kind": "ema", "length": 100},
+    #     {"kind": "ema", "length": 200},
+    #     # SMA
+    #     {"kind": "sma", "length": 16},
+    #     {"kind": "sma", "length": 30},
+    #     {"kind": "sma", "length": 75},
+    #     {"kind": "sma", "length": 200},
+    #     # BB 20 - STD2
+    #     {"kind": "bbands", "length": 20},
+    #     # BB 40 - STD2
+    #     {"kind": "bbands", "length": 40},
+    #     # Williams %R
+    #     {"kind": "willr", "length": 14},
+    #     {"kind": "willr", "length": 480},
+    #     # CTI
+    #     {"kind": "cti", "length": 20},
+    #     # MFI
+    #     {"kind": "mfi"},
+    #     # CMF
+    #     {"kind": "cmf"},
+    #     # CCI
+    #     {"kind": "cci", "length": 20},
+    #     # Hull Moving Average
+    #     {"kind": "hma", "length": 55},
+    #     {"kind": "hma", "length": 70},
+    #     # ZL MA
+    #     # {"kind": "zlma", "length": 50, "mamode":"linreg"},
+    #     # Heiken Ashi
+    #     # {"kind": "ha"},
+    #     # STOCHRSI
+    #     {"kind": "stochrsi"},
+    #     # KST
+    #     {"kind": "kst"},
+    #     # ROC
+    #     {"kind": "roc"},
+    #     # AROON
+    #     {"kind": "aroon"},
+    #     # UO
+    #     {"kind": "uo"},
+    #     # AO
+    #     {"kind": "ao"},
+    #     # OBV
+    #     {"kind": "obv"},
+    #   ],
+    # )
+    # df.ta.study(base_tf_5m_indicators_pandas_ta, cores=self.num_cores_indicators_calc)
+    # RSI
+    df = df.join(pta.rsi(df["close"], length=3))
+    df = df.join(pta.rsi(df["close"], length=4))
+    df = df.join(pta.rsi(df["close"], length=14))
+    df = df.join(pta.rsi(df["close"], length=20))
+    # EMA
+    df = df.join(pta.ema(df["close"], length=3))
+    df = df.join(pta.ema(df["close"], length=9))
+    df = df.join(pta.ema(df["close"], length=12))
+    df = df.join(pta.ema(df["close"], length=16))
+    df = df.join(pta.ema(df["close"], length=20))
+    df = df.join(pta.ema(df["close"], length=26))
+    df = df.join(pta.ema(df["close"], length=50))
+    df = df.join(pta.ema(df["close"], length=200))
+    # SMA
+    df = df.join(pta.sma(df["close"], length=16))
+    df = df.join(pta.sma(df["close"], length=30))
+    # BB 20 - STD2
+    df = df.join(pta.bbands(df["close"], length=20))
+    # MFI
+    df = df.join(pta.mfi(df["high"], df["low"], df["close"], df["volume"], length=14))
+    # CMF
+    df = df.join(pta.cmf(df["high"], df["low"], df["close"], df["volume"], length=20))
+    # Williams %R
+    df = df.join(pta.willr(df["high"], df["low"], df["close"], length=14))
+    df = df.join(pta.willr(df["high"], df["low"], df["close"], length=480))
+    # CTI
+    df = df.join(pta.cti(df["close"], length=20))
+    # AROON
+    df = df.join(pta.aroon(df["high"], df["low"], length=14))
+    # KST
+    df = df.join(pta.kst(df["close"]))
 
     # -----------------------------------------------------------------------------------------
 
@@ -1907,26 +1991,26 @@ class NostalgiaForInfinityX5(IStrategy):
     btc_info_1d = self.dp.get_pair_dataframe(btc_info_pair, btc_info_timeframe)
     # Indicators
     # -----------------------------------------------------------------------------------------
-    btc_info_1d_indicators_pandas_ta = pta.Strategy(
-      name="btc_info_1d_indicators_pandas_ta",
-      ta=[
-        # RSI
-        # {"kind": "rsi", "length": 3},
-        {"kind": "rsi", "length": 14},
-        # {"kind": "rsi", "length": 20},
-        # EMA
-        # {"kind": "ema", "length": 12},
-        # {"kind": "ema", "length": 16},
-        # {"kind": "ema", "length": 20},
-        # {"kind": "ema", "length": 26},
-        # {"kind": "ema", "length": 50},
-        # {"kind": "ema", "length": 100},
-        # {"kind": "ema", "length": 200},
-        # SMA
-        # {"kind": "sma", "length": 16},
-      ],
-    )
-    btc_info_1d.ta.study(btc_info_1d_indicators_pandas_ta, cores=self.num_cores_indicators_calc)
+    # btc_info_1d_indicators_pandas_ta = pta.Strategy(
+    #   name="btc_info_1d_indicators_pandas_ta",
+    #   ta=[
+    #     # RSI
+    #     # {"kind": "rsi", "length": 3},
+    #     {"kind": "rsi", "length": 14},
+    #     # {"kind": "rsi", "length": 20},
+    #     # EMA
+    #     # {"kind": "ema", "length": 12},
+    #     # {"kind": "ema", "length": 16},
+    #     # {"kind": "ema", "length": 20},
+    #     # {"kind": "ema", "length": 26},
+    #     # {"kind": "ema", "length": 50},
+    #     # {"kind": "ema", "length": 100},
+    #     # {"kind": "ema", "length": 200},
+    #     # SMA
+    #     # {"kind": "sma", "length": 16},
+    #   ],
+    # )
+    # btc_info_1d.ta.study(btc_info_1d_indicators_pandas_ta, cores=self.num_cores_indicators_calc)
 
     # Add prefix
     # -----------------------------------------------------------------------------------------
