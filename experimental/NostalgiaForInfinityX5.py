@@ -68,7 +68,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.0.5"
+    return "v15.0.6"
 
   stoploss = -0.99
 
@@ -2490,8 +2490,12 @@ class NostalgiaForInfinityX5(IStrategy):
           long_entry_logic.append(df["global_protections_long_dump"] == True)
           long_entry_logic.append(df["RSI_3_1h"] >= 1.0)
           long_entry_logic.append(df["RSI_3_4h"] >= 5.0)
-          long_entry_logic.append((df["AROONU_14_1h"] < df["AROOND_14_1h"]) | (df["AROONU_14_1h"] > df["AROONU_14_1h"].shift(48)))
-          long_entry_logic.append((df["AROONU_14_4h"] < df["AROOND_14_4h"]) | (df["AROONU_14_4h"] > df["AROONU_14_4h"].shift(48)))
+          long_entry_logic.append(
+            (df["AROONU_14_1h"] < df["AROOND_14_1h"]) | (df["AROONU_14_1h"] > df["AROONU_14_1h"].shift(48))
+          )
+          long_entry_logic.append(
+            (df["AROONU_14_4h"] < df["AROOND_14_4h"]) | (df["AROONU_14_4h"] > df["AROONU_14_4h"].shift(48))
+          )
 
           # Logic
           long_entry_logic.append(df["EMA_26"] > df["EMA_12"])
@@ -8012,8 +8016,7 @@ class NostalgiaForInfinityX5(IStrategy):
           return buy_amount
 
       if profit_stake < (
-        slice_amount
-        * (self.rebuy_mode_derisk_futures if self.is_futures_mode else self.rebuy_mode_derisk_spot)
+        slice_amount * (self.rebuy_mode_derisk_futures if self.is_futures_mode else self.rebuy_mode_derisk_spot)
         # / (trade.leverage if self.is_futures_mode else 1.0)
       ):
         sell_amount = trade.amount * exit_rate / trade.leverage - (min_stake * 1.55)
