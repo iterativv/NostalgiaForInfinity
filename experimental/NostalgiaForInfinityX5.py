@@ -108,6 +108,9 @@ class NostalgiaForInfinityX5(IStrategy):
   # Number of candles the strategy requires before producing valid signals
   startup_candle_count: int = 800
 
+  # Number of cores to use for pandas_ta indicators calculations
+  num_cores_indicators_calc = 0
+
   # Long Normal mode tags
   long_normal_mode_tags = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"]
   # Long Pump mode tags
@@ -519,6 +522,8 @@ class NostalgiaForInfinityX5(IStrategy):
       "sell_profit_only" in self.config and self.config["sell_profit_only"]
     ):
       self.exit_profit_only = True
+    if "num_cores_indicators_calc" in self.config:
+      self.num_cores_indicators_calc = self.config["num_cores_indicators_calc"]
     if "stop_threshold_spot" in self.config:
       self.stop_threshold = self.config["stop_threshold_spot"]
     if "stop_threshold_futures" in self.config:
@@ -1729,7 +1734,7 @@ class NostalgiaForInfinityX5(IStrategy):
         {"kind": "aroon"},
       ],
     )
-    informative_1d.ta.study(informative_1d_indicators_pandas_ta, cores=0)
+    informative_1d.ta.study(informative_1d_indicators_pandas_ta, cores=self.num_cores_indicators_calc)
 
     # Performance logging
     # -----------------------------------------------------------------------------------------
@@ -1789,7 +1794,7 @@ class NostalgiaForInfinityX5(IStrategy):
         {"kind": "ao"},
       ],
     )
-    informative_4h.ta.study(informative_4h_indicators_pandas_ta, cores=0)
+    informative_4h.ta.study(informative_4h_indicators_pandas_ta, cores=self.num_cores_indicators_calc)
 
     # Performance logging
     # -----------------------------------------------------------------------------------------
@@ -1849,7 +1854,7 @@ class NostalgiaForInfinityX5(IStrategy):
         {"kind": "ao"},
       ],
     )
-    informative_1h.ta.study(informative_1h_indicators_pandas_ta, cores=0)
+    informative_1h.ta.study(informative_1h_indicators_pandas_ta, cores=self.num_cores_indicators_calc)
 
     # Performance logging
     # -----------------------------------------------------------------------------------------
@@ -1904,7 +1909,7 @@ class NostalgiaForInfinityX5(IStrategy):
         {"kind": "ao"},
       ],
     )
-    informative_15m.ta.study(informative_15m_indicators_pandas_ta, cores=0)
+    informative_15m.ta.study(informative_15m_indicators_pandas_ta, cores=self.num_cores_indicators_calc)
 
     # Performance logging
     # -----------------------------------------------------------------------------------------
@@ -1980,7 +1985,7 @@ class NostalgiaForInfinityX5(IStrategy):
         {"kind": "obv"},
       ],
     )
-    df.ta.study(base_tf_5m_indicators_pandas_ta, cores=0)
+    df.ta.study(base_tf_5m_indicators_pandas_ta, cores=self.num_cores_indicators_calc)
 
     # -----------------------------------------------------------------------------------------
 
@@ -2041,7 +2046,7 @@ class NostalgiaForInfinityX5(IStrategy):
         # {"kind": "sma", "length": 16},
       ],
     )
-    btc_info_1d.ta.study(btc_info_1d_indicators_pandas_ta, cores=0)
+    btc_info_1d.ta.study(btc_info_1d_indicators_pandas_ta, cores=self.num_cores_indicators_calc)
 
     # Add prefix
     # -----------------------------------------------------------------------------------------
