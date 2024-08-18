@@ -68,7 +68,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.0.4"
+    return "v15.0.5"
 
   stoploss = -0.99
 
@@ -411,56 +411,13 @@ class NostalgiaForInfinityX5(IStrategy):
     "long_entry_condition_1_enable": True,
     "long_entry_condition_2_enable": True,
     "long_entry_condition_3_enable": True,
-    # "long_entry_condition_4_enable": True,
-    # "long_entry_condition_5_enable": True,
-    # "long_entry_condition_6_enable": True,
-    # "long_entry_condition_7_enable": True,
-    # "long_entry_condition_8_enable": True,
-    # "long_entry_condition_9_enable": True,
-    # "long_entry_condition_10_enable": True,
-    # "long_entry_condition_11_enable": True,
-    # "long_entry_condition_12_enable": True,
-    # "long_entry_condition_13_enable": True,
-    # "long_entry_condition_21_enable": True,
-    # "long_entry_condition_22_enable": True,
-    # "long_entry_condition_23_enable": True,
-    # "long_entry_condition_24_enable": True,
-    # "long_entry_condition_25_enable": True,
-    # "long_entry_condition_26_enable": True,
-    # "long_entry_condition_41_enable": True,
-    # "long_entry_condition_42_enable": True,
-    # "long_entry_condition_43_enable": True,
-    # "long_entry_condition_44_enable": True,
-    # "long_entry_condition_45_enable": True,
-    # "long_entry_condition_46_enable": True,
-    # "long_entry_condition_47_enable": True,
-    # "long_entry_condition_48_enable": True,
-    # "long_entry_condition_49_enable": True,
-    # "long_entry_condition_50_enable": True,
-    # "long_entry_condition_51_enable": True,
-    # "long_entry_condition_52_enable": True,
-    # "long_entry_condition_53_enable": True,
-    # "long_entry_condition_61_enable": True,
-    # "long_entry_condition_62_enable": True,
-    # "long_entry_condition_81_enable": True,
-    # "long_entry_condition_82_enable": True,
-    # "long_entry_condition_101_enable": True,
-    # "long_entry_condition_102_enable": True,
-    # "long_entry_condition_103_enable": True,
-    # "long_entry_condition_104_enable": True,
-    # "long_entry_condition_105_enable": True,
-    # "long_entry_condition_106_enable": True,
-    # "long_entry_condition_107_enable": True,
-    # "long_entry_condition_108_enable": True,
-    # "long_entry_condition_109_enable": True,
-    # "long_entry_condition_110_enable": True,
-    # "long_entry_condition_120_enable": True,
+    "long_entry_condition_41_enable": True,
   }
 
   short_entry_signal_params = {
     # Enable/Disable conditions
     # -------------------------------------------------------
-    # "short_entry_condition_500_enable": True,
+    # "short_entry_condition_500_enable": False,
     "short_entry_condition_501_enable": False,
   }
 
@@ -2579,6 +2536,25 @@ class NostalgiaForInfinityX5(IStrategy):
           long_entry_logic.append(df["close"] < (df["EMA_9"] * 0.982))
           long_entry_logic.append(df["close"] < df["SMA_16"] * 0.942)
           long_entry_logic.append(df["CTI_20"] < -0.5)
+
+        # Condition #41 - Quick mode (Long).
+        if index == 41:
+          long_entry_logic.append(df["RSI_3"] >= 2.0)
+          long_entry_logic.append(df["RSI_3"] <= 60.0)
+          long_entry_logic.append(df["RSI_3_15m"] >= 6.0)
+          long_entry_logic.append(df["RSI_3_1h"] >= 10.0)
+          long_entry_logic.append(df["RSI_3_4h"] >= 10.0)
+          long_entry_logic.append(df["RSI_14_1d"] < 70.0)
+          long_entry_logic.append(df["CTI_20_1h"] < 0.75)
+          long_entry_logic.append(df["CTI_20_4h"] < 0.5)
+          long_entry_logic.append(df["WILLR_14_1h"] > -90.0)
+          long_entry_logic.append(df["WILLR_14_4h"] > -85.0)
+
+          # Logic
+          long_entry_logic.append(df["RSI_14"] < 36.0)
+          long_entry_logic.append(df["AROONU_14"] < 25.0)
+          long_entry_logic.append(df["AROOND_14"] > 75.0)
+          long_entry_logic.append(df["EMA_9"] < (df["EMA_26"] * 0.970))
 
         # Long Entry Conditions Ends Here
 
