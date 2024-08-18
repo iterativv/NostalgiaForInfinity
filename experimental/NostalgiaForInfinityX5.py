@@ -68,7 +68,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.0.7"
+    return "v15.0.8"
 
   stoploss = -0.99
 
@@ -1691,7 +1691,7 @@ class NostalgiaForInfinityX5(IStrategy):
     informative_4h = informative_4h.join(pta.rsi(informative_4h["close"], length=14))
     # EMA
     informative_4h = informative_4h.join(pta.ema(informative_4h["close"], length=12))
-    informative_4h = informative_4h.join(pta.ema(informative_4h["close"], length=200))
+    informative_4h = informative_4h.join(pta.ema(informative_4h["close"], length=200, fillna=0.0))
     # BB 20 - STD2
     informative_4h = informative_4h.join(pta.bbands(informative_4h["close"], length=20))
     # CTI
@@ -1769,7 +1769,7 @@ class NostalgiaForInfinityX5(IStrategy):
     informative_1h = informative_1h.join(pta.rsi(informative_1h["close"], length=14))
     # EMA
     informative_1h = informative_1h.join(pta.ema(informative_1h["close"], length=12))
-    informative_1h = informative_1h.join(pta.ema(informative_1h["close"], length=200))
+    informative_1h = informative_1h.join(pta.ema(informative_1h["close"], length=200, fillna=0.0))
     # BB 20 - STD2
     informative_1h = informative_1h.join(pta.bbands(informative_1h["close"], length=20))
     # CTI
