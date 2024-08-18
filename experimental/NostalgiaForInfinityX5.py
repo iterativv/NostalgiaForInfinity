@@ -68,7 +68,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.0.9"
+    return "v15.0.10"
 
   stoploss = -0.99
 
@@ -1616,15 +1616,20 @@ class NostalgiaForInfinityX5(IStrategy):
     # )
     # informative_1d.ta.study(informative_1d_indicators_pandas_ta, cores=self.num_cores_indicators_calc)
     # RSI
-    informative_1d = informative_1d.join(pta.rsi(informative_1d["close"], length=3))
-    informative_1d = informative_1d.join(pta.rsi(informative_1d["close"], length=14))
+    informative_1d["RSI_3"] = pta.rsi(informative_1d["close"], length=3)
+    informative_1d["RSI_14"] = pta.rsi(informative_1d["close"], length=14)
     # BB 20 - STD2
-    informative_1d = informative_1d.join(pta.bbands(informative_1d["close"], length=20))
+    bbands_20_2 = pta.bbands(informative_1d["close"], length=20)
+    informative_1d["BBL_20_2.0"] = bbands_20_2["BBL_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
+    informative_1d["BBM_20_2.0"] = bbands_20_2["BBM_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
+    informative_1d["BBU_20_2.0"] = bbands_20_2["BBU_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
+    informative_1d["BBB_20_2.0"] = bbands_20_2["BBB_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
+    informative_1d["BBP_20_2.0"] = bbands_20_2["BBP_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
     # CTI
-    informative_1d = informative_1d.join(pta.cti(informative_1d["close"], length=20))
+    informative_1d["CTI_20"] = pta.cti(informative_1d["close"], length=20)
     # Williams %R
-    informative_1d = informative_1d.join(
-      pta.willr(informative_1d["high"], informative_1d["low"], informative_1d["close"], length=14)
+    informative_1d["WILLR_14"] = pta.willr(
+      informative_1d["high"], informative_1d["low"], informative_1d["close"], length=14
     )
 
     # Performance logging
@@ -1687,23 +1692,34 @@ class NostalgiaForInfinityX5(IStrategy):
     # )
     # informative_4h.ta.study(informative_4h_indicators_pandas_ta, cores=self.num_cores_indicators_calc)
     # RSI
-    informative_4h = informative_4h.join(pta.rsi(informative_4h["close"], length=3))
-    informative_4h = informative_4h.join(pta.rsi(informative_4h["close"], length=14))
+    informative_4h["RSI_3"] = pta.rsi(informative_4h["close"], length=3)
+    informative_4h["RSI_14"] = pta.rsi(informative_4h["close"], length=14)
     # EMA
-    informative_4h = informative_4h.join(pta.ema(informative_4h["close"], length=12))
+    informative_4h["EMA_12"] = pta.ema(informative_4h["close"], length=12)
     informative_4h["EMA_200"] = pta.ema(informative_4h["close"], length=200, fillna=0.0)
     # BB 20 - STD2
-    informative_4h = informative_4h.join(pta.bbands(informative_4h["close"], length=20))
+    bbands_20_2 = pta.bbands(informative_4h["close"], length=20)
+    informative_4h["BBL_20_2.0"] = bbands_20_2["BBL_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
+    informative_4h["BBM_20_2.0"] = bbands_20_2["BBM_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
+    informative_4h["BBU_20_2.0"] = bbands_20_2["BBU_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
+    informative_4h["BBB_20_2.0"] = bbands_20_2["BBB_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
+    informative_4h["BBP_20_2.0"] = bbands_20_2["BBP_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
     # CTI
-    informative_4h = informative_4h.join(pta.cti(informative_4h["close"], length=20))
+    informative_4h["CTI_20"] = pta.cti(informative_4h["close"], length=20)
     # Williams %R
-    informative_4h = informative_4h.join(
-      pta.willr(informative_4h["high"], informative_4h["low"], informative_4h["close"], length=14)
+    informative_4h["WILLR_14"] = pta.willr(
+      informative_4h["high"], informative_4h["low"], informative_4h["close"], length=14
     )
     # AROON
-    informative_4h = informative_4h.join(pta.aroon(informative_4h["high"], informative_4h["low"], length=14))
+    aroon_14 = pta.aroon(informative_4h["high"], informative_4h["low"], length=14)
+    informative_4h["AROONU_14"] = aroon_14["AROONU_14"] if isinstance(aroon_14, pd.DataFrame) else np.nan
+    informative_4h["AROOND_14"] = aroon_14["AROOND_14"] if isinstance(aroon_14, pd.DataFrame) else np.nan
     # KST
-    informative_4h = informative_4h.join(pta.kst(informative_4h["close"]))
+    kst = pta.kst(informative_4h["close"])
+    informative_4h["KST_10_15_20_30_10_10_10_15"] = (
+      kst["KST_10_15_20_30_10_10_10_15"] if isinstance(kst, pd.DataFrame) else np.nan
+    )
+    informative_4h["KSTs_9"] = kst["KSTs_9"] if isinstance(kst, pd.DataFrame) else np.nan
 
     # Performance logging
     # -----------------------------------------------------------------------------------------
@@ -1765,23 +1781,34 @@ class NostalgiaForInfinityX5(IStrategy):
     # )
     # informative_1h.ta.study(informative_1h_indicators_pandas_ta, cores=self.num_cores_indicators_calc)
     # RSI
-    informative_1h = informative_1h.join(pta.rsi(informative_1h["close"], length=3))
-    informative_1h = informative_1h.join(pta.rsi(informative_1h["close"], length=14))
+    informative_1h["RSI_3"] = pta.rsi(informative_1h["close"], length=3)
+    informative_1h["RSI_14"] = pta.rsi(informative_1h["close"], length=14)
     # EMA
-    informative_1h = informative_1h.join(pta.ema(informative_1h["close"], length=12))
+    informative_1h["EMA_12"] = pta.ema(informative_1h["close"], length=12)
     informative_1h["EMA_200"] = pta.ema(informative_1h["close"], length=200, fillna=0.0)
     # BB 20 - STD2
-    informative_1h = informative_1h.join(pta.bbands(informative_1h["close"], length=20))
+    bbands_20_2 = pta.bbands(informative_1h["close"], length=20)
+    informative_1h["BBL_20_2.0"] = bbands_20_2["BBL_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
+    informative_1h["BBM_20_2.0"] = bbands_20_2["BBM_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
+    informative_1h["BBU_20_2.0"] = bbands_20_2["BBU_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
+    informative_1h["BBB_20_2.0"] = bbands_20_2["BBB_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
+    informative_1h["BBP_20_2.0"] = bbands_20_2["BBP_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
     # CTI
-    informative_1h = informative_1h.join(pta.cti(informative_1h["close"], length=20))
+    informative_1h["CTI_20"] = pta.cti(informative_1h["close"], length=20)
     # Williams %R
-    informative_1h = informative_1h.join(
-      pta.willr(informative_1h["high"], informative_1h["low"], informative_1h["close"], length=14)
+    informative_1h["WILLR_14"] = pta.willr(
+      informative_1h["high"], informative_1h["low"], informative_1h["close"], length=14
     )
     # AROON
-    informative_1h = informative_1h.join(pta.aroon(informative_1h["high"], informative_1h["low"], length=14))
+    aroon_14 = pta.aroon(informative_1h["high"], informative_1h["low"], length=14)
+    informative_1h["AROONU_14"] = aroon_14["AROONU_14"] if isinstance(aroon_14, pd.DataFrame) else np.nan
+    informative_1h["AROOND_14"] = aroon_14["AROOND_14"] if isinstance(aroon_14, pd.DataFrame) else np.nan
     # KST
-    informative_1h = informative_1h.join(pta.kst(informative_1h["close"]))
+    kst = pta.kst(informative_1h["close"])
+    informative_1h["KST_10_15_20_30_10_10_10_15"] = (
+      kst["KST_10_15_20_30_10_10_10_15"] if isinstance(kst, pd.DataFrame) else np.nan
+    )
+    informative_1h["KSTs_9"] = kst["KSTs_9"] if isinstance(kst, pd.DataFrame) else np.nan
 
     # Performance logging
     # -----------------------------------------------------------------------------------------
@@ -1838,10 +1865,12 @@ class NostalgiaForInfinityX5(IStrategy):
     # )
     # informative_15m.ta.study(informative_15m_indicators_pandas_ta, cores=self.num_cores_indicators_calc)
     # RSI
-    informative_15m = informative_15m.join(pta.rsi(informative_15m["close"], length=3))
-    informative_15m = informative_15m.join(pta.rsi(informative_15m["close"], length=14))
+    informative_15m["RSI_3"] = pta.rsi(informative_15m["close"], length=3)
+    informative_15m["RSI_14"] = pta.rsi(informative_15m["close"], length=14)
     # AROON
-    informative_15m = informative_15m.join(pta.aroon(informative_15m["high"], informative_15m["low"], length=14))
+    aroon_14 = pta.aroon(informative_15m["high"], informative_15m["low"], length=14)
+    informative_15m["AROONU_14"] = aroon_14["AROONU_14"] if isinstance(aroon_14, pd.DataFrame) else np.nan
+    informative_15m["AROOND_14"] = aroon_14["AROOND_14"] if isinstance(aroon_14, pd.DataFrame) else np.nan
 
     # Performance logging
     # -----------------------------------------------------------------------------------------
@@ -1919,37 +1948,46 @@ class NostalgiaForInfinityX5(IStrategy):
     # )
     # df.ta.study(base_tf_5m_indicators_pandas_ta, cores=self.num_cores_indicators_calc)
     # RSI
-    df = df.join(pta.rsi(df["close"], length=3))
-    df = df.join(pta.rsi(df["close"], length=4))
-    df = df.join(pta.rsi(df["close"], length=14))
-    df = df.join(pta.rsi(df["close"], length=20))
+    df["RSI_3"] = pta.rsi(df["close"], length=3)
+    df["RSI_4"] = pta.rsi(df["close"], length=4)
+    df["RSI_14"] = pta.rsi(df["close"], length=14)
+    df["RSI_20"] = pta.rsi(df["close"], length=20)
     # EMA
-    df = df.join(pta.ema(df["close"], length=3))
-    df = df.join(pta.ema(df["close"], length=9))
-    df = df.join(pta.ema(df["close"], length=12))
-    df = df.join(pta.ema(df["close"], length=16))
-    df = df.join(pta.ema(df["close"], length=20))
-    df = df.join(pta.ema(df["close"], length=26))
-    df = df.join(pta.ema(df["close"], length=50))
-    df = df.join(pta.ema(df["close"], length=200))
+    df["EMA_3"] = pta.ema(df["close"], length=3)
+    df["EMA_9"] = pta.ema(df["close"], length=9)
+    df["EMA_12"] = pta.ema(df["close"], length=12)
+    df["EMA_16"] = pta.ema(df["close"], length=16)
+    df["EMA_20"] = pta.ema(df["close"], length=20)
+    df["EMA_26"] = pta.ema(df["close"], length=26)
+    df["EMA_50"] = pta.ema(df["close"], length=50)
+    df["EMA_200"] = pta.ema(df["close"], length=200, fillna=0.0)
     # SMA
-    df = df.join(pta.sma(df["close"], length=16))
-    df = df.join(pta.sma(df["close"], length=30))
+    df["SMA_16"] = pta.sma(df["close"], length=16)
+    df["SMA_30"] = pta.sma(df["close"], length=30)
     # BB 20 - STD2
-    df = df.join(pta.bbands(df["close"], length=20))
+    bbands_20_2 = pta.bbands(df["close"], length=20)
+    df["BBL_20_2.0"] = bbands_20_2["BBL_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
+    df["BBM_20_2.0"] = bbands_20_2["BBM_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
+    df["BBU_20_2.0"] = bbands_20_2["BBU_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
+    df["BBB_20_2.0"] = bbands_20_2["BBB_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
+    df["BBP_20_2.0"] = bbands_20_2["BBP_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
     # MFI
-    df = df.join(pta.mfi(df["high"], df["low"], df["close"], df["volume"], length=14))
+    df["MFI_14"] = pta.mfi(df["high"], df["low"], df["close"], df["volume"], length=14)
     # CMF
-    df = df.join(pta.cmf(df["high"], df["low"], df["close"], df["volume"], length=20))
+    df["CMF_20"] = pta.cmf(df["high"], df["low"], df["close"], df["volume"], length=20)
     # Williams %R
-    df = df.join(pta.willr(df["high"], df["low"], df["close"], length=14))
-    df = df.join(pta.willr(df["high"], df["low"], df["close"], length=480))
+    df["WILLR_14"] = pta.willr(df["high"], df["low"], df["close"], length=14)
+    df["WILLR_480"] = pta.willr(df["high"], df["low"], df["close"], length=480)
     # CTI
-    df = df.join(pta.cti(df["close"], length=20))
+    df["CTI_20"] = pta.cti(df["close"], length=20)
     # AROON
-    df = df.join(pta.aroon(df["high"], df["low"], length=14))
+    aroon_14 = pta.aroon(df["high"], df["low"], length=14)
+    df["AROONU_14"] = aroon_14["AROONU_14"] if isinstance(aroon_14, pd.DataFrame) else np.nan
+    df["AROOND_14"] = aroon_14["AROOND_14"] if isinstance(aroon_14, pd.DataFrame) else np.nan
     # KST
-    df = df.join(pta.kst(df["close"]))
+    kst = pta.kst(df["close"])
+    df["KST_10_15_20_30_10_10_10_15"] = kst["KST_10_15_20_30_10_10_10_15"] if isinstance(kst, pd.DataFrame) else np.nan
+    df["KSTs_9"] = kst["KSTs_9"] if isinstance(kst, pd.DataFrame) else np.nan
 
     # -----------------------------------------------------------------------------------------
 
