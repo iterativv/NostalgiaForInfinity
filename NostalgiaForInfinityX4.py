@@ -18217,6 +18217,15 @@ class NostalgiaForInfinityX4(IStrategy):
             | (df["cti_20_1d"] < 0.8)
             | (df["hl_pct_change_6_1d"] < 0.9)
           )
+          long_entry_logic.append(
+            (df["change_pct_1d"] < 0.24)
+            | (df["change_pct_4h"] < 0.06)
+            | (df["top_wick_pct_4h"] < 0.06)
+            | (df["change_pct_1h"] > -0.02)
+            | (df["rsi_14_15m"] < 40.0)
+            | (df["rsi_14_1h"] < 50.0)
+            | (df["rsi_14_4h"] < 80.0)
+          )
 
           # Logic
           long_entry_logic.append(df["cti_20"] < -0.75)
