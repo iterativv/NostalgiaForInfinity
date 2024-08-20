@@ -67,7 +67,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.0.11"
+    return "v15.0.12"
 
   stoploss = -0.99
 
@@ -4871,6 +4871,9 @@ class NostalgiaForInfinityX5(IStrategy):
     **kwargs,
   ):
     is_backtest = self.dp.runmode.value in ["backtest", "hyperopt"]
+    # min/max stakes include leverage. The return amounts is before leverage.
+    min_stake /= trade.leverage
+    max_stake /= trade.leverage
     df, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
     if len(df) < 2:
       return None
@@ -8004,6 +8007,9 @@ class NostalgiaForInfinityX5(IStrategy):
     current_exit_profit: float,
     **kwargs,
   ) -> Optional[float]:
+    # min/max stakes include leverage. The return amounts is before leverage.
+    min_stake /= trade.leverage
+    max_stake /= trade.leverage
     df, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
     if len(df) < 2:
       return None
@@ -15233,6 +15239,9 @@ class NostalgiaForInfinityX5(IStrategy):
     **kwargs,
   ):
     is_backtest = self.dp.runmode.value in ["backtest", "hyperopt"]
+    # min/max stakes include leverage. The return amounts is before leverage.
+    min_stake /= trade.leverage
+    max_stake /= trade.leverage
     df, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
     if len(df) < 2:
       return None
