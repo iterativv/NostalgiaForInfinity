@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.0.15"
+    return "v15.0.16"
 
   stoploss = -0.99
 
@@ -2668,17 +2668,23 @@ class NostalgiaForInfinityX5(IStrategy):
           long_entry_logic.append(df["global_protections_long_pump"] == True)
           long_entry_logic.append(df["global_protections_long_dump"] == True)
 
-          long_entry_logic.append(df["RSI_14_1h"] < 65.0)
-          long_entry_logic.append(df["RSI_14_4h"] < 65.0)
-          long_entry_logic.append(df["RSI_14_1d"] < 70.0)
+          long_entry_logic.append(df["RSI_3_1h"] >= 12.0)
+          long_entry_logic.append(df["RSI_3_1h"] <= 85.0)
+          long_entry_logic.append(df["RSI_3_4h"] >= 12.0)
+          long_entry_logic.append(df["RSI_3_4h"] <= 85.0)
+          long_entry_logic.append(df["RSI_3_1d"] >= 12.0)
+          long_entry_logic.append(df["RSI_3_1d"] <= 85.0)
+          long_entry_logic.append(df["RSI_14_1h"] < 85.0)
+          long_entry_logic.append(df["RSI_14_4h"] < 85.0)
+          long_entry_logic.append(df["RSI_14_1d"] < 90.0)
 
           # Logic
           long_entry_logic.append(df["RSI_20"] < df["RSI_20"].shift(1))
           long_entry_logic.append(df["RSI_4"] < 46.0)
-          long_entry_logic.append(df["RSI_14"] > 20.0)
-          long_entry_logic.append(df["close"] < (df["EMA_9"] * 0.982))
-          long_entry_logic.append(df["close"] < df["SMA_16"] * 0.942)
           long_entry_logic.append(df["CTI_20"] < -0.5)
+          long_entry_logic.append(df["close"] < df["SMA_16"] * 0.942)
+          long_entry_logic.append(df["AROONU_14"] < 25.0)
+          long_entry_logic.append(df["AROONU_14_15m"] < 25.0)
 
         # Condition #41 - Quick mode (Long).
         if index == 41:
