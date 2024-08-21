@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.0.14"
+    return "v15.0.15"
 
   stoploss = -0.99
 
@@ -166,8 +166,8 @@ class NostalgiaForInfinityX5(IStrategy):
   stop_threshold_futures = 0.10
   stop_threshold_doom_spot = 0.25
   stop_threshold_doom_futures = 0.25
-  stop_threshold_futures_rapid = 0.16
-  stop_threshold_spot_rapid = 0.16
+  stop_threshold_rapid_spot = 0.25
+  stop_threshold_rapid_futures = 0.25
   stop_threshold_spot_rebuy = 1.0
   stop_threshold_futures_rebuy = 1.0
 
@@ -4166,10 +4166,17 @@ class NostalgiaForInfinityX5(IStrategy):
         sell, signal_name = True, f"exit_{self.long_rapid_mode_name}_rpd_3"
 
       # Stoplosses
-      if profit_stake < -(
-        filled_entries[0].cost
-        * (self.stop_threshold_futures_rapid if self.is_futures_mode else self.stop_threshold_spot_rapid)
-        / (trade.leverage if self.is_futures_mode else 1.0)
+      if (
+        (
+          profit_stake
+          < -(
+            filled_entries[0].cost
+            * (self.stop_threshold_rapid_futures if self.is_futures_mode else self.stop_threshold_rapid_spot)
+            # / (trade.leverage if self.is_futures_mode else 1.0)
+          )
+        )
+        # temporary
+        and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 8, 16) or is_backtest)
       ):
         sell, signal_name = True, f"exit_{self.long_rapid_mode_name}_stoploss_doom"
 
