@@ -611,7 +611,15 @@ class NostalgiaForInfinityX5(IStrategy):
         self._remove_profit_target(pair)
         return False, None
       if trade.is_short:
-        if 0.01 <= profit_init_ratio < 0.02:
+        if 0.001 <= profit_init_ratio < 0.01:
+          if (
+            profit_init_ratio < (previous_profit - 0.03)
+            and (last_candle["RSI_14"] > 50.0)
+            and (last_candle["RSI_14"] > previous_candle_1["RSI_14"])
+            and (last_candle["CMF_20"] > 0.0)
+          ):
+            return True, f"exit_profit_{mode_name}_t_0_1"
+        elif 0.01 <= profit_init_ratio < 0.02:
           if (
             profit_init_ratio < (previous_profit - 0.03)
             and (last_candle["RSI_14"] > 50.0)
@@ -708,7 +716,15 @@ class NostalgiaForInfinityX5(IStrategy):
           ):
             return True, f"exit_profit_{mode_name}_t_12_1"
       else:
-        if 0.01 <= profit_init_ratio < 0.02:
+        if 0.001 <= profit_init_ratio < 0.01:
+          if (
+            profit_init_ratio < (previous_profit - 0.03)
+            and (last_candle["RSI_14"] < 50.0)
+            and (last_candle["RSI_14"] < previous_candle_1["RSI_14"])
+            and (last_candle["CMF_20"] < -0.0)
+          ):
+            return True, f"exit_profit_{mode_name}_t_0_1"
+        elif 0.01 <= profit_init_ratio < 0.02:
           if (
             profit_init_ratio < (previous_profit - 0.03)
             and (last_candle["RSI_14"] < 50.0)
