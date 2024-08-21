@@ -2,7 +2,6 @@ import copy
 import logging
 import pathlib
 import rapidjson
-import freqtrade.vendor.qtpylib.indicators as qtpylib
 import numpy as np
 import talib.abstract as ta
 import pandas as pd
