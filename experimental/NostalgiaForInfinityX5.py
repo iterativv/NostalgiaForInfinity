@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.0.17"
+    return "v15.0.18"
 
   stoploss = -0.99
 
@@ -410,6 +410,7 @@ class NostalgiaForInfinityX5(IStrategy):
     "long_entry_condition_2_enable": True,
     "long_entry_condition_3_enable": True,
     "long_entry_condition_41_enable": True,
+    "long_entry_condition_42_enable": True,
   }
 
   short_entry_signal_params = {
@@ -1999,9 +2000,13 @@ class NostalgiaForInfinityX5(IStrategy):
     )
     # CTI
     informative_1h["CTI_20"] = pta.cti(informative_1h["close"], length=20)
+    informative_1h["CTI_40"] = pta.cti(informative_1h["close"], length=40)
     # Williams %R
     informative_1h["WILLR_14"] = pta.willr(
       informative_1h["high"], informative_1h["low"], informative_1h["close"], length=14
+    )
+    informative_1h["WILLR_84"] = pta.willr(
+      informative_1h["high"], informative_1h["low"], informative_1h["close"], length=84
     )
     # AROON
     aroon_14 = pta.aroon(informative_1h["high"], informative_1h["low"], length=14)
@@ -2192,6 +2197,8 @@ class NostalgiaForInfinityX5(IStrategy):
     kst = pta.kst(df["close"])
     df["KST_10_15_20_30_10_10_10_15"] = kst["KST_10_15_20_30_10_10_10_15"] if isinstance(kst, pd.DataFrame) else np.nan
     df["KSTs_9"] = kst["KSTs_9"] if isinstance(kst, pd.DataFrame) else np.nan
+    # Close max
+    df["close_max_48"] = df["close"].rolling(48).max()
 
     # -----------------------------------------------------------------------------------------
 
@@ -2894,6 +2901,22 @@ class NostalgiaForInfinityX5(IStrategy):
           long_entry_logic.append(df["AROONU_14"] < 25.0)
           long_entry_logic.append(df["AROOND_14"] > 75.0)
           long_entry_logic.append(df["EMA_9"] < (df["EMA_26"] * 0.970))
+
+        # Condition #42 - Quick mode (Long).
+        if index == 42:
+          long_entry_logic.append(df["RSI_3"] <= 40.0)
+          long_entry_logic.append(df["RSI_3_15m"] >= 20.0)
+          long_entry_logic.append(df["RSI_14_1h"] < 85.0)
+          long_entry_logic.append(df["RSI_14_4h"] < 85.0)
+          long_entry_logic.append(df["RSI_14_1d"] < 85.0)
+
+          # Logic
+          long_entry_logic.append(df["CTI_20"] < -0.85)
+          long_entry_logic.append(df["WILLR_14"] < -50.0)
+          long_entry_logic.append(df["CTI_40_1h"] < -0.85)
+          long_entry_logic.append(df["WILLR_84_1h"] < -70.0)
+          long_entry_logic.append(df["BBB_20_2.0_1h"] > 16.0)
+          long_entry_logic.append(df['close_max_48'] >= (df['close'] * 1.10))
 
         # Long Entry Conditions Ends Here
 
