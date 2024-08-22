@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.0.18"
+    return "v15.0.19"
 
   stoploss = -0.99
 
@@ -411,6 +411,7 @@ class NostalgiaForInfinityX5(IStrategy):
     "long_entry_condition_3_enable": True,
     "long_entry_condition_41_enable": True,
     "long_entry_condition_42_enable": True,
+    "long_entry_condition_120_enable": True,
   }
 
   short_entry_signal_params = {
@@ -2917,6 +2918,20 @@ class NostalgiaForInfinityX5(IStrategy):
           long_entry_logic.append(df["WILLR_84_1h"] < -70.0)
           long_entry_logic.append(df["BBB_20_2.0_1h"] > 16.0)
           long_entry_logic.append(df['close_max_48'] >= (df['close'] * 1.10))
+
+        # Condition #120 - Grind mode (Long).
+        if index == 120:
+          long_entry_logic.append(df["RSI_3"] <= 40.0)
+          long_entry_logic.append(df["RSI_3_15m"] >= 20.0)
+          long_entry_logic.append(df["RSI_14_1h"] < 85.0)
+          long_entry_logic.append(df["RSI_14_4h"] < 85.0)
+          long_entry_logic.append(df["RSI_14_1d"] < 85.0)
+          long_entry_logic.append(df['close_max_48'] >= (df['close'] * 1.10))
+
+          # Logic
+          long_entry_logic.append(df["CTI_20"] < -0.85)
+          long_entry_logic.append(df["WILLR_14"] < -80.0)
+          long_entry_logic.append(df["AROONU_14"] < 25.0)
 
         # Long Entry Conditions Ends Here
 
