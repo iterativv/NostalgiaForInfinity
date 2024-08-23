@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.0.25"
+    return "v15.0.26"
 
   stoploss = -0.99
 
@@ -2026,6 +2026,8 @@ class NostalgiaForInfinityX5(IStrategy):
       kst["KST_10_15_20_30_10_10_10_15"] if isinstance(kst, pd.DataFrame) else np.nan
     )
     informative_1h["KSTs_9"] = kst["KSTs_9"] if isinstance(kst, pd.DataFrame) else np.nan
+    # Candle change
+    informative_1h["change_pct"] = (informative_1h["close"] - informative_1h["open"]) / informative_1h["open"] * 100.0
 
     # Performance logging
     # -----------------------------------------------------------------------------------------
@@ -2084,6 +2086,10 @@ class NostalgiaForInfinityX5(IStrategy):
     # RSI
     informative_15m["RSI_3"] = pta.rsi(informative_15m["close"], length=3)
     informative_15m["RSI_14"] = pta.rsi(informative_15m["close"], length=14)
+    # CMF
+    informative_15m["CMF_20"] = pta.cmf(
+      informative_15m["high"], informative_15m["low"], informative_15m["close"], informative_15m["volume"], length=20
+    )
     # AROON
     aroon_14 = pta.aroon(informative_15m["high"], informative_15m["low"], length=14)
     informative_15m["AROONU_14"] = aroon_14["AROONU_14"] if isinstance(aroon_14, pd.DataFrame) else np.nan
@@ -2946,6 +2952,7 @@ class NostalgiaForInfinityX5(IStrategy):
             | (df["change_pct_4h"] > -8.0)
           )
           long_entry_logic.append((df["RSI_3_1h"] > 2.0) | (df["CMF_20_1h"] > -0.4))
+          long_entry_logic.append((df["RSI_3_15m"] > 4.0) | (df["CMF_20_15m"] > -0.3) | (df["change_pct_1h"] > -8.0))
 
           # Logic
           long_entry_logic.append(df["RSI_14"] < 40.0)
