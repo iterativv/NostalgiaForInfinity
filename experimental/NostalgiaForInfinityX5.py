@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.0.19"
+    return "v15.0.20"
 
   stoploss = -0.99
 
@@ -411,6 +411,7 @@ class NostalgiaForInfinityX5(IStrategy):
     "long_entry_condition_3_enable": True,
     "long_entry_condition_41_enable": True,
     "long_entry_condition_42_enable": True,
+    "long_entry_condition_43_enable": True,
     "long_entry_condition_120_enable": True,
   }
 
@@ -2198,6 +2199,9 @@ class NostalgiaForInfinityX5(IStrategy):
     kst = pta.kst(df["close"])
     df["KST_10_15_20_30_10_10_10_15"] = kst["KST_10_15_20_30_10_10_10_15"] if isinstance(kst, pd.DataFrame) else np.nan
     df["KSTs_9"] = kst["KSTs_9"] if isinstance(kst, pd.DataFrame) else np.nan
+    # OBV
+    df["OBV"] = pta.obv(df["close"], df["volume"])
+    df["OBV_change_pct"] = ((df["OBV"] - df["OBV"].shift(1)) / abs(df["OBV"].shift(1))) * 100.0
     # Close max
     df["close_max_48"] = df["close"].rolling(48).max()
 
@@ -2918,6 +2922,28 @@ class NostalgiaForInfinityX5(IStrategy):
           long_entry_logic.append(df["WILLR_84_1h"] < -70.0)
           long_entry_logic.append(df["BBB_20_2.0_1h"] > 16.0)
           long_entry_logic.append(df["close_max_48"] >= (df["close"] * 1.10))
+
+        # Condition #43 - Rapid mode (Long).
+        if index == 43:
+          # Protections
+          long_entry_logic.append(df["protections_long_global"] == True)
+          long_entry_logic.append(df["global_protections_long_pump"] == True)
+          long_entry_logic.append(df["global_protections_long_dump"] == True)
+
+          long_entry_logic.append(df["RSI_14_1h"] < 80.0)
+          long_entry_logic.append(df["RSI_14_4h"] < 80.0)
+          long_entry_logic.append(df["RSI_14_1d"] < 90.0)
+          long_entry_logic.append(df["OBV_change_pct"] > -10.0)
+
+          # Logic
+          long_entry_logic.append(df["RSI_14"] < 40.0)
+          long_entry_logic.append(df["MFI_14"] < 40.0)
+          long_entry_logic.append(df["AROONU_14"] < 25.0)
+          long_entry_logic.append(df["EMA_26"] > df["EMA_12"])
+          long_entry_logic.append((df["EMA_26"] - df["EMA_12"]) > (df["open"] * 0.024))
+          long_entry_logic.append((df["EMA_26"].shift() - df["EMA_12"].shift()) > (df["open"] / 100.0))
+          long_entry_logic.append(df["close"] < (df["EMA_20"] * 0.958))
+          long_entry_logic.append(df["close"] < (df["BBL_20_2.0"] * 0.992))
 
         # Condition #120 - Grind mode (Long).
         if index == 120:
