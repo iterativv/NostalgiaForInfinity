@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.0.26"
+    return "v15.0.27"
 
   stoploss = -0.99
 
@@ -1830,6 +1830,8 @@ class NostalgiaForInfinityX5(IStrategy):
     informative_1d["WILLR_14"] = pta.willr(
       informative_1d["high"], informative_1d["low"], informative_1d["close"], length=14
     )
+    # Candle change
+    informative_1d["change_pct"] = (informative_1d["close"] - informative_1d["open"]) / informative_1d["open"] * 100.0
 
     # Performance logging
     # -----------------------------------------------------------------------------------------
@@ -2026,6 +2028,11 @@ class NostalgiaForInfinityX5(IStrategy):
       kst["KST_10_15_20_30_10_10_10_15"] if isinstance(kst, pd.DataFrame) else np.nan
     )
     informative_1h["KSTs_9"] = kst["KSTs_9"] if isinstance(kst, pd.DataFrame) else np.nan
+    # OBV
+    informative_1h["OBV"] = pta.obv(informative_1h["close"], informative_1h["volume"])
+    informative_1h["OBV_change_pct"] = (
+      (informative_1h["OBV"] - informative_1h["OBV"].shift(1)) / abs(informative_1h["OBV"].shift(1))
+    ) * 100.0
     # Candle change
     informative_1h["change_pct"] = (informative_1h["close"] - informative_1h["open"]) / informative_1h["open"] * 100.0
 
@@ -2094,6 +2101,15 @@ class NostalgiaForInfinityX5(IStrategy):
     aroon_14 = pta.aroon(informative_15m["high"], informative_15m["low"], length=14)
     informative_15m["AROONU_14"] = aroon_14["AROONU_14"] if isinstance(aroon_14, pd.DataFrame) else np.nan
     informative_15m["AROOND_14"] = aroon_14["AROOND_14"] if isinstance(aroon_14, pd.DataFrame) else np.nan
+    # OBV
+    informative_15m["OBV"] = pta.obv(informative_15m["close"], informative_15m["volume"])
+    informative_15m["OBV_change_pct"] = (
+      (informative_15m["OBV"] - informative_15m["OBV"].shift(1)) / abs(informative_15m["OBV"].shift(1))
+    ) * 100.0
+    # Candle change
+    informative_15m["change_pct"] = (
+      (informative_15m["close"] - informative_15m["open"]) / informative_15m["open"] * 100.0
+    )
 
     # Performance logging
     # -----------------------------------------------------------------------------------------
@@ -2858,16 +2874,31 @@ class NostalgiaForInfinityX5(IStrategy):
           long_entry_logic.append(df["global_protections_long_pump"] == True)
           long_entry_logic.append(df["global_protections_long_dump"] == True)
 
-          long_entry_logic.append(df["RSI_3_1h"] >= 12.0)
           long_entry_logic.append(df["RSI_3_1h"] <= 95.0)
-          long_entry_logic.append(df["RSI_3_4h"] >= 12.0)
-          long_entry_logic.append(df["RSI_3_4h"] <= 70.0)
-          long_entry_logic.append(df["RSI_3_1d"] >= 12.0)
-          long_entry_logic.append(df["RSI_3_1d"] <= 70.0)
+          long_entry_logic.append(df["RSI_3_4h"] <= 80.0)
+          long_entry_logic.append(df["RSI_3_1d"] <= 80.0)
+          long_entry_logic.append(df["RSI_14_1h"] < 80.0)
+          long_entry_logic.append(df["RSI_14_4h"] < 80.0)
           long_entry_logic.append(df["RSI_14_1d"] < 90.0)
+          long_entry_logic.append(df["OBV_change_pct"] > -5.0)
+          long_entry_logic.append(df["OBV_change_pct_15m"] > -10.0)
+          long_entry_logic.append(df["OBV_change_pct_1h"] > -40.0)
+          long_entry_logic.append((df["RSI_3"] > 4.0) | (df["change_pct"] > -4.0))
+          long_entry_logic.append((df["RSI_3_15m"] > 6.0) | (df["change_pct_15m"] > -6.0))
+          long_entry_logic.append((df["RSI_3_1h"] > 12.0) | (df["change_pct_1h"] > -8.0))
+          long_entry_logic.append((df["RSI_3_4h"] > 12.0) | (df["change_pct_4h"] > -10.0))
+          long_entry_logic.append((df["RSI_3_1h"] > 4.0) | (df["RSI_14_1h"] > 25.0))
+          long_entry_logic.append(
+            (df["BBB_20_2.0_4h"] < 50.0)
+            | (df["MFI_14_4h"] < 30.0)
+            | (df["RSI_14_4h"] < 30.0)
+            | (df["change_pct_4h"] > -8.0)
+          )
+          long_entry_logic.append((df["RSI_3_4h"] < 70.0) | (df["change_pct_4h"] < 20.0))
+          long_entry_logic.append((df["RSI_3_1d"] < 70.0) | (df["change_pct_1d"] < 30.0))
 
           # Logic
-          long_entry_logic.append(df["CTI_20"] < -0.75)
+          long_entry_logic.append(df["RSI_14"] > 5.0)
           long_entry_logic.append(df["WILLR_14"] < -90.0)
           long_entry_logic.append(df["AROONU_14"] < 25.0)
           long_entry_logic.append(df["close"] < (df["EMA_20"] * 0.942))
