@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.0.20"
+    return "v15.0.21"
 
   stoploss = -0.99
 
@@ -2202,6 +2202,8 @@ class NostalgiaForInfinityX5(IStrategy):
     # OBV
     df["OBV"] = pta.obv(df["close"], df["volume"])
     df["OBV_change_pct"] = ((df["OBV"] - df["OBV"].shift(1)) / abs(df["OBV"].shift(1))) * 100.0
+    # Candle change
+    df["change_pct"] = (df["close"] - df["open"]) / df["open"] * 100.0
     # Close max
     df["close_max_48"] = df["close"].rolling(48).max()
 
@@ -2934,6 +2936,8 @@ class NostalgiaForInfinityX5(IStrategy):
           long_entry_logic.append(df["RSI_14_4h"] < 80.0)
           long_entry_logic.append(df["RSI_14_1d"] < 90.0)
           long_entry_logic.append(df["OBV_change_pct"] > -10.0)
+          long_entry_logic.append((df["RSI_3"] > 2.0) | (df["change_pct"] > -5.0))
+          long_entry_logic.append((df["RSI_3"] > 4.0) | (df["change_pct"] > -10.0))
 
           # Logic
           long_entry_logic.append(df["RSI_14"] < 40.0)
