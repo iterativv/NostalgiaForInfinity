@@ -2917,7 +2917,7 @@ class NostalgiaForInfinityX5(IStrategy):
           long_entry_logic.append(df["CTI_40_1h"] < -0.85)
           long_entry_logic.append(df["WILLR_84_1h"] < -70.0)
           long_entry_logic.append(df["BBB_20_2.0_1h"] > 16.0)
-          long_entry_logic.append(df['close_max_48'] >= (df['close'] * 1.10))
+          long_entry_logic.append(df["close_max_48"] >= (df["close"] * 1.10))
 
         # Condition #120 - Grind mode (Long).
         if index == 120:
@@ -2926,7 +2926,7 @@ class NostalgiaForInfinityX5(IStrategy):
           long_entry_logic.append(df["RSI_14_1h"] < 85.0)
           long_entry_logic.append(df["RSI_14_4h"] < 85.0)
           long_entry_logic.append(df["RSI_14_1d"] < 85.0)
-          long_entry_logic.append(df['close_max_48'] >= (df['close'] * 1.10))
+          long_entry_logic.append(df["close_max_48"] >= (df["close"] * 1.10))
 
           # Logic
           long_entry_logic.append(df["CTI_20"] < -0.85)
@@ -4307,6 +4307,7 @@ class NostalgiaForInfinityX5(IStrategy):
     current_time: "datetime",
     enter_tags,
   ) -> tuple:
+    is_backtest = self.dp.runmode.value in ["backtest", "hyperopt"]
     sell = False
 
     # Original sell signals
@@ -4406,14 +4407,40 @@ class NostalgiaForInfinityX5(IStrategy):
 
     # Extra sell logic
     if not sell:
-      if (0.09 >= profit_init_ratio > 0.01) and (last_candle["RSI_14"] > 78.0):
-        sell, signal_name = True, f"exit_{self.long_rapid_mode_name}_rpd_1"
+      if (0.09 >= profit_init_ratio > 0.005) and (last_candle["RSI_14"] > 78.0):
+        sell, signal_name = True, f"exit_{self.long_quick_mode_name}_rpd_1"
 
-      if (0.09 >= profit_init_ratio > 0.01) and (last_candle["CTI_20"] > 0.95):
-        sell, signal_name = True, f"exit_{self.long_rapid_mode_name}_rpd_2"
+      if (0.09 >= profit_init_ratio > 0.005) and (last_candle["CTI_20"] > 0.95):
+        sell, signal_name = True, f"exit_{self.long_quick_mode_name}_rpd_2"
 
-      if (0.09 >= profit_init_ratio > 0.01) and (last_candle["WILLR_14"] >= -0.1):
-        sell, signal_name = True, f"exit_{self.long_rapid_mode_name}_rpd_3"
+      if (0.09 >= profit_init_ratio > 0.005) and (last_candle["WILLR_14"] >= -0.1):
+        sell, signal_name = True, f"exit_{self.long_quick_mode_name}_rpd_3"
+
+      if (
+        (0.09 >= profit_init_ratio > 0.005)
+        and (last_candle["RSI_14"] >= 72.0)
+        and (last_candle["RSI_3"] > 90.0)
+        and (last_candle["RSI_3_15m"] > 90.0)
+      ):
+        sell, signal_name = True, f"exit_{self.long_quick_mode_name}_rpd_4"
+
+      if (0.09 >= profit_init_ratio > 0.005) and (last_candle["RSI_3_15m"] > 96.0):
+        sell, signal_name = True, f"exit_{self.long_quick_mode_name}_rpd_5"
+
+      if (0.09 >= profit_init_ratio > 0.005) and (last_candle["RSI_3"] > 85.0) and (last_candle["RSI_3_15m"] > 85.0):
+        sell, signal_name = True, f"exit_{self.long_quick_mode_name}_rpd_6"
+
+      if (0.09 >= profit_init_ratio > 0.005) and (last_candle["RSI_3"] > 90.0) and (last_candle["RSI_3_15m"] > 80.0):
+        sell, signal_name = True, f"exit_{self.long_quick_mode_name}_rpd_7"
+
+      if (0.09 >= profit_init_ratio > 0.005) and (last_candle["RSI_3"] > 92.0) and (last_candle["RSI_3_15m"] > 75.0):
+        sell, signal_name = True, f"exit_{self.long_quick_mode_name}_rpd_8"
+
+      if (0.09 >= profit_init_ratio > 0.005) and (last_candle["RSI_3"] > 94.0) and (last_candle["RSI_3_15m"] > 70.0):
+        sell, signal_name = True, f"exit_{self.long_quick_mode_name}_rpd_9"
+
+      if (0.09 >= profit_init_ratio > 0.005) and (last_candle["RSI_3"] > 99.0):
+        sell, signal_name = True, f"exit_{self.long_quick_mode_name}_rpd_10"
 
       # Stoplosses
       if (
