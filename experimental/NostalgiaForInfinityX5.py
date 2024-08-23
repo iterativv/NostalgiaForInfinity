@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.0.23"
+    return "v15.0.24"
 
   stoploss = -0.99
 
@@ -2491,13 +2491,6 @@ class NostalgiaForInfinityX5(IStrategy):
     if entry_tag == "force_entry":
       return True
 
-    df, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
-
-    if len(df) < 1:
-      return False
-
-    df = df.iloc[-1].squeeze()
-
     # Grind mode
     entry_tags = entry_tag.split()
     if all(c in self.long_grind_mode_tags for c in entry_tags):
@@ -2517,14 +2510,16 @@ class NostalgiaForInfinityX5(IStrategy):
         # The pair is not in the list of grind mode allowed
         return False
 
-    if ("side" == "long" and rate > df["close"]) or ("side" == "short" and rate < df["close"]):
-      slippage = (rate / df["close"]) - 1.0
-
-      if ("side" == "long" and slippage < self.max_slippage) or ("side" == "short" and slippage > -self.max_slippage):
-        return True
-      else:
-        log.warning(f"Cancelling buy for {pair} due to slippage {(slippage * 100.0):.2f}%")
-        return False
+    df, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
+    if len(df) >= 1:
+      last_candle = df.iloc[-1].squeeze()
+      if ("side" == "long" and rate > last_candle["close"]) or ("side" == "short" and rate < last_candle["close"]):
+        slippage = (rate / last_candle["close"]) - 1.0
+        if ("side" == "long" and slippage < self.max_slippage) or ("side" == "short" and slippage > -self.max_slippage):
+          return True
+        else:
+          log.warning(f"Cancelling buy for {pair} due to slippage {(slippage * 100.0):.2f}%")
+          return False
 
     return True
 
