@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.0.22"
+    return "v15.0.23"
 
   stoploss = -0.99
 
@@ -1903,6 +1903,10 @@ class NostalgiaForInfinityX5(IStrategy):
     informative_4h["BBU_20_2.0"] = bbands_20_2["BBU_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
     informative_4h["BBB_20_2.0"] = bbands_20_2["BBB_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
     informative_4h["BBP_20_2.0"] = bbands_20_2["BBP_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
+    # MFI
+    informative_4h["MFI_14"] = pta.mfi(
+      informative_4h["high"], informative_4h["low"], informative_4h["close"], informative_4h["volume"], length=14
+    )
     # CMF
     informative_4h["CMF_20"] = pta.cmf(
       informative_4h["high"], informative_4h["low"], informative_4h["close"], informative_4h["volume"], length=20
@@ -1923,6 +1927,8 @@ class NostalgiaForInfinityX5(IStrategy):
       kst["KST_10_15_20_30_10_10_10_15"] if isinstance(kst, pd.DataFrame) else np.nan
     )
     informative_4h["KSTs_9"] = kst["KSTs_9"] if isinstance(kst, pd.DataFrame) else np.nan
+    # Candle change
+    informative_4h["change_pct"] = (informative_4h["close"] - informative_4h["open"]) / informative_4h["open"] * 100.0
 
     # Performance logging
     # -----------------------------------------------------------------------------------------
@@ -2938,6 +2944,12 @@ class NostalgiaForInfinityX5(IStrategy):
           long_entry_logic.append(df["OBV_change_pct"] > -10.0)
           long_entry_logic.append((df["RSI_3"] > 2.0) | (df["change_pct"] > -5.0))
           long_entry_logic.append((df["RSI_3"] > 4.0) | (df["change_pct"] > -10.0))
+          long_entry_logic.append(
+            (df["BBB_20_2.0_4h"] < 50.0)
+            | (df["MFI_14_4h"] < 30.0)
+            | (df["RSI_14_4h"] < 30.0)
+            | (df["change_pct_4h"] > -8.0)
+          )
 
           # Logic
           long_entry_logic.append(df["RSI_14"] < 40.0)
