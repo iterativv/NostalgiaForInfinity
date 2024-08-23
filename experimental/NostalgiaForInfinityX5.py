@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.0.27"
+    return "v15.0.28"
 
   stoploss = -0.99
 
@@ -2093,6 +2093,10 @@ class NostalgiaForInfinityX5(IStrategy):
     # RSI
     informative_15m["RSI_3"] = pta.rsi(informative_15m["close"], length=3)
     informative_15m["RSI_14"] = pta.rsi(informative_15m["close"], length=14)
+    # MFI
+    informative_15m["MFI_14"] = pta.mfi(
+      informative_15m["high"], informative_15m["low"], informative_15m["close"], informative_15m["volume"], length=14
+    )
     # CMF
     informative_15m["CMF_20"] = pta.cmf(
       informative_15m["high"], informative_15m["low"], informative_15m["close"], informative_15m["volume"], length=20
@@ -2537,7 +2541,9 @@ class NostalgiaForInfinityX5(IStrategy):
       last_candle = df.iloc[-1].squeeze()
       if ("side" == "long" and rate > last_candle["close"]) or ("side" == "short" and rate < last_candle["close"]):
         slippage = (rate / last_candle["close"]) - 1.0
-        if ("side" == "long" and slippage < self.max_slippage) or ("side" == "short" and slippage > -self.max_slippage):
+        if ("side" == "long" and slippage < self.max_slippage) or (
+          "side" == "short" and slippage > -self.max_slippage
+        ):
           return True
         else:
           log.warning(f"Cancelling buy for {pair} due to slippage {(slippage * 100.0):.2f}%")
@@ -2893,6 +2899,13 @@ class NostalgiaForInfinityX5(IStrategy):
             | (df["MFI_14_4h"] < 30.0)
             | (df["RSI_14_4h"] < 30.0)
             | (df["change_pct_4h"] > -8.0)
+          )
+          long_entry_logic.append(
+            (df["RSI_3_15m"] > 10.0)
+            | (df["RSI_14_15m"] < 30.0)
+            | (df["MFI_14_15m"] < 30.0)
+            | (df["AROONU_14_15m"] < 25.0)
+            | (df["change_pct_15m"] > -4.0)
           )
           long_entry_logic.append((df["RSI_3_4h"] < 70.0) | (df["change_pct_4h"] < 20.0))
           long_entry_logic.append((df["RSI_3_1d"] < 70.0) | (df["change_pct_1d"] < 30.0))
