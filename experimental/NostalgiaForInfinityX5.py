@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.0.28"
+    return "v15.0.29"
 
   stoploss = -0.99
 
@@ -2004,6 +2004,10 @@ class NostalgiaForInfinityX5(IStrategy):
     informative_1h["BBU_20_2.0"] = bbands_20_2["BBU_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
     informative_1h["BBB_20_2.0"] = bbands_20_2["BBB_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
     informative_1h["BBP_20_2.0"] = bbands_20_2["BBP_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
+    # MFI
+    informative_1h["MFI_14"] = pta.mfi(
+      informative_1h["high"], informative_1h["low"], informative_1h["close"], informative_1h["volume"], length=14
+    )
     # CMF
     informative_1h["CMF_20"] = pta.cmf(
       informative_1h["high"], informative_1h["low"], informative_1h["close"], informative_1h["volume"], length=20
@@ -2906,6 +2910,21 @@ class NostalgiaForInfinityX5(IStrategy):
             | (df["MFI_14_15m"] < 30.0)
             | (df["AROONU_14_15m"] < 25.0)
             | (df["change_pct_15m"] > -4.0)
+          )
+          long_entry_logic.append(
+            (df["RSI_3_1h"] > 25.0)
+            | (df["RSI_14_1h"] < 30.0)
+            | (df["MFI_14_1h"] < 30.0)
+            | (df["AROONU_14_1h"] < 25.0)
+            | (df["AROOND_14_1h"] == 100.0)
+            | (df["change_pct_1h"] > -4.0)
+          )
+          long_entry_logic.append(
+            (df["RSI_3_1h"] > 25.0)
+            | (df["RSI_14_1h"] < 30.0)
+            | (df["MFI_14_1h"] < 30.0)
+            | (df["AROONU_14_1h"] < 25.0)
+            | (df["change_pct_1h"] > -8.0)
           )
           long_entry_logic.append((df["RSI_3_4h"] < 70.0) | (df["change_pct_4h"] < 20.0))
           long_entry_logic.append((df["RSI_3_1d"] < 70.0) | (df["change_pct_1d"] < 30.0))
