@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.0.29"
+    return "v15.0.30"
 
   stoploss = -0.99
 
@@ -2535,9 +2535,11 @@ class NostalgiaForInfinityX5(IStrategy):
             num_open_grind_mode += 1
         if num_open_grind_mode >= self.grind_mode_max_slots:
           # Reached the limit of grind mode open trades
+          log.warning(f"Cancelling entry for {pair} due to reached the limit of grind mode open trades.")
           return False
       else:
         # The pair is not in the list of grind mode allowed
+        log.warning(f"Cancelling entry for {pair} due to {pair} not in list of grind mode coins.")
         return False
 
     df, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
@@ -2550,7 +2552,7 @@ class NostalgiaForInfinityX5(IStrategy):
         ):
           return True
         else:
-          log.warning(f"Cancelling buy for {pair} due to slippage {(slippage * 100.0):.2f}%")
+          log.warning(f"Cancelling entry for {pair} due to slippage {(slippage * 100.0):.2f}%")
           return False
 
     return True
