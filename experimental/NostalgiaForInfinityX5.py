@@ -2823,8 +2823,8 @@ class NostalgiaForInfinityX5(IStrategy):
     if not is_backtest:
       current_free_slots = self.config["max_open_trades"] - Trade.get_open_trade_count()
     # Grind mode
-    num_open_grind_mode = 0
-    is_pair_grind_mode = metadata["pair"].split("/")[0] in self.grind_mode_coins
+    num_open_long_grind_mode = 0
+    is_pair_long_grind_mode = metadata["pair"].split("/")[0] in self.grind_mode_coins
     if not is_backtest:
       open_trades = Trade.get_trades_proxy(is_open=True)
       for open_trade in open_trades:
@@ -2832,7 +2832,7 @@ class NostalgiaForInfinityX5(IStrategy):
         if enter_tag is not None:
           enter_tags = enter_tag.split()
           if all(c in self.long_grind_mode_tags for c in enter_tags):
-            num_open_grind_mode += 1
+            num_open_long_grind_mode += 1
     # if BTC/ETH stake
     is_btc_stake = self.config["stake_currency"] in self.btc_stakes
     allowed_empty_candles = 144 if is_btc_stake else 60
@@ -3031,6 +3031,8 @@ class NostalgiaForInfinityX5(IStrategy):
 
         # Condition #120 - Grind mode (Long).
         if index == 120:
+          long_entry_logic.append(num_open_long_grind_mode < self.grind_mode_max_slots)
+          long_entry_logic.append(is_pair_long_grind_mode)
           long_entry_logic.append(df["RSI_3"] <= 40.0)
           long_entry_logic.append(df["RSI_3_15m"] >= 20.0)
           long_entry_logic.append(df["RSI_14_1h"] < 85.0)
