@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.0.30"
+    return "v15.0.31"
 
   stoploss = -0.99
 
@@ -1895,6 +1895,12 @@ class NostalgiaForInfinityX5(IStrategy):
     # RSI
     informative_4h["RSI_3"] = pta.rsi(informative_4h["close"], length=3)
     informative_4h["RSI_14"] = pta.rsi(informative_4h["close"], length=14)
+    informative_4h["RSI_3_change_pct"] = (
+      (informative_4h["RSI_3"] - informative_4h["RSI_3"].shift(1)) / (informative_4h["RSI_3"].shift(1))
+    ) * 100.0
+    informative_4h["RSI_14_change_pct"] = (
+      (informative_4h["RSI_14"] - informative_4h["RSI_14"].shift(1)) / (informative_4h["RSI_14"].shift(1))
+    ) * 100.0
     # EMA
     informative_4h["EMA_12"] = pta.ema(informative_4h["close"], length=12)
     informative_4h["EMA_200"] = pta.ema(informative_4h["close"], length=200, fillna=0.0)
@@ -1994,6 +2000,12 @@ class NostalgiaForInfinityX5(IStrategy):
     # RSI
     informative_1h["RSI_3"] = pta.rsi(informative_1h["close"], length=3)
     informative_1h["RSI_14"] = pta.rsi(informative_1h["close"], length=14)
+    informative_1h["RSI_3_change_pct"] = (
+      (informative_1h["RSI_3"] - informative_1h["RSI_3"].shift(1)) / (informative_1h["RSI_3"].shift(1))
+    ) * 100.0
+    informative_1h["RSI_14_change_pct"] = (
+      (informative_1h["RSI_14"] - informative_1h["RSI_14"].shift(1)) / (informative_1h["RSI_14"].shift(1))
+    ) * 100.0
     # EMA
     informative_1h["EMA_12"] = pta.ema(informative_1h["close"], length=12)
     informative_1h["EMA_200"] = pta.ema(informative_1h["close"], length=200, fillna=0.0)
@@ -2097,6 +2109,12 @@ class NostalgiaForInfinityX5(IStrategy):
     # RSI
     informative_15m["RSI_3"] = pta.rsi(informative_15m["close"], length=3)
     informative_15m["RSI_14"] = pta.rsi(informative_15m["close"], length=14)
+    informative_15m["RSI_3_change_pct"] = (
+      (informative_15m["RSI_3"] - informative_15m["RSI_3"].shift(1)) / (informative_15m["RSI_3"].shift(1))
+    ) * 100.0
+    informative_15m["RSI_14_change_pct"] = (
+      (informative_15m["RSI_14"] - informative_15m["RSI_14"].shift(1)) / (informative_15m["RSI_14"].shift(1))
+    ) * 100.0
     # MFI
     informative_15m["MFI_14"] = pta.mfi(
       informative_15m["high"], informative_15m["low"], informative_15m["close"], informative_15m["volume"], length=14
@@ -2199,6 +2217,8 @@ class NostalgiaForInfinityX5(IStrategy):
     df["RSI_4"] = pta.rsi(df["close"], length=4)
     df["RSI_14"] = pta.rsi(df["close"], length=14)
     df["RSI_20"] = pta.rsi(df["close"], length=20)
+    df["RSI_3_change_pct"] = ((df["RSI_3"] - df["RSI_3"].shift(1)) / (df["RSI_3"].shift(1))) * 100.0
+    df["RSI_14_change_pct"] = ((df["RSI_14"] - df["RSI_14"].shift(1)) / (df["RSI_14"].shift(1))) * 100.0
     # EMA
     df["EMA_3"] = pta.ema(df["close"], length=3)
     df["EMA_9"] = pta.ema(df["close"], length=9)
@@ -2944,23 +2964,37 @@ class NostalgiaForInfinityX5(IStrategy):
           long_entry_logic.append(df["global_protections_long_pump"] == True)
           long_entry_logic.append(df["global_protections_long_dump"] == True)
 
-          long_entry_logic.append(df["RSI_3_1h"] >= 12.0)
-          long_entry_logic.append(df["RSI_3_1h"] <= 85.0)
-          long_entry_logic.append(df["RSI_3_4h"] >= 12.0)
-          long_entry_logic.append(df["RSI_3_4h"] <= 85.0)
-          long_entry_logic.append(df["RSI_3_1d"] >= 12.0)
-          long_entry_logic.append(df["RSI_3_1d"] <= 85.0)
-          long_entry_logic.append(df["RSI_14_1h"] < 85.0)
-          long_entry_logic.append(df["RSI_14_4h"] < 85.0)
+          long_entry_logic.append(df["RSI_3_1h"] <= 95.0)
+          long_entry_logic.append(df["RSI_3_4h"] <= 80.0)
+          long_entry_logic.append(df["RSI_3_1d"] <= 80.0)
+          long_entry_logic.append(df["RSI_14_1h"] < 80.0)
+          long_entry_logic.append(df["RSI_14_4h"] < 80.0)
           long_entry_logic.append(df["RSI_14_1d"] < 90.0)
+          long_entry_logic.append(df["OBV_change_pct"] > -30.0)
+          long_entry_logic.append(df["OBV_change_pct_15m"] > -100.0)
+          long_entry_logic.append((df["RSI_3"] > 2.0) | (df["change_pct"] > -5.0))
+          long_entry_logic.append((df["RSI_3"] > 4.0) | (df["change_pct"] > -10.0))
+          long_entry_logic.append((df["RSI_3"] > 4.0) | (df["OBV_change_pct"] > -10.0))
+          long_entry_logic.append((df["RSI_3_15m"] > 4.0) | (df["RSI_3_change_pct_15m"] > -40.0))
+          long_entry_logic.append((df["RSI_3_15m"] > 10.0) | (df["RSI_14_change_pct_15m"] > -40.0))
+          long_entry_logic.append((df["RSI_3_1h"] > 4.0) | (df["RSI_14_change_pct_1h"] > -40.0))
+          long_entry_logic.append((df["RSI_3_4h"] > 10.0) | (df["MFI_14_4h"] < 50.0))
+          long_entry_logic.append((df["RSI_3_4h"] > 6.0) | (df["RSI_3_change_pct_4h"] > -60.0))
+          long_entry_logic.append((df["MFI_14"] > 10.0) | (df["change_pct"] > -5.0))
+          long_entry_logic.append(
+            (df["RSI_3"] > 10.0) | (df["RSI_3_change_pct"] > -50.0) | (df["MFI_14"] > 4.0) | (df["RSI_3_1h"] > 10.0)
+          )
+          long_entry_logic.append((df["RSI_3_1h"] < 70.0) | (df["change_pct_1h"] < 10.0))
+          long_entry_logic.append((df["RSI_3_4h"] < 70.0) | (df["change_pct_4h"] < 20.0))
+          long_entry_logic.append((df["RSI_3_1d"] < 70.0) | (df["change_pct_1d"] < 30.0))
+          long_entry_logic.append((df["RSI_14_1d"].shift(288) < 70.0) | (df["change_pct_1d"] > -10.0))
 
           # Logic
           long_entry_logic.append(df["RSI_20"] < df["RSI_20"].shift(1))
           long_entry_logic.append(df["RSI_4"] < 46.0)
-          long_entry_logic.append(df["CTI_20"] < -0.5)
-          long_entry_logic.append(df["close"] < df["SMA_16"] * 0.942)
           long_entry_logic.append(df["AROONU_14"] < 25.0)
-          long_entry_logic.append(df["AROONU_14_15m"] < 25.0)
+          long_entry_logic.append(df["close"] < (df["EMA_3"] * 0.976))
+          long_entry_logic.append(df["close"] < df["SMA_16"] * 0.950)
 
         # Condition #41 - Quick mode (Long).
         if index == 41:
