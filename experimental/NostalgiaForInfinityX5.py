@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.0.33"
+    return "v15.0.34"
 
   stoploss = -0.99
 
@@ -2281,8 +2281,6 @@ class NostalgiaForInfinityX5(IStrategy):
     # Williams %R
     df["WILLR_14"] = pta.willr(df["high"], df["low"], df["close"], length=14)
     df["WILLR_480"] = pta.willr(df["high"], df["low"], df["close"], length=480)
-    # CTI
-    df["CTI_20"] = pta.cti(df["close"], length=20)
     # AROON
     aroon_14 = pta.aroon(df["high"], df["low"], length=14)
     df["AROONU_14"] = aroon_14["AROONU_14"] if isinstance(aroon_14, pd.DataFrame) else np.nan
