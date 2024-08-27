@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.0.34"
+    return "v15.0.35"
 
   stoploss = -0.99
 
@@ -1830,8 +1830,29 @@ class NostalgiaForInfinityX5(IStrategy):
     informative_1d["WILLR_14"] = pta.willr(
       informative_1d["high"], informative_1d["low"], informative_1d["close"], length=14
     )
+    # Stochastic RSI
+    stochrsi = pta.stochrsi(informative_1d["close"])
+    informative_1d["STOCHRSIk_14_14_3_3"] = (
+      stochrsi["STOCHRSIk_14_14_3_3"] if isinstance(stochrsi, pd.DataFrame) else np.nan
+    )
+    informative_1d["STOCHRSId_14_14_3_3"] = (
+      stochrsi["STOCHRSId_14_14_3_3"] if isinstance(stochrsi, pd.DataFrame) else np.nan
+    )
+    # ROC
+    informative_1d["ROC_9"] = pta.roc(informative_1d["close"], length=9)
     # Candle change
     informative_1d["change_pct"] = (informative_1d["close"] - informative_1d["open"]) / informative_1d["open"] * 100.0
+    # Wicks
+    informative_1d["top_wick_pct"] = (
+      (informative_1d["high"] - np.maximum(informative_1d["open"], informative_1d["close"]))
+      / np.maximum(informative_1d["open"], informative_1d["close"])
+      * 100.0
+    )
+    informative_1d["bot_wick_pct"] = abs(
+      (informative_1d["low"] - np.minimum(informative_1d["open"], informative_1d["close"]))
+      / np.minimum(informative_1d["open"], informative_1d["close"])
+      * 100.0
+    )
 
     # Performance logging
     # -----------------------------------------------------------------------------------------
@@ -1949,6 +1970,8 @@ class NostalgiaForInfinityX5(IStrategy):
       kst["KST_10_15_20_30_10_10_10_15"] if isinstance(kst, pd.DataFrame) else np.nan
     )
     informative_4h["KSTs_9"] = kst["KSTs_9"] if isinstance(kst, pd.DataFrame) else np.nan
+    # ROC
+    informative_4h["ROC_9"] = pta.roc(informative_4h["close"], length=9)
     # Candle change
     informative_4h["change_pct"] = (informative_4h["close"] - informative_4h["open"]) / informative_4h["open"] * 100.0
 
@@ -2020,6 +2043,8 @@ class NostalgiaForInfinityX5(IStrategy):
     informative_1h["RSI_14_change_pct"] = (
       (informative_1h["RSI_14"] - informative_1h["RSI_14"].shift(1)) / (informative_1h["RSI_14"].shift(1))
     ) * 100.0
+    informative_1h["RSI_3_diff"] = informative_1h["RSI_3"] - informative_1h["RSI_3"].shift(1)
+    informative_1h["RSI_14_diff"] = informative_1h["RSI_14"] - informative_1h["RSI_14"].shift(1)
     # EMA
     informative_1h["EMA_12"] = pta.ema(informative_1h["close"], length=12)
     informative_1h["EMA_200"] = pta.ema(informative_1h["close"], length=200, fillna=0.0)
@@ -3036,22 +3061,119 @@ class NostalgiaForInfinityX5(IStrategy):
 
         # Condition #41 - Quick mode (Long).
         if index == 41:
-          long_entry_logic.append(df["RSI_3"] >= 2.0)
-          long_entry_logic.append(df["RSI_3"] <= 60.0)
-          long_entry_logic.append(df["RSI_3_15m"] >= 6.0)
-          long_entry_logic.append(df["RSI_3_1h"] >= 10.0)
-          long_entry_logic.append(df["RSI_3_4h"] >= 10.0)
-          long_entry_logic.append(df["RSI_14_1d"] < 70.0)
-          long_entry_logic.append(df["CTI_20_1h"] < 0.75)
-          long_entry_logic.append(df["CTI_20_4h"] < 0.5)
-          long_entry_logic.append(df["WILLR_14_1h"] > -90.0)
-          long_entry_logic.append(df["WILLR_14_4h"] > -85.0)
+          # Protections
+          long_entry_logic.append(
+            (df["RSI_3_1h"] > 10.0) | (df["OBV_change_pct_1h"] > -20.0) | (df["RSI_3_change_pct_1h"] > -8.0)
+          )
+          long_entry_logic.append(
+            (df["RSI_14_4h"] < 80.0) | (df["change_pct_1h"] > -4.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 20.0)
+          )
+          long_entry_logic.append(
+            (df["RSI_3_15m"] > 5.0) | (df["RSI_3_1h"] > 20.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 50.0)
+          )
+          long_entry_logic.append(
+            (df["RSI_3_15m"] > 10.0) | (df["OBV_change_pct_15m"] > -100.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 50.0)
+          )
+          long_entry_logic.append(
+            (df["RSI_3_15m"] > 20.0) | (df["OBV_change_pct_15m"] > -20.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 70.0)
+          )
+          long_entry_logic.append(
+            (df["RSI_3_1h"] > 25.0)
+            | (df["RSI_3_1d"] > 15.0)
+            | (df["ROC_9_4h"] > -10.0)
+            | (df["ROC_9_1d"] > -20.0)
+            | (df["STOCHRSIk_14_14_3_3_1h"] < 20.0)
+            | (df["STOCHRSIk_14_14_3_3_4h"] < 50.0)
+          )
+          long_entry_logic.append(
+            (df["RSI_3_15m"] > 10.0)
+            | (df["RSI_3_change_pct_15m"] > -50.0)
+            | (df["STOCHRSIk_14_14_3_3_1h"] < 50.0)
+            | (df["STOCHRSIk_14_14_3_3_4h"] < 70.0)
+          )
+          long_entry_logic.append(
+            (df["RSI_3_15m"] > 15.0)
+            | (df["OBV_change_pct_15m"] > -5.0)
+            | (df["STOCHRSIk_14_14_3_3_1h"] < 50.0)
+            | (df["STOCHRSIk_14_14_3_3_4h"] < 20.0)
+          )
+          long_entry_logic.append((df["RSI_3_1h"] > 2.0) | (df["RSI_3_4h"] > 2.0))
+          long_entry_logic.append(
+            (df["RSI_3_1h"] > 15.0)
+            | (df["RSI_3_4h"] > 15.0)
+            | (df["RSI_3_diff_1h"] > -10.0)
+            | (df["RSI_3_diff_4h"] > -10.0)
+            | (df["STOCHRSIk_14_14_3_3_4h"] < 20.0)
+          )
+          long_entry_logic.append((df["RSI_3_4h"] < 90.0) | (df["RSI_14_4h"] < 70.0) | (df["RSI_3_1h"] > 10.0))
+          long_entry_logic.append(
+            (df["RSI_3_4h"] < 90.0)
+            | (df["RSI_14_4h"] < 70.0)
+            | (df["change_pct_1h"] > -3.0)
+            | (df["change_pct_4h"] < 10.0)
+          )
+          long_entry_logic.append(
+            (df["change_pct_4h"] > -10.0) | (df["RSI_3_4h"].shift(48) < 90.0) | (df["RSI_14_4h"].shift(48) < 70.0)
+          )
+          long_entry_logic.append((df["RSI_3_1d"] > 15.0) | (df["STOCHRSIk_14_14_3_3_1d"] < 50.0))
+          long_entry_logic.append(
+            (df["change_pct_4h"] > -10.0) | (df["change_pct_1d"] > -10.0) | (df["MFI_14_1h"] > 15.0)
+          )
+          long_entry_logic.append((df["top_wick_pct_1d"] < 20.0) | (df["RSI_3_1d"] > 20.0))
+          long_entry_logic.append(
+            (df["change_pct_1d"] > -10.0)
+            | (df["change_pct_1d"].shift(288) < 10.0)
+            | (df["top_wick_pct_1d"] < 10.0)
+            | (df["STOCHRSIk_14_14_3_3_1d"] < 70.0)
+            | (df["STOCHRSIk_14_14_3_3_1h"] < 20.0)
+          )
+          long_entry_logic.append(
+            (df["change_pct_1h"] > -10.0)
+            | (df["change_pct_1h"].shift(12) < 4.0)
+            | (df["RSI_3_15m"] > 20.0)
+            | (df["RSI_3_1h"] > 30.0)
+            | (df["ROC_9_1d"] < 100.0)
+          )
+          long_entry_logic.append(
+            (df["RSI_3_4h"] < 90.0)
+            | (df["RSI_3_1d"] < 90.0)
+            | (df["RSI_14_4h"] < 80.0)
+            | (df["ROC_9_4h"] < 100.0)
+            | (df["STOCHRSIk_14_14_3_3_1h"] > 40.0)
+          )
+          long_entry_logic.append(
+            (df["RSI_3_15m"] > 10.0)
+            | (df["RSI_3_1h"] > 25.0)
+            | (df["MFI_14_15m"] < 30.0)
+            | (df["UO_7_14_28_15m"] < 30.0)
+            | (df["STOCHRSIk_14_14_3_3_4h"] < 50.0)
+          )
+          long_entry_logic.append((df["change_pct_1d"] > -20.0) | (df["ROC_9_1d"] > -40.0))
+          long_entry_logic.append(
+            (df["RSI_3_15m"] > 10.0)
+            | (df["RSI_3_4h"] > 20.0)
+            | (df["MFI_14_15m"] < 30.0)
+            | (df["UO_7_14_28_15m"] < 30.0)
+          )
+          long_entry_logic.append(
+            (df["RSI_3_1h"] > 20.0)
+            | (df["RSI_3_1d"] > 20.0)
+            | (df["ROC_9_1d"] > -40.0)
+            | (df["STOCHRSIk_14_14_3_3_4h"] < 50.0)
+          )
+          long_entry_logic.append(
+            (df["change_pct_1h"] > -10.0)
+            | (df["RSI_3_diff_1h"] > -50.0)
+            | (df["MFI_14_1h"] < 50.0)
+            | (df["STOCHRSIk_14_14_3_3_1h"] < 50.0)
+            | (df["RSI_3_4h"] > 25.0)
+          )
 
           # Logic
           long_entry_logic.append(df["RSI_14"] < 36.0)
           long_entry_logic.append(df["AROONU_14"] < 25.0)
           long_entry_logic.append(df["AROOND_14"] > 75.0)
-          long_entry_logic.append(df["EMA_9"] < (df["EMA_26"] * 0.970))
+          long_entry_logic.append(df["EMA_9"] < (df["EMA_26"] * 0.960))
 
         # Condition #42 - Quick mode (Long).
         if index == 42:
