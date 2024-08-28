@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.0.38"
+    return "v15.0.39"
 
   stoploss = -0.99
 
@@ -3014,11 +3014,17 @@ class NostalgiaForInfinityX5(IStrategy):
           )
           long_entry_logic.append((df["RSI_3_15m"] > 5.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 50.0))
           long_entry_logic.append((df["RSI_3_15m"] > 5.0) | (df["ROC_9_15m"] > -20.0))
+          long_entry_logic.append(
+            (df["RSI_3_15m"] > 5.0) | (df["RSI_3_1h"] > 5.0) | (df["RSI_3_change_pct_1h"] > -60.0)
+          )
           long_entry_logic.append((df["RSI_3_1h"] > 5.0) | (df["CMF_20_1h"] > -0.4))
           long_entry_logic.append((df["RSI_3_1h"] > 5.0) | (df["UO_7_14_28_4h"] < 40.0))
           long_entry_logic.append((df["RSI_3_1h"] > 15.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 90.0))
           long_entry_logic.append((df["RSI_3_1h"] > 10.0) | (df["RSI_14_change_pct_1h"] > -40.0))
           long_entry_logic.append((df["RSI_3_1h"] > 10.0) | (df["ROC_9_4h"] > -40.0) | (df["UO_7_14_28_4h"] < 30.0))
+          long_entry_logic.append(
+            (df["RSI_3_15m"] > 5.0) | (df["MFI_14_15m"] > 10.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 20.0)
+          )
           long_entry_logic.append(
             (df["RSI_3_1h"] > 10.0) | (df["RSI_3_1d"] > 5.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 20.0)
           )
