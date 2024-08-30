@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.0.39"
+    return "v15.0.40"
 
   stoploss = -0.99
 
@@ -1493,48 +1493,48 @@ class NostalgiaForInfinityX5(IStrategy):
     #   if sell and (signal_name is not None):
     #     return f"{signal_name} ( {enter_tag})"
 
-    # # Trades not opened by X4
-    # if not trade.is_short and (
-    #   not any(
-    #     c
-    #     in (
-    #       self.long_normal_mode_tags
-    #       + self.long_pump_mode_tags
-    #       + self.long_quick_mode_tags
-    #       + self.long_rebuy_mode_tags
-    #       + self.long_mode_tags
-    #       + self.long_rapid_mode_tags
-    #       + self.long_grind_mode_tags
-    #     )
-    #     for c in enter_tags
-    #   )
-    # ):
-    #   # use normal mode for such trades
-    #   sell, signal_name = self.long_exit_normal(
-    #     pair,
-    #     current_rate,
-    #     profit_stake,
-    #     profit_ratio,
-    #     profit_current_stake_ratio,
-    #     profit_init_ratio,
-    #     max_profit,
-    #     max_loss,
-    #     filled_entries,
-    #     filled_exits,
-    #     last_candle,
-    #     previous_candle_1,
-    #     previous_candle_2,
-    #     previous_candle_3,
-    #     previous_candle_4,
-    #     previous_candle_5,
-    #     trade,
-    #     current_time,
-    #     enter_tags,
-    #   )
-    #   if sell and (signal_name is not None):
-    #     return f"{signal_name} ( {enter_tag})"
+    # Trades not opened by X5
+    if not trade.is_short and (
+      not any(
+        c
+        in (
+          self.long_normal_mode_tags
+          + self.long_pump_mode_tags
+          + self.long_quick_mode_tags
+          + self.long_rebuy_mode_tags
+          + self.long_mode_tags
+          + self.long_rapid_mode_tags
+          + self.long_grind_mode_tags
+        )
+        for c in enter_tags
+      )
+    ):
+      # use normal mode for such trades
+      sell, signal_name = self.long_exit_normal(
+        pair,
+        current_rate,
+        profit_stake,
+        profit_ratio,
+        profit_current_stake_ratio,
+        profit_init_ratio,
+        max_profit,
+        max_loss,
+        filled_entries,
+        filled_exits,
+        last_candle,
+        previous_candle_1,
+        previous_candle_2,
+        previous_candle_3,
+        previous_candle_4,
+        previous_candle_5,
+        trade,
+        current_time,
+        enter_tags,
+      )
+      if sell and (signal_name is not None):
+        return f"{signal_name} ( {enter_tag})"
 
-    # # Trades not opened by X4
+    # # Trades not opened by X5
     # if trade.is_short and (
     #   not any(
     #     c
