@@ -1311,31 +1311,31 @@ class NostalgiaForInfinityX5(IStrategy):
       if sell and (signal_name is not None):
         return f"{signal_name} ( {enter_tag})"
 
-    # # Long grind mode
-    # if all(c in self.long_grind_mode_tags for c in enter_tags):
-    #   sell, signal_name = self.long_exit_grind(
-    #     pair,
-    #     current_rate,
-    #     profit_stake,
-    #     profit_ratio,
-    #     profit_current_stake_ratio,
-    #     profit_init_ratio,
-    #     max_profit,
-    #     max_loss,
-    #     filled_entries,
-    #     filled_exits,
-    #     last_candle,
-    #     previous_candle_1,
-    #     previous_candle_2,
-    #     previous_candle_3,
-    #     previous_candle_4,
-    #     previous_candle_5,
-    #     trade,
-    #     current_time,
-    #     enter_tags,
-    #   )
-    #   if sell and (signal_name is not None):
-    #     return f"{signal_name} ( {enter_tag})"
+    # Long grind mode
+    if all(c in self.long_grind_mode_tags for c in enter_tags):
+      sell, signal_name = self.long_exit_grind(
+        pair,
+        current_rate,
+        profit_stake,
+        profit_ratio,
+        profit_current_stake_ratio,
+        profit_init_ratio,
+        max_profit,
+        max_loss,
+        filled_entries,
+        filled_exits,
+        last_candle,
+        previous_candle_1,
+        previous_candle_2,
+        previous_candle_3,
+        previous_candle_4,
+        previous_candle_5,
+        trade,
+        current_time,
+        enter_tags,
+      )
+      if sell and (signal_name is not None):
+        return f"{signal_name} ( {enter_tag})"
 
     # # Short normal mode
     # if any(c in self.short_normal_mode_tags for c in enter_tags):
