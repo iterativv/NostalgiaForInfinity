@@ -87,6 +87,7 @@ class Backtest:
       f"--timerange={start_date}-{end_date}",
       "--timeframe-detail=1m",
       "--export=signals",
+      "--breakdown=day",
       f"--log-file=user_data/logs/backtesting-{exchange}-{trading_mode}-{start_date}-{end_date}.log",
     ]
     if pairlist is None:
@@ -110,6 +111,17 @@ class Backtest:
     else:
       log.debug("Command Result:\n%s", ret)
     assert ret.exitcode == 0
+    #####
+    generated_signals_file = list(f for f in tmp_path.rglob("backtest-results-*signals.pkl") if "meta" not in str(f))[
+      0
+    ]
+    generated_pkl_ci_results_artifact_path = None
+    generated_rejected_file = list(
+      f for f in tmp_path.rglob("backtest-results-*rejected.pkl") if "meta" not in str(f)
+    )[0]
+    generated_pkl_ci_results_artifact_path = None
+    #####
+
     generated_results_file = list(f for f in tmp_path.rglob("backtest-results-*.json") if "meta" not in str(f))[0]
     generated_json_ci_results_artifact_path = None
     if self.request.config.option.artifacts_path:
@@ -119,7 +131,22 @@ class Backtest:
         self.request.config.option.artifacts_path
         / f"ci-results-{exchange}-{trading_mode}-{start_date}-{end_date}.json"
       )
+      #####
+      generated_pkl_results_artifact_path = self.request.config.option.artifacts_path / generated_signals_file.name
+      shutil.copyfile(generated_signals_file, generated_pkl_results_artifact_path)
+      generated_pkl_ci_results_artifact_path = (
+        self.request.config.option.artifacts_path
+        / f"ci-results-{exchange}-{trading_mode}-{start_date}-{end_date}-signals.pkl"
+      )
 
+      generated_pkl_results_artifact_path = self.request.config.option.artifacts_path / generated_rejected_file.name
+      shutil.copyfile(generated_rejected_file, generated_pkl_results_artifact_path)
+      generated_pkl_ci_results_artifact_path = (
+        self.request.config.option.artifacts_path
+        / f"ci-results-{exchange}-{trading_mode}-{start_date}-{end_date}-rejected.pkl"
+      )
+
+      #####
       generated_txt_results_artifact_path = (
         self.request.config.option.artifacts_path
         / f"backtest-output-{exchange}-{trading_mode}-{start_date}-{end_date}.txt"
