@@ -113,7 +113,7 @@ for START_YEAR in {2023..2017}; do
       -c tests/backtests/pairs-available-$EXCHANGE_CONFIG-$TRADING_MODE_CONFIG-usdt-$START_YEAR.json \
       --log-file user_data/logs/backtesting-$STRATEGY_NAME_CONFIG-$STRATEGY_VERSION_CONFIG-$EXCHANGE_CONFIG-$TRADING_MODE_CONFIG-$TIMERANGE_CONFIG.log \
       --export-filename user_data/backtest_results/$STRATEGY_NAME_CONFIG-$STRATEGY_VERSION_CONFIG-$EXCHANGE_CONFIG-$TRADING_MODE_CONFIG-$TIMERANGE_CONFIG.json \
-      --cache none --breakdown week \
+      --cache none --breakdown day \
       --disable-max-market-positions --dry-run-wallet 100000 --stake-amount 1000 --max-open-trades 100 --timeframe-detail 1m
 
     echo " "

@@ -113,7 +113,7 @@ for TRADING_MODE_RUN in ${TRADING_MODE_CONFIG[*]}; do
         -c $EXCHANGE_CONFIG_FILE \
         --log-file user_data/logs/backtesting-$STRATEGY_NAME_CONFIG-$STRATEGY_VERSION_CONFIG-$EXCHANGE_CONFIG-$TRADING_MODE_CONFIG-focus-group-$TIMERANGE.log \
         --export-filename user_data/backtest_results/$STRATEGY_NAME_CONFIG-$STRATEGY_VERSION_CONFIG-$EXCHANGE_CONFIG-$TRADING_MODE_CONFIG-focus-group-$TIMERANGE.json \
-        --cache none --breakdown week \
+        --cache none --breakdown day \
         --disable-max-market-positions --dry-run-wallet 100000 --stake-amount 1000 --max-open-trades 100 --timeframe-detail 1m --eps
       echo -e "\n\`\`\`\n\n---\n\n"
 
@@ -124,7 +124,7 @@ for TRADING_MODE_RUN in ${TRADING_MODE_CONFIG[*]}; do
         -c $EXCHANGE_CONFIG_FILE \
         --log-file user_data/logs/backtesting-$STRATEGY_NAME_CONFIG-$STRATEGY_VERSION_CONFIG-$EXCHANGE_CONFIG-$TRADING_MODE_CONFIG-focus-group-$TIMERANGE.log \
         --export-filename user_data/backtest_results/$STRATEGY_NAME_CONFIG-$STRATEGY_VERSION_CONFIG-$EXCHANGE_CONFIG-$TRADING_MODE_CONFIG-focus-group-$TIMERANGE.json \
-        --cache none --breakdown week \
+        --cache none --breakdown day \
         --disable-max-market-positions --dry-run-wallet 100000 --stake-amount 1000 --max-open-trades 100 --timeframe-detail 1m --eps
 
       echo -e "\n### ANALYSIS THE RESULT OF BACKTEST OF ${EXCHANGE_CONFIG} FOCUS GROUP" | tr '[a-z]' '[A-Z]'

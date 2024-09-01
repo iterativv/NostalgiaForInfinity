@@ -64,7 +64,7 @@ services:
         freqtrade backtesting \
           --strategy-list ${STRATEGY_NAME:-NostalgiaForInfinityX4} \
           --config configs/trading_mode-${TRADING_MODE:-spot}.json \
-          --timeframe-detail 1m --cache none --breakdown week \
+          --timeframe-detail 1m --cache none --breakdown day \
           --config configs/exampleconfig.json --timerange ${TIMERANGE:-20230101-} \
           --config configs/pairlist-backtest-static-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt.json \
           --config configs/blacklist-${EXCHANGE:-binance}.json \
@@ -78,7 +78,7 @@ services:
           --config configs/pairlist-backtest-static-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt.json \
           --config configs/blacklist-${EXCHANGE:-binance}.json
         freqtrade backtesting-show \
-          --config configs/exampleconfig.json --breakdown week \
+          --config configs/exampleconfig.json --breakdown day \
           --config configs/pairlist-backtest-static-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt.json \
           > user_data/backtest_results/${STRATEGY_NAME:-NostalgiaForInfinityX4}-${STRATEGY_VERSION:-latest}-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-${TIMERANGE:-20230101-}.txt
 
@@ -141,7 +141,7 @@ services:
         freqtrade backtesting \
           --strategy-list ${STRATEGY_NAME:-NostalgiaForInfinityX4} \
           --config configs/trading_mode-${TRADING_MODE:-spot}.json \
-          --timeframe-detail 1m --cache none --breakdown week \
+          --timeframe-detail 1m --cache none --breakdown day \
           --config configs/exampleconfig.json --timerange ${TIMERANGE:-20170101-} \
           --config tests/backtests/pairs-available-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt-2017.json \
           --disable-max-market-positions --dry-run-wallet 100000 --stake-amount 1000 --max-open-trades 100 \
@@ -153,7 +153,7 @@ services:
           --config configs/exampleconfig.json --timerange ${TIMERANGE:-20170101-} \
           --config tests/backtests/pairs-available-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt-2017.json
         freqtrade backtesting-show \
-          --config configs/exampleconfig.json --breakdown week \
+          --config configs/exampleconfig.json --breakdown day \
           --config configs/pairlist-backtest-static-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt.json \
           > user_data/backtest_results/${STRATEGY_NAME:-NostalgiaForInfinityX4}-${STRATEGY_VERSION:-latest}-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-${TIMERANGE:-20170101-}.txt
 
@@ -179,7 +179,7 @@ services:
         freqtrade backtesting \
           --strategy-list ${STRATEGY_NAME:-NostalgiaForInfinityX4} \
           --config configs/trading_mode-${TRADING_MODE:-spot}.json \
-          --timeframe-detail 1m --cache none --breakdown week \
+          --timeframe-detail 1m --cache none --breakdown day \
           --config configs/exampleconfig.json --timerange ${TIMERANGE:-20180101-} \
           --config tests/backtests/pairs-available-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt-2018.json \
           --disable-max-market-positions --dry-run-wallet 100000 --stake-amount 1000 --max-open-trades 100 \
@@ -191,7 +191,7 @@ services:
           --config configs/exampleconfig.json --timerange ${TIMERANGE:-20180101-} \
           --config tests/backtests/pairs-available-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt-2018.json
         freqtrade backtesting-show \
-          --config configs/exampleconfig.json --breakdown week \
+          --config configs/exampleconfig.json --breakdown day \
           --config configs/pairlist-backtest-static-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt.json \
           > user_data/backtest_results/${STRATEGY_NAME:-NostalgiaForInfinityX4}-${STRATEGY_VERSION:-latest}-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-${TIMERANGE:-20180101-}.txt
 
@@ -217,7 +217,7 @@ services:
         freqtrade backtesting \
           --strategy-list ${STRATEGY_NAME:-NostalgiaForInfinityX4} \
           --config configs/trading_mode-${TRADING_MODE:-spot}.json \
-          --timeframe-detail 1m --cache none --breakdown week \
+          --timeframe-detail 1m --cache none --breakdown day \
           --config configs/exampleconfig.json --timerange ${TIMERANGE:-20190101-} \
           --config tests/backtests/pairs-available-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt-2019.json \
           --disable-max-market-positions --dry-run-wallet 100000 --stake-amount 1000 --max-open-trades 100 \
@@ -229,7 +229,7 @@ services:
           --config configs/exampleconfig.json --timerange ${TIMERANGE:-20190101-} \
           --config tests/backtests/pairs-available-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt-2019.json
         freqtrade backtesting-show \
-          --config configs/exampleconfig.json --breakdown week \
+          --config configs/exampleconfig.json --breakdown day \
           --config configs/pairlist-backtest-static-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt.json \
           > user_data/backtest_results/${STRATEGY_NAME:-NostalgiaForInfinityX4}-${STRATEGY_VERSION:-latest}-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-${TIMERANGE:-20190101-}.txt
 
@@ -255,7 +255,7 @@ services:
         freqtrade backtesting \
           --strategy-list ${STRATEGY_NAME:-NostalgiaForInfinityX4} \
           --config configs/trading_mode-${TRADING_MODE:-spot}.json \
-          --timeframe-detail 1m --cache none --breakdown week \
+          --timeframe-detail 1m --cache none --breakdown day \
           --config configs/exampleconfig.json --timerange ${TIMERANGE:-20200101-} \
           --config tests/backtests/pairs-available-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt-2020.json \
           --disable-max-market-positions --dry-run-wallet 100000 --stake-amount 1000 --max-open-trades 100 \
@@ -267,7 +267,7 @@ services:
           --config configs/exampleconfig.json --timerange ${TIMERANGE:-20200101-} \
           --config tests/backtests/pairs-available-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt-2020.json
         freqtrade backtesting-show \
-          --config configs/exampleconfig.json --breakdown week \
+          --config configs/exampleconfig.json --breakdown day \
           --config configs/pairlist-backtest-static-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt.json \
           > user_data/backtest_results/${STRATEGY_NAME:-NostalgiaForInfinityX4}-${STRATEGY_VERSION:-latest}-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-${TIMERANGE:-20200101-}.txt
 
@@ -293,7 +293,7 @@ services:
         freqtrade backtesting \
           --strategy-list ${STRATEGY_NAME:-NostalgiaForInfinityX4} \
           --config configs/trading_mode-${TRADING_MODE:-spot}.json \
-          --timeframe-detail 1m --cache none --breakdown week \
+          --timeframe-detail 1m --cache none --breakdown day \
           --config configs/exampleconfig.json --timerange ${TIMERANGE:-20210101-} \
           --config tests/backtests/pairs-available-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt-2021.json \
           --disable-max-market-positions --dry-run-wallet 100000 --stake-amount 1000 --max-open-trades 100 \
@@ -305,7 +305,7 @@ services:
           --config configs/exampleconfig.json --timerange ${TIMERANGE:-20210101-} \
           --config tests/backtests/pairs-available-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt-2021.json
         freqtrade backtesting-show \
-          --config configs/exampleconfig.json --breakdown week \
+          --config configs/exampleconfig.json --breakdown day \
           --config configs/pairlist-backtest-static-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt.json \
           > user_data/backtest_results/${STRATEGY_NAME:-NostalgiaForInfinityX4}-${STRATEGY_VERSION:-latest}-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-${TIMERANGE:-20210101-}.txt
 
@@ -331,7 +331,7 @@ services:
         freqtrade backtesting \
           --strategy-list ${STRATEGY_NAME:-NostalgiaForInfinityX4} \
           --config configs/trading_mode-${TRADING_MODE:-spot}.json \
-          --timeframe-detail 1m --cache none --breakdown week \
+          --timeframe-detail 1m --cache none --breakdown day \
           --config configs/exampleconfig.json --timerange ${TIMERANGE:-20220101-} \
           --config tests/backtests/pairs-available-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt-2022.json \
           --disable-max-market-positions --dry-run-wallet 100000 --stake-amount 1000 --max-open-trades 100 \
@@ -343,7 +343,7 @@ services:
           --config configs/exampleconfig.json --timerange ${TIMERANGE:-20220101-} \
           --config tests/backtests/pairs-available-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt-2022.json
         freqtrade backtesting-show \
-          --config configs/exampleconfig.json --breakdown week \
+          --config configs/exampleconfig.json --breakdown day \
           --config configs/pairlist-backtest-static-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt.json \
           > user_data/backtest_results/${STRATEGY_NAME:-NostalgiaForInfinityX4}-${STRATEGY_VERSION:-latest}-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-${TIMERANGE:-20220101-}.txt
 
@@ -369,7 +369,7 @@ services:
         freqtrade backtesting \
           --strategy-list ${STRATEGY_NAME:-NostalgiaForInfinityX4} \
           --config configs/trading_mode-${TRADING_MODE:-spot}.json \
-          --timeframe-detail 1m --cache none --breakdown week \
+          --timeframe-detail 1m --cache none --breakdown day \
           --config configs/exampleconfig.json --timerange ${TIMERANGE:-20230101-} \
           --config tests/backtests/pairs-available-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt-2023.json \
           --disable-max-market-positions --dry-run-wallet 100000 --stake-amount 1000 --max-open-trades 100 \
@@ -381,6 +381,6 @@ services:
           --config configs/exampleconfig.json --timerange ${TIMERANGE:-20230101-} \
           --config tests/backtests/pairs-available-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt-2023.json
         freqtrade backtesting-show \
-          --config configs/exampleconfig.json --breakdown week \
+          --config configs/exampleconfig.json --breakdown day \
           --config configs/pairlist-backtest-static-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt.json \
           > user_data/backtest_results/${STRATEGY_NAME:-NostalgiaForInfinityX4}-${STRATEGY_VERSION:-latest}-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-${TIMERANGE:-20230101-}.txt
