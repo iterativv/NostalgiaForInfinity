@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.0.43"
+    return "v15.0.44"
 
   stoploss = -0.99
 
@@ -2382,6 +2382,8 @@ class NostalgiaForInfinityX5(IStrategy):
     df["change_pct"] = (df["close"] - df["open"]) / df["open"] * 100.0
     # Close max
     df["close_max_48"] = df["close"].rolling(48).max()
+    # Number of empty candles
+    df["num_empty_288"] = (df["volume"] <= 0).rolling(window=288, min_periods=288).sum()
 
     # -----------------------------------------------------------------------------------------
 
@@ -2976,7 +2978,7 @@ class NostalgiaForInfinityX5(IStrategy):
             num_open_long_grind_mode += 1
     # if BTC/ETH stake
     is_btc_stake = self.config["stake_currency"] in self.btc_stakes
-    allowed_empty_candles = 144 if is_btc_stake else 60
+    allowed_empty_candles_288 = 144 if is_btc_stake else 60
 
     #
     #  /$$       /$$$$$$ /$$   /$$ /$$$$$$        /$$$$$$$$/$$   /$$/$$$$$$$$/$$$$$$$$/$$$$$$$
@@ -3001,6 +3003,8 @@ class NostalgiaForInfinityX5(IStrategy):
         # Condition #1 - Normal mode (Long).
         if index == 1:
           # Protections
+          long_entry_logic.append(df["num_empty_288"] <= allowed_empty_candles_288)
+
           long_entry_logic.append((df["RSI_3"] > 2.0) | (df["RSI_14"] > 5.0))
           long_entry_logic.append((df["RSI_3_15m"] > 10.0) | (df["OBV_change_pct_15m"] > -100.0))
           long_entry_logic.append(
@@ -3047,9 +3051,7 @@ class NostalgiaForInfinityX5(IStrategy):
         # Condition #2 - Normal mode (Long).
         if index == 2:
           # Protections
-          long_entry_logic.append(df["protections_long_global"] == True)
-          long_entry_logic.append(df["global_protections_long_pump"] == True)
-          long_entry_logic.append(df["global_protections_long_dump"] == True)
+          long_entry_logic.append(df["num_empty_288"] <= allowed_empty_candles_288)
 
           long_entry_logic.append(df["RSI_3_1h"] <= 95.0)
           long_entry_logic.append(df["RSI_3_4h"] <= 80.0)
@@ -3105,9 +3107,7 @@ class NostalgiaForInfinityX5(IStrategy):
         # Condition #3 - Normal mode (Long).
         if index == 3:
           # Protections
-          long_entry_logic.append(df["protections_long_global"] == True)
-          long_entry_logic.append(df["global_protections_long_pump"] == True)
-          long_entry_logic.append(df["global_protections_long_dump"] == True)
+          long_entry_logic.append(df["num_empty_288"] <= allowed_empty_candles_288)
 
           long_entry_logic.append(df["RSI_3_1h"] <= 95.0)
           long_entry_logic.append(df["RSI_3_4h"] <= 80.0)
@@ -3144,6 +3144,8 @@ class NostalgiaForInfinityX5(IStrategy):
         # Condition #41 - Quick mode (Long).
         if index == 41:
           # Protections
+          long_entry_logic.append(df["num_empty_288"] <= allowed_empty_candles_288)
+
           long_entry_logic.append(
             (df["RSI_3_1h"] > 10.0) | (df["OBV_change_pct_1h"] > -20.0) | (df["RSI_3_change_pct_1h"] > -8.0)
           )
@@ -3260,6 +3262,8 @@ class NostalgiaForInfinityX5(IStrategy):
         # Condition #42 - Quick mode (Long).
         if index == 42:
           # Protections
+          long_entry_logic.append(df["num_empty_288"] <= allowed_empty_candles_288)
+
           long_entry_logic.append(df["RSI_3_1h"] <= 95.0)
           long_entry_logic.append(df["RSI_3_4h"] <= 80.0)
           long_entry_logic.append(df["RSI_3_1d"] <= 80.0)
@@ -3316,9 +3320,7 @@ class NostalgiaForInfinityX5(IStrategy):
         # Condition #43 - Rapid mode (Long).
         if index == 43:
           # Protections
-          long_entry_logic.append(df["protections_long_global"] == True)
-          long_entry_logic.append(df["global_protections_long_pump"] == True)
-          long_entry_logic.append(df["global_protections_long_dump"] == True)
+          long_entry_logic.append(df["num_empty_288"] <= allowed_empty_candles_288)
 
           long_entry_logic.append(df["RSI_14_1h"] < 80.0)
           long_entry_logic.append(df["RSI_14_4h"] < 80.0)
