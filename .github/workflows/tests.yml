@@ -92,6 +92,8 @@ jobs:
           - 20240401-20240501
           - 20240501-20240601
           - 20240601-20240701
+          - 20240701-20240801
+          # - 20240801-20240901
 
     steps:
       - name: Fetch Source Code
@@ -195,6 +197,8 @@ jobs:
           - 20240401-20240501
           - 20240501-20240601
           - 20240601-20240701
+          - 20240701-20240801
+          # - 20240801-20240901
 
     steps:
       - name: Fetch Source Code
@@ -406,6 +410,7 @@ jobs:
           find downloaded-results/ -type f -iname *.txt -exec sed -i 's/ENTER TAG STATS/\n## ENTER TAG STATS\n/g' {} +
           find downloaded-results/ -type f -iname *.txt -exec sed -i 's/EXIT REASON STATS/\n## EXIT REASON STATS\n/g' {} +
           find downloaded-results/ -type f -iname *.txt -exec sed -i 's/MIXED TAG STATS/\n## MIXED TAG STATS\n/g' {} +
+          find downloaded-results/ -type f -iname *.txt -exec sed -i 's/DAY BREAKDOWN/\n## DAY BREAKDOWN\n/g' {} +
           find downloaded-results/ -type f -iname *.txt -exec sed -i 's/SUMMARY METRICS/\n## SUMMARY METRICS\n/g' {} +
           find downloaded-results/ -type f -iname *.txt -exec sed -i 's/STRATEGY SUMMARY/\n## STRATEGY SUMMARY\n/g' {} +
       - name: Show Environ
