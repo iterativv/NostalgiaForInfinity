@@ -2744,16 +2744,15 @@ class NostalgiaForInfinityX5(IStrategy):
       if exit_reason == "stop_loss":
         return False
       if self.exit_profit_only:
-        if self.exit_profit_only:
-          profit = 0.0
-          if trade.realized_profit != 0.0:
-            profit = ((rate - trade.open_rate) / trade.open_rate) * trade.stake_amount * (1 - trade.fee_close)
-            profit = profit + trade.realized_profit
-            profit = profit / trade.stake_amount
-          else:
-            profit = trade.calc_profit_ratio(rate)
-          if profit < self.exit_profit_offset:
-            return False
+        profit = 0.0
+        if trade.realized_profit != 0.0:
+          profit = ((rate - trade.open_rate) / trade.open_rate) * trade.stake_amount * (1 - trade.fee_close)
+          profit = profit + trade.realized_profit
+          profit = profit / trade.stake_amount
+        else:
+          profit = trade.calc_profit_ratio(rate)
+        if profit < self.exit_profit_offset:
+          return False
 
     self._remove_profit_target(pair)
     return True
