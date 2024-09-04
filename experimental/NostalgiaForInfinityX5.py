@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.0.49"
+    return "v15.0.52"
 
   stoploss = -0.99
 
@@ -2036,9 +2036,13 @@ class NostalgiaForInfinityX5(IStrategy):
     informative_4h["CCI_20"] = pta.cci(
       informative_4h["high"], informative_4h["low"], informative_4h["close"], length=20
     )
+    informative_4h["CCI_20"] = (
+      (informative_4h["CCI_20"]).astype(np.float64).replace(to_replace=[np.nan, None], value=(0.0))
+    )
     informative_4h["CCI_20_change_pct"] = (
       (informative_4h["CCI_20"] - informative_4h["CCI_20"].shift(1)) / abs(informative_4h["CCI_20"].shift(1))
     ) * 100.0
+
     # Candle change
     informative_4h["change_pct"] = (informative_4h["close"] - informative_4h["open"]) / informative_4h["open"] * 100.0
 
@@ -2160,6 +2164,9 @@ class NostalgiaForInfinityX5(IStrategy):
     informative_1h["KSTs_9"] = kst["KSTs_9"] if isinstance(kst, pd.DataFrame) else np.nan
     # UO
     informative_1h["UO_7_14_28"] = pta.uo(informative_1h["high"], informative_1h["low"], informative_1h["close"])
+    informative_1h["UO_7_14_28"] = (
+      (informative_1h["UO_7_14_28"]).astype(np.float64).replace(to_replace=[np.nan, None], value=(50.0))
+    )
     informative_1h["UO_7_14_28_change_pct"] = (
       (informative_1h["UO_7_14_28"] - informative_1h["UO_7_14_28"].shift(1))
       / abs(informative_1h["UO_7_14_28"].shift(1))
