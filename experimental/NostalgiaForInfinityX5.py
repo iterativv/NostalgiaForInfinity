@@ -7856,7 +7856,7 @@ class NostalgiaForInfinityX5(IStrategy):
             else:
               return -ft_sell_amount
 
-    is_long_grind_buy = self.long_grind_buy(last_candle, previous_candle, slice_profit)
+    is_long_grind_entry = self.long_grind_entry(last_candle, previous_candle, slice_profit)
 
     # Grinding derisk 1
     # Buy
@@ -7884,11 +7884,11 @@ class NostalgiaForInfinityX5(IStrategy):
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
         and (
-          is_long_grind_buy
+          is_long_grind_entry
           or (
             (grind_1_derisk_1_sub_grind_count > 0)
             and (
-              is_long_grind_buy
+              is_long_grind_entry
               or (
                 (last_candle["RSI_3"] > 6.0)
                 and (last_candle["AROONU_14_15m"] < 25.0)
@@ -8012,11 +8012,11 @@ class NostalgiaForInfinityX5(IStrategy):
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
         and (
-          is_long_grind_buy
+          is_long_grind_entry
           or (
             (grind_2_derisk_1_sub_grind_count > 0)
             and (
-              is_long_grind_buy
+              is_long_grind_entry
               or (
                 (last_candle["RSI_3"] > 6.0)
                 and (last_candle["AROONU_14_15m"] < 25.0)
@@ -8131,7 +8131,7 @@ class NostalgiaForInfinityX5(IStrategy):
           or (slice_profit < -0.06)
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
-        and is_long_grind_buy
+        and is_long_grind_entry
       ):
         buy_amount = (
           slice_amount * grind_1_stakes[grind_1_sub_grind_count] / (trade.leverage if self.is_futures_mode else 1.0)
@@ -8266,7 +8266,7 @@ class NostalgiaForInfinityX5(IStrategy):
           or (slice_profit < -0.06)
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
-        and is_long_grind_buy
+        and is_long_grind_entry
       ):
         buy_amount = (
           slice_amount * grind_2_stakes[grind_2_sub_grind_count] / (trade.leverage if self.is_futures_mode else 1.0)
@@ -8369,7 +8369,7 @@ class NostalgiaForInfinityX5(IStrategy):
           or (slice_profit < -0.06)
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
-        and is_long_grind_buy
+        and is_long_grind_entry
       ):
         buy_amount = (
           slice_amount * grind_3_stakes[grind_3_sub_grind_count] / (trade.leverage if self.is_futures_mode else 1.0)
@@ -8473,13 +8473,15 @@ class NostalgiaForInfinityX5(IStrategy):
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
         and (
-          (is_long_grind_buy)
+          (is_long_grind_entry)
           or (
             (last_candle["RSI_3"] > 10.0)
             and (last_candle["RSI_3_15m"] > 10.0)
             and (last_candle["RSI_14"] < 36.0)
             and (last_candle["close"] < last_candle["BBM_20_2.0"])
             and (previous_candle["close"] < previous_candle["BBM_20_2.0"])
+            # and (last_candle["AROONU_14"] < 25.0)
+            # and (last_candle["AROONU_14_15m"] < 25.0)
           )
         )
       ):
@@ -8584,7 +8586,7 @@ class NostalgiaForInfinityX5(IStrategy):
           or (slice_profit < -0.06)
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
-        and is_long_grind_buy
+        and is_long_grind_entry
       ):
         buy_amount = (
           slice_amount * grind_5_stakes[grind_5_sub_grind_count] / (trade.leverage if self.is_futures_mode else 1.0)
@@ -8688,13 +8690,15 @@ class NostalgiaForInfinityX5(IStrategy):
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
         and (
-          (is_long_grind_buy)
+          (is_long_grind_entry)
           or (
             (last_candle["RSI_3"] > 10.0)
             and (last_candle["RSI_3_15m"] > 10.0)
             and (last_candle["RSI_14"] < 36.0)
             and (last_candle["close"] < last_candle["BBM_20_2.0"])
             and (previous_candle["close"] < previous_candle["BBM_20_2.0"])
+            # and (last_candle["AROONU_14"] < 25.0)
+            # and (last_candle["AROONU_14_15m"] < 25.0)
           )
         )
       ):
@@ -8811,7 +8815,7 @@ class NostalgiaForInfinityX5(IStrategy):
           (last_candle["global_protections_long_pump"] == True)
           and (last_candle["global_protections_long_dump"] == True)
         )
-        and is_long_grind_buy
+        and is_long_grind_entry
       ):
         buy_amount = derisk_1_order.safe_filled * derisk_1_order.safe_price
         if buy_amount < (min_stake * 1.5):
@@ -8930,62 +8934,26 @@ class NostalgiaForInfinityX5(IStrategy):
 
     return None
 
-  # Long Grinding Buy
+  # Long Grinding Entry
   # ---------------------------------------------------------------------------------------------
-  def long_grind_buy(self, last_candle: Series, previous_candle: Series, slice_profit: float) -> float:
+  def long_grind_entry(self, last_candle: Series, previous_candle: Series, slice_profit: float) -> float:
     if (
       (last_candle["protections_long_global"] == True)
       and (last_candle["protections_long_rebuy"] == True)
       and (last_candle["global_protections_long_pump"] == True)
       and (last_candle["global_protections_long_dump"] == True)
-      # and (
-      #   (last_candle["close"] > (last_candle["close_max_12"] * 0.88))
-      #   and (last_candle["close"] > (last_candle["close_max_24"] * 0.82))
-      #   and (last_candle["close"] > (last_candle["close_max_48"] * 0.76))
-      #   and (last_candle["btc_pct_close_max_72_5m"] < 0.03)
-      #   and (last_candle["btc_pct_close_max_24_5m"] < 0.03)
-      # )
       and (
         (last_candle["enter_long"] == True)
         or (
           (last_candle["RSI_14"] < 36.0)
-          # and (last_candle["RSI_14_15m"] < 46.0)
           and (last_candle["RSI_3"] > 6.0)
-          # and (last_candle["RSI_3_15m"] > 12.0)
-          # and (last_candle["RSI_3_1h"] > 12.0)
-          # and (last_candle["RSI_3_4h"] > 12.0)
-          # and (last_candle["WILLR_14"] > -90.0)
-          # and (last_candle["WILLR_14_15m"] > -90.0)
-          # and (last_candle["WILLR_14_1h"] > -90.0)
-          # and (last_candle["WILLR_14_4h"] > -90.0)
-          # and (last_candle["STOCHRSIk_14_14_3_3_1h"] < 90.0)
-          # and (last_candle["STOCHRSIk_14_14_3_3_4h"] < 90.0)
-          # and (last_candle["STOCHRSIk_14_14_3_3_1d"] < 90.0)
-          # and (last_candle["STOCHRSIk_14_14_3_3"] > last_candle["STOCHRSId_14_14_3_3"])
-          # and (last_candle["STOCHRSIk_14_14_3_3_1h"] > last_candle["STOCHRSId_14_14_3_3_1h"])
-          # and (last_candle["STOCHRSIk_14_14_3_3_4h"] > last_candle["STOCHRSId_14_14_3_3_4h"])
-          # and (last_candle["KST_10_15_20_30_10_10_10_15_1h"] > last_candle["KSTs_9_1h"])
-          # and (last_candle["KST_10_15_20_30_10_10_10_15_4h"] > last_candle["KSTs_9_4h"])
           and (last_candle["close"] < (last_candle["EMA_16"] * 0.958))
         )
         or (
           (last_candle["RSI_14"] < 36.0)
-          # and (previous_candle["RSI_3"] > 10.0)
-          # and (last_candle["RSI_3_15m"] > 16.0)
-          # and (last_candle["RSI_3_1h"] > 26.0)
-          # and (last_candle["RSI_3_4h"] > 26.0)
-          # and (last_candle["STOCHRSIk_14_14_3_3_1h"] < 90.0)
-          # and (last_candle["STOCHRSIk_14_14_3_3_4h"] < 90.0)
-          # and (last_candle["STOCHRSIk_14_14_3_3_1d"] < 90.0)
-          # and (last_candle["KST_10_15_20_30_10_10_10_15_1h"] > last_candle["KSTs_9_1h"])
-          # and (last_candle["KST_10_15_20_30_10_10_10_15_4h"] > last_candle["KSTs_9_4h"])
           and (last_candle["EMA_26"] > last_candle["EMA_12"])
           and ((last_candle["EMA_26"] - last_candle["EMA_12"]) > (last_candle["open"] * 0.030))
           and ((previous_candle["EMA_26"] - previous_candle["EMA_12"]) > (last_candle["open"] / 100.0))
-          # and (last_candle["rsi_3_1h"] > 20.0)
-          # and (last_candle["rsi_3_4h"] > 20.0)
-          # and (last_candle["CTI_20_1h"] < 0.8)
-          # and (last_candle["rsi_14_1h"] < 80.0)
         )
         or (
           (last_candle["RSI_14"] < 36.0)
@@ -8997,72 +8965,24 @@ class NostalgiaForInfinityX5(IStrategy):
         )
         or (
           (last_candle["RSI_14"] < 36.0)
-          # and (last_candle["RSI_14_15m"] < 36.0)
           and (last_candle["RSI_3"] > 16.0)
-          # and (last_candle["AROOND_14"] < previous_candle["AROOND_14"])
           and (last_candle["AROONU_14_15m"] < 25.0)
           and (last_candle["close"] < (last_candle["EMA_12"] * 0.984))
-          # and (last_candle["RSI_3_1h"] > 10.0)
-          # and (last_candle["RSI_3_4h"] > 10.0)
         )
         or (
           (last_candle["RSI_14"] < 36.0)
-          # and (last_candle["WILLR_14"] > -90.0)
-          # and (last_candle["WILLR_14_15m"] > -90.0)
-          # and (last_candle["WILLR_14_1h"] > -90.0)
-          # and (last_candle["WILLR_14_4h"] > -90.0)
-          # and (last_candle["STOCHRSIk_14_14_3_3_1h"] < 90.0)
-          # and (last_candle["STOCHRSIk_14_14_3_3_4h"] < 90.0)
-          # and (last_candle["STOCHRSIk_14_14_3_3_1d"] < 90.0)
-          #  and (last_candle["RSI_14_15m"] < 46.0)
-          # and (last_candle["RSI_3"] > 20.0)
-          # and (last_candle["RSI_3_15m"] > 26.0)
-          # and (last_candle["RSI_3_1h"] > 26.0)
-          # and (last_candle["RSI_3_4h"] > 26.0)
           and (last_candle["AROONU_14_1h"] > last_candle["AROOND_14_1h"])
           and (last_candle["AROONU_14_4h"] > last_candle["AROOND_14_4h"])
-          # and (last_candle["STOCHRSIk_14_14_3_3_1h"] > last_candle["STOCHRSId_14_14_3_3_1h"])
-          # and (last_candle["STOCHRSIk_14_14_3_3_4h"] > last_candle["STOCHRSId_14_14_3_3_4h"])
-          # and (last_candle["KST_10_15_20_30_10_10_10_15_1h"] > last_candle["KSTs_9_1h"])
-          # and (last_candle["KST_10_15_20_30_10_10_10_15_4h"] > last_candle["KSTs_9_4h"])
-          # and (last_candle["EMA_12_1h"] > last_candle["EMA_26_1h"])
-          # and (last_candle["EMA_12_4h"] > last_candle["EMA_26_4h"])
           and (last_candle["close"] < (last_candle["EMA_26"] * 0.978))
           and (last_candle["close"] < (last_candle["BBL_20_2.0"] * 0.999))
         )
         or (
           (last_candle["RSI_14"] < 36.0)
-          # and (last_candle["WILLR_14"] > -90.0)
-          # and (last_candle["WILLR_14_15m"] > -90.0)
-          # and (last_candle["WILLR_14_1h"] > -90.0)
-          # and (last_candle["WILLR_14_4h"] > -90.0)
-          # and (last_candle["STOCHRSIk_14_14_3_3_1h"] < 90.0)
-          # and (last_candle["STOCHRSIk_14_14_3_3_4h"] < 90.0)
-          # and (last_candle["STOCHRSIk_14_14_3_3_1d"] < 90.0)
-          #  and (last_candle["RSI_14_15m"] < 46.0)
-          # and (last_candle["RSI_3"] > 20.0)
-          # and (last_candle["RSI_3_15m"] > 26.0)
-          # and (last_candle["RSI_3_1h"] > 26.0)
-          # and (last_candle["RSI_3_4h"] > 26.0)
-          # and (last_candle["AROONU_14_15m"] < 25.0)
-          # and (last_candle["STOCHRSIk_14_14_3_3_1h"] > last_candle["STOCHRSId_14_14_3_3_1h"])
-          # and (last_candle["STOCHRSIk_14_14_3_3_4h"] > last_candle["STOCHRSId_14_14_3_3_4h"])
-          # and (last_candle["KST_10_15_20_30_10_10_10_15_1h"] > last_candle["KSTs_9_1h"])
-          # and (last_candle["KST_10_15_20_30_10_10_10_15_4h"] > last_candle["KSTs_9_4h"])
-          # and (last_candle["EMA_12_1h"] > last_candle["EMA_26_1h"])
-          # and (last_candle["EMA_12_4h"] > last_candle["EMA_26_4h"])
-          # and (last_candle["close"] < (last_candle["EMA_100"] * 0.988))
-          # and (last_candle["close"] < (last_candle["BBL_20_2.0"] * 0.998))
           and (last_candle["AROONU_14"] > last_candle["AROOND_14"])
           and (previous_candle["AROONU_14"] < previous_candle["AROOND_14"])
         )
         or (
           (last_candle["RSI_14"] < 36.0)
-          # and (last_candle["RSI_3"] > 5.0)
-          # and (last_candle["RSI_3_1h"] > 10.0)
-          # and (last_candle["RSI_3_4h"] > 10.0)
-          # and (last_candle["KST_10_15_20_30_10_10_10_15"] < -0.0)
-          # and (last_candle["KSTs_9"] < -0.0)
           and (last_candle["KST_10_15_20_30_10_10_10_15"] > last_candle["KSTs_9"])
           and (previous_candle["KST_10_15_20_30_10_10_10_15"] < previous_candle["KSTs_9"])
         )
@@ -9590,7 +9510,7 @@ class NostalgiaForInfinityX5(IStrategy):
             order_tag = order.ft_order_tag
         return -ft_sell_amount, order_tag, is_derisk
 
-    is_long_grind_buy = self.long_grind_buy(last_candle, previous_candle, slice_profit)
+    is_long_grind_entry = self.long_grind_entry(last_candle, previous_candle, slice_profit)
 
     # Rebuy
     if (not partial_sell) and (not rebuy_is_sell_found) and (rebuy_sub_grind_count < max_rebuy_sub_grinds):
@@ -9603,7 +9523,7 @@ class NostalgiaForInfinityX5(IStrategy):
         )
         and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
         and ((current_time - timedelta(hours=12) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.06))
-        and is_long_grind_buy
+        and is_long_grind_entry
       ):
         buy_amount = (
           slice_amount
@@ -9641,7 +9561,7 @@ class NostalgiaForInfinityX5(IStrategy):
           or (slice_profit < -0.06)
         )
         and ((num_open_grinds == 0) or (slice_profit < -0.03))
-        and is_long_grind_buy
+        and is_long_grind_entry
       ):
         buy_amount = (
           slice_amount
@@ -9765,7 +9685,7 @@ class NostalgiaForInfinityX5(IStrategy):
           or (slice_profit < -0.06)
         )
         and ((num_open_grinds == 0) or (slice_profit < -0.03))
-        and is_long_grind_buy
+        and is_long_grind_entry
       ):
         buy_amount = (
           slice_amount
@@ -9859,7 +9779,7 @@ class NostalgiaForInfinityX5(IStrategy):
           or (slice_profit < -0.06)
         )
         and ((num_open_grinds == 0) or (slice_profit < -0.03))
-        and is_long_grind_buy
+        and is_long_grind_entry
       ):
         buy_amount = (
           slice_amount
@@ -9953,7 +9873,7 @@ class NostalgiaForInfinityX5(IStrategy):
           or (slice_profit < -0.06)
         )
         and ((num_open_grinds == 0) or (slice_profit < -0.03))
-        and is_long_grind_buy
+        and is_long_grind_entry
       ):
         buy_amount = (
           slice_amount
@@ -10047,7 +9967,7 @@ class NostalgiaForInfinityX5(IStrategy):
           or (slice_profit < -0.06)
         )
         and ((num_open_grinds == 0) or (slice_profit < -0.03))
-        and is_long_grind_buy
+        and is_long_grind_entry
       ):
         buy_amount = (
           slice_amount
@@ -10142,7 +10062,7 @@ class NostalgiaForInfinityX5(IStrategy):
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
         and (
-          (is_long_grind_buy)
+          (is_long_grind_entry)
           or (
             (last_candle["RSI_3"] > 10.0)
             and (last_candle["RSI_3_15m"] > 10.0)
