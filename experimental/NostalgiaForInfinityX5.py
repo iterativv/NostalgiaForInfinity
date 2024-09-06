@@ -1880,8 +1880,6 @@ class NostalgiaForInfinityX5(IStrategy):
     informative_1d["MFI_14"] = pta.mfi(
       informative_1d["high"], informative_1d["low"], informative_1d["close"], informative_1d["volume"], length=14
     )
-    # CTI
-    informative_1d["CTI_20"] = pta.cti(informative_1d["close"], length=20)
     # Williams %R
     informative_1d["WILLR_14"] = pta.willr(
       informative_1d["high"], informative_1d["low"], informative_1d["close"], length=14
@@ -1999,8 +1997,6 @@ class NostalgiaForInfinityX5(IStrategy):
     informative_4h["CMF_20"] = pta.cmf(
       informative_4h["high"], informative_4h["low"], informative_4h["close"], informative_4h["volume"], length=20
     )
-    # CTI
-    informative_4h["CTI_20"] = pta.cti(informative_4h["close"], length=20)
     # Williams %R
     informative_4h["WILLR_14"] = pta.willr(
       informative_4h["high"], informative_4h["low"], informative_4h["close"], length=14
@@ -2134,9 +2130,6 @@ class NostalgiaForInfinityX5(IStrategy):
     informative_1h["CMF_20"] = pta.cmf(
       informative_1h["high"], informative_1h["low"], informative_1h["close"], informative_1h["volume"], length=20
     )
-    # CTI
-    informative_1h["CTI_20"] = pta.cti(informative_1h["close"], length=20)
-    informative_1h["CTI_40"] = pta.cti(informative_1h["close"], length=40)
     # Williams %R
     informative_1h["WILLR_14"] = pta.willr(
       informative_1h["high"], informative_1h["low"], informative_1h["close"], length=14
