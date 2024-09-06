@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.0.56"
+    return "v15.0.57"
 
   stoploss = -0.99
 
@@ -10149,15 +10149,18 @@ class NostalgiaForInfinityX5(IStrategy):
         return -ft_sell_amount, order_tag, is_derisk
 
     # De-risk
-    if profit_stake < (
-      slice_amount
-      * (
-        (self.regular_mode_derisk_futures if self.is_futures_mode else self.regular_mode_derisk_spot)
-        if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 3, 19) or is_backtest)
-        else (self.regular_mode_derisk_futures_old if self.is_futures_mode else self.regular_mode_derisk_spot_old)
+    if (
+      profit_stake
+      < (
+        slice_amount
+        * (
+          (self.regular_mode_derisk_futures if self.is_futures_mode else self.regular_mode_derisk_spot)
+          if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 1) or is_backtest)
+          else (self.regular_mode_derisk_futures_old if self.is_futures_mode else self.regular_mode_derisk_spot_old)
+        )
+        # / (trade.leverage if self.is_futures_mode else 1.0)
       )
-      # / (trade.leverage if self.is_futures_mode else 1.0)
-    ):
+    ) and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 1) or is_backtest):
       sell_amount = trade.amount * exit_rate / trade.leverage - (min_stake * 1.55)
       ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
       if sell_amount > min_stake and ft_sell_amount > min_stake:
@@ -10174,13 +10177,13 @@ class NostalgiaForInfinityX5(IStrategy):
     if (
       has_order_tags
       and not is_derisk_1
-      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 4, 5) or is_backtest)
+      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 1) or is_backtest)
       and profit_stake
       < (
         slice_amount
         * (
           (self.regular_mode_derisk_1_futures if self.is_futures_mode else self.regular_mode_derisk_1_spot)
-          if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 4, 16) or is_backtest)
+          if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 1) or is_backtest)
           else (
             self.regular_mode_derisk_1_futures_old if self.is_futures_mode else self.regular_mode_derisk_1_spot_old
           )
