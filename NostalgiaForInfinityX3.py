@@ -68,7 +68,7 @@ class NostalgiaForInfinityX3(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v13.2.7"
+    return "v13.2.8"
 
   stoploss = -0.99
 
@@ -16785,6 +16785,15 @@ class NostalgiaForInfinityX3(IStrategy):
       return self.futures_mode_leverage_grind_mode
     return self.futures_mode_leverage
 
+  # Correct Min Stake
+  # ---------------------------------------------------------------------------------------------
+  def correct_min_stake(self, min_stake: float) -> float:
+    if self.config["exchange"]["name"] in ["bybit"]:
+      if self.is_futures_mode:
+        if min_stake < 5.0:
+          min_stake = 5.0
+    return min_stake
+
   # Set Profit Target
   # ---------------------------------------------------------------------------------------------
   def _set_profit_target(
@@ -31271,6 +31280,7 @@ class NostalgiaForInfinityX3(IStrategy):
     **kwargs,
   ):
     is_backtest = self.dp.runmode.value in ["backtest", "hyperopt"]
+    min_stake = self.correct_min_stake(min_stake)
     # min/max stakes include leverage. The return amounts is before leverage.
     min_stake /= trade.leverage
     max_stake /= trade.leverage
@@ -35261,6 +35271,7 @@ class NostalgiaForInfinityX3(IStrategy):
     current_exit_profit: float,
     **kwargs,
   ) -> Optional[float]:
+    min_stake = self.correct_min_stake(min_stake)
     # min/max stakes include leverage. The return amounts is before leverage.
     min_stake /= trade.leverage
     max_stake /= trade.leverage
@@ -42470,6 +42481,7 @@ class NostalgiaForInfinityX3(IStrategy):
     **kwargs,
   ):
     is_backtest = self.dp.runmode.value in ["backtest", "hyperopt"]
+    min_stake = self.correct_min_stake(min_stake)
     # min/max stakes include leverage. The return amounts is before leverage.
     min_stake /= trade.leverage
     max_stake /= trade.leverage
@@ -46188,6 +46200,7 @@ class NostalgiaForInfinityX3(IStrategy):
     current_exit_profit: float,
     **kwargs,
   ) -> Optional[float]:
+    min_stake = self.correct_min_stake(min_stake)
     # min/max stakes include leverage. The return amounts is before leverage.
     min_stake /= trade.leverage
     max_stake /= trade.leverage
