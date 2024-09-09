@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.0.66"
+    return "v15.0.67"
 
   stoploss = -0.99
 
@@ -1869,6 +1869,14 @@ class NostalgiaForInfinityX5(IStrategy):
     # RSI
     informative_1d["RSI_3"] = pta.rsi(informative_1d["close"], length=3)
     informative_1d["RSI_14"] = pta.rsi(informative_1d["close"], length=14)
+    informative_1d["RSI_3_change_pct"] = (
+      (informative_1d["RSI_3"] - informative_1d["RSI_3"].shift(1)) / (informative_1d["RSI_3"].shift(1))
+    ) * 100.0
+    informative_1d["RSI_14_change_pct"] = (
+      (informative_1d["RSI_14"] - informative_1d["RSI_14"].shift(1)) / (informative_1d["RSI_14"].shift(1))
+    ) * 100.0
+    informative_1d["RSI_3_diff"] = informative_1d["RSI_3"] - informative_1d["RSI_3"].shift(1)
+    informative_1d["RSI_14_diff"] = informative_1d["RSI_14"] - informative_1d["RSI_14"].shift(1)
     # BB 20 - STD2
     bbands_20_2 = pta.bbands(informative_1d["close"], length=20)
     informative_1d["BBL_20_2.0"] = bbands_20_2["BBL_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
@@ -3668,6 +3676,10 @@ class NostalgiaForInfinityX5(IStrategy):
           long_entry_logic.append((df["ROC_9_1h"] > -30.0) | (df["RSI_3_4h"] > 10.0) | (df["ROC_9_1d"] < 40.0))
           # 1h downtrend, 4h down move, 1h downtrend
           long_entry_logic.append((df["ROC_9_1h"] > -30.0) | (df["RSI_3_4h"] > 10.0) | (df["ROC_9_1d"] > -50.0))
+          # 4h moving down, 1d P&D
+          long_entry_logic.append(
+            (df["ROC_9_4h"] > -30.0) | (df["RSI_3_change_pct_1d"] > -50.0) | (df["ROC_9_1d"] < 50.0)
+          )
           # 1h & 4h red, 1h not low enough
           long_entry_logic.append(
             (df["change_pct_1h"] > -10.0) | (df["change_pct_4h"] > -10.0) | (df["MFI_14_1h"] < 50.0)
