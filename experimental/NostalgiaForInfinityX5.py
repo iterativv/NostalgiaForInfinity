@@ -6088,7 +6088,7 @@ class NostalgiaForInfinityX5(IStrategy):
         and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 90.0)
         and (last_candle["ROC_9_4h"] > 30.0)
       ):
-        return True, f"exit_{mode_name}_d_2_17"
+        return True, f"exit_{mode_name}_d_1_17"
     elif 0.03 > current_profit >= 0.02:
       if (
         (last_candle["WILLR_14"] > -1.0)
