@@ -2188,6 +2188,9 @@ class NostalgiaForInfinityX5(IStrategy):
     informative_1h["CCI_20"] = pta.cci(
       informative_1h["high"], informative_1h["low"], informative_1h["close"], length=20
     )
+    informative_1h["CCI_20"] = (
+      (informative_1h["CCI_20"]).astype(np.float64).replace(to_replace=[np.nan, None], value=(0.0))
+    )
     informative_1h["CCI_20_change_pct"] = (
       (informative_1h["CCI_20"] - informative_1h["CCI_20"].shift(1)) / abs(informative_1h["CCI_20"].shift(1))
     ) * 100.0
@@ -2292,6 +2295,9 @@ class NostalgiaForInfinityX5(IStrategy):
     # CCI
     informative_15m["CCI_20"] = pta.cci(
       informative_15m["high"], informative_15m["low"], informative_15m["close"], length=20
+    )
+    informative_15m["CCI_20"] = (
+      (informative_15m["CCI_20"]).astype(np.float64).replace(to_replace=[np.nan, None], value=(0.0))
     )
     informative_15m["CCI_20_change_pct"] = (
       (informative_15m["CCI_20"] - informative_15m["CCI_20"].shift(1)) / abs(informative_15m["CCI_20"].shift(1))
