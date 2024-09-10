@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.0.76"
+    return "v15.0.77"
 
   stoploss = -0.99
 
@@ -3890,7 +3890,9 @@ class NostalgiaForInfinityX5(IStrategy):
           long_entry_logic.append(num_open_long_grind_mode < self.grind_mode_max_slots)
           long_entry_logic.append(is_pair_long_grind_mode)
           long_entry_logic.append(df["RSI_3"] <= 40.0)
-          long_entry_logic.append(df["RSI_3_15m"] >= 20.0)
+          long_entry_logic.append(df["RSI_3_15m"] >= 10.0)
+          long_entry_logic.append(df["RSI_3_1h"] >= 5.0)
+          long_entry_logic.append(df["RSI_3_4h"] >= 5.0)
           long_entry_logic.append(df["RSI_14_1h"] < 85.0)
           long_entry_logic.append(df["RSI_14_4h"] < 85.0)
           long_entry_logic.append(df["RSI_14_1d"] < 85.0)
