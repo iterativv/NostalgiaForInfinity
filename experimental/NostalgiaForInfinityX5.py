@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.0.84"
+    return "v15.0.85"
 
   stoploss = -0.99
 
@@ -409,6 +409,7 @@ class NostalgiaForInfinityX5(IStrategy):
     "long_entry_condition_1_enable": True,
     "long_entry_condition_2_enable": True,
     "long_entry_condition_3_enable": True,
+    "long_entry_condition_4_enable": True,
     "long_entry_condition_41_enable": True,
     "long_entry_condition_42_enable": True,
     "long_entry_condition_43_enable": True,
@@ -3520,6 +3521,53 @@ class NostalgiaForInfinityX5(IStrategy):
           long_entry_logic.append(df["RSI_4"] < 46.0)
           long_entry_logic.append(df["AROONU_14"] < 25.0)
           long_entry_logic.append(df["close"] < df["SMA_16"] * 0.942)
+
+        # Condition #4 - Normal mode (Long).
+        if index == 4:
+          # Protections
+          long_entry_logic.append(df["num_empty_288"] <= allowed_empty_candles_288)
+
+          long_entry_logic.append(df["RSI_3_1h"] <= 95.0)
+          long_entry_logic.append(df["RSI_3_4h"] <= 80.0)
+          long_entry_logic.append(df["RSI_3_1d"] <= 80.0)
+          long_entry_logic.append(df["RSI_14_1h"] < 80.0)
+          long_entry_logic.append(df["RSI_14_4h"] < 80.0)
+          long_entry_logic.append(df["RSI_14_1d"] < 90.0)
+          # 15m & 1h down move, 4h still high
+          long_entry_logic.append(
+            (df["RSI_3_15m"] > 5.0)
+            | (df["MFI_14_15m"] > 10.0)
+            | (df["RSI_3_1h"] > 20.0)
+            | (df["STOCHRSIk_14_14_3_3_4h"] < 50.0)
+          )
+          # 15m & 1h down move, 4h still high
+          long_entry_logic.append(
+            (df["RSI_3_15m"] > 10.0) | (df["MFI_14_15m"] > 15.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 70.0)
+          )
+          # 14m & 4h down move, 4h still high
+          long_entry_logic.append(
+            (df["RSI_3_15m"] > 10.0) | (df["RSI_3_4h"] > 15.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 40.0)
+          )
+          # 15m down move, 1h & 4h still high
+          long_entry_logic.append(
+            (df["RSI_3_15m"] > 10.0) | (df["UO_7_14_28_1h"] < 45.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 70.0)
+          )
+          # 1h strong down move, 4h still high
+          long_entry_logic.append(
+            (df["RSI_3_1h"] > 5.0) | (df["RSI_14_change_pct_1h"] > -40.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 70.0)
+          )
+          # 15m down move, 1h strong downtrend
+          long_entry_logic.append((df["RSI_3_15m"] > 5.0) | (df["RSI_3_1h"] > 5.0) | (df["MFI_14_1h"] > 5.0))
+          # 15m downtrend, 4h down move, 4h stil high
+          long_entry_logic.append(
+            (df["ROC_9_15m"] > -20.0) | (df["RSI_3_4h"] > 25.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 70.0)
+          )
+
+          # Logic
+          long_entry_logic.append(df["AROONU_14"] < 25.0)
+          long_entry_logic.append(df["AROONU_14_15m"] < 25.0)
+          long_entry_logic.append(df["close"] < (df["EMA_9"] * 0.942))
+          long_entry_logic.append(df["close"] < (df["EMA_20"] * 0.960))
 
         # Condition #41 - Quick mode (Long).
         if index == 41:
