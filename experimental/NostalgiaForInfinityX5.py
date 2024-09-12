@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.0.97"
+    return "v15.0.98"
 
   stoploss = -0.99
 
@@ -3992,6 +3992,10 @@ class NostalgiaForInfinityX5(IStrategy):
           long_entry_logic.append(
             (df["RSI_3_1h"] > 5.0) | (df["RSI_3_4h"] > 10.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 25.0)
           )
+          # 1h & 4h down move, 4h still high
+          long_entry_logic.append(
+            (df["RSI_3_1h"] > 5.0) | (df["RSI_3_change_pct_4h"] > -50.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 50.0)
+          )
           # 1h & 4h down move, 4h still not low enough
           long_entry_logic.append(
             (df["RSI_3_1h"] > 5.0) | (df["RSI_3_change_pct_4h"] > -65.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 30.0)
@@ -4028,9 +4032,6 @@ class NostalgiaForInfinityX5(IStrategy):
             | (df["CCI_20_change_pct_4h"] > 0.0)
             | (df["STOCHRSIk_14_14_3_3_4h"] < 50.0)
             | (df["ROC_9_1d"] > -40.0)
-          )
-          long_entry_logic.append(
-            (df["RSI_3_1h"] > 5.0) | (df["RSI_3_change_pct_4h"] > -50.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 50.0)
           )
 
           # Logic
