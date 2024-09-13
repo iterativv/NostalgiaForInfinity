@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.0.100"
+    return "v15.0.101"
 
   stoploss = -0.99
 
@@ -16799,14 +16799,14 @@ class NostalgiaForInfinityX5(IStrategy):
       profit_stake
       < -(
         filled_entries[0].cost
-        * (self.stop_threshold_futures if self.is_futures_mode else self.stop_threshold_spot)  # CHECK HERE
+        * (self.stop_threshold_futures if self.is_futures_mode else self.stop_threshold_spot)
         # / trade.leverage
       )
       and (last_candle["close"] > last_candle["EMA_200"])
       and (last_candle["CMF_20"] > 0.0)
-      and (((last_candle["EMA_200"] - last_candle["close"]) / last_candle["close"]) > 1.090)  # CHECK HERE
-      and (last_candle["RSI_14"] > previous_candle_1["RSI_14"])
-      and (last_candle["RSI_14"] > (last_candle["RSI_14_1h"] + 16.0))
+      and (((last_candle["close"] - last_candle["EMA_200"]) / last_candle["EMA_200"]) < 0.010)
+      and (last_candle["RSI_14"] < previous_candle_1["RSI_14"])
+      and (last_candle["RSI_14"] < (last_candle["RSI_14_1h"] - 16.0))
       and (current_time - timedelta(minutes=720) > trade.open_date_utc)
       # temporary
       and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 1) or is_backtest)
