@@ -3984,7 +3984,7 @@ class NostalgiaForInfinityX5(IStrategy):
           long_entry_logic.append(df["BBB_20_2.0_1h"] > 16.0)
           long_entry_logic.append(df["close_max_48"] >= (df["close"] * 1.10))
 
-        # Condition #43 - Rapid mode (Long).
+        # Condition #43 - Quick mode (Long).
         if index == 43:
           # Protections
           long_entry_logic.append(df["num_empty_288"] <= allowed_empty_candles_288)
