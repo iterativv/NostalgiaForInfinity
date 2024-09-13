@@ -16798,8 +16798,7 @@ class NostalgiaForInfinityX5(IStrategy):
     if (
       profit_stake
       < -(
-        filled_entries[0].cost
-        * (self.stop_threshold_futures if self.is_futures_mode else self.stop_threshold_spot)
+        filled_entries[0].cost * (self.stop_threshold_futures if self.is_futures_mode else self.stop_threshold_spot)
         # / trade.leverage
       )
       and (last_candle["close"] > last_candle["EMA_200"])
@@ -17409,20 +17408,12 @@ class NostalgiaForInfinityX5(IStrategy):
       grind_6_current_grind_stake_profit = grind_6_total_cost - grind_6_current_grind_stake
     if grind_1_derisk_1_sub_grind_count > 0:
       grind_1_derisk_1_current_open_rate = grind_1_derisk_1_total_cost / grind_1_derisk_1_total_amount
-      grind_1_derisk_1_current_grind_stake = (
-        grind_1_derisk_1_total_amount * exit_rate * (1 + trade.fee_close)
-      )
-      grind_1_derisk_1_current_grind_stake_profit = (
-        grind_1_derisk_1_total_cost - grind_1_derisk_1_current_grind_stake
-      )
+      grind_1_derisk_1_current_grind_stake = grind_1_derisk_1_total_amount * exit_rate * (1 + trade.fee_close)
+      grind_1_derisk_1_current_grind_stake_profit = grind_1_derisk_1_total_cost - grind_1_derisk_1_current_grind_stake
     if grind_2_derisk_1_sub_grind_count > 0:
       grind_2_derisk_1_current_open_rate = grind_2_derisk_1_total_cost / grind_2_derisk_1_total_amount
-      grind_2_derisk_1_current_grind_stake = (
-        grind_2_derisk_1_total_amount * exit_rate * (1 + trade.fee_close)
-      )
-      grind_2_derisk_1_current_grind_stake_profit = (
-        grind_2_derisk_1_total_cost - grind_2_derisk_1_current_grind_stake
-      )
+      grind_2_derisk_1_current_grind_stake = grind_2_derisk_1_total_amount * exit_rate * (1 + trade.fee_close)
+      grind_2_derisk_1_current_grind_stake_profit = grind_2_derisk_1_total_cost - grind_2_derisk_1_current_grind_stake
 
     num_open_grinds = (
       grind_1_sub_grind_count
@@ -17567,15 +17558,12 @@ class NostalgiaForInfinityX5(IStrategy):
         (
           (
             (grind_1_derisk_1_sub_grind_count > 0)
-            and -grind_1_derisk_1_distance_ratio
-            < grind_1_derisk_1_sub_thresholds[grind_1_derisk_1_sub_grind_count]
+            and -grind_1_derisk_1_distance_ratio < grind_1_derisk_1_sub_thresholds[grind_1_derisk_1_sub_grind_count]
           )
           or ((is_derisk or is_derisk_calc) and grind_1_derisk_1_sub_grind_count == 0)
         )
         and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
-        and (
-          (current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02)
-        )
+        and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
         and (
           (num_open_grinds == 0)
           or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -17610,9 +17598,7 @@ class NostalgiaForInfinityX5(IStrategy):
         grind_profit = 0.0
         grind_profit_stake = 0.0
         if grind_1_derisk_1_sub_grind_count > 0:
-          grind_profit = (
-            -(exit_rate - grind_1_derisk_1_current_open_rate) / grind_1_derisk_1_current_open_rate
-          )
+          grind_profit = -(exit_rate - grind_1_derisk_1_current_open_rate) / grind_1_derisk_1_current_open_rate
           grind_profit_stake = grind_1_derisk_1_current_grind_stake_profit
         self.dp.send_msg(
           f"Grinding entry (dl1) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_1_derisk_1_current_grind_stake_profit} {self.config['stake_currency']})"
@@ -17628,9 +17614,7 @@ class NostalgiaForInfinityX5(IStrategy):
 
     # Sell
     if grind_1_derisk_1_sub_grind_count > 0:
-      grind_profit = (
-        -(exit_rate - grind_1_derisk_1_current_open_rate) / grind_1_derisk_1_current_open_rate
-      )
+      grind_profit = -(exit_rate - grind_1_derisk_1_current_open_rate) / grind_1_derisk_1_current_open_rate
       if grind_profit > (grind_1_derisk_1_profit_threshold + fee_open_rate + fee_close_rate):
         sell_amount = grind_1_derisk_1_total_amount * exit_rate / trade.leverage
         if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
@@ -17812,16 +17796,12 @@ class NostalgiaForInfinityX5(IStrategy):
     if (not partial_sell) and (grind_1_sub_grind_count < grind_1_max_sub_grinds):
       if (
         (
-          (
-            (grind_1_sub_grind_count > 0) and -grind_1_distance_ratio < grind_1_sub_thresholds[grind_1_sub_grind_count]
-          )
+          ((grind_1_sub_grind_count > 0) and -grind_1_distance_ratio < grind_1_sub_thresholds[grind_1_sub_grind_count])
           or ((is_derisk or is_derisk_calc) and grind_1_sub_grind_count == 0)
           or (is_grind_mode and grind_1_sub_grind_count == 0)
         )
         and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
-        and (
-          (current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02)
-        )
+        and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
         and (
           (num_open_grinds == 0)
           or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -17951,16 +17931,12 @@ class NostalgiaForInfinityX5(IStrategy):
     if has_order_tags and (not partial_sell) and (grind_2_sub_grind_count < grind_2_max_sub_grinds):
       if (
         (
-          (
-            (grind_2_sub_grind_count > 0) and -grind_2_distance_ratio < grind_2_sub_thresholds[grind_2_sub_grind_count]
-          )
+          ((grind_2_sub_grind_count > 0) and -grind_2_distance_ratio < grind_2_sub_thresholds[grind_2_sub_grind_count])
           or ((is_derisk or is_derisk_calc) and grind_2_sub_grind_count == 0)
           or (is_grind_mode and grind_2_sub_grind_count == 0)
         )
         and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
-        and (
-          (current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02)
-        )
+        and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
         and (
           (num_open_grinds == 0)
           or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -18058,16 +18034,12 @@ class NostalgiaForInfinityX5(IStrategy):
     if has_order_tags and (not partial_sell) and (grind_3_sub_grind_count < grind_3_max_sub_grinds):
       if (
         (
-          (
-            (grind_3_sub_grind_count > 0) and -grind_3_distance_ratio < grind_3_sub_thresholds[grind_3_sub_grind_count]
-          )
+          ((grind_3_sub_grind_count > 0) and -grind_3_distance_ratio < grind_3_sub_thresholds[grind_3_sub_grind_count])
           or ((is_derisk or is_derisk_calc) and grind_3_sub_grind_count == 0)
           or (is_grind_mode and grind_3_sub_grind_count == 0)
         )
         and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
-        and (
-          (current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02)
-        )
+        and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
         and (
           (num_open_grinds == 0)
           or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -18279,9 +18251,7 @@ class NostalgiaForInfinityX5(IStrategy):
     if has_order_tags and (not partial_sell) and (grind_5_sub_grind_count < grind_5_max_sub_grinds):
       if (
         (
-          (
-            (grind_5_sub_grind_count > 0) and -grind_5_distance_ratio < grind_5_sub_thresholds[grind_5_sub_grind_count]
-          )
+          ((grind_5_sub_grind_count > 0) and -grind_5_distance_ratio < grind_5_sub_thresholds[grind_5_sub_grind_count])
           or ((is_derisk or is_derisk_calc) and grind_5_sub_grind_count == 0)
           or (is_grind_mode and grind_5_sub_grind_count == 0)
         )
@@ -18384,9 +18354,7 @@ class NostalgiaForInfinityX5(IStrategy):
     if has_order_tags and (not partial_sell) and (grind_6_sub_grind_count < grind_6_max_sub_grinds):
       if (
         (
-          (
-            (grind_6_sub_grind_count > 0) and -grind_6_distance_ratio < grind_6_sub_thresholds[grind_6_sub_grind_count]
-          )
+          ((grind_6_sub_grind_count > 0) and -grind_6_distance_ratio < grind_6_sub_thresholds[grind_6_sub_grind_count])
           or ((is_derisk or is_derisk_calc) and grind_6_sub_grind_count == 0)
           or (is_grind_mode and grind_6_sub_grind_count == 0)
         )
