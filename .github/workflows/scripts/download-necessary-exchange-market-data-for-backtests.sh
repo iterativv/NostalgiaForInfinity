@@ -14,28 +14,28 @@ rm PAIRS_FOR_DOWNLOAD.txt
 #     -c /running_config/configs/exampleconfig.json -1 --exchange $EXCHANGE \
 #     -c /running_config/configs/blacklist-$EXCHANGE.json|sed -e 's+/+_+g'>>PAIRS_FOR_DOWNLOAD.txt
 
-jq -r .exchange.pair_whitelist[] configs/pairlist-backtest-static-$EXCHANGE-$TRADING_MODE-usdt.json | sed -e 's+/+_+g' >PAIRS_FOR_DOWNLOAD.txt
+jq -r .exchange.pair_whitelist[] configs/pairlist-backtest-static-$EXCHANGE-$TRADING_MODE-usdt.json | sed -e 's+/+_+g' -e 's+:+_+g' >PAIRS_FOR_DOWNLOAD.txt
 
-if [ -L $MAIN_DATA_DIRECTORY ]; then
+if [[ -L $MAIN_DATA_DIRECTORY ]]; then
     echo "###############################################"
-    echo $MAIN_DATA_DIRECTORY exists on your filesyste as a link. We will delete it for Github CI Workflow
+    echo "$MAIN_DATA_DIRECTORY exists on your filesyste as a link. We will delete it for Github CI Workflow"
     echo "###############################################"
-    sudo rm -rf $MAIN_DATA_DIRECTORY
+    rm -rf $MAIN_DATA_DIRECTORY
 else
     echo "###############################################"
-    echo $MAIN_DATA_DIRECTORY not exists on your filesystem. Necessary to download first
+    echo "$MAIN_DATA_DIRECTORY file link is not exists as a link on your filesystem. Necessary to download first"
     echo "###############################################"
 
 fi
 
-if [ -d $MAIN_DATA_DIRECTORY ]; then
+if [[ -d $MAIN_DATA_DIRECTORY ]]; then
     echo "###############################################"
-    echo $MAIN_DATA_DIRECTORY as a directory exists on CI WORKFLOW filesystem. We will delete it for Github CI Workflow
+    echo "$MAIN_DATA_DIRECTORY as a directory exists on CI WORKFLOW filesystem. We will delete it for Github CI Workflow"
     echo "###############################################"
-    sudo rm -rf $MAIN_DATA_DIRECTORY
+    rm -rf $MAIN_DATA_DIRECTORY
 else
     echo "###############################################"
-    echo $MAIN_DATA_DIRECTORY not exists on your filesystem. Necessary to download first
+    echo "$MAIN_DATA_DIRECTORY not exists on your filesystem. Necessary to download first"
     echo "###############################################"
 
 fi
@@ -54,12 +54,12 @@ for data_necessary_exchange in ${EXCHANGE[*]}; do
             echo
 
             # Configure Market Data Directory
-            EXCHANGE_MARKET_DIRECTORY=$data_necessary_exchange
+            EXCHANGE_MARKET_DIRECTORY="$data_necessary_exchange"
 
             if [[ $data_necessary_market_type == futures ]]; then
-                EXCHANGE_MARKET_DIRECTORY=$data_necessary_exchange/futures
+                EXCHANGE_MARKET_DIRECTORY="$data_necessary_exchange/futures"
             else
-                EXCHANGE_MARKET_DIRECTORY=$data_necessary_exchange
+                EXCHANGE_MARKET_DIRECTORY="$data_necessary_exchange"
             fi
 
             while IFS= read -r pair; do
@@ -85,9 +85,9 @@ for data_necessary_exchange in ${EXCHANGE[*]}; do
             EXCHANGE_MARKET_DIRECTORY=$data_necessary_exchange
 
             if [[ $data_necessary_market_type == futures ]]; then
-                EXCHANGE_MARKET_DIRECTORY=$data_necessary_exchange/futures
+                EXCHANGE_MARKET_DIRECTORY="$data_necessary_exchange/futures"
             else
-                EXCHANGE_MARKET_DIRECTORY=$data_necessary_exchange
+                EXCHANGE_MARKET_DIRECTORY="$data_necessary_exchange"
             fi
 
             while IFS= read -r pair; do
