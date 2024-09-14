@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.0"
+    return "v15.1.1"
 
   stoploss = -0.99
 
@@ -3014,6 +3014,8 @@ class NostalgiaForInfinityX5(IStrategy):
     short_entry_conditions = []
 
     df.loc[:, "enter_tag"] = ""
+    df.loc[:, "enter_long"] = ""
+    df.loc[:, "enter_short"] = ""
 
     is_backtest = self.dp.runmode.value in ["backtest", "hyperopt", "plot"]
     # the number of free slots
