@@ -5124,7 +5124,7 @@ class NostalgiaForInfinityX5(IStrategy):
           # / (trade.leverage if self.is_futures_mode else 1.0)
         )
         # temporary
-        and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 12) or is_backtest)
+        and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
       ):
         sell, signal_name = True, f"exit_{self.long_rebuy_mode_name}_stoploss_doom"
 
@@ -5639,7 +5639,7 @@ class NostalgiaForInfinityX5(IStrategy):
           )
         )
         # temporary
-        and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 12) or is_backtest)
+        and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
       ):
         sell, signal_name = True, f"exit_{self.long_rapid_mode_name}_stoploss_doom"
 
@@ -9094,7 +9094,7 @@ class NostalgiaForInfinityX5(IStrategy):
         # / trade.leverage
       )
       # temporary
-      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 12) or is_backtest)
+      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
     ):
       return True, f"exit_{mode_name}_stoploss_doom"
 
@@ -9112,7 +9112,7 @@ class NostalgiaForInfinityX5(IStrategy):
       and (last_candle["RSI_14"] > (last_candle["RSI_14_1h"] + 16.0))
       and (current_time - timedelta(minutes=720) > trade.open_date_utc)
       # temporary
-      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 12) or is_backtest)
+      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
     ):
       return True, f"exit_{mode_name}_stoploss_u_e"
 
@@ -9947,7 +9947,7 @@ class NostalgiaForInfinityX5(IStrategy):
       and (grind_1_derisk_1_current_grind_stake_profit < (slice_amount * grind_1_derisk_1_stop_grinds))
       and (is_derisk or is_derisk_calc)
       # temporary
-      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 12) or is_backtest)
+      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
     ):
       sell_amount = grind_1_derisk_1_total_amount * exit_rate / trade.leverage
       if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
@@ -10075,7 +10075,7 @@ class NostalgiaForInfinityX5(IStrategy):
       and (grind_2_derisk_1_current_grind_stake_profit < (slice_amount * grind_2_derisk_1_stop_grinds))
       and (is_derisk or is_derisk_calc)
       # temporary
-      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 12) or is_backtest)
+      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
     ):
       sell_amount = grind_2_derisk_1_total_amount * exit_rate / trade.leverage
       if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
@@ -10210,7 +10210,7 @@ class NostalgiaForInfinityX5(IStrategy):
         and (is_derisk or is_derisk_calc or is_grind_mode)
       )
       # temporary
-      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 12) or is_backtest)
+      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
     ):
       sell_amount = grind_1_total_amount * exit_rate / trade.leverage
       if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
@@ -10313,7 +10313,7 @@ class NostalgiaForInfinityX5(IStrategy):
         and (is_derisk or is_derisk_calc or is_grind_mode)
       )
       # temporary
-      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 12) or is_backtest)
+      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
     ):
       sell_amount = grind_2_total_amount * exit_rate / trade.leverage
       if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
@@ -10416,7 +10416,7 @@ class NostalgiaForInfinityX5(IStrategy):
         and (is_derisk or is_derisk_calc or is_grind_mode)
       )
       # temporary
-      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 12) or is_backtest)
+      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
     ):
       sell_amount = grind_3_total_amount * exit_rate / trade.leverage
       if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
@@ -10530,7 +10530,7 @@ class NostalgiaForInfinityX5(IStrategy):
         and (is_derisk or is_derisk_calc or is_grind_mode)
       )
       # temporary
-      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 12) or is_backtest)
+      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
     ):
       sell_amount = grind_4_total_amount * exit_rate / trade.leverage
       if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
@@ -10633,7 +10633,7 @@ class NostalgiaForInfinityX5(IStrategy):
         and (is_derisk or is_derisk_calc or is_grind_mode)
       )
       # temporary
-      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 12) or is_backtest)
+      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
     ):
       sell_amount = grind_5_total_amount * exit_rate / trade.leverage
       if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
@@ -10747,7 +10747,7 @@ class NostalgiaForInfinityX5(IStrategy):
         and (is_derisk or is_derisk_calc or is_grind_mode)
       )
       # temporary
-      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 12) or is_backtest)
+      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
     ):
       sell_amount = grind_6_total_amount * exit_rate / trade.leverage
       if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
@@ -12144,12 +12144,12 @@ class NostalgiaForInfinityX5(IStrategy):
         slice_amount
         * (
           (self.regular_mode_derisk_futures if self.is_futures_mode else self.regular_mode_derisk_spot)
-          if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 12) or is_backtest)
+          if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
           else (self.regular_mode_derisk_futures_old if self.is_futures_mode else self.regular_mode_derisk_spot_old)
         )
         # / (trade.leverage if self.is_futures_mode else 1.0)
       )
-    ) and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 12) or is_backtest):
+    ) and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest):
       sell_amount = trade.amount * exit_rate / trade.leverage - (min_stake * 1.55)
       ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
       if sell_amount > min_stake and ft_sell_amount > min_stake:
@@ -12166,13 +12166,13 @@ class NostalgiaForInfinityX5(IStrategy):
     if (
       has_order_tags
       and not is_derisk_1
-      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 12) or is_backtest)
+      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
       and profit_stake
       < (
         slice_amount
         * (
           (self.regular_mode_derisk_1_futures if self.is_futures_mode else self.regular_mode_derisk_1_spot)
-          if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 12) or is_backtest)
+          if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
           else (
             self.regular_mode_derisk_1_futures_old if self.is_futures_mode else self.regular_mode_derisk_1_spot_old
           )
@@ -13281,7 +13281,7 @@ class NostalgiaForInfinityX5(IStrategy):
           # / (trade.leverage if self.is_futures_mode else 1.0)
         )
         # temporary
-        and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 12) or is_backtest)
+        and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
       ):
         sell, signal_name = True, f"exit_{self.short_rebuy_mode_name}_stoploss_doom"
 
@@ -13796,7 +13796,7 @@ class NostalgiaForInfinityX5(IStrategy):
           )
         )
         # temporary
-        and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 12) or is_backtest)
+        and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
       ):
         sell, signal_name = True, f"exit_{self.short_rapid_mode_name}_stoploss_doom"
 
@@ -17251,7 +17251,7 @@ class NostalgiaForInfinityX5(IStrategy):
         # / trade.leverage
       )
       # temporary
-      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 12) or is_backtest)
+      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
     ):
       return True, f"exit_{mode_name}_stoploss_doom"
 
@@ -17269,7 +17269,7 @@ class NostalgiaForInfinityX5(IStrategy):
       and (last_candle["RSI_14"] < (last_candle["RSI_14_1h"] - 16.0))
       and (current_time - timedelta(minutes=720) > trade.open_date_utc)
       # temporary
-      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 12) or is_backtest)
+      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
     ):
       return True, f"exit_{mode_name}_stoploss_u_e"
 
@@ -18224,7 +18224,7 @@ class NostalgiaForInfinityX5(IStrategy):
       and (grind_2_derisk_1_current_grind_stake_profit < (slice_amount * grind_2_derisk_1_stop_grinds))
       and (is_derisk or is_derisk_calc)
       # temporary
-      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 12) or is_backtest)
+      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
     ):
       sell_amount = grind_2_derisk_1_total_amount * exit_rate / trade.leverage
       if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
@@ -18359,7 +18359,7 @@ class NostalgiaForInfinityX5(IStrategy):
         and (is_derisk or is_derisk_calc or is_grind_mode)
       )
       # temporary
-      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 12) or is_backtest)
+      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
     ):
       sell_amount = grind_1_total_amount * exit_rate / trade.leverage
       if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
@@ -18462,7 +18462,7 @@ class NostalgiaForInfinityX5(IStrategy):
         and (is_derisk or is_derisk_calc or is_grind_mode)
       )
       # temporary
-      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 12) or is_backtest)
+      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
     ):
       sell_amount = grind_2_total_amount * exit_rate / trade.leverage
       if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
@@ -18565,7 +18565,7 @@ class NostalgiaForInfinityX5(IStrategy):
         and (is_derisk or is_derisk_calc or is_grind_mode)
       )
       # temporary
-      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 12) or is_backtest)
+      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
     ):
       sell_amount = grind_3_total_amount * exit_rate / trade.leverage
       if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
@@ -18782,7 +18782,7 @@ class NostalgiaForInfinityX5(IStrategy):
         and (is_derisk or is_derisk_calc or is_grind_mode)
       )
       # temporary
-      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 12) or is_backtest)
+      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
     ):
       sell_amount = grind_5_total_amount * exit_rate / trade.leverage
       if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
@@ -18896,7 +18896,7 @@ class NostalgiaForInfinityX5(IStrategy):
         and (is_derisk or is_derisk_calc or is_grind_mode)
       )
       # temporary
-      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 12) or is_backtest)
+      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
     ):
       sell_amount = grind_6_total_amount * exit_rate / trade.leverage
       if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
@@ -20235,12 +20235,12 @@ class NostalgiaForInfinityX5(IStrategy):
         slice_amount
         * (
           (self.regular_mode_derisk_futures if self.is_futures_mode else self.regular_mode_derisk_spot)
-          if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 12) or is_backtest)
+          if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
           else (self.regular_mode_derisk_futures_old if self.is_futures_mode else self.regular_mode_derisk_spot_old)
         )
         # / (trade.leverage if self.is_futures_mode else 1.0)
       )
-    ) and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 12) or is_backtest):
+    ) and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest):
       sell_amount = trade.amount * exit_rate / trade.leverage - (min_stake * 1.55)
       ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
       if sell_amount > min_stake and ft_sell_amount > min_stake:
@@ -20257,13 +20257,13 @@ class NostalgiaForInfinityX5(IStrategy):
     if (
       has_order_tags
       and not is_derisk_1
-      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 12) or is_backtest)
+      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
       and profit_stake
       < (
         slice_amount
         * (
           (self.regular_mode_derisk_1_futures if self.is_futures_mode else self.regular_mode_derisk_1_spot)
-          if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 12) or is_backtest)
+          if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
           else (
             self.regular_mode_derisk_1_futures_old if self.is_futures_mode else self.regular_mode_derisk_1_spot_old
           )
