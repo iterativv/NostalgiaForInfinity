@@ -312,8 +312,8 @@ def testdatadir(tmp_path) -> Path:
   for name in ("strategies", "data"):
     user_data.joinpath(name).mkdir()
   shutil.copyfile(
-    REPO_ROOT / "NostalgiaForInfinityX4.py",
-    user_data / "strategies" / "NostalgiaForInfinityX4.py",
+    REPO_ROOT / "NostalgiaForInfinityX5.py",
+    user_data / "strategies" / "NostalgiaForInfinityX5.py",
   )
   return user_data
 
@@ -374,7 +374,7 @@ def get_default_conf(testdatadir):
     "user_data_dir": testdatadir,
     "verbosity": 3,
     "strategy_path": str(testdatadir / "strategies"),
-    "strategy": "NostalgiaForInfinityX4",
+    "strategy": "NostalgiaForInfinityX5",
     "disableparamexport": True,
     "internals": {},
     "export": "none",

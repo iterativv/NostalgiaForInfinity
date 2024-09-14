@@ -7,12 +7,12 @@ services:
       context: .
       dockerfile: "./docker/Dockerfile.custom"
     restart: unless-stopped
-    container_name: ${FREQTRADE__BOT_NAME:-Example_Test_Account}_${FREQTRADE__EXCHANGE__NAME:-binance}_${FREQTRADE__TRADING_MODE:-futures}-${FREQTRADE__STRATEGY:-NostalgiaForInfinityX4}
+    container_name: ${FREQTRADE__BOT_NAME:-Example_Test_Account}_${FREQTRADE__EXCHANGE__NAME:-binance}_${FREQTRADE__TRADING_MODE:-futures}-${FREQTRADE__STRATEGY:-NostalgiaForInfinityX5}
     volumes:
       - "./user_data:/freqtrade/user_data"
       - "./user_data/data:/freqtrade/user_data/data"
       - "./configs:/freqtrade/configs"
-      - "./${FREQTRADE__STRATEGY:-NostalgiaForInfinityX4}.py:/freqtrade/${FREQTRADE__STRATEGY:-NostalgiaForInfinityX4}.py"
+      - "./${FREQTRADE__STRATEGY:-NostalgiaForInfinityX5}.py:/freqtrade/${FREQTRADE__STRATEGY:-NostalgiaForInfinityX5}.py"
     ports:
       - "${FREQTRADE__API_SERVER__LISTEN_PORT:-8080}:${FREQTRADE__API_SERVER__LISTEN_PORT:-8080}"
     # Default command used when running `docker compose up`
@@ -22,4 +22,15 @@ services:
     command: >
       trade
       --db-url sqlite:////freqtrade/user_data/${FREQTRADE__BOT_NAME:-Example_Test_Account}_${FREQTRADE__EXCHANGE__NAME:-binance}_${FREQTRADE__TRADING_MODE:-futures}-tradesv3.sqlite
-      --log-file user_data/logs/${FREQTRADE__BOT_NAME:-Example_Test_Account}-${FREQTRADE__EXCHANGE__NAME:-binance}-${FREQTRADE__STRATEGY:-NostalgiaForInfinityX4}-${FREQTRADE__TRADING_MODE:-futures}.log
+      --log-file user_data/logs/${FREQTRADE__BOT_NAME:-Example_Test_Account}-${FREQTRADE__EXCHANGE__NAME:-binance}-${FREQTRADE__STRATEGY:-NostalgiaForInfinityX5}-${FREQTRADE__TRADING_MODE:-futures}.log
+
+  restarter:
+    image: docker:cli
+    volumes: ["/var/run/docker.sock:/var/run/docker.sock"]
+    command:
+      [
+        "/bin/sh",
+        "-c",
+        "while true; do sleep 86400; docker restart ${FREQTRADE__BOT_NAME:-Example_Test_Account}_${FREQTRADE__EXCHANGE__NAME:-binance}_${FREQTRADE__TRADING_MODE:-futures}-${FREQTRADE__STRATEGY:-NostalgiaForInfinityX5}; done",
+      ]
+    restart: unless-stopped
