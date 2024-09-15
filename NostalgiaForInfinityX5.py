@@ -131,6 +131,7 @@ class NostalgiaForInfinityX5(IStrategy):
   long_high_profit_mode_name = "long_hp"
   long_rapid_mode_name = "long_rapid"
   long_grind_mode_name = "long_grind"
+  long_top_coins_mode_name = "long_tc"
 
   # Shorting
 
@@ -155,6 +156,7 @@ class NostalgiaForInfinityX5(IStrategy):
   short_rebuy_mode_name = "short_rebuy"
   short_high_profit_mode_name = "short_hp"
   short_rapid_mode_name = "short_rapid"
+  short_top_coins_mode_name = "short_tc"
 
   is_futures_mode = False
   futures_mode_leverage = 3.0
@@ -383,6 +385,37 @@ class NostalgiaForInfinityX5(IStrategy):
     "ATOM",
     "GRT",
     "LINK",
+    "VET",
+    "THETA",
+    "EOS",
+    "LRC",
+    "QTUM",
+    "CELR",
+  ]
+
+  # Top coins mode coins
+  top_coins_mode_coins = [
+    "BTC",
+    "ETH",
+    "ADA",
+    "ARB",
+    "DOT",
+    "XLM",
+    "ALGO",
+    "XMR",
+    "DOGE",
+    "BCH",
+    "ETC",
+    "FTM",
+    "KAS",
+    "HBAR",
+    "SUI",
+    "TON",
+    "XRP",
+    "UNI",
+    "LTC",
+    "FIL",
+    "ATOM",
     "VET",
     "THETA",
     "EOS",
@@ -1338,6 +1371,32 @@ class NostalgiaForInfinityX5(IStrategy):
       if sell and (signal_name is not None):
         return f"{signal_name} ( {enter_tag})"
 
+    # Long Top Coins mode
+    if any(c in self.long_normal_mode_tags for c in enter_tags):
+      sell, signal_name = self.long_exit_top_coins(
+        pair,
+        current_rate,
+        profit_stake,
+        profit_ratio,
+        profit_current_stake_ratio,
+        profit_init_ratio,
+        max_profit,
+        max_loss,
+        filled_entries,
+        filled_exits,
+        last_candle,
+        previous_candle_1,
+        previous_candle_2,
+        previous_candle_3,
+        previous_candle_4,
+        previous_candle_5,
+        trade,
+        current_time,
+        enter_tags,
+      )
+      if sell and (signal_name is not None):
+        return f"{signal_name} ( {enter_tag})"
+
     # Short normal mode
     if any(c in self.short_normal_mode_tags for c in enter_tags):
       sell, signal_name = self.short_exit_normal(
@@ -1506,6 +1565,7 @@ class NostalgiaForInfinityX5(IStrategy):
           + self.long_mode_tags
           + self.long_rapid_mode_tags
           + self.long_grind_mode_tags
+          + self.long_top_coins_mode_tags
         )
         for c in enter_tags
       )
@@ -1712,6 +1772,7 @@ class NostalgiaForInfinityX5(IStrategy):
           + self.long_mode_tags
           + self.long_rapid_mode_tags
           + self.long_grind_mode_tags
+          + self.long_top_coins_mode_tags
         )
         for c in enter_tags
       )
@@ -1725,6 +1786,7 @@ class NostalgiaForInfinityX5(IStrategy):
           + self.long_mode_tags
           + self.long_rapid_mode_tags
           + self.long_grind_mode_tags
+          + self.long_top_coins_mode_tags
         )
         for c in enter_tags
       )
@@ -2740,6 +2802,13 @@ class NostalgiaForInfinityX5(IStrategy):
         # The pair is not in the list of grind mode allowed
         log.warning(f"Cancelling entry for {pair} due to {pair} not in list of grind mode coins.")
         return False
+    # Top Coins mode
+    elif all(c in self.long_top_coins_mode_tags for c in entry_tags):
+      is_pair_top_coins_mode = pair.split("/")[0] in self.top_coins_mode_coins
+      if not is_pair_top_coins_mode:
+        # The pair is not in the list of top_coins mode allowed
+        log.warning(f"Cancelling entry for {pair} due to {pair} not in list of top coins mode coins.")
+        return False
 
     df, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
     if len(df) >= 1:
@@ -3033,6 +3102,8 @@ class NostalgiaForInfinityX5(IStrategy):
           enter_tags = enter_tag.split()
           if all(c in self.long_grind_mode_tags for c in enter_tags):
             num_open_long_grind_mode += 1
+    # Top Coins mode
+    is_pair_long_top_coins_mode = metadata["pair"].split("/")[0] in self.top_coins_mode_coins
     # if BTC/ETH stake
     is_btc_stake = self.config["stake_currency"] in self.btc_stakes
     allowed_empty_candles_288 = 144 if is_btc_stake else 60
@@ -3917,9 +3988,7 @@ class NostalgiaForInfinityX5(IStrategy):
             (df["STOCHRSIk_14_14_3_3_15m"] < 70.0) | (df["RSI_3_4h"] > 5.0) | (df["STOCHRSIk_14_14_3_3_1d"] < 50.0)
           )
           # 4m & 1h & 4h down move
-          long_entry_logic.append(
-            (df["RSI_3"] > 5.0) | (df["RSI_3_1h"] > 10.0) | (df["RSI_3_4h"] > 10.0)
-          )
+          long_entry_logic.append((df["RSI_3"] > 5.0) | (df["RSI_3_1h"] > 10.0) | (df["RSI_3_4h"] > 10.0))
           # 15m & 1h & 4h down move
           long_entry_logic.append((df["RSI_3_15m"] > 5.0) | (df["RSI_3_1h"] > 5.0) | (df["RSI_3_4h"] > 10.0))
           # 15m & 1h strong down move & downtrend
@@ -6862,6 +6931,253 @@ class NostalgiaForInfinityX5(IStrategy):
   ) -> tuple:
     if profit_init_ratio > 0.25:
       return True, f"exit_{self.long_grind_mode_name}_g"
+    return False, None
+
+  # Long Exit Top Coins
+  # ---------------------------------------------------------------------------------------------
+  def long_exit_top_coins(
+    self,
+    pair: str,
+    current_rate: float,
+    profit_stake: float,
+    profit_ratio: float,
+    profit_current_stake_ratio: float,
+    profit_init_ratio: float,
+    max_profit: float,
+    max_loss: float,
+    filled_entries,
+    filled_exits,
+    last_candle,
+    previous_candle_1,
+    previous_candle_2,
+    previous_candle_3,
+    previous_candle_4,
+    previous_candle_5,
+    trade: "Trade",
+    current_time: "datetime",
+    enter_tags,
+  ) -> tuple:
+    sell = False
+
+    # Original sell signals
+    sell, signal_name = self.long_exit_signals(
+      self.long_top_coins_mode_name,
+      profit_init_ratio,
+      max_profit,
+      max_loss,
+      last_candle,
+      previous_candle_1,
+      previous_candle_2,
+      previous_candle_3,
+      previous_candle_4,
+      previous_candle_5,
+      trade,
+      current_time,
+      enter_tags,
+    )
+
+    # Main sell signals
+    if not sell:
+      sell, signal_name = self.long_exit_main(
+        self.long_top_coins_mode_name,
+        profit_init_ratio,
+        max_profit,
+        max_loss,
+        last_candle,
+        previous_candle_1,
+        previous_candle_2,
+        previous_candle_3,
+        previous_candle_4,
+        previous_candle_5,
+        trade,
+        current_time,
+        enter_tags,
+      )
+
+    # Williams %R based sells
+    if not sell:
+      sell, signal_name = self.long_exit_williams_r(
+        self.long_top_coins_mode_name,
+        profit_init_ratio,
+        max_profit,
+        max_loss,
+        last_candle,
+        previous_candle_1,
+        previous_candle_2,
+        previous_candle_3,
+        previous_candle_4,
+        previous_candle_5,
+        trade,
+        current_time,
+        enter_tags,
+      )
+
+    # Downtrend/descending based sells
+    if not sell:
+      sell, signal_name = self.long_exit_dec(
+        self.long_top_coins_mode_name,
+        profit_init_ratio,
+        max_profit,
+        max_loss,
+        last_candle,
+        previous_candle_1,
+        previous_candle_2,
+        previous_candle_3,
+        previous_candle_4,
+        previous_candle_5,
+        trade,
+        current_time,
+        enter_tags,
+      )
+
+    # Stoplosses
+    if not sell:
+      sell, signal_name = self.long_exit_stoploss(
+        self.long_top_coins_mode_name,
+        current_rate,
+        profit_stake,
+        profit_ratio,
+        profit_current_stake_ratio,
+        profit_init_ratio,
+        max_profit,
+        max_loss,
+        filled_entries,
+        filled_exits,
+        last_candle,
+        previous_candle_1,
+        previous_candle_2,
+        previous_candle_3,
+        previous_candle_4,
+        previous_candle_5,
+        trade,
+        current_time,
+        enter_tags,
+      )
+
+    # Profit Target Signal
+    # Check if pair exist on target_profit_cache
+    if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
+      previous_rate = self.target_profit_cache.data[pair]["rate"]
+      previous_profit = self.target_profit_cache.data[pair]["profit"]
+      previous_sell_reason = self.target_profit_cache.data[pair]["sell_reason"]
+      previous_time_profit_reached = datetime.fromisoformat(self.target_profit_cache.data[pair]["time_profit_reached"])
+
+      sell_max, signal_name_max = self.exit_profit_target(
+        self.long_top_coins_mode_name,
+        pair,
+        trade,
+        current_time,
+        current_rate,
+        profit_stake,
+        profit_ratio,
+        profit_current_stake_ratio,
+        profit_init_ratio,
+        last_candle,
+        previous_candle_1,
+        previous_rate,
+        previous_profit,
+        previous_sell_reason,
+        previous_time_profit_reached,
+        enter_tags,
+      )
+      if sell_max and signal_name_max is not None:
+        return True, f"{signal_name_max}_m"
+      if previous_sell_reason in [f"exit_{self.long_top_coins_mode_name}_stoploss_u_e"]:
+        if profit_ratio > (previous_profit + 0.005):
+          mark_pair, mark_signal = self.mark_profit_target(
+            self.long_top_coins_mode_name,
+            pair,
+            True,
+            previous_sell_reason,
+            trade,
+            current_time,
+            current_rate,
+            profit_ratio,
+            last_candle,
+            previous_candle_1,
+          )
+          if mark_pair:
+            self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
+      elif (profit_init_ratio > (previous_profit + 0.001)) and (
+        previous_sell_reason not in [f"exit_{self.long_top_coins_mode_name}_stoploss_doom"]
+      ):
+        # Update the target, raise it.
+        mark_pair, mark_signal = self.mark_profit_target(
+          self.long_top_coins_mode_name,
+          pair,
+          True,
+          previous_sell_reason,
+          trade,
+          current_time,
+          current_rate,
+          profit_init_ratio,
+          last_candle,
+          previous_candle_1,
+        )
+        if mark_pair:
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
+
+    # Add the pair to the list, if a sell triggered and conditions met
+    if sell and signal_name is not None:
+      previous_profit = None
+      if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
+        previous_profit = self.target_profit_cache.data[pair]["profit"]
+      if signal_name in [
+        f"exit_{self.long_top_coins_mode_name}_stoploss_doom",
+        f"exit_{self.long_top_coins_mode_name}_stoploss_u_e",
+      ]:
+        mark_pair, mark_signal = self.mark_profit_target(
+          self.long_top_coins_mode_name,
+          pair,
+          sell,
+          signal_name,
+          trade,
+          current_time,
+          current_rate,
+          profit_ratio,
+          last_candle,
+          previous_candle_1,
+        )
+        if mark_pair:
+          self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
+        else:
+          # Just sell it, without maximize
+          return True, f"{signal_name}"
+      elif (previous_profit is None) or (previous_profit < profit_init_ratio):
+        mark_pair, mark_signal = self.mark_profit_target(
+          self.long_top_coins_mode_name,
+          pair,
+          sell,
+          signal_name,
+          trade,
+          current_time,
+          current_rate,
+          profit_init_ratio,
+          last_candle,
+          previous_candle_1,
+        )
+        if mark_pair:
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
+        else:
+          # Just sell it, without maximize
+          return True, f"{signal_name}"
+    else:
+      if profit_init_ratio >= 0.005:
+        previous_profit = None
+        if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
+          previous_profit = self.target_profit_cache.data[pair]["profit"]
+        if (previous_profit is None) or (previous_profit < profit_init_ratio):
+          mark_signal = f"exit_profit_{self.long_top_coins_mode_name}_max"
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
+
+    if signal_name not in [
+      f"exit_profit_{self.long_top_coins_mode_name}_max",
+      # f"exit_{self.long_top_coins_mode_name}_stoploss_doom",
+      # f"exit_{self.long_top_coins_mode_name}_stoploss_u_e",
+    ]:
+      if sell and (signal_name is not None):
+        return True, f"{signal_name}"
+
     return False, None
 
   # Long Exit Signals
