@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.9"
+    return "v15.1.10"
 
   stoploss = -0.99
 
@@ -123,6 +123,8 @@ class NostalgiaForInfinityX5(IStrategy):
   long_rapid_mode_tags = ["101", "102", "103", "104", "105", "106", "107", "108", "109", "110"]
   # Long grind mode tags
   long_grind_mode_tags = ["120"]
+  # Long top coins mode tags
+  long_top_coins_mode_tags = ["141"]
 
   long_normal_mode_name = "long_normal"
   long_pump_mode_name = "long_pump"
@@ -447,6 +449,7 @@ class NostalgiaForInfinityX5(IStrategy):
     "long_entry_condition_42_enable": True,
     "long_entry_condition_43_enable": True,
     "long_entry_condition_120_enable": True,
+    "long_entry_condition_141_enable": False,
   }
 
   short_entry_signal_params = {
@@ -4270,6 +4273,28 @@ class NostalgiaForInfinityX5(IStrategy):
           long_entry_logic.append(df["STOCHRSIk_14_14_3_3"] < 20.0)
           long_entry_logic.append(df["WILLR_14"] < -80.0)
           long_entry_logic.append(df["AROONU_14"] < 25.0)
+
+        # Condition #141 - Top Coins mode (Long).
+        if index == 141:
+          # Protections
+          long_entry_logic.append(is_pair_long_top_coins_mode)
+
+          long_entry_logic.append(df["num_empty_288"] <= allowed_empty_candles_288)
+
+          long_entry_logic.append(df["RSI_3_1h"] >= 5.0)
+          long_entry_logic.append(df["RSI_3_4h"] >= 5.0)
+          long_entry_logic.append(df["RSI_3_1h"] <= 95.0)
+          long_entry_logic.append(df["RSI_3_4h"] <= 80.0)
+          long_entry_logic.append(df["RSI_3_1d"] <= 80.0)
+          long_entry_logic.append(df["RSI_14_1h"] < 80.0)
+          long_entry_logic.append(df["RSI_14_4h"] < 80.0)
+          long_entry_logic.append(df["RSI_14_1d"] < 90.0)
+
+          # Logic
+          long_entry_logic.append(df["RSI_20"] < df["RSI_20"].shift(1))
+          long_entry_logic.append(df["RSI_3"] < 30.0)
+          long_entry_logic.append(df["AROONU_14"] < 25.0)
+          long_entry_logic.append(df["close"] < df["SMA_16"] * 0.956)
 
         # Long Entry Conditions Ends Here
 
