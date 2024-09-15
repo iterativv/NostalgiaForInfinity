@@ -1372,7 +1372,7 @@ class NostalgiaForInfinityX5(IStrategy):
         return f"{signal_name} ( {enter_tag})"
 
     # Long Top Coins mode
-    if any(c in self.long_normal_mode_tags for c in enter_tags):
+    if any(c in self.long_top_coins_mode_tags for c in enter_tags):
       sell, signal_name = self.long_exit_top_coins(
         pair,
         current_rate,
