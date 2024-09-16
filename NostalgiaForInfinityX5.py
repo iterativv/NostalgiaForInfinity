@@ -3468,6 +3468,10 @@ class NostalgiaForInfinityX5(IStrategy):
             | (df["AROONU_14_15m"] < 50.0)
             | (df["STOCHRSIk_14_14_3_3_1h"] < 50.0)
           )
+          # 1d green with top wick, 1h still high
+          long_entry_logic.append(
+            (df["change_pct_1d"] < 20.0) | (df["top_wick_pct_1d"] < 20.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 50.0)
+          )
 
           # Logic
           long_entry_logic.append(df["AROONU_14"] < 25.0)
