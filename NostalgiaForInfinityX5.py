@@ -4037,6 +4037,13 @@ class NostalgiaForInfinityX5(IStrategy):
           long_entry_logic.append(
             (df["STOCHRSIk_14_14_3_3_15m"] < 70.0) | (df["RSI_3_4h"] > 5.0) | (df["STOCHRSIk_14_14_3_3_1d"] < 50.0)
           )
+          # 15m high, 1h low, 4h down move, 4h still not low enough
+          long_entry_logic.append(
+            (df["STOCHRSIk_14_14_3_3_15m"] < 70.0)
+            | (df["CMF_20_1h"] > -0.20)
+            | (df["RSI_3_4h"] > 20.0)
+            | (df["STOCHRSIk_14_14_3_3_4h"] < 15.0)
+          )
           # 4m & 1h & 4h down move
           long_entry_logic.append((df["RSI_3"] > 5.0) | (df["RSI_3_1h"] > 10.0) | (df["RSI_3_4h"] > 10.0))
           # 15m & 1h & 4h down move
