@@ -7,9 +7,7 @@
       "API3/USDT:USDT",
       "APT/USDT:USDT",
       "BNB/USDT:USDT",
-      "CEL/USDT:USDT",
       "ETHW/USDT:USDT",
-      "FITFI/USDT:USDT",
       "GMT/USDT:USDT",
       "KLAY/USDT:USDT",
       "LOOKS/USDT:USDT",
@@ -19,17 +17,11 @@
       "SWEAT/USDT:USDT",
       "TON/USDT:USDT",
       "USTC/USDT:USDT"
-    ],
-    "ccxt_config": {
-      "enableRateLimit": true,
-      "rateLimit": 600,
-      "timeout": 60000
-    },
-    "ccxt_async_config": {
-      "enableRateLimit": true,
-      "rateLimit": 600,
-      "timeout": 60000
-    }
+    ]
   },
-  "pairlists": [{ "method": "StaticPairList" }]
+  "pairlists": [
+    {
+      "method": "StaticPairList"
+    }
+  ]
 }
