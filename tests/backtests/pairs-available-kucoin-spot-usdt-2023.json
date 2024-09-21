@@ -8,7 +8,6 @@
       "AIPAD/USDT",
       "ARB/USDT",
       "ARKM/USDT",
-      "ATEM/USDT",
       "AUCTION/USDT",
       "BABYDOGE/USDT",
       "BDX/USDT",
@@ -39,15 +38,12 @@
       "GOAL/USDT",
       "GRAIL/USDT",
       "HALO/USDT",
-      "HIBAKC/USDT",
       "HIBEANZ/USDT",
       "HIBIRDS/USDT",
       "HIFI/USDT",
       "HIFRIENDS/USDT",
       "HIGH/USDT",
-      "HIMFERS/USDT",
       "HISEALS/USDT",
-      "HIUNDEAD/USDT",
       "HMND/USDT",
       "ID/USDT",
       "IGU/USDT",
@@ -61,7 +57,6 @@
       "KARATE/USDT",
       "KAS/USDT",
       "KING/USDT",
-      "KLUB/USDT",
       "KPOL/USDT",
       "LADYS/USDT",
       "LAI/USDT",
@@ -76,7 +71,6 @@
       "MAV/USDT",
       "MEME/USDT",
       "MIND/USDT",
-      "MM/USDT",
       "MMM/USDT",
       "MNT/USDT",
       "MYRIA/USDT",
@@ -109,7 +103,6 @@
       "SEI/USDT",
       "SHRAP/USDT",
       "SIDUS/USDT",
-      "SIMP/USDT",
       "SNS/USDT",
       "SSV/USDT",
       "STRAX/USDT",
@@ -128,7 +121,6 @@
       "TURBOS/USDT",
       "UQC/USDT",
       "UTK/USDT",
-      "VCORE/USDT",
       "VERSE/USDT",
       "VOLT/USDT",
       "VRTX/USDT",
@@ -144,5 +136,9 @@
       "ZRX/USDT"
     ]
   },
-  "pairlists": [{ "method": "StaticPairList" }]
+  "pairlists": [
+    {
+      "method": "StaticPairList"
+    }
+  ]
 }

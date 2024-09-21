@@ -48,9 +48,7 @@
       "FIDA/USDT",
       "FITFI/USDT",
       "FORT/USDT",
-      "FSN/USDT",
       "FT/USDT",
-      "GAL/USDT",
       "GARI/USDT",
       "GEM/USDT",
       "GGG/USDT",
@@ -61,8 +59,6 @@
       "H2O/USDT",
       "HBB/USDT",
       "HFT/USDT",
-      "HIFLUF/USDT",
-      "HIODBS/USDT",
       "HIPENGUINS/USDT",
       "HNT/USDT",
       "ICX/USDT",
@@ -98,7 +94,6 @@
       "PSL/USDT",
       "PUMLX/USDT",
       "RACA/USDT",
-      "RANKER/USDT",
       "RBP/USDT",
       "REVU/USDT",
       "RVN/USDT",
@@ -133,5 +128,9 @@
       "XWG/USDT"
     ]
   },
-  "pairlists": [{ "method": "StaticPairList" }]
+  "pairlists": [
+    {
+      "method": "StaticPairList"
+    }
+  ]
 }
