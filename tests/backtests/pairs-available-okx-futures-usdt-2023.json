@@ -31,7 +31,6 @@
       "BNT/USDT:USDT",
       "BSV/USDT:USDT",
       "BTC/USDT:USDT",
-      "CEL/USDT:USDT",
       "CELO/USDT:USDT",
       "CETUS/USDT:USDT",
       "CFX/USDT:USDT",
@@ -54,7 +53,6 @@
       "ETHW/USDT:USDT",
       "FET/USDT:USDT",
       "FIL/USDT:USDT",
-      "FITFI/USDT:USDT",
       "FLM/USDT:USDT",
       "FLOKI/USDT:USDT",
       "FLOW/USDT:USDT",
@@ -132,7 +130,6 @@
       "TURBO/USDT:USDT",
       "UMA/USDT:USDT",
       "UNI/USDT:USDT",
-      "USDC/USDT:USDT",
       "USTC/USDT:USDT",
       "VRA/USDT:USDT",
       "WAXP/USDT:USDT",
@@ -146,17 +143,11 @@
       "YGG/USDT:USDT",
       "ZIL/USDT:USDT",
       "ZRX/USDT:USDT"
-    ],
-    "ccxt_config": {
-      "enableRateLimit": true,
-      "rateLimit": 600,
-      "timeout": 60000
-    },
-    "ccxt_async_config": {
-      "enableRateLimit": true,
-      "rateLimit": 600,
-      "timeout": 60000
-    }
+    ]
   },
-  "pairlists": [{ "method": "StaticPairList" }]
+  "pairlists": [
+    {
+      "method": "StaticPairList"
+    }
+  ]
 }
