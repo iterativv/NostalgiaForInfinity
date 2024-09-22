@@ -4341,6 +4341,8 @@ class NostalgiaForInfinityX5(IStrategy):
           long_entry_logic.append((df["ROC_9_4h"] < 200.0) | (df["RSI_14_4h"] < 80.0))
           # 4h down move, 1d P&D
           long_entry_logic.append((df["ROC_9_4h"] > -20.0) | (df["ROC_2_1d"] > -20.0) | (df["ROC_9_1d"] < 50.0))
+          # 15m red, 15m strong downtrend
+          long_entry_logic.append((df["change_pct_15m"] > -20.0) | (df["RSI_3_15m"] > 5.0))
           # 1h P&D, 4h overbought
           long_entry_logic.append(
             (df["change_pct_1h"] > -2.0) | (df["change_pct_1h"].shift(12) < 2.0) | (df["RSI_14_4h"] < 80.0)
