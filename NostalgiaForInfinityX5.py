@@ -3487,6 +3487,8 @@ class NostalgiaForInfinityX5(IStrategy):
           long_entry_logic.append(
             (df["ROC_2_1d"] > -20.0) | (df["ROC_9_1d"].shift(288) < 100.0) | (df["RSI_3_4h"] > 20.0)
           )
+          # 15m red, 15m strong downtrend
+          long_entry_logic.append((df["change_pct_15m"] > -20.0) | (df["RSI_3_15m"] > 5.0))
           # 1h red, previous 1h green, 1h overbought
           long_entry_logic.append(
             (df["change_pct_1h"] > -5.0) | (df["change_pct_1h"].shift(12) < 5.0) | (df["RSI_14_1h"].shift(12) < 80.0)
