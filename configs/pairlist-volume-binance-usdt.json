@@ -7,7 +7,7 @@
       "refresh_period": 1800
     },
     { "method": "FullTradesFilter" },
-    { "method": "AgeFilter", "min_days_listed": 30 },
+    { "method": "AgeFilter", "min_days_listed": 4 },
     {
       "method": "PriceFilter",
       "low_price_ratio": 0.003
