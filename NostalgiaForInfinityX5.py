@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.45"
+    return "v15.1.48"
 
   stoploss = -0.99
 
@@ -3139,6 +3139,12 @@ class NostalgiaForInfinityX5(IStrategy):
     is_btc_stake = self.config["stake_currency"] in self.btc_stakes
     allowed_empty_candles_288 = 144 if is_btc_stake else 60
 
+    ###############################################################################################
+
+    # LONG ENTRY CONDITIONS STARTS HERE
+
+    ###############################################################################################
+
     #
     #  /$$       /$$$$$$ /$$   /$$ /$$$$$$        /$$$$$$$$/$$   /$$/$$$$$$$$/$$$$$$$$/$$$$$$$
     # | $$      /$$__  $| $$$ | $$/$$__  $$      | $$_____| $$$ | $|__  $$__| $$_____| $$__  $$
@@ -4835,7 +4841,11 @@ class NostalgiaForInfinityX5(IStrategy):
           long_entry_logic.append(df["AROONU_14"] < 25.0)
           long_entry_logic.append(df["close"] < df["SMA_16"] * 0.956)
 
-        # Long Entry Conditions Ends Here
+        ###############################################################################################
+
+        # LONG ENTRY CONDITIONS ENDS HERE
+
+        ###############################################################################################
 
         long_entry_logic.append(df["volume"] > 0)
         item_long_entry = reduce(lambda x, y: x & y, long_entry_logic)
@@ -4845,6 +4855,12 @@ class NostalgiaForInfinityX5(IStrategy):
 
     if long_entry_conditions:
       df.loc[:, "enter_long"] = reduce(lambda x, y: x | y, long_entry_conditions)
+
+    ###############################################################################################
+
+    # SHORT ENTRY CONDITIONS STARTS HERE
+
+    ###############################################################################################
 
     #   ______  __    __  ______  _______ ________        ________ __    __ ________ ________ _______
     #  /      \|  \  |  \/      \|       |        \      |        |  \  |  |        |        |       \
@@ -5947,6 +5963,12 @@ class NostalgiaForInfinityX5(IStrategy):
 
         # Short Entry Conditions Ends Here
 
+        ###############################################################################################
+
+        # SHORT ENTRY CONDITIONS ENDS HERE
+
+        ###############################################################################################
+
         short_entry_logic.append(df["volume"] > 0)
         item_short_entry = reduce(lambda x, y: x & y, short_entry_logic)
         df.loc[item_short_entry, "enter_tag"] += f"{short_index} "
@@ -5976,6 +5998,12 @@ class NostalgiaForInfinityX5(IStrategy):
   # Long Side Functions for handling long orders
   # ---------------------------------------------------------------------------------------------
 
+  ###############################################################################################
+
+  # LONG EXIT FUNCTIONS STARTS HERE
+
+  ###############################################################################################
+
   #
   #  /$$        /$$$$$$  /$$   /$$  /$$$$$$        /$$$$$$$$ /$$   /$$ /$$$$$$ /$$$$$$$$
   # | $$       /$$__  $$| $$$ | $$ /$$__  $$      | $$_____/| $$  / $$|_  $$_/|__  $$__/
@@ -5986,12 +6014,6 @@ class NostalgiaForInfinityX5(IStrategy):
   # | $$$$$$$$|  $$$$$$/| $$ \  $$|  $$$$$$/      | $$$$$$$$| $$  \ $$ /$$$$$$   | $$
   # |________/ \______/ |__/  \__/ \______/       |________/|__/  |__/|______/   |__/
   #
-
-  ###############################################################################################
-
-  # LONG EXIT FUNCTIONS STARTS HERE
-
-  ###############################################################################################
 
   # Long Exit Normal
   # ---------------------------------------------------------------------------------------------
@@ -13312,7 +13334,13 @@ class NostalgiaForInfinityX5(IStrategy):
     return False, None
 
   ###############################################################################################
+
   # LONG EXIT FUNCTIONS ENDS HERE
+
+  ###############################################################################################
+
+  # LONG GRIND FUNCTIONS STARTS HERE
+
   ###############################################################################################
 
   #
@@ -16561,7 +16589,9 @@ class NostalgiaForInfinityX5(IStrategy):
     return None
 
   ###############################################################################################
-  # LONG EXIT FUNCTIONS ENDS HERE
+
+  # LONG GRIND FUNCTIONS ENDS HERE
+
   ###############################################################################################
 
   #   ______   __    __   ______   _______  ________         ______   ______  _______   ________
@@ -16578,6 +16608,12 @@ class NostalgiaForInfinityX5(IStrategy):
   # Short Side Functions for handling short orders
   # ---------------------------------------------------------------------------------------------
 
+  ###############################################################################################
+
+  # SHORT EXIT FUNCTIONS STARTS HERE
+
+  ###############################################################################################
+
   #   ______  __    __  ______  _______ ________        ________ __    __ ______ ________
   #  /      \|  \  |  \/      \|       |        \      |        |  \  |  |      |        \
   # |  $$$$$$| $$  | $|  $$$$$$| $$$$$$$\$$$$$$$$      | $$$$$$$| $$  | $$\$$$$$$\$$$$$$$$
@@ -16588,12 +16624,6 @@ class NostalgiaForInfinityX5(IStrategy):
   #  \$$    $| $$  | $$\$$    $| $$  | $$ | $$         | $$     | $$  | $|   $$ \  | $$
   #   \$$$$$$ \$$   \$$ \$$$$$$ \$$   \$$  \$$          \$$$$$$$$\$$   \$$\$$$$$$   \$$
   #
-
-  ###############################################################################################
-
-  # SHORT EXIT FUNCTIONS STARTS HERE
-
-  ###############################################################################################
 
   # Short Exit Normal
   # ---------------------------------------------------------------------------------------------
@@ -18144,6 +18174,253 @@ class NostalgiaForInfinityX5(IStrategy):
       return True, f"exit_{self.short_grind_mode_name}_g"
     return False, None
 
+  # Short Exit Top Coins
+  # ---------------------------------------------------------------------------------------------
+  def short_exit_top_coins(
+    self,
+    pair: str,
+    current_rate: float,
+    profit_stake: float,
+    profit_ratio: float,
+    profit_current_stake_ratio: float,
+    profit_init_ratio: float,
+    max_profit: float,
+    max_loss: float,
+    filled_entries,
+    filled_exits,
+    last_candle,
+    previous_candle_1,
+    previous_candle_2,
+    previous_candle_3,
+    previous_candle_4,
+    previous_candle_5,
+    trade: "Trade",
+    current_time: "datetime",
+    enter_tags,
+  ) -> tuple:
+    sell = False
+
+    # Original sell signals
+    sell, signal_name = self.short_exit_signals(
+      self.short_top_coins_mode_name,
+      profit_init_ratio,
+      max_profit,
+      max_loss,
+      last_candle,
+      previous_candle_1,
+      previous_candle_2,
+      previous_candle_3,
+      previous_candle_4,
+      previous_candle_5,
+      trade,
+      current_time,
+      enter_tags,
+    )
+
+    # Main sell signals
+    if not sell:
+      sell, signal_name = self.short_exit_main(
+        self.short_top_coins_mode_name,
+        profit_init_ratio,
+        max_profit,
+        max_loss,
+        last_candle,
+        previous_candle_1,
+        previous_candle_2,
+        previous_candle_3,
+        previous_candle_4,
+        previous_candle_5,
+        trade,
+        current_time,
+        enter_tags,
+      )
+
+    # Williams %R based sells
+    if not sell:
+      sell, signal_name = self.short_exit_williams_r(
+        self.short_top_coins_mode_name,
+        profit_init_ratio,
+        max_profit,
+        max_loss,
+        last_candle,
+        previous_candle_1,
+        previous_candle_2,
+        previous_candle_3,
+        previous_candle_4,
+        previous_candle_5,
+        trade,
+        current_time,
+        enter_tags,
+      )
+
+    # Downtrend/descending based sells
+    if not sell:
+      sell, signal_name = self.short_exit_dec(
+        self.short_top_coins_mode_name,
+        profit_init_ratio,
+        max_profit,
+        max_loss,
+        last_candle,
+        previous_candle_1,
+        previous_candle_2,
+        previous_candle_3,
+        previous_candle_4,
+        previous_candle_5,
+        trade,
+        current_time,
+        enter_tags,
+      )
+
+    # Stoplosses
+    if not sell:
+      sell, signal_name = self.short_exit_stoploss(
+        self.short_top_coins_mode_name,
+        current_rate,
+        profit_stake,
+        profit_ratio,
+        profit_current_stake_ratio,
+        profit_init_ratio,
+        max_profit,
+        max_loss,
+        filled_entries,
+        filled_exits,
+        last_candle,
+        previous_candle_1,
+        previous_candle_2,
+        previous_candle_3,
+        previous_candle_4,
+        previous_candle_5,
+        trade,
+        current_time,
+        enter_tags,
+      )
+
+    # Profit Target Signal
+    # Check if pair exist on target_profit_cache
+    if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
+      previous_rate = self.target_profit_cache.data[pair]["rate"]
+      previous_profit = self.target_profit_cache.data[pair]["profit"]
+      previous_sell_reason = self.target_profit_cache.data[pair]["sell_reason"]
+      previous_time_profit_reached = datetime.fromisoformat(self.target_profit_cache.data[pair]["time_profit_reached"])
+
+      sell_max, signal_name_max = self.exit_profit_target(
+        self.short_top_coins_mode_name,
+        pair,
+        trade,
+        current_time,
+        current_rate,
+        profit_stake,
+        profit_ratio,
+        profit_current_stake_ratio,
+        profit_init_ratio,
+        last_candle,
+        previous_candle_1,
+        previous_rate,
+        previous_profit,
+        previous_sell_reason,
+        previous_time_profit_reached,
+        enter_tags,
+      )
+      if sell_max and signal_name_max is not None:
+        return True, f"{signal_name_max}_m"
+      if previous_sell_reason in [f"exit_{self.short_top_coins_mode_name}_stoploss_u_e"]:
+        if profit_ratio > (previous_profit + 0.005):
+          mark_pair, mark_signal = self.mark_profit_target(
+            self.short_top_coins_mode_name,
+            pair,
+            True,
+            previous_sell_reason,
+            trade,
+            current_time,
+            current_rate,
+            profit_ratio,
+            last_candle,
+            previous_candle_1,
+          )
+          if mark_pair:
+            self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
+      elif (profit_init_ratio > (previous_profit + 0.001)) and (
+        previous_sell_reason not in [f"exit_{self.short_top_coins_mode_name}_stoploss_doom"]
+      ):
+        # Update the target, raise it.
+        mark_pair, mark_signal = self.mark_profit_target(
+          self.short_top_coins_mode_name,
+          pair,
+          True,
+          previous_sell_reason,
+          trade,
+          current_time,
+          current_rate,
+          profit_init_ratio,
+          last_candle,
+          previous_candle_1,
+        )
+        if mark_pair:
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
+
+    # Add the pair to the list, if a sell triggered and conditions met
+    if sell and signal_name is not None:
+      previous_profit = None
+      if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
+        previous_profit = self.target_profit_cache.data[pair]["profit"]
+      if signal_name in [
+        f"exit_{self.short_top_coins_mode_name}_stoploss_doom",
+        f"exit_{self.short_top_coins_mode_name}_stoploss_u_e",
+      ]:
+        mark_pair, mark_signal = self.mark_profit_target(
+          self.short_top_coins_mode_name,
+          pair,
+          sell,
+          signal_name,
+          trade,
+          current_time,
+          current_rate,
+          profit_ratio,
+          last_candle,
+          previous_candle_1,
+        )
+        if mark_pair:
+          self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
+        else:
+          # Just sell it, without maximize
+          return True, f"{signal_name}"
+      elif (previous_profit is None) or (previous_profit < profit_init_ratio):
+        mark_pair, mark_signal = self.mark_profit_target(
+          self.short_top_coins_mode_name,
+          pair,
+          sell,
+          signal_name,
+          trade,
+          current_time,
+          current_rate,
+          profit_init_ratio,
+          last_candle,
+          previous_candle_1,
+        )
+        if mark_pair:
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
+        else:
+          # Just sell it, without maximize
+          return True, f"{signal_name}"
+    else:
+      if profit_init_ratio >= 0.005:
+        previous_profit = None
+        if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
+          previous_profit = self.target_profit_cache.data[pair]["profit"]
+        if (previous_profit is None) or (previous_profit < profit_init_ratio):
+          mark_signal = f"exit_profit_{self.short_top_coins_mode_name}_max"
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
+
+    if signal_name not in [
+      f"exit_profit_{self.short_top_coins_mode_name}_max",
+      # f"exit_{self.short_top_coins_mode_name}_stoploss_doom",
+      # f"exit_{self.short_top_coins_mode_name}_stoploss_u_e",
+    ]:
+      if sell and (signal_name is not None):
+        return True, f"{signal_name}"
+
+    return False, None
+
   # Short Exit Signals
   # ---------------------------------------------------------------------------------------------
   def short_exit_signals(
@@ -18678,16 +18955,16 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] < 1.0)
         and (last_candle["WILLR_14"] < -99.0)
         and (last_candle["RSI_3_4h"] > 95.0)
-        and (last_candle["AROONU_14_4h"] < 75.0)
+        and (last_candle["AROOND_14_4h"] > 25.0)
       ):
         return True, f"exit_{mode_name}_d_0_14"
       elif (last_candle["RSI_3"] < 1.0) and (last_candle["RSI_14"] < 22.0) and (last_candle["ROC_9_4h"] > 30.0):
         return True, f"exit_{mode_name}_d_0_15"
       elif (
         (last_candle["RSI_3"] < 1.0)
-        and (last_candle["AROONU_14_4h"] < 75.0)
+        and (last_candle["AROOND_14_4h"] > 25.0)
         and (last_candle["ROC_9_4h"] > 25.0)
-        and (last_candle["AROONU_14_1d"] < 50.0)
+        and (last_candle["AROOND_14_1d"] > 50.0)
         and (last_candle["change_pct_1d"] > 15.0)
       ):
         return True, f"exit_{mode_name}_d_0_16"
@@ -18717,7 +18994,7 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] < 10.0)
         and (last_candle["RSI_14"] > 60.0)
         and (last_candle["RSI_3_1h"] > 90.0)
-        and (last_candle["AROONU_14_1h"] < 75.0)
+        and (last_candle["AROOND_14_1h"] > 25.0)
       ):
         return True, f"exit_{mode_name}_d_0_20"
       elif (
@@ -18747,7 +19024,7 @@ class NostalgiaForInfinityX5(IStrategy):
         and (last_candle["RSI_14"] < 22.0)
         and (last_candle["WILLR_14"] < -95.0)
         and (last_candle["RSI_3_4h"] > 70.0)
-        and (last_candle["AROONU_14_4h"] < 25.0)
+        and (last_candle["AROOND_14_4h"] > 75.0)
       ):
         return True, f"exit_{mode_name}_d_0_24"
       elif (
@@ -18842,7 +19119,7 @@ class NostalgiaForInfinityX5(IStrategy):
         return True, f"exit_{mode_name}_d_0_36"
       elif (
         (last_candle["RSI_3"] < 16.0)
-        and (last_candle["RSI_14"] < 50.0)
+        and (last_candle["RSI_14"] > 50.0)
         and (last_candle["RSI_3_1h"] < 80.0)
         and (last_candle["RSI_3_1d"] < 75.0)
         and (last_candle["STOCHRSIk_14_14_3_3_4h"] < 50.0)
@@ -19066,16 +19343,16 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] < 10.0)
         and (last_candle["WILLR_14"] < -96.0)
         and (last_candle["RSI_3_4h"] > 95.0)
-        and (last_candle["AROONU_14_4h"] < 75.0)
+        and (last_candle["AROOND_14_4h"] > 25.0)
       ):
         return True, f"exit_{mode_name}_d_1_14"
       elif (last_candle["RSI_3"] < 5.0) and (last_candle["RSI_14"] < 25.0) and (last_candle["ROC_9_4h"] > 30.0):
         return True, f"exit_{mode_name}_d_1_15"
       elif (
         (last_candle["RSI_3"] < 5.0)
-        and (last_candle["AROONU_14_4h"] < 75.0)
+        and (last_candle["AROOND_14_4h"] > 25.0)
         and (last_candle["ROC_9_4h"] > 25.0)
-        and (last_candle["AROONU_14_1d"] < 50.0)
+        and (last_candle["AROOND_14_1d"] > 50.0)
         and (last_candle["change_pct_1d"] > 15.0)
       ):
         return True, f"exit_{mode_name}_d_1_16"
@@ -19105,7 +19382,7 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] < 50.0)
         and (last_candle["RSI_14"] > 60.0)
         and (last_candle["RSI_3_1h"] > 90.0)
-        and (last_candle["AROONU_14_1h"] < 75.0)
+        and (last_candle["AROOND_14_1h"] > 25.0)
       ):
         return True, f"exit_{mode_name}_d_1_20"
       elif (
@@ -19135,7 +19412,7 @@ class NostalgiaForInfinityX5(IStrategy):
         and (last_candle["RSI_14"] < 25.0)
         and (last_candle["WILLR_14"] < -90.0)
         and (last_candle["RSI_3_4h"] > 70.0)
-        and (last_candle["AROONU_14_4h"] < 25.0)
+        and (last_candle["AROOND_14_4h"] > 75.0)
       ):
         return True, f"exit_{mode_name}_d_1_24"
       elif (
@@ -19230,7 +19507,7 @@ class NostalgiaForInfinityX5(IStrategy):
         return True, f"exit_{mode_name}_d_1_36"
       elif (
         (last_candle["RSI_3"] < 18.0)
-        and (last_candle["RSI_14"] < 50.0)
+        and (last_candle["RSI_14"] > 50.0)
         and (last_candle["RSI_3_1h"] < 80.0)
         and (last_candle["RSI_3_1d"] < 75.0)
         and (last_candle["STOCHRSIk_14_14_3_3_4h"] < 50.0)
@@ -19454,16 +19731,16 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] < 10.0)
         and (last_candle["WILLR_14"] < -94.0)
         and (last_candle["RSI_3_4h"] > 95.0)
-        and (last_candle["AROONU_14_4h"] < 75.0)
+        and (last_candle["AROOND_14_4h"] > 25.0)
       ):
         return True, f"exit_{mode_name}_d_2_14"
       elif (last_candle["RSI_3"] < 8.0) and (last_candle["RSI_14"] < 30.0) and (last_candle["ROC_9_4h"] > 30.0):
         return True, f"exit_{mode_name}_d_2_15"
       elif (
         (last_candle["RSI_3"] < 30.0)
-        and (last_candle["AROONU_14_4h"] < 75.0)
+        and (last_candle["AROOND_14_4h"] > 25.0)
         and (last_candle["ROC_9_4h"] > 25.0)
-        and (last_candle["AROONU_14_1d"] < 50.0)
+        and (last_candle["AROOND_14_1d"] > 50.0)
         and (last_candle["change_pct_1d"] > 15.0)
       ):
         return True, f"exit_{mode_name}_d_2_16"
@@ -19493,7 +19770,7 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] < 52.0)
         and (last_candle["RSI_14"] > 58.0)
         and (last_candle["RSI_3_1h"] > 90.0)
-        and (last_candle["AROONU_14_1h"] < 75.0)
+        and (last_candle["AROOND_14_1h"] > 25.0)
       ):
         return True, f"exit_{mode_name}_d_2_20"
       elif (
@@ -19523,7 +19800,7 @@ class NostalgiaForInfinityX5(IStrategy):
         and (last_candle["RSI_14"] < 30.0)
         and (last_candle["WILLR_14"] < -80.0)
         and (last_candle["RSI_3_4h"] > 70.0)
-        and (last_candle["AROONU_14_4h"] < 25.0)
+        and (last_candle["AROOND_14_4h"] > 75.0)
       ):
         return True, f"exit_{mode_name}_d_2_24"
       elif (
@@ -19618,7 +19895,7 @@ class NostalgiaForInfinityX5(IStrategy):
         return True, f"exit_{mode_name}_d_2_36"
       elif (
         (last_candle["RSI_3"] < 20.0)
-        and (last_candle["RSI_14"] < 50.0)
+        and (last_candle["RSI_14"] > 50.0)
         and (last_candle["RSI_3_1h"] < 80.0)
         and (last_candle["RSI_3_1d"] < 75.0)
         and (last_candle["STOCHRSIk_14_14_3_3_4h"] < 50.0)
@@ -19842,16 +20119,16 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] < 10.0)
         and (last_candle["WILLR_14"] < -92.0)
         and (last_candle["RSI_3_4h"] > 95.0)
-        and (last_candle["AROONU_14_4h"] < 75.0)
+        and (last_candle["AROOND_14_4h"] > 25.0)
       ):
         return True, f"exit_{mode_name}_d_3_14"
       elif (last_candle["RSI_3"] < 10.0) and (last_candle["RSI_14"] < 35.0) and (last_candle["ROC_9_4h"] > 30.0):
         return True, f"exit_{mode_name}_d_3_15"
       elif (
         (last_candle["RSI_3"] < 30.0)
-        and (last_candle["AROONU_14_4h"] < 75.0)
+        and (last_candle["AROOND_14_4h"] > 25.0)
         and (last_candle["ROC_9_4h"] > 25.0)
-        and (last_candle["AROONU_14_1d"] < 50.0)
+        and (last_candle["AROOND_14_1d"] > 50.0)
         and (last_candle["change_pct_1d"] > 15.0)
       ):
         return True, f"exit_{mode_name}_d_3_16"
@@ -19881,7 +20158,7 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] < 54.0)
         and (last_candle["RSI_14"] > 56.0)
         and (last_candle["RSI_3_1h"] > 90.0)
-        and (last_candle["AROONU_14_1h"] < 75.0)
+        and (last_candle["AROOND_14_1h"] > 25.0)
       ):
         return True, f"exit_{mode_name}_d_3_20"
       elif (
@@ -19911,7 +20188,7 @@ class NostalgiaForInfinityX5(IStrategy):
         and (last_candle["RSI_14"] < 32.0)
         and (last_candle["WILLR_14"] < -75.0)
         and (last_candle["RSI_3_4h"] > 70.0)
-        and (last_candle["AROONU_14_4h"] < 25.0)
+        and (last_candle["AROOND_14_4h"] > 75.0)
       ):
         return True, f"exit_{mode_name}_d_3_24"
       elif (
@@ -20006,7 +20283,7 @@ class NostalgiaForInfinityX5(IStrategy):
         return True, f"exit_{mode_name}_d_3_36"
       elif (
         (last_candle["RSI_3"] < 22.0)
-        and (last_candle["RSI_14"] < 50.0)
+        and (last_candle["RSI_14"] > 50.0)
         and (last_candle["RSI_3_1h"] < 80.0)
         and (last_candle["RSI_3_1d"] < 75.0)
         and (last_candle["STOCHRSIk_14_14_3_3_4h"] < 50.0)
@@ -20230,16 +20507,16 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] < 10.0)
         and (last_candle["WILLR_14"] < -90.0)
         and (last_candle["RSI_3_4h"] > 95.0)
-        and (last_candle["AROONU_14_4h"] < 75.0)
+        and (last_candle["AROOND_14_4h"] > 25.0)
       ):
         return True, f"exit_{mode_name}_d_4_14"
       elif (last_candle["RSI_3"] < 12.0) and (last_candle["RSI_14"] < 40.0) and (last_candle["ROC_9_4h"] > 30.0):
         return True, f"exit_{mode_name}_d_4_15"
       elif (
         (last_candle["RSI_3"] < 30.0)
-        and (last_candle["AROONU_14_4h"] < 75.0)
+        and (last_candle["AROOND_14_4h"] > 25.0)
         and (last_candle["ROC_9_4h"] > 25.0)
-        and (last_candle["AROONU_14_1d"] < 50.0)
+        and (last_candle["AROOND_14_1d"] > 50.0)
         and (last_candle["change_pct_1d"] > 15.0)
       ):
         return True, f"exit_{mode_name}_d_4_16"
@@ -20269,7 +20546,7 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] < 56.0)
         and (last_candle["RSI_14"] > 54.0)
         and (last_candle["RSI_3_1h"] > 90.0)
-        and (last_candle["AROONU_14_1h"] < 75.0)
+        and (last_candle["AROOND_14_1h"] > 25.0)
       ):
         return True, f"exit_{mode_name}_d_4_20"
       elif (
@@ -20299,7 +20576,7 @@ class NostalgiaForInfinityX5(IStrategy):
         and (last_candle["RSI_14"] < 34.0)
         and (last_candle["WILLR_14"] < -70.0)
         and (last_candle["RSI_3_4h"] > 70.0)
-        and (last_candle["AROONU_14_4h"] < 25.0)
+        and (last_candle["AROOND_14_4h"] > 75.0)
       ):
         return True, f"exit_{mode_name}_d_4_24"
       elif (
@@ -20394,7 +20671,7 @@ class NostalgiaForInfinityX5(IStrategy):
         return True, f"exit_{mode_name}_d_4_36"
       elif (
         (last_candle["RSI_3"] < 24.0)
-        and (last_candle["RSI_14"] < 50.0)
+        and (last_candle["RSI_14"] > 50.0)
         and (last_candle["RSI_3_1h"] < 80.0)
         and (last_candle["RSI_3_1d"] < 75.0)
         and (last_candle["STOCHRSIk_14_14_3_3_4h"] < 50.0)
@@ -20618,16 +20895,16 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] < 10.0)
         and (last_candle["WILLR_14"] < -88.0)
         and (last_candle["RSI_3_4h"] > 95.0)
-        and (last_candle["AROONU_14_4h"] < 75.0)
+        and (last_candle["AROOND_14_4h"] > 25.0)
       ):
         return True, f"exit_{mode_name}_d_5_14"
       elif (last_candle["RSI_3"] < 14.0) and (last_candle["RSI_14"] > 58.0) and (last_candle["ROC_9_4h"] > 30.0):
         return True, f"exit_{mode_name}_d_5_15"
       elif (
         (last_candle["RSI_3"] < 30.0)
-        and (last_candle["AROONU_14_4h"] < 75.0)
+        and (last_candle["AROOND_14_4h"] > 25.0)
         and (last_candle["ROC_9_4h"] > 25.0)
-        and (last_candle["AROONU_14_1d"] < 50.0)
+        and (last_candle["AROOND_14_1d"] > 50.0)
         and (last_candle["change_pct_1d"] > 15.0)
       ):
         return True, f"exit_{mode_name}_d_5_16"
@@ -20657,7 +20934,7 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] < 58.0)
         and (last_candle["RSI_14"] > 52.0)
         and (last_candle["RSI_3_1h"] > 90.0)
-        and (last_candle["AROONU_14_1h"] < 75.0)
+        and (last_candle["AROOND_14_1h"] > 25.0)
       ):
         return True, f"exit_{mode_name}_d_5_20"
       elif (
@@ -20687,7 +20964,7 @@ class NostalgiaForInfinityX5(IStrategy):
         and (last_candle["RSI_14"] < 36.0)
         and (last_candle["WILLR_14"] < -65.0)
         and (last_candle["RSI_3_4h"] > 70.0)
-        and (last_candle["AROONU_14_4h"] < 25.0)
+        and (last_candle["AROOND_14_4h"] > 75.0)
       ):
         return True, f"exit_{mode_name}_d_5_24"
       elif (
@@ -20782,7 +21059,7 @@ class NostalgiaForInfinityX5(IStrategy):
         return True, f"exit_{mode_name}_d_5_36"
       elif (
         (last_candle["RSI_3"] < 26.0)
-        and (last_candle["RSI_14"] < 50.0)
+        and (last_candle["RSI_14"] > 50.0)
         and (last_candle["RSI_3_1h"] < 80.0)
         and (last_candle["RSI_3_1d"] < 75.0)
         and (last_candle["STOCHRSIk_14_14_3_3_4h"] < 50.0)
@@ -21006,16 +21283,16 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] < 10.0)
         and (last_candle["WILLR_14"] < -90.0)
         and (last_candle["RSI_3_4h"] > 95.0)
-        and (last_candle["AROONU_14_4h"] < 75.0)
+        and (last_candle["AROOND_14_4h"] > 25.0)
       ):
         return True, f"exit_{mode_name}_d_6_14"
       elif (last_candle["RSI_3"] < 12.0) and (last_candle["RSI_14"] < 40.0) and (last_candle["ROC_9_4h"] > 30.0):
         return True, f"exit_{mode_name}_d_6_15"
       elif (
         (last_candle["RSI_3"] < 25.0)
-        and (last_candle["AROONU_14_4h"] < 75.0)
+        and (last_candle["AROOND_14_4h"] > 25.0)
         and (last_candle["ROC_9_4h"] > 25.0)
-        and (last_candle["AROONU_14_1d"] < 50.0)
+        and (last_candle["AROOND_14_1d"] > 50.0)
         and (last_candle["change_pct_1d"] > 15.0)
       ):
         return True, f"exit_{mode_name}_d_6_16"
@@ -21045,7 +21322,7 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] < 56.0)
         and (last_candle["RSI_14"] > 54.0)
         and (last_candle["RSI_3_1h"] > 90.0)
-        and (last_candle["AROONU_14_1h"] < 75.0)
+        and (last_candle["AROOND_14_1h"] > 25.0)
       ):
         return True, f"exit_{mode_name}_d_6_20"
       elif (
@@ -21075,7 +21352,7 @@ class NostalgiaForInfinityX5(IStrategy):
         and (last_candle["RSI_14"] < 34.0)
         and (last_candle["WILLR_14"] < -70.0)
         and (last_candle["RSI_3_4h"] > 70.0)
-        and (last_candle["AROONU_14_4h"] < 25.0)
+        and (last_candle["AROOND_14_4h"] > 75.0)
       ):
         return True, f"exit_{mode_name}_d_6_24"
       elif (
@@ -21170,7 +21447,7 @@ class NostalgiaForInfinityX5(IStrategy):
         return True, f"exit_{mode_name}_d_6_36"
       elif (
         (last_candle["RSI_3"] < 24.0)
-        and (last_candle["RSI_14"] < 50.0)
+        and (last_candle["RSI_14"] > 50.0)
         and (last_candle["RSI_3_1h"] < 80.0)
         and (last_candle["RSI_3_1d"] < 75.0)
         and (last_candle["STOCHRSIk_14_14_3_3_4h"] < 50.0)
@@ -21394,16 +21671,16 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] < 10.0)
         and (last_candle["WILLR_14"] < -92.0)
         and (last_candle["RSI_3_4h"] > 95.0)
-        and (last_candle["AROONU_14_4h"] < 75.0)
+        and (last_candle["AROOND_14_4h"] > 25.0)
       ):
         return True, f"exit_{mode_name}_d_7_14"
       elif (last_candle["RSI_3"] < 10.0) and (last_candle["RSI_14"] < 38.0) and (last_candle["ROC_9_4h"] > 30.0):
         return True, f"exit_{mode_name}_d_7_15"
       elif (
         (last_candle["RSI_3"] < 20.0)
-        and (last_candle["AROONU_14_4h"] < 75.0)
+        and (last_candle["AROOND_14_4h"] > 25.0)
         and (last_candle["ROC_9_4h"] > 25.0)
-        and (last_candle["AROONU_14_1d"] < 50.0)
+        and (last_candle["AROOND_14_1d"] > 50.0)
         and (last_candle["change_pct_1d"] > 15.0)
       ):
         return True, f"exit_{mode_name}_d_7_16"
@@ -21433,7 +21710,7 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] < 54.0)
         and (last_candle["RSI_14"] > 56.0)
         and (last_candle["RSI_3_1h"] > 90.0)
-        and (last_candle["AROONU_14_1h"] < 75.0)
+        and (last_candle["AROOND_14_1h"] > 25.0)
       ):
         return True, f"exit_{mode_name}_d_7_20"
       elif (
@@ -21463,7 +21740,7 @@ class NostalgiaForInfinityX5(IStrategy):
         and (last_candle["RSI_14"] < 32.0)
         and (last_candle["WILLR_14"] < -75.0)
         and (last_candle["RSI_3_4h"] > 70.0)
-        and (last_candle["AROONU_14_4h"] < 25.0)
+        and (last_candle["AROOND_14_4h"] > 75.0)
       ):
         return True, f"exit_{mode_name}_d_7_24"
       elif (
@@ -21558,7 +21835,7 @@ class NostalgiaForInfinityX5(IStrategy):
         return True, f"exit_{mode_name}_d_7_36"
       elif (
         (last_candle["RSI_3"] < 22.0)
-        and (last_candle["RSI_14"] < 50.0)
+        and (last_candle["RSI_14"] > 50.0)
         and (last_candle["RSI_3_1h"] < 80.0)
         and (last_candle["RSI_3_1d"] < 75.0)
         and (last_candle["STOCHRSIk_14_14_3_3_4h"] < 50.0)
@@ -21782,16 +22059,16 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] < 10.0)
         and (last_candle["WILLR_14"] < -94.0)
         and (last_candle["RSI_3_4h"] > 95.0)
-        and (last_candle["AROONU_14_4h"] < 75.0)
+        and (last_candle["AROOND_14_4h"] > 25.0)
       ):
         return True, f"exit_{mode_name}_d_8_14"
       elif (last_candle["RSI_3"] < 8.0) and (last_candle["RSI_14"] < 36.0) and (last_candle["ROC_9_4h"] > 30.0):
         return True, f"exit_{mode_name}_d_8_15"
       elif (
         (last_candle["RSI_3"] < 15.0)
-        and (last_candle["AROONU_14_4h"] < 75.0)
+        and (last_candle["AROOND_14_4h"] > 25.0)
         and (last_candle["ROC_9_4h"] > 25.0)
-        and (last_candle["AROONU_14_1d"] < 50.0)
+        and (last_candle["AROOND_14_1d"] > 50.0)
         and (last_candle["change_pct_1d"] > 15.0)
       ):
         return True, f"exit_{mode_name}_d_8_16"
@@ -21821,7 +22098,7 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] < 52.0)
         and (last_candle["RSI_14"] > 58.0)
         and (last_candle["RSI_3_1h"] > 90.0)
-        and (last_candle["AROONU_14_1h"] < 75.0)
+        and (last_candle["AROOND_14_1h"] > 25.0)
       ):
         return True, f"exit_{mode_name}_d_8_20"
       elif (
@@ -21851,7 +22128,7 @@ class NostalgiaForInfinityX5(IStrategy):
         and (last_candle["RSI_14"] < 30.0)
         and (last_candle["WILLR_14"] < -80.0)
         and (last_candle["RSI_3_4h"] > 70.0)
-        and (last_candle["AROONU_14_4h"] < 25.0)
+        and (last_candle["AROOND_14_4h"] > 75.0)
       ):
         return True, f"exit_{mode_name}_d_8_24"
       elif (
@@ -21946,7 +22223,7 @@ class NostalgiaForInfinityX5(IStrategy):
         return True, f"exit_{mode_name}_d_8_36"
       elif (
         (last_candle["RSI_3"] < 20.0)
-        and (last_candle["RSI_14"] < 50.0)
+        and (last_candle["RSI_14"] > 50.0)
         and (last_candle["RSI_3_1h"] < 80.0)
         and (last_candle["RSI_3_1d"] < 75.0)
         and (last_candle["STOCHRSIk_14_14_3_3_4h"] < 50.0)
@@ -22170,16 +22447,16 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] < 10.0)
         and (last_candle["WILLR_14"] < -96.0)
         and (last_candle["RSI_3_4h"] > 95.0)
-        and (last_candle["AROONU_14_4h"] < 75.0)
+        and (last_candle["AROOND_14_4h"] > 25.0)
       ):
         return True, f"exit_{mode_name}_d_9_14"
       elif (last_candle["RSI_3"] < 6.0) and (last_candle["RSI_14"] < 34.0) and (last_candle["ROC_9_4h"] > 30.0):
         return True, f"exit_{mode_name}_d_9_15"
       elif (
         (last_candle["RSI_3"] < 10.0)
-        and (last_candle["AROONU_14_4h"] < 75.0)
+        and (last_candle["AROOND_14_4h"] > 25.0)
         and (last_candle["ROC_9_4h"] > 25.0)
-        and (last_candle["AROONU_14_1d"] < 50.0)
+        and (last_candle["AROOND_14_1d"] > 50.0)
         and (last_candle["change_pct_1d"] > 15.0)
       ):
         return True, f"exit_{mode_name}_d_9_16"
@@ -22209,7 +22486,7 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] < 50.0)
         and (last_candle["RSI_14"] > 60.0)
         and (last_candle["RSI_3_1h"] > 90.0)
-        and (last_candle["AROONU_14_1h"] < 75.0)
+        and (last_candle["AROOND_14_1h"] > 25.0)
       ):
         return True, f"exit_{mode_name}_d_9_20"
       elif (
@@ -22239,7 +22516,7 @@ class NostalgiaForInfinityX5(IStrategy):
         and (last_candle["RSI_14"] < 28.0)
         and (last_candle["WILLR_14"] < -85.0)
         and (last_candle["RSI_3_4h"] > 70.0)
-        and (last_candle["AROONU_14_4h"] < 25.0)
+        and (last_candle["AROOND_14_4h"] > 75.0)
       ):
         return True, f"exit_{mode_name}_d_9_24"
       elif (
@@ -22334,7 +22611,7 @@ class NostalgiaForInfinityX5(IStrategy):
         return True, f"exit_{mode_name}_d_9_36"
       elif (
         (last_candle["RSI_3"] < 18.0)
-        and (last_candle["RSI_14"] < 50.0)
+        and (last_candle["RSI_14"] > 50.0)
         and (last_candle["RSI_3_1h"] < 80.0)
         and (last_candle["RSI_3_1d"] < 75.0)
         and (last_candle["STOCHRSIk_14_14_3_3_4h"] < 50.0)
@@ -22558,16 +22835,16 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] < 10.0)
         and (last_candle["WILLR_14"] < -98.0)
         and (last_candle["RSI_3_4h"] > 95.0)
-        and (last_candle["AROONU_14_4h"] < 75.0)
+        and (last_candle["AROOND_14_4h"] > 25.0)
       ):
         return True, f"exit_{mode_name}_d_10_14"
       elif (last_candle["RSI_3"] < 4.0) and (last_candle["RSI_14"] < 32.0) and (last_candle["ROC_9_4h"] > 30.0):
         return True, f"exit_{mode_name}_d_10_15"
       elif (
         (last_candle["RSI_3"] < 5.0)
-        and (last_candle["AROONU_14_4h"] < 75.0)
+        and (last_candle["AROOND_14_4h"] > 25.0)
         and (last_candle["ROC_9_4h"] > 25.0)
-        and (last_candle["AROONU_14_1d"] < 50.0)
+        and (last_candle["AROOND_14_1d"] > 50.0)
         and (last_candle["change_pct_1d"] > 15.0)
       ):
         return True, f"exit_{mode_name}_d_10_16"
@@ -22597,7 +22874,7 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] < 40.0)
         and (last_candle["RSI_14"] > 60.0)
         and (last_candle["RSI_3_1h"] > 90.0)
-        and (last_candle["AROONU_14_1h"] < 75.0)
+        and (last_candle["AROOND_14_1h"] > 25.0)
       ):
         return True, f"exit_{mode_name}_d_10_20"
       elif (
@@ -22627,7 +22904,7 @@ class NostalgiaForInfinityX5(IStrategy):
         and (last_candle["RSI_14"] < 26.0)
         and (last_candle["WILLR_14"] < -90.0)
         and (last_candle["RSI_3_4h"] > 70.0)
-        and (last_candle["AROONU_14_4h"] < 25.0)
+        and (last_candle["AROOND_14_4h"] > 75.0)
       ):
         return True, f"exit_{mode_name}_d_10_24"
       elif (
@@ -22722,7 +22999,7 @@ class NostalgiaForInfinityX5(IStrategy):
         return True, f"exit_{mode_name}_d_10_36"
       elif (
         (last_candle["RSI_3"] < 16.0)
-        and (last_candle["RSI_14"] < 50.0)
+        and (last_candle["RSI_14"] > 50.0)
         and (last_candle["RSI_3_1h"] < 80.0)
         and (last_candle["RSI_3_1d"] < 75.0)
         and (last_candle["STOCHRSIk_14_14_3_3_4h"] < 50.0)
@@ -22946,16 +23223,16 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] < 5.0)
         and (last_candle["WILLR_14"] < -99.0)
         and (last_candle["RSI_3_4h"] > 95.0)
-        and (last_candle["AROONU_14_4h"] < 75.0)
+        and (last_candle["AROOND_14_4h"] > 25.0)
       ):
         return True, f"exit_{mode_name}_d_11_14"
       elif (last_candle["RSI_3"] < 2.0) and (last_candle["RSI_14"] < 30.0) and (last_candle["ROC_9_4h"] > 30.0):
         return True, f"exit_{mode_name}_d_11_15"
       elif (
         (last_candle["RSI_3"] < 2.0)
-        and (last_candle["AROONU_14_4h"] < 75.0)
+        and (last_candle["AROOND_14_4h"] > 25.0)
         and (last_candle["ROC_9_4h"] > 25.0)
-        and (last_candle["AROONU_14_1d"] < 50.0)
+        and (last_candle["AROOND_14_1d"] > 50.0)
         and (last_candle["change_pct_1d"] > 15.0)
       ):
         return True, f"exit_{mode_name}_d_11_16"
@@ -22985,7 +23262,7 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] < 20.0)
         and (last_candle["RSI_14"] > 60.0)
         and (last_candle["RSI_3_1h"] > 90.0)
-        and (last_candle["AROONU_14_1h"] < 75.0)
+        and (last_candle["AROOND_14_1h"] > 25.0)
       ):
         return True, f"exit_{mode_name}_d_11_20"
       elif (
@@ -23015,7 +23292,7 @@ class NostalgiaForInfinityX5(IStrategy):
         and (last_candle["RSI_14"] < 24.0)
         and (last_candle["WILLR_14"] < -95.0)
         and (last_candle["RSI_3_4h"] > 70.0)
-        and (last_candle["AROONU_14_4h"] < 25.0)
+        and (last_candle["AROOND_14_4h"] > 75.0)
       ):
         return True, f"exit_{mode_name}_d_11_24"
       elif (
@@ -23110,7 +23387,7 @@ class NostalgiaForInfinityX5(IStrategy):
         return True, f"exit_{mode_name}_d_11_36"
       elif (
         (last_candle["RSI_3"] < 14.0)
-        and (last_candle["RSI_14"] < 50.0)
+        and (last_candle["RSI_14"] > 50.0)
         and (last_candle["RSI_3_1h"] < 80.0)
         and (last_candle["RSI_3_1d"] < 75.0)
         and (last_candle["STOCHRSIk_14_14_3_3_4h"] < 50.0)
@@ -23334,16 +23611,16 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] < 1.0)
         and (last_candle["WILLR_14"] < -99.0)
         and (last_candle["RSI_3_4h"] > 95.0)
-        and (last_candle["AROONU_14_4h"] < 75.0)
+        and (last_candle["AROOND_14_4h"] > 25.0)
       ):
         return True, f"exit_{mode_name}_d_12_14"
       elif (last_candle["RSI_3"] < 1.0) and (last_candle["RSI_14"] < 25.0) and (last_candle["ROC_9_4h"] > 30.0):
         return True, f"exit_{mode_name}_d_12_15"
       elif (
         (last_candle["RSI_3"] < 1.0)
-        and (last_candle["AROONU_14_4h"] < 75.0)
+        and (last_candle["AROOND_14_4h"] > 25.0)
         and (last_candle["ROC_9_4h"] > 25.0)
-        and (last_candle["AROONU_14_1d"] < 50.0)
+        and (last_candle["AROOND_14_1d"] > 50.0)
         and (last_candle["change_pct_1d"] > 15.0)
       ):
         return True, f"exit_{mode_name}_d_12_16"
@@ -23373,7 +23650,7 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] < 10.0)
         and (last_candle["RSI_14"] > 60.0)
         and (last_candle["RSI_3_1h"] > 90.0)
-        and (last_candle["AROONU_14_1h"] < 75.0)
+        and (last_candle["AROOND_14_1h"] > 25.0)
       ):
         return True, f"exit_{mode_name}_d_12_20"
       elif (
@@ -23403,7 +23680,7 @@ class NostalgiaForInfinityX5(IStrategy):
         and (last_candle["RSI_14"] < 22.0)
         and (last_candle["WILLR_14"] < -99.0)
         and (last_candle["RSI_3_4h"] > 70.0)
-        and (last_candle["AROONU_14_4h"] < 25.0)
+        and (last_candle["AROOND_14_4h"] > 75.0)
       ):
         return True, f"exit_{mode_name}_d_12_24"
       elif (
@@ -23498,7 +23775,7 @@ class NostalgiaForInfinityX5(IStrategy):
         return True, f"exit_{mode_name}_d_11_36"
       elif (
         (last_candle["RSI_3"] < 12.0)
-        and (last_candle["RSI_14"] < 50.0)
+        and (last_candle["RSI_14"] > 50.0)
         and (last_candle["RSI_3_1h"] < 80.0)
         and (last_candle["RSI_3_1d"] < 75.0)
         and (last_candle["STOCHRSIk_14_14_3_3_4h"] < 50.0)
@@ -23666,8 +23943,17 @@ class NostalgiaForInfinityX5(IStrategy):
 
     return False, None
 
-    #
+  ###############################################################################################
 
+  # SHORT EXIT FUNCTIONS ENDS HERE
+
+  ###############################################################################################
+
+  # SHORT GRIND FUNCTIONS STARTS HERE
+
+  ###############################################################################################
+
+  #
   #   ______  __    __  ______  _______ ________         ______  _______  ______ __    __ _______
   #  /      \|  \  |  \/      \|       |        \       /      \|       \|      |  \  |  |       \
   # |  $$$$$$| $$  | $|  $$$$$$| $$$$$$$\$$$$$$$$      |  $$$$$$| $$$$$$$\\$$$$$| $$\ | $| $$$$$$$\
@@ -23678,10 +23964,6 @@ class NostalgiaForInfinityX5(IStrategy):
   #  \$$    $| $$  | $$\$$    $| $$  | $$ | $$          \$$    $| $$  | $|   $$ | $$  \$$| $$    $$
   #   \$$$$$$ \$$   \$$ \$$$$$$ \$$   \$$  \$$           \$$$$$$ \$$   \$$\$$$$$$\$$   \$$\$$$$$$$
   #
-
-  ###############################################################################################
-  # SHORT GRIND FUNCTIONS STARTS HERE
-  ###############################################################################################
 
   # Short Grinding Adjust Trade Position
   # ---------------------------------------------------------------------------------------------
@@ -24431,7 +24713,7 @@ class NostalgiaForInfinityX5(IStrategy):
               is_short_grind_entry
               or (
                 (last_candle["RSI_3"] < 94.0)
-                and (last_candle["AROONU_14_15m"] > 75.0)
+                and (last_candle["AROOND_14_15m"] < 25.0)
                 and (last_candle["RSI_14"] > 64.0)
                 and (last_candle["close"] > (last_candle["EMA_26"] * 1.006))
               )
@@ -24549,7 +24831,7 @@ class NostalgiaForInfinityX5(IStrategy):
               is_short_grind_entry
               or (
                 (last_candle["RSI_3"] < 94.0)
-                and (last_candle["AROONU_14_15m"] > 75.0)
+                and (last_candle["AROOND_14_15m"] < 25.0)
                 and (last_candle["RSI_14"] > 64.0)
                 and (last_candle["close"] > (last_candle["EMA_26"] * 1.006))
               )
@@ -26850,7 +27132,9 @@ class NostalgiaForInfinityX5(IStrategy):
     return None
 
   ###############################################################################################
+
   # SHORT GRIND FUNCTIONS ENDS HERE
+
   ###############################################################################################
 
 
