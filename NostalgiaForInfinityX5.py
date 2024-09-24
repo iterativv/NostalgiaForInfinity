@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.48"
+    return "v15.1.49"
 
   stoploss = -0.99
 
@@ -17985,15 +17985,15 @@ class NostalgiaForInfinityX5(IStrategy):
     if not sell:
       if (0.09 >= profit_init_ratio > 0.005) and (last_candle["RSI_14"] < 22.0):
         sell, signal_name = True, f"exit_{self.short_quick_mode_name}_rpd_1"
-      elif (0.09 >= profit_init_ratio > 0.005) and (last_candle["MFI_14"] > 84.0):
+      elif (0.09 >= profit_init_ratio > 0.005) and (last_candle["MFI_14"] < 16.0):
         sell, signal_name = True, f"exit_{self.short_quick_mode_name}_rpd_2"
-      elif (0.09 >= profit_init_ratio > 0.005) and (last_candle["WILLR_14"] >= -0.1):
+      elif (0.09 >= profit_init_ratio > 0.005) and (last_candle["WILLR_14"] <= -0.99):
         sell, signal_name = True, f"exit_{self.short_quick_mode_name}_rpd_3"
       elif (
         (0.09 >= profit_init_ratio > 0.005)
-        and (last_candle["RSI_14"] >= 72.0)
+        and (last_candle["RSI_14"] <= 28.0)
         and (last_candle["RSI_3"] < 10.0)
-        and (last_candle["RSI_3_15m"] > 90.0)
+        and (last_candle["RSI_3_15m"] < 10.0)
       ):
         sell, signal_name = True, f"exit_{self.short_quick_mode_name}_rpd_4"
       elif (0.09 >= profit_init_ratio > 0.005) and (last_candle["RSI_3_15m"] < 4.0):
