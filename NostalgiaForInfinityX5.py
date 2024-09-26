@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.55"
+    return "v15.1.56"
 
   stoploss = -0.99
 
@@ -469,7 +469,7 @@ class NostalgiaForInfinityX5(IStrategy):
   short_entry_signal_params = {
     # Enable/Disable conditions
     # -------------------------------------------------------
-    "short_entry_condition_501_enable": False,
+    "short_entry_condition_501_enable": True,
     "short_entry_condition_502_enable": False,
     "short_entry_condition_503_enable": False,
     "short_entry_condition_504_enable": False,
