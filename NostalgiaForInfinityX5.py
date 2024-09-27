@@ -4287,8 +4287,6 @@ class NostalgiaForInfinityX5(IStrategy):
           long_entry_logic.append(
             (df["RSI_3_1h"] > 5.0) | (df["CMF_20_4h"] > -0.25) | (df["STOCHRSIk_14_14_3_3_4h"] < 30.0)
           )
-          # 1h down move, 4h high, 1d overbought
-          long_entry_logic.append((df["RSI_3_1h"] > 10.0) | (df["RSI_14_4h"] < 60.0) | (df["ROC_9_1d"] < 50.0))
           # 1h down move, 4h strong down move
           long_entry_logic.append((df["RSI_3_1h"] > 5.0) | (df["RSI_14_change_pct_4h"] > -40.0))
           # 1h & 4h down move, 4h still going down
@@ -4297,10 +4295,14 @@ class NostalgiaForInfinityX5(IStrategy):
           long_entry_logic.append(
             (df["RSI_3_1h"] > 5.0) | (df["RSI_3_change_pct_4h"] > -65.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 30.0)
           )
+          # 1h strong down move
+          long_entry_logic.append((df["RSI_3_1h"] > 10.0) | (df["CMF_20_1h"] > -0.30) | (df["MFI_14_1h"] > 15.0))
           # 1h down move, 4h down move, 4h P&D
           long_entry_logic.append(
             (df["RSI_3_1h"] > 10.0) | (df["RSI_3_change_pct_4h"] > -70.0) | (df["RSI_14_4h"].shift(48) < 70.0)
           )
+          # 1h down move, 4h high, 1d overbought
+          long_entry_logic.append((df["RSI_3_1h"] > 10.0) | (df["RSI_14_4h"] < 60.0) | (df["ROC_9_1d"] < 50.0))
           # 1h & 4h down move, 15m still not low enough
           long_entry_logic.append(
             (df["RSI_3_1h"] > 10.0) | (df["RSI_3_4h"] > 5.0) | (df["STOCHRSIk_14_14_3_3_15m"] < 25.0)
