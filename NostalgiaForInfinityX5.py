@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.64"
+    return "v15.1.65"
 
   stoploss = -0.99
 
@@ -189,82 +189,82 @@ class NostalgiaForInfinityX5(IStrategy):
   grinding_enable = True
 
   # Grinding
-  grind_1_stop_grinds_spot = -0.03
+  grind_1_stop_grinds_spot = -0.30
   grind_1_profit_threshold_spot = 0.018
   grind_1_stakes_spot = [0.22, 0.24, 0.26]
   grind_1_sub_thresholds_spot = [-0.065, -0.075, -0.085]
 
-  grind_1_stop_grinds_futures = -0.03
+  grind_1_stop_grinds_futures = -0.30
   grind_1_profit_threshold_futures = 0.018
   grind_1_stakes_futures = [0.22, 0.24, 0.26]
   grind_1_sub_thresholds_futures = [-0.065, -0.075, -0.085]
 
-  grind_2_stop_grinds_spot = -0.03
+  grind_2_stop_grinds_spot = -0.30
   grind_2_profit_threshold_spot = 0.018
   grind_2_stakes_spot = [0.16, 0.26, 0.32]
   grind_2_sub_thresholds_spot = [-0.065, -0.075, -0.085]
 
-  grind_2_stop_grinds_futures = -0.03
+  grind_2_stop_grinds_futures = -0.30
   grind_2_profit_threshold_futures = 0.018
   grind_2_stakes_futures = [0.16, 0.26, 0.32]
   grind_2_sub_thresholds_futures = [-0.065, -0.075, -0.085]
 
-  grind_3_stop_grinds_spot = -0.03
+  grind_3_stop_grinds_spot = -0.30
   grind_3_profit_threshold_spot = 0.018
   grind_3_stakes_spot = [0.16, 0.18, 0.20]
   grind_3_sub_thresholds_spot = [-0.065, -0.075, -0.085]
 
-  grind_3_stop_grinds_futures = -0.03
+  grind_3_stop_grinds_futures = -0.30
   grind_3_profit_threshold_futures = 0.018
   grind_3_stakes_futures = [0.16, 0.18, 0.20]
   grind_3_sub_thresholds_futures = [-0.065, -0.075, -0.085]
 
-  grind_4_stop_grinds_spot = -0.03
+  grind_4_stop_grinds_spot = -0.30
   grind_4_profit_threshold_spot = 0.018
   grind_4_stakes_spot = [0.16, 0.18, 0.20]
   grind_4_sub_thresholds_spot = [-0.065, -0.075, -0.085]
 
-  grind_4_stop_grinds_futures = -0.03
+  grind_4_stop_grinds_futures = -0.30
   grind_4_profit_threshold_futures = 0.018
   grind_4_stakes_futures = [0.16, 0.18, 0.20]
   grind_4_sub_thresholds_futures = [-0.065, -0.075, -0.085]
 
-  grind_5_stop_grinds_spot = -0.03
+  grind_5_stop_grinds_spot = -0.30
   grind_5_profit_threshold_spot = 0.048
   grind_5_stakes_spot = [0.16, 0.18, 0.20]
   grind_5_sub_thresholds_spot = [-0.065, -0.075, -0.085]
 
-  grind_5_stop_grinds_futures = -0.03
+  grind_5_stop_grinds_futures = -0.30
   grind_5_profit_threshold_futures = 0.048
   grind_5_stakes_futures = [0.16, 0.18, 0.20]
   grind_5_sub_thresholds_futures = [-0.065, -0.075, -0.085]
 
-  grind_6_stop_grinds_spot = -0.03
+  grind_6_stop_grinds_spot = -0.30
   grind_6_profit_threshold_spot = 0.018
   grind_6_stakes_spot = [0.05, 0.057, 0.065, 0.074, 0.084, 0.095, 0.107, 0.121, 0.137]
   grind_6_sub_thresholds_spot = [-0.03, -0.035, -0.04, -0.045, -0.05, -0.055, -0.06, -0.065, -0.07]
 
-  grind_6_stop_grinds_futures = -0.03
+  grind_6_stop_grinds_futures = -0.30
   grind_6_profit_threshold_futures = 0.018
   grind_6_stakes_futures = [0.05, 0.057, 0.065, 0.074, 0.084, 0.095, 0.107, 0.121, 0.137]
   grind_6_sub_thresholds_futures = [-0.03, -0.035, -0.04, -0.045, -0.05, -0.055, -0.06, -0.065, -0.07]
 
-  grind_1_derisk_1_stop_grinds_spot = -0.03
+  grind_1_derisk_1_stop_grinds_spot = -0.30
   grind_1_derisk_1_profit_threshold_spot = 0.018
   grind_1_derisk_1_stakes_spot = [0.25, 0.30, 0.35]
   grind_1_derisk_1_sub_thresholds_spot = [-0.07, -0.08, -0.09]
 
-  grind_1_derisk_1_stop_grinds_futures = -0.03
+  grind_1_derisk_1_stop_grinds_futures = -0.30
   grind_1_derisk_1_profit_threshold_futures = 0.018
   grind_1_derisk_1_stakes_futures = [0.25, 0.30, 0.35]
   grind_1_derisk_1_sub_thresholds_futures = [-0.07, -0.08, -0.09]
 
-  grind_2_derisk_1_stop_grinds_spot = -0.03
+  grind_2_derisk_1_stop_grinds_spot = -0.30
   grind_2_derisk_1_profit_threshold_spot = 0.018
   grind_2_derisk_1_stakes_spot = [0.16, 0.22, 0.28]
   grind_2_derisk_1_sub_thresholds_spot = [-0.065, -0.075, -0.085]
 
-  grind_2_derisk_1_stop_grinds_futures = -0.03
+  grind_2_derisk_1_stop_grinds_futures = -0.30
   grind_2_derisk_1_profit_threshold_futures = 0.018
   grind_2_derisk_1_stakes_futures = [0.16, 0.22, 0.28]
   grind_2_derisk_1_sub_thresholds_futures = [-0.065, -0.075, -0.085]
