@@ -4977,19 +4977,19 @@ class NostalgiaForInfinityX5(IStrategy):
           # Protections
           long_entry_logic.append(num_open_long_grind_mode < self.grind_mode_max_slots)
           long_entry_logic.append(is_pair_long_grind_mode)
-          long_entry_logic.append(df["RSI_3"] <= 40.0)
-          long_entry_logic.append(df["RSI_3_15m"] >= 10.0)
-          long_entry_logic.append(df["RSI_3_1h"] >= 5.0)
-          long_entry_logic.append(df["RSI_3_4h"] >= 5.0)
-          long_entry_logic.append(df["RSI_14_1h"] < 85.0)
-          long_entry_logic.append(df["RSI_14_4h"] < 85.0)
-          long_entry_logic.append(df["RSI_14_1d"] < 85.0)
-          long_entry_logic.append(df["close_max_48"] >= (df["close"] * 1.10))
+          long_entry_logic.append(df["RSI_3"] <= 50.0)
+          long_entry_logic.append(df["RSI_3_15m"] >= 20.0)
+          long_entry_logic.append(df["RSI_3_1h"] >= 10.0)
+          long_entry_logic.append(df["RSI_3_4h"] >= 10.0)
+          long_entry_logic.append(df["RSI_14_1h"] < 80.0)
+          long_entry_logic.append(df["RSI_14_4h"] < 80.0)
+          long_entry_logic.append(df["RSI_14_1d"] < 80.0)
 
           # Logic
           long_entry_logic.append(df["STOCHRSIk_14_14_3_3"] < 20.0)
           long_entry_logic.append(df["WILLR_14"] < -80.0)
           long_entry_logic.append(df["AROONU_14"] < 25.0)
+          long_entry_logic.append(df["close"] < (df["EMA_20"] * 0.978))
 
         # Condition #141 - Top Coins mode (Long).
         if index == 141:
