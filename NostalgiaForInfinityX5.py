@@ -363,6 +363,9 @@ class NostalgiaForInfinityX5(IStrategy):
   rapid_mode_stake_multiplier_spot = [0.5]
   rapid_mode_stake_multiplier_futures = [0.5]
 
+  # Derisk mode
+  min_free_slots_derisk_mode = 2
+
   # Grind mode
   grind_mode_stake_multiplier_spot = [0.20, 0.30, 0.40, 0.50, 0.60, 0.70]
   grind_mode_stake_multiplier_futures = [0.20, 0.30, 0.40, 0.50]
@@ -2904,6 +2907,14 @@ class NostalgiaForInfinityX5(IStrategy):
       if not is_pair_top_coins_mode:
         # The pair is not in the list of top_coins mode allowed
         log.warning(f"Cancelling entry for {pair} due to {pair} not in list of top coins mode coins.")
+        return False
+    # Derisk mode
+    elif all(c in self.long_derisk_mode_tags for c in entry_tags):
+      current_free_slots = self.config["max_open_trades"]
+      current_free_slots = self.config["max_open_trades"] - Trade.get_open_trade_count()
+      if current_free_slots < self.min_free_slots_derisk_mode:
+        # not enough free slots for derisk mode
+        log.warning(f"Cancelling entry for {pair} due to not enough free slots.")
         return False
 
     df, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
