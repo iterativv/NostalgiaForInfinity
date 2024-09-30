@@ -125,6 +125,8 @@ class NostalgiaForInfinityX5(IStrategy):
   long_grind_mode_tags = ["120"]
   # Long top coins mode tags
   long_top_coins_mode_tags = ["141", "142"]
+  # Long derisk mode tags
+  long_derisk_mode_tags = ["161"]
 
   long_normal_mode_name = "long_normal"
   long_pump_mode_name = "long_pump"
@@ -134,6 +136,7 @@ class NostalgiaForInfinityX5(IStrategy):
   long_rapid_mode_name = "long_rapid"
   long_grind_mode_name = "long_grind"
   long_top_coins_mode_name = "long_tc"
+  long_derisk_mode_name = "long_derisk"
 
   # Shorting
 
@@ -170,10 +173,12 @@ class NostalgiaForInfinityX5(IStrategy):
   stop_threshold_futures = 0.10
   stop_threshold_doom_spot = 0.25
   stop_threshold_doom_futures = 0.25
-  stop_threshold_rapid_spot = 0.25
-  stop_threshold_rapid_futures = 0.25
   stop_threshold_spot_rebuy = 1.0
   stop_threshold_futures_rebuy = 1.0
+  stop_threshold_rapid_spot = 0.25
+  stop_threshold_rapid_futures = 0.25
+  stop_threshold_derisk_spot = 0.25
+  stop_threshold_derisk_futures = 0.25
 
   # user specified fees to be used for profit calculations
   custom_fee_open_rate = None
@@ -308,6 +313,7 @@ class NostalgiaForInfinityX5(IStrategy):
   regular_mode_derisk_1_reentry_spot = -0.08
   regular_mode_derisk_spot = -0.40
   regular_mode_derisk_spot_old = -1.60
+  regular_mode_derisk_1_derisk_mode_spot = -0.05
 
   regular_mode_rebuy_stakes_futures = [0.10, 0.10, 0.10]
   regular_mode_rebuy_thresholds_futures = [-0.12, -0.14, -0.16]
@@ -340,6 +346,7 @@ class NostalgiaForInfinityX5(IStrategy):
   regular_mode_derisk_1_reentry_futures = -0.08  # without leverage
   regular_mode_derisk_futures = -0.40
   regular_mode_derisk_futures_old = -1.20
+  regular_mode_derisk_1_derisk_mode_futures = -0.05
 
   # Rebuy mode
   rebuy_mode_stake_multiplier = 0.2
@@ -351,6 +358,10 @@ class NostalgiaForInfinityX5(IStrategy):
   rebuy_mode_stakes_futures = [1.0, 1.25, 1.5, 1.75, 2.0]
   rebuy_mode_thresholds_spot = [-0.04, -0.06, -0.08, -0.10, -0.12]
   rebuy_mode_thresholds_futures = [-0.04, -0.06, -0.08, -0.10, -0.12]
+
+  # Rapid mode
+  rapid_mode_stake_multiplier_spot = [0.5]
+  rapid_mode_stake_multiplier_futures = [0.5]
 
   # Grind mode
   grind_mode_stake_multiplier_spot = [0.20, 0.30, 0.40, 0.50, 0.60, 0.70]
@@ -1343,7 +1354,19 @@ class NostalgiaForInfinityX5(IStrategy):
         return f"{signal_name} ( {enter_tag})"
 
     # Long rapid mode
-    if any(c in self.long_rapid_mode_tags for c in enter_tags):
+    if all(c in self.long_rapid_mode_tags for c in enter_tags) or (
+      any(c in self.long_rapid_mode_tags for c in enter_tags)
+      and all(
+        c
+        in (
+          self.long_rapid_mode_tags
+          + self.long_rebuy_mode_tags
+          + self.long_grind_mode_tags
+          + self.long_derisk_mode_tags
+        )
+        for c in enter_tags
+      )
+    ):
       sell, signal_name = self.long_exit_rapid(
         pair,
         current_rate,
@@ -1397,6 +1420,32 @@ class NostalgiaForInfinityX5(IStrategy):
     # Long Top Coins mode
     if any(c in self.long_top_coins_mode_tags for c in enter_tags):
       sell, signal_name = self.long_exit_top_coins(
+        pair,
+        current_rate,
+        profit_stake,
+        profit_ratio,
+        profit_current_stake_ratio,
+        profit_init_ratio,
+        max_profit,
+        max_loss,
+        filled_entries,
+        filled_exits,
+        last_candle,
+        previous_candle_1,
+        previous_candle_2,
+        previous_candle_3,
+        previous_candle_4,
+        previous_candle_5,
+        trade,
+        current_time,
+        enter_tags,
+      )
+      if sell and (signal_name is not None):
+        return f"{signal_name} ( {enter_tag})"
+
+    # Long derisk mode
+    if all(c in self.long_derisk_mode_tags for c in enter_tags):
+      sell, signal_name = self.long_exit_derisk(
         pair,
         current_rate,
         profit_stake,
@@ -1589,6 +1638,7 @@ class NostalgiaForInfinityX5(IStrategy):
           + self.long_rapid_mode_tags
           + self.long_grind_mode_tags
           + self.long_top_coins_mode_tags
+          + self.long_derisk_mode_tags
         )
         for c in enter_tags
       )
@@ -1688,6 +1738,29 @@ class NostalgiaForInfinityX5(IStrategy):
         if (proposed_stake * self.rebuy_mode_stake_multiplier) < min_stake:
           stake_multiplier = self.rebuy_mode_stake_multiplier_alt
         return proposed_stake * stake_multiplier
+      # Rapid mode
+      if all(c in self.long_rapid_mode_tags for c in enter_tags) or (
+        any(c in self.long_rapid_mode_tags for c in enter_tags)
+        and all(
+          c
+          in (
+            self.long_rapid_mode_tags
+            + self.long_rebuy_mode_tags
+            + self.long_grind_mode_tags
+            + self.long_derisk_mode_tags
+          )
+          for c in enter_tags
+        )
+      ):
+        stake_multiplier = (
+          self.rapid_mode_stake_multiplier_futures[0]
+          if self.is_futures_mode
+          else self.rapid_mode_stake_multiplier_spot[0]
+        )
+        if (proposed_stake * stake_multiplier) > min_stake:
+          return proposed_stake * stake_multiplier
+        else:
+          return min_stake
       # Grind mode
       elif all(c in self.long_grind_mode_tags for c in enter_tags):
         for _, item in enumerate(
@@ -8146,6 +8219,237 @@ class NostalgiaForInfinityX5(IStrategy):
       f"exit_profit_{self.long_top_coins_mode_name}_max",
       # f"exit_{self.long_top_coins_mode_name}_stoploss_doom",
       # f"exit_{self.long_top_coins_mode_name}_stoploss_u_e",
+    ]:
+      if sell and (signal_name is not None):
+        return True, f"{signal_name}"
+
+    return False, None
+
+  # Long Exit Derisk
+  # ---------------------------------------------------------------------------------------------
+  def long_exit_derisk(
+    self,
+    pair: str,
+    current_rate: float,
+    profit_stake: float,
+    profit_ratio: float,
+    profit_current_stake_ratio: float,
+    profit_init_ratio: float,
+    max_profit: float,
+    max_loss: float,
+    filled_entries,
+    filled_exits,
+    last_candle,
+    previous_candle_1,
+    previous_candle_2,
+    previous_candle_3,
+    previous_candle_4,
+    previous_candle_5,
+    trade: "Trade",
+    current_time: "datetime",
+    enter_tags,
+  ) -> tuple:
+    sell = False
+
+    # Original sell signals
+    sell, signal_name = self.long_exit_signals(
+      self.long_derisk_mode_name,
+      profit_init_ratio,
+      max_profit,
+      max_loss,
+      last_candle,
+      previous_candle_1,
+      previous_candle_2,
+      previous_candle_3,
+      previous_candle_4,
+      previous_candle_5,
+      trade,
+      current_time,
+      enter_tags,
+    )
+
+    # Main sell signals
+    if not sell:
+      sell, signal_name = self.long_exit_main(
+        self.long_derisk_mode_name,
+        profit_init_ratio,
+        max_profit,
+        max_loss,
+        last_candle,
+        previous_candle_1,
+        previous_candle_2,
+        previous_candle_3,
+        previous_candle_4,
+        previous_candle_5,
+        trade,
+        current_time,
+        enter_tags,
+      )
+
+    # Williams %R based sells
+    if not sell:
+      sell, signal_name = self.long_exit_williams_r(
+        self.long_derisk_mode_name,
+        profit_init_ratio,
+        max_profit,
+        max_loss,
+        last_candle,
+        previous_candle_1,
+        previous_candle_2,
+        previous_candle_3,
+        previous_candle_4,
+        previous_candle_5,
+        trade,
+        current_time,
+        enter_tags,
+      )
+
+    # Downtrend/descending based sells
+    if not sell:
+      sell, signal_name = self.long_exit_dec(
+        self.long_derisk_mode_name,
+        profit_init_ratio,
+        max_profit,
+        max_loss,
+        last_candle,
+        previous_candle_1,
+        previous_candle_2,
+        previous_candle_3,
+        previous_candle_4,
+        previous_candle_5,
+        trade,
+        current_time,
+        enter_tags,
+      )
+
+      # Stoplosses
+      if profit_stake < -(
+        filled_entries[0].cost
+        * (self.stop_threshold_derisk_futures if self.is_futures_mode else self.stop_threshold_derisk_spot)
+        # / (trade.leverage if self.is_futures_mode else 1.0)
+      ):
+        sell, signal_name = True, f"exit_{self.long_derisk_mode_name}_stoploss_doom"
+
+    # Profit Target Signal
+    # Check if pair exist on target_profit_cache
+    if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
+      previous_rate = self.target_profit_cache.data[pair]["rate"]
+      previous_profit = self.target_profit_cache.data[pair]["profit"]
+      previous_sell_reason = self.target_profit_cache.data[pair]["sell_reason"]
+      previous_time_profit_reached = datetime.fromisoformat(self.target_profit_cache.data[pair]["time_profit_reached"])
+
+      sell_max, signal_name_max = self.exit_profit_target(
+        self.long_derisk_mode_name,
+        pair,
+        trade,
+        current_time,
+        current_rate,
+        profit_stake,
+        profit_ratio,
+        profit_current_stake_ratio,
+        profit_init_ratio,
+        last_candle,
+        previous_candle_1,
+        previous_rate,
+        previous_profit,
+        previous_sell_reason,
+        previous_time_profit_reached,
+        enter_tags,
+      )
+      if sell_max and signal_name_max is not None:
+        return True, f"{signal_name_max}_m"
+      if previous_sell_reason in [f"exit_{self.long_derisk_mode_name}_stoploss_u_e"]:
+        if profit_ratio > (previous_profit + 0.005):
+          mark_pair, mark_signal = self.mark_profit_target(
+            self.long_derisk_mode_name,
+            pair,
+            True,
+            previous_sell_reason,
+            trade,
+            current_time,
+            current_rate,
+            profit_ratio,
+            last_candle,
+            previous_candle_1,
+          )
+          if mark_pair:
+            self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
+      elif (profit_init_ratio > (previous_profit + 0.001)) and (
+        previous_sell_reason not in [f"exit_{self.long_derisk_mode_name}_stoploss_doom"]
+      ):
+        # Update the target, raise it.
+        mark_pair, mark_signal = self.mark_profit_target(
+          self.long_derisk_mode_name,
+          pair,
+          True,
+          previous_sell_reason,
+          trade,
+          current_time,
+          current_rate,
+          profit_init_ratio,
+          last_candle,
+          previous_candle_1,
+        )
+        if mark_pair:
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
+
+    # Add the pair to the list, if a sell triggered and conditions met
+    if sell and signal_name is not None:
+      previous_profit = None
+      if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
+        previous_profit = self.target_profit_cache.data[pair]["profit"]
+      if signal_name in [
+        f"exit_{self.long_derisk_mode_name}_stoploss_doom",
+        f"exit_{self.long_derisk_mode_name}_stoploss_u_e",
+      ]:
+        mark_pair, mark_signal = self.mark_profit_target(
+          self.long_derisk_mode_name,
+          pair,
+          sell,
+          signal_name,
+          trade,
+          current_time,
+          current_rate,
+          profit_ratio,
+          last_candle,
+          previous_candle_1,
+        )
+        if mark_pair:
+          self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
+        else:
+          # Just sell it, without maximize
+          return True, f"{signal_name}"
+      elif (previous_profit is None) or (previous_profit < profit_init_ratio):
+        mark_pair, mark_signal = self.mark_profit_target(
+          self.long_derisk_mode_name,
+          pair,
+          sell,
+          signal_name,
+          trade,
+          current_time,
+          current_rate,
+          profit_init_ratio,
+          last_candle,
+          previous_candle_1,
+        )
+        if mark_pair:
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
+        else:
+          # Just sell it, without maximize
+          return True, f"{signal_name}"
+    else:
+      if profit_init_ratio >= 0.005:
+        previous_profit = None
+        if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
+          previous_profit = self.target_profit_cache.data[pair]["profit"]
+        if (previous_profit is None) or (previous_profit < profit_init_ratio):
+          mark_signal = f"exit_profit_{self.long_derisk_mode_name}_max"
+          self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
+
+    if signal_name not in [
+      f"exit_profit_{self.long_derisk_mode_name}_max",
+      # f"exit_{self.long_derisk_mode_name}_stoploss_doom",
+      # f"exit_{self.long_derisk_mode_name}_stoploss_u_e",
     ]:
       if sell and (signal_name is not None):
         return True, f"{signal_name}"
@@ -16861,6 +17165,8 @@ class NostalgiaForInfinityX5(IStrategy):
       + grind_6_sub_grind_count
     )
 
+    is_derisk_mode = all(c in self.long_derisk_mode_tags for c in enter_tags)
+
     fee_open_rate = trade.fee_open if self.custom_fee_open_rate is None else self.custom_fee_open_rate
     fee_close_rate = trade.fee_close if self.custom_fee_close_rate is None else self.custom_fee_close_rate
 
@@ -17553,10 +17859,18 @@ class NostalgiaForInfinityX5(IStrategy):
       < (
         slice_amount
         * (
-          (self.regular_mode_derisk_1_futures if self.is_futures_mode else self.regular_mode_derisk_1_spot)
-          if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
+          (
+            self.regular_mode_derisk_1_derisk_mode_futures
+            if self.is_futures_mode
+            else self.regular_mode_derisk_1_derisk_mode_spot
+          )
+          if is_derisk_mode
           else (
-            self.regular_mode_derisk_1_futures_old if self.is_futures_mode else self.regular_mode_derisk_1_spot_old
+            (self.regular_mode_derisk_1_futures if self.is_futures_mode else self.regular_mode_derisk_1_spot)
+            if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
+            else (
+              self.regular_mode_derisk_1_futures_old if self.is_futures_mode else self.regular_mode_derisk_1_spot_old
+            )
           )
         )
       )
