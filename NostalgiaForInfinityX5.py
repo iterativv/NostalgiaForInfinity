@@ -28701,7 +28701,7 @@ class NostalgiaForInfinityX5(IStrategy):
         and (is_derisk or is_derisk_calc or is_grind_mode)
       )
       # temporary
-      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 4, 14) or is_backtest)
+      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
     ):
       sell_amount = grind_4_total_amount * exit_rate / trade.leverage
       if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
@@ -28814,7 +28814,7 @@ class NostalgiaForInfinityX5(IStrategy):
         grind_profit = 0.0
         if grind_5_current_open_rate > 0.0:
           grind_profit = (
-            ((exit_rate - grind_5_current_open_rate) / grind_5_current_open_rate)
+            (-(exit_rate - grind_5_current_open_rate) / grind_5_current_open_rate)
             if grind_5_is_sell_found
             else profit_ratio
           )
@@ -29739,9 +29739,7 @@ class NostalgiaForInfinityX5(IStrategy):
       (
         (grind_1_sub_grind_count > 0)
         and self.regular_mode_use_grind_stops
-        and (
-          ((exit_rate - grind_1_current_open_rate) / grind_1_current_open_rate) < regular_mode_grind_1_stop_grinds
-        )  # CHECK HERE
+        and ((-(exit_rate - grind_1_current_open_rate) / grind_1_current_open_rate) < regular_mode_grind_1_stop_grinds)
       )
       # temporary
       and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 4, 16) or is_backtest)
@@ -29749,10 +29747,10 @@ class NostalgiaForInfinityX5(IStrategy):
       sell_amount = grind_1_total_amount * exit_rate / trade.leverage
       if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
         sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
-      ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate  # CHECK HERE
+      ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
-        if grind_1_current_open_rate > 0.0:  # CHECK HERE
+        if grind_1_current_open_rate > 0.0:
           grind_profit = -(
             ((exit_rate - grind_1_current_open_rate) / grind_1_current_open_rate)
             if grind_1_is_sell_found
@@ -29835,7 +29833,7 @@ class NostalgiaForInfinityX5(IStrategy):
       (
         (grind_2_sub_grind_count > 0)
         and self.regular_mode_use_grind_stops
-        and (((exit_rate - grind_2_current_open_rate) / grind_2_current_open_rate) < regular_mode_grind_2_stop_grinds)
+        and ((-(exit_rate - grind_2_current_open_rate) / grind_2_current_open_rate) < regular_mode_grind_2_stop_grinds)
       )
       # temporary
       and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 4, 16) or is_backtest)
@@ -29848,7 +29846,7 @@ class NostalgiaForInfinityX5(IStrategy):
         grind_profit = 0.0
         if grind_2_current_open_rate > 0.0:
           grind_profit = -(
-            ((exit_rate - grind_2_current_open_rate) / grind_2_current_open_rate)  # CHECK HERE
+            ((exit_rate - grind_2_current_open_rate) / grind_2_current_open_rate)
             if grind_2_is_sell_found
             else profit_ratio
           )
@@ -29929,7 +29927,7 @@ class NostalgiaForInfinityX5(IStrategy):
       (
         (grind_3_sub_grind_count > 0)
         and self.regular_mode_use_grind_stops
-        and (((exit_rate - grind_3_current_open_rate) / grind_3_current_open_rate) < regular_mode_grind_3_stop_grinds)
+        and ((-(exit_rate - grind_3_current_open_rate) / grind_3_current_open_rate) < regular_mode_grind_3_stop_grinds)
       )
       # temporary
       and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 4, 16) or is_backtest)
@@ -29937,10 +29935,10 @@ class NostalgiaForInfinityX5(IStrategy):
       sell_amount = grind_3_total_amount * exit_rate / trade.leverage
       if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
         sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
-      ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate  # CHECK HERE
+      ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
-        if grind_3_current_open_rate > 0.0:  # CHECK HERE
+        if grind_3_current_open_rate > 0.0:
           grind_profit = -(
             ((exit_rate - grind_3_current_open_rate) / grind_3_current_open_rate)
             if grind_3_is_sell_found
@@ -30023,9 +30021,7 @@ class NostalgiaForInfinityX5(IStrategy):
       (
         (grind_4_sub_grind_count > 0)
         and self.regular_mode_use_grind_stops
-        and (
-          ((exit_rate - grind_4_current_open_rate) / grind_4_current_open_rate) < regular_mode_grind_4_stop_grinds
-        )  # CHECK HERE
+        and ((-(exit_rate - grind_4_current_open_rate) / grind_4_current_open_rate) < regular_mode_grind_4_stop_grinds)
       )
       # temporary
       and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 4, 16) or is_backtest)
@@ -30033,10 +30029,10 @@ class NostalgiaForInfinityX5(IStrategy):
       sell_amount = grind_4_total_amount * exit_rate / trade.leverage
       if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
         sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
-      ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate  # CHECK HERE
+      ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
-        if grind_4_current_open_rate > 0.0:  # CHECK HERE
+        if grind_4_current_open_rate > 0.0:
           grind_profit = -(
             ((exit_rate - grind_4_current_open_rate) / grind_4_current_open_rate)
             if grind_4_is_sell_found
@@ -30119,7 +30115,7 @@ class NostalgiaForInfinityX5(IStrategy):
       (
         (grind_5_sub_grind_count > 0)
         and self.regular_mode_use_grind_stops
-        and (((exit_rate - grind_5_current_open_rate) / grind_5_current_open_rate) < regular_mode_grind_5_stop_grinds)
+        and ((-(exit_rate - grind_5_current_open_rate) / grind_5_current_open_rate) < regular_mode_grind_5_stop_grinds)
       )
       # temporary
       and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 4, 16) or is_backtest)
@@ -30132,7 +30128,7 @@ class NostalgiaForInfinityX5(IStrategy):
         grind_profit = 0.0
         if grind_5_current_open_rate > 0.0:
           grind_profit = (
-            (-(exit_rate - grind_5_current_open_rate) / grind_5_current_open_rate)  # CHECK HERE
+            (-(exit_rate - grind_5_current_open_rate) / grind_5_current_open_rate)
             if grind_5_is_sell_found
             else profit_ratio
           )
@@ -30222,7 +30218,7 @@ class NostalgiaForInfinityX5(IStrategy):
       (
         (grind_6_sub_grind_count > 0)
         and self.regular_mode_use_grind_stops
-        and (((exit_rate - grind_6_current_open_rate) / grind_6_current_open_rate) < regular_mode_grind_6_stop_grinds)
+        and ((-(exit_rate - grind_6_current_open_rate) / grind_6_current_open_rate) < regular_mode_grind_6_stop_grinds)
       )
       # temporary
       and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 4, 16) or is_backtest)
@@ -30233,7 +30229,7 @@ class NostalgiaForInfinityX5(IStrategy):
       ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
-        if grind_6_current_open_rate > 0.0:  # CHECK HERE
+        if grind_6_current_open_rate > 0.0:
           grind_profit = -(
             ((exit_rate - grind_6_current_open_rate) / grind_6_current_open_rate)
             if grind_6_is_sell_found
