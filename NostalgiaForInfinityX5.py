@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.89"
+    return "v15.1.90"
 
   stoploss = -0.99
 
@@ -6251,10 +6251,27 @@ class NostalgiaForInfinityX5(IStrategy):
           short_entry_logic.append(
             (df["STOCHRSIk_14_14_3_3_15m"] > 30.0) | (df["RSI_3_4h"] < 95.0) | (df["STOCHRSIk_14_14_3_3_1d"] < 50.0)
           )
+          # 15m high, 1h low, 4h down move, 4h still not low enough
+          short_entry_logic.append(
+            (df["STOCHRSIk_14_14_3_3_15m"] > 30.0)
+            | (df["CMF_20_1h"] < 0.20)
+            | (df["RSI_3_4h"] < 80.0)
+            | (df["STOCHRSIk_14_14_3_3_4h"] > 85.0)
+          )
+          # 4m & 1h & 4h down move
+          short_entry_logic.append((df["RSI_3"] < 95.0) | (df["RSI_3_1h"] < 90.0) | (df["RSI_3_4h"] < 90.0))
           # 15m & 1h & 4h down move
           short_entry_logic.append((df["RSI_3_15m"] < 95.0) | (df["RSI_3_1h"] < 95.0) | (df["RSI_3_4h"] < 90.0))
           # 15m & 1h strong down move & downtrend
           short_entry_logic.append((df["RSI_3_15m"] < 95.0) | (df["RSI_3_1h"] < 95.0) | (df["MFI_14_1h"] < 95.0))
+          # 15m & 1h down move, 4h still not low enough
+          short_entry_logic.append(
+            (df["RSI_3_15m"] < 95.0) | (df["RSI_3_1h"] < 90.0) | (df["STOCHRSIk_14_14_3_3_4h"] > 80.0)
+          )
+          # 15m & 1h down move, 4h still high
+          short_entry_logic.append(
+            (df["RSI_3_15m"] < 95.0) | (df["RSI_3_1h"] < 80.0) | (df["STOCHRSIk_14_14_3_3_4h"] > 30.0)
+          )
           # 15m down move, 1h down move
           short_entry_logic.append(
             (df["RSI_3_15m"] < 90.0)
@@ -6275,21 +6292,44 @@ class NostalgiaForInfinityX5(IStrategy):
           )
           # 15m & 1h down move, 1d overbought
           short_entry_logic.append((df["RSI_3_15m"] < 90.0) | (df["RSI_3_1h"] < 90.0) | (df["ROC_9_1d"] > -100.0))
+          # 15m & 4h down move, 4h still high
+          short_entry_logic.append((df["RSI_3_15m"] < 90.0) | (df["RSI_3_4h"] < 80.0) | (df["AROOND_14_4h"] < 50.0))
+          # 15m down move, 4h still not low enough, 1d overbought
+          short_entry_logic.append((df["RSI_3_15m"] < 85.0) | (df["AROOND_14_4h"] < 25.0) | (df["ROC_9_1d"] > -100.0))
           # 15m & 4h down move, 1d downtrend
           short_entry_logic.append((df["RSI_3_15m"] < 85.0) | (df["RSI_3_4h"] < 85.0) | (df["ROC_9_1d"] < 50.0))
-          # 15m & 1h down move, 4h high
-          short_entry_logic.append((df["RSI_3_15m"] < 75.0) | (df["RSI_3_1h"] < 75.0) | (df["MFI_14_4h"] < 70.0))
-          # 15m & 1h down move, 4h still high
+          # 15m & 1h & 4h down move, 4h still high
           short_entry_logic.append(
-            (df["RSI_3_15m"] < 95.0) | (df["RSI_3_1h"] < 80.0) | (df["STOCHRSIk_14_14_3_3_4h"] > 30.0)
+            (df["RSI_3_15m"] < 80.0)
+            | (df["RSI_3_1h"] < 80.0)
+            | (df["RSI_3_4h"] < 70.0)
+            | (df["STOCHRSIk_14_14_3_3_4h"] > 60.0)
           )
+          # 15m & 4h down move, 4h still high
+          short_entry_logic.append(
+            (df["RSI_3_15m"] < 80.0) | (df["RSI_3_4h"] < 70.0) | (df["STOCHRSIk_14_14_3_3_4h"] > 75.0)
+          )
+          # 15m & 1h down move, 4h high
+          short_entry_logic.append((df["RSI_3_15m"] < 75.0) | (df["RSI_3_1h"] < 75.0) | (df["MFI_14_4h"] > 30.0))
           # 15m down move, 1h downtrend, 4h still high
           short_entry_logic.append(
             (df["RSI_3_15m"] < 80.0) | (df["ROC_9_1h"] < 20.0) | (df["STOCHRSIk_14_14_3_3_4h"] > 50.0)
           )
+          # 15m & 1h down move, 4h hig
+          short_entry_logic.append(
+            (df["RSI_3_15m"] < 70.0) | (df["RSI_3_1h"] < 70.0) | (df["STOCHRSIk_14_14_3_3_4h"] > 10.0)
+          )
           # 1h & 4h down move, 4h not low enough
           short_entry_logic.append(
             (df["RSI_3_1h"] < 95.0) | (df["RSI_3_4h"] < 90.0) | (df["STOCHRSIk_14_14_3_3_4h"] > 70.0)
+          )
+          # 1h & 4h down move, 4h still high
+          short_entry_logic.append(
+            (df["RSI_3_1h"] < 95.0) | (df["RSI_3_4h"] < 75.0) | (df["STOCHRSIk_14_14_3_3_4h"] > 60.0)
+          )
+          # 1h & 4h down move, 1h still not low enough
+          short_entry_logic.append(
+            (df["RSI_3_1h"] < 90.0) | (df["RSI_3_4h"] < 85.0) | (df["STOCHRSIk_14_14_3_3_1h"] > 85.0)
           )
           # 1h & 4h down move, 4h still high
           short_entry_logic.append(
@@ -6320,9 +6360,17 @@ class NostalgiaForInfinityX5(IStrategy):
             (df["RSI_3_1h"] < 85.0) | (df["RSI_3_4h"] < 80.0) | (df["CCI_20_4h"] > 100.0) | (df["AROOND_14_4h"] < 25.0)
           )
           # 1h & 4h down move, 1d downtrend
-          short_entry_logic.append((df["RSI_3_1h"] < 85.0) | (df["RSI_3_4h"] < 80.0) | (df["ROC_9_1d"] < 50.0))
+          short_entry_logic.append((df["RSI_3_1h"] < 80.0) | (df["RSI_3_4h"] < 80.0) | (df["ROC_9_1d"] < 50.0))
+          # 1h & 4h down move, 4h high
+          short_entry_logic.append(
+            (df["RSI_3_1h"] < 80.0) | (df["RSI_3_4h"] < 70.0) | (df["STOCHRSIk_14_14_3_3_4h"] > 40.0)
+          )
           # 1h down move, 4h low, 1h not low enough
           short_entry_logic.append((df["RSI_3_1h"] < 80.0) | (df["MFI_14_4h"] < 95.0) | (df["UO_7_14_28_1h"] > 70.0))
+          # 4h down move, 15m & 4h still not low enough
+          short_entry_logic.append(
+            (df["RSI_3_4h"] < 90.0) | (df["STOCHRSIk_14_14_3_3_15m"] > 60.0) | (df["STOCHRSIk_14_14_3_3_4h"] > 80.0)
+          )
           # 1h & 4h strong down move
           short_entry_logic.append(
             (df["MFI_14_1h"] < 90.0) | (df["RSI_3_4h"] < 95.0) | (df["RSI_3_change_pct_4h"] < 70.0)
@@ -6335,6 +6383,14 @@ class NostalgiaForInfinityX5(IStrategy):
           short_entry_logic.append(
             (df["ROC_9_4h"] < 30.0) | (df["RSI_3_change_pct_1d"] < 50.0) | (df["ROC_9_1d"] > -50.0)
           )
+          # 1d going down and it was pumped, 4h down move
+          short_entry_logic.append(
+            (df["ROC_2_1d"] < 20.0) | (df["ROC_9_1d"].shift(288) > -100.0) | (df["RSI_3_4h"] < 80.0)
+          )
+          # 1d downtrend, 4h downtrend, 4h still not low enough
+          short_entry_logic.append((df["ROC_9_1d"] < 40.0) | (df["CMF_20_4h"] < 0.25) | (df["AROOND_14_4h"] < 50.0))
+          # 1d downtrend, 4h downtrend
+          short_entry_logic.append((df["ROC_9_1d"] < 40.0) | (df["CMF_20_4h"] < 0.30) | (df["RSI_3_4h"] < 90.0))
           # 1h & 4h red, 1h not low enough
           short_entry_logic.append(
             (df["change_pct_1h"] < 10.0) | (df["change_pct_4h"] < 10.0) | (df["MFI_14_1h"] > 50.0)
@@ -6359,7 +6415,17 @@ class NostalgiaForInfinityX5(IStrategy):
           )
           # 4h red, 4h & 1d still high
           short_entry_logic.append(
-            (df["change_pct_4h"] > -15.0) | (df["AROOND_14_4h"] < 50.0) | (df["AROOND_14_1d"] < 50.0)
+            (df["change_pct_4h"] < 15.0) | (df["AROOND_14_4h"] < 50.0) | (df["AROOND_14_1d"] < 50.0)
+          )
+          # 1d P&D, 1d overbought
+          short_entry_logic.append(
+            (df["change_pct_1d"] < 10.0)
+            | (df["change_pct_1d"].shift(288) > -10.0)
+            | (df["RSI_14_1d"].shift(288) > 20.0)
+          )
+          # 1d P&D, 1d overbought
+          short_entry_logic.append(
+            (df["change_pct_1d"] < 10.0) | (df["change_pct_1d"].shift(288) > -10.0) | (df["ROC_9_1d"] > -50.0)
           )
 
           # Logic
