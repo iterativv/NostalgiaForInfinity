@@ -79,7 +79,7 @@ if [[ -z ${STRATEGY_VERSION} ]]; then
   STRATEGY_VERSION_CONFIG="$(date -r $STRATEGY_NAME_CONFIG.py '+%Y_%m_%d-%H_%M')"
 else
   grep version $STRATEGY_NAME_CONFIG.py -A 1 | grep return | cut -d '"' -f 2
-  STRATEGY_VERSION_CONFIG=$(grep version $STRATEGY_NAME_CONFIG.py -A 1 | grep return | cut -d '"' -f 2 | sed "s/\.//g")
+  STRATEGY_VERSION_CONFIG=$(grep version $STRATEGY_NAME_CONFIG.py -A 1 | grep return | cut -d '"' -f 2 | sed "s/\./-/g")
 fi
 
 echo "# Running Backtests on Focus Group(s)"
@@ -124,6 +124,7 @@ for TRADING_MODE_RUN in ${TRADING_MODE_CONFIG[*]}; do
         --cache none --breakdown day --timeframe-detail 1m --dry-run-wallet 100000 --stake-amount 1000 --max-open-trades 100
 
       echo -e "\n### ${EXCHANGE_CONFIG} ANALYSIS" | tr '[a-z]' '[A-Z]'
+      echo -e "\n${STRATEGY_NAME_CONFIG} ${STRATEGY_VERSION} ${TIMERANGE}"
       echo -e "\n"
       echo -e "#### Running Command:\n\n\`\`\`sh\n"
       echo freqtrade backtesting-analysis --analysis-groups 0 1 2 3 4 5 \
@@ -139,6 +140,8 @@ for TRADING_MODE_RUN in ${TRADING_MODE_CONFIG[*]}; do
         -c configs/exampleconfig.json -c configs/exampleconfig_secret.json \
         -c $EXCHANGE_CONFIG_FILE
 
+      echo -e "\n### ${EXCHANGE_CONFIG} ANALYSIS FINISHED" | tr '[a-z]' '[A-Z]'
+      echo -e "\n${STRATEGY_NAME_CONFIG} ${STRATEGY_VERSION} ${TIMERANGE}"
     fi
     unset TRADING_MODE_CONFIG
   done
