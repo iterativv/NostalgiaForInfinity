@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.90"
+    return "v15.1.91"
 
   stoploss = -0.99
 
@@ -21299,7 +21299,7 @@ class NostalgiaForInfinityX5(IStrategy):
     if 0.01 > current_profit >= 0.001:
       if (
         (last_candle["WILLR_14"] < -99.0)
-        and (last_candle["RSI_14"] < 30.0)
+        and (last_candle["RSI_14"] < 22.0)
         and (
           isinstance(last_candle["EMA_200_1h"], np.float64) and (last_candle["EMA_12_1h"] > last_candle["EMA_200_1h"])
         )
@@ -21334,7 +21334,7 @@ class NostalgiaForInfinityX5(IStrategy):
         return True, f"exit_{mode_name}_d_0_3"
       elif (
         (last_candle["WILLR_14"] <= -99.0)
-        and (last_candle["RSI_14"] >= 50.0)
+        and (last_candle["RSI_14"] < 22.0)
         and (last_candle["STOCHRSIk_14_14_3_3"] < 5.0)
         and (last_candle["STOCHRSIk_14_14_3_3_4h"] < 30.0)
         and (
@@ -29354,18 +29354,7 @@ class NostalgiaForInfinityX5(IStrategy):
           or (slice_profit > 0.06)
         )
         # and ((num_open_grinds == 0) or (slice_profit > 0.03))
-        and (
-          (is_short_grind_entry)
-          or (
-            (last_candle["RSI_3"] < 90.0)
-            and (last_candle["RSI_3_15m"] < 90.0)
-            and (last_candle["RSI_14"] > 64.0)
-            and (last_candle["close"] > last_candle["BBM_20_2.0"])
-            and (previous_candle["close"] > previous_candle["BBM_20_2.0"])
-            # and (last_candle["AROONU_14"] < 25.0)
-            # and (last_candle["AROONU_14_15m"] < 25.0)
-          )
-        )
+        and (is_short_grind_entry)
       ):
         buy_amount = (
           slice_amount * grind_4_stakes[grind_4_sub_grind_count] / (trade.leverage if self.is_futures_mode else 1.0)
@@ -29571,18 +29560,7 @@ class NostalgiaForInfinityX5(IStrategy):
           or (slice_profit > 0.06)
         )
         # and ((num_open_grinds == 0) or (slice_profit > 0.03))
-        and (
-          (is_short_grind_entry)
-          or (
-            (last_candle["RSI_3"] < 90.0)
-            and (last_candle["RSI_3_15m"] < 90.0)
-            and (last_candle["RSI_14"] > 64.0)
-            and (last_candle["close"] > last_candle["BBM_20_2.0"])
-            and (previous_candle["close"] > previous_candle["BBM_20_2.0"])
-            # and (last_candle["AROONU_14"] < 25.0)
-            # and (last_candle["AROONU_14_15m"] < 25.0)
-          )
-        )
+        and (is_short_grind_entry)
       ):
         buy_amount = (
           slice_amount * grind_6_stakes[grind_6_sub_grind_count] / (trade.leverage if self.is_futures_mode else 1.0)
@@ -29635,7 +29613,7 @@ class NostalgiaForInfinityX5(IStrategy):
     if (
       (
         (grind_6_sub_grind_count > 0)
-        and ((-(exit_rate - grind_6_current_open_rate) / grind_6_current_open_rate) < grind_6_stop_grinds)
+        # and ((-(exit_rate - grind_6_current_open_rate) / grind_6_current_open_rate) < grind_6_stop_grinds)
         and (grind_6_current_grind_stake_profit < (slice_amount * grind_6_stop_grinds))
         and (is_derisk or is_derisk_calc or is_grind_mode)
       )
@@ -29766,11 +29744,16 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["enter_short"] == True)
         or (
           (last_candle["RSI_14"] > 64.0)
-          and (last_candle["RSI_3"] < 94.0)
+          and (last_candle["RSI_3"] < 90.0)
+          and (last_candle["RSI_3_15m"] < 90.0)
+          and (last_candle["AROOND_14"] < 25.0)
           and (last_candle["close"] > (last_candle["EMA_16"] * 1.042))
         )
         or (
           (last_candle["RSI_14"] > 64.0)
+          and (last_candle["RSI_3_15m"] < 95.0)
+          and (last_candle["RSI_3_1h"] < 95.0)
+          and (last_candle["RSI_3_4h"] < 95.0)
           and (last_candle["EMA_12"] > last_candle["EMA_26"])
           and ((last_candle["EMA_12"] - last_candle["EMA_26"]) > (last_candle["open"] * 0.030))
           and ((previous_candle["EMA_12"] - previous_candle["EMA_26"]) > (last_candle["open"] / 100.0))
@@ -29778,10 +29761,12 @@ class NostalgiaForInfinityX5(IStrategy):
         or (
           (last_candle["RSI_14"] > 64.0)
           and (last_candle["RSI_3"] < 95.0)
+          and (last_candle["RSI_3_15m"] < 90.0)
+          and (last_candle["RSI_3_1h"] < 90.0)
+          and (last_candle["RSI_3_4h"] < 90.0)
           and (last_candle["EMA_12"] > last_candle["EMA_26"])
           and ((last_candle["EMA_12"] - last_candle["EMA_26"]) > (last_candle["open"] * 0.005))
           and ((previous_candle["EMA_12"] - previous_candle["EMA_26"]) > (last_candle["open"] / 100.0))
-          and (last_candle["RSI_3_1h"] < 90.0)
         )
         or (
           (last_candle["RSI_14"] > 64.0)
@@ -29791,6 +29776,9 @@ class NostalgiaForInfinityX5(IStrategy):
         )
         or (
           (last_candle["RSI_14"] > 64.0)
+          and (last_candle["RSI_3_15m"] < 90.0)
+          and (last_candle["RSI_3_1h"] < 90.0)
+          and (last_candle["RSI_3_4h"] < 90.0)
           and (last_candle["AROONU_14_1h"] < last_candle["AROOND_14_1h"])
           and (last_candle["AROONU_14_4h"] < last_candle["AROOND_14_4h"])
           and (last_candle["close"] > (last_candle["EMA_26"] * 1.022))
@@ -29798,11 +29786,20 @@ class NostalgiaForInfinityX5(IStrategy):
         )
         or (
           (last_candle["RSI_14"] > 64.0)
+          and (last_candle["RSI_3_1h"] < 80.0)
+          and (last_candle["RSI_3_4h"] < 80.0)
+          and (last_candle["RSI_14_1h"] > 20.0)
+          and (last_candle["RSI_14_4h"] > 40.0)
           and (last_candle["AROONU_14"] < last_candle["AROOND_14"])
           and (previous_candle["AROONU_14"] > previous_candle["AROOND_14"])
         )
         or (
           (last_candle["RSI_14"] > 64.0)
+          and (last_candle["RSI_3_15m"] < 85.0)
+          and (last_candle["RSI_3_1h"] < 80.0)
+          and (last_candle["RSI_3_4h"] < 80.0)
+          and (last_candle["RSI_14_1h"] > 20.0)
+          and (last_candle["RSI_14_4h"] > 40.0)
           and (last_candle["KST_10_15_20_30_10_10_10_15"] < last_candle["KSTs_9"])
           and (previous_candle["KST_10_15_20_30_10_10_10_15"] > previous_candle["KSTs_9"])
         )
@@ -30881,16 +30878,7 @@ class NostalgiaForInfinityX5(IStrategy):
           or (slice_profit > 0.06)
         )
         # and ((num_open_grinds == 0) or (slice_profit > 0.03))
-        and (
-          (is_short_grind_entry)
-          or (
-            (last_candle["RSI_3"] < 90.0)
-            and (last_candle["RSI_3_15m"] < 90.0)
-            and (last_candle["RSI_14"] > 64.0)
-            and (last_candle["close"] > last_candle["BBM_20_2.0"])
-            and (previous_candle["close"] > previous_candle["BBM_20_2.0"])
-          )
-        )
+        and (is_short_grind_entry)
       ):
         buy_amount = (
           slice_amount
