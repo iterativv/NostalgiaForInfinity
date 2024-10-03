@@ -81,13 +81,14 @@ class Backtest:
       "backtesting",
       "--user-data=user_data",
       "--config=configs/exampleconfig.json",
+      "--config=configs/exampleconfig_secret.json",
       "--strategy-list=NostalgiaForInfinityX5",
       f"--config=configs/trading_mode-{trading_mode}.json",
       f"--config=configs/blacklist-{exchange}.json",
       f"--timerange={start_date}-{end_date}",
       "--timeframe-detail=1m",
-      "--export=signals",
       "--breakdown=day",
+      "--export=signals",
       f"--log-file=user_data/logs/backtesting-{exchange}-{trading_mode}-{start_date}-{end_date}.log",
     ]
     if pairlist is None:
@@ -112,55 +113,70 @@ class Backtest:
       log.debug("Command Result:\n%s", ret)
     assert ret.exitcode == 0
     #####
-    generated_signals_file = list(f for f in tmp_path.rglob("backtest-results-*signals.pkl") if "meta" not in str(f))[
-      0
-    ]
-    generated_pkl_ci_results_artifact_path = None
-    generated_rejected_file = list(
-      f for f in tmp_path.rglob("backtest-results-*rejected.pkl") if "meta" not in str(f)
-    )[0]
-    generated_pkl_ci_results_artifact_path = None
+    json_results_file = list(f for f in tmp_path.rglob("backtest-results-*.json") if "meta" not in str(f))[0]
+    json_results_artifact_path = None
+
+    signals_file = list(f for f in tmp_path.rglob("backtest-results-*signals.pkl") if "meta" not in str(f))[0]
+    signals_file_artifact_path = None
+
+    exited_file = list(f for f in tmp_path.rglob("backtest-results-*exited.pkl") if "meta" not in str(f))[0]
+    exited_file_artifact_path = None
+
+    rejected_file = list(f for f in tmp_path.rglob("backtest-results-*rejected.pkl") if "meta" not in str(f))[0]
+    rejected_file_artifact_path = None
+
+    json_ci_results_artifact_path = None
+
     #####
 
-    generated_results_file = list(f for f in tmp_path.rglob("backtest-results-*.json") if "meta" not in str(f))[0]
-    generated_json_ci_results_artifact_path = None
     if self.request.config.option.artifacts_path:
-      generated_json_results_artifact_path = self.request.config.option.artifacts_path / generated_results_file.name
-      shutil.copyfile(generated_results_file, generated_json_results_artifact_path)
-      generated_json_ci_results_artifact_path = (
+      json_results_artifact_path = (
+        self.request.config.option.artifacts_path
+        / f"backtest-results-{exchange}-{trading_mode}-{start_date}-{end_date}.json"
+      )
+      shutil.copyfile(json_results_file, json_results_artifact_path)
+
+      json_ci_results_artifact_path = (
         self.request.config.option.artifacts_path
         / f"ci-results-{exchange}-{trading_mode}-{start_date}-{end_date}.json"
       )
-      #####
-      generated_pkl_results_artifact_path = self.request.config.option.artifacts_path / generated_signals_file.name
-      shutil.copyfile(generated_signals_file, generated_pkl_results_artifact_path)
-      generated_pkl_ci_results_artifact_path = (
-        self.request.config.option.artifacts_path
-        / f"ci-results-{exchange}-{trading_mode}-{start_date}-{end_date}-signals.pkl"
-      )
+      # shutil.copyfile(json_results_file, json_results_artifact_path)
 
-      generated_pkl_results_artifact_path = self.request.config.option.artifacts_path / generated_rejected_file.name
-      shutil.copyfile(generated_rejected_file, generated_pkl_results_artifact_path)
-      generated_pkl_ci_results_artifact_path = (
+      # signals_file_artifact_path = self.request.config.option.artifacts_path / signals_file.name
+      signals_file_artifact_path = (
         self.request.config.option.artifacts_path
-        / f"ci-results-{exchange}-{trading_mode}-{start_date}-{end_date}-rejected.pkl"
+        / f"backtest-results-{exchange}-{trading_mode}-{start_date}-{end_date}_signals.pkl"
       )
+      shutil.copyfile(signals_file, signals_file_artifact_path)
 
-      #####
-      generated_txt_results_artifact_path = (
+      # exited_file_artifact_path = self.request.config.option.artifacts_path / exited_file.name
+      exited_file_artifact_path = (
+        self.request.config.option.artifacts_path
+        / f"backtest-results-{exchange}-{trading_mode}-{start_date}-{end_date}_exited.pkl"
+      )
+      shutil.copyfile(exited_file, exited_file_artifact_path)
+
+      # rejected_file_artifact_path = self.request.config.option.artifacts_path / rejected_file.name
+      rejected_file_artifact_path = (
+        self.request.config.option.artifacts_path
+        / f"backtest-results-{exchange}-{trading_mode}-{start_date}-{end_date}_rejected.pkl"
+      )
+      shutil.copyfile(rejected_file, rejected_file_artifact_path)
+
+      txt_results_artifact_path = (
         self.request.config.option.artifacts_path
         / f"backtest-output-{exchange}-{trading_mode}-{start_date}-{end_date}.txt"
       )
-      generated_txt_results_artifact_path.write_text(ret.stdout.strip())
+      txt_results_artifact_path.write_text(ret.stdout.strip())
 
-    results_data = json.loads(generated_results_file.read_text())
+    results_data = json.loads(json_results_file.read_text())
     ret = BacktestResults(
       stdout=ret.stdout.strip(),
       stderr=ret.stderr.strip(),
       raw_data=results_data,
     )
-    if generated_json_ci_results_artifact_path:
-      generated_json_ci_results_artifact_path.write_text(json.dumps({f"{start_date}-{end_date}": ret._stats_pct}))
+    if json_ci_results_artifact_path:
+      json_ci_results_artifact_path.write_text(json.dumps({f"{start_date}-{end_date}": ret._stats_pct}))
     ret.log_info()
     return ret
 
