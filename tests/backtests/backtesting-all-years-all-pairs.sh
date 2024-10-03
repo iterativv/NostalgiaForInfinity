@@ -106,7 +106,7 @@ for START_YEAR in {2023..2017}; do
     freqtrade backtesting --export signals \
       --timerange $TIMERANGE_CONFIG --strategy $STRATEGY_NAME_CONFIG \
       --strategy-path . -c configs/trading_mode-$TRADING_MODE_CONFIG.json \
-      -c configs/exampleconfig.json \
+      -c configs/exampleconfig.json -c configs/exampleconfig_secret.json \
       -c tests/backtests/pairs-available-$EXCHANGE_CONFIG-$TRADING_MODE_CONFIG-usdt-$START_YEAR.json \
       --log-file user_data/logs/backtesting-$STRATEGY_NAME_CONFIG-$STRATEGY_VERSION_CONFIG-$EXCHANGE_CONFIG-$TRADING_MODE_CONFIG-$TIMERANGE_CONFIG.log \
       --export-filename user_data/backtest_results/$STRATEGY_NAME_CONFIG-$STRATEGY_VERSION_CONFIG-$EXCHANGE_CONFIG-$TRADING_MODE_CONFIG-$TIMERANGE_CONFIG.json \
@@ -137,7 +137,7 @@ for START_YEAR in {2023..2017}; do
     freqtrade backtesting-analysis --analysis-groups 0 1 2 3 4 5 \
       --timerange $TIMERANGE_CONFIG \
       --config configs/trading_mode-$TRADING_MODE_CONFIG.json \
-      --config configs/exampleconfig.json \
+      --config configs/exampleconfig.json -c configs/exampleconfig_secret.json \
       -c tests/backtests/pairs-available-$EXCHANGE_CONFIG-$TRADING_MODE_CONFIG-usdt-$START_YEAR.json
   fi
 done
