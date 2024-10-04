@@ -13653,7 +13653,7 @@ class NostalgiaForInfinityX5(IStrategy):
         return True, f"exit_{mode_name}_d_7_65"
       elif (
         (last_candle["RSI_3"] > 78.0)
-        and (last_candle["RSI_14"] < 54.0)
+        and (last_candle["RSI_14"] < 52.0)
         and (last_candle["RSI_3_1h"] < 20.0)
         and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 50.0)
       ):
@@ -14179,7 +14179,7 @@ class NostalgiaForInfinityX5(IStrategy):
         return True, f"exit_{mode_name}_d_8_65"
       elif (
         (last_candle["RSI_3"] > 80.0)
-        and (last_candle["RSI_14"] < 52.0)
+        and (last_candle["RSI_14"] < 50.0)
         and (last_candle["RSI_3_1h"] < 20.0)
         and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 50.0)
       ):
@@ -14705,7 +14705,7 @@ class NostalgiaForInfinityX5(IStrategy):
         return True, f"exit_{mode_name}_d_9_65"
       elif (
         (last_candle["RSI_3"] > 82.0)
-        and (last_candle["RSI_14"] < 50.0)
+        and (last_candle["RSI_14"] < 48.0)
         and (last_candle["RSI_3_1h"] < 20.0)
         and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 50.0)
       ):
@@ -15231,7 +15231,7 @@ class NostalgiaForInfinityX5(IStrategy):
         return True, f"exit_{mode_name}_d_10_65"
       elif (
         (last_candle["RSI_3"] > 84.0)
-        and (last_candle["RSI_14"] < 48.0)
+        and (last_candle["RSI_14"] < 46.0)
         and (last_candle["RSI_3_1h"] < 20.0)
         and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 50.0)
       ):
@@ -15757,7 +15757,7 @@ class NostalgiaForInfinityX5(IStrategy):
         return True, f"exit_{mode_name}_d_11_65"
       elif (
         (last_candle["RSI_3"] > 86.0)
-        and (last_candle["RSI_14"] < 46.0)
+        and (last_candle["RSI_14"] < 44.0)
         and (last_candle["RSI_3_1h"] < 20.0)
         and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 50.0)
       ):
@@ -16283,7 +16283,7 @@ class NostalgiaForInfinityX5(IStrategy):
         return True, f"exit_{mode_name}_d_12_65"
       elif (
         (last_candle["RSI_3"] > 88.0)
-        and (last_candle["RSI_14"] < 44.0)
+        and (last_candle["RSI_14"] < 42.0)
         and (last_candle["RSI_3_1h"] < 20.0)
         and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 50.0)
       ):
