@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.105"
+    return "v15.1.106"
 
   stoploss = -0.99
 
@@ -3330,7 +3330,7 @@ class NostalgiaForInfinityX5(IStrategy):
           long_entry_logic.append(
             (df["RSI_3_15m"] > 10.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 50.0) | (df["MFI_14_1d"] > 10.0)
           )
-          # 15m down move, 1h still not low enough, 4h still high
+          # 15m down move, 4h still not low enough, 1d still high
           long_entry_logic.append(
             (df["RSI_3_15m"] > 10.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 30.0) | (df["STOCHRSIk_14_14_3_3_1d"] < 50.0)
           )
@@ -3374,14 +3374,6 @@ class NostalgiaForInfinityX5(IStrategy):
           long_entry_logic.append(
             (df["RSI_3_1h"] > 5.0) | (df["RSI_3_change_pct_4h"] > -65.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 30.0)
           )
-          # 1h down move, 1h still not low enough, 1d strong downtrend
-          long_entry_logic.append(
-            (df["RSI_3_1h"] > 10.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 25.0) | (df["ROC_9_1d"] > -50.0)
-          )
-          # 1h down move, 1h still not low enough, 4h still high
-          long_entry_logic.append(
-            (df["RSI_3_1h"] > 10.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 25.0) | (df["RSI_14_4h"] < 50.0)
-          )
           # 1h & 4h down move, 15m still not low enough
           long_entry_logic.append(
             (df["RSI_3_1h"] > 10.0) | (df["RSI_3_4h"] > 5.0) | (df["STOCHRSIk_14_14_3_3_15m"] < 25.0)
@@ -3397,6 +3389,18 @@ class NostalgiaForInfinityX5(IStrategy):
           # 1h & 4h down move, 1h still not low enough
           long_entry_logic.append(
             (df["RSI_3_1h"] > 10.0) | (df["RSI_3_4h"] > 20.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 25.0)
+          )
+          # 1h & 4h down move, 1d still high
+          long_entry_logic.append(
+            (df["RSI_3_1h"] > 10.0) | (df["RSI_3_4h"] > 20.0) | (df["STOCHRSIk_14_14_3_3_1d"] < 50.0)
+          )
+          # 1h down move, 1h still not low enough, 1d strong downtrend
+          long_entry_logic.append(
+            (df["RSI_3_1h"] > 10.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 25.0) | (df["ROC_9_1d"] > -50.0)
+          )
+          # 1h down move, 1h still not low enough, 4h still high
+          long_entry_logic.append(
+            (df["RSI_3_1h"] > 10.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 25.0) | (df["RSI_14_4h"] < 50.0)
           )
           # 1h down move, 1h not low enough, 1h still high
           long_entry_logic.append(
