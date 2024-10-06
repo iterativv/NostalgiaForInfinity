@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.111"
+    return "v15.1.112"
 
   stoploss = -0.99
 
@@ -16726,7 +16726,7 @@ class NostalgiaForInfinityX5(IStrategy):
       and (last_candle["CMF_20"] < -0.0)
       and (((last_candle["EMA_200"] - last_candle["close"]) / last_candle["close"]) < 0.010)
       and (last_candle["RSI_14"] > previous_candle_1["RSI_14"])
-      and (last_candle["RSI_14"] > (last_candle["RSI_14_1h"] + 16.0))
+      and (last_candle["RSI_14"] > (last_candle["RSI_14_1h"] + 24.0))
       and (current_time - timedelta(minutes=720) > trade.open_date_utc)
       # temporary
       and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
@@ -29414,7 +29414,7 @@ class NostalgiaForInfinityX5(IStrategy):
       and (last_candle["CMF_20"] > 0.0)
       and (((last_candle["close"] - last_candle["EMA_200"]) / last_candle["EMA_200"]) < 0.010)
       and (last_candle["RSI_14"] < previous_candle_1["RSI_14"])
-      and (last_candle["RSI_14"] < (last_candle["RSI_14_1h"] - 16.0))
+      and (last_candle["RSI_14"] < (last_candle["RSI_14_1h"] - 24.0))
       and (current_time - timedelta(minutes=720) > trade.open_date_utc)
       # temporary
       and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
