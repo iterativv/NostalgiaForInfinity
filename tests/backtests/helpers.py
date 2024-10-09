@@ -219,7 +219,7 @@ class BacktestResults:
       "max_drawdown": self.results.max_drawdown_account * 100,
       "trades": self.full_stats.trades,
       "market_change": round(self.results.market_change * 100, 2),
-      "winrate": round(self.full_stats.wins * 100.0 / self.full_stats.trades, 2),
+      "winrate": round(self.full_stats.wins * 100.0 / self.full_stats.trades, 2) if self.full_stats.trades > 0 else 0,
     }
 
   @stats_pct.default
