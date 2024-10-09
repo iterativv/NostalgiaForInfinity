@@ -224,9 +224,10 @@ def deviations():
       # ("20210701", "20210801"): {"max_drawdown": 25, "winrate": 70},
       # ("20210801", "20210901"): {"max_drawdown": 25, "winrate": 70},
       # ("20210901", "20211001"): {"max_drawdown": 25, "winrate": 70},
-      ("20211001", "20211101"): {"max_drawdown": 30, "winrate": 70},
+      # ("20211001", "20211101"): {"max_drawdown": 30, "winrate": 70},
       # ("20211201", "20220101"): {"max_drawdown": 25, "winrate": 70},
       # ("20220301", "20220401"): {"max_drawdown": 25, "winrate": 70},
+      ("20221101", "20221201"): {"max_drawdown": 30, "winrate": 70},
     },
     "kucoin": {
       # ("20210201", "20210301"): {"max_drawdown": 25, "winrate": 70},
