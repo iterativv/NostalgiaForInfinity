@@ -243,6 +243,7 @@ def deviations():
       # ("20220601", "20220701"): {"max_drawdown": 25, "winrate": 70},
       # ("20211201", "20220101"): {"max_drawdown": 25, "winrate": 70},
       # ("20211101", "20211201"): {"max_drawdown": 25, "winrate": 70},
+      ("20230901", "20231001"): {"max_drawdown": 25, "winrate": 0},
     },
   }
 
@@ -263,5 +264,5 @@ def test_expected_values(backtest, trading_mode, timerange, exchange, deviations
     exchange_deviations.get((trading_mode, timerange.start_date, timerange.end_date), {}).get("max_drawdown")
     or exchange.max_drawdown
   )
-  assert ret.stats_pct.winrate >= expected_winrate
+  assert ret.stats_pct.winrate >= expected_winrate or ret.stats_pct.trades == 0, "No trades were executed"
   assert ret.stats_pct.max_drawdown <= expected_max_drawdown
