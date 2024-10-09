@@ -7615,6 +7615,8 @@ class NostalgiaForInfinityX5(IStrategy):
       if sell and (signal_name is not None):
         return True, f"{signal_name}"
 
+    #  Here ends exit signal conditions for long_exit_normal
+
     return False, None
 
   # Long Exit Pump
@@ -7861,6 +7863,8 @@ class NostalgiaForInfinityX5(IStrategy):
     ]:
       if sell and (signal_name is not None):
         return True, f"{signal_name}"
+
+    #  Here ends exit signal conditions for long_exit_pump
 
     return False, None
 
@@ -8140,6 +8144,8 @@ class NostalgiaForInfinityX5(IStrategy):
       if sell and (signal_name is not None):
         return True, f"{signal_name}"
 
+    #  Here ends exit signal conditions for long_exit_quick
+
     return False, None
 
   # Long Exit Rebuy
@@ -8374,6 +8380,8 @@ class NostalgiaForInfinityX5(IStrategy):
       if sell and (signal_name is not None):
         return True, f"{signal_name}"
 
+    #  Here ends exit signal conditions for long_exit_rebuy
+
     return False, None
 
   # Long Exit High Profit
@@ -8601,6 +8609,8 @@ class NostalgiaForInfinityX5(IStrategy):
     ]:
       if sell and (signal_name is not None):
         return True, f"{signal_name}"
+
+    #  Here ends exit signal conditions for long_exit_high_profit
 
     return False, None
 
@@ -8889,6 +8899,8 @@ class NostalgiaForInfinityX5(IStrategy):
       if sell and (signal_name is not None):
         return True, f"{signal_name}"
 
+    #  Here ends exit signal conditions for long_exit_rapid
+
     return False, None
 
   # Long Exit Grind
@@ -8917,6 +8929,9 @@ class NostalgiaForInfinityX5(IStrategy):
   ) -> tuple:
     if profit_init_ratio > 0.25:
       return True, f"exit_{self.long_grind_mode_name}_g"
+
+    #  Here ends exit signal conditions for long_exit_grind
+
     return False, None
 
   # Long Exit Top Coins
@@ -9164,6 +9179,8 @@ class NostalgiaForInfinityX5(IStrategy):
       if sell and (signal_name is not None):
         return True, f"{signal_name}"
 
+    #  Here ends exit signal conditions for long_exit_top_coins
+
     return False, None
 
   # Long Exit Derisk
@@ -9395,6 +9412,8 @@ class NostalgiaForInfinityX5(IStrategy):
       if sell and (signal_name is not None):
         return True, f"{signal_name}"
 
+    #  Here ends exit signal conditions for long_exit_derisk
+
     return False, None
 
   # Long Exit Signals
@@ -9489,6 +9508,8 @@ class NostalgiaForInfinityX5(IStrategy):
       else:
         if current_profit > 0.01:
           return True, f"exit_{mode_name}_8_2_1"
+
+    #  Here ends exit signal conditions for long_exit_signals
 
     return False, None
 
@@ -9590,6 +9611,8 @@ class NostalgiaForInfinityX5(IStrategy):
       elif current_profit >= 0.2:
         if last_candle["RSI_14"] < 44.0:
           return True, f"exit_{mode_name}_u_12"
+
+    #  Here ends exit signal conditions for long_exit_main
 
     return False, None
 
@@ -9793,6 +9816,8 @@ class NostalgiaForInfinityX5(IStrategy):
         and (last_candle["ROC_9_4h"] > 20.0)
       ):
         return True, f"exit_{mode_name}_w_12_4"
+
+    #  Here ends exit signal conditions for long_exit_williams_r
 
     return False, None
 
@@ -17212,6 +17237,8 @@ class NostalgiaForInfinityX5(IStrategy):
       ):
         return True, f"exit_{mode_name}_d_12_72"
 
+    #  Here ends exit signal conditions for long_exit_dec
+
     return False, None
 
   # Long Exit Stop Loss
@@ -17269,6 +17296,8 @@ class NostalgiaForInfinityX5(IStrategy):
       and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
     ):
       return True, f"exit_{mode_name}_stoploss_u_e"
+
+    #  Here ends exit signal conditions for long_exit_stoploss
 
     return False, None
 
@@ -20807,6 +20836,8 @@ class NostalgiaForInfinityX5(IStrategy):
       if sell and (signal_name is not None):
         return True, f"{signal_name}"
 
+    #  Here ends exit signal conditions for short_exit_normal
+
     return False, None
 
   # Short Exit Pump
@@ -21053,6 +21084,8 @@ class NostalgiaForInfinityX5(IStrategy):
     ]:
       if sell and (signal_name is not None):
         return True, f"{signal_name}"
+
+    #  Here ends exit signal conditions for short_exit_pump
 
     return False, None
 
@@ -21332,6 +21365,8 @@ class NostalgiaForInfinityX5(IStrategy):
       if sell and (signal_name is not None):
         return True, f"{signal_name}"
 
+    #  Here ends exit signal conditions for short_exit_quick
+
     return False, None
 
   # Short Exit Rebuy
@@ -21566,6 +21601,8 @@ class NostalgiaForInfinityX5(IStrategy):
       if sell and (signal_name is not None):
         return True, f"{signal_name}"
 
+    #  Here ends exit signal conditions for short_exit_rebuy
+
     return False, None
 
   # Short Exit High Profit
@@ -21793,6 +21830,8 @@ class NostalgiaForInfinityX5(IStrategy):
     ]:
       if sell and (signal_name is not None):
         return True, f"{signal_name}"
+
+    #  Here ends exit signal conditions for short_exit_high_profit
 
     return False, None
 
@@ -22081,6 +22120,8 @@ class NostalgiaForInfinityX5(IStrategy):
       if sell and (signal_name is not None):
         return True, f"{signal_name}"
 
+    #  Here ends exit signal conditions for short_exit_rapid
+
     return False, None
 
   # Short Exit Grind
@@ -22109,6 +22150,9 @@ class NostalgiaForInfinityX5(IStrategy):
   ) -> tuple:
     if profit_init_ratio > 0.25:
       return True, f"exit_{self.short_grind_mode_name}_g"
+
+    #  Here ends exit signal conditions for short_exit_grind
+
     return False, None
 
   # Short Exit Top Coins
@@ -22356,6 +22400,8 @@ class NostalgiaForInfinityX5(IStrategy):
       if sell and (signal_name is not None):
         return True, f"{signal_name}"
 
+    #  Here ends exit signal conditions for short_exit_top_coins
+
     return False, None
 
   # Short Exit Signals
@@ -22450,6 +22496,8 @@ class NostalgiaForInfinityX5(IStrategy):
       else:
         if current_profit > 0.01:
           return True, f"exit_{mode_name}_8_2_1"
+
+    #  Here ends exit signal conditions for short_exit_signals
 
     return False, None
 
@@ -22551,6 +22599,8 @@ class NostalgiaForInfinityX5(IStrategy):
       elif current_profit >= 0.2:
         if last_candle["RSI_14"] > 56.0:
           return True, f"exit_{mode_name}_u_12"
+
+    #  Here ends exit signal conditions for short_exit_main
 
     return False, None
 
@@ -22754,6 +22804,8 @@ class NostalgiaForInfinityX5(IStrategy):
         and (last_candle["ROC_9_4h"] < -20.0)
       ):
         return True, f"exit_{mode_name}_w_12_4"
+
+    #  Here ends exit signal conditions for short_exit_williams_r
 
     return False, None
 
@@ -30173,6 +30225,8 @@ class NostalgiaForInfinityX5(IStrategy):
       ):
         return True, f"exit_{mode_name}_d_12_72"
 
+    #  Here ends exit signal conditions for short_exit_dec
+
     return False, None
 
   # Short Exit Stop Loss
@@ -30230,6 +30284,8 @@ class NostalgiaForInfinityX5(IStrategy):
       and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
     ):
       return True, f"exit_{mode_name}_stoploss_u_e"
+
+    #  Here ends exit signal conditions for short_exit_stoploss
 
     return False, None
 
