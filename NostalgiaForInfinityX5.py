@@ -18897,7 +18897,18 @@ class NostalgiaForInfinityX5(IStrategy):
           or (slice_profit < -0.06)
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
-        and (is_long_grind_entry)
+        and (
+          (is_long_grind_entry)
+          or (
+            (last_candle["RSI_14"] < 36.0)
+            and (last_candle["RSI_3"] > 10.0)
+            and (last_candle["RSI_3_15m"] > 15.0)
+            and (last_candle["RSI_3_1h"] > 20.0)
+            and (last_candle["RSI_3_4h"] > 20.0)
+            and (last_candle["AROONU_14"] < 25.0)
+            and (last_candle["close"] < (last_candle["EMA_20"] * 0.988))
+          )
+        )
       ):
         buy_amount = (
           slice_amount * grind_6_stakes[grind_6_sub_grind_count] / (trade.leverage if self.is_futures_mode else 1.0)
