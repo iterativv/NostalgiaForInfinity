@@ -5195,6 +5195,8 @@ class NostalgiaForInfinityX5(IStrategy):
           long_entry_logic.append(
             (df["change_pct_1d"] > -10.0) | (df["change_pct_1d"].shift(288) < 10.0) | (df["ROC_9_1d"] < 50.0)
           )
+          # 1d red, 15m & 1h down move
+          long_entry_logic.append((df["change_pct_1d"] > -15.0) | (df["RSI_3_15m"] > 20.0) | (df["RSI_3_1h"] > 20.0))
 
           # Logic
           long_entry_logic.append(df["WILLR_14"] < -50.0)
