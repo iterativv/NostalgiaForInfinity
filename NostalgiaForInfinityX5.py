@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.135"
+    return "v15.1.136"
 
   stoploss = -0.99
 
@@ -156,6 +156,8 @@ class NostalgiaForInfinityX5(IStrategy):
   short_grind_mode_tags = ["620"]
   # Short top coins mode tags
   short_top_coins_mode_tags = ["641", "642"]
+
+  short_derisk_mode_tags = ["661"]
 
   short_normal_mode_name = "short_normal"
   short_pump_mode_name = "short_pump"
@@ -487,15 +489,16 @@ class NostalgiaForInfinityX5(IStrategy):
     # Enable/Disable conditions
     # -------------------------------------------------------
     "short_entry_condition_501_enable": True,
-    "short_entry_condition_502_enable": False,
-    "short_entry_condition_503_enable": False,
-    "short_entry_condition_504_enable": False,
-    "short_entry_condition_541_enable": False,
-    "short_entry_condition_542_enable": False,
-    "short_entry_condition_543_enable": False,
-    "short_entry_condition_603_enable": False,
-    "short_entry_condition_641_enable": False,
-    "short_entry_condition_642_enable": False,
+    # "short_entry_condition_502_enable": True,
+    # "short_entry_condition_503_enable": True,
+    # "short_entry_condition_504_enable": True,
+    # "short_entry_condition_541_enable": True,
+    # "short_entry_condition_542_enable": True,
+    # "short_entry_condition_543_enable": True,
+    # "short_entry_condition_603_enable": True,
+    # "short_entry_condition_641_enable": True,
+    # "short_entry_condition_642_enable": True,
+    # "short_entry_condition_661_enable": False,
   }
 
   #############################################################
@@ -6819,7 +6822,7 @@ class NostalgiaForInfinityX5(IStrategy):
           )
           # 15m high, 4h down move, 1d still high
           short_entry_logic.append(
-            (df["STOCHRSIk_14_14_3_3_15m"] > 30.0) | (df["RSI_3_4h"] < 95.0) | (df["STOCHRSIk_14_14_3_3_1d"] < 50.0)
+            (df["STOCHRSIk_14_14_3_3_15m"] > 30.0) | (df["RSI_3_4h"] < 95.0) | (df["STOCHRSIk_14_14_3_3_1d"] > 50.0)
           )
           # 15m high, 1h low, 4h down move, 4h still not low enough
           short_entry_logic.append(
@@ -6834,6 +6837,10 @@ class NostalgiaForInfinityX5(IStrategy):
           short_entry_logic.append((df["RSI_3_15m"] < 95.0) | (df["RSI_3_1h"] < 95.0) | (df["RSI_3_4h"] < 90.0))
           # 15m & 1h strong down move & downtrend
           short_entry_logic.append((df["RSI_3_15m"] < 95.0) | (df["RSI_3_1h"] < 95.0) | (df["MFI_14_1h"] < 95.0))
+          # 15m & 1h down move, 1d high
+          short_entry_logic.append(
+            (df["RSI_3_15m"] < 95.0) | (df["RSI_3_1h"] < 95.0) | (df["STOCHRSIk_14_14_3_3_1d"] > 30.0)
+          )
           # 15m & 1h down move, 4h still not low enough
           short_entry_logic.append(
             (df["RSI_3_15m"] < 95.0) | (df["RSI_3_1h"] < 90.0) | (df["STOCHRSIk_14_14_3_3_4h"] > 80.0)
@@ -6849,6 +6856,8 @@ class NostalgiaForInfinityX5(IStrategy):
             | (df["RSI_3_1h"] < 90.0)
             | (df["CCI_20_change_pct_1h"] < 0.0)
           )
+          # 15m & 1h & 1d down move
+          short_entry_logic.append((df["RSI_3_15m"] < 90.0) | (df["RSI_3_1h"] < 90.0) | (df["RSI_3_1d"] < 70.0))
           # 15m & 1h down move, 4h red, 4h high
           short_entry_logic.append(
             (df["RSI_3_15m"] < 90.0)
@@ -6856,6 +6865,8 @@ class NostalgiaForInfinityX5(IStrategy):
             | (df["change_pct_4h"] < 5.0)
             | (df["STOCHRSIk_14_14_3_3_4h"] > 60.0)
           )
+          # 15m & 1h down move, 4h downtrend
+          short_entry_logic.append((df["RSI_3_15m"] < 90.0) | (df["RSI_3_1h"] < 85.0) | (df["ROC_9_4h"] < 25.0))
           # 15m & 1h down move, 4h high
           short_entry_logic.append(
             (df["RSI_3_15m"] < 90.0) | (df["RSI_3_1h"] < 75.0) | (df["STOCHRSIk_14_14_3_3_4h"] > 30.0)
@@ -6866,6 +6877,10 @@ class NostalgiaForInfinityX5(IStrategy):
           short_entry_logic.append((df["RSI_3_15m"] < 90.0) | (df["RSI_3_4h"] < 80.0) | (df["AROOND_14_4h"] < 50.0))
           # 15m down move, 4h still not low enough, 1d overbought
           short_entry_logic.append((df["RSI_3_15m"] < 85.0) | (df["AROOND_14_4h"] < 25.0) | (df["ROC_9_1d"] > -100.0))
+          # 15m & 4h down move, 15m still high
+          short_entry_logic.append(
+            (df["RSI_3_15m"] < 75.0) | (df["RSI_3_4h"] < 85.0) | (df["STOCHRSIk_14_14_3_3_15m"] > 50.0)
+          )
           # 15m & 4h down move, 1d downtrend
           short_entry_logic.append((df["RSI_3_15m"] < 85.0) | (df["RSI_3_4h"] < 85.0) | (df["ROC_9_1d"] < 50.0))
           # 15m & 1h & 4h down move, 4h still high
@@ -6874,6 +6889,10 @@ class NostalgiaForInfinityX5(IStrategy):
             | (df["RSI_3_1h"] < 80.0)
             | (df["RSI_3_4h"] < 70.0)
             | (df["STOCHRSIk_14_14_3_3_4h"] > 60.0)
+          )
+          # 15m & 1h down move, 4h high
+          short_entry_logic.append(
+            (df["RSI_3_15m"] < 80.0) | (df["RSI_3_1h"] < 70.0) | (df["STOCHRSIk_14_14_3_3_4h"] > 30.0)
           )
           # 15m & 4h down move, 4h still high
           short_entry_logic.append(
@@ -6888,6 +6907,10 @@ class NostalgiaForInfinityX5(IStrategy):
           # 15m & 1h down move, 4h hig
           short_entry_logic.append(
             (df["RSI_3_15m"] < 70.0) | (df["RSI_3_1h"] < 70.0) | (df["STOCHRSIk_14_14_3_3_4h"] > 10.0)
+          )
+          # 15m down move, 4h still high, 1d downtrend
+          short_entry_logic.append(
+            (df["RSI_3_15m"] < 70.0) | (df["STOCHRSIk_14_14_3_3_4h"] > 60.0) | (df["ROC_9_1d"] < 50.0)
           )
           # 1h & 4h down move, 4h not low enough
           short_entry_logic.append(
@@ -6907,11 +6930,15 @@ class NostalgiaForInfinityX5(IStrategy):
           )
           # 1h & 4h down move
           short_entry_logic.append(
-            (df["RSI_3_1h"] < 90.0) | (df["RSI_3_4h"] < 90.0) | (df["RSI_3_change_pct_4h"] > -75.0)
+            (df["RSI_3_1h"] < 90.0) | (df["RSI_3_4h"] < 90.0) | (df["RSI_3_change_pct_4h"] < 75.0)
           )
           # 1h down move, 4h strong down move
           short_entry_logic.append(
-            (df["RSI_3_1h"] < 90.0) | (df["RSI_3_4h"] < 95.0) | (df["RSI_14_change_pct_4h"] > -50.0)
+            (df["RSI_3_1h"] < 90.0) | (df["RSI_3_4h"] < 95.0) | (df["RSI_14_change_pct_4h"] < 50.0)
+          )
+          # 1h & 4h down move, 1h still going down
+          short_entry_logic.append(
+            (df["RSI_3_1h"] < 90.0) | (df["RSI_3_4h"] < 75.0) | (df["CCI_20_change_pct_1h"] < 0.0)
           )
           # 1h down move, 1h & 4h still not low enough
           short_entry_logic.append(
@@ -6923,23 +6950,41 @@ class NostalgiaForInfinityX5(IStrategy):
           )
           # 1h & 4h down move, 15m high
           short_entry_logic.append(
-            (df["RSI_3_1h"] < 90.0) | (df["RSI_3_4h"] < 80.0) | (df["STOCHRSIk_14_14_3_3_15m"] < 40.0)
+            (df["RSI_3_1h"] < 90.0) | (df["RSI_3_4h"] < 80.0) | (df["STOCHRSIk_14_14_3_3_15m"] > 60.0)
           )
           # 1h down move, 4h down move, 4h still not low enough
           short_entry_logic.append(
             (df["RSI_3_1h"] < 85.0) | (df["RSI_3_4h"] < 80.0) | (df["CCI_20_4h"] > 100.0) | (df["AROOND_14_4h"] < 25.0)
           )
+          # 1h & 1d down move, 1d downtrend
+          short_entry_logic.append((df["RSI_3_1h"] < 85.0) | (df["RSI_3_1d"] < 80.0) | (df["ROC_9_1d"] < 40.0))
           # 1h & 4h down move, 1d downtrend
           short_entry_logic.append((df["RSI_3_1h"] < 80.0) | (df["RSI_3_4h"] < 80.0) | (df["ROC_9_1d"] < 50.0))
           # 1h & 4h down move, 4h high
           short_entry_logic.append(
             (df["RSI_3_1h"] < 80.0) | (df["RSI_3_4h"] < 70.0) | (df["STOCHRSIk_14_14_3_3_4h"] > 40.0)
           )
+          # 1h down move, 15m high, 1d overbought
+          short_entry_logic.append(
+            (df["RSI_3_1h"] < 80.0) | (df["STOCHRSIk_14_14_3_3_15m"] > 30.0) | (df["ROC_9_1d"] > 40.0)
+          )
           # 1h down move, 4h low, 1h not low enough
           short_entry_logic.append((df["RSI_3_1h"] < 80.0) | (df["MFI_14_4h"] < 95.0) | (df["UO_7_14_28_1h"] > 70.0))
+          # 1h & 4h down move, 1d downtrend
+          short_entry_logic.append((df["RSI_3_1h"] < 70.0) | (df["RSI_3_4h"] < 80.0) | (df["ROC_9_1d"] < 40.0))
           # 4h down move, 15m & 4h still not low enough
           short_entry_logic.append(
             (df["RSI_3_4h"] < 90.0) | (df["STOCHRSIk_14_14_3_3_15m"] > 60.0) | (df["STOCHRSIk_14_14_3_3_4h"] > 80.0)
+          )
+          # 4h down move, 15m still high, 1d downtrend
+          short_entry_logic.append(
+            (df["RSI_3_4h"] < 90.0) | (df["STOCHRSIk_14_14_3_3_15m"] > 60.0) | (df["ROC_9_1d"] < 40.0)
+          )
+          # 4h & 1d down move, 1d downtrend
+          short_entry_logic.append((df["RSI_3_4h"] < 85.0) | (df["RSI_3_1d"] < 75.0) | (df["ROC_9_1d"] < 50.0))
+          # 4h down move, 4h still not low enough, 4h downtrend
+          short_entry_logic.append(
+            (df["RSI_3_4h"] < 75.0) | (df["STOCHRSIk_14_14_3_3_4h"] > 70.0) | (df["ROC_9_4h"] < 40.0)
           )
           # 1h & 4h strong down move
           short_entry_logic.append(
@@ -32481,7 +32526,17 @@ class NostalgiaForInfinityX5(IStrategy):
             return -ft_sell_amount
 
     # Grind stop
-    if (-grind_1_derisk_1_distance_ratio < grind_1_derisk_1_stop_grinds) and (is_derisk or is_derisk_calc):
+    if (
+      (grind_1_derisk_1_sub_grind_count > 0)
+      # and (
+      #   (-(exit_rate - grind_1_derisk_1_current_open_rate) / grind_1_derisk_1_current_open_rate)
+      #   < grind_1_derisk_1_stop_grinds
+      # )
+      and (grind_1_derisk_1_current_grind_stake_profit < (slice_amount * grind_1_derisk_1_stop_grinds))
+      and (is_derisk or is_derisk_calc)
+      # temporary
+      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
+    ):
       sell_amount = grind_1_derisk_1_total_amount * exit_rate / trade.leverage
       if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
         sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -33416,7 +33471,7 @@ class NostalgiaForInfinityX5(IStrategy):
           and (last_candle["RSI_3_1h"] < 90.0)
           and (last_candle["RSI_3_4h"] < 90.0)
           and (last_candle["EMA_12"] > last_candle["EMA_26"])
-          and ((last_candle["EMA_12"] - last_candle["EMA_26"]) > (last_candle["open"] * 0.005))
+          and ((last_candle["EMA_12"] - last_candle["EMA_26"]) > (last_candle["open"] * 0.020))
           and ((previous_candle["EMA_12"] - previous_candle["EMA_26"]) > (last_candle["open"] / 100.0))
         )
         or (
@@ -33958,6 +34013,8 @@ class NostalgiaForInfinityX5(IStrategy):
       + grind_6_sub_grind_count
     )
 
+    is_derisk_mode = all(c in self.short_derisk_mode_tags for c in enter_tags)
+
     fee_open_rate = trade.fee_open if self.custom_fee_open_rate is None else self.custom_fee_open_rate
     fee_close_rate = trade.fee_close if self.custom_fee_close_rate is None else self.custom_fee_close_rate
 
@@ -34121,8 +34178,8 @@ class NostalgiaForInfinityX5(IStrategy):
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
         if grind_1_current_open_rate > 0.0:
-          grind_profit = -(
-            ((exit_rate - grind_1_current_open_rate) / grind_1_current_open_rate)
+          grind_profit = (
+            (-(exit_rate - grind_1_current_open_rate) / grind_1_current_open_rate)
             if grind_1_is_sell_found
             else profit_ratio
           )
@@ -34215,8 +34272,8 @@ class NostalgiaForInfinityX5(IStrategy):
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
         if grind_2_current_open_rate > 0.0:
-          grind_profit = -(
-            ((exit_rate - grind_2_current_open_rate) / grind_2_current_open_rate)
+          grind_profit = (
+            (-(exit_rate - grind_2_current_open_rate) / grind_2_current_open_rate)
             if grind_2_is_sell_found
             else profit_ratio
           )
@@ -34309,8 +34366,8 @@ class NostalgiaForInfinityX5(IStrategy):
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
         if grind_3_current_open_rate > 0.0:
-          grind_profit = -(
-            ((exit_rate - grind_3_current_open_rate) / grind_3_current_open_rate)
+          grind_profit = (
+            (-(exit_rate - grind_3_current_open_rate) / grind_3_current_open_rate)
             if grind_3_is_sell_found
             else profit_ratio
           )
@@ -34403,8 +34460,8 @@ class NostalgiaForInfinityX5(IStrategy):
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
         if grind_4_current_open_rate > 0.0:
-          grind_profit = -(
-            ((exit_rate - grind_4_current_open_rate) / grind_4_current_open_rate)
+          grind_profit = (
+            (-(exit_rate - grind_4_current_open_rate) / grind_4_current_open_rate)
             if grind_4_is_sell_found
             else profit_ratio
           )
@@ -34591,8 +34648,8 @@ class NostalgiaForInfinityX5(IStrategy):
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
         if grind_6_current_open_rate > 0.0:
-          grind_profit = -(
-            ((exit_rate - grind_6_current_open_rate) / grind_6_current_open_rate)
+          grind_profit = (
+            (-(exit_rate - grind_6_current_open_rate) / grind_6_current_open_rate)
             if grind_6_is_sell_found
             else profit_ratio
           )
@@ -34641,10 +34698,18 @@ class NostalgiaForInfinityX5(IStrategy):
       < (
         slice_amount
         * (
-          (self.regular_mode_derisk_1_futures if self.is_futures_mode else self.regular_mode_derisk_1_spot)
-          if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
+          (
+            self.regular_mode_derisk_1_derisk_mode_futures
+            if self.is_futures_mode
+            else self.regular_mode_derisk_1_derisk_mode_spot
+          )
+          if is_derisk_mode
           else (
-            self.regular_mode_derisk_1_futures_old if self.is_futures_mode else self.regular_mode_derisk_1_spot_old
+            (self.regular_mode_derisk_1_futures if self.is_futures_mode else self.regular_mode_derisk_1_spot)
+            if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
+            else (
+              self.regular_mode_derisk_1_futures_old if self.is_futures_mode else self.regular_mode_derisk_1_spot_old
+            )
           )
         )
       )
