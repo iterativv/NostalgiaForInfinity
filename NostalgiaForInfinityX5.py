@@ -7298,7 +7298,7 @@ class NostalgiaForInfinityX5(IStrategy):
           # 1h down move, 4h low, 1h not low enough
           short_entry_logic.append((df["RSI_3_1h"] < 80.0) | (df["MFI_14_4h"] < 95.0) | (df["UO_7_14_28_1h"] > 70.0))
           # 1h down move, 4h high, 1d overbought
-          short_entry_logic.append((df["RSI_3_1h"] < 75.0) | (df["AROOND_14_4h"] < 75.0) | (df["ROC_9_1d"] > 20.0))
+          short_entry_logic.append((df["RSI_3_1h"] < 75.0) | (df["AROOND_14_4h"] < 75.0) | (df["ROC_9_1d"] > -80.0))
           # 1h & 4h down move, 1d downtrend
           short_entry_logic.append((df["RSI_3_1h"] < 70.0) | (df["RSI_3_4h"] < 80.0) | (df["ROC_9_1d"] < 40.0))
           # 1h down move, 15m high, 4h still not low enough
@@ -7325,7 +7325,7 @@ class NostalgiaForInfinityX5(IStrategy):
           )
           # 4h down move, 4h still high, 1d still high
           short_entry_logic.append(
-            (df["RSI_3_4h"] < 75.0) | (df["STOCHRSIk_14_14_3_3_4h"] > 60.0) | (df["RSI_3_1d"] > -50.0)
+            (df["RSI_3_4h"] < 75.0) | (df["STOCHRSIk_14_14_3_3_4h"] > 60.0) | (df["RSI_3_1d"] > 50.0)
           )
           # 4h down move, 15m stil high, 1d overbought
           short_entry_logic.append(
@@ -7380,7 +7380,7 @@ class NostalgiaForInfinityX5(IStrategy):
           # 1d red, 15m high, 1h still not low enough
           short_entry_logic.append(
             (df["change_pct_1d"] < 5.0)
-            | (df["STOCHRSIk_14_14_3_3_15m"] > 10.0)
+            | (df["STOCHRSIk_14_14_3_3_15m"] > 20.0)
             | (df["STOCHRSIk_14_14_3_3_1h"] > 90.0)
           )
           # 1d P&D, 1d overbought
@@ -7409,7 +7409,7 @@ class NostalgiaForInfinityX5(IStrategy):
           short_entry_logic.append(df["WILLR_84_1h"] > -30.0)
           short_entry_logic.append(df["STOCHRSIk_14_14_3_3_1h"] > 80.0)
           short_entry_logic.append(df["BBB_20_2.0_1h"] > 16.0)
-          short_entry_logic.append(df["close_max_48"] >= (df["close"] * 1.10))
+          short_entry_logic.append(df["close_min_48"] <= (df["close"] * 0.90))
 
         # Condition #543 - Rapid mode (Short).
         if short_entry_condition_index == 543:
