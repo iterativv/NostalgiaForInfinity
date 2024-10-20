@@ -2223,6 +2223,17 @@ class NostalgiaForInfinityX5(IStrategy):
 
     # Candle change
     informative_4h["change_pct"] = (informative_4h["close"] - informative_4h["open"]) / informative_4h["open"] * 100.0
+    # Wicks
+    informative_4h["top_wick_pct"] = (
+      (informative_4h["high"] - np.maximum(informative_4h["open"], informative_4h["close"]))
+      / np.maximum(informative_4h["open"], informative_4h["close"])
+      * 100.0
+    )
+    informative_4h["bot_wick_pct"] = abs(
+      (informative_4h["low"] - np.minimum(informative_4h["open"], informative_4h["close"]))
+      / np.minimum(informative_4h["open"], informative_4h["close"])
+      * 100.0
+    )
 
     # Performance logging
     # -----------------------------------------------------------------------------------------
