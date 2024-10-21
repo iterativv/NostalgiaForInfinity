@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.165"
+    return "v15.1.166"
 
   stoploss = -0.99
 
@@ -664,33 +664,21 @@ class NostalgiaForInfinityX5(IStrategy):
     enter_tags,
   ) -> tuple:
     if previous_sell_reason in [f"exit_{mode_name}_stoploss_doom", f"exit_{mode_name}_stoploss"]:
-      if profit_ratio > 0.0:
+      if profit_init_ratio > 0.0:
         # profit is over the threshold, don't exit
         self._remove_profit_target(pair)
         return False, None
       elif current_time - timedelta(minutes=60) > previous_time_profit_reached:
-        if profit_ratio < previous_profit:
+        if profit_init_ratio < previous_profit:
           return True, previous_sell_reason
-        elif profit_ratio > previous_profit:
+        elif profit_init_ratio > previous_profit:
           self._remove_profit_target(pair)
-      # if profit_ratio < -0.18:
-      #   if profit_ratio < (previous_profit - 0.04):
-      #     return True, previous_sell_reason
-      # elif profit_ratio < -0.1:
-      #   if profit_ratio < (previous_profit - 0.04):
-      #     return True, previous_sell_reason
-      # elif profit_ratio < -0.04:
-      #   if profit_ratio < (previous_profit - 0.04):
-      #     return True, previous_sell_reason
-      # else:
-      #   if profit_ratio < (previous_profit - 0.04):
-      #     return True, previous_sell_reason
     elif previous_sell_reason in [f"exit_{mode_name}_stoploss_u_e"]:
-      if profit_current_stake_ratio > 0.04:
+      if profit_init_ratio > 0.0:
         # profit is over the threshold, don't exit
         self._remove_profit_target(pair)
         return False, None
-      if profit_ratio < (previous_profit - (0.20 if trade.realized_profit == 0.0 else 0.26)):
+      elif profit_init_ratio < (previous_profit - 0.04):
         return True, previous_sell_reason
     elif previous_sell_reason in [f"exit_profit_{mode_name}_max"]:
       if profit_init_ratio < -0.08:
@@ -8182,6 +8170,7 @@ class NostalgiaForInfinityX5(IStrategy):
     if signal_name not in [
       f"exit_profit_{self.long_normal_mode_name}_max",
       f"exit_{self.long_normal_mode_name}_stoploss_doom",
+      f"exit_{self.long_normal_mode_name}_stoploss_u_e",
     ]:
       if sell and (signal_name is not None):
         return True, f"{signal_name}"
@@ -8718,6 +8707,7 @@ class NostalgiaForInfinityX5(IStrategy):
     if signal_name not in [
       f"exit_profit_{self.long_quick_mode_name}_max",
       f"exit_{self.long_quick_mode_name}_stoploss_doom",
+      f"exit_{self.long_quick_mode_name}_stoploss_u_e",
     ]:
       if sell and (signal_name is not None):
         return True, f"{signal_name}"
@@ -9760,6 +9750,7 @@ class NostalgiaForInfinityX5(IStrategy):
     if signal_name not in [
       f"exit_profit_{self.long_top_coins_mode_name}_max",
       f"exit_{self.long_top_coins_mode_name}_stoploss_doom",
+      f"exit_{self.long_top_coins_mode_name}_stoploss_u_e",
     ]:
       if sell and (signal_name is not None):
         return True, f"{signal_name}"
@@ -23502,6 +23493,7 @@ class NostalgiaForInfinityX5(IStrategy):
     if signal_name not in [
       f"exit_profit_{self.short_normal_mode_name}_max",
       f"exit_{self.short_normal_mode_name}_stoploss_doom",
+      f"exit_{self.short_normal_mode_name}_stoploss_u_e",
     ]:
       if sell and (signal_name is not None):
         return True, f"{signal_name}"
