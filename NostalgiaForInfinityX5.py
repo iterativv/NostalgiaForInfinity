@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.174"
+    return "v15.1.175"
 
   stoploss = -0.99
 
@@ -664,9 +664,26 @@ class NostalgiaForInfinityX5(IStrategy):
     previous_time_profit_reached,
     enter_tags,
   ) -> tuple:
-    filled_entries = trade.select_filled_orders(trade.entry_side)
-    # filled_exits = trade.select_filled_orders(trade.exit_side)
-    is_derisk = trade.amount < (filled_entries[0].safe_filled * 0.95)
+    is_derisk = False
+    if previous_sell_reason in [f"exit_{mode_name}_stoploss_doom", f"exit_{mode_name}_stoploss", f"exit_{mode_name}_stoploss_u_e"]:
+      filled_entries = trade.select_filled_orders(trade.entry_side)
+      filled_exits = trade.select_filled_orders(trade.exit_side)
+      has_order_tags = False
+      if hasattr(filled_entries[0], "ft_order_tag"):
+        has_order_tags = True
+      for order in filled_exits:
+        order_tag = ""
+        if has_order_tags:
+          if order.ft_order_tag is not None:
+            sell_order_tag = order.ft_order_tag
+            order_mode = sell_order_tag.split(" ", 1)
+            if len(order_mode) > 0:
+              order_tag = order_mode[0]
+        if order_tag in ["d", "d1"]:
+          is_derisk = True
+          break
+      if not is_derisk:
+        is_derisk = trade.amount < (filled_entries[0].safe_filled * 0.95)
     if previous_sell_reason in [f"exit_{mode_name}_stoploss_doom", f"exit_{mode_name}_stoploss"]:
       if profit_init_ratio > 0.0:
         # profit is over the threshold, don't exit
@@ -684,6 +701,9 @@ class NostalgiaForInfinityX5(IStrategy):
     elif previous_sell_reason in [f"exit_{mode_name}_stoploss_u_e"]:
       if profit_init_ratio > 0.0:
         # profit is over the threshold, don't exit
+        self._remove_profit_target(pair)
+        return False, None
+      elif is_derisk:
         self._remove_profit_target(pair)
         return False, None
       elif profit_ratio < (previous_profit - 0.04):
