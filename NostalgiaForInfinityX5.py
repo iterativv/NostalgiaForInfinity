@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.175"
+    return "v15.1.176"
 
   stoploss = -0.99
 
@@ -665,7 +665,11 @@ class NostalgiaForInfinityX5(IStrategy):
     enter_tags,
   ) -> tuple:
     is_derisk = False
-    if previous_sell_reason in [f"exit_{mode_name}_stoploss_doom", f"exit_{mode_name}_stoploss", f"exit_{mode_name}_stoploss_u_e"]:
+    if previous_sell_reason in [
+      f"exit_{mode_name}_stoploss_doom",
+      f"exit_{mode_name}_stoploss",
+      f"exit_{mode_name}_stoploss_u_e",
+    ]:
       filled_entries = trade.select_filled_orders(trade.entry_side)
       filled_exits = trade.select_filled_orders(trade.exit_side)
       has_order_tags = False
