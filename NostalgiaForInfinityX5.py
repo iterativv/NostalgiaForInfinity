@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.179"
+    return "v15.1.180"
 
   stoploss = -0.99
 
@@ -4547,6 +4547,10 @@ class NostalgiaForInfinityX5(IStrategy):
           )
           # 1d red, 4h down move, 4h downtrend
           long_entry_logic.append((df["change_pct_1d"] > -20.0) | (df["RSI_3_4h"] > 20.0) | (df["ROC_9_4h"] > -40.0))
+          # 1d green witj green wick, 1d downtrend
+          long_entry_logic.append(
+            (df["change_pct_1d"] < 20.0) | (df["top_wick_pct_1d"] < 20.0) | (df["ROC_9_1d"] > -50.0)
+          )
 
           # Logic
           long_entry_logic.append(df["AROONU_14"] < 25.0)
