@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.180"
+    return "v15.1.181"
 
   stoploss = -0.99
 
@@ -175,8 +175,8 @@ class NostalgiaForInfinityX5(IStrategy):
   # Based on the the first entry (regardless of rebuys)
   stop_threshold_spot = 0.10
   stop_threshold_futures = 0.10
-  stop_threshold_doom_spot = 0.25
-  stop_threshold_doom_futures = 0.25
+  stop_threshold_doom_spot = 0.20
+  stop_threshold_doom_futures = 0.20
   stop_threshold_spot_rebuy = 1.0
   stop_threshold_futures_rebuy = 1.0
   stop_threshold_rapid_spot = 0.25
@@ -312,10 +312,10 @@ class NostalgiaForInfinityX5(IStrategy):
   regular_mode_grind_6_thresholds_spot = [-0.025, -0.05, -0.06, -0.07, -0.08, -0.09, -0.10, -0.11, -0.12]
   regular_mode_grind_6_stop_grinds_spot = -0.20
   regular_mode_grind_6_profit_threshold_spot = 0.018
-  regular_mode_derisk_1_spot = -0.40
+  regular_mode_derisk_1_spot = -0.22
   regular_mode_derisk_1_spot_old = -0.80
   regular_mode_derisk_1_reentry_spot = -0.08
-  regular_mode_derisk_spot = -0.40
+  regular_mode_derisk_spot = -0.22
   regular_mode_derisk_spot_old = -1.60
   regular_mode_derisk_1_derisk_mode_spot = -0.05
 
@@ -345,10 +345,10 @@ class NostalgiaForInfinityX5(IStrategy):
   regular_mode_grind_6_thresholds_futures = [-0.025, -0.05, -0.06, -0.07, -0.08, -0.09, -0.10, -0.11, -0.12]
   regular_mode_grind_6_stop_grinds_futures = -0.20
   regular_mode_grind_6_profit_threshold_futures = 0.018
-  regular_mode_derisk_1_futures = -0.40
+  regular_mode_derisk_1_futures = -0.22
   regular_mode_derisk_1_futures_old = -0.80
   regular_mode_derisk_1_reentry_futures = -0.08  # without leverage
-  regular_mode_derisk_futures = -0.40
+  regular_mode_derisk_futures = -0.22
   regular_mode_derisk_futures_old = -1.20
   regular_mode_derisk_1_derisk_mode_futures = -0.05
 
