@@ -5323,6 +5323,10 @@ class NostalgiaForInfinityX5(IStrategy):
             | (df["change_pct_1d"].shift(288) < 20.0)
             | (df["RSI_14_1d"].shift(288) < 80.0)
           )
+          # 1d green, 4h still high, 4h downtrend
+          long_entry_logic.append(
+            (df["change_pct_1d"] < 25.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 50.0) | (df["ROC_2_4h"] > -15.0)
+          )
           # 1d top wick, 15m down move, 15m still not low enough, 4h still high
           long_entry_logic.append(
             (df["top_wick_pct_1d"] < 15.0)
