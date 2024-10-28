@@ -28019,14 +28019,14 @@ class NostalgiaForInfinityX5(IStrategy):
       ):
         return True, f"exit_{mode_name}_d_0_83"
       elif (
-        (last_candle["RSI_3"] < 8.0)
+        (last_candle["RSI_3"] < 1.0)
         and (last_candle["WILLR_14"] < -99.0)
         and (last_candle["RSI_3_4h"] > 70.0)
         and (last_candle["STOCHRSIk_14_14_3_3_1h"] < 80.0)
       ):
         return True, f"exit_{mode_name}_d_0_84"
       elif (
-        (last_candle["RSI_3"] < 10.0)
+        (last_candle["RSI_3"] < 1.0)
         and (last_candle["WILLR_14"] < -94.0)
         and (last_candle["RSI_3_1h"] > 70.0)
         and (last_candle["RSI_3_4h"] > 60.0)
