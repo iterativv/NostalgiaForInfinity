@@ -12255,7 +12255,7 @@ class NostalgiaForInfinityX5(IStrategy):
       ):
         return True, f"exit_{mode_name}_d_0_64"
       elif (
-        (last_candle["RSI_3"] > 70.0)
+        (last_candle["RSI_3"] > 90.0)
         and (last_candle["RSI_14"] < 40.0)
         and (last_candle["RSI_3_1h"] < 20.0)
         and (last_candle["RSI_3_4h"] < 15.0)
