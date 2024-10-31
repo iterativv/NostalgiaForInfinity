@@ -25793,7 +25793,7 @@ class NostalgiaForInfinityX5(IStrategy):
         sell, signal_name = True, f"exit_{self.short_rapid_mode_name}_rpd_1"
       elif (0.09 >= profit_init_ratio > 0.005) and (last_candle["MFI_14"] < 16.0):
         sell, signal_name = True, f"exit_{self.short_rapid_mode_name}_rpd_2"
-      elif (0.09 >= profit_init_ratio > 0.005) and (last_candle["WILLR_14"] <= -0.99):
+      elif (0.09 >= profit_init_ratio > 0.005) and (last_candle["WILLR_14"] <= -99.9):
         sell, signal_name = True, f"exit_{self.short_rapid_mode_name}_rpd_3"
       elif (
         (0.09 >= profit_init_ratio > 0.005)
