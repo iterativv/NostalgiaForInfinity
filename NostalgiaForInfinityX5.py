@@ -3556,6 +3556,8 @@ class NostalgiaForInfinityX5(IStrategy):
         if long_entry_condition_index == 2:
           # Protections
           long_entry_logic.append(df["num_empty_288"] <= allowed_empty_candles_288)
+          long_entry_logic.append(df["global_protections_long_pump"] == True)
+          long_entry_logic.append(df["global_protections_long_dump"] == True)
 
           # 5m down move, 4h overbought
           long_entry_logic.append(
