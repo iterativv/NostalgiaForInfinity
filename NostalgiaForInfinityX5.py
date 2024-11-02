@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.195"
+    return "v15.1.196"
 
   stoploss = -0.99
 
@@ -6281,7 +6281,7 @@ class NostalgiaForInfinityX5(IStrategy):
           )
           # 15m & 1h down move, 1h still high
           long_entry_logic.append(
-            (df["RSI_3_15m"] > 5.0) | (df["RSI_3_1h"] > 30.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 50.0)
+            (df["RSI_3_15m"] > 10.0) | (df["RSI_3_1h"] > 30.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 50.0)
           )
           # 15m & 4h down move, 4h still not low enough
           long_entry_logic.append(
@@ -6403,6 +6403,10 @@ class NostalgiaForInfinityX5(IStrategy):
           )
           # 4h & 1d down move, 1d strong downtrend
           long_entry_logic.append((df["RSI_3_4h"] > 10.0) | (df["RSI_3_1d"] > 10.0) | (df["ROC_9_1d"] > -60.0))
+          # 1h still high, 4h high, 1d still high
+          long_entry_logic.append(
+            (df["STOCHRSIk_14_14_3_3_1h"] < 40.0) | (df["WILLR_14_4h"] < -20.0) | (df["STOCHRSIk_14_14_3_3_1d"] < 50.0)
+          )
           # 4h overbought, 1h still high, 1d downtrend
           long_entry_logic.append(
             (df["ROC_9_4h"] < 50.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 30.0) | (df["ROC_9_1d"] > -50.0)
@@ -6423,9 +6427,6 @@ class NostalgiaForInfinityX5(IStrategy):
           # 1d P&D, 4h down move
           long_entry_logic.append(
             (df["change_pct_1d"] > -30.0) | (df["change_pct_1d"].shift(288) < 30.0) | (df["RSI_3_4h"] > 20.0)
-          )
-          long_entry_logic.append(
-            (df["RSI_3_15m"] > 10.0) | (df["RSI_3_1h"] > 30.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 50.0)
           )
 
           # Logic
