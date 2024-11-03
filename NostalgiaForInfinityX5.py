@@ -2906,7 +2906,7 @@ class NostalgiaForInfinityX5(IStrategy):
       # 1d green with top wick, 4h down move, 4h still high, 4h overbought
       & (
         (df["change_pct_1d"] < 20.0)
-        | (df["change_pct_1d"] < 20.0)
+        | (df["top_wick_pct_1d"] < 20.0)
         | (df["RSI_3_4h"] > 50.0)
         | (df["STOCHRSIk_14_14_3_3_4h"] < 50.0)
         | (df["ROC_9_4h"] < 80.0)
