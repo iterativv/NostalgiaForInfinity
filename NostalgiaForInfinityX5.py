@@ -2888,8 +2888,20 @@ class NostalgiaForInfinityX5(IStrategy):
     df["protections_long_global"] = True
 
     df["global_protections_long_pump"] = (
+      # 14m & 1h & 4h still not low enough, 1d high, 15m & 1h & 4h & 1d down move, 1d overbought
       (
-        # 1h & 4h not low enough, 1d high & overbought
+        (df["STOCHRSIk_14_14_3_3_15m"] < 10.0)
+        | (df["STOCHRSIk_14_14_3_3_1h"] < 20.0)
+        | (df["STOCHRSIk_14_14_3_3_4h"] < 30.0)
+        | (df["STOCHRSIk_14_14_3_3_1d"] < 80.0)
+        | (df["RSI_3_15m"] > 25.0)
+        | (df["RSI_3_1h"] > 35.0)
+        | (df["RSI_3_4h"] > 40.0)
+        | (df["RSI_14_1d"] < 80.0)
+        | (df["ROC_9_1d"] < 40.0)
+      )
+      # 1h & 4h not low enough, 1d high & overbought
+      & (
         (df["STOCHRSIk_14_14_3_3_1h"] < 30.0)
         | (df["STOCHRSIk_14_14_3_3_4h"] < 30.0)
         | (df["RSI_14_1d"] < 85.0)
