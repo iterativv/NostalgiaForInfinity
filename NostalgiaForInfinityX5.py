@@ -2895,6 +2895,13 @@ class NostalgiaForInfinityX5(IStrategy):
         | (df["RSI_14_1d"] < 85.0)
         | (df["ROC_9_1d"] < 250.0)
       )
+      & (
+        (df["change_pct_4h"] > -20.0)
+        | (df["change_pct_4h"].shift(48) < 20.0)
+        | (df["AROONU_14_1h"] < 50.0)
+        | (df["RSI_3_4h"] > 40.0)
+        | (df["RSI_3_4h"].shift(48) < 80.0)
+      )
       # 4h green with top wick, 15m still not low enough, 1h high, 4h high
       & (
         (df["change_pct_4h"] < 10.0)
