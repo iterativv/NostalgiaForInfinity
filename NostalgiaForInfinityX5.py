@@ -271,12 +271,12 @@ class NostalgiaForInfinityX5(IStrategy):
   grind_2_derisk_1_stop_grinds_spot = -0.30
   grind_2_derisk_1_profit_threshold_spot = 0.018
   grind_2_derisk_1_stakes_spot = [0.16, 0.22, 0.28]
-  grind_2_derisk_1_sub_thresholds_spot = [-0.08, -0.12, -0.16]
+  grind_2_derisk_1_sub_thresholds_spot = [-0.12, -0.16, -0.20]
 
   grind_2_derisk_1_stop_grinds_futures = -0.30
   grind_2_derisk_1_profit_threshold_futures = 0.018
   grind_2_derisk_1_stakes_futures = [0.16, 0.22, 0.28]
-  grind_2_derisk_1_sub_thresholds_futures = [-0.08, -0.12, -0.16]
+  grind_2_derisk_1_sub_thresholds_futures = [-0.12, -0.16, -0.20]
 
   grinds_stop_spot = -0.12
   grinds_stop_futures = -0.12
