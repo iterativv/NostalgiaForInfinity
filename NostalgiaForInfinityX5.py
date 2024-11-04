@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.201"
+    return "v15.1.202"
 
   stoploss = -0.99
 
@@ -175,8 +175,8 @@ class NostalgiaForInfinityX5(IStrategy):
   # Based on the the first entry (regardless of rebuys)
   stop_threshold_spot = 0.10
   stop_threshold_futures = 0.10
-  stop_threshold_doom_spot = 0.20
-  stop_threshold_doom_futures = 0.20
+  stop_threshold_doom_spot = 0.25
+  stop_threshold_doom_futures = 0.25
   stop_threshold_spot_rebuy = 1.0
   stop_threshold_futures_rebuy = 1.0
   stop_threshold_rapid_spot = 0.25
@@ -196,6 +196,7 @@ class NostalgiaForInfinityX5(IStrategy):
 
   # Grinding feature
   grinding_enable = True
+  derisk_enable = True
 
   # Grinding
   grind_1_stop_grinds_spot = -0.30
@@ -312,10 +313,10 @@ class NostalgiaForInfinityX5(IStrategy):
   regular_mode_grind_6_thresholds_spot = [-0.025, -0.05, -0.06, -0.07, -0.08, -0.09, -0.10, -0.11, -0.12]
   regular_mode_grind_6_stop_grinds_spot = -0.20
   regular_mode_grind_6_profit_threshold_spot = 0.018
-  regular_mode_derisk_1_spot = -0.20
+  regular_mode_derisk_1_spot = -0.24
   regular_mode_derisk_1_spot_old = -0.80
   regular_mode_derisk_1_reentry_spot = -0.08
-  regular_mode_derisk_spot = -0.20
+  regular_mode_derisk_spot = -0.24
   regular_mode_derisk_spot_old = -1.60
   regular_mode_derisk_1_derisk_mode_spot = -0.05
 
@@ -345,10 +346,10 @@ class NostalgiaForInfinityX5(IStrategy):
   regular_mode_grind_6_thresholds_futures = [-0.025, -0.05, -0.06, -0.07, -0.08, -0.09, -0.10, -0.11, -0.12]
   regular_mode_grind_6_stop_grinds_futures = -0.20
   regular_mode_grind_6_profit_threshold_futures = 0.018
-  regular_mode_derisk_1_futures = -0.20
+  regular_mode_derisk_1_futures = -0.24
   regular_mode_derisk_1_futures_old = -0.80
   regular_mode_derisk_1_reentry_futures = -0.08  # without leverage
-  regular_mode_derisk_futures = -0.20
+  regular_mode_derisk_futures = -0.24
   regular_mode_derisk_futures_old = -1.20
   regular_mode_derisk_1_derisk_mode_futures = -0.05
 
@@ -576,9 +577,12 @@ class NostalgiaForInfinityX5(IStrategy):
       self.futures_mode_leverage_grind_mode = self.config["futures_mode_leverage_grind_mode"]
 
     if "stop_threshold_doom_spot" in self.config:
-      self.stop_threshold = self.config["stop_threshold_doom_spot"]
+      self.stop_threshold_doom_spot = self.config["stop_threshold_doom_spot"]
     if "stop_threshold_doom_futures" in self.config:
-      self.stop_threshold = self.config["stop_threshold_doom_futures"]
+      self.stop_threshold_doom_futures = self.config["stop_threshold_doom_futures"]
+
+    if "derisk_enable" in self.config:
+      self.derisk_enable = self.config["derisk_enable"]
 
     if "regular_mode_derisk_1_spot" in self.config:
       self.regular_mode_derisk_1_spot = self.config["regular_mode_derisk_1_spot"]
@@ -710,12 +714,16 @@ class NostalgiaForInfinityX5(IStrategy):
       elif is_derisk:
         self._remove_profit_target(pair)
         return False, None
-      elif current_time - timedelta(minutes=60) > previous_time_profit_reached:
+      elif self.derisk_enable and (current_time - timedelta(minutes=60) > previous_time_profit_reached):
         if profit_ratio < previous_profit:
           return True, previous_sell_reason
         elif profit_ratio > previous_profit:
           self._remove_profit_target(pair)
           return False, None
+      elif profit_init_ratio <= -(
+        self.stop_threshold_doom_futures if self.is_futures_mode else self.stop_threshold_doom_spot
+      ):
+        return True, previous_sell_reason
     elif previous_sell_reason in [f"exit_{mode_name}_stoploss_u_e"]:
       if profit_init_ratio > 0.0:
         # profit is over the threshold, don't exit
@@ -24501,17 +24509,21 @@ class NostalgiaForInfinityX5(IStrategy):
 
     # De-risk
     if (
-      profit_stake
-      < (
-        slice_amount
-        * (
-          (self.regular_mode_derisk_futures if self.is_futures_mode else self.regular_mode_derisk_spot)
-          if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
-          else (self.regular_mode_derisk_futures_old if self.is_futures_mode else self.regular_mode_derisk_spot_old)
+      self.derisk_enable
+      and (
+        profit_stake
+        < (
+          slice_amount
+          * (
+            (self.regular_mode_derisk_futures if self.is_futures_mode else self.regular_mode_derisk_spot)
+            if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
+            else (self.regular_mode_derisk_futures_old if self.is_futures_mode else self.regular_mode_derisk_spot_old)
+          )
+          # / (trade.leverage if self.is_futures_mode else 1.0)
         )
-        # / (trade.leverage if self.is_futures_mode else 1.0)
       )
-    ) and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest):
+      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
+    ):
       sell_amount = trade.amount * exit_rate / trade.leverage - (min_stake * 1.55)
       ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
       if sell_amount > min_stake and ft_sell_amount > min_stake:
@@ -24526,7 +24538,8 @@ class NostalgiaForInfinityX5(IStrategy):
 
     # De-risk level 1
     if (
-      has_order_tags
+      self.derisk_enable
+      and has_order_tags
       and not is_derisk_1
       and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
       and profit_stake
@@ -40227,17 +40240,21 @@ class NostalgiaForInfinityX5(IStrategy):
 
     # De-risk
     if (
-      profit_stake
-      < (
-        slice_amount
-        * (
-          (self.regular_mode_derisk_futures if self.is_futures_mode else self.regular_mode_derisk_spot)
-          if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
-          else (self.regular_mode_derisk_futures_old if self.is_futures_mode else self.regular_mode_derisk_spot_old)
+      self.derisk_enable
+      and (
+        profit_stake
+        < (
+          slice_amount
+          * (
+            (self.regular_mode_derisk_futures if self.is_futures_mode else self.regular_mode_derisk_spot)
+            if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
+            else (self.regular_mode_derisk_futures_old if self.is_futures_mode else self.regular_mode_derisk_spot_old)
+          )
+          # / (trade.leverage if self.is_futures_mode else 1.0)
         )
-        # / (trade.leverage if self.is_futures_mode else 1.0)
       )
-    ) and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest):
+      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
+    ):
       sell_amount = trade.amount * exit_rate / trade.leverage - (min_stake * 1.55)
       ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
       if sell_amount > min_stake and ft_sell_amount > min_stake:
@@ -40252,7 +40269,8 @@ class NostalgiaForInfinityX5(IStrategy):
 
     # De-risk level 1
     if (
-      has_order_tags
+      self.derisk_enable
+      and has_order_tags
       and not is_derisk_1
       and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
       and profit_stake
