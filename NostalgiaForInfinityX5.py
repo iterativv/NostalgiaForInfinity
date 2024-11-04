@@ -576,9 +576,9 @@ class NostalgiaForInfinityX5(IStrategy):
       self.futures_mode_leverage_grind_mode = self.config["futures_mode_leverage_grind_mode"]
 
     if "stop_threshold_doom_spot" in self.config:
-      self.stop_threshold = self.config["stop_threshold_doom_spot"]
+      self.stop_threshold_doom_spot = self.config["stop_threshold_doom_spot"]
     if "stop_threshold_doom_futures" in self.config:
-      self.stop_threshold = self.config["stop_threshold_doom_futures"]
+      self.stop_threshold_doom_futures = self.config["stop_threshold_doom_futures"]
 
     if "regular_mode_derisk_1_spot" in self.config:
       self.regular_mode_derisk_1_spot = self.config["regular_mode_derisk_1_spot"]
