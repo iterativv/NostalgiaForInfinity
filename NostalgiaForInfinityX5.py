@@ -196,6 +196,7 @@ class NostalgiaForInfinityX5(IStrategy):
 
   # Grinding feature
   grinding_enable = True
+  derisk_enable = True
 
   # Grinding
   grind_1_stop_grinds_spot = -0.30
@@ -579,6 +580,9 @@ class NostalgiaForInfinityX5(IStrategy):
       self.stop_threshold_doom_spot = self.config["stop_threshold_doom_spot"]
     if "stop_threshold_doom_futures" in self.config:
       self.stop_threshold_doom_futures = self.config["stop_threshold_doom_futures"]
+
+    if "derisk_enable" in self.config:
+      self.derisk_enable = self.config["derisk_enable"]
 
     if "regular_mode_derisk_1_spot" in self.config:
       self.regular_mode_derisk_1_spot = self.config["regular_mode_derisk_1_spot"]
@@ -24362,17 +24366,21 @@ class NostalgiaForInfinityX5(IStrategy):
 
     # De-risk
     if (
-      profit_stake
-      < (
-        slice_amount
-        * (
-          (self.regular_mode_derisk_futures if self.is_futures_mode else self.regular_mode_derisk_spot)
-          if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
-          else (self.regular_mode_derisk_futures_old if self.is_futures_mode else self.regular_mode_derisk_spot_old)
+      self.derisk_enable
+      and (
+        profit_stake
+        < (
+          slice_amount
+          * (
+            (self.regular_mode_derisk_futures if self.is_futures_mode else self.regular_mode_derisk_spot)
+            if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
+            else (self.regular_mode_derisk_futures_old if self.is_futures_mode else self.regular_mode_derisk_spot_old)
+          )
+          # / (trade.leverage if self.is_futures_mode else 1.0)
         )
-        # / (trade.leverage if self.is_futures_mode else 1.0)
       )
-    ) and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest):
+      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
+    ):
       sell_amount = trade.amount * exit_rate / trade.leverage - (min_stake * 1.55)
       ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
       if sell_amount > min_stake and ft_sell_amount > min_stake:
@@ -24387,7 +24395,8 @@ class NostalgiaForInfinityX5(IStrategy):
 
     # De-risk level 1
     if (
-      has_order_tags
+      self.derisk_enable
+      and has_order_tags
       and not is_derisk_1
       and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
       and profit_stake
@@ -40088,17 +40097,21 @@ class NostalgiaForInfinityX5(IStrategy):
 
     # De-risk
     if (
-      profit_stake
-      < (
-        slice_amount
-        * (
-          (self.regular_mode_derisk_futures if self.is_futures_mode else self.regular_mode_derisk_spot)
-          if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
-          else (self.regular_mode_derisk_futures_old if self.is_futures_mode else self.regular_mode_derisk_spot_old)
+      self.derisk_enable
+      and (
+        profit_stake
+        < (
+          slice_amount
+          * (
+            (self.regular_mode_derisk_futures if self.is_futures_mode else self.regular_mode_derisk_spot)
+            if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
+            else (self.regular_mode_derisk_futures_old if self.is_futures_mode else self.regular_mode_derisk_spot_old)
+          )
+          # / (trade.leverage if self.is_futures_mode else 1.0)
         )
-        # / (trade.leverage if self.is_futures_mode else 1.0)
       )
-    ) and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest):
+      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
+    ):
       sell_amount = trade.amount * exit_rate / trade.leverage - (min_stake * 1.55)
       ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
       if sell_amount > min_stake and ft_sell_amount > min_stake:
@@ -40113,7 +40126,8 @@ class NostalgiaForInfinityX5(IStrategy):
 
     # De-risk level 1
     if (
-      has_order_tags
+      self.derisk_enable
+      and has_order_tags
       and not is_derisk_1
       and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
       and profit_stake
