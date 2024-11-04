@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.202"
+    return "v15.1.203"
 
   stoploss = -0.99
 
@@ -3028,9 +3028,119 @@ class NostalgiaForInfinityX5(IStrategy):
     # Global protections Short
     df["protections_short_global"] = True
 
-    df["global_protections_short_pump"] = True
+    df["global_protections_short_pump"] = (
+      # 15m & 1h down move, 1h still high, 4h high, 1d still high
+      (
+        (df["RSI_3_15m"] < 85.0)
+        | (df["RSI_3_1h"] < 60.0)
+        | (df["AROOND_14_1h"] < 50.0)
+        | (df["AROOND_14_4h"] < 75.0)
+        | (df["WILLR_14_4h"] > -70.0)
+        | (df["STOCHRSIk_14_14_3_3_4h"] > 20.0)
+        | (df["STOCHRSIk_14_14_3_3_1d"] > 50.0)
+      )
+      # 15m down move, 15m still not low enough, 1h & 4h high, 1d overbought
+      & (
+        (df["RSI_3_15m"] < 65.0)
+        | (df["AROOND_14_15m"] < 25.0)
+        | (df["STOCHRSIk_14_14_3_3_1h"] > 10.0)
+        | (df["AROOND_14_4h"] < 75.0)
+        | (df["WILLR_14_4h"] > -80.0)
+        | (df["STOCHRSIk_14_14_3_3_4h"] > 30.0)
+        | (df["RSI_14_1d"] > 25.0)
+        | (df["ROC_9_1d"] > -50.0)
+      )
+      # 15m & 1h down move, 15m & 1h still high, 4h high, 1d overbought
+      & (
+        (df["RSI_3_15m"] < 60.0)
+        | (df["RSI_3_1h"] < 60.0)
+        | (df["AROOND_14_15m"] < 50.0)
+        | (df["STOCHRSIk_14_14_3_3_15m"] > 80.0)
+        | (df["RSI_14_1h"] > 50.0)
+        | (df["AROOND_14_4h"] < 75.0)
+        | (df["STOCHRSIk_14_14_3_3_4h"] > 20.0)
+        | (df["ROC_9_1d"] > -50.0)
+      )
+      # 14m & 1h & 4h still not low enough, 1d high, 15m & 1h & 4h & 1d down move, 1d overbought
+      & (
+        (df["STOCHRSIk_14_14_3_3_15m"] > 90.0)
+        | (df["STOCHRSIk_14_14_3_3_1h"] > 80.0)
+        | (df["STOCHRSIk_14_14_3_3_4h"] > 70.0)
+        | (df["STOCHRSIk_14_14_3_3_1d"] > 20.0)
+        | (df["RSI_3_15m"] < 75.0)
+        | (df["RSI_3_1h"] < 65.0)
+        | (df["RSI_3_4h"] < 60.0)
+        | (df["RSI_14_1d"] > 20.0)
+        | (df["ROC_9_1d"] > -40.0)
+      )
+      # 1h & 4h not low enough, 1d high & overbought
+      & (
+        (df["STOCHRSIk_14_14_3_3_1h"] > 70.0)
+        | (df["STOCHRSIk_14_14_3_3_4h"] > 70.0)
+        | (df["RSI_14_1d"] > 15.0)
+        | (df["ROC_9_1d"] > -250.0)
+      )
+      # 4h P&D, 1h still high, 4h down move, 4h still high
+      & (
+        (df["change_pct_4h"] < 20.0)
+        | (df["change_pct_4h"].shift(48) > -20.0)
+        | (df["AROOND_14_1h"] < 50.0)
+        | (df["RSI_3_4h"] < 60.0)
+        | (df["RSI_3_4h"].shift(48) > 20.0)
+      )
+      # 4h green with top wick, 15m still not low enough, 1h high, 4h high
+      & (
+        (df["change_pct_4h"] > -10.0)
+        | (df["bot_wick_pct_4h"] < 10.0)
+        | (df["AROOND_14_15m"] < 25.0)
+        | (df["AROOND_14_1h"] < 75.0)
+        | (df["STOCHRSIk_14_14_3_3_4h"] > 10.0)
+      )
+      # 4h green with top wick, 15m & 1h & 4h still high, 1d overbought
+      & (
+        (df["change_pct_4h"] > -10.0)
+        | (df["bot_wick_pct_4h"] < 10.0)
+        | (df["AROOND_14_15m"] < 50.0)
+        | (df["AROOND_14_1h"] < 50.0)
+        | (df["STOCHRSIk_14_14_3_3_4h"] > 50.0)
+        | (df["ROC_9_1d"] > -50.0)
+      )
+      # 1d green with top wick, 4h down move, 4h still high, 4h overbought
+      & (
+        (df["change_pct_1d"] > -20.0)
+        | (df["bot_wick_pct_1d"] < 20.0)
+        | (df["RSI_3_4h"] < 50.0)
+        | (df["STOCHRSIk_14_14_3_3_4h"] > 50.0)
+        | (df["ROC_9_4h"] > -80.0)
+      )
+    )
 
-    df["global_protections_short_dump"] = True
+    df["global_protections_short_dump"] = (
+      (
+        # 15m still not low enough, 4h & 1d down move, 1d downtrend
+        (df["STOCHRSIk_14_14_3_3_15m"] > 95.0)
+        | (df["AROOND_14_15m"] < 25.0)
+        | (df["RSI_3_4h"] < 90.0)
+        | (df["RSI_3_1d"] < 90.0)
+        | (df["ROC_9_1d"] < 30.0)
+      )
+      # 15m & 4h still not low enough, 1h & 4h & 1d down move
+      & (
+        (df["STOCHRSIk_14_14_3_3_15m"] > 90.0)
+        | (df["STOCHRSIk_14_14_3_3_4h"] > 70.0)
+        | (df["RSI_3_1h"] < 85.0)
+        | (df["RSI_3_4h"] < 70.0)
+        | (df["RSI_3_1d"] < 70.0)
+      )
+      # 1d green with top wick, 4h down move, 4h still high, 4h overbought
+      & (
+        (df["change_pct_1d"] > -20.0)
+        | (df["bot_wick_pct_1d"] < 20.0)
+        | (df["RSI_3_4h"] < 50.0)
+        | (df["STOCHRSIk_14_14_3_3_4h"] > 60.0)
+        | (df["ROC_9_4h"] > -50.0)
+      )
+    )
 
     df["protections_short_rebuy"] = True
 
@@ -8051,6 +8161,8 @@ class NostalgiaForInfinityX5(IStrategy):
         if short_entry_condition_index == 542:
           # Protections
           short_entry_logic.append(df["num_empty_288"] <= allowed_empty_candles_288)
+          short_entry_logic.append(df["global_protections_short_pump"] == True)
+          short_entry_logic.append(df["global_protections_short_dump"] == True)
 
           short_entry_logic.append(df["RSI_3_1h"] >= 5.0)
           short_entry_logic.append(df["RSI_3_4h"] >= 20.0)
@@ -8129,6 +8241,13 @@ class NostalgiaForInfinityX5(IStrategy):
           )
           # 15m & 4h down move, 1d downtrend
           short_entry_logic.append((df["RSI_3_15m"] < 85.0) | (df["RSI_3_4h"] < 85.0) | (df["ROC_9_1d"] < 50.0))
+          # 15m & 1h down move, 4h high, 1d still high
+          short_entry_logic.append(
+            (df["RSI_3_15m"] < 80.0)
+            | (df["RSI_3_1h"] < 90.0)
+            | (df["AROOND_14_4h"] < 75.0)
+            | (df["STOCHRSIk_14_14_3_3_1d"] > 50.0)
+          )
           # 15m & 1h & 4h down move, 4h still high
           short_entry_logic.append(
             (df["RSI_3_15m"] < 80.0)
@@ -8230,6 +8349,20 @@ class NostalgiaForInfinityX5(IStrategy):
           )
           # 1h down move, 4h low, 1h not low enough
           short_entry_logic.append((df["RSI_3_1h"] < 80.0) | (df["MFI_14_4h"] < 95.0) | (df["UO_7_14_28_1h"] > 70.0))
+          # 1h & 4h down move, 15m still high, 1d high
+          short_entry_logic.append(
+            (df["RSI_3_1h"] < 75.0)
+            | (df["RSI_3_4h"] < 70.0)
+            | (df["STOCHRSIk_14_14_3_3_15m"] > 50.0)
+            | (df["STOCHRSIk_14_14_3_3_1d"] > 30.0)
+          )
+          # 1h & 1d down move, 1h still high, 1d high
+          short_entry_logic.append(
+            (df["RSI_3_1h"] < 75.0)
+            | (df["RSI_3_1d"] < 70.0)
+            | (df["AROOND_14_1h"] < 50.0)
+            | (df["AROOND_14_1d"] < 75.0)
+          )
           # 1h down move, 4h high, 1d overbought
           short_entry_logic.append((df["RSI_3_1h"] < 75.0) | (df["AROOND_14_4h"] < 75.0) | (df["ROC_9_1d"] > -80.0))
           # 1h & 4h down move, 1d downtrend
@@ -8260,6 +8393,8 @@ class NostalgiaForInfinityX5(IStrategy):
           short_entry_logic.append(
             (df["RSI_3_4h"] < 75.0) | (df["STOCHRSIk_14_14_3_3_4h"] > 60.0) | (df["RSI_3_1d"] > 50.0)
           )
+          # 4h down move, 4h still not low enough, 1d overbought
+          short_entry_logic.append((df["RSI_3_4h"] < 75.0) | (df["AROOND_14_4h"] < 25.0) | (df["ROC_9_1d"] > -150.0))
           # 4h down move, 15m stil high, 1d overbought
           short_entry_logic.append(
             (df["RSI_3_4h"] < 70.0) | (df["STOCHRSIk_14_14_3_3_15m"] > 50.0) | (df["ROC_9_1d"] > -100.0)
@@ -8315,6 +8450,10 @@ class NostalgiaForInfinityX5(IStrategy):
             (df["change_pct_1d"] < 5.0)
             | (df["STOCHRSIk_14_14_3_3_15m"] > 20.0)
             | (df["STOCHRSIk_14_14_3_3_1h"] > 90.0)
+          )
+          # 1d red, 4h down move, 1d still high
+          short_entry_logic.append(
+            (df["change_pct_1d"] < 10.0) | (df["RSI_3_4h"] < 95.0) | (df["STOCHRSIk_14_14_3_3_1d"] > 30.0)
           )
           # 1d P&D, 1d overbought
           short_entry_logic.append(
@@ -21325,6 +21464,8 @@ class NostalgiaForInfinityX5(IStrategy):
     # ):
     #   return True, f"exit_{mode_name}_stoploss_u_e"
 
+    #  Here ends exit signal conditions for long_exit_stoploss
+
     return False, None
 
   ###############################################################################################
@@ -25282,7 +25423,7 @@ class NostalgiaForInfinityX5(IStrategy):
       elif (0.09 >= profit_init_ratio > 0.02) and (last_candle["MFI_14"] < 16.0):
         sell, signal_name = True, f"exit_{self.short_quick_mode_name}_q_2"
 
-      elif (0.09 >= profit_init_ratio > 0.02) and (last_candle["WILLR_14"] <= -0.99):
+      elif (0.09 >= profit_init_ratio > 0.02) and (last_candle["WILLR_14"] <= -99.9):
         sell, signal_name = True, f"exit_{self.short_quick_mode_name}_q_3"
 
       elif (
@@ -25371,12 +25512,20 @@ class NostalgiaForInfinityX5(IStrategy):
     # Add the pair to the list, if a sell triggered and conditions met
     if sell and signal_name is not None:
       previous_profit = None
+      previous_sell_reason = ""
       if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
         previous_profit = self.target_profit_cache.data[pair]["profit"]
+        previous_sell_reason = self.target_profit_cache.data[pair]["sell_reason"]
       if signal_name in [
         f"exit_{self.short_quick_mode_name}_stoploss_doom",
         f"exit_{self.short_quick_mode_name}_stoploss_u_e",
-      ]:
+      ] and (
+        previous_sell_reason
+        not in [
+          f"exit_{self.short_quick_mode_name}_stoploss_doom",
+          f"exit_profit_{self.short_quick_mode_name}_stoploss_u_e",
+        ]
+      ):
         mark_pair, mark_signal = self.mark_profit_target(
           self.short_quick_mode_name,
           pair,
@@ -25423,8 +25572,8 @@ class NostalgiaForInfinityX5(IStrategy):
 
     if signal_name not in [
       f"exit_profit_{self.short_quick_mode_name}_max",
-      # f"exit_{self.short_quick_mode_name}_stoploss_doom",
-      # f"exit_{self.short_quick_mode_name}_stoploss_u_e",
+      f"exit_{self.short_quick_mode_name}_stoploss_doom",
+      f"exit_{self.short_quick_mode_name}_stoploss_u_e",
     ]:
       if sell and (signal_name is not None):
         return True, f"{signal_name}"
@@ -26406,12 +26555,20 @@ class NostalgiaForInfinityX5(IStrategy):
     # Add the pair to the list, if a sell triggered and conditions met
     if sell and signal_name is not None:
       previous_profit = None
+      previous_sell_reason = ""
       if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
         previous_profit = self.target_profit_cache.data[pair]["profit"]
+        previous_sell_reason = self.target_profit_cache.data[pair]["sell_reason"]
       if signal_name in [
         f"exit_{self.short_top_coins_mode_name}_stoploss_doom",
         f"exit_{self.short_top_coins_mode_name}_stoploss_u_e",
-      ]:
+      ] and (
+        previous_sell_reason
+        not in [
+          f"exit_{self.short_top_coins_mode_name}_stoploss_doom",
+          f"exit_profit_{self.short_top_coins_mode_name}_stoploss_u_e",
+        ]
+      ):
         mark_pair, mark_signal = self.mark_profit_target(
           self.short_top_coins_mode_name,
           pair,
@@ -26458,8 +26615,8 @@ class NostalgiaForInfinityX5(IStrategy):
 
     if signal_name not in [
       f"exit_profit_{self.short_top_coins_mode_name}_max",
-      # f"exit_{self.short_top_coins_mode_name}_stoploss_doom",
-      # f"exit_{self.short_top_coins_mode_name}_stoploss_u_e",
+      f"exit_{self.short_top_coins_mode_name}_stoploss_doom",
+      f"exit_{self.short_top_coins_mode_name}_stoploss_u_e",
     ]:
       if sell and (signal_name is not None):
         return True, f"{signal_name}"
@@ -37116,6 +37273,8 @@ class NostalgiaForInfinityX5(IStrategy):
     #   and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
     # ):
     #   return True, f"exit_{mode_name}_stoploss_u_e"
+
+    #  Here ends exit signal conditions for short_exit_stoploss
 
     return False, None
 
