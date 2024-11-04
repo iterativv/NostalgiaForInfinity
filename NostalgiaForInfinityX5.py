@@ -2997,7 +2997,19 @@ class NostalgiaForInfinityX5(IStrategy):
     )
 
     df["global_protections_long_dump"] = (
+      # 15m & 1h & 4h & 1d down move, 15m & 1h & 4h still not low enough
       (
+        (df["RSI_3_15m"] > 5.0)
+        | (df["RSI_3_1h"] > 25.0)
+        | (df["RSI_3_4h"] > 20.0)
+        | (df["RSI_3_1d"] > 15.0)
+        | (df["STOCHRSIk_14_14_3_3_15m"] < 25.0)
+        | (df["AROONU_14_15m"] < 25.0)
+        | (df["AROONU_14_1h"] < 25.0)
+        | (df["STOCHRSIk_14_14_3_3_1h"] < 20.0)
+        | (df["STOCHRSIk_14_14_3_3_4h"] < 20.0)
+      )
+      & (
         # 15m still not low enough, 4h & 1d down move, 1d downtrend
         (df["STOCHRSIk_14_14_3_3_15m"] < 5.0)
         | (df["AROONU_14_15m"] < 25.0)
