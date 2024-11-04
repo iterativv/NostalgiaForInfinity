@@ -175,8 +175,8 @@ class NostalgiaForInfinityX5(IStrategy):
   # Based on the the first entry (regardless of rebuys)
   stop_threshold_spot = 0.10
   stop_threshold_futures = 0.10
-  stop_threshold_doom_spot = 0.20
-  stop_threshold_doom_futures = 0.20
+  stop_threshold_doom_spot = 0.25
+  stop_threshold_doom_futures = 0.25
   stop_threshold_spot_rebuy = 1.0
   stop_threshold_futures_rebuy = 1.0
   stop_threshold_rapid_spot = 0.25
