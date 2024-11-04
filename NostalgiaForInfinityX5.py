@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.202"
+    return "v15.1.203"
 
   stoploss = -0.99
 
@@ -21464,6 +21464,8 @@ class NostalgiaForInfinityX5(IStrategy):
     # ):
     #   return True, f"exit_{mode_name}_stoploss_u_e"
 
+    #  Here ends exit signal conditions for long_exit_stoploss
+
     return False, None
 
   ###############################################################################################
@@ -25421,7 +25423,7 @@ class NostalgiaForInfinityX5(IStrategy):
       elif (0.09 >= profit_init_ratio > 0.02) and (last_candle["MFI_14"] < 16.0):
         sell, signal_name = True, f"exit_{self.short_quick_mode_name}_q_2"
 
-      elif (0.09 >= profit_init_ratio > 0.02) and (last_candle["WILLR_14"] <= -0.99):
+      elif (0.09 >= profit_init_ratio > 0.02) and (last_candle["WILLR_14"] <= -99.9):
         sell, signal_name = True, f"exit_{self.short_quick_mode_name}_q_3"
 
       elif (
@@ -25510,12 +25512,20 @@ class NostalgiaForInfinityX5(IStrategy):
     # Add the pair to the list, if a sell triggered and conditions met
     if sell and signal_name is not None:
       previous_profit = None
+      previous_sell_reason = ""
       if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
         previous_profit = self.target_profit_cache.data[pair]["profit"]
+        previous_sell_reason = self.target_profit_cache.data[pair]["sell_reason"]
       if signal_name in [
         f"exit_{self.short_quick_mode_name}_stoploss_doom",
         f"exit_{self.short_quick_mode_name}_stoploss_u_e",
-      ]:
+      ] and (
+        previous_sell_reason
+        not in [
+          f"exit_{self.short_quick_mode_name}_stoploss_doom",
+          f"exit_profit_{self.short_quick_mode_name}_stoploss_u_e",
+        ]
+      ):
         mark_pair, mark_signal = self.mark_profit_target(
           self.short_quick_mode_name,
           pair,
@@ -25562,8 +25572,8 @@ class NostalgiaForInfinityX5(IStrategy):
 
     if signal_name not in [
       f"exit_profit_{self.short_quick_mode_name}_max",
-      # f"exit_{self.short_quick_mode_name}_stoploss_doom",
-      # f"exit_{self.short_quick_mode_name}_stoploss_u_e",
+      f"exit_{self.short_quick_mode_name}_stoploss_doom",
+      f"exit_{self.short_quick_mode_name}_stoploss_u_e",
     ]:
       if sell and (signal_name is not None):
         return True, f"{signal_name}"
@@ -26545,12 +26555,20 @@ class NostalgiaForInfinityX5(IStrategy):
     # Add the pair to the list, if a sell triggered and conditions met
     if sell and signal_name is not None:
       previous_profit = None
+      previous_sell_reason = ""
       if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
         previous_profit = self.target_profit_cache.data[pair]["profit"]
+        previous_sell_reason = self.target_profit_cache.data[pair]["sell_reason"]
       if signal_name in [
         f"exit_{self.short_top_coins_mode_name}_stoploss_doom",
         f"exit_{self.short_top_coins_mode_name}_stoploss_u_e",
-      ]:
+      ] and (
+        previous_sell_reason
+        not in [
+          f"exit_{self.short_top_coins_mode_name}_stoploss_doom",
+          f"exit_profit_{self.short_top_coins_mode_name}_stoploss_u_e",
+        ]
+      ):
         mark_pair, mark_signal = self.mark_profit_target(
           self.short_top_coins_mode_name,
           pair,
@@ -26597,8 +26615,8 @@ class NostalgiaForInfinityX5(IStrategy):
 
     if signal_name not in [
       f"exit_profit_{self.short_top_coins_mode_name}_max",
-      # f"exit_{self.short_top_coins_mode_name}_stoploss_doom",
-      # f"exit_{self.short_top_coins_mode_name}_stoploss_u_e",
+      f"exit_{self.short_top_coins_mode_name}_stoploss_doom",
+      f"exit_{self.short_top_coins_mode_name}_stoploss_u_e",
     ]:
       if sell and (signal_name is not None):
         return True, f"{signal_name}"
@@ -37255,6 +37273,8 @@ class NostalgiaForInfinityX5(IStrategy):
     #   and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
     # ):
     #   return True, f"exit_{mode_name}_stoploss_u_e"
+
+    #  Here ends exit signal conditions for short_exit_stoploss
 
     return False, None
 
