@@ -720,7 +720,9 @@ class NostalgiaForInfinityX5(IStrategy):
         elif profit_ratio > previous_profit:
           self._remove_profit_target(pair)
           return False, None
-      else:
+      elif profit_init_ratio <= -(
+        self.stop_threshold_doom_futures if self.is_futures_mode else self.stop_threshold_doom_spot
+      ):
         return True, previous_sell_reason
     elif previous_sell_reason in [f"exit_{mode_name}_stoploss_u_e"]:
       if profit_init_ratio > 0.0:
