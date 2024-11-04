@@ -714,12 +714,14 @@ class NostalgiaForInfinityX5(IStrategy):
       elif is_derisk:
         self._remove_profit_target(pair)
         return False, None
-      elif current_time - timedelta(minutes=60) > previous_time_profit_reached:
+      elif self.derisk_enable and (current_time - timedelta(minutes=60) > previous_time_profit_reached):
         if profit_ratio < previous_profit:
           return True, previous_sell_reason
         elif profit_ratio > previous_profit:
           self._remove_profit_target(pair)
           return False, None
+      else:
+        return True, previous_sell_reason
     elif previous_sell_reason in [f"exit_{mode_name}_stoploss_u_e"]:
       if profit_init_ratio > 0.0:
         # profit is over the threshold, don't exit
