@@ -575,6 +575,20 @@ class NostalgiaForInfinityX5(IStrategy):
     if "futures_mode_leverage_grind_mode" in self.config:
       self.futures_mode_leverage_grind_mode = self.config["futures_mode_leverage_grind_mode"]
 
+    if "stop_threshold_doom_spot" in self.config:
+      self.stop_threshold = self.config["stop_threshold_doom_spot"]
+    if "stop_threshold_doom_futures" in self.config:
+      self.stop_threshold = self.config["stop_threshold_doom_futures"]
+
+    if "regular_mode_derisk_1_spot" in self.config:
+      self.regular_mode_derisk_1_spot = self.config["regular_mode_derisk_1_spot"]
+    if "regular_mode_derisk_spot" in self.config:
+      self.regular_mode_derisk_spot = self.config["regular_mode_derisk_spot"]
+    if "regular_mode_derisk_1_futures" in self.config:
+      self.regular_mode_derisk_1_futures = self.config["regular_mode_derisk_1_futures"]
+    if "regular_mode_derisk_futures" in self.config:
+      self.regular_mode_derisk_futures = self.config["regular_mode_derisk_futures"]
+
     if "grind_mode_max_slots" in self.config:
       self.grind_mode_max_slots = self.config["grind_mode_max_slots"]
     if "grind_mode_coins" in self.config:
