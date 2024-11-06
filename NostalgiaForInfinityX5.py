@@ -2496,6 +2496,10 @@ class NostalgiaForInfinityX5(IStrategy):
     informative_15m["CMF_20"] = pta.cmf(
       informative_15m["high"], informative_15m["low"], informative_15m["close"], informative_15m["volume"], length=20
     )
+    # Williams %R
+    informative_15m["WILLR_14"] = pta.willr(
+      informative_15m["high"], informative_15m["low"], informative_15m["close"], length=14
+    )
     # AROON
     aroon_14 = pta.aroon(informative_15m["high"], informative_15m["low"], length=14)
     informative_15m["AROONU_14"] = aroon_14["AROONU_14"] if isinstance(aroon_14, pd.DataFrame) else np.nan
