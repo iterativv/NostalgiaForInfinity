@@ -6958,6 +6958,8 @@ class NostalgiaForInfinityX5(IStrategy):
         if long_entry_condition_index == 141:
           # Protections
           long_entry_logic.append(is_pair_long_top_coins_mode)
+          long_entry_logic.append(df["global_protections_long_pump"] == True)
+          long_entry_logic.append(df["global_protections_long_dump"] == True)
 
           long_entry_logic.append(df["num_empty_288"] <= allowed_empty_candles_288)
 
