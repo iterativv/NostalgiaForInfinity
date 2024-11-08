@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.206"
+    return "v15.1.207"
 
   stoploss = -0.99
 
@@ -733,7 +733,7 @@ class NostalgiaForInfinityX5(IStrategy):
       elif is_derisk:
         self._remove_profit_target(pair)
         return False, None
-      elif profit_ratio < (previous_profit - 0.04):
+      elif profit_ratio < (previous_profit - (0.04 / trade.leverage)):
         return True, previous_sell_reason
     elif previous_sell_reason in [f"exit_profit_{mode_name}_max"]:
       if profit_init_ratio < -0.08:
