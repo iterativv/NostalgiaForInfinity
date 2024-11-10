@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.208"
+    return "v15.1.209"
 
   stoploss = -0.99
 
@@ -3452,14 +3452,14 @@ class NostalgiaForInfinityX5(IStrategy):
           return False
       else:
         # The pair is not in the list of grind mode allowed
-        log.warning(f"Cancelling entry for {pair} due to {pair} not in list of grind mode coins.")
+        log.warning(f"[{current_time}] Cancelling entry for {pair} due to {pair} not in list of grind mode coins.")
         return False
     # Top Coins mode
     elif all(c in self.long_top_coins_mode_tags for c in entry_tags):
       is_pair_top_coins_mode = pair.split("/")[0] in self.top_coins_mode_coins
       if not is_pair_top_coins_mode:
         # The pair is not in the list of top_coins mode allowed
-        log.warning(f"Cancelling entry for {pair} due to {pair} not in list of top coins mode coins.")
+        log.warning(f"[{current_time}] Cancelling entry for {pair} due to {pair} not in list of top coins mode coins.")
         return False
     # Derisk mode
     elif all(c in self.long_derisk_mode_tags for c in entry_tags):
@@ -3467,7 +3467,7 @@ class NostalgiaForInfinityX5(IStrategy):
       current_free_slots = self.config["max_open_trades"] - Trade.get_open_trade_count()
       if current_free_slots < self.min_free_slots_derisk_mode:
         # not enough free slots for derisk mode
-        log.warning(f"Cancelling entry for {pair} due to not enough free slots.")
+        log.warning(f"[{current_time}] Cancelling entry for {pair} due to not enough free slots.")
         return False
 
     df, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
@@ -3480,7 +3480,7 @@ class NostalgiaForInfinityX5(IStrategy):
         ):
           return True
         else:
-          log.warning(f"Cancelling entry for {pair} due to slippage {(slippage * 100.0):.2f}%")
+          log.warning(f"[{current_time}] Cancelling entry for {pair} due to slippage {(slippage * 100.0):.2f}%")
           return False
 
     return True
