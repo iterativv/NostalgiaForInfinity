@@ -3103,6 +3103,18 @@ class NostalgiaForInfinityX5(IStrategy):
         | (df["RSI_3_4h"] > 40.0)
         | (df["RSI_3_4h"].shift(48) < 80.0)
       )
+      # 4h green with top wick, 15m down move, 15m still not low enough, 4h still high & overbought, 1d high
+      & (
+        (df["change_pct_4h"] < 5.0)
+        | (df["top_wick_pct_4h"] < 5.0)
+        | (df["RSI_3_15m"] > 50.0)
+        | (df["AROONU_14_15m"] < 25.0)
+        | (df["STOCHRSIk_14_14_3_3_15m"] < 30.0)
+        | (df["AROONU_14_4h"] < 50.0)
+        | (df["AROONU_14_1d"] < 75.0)
+        | (df["ROC_9_4h"] < 25.0)
+        | (df["STOCHRSIk_14_14_3_3_1d"] < 90.0)
+      )
       # 4h green with top wick, 15m still not low enough, 1h high, 4h high
       & (
         (df["change_pct_4h"] < 10.0)
