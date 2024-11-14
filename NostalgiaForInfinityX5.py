@@ -3494,6 +3494,20 @@ class NostalgiaForInfinityX5(IStrategy):
         | (df["STOCHRSIk_14_14_3_3_4h"] < 50.0)
         | (df["STOCHRSIk_14_14_3_3_1d"] < 50.0)
       )
+      # 4h P&D, 1h & 4h & 1d down move, 15m & 1h & 4h still not low enough, 1d still high
+      & (
+        (df["change_pct_4h"] > -5.0)
+        | (df["change_pct_4h"].shift(48) < 5.0)
+        | (df["RSI_3_1h"] > 25.0)
+        | (df["RSI_3_4h"] > 50.0)
+        | (df["RSI_3_1d"] > 50.0)
+        | (df["STOCHRSIk_14_14_3_3_15m"] < 20.0)
+        | (df["RSI_14_1h"] < 30.0)
+        | (df["RSI_14_4h"] < 35.0)
+        | (df["AROONU_14_4h"] < 75.0)
+        | (df["STOCHRSIk_14_14_3_3_4h"] < 50.0)
+        | (df["AROONU_14_1d"] < 50.0)
+      )
       # 1d red, 15m & 1h & 4h & 1d down move, 4h stil not low enough, 1d still high, 4h downtrend
       & (
         (df["change_pct_1d"] > -10.0)
