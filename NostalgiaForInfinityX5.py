@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.218"
+    return "v15.1.219"
 
   stoploss = -0.99
 
@@ -9599,26 +9599,10 @@ class NostalgiaForInfinityX5(IStrategy):
   ) -> tuple:
     sell = False
 
-    # Original sell signals
-    sell, signal_name = self.long_exit_signals(
-      self.long_normal_mode_name,
-      profit_init_ratio,
-      max_profit,
-      max_loss,
-      last_candle,
-      previous_candle_1,
-      previous_candle_2,
-      previous_candle_3,
-      previous_candle_4,
-      previous_candle_5,
-      trade,
-      current_time,
-      enter_tags,
-    )
-
-    # Main sell signals
-    if not sell:
-      sell, signal_name = self.long_exit_main(
+    # if the profit is negative skip checking these
+    if profit_init_ratio > 0.0:
+      # Original sell signals
+      sell, signal_name = self.long_exit_signals(
         self.long_normal_mode_name,
         profit_init_ratio,
         max_profit,
@@ -9634,41 +9618,59 @@ class NostalgiaForInfinityX5(IStrategy):
         enter_tags,
       )
 
-    # Williams %R based sells
-    if not sell:
-      sell, signal_name = self.long_exit_williams_r(
-        self.long_normal_mode_name,
-        profit_init_ratio,
-        max_profit,
-        max_loss,
-        last_candle,
-        previous_candle_1,
-        previous_candle_2,
-        previous_candle_3,
-        previous_candle_4,
-        previous_candle_5,
-        trade,
-        current_time,
-        enter_tags,
-      )
+      # Main sell signals
+      if not sell:
+        sell, signal_name = self.long_exit_main(
+          self.long_normal_mode_name,
+          profit_init_ratio,
+          max_profit,
+          max_loss,
+          last_candle,
+          previous_candle_1,
+          previous_candle_2,
+          previous_candle_3,
+          previous_candle_4,
+          previous_candle_5,
+          trade,
+          current_time,
+          enter_tags,
+        )
 
-    # Downtrend/descending based sells
-    if not sell:
-      sell, signal_name = self.long_exit_dec(
-        self.long_normal_mode_name,
-        profit_init_ratio,
-        max_profit,
-        max_loss,
-        last_candle,
-        previous_candle_1,
-        previous_candle_2,
-        previous_candle_3,
-        previous_candle_4,
-        previous_candle_5,
-        trade,
-        current_time,
-        enter_tags,
-      )
+      # Williams %R based sells
+      if not sell:
+        sell, signal_name = self.long_exit_williams_r(
+          self.long_normal_mode_name,
+          profit_init_ratio,
+          max_profit,
+          max_loss,
+          last_candle,
+          previous_candle_1,
+          previous_candle_2,
+          previous_candle_3,
+          previous_candle_4,
+          previous_candle_5,
+          trade,
+          current_time,
+          enter_tags,
+        )
+
+      # Downtrend/descending based sells
+      if not sell:
+        sell, signal_name = self.long_exit_dec(
+          self.long_normal_mode_name,
+          profit_init_ratio,
+          max_profit,
+          max_loss,
+          last_candle,
+          previous_candle_1,
+          previous_candle_2,
+          previous_candle_3,
+          previous_candle_4,
+          previous_candle_5,
+          trade,
+          current_time,
+          enter_tags,
+        )
 
     # Stoplosses
     if not sell:
@@ -9856,26 +9858,10 @@ class NostalgiaForInfinityX5(IStrategy):
   ) -> tuple:
     sell = False
 
-    # Original sell signals
-    sell, signal_name = self.long_exit_signals(
-      self.long_pump_mode_name,
-      profit_init_ratio,
-      max_profit,
-      max_loss,
-      last_candle,
-      previous_candle_1,
-      previous_candle_2,
-      previous_candle_3,
-      previous_candle_4,
-      previous_candle_5,
-      trade,
-      current_time,
-      enter_tags,
-    )
-
-    # Main sell signals
-    if not sell:
-      sell, signal_name = self.long_exit_main(
+    # if the profit is negative skip checking these
+    if profit_init_ratio > 0.0:
+      # Original sell signals
+      sell, signal_name = self.long_exit_signals(
         self.long_pump_mode_name,
         profit_init_ratio,
         max_profit,
@@ -9891,41 +9877,59 @@ class NostalgiaForInfinityX5(IStrategy):
         enter_tags,
       )
 
-    # Williams %R based sells
-    if not sell:
-      sell, signal_name = self.long_exit_williams_r(
-        self.long_pump_mode_name,
-        profit_init_ratio,
-        max_profit,
-        max_loss,
-        last_candle,
-        previous_candle_1,
-        previous_candle_2,
-        previous_candle_3,
-        previous_candle_4,
-        previous_candle_5,
-        trade,
-        current_time,
-        enter_tags,
-      )
+      # Main sell signals
+      if not sell:
+        sell, signal_name = self.long_exit_main(
+          self.long_pump_mode_name,
+          profit_init_ratio,
+          max_profit,
+          max_loss,
+          last_candle,
+          previous_candle_1,
+          previous_candle_2,
+          previous_candle_3,
+          previous_candle_4,
+          previous_candle_5,
+          trade,
+          current_time,
+          enter_tags,
+        )
 
-    # Downtrend/descending based sells
-    if not sell:
-      sell, signal_name = self.long_exit_dec(
-        self.long_pump_mode_name,
-        profit_init_ratio,
-        max_profit,
-        max_loss,
-        last_candle,
-        previous_candle_1,
-        previous_candle_2,
-        previous_candle_3,
-        previous_candle_4,
-        previous_candle_5,
-        trade,
-        current_time,
-        enter_tags,
-      )
+      # Williams %R based sells
+      if not sell:
+        sell, signal_name = self.long_exit_williams_r(
+          self.long_pump_mode_name,
+          profit_init_ratio,
+          max_profit,
+          max_loss,
+          last_candle,
+          previous_candle_1,
+          previous_candle_2,
+          previous_candle_3,
+          previous_candle_4,
+          previous_candle_5,
+          trade,
+          current_time,
+          enter_tags,
+        )
+
+      # Downtrend/descending based sells
+      if not sell:
+        sell, signal_name = self.long_exit_dec(
+          self.long_pump_mode_name,
+          profit_init_ratio,
+          max_profit,
+          max_loss,
+          last_candle,
+          previous_candle_1,
+          previous_candle_2,
+          previous_candle_3,
+          previous_candle_4,
+          previous_candle_5,
+          trade,
+          current_time,
+          enter_tags,
+        )
 
     # Stoplosses
     if not sell:
@@ -10075,8 +10079,6 @@ class NostalgiaForInfinityX5(IStrategy):
       if sell and (signal_name is not None):
         return True, f"{signal_name}"
 
-    #  Here ends exit signal conditions for long_exit_pump
-
     return False, None
 
   # Long Exit Quick
@@ -10105,26 +10107,10 @@ class NostalgiaForInfinityX5(IStrategy):
   ) -> tuple:
     sell = False
 
-    # Original sell signals
-    sell, signal_name = self.long_exit_signals(
-      self.long_quick_mode_name,
-      profit_init_ratio,
-      max_profit,
-      max_loss,
-      last_candle,
-      previous_candle_1,
-      previous_candle_2,
-      previous_candle_3,
-      previous_candle_4,
-      previous_candle_5,
-      trade,
-      current_time,
-      enter_tags,
-    )
-
-    # Main sell signals
-    if not sell:
-      sell, signal_name = self.long_exit_main(
+    # if the profit is negative skip checking these
+    if profit_init_ratio > 0.0:
+      # Original sell signals
+      sell, signal_name = self.long_exit_signals(
         self.long_quick_mode_name,
         profit_init_ratio,
         max_profit,
@@ -10140,41 +10126,59 @@ class NostalgiaForInfinityX5(IStrategy):
         enter_tags,
       )
 
-    # Williams %R based sells
-    if not sell:
-      sell, signal_name = self.long_exit_williams_r(
-        self.long_quick_mode_name,
-        profit_init_ratio,
-        max_profit,
-        max_loss,
-        last_candle,
-        previous_candle_1,
-        previous_candle_2,
-        previous_candle_3,
-        previous_candle_4,
-        previous_candle_5,
-        trade,
-        current_time,
-        enter_tags,
-      )
+      # Main sell signals
+      if not sell:
+        sell, signal_name = self.long_exit_main(
+          self.long_quick_mode_name,
+          profit_init_ratio,
+          max_profit,
+          max_loss,
+          last_candle,
+          previous_candle_1,
+          previous_candle_2,
+          previous_candle_3,
+          previous_candle_4,
+          previous_candle_5,
+          trade,
+          current_time,
+          enter_tags,
+        )
 
-    # Downtrend/descending based sells
-    if not sell:
-      sell, signal_name = self.long_exit_dec(
-        self.long_quick_mode_name,
-        profit_init_ratio,
-        max_profit,
-        max_loss,
-        last_candle,
-        previous_candle_1,
-        previous_candle_2,
-        previous_candle_3,
-        previous_candle_4,
-        previous_candle_5,
-        trade,
-        current_time,
-        enter_tags,
-      )
+      # Williams %R based sells
+      if not sell:
+        sell, signal_name = self.long_exit_williams_r(
+          self.long_quick_mode_name,
+          profit_init_ratio,
+          max_profit,
+          max_loss,
+          last_candle,
+          previous_candle_1,
+          previous_candle_2,
+          previous_candle_3,
+          previous_candle_4,
+          previous_candle_5,
+          trade,
+          current_time,
+          enter_tags,
+        )
+
+      # Downtrend/descending based sells
+      if not sell:
+        sell, signal_name = self.long_exit_dec(
+          self.long_quick_mode_name,
+          profit_init_ratio,
+          max_profit,
+          max_loss,
+          last_candle,
+          previous_candle_1,
+          previous_candle_2,
+          previous_candle_3,
+          previous_candle_4,
+          previous_candle_5,
+          trade,
+          current_time,
+          enter_tags,
+        )
 
     # Stoplosses
     if not sell:
@@ -10860,26 +10864,10 @@ class NostalgiaForInfinityX5(IStrategy):
     is_backtest = self.dp.runmode.value in ["backtest", "hyperopt"]
     sell = False
 
-    # Original sell signals
-    sell, signal_name = self.long_exit_signals(
-      self.long_rapid_mode_name,
-      profit_init_ratio,
-      max_profit,
-      max_loss,
-      last_candle,
-      previous_candle_1,
-      previous_candle_2,
-      previous_candle_3,
-      previous_candle_4,
-      previous_candle_5,
-      trade,
-      current_time,
-      enter_tags,
-    )
-
-    # Main sell signals
-    if not sell:
-      sell, signal_name = self.long_exit_main(
+    # if the profit is negative skip checking these
+    if profit_init_ratio > 0.0:
+      # Original sell signals
+      sell, signal_name = self.long_exit_signals(
         self.long_rapid_mode_name,
         profit_init_ratio,
         max_profit,
@@ -10895,41 +10883,59 @@ class NostalgiaForInfinityX5(IStrategy):
         enter_tags,
       )
 
-    # Williams %R based sells
-    if not sell:
-      sell, signal_name = self.long_exit_williams_r(
-        self.long_rapid_mode_name,
-        profit_init_ratio,
-        max_profit,
-        max_loss,
-        last_candle,
-        previous_candle_1,
-        previous_candle_2,
-        previous_candle_3,
-        previous_candle_4,
-        previous_candle_5,
-        trade,
-        current_time,
-        enter_tags,
-      )
+      # Main sell signals
+      if not sell:
+        sell, signal_name = self.long_exit_main(
+          self.long_rapid_mode_name,
+          profit_init_ratio,
+          max_profit,
+          max_loss,
+          last_candle,
+          previous_candle_1,
+          previous_candle_2,
+          previous_candle_3,
+          previous_candle_4,
+          previous_candle_5,
+          trade,
+          current_time,
+          enter_tags,
+        )
 
-    # Downtrend/descending based sells
-    if not sell:
-      sell, signal_name = self.long_exit_dec(
-        self.long_rapid_mode_name,
-        profit_init_ratio,
-        max_profit,
-        max_loss,
-        last_candle,
-        previous_candle_1,
-        previous_candle_2,
-        previous_candle_3,
-        previous_candle_4,
-        previous_candle_5,
-        trade,
-        current_time,
-        enter_tags,
-      )
+      # Williams %R based sells
+      if not sell:
+        sell, signal_name = self.long_exit_williams_r(
+          self.long_rapid_mode_name,
+          profit_init_ratio,
+          max_profit,
+          max_loss,
+          last_candle,
+          previous_candle_1,
+          previous_candle_2,
+          previous_candle_3,
+          previous_candle_4,
+          previous_candle_5,
+          trade,
+          current_time,
+          enter_tags,
+        )
+
+      # Downtrend/descending based sells
+      if not sell:
+        sell, signal_name = self.long_exit_dec(
+          self.long_rapid_mode_name,
+          profit_init_ratio,
+          max_profit,
+          max_loss,
+          last_candle,
+          previous_candle_1,
+          previous_candle_2,
+          previous_candle_3,
+          previous_candle_4,
+          previous_candle_5,
+          trade,
+          current_time,
+          enter_tags,
+        )
 
     # Stoplosses
     if not sell:
@@ -26294,26 +26300,10 @@ class NostalgiaForInfinityX5(IStrategy):
   ) -> tuple:
     sell = False
 
-    # Original sell signals
-    sell, signal_name = self.short_exit_signals(
-      self.short_normal_mode_name,
-      profit_init_ratio,
-      max_profit,
-      max_loss,
-      last_candle,
-      previous_candle_1,
-      previous_candle_2,
-      previous_candle_3,
-      previous_candle_4,
-      previous_candle_5,
-      trade,
-      current_time,
-      enter_tags,
-    )
-
-    # Main sell signals
-    if not sell:
-      sell, signal_name = self.short_exit_main(
+    # if the profit is negative skip checking these
+    if profit_init_ratio > 0.0:
+      # Original sell signals
+      sell, signal_name = self.short_exit_signals(
         self.short_normal_mode_name,
         profit_init_ratio,
         max_profit,
@@ -26329,41 +26319,59 @@ class NostalgiaForInfinityX5(IStrategy):
         enter_tags,
       )
 
-    # Williams %R based sells
-    if not sell:
-      sell, signal_name = self.short_exit_williams_r(
-        self.short_normal_mode_name,
-        profit_init_ratio,
-        max_profit,
-        max_loss,
-        last_candle,
-        previous_candle_1,
-        previous_candle_2,
-        previous_candle_3,
-        previous_candle_4,
-        previous_candle_5,
-        trade,
-        current_time,
-        enter_tags,
-      )
+      # Main sell signals
+      if not sell:
+        sell, signal_name = self.short_exit_main(
+          self.short_normal_mode_name,
+          profit_init_ratio,
+          max_profit,
+          max_loss,
+          last_candle,
+          previous_candle_1,
+          previous_candle_2,
+          previous_candle_3,
+          previous_candle_4,
+          previous_candle_5,
+          trade,
+          current_time,
+          enter_tags,
+        )
 
-    # Downtrend/descending based sells
-    if not sell:
-      sell, signal_name = self.short_exit_dec(
-        self.short_normal_mode_name,
-        profit_init_ratio,
-        max_profit,
-        max_loss,
-        last_candle,
-        previous_candle_1,
-        previous_candle_2,
-        previous_candle_3,
-        previous_candle_4,
-        previous_candle_5,
-        trade,
-        current_time,
-        enter_tags,
-      )
+      # Williams %R based sells
+      if not sell:
+        sell, signal_name = self.short_exit_williams_r(
+          self.short_normal_mode_name,
+          profit_init_ratio,
+          max_profit,
+          max_loss,
+          last_candle,
+          previous_candle_1,
+          previous_candle_2,
+          previous_candle_3,
+          previous_candle_4,
+          previous_candle_5,
+          trade,
+          current_time,
+          enter_tags,
+        )
+
+      # Downtrend/descending based sells
+      if not sell:
+        sell, signal_name = self.short_exit_dec(
+          self.short_normal_mode_name,
+          profit_init_ratio,
+          max_profit,
+          max_loss,
+          last_candle,
+          previous_candle_1,
+          previous_candle_2,
+          previous_candle_3,
+          previous_candle_4,
+          previous_candle_5,
+          trade,
+          current_time,
+          enter_tags,
+        )
 
     # Stoplosses
     if not sell:
