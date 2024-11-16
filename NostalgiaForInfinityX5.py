@@ -21,8 +21,8 @@ log = logging.getLogger(__name__)
 warnings.simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 
 #############################################################################################################
-##                NostalgiaForInfinityX5 by iterativ                                                       ##
-##           https://github.com/iterativv/NostalgiaForInfinity                                             ##
+##                 NostalgiaForInfinityX5 by iterativ                                                       ##
+##            https://github.com/iterativv/NostalgiaForInfinity                                             ##
 ##                                                                                                         ##
 ##    Strategy for Freqtrade https://github.com/freqtrade/freqtrade                                        ##
 ##                                                                                                         ##
@@ -33,16 +33,16 @@ warnings.simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 ##   A pairlist with 40 to 80 pairs. Volume pairlist works well.                                           ##
 ##   Prefer stable coin (USDT, BUSDT etc) pairs, instead of BTC or ETH pairs.                              ##
 ##   Highly recommended to blacklist leveraged tokens (*BULL, *BEAR, *UP, *DOWN etc).                      ##
-##   Ensure that you don't override any variables in you config.json. Especially                           ##
+##   Ensure that you don't override any variables in you config.json. Especially                            ##
 ##   the timeframe (must be 5m).                                                                           ##
 ##     use_exit_signal must set to true (or not set at all).                                               ##
-##     exit_profit_only must set to false (or not set at all).                                             ##
+##     exit_profit_only must set to false (or not set at all).                                              ##
 ##     ignore_roi_if_entry_signal must set to true (or not set at all).                                    ##
 ##                                                                                                         ##
 #############################################################################################################
 ##               DONATIONS                                                                                 ##
 ##                                                                                                         ##
-##   BTC: bc1qvflsvddkmxh7eqhc4jyu5z5k6xcw3ay8jl49sk                                                       ##
+##   BTC: bc1qvflsvddkmxh7eqhc4jyu5z5k6xcw3ay8jl49sk                                                        ##
 ##   ETH (ERC20): 0x83D3cFb8001BDC5d2211cBeBB8cB3461E5f7Ec91                                               ##
 ##   BEP20/BSC (USDT, ETH, BNB, ...): 0x86A0B21a20b39d16424B7c8003E4A7e12d78ABEe                           ##
 ##   TRC20/TRON (USDT, TRON, ...): TTAa9MX6zMLXNgWMhg7tkNormVHWCoq8Xk                                      ##
@@ -53,12 +53,12 @@ warnings.simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 ##  Kucoin: https://www.kucoin.com/r/af/QBSSS5J2 (20% lifetime discount on trading fees)                   ##
 ##  Gate.io: https://www.gate.io/referral/invite/UAARUlhf_2130_103 (20% lifetime discount on trading fees) ##
 ##  OKX: https://www.okx.com/join/11749725931 (20% discount on trading fees)                               ##
-##  MEXC: https://promote.mexc.com/a/nfi  (10% discount on trading fees)                                   ##
-##  ByBit: https://partner.bybit.com/b/nfi                                                                 ##
-##  Bitget: https://bonus.bitget.com/nfi (lifetime 20% rebate all & 10% discount on spot fees)             ##
+##  MEXC: https://promote.mexc.com/a/nfi  (10% discount on trading fees)                                    ##
+##  ByBit: https://partner.bybit.com/b/nfi                                                                  ##
+##  Bitget: https://bonus.bitget.com/nfi (lifetime 20% rebate all & 10% discount on spot fees)              ##
 ##  HTX: https://www.htx.com/invite/en-us/1f?invite_code=ubpt2223                                          ##
 ##         (Welcome Bonus worth 241 USDT upon completion of a deposit and trade)                           ##
-##  Bitvavo: https://account.bitvavo.com/create?a=D22103A4BC (no fees for the first € 1000)                ##
+##  Bitvavo: https://account.bitvavo.com/create?a=D22103A4BC (no fees for the first € 1000)                 ##
 #############################################################################################################
 
 
@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.219"
+    return "v15.1.220"
 
   stoploss = -0.99
 
@@ -10078,6 +10078,8 @@ class NostalgiaForInfinityX5(IStrategy):
     ]:
       if sell and (signal_name is not None):
         return True, f"{signal_name}"
+
+    #  Here ends exit signal conditions for long_exit_pump
 
     return False, None
 
@@ -26559,26 +26561,10 @@ class NostalgiaForInfinityX5(IStrategy):
   ) -> tuple:
     sell = False
 
-    # Original sell signals
-    sell, signal_name = self.short_exit_signals(
-      self.short_pump_mode_name,
-      profit_init_ratio,
-      max_profit,
-      max_loss,
-      last_candle,
-      previous_candle_1,
-      previous_candle_2,
-      previous_candle_3,
-      previous_candle_4,
-      previous_candle_5,
-      trade,
-      current_time,
-      enter_tags,
-    )
-
-    # Main sell signals
-    if not sell:
-      sell, signal_name = self.short_exit_main(
+    # if the profit is negative skip checking these
+    if profit_init_ratio > 0.0:
+      # Original sell signals
+      sell, signal_name = self.short_exit_signals(
         self.short_pump_mode_name,
         profit_init_ratio,
         max_profit,
@@ -26594,41 +26580,59 @@ class NostalgiaForInfinityX5(IStrategy):
         enter_tags,
       )
 
-    # Williams %R based sells
-    if not sell:
-      sell, signal_name = self.short_exit_williams_r(
-        self.short_pump_mode_name,
-        profit_init_ratio,
-        max_profit,
-        max_loss,
-        last_candle,
-        previous_candle_1,
-        previous_candle_2,
-        previous_candle_3,
-        previous_candle_4,
-        previous_candle_5,
-        trade,
-        current_time,
-        enter_tags,
-      )
+      # Main sell signals
+      if not sell:
+        sell, signal_name = self.short_exit_main(
+          self.short_pump_mode_name,
+          profit_init_ratio,
+          max_profit,
+          max_loss,
+          last_candle,
+          previous_candle_1,
+          previous_candle_2,
+          previous_candle_3,
+          previous_candle_4,
+          previous_candle_5,
+          trade,
+          current_time,
+          enter_tags,
+        )
 
-    # Downtrend/descending based sells
-    if not sell:
-      sell, signal_name = self.short_exit_dec(
-        self.short_pump_mode_name,
-        profit_init_ratio,
-        max_profit,
-        max_loss,
-        last_candle,
-        previous_candle_1,
-        previous_candle_2,
-        previous_candle_3,
-        previous_candle_4,
-        previous_candle_5,
-        trade,
-        current_time,
-        enter_tags,
-      )
+      # Williams %R based sells
+      if not sell:
+        sell, signal_name = self.short_exit_williams_r(
+          self.short_pump_mode_name,
+          profit_init_ratio,
+          max_profit,
+          max_loss,
+          last_candle,
+          previous_candle_1,
+          previous_candle_2,
+          previous_candle_3,
+          previous_candle_4,
+          previous_candle_5,
+          trade,
+          current_time,
+          enter_tags,
+        )
+
+      # Downtrend/descending based sells
+      if not sell:
+        sell, signal_name = self.short_exit_dec(
+          self.short_pump_mode_name,
+          profit_init_ratio,
+          max_profit,
+          max_loss,
+          last_candle,
+          previous_candle_1,
+          previous_candle_2,
+          previous_candle_3,
+          previous_candle_4,
+          previous_candle_5,
+          trade,
+          current_time,
+          enter_tags,
+        )
 
     # Stoplosses
     if not sell:
@@ -26808,26 +26812,10 @@ class NostalgiaForInfinityX5(IStrategy):
   ) -> tuple:
     sell = False
 
-    # Original sell signals
-    sell, signal_name = self.short_exit_signals(
-      self.short_quick_mode_name,
-      profit_init_ratio,
-      max_profit,
-      max_loss,
-      last_candle,
-      previous_candle_1,
-      previous_candle_2,
-      previous_candle_3,
-      previous_candle_4,
-      previous_candle_5,
-      trade,
-      current_time,
-      enter_tags,
-    )
-
-    # Main sell signals
-    if not sell:
-      sell, signal_name = self.short_exit_main(
+    # if the profit is negative skip checking these
+    if profit_init_ratio > 0.0:
+      # Original sell signals
+      sell, signal_name = self.short_exit_signals(
         self.short_quick_mode_name,
         profit_init_ratio,
         max_profit,
@@ -26843,41 +26831,59 @@ class NostalgiaForInfinityX5(IStrategy):
         enter_tags,
       )
 
-    # Williams %R based sells
-    if not sell:
-      sell, signal_name = self.short_exit_williams_r(
-        self.short_quick_mode_name,
-        profit_init_ratio,
-        max_profit,
-        max_loss,
-        last_candle,
-        previous_candle_1,
-        previous_candle_2,
-        previous_candle_3,
-        previous_candle_4,
-        previous_candle_5,
-        trade,
-        current_time,
-        enter_tags,
-      )
+      # Main sell signals
+      if not sell:
+        sell, signal_name = self.short_exit_main(
+          self.short_quick_mode_name,
+          profit_init_ratio,
+          max_profit,
+          max_loss,
+          last_candle,
+          previous_candle_1,
+          previous_candle_2,
+          previous_candle_3,
+          previous_candle_4,
+          previous_candle_5,
+          trade,
+          current_time,
+          enter_tags,
+        )
 
-    # Downtrend/descending based sells
-    if not sell:
-      sell, signal_name = self.short_exit_dec(
-        self.short_quick_mode_name,
-        profit_init_ratio,
-        max_profit,
-        max_loss,
-        last_candle,
-        previous_candle_1,
-        previous_candle_2,
-        previous_candle_3,
-        previous_candle_4,
-        previous_candle_5,
-        trade,
-        current_time,
-        enter_tags,
-      )
+      # Williams %R based sells
+      if not sell:
+        sell, signal_name = self.short_exit_williams_r(
+          self.short_quick_mode_name,
+          profit_init_ratio,
+          max_profit,
+          max_loss,
+          last_candle,
+          previous_candle_1,
+          previous_candle_2,
+          previous_candle_3,
+          previous_candle_4,
+          previous_candle_5,
+          trade,
+          current_time,
+          enter_tags,
+        )
+
+      # Downtrend/descending based sells
+      if not sell:
+        sell, signal_name = self.short_exit_dec(
+          self.short_quick_mode_name,
+          profit_init_ratio,
+          max_profit,
+          max_loss,
+          last_candle,
+          previous_candle_1,
+          previous_candle_2,
+          previous_candle_3,
+          previous_candle_4,
+          previous_candle_5,
+          trade,
+          current_time,
+          enter_tags,
+        )
 
     # Stoplosses
     if not sell:
@@ -27563,26 +27569,10 @@ class NostalgiaForInfinityX5(IStrategy):
     is_backtest = self.dp.runmode.value in ["backtest", "hyperopt"]
     sell = False
 
-    # Original sell signals
-    sell, signal_name = self.short_exit_signals(
-      self.short_rapid_mode_name,
-      profit_init_ratio,
-      max_profit,
-      max_loss,
-      last_candle,
-      previous_candle_1,
-      previous_candle_2,
-      previous_candle_3,
-      previous_candle_4,
-      previous_candle_5,
-      trade,
-      current_time,
-      enter_tags,
-    )
-
-    # Main sell signals
-    if not sell:
-      sell, signal_name = self.short_exit_main(
+    # if the profit is negative skip checking these
+    if profit_init_ratio > 0.0:
+      # Original sell signals
+      sell, signal_name = self.short_exit_signals(
         self.short_rapid_mode_name,
         profit_init_ratio,
         max_profit,
@@ -27598,41 +27588,59 @@ class NostalgiaForInfinityX5(IStrategy):
         enter_tags,
       )
 
-    # Williams %R based sells
-    if not sell:
-      sell, signal_name = self.short_exit_williams_r(
-        self.short_rapid_mode_name,
-        profit_init_ratio,
-        max_profit,
-        max_loss,
-        last_candle,
-        previous_candle_1,
-        previous_candle_2,
-        previous_candle_3,
-        previous_candle_4,
-        previous_candle_5,
-        trade,
-        current_time,
-        enter_tags,
-      )
+      # Main sell signals
+      if not sell:
+        sell, signal_name = self.short_exit_main(
+          self.short_rapid_mode_name,
+          profit_init_ratio,
+          max_profit,
+          max_loss,
+          last_candle,
+          previous_candle_1,
+          previous_candle_2,
+          previous_candle_3,
+          previous_candle_4,
+          previous_candle_5,
+          trade,
+          current_time,
+          enter_tags,
+        )
 
-    # Downtrend/descending based sells
-    if not sell:
-      sell, signal_name = self.short_exit_dec(
-        self.short_rapid_mode_name,
-        profit_init_ratio,
-        max_profit,
-        max_loss,
-        last_candle,
-        previous_candle_1,
-        previous_candle_2,
-        previous_candle_3,
-        previous_candle_4,
-        previous_candle_5,
-        trade,
-        current_time,
-        enter_tags,
-      )
+      # Williams %R based sells
+      if not sell:
+        sell, signal_name = self.short_exit_williams_r(
+          self.short_rapid_mode_name,
+          profit_init_ratio,
+          max_profit,
+          max_loss,
+          last_candle,
+          previous_candle_1,
+          previous_candle_2,
+          previous_candle_3,
+          previous_candle_4,
+          previous_candle_5,
+          trade,
+          current_time,
+          enter_tags,
+        )
+
+      # Downtrend/descending based sells
+      if not sell:
+        sell, signal_name = self.short_exit_dec(
+          self.short_rapid_mode_name,
+          profit_init_ratio,
+          max_profit,
+          max_loss,
+          last_candle,
+          previous_candle_1,
+          previous_candle_2,
+          previous_candle_3,
+          previous_candle_4,
+          previous_candle_5,
+          trade,
+          current_time,
+          enter_tags,
+        )
 
     # Stoplosses
     if not sell:
