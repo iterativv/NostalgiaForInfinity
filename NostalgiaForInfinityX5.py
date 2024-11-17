@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.225"
+    return "v15.1.226"
 
   stoploss = -0.99
 
@@ -40764,7 +40764,7 @@ class NostalgiaForInfinityX5(IStrategy):
             else:
               return -ft_sell_amount
 
-    is_short_grind_entry = self.short_grind_entry(last_candle, previous_candle, slice_profit)
+    is_short_grind_entry = self.short_grind_entry(last_candle, previous_candle, slice_profit, True)
 
     # Grinding derisk 1
     # Buy
@@ -41783,7 +41783,9 @@ class NostalgiaForInfinityX5(IStrategy):
 
   # Short Grinding Entry
   # ---------------------------------------------------------------------------------------------
-  def short_grind_entry(self, last_candle: Series, previous_candle: Series, slice_profit: float) -> float:
+  def short_grind_entry(
+    self, last_candle: Series, previous_candle: Series, slice_profit: float, is_derisk: bool
+  ) -> float:
     if (
       (last_candle["protections_short_global"] == True)
       and (last_candle["protections_short_rebuy"] == True)
@@ -41853,6 +41855,15 @@ class NostalgiaForInfinityX5(IStrategy):
           and (last_candle["RSI_14_4h"] > 40.0)
           and (last_candle["KST_10_15_20_30_10_10_10_15"] < last_candle["KSTs_9"])
           and (previous_candle["KST_10_15_20_30_10_10_10_15"] > previous_candle["KSTs_9"])
+        )
+        or (
+          is_derisk
+          and (last_candle["RSI_3"] < 80.0)
+          and (last_candle["RSI_3_15m"] < 80.0)
+          and (last_candle["RSI_14"] > 64.0)
+          and (last_candle["AROOND_14"] < 25.0)
+          and (last_candle["AROOND_14_15m"] < 25.0)
+          and (last_candle["STOCHRSIk_14_14_3_3_15m"] > 50.0)
         )
       )
     ):
@@ -42380,7 +42391,7 @@ class NostalgiaForInfinityX5(IStrategy):
             order_tag = order.ft_order_tag
         return -ft_sell_amount, order_tag, is_derisk
 
-    is_short_grind_entry = self.short_grind_entry(last_candle, previous_candle, slice_profit)
+    is_short_grind_entry = self.short_grind_entry(last_candle, previous_candle, slice_profit, False)
 
     # Rebuy
     if (not partial_sell) and (not rebuy_is_sell_found) and (rebuy_sub_grind_count < max_rebuy_sub_grinds):
