@@ -4100,6 +4100,20 @@ class NostalgiaForInfinityX5(IStrategy):
         | (df["AROOND_14_1d"] < 50.0)
         | (df["ROC_9_1d"] < 20.0)
       )
+      # 1d green, 15m & 1h & 4h & 1d up move, 4h & 1d still not high enough & uptrend
+      & (
+        (df["change_pct_1d"] < 20.0)
+        | (df["RSI_3_15m"] < 60.0)
+        | (df["RSI_3_1h"] < 70.0)
+        | (df["RSI_3_4h"] < 70.0)
+        | (df["RSI_3_1d"] < 80.0)
+        | (df["RSI_14_4h"] > 70.0)
+        | (df["WILLR_14_4h"] > -10.0)
+        | (df["STOCHRSIk_14_14_3_3_4h"] > 80.0)
+        | (df["ROC_9_4h"] < 40.0)
+        | (df["RSI_14_1d"] > 80.0)
+        | (df["ROC_9_1d"] < 100.0)
+      )
     )
 
     df["global_protections_short_dump"] = (
