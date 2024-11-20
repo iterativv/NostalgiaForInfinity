@@ -4064,8 +4064,21 @@ class NostalgiaForInfinityX5(IStrategy):
     df["protections_short_global"] = True
 
     df["global_protections_short_pump"] = (
-      # 15m & 1h & 4h & 1d up move, 15m & 1h & 4h & 1d still not high enough, 1d uptrend
+      # 1d green, 15m & 1h & 4h & 1d up move, 4h & 1d still not high enough & uptrend
       (
+        (df["RSI_3_15m"] < 60.0)
+        | (df["RSI_3_1h"] < 70.0)
+        | (df["RSI_3_4h"] < 70.0)
+        | (df["RSI_3_1d"] < 80.0)
+        | (df["RSI_14_4h"] > 70.0)
+        | (df["WILLR_14_4h"] > -10.0)
+        | (df["STOCHRSIk_14_14_3_3_4h"] > 80.0)
+        | (df["ROC_9_4h"] < 40.0)
+        | (df["RSI_14_1d"] > 80.0)
+        | (df["ROC_9_1d"] < 100.0)
+      )
+      # 15m & 1h & 4h & 1d up move, 15m & 1h & 4h & 1d still not high enough, 1d uptrend
+      & (
         (df["RSI_3_15m"] < 70.0)
         | (df["RSI_3_1h"] < 80.0)
         | (df["RSI_3_4h"] < 80.0)
@@ -4112,20 +4125,6 @@ class NostalgiaForInfinityX5(IStrategy):
         | (df["STOCHRSIk_14_14_3_3_4h"] > 20.0)
         | (df["AROOND_14_1d"] < 50.0)
         | (df["ROC_9_1d"] < 20.0)
-      )
-      # 1d green, 15m & 1h & 4h & 1d up move, 4h & 1d still not high enough & uptrend
-      & (
-        (df["change_pct_1d"] < 20.0)
-        | (df["RSI_3_15m"] < 60.0)
-        | (df["RSI_3_1h"] < 70.0)
-        | (df["RSI_3_4h"] < 70.0)
-        | (df["RSI_3_1d"] < 80.0)
-        | (df["RSI_14_4h"] > 70.0)
-        | (df["WILLR_14_4h"] > -10.0)
-        | (df["STOCHRSIk_14_14_3_3_4h"] > 80.0)
-        | (df["ROC_9_4h"] < 40.0)
-        | (df["RSI_14_1d"] > 80.0)
-        | (df["ROC_9_1d"] < 100.0)
       )
     )
 
