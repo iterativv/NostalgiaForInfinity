@@ -2106,6 +2106,10 @@ class NostalgiaForInfinityX5(IStrategy):
     informative_1d["MFI_14"] = pta.mfi(
       informative_1d["high"], informative_1d["low"], informative_1d["close"], informative_1d["volume"], length=14
     )
+    # CMF
+    informative_1d["CMF_20"] = pta.cmf(
+      informative_1d["high"], informative_1d["low"], informative_1d["close"], informative_1d["volume"], length=20
+    )
     # Williams %R
     informative_1d["WILLR_14"] = pta.willr(
       informative_1d["high"], informative_1d["low"], informative_1d["close"], length=14
