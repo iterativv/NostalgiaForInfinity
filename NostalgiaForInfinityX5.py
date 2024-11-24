@@ -4268,6 +4268,17 @@ class NostalgiaForInfinityX5(IStrategy):
         | (df["ROC_9_4h"] > -20.0)
         | (df["ROC_9_1d"] > -30.0)
       )
+      # 1d red, 1h still not low enough, 4h & 1d still not low enough & downtrend
+      & (
+        (df["change_pct_1d"] > -10.0)
+        | (df["RSI_14_1h"] < 20.0)
+        | (df["RSI_14_4h"] < 20.0)
+        | (df["CMF_20_4h"] > -0.40)
+        | (df["ROC_9_4h"] > -20.0)
+        | (df["RSI_14_1d"] < 30.0)
+        | (df["CMF_20_1d"] > -0.50)
+        | (df["ROC_9_1d"] > -50.0)
+      )
       # 1d red with top wick, 4h down move, 15m high, 1h & 4h still not low enough, 4h downtrend
       & (
         (df["change_pct_1d"] > -10.0)
