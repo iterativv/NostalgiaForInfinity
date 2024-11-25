@@ -2118,6 +2118,10 @@ class NostalgiaForInfinityX5(IStrategy):
     aroon_14 = pta.aroon(informative_1d["high"], informative_1d["low"], length=14)
     informative_1d["AROONU_14"] = aroon_14["AROONU_14"] if isinstance(aroon_14, pd.DataFrame) else np.nan
     informative_1d["AROOND_14"] = aroon_14["AROOND_14"] if isinstance(aroon_14, pd.DataFrame) else np.nan
+    # Stochastic
+    stochrsi = pta.stoch(informative_1d["high"], informative_1d["low"], informative_1d["close"])
+    informative_1d["STOCHk_14_3_3"] = stochrsi["STOCHk_14_3_3"] if isinstance(stochrsi, pd.DataFrame) else np.nan
+    informative_1d["STOCHd_14_3_3"] = stochrsi["STOCHd_14_3_3"] if isinstance(stochrsi, pd.DataFrame) else np.nan
     # Stochastic RSI
     stochrsi = pta.stochrsi(informative_1d["close"])
     informative_1d["STOCHRSIk_14_14_3_3"] = (
