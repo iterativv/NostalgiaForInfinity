@@ -12,6 +12,260 @@ However, if you plan on running additional strategies or run the test suite, you
 ./tools/download-necessary-exchange-market-data-for-backtests.sh
 ```
 
+
+# Quick Start
+
+## With Docker
+
+### Clone repo
+```bash
+git clone https://github.com/iterativv/NostalgiaForInfinity
+```
+### enter repo directory
+```bash
+cd NostalgiaForInfinity
+```
+
+### copy configs/recommended_config.json -> user_data/config.json
+```bash
+cp live-account-example.env .env
+```
+
+### edit your .env file
+```
+# Change all necessary parts as needed
+
+FREQTRADE__BOT_NAME=Example_Test_Account
+FREQTRADE__MAX_OPEN_TRADES=10
+
+FREQTRADE__TRADING_MODE=spot
+
+FREQTRADE__EXCHANGE__NAME=binance
+FREQTRADE__EXCHANGE__KEY=Put_Your_Exchange_Key_Here
+FREQTRADE__EXCHANGE__SECRET=Put_Your_Exchange_Keys_Secret_Here
+
+FREQTRADE__TELEGRAM__ENABLED=false
+FREQTRADE__TELEGRAM__TOKEN=123123123:123123YourTelgramTokenConfiguration
+FREQTRADE__TELEGRAM__CHAT_ID=461799865
+
+FREQTRADE__API_SERVER__ENABLED=true
+FREQTRADE__API_SERVER__LISTEN_PORT=8989
+FREQTRADE__API_SERVER__USERNAME=user
+FREQTRADE__API_SERVER__PASSWORD=pass
+FREQTRADE__API_SERVER__JWT_SECRET_KEY=Put_Your_JWT_Secret_Key_Here
+FREQTRADE__API_SERVER__WS_TOKEN=JustWriteSomethingVeryRandom
+
+# Time Zone
+TZ=Europe/Istanbul
+FREQTRADE__DRY_RUN=true
+FREQTRADE__STRATEGY=NostalgiaForInfinityX5
+```
+
+### Start docker container
+```bash
+docker compose up
+```
+
+
+---
+you should see this screen and everything is ok :
+```bash
+docker compose up
+[+] Running 2/0
+ ✔ Container Example_Test_Account_binance_futures-NostalgiaForInfinityX5  Created                                                                                                                                                          0.0s
+ ✔ Container nostalgiaforinfinity-restarter-1                             Created                                                                                                                                                          0.0s
+Attaching to Example_Test_Account_binance_futures-NostalgiaForInfinityX5, restarter-1
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:25,075 - freqtrade - INFO - freqtrade 2024.10
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:25,563 - numexpr.utils - INFO - NumExpr defaulting to 12 threads.
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:27,241 - freqtrade.worker - INFO - Starting worker 2024.10
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:27,241 - freqtrade.configuration.load_config - INFO - Using config: user_data/config.json ...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:27,243 - freqtrade.configuration.load_config - INFO - Using config: ../configs/trading_mode-spot.json ...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:27,244 - freqtrade.configuration.load_config - INFO - Using config: ../configs/pairlist-volume-binance-usdt.json ...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:27,244 - freqtrade.configuration.load_config - INFO - Using config: ../configs/blacklist-binance.json ...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:27,245 - freqtrade.configuration.load_config - INFO - Using config: ../configs/exampleconfig.json ...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:27,245 - freqtrade.configuration.load_config - INFO - Using config: ../configs/exampleconfig_secret.json ...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:27,247 - freqtrade.loggers - INFO - Verbosity set to 0
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:27,247 - freqtrade.configuration.configuration - INFO - Runmode set to dry_run.
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:27,247 - freqtrade.configuration.configuration - INFO - Parameter --db-url detected ...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:27,247 - freqtrade.configuration.configuration - WARNING - `force_entry_enable` RPC message enabled.
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:27,247 - freqtrade.configuration.configuration - INFO - Dry run is enabled
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:27,248 - freqtrade.configuration.configuration - INFO - Using DB: "sqlite:////freqtrade/user_data/Example_Test_Account_binance_futures-tradesv3.sqlite"
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:27,248 - freqtrade.configuration.configuration - INFO - Using max_open_trades: 6 ...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:27,273 - freqtrade.configuration.configuration - INFO - Using user-data directory: /freqtrade/user_data ...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:27,274 - freqtrade.configuration.configuration - INFO - Using data directory: /freqtrade/user_data/data/binance ...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:27,274 - freqtrade.exchange.check_exchange - INFO - Checking exchange...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:27,280 - freqtrade.exchange.check_exchange - INFO - Exchange "binance" is officially supported by the Freqtrade development team.
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:27,280 - freqtrade.configuration.configuration - INFO - Using pairlist from configuration.
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,014 - freqtrade.resolvers.iresolver - INFO - Using resolved strategy NostalgiaForInfinityX5 from '/freqtrade/NostalgiaForInfinityX5.py'...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,015 - freqtrade.strategy.hyper - INFO - Found no parameter file.
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,015 - freqtrade.resolvers.strategy_resolver - INFO - Override strategy 'timeframe' with value in config file: 5m.
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,015 - freqtrade.resolvers.strategy_resolver - INFO - Override strategy 'order_types' with value in config file: {'entry': 'limit', 'exit': 'limit', 'emergency_exit': 'limit', 'force_entry': 'limit', 'force_exit': 'limit', 'stoploss': 'limit', 'stoploss_on_exchange': False, 'stoploss_on_exchange_interval': 60, 'stoploss_on_exchange_limit_ratio': 0.99}.
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,016 - freqtrade.resolvers.strategy_resolver - INFO - Override strategy 'stake_currency' with value in config file: USDT.
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,016 - freqtrade.resolvers.strategy_resolver - INFO - Override strategy 'stake_amount' with value in config file: unlimited.
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,016 - freqtrade.resolvers.strategy_resolver - INFO - Override strategy 'unfilledtimeout' with value in config file: {'entry': 20, 'exit': 20, 'exit_timeout_count': 0, 'unit': 'minutes'}.
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,016 - freqtrade.resolvers.strategy_resolver - INFO - Override strategy 'max_open_trades' with value in config file: 6.
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,016 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using minimal_roi: {}
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,016 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using timeframe: 5m
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,016 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using stoploss: -0.99
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,017 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using trailing_stop: False
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,017 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using trailing_stop_positive: 0.01
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,017 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using trailing_stop_positive_offset: 0.03
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,017 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using trailing_only_offset_is_reached: True
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,017 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using use_custom_stoploss: False
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,017 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using process_only_new_candles: True
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,017 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using order_types: {'entry': 'limit', 'exit': 'limit', 'emergency_exit': 'limit', 'force_entry': 'limit', 'force_exit': 'limit', 'stoploss': 'limit', 'stoploss_on_exchange': False, 'stoploss_on_exchange_interval': 60, 'stoploss_on_exchange_limit_ratio': 0.99}
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,017 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using order_time_in_force: {'entry': 'GTC', 'exit': 'GTC'}
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,018 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using stake_currency: USDT
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,018 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using stake_amount: unlimited
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,018 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using startup_candle_count: 800
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,018 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using unfilledtimeout: {'entry': 20, 'exit': 20, 'exit_timeout_count': 0, 'unit': 'minutes'}
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,018 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using use_exit_signal: True
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,018 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using exit_profit_only: False
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,018 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using ignore_roi_if_entry_signal: True
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,018 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using exit_profit_offset: 0.0
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,019 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using disable_dataframe_checks: False
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,019 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using ignore_buying_expired_candle_after: 0
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,019 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using position_adjustment_enable: True
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,019 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using max_entry_position_adjustment: -1
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,019 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using max_open_trades: 6
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,019 - freqtrade.configuration.config_validation - INFO - Validating configuration ...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,021 - freqtrade.exchange.exchange - INFO - Instance is running with dry_run enabled
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,021 - freqtrade.exchange.exchange - INFO - Using CCXT 4.4.24
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,021 - freqtrade.exchange.exchange - INFO - Applying additional ccxt config: {'enableRateLimit': True, 'rateLimit': 60, 'options': {'brokerId': None, 'partner': {'spot': {'id': None, 'key': None}, 'future': {'id': None, 'key': None}}}}
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,025 - freqtrade.exchange.exchange - INFO - Applying additional ccxt config: {'enableRateLimit': True, 'rateLimit': 60, 'options': {'brokerId': None, 'partner': {'spot': {'id': None, 'key': None}, 'future': {'id': None, 'key': None}}}}
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,031 - freqtrade.exchange.exchange - INFO - Applying additional ccxt config: {'enableRateLimit': True, 'rateLimit': 60, 'options': {'brokerId': None, 'partner': {'spot': {'id': None, 'key': None}, 'future': {'id': None, 'key': None}}}}
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:28,036 - freqtrade.exchange.exchange - INFO - Using Exchange "Binance"
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:30,629 - freqtrade.resolvers.exchange_resolver - INFO - Using resolved exchange 'Binance'...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:30,654 - freqtrade.wallets - INFO - Wallets synced.
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:30,962 - freqtrade.rpc.rpc_manager - INFO - Enabling rpc.api_server
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,083 - freqtrade.rpc.api_server.webserver - INFO - Starting HTTP Server at 0.0.0.0:8080
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,083 - freqtrade.rpc.api_server.webserver - WARNING - SECURITY WARNING - No password for local REST Server defined. Please make sure that this is intentional!
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,084 - freqtrade.rpc.api_server.webserver - WARNING - SECURITY WARNING - `jwt_secret_key` seems to be default.Others may be able to log into your bot.
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,084 - freqtrade.rpc.api_server.webserver - INFO - Starting Local Rest Server.
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,093 - uvicorn.error - INFO - Started server process [1]
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,094 - uvicorn.error - INFO - Waiting for application startup.
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,094 - uvicorn.error - INFO - Application startup complete.
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,094 - uvicorn.error - INFO - Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,101 - freqtrade.resolvers.iresolver - INFO - Using resolved pairlist VolumePairList from '/freqtrade/freqtrade/plugins/pairlist/VolumePairList.py'...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,103 - freqtrade.resolvers.iresolver - INFO - Using resolved pairlist FullTradesFilter from '/freqtrade/freqtrade/plugins/pairlist/FullTradesFilter.py'...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,108 - freqtrade.resolvers.iresolver - INFO - Using resolved pairlist AgeFilter from '/freqtrade/freqtrade/plugins/pairlist/AgeFilter.py'...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,117 - freqtrade.resolvers.iresolver - INFO - Using resolved pairlist PriceFilter from '/freqtrade/freqtrade/plugins/pairlist/PriceFilter.py'...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,123 - freqtrade.resolvers.iresolver - INFO - Using resolved pairlist SpreadFilter from '/freqtrade/freqtrade/plugins/pairlist/SpreadFilter.py'...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,127 - freqtrade.resolvers.iresolver - INFO - Using resolved pairlist VolumePairList from '/freqtrade/freqtrade/plugins/pairlist/VolumePairList.py'...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,653 - VolumePairList - INFO - Pair BNB/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,653 - VolumePairList - INFO - Pair TUSD/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,653 - VolumePairList - INFO - Pair NULS/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,654 - VolumePairList - INFO - Pair USDC/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,654 - VolumePairList - INFO - Pair ZEC/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,654 - VolumePairList - INFO - Pair CHZ/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,654 - VolumePairList - INFO - Pair REN/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,655 - VolumePairList - INFO - Pair CTXC/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,655 - VolumePairList - INFO - Pair FTT/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,655 - VolumePairList - INFO - Pair EUR/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,656 - VolumePairList - INFO - Pair MBL/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,656 - VolumePairList - INFO - Pair BAL/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,656 - VolumePairList - INFO - Pair IRIS/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,656 - VolumePairList - INFO - Pair NMR/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,656 - VolumePairList - INFO - Pair LUNA/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,657 - VolumePairList - INFO - Pair PAXG/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,657 - VolumePairList - INFO - Pair SUN/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,657 - VolumePairList - INFO - Pair AKRO/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,657 - VolumePairList - INFO - Pair HARD/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,657 - VolumePairList - INFO - Pair JUV/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,658 - VolumePairList - INFO - Pair PSG/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,658 - VolumePairList - INFO - Pair ATM/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,658 - VolumePairList - INFO - Pair ASR/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,658 - VolumePairList - INFO - Pair FIRO/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,658 - VolumePairList - INFO - Pair ACM/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,659 - VolumePairList - INFO - Pair LINA/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,659 - VolumePairList - INFO - Pair BAR/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,659 - VolumePairList - INFO - Pair ELF/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,659 - VolumePairList - INFO - Pair USDP/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,659 - VolumePairList - INFO - Pair BETA/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,660 - VolumePairList - INFO - Pair CITY/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,660 - VolumePairList - INFO - Pair JASMY/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,660 - VolumePairList - INFO - Pair CVX/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,660 - VolumePairList - INFO - Pair ACA/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,660 - VolumePairList - INFO - Pair ALPINE/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,661 - VolumePairList - INFO - Pair AMB/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,661 - VolumePairList - INFO - Pair USTC/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,661 - VolumePairList - INFO - Pair QKC/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,661 - VolumePairList - INFO - Pair ID/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,661 - VolumePairList - INFO - Pair OAX/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,661 - VolumePairList - INFO - Pair SNT/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,662 - VolumePairList - INFO - Pair FDUSD/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,662 - VolumePairList - INFO - Pair ARK/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,662 - VolumePairList - INFO - Pair CREAM/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,662 - VolumePairList - INFO - Pair ORDI/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,662 - VolumePairList - INFO - Pair AEUR/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,663 - VolumePairList - INFO - Pair 1000SATS/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:31,663 - VolumePairList - INFO - Pair JUP/USDT in your blacklist. Removing it from whitelist...
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:34,718 - AgeFilter - INFO - Validated 100 pairs.
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:34,777 - freqtrade.plugins.pairlistmanager - INFO - Whitelist with 80 pairs: ['BTC/USDT', 'ETH/USDT', 'DOGE/USDT', 'XRP/USDT', 'SOL/USDT', 'XLM/USDT', 'SAND/USDT', 'PEPE/USDT', 'PNUT/USDT', 'ADA/USDT', 'AVAX/USDT', 'WIF/USDT', 'SUI/USDT', 'WLD/USDT', 'SEI/USDT', 'ARB/USDT', 'SHIB/USDT', 'NEAR/USDT', 'TIA/USDT', 'NEIRO/USDT', 'DOT/USDT', 'BONK/USDT', 'TRX/USDT', 'LINK/USDT', 'FTM/USDT', 'FET/USDT', 'OP/USDT', 'ENS/USDT', 'ACT/USDT', 'UNI/USDT', 'MANA/USDT', 'APT/USDT', 'RUNE/USDT', 'FIL/USDT', 'GALA/USDT', 'LDO/USDT', 'POL/USDT', 'STX/USDT', 'ETC/USDT', 'TAO/USDT', 'LTC/USDT', 'HBAR/USDT', 'COS/USDT', 'FLOKI/USDT', 'ENA/USDT', 'ETHFI/USDT', 'CAKE/USDT', 'BOME/USDT', 'ICP/USDT', 'BCH/USDT', 'AAVE/USDT', 'RENDER/USDT', 'AR/USDT', 'NOT/USDT', 'DOGS/USDT', 'SCRT/USDT', 'EIGEN/USDT', 'CRV/USDT', 'TON/USDT', 'INJ/USDT', 'STRK/USDT', 'MKR/USDT', 'SSV/USDT', 'ATOM/USDT', 'GLM/USDT', 'ZRO/USDT', 'KDA/USDT', 'HOT/USDT', 'ARKM/USDT', 'AXS/USDT', 'ALGO/USDT', 'CKB/USDT', 'SAGA/USDT', 'AEVO/USDT', 'PYTH/USDT', 'PEOPLE/USDT', 'BLUR/USDT', 'GRT/USDT', 'PENDLE/USDT', 'XTZ/USDT']
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:34,777 - freqtrade.strategy.hyper - INFO - No params for buy found, using default values.
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:34,778 - freqtrade.strategy.hyper - INFO - No params for sell found, using default values.
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:34,778 - freqtrade.strategy.hyper - INFO - No params for protection found, using default values.
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:34,779 - freqtrade.plugins.protectionmanager - INFO - No protection Handlers defined.
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:34,779 - freqtrade.rpc.rpc_manager - INFO - Sending rpc message: {'type': status, 'status': 'running'}
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:34,779 - freqtrade.worker - INFO - Changing state to: RUNNING
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:34,782 - freqtrade.rpc.rpc_manager - INFO - Sending rpc message: {'type': warning, 'status': 'Dry run is enabled. All trades are simulated.'}
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:34,783 - freqtrade.rpc.rpc_manager - INFO - Sending rpc message: {'type': startup, 'status': '*Exchange:* `binance`\n*Stake per trade:* `unlimited USDT`\n*Minimum ROI:* `{}`\n*Stoploss:* `-0.99`\n*Position adjustment:* `On`\n*Timeframe:* `5m`\n*Strategy:* `NostalgiaForInfinityX5`'}
+Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:34,783 - freqtrade.rpc.rpc_manager - INFO - Sending rpc message: {'type': startup, 'status': "Searching for USDT pairs to buy and sell based on [{'VolumePairList': 'VolumePairList - top 100 volume pairs.'}, {'FullTradesFilter': 'FullTradesFilter - Shrink whitelist when trade slots are full.'}, {'AgeFilter': 'AgeFilter - Filtering pairs with age less than 4 days'}, {'PriceFilter': 'PriceFilter - Filtering pairs priced below 0.3%.'}, {'SpreadFilter': 'SpreadFilter - Filtering pairs with ask/bid diff above 0.50%.'}, {'VolumePairList': 'VolumePairList - top 80 volume pairs.'}]"}
+```
+
+### Open your browser
+http://0.0.0.0:8080
+ system is up and running
+Open accessible
+
+## Wihtout Docker
+ after cloning repo there are only few steps:
+
+1. **clone repo**
+```bash
+git clone https://github.com/iterativv/NostalgiaForInfinity
+```
+2. enter repo
+```bash
+cd NostalgiaForInfinity
+```
+
+3. copy configs/recommended_config.json -> user_data/config.json
+```bash
+cp configs/recommended_config.json user_data/config.json
+```
+4. copy configs/exampleconfig_secret.json -> user_data/private_config.json
+```bash
+cp configs/exampleconfig_secret.json user_data/private_config.json
+```
+5. edit user_data/private_config.json (your private key etc)
+6. edit user_data/config.json (exchange, blacklist etc)
+```json
+   {
+  // This is an example configuration
+  // Please use at own risk
+  // For full documentation on Freqtrade configration files please visit https://www.freqtrade.io/en/stable/configuration/
+  // Copy this file to user_data/config.json
+  // make sure your secret files are really in a secret place
+  // copy configs/exampleconfig_secret.json to user_data/config-private.json
+  // Change     "dry_run": true, to     "dry_run": false, after testing
+
+  "strategy": "NostalgiaForInfinityX5",
+  "add_config_files": [
+    "../configs/trading_mode-spot.json",
+    "../configs/pairlist-volume-binance-usdt.json",
+    "../configs/blacklist-binance.json",
+    "../configs/exampleconfig.json",
+    "private_config.json" // << Your private config file which you created
+  ]
+    }
+```
+
+7.  run freqtrade trade and everything will work as necessary
+```bash
+freqtrade trade
+```
+
 ## Change strategy
 
 Add strategies to the [user_data/strategies](user_data/strategies) folder and also in the [docker-compose.yml](docker-compose.yml) file at `strategy-list` add your strategy in the list.
