@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.239"
+    return "v15.1.240"
 
   stoploss = -0.99
 
@@ -176,13 +176,13 @@ class NostalgiaForInfinityX5(IStrategy):
   stop_threshold_spot = 0.10
   stop_threshold_futures = 0.10
   stop_threshold_doom_spot = 0.25
-  stop_threshold_doom_futures = 0.25
+  stop_threshold_doom_futures = 0.60
   stop_threshold_spot_rebuy = 1.0
-  stop_threshold_futures_rebuy = 1.0
+  stop_threshold_futures_rebuy = 3.0
   stop_threshold_rapid_spot = 0.25
-  stop_threshold_rapid_futures = 0.25
+  stop_threshold_rapid_futures = 0.60
   stop_threshold_derisk_spot = 0.25
-  stop_threshold_derisk_futures = 0.25
+  stop_threshold_derisk_futures = 0.60
 
   # user specified fees to be used for profit calculations
   custom_fee_open_rate = None
@@ -11830,7 +11830,7 @@ class NostalgiaForInfinityX5(IStrategy):
           < -(
             filled_entries[0].cost
             * (self.stop_threshold_rapid_futures if self.is_futures_mode else self.stop_threshold_rapid_spot)
-            # / (trade.leverage if self.is_futures_mode else 1.0)
+            / trade.leverage
           )
         )
         # temporary
@@ -24083,7 +24083,7 @@ class NostalgiaForInfinityX5(IStrategy):
       < -(
         filled_entries[0].cost
         * (self.stop_threshold_doom_futures if self.is_futures_mode else self.stop_threshold_doom_spot)
-        # / trade.leverage
+        / trade.leverage
       )
       # temporary
       and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
@@ -28869,7 +28869,7 @@ class NostalgiaForInfinityX5(IStrategy):
           < -(
             filled_entries[0].cost
             * (self.stop_threshold_rapid_futures if self.is_futures_mode else self.stop_threshold_rapid_spot)
-            # / (trade.leverage if self.is_futures_mode else 1.0)
+            / trade.leverage
           )
         )
         # temporary
@@ -41122,7 +41122,7 @@ class NostalgiaForInfinityX5(IStrategy):
       < -(
         filled_entries[0].cost
         * (self.stop_threshold_doom_futures if self.is_futures_mode else self.stop_threshold_doom_spot)
-        # / trade.leverage
+        / trade.leverage
       )
       # temporary
       and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
