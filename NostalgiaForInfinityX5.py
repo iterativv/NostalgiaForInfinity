@@ -2239,6 +2239,10 @@ class NostalgiaForInfinityX5(IStrategy):
     aroon_14 = pta.aroon(informative_4h["high"], informative_4h["low"], length=14)
     informative_4h["AROONU_14"] = aroon_14["AROONU_14"] if isinstance(aroon_14, pd.DataFrame) else np.nan
     informative_4h["AROOND_14"] = aroon_14["AROOND_14"] if isinstance(aroon_14, pd.DataFrame) else np.nan
+    # Stochastic
+    stochrsi = pta.stoch(informative_4h["high"], informative_4h["low"], informative_4h["close"])
+    informative_4h["STOCHk_14_3_3"] = stochrsi["STOCHk_14_3_3"] if isinstance(stochrsi, pd.DataFrame) else np.nan
+    informative_4h["STOCHd_14_3_3"] = stochrsi["STOCHd_14_3_3"] if isinstance(stochrsi, pd.DataFrame) else np.nan
     # Stochastic RSI
     stochrsi = pta.stochrsi(informative_4h["close"])
     informative_4h["STOCHRSIk_14_14_3_3"] = (
@@ -2386,6 +2390,10 @@ class NostalgiaForInfinityX5(IStrategy):
     aroon_14 = pta.aroon(informative_1h["high"], informative_1h["low"], length=14)
     informative_1h["AROONU_14"] = aroon_14["AROONU_14"] if isinstance(aroon_14, pd.DataFrame) else np.nan
     informative_1h["AROOND_14"] = aroon_14["AROOND_14"] if isinstance(aroon_14, pd.DataFrame) else np.nan
+    # Stochastic
+    stochrsi = pta.stoch(informative_1h["high"], informative_1h["low"], informative_1h["close"])
+    informative_1h["STOCHk_14_3_3"] = stochrsi["STOCHk_14_3_3"] if isinstance(stochrsi, pd.DataFrame) else np.nan
+    informative_1h["STOCHd_14_3_3"] = stochrsi["STOCHd_14_3_3"] if isinstance(stochrsi, pd.DataFrame) else np.nan
     # Stochastic RSI
     stochrsi = pta.stochrsi(informative_1h["close"])
     informative_1h["STOCHRSIk_14_14_3_3"] = (
@@ -2520,6 +2528,10 @@ class NostalgiaForInfinityX5(IStrategy):
     aroon_14 = pta.aroon(informative_15m["high"], informative_15m["low"], length=14)
     informative_15m["AROONU_14"] = aroon_14["AROONU_14"] if isinstance(aroon_14, pd.DataFrame) else np.nan
     informative_15m["AROOND_14"] = aroon_14["AROOND_14"] if isinstance(aroon_14, pd.DataFrame) else np.nan
+    # Stochastic
+    stochrsi = pta.stoch(informative_15m["high"], informative_15m["low"], informative_15m["close"])
+    informative_15m["STOCHk_14_3_3"] = stochrsi["STOCHk_14_3_3"] if isinstance(stochrsi, pd.DataFrame) else np.nan
+    informative_15m["STOCHd_14_3_3"] = stochrsi["STOCHd_14_3_3"] if isinstance(stochrsi, pd.DataFrame) else np.nan
     # Stochastic RSI
     stochrsi = pta.stochrsi(informative_15m["close"])
     informative_15m["STOCHRSIk_14_14_3_3"] = (
