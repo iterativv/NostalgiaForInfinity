@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.242"
+    return "v15.1.243"
 
   stoploss = -0.99
 
@@ -2248,9 +2248,13 @@ class NostalgiaForInfinityX5(IStrategy):
     informative_4h["AROONU_14"] = aroon_14["AROONU_14"] if isinstance(aroon_14, pd.DataFrame) else np.nan
     informative_4h["AROOND_14"] = aroon_14["AROOND_14"] if isinstance(aroon_14, pd.DataFrame) else np.nan
     # Stochastic
-    stochrsi = pta.stoch(informative_4h["high"], informative_4h["low"], informative_4h["close"])
-    informative_4h["STOCHk_14_3_3"] = stochrsi["STOCHk_14_3_3"] if isinstance(stochrsi, pd.DataFrame) else np.nan
-    informative_4h["STOCHd_14_3_3"] = stochrsi["STOCHd_14_3_3"] if isinstance(stochrsi, pd.DataFrame) else np.nan
+    try:
+      stochrsi = pta.stoch(informative_4h["high"], informative_4h["low"], informative_4h["close"])
+      informative_4h["STOCHk_14_3_3"] = stochrsi["STOCHk_14_3_3"] if isinstance(stochrsi, pd.DataFrame) else np.nan
+      informative_4h["STOCHd_14_3_3"] = stochrsi["STOCHd_14_3_3"] if isinstance(stochrsi, pd.DataFrame) else np.nan
+    except AttributeError:
+      informative_4h["STOCHk_14_3_3"] = np.nan
+      informative_4h["STOCHd_14_3_3"] = np.nan
     # Stochastic RSI
     stochrsi = pta.stochrsi(informative_4h["close"])
     informative_4h["STOCHRSIk_14_14_3_3"] = (
