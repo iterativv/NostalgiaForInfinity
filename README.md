@@ -2,15 +2,6 @@
 
 Trading strategy for the [Freqtrade](https://www.freqtrade.io) crypto bot. For backtesting results, check out the comments in the individual [commit](https://github.com/iterativv/NostalgiaForInfinity/commits/main) page.
 
-## Clone The Repository
-
-If you plan to only clone the repository to use the strategy, a regular `git clone` will do.
-
-However, if you plan on running additional strategies or run the test suite, you need to run `tools/download-necessary-exchange-market-data-for-backtests.sh`
-
-```bash
-./tools/download-necessary-exchange-market-data-for-backtests.sh
-```
 
 
 # Quick Start
@@ -49,7 +40,7 @@ FREQTRADE__TELEGRAM__TOKEN=123123123:123123YourTelgramTokenConfiguration
 FREQTRADE__TELEGRAM__CHAT_ID=461799865
 
 FREQTRADE__API_SERVER__ENABLED=true
-FREQTRADE__API_SERVER__LISTEN_PORT=8989
+FREQTRADE__API_SERVER__LISTEN_PORT=8080
 FREQTRADE__API_SERVER__USERNAME=user
 FREQTRADE__API_SERVER__PASSWORD=pass
 FREQTRADE__API_SERVER__JWT_SECRET_KEY=Put_Your_JWT_Secret_Key_Here
@@ -216,34 +207,117 @@ Example_Test_Account_binance_futures-NostalgiaForInfinityX5  | 2024-11-25 23:30:
 ### Open your browser
 http://0.0.0.0:8080
  system is up and running
-Open accessible
+
+---
 
 ## Wihtout Docker
  after cloning repo there are only few steps:
 
-1. **clone repo**
+### **clone repo**
 ```bash
 git clone https://github.com/iterativv/NostalgiaForInfinity
 ```
-2. enter repo
+### enter repo
 ```bash
 cd NostalgiaForInfinity
 ```
 
-3. copy configs/recommended_config.json -> user_data/config.json
+### copy configs/recommended_config.json -> user_data/config.json
 ```bash
 cp configs/recommended_config.json user_data/config.json
 ```
-4. copy configs/exampleconfig_secret.json -> user_data/private_config.json
+### copy configs/exampleconfig_secret.json -> user_data/private_config.json
 ```bash
 cp configs/exampleconfig_secret.json user_data/private_config.json
 ```
-5. edit user_data/private_config.json (your private key etc)
-6. edit user_data/config.json (exchange, blacklist etc)
+### edit user_data/private_config.json (your private key etc)
+
+```json
+// For full documentation on Freqtrade configration files please visit https://www.freqtrade.io/en/stable/configuration/
+{
+  "bot_name": "freqtrade", // name your bot
+  "stake_currency": "USDT",
+  "fiat_display_currency": "USD",
+  "dry_run": true, // change after your tests
+  "cancel_open_orders_on_exit": false,
+  "entry_pricing": {
+    "use_order_book": true,
+    "order_book_top": 1,
+    "check_depth_of_market": {
+      "enabled": false,
+      "bids_to_ask_delta": 1
+    }
+  },
+  "exit_pricing": {
+    "use_order_book": true,
+    "order_book_top": 1
+  },
+  "exchange": {
+    "name": "binance",
+    "key": "",
+    "secret": "",
+    "ccxt_config": {},
+    "ccxt_async_config": {},
+    "pair_whitelist": []
+  },
+  "telegram": {
+    "enabled": false,
+    "token": "",
+    "chat_id": "",
+    "reload": true,
+    "keyboard": [
+      ["/daily", "/stats", "/balance", "/profit"],
+      ["/status table", "/performance"],
+      ["/reload_config", "/count", "/logs"]
+    ],
+    "notification_settings": {
+      "status": "silent",
+      "protection_trigger_global": "on",
+      "warning": "on",
+      "startup": "off",
+      "entry": "silent",
+      "entry_fill": "on",
+      "entry_cancel": "on",
+      "exit_cancel": "on",
+      "exit_fill": "on",
+      "exit": {
+        "roi": "silent",
+        "emergency_exit": "silent",
+        "force_exit": "silent",
+        "exit_signal": "silent",
+        "trailing_stop_loss": "silent",
+        "stop_loss": "silent",
+        "stoploss_on_exchange": "silent",
+        "custom_exit": "silent"
+      },
+      "strategy_msg": "silent",
+    },
+    "balance_dust_level": 0.01
+  },
+  "api_server": {
+    "enabled": true,
+    "listen_ip_address": "0.0.0.0",
+    "listen_port": 8080,
+    "verbosity": "error",
+    "enable_openapi": false,
+    "jwt_secret_key": "",
+    "CORS_origins": [""],
+    "username": "user", // << username
+    "password": "pass" // << password
+  },
+
+  "initial_state": "running",
+  "force_entry_enable": true,
+  "internals": {
+    "process_throttle_secs": 5
+  }
+}
+
+```
+
+### edit user_data/config.json (exchange, blacklist etc)
 ```json
    {
-  // This is an example configuration
-  // Please use at own risk
   // For full documentation on Freqtrade configration files please visit https://www.freqtrade.io/en/stable/configuration/
   // Copy this file to user_data/config.json
   // make sure your secret files are really in a secret place
@@ -261,10 +335,54 @@ cp configs/exampleconfig_secret.json user_data/private_config.json
     }
 ```
 
-7.  run freqtrade trade and everything will work as necessary
+### Run freqtrade trade and everything will work as necessary
 ```bash
 freqtrade trade
 ```
+
+You will see same output as docker
+
+
+# Run Backtests with your  own configuration
+
+If you plan to only clone the repository to use the strategy, a regular `git clone` will do.
+
+However, if you plan on running additional backtest and run the test suite, you need to download data.
+## Fast download test data from DigiTuccar Historical Trade Data Repo
+
+There is a repo for this :
+https://github.com/DigiTuccar/HistoricalDataForTradeBacktest
+
+For fast downloading data from github repo run `tools/download-necessary-exchange-market-data-for-backtests.sh`
+
+```bash
+./tools/download-necessary-exchange-market-data-for-backtests.sh
+```
+
+## Running the tests
+
+export your exchange (binance / kucoin)
+```bash
+export TRADING_MODE=binance
+```
+
+
+export your exchange market (spot / futures)
+
+```bash
+export TRADING_MODE=futures
+```
+
+enter the date you want to test
+```bash
+export TIMERANGE=20240801-20240901
+```
+
+run the test which you want:
+```bash
+./tests/backtests/backtesting-analysis-hunting.sh
+```
+
 
 ## Change strategy
 
