@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.248"
+    return "v15.1.249"
 
   stoploss = -0.99
 
@@ -24264,7 +24264,7 @@ class NostalgiaForInfinityX5(IStrategy):
     current_time: "datetime",
     buy_tag,
   ) -> tuple:
-    is_backtest = self.is_backtest_mode
+    is_backtest = self.is_backtest_mode()
     # Stoploss doom
     if (
       (
@@ -24275,7 +24275,7 @@ class NostalgiaForInfinityX5(IStrategy):
           / trade.leverage
         )
       )
-      # and (self.has_valid_entry_conditions("long", last_candle) == False)
+      and (self.has_valid_entry_conditions("long", last_candle) == False)
       # temporary
       and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
     ):
@@ -41306,7 +41306,7 @@ class NostalgiaForInfinityX5(IStrategy):
     current_time: "datetime",
     buy_tag,
   ) -> tuple:
-    is_backtest = self.is_backtest_mode
+    is_backtest = self.is_backtest_mode()
     # Stoploss doom
     if (
       (
@@ -41317,7 +41317,7 @@ class NostalgiaForInfinityX5(IStrategy):
           / trade.leverage
         )
       )
-      # and (self.has_valid_entry_conditions("short", last_candle) == False)
+      and (self.has_valid_entry_conditions("short", last_candle) == False)
       # temporary
       and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
     ):
