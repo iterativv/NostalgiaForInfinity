@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.245"
+    return "v15.1.246"
 
   stoploss = -0.99
 
@@ -24273,7 +24273,7 @@ class NostalgiaForInfinityX5(IStrategy):
         * (self.stop_threshold_doom_futures if self.is_futures_mode else self.stop_threshold_doom_spot)
         / trade.leverage
       )
-      and not self.has_valid_entry_conditions(last_candle, "long")
+      and not self.has_valid_entry_conditions("long", last_candle)
       # temporary
       and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
     ):
@@ -41313,7 +41313,7 @@ class NostalgiaForInfinityX5(IStrategy):
         * (self.stop_threshold_doom_futures if self.is_futures_mode else self.stop_threshold_doom_spot)
         / trade.leverage
       )
-      and not self.has_valid_entry_conditions(last_candle, "short")
+      and not self.has_valid_entry_conditions("short", last_candle)
       # temporary
       and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
     ):
