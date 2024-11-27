@@ -4860,6 +4860,10 @@ class NostalgiaForInfinityX5(IStrategy):
           min_stake = 5.0
     return min_stake
 
+  def is_backtest_mode(self):
+    """Check if the current run mode is backtest or hyperopt"""
+    return self.dp.runmode.value in ["backtest", "hyperopt"]
+
   # Set Profit Target
   # ---------------------------------------------------------------------------------------------
   def _set_profit_target(
