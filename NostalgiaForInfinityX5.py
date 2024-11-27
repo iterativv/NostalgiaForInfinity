@@ -4864,6 +4864,14 @@ class NostalgiaForInfinityX5(IStrategy):
     """Check if the current run mode is backtest or hyperopt"""
     return self.dp.runmode.value in ["backtest", "hyperopt"]
 
+  def has_valid_entry_conditions(self, side: str, last_candle) -> bool:
+    """Check if there are valid entry conditions"""
+    if side == "long":
+      return last_candle["enter_long"]
+    elif side == "short":
+      return last_candle["enter_short"]
+    return False
+
   # Set Profit Target
   # ---------------------------------------------------------------------------------------------
   def _set_profit_target(
