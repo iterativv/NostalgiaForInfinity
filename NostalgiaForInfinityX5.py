@@ -66,7 +66,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.249"
+    return "v15.1.250"
 
   stoploss = -0.99
 
@@ -4940,12 +4940,16 @@ class NostalgiaForInfinityX5(IStrategy):
     """Check if the current run mode is backtest or hyperopt"""
     return self.dp.runmode.value in ["backtest", "hyperopt"]
 
-  def has_valid_entry_conditions(self, side: str, last_candle) -> bool:
+  def has_valid_entry_conditions(self, trade: Trade, exit_rate: float, last_candle, previous_candle) -> bool:
     """Check if there are valid entry conditions"""
-    if side == "long":
-      return last_candle["enter_long"]
-    elif side == "short":
-      return last_candle["enter_short"]
+    filled_orders = trade.select_filled_orders()
+    if len(filled_orders) < 1:
+      return False
+    slice_profit = (exit_rate - filled_orders[-1].safe_price) / filled_orders[-1].safe_price
+    if not trade.is_short:
+      return last_candle["enter_long"] or self.long_grind_entry(last_candle, previous_candle, slice_profit, False)
+    else:
+      return last_candle["enter_short"] or self.short_grind_entry(last_candle, previous_candle, slice_profit, False)
     return False
 
   # Set Profit Target
@@ -24351,7 +24355,7 @@ class NostalgiaForInfinityX5(IStrategy):
           / trade.leverage
         )
       )
-      and (self.has_valid_entry_conditions("long", last_candle) == False)
+      and (self.has_valid_entry_conditions(trade, current_rate, last_candle, previous_candle_1) == False)
       # temporary
       and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
     ):
@@ -41393,7 +41397,7 @@ class NostalgiaForInfinityX5(IStrategy):
           / trade.leverage
         )
       )
-      and (self.has_valid_entry_conditions("short", last_candle) == False)
+      and (self.has_valid_entry_conditions(trade, current_rate, last_candle, previous_candle_1) == False)
       # temporary
       and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
     ):
