@@ -14,7 +14,7 @@
     },
     {
       "method": "SpreadFilter",
-      "max_spread_ratio": 0.008
+      "max_spread_ratio": 0.005
     },
     // {
     //   "method": "RangeStabilityFilter",
@@ -31,7 +31,7 @@
     // },
     {
       "method": "VolumePairList",
-      "number_assets": 75,
+      "number_assets": 80,
       "sort_key": "quoteVolume"
     },
     // { "method": "ShuffleFilter" }

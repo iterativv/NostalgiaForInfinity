@@ -4,6 +4,7 @@ import os
 import pathlib
 import pprint
 import sys
+import time
 
 import github
 from github.GithubException import GithubException
@@ -135,6 +136,7 @@ def comment_results(options, results_data):
       comment_body += f"{ft_output.read_text().strip()}\n"
       comment_body += "</details>\n"
       comment_body += "\n\n"
+      time.sleep(5)
       comment = commit.create_comment(comment_body.rstrip())
       print(f"Created Comment: {comment}", file=sys.stderr, flush=True)
       comment_ids.add(comment.id)

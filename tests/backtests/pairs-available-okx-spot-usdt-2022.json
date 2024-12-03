@@ -17,7 +17,6 @@
       "CITY/USDT",
       "ETHW/USDT",
       "EURT/USDT",
-      "FITFI/USDT",
       "FLOKI/USDT",
       "GALFT/USDT",
       "GARI/USDT",
@@ -59,8 +58,7 @@
       "WAXP/USDT",
       "XAUT/USDT",
       "XETA/USDT",
-      "XNO/USDT",
-      "ZBC/USDT"
+      "XNO/USDT"
     ],
     "ccxt_config": {
       "enableRateLimit": true,

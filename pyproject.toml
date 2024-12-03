@@ -4,12 +4,12 @@ description = "Trading strategy for the Freqtrade crypto bot"
 homepage = "https://github.com/iterativv/NostalgiaForInfinity"
 dependencies = ["freqtrade"]
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 
 
 [tool.black]
 line-length = 119
-target-version = ["py311"]
+target-version = ["py312"]
 exclude = '''
   /(
     \.git
@@ -48,14 +48,12 @@ max-complexity = 12
 # Same as Black.
 line-length = 119
 indent-width = 2
-target-version = "py311"
+target-version = "py312"
 fix = true
 extend-exclude = [".env", ".venv"]
 
 
-
-
-[tool.ruff.mccabe]
+[tool.ruff.lint.mccabe]
 max-complexity = 12
 
 

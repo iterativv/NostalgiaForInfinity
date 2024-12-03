@@ -29,7 +29,7 @@
 # export EXCHANGE=binance
 # export TRADING_MODE=spot
 # export STRATEGY_VERSION=v13-0-442 # dont use . in version there is a bug
-# export STRATEGY_NAME=NostalgiaForInfinityX4
+# export STRATEGY_NAME=NostalgiaForInfinityX5
 # export TIMERANGE=20230801-
 
 date() {
@@ -59,7 +59,7 @@ fi
 # Strategy Config
 STRATEGY_NAME_CONFIG=""
 if [[ -z ${STRATEGY_NAME} ]]; then
-  STRATEGY_NAME_CONFIG="NostalgiaForInfinityX4"
+  STRATEGY_NAME_CONFIG="NostalgiaForInfinityX5"
 else
   STRATEGY_NAME_CONFIG=${STRATEGY_NAME}
 fi
@@ -109,11 +109,11 @@ for START_YEAR in {2023..2017}; do
     freqtrade backtesting --export signals \
       --timerange $TIMERANGE_CONFIG --strategy $STRATEGY_NAME_CONFIG \
       --strategy-path . -c configs/trading_mode-$TRADING_MODE_CONFIG.json \
-      -c configs/exampleconfig.json \
+      -c configs/exampleconfig.json -c configs/exampleconfig_secret.json \
       -c tests/backtests/pairs-available-$EXCHANGE_CONFIG-$TRADING_MODE_CONFIG-usdt-$START_YEAR.json \
       --log-file user_data/logs/backtesting-$STRATEGY_NAME_CONFIG-$STRATEGY_VERSION_CONFIG-$EXCHANGE_CONFIG-$TRADING_MODE_CONFIG-$TIMERANGE_CONFIG.log \
       --export-filename user_data/backtest_results/$STRATEGY_NAME_CONFIG-$STRATEGY_VERSION_CONFIG-$EXCHANGE_CONFIG-$TRADING_MODE_CONFIG-$TIMERANGE_CONFIG.json \
-      --cache none --breakdown week \
+      --cache none --breakdown day \
       --disable-max-market-positions --dry-run-wallet 100000 --stake-amount 1000 --max-open-trades 100 --timeframe-detail 1m
 
     echo " "
@@ -140,8 +140,8 @@ for START_YEAR in {2023..2017}; do
     echo " "
     freqtrade backtesting-analysis --analysis-groups 0 1 2 3 4 5 \
       --timerange $TIMERANGE_CONFIG \
-      --config configs/trading_mode-$TRADING_MODE_CONFIG.json \
-      --config configs/exampleconfig.json \
+      -c configs/trading_mode-$TRADING_MODE_CONFIG.json \
+      -c configs/exampleconfig.json -c configs/exampleconfig_secret.json \
       -c tests/backtests/pairs-available-$EXCHANGE_CONFIG-$TRADING_MODE_CONFIG-usdt-$START_YEAR.json
   fi
 done
