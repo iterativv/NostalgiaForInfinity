@@ -34,14 +34,3 @@ services:
       trade
       --db-url sqlite:////freqtrade/user_data/${FREQTRADE__BOT_NAME:-Example_Test_Account}_${FREQTRADE__EXCHANGE__NAME:-binance}_${FREQTRADE__TRADING_MODE:-futures}-tradesv3.sqlite
       --log-file user_data/logs/${FREQTRADE__BOT_NAME:-Example_Test_Account}-${FREQTRADE__EXCHANGE__NAME:-binance}-${FREQTRADE__STRATEGY:-NostalgiaForInfinityX5}-${FREQTRADE__TRADING_MODE:-futures}.log
-
-  restarter-freqtrade:
-    image: docker:cli
-    volumes: ["/var/run/docker.sock:/var/run/docker.sock"]
-    command:
-      [
-        "/bin/sh",
-        "-c",
-        'while true; do sleep 86400; docker ps --filter "name=freqtrade" --format "{{.Names}}" | xargs -r docker restart; done',
-      ]
-    restart: unless-stopped
