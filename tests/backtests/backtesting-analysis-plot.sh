@@ -3,7 +3,7 @@
 # This script for finding all possible bad buys with all pairs available
 
 # with these parameters you can see all possible buy signals together
-# --disable-max-market-positions --dry-run-wallet 100000 --stake-amount 1000 --max-open-trades 100
+# --dry-run-wallet 100000 --stake-amount 100 --max-open-trades 1000 --eps
 
 # Because of limitations pairlists divided by years as they are available
 # these tests are for covering all possible time periods and all possible pairs
@@ -111,7 +111,7 @@ for TRADING_MODE_RUN in ${TRADING_MODE_CONFIG[*]}; do
         -c $EXCHANGE_CONFIG_FILE \
         --log-file user_data/logs/backtesting-$STRATEGY_NAME_CONFIG-$STRATEGY_VERSION_CONFIG-$EXCHANGE_CONFIG-$TRADING_MODE_CONFIG-$TIMERANGE.log \
         --export-filename user_data/backtest_results/$STRATEGY_NAME_CONFIG-$STRATEGY_VERSION_CONFIG-$EXCHANGE_CONFIG-$TRADING_MODE_CONFIG-$TIMERANGE.json \
-        --cache none --breakdown day --timeframe-detail 1m --dry-run-wallet 100000 --stake-amount 1000 --max-open-trades 100
+        --cache none --breakdown day --timeframe-detail 1m --dry-run-wallet 100000 --stake-amount 100 --max-open-trades 1000 --eps
       echo -e "\n\`\`\`\n\n---\n\n"
 
       freqtrade backtesting --export signals \
@@ -121,7 +121,7 @@ for TRADING_MODE_RUN in ${TRADING_MODE_CONFIG[*]}; do
         -c $EXCHANGE_CONFIG_FILE \
         --log-file user_data/logs/backtesting-$STRATEGY_NAME_CONFIG-$STRATEGY_VERSION_CONFIG-$EXCHANGE_CONFIG-$TRADING_MODE_CONFIG-$TIMERANGE.log \
         --export-filename user_data/backtest_results/$STRATEGY_NAME_CONFIG-$STRATEGY_VERSION_CONFIG-$EXCHANGE_CONFIG-$TRADING_MODE_CONFIG-$TIMERANGE.json \
-        --cache none --breakdown day --timeframe-detail 1m --dry-run-wallet 100000 --stake-amount 1000 --max-open-trades 100
+        --cache none --breakdown day --timeframe-detail 1m --dry-run-wallet 100000 --stake-amount 100 --max-open-trades 1000 --eps
 
       echo -e "\n### ${EXCHANGE_CONFIG} ANALYSIS" | tr '[a-z]' '[A-Z]'
       echo -e "\n${STRATEGY_NAME_CONFIG} ${STRATEGY_VERSION} ${TIMERANGE}"
@@ -165,7 +165,7 @@ for TRADING_MODE_RUN in ${TRADING_MODE_CONFIG[*]}; do
         -c configs/exampleconfig.json -c configs/exampleconfig_secret.json \
         -c $EXCHANGE_CONFIG_FILE \
         --indicators1 EMA_200 \
-        --indicators2 RSI_3_1d RSI_14_1d RSI_3_4h RSI_14_4h RSI_14_1h RSI_3_1h RSI_14_15m RSI_3_15m CCI_20_15m CCI_20_1h CCI_20_4h short_entry_signal_2 short_entry_signal_1 long_entry_signal_2 long_entry_signal_1
+        --indicators2 RSI_3_1d RSI_14_1d RSI_3_4h RSI_14_4h RSI_14_1h RSI_3_1h RSI_14_15m RSI_3_15m CCI_20_15m CCI_20_1h CCI_20_4h
       echo -e "\n\`\`\`\n"
 
       freqtrade plot-dataframe $TIMERANGE_CONFIG --strategy $STRATEGY_NAME_CONFIG \
