@@ -3,7 +3,7 @@
 # This script for finding all possible bad buys with all pairs available
 
 # with these parameters you can see all possible buy signals together
-# --disable-max-market-positions --dry-run-wallet 100000 --stake-amount 1000 --max-open-trades 100
+# --dry-run-wallet 100000 --stake-amount 100 --max-open-trades 1000 --eps
 
 # Because of limitations pairlists divided by years as they are available
 # these tests are for covering all possible time periods and all possible pairs
@@ -111,7 +111,7 @@ for TRADING_MODE_RUN in ${TRADING_MODE_CONFIG[*]}; do
         -c $EXCHANGE_CONFIG_FILE \
         --log-file user_data/logs/backtesting-$STRATEGY_NAME_CONFIG-$STRATEGY_VERSION_CONFIG-$EXCHANGE_CONFIG-$TRADING_MODE_CONFIG-$TIMERANGE.log \
         --export-filename user_data/backtest_results/$STRATEGY_NAME_CONFIG-$STRATEGY_VERSION_CONFIG-$EXCHANGE_CONFIG-$TRADING_MODE_CONFIG-$TIMERANGE.json \
-        --cache none --breakdown day --timeframe-detail 1m --dry-run-wallet 100000 --stake-amount 1000 --max-open-trades 100
+        --cache none --breakdown day --timeframe-detail 1m --dry-run-wallet 100000 --stake-amount 100 --max-open-trades 1000 --eps
       echo -e "\n\`\`\`\n\n---\n\n"
 
       freqtrade backtesting --export signals \
@@ -121,7 +121,7 @@ for TRADING_MODE_RUN in ${TRADING_MODE_CONFIG[*]}; do
         -c $EXCHANGE_CONFIG_FILE \
         --log-file user_data/logs/backtesting-$STRATEGY_NAME_CONFIG-$STRATEGY_VERSION_CONFIG-$EXCHANGE_CONFIG-$TRADING_MODE_CONFIG-$TIMERANGE.log \
         --export-filename user_data/backtest_results/$STRATEGY_NAME_CONFIG-$STRATEGY_VERSION_CONFIG-$EXCHANGE_CONFIG-$TRADING_MODE_CONFIG-$TIMERANGE.json \
-        --cache none --breakdown day --timeframe-detail 1m --dry-run-wallet 100000 --stake-amount 1000 --max-open-trades 100
+        --cache none --breakdown day --timeframe-detail 1m --dry-run-wallet 100000 --stake-amount 100 --max-open-trades 1000 --eps
 
       echo -e "\n### ${EXCHANGE_CONFIG} ANALYSIS" | tr '[a-z]' '[A-Z]'
       echo -e "\n${STRATEGY_NAME_CONFIG} ${STRATEGY_VERSION} ${TIMERANGE}"

@@ -4,7 +4,7 @@
 # This script for finding all possible bad buys with all pairs available
 
 # with these parameters you can see all possible buy signals together
-# --disable-max-market-positions --dry-run-wallet 100000 --stake-amount 1000 --max-open-trades 100
+# --dry-run-wallet 100000 --stake-amount 100 --max-open-trades 1000 --eps
 
 # Because of limitations pairlists divided by years as they are available
 # these tests are for covering all possible time periods and all possible pairs
@@ -114,7 +114,7 @@ for START_YEAR in {2023..2017}; do
       --log-file user_data/logs/backtesting-$STRATEGY_NAME_CONFIG-$STRATEGY_VERSION_CONFIG-$EXCHANGE_CONFIG-$TRADING_MODE_CONFIG-$TIMERANGE_CONFIG.log \
       --export-filename user_data/backtest_results/$STRATEGY_NAME_CONFIG-$STRATEGY_VERSION_CONFIG-$EXCHANGE_CONFIG-$TRADING_MODE_CONFIG-$TIMERANGE_CONFIG.json \
       --cache none --breakdown day \
-      --disable-max-market-positions --dry-run-wallet 100000 --stake-amount 1000 --max-open-trades 100 --timeframe-detail 1m
+      --dry-run-wallet 100000 --stake-amount 100 --max-open-trades 1000 --timeframe-detail 1m --eps
 
     echo " "
     echo " "
