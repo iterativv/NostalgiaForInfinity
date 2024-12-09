@@ -72,7 +72,6 @@ ignore = [
   ### TODO: Enable gradually
   "F821", # Undefined name
   "F841", # Local variable is assigned to but never used
-
 ]
 
 exclude = [
