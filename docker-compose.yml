@@ -13,7 +13,7 @@ x-common-settings:
     - "./configs:/freqtrade/configs"
     - "./${FREQTRADE__STRATEGY:-NostalgiaForInfinityX5}.py:/freqtrade/${FREQTRADE__STRATEGY:-NostalgiaForInfinityX5}.py"
   healthcheck:
-    test: ["CMD", "curl", "-f", "http://localhost:8080"]
+    test: ["CMD", "curl", "-f", "http://localhost:${FREQTRADE__API_SERVER__LISTEN_PORT:-8080}"]
     interval: 1m30s
     timeout: 10s
     retries: 3
