@@ -67,7 +67,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.280"
+    return "v15.1.281"
 
   stoploss = -0.99
 
@@ -200,6 +200,8 @@ class NostalgiaForInfinityX5(IStrategy):
   derisk_enable = True
 
   # Grinding
+  derisk_use_grind_stops = False
+
   grind_1_stop_grinds_spot = -0.50
   grind_1_profit_threshold_spot = 0.018
   grind_1_stakes_spot = [0.30, 0.32, 0.34]
@@ -27314,10 +27316,13 @@ class NostalgiaForInfinityX5(IStrategy):
             else:
               return -ft_sell_amount
         # First entry de-risk
-        if first_entry_distance_ratio < (
-          self.grind_mode_first_entry_stop_threshold_spot
-          if self.is_futures_mode
-          else self.grind_mode_first_entry_stop_threshold_spot
+        if self.derisk_use_grind_stops and (
+          first_entry_distance_ratio
+          < (
+            self.grind_mode_first_entry_stop_threshold_spot
+            if self.is_futures_mode
+            else self.grind_mode_first_entry_stop_threshold_spot
+          )
         ):
           sell_amount = first_entry.safe_filled * exit_rate / trade.leverage
           if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
@@ -27434,7 +27439,8 @@ class NostalgiaForInfinityX5(IStrategy):
 
     # Grind stop
     if (
-      (grind_1_derisk_1_sub_grind_count > 0)
+      self.derisk_use_grind_stops
+      and (grind_1_derisk_1_sub_grind_count > 0)
       # and (
       #   ((exit_rate - grind_1_derisk_1_current_open_rate) / grind_1_derisk_1_current_open_rate)
       #   < grind_1_derisk_1_stop_grinds
@@ -27562,7 +27568,8 @@ class NostalgiaForInfinityX5(IStrategy):
 
     # Grind stop
     if (
-      (grind_2_derisk_1_sub_grind_count > 0)
+      self.derisk_use_grind_stops
+      and (grind_2_derisk_1_sub_grind_count > 0)
       # and (
       #   ((exit_rate - grind_2_derisk_1_current_open_rate) / grind_2_derisk_1_current_open_rate)
       #   < grind_2_derisk_1_stop_grinds
@@ -27698,7 +27705,8 @@ class NostalgiaForInfinityX5(IStrategy):
 
     # Grind stop
     if (
-      (
+      self.derisk_use_grind_stops
+      and (
         (grind_1_sub_grind_count > 0)
         # and (((exit_rate - grind_1_current_open_rate) / grind_1_current_open_rate) < grind_1_stop_grinds)
         and (grind_1_current_grind_stake_profit < (slice_amount * grind_1_stop_grinds))
@@ -27801,7 +27809,8 @@ class NostalgiaForInfinityX5(IStrategy):
 
     # Grind stop
     if (
-      (
+      self.derisk_use_grind_stops
+      and (
         (grind_2_sub_grind_count > 0)
         # and (((exit_rate - grind_2_current_open_rate) / grind_2_current_open_rate) < grind_2_stop_grinds)
         and (grind_2_current_grind_stake_profit < (slice_amount * grind_2_stop_grinds))
@@ -27904,7 +27913,8 @@ class NostalgiaForInfinityX5(IStrategy):
 
     # Grind stop
     if (
-      (
+      self.derisk_use_grind_stops
+      and (
         (grind_3_sub_grind_count > 0)
         # and (((exit_rate - grind_3_current_open_rate) / grind_3_current_open_rate) < grind_3_stop_grinds)
         and (grind_3_current_grind_stake_profit < (slice_amount * grind_3_stop_grinds))
@@ -28019,7 +28029,8 @@ class NostalgiaForInfinityX5(IStrategy):
 
     # Grind stop
     if (
-      (
+      self.derisk_use_grind_stops
+      and (
         (grind_4_sub_grind_count > 0)
         # and (((exit_rate - grind_4_current_open_rate) / grind_4_current_open_rate) < grind_4_stop_grinds)
         and (grind_4_current_grind_stake_profit < (slice_amount * grind_4_stop_grinds))
@@ -28122,7 +28133,8 @@ class NostalgiaForInfinityX5(IStrategy):
 
     # Grind stop
     if (
-      (
+      self.derisk_use_grind_stops
+      and (
         (grind_5_sub_grind_count > 0)
         # and (((exit_rate - grind_5_current_open_rate) / grind_5_current_open_rate) < grind_5_stop_grinds)
         and (grind_5_current_grind_stake_profit < (slice_amount * grind_5_stop_grinds))
@@ -28236,7 +28248,8 @@ class NostalgiaForInfinityX5(IStrategy):
 
     # Grind stop
     if (
-      (
+      self.derisk_use_grind_stops
+      and (
         (grind_6_sub_grind_count > 0)
         # and (((exit_rate - grind_6_current_open_rate) / grind_6_current_open_rate) < grind_6_stop_grinds)
         and (grind_6_current_grind_stake_profit < (slice_amount * grind_6_stop_grinds))
@@ -45462,10 +45475,13 @@ class NostalgiaForInfinityX5(IStrategy):
             else:
               return -ft_sell_amount
         # First entry de-risk
-        if first_entry_distance_ratio < (
-          self.grind_mode_first_entry_stop_threshold_spot
-          if self.is_futures_mode
-          else self.grind_mode_first_entry_stop_threshold_spot
+        if self.derisk_use_grind_stops and (
+          first_entry_distance_ratio
+          < (
+            self.grind_mode_first_entry_stop_threshold_spot
+            if self.is_futures_mode
+            else self.grind_mode_first_entry_stop_threshold_spot
+          )
         ):
           sell_amount = first_entry.safe_filled * exit_rate / trade.leverage
           if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
@@ -45582,7 +45598,8 @@ class NostalgiaForInfinityX5(IStrategy):
 
     # Grind stop
     if (
-      (grind_1_derisk_1_sub_grind_count > 0)
+      self.derisk_use_grind_stops
+      and (grind_1_derisk_1_sub_grind_count > 0)
       # and (
       #   (-(exit_rate - grind_1_derisk_1_current_open_rate) / grind_1_derisk_1_current_open_rate)
       #   < grind_1_derisk_1_stop_grinds
@@ -45710,7 +45727,8 @@ class NostalgiaForInfinityX5(IStrategy):
 
     # Grind stop
     if (
-      (grind_2_derisk_1_sub_grind_count > 0)
+      self.derisk_use_grind_stops
+      and (grind_2_derisk_1_sub_grind_count > 0)
       # and (
       #   (-(exit_rate - grind_2_derisk_1_current_open_rate) / grind_2_derisk_1_current_open_rate)
       #   < grind_2_derisk_1_stop_grinds
@@ -45846,7 +45864,8 @@ class NostalgiaForInfinityX5(IStrategy):
 
     # Grind stop
     if (
-      (
+      self.derisk_use_grind_stops
+      and (
         (grind_1_sub_grind_count > 0)
         # and ((-(exit_rate - grind_1_current_open_rate) / grind_1_current_open_rate) < grind_1_stop_grinds)
         and (grind_1_current_grind_stake_profit < (slice_amount * grind_1_stop_grinds))
@@ -45949,7 +45968,8 @@ class NostalgiaForInfinityX5(IStrategy):
 
     # Grind stop
     if (
-      (
+      self.derisk_use_grind_stops
+      and (
         (grind_2_sub_grind_count > 0)
         # and ((-(exit_rate - grind_2_current_open_rate) / grind_2_current_open_rate) < grind_2_stop_grinds)
         and (grind_2_current_grind_stake_profit < (slice_amount * grind_2_stop_grinds))
@@ -46052,7 +46072,8 @@ class NostalgiaForInfinityX5(IStrategy):
 
     # Grind stop
     if (
-      (
+      self.derisk_use_grind_stops
+      and (
         (grind_3_sub_grind_count > 0)
         # and ((-(exit_rate - grind_3_current_open_rate) / grind_3_current_open_rate) < grind_3_stop_grinds)
         and (grind_3_current_grind_stake_profit < (slice_amount * grind_3_stop_grinds))
@@ -46167,7 +46188,8 @@ class NostalgiaForInfinityX5(IStrategy):
 
     # Grind stop
     if (
-      (
+      self.derisk_use_grind_stops
+      and (
         (grind_4_sub_grind_count > 0)
         # and ((-(exit_rate - grind_4_current_open_rate) / grind_4_current_open_rate) < grind_4_stop_grinds)
         and (grind_4_current_grind_stake_profit < (slice_amount * grind_4_stop_grinds))
@@ -46270,7 +46292,8 @@ class NostalgiaForInfinityX5(IStrategy):
 
     # Grind stop
     if (
-      (
+      self.derisk_use_grind_stops
+      and (
         (grind_5_sub_grind_count > 0)
         # and ((-(exit_rate - grind_5_current_open_rate) / grind_5_current_open_rate) < grind_5_stop_grinds)
         and (grind_5_current_grind_stake_profit < (slice_amount * grind_5_stop_grinds))
@@ -46384,7 +46407,8 @@ class NostalgiaForInfinityX5(IStrategy):
 
     # Grind stop
     if (
-      (
+      self.derisk_use_grind_stops
+      and (
         (grind_6_sub_grind_count > 0)
         # and ((-(exit_rate - grind_6_current_open_rate) / grind_6_current_open_rate) < grind_6_stop_grinds)
         and (grind_6_current_grind_stake_profit < (slice_amount * grind_6_stop_grinds))
