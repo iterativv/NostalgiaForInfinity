@@ -67,7 +67,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.281"
+    return "v15.1.282"
 
   stoploss = -0.99
 
@@ -5964,18 +5964,18 @@ class NostalgiaForInfinityX5(IStrategy):
             num_open_grind_mode += 1
         if num_open_grind_mode >= self.grind_mode_max_slots:
           # Reached the limit of grind mode open trades
-          log.warning(f"Cancelling entry for {pair} due to reached the limit of grind mode open trades.")
+          log.info(f"Cancelling entry for {pair} due to reached the limit of grind mode open trades.")
           return False
       else:
         # The pair is not in the list of grind mode allowed
-        log.warning(f"[{current_time}] Cancelling entry for {pair} due to {pair} not in list of grind mode coins.")
+        log.info(f"[{current_time}] Cancelling entry for {pair} due to {pair} not in list of grind mode coins.")
         return False
     # Top Coins mode
     elif all(c in self.long_top_coins_mode_tags for c in entry_tags):
       is_pair_top_coins_mode = pair.split("/")[0] in self.top_coins_mode_coins
       if not is_pair_top_coins_mode:
         # The pair is not in the list of top_coins mode allowed
-        log.warning(f"[{current_time}] Cancelling entry for {pair} due to {pair} not in list of top coins mode coins.")
+        log.info(f"[{current_time}] Cancelling entry for {pair} due to {pair} not in list of top coins mode coins.")
         return False
     # Derisk mode
     elif all(c in self.long_derisk_mode_tags for c in entry_tags):
@@ -5983,7 +5983,7 @@ class NostalgiaForInfinityX5(IStrategy):
       current_free_slots = self.config["max_open_trades"] - Trade.get_open_trade_count()
       if current_free_slots < self.min_free_slots_derisk_mode:
         # not enough free slots for derisk mode
-        log.warning(f"[{current_time}] Cancelling entry for {pair} due to not enough free slots.")
+        log.info(f"[{current_time}] Cancelling entry for {pair} due to not enough free slots.")
         return False
 
     df, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
@@ -6020,7 +6020,7 @@ class NostalgiaForInfinityX5(IStrategy):
       if self._should_hold_trade(trade, rate, exit_reason):
         return False
       if exit_reason in ["stop_loss", "trailing_stop_loss", "liquidation"]:
-        log.warning(f"[{current_time}] Cancelling {exit_reason} exit for {pair}")
+        log.info(f"[{current_time}] Cancelling {exit_reason} exit for {pair}")
         return False
       if self.exit_profit_only:
         profit = 0.0
