@@ -3909,7 +3909,7 @@ class NostalgiaForInfinityX5(IStrategy):
       & (
         (df["RSI_3_15m"] > 45.0)
         | (df["RSI_3_4h"] > 65.0)
-        | (df["RSI_14_15m"] < 40.0)
+        | (df["RSI_14_15m"] < 50.0)
         | (df["AROONU_14_15m"] < 50.0)
         | (df["CCI_20_15m"] < -0.0)
         | (df["STOCHk_14_3_3_15m"] < 20.0)
