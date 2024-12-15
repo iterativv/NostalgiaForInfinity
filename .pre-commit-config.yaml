@@ -1,7 +1,7 @@
 ---
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
       - id: check-added-large-files
         args: [--maxkb=10240]
@@ -31,7 +31,7 @@ repos:
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.
-    rev: v0.6.3
+    rev: v0.8.2
     hooks:
       # Run the linter.
       - id: ruff
@@ -40,28 +40,3 @@ repos:
       # Run the formatter.
       - id: ruff-format
         types_or: [python, pyi, jupyter]
-
-  # <---- Formatting --------------------------------------------------------->
-  # - repo: https://github.com/asottile/pyupgrade
-  #   rev: v3.15.0
-  #   hooks:
-  #     - id: pyupgrade
-  #       name: Rewrite Code to be Py3.11+
-  #       args: [--py311-plus]
-  #       files: tests/.*\.py
-  #       exclude: user_data/.*
-
-  # - repo: https://github.com/asottile/reorder_python_imports
-  #   rev: v3.12.0
-  #   hooks:
-  #     - id: reorder-python-imports
-  #       args: [--py311-plus]
-  #       files: (tests|.github)/.*\.py
-
-  # - repo: https://github.com/psf/black
-  #   rev: 23.11.0
-  #   hooks:
-  #     - id: black
-  #       args: [-l 119]
-  #       files: (tests|.github)/.*\.py
-# <---- Formatting --------------------------------------------------------->

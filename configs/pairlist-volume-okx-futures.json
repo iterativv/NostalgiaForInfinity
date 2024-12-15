@@ -8,7 +8,7 @@
       "lookback_days": 1
     },
     { "method": "FullTradesFilter" },
-    { "method": "AgeFilter", "min_days_listed": 4 },
+    { "method": "AgeFilter", "min_days_listed": 30 },
     {
       "method": "PriceFilter",
       "low_price_ratio": 0.003
