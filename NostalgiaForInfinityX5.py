@@ -6019,7 +6019,7 @@ class NostalgiaForInfinityX5(IStrategy):
     if exit_reason != "force_exit":
       if self._should_hold_trade(trade, rate, exit_reason):
         return False
-      if exit_reason in ["stop_loss", "trailing_stop_loss"]:
+      if exit_reason in ["stop_loss", "trailing_stop_loss", "liquidation"]:
         log.warning(f"[{current_time}] Cancelling {exit_reason} exit for {pair}")
         return False
       if self.exit_profit_only:
