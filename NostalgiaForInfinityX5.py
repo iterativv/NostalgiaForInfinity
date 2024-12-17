@@ -641,23 +641,6 @@ class NostalgiaForInfinityX5(IStrategy):
 
     self.update_signals_from_config(self.config)
 
-
-  # Get Ticker Indicator
-  # ---------------------------------------------------------------------------------------------
-  def update_signals_from_config(self, config):
-    # Update long entry signal parameters (if they exist in the config)
-    if hasattr(self, "long_entry_signal_params") and "long_entry_signal_params" in config:
-        for condition_key in self.long_entry_signal_params:
-            if condition_key in config['long_entry_signal_params']:
-                self.long_entry_signal_params[condition_key] = config['long_entry_signal_params'][condition_key]
-
-    # Update short entry signal parameters (if they exist in the config)
-    if hasattr(self, "short_entry_signal_params") and "short_entry_signal_params" in config:
-        for condition_key in self.short_entry_signal_params:
-            if condition_key in config['short_entry_signal_params']:
-                self.short_entry_signal_params[condition_key] = config['short_entry_signal_params'][condition_key]
-
-
   # Get Ticker Indicator
   # ---------------------------------------------------------------------------------------------
   def get_ticker_indicator(self):
@@ -6203,6 +6186,21 @@ class NostalgiaForInfinityX5(IStrategy):
     else:
       return last_candle["enter_short"] or self.short_grind_entry(last_candle, previous_candle, slice_profit, False)
     return False
+
+  # Update signals (enable/disable) from config
+  # ---------------------------------------------------------------------------------------------
+  def update_signals_from_config(self, config):
+    # Update long entry signal parameters (if they exist in the config)
+    if hasattr(self, "long_entry_signal_params") and "long_entry_signal_params" in config:
+      for condition_key in self.long_entry_signal_params:
+        if condition_key in config["long_entry_signal_params"]:
+          self.long_entry_signal_params[condition_key] = config["long_entry_signal_params"][condition_key]
+
+    # Update short entry signal parameters (if they exist in the config)
+    if hasattr(self, "short_entry_signal_params") and "short_entry_signal_params" in config:
+      for condition_key in self.short_entry_signal_params:
+        if condition_key in config["short_entry_signal_params"]:
+          self.short_entry_signal_params[condition_key] = config["short_entry_signal_params"][condition_key]
 
   # Set Profit Target
   # ---------------------------------------------------------------------------------------------
