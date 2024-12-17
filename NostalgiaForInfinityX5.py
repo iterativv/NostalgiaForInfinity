@@ -67,7 +67,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.286"
+    return "v15.1.287"
 
   stoploss = -0.99
 
@@ -8691,7 +8691,7 @@ class NostalgiaForInfinityX5(IStrategy):
           long_entry_logic.append(df["RSI_20"] < df["RSI_20"].shift(1))
           long_entry_logic.append(df["RSI_3"] < 46.0)
           long_entry_logic.append(df["STOCHRSIk_14_14_3_3"] < 20.0)
-          long_entry_logic.append(df["close"] < df["SMA_16"] * 0.960)
+          long_entry_logic.append(df["close"] < df["SMA_16"] * 0.956)
 
         # Condition #41 - Quick mode (Long).
         if long_entry_condition_index == 41:
