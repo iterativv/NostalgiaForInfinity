@@ -67,7 +67,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.287"
+    return "v15.1.288"
 
   stoploss = -0.99
 
@@ -484,6 +484,7 @@ class NostalgiaForInfinityX5(IStrategy):
     "long_entry_condition_41_enable": True,
     "long_entry_condition_42_enable": True,
     "long_entry_condition_43_enable": True,
+    "long_entry_condition_101_enable": True,
     "long_entry_condition_120_enable": True,
     "long_entry_condition_141_enable": True,
     "long_entry_condition_142_enable": True,
@@ -9639,6 +9640,30 @@ class NostalgiaForInfinityX5(IStrategy):
           long_entry_logic.append((df["EMA_26"].shift() - df["EMA_12"].shift()) > (df["open"] / 100.0))
           long_entry_logic.append(df["close"] < (df["EMA_20"] * 0.958))
           long_entry_logic.append(df["close"] < (df["BBL_20_2.0"] * 0.992))
+
+        # Condition #101 - Rapid mode (Long).
+        if long_entry_condition_index == 101:
+          # Protections
+          long_entry_logic.append(df["num_empty_288"] <= allowed_empty_candles_288)
+          long_entry_logic.append(df["global_protections_long_pump"] == True)
+          long_entry_logic.append(df["global_protections_long_dump"] == True)
+
+          long_entry_logic.append(df["RSI_14_1h"] < 80.0)
+          long_entry_logic.append(df["RSI_14_4h"] < 80.0)
+          long_entry_logic.append(df["RSI_14_1d"] < 80.0)
+          # 15m down move, 1h high
+          long_entry_logic.append((df["RSI_3_15m"] > 10.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 70.0))
+          # 15m down move, 4h high
+          long_entry_logic.append((df["RSI_3_15m"] > 10.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 70.0))
+          # 1h down move, 4h high
+          long_entry_logic.append((df["RSI_3_1h"] > 15.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 70.0))
+
+          # Logic
+          long_entry_logic.append(df["RSI_14"] < 36.0)
+          long_entry_logic.append(df["AROONU_14"] < 25.0)
+          long_entry_logic.append(df["STOCHRSIk_14_14_3_3"] < 20.0)
+          long_entry_logic.append(df["close"] < (df["SMA_16"] * 0.948))
+          long_entry_logic.append(df["AROONU_14_15m"] < 50.0)
 
         # Condition #120 - Grind mode (Long).
         if long_entry_condition_index == 120:
