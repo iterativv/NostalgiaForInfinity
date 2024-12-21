@@ -2,7 +2,7 @@
 
 x-common-settings:
   &common-settings
-  image: freqtrade_with_numba
+  image: freqtradeorg/freqtrade:stable
   build:
     context: .
     dockerfile: "./docker/Dockerfile.custom"
