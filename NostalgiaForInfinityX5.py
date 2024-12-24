@@ -397,7 +397,6 @@ class NostalgiaForInfinityX5(IStrategy):
     "DOGE",
     "BCH",
     "ETC",
-    "FTM",
     "KAS",
     "HBAR",
     "SUI",
