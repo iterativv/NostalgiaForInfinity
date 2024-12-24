@@ -67,7 +67,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.304"
+    return "v15.1.305"
 
   stoploss = -0.99
 
@@ -6953,60 +6953,111 @@ class NostalgiaForInfinityX5(IStrategy):
     side: str,
     **kwargs,
   ) -> bool:
-    # allow force entries
+    # Force Entry
     if entry_tag == "force_entry":
       return True
 
-    # Grind mode
-    entry_tags = entry_tag.split()
-    if all(c in self.long_grind_mode_tags for c in entry_tags):
-      is_pair_grind_mode = pair.split("/")[0] in self.grind_mode_coins
-      if is_pair_grind_mode:
-        num_open_grind_mode = 0
-        open_trades = Trade.get_trades_proxy(is_open=True)
-        for open_trade in open_trades:
-          enter_tag = open_trade.enter_tag
-          enter_tags = enter_tag.split()
-          if all(c in self.long_grind_mode_tags for c in enter_tags):
-            num_open_grind_mode += 1
-        if num_open_grind_mode >= self.grind_mode_max_slots:
-          # Reached the limit of grind mode open trades
-          log.info(f"Cancelling entry for {pair} due to reached the limit of grind mode open trades.")
-          return False
-      else:
-        # The pair is not in the list of grind mode allowed
-        log.info(f"[{current_time}] Cancelling entry for {pair} due to {pair} not in list of grind mode coins.")
-        return False
-    # Top Coins mode
-    elif all(c in self.long_top_coins_mode_tags for c in entry_tags):
-      is_pair_top_coins_mode = pair.split("/")[0] in self.top_coins_mode_coins
-      if not is_pair_top_coins_mode:
-        # The pair is not in the list of top_coins mode allowed
-        log.info(f"[{current_time}] Cancelling entry for {pair} due to {pair} not in list of top coins mode coins.")
-        return False
-    # Derisk mode
-    elif all(c in self.long_derisk_mode_tags for c in entry_tags):
-      current_free_slots = self.config["max_open_trades"]
-      current_free_slots = self.config["max_open_trades"] - Trade.get_open_trade_count()
-      if current_free_slots < self.min_free_slots_derisk_mode:
-        # not enough free slots for derisk mode
-        log.info(f"[{current_time}] Cancelling entry for {pair} due to not enough free slots.")
+    # Mode configurations (dynamic structure)
+    mode_configs = {
+      "grind": {
+        "tags": self.long_grind_mode_tags,
+        "coins": self.grind_mode_coins,
+        "max_slots": self.grind_mode_max_slots,
+        "log_message": "grind mode",
+      },
+      "top_coins": {
+        "tags": self.long_top_coins_mode_tags,
+        "coins": self.top_coins_mode_coins,
+        "log_message": "top coins mode",
+      },
+      "derisk": {
+        "tags": self.long_derisk_mode_tags,
+        "min_free_slots": self.min_free_slots_derisk_mode,
+        "log_message": "derisk mode",
+      },
+    }
+
+    # Mode Validation
+    for mode, config in mode_configs.items():
+      if all(c in config["tags"] for c in entry_tag.split()):
+        if mode == "grind":
+          return self._handle_grind_mode(pair, config, current_time)
+        elif mode == "top_coins":
+          return self._handle_top_coins_mode(pair, config, current_time)
+        elif mode == "derisk":
+          return self._handle_derisk_mode(pair, config, current_time)
+
+    # Long/Short Slot Validation (only in futures mode)
+    if not self.is_spot_mode():
+      total_slots = self.config["max_open_trades"]
+      max_open_trades_long = self.config.get("max_open_trades_long", total_slots // 2)  # Adjustable long slot limit
+      max_open_trades_short = self.config.get("max_open_trades_short", total_slots // 2)  # Adjustable short slot limit
+
+      open_trades = Trade.get_trades_proxy(is_open=True)
+      long_trades = sum(1 for t in open_trades if t.trade_direction == "long")
+      short_trades = sum(1 for t in open_trades if t.trade_direction == "short")
+
+      # Long trade limit validation
+      if side == "long" and long_trades >= max_open_trades_long:
+        log.info(
+          f"[{current_time}] Cancelling entry for {pair} due to long trades reaching the max limit of {max_open_trades_long}."
+        )
         return False
 
+      # Short trade limit validation
+      if side == "short" and short_trades >= max_open_trades_short:
+        log.info(
+          f"[{current_time}] Cancelling entry for {pair} due to short trades reaching the max limit of {max_open_trades_short}."
+        )
+        return False
+
+    # Slippage Validation
     df, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
     if len(df) >= 1:
       last_candle = df.iloc[-1].squeeze()
-      if ("side" == "long" and rate > last_candle["close"]) or ("side" == "short" and rate < last_candle["close"]):
+      if (side == "long" and rate > last_candle["close"]) or (side == "short" and rate < last_candle["close"]):
         slippage = (rate / last_candle["close"]) - 1.0
-        if ("side" == "long" and slippage < self.max_slippage) or (
-          "side" == "short" and slippage > -self.max_slippage
-        ):
+        if (side == "long" and slippage < self.max_slippage) or (side == "short" and slippage > -self.max_slippage):
           return True
         else:
           log.warning(f"[{current_time}] Cancelling entry for {pair} due to slippage {(slippage * 100.0):.2f}%")
           return False
 
     return True
+
+  def _handle_grind_mode(self, pair: str, config: dict, current_time: datetime) -> bool:
+    is_pair_grind_mode = pair.split("/")[0] in config["coins"]
+    if not is_pair_grind_mode:
+      log.info(f"[{current_time}] Cancelling entry for {pair} due to not being in grind mode coins list.")
+      return False
+
+    open_trades = Trade.get_trades_proxy(is_open=True)
+    num_open_grind_mode = sum(1 for t in open_trades if all(c in config["tags"] for c in t.enter_tag.split()))
+    if num_open_grind_mode >= config["max_slots"]:
+      log.info(f"[{current_time}] Cancelling entry for {pair} due to grind mode slots limit reached.")
+      return False
+
+    return True
+
+  def _handle_top_coins_mode(self, pair: str, config: dict, current_time: datetime) -> bool:
+    is_pair_top_coins_mode = pair.split("/")[0] in config["coins"]
+    if not is_pair_top_coins_mode:
+      log.info(f"[{current_time}] Cancelling entry for {pair} due to not being in top coins list.")
+      return False
+    return True
+
+  def _handle_derisk_mode(self, pair: str, config: dict, current_time: datetime) -> bool:
+    current_free_slots = self.config["max_open_trades"] - Trade.get_open_trade_count()
+    if current_free_slots < config["min_free_slots"]:
+      log.info(f"[{current_time}] Cancelling entry for {pair} due to insufficient free slots.")
+      return False
+    return True
+
+  def is_spot_mode(self) -> bool:
+    """
+    Returns True if the bot is running in spot mode, otherwise False.
+    """
+    return self.config.get("mode", "futures") == "spot"
 
   # Confirm Trade Exit
   # ---------------------------------------------------------------------------------------------
