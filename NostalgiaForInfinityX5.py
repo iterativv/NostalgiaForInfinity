@@ -434,7 +434,6 @@ class NostalgiaForInfinityX5(IStrategy):
     "ETH",
     "FET",
     "FIL",
-    "FTM",
     "GRT",
     "HBAR",
     "INJ",
