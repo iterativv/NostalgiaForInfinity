@@ -368,8 +368,8 @@ class NostalgiaForInfinityX5(IStrategy):
   rebuy_mode_thresholds_futures = [-0.04, -0.06, -0.08, -0.10, -0.12]
 
   # Rapid mode
-  rapid_mode_stake_multiplier_spot = [0.5]
-  rapid_mode_stake_multiplier_futures = [0.5]
+  rapid_mode_stake_multiplier_spot = [0.75]
+  rapid_mode_stake_multiplier_futures = [0.75]
 
   # Derisk mode
   min_free_slots_derisk_mode = 2
