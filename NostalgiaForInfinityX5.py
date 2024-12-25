@@ -173,6 +173,10 @@ class NostalgiaForInfinityX5(IStrategy):
   futures_mode_leverage_rebuy_mode = 3.0
   futures_mode_leverage_grind_mode = 3.0
 
+  # Limit the number of long/short trades for futures (0 for no limit)
+  futures_max_open_trades_long = 0
+  futures_max_open_trades_short = 0
+
   # Based on the the first entry (regardless of rebuys)
   stop_threshold_spot = 0.10
   stop_threshold_futures = 0.10
@@ -577,6 +581,11 @@ class NostalgiaForInfinityX5(IStrategy):
       self.futures_mode_leverage_rebuy_mode = self.config["futures_mode_leverage_rebuy_mode"]
     if "futures_mode_leverage_grind_mode" in self.config:
       self.futures_mode_leverage_grind_mode = self.config["futures_mode_leverage_grind_mode"]
+
+    if "futures_max_open_trades_long" in self.config:
+      self.futures_max_open_trades_long = self.config["futures_max_open_trades_long"]
+    if "futures_max_open_trades_short" in self.config:
+      self.futures_max_open_trades_short = self.config["futures_max_open_trades_short"]
 
     if "stop_threshold_doom_spot" in self.config:
       self.stop_threshold_doom_spot = self.config["stop_threshold_doom_spot"]
@@ -6988,24 +6997,20 @@ class NostalgiaForInfinityX5(IStrategy):
           return self._handle_derisk_mode(pair, config, current_time)
 
     # Long/Short Slot Validation (only in futures mode)
-    if not self.is_spot_mode():
-      total_slots = self.config["max_open_trades"]
-      max_open_trades_long = self.config.get("max_open_trades_long", total_slots // 2)  # Adjustable long slot limit
-      max_open_trades_short = self.config.get("max_open_trades_short", total_slots // 2)  # Adjustable short slot limit
-
+    if self.is_futures_mode and self.futures_max_open_trades_long != 0 and self.futures_max_open_trades_short != 0:
       open_trades = Trade.get_trades_proxy(is_open=True)
       long_trades = sum(1 for t in open_trades if t.trade_direction == "long")
       short_trades = sum(1 for t in open_trades if t.trade_direction == "short")
 
       # Long trade limit validation
-      if side == "long" and long_trades >= max_open_trades_long:
+      if side == "long" and long_trades >= self.futures_max_open_trades_long:
         log.info(
           f"[{current_time}] Cancelling entry for {pair} due to long trades reaching the max limit of {max_open_trades_long}."
         )
         return False
 
       # Short trade limit validation
-      if side == "short" and short_trades >= max_open_trades_short:
+      if side == "short" and short_trades >= self.futures_max_open_trades_short:
         log.info(
           f"[{current_time}] Cancelling entry for {pair} due to short trades reaching the max limit of {max_open_trades_short}."
         )
@@ -7052,12 +7057,6 @@ class NostalgiaForInfinityX5(IStrategy):
       log.info(f"[{current_time}] Cancelling entry for {pair} due to insufficient free slots.")
       return False
     return True
-
-  def is_spot_mode(self) -> bool:
-    """
-    Returns True if the bot is running in spot mode, otherwise False.
-    """
-    return self.config.get("mode", "futures") == "spot"
 
   # Confirm Trade Exit
   # ---------------------------------------------------------------------------------------------
