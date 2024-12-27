@@ -15417,7 +15417,7 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] > 88.0)
         and (last_candle["WILLR_14"] > -1.0)
         and (last_candle["RSI_3_1h"] < 40.0)
-        and (last_candle["AROOND_14_4h"] > 75.0)
+        and (last_candle["AROONU_14_4h"] > 75.0)
         and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 30.0)
         and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 30.0)
       ):
@@ -15531,7 +15531,7 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] > 86.0)
         and (last_candle["WILLR_14"] > -2.0)
         and (last_candle["RSI_3_1h"] < 40.0)
-        and (last_candle["AROOND_14_4h"] > 75.0)
+        and (last_candle["AROONU_14_4h"] > 75.0)
         and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 30.0)
         and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 30.0)
       ):
@@ -15645,7 +15645,7 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] > 84.0)
         and (last_candle["WILLR_14"] > -4.0)
         and (last_candle["RSI_3_1h"] < 40.0)
-        and (last_candle["AROOND_14_4h"] > 75.0)
+        and (last_candle["AROONU_14_4h"] > 75.0)
         and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 30.0)
         and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 30.0)
       ):
@@ -15759,7 +15759,7 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] > 82.0)
         and (last_candle["WILLR_14"] > -6.0)
         and (last_candle["RSI_3_1h"] < 40.0)
-        and (last_candle["AROOND_14_4h"] > 75.0)
+        and (last_candle["AROONU_14_4h"] > 75.0)
         and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 30.0)
         and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 30.0)
       ):
@@ -15873,7 +15873,7 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] > 80.0)
         and (last_candle["WILLR_14"] > -8.0)
         and (last_candle["RSI_3_1h"] < 40.0)
-        and (last_candle["AROOND_14_4h"] > 75.0)
+        and (last_candle["AROONU_14_4h"] > 75.0)
         and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 30.0)
         and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 30.0)
       ):
@@ -15987,7 +15987,7 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] > 78.0)
         and (last_candle["WILLR_14"] > -10.0)
         and (last_candle["RSI_3_1h"] < 40.0)
-        and (last_candle["AROOND_14_4h"] > 75.0)
+        and (last_candle["AROONU_14_4h"] > 75.0)
         and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 30.0)
         and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 30.0)
       ):
@@ -16101,7 +16101,7 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] > 80.0)
         and (last_candle["WILLR_14"] > -8.0)
         and (last_candle["RSI_3_1h"] < 40.0)
-        and (last_candle["AROOND_14_4h"] > 75.0)
+        and (last_candle["AROONU_14_4h"] > 75.0)
         and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 30.0)
         and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 30.0)
       ):
@@ -16215,7 +16215,7 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] > 82.0)
         and (last_candle["WILLR_14"] > -6.0)
         and (last_candle["RSI_3_1h"] < 40.0)
-        and (last_candle["AROOND_14_4h"] > 75.0)
+        and (last_candle["AROONU_14_4h"] > 75.0)
         and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 30.0)
         and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 30.0)
       ):
@@ -16329,7 +16329,7 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] > 84.0)
         and (last_candle["WILLR_14"] > -4.0)
         and (last_candle["RSI_3_1h"] < 40.0)
-        and (last_candle["AROOND_14_4h"] > 75.0)
+        and (last_candle["AROONU_14_4h"] > 75.0)
         and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 30.0)
         and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 30.0)
       ):
@@ -16443,7 +16443,7 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] > 86.0)
         and (last_candle["WILLR_14"] > -2.0)
         and (last_candle["RSI_3_1h"] < 40.0)
-        and (last_candle["AROOND_14_4h"] > 75.0)
+        and (last_candle["AROONU_14_4h"] > 75.0)
         and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 30.0)
         and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 30.0)
       ):
@@ -16557,7 +16557,7 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] > 88.0)
         and (last_candle["WILLR_14"] > -1.0)
         and (last_candle["RSI_3_1h"] < 40.0)
-        and (last_candle["AROOND_14_4h"] > 75.0)
+        and (last_candle["AROONU_14_4h"] > 75.0)
         and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 30.0)
         and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 30.0)
       ):
@@ -16671,7 +16671,7 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] > 90.0)
         and (last_candle["WILLR_14"] > -1.0)
         and (last_candle["RSI_3_1h"] < 40.0)
-        and (last_candle["AROOND_14_4h"] > 75.0)
+        and (last_candle["AROONU_14_4h"] > 75.0)
         and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 30.0)
         and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 30.0)
       ):
@@ -16785,7 +16785,7 @@ class NostalgiaForInfinityX5(IStrategy):
         (last_candle["RSI_3"] > 92.0)
         and (last_candle["WILLR_14"] > -1.0)
         and (last_candle["RSI_3_1h"] < 40.0)
-        and (last_candle["AROOND_14_4h"] > 75.0)
+        and (last_candle["AROONU_14_4h"] > 75.0)
         and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 30.0)
         and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 30.0)
       ):
