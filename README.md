@@ -17,8 +17,9 @@ git clone https://github.com/iterativv/NostalgiaForInfinity
 cd NostalgiaForInfinity
 ```
 
-### copy configs/recommended_config.json -> user_data/config.json
+### copy configurations
 ```bash
+cp configs/recommended_config.json user_data/config.json
 cp live-account-example.env .env
 ```
 
@@ -36,7 +37,7 @@ FREQTRADE__EXCHANGE__KEY=Put_Your_Exchange_Key_Here
 FREQTRADE__EXCHANGE__SECRET=Put_Your_Exchange_Keys_Secret_Here
 
 FREQTRADE__TELEGRAM__ENABLED=false
-FREQTRADE__TELEGRAM__TOKEN=123123123:123123YourTelgramTokenConfiguration
+FREQTRADE__TELEGRAM__TOKEN=123123123:123123YourTelegramTokenConfiguration
 FREQTRADE__TELEGRAM__CHAT_ID=461799865
 
 FREQTRADE__API_SERVER__ENABLED=true
@@ -210,7 +211,7 @@ http://0.0.0.0:8080
 
 ---
 
-## Wihtout Docker
+## Without Docker
  after cloning repo there are only few steps:
 
 ### **clone repo**
@@ -233,7 +234,7 @@ cp configs/exampleconfig_secret.json user_data/private_config.json
 ### edit user_data/private_config.json (your private key etc)
 
 ```json
-// For full documentation on Freqtrade configration files please visit https://www.freqtrade.io/en/stable/configuration/
+// For full documentation on Freqtrade configuration files please visit https://www.freqtrade.io/en/stable/configuration/
 {
   "bot_name": "freqtrade", // name your bot
   "stake_currency": "USDT",
@@ -318,7 +319,7 @@ cp configs/exampleconfig_secret.json user_data/private_config.json
 ### edit user_data/config.json (exchange, blacklist etc)
 ```json
    {
-  // For full documentation on Freqtrade configration files please visit https://www.freqtrade.io/en/stable/configuration/
+  // For full documentation on Freqtrade configuration files please visit https://www.freqtrade.io/en/stable/configuration/
   // Copy this file to user_data/config.json
   // make sure your secret files are really in a secret place
   // copy configs/exampleconfig_secret.json to user_data/config-private.json
@@ -343,7 +344,7 @@ freqtrade trade
 You will see same output as docker
 
 
-# Run Backtests with your  own configuration
+# Run Backtests with your own configuration
 
 If you plan to only clone the repository to use the strategy, a regular `git clone` will do.
 
