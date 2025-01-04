@@ -67,7 +67,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.313"
+    return "v15.1.314"
 
   stoploss = -0.99
 
@@ -591,6 +591,10 @@ class NostalgiaForInfinityX5(IStrategy):
       self.stop_threshold_doom_spot = self.config["stop_threshold_doom_spot"]
     if "stop_threshold_doom_futures" in self.config:
       self.stop_threshold_doom_futures = self.config["stop_threshold_doom_futures"]
+    if "stop_threshold_rapid_spot" in self.config:
+      self.stop_threshold_rapid_spot = self.config["stop_threshold_rapid_spot"]
+    if "stop_threshold_rapid_futures" in self.config:
+      self.stop_threshold_rapid_futures = self.config["stop_threshold_rapid_futures"]
 
     if "derisk_enable" in self.config:
       self.derisk_enable = self.config["derisk_enable"]
