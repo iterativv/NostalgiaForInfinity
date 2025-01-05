@@ -140,10 +140,10 @@ def test_adjust_trade_position(mock_config, mocker, trade, expected_function):
         (MockTrade(False, "1"), ["long_exit_normal"],{}),
         (MockTrade(False, "21"), ["long_exit_pump"], {}),
         (MockTrade(False, "41"), ["long_exit_quick"], {}),
-        (MockTrade(False, "61"), ["long_exit_rebuy"], {}),  # Default to (False, None)
+        (MockTrade(False, "61"), ["long_exit_rebuy"], {}),
         (MockTrade(True, "500"), ["short_exit_normal"], {}),
-        (MockTrade(True, "521"), ["short_exit_pump"], {}),  # Default to (False, None)
-        (MockTrade(False, "999"), ["long_exit_normal"], {}),  # Unknown tag, no function should be called
+        (MockTrade(True, "521"), ["short_exit_pump"], {}),
+        (MockTrade(False, "999"), ["long_exit_normal"], {}),
 
         # Combined exit tags
         (MockTrade(False, "1 21"), ["long_exit_normal", "long_exit_pump"], {}),
