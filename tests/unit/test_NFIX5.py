@@ -137,13 +137,16 @@ def test_adjust_trade_position(mock_config, mocker, trade, expected_function):
     "trade, expected_calls, exit_returns",
     [
         # Single entry tags
-        (MockTrade(False, "1"), ["long_exit_normal"], {"long_exit_normal": (False, "Reason 1")}),
-        (MockTrade(False, "21"), ["long_exit_pump"], {"long_exit_pump": (False, "Reason 2")}),
-        (MockTrade(False, "41"), ["long_exit_quick"], {"long_exit_quick": (False, "Reason 3")}),
-        (MockTrade(False, "61"), ["long_exit_rebuy"], {"long_exit_rebuy": (False, "Reason 4")}),  # Default to (False, None)
-        (MockTrade(True, "500"), ["short_exit_normal"], {"short_exit_normal": (False, "Reason 5")}),
-        (MockTrade(True, "521"), ["short_exit_pump"], {"long_exit_pump": (False, "Reason 6")}),  # Default to (False, None)
-        (MockTrade(False, "999"), ["long_exit_normal"], {"long_exit_normal": (False, "Reason 7")}),  # Unknown tag, no function should be called
+        (MockTrade(False, "1"), ["long_exit_normal"],{}),
+        (MockTrade(False, "21"), ["long_exit_pump"], {}),
+        (MockTrade(False, "41"), ["long_exit_quick"], {}),
+        (MockTrade(False, "61"), ["long_exit_rebuy"], {}),  # Default to (False, None)
+        (MockTrade(True, "500"), ["short_exit_normal"], {}),
+        (MockTrade(True, "521"), ["short_exit_pump"], {}),  # Default to (False, None)
+        (MockTrade(False, "999"), ["long_exit_normal"], {}),  # Unknown tag, no function should be called
+
+        # Combined exit tags
+        (MockTrade(False, "1 21"), ["long_exit_normal", "long_exit_pump"], {}),
     ],
 )
 def test_custom_exit_calls_correct_functions(mock_config, mocker, trade, expected_calls, exit_returns):
