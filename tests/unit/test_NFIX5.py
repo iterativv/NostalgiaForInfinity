@@ -1,4 +1,6 @@
 import pytest
+from unittest.mock import MagicMock
+from datetime import datetime
 from NostalgiaForInfinityX5 import NostalgiaForInfinityX5
 
 
@@ -31,9 +33,22 @@ def mock_config(tmp_path):
 
 # Define a mock trade object
 class MockTrade:
-  def __init__(self, is_short, enter_tag):
+  def __init__(self, is_short, enter_tag, fee_open=0.001, fee_close=0.001):
     self.is_short = is_short
     self.enter_tag = enter_tag
+    self.open_rate = 100.0
+    self.max_rate = 110.0
+    self.min_rate = 90.0
+    self.entry_side = "buy"
+    self.exit_side = "sell"
+    self.fee_open = fee_open
+    self.fee_close = fee_close
+
+  def select_filled_orders(self, side):
+    # Simulate returning an empty list of filled orders for the test
+    return [
+      MagicMock(average=100.0, amount=1.0),  # Example filled order
+    ]
 
 
 @pytest.mark.parametrize(
@@ -115,6 +130,77 @@ def test_adjust_trade_position(mock_config, mocker, trade, expected_function):
 
     if called_functions:
       pytest.fail(f"Unexpected function calls: {called_functions}")
+
+
+@pytest.mark.parametrize(
+  "trade, expected_function",
+  [
+    (MockTrade(False, "1"), "long_exit_normal"),  # Long normal mode
+    (MockTrade(False, "21"), "long_exit_pump"),   # Long pump mode
+    (MockTrade(False, "41"), "long_exit_quick"),  # Long quick mode
+    (MockTrade(True, "500"), "short_exit_normal"),  # Short normal mode
+    (MockTrade(True, "521"), "short_exit_pump"),  # Short pump mode
+    (MockTrade(False, "999"), "long_exit_normal"),  # Unknown tag, long normal mode
+  ],
+)
+def test_custom_exit_calls_correct_function(mock_config, mocker, trade, expected_function):
+  """Test to validate that custom_exit calls the correct exit function."""
+  # Instantiate the real strategy
+  strategy = NostalgiaForInfinityX5(mock_config)
+
+  # Ensure the `dp` attribute exists before mocking
+  strategy.dp = MagicMock()
+  mocker.patch.object(strategy.dp, "get_analyzed_dataframe", return_value=(
+    MagicMock(
+      iloc=MagicMock(
+        side_effect=[
+          MagicMock(squeeze=lambda: {"close": 105.0}),
+          MagicMock(squeeze=lambda: {"close": 104.0}),
+          MagicMock(squeeze=lambda: {"close": 103.0}),
+          MagicMock(squeeze=lambda: {"close": 102.0}),
+          MagicMock(squeeze=lambda: {"close": 101.0}),
+          MagicMock(squeeze=lambda: {"close": 100.0}),
+        ]
+      )
+    ),
+    None,
+  ))
+
+  # Mock exit functions to track their calls using mocker
+  mocker.patch.object(strategy, "long_exit_normal", return_value=(True, "long_exit_normal"))
+  mocker.patch.object(strategy, "long_exit_pump", return_value=(True, "long_exit_pump"))
+  mocker.patch.object(strategy, "long_exit_quick", return_value=(True, "long_exit_quick"))
+  mocker.patch.object(strategy, "short_exit_normal", return_value=(True, "short_exit_normal"))
+  mocker.patch.object(strategy, "short_exit_pump", return_value=(True, "short_exit_pump"))
+
+  # Generic values for required parameters
+  pair = "BTC/USDT"
+  current_time = datetime(2023, 1, 1)  # Arbitrary date
+  current_rate = 105.0  # Example current rate
+  current_profit = 0.05  # Example profit
+
+  # Call the real custom_exit function
+  strategy.custom_exit(
+    pair=pair,
+    trade=trade,
+    current_time=current_time,
+    current_rate=current_rate,
+    current_profit=current_profit,
+  )
+
+  # Verify that only the expected function was called
+  for func_name in [
+    "long_exit_normal",
+    "long_exit_pump",
+    "long_exit_quick",
+    "short_exit_normal",
+    "short_exit_pump",
+  ]:
+    func = getattr(strategy, func_name)
+    if func_name == expected_function:
+      func.assert_called_once()  # Ensure the expected function was called exactly once
+    else:
+      func.assert_not_called()  # Ensure no other function was called
 
 
 def test_update_signals_from_config(mock_config):
