@@ -35,36 +35,35 @@ class MockTrade:
         self.enter_tag = enter_tag
 
 @pytest.mark.parametrize(
-    "trade, enter_tags, expected_function",
+    "trade, expected_function",
     [
         # Rebuy and grind only tags
-        (MockTrade(False, "61"), ["61"], "long_rebuy_adjust_trade_position"),  # Long rebuy tag
-        (MockTrade(False, "120"), ["120"], "long_grind_adjust_trade_position"),  # Long grind tag
+        (MockTrade(False, "61"), "long_rebuy_adjust_trade_position"),  # Long rebuy tag
+        (MockTrade(False, "120"), "long_grind_adjust_trade_position"),  # Long grind tag
         
         # Other tags
-        (MockTrade(True, "620"), ["620"], "short_grind_adjust_trade_position"),  # Short grind tag
-        (MockTrade(False, "161"), ["161"], "long_grind_adjust_trade_position"),  # Long derisk tag
-        (MockTrade(False, "6"), ["6"], "long_grind_adjust_trade_position"),  # Long normal tag
-        (MockTrade(False, "81"), ["81"], "long_grind_adjust_trade_position"),  # Long high profit tag
-        (MockTrade(False, "41"), ["41"], "long_grind_adjust_trade_position"),  # Long quick tag
-        (MockTrade(False, "101"), ["101"], "long_grind_adjust_trade_position"),  # Long rapid tag
-        (MockTrade(False, "141"), ["141"], "long_grind_adjust_trade_position"),  # Long top coins tag
-        (MockTrade(False, "999"), ["999"], "long_grind_adjust_trade_position"),  # Long unkown tag
+        (MockTrade(True, "620"), "short_grind_adjust_trade_position"),  # Short grind tag
+        (MockTrade(False, "161"), "long_grind_adjust_trade_position"),  # Long derisk tag
+        (MockTrade(False, "6"), "long_grind_adjust_trade_position"),  # Long normal tag
+        (MockTrade(False, "81"), "long_grind_adjust_trade_position"),  # Long high profit tag
+        (MockTrade(False, "41"), "long_grind_adjust_trade_position"),  # Long quick tag
+        (MockTrade(False, "101"), "long_grind_adjust_trade_position"),  # Long rapid tag
+        (MockTrade(False, "141"), "long_grind_adjust_trade_position"),  # Long top coins tag
+        (MockTrade(False, "999"), "long_grind_adjust_trade_position"),  # Long unknown tag
         
         # Rebuy + grind tags
-        (MockTrade(False, "61 120"), ["61", "120"], "long_rebuy_adjust_trade_position"),  # Long rebuy + long grind tags
-        (MockTrade(False, "120 61"), ["120", "61"], "long_rebuy_adjust_trade_position"),  # Long grind + long rebuy tags
+        (MockTrade(False, "61 120"), "long_rebuy_adjust_trade_position"),  # Long rebuy + long grind tags
+        (MockTrade(False, "120 61"), "long_rebuy_adjust_trade_position"),  # Long grind + long rebuy tags
         
         # (Rebuy or grind) + other tags
-        (MockTrade(False, "120 6"), ["120", "6"], "long_grind_adjust_trade_position"),  # Long grind + long normal tag
-        (MockTrade(False, "61 6"), ["61", "6"], "long_grind_adjust_trade_position"),  # Long rebuy + long normal tag
+        (MockTrade(False, "120 6"), "long_grind_adjust_trade_position"),  # Long grind + long normal tag
+        (MockTrade(False, "61 6"), "long_grind_adjust_trade_position"),  # Long rebuy + long normal tag
         
         # No tags!
-        (MockTrade(False, ""), [], "long_rebuy_adjust_trade_position"),  # Empty enter_tags
+        (MockTrade(False, ""), "long_rebuy_adjust_trade_position"),  # Empty enter_tags
     ],
 )
-
-def test_adjust_trade_position(mock_config, mocker, trade, enter_tags, expected_function):
+def test_adjust_trade_position(mock_config, mocker, trade, expected_function):
     """Test that adjust_trade_position calls the correct function."""
     strategy = NostalgiaForInfinityX5(mock_config)
     strategy.position_adjustment_enable = True
@@ -73,6 +72,9 @@ def test_adjust_trade_position(mock_config, mocker, trade, enter_tags, expected_
     strategy.long_rebuy_adjust_trade_position = mocker.MagicMock()
     strategy.long_grind_adjust_trade_position = mocker.MagicMock()
     strategy.short_grind_adjust_trade_position = mocker.MagicMock()
+
+    # Derive enter_tags from trade.enter_tag
+    enter_tags = trade.enter_tag.split()
 
     # Call adjust_trade_position
     strategy.adjust_trade_position(
