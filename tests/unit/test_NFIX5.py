@@ -1,5 +1,4 @@
 import pytest
-from unittest.mock import MagicMock
 from NostalgiaForInfinityX5 import NostalgiaForInfinityX5
 
 @pytest.fixture
