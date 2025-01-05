@@ -23,7 +23,7 @@ def mock_config(tmp_path):
     "stake_amount": 10,
     "dry_run": True,
     "timeframe": "5m",
-    "max_open_trades": 5,
+    "max_open_trades": 10,
     "user_data_dir": tmp_path,  # Use pytest's temporary directory
     "runmode": RunModeMock("backtest"),  # Simulate the execution mode
   }
@@ -37,11 +37,30 @@ class MockTrade:
 @pytest.mark.parametrize(
     "trade, enter_tags, expected_function",
     [
-        (MockTrade(False, "61"), ["61"], "long_rebuy_adjust_trade_position"),  # Rebuy
-        (MockTrade(False, "120"), ["120"], "long_grind_adjust_trade_position"),  # Grind
-        (MockTrade(True, "620"), ["620"], "short_grind_adjust_trade_position"),  # Short Grind
-        (MockTrade(False, "999"), ["999"], None),  # No match
-        (MockTrade(False, ""), [], None),  # Empty enter_tags
+        # Rebuy and grind only tags
+        (MockTrade(False, "61"), ["61"], "long_rebuy_adjust_trade_position"),  # Long rebuy tag
+        (MockTrade(False, "120"), ["120"], "long_grind_adjust_trade_position"),  # Long grind tag
+        
+        # Other tags
+        (MockTrade(True, "620"), ["620"], "short_grind_adjust_trade_position"),  # Short grind tag
+        (MockTrade(False, "161"), ["161"], "long_grind_adjust_trade_position"),  # Long derisk tag
+        (MockTrade(False, "6"), ["6"], "long_grind_adjust_trade_position"),  # Long normal tag
+        (MockTrade(False, "81"), ["81"], "long_grind_adjust_trade_position"),  # Long high profit tag
+        (MockTrade(False, "41"), ["41"], "long_grind_adjust_trade_position"),  # Long quick tag
+        (MockTrade(False, "101"), ["101"], "long_grind_adjust_trade_position"),  # Long rapid tag
+        (MockTrade(False, "141"), ["141"], "long_grind_adjust_trade_position"),  # Long top coins tag
+        (MockTrade(False, "999"), ["999"], "long_grind_adjust_trade_position"),  # Long unkown tag
+        
+        # Rebuy + grind tags
+        (MockTrade(False, "61 120"), ["61", "120"], "long_rebuy_adjust_trade_position"),  # Long rebuy + long grind tags
+        (MockTrade(False, "120 61"), ["120", "61"], "long_rebuy_adjust_trade_position"),  # Long grind + long rebuy tags
+        
+        # (Rebuy or grind) + other tags
+        (MockTrade(False, "120 6"), ["120", "6"], "long_grind_adjust_trade_position"),  # Long grind + long normal tag
+        (MockTrade(False, "61 6"), ["61", "6"], "long_grind_adjust_trade_position"),  # Long rebuy + long normal tag
+        
+        # No tags!
+        (MockTrade(False, ""), [], "long_rebuy_adjust_trade_position"),  # Empty enter_tags
     ],
 )
 
