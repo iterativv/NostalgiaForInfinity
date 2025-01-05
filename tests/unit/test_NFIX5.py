@@ -1,6 +1,6 @@
 import pytest
+from unittest.mock import MagicMock
 from NostalgiaForInfinityX5 import NostalgiaForInfinityX5
-
 
 @pytest.fixture
 def mock_config(tmp_path):
@@ -27,6 +27,75 @@ def mock_config(tmp_path):
     "user_data_dir": tmp_path,  # Use pytest's temporary directory
     "runmode": RunModeMock("backtest"),  # Simulate the execution mode
   }
+
+# Define a mock trade object
+class MockTrade:
+    def __init__(self, is_short, enter_tag):
+        self.is_short = is_short
+        self.enter_tag = enter_tag
+
+@pytest.mark.parametrize(
+    "trade, enter_tags, expected_function",
+    [
+        (MockTrade(False, "61"), ["61"], "long_rebuy_adjust_trade_position"),  # Rebuy
+        (MockTrade(False, "120"), ["120"], "long_grind_adjust_trade_position"),  # Grind
+        (MockTrade(True, "620"), ["620"], "short_grind_adjust_trade_position"),  # Short Grind
+        (MockTrade(False, "999"), ["999"], None),  # No match
+        (MockTrade(False, ""), [], None),  # Empty enter_tags
+    ],
+)
+
+def test_adjust_trade_position(mock_config, mocker, trade, enter_tags, expected_function):
+    """Test that adjust_trade_position calls the correct function."""
+    strategy = NostalgiaForInfinityX5(mock_config)
+    strategy.position_adjustment_enable = True
+
+    # Mock adjustment functions
+    strategy.long_rebuy_adjust_trade_position = mocker.MagicMock()
+    strategy.long_grind_adjust_trade_position = mocker.MagicMock()
+    strategy.short_grind_adjust_trade_position = mocker.MagicMock()
+
+    # Call adjust_trade_position
+    strategy.adjust_trade_position(
+        trade,
+        current_time=None,
+        current_rate=0.0,
+        current_profit=0.0,
+        min_stake=None,
+        max_stake=10.0,
+        current_entry_rate=0.0,
+        current_exit_rate=0.0,
+        current_entry_profit=0.0,
+        current_exit_profit=0.0,
+    )
+
+    # Verify correct function call
+    if expected_function:
+        getattr(strategy, expected_function).assert_called_once_with(
+            trade,
+            enter_tags,
+            None,
+            0.0,
+            0.0,
+            None,
+            10.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+        )
+    else:
+        called_functions = []
+        for func_name, func in [
+            ("long_rebuy_adjust_trade_position", strategy.long_rebuy_adjust_trade_position),
+            ("long_grind_adjust_trade_position", strategy.long_grind_adjust_trade_position),
+            ("short_grind_adjust_trade_position", strategy.short_grind_adjust_trade_position),
+        ]:
+            if func.called:
+                called_functions.append(f"{func_name} called with: {func.call_args_list}")
+
+        if called_functions:
+            pytest.fail(f"Unexpected function calls: {called_functions}")
 
 
 def test_update_signals_from_config(mock_config):
