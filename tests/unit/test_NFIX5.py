@@ -141,12 +141,20 @@ def test_adjust_trade_position(mock_config, mocker, trade, expected_function):
         (MockTrade(False, "21"), ["long_exit_pump"], {}),
         (MockTrade(False, "41"), ["long_exit_quick"], {}),
         (MockTrade(False, "61"), ["long_exit_rebuy"], {}),
+        (MockTrade(False, "101"), ["long_exit_rapid"], {}),
         (MockTrade(True, "500"), ["short_exit_normal"], {}),
         (MockTrade(True, "521"), ["short_exit_pump"], {}),
         (MockTrade(False, "999"), ["long_exit_normal"], {}),
 
         # Long and pump tags
         (MockTrade(False, "1 21"), ["long_exit_normal", "long_exit_pump"], {}),
+
+        # FAILING TEST! Long normal and long quick and long rapid tags.
+        (MockTrade(False, "1 41 101"), ["long_exit_normal", "long_exit_quick", "long_exit_rapid"], {}),
+
+        # Long normal and long quick and long rapid and long grind tags.
+        (MockTrade(False, "1 41 101 120"), ["long_exit_normal", "long_exit_quick", "long_exit_rapid"], {}),
+
         # Rebuy and grind tags. WARNING! No exit function for these tags!
         (MockTrade(False, "61 120"), [], {}),
 
