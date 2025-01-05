@@ -184,8 +184,16 @@ def test_custom_exit_calls_correct_function(mock_config, mocker, trade, expected
     "long_exit_pump",
     "long_exit_quick",
     "long_exit_rebuy",
+    "long_exit_high_profit",
+    "long_exit_rapid",
+    "long_exit_top_coins",
+    "long_exit_derisk",
     "short_exit_normal",
     "short_exit_pump",
+    "short_exit_quick",
+    "short_exit_rebuy",
+    "short_exit_high_profit",
+    "short_exit_rapid"
   ]
   mocked_functions = {}
   for func_name in functions_to_mock:
