@@ -36,6 +36,7 @@ class MockTrade:
   def __init__(self, is_short, enter_tag, fee_open=0.001, fee_close=0.001):
     self.is_short = is_short
     self.enter_tag = enter_tag
+    self.enter_tags = enter_tag.split()
     self.open_rate = 100.0
     self.max_rate = 110.0
     self.min_rate = 90.0
@@ -135,12 +136,17 @@ def test_adjust_trade_position(mock_config, mocker, trade, expected_function):
 @pytest.mark.parametrize(
   "trade, expected_function",
   [
+    # Simple tags
     (MockTrade(False, "1"), "long_exit_normal"),  # Long normal mode
+    (MockTrade(False, "61"), "long_exit_rebuy"),  # Long rebuy mode
+    (MockTrade(False, "120"), "long_exit_grind"),  # Long grind mode
     (MockTrade(False, "21"), "long_exit_pump"),   # Long pump mode
     (MockTrade(False, "41"), "long_exit_quick"),  # Long quick mode
     (MockTrade(True, "500"), "short_exit_normal"),  # Short normal mode
     (MockTrade(True, "521"), "short_exit_pump"),  # Short pump mode
     (MockTrade(False, "999"), "long_exit_normal"),  # Unknown tag, long normal mode
+    # Combined tags
+    (MockTrade(False, "61 120"), "long_exit_grind"),  # Long rebuy + grind mode
   ],
 )
 def test_custom_exit_calls_correct_function(mock_config, mocker, trade, expected_function):
@@ -148,30 +154,42 @@ def test_custom_exit_calls_correct_function(mock_config, mocker, trade, expected
   # Instantiate the real strategy
   strategy = NostalgiaForInfinityX5(mock_config)
 
-  # Ensure the `dp` attribute exists before mocking
+  # Mock the dp attribute to provide fake data
   strategy.dp = MagicMock()
   mocker.patch.object(strategy.dp, "get_analyzed_dataframe", return_value=(
     MagicMock(
       iloc=MagicMock(
         side_effect=[
-          MagicMock(squeeze=lambda: {"close": 105.0}),
-          MagicMock(squeeze=lambda: {"close": 104.0}),
-          MagicMock(squeeze=lambda: {"close": 103.0}),
-          MagicMock(squeeze=lambda: {"close": 102.0}),
-          MagicMock(squeeze=lambda: {"close": 101.0}),
-          MagicMock(squeeze=lambda: {"close": 100.0}),
+          # Provide actual mock data for candles
+          MagicMock(squeeze=lambda: {"close": 105.0, "RSI_14": 85.0, "BBU_20_2.0": 104.0}),
+          MagicMock(squeeze=lambda: {"close": 104.0, "RSI_14": 83.0, "BBU_20_2.0": 103.0}),
+          MagicMock(squeeze=lambda: {"close": 103.0, "RSI_14": 82.0, "BBU_20_2.0": 102.0}),
+          MagicMock(squeeze=lambda: {"close": 102.0, "RSI_14": 81.0, "BBU_20_2.0": 101.0}),
+          MagicMock(squeeze=lambda: {"close": 101.0, "RSI_14": 80.0, "BBU_20_2.0": 100.0}),
+          MagicMock(squeeze=lambda: {"close": 100.0, "RSI_14": 79.0, "BBU_20_2.0": 99.0}),
         ]
       )
     ),
     None,
   ))
 
+  # Mock calc_total_profit to prevent ZeroDivisionError
+  mocker.patch.object(strategy, "calc_total_profit", return_value=(100.0, 1.0, 0.1, 0.05))
+
   # Mock exit functions to track their calls using mocker
-  mocker.patch.object(strategy, "long_exit_normal", return_value=(True, "long_exit_normal"))
-  mocker.patch.object(strategy, "long_exit_pump", return_value=(True, "long_exit_pump"))
-  mocker.patch.object(strategy, "long_exit_quick", return_value=(True, "long_exit_quick"))
-  mocker.patch.object(strategy, "short_exit_normal", return_value=(True, "short_exit_normal"))
-  mocker.patch.object(strategy, "short_exit_pump", return_value=(True, "short_exit_pump"))
+  functions_to_mock = [
+    "long_exit_normal",
+    "long_exit_rebuy",
+    "long_exit_grind",
+    "long_exit_pump",
+    "long_exit_quick",
+    "long_exit_rebuy",
+    "short_exit_normal",
+    "short_exit_pump",
+  ]
+  mocked_functions = {}
+  for func_name in functions_to_mock:
+    mocked_functions[func_name] = mocker.patch.object(strategy, func_name, return_value=(True, f"{func_name}"))
 
   # Generic values for required parameters
   pair = "BTC/USDT"
@@ -189,18 +207,14 @@ def test_custom_exit_calls_correct_function(mock_config, mocker, trade, expected
   )
 
   # Verify that only the expected function was called
-  for func_name in [
-    "long_exit_normal",
-    "long_exit_pump",
-    "long_exit_quick",
-    "short_exit_normal",
-    "short_exit_pump",
-  ]:
-    func = getattr(strategy, func_name)
+  for func_name, mock in mocked_functions.items():
     if func_name == expected_function:
-      func.assert_called_once()  # Ensure the expected function was called exactly once
+      mock.assert_called_once()  # Ensure the expected function was called exactly once
     else:
-      func.assert_not_called()  # Ensure no other function was called
+      try:
+        mock.assert_not_called()  # Ensure no other function was called
+      except AssertionError:
+        pytest.fail(f"Unexpected call to {func_name}. Expected {expected_function}.")
 
 
 def test_update_signals_from_config(mock_config):
