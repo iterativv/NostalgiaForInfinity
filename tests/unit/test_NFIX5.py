@@ -1,6 +1,7 @@
 import pytest
 from NostalgiaForInfinityX5 import NostalgiaForInfinityX5
 
+
 @pytest.fixture
 def mock_config(tmp_path):
   class RunModeMock:
@@ -27,11 +28,13 @@ def mock_config(tmp_path):
     "runmode": RunModeMock("backtest"),  # Simulate the execution mode
   }
 
+
 # Define a mock trade object
 class MockTrade:
   def __init__(self, is_short, enter_tag):
     self.is_short = is_short
     self.enter_tag = enter_tag
+
 
 @pytest.mark.parametrize(
   "trade, expected_function",
@@ -39,7 +42,6 @@ class MockTrade:
     # Rebuy and grind only tags
     (MockTrade(False, "61"), "long_rebuy_adjust_trade_position"),  # Long rebuy tag
     (MockTrade(False, "120"), "long_grind_adjust_trade_position"),  # Long grind tag
-    
     # Other tags
     (MockTrade(True, "620"), "short_grind_adjust_trade_position"),  # Short grind tag
     (MockTrade(False, "161"), "long_grind_adjust_trade_position"),  # Long derisk tag
@@ -49,15 +51,12 @@ class MockTrade:
     (MockTrade(False, "101"), "long_grind_adjust_trade_position"),  # Long rapid tag
     (MockTrade(False, "141"), "long_grind_adjust_trade_position"),  # Long top coins tag
     (MockTrade(False, "999"), "long_grind_adjust_trade_position"),  # Long unknown tag
-    
     # Rebuy + grind tags
     (MockTrade(False, "61 120"), "long_rebuy_adjust_trade_position"),  # Long rebuy + long grind tags
     (MockTrade(False, "120 61"), "long_rebuy_adjust_trade_position"),  # Long grind + long rebuy tags
-    
     # (Rebuy or grind) + other tags
     (MockTrade(False, "120 6"), "long_grind_adjust_trade_position"),  # Long grind + long normal tag
     (MockTrade(False, "61 6"), "long_grind_adjust_trade_position"),  # Long rebuy + long normal tag
-    
     # No tags!
     (MockTrade(False, ""), "long_rebuy_adjust_trade_position"),  # Empty enter_tags
   ],
