@@ -145,8 +145,11 @@ def test_adjust_trade_position(mock_config, mocker, trade, expected_function):
         (MockTrade(True, "521"), ["short_exit_pump"], {}),
         (MockTrade(False, "999"), ["long_exit_normal"], {}),
 
-        # Combined exit tags
+        # Long and pump tags
         (MockTrade(False, "1 21"), ["long_exit_normal", "long_exit_pump"], {}),
+        # Rebuy and grind tags. WARNING! No exit function for these tags!
+        (MockTrade(False, "61 120"), [], {}),
+
     ],
 )
 def test_custom_exit_calls_correct_functions(mock_config, mocker, trade, expected_calls, exit_returns):
