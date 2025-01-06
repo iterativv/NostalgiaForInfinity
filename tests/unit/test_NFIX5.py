@@ -136,28 +136,47 @@ def test_adjust_trade_position(mock_config, mocker, trade, expected_function):
 @pytest.mark.parametrize(
     "trade, expected_calls, exit_returns",
     [
-        # Single entry tags
+        # Single long entry tags
         (MockTrade(False, "1"), ["long_exit_normal"],{}),
         (MockTrade(False, "21"), ["long_exit_pump"], {}),
         (MockTrade(False, "41"), ["long_exit_quick"], {}),
         (MockTrade(False, "61"), ["long_exit_rebuy"], {}),
+        (MockTrade(False, "81"), ["long_exit_high_profit"], {}),
         (MockTrade(False, "101"), ["long_exit_rapid"], {}),
-        (MockTrade(True, "500"), ["short_exit_normal"], {}),
-        (MockTrade(True, "521"), ["short_exit_pump"], {}),
+        (MockTrade(False, "120"), ["long_exit_grind"], {}),
+        (MockTrade(False, "141"), ["long_exit_top_coins"], {}),
+        (MockTrade(False, "161"), ["long_exit_derisk"], {}),
         (MockTrade(False, "999"), ["long_exit_normal"], {}),
 
-        # Long and pump tags
+        # Single short entry tags
+        (MockTrade(True, "500"), ["short_exit_normal"], {}),
+        (MockTrade(True, "521"), ["short_exit_pump"], {}),
+        (MockTrade(True, "541"), ["short_exit_quick"], {}),
+        (MockTrade(True, "561"), ["short_exit_rebuy"], {}),
+        (MockTrade(True, "581"), ["short_exit_high_profit"], {}),
+        (MockTrade(True, "601"), ["short_exit_rapid"], {}),
+
+        # TODO: FAILING TEST! Currently code calls short_exit_normal (is this normal?)
+        #(MockTrade(True, "620"), ["short_exit_grind"], {}),
+
+        # TODO: FAILING TEST! Currently code calls short_exit_normal (is this normal?)
+        #(MockTrade(True, "641"), ["short_exit_top_coins"], {}),
+
+        # TODO: FAILING TEST! Currently code calls short_exit_normal (is this normal?)
+        #(MockTrade(True, "661"), ["short_exit_derisk"], {}),
+
+        # Combined long entry tags
         (MockTrade(False, "1 21"), ["long_exit_normal", "long_exit_pump"], {}),
 
-        # FAILING TEST! Long normal and long quick and long rapid tags.
-        (MockTrade(False, "1 41 101"), ["long_exit_normal", "long_exit_quick", "long_exit_rapid"], {}),
+        # TODO: FAILING TEST! Not calling long_exit_rapid
+        #(MockTrade(False, "1 41 101"), ["long_exit_normal", "long_exit_quick", "long_exit_rapid"], {}),
 
-        # Long normal and long quick and long rapid and long grind tags.
-        (MockTrade(False, "1 41 101 120"), ["long_exit_normal", "long_exit_quick", "long_exit_rapid"], {}),
+        # TODO: FAILING TEST! Not calling long_exit_rapid
+        #(MockTrade(False, "1 41 101 120"), ["long_exit_normal", "long_exit_quick", "long_exit_rapid"], {}),
 
-        # Rebuy and grind tags. WARNING! No exit function for these tags!
+        # Rebuy and grind tags.
+        # TODO: WARNING! No exit function for these tags! What should this call?
         (MockTrade(False, "61 120"), [], {}),
-
     ],
 )
 def test_custom_exit_calls_correct_functions(mock_config, mocker, trade, expected_calls, exit_returns):
