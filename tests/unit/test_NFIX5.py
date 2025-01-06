@@ -155,11 +155,11 @@ def test_adjust_trade_position(mock_config, mocker, trade, expected_function):
     (MockTrade(True, "581"), ["short_exit_high_profit"], {}),
     (MockTrade(True, "601"), ["short_exit_rapid"], {}),
     # TODO: FAILING TEST! Currently code calls short_exit_normal
-    #(MockTrade(True, "620"), ["short_exit_grind"], {}),
+    # (MockTrade(True, "620"), ["short_exit_grind"], {}),
     # TODO: FAILING TEST! Currently code calls short_exit_normal
-    #(MockTrade(True, "641"), ["short_exit_top_coins"], {}),
+    # (MockTrade(True, "641"), ["short_exit_top_coins"], {}),
     # TODO: FAILING TEST! Currently code calls short_exit_normal
-    #(MockTrade(True, "661"), ["short_exit_derisk"], {}),
+    # (MockTrade(True, "661"), ["short_exit_derisk"], {}),
     # Combined long entry tags
     # normal + pump
     (MockTrade(False, "1 21"), ["long_exit_normal", "long_exit_pump"], {}),
@@ -169,13 +169,13 @@ def test_adjust_trade_position(mock_config, mocker, trade, expected_function):
     (
       MockTrade(False, "1 21 41 81 141"),
       ["long_exit_normal", "long_exit_pump", "long_exit_quick", "long_exit_high_profit", "long_exit_top_coins"],
-      {}
+      {},
     ),
     # Combined entry tags that are exclusive
     # rebuy + grind
     (MockTrade(False, "61 120"), [], {}),
     # rebuy + grind + derisk
-    (MockTrade(False, "61 120 161"), [], {}),
+    (MockTrade(False, "61 120 161"), [], {}), 
   ],
 )
 def test_custom_exit_calls_correct_functions(mock_config, mocker, trade, expected_calls, exit_returns):
@@ -202,7 +202,7 @@ def test_custom_exit_calls_correct_functions(mock_config, mocker, trade, expecte
         )
       ),
       None,
-    )
+    ),
   )
 
   # Mock calc_total_profit to prevent ZeroDivisionError
@@ -254,7 +254,7 @@ def test_custom_exit_calls_correct_functions(mock_config, mocker, trade, expecte
   # Assert that the actual calls match the expected calls
   assert actual_calls == expected_calls, f"Expected calls: {expected_calls}, but got: {actual_calls}"
 
-    
+
 def test_update_signals_from_config(mock_config):
   """Test that the update_signals_from_config function correctly updates signals"""
   strategy = NostalgiaForInfinityX5(mock_config)  # mock_config is injected by pytest
