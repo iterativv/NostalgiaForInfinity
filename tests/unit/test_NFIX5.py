@@ -134,124 +134,128 @@ def test_adjust_trade_position(mock_config, mocker, trade, expected_function):
 
 
 @pytest.mark.parametrize(
-    "trade, expected_calls, exit_returns",
-    [
-        # Single long entry tags
-        (MockTrade(False, "1"), ["long_exit_normal"],{}),
-        (MockTrade(False, "21"), ["long_exit_pump"], {}),
-        (MockTrade(False, "41"), ["long_exit_quick"], {}),
-        (MockTrade(False, "61"), ["long_exit_rebuy"], {}),
-        (MockTrade(False, "81"), ["long_exit_high_profit"], {}),
-        (MockTrade(False, "101"), ["long_exit_rapid"], {}),
-        (MockTrade(False, "120"), ["long_exit_grind"], {}),
-        (MockTrade(False, "141"), ["long_exit_top_coins"], {}),
-        (MockTrade(False, "161"), ["long_exit_derisk"], {}),
-        (MockTrade(False, "999"), ["long_exit_normal"], {}),
+  "trade, expected_calls, exit_returns",
+  [
+    # Single long entry tags
+    (MockTrade(False, "1"), ["long_exit_normal"],{}),
+    (MockTrade(False, "21"), ["long_exit_pump"], {}),
+    (MockTrade(False, "41"), ["long_exit_quick"], {}),
+    (MockTrade(False, "61"), ["long_exit_rebuy"], {}),
+    (MockTrade(False, "81"), ["long_exit_high_profit"], {}),
+    (MockTrade(False, "101"), ["long_exit_rapid"], {}),
+    (MockTrade(False, "120"), ["long_exit_grind"], {}),
+    (MockTrade(False, "141"), ["long_exit_top_coins"], {}),
+    (MockTrade(False, "161"), ["long_exit_derisk"], {}),
+    (MockTrade(False, "999"), ["long_exit_normal"], {}),
 
-        # Single short entry tags
-        (MockTrade(True, "500"), ["short_exit_normal"], {}),
-        (MockTrade(True, "521"), ["short_exit_pump"], {}),
-        (MockTrade(True, "541"), ["short_exit_quick"], {}),
-        (MockTrade(True, "561"), ["short_exit_rebuy"], {}),
-        (MockTrade(True, "581"), ["short_exit_high_profit"], {}),
-        (MockTrade(True, "601"), ["short_exit_rapid"], {}),
+    # Single short entry tags
+    (MockTrade(True, "500"), ["short_exit_normal"], {}),
+    (MockTrade(True, "521"), ["short_exit_pump"], {}),
+    (MockTrade(True, "541"), ["short_exit_quick"], {}),
+    (MockTrade(True, "561"), ["short_exit_rebuy"], {}),
+    (MockTrade(True, "581"), ["short_exit_high_profit"], {}),
+    (MockTrade(True, "601"), ["short_exit_rapid"], {}),
 
-        # TODO: FAILING TEST! Currently code calls short_exit_normal (is this normal?)
-        #(MockTrade(True, "620"), ["short_exit_grind"], {}),
+    # TODO: FAILING TEST! Currently code calls short_exit_normal
+    #(MockTrade(True, "620"), ["short_exit_grind"], {}),
 
-        # TODO: FAILING TEST! Currently code calls short_exit_normal (is this normal?)
-        #(MockTrade(True, "641"), ["short_exit_top_coins"], {}),
+    # TODO: FAILING TEST! Currently code calls short_exit_normal
+    #(MockTrade(True, "641"), ["short_exit_top_coins"], {}),
 
-        # TODO: FAILING TEST! Currently code calls short_exit_normal (is this normal?)
-        #(MockTrade(True, "661"), ["short_exit_derisk"], {}),
+    # TODO: FAILING TEST! Currently code calls short_exit_normal
+    #(MockTrade(True, "661"), ["short_exit_derisk"], {}),
 
-        # Combined long entry tags
-        (MockTrade(False, "1 21"), ["long_exit_normal", "long_exit_pump"], {}),
+    # Combined long entry tags
+    # normal + pump
+    (MockTrade(False, "1 21"), ["long_exit_normal", "long_exit_pump"], {}),
 
-        # TODO: FAILING TEST! Not calling long_exit_rapid
-        #(MockTrade(False, "1 41 101"), ["long_exit_normal", "long_exit_quick", "long_exit_rapid"], {}),
+    # rapid + rebuy + grind + derisk (rebuy, grind and derisk are all exclusive. Rapid can combine with the others)
+    (MockTrade(False, "101 61 120 161"), ["long_exit_rapid"], {}),
 
-        # TODO: FAILING TEST! Not calling long_exit_rapid
-        #(MockTrade(False, "1 41 101 120"), ["long_exit_normal", "long_exit_quick", "long_exit_rapid"], {}),
+    # long normal + pump + quick + high_profit + top_coins (all can combine together)
+    (MockTrade(False, "1 21 41 81 141"), ["long_exit_normal", "long_exit_pump", "long_exit_quick", "long_exit_high_profit", "long_exit_top_coins"], {}),
 
-        # Rebuy and grind tags.
-        # TODO: WARNING! No exit function for these tags! What should this call?
-        (MockTrade(False, "61 120"), [], {}),
-    ],
+    # Combined entry tags that are exclusive
+    # rebuy + grind
+    (MockTrade(False, "61 120"), [], {}),
+
+    # rebuy + grind + derisk
+    (MockTrade(False, "61 120 161"), [], {}),
+  ],
 )
 def test_custom_exit_calls_correct_functions(mock_config, mocker, trade, expected_calls, exit_returns):
-    """Test to validate that custom_exit calls the correct exit functions."""
-    # Instantiate the real strategy
-    strategy = NostalgiaForInfinityX5(mock_config)
+  """Test to validate that custom_exit calls the correct exit functions."""
+  # Instantiate the real strategy
+  strategy = NostalgiaForInfinityX5(mock_config)
 
-    # Mock the dp attribute to provide fake data
-    strategy.dp = MagicMock()
-    mocker.patch.object(strategy.dp, "get_analyzed_dataframe", return_value=(
-        MagicMock(
-            iloc=MagicMock(
-                side_effect=[
-                    MagicMock(squeeze=lambda: {"close": 105.0, "RSI_14": 85.0, "BBU_20_2.0": 104.0}),
-                    MagicMock(squeeze=lambda: {"close": 104.0, "RSI_14": 83.0, "BBU_20_2.0": 103.0}),
-                    MagicMock(squeeze=lambda: {"close": 103.0, "RSI_14": 82.0, "BBU_20_2.0": 102.0}),
-                    MagicMock(squeeze=lambda: {"close": 102.0, "RSI_14": 81.0, "BBU_20_2.0": 101.0}),
-                    MagicMock(squeeze=lambda: {"close": 101.0, "RSI_14": 80.0, "BBU_20_2.0": 100.0}),
-                    MagicMock(squeeze=lambda: {"close": 100.0, "RSI_14": 79.0, "BBU_20_2.0": 99.0}),
-                ]
-            )
-        ),
-        None,
-    ))
+  # Mock the dp attribute to provide fake data
+  strategy.dp = MagicMock()
+  mocker.patch.object(strategy.dp, "get_analyzed_dataframe", return_value=(
+    MagicMock(
+      iloc=MagicMock(
+        side_effect=[
+          MagicMock(squeeze=lambda: {"close": 105.0, "RSI_14": 85.0, "BBU_20_2.0": 104.0}),
+          MagicMock(squeeze=lambda: {"close": 104.0, "RSI_14": 83.0, "BBU_20_2.0": 103.0}),
+          MagicMock(squeeze=lambda: {"close": 103.0, "RSI_14": 82.0, "BBU_20_2.0": 102.0}),
+          MagicMock(squeeze=lambda: {"close": 102.0, "RSI_14": 81.0, "BBU_20_2.0": 101.0}),
+          MagicMock(squeeze=lambda: {"close": 101.0, "RSI_14": 80.0, "BBU_20_2.0": 100.0}),
+          MagicMock(squeeze=lambda: {"close": 100.0, "RSI_14": 79.0, "BBU_20_2.0": 99.0}),
+        ]
+      )
+    ),
+    None,
+  ))
 
-    # Mock calc_total_profit to prevent ZeroDivisionError
-    mocker.patch.object(strategy, "calc_total_profit", return_value=(100.0, 1.0, 0.1, 0.05))
+  # Mock calc_total_profit to prevent ZeroDivisionError
+  mocker.patch.object(strategy, "calc_total_profit", return_value=(100.0, 1.0, 0.1, 0.05))
 
-    # Mock exit functions to track their calls
-    functions_to_mock = [
-        "long_exit_normal",
-        "long_exit_rebuy",
-        "long_exit_grind",
-        "long_exit_pump",
-        "long_exit_quick",
-        "long_exit_rebuy",
-        "long_exit_high_profit",
-        "long_exit_rapid",
-        "long_exit_top_coins",
-        "long_exit_derisk",
-        "short_exit_normal",
-        "short_exit_pump",
-        "short_exit_quick",
-        "short_exit_rebuy",
-        "short_exit_high_profit",
-        "short_exit_rapid"
-    ]
-    mocked_functions = {}
-    for func_name in functions_to_mock:
-        # Set return value based on parameterized `exit_returns` or default to (False, None)
-        return_value = exit_returns.get(func_name, (False, None)) if exit_returns else (False, None)
-        mocked_functions[func_name] = mocker.patch.object(strategy, func_name, return_value=return_value)
+  # Mock exit functions to track their calls
+  functions_to_mock = [
+    "long_exit_normal",
+    "long_exit_rebuy",
+    "long_exit_grind",
+    "long_exit_pump",
+    "long_exit_quick",
+    "long_exit_rebuy",
+    "long_exit_high_profit",
+    "long_exit_rapid",
+    "long_exit_top_coins",
+    "long_exit_derisk",
+    "short_exit_normal",
+    "short_exit_pump",
+    "short_exit_quick",
+    "short_exit_rebuy",
+    "short_exit_high_profit",
+    "short_exit_rapid"
+  ]
+  mocked_functions = {}
+  for func_name in functions_to_mock:
+    # Set return value based on parameterized `exit_returns` or default to (False, None)
+    return_value = exit_returns.get(func_name, (False, None)) if exit_returns else (False, None)
+    mocked_functions[func_name] = mocker.patch.object(strategy, func_name, return_value=return_value)
 
-    # Generic values for required parameters
-    pair = "BTC/USDT"
-    current_time = datetime(2023, 1, 1)  # Arbitrary date
-    current_rate = 105.0  # Example current rate
-    current_profit = 0.05  # Example profit
+  # Generic values for required parameters
+  pair = "BTC/USDT"
+  current_time = datetime(2023, 1, 1)  # Arbitrary date
+  current_rate = 105.0  # Example current rate
+  current_profit = 0.05  # Example profit
 
-    # Call the real custom_exit function
-    strategy.custom_exit(
-        pair=pair,
-        trade=trade,
-        current_time=current_time,
-        current_rate=current_rate,
-        current_profit=current_profit,
-    )
+  # Call the real custom_exit function
+  strategy.custom_exit(
+    pair=pair,
+    trade=trade,
+    current_time=current_time,
+    current_rate=current_rate,
+    current_profit=current_profit,
+  )
 
-    # Verify the calls
-    actual_calls = [func_name for func_name, mock in mocked_functions.items() if mock.call_count > 0]
+  # Verify the calls
+  actual_calls = [func_name for func_name, mock in mocked_functions.items() if mock.call_count > 0]
 
-    # Assert that the actual calls match the expected calls
-    assert actual_calls == expected_calls, (
-        f"Expected calls: {expected_calls}, but got: {actual_calls}"
-    )
+  # Assert that the actual calls match the expected calls
+  assert actual_calls == expected_calls, (
+    f"Expected calls: {expected_calls}, but got: {actual_calls}"
+  )
 
 
 def test_update_signals_from_config(mock_config):
