@@ -1,5 +1,5 @@
 import pytest
-from unittest.mock import MagicMock, call
+from unittest.mock import MagicMock
 from datetime import datetime
 from NostalgiaForInfinityX5 import NostalgiaForInfinityX5
 
@@ -137,7 +137,7 @@ def test_adjust_trade_position(mock_config, mocker, trade, expected_function):
   "trade, expected_calls, exit_returns",
   [
     # Single long entry tags
-    (MockTrade(False, "1"), ["long_exit_normal"],{}),
+    (MockTrade(False, "1"), ["long_exit_normal"], {}),
     (MockTrade(False, "21"), ["long_exit_pump"], {}),
     (MockTrade(False, "41"), ["long_exit_quick"], {}),
     (MockTrade(False, "61"), ["long_exit_rebuy"], {}),
@@ -147,7 +147,6 @@ def test_adjust_trade_position(mock_config, mocker, trade, expected_function):
     (MockTrade(False, "141"), ["long_exit_top_coins"], {}),
     (MockTrade(False, "161"), ["long_exit_derisk"], {}),
     (MockTrade(False, "999"), ["long_exit_normal"], {}),
-
     # Single short entry tags
     (MockTrade(True, "500"), ["short_exit_normal"], {}),
     (MockTrade(True, "521"), ["short_exit_pump"], {}),
@@ -155,30 +154,26 @@ def test_adjust_trade_position(mock_config, mocker, trade, expected_function):
     (MockTrade(True, "561"), ["short_exit_rebuy"], {}),
     (MockTrade(True, "581"), ["short_exit_high_profit"], {}),
     (MockTrade(True, "601"), ["short_exit_rapid"], {}),
-
     # TODO: FAILING TEST! Currently code calls short_exit_normal
     #(MockTrade(True, "620"), ["short_exit_grind"], {}),
-
     # TODO: FAILING TEST! Currently code calls short_exit_normal
     #(MockTrade(True, "641"), ["short_exit_top_coins"], {}),
-
     # TODO: FAILING TEST! Currently code calls short_exit_normal
     #(MockTrade(True, "661"), ["short_exit_derisk"], {}),
-
     # Combined long entry tags
     # normal + pump
     (MockTrade(False, "1 21"), ["long_exit_normal", "long_exit_pump"], {}),
-
     # rapid + rebuy + grind + derisk (rebuy, grind and derisk are all exclusive. Rapid can combine with the others)
     (MockTrade(False, "101 61 120 161"), ["long_exit_rapid"], {}),
-
     # long normal + pump + quick + high_profit + top_coins (all can combine together)
-    (MockTrade(False, "1 21 41 81 141"), ["long_exit_normal", "long_exit_pump", "long_exit_quick", "long_exit_high_profit", "long_exit_top_coins"], {}),
-
+    (
+      MockTrade(False, "1 21 41 81 141"),
+      ["long_exit_normal", "long_exit_pump", "long_exit_quick", "long_exit_high_profit", "long_exit_top_coins"],
+      {}
+    ),
     # Combined entry tags that are exclusive
     # rebuy + grind
     (MockTrade(False, "61 120"), [], {}),
-
     # rebuy + grind + derisk
     (MockTrade(False, "61 120 161"), [], {}),
   ],
@@ -190,21 +185,25 @@ def test_custom_exit_calls_correct_functions(mock_config, mocker, trade, expecte
 
   # Mock the dp attribute to provide fake data
   strategy.dp = MagicMock()
-  mocker.patch.object(strategy.dp, "get_analyzed_dataframe", return_value=(
-    MagicMock(
-      iloc=MagicMock(
-        side_effect=[
-          MagicMock(squeeze=lambda: {"close": 105.0, "RSI_14": 85.0, "BBU_20_2.0": 104.0}),
-          MagicMock(squeeze=lambda: {"close": 104.0, "RSI_14": 83.0, "BBU_20_2.0": 103.0}),
-          MagicMock(squeeze=lambda: {"close": 103.0, "RSI_14": 82.0, "BBU_20_2.0": 102.0}),
-          MagicMock(squeeze=lambda: {"close": 102.0, "RSI_14": 81.0, "BBU_20_2.0": 101.0}),
-          MagicMock(squeeze=lambda: {"close": 101.0, "RSI_14": 80.0, "BBU_20_2.0": 100.0}),
-          MagicMock(squeeze=lambda: {"close": 100.0, "RSI_14": 79.0, "BBU_20_2.0": 99.0}),
-        ]
-      )
-    ),
-    None,
-  ))
+  mocker.patch.object(
+    strategy.dp,
+    "get_analyzed_dataframe",
+    return_value=(
+      MagicMock(
+        iloc=MagicMock(
+          side_effect=[
+            MagicMock(squeeze=lambda: {"close": 105.0, "RSI_14": 85.0, "BBU_20_2.0": 104.0}),
+            MagicMock(squeeze=lambda: {"close": 104.0, "RSI_14": 83.0, "BBU_20_2.0": 103.0}),
+            MagicMock(squeeze=lambda: {"close": 103.0, "RSI_14": 82.0, "BBU_20_2.0": 102.0}),
+            MagicMock(squeeze=lambda: {"close": 102.0, "RSI_14": 81.0, "BBU_20_2.0": 101.0}),
+            MagicMock(squeeze=lambda: {"close": 101.0, "RSI_14": 80.0, "BBU_20_2.0": 100.0}),
+            MagicMock(squeeze=lambda: {"close": 100.0, "RSI_14": 79.0, "BBU_20_2.0": 99.0}),
+          ]
+        )
+      ),
+      None,
+    )
+  )
 
   # Mock calc_total_profit to prevent ZeroDivisionError
   mocker.patch.object(strategy, "calc_total_profit", return_value=(100.0, 1.0, 0.1, 0.05))
@@ -226,7 +225,7 @@ def test_custom_exit_calls_correct_functions(mock_config, mocker, trade, expecte
     "short_exit_quick",
     "short_exit_rebuy",
     "short_exit_high_profit",
-    "short_exit_rapid"
+    "short_exit_rapid",
   ]
   mocked_functions = {}
   for func_name in functions_to_mock:
@@ -253,11 +252,9 @@ def test_custom_exit_calls_correct_functions(mock_config, mocker, trade, expecte
   actual_calls = [func_name for func_name, mock in mocked_functions.items() if mock.call_count > 0]
 
   # Assert that the actual calls match the expected calls
-  assert actual_calls == expected_calls, (
-    f"Expected calls: {expected_calls}, but got: {actual_calls}"
-  )
+  assert actual_calls == expected_calls, f"Expected calls: {expected_calls}, but got: {actual_calls}"
 
-
+    
 def test_update_signals_from_config(mock_config):
   """Test that the update_signals_from_config function correctly updates signals"""
   strategy = NostalgiaForInfinityX5(mock_config)  # mock_config is injected by pytest
