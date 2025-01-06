@@ -175,7 +175,7 @@ def test_adjust_trade_position(mock_config, mocker, trade, expected_function):
     # rebuy + grind
     (MockTrade(False, "61 120"), [], {}),
     # rebuy + grind + derisk
-    (MockTrade(False, "61 120 161"), [], {}), 
+    (MockTrade(False, "61 120 161"), [], {}),
   ],
 )
 def test_custom_exit_calls_correct_functions(mock_config, mocker, trade, expected_calls, exit_returns):
