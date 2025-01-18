@@ -67,7 +67,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.327"
+    return "v15.1.328"
 
   stoploss = -0.99
 
@@ -487,6 +487,7 @@ class NostalgiaForInfinityX5(IStrategy):
     "long_entry_condition_42_enable": True,
     "long_entry_condition_43_enable": True,
     "long_entry_condition_101_enable": True,
+    "long_entry_condition_102_enable": True,
     "long_entry_condition_120_enable": True,
     "long_entry_condition_141_enable": True,
     "long_entry_condition_142_enable": True,
@@ -11178,6 +11179,26 @@ class NostalgiaForInfinityX5(IStrategy):
           long_entry_logic.append(df["STOCHRSIk_14_14_3_3"] < 20.0)
           long_entry_logic.append(df["close"] < (df["SMA_16"] * 0.946))
           long_entry_logic.append(df["AROONU_14_15m"] < 50.0)
+
+        # Condition #102 - Rapid mode (Long).
+        if long_entry_condition_index == 102:
+          # Protections
+          long_entry_logic.append(df["num_empty_288"] <= allowed_empty_candles_288)
+          long_entry_logic.append(df["global_protections_long_pump"] == True)
+          long_entry_logic.append(df["global_protections_long_dump"] == True)
+
+          long_entry_logic.append(df["RSI_3"] < 46.0)
+          long_entry_logic.append(df["RSI_3_15m"] > 5.0)
+          long_entry_logic.append(df["RSI_3_1h"] > 10.0)
+          long_entry_logic.append(df["RSI_3_4h"] > 10.0)
+          long_entry_logic.append((df["RSI_3_15m"] > 20.0) | (df["AROONU_14_15m"] < 25.0))
+          long_entry_logic.append((df["RSI_3_1h"] > 30.0) | (df["AROONU_14_1h"] < 25.0))
+
+          # Logic
+          long_entry_logic.append(df["WILLR_14"] < -95.0)
+          long_entry_logic.append(df["STOCHRSIk_14_14_3_3"] < 10.0)
+          long_entry_logic.append(df["close"] < (df["BBL_20_2.0"] * 0.999))
+          long_entry_logic.append(df["close"] < (df["EMA_20"] * 0.960))
 
         # Condition #120 - Grind mode (Long).
         if long_entry_condition_index == 120:
