@@ -67,7 +67,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.335"
+    return "v15.1.336"
 
   stoploss = -0.99
 
@@ -29483,6 +29483,10 @@ class NostalgiaForInfinityX5(IStrategy):
     last_candle = df.iloc[-1].squeeze()
     previous_candle = df.iloc[-2].squeeze()
 
+    # we already waiting for an order to get filled
+    if trade.has_open_orders:
+      return None
+
     filled_orders = trade.select_filled_orders()
     filled_entries = trade.select_filled_orders(trade.entry_side)
     filled_exits = trade.select_filled_orders(trade.exit_side)
@@ -48514,6 +48518,10 @@ class NostalgiaForInfinityX5(IStrategy):
       return None
     last_candle = df.iloc[-1].squeeze()
     previous_candle = df.iloc[-2].squeeze()
+
+    # we already waiting for an order to get filled
+    if trade.has_open_orders:
+      return None
 
     filled_orders = trade.select_filled_orders()
     filled_entries = trade.select_filled_orders(trade.entry_side)
