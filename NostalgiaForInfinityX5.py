@@ -661,19 +661,19 @@ class NostalgiaForInfinityX5(IStrategy):
   def plot_config(self):
     plot_config = {}
 
-    plot_config['main_plot'] = {
-      'EMA_12': {'color': 'LightGreen'},
-      'EMA_26': {'color': 'Yellow'},
-      'EMA_50': {'color': 'DodgerBlue'},
-      'EMA_200': {'color': 'DarkRed'}
+    plot_config["main_plot"] = {
+      "EMA_12": {"color": "LightGreen"},
+      "EMA_26": {"color": "Yellow"},
+      "EMA_50": {"color": "DodgerBlue"},
+      "EMA_200": {"color": "DarkRed"}
     }
 
-    plot_config['subplots'] = {
-      'long_pump_protection': {
-          'global_protections_long_pump': {'color': 'green'}
+    plot_config["subplots"] = {
+      "long_pump_protection": {
+          "global_protections_long_pump": {"color": "green"}
       },
-      'long_dump_protection': {
-          'global_protections_long_dump': {'color': 'red'}
+      "long_dump_protection": {
+          "global_protections_long_dump": {"color": "red"}
       }
     }
 
