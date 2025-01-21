@@ -654,7 +654,6 @@ class NostalgiaForInfinityX5(IStrategy):
 
     self.update_signals_from_config(self.config)
 
-
   # Plot configuration for FreqUI
   # ---------------------------------------------------------------------------------------------
   @property
@@ -665,20 +664,15 @@ class NostalgiaForInfinityX5(IStrategy):
       "EMA_12": {"color": "LightGreen"},
       "EMA_26": {"color": "Yellow"},
       "EMA_50": {"color": "DodgerBlue"},
-      "EMA_200": {"color": "DarkRed"}
+      "EMA_200": {"color": "DarkRed"},
     }
 
     plot_config["subplots"] = {
-      "long_pump_protection": {
-          "global_protections_long_pump": {"color": "green"}
-      },
-      "long_dump_protection": {
-          "global_protections_long_dump": {"color": "red"}
-      }
+      "long_pump_protection": {"global_protections_long_pump": {"color": "green"}},
+      "long_dump_protection": {"global_protections_long_dump": {"color": "red"}},
     }
 
     return plot_config
-
 
   # Get Ticker Indicator
   # ---------------------------------------------------------------------------------------------
@@ -3639,6 +3633,26 @@ class NostalgiaForInfinityX5(IStrategy):
         | (df["STOCHk_14_3_3_4h"] < 80.0)
         | (df["ROC_9_4h"] < 15.0)
         | (df["RSI_14_1d"] < 40.0)
+      )
+      # 15m & 1h & 4h & 1d down move, 15m & 1h & 4h still not low enough, 1d still not low enough & downtrend
+      & (
+        (df["RSI_3_15m"] > 25.0)
+        | (df["RSI_3_1h"] > 45.0)
+        | (df["RSI_3_4h"] > 45.0)
+        | (df["RSI_3_1d"] > 65.0)
+        | (df["RSI_14_15m"] < 10.0)
+        | (df["CCI_20_15m"] < -450.0)
+        | (df["STOCHRSIk_14_14_3_3_15m"] < 5.0)
+        | (df["RSI_14_1h"] < 20.0)
+        | (df["CCI_20_1h"] < -450.0)
+        | (df["STOCHRSIk_14_14_3_3_1h"] < 10.0)
+        | (df["RSI_14_4h"] < 30.0)
+        | (df["CCI_20_4h"] < -300.0)
+        | (df["STOCHRSIk_14_14_3_3_4h"] < 10.0)
+        | (df["RSI_14_1d"] < 40.0)
+        | (df["WILLR_14_1d"] < -50.0)
+        | (df["STOCHRSIk_14_14_3_3_1d"] < 80.0)
+        | (df["ROC_9_1d"] < 25.0)
       )
       # 15m & 1h & 4h down move, 15m & 1h & 4h still not low enough, 1d high & overbought
       & (
@@ -51717,7 +51731,6 @@ class NostalgiaForInfinityX5(IStrategy):
             return -ft_sell_amount
 
     return None
-
 
   ###############################################################################################
 
