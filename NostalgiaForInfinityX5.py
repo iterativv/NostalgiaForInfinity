@@ -67,7 +67,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.336"
+    return "v15.1.337"
 
   stoploss = -0.99
 
@@ -30235,21 +30235,7 @@ class NostalgiaForInfinityX5(IStrategy):
           or (slice_profit < -0.06)
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
-        and (
-          is_long_grind_entry
-          or (
-            (grind_1_derisk_1_sub_grind_count > 0)
-            and (
-              is_long_grind_entry
-              or (
-                (last_candle["RSI_3"] > 6.0)
-                and (last_candle["AROONU_14_15m"] < 25.0)
-                and (last_candle["RSI_14"] < 36.0)
-                and (last_candle["close"] < (last_candle["EMA_26"] * 0.994))
-              )
-            )
-          )
-        )
+        and is_long_grind_entry
       ):
         buy_amount = (
           slice_amount
@@ -30364,21 +30350,7 @@ class NostalgiaForInfinityX5(IStrategy):
           or (slice_profit < -0.06)
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
-        and (
-          is_long_grind_entry
-          or (
-            (grind_2_derisk_1_sub_grind_count > 0)
-            and (
-              is_long_grind_entry
-              or (
-                (last_candle["RSI_3"] > 6.0)
-                and (last_candle["AROONU_14_15m"] < 25.0)
-                and (last_candle["RSI_14"] < 36.0)
-                and (last_candle["close"] < (last_candle["EMA_26"] * 0.994))
-              )
-            )
-          )
-        )
+        and is_long_grind_entry
       ):
         buy_amount = (
           slice_amount
@@ -30829,19 +30801,7 @@ class NostalgiaForInfinityX5(IStrategy):
           or (slice_profit < -0.06)
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
-        and (
-          (is_long_grind_entry)
-          or (
-            (slice_profit < -0.04)
-            and (last_candle["RSI_14"] < 36.0)
-            and (last_candle["RSI_3"] > 10.0)
-            and (last_candle["RSI_3_15m"] > 10.0)
-            and (last_candle["RSI_3_1h"] > 15.0)
-            and (last_candle["RSI_3_4h"] > 15.0)
-            and (last_candle["AROONU_14"] < 25.0)
-            and (last_candle["close"] < (last_candle["EMA_20"] * 0.988))
-          )
-        )
+        and is_long_grind_entry
       ):
         buy_amount = (
           slice_amount * grind_4_stakes[grind_4_sub_grind_count] / (trade.leverage if self.is_futures_mode else 1.0)
@@ -31049,18 +31009,7 @@ class NostalgiaForInfinityX5(IStrategy):
           or (slice_profit < -0.06)
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
-        and (
-          (is_long_grind_entry)
-          or (
-            (last_candle["RSI_14"] < 36.0)
-            and (last_candle["RSI_3"] > 10.0)
-            and (last_candle["RSI_3_15m"] > 10.0)
-            and (last_candle["RSI_3_1h"] > 10.0)
-            and (last_candle["RSI_3_4h"] > 10.0)
-            and (last_candle["AROONU_14"] < 25.0)
-            and (last_candle["close"] < (last_candle["EMA_20"] * 0.988))
-          )
-        )
+        and is_long_grind_entry
       ):
         buy_amount = (
           slice_amount * grind_6_stakes[grind_6_sub_grind_count] / (trade.leverage if self.is_futures_mode else 1.0)
@@ -49271,21 +49220,7 @@ class NostalgiaForInfinityX5(IStrategy):
           or (slice_profit > 0.06)
         )
         # and ((num_open_grinds == 0) or (slice_profit > 0.03))
-        and (
-          is_short_grind_entry
-          or (
-            (grind_1_derisk_1_sub_grind_count > 0)
-            and (
-              is_short_grind_entry
-              or (
-                (last_candle["RSI_3"] < 94.0)
-                and (last_candle["AROOND_14_15m"] < 25.0)
-                and (last_candle["RSI_14"] > 64.0)
-                and (last_candle["close"] > (last_candle["EMA_26"] * 1.006))
-              )
-            )
-          )
-        )
+        and is_short_grind_entry
       ):
         buy_amount = (
           slice_amount
@@ -49400,21 +49335,7 @@ class NostalgiaForInfinityX5(IStrategy):
           or (slice_profit > 0.06)
         )
         # and ((num_open_grinds == 0) or (slice_profit > 0.03))
-        and (
-          is_short_grind_entry
-          or (
-            (grind_2_derisk_1_sub_grind_count > 0)
-            and (
-              is_short_grind_entry
-              or (
-                (last_candle["RSI_3"] < 94.0)
-                and (last_candle["AROOND_14_15m"] < 25.0)
-                and (last_candle["RSI_14"] > 64.0)
-                and (last_candle["close"] > (last_candle["EMA_26"] * 1.006))
-              )
-            )
-          )
-        )
+        and is_short_grind_entry
       ):
         buy_amount = (
           slice_amount
@@ -49865,19 +49786,7 @@ class NostalgiaForInfinityX5(IStrategy):
           or (slice_profit > 0.06)
         )
         # and ((num_open_grinds == 0) or (slice_profit > 0.03))
-        and (
-          (is_short_grind_entry)
-          or (
-            (slice_profit > 0.04)
-            and (last_candle["RSI_14"] > 64.0)
-            and (last_candle["RSI_3"] < 90.0)
-            and (last_candle["RSI_3_15m"] < 90.0)
-            and (last_candle["RSI_3_1h"] < 85.0)
-            and (last_candle["RSI_3_4h"] < 85.0)
-            and (last_candle["AROOND_14"] < 25.0)
-            and (last_candle["close"] > (last_candle["EMA_20"] * 1.012))
-          )
-        )
+        and is_short_grind_entry
       ):
         buy_amount = (
           slice_amount * grind_4_stakes[grind_4_sub_grind_count] / (trade.leverage if self.is_futures_mode else 1.0)
@@ -50085,18 +49994,7 @@ class NostalgiaForInfinityX5(IStrategy):
           or (slice_profit > 0.06)
         )
         # and ((num_open_grinds == 0) or (slice_profit > 0.03))
-        and (
-          (is_short_grind_entry)
-          or (
-            (last_candle["RSI_14"] > 64.0)
-            and (last_candle["RSI_3"] < 90.0)
-            and (last_candle["RSI_3_15m"] < 90.0)
-            and (last_candle["RSI_3_1h"] < 90.0)
-            and (last_candle["RSI_3_4h"] < 90.0)
-            and (last_candle["AROOND_14"] < 25.0)
-            and (last_candle["close"] > (last_candle["EMA_20"] * 1.012))
-          )
-        )
+        and is_short_grind_entry
       ):
         buy_amount = (
           slice_amount * grind_6_stakes[grind_6_sub_grind_count] / (trade.leverage if self.is_futures_mode else 1.0)
