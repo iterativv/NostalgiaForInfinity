@@ -66,7 +66,7 @@ def comment_results(options, results_data):
         row_line = "| "
         if key == "max_drawdown":
           label = "Max Drawdown"
-          row_line += f" {label } |"
+          row_line += f" {label} |"
           for report_name in sorted_report_names:
             value = results_data[exchange]["timeranges"][timerange][key][report_name]
             if not isinstance(value, str):
@@ -75,7 +75,7 @@ def comment_results(options, results_data):
           comment_body += f"{row_line}\n"
         elif key == "profit_mean_pct":
           label = "Profit Mean"
-          row_line += f" {label } |"
+          row_line += f" {label} |"
           for report_name in sorted_report_names:
             value = results_data[exchange]["timeranges"][timerange][key][report_name]
             if not isinstance(value, str):
@@ -84,7 +84,7 @@ def comment_results(options, results_data):
           comment_body += f"{row_line}\n"
         elif key == "profit_sum_pct":
           label = "Profit Sum"
-          row_line += f" {label } |"
+          row_line += f" {label} |"
           for report_name in sorted_report_names:
             value = results_data[exchange]["timeranges"][timerange][key][report_name]
             if not isinstance(value, str):
@@ -93,7 +93,7 @@ def comment_results(options, results_data):
           comment_body += f"{row_line}\n"
         elif key == "market_change":
           label = "Market Change"
-          row_line += f" {label } |"
+          row_line += f" {label} |"
           for report_name in sorted_report_names:
             value = results_data[exchange]["timeranges"][timerange][key][report_name]
             if not isinstance(value, str):
@@ -102,7 +102,7 @@ def comment_results(options, results_data):
           comment_body += f"{row_line}\n"
         elif key == "profit_total_pct":
           label = "Profit Total"
-          row_line += f" {label } |"
+          row_line += f" {label} |"
           for report_name in sorted_report_names:
             value = results_data[exchange]["timeranges"][timerange][key][report_name]
             if not isinstance(value, str):
@@ -111,7 +111,7 @@ def comment_results(options, results_data):
           comment_body += f"{row_line}\n"
         elif key == "winrate":
           label = "Win Rate"
-          row_line += f" {label } |"
+          row_line += f" {label} |"
           for report_name in sorted_report_names:
             value = results_data[exchange]["timeranges"][timerange][key][report_name]
             if not isinstance(value, str):
@@ -125,7 +125,7 @@ def comment_results(options, results_data):
             label = "Trades"
           else:
             label = key
-          row_line += f" {label } |"
+          row_line += f" {label} |"
           for report_name in sorted_report_names:
             value = results_data[exchange]["timeranges"][timerange][key][report_name]
             row_line += f" {value} |"
