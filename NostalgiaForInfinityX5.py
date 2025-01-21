@@ -67,7 +67,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.337"
+    return "v15.1.338"
 
   stoploss = -0.99
 
@@ -29989,7 +29989,7 @@ class NostalgiaForInfinityX5(IStrategy):
           "gd6",
           "gm0",
           "gmd0",
-          "dr",
+          "gdr",
         ]:
           grind_1_sub_grind_count += 1
           grind_1_total_amount += order.safe_filled
@@ -30072,7 +30072,7 @@ class NostalgiaForInfinityX5(IStrategy):
           "dd6",
           "gm0",
           "gmd0",
-          "dr",
+          "gdr",
         ]:
           grind_1_is_sell_found = True
 
@@ -48976,7 +48976,7 @@ class NostalgiaForInfinityX5(IStrategy):
           "gd6",
           "gm0",
           "gmd0",
-          "dr",
+          "gdr",
         ]:
           grind_1_sub_grind_count += 1
           grind_1_total_amount += order.safe_filled
@@ -49059,7 +49059,7 @@ class NostalgiaForInfinityX5(IStrategy):
           "dd6",
           "gm0",
           "gmd0",
-          "dr",
+          "gdr",
         ]:
           grind_1_is_sell_found = True
 
