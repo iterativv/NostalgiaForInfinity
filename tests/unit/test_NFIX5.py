@@ -289,9 +289,9 @@ def test_update_signals_from_config(mock_config):
 
   # Verify that the long signals were updated correctly
   for signal_name, value in test_config["long_entry_signal_params"].items():
-    assert strategy.long_entry_signal_params[signal_name] == value, (
-      f"Mismatch in {signal_name}: expected {value}, got {strategy.long_entry_signal_params[signal_name]}"
-    )
+    assert (
+      strategy.long_entry_signal_params[signal_name] == value
+    ), f"Mismatch in {signal_name}: expected {value}, got {strategy.long_entry_signal_params[signal_name]}"
 
   # Verify that the short signals were updated correctly
   for signal_name, value in test_config["short_entry_signal_params"].items():
