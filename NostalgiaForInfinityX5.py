@@ -4410,6 +4410,24 @@ class NostalgiaForInfinityX5(IStrategy):
         | (df["AROONU_14_1d"] < 75.0)
         | (df["ROC_9_1d"] < 100.0)
       )
+      # 15m & 1h down move, 15m still not low enough, 1h still high, 4h high, 1d high & overbought
+      & (
+        (df["RSI_3_15m"] > 35.0)
+        | (df["RSI_3_1h"] > 60.0)
+        | (df["RSI_14_15m"] < 30.0)
+        | (df["CCI_20_15m"] < -250.0)
+        | (df["RSI_14_1h"] < 60.0)
+        | (df["AROONU_14_1h"] < 50.0)
+        | (df["CCI_20_1h"] < -100.0)
+        | (df["RSI_14_4h"] < 70.0)
+        | (df["AROONU_14_4h"] < 75.0)
+        | (df["CCI_20_4h"] < 100.0)
+        | (df["STOCHRSIk_14_14_3_3_4h"] < 70.0)
+        | (df["RSI_14_1d"] < 70.0)
+        | (df["AROONU_14_1d"] < 75.0)
+        | (df["STOCHRSIk_14_14_3_3_1d"] < 70.0)
+        | (df["ROC_9_1d"] < 250.0)
+      )
       # 15m & 1h down move, 15m still not low enough, 1h & 4h still high, 1d still high & overbought
       & (
         (df["RSI_3_15m"] > 35.0)
