@@ -2,7 +2,6 @@
   // WARNING: This is an example configuration
   // Please use at own risk
   // For full documentation on Freqtrade configuration files please visit https://www.freqtrade.io/en/stable/configuration/
-  "dry_run": true,
   "dry_run_wallet": 10000,
   "grinding_enable": true,
   "max_open_trades": 6,
