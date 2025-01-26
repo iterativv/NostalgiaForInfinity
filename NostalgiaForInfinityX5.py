@@ -8494,14 +8494,14 @@ class NostalgiaForInfinityX5(IStrategy):
       # Long trade limit validation
       if side == "long" and long_trades >= self.futures_max_open_trades_long:
         log.info(
-          f"[{current_time}] Cancelling entry for {pair} due to long trades reaching the max limit of {max_open_trades_long}."
+          f"[{current_time}] Cancelling entry for {pair} due to long trades reaching the max limit of {self.futures_max_open_trades_long}."
         )
         return False
 
       # Short trade limit validation
       if side == "short" and short_trades >= self.futures_max_open_trades_short:
         log.info(
-          f"[{current_time}] Cancelling entry for {pair} due to short trades reaching the max limit of {max_open_trades_short}."
+          f"[{current_time}] Cancelling entry for {pair} due to short trades reaching the max limit of {self.futures_max_open_trades_short}."
         )
         return False
 
