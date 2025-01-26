@@ -3,9 +3,6 @@
 x-common-settings:
   &common-settings
   image: freqtradeorg/freqtrade:stable
-  build:
-    context: .
-    dockerfile: "./docker/Dockerfile.custom"
   restart: unless-stopped
   volumes:
     - "./user_data:/freqtrade/user_data"
