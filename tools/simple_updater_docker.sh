@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #Fork of https://github.com/lobap/NostalgiaForInfinity_Update/blob/master/NostalgiaForInfinity_Update.sh
 #Changed a little bit by Yogabba (becouse for some reason didnt want to restart docker after update)
 #Update to latest tag
@@ -5,8 +7,6 @@
 #   */60 * * * * /bin/bash -c "ft_userdata/user_data/tools/simple_update.sh
 #
 
-
-#!/bin/bash
 
 ROOT_PATH="Your root path f.e. (/home/user)"
 NFI_PATH="${ROOT_PATH}/NFI/NostalgiaForInfinityX.py"
