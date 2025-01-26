@@ -5,7 +5,7 @@
 
 ### Simple script that does the following:
 ## 1. Pull NFIX repo
-## 2. Stop, Pull, Build, and Start freqtrader via docker compose
+## 2. Stop, Pull, and Start freqtrader via docker compose
 ## 3. Add this script to a cron job to run at a specific interval: */60 * * * * /path/to/update_nfx_docker_compose.sh
 
 NFI_LOCAL_REPO=/home/user/NostalgiaForInfinity
@@ -20,7 +20,6 @@ latest_remote_commit=$(git rev-parse HEAD)
 if [ "$latest_local_commit" != "$latest_remote_commit" ]; then
     echo "restarting freqtrade with NFIX"
     docker compose pull
-    # docker compose build
     docker compose stop
     docker compose up -d
 fi
