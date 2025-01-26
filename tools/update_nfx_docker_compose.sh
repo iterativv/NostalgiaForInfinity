@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ### Prereqs:
-## 1. A directory with the NFIX repo setup on the master branch to run via docker compose
+## 1. A directory with the NFIX repo setup on the main branch to run via docker compose
 
 ### Simple script that does the following:
 ## 1. Pull NFIX repo
