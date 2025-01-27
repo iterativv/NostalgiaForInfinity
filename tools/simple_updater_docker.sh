@@ -1,14 +1,14 @@
+#!/bin/bash
+
 #Fork of https://github.com/lobap/NostalgiaForInfinity_Update/blob/master/NostalgiaForInfinity_Update.sh
-#Changed a little bit by Yogabba (becouse for some reason didnt want to restart docker after update)
+#Changed a little bit by Yogabba (because for some reason didn't want to restart docker after update)
 #Update to latest tag
 #need to add to crontab by typing "crontab -e" in terminal "
 #   */60 * * * * /bin/bash -c "ft_userdata/user_data/tools/simple_update.sh
 #
 
 
-#!/bin/bash
-
-ROOT_PATH="Your root path f.e. (/home/user"
+ROOT_PATH="Your root path f.e. (/home/user)"
 NFI_PATH="${ROOT_PATH}/NFI/NostalgiaForInfinityX.py"
 FT_PATH="${ROOT_PATH}/ft_userdata/user_data/strategies/NostalgiaForInfinityX.py"
 TG_TOKEN=""
