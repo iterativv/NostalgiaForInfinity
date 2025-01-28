@@ -2202,6 +2202,16 @@ class NostalgiaForInfinityX5(IStrategy):
       / np.minimum(informative_1d["open"], informative_1d["close"])
       * 100.0
     )
+    # Max highs
+    informative_1d["high_max_6"] = informative_1d["high"].rolling(6).max()
+    informative_1d["high_max_12"] = informative_1d["high"].rolling(12).max()
+    informative_1d["high_max_20"] = informative_1d["high"].rolling(20).max()
+    informative_1d["high_max_30"] = informative_1d["high"].rolling(30).max()
+    # Max lows
+    informative_1d["low_min_6"] = informative_1d["low"].rolling(6).min()
+    informative_1d["low_min_12"] = informative_1d["low"].rolling(12).min()
+    informative_1d["low_min_20"] = informative_1d["low"].rolling(20).min()
+    informative_1d["low_min_30"] = informative_1d["low"].rolling(30).min()
 
     # Performance logging
     # -----------------------------------------------------------------------------------------
