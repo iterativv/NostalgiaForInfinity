@@ -67,7 +67,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.355"
+    return "v15.1.356"
 
   stoploss = -0.99
 
@@ -202,6 +202,7 @@ class NostalgiaForInfinityX5(IStrategy):
   # Grinding feature
   grinding_enable = True
   derisk_enable = True
+  stops_enable = True
 
   # Grinding
   derisk_use_grind_stops = False
@@ -599,6 +600,8 @@ class NostalgiaForInfinityX5(IStrategy):
 
     if "derisk_enable" in self.config:
       self.derisk_enable = self.config["derisk_enable"]
+    if "stops_enable" in self.config:
+      self.stops_enable = self.config["stops_enable"]
 
     if "regular_mode_derisk_1_spot" in self.config:
       self.regular_mode_derisk_1_spot = self.config["regular_mode_derisk_1_spot"]
@@ -16189,11 +16192,14 @@ class NostalgiaForInfinityX5(IStrategy):
       # Stoplosses
       if (
         (
-          profit_stake
-          < -(
-            filled_entries[0].cost
-            * (self.stop_threshold_rapid_futures if self.is_futures_mode else self.stop_threshold_rapid_spot)
-            / trade.leverage
+          self.stops_enable
+          and (
+            profit_stake
+            < -(
+              filled_entries[0].cost
+              * (self.stop_threshold_rapid_futures if self.is_futures_mode else self.stop_threshold_rapid_spot)
+              / trade.leverage
+            )
           )
         )
         # temporary
@@ -30558,6 +30564,8 @@ class NostalgiaForInfinityX5(IStrategy):
     buy_tag,
   ) -> tuple:
     is_backtest = self.is_backtest_mode()
+    if not self.stops_enable:
+      return False, None
     # Stoploss doom
     if (
       (
@@ -35292,11 +35300,14 @@ class NostalgiaForInfinityX5(IStrategy):
       # Stoplosses
       if (
         (
-          profit_stake
-          < -(
-            filled_entries[0].cost
-            * (self.stop_threshold_rapid_futures if self.is_futures_mode else self.stop_threshold_rapid_spot)
-            / trade.leverage
+          self.stops_enable
+          and (
+            profit_stake
+            < -(
+              filled_entries[0].cost
+              * (self.stop_threshold_rapid_futures if self.is_futures_mode else self.stop_threshold_rapid_spot)
+              / trade.leverage
+            )
           )
         )
         # temporary
@@ -49661,6 +49672,8 @@ class NostalgiaForInfinityX5(IStrategy):
     buy_tag,
   ) -> tuple:
     is_backtest = self.is_backtest_mode()
+    if not self.stops_enable:
+      return False, None
     # Stoploss doom
     if (
       (
