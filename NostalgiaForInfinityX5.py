@@ -2376,9 +2376,11 @@ class NostalgiaForInfinityX5(IStrategy):
     # Max highs
     informative_4h["high_max_6"] = informative_4h["high"].rolling(6).max()
     informative_4h["high_max_12"] = informative_4h["high"].rolling(12).max()
+    informative_4h["high_max_24"] = informative_4h["high"].rolling(24).max()
     # Min lows
     informative_4h["low_min_6"] = informative_4h["low"].rolling(6).min()
     informative_4h["low_min_12"] = informative_4h["low"].rolling(12).min()
+    informative_4h["low_min_24"] = informative_4h["low"].rolling(24).min()
 
     # Performance logging
     # -----------------------------------------------------------------------------------------
