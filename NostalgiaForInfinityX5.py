@@ -8879,6 +8879,18 @@ class NostalgiaForInfinityX5(IStrategy):
         | (df["WILLR_14_1d"] > -10.0)
         | (df["ROC_9_1d"] < 50.0)
       )
+      # 15m & 1h & 4h up move, 15m & 1h still not high enough, 4h still not high enough & uptrend
+      & (
+        (df["RSI_3_15m"] < 80.0)
+        | (df["RSI_3_1h"] < 80.0)
+        | (df["RSI_3_4h"] < 90.0)
+        | (df["RSI_14_15m"] > 90.0)
+        | (df["CCI_20_15m"] > 400.0)
+        | (df["RSI_14_1h"] > 90.0)
+        | (df["CCI_20_1h"] > 400.0)
+        | (df["CCI_20_4h"] > 400.0)
+        | (df["ROC_9_4h"] < 200.0)
+      )
       # 15m & 1h up move, 15m & 1h & 4h still not high enough, 1d still not high enough & uptrend
       & (
         (df["RSI_3_15m"] < 80.0)
