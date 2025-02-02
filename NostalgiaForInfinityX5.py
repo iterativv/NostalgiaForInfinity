@@ -2356,6 +2356,12 @@ class NostalgiaForInfinityX5(IStrategy):
 
     # Candle change
     informative_4h["change_pct"] = (informative_4h["close"] - informative_4h["open"]) / informative_4h["open"] * 100.0
+    informative_4h["change_pct_min_3"] = informative_4h["change_pct"].rolling(3).min()
+    informative_4h["change_pct_min_6"] = informative_4h["change_pct"].rolling(6).min()
+    informative_4h["change_pct_max_3"] = informative_4h["change_pct"].rolling(3).max()
+    informative_4h["change_pct_max_6"] = informative_4h["change_pct"].rolling(6).max()
+    # Candle change
+    informative_4h["change_pct"] = (informative_4h["close"] - informative_4h["open"]) / informative_4h["open"] * 100.0
     # Wicks
     informative_4h["top_wick_pct"] = (
       (informative_4h["high"] - np.maximum(informative_4h["open"], informative_4h["close"]))
@@ -2367,6 +2373,12 @@ class NostalgiaForInfinityX5(IStrategy):
       / np.minimum(informative_4h["open"], informative_4h["close"])
       * 100.0
     )
+    # Max highs
+    informative_4h["high_max_6"] = informative_4h["high"].rolling(6).max()
+    informative_4h["high_max_12"] = informative_4h["high"].rolling(12).max()
+    # Min lows
+    informative_4h["low_min_6"] = informative_4h["low"].rolling(6).min()
+    informative_4h["low_min_12"] = informative_4h["low"].rolling(12).min()
 
     # Performance logging
     # -----------------------------------------------------------------------------------------
@@ -2525,6 +2537,12 @@ class NostalgiaForInfinityX5(IStrategy):
       / np.minimum(informative_1h["open"], informative_1h["close"])
       * 100.0
     )
+    # Max highs
+    informative_1h["high_max_6"] = informative_1h["high"].rolling(6).max()
+    informative_1h["high_max_12"] = informative_1h["high"].rolling(12).max()
+    # Min lows
+    informative_1h["low_min_6"] = informative_1h["low"].rolling(6).min()
+    informative_1h["low_min_12"] = informative_1h["low"].rolling(12).min()
 
     # Performance logging
     # -----------------------------------------------------------------------------------------
