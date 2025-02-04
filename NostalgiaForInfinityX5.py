@@ -2340,6 +2340,11 @@ class NostalgiaForInfinityX5(IStrategy):
     informative_4h["KSTs_9"] = kst["KSTs_9"] if isinstance(kst, pd.DataFrame) else np.nan
     # UO
     informative_4h["UO_7_14_28"] = pta.uo(informative_4h["high"], informative_4h["low"], informative_4h["close"])
+    # OBV
+    informative_4h["OBV"] = pta.obv(informative_4h["close"], informative_4h["volume"])
+    informative_4h["OBV_change_pct"] = (
+      (informative_4h["OBV"] - informative_4h["OBV"].shift(1)) / abs(informative_4h["OBV"].shift(1))
+    ) * 100.0
     # ROC
     informative_4h["ROC_2"] = pta.roc(informative_4h["close"], length=2)
     informative_4h["ROC_9"] = pta.roc(informative_4h["close"], length=9)
