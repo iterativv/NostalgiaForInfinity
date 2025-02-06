@@ -67,7 +67,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.364"
+    return "v15.1.365"
 
   stoploss = -0.99
 
@@ -7896,6 +7896,31 @@ class NostalgiaForInfinityX5(IStrategy):
         | (df["STOCHRSIk_14_14_3_3_4h"] < 50.0)
         | (df["RSI_14_1d"] < 35.0)
         | (df["ROC_9_1d"] > -20.0)
+      )
+      # 15m & 1h & 4h & 1d down move, 15m & 1h & 4h & 1d still not low enough, drop in last 30d
+      & (
+        (df["RSI_3_15m"] > 25.0)
+        | (df["RSI_3_1h"] > 45.0)
+        | (df["RSI_3_4h"] > 45.0)
+        | (df["RSI_3_1d"] > 45.0)
+        | (df["RSI_14_15m"] < 20.0)
+        | ((df["AROONU_14_15m"] == 0.0) & (df["AROOND_14_15m"] == 100.0))
+        | (df["UO_7_14_28_15m"] < 30.0)
+        | (df["CCI_20_15m"] < -350.0)
+        | (df["RSI_14_1h"] < 20.0)
+        | ((df["AROONU_14_1h"] == 0.0) & (df["AROOND_14_1h"] == 100.0))
+        | (df["UO_7_14_28_1h"] < 35.0)
+        | (df["OBV_1h"] > df["OBV_1h"].shift(36))
+        | (df["CCI_20_1h"] < -350.0)
+        | (df["STOCHRSIk_14_14_3_3_1h"] < 10.0)
+        | (df["RSI_14_4h"] < 20.0)
+        | ((df["AROONU_14_4h"] == 0.0) & (df["AROOND_14_4h"] == 100.0))
+        | (df["UO_7_14_28_4h"] < 40.0)
+        | (df["OBV_4h"] > df["OBV_4h"].shift(144))
+        | (df["CCI_20_4h"] < -150.0)
+        | (df["STOCHRSIk_14_14_3_3_4h"] < 20.0)
+        | (df["RSI_14_1d"] < 30.0)
+        | (df["close"] > (df["high_max_30_1d"] * 0.55))
       )
       # 15m & 1h & 1d down move, 15m & 1h still not low enough, 4h still high, 1d still not low enough & downtrend
       & (
