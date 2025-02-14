@@ -32074,7 +32074,7 @@ class NostalgiaForInfinityX6(IStrategy):
       and (grind_1_sub_grind_count < grind_1_max_sub_grinds)
       and (grind_1_sub_grind_count == 0 or (grind_1_distance_ratio < grind_1_sub_thresholds[grind_1_sub_grind_count]))
     ):
-      if trade.amount < (filled_entries[0].safe_filled * self.grinding_v2_max_stake):
+      if trade.amount < (filled_entries[0].cost * self.grinding_v2_max_stake):
         buy_amount = slice_amount * grind_1_stakes[grind_1_sub_grind_count] / trade.leverage
         if buy_amount < (min_stake * 1.5):
           buy_amount = min_stake * 1.5
@@ -32158,7 +32158,7 @@ class NostalgiaForInfinityX6(IStrategy):
       and (grind_2_sub_grind_count < grind_2_max_sub_grinds)
       and (grind_2_sub_grind_count == 0 or (grind_2_distance_ratio < grind_2_sub_thresholds[grind_2_sub_grind_count]))
     ):
-      if trade.amount < (filled_entries[0].safe_filled * self.grinding_v2_max_stake):
+      if trade.amount < (filled_entries[0].cost * self.grinding_v2_max_stake):
         buy_amount = slice_amount * grind_2_stakes[grind_2_sub_grind_count] / trade.leverage
         if buy_amount < (min_stake * 1.5):
           buy_amount = min_stake * 1.5
@@ -32250,7 +32250,7 @@ class NostalgiaForInfinityX6(IStrategy):
         )
       )
     ):
-      if trade.amount < (filled_entries[0].safe_filled * self.grinding_v2_max_stake):
+      if trade.amount < (filled_entries[0].cost * self.grinding_v2_max_stake):
         buy_amount = (
           slice_amount
           * (
@@ -32365,7 +32365,7 @@ class NostalgiaForInfinityX6(IStrategy):
         )
       )
     ):
-      if trade.amount < (filled_entries[0].safe_filled * self.grinding_v2_max_stake):
+      if trade.amount < (filled_entries[0].cost * self.grinding_v2_max_stake):
         buy_amount = (
           slice_amount
           * (
@@ -32479,7 +32479,7 @@ class NostalgiaForInfinityX6(IStrategy):
         )
       )
     ):
-      if trade.amount < (filled_entries[0].safe_filled * self.grinding_v2_max_stake):
+      if trade.amount < (filled_entries[0].cost * self.grinding_v2_max_stake):
         buy_amount = (
           slice_amount
           * (
