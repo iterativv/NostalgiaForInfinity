@@ -67,7 +67,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.0.0"
+    return "v16.0.1"
 
   stoploss = -0.99
 
@@ -31712,7 +31712,7 @@ class NostalgiaForInfinityX6(IStrategy):
       trade, filled_entries, filled_exits, exit_rate
     )
 
-    current_stake_amount = trade.amount * current_rate
+    current_stake_amount = trade.amount * exit_rate
     slice_amount = filled_entries[0].cost
     slice_profit = (exit_rate - filled_orders[-1].safe_price) / filled_orders[-1].safe_price
     slice_profit_entry = (exit_rate - filled_entries[-1].safe_price) / filled_entries[-1].safe_price
