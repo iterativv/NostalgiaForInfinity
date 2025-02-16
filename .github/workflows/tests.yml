@@ -143,9 +143,9 @@ jobs:
           cat artifacts/backtest-output-binance-spot-${{ matrix.timerange }}.txt
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: binance-testrun-artifacts
+          name: binance-testrun-artifacts-${{ matrix.runs-on }}
           path: artifacts/
 
   Kucoin-Backtests:
@@ -241,9 +241,9 @@ jobs:
           cat artifacts/backtest-output-kucoin-spot-${{ matrix.timerange }}.txt
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: kucoin-testrun-artifacts
+          name: kucoin-testrun-artifacts-${{ matrix.runs-on }}
           path: artifacts/
 
   # OKX-Backtests:
@@ -322,9 +322,9 @@ jobs:
   #         cat artifacts/backtest-output-okx-spot-${{ matrix.timerange }}.txt
 
   #     - name: Upload Artifacts
-  #       uses: actions/upload-artifact@v3
+  #       uses: actions/upload-artifact@v4
   #       with:
-  #         name: okx-testrun-artifacts
+  #         name: okx-testrun-artifacts-${{ matrix.runs-on }}
   #         path: artifacts/
 
   Backest-CI-Stats:
@@ -380,22 +380,25 @@ jobs:
       #       --name=okx-testrun-artifacts downloaded-results
 
       - name: Download Current Binance CI Artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
-          name: binance-testrun-artifacts
+          pattern:: binance-testrun-artifacts-*
           path: downloaded-results/current
+          merge-multiple: true
 
       - name: Download Current Kucoin CI Artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
-          name: kucoin-testrun-artifacts
+          pattern: kucoin-testrun-artifacts-*
           path: downloaded-results/current
+          merge-multiple: true
 
       # - name: Download Current OKX CI Artifacts
-      #   uses: actions/download-artifact@v3
+      #   uses: actions/download-artifact@v4
       #   with:
-      #     name: okx-testrun-artifacts
+      #     pattern: okx-testrun-artifacts-*
       #     path: downloaded-results/current
+      #     merge-multiple: true
 
       - name: Pre Format Backtest Results
         run: |
