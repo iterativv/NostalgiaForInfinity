@@ -32656,7 +32656,7 @@ class NostalgiaForInfinityX6(IStrategy):
           and (last_candle["ROC_9_1h"] > -10.0)
           and (last_candle["ROC_9_4h"] > -10.0)
           and (last_candle["EMA_26"] > last_candle["EMA_12"])
-          and ((last_candle["EMA_26"] - last_candle["EMA_12"]) > (last_candle["open"] * 0.025))
+          and ((last_candle["EMA_26"] - last_candle["EMA_12"]) > (last_candle["open"] * 0.020))
           and ((previous_candle["EMA_26"] - previous_candle["EMA_12"]) > (last_candle["open"] / 100.0))
         )
         or (
