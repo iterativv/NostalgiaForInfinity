@@ -67,7 +67,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.0.4"
+    return "v16.0.5"
 
   stoploss = -0.99
 
@@ -32750,8 +32750,29 @@ class NostalgiaForInfinityX6(IStrategy):
           and (last_candle["close"] > (last_candle["close_max_48"] * 0.90))
           and (last_candle["close"] > (last_candle["high_max_6_1h"] * 0.85))
           and (last_candle["close"] > (last_candle["high_max_12_1h"] * 0.80))
-          and (last_candle["close"] < (last_candle["EMA_26"] * 0.945))
+          and (last_candle["close"] < (last_candle["EMA_26"] * 0.960))
           and (last_candle["close"] < (last_candle["BBL_20_2.0"] * 0.999))
+        )
+        or (
+          (last_candle["RSI_14"] < 40.0)
+          and (last_candle["RSI_3"] > 5.0)
+          and (last_candle["RSI_3_15m"] > 5.0)
+          and (last_candle["RSI_3_1h"] > 10.0)
+          and (last_candle["RSI_3_4h"] > 10.0)
+          # and (last_candle["RSI_3_1d"] > 20.0)
+          # and (last_candle["ROC_2_1h"] > -5.0)
+          # and (last_candle["ROC_2_4h"] > -5.0)
+          # and (last_candle["ROC_2_1d"] > -5.0)
+          # and (last_candle["ROC_9_1h"] > -10.0)
+          # and (last_candle["ROC_9_4h"] > -10.0)
+          # and (last_candle["ROC_9_1d"] > -10.0)
+          and (last_candle["AROONU_14"] < 25.0)
+          and (last_candle["AROONU_14_15m"] < 25.0)
+          # and (last_candle["close"] > (last_candle["close_max_48"] * 0.90))
+          # and (last_candle["close"] > (last_candle["high_max_6_1h"] * 0.85))
+          # and (last_candle["close"] > (last_candle["high_max_12_1h"] * 0.80))
+          and (last_candle["close"] < (last_candle["EMA_9"] * 0.965))
+          # and (last_candle["close"] < (last_candle["EMA_20"] * 0.980))
         )
       )
     ):
