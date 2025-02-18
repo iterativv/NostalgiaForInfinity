@@ -7339,6 +7339,27 @@ class NostalgiaForInfinityX5(IStrategy):
         | (df["CCI_20_4h"] < -250.0)
         | (df["RSI_14_1d"] < 30.0)
       )
+      # 15m & 1h & 1d down move, 15m & 1h & 4h & 1d still now low enough, drop in last 20d
+      & (
+        (df["RSI_3_15m"] > 15.0)
+        | (df["RSI_3_1h"] > 30.0)
+        | (df["RSI_3_1d"] > 40.0)
+        | (df["RSI_14_15m"] < 30.0)
+        | (df["UO_7_14_28_15m"] < 20.0)
+        | (df["CCI_20_15m"] < -150.0)
+        | (df["RSI_14_1h"] < 35.0)
+        | (df["MFI_14_1h"] < 30.0)
+        | (df["AROONU_14_1h"] < 50.0)
+        | (df["UO_7_14_28_1h"] < 20.0)
+        | (df["CCI_20_1h"] < -150.0)
+        | (df["RSI_14_4h"] < 35.0)
+        | (df["MFI_14_4h"] < 30.0)
+        | (df["UO_7_14_28_4h"] < 30.0)
+        | (df["CCI_20_4h"] < -150.0)
+        | (df["STOCHRSIk_14_14_3_3_4h"] < 30.0)
+        | (df["RSI_14_1d"] < 35.0)
+        | (df["close"] > (df["high_max_20_1d"] * 0.35))
+      )
       # 15m & 1h & 1d down move, 15m & 1h still not low enough, 4h still high, 1d still not low enough, drop in last 30d
       & (
         (df["RSI_3_15m"] > 15.0)
