@@ -10481,6 +10481,11 @@ class NostalgiaForInfinityX6(IStrategy):
           long_entry_logic.append(df["global_protections_long_pump"] == True)
           long_entry_logic.append(df["global_protections_long_dump"] == True)
 
+          # 5m down move, 15m still high
+          long_entry_logic.append((df["RSI_3"] > 10.0) | (df["AROONU_14_15m"] < 75.0))
+          # 15m down move, 1h high
+          long_entry_logic.append((df["RSI_3_15m"] > 10.0) | (df["AROONU_14_1h"] < 75.0))
+
           # 5m down move, 4h overbought
           long_entry_logic.append(
             (df["RSI_3"] > 20.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 90.0) | (df["ROC_9_4h"] < 50.0)
