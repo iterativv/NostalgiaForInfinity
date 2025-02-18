@@ -143,10 +143,20 @@ jobs:
           cat artifacts/backtest-output-binance-spot-${{ matrix.timerange }}.txt
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
+        with:
+          name: binance-testrun-artifacts-${{ matrix.timerange }}
+          path: artifacts/
+
+  Merge-Binance:
+    runs-on: ubuntu-latest
+    needs: Binance-Backtests
+    steps:
+      - name: Merge Artifacts
+        uses: actions/upload-artifact/merge@v4
         with:
           name: binance-testrun-artifacts
-          path: artifacts/
+          pattern: binance-testrun-artifacts-*
 
   Kucoin-Backtests:
     runs-on: ubuntu-latest
@@ -241,10 +251,20 @@ jobs:
           cat artifacts/backtest-output-kucoin-spot-${{ matrix.timerange }}.txt
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
+        with:
+          name: kucoin-testrun-artifacts-${{ matrix.timerange }}
+          path: artifacts/
+
+  Merge-Kucoin:
+    runs-on: ubuntu-latest
+    needs: Kucoin-Backtests
+    steps:
+      - name: Merge Artifacts
+        uses: actions/upload-artifact/merge@v4
         with:
           name: kucoin-testrun-artifacts
-          path: artifacts/
+          pattern: kucoin-testrun-artifacts-*
 
   # OKX-Backtests:
   #   runs-on: ubuntu-latest
@@ -322,10 +342,19 @@ jobs:
   #         cat artifacts/backtest-output-okx-spot-${{ matrix.timerange }}.txt
 
   #     - name: Upload Artifacts
-  #       uses: actions/upload-artifact@v3
+  #       uses: actions/upload-artifact@v4
   #       with:
-  #         name: okx-testrun-artifacts
+  #         name: okx-testrun-artifacts-${{ matrix.timerange }}
   #         path: artifacts/
+  #  Merge-Backtests:
+  #    runs-on: ubuntu-latest
+  #    needs: OKX-Backtests
+  #    steps:
+  #      - name: Merge Artifacts
+  #        uses: actions/upload-artifact/merge@v4
+  #        with:
+  #          name: okx-testrun-artifacts
+  #          pattern: okx-testrun-artifacts-*
 
   Backest-CI-Stats:
     runs-on: ubuntu-latest
@@ -380,21 +409,21 @@ jobs:
       #       --name=okx-testrun-artifacts downloaded-results
 
       - name: Download Current Binance CI Artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
-          name: binance-testrun-artifacts
+          pattern:: binance-testrun-artifacts
           path: downloaded-results/current
 
       - name: Download Current Kucoin CI Artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
-          name: kucoin-testrun-artifacts
+          pattern: kucoin-testrun-artifacts
           path: downloaded-results/current
 
       # - name: Download Current OKX CI Artifacts
-      #   uses: actions/download-artifact@v3
+      #   uses: actions/download-artifact@v4
       #   with:
-      #     name: okx-testrun-artifacts
+      #     pattern: okx-testrun-artifacts
       #     path: downloaded-results/current
 
       - name: Pre Format Backtest Results
