@@ -67,7 +67,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.0.17"
+    return "v16.0.18"
 
   stoploss = -0.99
 
@@ -32015,7 +32015,7 @@ class NostalgiaForInfinityX6(IStrategy):
             order_mode = sell_order_tag.split(" ", 1)
             if len(order_mode) > 0:
               order_tag = order_mode[0]
-        if order_tag in ["derisk_level_1"]:
+        if order_tag in ["derisk_level_1", "d"]:
           if not is_derisk_1_found:
             is_derisk_1_found = True
             is_derisk_1 = True
