@@ -67,7 +67,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.0.19"
+    return "v16.0.20"
 
   stoploss = -0.99
 
@@ -32456,11 +32456,21 @@ class NostalgiaForInfinityX6(IStrategy):
       )
       and (buyback_1_current_open_rate == 0)
       and (
-        buyback_1_exit_distance_ratio
-        < (
-          self.grinding_v2_buyback_1_distance_ratio_futures
-          if self.is_futures_mode
-          else self.grinding_v2_buyback_1_distance_ratio_spot
+        (
+          buyback_1_exit_distance_ratio
+          < (
+            self.grinding_v2_buyback_1_distance_ratio_futures
+            if self.is_futures_mode
+            else self.grinding_v2_buyback_1_distance_ratio_spot
+          )
+        )
+        or (
+          slice_profit
+          < (
+            self.grinding_v2_buyback_1_distance_ratio_futures
+            if self.is_futures_mode
+            else self.grinding_v2_buyback_1_distance_ratio_spot
+          )
         )
       )
     ):
