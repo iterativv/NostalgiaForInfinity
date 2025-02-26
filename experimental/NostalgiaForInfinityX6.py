@@ -699,7 +699,7 @@ class NostalgiaForInfinityX6(IStrategy):
       self.target_profit_cache = Cache(
         self.config["user_data_dir"]
         / (
-          "nfix5-profit_max-"
+          "nfix6-profit_max-"
           + bot_name
           + self.config["exchange"]["name"]
           + "-"
