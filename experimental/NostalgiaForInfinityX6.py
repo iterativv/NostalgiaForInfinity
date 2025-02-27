@@ -2887,7 +2887,11 @@ class NostalgiaForInfinityX6(IStrategy):
     # Candle change
     df["change_pct"] = (df["close"] - df["open"]) / df["open"] * 100.0
     # Close max
+    df["close_max_12"] = df["close"].rolling(12).max()
     df["close_max_48"] = df["close"].rolling(48).max()
+    # Close min
+    df["close_min_12"] = df["close"].rolling(12).min()
+    df["close_min_48"] = df["close"].rolling(48).min()
     # Number of empty candles
     df["num_empty_288"] = (df["volume"] <= 0).rolling(window=288, min_periods=288).sum()
 
