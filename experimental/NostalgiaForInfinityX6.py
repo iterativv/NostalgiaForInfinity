@@ -408,6 +408,7 @@ class NostalgiaForInfinityX6(IStrategy):
   grinding_v2_grind_3_derisk_spot = -0.10
   grinding_v2_grind_3_derisk_futures = -0.10
 
+  grinding_v2_buyback_1_enable = True
   grinding_v2_buyback_1_stake_spot = 0.20
   grinding_v2_buyback_1_stake_futures = 0.20
   grinding_v2_buyback_1_distance_ratio_spot = -0.06
@@ -417,6 +418,7 @@ class NostalgiaForInfinityX6(IStrategy):
   grinding_v2_buyback_1_derisk_spot = -0.10
   grinding_v2_buyback_1_derisk_futures = -0.10
 
+  grinding_v2_buyback_2_enable = True
   grinding_v2_buyback_2_stake_spot = 0.20
   grinding_v2_buyback_2_stake_futures = 0.20
   grinding_v2_buyback_2_distance_ratio_spot = -0.12
@@ -426,6 +428,7 @@ class NostalgiaForInfinityX6(IStrategy):
   grinding_v2_buyback_2_derisk_spot = -0.10
   grinding_v2_buyback_2_derisk_futures = -0.10
 
+  grinding_v2_buyback_3_enable = True
   grinding_v2_buyback_3_stake_spot = 0.20
   grinding_v2_buyback_3_stake_futures = 0.20
   grinding_v2_buyback_3_distance_ratio_spot = -0.16
@@ -32449,7 +32452,8 @@ class NostalgiaForInfinityX6(IStrategy):
 
     # if is_derisk_1_found and (slice_profit < -0.03):
     if (
-      is_derisk_1_found
+      self.grinding_v2_buyback_1_enable
+      and is_derisk_1_found
       and is_long_buyback_entry
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
       and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
@@ -32574,7 +32578,8 @@ class NostalgiaForInfinityX6(IStrategy):
     # # Buyback 2
 
     if (
-      is_derisk_2_found
+      self.grinding_v2_buyback_2_enable
+      and is_derisk_2_found
       and is_long_buyback_entry
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
       and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
@@ -32585,11 +32590,21 @@ class NostalgiaForInfinityX6(IStrategy):
       )
       and (buyback_2_current_open_rate == 0)
       and (
-        buyback_2_exit_distance_ratio
-        < (
-          self.grinding_v2_buyback_2_distance_ratio_futures
-          if self.is_futures_mode
-          else self.grinding_v2_buyback_2_distance_ratio_spot
+        (
+          buyback_2_exit_distance_ratio
+          < (
+            self.grinding_v2_buyback_2_distance_ratio_futures
+            if self.is_futures_mode
+            else self.grinding_v2_buyback_2_distance_ratio_spot
+          )
+        )
+        or (
+          slice_profit
+          < (
+            self.grinding_v2_buyback_2_distance_ratio_futures
+            if self.is_futures_mode
+            else self.grinding_v2_buyback_2_distance_ratio_spot
+          )
         )
       )
     ):
@@ -32688,7 +32703,8 @@ class NostalgiaForInfinityX6(IStrategy):
     # # Buyback 3
 
     if (
-      is_derisk_3_found
+      self.grinding_v2_buyback_3_enable
+      and is_derisk_3_found
       and is_long_buyback_entry
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
       and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
@@ -32699,11 +32715,21 @@ class NostalgiaForInfinityX6(IStrategy):
       )
       and (buyback_3_current_open_rate == 0)
       and (
-        buyback_3_exit_distance_ratio
-        < (
-          self.grinding_v2_buyback_3_distance_ratio_futures
-          if self.is_futures_mode
-          else self.grinding_v2_buyback_3_distance_ratio_spot
+        (
+          buyback_3_exit_distance_ratio
+          < (
+            self.grinding_v2_buyback_3_distance_ratio_futures
+            if self.is_futures_mode
+            else self.grinding_v2_buyback_3_distance_ratio_spot
+          )
+        )
+        or (
+          slice_profit
+          < (
+            self.grinding_v2_buyback_3_distance_ratio_futures
+            if self.is_futures_mode
+            else self.grinding_v2_buyback_3_distance_ratio_spot
+          )
         )
       )
     ):
