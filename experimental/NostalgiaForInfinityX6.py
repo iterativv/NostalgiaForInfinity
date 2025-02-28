@@ -32201,7 +32201,7 @@ class NostalgiaForInfinityX6(IStrategy):
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
       and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
       and (
-        (trade.amount < (filled_entries[0].safe_filled * 0.50))
+        (current_stake_amount < (filled_entries[0].cost * 0.50))
         or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
         or (slice_profit < -0.06)
       )
@@ -32286,7 +32286,7 @@ class NostalgiaForInfinityX6(IStrategy):
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
       and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
       and (
-        (trade.amount < (filled_entries[0].safe_filled * 0.50))
+        (current_stake_amount < (filled_entries[0].cost * 0.50))
         or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
         or (slice_profit < -0.06)
       )
@@ -32372,7 +32372,7 @@ class NostalgiaForInfinityX6(IStrategy):
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
       and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
       and (
-        (trade.amount < (filled_entries[0].safe_filled * 0.50))
+        (current_stake_amount < (filled_entries[0].cost * 0.50))
         or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
         or (slice_profit < -0.06)
       )
@@ -32458,7 +32458,7 @@ class NostalgiaForInfinityX6(IStrategy):
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
       and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
       and (
-        (trade.amount < (filled_entries[0].safe_filled * 0.50))
+        (current_stake_amount < (filled_entries[0].cost * 0.50))
         or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
         or (slice_profit < -0.06)
       )
@@ -32584,7 +32584,7 @@ class NostalgiaForInfinityX6(IStrategy):
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
       and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
       and (
-        (trade.amount < (filled_entries[0].safe_filled * 0.50))
+        (current_stake_amount < (filled_entries[0].cost * 0.50))
         or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
         or (slice_profit < -0.06)
       )
@@ -32709,7 +32709,7 @@ class NostalgiaForInfinityX6(IStrategy):
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
       and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
       and (
-        (trade.amount < (filled_entries[0].safe_filled * 0.50))
+        (current_stake_amount < (filled_entries[0].cost * 0.50))
         or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
         or (slice_profit < -0.06)
       )
