@@ -67,7 +67,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.0.21"
+    return "v16.0.22"
 
   stoploss = -0.99
 
@@ -377,6 +377,9 @@ class NostalgiaForInfinityX6(IStrategy):
   grinding_v2_derisk_level_1_stake_futures = 1.0
   grinding_v2_derisk_level_2_stake_spot = 0.30
   grinding_v2_derisk_level_2_stake_futures = 0.30
+  grinding_v2_derisk_global_enable = False
+  grinding_v2_derisk_global_spot = -0.10
+  grinding_v2_derisk_global_futures = -0.10
 
   grinding_v2_grind_1_enable = True
   grinding_v2_grind_1_stakes_spot = [0.25, 0.30, 0.35, 0.40]
@@ -403,7 +406,7 @@ class NostalgiaForInfinityX6(IStrategy):
   grinding_v2_grind_3_thresholds_spot = [-0.10, -0.11, -0.12, -0.13, -0.14, -0.15, -0.16, -0.17, -0.18]
   grinding_v2_grind_3_stakes_futures = [0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18]
   grinding_v2_grind_3_thresholds_futures = [-0.10, -0.11, -0.12, -0.13, -0.14, -0.15, -0.16, -0.17, -0.18]
-  grinding_v2_grind_3_profit_threshold_spot = 0.05
+  grinding_v2_grind_3_profit_threshold_spot = 0.02
   grinding_v2_grind_3_profit_threshold_futures = 0.02
   grinding_v2_grind_3_derisk_spot = -0.10
   grinding_v2_grind_3_derisk_futures = -0.10
@@ -32055,6 +32058,19 @@ class NostalgiaForInfinityX6(IStrategy):
         elif order_tag in ["grind_3_exit", "grind_3_derisk"]:
           grind_3_is_exit_found = True
           grind_3_exit_order = order
+        elif order_tag in ["derisk_global"]:
+          buyback_1_is_exit_found = True
+          buyback_1_exit_order = order
+          buyback_2_is_exit_found = True
+          buyback_2_exit_order = order
+          buyback_3_is_exit_found = True
+          buyback_3_exit_order = order
+          grind_1_is_exit_found = True
+          grind_1_exit_order = order
+          grind_2_is_exit_found = True
+          grind_2_exit_order = order
+          grind_3_is_exit_found = True
+          grind_3_exit_order = order
 
     if buyback_1_sub_grind_count > 0:
       buyback_1_current_open_rate = buyback_1_total_cost / buyback_1_total_amount
@@ -32093,6 +32109,16 @@ class NostalgiaForInfinityX6(IStrategy):
       buyback_3_exit_distance_ratio = (exit_rate - buyback_3_exit_order.safe_price) / buyback_3_exit_order.safe_price
     elif is_derisk_3_found:
       buyback_3_exit_distance_ratio = (exit_rate - derisk_3_order.safe_price) / derisk_3_order.safe_price
+
+    # all buybacks & grinds
+    current_open_grind_stake_profit = (
+      buyback_1_current_grind_stake_profit
+      + buyback_2_current_grind_stake_profit
+      + buyback_3_current_grind_stake_profit
+      + grind_1_current_grind_stake_profit
+      + grind_2_current_grind_stake_profit
+      + grind_3_current_grind_stake_profit
+    )
 
     # De-risk level 1
     if (
@@ -32191,6 +32217,30 @@ class NostalgiaForInfinityX6(IStrategy):
           f"De-risk Level 3 [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         return -ft_sell_amount, "derisk_level_3"
+
+    # De-risk global
+    if (
+      self.grinding_v2_derisk_global_enable
+      and is_derisk_1_found
+      and (
+        current_open_grind_stake_profit
+        < (
+          slice_amount
+          * (self.grinding_v2_derisk_global_futures if self.is_futures_mode else self.grinding_v2_derisk_global_spot)
+        )
+      )
+    ):
+      sell_amount = trade.amount * exit_rate / trade.leverage - (min_stake * 1.55)
+      ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
+      if sell_amount > min_stake and ft_sell_amount > min_stake:
+        grind_profit = 0.0
+        self.dp.send_msg(
+          f"De-risk Global [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        )
+        log.info(
+          f"De-risk Global [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        )
+        return -ft_sell_amount, "derisk_global"
 
     # Grinding 1
 
