@@ -67,7 +67,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.1.1"
+    return "v16.1.2"
 
   stoploss = -0.99
 
@@ -401,7 +401,7 @@ class NostalgiaForInfinityX6(IStrategy):
   grinding_v2_grind_2_derisk_spot = -0.10
   grinding_v2_grind_2_derisk_futures = -0.10
 
-  grinding_v2_grind_3_enable = False
+  grinding_v2_grind_3_enable = True
   grinding_v2_grind_3_stakes_spot = [0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18]
   grinding_v2_grind_3_thresholds_spot = [-0.10, -0.11, -0.12, -0.13, -0.14, -0.15, -0.16, -0.17, -0.18]
   grinding_v2_grind_3_stakes_futures = [0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18]
@@ -32058,7 +32058,7 @@ class NostalgiaForInfinityX6(IStrategy):
         elif order_tag in ["grind_3_exit", "grind_3_derisk"]:
           grind_3_is_exit_found = True
           grind_3_exit_order = order
-        elif order_tag in ["derisk_global"]:
+        elif order_tag in ["derisk_global", "derisk_level_3"]:
           buyback_1_is_exit_found = True
           buyback_1_exit_order = order
           buyback_2_is_exit_found = True
@@ -32332,7 +32332,7 @@ class NostalgiaForInfinityX6(IStrategy):
     if (
       (self.grinding_v2_grind_2_enable)
       and (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
-      and is_long_grind_entry
+      and (is_long_grind_entry or (grind_2_sub_grind_count > 0))
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
       and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
       and (
@@ -32417,8 +32417,7 @@ class NostalgiaForInfinityX6(IStrategy):
     if (
       (self.grinding_v2_grind_3_enable)
       and (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
-      and is_long_grind_entry
-      # and (slice_profit < -0.06)
+      and (is_long_grind_entry or (grind_3_sub_grind_count > 0))
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
       and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
       and (
