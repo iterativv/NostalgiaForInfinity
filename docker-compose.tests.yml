@@ -98,8 +98,8 @@ services:
       --config configs/exampleconfig.json --timerange ${TIMERANGE:-20230601-20230701}
       --config configs/pairlist-backtest-static-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-usdt.json
       --config configs/blacklist-${EXCHANGE:-binance}.json
-      --indicators1 ema_200
-      --indicators2 rsi_3_1d rsi_14_1d rsi_3_4h rsi_14_4h rsi_14_1h rsi_3_1h rsi_14_15m rsi_3_15m
+      --indicators1 EMA_200
+      --indicators2 RSI_3_1d RSI_14_1d RSI_3_4h RSI_14_4h RSI_14_1h RSI_3_1h RSI_14_15m RSI_3_15m
 
 
   plot-profit:
