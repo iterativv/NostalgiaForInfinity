@@ -104,7 +104,7 @@ for TRADING_MODE_RUN in ${TRADING_MODE_CONFIG[*]}; do
       echo -e "\n#### Trading Mode: $TRADING_MODE_CONFIG"
 
       echo -e "\n#### Running Command:\n\n\`\`\`sh\n"
-      echo freqtrade backtesting --export signals --dmmp --eps \
+      echo freqtrade backtesting --export signals --eps \
         $TIMERANGE_CONFIG --strategy $STRATEGY_NAME_CONFIG \
         --strategy-path . -c configs/trading_mode-$TRADING_MODE_CONFIG.json \
         -c configs/exampleconfig.json -c configs/exampleconfig_secret.json \
@@ -114,7 +114,7 @@ for TRADING_MODE_RUN in ${TRADING_MODE_CONFIG[*]}; do
         --cache none --breakdown day --timeframe-detail 1m --dry-run-wallet 100000 --stake-amount 1000 --max-open-trades 100
       echo -e "\n\`\`\`\n\n---\n\n"
 
-      freqtrade backtesting --export signals --dmmp --eps \
+      freqtrade backtesting --export signals --eps \
         $TIMERANGE_CONFIG --strategy $STRATEGY_NAME_CONFIG \
         --strategy-path . -c configs/trading_mode-$TRADING_MODE_CONFIG.json \
         -c configs/exampleconfig.json -c configs/exampleconfig_secret.json \
@@ -124,7 +124,7 @@ for TRADING_MODE_RUN in ${TRADING_MODE_CONFIG[*]}; do
         --cache none --breakdown day --timeframe-detail 1m --dry-run-wallet 100000 --stake-amount 1000 --max-open-trades 100
 
       echo -e "\n### ${EXCHANGE_CONFIG} FOCUS GROUP ANALYSIS HUNTING BAD ENTRIES" | tr '[a-z]' '[A-Z]'
-      echo -e "\n${STRATEGY_NAME_CONFIG} ${STRATEGY_VERSION} ${TIMERANGE}" with --eps --dmmp
+      echo -e "\n${STRATEGY_NAME_CONFIG} ${STRATEGY_VERSION} ${TIMERANGE}" with --eps
       echo -e "\n"
       echo -e "#### Running Command:\n\n\`\`\`sh\n"
       echo freqtrade backtesting-analysis --analysis-groups 0 1 2 3 4 5 \
@@ -157,7 +157,7 @@ for TRADING_MODE_RUN in ${TRADING_MODE_CONFIG[*]}; do
         -c $EXCHANGE_CONFIG_FILE
 
       echo -e "\n### ${EXCHANGE_CONFIG} FOCUS GROUP PLOT DATAFRAME" | tr '[a-z]' '[A-Z]'
-      echo -e "\n${STRATEGY_NAME_CONFIG} ${STRATEGY_VERSION} ${TIMERANGE} with --eps --dmmp"
+      echo -e "\n${STRATEGY_NAME_CONFIG} ${STRATEGY_VERSION} ${TIMERANGE} with --eps"
       echo -e "\n"
       echo -e "#### Running Command:\n\n\`\`\`sh\n"
       echo freqtrade plot-dataframe $TIMERANGE_CONFIG --strategy $STRATEGY_NAME_CONFIG \
@@ -174,7 +174,7 @@ for TRADING_MODE_RUN in ${TRADING_MODE_CONFIG[*]}; do
         -c $EXCHANGE_CONFIG_FILE
 
       echo -e "\n${EXCHANGE_CONFIG} FOCUS GROUP ANALYSIS WITH PLOT FINISHED (with --eps )" | tr '[a-z]' '[A-Z]'
-      echo -e "\n${STRATEGY_NAME_CONFIG} ${STRATEGY_VERSION} ${TIMERANGE} with --eps --dmmp"
+      echo -e "\n${STRATEGY_NAME_CONFIG} ${STRATEGY_VERSION} ${TIMERANGE} with --eps"
       echo -e "\n"
     fi
     unset TRADING_MODE_CONFIG
