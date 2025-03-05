@@ -67,7 +67,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.1.4"
+    return "v16.1.5"
 
   stoploss = -0.99
 
@@ -32122,7 +32122,8 @@ class NostalgiaForInfinityX6(IStrategy):
 
     # De-risk level 1
     if (
-      (self.grinding_v2_derisk_level_1_enable)
+      self.derisk_enable
+      and self.grinding_v2_derisk_level_1_enable
       and (not is_derisk_1_found)
       and (
         profit_stake
@@ -32159,7 +32160,8 @@ class NostalgiaForInfinityX6(IStrategy):
 
     # De-risk level 2
     if (
-      (self.grinding_v2_derisk_level_2_enable)
+      self.derisk_enable
+      and self.grinding_v2_derisk_level_2_enable
       and (not is_derisk_2_found)
       and (
         profit_stake
@@ -32196,7 +32198,8 @@ class NostalgiaForInfinityX6(IStrategy):
 
     # De-risk level 3
     if (
-      (self.grinding_v2_derisk_level_3_enable)
+      self.derisk_enable
+      and self.grinding_v2_derisk_level_3_enable
       and (not is_derisk_3_found)
       and (
         profit_stake
