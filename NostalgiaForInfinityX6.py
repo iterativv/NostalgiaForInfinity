@@ -67,7 +67,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.1.5"
+    return "v16.1.6"
 
   stoploss = -0.99
 
@@ -31935,6 +31935,7 @@ class NostalgiaForInfinityX6(IStrategy):
     grind_1_buy_orders = []
     grind_1_distance_ratio = 0.0
     grind_1_exit_order = None
+    grind_1_exit_distance_ratio = 0.0
     grind_2_sub_grind_count = 0
     grind_2_total_amount = 0.0
     grind_2_total_cost = 0.0
@@ -31946,6 +31947,7 @@ class NostalgiaForInfinityX6(IStrategy):
     grind_2_buy_orders = []
     grind_2_distance_ratio = 0.0
     grind_2_exit_order = None
+    grind_2_exit_distance_ratio = 0.0
     grind_3_sub_grind_count = 0
     grind_3_total_amount = 0.0
     grind_3_total_cost = 0.0
@@ -31957,6 +31959,7 @@ class NostalgiaForInfinityX6(IStrategy):
     grind_3_buy_orders = []
     grind_3_distance_ratio = 0.0
     grind_3_exit_order = None
+    grind_3_exit_distance_ratio = 0.0
     for order in reversed(filled_orders):
       if (order.ft_order_side == "buy") and (order is not filled_orders[0]):
         order_tag = ""
@@ -32040,37 +32043,43 @@ class NostalgiaForInfinityX6(IStrategy):
             is_derisk_3_found = True
             is_derisk_3 = True
             derisk_3_order = order
-        elif order_tag in ["buyback_1_exit", "buyback_1_derisk"]:
+        elif not buyback_1_is_exit_found and order_tag in ["buyback_1_exit", "buyback_1_derisk"]:
           buyback_1_is_exit_found = True
           buyback_1_exit_order = order
-        elif order_tag in ["buyback_2_exit", "buyback_2_derisk"]:
+        elif not buyback_2_is_exit_found and order_tag in ["buyback_2_exit", "buyback_2_derisk"]:
           buyback_2_is_exit_found = True
           buyback_2_exit_order = order
-        elif order_tag in ["buyback_3_exit", "buyback_3_derisk"]:
+        elif not buyback_3_is_exit_found and order_tag in ["buyback_3_exit", "buyback_3_derisk"]:
           buyback_3_is_exit_found = True
           buyback_3_exit_order = order
-        elif order_tag in ["grind_1_exit", "grind_1_derisk"]:
+        elif not grind_1_is_exit_found and order_tag in ["grind_1_exit", "grind_1_derisk"]:
           grind_1_is_exit_found = True
           grind_1_exit_order = order
-        elif order_tag in ["grind_2_exit", "grind_2_derisk"]:
+        elif not grind_2_is_exit_found and order_tag in ["grind_2_exit", "grind_2_derisk"]:
           grind_2_is_exit_found = True
           grind_2_exit_order = order
-        elif order_tag in ["grind_3_exit", "grind_3_derisk"]:
+        elif not grind_3_is_exit_found and order_tag in ["grind_3_exit", "grind_3_derisk"]:
           grind_3_is_exit_found = True
           grind_3_exit_order = order
-        elif order_tag in ["derisk_global", "derisk_level_3"]:
-          buyback_1_is_exit_found = True
-          buyback_1_exit_order = order
-          buyback_2_is_exit_found = True
-          buyback_2_exit_order = order
-          buyback_3_is_exit_found = True
-          buyback_3_exit_order = order
-          grind_1_is_exit_found = True
-          grind_1_exit_order = order
-          grind_2_is_exit_found = True
-          grind_2_exit_order = order
-          grind_3_is_exit_found = True
-          grind_3_exit_order = order
+        elif order_tag in ["derisk_global"]:
+          if not buyback_1_is_exit_found:
+            buyback_1_is_exit_found = True
+            buyback_1_exit_order = order
+          if not buyback_2_is_exit_found:
+            buyback_2_is_exit_found = True
+            buyback_2_exit_order = order
+          if not buyback_3_is_exit_found:
+            buyback_3_is_exit_found = True
+            buyback_3_exit_order = order
+          if not grind_1_is_exit_found:
+            grind_1_is_exit_found = True
+            grind_1_exit_order = order
+          if not grind_2_is_exit_found:
+            grind_2_is_exit_found = True
+            grind_2_exit_order = order
+          if not grind_3_is_exit_found:
+            grind_3_is_exit_found = True
+            grind_3_exit_order = order
 
     if buyback_1_sub_grind_count > 0:
       buyback_1_current_open_rate = buyback_1_total_cost / buyback_1_total_amount
@@ -32097,6 +32106,12 @@ class NostalgiaForInfinityX6(IStrategy):
       grind_3_current_grind_stake = grind_3_total_amount * exit_rate * (1 - trade.fee_close)
       grind_3_current_grind_stake_profit = grind_3_current_grind_stake - grind_3_total_cost
 
+    if grind_1_is_exit_found:
+      grind_1_exit_distance_ratio = (exit_rate - grind_1_exit_order.safe_price) / grind_1_exit_order.safe_price
+    if grind_2_is_exit_found:
+      grind_2_exit_distance_ratio = (exit_rate - grind_2_exit_order.safe_price) / grind_2_exit_order.safe_price
+    if grind_3_is_exit_found:
+      grind_3_exit_distance_ratio = (exit_rate - grind_3_exit_order.safe_price) / grind_3_exit_order.safe_price
     if buyback_1_is_exit_found:
       buyback_1_exit_distance_ratio = (exit_rate - buyback_1_exit_order.safe_price) / buyback_1_exit_order.safe_price
     elif is_derisk_1_found:
@@ -32209,7 +32224,20 @@ class NostalgiaForInfinityX6(IStrategy):
         )
       )
     ):
-      sell_amount = trade.amount * exit_rate / trade.leverage - (min_stake * 1.55)
+      sell_amount = (
+        (
+          filled_entries[0].safe_filled
+          * (
+            self.grinding_v2_derisk_level_3_stake_futures
+            if self.is_futures_mode
+            else self.grinding_v2_derisk_level_3_stake_spot
+          )
+        )
+        * exit_rate
+        / trade.leverage
+      )
+      if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
+        sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
       ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
@@ -32516,21 +32544,11 @@ class NostalgiaForInfinityX6(IStrategy):
       )
       and (buyback_1_current_open_rate == 0)
       and (
-        (
-          buyback_1_exit_distance_ratio
-          < (
-            self.grinding_v2_buyback_1_distance_ratio_futures
-            if self.is_futures_mode
-            else self.grinding_v2_buyback_1_distance_ratio_spot
-          )
-        )
-        or (
-          slice_profit
-          < (
-            self.grinding_v2_buyback_1_distance_ratio_futures
-            if self.is_futures_mode
-            else self.grinding_v2_buyback_1_distance_ratio_spot
-          )
+        buyback_1_exit_distance_ratio
+        < (
+          self.grinding_v2_buyback_1_distance_ratio_futures
+          if self.is_futures_mode
+          else self.grinding_v2_buyback_1_distance_ratio_spot
         )
       )
     ):
@@ -32642,21 +32660,11 @@ class NostalgiaForInfinityX6(IStrategy):
       )
       and (buyback_2_current_open_rate == 0)
       and (
-        (
-          buyback_2_exit_distance_ratio
-          < (
-            self.grinding_v2_buyback_2_distance_ratio_futures
-            if self.is_futures_mode
-            else self.grinding_v2_buyback_2_distance_ratio_spot
-          )
-        )
-        or (
-          slice_profit
-          < (
-            self.grinding_v2_buyback_2_distance_ratio_futures
-            if self.is_futures_mode
-            else self.grinding_v2_buyback_2_distance_ratio_spot
-          )
+        buyback_2_exit_distance_ratio
+        < (
+          self.grinding_v2_buyback_2_distance_ratio_futures
+          if self.is_futures_mode
+          else self.grinding_v2_buyback_2_distance_ratio_spot
         )
       )
     ):
@@ -32767,21 +32775,11 @@ class NostalgiaForInfinityX6(IStrategy):
       )
       and (buyback_3_current_open_rate == 0)
       and (
-        (
-          buyback_3_exit_distance_ratio
-          < (
-            self.grinding_v2_buyback_3_distance_ratio_futures
-            if self.is_futures_mode
-            else self.grinding_v2_buyback_3_distance_ratio_spot
-          )
-        )
-        or (
-          slice_profit
-          < (
-            self.grinding_v2_buyback_3_distance_ratio_futures
-            if self.is_futures_mode
-            else self.grinding_v2_buyback_3_distance_ratio_spot
-          )
+        buyback_3_exit_distance_ratio
+        < (
+          self.grinding_v2_buyback_3_distance_ratio_futures
+          if self.is_futures_mode
+          else self.grinding_v2_buyback_3_distance_ratio_spot
         )
       )
     ):
