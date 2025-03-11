@@ -12568,6 +12568,9 @@ class NostalgiaForInfinityX6(IStrategy):
           long_entry_logic.append(df["global_protections_long_pump"] == True)
           long_entry_logic.append(df["global_protections_long_dump"] == True)
 
+          # 15m down move, 1h high
+          long_entry_logic.append((df["RSI_3_15m"] > 15.0) | (df["AROONU_14_1h"] < 75.0))
+
           # 5m & 15m down move, 4h still high
           long_entry_logic.append(
             (df["RSI_3"] > 5.0) | (df["RSI_3_change_pct_15m"] > -50.0) | (df["RSI_14_4h"] < 50.0)
