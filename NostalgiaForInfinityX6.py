@@ -67,7 +67,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.2.14"
+    return "v16.2.15"
 
   stoploss = -0.99
 
@@ -13797,10 +13797,14 @@ class NostalgiaForInfinityX6(IStrategy):
         if long_entry_condition_index == 142:
           # Protections
           long_entry_logic.append(is_pair_long_top_coins_mode)
+          long_entry_logic.append(df["num_empty_288"] <= allowed_empty_candles_288)
           long_entry_logic.append(df["global_protections_long_pump"] == True)
           long_entry_logic.append(df["global_protections_long_dump"] == True)
 
-          long_entry_logic.append(df["num_empty_288"] <= allowed_empty_candles_288)
+          # 15m down move, 15m still not low enough, 1h high
+          long_entry_logic.append(
+            (df["RSI_3_15m"] > 25.0) | (df["STOCHRSIk_14_14_3_3_15m"] < 30.0) | (df["AROONU_14_1h"] < 70.0)
+          )
 
           # 5m & 1h & 4h down move
           long_entry_logic.append((df["RSI_3"] > 10.0) | (df["RSI_3_1h"] > 5.0) | (df["RSI_3_4h"] > 10.0))
