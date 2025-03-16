@@ -373,8 +373,8 @@ class NostalgiaForInfinityX6(IStrategy):
   grinding_v2_derisk_level_3_enable = False
   grinding_v2_derisk_level_3_spot = -0.10
   grinding_v2_derisk_level_3_futures = -0.10
-  grinding_v2_derisk_level_1_stake_spot = 0.40
-  grinding_v2_derisk_level_1_stake_futures = 0.40
+  grinding_v2_derisk_level_1_stake_spot = 0.20
+  grinding_v2_derisk_level_1_stake_futures = 0.20
   grinding_v2_derisk_level_2_stake_spot = 0.20
   grinding_v2_derisk_level_2_stake_futures = 0.20
   grinding_v2_derisk_level_3_stake_spot = 0.20
