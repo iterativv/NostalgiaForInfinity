@@ -12034,6 +12034,8 @@ class NostalgiaForInfinityX6(IStrategy):
           long_entry_logic.append((df["RSI_3_4h"] > 5.0) | (df["AROONU_14_4h"] < 20.0))
           # 4h down move, 5m going down
           long_entry_logic.append((df["RSI_3_4h"] > 5.0) | (((df["EMA_12"] - df["EMA_26"]) / df["EMA_26"]) > -0.02))
+          # 4h down move, 4h still high, 4h overbought
+          long_entry_logic.append((df["RSI_3_4h"] > 60.0) | (df["AROONU_14_4h"] < 50.0) | (df["ROC_9_4h"] < 80.0))
           # 1d down move, 4h high, 1d downtrend
           long_entry_logic.append((df["RSI_3_1d"] > 20.0) | (df["AROONU_14_4h"] < 75.0) | (df["ROC_2_1d"] > -30.0))
           # 15m & 1h still high, 1d overbought
