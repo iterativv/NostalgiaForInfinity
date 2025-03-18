@@ -14099,6 +14099,10 @@ class NostalgiaForInfinityX5(IStrategy):
           short_entry_logic.append(
             (df["RSI_3_15m"] < 95.0) | (df["STOCHRSIk_14_14_3_3_15m"] > 70.0) | (df["STOCHRSIk_14_14_3_3_1h"] > 10.0)
           )
+          # 15m up move, 1h still not high enough, 4h low
+          short_entry_logic.append(
+            (df["RSI_3_15m"] < 95.0) | (df["STOCHRSIk_14_14_3_3_1h"] > 70.0) | (df["AROONU_14_4h"] > 20.0)
+          )
           # 15m up move, 1h & 4h still not high enough
           short_entry_logic.append(
             (df["RSI_3_15m"] < 95.0) | (df["STOCHRSIk_14_14_3_3_1h"] > 70.0) | (df["STOCHRSIk_14_14_3_3_4h"] > 80.0)
@@ -14131,6 +14135,10 @@ class NostalgiaForInfinityX5(IStrategy):
           short_entry_logic.append(
             (df["RSI_3_15m"] < 90.0) | (df["RSI_3_4h"] < 90.0) | (df["STOCHRSIk_14_14_3_3_1h"] > 80.0)
           )
+          # 15m & 4h up move, 1h still not high enough
+          short_entry_logic.append(
+            (df["RSI_3_15m"] < 90.0) | (df["RSI_3_4h"] < 90.0) | (df["STOCHRSIk_14_14_3_3_1h"] > 90.0)
+          )
           # 15m & 4h up move, 1d low
           short_entry_logic.append(
             (df["RSI_3_15m"] < 90.0) | (df["RSI_3_4h"] < 90.0) | (df["STOCHRSIk_14_14_3_3_1d"] > 20.0)
@@ -14157,6 +14165,14 @@ class NostalgiaForInfinityX5(IStrategy):
           short_entry_logic.append(
             (df["RSI_3_15m"] < 85.0) | (df["RSI_3_1h"] < 70.0) | (df["STOCHRSIk_14_14_3_3_4h"] > 30.0)
           )
+          # 15m & 4h down move, 4h still not high enough
+          short_entry_logic.append(
+            (df["RSI_3_15m"] < 85.0) | (df["RSI_3_4h"] < 90.0) | (df["STOCHRSIk_14_14_3_3_4h"] > 75.0)
+          )
+          # 15m & 1h up move, 1h still not high enough
+          short_entry_logic.append((df["RSI_3_15m"] < 80.0) | (df["RSI_3_1h"] < 70.0) | (df["AROONU_14_1h"] > 60.0))
+          # 1h up move, 4h low
+          short_entry_logic.append((df["RSI_3_1h"] < 95.0) | (df["STOCHRSIk_14_14_3_3_4h"] > 30.0))
           # 1h & 4h up move, 4h still not high enough
           short_entry_logic.append((df["RSI_3_1h"] < 95.0) | (df["RSI_3_4h"] < 95.0) | (df["UO_7_14_28_4h"] > 60.0))
           # 1h & 4h up move, 4h still low
