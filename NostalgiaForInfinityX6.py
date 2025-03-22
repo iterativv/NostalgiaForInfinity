@@ -180,14 +180,14 @@ class NostalgiaForInfinityX6(IStrategy):
   # Based on the the first entry (regardless of rebuys)
   stop_threshold_spot = 0.10
   stop_threshold_futures = 0.10
-  stop_threshold_doom_spot = 0.12
-  stop_threshold_doom_futures = 0.12
+  stop_threshold_doom_spot = 0.20
+  stop_threshold_doom_futures = 0.20
   stop_threshold_spot_rebuy = 1.0
   stop_threshold_futures_rebuy = 3.0
-  stop_threshold_rapid_spot = 0.12
-  stop_threshold_rapid_futures = 0.12
-  stop_threshold_derisk_spot = 0.12
-  stop_threshold_derisk_futures = 0.12
+  stop_threshold_rapid_spot = 0.20
+  stop_threshold_rapid_futures = 0.20
+  stop_threshold_derisk_spot = 0.20
+  stop_threshold_derisk_futures = 0.20
 
   # user specified fees to be used for profit calculations
   custom_fee_open_rate = None
