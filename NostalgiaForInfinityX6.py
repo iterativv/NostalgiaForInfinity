@@ -67,7 +67,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.3.9"
+    return "v16.3.10"
 
   stoploss = -0.99
 
@@ -125,7 +125,7 @@ class NostalgiaForInfinityX6(IStrategy):
   # Long grind mode tags
   long_grind_mode_tags = ["120"]
   # Long top coins mode tags
-  long_top_coins_mode_tags = ["141", "142", "143"]
+  long_top_coins_mode_tags = ["141", "142", "143", "144"]
   # Long derisk mode tags
   long_derisk_mode_tags = ["161"]
 
@@ -578,6 +578,7 @@ class NostalgiaForInfinityX6(IStrategy):
     "long_entry_condition_141_enable": True,
     "long_entry_condition_142_enable": True,
     "long_entry_condition_143_enable": True,
+    "long_entry_condition_144_enable": True,
   }
 
   short_entry_signal_params = {
@@ -14617,6 +14618,27 @@ class NostalgiaForInfinityX6(IStrategy):
           long_entry_logic.append(df["EMA_26"] > df["EMA_12"])
           long_entry_logic.append((df["EMA_26"] - df["EMA_12"]) > (df["open"] * 0.020))
           long_entry_logic.append((df["EMA_26"].shift() - df["EMA_12"].shift()) > (df["open"] / 100.0))
+
+        # Condition #144 - Top Coins mode (Long).
+        if long_entry_condition_index == 144:
+          # Protections
+          long_entry_logic.append(is_pair_long_top_coins_mode)
+          long_entry_logic.append(df["num_empty_288"] <= allowed_empty_candles_288)
+
+          long_entry_logic.append(df["RSI_14_1h"] < 80.0)
+          long_entry_logic.append(df["RSI_14_4h"] < 80.0)
+          long_entry_logic.append(df["RSI_14_1d"] < 80.0)
+          # 15m & 1h & 4h down move
+          long_entry_logic.append((df["RSI_3_15m"] > 5.0) | (df["RSI_3_1h"] > 15.0) | (df["RSI_3_4h"] > 30.0))
+          long_entry_logic.append((df["RSI_3_15m"] > 5.0) | (df["RSI_3_4h"] > 15.0) | (df["AROONU_14_4h"] < 30.0))
+
+          # Logic
+          long_entry_logic.append(df["WILLR_14"] < -50.0)
+          long_entry_logic.append(df["STOCHRSIk_14_14_3_3"] < 30.0)
+          long_entry_logic.append(df["STOCHRSIk_14_14_3_3_15m"] < 30.0)
+          long_entry_logic.append(df["STOCHRSIk_14_14_3_3_1h"] < 30.0)
+          long_entry_logic.append(df["BBB_20_2.0_1h"] > 12.0)
+          long_entry_logic.append(df["close_max_48"] >= (df["close"] * 1.10))
 
         ###############################################################################################
 
