@@ -10137,14 +10137,12 @@ class NostalgiaForInfinityX6(IStrategy):
     trade_ids: dict = self.hold_trades_cache.data.get("trade_ids")
     if trade_ids and trade.id in trade_ids:
       trade_profit_ratio = trade_ids[trade.id]
-      profit = 0.0
-      if trade.realized_profit != 0.0:
-        profit = ((rate - trade.open_rate) / trade.open_rate) * trade.stake_amount * (1 - trade.fee_close)
-        profit = profit + trade.realized_profit
-        profit = profit / trade.stake_amount
-      else:
-        profit = trade.calc_profit_ratio(rate)
-      current_profit_ratio = profit
+      filled_entries = trade.select_filled_orders(trade.entry_side)
+      filled_exits = trade.select_filled_orders(trade.exit_side)
+      profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = self.calc_total_profit(
+        trade, filled_entries, filled_exits, rate
+      )
+      current_profit_ratio = profit_init_ratio
       if sell_reason == "force_sell":
         formatted_profit_ratio = f"{trade_profit_ratio * 100}%"
         formatted_current_profit_ratio = f"{current_profit_ratio * 100}%"
@@ -10173,14 +10171,12 @@ class NostalgiaForInfinityX6(IStrategy):
     trade_pairs: dict = self.hold_trades_cache.data.get("trade_pairs")
     if trade_pairs and trade.pair in trade_pairs:
       trade_profit_ratio = trade_pairs[trade.pair]
-      profit = 0.0
-      if trade.realized_profit != 0.0:
-        profit = ((rate - trade.open_rate) / trade.open_rate) * trade.stake_amount * (1 - trade.fee_close)
-        profit = profit + trade.realized_profit
-        profit = profit / trade.stake_amount
-      else:
-        profit = trade.calc_profit_ratio(rate)
-      current_profit_ratio = profit
+      filled_entries = trade.select_filled_orders(trade.entry_side)
+      filled_exits = trade.select_filled_orders(trade.exit_side)
+      profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = self.calc_total_profit(
+        trade, filled_entries, filled_exits, rate
+      )
+      current_profit_ratio = profit_init_ratio
       if sell_reason == "force_sell":
         formatted_profit_ratio = f"{trade_profit_ratio * 100}%"
         formatted_current_profit_ratio = f"{current_profit_ratio * 100}%"
