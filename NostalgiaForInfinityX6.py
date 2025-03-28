@@ -13393,7 +13393,7 @@ class NostalgiaForInfinityX6(IStrategy):
           long_entry_logic.append((df["RSI_3_1d"] > 10.0) | (df["STOCHRSIk_14_14_3_3_15m"] < 20.0))
           # 1d overbought, drop but not yet near the previous lows in last 12 days
           long_entry_logic.append(
-            (df["ROC_9_1d"] < 250.0)
+            (df["ROC_9_1d"] < 200.0)
             | (df["close"] > (df["high_max_12_1d"] * 0.50))
             | (df["close"] < (df["low_min_12_1d"] * 1.25))
           )
