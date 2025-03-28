@@ -11658,6 +11658,8 @@ class NostalgiaForInfinityX6(IStrategy):
           long_entry_logic.append(
             (df["top_wick_pct_4h"] < 25.0) | (df["AROONU_14_1h"] < 70.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 85.0)
           )
+          # 1d top wick, 15m still high
+          long_entry_logic.append((df["top_wick_pct_1d"] < 50.0) | (df["STOCHRSIk_14_14_3_3_15m"] < 50.0))
           # big drop in the last 30 days, 1h still high
           long_entry_logic.append(
             (df["close"] > (df["high_max_30_1d"] * 0.05)) | (df["STOCHRSIk_14_14_3_3_1h"] < 30.0)
