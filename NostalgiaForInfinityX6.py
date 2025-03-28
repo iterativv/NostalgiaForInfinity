@@ -10336,6 +10336,10 @@ class NostalgiaForInfinityX6(IStrategy):
           long_entry_logic.append((df["RSI_3_1h"] > 25.0) | (df["AROONU_14_4h"] < 50.0) | (df["ROC_9_1d"] > -50.0))
           # 5m down move, 1h still high
           long_entry_logic.append((df["RSI_14"] > 20.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 40.0))
+          # big drop in the last 30 days, 4h still high
+          long_entry_logic.append(
+            (df["close"] > (df["high_max_30_1d"] * 0.05)) | (df["STOCHRSIk_14_14_3_3_4h"] < 30.0)
+          )
 
           # Logic
           long_entry_logic.append(df["EMA_26"] > df["EMA_12"])
