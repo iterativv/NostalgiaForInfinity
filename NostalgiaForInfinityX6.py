@@ -10646,6 +10646,10 @@ class NostalgiaForInfinityX6(IStrategy):
           )
           # 15m still not low enough, 1h high, 1d overbought
           long_entry_logic.append(
+            (df["AROONU_14_15m"] < 40.0) | (df["AROONU_14_1h"] < 80.0) | (df["ROC_9_1d"] < 100.0)
+          )
+          # 15m still not low enough, 1h high, 1d overbought
+          long_entry_logic.append(
             (df["AROONU_14_15m"] < 40.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 80.0) | (df["ROC_9_1d"] < 100.0)
           )
           # 15m still high, 1h & 4h high
