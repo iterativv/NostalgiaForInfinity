@@ -11400,6 +11400,12 @@ class NostalgiaForInfinityX6(IStrategy):
           long_entry_logic.append(
             (df["AROONU_14_15m"] < 50.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 50.0) | (df["ROC_9_1d"] < 80.0)
           )
+          # 1d overbought, drop but not yet near the previous lows in last 12 days
+          long_entry_logic.append(
+            (df["ROC_9_1d"] < 200.0)
+            | (df["close"] > (df["high_max_12_1d"] * 0.50))
+            | (df["close"] < (df["low_min_12_1d"] * 1.25))
+          )
           # 4h top wick, 1h & 4h high
           long_entry_logic.append(
             (df["top_wick_pct_4h"] < 25.0) | (df["AROONU_14_1h"] < 70.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 85.0)
