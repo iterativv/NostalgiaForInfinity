@@ -472,14 +472,14 @@ class NostalgiaForInfinityX6(IStrategy):
   grind_mode_first_entry_stop_threshold_futures = -0.20
   grind_mode_max_slots = 1
   grind_mode_coins = [
-    "MATIC",
+    "POL",
     "ADA",
     "ARB",
     "DOT",
     "XLM",
     "ALGO",
     "ETH",
-    "RNDR",
+    "RENDER",
     "XMR",
     "AVAX",
     "NEAR",
