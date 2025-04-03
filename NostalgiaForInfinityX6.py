@@ -183,7 +183,7 @@ class NostalgiaForInfinityX6(IStrategy):
   stop_threshold_doom_spot = 0.20
   stop_threshold_doom_futures = 0.20
   stop_threshold_spot_rebuy = 1.0
-  stop_threshold_futures_rebuy = 3.0
+  stop_threshold_futures_rebuy = 1.0
   stop_threshold_rapid_spot = 0.20
   stop_threshold_rapid_futures = 0.20
   stop_threshold_derisk_spot = 0.20
@@ -203,6 +203,8 @@ class NostalgiaForInfinityX6(IStrategy):
   grinding_enable = True
   derisk_enable = True
   stops_enable = True
+  doom_stops_enable = True
+  u_e_stops_enable = False
 
   # Grinding
   derisk_use_grind_stops = False
@@ -31654,7 +31656,8 @@ class NostalgiaForInfinityX6(IStrategy):
       return False, None
     # Stoploss doom
     if (
-      (
+      self.doom_stops_enable
+      and (
         profit_stake
         < -(
           filled_entries[0].cost
@@ -31668,22 +31671,25 @@ class NostalgiaForInfinityX6(IStrategy):
       return True, f"exit_{mode_name}_stoploss_doom"
 
     # Stoploss u_e
-    # if (
-    #   profit_stake
-    #   < -(
-    #     filled_entries[0].cost * (self.stop_threshold_futures if self.is_futures_mode else self.stop_threshold_spot)
-    #     # / trade.leverage
-    #   )
-    #   and (last_candle["close"] < last_candle["EMA_200"])
-    #   and (last_candle["CMF_20"] < -0.0)
-    #   and (((last_candle["EMA_200"] - last_candle["close"]) / last_candle["close"]) < 0.010)
-    #   and (last_candle["RSI_14"] > previous_candle_1["RSI_14"])
-    #   and (last_candle["RSI_14"] > (last_candle["RSI_14_1h"] + 24.0))
-    #   and (current_time - timedelta(minutes=720) > trade.open_date_utc)
-    #   # temporary
-    #   and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
-    # ):
-    #   return True, f"exit_{mode_name}_stoploss_u_e"
+    if (
+      self.u_e_stops_enable
+      and (
+        profit_stake
+        < -(
+          filled_entries[0].cost * (self.stop_threshold_futures if self.is_futures_mode else self.stop_threshold_spot)
+          # / trade.leverage
+        )
+      )
+      and (last_candle["close"] < last_candle["EMA_200"])
+      and (last_candle["CMF_20"] < -0.0)
+      and (((last_candle["EMA_200"] - last_candle["close"]) / last_candle["close"]) < 0.010)
+      and (last_candle["RSI_14"] > previous_candle_1["RSI_14"])
+      and (last_candle["RSI_14"] > (last_candle["RSI_14_1h"] + 24.0))
+      # and (current_time - timedelta(minutes=720) > trade.open_date_utc)
+      # temporary
+      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2025, 4, 3) or is_backtest)
+    ):
+      return True, f"exit_{mode_name}_stoploss_u_e"
 
     #  Here ends exit signal conditions for long_exit_stoploss
 
@@ -52633,7 +52639,8 @@ class NostalgiaForInfinityX6(IStrategy):
       return False, None
     # Stoploss doom
     if (
-      (
+      self.doom_stops_enable
+      and (
         profit_stake
         < -(
           filled_entries[0].cost
@@ -52647,22 +52654,25 @@ class NostalgiaForInfinityX6(IStrategy):
       return True, f"exit_{mode_name}_stoploss_doom"
 
     # Stoploss u_e
-    # if (
-    #   profit_stake
-    #   < -(
-    #     filled_entries[0].cost * (self.stop_threshold_futures if self.is_futures_mode else self.stop_threshold_spot)
-    #     # / trade.leverage
-    #   )
-    #   and (last_candle["close"] > last_candle["EMA_200"])
-    #   and (last_candle["CMF_20"] > 0.0)
-    #   and (((last_candle["close"] - last_candle["EMA_200"]) / last_candle["EMA_200"]) < 0.010)
-    #   and (last_candle["RSI_14"] < previous_candle_1["RSI_14"])
-    #   and (last_candle["RSI_14"] < (last_candle["RSI_14_1h"] - 24.0))
-    #   and (current_time - timedelta(minutes=720) > trade.open_date_utc)
-    #   # temporary
-    #   and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
-    # ):
-    #   return True, f"exit_{mode_name}_stoploss_u_e"
+    if (
+      self.u_e_stops_enable
+      and (
+        profit_stake
+        < -(
+          filled_entries[0].cost * (self.stop_threshold_futures if self.is_futures_mode else self.stop_threshold_spot)
+          # / trade.leverage
+        )
+      )
+      and (last_candle["close"] > last_candle["EMA_200"])
+      and (last_candle["CMF_20"] > 0.0)
+      and (((last_candle["close"] - last_candle["EMA_200"]) / last_candle["EMA_200"]) < 0.010)
+      and (last_candle["RSI_14"] < previous_candle_1["RSI_14"])
+      and (last_candle["RSI_14"] < (last_candle["RSI_14_1h"] - 24.0))
+      # and (current_time - timedelta(minutes=720) > trade.open_date_utc)
+      # temporary
+      and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2025, 4, 3) or is_backtest)
+    ):
+      return True, f"exit_{mode_name}_stoploss_u_e"
 
     #  Here ends exit signal conditions for short_exit_stoploss
 
