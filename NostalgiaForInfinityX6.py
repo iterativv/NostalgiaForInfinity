@@ -67,7 +67,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.3.40"
+    return "v16.3.41"
 
   stoploss = -0.99
 
@@ -207,6 +207,7 @@ class NostalgiaForInfinityX6(IStrategy):
   u_e_stops_enable = False
 
   # Grinding
+  grinding_v1_max_stake = 1.40  # ratio of first entry
   derisk_use_grind_stops = False
 
   grind_1_stop_grinds_spot = -0.50
@@ -33264,6 +33265,19 @@ class NostalgiaForInfinityX6(IStrategy):
           else self.regular_mode_stake_multiplier_spot[0]
         )
 
+    is_not_trade_max_stake = current_stake_amount < (
+      (filled_entries[0].cost * self.grinding_v1_max_stake)
+      / (
+        (
+          self.grind_mode_stake_multiplier_futures[0]
+          if self.is_futures_mode
+          else self.grind_mode_stake_multiplier_spot[0]
+        )
+        if is_grind_mode
+        else 1.0
+      )
+    )
+
     grind_1_max_sub_grinds = 0
     grind_1_stakes = self.grind_1_stakes_futures.copy() if self.is_futures_mode else self.grind_1_stakes_spot.copy()
     grind_1_sub_thresholds = (
@@ -33856,6 +33870,7 @@ class NostalgiaForInfinityX6(IStrategy):
       and not derisk_1_reentry_found
       and (not partial_sell)
       and (grind_1_derisk_1_sub_grind_count < grind_1_derisk_1_max_sub_grinds)
+      and is_not_trade_max_stake
     ):
       if (
         (
@@ -33971,6 +33986,7 @@ class NostalgiaForInfinityX6(IStrategy):
       and not derisk_1_reentry_found
       and (not partial_sell)
       and (grind_2_derisk_1_sub_grind_count < grind_2_derisk_1_max_sub_grinds)
+      and is_not_trade_max_stake
     ):
       if (
         (
@@ -34096,6 +34112,7 @@ class NostalgiaForInfinityX6(IStrategy):
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
         and is_long_grind_entry
+        and is_not_trade_max_stake
       ):
         buy_amount = (
           slice_amount * grind_1_stakes[grind_1_sub_grind_count] / (trade.leverage if self.is_futures_mode else 1.0)
@@ -34232,6 +34249,7 @@ class NostalgiaForInfinityX6(IStrategy):
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
         and is_long_grind_entry
+        and is_not_trade_max_stake
       ):
         buy_amount = (
           slice_amount * grind_2_stakes[grind_2_sub_grind_count] / (trade.leverage if self.is_futures_mode else 1.0)
@@ -34336,6 +34354,7 @@ class NostalgiaForInfinityX6(IStrategy):
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
         and is_long_grind_entry
+        and is_not_trade_max_stake
       ):
         buy_amount = (
           slice_amount * grind_3_stakes[grind_3_sub_grind_count] / (trade.leverage if self.is_futures_mode else 1.0)
@@ -34440,6 +34459,7 @@ class NostalgiaForInfinityX6(IStrategy):
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
         and is_long_grind_entry
+        and is_not_trade_max_stake
       ):
         buy_amount = (
           slice_amount * grind_4_stakes[grind_4_sub_grind_count] / (trade.leverage if self.is_futures_mode else 1.0)
@@ -34544,6 +34564,7 @@ class NostalgiaForInfinityX6(IStrategy):
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
         and is_long_grind_entry
+        and is_not_trade_max_stake
       ):
         buy_amount = (
           slice_amount * grind_5_stakes[grind_5_sub_grind_count] / (trade.leverage if self.is_futures_mode else 1.0)
@@ -34648,6 +34669,7 @@ class NostalgiaForInfinityX6(IStrategy):
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
         and is_long_grind_entry
+        and is_not_trade_max_stake
       ):
         buy_amount = (
           slice_amount * grind_6_stakes[grind_6_sub_grind_count] / (trade.leverage if self.is_futures_mode else 1.0)
@@ -54404,6 +54426,19 @@ class NostalgiaForInfinityX6(IStrategy):
           else self.regular_mode_stake_multiplier_spot[0]
         )
 
+    is_not_trade_max_stake = current_stake_amount < (
+      (filled_entries[0].cost * self.grinding_v1_max_stake)
+      / (
+        (
+          self.grind_mode_stake_multiplier_futures[0]
+          if self.is_futures_mode
+          else self.grind_mode_stake_multiplier_spot[0]
+        )
+        if is_grind_mode
+        else 1.0
+      )
+    )
+
     grind_1_max_sub_grinds = 0
     grind_1_stakes = self.grind_1_stakes_futures.copy() if self.is_futures_mode else self.grind_1_stakes_spot.copy()
     grind_1_sub_thresholds = (
@@ -54996,6 +55031,7 @@ class NostalgiaForInfinityX6(IStrategy):
       and not derisk_1_reentry_found
       and (not partial_sell)
       and (grind_1_derisk_1_sub_grind_count < grind_1_derisk_1_max_sub_grinds)
+      and is_not_trade_max_stake
     ):
       if (
         (
@@ -55111,6 +55147,7 @@ class NostalgiaForInfinityX6(IStrategy):
       and not derisk_1_reentry_found
       and (not partial_sell)
       and (grind_2_derisk_1_sub_grind_count < grind_2_derisk_1_max_sub_grinds)
+      and is_not_trade_max_stake
     ):
       if (
         (
@@ -55236,6 +55273,7 @@ class NostalgiaForInfinityX6(IStrategy):
         )
         # and ((num_open_grinds == 0) or (slice_profit > 0.03))
         and is_short_grind_entry
+        and is_not_trade_max_stake
       ):
         buy_amount = (
           slice_amount * grind_1_stakes[grind_1_sub_grind_count] / (trade.leverage if self.is_futures_mode else 1.0)
@@ -55372,6 +55410,7 @@ class NostalgiaForInfinityX6(IStrategy):
         )
         # and ((num_open_grinds == 0) or (slice_profit > 0.03))
         and is_short_grind_entry
+        and is_not_trade_max_stake
       ):
         buy_amount = (
           slice_amount * grind_2_stakes[grind_2_sub_grind_count] / (trade.leverage if self.is_futures_mode else 1.0)
@@ -55476,6 +55515,7 @@ class NostalgiaForInfinityX6(IStrategy):
         )
         # and ((num_open_grinds == 0) or (slice_profit > 0.03))
         and is_short_grind_entry
+        and is_not_trade_max_stake
       ):
         buy_amount = (
           slice_amount * grind_3_stakes[grind_3_sub_grind_count] / (trade.leverage if self.is_futures_mode else 1.0)
@@ -55580,6 +55620,7 @@ class NostalgiaForInfinityX6(IStrategy):
         )
         # and ((num_open_grinds == 0) or (slice_profit > 0.03))
         and is_short_grind_entry
+        and is_not_trade_max_stake
       ):
         buy_amount = (
           slice_amount * grind_4_stakes[grind_4_sub_grind_count] / (trade.leverage if self.is_futures_mode else 1.0)
@@ -55684,6 +55725,7 @@ class NostalgiaForInfinityX6(IStrategy):
         )
         # and ((num_open_grinds == 0) or (slice_profit > 0.03))
         and is_short_grind_entry
+        and is_not_trade_max_stake
       ):
         buy_amount = (
           slice_amount * grind_5_stakes[grind_5_sub_grind_count] / (trade.leverage if self.is_futures_mode else 1.0)
@@ -55788,6 +55830,7 @@ class NostalgiaForInfinityX6(IStrategy):
         )
         # and ((num_open_grinds == 0) or (slice_profit > 0.03))
         and is_short_grind_entry
+        and is_not_trade_max_stake
       ):
         buy_amount = (
           slice_amount * grind_6_stakes[grind_6_sub_grind_count] / (trade.leverage if self.is_futures_mode else 1.0)
