@@ -507,9 +507,11 @@ class NostalgiaForInfinityX6(IStrategy):
     "VET",
     "THETA",
     "EOS",
-    "LRC",
-    "QTUM",
-    "CELR",
+    "APT",
+    "OP",
+    "ICP",
+    "QNT",
+
   ]
 
   # Top coins mode coins
@@ -523,7 +525,6 @@ class NostalgiaForInfinityX6(IStrategy):
     "AVAX",
     "BCH",
     "BTC",
-    "CELR",
     "DOGE",
     "DOT",
     "EOS",
@@ -536,12 +537,10 @@ class NostalgiaForInfinityX6(IStrategy):
     "INJ",
     "KAS",
     "LINK",
-    "LRC",
     "LTC",
     "NEAR",
     "OP",
     "POL",
-    "QTUM",
     "RENDER",
     "SEI",
     "SOL",
@@ -553,8 +552,19 @@ class NostalgiaForInfinityX6(IStrategy):
     "UNI",
     "VET",
     "XLM",
-    "XMR",
     "XRP",
+    "ENA",
+    "TAO",
+    "LDO",
+    "ICP",
+    "MKR",
+    "IMX",
+    "XTZ",
+    "JTO",
+    "QNT",
+    "TIA",
+    "CRV",
+    "RAY",
   ]
 
   # Profit max thresholds
