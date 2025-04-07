@@ -67,7 +67,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.379"
+    return "v15.1.380"
 
   stoploss = -0.99
 
@@ -430,11 +430,13 @@ class NostalgiaForInfinityX5(IStrategy):
     "APT",
     "ARB",
     "ATOM",
+    "AVAX",
     "BCH",
     "BTC",
-    "CELR",
+    "CRV",
     "DOGE",
     "DOT",
+    "ENA",
     "EOS",
     "ETC",
     "ETH",
@@ -442,26 +444,35 @@ class NostalgiaForInfinityX5(IStrategy):
     "FIL",
     "GRT",
     "HBAR",
+    "ICP",
+    "IMX",
     "INJ",
+    "JTO",
     "KAS",
-    "LRC",
+    "LDO",
+    "LINK",
     "LTC",
+    "MKR",
     "NEAR",
     "OP",
     "POL",
-    "QTUM",
+    "QNT",
+    "RAY",
+    "RENDER",
     "SEI",
     "SOL",
     "STX",
     "SUI",
+    "TAO",
     "THETA",
+    "TIA",
     "TON",
     "TRX",
     "UNI",
     "VET",
     "XLM",
-    "XMR",
     "XRP",
+    "XTZ",
   ]
 
   # Profit max thresholds
