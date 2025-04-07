@@ -511,7 +511,6 @@ class NostalgiaForInfinityX6(IStrategy):
     "OP",
     "ICP",
     "QNT",
-
   ]
 
   # Top coins mode coins
