@@ -67,7 +67,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.3.57"
+    return "v16.3.58"
 
   stoploss = -0.99
 
@@ -11805,6 +11805,8 @@ class NostalgiaForInfinityX6(IStrategy):
             (df["RSI_3_15m"] > 10.0) | (df["STOCHRSIk_14_14_3_3_15m"] < 10.0) | (df["AROONU_14_4h"] < 30.0)
           )
           # 15m & 4h down move, 1d high
+          long_entry_logic.append((df["RSI_3_15m"] > 15.0) | (df["RSI_3_1h"] > 20.0) | (df["AROONU_14_1d"] < 70.0))
+          # 15m & 4h down move, 1d high
           long_entry_logic.append(
             (df["RSI_3_15m"] > 15.0) | (df["RSI_3_4h"] > 20.0) | (df["STOCHRSIk_14_14_3_3_1d"] < 80.0)
           )
@@ -11926,6 +11928,14 @@ class NostalgiaForInfinityX6(IStrategy):
           long_entry_logic.append((df["close"] > (df["high_max_30_1d"] * 0.01)))
           # 1d top wick, 1h down move
           long_entry_logic.append((df["top_wick_pct_1d"] < 30.0) | (df["RSI_3_1h"] > 20.0))
+
+          # Logic
+          long_entry_logic.append(df["WILLR_14"] < -50.0)
+          long_entry_logic.append(df["STOCHRSIk_14_14_3_3"] < 20.0)
+          long_entry_logic.append(df["WILLR_84_1h"] < -70.0)
+          long_entry_logic.append(df["STOCHRSIk_14_14_3_3_1h"] < 20.0)
+          long_entry_logic.append(df["BBB_20_2.0_1h"] > 16.0)
+          long_entry_logic.append(df["close_max_48"] >= (df["close"] * 1.10))
 
         # Condition #43 - Quick mode (Long).
         if long_entry_condition_index == 43:
