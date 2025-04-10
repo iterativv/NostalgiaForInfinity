@@ -98,11 +98,13 @@ else:
 ##   BEP20/BSC (USDT, ETH, BNB, ...): 0x86A0B21a20b39d16424B7c8003E4A7e12d78ABEe                           ##
 ##   TRC20/TRON (USDT, TRON, ...): TTAa9MX6zMLXNgWMhg7tkNormVHWCoq8Xk                                      ##
 ##                                                                                                         ##
+##  Patreon: https://www.patreon.com/iterativ                                                              ##
+##                                                                                                         ##
 ##               REFERRAL LINKS                                                                            ##
 ##                                                                                                         ##
 ##  Binance: https://accounts.binance.com/en/register?ref=C68K26A9 (20% discount on trading fees)          ##
 ##  Kucoin: https://www.kucoin.com/r/af/QBSSS5J2 (20% lifetime discount on trading fees)                   ##
-##  Gate.io: https://www.gate.io/signup/UAARUlhf/2130?ref_type=103 (20% lifetime discount on trading fees) ##
+##  Gate.io: https://www.gate.io/share/nfinfinity (20% lifetime discount on trading fees)                  ##
 ##  OKX: https://www.okx.com/join/11749725931 (20% discount on trading fees)                               ##
 ##  MEXC: https://www.mexc.com/register?inviteCode=mexc-1b888 (10% discount on trading fees)               ##
 ##  ByBit: https://partner.bybit.com/b/nfi                                                                 ##
@@ -110,7 +112,7 @@ else:
 ##  BitMart: https://www.bitmart.com/invite/nfinfinity/en-US (20% lifetime discount on trading fees)       ##
 ##  HTX: https://www.htx.com/invite/en-us/1f?invite_code=ubpt2223                                          ##
 ##         (Welcome Bonus worth 241 USDT upon completion of a deposit and trade)                           ##
-##  Bitvavo: https://account.bitvavo.com/create?a=D22103A4BC (no fees for the first € 1000)                ##
+##  Bitvavo: https://bitvavo.com/invite?a=D22103A4BC (no fees for the first € 10000)                       ##
 #############################################################################################################
 
 
