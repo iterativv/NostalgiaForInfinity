@@ -10037,10 +10037,10 @@ class NostalgiaForInfinityX6(IStrategy):
   # Correct Min Stake
   # ---------------------------------------------------------------------------------------------
   def correct_min_stake(self, min_stake: float) -> float:
-    if self.config["exchange"]["name"] in ["bybit"]:
-      if self.is_futures_mode:
-        if min_stake < 5.0:
-          min_stake = 5.0
+    # if self.config["exchange"]["name"] in ["bybit"]:
+    #   if self.is_futures_mode:
+    #     if min_stake < 5.0:
+    #       min_stake = 5.0
     return min_stake
 
   def is_backtest_mode(self) -> bool:
