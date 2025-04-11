@@ -69,7 +69,7 @@ class NostalgiaForInfinityX5(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v15.1.383"
+    return "v15.1.384"
 
   stoploss = -0.99
 
@@ -207,7 +207,7 @@ class NostalgiaForInfinityX5(IStrategy):
   stops_enable = True
 
   # Grinding
-  grinding_v1_max_stake = 1.40  # ratio of first entry
+  grinding_v1_max_stake = 1.0  # ratio of first entry
   derisk_use_grind_stops = False
 
   grind_1_stop_grinds_spot = -0.50
