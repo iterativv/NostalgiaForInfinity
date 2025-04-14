@@ -11207,6 +11207,8 @@ class NostalgiaForInfinityX6(IStrategy):
           # Protections
           long_entry_logic.append(df["num_empty_288"] <= allowed_empty_candles_288)
 
+          # big drop in the last hour
+          long_entry_logic.append(df["close"] > (df["close_max_12"] * 0.50))
           # 5m down move, 15m still not low enough
           long_entry_logic.append((df["RSI_3"] > 3.0) | (df["STOCHRSIk_14_14_3_3_15m"] < 30.0))
           # 5m & 15m down move, 1h still high
