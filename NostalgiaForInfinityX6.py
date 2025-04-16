@@ -10622,6 +10622,8 @@ class NostalgiaForInfinityX6(IStrategy):
           long_entry_logic.append(
             (df["close"] > (df["high_max_24_4h"] * 0.20)) | (df["STOCHRSIk_14_14_3_3_1h"] < 70.0)
           )
+          # big drop in the last 6 days, 1d down move
+          long_entry_logic.append((df["close"] > (df["high_max_6_1d"] * 0.30)) | (df["RSI_3_1d"] > 15.0))
           # big drop in the last 30 days, 1d downtrend
           long_entry_logic.append((df["close"] > (df["high_max_30_1d"] * 0.05)) | (df["ROC_9_1d"] > -40.0))
           # big drop in the last 30 days
