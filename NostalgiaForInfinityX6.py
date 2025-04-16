@@ -12432,6 +12432,12 @@ class NostalgiaForInfinityX6(IStrategy):
           long_entry_logic.append(
             (df["AROONU_14_4h"] < 50.0) | (df["AROONU_14_4h"] > df["AROONU_14_4h"].shift(48)) | (df["ROC_9_4h"] < 40.0)
           )
+          # pump, drop but not yet near the previous lows
+          long_entry_logic.append(
+            (((df["high_max_24_4h"] - df["low_min_24_4h"]) / df["low_min_24_4h"]) < 1.75)
+            | (df["close"] > (df["high_max_6_4h"] * 0.75))
+            | (df["close"] < (df["low_min_24_4h"] * 1.25))
+          )
           # 4h high, drop but not yet near the previous lows
           long_entry_logic.append(
             (df["AROONU_14_4h"] < 70.0)
