@@ -5379,6 +5379,8 @@ class NostalgiaForInfinityX6(IStrategy):
             | (df["close"] > (df["high_max_12_1d"] * 0.50))
             | (df["close"] < (df["low_min_12_1d"] * 1.25))
           )
+          # 5m red, 1h still high
+          long_entry_logic.append((df["change_pct"] > -5.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 50.0))
           # 4h top wick, 1h & 4h high
           long_entry_logic.append(
             (df["top_wick_pct_4h"] < 25.0) | (df["AROONU_14_1h"] < 70.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 85.0)
