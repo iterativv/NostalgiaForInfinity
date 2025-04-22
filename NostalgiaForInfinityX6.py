@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.4.15"
+    return "v16.4.16"
 
   stoploss = -0.99
 
@@ -25607,6 +25607,9 @@ class NostalgiaForInfinityX6(IStrategy):
       + grind_3_current_grind_stake_profit
     )
 
+    # not reached the max allowed stake for all grinds
+    is_not_trade_max_stake = current_stake_amount < (filled_entries[0].cost * self.grinding_v2_max_stake)
+
     # De-risk level 1
     if (
       self.derisk_enable
@@ -25760,24 +25763,24 @@ class NostalgiaForInfinityX6(IStrategy):
       )
       and (grind_1_sub_grind_count < grind_1_max_sub_grinds)
       and (grind_1_sub_grind_count == 0 or (grind_1_distance_ratio < grind_1_sub_thresholds[grind_1_sub_grind_count]))
+      and is_not_trade_max_stake
     ):
-      if current_stake_amount < (filled_entries[0].cost * self.grinding_v2_max_stake):
-        buy_amount = slice_amount * grind_1_stakes[grind_1_sub_grind_count] / trade.leverage
-        if buy_amount < (min_stake * 1.5):
-          buy_amount = min_stake * 1.5
-        if buy_amount > max_stake:
-          return None
-        self.dp.send_msg(
-          f"Grinding entry (grind_1_entry) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
-        )
-        log.info(
-          f"Grinding entry (grind_1_entry) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
-        )
-        order_tag = "grind_1_entry"
-        if has_order_tags:
-          return buy_amount, order_tag
-        else:
-          return buy_amount
+      buy_amount = slice_amount * grind_1_stakes[grind_1_sub_grind_count] / trade.leverage
+      if buy_amount < (min_stake * 1.5):
+        buy_amount = min_stake * 1.5
+      if buy_amount > max_stake:
+        return None
+      self.dp.send_msg(
+        f"Grinding entry (grind_1_entry) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+      )
+      log.info(
+        f"Grinding entry (grind_1_entry) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+      )
+      order_tag = "grind_1_entry"
+      if has_order_tags:
+        return buy_amount, order_tag
+      else:
+        return buy_amount
 
     if grind_1_sub_grind_count > 0:
       grind_profit = (exit_rate - grind_1_current_open_rate) / grind_1_current_open_rate
@@ -25850,24 +25853,24 @@ class NostalgiaForInfinityX6(IStrategy):
       )
       and (grind_2_sub_grind_count < grind_2_max_sub_grinds)
       and (grind_2_sub_grind_count == 0 or (grind_2_distance_ratio < grind_2_sub_thresholds[grind_2_sub_grind_count]))
+      and is_not_trade_max_stake
     ):
-      if current_stake_amount < (filled_entries[0].cost * self.grinding_v2_max_stake):
-        buy_amount = slice_amount * grind_2_stakes[grind_2_sub_grind_count] / trade.leverage
-        if buy_amount < (min_stake * 1.5):
-          buy_amount = min_stake * 1.5
-        if buy_amount > max_stake:
-          return None
-        self.dp.send_msg(
-          f"Grinding entry (grind_2_entry) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
-        )
-        log.info(
-          f"Grinding entry (grind_2_entry) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
-        )
-        order_tag = "grind_2_entry"
-        if has_order_tags:
-          return buy_amount, order_tag
-        else:
-          return buy_amount
+      buy_amount = slice_amount * grind_2_stakes[grind_2_sub_grind_count] / trade.leverage
+      if buy_amount < (min_stake * 1.5):
+        buy_amount = min_stake * 1.5
+      if buy_amount > max_stake:
+        return None
+      self.dp.send_msg(
+        f"Grinding entry (grind_2_entry) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+      )
+      log.info(
+        f"Grinding entry (grind_2_entry) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+      )
+      order_tag = "grind_2_entry"
+      if has_order_tags:
+        return buy_amount, order_tag
+      else:
+        return buy_amount
 
     if grind_2_sub_grind_count > 0:
       grind_profit = (exit_rate - grind_2_current_open_rate) / grind_2_current_open_rate
@@ -25940,24 +25943,24 @@ class NostalgiaForInfinityX6(IStrategy):
       )
       and (grind_3_sub_grind_count < grind_3_max_sub_grinds)
       and (grind_3_sub_grind_count == 0 or (grind_3_distance_ratio < grind_3_sub_thresholds[grind_3_sub_grind_count]))
+      and is_not_trade_max_stake
     ):
-      if current_stake_amount < (filled_entries[0].cost * self.grinding_v2_max_stake):
-        buy_amount = slice_amount * grind_3_stakes[grind_3_sub_grind_count] / trade.leverage
-        if buy_amount < (min_stake * 1.5):
-          buy_amount = min_stake * 1.5
-        if buy_amount > max_stake:
-          return None
-        self.dp.send_msg(
-          f"Grinding entry (grind_3_entry) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
-        )
-        log.info(
-          f"Grinding entry (grind_3_entry) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
-        )
-        order_tag = "grind_3_entry"
-        if has_order_tags:
-          return buy_amount, order_tag
-        else:
-          return buy_amount
+      buy_amount = slice_amount * grind_3_stakes[grind_3_sub_grind_count] / trade.leverage
+      if buy_amount < (min_stake * 1.5):
+        buy_amount = min_stake * 1.5
+      if buy_amount > max_stake:
+        return None
+      self.dp.send_msg(
+        f"Grinding entry (grind_3_entry) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+      )
+      log.info(
+        f"Grinding entry (grind_3_entry) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+      )
+      order_tag = "grind_3_entry"
+      if has_order_tags:
+        return buy_amount, order_tag
+      else:
+        return buy_amount
 
     if grind_3_sub_grind_count > 0:
       grind_profit = (exit_rate - grind_3_current_open_rate) / grind_3_current_open_rate
@@ -26037,30 +26040,28 @@ class NostalgiaForInfinityX6(IStrategy):
           else self.grinding_v2_buyback_1_distance_ratio_spot
         )
       )
+      and is_not_trade_max_stake
     ):
-      if current_stake_amount < (filled_entries[0].cost * self.grinding_v2_max_stake):
-        buy_amount = (
-          slice_amount
-          * (
-            self.grinding_v2_buyback_1_stake_futures if self.is_futures_mode else self.grinding_v2_buyback_1_stake_spot
-          )
-          / trade.leverage
-        )
-        if buy_amount < (min_stake * 1.5):
-          buy_amount = min_stake * 1.5
-        if buy_amount > max_stake:
-          return None
-        self.dp.send_msg(
-          f"Buyback entry (buyback_1_entry) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
-        )
-        log.info(
-          f"Buyback entry (buyback_1_entry) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
-        )
-        order_tag = "buyback_1_entry"
-        if has_order_tags:
-          return buy_amount, order_tag
-        else:
-          return buy_amount
+      buy_amount = (
+        slice_amount
+        * (self.grinding_v2_buyback_1_stake_futures if self.is_futures_mode else self.grinding_v2_buyback_1_stake_spot)
+        / trade.leverage
+      )
+      if buy_amount < (min_stake * 1.5):
+        buy_amount = min_stake * 1.5
+      if buy_amount > max_stake:
+        return None
+      self.dp.send_msg(
+        f"Buyback entry (buyback_1_entry) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+      )
+      log.info(
+        f"Buyback entry (buyback_1_entry) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+      )
+      order_tag = "buyback_1_entry"
+      if has_order_tags:
+        return buy_amount, order_tag
+      else:
+        return buy_amount
 
     # if buyback_1_sub_grind_count > 0:
     #   grind_profit = (exit_rate - buyback_1_current_open_rate) / buyback_1_current_open_rate
@@ -26159,30 +26160,28 @@ class NostalgiaForInfinityX6(IStrategy):
           else self.grinding_v2_buyback_2_distance_ratio_spot
         )
       )
+      and is_not_trade_max_stake
     ):
-      if current_stake_amount < (filled_entries[0].cost * self.grinding_v2_max_stake):
-        buy_amount = (
-          slice_amount
-          * (
-            self.grinding_v2_buyback_2_stake_futures if self.is_futures_mode else self.grinding_v2_buyback_2_stake_spot
-          )
-          / trade.leverage
-        )
-        if buy_amount < (min_stake * 1.5):
-          buy_amount = min_stake * 1.5
-        if buy_amount > max_stake:
-          return None
-        self.dp.send_msg(
-          f"Buyback entry (buyback_2_entry) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
-        )
-        log.info(
-          f"Buyback entry (buyback_2_entry) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
-        )
-        order_tag = "buyback_2_entry"
-        if has_order_tags:
-          return buy_amount, order_tag
-        else:
-          return buy_amount
+      buy_amount = (
+        slice_amount
+        * (self.grinding_v2_buyback_2_stake_futures if self.is_futures_mode else self.grinding_v2_buyback_2_stake_spot)
+        / trade.leverage
+      )
+      if buy_amount < (min_stake * 1.5):
+        buy_amount = min_stake * 1.5
+      if buy_amount > max_stake:
+        return None
+      self.dp.send_msg(
+        f"Buyback entry (buyback_2_entry) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+      )
+      log.info(
+        f"Buyback entry (buyback_2_entry) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+      )
+      order_tag = "buyback_2_entry"
+      if has_order_tags:
+        return buy_amount, order_tag
+      else:
+        return buy_amount
 
     # if buyback_2_sub_grind_count > 0:
     #   grind_profit = (exit_rate - buyback_2_current_open_rate) / buyback_2_current_open_rate
@@ -26281,30 +26280,28 @@ class NostalgiaForInfinityX6(IStrategy):
           else self.grinding_v2_buyback_3_distance_ratio_spot
         )
       )
+      and is_not_trade_max_stake
     ):
-      if current_stake_amount < (filled_entries[0].cost * self.grinding_v2_max_stake):
-        buy_amount = (
-          slice_amount
-          * (
-            self.grinding_v2_buyback_3_stake_futures if self.is_futures_mode else self.grinding_v2_buyback_3_stake_spot
-          )
-          / trade.leverage
-        )
-        if buy_amount < (min_stake * 1.5):
-          buy_amount = min_stake * 1.5
-        if buy_amount > max_stake:
-          return None
-        self.dp.send_msg(
-          f"Buyback entry (buyback_3_entry) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
-        )
-        log.info(
-          f"Buyback entry (buyback_3_entry) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
-        )
-        order_tag = "buyback_3_entry"
-        if has_order_tags:
-          return buy_amount, order_tag
-        else:
-          return buy_amount
+      buy_amount = (
+        slice_amount
+        * (self.grinding_v2_buyback_3_stake_futures if self.is_futures_mode else self.grinding_v2_buyback_3_stake_spot)
+        / trade.leverage
+      )
+      if buy_amount < (min_stake * 1.5):
+        buy_amount = min_stake * 1.5
+      if buy_amount > max_stake:
+        return None
+      self.dp.send_msg(
+        f"Buyback entry (buyback_3_entry) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+      )
+      log.info(
+        f"Buyback entry (buyback_3_entry) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+      )
+      order_tag = "buyback_3_entry"
+      if has_order_tags:
+        return buy_amount, order_tag
+      else:
+        return buy_amount
 
     # if buyback_3_sub_grind_count > 0:
     #   grind_profit = (exit_rate - buyback_3_current_open_rate) / buyback_3_current_open_rate
@@ -47201,6 +47198,9 @@ class NostalgiaForInfinityX6(IStrategy):
       + grind_3_current_grind_stake_profit
     )
 
+    # not reached the max allowed stake for all grinds
+    is_not_trade_max_stake = current_stake_amount < (filled_entries[0].cost * self.grinding_v2_max_stake)
+
     # De-risk level 1
     if (
       self.derisk_enable
@@ -47354,24 +47354,24 @@ class NostalgiaForInfinityX6(IStrategy):
       )
       and (grind_1_sub_grind_count < grind_1_max_sub_grinds)
       and (grind_1_sub_grind_count == 0 or (-grind_1_distance_ratio < grind_1_sub_thresholds[grind_1_sub_grind_count]))
+      and is_not_trade_max_stake
     ):
-      if current_stake_amount < (filled_entries[0].cost * self.grinding_v2_max_stake):
-        buy_amount = slice_amount * grind_1_stakes[grind_1_sub_grind_count] / trade.leverage
-        if buy_amount < (min_stake * 1.5):
-          buy_amount = min_stake * 1.5
-        if buy_amount > max_stake:
-          return None
-        self.dp.send_msg(
-          f"Grinding entry (grind_1_entry) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
-        )
-        log.info(
-          f"Grinding entry (grind_1_entry) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
-        )
-        order_tag = "grind_1_entry"
-        if has_order_tags:
-          return buy_amount, order_tag
-        else:
-          return buy_amount
+      buy_amount = slice_amount * grind_1_stakes[grind_1_sub_grind_count] / trade.leverage
+      if buy_amount < (min_stake * 1.5):
+        buy_amount = min_stake * 1.5
+      if buy_amount > max_stake:
+        return None
+      self.dp.send_msg(
+        f"Grinding entry (grind_1_entry) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+      )
+      log.info(
+        f"Grinding entry (grind_1_entry) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+      )
+      order_tag = "grind_1_entry"
+      if has_order_tags:
+        return buy_amount, order_tag
+      else:
+        return buy_amount
 
     if grind_1_sub_grind_count > 0:
       grind_profit = -(exit_rate - grind_1_current_open_rate) / grind_1_current_open_rate
@@ -47444,24 +47444,24 @@ class NostalgiaForInfinityX6(IStrategy):
       )
       and (grind_2_sub_grind_count < grind_2_max_sub_grinds)
       and (grind_2_sub_grind_count == 0 or (-grind_2_distance_ratio < grind_2_sub_thresholds[grind_2_sub_grind_count]))
+      and is_not_trade_max_stake
     ):
-      if current_stake_amount < (filled_entries[0].cost * self.grinding_v2_max_stake):
-        buy_amount = slice_amount * grind_2_stakes[grind_2_sub_grind_count] / trade.leverage
-        if buy_amount < (min_stake * 1.5):
-          buy_amount = min_stake * 1.5
-        if buy_amount > max_stake:
-          return None
-        self.dp.send_msg(
-          f"Grinding entry (grind_2_entry) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
-        )
-        log.info(
-          f"Grinding entry (grind_2_entry) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
-        )
-        order_tag = "grind_2_entry"
-        if has_order_tags:
-          return buy_amount, order_tag
-        else:
-          return buy_amount
+      buy_amount = slice_amount * grind_2_stakes[grind_2_sub_grind_count] / trade.leverage
+      if buy_amount < (min_stake * 1.5):
+        buy_amount = min_stake * 1.5
+      if buy_amount > max_stake:
+        return None
+      self.dp.send_msg(
+        f"Grinding entry (grind_2_entry) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+      )
+      log.info(
+        f"Grinding entry (grind_2_entry) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+      )
+      order_tag = "grind_2_entry"
+      if has_order_tags:
+        return buy_amount, order_tag
+      else:
+        return buy_amount
 
     if grind_2_sub_grind_count > 0:
       grind_profit = -(exit_rate - grind_2_current_open_rate) / grind_2_current_open_rate
@@ -47534,24 +47534,24 @@ class NostalgiaForInfinityX6(IStrategy):
       )
       and (grind_3_sub_grind_count < grind_3_max_sub_grinds)
       and (grind_3_sub_grind_count == 0 or (-grind_3_distance_ratio < grind_3_sub_thresholds[grind_3_sub_grind_count]))
+      and is_not_trade_max_stake
     ):
-      if current_stake_amount < (filled_entries[0].cost * self.grinding_v2_max_stake):
-        buy_amount = slice_amount * grind_3_stakes[grind_3_sub_grind_count] / trade.leverage
-        if buy_amount < (min_stake * 1.5):
-          buy_amount = min_stake * 1.5
-        if buy_amount > max_stake:
-          return None
-        self.dp.send_msg(
-          f"Grinding entry (grind_3_entry) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
-        )
-        log.info(
-          f"Grinding entry (grind_3_entry) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
-        )
-        order_tag = "grind_3_entry"
-        if has_order_tags:
-          return buy_amount, order_tag
-        else:
-          return buy_amount
+      buy_amount = slice_amount * grind_3_stakes[grind_3_sub_grind_count] / trade.leverage
+      if buy_amount < (min_stake * 1.5):
+        buy_amount = min_stake * 1.5
+      if buy_amount > max_stake:
+        return None
+      self.dp.send_msg(
+        f"Grinding entry (grind_3_entry) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+      )
+      log.info(
+        f"Grinding entry (grind_3_entry) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+      )
+      order_tag = "grind_3_entry"
+      if has_order_tags:
+        return buy_amount, order_tag
+      else:
+        return buy_amount
 
     if grind_3_sub_grind_count > 0:
       grind_profit = -(exit_rate - grind_3_current_open_rate) / grind_3_current_open_rate
@@ -47631,30 +47631,28 @@ class NostalgiaForInfinityX6(IStrategy):
           else self.grinding_v2_buyback_1_distance_ratio_spot
         )
       )
+      and is_not_trade_max_stake
     ):
-      if current_stake_amount < (filled_entries[0].cost * self.grinding_v2_max_stake):
-        buy_amount = (
-          slice_amount
-          * (
-            self.grinding_v2_buyback_1_stake_futures if self.is_futures_mode else self.grinding_v2_buyback_1_stake_spot
-          )
-          / trade.leverage
-        )
-        if buy_amount < (min_stake * 1.5):
-          buy_amount = min_stake * 1.5
-        if buy_amount > max_stake:
-          return None
-        self.dp.send_msg(
-          f"Buyback entry (buyback_1_entry) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
-        )
-        log.info(
-          f"Buyback entry (buyback_1_entry) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
-        )
-        order_tag = "buyback_1_entry"
-        if has_order_tags:
-          return buy_amount, order_tag
-        else:
-          return buy_amount
+      buy_amount = (
+        slice_amount
+        * (self.grinding_v2_buyback_1_stake_futures if self.is_futures_mode else self.grinding_v2_buyback_1_stake_spot)
+        / trade.leverage
+      )
+      if buy_amount < (min_stake * 1.5):
+        buy_amount = min_stake * 1.5
+      if buy_amount > max_stake:
+        return None
+      self.dp.send_msg(
+        f"Buyback entry (buyback_1_entry) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+      )
+      log.info(
+        f"Buyback entry (buyback_1_entry) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+      )
+      order_tag = "buyback_1_entry"
+      if has_order_tags:
+        return buy_amount, order_tag
+      else:
+        return buy_amount
 
     # if buyback_1_sub_grind_count > 0:
     #   grind_profit = -(exit_rate - buyback_1_current_open_rate) / buyback_1_current_open_rate
@@ -47753,30 +47751,28 @@ class NostalgiaForInfinityX6(IStrategy):
           else self.grinding_v2_buyback_2_distance_ratio_spot
         )
       )
+      and is_not_trade_max_stake
     ):
-      if current_stake_amount < (filled_entries[0].cost * self.grinding_v2_max_stake):
-        buy_amount = (
-          slice_amount
-          * (
-            self.grinding_v2_buyback_2_stake_futures if self.is_futures_mode else self.grinding_v2_buyback_2_stake_spot
-          )
-          / trade.leverage
-        )
-        if buy_amount < (min_stake * 1.5):
-          buy_amount = min_stake * 1.5
-        if buy_amount > max_stake:
-          return None
-        self.dp.send_msg(
-          f"Buyback entry (buyback_2_entry) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
-        )
-        log.info(
-          f"Buyback entry (buyback_2_entry) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
-        )
-        order_tag = "buyback_2_entry"
-        if has_order_tags:
-          return buy_amount, order_tag
-        else:
-          return buy_amount
+      buy_amount = (
+        slice_amount
+        * (self.grinding_v2_buyback_2_stake_futures if self.is_futures_mode else self.grinding_v2_buyback_2_stake_spot)
+        / trade.leverage
+      )
+      if buy_amount < (min_stake * 1.5):
+        buy_amount = min_stake * 1.5
+      if buy_amount > max_stake:
+        return None
+      self.dp.send_msg(
+        f"Buyback entry (buyback_2_entry) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+      )
+      log.info(
+        f"Buyback entry (buyback_2_entry) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+      )
+      order_tag = "buyback_2_entry"
+      if has_order_tags:
+        return buy_amount, order_tag
+      else:
+        return buy_amount
 
     # if buyback_2_sub_grind_count > 0:
     #   grind_profit = -(exit_rate - buyback_2_current_open_rate) / buyback_2_current_open_rate
@@ -47875,30 +47871,28 @@ class NostalgiaForInfinityX6(IStrategy):
           else self.grinding_v2_buyback_3_distance_ratio_spot
         )
       )
+      and is_not_trade_max_stake
     ):
-      if current_stake_amount < (filled_entries[0].cost * self.grinding_v2_max_stake):
-        buy_amount = (
-          slice_amount
-          * (
-            self.grinding_v2_buyback_3_stake_futures if self.is_futures_mode else self.grinding_v2_buyback_3_stake_spot
-          )
-          / trade.leverage
-        )
-        if buy_amount < (min_stake * 1.5):
-          buy_amount = min_stake * 1.5
-        if buy_amount > max_stake:
-          return None
-        self.dp.send_msg(
-          f"Buyback entry (buyback_3_entry) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
-        )
-        log.info(
-          f"Buyback entry (buyback_3_entry) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
-        )
-        order_tag = "buyback_3_entry"
-        if has_order_tags:
-          return buy_amount, order_tag
-        else:
-          return buy_amount
+      buy_amount = (
+        slice_amount
+        * (self.grinding_v2_buyback_3_stake_futures if self.is_futures_mode else self.grinding_v2_buyback_3_stake_spot)
+        / trade.leverage
+      )
+      if buy_amount < (min_stake * 1.5):
+        buy_amount = min_stake * 1.5
+      if buy_amount > max_stake:
+        return None
+      self.dp.send_msg(
+        f"Buyback entry (buyback_3_entry) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+      )
+      log.info(
+        f"Buyback entry (buyback_3_entry) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+      )
+      order_tag = "buyback_3_entry"
+      if has_order_tags:
+        return buy_amount, order_tag
+      else:
+        return buy_amount
 
     # if buyback_3_sub_grind_count > 0:
     #   grind_profit = -(exit_rate - buyback_3_current_open_rate) / buyback_3_current_open_rate
