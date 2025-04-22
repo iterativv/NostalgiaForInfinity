@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.4.16"
+    return "v16.4.17"
 
   stoploss = -0.99
 
@@ -592,6 +592,7 @@ class NostalgiaForInfinityX6(IStrategy):
     "long_entry_condition_41_enable": True,
     "long_entry_condition_42_enable": True,
     "long_entry_condition_43_enable": True,
+    "long_entry_condition_44_enable": True,
     "long_entry_condition_101_enable": True,
     "long_entry_condition_102_enable": True,
     "long_entry_condition_120_enable": True,
@@ -2765,6 +2766,10 @@ class NostalgiaForInfinityX6(IStrategy):
     informative_15m["RSI_14_change_pct"] = (
       (informative_15m["RSI_14"] - informative_15m["RSI_14"].shift(1)) / (informative_15m["RSI_14"].shift(1))
     ) * 100.0
+    # EMA
+    informative_15m["EMA_12"] = pta.ema(informative_15m["close"], length=12)
+    informative_15m["EMA_20"] = pta.ema(informative_15m["close"], length=20)
+    informative_15m["EMA_26"] = pta.ema(informative_15m["close"], length=26)
     # MFI
     informative_15m["MFI_14"] = pta.mfi(
       informative_15m["high"], informative_15m["low"], informative_15m["close"], informative_15m["volume"], length=14
@@ -5985,6 +5990,76 @@ class NostalgiaForInfinityX6(IStrategy):
           long_entry_logic.append((df["EMA_26"].shift() - df["EMA_12"].shift()) > (df["open"] / 100.0))
           long_entry_logic.append(df["close"] < (df["EMA_20"] * 0.958))
           long_entry_logic.append(df["close"] < (df["BBL_20_2.0"] * 0.992))
+
+        # Condition #44 - Quick mode (Long).
+        if long_entry_condition_index == 44:
+          # Protections
+          long_entry_logic.append(df["num_empty_288"] <= allowed_empty_candles_288)
+
+          # 1h & 4h down move
+          long_entry_logic.append((df["RSI_3_1h"] > 3.0) | (df["RSI_3_4h"] > 15.0))
+          # 1h down move, 4h high
+          long_entry_logic.append((df["RSI_3_1h"] > 3.0) | (df["AROONU_14_4h"] < 50.0))
+          # 1h down move, 4h high
+          long_entry_logic.append((df["RSI_3_1h"] > 10.0) | (df["AROONU_14_4h"] < 70.0))
+          # 1h down move, 4h still high
+          long_entry_logic.append((df["RSI_3_1h"] > 10.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 50.0))
+          # 14 down move, 1h still high
+          long_entry_logic.append((df["RSI_3_1h"] > 15.0) | (df["AROONU_14_1h"] < 50.0))
+          # 1h down move, 1h still high
+          long_entry_logic.append((df["RSI_3_1h"] > 15.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 40.0))
+          # 1h down move, 4h high
+          long_entry_logic.append((df["RSI_3_1h"] > 20.0) | (df["AROONU_14_4h"] < 85.0))
+          # 1h down move, 4h high
+          long_entry_logic.append((df["RSI_3_1h"] > 20.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 80.0))
+          # 1d down move, 4h high
+          long_entry_logic.append((df["RSI_3_1d"] > 25.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 90.0))
+          # 1d top wick, 4h still high
+          long_entry_logic.append((df["top_wick_pct_1d"] < 50.0) | (df["AROONU_14_4h"] < 50.0))
+          # pump, drop but not yet near the previous lows
+          long_entry_logic.append(
+            (((df["high_max_24_4h"] - df["low_min_24_4h"]) / df["low_min_24_4h"]) < 2.0)
+            | (df["close"] > (df["high_max_6_4h"] * 0.75))
+            | (df["close"] < (df["low_min_24_4h"] * 1.25))
+          )
+          # pump, drop but not yet near the previous lows
+          long_entry_logic.append(
+            (((df["high_max_12_1d"] - df["low_min_12_1d"]) / df["low_min_12_1d"]) < 2.0)
+            | (df["close"] > (df["high_max_24_4h"] * 0.70))
+            | (df["close"] < (df["low_min_12_1d"] * 1.25))
+          )
+          # drop but not yet near the previous lows
+          long_entry_logic.append(
+            (df["close"] > (df["high_max_24_4h"] * 0.50)) | (df["close"] < (df["low_min_6_1d"] * 1.25))
+          )
+          # drop but not yet near the previous lows in last 12 days
+          long_entry_logic.append(
+            (df["close"] > (df["high_max_12_1d"] * 0.50)) | (df["close"] < (df["low_min_12_1d"] * 1.25))
+          )
+          # big drop in last hour
+          long_entry_logic.append(df["close"] > (df["close_max_12"] * 0.50))
+          # big drop in last hour, 1d down move
+          long_entry_logic.append((df["close"] > (df["close_max_12"] * 0.85)) | (df["RSI_3_1d"] > 15.0))
+          # big drop in the last 12 hours
+          long_entry_logic.append((df["close"] > (df["high_max_12_1h"] * 0.50)))
+          # big drop in the last 4 days, 1d overbought
+          long_entry_logic.append((df["close"] > (df["high_max_24_4h"] * 0.50)) | (df["ROC_9_1d"] < 100.0))
+          # big drop in the last 6 days, 1d down move
+          long_entry_logic.append((df["close"] > (df["high_max_6_1d"] * 0.30)) | (df["RSI_3_1d"] > 15.0))
+          # big drop in the last 20 days
+          long_entry_logic.append((df["close"] > (df["high_max_20_1d"] * 0.10)))
+          # big drop in the last 20 days, 1h down move
+          long_entry_logic.append((df["close"] > (df["high_max_20_1d"] * 0.30)) | (df["RSI_3_1h"] > 10.0))
+
+          # Logic
+          long_entry_logic.append(df["RSI_3"] < 40.0)
+          long_entry_logic.append(df["RSI_3_15m"] < 50.0)
+          long_entry_logic.append(df["AROONU_14_15m"] < 25.0)
+          long_entry_logic.append(df["AROOND_14_15m"] > 75.0)
+          long_entry_logic.append(df["STOCHRSIk_14_14_3_3_15m"] < 20.0)
+          long_entry_logic.append(df["EMA_26_15m"] > df["EMA_12_15m"])
+          long_entry_logic.append((df["EMA_26_15m"] - df["EMA_12_15m"]) > (df["open_15m"] * 0.046))  # 0.046
+          long_entry_logic.append((df["EMA_26_15m"].shift() - df["EMA_12_15m"].shift()) > (df["open_15m"] / 100.0))
 
         # Condition #101 - Rapid mode (Long).
         if long_entry_condition_index == 101:
