@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.4.21"
+    return "v16.4.22"
 
   stoploss = -0.99
 
@@ -26125,38 +26125,38 @@ class NostalgiaForInfinityX6(IStrategy):
       else:
         return buy_amount
 
-    # if buyback_1_sub_grind_count > 0:
-    #   grind_profit = (exit_rate - buyback_1_current_open_rate) / buyback_1_current_open_rate
-    #   if (
-    #     grind_profit
-    #     > (
-    #       (
-    #         self.grinding_v2_buyback_1_profit_threshold_futures
-    #         if self.is_futures_mode
-    #         else self.grinding_v2_buyback_1_profit_threshold_spot
-    #       )
-    #       + fee_open_rate
-    #       + fee_close_rate
-    #     )
-    #   ) and self.long_grind_exit_v2(last_candle, previous_candle, slice_profit, True):
-    #     sell_amount = buyback_1_total_amount * exit_rate / trade.leverage
-    #     if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
-    #       sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
-    #     ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
-    #     if sell_amount > min_stake and ft_sell_amount > min_stake:
-    #       self.dp.send_msg(
-    #         f"Buyback exit (buyback_1_exit) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']})"
-    #       )
-    #       log.info(
-    #         f"Buyback exit (buyback_1_exit) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']})"
-    #       )
-    #       order_tag = "buyback_1_exit"
-    #       for grind_entry_id in buyback_1_buy_orders:
-    #         order_tag += " " + str(grind_entry_id)
-    #       if has_order_tags:
-    #         return -ft_sell_amount, order_tag
-    #       else:
-    #         return -ft_sell_amount
+    if buyback_1_sub_grind_count > 0:
+      grind_profit = (exit_rate - buyback_1_current_open_rate) / buyback_1_current_open_rate
+      if (
+        grind_profit
+        > (
+          (
+            self.grinding_v2_buyback_1_profit_threshold_futures
+            if self.is_futures_mode
+            else self.grinding_v2_buyback_1_profit_threshold_spot
+          )
+          + fee_open_rate
+          + fee_close_rate
+        )
+      ) and self.long_grind_exit_v2(last_candle, previous_candle, slice_profit, True):
+        sell_amount = buyback_1_total_amount * exit_rate / trade.leverage
+        if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
+          sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
+        ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
+        if sell_amount > min_stake and ft_sell_amount > min_stake:
+          self.dp.send_msg(
+            f"Buyback exit (buyback_1_exit) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']})"
+          )
+          log.info(
+            f"Buyback exit (buyback_1_exit) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']})"
+          )
+          order_tag = "buyback_1_exit"
+          for grind_entry_id in buyback_1_buy_orders:
+            order_tag += " " + str(grind_entry_id)
+          if has_order_tags:
+            return -ft_sell_amount, order_tag
+          else:
+            return -ft_sell_amount
 
     # if (buyback_1_sub_grind_count > 0) and (((exit_rate - buyback_1_current_open_rate) / buyback_1_current_open_rate) < (self.grinding_v2_buyback_1_derisk_futures if self.is_futures_mode else self.grinding_v2_buyback_1_derisk_spot)):
     if (
@@ -26245,38 +26245,38 @@ class NostalgiaForInfinityX6(IStrategy):
       else:
         return buy_amount
 
-    # if buyback_2_sub_grind_count > 0:
-    #   grind_profit = (exit_rate - buyback_2_current_open_rate) / buyback_2_current_open_rate
-    #   if (
-    #     grind_profit
-    #     > (
-    #       (
-    #         self.grinding_v2_buyback_2_profit_threshold_futures
-    #         if self.is_futures_mode
-    #         else self.grinding_v2_buyback_2_profit_threshold_spot
-    #       )
-    #       + fee_open_rate
-    #       + fee_close_rate
-    #     )
-    #   ) and self.long_grind_exit_v2(last_candle, previous_candle, slice_profit, True):
-    #     sell_amount = buyback_2_total_amount * exit_rate / trade.leverage
-    #     if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
-    #       sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
-    #     ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
-    #     if sell_amount > min_stake and ft_sell_amount > min_stake:
-    #       self.dp.send_msg(
-    #         f"Buyback exit (buyback_2_exit) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']})"
-    #       )
-    #       log.info(
-    #         f"Buyback exit (buyback_2_exit) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']})"
-    #       )
-    #       order_tag = "buyback_2_exit"
-    #       for grind_entry_id in buyback_2_buy_orders:
-    #         order_tag += " " + str(grind_entry_id)
-    #       if has_order_tags:
-    #         return -ft_sell_amount, order_tag
-    #       else:
-    #         return -ft_sell_amount
+    if buyback_2_sub_grind_count > 0:
+      grind_profit = (exit_rate - buyback_2_current_open_rate) / buyback_2_current_open_rate
+      if (
+        grind_profit
+        > (
+          (
+            self.grinding_v2_buyback_2_profit_threshold_futures
+            if self.is_futures_mode
+            else self.grinding_v2_buyback_2_profit_threshold_spot
+          )
+          + fee_open_rate
+          + fee_close_rate
+        )
+      ) and self.long_grind_exit_v2(last_candle, previous_candle, slice_profit, True):
+        sell_amount = buyback_2_total_amount * exit_rate / trade.leverage
+        if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
+          sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
+        ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
+        if sell_amount > min_stake and ft_sell_amount > min_stake:
+          self.dp.send_msg(
+            f"Buyback exit (buyback_2_exit) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']})"
+          )
+          log.info(
+            f"Buyback exit (buyback_2_exit) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']})"
+          )
+          order_tag = "buyback_2_exit"
+          for grind_entry_id in buyback_2_buy_orders:
+            order_tag += " " + str(grind_entry_id)
+          if has_order_tags:
+            return -ft_sell_amount, order_tag
+          else:
+            return -ft_sell_amount
 
     # if (buyback_2_sub_grind_count > 0) and (((exit_rate - buyback_2_current_open_rate) / buyback_2_current_open_rate) < (self.grinding_v2_buyback_2_derisk_futures if self.is_futures_mode else self.grinding_v2_buyback_2_derisk_spot)):
     if (
@@ -26365,38 +26365,38 @@ class NostalgiaForInfinityX6(IStrategy):
       else:
         return buy_amount
 
-    # if buyback_3_sub_grind_count > 0:
-    #   grind_profit = (exit_rate - buyback_3_current_open_rate) / buyback_3_current_open_rate
-    #   if (
-    #     grind_profit
-    #     > (
-    #       (
-    #         self.grinding_v2_buyback_3_profit_threshold_futures
-    #         if self.is_futures_mode
-    #         else self.grinding_v2_buyback_3_profit_threshold_spot
-    #       )
-    #       + fee_open_rate
-    #       + fee_close_rate
-    #     )
-    #   ) and self.long_grind_exit_v2(last_candle, previous_candle, slice_profit, True):
-    #     sell_amount = buyback_3_total_amount * exit_rate / trade.leverage
-    #     if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
-    #       sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
-    #     ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
-    #     if sell_amount > min_stake and ft_sell_amount > min_stake:
-    #       self.dp.send_msg(
-    #         f"Buyback exit (buyback_3_exit) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']})"
-    #       )
-    #       log.info(
-    #         f"Buyback exit (buyback_3_exit) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']})"
-    #       )
-    #       order_tag = "buyback_3_exit"
-    #       for grind_entry_id in buyback_3_buy_orders:
-    #         order_tag += " " + str(grind_entry_id)
-    #       if has_order_tags:
-    #         return -ft_sell_amount, order_tag
-    #       else:
-    #         return -ft_sell_amount
+    if buyback_3_sub_grind_count > 0:
+      grind_profit = (exit_rate - buyback_3_current_open_rate) / buyback_3_current_open_rate
+      if (
+        grind_profit
+        > (
+          (
+            self.grinding_v2_buyback_3_profit_threshold_futures
+            if self.is_futures_mode
+            else self.grinding_v2_buyback_3_profit_threshold_spot
+          )
+          + fee_open_rate
+          + fee_close_rate
+        )
+      ) and self.long_grind_exit_v2(last_candle, previous_candle, slice_profit, True):
+        sell_amount = buyback_3_total_amount * exit_rate / trade.leverage
+        if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
+          sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
+        ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
+        if sell_amount > min_stake and ft_sell_amount > min_stake:
+          self.dp.send_msg(
+            f"Buyback exit (buyback_3_exit) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']})"
+          )
+          log.info(
+            f"Buyback exit (buyback_3_exit) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']})"
+          )
+          order_tag = "buyback_3_exit"
+          for grind_entry_id in buyback_3_buy_orders:
+            order_tag += " " + str(grind_entry_id)
+          if has_order_tags:
+            return -ft_sell_amount, order_tag
+          else:
+            return -ft_sell_amount
 
     # if (buyback_3_sub_grind_count > 0) and (((exit_rate - buyback_3_current_open_rate) / buyback_3_current_open_rate) < (self.grinding_v2_buyback_3_derisk_futures if self.is_futures_mode else self.grinding_v2_buyback_3_derisk_spot)):
     if (
@@ -47716,38 +47716,38 @@ class NostalgiaForInfinityX6(IStrategy):
       else:
         return buy_amount
 
-    # if buyback_1_sub_grind_count > 0:
-    #   grind_profit = -(exit_rate - buyback_1_current_open_rate) / buyback_1_current_open_rate
-    #   if (
-    #     grind_profit
-    #     > (
-    #       (
-    #         self.grinding_v2_buyback_1_profit_threshold_futures
-    #         if self.is_futures_mode
-    #         else self.grinding_v2_buyback_1_profit_threshold_spot
-    #       )
-    #       + fee_open_rate
-    #       + fee_close_rate
-    #     )
-    #   ) and self.short_grind_exit_v2(last_candle, previous_candle, slice_profit, True):
-    #     sell_amount = buyback_1_total_amount * exit_rate / trade.leverage
-    #     if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
-    #       sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
-    #     ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
-    #     if sell_amount > min_stake and ft_sell_amount > min_stake:
-    #       self.dp.send_msg(
-    #         f"Buyback exit (buyback_1_exit) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']})"
-    #       )
-    #       log.info(
-    #         f"Buyback exit (buyback_1_exit) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']})"
-    #       )
-    #       order_tag = "buyback_1_exit"
-    #       for grind_entry_id in buyback_1_buy_orders:
-    #         order_tag += " " + str(grind_entry_id)
-    #       if has_order_tags:
-    #         return -ft_sell_amount, order_tag
-    #       else:
-    #         return -ft_sell_amount
+    if buyback_1_sub_grind_count > 0:
+      grind_profit = -(exit_rate - buyback_1_current_open_rate) / buyback_1_current_open_rate
+      if (
+        grind_profit
+        > (
+          (
+            self.grinding_v2_buyback_1_profit_threshold_futures
+            if self.is_futures_mode
+            else self.grinding_v2_buyback_1_profit_threshold_spot
+          )
+          + fee_open_rate
+          + fee_close_rate
+        )
+      ) and self.short_grind_exit_v2(last_candle, previous_candle, slice_profit, True):
+        sell_amount = buyback_1_total_amount * exit_rate / trade.leverage
+        if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
+          sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
+        ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
+        if sell_amount > min_stake and ft_sell_amount > min_stake:
+          self.dp.send_msg(
+            f"Buyback exit (buyback_1_exit) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']})"
+          )
+          log.info(
+            f"Buyback exit (buyback_1_exit) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']})"
+          )
+          order_tag = "buyback_1_exit"
+          for grind_entry_id in buyback_1_buy_orders:
+            order_tag += " " + str(grind_entry_id)
+          if has_order_tags:
+            return -ft_sell_amount, order_tag
+          else:
+            return -ft_sell_amount
 
     # if (buyback_1_sub_grind_count > 0) and ((-(exit_rate - buyback_1_current_open_rate) / buyback_1_current_open_rate) < (self.grinding_v2_buyback_1_derisk_futures if self.is_futures_mode else self.grinding_v2_buyback_1_derisk_spot)):
     if (
@@ -47836,38 +47836,38 @@ class NostalgiaForInfinityX6(IStrategy):
       else:
         return buy_amount
 
-    # if buyback_2_sub_grind_count > 0:
-    #   grind_profit = -(exit_rate - buyback_2_current_open_rate) / buyback_2_current_open_rate
-    #   if (
-    #     grind_profit
-    #     > (
-    #       (
-    #         self.grinding_v2_buyback_2_profit_threshold_futures
-    #         if self.is_futures_mode
-    #         else self.grinding_v2_buyback_2_profit_threshold_spot
-    #       )
-    #       + fee_open_rate
-    #       + fee_close_rate
-    #     )
-    #   ) and self.short_grind_exit_v2(last_candle, previous_candle, slice_profit, True):
-    #     sell_amount = buyback_2_total_amount * exit_rate / trade.leverage
-    #     if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
-    #       sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
-    #     ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
-    #     if sell_amount > min_stake and ft_sell_amount > min_stake:
-    #       self.dp.send_msg(
-    #         f"Buyback exit (buyback_2_exit) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']})"
-    #       )
-    #       log.info(
-    #         f"Buyback exit (buyback_2_exit) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']})"
-    #       )
-    #       order_tag = "buyback_2_exit"
-    #       for grind_entry_id in buyback_2_buy_orders:
-    #         order_tag += " " + str(grind_entry_id)
-    #       if has_order_tags:
-    #         return -ft_sell_amount, order_tag
-    #       else:
-    #         return -ft_sell_amount
+    if buyback_2_sub_grind_count > 0:
+      grind_profit = -(exit_rate - buyback_2_current_open_rate) / buyback_2_current_open_rate
+      if (
+        grind_profit
+        > (
+          (
+            self.grinding_v2_buyback_2_profit_threshold_futures
+            if self.is_futures_mode
+            else self.grinding_v2_buyback_2_profit_threshold_spot
+          )
+          + fee_open_rate
+          + fee_close_rate
+        )
+      ) and self.short_grind_exit_v2(last_candle, previous_candle, slice_profit, True):
+        sell_amount = buyback_2_total_amount * exit_rate / trade.leverage
+        if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
+          sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
+        ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
+        if sell_amount > min_stake and ft_sell_amount > min_stake:
+          self.dp.send_msg(
+            f"Buyback exit (buyback_2_exit) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']})"
+          )
+          log.info(
+            f"Buyback exit (buyback_2_exit) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']})"
+          )
+          order_tag = "buyback_2_exit"
+          for grind_entry_id in buyback_2_buy_orders:
+            order_tag += " " + str(grind_entry_id)
+          if has_order_tags:
+            return -ft_sell_amount, order_tag
+          else:
+            return -ft_sell_amount
 
     # if (buyback_2_sub_grind_count > 0) and ((-(exit_rate - buyback_2_current_open_rate) / buyback_2_current_open_rate) < (self.grinding_v2_buyback_2_derisk_futures if self.is_futures_mode else self.grinding_v2_buyback_2_derisk_spot)):
     if (
@@ -47956,38 +47956,38 @@ class NostalgiaForInfinityX6(IStrategy):
       else:
         return buy_amount
 
-    # if buyback_3_sub_grind_count > 0:
-    #   grind_profit = -(exit_rate - buyback_3_current_open_rate) / buyback_3_current_open_rate
-    #   if (
-    #     grind_profit
-    #     > (
-    #       (
-    #         self.grinding_v2_buyback_3_profit_threshold_futures
-    #         if self.is_futures_mode
-    #         else self.grinding_v2_buyback_3_profit_threshold_spot
-    #       )
-    #       + fee_open_rate
-    #       + fee_close_rate
-    #     )
-    #   ) and self.short_grind_exit_v2(last_candle, previous_candle, slice_profit, True):
-    #     sell_amount = buyback_3_total_amount * exit_rate / trade.leverage
-    #     if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
-    #       sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
-    #     ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
-    #     if sell_amount > min_stake and ft_sell_amount > min_stake:
-    #       self.dp.send_msg(
-    #         f"Buyback exit (buyback_3_exit) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']})"
-    #       )
-    #       log.info(
-    #         f"Buyback exit (buyback_3_exit) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']})"
-    #       )
-    #       order_tag = "buyback_3_exit"
-    #       for grind_entry_id in buyback_3_buy_orders:
-    #         order_tag += " " + str(grind_entry_id)
-    #       if has_order_tags:
-    #         return -ft_sell_amount, order_tag
-    #       else:
-    #         return -ft_sell_amount
+    if buyback_3_sub_grind_count > 0:
+      grind_profit = -(exit_rate - buyback_3_current_open_rate) / buyback_3_current_open_rate
+      if (
+        grind_profit
+        > (
+          (
+            self.grinding_v2_buyback_3_profit_threshold_futures
+            if self.is_futures_mode
+            else self.grinding_v2_buyback_3_profit_threshold_spot
+          )
+          + fee_open_rate
+          + fee_close_rate
+        )
+      ) and self.short_grind_exit_v2(last_candle, previous_candle, slice_profit, True):
+        sell_amount = buyback_3_total_amount * exit_rate / trade.leverage
+        if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
+          sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
+        ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
+        if sell_amount > min_stake and ft_sell_amount > min_stake:
+          self.dp.send_msg(
+            f"Buyback exit (buyback_3_exit) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']})"
+          )
+          log.info(
+            f"Buyback exit (buyback_3_exit) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']})"
+          )
+          order_tag = "buyback_3_exit"
+          for grind_entry_id in buyback_3_buy_orders:
+            order_tag += " " + str(grind_entry_id)
+          if has_order_tags:
+            return -ft_sell_amount, order_tag
+          else:
+            return -ft_sell_amount
 
     # if (buyback_3_sub_grind_count > 0) and ((-(exit_rate - buyback_3_current_open_rate) / buyback_3_current_open_rate) < (self.grinding_v2_buyback_3_derisk_futures if self.is_futures_mode else self.grinding_v2_buyback_3_derisk_spot)):
     if (
