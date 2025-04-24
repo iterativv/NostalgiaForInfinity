@@ -4314,6 +4314,12 @@ class NostalgiaForInfinityX6(IStrategy):
             | (df["close"] > (df["high_max_12_4h"] * 0.50))
             | (df["close"] < (df["low_min_12_4h"] * 1.25))
           )
+          # pump, drop but not yet near the previous lows
+          long_entry_logic.append(
+            (((df["high_max_12_1d"] - df["low_min_12_1d"]) / df["low_min_12_1d"]) < 2.0)
+            | (df["close"] > (df["high_max_6_1d"] * 0.60))
+            | (df["close"] < (df["low_min_12_1d"] * 1.25))
+          )
           # 1d overbought, drop but not yet near the previous lows in last 12 days
           long_entry_logic.append(
             (df["ROC_9_1d"] < 200.0)
