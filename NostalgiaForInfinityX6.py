@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.4.45"
+    return "v16.4.46"
 
   stoploss = -0.99
 
@@ -5430,6 +5430,12 @@ class NostalgiaForInfinityX6(IStrategy):
             (df["ROC_9_4h"] < 50.0)
             | (df["close"] > (df["high_max_12_4h"] * 0.60))
             | (df["close"] < (df["low_min_24_4h"] * 1.25))
+          )
+          # pump, drop but not yet near the previous lows
+          long_entry_logic.append(
+            (((df["high_max_12_1d"] - df["low_min_12_1d"]) / df["low_min_12_1d"]) < 2.0)
+            | (df["close"] > (df["high_max_6_1d"] * 0.60))
+            | (df["close"] < (df["low_min_12_1d"] * 1.25))
           )
           # 1d overbought, drop but not yet near the previous lows in last 12 days
           long_entry_logic.append(
