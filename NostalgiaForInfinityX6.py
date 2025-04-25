@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.4.58"
+    return "v16.4.59"
 
   stoploss = -0.99
 
@@ -48620,8 +48620,8 @@ class NostalgiaForInfinityX6(IStrategy):
         and (last_candle["close"] < (last_candle["close_min_48"] * 1.10))
         and (last_candle["close"] > (last_candle["low_min_6_1h"] * 0.85))
         and (last_candle["close"] > (last_candle["high_max_12_1h"] * 0.80))
-        and (last_candle["close"] < (last_candle["EMA_26"] * 0.962))
-        and (last_candle["close"] < (last_candle["BBL_20_2.0"] * 0.999))
+        and (last_candle["close"] > (last_candle["EMA_26"] * 1.038))
+        and (last_candle["close"] > (last_candle["BBU_20_2.0"] * 1.0))
       )
       or (
         (last_candle["RSI_14"] > 65.0)
@@ -48691,7 +48691,7 @@ class NostalgiaForInfinityX6(IStrategy):
         # and (last_candle["STOCHRSIk_14_14_3_3_1h"] < 40.0)
         and (last_candle["close"] < (last_candle["high_max_24_4h"] * 0.77))
         and (last_candle["BBB_20_2.0_1h"] > 12.0)
-        and (last_candle["close_max_48"] <= (last_candle["close"] * 0.90))
+        and (last_candle["close_min_48"] <= (last_candle["close"] * 0.90))
       )
       or (
         (last_candle["RSI_3"] > 70.0)
@@ -48723,6 +48723,32 @@ class NostalgiaForInfinityX6(IStrategy):
         and (last_candle["RSI_3_15m"] < 95.0)
         and (last_candle["STOCHRSIk_14_14_3_3"] > 80.0)
         and (last_candle["RSI_14"] > (last_candle["RSI_14_1h"] + 45.0))
+      )
+      or (
+        (last_candle["RSI_3"] < 90.0)
+        and (last_candle["RSI_3_15m"] < 90.0)
+        and (last_candle["RSI_3_1h"] < 90.0)
+        and (last_candle["RSI_3_4h"] < 90.0)
+        and (last_candle["RSI_3_1d"] < 90.0)
+        and (last_candle["STOCHRSIk_14_14_3_3"] > 80.0)
+        and (last_candle["close"] > (last_candle["SMA_30"] * 1.020))
+        and (last_candle["close"] > (last_candle["BBU_20_2.0"] * 1.0))
+      )
+      or (
+        (last_candle["RSI_14"] > 64.0)
+        and (last_candle["RSI_3"] < 95.0)
+        and (last_candle["RSI_3_15m"] < 90.0)
+        and (last_candle["RSI_3_1h"] < 90.0)
+        and (last_candle["RSI_3_4h"] < 90.0)
+        and (last_candle["RSI_3_1d"] < 90.0)
+        and (last_candle["STOCHRSIk_14_14_3_3"] > 70.0)
+        and (last_candle["close"] < (last_candle["close_min_48"] * 1.15))
+        and (last_candle["close"] < (last_candle["low_min_6_1h"] * 1.20))
+        and (last_candle["close"] < (last_candle["low_min_12_1h"] * 1.25))
+        and (last_candle["close"] > (last_candle["high_max_12_4h"] * 0.75))
+        and (last_candle["EMA_12"] > last_candle["EMA_26"])
+        and ((last_candle["EMA_12"] - last_candle["EMA_26"]) > (last_candle["open"] * 0.010))
+        and ((previous_candle["EMA_12"] - previous_candle["EMA_26"]) > (last_candle["open"] / 100.0))
       )
     ):
       return True
