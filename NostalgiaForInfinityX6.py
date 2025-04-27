@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.4.76"
+    return "v16.4.77"
 
   stoploss = -0.99
 
@@ -368,6 +368,7 @@ class NostalgiaForInfinityX6(IStrategy):
 
   # Grinding v2
   grinding_v2_max_stake = 1.0  # ratio of first entry
+  grinding_v2_max_grinds_and_buybacks = 6  # current open
 
   grinding_v2_derisk_level_1_enable = True
   grinding_v2_derisk_level_1_spot = -0.06
@@ -26047,9 +26048,19 @@ class NostalgiaForInfinityX6(IStrategy):
       + grind_2_current_grind_stake_profit
       + grind_3_current_grind_stake_profit
     )
+    num_open_grinds_and_buybacks = (
+      buyback_1_sub_grind_count
+      + buyback_2_sub_grind_count
+      + buyback_3_sub_grind_count
+      + grind_1_sub_grind_count
+      + grind_2_sub_grind_count
+      + grind_3_sub_grind_count
+    )
 
     # not reached the max allowed stake for all grinds
-    is_not_trade_max_stake = current_stake_amount < (filled_entries[0].cost * self.grinding_v2_max_stake)
+    is_not_trade_max_stake = (current_stake_amount < (filled_entries[0].cost * self.grinding_v2_max_stake)) and (
+      num_open_grinds_and_buybacks < self.grinding_v2_max_grinds_and_buybacks
+    )
 
     # De-risk level 1
     if (
@@ -47729,9 +47740,19 @@ class NostalgiaForInfinityX6(IStrategy):
       + grind_2_current_grind_stake_profit
       + grind_3_current_grind_stake_profit
     )
+    num_open_grinds_and_buybacks = (
+      buyback_1_sub_grind_count
+      + buyback_2_sub_grind_count
+      + buyback_3_sub_grind_count
+      + grind_1_sub_grind_count
+      + grind_2_sub_grind_count
+      + grind_3_sub_grind_count
+    )
 
     # not reached the max allowed stake for all grinds
-    is_not_trade_max_stake = current_stake_amount < (filled_entries[0].cost * self.grinding_v2_max_stake)
+    is_not_trade_max_stake = (current_stake_amount < (filled_entries[0].cost * self.grinding_v2_max_stake)) and (
+      num_open_grinds_and_buybacks < self.grinding_v2_max_grinds_and_buybacks
+    )
 
     # De-risk level 1
     if (
