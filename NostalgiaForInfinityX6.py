@@ -7565,6 +7565,8 @@ class NostalgiaForInfinityX6(IStrategy):
           short_entry_logic.append(
             (df["close"] < (df["close_min_12"] * 1.10)) | (df["close_min_12"] > (df["close_min_48"] * 1.10))
           )
+          # big pump in the last 20 days, 1h up move
+          short_entry_logic.append((df["close"] < (df["low_min_20_1d"] * 6.0)) | (df["RSI_3_1h"] < 90.0))
 
           # Logic
           short_entry_logic.append(df["AROOND_14"] < 25.0)
