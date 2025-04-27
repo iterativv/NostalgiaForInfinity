@@ -75,7 +75,7 @@ class Backtest:
 
     tmp_path = self.request.getfixturevalue("tmp_path")
     exchange_config = f"configs/pairlist-backtest-static-{exchange}-{trading_mode}-usdt.json"
-    json_results_file = tmp_path / "backtest-results.json"
+    json_results_file = tmp_path / f"backtest-results-{exchange}-{trading_mode}-{start_date}-{end_date}.json"
     cmdline = [
       "freqtrade",
       "backtesting",
