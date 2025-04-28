@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.4.79"
+    return "v16.4.80"
 
   stoploss = -0.99
 
@@ -7622,6 +7622,8 @@ class NostalgiaForInfinityX6(IStrategy):
           # Protections
           short_entry_logic.append(df["num_empty_288"] <= allowed_empty_candles_288)
 
+          # 5m up move, 4h still not high enough
+          short_entry_logic.append((df["RSI_3"] < 97.0) | (df["STOCHRSIk_14_14_3_3_4h"] > 80.0))
           # 5m & 15m strong up move
           short_entry_logic.append((df["RSI_3"] < 95.0) | (df["RSI_3_15m"] < 95.0))
           # 5m & 1h up move, 15m still not high enough
@@ -7730,6 +7732,8 @@ class NostalgiaForInfinityX6(IStrategy):
           short_entry_logic.append(
             (df["close"] < (df["close_min_12"] * 1.10)) | (df["close_min_12"] > (df["close_min_48"] * 1.10))
           )
+          # big pump in the last 6 days, 4h still not high enough
+          short_entry_logic.append((df["close"] < (df["low_min_6_1d"] * 4.0)) | (df["STOCHRSIk_14_14_3_3_4h"] > 80.0))
           # big pump in the last 20 days, 1h up move
           short_entry_logic.append((df["close"] < (df["low_min_20_1d"] * 6.0)) | (df["RSI_3_1h"] < 90.0))
 
