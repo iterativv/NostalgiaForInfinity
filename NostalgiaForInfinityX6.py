@@ -4688,6 +4688,12 @@ class NostalgiaForInfinityX6(IStrategy):
           )
           # pump, drop but not yet near the previous lows
           long_entry_logic.append(
+            (((df["high_max_6_1d"] - df["low_min_6_1d"]) / df["low_min_6_1d"]) < 6.0)
+            | (df["close"] > (df["high_max_6_4h"] * 0.85))
+            | (df["close"] < (df["low_min_6_1d"] * 1.25))
+          )
+          # pump, drop but not yet near the previous lows
+          long_entry_logic.append(
             (((df["high_max_12_1d"] - df["low_min_12_1d"]) / df["low_min_12_1d"]) < 2.0)
             | (df["close"] > (df["high_max_6_1d"] * 0.60))
             | (df["close"] < (df["low_min_12_1d"] * 1.25))
