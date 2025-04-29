@@ -8303,8 +8303,14 @@ class NostalgiaForInfinityX6(IStrategy):
           short_entry_logic.append(
             (df["RSI_3_4h"] < 80.0) | (df["STOCHRSIk_14_14_3_3_15m"] > 60.0) | (df["AROONU_14_4h"] > 80.0)
           )
+          # 4h up move, 15m still low, 4h still not high enough
+          short_entry_logic.append(
+            (df["RSI_3_4h"] < 75.0) | (df["STOCHRSIk_14_14_3_3_15m"] > 60.0) | (df["STOCHRSIk_14_14_3_3_4h"] > 80.0)
+          )
           # 1d up move, 4h low
           short_entry_logic.append((df["RSI_3_1d"] < 85.0) | (df["STOCHRSIk_14_14_3_3_4h"] > 40.0))
+          # 1d bot wick, 4h still not high enough
+          short_entry_logic.append((df["bot_wick_pct_1d"] < 30.0) | (df["STOCHRSIk_14_14_3_3_4h"] > 80.0))
           # rise in the last 12 hours, relatively stable before the 12 hours
           short_entry_logic.append(
             (df["close"] < (df["low_min_12_1h"] * 1.30)) | (df["low_min_12_1h"] > (df["low_min_24_1h"] * 1.10))
