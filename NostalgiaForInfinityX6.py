@@ -5040,6 +5040,12 @@ class NostalgiaForInfinityX6(IStrategy):
           )
           # 1d top wick, 4h still high
           long_entry_logic.append((df["top_wick_pct_1d"] < 50.0) | (df["AROONU_14_4h"] < 50.0))
+          # pump, drop but not yet near the previous lows
+          long_entry_logic.append(
+            (((df["high_max_6_1d"] - df["low_min_6_1d"]) / df["low_min_6_1d"]) < 6.0)
+            | (df["close"] > (df["high_max_6_4h"] * 0.85))
+            | (df["close"] < (df["low_min_6_1d"] * 1.25))
+          )
           # big drop in last 4 hours, 4h down move
           long_entry_logic.append((df["close"] > (df["high_max_24_4h"] * 0.50)) | (df["RSI_3_4h"] > 10.0))
           # big drop in last 24 hours, 1h still high
