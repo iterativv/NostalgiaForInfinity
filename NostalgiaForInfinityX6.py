@@ -5018,6 +5018,10 @@ class NostalgiaForInfinityX6(IStrategy):
           )
           # 4h down move, drop in last 1h
           long_entry_logic.append((df["RSI_3_4h"] > 15.0) | (df["close"] > (df["close_max_12"] * 0.85)))
+          # 4h & 1d down move, 15m still high
+          long_entry_logic.append(
+            (df["RSI_3_4h"] > 20.0) | (df["RSI_3_1d"] > 20.0) | (df["STOCHRSIk_14_14_3_3_15m"] < 40.0)
+          )
           # 4h down move, 1h high, 4h still high
           long_entry_logic.append((df["RSI_3_4h"] > 20.0) | (df["AROONU_14_1h"] < 75.0) | (df["AROONU_14_4h"] < 50.0))
           # 1d down move, 4h high, 1d downtrend
