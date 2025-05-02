@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.4.95"
+    return "v16.4.96"
 
   stoploss = -0.99
 
@@ -10266,7 +10266,11 @@ class NostalgiaForInfinityX6(IStrategy):
           mark_signal = f"exit_profit_{self.long_rebuy_mode_name}_max"
           self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
 
-    if signal_name not in [f"exit_profit_{self.long_rebuy_mode_name}_max"]:
+    if signal_name not in [
+      f"exit_profit_{self.long_rebuy_mode_name}_max",
+      f"exit_{self.long_rebuy_mode_name}_stoploss_doom",
+      f"exit_{self.long_rebuy_mode_name}_stoploss_u_e",
+    ]:
       if sell and (signal_name is not None):
         return True, f"{signal_name}"
 
