@@ -896,6 +896,15 @@ class NostalgiaForInfinityX6(IStrategy):
         )
       ):
         return True, previous_sell_reason
+      elif (
+        not self.derisk_enable
+        and is_rebuy_mode
+        and (
+          profit_init_ratio
+          <= -(self.stop_threshold_futures_rebuy if self.is_futures_mode else self.stop_threshold_spot_rebuy)
+        )
+      ):
+        return True, previous_sell_reason
     elif previous_sell_reason in [f"exit_{mode_name}_stoploss_u_e"]:
       if profit_init_ratio > 0.0:
         # profit is over the threshold, don't exit
