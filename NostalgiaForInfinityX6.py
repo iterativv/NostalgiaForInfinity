@@ -860,6 +860,10 @@ class NostalgiaForInfinityX6(IStrategy):
         is_derisk = trade.amount < (filled_entries[0].safe_filled * 0.95)
     if previous_sell_reason in [f"exit_{mode_name}_stoploss_doom", f"exit_{mode_name}_stoploss"]:
       is_rapid_mode = all(c in self.long_rapid_mode_tags for c in enter_tags)
+      is_rebuy_mode = all(c in self.long_rebuy_mode_tags for c in enter_tags) or (
+        any(c in self.long_rebuy_mode_tags for c in enter_tags)
+        and all(c in (self.long_rebuy_mode_tags + self.long_grind_mode_tags) for c in enter_tags)
+      )
       if profit_init_ratio > 0.0:
         # profit is over the threshold, don't exit
         self._remove_profit_target(pair)
@@ -876,6 +880,7 @@ class NostalgiaForInfinityX6(IStrategy):
       elif (
         not self.derisk_enable
         and not is_rapid_mode
+        and not is_rebuy_mode
         and (
           profit_init_ratio
           <= -(self.stop_threshold_doom_futures if self.is_futures_mode else self.stop_threshold_doom_spot)
