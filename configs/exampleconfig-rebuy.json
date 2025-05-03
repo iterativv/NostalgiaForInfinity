@@ -11,8 +11,8 @@
   "force_entry_enable": true,
   "position_adjustment_enable": true,
   "unfilledtimeout": {
-    "entry": 5,
-    "exit": 20,
+    "entry": 3,
+    "exit": 2,
     "exit_timeout_count": 0,
     "unit": "minutes"
   },

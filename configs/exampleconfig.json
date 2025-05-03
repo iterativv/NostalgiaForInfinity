@@ -14,8 +14,8 @@
   "initial_state": "running",
   "timeframe": "5m",
   "unfilledtimeout": {
-    "entry": 20,
-    "exit": 20,
+    "entry": 3,
+    "exit": 2,
     "exit_timeout_count": 0,
     "unit": "minutes"
   },
