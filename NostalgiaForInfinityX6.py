@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.4.110"
+    return "v16.4.111"
 
   stoploss = -0.99
 
@@ -600,6 +600,7 @@ class NostalgiaForInfinityX6(IStrategy):
     "long_entry_condition_101_enable": True,
     "long_entry_condition_102_enable": True,
     "long_entry_condition_103_enable": True,
+    "long_entry_condition_104_enable": True,
     "long_entry_condition_120_enable": True,
     "long_entry_condition_141_enable": True,
     "long_entry_condition_142_enable": True,
@@ -7822,6 +7823,157 @@ class NostalgiaForInfinityX6(IStrategy):
           long_entry_logic.append(df["RSI_20"] < df["RSI_20"].shift(1))
           long_entry_logic.append(df["AROONU_14"] < 25.0)
           long_entry_logic.append(df["close"] < df["SMA_16"] * 0.960)
+
+        # Condition #104 - Rapid mode (Long).
+        if long_entry_condition_index == 104:
+          # Protections
+          long_entry_logic.append(df["num_empty_288"] <= allowed_empty_candles_288)
+
+          # 15m & 4h & 1d down move
+          long_entry_logic.append((df["RSI_3_15m"] > 3.0) | (df["RSI_3_4h"] > 10.0) | (df["RSI_3_1d"] > 15.0))
+          # 5m & 1h down move, 1h still high
+          long_entry_logic.append(
+            (df["RSI_3"] > 5.0) | (df["RSI_3_1h"] > 30.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 50.0)
+          )
+          # 15m & 1h down move
+          long_entry_logic.append((df["RSI_3_15m"] > 3.0) | (df["RSI_3_1h"] > 3.0))
+          # 15m & 1h down move, 1j still not low enough
+          long_entry_logic.append(
+            (df["RSI_3_15m"] > 3.0) | (df["RSI_3_1h"] > 15.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 30.0)
+          )
+          # 15m & 1h down move, 1h high
+          long_entry_logic.append(
+            (df["RSI_3_15m"] > 5.0) | (df["RSI_3_1h"] > 30.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 80.0)
+          )
+          # 15m & 1h down move, 1h still not low enough
+          long_entry_logic.append(
+            (df["RSI_3_15m"] > 10.0) | (df["RSI_3_1h"] > 10.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 20.0)
+          )
+          # 15m & 1h down move, 4h still high
+          long_entry_logic.append(
+            (df["RSI_3_15m"] > 10.0) | (df["RSI_3_1h"] > 20.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 50.0)
+          )
+          # 15m & 1h down move, 1h high
+          long_entry_logic.append((df["RSI_3_15m"] > 10.0) | (df["RSI_3_1h"] > 25.0) | (df["AROONU_14_1h"] < 80.0))
+          # 15m & 4h down move, 4h still high
+          long_entry_logic.append((df["RSI_3_15m"] > 10.0) | (df["RSI_3_4h"] > 10.0) | (df["AROONU_14_4h"] < 40.0))
+          # 15m & 4h down move, 1h high
+          long_entry_logic.append(
+            (df["RSI_3_15m"] > 10.0) | (df["RSI_3_4h"] > 20.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 70.0)
+          )
+          # 15m & 4h down move, 4h still high
+          long_entry_logic.append(
+            (df["RSI_3_15m"] > 10.0) | (df["RSI_3_4h"] > 20.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 40.0)
+          )
+          # 15m & 4h down move, 15m still not low enough
+          long_entry_logic.append(
+            (df["RSI_3_15m"] > 10.0) | (df["RSI_3_4h"] > 25.0) | (df["STOCHRSIk_14_14_3_3_15m"] < 20.0)
+          )
+          # 15m & 4h down move, 4h high
+          long_entry_logic.append((df["RSI_3_15m"] > 10.0) | (df["RSI_3_4h"] > 40.0) | (df["AROONU_14_4h"] < 80.0))
+          # 15m & 1h down move, 4h still high
+          long_entry_logic.append((df["RSI_3_15m"] > 15.0) | (df["RSI_3_1h"] > 20.0) | (df["AROONU_14_4h"] < 40.0))
+          # 15m & 1h down move, 4h high
+          long_entry_logic.append((df["RSI_3_15m"] > 15.0) | (df["RSI_3_1h"] > 25.0) | (df["AROONU_14_4h"] < 70.0))
+          # 15m & 1h down move, 1h still high
+          long_entry_logic.append((df["RSI_3_15m"] > 15.0) | (df["RSI_3_1h"] > 30.0) | (df["AROONU_14_1h"] < 40.0))
+          # 15m & 3h down move, 15m still not low enough
+          long_entry_logic.append(
+            (df["RSI_3_15m"] > 20.0) | (df["RSI_3_4h"] > 20.0) | (df["STOCHRSIk_14_14_3_3_15m"] < 20.0)
+          )
+          # 1h & 4h down move
+          long_entry_logic.append((df["RSI_3_1h"] > 3.0) | (df["RSI_3_4h"] > 10.0))
+          # 1h & 4h down move, 4h still not low enough
+          long_entry_logic.append(
+            (df["RSI_3_1h"] > 3.0) | (df["RSI_3_4h"] > 25.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 30.0)
+          )
+          # 1h & 4h down move
+          long_entry_logic.append((df["RSI_3_1h"] > 5.0) | (df["RSI_3_4h"] > 5.0))
+          # 1h down move, 1h still high
+          long_entry_logic.append((df["RSI_3_1h"] > 5.0) | (df["AROONU_14_1h"] < 50.0))
+          # 1h & 4h down move, 1d still high
+          long_entry_logic.append(
+            (df["RSI_3_1h"] > 10.0) | (df["RSI_3_4h"] > 15.0) | (df["STOCHRSIk_14_14_3_3_1d"] < 50.0)
+          )
+          # 1h & 1d down move, 1h still moving lower
+          long_entry_logic.append(
+            (df["RSI_3_1h"] > 10.0) | (df["RSI_3_1d"] > 15.0) | (df["CCI_20_change_pct_1h"] > -0.0)
+          )
+          # 1h & 4h down move, 1h still high
+          long_entry_logic.append((df["RSI_3_1h"] > 15.0) | (df["RSI_3_4h"] > 15.0) | (df["AROONU_14_1h"] < 50.0))
+          # 1h & 4h & 1d down move
+          long_entry_logic.append((df["RSI_3_1h"] > 15.0) | (df["RSI_3_4h"] > 20.0) | (df["RSI_3_1d"] > 30.0))
+          # 1h & 4h down move, 1h still not low enough
+          long_entry_logic.append(
+            (df["RSI_3_1h"] > 15.0) | (df["RSI_3_4h"] > 20.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 20.0)
+          )
+          # 1h & 4h & 1d down move
+          long_entry_logic.append((df["RSI_3_1h"] > 15.0) | (df["RSI_3_4h"] > 25.0) | (df["RSI_3_1d"] > 25.0))
+          # 1h & 1d down move, 1d high
+          long_entry_logic.append((df["RSI_3_1h"] > 15.0) | (df["RSI_3_1d"] > 25.0) | (df["AROONU_14_1d"] < 70.0))
+          # 1h & 1d down move, 1d high
+          long_entry_logic.append(
+            (df["RSI_3_1h"] > 15.0) | (df["RSI_3_1d"] > 25.0) | (df["STOCHRSIk_14_14_3_3_1d"] < 70.0)
+          )
+          # 1h down move, 1h & 4h high
+          long_entry_logic.append((df["RSI_3_1h"] > 15.0) | (df["AROONU_14_1h"] < 60.0) | (df["AROONU_14_4h"] < 60.0))
+          # 1h & 4h down move, 1d overbought
+          long_entry_logic.append((df["RSI_3_1h"] > 20.0) | (df["RSI_3_4h"] > 20.0) | (df["ROC_9_1d"] < 50.0))
+          # 1h & 4h down move, 1h still high
+          long_entry_logic.append(
+            (df["RSI_3_1h"] > 20.0) | (df["RSI_3_4h"] > 25.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 50.0)
+          )
+          # 1h & 1d down move, 1d high
+          long_entry_logic.append((df["RSI_3_1h"] > 20.0) | (df["RSI_3_1d"] > 20.0) | (df["AROONU_14_1d"] < 70.0))
+          # 1h down move, 4h high
+          long_entry_logic.append((df["RSI_3_1h"] > 20.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 90.0))
+          # 1h & 4h down move, 4h high
+          long_entry_logic.append((df["RSI_3_1h"] > 30.0) | (df["RSI_3_4h"] > 45.0) | (df["AROONU_14_4h"] < 90.0))
+          # 4h down move, 15m not low enough, 1h still high
+          long_entry_logic.append(
+            (df["RSI_3_4h"] > 3.0) | (df["STOCHRSIk_14_14_3_3_15m"] < 20.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 40.0)
+          )
+          # 4h down move, 1h high
+          long_entry_logic.append((df["RSI_3_4h"] > 20.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 80.0))
+          # 4h down move, 4h still high, 1d overbought
+          long_entry_logic.append((df["RSI_3_4h"] > 30.0) | (df["AROONU_14_4h"] < 40.0) | (df["ROC_9_1d"] < 100.0))
+          # pump, drop but not yet near the previous lows
+          long_entry_logic.append(
+            (((df["high_max_24_4h"] - df["low_min_24_4h"]) / df["low_min_24_4h"]) < 2.0)
+            | (df["close"] > (df["high_max_12_4h"] * 0.60))
+            | (df["close"] < (df["low_min_24_4h"] * 1.10))
+          )
+          # pump, drop but not yet near the previous lows
+          long_entry_logic.append(
+            (((df["high_max_12_1d"] - df["low_min_12_1d"]) / df["low_min_12_1d"]) < 5.0)
+            | (df["close"] > (df["high_max_6_1d"] * 0.30))
+            | (df["close"] < (df["low_min_12_1d"] * 1.25))
+          )
+          # big drop in the last hour
+          long_entry_logic.append(df["close"] > (df["close_max_12"] * 0.50))
+          # big drop in the last 12 days, 15m & 4h down move
+          long_entry_logic.append(
+            (df["close"] > (df["high_max_12_1d"] * 0.40)) | (df["RSI_3_15m"] > 10.0) | (df["RSI_3_4h"] > 10.0)
+          )
+          # big drop in the last 20 days, 15m & 1h down move
+          long_entry_logic.append(
+            (df["close"] > (df["high_max_20_1d"] * 0.40)) | (df["RSI_14_15m"] < 10.0) | (df["RSI_14_1h"] < 10.0)
+          )
+          # big drop in the last 20 days, 1d down move
+          long_entry_logic.append((df["close"] > (df["high_max_20_1d"] * 0.25)) | (df["RSI_3_1d"] > 30.0))
+          # big drop in the last 20 days, 4h still not low enough
+          long_entry_logic.append((df["close"] > (df["high_max_20_1d"] * 0.10)) | (df["RSI_14_4h"] < 30.0))
+          # big drop in the last 30 days, 4h down move
+          long_entry_logic.append((df["close"] > (df["high_max_30_1d"] * 0.25)) | (df["RSI_3_4h"] > 20.0))
+
+          # Logic
+          long_entry_logic.append(df["RSI_3"] < 40.0)
+          long_entry_logic.append(df["AROONU_14"] < 25.0)
+          long_entry_logic.append(df["STOCHRSIk_14_14_3_3"] < 20.0)
+          long_entry_logic.append(df["AROONU_14_15m"] < 25.0)
+          long_entry_logic.append(df["STOCHRSIk_14_14_3_3_15m"] < 30.0)
+          long_entry_logic.append(df["close"] < df["EMA_16"] * 0.975)
+          long_entry_logic.append(((df["EMA_50"] - df["EMA_200"]) / df["close"] * 100.0) < -5.5)
 
         # Condition #120 - Grind mode (Long).
         if long_entry_condition_index == 120:
