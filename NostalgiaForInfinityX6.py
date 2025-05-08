@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.4.115"
+    return "v16.4.116"
 
   stoploss = -0.99
 
@@ -868,7 +868,12 @@ class NostalgiaForInfinityX6(IStrategy):
         any(c in self.long_rebuy_mode_tags for c in enter_tags)
         and all(c in (self.long_rebuy_mode_tags + self.long_grind_mode_tags) for c in enter_tags)
       )
-      is_scalp_mode = all(c in self.long_scalp_mode_tags for c in enter_tags)
+      is_scalp_mode = all(c in self.long_scalp_mode_tags for c in enter_tags) or (
+        any(c in self.long_scalp_mode_tags for c in enter_tags)
+        and all(
+          c in (self.long_scalp_mode_tags + self.long_rebuy_mode_tags + self.long_grind_mode_tags) for c in enter_tags
+        )
+      )
       if profit_init_ratio > 0.0:
         # profit is over the threshold, don't exit
         self._remove_profit_target(pair)
@@ -1598,7 +1603,10 @@ class NostalgiaForInfinityX6(IStrategy):
         return f"{signal_name} ( {enter_tag})"
 
     # Long Rebuy mode
-    if all(c in self.long_rebuy_mode_tags for c in enter_tags):
+    if all(c in self.long_rebuy_mode_tags for c in enter_tags) or (
+      any(c in self.long_rebuy_mode_tags for c in enter_tags)
+      and all(c in (self.long_rebuy_mode_tags + self.long_grind_mode_tags) for c in enter_tags)
+    ):
       sell, signal_name = self.long_exit_rebuy(
         pair,
         current_rate,
@@ -1737,7 +1745,12 @@ class NostalgiaForInfinityX6(IStrategy):
         return f"{signal_name} ( {enter_tag})"
 
     # Long scalp mode
-    if all(c in self.long_scalp_mode_tags for c in enter_tags):
+    if all(c in self.long_scalp_mode_tags for c in enter_tags) or (
+      any(c in self.long_scalp_mode_tags for c in enter_tags)
+      and all(
+        c in (self.long_scalp_mode_tags + self.long_rebuy_mode_tags + self.long_grind_mode_tags) for c in enter_tags
+      )
+    ):
       sell, signal_name = self.long_exit_scalp(
         pair,
         current_rate,
