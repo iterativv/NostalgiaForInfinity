@@ -144,7 +144,7 @@ class NostalgiaForInfinityX6(IStrategy):
   # Shorting
 
   # Short normal mode tags
-  short_normal_mode_tags = ["500", "501"]
+  short_normal_mode_tags = ["501", "502"]
   # Short Pump mode tags
   short_pump_mode_tags = ["521", "522", "523", "524", "525", "526"]
   # Short Quick mode tags
