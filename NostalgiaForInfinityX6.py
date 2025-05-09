@@ -2985,9 +2985,12 @@ class NostalgiaForInfinityX6(IStrategy):
     df["EMA_20"] = pta.ema(df["close"], length=20)
     df["EMA_26"] = pta.ema(df["close"], length=26)
     df["EMA_50"] = pta.ema(df["close"], length=50)
+    df["EMA_100"] = pta.ema(df["close"], length=100, fillna=0.0)
     df["EMA_200"] = pta.ema(df["close"], length=200, fillna=0.0)
     # SMA
+    df["SMA_9"] = pta.sma(df["close"], length=9)
     df["SMA_16"] = pta.sma(df["close"], length=16)
+    df["SMA_21"] = pta.sma(df["close"], length=21)
     df["SMA_30"] = pta.sma(df["close"], length=30)
     # BB 20 - STD2
     bbands_20_2 = pta.bbands(df["close"], length=20)
