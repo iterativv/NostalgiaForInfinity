@@ -16,17 +16,17 @@ cd $NFI_LOCAL_REPO
 latest_local_commit=$(git rev-parse HEAD)
 git stash push > /dev/null 2>&1
 if [ $? -ne 0 ]; then
-    echo "Failed to stash changes in NFIX repo"
+    echo "failed to stash changes in NFIX repo"
     exit 1
 fi
 git_pull_output=$(git pull >/dev/null 2>&1)
 if [ $? -ne 0 ]; then
-    echo "Failed to pull from NFIX repo: $git_pull_output"
+    echo "failed to pull from NFIX repo: $git_pull_output"
     exit 1
 fi
 git stash pop > /dev/null 2>&1
 if [ $? -ne 0 ]; then
-    echo "Failed to unstash changes in NFIX repo"
+    echo "failed to unstash changes in NFIX repo"
     exit 1
 fi
 latest_remote_commit=$(git rev-parse HEAD)
