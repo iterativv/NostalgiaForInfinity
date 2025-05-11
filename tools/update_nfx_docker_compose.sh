@@ -14,7 +14,21 @@ NFI_LOCAL_REPO=/home/user/NostalgiaForInfinity
 echo "updating local NFIX repo"
 cd $NFI_LOCAL_REPO
 latest_local_commit=$(git rev-parse HEAD)
-git pull
+git stash push > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+    echo "failed to stash changes in NFIX repo"
+    exit 1
+fi
+git_pull_output=$(git pull >/dev/null 2>&1)
+if [ $? -ne 0 ]; then
+    echo "failed to pull from NFIX repo: $git_pull_output"
+    exit 1
+fi
+git stash pop > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+    echo "failed to unstash changes in NFIX repo"
+    exit 1
+fi
 latest_remote_commit=$(git rev-parse HEAD)
 
 if [ "$latest_local_commit" != "$latest_remote_commit" ]; then
@@ -23,3 +37,5 @@ if [ "$latest_local_commit" != "$latest_remote_commit" ]; then
     docker compose stop
     docker compose up -d
 fi
+
+exit 0
