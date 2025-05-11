@@ -3675,20 +3675,26 @@ class NostalgiaForInfinityX6(IStrategy):
           return self._handle_scalp_mode(pair, config, current_time)
 
     # Long/Short Slot Validation (only in futures mode)
-    if self.is_futures_mode and self.futures_max_open_trades_long != 0 and self.futures_max_open_trades_short != 0:
+    if self.is_futures_mode and (self.futures_max_open_trades_long != 0 or self.futures_max_open_trades_short != 0):
       open_trades = Trade.get_trades_proxy(is_open=True)
       long_trades = sum(1 for t in open_trades if t.trade_direction == "long")
       short_trades = sum(1 for t in open_trades if t.trade_direction == "short")
 
       # Long trade limit validation
-      if side == "long" and long_trades >= self.futures_max_open_trades_long:
+      if (
+        side == "long" and self.futures_max_open_trades_long != 0 and long_trades >= self.futures_max_open_trades_long
+      ):
         log.info(
           f"[{current_time}] Cancelling entry for {pair} due to long trades reaching the max limit of {self.futures_max_open_trades_long}."
         )
         return False
 
       # Short trade limit validation
-      if side == "short" and short_trades >= self.futures_max_open_trades_short:
+      if (
+        side == "short"
+        and self.futures_max_open_trades_short != 0
+        and short_trades >= self.futures_max_open_trades_short
+      ):
         log.info(
           f"[{current_time}] Cancelling entry for {pair} due to short trades reaching the max limit of {self.futures_max_open_trades_short}."
         )
