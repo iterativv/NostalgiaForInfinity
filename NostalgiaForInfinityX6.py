@@ -6583,7 +6583,7 @@ class NostalgiaForInfinityX6(IStrategy):
             | (df["STOCHRSIk_14_14_3_3_1d"] < 80.0)
           )
           # 1d top wick, 4h still high
-          long_entry_logic.append((df["top_wick_pct_1d"] < 50.0) | (df["AROONU_14_4h"] < 50.0))
+          long_entry_logic.append((df["top_wick_pct_1d"] < 40.0) | (df["AROONU_14_4h"] < 50.0))
           # pump, drop but not yet near the previous lows
           long_entry_logic.append(
             (((df["high_max_24_4h"] - df["low_min_24_4h"]) / df["low_min_24_4h"]) < 2.0)
