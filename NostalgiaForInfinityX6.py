@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.5.12"
+    return "v16.5.13"
 
   stoploss = -0.99
 
@@ -1514,15 +1514,8 @@ class NostalgiaForInfinityX6(IStrategy):
       trade, filled_entries, filled_exits, current_rate
     )
 
-    max_profit = (trade.max_rate - trade.open_rate) / trade.open_rate
-    max_loss = (trade.open_rate - trade.min_rate) / trade.min_rate
-
-    count_of_entries = len(filled_entries)
-    if count_of_entries > 1:
-      initial_entry = filled_entries[0]
-      if initial_entry is not None and initial_entry.average is not None:
-        max_profit = (trade.max_rate - initial_entry.average) / initial_entry.average
-        max_loss = (initial_entry.average - trade.min_rate) / trade.min_rate
+    max_profit = 0.0
+    max_loss = 0.0
 
     # Long Normal mode
     if any(c in self.long_normal_mode_tags for c in enter_tags):
