@@ -28696,8 +28696,8 @@ class NostalgiaForInfinityX6(IStrategy):
         and (last_candle["AROONU_14_15m"] < 30.0)
         and (last_candle["STOCHRSIk_14_14_3_3"] < 20.0)
         and (last_candle["STOCHRSIk_14_14_3_3_15m"] < 30.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] < 30.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] < 30.0)
+        and (last_candle["RSI_14_1h"] < 50.0)
+        and (last_candle["RSI_14_4h"] < 50.0)
       )
     ):
       return True
