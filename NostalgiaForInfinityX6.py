@@ -481,6 +481,7 @@ class NostalgiaForInfinityX6(IStrategy):
   grind_mode_first_entry_stop_threshold_futures = -0.20
   grind_mode_max_slots = 1
   grind_mode_coins = [
+    "A",
     "ADA",
     "ALGO",
     "APT",
@@ -490,7 +491,6 @@ class NostalgiaForInfinityX6(IStrategy):
     "BCH",
     "DOGE",
     "DOT",
-    "EOS",
     "ETC",
     "ETH",
     "FIL",
