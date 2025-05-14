@@ -9,7 +9,7 @@
 
   "strategy": "NostalgiaForInfinityX6",
   "add_config_files": [
-    "../configs/trading_mode-futures.json",
+    "../configs/trading_mode-spot.json",
     "../configs/pairlist-volume-binance-usdt.json",
     "../configs/blacklist-binance.json",
     "../configs/exampleconfig.json",
