@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.5.17"
+    return "v16.5.18"
 
   stoploss = -0.99
 
@@ -517,6 +517,7 @@ class NostalgiaForInfinityX6(IStrategy):
 
   # Top coins mode coins
   top_coins_mode_coins = [
+    "A",
     "AAVE",
     "ADA",
     "ALGO",
@@ -530,7 +531,6 @@ class NostalgiaForInfinityX6(IStrategy):
     "DOGE",
     "DOT",
     "ENA",
-    "EOS",
     "ETC",
     "ETH",
     "FET",
