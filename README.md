@@ -397,7 +397,7 @@ For optimal performance, suggested to use between 4 and 6 open trades, with unli
 
 A pairlist with 40 to 80 pairs. Volume pairlist works well.
 
-Prefer stable coin (USDT, BUSD etc) pairs, instead of BTC or ETH pairs.
+Prefer stable coin (USDT, USDC etc) pairs, instead of BTC or ETH pairs.
 
 Highly recommended to blacklist leveraged tokens (*BULL, *BEAR, *UP, *DOWN etc).
 
