@@ -32,7 +32,7 @@ warnings.simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 ##                                                                                                         ##
 ##   For optimal performance, suggested to use between 4 and 6 open trades, with unlimited stake.          ##
 ##   A pairlist with 40 to 80 pairs. Volume pairlist works well.                                           ##
-##   Prefer stable coin (USDT, BUSDT etc) pairs, instead of BTC or ETH pairs.                              ##
+##   Prefer stable coin (USDT, USDC etc) pairs, instead of BTC or ETH pairs.                              ##
 ##   Highly recommended to blacklist leveraged tokens (*BULL, *BEAR, *UP, *DOWN etc).                      ##
 ##   Ensure that you don't override any variables in you config.json. Especially                           ##
 ##   the timeframe (must be 5m).                                                                           ##
