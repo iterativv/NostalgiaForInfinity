@@ -27947,12 +27947,16 @@ class NostalgiaForInfinityX6(IStrategy):
           else:
             return -ft_sell_amount
 
-    # if (grind_1_sub_grind_count > 0) and (((exit_rate - grind_1_current_open_rate) / grind_1_current_open_rate) < grind_1_derisk_grinds):
     if (
       self.grinding_v2_grind_1_use_derisk
       and (grind_1_sub_grind_count > 0)
-      and (grind_1_current_grind_stake_profit < (slice_amount * grind_1_derisk_grinds))
+      and (((exit_rate - grind_1_current_open_rate) / grind_1_current_open_rate) < grind_1_derisk_grinds)
     ):
+      # if (
+      #   self.grinding_v2_grind_1_use_derisk
+      #   and (grind_1_sub_grind_count > 0)
+      #   and (grind_1_current_grind_stake_profit < (slice_amount * grind_1_derisk_grinds))
+      # ):
       sell_amount = grind_1_total_amount * exit_rate / trade.leverage
       if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
         sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -28037,12 +28041,16 @@ class NostalgiaForInfinityX6(IStrategy):
           else:
             return -ft_sell_amount
 
-    # if (grind_2_sub_grind_count > 0) and (((exit_rate - grind_2_current_open_rate) / grind_2_current_open_rate) < grind_2_derisk_grinds):
     if (
       self.grinding_v2_grind_2_use_derisk
       and (grind_2_sub_grind_count > 0)
-      and (grind_2_current_grind_stake_profit < (slice_amount * grind_2_derisk_grinds))
+      and (((exit_rate - grind_2_current_open_rate) / grind_2_current_open_rate) < grind_2_derisk_grinds)
     ):
+      # if (
+      #   self.grinding_v2_grind_2_use_derisk
+      #   and (grind_2_sub_grind_count > 0)
+      #   and (grind_2_current_grind_stake_profit < (slice_amount * grind_2_derisk_grinds))
+      # ):
       sell_amount = grind_2_total_amount * exit_rate / trade.leverage
       if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
         sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -28127,12 +28135,16 @@ class NostalgiaForInfinityX6(IStrategy):
           else:
             return -ft_sell_amount
 
-    # if (grind_3_sub_grind_count > 0) and (((exit_rate - grind_3_current_open_rate) / grind_3_current_open_rate) < grind_3_derisk_grinds):
     if (
       self.grinding_v2_grind_3_use_derisk
       and (grind_3_sub_grind_count > 0)
-      and (grind_3_current_grind_stake_profit < (slice_amount * grind_3_derisk_grinds))
+      and (((exit_rate - grind_3_current_open_rate) / grind_3_current_open_rate) < grind_3_derisk_grinds)
     ):
+      # if (
+      #   self.grinding_v2_grind_3_use_derisk
+      #   and (grind_3_sub_grind_count > 0)
+      #   and (grind_3_current_grind_stake_profit < (slice_amount * grind_3_derisk_grinds))
+      # ):
       sell_amount = grind_3_total_amount * exit_rate / trade.leverage
       if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
         sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -28237,22 +28249,31 @@ class NostalgiaForInfinityX6(IStrategy):
           else:
             return -ft_sell_amount
 
-    # if (buyback_1_sub_grind_count > 0) and (((exit_rate - buyback_1_current_open_rate) / buyback_1_current_open_rate) < (self.grinding_v2_buyback_1_derisk_futures if self.is_futures_mode else self.grinding_v2_buyback_1_derisk_spot)):
     if (
       self.grinding_v2_buyback_1_use_derisk
       and (buyback_1_sub_grind_count > 0)
       and (
-        buyback_1_current_grind_stake_profit
+        ((exit_rate - buyback_1_current_open_rate) / buyback_1_current_open_rate)
         < (
-          slice_amount
-          * (
-            self.grinding_v2_buyback_1_derisk_futures
-            if self.is_futures_mode
-            else self.grinding_v2_buyback_1_derisk_spot
-          )
+          self.grinding_v2_buyback_1_derisk_futures if self.is_futures_mode else self.grinding_v2_buyback_1_derisk_spot
         )
       )
     ):
+      # if (
+      #   self.grinding_v2_buyback_1_use_derisk
+      #   and (buyback_1_sub_grind_count > 0)
+      #   and (
+      #     buyback_1_current_grind_stake_profit
+      #     < (
+      #       slice_amount
+      #       * (
+      #         self.grinding_v2_buyback_1_derisk_futures
+      #         if self.is_futures_mode
+      #         else self.grinding_v2_buyback_1_derisk_spot
+      #       )
+      #     )
+      #   )
+      # ):
       sell_amount = buyback_1_total_amount * exit_rate / trade.leverage
       if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
         sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -28357,22 +28378,31 @@ class NostalgiaForInfinityX6(IStrategy):
           else:
             return -ft_sell_amount
 
-    # if (buyback_2_sub_grind_count > 0) and (((exit_rate - buyback_2_current_open_rate) / buyback_2_current_open_rate) < (self.grinding_v2_buyback_2_derisk_futures if self.is_futures_mode else self.grinding_v2_buyback_2_derisk_spot)):
     if (
       self.grinding_v2_buyback_2_use_derisk
       and (buyback_2_sub_grind_count > 0)
       and (
-        buyback_2_current_grind_stake_profit
+        ((exit_rate - buyback_2_current_open_rate) / buyback_2_current_open_rate)
         < (
-          slice_amount
-          * (
-            self.grinding_v2_buyback_2_derisk_futures
-            if self.is_futures_mode
-            else self.grinding_v2_buyback_2_derisk_spot
-          )
+          self.grinding_v2_buyback_2_derisk_futures if self.is_futures_mode else self.grinding_v2_buyback_2_derisk_spot
         )
       )
     ):
+      # if (
+      #   self.grinding_v2_buyback_2_use_derisk
+      #   and (buyback_2_sub_grind_count > 0)
+      #   and (
+      #     buyback_2_current_grind_stake_profit
+      #     < (
+      #       slice_amount
+      #       * (
+      #         self.grinding_v2_buyback_2_derisk_futures
+      #         if self.is_futures_mode
+      #         else self.grinding_v2_buyback_2_derisk_spot
+      #       )
+      #     )
+      #   )
+      # ):
       sell_amount = buyback_2_total_amount * exit_rate / trade.leverage
       if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
         sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -28477,22 +28507,31 @@ class NostalgiaForInfinityX6(IStrategy):
           else:
             return -ft_sell_amount
 
-    # if (buyback_3_sub_grind_count > 0) and (((exit_rate - buyback_3_current_open_rate) / buyback_3_current_open_rate) < (self.grinding_v2_buyback_3_derisk_futures if self.is_futures_mode else self.grinding_v2_buyback_3_derisk_spot)):
     if (
       self.grinding_v2_buyback_3_use_derisk
       and (buyback_3_sub_grind_count > 0)
       and (
-        buyback_3_current_grind_stake_profit
+        ((exit_rate - buyback_3_current_open_rate) / buyback_3_current_open_rate)
         < (
-          slice_amount
-          * (
-            self.grinding_v2_buyback_3_derisk_futures
-            if self.is_futures_mode
-            else self.grinding_v2_buyback_3_derisk_spot
-          )
+          self.grinding_v2_buyback_3_derisk_futures if self.is_futures_mode else self.grinding_v2_buyback_3_derisk_spot
         )
       )
     ):
+      # if (
+      #   self.grinding_v2_buyback_3_use_derisk
+      #   and (buyback_3_sub_grind_count > 0)
+      #   and (
+      #     buyback_3_current_grind_stake_profit
+      #     < (
+      #       slice_amount
+      #       * (
+      #         self.grinding_v2_buyback_3_derisk_futures
+      #         if self.is_futures_mode
+      #         else self.grinding_v2_buyback_3_derisk_spot
+      #       )
+      #     )
+      #   )
+      # ):
       sell_amount = buyback_3_total_amount * exit_rate / trade.leverage
       if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
         sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -50069,12 +50108,16 @@ class NostalgiaForInfinityX6(IStrategy):
           else:
             return -ft_sell_amount
 
-    # if (grind_1_sub_grind_count > 0) and ((-(exit_rate - grind_1_current_open_rate) / grind_1_current_open_rate) < grind_1_derisk_grinds):
     if (
       self.grinding_v2_grind_1_use_derisk
       and (grind_1_sub_grind_count > 0)
-      and (grind_1_current_grind_stake_profit < (slice_amount * grind_1_derisk_grinds))
+      and ((-(exit_rate - grind_1_current_open_rate) / grind_1_current_open_rate) < grind_1_derisk_grinds)
     ):
+      # if (
+      #   self.grinding_v2_grind_1_use_derisk
+      #   and (grind_1_sub_grind_count > 0)
+      #   and (grind_1_current_grind_stake_profit < (slice_amount * grind_1_derisk_grinds))
+      # ):
       sell_amount = grind_1_total_amount * exit_rate / trade.leverage
       if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
         sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -50159,12 +50202,16 @@ class NostalgiaForInfinityX6(IStrategy):
           else:
             return -ft_sell_amount
 
-    # if (grind_2_sub_grind_count > 0) and ((-(exit_rate - grind_2_current_open_rate) / grind_2_current_open_rate) < grind_2_derisk_grinds):
     if (
       self.grinding_v2_grind_2_use_derisk
       and (grind_2_sub_grind_count > 0)
-      and (grind_2_current_grind_stake_profit < (slice_amount * grind_2_derisk_grinds))
+      and ((-(exit_rate - grind_2_current_open_rate) / grind_2_current_open_rate) < grind_2_derisk_grinds)
     ):
+      # if (
+      #   self.grinding_v2_grind_2_use_derisk
+      #   and (grind_2_sub_grind_count > 0)
+      #   and (grind_2_current_grind_stake_profit < (slice_amount * grind_2_derisk_grinds))
+      # ):
       sell_amount = grind_2_total_amount * exit_rate / trade.leverage
       if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
         sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -50249,12 +50296,16 @@ class NostalgiaForInfinityX6(IStrategy):
           else:
             return -ft_sell_amount
 
-    # if (grind_3_sub_grind_count > 0) and ((-(exit_rate - grind_3_current_open_rate) / grind_3_current_open_rate) < grind_3_derisk_grinds):
     if (
       self.grinding_v2_grind_3_use_derisk
       and (grind_3_sub_grind_count > 0)
-      and (grind_3_current_grind_stake_profit < (slice_amount * grind_3_derisk_grinds))
+      and ((-(exit_rate - grind_3_current_open_rate) / grind_3_current_open_rate) < grind_3_derisk_grinds)
     ):
+      # if (
+      #   self.grinding_v2_grind_3_use_derisk
+      #   and (grind_3_sub_grind_count > 0)
+      #   and (grind_3_current_grind_stake_profit < (slice_amount * grind_3_derisk_grinds))
+      # ):
       sell_amount = grind_3_total_amount * exit_rate / trade.leverage
       if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
         sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -50359,22 +50410,31 @@ class NostalgiaForInfinityX6(IStrategy):
           else:
             return -ft_sell_amount
 
-    # if (buyback_1_sub_grind_count > 0) and ((-(exit_rate - buyback_1_current_open_rate) / buyback_1_current_open_rate) < (self.grinding_v2_buyback_1_derisk_futures if self.is_futures_mode else self.grinding_v2_buyback_1_derisk_spot)):
     if (
       self.grinding_v2_buyback_1_use_derisk
       and (buyback_1_sub_grind_count > 0)
       and (
-        buyback_1_current_grind_stake_profit
+        (-(exit_rate - buyback_1_current_open_rate) / buyback_1_current_open_rate)
         < (
-          slice_amount
-          * (
-            self.grinding_v2_buyback_1_derisk_futures
-            if self.is_futures_mode
-            else self.grinding_v2_buyback_1_derisk_spot
-          )
+          self.grinding_v2_buyback_1_derisk_futures if self.is_futures_mode else self.grinding_v2_buyback_1_derisk_spot
         )
       )
     ):
+      # if (
+      #   self.grinding_v2_buyback_1_use_derisk
+      #   and (buyback_1_sub_grind_count > 0)
+      #   and (
+      #     buyback_1_current_grind_stake_profit
+      #     < (
+      #       slice_amount
+      #       * (
+      #         self.grinding_v2_buyback_1_derisk_futures
+      #         if self.is_futures_mode
+      #         else self.grinding_v2_buyback_1_derisk_spot
+      #       )
+      #     )
+      #   )
+      # ):
       sell_amount = buyback_1_total_amount * exit_rate / trade.leverage
       if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
         sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -50479,22 +50539,31 @@ class NostalgiaForInfinityX6(IStrategy):
           else:
             return -ft_sell_amount
 
-    # if (buyback_2_sub_grind_count > 0) and ((-(exit_rate - buyback_2_current_open_rate) / buyback_2_current_open_rate) < (self.grinding_v2_buyback_2_derisk_futures if self.is_futures_mode else self.grinding_v2_buyback_2_derisk_spot)):
     if (
       self.grinding_v2_buyback_2_use_derisk
       and (buyback_2_sub_grind_count > 0)
       and (
-        buyback_2_current_grind_stake_profit
+        (-(exit_rate - buyback_2_current_open_rate) / buyback_2_current_open_rate)
         < (
-          slice_amount
-          * (
-            self.grinding_v2_buyback_2_derisk_futures
-            if self.is_futures_mode
-            else self.grinding_v2_buyback_2_derisk_spot
-          )
+          self.grinding_v2_buyback_2_derisk_futures if self.is_futures_mode else self.grinding_v2_buyback_2_derisk_spot
         )
       )
     ):
+      # if (
+      #   self.grinding_v2_buyback_2_use_derisk
+      #   and (buyback_2_sub_grind_count > 0)
+      #   and (
+      #     buyback_2_current_grind_stake_profit
+      #     < (
+      #       slice_amount
+      #       * (
+      #         self.grinding_v2_buyback_2_derisk_futures
+      #         if self.is_futures_mode
+      #         else self.grinding_v2_buyback_2_derisk_spot
+      #       )
+      #     )
+      #   )
+      # ):
       sell_amount = buyback_2_total_amount * exit_rate / trade.leverage
       if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
         sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
@@ -50599,22 +50668,31 @@ class NostalgiaForInfinityX6(IStrategy):
           else:
             return -ft_sell_amount
 
-    # if (buyback_3_sub_grind_count > 0) and ((-(exit_rate - buyback_3_current_open_rate) / buyback_3_current_open_rate) < (self.grinding_v2_buyback_3_derisk_futures if self.is_futures_mode else self.grinding_v2_buyback_3_derisk_spot)):
     if (
       self.grinding_v2_buyback_3_use_derisk
       and (buyback_3_sub_grind_count > 0)
       and (
-        buyback_3_current_grind_stake_profit
+        (-(exit_rate - buyback_3_current_open_rate) / buyback_3_current_open_rate)
         < (
-          slice_amount
-          * (
-            self.grinding_v2_buyback_3_derisk_futures
-            if self.is_futures_mode
-            else self.grinding_v2_buyback_3_derisk_spot
-          )
+          self.grinding_v2_buyback_3_derisk_futures if self.is_futures_mode else self.grinding_v2_buyback_3_derisk_spot
         )
       )
     ):
+      # if (
+      #   self.grinding_v2_buyback_3_use_derisk
+      #   and (buyback_3_sub_grind_count > 0)
+      #   and (
+      #     buyback_3_current_grind_stake_profit
+      #     < (
+      #       slice_amount
+      #       * (
+      #         self.grinding_v2_buyback_3_derisk_futures
+      #         if self.is_futures_mode
+      #         else self.grinding_v2_buyback_3_derisk_spot
+      #       )
+      #     )
+      #   )
+      # ):
       sell_amount = buyback_3_total_amount * exit_rate / trade.leverage
       if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
         sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
