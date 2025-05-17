@@ -683,55 +683,33 @@ class NostalgiaForInfinityX6(IStrategy):
       "sell_profit_only" in self.config and self.config["sell_profit_only"]
     ):
       self.exit_profit_only = True
-    if "num_cores_indicators_calc" in self.config:
-      self.num_cores_indicators_calc = self.config["num_cores_indicators_calc"]
 
-    if "custom_fee_open_rate" in self.config:
-      self.custom_fee_open_rate = self.config["custom_fee_open_rate"]
-    if "custom_fee_close_rate" in self.config:
-      self.custom_fee_close_rate = self.config["custom_fee_close_rate"]
+    for config in [
+      "num_cores_indicators_calc",
+      "custom_fee_open_rate",
+      "custom_fee_close_rate",
+      "futures_mode_leverage",
+      "futures_mode_leverage_rebuy_mode",
+      "futures_mode_leverage_grind_mode",
+      "futures_max_open_trades_long",
+      "futures_max_open_trades_short",
+      "stop_threshold_doom_spot",
+      "stop_threshold_doom_futures",
+      "stop_threshold_rapid_spot",
+      "stop_threshold_rapid_futures",
+      "derisk_enable",
+      "stops_enable",
+      "regular_mode_derisk_1_spot",
+      "regular_mode_derisk_spot",
+      "regular_mode_derisk_1_futures",
+      "regular_mode_derisk_futures",
+      "grind_mode_max_slots",
+      "grind_mode_coins",
+      "max_slippage"
+    ]:
+      if config in self.config:
+        setattr(self, config, self.config[config])
 
-    if "futures_mode_leverage" in self.config:
-      self.futures_mode_leverage = self.config["futures_mode_leverage"]
-    if "futures_mode_leverage_rebuy_mode" in self.config:
-      self.futures_mode_leverage_rebuy_mode = self.config["futures_mode_leverage_rebuy_mode"]
-    if "futures_mode_leverage_grind_mode" in self.config:
-      self.futures_mode_leverage_grind_mode = self.config["futures_mode_leverage_grind_mode"]
-
-    if "futures_max_open_trades_long" in self.config:
-      self.futures_max_open_trades_long = self.config["futures_max_open_trades_long"]
-    if "futures_max_open_trades_short" in self.config:
-      self.futures_max_open_trades_short = self.config["futures_max_open_trades_short"]
-
-    if "stop_threshold_doom_spot" in self.config:
-      self.stop_threshold_doom_spot = self.config["stop_threshold_doom_spot"]
-    if "stop_threshold_doom_futures" in self.config:
-      self.stop_threshold_doom_futures = self.config["stop_threshold_doom_futures"]
-    if "stop_threshold_rapid_spot" in self.config:
-      self.stop_threshold_rapid_spot = self.config["stop_threshold_rapid_spot"]
-    if "stop_threshold_rapid_futures" in self.config:
-      self.stop_threshold_rapid_futures = self.config["stop_threshold_rapid_futures"]
-
-    if "derisk_enable" in self.config:
-      self.derisk_enable = self.config["derisk_enable"]
-    if "stops_enable" in self.config:
-      self.stops_enable = self.config["stops_enable"]
-
-    if "regular_mode_derisk_1_spot" in self.config:
-      self.regular_mode_derisk_1_spot = self.config["regular_mode_derisk_1_spot"]
-    if "regular_mode_derisk_spot" in self.config:
-      self.regular_mode_derisk_spot = self.config["regular_mode_derisk_spot"]
-    if "regular_mode_derisk_1_futures" in self.config:
-      self.regular_mode_derisk_1_futures = self.config["regular_mode_derisk_1_futures"]
-    if "regular_mode_derisk_futures" in self.config:
-      self.regular_mode_derisk_futures = self.config["regular_mode_derisk_futures"]
-
-    if "grind_mode_max_slots" in self.config:
-      self.grind_mode_max_slots = self.config["grind_mode_max_slots"]
-    if "grind_mode_coins" in self.config:
-      self.grind_mode_coins = self.config["grind_mode_coins"]
-    if "max_slippage" in self.config:
-      self.max_slippage = self.config["max_slippage"]
     if self.target_profit_cache is None:
       bot_name = ""
       if "bot_name" in self.config:
