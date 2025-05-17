@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.5.30"
+    return "v16.5.31"
 
   stoploss = -0.99
 
@@ -705,7 +705,7 @@ class NostalgiaForInfinityX6(IStrategy):
       "regular_mode_derisk_futures",
       "grind_mode_max_slots",
       "grind_mode_coins",
-      "max_slippage"
+      "max_slippage",
     ]:
       if config in self.config:
         setattr(self, config, self.config[config])
