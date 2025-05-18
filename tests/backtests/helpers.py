@@ -6,6 +6,7 @@ import subprocess
 import zipfile
 from types import SimpleNamespace
 import attr
+import time
 
 from tests.conftest import REPO_ROOT
 
@@ -112,7 +113,7 @@ class Backtest:
     else:
       log.debug("Command Result:\n%s", ret)
 
-    # Look for result .zip file instead of .json
+    # Look for result .zip file
     result_zips = list(f for f in tmp_path.rglob("backtest-results-*.zip"))
     if not result_zips:
       raise FileNotFoundError("No backtest result .zip file found after backtesting command.")
@@ -120,36 +121,50 @@ class Backtest:
     # Unzip the file to extract the JSON inside
     with zipfile.ZipFile(result_zips[0], "r") as zip_ref:
       zip_ref.extractall(tmp_path)
+    time.sleep(1)
 
     # JSON result file
-    result_files = list(f for f in tmp_path.rglob("backtest-results-*.json") if "meta" not in str(f))
-    if not result_files:
-      raise FileNotFoundError("No backtest JSON result file found after backtesting command.")
+    result_files = list(
+      f for f in tmp_path.rglob("backtest-results-*.json") if "meta" not in str(f) and "_config" not in str(f)
+    )
+    if len(result_files) != 1:
+      raise RuntimeError(f"Expected 1 JSON result file, found {len(result_files)}: {result_files}")
     json_results_file = result_files[0]
-    json_results_artifact_path = None
+    log.debug(f"Reading JSON backtest results from: {json_results_file}")
+
+    # Safely read and parse JSON
+    try:
+      raw_text = json_results_file.read_text()
+      if not raw_text.strip():
+        raise ValueError("Backtest result JSON file is empty.")
+      results_data = json.loads(raw_text)
+    except json.JSONDecodeError as e:
+      raise RuntimeError(f"Failed to parse JSON from {json_results_file}: {e}") from e
 
     # Signals file
     signals_files = list(f for f in tmp_path.rglob("backtest-results-*signals.pkl") if "meta" not in str(f))
     if not signals_files:
       raise FileNotFoundError("Signals file not found after backtesting.")
     signals_file = signals_files[0]
-    signals_file_artifact_path = None
 
     # Exited file
     exited_files = list(f for f in tmp_path.rglob("backtest-results-*exited.pkl") if "meta" not in str(f))
     if not exited_files:
       raise FileNotFoundError("Exited trades file not found after backtesting.")
     exited_file = exited_files[0]
-    exited_file_artifact_path = None
 
     # Rejected file
     rejected_files = list(f for f in tmp_path.rglob("backtest-results-*rejected.pkl") if "meta" not in str(f))
     if not rejected_files:
       raise FileNotFoundError("Rejected trades file not found after backtesting.")
     rejected_file = rejected_files[0]
-    rejected_file_artifact_path = None
 
+    # Artifact paths
+    json_results_artifact_path = None
     json_ci_results_artifact_path = None
+    signals_file_artifact_path = None
+    exited_file_artifact_path = None
+    rejected_file_artifact_path = None
 
     if self.request.config.option.artifacts_path:
       json_results_artifact_path = (
@@ -186,7 +201,6 @@ class Backtest:
       )
       txt_results_artifact_path.write_text(ret.stdout.strip())
 
-    results_data = json.loads(json_results_file.read_text())
     ret = BacktestResults(
       stdout=ret.stdout.strip(),
       stderr=ret.stderr.strip(),
