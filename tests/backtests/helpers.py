@@ -3,8 +3,8 @@ import logging
 import pprint
 import shutil
 import subprocess
+import zipfile
 from types import SimpleNamespace
-
 import attr
 
 from tests.conftest import REPO_ROOT
@@ -79,14 +79,13 @@ class Backtest:
     cmdline = [
       "freqtrade",
       "backtesting",
-      "--strategy-list=NostalgiaForInfinityX5",
+      "--strategy=NostalgiaForInfinityX6",
       f"--timerange={start_date}-{end_date}",
-      "--user-data=user_data",
+      "--user-data-dir=user_data",
       "--config=configs/exampleconfig.json",
       "--config=configs/exampleconfig_secret.json",
       f"--config=configs/trading_mode-{trading_mode}.json",
       f"--config=configs/blacklist-{exchange}.json",
-      "--timeframe-detail=1m",
       "--breakdown=day",
       "--export=signals",
       f"--log-file=user_data/logs/backtesting-{exchange}-{trading_mode}-{start_date}-{end_date}.log",
@@ -109,25 +108,48 @@ class Backtest:
     )
     if ret.exitcode != 0:
       log.info("Command Result:\n%s", ret)
+      raise RuntimeError(f"Backtest failed with exit code {ret.exitcode}!\n{ret}")
     else:
       log.debug("Command Result:\n%s", ret)
-    assert ret.exitcode == 0
-    #####
-    json_results_file = list(f for f in tmp_path.rglob("backtest-results-*.json") if "meta" not in str(f))[0]
+
+    # Look for result .zip file instead of .json
+    result_zips = list(f for f in tmp_path.rglob("backtest-results-*.zip"))
+    if not result_zips:
+      raise FileNotFoundError("No backtest result .zip file found after backtesting command.")
+
+    # Unzip the file to extract the JSON inside
+    with zipfile.ZipFile(result_zips[0], "r") as zip_ref:
+      zip_ref.extractall(tmp_path)
+
+    # JSON result file
+    result_files = list(f for f in tmp_path.rglob("backtest-results-*.json") if "meta" not in str(f))
+    if not result_files:
+      raise FileNotFoundError("No backtest JSON result file found after backtesting command.")
+    json_results_file = result_files[0]
     json_results_artifact_path = None
 
-    signals_file = list(f for f in tmp_path.rglob("backtest-results-*signals.pkl") if "meta" not in str(f))[0]
+    # Signals file
+    signals_files = list(f for f in tmp_path.rglob("backtest-results-*signals.pkl") if "meta" not in str(f))
+    if not signals_files:
+      raise FileNotFoundError("Signals file not found after backtesting.")
+    signals_file = signals_files[0]
     signals_file_artifact_path = None
 
-    exited_file = list(f for f in tmp_path.rglob("backtest-results-*exited.pkl") if "meta" not in str(f))[0]
+    # Exited file
+    exited_files = list(f for f in tmp_path.rglob("backtest-results-*exited.pkl") if "meta" not in str(f))
+    if not exited_files:
+      raise FileNotFoundError("Exited trades file not found after backtesting.")
+    exited_file = exited_files[0]
     exited_file_artifact_path = None
 
-    rejected_file = list(f for f in tmp_path.rglob("backtest-results-*rejected.pkl") if "meta" not in str(f))[0]
+    # Rejected file
+    rejected_files = list(f for f in tmp_path.rglob("backtest-results-*rejected.pkl") if "meta" not in str(f))
+    if not rejected_files:
+      raise FileNotFoundError("Rejected trades file not found after backtesting.")
+    rejected_file = rejected_files[0]
     rejected_file_artifact_path = None
 
     json_ci_results_artifact_path = None
-
-    #####
 
     if self.request.config.option.artifacts_path:
       json_results_artifact_path = (
@@ -140,23 +162,18 @@ class Backtest:
         self.request.config.option.artifacts_path
         / f"ci-results-{exchange}-{trading_mode}-{start_date}-{end_date}.json"
       )
-      # shutil.copyfile(json_results_file, json_results_artifact_path)
-
-      # signals_file_artifact_path = self.request.config.option.artifacts_path / signals_file.name
       signals_file_artifact_path = (
         self.request.config.option.artifacts_path
         / f"backtest-results-{exchange}-{trading_mode}-{start_date}-{end_date}_signals.pkl"
       )
       shutil.copyfile(signals_file, signals_file_artifact_path)
 
-      # exited_file_artifact_path = self.request.config.option.artifacts_path / exited_file.name
       exited_file_artifact_path = (
         self.request.config.option.artifacts_path
         / f"backtest-results-{exchange}-{trading_mode}-{start_date}-{end_date}_exited.pkl"
       )
       shutil.copyfile(exited_file, exited_file_artifact_path)
 
-      # rejected_file_artifact_path = self.request.config.option.artifacts_path / rejected_file.name
       rejected_file_artifact_path = (
         self.request.config.option.artifacts_path
         / f"backtest-results-{exchange}-{trading_mode}-{start_date}-{end_date}_rejected.pkl"
@@ -175,6 +192,7 @@ class Backtest:
       stderr=ret.stderr.strip(),
       raw_data=results_data,
     )
+
     if json_ci_results_artifact_path:
       json_ci_results_artifact_path.write_text(json.dumps({f"{start_date}-{end_date}": ret._stats_pct}))
     ret.log_info()
@@ -195,11 +213,32 @@ class BacktestResults:
 
   @_results.default
   def _set_results(self):
-    return self.raw_data["strategy"]["NostalgiaForInfinityX5"]
+    strategy_data = self.raw_data.get("strategy")
+
+    if isinstance(strategy_data, dict):
+      # Expected structure: {"strategy": {"NostalgiaForInfinityX6": {...}}}
+      return strategy_data.get("NostalgiaForInfinityX6")
+
+    elif isinstance(strategy_data, str) and strategy_data == "NostalgiaForInfinityX6":
+      # Fallback structure: {"strategy": "NostalgiaForInfinityX6"}
+      # Then use the top-level key instead
+      return self.raw_data.get("NostalgiaForInfinityX6")
+
+    else:
+      raise TypeError(f"Unsupported 'strategy' value: {strategy_data!r}. Expected a dict or strategy name.")
 
   @_stats.default
   def _set_stats(self):
-    return self.raw_data["strategy_comparison"][0]
+    comparison_data = self.raw_data.get("strategy_comparison")
+
+    if isinstance(comparison_data, list) and len(comparison_data) > 0:
+      return comparison_data[0]
+
+    elif isinstance(comparison_data, dict):
+      return comparison_data
+
+    else:
+      raise TypeError(f"Unsupported 'strategy_comparison' value: {comparison_data!r}. Expected a list or dict.")
 
   @results.default
   def _set_results(self):
