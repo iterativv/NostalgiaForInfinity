@@ -29,7 +29,7 @@ jobs:
                 - '**'
       - name: Set Cache Key
         run: echo "PY=$(python --version --version | sha256sum | cut -d' ' -f1)" >> $GITHUB_ENV
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/.cache/pre-commit
           key: pre-commit|${{ env.PY }}|${{ hashFiles('.pre-commit-config.yaml') }}
@@ -42,122 +42,6 @@ jobs:
         with:
           extra_args: --files ${{ steps.changed-files.outputs.repo_files }}
 
-  Binance-Backtests:
-    runs-on: ubuntu-latest
-    needs:
-      - Pre-Commit
-    strategy:
-      fail-fast: false
-      matrix:
-        timerange:
-          - 20210101-20210201
-          - 20210201-20210301
-          - 20210301-20210401
-          - 20210401-20210501
-          - 20210501-20210601
-          - 20210601-20210701
-          - 20210701-20210801
-          - 20210801-20210901
-          - 20210901-20211001
-          - 20211001-20211101
-          - 20211101-20211201
-          - 20211201-20220101
-          - 20220101-20220201
-          - 20220201-20220301
-          - 20220301-20220401
-          - 20220401-20220501
-          - 20220501-20220601
-          - 20220601-20220701
-          - 20220701-20220801
-          - 20220801-20220901
-          - 20220901-20221001
-          - 20221001-20221101
-          - 20221101-20221201
-          - 20221201-20230101
-          - 20230101-20230201
-          - 20230201-20230301
-          - 20230301-20230401
-          - 20230401-20230501
-          - 20230501-20230601
-          - 20230601-20230701
-          - 20230701-20230801
-          - 20230801-20230901
-          - 20230901-20231001
-          - 20231001-20231101
-          - 20231101-20231201
-          - 20231201-20240101
-          - 20240101-20240201
-          - 20240201-20240301
-          - 20240301-20240401
-          - 20240401-20240501
-          - 20240501-20240601
-          - 20240601-20240701
-          - 20240701-20240801
-          - 20240801-20240901
-          # - 20240901-20241001
-
-    steps:
-      - name: Fetch Source Code
-        uses: actions/checkout@v4
-
-      - name: "Create env file"
-        run: |
-          echo FREQTRADE__EXCHANGE__CCXT_CONFIG__AIOHTTP_PROXY=${{ secrets.FREQTRADE_PROXY }} >> .github/workflows/scripts/ci-proxy.env
-          echo FREQTRADE__EXCHANGE__CCXT_CONFIG__PROXIES__HTTP=${{ secrets.FREQTRADE_PROXY }} >> .github/workflows/scripts/ci-proxy.env
-          echo FREQTRADE__EXCHANGE__CCXT_CONFIG__PROXIES__HTTPS=${{ secrets.FREQTRADE_PROXY }} >> .github/workflows/scripts/ci-proxy.env
-          echo FREQTRADE__EXCHANGE__CCXT_CONFIG__RATELIMIT=4000 >> .github/workflows/scripts/ci-proxy.env
-      - name: Fetch data for backtests from https://github.com/DigiTuccar/HistoricalDataForTradeBacktest
-        env:
-          EXCHANGE: binance
-          TRADING_MODE: spot
-          TIMEFRAME: 5m
-          HELPER_TIME_FRAMES: 1m 15m 1h 4h 1d
-        run: |
-          .github/workflows/scripts/download-necessary-exchange-market-data-for-backtests.sh
-          cat user_data/data/.git/info/sparse-checkout
-          du -sh user_data/data
-          tree
-
-      - name: Run Tests
-        run: |
-          mkdir artifacts
-          chmod 777 artifacts
-          chmod 777 ./user_data/backtest_results
-          chmod 777 ./user_data/logs
-          export COLUMNS=240
-          docker build -f docker/Dockerfile.custom --no-cache -t ci-strategy-backtesting .
-          docker run -v ".:/testing" -v "./user_data/data:/testing/user_data/data" \
-            -v "./user_data/logs:/testing/user_data/logs" -e "COLUMNS=240" \
-            -v "./user_data/backtest_results:/testing/user_data/backtest_results" --rm \
-            -w /testing --entrypoint "" --env-file .github/workflows/scripts/ci-proxy.env \
-            ci-strategy-backtesting \
-            python -m pytest -ra -vv -s --log-cli-level=info --artifacts-path=artifacts/ \
-            -p no:cacheprovider tests/backtests -k 'binance and spot and ${{ matrix.timerange }}'
-
-      - name: List Artifacts
-        run: |
-          ls -lah artifacts/
-
-      - name: Show Backest Output
-        run: |
-          cat artifacts/backtest-output-binance-spot-${{ matrix.timerange }}.txt
-
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: binance-testrun-artifacts-${{ matrix.timerange }}
-          path: artifacts/
-
-  Merge-Binance:
-    runs-on: ubuntu-latest
-    needs: Binance-Backtests
-    steps:
-      - name: Merge Artifacts
-        uses: actions/upload-artifact/merge@v4
-        with:
-          name: binance-testrun-artifacts
-          pattern: binance-testrun-artifacts-*
-
   Kucoin-Backtests:
     runs-on: ubuntu-latest
     needs:
@@ -166,42 +50,6 @@ jobs:
       fail-fast: false
       matrix:
         timerange:
-          - 20210101-20210201
-          - 20210201-20210301
-          - 20210301-20210401
-          - 20210401-20210501
-          - 20210501-20210601
-          - 20210601-20210701
-          - 20210701-20210801
-          - 20210801-20210901
-          - 20210901-20211001
-          - 20211001-20211101
-          - 20211101-20211201
-          - 20211201-20220101
-          - 20220101-20220201
-          - 20220201-20220301
-          - 20220301-20220401
-          - 20220401-20220501
-          - 20220501-20220601
-          - 20220601-20220701
-          - 20220701-20220801
-          - 20220801-20220901
-          - 20220901-20221001
-          - 20221001-20221101
-          - 20221101-20221201
-          - 20221201-20230101
-          - 20230101-20230201
-          - 20230201-20230301
-          - 20230301-20230401
-          - 20230401-20230501
-          - 20230501-20230601
-          - 20230601-20230701
-          - 20230701-20230801
-          - 20230801-20230901
-          - 20230901-20231001
-          - 20231001-20231101
-          - 20231101-20231201
-          - 20231201-20240101
           - 20240101-20240201
           - 20240201-20240301
           - 20240301-20240401
@@ -209,8 +57,6 @@ jobs:
           - 20240501-20240601
           - 20240601-20240701
           - 20240701-20240801
-          - 20240801-20240901
-          # - 20240901-20241001
 
     steps:
       - name: Fetch Source Code
@@ -221,19 +67,16 @@ jobs:
           EXCHANGE: kucoin
           TRADING_MODE: spot
           TIMEFRAME: 5m
-          HELPER_TIME_FRAMES: 1m 15m 1h 4h 1d
+          TIMERANGE: ${{ matrix.timerange }}
+          HELPER_TIME_FRAMES: 5m 15m 1h 4h 1d
         run: |
           .github/workflows/scripts/download-necessary-exchange-market-data-for-backtests.sh
-          cat user_data/data/.git/info/sparse-checkout
-          du -sh user_data/data
-          tree
 
       - name: Run Tests
         run: |
           mkdir artifacts
           chmod 777 artifacts
-          chmod 777 ./user_data/backtest_results
-          chmod 777 ./user_data/logs
+          chmod 777 -R ./user_data
           export COLUMNS=240
           docker build -f docker/Dockerfile.custom --no-cache -t ci-strategy-backtesting .
           docker run -v ".:/testing" -v "./user_data/data:/testing/user_data/data" --rm \
@@ -246,7 +89,7 @@ jobs:
         run: |
           ls -lah artifacts/
 
-      - name: Show Backest Output
+      - name: Show Backtest Output
         run: |
           cat artifacts/backtest-output-kucoin-spot-${{ matrix.timerange }}.txt
 
@@ -259,6 +102,7 @@ jobs:
   Merge-Kucoin:
     runs-on: ubuntu-latest
     needs: Kucoin-Backtests
+    if: always()
     steps:
       - name: Merge Artifacts
         uses: actions/upload-artifact/merge@v4
@@ -356,12 +200,13 @@ jobs:
   #          name: okx-testrun-artifacts
   #          pattern: okx-testrun-artifacts-*
 
-  Backest-CI-Stats:
+  Backtest-CI-Stats:
     runs-on: ubuntu-latest
-    needs:
-      - Kucoin-Backtests
-      - Binance-Backtests
-      # - OKX-Backtests
+    needs: Kucoin-Backtests
+    if: always()
+    permissions:
+      contents: write
+      actions: read
 
     steps:
       - uses: actions/checkout@v4
@@ -374,17 +219,6 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install -r tests/ci-requirements.txt
-
-      - name: Download Previous Binance CI Artifacts
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          python .github/workflows/scripts/download-previous-artifacts.py \
-            --repo=${{ github.event.repository.full_name }} \
-            --branch=main \
-            --workflow=tests.yml \
-            --exchange=binance \
-            --name=binance-testrun-artifacts downloaded-results
 
       - name: Download Previous Kucoin CI Artifacts
         env:
@@ -407,12 +241,6 @@ jobs:
       #       --workflow=tests.yml \
       #       --exchange=okx \
       #       --name=okx-testrun-artifacts downloaded-results
-
-      - name: Download Current Binance CI Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          pattern:: binance-testrun-artifacts
-          path: downloaded-results/current
 
       - name: Download Current Kucoin CI Artifacts
         uses: actions/download-artifact@v4
@@ -451,6 +279,9 @@ jobs:
       - name: Show Downloaded Artifacts
         run: |
           tree downloaded-results
+      - name: Flatten downloaded artifacts
+        run: |
+          find downloaded-results/current -type f -name 'backtest-output-*.txt' -exec mv {} downloaded-results/current/ \;
 
       - name: Comment CI Results
         env:

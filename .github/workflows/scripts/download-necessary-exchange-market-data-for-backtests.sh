@@ -43,13 +43,13 @@ git clone --filter=blob:none --no-checkout --depth 1 --sparse $URL $MAIN_DATA_DI
 git -C $MAIN_DATA_DIRECTORY sparse-checkout reapply --no-cone
 
 echo "Fetching necessary Timeframe Data"
-
+data_necessary_timerange="${TIMERANGE[*]}"
 for data_necessary_exchange in ${EXCHANGE[*]}; do
     for data_necessary_market_type in ${TRADING_MODE[*]}; do
         for data_necessary_timeframe in ${TIMEFRAME[*]}; do
             echo
             echo "--------------------------------------------------------------------------------------------------------"
-            echo "# Exchange: $data_necessary_exchange      Market Type: $data_necessary_market_type      Time Frame: $data_necessary_timeframe"
+            echo "# Exchange: $data_necessary_exchange      Market Type: $data_necessary_market_type      Time Frame: $data_necessary_timeframe     Timerange: $data_necessary_timerange"
             echo "--------------------------------------------------------------------------------------------------------"
             echo
 
@@ -78,7 +78,7 @@ for data_necessary_exchange in ${EXCHANGE[*]}; do
         for data_necessary_timeframe in ${HELPER_TIME_FRAMES[*]}; do
             echo
             echo "--------------------------------------------------------------------------------------------------------"
-            echo "# Exchange: $data_necessary_exchange      Market Type: $data_necessary_market_type      Time Frame: $data_necessary_timeframe"
+            echo "# Exchange: $data_necessary_exchange      Market Type: $data_necessary_market_type      Time Frame: $data_necessary_timeframe     Timerange: $data_necessary_timerange"
             echo "--------------------------------------------------------------------------------------------------------"
             echo
 
