@@ -116,14 +116,18 @@ def test_expected_values(backtest, trading_mode, timerange, exchange, deviations
     exchange=exchange.name,
     trading_mode=trading_mode,
   )
-  exchange_deviations = deviations[exchange.name]
-  expected_winrate = (
-    exchange_deviations.get((trading_mode, timerange.start_date, timerange.end_date), {}).get("winrate")
-    or exchange.winrate
+
+  exchange_deviations = deviations.get(exchange.name, {})
+  key = (trading_mode, timerange.start_date, timerange.end_date)
+  entry = exchange_deviations.get(key, {})
+
+  expected_winrate = entry.get("winrate") if entry.get("winrate") is not None else exchange.winrate
+  expected_max_drawdown = entry.get("max_drawdown") if entry.get("max_drawdown") is not None else exchange.max_drawdown
+
+  assert ret.stats_pct.winrate >= expected_winrate or ret.stats_pct.trades == 0, (
+    f"Expected winrate ≥ {expected_winrate}, got {ret.stats_pct.winrate}. Trades: {ret.stats_pct.trades}."
   )
-  expected_max_drawdown = (
-    exchange_deviations.get((trading_mode, timerange.start_date, timerange.end_date), {}).get("max_drawdown")
-    or exchange.max_drawdown
+
+  assert ret.stats_pct.max_drawdown <= expected_max_drawdown, (
+    f"Expected max drawdown ≤ {expected_max_drawdown}, got {ret.stats_pct.max_drawdown}."
   )
-  assert ret.stats_pct.winrate >= expected_winrate or ret.stats_pct.trades == 0, "No trades were executed"
-  assert ret.stats_pct.max_drawdown <= expected_max_drawdown
