@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.5.33"
+    return "v16.5.34"
 
   stoploss = -0.99
 
@@ -660,7 +660,6 @@ class NostalgiaForInfinityX6(IStrategy):
   ###############################################################################################
 
   def __init__(self, config: dict) -> None:
-
     # A list of parameters that can be changed through the config.
     NFI_SAFE_PARAMETERS = [
       "num_cores_indicators_calc",
@@ -683,9 +682,9 @@ class NostalgiaForInfinityX6(IStrategy):
       "regular_mode_derisk_futures",
       "grind_mode_max_slots",
       "grind_mode_coins",
-      "max_slippage"
+      "max_slippage",
     ]
-    
+
     if "ccxt_config" not in config["exchange"]:
       config["exchange"]["ccxt_config"] = {}
     if "ccxt_async_config" not in config["exchange"]:
@@ -710,30 +709,31 @@ class NostalgiaForInfinityX6(IStrategy):
     ):
       self.exit_profit_only = True
 
-    
     # Advanced configuration mode. Allows to change any parameter.
-    is_config_advanced_mode = 'nfi_advanced_mode' in self.config and self.config['nfi_advanced_mode'] == True
+    is_config_advanced_mode = "nfi_advanced_mode" in self.config and self.config["nfi_advanced_mode"] == True
     if is_config_advanced_mode:
-      log.warning('The advanced configuration mode is enabled. I hope you know what you are doing.')
+      log.warning("The advanced configuration mode is enabled. I hope you know what you are doing.")
 
     # Configuration from the nfi_parameters block. New config style.
-    if 'nfi_parameters' in self.config and type(self.config['nfi_parameters']) is dict:
-      for nfi_param in self.config['nfi_parameters']:
-        if nfi_param in ['long_entry_signal_params','short_entry_signal_params']:
+    if "nfi_parameters" in self.config and type(self.config["nfi_parameters"]) is dict:
+      for nfi_param in self.config["nfi_parameters"]:
+        if nfi_param in ["long_entry_signal_params", "short_entry_signal_params"]:
           continue
         if (nfi_param in NFI_SAFE_PARAMETERS or is_config_advanced_mode) and hasattr(self, nfi_param):
-          log.info(f'Parameter {nfi_param} changed from "{getattr(self,nfi_param)}" to "{self.config['nfi_parameters'][nfi_param]}".')
-          setattr(self, nfi_param, self.config['nfi_parameters'][nfi_param])
+          log.info(
+            f'Parameter {nfi_param} changed from "{getattr(self, nfi_param)}" to "{self.config["nfi_parameters"][nfi_param]}".'
+          )
+          setattr(self, nfi_param, self.config["nfi_parameters"][nfi_param])
         else:
-          log.warning(f'Invalid or unsafe parameter: {nfi_param}.')
+          log.warning(f"Invalid or unsafe parameter: {nfi_param}.")
 
-      self.update_signals_from_config(self.config['nfi_parameters'])
-    
+      self.update_signals_from_config(self.config["nfi_parameters"])
+
     # Parameter settings. Backward compatibility with the old configuration style.
     for nfi_param in NFI_SAFE_PARAMETERS:
       if (nfi_param in self.config) and hasattr(self, nfi_param):
         setattr(self, nfi_param, self.config[nfi_param])
-      
+
     if self.target_profit_cache is None:
       bot_name = ""
       if "bot_name" in self.config:
