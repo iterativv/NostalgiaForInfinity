@@ -98,6 +98,12 @@ class Backtest:
       pairlist_config_file = tmp_path / "test-pairlist.json"
       pairlist_config_file.write(json.dumps(pairlist_config))
       cmdline.append(f"--config={pairlist_config_file}")
+    # Add Proxy if exchange matches binance
+    if exchange == "binance":
+      cmdline.append("--config=configs/proxy-binance.json")
+    # Add datadir if exchange matches binance and trading mode is futures
+    if exchange == "binance" and trading_mode == "futures":
+      cmdline.append("--datadir=user_data/data/binance/futures")
     cmdline.append(f"--export-filename={json_results_file}")
     log.info("Running cmdline '%s' on '%s'", " ".join(cmdline), REPO_ROOT)
     proc = subprocess.run(cmdline, check=False, shell=False, cwd=REPO_ROOT, text=True, capture_output=True)
