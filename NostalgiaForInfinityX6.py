@@ -1169,7 +1169,7 @@ class NostalgiaForInfinityX6(IStrategy):
         is_scalp_mode = all(c in self.long_scalp_mode_tags for c in enter_tags)
         if is_scalp_mode:
           if 0.001 <= profit_init_ratio < 0.01:
-            if profit_init_ratio < (previous_profit - 0.01):
+            if profit_init_ratio < (previous_profit - 0.008):
               return True, f"exit_profit_{mode_name}_t_0_1"
           elif 0.01 <= profit_init_ratio < 0.02:
             if profit_init_ratio < (previous_profit - 0.01):
