@@ -131,11 +131,20 @@ def comment_results(options, results_data):
             row_line += f" {value} |"
           comment_body += f"{row_line}\n"
       ft_output = options.path / "current" / f"backtest-output-{exchange}-spot-{timerange}.txt"
-      comment_body += "\n<details>\n"
-      comment_body += "<summary>Detailed Backest Output (click to see details)</summary>\n"
-      comment_body += f"{ft_output.read_text().strip()}\n"
-      comment_body += "</details>\n"
-      comment_body += "\n\n"
+      if ft_output.exists():
+        comment_body += "\n<details>\n"
+        comment_body += "<summary>Detailed Backest Output (click to see details)</summary>\n"
+        try:
+          comment_body += f"{ft_output.read_text().strip()}\n"
+        except Exception as e:
+          comment_body += f"⚠️ Failed to read file: {e}\n"
+        comment_body += "</details>\n"
+        comment_body += "\n\n"
+      else:
+        comment_body += "\n<details>\n"
+        comment_body += "<summary>Detailed Backtest Output</summary>\n"
+        comment_body += "⚠️ No backtest output file found for this exchange and timerange.\n"
+        comment_body += "</details>\n"
       time.sleep(5)
       comment = commit.create_comment(comment_body.rstrip())
       print(f"Created Comment: {comment}", file=sys.stderr, flush=True)
