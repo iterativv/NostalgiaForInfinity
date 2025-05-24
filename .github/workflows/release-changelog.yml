@@ -1,0 +1,79 @@
+name: Release Changelog
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  changelog:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch tags
+        run: git fetch --tags
+
+      - name: Generate categorized changelog
+        id: changelog
+        run: |
+          CURRENT_TAG=${{ github.event.release.tag_name }}
+          PREVIOUS_TAG=$(git tag --sort=-v:refname | grep -v "$CURRENT_TAG" | head -n 1)
+
+          echo "🔍 Previous tag: $PREVIOUS_TAG"
+          echo "🚀 Current tag: $CURRENT_TAG"
+
+          COMMITS=$(git log $PREVIOUS_TAG..$CURRENT_TAG --pretty=format:"%s (%an)")
+
+          STRATEGY=""
+          CONFIGS=""
+          FEATURES=""
+          FIXES=""
+          MISC=""
+
+          while IFS= read -r line; do
+            if [[ "$line" =~ ^X[1-9][0-9]*: ]]; then
+              STRATEGY+="- $line"$'\n'
+            elif [[ "$line" =~ Configs: ]]; then
+              CONFIGS+="- $line"$'\n'
+            elif [[ "$line" =~ ^feat: ]]; then
+              FEATURES+="- ${line#feat: }"$'\n'
+            elif [[ "$line" =~ ^fix: ]]; then
+              FIXES+="- ${line#fix: }"$'\n'
+            else
+              MISC+="- $line"$'\n'
+            fi
+          done <<< "$COMMITS"
+
+          FINAL_CHANGELOG="# 📝 Changelog"$'\n\n'
+          if [ -n "$STRATEGY" ]; then
+            FINAL_CHANGELOG+="## 🔖 Strategy"$'\n\n'"$STRATEGY"$'\n'
+          fi
+          if [ -n "$CONFIGS" ]; then
+            FINAL_CHANGELOG+="## ⚙️ Configs"$'\n\n'"$CONFIGS"$'\n'
+          fi
+          if [ -n "$FEATURES" ]; then
+            FINAL_CHANGELOG+="## ✨ Features"$'\n\n'"$FEATURES"$'\n'
+          fi
+          if [ -n "$FIXES" ]; then
+            FINAL_CHANGELOG+="## 🐛 Fixes"$'\n\n'"$FIXES"$'\n'
+          fi
+          if [ -n "$MISC" ]; then
+            FINAL_CHANGELOG+="## 🧩 Misc"$'\n\n'"$MISC"$'\n'
+          fi
+
+          echo "$FINAL_CHANGELOG" > changelog.md
+          echo "FINAL_CHANGELOG<<EOF" >> $GITHUB_ENV
+          echo "$FINAL_CHANGELOG" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Post changelog to release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FINAL_CHANGELOG: ${{ env.FINAL_CHANGELOG }}
+        run: |
+          CURRENT_TAG=${{ github.event.release.tag_name }}
+          gh release edit "$CURRENT_TAG" --notes "$FINAL_CHANGELOG"
