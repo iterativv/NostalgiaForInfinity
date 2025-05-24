@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.5.47"
+    return "v16.5.48"
 
   stoploss = -0.99
 
@@ -8842,11 +8842,11 @@ class NostalgiaForInfinityX6(IStrategy):
           if isinstance(df["EMA_200_1h"].iloc[-1], np.float64):
             long_entry_logic.append(df["close"] > df["EMA_200_1h"])
           else:
-            long_entry_logic.append([False])
+            long_entry_logic.append(pd.Series([False]))
           if isinstance(df["EMA_200_4h"].iloc[-1], np.float64):
             long_entry_logic.append(df["close"] > df["EMA_200_4h"])
           else:
-            long_entry_logic.append([False])
+            long_entry_logic.append(pd.Series([False]))
           long_entry_logic.append(df["BBB_20_2.0_1h"] > 4.0)
 
         ###############################################################################################
