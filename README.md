@@ -454,13 +454,13 @@ Absolutely not required. However, will be accepted as a token of appreciation.
 
 If you like to help, you can also use the following links to sign up to various exchanges:
 
-- Binance: https://accounts.binance.com/en/register?ref=C68K26A9 (20% discount on trading fees)
+- Binance: https://www.binance.com/join?ref=C68K26A9 (20% discount on trading fees)
 - Kucoin: https://www.kucoin.com/r/af/QBSSS5J2 (20% lifetime discount on trading fees)
 - Gate.io: https://www.gate.io/share/nfinfinity (20% lifetime discount on trading fees)
 - OKX: https://www.okx.com/join/11749725931 (20% discount on trading fees)
-- MEXC: https://www.mexc.com/register?inviteCode=mexc-1b888 (10% discount on trading fees)
+- MEXC: https://promote.mexc.com/a/luA6Xclb (10% discount on trading fees)
 - ByBit: https://partner.bybit.com/b/nfi
-- Bitget: https://bonus.bitget.com/nfi (lifetime 20% rebate all & 10% discount on spot fees)
+- Bitget: https://bonus.bitget.com/fdqe83481698435803831 (lifetime 20% rebate all plus 10% discount on spot fees)
 - BitMart: https://www.bitmart.com/invite/nfinfinity/en-US (20% lifetime discount on trading fees)
 - HTX: https://www.htx.com/invite/en-us/1f?invite_code=ubpt2223 (Welcome Bonus worth 241 USDT upon completion of a deposit and trade)
 - Bitvavo: https://bitvavo.com/invite?a=D22103A4BC (no fees for the first € 1000)
