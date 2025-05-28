@@ -28,7 +28,7 @@
 # export EXCHANGE=binance
 # export TRADING_MODE=spot
 # export STRATEGY_VERSION=v15-0-442 # dont use . in version there is a bug
-# export STRATEGY_NAME=NostalgiaForInfinityX5
+# export STRATEGY_NAME=NostalgiaForInfinityX6
 # export TIMERANGE=20230801-
 
 date() {
@@ -66,7 +66,7 @@ fi
 # Strategy Config
 STRATEGY_NAME_CONFIG=""
 if [[ -z ${STRATEGY_NAME} ]]; then
-  STRATEGY_NAME_CONFIG="NostalgiaForInfinityX5"
+  STRATEGY_NAME_CONFIG="NostalgiaForInfinityX6"
 else
   STRATEGY_NAME_CONFIG=${STRATEGY_NAME}
 fi
