@@ -16360,8 +16360,8 @@ class NostalgiaForInfinityX5(IStrategy):
 
     if signal_name not in [
       f"exit_profit_{self.long_pump_mode_name}_max",
-      # f"exit_{self.long_pump_mode_name}_stoploss_doom",
-      # f"exit_{self.long_pump_mode_name}_stoploss_u_e",
+      f"exit_{self.long_pump_mode_name}_stoploss_doom",
+      f"exit_{self.long_pump_mode_name}_stoploss_u_e",
     ]:
       if sell and (signal_name is not None):
         return True, f"{signal_name}"
@@ -37036,8 +37036,8 @@ class NostalgiaForInfinityX5(IStrategy):
 
     if signal_name not in [
       f"exit_profit_{self.short_pump_mode_name}_max",
-      # f"exit_{self.short_pump_mode_name}_stoploss_doom",
-      # f"exit_{self.short_pump_mode_name}_stoploss_u_e",
+      f"exit_{self.short_pump_mode_name}_stoploss_doom",
+      f"exit_{self.short_pump_mode_name}_stoploss_u_e",
     ]:
       if sell and (signal_name is not None):
         return True, f"{signal_name}"
