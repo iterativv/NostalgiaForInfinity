@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.5.62"
+    return "v16.5.64"
 
   stoploss = -0.99
 
@@ -395,33 +395,33 @@ class NostalgiaForInfinityX6(IStrategy):
   grinding_v2_grind_1_thresholds_spot = [-0.12, -0.14, -0.16, -0.18]
   grinding_v2_grind_1_stakes_futures = [0.25, 0.30, 0.35, 0.40]
   grinding_v2_grind_1_thresholds_futures = [-0.12, -0.14, -0.16, -0.18]
-  grinding_v2_grind_1_profit_threshold_spot = 0.01
-  grinding_v2_grind_1_profit_threshold_futures = 0.01
+  grinding_v2_grind_1_profit_threshold_spot = 0.02
+  grinding_v2_grind_1_profit_threshold_futures = 0.02
   grinding_v2_grind_1_use_derisk = False
-  grinding_v2_grind_1_derisk_spot = -0.10
-  grinding_v2_grind_1_derisk_futures = -0.10
+  grinding_v2_grind_1_derisk_spot = -0.15
+  grinding_v2_grind_1_derisk_futures = -0.15
 
   grinding_v2_grind_2_enable = True
   grinding_v2_grind_2_stakes_spot = [0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18]
   grinding_v2_grind_2_thresholds_spot = [-0.10, -0.11, -0.12, -0.13, -0.14, -0.15, -0.16, -0.17, -0.18]
   grinding_v2_grind_2_stakes_futures = [0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18]
   grinding_v2_grind_2_thresholds_futures = [-0.10, -0.11, -0.12, -0.13, -0.14, -0.15, -0.16, -0.17, -0.18]
-  grinding_v2_grind_2_profit_threshold_spot = 0.02
-  grinding_v2_grind_2_profit_threshold_futures = 0.02
+  grinding_v2_grind_2_profit_threshold_spot = 0.025
+  grinding_v2_grind_2_profit_threshold_futures = 0.025
   grinding_v2_grind_2_use_derisk = False
-  grinding_v2_grind_2_derisk_spot = -0.10
-  grinding_v2_grind_2_derisk_futures = -0.10
+  grinding_v2_grind_2_derisk_spot = -0.15
+  grinding_v2_grind_2_derisk_futures = -0.15
 
   grinding_v2_grind_3_enable = True
   grinding_v2_grind_3_stakes_spot = [0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18]
   grinding_v2_grind_3_thresholds_spot = [-0.10, -0.11, -0.12, -0.13, -0.14, -0.15, -0.16, -0.17, -0.18]
   grinding_v2_grind_3_stakes_futures = [0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18]
   grinding_v2_grind_3_thresholds_futures = [-0.10, -0.11, -0.12, -0.13, -0.14, -0.15, -0.16, -0.17, -0.18]
-  grinding_v2_grind_3_profit_threshold_spot = 0.02
-  grinding_v2_grind_3_profit_threshold_futures = 0.02
+  grinding_v2_grind_3_profit_threshold_spot = 0.03
+  grinding_v2_grind_3_profit_threshold_futures = 0.03
   grinding_v2_grind_3_use_derisk = False
-  grinding_v2_grind_3_derisk_spot = -0.10
-  grinding_v2_grind_3_derisk_futures = -0.10
+  grinding_v2_grind_3_derisk_spot = -0.15
+  grinding_v2_grind_3_derisk_futures = -0.15
 
   grinding_v2_buyback_1_enable = True
   grinding_v2_buyback_1_stake_spot = 0.20
@@ -431,8 +431,8 @@ class NostalgiaForInfinityX6(IStrategy):
   grinding_v2_buyback_1_profit_threshold_spot = 0.10
   grinding_v2_buyback_1_profit_threshold_futures = 0.10
   grinding_v2_buyback_1_use_derisk = False
-  grinding_v2_buyback_1_derisk_spot = -0.10
-  grinding_v2_buyback_1_derisk_futures = -0.10
+  grinding_v2_buyback_1_derisk_spot = -0.15
+  grinding_v2_buyback_1_derisk_futures = -0.15
 
   grinding_v2_buyback_2_enable = True
   grinding_v2_buyback_2_stake_spot = 0.20
@@ -442,8 +442,8 @@ class NostalgiaForInfinityX6(IStrategy):
   grinding_v2_buyback_2_profit_threshold_spot = 0.10
   grinding_v2_buyback_2_profit_threshold_futures = 0.10
   grinding_v2_buyback_2_use_derisk = False
-  grinding_v2_buyback_2_derisk_spot = -0.10
-  grinding_v2_buyback_2_derisk_futures = -0.10
+  grinding_v2_buyback_2_derisk_spot = -0.15
+  grinding_v2_buyback_2_derisk_futures = -0.15
 
   grinding_v2_buyback_3_enable = True
   grinding_v2_buyback_3_stake_spot = 0.20
@@ -453,8 +453,8 @@ class NostalgiaForInfinityX6(IStrategy):
   grinding_v2_buyback_3_profit_threshold_spot = 0.10
   grinding_v2_buyback_3_profit_threshold_futures = 0.10
   grinding_v2_buyback_3_use_derisk = False
-  grinding_v2_buyback_3_derisk_spot = -0.10
-  grinding_v2_buyback_3_derisk_futures = -0.10
+  grinding_v2_buyback_3_derisk_spot = -0.15
+  grinding_v2_buyback_3_derisk_futures = -0.15
 
   # Rebuy mode
   rebuy_mode_stake_multiplier = 0.35
@@ -4168,6 +4168,8 @@ class NostalgiaForInfinityX6(IStrategy):
           long_entry_logic.append((df["RSI_3_1h"] > 15.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 40.0))
           # 1h down move, 4h high
           long_entry_logic.append((df["RSI_3_1h"] > 15.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 70.0))
+          # 1h down move, 1h still high, 1d overbought
+          long_entry_logic.append((df["RSI_3_1h"] > 20.0) | (df["AROONU_14_1h"] < 50.0) | (df["ROC_9_1d"] < 50.0))
           # 1h, 4h still high, 1d downtrend
           long_entry_logic.append((df["RSI_3_1h"] > 25.0) | (df["AROONU_14_4h"] < 50.0) | (df["ROC_9_1d"] > -50.0))
           # 4 down move, 15m high
