@@ -7198,6 +7198,10 @@ class NostalgiaForInfinityX6(IStrategy):
           long_entry_logic.append(
             (((df["high_max_6_1d"] - df["low_min_6_1d"]) / df["low_min_6_1d"]) < 3.0) | (df["ROC_9_1d"] < 100.0)
           )
+          # big drop in last 6 hours, 1d overbought
+          long_entry_logic.append((df["close"] > (df["high_max_6_1h"] * 0.65)) | (df["ROC_9_1d"] < 50.0))
+          # big drop in last 12 hours, 1d overbought
+          long_entry_logic.append((df["close"] > (df["high_max_12_1h"] * 0.50)) | (df["ROC_9_1d"] < 50.0))
           # big drop in the last 4 days, 4h down move
           long_entry_logic.append((df["close"] > (df["high_max_24_4h"] * 0.20)) | (df["RSI_3_4h"] > 20.0))
           # big drop in the last 6 days, 1d down move
