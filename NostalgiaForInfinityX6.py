@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.5.65"
+    return "v16.5.66"
 
   stoploss = -0.99
 
@@ -7643,6 +7643,8 @@ class NostalgiaForInfinityX6(IStrategy):
             | (df["close"] > (df["high_max_6_1d"] * 0.70))
             | (df["close"] < (df["low_min_12_1d"] * 1.25))
           )
+          # big drop in last 6 hours, 1d overbought
+          long_entry_logic.append((df["close"] > (df["high_max_6_1h"] * 0.65)) | (df["ROC_9_1d"] < 50.0))
           # big drop in last 4 hours, 4h still not low enough
           long_entry_logic.append(
             (df["close"] > (df["high_max_24_4h"] * 0.50)) | (df["STOCHRSIk_14_14_3_3_4h"] < 30.0)
