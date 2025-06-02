@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.5.68"
+    return "v16.5.69"
 
   stoploss = -0.99
 
@@ -12321,23 +12321,23 @@ class NostalgiaForInfinityX6(IStrategy):
         enter_tags,
       )
 
-    # # Downtrend/descending based sells
-    # if not sell:
-    #   sell, signal_name = self.long_exit_dec(
-    #     self.long_scalp_mode_name,
-    #     profit_init_ratio,
-    #     max_profit,
-    #     max_loss,
-    #     last_candle,
-    #     previous_candle_1,
-    #     previous_candle_2,
-    #     previous_candle_3,
-    #     previous_candle_4,
-    #     previous_candle_5,
-    #     trade,
-    #     current_time,
-    #     enter_tags,
-    #   )
+    # Downtrend/descending based sells
+    if not sell:
+      sell, signal_name = self.long_exit_dec(
+        self.long_scalp_mode_name,
+        profit_init_ratio,
+        max_profit,
+        max_loss,
+        last_candle,
+        previous_candle_1,
+        previous_candle_2,
+        previous_candle_3,
+        previous_candle_4,
+        previous_candle_5,
+        trade,
+        current_time,
+        enter_tags,
+      )
 
     # Extra exit logic
     if not sell:
