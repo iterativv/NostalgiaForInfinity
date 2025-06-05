@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.5.72"
+    return "v16.5.76"
 
   stoploss = -0.99
 
@@ -4154,6 +4154,8 @@ class NostalgiaForInfinityX6(IStrategy):
           long_entry_logic.append(
             (df["RSI_3_1h"] > 5.0) | (df["RSI_3_4h"] > 20.0) | (df["close"] > (df["close_max_12"] * 0.90))
           )
+          # 1h & 4h down move, 1d overbought
+          long_entry_logic.append((df["RSI_3_1h"] > 5.0) | (df["RSI_3_4h"] > 20.0) | (df["ROC_9_1d"] < 40.0))
           # 1h down move, 1h still high
           long_entry_logic.append((df["RSI_3_1h"] > 10.0) | (df["AROONU_14_1h"] < 50.0))
           # 1h down move, 4h still high, 1d overbought
@@ -5184,6 +5186,8 @@ class NostalgiaForInfinityX6(IStrategy):
           long_entry_logic.append(
             (df["RSI_3_15m"] > 35.0) | (df["AROONU_14_15m"] < 50.0) | (df["AROONU_14_4h"] < 50.0)
           )
+          # 1h & 4h down move, 1d overbought
+          long_entry_logic.append((df["RSI_3_1h"] > 5.0) | (df["RSI_3_4h"] > 20.0) | (df["ROC_9_1d"] < 40.0))
           # 1h down move, 4h high
           long_entry_logic.append((df["RSI_3_1h"] > 5.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 50.0))
           # 1h & 1d down move, 5m moving down
@@ -5287,6 +5291,10 @@ class NostalgiaForInfinityX6(IStrategy):
 
           # big drop in the last hour
           long_entry_logic.append(df["close"] > (df["close_max_12"] * 0.50))
+          # 5m & 15m down move, 4h still not low enough
+          long_entry_logic.append(
+            (df["RSI_3"] > 3.0) | (df["RSI_3_15m"] > 3.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 30.0)
+          )
           # 5m & 15m down move, 1h still high
           long_entry_logic.append((df["RSI_3"] > 3.0) | (df["RSI_3_15m"] > 15.0) | (df["AROONU_14_1h"] < 50.0))
           # 5m & 15m down move, 4h still high
@@ -5373,7 +5381,7 @@ class NostalgiaForInfinityX6(IStrategy):
           long_entry_logic.append((df["RSI_3_15m"] > 3.0) | (df["RSI_3_1h"] > 5.0) | (df["RSI_14_4h"] < 35.0))
           # 15m & 1h down move, 4h still not low enough
           long_entry_logic.append(
-            (df["RSI_3_15m"] > 3.0) | (df["RSI_3_1h"] > 15.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 30.0)
+            (df["RSI_3_15m"] > 3.0) | (df["RSI_3_1h"] > 20.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 30.0)
           )
           # 15m & 1h down move, 15m still not low enough
           long_entry_logic.append(
@@ -6085,6 +6093,8 @@ class NostalgiaForInfinityX6(IStrategy):
           )
           # 1h down move, 15m still high
           long_entry_logic.append((df["RSI_3_1h"] > 3.0) | (df["AROONU_14_15m"] < 40.0))
+          # 1h down move, 1h still not low enough
+          long_entry_logic.append((df["RSI_3_1h"] > 3.0) | (df["AROONU_14_1h"] < 30.0))
           # 1h & 4h down move, 4h still not low enough
           long_entry_logic.append(
             (df["RSI_3_1h"] > 5.0) | (df["RSI_3_4h"] > 10.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 20.0)
@@ -6997,6 +7007,10 @@ class NostalgiaForInfinityX6(IStrategy):
           long_entry_logic.append((df["RSI_3_1h"] > 10.0) | (df["RSI_3_4h"] > 30.0) | (df["RSI_3_1d"] > 30.0))
           # 1h & 4h down move, 4h high
           long_entry_logic.append((df["RSI_3_1h"] > 10.0) | (df["RSI_3_4h"] > 45.0) | (df["AROONU_14_4h"] < 70.0))
+          # 1h & 4h down move, 4h still high
+          long_entry_logic.append(
+            (df["RSI_3_1h"] > 10.0) | (df["RSI_3_4h"] > 45.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 40.0)
+          )
           # 1h & 1d down move, 4h still not low enough
           long_entry_logic.append(
             (df["RSI_3_1h"] > 10.0) | (df["RSI_3_1d"] > 25.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 30.0)
@@ -7158,6 +7172,8 @@ class NostalgiaForInfinityX6(IStrategy):
           long_entry_logic.append(
             (df["RSI_3_1h"] > 5.0) | (df["RSI_3_4h"] > 20.0) | (df["STOCHRSIk_14_14_3_3_15m"] < 20.0)
           )
+          # 1h & 4h down move, 1d overbought
+          long_entry_logic.append((df["RSI_3_1h"] > 5.0) | (df["RSI_3_4h"] > 20.0) | (df["ROC_9_1d"] < 40.0))
           # 1h down move, 4h high
           long_entry_logic.append((df["RSI_3_1h"] > 5.0) | (df["AROONU_14_4h"] < 70.0))
           # 1h down move, 4h high
@@ -28473,7 +28489,7 @@ class NostalgiaForInfinityX6(IStrategy):
 
     if (
       (self.grinding_v2_grind_1_enable)
-      and (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
+      # and (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
       and is_long_grind_entry
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
       and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
@@ -28567,7 +28583,7 @@ class NostalgiaForInfinityX6(IStrategy):
 
     if (
       (self.grinding_v2_grind_2_enable)
-      and (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
+      # and (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
       and is_long_grind_entry
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
       and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
@@ -28661,7 +28677,7 @@ class NostalgiaForInfinityX6(IStrategy):
 
     if (
       (self.grinding_v2_grind_3_enable)
-      and (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
+      # and (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
       and is_long_grind_entry
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
       and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
@@ -50829,7 +50845,7 @@ class NostalgiaForInfinityX6(IStrategy):
 
     if (
       (self.grinding_v2_grind_1_enable)
-      and (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
+      # and (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
       and is_short_grind_entry
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
       and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
@@ -50923,7 +50939,7 @@ class NostalgiaForInfinityX6(IStrategy):
 
     if (
       (self.grinding_v2_grind_2_enable)
-      and (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
+      # and (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
       and is_short_grind_entry
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
       and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
@@ -51017,7 +51033,7 @@ class NostalgiaForInfinityX6(IStrategy):
 
     if (
       (self.grinding_v2_grind_3_enable)
-      and (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
+      # and (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
       and is_short_grind_entry
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
       and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
