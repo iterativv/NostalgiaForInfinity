@@ -54947,8 +54947,8 @@ class NostalgiaForInfinityX6(IStrategy):
       has_order_tags = True
 
     # The first exit is de-risk (providing the trade is still open)
-    if count_of_exits > 0:
-      return self.short_grind_adjust_trade_position(
+    if (count_of_exits > 0) and (filled_exits[0].ft_order_tag in ["derisk_level_3"]):
+      return self.short_grind_adjust_trade_position_v2(
         trade,
         enter_tags,
         current_time,
@@ -54988,8 +54988,6 @@ class NostalgiaForInfinityX6(IStrategy):
 
     current_stake_amount = trade.amount * current_rate
 
-    is_rebuy = False
-
     rebuy_mode_stakes = self.rebuy_mode_stakes_futures if self.is_futures_mode else self.rebuy_mode_stakes_spot
     max_sub_grinds = len(rebuy_mode_stakes)
     rebuy_mode_sub_thresholds = (
@@ -55018,36 +55016,21 @@ class NostalgiaForInfinityX6(IStrategy):
 
     if (not partial_sell) and (sub_grind_count < max_sub_grinds):
       if (
-        ((0 <= sub_grind_count < max_sub_grinds) and (slice_profit_entry < rebuy_mode_sub_thresholds[sub_grind_count]))
-        and (last_candle["protections_short_global"] == True)
-        and (last_candle["protections_short_rebuy"] == True)
-        and (last_candle["global_protections_short_pump"] == True)
-        and (last_candle["global_protections_short_dump"] == True)
-        # and (
-        #   (last_candle["close"] < (last_candle["close_min_12"] * 1.06))
-        #   and (last_candle["close"] < (last_candle["close_min_24"] * 1.08))
-        #   and (last_candle["close"] < (last_candle["close_min_48"] * 1.10))
-        #   and (last_candle["close"] < (last_candle["low_min_24_1h"] * 1.12))
-        #   and (last_candle["close"] < (last_candle["low_min_48_1h"] * 1.14))
-        #   and (last_candle["btc_pct_close_min_72_5m"] > 0.03)
-        #   and (last_candle["btc_pct_close_min_24_5m"] > 0.03)
-        # )
-        and (
-          (last_candle["RSI_3"] < 90.0)
-          and (last_candle["RSI_3_15m"] < 90.0)
-          and (last_candle["RSI_3_1h"] < 90.0)
-          and (last_candle["RSI_3_4h"] < 90.0)
-          and (last_candle["RSI_14"] > 64.0)
-          and (last_candle["close"] > (last_candle["EMA_26"] * 1.012))
-        )
+        (0 <= sub_grind_count < max_sub_grinds) and (slice_profit_entry < rebuy_mode_sub_thresholds[sub_grind_count])
+      ) and (
+        (last_candle["RSI_3"] < 90.0)
+        and (last_candle["RSI_3_15m"] < 90.0)
+        # and (last_candle["RSI_3_1h"] < 90.0)
+        # and (last_candle["RSI_3_4h"] < 90.0)
+        and (last_candle["RSI_14"] > 60.0)
+        and (last_candle["ROC_2"] < 0.0)
+        and (last_candle["close"] > (last_candle["EMA_26"] * 1.012))
       ):
-        buy_amount = (
-          slice_amount * rebuy_mode_stakes[sub_grind_count] / (trade.leverage if self.is_futures_mode else 1.0)
-        )
-        if buy_amount > max_stake:
-          buy_amount = max_stake
+        buy_amount = slice_amount * rebuy_mode_stakes[sub_grind_count] / trade.leverage
         if buy_amount < (min_stake * 1.5):
           buy_amount = min_stake * 1.5
+        if buy_amount > max_stake:
+          return None
         self.dp.send_msg(
           f"Rebuy (r) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
@@ -55059,24 +55042,27 @@ class NostalgiaForInfinityX6(IStrategy):
         else:
           return buy_amount
 
-      if profit_stake < (
+    if self.derisk_enable and (
+      profit_stake
+      < (
         slice_amount * (self.rebuy_mode_derisk_futures if self.is_futures_mode else self.rebuy_mode_derisk_spot)
         # / (trade.leverage if self.is_futures_mode else 1.0)
-      ):
-        sell_amount = trade.amount * exit_rate / trade.leverage - (min_stake * 1.55)
-        ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
-        if sell_amount > min_stake and ft_sell_amount > min_stake:
-          grind_profit = 0.0
-          self.dp.send_msg(
-            f"Rebuy de-risk (d1) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
-          )
-          log.info(
-            f"Rebuy de-risk (d1) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
-          )
-          if has_order_tags:
-            return -ft_sell_amount, "d1"
-          else:
-            return -ft_sell_amount
+      )
+    ):
+      sell_amount = trade.amount * exit_rate / trade.leverage - (min_stake * 1.55)
+      ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
+      if sell_amount > min_stake and ft_sell_amount > min_stake:
+        grind_profit = 0.0
+        self.dp.send_msg(
+          f"Rebuy De-risk Level 3 [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        )
+        log.info(
+          f"Rebuy De-risk Level 3 [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        )
+        if has_order_tags:
+          return -ft_sell_amount, "derisk_level_3"
+        else:
+          return -ft_sell_amount
 
     return None
 
