@@ -12,8 +12,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install black==23.7.0
       - id: changed-files
+        name: Check changed files
         uses: dorny/paths-filter@v3
         with:
           token: ${{ github.token }}
@@ -54,7 +54,7 @@ jobs:
           # - 20250801-20250901
           # - 20250701-20250801
           # - 20250601-20250701
-          # - 20250501-20250601
+          - 20250501-20250601
           - 20250401-20250501
           - 20250301-20250401
           - 20250201-20250301
