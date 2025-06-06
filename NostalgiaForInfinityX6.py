@@ -50356,6 +50356,11 @@ class NostalgiaForInfinityX6(IStrategy):
       ((exit_rate - filled_exits[-1].safe_price) / filled_exits[-1].safe_price) if count_of_exits > 0 else 0.0
     )
 
+    is_rebuy_mode = all(c in self.short_rebuy_mode_tags for c in enter_tags) or (
+      any(c in self.short_rebuy_mode_tags for c in enter_tags)
+      and all(c in (self.short_rebuy_mode_tags + self.short_grind_mode_tags) for c in enter_tags)
+    )
+
     has_order_tags = False
     if hasattr(filled_orders[0], "ft_order_tag"):
       has_order_tags = True
@@ -50698,8 +50703,11 @@ class NostalgiaForInfinityX6(IStrategy):
       + grind_3_sub_grind_count
     )
 
+    # Rebuy mode, the first entry is lower than normal slot stake
+    if is_rebuy_mode:
+      slice_amount /= self.rebuy_mode_stake_multiplier
     # not reached the max allowed stake for all grinds
-    is_not_trade_max_stake = (current_stake_amount < (filled_entries[0].cost * self.grinding_v2_max_stake)) and (
+    is_not_trade_max_stake = (current_stake_amount < (slice_amount * self.grinding_v2_max_stake)) and (
       num_open_grinds_and_buybacks < self.grinding_v2_max_grinds_and_buybacks
     )
 
@@ -50708,6 +50716,7 @@ class NostalgiaForInfinityX6(IStrategy):
       self.derisk_enable
       and self.grinding_v2_derisk_level_1_enable
       and (not is_derisk_1_found)
+      and not is_rebuy_mode
       and (
         profit_stake
         < (
@@ -50746,6 +50755,7 @@ class NostalgiaForInfinityX6(IStrategy):
       self.derisk_enable
       and self.grinding_v2_derisk_level_2_enable
       and (not is_derisk_2_found)
+      and not is_rebuy_mode
       and (
         profit_stake
         < (
@@ -50784,6 +50794,7 @@ class NostalgiaForInfinityX6(IStrategy):
       self.derisk_enable
       and self.grinding_v2_derisk_level_3_enable
       and (not is_derisk_3_found)
+      and not is_rebuy_mode
       and (
         profit_stake
         < (
