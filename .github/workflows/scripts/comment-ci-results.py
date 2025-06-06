@@ -4,7 +4,6 @@ import os
 import pathlib
 import pprint
 import sys
-import time
 
 import github
 from github.GithubException import GithubException
@@ -145,7 +144,6 @@ def comment_results(options, results_data):
         comment_body += "<summary>Detailed Backtest Output</summary>\n"
         comment_body += "⚠️ No backtest output file found for this exchange and timerange.\n"
         comment_body += "</details>\n"
-      time.sleep(2)
       comment = commit.create_comment(comment_body.rstrip())
       print(f"Created Comment: {comment}", file=sys.stderr, flush=True)
       comment_ids.add(comment.id)
