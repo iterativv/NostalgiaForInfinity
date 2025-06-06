@@ -1,4 +1,2 @@
-pygithub==1.58.2
-python-gitlab
+pygithub
 pre-commit
-pytest-test-groups
