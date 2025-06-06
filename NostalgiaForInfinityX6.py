@@ -34644,9 +34644,9 @@ class NostalgiaForInfinityX6(IStrategy):
 
     return False, None
 
-  # Short Exit Derisk
+  # Short Exit Scalp
   # ---------------------------------------------------------------------------------------------
-  def short_exit_derisk(
+  def short_exit_scalp(
     self,
     pair: str,
     current_rate: float,
@@ -34672,7 +34672,7 @@ class NostalgiaForInfinityX6(IStrategy):
 
     # Original sell signals
     sell, signal_name = self.short_exit_signals(
-      self.short_derisk_mode_name,
+      self.short_scalp_mode_name,
       profit_init_ratio,
       max_profit,
       max_loss,
@@ -34690,7 +34690,7 @@ class NostalgiaForInfinityX6(IStrategy):
     # Main sell signals
     if not sell:
       sell, signal_name = self.short_exit_main(
-        self.short_derisk_mode_name,
+        self.short_scalp_mode_name,
         profit_init_ratio,
         max_profit,
         max_loss,
@@ -34708,7 +34708,7 @@ class NostalgiaForInfinityX6(IStrategy):
     # Williams %R based sells
     if not sell:
       sell, signal_name = self.short_exit_williams_r(
-        self.short_derisk_mode_name,
+        self.short_scalp_mode_name,
         profit_init_ratio,
         max_profit,
         max_loss,
@@ -34726,7 +34726,7 @@ class NostalgiaForInfinityX6(IStrategy):
     # Downtrend/descending based sells
     if not sell:
       sell, signal_name = self.short_exit_dec(
-        self.short_derisk_mode_name,
+        self.short_scalp_mode_name,
         profit_init_ratio,
         max_profit,
         max_loss,
@@ -34741,13 +34741,15 @@ class NostalgiaForInfinityX6(IStrategy):
         enter_tags,
       )
 
+    # Extra exit logic
+    if not sell:
       # Stoplosses
       if profit_stake < -(
         filled_entries[0].cost
-        * (self.stop_threshold_derisk_futures if self.is_futures_mode else self.stop_threshold_derisk_spot)
+        * (self.stop_threshold_scalp_futures if self.is_futures_mode else self.stop_threshold_scalp_spot)
         # / (trade.leverage if self.is_futures_mode else 1.0)
       ):
-        sell, signal_name = True, f"exit_{self.short_derisk_mode_name}_stoploss_doom"
+        sell, signal_name = True, f"exit_{self.short_scalp_mode_name}_stoploss_doom"
 
     # Profit Target Signal
     # Check if pair exist on target_profit_cache
@@ -34758,7 +34760,7 @@ class NostalgiaForInfinityX6(IStrategy):
       previous_time_profit_reached = datetime.fromisoformat(self.target_profit_cache.data[pair]["time_profit_reached"])
 
       sell_max, signal_name_max = self.exit_profit_target(
-        self.short_derisk_mode_name,
+        self.short_scalp_mode_name,
         pair,
         trade,
         current_time,
@@ -34777,10 +34779,10 @@ class NostalgiaForInfinityX6(IStrategy):
       )
       if sell_max and signal_name_max is not None:
         return True, f"{signal_name_max}_m"
-      if previous_sell_reason in [f"exit_{self.short_derisk_mode_name}_stoploss_u_e"]:
+      if previous_sell_reason in [f"exit_{self.short_scalp_mode_name}_stoploss_u_e"]:
         if profit_ratio > (previous_profit + 0.005):
           mark_pair, mark_signal = self.mark_profit_target(
-            self.short_derisk_mode_name,
+            self.short_scalp_mode_name,
             pair,
             True,
             previous_sell_reason,
@@ -34794,11 +34796,11 @@ class NostalgiaForInfinityX6(IStrategy):
           if mark_pair:
             self._set_profit_target(pair, mark_signal, current_rate, profit_ratio, current_time)
       elif (profit_init_ratio > (previous_profit + 0.001)) and (
-        previous_sell_reason not in [f"exit_{self.short_derisk_mode_name}_stoploss_doom"]
+        previous_sell_reason not in [f"exit_{self.short_scalp_mode_name}_stoploss_doom"]
       ):
         # Update the target, raise it.
         mark_pair, mark_signal = self.mark_profit_target(
-          self.short_derisk_mode_name,
+          self.short_scalp_mode_name,
           pair,
           True,
           previous_sell_reason,
@@ -34818,11 +34820,11 @@ class NostalgiaForInfinityX6(IStrategy):
       if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
         previous_profit = self.target_profit_cache.data[pair]["profit"]
       if signal_name in [
-        f"exit_{self.short_derisk_mode_name}_stoploss_doom",
-        f"exit_{self.short_derisk_mode_name}_stoploss_u_e",
+        f"exit_{self.short_scalp_mode_name}_stoploss_doom",
+        f"exit_{self.short_scalp_mode_name}_stoploss_u_e",
       ]:
         mark_pair, mark_signal = self.mark_profit_target(
-          self.short_derisk_mode_name,
+          self.short_scalp_mode_name,
           pair,
           sell,
           signal_name,
@@ -34840,7 +34842,7 @@ class NostalgiaForInfinityX6(IStrategy):
           return True, f"{signal_name}"
       elif (previous_profit is None) or (previous_profit < profit_init_ratio):
         mark_pair, mark_signal = self.mark_profit_target(
-          self.short_derisk_mode_name,
+          self.short_scalp_mode_name,
           pair,
           sell,
           signal_name,
@@ -34862,13 +34864,13 @@ class NostalgiaForInfinityX6(IStrategy):
         if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
           previous_profit = self.target_profit_cache.data[pair]["profit"]
         if (previous_profit is None) or (previous_profit < profit_init_ratio):
-          mark_signal = f"exit_profit_{self.short_derisk_mode_name}_max"
+          mark_signal = f"exit_profit_{self.short_scalp_mode_name}_max"
           self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
 
     if signal_name not in [
-      f"exit_profit_{self.short_derisk_mode_name}_max",
-      # f"exit_{self.short_derisk_mode_name}_stoploss_doom",
-      # f"exit_{self.short_derisk_mode_name}_stoploss_u_e",
+      f"exit_profit_{self.short_scalp_mode_name}_max",
+      f"exit_{self.short_scalp_mode_name}_stoploss_doom",
+      f"exit_{self.short_scalp_mode_name}_stoploss_u_e",
     ]:
       if sell and (signal_name is not None):
         return True, f"{signal_name}"
