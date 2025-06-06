@@ -33836,7 +33836,11 @@ class NostalgiaForInfinityX6(IStrategy):
           mark_signal = f"exit_profit_{self.short_rebuy_mode_name}_max"
           self._set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
 
-    if signal_name not in [f"exit_profit_{self.short_rebuy_mode_name}_max"]:
+    if signal_name not in [
+      f"exit_profit_{self.short_rebuy_mode_name}_max",
+      f"exit_{self.short_rebuy_mode_name}_stoploss_doom",
+      f"exit_{self.short_rebuy_mode_name}_stoploss_u_e",
+    ]:
       if sell and (signal_name is not None):
         return True, f"{signal_name}"
 
