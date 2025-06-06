@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.5.76"
+    return "v16.5.77"
 
   stoploss = -0.99
 
@@ -572,7 +572,7 @@ class NostalgiaForInfinityX6(IStrategy):
   profit_max_thresholds = [0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.05, 0.05]
 
   # Max allowed buy "slippage", how high to buy on the candle
-  max_slippage = 0.005
+  max_slippage = 0.01
 
   # BTC/ETH stakes
   btc_stakes = ["BTC", "ETH"]
