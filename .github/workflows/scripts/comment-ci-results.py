@@ -187,44 +187,46 @@ def main():
 
   reports_data = {}
   for exchange in reports_info:
+    reports_data[exchange] = {}
     timeranges = set()
     keys = set()
-    reports_data[exchange] = {}
+
+    # Load raw per-report results
     for name in sorted(reports_info[exchange]):
       exchange_results = {}
       reports_data[exchange][name] = {
         "results": exchange_results,
         "sha": reports_info[exchange][name]["sha"],
       }
+
       results_path = pathlib.Path(reports_info[exchange][name]["path"])
       for results_file in results_path.rglob(f"ci-results-{exchange}-*"):
+        # Load and merge results
         exchange_results.update(json.loads(results_file.read_text()))
-    # Set n/a data if necessary
-    names = list(reports_data[exchange])
-    reports_data[exchange]["names"] = {}
-    for name in names:
-      reports_data[exchange]["names"][name] = reports_data[exchange][name]["sha"]
-      for timerange in reports_data[exchange][name]["results"]:
+
+      # Collect timeranges and keys
+      for timerange in exchange_results:
         timeranges.add(timerange)
-        for key in reports_data[exchange][name]["results"][timerange]:
+        for key in exchange_results[timerange]:
           keys.add(key)
-          for oname in names:
-            if oname == name:
-              continue
-            oresults = reports_data[exchange][oname]["results"]
-            if timerange not in oresults:
-              oresults[timerange] = {}
-            oresults[timerange].setdefault(key, "n/a")
+
+    # Add 'names' mapping (sha per report name)
+    reports_data[exchange]["names"] = {}
+    for name in reports_info[exchange]:
+      reports_data[exchange]["names"][name] = reports_info[exchange][name]["sha"]
+
+    # Build a merged 'timeranges' view — without touching the original 'results'
     reports_data[exchange]["timeranges"] = {}
     for timerange in sorted(timeranges):
       reports_data[exchange]["timeranges"][timerange] = {}
       for key in sorted(keys):
         reports_data[exchange]["timeranges"][timerange][key] = {}
-        for name in names:
-          value = reports_data[exchange][name]["results"][timerange][key]
+        for name in sorted(reports_info[exchange]):
+          value = reports_data[exchange][name]["results"].get(timerange, {}).get(key, "n/a")
           reports_data[exchange]["timeranges"][timerange][key][name] = value
 
   pprint.pprint(reports_data)
+
   try:
     comment_results(options, reports_data)
     parser.exit(0)
