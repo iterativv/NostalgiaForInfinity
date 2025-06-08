@@ -266,6 +266,7 @@ jobs:
           find downloaded-results/ -type f -iname *.txt -exec sed -i 's/DAY BREAKDOWN/\n## DAY BREAKDOWN\n/g' {} +
           find downloaded-results/ -type f -iname *.txt -exec sed -i 's/SUMMARY METRICS/\n## SUMMARY METRICS\n/g' {} +
           find downloaded-results/ -type f -iname *.txt -exec sed -i 's/STRATEGY SUMMARY/\n## STRATEGY SUMMARY\n/g' {} +
+          tree
 
       - name: Comment CI Results
         env:
