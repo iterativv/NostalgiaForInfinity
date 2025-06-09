@@ -1,2 +1,2 @@
-pygithub
+pygithub==1.58.2
 pre-commit
