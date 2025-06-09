@@ -202,6 +202,7 @@ jobs:
             --branch=main \
             --workflow=tests.yml \
             --exchange=kucoin \
+            --tradingmode=spot \
             --name=kucoin-spot-testrun-artifacts downloaded-results
 
       - name: Download Previous Binance Spot CI Artifacts
@@ -213,6 +214,7 @@ jobs:
             --branch=main \
             --workflow=tests.yml \
             --exchange=binance \
+            --tradingmode=spot \
             --name=binance-spot-testrun-artifacts downloaded-results
 
       - name: Download Previous Binance Futures CI Artifacts
@@ -224,6 +226,7 @@ jobs:
             --branch=main \
             --workflow=tests.yml \
             --exchange=binance \
+            --tradingmode=futures \
             --name=binance-futures-testrun-artifacts downloaded-results
 
       - name: Download Current Binance Futures CI Artifacts
