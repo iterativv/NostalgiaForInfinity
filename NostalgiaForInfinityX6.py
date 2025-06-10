@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.5.86"
+    return "v16.5.87"
 
   stoploss = -0.99
 
@@ -9306,6 +9306,8 @@ class NostalgiaForInfinityX6(IStrategy):
           short_entry_logic.append((df["change_pct"] < 5.0) | (df["AROOND_14_15m"] < 50.0))
           # 5m green, 15m still not high enough
           short_entry_logic.append((df["change_pct"] < 5.0) | (df["STOCHRSIk_14_14_3_3_15m"] > 90.0))
+          # big pump in the last 4 hours, 15m still low
+          short_entry_logic.append((df["close"] < (df["close_min_48"] * 1.50)) | (df["AROONU_14_15m"] > 50.0))
 
           # Logic
           short_entry_logic.append(df["EMA_12"] > df["EMA_26"])
