@@ -4,6 +4,7 @@ import os
 import pathlib
 import pprint
 import sys
+import time
 
 import github
 from github.GithubException import GithubException
@@ -11,25 +12,21 @@ from github.GithubException import GithubException
 
 def sort_report_names(value):
   if value == "Current":
-    return -1
+    return 0
   if value == "Previous":
-    return -2
-  return -3
+    return 1
+  return 2  # For releases or others
 
 
 def delete_previous_comments(commit, created_comment_ids, exchanges):
   comment_starts = tuple({f"## {exchange.capitalize()}" for exchange in exchanges})
   for comment in commit.get_comments():
     if comment.user.login != "github-actions[bot]":
-      # Not a comment made by this bot
       continue
     if comment.id in created_comment_ids:
-      # These are the comments we have just created
       continue
     if not comment.body.startswith(comment_starts):
-      # This comment does not start with our headers
       continue
-    # We have a match, delete it
     print(f"Deleting previous comment {comment}")
     comment.delete()
 
@@ -45,120 +42,109 @@ def comment_results(options, results_data):
   print(f"Loaded Commit: {commit}", file=sys.stderr, flush=True)
 
   for exchange in sorted(results_data):
-    exchanges.add(exchange)
-    sorted_report_names = list(reversed(sorted(results_data[exchange]["names"], key=sort_report_names)))
-    for timerange in results_data[exchange]["timeranges"]:
-      # Detect if we have spot or futures output
-      market_type = None
-      ft_output = None
-      for mt_candidate in ["spot", "futures"]:
-        candidate_path = options.path / "current" / f"backtest-output-{exchange}-{mt_candidate}-{timerange}.txt"
-        if candidate_path.exists():
-          market_type = mt_candidate
-          ft_output = candidate_path
-          break
-      # Build the header
-      if market_type:
-        comment_body = f"## {exchange.capitalize()} ({market_type}) - {timerange}\n\n"
-      else:
-        comment_body = f"## {exchange.capitalize()} - {timerange}\n\n"
-      report_table_header_1 = "| "
-      report_table_header_2 = "| --: "
-      for report_name in sorted_report_names:
-        if report_name == "Current":
-          report_table_header_1 += f"| {report_name} "
-        else:
-          report_table_header_1 += f"| [{report_name}](https://github.com/{options.repo}/commit/{results_data[exchange]['names'][report_name]}) "
-        report_table_header_2 += "| --: "
-      report_table_header_1 += "|\n"
-      report_table_header_2 += "|\n"
-      comment_body += report_table_header_1
-      comment_body += report_table_header_2
-      for key in sorted(results_data[exchange]["timeranges"][timerange]):
-        row_line = "| "
-        if key == "max_drawdown":
-          label = "Max Drawdown"
-          row_line += f" {label} |"
-          for report_name in sorted_report_names:
-            value = results_data[exchange]["timeranges"][timerange][key][report_name]
-            if not isinstance(value, str):
-              value = f"{round(value, 4)} %"
-            row_line += f" {value} |"
-          comment_body += f"{row_line}\n"
-        elif key == "profit_mean_pct":
-          label = "Profit Mean"
-          row_line += f" {label} |"
-          for report_name in sorted_report_names:
-            value = results_data[exchange]["timeranges"][timerange][key][report_name]
-            if not isinstance(value, str):
-              value = f"{round(value, 4)} %"
-            row_line += f" {value} |"
-          comment_body += f"{row_line}\n"
-        elif key == "profit_sum_pct":
-          label = "Profit Sum"
-          row_line += f" {label} |"
-          for report_name in sorted_report_names:
-            value = results_data[exchange]["timeranges"][timerange][key][report_name]
-            if not isinstance(value, str):
-              value = f"{round(value, 4)} %"
-            row_line += f" {value} |"
-          comment_body += f"{row_line}\n"
-        elif key == "market_change":
-          label = "Market Change"
-          row_line += f" {label} |"
-          for report_name in sorted_report_names:
-            value = results_data[exchange]["timeranges"][timerange][key][report_name]
-            if not isinstance(value, str):
-              value = f"{round(value, 4)} %"
-            row_line += f" {value} |"
-          comment_body += f"{row_line}\n"
-        elif key == "profit_total_pct":
-          label = "Profit Total"
-          row_line += f" {label} |"
-          for report_name in sorted_report_names:
-            value = results_data[exchange]["timeranges"][timerange][key][report_name]
-            if not isinstance(value, str):
-              value = f"{round(value, 4)} %"
-            row_line += f" {value} |"
-          comment_body += f"{row_line}\n"
-        elif key == "winrate":
-          label = "Win Rate"
-          row_line += f" {label} |"
-          for report_name in sorted_report_names:
-            value = results_data[exchange]["timeranges"][timerange][key][report_name]
-            if not isinstance(value, str):
-              value = f"{round(value, 4)} %"
-            row_line += f" {value} |"
-          comment_body += f"{row_line}\n"
-        else:
-          if key == "duration_avg":
-            label = "Average Duration"
-          elif key == "trades":
-            label = "Trades"
+    for tradingmode in ("spot", "futures"):
+      if tradingmode not in results_data[exchange]:
+        continue
+      exchanges.add(f"{exchange}-{tradingmode}")
+      mode_data = results_data[exchange][tradingmode]
+      sorted_report_names = sorted(mode_data["names"], key=sort_report_names)
+      for timerange in mode_data["timeranges"]:
+        comment_body = f"## {exchange.capitalize()} - {tradingmode.capitalize()} - {timerange}\n\n"
+        report_table_header_1 = "| "
+        report_table_header_2 = "| --: "
+        for report_name in sorted_report_names:
+          if report_name == "Current":
+            report_table_header_1 += f"| {report_name} "
           else:
-            label = key
-          row_line += f" {label} |"
-          for report_name in sorted_report_names:
-            value = results_data[exchange]["timeranges"][timerange][key][report_name]
-            row_line += f" {value} |"
-          comment_body += f"{row_line}\n"
-      if ft_output:
+            report_table_header_1 += (
+              f"| [{report_name}](https://github.com/{options.repo}/commit/{mode_data['names'][report_name]}) "
+            )
+          report_table_header_2 += "| --: "
+        report_table_header_1 += "|\n"
+        report_table_header_2 += "|\n"
+        comment_body += report_table_header_1
+        comment_body += report_table_header_2
+        for key in sorted(mode_data["timeranges"][timerange]):
+          row_line = "| "
+          if key == "max_drawdown":
+            label = "Max Drawdown"
+            row_line += f" {label} |"
+            for report_name in sorted_report_names:
+              value = mode_data["timeranges"][timerange][key][report_name]
+              if not isinstance(value, str):
+                value = f"{round(value, 4)} %"
+              row_line += f" {value} |"
+            comment_body += f"{row_line}\n"
+          elif key == "profit_mean_pct":
+            label = "Profit Mean"
+            row_line += f" {label} |"
+            for report_name in sorted_report_names:
+              value = mode_data["timeranges"][timerange][key][report_name]
+              if not isinstance(value, str):
+                value = f"{round(value, 4)} %"
+              row_line += f" {value} |"
+            comment_body += f"{row_line}\n"
+          elif key == "profit_sum_pct":
+            label = "Profit Sum"
+            row_line += f" {label} |"
+            for report_name in sorted_report_names:
+              value = mode_data["timeranges"][timerange][key][report_name]
+              if not isinstance(value, str):
+                value = f"{round(value, 4)} %"
+              row_line += f" {value} |"
+            comment_body += f"{row_line}\n"
+          elif key == "market_change":
+            label = "Market Change"
+            row_line += f" {label} |"
+            for report_name in sorted_report_names:
+              value = mode_data["timeranges"][timerange][key][report_name]
+              if not isinstance(value, str):
+                value = f"{round(value, 4)} %"
+              row_line += f" {value} |"
+            comment_body += f"{row_line}\n"
+          elif key == "profit_total_pct":
+            label = "Profit Total"
+            row_line += f" {label} |"
+            for report_name in sorted_report_names:
+              value = mode_data["timeranges"][timerange][key][report_name]
+              if not isinstance(value, str):
+                value = f"{round(value, 4)} %"
+              row_line += f" {value} |"
+            comment_body += f"{row_line}\n"
+          elif key == "winrate":
+            label = "Win Rate"
+            row_line += f" {label} |"
+            for report_name in sorted_report_names:
+              value = mode_data["timeranges"][timerange][key][report_name]
+              if not isinstance(value, str):
+                value = f"{round(value, 4)} %"
+              row_line += f" {value} |"
+            comment_body += f"{row_line}\n"
+          else:
+            if key == "duration_avg":
+              label = "Average Duration"
+            elif key == "trades":
+              label = "Trades"
+            else:
+              label = key
+            row_line += f" {label} |"
+            for report_name in sorted_report_names:
+              value = mode_data["timeranges"][timerange][key][report_name]
+              row_line += f" {value} |"
+            comment_body += f"{row_line}\n"
+        ft_output = options.path / "current" / f"backtest-output-{exchange}-{tradingmode}-{timerange}.txt"
         comment_body += "\n<details>\n"
         comment_body += "<summary>Detailed Backtest Output (click to see details)</summary>\n"
-        try:
+        if ft_output.exists():
           comment_body += f"{ft_output.read_text().strip()}\n"
-        except Exception as e:
-          comment_body += f"⚠️ Failed to read file: {e}\n"
+        else:
+          comment_body += "No backtest output found.\n"
         comment_body += "</details>\n"
         comment_body += "\n\n"
-      else:
-        comment_body += "\n<details>\n"
-        comment_body += "<summary>Detailed Backtest Output</summary>\n"
-        comment_body += "⚠️ No backtest output file found for this exchange and timerange.\n"
-        comment_body += "</details>\n"
-      comment = commit.create_comment(comment_body.rstrip())
-      print(f"Created Comment: {comment}", file=sys.stderr, flush=True)
-      comment_ids.add(comment.id)
+        time.sleep(2)
+        comment = commit.create_comment(comment_body.rstrip())
+        print(f"Created Comment: {comment}", file=sys.stderr, flush=True)
+        comment_ids.add(comment.id)
 
   delete_previous_comments(commit, comment_ids, exchanges)
 
@@ -188,45 +174,45 @@ def main():
   reports_data = {}
   for exchange in reports_info:
     reports_data[exchange] = {}
-    timeranges = set()
-    keys = set()
-
-    # Load raw per-report results
-    for name in sorted(reports_info[exchange]):
-      exchange_results = {}
-      reports_data[exchange][name] = {
-        "results": exchange_results,
-        "sha": reports_info[exchange][name]["sha"],
-      }
-
-      results_path = pathlib.Path(reports_info[exchange][name]["path"])
-      for results_file in results_path.rglob(f"ci-results-{exchange}-*"):
-        # Load and merge results
-        exchange_results.update(json.loads(results_file.read_text()))
-
-      # Collect timeranges and keys
-      for timerange in exchange_results:
-        timeranges.add(timerange)
-        for key in exchange_results[timerange]:
-          keys.add(key)
-
-    # Add 'names' mapping (sha per report name)
-    reports_data[exchange]["names"] = {}
-    for name in reports_info[exchange]:
-      reports_data[exchange]["names"][name] = reports_info[exchange][name]["sha"]
-
-    # Build a merged 'timeranges' view — without touching the original 'results'
-    reports_data[exchange]["timeranges"] = {}
-    for timerange in sorted(timeranges):
-      reports_data[exchange]["timeranges"][timerange] = {}
-      for key in sorted(keys):
-        reports_data[exchange]["timeranges"][timerange][key] = {}
-        for name in sorted(reports_info[exchange]):
-          value = reports_data[exchange][name]["results"].get(timerange, {}).get(key, "n/a")
-          reports_data[exchange]["timeranges"][timerange][key][name] = value
+    for tradingmode in reports_info[exchange]:
+      timeranges = set()
+      keys = set()
+      reports_data[exchange][tradingmode] = {}
+      for name in sorted(reports_info[exchange][tradingmode]):
+        exchange_results = {}
+        reports_data[exchange][tradingmode][name] = {
+          "results": exchange_results,
+          "sha": reports_info[exchange][tradingmode][name]["sha"],
+        }
+        results_path = pathlib.Path(reports_info[exchange][tradingmode][name]["path"])
+        for results_file in results_path.rglob(f"ci-results-{exchange}-{tradingmode}-*"):
+          exchange_results.update(json.loads(results_file.read_text()))
+      # Set n/a data if necessary
+      names = list(reports_data[exchange][tradingmode])
+      reports_data[exchange][tradingmode]["names"] = {}
+      for name in names:
+        reports_data[exchange][tradingmode]["names"][name] = reports_data[exchange][tradingmode][name]["sha"]
+        for timerange in reports_data[exchange][tradingmode][name]["results"]:
+          timeranges.add(timerange)
+          for key in reports_data[exchange][tradingmode][name]["results"][timerange]:
+            keys.add(key)
+            for oname in names:
+              if oname == name:
+                continue
+              oresults = reports_data[exchange][tradingmode][oname]["results"]
+              if timerange not in oresults:
+                oresults[timerange] = {}
+              oresults[timerange].setdefault(key, "n/a")
+      reports_data[exchange][tradingmode]["timeranges"] = {}
+      for timerange in sorted(timeranges):
+        reports_data[exchange][tradingmode]["timeranges"][timerange] = {}
+        for key in sorted(keys):
+          reports_data[exchange][tradingmode]["timeranges"][timerange][key] = {}
+          for name in names:
+            value = reports_data[exchange][tradingmode][name]["results"][timerange][key]
+            reports_data[exchange][tradingmode]["timeranges"][timerange][key][name] = value
 
   pprint.pprint(reports_data)
-
   try:
     comment_results(options, reports_data)
     parser.exit(0)
