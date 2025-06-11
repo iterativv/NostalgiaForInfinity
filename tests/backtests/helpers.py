@@ -88,6 +88,7 @@ class Backtest:
       f"--config=configs/trading_mode-{trading_mode}.json",
       f"--config=configs/blacklist-{exchange}.json",
       "--breakdown=day",
+      "--export=signals",
       f"--log-file=user_data/logs/backtesting-{exchange}-{trading_mode}-{start_date}-{end_date}.log",
     ]
     if pairlist is None:
