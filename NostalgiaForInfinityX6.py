@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.5.94"
+    return "v16.5.95"
 
   stoploss = -0.99
 
@@ -373,13 +373,13 @@ class NostalgiaForInfinityX6(IStrategy):
 
   grinding_v2_derisk_level_1_enable = True
   grinding_v2_derisk_level_1_spot = -0.12
-  grinding_v2_derisk_level_1_futures = -0.12
+  grinding_v2_derisk_level_1_futures = -0.36
   grinding_v2_derisk_level_2_enable = True
   grinding_v2_derisk_level_2_spot = -0.14
-  grinding_v2_derisk_level_2_futures = -0.14
+  grinding_v2_derisk_level_2_futures = -0.42
   grinding_v2_derisk_level_3_enable = True
   grinding_v2_derisk_level_3_spot = -0.15
-  grinding_v2_derisk_level_3_futures = -0.15
+  grinding_v2_derisk_level_3_futures = -0.45
   grinding_v2_derisk_level_1_stake_spot = 0.50
   grinding_v2_derisk_level_1_stake_futures = 0.50
   grinding_v2_derisk_level_2_stake_spot = 0.30
@@ -388,7 +388,7 @@ class NostalgiaForInfinityX6(IStrategy):
   grinding_v2_derisk_level_3_stake_futures = 0.20
   grinding_v2_derisk_global_enable = False
   grinding_v2_derisk_global_spot = -0.10
-  grinding_v2_derisk_global_futures = -0.10
+  grinding_v2_derisk_global_futures = -0.30
 
   grinding_v2_grind_1_enable = True
   grinding_v2_grind_1_stakes_spot = [0.25, 0.30, 0.35, 0.40]
@@ -28769,6 +28769,7 @@ class NostalgiaForInfinityX6(IStrategy):
           slice_amount
           * (self.grinding_v2_derisk_level_1_futures if self.is_futures_mode else self.grinding_v2_derisk_level_1_spot)
         )
+        / trade.leverage
       )
     ):
       sell_amount = (
@@ -28808,6 +28809,7 @@ class NostalgiaForInfinityX6(IStrategy):
           slice_amount
           * (self.grinding_v2_derisk_level_2_futures if self.is_futures_mode else self.grinding_v2_derisk_level_2_spot)
         )
+        / trade.leverage
       )
     ):
       sell_amount = (
@@ -28847,6 +28849,7 @@ class NostalgiaForInfinityX6(IStrategy):
           slice_amount
           * (self.grinding_v2_derisk_level_3_futures if self.is_futures_mode else self.grinding_v2_derisk_level_3_spot)
         )
+        / trade.leverage
       )
     ):
       sell_amount = (
@@ -28884,6 +28887,7 @@ class NostalgiaForInfinityX6(IStrategy):
           slice_amount
           * (self.grinding_v2_derisk_global_futures if self.is_futures_mode else self.grinding_v2_derisk_global_spot)
         )
+        / trade.leverage
       )
     ):
       sell_amount = trade.amount * exit_rate / trade.leverage - (min_stake * 1.55)
@@ -51142,6 +51146,7 @@ class NostalgiaForInfinityX6(IStrategy):
           slice_amount
           * (self.grinding_v2_derisk_level_1_futures if self.is_futures_mode else self.grinding_v2_derisk_level_1_spot)
         )
+        / trade.leverage
       )
     ):
       sell_amount = (
@@ -51181,6 +51186,7 @@ class NostalgiaForInfinityX6(IStrategy):
           slice_amount
           * (self.grinding_v2_derisk_level_2_futures if self.is_futures_mode else self.grinding_v2_derisk_level_2_spot)
         )
+        / trade.leverage
       )
     ):
       sell_amount = (
@@ -51220,6 +51226,7 @@ class NostalgiaForInfinityX6(IStrategy):
           slice_amount
           * (self.grinding_v2_derisk_level_3_futures if self.is_futures_mode else self.grinding_v2_derisk_level_3_spot)
         )
+        / trade.leverage
       )
     ):
       sell_amount = (
@@ -51257,6 +51264,7 @@ class NostalgiaForInfinityX6(IStrategy):
           slice_amount
           * (self.grinding_v2_derisk_global_futures if self.is_futures_mode else self.grinding_v2_derisk_global_spot)
         )
+        / trade.leverage
       )
     ):
       sell_amount = trade.amount * exit_rate / trade.leverage - (min_stake * 1.55)
