@@ -88,7 +88,6 @@ class Backtest:
       f"--config=configs/trading_mode-{trading_mode}.json",
       f"--config=configs/blacklist-{exchange}.json",
       "--breakdown=day",
-      "--export=signals",
       f"--log-file=user_data/logs/backtesting-{exchange}-{trading_mode}-{start_date}-{end_date}.log",
     ]
     if pairlist is None:
@@ -144,30 +143,9 @@ class Backtest:
     except json.JSONDecodeError as e:
       raise RuntimeError(f"Failed to parse JSON from {json_results_file}: {e}") from e
 
-    # Signals file
-    signals_files = list(f for f in tmp_path.rglob("backtest-results-*signals.pkl") if "meta" not in str(f))
-    if not signals_files:
-      raise FileNotFoundError("Signals file not found after backtesting.")
-    signals_file = signals_files[0]
-
-    # Exited file
-    exited_files = list(f for f in tmp_path.rglob("backtest-results-*exited.pkl") if "meta" not in str(f))
-    if not exited_files:
-      raise FileNotFoundError("Exited trades file not found after backtesting.")
-    exited_file = exited_files[0]
-
-    # Rejected file
-    rejected_files = list(f for f in tmp_path.rglob("backtest-results-*rejected.pkl") if "meta" not in str(f))
-    if not rejected_files:
-      raise FileNotFoundError("Rejected trades file not found after backtesting.")
-    rejected_file = rejected_files[0]
-
     # Artifact paths
     json_results_artifact_path = None
     json_ci_results_artifact_path = None
-    signals_file_artifact_path = None
-    exited_file_artifact_path = None
-    rejected_file_artifact_path = None
 
     if self.request.config.option.artifacts_path:
       json_results_artifact_path = (
@@ -180,23 +158,6 @@ class Backtest:
         self.request.config.option.artifacts_path
         / f"ci-results-{exchange}-{trading_mode}-{start_date}-{end_date}.json"
       )
-      signals_file_artifact_path = (
-        self.request.config.option.artifacts_path
-        / f"backtest-results-{exchange}-{trading_mode}-{start_date}-{end_date}_signals.pkl"
-      )
-      shutil.copyfile(signals_file, signals_file_artifact_path)
-
-      exited_file_artifact_path = (
-        self.request.config.option.artifacts_path
-        / f"backtest-results-{exchange}-{trading_mode}-{start_date}-{end_date}_exited.pkl"
-      )
-      shutil.copyfile(exited_file, exited_file_artifact_path)
-
-      rejected_file_artifact_path = (
-        self.request.config.option.artifacts_path
-        / f"backtest-results-{exchange}-{trading_mode}-{start_date}-{end_date}_rejected.pkl"
-      )
-      shutil.copyfile(rejected_file, rejected_file_artifact_path)
 
       txt_results_artifact_path = (
         self.request.config.option.artifacts_path
