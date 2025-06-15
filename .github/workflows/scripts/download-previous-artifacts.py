@@ -55,9 +55,6 @@ def find_previous_run(workflow, branch, current_run_id, artifact_name, repo):
   found_current = False
   print(f"Looking for previous run before run id {current_run_id} on branch {branch} with commit comments")
   for run in workflow.get_runs(branch=branch):
-    print(
-      f"Run id: {run.id}, sha: {run.head_sha}, branch: {run.head_branch}, status: {run.status}, conclusion: {run.conclusion}"
-    )
     if str(run.id) == current_run_id:
       found_current = True
       continue
