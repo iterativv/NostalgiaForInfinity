@@ -274,6 +274,7 @@ jobs:
       - name: Comment CI Results
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EXCLUDED_TIMERANGES: 20240101-20240301,20240301-20240501,20240501-20240701,20240701-20240901,20240901-20241101,20241101-20241231,20250101-20250301,20250301-20250501
         run: |
           python .github/workflows/scripts/comment-ci-results.py \
             --repo=${{ github.event.repository.full_name }} downloaded-results
