@@ -8621,6 +8621,10 @@ class NostalgiaForInfinityX6(IStrategy):
           long_entry_logic.append(
             (df["RSI_3_4h"] > 15.0) | (df["STOCHRSIk_14_14_3_3_15m"] < 30.0) | (df["AROONU_14_4h"] < 40.0)
           )
+          # 15m & 1h & 4h high
+          long_entry_logic.append(
+            (df["AROONU_14_15m"] < 70.0) | (df["AROONU_14_1h"] < 90.0) | (df["AROONU_14_4h"] < 90.0)
+          )
 
           # Logic
           long_entry_logic.append(df["RSI_20"] < df["RSI_20"].shift(1))
