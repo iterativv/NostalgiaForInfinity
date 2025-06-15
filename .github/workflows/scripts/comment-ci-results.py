@@ -9,6 +9,10 @@ import time
 import github
 from github.GithubException import GithubException
 
+EXCLUDED_TIMERANGES = set(
+  filter(None, os.environ.get("EXCLUDED_TIMERANGES", "").replace('"', "").replace("[", "").replace("]", "").split(","))
+)
+
 
 def sort_report_names(value):
   if value == "Current":
@@ -52,6 +56,9 @@ def comment_results(options, results_data):
       mode_data = results_data[exchange][tradingmode]
       sorted_report_names = sorted(mode_data["names"], key=sort_report_names)
       for timerange in mode_data["timeranges"]:
+        if EXCLUDED_TIMERANGES and timerange in EXCLUDED_TIMERANGES:
+          print(f"Skipping timerange {timerange}", file=sys.stderr, flush=True)
+          continue
         comment_body = f"## {exchange.capitalize()} - {tradingmode.capitalize()} - {timerange}\n\n"
         report_table_header_1 = "| "
         report_table_header_2 = "| --: "
