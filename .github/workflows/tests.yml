@@ -36,6 +36,7 @@ jobs:
           extra_args: --files ${{ steps.changed-files.outputs.repo_files }}
 
   Backtest:
+    if: github.event_name != 'pull_request'
     needs: Pre-Commit
     runs-on: ubuntu-latest
     strategy:
@@ -156,9 +157,9 @@ jobs:
           path: artifacts/
 
   Merge-Artifacts:
-    runs-on: ubuntu-latest
+    if: always() && github.event_name != 'pull_request'
     needs: Backtest
-    if: always()
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -175,9 +176,9 @@ jobs:
           pattern: ${{ matrix.EXCHANGE }}-${{ matrix.TRADING_MODE }}-testrun-artifacts-*
 
   Comment-CI-Results:
-    runs-on: ubuntu-latest
+    if: always() && github.event_name != 'pull_request'
     needs: Merge-Artifacts
-    if: always()
+    runs-on: ubuntu-latest
     permissions:
       contents: write
       actions: read
@@ -269,11 +270,11 @@ jobs:
           find downloaded-results/ -type f -iname *.txt -exec sed -i 's/DAY BREAKDOWN/\n## DAY BREAKDOWN\n/g' {} +
           find downloaded-results/ -type f -iname *.txt -exec sed -i 's/SUMMARY METRICS/\n## SUMMARY METRICS\n/g' {} +
           find downloaded-results/ -type f -iname *.txt -exec sed -i 's/STRATEGY SUMMARY/\n## STRATEGY SUMMARY\n/g' {} +
-          tree
 
       - name: Comment CI Results
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EXCLUDED_TIMERANGES: 20240101-20240301,20240301-20240501,20240501-20240701,20240701-20240901,20240901-20241101,20241101-20241231,20250101-20250301,20250301-20250501
         run: |
           python .github/workflows/scripts/comment-ci-results.py \
             --repo=${{ github.event.repository.full_name }} downloaded-results
