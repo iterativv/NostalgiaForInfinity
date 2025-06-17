@@ -8,6 +8,7 @@
 NFI_PATH=
 ENV_PATH=$NFI_PATH
 FREQTRADE_IMAGE_UPDATE=false
+FREQTRADE_IMAGE="freqtradeorg/freqtrade:stable"
 
 ### Simple script that does the following:
 ## 1. Pull NFIX repo
@@ -96,17 +97,21 @@ if [ "$latest_local_commit" != "$latest_remote_commit" ]; then
     echo "text=NFI was updated to commit: *${latest_remote_commit}* . Please wait for reload..."
     send_telegram_notification "text=NFI was updated to commit: *${latest_remote_commit}* . Please wait for reload..."
 
-    echo "\nrestarting freqtrade with NFIX"
     if [[ "$FREQTRADE_IMAGE_UPDATE" == "true" ]]; then
-        if docker pull; then
-            echo "Pulling new Freqtrade image"
-            send_telegram_notification "Pulling new Freqtrade image"
-        else
-            echo "Error when pulling new Freqtrade image" >&2
-            exit 1
+        echo "checking new Freqtrade image"
+        local_digest=$(docker inspect --format='{{.Id}}' "$FREQTRADE_IMAGE" 2>/dev/null || echo "none")
+
+        docker pull "$FREQTRADE_IMAGE" --quiet >/dev/null
+
+        remote_digest=$(docker inspect --format='{{.Id}}' "$FREQTRADE_IMAGE" 2>/dev/null || echo "none")
+
+        if [ "$local_digest" != "$remote_digest" ]; then
+            echo "Freqtrade image version was updated"
+            send_telegram_notification "Freqtrade image version was updated"
         fi
     fi
 
+    echo "restarting freqtrade with NFIX"
     docker compose stop
     docker compose up -d
 fi
