@@ -16,16 +16,39 @@ FREQTRADE_IMAGE_UPDATE=false
 ## 4. Stop and Start freqtrader via docker compose
 ######################################################
 
+## FUNCTIONS
 load_env() {
     local env_file="${1:-.env}"
     
     if [[ -f "$env_file" ]]; then
         set -a
-        source <(grep -v '^#' "$env_file" | grep -v '^[[:space:]]*$' | sed 's/^/export /')
+        source grep -v '^#' "$env_file" | grep -v '^[[:space:]]*$' | sed 's/^/export /'
         set +a
     else
         echo "$env_file not found"
         exit 1
+    fi
+}
+
+send_telegram_notification() {
+    local message="${1}"
+
+    if [ -z "$message" ]; then
+        echo "message variable is empty"
+        exit 1
+    fi
+
+    if [ -n "$FREQTRADE__TELEGRAM__TOKEN" ] && [ -n "$FREQTRADE__TELEGRAM__CHAT_ID" ]; then
+        response=$(curl -s -X POST \
+            --data-urlencode "text=${message}" \
+            --data-urlencode "parse_mode=markdown" \
+            --data "chat_id=$FREQTRADE__TELEGRAM__CHAT_ID" \
+            "https://api.telegram.org/bot${FREQTRADE__TELEGRAM__TOKEN}/sendMessage" 2>/dev/null)
+            
+        if [[ $? -ne 0 ]]; then
+            echo "Error: failed to send telegram notification."
+            exit 1
+        fi
     fi
 }
 
@@ -70,22 +93,19 @@ latest_remote_commit=$(git rev-parse HEAD)
 if [ "$latest_local_commit" != "$latest_remote_commit" ]; then
     load_env "${ENV_PATH}/.env"
 
-    if [ -n "$FREQTRADE__TELEGRAM__TOKEN" ] && [ -n "$FREQTRADE__TELEGRAM__CHAT_ID" ]; then
-        # Compose the main message send by the bot
-        curl -s --data "text=NFI is updated to commit: *${latest_remote_commit}* . Please wait for reload..." \
-            --data "parse_mode=markdown" \
-            --data "chat_id=$FREQTRADE__TELEGRAM__CHAT_ID" \
-            "https://api.telegram.org/bot${FREQTRADE__TELEGRAM__TOKEN}/sendMessage"
-    fi
+    echo "text=NFI was updated to commit: *${latest_remote_commit}* . Please wait for reload..."
+    send_telegram_notification "text=NFI was updated to commit: *${latest_remote_commit}* . Please wait for reload..."
 
     echo "\nrestarting freqtrade with NFIX"
     if [[ "$FREQTRADE_IMAGE_UPDATE" == "true" ]]; then
         if docker pull; then
             echo "Pulling new Freqtrade image"
+            send_telegram_notification "Pulling new Freqtrade image"
         else
             echo "Error when pulling new Freqtrade image" >&2
             exit 1
         fi
+    fi
 
     docker compose stop
     docker compose up -d
