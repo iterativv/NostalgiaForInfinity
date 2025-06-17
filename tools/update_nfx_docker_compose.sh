@@ -6,12 +6,27 @@
 ## OPTIONAL: configure token and chatId on .env
 
 NFI_PATH=
-
+ENV_PATH=$NFI_PATH
 ### Simple script that does the following:
 ## 1. Pull NFIX repo
 ## 2. Compare if have new commit
 ## 3. Send message to telegram if .env is configured
 ## 4. Stop and Start freqtrader via docker compose
+######################################################
+
+load_env() {
+    local env_file="${1:-.env}"
+    
+    if [[ -f "$env_file" ]]; then
+        set -a
+        source <(grep -v '^#' "$env_file" | grep -v '^[[:space:]]*$' | sed 's/^/export /')
+        set +a
+    else
+        echo "$env_file not found"
+        exit 1
+    fi
+}
+
 ######################################################
 
 if [ -z "$NFI_PATH" ]; then
@@ -22,7 +37,6 @@ fi
 echo "starting update on path $NFI_PATH"
 cd $NFI_PATH
 
-export $(grep -v '^#' "$NFI_PATH/.env" | xargs)
 
 # pull from NFIX repo
 echo "Pulling updates from repo"
@@ -52,6 +66,8 @@ fi
 latest_remote_commit=$(git rev-parse HEAD)
 
 if [ "$latest_local_commit" != "$latest_remote_commit" ]; then
+    load_env "${ENV_PATH}/.env"
+
     if [ -n "$FREQTRADE__TELEGRAM__TOKEN" ] && [ -n "$FREQTRADE__TELEGRAM__CHAT_ID" ]; then
         # Compose the main message send by the bot
         curl -s --data "text=NFI is updated to commit: *${latest_remote_commit}* . Please wait for reload..." \
