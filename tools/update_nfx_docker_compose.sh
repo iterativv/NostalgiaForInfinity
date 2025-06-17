@@ -79,7 +79,7 @@ if [ "$latest_local_commit" != "$latest_remote_commit" ]; then
     fi
 
     echo "\nrestarting freqtrade with NFIX"
-    if [[ "$FREQTRADE_IMAGE_UPDATE" == "true" ]]; then    
+    if [[ "$FREQTRADE_IMAGE_UPDATE" == "true" ]]; then
         if docker pull; then
             echo "Pulling new Freqtrade image"
         else
