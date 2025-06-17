@@ -14,15 +14,17 @@ NFI_PATH=
 ## 4. Stop and Start freqtrader via docker compose
 ######################################################
 
-if [ -n "$NFI_PATH" ]; then
-    echo "NFI LOCAL REPO variable empty"
+if [ -z "$NFI_PATH" ]; then
+    echo "NFI_PATH variable is empty"
     exit 1
 fi
 
-# pull from NFIX repo
-echo "updating local NFIX repo"
-
 cd $NFI_PATH
+
+export $(grep -v '^#' .env | xargs)
+
+# pull from NFIX repo
+echo "Initianting update on $NFI_PATH"
 
 latest_local_commit=$(git rev-parse HEAD)
 
@@ -33,7 +35,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-git_pull_output=$(git pull >/dev/null 2>&1)
+git_pull_output=$(git pull)
 
 if [ $? -ne 0 ]; then
     echo "failed to pull from NFIX repo: $git_pull_output"
@@ -49,15 +51,13 @@ fi
 
 latest_remote_commit=$(git rev-parse HEAD)
 
-export $(grep -v '^#' .env | xargs)
-
 if [ "$latest_local_commit" != "$latest_remote_commit" ]; then
     if [ -n "$FREQTRADE__TELEGRAM__TOKEN" ] && [ -n "$FREQTRADE__TELEGRAM__CHAT_ID" ]; then
         # Compose the main message send by the bot
         curl -s --data "text=NFI is updated to commit: *${latest_remote_commit}* . Please wait for reload..." \
             --data "parse_mode=markdown" \
-            --data "chat_id=$FREQTRADE__TELEGRAM__TOKEN" \
-            "https://api.telegram.org/bot${FREQTRADE__TELEGRAM__CHAT_ID}/sendMessage"
+            --data "chat_id=$FREQTRADE__TELEGRAM__CHAT_ID" \
+            "https://api.telegram.org/bot${FREQTRADE__TELEGRAM__TOKEN}/sendMessage"
     fi
 
     echo "\nrestarting freqtrade with NFIX"
