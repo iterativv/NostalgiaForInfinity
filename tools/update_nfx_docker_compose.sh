@@ -5,7 +5,7 @@
 ## 2. Configure the localization from repo
 ## OPTIONAL: configure token and chatId on .env
 
-NFI_LOCAL_REPO=/opt/binance/NFI-10x
+NFI_PATH=
 
 ### Simple script that does the following:
 ## 1. Pull NFIX repo
@@ -14,7 +14,7 @@ NFI_LOCAL_REPO=/opt/binance/NFI-10x
 ## 4. Stop and Start freqtrader via docker compose
 ######################################################
 
-if [ -n "$NFI_LOCAL_REPO" ]; then
+if [ -n "$NFI_PATH" ]; then
     echo "NFI LOCAL REPO variable empty"
     exit 1
 fi
@@ -22,7 +22,7 @@ fi
 # pull from NFIX repo
 echo "updating local NFIX repo"
 
-cd $NFI_LOCAL_REPO
+cd $NFI_PATH
 
 latest_local_commit=$(git rev-parse HEAD)
 
