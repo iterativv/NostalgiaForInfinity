@@ -19,13 +19,13 @@ if [ -z "$NFI_PATH" ]; then
     exit 1
 fi
 
+echo "starting update on path $NFI_PATH"
 cd $NFI_PATH
 
 export $(grep -v '^#' .env | xargs)
 
 # pull from NFIX repo
-echo "Initianting update on $NFI_PATH"
-
+echo "Pulling updates from repo"
 latest_local_commit=$(git rev-parse HEAD)
 
 git stash push > /dev/null 2>&1
@@ -35,7 +35,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-git_pull_output=$(git pull)
+git_pull_output=$(git pull > /dev/null 2>&1)
 
 if [ $? -ne 0 ]; then
     echo "failed to pull from NFIX repo: $git_pull_output"
@@ -61,7 +61,6 @@ if [ "$latest_local_commit" != "$latest_remote_commit" ]; then
     fi
 
     echo "\nrestarting freqtrade with NFIX"
-
     docker compose stop
     docker compose up -d
 fi
