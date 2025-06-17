@@ -22,7 +22,7 @@ fi
 echo "starting update on path $NFI_PATH"
 cd $NFI_PATH
 
-export $(grep -v '^#' .env | xargs)
+export $(grep -v '^#' "$NFI_PATH/.env" | xargs)
 
 # pull from NFIX repo
 echo "Pulling updates from repo"
