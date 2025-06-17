@@ -7,6 +7,8 @@
 
 NFI_PATH=
 ENV_PATH=$NFI_PATH
+FREQTRADE_IMAGE_UPDATE=false
+
 ### Simple script that does the following:
 ## 1. Pull NFIX repo
 ## 2. Compare if have new commit
@@ -77,6 +79,14 @@ if [ "$latest_local_commit" != "$latest_remote_commit" ]; then
     fi
 
     echo "\nrestarting freqtrade with NFIX"
+    if [[ "$FREQTRADE_IMAGE_UPDATE" == "true" ]]; then    
+        if docker pull; then
+            echo "Pulling new Freqtrade image"
+        else
+            echo "Error when pulling new Freqtrade image" >&2
+            exit 1
+        fi
+
     docker compose stop
     docker compose up -d
 fi
