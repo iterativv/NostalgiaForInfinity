@@ -21,7 +21,7 @@ FREQTRADE_IMAGE="freqtradeorg/freqtrade:stable"
 load_env() {
     local env_file="${1:-.env}"
     
-    if [[ -f "$env_file" ]]; then
+    if [ -f "$env_file" ]; then
         set -a
         source grep -v '^#' "$env_file" | grep -v '^[[:space:]]*$' | sed 's/^/export /'
         set +a
@@ -95,7 +95,7 @@ if [ "$latest_local_commit" != "$latest_remote_commit" ]; then
     load_env "${ENV_PATH}/.env"
 
     message="NFI was updated to commit: *${latest_remote_commit}* . Please wait for reload..."
-    
+
     echo "$message"
     send_telegram_notification "$message"
 
