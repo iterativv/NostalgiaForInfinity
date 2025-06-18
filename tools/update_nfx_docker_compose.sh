@@ -94,8 +94,10 @@ latest_remote_commit=$(git rev-parse HEAD)
 if [ "$latest_local_commit" != "$latest_remote_commit" ]; then
     load_env "${ENV_PATH}/.env"
 
-    echo "text=NFI was updated to commit: *${latest_remote_commit}* . Please wait for reload..."
-    send_telegram_notification "text=NFI was updated to commit: *${latest_remote_commit}* . Please wait for reload..."
+    message="NFI was updated to commit: *${latest_remote_commit}* . Please wait for reload..."
+    
+    echo "$message"
+    send_telegram_notification "$message"
 
     if [[ "$FREQTRADE_IMAGE_UPDATE" == "true" ]]; then
         echo "checking new Freqtrade image"
@@ -106,8 +108,10 @@ if [ "$latest_local_commit" != "$latest_remote_commit" ]; then
         remote_digest=$(docker inspect --format='{{.Id}}' "$FREQTRADE_IMAGE" 2>/dev/null || echo "none")
 
         if [ "$local_digest" != "$remote_digest" ]; then
-            echo "Freqtrade image version was updated"
-            send_telegram_notification "Freqtrade image version was updated"
+            message="Freqtrade image version was updated"
+
+            echo $message
+            send_telegram_notification $message
         fi
     fi
 
