@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.5.111"
+    return "v16.5.112"
 
   stoploss = -0.99
 
@@ -28447,9 +28447,6 @@ class NostalgiaForInfinityX6(IStrategy):
   ):
     is_backtest = self.is_backtest_mode()
     min_stake = self.correct_min_stake(min_stake)
-    # min/max stakes include leverage. The return amounts is before leverage.
-    min_stake /= trade.leverage
-    max_stake /= trade.leverage
     df, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
     if len(df) < 2:
       return None
@@ -30039,9 +30036,6 @@ class NostalgiaForInfinityX6(IStrategy):
   ):
     is_backtest = self.dp.runmode.value in ["backtest", "hyperopt"]
     min_stake = self.correct_min_stake(min_stake)
-    # min/max stakes include leverage. The return amounts is before leverage.
-    min_stake /= trade.leverage
-    max_stake /= trade.leverage
     df, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
     if len(df) < 2:
       return None
@@ -50824,9 +50818,6 @@ class NostalgiaForInfinityX6(IStrategy):
   ):
     is_backtest = self.is_backtest_mode()
     min_stake = self.correct_min_stake(min_stake)
-    # min/max stakes include leverage. The return amounts is before leverage.
-    min_stake /= trade.leverage
-    max_stake /= trade.leverage
     df, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
     if len(df) < 2:
       return None
@@ -52416,9 +52407,6 @@ class NostalgiaForInfinityX6(IStrategy):
   ):
     is_backtest = self.dp.runmode.value in ["backtest", "hyperopt"]
     min_stake = self.correct_min_stake(min_stake)
-    # min/max stakes include leverage. The return amounts is before leverage.
-    min_stake /= trade.leverage
-    max_stake /= trade.leverage
     df, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
     if len(df) < 2:
       return None
