@@ -97,11 +97,11 @@ if [ "$latest_local_commit" != "$latest_remote_commit" ]; then
     echo "$message"
     send_telegram_notification "$message"
 
-    if [[ "$FREQTRADE_IMAGE_UPDATE" == "true" ]]; then
+    if [ $FREQTRADE_IMAGE_UPDATE = true ]; then
         echo "checking new Freqtrade image"
         local_digest=$(docker inspect --format='{{.Id}}' "$FREQTRADE_IMAGE" 2>/dev/null || echo "none")
 
-        docker pull "$FREQTRADE_IMAGE" --quiet >/dev/null
+        docker pull "$FREQTRADE_IMAGE" --quiet > /dev/null
 
         remote_digest=$(docker inspect --format='{{.Id}}' "$FREQTRADE_IMAGE" 2>/dev/null || echo "none")
 
