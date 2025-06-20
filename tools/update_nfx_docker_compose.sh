@@ -22,7 +22,7 @@ load_env() {
     local env_file="${1:-.env}"
     if [ -f "$env_file" ]; then
         set -a
-        source grep -v '^#' "$env_file" | grep -v '^[[:space:]]*$' | sed 's/^/export /'
+        . "$(grep -v '^#' "$env_file" | grep -v '^[[:space:]]*$' | sed 's/^/export /')"
         set +a
     else
         echo "$env_file not found"
@@ -31,7 +31,7 @@ load_env() {
 }
 
 send_telegram_notification() {
-    local message="${1}"
+    local message=$1
 
     if [ -z "$message" ]; then
         echo "message variable is empty"
