@@ -21,9 +21,7 @@ FREQTRADE_IMAGE="freqtradeorg/freqtrade:stable"
 load_env() {
     local env_file="${1:-.env}"
     if [ -f "$env_file" ]; then
-        set -a
-        . "$(grep -v '^#' "$env_file" | grep -v '^[[:space:]]*$' | sed 's/^/export /')"
-        set +a
+       export $(grep -v '^#' .env | xargs)
     else
         echo "$env_file not found"
         exit 1
@@ -44,7 +42,7 @@ send_telegram_notification() {
             --data-urlencode "parse_mode=markdown" \
             --data "chat_id=$FREQTRADE__TELEGRAM__CHAT_ID" \
             "https://api.telegram.org/bot${FREQTRADE__TELEGRAM__TOKEN}/sendMessage" 2>/dev/null)
-        if [[ $? -ne 0 ]]; then
+        if [ $? -ne 0 ]; then
             echo "Error: failed to send telegram notification."
             exit 1
         fi
