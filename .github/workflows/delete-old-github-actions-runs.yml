@@ -1,0 +1,12 @@
+name: Cleanup old Actions
+on:
+  workflow_dispatch:
+jobs:
+  delete-old-actions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: yanovation/delete-old-actions@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          days-ago: 60
