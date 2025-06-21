@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.5.117"
+    return "v16.5.118"
 
   stoploss = -0.99
 
@@ -28684,6 +28684,7 @@ class NostalgiaForInfinityX6(IStrategy):
     buyback_1_is_exit_found = False
     buyback_1_found = False
     buyback_1_buy_orders = []
+    buyback_1_orders = []
     buyback_1_distance_ratio = 0.0
     buyback_1_exit_order = None
     buyback_1_exit_distance_ratio = 0.0
@@ -28696,6 +28697,7 @@ class NostalgiaForInfinityX6(IStrategy):
     buyback_2_is_exit_found = False
     buyback_2_found = False
     buyback_2_buy_orders = []
+    buyback_2_orders = []
     buyback_2_distance_ratio = 0.0
     buyback_2_exit_order = None
     buyback_2_exit_distance_ratio = 0.0
@@ -28708,6 +28710,7 @@ class NostalgiaForInfinityX6(IStrategy):
     buyback_3_is_exit_found = False
     buyback_3_found = False
     buyback_3_buy_orders = []
+    buyback_3_orders = []
     buyback_3_distance_ratio = 0.0
     buyback_3_exit_order = None
     buyback_3_exit_distance_ratio = 0.0
@@ -28720,6 +28723,7 @@ class NostalgiaForInfinityX6(IStrategy):
     grind_1_is_exit_found = False
     grind_1_found = False
     grind_1_buy_orders = []
+    grind_1_orders = []
     grind_1_distance_ratio = 0.0
     grind_1_exit_order = None
     grind_1_exit_distance_ratio = 0.0
@@ -28732,6 +28736,7 @@ class NostalgiaForInfinityX6(IStrategy):
     grind_2_is_exit_found = False
     grind_2_found = False
     grind_2_buy_orders = []
+    grind_2_orders = []
     grind_2_distance_ratio = 0.0
     grind_2_exit_order = None
     grind_2_exit_distance_ratio = 0.0
@@ -28744,6 +28749,7 @@ class NostalgiaForInfinityX6(IStrategy):
     grind_3_is_exit_found = False
     grind_3_found = False
     grind_3_buy_orders = []
+    grind_3_orders = []
     grind_3_distance_ratio = 0.0
     grind_3_exit_order = None
     grind_3_exit_distance_ratio = 0.0
@@ -28758,6 +28764,7 @@ class NostalgiaForInfinityX6(IStrategy):
           buyback_1_total_amount += order.safe_filled
           buyback_1_total_cost += order.safe_filled * order.safe_price
           buyback_1_buy_orders.append(order.id)
+          buyback_1_orders.append(order)
           if not buyback_1_found:
             buyback_1_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
             buyback_1_found = True
@@ -28766,6 +28773,7 @@ class NostalgiaForInfinityX6(IStrategy):
           buyback_2_total_amount += order.safe_filled
           buyback_2_total_cost += order.safe_filled * order.safe_price
           buyback_2_buy_orders.append(order.id)
+          buyback_2_orders.append(order)
           if not buyback_2_found:
             buyback_2_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
             buyback_2_found = True
@@ -28774,6 +28782,7 @@ class NostalgiaForInfinityX6(IStrategy):
           buyback_3_total_amount += order.safe_filled
           buyback_3_total_cost += order.safe_filled * order.safe_price
           buyback_3_buy_orders.append(order.id)
+          buyback_3_orders.append(order)
           if not buyback_3_found:
             buyback_3_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
             buyback_3_found = True
@@ -28782,6 +28791,7 @@ class NostalgiaForInfinityX6(IStrategy):
           grind_1_total_amount += order.safe_filled
           grind_1_total_cost += order.safe_filled * order.safe_price
           grind_1_buy_orders.append(order.id)
+          grind_1_orders.append(order)
           if not grind_1_found:
             grind_1_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
             grind_1_found = True
@@ -28790,6 +28800,7 @@ class NostalgiaForInfinityX6(IStrategy):
           grind_2_total_amount += order.safe_filled
           grind_2_total_cost += order.safe_filled * order.safe_price
           grind_2_buy_orders.append(order.id)
+          grind_2_orders.append(order)
           if not grind_2_found:
             grind_2_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
             grind_2_found = True
@@ -28798,6 +28809,7 @@ class NostalgiaForInfinityX6(IStrategy):
           grind_3_total_amount += order.safe_filled
           grind_3_total_cost += order.safe_filled * order.safe_price
           grind_3_buy_orders.append(order.id)
+          grind_3_orders.append(order)
           if not grind_3_found:
             grind_3_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
             grind_3_found = True
@@ -29145,6 +29157,7 @@ class NostalgiaForInfinityX6(IStrategy):
       self.grinding_v2_grind_1_use_derisk
       and (grind_1_sub_grind_count > 0)
       and (((exit_rate - grind_1_current_open_rate) / grind_1_current_open_rate) < grind_1_derisk_grinds)
+      and (grind_1_orders[-1].order_date_utc.replace(tzinfo=None) >= datetime(2025, 6, 20) or is_backtest)
     ):
       # if (
       #   self.grinding_v2_grind_1_use_derisk
@@ -29239,6 +29252,7 @@ class NostalgiaForInfinityX6(IStrategy):
       self.grinding_v2_grind_2_use_derisk
       and (grind_2_sub_grind_count > 0)
       and (((exit_rate - grind_2_current_open_rate) / grind_2_current_open_rate) < grind_2_derisk_grinds)
+      and (grind_2_orders[-1].order_date_utc.replace(tzinfo=None) >= datetime(2025, 6, 20) or is_backtest)
     ):
       # if (
       #   self.grinding_v2_grind_2_use_derisk
@@ -29333,6 +29347,7 @@ class NostalgiaForInfinityX6(IStrategy):
       self.grinding_v2_grind_3_use_derisk
       and (grind_3_sub_grind_count > 0)
       and (((exit_rate - grind_3_current_open_rate) / grind_3_current_open_rate) < grind_3_derisk_grinds)
+      and (grind_3_orders[-1].order_date_utc.replace(tzinfo=None) >= datetime(2025, 6, 20) or is_backtest)
     ):
       # if (
       #   self.grinding_v2_grind_3_use_derisk
@@ -29452,6 +29467,7 @@ class NostalgiaForInfinityX6(IStrategy):
           self.grinding_v2_buyback_1_derisk_futures if self.is_futures_mode else self.grinding_v2_buyback_1_derisk_spot
         )
       )
+      and (buyback_1_orders[-1].order_date_utc.replace(tzinfo=None) >= datetime(2025, 6, 20) or is_backtest)
     ):
       # if (
       #   self.grinding_v2_buyback_1_use_derisk
@@ -29581,6 +29597,7 @@ class NostalgiaForInfinityX6(IStrategy):
           self.grinding_v2_buyback_2_derisk_futures if self.is_futures_mode else self.grinding_v2_buyback_2_derisk_spot
         )
       )
+      and (buyback_2_orders[-1].order_date_utc.replace(tzinfo=None) >= datetime(2025, 6, 20) or is_backtest)
     ):
       # if (
       #   self.grinding_v2_buyback_2_use_derisk
@@ -29710,6 +29727,7 @@ class NostalgiaForInfinityX6(IStrategy):
           self.grinding_v2_buyback_3_derisk_futures if self.is_futures_mode else self.grinding_v2_buyback_3_derisk_spot
         )
       )
+      and (buyback_3_orders[-1].order_date_utc.replace(tzinfo=None) >= datetime(2025, 6, 20) or is_backtest)
     ):
       # if (
       #   self.grinding_v2_buyback_3_use_derisk
@@ -51148,6 +51166,7 @@ class NostalgiaForInfinityX6(IStrategy):
     buyback_1_is_exit_found = False
     buyback_1_found = False
     buyback_1_buy_orders = []
+    buyback_1_orders = []
     buyback_1_distance_ratio = 0.0
     buyback_1_exit_order = None
     buyback_1_exit_distance_ratio = 0.0
@@ -51160,6 +51179,7 @@ class NostalgiaForInfinityX6(IStrategy):
     buyback_2_is_exit_found = False
     buyback_2_found = False
     buyback_2_buy_orders = []
+    buyback_2_orders = []
     buyback_2_distance_ratio = 0.0
     buyback_2_exit_order = None
     buyback_2_exit_distance_ratio = 0.0
@@ -51172,6 +51192,7 @@ class NostalgiaForInfinityX6(IStrategy):
     buyback_3_is_exit_found = False
     buyback_3_found = False
     buyback_3_buy_orders = []
+    buyback_3_orders = []
     buyback_3_distance_ratio = 0.0
     buyback_3_exit_order = None
     buyback_3_exit_distance_ratio = 0.0
@@ -51184,6 +51205,7 @@ class NostalgiaForInfinityX6(IStrategy):
     grind_1_is_exit_found = False
     grind_1_found = False
     grind_1_buy_orders = []
+    grind_1_orders = []
     grind_1_distance_ratio = 0.0
     grind_1_exit_order = None
     grind_1_exit_distance_ratio = 0.0
@@ -51196,6 +51218,7 @@ class NostalgiaForInfinityX6(IStrategy):
     grind_2_is_exit_found = False
     grind_2_found = False
     grind_2_buy_orders = []
+    grind_2_orders = []
     grind_2_distance_ratio = 0.0
     grind_2_exit_order = None
     grind_2_exit_distance_ratio = 0.0
@@ -51208,6 +51231,7 @@ class NostalgiaForInfinityX6(IStrategy):
     grind_3_is_exit_found = False
     grind_3_found = False
     grind_3_buy_orders = []
+    grind_3_orders = []
     grind_3_distance_ratio = 0.0
     grind_3_exit_order = None
     grind_3_exit_distance_ratio = 0.0
@@ -51222,6 +51246,7 @@ class NostalgiaForInfinityX6(IStrategy):
           buyback_1_total_amount += order.safe_filled
           buyback_1_total_cost += order.safe_filled * order.safe_price
           buyback_1_buy_orders.append(order.id)
+          buyback_1_orders.append(order)
           if not buyback_1_found:
             buyback_1_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
             buyback_1_found = True
@@ -51230,6 +51255,7 @@ class NostalgiaForInfinityX6(IStrategy):
           buyback_2_total_amount += order.safe_filled
           buyback_2_total_cost += order.safe_filled * order.safe_price
           buyback_2_buy_orders.append(order.id)
+          buyback_2_orders.append(order)
           if not buyback_2_found:
             buyback_2_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
             buyback_2_found = True
@@ -51238,6 +51264,7 @@ class NostalgiaForInfinityX6(IStrategy):
           buyback_3_total_amount += order.safe_filled
           buyback_3_total_cost += order.safe_filled * order.safe_price
           buyback_3_buy_orders.append(order.id)
+          buyback_3_orders.append(order)
           if not buyback_3_found:
             buyback_3_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
             buyback_3_found = True
@@ -51246,6 +51273,7 @@ class NostalgiaForInfinityX6(IStrategy):
           grind_1_total_amount += order.safe_filled
           grind_1_total_cost += order.safe_filled * order.safe_price
           grind_1_buy_orders.append(order.id)
+          grind_1_orders.append(order)
           if not grind_1_found:
             grind_1_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
             grind_1_found = True
@@ -51254,6 +51282,7 @@ class NostalgiaForInfinityX6(IStrategy):
           grind_2_total_amount += order.safe_filled
           grind_2_total_cost += order.safe_filled * order.safe_price
           grind_2_buy_orders.append(order.id)
+          grind_2_orders.append(order)
           if not grind_2_found:
             grind_2_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
             grind_2_found = True
@@ -51262,6 +51291,7 @@ class NostalgiaForInfinityX6(IStrategy):
           grind_3_total_amount += order.safe_filled
           grind_3_total_cost += order.safe_filled * order.safe_price
           grind_3_buy_orders.append(order.id)
+          grind_3_orders.append(order)
           if not grind_3_found:
             grind_3_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
             grind_3_found = True
@@ -51609,6 +51639,7 @@ class NostalgiaForInfinityX6(IStrategy):
       self.grinding_v2_grind_1_use_derisk
       and (grind_1_sub_grind_count > 0)
       and ((-(exit_rate - grind_1_current_open_rate) / grind_1_current_open_rate) < grind_1_derisk_grinds)
+      and (grind_1_orders[-1].order_date_utc.replace(tzinfo=None) >= datetime(2025, 6, 20) or is_backtest)
     ):
       # if (
       #   self.grinding_v2_grind_1_use_derisk
@@ -51703,6 +51734,7 @@ class NostalgiaForInfinityX6(IStrategy):
       self.grinding_v2_grind_2_use_derisk
       and (grind_2_sub_grind_count > 0)
       and ((-(exit_rate - grind_2_current_open_rate) / grind_2_current_open_rate) < grind_2_derisk_grinds)
+      and (grind_2_orders[-1].order_date_utc.replace(tzinfo=None) >= datetime(2025, 6, 20) or is_backtest)
     ):
       # if (
       #   self.grinding_v2_grind_2_use_derisk
@@ -51797,6 +51829,7 @@ class NostalgiaForInfinityX6(IStrategy):
       self.grinding_v2_grind_3_use_derisk
       and (grind_3_sub_grind_count > 0)
       and ((-(exit_rate - grind_3_current_open_rate) / grind_3_current_open_rate) < grind_3_derisk_grinds)
+      and (grind_3_orders[-1].order_date_utc.replace(tzinfo=None) >= datetime(2025, 6, 20) or is_backtest)
     ):
       # if (
       #   self.grinding_v2_grind_3_use_derisk
@@ -51916,6 +51949,7 @@ class NostalgiaForInfinityX6(IStrategy):
           self.grinding_v2_buyback_1_derisk_futures if self.is_futures_mode else self.grinding_v2_buyback_1_derisk_spot
         )
       )
+      and (buyback_1_orders[-1].order_date_utc.replace(tzinfo=None) >= datetime(2025, 6, 20) or is_backtest)
     ):
       # if (
       #   self.grinding_v2_buyback_1_use_derisk
@@ -52045,6 +52079,7 @@ class NostalgiaForInfinityX6(IStrategy):
           self.grinding_v2_buyback_2_derisk_futures if self.is_futures_mode else self.grinding_v2_buyback_2_derisk_spot
         )
       )
+      and (buyback_2_orders[-1].order_date_utc.replace(tzinfo=None) >= datetime(2025, 6, 20) or is_backtest)
     ):
       # if (
       #   self.grinding_v2_buyback_2_use_derisk
@@ -52174,6 +52209,7 @@ class NostalgiaForInfinityX6(IStrategy):
           self.grinding_v2_buyback_3_derisk_futures if self.is_futures_mode else self.grinding_v2_buyback_3_derisk_spot
         )
       )
+      and (buyback_3_orders[-1].order_date_utc.replace(tzinfo=None) >= datetime(2025, 6, 20) or is_backtest)
     ):
       # if (
       #   self.grinding_v2_buyback_3_use_derisk
