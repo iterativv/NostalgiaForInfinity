@@ -1,43 +1,12 @@
-name: CI
+name: Backtests
 
-on: [push, pull_request]
+on:
+  push:
+    paths:
+      - 'NostalgiaForInfinityX6.py'
 
 jobs:
-  Pre-Commit:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 10
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - id: changed-files
-        name: Check changed files
-        uses: dorny/paths-filter@v3
-        with:
-          token: ${{ github.token }}
-          list-files: shell
-          filters: |
-            repo:
-              - added|modified: ['**']
-      - run: echo "PY=$(python --version --version | sha256sum | cut -d' ' -f1)" >> $GITHUB_ENV
-      - uses: actions/cache@v4
-        with:
-          path: ~/.cache/pre-commit
-          key: pre-commit|${{ env.PY }}|${{ hashFiles('.pre-commit-config.yaml') }}
-      - name: Check ALL Files On Branch
-        uses: pre-commit/action@v3.0.1
-        if: github.event_name != 'pull_request'
-      - name: Check Changed Files On PR
-        uses: pre-commit/action@v3.0.1
-        if: github.event_name == 'pull_request'
-        with:
-          extra_args: --files ${{ steps.changed-files.outputs.repo_files }}
-
   Backtest:
-    if: github.event_name != 'pull_request'
-    needs: Pre-Commit
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -72,42 +41,6 @@ jobs:
           - 20240301-20240401
           - 20240201-20240301
           - 20240101-20240201
-          # - 20231201-20240101
-          # - 20231101-20231201
-          # - 20231001-20231101
-          # - 20230901-20231001
-          # - 20230801-20230901
-          # - 20230701-20230801
-          # - 20230601-20230701
-          # - 20230501-20230601
-          # - 20230401-20230501
-          # - 20230301-20230401
-          # - 20230201-20230301
-          # - 20230101-20230201
-          # - 20221201-20230101
-          # - 20221101-20221201
-          # - 20221001-20221101
-          # - 20220901-20221001
-          # - 20220801-20220901
-          # - 20220701-20220801
-          # - 20220601-20220701
-          # - 20220501-20220601
-          # - 20220401-20220501
-          # - 20220301-20220401
-          # - 20220201-20220301
-          # - 20220101-20220201
-          # - 20211201-20220101
-          # - 20211101-20211201
-          # - 20211001-20211101
-          # - 20210901-20211001
-          # - 20210801-20210901
-          # - 20210701-20210801
-          # - 20210601-20210701
-          # - 20210501-20210601
-          # - 20210401-20210501
-          # - 20210301-20210401
-          # - 20210201-20210301
-          # - 20210101-20210201
 
     steps:
       - uses: actions/checkout@v4
@@ -157,7 +90,7 @@ jobs:
           path: artifacts/
 
   Merge-Artifacts:
-    if: always() && github.event_name != 'pull_request'
+    if: always()
     needs: Backtest
     runs-on: ubuntu-latest
     strategy:
@@ -176,7 +109,7 @@ jobs:
           pattern: ${{ matrix.EXCHANGE }}-${{ matrix.TRADING_MODE }}-testrun-artifacts-*
 
   Comment-CI-Results:
-    if: always() && github.event_name != 'pull_request'
+    if: always()
     needs: Merge-Artifacts
     runs-on: ubuntu-latest
     permissions:
@@ -201,7 +134,7 @@ jobs:
           python .github/workflows/scripts/download-previous-artifacts.py \
             --repo=${{ github.event.repository.full_name }} \
             --branch=main \
-            --workflow=tests.yml \
+            --workflow=backtests.yml \
             --exchange=kucoin \
             --tradingmode=spot \
             --name=kucoin-spot-testrun-artifacts downloaded-results
@@ -213,7 +146,7 @@ jobs:
           python .github/workflows/scripts/download-previous-artifacts.py \
             --repo=${{ github.event.repository.full_name }} \
             --branch=main \
-            --workflow=tests.yml \
+            --workflow=backtests.yml \
             --exchange=binance \
             --tradingmode=spot \
             --name=binance-spot-testrun-artifacts downloaded-results
@@ -225,7 +158,7 @@ jobs:
           python .github/workflows/scripts/download-previous-artifacts.py \
             --repo=${{ github.event.repository.full_name }} \
             --branch=main \
-            --workflow=tests.yml \
+            --workflow=backtests.yml \
             --exchange=binance \
             --tradingmode=futures \
             --name=binance-futures-testrun-artifacts downloaded-results
