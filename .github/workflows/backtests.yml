@@ -137,7 +137,7 @@ jobs:
             --workflow=backtests.yml \
             --exchange=kucoin \
             --tradingmode=spot \
-            --name=kucoin-spot-testrun-artifacts downloaded-results
+            --artifact=kucoin-spot-testrun-artifacts downloaded-results
 
       - name: Download Previous Binance Spot CI Artifacts
         env:
@@ -149,7 +149,7 @@ jobs:
             --workflow=backtests.yml \
             --exchange=binance \
             --tradingmode=spot \
-            --name=binance-spot-testrun-artifacts downloaded-results
+            --artifact=binance-spot-testrun-artifacts downloaded-results
 
       - name: Download Previous Binance Futures CI Artifacts
         env:
@@ -161,7 +161,7 @@ jobs:
             --workflow=backtests.yml \
             --exchange=binance \
             --tradingmode=futures \
-            --name=binance-futures-testrun-artifacts downloaded-results
+            --artifact=binance-futures-testrun-artifacts downloaded-results
 
       - name: Download Current Binance Futures CI Artifacts
         uses: actions/download-artifact@v4
