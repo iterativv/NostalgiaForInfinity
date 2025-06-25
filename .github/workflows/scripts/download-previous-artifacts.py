@@ -1,162 +1,185 @@
 import argparse
 import json
 import os
-import pathlib
-import pprint
 import sys
+import requests
 import zipfile
-
+import io
+import pathlib
 import github
 from github.GithubException import GithubException
 
 
-def get_artifact_url(workflow_run, name):
-  headers, data = workflow_run._requester.requestJsonAndCheck("GET", workflow_run.artifacts_url)
-  for artifact in data.get("artifacts", ()):
-    if artifact["name"] == name:
-      return artifact["archive_download_url"]
+def get_artifact_url(workflow_run, artifact_name):
+  for artifact in workflow_run.get_artifacts():
+    if artifact.name == artifact_name:
+      return artifact.archive_download_url
   return None
 
 
-def get_previous_releases(repo, latest_n_releases):
-  # Get the latest N tags/releases
-  releases = []
+def get_recent_tags(repo, num_tags):
+  tags = []
   for tag in repo.get_tags():
-    if len(releases) == latest_n_releases:
+    if len(tags) == num_tags:
       break
-    releases.append(tag)
-  return releases
+    tags.append(tag)
+  return tags
 
 
-def download_and_extract_artifact(repo, url, outdir, outfile):
-  req_headers = {}
-  repo._requester._Requester__authenticate(url, req_headers, None)
-  response = repo._requester._Requester__connection.session.get(url, headers=req_headers, allow_redirects=True)
-  if response.status_code == 200:
-    with open(outfile, "wb") as wfh:
-      for data in response.iter_content(chunk_size=512 * 1024):
-        if data:
-          wfh.write(data)
-    if not outdir.is_dir():
-      outdir.mkdir()
-    zipfile.ZipFile(outfile).extractall(path=outdir)
-    outfile.unlink()
-    return True
-  else:
-    print(f"Failed to download artifact from {url}: {response.status_code}", file=sys.stderr, flush=True)
-    return False
+def find_workflow_by_filename(repo, workflow_filename):
+  for wf in repo.get_workflows():
+    if wf.path.endswith(workflow_filename):
+      return wf
+  return None
 
 
-def find_previous_run(workflow, branch, current_run_id, artifact_name, repo):
-  """
-  Finds the most recent successful run on the branch before the current run,
-  where the commit also has comments.
-  """
-  found_current = False
-  print(f"Looking for previous run before run id {current_run_id} on branch {branch} with commit comments")
+def get_run_for_commit(workflow, commit_sha):
+  for run in workflow.get_runs():
+    if run.head_sha == commit_sha:
+      return run
+  return None
+
+
+def download_and_extract_artifact(response_content, outdir, outfile):
+  with zipfile.ZipFile(io.BytesIO(response_content)) as zf:
+    zf.extractall(outdir)
+    print(f"Extracted {outfile.resolve()} to {outdir.resolve()}", file=sys.stderr, flush=True)
+
+
+def find_previous_run(repo, workflow, branch, current_run_created_at, artifact_name):
+  print(f"Looking for previous runs for workflow '{workflow.name}' on branch '{branch}'", file=sys.stderr, flush=True)
+
   for run in workflow.get_runs(branch=branch):
-    if str(run.id) == current_run_id:
-      found_current = True
+    if run.created_at >= current_run_created_at:
       continue
-    if not found_current:
-      continue  # Only look at runs before the current one
-    if run.conclusion != "success":
+    print(f"Checking run {run.id} on {run.head_sha}", file=sys.stderr, flush=True)
+
+    try:
+      commit = repo.get_commit(run.head_sha)
+      comments = commit.get_comments()
+      if comments.totalCount == 0:
+        print(f"Skipping run {run.id} — no commit comments on {run.head_sha}", file=sys.stderr, flush=True)
+        continue
+
+      artifact_url = get_artifact_url(run, artifact_name)
+      if artifact_url:
+        print(f"Found matching run {run.id} with artifact '{artifact_name}'", file=sys.stderr, flush=True)
+        return run.head_sha, artifact_url
+    except Exception as e:
+      print(f"Error checking run {run.id}: {e}", file=sys.stderr, flush=True)
       continue
-    # Check if commit has comments
-    commit = repo.get_commit(run.head_sha)
-    if commit.get_comments().totalCount == 0:
-      continue
-    url = get_artifact_url(run, artifact_name)
-    if url:
-      return run.head_sha, url
+
+  print("No suitable previous run found.", file=sys.stderr, flush=True)
   return None, None
 
 
 def download_previous_artifacts(repo, options):
-  releases = get_previous_releases(repo, options.releases)
-  workflow = repo.get_workflow(options.workflow)
-  runs = {}
-  release_names = {release.name: release for release in releases}
+  workflow = find_workflow_by_filename(repo, options.workflow)
+  if not workflow:
+    print(f"Workflow {options.workflow} not found in {repo.name}", file=sys.stderr, flush=True)
+    return
+  print(f"Using workflow: {workflow.name}", file=sys.stderr, flush=True)
 
+  runs = {}
   current_run_id = os.environ.get("GITHUB_RUN_ID")
   current_sha = os.environ.get("GITHUB_SHA")
+  if not current_run_id or not current_sha:
+    print("GITHUB_RUN_ID or GITHUB_SHA environment variables not set", file=sys.stderr, flush=True)
+    return
 
-  # Find the current run
-  current_run = None
-  for run in workflow.get_runs():
-    if str(run.id) == current_run_id:
-      current_run = run
-      break
+  # Fetch the current run directly from the repo
+  try:
+    current_run = repo.get_workflow_run(int(current_run_id))
+    if current_run.head_sha != current_sha:
+      print(f"Warning: SHA mismatch. Env: {current_sha}, Run: {current_run.head_sha}", file=sys.stderr, flush=True)
+  except GithubException as e:
+    print(f"Failed to fetch current run {current_run_id}: {e}", file=sys.stderr, flush=True)
+    return
 
-  # Get Current artifact
-  if current_run:
-    url = get_artifact_url(current_run, options.name)
-    runs["Current"] = (current_sha, url)
+  print(f"Current run: {current_run.id} on {current_run.head_sha}", file=sys.stderr, flush=True)
 
-  # Get Previous artifact (most recent successful run before current on branch)
-  prev_sha, prev_url = find_previous_run(workflow, options.branch, current_run_id, options.name, repo)
+  # Get the artifact URL for the current run
+  artifact_url = get_artifact_url(current_run, options.artifact)
+  if not artifact_url:
+    print(f"Artifact {options.artifact} not found in current run {current_run.id}", file=sys.stderr, flush=True)
+    return
+  runs["Current"] = (current_sha, artifact_url)
+  print(f"Current artifact URL: {artifact_url}", file=sys.stderr, flush=True)
+
+  # Find the previous successful run with the specified artifact
+  prev_sha, prev_url = find_previous_run(repo, workflow, options.branch, current_run.created_at, options.artifact)
   if prev_sha and prev_url:
     runs["Previous"] = (prev_sha, prev_url)
+    print(f"Previous artifact URL: {prev_url}", file=sys.stderr, flush=True)
+  else:
+    print("No previous successful run found with the specified artifact", file=sys.stderr, flush=True)
 
-  # Get artifacts for releases (tags)
-  for run in workflow.get_runs():
-    if not release_names:
-      break
-    release = release_names.pop(run.head_branch, None)
-    if release:
-      url = get_artifact_url(run, options.name)
-      runs[release.name] = (release.commit.sha, url)
+  # Get the last few releases and their artifacts
+  previous_tags = get_recent_tags(repo, options.releases)
+  print(f"Found {len(previous_tags)} previous releases", file=sys.stderr, flush=True)
+  for tag in previous_tags:
+    run = get_run_for_commit(workflow, tag.commit.sha)
+    if not run:
+      continue
+    artifact_url = get_artifact_url(run, options.artifact)
+    if artifact_url:
+      runs[tag.name] = (tag.commit.sha, artifact_url)
 
-  print(f"Collected Runs:\n{pprint.pformat(runs)}", file=sys.stderr, flush=True)
-  reports_info_path = options.path / "reports-info.json"
+  print(f"Found {len(runs)} artifacts to download", file=sys.stderr, flush=True)
+
+  # Download and extract artifacts
   reports_info = {}
+
+  for name, (_sha, url) in runs.items():
+    print(f"Downloading artifact {name} from {url}", file=sys.stderr, flush=True)
+    try:
+      response = requests.get(url, headers={"Authorization": f"Bearer {os.environ['GITHUB_TOKEN']}"}, timeout=30)
+      if response.status_code != 200:
+        print(
+          f"Failed to download artifact {name}: {response.status_code} {response.reason}", file=sys.stderr, flush=True
+        )
+        continue
+
+      outdir = options.path / name.lower()
+      outdir.mkdir(exist_ok=True)
+      outfile = outdir / f"{name}-{options.artifact}.zip"
+      download_and_extract_artifact(response.content, outdir, outfile)
+
+    except Exception as e:
+      print(f"Error downloading artifact for {name}: {e}", file=sys.stderr, flush=True)
+
+  reports_info_path = options.path / "reports-info.json"
   if reports_info_path.exists():
     reports_info = json.loads(reports_info_path.read_text())
-  if options.exchange not in reports_info:
-    reports_info[options.exchange] = {}
-  if options.tradingmode not in reports_info[options.exchange]:
-    reports_info[options.exchange][options.tradingmode] = {}
+    print(f"Loaded reports-info.json from {reports_info_path}", file=sys.stderr, flush=True)
+  else:
+    print(f"Could not find reports-info.json in {options.path}", file=sys.stderr, flush=True)
 
-  for name, (sha, url) in runs.items():
-    if not url:
-      print(f"Did not find a download url for {name}", file=sys.stderr, flush=True)
-      reports_info[options.exchange][options.tradingmode][name] = {
-        "sha": sha,
-        "path": str(options.path / "current"),
-      }
-      continue
-    print(f"Downloading {name} {url}....", file=sys.stderr, flush=True)
-    outfile = options.path / f"{name}-{options.name}.zip"
+  reports_info.setdefault(options.exchange, {}).setdefault(options.tradingmode, {})
+
+  for name, (sha, _) in runs.items():
     outdir = options.path / name.lower()
-    if download_and_extract_artifact(repo, url, outdir, outfile):
-      print(f"Wrote and extracted to {outdir}", file=sys.stderr, flush=True)
-      reports_info[options.exchange][options.tradingmode][name] = {"sha": sha, "path": str(outdir.resolve())}
+    reports_info[options.exchange][options.tradingmode][name] = {"sha": sha, "path": str(outdir.resolve())}
+
   reports_info_path.write_text(json.dumps(reports_info, indent=2))
 
 
 def main():
   parser = argparse.ArgumentParser()
   parser.add_argument("--repo", required=True, help="The Organization Repository")
+  parser.add_argument("--workflow", default="backtests.yml", help="The workflow filename")
+  parser.add_argument("--artifact", required=True, help="The artifact name")
+  parser.add_argument("--branch", default="main", help="The branch name")
+  parser.add_argument("--releases", type=int, default=3, help="How many releases to get")
   parser.add_argument("--exchange", required=True, help="The exchange name")
-  parser.add_argument("--tradingmode", required=True, help="The trading mode")
-  parser.add_argument("--name", required=True, help="The artifacts name to get")
-  parser.add_argument("--workflow", required=True, help="The workflow name from where to get artifacts")
-  parser.add_argument("--branch", required=True, help="The branch from where to get the previous artifacts")
-  parser.add_argument(
-    "--releases",
-    type=int,
-    default=3,
-    help="Besides previous artifacts, how many previous release(tags) artifacts to get",
-  )
+  parser.add_argument("--tradingmode", required=True, help="The trading mode name")
   parser.add_argument("path", metavar="PATH", type=pathlib.Path, help="Path where to extract artifacts")
 
   if not os.environ.get("GITHUB_TOKEN"):
     parser.exit(status=1, message="GITHUB_TOKEN environment variable not set")
 
   options = parser.parse_args()
-  results_dir = pathlib.Path(options.path).resolve()
-  if not results_dir.is_dir():
-    results_dir.mkdir(parents=True, exist_ok=True)
+  options.path.mkdir(parents=True, exist_ok=True)
 
   gh = github.Github(os.environ["GITHUB_TOKEN"])
   repo = gh.get_repo(options.repo)
