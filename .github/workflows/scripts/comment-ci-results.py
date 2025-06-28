@@ -22,37 +22,43 @@ def sort_report_names(value):
   return 2  # For releases or others
 
 
-def delete_previous_comments(commit, created_comment_ids, exchanges):
+def delete_previous_comments(commit, created_comment_ids, targets):
   # We'll match comments that start with "## {exchange} - {tradingmode} -"
-  comment_starts = tuple(
-    f"## {exchange.split('-')[0].capitalize()} - {exchange.split('-')[1].capitalize()} -" for exchange in exchanges
+  expected_prefixes = tuple(
+    f"## {exchange.capitalize()} - {tradingmode.capitalize()} -" for exchange, tradingmode in targets
   )
   for comment in commit.get_comments():
     if comment.user.login != "github-actions[bot]":
       continue
     if comment.id in created_comment_ids:
       continue
-    if not comment.body.startswith(comment_starts):
-      continue
-    print(f"Deleting previous comment {comment}")
-    comment.delete()
+    if comment.body.startswith(expected_prefixes):
+      print(f"Deleting previous comment {comment.id}", file=sys.stderr)
+      comment.delete()
 
 
 def comment_results(options, results_data):
   gh = github.Github(os.environ["GITHUB_TOKEN"])
   repo = gh.get_repo(options.repo)
-  print(f"Loaded Repository: {repo.full_name}", file=sys.stderr, flush=True)
-
-  exchanges = set()
-  comment_ids = set()
   commit = repo.get_commit(os.environ["GITHUB_SHA"])
   print(f"Loaded Commit: {commit}", file=sys.stderr, flush=True)
 
+  targets = set()
+  for exchange in results_data:
+    for tradingmode in ("spot", "futures"):
+      if tradingmode in results_data[exchange]:
+        targets.add((exchange, tradingmode))
+
+  comment_ids = set()
+
+  # Clean up old comments before adding new ones
+  delete_previous_comments(commit, comment_ids, targets)
+
+  # Create new commits
   for exchange in sorted(results_data):
     for tradingmode in ("spot", "futures"):
       if tradingmode not in results_data[exchange]:
         continue
-      exchanges.add(f"{exchange}-{tradingmode}")
       mode_data = results_data[exchange][tradingmode]
       sorted_report_names = sorted(mode_data["names"], key=sort_report_names)
       for timerange in mode_data["timeranges"]:
@@ -155,8 +161,6 @@ def comment_results(options, results_data):
         comment = commit.create_comment(comment_body.rstrip())
         print(f"Created Comment: {comment}", file=sys.stderr, flush=True)
         comment_ids.add(comment.id)
-
-  delete_previous_comments(commit, comment_ids, exchanges)
 
 
 def main():
