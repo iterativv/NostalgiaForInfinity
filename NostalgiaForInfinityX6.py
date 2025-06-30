@@ -50185,7 +50185,7 @@ class NostalgiaForInfinityX6(IStrategy):
         and (last_candle["RSI_3_1d"] > 75.0)
         and (last_candle["STOCHRSIk_14_14_3_3_1h"] < 50.0)
       ):
-        return True, f"exit_{mode_name}_d_11_36"
+        return True, f"exit_{mode_name}_d_12_36"
       elif (
         (last_candle["RSI_3"] < 12.0)
         and (last_candle["RSI_14"] > 50.0)
