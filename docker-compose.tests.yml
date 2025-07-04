@@ -1,7 +1,7 @@
 ---
 services:
   tests:
-    image: freqtradeorg/freqtrade:stable
+    image: freqtradeorg/freqtrade:2025.5
     build:
       context: .
       dockerfile: "./docker/Dockerfile.custom"
@@ -83,7 +83,7 @@ services:
           > user_data/backtest_results/${STRATEGY_NAME:-NostalgiaForInfinityX6}-${STRATEGY_VERSION:-latest}-${EXCHANGE:-binance}-${TRADING_MODE:-spot}-${TIMERANGE:-20230101-}.txt
 
   plot-dataframe:
-    image: freqtradeorg/freqtrade:stable_plot
+    image: freqtradeorg/freqtrade:2025.5_plot
     container_name: ${EXCHANGE:-binance}-${TRADING_MODE:-spot}-plot-dataframe
     volumes:
       - "./user_data:/freqtrade/user_data"
@@ -103,7 +103,7 @@ services:
 
 
   plot-profit:
-    image: freqtradeorg/freqtrade:stable_plot
+    image: freqtradeorg/freqtrade:2025.5_plot
     container_name: ${EXCHANGE:-binance}-${TRADING_MODE:-spot}-plot-profit
     volumes:
       - "./user_data:/freqtrade/user_data"
