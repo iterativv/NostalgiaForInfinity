@@ -1,7 +1,6 @@
 # freqtrade==2024.5
 # freqtrade @ git+https://github.com/freqtrade/freqtrade@releases/tag/2024.5
 freqtrade
-pandas-ta
 pytest
 pytest-mock
 pytest-subtests
