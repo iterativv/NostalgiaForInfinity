@@ -8,7 +8,7 @@
 NFI_PATH=
 ENV_PATH=$NFI_PATH
 FREQTRADE_IMAGE_UPDATE=false
-FREQTRADE_IMAGE="freqtradeorg/freqtrade:2025.5"
+FREQTRADE_IMAGE="freqtradeorg/freqtrade:stable"
 
 ### Simple script that does the following:
 ## 1. Pull NFIX repo
