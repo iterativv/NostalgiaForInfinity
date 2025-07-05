@@ -9,7 +9,7 @@ URL="https://github.com/iterativv/NostalgiaForInfinityData.git"
 
 rm PAIRS_FOR_DOWNLOAD.txt
 # docker run -v ".:/running_config" --rm --env-file .github/workflows/scripts/ci-proxy.env \
-#     freqtradeorg/freqtrade:stable test-pairlist -c /running_config/configs/trading_mode-$TRADING_MODE.json \
+#     freqtradeorg/freqtrade:2025.5 test-pairlist -c /running_config/configs/trading_mode-$TRADING_MODE.json \
 #     -c /running_config/configs/pairlist-backtest-static-$EXCHANGE-$TRADING_MODE-usdt.json \
 #     -c /running_config/configs/exampleconfig.json -1 --exchange $EXCHANGE \
 #     -c /running_config/configs/blacklist-$EXCHANGE.json|sed -e 's+/+_+g'>>PAIRS_FOR_DOWNLOAD.txt

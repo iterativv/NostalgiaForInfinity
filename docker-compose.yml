@@ -2,7 +2,7 @@
 
 x-common-settings:
   &common-settings
-  image: freqtradeorg/freqtrade:stable
+  image: freqtradeorg/freqtrade:2025.5
   build:
     context: .
     dockerfile: "./docker/Dockerfile.custom"
