@@ -4123,7 +4123,7 @@ class NostalgiaForInfinityX6(IStrategy):
     df.loc[:, "enter_long"] = ""
     df.loc[:, "enter_short"] = ""
 
-    is_backtest = self.dp.runmode.value in ["backtest", "hyperopt", "plot"]
+    is_backtest = self.dp.runmode.value in ["backtest", "hyperopt", "plot", "webserver"]
     # the number of free slots
     current_free_slots = self.config["max_open_trades"]
     if not is_backtest:
