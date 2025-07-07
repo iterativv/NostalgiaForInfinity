@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.5.160"
+    return "v16.5.161"
 
   stoploss = -0.99
 
@@ -3896,8 +3896,8 @@ class NostalgiaForInfinityX6(IStrategy):
   def correct_min_stake(self, min_stake: float) -> float:
     if self.config["exchange"]["name"] in ["bybit"]:
       if self.is_futures_mode:
-        if min_stake < 5.0:
-          min_stake = 5.0
+        if min_stake < 5.0 / self.futures_mode_leverage:
+          min_stake = 5.0 / self.futures_mode_leverage
     return min_stake
 
   def is_backtest_mode(self) -> bool:
