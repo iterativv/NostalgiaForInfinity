@@ -9292,11 +9292,18 @@ class NostalgiaForInfinityX6(IStrategy):
           long_entry_logic.append(df["AROONU_14_15m"] < 90.0)
           long_entry_logic.append(df["STOCHRSIk_14_14_3_3_15m"] < 90.0)
           long_entry_logic.append(
-            (df["SMA_21"].shift(1) < df["SMA_200"].shift(1).fillna(np.nan)) & df["SMA_200"].shift(1).notna()
+            (df["SMA_21"].shift(1) < df["SMA_200"].shift(1).fillna(np.nan).infer_objects(copy=False))
+            & df["SMA_200"].shift(1).notna()
           )
-          long_entry_logic.append((df["SMA_21"] > df["SMA_200"].fillna(np.nan)) & df["SMA_200"].notna())
-          long_entry_logic.append((df["close"] > df["EMA_200_1h"].fillna(np.nan)) & df["EMA_200_1h"].notna())
-          long_entry_logic.append((df["close"] > df["EMA_200_4h"].fillna(np.nan)) & df["EMA_200_4h"].notna())
+          long_entry_logic.append(
+            (df["SMA_21"] > df["SMA_200"].fillna(np.nan).infer_objects(copy=False)) & df["SMA_200"].notna()
+          )
+          long_entry_logic.append(
+            (df["close"] > df["EMA_200_1h"].fillna(np.nan).infer_objects(copy=False)) & df["EMA_200_1h"].notna()
+          )
+          long_entry_logic.append(
+            (df["close"] > df["EMA_200_4h"].fillna(np.nan).infer_objects(copy=False)) & df["EMA_200_4h"].notna()
+          )
           long_entry_logic.append(df["BBB_20_2.0"] > 1.5)
           long_entry_logic.append(df["BBB_20_2.0_1h"] > 6.0)
 
