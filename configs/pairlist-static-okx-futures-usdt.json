@@ -183,6 +183,6 @@
       "method": "VolumePairList",
       "number_assets": 80,
       "sort_key": "quoteVolume"
-    },
+    }
   ]
 }
