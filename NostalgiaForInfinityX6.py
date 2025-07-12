@@ -4301,6 +4301,8 @@ class NostalgiaForInfinityX6(IStrategy):
           )
           # big drop in last 4 days, 4h down move
           long_entry_logic.append((df["close"] > (df["high_max_24_4h"] * 0.50)) | (df["RSI_3_4h"] > 10.0))
+          # big drop in last 4 days, 1d down move
+          long_entry_logic.append((df["close"] > (df["high_max_24_4h"] * 0.20)) | (df["RSI_3_1d"] > 20.0))
           # big drop in last 4 days, 1h high
           long_entry_logic.append(
             (df["close"] > (df["high_max_24_4h"] * 0.20)) | (df["STOCHRSIk_14_14_3_3_1h"] < 70.0)
