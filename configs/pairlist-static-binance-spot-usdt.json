@@ -1,0 +1,72 @@
+{
+  "exchange": {
+    "name": "binance",
+    "pair_whitelist": [
+      "AAVE/USDT",
+      "ADA/USDT",
+      "ALGO/USDT",
+      "ARB/USDT",
+      "ATOM/USDT",
+      "AVAX/USDT",
+      "BCH/USDT",
+      "BTC/USDT",
+      "CHR/USDT",
+      "CKB/USDT",
+      "COMP/USDT",
+      "DASH/USDT",
+      "DOGE/USDT",
+      "DOT/USDT",
+      "ETC/USDT",
+      "ETH/USDT",
+      "FIL/USDT",
+      "GALA/USDT",
+      "GRT/USDT",
+      "HBAR/USDT",
+      "KSM/USDT",
+      "LINK/USDT",
+      "LTC/USDT",
+      "MKR/USDT",
+      "NEAR/USDT",
+      "NEO/USDT",
+      "ONE/USDT",
+      "ONT/USDT",
+      "OP/USDT",
+      "PEPE/USDT",
+      "ROSE/USDT",
+      "SEI/USDT",
+      "SNX/USDT",
+      "SOL/USDT",
+      "STX/USDT",
+      "SUI/USDT",
+      "SUSHI/USDT",
+      "SXP/USDT",
+      "TON/USDT",
+      "TRX/USDT",
+      "UMA/USDT",
+      "UNI/USDT",
+      "VET/USDT",
+      "WIF/USDT",
+      "XLM/USDT",
+      "XRP/USDT",
+      "XTZ/USDT",
+      "ZEC/USDT"
+    ]
+  },
+  "pairlists": [
+    {
+      "method": "StaticPairList"
+    },
+    {
+      "method": "FullTradesFilter"
+    },
+    {
+      "method": "SpreadFilter",
+      "max_spread_ratio": 0.005
+    },
+    {
+      "method": "VolumePairList",
+      "number_assets": 80,
+      "sort_key": "quoteVolume"
+    }
+  ]
+}
