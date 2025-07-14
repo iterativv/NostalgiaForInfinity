@@ -2,9 +2,11 @@
   "exchange": {
     "name": "bitget",
     "pair_whitelist": [
+      "A/USDT",
       "AAVE/USDT",
       "ADA/USDT",
       "ALGO/USDT",
+      "APT/USDT",
       "ARB/USDT",
       "ATOM/USDT",
       "AVA/USDT",
@@ -26,6 +28,7 @@
       "FIL/USDT",
       "GRT/USDT",
       "HBAR/USDT",
+      "ICP/USDT",
       "KAS/USDT",
       "KCS/USDT",
       "KSM/USDT",
@@ -38,6 +41,9 @@
       "ONE/USDT",
       "ONT/USDT",
       "OP/USDT",
+      "PEPE/USDT",
+      "POL/USDT",
+      "QNT/USDT",
       "RENDER/USDT",
       "ROSE/USDT",
       "SEI/USDT",
@@ -55,6 +61,7 @@
       "WAVES/USDT",
       "WIN/USDT",
       "XLM/USDT",
+      "XMR/USDT",
       "XRP/USDT",
       "XTZ/USDT",
       "ZEC/USDT"
