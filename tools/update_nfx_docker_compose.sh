@@ -9,6 +9,7 @@ NFI_PATH=
 ENV_PATH=$NFI_PATH
 FREQTRADE_IMAGE_UPDATE=false
 FREQTRADE_IMAGE="freqtradeorg/freqtrade:stable"
+TELEGRAM_NOTIFICATION=true
 
 ### Simple script that does the following:
 ## 1. Pull NFIX repo
@@ -29,6 +30,10 @@ load_env() {
 }
 
 send_telegram_notification() {
+    if [ $TELEGRAM_NOTIFICATION = false ]; then
+        return 0
+    fi
+
     local message=$1
 
     if [ -z "$message" ]; then
