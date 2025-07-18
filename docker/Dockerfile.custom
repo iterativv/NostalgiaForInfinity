@@ -1,14 +1,30 @@
 ARG sourceimage=freqtradeorg/freqtrade
 ARG sourcetag=stable
+
+# Stage 1: Build dependencies
+FROM ${sourceimage}:${sourcetag} AS builder
+
+USER root
+RUN pip install --upgrade pip
+
+COPY --chown=1000:1000 tests/requirements.txt /freqtrade/
+
+USER ftuser
+RUN --mount=type=cache,target=/home/ftuser/.cache/pip \
+    pip install --user --no-build-isolation --no-cache-dir -r /freqtrade/requirements.txt
+
+USER root
+# Fix ownership of user install directory
+RUN chown -R 1000:1000 /home/ftuser/.local
+
+# Stage 2: Final image
 FROM ${sourceimage}:${sourcetag}
+
 USER root
 
-# RUN apt-get update; \
-# 	apt-get install -y --no-install-recommends git git-lfs; \
-# 	\
-# 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
-# 	rm -rf /var/lib/apt/lists/*
+COPY --from=builder /home/ftuser/.local /home/ftuser/.local
+COPY --chown=1000:1000 tests/requirements.txt /freqtrade/
 
-COPY --chown=1000:1000  tests/requirements.txt /freqtrade
 USER ftuser
-RUN pip install --upgrade pip && pip install --user --no-cache-dir --no-build-isolation -r /freqtrade/requirements.txt
+
+ENV PATH=/home/ftuser/.local/bin:$PATH
