@@ -1,28 +1,77 @@
 name: Backtests
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'NostalgiaForInfinityX6.py'
 
 jobs:
-  Backtest:
+  # Download jobs
+  Download-Data-Binance-Spot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch Binance Spot data
+        env:
+          EXCHANGE: binance
+          TRADING_MODE: spot
+          TIMEFRAME: 5m
+          TIMERANGE: 20240101-20250701
+          HELPER_TIME_FRAMES: 5m 15m 1h 4h 8h 1d
+        run: .github/workflows/scripts/download-necessary-exchange-market-data-for-backtests.sh
+      - name: Upload Market Data Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: data-binance-spot
+          path: user_data/data
+          retention-days: 1
+
+  Download-Data-Binance-Futures:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch Binance Futures data
+        env:
+          EXCHANGE: binance
+          TRADING_MODE: futures
+          TIMEFRAME: 5m
+          TIMERANGE: 20240101-20250701
+          HELPER_TIME_FRAMES: 5m 15m 1h 4h 8h 1d
+        run: .github/workflows/scripts/download-necessary-exchange-market-data-for-backtests.sh
+      - name: Upload Market Data Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: data-binance-futures
+          path: user_data/data
+          retention-days: 1
+
+  Download-Data-Kucoin-Spot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch Kucoin Spot data
+        env:
+          EXCHANGE: kucoin
+          TRADING_MODE: spot
+          TIMEFRAME: 5m
+          TIMERANGE: 20240101-20250701
+          HELPER_TIME_FRAMES: 5m 15m 1h 4h 8h 1d
+        run: .github/workflows/scripts/download-necessary-exchange-market-data-for-backtests.sh
+      - name: Upload Market Data Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: data-kucoin-spot
+          path: user_data/data
+          retention-days: 1
+  # Backtest Jobs
+  Backtest-Binance-Spot:
+    needs: Download-Data-Binance-Spot
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        EXCHANGE: [binance, kucoin]
-        TRADING_MODE: [spot, futures]
-        exclude:
-          - EXCHANGE: kucoin
-            TRADING_MODE: futures
         TIMERANGE:
-          # - 20251201-20260101
-          # - 20251101-20251201
-          # - 20251001-20251101
-          # - 20250901-20251001
-          # - 20250801-20250901
-          # - 20250701-20250801
           - 20250601-20250701
           - 20250501-20250601
           - 20250401-20250501
@@ -41,57 +90,240 @@ jobs:
           - 20240301-20240401
           - 20240201-20240301
           - 20240101-20240201
-
     steps:
       - uses: actions/checkout@v4
+      - name: Download Market Data Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: data-binance-spot
+          path: user_data/data
 
-      - name: Fetch data for backtests
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/Dockerfile.custom
+          tags: ci-strategy-backtesting
+          push: false
+          load: true
+          cache-from: type=gha,mode=inline,scope=ci-strategy-backtesting
+          cache-to: type=gha,mode=max,scope=ci-strategy-backtesting
         env:
-          EXCHANGE: ${{ matrix.EXCHANGE }}
-          TRADING_MODE: ${{ matrix.TRADING_MODE }}
-          TIMEFRAME: 5m
-          TIMERANGE: ${{ matrix.TIMERANGE }}
-          HELPER_TIME_FRAMES: 5m 15m 1h 4h 8h 1d
-        run: |
-          .github/workflows/scripts/download-necessary-exchange-market-data-for-backtests.sh
+          DOCKER_BUILDKIT: 1
+          DOCKER_BUILD_CHECKS_ANNOTATIONS: false
+          DOCKER_BUILD_SUMMARY: false
+          DOCKER_BUILD_RECORD_UPLOAD: false
 
       - name: Inject proxy config
-        if: ${{ matrix.EXCHANGE == 'binance' }}
         env:
           PROXY: ${{ secrets.FREQTRADE_PROXY }}
         run: |
-          for file in configs/proxy-binance.json; do
-            jq --arg proxy "$PROXY" \
-            '.exchange.ccxt_config = {
-              http_proxy: $proxy
-            }' "$file" > tmp.json && mv tmp.json "$file"
-          done
+          jq --arg proxy "$PROXY" \
+            '.exchange.ccxt_config = { http_proxy: $proxy }' \
+            configs/proxy-binance.json > tmp.json && mv tmp.json configs/proxy-binance.json
 
       - name: Run Backtests
         run: |
-          mkdir artifacts
-          chmod 777 artifacts
+          mkdir -p artifacts && chmod 777 artifacts
           export COLUMNS=240
-          docker build -f docker/Dockerfile.custom --no-cache -t ci-strategy-backtesting . > /dev/null 2>&1
-          docker run -v ".:/testing" -v "./user_data/data:/testing/user_data/data" --rm \
-            -w /testing --entrypoint "" -e "COLUMNS=240" \
+          docker run -v "$PWD:/testing" \
+            -v "$PWD/user_data/data:/testing/user_data/data" \
+            --rm \
+            -w /testing \
+            --entrypoint "" \
             --env-file .github/workflows/scripts/ci-proxy.env \
             ci-strategy-backtesting \
-            python -m pytest -ra -vv -s --log-cli-level=info --artifacts-path=artifacts/ \
-            -p no:cacheprovider tests/backtests -k '${{ matrix.EXCHANGE }} and ${{ matrix.TRADING_MODE }} and ${{ matrix.TIMERANGE }}'
+            python -m pytest \
+            tests/backtests \
+            -ra -vv -s \
+            --log-cli-level=info \
+            --artifacts-path=artifacts/ \
+            -p no:cacheprovider \
+            -k "binance and spot and ${{ matrix.TIMERANGE }}"
 
       - name: Show Backtest Output
-        run: cat artifacts/backtest-output-${{ matrix.EXCHANGE }}-${{ matrix.TRADING_MODE }}-${{ matrix.TIMERANGE }}.txt
-
-      - name: Upload Artifacts
+        run: cat artifacts/backtest-output-binance-spot-${{ matrix.TIMERANGE }}.txt
+      - name: Upload results
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.EXCHANGE }}-${{ matrix.TRADING_MODE }}-testrun-artifacts-${{ matrix.TIMERANGE }}
+          name: binance-spot-testrun-artifacts-${{ matrix.TIMERANGE }}
+          path: artifacts/
+
+  Backtest-Binance-Futures:
+    needs: Download-Data-Binance-Futures
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        TIMERANGE:
+          - 20250601-20250701
+          - 20250501-20250601
+          - 20250401-20250501
+          - 20250301-20250401
+          - 20250201-20250301
+          - 20250101-20250201
+          - 20241201-20250101
+          - 20241101-20241201
+          - 20241001-20241101
+          - 20240901-20241001
+          - 20240801-20240901
+          - 20240701-20240801
+          - 20240601-20240701
+          - 20240501-20240601
+          - 20240401-20240501
+          - 20240301-20240401
+          - 20240201-20240301
+          - 20240101-20240201
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download Market Data Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: data-binance-futures
+          path: user_data/data
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/Dockerfile.custom
+          tags: ci-strategy-backtesting
+          push: false
+          load: true
+          cache-from: type=gha,mode=inline,scope=ci-strategy-backtesting
+          cache-to: type=gha,mode=max,scope=ci-strategy-backtesting
+        env:
+          DOCKER_BUILDKIT: 1
+          DOCKER_BUILD_CHECKS_ANNOTATIONS: false
+          DOCKER_BUILD_SUMMARY: false
+          DOCKER_BUILD_RECORD_UPLOAD: false
+
+      - name: Inject proxy config
+        env:
+          PROXY: ${{ secrets.FREQTRADE_PROXY }}
+        run: |
+          jq --arg proxy "$PROXY" \
+            '.exchange.ccxt_config = { http_proxy: $proxy }' \
+            configs/proxy-binance.json > tmp.json && mv tmp.json configs/proxy-binance.json
+
+      - name: Run Backtests
+        run: |
+          mkdir -p artifacts && chmod 777 artifacts
+          export COLUMNS=240
+          docker run -v "$PWD:/testing" \
+            -v "$PWD/user_data/data:/testing/user_data/data" \
+            --rm \
+            -w /testing \
+            --entrypoint "" \
+            --env-file .github/workflows/scripts/ci-proxy.env \
+            ci-strategy-backtesting \
+            python -m pytest \
+            tests/backtests \
+            -ra -vv -s \
+            --log-cli-level=info \
+            --artifacts-path=artifacts/ \
+            -p no:cacheprovider \
+            -k "binance and futures and ${{ matrix.TIMERANGE }}"
+
+      - name: Show Backtest Output
+        run: cat artifacts/backtest-output-binance-futures-${{ matrix.TIMERANGE }}.txt
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        with:
+          name: binance-futures-testrun-artifacts-${{ matrix.TIMERANGE }}
+          path: artifacts/
+
+  Backtest-Kucoin-Spot:
+    needs: Download-Data-Kucoin-Spot
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        TIMERANGE:
+          - 20250601-20250701
+          - 20250501-20250601
+          - 20250401-20250501
+          - 20250301-20250401
+          - 20250201-20250301
+          - 20250101-20250201
+          - 20241201-20250101
+          - 20241101-20241201
+          - 20241001-20241101
+          - 20240901-20241001
+          - 20240801-20240901
+          - 20240701-20240801
+          - 20240601-20240701
+          - 20240501-20240601
+          - 20240401-20240501
+          - 20240301-20240401
+          - 20240201-20240301
+          - 20240101-20240201
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download Market Data Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: data-kucoin-spot
+          path: user_data/data
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/Dockerfile.custom
+          tags: ci-strategy-backtesting
+          push: false
+          load: true
+          cache-from: type=gha,mode=inline,scope=ci-strategy-backtesting
+          cache-to: type=gha,mode=max,scope=ci-strategy-backtesting
+        env:
+          DOCKER_BUILDKIT: 1
+          DOCKER_BUILD_CHECKS_ANNOTATIONS: false
+          DOCKER_BUILD_SUMMARY: false
+          DOCKER_BUILD_RECORD_UPLOAD: false
+
+      - name: Run Backtests
+        run: |
+          mkdir -p artifacts && chmod 777 artifacts
+          export COLUMNS=240
+          docker run -v "$PWD:/testing" \
+            -v "$PWD/user_data/data:/testing/user_data/data" \
+            --rm \
+            -w /testing \
+            --entrypoint "" \
+            --env-file .github/workflows/scripts/ci-proxy.env \
+            ci-strategy-backtesting \
+            python -m pytest \
+            tests/backtests \
+            -ra -vv -s \
+            --log-cli-level=info \
+            --artifacts-path=artifacts/ \
+            -p no:cacheprovider \
+            -k "kucoin and spot and ${{ matrix.TIMERANGE }}"
+
+      - name: Show Backtest Output
+        run: cat artifacts/backtest-output-kucoin-spot-${{ matrix.TIMERANGE }}.txt
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        with:
+          name: kucoin-spot-testrun-artifacts-${{ matrix.TIMERANGE }}
           path: artifacts/
 
   Merge-Artifacts:
     if: always()
-    needs: Backtest
+    needs:
+      - Backtest-Kucoin-Spot
+      - Backtest-Binance-Spot
+      - Backtest-Binance-Futures
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
