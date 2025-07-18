@@ -1,6 +1,7 @@
 name: Backtests
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'NostalgiaForInfinityX6.py'
