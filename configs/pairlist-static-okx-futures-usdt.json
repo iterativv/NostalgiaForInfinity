@@ -182,7 +182,9 @@
     {
       "method": "VolumePairList",
       "number_assets": 80,
-      "sort_key": "quoteVolume"
+      "sort_key": "quoteVolume",
+      "refresh_period": 86400,
+      "lookback_days": 1
     }
   ]
 }
