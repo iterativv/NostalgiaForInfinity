@@ -12,7 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -99,6 +98,7 @@ jobs:
           name: data-kucoin-spot
           path: user_data/data
           retention-days: 1
+
   # Backtest Jobs
   Backtest-Binance-Spot:
     needs:
@@ -161,6 +161,8 @@ jobs:
             --rm \
             -w /testing \
             --entrypoint "" \
+            -e "COLUMNS=240" \
+            -t \
             --env-file .github/workflows/scripts/ci-proxy.env \
             ci-strategy-backtesting \
             python -m pytest \
@@ -240,6 +242,8 @@ jobs:
             --rm \
             -w /testing \
             --entrypoint "" \
+            -e "COLUMNS=240" \
+            -t \
             --env-file .github/workflows/scripts/ci-proxy.env \
             ci-strategy-backtesting \
             python -m pytest \
@@ -311,6 +315,8 @@ jobs:
             --rm \
             -w /testing \
             --entrypoint "" \
+            -e "COLUMNS=240" \
+            -t \
             --env-file .github/workflows/scripts/ci-proxy.env \
             ci-strategy-backtesting \
             python -m pytest \
