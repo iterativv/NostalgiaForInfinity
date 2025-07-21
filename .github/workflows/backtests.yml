@@ -171,6 +171,7 @@ jobs:
             --log-cli-level=info \
             --artifacts-path=artifacts/ \
             -p no:cacheprovider \
+            -n auto \
             -k "binance and spot and ${{ matrix.TIMERANGE }}"
 
       - name: Show Backtest Output
@@ -252,6 +253,7 @@ jobs:
             --log-cli-level=info \
             --artifacts-path=artifacts/ \
             -p no:cacheprovider \
+            -n auto \
             -k "binance and futures and ${{ matrix.TIMERANGE }}"
 
       - name: Show Backtest Output
@@ -325,6 +327,7 @@ jobs:
             --log-cli-level=info \
             --artifacts-path=artifacts/ \
             -p no:cacheprovider \
+            -n auto \
             -k "kucoin and spot and ${{ matrix.TIMERANGE }}"
 
       - name: Show Backtest Output
@@ -366,14 +369,22 @@ jobs:
       actions: read
     steps:
       - uses: actions/checkout@v4
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('tests/ci-requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
       - name: Install Dependencies
         run: |
+          python -m pip install --upgrade pip
           python -m pip install -r tests/ci-requirements.txt
 
       - name: Download Previous Kucoin CI Artifacts
