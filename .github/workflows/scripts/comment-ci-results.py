@@ -44,20 +44,17 @@ def comment_results(options, results_data):
 
   targets = set()
   for exchange in results_data:
-    for tradingmode in ("spot", "futures"):
-      if tradingmode in results_data[exchange]:
-        targets.add((exchange, tradingmode))
+    for tradingmode in results_data[exchange].keys():
+      targets.add((exchange, tradingmode))
 
   comment_ids = set()
 
   # Clean up old comments before adding new ones
   delete_previous_comments(commit, comment_ids, targets)
 
-  # Create new commits
+  # Create new comments
   for exchange in sorted(results_data):
-    for tradingmode in ("spot", "futures"):
-      if tradingmode not in results_data[exchange]:
-        continue
+    for tradingmode in results_data[exchange].keys():
       mode_data = results_data[exchange][tradingmode]
       sorted_report_names = sorted(mode_data["names"], key=sort_report_names)
       for timerange in mode_data["timeranges"]:
