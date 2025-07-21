@@ -2,7 +2,6 @@ import argparse
 import json
 import os
 import pathlib
-import pprint
 import sys
 import time
 
@@ -226,7 +225,6 @@ def main():
             value = reports_data[exchange][tradingmode][name]["results"][timerange][key]
             reports_data[exchange][tradingmode]["timeranges"][timerange][key][name] = value
 
-  pprint.pprint(reports_data)
   try:
     comment_results(options, reports_data)
     parser.exit(0)
