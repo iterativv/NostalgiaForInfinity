@@ -1,7 +1,14 @@
 {
   "exchange": {
     "name": "binance",
-    "ccxt_config": {"enableRateLimit": false},
-    "ccxt_async_config": {"aiohttp_trust_env": true, "enableRateLimit": false}
+    "ccxt_config": {
+      "enableRateLimit": true,
+      "rateLimit": 200
+    },
+    "ccxt_async_config": {
+      "aiohttp_trust_env": true,
+      "enableRateLimit": true,
+      "rateLimit": 200
+    }
   }
 }
