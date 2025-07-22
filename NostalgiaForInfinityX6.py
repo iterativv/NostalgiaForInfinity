@@ -7492,6 +7492,7 @@ class NostalgiaForInfinityX6(IStrategy):
         if long_entry_condition_index == 61:
           # Protections
           long_entry_logic.append(df["num_empty_288"] <= allowed_empty_candles_288)
+          long_entry_logic.append(df["protections_long_global"] == True)
 
           # 5m & 15m down move, 4h high
           long_entry_logic.append((df["RSI_3"] > 10.0) | (df["RSI_3_15m"] > 20.0) | (df["AROONU_14_4h"] < 85.0))
