@@ -10165,6 +10165,7 @@ class NostalgiaForInfinityX6(IStrategy):
         if short_entry_condition_index == 501:
           # Protections
           short_entry_logic.append(df["num_empty_288"] <= allowed_empty_candles_288)
+          short_entry_logic.append(df["protections_short_global"] == True)
           short_entry_logic.append(df["global_protections_short_pump"] == True)
           short_entry_logic.append(df["global_protections_short_dump"] == True)
 
