@@ -10388,6 +10388,7 @@ class NostalgiaForInfinityX6(IStrategy):
         if short_entry_condition_index == 502:
           # Protections
           short_entry_logic.append(df["num_empty_288"] <= allowed_empty_candles_288)
+          short_entry_logic.append(df["protections_short_global"] == True)
 
           # 5m & 4h up move
           short_entry_logic.append((df["RSI_3"] < 97.0) | (df["RSI_3_4h"] < 95.0))
