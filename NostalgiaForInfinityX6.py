@@ -9238,6 +9238,7 @@ class NostalgiaForInfinityX6(IStrategy):
         if long_entry_condition_index == 120:
           # Protections
           long_entry_logic.append(num_open_long_grind_mode < self.grind_mode_max_slots)
+          long_entry_logic.append(df["protections_long_global"] == True)
           long_entry_logic.append(is_pair_long_grind_mode)
           long_entry_logic.append(df["RSI_3"] <= 50.0)
           long_entry_logic.append(df["RSI_3_15m"] >= 20.0)
