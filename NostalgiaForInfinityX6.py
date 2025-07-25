@@ -3572,6 +3572,13 @@ class NostalgiaForInfinityX6(IStrategy):
         | (df["CMF_20_4h"] > -0.3)
         | (df["AROONU_14_1h"] < 50.0)
       )
+      # 4h down move, 1h & 4h downtrend, 15m high
+      & (
+        (df["RSI_3_4h"] > 3.0)
+        | (df["CMF_20_1h"] > -0.25)
+        | (df["CMF_20_4h"] > -0.30)
+        | (df["STOCHRSIk_14_14_3_3_15m"] < 70.0)
+      )
       # 1d down move, 15m high, 1h & 4h downtrend
       & (
         (df["RSI_3_1d"] > 5.0)
