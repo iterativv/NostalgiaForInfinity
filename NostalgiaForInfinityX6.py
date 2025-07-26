@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.5.273"
+    return "v16.5.274"
 
   stoploss = -0.99
 
@@ -3407,6 +3407,17 @@ class NostalgiaForInfinityX6(IStrategy):
         | (df["RSI_3_1d"] > 5.0)
         | (df["CMF_20_15m"] > -0.40)
       )
+      # 15m & 1h & 4h down move, 1h & 4h still high, 15m downtrend
+      & (
+        (df["RSI_3_15m"] > 5.0)
+        | (df["RSI_3_1h"] > 30.0)
+        | (df["RSI_3_4h"] > 50.0)
+        | (df["RSI_14_1h"] < 40.0)
+        | (df["RSI_14_4h"] < 50.0)
+        | (df["CMF_20_15m"] > -0.30)
+        | (df["AROONU_14_4h"] < 50.0)
+        | (df["STOCHRSIk_14_14_3_3_4h"] < 50.0)
+      )
       # 15m & 1h & 3h down move, 1h & 4h still not low enough, 15m downtrend, 1h still high
       & (
         (df["RSI_3_15m"] > 5.0)
@@ -3575,6 +3586,26 @@ class NostalgiaForInfinityX6(IStrategy):
         | (df["AROONU_14_4h"] < 100.0)
         | (df["ROC_9_1d"] < 250.0)
       )
+      # 15m & 1h down move, 15m still not low enough, 1h & 4h still high, 1d overbought
+      & (
+        (df["RSI_3_15m"] > 20.0)
+        | (df["RSI_3_1h"] > 25.0)
+        | (df["RSI_14_15m"] < 30.0)
+        | (df["RSI_14_1h"] < 40.0)
+        | (df["RSI_14_4h"] < 50.0)
+        | (df["STOCHRSIk_14_14_3_3_1h"] < 50.0)
+        | (df["ROC_9_1d"] < 150.0)
+      )
+      # 15m & 1h & 1d down move, 1h & 4h still high, 15m downtrend, 1d overbought
+      & (
+        (df["RSI_3_15m"] > 20.0)
+        | (df["RSI_3_1h"] > 25.0)
+        | (df["RSI_3_1d"] > 55.0)
+        | (df["RSI_14_1h"] < 40.0)
+        | (df["RSI_14_4h"] < 50.0)
+        | (df["CMF_20_15m"] > -0.3)
+        | (df["ROC_9_1d"] < 80.0)
+      )
       # 15m & 1h & 4h & 1d down move, 1d still high, 1h still high, 4h high
       & (
         (df["RSI_3_15m"] > 20.0)
@@ -3695,6 +3726,16 @@ class NostalgiaForInfinityX6(IStrategy):
         | (df["RSI_3_4h"] > 10.0)
         | (df["STOCHRSIk_14_14_3_3_1h"] < 50.0)
         | (df["ROC_9_4h"] > -35.0)
+      )
+      # 1d P&D, 15m & 1h & 4h & 1d down move, 4h still not low enough
+      & (
+        (df["change_pct_1d"] > -10.0)
+        | (df["change_pct_1d"].shift(288) < 10.0)
+        | (df["RSI_3_15m"] > 10.0)
+        | (df["RSI_3_1h"] > 25.0)
+        | (df["RSI_3_4h"] > 10.0)
+        | (df["RSI_3_1d"] > 40.0)
+        | (df["RSI_14_4h"] < 30.0)
       )
       # 1d P&D, 15m & 1h down move, 15m still not low enough, 1h & 4h still high, 1d overbought
       & (
