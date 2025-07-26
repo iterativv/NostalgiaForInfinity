@@ -1,0 +1,223 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# =============================================================================
+# checkupdates.sh — Pull down the highest‐version git tag, OR if no new tag,
+#                  still refresh your strategy files if they’ve changed on
+#                  the default branch.  Then copy files, clean up, notify,
+#                  and restart Docker as before.
+# =============================================================================
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CONFIG_FILE="$SCRIPT_DIR/config.cfg"
+LOCAL_VERSION_FILE="$SCRIPT_DIR/version.txt"
+LOG_FILE="$SCRIPT_DIR/update.log"
+GITHUB_USER="iterativv"
+GITHUB_REPO="NostalgiaForInfinity"
+
+log() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') $*" | tee -a "$LOG_FILE"
+}
+
+check_dep() {
+    if ! command -v "$1" &>/dev/null; then
+        log "❌ Missing dependency: $1"
+        exit 1
+    fi
+}
+
+validate_ext() {
+    local files="$1" ext="$2"
+    IFS=',' read -r -a arr <<<"${files//[[:space:]]/,}"
+    for f in "${arr[@]}"; do
+        [[ "$f" == *"$ext" ]] || {
+            log "❌ '$f' must end with '$ext'"
+            return 1
+        }
+    done
+    return 0
+}
+
+update_files() {
+    local label="$1" files dest="$3"
+    log "→ Copying $label files: $files"
+    IFS=',' read -r -a arr <<<"${files//[[:space:]]/,}"
+    for f in "${arr[@]}"; do
+        src=$(find "$EXTRACTED_DIR" -type f -name "$f" | head -n1 || true)
+        if [[ -n "$src" ]]; then
+            cp "$src" "$dest/$(basename "$f")"
+            log "   ✅ $label copied: $f"
+        else
+            log "   ⚠️  $label not found in release: $f"
+        fi
+    done
+}
+
+# -----------------------------------------------------------------------------
+# 1) Check dependencies
+# -----------------------------------------------------------------------------
+for dep in jq curl unzip; do
+    check_dep "$dep"
+done
+
+# -----------------------------------------------------------------------------
+# 2) Load or create config
+# -----------------------------------------------------------------------------
+if [[ ! -f "$CONFIG_FILE" ]]; then
+    log "Config not found — creating $CONFIG_FILE"
+    read -rp "Strategy files (comma‑sep) [NostalgiaForInfinityX6.py]: " strategy_file
+    strategy_file=${strategy_file:-NostalgiaForInfinityX6.py}
+    validate_ext "$strategy_file" ".py" || exit 1
+
+    read -rp "Blacklist files [blacklist-binance.json]: " blacklist_file
+    blacklist_file=${blacklist_file:-blacklist-binance.json}
+    validate_ext "$blacklist_file" ".json" || exit 1
+
+    read -rp "Cleanup old files? (y/n) [y]: " cleanup_old
+    cleanup_old=${cleanup_old:-y}
+
+    read -rp "Telegram bot token (leave blank to skip): " telegram_bot_token
+    read -rp "Telegram chat ID (leave blank to skip): " telegram_chat_id
+
+    cat >"$CONFIG_FILE" <<EOF
+strategy_file="$strategy_file"
+blacklist_file="$blacklist_file"
+cleanup_old_files="$cleanup_old"
+telegram_bot_token="$telegram_bot_token"
+telegram_chat_id="$telegram_chat_id"
+EOF
+    log "Config written."
+fi
+# shellcheck source=/dev/null
+source "$CONFIG_FILE"
+
+# Ensure defaults
+strategy_file=${strategy_file:-NostalgiaForInfinityX6.py}
+blacklist_file=${blacklist_file:-blacklist-binance.json}
+cleanup_old_files=${cleanup_old_files:-y}
+telegram_bot_token=${telegram_bot_token:-}
+telegram_chat_id=${telegram_chat_id:-}
+
+# -----------------------------------------------------------------------------
+# 3) Ensure local version file
+# -----------------------------------------------------------------------------
+if [[ ! -f "$LOCAL_VERSION_FILE" ]]; then
+    echo "0" >"$LOCAL_VERSION_FILE"
+    log "Initialized local version to 0."
+fi
+LOCAL_VERSION=$(<"$LOCAL_VERSION_FILE")
+
+# -----------------------------------------------------------------------------
+# 4) Determine GitHub default branch
+# -----------------------------------------------------------------------------
+REPO_INFO=$(curl -s "https://api.github.com/repos/$GITHUB_USER/$GITHUB_REPO")
+DEFAULT_BRANCH=$(jq -r .default_branch <<<"$REPO_INFO")
+[[ -n "$DEFAULT_BRANCH" && "$DEFAULT_BRANCH" != "null" ]] || DEFAULT_BRANCH="main"
+log "Using default branch: $DEFAULT_BRANCH"
+
+log "=== Starting update check (local: $LOCAL_VERSION) ==="
+
+# -----------------------------------------------------------------------------
+# 5) Fetch all tags, pick highest
+# -----------------------------------------------------------------------------
+TAGS_JSON=$(curl -s "https://api.github.com/repos/$GITHUB_USER/$GITHUB_REPO/git/refs/tags?per_page=100")
+CANDIDATES=$(jq -r '.[] | .ref' <<<"$TAGS_JSON" \
+  | sed -n 's#refs/tags/\(v.*\)#\1#p')
+
+if [[ -z "$CANDIDATES" ]]; then
+    log "❌ No tags found; skipping tag‐based update."
+    TAG_LATEST_VERSION="$LOCAL_VERSION"
+    LATEST_TAG=""
+else
+    LATEST_TAG=$(printf "%s\n" $CANDIDATES | sort -V | tail -n1)
+    TAG_LATEST_VERSION=${LATEST_TAG#*[!0-9]}
+    log "Remote highest tag: $LATEST_TAG (ver: $TAG_LATEST_VERSION)"
+fi
+
+# -----------------------------------------------------------------------------
+# 6) If new tag → full release update path
+# -----------------------------------------------------------------------------
+if [[ -n "$LATEST_TAG" ]] \
+  && [[ "$(printf "%s\n%s" "$LOCAL_VERSION" "$TAG_LATEST_VERSION" | sort -V | head -n1)" == "$LOCAL_VERSION" ]] \
+  && [[ "$LOCAL_VERSION" != "$TAG_LATEST_VERSION" ]]; then
+
+    # Full update on tag bump…
+    log "⬆️  New version $TAG_LATEST_VERSION detected (was $LOCAL_VERSION)."
+
+    ZIP_URL="https://github.com/$GITHUB_USER/$GITHUB_REPO/archive/refs/tags/$LATEST_TAG.zip"
+    ZIP_FILE="$SCRIPT_DIR/${LATEST_TAG}.zip"
+    curl -L -o "$ZIP_FILE" "$ZIP_URL"
+    unzip -oqq "$ZIP_FILE" -d "$SCRIPT_DIR"
+    EXTRACTED_DIR=$(find "$SCRIPT_DIR" -maxdepth 1 -type d -name "$GITHUB_REPO-*${TAG_LATEST_VERSION}*" | head -n1)
+    [[ -d "$EXTRACTED_DIR" ]] || { log "❌ Extract failed."; exit 1; }
+
+    echo "$TAG_LATEST_VERSION" >"$LOCAL_VERSION_FILE"
+    log "Updated version file to $TAG_LATEST_VERSION."
+
+    update_files "Strategy"  "$strategy_file"  "$SCRIPT_DIR/.."
+    update_files "Blacklist" "$blacklist_file" "$SCRIPT_DIR/../configs"
+
+    if [[ "${cleanup_old_files,,}" == "y" ]]; then
+        rm -f "$SCRIPT_DIR"/*.zip
+        rm -rf "$EXTRACTED_DIR"
+        log "🧹 Cleanup complete."
+    fi
+
+    if [[ -n "$telegram_bot_token" && -n "$telegram_chat_id" ]]; then
+        curl -s -X POST "https://api.telegram.org/bot${telegram_bot_token}/sendMessage" \
+             -d "chat_id=${telegram_chat_id}&text=Updated to ${LATEST_TAG}"
+    fi
+
+    if [[ -f "$SCRIPT_DIR/../docker-compose.yml" ]]; then
+        log "🔄 Restarting Docker..."
+        docker compose -f "$SCRIPT_DIR/../docker-compose.yml" down
+        docker compose -f "$SCRIPT_DIR/../docker-compose.yml" up -d
+    fi
+
+# -----------------------------------------------------------------------------
+# 7) Else if no tag bump → check strategy files on default branch
+# -----------------------------------------------------------------------------
+else
+    log "✅ At latest version ($LOCAL_VERSION). Checking for strategy file changes…"
+    any_changed=false
+
+    IFS=',' read -r -a strategies <<<"${strategy_file//[[:space:]]/,}"
+    for strat in "${strategies[@]}"; do
+        RAW_URL="https://raw.githubusercontent.com/$GITHUB_USER/$GITHUB_REPO/$DEFAULT_BRANCH/$strat"
+        TMPFILE=$(mktemp)
+        if curl -fsS "$RAW_URL" -o "$TMPFILE"; then
+            LOCAL_PATH="$SCRIPT_DIR/../$(basename "$strat")"
+            if [[ -f "$LOCAL_PATH" ]]; then
+                if ! cmp -s "$TMPFILE" "$LOCAL_PATH"; then
+                    cp "$TMPFILE" "$LOCAL_PATH"
+                    log "🔄 Updated strategy file: $strat"
+                    any_changed=true
+                fi
+            else
+                cp "$TMPFILE" "$LOCAL_PATH"
+                log "➕ Added missing strategy file: $strat"
+                any_changed=true
+            fi
+        else
+            log "⚠️  Failed to download $strat from $DEFAULT_BRANCH"
+        fi
+        rm -f "$TMPFILE"
+    done
+
+    if $any_changed; then
+        # Optional: Telegram notify & Docker restart on file‐only changes
+        if [[ -n "$telegram_bot_token" && -n "$telegram_chat_id" ]]; then
+            curl -s -X POST "https://api.telegram.org/bot${telegram_bot_token}/sendMessage" \
+                 -d "chat_id=${telegram_chat_id}&text=Strategy file(s) updated on $DEFAULT_BRANCH"
+        fi
+        if [[ -f "$SCRIPT_DIR/../docker-compose.yml" ]]; then
+            log "🔄 Restarting Docker due to file changes..."
+            docker compose -f "$SCRIPT_DIR/../docker-compose.yml" down
+            docker compose -f "$SCRIPT_DIR/../docker-compose.yml" up -d
+        fi
+    else
+        log "No changes detected in strategy files."
+    fi
+fi
+
+log "=== Update check complete ==="
