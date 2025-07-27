@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.5.282"
+    return "v16.5.283"
 
   stoploss = -0.99
 
@@ -391,9 +391,9 @@ class NostalgiaForInfinityX6(IStrategy):
   grinding_v2_derisk_global_futures = -0.30
 
   grinding_v2_grind_1_enable = True
-  grinding_v2_grind_1_stakes_spot = [0.25, 0.30, 0.35, 0.40]
+  grinding_v2_grind_1_stakes_spot = [0.25, 0.26, 0.27, 0.28]
   grinding_v2_grind_1_thresholds_spot = [-0.12, -0.14, -0.16, -0.18]
-  grinding_v2_grind_1_stakes_futures = [0.25, 0.30, 0.35, 0.40]
+  grinding_v2_grind_1_stakes_futures = [0.25, 0.26, 0.27, 0.28]
   grinding_v2_grind_1_thresholds_futures = [-0.12, -0.14, -0.16, -0.18]
   grinding_v2_grind_1_profit_threshold_spot = 0.028
   grinding_v2_grind_1_profit_threshold_futures = 0.028
