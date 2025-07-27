@@ -30849,6 +30849,7 @@ class NostalgiaForInfinityX6(IStrategy):
           is_derisk_1_found
           # only queue 4 grinds open
           and (num_open_grinds_and_buybacks == grind_4_sub_grind_count)
+          and (last_candle["protections_long_global"] == True)
           and (
             (slice_profit < -0.04)
             and (last_candle["RSI_3"] > 10.0)
@@ -53596,6 +53597,7 @@ class NostalgiaForInfinityX6(IStrategy):
           is_derisk_1_found
           # only queue 4 grinds open
           and (num_open_grinds_and_buybacks == grind_4_sub_grind_count)
+          and (last_candle["protections_short_global"] == True)
           and (
             (slice_profit > 0.04)
             and (last_candle["RSI_3"] < 90.0)
