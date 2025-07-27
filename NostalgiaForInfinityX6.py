@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.5.280"
+    return "v16.5.281"
 
   stoploss = -0.99
 
@@ -31342,14 +31342,14 @@ class NostalgiaForInfinityX6(IStrategy):
   def long_buyback_entry_v2(
     self, last_candle: Series, previous_candle: Series, slice_profit: float, is_derisk: bool
   ) -> float:
-    if (
+    if (last_candle["protections_long_global"] == True) and (
       (last_candle["enter_long"] == True)
       or (
         (last_candle["RSI_14"] < 36.0)
         and (last_candle["RSI_3"] > 20.0)
-        and (last_candle["RSI_3_15m"] > 30.0)
-        and (last_candle["RSI_3_1h"] > 30.0)
-        and (last_candle["RSI_3_4h"] > 30.0)
+        and (last_candle["RSI_3_15m"] > 20.0)
+        # and (last_candle["RSI_3_1h"] > 20.0)
+        # and (last_candle["RSI_3_4h"] > 20.0)
         and (last_candle["AROONU_14"] < 25.0)
         and (last_candle["ROC_2_1h"] > -5.0)
         and (last_candle["ROC_2_4h"] > -5.0)
@@ -31433,7 +31433,7 @@ class NostalgiaForInfinityX6(IStrategy):
   def long_grind_entry_v2(
     self, last_candle: Series, previous_candle: Series, slice_profit: float, is_derisk: bool
   ) -> float:
-    if (
+    if (last_candle["protections_long_global"] == True) and (
       (last_candle["enter_long"] == True)
       or (
         (last_candle["RSI_14"] < 46.0)
@@ -54089,7 +54089,7 @@ class NostalgiaForInfinityX6(IStrategy):
   def short_buyback_entry_v2(
     self, last_candle: Series, previous_candle: Series, slice_profit: float, is_derisk: bool
   ) -> float:
-    if (
+    if (last_candle["protections_short_global"] == True) and (
       (last_candle["enter_short"] == True)
       or (
         (last_candle["RSI_14"] > 64.0)
@@ -54180,7 +54180,7 @@ class NostalgiaForInfinityX6(IStrategy):
   def short_grind_entry_v2(
     self, last_candle: Series, previous_candle: Series, slice_profit: float, is_derisk: bool
   ) -> float:
-    if (
+    if (last_candle["protections_short_global"] == True) and (
       (last_candle["enter_short"] == True)
       or (
         (last_candle["RSI_14"] > 54.0)
