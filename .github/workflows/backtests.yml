@@ -107,7 +107,6 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      max-parallel: 4
       matrix:
         TIMERANGE:
           - 20250601-20250701
@@ -190,7 +189,6 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      max-parallel: 4
       matrix:
         TIMERANGE:
           - 20250601-20250701
