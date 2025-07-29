@@ -688,6 +688,8 @@ class NostalgiaForInfinityX6(IStrategy):
       "stop_threshold_doom_futures",
       "stop_threshold_rapid_spot",
       "stop_threshold_rapid_futures",
+      "stop_threshold_scalp_spot",
+      "stop_threshold_scalp_futures",
       "derisk_enable",
       "stops_enable",
       "regular_mode_derisk_1_spot",
