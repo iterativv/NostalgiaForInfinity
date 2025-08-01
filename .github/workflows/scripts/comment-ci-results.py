@@ -96,15 +96,6 @@ def comment_results(options, results_data):
                 value = f"{round(value, 4)} %"
               row_line += f" {value} |"
             comment_body += f"{row_line}\n"
-          elif key == "profit_sum_pct":
-            label = "Profit Sum"
-            row_line += f" {label} |"
-            for report_name in sorted_report_names:
-              value = mode_data["timeranges"][timerange][key][report_name]
-              if not isinstance(value, str):
-                value = f"{round(value, 4)} %"
-              row_line += f" {value} |"
-            comment_body += f"{row_line}\n"
           elif key == "market_change":
             label = "Market Change"
             row_line += f" {label} |"
