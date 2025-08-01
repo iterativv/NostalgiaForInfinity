@@ -269,7 +269,6 @@ class BacktestResults:
   def _set__stats_pct(self):
     return {
       "duration_avg": self.full_stats.duration_avg,
-      "profit_sum_pct": self.full_stats.profit_sum_pct,
       "profit_mean_pct": self.full_stats.profit_mean_pct,
       "profit_total_pct": self.full_stats.profit_total_pct,
       "max_drawdown": self.results.max_drawdown_account * 100,
