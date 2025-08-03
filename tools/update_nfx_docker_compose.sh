@@ -26,7 +26,7 @@ load_env() {
         . "$env_file"
         set +a
     else
-        echo "Error: $env_file not found"
+        echo "$(date +"%H:%M:%S") - Error: $env_file not found"
         exit 1
     fi
 }
@@ -40,7 +40,7 @@ send_telegram_notification() {
     local message="$1"
 
     if [ -z "$message" ]; then
-        echo "Error: message variable is empty"
+        echo "$(date +"%H:%M:%S") - Error: message variable is empty"
         return 1
     fi
 
@@ -51,7 +51,7 @@ send_telegram_notification() {
             --data "chat_id=$FREQTRADE__TELEGRAM__CHAT_ID" \
             "https://api.telegram.org/bot${FREQTRADE__TELEGRAM__TOKEN}/sendMessage" 2>&1 1>/dev/null)
         if [ $? -ne 0 ]; then
-            echo "Error: failed to send telegram notification: $curl_error"
+            echo "$(date +"%H:%M:%S") - Error: failed to send telegram notification: $curl_error"
             return 1
         fi
     fi
@@ -60,7 +60,7 @@ send_telegram_notification() {
 ######################################################
 
 if [ -z "$NFI_PATH" ]; then
-    echo "Error: NFI_PATH variable is empty"
+    echo "$(date +"%H:%M:%S") - Error: NFI_PATH variable is empty"
     exit 1
 fi
 
@@ -70,32 +70,32 @@ fi
 
 
 if [ ! -d "$NFI_PATH" ]; then
-    echo "Error: NFI_PATH ($NFI_PATH) is not a directory or does not exist."
+    echo "$(date +"%H:%M:%S") - Error: NFI_PATH ($NFI_PATH) is not a directory or does not exist."
     exit 1
 fi
 
 cd "$NFI_PATH" || exit 1
 
 if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
-    echo "Error: NFI_PATH ($NFI_PATH) is not a git repository."
+    echo "$(date +"%H:%M:%S") - Error: NFI_PATH ($NFI_PATH) is not a git repository."
     exit 1
 fi
 
 # pull from NFIX repo
-echo "Info: pulling updates from repo"
+echo "$(date +"%H:%M:%S") - Info: pulling updates from repo"
 latest_local_commit=$(git rev-parse HEAD)
 
 git stash push > /dev/null 2>&1
 
 if [ $? -ne 0 ]; then
-    echo "Error: failed to stash changes in NFIX repo"
+    echo "$(date +"%H:%M:%S") - Error: failed to stash changes in NFIX repo"
     exit 1
 fi
 
 git_pull_error=$(git pull 2>&1 1>/dev/null)
 
 if [ $? -ne 0 ]; then
-    echo "Error: failed to pull from NFIX repo: $git_pull_error"
+    echo "$(date +"%H:%M:%S") - Error: failed to pull from NFIX repo: $git_pull_error"
     git stash pop > /dev/null 2>&1
     exit 1
 fi
@@ -103,8 +103,30 @@ fi
 git stash pop > /dev/null 2>&1
 
 if [ $? -ne 0 ]; then
-    echo "Error: failed to unstash changes in NFIX repo"
+    echo "$(date +"%H:%M:%S") - Error: failed to unstash changes in NFIX repo"
     exit 1
+fi
+
+# check ft image and update if needed
+ft_image_updated=false
+
+if [ "$FREQTRADE_IMAGE_UPDATE" = "true" ]; then
+    echo "$(date +"%H:%M:%S") - Info: checking if new freqtrade image avalaible"
+    local_digest=$(docker inspect --format='{{.Id}}' "$FREQTRADE_IMAGE" 2>/dev/null || echo "none")
+
+    docker pull "$FREQTRADE_IMAGE" > /dev/null 2>&1
+
+    remote_digest=$(docker inspect --format='{{.Id}}' "$FREQTRADE_IMAGE" 2>/dev/null || echo "none")
+
+    if [ "$local_digest" != "$remote_digest" ]; then
+        ft_image_updated=true
+        message="freqtrade image version was updated"
+    else
+        message="no new freqtrade image version"
+    fi
+
+    echo "$(date +"%H:%M:%S") - Info: $message"
+    send_telegram_notification "$message"
 fi
 
 latest_remote_commit=$(git rev-parse HEAD)
@@ -115,28 +137,17 @@ if [ "$latest_local_commit" != "$latest_remote_commit" ]; then
     latest_remote_commit_short=$(echo "$latest_remote_commit" | cut -c1-7)
     message="NFI was updated to commit: *${latest_remote_commit_short}*. Please wait for reload..."
 
-    echo "Info: $message"
+    echo "$(date +"%H:%M:%S") - Info: $message"
     send_telegram_notification "$message"
+fi
 
-    if [ "$FREQTRADE_IMAGE_UPDATE" = "true" ]; then
-        echo "Info: checking new freqtrade image"
-        local_digest=$(docker inspect --format='{{.Id}}' "$FREQTRADE_IMAGE" 2>/dev/null || echo "none")
-
-        docker pull "$FREQTRADE_IMAGE" --quiet
-
-        remote_digest=$(docker inspect --format='{{.Id}}' "$FREQTRADE_IMAGE" 2>/dev/null || echo "none")
-
-        if [ "$local_digest" != "$remote_digest" ]; then
-            message="freqtrade image version was updated"
-
-            echo "Info: $message"
-            send_telegram_notification "$message"
-        fi
-    fi
-
-    echo "Info: restarting freqtrade with NFIX"
-    docker compose stop
-    docker compose up -d
+if { [ "$FREQTRADE_IMAGE_UPDATE" = "true" ] && [ "$ft_image_updated" = "true" ]; } || [ "$latest_local_commit" != "$latest_remote_commit" ]; then
+    echo "$(date +"%H:%M:%S") - Info: restarting freqtrade with NFIX"
+    docker compose --progress quiet stop
+    docker compose --progress quiet up -d
+    echo "$(date +"%H:%M:%S") - Info: restarted freqtrade with NFIX"
+else
+    echo "$(date +"%H:%M:%S") - Info: no new updates avalaible"
 fi
 
 exit 0
