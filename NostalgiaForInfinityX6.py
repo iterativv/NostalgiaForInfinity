@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.6.27"
+    return "v16.6.28"
 
   stoploss = -0.99
 
@@ -10926,7 +10926,7 @@ class NostalgiaForInfinityX6(IStrategy):
           long_entry_logic.append(df["AROONU_14_15m"] < 90.0)
           long_entry_logic.append(df["STOCHRSIk_14_14_3_3_15m"] < 90.0)
           long_entry_logic.append(
-            (df["SMA_21"].shift(1) < df["SMA_200"].shift(1).fillna(np.nan).infer_objects(copy=False))
+            (df["SMA_21"].shift(1) < df["SMA_200"].shift(1).infer_objects(copy=False).fillna(np.nan))
             & df["SMA_200"].shift(1).notna()
           )
           long_entry_logic.append(
