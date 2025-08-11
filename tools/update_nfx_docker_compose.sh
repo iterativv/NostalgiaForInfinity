@@ -77,7 +77,7 @@ fi
 cd "$NFI_PATH" || exit 1
 
 if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
-    echo "$(date +"%H:%M:%S") - Error: NFI_PATH ($NFI_PATH) is not a git repository."
+    echo "$(date +"%d-%b %H:%M:%S") - Error: NFI_PATH ($NFI_PATH) is not a git repository."
     exit 1
 fi
 
