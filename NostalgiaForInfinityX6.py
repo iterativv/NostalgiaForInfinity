@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.6.30"
+    return "v16.6.31"
 
   stoploss = -0.99
 
@@ -3372,8 +3372,21 @@ class NostalgiaForInfinityX6(IStrategy):
 
     # Global protections Long
     df["protections_long_global"] = (
-      # 5m & 4h & 1d down move, 15m & 1h & 4h still not low enough, 1d still high
+      # 5m & 15m & 1h & 4h & 1d down move, 1h & 4h & 1d still not low enough
       (
+        (df["RSI_3"] > 1.0)
+        | (df["RSI_3_15m"] > 15.0)
+        | (df["RSI_3_1h"] > 20.0)
+        | (df["RSI_3_4h"] > 20.0)
+        | (df["RSI_3_1d"] > 20.0)
+        | (df["RSI_14_1h"] < 30.0)
+        | (df["RSI_14_4h"] < 30.0)
+        | (df["RSI_14_1d"] < 30.0)
+        | (df["CCI_20_1h"] < -250.0)
+        | (df["CCI_20_4h"] < -200.0)
+      )
+      # 5m & 4h & 1d down move, 15m & 1h & 4h still not low enough, 1d still high
+      & (
         (df["RSI_3"] > 1.0)
         | (df["RSI_3_4h"] > 10.0)
         | (df["RSI_3_1d"] > 35.0)
