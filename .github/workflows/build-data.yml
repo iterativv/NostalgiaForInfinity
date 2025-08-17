@@ -1,0 +1,48 @@
+name: Build Data Image
+on:
+  schedule:
+    - cron: '0 0 3 * *'  # Runs at 00:00 UTC on the 3rd day of each month
+  workflow_dispatch:
+
+jobs:
+  # Download market data in parallel
+  build-data-image:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        EXCHANGE: [binance, kucoin]
+        TRADING_MODE: [spot, futures]
+        exclude:
+          - EXCHANGE: kucoin
+            TRADING_MODE: futures
+
+    steps:
+      - uses: actions/checkout@v5
+      - name: Fetch data for backtests
+        env:
+          EXCHANGE: ${{ matrix.EXCHANGE }}
+          TRADING_MODE: ${{ matrix.TRADING_MODE }}
+          TIMEFRAME: 5m
+          TIMERANGE: 20240101-20250701
+          HELPER_TIME_FRAMES: 5m 15m 1h 4h 8h 1d
+        run: |
+          mkdir -p user_data/data
+          .github/workflows/scripts/download-necessary-exchange-market-data-for-backtests.sh
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Docker image with data
+        run: |
+          docker build -t ghcr.io/${{ github.actor }}/market-data:${{ matrix.EXCHANGE }}-${{ matrix.TRADING_MODE }} . -f- <<EOF
+          FROM ubuntu:22.04
+          COPY user_data/data /data
+          EOF
+      - name: Push data image
+        run: |
+          docker push ghcr.io/${{ github.actor }}/market-data:${{ matrix.EXCHANGE }}-${{ matrix.TRADING_MODE }}
