@@ -7,103 +7,8 @@ on:
       - 'NostalgiaForInfinityX6.py'
 
 jobs:
-  # Docker build
-  Build-Docker-Image:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build and load Docker image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: docker/Dockerfile.custom
-          tags: ci-strategy-backtesting:latest
-          load: true
-          cache-from: type=gha,mode=inline,scope=ci-strategy-backtesting
-          cache-to: type=gha,mode=max,scope=ci-strategy-backtesting
-        env:
-          DOCKER_BUILDKIT: 1
-          DOCKER_BUILD_CHECKS_ANNOTATIONS: false
-          DOCKER_BUILD_SUMMARY: false
-          DOCKER_BUILD_RECORD_UPLOAD: false
-
-      - name: Save Docker image as tarball
-        run: |
-          docker save ci-strategy-backtesting:latest -o image.tar
-
-      - name: Upload Docker image artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: docker-image
-          path: image.tar
-          retention-days: 1
-
-  # Download jobs
-  Download-Data-Binance-Spot:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Fetch Binance Spot data
-        env:
-          EXCHANGE: binance
-          TRADING_MODE: spot
-          TIMEFRAME: 5m
-          TIMERANGE: 20240101-20250701
-          HELPER_TIME_FRAMES: 5m 15m 1h 4h 8h 1d
-        run: .github/workflows/scripts/download-necessary-exchange-market-data-for-backtests.sh
-      - name: Upload Market Data Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: data-binance-spot
-          path: user_data/data
-          retention-days: 1
-
-  Download-Data-Binance-Futures:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Fetch Binance Futures data
-        env:
-          EXCHANGE: binance
-          TRADING_MODE: futures
-          TIMEFRAME: 5m
-          TIMERANGE: 20240101-20250701
-          HELPER_TIME_FRAMES: 5m 15m 1h 4h 8h 1d
-        run: .github/workflows/scripts/download-necessary-exchange-market-data-for-backtests.sh
-      - name: Upload Market Data Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: data-binance-futures
-          path: user_data/data
-          retention-days: 1
-
-  Download-Data-Kucoin-Spot:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Fetch Kucoin Spot data
-        env:
-          EXCHANGE: kucoin
-          TRADING_MODE: spot
-          TIMEFRAME: 5m
-          TIMERANGE: 20240101-20250701
-          HELPER_TIME_FRAMES: 5m 15m 1h 4h 8h 1d
-        run: .github/workflows/scripts/download-necessary-exchange-market-data-for-backtests.sh
-      - name: Upload Market Data Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: data-kucoin-spot
-          path: user_data/data
-          retention-days: 1
-
   # Backtest Jobs
-  Backtest-Binance-Spot:
-    needs:
-      - Download-Data-Binance-Spot
-      - Build-Docker-Image
+  Backtest-Kucoin-Spot:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -129,22 +34,76 @@ jobs:
           - 20240201-20240301
           - 20240101-20240201
     steps:
-      - uses: actions/checkout@v4
-      - name: Download Market Data Artifact
-        uses: actions/download-artifact@v4
+      - uses: actions/checkout@v5
+      - name: Pull docker image
+        run: |
+          docker pull ghcr.io/${{ github.actor }}/ci-strategy-backtesting:latest
+
+      - name: Pull Market data and copy to user_data/data
+        run: |
+          docker pull ghcr.io/${{ github.actor }}/market-data:kucoin-spot
+          mkdir -p user_data/data
+          docker run --rm -v "$PWD/user_data/data:/host_data" ghcr.io/${{ github.actor }}/market-data:kucoin-spot \
+            bash -c "cp -r /data/* /host_data/"
+
+      - name: Run Backtests
+        run: |
+          mkdir -p artifacts && chmod 777 artifacts
+          tree
+          export COLUMNS=240
+          docker run -v "$PWD:/testing" \
+            -v "$PWD/user_data/data:/testing/user_data/data" \
+            --rm \
+            -w /testing \
+            --entrypoint "" \
+            -e "COLUMNS=240" \
+            -t \
+            --env-file .github/workflows/scripts/ci-proxy.env \
+            ghcr.io/${{ github.actor }}/ci-strategy-backtesting:latest \
+            python -m pytest \
+            tests/backtests \
+            -ra -vv -s \
+            --log-cli-level=info \
+            --artifacts-path=artifacts/ \
+            -p no:cacheprovider \
+            -n auto \
+            -k "kucoin and spot and ${{ matrix.TIMERANGE }}"
+
+      - name: Show Backtest Output
+        run: cat artifacts/backtest-output-kucoin-spot-${{ matrix.TIMERANGE }}.txt
+      - name: Upload results
+        uses: actions/upload-artifact@v4
         with:
-          name: data-binance-spot
-          path: user_data/data
+          name: kucoin-spot-testrun-artifacts-${{ matrix.TIMERANGE }}
+          path: artifacts/
 
-      - name: Download Docker Image Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: docker-image
-          path: .
-
-      - name: Load Docker Image
-        run: docker load -i image.tar
-
+  Backtest-Binance-Spot:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        TIMERANGE:
+          - 20250701-20250801
+          - 20250601-20250701
+          - 20250501-20250601
+          - 20250401-20250501
+          - 20250301-20250401
+          - 20250201-20250301
+          - 20250101-20250201
+          - 20241201-20250101
+          - 20241101-20241201
+          - 20241001-20241101
+          - 20240901-20241001
+          - 20240801-20240901
+          - 20240701-20240801
+          - 20240601-20240701
+          - 20240501-20240601
+          - 20240401-20240501
+          - 20240301-20240401
+          - 20240201-20240301
+          - 20240101-20240201
+    steps:
+      - uses: actions/checkout@v5
       - name: Inject Proxy Config
         env:
           PROXY: ${{ secrets.FREQTRADE_PROXY }}
@@ -152,6 +111,17 @@ jobs:
           jq --arg proxy "$PROXY" \
             '.exchange.ccxt_config = { http_proxy: $proxy }' \
             configs/proxy-binance.json > tmp.json && mv tmp.json configs/proxy-binance.json
+
+      - name: Pull docker image
+        run: |
+          docker pull ghcr.io/${{ github.actor }}/ci-strategy-backtesting:latest
+
+      - name: Pull Market data and copy to user_data/data
+        run: |
+          docker pull ghcr.io/${{ github.actor }}/market-data:binance-spot
+          mkdir -p user_data/data
+          docker run --rm -v "$PWD/user_data/data:/host_data" ghcr.io/${{ github.actor }}/market-data:binance-spot \
+            bash -c "cp -r /data/* /host_data/"
 
       - name: Run Backtests
         run: |
@@ -165,7 +135,7 @@ jobs:
             -e "COLUMNS=240" \
             -t \
             --env-file .github/workflows/scripts/ci-proxy.env \
-            ci-strategy-backtesting \
+            ghcr.io/${{ github.actor }}/ci-strategy-backtesting:latest \
             python -m pytest \
             tests/backtests \
             -ra -vv -s \
@@ -184,9 +154,6 @@ jobs:
           path: artifacts/
 
   Backtest-Binance-Futures:
-    needs:
-      - Download-Data-Binance-Futures
-      - Build-Docker-Image
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -212,22 +179,7 @@ jobs:
           - 20240201-20240301
           - 20240101-20240201
     steps:
-      - uses: actions/checkout@v4
-      - name: Download Market Data Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: data-binance-futures
-          path: user_data/data
-
-      - name: Download Docker Image Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: docker-image
-          path: .
-
-      - name: Load Docker Image
-        run: docker load -i image.tar
-
+      - uses: actions/checkout@v5
       - name: Inject Proxy Config
         env:
           PROXY: ${{ secrets.FREQTRADE_PROXY }}
@@ -235,6 +187,17 @@ jobs:
           jq --arg proxy "$PROXY" \
             '.exchange.ccxt_config = { http_proxy: $proxy }' \
             configs/proxy-binance.json > tmp.json && mv tmp.json configs/proxy-binance.json
+
+      - name: Pull docker image
+        run: |
+          docker pull ghcr.io/${{ github.actor }}/ci-strategy-backtesting:latest
+
+      - name: Pull Market data and copy to user_data/data
+        run: |
+          docker pull ghcr.io/${{ github.actor }}/market-data:binance-futures
+          mkdir -p user_data/data
+          docker run --rm -v "$PWD/user_data/data:/host_data" ghcr.io/${{ github.actor }}/market-data:binance-futures \
+            bash -c "cp -r /data/* /host_data/"
 
       - name: Run Backtests
         run: |
@@ -248,7 +211,7 @@ jobs:
             -e "COLUMNS=240" \
             -t \
             --env-file .github/workflows/scripts/ci-proxy.env \
-            ci-strategy-backtesting \
+            ghcr.io/${{ github.actor }}/ci-strategy-backtesting:latest \
             python -m pytest \
             tests/backtests \
             -ra -vv -s \
@@ -264,81 +227,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: binance-futures-testrun-artifacts-${{ matrix.TIMERANGE }}
-          path: artifacts/
-
-  Backtest-Kucoin-Spot:
-    needs:
-      - Download-Data-Kucoin-Spot
-      - Build-Docker-Image
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        TIMERANGE:
-          - 20250701-20250801
-          - 20250601-20250701
-          - 20250501-20250601
-          - 20250401-20250501
-          - 20250301-20250401
-          - 20250201-20250301
-          - 20250101-20250201
-          - 20241201-20250101
-          - 20241101-20241201
-          - 20241001-20241101
-          - 20240901-20241001
-          - 20240801-20240901
-          - 20240701-20240801
-          - 20240601-20240701
-          - 20240501-20240601
-          - 20240401-20240501
-          - 20240301-20240401
-          - 20240201-20240301
-          - 20240101-20240201
-    steps:
-      - uses: actions/checkout@v4
-      - name: Download Market Data Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: data-kucoin-spot
-          path: user_data/data
-
-      - name: Download Docker Image Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: docker-image
-          path: .
-
-      - name: Load Docker Image
-        run: docker load -i image.tar
-
-      - name: Run Backtests
-        run: |
-          mkdir -p artifacts && chmod 777 artifacts
-          export COLUMNS=240
-          docker run -v "$PWD:/testing" \
-            -v "$PWD/user_data/data:/testing/user_data/data" \
-            --rm \
-            -w /testing \
-            --entrypoint "" \
-            -e "COLUMNS=240" \
-            -t \
-            --env-file .github/workflows/scripts/ci-proxy.env \
-            ci-strategy-backtesting \
-            python -m pytest \
-            tests/backtests \
-            -ra -vv -s \
-            --log-cli-level=info \
-            --artifacts-path=artifacts/ \
-            -p no:cacheprovider \
-            -n auto \
-            -k "kucoin and spot and ${{ matrix.TIMERANGE }}"
-
-      - name: Show Backtest Output
-        run: cat artifacts/backtest-output-kucoin-spot-${{ matrix.TIMERANGE }}.txt
-      - name: Upload results
-        uses: actions/upload-artifact@v4
-        with:
-          name: kucoin-spot-testrun-artifacts-${{ matrix.TIMERANGE }}
           path: artifacts/
 
   Merge-Artifacts:
@@ -371,11 +259,11 @@ jobs:
       contents: write
       actions: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.13"
 
       - name: Cache pip
         uses: actions/cache@v4
@@ -427,19 +315,19 @@ jobs:
             --artifact=binance-futures-testrun-artifacts downloaded-results
 
       - name: Download Current Binance Futures CI Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           pattern: binance-futures-testrun-artifacts
           path: downloaded-results/current
 
       - name: Download Current Binance Spot CI Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           pattern: binance-spot-testrun-artifacts
           path: downloaded-results/current
 
       - name: Download Current Kucoin CI Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           pattern: kucoin-spot-testrun-artifacts
           path: downloaded-results/current
