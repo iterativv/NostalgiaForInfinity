@@ -4811,7 +4811,7 @@ class NostalgiaForInfinityX6(IStrategy):
       # 15m & 1h & 4h down move, 15m & 1h & 4h still not low enough, 15m still high, 4h high & overbought
       & (
         (df["RSI_3_15m"] > 45.0)
-        | (df["RSI_3_1h"] > 50.0)
+        | (df["RSI_3_1h"] > 55.0)
         | (df["RSI_3_4h"] > 50.0)
         | (df["RSI_14_15m"] < 30.0)
         | (df["RSI_14_1h"] < 30.0)
