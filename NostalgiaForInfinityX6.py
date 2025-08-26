@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.6.149"
+    return "v16.6.150"
 
   stoploss = -0.99
 
@@ -32878,7 +32878,7 @@ class NostalgiaForInfinityX6(IStrategy):
 
     if (
       (self.grinding_v2_grind_1_enable)
-      # and (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
+      and (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
       and is_long_grind_entry
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
       and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
@@ -55905,7 +55905,7 @@ class NostalgiaForInfinityX6(IStrategy):
 
     if (
       (self.grinding_v2_grind_1_enable)
-      # and (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
+      and (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
       and is_short_grind_entry
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
       and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
