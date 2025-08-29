@@ -446,8 +446,8 @@ class NostalgiaForInfinityX6(IStrategy):
   grinding_v2_grind_5_derisk_futures = -0.10
 
   grinding_v2_buyback_1_enable = True
-  grinding_v2_buyback_1_stake_spot = 0.20
-  grinding_v2_buyback_1_stake_futures = 0.20
+  grinding_v2_buyback_1_stake_spot = 0.10
+  grinding_v2_buyback_1_stake_futures = 0.10
   grinding_v2_buyback_1_distance_ratio_spot = -0.06
   grinding_v2_buyback_1_distance_ratio_futures = -0.06
   grinding_v2_buyback_1_profit_threshold_spot = 0.05
@@ -457,8 +457,8 @@ class NostalgiaForInfinityX6(IStrategy):
   grinding_v2_buyback_1_derisk_futures = -0.10
 
   grinding_v2_buyback_2_enable = True
-  grinding_v2_buyback_2_stake_spot = 0.20
-  grinding_v2_buyback_2_stake_futures = 0.20
+  grinding_v2_buyback_2_stake_spot = 0.10
+  grinding_v2_buyback_2_stake_futures = 0.10
   grinding_v2_buyback_2_distance_ratio_spot = -0.12
   grinding_v2_buyback_2_distance_ratio_futures = -0.12
   grinding_v2_buyback_2_profit_threshold_spot = 0.05
@@ -468,8 +468,8 @@ class NostalgiaForInfinityX6(IStrategy):
   grinding_v2_buyback_2_derisk_futures = -0.10
 
   grinding_v2_buyback_3_enable = True
-  grinding_v2_buyback_3_stake_spot = 0.20
-  grinding_v2_buyback_3_stake_futures = 0.20
+  grinding_v2_buyback_3_stake_spot = 0.10
+  grinding_v2_buyback_3_stake_futures = 0.10
   grinding_v2_buyback_3_distance_ratio_spot = -0.16
   grinding_v2_buyback_3_distance_ratio_futures = -0.16
   grinding_v2_buyback_3_profit_threshold_spot = 0.05
