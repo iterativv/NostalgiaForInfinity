@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.7.12"
+    return "v16.7.13"
 
   stoploss = -0.99
 
@@ -33802,19 +33802,31 @@ class NostalgiaForInfinityX6(IStrategy):
       # and (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
       and (
         is_long_grind_entry
-        or (
-          is_derisk_1_found
-          # only queue 4 grinds open
-          and (num_open_grinds_and_buybacks == grind_4_sub_grind_count)
-          and (last_candle["protections_long_global"] == True)
-          and (
-            (slice_profit < -0.04)
-            and (last_candle["RSI_3"] > 10.0)
-            and (last_candle["RSI_3_15m"] > 20.0)
-            and (last_candle["AROONU_14"] < 50.0)
-            and (last_candle["AROONU_14_15m"] < 50.0)
-          )
-        )
+        # or (
+        #   is_derisk_1_found
+        #   # only queue 4 grinds open
+        #   and (num_open_grinds_and_buybacks == grind_4_sub_grind_count)
+        #   and (last_candle["protections_long_global"] == True)
+        #   and (
+        #     (slice_profit < -0.04)
+        #     and (last_candle["RSI_3"] > 10.0)
+        #     and (last_candle["RSI_3_15m"] > 20.0)
+        #     and (last_candle["AROONU_14"] < 50.0)
+        #     and (last_candle["AROONU_14_15m"] < 50.0)
+        #   )
+        # )
+        # or (
+        #   (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
+        #   and (num_open_grinds_and_buybacks == 0)
+        #   and (
+        #     (last_candle["RSI_3"] > 10.0)
+        #     and (last_candle["RSI_3_15m"] > 20.0)
+        #     and (last_candle["RSI_3_1h"] > 20.0)
+        #     and (last_candle["RSI_3_1h"] > 20.0)
+        #     and (last_candle["AROONU_14"] < 50.0)
+        #     and (last_candle["AROONU_14_15m"] < 50.0)
+        #   )
+        # )
       )
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
       and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
@@ -56829,19 +56841,19 @@ class NostalgiaForInfinityX6(IStrategy):
       # and (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
       and (
         is_short_grind_entry
-        or (
-          is_derisk_1_found
-          # only queue 4 grinds open
-          and (num_open_grinds_and_buybacks == grind_4_sub_grind_count)
-          and (last_candle["protections_short_global"] == True)
-          and (
-            (slice_profit > 0.04)
-            and (last_candle["RSI_3"] < 90.0)
-            and (last_candle["RSI_3_15m"] < 80.0)
-            and (last_candle["AROOND_14"] < 50.0)
-            and (last_candle["AROOND_14_15m"] < 50.0)
-          )
-        )
+        # or (
+        #   is_derisk_1_found
+        #   # only queue 4 grinds open
+        #   and (num_open_grinds_and_buybacks == grind_4_sub_grind_count)
+        #   and (last_candle["protections_short_global"] == True)
+        #   and (
+        #     (slice_profit > 0.04)
+        #     and (last_candle["RSI_3"] < 90.0)
+        #     and (last_candle["RSI_3_15m"] < 80.0)
+        #     and (last_candle["AROOND_14"] < 50.0)
+        #     and (last_candle["AROOND_14_15m"] < 50.0)
+        #   )
+        # )
       )
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
       and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
