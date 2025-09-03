@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.7.13"
+    return "v16.7.14"
 
   stoploss = -0.99
 
@@ -32890,8 +32890,6 @@ class NostalgiaForInfinityX6(IStrategy):
 
     fee_open_rate = trade.fee_open if self.custom_fee_open_rate is None else self.custom_fee_open_rate
     fee_close_rate = trade.fee_close if self.custom_fee_close_rate is None else self.custom_fee_close_rate
-    is_long_buyback_entry = self.long_buyback_entry_v2(last_candle, previous_candle, slice_profit, True)
-    is_long_grind_entry = self.long_grind_entry_v2(last_candle, previous_candle, slice_profit, True)
 
     grind_1_max_sub_grinds = 0
     grind_1_stakes = (
@@ -33360,6 +33358,36 @@ class NostalgiaForInfinityX6(IStrategy):
     # not reached the max allowed stake for all grinds
     is_not_trade_max_stake = (current_stake_amount < (slice_amount * self.grinding_v2_max_stake)) and (
       num_open_grinds_and_buybacks < self.grinding_v2_max_grinds_and_buybacks
+    )
+
+    is_long_buyback_entry = self.long_buyback_entry_v2(last_candle, previous_candle, slice_profit, True)
+    is_long_grind_entry = (
+      self.long_grind_entry_v2(last_candle, previous_candle, slice_profit, True)
+      or (
+        (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
+        and (num_open_grinds_and_buybacks == 0)
+        and (
+          (last_candle["RSI_3"] > 10.0)
+          and (last_candle["RSI_3_15m"] > 20.0)
+          and (last_candle["RSI_3_1h"] > 20.0)
+          and (last_candle["RSI_3_1h"] > 20.0)
+          and (last_candle["AROONU_14"] < 50.0)
+          and (last_candle["AROONU_14_15m"] < 50.0)
+        )
+      )
+      or (
+        self.is_futures_mode
+        and (
+          (trade.is_short and current_rate > trade.liquidation_price * 0.90)
+          or (not trade.is_short and current_rate < trade.liquidation_price * 1.10)
+        )
+        and (last_candle["RSI_3"] > 10.0)
+        and (last_candle["RSI_3_15m"] > 20.0)
+        # and (last_candle["RSI_3_1h"] > 20.0)
+        # and (last_candle["RSI_3_1h"] > 20.0)
+        and (last_candle["AROONU_14"] < 50.0)
+        and (last_candle["AROONU_14_15m"] < 50.0)
+      )
     )
 
     # De-risk level 1
