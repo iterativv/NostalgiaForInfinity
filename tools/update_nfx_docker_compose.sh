@@ -116,7 +116,7 @@ if ! command -v docker >/dev/null 2>&1; then
     exit 1
 fi
 
-cd "$NFI_PATH" || exit 1
+cd -- "$NFI_PATH" || exit 1
 
 load_env "${ENV_PATH}/.env"
 
