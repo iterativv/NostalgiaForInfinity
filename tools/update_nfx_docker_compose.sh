@@ -120,7 +120,7 @@ cd -- "$NFI_PATH" || exit 1
 
 load_env "${ENV_PATH}/.env"
 
-if ! command git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
+if ! command git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     echo_timestamped "Error: NFI_PATH (${NFI_PATH}) is not a git repository"
     exit 1
 fi
@@ -128,7 +128,7 @@ fi
 echo_timestamped "Info: pulling updates from repo"
 latest_local_commit=$(command git rev-parse HEAD)
 
-command git stash push > /dev/null 2>&1
+command git stash push >/dev/null 2>&1
 
 if [ $? -ne 0 ]; then
     echo_timestamped "Error: failed to stash changes in NFIX repo"
@@ -139,11 +139,11 @@ git_pull_error=$(command git pull 2>&1 1>/dev/null)
 
 if [ $? -ne 0 ]; then
     echo_timestamped "Error: failed to pull from NFIX repo: $git_pull_error"
-    command git stash pop > /dev/null 2>&1
+    command git stash pop >/dev/null 2>&1
     exit 1
 fi
 
-command git stash pop > /dev/null 2>&1
+command git stash pop >/dev/null 2>&1
 
 if [ $? -ne 0 ]; then
     echo_timestamped "Error: failed to unstash changes in NFIX repo"
