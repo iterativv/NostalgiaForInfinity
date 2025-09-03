@@ -167,7 +167,7 @@ fi
 if [ "$FREQTRADE_IMAGE_UPDATE" = "true" ]; then
     echo_timestamped "Info: docker image pull for ${FREQTRADE_IMAGE}"
     local_digest=$(command docker image inspect --format='{{.Id}}' "$FREQTRADE_IMAGE" 2>/dev/null || command echo "none")
-    if ! command docker image pull --quiet "$FREQTRADE_IMAGE"; then
+    if ! command docker image pull --quiet "$FREQTRADE_IMAGE" >/dev/null 2>&1; then
         echo_timestamped "Error: docker image pull failed for ${FREQTRADE_IMAGE}"
         exit 1
     fi
