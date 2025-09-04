@@ -1,0 +1,35 @@
+{
+  "pairlists": [
+    {
+      "method": "VolumePairList",
+      "number_assets": 100,
+      "sort_key": "quoteVolume",
+      "refresh_period": 1800
+    },
+    {
+      "method": "FullTradesFilter"
+    },
+    {
+      "method": "AgeFilter",
+      "min_days_listed": 60
+    },
+    {
+      "method": "PriceFilter",
+      "low_price_ratio": 0.01
+    },
+    {
+      "method": "SpreadFilter",
+      "max_spread_ratio": 0.01
+    },
+    {
+      "method": "VolumePairList",
+      "number_assets": 80,
+      "sort_key": "quoteVolume"
+    },
+    {
+      "method": "OffsetFilter",
+      "offset": 50,
+      "number_assets": 10
+    }
+  ]
+}

@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.7.28"
+    return "v16.7.28c"
 
   stoploss = -0.99
 
@@ -99,6 +99,7 @@ class NostalgiaForInfinityX6(IStrategy):
   hold_support_enabled = True
 
   # Run "populate_indicators()" only for new candle.
+  # For NFI consumer mode, ingnore the warning and leave this set to True
   process_only_new_candles = True
 
   # These values can be overridden in the "ask_strategy" section in the config.
@@ -656,6 +657,15 @@ class NostalgiaForInfinityX6(IStrategy):
   hold_trades_cache = None
   target_profit_cache = None
   #############################################################
+  # Producer-Consumer mode
+  
+  consumer_mode = False
+  producer_names = []
+  # For consumer mode, when producer analyzed dataframe is unavailable,
+  # disable fallback to default indicator population. For now, DEBUG ONLY!
+  consumer_mode_disable_fallback = False
+
+  #############################################################
   #
   #
   #  $$$$$$\   $$$$$$\  $$\      $$\ $$\      $$\  $$$$$$\  $$\   $$\
@@ -800,6 +810,17 @@ class NostalgiaForInfinityX6(IStrategy):
 
     # Parameter settings. Backward compatibility with the old configuration style.
     self.update_signals_from_config(self.config)
+
+    if (self.config["runmode"].value in ("live", "dry_run") and
+      "external_message_consumer" in self.config and
+        self.config["external_message_consumer"]["enabled"]):
+      self.consumer_mode = True
+      emc_config = self.config.get("external_message_consumer", {})
+      emc_producers = emc_config.get("producers", [])
+      self.producer_names = [i['name'] for i in emc_producers]
+        # self.process_only_new_candles = False
+    else:
+      self.consumer_mode = False
 
   # Plot configuration for FreqUI
   # ---------------------------------------------------------------------------------------------
@@ -3297,6 +3318,27 @@ class NostalgiaForInfinityX6(IStrategy):
   # ---------------------------------------------------------------------------------------------
   def populate_indicators(self, df: DataFrame, metadata: dict) -> DataFrame:
     tik = time.perf_counter()
+
+    # Consumer mode
+    if self.consumer_mode:
+      for producer_name in self.producer_names:
+        producer_df, _ = self.dp.get_producer_df(pair=metadata['pair'], producer_name=producer_name)
+
+        if not producer_df.empty and df.iloc[-1]["date"] == producer_df.iloc[-1]["date"]:
+          producer_df = producer_df.copy()
+          producer_df = producer_df.drop(columns=["open", "high", "low", "close", "volume"])
+          # Need to rename enter_tag column because populate_entry_trend() drops its values when you give it analyzed dataframe
+          producer_df = producer_df.rename(columns={"date":"date_producer", "enter_tag":"enter_tag_producer"})
+          merged_df = pd.merge(df, producer_df, left_on="date", right_on="date_producer", how="left", suffixes=("", "_producer"))
+          merged_df = merged_df.drop("date_producer", axis=1)
+
+          tok = time.perf_counter()
+          log.debug(f"[{metadata['pair']}] Getting indicators from producer bot took a total of: {tok - tik:0.4f} seconds.")
+          return merged_df
+      # mostly for debug
+      if self.consumer_mode_disable_fallback:
+        return df
+
     """
         --> BTC informative indicators
         ___________________________________________________________________________________________
@@ -7542,10 +7584,6 @@ class NostalgiaForInfinityX6(IStrategy):
     long_entry_conditions = []
     short_entry_conditions = []
 
-    df.loc[:, "enter_tag"] = ""
-    df.loc[:, "enter_long"] = ""
-    df.loc[:, "enter_short"] = ""
-
     is_backtest = self.dp.runmode.value in ["backtest", "hyperopt", "plot", "webserver"]
     # the number of free slots
     current_free_slots = self.config["max_open_trades"]
@@ -7568,6 +7606,30 @@ class NostalgiaForInfinityX6(IStrategy):
     # if BTC/ETH stake
     is_btc_stake = self.config["stake_currency"] in self.btc_stakes
     allowed_empty_candles_288 = 144 if is_btc_stake else 60
+    
+    # Consumer mode
+    if self.consumer_mode:
+      # Check if we got analyzed dataframe
+      if {"enter_tag_producer"}.issubset(df.columns):
+        # Strat checks this with confirm_trade_entry() and _handle_grind_mode(), but let's do it anyways
+        if is_pair_long_grind_mode and not num_open_long_grind_mode < self.grind_mode_max_slots:
+          df.loc[df["enter_tag_producer"].isin(self.long_grind_mode_tags), ["enter_long", "enter_tag_producer"]] = (0, "")
+        # You can't just enter_tag = enter_tag_producer and have it working, so...
+        entry_mask = (df["enter_long"] == 1) | (df["enter_short"] == 1)
+        for idx in df[entry_mask].index:
+          df.loc[idx, "enter_tag"] = str(df.at[idx, "enter_tag_producer"])
+
+        log.debug(f"Returning entry conditions for {metadata['pair']} from the producer bot.")
+        return df
+
+      elif self.consumer_mode_disable_fallback:
+        df.loc[:, "enter_long"] = 0
+        df.loc[:, "enter_short"] = 0
+        return df
+    
+    df.loc[:, "enter_tag"] = ""
+    df.loc[:, "enter_long"] = ""
+    df.loc[:, "enter_short"] = ""
 
     ###############################################################################################
 

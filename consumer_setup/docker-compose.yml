@@ -1,0 +1,2 @@
+include:
+  - docker-compose.${NUM_OF_BOTS:-2}bots.yml

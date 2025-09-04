@@ -1,0 +1,201 @@
+---
+
+x-common-settings:
+  &common-settings
+  image: freqtradeorg/freqtrade:stable
+  build:
+    context: ..
+    dockerfile: "../docker/Dockerfile.custom"
+  restart: unless-stopped
+  volumes:
+    - "../user_data:/freqtrade/user_data"
+    - "../user_data/data:/freqtrade/user_data/data"
+    - "../configs:/freqtrade/configs"
+    - "../consumer_setup:/freqtrade/consumer_setup"
+    - "../${STRATEGY:-NostalgiaForInfinityX6}.py:/freqtrade/${STRATEGY:-NostalgiaForInfinityX6}.py"
+  # healthcheck:
+  #   test: ["CMD", "curl", "-f", "http://localhost:${API_SERVER__LISTEN_PORT:-8080}"]
+  #   interval: 1m30s
+  #   timeout: 10s
+  #   retries: 3
+  #   start_period: 40s
+  #   start_interval: 5s
+
+services:
+
+  freqtrade-consumer:
+    <<: *common-settings
+    container_name: ${CONSUMER_BOT_NAME:-Example_Test_Account}_${EXCHANGE_NAME:-binance}_${TRADING_MODE:-spot}-${STRATEGY:-NostalgiaForInfinityX6}
+    ports:
+      - "${CONSUMER_LISTEN_PORT:-8989}:${CONSUMER_LISTEN_PORT:-8989}"
+    env_file:
+      - path: env/common-all.env
+        required: false # default true
+      - path: env/consumer.env
+        required: false # default true
+      - path: env/producer_list_${NUM_OF_BOTS:-5}bots.env
+        required: false # default true
+      - path: env/pairlists/pairlist-${PAIRLIST_MODE:-volume}-${EXCHANGE_NAME:-binance}-${PAIRLIST_CURRENCY:-${STAKE_CURRENCY:-USDT}}.env
+        required: false # default true
+    # depends_on:
+    #   - freqtrade-producer1
+    #   - freqtrade-producer2
+    #   - freqtrade-producer3
+    #   - freqtrade-producer4
+    #   - freqtrade-producer5
+    #   - freqtrade-producer6
+    #   - freqtrade-producer7
+    command: >
+      trade
+      --db-url sqlite:////freqtrade/user_data/${CONSUMER_BOT_NAME:-Example_Test_Account}_${EXCHANGE_NAME:-binance}_${TRADING_MODE:-spot}-tradesv3.sqlite
+      --log-file user_data/logs/${CONSUMER_BOT_NAME:-Example_Test_Account}-${EXCHANGE_NAME:-binance}-${STRATEGY:-NostalgiaForInfinityX6}-${TRADING_MODE:-spot}.log
+      --config user_data/config.json
+      --config consumer_setup/configs/producer_list.json
+      --strategy-path .
+
+  freqtrade-producer1:
+    <<: *common-settings
+    container_name: ${PRODUCER1_BOT_NAME:-Producer_1}_${EXCHANGE_NAME:-binance}_${TRADING_MODE:-spot}-${STRATEGY:-NostalgiaForInfinityX6}
+    ports:
+      - "${PRODUCER1_LISTEN_PORT:-8981}:${PRODUCER1_LISTEN_PORT:-8981}"
+    env_file:
+      - path: env/common-all.env
+        required: false # default true
+      - path: env/common-producer.env
+        required: false # default true
+      - path: env/producer1.env
+        required: false # default true
+      - path: env/pairlists/producers/pairlist-${PAIRLIST_MODE:-volume}-${EXCHANGE_NAME:-binance}-${PAIRLIST_CURRENCY:-${STAKE_CURRENCY:-USDT}}-producer.env
+        required: false # default true
+    command: >
+      trade
+      --db-url sqlite:////freqtrade/user_data/${PRODUCER1_BOT_NAME:-Producer_1}_${EXCHANGE_NAME:-binance}_${TRADING_MODE:-spot}-tradesv3.sqlite
+      --log-file user_data/logs/${PRODUCER1_BOT_NAME:-Producer_1}-${EXCHANGE_NAME:-binance}-${STRATEGY:-NostalgiaForInfinityX6}-${TRADING_MODE:-spot}.log
+      --config consumer_setup/configs/config_producer1.json
+      --strategy-path .
+
+  freqtrade-producer2:
+    <<: *common-settings
+    container_name: ${PRODUCER2_BOT_NAME:-Producer_2}_${EXCHANGE_NAME:-binance}_${TRADING_MODE:-spot}-${STRATEGY:-NostalgiaForInfinityX6}
+    ports:
+      - "${PRODUCER2_LISTEN_PORT:-8982}:${PRODUCER2_LISTEN_PORT:-8982}"
+    env_file:
+      - path: env/common-all.env
+        required: false # default true
+      - path: env/common-producer.env
+        required: false # default true
+      - path: env/producer2.env
+        required: false # default true
+      - path: env/pairlists/producers/pairlist-${PAIRLIST_MODE:-volume}-${EXCHANGE_NAME:-binance}-${PAIRLIST_CURRENCY:-${STAKE_CURRENCY:-USDT}}-producer.env
+        required: false # default true
+    command: >
+      trade
+      --db-url sqlite:////freqtrade/user_data/${PRODUCER2_BOT_NAME:-Producer_2}_${EXCHANGE_NAME:-binance}_${TRADING_MODE:-spot}-tradesv3.sqlite
+      --log-file user_data/logs/${PRODUCER2_BOT_NAME:-Producer_2}-${EXCHANGE_NAME:-binance}-${STRATEGY:-NostalgiaForInfinityX6}-${TRADING_MODE:-spot}.log
+      --config consumer_setup/configs/config_producer2.json
+      --strategy-path .
+
+  freqtrade-producer3:
+    <<: *common-settings
+    container_name: ${PRODUCER3_BOT_NAME:-Producer_3}_${EXCHANGE_NAME:-binance}_${TRADING_MODE:-spot}-${STRATEGY:-NostalgiaForInfinityX6}
+    ports:
+      - "${PRODUCER3_LISTEN_PORT:-8983}:${PRODUCER3_LISTEN_PORT:-8983}"
+    env_file:
+      - path: env/common-all.env
+        required: false # default true
+      - path: env/common-producer.env
+        required: false # default true
+      - path: env/producer3.env
+        required: false # default true
+      - path: env/pairlists/producers/pairlist-${PAIRLIST_MODE:-volume}-${EXCHANGE_NAME:-binance}-${PAIRLIST_CURRENCY:-${STAKE_CURRENCY:-USDT}}-producer.env
+        required: false # default true
+    command: >
+      trade
+      --db-url sqlite:////freqtrade/user_data/${PRODUCER3_BOT_NAME:-Producer_3}_${EXCHANGE_NAME:-binance}_${TRADING_MODE:-spot}-tradesv3.sqlite
+      --log-file user_data/logs/${PRODUCER3_BOT_NAME:-Producer_3}-${EXCHANGE_NAME:-binance}-${STRATEGY:-NostalgiaForInfinityX6}-${TRADING_MODE:-spot}.log
+      --config consumer_setup/configs/config_producer3.json
+      --strategy-path .
+
+  freqtrade-producer4:
+    <<: *common-settings
+    container_name: ${PRODUCER4_BOT_NAME:-Producer_4}_${EXCHANGE_NAME:-binance}_${TRADING_MODE:-spot}-${STRATEGY:-NostalgiaForInfinityX6}
+    ports:
+      - "${PRODUCER4_LISTEN_PORT:-8984}:${PRODUCER4_LISTEN_PORT:-8984}"
+    env_file:
+      - path: env/common-all.env
+        required: false # default true
+      - path: env/common-producer.env
+        required: false # default true
+      - path: env/producer4.env
+        required: false # default true
+      - path: env/pairlists/producers/pairlist-${PAIRLIST_MODE:-volume}-${EXCHANGE_NAME:-binance}-${PAIRLIST_CURRENCY:-${STAKE_CURRENCY:-USDT}}-producer.env
+        required: false # default true
+    command: >
+      trade
+      --db-url sqlite:////freqtrade/user_data/${PRODUCER4_BOT_NAME:-Producer_4}_${EXCHANGE_NAME:-binance}_${TRADING_MODE:-spot}-tradesv3.sqlite
+      --log-file user_data/logs/${PRODUCER4_BOT_NAME:-Producer_4}-${EXCHANGE_NAME:-binance}-${STRATEGY:-NostalgiaForInfinityX6}-${TRADING_MODE:-spot}.log
+      --config consumer_setup/configs/config_producer4.json
+      --strategy-path .
+
+  freqtrade-producer5:
+    <<: *common-settings
+    container_name: ${PRODUCER5_BOT_NAME:-Producer_5}_${EXCHANGE_NAME:-binance}_${TRADING_MODE:-spot}-${STRATEGY:-NostalgiaForInfinityX6}
+    ports:
+      - "${PRODUCER5_LISTEN_PORT:-8985}:${PRODUCER5_LISTEN_PORT:-8985}"
+    env_file:
+      - path: env/common-all.env
+        required: false # default true
+      - path: env/common-producer.env
+        required: false # default true
+      - path: env/producer5.env
+        required: false # default true
+      - path: env/pairlists/producers/pairlist-${PAIRLIST_MODE:-volume}-${EXCHANGE_NAME:-binance}-${PAIRLIST_CURRENCY:-${STAKE_CURRENCY:-USDT}}-producer.env
+        required: false # default true
+    command: >
+      trade
+      --db-url sqlite:////freqtrade/user_data/${PRODUCER5_BOT_NAME:-Producer_5}_${EXCHANGE_NAME:-binance}_${TRADING_MODE:-spot}-tradesv3.sqlite
+      --log-file user_data/logs/${PRODUCER5_BOT_NAME:-Producer_5}-${EXCHANGE_NAME:-binance}-${STRATEGY:-NostalgiaForInfinityX6}-${TRADING_MODE:-spot}.log
+      --config consumer_setup/configs/config_producer5.json
+      --strategy-path .
+
+  freqtrade-producer6:
+    <<: *common-settings
+    container_name: ${PRODUCER6_BOT_NAME:-Producer_6}_${EXCHANGE_NAME:-binance}_${TRADING_MODE:-spot}-${STRATEGY:-NostalgiaForInfinityX6}
+    ports:
+      - "${PRODUCER6_LISTEN_PORT:-8986}:${PRODUCER6_LISTEN_PORT:-8986}"
+    env_file:
+      - path: env/common-all.env
+        required: false # default true
+      - path: env/common-producer.env
+        required: false # default true
+      - path: env/producer6.env
+        required: false # default true
+      - path: env/pairlists/producers/pairlist-${PAIRLIST_MODE:-volume}-${EXCHANGE_NAME:-binance}-${PAIRLIST_CURRENCY:-${STAKE_CURRENCY:-USDT}}-producer.env
+        required: false # default true
+    command: >
+      trade
+      --db-url sqlite:////freqtrade/user_data/${PRODUCER6_BOT_NAME:-Producer_6}_${EXCHANGE_NAME:-binance}_${TRADING_MODE:-spot}-tradesv3.sqlite
+      --log-file user_data/logs/${PRODUCER6_BOT_NAME:-Producer_6}-${EXCHANGE_NAME:-binance}-${STRATEGY:-NostalgiaForInfinityX6}-${TRADING_MODE:-spot}.log
+      --config consumer_setup/configs/config_producer6.json
+      --strategy-path .
+    
+  freqtrade-producer7:
+    <<: *common-settings
+    container_name: ${PRODUCER7_BOT_NAME:-Producer_7}_${EXCHANGE_NAME:-binance}_${TRADING_MODE:-spot}-${STRATEGY:-NostalgiaForInfinityX6}
+    ports:
+      - "${PRODUCER7_LISTEN_PORT:-8987}:${PRODUCER7_LISTEN_PORT:-8987}"
+    env_file:
+      - path: env/common-all.env
+        required: false # default true
+      - path: env/common-producer.env
+        required: false # default true
+      - path: env/producer7.env
+        required: false # default true
+      - path: env/pairlists/producers/pairlist-${PAIRLIST_MODE:-volume}-${EXCHANGE_NAME:-binance}-${PAIRLIST_CURRENCY:-${STAKE_CURRENCY:-USDT}}-producer.env
+        required: false # default true
+    command: >
+      trade
+      --db-url sqlite:////freqtrade/user_data/${PRODUCER7_BOT_NAME:-Producer_7}_${EXCHANGE_NAME:-binance}_${TRADING_MODE:-spot}-tradesv3.sqlite
+      --log-file user_data/logs/${PRODUCER7_BOT_NAME:-Producer_7}-${EXCHANGE_NAME:-binance}-${STRATEGY:-NostalgiaForInfinityX6}-${TRADING_MODE:-spot}.log
+      --config consumer_setup/configs/config_producer7.json
+      --strategy-path .

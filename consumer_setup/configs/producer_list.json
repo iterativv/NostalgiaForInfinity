@@ -1,0 +1,62 @@
+{
+  "external_message_consumer": {
+    "enabled": true,
+    "producers": [
+      {
+        "name": "Producer_1",
+        "host": "127.0.0.1",
+        "port": 8081,
+        "secure": false,
+        "ws_token": ""
+      },
+      // {
+      //   "name": "Producer_2",
+      //   "host": "127.0.0.1",
+      //   "port": 8082,
+      //   "secure": false,
+      //   "ws_token": ""
+      // },
+      // {
+      //   "name": "Producer_3",
+      //   "host": "127.0.0.1",
+      //   "port": 8083,
+      //   "secure": false,
+      //   "ws_token": ""
+      // },
+      // {
+      //   "name": "Producer_4",
+      //   "host": "127.0.0.1",
+      //   "port": 8084,
+      //   "secure": false,
+      //   "ws_token": ""
+      // },
+      // {
+      //   "name": "Producer_5",
+      //   "host": "127.0.0.1",
+      //   "port": 8085,
+      //   "secure": false,
+      //   "ws_token": ""
+      // },
+      // {
+      //   "name": "Producer_6",
+      //   "host": "127.0.0.1",
+      //   "port": 8086,
+      //   "secure": false,
+      //   "ws_token": ""
+      // },
+      // {
+      //   "name": "Producer_7",
+      //   "host": "127.0.0.1",
+      //   "port": 8087,
+      //   "secure": false,
+      //   "ws_token": ""
+      // }
+    ],
+    // The following configurations are optional, and usually not required
+    // "wait_timeout": 300,
+    // "ping_timeout": 10,
+    // "sleep_time": 10,
+    // "remove_entry_exit_signals": false,
+    // "message_size_limit": 8
+  }
+}
