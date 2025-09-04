@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.7.16"
+    return "v16.7.17"
 
   stoploss = -0.99
 
@@ -33387,19 +33387,19 @@ class NostalgiaForInfinityX6(IStrategy):
           and (last_candle["AROONU_14_15m"] < 50.0)
         )
       )
-      # or (
-      #   self.is_futures_mode
-      #   and (
-      #     (trade.is_short and current_rate > trade.liquidation_price * 0.90)
-      #     or (not trade.is_short and current_rate < trade.liquidation_price * 1.10)
-      #   )
-      #   and (last_candle["RSI_3"] > 10.0)
-      #   and (last_candle["RSI_3_15m"] > 20.0)
-      #   # and (last_candle["RSI_3_1h"] > 20.0)
-      #   # and (last_candle["RSI_3_1h"] > 20.0)
-      #   and (last_candle["AROONU_14"] < 50.0)
-      #   and (last_candle["AROONU_14_15m"] < 50.0)
-      # )
+      or (
+        self.is_futures_mode
+        and (
+          (trade.is_short and current_rate > trade.liquidation_price * 0.90)
+          or (not trade.is_short and current_rate < trade.liquidation_price * 1.10)
+        )
+        and (last_candle["RSI_3"] > 10.0)
+        and (last_candle["RSI_3_15m"] > 20.0)
+        # and (last_candle["RSI_3_1h"] > 20.0)
+        # and (last_candle["RSI_3_1h"] > 20.0)
+        and (last_candle["AROONU_14"] < 50.0)
+        and (last_candle["AROONU_14_15m"] < 50.0)
+      )
     )
 
     # De-risk level 1
