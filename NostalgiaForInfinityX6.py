@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.7.18"
+    return "v16.7.19"
 
   stoploss = -0.99
 
@@ -33402,8 +33402,8 @@ class NostalgiaForInfinityX6(IStrategy):
       or (
         self.is_futures_mode
         and (
-          (trade.is_short and current_rate > trade.liquidation_price * 0.90)
-          or (not trade.is_short and current_rate < trade.liquidation_price * 1.10)
+          (trade.is_short and current_rate > trade.liquidation_price * 0.95)
+          or (not trade.is_short and current_rate < trade.liquidation_price * 1.05)
         )
         and (last_candle["RSI_3"] > 10.0)
         and (last_candle["RSI_3_15m"] > 20.0)
@@ -56452,14 +56452,30 @@ class NostalgiaForInfinityX6(IStrategy):
     )
 
     is_short_buyback_entry = self.short_buyback_entry_v2(last_candle, previous_candle, slice_profit, True)
-    is_short_grind_entry = self.short_grind_entry_v2(last_candle, previous_candle, slice_profit, True) or (
-      (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
-      and (num_open_grinds_and_buybacks == 0)
-      and (
-        (last_candle["RSI_3"] < 90.0)
+    is_short_grind_entry = (
+      self.short_grind_entry_v2(last_candle, previous_candle, slice_profit, True)
+      or (
+        (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
+        and (num_open_grinds_and_buybacks == 0)
+        and (
+          (last_candle["RSI_3"] < 90.0)
+          and (last_candle["RSI_3_15m"] < 80.0)
+          and (last_candle["RSI_3_1h"] < 80.0)
+          and (last_candle["RSI_3_1h"] < 80.0)
+          and (last_candle["AROOND_14"] < 50.0)
+          and (last_candle["AROOND_14_15m"] < 50.0)
+        )
+      )
+      or (
+        self.is_futures_mode
+        and (
+          (trade.is_short and current_rate > trade.liquidation_price * 0.95)
+          or (not trade.is_short and current_rate < trade.liquidation_price * 1.05)
+        )
+        and (last_candle["RSI_3"] < 90.0)
         and (last_candle["RSI_3_15m"] < 80.0)
-        and (last_candle["RSI_3_1h"] < 80.0)
-        and (last_candle["RSI_3_1h"] < 80.0)
+        # and (last_candle["RSI_3_1h"] < 80.0)
+        # and (last_candle["RSI_3_1h"] < 80.0)
         and (last_candle["AROOND_14"] < 50.0)
         and (last_candle["AROOND_14_15m"] < 50.0)
       )
