@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/usr/bin/env sh
+set -eu
 
 ### Prereqs:
 ## 1. A directory with the NFIX repo setup on the main branch to run via docker compose
@@ -9,6 +10,7 @@ NFI_PATH=
 ENV_PATH=
 FREQTRADE_IMAGE_UPDATE=false
 FREQTRADE_IMAGE="freqtradeorg/freqtrade:stable"
+PRUNE_IMAGES=false
 TELEGRAM_NOTIFICATION=true
 
 ### Simple script that does the following:
@@ -19,39 +21,75 @@ TELEGRAM_NOTIFICATION=true
 ######################################################
 
 ## FUNCTIONS
+echo_timestamped() {
+    printf '%s - %s\n' "$(date +"%Y-%m-%d %H:%M:%S")" "$*"
+}
+
 load_env() {
-    local env_file="${1:-.env}"
+    env_file="${1:-.env}"
     if [ -f "$env_file" ]; then
         set -a
         . "$env_file"
         set +a
     else
-        echo "$(date +"%d-%b %H:%M:%S") - Error: $env_file not found"
+        echo_timestamped "Error: $env_file not found"
         exit 1
     fi
 }
 
+escape_telegram_markdown() {
+    printf '%s' "$1" | \
+    command sed \
+        -e 's/\\\([][_*()~`>#+=|{}.!-]\)/MDV2ESC\1/g' | \
+    command sed \
+        -e 's/`\([^`]*\)`/MDV2COPEN\1MDV2CCLOSE/g' \
+        -e 's/\[\([^]]*\)\](\([^)]*\))/MDV2LOPEN\1MDV2LMID\2MDV2LCLOSE/g' \
+        -e 's/!\[\([^]]*\)\](\([^)]*\))/MDV2EOPEN\1MDV2EMID\2MDV2ECLOSE/g' \
+        -e 's/__\([^_]*\)__/MDV2UOPEN\1MDV2UCLOSE/g' \
+        -e 's/\*\([^*]*\)\*/MDV2BOPEN\1MDV2BCLOSE/g' \
+        -e 's/_\([^_]*\)_/MDV2IOPEN\1MDV2ICLOSE/g' \
+        -e 's/~\([^~]*\)~/MDV2SOPEN\1MDV2SCLOSE/g' \
+        -e 's/||\([^|]*\)||/MDV2POPEN\1MDV2PCLOSE/g' | \
+    command sed \
+        -e 's/\\/\\\\/g' \
+        -e 's/[][_*()~`>#+=|{}.!-]/\\&/g' | \
+    command sed \
+        -e 's/MDV2COPEN/`/g'      -e 's/MDV2CCLOSE/`/g' \
+        -e 's/MDV2LOPEN/[/g'      -e 's/MDV2LMID/](/g'     -e 's/MDV2LCLOSE/)/g' \
+        -e 's/MDV2EOPEN/!\[/g'    -e 's/MDV2EMID/](/g'     -e 's/MDV2ECLOSE/)/g' \
+        -e 's/MDV2UOPEN/__/g'     -e 's/MDV2UCLOSE/__/g' \
+        -e 's/MDV2BOPEN/*/g'      -e 's/MDV2BCLOSE/*/g' \
+        -e 's/MDV2IOPEN/_/g'      -e 's/MDV2ICLOSE/_/g' \
+        -e 's/MDV2SOPEN/~/g'      -e 's/MDV2SCLOSE/~/g' \
+        -e 's/MDV2POPEN/||/g'     -e 's/MDV2PCLOSE/||/g' \
+        -e 's/MDV2ESC\\\([][_*()~`>#+=|{}.!-]\)/\\\1/g'
+}
+
 send_telegram_notification() {
-    local freqtrade_telegram_enabled=${FREQTRADE__TELEGRAM__ENABLED:-false}
+    freqtrade_telegram_enabled=${FREQTRADE__TELEGRAM__ENABLED:-false}
     if [ "$freqtrade_telegram_enabled" = "false" ] || [ "$TELEGRAM_NOTIFICATION" = "false" ]; then
         return 0
     fi
 
-    local message="$1"
+    telegram_message=$(escape_telegram_markdown "$1")
+    if [ -z "$telegram_message" ]; then
+        echo_timestamped "Error: message variable is empty"
+        return 1
+    fi
 
-    if [ -z "$message" ]; then
-        echo "$(date +"%d-%b %H:%M:%S") - Error: message variable is empty"
+    if ! command -v curl >/dev/null 2>&1; then
+        echo_timestamped "Error: curl not found, cannot send telegram notification"
         return 1
     fi
 
     if [ -n "$FREQTRADE__TELEGRAM__TOKEN" ] && [ -n "$FREQTRADE__TELEGRAM__CHAT_ID" ]; then
-        local curl_error=$(curl -s -X POST \
-            --data-urlencode "text=${message}" \
-            --data-urlencode "parse_mode=markdown" \
+        curl_error=$(command curl -s -X POST \
+            --data-urlencode "text=${telegram_message}" \
+            --data-urlencode "parse_mode=MarkdownV2" \
             --data "chat_id=$FREQTRADE__TELEGRAM__CHAT_ID" \
             "https://api.telegram.org/bot${FREQTRADE__TELEGRAM__TOKEN}/sendMessage" 2>&1 1>/dev/null)
         if [ $? -ne 0 ]; then
-            echo "$(date +"%d-%b %H:%M:%S") - Error: failed to send telegram notification: $curl_error"
+            echo_timestamped "Error: failed to send telegram notification: $curl_error"
             return 1
         fi
     fi
@@ -60,94 +98,130 @@ send_telegram_notification() {
 ######################################################
 
 if [ -z "$NFI_PATH" ]; then
-    echo "$(date +"%d-%b %H:%M:%S") - Error: NFI_PATH variable is empty"
+    echo_timestamped "Error: NFI_PATH variable is empty"
     exit 1
 fi
+
+if command -v sha256sum >/dev/null 2>&1; then
+    nfi_path_hash=$(printf '%s' "$NFI_PATH" | command sha256sum | command cut -c1-10)
+elif command -v md5sum >/dev/null 2>&1; then
+    nfi_path_hash=$(printf '%s' "$NFI_PATH" | command md5sum | command cut -c1-10)
+elif command -v shasum >/dev/null 2>&1; then
+    nfi_path_hash=$(printf '%s' "$NFI_PATH" | command shasum -a 256 | command cut -c1-10)
+else
+    nfi_path_hash=$(printf '%s' "$NFI_PATH" | command sed -e 's/[^A-Za-z0-9]/_/g' | command cut -c1-10)
+fi
+LOCKFILE="/tmp/nfx-docker-update.${nfi_path_hash}.lock"
+if [ -f "$LOCKFILE" ]; then
+    echo_timestamped "Error: already running for ${NFI_PATH}"
+    exit 1
+fi
+trap 'rm -f "$LOCKFILE"' 0 HUP INT TERM
+touch "$LOCKFILE"
 
 if [ -z "$ENV_PATH" ]; then
     ENV_PATH=$NFI_PATH
 fi
 
-
 if [ ! -d "$NFI_PATH" ]; then
-    echo "$(date +"%d-%b %H:%M:%S") - Error: NFI_PATH ($NFI_PATH) is not a directory or does not exist."
+    echo_timestamped "Error: NFI_PATH (${NFI_PATH}) is not a directory or does not exist"
     exit 1
 fi
 
-cd "$NFI_PATH" || exit 1
-
-if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
-    echo "$(date +"%d-%b %H:%M:%S") - Error: NFI_PATH ($NFI_PATH) is not a git repository."
+if ! command -v git >/dev/null 2>&1; then
+    echo_timestamped "Error: git not found in PATH"
     exit 1
 fi
 
-# pull from NFIX repo
-echo "$(date +"%d-%b %H:%M:%S") - Info: pulling updates from repo"
-latest_local_commit=$(git rev-parse HEAD)
+if ! command -v docker >/dev/null 2>&1; then
+    echo_timestamped "Error: docker not found in PATH"
+    exit 1
+fi
 
-git stash push > /dev/null 2>&1
+cd -- "$NFI_PATH" || exit 1
+
+load_env "${ENV_PATH}/.env"
+
+if ! command git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    echo_timestamped "Error: NFI_PATH (${NFI_PATH}) is not a git repository"
+    exit 1
+fi
+
+echo_timestamped "Info: pulling updates from repo"
+latest_local_commit=$(command git rev-parse HEAD)
+
+command git stash push >/dev/null 2>&1
 
 if [ $? -ne 0 ]; then
-    echo "$(date +"%d-%b %H:%M:%S") - Error: failed to stash changes in NFIX repo"
+    echo_timestamped "Error: failed to stash changes in NFIX repo"
     exit 1
 fi
 
-git_pull_error=$(git pull 2>&1 1>/dev/null)
+git_pull_error=$(command git pull 2>&1 1>/dev/null)
 
 if [ $? -ne 0 ]; then
-    echo "$(date +"%d-%b %H:%M:%S") - Error: failed to pull from NFIX repo: $git_pull_error"
-    git stash pop > /dev/null 2>&1
+    echo_timestamped "Error: failed to pull from NFIX repo: $git_pull_error"
+    command git stash pop >/dev/null 2>&1
     exit 1
 fi
 
-git stash pop > /dev/null 2>&1
+command git stash pop >/dev/null 2>&1
 
 if [ $? -ne 0 ]; then
-    echo "$(date +"%d-%b %H:%M:%S") - Error: failed to unstash changes in NFIX repo"
+    echo_timestamped "Error: failed to unstash changes in NFIX repo"
     exit 1
+fi
+
+need_restart=false
+
+latest_remote_commit=$(command git rev-parse HEAD)
+if [ "$latest_local_commit" != "$latest_remote_commit" ]; then
+    need_restart=true
+    latest_remote_commit_short=$(printf %s "$latest_remote_commit" | command cut -c1-7)
+    message="NFI was updated to commit: *${latest_remote_commit_short}*. Please wait for reload..."
+    echo_timestamped "Info: $message"
+    send_telegram_notification "$message"
+else
+    echo_timestamped "Info: NFI is up to date"
 fi
 
 # check ft image and update if needed
-ft_image_updated=false
-
 if [ "$FREQTRADE_IMAGE_UPDATE" = "true" ]; then
-    echo "$(date +"%d-%b %H:%M:%S") - Info: checking if new freqtrade image avalaible"
-    local_digest=$(docker inspect --format='{{.Id}}' "$FREQTRADE_IMAGE" 2>/dev/null || echo "none")
-
-    docker pull "$FREQTRADE_IMAGE" > /dev/null 2>&1
-
-    remote_digest=$(docker inspect --format='{{.Id}}' "$FREQTRADE_IMAGE" 2>/dev/null || echo "none")
+    echo_timestamped "Info: docker image pull for ${FREQTRADE_IMAGE}"
+    local_digest=$(command docker image inspect --format='{{.Id}}' "$FREQTRADE_IMAGE" 2>/dev/null || command echo "none")
+    if ! command docker image pull --quiet "$FREQTRADE_IMAGE" >/dev/null 2>&1; then
+        echo_timestamped "Error: docker image pull failed for ${FREQTRADE_IMAGE}"
+        exit 1
+    fi
+    remote_digest=$(command docker image inspect --format='{{.Id}}' "$FREQTRADE_IMAGE" 2>/dev/null || command echo "none")
 
     if [ "$local_digest" != "$remote_digest" ]; then
-        ft_image_updated=true
-        message="freqtrade image version was updated"
+        need_restart=true
+        message="docker image ${FREQTRADE_IMAGE} was updated (${local_digest} -> ${remote_digest}). Please wait for reload..."
+        echo_timestamped "Info: $message"
+        send_telegram_notification "$message"
     else
-        message="no new freqtrade image version"
+        echo_timestamped "Info: docker image ${FREQTRADE_IMAGE} is up to date"
     fi
-
-    echo "$(date +"%d-%b %H:%M:%S") - Info: $message"
-    send_telegram_notification "$message"
 fi
 
-latest_remote_commit=$(git rev-parse HEAD)
-
-if [ "$latest_local_commit" != "$latest_remote_commit" ]; then
-    load_env "${ENV_PATH}/.env"
-
-    latest_remote_commit_short=$(echo "$latest_remote_commit" | cut -c1-7)
-    message="NFI was updated to commit: *${latest_remote_commit_short}*. Please wait for reload..."
-
-    echo "$(date +"%d-%b %H:%M:%S") - Info: $message"
-    send_telegram_notification "$message"
-fi
-
-if { [ "$FREQTRADE_IMAGE_UPDATE" = "true" ] && [ "$ft_image_updated" = "true" ]; } || [ "$latest_local_commit" != "$latest_remote_commit" ]; then
-    echo "$(date +"%d-%b %H:%M:%S") - Info: restarting freqtrade with NFIX"
-    docker compose --progress quiet stop
-    docker compose --progress quiet up -d
-    echo "$(date +"%d-%b %H:%M:%S") - Info: restarted freqtrade with NFIX"
+if [ "$need_restart" = "true" ]; then
+    echo_timestamped "Info: restarting docker image ${FREQTRADE_IMAGE} with NFIX"
+    if ! command docker compose --progress quiet down; then
+        echo_timestamped "Error: docker compose down failed"
+        exit 1
+    fi
+    if ! command docker compose --progress quiet up -d; then
+        echo_timestamped "Error: docker compose up failed"
+        exit 1
+    fi
+    echo_timestamped "Info: restarted docker image ${FREQTRADE_IMAGE} with NFIX"
+    if [ "$PRUNE_IMAGES" = "true" ]; then
+        echo_timestamped "Info: pruning unused docker images"
+        command docker image prune -f >/dev/null 2>&1 || true
+    fi
 else
-    echo "$(date +"%d-%b %H:%M:%S") - Info: no new updates avalaible"
+    echo_timestamped "Info: NFI and docker image ${FREQTRADE_IMAGE} are up to date, no restart needed"
 fi
 
 exit 0
