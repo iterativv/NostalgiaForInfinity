@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.7.16"
+    return "v16.7.23"
 
   stoploss = -0.99
 
@@ -3603,6 +3603,15 @@ class NostalgiaForInfinityX6(IStrategy):
         | (df["CMF_20_1h"] > -0.30)
         | (df["STOCHRSIk_14_14_3_3_1h"] < 50.0)
       )
+      # 15m & 1h down move, 1h & 4h still not low enough, 4h high
+      & (
+        (df["RSI_3_15m"] > 5.0)
+        | (df["RSI_3_1h"] > 10.0)
+        | (df["AROONU_14_1h"] < 20.0)
+        | (df["AROONU_14_4h"] < 20.0)
+        | (df["STOCHRSIk_14_14_3_3_1h"] < 20.0)
+        | (df["STOCHRSIk_14_14_3_3_4h"] < 90.0)
+      )
       # 15m & 1h & 4h down move, 1h & 4h still not low enough, 15m still high
       & (
         (df["RSI_3_15m"] > 5.0)
@@ -4159,6 +4168,19 @@ class NostalgiaForInfinityX6(IStrategy):
         | (df["AROONU_14_4h"] < 90.0)
         | (df["ROC_9_1d"] < 20.0)
       )
+      # 15m & 1h down move, 15m & 1h still high, 4h high, 4h overbought
+      & (
+        (df["RSI_3_15m"] > 15.0)
+        | (df["RSI_3_1h"] > 35.0)
+        | (df["RSI_14_15m"] < 40.0)
+        | (df["RSI_14_1h"] < 50.0)
+        | (df["RSI_14_4h"] < 60.0)
+        | (df["AROONU_14_15m"] < 40.0)
+        | (df["AROONU_14_1h"] < 40.0)
+        | (df["AROONU_14_4h"] < 85.0)
+        | (df["STOCHRSIk_14_14_3_3_4h"] < 85.0)
+        | (df["ROC_9_4h"] < 10.0)
+      )
       # 15m & 1h & 4h & 1d down move, 1h still high, 4h still not low enough, 4h downtrend
       & (
         (df["RSI_3_15m"] > 15.0)
@@ -4489,6 +4511,18 @@ class NostalgiaForInfinityX6(IStrategy):
         | (df["STOCHRSIk_14_14_3_3_1h"] < 50.0)
         | (df["STOCHRSIk_14_14_3_3_4h"] < 50.0)
         | (df["ROC_9_1d"] > -50.0)
+      )
+      # 15m & 1h down move, 15m & 1h sitll high, 4h high, 1h & 4h high, 1h & 4h overbought
+      & (
+        (df["RSI_3_15m"] > 20.0)
+        | (df["RSI_3_1h"] > 35.0)
+        | (df["RSI_14_15m"] < 40.0)
+        | (df["RSI_14_1h"] < 50.0)
+        | (df["RSI_14_4h"] < 70.0)
+        | (df["AROONU_14_1h"] < 80.0)
+        | (df["AROONU_14_4h"] < 90.0)
+        | (df["ROC_9_1h"] < 20.0)
+        | (df["ROC_9_4h"] < 30.0)
       )
       # 15m & 4h down move, 15m & 1h & 4h still high, 4h downtrend, 15m & 1h still high, 4h downtrend
       & (
@@ -5566,6 +5600,18 @@ class NostalgiaForInfinityX6(IStrategy):
         | (df["RSI_14_4h"] < 80.0)
         | (df["STOCHk_14_3_3_1h"] < 60.0)
         | (df["STOCHk_14_3_3_4h"] < 90.0)
+        | (df["ROC_9_4h"] < 80.0)
+      )
+      # 15m & 1h & 4h down move, 15m & 1h & 4h still high, 15m still high, 4h overbought
+      & (
+        (df["RSI_3_15m"] > 35.0)
+        | (df["RSI_3_1h"] > 55.0)
+        | (df["RSI_3_4h"] > 55.0)
+        | (df["RSI_14_15m"] < 40.0)
+        | (df["RSI_14_1h"] < 40.0)
+        | (df["RSI_14_4h"] < 50.0)
+        | (df["AROONU_14_15m"] < 50.0)
+        | (df["STOCHRSIk_14_14_3_3_15m"] < 50.0)
         | (df["ROC_9_4h"] < 80.0)
       )
       # 15m & 1h & 4h down move, 15m & 1h & 4h still high, 15m & 1h high
@@ -7880,6 +7926,16 @@ class NostalgiaForInfinityX6(IStrategy):
               | (df["RSI_3_1d"] > 40.0)
               | (df["RSI_14_1h"] < 30.0)
               | (df["RSI_14_4h"] < 35.0)
+            )
+            # 15m & 1h & 4h down move, 15m still not low enough, 1h & 4h still high, 1d overbought
+            & (
+              (df["RSI_3_15m"] > 10.0)
+              | (df["RSI_3_1h"] > 25.0)
+              | (df["RSI_3_4h"] > 50.0)
+              | (df["RSI_14_15m"] < 30.0)
+              | (df["RSI_14_1h"] < 40.0)
+              | (df["RSI_14_4h"] < 40.0)
+              | (df["ROC_9_1d"] < 30.0)
             )
             # 15m & 1h down move, 15m still not low enough, 1h & 4h still high, 1h high
             & (
@@ -33387,19 +33443,19 @@ class NostalgiaForInfinityX6(IStrategy):
           and (last_candle["AROONU_14_15m"] < 50.0)
         )
       )
-      # or (
-      #   self.is_futures_mode
-      #   and (
-      #     (trade.is_short and current_rate > trade.liquidation_price * 0.90)
-      #     or (not trade.is_short and current_rate < trade.liquidation_price * 1.10)
-      #   )
-      #   and (last_candle["RSI_3"] > 10.0)
-      #   and (last_candle["RSI_3_15m"] > 20.0)
-      #   # and (last_candle["RSI_3_1h"] > 20.0)
-      #   # and (last_candle["RSI_3_1h"] > 20.0)
-      #   and (last_candle["AROONU_14"] < 50.0)
-      #   and (last_candle["AROONU_14_15m"] < 50.0)
-      # )
+      or (
+        self.is_futures_mode
+        and (
+          (trade.is_short and current_rate > trade.liquidation_price * 0.95)
+          or (not trade.is_short and current_rate < trade.liquidation_price * 1.05)
+        )
+        and (last_candle["RSI_3"] > 10.0)
+        and (last_candle["RSI_3_15m"] > 20.0)
+        # and (last_candle["RSI_3_1h"] > 20.0)
+        # and (last_candle["RSI_3_1h"] > 20.0)
+        and (last_candle["AROONU_14"] < 50.0)
+        and (last_candle["AROONU_14_15m"] < 50.0)
+      )
     )
 
     # De-risk level 1
@@ -56440,14 +56496,30 @@ class NostalgiaForInfinityX6(IStrategy):
     )
 
     is_short_buyback_entry = self.short_buyback_entry_v2(last_candle, previous_candle, slice_profit, True)
-    is_short_grind_entry = self.short_grind_entry_v2(last_candle, previous_candle, slice_profit, True) or (
-      (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
-      and (num_open_grinds_and_buybacks == 0)
-      and (
-        (last_candle["RSI_3"] < 90.0)
+    is_short_grind_entry = (
+      self.short_grind_entry_v2(last_candle, previous_candle, slice_profit, True)
+      or (
+        (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
+        and (num_open_grinds_and_buybacks == 0)
+        and (
+          (last_candle["RSI_3"] < 90.0)
+          and (last_candle["RSI_3_15m"] < 80.0)
+          and (last_candle["RSI_3_1h"] < 80.0)
+          and (last_candle["RSI_3_1h"] < 80.0)
+          and (last_candle["AROOND_14"] < 50.0)
+          and (last_candle["AROOND_14_15m"] < 50.0)
+        )
+      )
+      or (
+        self.is_futures_mode
+        and (
+          (trade.is_short and current_rate > trade.liquidation_price * 0.95)
+          or (not trade.is_short and current_rate < trade.liquidation_price * 1.05)
+        )
+        and (last_candle["RSI_3"] < 90.0)
         and (last_candle["RSI_3_15m"] < 80.0)
-        and (last_candle["RSI_3_1h"] < 80.0)
-        and (last_candle["RSI_3_1h"] < 80.0)
+        # and (last_candle["RSI_3_1h"] < 80.0)
+        # and (last_candle["RSI_3_1h"] < 80.0)
         and (last_candle["AROOND_14"] < 50.0)
         and (last_candle["AROOND_14_15m"] < 50.0)
       )
