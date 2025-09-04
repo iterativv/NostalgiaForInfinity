@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.7.28c"
+    return "v16.7.28.c1"
 
   stoploss = -0.99
 
@@ -7613,7 +7613,7 @@ class NostalgiaForInfinityX6(IStrategy):
       if {"enter_tag_producer"}.issubset(df.columns):
         # Strat checks this with confirm_trade_entry() and _handle_grind_mode(), but let's do it anyways
         if is_pair_long_grind_mode and not num_open_long_grind_mode < self.grind_mode_max_slots:
-          df.loc[df["enter_tag_producer"].isin(self.long_grind_mode_tags), ["enter_long", "enter_tag_producer"]] = (0, "")
+          df.loc[df["enter_tag_producer"].isin(self.long_grind_mode_tags), "enter_long"] = False
         # You can't just enter_tag = enter_tag_producer and have it working, so...
         entry_mask = (df["enter_long"] == 1) | (df["enter_short"] == 1)
         for idx in df[entry_mask].index:
