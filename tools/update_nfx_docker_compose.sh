@@ -38,9 +38,31 @@ load_env() {
 }
 
 escape_telegram_markdown() {
-    printf '%s' "$1" | command sed \
+    printf '%s' "$1" | \
+    command sed \
+        -e 's/\\\([][_*()~`>#+=|{}.!-]\)/MDV2ESC\1/g' | \
+    command sed \
+        -e 's/`\([^`]*\)`/MDV2COPEN\1MDV2CCLOSE/g' \
+        -e 's/\[\([^]]*\)\](\([^)]*\))/MDV2LOPEN\1MDV2LMID\2MDV2LCLOSE/g' \
+        -e 's/!\[\([^]]*\)\](\([^)]*\))/MDV2EOPEN\1MDV2EMID\2MDV2ECLOSE/g' \
+        -e 's/__\([^_]*\)__/MDV2UOPEN\1MDV2UCLOSE/g' \
+        -e 's/\*\([^*]*\)\*/MDV2BOPEN\1MDV2BCLOSE/g' \
+        -e 's/_\([^_]*\)_/MDV2IOPEN\1MDV2ICLOSE/g' \
+        -e 's/~\([^~]*\)~/MDV2SOPEN\1MDV2SCLOSE/g' \
+        -e 's/||\([^|]*\)||/MDV2POPEN\1MDV2PCLOSE/g' | \
+    command sed \
         -e 's/\\/\\\\/g' \
-        -e 's/[][(){}.*_~`>#\+=|.!-]/\\&/g'
+        -e 's/[][_*()~`>#+=|{}.!-]/\\&/g' | \
+    command sed \
+        -e 's/MDV2COPEN/`/g'      -e 's/MDV2CCLOSE/`/g' \
+        -e 's/MDV2LOPEN/[/g'      -e 's/MDV2LMID/](/g'     -e 's/MDV2LCLOSE/)/g' \
+        -e 's/MDV2EOPEN/!\[/g'    -e 's/MDV2EMID/](/g'     -e 's/MDV2ECLOSE/)/g' \
+        -e 's/MDV2UOPEN/__/g'     -e 's/MDV2UCLOSE/__/g' \
+        -e 's/MDV2BOPEN/*/g'      -e 's/MDV2BCLOSE/*/g' \
+        -e 's/MDV2IOPEN/_/g'      -e 's/MDV2ICLOSE/_/g' \
+        -e 's/MDV2SOPEN/~/g'      -e 's/MDV2SCLOSE/~/g' \
+        -e 's/MDV2POPEN/||/g'     -e 's/MDV2PCLOSE/||/g' \
+        -e 's/MDV2ESC\\\([][_*()~`>#+=|{}.!-]\)/\\\1/g'
 }
 
 send_telegram_notification() {
