@@ -33545,7 +33545,12 @@ class NostalgiaForInfinityX6(IStrategy):
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
         self.dp.send_msg(
-          f"De-risk Level 1 [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"❌​​ ​**De-risk:** `Level 1`\n"
+          f"🪙​ **Pair:** `{trade.pair}`\n"
+          f"〽️​ **Rate:** `{exit_rate}`\n"
+          f"💰 **Stake amount:** `{sell_amount}`\n"
+          f"💵​ **Profit (stake):** `{profit_stake}`\n"
+          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
         )
         log.info(
           f"De-risk Level 1 [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
@@ -33585,7 +33590,12 @@ class NostalgiaForInfinityX6(IStrategy):
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
         self.dp.send_msg(
-          f"De-risk Level 2 [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"❌​​ ​**De-risk:** `Level 2`\n"
+          f"🪙​ **Pair:** `{trade.pair}`\n"
+          f"〽️​ **Rate:** `{exit_rate}`\n"
+          f"💰 **Stake amount:** `{sell_amount}`\n"
+          f"💵​ **Profit (stake):** `{profit_stake}`\n"
+          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
         )
         log.info(
           f"De-risk Level 2 [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
@@ -33625,7 +33635,12 @@ class NostalgiaForInfinityX6(IStrategy):
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
         self.dp.send_msg(
-          f"De-risk Level 3 [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"❌​​ ​**De-risk:** `Level 3`\n"
+          f"🪙​ **Pair:** `{trade.pair}`\n"
+          f"〽️​ **Rate:** `{exit_rate}`\n"
+          f"💰 **Stake amount:** `{sell_amount}`\n"
+          f"💵​ **Profit (stake):** `{profit_stake}`\n"
+          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
         )
         log.info(
           f"De-risk Level 3 [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
@@ -33650,7 +33665,12 @@ class NostalgiaForInfinityX6(IStrategy):
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
         self.dp.send_msg(
-          f"De-risk Global [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"❌​​ ​**De-risk:** `Global`\n"
+          f"🪙​ **Pair:** `{trade.pair}`\n"
+          f"〽️​ **Rate:** `{exit_rate}`\n"
+          f"💰 **Stake amount:** `{sell_amount}`\n"
+          f"💵​ **Profit (stake):** `{profit_stake}`\n"
+          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
         )
         log.info(
           f"De-risk Global [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
@@ -37023,7 +37043,12 @@ class NostalgiaForInfinityX6(IStrategy):
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
         self.dp.send_msg(
-          f"De-risk (d1) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"❌​​ ​**De-risk:** `(d1)`\n"
+          f"🪙​ **Pair:** `{trade.pair}`\n"
+          f"〽️​ **Rate:** `{exit_rate}`\n"
+          f"💰 **Stake amount:** `{sell_amount}`\n"
+          f"💵​ **Profit (stake):** `{profit_stake}`\n"
+          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
         )
         log.info(
           f"De-risk (d1) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
@@ -38500,7 +38525,12 @@ class NostalgiaForInfinityX6(IStrategy):
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
         self.dp.send_msg(
-          f"De-risk [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"❌​​ ​**De-risk**\n"
+          f"🪙​ **Pair:** `{trade.pair}`\n"
+          f"〽️​ **Rate:** `{exit_rate}`\n"
+          f"💰 **Stake amount:** `{sell_amount}`\n"
+          f"💵​ **Profit (stake):** `{profit_stake}`\n"
+          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
         )
         log.info(
           f"De-risk [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
@@ -38539,7 +38569,12 @@ class NostalgiaForInfinityX6(IStrategy):
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
         self.dp.send_msg(
-          f"De-risk (d1) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"❌​​ ​**De-risk:** `(d1)`\n"
+          f"🪙​ **Pair:** `{trade.pair}`\n"
+          f"〽️​ **Rate:** `{exit_rate}`\n"
+          f"💰 **Stake amount:** `{sell_amount}`\n"
+          f"💵​ **Profit (stake):** `{profit_stake}`\n"
+          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
         )
         log.info(
           f"De-risk (d1) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
@@ -38709,7 +38744,12 @@ class NostalgiaForInfinityX6(IStrategy):
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
         self.dp.send_msg(
-          f"Rebuy De-risk Level 3 [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"❌​​ ​**Rebuy De-risk:** `Level 3`\n"
+          f"🪙​ **Pair:** `{trade.pair}`\n"
+          f"〽️​ **Rate:** `{exit_rate}`\n"
+          f"💰 **Stake amount:** `{sell_amount}`\n"
+          f"💵​ **Profit (stake):** `{profit_stake}`\n"
+          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
         )
         log.info(
           f"Rebuy De-risk Level 3 [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
@@ -57139,7 +57179,12 @@ class NostalgiaForInfinityX6(IStrategy):
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
         self.dp.send_msg(
-          f"De-risk Level 1 [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"❌​​ ​**De-risk:** `Level 1`\n"
+          f"🪙​ **Pair:** `{trade.pair}`\n"
+          f"〽️​ **Rate:** `{exit_rate}`\n"
+          f"💰 **Stake amount:** `{sell_amount}`\n"
+          f"💵​ **Profit (stake):** `{profit_stake}`\n"
+          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
         )
         log.info(
           f"De-risk Level 1 [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
@@ -57179,7 +57224,12 @@ class NostalgiaForInfinityX6(IStrategy):
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
         self.dp.send_msg(
-          f"De-risk Level 2 [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"❌​​ ​**De-risk:** `Level 2`\n"
+          f"🪙​ **Pair:** `{trade.pair}`\n"
+          f"〽️​ **Rate:** `{exit_rate}`\n"
+          f"💰 **Stake amount:** `{sell_amount}`\n"
+          f"💵​ **Profit (stake):** `{profit_stake}`\n"
+          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
         )
         log.info(
           f"De-risk Level 2 [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
@@ -57219,7 +57269,12 @@ class NostalgiaForInfinityX6(IStrategy):
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
         self.dp.send_msg(
-          f"De-risk Level 3 [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"❌​​ ​**De-risk:** `Level 3`\n"
+          f"🪙​ **Pair:** `{trade.pair}`\n"
+          f"〽️​ **Rate:** `{exit_rate}`\n"
+          f"💰 **Stake amount:** `{sell_amount}`\n"
+          f"💵​ **Profit (stake):** `{profit_stake}`\n"
+          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
         )
         log.info(
           f"De-risk Level 3 [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
@@ -57244,7 +57299,12 @@ class NostalgiaForInfinityX6(IStrategy):
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
         self.dp.send_msg(
-          f"De-risk Global [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"❌​​ ​**De-risk:** `Global`\n"
+          f"🪙​ **Pair:** `{trade.pair}`\n"
+          f"〽️​ **Rate:** `{exit_rate}`\n"
+          f"💰 **Stake amount:** `{sell_amount}`\n"
+          f"💵​ **Profit (stake):** `{profit_stake}`\n"
+          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
         )
         log.info(
           f"De-risk Global [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
@@ -60599,7 +60659,12 @@ class NostalgiaForInfinityX6(IStrategy):
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
         self.dp.send_msg(
-          f"De-risk (d1) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"❌​​ ​**De-risk:** `(d1)`\n"
+          f"🪙​ **Pair:** `{trade.pair}`\n"
+          f"〽️​ **Rate:** `{exit_rate}`\n"
+          f"💰 **Stake amount:** `{sell_amount}`\n"
+          f"💵​ **Profit (stake):** `{profit_stake}`\n"
+          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
         )
         log.info(
           f"De-risk (d1) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
@@ -62014,7 +62079,12 @@ class NostalgiaForInfinityX6(IStrategy):
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
         self.dp.send_msg(
-          f"De-risk [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"❌​​ ​**De-risk**\n"
+          f"🪙​ **Pair:** `{trade.pair}`\n"
+          f"〽️​ **Rate:** `{exit_rate}`\n"
+          f"💰 **Stake amount:** `{sell_amount}`\n"
+          f"💵​ **Profit (stake):** `{profit_stake}`\n"
+          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
         )
         log.info(
           f"De-risk [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
@@ -62053,7 +62123,12 @@ class NostalgiaForInfinityX6(IStrategy):
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
         self.dp.send_msg(
-          f"De-risk (d1) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"❌​​ ​**De-risk:** `(d1)`\n"
+          f"🪙​ **Pair:** `{trade.pair}`\n"
+          f"〽️​ **Rate:** `{exit_rate}`\n"
+          f"💰 **Stake amount:** `{sell_amount}`\n"
+          f"💵​ **Profit (stake):** `{profit_stake}`\n"
+          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
         )
         log.info(
           f"De-risk (d1) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
@@ -62213,7 +62288,12 @@ class NostalgiaForInfinityX6(IStrategy):
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
         self.dp.send_msg(
-          f"Rebuy De-risk Level 3 [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"❌​​ ​**Rebuy De-risk:** `Level 3`\n"
+          f"🪙​ **Pair:** `{trade.pair}`\n"
+          f"〽️​ **Rate:** `{exit_rate}`\n"
+          f"💰 **Stake amount:** `{sell_amount}`\n"
+          f"💵​ **Profit (stake):** `{profit_stake}`\n"
+          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
         )
         log.info(
           f"Rebuy De-risk Level 3 [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
