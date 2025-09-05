@@ -36981,7 +36981,14 @@ class NostalgiaForInfinityX6(IStrategy):
           grind_profit = (exit_rate - derisk_1_current_open_rate) / derisk_1_current_open_rate
           grind_profit_stake = derisk_1_current_grind_stake_profit
         self.dp.send_msg(
-          f"Re-entry (d1) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({derisk_1_current_grind_stake_profit} {self.config['stake_currency']})"
+          f"✅ ​**Re-entry:** `(d1)`\n"
+          f"🪙​ **Pair:** `{trade.pair}`\n"
+          f"〽️​ **Rate:** `{current_rate}`\n"
+          f"💰 **Stake amount:** `{buy_amount}`\n"
+          f"💵​ **Profit (stake):** `{profit_stake}`\n"
+          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`\n"
+          f"💶​ **Grind profit (stake):** `{derisk_1_current_grind_stake_profit} {self.config['stake_currency']}`\n"
+          f"💸 **Grind profit (percent):** `{(grind_profit * 100.0):.2f}%`"
         )
         log.info(
           f"Re-entry (d1) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({derisk_1_current_grind_stake_profit} {self.config['stake_currency']})"
@@ -60550,7 +60557,14 @@ class NostalgiaForInfinityX6(IStrategy):
           grind_profit = -(exit_rate - derisk_1_current_open_rate) / derisk_1_current_open_rate
           grind_profit_stake = derisk_1_current_grind_stake_profit
         self.dp.send_msg(
-          f"Re-entry (d1) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({derisk_1_current_grind_stake_profit} {self.config['stake_currency']})"
+          f"✅ ​**Re-entry:** `(d1)`\n"
+          f"🪙​ **Pair:** `{trade.pair}`\n"
+          f"〽️​ **Rate:** `{current_rate}`\n"
+          f"💰 **Stake amount:** `{buy_amount}`\n"
+          f"💵​ **Profit (stake):** `{profit_stake}`\n"
+          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`\n"
+          f"💶​ **Grind profit (stake):** `{derisk_1_current_grind_stake_profit} {self.config['stake_currency']}`\n"
+          f"💸 **Grind profit (percent):** `{(grind_profit * 100.0):.2f}%`"
         )
         log.info(
           f"Re-entry (d1) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({derisk_1_current_grind_stake_profit} {self.config['stake_currency']})"
