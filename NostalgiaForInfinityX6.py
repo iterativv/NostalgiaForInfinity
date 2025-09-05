@@ -34278,7 +34278,12 @@ class NostalgiaForInfinityX6(IStrategy):
       if buy_amount > max_stake:
         return None
       self.dp.send_msg(
-        f"Buyback entry (buyback_1_entry) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        f"✅ ​**Buyback entry:** `(buyback_1_entry)`\n"
+        f"🪙​ **Pair:** `{trade.pair}`\n"
+        f"〽️​ **Rate:** `{current_rate}`\n"
+        f"💰 **Stake amount:** `{buy_amount}`\n"
+        f"💵​ **Profit (stake):** `{profit_stake}`\n"
+        f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
       )
       log.info(
         f"Buyback entry (buyback_1_entry) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
@@ -34409,7 +34414,12 @@ class NostalgiaForInfinityX6(IStrategy):
       if buy_amount > max_stake:
         return None
       self.dp.send_msg(
-        f"Buyback entry (buyback_2_entry) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        f"✅ ​**Buyback entry:** `(buyback_2_entry)`\n"
+        f"🪙​ **Pair:** `{trade.pair}`\n"
+        f"〽️​ **Rate:** `{current_rate}`\n"
+        f"💰 **Stake amount:** `{buy_amount}`\n"
+        f"💵​ **Profit (stake):** `{profit_stake}`\n"
+        f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
       )
       log.info(
         f"Buyback entry (buyback_2_entry) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
@@ -34540,7 +34550,12 @@ class NostalgiaForInfinityX6(IStrategy):
       if buy_amount > max_stake:
         return None
       self.dp.send_msg(
-        f"Buyback entry (buyback_3_entry) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        f"✅ ​**Buyback entry:** `(buyback_3_entry)`\n"
+        f"🪙​ **Pair:** `{trade.pair}`\n"
+        f"〽️​ **Rate:** `{current_rate}`\n"
+        f"💰 **Stake amount:** `{buy_amount}`\n"
+        f"💵​ **Profit (stake):** `{profit_stake}`\n"
+        f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
       )
       log.info(
         f"Buyback entry (buyback_3_entry) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
@@ -57630,7 +57645,12 @@ class NostalgiaForInfinityX6(IStrategy):
       if buy_amount > max_stake:
         return None
       self.dp.send_msg(
-        f"Buyback entry (buyback_1_entry) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        f"✅ ​**Buyback entry:** `(buyback_1_entry)`\n"
+        f"🪙​ **Pair:** `{trade.pair}`\n"
+        f"〽️​ **Rate:** `{current_rate}`\n"
+        f"💰 **Stake amount:** `{buy_amount}`\n"
+        f"💵​ **Profit (stake):** `{profit_stake}`\n"
+        f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
       )
       log.info(
         f"Buyback entry (buyback_1_entry) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
@@ -57761,7 +57781,12 @@ class NostalgiaForInfinityX6(IStrategy):
       if buy_amount > max_stake:
         return None
       self.dp.send_msg(
-        f"Buyback entry (buyback_2_entry) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        f"✅ ​**Buyback entry:** `(buyback_2_entry)`\n"
+        f"🪙​ **Pair:** `{trade.pair}`\n"
+        f"〽️​ **Rate:** `{current_rate}`\n"
+        f"💰 **Stake amount:** `{buy_amount}`\n"
+        f"💵​ **Profit (stake):** `{profit_stake}`\n"
+        f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
       )
       log.info(
         f"Buyback entry (buyback_2_entry) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
@@ -57892,7 +57917,12 @@ class NostalgiaForInfinityX6(IStrategy):
       if buy_amount > max_stake:
         return None
       self.dp.send_msg(
-        f"Buyback entry (buyback_3_entry) [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        f"✅ ​**Buyback entry:** `(buyback_3_entry)`\n"
+        f"🪙​ **Pair:** `{trade.pair}`\n"
+        f"〽️​ **Rate:** `{current_rate}`\n"
+        f"💰 **Stake amount:** `{buy_amount}`\n"
+        f"💵​ **Profit (stake):** `{profit_stake}`\n"
+        f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
       )
       log.info(
         f"Buyback entry (buyback_3_entry) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
