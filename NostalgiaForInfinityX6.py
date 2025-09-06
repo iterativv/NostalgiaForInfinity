@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.7.36"
+    return "v16.7.37"
 
   stoploss = -0.99
 
@@ -2375,6 +2375,7 @@ class NostalgiaForInfinityX6(IStrategy):
     return None
 
   def notification_msg(
+    self,
     msg_type: str,
     tag: str,
     trade,
@@ -2475,7 +2476,7 @@ class NostalgiaForInfinityX6(IStrategy):
 
     # Common fields
     msg += (
-      f"🪙 **Pair:** `{trade.pair}`\n"
+      f"🪙 **Pair:** `{trade}`\n"
       f"〽️ **Rate:** `{rate}`\n"
       f"💰 **Stake amount:** `{stake_amount:.2f}{'' if stake_currency is None else ' ' + stake_currency}`\n"
     )
