@@ -2373,6 +2373,135 @@ class NostalgiaForInfinityX6(IStrategy):
           )
 
     return None
+  
+  def notification_msg(
+        msg_type: str,
+        tag: str,
+        trade,
+        rate: float,
+        stake_amount: float,
+        profit_stake: float,
+        profit_ratio: float,
+        grind_profit_stake: float = None,
+        grind_profit_pct: float = None,
+        stake_currency: str = None,
+        coin_amount: float = None,
+    ) -> str:
+    """
+    Generate a formatted notification message for trade events.
+
+    This function is designed to standardize trade-related notifications 
+    such as grinding entries, exits, stop-losses, buybacks, and re-entries. 
+    It builds a Markdown-formatted message with emojis for readability.
+
+    Parameters
+    ----------
+    msg_type : str
+        Type of notification. Must be one of:
+        - "grinding-entry"
+        - "grinding-exit"
+        - "grinding-derisk"
+        - "grinding-stop"
+        - "buyback-entry"
+        - "buyback-exit"
+        - "buyback-derisk"
+        - "re-entry"
+        - "de-risk"
+        - "rebuy-derisk"
+        - "rebuy"
+    tag : str
+        Identifier or label for the trade step (e.g., "g1", "dl1").
+    trade : object
+        Trade object with at least a `.pair` attribute (e.g., "BTC/USDT").
+    rate : float
+        Entry or exit rate for the trade.
+    stake_amount : float
+        Amount of stake used in the trade.
+    profit_stake : float
+        Profit expressed in stake currency.
+    profit_ratio : float
+        Profit ratio (decimal form, e.g. 0.05 = 5%).
+    grind_profit_stake : float, optional
+        Grind profit expressed in stake currency (default: None).
+    grind_profit_pct : float, optional
+        Grind profit ratio (decimal form, e.g. 0.02 = 2%) (default: None).
+    stake_currency : str, optional
+        Symbol of the stake currency (e.g., "USDT"). If None, only numeric values are shown.
+    coin_amount : float, optional
+        Amount of base coins involved in the trade (e.g., exit/stop cases).
+
+    Returns
+    -------
+    str
+        A formatted multi-line string with trade details.
+        Example:
+        ```
+        ✅ **Grinding entry:** `(dl1)`
+        🪙 **Pair:** `BTC/USDT`
+        〽️ **Rate:** `20000.0`
+        💰 **Stake amount:** `100.00 USDT`
+        💵 **Profit (stake):** `5.00 USDT`
+        💸 **Profit (percent):** `5.00%`
+        💶 **Grind profit (stake):** `2.00 USDT`
+        💸 **Grind profit (percent):** `2.00%`
+        ```
+
+    Notes
+    -----
+    - The function uses Markdown formatting (e.g., **bold**, `inline code`) 
+      for compatibility with Discord, Telegram, etc.
+    - If `grind_profit_stake` or `grind_profit_pct` are not provided, 
+      the related fields are omitted.
+    - If `stake_currency` is provided, it will be appended to amounts.
+    """
+
+    # Headers for different message types
+    headers = {
+        "grinding-entry": f"✅ **Grinding entry:** `({tag})`\n",
+        "grinding-exit": f"☑️ **Grinding exit:** `({tag})`\n",
+        "grinding-derisk": f"❌​​ ​**Grinding de-risk:** `({tag})`\n",
+        "grinding-stop": f"❌ **Grinding stop exit:** `({tag})`\n",
+        "buyback-entry": f"✅ ​**Buyback entry:** `({tag})`\n",
+        "buyback-exit": f"☑️​ ​**Buyback exit:** `({tag})`\n",
+        "buyback-derisk": f"❌​​ ​**Buyback de-risk:** `({tag})`\n",
+        "re-entry": f"✅ ​**Re-entry:** `({tag})`\n",
+        "de-risk": f"❌​​ ​**De-risk:** `({tag})`\n",
+        "rebuy-derisk": f"❌​​ ​**Rebuy de-risk:** `({tag})`\n",
+        "rebuy": f"✅ ​**Rebuy:** `({tag})`\n",
+    }
+
+    # Start with the header
+    msg = headers.get(msg_type, None)
+
+    # Common fields
+    msg += (
+        f"🪙 **Pair:** `{trade.pair}`\n"
+        f"〽️ **Rate:** `{rate}`\n"
+        f"💰 **Stake amount:** `{stake_amount:.2f}{'' if stake_currency is None else ' ' + stake_currency}`\n"
+    )
+
+    # Add coin amount if available (exit/stop cases)
+    if coin_amount is not None:
+        msg += f"🪙 **Coin amount:** `{coin_amount}`\n"
+
+    # Profit section
+    profit_pct = profit_ratio * 100
+    msg += (
+        f"💵 **Profit (stake):** `{profit_stake:.2f}{'' if stake_currency is None else ' ' + stake_currency}`\n"
+        f"💸 **Profit (percent):** `{profit_pct:.2f}%`\n"
+    )
+
+    # Grind profit calculation
+    if grind_profit_stake is not None:
+        msg += (
+            f"💶 **Grind profit (stake):** `{grind_profit_stake:.2f}{'' if stake_currency is None else ' ' + stake_currency}`\n"
+        )
+    if grind_profit_pct is not None:
+        msg += (
+            f"💸 **Grind profit (percent):** `{(grind_profit_pct * 100.0):.2f}%`"
+        )
+
+    return msg
 
   # Informative Pairs
   # ---------------------------------------------------------------------------------------------
