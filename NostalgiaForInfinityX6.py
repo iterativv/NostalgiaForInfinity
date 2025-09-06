@@ -36158,15 +36158,7 @@ class NostalgiaForInfinityX6(IStrategy):
             else profit_ratio
           )
         self.dp.send_msg(
-          f"❌​​ ​**Grinding stop exit:** `(ddl1)`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"🪙 **Coin amount:** `{grind_1_derisk_1_total_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`\n"
-          f"💶​ **Grind profit (stake):** `{grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']}`\n"
-          f"💸 **Grind profit (percent):** `{(grind_profit * 100.0):.2f}%`"
+          self.notification_msg("grinding-stop", tag="ddl1", trade=trade.pair, rate=exit_rate, stake_amount=sell_amount, profit_stake=profit_stake, profit_ratio=profit_ratio, stake_currency=self.config['stake_currency'], grind_profit_stake=grind_profit * sell_amount * trade.leverage, grind_profit_pct=grind_profit, coin_amount=grind_1_derisk_1_total_amount)
         )
         log.info(
           f"Grinding stop exit (ddl1) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_derisk_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
@@ -36297,15 +36289,7 @@ class NostalgiaForInfinityX6(IStrategy):
             else profit_ratio
           )
         self.dp.send_msg(
-          f"❌​​ ​**Grinding stop exit:** `(ddl2)`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"🪙 **Coin amount:** `{grind_2_derisk_1_total_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`\n"
-          f"💶​ **Grind profit (stake):** `{grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']}`\n"
-          f"💸 **Grind profit (percent):** `{(grind_profit * 100.0):.2f}%`"
+          self.notification_msg("grinding-stop", tag="ddl2", trade=trade.pair, rate=exit_rate, stake_amount=sell_amount, profit_stake=profit_stake, profit_ratio=profit_ratio, stake_currency=self.config['stake_currency'], grind_profit_stake=grind_profit * sell_amount * trade.leverage, grind_profit_pct=grind_profit, coin_amount=grind_2_derisk_1_total_amount)
         )
         log.info(
           f"Grinding stop exit (ddl2) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_derisk_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
@@ -36464,15 +36448,7 @@ class NostalgiaForInfinityX6(IStrategy):
             else profit_ratio
           )
         self.dp.send_msg(
-          f"❌​​ ​**Grinding stop exit:** `(dd1)`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"🪙 **Coin amount:** `{grind_1_total_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`\n"
-          f"💶​ **Grind profit (stake):** `{grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']}`\n"
-          f"💸 **Grind profit (percent):** `{(grind_profit * 100.0):.2f}%`"
+          self.notification_msg("grinding-stop", tag="dd1", trade=trade.pair, rate=exit_rate, stake_amount=sell_amount, profit_stake=profit_stake, profit_ratio=profit_ratio, stake_currency=self.config['stake_currency'], grind_profit_stake=grind_profit * sell_amount * trade.leverage, grind_profit_pct=grind_profit, coin_amount=grind_1_total_amount)
         )
         log.info(
           f"Grinding stop exit (dd1) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
@@ -36592,15 +36568,7 @@ class NostalgiaForInfinityX6(IStrategy):
             else profit_ratio
           )
         self.dp.send_msg(
-          f"❌​​ ​**Grinding stop exit:** `(dd2)`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"🪙 **Coin amount:** `{grind_2_total_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`\n"
-          f"💶​ **Grind profit (stake):** `{grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']}`\n"
-          f"💸 **Grind profit (percent):** `{(grind_profit * 100.0):.2f}%`"
+          self.notification_msg("grinding-stop", tag="dd2", trade=trade.pair, rate=exit_rate, stake_amount=sell_amount, profit_stake=profit_stake, profit_ratio=profit_ratio, stake_currency=self.config['stake_currency'], grind_profit_stake=grind_profit * sell_amount * trade.leverage, grind_profit_pct=grind_profit, coin_amount=grind_2_total_amount)
         )
         log.info(
           f"Grinding stop exit (dd2) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
@@ -36720,15 +36688,7 @@ class NostalgiaForInfinityX6(IStrategy):
             else profit_ratio
           )
         self.dp.send_msg(
-          f"❌​​ ​**Grinding stop exit:** `(dd3)`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"🪙 **Coin amount:** `{grind_3_total_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`\n"
-          f"💶​ **Grind profit (stake):** `{grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']}`\n"
-          f"💸 **Grind profit (percent):** `{(grind_profit * 100.0):.2f}%`"
+          self.notification_msg("grinding-stop", tag="dd3", trade=trade.pair, rate=exit_rate, stake_amount=sell_amount, profit_stake=profit_stake, profit_ratio=profit_ratio, stake_currency=self.config['stake_currency'], grind_profit_stake=grind_profit * sell_amount * trade.leverage, grind_profit_pct=grind_profit, coin_amount=grind_3_total_amount)
         )
         log.info(
           f"Grinding stop exit (dd3) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
@@ -36848,15 +36808,7 @@ class NostalgiaForInfinityX6(IStrategy):
             else profit_ratio
           )
         self.dp.send_msg(
-          f"❌​​ ​**Grinding stop exit:** `(dd4)`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"🪙 **Coin amount:** `{grind_4_total_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`\n"
-          f"💶​ **Grind profit (stake):** `{grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']}`\n"
-          f"💸 **Grind profit (percent):** `{(grind_profit * 100.0):.2f}%`"
+          self.notification_msg("grinding-stop", tag="dd4", trade=trade.pair, rate=exit_rate, stake_amount=sell_amount, profit_stake=profit_stake, profit_ratio=profit_ratio, stake_currency=self.config['stake_currency'], grind_profit_stake=grind_profit * sell_amount * trade.leverage, grind_profit_pct=grind_profit, coin_amount=grind_4_total_amount)
         )
         log.info(
           f"Grinding stop exit (dd4) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_4_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
@@ -36976,15 +36928,7 @@ class NostalgiaForInfinityX6(IStrategy):
             else profit_ratio
           )
         self.dp.send_msg(
-          f"❌​​ ​**Grinding stop exit:** `(dd5)`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"🪙 **Coin amount:** `{grind_5_total_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`\n"
-          f"💶​ **Grind profit (stake):** `{grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']}`\n"
-          f"💸 **Grind profit (percent):** `{(grind_profit * 100.0):.2f}%`"
+          self.notification_msg("grinding-stop", tag="dd5", trade=trade.pair, rate=exit_rate, stake_amount=sell_amount, profit_stake=profit_stake, profit_ratio=profit_ratio, stake_currency=self.config['stake_currency'], grind_profit_stake=grind_profit * sell_amount * trade.leverage, grind_profit_pct=grind_profit, coin_amount=grind_5_total_amount)
         )
         log.info(
           f"Grinding stop exit (dd5) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_5_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
@@ -37104,15 +37048,7 @@ class NostalgiaForInfinityX6(IStrategy):
             else profit_ratio
           )
         self.dp.send_msg(
-          f"❌​​ ​**Grinding stop exit:** `(dd6)`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"🪙 **Coin amount:** `{grind_6_total_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`\n"
-          f"💶​ **Grind profit (stake):** `{grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']}`\n"
-          f"💸 **Grind profit (percent):** `{(grind_profit * 100.0):.2f}%`"
+          self.notification_msg("grinding-stop", tag="dd6", trade=trade.pair, rate=exit_rate, stake_amount=sell_amount, profit_stake=profit_stake, profit_ratio=profit_ratio, stake_currency=self.config['stake_currency'], grind_profit_stake=grind_profit * sell_amount * trade.leverage, grind_profit_pct=grind_profit, coin_amount=grind_6_total_amount)
         )
         log.info(
           f"Grinding stop exit (dd6) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_6_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
@@ -38054,15 +37990,7 @@ class NostalgiaForInfinityX6(IStrategy):
             else profit_ratio
           )
         self.dp.send_msg(
-          f"❌​​ ​**Grinding stop exit:** `(sg1)`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"🪙 **Coin amount:** `{grind_1_total_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`\n"
-          f"💶​ **Grind profit (stake):** `{grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']}`\n"
-          f"💸 **Grind profit (percent):** `{(grind_profit * 100.0):.2f}%`"
+          self.notification_msg("grinding-stop", tag="sg1", trade=trade.pair, rate=exit_rate, stake_amount=sell_amount, profit_stake=profit_stake, profit_ratio=profit_ratio, stake_currency=self.config['stake_currency'], grind_profit_stake=grind_profit * sell_amount * trade.leverage, grind_profit_pct=grind_profit, coin_amount=grind_1_total_amount)
         )
         log.info(
           f"Grinding stop exit (sg1) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
@@ -38171,15 +38099,7 @@ class NostalgiaForInfinityX6(IStrategy):
             else profit_ratio
           )
         self.dp.send_msg(
-          f"❌​​ ​**Grinding stop exit:** `(sg2)`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"🪙 **Coin amount:** `{grind_2_total_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`\n"
-          f"💶​ **Grind profit (stake):** `{grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']}`\n"
-          f"💸 **Grind profit (percent):** `{(grind_profit * 100.0):.2f}%`"
+          self.notification_msg("grinding-stop", tag="sg2", trade=trade.pair, rate=exit_rate, stake_amount=sell_amount, profit_stake=profit_stake, profit_ratio=profit_ratio, stake_currency=self.config['stake_currency'], grind_profit_stake=grind_profit * sell_amount * trade.leverage, grind_profit_pct=grind_profit, coin_amount=grind_2_total_amount)
         )
         log.info(
           f"Grinding stop exit (sg2) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
@@ -38288,15 +38208,7 @@ class NostalgiaForInfinityX6(IStrategy):
             else profit_ratio
           )
         self.dp.send_msg(
-          f"❌​​ ​**Grinding stop exit:** `(sg3)`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"🪙 **Coin amount:** `{grind_3_total_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`\n"
-          f"💶​ **Grind profit (stake):** `{grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']}`\n"
-          f"💸 **Grind profit (percent):** `{(grind_profit * 100.0):.2f}%`"
+          self.notification_msg("grinding-stop", tag="sg3", trade=trade.pair, rate=exit_rate, stake_amount=sell_amount, profit_stake=profit_stake, profit_ratio=profit_ratio, stake_currency=self.config['stake_currency'], grind_profit_stake=grind_profit * sell_amount * trade.leverage, grind_profit_pct=grind_profit, coin_amount=grind_3_total_amount)
         )
         log.info(
           f"Grinding stop exit (sg3) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
@@ -38405,15 +38317,7 @@ class NostalgiaForInfinityX6(IStrategy):
             else profit_ratio
           )
         self.dp.send_msg(
-          f"❌​​ ​**Grinding stop exit:** `(sg4)`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"🪙 **Coin amount:** `{grind_4_total_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`\n"
-          f"💶​ **Grind profit (stake):** `{grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']}`\n"
-          f"💸 **Grind profit (percent):** `{(grind_profit * 100.0):.2f}%`"
+          self.notification_msg("grinding-stop", tag="sg4", trade=trade.pair, rate=exit_rate, stake_amount=sell_amount, profit_stake=profit_stake, profit_ratio=profit_ratio, stake_currency=self.config['stake_currency'], grind_profit_stake=grind_profit * sell_amount * trade.leverage, grind_profit_pct=grind_profit, coin_amount=grind_4_total_amount)
         )
         log.info(
           f"Grinding stop exit (sg4) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_4_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
@@ -38522,15 +38426,7 @@ class NostalgiaForInfinityX6(IStrategy):
             else profit_ratio
           )
         self.dp.send_msg(
-          f"❌​​ ​**Grinding stop exit:** `(sg5)`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"🪙 **Coin amount:** `{grind_5_total_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`\n"
-          f"💶​ **Grind profit (stake):** `{grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']}`\n"
-          f"💸 **Grind profit (percent):** `{(grind_profit * 100.0):.2f}%`"
+          self.notification_msg("grinding-stop", tag="sg5", trade=trade.pair, rate=exit_rate, stake_amount=sell_amount, profit_stake=profit_stake, profit_ratio=profit_ratio, stake_currency=self.config['stake_currency'], grind_profit_stake=grind_profit * sell_amount * trade.leverage, grind_profit_pct=grind_profit, coin_amount=grind_5_total_amount)
         )
         log.info(
           f"Grinding stop exit (sg5) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_5_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
@@ -38639,15 +38535,7 @@ class NostalgiaForInfinityX6(IStrategy):
             else profit_ratio
           )
         self.dp.send_msg(
-          f"❌​​ ​**Grinding stop exit:** `(sg6)`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"🪙 **Coin amount:** `{grind_6_total_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`\n"
-          f"💶​ **Grind profit (stake):** `{grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']}`\n"
-          f"💸 **Grind profit (percent):** `{(grind_profit * 100.0):.2f}%`"
+          self.notification_msg("grinding-stop", tag="sg6", trade=trade.pair, rate=exit_rate, stake_amount=sell_amount, profit_stake=profit_stake, profit_ratio=profit_ratio, stake_currency=self.config['stake_currency'], grind_profit_stake=grind_profit * sell_amount * trade.leverage, grind_profit_pct=grind_profit, coin_amount=grind_6_total_amount)
         )
         log.info(
           f"Grinding stop exit (sg6) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_6_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
@@ -59732,15 +59620,7 @@ class NostalgiaForInfinityX6(IStrategy):
             else profit_ratio
           )
         self.dp.send_msg(
-          f"❌​​ ​**Grinding stop exit:** `(ddl1)`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"🪙 **Coin amount:** `{grind_1_derisk_1_total_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`\n"
-          f"💶​ **Grind profit (stake):** `{grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']}`\n"
-          f"💸 **Grind profit (percent):** `{(grind_profit * 100.0):.2f}%`"
+          self.notification_msg("grinding-stop", tag="ddl1", trade=trade.pair, rate=exit_rate, stake_amount=sell_amount, profit_stake=profit_stake, profit_ratio=profit_ratio, stake_currency=self.config['stake_currency'], grind_profit_stake=grind_profit * sell_amount * trade.leverage, grind_profit_pct=grind_profit, coin_amount=grind_1_derisk_1_total_amount)
         )
         log.info(
           f"Grinding stop exit (ddl1) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_derisk_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
@@ -59871,15 +59751,7 @@ class NostalgiaForInfinityX6(IStrategy):
             else profit_ratio
           )
         self.dp.send_msg(
-          f"❌​​ ​**Grinding stop exit:** `(ddl2)`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"🪙 **Coin amount:** `{grind_2_derisk_1_total_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`\n"
-          f"💶​ **Grind profit (stake):** `{grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']}`\n"
-          f"💸 **Grind profit (percent):** `{(grind_profit * 100.0):.2f}%`"
+          self.notification_msg("grinding-stop", tag="ddl2", trade=trade.pair, rate=exit_rate, stake_amount=sell_amount, profit_stake=profit_stake, profit_ratio=profit_ratio, stake_currency=self.config['stake_currency'], grind_profit_stake=grind_profit * sell_amount * trade.leverage, grind_profit_pct=grind_profit, coin_amount=grind_2_derisk_1_total_amount)
         )
         log.info(
           f"Grinding stop exit (ddl2) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_derisk_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
@@ -60038,15 +59910,7 @@ class NostalgiaForInfinityX6(IStrategy):
             else profit_ratio
           )
         self.dp.send_msg(
-          f"❌​​ ​**Grinding stop exit:** `(dd1)`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"🪙 **Coin amount:** `{grind_1_total_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`\n"
-          f"💶​ **Grind profit (stake):** `{grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']}`\n"
-          f"💸 **Grind profit (percent):** `{(grind_profit * 100.0):.2f}%`"
+          self.notification_msg("grinding-stop", tag="dd1", trade=trade.pair, rate=exit_rate, stake_amount=sell_amount, profit_stake=profit_stake, profit_ratio=profit_ratio, stake_currency=self.config['stake_currency'], grind_profit_stake=grind_profit * sell_amount * trade.leverage, grind_profit_pct=grind_profit, coin_amount=grind_1_total_amount)
         )
         log.info(
           f"Grinding stop exit (dd1) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
@@ -60166,15 +60030,7 @@ class NostalgiaForInfinityX6(IStrategy):
             else profit_ratio
           )
         self.dp.send_msg(
-          f"❌​​ ​**Grinding stop exit:** `(dd2)`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"🪙 **Coin amount:** `{grind_2_total_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`\n"
-          f"💶​ **Grind profit (stake):** `{grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']}`\n"
-          f"💸 **Grind profit (percent):** `{(grind_profit * 100.0):.2f}%`"
+          self.notification_msg("grinding-stop", tag="dd2", trade=trade.pair, rate=exit_rate, stake_amount=sell_amount, profit_stake=profit_stake, profit_ratio=profit_ratio, stake_currency=self.config['stake_currency'], grind_profit_stake=grind_profit * sell_amount * trade.leverage, grind_profit_pct=grind_profit, coin_amount=grind_2_total_amount)
         )
         log.info(
           f"Grinding stop exit (dd2) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
@@ -60294,15 +60150,7 @@ class NostalgiaForInfinityX6(IStrategy):
             else profit_ratio
           )
         self.dp.send_msg(
-          f"❌​​ ​**Grinding stop exit:** `(dd3)`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"🪙 **Coin amount:** `{grind_3_total_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`\n"
-          f"💶​ **Grind profit (stake):** `{grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']}`\n"
-          f"💸 **Grind profit (percent):** `{(grind_profit * 100.0):.2f}%`"
+          self.notification_msg("grinding-stop", tag="dd3", trade=trade.pair, rate=exit_rate, stake_amount=sell_amount, profit_stake=profit_stake, profit_ratio=profit_ratio, stake_currency=self.config['stake_currency'], grind_profit_stake=grind_profit * sell_amount * trade.leverage, grind_profit_pct=grind_profit, coin_amount=grind_3_total_amount)
         )
         log.info(
           f"Grinding stop exit (dd3) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
@@ -60422,15 +60270,7 @@ class NostalgiaForInfinityX6(IStrategy):
             else profit_ratio
           )
         self.dp.send_msg(
-          f"❌​​ ​**Grinding stop exit:** `(dd4)`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"🪙 **Coin amount:** `{grind_4_total_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`\n"
-          f"💶​ **Grind profit (stake):** `{grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']}`\n"
-          f"💸 **Grind profit (percent):** `{(grind_profit * 100.0):.2f}%`"
+          self.notification_msg("grinding-stop", tag="dd4", trade=trade.pair, rate=exit_rate, stake_amount=sell_amount, profit_stake=profit_stake, profit_ratio=profit_ratio, stake_currency=self.config['stake_currency'], grind_profit_stake=grind_profit * sell_amount * trade.leverage, grind_profit_pct=grind_profit, coin_amount=grind_4_total_amount)
         )
         log.info(
           f"Grinding stop exit (dd4) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_4_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
@@ -60550,15 +60390,7 @@ class NostalgiaForInfinityX6(IStrategy):
             else profit_ratio
           )
         self.dp.send_msg(
-          f"❌​​ ​**Grinding stop exit:** `(dd5)`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"🪙 **Coin amount:** `{grind_5_total_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`\n"
-          f"💶​ **Grind profit (stake):** `{grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']}`\n"
-          f"💸 **Grind profit (percent):** `{(grind_profit * 100.0):.2f}%`"
+          self.notification_msg("grinding-stop", tag="dd5", trade=trade.pair, rate=exit_rate, stake_amount=sell_amount, profit_stake=profit_stake, profit_ratio=profit_ratio, stake_currency=self.config['stake_currency'], grind_profit_stake=grind_profit * sell_amount * trade.leverage, grind_profit_pct=grind_profit, coin_amount=grind_5_total_amount)
         )
         log.info(
           f"Grinding stop exit (dd5) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_5_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
@@ -60678,15 +60510,7 @@ class NostalgiaForInfinityX6(IStrategy):
             else profit_ratio
           )
         self.dp.send_msg(
-          f"❌​​ ​**Grinding stop exit:** `(dd6)`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"🪙 **Coin amount:** `{grind_6_total_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`\n"
-          f"💶​ **Grind profit (stake):** `{grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']}`\n"
-          f"💸 **Grind profit (percent):** `{(grind_profit * 100.0):.2f}%`"
+          self.notification_msg("grinding-stop", tag="dd6", trade=trade.pair, rate=exit_rate, stake_amount=sell_amount, profit_stake=profit_stake, profit_ratio=profit_ratio, stake_currency=self.config['stake_currency'], grind_profit_stake=grind_profit * sell_amount * trade.leverage, grind_profit_pct=grind_profit, coin_amount=grind_6_total_amount)
         )
         log.info(
           f"Grinding stop exit (dd6) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_6_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
@@ -61566,15 +61390,7 @@ class NostalgiaForInfinityX6(IStrategy):
             else profit_ratio
           )
         self.dp.send_msg(
-          f"❌​​ ​**Grinding stop exit:** `(sg1)`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"🪙 **Coin amount:** `{grind_1_total_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`\n"
-          f"💶​ **Grind profit (stake):** `{grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']}`\n"
-          f"💸 **Grind profit (percent):** `{(grind_profit * 100.0):.2f}%`"
+          self.notification_msg("grinding-stop", tag="sg1", trade=trade.pair, rate=exit_rate, stake_amount=sell_amount, profit_stake=profit_stake, profit_ratio=profit_ratio, stake_currency=self.config['stake_currency'], grind_profit_stake=grind_profit * sell_amount * trade.leverage, grind_profit_pct=grind_profit, coin_amount=grind_1_total_amount)
         )
         log.info(
           f"Grinding stop exit (sg1) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
@@ -61683,15 +61499,7 @@ class NostalgiaForInfinityX6(IStrategy):
             else profit_ratio
           )
         self.dp.send_msg(
-          f"❌​​ ​**Grinding stop exit:** `(sg2)`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"🪙 **Coin amount:** `{grind_2_total_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`\n"
-          f"💶​ **Grind profit (stake):** `{grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']}`\n"
-          f"💸 **Grind profit (percent):** `{(grind_profit * 100.0):.2f}%`"
+          self.notification_msg("grinding-stop", tag="sg2", trade=trade.pair, rate=exit_rate, stake_amount=sell_amount, profit_stake=profit_stake, profit_ratio=profit_ratio, stake_currency=self.config['stake_currency'], grind_profit_stake=grind_profit * sell_amount * trade.leverage, grind_profit_pct=grind_profit, coin_amount=grind_2_total_amount)
         )
         log.info(
           f"Grinding stop exit (sg2) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
@@ -61800,15 +61608,7 @@ class NostalgiaForInfinityX6(IStrategy):
             else profit_ratio
           )
         self.dp.send_msg(
-          f"❌​​ ​**Grinding stop exit:** `(sg3)`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"🪙 **Coin amount:** `{grind_3_total_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`\n"
-          f"💶​ **Grind profit (stake):** `{grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']}`\n"
-          f"💸 **Grind profit (percent):** `{(grind_profit * 100.0):.2f}%`"
+          self.notification_msg("grinding-stop", tag="sg3", trade=trade.pair, rate=exit_rate, stake_amount=sell_amount, profit_stake=profit_stake, profit_ratio=profit_ratio, stake_currency=self.config['stake_currency'], grind_profit_stake=grind_profit * sell_amount * trade.leverage, grind_profit_pct=grind_profit, coin_amount=grind_3_total_amount)
         )
         log.info(
           f"Grinding stop exit (sg3) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
@@ -61917,15 +61717,7 @@ class NostalgiaForInfinityX6(IStrategy):
             else profit_ratio
           )
         self.dp.send_msg(
-          f"❌​​ ​**Grinding stop exit:** `(sg4)`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"🪙 **Coin amount:** `{grind_4_total_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`\n"
-          f"💶​ **Grind profit (stake):** `{grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']}`\n"
-          f"💸 **Grind profit (percent):** `{(grind_profit * 100.0):.2f}%`"
+          self.notification_msg("grinding-stop", tag="sg4", trade=trade.pair, rate=exit_rate, stake_amount=sell_amount, profit_stake=profit_stake, profit_ratio=profit_ratio, stake_currency=self.config['stake_currency'], grind_profit_stake=grind_profit * sell_amount * trade.leverage, grind_profit_pct=grind_profit, coin_amount=grind_4_total_amount)
         )
         log.info(
           f"Grinding stop exit (sg4) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_4_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
@@ -62034,15 +61826,7 @@ class NostalgiaForInfinityX6(IStrategy):
             else profit_ratio
           )
         self.dp.send_msg(
-          f"❌​​ ​**Grinding stop exit:** `(sg5)`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"🪙 **Coin amount:** `{grind_5_total_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`\n"
-          f"💶​ **Grind profit (stake):** `{grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']}`\n"
-          f"💸 **Grind profit (percent):** `{(grind_profit * 100.0):.2f}%`"
+          self.notification_msg("grinding-stop", tag="sg5", trade=trade.pair, rate=exit_rate, stake_amount=sell_amount, profit_stake=profit_stake, profit_ratio=profit_ratio, stake_currency=self.config['stake_currency'], grind_profit_stake=grind_profit * sell_amount * trade.leverage, grind_profit_pct=grind_profit, coin_amount=grind_5_total_amount)
         )
         log.info(
           f"Grinding stop exit (sg5) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_5_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
@@ -62151,15 +61935,7 @@ class NostalgiaForInfinityX6(IStrategy):
             else profit_ratio
           )
         self.dp.send_msg(
-          f"❌​​ ​**Grinding stop exit:** `(sg6)`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"🪙 **Coin amount:** `{grind_6_total_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`\n"
-          f"💶​ **Grind profit (stake):** `{grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']}`\n"
-          f"💸 **Grind profit (percent):** `{(grind_profit * 100.0):.2f}%`"
+          self.notification_msg("grinding-stop", tag="sg6", trade=trade.pair, rate=exit_rate, stake_amount=sell_amount, profit_stake=profit_stake, profit_ratio=profit_ratio, stake_currency=self.config['stake_currency'], grind_profit_stake=grind_profit * sell_amount * trade.leverage, grind_profit_pct=grind_profit, coin_amount=grind_6_total_amount)
         )
         log.info(
           f"Grinding stop exit (sg6) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_6_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
