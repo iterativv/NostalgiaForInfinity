@@ -34561,15 +34561,7 @@ class NostalgiaForInfinityX6(IStrategy):
             else profit_ratio
           )
         self.dp.send_msg(
-          f"❌​​ ​**Buyback de-risk:** `(buyback_1_derisk)`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"🪙 **Coin amount:** `{buyback_1_total_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`\n"
-          f"💶​ **Grind profit (stake):** `{buyback_1_current_grind_stake_profit} {self.config['stake_currency']}`\n"
-          f"💸 **Grind profit (percent):** `{(grind_profit * 100.0):.2f}%`"
+          self.notification_msg("buyback-derisk", tag="buyback_1_derisk", trade=trade.pair, rate=exit_rate, stake_amount=sell_amount, profit_stake=profit_stake, profit_ratio=profit_ratio, stake_currency=self.config['stake_currency'], grind_profit_stake=buyback_1_current_grind_stake_profit, grind_profit_pct=grind_profit, coin_amount=buyback_1_total_amount)
         )
         log.info(
           f"Buyback de-risk (buyback_1_derisk) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({buyback_1_current_grind_stake_profit} {self.config['stake_currency']})"
@@ -34713,15 +34705,7 @@ class NostalgiaForInfinityX6(IStrategy):
             else profit_ratio
           )
         self.dp.send_msg(
-          f"❌​​ ​**Buyback de-risk:** `(buyback_2_derisk)`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"🪙 **Coin amount:** `{buyback_2_total_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`\n"
-          f"💶​ **Grind profit (stake):** `{buyback_2_current_grind_stake_profit} {self.config['stake_currency']}`\n"
-          f"💸 **Grind profit (percent):** `{(grind_profit * 100.0):.2f}%`"
+          self.notification_msg("buyback-derisk", tag="buyback_2_derisk", trade=trade.pair, rate=exit_rate, stake_amount=sell_amount, profit_stake=profit_stake, profit_ratio=profit_ratio, stake_currency=self.config['stake_currency'], grind_profit_stake=buyback_2_current_grind_stake_profit, grind_profit_pct=grind_profit, coin_amount=buyback_2_total_amount)
         )
         log.info(
           f"Buyback de-risk (buyback_2_derisk) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({buyback_2_current_grind_stake_profit} {self.config['stake_currency']})"
@@ -34865,15 +34849,7 @@ class NostalgiaForInfinityX6(IStrategy):
             else profit_ratio
           )
         self.dp.send_msg(
-          f"❌​​ ​**Buyback de-risk:** `(buyback_3_derisk)`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"🪙 **Coin amount:** `{buyback_3_total_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`\n"
-          f"💶​ **Grind profit (stake):** `{buyback_3_current_grind_stake_profit} {self.config['stake_currency']}`\n"
-          f"💸 **Grind profit (percent):** `{(grind_profit * 100.0):.2f}%`"
+          self.notification_msg("buyback-derisk", tag="buyback_3_derisk", trade=trade.pair, rate=exit_rate, stake_amount=sell_amount, profit_stake=profit_stake, profit_ratio=profit_ratio, stake_currency=self.config['stake_currency'], grind_profit_stake=buyback_3_current_grind_stake_profit, grind_profit_pct=grind_profit, coin_amount=buyback_3_total_amount)
         )
         log.info(
           f"Buyback de-risk (buyback_3_derisk) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({buyback_3_current_grind_stake_profit} {self.config['stake_currency']})"
@@ -57981,13 +57957,7 @@ class NostalgiaForInfinityX6(IStrategy):
             else profit_ratio
           )
         self.dp.send_msg(
-          f"❌​​ ​**Buyback de-risk:** `(buyback_1_derisk)`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"🪙 **Coin amount:** `{buyback_1_total_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
+          self.notification_msg("buyback-derisk", tag="buyback_1_derisk", trade=trade.pair, rate=exit_rate, stake_amount=sell_amount, profit_stake=profit_stake, profit_ratio=profit_ratio, stake_currency=self.config['stake_currency'],  coin_amount=buyback_1_total_amount)
         )
         log.info(
           f"Buyback de-risk (buyback_1_derisk) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
@@ -58131,13 +58101,7 @@ class NostalgiaForInfinityX6(IStrategy):
             else profit_ratio
           )
         self.dp.send_msg(
-          f"❌​​ ​**Buyback de-risk:** `(buyback_2_derisk)`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"🪙 **Coin amount:** `{buyback_2_total_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
+          self.notification_msg("buyback-derisk", tag="buyback_2_derisk", trade=trade.pair, rate=exit_rate, stake_amount=sell_amount, profit_stake=profit_stake, profit_ratio=profit_ratio, stake_currency=self.config['stake_currency'],  coin_amount=buyback_2_total_amount)
         )
         log.info(
           f"Buyback de-risk (buyback_2_derisk) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
@@ -58281,13 +58245,7 @@ class NostalgiaForInfinityX6(IStrategy):
             else profit_ratio
           )
         self.dp.send_msg(
-          f"❌​​ ​**Buyback de-risk:** `(buyback_3_derisk)`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"🪙 **Coin amount:** `{buyback_3_total_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
+          self.notification_msg("buyback-derisk", tag="buyback_3_derisk", trade=trade.pair, rate=exit_rate, stake_amount=sell_amount, profit_stake=profit_stake, profit_ratio=profit_ratio, stake_currency=self.config['stake_currency'],  coin_amount=buyback_3_total_amount)
         )
         log.info(
           f"Buyback de-risk (buyback_3_derisk) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
