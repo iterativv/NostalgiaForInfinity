@@ -33809,6 +33809,7 @@ class NostalgiaForInfinityX6(IStrategy):
       )
       or (
         self.is_futures_mode
+        and trade.liquidation_price is not None
         and (
           (trade.is_short and current_rate > trade.liquidation_price * 0.95)
           or (not trade.is_short and current_rate < trade.liquidation_price * 1.05)
@@ -57773,6 +57774,7 @@ class NostalgiaForInfinityX6(IStrategy):
       )
       or (
         self.is_futures_mode
+        and trade.liquidation_price is not None
         and (
           (trade.is_short and current_rate > trade.liquidation_price * 0.95)
           or (not trade.is_short and current_rate < trade.liquidation_price * 1.05)
