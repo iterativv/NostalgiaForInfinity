@@ -66,6 +66,11 @@ escape_telegram_markdown() {
 }
 
 send_telegram_notification() {
+    if ! command -v curl >/dev/null 2>&1; then
+        echo_timestamped "Error: curl not found, cannot send telegram notification"
+        return 1
+    fi
+
     freqtrade_telegram_enabled=${FREQTRADE__TELEGRAM__ENABLED:-false}
     if [ "$freqtrade_telegram_enabled" = "false" ] || [ "$TELEGRAM_NOTIFICATION" = "false" ]; then
         return 0
@@ -77,16 +82,11 @@ send_telegram_notification() {
         return 1
     fi
 
-    if ! command -v curl >/dev/null 2>&1; then
-        echo_timestamped "Error: curl not found, cannot send telegram notification"
-        return 1
-    fi
-
     if [ -n "$FREQTRADE__TELEGRAM__TOKEN" ] && [ -n "$FREQTRADE__TELEGRAM__CHAT_ID" ]; then
         curl_error=$(command curl -s -X POST \
             --data-urlencode "text=${telegram_message}" \
             --data-urlencode "parse_mode=MarkdownV2" \
-            --data "chat_id=$FREQTRADE__TELEGRAM__CHAT_ID" \
+            --data "chat_id=${FREQTRADE__TELEGRAM__CHAT_ID}" \
             "https://api.telegram.org/bot${FREQTRADE__TELEGRAM__TOKEN}/sendMessage" 2>&1 1>/dev/null)
         if [ $? -ne 0 ]; then
             echo_timestamped "Error: failed to send telegram notification: $curl_error"
