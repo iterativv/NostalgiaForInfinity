@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.7.40"
+    return "v16.7.42"
 
   stoploss = -0.99
 
@@ -4272,6 +4272,19 @@ class NostalgiaForInfinityX6(IStrategy):
         | (df["AROONU_14_4h"] < 85.0)
         | (df["ROC_9_4h"] < 15.0)
       )
+      # 15m & 1h down move, 15m still not low enough, 1h still high, 4h high, 1d downtrend, 4h overbought
+      & (
+        (df["RSI_3_15m"] > 15.0)
+        | (df["RSI_3_1h"] > 30.0)
+        | (df["RSI_14_15m"] < 30.0)
+        | (df["RSI_14_1h"] < 50.0)
+        | (df["RSI_14_4h"] < 60.0)
+        | (df["CMF_20_1d"] > -0.10)
+        | (df["AROONU_14_15m"] < 20.0)
+        | (df["AROONU_14_1h"] < 20.0)
+        | (df["AROONU_14_4h"] < 85.0)
+        | (df["ROC_9_4h"] < 20.0)
+      )
       # 15m & 1h down move, 15m still not low enough, 1h still high, 4h high
       & (
         (df["RSI_3_15m"] > 15.0)
@@ -6614,6 +6627,17 @@ class NostalgiaForInfinityX6(IStrategy):
         | (df["AROONU_14_1h"] < 20.0)
         | (df["AROONU_14_4h"] < 50.0)
         | (df["ROC_9_1d"] < 100.0)
+      )
+      # 1d green with top wick, 15m down move, 15m & 1h still high, 4h high & overbought
+      & (
+        (df["change_pct_1d"] < 30.0)
+        | (df["top_wick_pct_1d"] < 20.0)
+        | (df["RSI_3_15m"] > 35.0)
+        | (df["RSI_14_15m"] < 40.0)
+        | (df["RSI_14_1h"] < 50.0)
+        | (df["RSI_14_4h"] < 80.0)
+        | (df["AROONU_14_4h"] < 80.0)
+        | (df["ROC_9_4h"] < 50.0)
       )
       # 1d green with top wick, 1h down move, 1h still high, 4h high & overbought, 1d overbought
       & (
