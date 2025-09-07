@@ -2378,7 +2378,7 @@ class NostalgiaForInfinityX6(IStrategy):
     self,
     msg_type: str,
     tag: str,
-    trade,
+    pair: str,
     rate: float,
     stake_amount: float,
     profit_stake: float,
@@ -2412,8 +2412,8 @@ class NostalgiaForInfinityX6(IStrategy):
         - "rebuy"
     tag : str
         Identifier or label for the trade step (e.g., "g1", "dl1").
-    trade : object
-        Trade object with at least a `.pair` attribute (e.g., "BTC/USDT").
+    pair : str
+        Pair (e.g., "BTC/USDT").
     rate : float
         Entry or exit rate for the trade.
     stake_amount : float
@@ -2459,11 +2459,11 @@ class NostalgiaForInfinityX6(IStrategy):
     # Headers for different message types
     headers = {
       "grinding-entry": f"✅ ​**Grinding entry:** `({tag})`\n",
-      "grinding-exit": f"☑️ ​**Grinding exit:** `({tag})`\n",
+      "grinding-exit": f"❎​ ​**Grinding exit:** `({tag})`\n",
       "grinding-derisk": f"❌​​ ​**Grinding de-risk:** `({tag})`\n",
       "grinding-stop": f"❌ ​**Grinding stop exit:** `({tag})`\n",
       "buyback-entry": f"✅ ​**Buyback entry:** `({tag})`\n",
-      "buyback-exit": f"☑️​ ​**Buyback exit:** `({tag})`\n",
+      "buyback-exit": f"❎​​ ​**Buyback exit:** `({tag})`\n",
       "buyback-derisk": f"❌​​ ​**Buyback de-risk:** `({tag})`\n",
       "re-entry": f"✅ ​**Re-entry:** `({tag})`\n",
       "de-risk": f"❌​​ ​**De-risk:** `({tag})`\n",
@@ -2476,7 +2476,7 @@ class NostalgiaForInfinityX6(IStrategy):
 
     # Common fields
     msg += (
-      f"🪙 **Pair:** `{trade}`\n"
+      f"🪙 **Pair:** `{pair}`\n"
       f"〽️ **Rate:** `{rate}`\n"
       f"💰 **Stake amount:** `{stake_amount:.2f}{'' if stake_currency is None else ' ' + stake_currency}`\n"
     )
@@ -33842,13 +33842,13 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "de-risk",
-            tag="Level 1",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
+            tag = "Level 1",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
           )
         )
         log.info(
@@ -33891,13 +33891,13 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "de-risk",
-            tag="Level 2",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
+            tag = "Level 2",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
           )
         )
         log.info(
@@ -33940,13 +33940,13 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "de-risk",
-            tag="Level 3",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
+            tag = "Level 3",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
           )
         )
         log.info(
@@ -33974,13 +33974,13 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "de-risk",
-            tag="Global",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
+            tag = "Global",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
           )
         )
         log.info(
@@ -34013,13 +34013,13 @@ class NostalgiaForInfinityX6(IStrategy):
       self.dp.send_msg(
         self.notification_msg(
           "grinding-entry",
-          tag="grind_1_entry",
-          trade=trade.pair,
-          rate=current_rate,
-          stake_amount=buy_amount,
-          profit_stake=profit_stake,
-          profit_ratio=profit_ratio,
-          stake_currency=self.config["stake_currency"],
+          tag = "grind_1_entry",
+          pair = trade.pair,
+          rate = current_rate,
+          stake_amount = buy_amount,
+          profit_stake = profit_stake,
+          profit_ratio = profit_ratio,
+          stake_currency = self.config["stake_currency"],
         )
       )
       log.info(
@@ -34044,16 +34044,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="grind_1_exit",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_1_total_amount,
+              tag = "grind_1_exit",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_1_total_amount,
             )
           )
           log.info(
@@ -34094,16 +34094,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-derisk",
-            tag="grind_1_derisk",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_1_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_1_total_amount,
+            tag = "grind_1_derisk",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_1_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_1_total_amount,
           )
         )
         log.info(
@@ -34142,13 +34142,13 @@ class NostalgiaForInfinityX6(IStrategy):
       self.dp.send_msg(
         self.notification_msg(
           "grinding-entry",
-          tag="grind_2_entry",
-          trade=trade.pair,
-          rate=current_rate,
-          stake_amount=buy_amount,
-          profit_stake=profit_stake,
-          profit_ratio=profit_ratio,
-          stake_currency=self.config["stake_currency"],
+          tag = "grind_2_entry",
+          pair = trade.pair,
+          rate = current_rate,
+          stake_amount = buy_amount,
+          profit_stake = profit_stake,
+          profit_ratio = profit_ratio,
+          stake_currency = self.config["stake_currency"],
         )
       )
       log.info(
@@ -34173,16 +34173,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="grind_2_exit",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_2_total_amount,
+              tag = "grind_2_exit",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_2_total_amount,
             )
           )
           log.info(
@@ -34223,16 +34223,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-derisk",
-            tag="grind_2_derisk",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_2_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_2_total_amount,
+            tag = "grind_2_derisk",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_2_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_2_total_amount,
           )
         )
         log.info(
@@ -34271,13 +34271,13 @@ class NostalgiaForInfinityX6(IStrategy):
       self.dp.send_msg(
         self.notification_msg(
           "grinding-entry",
-          tag="grind_3_entry",
-          trade=trade.pair,
-          rate=current_rate,
-          stake_amount=buy_amount,
-          profit_stake=profit_stake,
-          profit_ratio=profit_ratio,
-          stake_currency=self.config["stake_currency"],
+          tag = "grind_3_entry",
+          pair = trade.pair,
+          rate = current_rate,
+          stake_amount = buy_amount,
+          profit_stake = profit_stake,
+          profit_ratio = profit_ratio,
+          stake_currency = self.config["stake_currency"],
         )
       )
       log.info(
@@ -34302,16 +34302,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="grind_3_exit",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_3_total_amount,
+              tag = "grind_3_exit",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_3_total_amount,
             )
           )
           log.info(
@@ -34352,16 +34352,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-derisk",
-            tag="grind_3_derisk",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_3_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_3_total_amount,
+            tag = "grind_3_derisk",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_3_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_3_total_amount,
           )
         )
         log.info(
@@ -34427,13 +34427,13 @@ class NostalgiaForInfinityX6(IStrategy):
       self.dp.send_msg(
         self.notification_msg(
           "grinding-entry",
-          tag="grind_4_entry",
-          trade=trade.pair,
-          rate=current_rate,
-          stake_amount=buy_amount,
-          profit_stake=profit_stake,
-          profit_ratio=profit_ratio,
-          stake_currency=self.config["stake_currency"],
+          tag = "grind_4_entry",
+          pair = trade.pair,
+          rate = current_rate,
+          stake_amount = buy_amount,
+          profit_stake = profit_stake,
+          profit_ratio = profit_ratio,
+          stake_currency = self.config["stake_currency"],
         )
       )
       log.info(
@@ -34458,16 +34458,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="grind_4_exit",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_4_total_amount,
+              tag = "grind_4_exit",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_4_total_amount,
             )
           )
           log.info(
@@ -34508,16 +34508,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-derisk",
-            tag="grind_4_derisk",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_4_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_4_total_amount,
+            tag = "grind_4_derisk",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_4_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_4_total_amount,
           )
         )
         log.info(
@@ -34571,13 +34571,13 @@ class NostalgiaForInfinityX6(IStrategy):
       self.dp.send_msg(
         self.notification_msg(
           "grinding-entry",
-          tag="grind_5_entry",
-          trade=trade.pair,
-          rate=current_rate,
-          stake_amount=buy_amount,
-          profit_stake=profit_stake,
-          profit_ratio=profit_ratio,
-          stake_currency=self.config["stake_currency"],
+          tag = "grind_5_entry",
+          pair = trade.pair,
+          rate = current_rate,
+          stake_amount = buy_amount,
+          profit_stake = profit_stake,
+          profit_ratio = profit_ratio,
+          stake_currency = self.config["stake_currency"],
         )
       )
       log.info(
@@ -34602,16 +34602,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="grind_5_exit",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_5_total_amount,
+              tag = "grind_5_exit",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_5_total_amount,
             )
           )
           log.info(
@@ -34652,16 +34652,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-derisk",
-            tag="grind_5_derisk",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_5_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_5_total_amount,
+            tag = "grind_5_derisk",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_5_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_5_total_amount,
           )
         )
         log.info(
@@ -34711,13 +34711,13 @@ class NostalgiaForInfinityX6(IStrategy):
       self.dp.send_msg(
         self.notification_msg(
           "buyback-entry",
-          tag="buyback_1_entry",
-          trade=trade.pair,
-          rate=current_rate,
-          stake_amount=buy_amount,
-          profit_stake=profit_stake,
-          profit_ratio=profit_ratio,
-          stake_currency=self.config["stake_currency"],
+          tag = "buyback_1_entry",
+          pair = trade.pair,
+          rate = current_rate,
+          stake_amount = buy_amount,
+          profit_stake = profit_stake,
+          profit_ratio = profit_ratio,
+          stake_currency = self.config["stake_currency"],
         )
       )
       log.info(
@@ -34751,16 +34751,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "buyback-exit",
-              tag="buyback_1_exit",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=buyback_1_total_amount,
+              tag = "buyback_1_exit",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = buyback_1_total_amount,
             )
           )
           log.info(
@@ -34816,16 +34816,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "buyback-derisk",
-            tag="buyback_1_derisk",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=buyback_1_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
-            coin_amount=buyback_1_total_amount,
+            tag = "buyback_1_derisk",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = buyback_1_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
+            coin_amount = buyback_1_total_amount,
           )
         )
         log.info(
@@ -34875,13 +34875,13 @@ class NostalgiaForInfinityX6(IStrategy):
       self.dp.send_msg(
         self.notification_msg(
           "buyback-entry",
-          tag="buyback_2_entry",
-          trade=trade.pair,
-          rate=current_rate,
-          stake_amount=buy_amount,
-          profit_stake=profit_stake,
-          profit_ratio=profit_ratio,
-          stake_currency=self.config["stake_currency"],
+          tag = "buyback_2_entry",
+          pair = trade.pair,
+          rate = current_rate,
+          stake_amount = buy_amount,
+          profit_stake = profit_stake,
+          profit_ratio = profit_ratio,
+          stake_currency = self.config["stake_currency"],
         )
       )
       log.info(
@@ -34915,16 +34915,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "buyback-exit",
-              tag="buyback_2_exit",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=buyback_2_total_amount,
+              tag = "buyback_2_exit",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = buyback_2_total_amount,
             )
           )
           log.info(
@@ -34980,16 +34980,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "buyback-derisk",
-            tag="buyback_2_derisk",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=buyback_2_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
-            coin_amount=buyback_2_total_amount,
+            tag = "buyback_2_derisk",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = buyback_2_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
+            coin_amount = buyback_2_total_amount,
           )
         )
         log.info(
@@ -35039,13 +35039,13 @@ class NostalgiaForInfinityX6(IStrategy):
       self.dp.send_msg(
         self.notification_msg(
           "buyback-entry",
-          tag="buyback_3_entry",
-          trade=trade.pair,
-          rate=current_rate,
-          stake_amount=buy_amount,
-          profit_stake=profit_stake,
-          profit_ratio=profit_ratio,
-          stake_currency=self.config["stake_currency"],
+          tag = "buyback_3_entry",
+          pair = trade.pair,
+          rate = current_rate,
+          stake_amount = buy_amount,
+          profit_stake = profit_stake,
+          profit_ratio = profit_ratio,
+          stake_currency = self.config["stake_currency"],
         )
       )
       log.info(
@@ -35079,16 +35079,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "buyback-exit",
-              tag="buyback_3_exit",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=buyback_3_total_amount,
+              tag = "buyback_3_exit",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = buyback_3_total_amount,
             )
           )
           log.info(
@@ -35144,16 +35144,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "buyback-derisk",
-            tag="buyback_3_derisk",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=buyback_3_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
-            coin_amount=buyback_3_total_amount,
+            tag = "buyback_3_derisk",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = buyback_3_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
+            coin_amount = buyback_3_total_amount,
           )
         )
         log.info(
@@ -36223,16 +36223,16 @@ class NostalgiaForInfinityX6(IStrategy):
             self.dp.send_msg(
               self.notification_msg(
                 "grinding-exit",
-                tag="gm0",
-                trade=trade.pair,
-                rate=exit_rate,
-                stake_amount=sell_amount,
-                profit_stake=profit_stake,
-                profit_ratio=profit_ratio,
-                stake_currency=self.config["stake_currency"],
-                grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-                grind_profit_pct=grind_profit,
-                coin_amount=coin_amount,
+                tag = "gm0",
+                pair = trade.pair,
+                rate = exit_rate,
+                stake_amount = sell_amount,
+                profit_stake = profit_stake,
+                profit_ratio = profit_ratio,
+                stake_currency = self.config["stake_currency"],
+                grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+                grind_profit_pct = grind_profit,
+                coin_amount = coin_amount,
               )
             )
             log.info(
@@ -36264,16 +36264,16 @@ class NostalgiaForInfinityX6(IStrategy):
             self.dp.send_msg(
               self.notification_msg(
                 "grinding-derisk",
-                tag="gmd0",
-                trade=trade.pair,
-                rate=exit_rate,
-                stake_amount=sell_amount,
-                profit_stake=profit_stake,
-                profit_ratio=profit_ratio,
-                stake_currency=self.config["stake_currency"],
-                grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-                grind_profit_pct=grind_profit,
-                coin_amount=coin_amount,
+                tag = "gmd0",
+                pair = trade.pair,
+                rate = exit_rate,
+                stake_amount = sell_amount,
+                profit_stake = profit_stake,
+                profit_ratio = profit_ratio,
+                stake_currency = self.config["stake_currency"],
+                grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+                grind_profit_pct = grind_profit,
+                coin_amount = coin_amount,
               )
             )
             log.info(
@@ -36334,15 +36334,15 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-entry",
-            tag="dl1",
-            trade=trade.pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_1_derisk_1_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
+            tag = "dl1",
+            pair = trade.pair,
+            rate = current_rate,
+            stake_amount = buy_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_1_derisk_1_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
           )
         )
         log.info(
@@ -36366,16 +36366,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="dl1",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_1_derisk_1_total_amount,
+              tag = "dl1",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_1_derisk_1_total_amount,
             )
           )
           log.info(
@@ -36417,16 +36417,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-stop",
-            tag="ddl1",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_1_derisk_1_total_amount,
+            tag = "ddl1",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_1_derisk_1_total_amount,
           )
         )
         log.info(
@@ -36485,15 +36485,15 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-entry",
-            tag="dl2",
-            trade=trade.pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_2_derisk_1_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
+            tag = "dl2",
+            pair = trade.pair,
+            rate = current_rate,
+            stake_amount = buy_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_2_derisk_1_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
           )
         )
         log.info(
@@ -36517,16 +36517,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="dl2",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_2_derisk_1_total_amount,
+              tag = "dl2",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_2_derisk_1_total_amount,
             )
           )
           log.info(
@@ -36568,16 +36568,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-stop",
-            tag="ddl2",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_2_derisk_1_total_amount,
+            tag = "ddl2",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_2_derisk_1_total_amount,
           )
         )
         log.info(
@@ -36626,15 +36626,15 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-entry",
-            tag="gd1",
-            trade=trade.pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_1_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
+            tag = "gd1",
+            pair = trade.pair,
+            rate = current_rate,
+            stake_amount = buy_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_1_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
           )
         )
         log.info(
@@ -36669,15 +36669,15 @@ class NostalgiaForInfinityX6(IStrategy):
       self.dp.send_msg(
         self.notification_msg(
           "grinding-entry",
-          tag="gd1",
-          trade=trade.pair,
-          rate=current_rate,
-          stake_amount=buy_amount,
-          profit_stake=profit_stake,
-          profit_ratio=profit_ratio,
-          stake_currency=self.config["stake_currency"],
-          grind_profit_stake=grind_1_current_grind_stake_profit,
-          grind_profit_pct=grind_profit,
+          tag = "gd1",
+          pair = trade.pair,
+          rate = current_rate,
+          stake_amount = buy_amount,
+          profit_stake = profit_stake,
+          profit_ratio = profit_ratio,
+          stake_currency = self.config["stake_currency"],
+          grind_profit_stake = grind_1_current_grind_stake_profit,
+          grind_profit_pct = grind_profit,
         )
       )
       log.info(
@@ -36701,16 +36701,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="gd1",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_1_total_amount,
+              tag = "gd1",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_1_total_amount,
             )
           )
           log.info(
@@ -36751,16 +36751,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-stop",
-            tag="dd1",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_1_total_amount,
+            tag = "dd1",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_1_total_amount,
           )
         )
         log.info(
@@ -36809,15 +36809,15 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-entry",
-            tag="gd2",
-            trade=trade.pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_2_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
+            tag = "gd2",
+            pair = trade.pair,
+            rate = current_rate,
+            stake_amount = buy_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_2_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
           )
         )
         log.info(
@@ -36841,16 +36841,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="gd2",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_2_total_amount,
+              tag = "gd2",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_2_total_amount,
             )
           )
           log.info(
@@ -36891,16 +36891,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-stop",
-            tag="dd2",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_2_total_amount,
+            tag = "dd2",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_2_total_amount,
           )
         )
         log.info(
@@ -36949,15 +36949,15 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-entry",
-            tag="gd3",
-            trade=trade.pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_3_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
+            tag = "gd3",
+            pair = trade.pair,
+            rate = current_rate,
+            stake_amount = buy_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_3_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
           )
         )
         log.info(
@@ -36981,16 +36981,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="gd3",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_3_total_amount,
+              tag = "gd3",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_3_total_amount,
             )
           )
           log.info(
@@ -37031,16 +37031,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-stop",
-            tag="dd3",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_3_total_amount,
+            tag = "dd3",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_3_total_amount,
           )
         )
         log.info(
@@ -37089,15 +37089,15 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-entry",
-            tag="gd4",
-            trade=trade.pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_4_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
+            tag = "gd4",
+            pair = trade.pair,
+            rate = current_rate,
+            stake_amount = buy_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_4_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
           )
         )
         log.info(
@@ -37121,16 +37121,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="gd4",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_4_total_amount,
+              tag = "gd4",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_4_total_amount,
             )
           )
           log.info(
@@ -37171,16 +37171,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-stop",
-            tag="dd4",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_4_total_amount,
+            tag = "dd4",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_4_total_amount,
           )
         )
         log.info(
@@ -37229,15 +37229,15 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-entry",
-            tag="gd5",
-            trade=trade.pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_5_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
+            tag = "gd5",
+            pair = trade.pair,
+            rate = current_rate,
+            stake_amount = buy_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_5_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
           )
         )
         log.info(
@@ -37261,16 +37261,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="gd5",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_5_total_amount,
+              tag = "gd5",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_5_total_amount,
             )
           )
           log.info(
@@ -37311,16 +37311,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-stop",
-            tag="dd5",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_5_total_amount,
+            tag = "dd5",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_5_total_amount,
           )
         )
         log.info(
@@ -37369,15 +37369,15 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-entry",
-            tag="gd6",
-            trade=trade.pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_6_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
+            tag = "gd6",
+            pair = trade.pair,
+            rate = current_rate,
+            stake_amount = buy_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_6_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
           )
         )
         log.info(
@@ -37401,16 +37401,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="gd6",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_6_total_amount,
+              tag = "gd6",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_6_total_amount,
             )
           )
           log.info(
@@ -37451,16 +37451,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-stop",
-            tag="dd6",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_6_total_amount,
+            tag = "dd6",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_6_total_amount,
           )
         )
         log.info(
@@ -37518,15 +37518,15 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "re-entry",
-            tag="d1",
-            trade=trade.pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=derisk_1_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
+            tag = "d1",
+            pair = trade.pair,
+            rate = current_rate,
+            stake_amount = buy_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = derisk_1_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
           )
         )
         log.info(
@@ -37564,13 +37564,13 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "de-risk",
-            tag="d1",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
+            tag = "d1",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
           )
         )
         log.info(
@@ -38281,13 +38281,13 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "rebuy",
-            tag="r",
-            trade=trade.pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
+            tag = "r",
+            pair = trade.pair,
+            rate = current_rate,
+            stake_amount = buy_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
           )
         )
         log.info(
@@ -38331,15 +38331,15 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-entry",
-            tag="g1",
-            trade=trade.pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_1_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
+            tag = "g1",
+            pair = trade.pair,
+            rate = current_rate,
+            stake_amount = buy_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_1_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
           )
         )
         log.info(
@@ -38372,15 +38372,15 @@ class NostalgiaForInfinityX6(IStrategy):
       self.dp.send_msg(
         self.notification_msg(
           "grinding-entry",
-          tag="g1",
-          trade=trade.pair,
-          rate=current_rate,
-          stake_amount=buy_amount,
-          profit_stake=profit_stake,
-          profit_ratio=profit_ratio,
-          stake_currency=self.config["stake_currency"],
-          grind_profit_stake=grind_1_current_grind_stake_profit,
-          grind_profit_pct=grind_profit,
+          tag = "g1",
+          pair = trade.pair,
+          rate = current_rate,
+          stake_amount = buy_amount,
+          profit_stake = profit_stake,
+          profit_ratio = profit_ratio,
+          stake_currency = self.config["stake_currency"],
+          grind_profit_stake = grind_1_current_grind_stake_profit,
+          grind_profit_pct = grind_profit,
         )
       )
       log.info(
@@ -38401,16 +38401,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="g1",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_1_total_amount,
+              tag = "g1",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_1_total_amount,
             )
           )
           log.info(
@@ -38446,16 +38446,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-stop",
-            tag="sg1",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_1_total_amount,
+            tag = "sg1",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_1_total_amount,
           )
         )
         log.info(
@@ -38501,15 +38501,15 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-entry",
-            tag="g2",
-            trade=trade.pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_2_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
+            tag = "g2",
+            pair = trade.pair,
+            rate = current_rate,
+            stake_amount = buy_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_2_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
           )
         )
         log.info(
@@ -38530,16 +38530,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="g2",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_2_total_amount,
+              tag = "g2",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_2_total_amount,
             )
           )
           log.info(
@@ -38575,16 +38575,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-stop",
-            tag="sg2",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_2_total_amount,
+            tag = "sg2",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_2_total_amount,
           )
         )
         log.info(
@@ -38630,15 +38630,15 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-entry",
-            tag="g3",
-            trade=trade.pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_3_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
+            tag = "g3",
+            pair = trade.pair,
+            rate = current_rate,
+            stake_amount = buy_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_3_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
           )
         )
         log.info(
@@ -38659,16 +38659,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="g3",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_3_total_amount,
+              tag = "g3",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_3_total_amount,
             )
           )
           log.info(
@@ -38704,16 +38704,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-stop",
-            tag="sg3",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_3_total_amount,
+            tag = "sg3",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_3_total_amount,
           )
         )
         log.info(
@@ -38759,15 +38759,15 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-entry",
-            tag="g4",
-            trade=trade.pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_4_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
+            tag = "g4",
+            pair = trade.pair,
+            rate = current_rate,
+            stake_amount = buy_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_4_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
           )
         )
         log.info(
@@ -38788,16 +38788,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="g4",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_4_total_amount,
+              tag = "g4",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_4_total_amount,
             )
           )
           log.info(
@@ -38833,16 +38833,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-stop",
-            tag="sg4",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_4_total_amount,
+            tag = "sg4",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_4_total_amount,
           )
         )
         log.info(
@@ -38888,15 +38888,15 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-entry",
-            tag="g5",
-            trade=trade.pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_5_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
+            tag = "g5",
+            pair = trade.pair,
+            rate = current_rate,
+            stake_amount = buy_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_5_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
           )
         )
         log.info(
@@ -38917,16 +38917,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="g5",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_5_total_amount,
+              tag = "g5",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_5_total_amount,
             )
           )
           log.info(
@@ -38962,16 +38962,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-stop",
-            tag="sg5",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_5_total_amount,
+            tag = "sg5",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_5_total_amount,
           )
         )
         log.info(
@@ -39017,15 +39017,15 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-entry",
-            tag="g6",
-            trade=trade.pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_6_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
+            tag = "g6",
+            pair = trade.pair,
+            rate = current_rate,
+            stake_amount = buy_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_6_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
           )
         )
         log.info(
@@ -39046,16 +39046,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="g6",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_6_total_amount,
+              tag = "g6",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_6_total_amount,
             )
           )
           log.info(
@@ -39091,16 +39091,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-stop",
-            tag="sg6",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_6_total_amount,
+            tag = "sg6",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_6_total_amount,
           )
         )
         log.info(
@@ -39135,13 +39135,13 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "de-risk",
-            tag="d",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
+            tag = "d",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
           )
         )
         log.info(
@@ -39183,13 +39183,13 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "de-risk",
-            tag="d1",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
+            tag = "d1",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
           )
         )
         log.info(
@@ -39340,13 +39340,13 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "rebuy",
-            tag="r",
-            trade=trade.pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
+            tag = "r",
+            pair = trade.pair,
+            rate = current_rate,
+            stake_amount = buy_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
           )
         )
         log.info(
@@ -57806,13 +57806,13 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "de-risk",
-            tag="Level 1",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
+            tag = "Level 1",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
           )
         )
         log.info(
@@ -57855,13 +57855,13 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "de-risk",
-            tag="Level 2",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
+            tag = "Level 2",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
           )
         )
         log.info(
@@ -57904,13 +57904,13 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "de-risk",
-            tag="Level 3",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
+            tag = "Level 3",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
           )
         )
         log.info(
@@ -57938,13 +57938,13 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "de-risk",
-            tag="Global",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
+            tag = "Global",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
           )
         )
         log.info(
@@ -57977,13 +57977,13 @@ class NostalgiaForInfinityX6(IStrategy):
       self.dp.send_msg(
         self.notification_msg(
           "grinding-entry",
-          tag="grind_1_entry",
-          trade=trade.pair,
-          rate=current_rate,
-          stake_amount=buy_amount,
-          profit_stake=profit_stake,
-          profit_ratio=profit_ratio,
-          stake_currency=self.config["stake_currency"],
+          tag = "grind_1_entry",
+          pair = trade.pair,
+          rate = current_rate,
+          stake_amount = buy_amount,
+          profit_stake = profit_stake,
+          profit_ratio = profit_ratio,
+          stake_currency = self.config["stake_currency"],
         )
       )
       log.info(
@@ -58008,16 +58008,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="grind_1_exit",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_1_total_amount,
+              tag = "grind_1_exit",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_1_total_amount,
             )
           )
           log.info(
@@ -58058,16 +58058,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-derisk",
-            tag="grind_1_derisk",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_1_total_amount,
+            tag = "grind_1_derisk",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_1_total_amount,
           )
         )
         log.info(
@@ -58106,13 +58106,13 @@ class NostalgiaForInfinityX6(IStrategy):
       self.dp.send_msg(
         self.notification_msg(
           "grinding-entry",
-          tag="grind_2_entry",
-          trade=trade.pair,
-          rate=current_rate,
-          stake_amount=buy_amount,
-          profit_stake=profit_stake,
-          profit_ratio=profit_ratio,
-          stake_currency=self.config["stake_currency"],
+          tag = "grind_2_entry",
+          pair = trade.pair,
+          rate = current_rate,
+          stake_amount = buy_amount,
+          profit_stake = profit_stake,
+          profit_ratio = profit_ratio,
+          stake_currency = self.config["stake_currency"],
         )
       )
       log.info(
@@ -58137,16 +58137,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="grind_2_exit",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_2_total_amount,
+              tag = "grind_2_exit",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_2_total_amount,
             )
           )
           log.info(
@@ -58187,16 +58187,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-derisk",
-            tag="grind_2_derisk",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_2_total_amount,
+            tag = "grind_2_derisk",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_2_total_amount,
           )
         )
         log.info(
@@ -58235,13 +58235,13 @@ class NostalgiaForInfinityX6(IStrategy):
       self.dp.send_msg(
         self.notification_msg(
           "grinding-entry",
-          tag="grind_3_entry",
-          trade=trade.pair,
-          rate=current_rate,
-          stake_amount=buy_amount,
-          profit_stake=profit_stake,
-          profit_ratio=profit_ratio,
-          stake_currency=self.config["stake_currency"],
+          tag = "grind_3_entry",
+          pair = trade.pair,
+          rate = current_rate,
+          stake_amount = buy_amount,
+          profit_stake = profit_stake,
+          profit_ratio = profit_ratio,
+          stake_currency = self.config["stake_currency"],
         )
       )
       log.info(
@@ -58266,16 +58266,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="grind_3_exit",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_3_total_amount,
+              tag = "grind_3_exit",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_3_total_amount,
             )
           )
           log.info(
@@ -58316,16 +58316,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-derisk",
-            tag="grind_3_derisk",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_3_total_amount,
+            tag = "grind_3_derisk",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_3_total_amount,
           )
         )
         log.info(
@@ -58379,13 +58379,13 @@ class NostalgiaForInfinityX6(IStrategy):
       self.dp.send_msg(
         self.notification_msg(
           "grinding-entry",
-          tag="grind_4_entry",
-          trade=trade.pair,
-          rate=current_rate,
-          stake_amount=buy_amount,
-          profit_stake=profit_stake,
-          profit_ratio=profit_ratio,
-          stake_currency=self.config["stake_currency"],
+          tag = "grind_4_entry",
+          pair = trade.pair,
+          rate = current_rate,
+          stake_amount = buy_amount,
+          profit_stake = profit_stake,
+          profit_ratio = profit_ratio,
+          stake_currency = self.config["stake_currency"],
         )
       )
       log.info(
@@ -58410,16 +58410,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="grind_4_exit",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_4_total_amount,
+              tag = "grind_4_exit",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_4_total_amount,
             )
           )
           log.info(
@@ -58460,16 +58460,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-derisk",
-            tag="grind_4_derisk",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_4_total_amount,
+            tag = "grind_4_derisk",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_4_total_amount,
           )
         )
         log.info(
@@ -58523,13 +58523,13 @@ class NostalgiaForInfinityX6(IStrategy):
       self.dp.send_msg(
         self.notification_msg(
           "grinding-entry",
-          tag="grind_5_entry",
-          trade=trade.pair,
-          rate=current_rate,
-          stake_amount=buy_amount,
-          profit_stake=profit_stake,
-          profit_ratio=profit_ratio,
-          stake_currency=self.config["stake_currency"],
+          tag = "grind_5_entry",
+          pair = trade.pair,
+          rate = current_rate,
+          stake_amount = buy_amount,
+          profit_stake = profit_stake,
+          profit_ratio = profit_ratio,
+          stake_currency = self.config["stake_currency"],
         )
       )
       log.info(
@@ -58554,16 +58554,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="grind_5_exit",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_5_total_amount,
+              tag = "grind_5_exit",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_5_total_amount,
             )
           )
           log.info(
@@ -58604,16 +58604,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-derisk",
-            tag="grind_5_derisk",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_5_total_amount,
+            tag = "grind_5_derisk",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_5_total_amount,
           )
         )
         log.info(
@@ -58663,13 +58663,13 @@ class NostalgiaForInfinityX6(IStrategy):
       self.dp.send_msg(
         self.notification_msg(
           "buyback-entry",
-          tag="buyback_1_entry",
-          trade=trade.pair,
-          rate=current_rate,
-          stake_amount=buy_amount,
-          profit_stake=profit_stake,
-          profit_ratio=profit_ratio,
-          stake_currency=self.config["stake_currency"],
+          tag = "buyback_1_entry",
+          pair = trade.pair,
+          rate = current_rate,
+          stake_amount = buy_amount,
+          profit_stake = profit_stake,
+          profit_ratio = profit_ratio,
+          stake_currency = self.config["stake_currency"],
         )
       )
       log.info(
@@ -58703,16 +58703,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "buyback-exit",
-              tag="buyback_1_exit",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=buyback_1_total_amount,
+              tag = "buyback_1_exit",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = buyback_1_total_amount,
             )
           )
           log.info(
@@ -58768,14 +58768,14 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "buyback-derisk",
-            tag="buyback_1_derisk",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            coin_amount=buyback_1_total_amount,
+            tag = "buyback_1_derisk",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            coin_amount = buyback_1_total_amount,
           )
         )
         log.info(
@@ -58825,13 +58825,13 @@ class NostalgiaForInfinityX6(IStrategy):
       self.dp.send_msg(
         self.notification_msg(
           "buyback-entry",
-          tag="buyback_2_entry",
-          trade=trade.pair,
-          rate=current_rate,
-          stake_amount=buy_amount,
-          profit_stake=profit_stake,
-          profit_ratio=profit_ratio,
-          stake_currency=self.config["stake_currency"],
+          tag = "buyback_2_entry",
+          pair = trade.pair,
+          rate = current_rate,
+          stake_amount = buy_amount,
+          profit_stake = profit_stake,
+          profit_ratio = profit_ratio,
+          stake_currency = self.config["stake_currency"],
         )
       )
       log.info(
@@ -58865,16 +58865,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "buyback-exit",
-              tag="buyback_2_exit",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=buyback_2_total_amount,
+              tag = "buyback_2_exit",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = buyback_2_total_amount,
             )
           )
           log.info(
@@ -58930,14 +58930,14 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "buyback-derisk",
-            tag="buyback_2_derisk",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            coin_amount=buyback_2_total_amount,
+            tag = "buyback_2_derisk",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            coin_amount = buyback_2_total_amount,
           )
         )
         log.info(
@@ -58987,13 +58987,13 @@ class NostalgiaForInfinityX6(IStrategy):
       self.dp.send_msg(
         self.notification_msg(
           "buyback-entry",
-          tag="buyback_3_entry",
-          trade=trade.pair,
-          rate=current_rate,
-          stake_amount=buy_amount,
-          profit_stake=profit_stake,
-          profit_ratio=profit_ratio,
-          stake_currency=self.config["stake_currency"],
+          tag = "buyback_3_entry",
+          pair = trade.pair,
+          rate = current_rate,
+          stake_amount = buy_amount,
+          profit_stake = profit_stake,
+          profit_ratio = profit_ratio,
+          stake_currency = self.config["stake_currency"],
         )
       )
       log.info(
@@ -59027,16 +59027,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "buyback-exit",
-              tag="buyback_3_exit",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=buyback_3_total_amount,
+              tag = "buyback_3_exit",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = buyback_3_total_amount,
             )
           )
           log.info(
@@ -59092,14 +59092,14 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "buyback-derisk",
-            tag="buyback_3_derisk",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            coin_amount=buyback_3_total_amount,
+            tag = "buyback_3_derisk",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            coin_amount = buyback_3_total_amount,
           )
         )
         log.info(
@@ -60169,16 +60169,16 @@ class NostalgiaForInfinityX6(IStrategy):
             self.dp.send_msg(
               self.notification_msg(
                 "grinding-exit",
-                tag="gm0",
-                trade=trade.pair,
-                rate=exit_rate,
-                stake_amount=sell_amount,
-                profit_stake=profit_stake,
-                profit_ratio=profit_ratio,
-                stake_currency=self.config["stake_currency"],
-                grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-                grind_profit_pct=grind_profit,
-                coin_amount=coin_amount,
+                tag = "gm0",
+                pair = trade.pair,
+                rate = exit_rate,
+                stake_amount = sell_amount,
+                profit_stake = profit_stake,
+                profit_ratio = profit_ratio,
+                stake_currency = self.config["stake_currency"],
+                grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+                grind_profit_pct = grind_profit,
+                coin_amount = coin_amount,
               )
             )
             log.info(
@@ -60210,16 +60210,16 @@ class NostalgiaForInfinityX6(IStrategy):
             self.dp.send_msg(
               self.notification_msg(
                 "grinding-derisk",
-                tag="gmd0",
-                trade=trade.pair,
-                rate=exit_rate,
-                stake_amount=sell_amount,
-                profit_stake=profit_stake,
-                profit_ratio=profit_ratio,
-                stake_currency=self.config["stake_currency"],
-                grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-                grind_profit_pct=grind_profit,
-                coin_amount=coin_amount,
+                tag = "gmd0",
+                pair = trade.pair,
+                rate = exit_rate,
+                stake_amount = sell_amount,
+                profit_stake = profit_stake,
+                profit_ratio = profit_ratio,
+                stake_currency = self.config["stake_currency"],
+                grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+                grind_profit_pct = grind_profit,
+                coin_amount = coin_amount,
               )
             )
             log.info(
@@ -60280,15 +60280,15 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-entry",
-            tag="dl1",
-            trade=trade.pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_1_derisk_1_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
+            tag = "dl1",
+            pair = trade.pair,
+            rate = current_rate,
+            stake_amount = buy_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_1_derisk_1_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
           )
         )
         log.info(
@@ -60312,16 +60312,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="dl1",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_1_derisk_1_total_amount,
+              tag = "dl1",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_1_derisk_1_total_amount,
             )
           )
           log.info(
@@ -60363,16 +60363,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-stop",
-            tag="ddl1",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_1_derisk_1_total_amount,
+            tag = "ddl1",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_1_derisk_1_total_amount,
           )
         )
         log.info(
@@ -60431,15 +60431,15 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-entry",
-            tag="dl2",
-            trade=trade.pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_2_derisk_1_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
+            tag = "dl2",
+            pair = trade.pair,
+            rate = current_rate,
+            stake_amount = buy_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_2_derisk_1_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
           )
         )
         log.info(
@@ -60463,16 +60463,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="dl2",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_2_derisk_1_total_amount,
+              tag = "dl2",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_2_derisk_1_total_amount,
             )
           )
           log.info(
@@ -60514,16 +60514,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-stop",
-            tag="ddl2",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_2_derisk_1_total_amount,
+            tag = "ddl2",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_2_derisk_1_total_amount,
           )
         )
         log.info(
@@ -60572,15 +60572,15 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-entry",
-            tag="gd1",
-            trade=trade.pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_1_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
+            tag = "gd1",
+            pair = trade.pair,
+            rate = current_rate,
+            stake_amount = buy_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_1_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
           )
         )
         log.info(
@@ -60615,15 +60615,15 @@ class NostalgiaForInfinityX6(IStrategy):
       self.dp.send_msg(
         self.notification_msg(
           "grinding-entry",
-          tag="gd1",
-          trade=trade.pair,
-          rate=current_rate,
-          stake_amount=buy_amount,
-          profit_stake=profit_stake,
-          profit_ratio=profit_ratio,
-          stake_currency=self.config["stake_currency"],
-          grind_profit_stake=grind_1_current_grind_stake_profit,
-          grind_profit_pct=grind_profit,
+          tag = "gd1",
+          pair = trade.pair,
+          rate = current_rate,
+          stake_amount = buy_amount,
+          profit_stake = profit_stake,
+          profit_ratio = profit_ratio,
+          stake_currency = self.config["stake_currency"],
+          grind_profit_stake = grind_1_current_grind_stake_profit,
+          grind_profit_pct = grind_profit,
         )
       )
       log.info(
@@ -60647,16 +60647,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="gd1",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_1_total_amount,
+              tag = "gd1",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_1_total_amount,
             )
           )
           log.info(
@@ -60697,16 +60697,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-stop",
-            tag="dd1",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_1_total_amount,
+            tag = "dd1",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_1_total_amount,
           )
         )
         log.info(
@@ -60755,15 +60755,15 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-entry",
-            tag="gd2",
-            trade=trade.pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_2_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
+            tag = "gd2",
+            pair = trade.pair,
+            rate = current_rate,
+            stake_amount = buy_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_2_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
           )
         )
         log.info(
@@ -60787,16 +60787,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="gd2",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_2_total_amount,
+              tag = "gd2",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_2_total_amount,
             )
           )
           log.info(
@@ -60837,16 +60837,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-stop",
-            tag="dd2",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_2_total_amount,
+            tag = "dd2",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_2_total_amount,
           )
         )
         log.info(
@@ -60895,15 +60895,15 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-entry",
-            tag="gd3",
-            trade=trade.pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_3_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
+            tag = "gd3",
+            pair = trade.pair,
+            rate = current_rate,
+            stake_amount = buy_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_3_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
           )
         )
         log.info(
@@ -60927,16 +60927,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="gd3",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_3_total_amount,
+              tag = "gd3",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_3_total_amount,
             )
           )
           log.info(
@@ -60977,16 +60977,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-stop",
-            tag="dd3",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_3_total_amount,
+            tag = "dd3",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_3_total_amount,
           )
         )
         log.info(
@@ -61035,15 +61035,15 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-entry",
-            tag="gd4",
-            trade=trade.pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_4_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
+            tag = "gd4",
+            pair = trade.pair,
+            rate = current_rate,
+            stake_amount = buy_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_4_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
           )
         )
         log.info(
@@ -61067,16 +61067,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="gd4",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_4_total_amount,
+              tag = "gd4",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_4_total_amount,
             )
           )
           log.info(
@@ -61117,16 +61117,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-stop",
-            tag="dd4",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_4_total_amount,
+            tag = "dd4",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_4_total_amount,
           )
         )
         log.info(
@@ -61175,15 +61175,15 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-entry",
-            tag="gd5",
-            trade=trade.pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_5_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
+            tag = "gd5",
+            pair = trade.pair,
+            rate = current_rate,
+            stake_amount = buy_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_5_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
           )
         )
         log.info(
@@ -61207,16 +61207,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="gd5",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_5_total_amount,
+              tag = "gd5",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_5_total_amount,
             )
           )
           log.info(
@@ -61257,16 +61257,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-stop",
-            tag="dd5",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_5_total_amount,
+            tag = "dd5",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_5_total_amount,
           )
         )
         log.info(
@@ -61315,15 +61315,15 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-entry",
-            tag="gd6",
-            trade=trade.pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_6_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
+            tag = "gd6",
+            pair = trade.pair,
+            rate = current_rate,
+            stake_amount = buy_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_6_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
           )
         )
         log.info(
@@ -61347,16 +61347,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="gd6",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_6_total_amount,
+              tag = "gd6",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_6_total_amount,
             )
           )
           log.info(
@@ -61397,16 +61397,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-stop",
-            tag="dd6",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_6_total_amount,
+            tag = "dd6",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_6_total_amount,
           )
         )
         log.info(
@@ -61464,15 +61464,15 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "re-entry",
-            tag="d1",
-            trade=trade.pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=derisk_1_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
+            tag = "d1",
+            pair = trade.pair,
+            rate = current_rate,
+            stake_amount = buy_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = derisk_1_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
           )
         )
         log.info(
@@ -61510,13 +61510,13 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "de-risk",
-            tag="d1",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
+            tag = "d1",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
           )
         )
         log.info(
@@ -62165,13 +62165,13 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "rebuy",
-            tag="r",
-            trade=trade.pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
+            tag = "r",
+            pair = trade.pair,
+            rate = current_rate,
+            stake_amount = buy_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
           )
         )
         log.info(
@@ -62215,15 +62215,15 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-entry",
-            tag="g1",
-            trade=trade.pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_1_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
+            tag = "g1",
+            pair = trade.pair,
+            rate = current_rate,
+            stake_amount = buy_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_1_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
           )
         )
         log.info(
@@ -62256,15 +62256,15 @@ class NostalgiaForInfinityX6(IStrategy):
       self.dp.send_msg(
         self.notification_msg(
           "grinding-entry",
-          tag="g1",
-          trade=trade.pair,
-          rate=current_rate,
-          stake_amount=buy_amount,
-          profit_stake=profit_stake,
-          profit_ratio=profit_ratio,
-          stake_currency=self.config["stake_currency"],
-          grind_profit_stake=grind_1_current_grind_stake_profit,
-          grind_profit_pct=grind_profit,
+          tag = "g1",
+          pair = trade.pair,
+          rate = current_rate,
+          stake_amount = buy_amount,
+          profit_stake = profit_stake,
+          profit_ratio = profit_ratio,
+          stake_currency = self.config["stake_currency"],
+          grind_profit_stake = grind_1_current_grind_stake_profit,
+          grind_profit_pct = grind_profit,
         )
       )
       log.info(
@@ -62285,16 +62285,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="g1",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_1_total_amount,
+              tag = "g1",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_1_total_amount,
             )
           )
           log.info(
@@ -62330,16 +62330,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-stop",
-            tag="sg1",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_1_total_amount,
+            tag = "sg1",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_1_total_amount,
           )
         )
         log.info(
@@ -62385,15 +62385,15 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-entry",
-            tag="g2",
-            trade=trade.pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_2_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
+            tag = "g2",
+            pair = trade.pair,
+            rate = current_rate,
+            stake_amount = buy_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_2_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
           )
         )
         log.info(
@@ -62414,16 +62414,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="g2",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_2_total_amount,
+              tag = "g2",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_2_total_amount,
             )
           )
           log.info(
@@ -62459,16 +62459,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-stop",
-            tag="sg2",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_2_total_amount,
+            tag = "sg2",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_2_total_amount,
           )
         )
         log.info(
@@ -62514,15 +62514,15 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-entry",
-            tag="g3",
-            trade=trade.pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_3_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
+            tag = "g3",
+            pair = trade.pair,
+            rate = current_rate,
+            stake_amount = buy_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_3_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
           )
         )
         log.info(
@@ -62543,16 +62543,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="g3",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_3_total_amount,
+              tag = "g3",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_3_total_amount,
             )
           )
           log.info(
@@ -62588,16 +62588,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-stop",
-            tag="sg3",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_3_total_amount,
+            tag = "sg3",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_3_total_amount,
           )
         )
         log.info(
@@ -62643,15 +62643,15 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-entry",
-            tag="g4",
-            trade=trade.pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_4_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
+            tag = "g4",
+            pair = trade.pair,
+            rate = current_rate,
+            stake_amount = buy_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_4_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
           )
         )
         log.info(
@@ -62672,16 +62672,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="g4",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_4_total_amount,
+              tag = "g4",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_4_total_amount,
             )
           )
           log.info(
@@ -62717,16 +62717,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-stop",
-            tag="sg4",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_4_total_amount,
+            tag = "sg4",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_4_total_amount,
           )
         )
         log.info(
@@ -62772,15 +62772,15 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-entry",
-            tag="g5",
-            trade=trade.pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_5_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
+            tag = "g5",
+            pair = trade.pair,
+            rate = current_rate,
+            stake_amount = buy_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_5_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
           )
         )
         log.info(
@@ -62801,16 +62801,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="g5",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_5_total_amount,
+              tag = "g5",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_5_total_amount,
             )
           )
           log.info(
@@ -62846,16 +62846,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-stop",
-            tag="sg5",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_5_total_amount,
+            tag = "sg5",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_5_total_amount,
           )
         )
         log.info(
@@ -62901,15 +62901,15 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-entry",
-            tag="g6",
-            trade=trade.pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_6_current_grind_stake_profit,
-            grind_profit_pct=grind_profit,
+            tag = "g6",
+            pair = trade.pair,
+            rate = current_rate,
+            stake_amount = buy_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_6_current_grind_stake_profit,
+            grind_profit_pct = grind_profit,
           )
         )
         log.info(
@@ -62930,16 +62930,16 @@ class NostalgiaForInfinityX6(IStrategy):
           self.dp.send_msg(
             self.notification_msg(
               "grinding-exit",
-              tag="g6",
-              trade=trade.pair,
-              rate=exit_rate,
-              stake_amount=sell_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-              grind_profit_pct=grind_profit,
-              coin_amount=grind_6_total_amount,
+              tag = "g6",
+              pair = trade.pair,
+              rate = exit_rate,
+              stake_amount = sell_amount,
+              profit_stake = profit_stake,
+              profit_ratio = profit_ratio,
+              stake_currency = self.config["stake_currency"],
+              grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+              grind_profit_pct = grind_profit,
+              coin_amount = grind_6_total_amount,
             )
           )
           log.info(
@@ -62975,16 +62975,16 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "grinding-stop",
-            tag="sg6",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
-            grind_profit_pct=grind_profit,
-            coin_amount=grind_6_total_amount,
+            tag = "sg6",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
+            grind_profit_stake = grind_profit * sell_amount * trade.leverage,
+            grind_profit_pct = grind_profit,
+            coin_amount = grind_6_total_amount,
           )
         )
         log.info(
@@ -63019,13 +63019,13 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "de-risk",
-            tag="d",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
+            tag = "d",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
           )
         )
         log.info(
@@ -63067,13 +63067,13 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "de-risk",
-            tag="d1",
-            trade=trade.pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
+            tag = "d1",
+            pair = trade.pair,
+            rate = exit_rate,
+            stake_amount = sell_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
           )
         )
         log.info(
@@ -63214,13 +63214,13 @@ class NostalgiaForInfinityX6(IStrategy):
         self.dp.send_msg(
           self.notification_msg(
             "rebuy",
-            tag="r",
-            trade=trade.pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
+            tag = "r",
+            pair = trade.pair,
+            rate = current_rate,
+            stake_amount = buy_amount,
+            profit_stake = profit_stake,
+            profit_ratio = profit_ratio,
+            stake_currency = self.config["stake_currency"],
           )
         )
         log.info(
