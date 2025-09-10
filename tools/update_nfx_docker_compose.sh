@@ -137,7 +137,7 @@ short_path_hash() {
 create_lock() {
     _dir="$1"
     umask 077
-    if mkdir "$_dir" 2>/dev/null; then
+    if command mkdir "$_dir" 2>/dev/null; then
         if ! printf '%d\n' "$$" >"$_dir/pid"; then
             rm -rf "$_dir" 2>/dev/null || true
             return 1
