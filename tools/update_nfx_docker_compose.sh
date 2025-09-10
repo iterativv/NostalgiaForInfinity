@@ -234,8 +234,8 @@ if [ "$stashed" = "true" ]; then
     set -e
     if [ $rc -ne 0 ]; then
         message="failed to unstash changes in NFIX repo: $git_stash_error"
-        send_telegram_notification "$message"
         echo_timestamped "Error: $message"
+        send_telegram_notification "$message"
         exit 1
     fi
 fi
