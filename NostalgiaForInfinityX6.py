@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.7.62"
+    return "v16.7.63"
 
   stoploss = -0.99
 
@@ -34177,7 +34177,7 @@ class NostalgiaForInfinityX6(IStrategy):
       and (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
       and is_long_grind_entry
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
-      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
+      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.06))
       and (
         (current_stake_amount < (filled_entries[0].cost * 0.50))
         or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -34306,7 +34306,7 @@ class NostalgiaForInfinityX6(IStrategy):
       # and (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
       and is_long_grind_entry
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
-      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
+      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.06))
       and (
         (current_stake_amount < (filled_entries[0].cost * 0.50))
         or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -34435,7 +34435,7 @@ class NostalgiaForInfinityX6(IStrategy):
       # and (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
       and is_long_grind_entry
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
-      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
+      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.06))
       and (
         (current_stake_amount < (filled_entries[0].cost * 0.50))
         or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -34591,7 +34591,7 @@ class NostalgiaForInfinityX6(IStrategy):
         # )
       )
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
-      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
+      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.06))
       and (
         (current_stake_amount < (filled_entries[0].cost * 0.50))
         or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -34735,7 +34735,7 @@ class NostalgiaForInfinityX6(IStrategy):
         )
       )
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
-      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
+      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.06))
       and (
         (current_stake_amount < (filled_entries[0].cost * 0.50))
         or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -34864,7 +34864,7 @@ class NostalgiaForInfinityX6(IStrategy):
       and is_derisk_1_found
       and is_long_buyback_entry
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
-      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
+      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.06))
       and (
         (current_stake_amount < (filled_entries[0].cost * 0.50))
         or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -35028,7 +35028,7 @@ class NostalgiaForInfinityX6(IStrategy):
       and is_derisk_2_found
       and is_long_buyback_entry
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
-      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
+      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.06))
       and (
         (current_stake_amount < (filled_entries[0].cost * 0.50))
         or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -35192,7 +35192,7 @@ class NostalgiaForInfinityX6(IStrategy):
       and is_derisk_3_found
       and is_long_buyback_entry
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
-      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
+      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.06))
       and (
         (current_stake_amount < (filled_entries[0].cost * 0.50))
         or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -58150,7 +58150,7 @@ class NostalgiaForInfinityX6(IStrategy):
       and (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
       and is_short_grind_entry
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
-      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
+      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.06))
       and (
         (current_stake_amount < (filled_entries[0].cost * 0.50))
         or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -58279,7 +58279,7 @@ class NostalgiaForInfinityX6(IStrategy):
       # and (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
       and is_short_grind_entry
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
-      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
+      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.06))
       and (
         (current_stake_amount < (filled_entries[0].cost * 0.50))
         or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -58408,7 +58408,7 @@ class NostalgiaForInfinityX6(IStrategy):
       # and (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
       and is_short_grind_entry
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
-      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
+      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.06))
       and (
         (current_stake_amount < (filled_entries[0].cost * 0.50))
         or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -58552,7 +58552,7 @@ class NostalgiaForInfinityX6(IStrategy):
         # )
       )
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
-      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
+      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.06))
       and (
         (current_stake_amount < (filled_entries[0].cost * 0.50))
         or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -58696,7 +58696,7 @@ class NostalgiaForInfinityX6(IStrategy):
         )
       )
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
-      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
+      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.06))
       and (
         (current_stake_amount < (filled_entries[0].cost * 0.50))
         or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -58825,7 +58825,7 @@ class NostalgiaForInfinityX6(IStrategy):
       and is_derisk_1_found
       and is_short_buyback_entry
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
-      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
+      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.06))
       and (
         (current_stake_amount < (filled_entries[0].cost * 0.50))
         or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -58987,7 +58987,7 @@ class NostalgiaForInfinityX6(IStrategy):
       and is_derisk_2_found
       and is_short_buyback_entry
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
-      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
+      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.06))
       and (
         (current_stake_amount < (filled_entries[0].cost * 0.50))
         or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -59149,7 +59149,7 @@ class NostalgiaForInfinityX6(IStrategy):
       and is_derisk_3_found
       and is_short_buyback_entry
       and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
-      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
+      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.06))
       and (
         (current_stake_amount < (filled_entries[0].cost * 0.50))
         or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
