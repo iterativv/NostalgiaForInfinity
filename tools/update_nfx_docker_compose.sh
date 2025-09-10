@@ -113,7 +113,7 @@ short_digest() {
         sha256:*) _h=${_d#sha256:} ;;
         *) _h="$_d" ;;
     esac
-    printf '%s' "$_h" | LC_ALL=C cut -c1-12
+    printf '%s' "$_h" | LC_ALL=C command cut -c1-12
     printf '\n'
 }
 
@@ -158,7 +158,7 @@ nfi_path_hash=$(short_path_hash "$NFI_PATH")
 LOCKDIR="${TMPDIR:-/tmp}/nfx-docker-update.${nfi_path_hash}.lock.d"
 
 if [ -d "$LOCKDIR" ]; then
-    _oldpid=$(sed -n '1p' "$LOCKDIR/pid" 2>/dev/null | tr -cd '0-9' || true)
+    _oldpid=$(command sed -n '1p' "$LOCKDIR/pid" 2>/dev/null | tr -cd '0-9' || true)
     if [ -n "$_oldpid" ] && is_pid_running "$_oldpid"; then
         echo_timestamped "Error: already running for ${FREQTRADE_IMAGE} (pid ${_oldpid})"
         exit 1
