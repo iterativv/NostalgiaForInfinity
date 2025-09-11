@@ -33958,6 +33958,15 @@ class NostalgiaForInfinityX6(IStrategy):
       num_open_grinds_and_buybacks < self.grinding_v2_max_grinds_and_buybacks
     )
 
+    is_long_extra_checks_entry = (
+      (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
+      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.06))
+      and (
+        (current_stake_amount < (filled_entries[0].cost * 0.50))
+        or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
+        or (slice_profit < -0.06)
+      )
+    )
     is_long_buyback_entry = self.long_buyback_entry_v2(last_candle, previous_candle, slice_profit, True)
     is_long_grind_entry = (
       self.long_grind_entry_v2(last_candle, previous_candle, slice_profit, True)
@@ -34176,13 +34185,7 @@ class NostalgiaForInfinityX6(IStrategy):
       (self.grinding_v2_grind_1_enable)
       and (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
       and is_long_grind_entry
-      and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
-      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.06))
-      and (
-        (current_stake_amount < (filled_entries[0].cost * 0.50))
-        or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
-        or (slice_profit < -0.06)
-      )
+      and is_long_extra_checks_entry
       and (grind_1_sub_grind_count < grind_1_max_sub_grinds)
       and (grind_1_sub_grind_count == 0 or (grind_1_distance_ratio < grind_1_sub_thresholds[grind_1_sub_grind_count]))
       and is_not_trade_max_stake
@@ -34305,13 +34308,7 @@ class NostalgiaForInfinityX6(IStrategy):
       (self.grinding_v2_grind_2_enable)
       # and (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
       and is_long_grind_entry
-      and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
-      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.06))
-      and (
-        (current_stake_amount < (filled_entries[0].cost * 0.50))
-        or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
-        or (slice_profit < -0.06)
-      )
+      and is_long_extra_checks_entry
       and (grind_2_sub_grind_count < grind_2_max_sub_grinds)
       and (grind_2_sub_grind_count == 0 or (grind_2_distance_ratio < grind_2_sub_thresholds[grind_2_sub_grind_count]))
       and is_not_trade_max_stake
@@ -34434,13 +34431,7 @@ class NostalgiaForInfinityX6(IStrategy):
       (self.grinding_v2_grind_3_enable)
       # and (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
       and is_long_grind_entry
-      and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
-      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.06))
-      and (
-        (current_stake_amount < (filled_entries[0].cost * 0.50))
-        or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
-        or (slice_profit < -0.06)
-      )
+      and is_long_extra_checks_entry
       and (grind_3_sub_grind_count < grind_3_max_sub_grinds)
       and (grind_3_sub_grind_count == 0 or (grind_3_distance_ratio < grind_3_sub_thresholds[grind_3_sub_grind_count]))
       and is_not_trade_max_stake
@@ -34590,13 +34581,7 @@ class NostalgiaForInfinityX6(IStrategy):
         #   )
         # )
       )
-      and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
-      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.06))
-      and (
-        (current_stake_amount < (filled_entries[0].cost * 0.50))
-        or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
-        or (slice_profit < -0.06)
-      )
+      and is_long_extra_checks_entry
       and (grind_4_sub_grind_count < grind_4_max_sub_grinds)
       and (grind_4_sub_grind_count == 0 or (grind_4_distance_ratio < grind_4_sub_thresholds[grind_4_sub_grind_count]))
       and is_not_trade_max_stake
@@ -34734,13 +34719,7 @@ class NostalgiaForInfinityX6(IStrategy):
           # )
         )
       )
-      and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
-      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.06))
-      and (
-        (current_stake_amount < (filled_entries[0].cost * 0.50))
-        or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
-        or (slice_profit < -0.06)
-      )
+      and is_long_extra_checks_entry
       and (grind_5_sub_grind_count < grind_5_max_sub_grinds)
       and (grind_5_sub_grind_count == 0 or (grind_5_distance_ratio < grind_5_sub_thresholds[grind_5_sub_grind_count]))
       and is_not_trade_max_stake
@@ -34863,13 +34842,7 @@ class NostalgiaForInfinityX6(IStrategy):
       self.grinding_v2_buyback_1_enable
       and is_derisk_1_found
       and is_long_buyback_entry
-      and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
-      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.06))
-      and (
-        (current_stake_amount < (filled_entries[0].cost * 0.50))
-        or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
-        or (slice_profit < -0.06)
-      )
+      and is_long_extra_checks_entry
       and (buyback_1_current_open_rate == 0)
       and (
         buyback_1_exit_distance_ratio
@@ -35027,13 +35000,7 @@ class NostalgiaForInfinityX6(IStrategy):
       self.grinding_v2_buyback_2_enable
       and is_derisk_2_found
       and is_long_buyback_entry
-      and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
-      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.06))
-      and (
-        (current_stake_amount < (filled_entries[0].cost * 0.50))
-        or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
-        or (slice_profit < -0.06)
-      )
+      and is_long_extra_checks_entry
       and (buyback_2_current_open_rate == 0)
       and (
         buyback_2_exit_distance_ratio
@@ -35191,13 +35158,7 @@ class NostalgiaForInfinityX6(IStrategy):
       self.grinding_v2_buyback_3_enable
       and is_derisk_3_found
       and is_long_buyback_entry
-      and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
-      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.06))
-      and (
-        (current_stake_amount < (filled_entries[0].cost * 0.50))
-        or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
-        or (slice_profit < -0.06)
-      )
+      and is_long_extra_checks_entry
       and (buyback_3_current_open_rate == 0)
       and (
         buyback_3_exit_distance_ratio
@@ -57931,6 +57892,15 @@ class NostalgiaForInfinityX6(IStrategy):
       num_open_grinds_and_buybacks < self.grinding_v2_max_grinds_and_buybacks
     )
 
+    is_short_extra_checks_entry = (
+      (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
+      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.06))
+      and (
+        (current_stake_amount < (filled_entries[0].cost * 0.50))
+        or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
+        or (slice_profit > 0.06)
+      )
+    )
     is_short_buyback_entry = self.short_buyback_entry_v2(last_candle, previous_candle, slice_profit, True)
     is_short_grind_entry = (
       self.short_grind_entry_v2(last_candle, previous_candle, slice_profit, True)
@@ -58149,13 +58119,7 @@ class NostalgiaForInfinityX6(IStrategy):
       (self.grinding_v2_grind_1_enable)
       and (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
       and is_short_grind_entry
-      and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
-      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.06))
-      and (
-        (current_stake_amount < (filled_entries[0].cost * 0.50))
-        or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
-        or (slice_profit > 0.06)
-      )
+      and is_short_extra_checks_entry
       and (grind_1_sub_grind_count < grind_1_max_sub_grinds)
       and (grind_1_sub_grind_count == 0 or (-grind_1_distance_ratio < grind_1_sub_thresholds[grind_1_sub_grind_count]))
       and is_not_trade_max_stake
@@ -58278,13 +58242,7 @@ class NostalgiaForInfinityX6(IStrategy):
       (self.grinding_v2_grind_2_enable)
       # and (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
       and is_short_grind_entry
-      and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
-      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.06))
-      and (
-        (current_stake_amount < (filled_entries[0].cost * 0.50))
-        or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
-        or (slice_profit > 0.06)
-      )
+      and is_short_extra_checks_entry
       and (grind_2_sub_grind_count < grind_2_max_sub_grinds)
       and (grind_2_sub_grind_count == 0 or (-grind_2_distance_ratio < grind_2_sub_thresholds[grind_2_sub_grind_count]))
       and is_not_trade_max_stake
@@ -58407,13 +58365,7 @@ class NostalgiaForInfinityX6(IStrategy):
       (self.grinding_v2_grind_3_enable)
       # and (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
       and is_short_grind_entry
-      and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
-      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.06))
-      and (
-        (current_stake_amount < (filled_entries[0].cost * 0.50))
-        or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
-        or (slice_profit > 0.06)
-      )
+      and is_short_extra_checks_entry
       and (grind_3_sub_grind_count < grind_3_max_sub_grinds)
       and (grind_3_sub_grind_count == 0 or (-grind_3_distance_ratio < grind_3_sub_thresholds[grind_3_sub_grind_count]))
       and is_not_trade_max_stake
@@ -58551,13 +58503,7 @@ class NostalgiaForInfinityX6(IStrategy):
         #   )
         # )
       )
-      and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
-      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.06))
-      and (
-        (current_stake_amount < (filled_entries[0].cost * 0.50))
-        or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
-        or (slice_profit > 0.06)
-      )
+      and is_short_extra_checks_entry
       and (grind_4_sub_grind_count < grind_4_max_sub_grinds)
       and (grind_4_sub_grind_count == 0 or (-grind_4_distance_ratio < grind_4_sub_thresholds[grind_4_sub_grind_count]))
       and is_not_trade_max_stake
@@ -58695,13 +58641,7 @@ class NostalgiaForInfinityX6(IStrategy):
           # )
         )
       )
-      and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
-      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.06))
-      and (
-        (current_stake_amount < (filled_entries[0].cost * 0.50))
-        or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
-        or (slice_profit > 0.06)
-      )
+      and is_short_extra_checks_entry
       and (grind_5_sub_grind_count < grind_5_max_sub_grinds)
       and (grind_5_sub_grind_count == 0 or (-grind_5_distance_ratio < grind_5_sub_thresholds[grind_5_sub_grind_count]))
       and is_not_trade_max_stake
@@ -58824,13 +58764,7 @@ class NostalgiaForInfinityX6(IStrategy):
       self.grinding_v2_buyback_1_enable
       and is_derisk_1_found
       and is_short_buyback_entry
-      and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
-      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.06))
-      and (
-        (current_stake_amount < (filled_entries[0].cost * 0.50))
-        or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
-        or (slice_profit > 0.06)
-      )
+      and is_short_extra_checks_entry
       and (buyback_1_current_open_rate == 0)
       and (
         -buyback_1_exit_distance_ratio
@@ -58986,13 +58920,7 @@ class NostalgiaForInfinityX6(IStrategy):
       self.grinding_v2_buyback_2_enable
       and is_derisk_2_found
       and is_short_buyback_entry
-      and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
-      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.06))
-      and (
-        (current_stake_amount < (filled_entries[0].cost * 0.50))
-        or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
-        or (slice_profit > 0.06)
-      )
+      and is_short_extra_checks_entry
       and (buyback_2_current_open_rate == 0)
       and (
         -buyback_2_exit_distance_ratio
@@ -59148,13 +59076,7 @@ class NostalgiaForInfinityX6(IStrategy):
       self.grinding_v2_buyback_3_enable
       and is_derisk_3_found
       and is_short_buyback_entry
-      and (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
-      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.06))
-      and (
-        (current_stake_amount < (filled_entries[0].cost * 0.50))
-        or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
-        or (slice_profit > 0.06)
-      )
+      and is_short_extra_checks_entry
       and (buyback_3_current_open_rate == 0)
       and (
         -buyback_3_exit_distance_ratio
