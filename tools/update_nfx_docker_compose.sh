@@ -67,8 +67,8 @@ escape_telegram_markdown() {
 
 send_telegram_notification() {
     if ! command -v curl >/dev/null 2>&1; then
-        echo_timestamped "Error: curl not found, cannot send telegram notification"
-        return 1
+        echo_timestamped "Warning: curl not found, skipping telegram notification"
+        return 0
     fi
 
     freqtrade_telegram_enabled=${FREQTRADE__TELEGRAM__ENABLED:-false}
@@ -78,21 +78,73 @@ send_telegram_notification() {
 
     telegram_message=$(escape_telegram_markdown "$1")
     if [ -z "$telegram_message" ]; then
-        echo_timestamped "Error: message variable is empty"
-        return 1
+        echo_timestamped "Warning: message variable is empty, skipping telegram notification"
+        return 0
     fi
 
     if [ -n "$FREQTRADE__TELEGRAM__TOKEN" ] && [ -n "$FREQTRADE__TELEGRAM__CHAT_ID" ]; then
-        curl_error=$(command curl -s -X POST \
+        set +e
+        curl_error=$({ command curl -sS --max-time 10 -X POST \
             --data-urlencode "text=${telegram_message}" \
             --data-urlencode "parse_mode=MarkdownV2" \
             --data "chat_id=${FREQTRADE__TELEGRAM__CHAT_ID}" \
-            "https://api.telegram.org/bot${FREQTRADE__TELEGRAM__TOKEN}/sendMessage" 2>&1 1>/dev/null)
-        if [ $? -ne 0 ]; then
-            echo_timestamped "Error: failed to send telegram notification: $curl_error"
-            return 1
+            "https://api.telegram.org/bot${FREQTRADE__TELEGRAM__TOKEN}/sendMessage" 1>/dev/null; } 2>&1)
+        rc=$?
+        set -e
+        if [ $rc -ne 0 ]; then
+            echo_timestamped "Warning: failed to send telegram message: $curl_error"
+            return 0
         fi
     fi
+}
+
+is_pid_running() {
+    _pid="$1"
+    [ -n "$_pid" ] && kill -0 "$_pid" 2>/dev/null
+}
+
+short_digest() {
+    _d="$1"
+    if [ -z "$_d" ] || [ "$_d" = "none" ]; then
+        printf '%s\n' "$_d"
+        return 0
+    fi
+    case "$_d" in
+        sha256:*) _h=${_d#sha256:} ;;
+        *) _h="$_d" ;;
+    esac
+    printf '%s' "$_h" | LC_ALL=C command cut -c1-12
+    printf '\n'
+}
+
+short_path_hash() {
+    _in="$1"
+    if command -v sha256sum >/dev/null 2>&1; then
+        printf '%s' "$_in" | command sha256sum | command cut -c1-10
+        return 0
+    fi
+    if command -v md5sum >/dev/null 2>&1; then
+        printf '%s' "$_in" | command md5sum | command cut -c1-10
+        return 0
+    fi
+    if command -v shasum >/dev/null 2>&1; then
+        printf '%s' "$_in" | command shasum -a 256 | command cut -c1-10
+        return 0
+    fi
+    printf '%s' "$_in" | command sed -e 's/[^A-Za-z0-9]/_/g' | command cut -c1-10
+}
+
+create_lock() {
+    _dir="$1"
+    umask 077
+    if command mkdir "$_dir" 2>/dev/null; then
+        if ! printf '%d\n' "$$" >"$_dir/pid"; then
+            rm -rf "$_dir" 2>/dev/null || true
+            return 1
+        fi
+        return 0
+    fi
+    return 1
 }
 
 ######################################################
@@ -102,22 +154,25 @@ if [ -z "$NFI_PATH" ]; then
     exit 1
 fi
 
-if command -v sha256sum >/dev/null 2>&1; then
-    nfi_path_hash=$(printf '%s' "$NFI_PATH" | command sha256sum | command cut -c1-10)
-elif command -v md5sum >/dev/null 2>&1; then
-    nfi_path_hash=$(printf '%s' "$NFI_PATH" | command md5sum | command cut -c1-10)
-elif command -v shasum >/dev/null 2>&1; then
-    nfi_path_hash=$(printf '%s' "$NFI_PATH" | command shasum -a 256 | command cut -c1-10)
-else
-    nfi_path_hash=$(printf '%s' "$NFI_PATH" | command sed -e 's/[^A-Za-z0-9]/_/g' | command cut -c1-10)
+nfi_path_hash=$(short_path_hash "$NFI_PATH")
+LOCKDIR="${TMPDIR:-/tmp}/nfx-docker-update.${nfi_path_hash}.lock.d"
+
+if [ -d "$LOCKDIR" ]; then
+    _oldpid=$(command sed -n '1p' "$LOCKDIR/pid" 2>/dev/null | tr -cd '0-9' || true)
+    if [ -n "$_oldpid" ] && is_pid_running "$_oldpid"; then
+        echo_timestamped "Error: already running for ${FREQTRADE_IMAGE} (pid ${_oldpid})"
+        exit 1
+    fi
+    echo_timestamped "Warning: removing stale lock ${LOCKDIR} (pid ${_oldpid:-unknown})"
+    rm -rf "$LOCKDIR" || true
 fi
-LOCKFILE="/tmp/nfx-docker-update.${nfi_path_hash}.lock"
-if [ -f "$LOCKFILE" ]; then
-    echo_timestamped "Error: already running for ${NFI_PATH}"
+
+trap 'rm -rf "$LOCKDIR"' 0 HUP INT TERM QUIT
+
+if ! create_lock "$LOCKDIR"; then
+    echo_timestamped "Error: already running for ${FREQTRADE_IMAGE}"
     exit 1
 fi
-trap 'rm -f "$LOCKFILE"' 0 HUP INT TERM
-touch "$LOCKFILE"
 
 if [ -z "$ENV_PATH" ]; then
     ENV_PATH=$NFI_PATH
@@ -150,26 +205,39 @@ fi
 echo_timestamped "Info: pulling updates from repo"
 latest_local_commit=$(command git rev-parse HEAD)
 
-command git stash push >/dev/null 2>&1
-
-if [ $? -ne 0 ]; then
-    echo_timestamped "Error: failed to stash changes in NFIX repo"
-    exit 1
+stashed=false
+if ! command git diff-index --quiet HEAD --; then
+    stashed=true
+    if ! command git stash push -u -m "nfi-update-$(date '+%Y%m%d%H%M%S')" >/dev/null 2>&1; then
+        echo_timestamped "Error: failed to stash changes in NFIX repo"
+        exit 1
+    fi
 fi
 
-git_pull_error=$(command git pull 2>&1 1>/dev/null)
+set +e
+git_pull_error=$({ command git pull 1>/dev/null; } 2>&1)
+rc=$?
+set -e
 
-if [ $? -ne 0 ]; then
+if [ $rc -ne 0 ]; then
     echo_timestamped "Error: failed to pull from NFIX repo: $git_pull_error"
-    command git stash pop >/dev/null 2>&1
+    if [ "$stashed" = "true" ]; then
+        command git stash pop >/dev/null 2>&1 || true
+    fi
     exit 1
 fi
 
-command git stash pop >/dev/null 2>&1
-
-if [ $? -ne 0 ]; then
-    echo_timestamped "Error: failed to unstash changes in NFIX repo"
-    exit 1
+if [ "$stashed" = "true" ]; then
+    set +e
+    git_stash_error=$({ command git stash pop 1>/dev/null; } 2>&1)
+    rc=$?
+    set -e
+    if [ $rc -ne 0 ]; then
+        message="failed to unstash changes in NFIX repo: $git_stash_error"
+        echo_timestamped "Error: $message"
+        send_telegram_notification "$message"
+        exit 1
+    fi
 fi
 
 need_restart=false
@@ -177,8 +245,8 @@ need_restart=false
 latest_remote_commit=$(command git rev-parse HEAD)
 if [ "$latest_local_commit" != "$latest_remote_commit" ]; then
     need_restart=true
-    latest_remote_commit_short=$(printf %s "$latest_remote_commit" | command cut -c1-7)
-    message="NFI was updated to commit: *${latest_remote_commit_short}*. Please wait for reload..."
+    short_latest_remote_commit=$(printf %s "$latest_remote_commit" | command cut -c1-7)
+    message="NFI was updated to commit: *${short_latest_remote_commit}*. Please wait for reload..."
     echo_timestamped "Info: $message"
     send_telegram_notification "$message"
 else
@@ -188,16 +256,18 @@ fi
 # check ft image and update if needed
 if [ "$FREQTRADE_IMAGE_UPDATE" = "true" ]; then
     echo_timestamped "Info: docker image pull for ${FREQTRADE_IMAGE}"
-    local_digest=$(command docker image inspect --format='{{.Id}}' "$FREQTRADE_IMAGE" 2>/dev/null || command echo "none")
+    local_digest=$(command docker image inspect --format='{{.Id}}' "$FREQTRADE_IMAGE" 2>/dev/null || printf '%s\n' 'none')
     if ! command docker image pull --quiet "$FREQTRADE_IMAGE" >/dev/null 2>&1; then
         echo_timestamped "Error: docker image pull failed for ${FREQTRADE_IMAGE}"
         exit 1
     fi
-    remote_digest=$(command docker image inspect --format='{{.Id}}' "$FREQTRADE_IMAGE" 2>/dev/null || command echo "none")
+    remote_digest=$(command docker image inspect --format='{{.Id}}' "$FREQTRADE_IMAGE" 2>/dev/null || printf '%s\n' 'none')
 
     if [ "$local_digest" != "$remote_digest" ]; then
         need_restart=true
-        message="docker image ${FREQTRADE_IMAGE} was updated (${local_digest} -> ${remote_digest}). Please wait for reload..."
+        short_local_digest=$(short_digest "$local_digest")
+        short_remote_digest=$(short_digest "$remote_digest")
+        message="docker image ${FREQTRADE_IMAGE} was updated (${short_local_digest} -> ${short_remote_digest}). Please wait for reload..."
         echo_timestamped "Info: $message"
         send_telegram_notification "$message"
     else
