@@ -550,6 +550,7 @@ class NostalgiaForInfinityX6(IStrategy):
     "UNI",
     "VET",
     "XLM",
+    "XMR",
     "XRP",
     "XTZ",
     "ZEC"
@@ -604,6 +605,7 @@ class NostalgiaForInfinityX6(IStrategy):
     "UNI",
     "VET",
     "XLM",
+    "XMR",
     "XRP",
     "XTZ",
     "ZEC"
