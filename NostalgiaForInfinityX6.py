@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.7.86"
+    return "v16.7.87"
 
   stoploss = -0.99
 
@@ -14411,7 +14411,7 @@ class NostalgiaForInfinityX6(IStrategy):
           short_entry_logic.append(df["EMA_12"] > df["EMA_26"])
           short_entry_logic.append((df["EMA_12"] - df["EMA_26"]) > (df["open"] * 0.030))
           short_entry_logic.append((df["EMA_12"].shift() - df["EMA_26"].shift()) > (df["open"] / 100.0))
-          short_entry_logic.append(df["close"] > (df["BBU_20_2.0"] * 1.001))
+          short_entry_logic.append(df["close"] > (df["BBU_20_2.0"] * 1.004))
 
         # Condition #502 - Normal mode (Short).
         if short_entry_condition_index == 502:
