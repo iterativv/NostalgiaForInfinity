@@ -20,7 +20,7 @@
       "method": "RangeStabilityFilter",
       "lookback_days": 3,
       "min_rate_of_change": 0.03,
-      "max_rate_of_change": 0.75,
+      "max_rate_of_change": 0.90,
       "refresh_period": 1800
     },
     // {
