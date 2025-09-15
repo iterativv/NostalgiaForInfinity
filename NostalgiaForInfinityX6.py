@@ -2519,9 +2519,9 @@ class NostalgiaForInfinityX6(IStrategy):
     )
 
     # Grind profit calculation
-    if grind_profit_stake is not None:
+    if grind_profit_stake is not None and grind_profit_stake != 0:
       msg += f"💶 **Grind profit (stake):** `{grind_profit_stake:.2f}{'' if stake_currency is None else ' ' + stake_currency}`\n"
-    if grind_profit_pct is not None:
+    if grind_profit_pct is not None and grind_profit_pct != 0:
       msg += f"💸 **Grind profit (percent):** `{(grind_profit_pct * 100.0):.2f}%`"
 
     return msg
