@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.7.120"
+    return "v16.7.121"
 
   stoploss = -0.99
 
@@ -392,9 +392,9 @@ class NostalgiaForInfinityX6(IStrategy):
 
   grinding_v2_grind_1_enable = True
   grinding_v2_grind_1_stakes_spot = [0.10, 0.15, 0.25, 0.30, 0.35]
-  grinding_v2_grind_1_thresholds_spot = [-0.08, -0.09, -0.10, -0.11, -0.12]
+  grinding_v2_grind_1_thresholds_spot = [-0.06, -0.07, -0.08, -0.09, -0.10]
   grinding_v2_grind_1_stakes_futures = [0.10, 0.15, 0.25, 0.30, 0.35]
-  grinding_v2_grind_1_thresholds_futures = [-0.08, -0.09, -0.10, -0.11, -0.12]
+  grinding_v2_grind_1_thresholds_futures = [-0.06, -0.07, -0.08, -0.09, -0.10]
   grinding_v2_grind_1_profit_threshold_spot = 0.028
   grinding_v2_grind_1_profit_threshold_futures = 0.028
   grinding_v2_grind_1_use_derisk = True
@@ -403,9 +403,9 @@ class NostalgiaForInfinityX6(IStrategy):
 
   grinding_v2_grind_2_enable = True
   grinding_v2_grind_2_stakes_spot = [0.05, 0.10, 0.15, 0.20, 0.25]
-  grinding_v2_grind_2_thresholds_spot = [-0.08, -0.09, -0.10, -0.11, -0.12]
+  grinding_v2_grind_2_thresholds_spot = [-0.06, -0.07, -0.08, -0.09, -0.10]
   grinding_v2_grind_2_stakes_futures = [0.05, 0.10, 0.15, 0.20, 0.25]
-  grinding_v2_grind_2_thresholds_futures = [-0.08, -0.09, -0.10, -0.11, -0.12]
+  grinding_v2_grind_2_thresholds_futures = [-0.06, -0.07, -0.08, -0.09, -0.10]
   grinding_v2_grind_2_profit_threshold_spot = 0.05
   grinding_v2_grind_2_profit_threshold_futures = 0.05
   grinding_v2_grind_2_use_derisk = True
@@ -414,9 +414,9 @@ class NostalgiaForInfinityX6(IStrategy):
 
   grinding_v2_grind_3_enable = True
   grinding_v2_grind_3_stakes_spot = [0.05, 0.10, 0.15, 0.20, 0.25]
-  grinding_v2_grind_3_thresholds_spot = [-0.08, -0.09, -0.10, -0.11, -0.12]
+  grinding_v2_grind_3_thresholds_spot = [-0.06, -0.07, -0.08, -0.09, -0.10]
   grinding_v2_grind_3_stakes_futures = [0.05, 0.10, 0.15, 0.20, 0.25]
-  grinding_v2_grind_3_thresholds_futures = [-0.08, -0.09, -0.10, -0.11, -0.12]
+  grinding_v2_grind_3_thresholds_futures = [-0.06, -0.07, -0.08, -0.09, -0.10]
   grinding_v2_grind_3_profit_threshold_spot = 0.05
   grinding_v2_grind_3_profit_threshold_futures = 0.05
   grinding_v2_grind_3_use_derisk = True
