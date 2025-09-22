@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.7.135"
+    return "v16.7.136"
 
   stoploss = -0.99
 
@@ -60901,7 +60901,7 @@ class NostalgiaForInfinityX6(IStrategy):
     ):
       is_first_entry_exit_found = False
       for order in filled_orders:
-        if order.ft_order_side == "sell":
+        if order.ft_order_side == "buy":
           order_tag = ""
           if has_order_tags:
             if order.ft_order_tag is not None:
