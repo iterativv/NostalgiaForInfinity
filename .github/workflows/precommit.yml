@@ -5,24 +5,13 @@ on: [push, pull_request]
 jobs:
   Pre-Commit:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 10
-
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-
-      - name: Cache pip packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: pip-cache-${{ runner.os }}
-          restore-keys: |
-            pip-cache-${{ runner.os }}-
-
       - id: changed-files
         name: Check changed files
         uses: dorny/paths-filter@v3
@@ -32,25 +21,16 @@ jobs:
           filters: |
             repo:
               - added|modified: ['**']
-
-      - name: Set Python version hash env
-        run: echo "PY=$(python --version | sha256sum | cut -d' ' -f1)" >> $GITHUB_ENV
-
-      - name: Restore pre-commit cache
-        uses: actions/cache@v4
+      - run: echo "PY=$(python --version --version | sha256sum | cut -d' ' -f1)" >> $GITHUB_ENV
+      - uses: actions/cache@v4
         with:
           path: ~/.cache/pre-commit
           key: pre-commit|${{ env.PY }}|${{ hashFiles('.pre-commit-config.yaml') }}
-          restore-keys: |
-            pre-commit|${{ env.PY }}|
-            pre-commit|
-
-      - name: Run pre-commit on all files (for push events)
+      - name: Check ALL Files On Branch
         uses: pre-commit/action@v3.0.1
         if: github.event_name != 'pull_request'
-
-      - name: Run pre-commit on changed files (for pull requests)
+      - name: Check Changed Files On PR
         uses: pre-commit/action@v3.0.1
         if: github.event_name == 'pull_request'
         with:
-          extra_args: --files ${{ steps.changed-files.outputs.repo }}
+          extra_args: --files ${{ steps.changed-files.outputs.repo_files }}
