@@ -6,7 +6,6 @@ import subprocess
 import zipfile
 from types import SimpleNamespace
 import attr
-import time
 
 from tests.conftest import REPO_ROOT
 
@@ -75,8 +74,15 @@ class Backtest:
       raise RuntimeError(f"No 'exchange' was passed when instantiating {self.__class__.__name__} or when calling it")
 
     tmp_path = self.request.getfixturevalue("tmp_path")
+
+    # ---- Setup export directory and filename (per Freqtrade docs) ----
+    export_dir = tmp_path / "backtest_results"
+    export_dir.mkdir(parents=True, exist_ok=True)
+    json_filename = f"backtest-result-{exchange}-{trading_mode}-{start_date}-{end_date}.json"
+
     exchange_config = f"configs/pairlist-backtest-static-{exchange}-{trading_mode}-usdt.json"
-    json_results_file = tmp_path / f"backtest-results-{exchange}-{trading_mode}-{start_date}-{end_date}.json"
+
+    # ---- Build cmdline ----
     cmdline = [
       "freqtrade",
       "backtesting",
@@ -90,18 +96,20 @@ class Backtest:
       "--breakdown=day",
       "--export=signals",
       f"--log-file=user_data/logs/backtesting-{exchange}-{trading_mode}-{start_date}-{end_date}.log",
+      f"--export-directory={str(export_dir)}",
+      f"--export-filename={json_filename}",
     ]
+
     if pairlist is None:
       cmdline.append(f"--config={exchange_config}")
     else:
-      pairlist_config = {"exchange": {"name": exchange, "pair_whitelist": pairlist}}
       pairlist_config_file = tmp_path / "test-pairlist.json"
-      pairlist_config_file.write(json.dumps(pairlist_config))
+      pairlist_config_file.write_text(json.dumps({"exchange": {"name": exchange, "pair_whitelist": pairlist}}))
       cmdline.append(f"--config={pairlist_config_file}")
-    # Add Proxy if exchange matches binance
+
     if exchange == "binance":
       cmdline.append("--config=configs/proxy-binance.json")
-    cmdline.append(f"--export-filename={json_results_file}")
+
     log.info("Running cmdline '%s' on '%s'", " ".join(cmdline), REPO_ROOT)
     proc = subprocess.run(cmdline, check=False, shell=False, cwd=REPO_ROOT, text=True, capture_output=True)
     ret = ProcessResult(
@@ -116,104 +124,46 @@ class Backtest:
     else:
       log.debug("Command Result:\n%s", ret)
 
-    # Look for result .zip file
-    result_zips = list(f for f in tmp_path.rglob("backtest-results-*.zip"))
-    if not result_zips:
-      raise FileNotFoundError("No backtest result .zip file found after backtesting command.")
+    # ---- Unzip any zip results ----
+    for zip_path in export_dir.glob("backtest-result*.zip"):
+      with zipfile.ZipFile(zip_path, "r") as zip_ref:
+        zip_ref.extractall(export_dir)
 
-    # Unzip the file to extract the JSON inside
-    with zipfile.ZipFile(result_zips[0], "r") as zip_ref:
-      zip_ref.extractall(tmp_path)
-    time.sleep(1)
+    # ---- Helper to find backtest artifacts ----
+    def find_file(pattern):
+      files = [f for f in export_dir.rglob(pattern) if "_config" not in str(f) and "meta" not in str(f)]
+      if not files:
+        raise FileNotFoundError(f"No files found for pattern '{pattern}' in {export_dir}")
+      return files[0]
 
-    # JSON result file
-    result_files = list(
-      f for f in tmp_path.rglob("backtest-results-*.json") if "meta" not in str(f) and "_config" not in str(f)
-    )
-    if len(result_files) != 1:
-      raise RuntimeError(f"Expected 1 JSON result file, found {len(result_files)}: {result_files}")
-    json_results_file = result_files[0]
-    log.debug(f"Reading JSON backtest results from: {json_results_file}")
+    # ---- Collect artifacts ----
+    json_results_file = find_file("backtest-result*.json")
+    signals_file = find_file("backtest-result-*signals.pkl")
+    exited_file = find_file("backtest-result-*exited.pkl")
+    rejected_file = find_file("backtest-result-*rejected.pkl")
 
-    # Safely read and parse JSON
-    try:
-      raw_text = json_results_file.read_text()
-      if not raw_text.strip():
-        raise ValueError("Backtest result JSON file is empty.")
-      results_data = json.loads(raw_text)
-    except json.JSONDecodeError as e:
-      raise RuntimeError(f"Failed to parse JSON from {json_results_file}: {e}") from e
+    # ---- Read JSON results ----
+    raw_text = json_results_file.read_text()
+    if not raw_text.strip():
+      raise ValueError("Backtest result JSON file is empty.")
+    results_data = json.loads(raw_text)
 
-    # Signals file
-    signals_files = list(f for f in tmp_path.rglob("backtest-results-*signals.pkl") if "meta" not in str(f))
-    if not signals_files:
-      raise FileNotFoundError("Signals file not found after backtesting.")
-    signals_file = signals_files[0]
-
-    # Exited file
-    exited_files = list(f for f in tmp_path.rglob("backtest-results-*exited.pkl") if "meta" not in str(f))
-    if not exited_files:
-      raise FileNotFoundError("Exited trades file not found after backtesting.")
-    exited_file = exited_files[0]
-
-    # Rejected file
-    rejected_files = list(f for f in tmp_path.rglob("backtest-results-*rejected.pkl") if "meta" not in str(f))
-    if not rejected_files:
-      raise FileNotFoundError("Rejected trades file not found after backtesting.")
-    rejected_file = rejected_files[0]
-
-    # Artifact paths
-    json_results_artifact_path = None
-    json_ci_results_artifact_path = None
-    signals_file_artifact_path = None
-    exited_file_artifact_path = None
-    rejected_file_artifact_path = None
-
+    # ---- Save artifacts to CI if requested ----
     if self.request.config.option.artifacts_path:
-      json_results_artifact_path = (
-        self.request.config.option.artifacts_path
-        / f"backtest-results-{exchange}-{trading_mode}-{start_date}-{end_date}.json"
-      )
-      shutil.copyfile(json_results_file, json_results_artifact_path)
+      artifacts_path = self.request.config.option.artifacts_path
+      shutil.copyfile(json_results_file, artifacts_path / json_results_file.name)
+      shutil.copyfile(signals_file, artifacts_path / signals_file.name)
+      shutil.copyfile(exited_file, artifacts_path / exited_file.name)
+      shutil.copyfile(rejected_file, artifacts_path / rejected_file.name)
+      txt_path = artifacts_path / f"backtest-output-{exchange}-{trading_mode}-{start_date}-{end_date}.txt"
+      txt_path.write_text(ret.stdout.strip())
 
-      json_ci_results_artifact_path = (
-        self.request.config.option.artifacts_path
-        / f"ci-results-{exchange}-{trading_mode}-{start_date}-{end_date}.json"
-      )
-      signals_file_artifact_path = (
-        self.request.config.option.artifacts_path
-        / f"backtest-results-{exchange}-{trading_mode}-{start_date}-{end_date}_signals.pkl"
-      )
-      shutil.copyfile(signals_file, signals_file_artifact_path)
-
-      exited_file_artifact_path = (
-        self.request.config.option.artifacts_path
-        / f"backtest-results-{exchange}-{trading_mode}-{start_date}-{end_date}_exited.pkl"
-      )
-      shutil.copyfile(exited_file, exited_file_artifact_path)
-
-      rejected_file_artifact_path = (
-        self.request.config.option.artifacts_path
-        / f"backtest-results-{exchange}-{trading_mode}-{start_date}-{end_date}_rejected.pkl"
-      )
-      shutil.copyfile(rejected_file, rejected_file_artifact_path)
-
-      txt_results_artifact_path = (
-        self.request.config.option.artifacts_path
-        / f"backtest-output-{exchange}-{trading_mode}-{start_date}-{end_date}.txt"
-      )
-      txt_results_artifact_path.write_text(ret.stdout.strip())
-
-    ret = BacktestResults(
+    # ---- Return structured BacktestResults ----
+    return BacktestResults(
       stdout=ret.stdout.strip(),
       stderr=ret.stderr.strip(),
       raw_data=results_data,
     )
-
-    if json_ci_results_artifact_path:
-      json_ci_results_artifact_path.write_text(json.dumps({f"{start_date}-{end_date}": ret._stats_pct}))
-    ret.log_info()
-    return ret
 
 
 @attr.s(frozen=True)
