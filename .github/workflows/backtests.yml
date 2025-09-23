@@ -68,7 +68,8 @@ jobs:
             --artifacts-path=artifacts/ \
             -p no:cacheprovider \
             -n auto \
-            -k "kucoin and spot and ${{ matrix.TIMERANGE }}"
+            -k "kucoin and spot and ${{ matrix.TIMERANGE }}" \
+            --junitxml="artifacts/kucoin-spot-${{ matrix.TIMERANGE }}-report.xml"
 
       - name: Show Backtest Output
         run: cat artifacts/backtest-output-kucoin-spot-${{ matrix.TIMERANGE }}.txt
@@ -145,7 +146,8 @@ jobs:
             --artifacts-path=artifacts/ \
             -p no:cacheprovider \
             -n auto \
-            -k "binance and spot and ${{ matrix.TIMERANGE }}"
+            -k "binance and spot and ${{ matrix.TIMERANGE }}" \
+            --junitxml="artifacts/binance-spot-${{ matrix.TIMERANGE }}-report.xml"
 
       - name: Show Backtest Output
         run: cat artifacts/backtest-output-binance-spot-${{ matrix.TIMERANGE }}.txt
@@ -222,7 +224,8 @@ jobs:
             --artifacts-path=artifacts/ \
             -p no:cacheprovider \
             -n auto \
-            -k "binance and futures and ${{ matrix.TIMERANGE }}"
+            -k "binance and futures and ${{ matrix.TIMERANGE }}" \
+            --junitxml="artifacts/binance-futures-${{ matrix.TIMERANGE }}-report.xml"
 
       - name: Show Backtest Output
         run: cat artifacts/backtest-output-binance-futures-${{ matrix.TIMERANGE }}.txt
