@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.7.156"
+    return "v16.8.0"
 
   stoploss = -0.99
 
@@ -372,14 +372,14 @@ class NostalgiaForInfinityX6(IStrategy):
   grinding_v2_max_grinds_and_buybacks = 20  # current open
 
   grinding_v2_derisk_level_1_enable = True
-  grinding_v2_derisk_level_1_spot = -0.12
-  grinding_v2_derisk_level_1_futures = -0.36
+  grinding_v2_derisk_level_1_spot = [-0.06, -0.15]
+  grinding_v2_derisk_level_1_futures = [-0.18, -0.35]
   grinding_v2_derisk_level_2_enable = True
-  grinding_v2_derisk_level_2_spot = -0.14
-  grinding_v2_derisk_level_2_futures = -0.42
+  grinding_v2_derisk_level_2_spot = [-0.08, -0.18]
+  grinding_v2_derisk_level_2_futures = [-0.16, -0.54]
   grinding_v2_derisk_level_3_enable = True
-  grinding_v2_derisk_level_3_spot = -0.15
-  grinding_v2_derisk_level_3_futures = -0.45
+  grinding_v2_derisk_level_3_spot = [-0.10, -0.20]
+  grinding_v2_derisk_level_3_futures = [-0.30, -0.60]
   grinding_v2_derisk_level_1_stake_spot = 0.20
   grinding_v2_derisk_level_1_stake_futures = 0.20
   grinding_v2_derisk_level_2_stake_spot = 0.30
@@ -34802,18 +34802,66 @@ class NostalgiaForInfinityX6(IStrategy):
     )
 
     # De-risk level 1
+
+    # flag it
+    if (
+      self.derisk_enable
+      and self.grinding_v2_derisk_level_1_enable
+      and (not is_derisk_1_found)
+      and not is_rebuy_mode
+      and (trade.get_custom_data(key="grinding_v2_derisk_level_1_flag") is None)
+      and (
+        profit_stake
+        < (
+          slice_amount
+          * (
+            self.grinding_v2_derisk_level_1_futures[0]
+            if self.is_futures_mode
+            else self.grinding_v2_derisk_level_1_spot[0]
+          )
+        )
+        / trade.leverage
+      )
+    ):
+      trade.set_custom_data(key="grinding_v2_derisk_level_1_flag", value=True)
+      trade.set_custom_data(key="grinding_v2_derisk_level_1_profit", value=profit_stake)
+      trade.set_custom_data(key="grinding_v2_derisk_level_1_time", value=current_time.isoformat())
+
+    flag_is_derisk_level_1 = False
+    if (
+      self.derisk_enable
+      and self.grinding_v2_derisk_level_1_enable
+      and (not is_derisk_1_found)
+      and not is_rebuy_mode
+      and (trade.get_custom_data(key="grinding_v2_derisk_level_1_flag") is True)
+    ):
+      flag_profit = trade.get_custom_data(key="grinding_v2_derisk_level_1_profit")
+      flag_time = datetime.fromisoformat(trade.get_custom_data(key="grinding_v2_derisk_level_1_time"))
+      if current_time - timedelta(hours=12) > flag_time:
+        if profit_stake > flag_profit:
+          trade.set_custom_data(key="grinding_v2_derisk_level_1_flag", value=None)
+        else:
+          flag_is_derisk_level_1 = True
+
     if (
       self.derisk_enable
       and self.grinding_v2_derisk_level_1_enable
       and (not is_derisk_1_found)
       and not is_rebuy_mode
       and (
-        profit_stake
-        < (
-          slice_amount
-          * (self.grinding_v2_derisk_level_1_futures if self.is_futures_mode else self.grinding_v2_derisk_level_1_spot)
+        flag_is_derisk_level_1
+        or (
+          profit_stake
+          < (
+            slice_amount
+            * (
+              self.grinding_v2_derisk_level_1_futures[1]
+              if self.is_futures_mode
+              else self.grinding_v2_derisk_level_1_spot[1]
+            )
+          )
+          / trade.leverage
         )
-        / trade.leverage
       )
     ):
       sell_amount = (
@@ -34851,18 +34899,66 @@ class NostalgiaForInfinityX6(IStrategy):
         return -ft_sell_amount, "derisk_level_1"
 
     # De-risk level 2
+
+    # flag it
+    if (
+      self.derisk_enable
+      and self.grinding_v2_derisk_level_2_enable
+      and (not is_derisk_2_found)
+      and not is_rebuy_mode
+      and (trade.get_custom_data(key="grinding_v2_derisk_level_2_flag") is None)
+      and (
+        profit_stake
+        < (
+          slice_amount
+          * (
+            self.grinding_v2_derisk_level_2_futures[0]
+            if self.is_futures_mode
+            else self.grinding_v2_derisk_level_2_spot[0]
+          )
+        )
+        / trade.leverage
+      )
+    ):
+      trade.set_custom_data(key="grinding_v2_derisk_level_2_flag", value=True)
+      trade.set_custom_data(key="grinding_v2_derisk_level_2_profit", value=profit_stake)
+      trade.set_custom_data(key="grinding_v2_derisk_level_2_time", value=current_time.isoformat())
+
+    flag_is_derisk_level_2 = False
+    if (
+      self.derisk_enable
+      and self.grinding_v2_derisk_level_2_enable
+      and (not is_derisk_2_found)
+      and not is_rebuy_mode
+      and (trade.get_custom_data(key="grinding_v2_derisk_level_2_flag") is True)
+    ):
+      flag_profit = trade.get_custom_data(key="grinding_v2_derisk_level_2_profit")
+      flag_time = datetime.fromisoformat(trade.get_custom_data(key="grinding_v2_derisk_level_2_time"))
+      if current_time - timedelta(hours=12) > flag_time:
+        if profit_stake > flag_profit:
+          trade.set_custom_data(key="grinding_v2_derisk_level_2_flag", value=None)
+        else:
+          flag_is_derisk_level_2 = True
+
     if (
       self.derisk_enable
       and self.grinding_v2_derisk_level_2_enable
       and (not is_derisk_2_found)
       and not is_rebuy_mode
       and (
-        profit_stake
-        < (
-          slice_amount
-          * (self.grinding_v2_derisk_level_2_futures if self.is_futures_mode else self.grinding_v2_derisk_level_2_spot)
+        flag_is_derisk_level_2
+        or (
+          profit_stake
+          < (
+            slice_amount
+            * (
+              self.grinding_v2_derisk_level_2_futures[1]
+              if self.is_futures_mode
+              else self.grinding_v2_derisk_level_2_spot[1]
+            )
+          )
+          / trade.leverage
         )
-        / trade.leverage
       )
     ):
       sell_amount = (
@@ -34900,18 +34996,66 @@ class NostalgiaForInfinityX6(IStrategy):
         return -ft_sell_amount, "derisk_level_2"
 
     # De-risk level 3
+
+    # flag it
+    if (
+      self.derisk_enable
+      and self.grinding_v2_derisk_level_3_enable
+      and (not is_derisk_3_found)
+      and not is_rebuy_mode
+      and (trade.get_custom_data(key="grinding_v2_derisk_level_3_flag") is None)
+      and (
+        profit_stake
+        < (
+          slice_amount
+          * (
+            self.grinding_v2_derisk_level_3_futures[0]
+            if self.is_futures_mode
+            else self.grinding_v2_derisk_level_3_spot[0]
+          )
+        )
+        / trade.leverage
+      )
+    ):
+      trade.set_custom_data(key="grinding_v2_derisk_level_3_flag", value=True)
+      trade.set_custom_data(key="grinding_v2_derisk_level_3_profit", value=profit_stake)
+      trade.set_custom_data(key="grinding_v2_derisk_level_3_time", value=current_time.isoformat())
+
+    flag_is_derisk_level_3 = False
+    if (
+      self.derisk_enable
+      and self.grinding_v2_derisk_level_3_enable
+      and (not is_derisk_3_found)
+      and not is_rebuy_mode
+      and (trade.get_custom_data(key="grinding_v2_derisk_level_3_flag") is True)
+    ):
+      flag_profit = trade.get_custom_data(key="grinding_v2_derisk_level_3_profit")
+      flag_time = datetime.fromisoformat(trade.get_custom_data(key="grinding_v2_derisk_level_3_time"))
+      if current_time - timedelta(hours=12) > flag_time:
+        if profit_stake > flag_profit:
+          trade.set_custom_data(key="grinding_v2_derisk_level_3_flag", value=None)
+        else:
+          flag_is_derisk_level_3 = True
+
     if (
       self.derisk_enable
       and self.grinding_v2_derisk_level_3_enable
       and (not is_derisk_3_found)
       and not is_rebuy_mode
       and (
-        profit_stake
-        < (
-          slice_amount
-          * (self.grinding_v2_derisk_level_3_futures if self.is_futures_mode else self.grinding_v2_derisk_level_3_spot)
+        flag_is_derisk_level_3
+        or (
+          profit_stake
+          < (
+            slice_amount
+            * (
+              self.grinding_v2_derisk_level_3_futures[1]
+              if self.is_futures_mode
+              else self.grinding_v2_derisk_level_3_spot[1]
+            )
+          )
+          / trade.leverage
         )
-        / trade.leverage
       )
     ):
       sell_amount = (
@@ -58736,18 +58880,66 @@ class NostalgiaForInfinityX6(IStrategy):
     )
 
     # De-risk level 1
+
+    # flag it
+    if (
+      self.derisk_enable
+      and self.grinding_v2_derisk_level_1_enable
+      and (not is_derisk_1_found)
+      and not is_rebuy_mode
+      and (trade.get_custom_data(key="grinding_v2_derisk_level_1_flag") is None)
+      and (
+        profit_stake
+        < (
+          slice_amount
+          * (
+            self.grinding_v2_derisk_level_1_futures[0]
+            if self.is_futures_mode
+            else self.grinding_v2_derisk_level_1_spot[0]
+          )
+        )
+        / trade.leverage
+      )
+    ):
+      trade.set_custom_data(key="grinding_v2_derisk_level_1_flag", value=True)
+      trade.set_custom_data(key="grinding_v2_derisk_level_1_profit", value=profit_stake)
+      trade.set_custom_data(key="grinding_v2_derisk_level_1_time", value=current_time.isoformat())
+
+    flag_is_derisk_level_1 = False
+    if (
+      self.derisk_enable
+      and self.grinding_v2_derisk_level_1_enable
+      and (not is_derisk_1_found)
+      and not is_rebuy_mode
+      and (trade.get_custom_data(key="grinding_v2_derisk_level_1_flag") is True)
+    ):
+      flag_profit = trade.get_custom_data(key="grinding_v2_derisk_level_1_profit")
+      flag_time = datetime.fromisoformat(trade.get_custom_data(key="grinding_v2_derisk_level_1_time"))
+      if current_time - timedelta(hours=12) > flag_time:
+        if profit_stake > flag_profit:
+          trade.set_custom_data(key="grinding_v2_derisk_level_1_flag", value=None)
+        else:
+          flag_is_derisk_level_1 = True
+
     if (
       self.derisk_enable
       and self.grinding_v2_derisk_level_1_enable
       and (not is_derisk_1_found)
       and not is_rebuy_mode
       and (
-        profit_stake
-        < (
-          slice_amount
-          * (self.grinding_v2_derisk_level_1_futures if self.is_futures_mode else self.grinding_v2_derisk_level_1_spot)
+        flag_is_derisk_level_1
+        or (
+          profit_stake
+          < (
+            slice_amount
+            * (
+              self.grinding_v2_derisk_level_1_futures[1]
+              if self.is_futures_mode
+              else self.grinding_v2_derisk_level_1_spot[1]
+            )
+          )
+          / trade.leverage
         )
-        / trade.leverage
       )
     ):
       sell_amount = (
@@ -58785,18 +58977,66 @@ class NostalgiaForInfinityX6(IStrategy):
         return -ft_sell_amount, "derisk_level_1"
 
     # De-risk level 2
+
+    # flag it
+    if (
+      self.derisk_enable
+      and self.grinding_v2_derisk_level_2_enable
+      and (not is_derisk_2_found)
+      and not is_rebuy_mode
+      and (trade.get_custom_data(key="grinding_v2_derisk_level_2_flag") is None)
+      and (
+        profit_stake
+        < (
+          slice_amount
+          * (
+            self.grinding_v2_derisk_level_2_futures[0]
+            if self.is_futures_mode
+            else self.grinding_v2_derisk_level_2_spot[0]
+          )
+        )
+        / trade.leverage
+      )
+    ):
+      trade.set_custom_data(key="grinding_v2_derisk_level_2_flag", value=True)
+      trade.set_custom_data(key="grinding_v2_derisk_level_2_profit", value=profit_stake)
+      trade.set_custom_data(key="grinding_v2_derisk_level_2_time", value=current_time.isoformat())
+
+    flag_is_derisk_level_2 = False
+    if (
+      self.derisk_enable
+      and self.grinding_v2_derisk_level_2_enable
+      and (not is_derisk_2_found)
+      and not is_rebuy_mode
+      and (trade.get_custom_data(key="grinding_v2_derisk_level_2_flag") is True)
+    ):
+      flag_profit = trade.get_custom_data(key="grinding_v2_derisk_level_2_profit")
+      flag_time = datetime.fromisoformat(trade.get_custom_data(key="grinding_v2_derisk_level_2_time"))
+      if current_time - timedelta(hours=12) > flag_time:
+        if profit_stake > flag_profit:
+          trade.set_custom_data(key="grinding_v2_derisk_level_2_flag", value=None)
+        else:
+          flag_is_derisk_level_2 = True
+
     if (
       self.derisk_enable
       and self.grinding_v2_derisk_level_2_enable
       and (not is_derisk_2_found)
       and not is_rebuy_mode
       and (
-        profit_stake
-        < (
-          slice_amount
-          * (self.grinding_v2_derisk_level_2_futures if self.is_futures_mode else self.grinding_v2_derisk_level_2_spot)
+        flag_is_derisk_level_2
+        or (
+          profit_stake
+          < (
+            slice_amount
+            * (
+              self.grinding_v2_derisk_level_2_futures[1]
+              if self.is_futures_mode
+              else self.grinding_v2_derisk_level_2_spot[1]
+            )
+          )
+          / trade.leverage
         )
-        / trade.leverage
       )
     ):
       sell_amount = (
@@ -58834,18 +59074,66 @@ class NostalgiaForInfinityX6(IStrategy):
         return -ft_sell_amount, "derisk_level_2"
 
     # De-risk level 3
+
+    # flag it
+    if (
+      self.derisk_enable
+      and self.grinding_v2_derisk_level_3_enable
+      and (not is_derisk_3_found)
+      and not is_rebuy_mode
+      and (trade.get_custom_data(key="grinding_v2_derisk_level_3_flag") is None)
+      and (
+        profit_stake
+        < (
+          slice_amount
+          * (
+            self.grinding_v2_derisk_level_3_futures[0]
+            if self.is_futures_mode
+            else self.grinding_v2_derisk_level_3_spot[0]
+          )
+        )
+        / trade.leverage
+      )
+    ):
+      trade.set_custom_data(key="grinding_v2_derisk_level_3_flag", value=True)
+      trade.set_custom_data(key="grinding_v2_derisk_level_3_profit", value=profit_stake)
+      trade.set_custom_data(key="grinding_v2_derisk_level_3_time", value=current_time.isoformat())
+
+    flag_is_derisk_level_3 = False
+    if (
+      self.derisk_enable
+      and self.grinding_v2_derisk_level_3_enable
+      and (not is_derisk_3_found)
+      and not is_rebuy_mode
+      and (trade.get_custom_data(key="grinding_v2_derisk_level_3_flag") is True)
+    ):
+      flag_profit = trade.get_custom_data(key="grinding_v2_derisk_level_3_profit")
+      flag_time = datetime.fromisoformat(trade.get_custom_data(key="grinding_v2_derisk_level_3_time"))
+      if current_time - timedelta(hours=12) > flag_time:
+        if profit_stake > flag_profit:
+          trade.set_custom_data(key="grinding_v2_derisk_level_3_flag", value=None)
+        else:
+          flag_is_derisk_level_3 = True
+
     if (
       self.derisk_enable
       and self.grinding_v2_derisk_level_3_enable
       and (not is_derisk_3_found)
       and not is_rebuy_mode
       and (
-        profit_stake
-        < (
-          slice_amount
-          * (self.grinding_v2_derisk_level_3_futures if self.is_futures_mode else self.grinding_v2_derisk_level_3_spot)
+        flag_is_derisk_level_3
+        or (
+          profit_stake
+          < (
+            slice_amount
+            * (
+              self.grinding_v2_derisk_level_3_futures[1]
+              if self.is_futures_mode
+              else self.grinding_v2_derisk_level_3_spot[1]
+            )
+          )
+          / trade.leverage
         )
-        / trade.leverage
       )
     ):
       sell_amount = (
