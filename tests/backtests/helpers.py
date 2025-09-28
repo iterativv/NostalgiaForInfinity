@@ -159,11 +159,20 @@ class Backtest:
       txt_path.write_text(ret.stdout.strip())
 
     # ---- Return structured BacktestResults ----
-    return BacktestResults(
+    backtest_results = BacktestResults(
       stdout=ret.stdout.strip(),
       stderr=ret.stderr.strip(),
       raw_data=results_data,
     )
+
+    # ---- Write CI JSON summary ----
+    if self.request.config.option.artifacts_path:
+      ci_json_path = artifacts_path / f"ci-results-{exchange}-{trading_mode}-{start_date}-{end_date}.json"
+      summary = {f"{start_date}-{end_date}": backtest_results._stats_pct}
+      ci_json_path.write_text(json.dumps(summary))
+
+    backtest_results.log_info()
+    return backtest_results
 
 
 @attr.s(frozen=True)
