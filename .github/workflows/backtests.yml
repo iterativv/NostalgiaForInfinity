@@ -38,19 +38,18 @@ jobs:
       - uses: actions/checkout@v5
       - name: Pull docker image
         run: |
-          docker pull ghcr.io/${{ github.actor }}/ci-strategy-backtesting:latest
+          docker pull ghcr.io/iterativv/ci-strategy-backtesting:latest
 
       - name: Pull Market data and copy to user_data/data
         run: |
-          docker pull ghcr.io/${{ github.actor }}/market-data:kucoin-spot
+          docker pull ghcr.io/iterativv/market-data:kucoin-spot
           mkdir -p user_data/data
-          docker run --rm -v "$PWD/user_data/data:/host_data" ghcr.io/${{ github.actor }}/market-data:kucoin-spot \
+          docker run --rm -v "$PWD/user_data/data:/host_data" ghcr.io/iterativv/market-data:kucoin-spot \
             bash -c "cp -r /data/* /host_data/"
 
       - name: Run Backtests
         run: |
           mkdir -p artifacts && chmod 777 artifacts
-          tree
           export COLUMNS=240
           docker run -v "$PWD:/testing" \
             -v "$PWD/user_data/data:/testing/user_data/data" \
@@ -60,7 +59,7 @@ jobs:
             -e "COLUMNS=240" \
             -t \
             --env-file .github/workflows/scripts/ci-proxy.env \
-            ghcr.io/${{ github.actor }}/ci-strategy-backtesting:latest \
+            ghcr.io/iterativv/ci-strategy-backtesting:latest \
             python -m pytest \
             tests/backtests \
             -ra -vv -s \
@@ -117,13 +116,13 @@ jobs:
 
       - name: Pull docker image
         run: |
-          docker pull ghcr.io/${{ github.actor }}/ci-strategy-backtesting:latest
+          docker pull ghcr.io/iterativv/ci-strategy-backtesting:latest
 
       - name: Pull Market data and copy to user_data/data
         run: |
-          docker pull ghcr.io/${{ github.actor }}/market-data:binance-spot
+          docker pull ghcr.io/iterativv/market-data:binance-spot
           mkdir -p user_data/data
-          docker run --rm -v "$PWD/user_data/data:/host_data" ghcr.io/${{ github.actor }}/market-data:binance-spot \
+          docker run --rm -v "$PWD/user_data/data:/host_data" ghcr.io/iterativv/market-data:binance-spot \
             bash -c "cp -r /data/* /host_data/"
 
       - name: Run Backtests
@@ -138,7 +137,7 @@ jobs:
             -e "COLUMNS=240" \
             -t \
             --env-file .github/workflows/scripts/ci-proxy.env \
-            ghcr.io/${{ github.actor }}/ci-strategy-backtesting:latest \
+            ghcr.io/iterativv/ci-strategy-backtesting:latest \
             python -m pytest \
             tests/backtests \
             -ra -vv -s \
@@ -195,13 +194,13 @@ jobs:
 
       - name: Pull docker image
         run: |
-          docker pull ghcr.io/${{ github.actor }}/ci-strategy-backtesting:latest
+          docker pull ghcr.io/iterativv/ci-strategy-backtesting:latest
 
       - name: Pull Market data and copy to user_data/data
         run: |
-          docker pull ghcr.io/${{ github.actor }}/market-data:binance-futures
+          docker pull ghcr.io/iterativv/market-data:binance-futures
           mkdir -p user_data/data
-          docker run --rm -v "$PWD/user_data/data:/host_data" ghcr.io/${{ github.actor }}/market-data:binance-futures \
+          docker run --rm -v "$PWD/user_data/data:/host_data" ghcr.io/iterativv/market-data:binance-futures \
             bash -c "cp -r /data/* /host_data/"
 
       - name: Run Backtests
@@ -216,7 +215,7 @@ jobs:
             -e "COLUMNS=240" \
             -t \
             --env-file .github/workflows/scripts/ci-proxy.env \
-            ghcr.io/${{ github.actor }}/ci-strategy-backtesting:latest \
+            ghcr.io/iterativv/ci-strategy-backtesting:latest \
             python -m pytest \
             tests/backtests \
             -ra -vv -s \
