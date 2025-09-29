@@ -186,7 +186,7 @@ jobs:
       - uses: actions/checkout@v5
       - name: Inject Proxy Config
         env:
-          PROXY: ${{ secrets.FREQTRADE_PROXY }}
+          PROXY: ${{ secrets.FREQTRADE_PROXY2 }}
         run: |
           jq --arg proxy "$PROXY" \
             '.exchange.ccxt_config = { http_proxy: $proxy }' \
