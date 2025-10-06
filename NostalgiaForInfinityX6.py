@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.8.102"
+    return "v16.8.103"
 
   stoploss = -0.99
 
@@ -38285,7 +38285,7 @@ class NostalgiaForInfinityX6(IStrategy):
           or ((is_derisk or is_derisk_calc) and grind_1_derisk_1_sub_grind_count == 0)
         )
         and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
-        and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
+        and ((current_time - timedelta(hours=24) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
         and (
           (num_open_grinds == 0)
           or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -38436,7 +38436,7 @@ class NostalgiaForInfinityX6(IStrategy):
           or ((is_derisk or is_derisk_calc) and grind_2_derisk_1_sub_grind_count == 0)
         )
         and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
-        and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
+        and ((current_time - timedelta(hours=24) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
         and (
           (num_open_grinds == 0)
           or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -38578,7 +38578,7 @@ class NostalgiaForInfinityX6(IStrategy):
           or (is_grind_mode and grind_1_sub_grind_count == 0)
         )
         and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
-        and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
+        and ((current_time - timedelta(hours=24) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
         and (
           (num_open_grinds == 0)
           or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -38761,7 +38761,7 @@ class NostalgiaForInfinityX6(IStrategy):
           or (is_grind_mode and grind_2_sub_grind_count == 0)
         )
         and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
-        and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
+        and ((current_time - timedelta(hours=24) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
         and (
           (num_open_grinds == 0)
           or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -38901,7 +38901,7 @@ class NostalgiaForInfinityX6(IStrategy):
           or (is_grind_mode and grind_3_sub_grind_count == 0)
         )
         and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
-        and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
+        and ((current_time - timedelta(hours=24) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
         and (
           (num_open_grinds == 0)
           or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -39041,7 +39041,7 @@ class NostalgiaForInfinityX6(IStrategy):
           or (is_grind_mode and grind_4_sub_grind_count == 0)
         )
         and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
-        and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
+        and ((current_time - timedelta(hours=24) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
         and (
           (num_open_grinds == 0)
           or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -39181,7 +39181,7 @@ class NostalgiaForInfinityX6(IStrategy):
           or (is_grind_mode and grind_5_sub_grind_count == 0)
         )
         and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
-        and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
+        and ((current_time - timedelta(hours=24) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
         and (
           (num_open_grinds == 0)
           or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -39321,7 +39321,7 @@ class NostalgiaForInfinityX6(IStrategy):
           or (is_grind_mode and grind_6_sub_grind_count == 0)
         )
         and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
-        and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
+        and ((current_time - timedelta(hours=24) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
         and (
           (num_open_grinds == 0)
           or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -39467,7 +39467,7 @@ class NostalgiaForInfinityX6(IStrategy):
     ):
       if (
         (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
-        and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
+        and ((current_time - timedelta(hours=24) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
         and (
           (num_open_grinds == 0)
           or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -62346,7 +62346,7 @@ class NostalgiaForInfinityX6(IStrategy):
           or ((is_derisk or is_derisk_calc) and grind_1_derisk_1_sub_grind_count == 0)
         )
         and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
-        and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
+        and ((current_time - timedelta(hours=24) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
         and (
           (num_open_grinds == 0)
           or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -62497,7 +62497,7 @@ class NostalgiaForInfinityX6(IStrategy):
           or ((is_derisk or is_derisk_calc) and grind_2_derisk_1_sub_grind_count == 0)
         )
         and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
-        and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
+        and ((current_time - timedelta(hours=24) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
         and (
           (num_open_grinds == 0)
           or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -62639,7 +62639,7 @@ class NostalgiaForInfinityX6(IStrategy):
           or (is_grind_mode and grind_1_sub_grind_count == 0)
         )
         and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
-        and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
+        and ((current_time - timedelta(hours=24) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
         and (
           (num_open_grinds == 0)
           or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -62822,7 +62822,7 @@ class NostalgiaForInfinityX6(IStrategy):
           or (is_grind_mode and grind_2_sub_grind_count == 0)
         )
         and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
-        and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
+        and ((current_time - timedelta(hours=24) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
         and (
           (num_open_grinds == 0)
           or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -62962,7 +62962,7 @@ class NostalgiaForInfinityX6(IStrategy):
           or (is_grind_mode and grind_3_sub_grind_count == 0)
         )
         and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
-        and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
+        and ((current_time - timedelta(hours=24) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
         and (
           (num_open_grinds == 0)
           or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -63102,7 +63102,7 @@ class NostalgiaForInfinityX6(IStrategy):
           or (is_grind_mode and grind_4_sub_grind_count == 0)
         )
         and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
-        and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
+        and ((current_time - timedelta(hours=24) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
         and (
           (num_open_grinds == 0)
           or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -63242,7 +63242,7 @@ class NostalgiaForInfinityX6(IStrategy):
           or (is_grind_mode and grind_5_sub_grind_count == 0)
         )
         and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
-        and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
+        and ((current_time - timedelta(hours=24) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
         and (
           (num_open_grinds == 0)
           or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -63382,7 +63382,7 @@ class NostalgiaForInfinityX6(IStrategy):
           or (is_grind_mode and grind_6_sub_grind_count == 0)
         )
         and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
-        and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
+        and ((current_time - timedelta(hours=24) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
         and (
           (num_open_grinds == 0)
           or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -63528,7 +63528,7 @@ class NostalgiaForInfinityX6(IStrategy):
     ):
       if (
         (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
-        and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
+        and ((current_time - timedelta(hours=24) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
         and (
           (num_open_grinds == 0)
           or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
