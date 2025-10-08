@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.8.110"
+    return "v16.8.111"
 
   stoploss = -0.99
 
@@ -35787,7 +35787,7 @@ class NostalgiaForInfinityX6(IStrategy):
     ):
       flag_profit = trade.get_custom_data(key="grinding_v2_derisk_level_1_profit")
       flag_time = datetime.fromisoformat(trade.get_custom_data(key="grinding_v2_derisk_level_1_time"))
-      if current_time - timedelta(hours=24) > flag_time:
+      if current_time - timedelta(hours=48) > flag_time:
         if profit_stake > flag_profit:
           trade.set_custom_data(key="grinding_v2_derisk_level_1_flag", value=None)
         else:
@@ -35884,7 +35884,7 @@ class NostalgiaForInfinityX6(IStrategy):
     ):
       flag_profit = trade.get_custom_data(key="grinding_v2_derisk_level_2_profit")
       flag_time = datetime.fromisoformat(trade.get_custom_data(key="grinding_v2_derisk_level_2_time"))
-      if current_time - timedelta(hours=24) > flag_time:
+      if current_time - timedelta(hours=48) > flag_time:
         if profit_stake > flag_profit:
           trade.set_custom_data(key="grinding_v2_derisk_level_2_flag", value=None)
         else:
@@ -35981,7 +35981,7 @@ class NostalgiaForInfinityX6(IStrategy):
     ):
       flag_profit = trade.get_custom_data(key="grinding_v2_derisk_level_3_profit")
       flag_time = datetime.fromisoformat(trade.get_custom_data(key="grinding_v2_derisk_level_3_time"))
-      if current_time - timedelta(hours=24) > flag_time:
+      if current_time - timedelta(hours=48) > flag_time:
         if profit_stake > flag_profit:
           trade.set_custom_data(key="grinding_v2_derisk_level_3_flag", value=None)
         else:
@@ -59866,7 +59866,7 @@ class NostalgiaForInfinityX6(IStrategy):
     ):
       flag_profit = trade.get_custom_data(key="grinding_v2_derisk_level_1_profit")
       flag_time = datetime.fromisoformat(trade.get_custom_data(key="grinding_v2_derisk_level_1_time"))
-      if current_time - timedelta(hours=24) > flag_time:
+      if current_time - timedelta(hours=48) > flag_time:
         if profit_stake > flag_profit:
           trade.set_custom_data(key="grinding_v2_derisk_level_1_flag", value=None)
         else:
@@ -59963,7 +59963,7 @@ class NostalgiaForInfinityX6(IStrategy):
     ):
       flag_profit = trade.get_custom_data(key="grinding_v2_derisk_level_2_profit")
       flag_time = datetime.fromisoformat(trade.get_custom_data(key="grinding_v2_derisk_level_2_time"))
-      if current_time - timedelta(hours=24) > flag_time:
+      if current_time - timedelta(hours=48) > flag_time:
         if profit_stake > flag_profit:
           trade.set_custom_data(key="grinding_v2_derisk_level_2_flag", value=None)
         else:
@@ -60060,7 +60060,7 @@ class NostalgiaForInfinityX6(IStrategy):
     ):
       flag_profit = trade.get_custom_data(key="grinding_v2_derisk_level_3_profit")
       flag_time = datetime.fromisoformat(trade.get_custom_data(key="grinding_v2_derisk_level_3_time"))
-      if current_time - timedelta(hours=24) > flag_time:
+      if current_time - timedelta(hours=48) > flag_time:
         if profit_stake > flag_profit:
           trade.set_custom_data(key="grinding_v2_derisk_level_3_flag", value=None)
         else:
