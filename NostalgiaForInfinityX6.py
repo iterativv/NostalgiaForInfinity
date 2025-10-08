@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.8.121"
+    return "v16.8.122"
 
   stoploss = -0.99
 
@@ -4071,17 +4071,18 @@ class NostalgiaForInfinityX6(IStrategy):
         | (df["AROONU_14_4h"] < 80.0)
         | (df["STOCHRSIk_14_14_3_3_4h"] < 70.0)
       )
-      # 15m & 1h & 4h & 1d down move, 15m & 1 & 4h still not low enough, 1h still high, 4h high
+      # 15m & 1h & 4h down move, 1h & 4h still not low enough, 1h & 4h downtrend, 15m & 1h & 4h still not low enough
       & (
         (df["RSI_3_15m"] > 10.0)
-        | (df["RSI_3_1h"] > 35.0)
-        | (df["RSI_3_4h"] > 35.0)
-        | (df["RSI_3_1d"] > 35.0)
-        | (df["RSI_14_15m"] < 30.0)
-        | (df["RSI_14_1h"] < 30.0)
-        | (df["RSI_14_4h"] < 30.0)
-        | (df["STOCHRSIk_14_14_3_3_1h"] < 40.0)
-        | (df["STOCHRSIk_14_14_3_3_4h"] < 60.0)
+        | (df["RSI_3_1h"] > 20.0)
+        | (df["RSI_3_4h"] > 20.0)
+        | (df["RSI_14_1h"] < 20.0)
+        | (df["RSI_14_4h"] < 20.0)
+        | (df["CMF_20_1h"] > -0.15)
+        | (df["CMF_20_4h"] > -0.20)
+        | (df["AROONU_14_15m"] < 25.0)
+        | (df["STOCHRSIk_14_14_3_3_1h"] < 30.0)
+        | (df["STOCHRSIk_14_14_3_3_4h"] < 30.0)
       )
       # 15m & 1h & 4h down move, 1h still not low enough, 4h still high, 1h downtrend, 1d overbought
       & (
@@ -4250,6 +4251,18 @@ class NostalgiaForInfinityX6(IStrategy):
         | (df["RSI_14_1h"] < 35.0)
         | (df["STOCHRSIk_14_14_3_3_15m"] < 30.0)
         | (df["STOCHRSIk_14_14_3_3_4h"] < 85.0)
+      )
+      # 15m & 1h & 4h & 1d down move, 15m & 1 & 4h still not low enough, 1h still high, 4h high
+      & (
+        (df["RSI_3_15m"] > 10.0)
+        | (df["RSI_3_1h"] > 35.0)
+        | (df["RSI_3_4h"] > 35.0)
+        | (df["RSI_3_1d"] > 35.0)
+        | (df["RSI_14_15m"] < 30.0)
+        | (df["RSI_14_1h"] < 30.0)
+        | (df["RSI_14_4h"] < 30.0)
+        | (df["STOCHRSIk_14_14_3_3_1h"] < 40.0)
+        | (df["STOCHRSIk_14_14_3_3_4h"] < 60.0)
       )
       # 15m & 1h & 4h down move, 15m still not low enough, 1h still high, 4h high & overbought
       & (
