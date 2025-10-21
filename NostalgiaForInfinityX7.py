@@ -69,7 +69,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.0.2"
+    return "v17.0.3"
 
   stoploss = -0.99
 
@@ -2299,11 +2299,12 @@ class NostalgiaForInfinityX7(IStrategy):
         any(c in self.short_rebuy_mode_tags for c in enter_tags)
         and all(c in (self.short_rebuy_mode_tags + self.short_grind_mode_tags) for c in enter_tags)
       ):
-        stake_multiplier = self.rebuy_mode_stake_multiplier
-        # Low stakes, on Binance mostly
-        if (proposed_stake * self.rebuy_mode_stake_multiplier) < min_stake:
-          stake_multiplier = self.rebuy_mode_stake_multiplier_alt
-        return proposed_stake * stake_multiplier
+        stake_multiplier = self.system_v3_rebuy_mode_stake_multiplier
+        stake = proposed_stake * stake_multiplier
+        if stake > min_stake:
+          return stake
+        else:
+          return min_stake
       # Grind mode
       elif all(c in self.short_grind_mode_tags for c in enter_tags):
         for _, item in enumerate(
