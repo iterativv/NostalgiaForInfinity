@@ -84,10 +84,10 @@ if [ ! -f "$CONFIG_FILE" ]; then
     log "Config file not found. Creating a new one at $CONFIG_FILE."
 
     # Prompt user for configuration values
-    echo "Enter strategy files (default: NostalgiaForInfinityX6.py)."
+    echo "Enter strategy files (default: NostalgiaForInfinityX7.py)."
     echo "You can use commas, spaces, or press Enter to accept the default value:"
     read -p "Strategy files: " strategy_file
-    strategy_file=${strategy_file:-NostalgiaForInfinityX6.py}
+    strategy_file=${strategy_file:-NostalgiaForInfinityX7.py}
     validate_file_extension "$strategy_file" ".py" || { log "Invalid strategy file extension."; exit 1; }
 
     echo "Enter blacklist file(s) (default: blacklist-binance.json)."

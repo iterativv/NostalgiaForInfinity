@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'NostalgiaForInfinityX6.py'
+      - 'NostalgiaForInfinityX7.py'
 
 jobs:
   # Backtest Jobs
