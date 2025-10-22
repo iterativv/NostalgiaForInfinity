@@ -69,7 +69,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.0.13"
+    return "v17.0.14"
 
   stoploss = -0.99
 
@@ -495,18 +495,18 @@ class NostalgiaForInfinityX7(IStrategy):
   system_v3_derisk_level_1_enable = True
   system_v3_derisk_level_1_spot = [-0.04, -0.06]
   system_v3_derisk_level_1_futures = [-0.12, -0.18]
-  system_v3_derisk_level_1_stake_spot = 0.20
-  system_v3_derisk_level_1_stake_futures = 0.20
+  system_v3_derisk_level_1_stake_spot = 0.10
+  system_v3_derisk_level_1_stake_futures = 0.10
   system_v3_derisk_level_2_enable = True
   system_v3_derisk_level_2_spot = [-0.06, -0.08]
   system_v3_derisk_level_2_futures = [-0.18, -0.24]
-  system_v3_derisk_level_2_stake_spot = 0.20
-  system_v3_derisk_level_2_stake_futures = 0.20
+  system_v3_derisk_level_2_stake_spot = 0.10
+  system_v3_derisk_level_2_stake_futures = 0.10
   system_v3_derisk_level_3_enable = True
   system_v3_derisk_level_3_spot = [-0.08, -0.10]
   system_v3_derisk_level_3_futures = [-0.24, -0.30]
-  system_v3_derisk_level_3_stake_spot = 0.20
-  system_v3_derisk_level_3_stake_futures = 0.20
+  system_v3_derisk_level_3_stake_spot = 0.10
+  system_v3_derisk_level_3_stake_futures = 0.10
 
   system_v3_grind_1_enable = True
   system_v3_grind_1_stakes_spot = [0.20]
