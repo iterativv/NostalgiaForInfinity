@@ -1007,7 +1007,7 @@ class NostalgiaForInfinityX7(IStrategy):
       if not is_derisk:
         is_derisk = trade.amount < (filled_entries[0].safe_filled * 0.95)
     if previous_sell_reason in [f"exit_{mode_name}_stoploss_doom", f"exit_{mode_name}_stoploss"]:
-      # return right away for system v2
+      # return right away for system v3
       if is_system_v3:
         return True, previous_sell_reason
 
