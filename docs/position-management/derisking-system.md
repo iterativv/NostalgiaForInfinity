@@ -88,23 +88,33 @@ Strategy->>Strategy : Adjust stop-loss to trailing mode
 The derisking system is controlled by several configurable parameters that allow traders to customize the risk management behavior according to their risk tolerance and market outlook.
 
 ### Key Configuration Parameters
-- **derisk_threshold**: The profit percentage at which derisking mode is activated
-- **derisk_percent**: The percentage of position to close when derisking is triggered
-- **derisk_timeout**: The time window during which derisking conditions must be met
-- **derisk_enable**: Boolean flag to enable or disable the derisking system
+- **derisk_enable**: Boolean flag to enable or disable the derisking system (default: `True`)
+- **regular_mode_derisk_spot/futures**: The negative profit threshold at which derisking is triggered for normal mode trades
+- **grinding_v2_derisk_level_1/2/3_spot/futures**: Multi-level derisking thresholds for grinding positions
+- **rebuy_mode_derisk_spot/futures**: Derisking threshold for rebuy mode trades
+
+**Note:** The derisking system does not use standalone `derisk_threshold`, `derisk_percent`, or `derisk_timeout` parameters. Instead, it uses mode-specific profit/loss thresholds and calculates partial exit amounts dynamically based on position size and minimum stake requirements.
 
 ### Mode-Specific Parameters
 The system uses different derisking parameters for various trading modes:
 
-| Mode | derisk_threshold | derisk_percent | derisk_stop_level |
-|------|------------------|----------------|-------------------|
-| Normal | 0.018 (1.8%) | 20-30% | -0.24 (spot), -0.60 (futures) |
-| Rebuy | 0.018 (1.8%) | 100% | -0.60 (both spot and futures) |
-| Grind | 0.018 (1.8%) | Variable | -0.20 (spot), -0.20 (futures) |
-| Rapid | 0.028 (2.8%) | 20-23% | -0.18 (both spot and futures) |
-| Scalp | 0.05 (5.0%) | 5-11% | -0.05 (both spot and futures) |
+| Mode | Profit Threshold (for grinding) | Derisk Stop Level |
+|------|--------------------------------|-------------------|
+| Normal | 0.018 (1.8%) | -0.24 (spot), -0.60 (futures) |
+| Rebuy | N/A | -0.60 (both spot and futures) |
+| Grind (v1) | 0.018 (1.8%) | -0.50 (both) |
+| Grind (v2) Level 1 | N/A | [-0.06, -0.15] (spot), [-0.18, -0.35] (futures) |
+| Grind (v2) Level 2 | N/A | [-0.08, -0.18] (spot), [-0.16, -0.54] (futures) |
+| Grind (v2) Level 3 | N/A | [-0.10, -0.20] (spot), [-0.30, -0.60] (futures) |
+| Rapid | 0.028 (2.8%) | N/A (uses regular mode derisk) |
+| Scalp | 0.05 (5.0%) | -0.05 (both spot and futures) |
 
-These parameters are defined in the strategy class and can be overridden in the configuration file, allowing for fine-tuning based on market conditions and risk preferences.
+**Note:**
+- Profit thresholds are used to determine when to stop adding more grinds, not for derisking activation
+- Derisk stop levels are negative values indicating loss thresholds at which partial exits occur
+- Grinding v2 uses multi-level derisking with two thresholds per level (first triggers flag, second triggers sell)
+
+These parameters are defined in the strategy class (L206-L488) and can be overridden in the configuration file, allowing for fine-tuning based on market conditions and risk preferences.
 
 **Section sources**
 - [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L206-L362)
@@ -171,30 +181,60 @@ def long_adjust_trade_position_no_derisk(self, trade: Trade, current_time: datet
     pass
 ```
 
-### Derisk Price Calculation
-The derisk_price is calculated based on the entry price, current profit, and various thresholds:
+### Derisk Trigger Calculation
+The derisking system triggers when profit_stake falls below the calculated derisk threshold:
 
 ```python
-# Example calculation logic
-derisk_price = current_entry_rate * (1 + derisk_threshold)
-if current_rate >= derisk_price:
-    # Activate derisk mode
-    self.activate_derisk_mode(trade, current_rate, current_profit)
+# Actual implementation from long_adjust_trade_position_no_derisk (L40676-40691)
+if (
+  self.derisk_enable
+  and (
+    profit_stake
+    < (
+      slice_amount
+      * (
+        (self.regular_mode_derisk_futures if self.is_futures_mode
+         else self.regular_mode_derisk_spot)
+        if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
+        else (self.regular_mode_derisk_futures_old if self.is_futures_mode
+              else self.regular_mode_derisk_spot_old)
+      )
+      / trade.leverage
+    )
+  )
+):
+    # Calculate partial sell amount
+    sell_amount = trade.amount * exit_rate / trade.leverage - (min_stake * 1.55)
+    ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
+
+    if sell_amount > min_stake and ft_sell_amount > min_stake:
+        # Execute partial exit with "d" tag
+        return -ft_sell_amount, "d", is_derisk
 ```
 
-### Dynamic Stop-Loss Adjustment
-The stop-loss is dynamically adjusted based on the highest price reached:
+### Multi-Level Derisking (Grinding v2)
+Grinding v2 implements a sophisticated multi-level derisking system:
 
 ```python
-# Trailing stop logic
-if hasattr(trade, 'highest_price') and trade.highest_price > current_entry_rate:
-    trailing_stop_price = trade.highest_price * (1 - trailing_offset)
-    if current_rate <= trailing_stop_price:
-        # Trigger exit
-        return True
+# Level 1 derisking (L35271-35291 for long trades)
+if (
+  self.derisk_enable
+  and self.grinding_v2_derisk_level_1_enable
+  and (trade.get_custom_data(key="grinding_v2_derisk_level_1_flag") is None)
+  and profit_stake
+  < (
+    slice_amount
+    * (self.grinding_v2_derisk_level_1_futures[0] if self.is_futures_mode
+       else self.grinding_v2_derisk_level_1_spot[0])
+  )
+):
+    # Set flag to track that level 1 threshold has been crossed
+    trade.set_custom_data(key="grinding_v2_derisk_level_1_flag", value=True)
+    trade.set_custom_data(key="grinding_v2_derisk_level_1_profit", value=profit_stake)
+    trade.set_custom_data(key="grinding_v2_derisk_level_1_time", value=current_time.isoformat())
 ```
 
-The implementation also considers various trading modes and their specific parameters, ensuring that derisking behavior is appropriate for the current market context.
+The implementation considers various trading modes and their specific parameters, ensuring that derisking behavior is appropriate for the current market context.
 
 **Section sources**
 - [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L39297-L40760) - long_adjust_trade_position_no_derisk method
