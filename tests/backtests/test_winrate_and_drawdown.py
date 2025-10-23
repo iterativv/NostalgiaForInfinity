@@ -1,3 +1,41 @@
+"""Winrate and Drawdown Tests for NostalgiaForInfinity Strategy
+
+This module contains comprehensive tests for validating strategy performance
+across different exchanges, trading modes, and time periods.
+
+TEST PARAMETERS:
+- Exchanges: Binance, KuCoin (Gate.io and OKX commented for performance)
+- Trading Modes: Spot, Futures
+- Time Periods: Monthly tests from 2024-2025
+- Expected Winrate: ≥85% (Binance, KuCoin)
+- Expected Max Drawdown: ≤15%
+
+RUN COMMANDS:
+  # Run all tests
+  python -m pytest tests/backtests/test_winrate_and_drawdown.py -v
+
+  # Run specific exchange
+  python -m pytest tests/backtests/test_winrate_and_drawdown.py::test_expected_values[binance] -v
+
+  # Run specific trading mode
+  python -m pytest tests/backtests/test_winrate_and_drawdown.py -k "futures" -v
+
+  # Stop on first failure
+  python -m pytest tests/backtests/test_winrate_and_drawdown.py -x
+
+PREREQUISITES:
+  1. Download data first:
+     ./tools/download-necessary-exchange-market-data-for-backtests.sh
+
+  2. Ensure virtual environment is active:
+     source ../freqtrade/.venv/bin/activate
+
+EXPECTED RESULTS:
+  - All tests should pass with winrate ≥85% and drawdown ≤15%
+  - Tests with 0 trades are considered passing
+  - Deviations can be configured per exchange/timerange
+"""
+
 import os.path
 
 import pytest
