@@ -4,7 +4,7 @@ Trading strategy for the [Freqtrade](https://www.freqtrade.io) crypto bot. For b
 
 ## General Recommendations
 
-For optimal performance, suggested to use between 4 and 6 open trades, with unlimited stake.
+For optimal performance, suggested to use between 6 and 12 open trades, with unlimited stake.
 
 A pairlist with 40 to 80 pairs. Volume pairlist works well.
 
