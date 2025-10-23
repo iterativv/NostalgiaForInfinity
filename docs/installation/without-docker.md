@@ -112,7 +112,7 @@ cp configs/exampleconfig_secret.json user_data/private_config.json
   // copy configs/exampleconfig_secret.json to user_data/config-private.json
   // Change     "dry_run": true, to     "dry_run": false, after testing
 
-  "strategy": "NostalgiaForInfinityX5",
+  "strategy": "NostalgiaForInfinityX6",
   "add_config_files": [
     "../configs/trading_mode-spot.json",
     "../configs/pairlist-volume-binance-usdt.json",
