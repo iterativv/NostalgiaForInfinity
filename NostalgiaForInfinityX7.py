@@ -69,7 +69,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.0.40"
+    return "v17.0.41"
 
   stoploss = -0.99
 
@@ -119,7 +119,7 @@ class NostalgiaForInfinityX7(IStrategy):
   # Long Quick mode tags
   long_quick_mode_tags = ["41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53"]
   # Long rebuy mode tags
-  long_rebuy_mode_tags = ["61", "62"]
+  long_rebuy_mode_tags = ["61", "62", "63"]
   # Long high profit mode tags
   long_high_profit_mode_tags = ["81", "82"]
   # Long rapid mode tags
@@ -733,6 +733,7 @@ class NostalgiaForInfinityX7(IStrategy):
     "long_entry_condition_46_enable": True,
     "long_entry_condition_61_enable": True,
     "long_entry_condition_62_enable": True,
+    "long_entry_condition_63_enable": True,
     "long_entry_condition_101_enable": True,
     "long_entry_condition_102_enable": True,
     "long_entry_condition_103_enable": True,
@@ -15538,6 +15539,88 @@ class NostalgiaForInfinityX7(IStrategy):
           long_entry_logic.append(df["STOCHRSIk_14_14_3_3_1h"] < 30.0)
           long_entry_logic.append(df["BBB_20_2.0_1h"] > 12.0)
           long_entry_logic.append(df["close_max_48"] >= (df["close"] * 1.12))
+
+        # Condition #63 - Rebuy mode (Long).
+        if long_entry_condition_index == 63:
+          # Protections
+          long_entry_logic.append(df["num_empty_288"] <= allowed_empty_candles_288)
+          long_entry_logic.append(df["protections_long_global"] == True)
+
+          long_entry_logic.append(
+            (df["RSI_3_15m"] > 5.0)
+            # 15m & 1h down move, 4h still high
+            & ((df["RSI_3_15m"] > 10.0) | (df["RSI_3_1h"] > 20.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 50.0))
+            # 15m & 1h down move, 15m still high
+            & ((df["RSI_3_15m"] > 10.0) | (df["RSI_3_1h"] > 30.0) | (df["AROONU_14_15m"] < 50.0))
+            # 15m down move, 15m still high, 4h high
+            & ((df["RSI_3_15m"] > 10.0) | (df["AROONU_14_15m"] < 50.0) | (df["AROONU_14_4h"] < 80.0))
+            # 15m & 1h & 4h down move
+            & ((df["RSI_3_15m"] > 15.0) | (df["RSI_3_1h"] > 15.0) | (df["RSI_3_4h"] > 15.0))
+            # 15m down move, 15m still not low enough, 1h still high
+            & (
+              (df["RSI_3_15m"] > 15.0) | (df["STOCHRSIk_14_14_3_3_15m"] < 30.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 50.0)
+            )
+            # 15m down move, 1h high
+            & ((df["RSI_3_15m"] > 20.0) | (df["AROONU_14_1h"] < 75.0))
+            # 15m down move, 4h overbought
+            & ((df["RSI_3_15m"] > 20.0) | (df["ROC_9_4h"] < 40.0))
+            # 15m down move, 4h high
+            & ((df["RSI_3_15m"] > 30.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 90.0))
+            # 15m still high, 4h high
+            & ((df["RSI_3_15m"] < 40.0) | (df["AROONU_14_4h"] < 85.0))
+            # 1h down move, 1h still not low enough
+            & ((df["RSI_3_1h"] > 3.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 30.0))
+            # 1h & 4h down move, 4h still not low enough
+            & ((df["RSI_3_1h"] > 10.0) | (df["RSI_3_4h"] > 10.0) | (df["AROONU_14_4h"] < 30.0))
+            # 1h & 4h down move, 4h still high
+            & ((df["RSI_3_1h"] > 10.0) | (df["RSI_3_4h"] > 30.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 50.0))
+            # 1h down move, 1h downtrend, 1h still not low enough
+            & ((df["RSI_3_1h"] > 10.0) | (df["CMF_20_1h"] > -0.20) | (df["AROONU_14_1h"] < 30.0))
+            # 1h down move, 1h downtrend
+            & ((df["RSI_3_1h"] > 10.0) | (df["CMF_20_1h"] > -0.30))
+            # 1h down move, 1d overbought
+            & ((df["RSI_3_1h"] > 10.0) | (df["ROC_9_1d"] < 200.0))
+            # 1h & 4h down move, 1h still not low enough
+            & ((df["RSI_3_1h"] > 15.0) | (df["RSI_3_4h"] > 15.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 30.0))
+            # 1h down move, 1h still high
+            & ((df["RSI_3_1h"] > 15.0) | (df["AROONU_14_1h"] < 50.0))
+            # 1h down move, 1h still high
+            & ((df["RSI_3_1h"] > 15.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 50.0))
+            # 1h down move, 4h still high
+            & ((df["RSI_3_1h"] > 20.0) | (df["AROONU_14_4h"] < 40.0))
+            # 1h down move, 1h still not low enough, 4h still high
+            & ((df["RSI_3_1h"] > 25.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 30.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 50.0))
+            # 1h & 4h down move, 1h high
+            & ((df["RSI_3_1h"] > 30.0) | (df["RSI_3_4h"] > 30.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 60.0))
+            # 1h & 4h down move, 4h still high
+            & ((df["RSI_3_1h"] > 30.0) | (df["RSI_3_4h"] > 30.0) | (df["AROONU_14_4h"] < 50.0))
+            # 1h down move, 1h high
+            & ((df["RSI_3_1h"] > 30.0) | (df["AROONU_14_1h"] < 80.0))
+            # 1h down move, 1h & 4h still high
+            & ((df["RSI_3_1h"] > 30.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 40.0) | (df["STOCHRSIk_14_14_3_3_4h"] < 50.0))
+            # 4h down move, 1h high
+            & ((df["RSI_3_4h"] > 10.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 70.0))
+            # 4h down move, 15m still high
+            & ((df["RSI_3_4h"] > 20.0) | (df["AROONU_14_15m"] < 45.0))
+            # 15m still high, 1h overbought
+            & ((df["AROONU_14_15m"] < 40.0) | (df["ROC_9_1h"] < 40.0))
+            # 15m still high, 4h overbought
+            & ((df["AROONU_14_15m"] < 40.0) | (df["ROC_9_4h"] < 80.0))
+            # 15m still high, 1h high
+            & ((df["AROONU_14_15m"] < 50.0) | (df["AROONU_14_1h"] < 85.0))
+            # 1h & 4h overbought
+            & ((df["ROC_9_1h"] < 30.0) | (df["ROC_9_4h"] < 80.0))
+          )
+
+          # Logic
+          long_entry_logic.append(
+            (df["RSI_3"] > 0.0)
+            & (df["RSI_3"] < 50.0)
+            & (df["AROONU_14"] < 25.0)
+            & (df["EMA_26"] > df["EMA_12"])
+            & ((df["EMA_26"] - df["EMA_12"]) > (df["open"] * 0.022))
+            & ((df["EMA_26"].shift() - df["EMA_12"].shift()) > (df["open"] / 100.0))
+          )
 
         # Condition #101 - Rapid mode (Long).
         if long_entry_condition_index == 101:
