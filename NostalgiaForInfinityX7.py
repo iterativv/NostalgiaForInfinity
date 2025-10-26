@@ -69,7 +69,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.0.47"
+    return "v17.1.0"
 
   stoploss = -0.99
 
@@ -480,8 +480,11 @@ class NostalgiaForInfinityX7(IStrategy):
 
   # System v3
   system_v3_name = "system_v3"
+  system_v3_1_name = "system_v3_1"
+  system_name_use = system_v3_1_name
 
   system_v3_max_stake = 1.0  # ratio of first entry
+  system_v3_1_max_stake = 3.0  # ratio of first entry
 
   system_v3_stop_threshold_doom_spot = 0.14
   system_v3_stop_threshold_doom_futures = 0.35
@@ -491,6 +494,21 @@ class NostalgiaForInfinityX7(IStrategy):
   system_v3_stop_threshold_rapid_futures = 0.35
   system_v3_stop_threshold_scalp_spot = 0.14
   system_v3_stop_threshold_scalp_futures = 0.35
+
+  system_v3_1_stop_threshold_doom_spot = 0.40
+  system_v3_1_stop_threshold_doom_futures = 1.00
+  system_v3_1_stop_threshold_spot_rebuy = 0.70
+  system_v3_1_stop_threshold_futures_rebuy = 1.75
+  system_v3_1_stop_threshold_rapid_spot = 0.40
+  system_v3_1_stop_threshold_rapid_futures = 1.00
+  system_v3_1_stop_threshold_scalp_spot = 0.40
+  system_v3_1_stop_threshold_scalp_futures = 1.00
+
+  system_v3_1_stake_multiplier = 0.35
+  system_v3_1_rebuy_stakes_spot = [1.0, 1.0]
+  system_v3_1_rebuy_stakes_futures = [1.0, 1.0]
+  system_v3_1_rebuy_thresholds_spot = [-0.08, -0.10, -0.12, -0.14]
+  system_v3_1_rebuy_thresholds_futures = [-0.08, -0.10, -0.12, -0.14]
 
   system_v3_derisk_level_1_enable = True
   system_v3_derisk_level_1_spot = [-0.04, -0.06]
@@ -983,6 +1001,7 @@ class NostalgiaForInfinityX7(IStrategy):
   ) -> tuple:
     is_backtest = self.is_backtest_mode()
     is_system_v3 = self.is_system_v3(trade)
+    is_system_v3_1 = self.is_system_v3_1(trade)
     is_derisk = False
     if previous_sell_reason in [
       f"exit_{mode_name}_stoploss_doom",
@@ -1009,7 +1028,7 @@ class NostalgiaForInfinityX7(IStrategy):
         is_derisk = trade.amount < (filled_entries[0].safe_filled * 0.95)
     if previous_sell_reason in [f"exit_{mode_name}_stoploss_doom", f"exit_{mode_name}_stoploss"]:
       # return right away for system v3
-      if is_system_v3:
+      if is_system_v3 or is_system_v3_1:
         return True, previous_sell_reason
 
       is_rapid_mode = all(c in self.long_rapid_mode_tags for c in enter_tags)
@@ -2261,10 +2280,14 @@ class NostalgiaForInfinityX7(IStrategy):
         else:
           return min_stake
       # Rapid mode
-      if all(c in self.long_rapid_mode_tags for c in enter_tags) or (
-        any(c in self.long_rapid_mode_tags for c in enter_tags)
-        and all(
-          c in (self.long_rapid_mode_tags + self.long_rebuy_mode_tags + self.long_grind_mode_tags) for c in enter_tags
+      if (self.system_name_use == self.system_v3_name) and (
+        all(c in self.long_rapid_mode_tags for c in enter_tags)
+        or (
+          any(c in self.long_rapid_mode_tags for c in enter_tags)
+          and all(
+            c in (self.long_rapid_mode_tags + self.long_rebuy_mode_tags + self.long_grind_mode_tags)
+            for c in enter_tags
+          )
         )
       ):
         stake_multiplier = (
@@ -2285,15 +2308,22 @@ class NostalgiaForInfinityX7(IStrategy):
             stake_multiplier = item
             return proposed_stake * stake_multiplier
       else:
-        stake_multiplier = (
-          self.regular_mode_stake_multiplier_futures[0]
-          if self.is_futures_mode
-          else self.regular_mode_stake_multiplier_spot[0]
-        )
-        if (proposed_stake * stake_multiplier) > min_stake:
-          return proposed_stake * stake_multiplier
+        if self.system_name_use == self.system_v3_1_name:
+          stake_multiplier = self.system_v3_1_stake_multiplier
+          if (proposed_stake * stake_multiplier) > min_stake:
+            return proposed_stake * stake_multiplier
+          else:
+            return min_stake
         else:
-          return min_stake
+          stake_multiplier = (
+            self.regular_mode_stake_multiplier_futures[0]
+            if self.is_futures_mode
+            else self.regular_mode_stake_multiplier_spot[0]
+          )
+          if (proposed_stake * stake_multiplier) > min_stake:
+            return proposed_stake * stake_multiplier
+          else:
+            return min_stake
     else:
       # Rebuy mode
       if all(c in self.short_rebuy_mode_tags for c in enter_tags) or (
@@ -2314,16 +2344,43 @@ class NostalgiaForInfinityX7(IStrategy):
           if (proposed_stake * item) > min_stake:
             stake_multiplier = item
             return proposed_stake * stake_multiplier
-      else:
+      # Rapid mode
+      if (self.system_name_use == self.system_v3_name) and (
+        all(c in self.short_rapid_mode_tags for c in enter_tags)
+        or (
+          any(c in self.short_rapid_mode_tags for c in enter_tags)
+          and all(
+            c in (self.short_rapid_mode_tags + self.short_rebuy_mode_tags + self.short_grind_mode_tags)
+            for c in enter_tags
+          )
+        )
+      ):
         stake_multiplier = (
-          self.regular_mode_stake_multiplier_futures[0]
+          self.rapid_mode_stake_multiplier_futures[0]
           if self.is_futures_mode
-          else self.regular_mode_stake_multiplier_spot[0]
+          else self.rapid_mode_stake_multiplier_spot[0]
         )
         if (proposed_stake * stake_multiplier) > min_stake:
           return proposed_stake * stake_multiplier
         else:
           return min_stake
+      else:
+        if self.system_name_use == self.system_v3_1_name:
+          stake_multiplier = self.system_v3_1_stake_multiplier
+          if (proposed_stake * stake_multiplier) > min_stake:
+            return proposed_stake * stake_multiplier
+          else:
+            return min_stake
+        else:
+          stake_multiplier = (
+            self.regular_mode_stake_multiplier_futures[0]
+            if self.is_futures_mode
+            else self.regular_mode_stake_multiplier_spot[0]
+          )
+          if (proposed_stake * stake_multiplier) > min_stake:
+            return proposed_stake * stake_multiplier
+          else:
+            return min_stake
 
     return proposed_stake
 
@@ -2332,7 +2389,10 @@ class NostalgiaForInfinityX7(IStrategy):
   def order_filled(self, pair: str, trade: Trade, order: Order, current_time: datetime, **kwargs) -> None:
     # Check if it's the first entry
     if trade.nr_of_successful_entries == 1:
-      trade.set_custom_data(key="system_version", value=self.system_v3_name)
+      if self.system_name_use == self.system_v3_1_name:
+        trade.set_custom_data(key="system_version", value=self.system_v3_1_name)
+      elif self.system_name_use == self.system_v3_name:
+        trade.set_custom_data(key="system_version", value=self.system_v3_name)
     return None
 
   # Adjust Trade Position
@@ -2364,6 +2424,7 @@ class NostalgiaForInfinityX7(IStrategy):
     is_short_grind_mode = all(c in self.short_grind_mode_tags for c in enter_tags)
     is_v2_date = trade.open_date_utc.replace(tzinfo=None) >= datetime(2025, 2, 13) or is_backtest
     is_system_v3 = self.is_system_v3(trade)
+    is_system_v3_1 = self.is_system_v3_1(trade)
 
     # Rebuy mode
     if not trade.is_short and (
@@ -2373,7 +2434,7 @@ class NostalgiaForInfinityX7(IStrategy):
         and all(c in (self.long_rebuy_mode_tags + self.long_grind_mode_tags) for c in enter_tags)
       )
     ):
-      if is_system_v3:
+      if is_system_v3 or is_system_v3_1:
         return self.long_rebuy_adjust_trade_position_v3(
           trade,
           enter_tags,
@@ -2408,7 +2469,7 @@ class NostalgiaForInfinityX7(IStrategy):
         and all(c in (self.short_rebuy_mode_tags + self.short_grind_mode_tags) for c in enter_tags)
       )
     ):
-      if is_system_v3:
+      if is_system_v3 or is_system_v3_1:
         return self.short_rebuy_adjust_trade_position_v3(
           trade,
           enter_tags,
@@ -2439,7 +2500,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Grinding
     elif not trade.is_short:
-      if not is_long_grind_mode and is_system_v3:
+      if not is_long_grind_mode and (is_system_v3 or is_system_v3_1):
         if any(
           c
           in (
@@ -2536,7 +2597,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
 
     elif trade.is_short:
-      if not is_short_grind_mode and is_system_v3:
+      if not is_short_grind_mode and (is_system_v3 or is_system_v3_1):
         if any(
           c
           in (
@@ -11297,6 +11358,10 @@ class NostalgiaForInfinityX7(IStrategy):
   def is_system_v3(self, trade: Trade) -> bool:
     """Check if the current system is v3"""
     return trade.get_custom_data(key="system_version") == self.system_v3_name
+
+  def is_system_v3_1(self, trade: Trade) -> bool:
+    """Check if the current system is v3_1"""
+    return trade.get_custom_data(key="system_version") == self.system_v3_1_name
 
   def has_valid_entry_conditions(self, trade: Trade, exit_rate: float, last_candle, previous_candle) -> bool:
     """Check if there are valid entry conditions"""
@@ -37426,9 +37491,25 @@ class NostalgiaForInfinityX7(IStrategy):
   ) -> tuple:
     is_backtest = self.is_backtest_mode()
     is_system_v3 = self.is_system_v3(trade)
+    is_system_v3_1 = self.is_system_v3_1(trade)
     if not self.stops_enable:
       return False, None
-    if is_system_v3:
+    if is_system_v3_1:
+      # Stoploss doom
+      if self.doom_stops_enable and (
+        profit_stake
+        < -(
+          filled_entries[0].cost
+          * (
+            self.system_v3_1_stop_threshold_doom_futures
+            if self.is_futures_mode
+            else self.system_v3_1_stop_threshold_doom_spot
+          )
+          / trade.leverage
+        )
+      ):
+        return True, f"exit_{mode_name}_stoploss_doom"
+    elif is_system_v3:
       # Stoploss doom
       if self.doom_stops_enable and (
         profit_stake
@@ -39981,6 +40062,9 @@ class NostalgiaForInfinityX7(IStrategy):
       and all(c in (self.long_rebuy_mode_tags + self.long_grind_mode_tags) for c in enter_tags)
     )
 
+    is_system_v3 = self.is_system_v3(trade)
+    is_system_v3_1 = self.is_system_v3_1(trade)
+
     has_order_tags = False
     if hasattr(filled_orders[0], "ft_order_tag"):
       has_order_tags = True
@@ -40103,6 +40187,14 @@ class NostalgiaForInfinityX7(IStrategy):
       else self.system_v3_grind_5_profit_threshold_spot
     )
 
+    rebuy_stakes = (
+      self.system_v3_1_rebuy_stakes_futures if self.is_futures_mode else self.system_v3_1_rebuy_stakes_spot
+    )
+    rebuy_max_sub_grinds = len(rebuy_stakes)
+    rebuy_sub_thresholds = (
+      self.system_v3_1_rebuy_thresholds_futures if self.is_futures_mode else self.system_v3_1_rebuy_thresholds_spot
+    )
+
     is_derisk_1 = False
     is_derisk_1_found = False  # derisk_level_1 de-risk exit
     derisk_1_order = None
@@ -40177,6 +40269,19 @@ class NostalgiaForInfinityX7(IStrategy):
     grind_5_distance_ratio = 0.0
     grind_5_exit_order = None
     grind_5_exit_distance_ratio = 0.0
+    rebuy_sub_grind_count = 0
+    rebuy_total_amount = 0.0
+    rebuy_total_cost = 0.0
+    rebuy_current_open_rate = 0.0
+    rebuy_current_grind_stake = 0.0
+    rebuy_current_grind_stake_profit = 0.0
+    rebuy_is_exit_found = False
+    rebuy_found = False
+    rebuy_buy_orders = []
+    rebuy_orders = []
+    rebuy_distance_ratio = 0.0
+    rebuy_exit_order = None
+    rebuy_exit_distance_ratio = 0.0
     for order in reversed(filled_orders):
       if (order.ft_order_side == "buy") and (order is not filled_orders[0]):
         order_tag = ""
@@ -40228,6 +40333,15 @@ class NostalgiaForInfinityX7(IStrategy):
           if not grind_5_found:
             grind_5_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
             grind_5_found = True
+        elif not rebuy_is_exit_found and order_tag == "rebuy_entry":
+          rebuy_sub_grind_count += 1
+          rebuy_total_amount += order.safe_filled
+          rebuy_total_cost += order.safe_filled * order.safe_price
+          rebuy_buy_orders.append(order.id)
+          rebuy_orders.append(order)
+          if not rebuy_found:
+            rebuy_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
+            rebuy_found = True
       elif order.ft_order_side == "sell":
         if (
           order is filled_exits[-1]
@@ -40272,6 +40386,9 @@ class NostalgiaForInfinityX7(IStrategy):
         elif not grind_5_is_exit_found and order_tag in ["grind_5_exit", "grind_5_derisk"]:
           grind_5_is_exit_found = True
           grind_5_exit_order = order
+        elif not rebuy_is_exit_found and order_tag in ["rebuy_exit", "rebuy_derisk"]:
+          rebuy_is_exit_found = True
+          rebuy_exit_order = order
         elif order_tag in ["derisk_global"]:
           if not grind_1_is_exit_found:
             grind_1_is_exit_found = True
@@ -40288,6 +40405,9 @@ class NostalgiaForInfinityX7(IStrategy):
           if not grind_5_is_exit_found:
             grind_5_is_exit_found = True
             grind_5_exit_order = order
+          if not rebuy_is_exit_found:
+            rebuy_is_exit_found = True
+            rebuy_exit_order = order
 
     if grind_1_sub_grind_count > 0:
       grind_1_current_open_rate = grind_1_total_cost / grind_1_total_amount
@@ -40309,6 +40429,10 @@ class NostalgiaForInfinityX7(IStrategy):
       grind_5_current_open_rate = grind_5_total_cost / grind_5_total_amount
       grind_5_current_grind_stake = grind_5_total_amount * exit_rate * (1 - trade.fee_close)
       grind_5_current_grind_stake_profit = grind_5_current_grind_stake - grind_5_total_cost
+    if rebuy_sub_grind_count > 0:
+      rebuy_current_open_rate = rebuy_total_cost / rebuy_total_amount
+      rebuy_current_grind_stake = rebuy_total_amount * exit_rate * (1 - trade.fee_close)
+      rebuy_current_grind_stake_profit = rebuy_current_grind_stake - rebuy_total_cost
 
     if grind_1_is_exit_found:
       grind_1_exit_distance_ratio = (exit_rate - grind_1_exit_order.safe_price) / grind_1_exit_order.safe_price
@@ -40320,6 +40444,8 @@ class NostalgiaForInfinityX7(IStrategy):
       grind_4_exit_distance_ratio = (exit_rate - grind_4_exit_order.safe_price) / grind_4_exit_order.safe_price
     if grind_5_is_exit_found:
       grind_5_exit_distance_ratio = (exit_rate - grind_5_exit_order.safe_price) / grind_5_exit_order.safe_price
+    if rebuy_is_exit_found:
+      rebuy_exit_distance_ratio = (exit_rate - rebuy_exit_order.safe_price) / rebuy_exit_order.safe_price
 
     # all buybacks & grinds
     current_open_grind_stake_profit = (
@@ -40328,6 +40454,7 @@ class NostalgiaForInfinityX7(IStrategy):
       + grind_3_current_grind_stake_profit
       + grind_4_current_grind_stake_profit
       + grind_5_current_grind_stake_profit
+      + rebuy_current_grind_stake_profit
     )
     num_open_grinds_and_buybacks = (
       grind_1_sub_grind_count
@@ -40335,16 +40462,19 @@ class NostalgiaForInfinityX7(IStrategy):
       + grind_3_sub_grind_count
       + grind_4_sub_grind_count
       + grind_5_sub_grind_count
+      + rebuy_sub_grind_count
     )
 
     # Rebuy mode, the first entry is lower than normal slot stake
     if is_rebuy_mode:
       slice_amount /= self.rebuy_mode_stake_multiplier
     # not reached the max allowed stake for all grinds
-    is_not_trade_max_stake = current_stake_amount < (slice_amount * self.system_v3_max_stake)
+    is_not_trade_max_stake_v3 = current_stake_amount < (slice_amount * self.system_v3_max_stake)
+    is_not_trade_max_stake_v3_1 = current_stake_amount < (slice_amount * self.system_v3_1_max_stake)
 
     is_long_extra_checks_entry = (
       current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc
+      # and (slice_profit < -0.02)
       # and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
       # and (
       #   (current_stake_amount < (filled_entries[0].cost * 0.50))
@@ -40354,11 +40484,13 @@ class NostalgiaForInfinityX7(IStrategy):
     )
     # is_long_extra_checks_entry = True
     is_long_grind_entry = self.long_grind_entry_v3(last_candle, previous_candle, slice_profit, True)
+    is_long_rebuy_entry = self.long_rebuy_entry_v3(last_candle, previous_candle, slice_profit, True)
 
     # De-risk level 1
 
     if (
       self.derisk_enable
+      and is_system_v3
       and self.system_v3_derisk_level_1_enable
       and (not is_derisk_1_found)
       and not is_rebuy_mode
@@ -40411,6 +40543,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     if (
       self.derisk_enable
+      and is_system_v3
       and self.system_v3_derisk_level_2_enable
       and (not is_derisk_2_found)
       and not is_rebuy_mode
@@ -40463,6 +40596,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     if (
       self.derisk_enable
+      and is_system_v3
       and self.system_v3_derisk_level_3_enable
       and (not is_derisk_3_found)
       and not is_rebuy_mode
@@ -40520,7 +40654,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and is_long_extra_checks_entry
       and (grind_1_sub_grind_count < grind_1_max_sub_grinds)
       and (grind_1_sub_grind_count == 0 or (grind_1_distance_ratio < grind_1_sub_thresholds[grind_1_sub_grind_count]))
-      and is_not_trade_max_stake
+      and is_not_trade_max_stake_v3
     ):
       buy_amount = slice_amount * grind_1_stakes[grind_1_sub_grind_count] / trade.leverage
       if buy_amount < (min_stake * 1.5):
@@ -40642,7 +40776,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and is_long_extra_checks_entry
       and (grind_2_sub_grind_count < grind_2_max_sub_grinds)
       and (grind_2_sub_grind_count == 0 or (grind_2_distance_ratio < grind_2_sub_thresholds[grind_2_sub_grind_count]))
-      and is_not_trade_max_stake
+      and is_not_trade_max_stake_v3
     ):
       buy_amount = slice_amount * grind_2_stakes[grind_2_sub_grind_count] / trade.leverage
       if buy_amount < (min_stake * 1.5):
@@ -40764,7 +40898,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and is_long_extra_checks_entry
       and (grind_3_sub_grind_count < grind_3_max_sub_grinds)
       and (grind_3_sub_grind_count == 0 or (grind_3_distance_ratio < grind_3_sub_thresholds[grind_3_sub_grind_count]))
-      and is_not_trade_max_stake
+      and is_not_trade_max_stake_v3
     ):
       buy_amount = slice_amount * grind_3_stakes[grind_3_sub_grind_count] / trade.leverage
       if buy_amount < (min_stake * 1.5):
@@ -40886,7 +41020,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and is_long_extra_checks_entry
       and (grind_4_sub_grind_count < grind_4_max_sub_grinds)
       and (grind_4_sub_grind_count == 0 or (grind_4_distance_ratio < grind_4_sub_thresholds[grind_4_sub_grind_count]))
-      and is_not_trade_max_stake
+      and is_not_trade_max_stake_v3
     ):
       buy_amount = slice_amount * grind_4_stakes[grind_4_sub_grind_count] / trade.leverage
       if buy_amount < (min_stake * 1.5):
@@ -41008,7 +41142,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and is_long_extra_checks_entry
       and (grind_5_sub_grind_count < grind_5_max_sub_grinds)
       and (grind_5_sub_grind_count == 0 or (grind_5_distance_ratio < grind_5_sub_thresholds[grind_5_sub_grind_count]))
-      and is_not_trade_max_stake
+      and is_not_trade_max_stake_v3
     ):
       buy_amount = slice_amount * grind_5_stakes[grind_5_sub_grind_count] / trade.leverage
       if buy_amount < (min_stake * 1.5):
@@ -41121,6 +41255,42 @@ class NostalgiaForInfinityX7(IStrategy):
         else:
           return -ft_sell_amount
 
+    # Rebuy
+
+    if (
+      is_system_v3_1
+      and is_long_rebuy_entry
+      and (
+        (0 <= rebuy_sub_grind_count < rebuy_max_sub_grinds)
+        and (slice_profit_entry < rebuy_sub_thresholds[rebuy_sub_grind_count])
+      )
+      and is_not_trade_max_stake_v3_1
+    ):
+      buy_amount = slice_amount * rebuy_stakes[rebuy_sub_grind_count] / trade.leverage
+      if buy_amount < (min_stake * 1.5):
+        buy_amount = min_stake * 1.5
+      if buy_amount > max_stake:
+        return None
+      self.dp.send_msg(
+        self.notification_msg(
+          "rebuy",
+          tag="rebuy_entry",
+          pair=trade.pair,
+          rate=current_rate,
+          stake_amount=buy_amount,
+          profit_stake=profit_stake,
+          profit_ratio=profit_ratio,
+          stake_currency=self.config["stake_currency"],
+        )
+      )
+      log.info(
+        f"Rebuy (rebuy_entry) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+      )
+      if has_order_tags:
+        return buy_amount, "rebuy_entry"
+      else:
+        return buy_amount
+
     return None
 
   def long_grind_entry_v3(
@@ -41131,18 +41301,29 @@ class NostalgiaForInfinityX7(IStrategy):
       or (
         (last_candle["RSI_3"] > 10.0)
         and (last_candle["RSI_3_15m"] > 10.0)
-        # and (last_candle["RSI_3_1h"] > 10.0)
-        # and (last_candle["RSI_3_4h"] > 10.0)
-        # and (last_candle["ROC_2_1h"] > -5.0)
-        # and (last_candle["ROC_2_4h"] > -5.0)
         and (last_candle["AROONU_14"] < 30.0)
         and (last_candle["AROONU_14_15m"] < 30.0)
-        # and (df["close"] > (df["close_max_12"] * 0.95))
+        and (last_candle["close"] < (last_candle["EMA_26"] * 0.988))
       )
     ):
       return True
 
     return False
+
+  def long_rebuy_entry_v3(
+    self, last_candle: Series, previous_candle: Series, slice_profit: float, is_derisk: bool
+  ) -> float:
+    if (last_candle["protections_long_global"] == True) and (
+      (last_candle["enter_long"] == True)
+      or (
+        (last_candle["RSI_3"] > 10.0)
+        and (last_candle["RSI_3_15m"] > 10.0)
+        and (last_candle["AROONU_14"] < 30.0)
+        and (last_candle["AROONU_14_15m"] < 30.0)
+        and (last_candle["close"] < (last_candle["EMA_26"] * 0.988))
+      )
+    ):
+      return True
 
   # Long Grinding Adjust Trade Position
   # ---------------------------------------------------------------------------------------------
@@ -62922,9 +63103,25 @@ class NostalgiaForInfinityX7(IStrategy):
   ) -> tuple:
     is_backtest = self.is_backtest_mode()
     is_system_v3 = self.is_system_v3(trade)
+    is_system_v3_1 = self.is_system_v3_1(trade)
     if not self.stops_enable:
       return False, None
-    if is_system_v3:
+    if is_system_v3_1:
+      # Stoploss doom
+      if self.doom_stops_enable and (
+        profit_stake
+        < -(
+          filled_entries[0].cost
+          * (
+            self.system_v3_1_stop_threshold_doom_futures
+            if self.is_futures_mode
+            else self.system_v3_1_stop_threshold_doom_spot
+          )
+          / trade.leverage
+        )
+      ):
+        return True, f"exit_{mode_name}_stoploss_doom"
+    elif is_system_v3:
       # Stoploss doom
       if self.doom_stops_enable and (
         profit_stake
@@ -65460,6 +65657,9 @@ class NostalgiaForInfinityX7(IStrategy):
       and all(c in (self.short_rebuy_mode_tags + self.short_grind_mode_tags) for c in enter_tags)
     )
 
+    is_system_v3 = self.is_system_v3(trade)
+    is_system_v3_1 = self.is_system_v3_1(trade)
+
     has_order_tags = False
     if hasattr(filled_orders[0], "ft_order_tag"):
       has_order_tags = True
@@ -65582,6 +65782,14 @@ class NostalgiaForInfinityX7(IStrategy):
       else self.system_v3_grind_5_profit_threshold_spot
     )
 
+    rebuy_stakes = (
+      self.system_v3_1_rebuy_stakes_futures if self.is_futures_mode else self.system_v3_1_rebuy_stakes_spot
+    )
+    rebuy_max_sub_grinds = len(rebuy_stakes)
+    rebuy_sub_thresholds = (
+      self.system_v3_1_rebuy_thresholds_futures if self.is_futures_mode else self.system_v3_1_rebuy_thresholds_spot
+    )
+
     is_derisk_1 = False
     is_derisk_1_found = False  # derisk_level_1 de-risk exit
     derisk_1_order = None
@@ -65656,6 +65864,19 @@ class NostalgiaForInfinityX7(IStrategy):
     grind_5_distance_ratio = 0.0
     grind_5_exit_order = None
     grind_5_exit_distance_ratio = 0.0
+    rebuy_sub_grind_count = 0
+    rebuy_total_amount = 0.0
+    rebuy_total_cost = 0.0
+    rebuy_current_open_rate = 0.0
+    rebuy_current_grind_stake = 0.0
+    rebuy_current_grind_stake_profit = 0.0
+    rebuy_is_exit_found = False
+    rebuy_found = False
+    rebuy_buy_orders = []
+    rebuy_orders = []
+    rebuy_distance_ratio = 0.0
+    rebuy_exit_order = None
+    rebuy_exit_distance_ratio = 0.0
     for order in reversed(filled_orders):
       if (order.ft_order_side == "sell") and (order is not filled_orders[0]):
         order_tag = ""
@@ -65707,6 +65928,15 @@ class NostalgiaForInfinityX7(IStrategy):
           if not grind_5_found:
             grind_5_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
             grind_5_found = True
+        elif not rebuy_is_exit_found and order_tag == "rebuy_entry":
+          rebuy_sub_grind_count += 1
+          rebuy_total_amount += order.safe_filled
+          rebuy_total_cost += order.safe_filled * order.safe_price
+          rebuy_buy_orders.append(order.id)
+          rebuy_orders.append(order)
+          if not rebuy_found:
+            rebuy_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
+            rebuy_found = True
       elif order.ft_order_side == "buy":
         if (
           order is filled_exits[-1]
@@ -65751,6 +65981,9 @@ class NostalgiaForInfinityX7(IStrategy):
         elif not grind_5_is_exit_found and order_tag in ["grind_5_exit", "grind_5_derisk"]:
           grind_5_is_exit_found = True
           grind_5_exit_order = order
+        elif not rebuy_is_exit_found and order_tag in ["rebuy_exit", "rebuy_derisk"]:
+          rebuy_is_exit_found = True
+          rebuy_exit_order = order
         elif order_tag in ["derisk_global"]:
           if not grind_1_is_exit_found:
             grind_1_is_exit_found = True
@@ -65767,6 +66000,9 @@ class NostalgiaForInfinityX7(IStrategy):
           if not grind_5_is_exit_found:
             grind_5_is_exit_found = True
             grind_5_exit_order = order
+          if not rebuy_is_exit_found:
+            rebuy_is_exit_found = True
+            rebuy_exit_order = order
 
     if grind_1_sub_grind_count > 0:
       grind_1_current_open_rate = grind_1_total_cost / grind_1_total_amount
@@ -65788,6 +66024,10 @@ class NostalgiaForInfinityX7(IStrategy):
       grind_5_current_open_rate = grind_5_total_cost / grind_5_total_amount
       grind_5_current_grind_stake = grind_5_total_amount * exit_rate * (1 - trade.fee_close)
       grind_5_current_grind_stake_profit = grind_5_current_grind_stake - grind_5_total_cost
+    if rebuy_sub_grind_count > 0:
+      rebuy_current_open_rate = rebuy_total_cost / rebuy_total_amount
+      rebuy_current_grind_stake = rebuy_total_amount * exit_rate * (1 - trade.fee_close)
+      rebuy_current_grind_stake_profit = rebuy_current_grind_stake - rebuy_total_cost
 
     if grind_1_is_exit_found:
       grind_1_exit_distance_ratio = (exit_rate - grind_1_exit_order.safe_price) / grind_1_exit_order.safe_price
@@ -65799,6 +66039,8 @@ class NostalgiaForInfinityX7(IStrategy):
       grind_4_exit_distance_ratio = (exit_rate - grind_4_exit_order.safe_price) / grind_4_exit_order.safe_price
     if grind_5_is_exit_found:
       grind_5_exit_distance_ratio = (exit_rate - grind_5_exit_order.safe_price) / grind_5_exit_order.safe_price
+    if rebuy_is_exit_found:
+      rebuy_exit_distance_ratio = (exit_rate - rebuy_exit_order.safe_price) / rebuy_exit_order.safe_price
 
     # all buybacks & grinds
     current_open_grind_stake_profit = (
@@ -65807,6 +66049,7 @@ class NostalgiaForInfinityX7(IStrategy):
       + grind_3_current_grind_stake_profit
       + grind_4_current_grind_stake_profit
       + grind_5_current_grind_stake_profit
+      + rebuy_current_grind_stake_profit
     )
     num_open_grinds_and_buybacks = (
       grind_1_sub_grind_count
@@ -65814,13 +66057,15 @@ class NostalgiaForInfinityX7(IStrategy):
       + grind_3_sub_grind_count
       + grind_4_sub_grind_count
       + grind_5_sub_grind_count
+      + rebuy_sub_grind_count
     )
 
     # Rebuy mode, the first entry is lower than normal slot stake
     if is_rebuy_mode:
       slice_amount /= self.rebuy_mode_stake_multiplier
     # not reached the max allowed stake for all grinds
-    is_not_trade_max_stake = current_stake_amount < (slice_amount * self.system_v3_max_stake)
+    is_not_trade_max_stake_v3 = current_stake_amount < (slice_amount * self.system_v3_max_stake)
+    is_not_trade_max_stake_v3_1 = current_stake_amount < (slice_amount * self.system_v3_1_max_stake)
 
     is_short_extra_checks_entry = (
       current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc
@@ -65833,11 +66078,13 @@ class NostalgiaForInfinityX7(IStrategy):
     )
     # is_short_extra_checks_entry = True
     is_short_grind_entry = self.short_grind_entry_v3(last_candle, previous_candle, slice_profit, True)
+    is_short_rebuy_entry = self.short_rebuy_entry_v3(last_candle, previous_candle, slice_profit, True)
 
     # De-risk level 1
 
     if (
       self.derisk_enable
+      and is_system_v3
       and self.system_v3_derisk_level_1_enable
       and (not is_derisk_1_found)
       and not is_rebuy_mode
@@ -65890,6 +66137,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     if (
       self.derisk_enable
+      and is_system_v3
       and self.system_v3_derisk_level_2_enable
       and (not is_derisk_2_found)
       and not is_rebuy_mode
@@ -65942,6 +66190,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     if (
       self.derisk_enable
+      and is_system_v3
       and self.system_v3_derisk_level_3_enable
       and (not is_derisk_3_found)
       and not is_rebuy_mode
@@ -65999,7 +66248,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and is_short_extra_checks_entry
       and (grind_1_sub_grind_count < grind_1_max_sub_grinds)
       and (grind_1_sub_grind_count == 0 or (-grind_1_distance_ratio < grind_1_sub_thresholds[grind_1_sub_grind_count]))
-      and is_not_trade_max_stake
+      and is_not_trade_max_stake_v3
     ):
       buy_amount = slice_amount * grind_1_stakes[grind_1_sub_grind_count] / trade.leverage
       if buy_amount < (min_stake * 1.5):
@@ -66121,7 +66370,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and is_short_extra_checks_entry
       and (grind_2_sub_grind_count < grind_2_max_sub_grinds)
       and (grind_2_sub_grind_count == 0 or (-grind_2_distance_ratio < grind_2_sub_thresholds[grind_2_sub_grind_count]))
-      and is_not_trade_max_stake
+      and is_not_trade_max_stake_v3
     ):
       buy_amount = slice_amount * grind_2_stakes[grind_2_sub_grind_count] / trade.leverage
       if buy_amount < (min_stake * 1.5):
@@ -66243,7 +66492,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and is_short_extra_checks_entry
       and (grind_3_sub_grind_count < grind_3_max_sub_grinds)
       and (grind_3_sub_grind_count == 0 or (-grind_3_distance_ratio < grind_3_sub_thresholds[grind_3_sub_grind_count]))
-      and is_not_trade_max_stake
+      and is_not_trade_max_stake_v3
     ):
       buy_amount = slice_amount * grind_3_stakes[grind_3_sub_grind_count] / trade.leverage
       if buy_amount < (min_stake * 1.5):
@@ -66365,7 +66614,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and is_short_extra_checks_entry
       and (grind_4_sub_grind_count < grind_4_max_sub_grinds)
       and (grind_4_sub_grind_count == 0 or (-grind_4_distance_ratio < grind_4_sub_thresholds[grind_4_sub_grind_count]))
-      and is_not_trade_max_stake
+      and is_not_trade_max_stake_v3
     ):
       buy_amount = slice_amount * grind_4_stakes[grind_4_sub_grind_count] / trade.leverage
       if buy_amount < (min_stake * 1.5):
@@ -66487,7 +66736,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and is_short_extra_checks_entry
       and (grind_5_sub_grind_count < grind_5_max_sub_grinds)
       and (grind_5_sub_grind_count == 0 or (-grind_5_distance_ratio < grind_5_sub_thresholds[grind_5_sub_grind_count]))
-      and is_not_trade_max_stake
+      and is_not_trade_max_stake_v3
     ):
       buy_amount = slice_amount * grind_5_stakes[grind_5_sub_grind_count] / trade.leverage
       if buy_amount < (min_stake * 1.5):
@@ -66600,6 +66849,42 @@ class NostalgiaForInfinityX7(IStrategy):
         else:
           return -ft_sell_amount
 
+    # Rebuy
+
+    if (
+      is_system_v3_1
+      and is_short_rebuy_entry
+      and (
+        (0 <= rebuy_sub_grind_count < rebuy_max_sub_grinds)
+        and (slice_profit_entry < rebuy_sub_thresholds[rebuy_sub_grind_count])
+      )
+      and is_not_trade_max_stake_v3_1
+    ):
+      buy_amount = slice_amount * rebuy_stakes[rebuy_sub_grind_count] / trade.leverage
+      if buy_amount < (min_stake * 1.5):
+        buy_amount = min_stake * 1.5
+      if buy_amount > max_stake:
+        return None
+      self.dp.send_msg(
+        self.notification_msg(
+          "rebuy",
+          tag="rebuy_entry",
+          pair=trade.pair,
+          rate=current_rate,
+          stake_amount=buy_amount,
+          profit_stake=profit_stake,
+          profit_ratio=profit_ratio,
+          stake_currency=self.config["stake_currency"],
+        )
+      )
+      log.info(
+        f"Rebuy (rebuy_entry) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+      )
+      if has_order_tags:
+        return buy_amount, "rebuy_entry"
+      else:
+        return buy_amount
+
     return None
 
   def short_grind_entry_v3(
@@ -66612,6 +66897,24 @@ class NostalgiaForInfinityX7(IStrategy):
         and (last_candle["RSI_3_15m"] < 90.0)
         and (last_candle["AROOND_14"] < 30.0)
         and (last_candle["AROOND_14_15m"] < 30.0)
+        and (last_candle["close"] > (last_candle["EMA_26"] * 1.012))
+      )
+    ):
+      return True
+
+    return False
+
+  def short_rebuy_entry_v3(
+    self, last_candle: Series, previous_candle: Series, slice_profit: float, is_derisk: bool
+  ) -> float:
+    if (last_candle["protections_short_global"] == True) and (
+      (last_candle["enter_short"] == True)
+      or (
+        (last_candle["RSI_3"] < 90.0)
+        and (last_candle["RSI_3_15m"] < 90.0)
+        and (last_candle["AROOND_14"] < 30.0)
+        and (last_candle["AROOND_14_15m"] < 30.0)
+        and (last_candle["close"] > (last_candle["EMA_26"] * 1.012))
       )
     ):
       return True
