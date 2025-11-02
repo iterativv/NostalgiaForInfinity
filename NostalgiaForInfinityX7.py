@@ -69,7 +69,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.1.60"
+    return "v17.1.61"
 
   stoploss = -0.99
 
@@ -127,7 +127,7 @@ class NostalgiaForInfinityX7(IStrategy):
   # Long grind mode tags
   long_grind_mode_tags = ["120"]
   # Long top coins mode tags
-  long_top_coins_mode_tags = ["141", "142", "143", "144"]
+  long_top_coins_mode_tags = ["141", "142", "143", "144", "145"]
   # Long scalp mode tags
   long_scalp_mode_tags = ["161", "162", "163"]
 
@@ -761,6 +761,7 @@ class NostalgiaForInfinityX7(IStrategy):
     "long_entry_condition_142_enable": True,
     "long_entry_condition_143_enable": True,
     "long_entry_condition_144_enable": True,
+    "long_entry_condition_145_enable": True,
     "long_entry_condition_161_enable": True,
     "long_entry_condition_162_enable": True,
     "long_entry_condition_163_enable": True,
@@ -3551,6 +3552,15 @@ class NostalgiaForInfinityX7(IStrategy):
     df["BBU_20_2.0"] = bbands_20_2["BBU_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
     df["BBB_20_2.0"] = bbands_20_2["BBB_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
     df["BBP_20_2.0"] = bbands_20_2["BBP_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
+    # BB 40 - STD2
+    upper, middle, lower = ta.BBANDS(df["close"], timeperiod=40, nbdevup=2.0, nbdevdn=2.0, matype=0)
+    df["BBL_40_2.0"] = lower
+    df["BBM_40_2.0"] = middle
+    df["BBU_40_2.0"] = upper
+    df["BBB_40_2.0"] = (upper - lower) / middle * 100.0  # Bandwidth
+    df["BBP_40_2.0"] = (df["close"] - lower) / (upper - lower)  # %B
+    df["BBD_40_2.0"] = (df["BBM_40_2.0"] - df["BBL_40_2.0"]).abs()  # delta
+    df["BBT_40_2.0"] = (df["close"] - df["BBL_40_2.0"]).abs()  # tail
     # MFI
     df["MFI_14"] = pta.mfi(df["high"], df["low"], df["close"], df["volume"], length=14)
     # CMF
@@ -3578,6 +3588,8 @@ class NostalgiaForInfinityX7(IStrategy):
     df["ROC_9"] = pta.roc(df["close"], length=9)
     # Candle change
     df["change_pct"] = (df["close"] - df["open"]) / df["open"] * 100.0
+    # Close delta
+    df["close_delta"] = (df["close"] - df["close"].shift()).abs()
     # Close max
     df["close_max_12"] = df["close"].rolling(12).max()
     df["close_max_48"] = df["close"].rolling(48).max()
@@ -16793,6 +16805,32 @@ class NostalgiaForInfinityX7(IStrategy):
             & (df["STOCHRSIk_14_14_3_3_1h"] < 40.0)
             & (df["BBB_20_2.0_1h"] > 12.0)
             & (df["close_max_48"] >= (df["close"] * 1.10))
+          )
+
+        # Condition #145 - Top Coins mode (Long).
+        if long_entry_condition_index == 145:
+          # Protections
+          long_entry_logic.append(is_pair_long_top_coins_mode)
+          long_entry_logic.append(df["num_empty_288"] <= allowed_empty_candles_288)
+          long_entry_logic.append(df["protections_long_global"] == True)
+
+          long_entry_logic.append(
+            # 15m & 4h down move, 1h high
+            ((df["RSI_3_15m"] > 30.0) | (df["RSI_3_4h"] > 30.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 70.0))
+            # 1h & 4h down move, 15m high
+            & ((df["RSI_3_1h"] > 10.0) | (df["RSI_3_4h"] > 20.0) | (df["STOCHRSIk_14_14_3_3_15m"] < 80.0))
+            # 1h & 4h down move, 4h high
+            & ((df["RSI_3_1h"] > 15.0) | (df["RSI_3_4h"] > 25.0) | (df["AROONU_14_4h"] < 85.0))
+          )
+
+          # Logic
+          long_entry_logic.append(
+            (df["RSI_14"] < 36.0)
+            & (df["BBD_40_2.0"].gt(df["close"] * 0.020))
+            & (df["close_delta"].gt(df["close"] * 0.02))
+            & (df["BBT_40_2.0"].lt(df["BBD_40_2.0"] * 0.3))
+            & (df["close"].lt(df["BBL_40_2.0"].shift()))
+            & (df["close"].le(df["close"].shift()))
           )
 
         # Condition #161 - Scalp mode (Long).
