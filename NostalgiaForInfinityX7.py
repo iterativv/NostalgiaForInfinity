@@ -69,7 +69,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.1.67"
+    return "v17.1.68"
 
   stoploss = -0.99
 
@@ -17117,10 +17117,19 @@ class NostalgiaForInfinityX7(IStrategy):
           long_entry_logic.append(df["RSI_14"] < 50.0)
           long_entry_logic.append(df["AROONU_14_15m"] < 90.0)
           long_entry_logic.append(df["STOCHRSIk_14_14_3_3_15m"] < 90.0)
-          long_entry_logic.append((df["SMA_21"].shift(1) < df["SMA_200"].shift(1)) & df["SMA_200"].shift(1).notna())
-          long_entry_logic.append((df["SMA_21"] > df["SMA_200"]) & df["SMA_200"].notna())
-          long_entry_logic.append((df["close"] > df["EMA_200_1h"]) & df["EMA_200_1h"].notna())
-          long_entry_logic.append((df["close"] > df["EMA_200_4h"]) & df["EMA_200_4h"].notna())
+          long_entry_logic.append(
+            (df["SMA_21"].shift(1) < df["SMA_200"].shift(1).infer_objects(copy=False).fillna(np.nan))
+            & df["SMA_200"].shift(1).notna()
+          )
+          long_entry_logic.append(
+            (df["SMA_21"] > df["SMA_200"].infer_objects(copy=False).fillna(np.nan)) & df["SMA_200"].notna()
+          )
+          long_entry_logic.append(
+            (df["close"] > df["EMA_200_1h"].infer_objects(copy=False).fillna(np.nan)) & df["EMA_200_1h"].notna()
+          )
+          long_entry_logic.append(
+            (df["close"] > df["EMA_200_4h"].infer_objects(copy=False).fillna(np.nan)) & df["EMA_200_4h"].notna()
+          )
           long_entry_logic.append(df["BBB_20_2.0"] > 1.5)
           long_entry_logic.append(df["BBB_20_2.0_1h"] > 6.0)
 
