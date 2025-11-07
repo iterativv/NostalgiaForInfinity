@@ -69,7 +69,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.1.112"
+    return "v17.1.113"
 
   stoploss = -0.99
 
@@ -20742,6 +20742,7 @@ class NostalgiaForInfinityX7(IStrategy):
   ) -> tuple:
     is_backtest = self.is_backtest_mode()
     is_system_v3 = self.is_system_v3(trade)
+    is_system_v3_1 = self.is_system_v3_1(trade)
     sell = False
     signal_name = None
 
@@ -20846,7 +20847,22 @@ class NostalgiaForInfinityX7(IStrategy):
       elif (0.09 >= profit_init_ratio > 0.005) and (last_candle["RSI_3"] > 99.0):
         sell, signal_name = True, f"exit_{self.long_rapid_mode_name}_rpd_10"
 
-      if is_system_v3:
+      if is_system_v3_1:
+        # Stoplosses
+        if self.stops_enable and (
+          profit_stake
+          < -(
+            filled_entries[0].cost
+            * (
+              self.system_v3_1_stop_threshold_rapid_futures
+              if self.is_futures_mode
+              else self.system_v3_1_stop_threshold_rapid_spot
+            )
+            / trade.leverage
+          )
+        ):
+          sell, signal_name = True, f"exit_{self.long_rapid_mode_name}_stoploss_doom"
+      elif is_system_v3:
         # Stoplosses
         if self.stops_enable and (
           profit_stake
@@ -46354,6 +46370,7 @@ class NostalgiaForInfinityX7(IStrategy):
   ) -> tuple:
     is_backtest = self.is_backtest_mode()
     is_system_v3 = self.is_system_v3(trade)
+    is_system_v3_1 = self.is_system_v3_1(trade)
     sell = False
     signal_name = None
 
@@ -46458,7 +46475,22 @@ class NostalgiaForInfinityX7(IStrategy):
       elif (0.09 >= profit_init_ratio > 0.005) and (last_candle["RSI_3"] < 1.0):
         sell, signal_name = True, f"exit_{self.short_rapid_mode_name}_rpd_10"
 
-      if is_system_v3:
+      if is_system_v3_1:
+        # Stoplosses
+        if self.stops_enable and (
+          profit_stake
+          < -(
+            filled_entries[0].cost
+            * (
+              self.system_v3_1_stop_threshold_rapid_futures
+              if self.is_futures_mode
+              else self.system_v3_1_stop_threshold_rapid_spot
+            )
+            / trade.leverage
+          )
+        ):
+          sell, signal_name = True, f"exit_{self.short_rapid_mode_name}_stoploss_doom"
+      elif is_system_v3:
         # Stoplosses
         if self.stops_enable and (
           profit_stake
