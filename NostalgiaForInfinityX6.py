@@ -69,7 +69,7 @@ class NostalgiaForInfinityX6(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v16.8.354"
+    return "v16.8.355"
 
   stoploss = -0.99
 
@@ -558,6 +558,7 @@ class NostalgiaForInfinityX6(IStrategy):
 
   # Top coins mode coins
   top_coins_mode_coins = [
+    "1INCH",
     "AAVE",
     "ADA",
     "ALGO",
@@ -571,6 +572,7 @@ class NostalgiaForInfinityX6(IStrategy):
     "BTC",
     "CAKE",
     "CRV",
+    "DASH",
     "DOGE",
     "DOT",
     "DYDX",
@@ -590,6 +592,7 @@ class NostalgiaForInfinityX6(IStrategy):
     "LTC",
     "NEAR",
     "NEO",
+    "ONDO",
     "OP",
     "POL",
     "RENDER",
@@ -604,6 +607,7 @@ class NostalgiaForInfinityX6(IStrategy):
     "TRX",
     "UNI",
     "VET",
+    "WLD",
     "XLM",
     "XMR",
     "XRP",
