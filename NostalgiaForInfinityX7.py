@@ -668,6 +668,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
   # Top coins mode coins
   top_coins_mode_coins = [
+    "1INCH",
     "AAVE",
     "ADA",
     "ALGO",
@@ -681,6 +682,7 @@ class NostalgiaForInfinityX7(IStrategy):
     "BTC",
     "CAKE",
     "CRV",
+    "DASH",
     "DOGE",
     "DOT",
     "DYDX",
@@ -700,6 +702,7 @@ class NostalgiaForInfinityX7(IStrategy):
     "LTC",
     "NEAR",
     "NEO",
+    "ONDO",
     "OP",
     "POL",
     "RENDER",
@@ -714,6 +717,7 @@ class NostalgiaForInfinityX7(IStrategy):
     "TRX",
     "UNI",
     "VET",
+    "WLD",
     "XLM",
     "XMR",
     "XRP",
