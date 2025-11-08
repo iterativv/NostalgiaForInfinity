@@ -69,7 +69,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.1.124"
+    return "v17.1.125"
 
   stoploss = -0.99
 
@@ -27321,6 +27321,7 @@ class NostalgiaForInfinityX7(IStrategy):
     enter_tags,
   ) -> tuple:
     is_system_v3 = self.is_system_v3(trade)
+    is_system_v3_1 = self.is_system_v3_1(trade)
     sell = False
 
     # Original sell signals
@@ -27396,7 +27397,19 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Extra exit logic
     if not sell:
-      if is_system_v3:
+      if is_system_v3_1:
+        # Stoplosses
+        if profit_stake < -(
+          filled_entries[0].cost
+          * (
+            self.system_v3_1_stop_threshold_scalp_futures
+            if self.is_futures_mode
+            else self.system_v3_1_stop_threshold_scalp_spot
+          )
+          / trade.leverage
+        ):
+          sell, signal_name = True, f"exit_{self.long_scalp_mode_name}_stoploss_doom"
+      elif is_system_v3:
         # Stoplosses
         if profit_stake < -(
           filled_entries[0].cost
@@ -52949,6 +52962,7 @@ class NostalgiaForInfinityX7(IStrategy):
     enter_tags,
   ) -> tuple:
     is_system_v3 = self.is_system_v3(trade)
+    is_system_v3_1 = self.is_system_v3_1(trade)
     sell = False
 
     # Original sell signals
@@ -53024,7 +53038,19 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Extra exit logic
     if not sell:
-      if is_system_v3:
+      if is_system_v3_1:
+        # Stoplosses
+        if profit_stake < -(
+          filled_entries[0].cost
+          * (
+            self.system_v3_1_stop_threshold_scalp_futures
+            if self.is_futures_mode
+            else self.system_v3_1_stop_threshold_scalp_spot
+          )
+          / trade.leverage
+        ):
+          sell, signal_name = True, f"exit_{self.short_scalp_mode_name}_stoploss_doom"
+      elif is_system_v3:
         # Stoplosses
         if profit_stake < -(
           filled_entries[0].cost
