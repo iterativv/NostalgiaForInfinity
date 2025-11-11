@@ -81,6 +81,7 @@
     {
       "method": "FullTradesFilter"
     },
+    { "method": "DelistFilter" },
     {
       "method": "SpreadFilter",
       "max_spread_ratio": 0.005

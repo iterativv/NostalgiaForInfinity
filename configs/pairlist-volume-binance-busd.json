@@ -7,6 +7,7 @@
       "refresh_period": 1800
     },
     { "method": "FullTradesFilter" },
+    { "method": "DelistFilter" },
     { "method": "AgeFilter", "min_days_listed": 60 },
     {
       "method": "PriceFilter",
