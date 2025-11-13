@@ -31,6 +31,11 @@
 set +e
 
 # ============================================================================
+# Get absolute script directory (works with cron and relative paths)
+# ============================================================================
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# ============================================================================
 # Color Codes
 # ============================================================================
 
@@ -48,7 +53,6 @@ NC='\033[0m' # No Color
 # Constants and Variables
 # ============================================================================
 
-SCRIPT_DIR=$(dirname "$0")
 CONFIG_FILE="$SCRIPT_DIR/config.cfg"
 LOCAL_COMMIT_FILE="$SCRIPT_DIR/commit.txt"
 LOG_FILE="$SCRIPT_DIR/update.log"
@@ -109,6 +113,21 @@ validate_file_extension() {
         fi
     done
     return 0
+}
+
+# ============================================================================
+# Resolve path to absolute if relative
+# ============================================================================
+
+resolve_path() {
+    local path="$1"
+    if [[ "$path" == /* ]]; then
+        # Already absolute
+        echo "$path"
+    else
+        # Make it absolute relative to script directory
+        echo "$SCRIPT_DIR/$path"
+    fi
 }
 
 # ============================================================================
@@ -625,6 +644,9 @@ copy_updated_files() {
 
     monitored_files=$(echo "$monitored_files" | tr ',' ' ')
 
+    # Resolve destination to absolute path
+    destination=$(resolve_path "$destination")
+    
     log "Copying updated files to: $destination"
 
     while IFS= read -r changed_file; do
@@ -673,6 +695,9 @@ stop_docker_compose() {
         return 0
     fi
 
+    # Resolve to absolute path
+    docker_file=$(resolve_path "$docker_file")
+    
     if [ ! -f "$docker_file" ]; then
         log "WARNING: Docker file not found: $docker_file"
         return 1
@@ -693,7 +718,14 @@ stop_docker_compose() {
 start_docker_compose() {
     local docker_file="$1"
 
-    if [[ -z "$docker_file" || ! -f "$docker_file" ]]; then
+    if [[ -z "$docker_file" ]]; then
+        return 0
+    fi
+
+    # Resolve to absolute path
+    docker_file=$(resolve_path "$docker_file")
+    
+    if [ ! -f "$docker_file" ]; then
         return 0
     fi
 
