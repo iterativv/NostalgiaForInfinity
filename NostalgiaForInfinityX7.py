@@ -594,8 +594,8 @@ class NostalgiaForInfinityX7(IStrategy):
   system_v3_rebuy_mode_stake_multiplier = 0.20
   system_v3_rebuy_mode_stakes_spot = [1.0, 1.0, 1.0, 1.0]
   system_v3_rebuy_mode_stakes_futures = [1.0, 1.0, 1.0, 1.0]
-  system_v3_rebuy_mode_thresholds_spot = [-0.08, -0.10, -0.12, -0.14]
-  system_v3_rebuy_mode_thresholds_futures = [-0.08, -0.10, -0.12, -0.14]
+  system_v3_rebuy_mode_thresholds_spot = [-0.08, -0.12, -0.16, -0.20]
+  system_v3_rebuy_mode_thresholds_futures = [-0.08, -0.12, -0.16, -0.20]
 
   # Rapid mode
   rapid_mode_stake_multiplier_spot = [0.75]
