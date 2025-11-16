@@ -15811,7 +15811,7 @@ class NostalgiaForInfinityX6(IStrategy):
           )
           # 15m down move, 15m still not low enough, 1h high
           long_entry_logic.append(
-            (df["RSI_3_15m"] > 3.0) | (df["AROONU_14_15m"] < 30.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 70.0)
+            (df["RSI_3_15m"] > 3.0) | (df["AROONU_14_15m"] < 20.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 60.0)
           )
           # 15m down move, 15m still not low enough, 4h high
           long_entry_logic.append(
