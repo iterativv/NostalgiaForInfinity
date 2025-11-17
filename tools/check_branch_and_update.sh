@@ -3,7 +3,7 @@
 ###############################################################################
 # NostalgiaForInfinity Git-based Update Script
 ###############################################################################
-# 
+#
 # This script automates the process of checking for updates from the main
 # branch of the NFI repository (not releases), downloading changes,
 # updating specified files, and optionally restarting a Docker container.
@@ -186,22 +186,22 @@ yes_no_prompt() {
     local prompt="$1"
     local default="$2"
     local response
-    
+
     echo ""
     if [[ "$default" == "y" ]]; then
         read -p "$(cecho $CYAN '  ➜ ')$(cecho $WHITE "$prompt (Y/n): ")" response
     else
         read -p "$(cecho $CYAN '  ➜ ')$(cecho $WHITE "$prompt (y/N): ")" response
     fi
-    
+
     # Trim whitespace and convert to lowercase
     response="$(echo "$response" | xargs | tr '[:upper:]' '[:lower:]')"
-    
+
     # If empty, use default
     if [[ -z "$response" ]]; then
         response="$default"
     fi
-    
+
     # Return 0 if yes, 1 if no
     if [[ "$response" == "y" ]]; then
         return 0
@@ -225,9 +225,9 @@ create_config() {
     cecho "$MAGENTA" "║        NostalgiaForInfinity Update Script Setup Wizard             ║"
     cecho "$MAGENTA" "║                                                                    ║"
     cecho "$MAGENTA" "╚════════════════════════════════════════════════════════════════════╝"
-    
+
     echo ""
-    
+
     # Step 1: Strategy Files (MULTIPLE ALLOWED)
     print_header "1/6" "REQUIRED - Strategy Files"
     print_input "  Which strategy files do you want to update?"
@@ -236,7 +236,7 @@ create_config() {
     echo ""
     read -p "$(cecho $CYAN '  ➜ ')$(cecho $WHITE 'Strategy files (default: NostalgiaForInfinityX7.py): ')" strategy_file
     strategy_file=${strategy_file:-NostalgiaForInfinityX7.py}
-    
+
     if ! validate_file_extension "$strategy_file" ".py"; then
         print_warn "Invalid file extension - must be .py"
         strategy_file="NostalgiaForInfinityX7.py"
@@ -257,7 +257,7 @@ create_config() {
     echo ""
     read -p "$(cecho $CYAN '  ➜ ')$(cecho $WHITE 'Config files (default: blacklist-binance.json): ')" config_files
     config_files=${config_files:-blacklist-binance.json}
-    
+
     if ! validate_file_extension "$config_files" ".json"; then
         print_warn "Invalid file extension - must be .json"
         config_files="blacklist-binance.json"
@@ -272,7 +272,7 @@ create_config() {
     # Step 3: Ask if user wants Additional Files
     print_header "3/6" "OPTIONAL - Additional Files"
     print_input "  Do you want to monitor additional files?"
-    
+
     cecho "$RED" "╔════════════════════════════════════════════════════════════════════╗"
     cecho "$RED" "║  IMPORTANT for Additional Files                                    ║"
     cecho "$RED" "╚════════════════════════════════════════════════════════════════════╝"
@@ -280,12 +280,12 @@ create_config() {
     print_warn "IMPORTANT: Separate with commas ONLY, NO SPACES! (e.g., file1,file2)"
     print_warn "Example: If Git has 'tools/update.sh', you must add exactly 'tools/update.sh'"
     print_warn "         Root '../' + 'tools/update.sh' = '../tools/update.sh'"
-    
+
     print_info "Examples: tools/update_nfx.sh"
-    
+
     local additional_files=""
     local additional_root="../"
-    
+
     if yes_no_prompt "Monitor additional files?" "n"; then
         # Set root directory
         echo ""
@@ -306,26 +306,26 @@ create_config() {
         print_warn "WARNING: Do not add this update script itself!"
         print_info "Leave blank and press Enter when done"
         echo ""
-        
+
         local file_count=0
-        
+
         while true; do
             read -p "$(cecho $CYAN '  ➜ ')$(cecho $WHITE "Additional file #$((file_count + 1)) (or press Enter to skip): ")" additional_file
-            
+
             if [[ -z "$additional_file" ]]; then
                 break
             fi
-            
+
             if [[ -n "$additional_files" ]]; then
                 additional_files+=",$additional_file"
             else
                 additional_files="$additional_file"
             fi
-            
+
             print_ok "Added: $additional_file"
             ((file_count++))
         done
-        
+
         if [[ -n "$additional_files" ]]; then
             print_ok "Total additional files: $file_count"
             print_ok "All files: $additional_files"
@@ -340,7 +340,7 @@ create_config() {
 
     # Step 4: Docker Compose
     print_header "4/6" "OPTIONAL - Docker Compose"
-    
+
     local docker_compose_path=""
     if yes_no_prompt "Do you want to restart Docker containers on update?" "y"; then
         echo ""
@@ -353,7 +353,7 @@ create_config() {
 
     # Step 5: Cleanup
     print_header "5/6" "OPTIONAL - Cleanup"
-    
+
     local cleanup_old_files="n"
     if yes_no_prompt "Clean up temporary files after update?" "y"; then
         cleanup_old_files="y"
@@ -365,15 +365,15 @@ create_config() {
 
     # Step 6: Telegram
     print_header "6/6" "OPTIONAL - Telegram Notifications"
-    
+
     local telegram_bot_token=""
     local telegram_chat_id=""
-    
+
     if yes_no_prompt "Enable Telegram notifications?" "n"; then
         echo ""
         print_input "  Enter your Telegram credentials:"
         read -p "$(cecho $CYAN '  ➜ ')$(cecho $WHITE 'Bot token: ')" telegram_bot_token
-        
+
         if [[ -n "$telegram_bot_token" ]]; then
             read -p "$(cecho $CYAN '  ➜ ')$(cecho $WHITE 'Chat ID: ')" telegram_chat_id
             print_ok "Telegram notifications enabled"
@@ -419,19 +419,19 @@ EOF
     cecho "$MAGENTA" "║                  CONFIGURATION SUMMARY                             ║"
     cecho "$MAGENTA" "║                                                                    ║"
     cecho "$MAGENTA" "╚════════════════════════════════════════════════════════════════════╝"
-    
+
     echo ""
     cecho "$CYAN" "  📋 STRATEGY FILES"
     print_sep_small
     print_info "Files: $strategy_file"
     print_info "Destination: $strategy_dest"
-    
+
     echo ""
     cecho "$CYAN" "  📋 CONFIG FILES (JSON)"
     print_sep_small
     print_info "Files: $config_files"
     print_info "Destination: $config_dest"
-    
+
     echo ""
     cecho "$CYAN" "  📋 ADDITIONAL FILES"
     print_sep_small
@@ -442,7 +442,7 @@ EOF
     else
         print_warn "Disabled"
     fi
-    
+
     echo ""
     cecho "$CYAN" "  🐳 DOCKER COMPOSE"
     print_sep_small
@@ -452,7 +452,7 @@ EOF
     else
         print_warn "Disabled"
     fi
-    
+
     echo ""
     cecho "$CYAN" "  🧹 CLEANUP"
     print_sep_small
@@ -461,7 +461,7 @@ EOF
     else
         print_warn "Disabled - Temp files will be kept"
     fi
-    
+
     echo ""
     cecho "$CYAN" "  📱 TELEGRAM NOTIFICATIONS"
     print_sep_small
@@ -472,7 +472,7 @@ EOF
     else
         print_warn "Disabled"
     fi
-    
+
     echo ""
     print_sep
     print_ok "Configuration saved to $CONFIG_FILE"
@@ -488,11 +488,11 @@ EOF
 files_are_identical() {
     local file1="$1"
     local file2="$2"
-    
+
     if [ ! -f "$file1" ] || [ ! -f "$file2" ]; then
         return 1
     fi
-    
+
     cmp -s "$file1" "$file2" 2>/dev/null
     return $?
 }
@@ -503,25 +503,25 @@ files_are_identical() {
 
 add_updated_file() {
     local file="$1"
-    
+
     for existing_file in "${UPDATED_FILES_ARRAY[@]}"; do
         if [[ "$existing_file" == "$file" ]]; then
             return 0
         fi
     done
-    
+
     UPDATED_FILES_ARRAY+=("$file")
 }
 
 send_telegram_notification() {
     local message="$1"
-    
+
     if [[ -z "$telegram_bot_token" || -z "$telegram_chat_id" ]]; then
         return 0
     fi
 
     log "Sending Telegram notification..."
-    
+
     # disable_web_page_preview=true removes link previews
     curl -s -X POST "https://api.telegram.org/bot$telegram_bot_token/sendMessage" \
         -d "chat_id=$telegram_chat_id&text=$message&parse_mode=HTML&disable_web_page_preview=true" 2>/dev/null
@@ -538,7 +538,7 @@ init_or_update_git_repo() {
         log "Cloning $GITHUB_REPO repository..."
         git clone --branch "$GITHUB_BRANCH" --depth 1 \
             "https://github.com/$GITHUB_USER/$GITHUB_REPO.git" "$TEMP_DIR" 2>&1 | tee -a "$LOG_FILE"
-        
+
         if [ ! -d "$TEMP_DIR/.git" ]; then
             log_error "Failed to clone repository"
         fi
@@ -548,13 +548,13 @@ init_or_update_git_repo() {
         # Fix git safe.directory issue - mark temp directory as safe
         git config --global --add safe.directory "$TEMP_DIR" 2>/dev/null || true
         (cd "$TEMP_DIR" && git fetch origin "$GITHUB_BRANCH" 2>&1 | tee -a "$LOG_FILE")
-        
+
         if [ $? -ne 0 ]; then
             log "WARNING: Git fetch failed. Removing temp directory and retrying..."
             rm -rf "$TEMP_DIR" 2>/dev/null || true
             git clone --branch "$GITHUB_BRANCH" --depth 1 \
                 "https://github.com/$GITHUB_USER/$GITHUB_REPO.git" "$TEMP_DIR" 2>&1 | tee -a "$LOG_FILE"
-            
+
             if [ ! -d "$TEMP_DIR/.git" ]; then
                 log_error "Failed to clone repository after retry"
             fi
@@ -567,15 +567,15 @@ init_or_update_git_repo() {
 get_remote_commit() {
     local commit_hash
     commit_hash=$(cd "$TEMP_DIR" && git rev-parse origin/"$GITHUB_BRANCH" 2>/dev/null)
-    
+
     if [[ -z "$commit_hash" ]]; then
         commit_hash=$(cd "$TEMP_DIR" && git rev-parse HEAD 2>/dev/null)
     fi
-    
+
     if [[ -z "$commit_hash" ]]; then
         log_error "Failed to retrieve commit hash"
     fi
-    
+
     echo "$commit_hash"
 }
 
@@ -591,10 +591,10 @@ get_changed_files() {
         # For shallow clones, use git show to get file list from each commit
         local old_files=$(cd "$TEMP_DIR" && git ls-tree -r --name-only "$old_commit" 2>/dev/null)
         local new_files=$(cd "$TEMP_DIR" && git ls-tree -r --name-only "$new_commit" 2>/dev/null)
-        
+
         # Find differences between the two file lists
         CHANGED_FILES=$(comm -23 <(echo "$new_files" | sort) <(echo "$old_files" | sort))
-        
+
         # If no additions, try to find modified files
         if [[ -z "$CHANGED_FILES" ]]; then
             CHANGED_FILES=$(comm -2 <(echo "$new_files" | sort) <(echo "$old_files" | sort))
@@ -604,26 +604,26 @@ get_changed_files() {
     if [[ -z "$CHANGED_FILES" ]]; then
         return 1
     fi
-    
+
     return 0
 }
 
 has_monitored_files_changed() {
     local monitored_files="$1"
-    
+
     if [[ -z "$monitored_files" ]]; then
         return 1
     fi
-    
+
     monitored_files=$(echo "$monitored_files" | tr ',' ' ')
 
     while IFS= read -r changed_file; do
         [[ -z "$changed_file" ]] && continue
-        
+
         for monitored_file in $monitored_files; do
             monitored_file=$(echo "$monitored_file" | xargs)
             [[ -z "$monitored_file" ]] && continue
-            
+
             if [[ "$changed_file" == *"$monitored_file" ]]; then
                 return 0
             fi
@@ -646,25 +646,25 @@ copy_updated_files() {
 
     # Resolve destination to absolute path
     destination=$(resolve_path "$destination")
-    
+
     log "Copying updated files to: $destination"
 
     while IFS= read -r changed_file; do
         [[ -z "$changed_file" ]] && continue
-        
+
         for monitored_file in $monitored_files; do
             monitored_file=$(echo "$monitored_file" | xargs)
             [[ -z "$monitored_file" ]] && continue
-            
+
             if [[ "$changed_file" == *"$monitored_file" ]]; then
                 local source_file="$TEMP_DIR/$changed_file"
                 # Keep directory structure - don't use basename
                 local dest_file="$destination/$monitored_file"
-                
+
                 if [ -f "$source_file" ]; then
                     # Create directory structure if needed
                     mkdir -p "$(dirname "$dest_file")" 2>/dev/null || true
-                    
+
                     # On first run, always update regardless of file content
                     if [[ "$is_first_run" == "yes" ]]; then
                         cp "$source_file" "$dest_file" 2>/dev/null || true
@@ -697,14 +697,14 @@ stop_docker_compose() {
 
     # Resolve to absolute path
     docker_file=$(resolve_path "$docker_file")
-    
+
     if [ ! -f "$docker_file" ]; then
         log "WARNING: Docker file not found: $docker_file"
         return 1
     fi
 
     log "Stopping Docker Compose..."
-    
+
     docker compose -f "$docker_file" down 2>&1 | tee -a "$LOG_FILE"
     if [ ${PIPESTATUS[0]} -eq 0 ]; then
         log "✓ Docker stopped."
@@ -724,13 +724,13 @@ start_docker_compose() {
 
     # Resolve to absolute path
     docker_file=$(resolve_path "$docker_file")
-    
+
     if [ ! -f "$docker_file" ]; then
         return 0
     fi
 
     log "Starting Docker Compose..."
-    
+
     docker compose -f "$docker_file" up -d 2>&1 | tee -a "$LOG_FILE"
     if [ ${PIPESTATUS[0]} -eq 0 ]; then
         log "✓ Docker started."
@@ -748,7 +748,7 @@ start_docker_compose() {
 cleanup_temp_files() {
     if [[ "$cleanup_old_files" == "y" ]]; then
         log "Cleaning up temporary files..."
-        
+
         if [ -d "$TEMP_DIR" ]; then
             rm -rf "$TEMP_DIR" 2>/dev/null || true
             log "✓ Cleanup complete."
@@ -851,10 +851,10 @@ main() {
     # Update files
     [[ -n "$strategy_file" ]] && has_monitored_files_changed "$strategy_file" && \
         copy_updated_files "$strategy_file" "$strategy_dest" "$is_first_run"
-    
+
     [[ -n "$config_files" ]] && has_monitored_files_changed "$config_files" && \
         copy_updated_files "$config_files" "$config_dest" "$is_first_run"
-    
+
     [[ -n "$additional_files" ]] && has_monitored_files_changed "$additional_files" && \
         copy_updated_files "$additional_files" "$additional_root" "$is_first_run"
 
@@ -876,18 +876,18 @@ main() {
         msg+="<b>Time:</b> $(date '+%Y-%m-%d %H:%M:%S')%0A"
         msg+="%0A"
         msg+="<b>📁 Updated Files:</b>%0A"
-        
+
         for file in "${UPDATED_FILES_ARRAY[@]}"; do
             msg+="✅ $file%0A"
         done
-        
+
         msg+="%0A"
-        
+
         # Show diff link only on updates, not on first run
         if [[ "$is_first_run" != "yes" ]]; then
             msg+="🔗 https://github.com/$GITHUB_USER/$GITHUB_REPO/compare/${OLD_COMMIT:0:8}...${NEW_COMMIT:0:8}"
         fi
-        
+
         send_telegram_notification "$msg"
     fi
 
