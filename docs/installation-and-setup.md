@@ -135,19 +135,39 @@ Proper configuration is crucial for the strategy to function correctly.
 
 ### Copy Recommended Configuration
 
-Start by copying the recommended configuration file to your Freqtrade user data directory:
+Start by copying the recommended configuration file for your exchange to your Freqtrade user data directory. A dedicated JSON file is provided for each supported exchange, for example:
 
 ```bash
-cp configs/recommended_config.json user_data/config.json
+cp configs/recommended_config-binance.json user_data/config.json
 ```
 
-The `recommended_config.json` file contains essential settings, including the strategy name and a list of additional configuration files to load:
+Other available options include:
+
+- `configs/recommended_config-bitget.json`
+- `configs/recommended_config-bitmart.json`
+- `configs/recommended_config-bitvavo.json`
+- `configs/recommended_config-bybit.json`
+- `configs/recommended_config-gateio.json`
+- `configs/recommended_config-htx.json`
+- `configs/recommended_config-hyperliquid.json`
+- `configs/recommended_config-kraken.json`
+- `configs/recommended_config-kucoin.json`
+- `configs/recommended_config-mexc.json`
+- `configs/recommended_config-okx.json`
+
+If you want a more opinionated starting point, two optimized templates are available in `templates/`:
+
+- `templates/freqtrade-optimized-template.json` for a lean Freqtrade-only setup with the core add-on files pre-wired.
+- `templates/freqai-optimized-template.json` for running NostalgiaForInfinity with FreqAI training parameters already scaffolded.
+- `templates/hyperopt-optimized-template.json` for launching Hyperopt with the common add-on files and loss/space defaults pre-set.
+
+Each recommended configuration defines the strategy name and a list of additional configuration files to load. For Binance futures, the file looks like this:
 
 ```json
 {
-  "strategy": "NostalgiaForInfinityX6",
+  "strategy": "NostalgiaForInfinityX7",
   "add_config_files": [
-    "../configs/trading_mode-spot.json",
+    "../configs/trading_mode-futures.json",
     "../configs/pairlist-volume-binance-usdt.json",
     "../configs/blacklist-binance.json",
     "../configs/exampleconfig.json",
@@ -158,8 +178,109 @@ The `recommended_config.json` file contains essential settings, including the st
 
 These files define trading mode, pair selection, blacklists, and secret credentials.
 
+### Running a quick backtest
+
+1. Copy the Binance example config into `user_data/config.json`:
+
+   ```bash
+   cp configs/recommended_config-binance.json user_data/config.json
+   ```
+
+2. Download a small amount of OHLCV data for the pairs and timeframes you want to test (adjust the date range, pairs, and timeframes as needed):
+
+   ```bash
+   freqtrade download-data --config user_data/config.json --timeframes 5m 1h --timerange 20230101-20230131 -p BTC/USDT ETH/USDT
+   ```
+
+3. Run backtesting against the downloaded data using NostalgiaForInfinityX7:
+
+   ```bash
+   freqtrade backtesting --config user_data/config.json --strategy NostalgiaForInfinityX7 --timeframe 5m --timerange 20230101-20230131 -p BTC/USDT ETH/USDT
+   ```
+
+### Backtesting with FreqAI
+
+To exercise the FreqAI template after downloading data (including the additional 1h timeframe used for features):
+
+```bash
+cp templates/freqai-optimized-template.json user_data/config-freqai.json
+freqtrade backtesting --config user_data/config-freqai.json --strategy NostalgiaForInfinityX7 --timeframe 5m --timerange 20230101-20230131 -p BTC/USDT ETH/USDT
+```
+
+If network access to your exchange is restricted, both the data download step and the FreqAI backtest will fail; make sure the environment can reach the exchange API endpoints before rerunning the commands.
+
 **Section sources**
-- [configs/recommended_config.json](file://configs/recommended_config.json#L1-L18)
+- [configs/recommended_config-binance.json](file://configs/recommended_config-binance.json#L1-L18)
+
+## Command index: config creation and data preparation
+
+Use the following quick-reference commands to create configs and prepare matching historical data. Adjust exchange names, pairs, and timeranges to fit your target run.
+
+### Create Freqtrade configs
+
+- Copy a recommended exchange config into place (example for Binance):
+
+  ```bash
+  cp configs/recommended_config-binance.json user_data/config.json
+  ```
+
+- Swap to another exchange by choosing the corresponding recommended file (e.g., `configs/recommended_config-okx.json`, `configs/recommended_config-kucoin.json`, etc.).
+
+- Start from the optimized Freqtrade template (pre-linked add-on files):
+
+  ```bash
+  cp templates/freqtrade-optimized-template.json user_data/config.json
+  ```
+
+- Prepare the optimized FreqAI template for model training/backtesting:
+
+  ```bash
+  cp templates/freqai-optimized-template.json user_data/config-freqai.json
+  ```
+
+- Create a ready-to-run Hyperopt config with the recommended loss and search spaces:
+
+  ```bash
+  cp templates/hyperopt-optimized-template.json user_data/config-hyperopt.json
+  ```
+
+### Download historical data
+
+- Download OHLCV data for the configured pairs and timeframes before backtesting:
+
+  ```bash
+  freqtrade download-data --config user_data/config.json --timeframes 5m 1h --timerange 20230101-20230131 -p BTC/USDT ETH/USDT
+  ```
+
+### Run backtests on the downloaded data
+
+- Standard backtest with NostalgiaForInfinityX7 on 5m candles:
+
+  ```bash
+  freqtrade backtesting --config user_data/config.json --strategy NostalgiaForInfinityX7 --timeframe 5m --timerange 20230101-20230131 -p BTC/USDT ETH/USDT
+  ```
+
+- FreqAI backtest using the optimized config (keeps timerange/pairs in sync with downloaded data):
+
+  ```bash
+  freqtrade backtesting --config user_data/config-freqai.json --strategy NostalgiaForInfinityX7 --timeframe 5m --timerange 20230101-20230131 -p BTC/USDT ETH/USDT
+  ```
+
+## Run Hyperopt on the downloaded data
+
+- Execute Hyperopt with the optimized config, aligning pairs/timeframes with the downloaded dataset and picking a suitable epoch count for your hardware:
+
+  ```bash
+  freqtrade hyperopt \
+    --config user_data/config-hyperopt.json \
+    --strategy NostalgiaForInfinityX7 \
+    --hyperopt-loss SharpeHyperOptLossDaily \
+    --spaces buy sell roi stoploss \
+    --timeframe 5m \
+    --timerange 20230101-20230131 \
+    -p BTC/USDT ETH/USDT \
+    --epochs 50
+  ```
 
 ## Setting Up API Keys and Exchange Credentials
 

@@ -1,0 +1,48 @@
+{
+  // Optimized Hyperopt configuration template for NostalgiaForInfinity
+  // Copy to user_data/config-hyperopt.json and adjust add_config_files for your exchange
+  "strategy": "NostalgiaForInfinityX7",
+  "timeframe": "5m",
+  "dry_run": true,
+  "dry_run_wallet": 10000,
+  "max_open_trades": 8,
+  "stake_currency": "USDT",
+  "stake_amount": "unlimited",
+  "tradable_balance_ratio": 0.99,
+  "fiat_display_currency": "USD",
+  "grinding_enable": true,
+  "force_entry_enable": true,
+  "initial_state": "running",
+  "hyperopt": {
+    "loss": "SharpeHyperOptLossDaily",
+    "spaces": ["buy", "sell", "roi", "stoploss"],
+    "num_jobs": -1,
+    "random_state": 42,
+    "prevent_timeout": true,
+    "min_trades": 10
+  },
+  "add_config_files": [
+    "../configs/trading_mode-futures.json",
+    "../configs/pairlist-volume-binance-usdt.json",
+    "../configs/blacklist-binance.json",
+    "../configs/exampleconfig.json",
+    "../configs/exampleconfig_secret.json"
+  ],
+  "exchange": {
+    "name": "",
+    "key": "",
+    "password": "",
+    "secret": "",
+    "ccxt_config": {
+      "enableRateLimit": true,
+      "rateLimit": 60
+    },
+    "ccxt_async_config": {
+      "enableRateLimit": true,
+      "rateLimit": 60
+    }
+  },
+  "internals": {
+    "process_throttle_secs": 5
+  }
+}

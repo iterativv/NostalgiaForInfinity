@@ -1,0 +1,92 @@
+{
+  // Optimized FreqAI configuration template for NostalgiaForInfinity
+  // Copy to user_data/config.json and customize exchange + model settings
+  "strategy": "NostalgiaForInfinityX7",
+  "dry_run": true,
+  "max_open_trades": 8,
+  "stake_currency": "USDT",
+  "stake_amount": "unlimited",
+  "tradable_balance_ratio": 0.99,
+  "fiat_display_currency": "USD",
+  "grinding_enable": true,
+  "force_entry_enable": true,
+  "initial_state": "running",
+  "timeframe": "5m",
+  "freqai": {
+    "enabled": true,
+    "identifier": "nfi-xgboost-return-forecast",
+    "model_path": "user_data/freqaimodels",
+    "live_trained": true,
+    "data_provider": "freqtrade",
+    "labeling_params": {
+      "future_period_minutes": 60,
+      "future_price_type": "close",
+      "labeling_technique": "future_return"
+    },
+    "feature_parameters": {
+      "include_corr_pairs": [],
+      "include_timeframes": ["5m", "1h"],
+      "price_transformations": ["roc", "percent_change"],
+      "ta_features": [
+        {"ind": "rsi", "length": 14},
+        {"ind": "ema", "length": 12},
+        {"ind": "ema", "length": 50},
+        {"ind": "atr", "length": 14}
+      ]
+    },
+    "data_split_parameters": {
+      "train_test_split": 0.8,
+      "shuffle": true,
+      "random_seed": 42
+    },
+    "model_training_parameters": {
+      "package": "xgboost",
+      "model_class": "XGBRegressor",
+      "params": {
+        "n_estimators": 400,
+        "max_depth": 6,
+        "learning_rate": 0.05,
+        "subsample": 0.9,
+        "colsample_bytree": 0.9,
+        "min_child_weight": 1,
+        "gamma": 0.1,
+        "reg_alpha": 0.0,
+        "reg_lambda": 1.0
+      }
+    },
+    "prediction_parameters": {
+      "include_protections": true,
+      "prediction_lag": 1,
+      "window_size": 12
+    },
+    "backtesting": {
+      "enabled": true,
+      "start_date": "2023-01-01",
+      "end_date": "2023-12-31"
+    }
+  },
+  "add_config_files": [
+    "../configs/trading_mode-futures.json",
+    "../configs/pairlist-volume-binance-usdt.json",
+    "../configs/blacklist-binance.json",
+    "../configs/exampleconfig.json",
+    "../configs/exampleconfig_secret.json"
+  ],
+  "exchange": {
+    "name": "",
+    "key": "",
+    "password": "",
+    "secret": "",
+    "ccxt_config": {
+      "enableRateLimit": true,
+      "rateLimit": 60
+    },
+    "ccxt_async_config": {
+      "enableRateLimit": true,
+      "rateLimit": 60
+    }
+  },
+  "internals": {
+    "process_throttle_secs": 5
+  }
+}

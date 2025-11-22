@@ -1,0 +1,18 @@
+{
+  // This configuration targets Bitget
+  // Please use at own risk
+  // For full documentation on Freqtrade configuration files please visit https://www.freqtrade.io/en/stable/configuration/
+  // Copy this file to user_data/config.json
+  // make sure your secret files are really in a secret place
+  // copy configs/exampleconfig_secret.json to user_data/config-private.json
+  // Change     "dry_run": true, to     "dry_run": false, after testing
+
+  "strategy": "NostalgiaForInfinityX7",
+  "add_config_files": [
+    "../configs/trading_mode-futures.json",
+    "../configs/pairlist-volume-bitget-usdt.json",
+    "../configs/blacklist-bitget.json",
+    "../configs/exampleconfig.json",
+    "../configs/exampleconfig_secret.json"
+  ]
+}

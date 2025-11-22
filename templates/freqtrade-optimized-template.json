@@ -1,0 +1,73 @@
+{
+  // Optimized Freqtrade configuration template for NostalgiaForInfinity
+  // Copy to user_data/config.json and adjust add_config_files for your exchange
+  "strategy": "NostalgiaForInfinityX7",
+  "dry_run": true,
+  "dry_run_wallet": 10000,
+  "max_open_trades": 8,
+  "stake_currency": "USDT",
+  "stake_amount": "unlimited",
+  "tradable_balance_ratio": 0.99,
+  "fiat_display_currency": "USD",
+  "grinding_enable": true,
+  "force_entry_enable": true,
+  "initial_state": "running",
+  "timeframe": "5m",
+  "unfilledtimeout": {
+    "entry": 3,
+    "exit": 2,
+    "exit_timeout_count": 0,
+    "unit": "minutes"
+  },
+  "order_types": {
+    "entry": "limit",
+    "exit": "limit",
+    "emergency_exit": "limit",
+    "force_entry": "limit",
+    "force_exit": "limit",
+    "stoploss": "limit",
+    "stoploss_on_exchange": false,
+    "stoploss_on_exchange_interval": 60,
+    "stoploss_on_exchange_limit_ratio": 0.99
+  },
+  "entry_pricing": {
+    "price_side": "other",
+    "use_order_book": false,
+    "order_book_top": 1,
+    "price_last_balance": 0,
+    "check_depth_of_market": {
+      "enabled": false,
+      "bids_to_ask_delta": 1
+    }
+  },
+  "exit_pricing": {
+    "price_side": "other",
+    "use_order_book": false,
+    "order_book_top": 1,
+    "price_last_balance": 0
+  },
+  "exchange": {
+    "name": "",
+    "key": "",
+    "password": "",
+    "secret": "",
+    "ccxt_config": {
+      "enableRateLimit": true,
+      "rateLimit": 60
+    },
+    "ccxt_async_config": {
+      "enableRateLimit": true,
+      "rateLimit": 60
+    }
+  },
+  "add_config_files": [
+    "../configs/trading_mode-futures.json",
+    "../configs/pairlist-volume-binance-usdt.json",
+    "../configs/blacklist-binance.json",
+    "../configs/exampleconfig.json",
+    "../configs/exampleconfig_secret.json"
+  ],
+  "internals": {
+    "process_throttle_secs": 5
+  }
+}
