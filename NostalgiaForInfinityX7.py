@@ -15286,6 +15286,8 @@ class NostalgiaForInfinityX7(IStrategy):
             )
             # 4h down move, 4h high
             & ((df["RSI_3_4h"] > 40.0) | (df["AROONU_14_4h"] < 100.0))
+            # 1d green, 4h down move, 4h still high
+            & ((df["change_pct_1d"] < 40.0) | (df["RSI_3_4h"] > 35.0) | (df["AROONU_14_4h"] < 40.0))
           )
 
           # Logic
