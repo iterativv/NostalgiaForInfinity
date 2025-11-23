@@ -80,6 +80,7 @@ class NostalgiaForInfinityX7(IStrategy):
   trailing_stop_positive_offset = 0.03
 
   use_custom_stoploss = False
+  stoploss_on_exchange = False
 
   # Optimal timeframe for the strategy.
   timeframe = "5m"
