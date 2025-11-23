@@ -69,7 +69,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.1.311"
+    return "v17.2.0"
 
   stoploss = -0.99
 
@@ -495,16 +495,16 @@ class NostalgiaForInfinityX7(IStrategy):
   system_v3_stop_threshold_scalp_spot = 0.14
   system_v3_stop_threshold_scalp_futures = 0.35
 
-  system_v3_1_stop_threshold_doom_spot = 0.40
-  system_v3_1_stop_threshold_doom_futures = 1.00
-  system_v3_1_stop_threshold_spot_rebuy = 0.70
-  system_v3_1_stop_threshold_futures_rebuy = 1.75
-  system_v3_1_stop_threshold_rapid_spot = 0.40
-  system_v3_1_stop_threshold_rapid_futures = 1.00
-  system_v3_1_stop_threshold_scalp_spot = 0.40
-  system_v3_1_stop_threshold_scalp_futures = 1.00
+  system_v3_1_stop_threshold_doom_spot = 0.24
+  system_v3_1_stop_threshold_doom_futures = 0.70
+  system_v3_1_stop_threshold_spot_rebuy = 0.47
+  system_v3_1_stop_threshold_futures_rebuy = 1.40
+  system_v3_1_stop_threshold_rapid_spot = 0.24
+  system_v3_1_stop_threshold_rapid_futures = 0.70
+  system_v3_1_stop_threshold_scalp_spot = 0.24
+  system_v3_1_stop_threshold_scalp_futures = 0.70
 
-  system_v3_1_stake_multiplier = 0.35
+  system_v3_1_stake_multiplier = 0.50
   system_v3_1_rebuy_stakes_spot = [1.0, 1.0]
   system_v3_1_rebuy_stakes_futures = [1.0, 1.0]
   system_v3_1_rebuy_thresholds_spot = [-0.09, -0.16, -0.16, -0.20]
@@ -591,7 +591,7 @@ class NostalgiaForInfinityX7(IStrategy):
   rebuy_mode_thresholds_futures = [-0.08, -0.10]
 
   # Rebuy mode v3
-  system_v3_rebuy_mode_stake_multiplier = 0.20
+  system_v3_rebuy_mode_stake_multiplier = 0.25
   system_v3_rebuy_mode_stakes_spot = [1.0, 1.0, 1.0, 1.0]
   system_v3_rebuy_mode_stakes_futures = [1.0, 1.0, 1.0, 1.0]
   system_v3_rebuy_mode_thresholds_spot = [-0.08, -0.12, -0.16, -0.20]
