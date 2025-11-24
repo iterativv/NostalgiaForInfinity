@@ -17983,6 +17983,14 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(
             (df["STOCHRSIk_14_14_3_3_15m"] > 70.0) | (df["ROC_9_1h"] < 30.0) | (df["ROC_9_4h"] < 60.0)
           )
+          # 1h & 4h overbought, 1h uptrend
+          short_entry_logic.append(
+            (df["ROC_9_1h"] < 10.0) | (df["ROC_9_4h"] < 40.0) | (df["CCI_20_change_pct_1h"] < 0.0)
+          )
+          # 1h & 4h overbought, 4h uptrend
+          short_entry_logic.append(
+            (df["ROC_9_1h"] < 10.0) | (df["ROC_9_4h"] < 40.0) | (df["CCI_20_change_pct_4h"] < 0.0)
+          )
           # 5m green, 15m still not high enough
           short_entry_logic.append((df["change_pct"] < 5.0) | (df["AROOND_14_15m"] < 50.0))
           # 5m green, 15m still not high enough
