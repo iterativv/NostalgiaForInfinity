@@ -69,7 +69,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.2.27"
+    return "v17.2.28"
 
   stoploss = -0.99
 
@@ -506,8 +506,8 @@ class NostalgiaForInfinityX7(IStrategy):
   system_v3_1_stop_threshold_scalp_futures = 0.70
 
   system_v3_1_stake_multiplier = 0.50
-  system_v3_1_rebuy_stakes_spot = [1.0, 1.0]
-  system_v3_1_rebuy_stakes_futures = [1.0, 1.0]
+  system_v3_1_rebuy_stakes_spot = [0.5, 0.5]
+  system_v3_1_rebuy_stakes_futures = [0.5, 0.5]
   system_v3_1_rebuy_thresholds_spot = [-0.09, -0.16, -0.16, -0.20]
   system_v3_1_rebuy_thresholds_futures = [-0.09, -0.16, -0.16, -0.20]
 
