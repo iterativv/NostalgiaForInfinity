@@ -8,7 +8,16 @@ Core Philosophy:
 - Trade the reversal after liquidity sweep (not the breakout)
 
 Author: Claude Code (based on trading notes)
-Version: 1.0.0
+Version: 1.1.0
+
+Changelog v1.1.0:
+- Fixed custom_stoploss calculation (increased ATR multiplier to 2.0)
+- Disabled trailing_stop temporarily for debugging
+- Improved PDH/PDL calculation using date grouping
+- Enhanced entry conditions with stricter filters
+- Added session filters (London/NY AM only)
+- Added trend alignment requirement (price vs EMA20)
+- Added data validation checks
 """
 
 import logging
@@ -40,7 +49,7 @@ class ICT_TimeBasedLiquidityStrategy(IStrategy):
 
     # Strategy version
     def version(self) -> str:
-        return "v1.0.0"
+        return "v1.1.0"
 
     # ROI table - conservative targets based on liquidity pools
     minimal_roi = {
@@ -53,10 +62,10 @@ class ICT_TimeBasedLiquidityStrategy(IStrategy):
     # Stoploss - will be managed dynamically based on swing points
     stoploss = -0.05  # 5% hard stop
 
-    # Trailing stoploss
-    trailing_stop = True
+    # Trailing stoploss - disabled initially to debug
+    trailing_stop = False
     trailing_stop_positive = 0.01
-    trailing_stop_positive_offset = 0.02
+    trailing_stop_positive_offset = 0.03
     trailing_only_offset_is_reached = True
 
     # Use custom stoploss
@@ -170,13 +179,28 @@ class ICT_TimeBasedLiquidityStrategy(IStrategy):
         """
 
         # Previous Day High/Low (PDH/PDL)
-        # Using rolling window to find previous day's high/low
-        dataframe['pdh'] = dataframe['high'].shift(288).rolling(window=288).max()  # 288 = 24h in 5m candles
-        dataframe['pdl'] = dataframe['low'].shift(288).rolling(window=288).min()
+        # Use date grouping for more accurate daily levels
+        dataframe['date_only'] = dataframe['date'].dt.date
+
+        # Calculate daily high/low
+        daily_high = dataframe.groupby('date_only')['high'].transform('max')
+        daily_low = dataframe.groupby('date_only')['low'].transform('min')
+
+        # Shift to get previous day's levels
+        dataframe['pdh'] = daily_high.shift(288)  # Shift by 1 day (288 candles)
+        dataframe['pdl'] = daily_low.shift(288)
+
+        # Forward fill to ensure all candles have the value
+        dataframe['pdh'] = dataframe['pdh'].ffill()
+        dataframe['pdl'] = dataframe['pdl'].ffill()
 
         # Previous Week High/Low (PWH/PWL)
-        dataframe['pwh'] = dataframe['high'].shift(2016).rolling(window=2016).max()  # 2016 = 7d in 5m candles
-        dataframe['pwl'] = dataframe['low'].shift(2016).rolling(window=2016).min()
+        # Use rolling 7-day window, shifted by 1 week
+        dataframe['pwh'] = dataframe['high'].rolling(window=2016, min_periods=1).max().shift(2016)
+        dataframe['pwl'] = dataframe['low'].rolling(window=2016, min_periods=1).min().shift(2016)
+
+        dataframe['pwh'] = dataframe['pwh'].ffill()
+        dataframe['pwl'] = dataframe['pwl'].ffill()
 
         # Asian Session High/Low
         # Calculate high/low during Asian session, then forward fill for use in other sessions
@@ -410,28 +434,39 @@ class ICT_TimeBasedLiquidityStrategy(IStrategy):
                 # Core condition: Bullish liquidity sweep
                 (dataframe['bullish_sweep'] == 1) &
 
-                # Bias filter: Either bullish bias or in favorable session
+                # Bias filter: Require bullish bias OR specific sweep type
                 (
                     (dataframe['bullish_bias'] == 1) |
+                    (dataframe['pdl_sweep'] == 1) |  # PDL sweep is strong signal
+                    (dataframe['pwl_sweep'] == 1)    # PWL sweep is very strong
+                ) &
+
+                # Session filter: Only trade during active sessions
+                (
                     (dataframe['is_london_session'] == 1) |
                     (dataframe['is_ny_am_session'] == 1)
                 ) &
 
-                # Optional FVG confirmation (or previous FVG exists nearby)
+                # FVG confirmation - require actual FVG formation
                 (
                     (dataframe['bullish_fvg'] == 1) |
-                    (dataframe['bullish_fvg'].shift(1) == 1) |
-                    (dataframe['bullish_fvg'].shift(2) == 1)
+                    (dataframe['bullish_fvg'].shift(1) == 1)
                 ) &
 
-                # Not overbought
-                (dataframe['rsi'] < 70) &
+                # RSI filter - not overbought
+                (dataframe['rsi'] < 65) &
+                (dataframe['rsi'] > 30) &  # Also not in extreme oversold
 
-                # Volume confirmation
+                # Volume confirmation - require strong volume
                 (dataframe['high_volume'] == 1) &
 
+                # Trend alignment - price above short-term MA
+                (dataframe['close'] > dataframe['ema_20']) &
+
                 # Ensure we have valid data
-                (dataframe['volume'] > 0)
+                (dataframe['volume'] > 0) &
+                (dataframe['pdl'].notna()) &
+                (dataframe['asian_low'].notna())
             ),
             ['enter_long', 'enter_tag']
         ] = (1, 'ict_liquidity_sweep_long')
@@ -448,28 +483,39 @@ class ICT_TimeBasedLiquidityStrategy(IStrategy):
                 # Core condition: Bearish liquidity sweep
                 (dataframe['bearish_sweep'] == 1) &
 
-                # Bias filter
+                # Bias filter: Require bearish bias OR specific sweep type
                 (
                     (dataframe['bearish_bias'] == 1) |
+                    (dataframe['pdh_sweep'] == 1) |  # PDH sweep is strong signal
+                    (dataframe['pwh_sweep'] == 1)    # PWH sweep is very strong
+                ) &
+
+                # Session filter: Only trade during active sessions
+                (
                     (dataframe['is_london_session'] == 1) |
                     (dataframe['is_ny_am_session'] == 1)
                 ) &
 
-                # Optional FVG confirmation
+                # FVG confirmation - require actual FVG formation
                 (
                     (dataframe['bearish_fvg'] == 1) |
-                    (dataframe['bearish_fvg'].shift(1) == 1) |
-                    (dataframe['bearish_fvg'].shift(2) == 1)
+                    (dataframe['bearish_fvg'].shift(1) == 1)
                 ) &
 
-                # Not oversold
-                (dataframe['rsi'] > 30) &
+                # RSI filter - not oversold
+                (dataframe['rsi'] > 35) &
+                (dataframe['rsi'] < 70) &  # Also not in extreme overbought
 
-                # Volume confirmation
+                # Volume confirmation - require strong volume
                 (dataframe['high_volume'] == 1) &
 
+                # Trend alignment - price below short-term MA
+                (dataframe['close'] < dataframe['ema_20']) &
+
                 # Ensure we have valid data
-                (dataframe['volume'] > 0)
+                (dataframe['volume'] > 0) &
+                (dataframe['pdh'].notna()) &
+                (dataframe['asian_high'].notna())
             ),
             ['enter_short', 'enter_tag']
         ] = (1, 'ict_liquidity_sweep_short')
@@ -547,24 +593,39 @@ class ICT_TimeBasedLiquidityStrategy(IStrategy):
         Custom stoploss logic based on swing points and ATR
 
         Stop loss should be placed beyond the swing point where liquidity was swept
+        Returns: stoploss value (negative for loss, positive for profit)
         """
 
-        dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
-        last_candle = dataframe.iloc[-1].squeeze()
+        try:
+            dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
+            if dataframe is None or len(dataframe) == 0:
+                return -0.05  # Fallback to default 5% stoploss
 
-        # Get ATR for dynamic stop
-        atr = last_candle['atr']
+            last_candle = dataframe.iloc[-1].squeeze()
 
-        if trade.is_short:
-            # For short trades, stop above recent swing high
-            # Use 1.5x ATR above entry as stop
-            stop_distance = (atr * 1.5) / current_rate
-            return stop_distance
-        else:
-            # For long trades, stop below recent swing low
-            # Use 1.5x ATR below entry as stop
-            stop_distance = (atr * 1.5) / trade.open_rate
-            return -stop_distance
+            # Get ATR for dynamic stop
+            atr = last_candle.get('atr', 0)
+            if atr == 0 or pd.isna(atr):
+                return -0.05  # Fallback if ATR not available
+
+            # Calculate stop based on ATR (2.0x for more breathing room)
+            # For long: stop = -2.0 * ATR / entry_price (as percentage)
+            # For short: stop = 2.0 * ATR / entry_price (as percentage)
+
+            atr_multiplier = 2.0  # Increased from 1.5 to give more room
+
+            if trade.is_short:
+                # For short trades, stop is above entry (positive stoploss)
+                stop_percentage = (atr * atr_multiplier) / trade.open_rate
+                return min(stop_percentage, 0.05)  # Cap at 5%
+            else:
+                # For long trades, stop is below entry (negative stoploss)
+                stop_percentage = (atr * atr_multiplier) / trade.open_rate
+                return -min(stop_percentage, 0.05)  # Cap at -5%
+
+        except Exception as e:
+            log.error(f"Error in custom_stoploss: {e}")
+            return -0.05  # Fallback to default 5% stoploss
 
     def custom_exit(self, pair: str, trade: Trade, current_time: datetime,
                     current_rate: float, current_profit: float, **kwargs) -> Optional[str]:
