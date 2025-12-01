@@ -8,7 +8,15 @@ Core Philosophy:
 - Trade the reversal after liquidity sweep (not the breakout)
 
 Author: Claude Code (based on trading notes)
-Version: 1.1.0
+Version: 1.2.0
+
+Changelog v1.2.0:
+- CRITICAL FIX: Completely removed trailing_stop (was being overridden by config)
+- Changed to fixed stoploss of -3% (more breathing room)
+- Disabled custom_stoploss to eliminate complexity
+- Increased minimal_roi targets (less aggressive)
+- Added extensive debug logging
+- Simplified logic to focus on core ICT concepts
 
 Changelog v1.1.0:
 - Fixed custom_stoploss calculation (increased ATR multiplier to 2.0)
@@ -49,27 +57,28 @@ class ICT_TimeBasedLiquidityStrategy(IStrategy):
 
     # Strategy version
     def version(self) -> str:
-        return "v1.1.0"
+        return "v1.2.0"
 
-    # ROI table - conservative targets based on liquidity pools
+    # ROI table - more conservative, give trades room to develop
     minimal_roi = {
-        "0": 0.10,    # 10% - take profit at opposing liquidity
-        "60": 0.05,   # 5% after 1 hour
-        "120": 0.03,  # 3% after 2 hours
-        "240": 0.01   # 1% after 4 hours
+        "0": 0.15,    # 15% - aggressive target
+        "120": 0.08,  # 8% after 2 hours
+        "240": 0.05,  # 5% after 4 hours
+        "480": 0.03,  # 3% after 8 hours
+        "720": 0.02   # 2% after 12 hours
     }
 
-    # Stoploss - will be managed dynamically based on swing points
-    stoploss = -0.05  # 5% hard stop
+    # Stoploss - fixed at 3% to give more breathing room
+    stoploss = -0.03  # 3% hard stop (increased from 5%)
 
-    # Trailing stoploss - disabled initially to debug
+    # Trailing stoploss - COMPLETELY DISABLED
     trailing_stop = False
-    trailing_stop_positive = 0.01
-    trailing_stop_positive_offset = 0.03
-    trailing_only_offset_is_reached = True
+    trailing_stop_positive = 0.0
+    trailing_stop_positive_offset = 0.0
+    trailing_only_offset_is_reached = False
 
-    # Use custom stoploss
-    use_custom_stoploss = True
+    # Use custom stoploss - DISABLED to simplify
+    use_custom_stoploss = False
 
     # Optimal timeframe for the strategy
     timeframe = "5m"
@@ -132,6 +141,23 @@ class ICT_TimeBasedLiquidityStrategy(IStrategy):
         # SECTION 6: Additional technical indicators for confirmation
         # ============================================================================
         dataframe = self.add_technical_indicators(dataframe)
+
+        # ============================================================================
+        # SECTION 7: Debug logging (optional, can be commented out for production)
+        # ============================================================================
+        if len(dataframe) > 0:
+            bullish_sweeps = dataframe['bullish_sweep'].sum()
+            bearish_sweeps = dataframe['bearish_sweep'].sum()
+            bullish_fvg = dataframe['bullish_fvg'].sum()
+            bearish_fvg = dataframe['bearish_fvg'].sum()
+
+            log.info(f"ICT Strategy Analysis: Bullish Sweeps={bullish_sweeps}, Bearish Sweeps={bearish_sweeps}")
+            log.info(f"ICT Strategy Analysis: Bullish FVG={bullish_fvg}, Bearish FVG={bearish_fvg}")
+
+            if bullish_sweeps > 0:
+                log.info(f"PDL Sweeps: {dataframe['pdl_sweep'].sum()}, PWL Sweeps: {dataframe['pwl_sweep'].sum()}")
+            if bearish_sweeps > 0:
+                log.info(f"PDH Sweeps: {dataframe['pdh_sweep'].sum()}, PWH Sweeps: {dataframe['pwh_sweep'].sum()}")
 
         return dataframe
 
@@ -434,39 +460,38 @@ class ICT_TimeBasedLiquidityStrategy(IStrategy):
                 # Core condition: Bullish liquidity sweep
                 (dataframe['bullish_sweep'] == 1) &
 
-                # Bias filter: Require bullish bias OR specific sweep type
+                # Bias filter: More lenient - any bullish condition
                 (
                     (dataframe['bullish_bias'] == 1) |
                     (dataframe['pdl_sweep'] == 1) |  # PDL sweep is strong signal
-                    (dataframe['pwl_sweep'] == 1)    # PWL sweep is very strong
+                    (dataframe['pwl_sweep'] == 1) |  # PWL sweep is very strong
+                    (dataframe['asian_low_sweep'] == 1)  # Asian low sweep also valid
                 ) &
 
-                # Session filter: Only trade during active sessions
+                # Session filter: Expanded to include NY PM
                 (
                     (dataframe['is_london_session'] == 1) |
-                    (dataframe['is_ny_am_session'] == 1)
+                    (dataframe['is_ny_am_session'] == 1) |
+                    (dataframe['is_ny_pm_session'] == 1)
                 ) &
 
-                # FVG confirmation - require actual FVG formation
+                # FVG confirmation - allow longer window
                 (
                     (dataframe['bullish_fvg'] == 1) |
-                    (dataframe['bullish_fvg'].shift(1) == 1)
+                    (dataframe['bullish_fvg'].shift(1) == 1) |
+                    (dataframe['bullish_fvg'].shift(2) == 1)
                 ) &
 
-                # RSI filter - not overbought
-                (dataframe['rsi'] < 65) &
-                (dataframe['rsi'] > 30) &  # Also not in extreme oversold
+                # RSI filter - wider range
+                (dataframe['rsi'] < 70) &
+                (dataframe['rsi'] > 25) &
 
-                # Volume confirmation - require strong volume
-                (dataframe['high_volume'] == 1) &
-
-                # Trend alignment - price above short-term MA
-                (dataframe['close'] > dataframe['ema_20']) &
+                # Volume confirmation - slightly less strict
+                (dataframe['volume'] > dataframe['volume_ma'] * 1.3) &
 
                 # Ensure we have valid data
                 (dataframe['volume'] > 0) &
-                (dataframe['pdl'].notna()) &
-                (dataframe['asian_low'].notna())
+                (dataframe['pdl'].notna())
             ),
             ['enter_long', 'enter_tag']
         ] = (1, 'ict_liquidity_sweep_long')
@@ -483,39 +508,38 @@ class ICT_TimeBasedLiquidityStrategy(IStrategy):
                 # Core condition: Bearish liquidity sweep
                 (dataframe['bearish_sweep'] == 1) &
 
-                # Bias filter: Require bearish bias OR specific sweep type
+                # Bias filter: More lenient - any bearish condition
                 (
                     (dataframe['bearish_bias'] == 1) |
                     (dataframe['pdh_sweep'] == 1) |  # PDH sweep is strong signal
-                    (dataframe['pwh_sweep'] == 1)    # PWH sweep is very strong
+                    (dataframe['pwh_sweep'] == 1) |  # PWH sweep is very strong
+                    (dataframe['asian_high_sweep'] == 1)  # Asian high sweep also valid
                 ) &
 
-                # Session filter: Only trade during active sessions
+                # Session filter: Expanded to include NY PM
                 (
                     (dataframe['is_london_session'] == 1) |
-                    (dataframe['is_ny_am_session'] == 1)
+                    (dataframe['is_ny_am_session'] == 1) |
+                    (dataframe['is_ny_pm_session'] == 1)
                 ) &
 
-                # FVG confirmation - require actual FVG formation
+                # FVG confirmation - allow longer window
                 (
                     (dataframe['bearish_fvg'] == 1) |
-                    (dataframe['bearish_fvg'].shift(1) == 1)
+                    (dataframe['bearish_fvg'].shift(1) == 1) |
+                    (dataframe['bearish_fvg'].shift(2) == 1)
                 ) &
 
-                # RSI filter - not oversold
-                (dataframe['rsi'] > 35) &
-                (dataframe['rsi'] < 70) &  # Also not in extreme overbought
+                # RSI filter - wider range
+                (dataframe['rsi'] > 30) &
+                (dataframe['rsi'] < 75) &
 
-                # Volume confirmation - require strong volume
-                (dataframe['high_volume'] == 1) &
-
-                # Trend alignment - price below short-term MA
-                (dataframe['close'] < dataframe['ema_20']) &
+                # Volume confirmation - slightly less strict
+                (dataframe['volume'] > dataframe['volume_ma'] * 1.3) &
 
                 # Ensure we have valid data
                 (dataframe['volume'] > 0) &
-                (dataframe['pdh'].notna()) &
-                (dataframe['asian_high'].notna())
+                (dataframe['pdh'].notna())
             ),
             ['enter_short', 'enter_tag']
         ] = (1, 'ict_liquidity_sweep_short')
@@ -587,63 +611,24 @@ class ICT_TimeBasedLiquidityStrategy(IStrategy):
 
         return dataframe
 
-    def custom_stoploss(self, pair: str, trade: Trade, current_time: datetime,
-                        current_rate: float, current_profit: float, **kwargs) -> float:
-        """
-        Custom stoploss logic based on swing points and ATR
-
-        Stop loss should be placed beyond the swing point where liquidity was swept
-        Returns: stoploss value (negative for loss, positive for profit)
-        """
-
-        try:
-            dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
-            if dataframe is None or len(dataframe) == 0:
-                return -0.05  # Fallback to default 5% stoploss
-
-            last_candle = dataframe.iloc[-1].squeeze()
-
-            # Get ATR for dynamic stop
-            atr = last_candle.get('atr', 0)
-            if atr == 0 or pd.isna(atr):
-                return -0.05  # Fallback if ATR not available
-
-            # Calculate stop based on ATR (2.0x for more breathing room)
-            # For long: stop = -2.0 * ATR / entry_price (as percentage)
-            # For short: stop = 2.0 * ATR / entry_price (as percentage)
-
-            atr_multiplier = 2.0  # Increased from 1.5 to give more room
-
-            if trade.is_short:
-                # For short trades, stop is above entry (positive stoploss)
-                stop_percentage = (atr * atr_multiplier) / trade.open_rate
-                return min(stop_percentage, 0.05)  # Cap at 5%
-            else:
-                # For long trades, stop is below entry (negative stoploss)
-                stop_percentage = (atr * atr_multiplier) / trade.open_rate
-                return -min(stop_percentage, 0.05)  # Cap at -5%
-
-        except Exception as e:
-            log.error(f"Error in custom_stoploss: {e}")
-            return -0.05  # Fallback to default 5% stoploss
-
-    def custom_exit(self, pair: str, trade: Trade, current_time: datetime,
-                    current_rate: float, current_profit: float, **kwargs) -> Optional[str]:
-        """
-        Custom exit logic for special conditions
-        """
-
-        dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
-        last_candle = dataframe.iloc[-1].squeeze()
-
-        # Exit if opposite sweep occurs (strong reversal signal)
-        if trade.is_short and last_candle['bullish_sweep'] == 1:
-            return 'opposite_sweep_detected'
-
-        if not trade.is_short and last_candle['bearish_sweep'] == 1:
-            return 'opposite_sweep_detected'
-
-        return None
+    # DISABLED: custom_stoploss and custom_exit to simplify strategy
+    # Using fixed stoploss of -3% instead
+    #
+    # def custom_stoploss(self, pair: str, trade: Trade, current_time: datetime,
+    #                     current_rate: float, current_profit: float, **kwargs) -> float:
+    #     """
+    #     Custom stoploss logic based on swing points and ATR
+    #     DISABLED in v1.2.0 to simplify and prevent immediate stop-outs
+    #     """
+    #     return -0.03  # Fixed 3% stop
+    #
+    # def custom_exit(self, pair: str, trade: Trade, current_time: datetime,
+    #                 current_rate: float, current_profit: float, **kwargs) -> Optional[str]:
+    #     """
+    #     Custom exit logic for special conditions
+    #     DISABLED in v1.2.0 to let ROI and exit signals handle exits
+    #     """
+    #     return None
 
     def leverage(self, pair: str, current_time: datetime, current_rate: float,
                  proposed_leverage: float, max_leverage: float, entry_tag: Optional[str],
