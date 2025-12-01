@@ -69,7 +69,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.2.168"
+    return "v17.2.169"
 
   stoploss = -0.99
 
@@ -664,7 +664,7 @@ class NostalgiaForInfinityX7(IStrategy):
     "XMR",
     "XRP",
     "XTZ",
-    "ZEC",
+    # "ZEC",
   ]
 
   # Top coins mode coins
@@ -723,7 +723,7 @@ class NostalgiaForInfinityX7(IStrategy):
     "XMR",
     "XRP",
     "XTZ",
-    "ZEC",
+    # "ZEC",
   ]
 
   # Profit max thresholds
