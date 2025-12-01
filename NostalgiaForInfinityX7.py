@@ -664,7 +664,7 @@ class NostalgiaForInfinityX7(IStrategy):
     "XMR",
     "XRP",
     "XTZ",
-    # "ZEC",
+    "ZEC",
   ]
 
   # Top coins mode coins
@@ -723,7 +723,7 @@ class NostalgiaForInfinityX7(IStrategy):
     "XMR",
     "XRP",
     "XTZ",
-    # "ZEC",
+    "ZEC",
   ]
 
   # Profit max thresholds
