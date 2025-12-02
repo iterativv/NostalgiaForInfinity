@@ -69,7 +69,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.2.192"
+    return "v17.2.193"
 
   stoploss = -0.99
 
@@ -17753,7 +17753,7 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append((df["RSI_3"] < 95.0) | (df["AROOND_14_15m"] < 25.0) | (df["AROOND_14_1h"] < 25.0))
           # 4m up move, 1h & 4h still low
           short_entry_logic.append(
-            (df["RSI_3"] < 95.0) | (df["STOCHRSIk_14_14_3_3_1h"] > 70.0) | (df["STOCHRSIk_14_14_3_3_4h"] > 60.0)
+            (df["RSI_3"] < 95.0) | (df["STOCHRSIk_14_14_3_3_1h"] > 70.0) | (df["STOCHRSIk_14_14_3_3_4h"] > 70.0)
           )
           # 4m & 1h up move, 1h still low
           short_entry_logic.append(
