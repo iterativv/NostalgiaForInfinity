@@ -69,7 +69,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.2.443"
+    return "v17.2.444"
 
   stoploss = -0.99
 
@@ -20959,7 +20959,9 @@ class NostalgiaForInfinityX7(IStrategy):
     current_time: "datetime",
     enter_tags,
   ) -> tuple:
-    is_backtest = self.dp.runmode.value in ["backtest", "hyperopt"]
+    is_backtest = self.is_backtest_mode()
+    is_system_v3 = self.is_system_v3(trade)
+    is_system_v3_1 = self.is_system_v3_1(trade)
     sell = False
 
     # Original sell signals
@@ -21035,9 +21037,19 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Stoplosses
     if not sell:
-      if (
-        profit_stake
-        < -(
+      if is_system_v3_1:
+        if profit_stake < -(
+          filled_entries[0].cost
+          * (
+            self.system_v3_1_stop_threshold_futures_rebuy
+            if self.is_futures_mode
+            else self.system_v3_1_stop_threshold_spot_rebuy
+          )
+          / trade.leverage
+        ):
+          sell, signal_name = True, f"exit_{self.long_rebuy_mode_name}_stoploss_doom"
+      elif is_system_v3:
+        if profit_stake < -(
           filled_entries[0].cost
           * (
             self.system_v3_stop_threshold_futures_rebuy
@@ -21045,11 +21057,20 @@ class NostalgiaForInfinityX7(IStrategy):
             else self.system_v3_stop_threshold_spot_rebuy
           )
           / trade.leverage
-        )
-        # temporary
-        and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
-      ):
-        sell, signal_name = True, f"exit_{self.long_rebuy_mode_name}_stoploss_doom"
+        ):
+          sell, signal_name = True, f"exit_{self.long_rebuy_mode_name}_stoploss_doom"
+      else:
+        if (
+          profit_stake
+          < -(
+            filled_entries[0].cost
+            * (self.stop_threshold_futures_rebuy if self.is_futures_mode else self.stop_threshold_spot_rebuy)
+            / trade.leverage
+          )
+          # temporary
+          and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
+        ):
+          sell, signal_name = True, f"exit_{self.long_rebuy_mode_name}_stoploss_doom"
 
     # Profit Target Signal
     # Check if pair exist on target_profit_cache
@@ -46600,7 +46621,9 @@ class NostalgiaForInfinityX7(IStrategy):
     current_time: "datetime",
     enter_tags,
   ) -> tuple:
-    is_backtest = self.dp.runmode.value in ["backtest", "hyperopt"]
+    is_backtest = self.is_backtest_mode()
+    is_system_v3 = self.is_system_v3(trade)
+    is_system_v3_1 = self.is_system_v3_1(trade)
     sell = False
 
     # Original sell signals
@@ -46676,9 +46699,19 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Stoplosses
     if not sell:
-      if (
-        profit_stake
-        < -(
+      if is_system_v3_1:
+        if profit_stake < -(
+          filled_entries[0].cost
+          * (
+            self.system_v3_1_stop_threshold_futures_rebuy
+            if self.is_futures_mode
+            else self.system_v3_1_stop_threshold_spot_rebuy
+          )
+          / trade.leverage
+        ):
+          sell, signal_name = True, f"exit_{self.short_rebuy_mode_name}_stoploss_doom"
+      elif is_system_v3:
+        if profit_stake < -(
           filled_entries[0].cost
           * (
             self.system_v3_stop_threshold_futures_rebuy
@@ -46686,11 +46719,20 @@ class NostalgiaForInfinityX7(IStrategy):
             else self.system_v3_stop_threshold_spot_rebuy
           )
           / trade.leverage
-        )
-        # temporary
-        and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
-      ):
-        sell, signal_name = True, f"exit_{self.short_rebuy_mode_name}_stoploss_doom"
+        ):
+          sell, signal_name = True, f"exit_{self.short_rebuy_mode_name}_stoploss_doom"
+      else:
+        if (
+          profit_stake
+          < -(
+            filled_entries[0].cost
+            * (self.stop_threshold_futures_rebuy if self.is_futures_mode else self.stop_threshold_spot_rebuy)
+            / trade.leverage
+          )
+          # temporary
+          and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
+        ):
+          sell, signal_name = True, f"exit_{self.short_rebuy_mode_name}_stoploss_doom"
 
     # Profit Target Signal
     # Check if pair exist on target_profit_cache
