@@ -69,7 +69,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.2.664"
+    return "v17.2.665"
 
   stoploss = -0.99
 
@@ -11517,13 +11517,21 @@ class NostalgiaForInfinityX7(IStrategy):
     current_time: datetime,
     **kwargs,
   ) -> bool:
+    is_backtest = self.is_backtest_mode()
     # Allow force exits
     if exit_reason != "force_exit":
       if self._should_hold_trade(trade, rate, exit_reason):
         return False
       if exit_reason in ["stop_loss", "trailing_stop_loss"]:
         # log.info(f"[{current_time}] Cancelling {exit_reason} exit for {pair}")
-        return False
+        is_liquidation = False
+        if self.is_futures_mode and is_backtest:
+          if (trade.is_short and rate > trade.liquidation_price) or (
+            not trade.is_short and rate < trade.liquidation_price
+          ):
+            is_liquidation = True
+        if not is_liquidation:
+          return False
       if self.exit_profit_only:
         profit = 0.0
         if trade.realized_profit != 0.0:
