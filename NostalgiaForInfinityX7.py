@@ -14020,6 +14020,8 @@ class NostalgiaForInfinityX7(IStrategy):
             & ((df["RSI_3_15m"] > 10.0) | (df["AROONU_14_1h"] < 80.0) | (df["ROC_9_1d"] > -30.0))
             # 15m down move, 1h high, 1d overbought
             & ((df["RSI_3_15m"] > 10.0) | (df["AROONU_14_1h"] < 85.0) | (df["ROC_9_1d"] < 40.0))
+            # 15m down move, 1h & 1d high
+            & ((df["RSI_3_15m"] > 10.0) | (df["AROONU_14_1h"] < 90.0) | (df["AROONU_14_1d"] < 100.0))
             # 15m down move, 1h & 4h high
             & ((df["RSI_3_15m"] > 10.0) | (df["AROONU_14_1h"] < 100.0) | (df["AROONU_14_4h"] < 100.0))
             # 15m down move, 4h high, 1h downtrend
