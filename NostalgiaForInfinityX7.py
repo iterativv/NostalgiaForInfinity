@@ -69,7 +69,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.2.670"
+    return "v17.2.671"
 
   stoploss = -0.99
 
@@ -17602,12 +17602,16 @@ class NostalgiaForInfinityX7(IStrategy):
           long_entry_logic.append(df["RSI_14_1h"] < 80.0)
           long_entry_logic.append(df["RSI_14_4h"] < 80.0)
           long_entry_logic.append(df["RSI_14_1d"] < 80.0)
+          long_entry_logic.append(df["AROONU_14_1d"] < 100.0)
+          long_entry_logic.append(df["STOCHRSIk_14_14_3_3_1d"] < 90.0)
 
           # Logic
-          long_entry_logic.append(df["STOCHRSIk_14_14_3_3"] < 20.0)
-          long_entry_logic.append(df["WILLR_14"] < -80.0)
-          long_entry_logic.append(df["AROONU_14"] < 25.0)
-          long_entry_logic.append(df["close"] < (df["EMA_20"] * 0.978))
+          long_entry_logic.append(
+            (df["STOCHRSIk_14_14_3_3"] < 20.0)
+            & (df["WILLR_14"] < -80.0)
+            & (df["AROONU_14"] < 25.0)
+            & (df["close"] < (df["EMA_20"] * 0.978))
+          )
 
         # Condition #141 - Top Coins mode (Long).
         if long_entry_condition_index == 141:
