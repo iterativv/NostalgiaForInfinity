@@ -12210,8 +12210,10 @@ class NostalgiaForInfinityX7(IStrategy):
           long_entry_logic.append(df["protections_long_global"] == True)
 
           long_entry_logic.append(
+            # 5m & 1h down move, 1d high
+            ((df["RSI_3"] > 3.0) | (df["RSI_3_1h"] > 20.0) | (df["AROONU_14_1d"] < 100.0))
             # 5m & 1h down move, 1h still high
-            ((df["RSI_3"] > 3.0) | (df["RSI_3_1h"] > 30.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 50.0))
+            & ((df["RSI_3"] > 3.0) | (df["RSI_3_1h"] > 30.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 50.0))
             # 5m & 4h down move, 15m still not low enough
             & ((df["RSI_3"] > 3.0) | (df["RSI_3_4h"] > 3.0) | (df["STOCHRSIk_14_14_3_3_15m"] < 30.0))
             # 5m & 4h down move, 1d downtrend
