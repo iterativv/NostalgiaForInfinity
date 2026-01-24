@@ -69,7 +69,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.3.371"
+    return "v17.3.372"
 
   stoploss = -0.99
 
@@ -3025,14 +3025,10 @@ class NostalgiaForInfinityX7(IStrategy):
     # RSI
     informative_1d["RSI_3"] = pta.rsi(informative_1d["close"], length=3)
     informative_1d["RSI_14"] = pta.rsi(informative_1d["close"], length=14)
-    informative_1d["RSI_3_change_pct"] = (
-      (informative_1d["RSI_3"] - informative_1d["RSI_3"].shift(1)) / (informative_1d["RSI_3"].shift(1))
-    ) * 100.0
-    informative_1d["RSI_14_change_pct"] = (
-      (informative_1d["RSI_14"] - informative_1d["RSI_14"].shift(1)) / (informative_1d["RSI_14"].shift(1))
-    ) * 100.0
-    informative_1d["RSI_3_diff"] = informative_1d["RSI_3"] - informative_1d["RSI_3"].shift(1)
-    informative_1d["RSI_14_diff"] = informative_1d["RSI_14"] - informative_1d["RSI_14"].shift(1)
+    informative_1d["RSI_3_change_pct"] = informative_1d["RSI_3"].pct_change() * 100.0
+    informative_1d["RSI_14_change_pct"] = informative_1d["RSI_14"].pct_change() * 100.0
+    informative_1d["RSI_3_diff"] = informative_1d["RSI_3"].diff()
+    informative_1d["RSI_14_diff"] = informative_1d["RSI_14"].diff()
     # BB 20 - STD2
     bbands_20_2 = pta.bbands(informative_1d["close"], length=20)
     informative_1d["BBL_20_2.0"] = bbands_20_2["BBL_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
@@ -3161,14 +3157,10 @@ class NostalgiaForInfinityX7(IStrategy):
     # RSI
     informative_4h["RSI_3"] = pta.rsi(informative_4h["close"], length=3)
     informative_4h["RSI_14"] = pta.rsi(informative_4h["close"], length=14)
-    informative_4h["RSI_3_change_pct"] = (
-      (informative_4h["RSI_3"] - informative_4h["RSI_3"].shift(1)) / (informative_4h["RSI_3"].shift(1))
-    ) * 100.0
-    informative_4h["RSI_14_change_pct"] = (
-      (informative_4h["RSI_14"] - informative_4h["RSI_14"].shift(1)) / (informative_4h["RSI_14"].shift(1))
-    ) * 100.0
-    informative_4h["RSI_3_diff"] = informative_4h["RSI_3"] - informative_4h["RSI_3"].shift(1)
-    informative_4h["RSI_14_diff"] = informative_4h["RSI_14"] - informative_4h["RSI_14"].shift(1)
+    informative_4h["RSI_3_change_pct"] = informative_4h["RSI_3"].pct_change() * 100.0
+    informative_4h["RSI_14_change_pct"] = informative_4h["RSI_14"].pct_change() * 100.0
+    informative_4h["RSI_3_diff"] = informative_4h["RSI_3"].diff()
+    informative_4h["RSI_14_diff"] = informative_4h["RSI_14"].diff()
     # EMA
     informative_4h["EMA_12"] = pta.ema(informative_4h["close"], length=12)
     informative_4h["EMA_200"] = pta.ema(informative_4h["close"], length=200, fillna=0.0)
@@ -3211,10 +3203,7 @@ class NostalgiaForInfinityX7(IStrategy):
     informative_4h["STOCHRSId_14_14_3_3"] = (
       stochrsi["STOCHRSId_14_14_3_3"] if isinstance(stochrsi, pd.DataFrame) else np.nan
     )
-    informative_4h["STOCHRSIk_14_14_3_3_change_pct"] = (
-      (informative_4h["STOCHRSIk_14_14_3_3"] - informative_4h["STOCHRSIk_14_14_3_3"].shift(1))
-      / informative_4h["STOCHRSIk_14_14_3_3"].shift(1)
-    ) * 100.0
+    informative_4h["STOCHRSIk_14_14_3_3_change_pct"] = (informative_4h["STOCHRSIk_14_14_3_3"].pct_change()) * 100.0
     # KST
     kst = pta.kst(informative_4h["close"])
     informative_4h["KST_10_15_20_30_10_10_10_15"] = (
@@ -3225,9 +3214,7 @@ class NostalgiaForInfinityX7(IStrategy):
     informative_4h["UO_7_14_28"] = pta.uo(informative_4h["high"], informative_4h["low"], informative_4h["close"])
     # OBV
     informative_4h["OBV"] = pta.obv(informative_4h["close"], informative_4h["volume"])
-    informative_4h["OBV_change_pct"] = (
-      (informative_4h["OBV"] - informative_4h["OBV"].shift(1)) / abs(informative_4h["OBV"].shift(1))
-    ) * 100.0
+    informative_4h["OBV_change_pct"] = (informative_4h["OBV"].pct_change()) * 100.0
     # ROC
     informative_4h["ROC_2"] = pta.roc(informative_4h["close"], length=2)
     informative_4h["ROC_9"] = pta.roc(informative_4h["close"], length=9)
@@ -3238,9 +3225,7 @@ class NostalgiaForInfinityX7(IStrategy):
     informative_4h["CCI_20"] = (
       (informative_4h["CCI_20"]).astype(np.float64).replace(to_replace=[np.nan, None], value=(0.0))
     )
-    informative_4h["CCI_20_change_pct"] = (
-      (informative_4h["CCI_20"] - informative_4h["CCI_20"].shift(1)) / abs(informative_4h["CCI_20"].shift(1))
-    ) * 100.0
+    informative_4h["CCI_20_change_pct"] = (informative_4h["CCI_20"].pct_change()) * 100.0
 
     # Candle change
     informative_4h["change_pct"] = (informative_4h["close"] - informative_4h["open"]) / informative_4h["open"] * 100.0
@@ -3332,14 +3317,10 @@ class NostalgiaForInfinityX7(IStrategy):
     # RSI
     informative_1h["RSI_3"] = pta.rsi(informative_1h["close"], length=3)
     informative_1h["RSI_14"] = pta.rsi(informative_1h["close"], length=14)
-    informative_1h["RSI_3_change_pct"] = (
-      (informative_1h["RSI_3"] - informative_1h["RSI_3"].shift(1)) / (informative_1h["RSI_3"].shift(1))
-    ) * 100.0
-    informative_1h["RSI_14_change_pct"] = (
-      (informative_1h["RSI_14"] - informative_1h["RSI_14"].shift(1)) / (informative_1h["RSI_14"].shift(1))
-    ) * 100.0
-    informative_1h["RSI_3_diff"] = informative_1h["RSI_3"] - informative_1h["RSI_3"].shift(1)
-    informative_1h["RSI_14_diff"] = informative_1h["RSI_14"] - informative_1h["RSI_14"].shift(1)
+    informative_1h["RSI_3_change_pct"] = informative_1h["RSI_3"].pct_change() * 100.0
+    informative_1h["RSI_14_change_pct"] = informative_1h["RSI_14"].pct_change() * 100.0
+    informative_1h["RSI_3_diff"] = informative_1h["RSI_3"].diff()
+    informative_1h["RSI_14_diff"] = informative_1h["RSI_14"].diff()
     # EMA
     informative_1h["EMA_12"] = pta.ema(informative_1h["close"], length=12)
     informative_1h["EMA_200"] = pta.ema(informative_1h["close"], length=200, fillna=0.0)
@@ -3394,15 +3375,10 @@ class NostalgiaForInfinityX7(IStrategy):
     informative_1h["UO_7_14_28"] = (
       (informative_1h["UO_7_14_28"]).astype(np.float64).replace(to_replace=[np.nan, None], value=(50.0))
     )
-    informative_1h["UO_7_14_28_change_pct"] = (
-      (informative_1h["UO_7_14_28"] - informative_1h["UO_7_14_28"].shift(1))
-      / abs(informative_1h["UO_7_14_28"].shift(1))
-    ) * 100.0
+    informative_1h["UO_7_14_28_change_pct"] = informative_1h["UO_7_14_28"].pct_change() * 100.0
     # OBV
     informative_1h["OBV"] = pta.obv(informative_1h["close"], informative_1h["volume"])
-    informative_1h["OBV_change_pct"] = (
-      (informative_1h["OBV"] - informative_1h["OBV"].shift(1)) / abs(informative_1h["OBV"].shift(1))
-    ) * 100.0
+    informative_1h["OBV_change_pct"] = informative_1h["OBV"].pct_change() * 100.0
     # ROC
     informative_1h["ROC_2"] = pta.roc(informative_1h["close"], length=2)
     informative_1h["ROC_9"] = pta.roc(informative_1h["close"], length=9)
@@ -3413,9 +3389,7 @@ class NostalgiaForInfinityX7(IStrategy):
     informative_1h["CCI_20"] = (
       (informative_1h["CCI_20"]).astype(np.float64).replace(to_replace=[np.nan, None], value=(0.0))
     )
-    informative_1h["CCI_20_change_pct"] = (
-      (informative_1h["CCI_20"] - informative_1h["CCI_20"].shift(1)) / abs(informative_1h["CCI_20"].shift(1))
-    ) * 100.0
+    informative_1h["CCI_20_change_pct"] = informative_1h["CCI_20"].pct_change() * 100.0
     # Candle change
     informative_1h["change_pct"] = (informative_1h["close"] - informative_1h["open"]) / informative_1h["open"] * 100.0
     # Wicks
@@ -3495,12 +3469,8 @@ class NostalgiaForInfinityX7(IStrategy):
     # RSI
     informative_15m["RSI_3"] = pta.rsi(informative_15m["close"], length=3)
     informative_15m["RSI_14"] = pta.rsi(informative_15m["close"], length=14)
-    informative_15m["RSI_3_change_pct"] = (
-      (informative_15m["RSI_3"] - informative_15m["RSI_3"].shift(1)) / (informative_15m["RSI_3"].shift(1))
-    ) * 100.0
-    informative_15m["RSI_14_change_pct"] = (
-      (informative_15m["RSI_14"] - informative_15m["RSI_14"].shift(1)) / (informative_15m["RSI_14"].shift(1))
-    ) * 100.0
+    informative_15m["RSI_3_change_pct"] = informative_15m["RSI_3"].pct_change() * 100.0
+    informative_15m["RSI_14_change_pct"] = informative_15m["RSI_14"].pct_change() * 100.0
     # EMA
     informative_15m["EMA_12"] = pta.ema(informative_15m["close"], length=12)
     informative_15m["EMA_20"] = pta.ema(informative_15m["close"], length=20)
@@ -3535,14 +3505,10 @@ class NostalgiaForInfinityX7(IStrategy):
     )
     # UO
     informative_15m["UO_7_14_28"] = pta.uo(informative_15m["high"], informative_15m["low"], informative_15m["close"])
-    informative_15m["UO_7_14_28_change_pct"] = (
-      informative_15m["UO_7_14_28"] - informative_15m["UO_7_14_28"].shift(1)
-    ) * 100.0
+    informative_15m["UO_7_14_28_change_pct"] = informative_15m["UO_7_14_28"].pct_change() * 100.0
     # OBV
     informative_15m["OBV"] = pta.obv(informative_15m["close"], informative_15m["volume"])
-    informative_15m["OBV_change_pct"] = (
-      (informative_15m["OBV"] - informative_15m["OBV"].shift(1)) / abs(informative_15m["OBV"].shift(1))
-    ) * 100.0
+    informative_15m["OBV_change_pct"] = informative_15m["OBV"].pct_change() * 100.0
     # ROC
     informative_15m["ROC_9"] = pta.roc(informative_15m["close"], length=9)
     # CCI
@@ -3552,9 +3518,7 @@ class NostalgiaForInfinityX7(IStrategy):
     informative_15m["CCI_20"] = (
       (informative_15m["CCI_20"]).astype(np.float64).replace(to_replace=[np.nan, None], value=(0.0))
     )
-    informative_15m["CCI_20_change_pct"] = (
-      (informative_15m["CCI_20"] - informative_15m["CCI_20"].shift(1)) / abs(informative_15m["CCI_20"].shift(1))
-    ) * 100.0
+    informative_15m["CCI_20_change_pct"] = informative_15m["CCI_20"].pct_change() * 100.0
     # Candle change
     informative_15m["change_pct"] = (
       (informative_15m["close"] - informative_15m["open"]) / informative_15m["open"] * 100.0
@@ -3640,8 +3604,8 @@ class NostalgiaForInfinityX7(IStrategy):
     df["RSI_4"] = pta.rsi(df["close"], length=4)
     df["RSI_14"] = pta.rsi(df["close"], length=14)
     df["RSI_20"] = pta.rsi(df["close"], length=20)
-    df["RSI_3_change_pct"] = ((df["RSI_3"] - df["RSI_3"].shift(1)) / (df["RSI_3"].shift(1))) * 100.0
-    df["RSI_14_change_pct"] = ((df["RSI_14"] - df["RSI_14"].shift(1)) / (df["RSI_14"].shift(1))) * 100.0
+    df["RSI_3_change_pct"] = df["RSI_3"].pct_change() * 100.0
+    df["RSI_14_change_pct"] = df["RSI_14"].pct_change() * 100.0
     # EMA
     df["EMA_3"] = pta.ema(df["close"], length=3)
     df["EMA_9"] = pta.ema(df["close"], length=9)
@@ -3695,7 +3659,7 @@ class NostalgiaForInfinityX7(IStrategy):
     df["KSTs_9"] = kst["KSTs_9"] if isinstance(kst, pd.DataFrame) else np.nan
     # OBV
     df["OBV"] = pta.obv(df["close"], df["volume"])
-    df["OBV_change_pct"] = ((df["OBV"] - df["OBV"].shift(1)) / abs(df["OBV"].shift(1))) * 100.0
+    df["OBV_change_pct"] = df["OBV"].pct_change() * 100.0
     # ROC
     df["ROC_2"] = pta.roc(df["close"], length=2)
     df["ROC_9"] = pta.roc(df["close"], length=9)
