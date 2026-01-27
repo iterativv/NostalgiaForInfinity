@@ -1,6 +1,7 @@
 site_name: NostalgiaForInfinity
 use_directory_urls: true
 repo_url: https://github.com/pimpmyname2/NostalgiaForInfinity
+
 theme:
   name: material
   features:
@@ -10,6 +11,11 @@ theme:
     - content.action.edit
     - navigation.top
     - navigation.footer
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - toc.follow
+  custom_dir: overrides
   palette:
 
     # Palette toggle for automatic mode
@@ -20,7 +26,7 @@ theme:
 
     # Palette toggle for light mode
     - media: "(prefers-color-scheme: light)"
-      scheme: default 
+      scheme: default
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
@@ -31,10 +37,112 @@ theme:
       toggle:
         icon: material/brightness-4
         name: Switch to system preference
+
+# Markdown Extensions
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - admonition
+  - pymdownx.details
+  - attr_list
+  - md_in_html
+  - def_list
+  - tables
+  - footnotes
+  - toc:
+      permalink: true
+      toc_depth: 3
+
+# Plugins
+plugins:
+  - search:
+      lang: en
+
+# Extra JavaScript for Mermaid
+extra_javascript:
+  - https://unpkg.com/mermaid@10.9.0/dist/mermaid.min.js
+  - javascripts/mermaid-config.js
 nav:
   - Home: index.md
   - Features: features.md
-  - Installation:
+  - Project Overview: project-overview.md
+
+  - Installation & Setup:
+      - Installation Guide: installation-and-setup.md
       - With Docker: installation/docker.md
       - Without Docker: installation/without-docker.md
-  - Backtesting: backtesting.md
+
+  - Configuration:
+      - Configuration Guide: configuration-guide/configuration-guide.md
+      - Configuration Hierarchy: configuration-guide/configuration-hierarchy.md
+      - Advanced Configuration: configuration-guide/advanced-configuration.md
+      - Pair List Management: configuration-guide/pair-list-management.md
+      - Blacklist Management: configuration-guide/blacklist-management.md
+
+  - Trading Modes:
+      - Overview: trading-modes/trading-modes.md
+      - Long Trading Modes:
+          - Overview: trading-modes/long-trading-modes/long-trading-modes.md
+          - Normal Long Mode: trading-modes/long-trading-modes/normal-long-mode.md
+          - Pump Long Mode: trading-modes/long-trading-modes/pump-long-mode.md
+          - Quick Long Mode: trading-modes/long-trading-modes/quick-long-mode.md
+          - Rapid Long Mode: trading-modes/long-trading-modes/rapid-long-mode.md
+          - Rebuy Long Mode: trading-modes/long-trading-modes/rebuy-long-mode.md
+          - Grind Long Mode: trading-modes/long-trading-modes/grind-long-mode.md
+          - Scalp Long Mode: trading-modes/long-trading-modes/scalp-long-mode.md
+      - Short Trading Modes:
+          - Overview: trading-modes/short-trading-modes/short-trading-modes.md
+          - Short Normal Mode: trading-modes/short-trading-modes/short-normal-mode.md
+          - Short Pump Mode: trading-modes/short-trading-modes/short-pump-mode.md
+          - Short Quick Mode: trading-modes/short-trading-modes/short-quick-mode.md
+          - Short Rapid Mode: trading-modes/short-trading-modes/short-rapid-mode.md
+          - Short Rebuy Mode: trading-modes/short-trading-modes/short-rebuy-mode.md
+          - Short Grind Mode: trading-modes/short-trading-modes/short-grind-mode.md
+          - Short Scalp Mode: trading-modes/short-trading-modes/short-scalp-mode.md
+
+  - Position Management:
+      - Overview: position-management/position-management.md
+      - Grinding Mechanism: position-management/grinding-mechanism.md
+      - Rebuy Logic: position-management/rebuy-logic.md
+      - Derisking System: position-management/derisking-system.md
+
+  - Backtesting:
+      - Overview: backtesting/backtesting.md
+      - Backtesting Guide: backtesting.md
+      - Data & Configuration: backtesting/backtesting-data-and-configuration.md
+      - Execution: backtesting/backtesting-execution.md
+      - Analysis & Visualization: backtesting/backtesting-analysis-and-visualization.md
+
+  - Technical Architecture:
+      - Overview: technical-architecture/technical-architecture.md
+      - Architecture Overview: technical-architecture/architecture-overview.md
+      - Data Flow & Processing: technical-architecture/data-flow-and-processing.md
+      - Design Patterns: technical-architecture/design-patterns.md
+      - Integration Points: technical-architecture/integration-points.md
+      - Scalability & Performance: technical-architecture/scalability-and-performance.md
+      - NFI-X6 Architecture: nostalgia-for-infinity-x6-architecture.md
+
+  - Reference:
+      - API Reference: api-reference.md
+      - Best Practices: best-practices.md
+      - Troubleshooting: troubleshooting.md
+
+  - Performance Improvements:
+      - PRD (English): performance-improvements-prd.md
+      - PRD (Türkçe): performans-iyilestirmeleri-prd.md
