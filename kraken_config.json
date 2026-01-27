@@ -1,0 +1,71 @@
+{
+    "max_open_trades": 1,
+    "stake_currency": "USDT",
+    "stake_amount": "unlimited",
+    "tradable_balance_ratio": 0.99,
+    "fiat_display_currency": "USD",
+    "timeframe": "5m",
+    "dry_run": false,
+    "dry_run_wallet": 1000,
+    "cancel_open_orders_on_exit": false,
+    "unfilledtimeout": {
+          "buy": 15,
+          "sell": 15,
+          "unit": "minutes"
+      },
+    "bid_strategy": {
+        "price_side": "ask",
+        "ask_last_balance": 0.0,
+        "use_order_book": false,
+        "order_book_top": 1,
+        "check_depth_of_market": {
+            "enabled": false,
+            "bids_to_ask_delta": 1
+        }
+    },
+    "ask_strategy": {
+        "price_side": "bid",
+        "use_order_book": false,
+        "order_book_min": 1,
+        "order_book_max": 1
+    },
+    "exchange": {
+        "name": "kraken",
+        "key": "",
+        "secret": "",
+        "ccxt_config": {"enableRateLimit": true},
+        "ccxt_async_config": {
+            "enableRateLimit": true,
+            "rateLimit": 3100
+        },
+        "pair_whitelist":[
+            "ALGO/USDT",
+            "APE/USDT",
+            "AVAX/USDT",
+            "BTC/USDT",
+            "BCH/USDT",
+            "ADA/USDT",
+            "LINK/USDT",
+            "ATOM/USDT",
+            "DAI/USDT",
+            "MANA/USDT",
+            "DOGE/USDT",
+            "EOS/USDT",
+            "ETH/USDT",
+            "LTC/USDT",
+            "XMR/USDT",
+            "DOT/USDT",
+            "MATIC/USDT",
+            "XRP/USDT",
+            "SHIB/USDT",
+            "SOL/USDT",
+            "USDC/USDT"
+        ]
+    },
+    "pairlists": [
+        {"method": "StaticPairList"}
+    ],
+    "dataformat_ohlcv": "jsongz",
+    "dataformat_trades": "jsongz"
+  }
+  
