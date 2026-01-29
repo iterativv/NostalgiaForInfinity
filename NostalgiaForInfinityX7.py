@@ -69,7 +69,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.3.538"
+    return "v17.3.539"
 
   stoploss = -0.99
 
@@ -19326,6 +19326,8 @@ class NostalgiaForInfinityX7(IStrategy):
             & ((df["RSI_3_4h"] > 3.0) | (df["RSI_3_1d"] > 20.0) | (df["RSI_14_1d"] < 40.0))
             # 4h & 1d down move, 1d high
             & ((df["RSI_3_4h"] > 5.0) | (df["RSI_3_1d"] > 45.0) | (df["AROONU_14_1d"] < 70.0))
+            # 4h down move, 4h still high, 4h downtrend
+            & ((df["RSI_3_4h"] > 5.0) | (df["AROONU_14_4h"] < 40.0) | (df["ROC_9_4h"] > -10.0))
             # 4h down move, 1h high
             & ((df["RSI_3_4h"] > 5.0) | (df["STOCHRSIk_14_14_3_3_1h"] < 90.0))
             # 4h down move, 4h & 1d downtrend
