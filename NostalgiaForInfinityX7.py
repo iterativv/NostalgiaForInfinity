@@ -69,7 +69,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.3.712"
+    return "v17.3.713"
 
   stoploss = -0.99
 
@@ -47477,7 +47477,7 @@ class NostalgiaForInfinityX7(IStrategy):
           and (last_candle["AROONU_14"] < 25.0)
           and (last_candle["STOCHRSIk_14_14_3_3_1h"] < 70.0)
           and (last_candle["STOCHRSIk_14_14_3_3_4h"] < 70.0)
-          and (last_candle["close"] < (last_candle["EMA_16"] * 0.988))
+          and (last_candle["close"] < (last_candle["EMA_16"] * 0.980))
         )
         or (
           (last_candle["RSI_14"] < 36.0)
@@ -47537,10 +47537,13 @@ class NostalgiaForInfinityX7(IStrategy):
           is_derisk
           and (last_candle["RSI_3"] > 20.0)
           and (last_candle["RSI_3_15m"] > 20.0)
+          and (last_candle["RSI_3_1h"] > 20.0)
+          and (last_candle["RSI_3_4h"] > 20.0)
           and (last_candle["RSI_14"] < 36.0)
           and (last_candle["AROONU_14"] < 25.0)
           and (last_candle["AROONU_14_15m"] < 25.0)
           and (last_candle["STOCHRSIk_14_14_3_3_15m"] < 50.0)
+          and (last_candle["close"] < (last_candle["EMA_20"] * 0.980))
         )
       )
     ):
@@ -73270,7 +73273,7 @@ class NostalgiaForInfinityX7(IStrategy):
           and (last_candle["AROOND_14"] < 25.0)
           and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 30.0)
           and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 30.0)
-          and (last_candle["close"] > (last_candle["EMA_16"] * 1.012))
+          and (last_candle["close"] > (last_candle["EMA_16"] * 1.020))
         )
         or (
           (last_candle["RSI_14"] > 64.0)
@@ -73330,10 +73333,13 @@ class NostalgiaForInfinityX7(IStrategy):
           is_derisk
           and (last_candle["RSI_3"] < 80.0)
           and (last_candle["RSI_3_15m"] < 80.0)
+          and (last_candle["RSI_3_1h"] < 80.0)
+          and (last_candle["RSI_3_4h"] < 80.0)
           and (last_candle["RSI_14"] > 64.0)
           and (last_candle["AROOND_14"] < 25.0)
           and (last_candle["AROOND_14_15m"] < 25.0)
           and (last_candle["STOCHRSIk_14_14_3_3_15m"] > 50.0)
+          and (last_candle["close"] > (last_candle["EMA_20"] * 1.020))
         )
       )
     ):
