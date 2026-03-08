@@ -6,12 +6,18 @@ set -eu
 ## 2. Configure the localization from repo
 ## OPTIONAL: configure token and chatId on .env
 
+# Set NFI_PATH to the directory containing the NFI repo, otherwise parent of this script will be used as NFI_PATH
 NFI_PATH=
 ENV_PATH=
 FREQTRADE_IMAGE_UPDATE=false
 FREQTRADE_IMAGE="freqtradeorg/freqtrade:stable"
 PRUNE_IMAGES=false
 TELEGRAM_NOTIFICATION=true
+
+if [ -z "${NFI_PATH:-}" ]; then
+    script_dir=$(cd "$(dirname "$0")" && pwd)
+    NFI_PATH=$(cd "$script_dir/.." && pwd)
+fi
 
 ### Simple script that does the following:
 ## 1. Pull NFIX repo
@@ -147,12 +153,25 @@ create_lock() {
     return 1
 }
 
-######################################################
+has_open_trades() {
+    _api_port="${FREQTRADE__API_SERVER__LISTEN_PORT:-8089}"
+    _api_user="${FREQTRADE__API_SERVER__USERNAME:-}"
+    _api_pass="${FREQTRADE__API_SERVER__PASSWORD:-}"
 
-if [ -z "$NFI_PATH" ]; then
-    echo_timestamped "Error: NFI_PATH variable is empty"
-    exit 1
-fi
+    if [ -z "$_api_user" ] || [ -z "$_api_pass" ]; then
+        echo_timestamped "Warning: API credentials not configured, cannot check open trades"
+        return 1
+    fi
+
+    _response=$(command curl -sS --max-time 10 -u "${_api_user}:${_api_pass}" "http://localhost:${_api_port}/api/v1/status" 2>/dev/null || printf '%s' '[]')
+
+    if printf '%s' "$_response" | grep -qE '"is_open"\s*:\s*true'; then
+        return 0
+    fi
+    return 1
+}
+
+######################################################
 
 nfi_path_hash=$(short_path_hash "$NFI_PATH")
 LOCKDIR="${TMPDIR:-/tmp}/nfx-docker-update.${nfi_path_hash}.lock.d"
@@ -276,6 +295,13 @@ if [ "$FREQTRADE_IMAGE_UPDATE" = "true" ]; then
 fi
 
 if [ "$need_restart" = "true" ]; then
+    if has_open_trades; then
+        message="NFI update skipped: Trades ongoing"
+        echo_timestamped "Info: $message"
+        send_telegram_notification "$message"
+        exit 0
+    fi
+
     echo_timestamped "Info: restarting docker image ${FREQTRADE_IMAGE} with NFIX"
     if ! command docker compose --progress quiet down; then
         echo_timestamped "Error: docker compose down failed"
