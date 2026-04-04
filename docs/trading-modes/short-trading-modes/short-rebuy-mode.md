@@ -11,7 +11,7 @@
 ## Table of Contents
 1. [Introduction](#introduction)
 2. [Short Rebuy Mechanism Overview](#short-rebuy-mechanism-overview)
-3. [State Management via `self.rebuy_state`](#state-management-via-selfrebuystate)
+3. [State Management via `self.rebuy_state`]
 4. [Configuration Parameters](#configuration-parameters)
 5. [Entry and Exit Logic](#entry-and-exit-logic)
 6. [Position Sizing and Risk Exposure](#position-sizing-and-risk-exposure)
@@ -20,40 +20,61 @@
 9. [Conclusion](#conclusion)
 
 ## Introduction
-The Short Rebuy trading mode is an advanced strategy feature in the NostalgiaForInfinityX6 (NFIX6) trading bot designed to optimize short positions by enabling partial profit-taking followed by re-entry at improved prices. This two-phase mechanism enhances capital efficiency and allows traders to capitalize on sustained bearish momentum after securing initial gains. The system is particularly effective in trending markets and integrates tightly with the bot’s broader position adjustment and risk management framework.
 
-This document provides a comprehensive analysis of the Short Rebuy mode, focusing on its implementation in the `NostalgiaForInfinityX6.py` strategy file. It details the logic behind `short_exit_rebuy()` and `short_entry_rebuy()` functions, configuration parameters, state tracking, and integration with position sizing. It also highlights key differences between spot and futures implementations and offers best practices for tuning.
+**IMPORTANT CLARIFICATION**: Despite its name suggesting "re-buying" into profitable positions, the Short Rebuy mode in NostalgiaForInfinityX6 actually functions as a **controlled averaging down strategy for LOSING short positions**. It adds to short positions when they are in loss (typically -8% to -10%), NOT when profitable. This is the SHORT equivalent of the Long Rebuy mode.
+
+The Short Rebuy trading mode is designed to reduce the average entry price of losing short positions by adding capital when the position moves against the trader (price goes UP instead of down). The system uses strict indicator confirmation to ensure additional shorts are only added when technical signals suggest the upward move may reverse. This approach aims to improve the break-even point while maintaining disciplined risk management.
+
+This document provides a comprehensive analysis of the Short Rebuy mode, focusing on its implementation in the `NostalgiaForInfinityX6.py` strategy file at L64763-L64936. It details the actual trigger logic, configuration parameters, and integration with position sizing.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40347-L40581)
+- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L64763-L64936) - short_rebuy_adjust_trade_position method
+- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L41788-L42024) - short_exit_rebuy method
+- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L481-L488) - Rebuy configuration parameters
 
 ## Short Rebuy Mechanism Overview
-The Short Rebuy mode operates in two distinct phases:
 
-1. **Initial Exit at Target Profit**: The strategy first exits a portion of the short position when a predefined profit threshold is reached. This allows the trader to lock in gains while maintaining exposure to further downside movement.
-2. **Conditional Re-entry Based on Bearish Momentum**: After the partial exit, the system monitors price action and technical indicators to determine if bearish momentum persists. If conditions are favorable, it re-enters the market at a better price, effectively lowering the average entry price and increasing potential profitability.
+The Short Rebuy mode operates through the `short_rebuy_adjust_trade_position` method, which adds to losing short positions when specific conditions are met:
 
-This mechanism is particularly useful in volatile or strongly trending markets where price may continue moving in the desired direction after a short-term profit target is hit.
+**How It Actually Works:**
 
-The mode is activated using the `short_rebuy_mode_tags` (e.g., `"561"`) and is governed by a set of dedicated exit and entry functions that evaluate market conditions independently from standard short strategies.
+1. **Initial Short Entry**: A short position is opened using tag "561" (defined in `short_rebuy_mode_tags`)
+2. **Position Moves Against Trader**: Price goes UP instead of down, putting the short position into loss
+3. **Loss Threshold Reached**: When `slice_profit_entry < rebuy_mode_sub_thresholds[sub_grind_count]` (i.e., -8% or -10% loss)
+4. **Indicator Confirmation**: System checks RSI_3, RSI_14, ROC_2, and EMA_26 to confirm potential reversal
+5. **Additional Short Entry**: If confirmed, adds more short position with stake size from `rebuy_mode_stakes` array (1.0x initial)
+6. **Average Entry Price Improved**: The average short entry price is now higher, improving break-even point
+
+**Maximum Rebuys:** 2 additional entries (controlled by `rebuy_mode_stakes = [1.0, 1.0]`)
+
+The mode is activated using the `short_rebuy_mode_tags` (tag `"561"`) and is governed by position adjustment logic that evaluates market conditions for potential reversals.
 
 ```mermaid
 flowchart TD
-A["Short Position Opened"] --> B{"Profit Target Reached?"}
-B --> |Yes| C["Partial Exit: Lock in Profit"]
-C --> D{"Bearish Momentum Sustained?"}
-D --> |Yes| E["Re-enter at Better Price"]
-E --> F["Continue Holding/Scaling"]
-D --> |No| G["Hold Remaining Position"]
-G --> H["Exit on Standard Signal"]
-B --> |No| I["Hold and Monitor"]
-I --> B
+A["Short Position Opened<br/>(Tag: 561)"] --> B{"Price Movement?"}
+B --> |"Price goes DOWN<br/>(Profitable)"| C["Hold Position<br/>Monitor for Exit"]
+B --> |"Price goes UP<br/>(Loss)"| D{"Loss ≥ -8%?"}
+D --> |No| B
+D --> |Yes| E["Check Max Rebuys<br/>(Limit: 2)"]
+E --> |"Max Reached"| F["No More Rebuys<br/>Monitor for Derisk"]
+E --> |"Below Max"| G["Check Indicators:<br/>RSI_3 < 90<br/>RSI_14 > 60<br/>ROC_2 < 0<br/>Close > EMA_26 * 1.012"]
+G --> |"Confirmed"| H["Add Short Position<br/>(Stake: 1.0x initial)"]
+H --> I["Average Entry Price<br/>Improved (Higher)"]
+I --> J{"Loss ≥ -10%<br/>AND Sub-grind < 2?"}
+J --> |Yes| G
+J --> |No| K["Monitor Position"]
+G --> |"Not Confirmed"| K
+K --> L{"Profit < -60%?"}
+L --> |Yes| M["Derisk Exit<br/>(Tag: derisk_level_3)"]
+L --> |No| C
+C --> N["Exit on Normal Signals"]
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40347-L40581)
+- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L64763-L64936) - short_rebuy_adjust_trade_position
+- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L64875-L64884) - Rebuy trigger condition
 
-## State Management via `self.rebuy_state`
+## State Management via self.rebuy_state
 Although the provided code does not explicitly define a `self.rebuy_state` variable, the system maintains state implicitly through the trade object, cache mechanisms, and signal tagging. The `Trade` object tracks entry fills, profit ratios, and current stake, which are used to determine whether a rebuy condition should be evaluated.
 
 The `target_profit_cache` plays a critical role in state tracking by storing:
@@ -78,28 +99,50 @@ This ensures that the bot only acts when there is a meaningful change in the tra
 - [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40347-L40581)
 
 ## Configuration Parameters
-The Short Rebuy mode is controlled by several key configuration parameters defined in the strategy class. These can be adjusted in the config file under the `nfi_parameters` block for fine-tuned control.
+The Short Rebuy mode is controlled by several key configuration parameters defined in the strategy class (L481-L488). These can be adjusted in the config file under the `nfi_parameters` block for fine-tuned control.
 
-### Key Parameters:
-- **`short_rebuy_profit_percent`**: Defines the profit percentage at which the initial partial exit is triggered. While not explicitly named in the code, this is derived from the general exit signal logic and can be influenced via `profit_init_ratio` thresholds.
-- **`short_rebuy_wait_time`**: Although not directly implemented as a time-based wait, the system uses candle confirmation (via `previous_candle_1`, etc.) to ensure signals are not generated too rapidly.
-- **`short_rebuy_entry_threshold`**: This corresponds to `rebuy_mode_thresholds_spot` or `rebuy_mode_thresholds_futures`, which define the price drop thresholds (in percentage) required to trigger a re-entry after a partial exit.
-
-### Rebuy Mode Settings:
+### Actual Rebuy Mode Settings:
 ```python
-rebuy_mode_stake_multiplier = 0.35
-rebuy_mode_derisk_spot = -0.60
-rebuy_mode_derisk_futures = -0.60
-rebuy_mode_stakes_spot = [1.0, 1.0]
-rebuy_mode_stakes_futures = [1.0, 1.0]
-rebuy_mode_thresholds_spot = [-0.08, -0.10]
-rebuy_mode_thresholds_futures = [-0.08, -0.10]
+# L481-L488
+rebuy_mode_stake_multiplier = 0.35  # Not used directly in short rebuy
+rebuy_mode_derisk_spot = -0.60      # Derisk threshold (exit if loss > 60%)
+rebuy_mode_derisk_futures = -0.60   # Derisk threshold for futures
+rebuy_mode_stakes_spot = [1.0, 1.0]      # 2 rebuys, each 1.0x initial stake
+rebuy_mode_stakes_futures = [1.0, 1.0]   # Same for futures
+rebuy_mode_thresholds_spot = [-0.08, -0.10]     # LOSS thresholds: -8%, -10%
+rebuy_mode_thresholds_futures = [-0.08, -0.10]  # Same for futures
+```
+
+**CRITICAL:** The `rebuy_mode_thresholds` are **NEGATIVE** values, meaning:
+- First rebuy triggers when position is at **-8% LOSS** (not profit!)
+- Second rebuy triggers when position is at **-10% LOSS**
+- For SHORT positions: This means price went UP 8-10% from entry (against the trade)
+
+### Trigger Condition (L64875):
+```python
+if (
+  (0 <= sub_grind_count < max_sub_grinds)
+  and (slice_profit_entry < rebuy_mode_sub_thresholds[sub_grind_count])  # NEGATIVE threshold
+):
+    # Add more short position
+```
+
+### Indicator Filters (L64877-64883):
+```python
+and (
+  (last_candle["RSI_3"] < 90.0)        # Not overbought on fast RSI
+  and (last_candle["RSI_3_15m"] < 90.0) # Multi-timeframe confirmation
+  and (last_candle["RSI_14"] > 60.0)    # But showing some strength
+  and (last_candle["ROC_2"] < 0.0)      # Negative rate of change
+  and (last_candle["close"] > (last_candle["EMA_26"] * 1.012))  # Above EMA
+)
 ```
 
 These settings control:
-- The stake size for rebuy entries
-- The price drop required to trigger a rebuy (e.g., 8–10% below the exit price)
-- Derisk thresholds to prevent overexposure
+- The LOSS thresholds that trigger rebuys (not profit!)
+- The stake size for each rebuy entry (1.0x = same as initial)
+- Derisk threshold to prevent catastrophic losses (-60%)
+- Maximum number of rebuy attempts (2)
 
 **Section sources**
 - [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40347-L40581)
@@ -215,8 +258,21 @@ Example configuration for conservative rebuy:
 - [test_NFIX6.py](file://tests/unit/test_NFIX6.py#L225)
 
 ## Conclusion
-The Short Rebuy mode in NostalgiaForInfinityX6 is a sophisticated strategy that enhances short trading performance by combining partial profit-taking with intelligent re-entry logic. It leverages state tracking via cache, configurable thresholds, and tight integration with position sizing to maximize gains in bearish trends while managing risk.
 
-By understanding the `short_exit_rebuy()` and `short_entry_rebuy()` logic, traders can fine-tune parameters like `rebuy_mode_thresholds`, `stake_multiplier`, and `derisk` levels to suit their risk profile and market conditions. Special attention should be paid to differences between spot and futures implementations, particularly regarding leverage and funding costs.
+**Key Takeaways:**
 
-When properly tuned using historical backtesting, the Short Rebuy mode can significantly improve risk-adjusted returns in trending markets, making it a valuable tool in the algorithmic trader’s arsenal.
+1. **Short Rebuy is NOT profit-taking + re-entry** - It is an averaging down strategy for LOSING short positions
+2. **Triggers on LOSSES** - Adds to short positions when price moves AGAINST the trade (-8%, -10%)
+3. **Maximum 2 rebuys** - Limited to prevent overexposure (controlled by 2-element `rebuy_mode_stakes` array)
+4. **Strict indicator filters** - Uses RSI, ROC, and EMA to confirm potential reversals before adding capital
+5. **Hard stop at -60%** - Derisk threshold exits entire position if loss exceeds 60%
+
+The Short Rebuy mode in NostalgiaForInfinityX6 is implemented in `short_rebuy_adjust_trade_position` (L64763-L64936) and functions as a risk management tool for recovering from adverse price movements. It uses the same configuration parameters as Long Rebuy mode (`rebuy_mode_thresholds`, `rebuy_mode_stakes`, `rebuy_mode_derisk`) but with inverse logic appropriate for short positions.
+
+**Risk Warning:** Averaging down can amplify losses if the market continues moving against the position. The system's indicator filters and derisk threshold provide some protection, but traders should:
+- Backtest thoroughly before using in live trading
+- Monitor positions closely when rebuy logic activates
+- Consider reducing `rebuy_mode_stakes` values for more conservative risk management
+- Ensure sufficient capital to handle potential -60% drawdown before derisk triggers
+
+When properly tuned using historical backtesting, the Short Rebuy mode can help recover from temporary adverse price movements, but it requires careful risk management and understanding that it is fundamentally an averaging down strategy, not a profit maximization tool.
