@@ -113,7 +113,7 @@ if [ ! -f "$CONFIG_FILE" ]; then
     echo "  2) commits  - Use latest commits from the repository"
     read -p "Enter your choice (1 or 2, default: 2): " update_mode_choice
     update_mode_choice=${update_mode_choice:-2}
-    
+
     if [ "$update_mode_choice" = "2" ]; then
         update_mode="commits"
     else
@@ -160,35 +160,35 @@ fi
 # Fetch latest release data and compare versions
 if [ "$update_mode" = "commits" ]; then
     log "Update mode: Using latest commits from branch '$git_branch'"
-    
+
     # Fetch latest commit data
     COMMIT_DATA=$(curl --silent "https://api.github.com/repos/$GITHUB_USER/$GITHUB_REPO/commits?per_page=1&sha=$git_branch")
     LATEST_COMMIT=$(echo "$COMMIT_DATA" | jq -r '.[0].sha' 2>/dev/null | cut -c1-7)
     COMMIT_DATE=$(echo "$COMMIT_DATA" | jq -r '.[0].commit.committer.date' 2>/dev/null)
-    
+
     if [ -z "$LATEST_COMMIT" ] || [ "$LATEST_COMMIT" = "null" ]; then
         log "Error: Could not fetch latest commit from branch '$git_branch'. Please check the branch name."
         exit 1
     fi
-    
+
     LOCAL_VERSION=$(cat "$LOCAL_VERSION_FILE")
     LATEST_VERSION="$LATEST_COMMIT"
-    
+
     log "Latest commit: $LATEST_VERSION (Date: $COMMIT_DATE)"
     log "Local version: $LOCAL_VERSION"
-    
+
     # Compare versions
     if [ "$LOCAL_VERSION" != "$LATEST_VERSION" ]; then
         log "A new commit ($LATEST_VERSION) is available. Current version: $LOCAL_VERSION."
         log "Downloading from branch '$git_branch'..."
-        
+
         # Download the latest code from the branch
         ZIP_URL="https://github.com/$GITHUB_USER/$GITHUB_REPO/archive/refs/heads/$git_branch.zip"
         ZIP_FILE="$SCRIPT_DIR/$LATEST_VERSION.zip"
-        
+
         curl -L -o "$ZIP_FILE" "$ZIP_URL"
         unzip -oqq "$ZIP_FILE" -d "$SCRIPT_DIR"
-        
+
         # Determine the extracted directory (for branch archives, it's {repo}-{branch})
         EXTRACTED_DIR=$(find "$SCRIPT_DIR" -mindepth 1 -maxdepth 1 -type d -name "$GITHUB_REPO-$git_branch" | head -n 1)
         if [ -z "$EXTRACTED_DIR" ]; then
@@ -199,7 +199,7 @@ if [ "$update_mode" = "commits" ]; then
             log "Error: Could not determine the extracted release directory."
             exit 1
         fi
-        
+
         log "Extracted directory: $EXTRACTED_DIR"
         UPDATE_AVAILABLE=true
     else
@@ -208,34 +208,34 @@ if [ "$update_mode" = "commits" ]; then
     fi
 else
     log "Update mode: Using official GitHub releases"
-    
+
     # Fetch latest release data
     RELEASE_DATA=$(curl --silent "https://api.github.com/repos/$GITHUB_USER/$GITHUB_REPO/releases/latest")
     LATEST_RELEASE=$(echo "$RELEASE_DATA" | jq -r .tag_name)
     LATEST_VERSION=${LATEST_RELEASE#*v}
     LOCAL_VERSION=$(cat "$LOCAL_VERSION_FILE")
-    
+
     log "Latest release: $LATEST_RELEASE (Version: $LATEST_VERSION)"
     log "Local version: $LOCAL_VERSION"
-    
+
     # Compare versions using sort -V
     if [ "$(printf "%s\n%s" "$LOCAL_VERSION" "$LATEST_VERSION" | sort -V | head -n 1)" != "$LATEST_VERSION" ]; then
         log "A new version ($LATEST_VERSION) is available. Current version: $LOCAL_VERSION."
         log "Updating to the latest version..."
-        
+
         # Download and unzip the latest release
         ZIP_URL=$(echo "$RELEASE_DATA" | jq -r .zipball_url)
         ZIP_FILE="$SCRIPT_DIR/$LATEST_RELEASE.zip"
         curl -L -o "$ZIP_FILE" "$ZIP_URL"
         unzip -oqq "$ZIP_FILE" -d "$SCRIPT_DIR"
-        
+
         # Determine the extracted release directory
         EXTRACTED_DIR=$(find "$SCRIPT_DIR" -mindepth 1 -maxdepth 1 -type d -name "iterativv-*" | head -n 1)
         if [ -z "$EXTRACTED_DIR" ]; then
             log "Error: Could not determine the extracted release directory."
             exit 1
         fi
-        
+
         log "Extracted release directory: $EXTRACTED_DIR"
         UPDATE_AVAILABLE=true
     else
