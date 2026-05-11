@@ -3030,10 +3030,14 @@ class NostalgiaForInfinityX7(IStrategy):
     # RSI
     informative_1d["RSI_3"] = pta.rsi(informative_1d["close"], length=3)
     informative_1d["RSI_14"] = pta.rsi(informative_1d["close"], length=14)
-    informative_1d["RSI_3_change_pct"] = informative_1d["RSI_3"].pct_change() * 100.0
-    informative_1d["RSI_14_change_pct"] = informative_1d["RSI_14"].pct_change() * 100.0
-    informative_1d["RSI_3_diff"] = informative_1d["RSI_3"].diff()
-    informative_1d["RSI_14_diff"] = informative_1d["RSI_14"].diff()
+    informative_1d["RSI_3_change_pct"] = (
+      informative_1d["RSI_3"].fillna(float("nan")).pct_change(fill_method=None) * 100.0
+    )
+    informative_1d["RSI_14_change_pct"] = (
+      informative_1d["RSI_14"].fillna(float("nan")).pct_change(fill_method=None) * 100.0
+    )
+    informative_1d["RSI_3_diff"] = informative_1d["RSI_3"].fillna(float("nan")).diff()
+    informative_1d["RSI_14_diff"] = informative_1d["RSI_14"].fillna(float("nan")).diff()
     # BB 20 - STD2
     bbands_20_2 = pta.bbands(informative_1d["close"], length=20)
     informative_1d["BBL_20_2.0"] = bbands_20_2["BBL_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
@@ -3162,10 +3166,14 @@ class NostalgiaForInfinityX7(IStrategy):
     # RSI
     informative_4h["RSI_3"] = pta.rsi(informative_4h["close"], length=3)
     informative_4h["RSI_14"] = pta.rsi(informative_4h["close"], length=14)
-    informative_4h["RSI_3_change_pct"] = informative_4h["RSI_3"].pct_change() * 100.0
-    informative_4h["RSI_14_change_pct"] = informative_4h["RSI_14"].pct_change() * 100.0
-    informative_4h["RSI_3_diff"] = informative_4h["RSI_3"].diff()
-    informative_4h["RSI_14_diff"] = informative_4h["RSI_14"].diff()
+    informative_4h["RSI_3_change_pct"] = (
+      informative_4h["RSI_3"].fillna(float("nan")).pct_change(fill_method=None) * 100.0
+    )
+    informative_4h["RSI_14_change_pct"] = (
+      informative_4h["RSI_14"].fillna(float("nan")).pct_change(fill_method=None) * 100.0
+    )
+    informative_4h["RSI_3_diff"] = informative_4h["RSI_3"].fillna(float("nan")).diff()
+    informative_4h["RSI_14_diff"] = informative_4h["RSI_14"].fillna(float("nan")).diff()
     # EMA
     informative_4h["EMA_12"] = pta.ema(informative_4h["close"], length=12)
     informative_4h["EMA_200"] = pta.ema(informative_4h["close"], length=200, fillna=0.0)
@@ -3322,10 +3330,14 @@ class NostalgiaForInfinityX7(IStrategy):
     # RSI
     informative_1h["RSI_3"] = pta.rsi(informative_1h["close"], length=3)
     informative_1h["RSI_14"] = pta.rsi(informative_1h["close"], length=14)
-    informative_1h["RSI_3_change_pct"] = informative_1h["RSI_3"].pct_change() * 100.0
-    informative_1h["RSI_14_change_pct"] = informative_1h["RSI_14"].pct_change() * 100.0
-    informative_1h["RSI_3_diff"] = informative_1h["RSI_3"].diff()
-    informative_1h["RSI_14_diff"] = informative_1h["RSI_14"].diff()
+    informative_1h["RSI_3_change_pct"] = (
+      informative_1h["RSI_3"].fillna(float("nan")).pct_change(fill_method=None) * 100.0
+    )
+    informative_1h["RSI_14_change_pct"] = (
+      informative_1h["RSI_14"].fillna(float("nan")).pct_change(fill_method=None) * 100.0
+    )
+    informative_1h["RSI_3_diff"] = informative_1h["RSI_3"].fillna(float("nan")).diff()
+    informative_1h["RSI_14_diff"] = informative_1h["RSI_14"].fillna(float("nan")).diff()
     # EMA
     informative_1h["EMA_12"] = pta.ema(informative_1h["close"], length=12)
     informative_1h["EMA_200"] = pta.ema(informative_1h["close"], length=200, fillna=0.0)
