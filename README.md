@@ -27,25 +27,6 @@ Ensure that you don't override any variables in you config.json. Especially the 
 - `exit_profit_only` must set to false (or not set at all).
 - `ignore_roi_if_entry_signal` must set to true (or not set at all).
 
-## Discord Link
-This is where we chat, hangout and contribute as a community (both links is the same server)
-
-- [Discord Invite 1](https://discord.gg/DeAmv3btxQ)
-- [Discord Invite 2](https://discord.gg/nzVeNvZsQq)
-
-## Referral Links
-If you like to help, you can also use the following links to sign up to various exchanges:
-
-- [Binance: (20% discount on trading fees)](https://www.binance.com/join?ref=C68K26A9)
-- [Kucoin: (20% lifetime discount on trading fees)](https://www.kucoin.com/r/af/QBSSS5J2)
-- [Gate: (20% lifetime discount on trading fees)](https://www.gate.io/share/nfinfinity)
-- [OKX: (20% discount on trading fees)](https://www.okx.com/join/11749725931)
-- [MEXC: (10% discount on trading fees)](https://promote.mexc.com/a/luA6Xclb)
-- [ByBit: (signup bonuses)](https://partner.bybit.com/b/nfi)
-- [Bitget: (lifetime 20% rebate all plus 10% discount on spot fees)](https://bonus.bitget.com/fdqe83481698435803831)
-- [BitMart: (20% lifetime discount on trading fees)](https://www.bitmart.com/invite/nfinfinity/en-US)
-- [HTX: (Welcome Bonus worth 241 USDT upon completion of a deposit and trade)](https://www.htx.com/invite/en-us/1f?invite_code=ubpt2223)
-
 ## Automatic Updates (Docker)
 
 The repository includes an `nfi-updater` sidecar service for Docker Compose users that keeps the strategy, blacklist, and pairlist automatically up to date without manual intervention.
@@ -82,6 +63,27 @@ COMPOSE_PROJECT_NAME=nostalgiaforinfinity
 ```bash
 docker compose logs -f nfi-updater
 ```
+
+## Discord Link
+This is where we chat, hangout and contribute as a community (both links is the same server)
+
+- [Discord Invite 1](https://discord.gg/DeAmv3btxQ)
+- [Discord Invite 2](https://discord.gg/nzVeNvZsQq)
+
+## Referral Links
+If you like to help, you can also use the following links to sign up to various exchanges:
+
+- [Binance: (20% discount on trading fees)](https://www.binance.com/join?ref=C68K26A9)
+- [Kucoin: (20% lifetime discount on trading fees)](https://www.kucoin.com/r/af/QBSSS5J2)
+- [Gate: (20% lifetime discount on trading fees)](https://www.gate.io/share/nfinfinity)
+- [OKX: (20% discount on trading fees)](https://www.okx.com/join/11749725931)
+- [MEXC: (10% discount on trading fees)](https://promote.mexc.com/b/nfinfinity)
+- [ByBit: (signup bonuses)](https://partner.bybit.com/b/nfi)
+- [Bitget: (lifetime 20% rebate all plus 10% discount on spot fees)](https://bonus.bitget.com/nfinfinity)
+- [Kraken: ](https://proinvite.kraken.com/9f1e/cctimhte)
+- [BitMart: (20% lifetime discount on trading fees)](https://www.bitmart.com/invite/nfinfinity)
+- [HTX: (Welcome Bonus worth 241 USDT upon completion of a deposit and trade)](https://www.htx.com/invite/en-us/1f?invite_code=ubpt2223)
+- [ByBit: (no fees for the first € 10000)](https://bitvavo.com/invite?a=D22103A4BC)
 
 ## Donations
 Absolutely not required. However, will be accepted as a token of appreciation.

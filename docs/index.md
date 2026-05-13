@@ -33,10 +33,11 @@ If you like to help, you can also use the following links to sign up to various 
 - [OKX: (20% discount on trading fees)](https://www.okx.com/join/11749725931)
 - [MEXC: (10% discount on trading fees)](https://promote.mexc.com/b/nfinfinity)
 - [ByBit: (signup bonuses)](https://partner.bybit.com/b/nfi)
-- [Bitget: (lifetime 20% rebate all plus 10% discount on spot fees)](https://bonus.bitget.com/fdqe83481698435803831)
-- [BitMart: (20% lifetime discount on trading fees)](https://www.bitmart.com/invite/nfinfinity/en-US)
+- [Bitget: (lifetime 20% rebate all plus 10% discount on spot fees)](https://bonus.bitget.com/nfinfinity)
+- [Kraken: ](https://proinvite.kraken.com/9f1e/cctimhte)
+- [BitMart: (20% lifetime discount on trading fees)](https://www.bitmart.com/invite/nfinfinity)
 - [HTX: (Welcome Bonus worth 241 USDT upon completion of a deposit and trade)](https://www.htx.com/invite/en-us/1f?invite_code=ubpt2223)
-- [Bitvavo: (no fees for the first € 10000)](https://bitvavo.com/invite?a=D22103A4BC)
+- [ByBit: (no fees for the first € 10000)](https://bitvavo.com/invite?a=D22103A4BC)
 
 ## Donations
 Absolutely not required. However, will be accepted as a token of appreciation.
