@@ -70,7 +70,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.90"
+    return "v17.4.91"
 
   stoploss = -0.99
 
@@ -3512,15 +3512,15 @@ class NostalgiaForInfinityX7(IStrategy):
     # Stochastic
     stochrsi = pta.stoch(informative_15m["high"], informative_15m["low"], informative_15m["close"])
     informative_15m["STOCHk_14_3_3"] = stochrsi["STOCHk_14_3_3"] if isinstance(stochrsi, pd.DataFrame) else np.nan
-    informative_15m["STOCHd_14_3_3"] = stochrsi["STOCHd_14_3_3"] if isinstance(stochrsi, pd.DataFrame) else np.nan
+    # informative_15m["STOCHd_14_3_3"] = stochrsi["STOCHd_14_3_3"] if isinstance(stochrsi, pd.DataFrame) else np.nan
     # Stochastic RSI
     stochrsi = pta.stochrsi(informative_15m["close"])
     informative_15m["STOCHRSIk_14_14_3_3"] = (
       stochrsi["STOCHRSIk_14_14_3_3"] if isinstance(stochrsi, pd.DataFrame) else np.nan
     )
-    informative_15m["STOCHRSId_14_14_3_3"] = (
-      stochrsi["STOCHRSId_14_14_3_3"] if isinstance(stochrsi, pd.DataFrame) else np.nan
-    )
+    # informative_15m["STOCHRSId_14_14_3_3"] = (
+    #   stochrsi["STOCHRSId_14_14_3_3"] if isinstance(stochrsi, pd.DataFrame) else np.nan
+    # )
     # UO
     informative_15m["UO_7_14_28"] = pta.uo(informative_15m["high"], informative_15m["low"], informative_15m["close"])
     informative_15m["UO_7_14_28_change_pct"] = informative_15m["UO_7_14_28"].pct_change() * 100.0
@@ -3622,8 +3622,8 @@ class NostalgiaForInfinityX7(IStrategy):
     df["RSI_4"] = pta.rsi(df["close"], length=4)
     df["RSI_14"] = pta.rsi(df["close"], length=14)
     df["RSI_20"] = pta.rsi(df["close"], length=20)
-    df["RSI_3_change_pct"] = df["RSI_3"].pct_change() * 100.0
-    df["RSI_14_change_pct"] = df["RSI_14"].pct_change() * 100.0
+    # df["RSI_3_change_pct"] = df["RSI_3"].pct_change() * 100.0
+    # df["RSI_14_change_pct"] = df["RSI_14"].pct_change() * 100.0
     # EMA
     df["EMA_3"] = pta.ema(df["close"], length=3)
     df["EMA_9"] = pta.ema(df["close"], length=9)
@@ -3643,10 +3643,10 @@ class NostalgiaForInfinityX7(IStrategy):
     # BB 20 - STD2
     bbands_20_2 = pta.bbands(df["close"], length=20)
     df["BBL_20_2.0"] = bbands_20_2["BBL_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
-    df["BBM_20_2.0"] = bbands_20_2["BBM_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
+    # df["BBM_20_2.0"] = bbands_20_2["BBM_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
     df["BBU_20_2.0"] = bbands_20_2["BBU_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
     df["BBB_20_2.0"] = bbands_20_2["BBB_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
-    df["BBP_20_2.0"] = bbands_20_2["BBP_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
+    # df["BBP_20_2.0"] = bbands_20_2["BBP_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan
     # BB 40 - STD2
     upper, middle, lower = ta.BBANDS(df["close"], timeperiod=40, nbdevup=2.0, nbdevdn=2.0, matype=0)
     df["BBL_40_2.0"] = lower
@@ -3670,7 +3670,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # Stochastic RSI
     stochrsi = pta.stochrsi(df["close"])
     df["STOCHRSIk_14_14_3_3"] = stochrsi["STOCHRSIk_14_14_3_3"] if isinstance(stochrsi, pd.DataFrame) else np.nan
-    df["STOCHRSId_14_14_3_3"] = stochrsi["STOCHRSId_14_14_3_3"] if isinstance(stochrsi, pd.DataFrame) else np.nan
+    # df["STOCHRSId_14_14_3_3"] = stochrsi["STOCHRSId_14_14_3_3"] if isinstance(stochrsi, pd.DataFrame) else np.nan
     # KST
     kst = pta.kst(df["close"])
     df["KST_10_15_20_30_10_10_10_15"] = kst["KST_10_15_20_30_10_10_10_15"] if isinstance(kst, pd.DataFrame) else np.nan
