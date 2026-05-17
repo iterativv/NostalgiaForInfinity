@@ -11549,7 +11549,7 @@ class NostalgiaForInfinityX7(IStrategy):
       last_candle = df.iloc[-1].squeeze()
       if (side == "long" and rate > last_candle["close"]) or (side == "short" and rate < last_candle["close"]):
         slippage = (rate / last_candle["close"]) - 1.0
-        if (side == "long" and slippage < self.max_slippage) or (side == "short" and -slippage > self.max_slippage):
+        if (side == "long" and slippage < self.max_slippage) or (side == "short" and slippage > -self.max_slippage):
           return True
         else:
           log.warning(f"[{current_time}] Cancelling entry for {pair} due to slippage {(slippage * 100.0):.2f}%")
