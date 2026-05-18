@@ -70,7 +70,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.96"
+    return "v17.4.97"
 
   stoploss = -0.99
 
@@ -47483,7 +47483,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # g1 — AROONU dip + EMA_16 drop
     if (
       (last_candle["RSI_3"] > 10.0)
-      and (last_candle["RSI_3_15m"] > 10.0)
+      and (last_candle["RSI_3_15m"] > 15.0)
       and (last_candle["RSI_3_1h"] > 15.0)
       and (last_candle["RSI_3_4h"] > 15.0)
       and (last_candle["RSI_14"] < 45.0)
