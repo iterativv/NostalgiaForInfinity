@@ -2987,6 +2987,23 @@ class NostalgiaForInfinityX7(IStrategy):
 
     return list(informative_pairs)
 
+  # Safe Series helper to avoid None / malformed indicator outputs
+  def safe_series(self, series, index, fill_value=np.nan):
+    """
+    Guarantees:
+    - always returns pd.Series
+    - always aligned to supplied index
+    - always float64
+    - protects against None / scalar returns
+    """
+
+    if isinstance(series, pd.Series):
+      # FULL ALIGNMENT PROTECTION
+      return series.reindex(index).astype(np.float64)
+
+    # fallback for None / invalid outputs
+    return pd.Series(fill_value, index=index, dtype=np.float64)
+
   # Informative 1d Timeframe Indicators
   # ---------------------------------------------------------------------------------------------
   def informative_1d_indicators(self, metadata: dict, info_timeframe) -> DataFrame:
@@ -2997,71 +3014,100 @@ class NostalgiaForInfinityX7(IStrategy):
     # Get dataframe
     informative_1d = self.dp.get_pair_dataframe(pair=metadata["pair"], timeframe=info_timeframe).copy()
 
+    # Empty dataframe protection
+    if informative_1d.empty:
+      return informative_1d
+
+    # Base OHLCV
     close = informative_1d["close"]
     high = informative_1d["high"]
     low = informative_1d["low"]
     open_ = informative_1d["open"]
     volume = informative_1d["volume"]
 
+    idx = informative_1d.index
+
     # =========================================================================
-    # CALCULATE INDICATORS FIRST
+    # PRECALCULATE INDICATORS
     # =========================================================================
 
     # RSI
-    rsi_3 = pta.rsi(close, length=3)
-    rsi_14 = pta.rsi(close, length=14)
+    rsi_3 = self.safe_series(pta.rsi(close, length=3), idx)
+    rsi_14 = self.safe_series(pta.rsi(close, length=14), idx)
 
     # BBANDS
     bbands = pta.bbands(close, length=20)
 
+    bbl = self.safe_series(bbands["BBL_20_2.0"] if isinstance(bbands, pd.DataFrame) else None, idx)
+    bbu = self.safe_series(bbands["BBU_20_2.0"] if isinstance(bbands, pd.DataFrame) else None, idx)
+    bbb = self.safe_series(bbands["BBB_20_2.0"] if isinstance(bbands, pd.DataFrame) else None, idx)
+
     # AROON
     aroon = pta.aroon(high, low, length=14)
+
+    aroon_up = self.safe_series(aroon["AROONU_14"] if isinstance(aroon, pd.DataFrame) else None, idx)
+    aroon_down = self.safe_series(aroon["AROOND_14"] if isinstance(aroon, pd.DataFrame) else None, idx)
 
     # STOCH
     try:
       stoch = pta.stoch(high, low, close)
-      stoch_k = stoch["STOCHk_14_3_3"] if isinstance(stoch, pd.DataFrame) else np.nan
-    except AttributeError:
-      stoch_k = np.nan
+      stoch_k = self.safe_series(stoch["STOCHk_14_3_3"] if isinstance(stoch, pd.DataFrame) else None, idx)
+    except Exception:
+      stoch_k = pd.Series(np.nan, index=idx, dtype=np.float64)
 
     # STOCH RSI
     stochrsi = pta.stochrsi(close)
 
+    stochrsi_k = self.safe_series(stochrsi["STOCHRSIk_14_14_3_3"] if isinstance(stochrsi, pd.DataFrame) else None, idx)
+
+    # MFI
+    mfi_14 = self.safe_series(pta.mfi(high, low, close, volume, length=14), idx)
+
+    # CMF
+    cmf_20 = self.safe_series(pta.cmf(high, low, close, volume, length=20), idx)
+
+    # WILLR
+    willr_14 = self.safe_series(pta.willr(high, low, close, length=14), idx)
+
+    # ROC
+    roc_2 = self.safe_series(pta.roc(close, length=2), idx)
+    roc_9 = self.safe_series(pta.roc(close, length=9), idx)
+
     # =========================================================================
-    # BUILD NEW COLUMNS IN ONE GO (ANTI-FRAGMENTATION)
+    # BUILD COLUMNS
     # =========================================================================
 
     new_cols = {
       # RSI
       "RSI_3": rsi_3,
       "RSI_14": rsi_14,
-      "RSI_3_change_pct": (rsi_3.fillna(np.nan).pct_change(fill_method=None) * 100.0),
-      "RSI_14_change_pct": (rsi_14.fillna(np.nan).pct_change(fill_method=None) * 100.0),
+      "RSI_3_change_pct": rsi_3.pct_change(fill_method=None) * 100.0,
+      "RSI_14_change_pct": rsi_14.pct_change(fill_method=None) * 100.0,
       # Bollinger Bands
-      "BBL_20_2.0": (bbands["BBL_20_2.0"] if isinstance(bbands, pd.DataFrame) else np.nan),
-      "BBU_20_2.0": (bbands["BBU_20_2.0"] if isinstance(bbands, pd.DataFrame) else np.nan),
-      "BBB_20_2.0": (bbands["BBB_20_2.0"] if isinstance(bbands, pd.DataFrame) else np.nan),
+      "BBL_20_2.0": bbl,
+      "BBU_20_2.0": bbu,
+      "BBB_20_2.0": bbb,
       # MFI
-      "MFI_14": pta.mfi(high, low, close, volume, length=14),
+      "MFI_14": mfi_14,
       # CMF
-      "CMF_20": pta.cmf(high, low, close, volume, length=20),
+      "CMF_20": cmf_20,
       # Williams %R
-      "WILLR_14": pta.willr(high, low, close, length=14),
+      "WILLR_14": willr_14,
       # AROON
-      "AROONU_14": (aroon["AROONU_14"] if isinstance(aroon, pd.DataFrame) else np.nan),
-      "AROOND_14": (aroon["AROOND_14"] if isinstance(aroon, pd.DataFrame) else np.nan),
+      "AROONU_14": aroon_up,
+      "AROOND_14": aroon_down,
       # STOCH
       "STOCHk_14_3_3": stoch_k,
       # STOCH RSI
-      "STOCHRSIk_14_14_3_3": (stochrsi["STOCHRSIk_14_14_3_3"] if isinstance(stochrsi, pd.DataFrame) else np.nan),
+      "STOCHRSIk_14_14_3_3": stochrsi_k,
       # ROC
-      "ROC_2": pta.roc(close, length=2),
-      "ROC_9": pta.roc(close, length=9),
+      "ROC_2": roc_2,
+      "ROC_9": roc_9,
       # Candle change
-      "change_pct": ((close - open_) / open_ * 100.0),
+      "change_pct": ((close - open_) / open_ * 100.0).astype(np.float64),
       # Wick %
-      "top_wick_pct": ((high - np.maximum(open_, close)) / np.maximum(open_, close) * 100.0),
-      "bot_wick_pct": np.abs((low - np.minimum(open_, close)) / np.minimum(open_, close) * 100.0),
+      "top_wick_pct": ((high - np.maximum(open_, close)) / np.maximum(open_, close) * 100.0).astype(np.float64),
+      "bot_wick_pct": np.abs((low - np.minimum(open_, close)) / np.minimum(open_, close) * 100.0).astype(np.float64),
       # Highs
       "high_max_6": high.rolling(6).max(),
       "high_max_12": high.rolling(12).max(),
@@ -3075,15 +3121,30 @@ class NostalgiaForInfinityX7(IStrategy):
     }
 
     # =========================================================================
-    # CONCAT ONCE (VERY IMPORTANT FOR SPEED)
+    # SINGLE CONCAT (ANTI-FRAGMENTATION)
     # =========================================================================
 
     informative_1d = pd.concat(
-      [informative_1d, pd.DataFrame(new_cols, index=informative_1d.index)], axis=1, copy=False
+      [
+        informative_1d,
+        pd.DataFrame(new_cols, index=idx),
+      ],
+      axis=1,
+      copy=False,
     )
 
-    # Optional defrag
+    # Memory defrag
     informative_1d = informative_1d.copy()
+
+    # =========================================================================
+    # DEBUG VALIDATION
+    # =========================================================================
+
+    # Uncomment during testing:
+    #
+    # for col in new_cols:
+    #  if not informative_1d[col].index.equals(idx):
+    #    log.warning(f"{col} index misalignment detected!")
 
     # =========================================================================
     # LOGGING
@@ -3108,112 +3169,149 @@ class NostalgiaForInfinityX7(IStrategy):
 
     informative_4h = self.dp.get_pair_dataframe(pair=metadata["pair"], timeframe=info_timeframe).copy()
 
+    # Empty dataframe protection
+    if informative_4h.empty:
+      return informative_4h
+
+    # Base OHLCV
     close = informative_4h["close"]
     high = informative_4h["high"]
     low = informative_4h["low"]
     open_ = informative_4h["open"]
     volume = informative_4h["volume"]
 
+    idx = informative_4h.index
+
     # =========================================================================
     # PRECALCULATE INDICATORS
     # =========================================================================
 
     # RSI
-    rsi_3 = pta.rsi(close, length=3)
-    rsi_14 = pta.rsi(close, length=14)
+    rsi_3 = self.safe_series(pta.rsi(close, length=3), idx)
+    rsi_14 = self.safe_series(pta.rsi(close, length=14), idx)
 
     # EMA
-    ema_12 = pta.ema(close, length=12)
-    ema_200 = pta.ema(close, length=200, fillna=0.0)
+    ema_12 = self.safe_series(pta.ema(close, length=12), idx)
+    ema_200 = self.safe_series(pta.ema(close, length=200), idx)
 
     # BBANDS
     bbands = pta.bbands(close, length=20)
 
+    bbl_20 = self.safe_series(bbands["BBL_20_2.0"] if isinstance(bbands, pd.DataFrame) else None, idx)
+    bbu_20 = self.safe_series(bbands["BBU_20_2.0"] if isinstance(bbands, pd.DataFrame) else None, idx)
+    bbb_20 = self.safe_series(bbands["BBB_20_2.0"] if isinstance(bbands, pd.DataFrame) else None, idx)
+
     # AROON
     aroon = pta.aroon(high, low, length=14)
+
+    aroon_up = self.safe_series(aroon["AROONU_14"] if isinstance(aroon, pd.DataFrame) else None, idx)
+    aroon_down = self.safe_series(aroon["AROOND_14"] if isinstance(aroon, pd.DataFrame) else None, idx)
 
     # STOCH
     try:
       stoch = pta.stoch(high, low, close)
-
-      stoch_k = stoch["STOCHk_14_3_3"] if isinstance(stoch, pd.DataFrame) else np.nan
-
-    except AttributeError:
-      stoch_k = np.nan
+      stoch_k = self.safe_series(stoch["STOCHk_14_3_3"] if isinstance(stoch, pd.DataFrame) else None, idx)
+    except Exception:
+      stoch_k = pd.Series(np.nan, index=idx, dtype=np.float64)
 
     # STOCH RSI
     stochrsi = pta.stochrsi(close)
 
+    stochrsi_k = self.safe_series(stochrsi["STOCHRSIk_14_14_3_3"] if isinstance(stochrsi, pd.DataFrame) else None, idx)
+
     # KST
     kst = pta.kst(close)
 
+    kst_main = self.safe_series(kst["KST_10_15_20_30_10_10_10_15"] if isinstance(kst, pd.DataFrame) else None, idx)
+    kst_signal = self.safe_series(kst["KSTs_9"] if isinstance(kst, pd.DataFrame) else None, idx)
+
+    # MFI
+    mfi_14 = self.safe_series(pta.mfi(high, low, close, volume, length=14), idx)
+
+    # CMF
+    cmf_20 = self.safe_series(pta.cmf(high, low, close, volume, length=20), idx)
+
+    # Williams %R
+    willr_14 = self.safe_series(pta.willr(high, low, close, length=14), idx)
+
+    # UO
+    uo = self.safe_series(pta.uo(high, low, close), idx)
+
     # OBV
-    obv = pta.obv(close, volume)
+    obv = self.safe_series(pta.obv(close, volume), idx)
+
+    # ROC
+    roc_2 = self.safe_series(pta.roc(close, length=2), idx)
+    roc_9 = self.safe_series(pta.roc(close, length=9), idx)
 
     # CCI
-    cci_20 = pta.cci(high, low, close, length=20)
-
-    cci_20 = cci_20.astype(np.float64).replace(to_replace=[np.nan, None], value=0.0)
+    cci_20 = self.safe_series(pta.cci(high, low, close, length=20), idx)
 
     # Candle %
-    change_pct = (close - open_) / open_ * 100.0
+    change_pct = ((close - open_) / open_) * 100.0
+
+    # Wick %
+    max_oc = np.maximum(open_, close)
+    min_oc = np.minimum(open_, close)
+
+    top_wick_pct = ((high - max_oc) / max_oc) * 100.0
+    bot_wick_pct = np.abs((low - min_oc) / min_oc) * 100.0
 
     # =========================================================================
-    # BUILD NEW COLUMNS (ANTI-FRAGMENTATION)
+    # BUILD NEW COLUMNS
     # =========================================================================
 
     new_cols = {
       # RSI
       "RSI_3": rsi_3,
       "RSI_14": rsi_14,
-      "RSI_3_change_pct": (rsi_3.fillna(np.nan).pct_change(fill_method=None) * 100.0),
-      "RSI_14_change_pct": (rsi_14.fillna(np.nan).pct_change(fill_method=None) * 100.0),
+      "RSI_3_change_pct": rsi_3.pct_change(fill_method=None) * 100.0,
+      "RSI_14_change_pct": rsi_14.pct_change(fill_method=None) * 100.0,
       # EMA
       "EMA_12": ema_12,
       "EMA_200": ema_200,
       # BBANDS
-      "BBL_20_2.0": (bbands["BBL_20_2.0"] if isinstance(bbands, pd.DataFrame) else np.nan),
-      "BBU_20_2.0": (bbands["BBU_20_2.0"] if isinstance(bbands, pd.DataFrame) else np.nan),
-      "BBB_20_2.0": (bbands["BBB_20_2.0"] if isinstance(bbands, pd.DataFrame) else np.nan),
+      "BBL_20_2.0": bbl_20,
+      "BBU_20_2.0": bbu_20,
+      "BBB_20_2.0": bbb_20,
       # MFI
-      "MFI_14": pta.mfi(high, low, close, volume, length=14),
+      "MFI_14": mfi_14,
       # CMF
-      "CMF_20": pta.cmf(high, low, close, volume, length=20),
+      "CMF_20": cmf_20,
       # Williams %R
-      "WILLR_14": pta.willr(high, low, close, length=14),
+      "WILLR_14": willr_14,
       # AROON
-      "AROONU_14": (aroon["AROONU_14"] if isinstance(aroon, pd.DataFrame) else np.nan),
-      "AROOND_14": (aroon["AROOND_14"] if isinstance(aroon, pd.DataFrame) else np.nan),
+      "AROONU_14": aroon_up,
+      "AROOND_14": aroon_down,
       # STOCH
       "STOCHk_14_3_3": stoch_k,
       # STOCH RSI
-      "STOCHRSIk_14_14_3_3": (stochrsi["STOCHRSIk_14_14_3_3"] if isinstance(stochrsi, pd.DataFrame) else np.nan),
-      "STOCHRSIk_14_14_3_3_change_pct": (
-        (stochrsi["STOCHRSIk_14_14_3_3"] if isinstance(stochrsi, pd.DataFrame) else np.nan).pct_change() * 100.0
-      ),
+      "STOCHRSIk_14_14_3_3": stochrsi_k,
+      "STOCHRSIk_14_14_3_3_change_pct": stochrsi_k.pct_change(fill_method=None) * 100.0,
       # KST
-      "KST_10_15_20_30_10_10_10_15": (kst["KST_10_15_20_30_10_10_10_15"] if isinstance(kst, pd.DataFrame) else np.nan),
-      "KSTs_9": (kst["KSTs_9"] if isinstance(kst, pd.DataFrame) else np.nan),
+      "KST_10_15_20_30_10_10_10_15": kst_main,
+      "KSTs_9": kst_signal,
       # UO
-      "UO_7_14_28": pta.uo(high, low, close),
+      "UO_7_14_28": uo,
+      "UO_7_14_28_change_pct": uo.pct_change(fill_method=None) * 100.0,
       # OBV
       "OBV": obv,
-      "OBV_change_pct": (obv.pct_change() * 100.0),
+      "OBV_change_pct": obv.pct_change(fill_method=None) * 100.0,
       # ROC
-      "ROC_2": pta.roc(close, length=2),
-      "ROC_9": pta.roc(close, length=9),
+      "ROC_2": roc_2,
+      "ROC_9": roc_9,
       # CCI
       "CCI_20": cci_20,
-      "CCI_20_change_pct": (cci_20.pct_change() * 100.0),
+      "CCI_20_change_pct": cci_20.pct_change(fill_method=None) * 100.0,
       # Candle %
       "change_pct": change_pct,
-      "change_pct_min_3": (change_pct.rolling(3).min()),
-      "change_pct_min_6": (change_pct.rolling(6).min()),
-      "change_pct_max_3": (change_pct.rolling(3).max()),
-      "change_pct_max_6": (change_pct.rolling(6).max()),
+      "change_pct_min_3": change_pct.rolling(3).min(),
+      "change_pct_min_6": change_pct.rolling(6).min(),
+      "change_pct_max_3": change_pct.rolling(3).max(),
+      "change_pct_max_6": change_pct.rolling(6).max(),
       # Wicks
-      "top_wick_pct": ((high - np.maximum(open_, close)) / np.maximum(open_, close) * 100.0),
-      "bot_wick_pct": np.abs((low - np.minimum(open_, close)) / np.minimum(open_, close) * 100.0),
+      "top_wick_pct": top_wick_pct,
+      "bot_wick_pct": bot_wick_pct,
       # Highs
       "high_max_6": high.rolling(6).max(),
       "high_max_12": high.rolling(12).max(),
@@ -3225,15 +3323,30 @@ class NostalgiaForInfinityX7(IStrategy):
     }
 
     # =========================================================================
-    # CONCAT ONCE (VERY IMPORTANT)
+    # CONCAT ONCE (ANTI-FRAGMENTATION)
     # =========================================================================
 
     informative_4h = pd.concat(
-      [informative_4h, pd.DataFrame(new_cols, index=informative_4h.index)], axis=1, copy=False
+      [
+        informative_4h,
+        pd.DataFrame(new_cols, index=idx),
+      ],
+      axis=1,
+      copy=False,
     )
 
-    # Optional defragmentation
+    # Memory defrag
     informative_4h = informative_4h.copy()
+
+    # =========================================================================
+    # DEBUG VALIDATION
+    # =========================================================================
+
+    # Uncomment during testing:
+    #
+    # for col in new_cols:
+    #  if not informative_4h[col].index.equals(idx):
+    #    log.warning(f"{col} index misalignment detected!")
 
     # =========================================================================
     # LOGGING
@@ -3252,149 +3365,198 @@ class NostalgiaForInfinityX7(IStrategy):
 
     assert self.dp, "DataProvider is required for multiple timeframes."
 
-    # Get informative dataframe
-    informative_1h = self.dp.get_pair_dataframe(
-      pair=metadata["pair"],
-      timeframe=info_timeframe,
-    ).copy()
+    # =========================================================================
+    # GET DATAFRAME
+    # =========================================================================
 
+    informative_1h = self.dp.get_pair_dataframe(pair=metadata["pair"], timeframe=info_timeframe).copy()
+
+    # Empty dataframe protection
+    if informative_1h.empty:
+      return informative_1h
+
+    # Base OHLCV
     close = informative_1h["close"]
     high = informative_1h["high"]
     low = informative_1h["low"]
     open_ = informative_1h["open"]
     volume = informative_1h["volume"]
 
-    # Store indicators first to avoid dataframe fragmentation
-    indicators = {}
+    idx = informative_1h.index
 
-    # -----------------------------------------------------------------------------------------
+    # =========================================================================
+    # PRECALCULATE INDICATORS
+    # =========================================================================
+
     # RSI
-    rsi_3 = pta.rsi(close, length=3)
-    rsi_14 = pta.rsi(close, length=14)
-
-    indicators["RSI_3"] = rsi_3
-    indicators["RSI_14"] = rsi_14
-    indicators["RSI_3_change_pct"] = rsi_3.pct_change(fill_method=None) * 100.0
-    indicators["RSI_14_change_pct"] = rsi_14.pct_change(fill_method=None) * 100.0
+    rsi_3 = self.safe_series(pta.rsi(close, length=3), idx)
+    rsi_14 = self.safe_series(pta.rsi(close, length=14), idx)
 
     # EMA
-    indicators["EMA_12"] = pta.ema(close, length=12)
-    indicators["EMA_200"] = pta.ema(close, length=200, fillna=0.0)
+    ema_12 = self.safe_series(pta.ema(close, length=12), idx)
+    ema_200 = self.safe_series(pta.ema(close, length=200), idx)
 
     # SMA
-    indicators["SMA_16"] = pta.sma(close, length=16)
+    sma_16 = self.safe_series(pta.sma(close, length=16), idx)
 
     # BBANDS
     bbands = pta.bbands(close, length=20)
-    if isinstance(bbands, pd.DataFrame):
-      indicators["BBL_20_2.0"] = bbands["BBL_20_2.0"]
-      indicators["BBU_20_2.0"] = bbands["BBU_20_2.0"]
-      indicators["BBB_20_2.0"] = bbands["BBB_20_2.0"]
 
-    # MFI
-    indicators["MFI_14"] = pta.mfi(
-      high,
-      low,
-      close,
-      volume,
-      length=14,
-    )
-
-    # CMF
-    indicators["CMF_20"] = pta.cmf(
-      high,
-      low,
-      close,
-      volume,
-      length=20,
-    )
-
-    # Williams %R
-    indicators["WILLR_14"] = pta.willr(high, low, close, length=14)
-    indicators["WILLR_84"] = pta.willr(high, low, close, length=84)
+    bbl_20 = self.safe_series(bbands["BBL_20_2.0"] if isinstance(bbands, pd.DataFrame) else None, idx)
+    bbu_20 = self.safe_series(bbands["BBU_20_2.0"] if isinstance(bbands, pd.DataFrame) else None, idx)
+    bbb_20 = self.safe_series(bbands["BBB_20_2.0"] if isinstance(bbands, pd.DataFrame) else None, idx)
 
     # AROON
     aroon = pta.aroon(high, low, length=14)
-    if isinstance(aroon, pd.DataFrame):
-      indicators["AROONU_14"] = aroon["AROONU_14"]
-      indicators["AROOND_14"] = aroon["AROOND_14"]
+
+    aroon_up = self.safe_series(aroon["AROONU_14"] if isinstance(aroon, pd.DataFrame) else None, idx)
+    aroon_down = self.safe_series(aroon["AROOND_14"] if isinstance(aroon, pd.DataFrame) else None, idx)
 
     # STOCH
     try:
       stoch = pta.stoch(high, low, close)
-      if isinstance(stoch, pd.DataFrame):
-        indicators["STOCHk_14_3_3"] = stoch["STOCHk_14_3_3"]
+      stoch_k = self.safe_series(stoch["STOCHk_14_3_3"] if isinstance(stoch, pd.DataFrame) else None, idx)
     except Exception:
-      indicators["STOCHk_14_3_3"] = np.nan
+      stoch_k = pd.Series(np.nan, index=idx, dtype=np.float64)
 
-    # STOCHRSI
+    # STOCH RSI
     stochrsi = pta.stochrsi(close)
-    if isinstance(stochrsi, pd.DataFrame):
-      indicators["STOCHRSIk_14_14_3_3"] = stochrsi["STOCHRSIk_14_14_3_3"]
+
+    stochrsi_k = self.safe_series(stochrsi["STOCHRSIk_14_14_3_3"] if isinstance(stochrsi, pd.DataFrame) else None, idx)
 
     # KST
     kst = pta.kst(close)
-    if isinstance(kst, pd.DataFrame):
-      indicators["KST_10_15_20_30_10_10_10_15"] = kst["KST_10_15_20_30_10_10_10_15"]
-      indicators["KSTs_9"] = kst["KSTs_9"]
+
+    kst_main = self.safe_series(kst["KST_10_15_20_30_10_10_10_15"] if isinstance(kst, pd.DataFrame) else None, idx)
+    kst_signal = self.safe_series(kst["KSTs_9"] if isinstance(kst, pd.DataFrame) else None, idx)
+
+    # MFI
+    mfi_14 = self.safe_series(pta.mfi(high, low, close, volume, length=14), idx)
+
+    # CMF
+    cmf_20 = self.safe_series(pta.cmf(high, low, close, volume, length=20), idx)
+
+    # Williams %R
+    willr_14 = self.safe_series(pta.willr(high, low, close, length=14), idx)
+    willr_84 = self.safe_series(pta.willr(high, low, close, length=84), idx)
 
     # UO
-    uo = pta.uo(high, low, close)
-    uo = uo.astype(np.float64).fillna(50.0)
-
-    indicators["UO_7_14_28"] = uo
-    indicators["UO_7_14_28_change_pct"] = uo.pct_change() * 100.0
+    uo = self.safe_series(pta.uo(high, low, close), idx)
 
     # OBV
-    obv = pta.obv(close, volume)
-
-    indicators["OBV"] = obv
-    indicators["OBV_change_pct"] = obv.pct_change() * 100.0
+    obv = self.safe_series(pta.obv(close, volume), idx)
 
     # ROC
-    indicators["ROC_2"] = pta.roc(close, length=2)
-    indicators["ROC_9"] = pta.roc(close, length=9)
+    roc_2 = self.safe_series(pta.roc(close, length=2), idx)
+    roc_9 = self.safe_series(pta.roc(close, length=9), idx)
 
     # CCI
-    cci = pta.cci(high, low, close, length=20)
-    cci = cci.astype(np.float64).fillna(0.0)
+    cci_20 = self.safe_series(pta.cci(high, low, close, length=20), idx)
 
-    indicators["CCI_20"] = cci
-    indicators["CCI_20_change_pct"] = cci.pct_change() * 100.0
-
-    # Candle change
-    change_pct = (close - open_) / open_ * 100.0
-    indicators["change_pct"] = change_pct
-
-    # Wicks
+    # Wick %
     max_oc = np.maximum(open_, close)
     min_oc = np.minimum(open_, close)
 
-    indicators["top_wick_pct"] = ((high - max_oc) / max_oc) * 100.0
+    top_wick_pct = ((high - max_oc) / max_oc) * 100.0
+    bot_wick_pct = np.abs((low - min_oc) / min_oc) * 100.0
 
-    indicators["bot_wick_pct"] = np.abs((low - min_oc) / min_oc) * 100.0
+    # Candle %
+    change_pct = (close - open_) / open_ * 100.0
 
-    # Max highs
-    indicators["high_max_6"] = high.rolling(6).max()
-    indicators["high_max_12"] = high.rolling(12).max()
-    indicators["high_max_24"] = high.rolling(24).max()
+    # =========================================================================
+    # BUILD NEW COLUMNS (ANTI-FRAGMENTATION)
+    # =========================================================================
 
-    # Min lows
-    indicators["low_min_6"] = low.rolling(6).min()
-    indicators["low_min_12"] = low.rolling(12).min()
-    indicators["low_min_24"] = low.rolling(24).min()
+    new_cols = {
+      # RSI
+      "RSI_3": rsi_3,
+      "RSI_14": rsi_14,
+      "RSI_3_change_pct": (rsi_3.pct_change(fill_method=None) * 100.0),
+      "RSI_14_change_pct": (rsi_14.pct_change(fill_method=None) * 100.0),
+      # EMA
+      "EMA_12": ema_12,
+      "EMA_200": ema_200,
+      # SMA
+      "SMA_16": sma_16,
+      # BBANDS
+      "BBL_20_2.0": bbl_20,
+      "BBU_20_2.0": bbu_20,
+      "BBB_20_2.0": bbb_20,
+      # MFI
+      "MFI_14": mfi_14,
+      # CMF
+      "CMF_20": cmf_20,
+      # Williams %R
+      "WILLR_14": willr_14,
+      "WILLR_84": willr_84,
+      # AROON
+      "AROONU_14": aroon_up,
+      "AROOND_14": aroon_down,
+      # STOCH
+      "STOCHk_14_3_3": stoch_k,
+      # STOCH RSI
+      "STOCHRSIk_14_14_3_3": stochrsi_k,
+      "STOCHRSIk_14_14_3_3_change_pct": (stochrsi_k.pct_change(fill_method=None) * 100.0),
+      # KST
+      "KST_10_15_20_30_10_10_10_15": kst_main,
+      "KSTs_9": kst_signal,
+      # UO
+      "UO_7_14_28": uo,
+      "UO_7_14_28_change_pct": (uo.pct_change(fill_method=None) * 100.0),
+      # OBV
+      "OBV": obv,
+      "OBV_change_pct": (obv.pct_change(fill_method=None) * 100.0),
+      # ROC
+      "ROC_2": roc_2,
+      "ROC_9": roc_9,
+      # CCI
+      "CCI_20": cci_20,
+      "CCI_20_change_pct": (cci_20.pct_change(fill_method=None) * 100.0),
+      # Candle %
+      "change_pct": change_pct,
+      # Wicks
+      "top_wick_pct": top_wick_pct,
+      "bot_wick_pct": bot_wick_pct,
+      # Highs
+      "high_max_6": high.rolling(6).max(),
+      "high_max_12": high.rolling(12).max(),
+      "high_max_24": high.rolling(24).max(),
+      # Lows
+      "low_min_6": low.rolling(6).min(),
+      "low_min_12": low.rolling(12).min(),
+      "low_min_24": low.rolling(24).min(),
+    }
 
-    # Add all indicators at once (prevents fragmentation)
+    # =========================================================================
+    # CONCAT ONCE (VERY IMPORTANT)
+    # =========================================================================
+
     informative_1h = pd.concat(
-      [informative_1h, pd.DataFrame(indicators, index=informative_1h.index)],
+      [
+        informative_1h,
+        pd.DataFrame(new_cols, index=idx),
+      ],
       axis=1,
+      copy=False,
     )
 
-    # Optional: de-fragment dataframe memory
+    # Memory Defrag
     informative_1h = informative_1h.copy()
 
-    # Performance logging
-    # -----------------------------------------------------------------------------------------
+    # =========================================================================
+    # DEBUG VALIDATION
+    # =========================================================================
+
+    # Uncomment during testing:
+    #
+    # for col in new_cols:
+    #  if not informative_1h[col].index.equals(idx):
+    #    log.warning(f"{col} index misalignment detected!")
+
+    # =========================================================================
+    # LOGGING
+    # =========================================================================
+
     tok = time.perf_counter()
 
     log.debug(f"[{metadata['pair']}] informative_1h_indicators took: {tok - tik:0.4f} seconds.")
@@ -3408,129 +3570,163 @@ class NostalgiaForInfinityX7(IStrategy):
 
     assert self.dp, "DataProvider is required for multiple timeframes."
 
-    # Get informative dataframe
-    informative_15m = self.dp.get_pair_dataframe(
-      pair=metadata["pair"],
-      timeframe=info_timeframe,
-    ).copy()
+    # =========================================================================
+    # GET DATAFRAME
+    # =========================================================================
 
+    informative_15m = self.dp.get_pair_dataframe(pair=metadata["pair"], timeframe=info_timeframe).copy()
+
+    # Empty dataframe protection
+    if informative_15m.empty:
+      return informative_15m
+
+    # Base OHLCV
     close = informative_15m["close"]
     high = informative_15m["high"]
     low = informative_15m["low"]
     open_ = informative_15m["open"]
     volume = informative_15m["volume"]
 
-    # Store indicators first to avoid dataframe fragmentation
-    indicators = {}
+    idx = informative_15m.index
 
-    # -----------------------------------------------------------------------------------------
+    # =========================================================================
+    # PRECALCULATE INDICATORS
+    # =========================================================================
+
     # RSI
-    rsi_3 = pta.rsi(close, length=3)
-    rsi_14 = pta.rsi(close, length=14)
-
-    indicators["RSI_3"] = rsi_3
-    indicators["RSI_14"] = rsi_14
-    indicators["RSI_3_change_pct"] = rsi_3.pct_change() * 100.0
-    indicators["RSI_14_change_pct"] = rsi_14.pct_change() * 100.0
+    rsi_3 = self.safe_series(pta.rsi(close, length=3), idx)
+    rsi_14 = self.safe_series(pta.rsi(close, length=14), idx)
 
     # EMA
-    indicators["EMA_12"] = pta.ema(close, length=12)
-    indicators["EMA_20"] = pta.ema(close, length=20)
-    indicators["EMA_26"] = pta.ema(close, length=26)
-
-    # MFI
-    indicators["MFI_14"] = pta.mfi(
-      high,
-      low,
-      close,
-      volume,
-      length=14,
-    )
-
-    # CMF
-    indicators["CMF_20"] = pta.cmf(
-      high,
-      low,
-      close,
-      volume,
-      length=20,
-    )
-
-    # Williams %R
-    indicators["WILLR_14"] = pta.willr(
-      high,
-      low,
-      close,
-      length=14,
-    )
+    ema_12 = self.safe_series(pta.ema(close, length=12), idx)
+    ema_20 = self.safe_series(pta.ema(close, length=20), idx)
+    ema_26 = self.safe_series(pta.ema(close, length=26), idx)
 
     # AROON
     aroon = pta.aroon(high, low, length=14)
-    if isinstance(aroon, pd.DataFrame):
-      indicators["AROONU_14"] = aroon["AROONU_14"]
-      indicators["AROOND_14"] = aroon["AROOND_14"]
+
+    aroon_up = self.safe_series(aroon["AROONU_14"] if isinstance(aroon, pd.DataFrame) else None, idx)
+    aroon_down = self.safe_series(aroon["AROOND_14"] if isinstance(aroon, pd.DataFrame) else None, idx)
 
     # STOCH
     try:
       stoch = pta.stoch(high, low, close)
-
-      if isinstance(stoch, pd.DataFrame):
-        indicators["STOCHk_14_3_3"] = stoch["STOCHk_14_3_3"]
-
+      stoch_k = self.safe_series(stoch["STOCHk_14_3_3"] if isinstance(stoch, pd.DataFrame) else None, idx)
     except Exception:
-      indicators["STOCHk_14_3_3"] = np.nan
+      stoch_k = pd.Series(np.nan, index=idx, dtype=np.float64)
 
-    # STOCHRSI
+    # STOCH RSI
     stochrsi = pta.stochrsi(close)
 
-    if isinstance(stochrsi, pd.DataFrame):
-      indicators["STOCHRSIk_14_14_3_3"] = stochrsi["STOCHRSIk_14_14_3_3"]
+    stochrsi_k = self.safe_series(stochrsi["STOCHRSIk_14_14_3_3"] if isinstance(stochrsi, pd.DataFrame) else None, idx)
+
+    # MFI
+    mfi_14 = self.safe_series(pta.mfi(high, low, close, volume, length=14), idx)
+
+    # CMF
+    cmf_20 = self.safe_series(pta.cmf(high, low, close, volume, length=20), idx)
+
+    # Williams %R
+    willr_14 = self.safe_series(pta.willr(high, low, close, length=14), idx)
 
     # UO
-    uo = pta.uo(high, low, close)
-
-    indicators["UO_7_14_28"] = uo
-    indicators["UO_7_14_28_change_pct"] = uo.pct_change() * 100.0
+    uo = self.safe_series(pta.uo(high, low, close), idx)
 
     # OBV
-    obv = pta.obv(close, volume)
-
-    indicators["OBV"] = obv
-    indicators["OBV_change_pct"] = obv.pct_change() * 100.0
+    obv = self.safe_series(pta.obv(close, volume), idx)
 
     # ROC
-    indicators["ROC_9"] = pta.roc(close, length=9)
+    roc_9 = self.safe_series(pta.roc(close, length=9), idx)
 
     # CCI
-    cci = pta.cci(
-      high,
-      low,
-      close,
-      length=20,
-    )
+    cci_20 = self.safe_series(pta.cci(high, low, close, length=20), idx)
 
-    cci = cci.astype(np.float64).fillna(0.0)
+    # Wick %
+    max_oc = np.maximum(open_, close)
+    min_oc = np.minimum(open_, close)
 
-    indicators["CCI_20"] = cci
-    indicators["CCI_20_change_pct"] = cci.pct_change() * 100.0
+    top_wick_pct = ((high - max_oc) / max_oc) * 100.0
+    bot_wick_pct = np.abs((low - min_oc) / min_oc) * 100.0
 
-    # Candle change
-    indicators["change_pct"] = ((close - open_) / open_) * 100.0
+    # Candle %
+    change_pct = (close - open_) / open_ * 100.0
 
-    # Add all indicators at once (prevents fragmentation)
+    # =========================================================================
+    # BUILD NEW COLUMNS (ANTI-FRAGMENTATION)
+    # =========================================================================
+
+    new_cols = {
+      # RSI
+      "RSI_3": rsi_3,
+      "RSI_14": rsi_14,
+      "RSI_3_change_pct": (rsi_3.pct_change(fill_method=None) * 100.0),
+      "RSI_14_change_pct": (rsi_14.pct_change(fill_method=None) * 100.0),
+      # EMA
+      "EMA_12": ema_12,
+      "EMA_20": ema_20,
+      "EMA_26": ema_26,
+      # MFI
+      "MFI_14": mfi_14,
+      # CMF
+      "CMF_20": cmf_20,
+      # Williams %R
+      "WILLR_14": willr_14,
+      # AROON
+      "AROONU_14": aroon_up,
+      "AROOND_14": aroon_down,
+      # STOCH
+      "STOCHk_14_3_3": stoch_k,
+      # STOCH RSI
+      "STOCHRSIk_14_14_3_3": stochrsi_k,
+      "STOCHRSIk_14_14_3_3_change_pct": (stochrsi_k.pct_change(fill_method=None) * 100.0),
+      # UO
+      "UO_7_14_28": uo,
+      "UO_7_14_28_change_pct": (uo.pct_change(fill_method=None) * 100.0),
+      # OBV
+      "OBV": obv,
+      "OBV_change_pct": (obv.pct_change(fill_method=None) * 100.0),
+      # ROC
+      "ROC_9": roc_9,
+      # CCI
+      "CCI_20": cci_20,
+      "CCI_20_change_pct": (cci_20.pct_change(fill_method=None) * 100.0),
+      # Candle %
+      "change_pct": change_pct,
+      # Wicks
+      "top_wick_pct": top_wick_pct,
+      "bot_wick_pct": bot_wick_pct,
+    }
+
+    # =========================================================================
+    # CONCAT ONCE (VERY IMPORTANT)
+    # =========================================================================
+
     informative_15m = pd.concat(
       [
         informative_15m,
-        pd.DataFrame(indicators, index=informative_15m.index),
+        pd.DataFrame(new_cols, index=idx),
       ],
       axis=1,
+      copy=False,
     )
 
-    # Optional: de-fragment dataframe memory
+    # Memory Defrag
     informative_15m = informative_15m.copy()
 
-    # Performance logging
-    # -----------------------------------------------------------------------------------------
+    # =========================================================================
+    # DEBUG VALIDATION
+    # =========================================================================
+
+    # Uncomment during testing:
+    #
+    # for col in new_cols:
+    #  if not informative_15m[col].index.equals(idx):
+    #    log.warning(f"{col} index misalignment detected!")
+
+    # =========================================================================
+    # LOGGING
+    # =========================================================================
+
     tok = time.perf_counter()
 
     log.debug(f"[{metadata['pair']}] informative_15m_indicators took: {tok - tik:0.4f} seconds.")
@@ -3542,130 +3738,197 @@ class NostalgiaForInfinityX7(IStrategy):
   def base_tf_5m_indicators(self, metadata: dict, df: DataFrame) -> DataFrame:
     tik = time.perf_counter()
 
+    # OHLCV
     close = df["close"]
     high = df["high"]
     low = df["low"]
     open_ = df["open"]
     volume = df["volume"]
 
-    indicators = {}
+    # =========================================================================
+    # PRECALCULATE INDICATORS
+    # =========================================================================
 
     # RSI
-    rsi_3 = pta.rsi(close, length=3)
-    rsi_14 = pta.rsi(close, length=14)
-
-    indicators["RSI_3"] = rsi_3
-    indicators["RSI_4"] = pta.rsi(close, length=4)
-    indicators["RSI_14"] = rsi_14
-    indicators["RSI_20"] = pta.rsi(close, length=20)
-    indicators["RSI_3_change_pct"] = rsi_3.pct_change() * 100.0
-    indicators["RSI_14_change_pct"] = rsi_14.pct_change() * 100.0
+    rsi_3 = self.safe_series(pta.rsi(close, length=3), df.index)
+    rsi_4 = self.safe_series(pta.rsi(close, length=4), df.index)
+    rsi_14 = self.safe_series(pta.rsi(close, length=14), df.index)
+    rsi_20 = self.safe_series(pta.rsi(close, length=20), df.index)
 
     # EMA
-    indicators["EMA_3"] = pta.ema(close, length=3)
-    indicators["EMA_9"] = pta.ema(close, length=9)
-    indicators["EMA_12"] = pta.ema(close, length=12)
-    indicators["EMA_16"] = pta.ema(close, length=16)
-    indicators["EMA_20"] = pta.ema(close, length=20)
-    indicators["EMA_26"] = pta.ema(close, length=26)
-    indicators["EMA_50"] = pta.ema(close, length=50)
-    indicators["EMA_100"] = pta.ema(close, length=100, fillna=0.0)
-    indicators["EMA_200"] = pta.ema(close, length=200, fillna=0.0)
+    ema_3 = self.safe_series(pta.ema(close, length=3), df.index)
+    ema_9 = self.safe_series(pta.ema(close, length=9), df.index)
+    ema_12 = self.safe_series(pta.ema(close, length=12), df.index)
+    ema_16 = self.safe_series(pta.ema(close, length=16), df.index)
+    ema_20 = self.safe_series(pta.ema(close, length=20), df.index)
+    ema_26 = self.safe_series(pta.ema(close, length=26), df.index)
+    ema_50 = self.safe_series(pta.ema(close, length=50), df.index)
+    ema_100 = self.safe_series(pta.ema(close, length=100), df.index)
+    ema_200 = self.safe_series(pta.ema(close, length=200), df.index)
 
     # SMA
-    indicators["SMA_9"] = pta.sma(close, length=9)
-    indicators["SMA_16"] = pta.sma(close, length=16)
-    indicators["SMA_21"] = pta.sma(close, length=21)
-    indicators["SMA_30"] = pta.sma(close, length=30)
-    indicators["SMA_200"] = pta.sma(close, length=200)
+    sma_9 = self.safe_series(pta.sma(close, length=9), df.index)
+    sma_16 = self.safe_series(pta.sma(close, length=16), df.index)
+    sma_21 = self.safe_series(pta.sma(close, length=21), df.index)
+    sma_30 = self.safe_series(pta.sma(close, length=30), df.index)
+    sma_200 = self.safe_series(pta.sma(close, length=200), df.index)
 
     # BBANDS 20
     bbands_20_2 = pta.bbands(close, length=20)
-    if isinstance(bbands_20_2, pd.DataFrame):
-      indicators["BBL_20_2.0"] = bbands_20_2["BBL_20_2.0"]
-      indicators["BBU_20_2.0"] = bbands_20_2["BBU_20_2.0"]
-      indicators["BBB_20_2.0"] = bbands_20_2["BBB_20_2.0"]
 
     # BBANDS 40
     upper, middle, lower = ta.BBANDS(close, timeperiod=40, nbdevup=2.0, nbdevdn=2.0, matype=0)
-
-    indicators["BBL_40_2.0"] = lower
-    indicators["BBM_40_2.0"] = middle
-    indicators["BBU_40_2.0"] = upper
-    indicators["BBB_40_2.0"] = (upper - lower) / middle * 100.0
-    indicators["BBP_40_2.0"] = (close - lower) / (upper - lower)
-    indicators["BBD_40_2.0"] = np.abs(middle - lower)
-    indicators["BBT_40_2.0"] = np.abs(close - lower)
+    bb_range = pd.Series((upper - lower), index=df.index).replace(0, np.nan)
 
     # MFI
-    indicators["MFI_14"] = pta.mfi(high, low, close, volume, length=14)
+    mfi_14 = self.safe_series(pta.mfi(high, low, close, volume, length=14), df.index)
 
     # CMF
-    indicators["CMF_20"] = pta.cmf(high, low, close, volume, length=20)
+    cmf_20 = self.safe_series(pta.cmf(high, low, close, volume, length=20), df.index)
 
     # Williams %R
-    indicators["WILLR_14"] = pta.willr(high, low, close, length=14)
-    indicators["WILLR_480"] = pta.willr(high, low, close, length=480)
+    willr_14 = self.safe_series(pta.willr(high, low, close, length=14), df.index)
+    willr_480 = self.safe_series(pta.willr(high, low, close, length=480), df.index)
 
     # AROON
     aroon_14 = pta.aroon(high, low, length=14)
-    if isinstance(aroon_14, pd.DataFrame):
-      indicators["AROONU_14"] = aroon_14["AROONU_14"]
-      indicators["AROOND_14"] = aroon_14["AROOND_14"]
 
     # STOCH RSI
     stochrsi = pta.stochrsi(close)
-    if isinstance(stochrsi, pd.DataFrame):
-      indicators["STOCHRSIk_14_14_3_3"] = stochrsi["STOCHRSIk_14_14_3_3"]
 
     # KST
     kst = pta.kst(close)
-    if isinstance(kst, pd.DataFrame):
-      indicators["KST_10_15_20_30_10_10_10_15"] = kst["KST_10_15_20_30_10_10_10_15"]
-      indicators["KSTs_9"] = kst["KSTs_9"]
 
     # OBV
-    obv = pta.obv(close, volume)
-    indicators["OBV"] = obv
-    indicators["OBV_change_pct"] = obv.pct_change() * 100.0
+    obv = self.safe_series(pta.obv(close, volume), df.index)
 
     # ROC
-    indicators["ROC_2"] = pta.roc(close, length=2)
-    indicators["ROC_9"] = pta.roc(close, length=9)
+    roc_2 = self.safe_series(pta.roc(close, length=2), df.index)
+    roc_9 = self.safe_series(pta.roc(close, length=9), df.index)
 
     # Candle change
-    indicators["change_pct"] = (close - open_) / open_ * 100.0
+    change_pct = ((close - open_) / open_) * 100.0
 
     # Close delta
-    indicators["close_delta"] = (close - close.shift()).abs()
+    close_delta = (close - close.shift()).abs()
 
-    # Close max
-    indicators["close_max_6"] = close.rolling(6).max()
-    indicators["close_max_12"] = close.rolling(12).max()
-    indicators["close_max_48"] = close.rolling(48).max()
+    # =========================================================================
+    # BUILD NEW COLUMNS (ANTI-FRAGMENTATION)
+    # =========================================================================
 
-    # Close min
-    indicators["close_min_6"] = close.rolling(6).min()
-    indicators["close_min_12"] = close.rolling(12).min()
-    indicators["close_min_48"] = close.rolling(48).min()
+    new_cols = {
+      # RSI
+      "RSI_3": rsi_3,
+      "RSI_4": rsi_4,
+      "RSI_14": rsi_14,
+      "RSI_20": rsi_20,
+      "RSI_3_change_pct": rsi_3.pct_change(fill_method=None) * 100.0,
+      "RSI_14_change_pct": rsi_14.pct_change(fill_method=None) * 100.0,
+      # EMA
+      "EMA_3": ema_3,
+      "EMA_9": ema_9,
+      "EMA_12": ema_12,
+      "EMA_16": ema_16,
+      "EMA_20": ema_20,
+      "EMA_26": ema_26,
+      "EMA_50": ema_50,
+      "EMA_100": ema_100,
+      "EMA_200": ema_200,
+      # SMA
+      "SMA_9": sma_9,
+      "SMA_16": sma_16,
+      "SMA_21": sma_21,
+      "SMA_30": sma_30,
+      "SMA_200": sma_200,
+      # BBANDS 20
+      "BBL_20_2.0": (bbands_20_2["BBL_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan),
+      "BBU_20_2.0": (bbands_20_2["BBU_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan),
+      "BBB_20_2.0": (bbands_20_2["BBB_20_2.0"] if isinstance(bbands_20_2, pd.DataFrame) else np.nan),
+      # BBANDS 40
+      "BBL_40_2.0": lower,
+      "BBM_40_2.0": middle,
+      "BBU_40_2.0": upper,
+      "BBB_40_2.0": ((upper - lower) / middle) * 100.0,
+      "BBP_40_2.0": (close - lower) / bb_range,
+      "BBD_40_2.0": np.abs(middle - lower),
+      "BBT_40_2.0": np.abs(close - lower),
+      # MFI
+      "MFI_14": mfi_14,
+      # CMF
+      "CMF_20": cmf_20,
+      # Williams %R
+      "WILLR_14": willr_14,
+      "WILLR_480": willr_480,
+      # AROON
+      "AROONU_14": (aroon_14["AROONU_14"] if isinstance(aroon_14, pd.DataFrame) else np.nan),
+      "AROOND_14": (aroon_14["AROOND_14"] if isinstance(aroon_14, pd.DataFrame) else np.nan),
+      # STOCH RSI
+      "STOCHRSIk_14_14_3_3": (stochrsi["STOCHRSIk_14_14_3_3"] if isinstance(stochrsi, pd.DataFrame) else np.nan),
+      # KST
+      "KST_10_15_20_30_10_10_10_15": (kst["KST_10_15_20_30_10_10_10_15"] if isinstance(kst, pd.DataFrame) else np.nan),
+      "KSTs_9": (kst["KSTs_9"] if isinstance(kst, pd.DataFrame) else np.nan),
+      # OBV
+      "OBV": obv,
+      "OBV_change_pct": obv.pct_change(fill_method=None) * 100.0,
+      # ROC
+      "ROC_2": roc_2,
+      "ROC_9": roc_9,
+      # Candle %
+      "change_pct": change_pct,
+      # Close delta
+      "close_delta": close_delta,
+      # Close max
+      "close_max_6": close.rolling(6).max(),
+      "close_max_12": close.rolling(12).max(),
+      "close_max_48": close.rolling(48).max(),
+      # Close min
+      "close_min_6": close.rolling(6).min(),
+      "close_min_12": close.rolling(12).min(),
+      "close_min_48": close.rolling(48).min(),
+      # Empty candles
+      "num_empty_288": ((volume <= 0).rolling(window=288, min_periods=288).sum()),
+    }
 
-    # Number of empty candles
-    indicators["num_empty_288"] = (volume <= 0).rolling(window=288, min_periods=288).sum()
+    # =========================================================================
+    # GLOBAL PROTECTIONS
+    # =========================================================================
 
-    # Global protections
     if not self.config["runmode"].value in ("live", "dry_run"):
-      indicators["bt_agefilter_ok"] = False
       bt_agefilter_ok = np.zeros(len(df), dtype=bool)
       bt_agefilter_ok[(12 * 24 * self.bt_min_age_days) :] = True
-      indicators["bt_agefilter_ok"] = bt_agefilter_ok
+      new_cols["bt_agefilter_ok"] = bt_agefilter_ok
     else:
-      indicators["live_data_ok"] = volume.rolling(window=72, min_periods=72).min() > 0
+      new_cols["live_data_ok"] = volume.rolling(window=72, min_periods=72).min() > 0
 
-    # SINGLE CONCAT = NO FRAGMENTATION
-    df = pd.concat([df, pd.DataFrame(indicators, index=df.index)], axis=1)
+    # =========================================================================
+    # CONCAT ONCE (VERY IMPORTANT)
+    # =========================================================================
 
-    # Performance logging
+    df = pd.concat(
+      [df, pd.DataFrame(new_cols, index=df.index)],
+      axis=1,
+      copy=False,
+    )
+
+    # Memory Defrag
+    df = df.copy()
+
+    # =========================================================================
+    # DEBUG VALIDATION
+    # =========================================================================
+
+    # Uncomment during testing:
+    #
+    # for col in new_cols:
+    #  if not df[col].index.equals(df.index):
+    #    log.warning(f"{col} index misalignment detected!")
+
+    # =========================================================================
+    # LOGGING
+    # =========================================================================
+
     tok = time.perf_counter()
+
     log.debug(f"[{metadata['pair']}] base_tf_5m_indicators took: {tok - tik:0.4f} seconds.")
 
     return df
