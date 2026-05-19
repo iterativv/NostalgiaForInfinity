@@ -12,7 +12,6 @@ RUN pip install --upgrade pip && \
 COPY docker/entrypoint.production.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-USER ftuser
 ENV PATH=/home/ftuser/.local/bin:$PATH
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
