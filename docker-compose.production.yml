@@ -8,6 +8,9 @@ services:
       dockerfile: ./docker/Dockerfile.production
     image: freqtrade_with_numba
     restart: unless-stopped
+    environment:
+      - FREQTRADE__API_SERVER__USERNAME=${FREQTRADE__API_SERVER__USERNAME:-}
+      - FREQTRADE__API_SERVER__PASSWORD=${FREQTRADE__API_SERVER__PASSWORD:-}
     volumes:
       - "./user_data:/freqtrade/user_data"
       - "./user_data/data:/freqtrade/user_data/data"
