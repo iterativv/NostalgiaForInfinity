@@ -5,7 +5,14 @@ FROM ${sourceimage}:${sourcetag}
 
 USER root
 RUN pip install --upgrade pip && \
-    pip install --no-build-isolation --no-cache-dir numba
+    pip install --no-build-isolation --no-cache-dir numba && \
+    apt-get update && apt-get install -y --no-install-recommends gosu && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY docker/entrypoint.production.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
 USER ftuser
 ENV PATH=/home/ftuser/.local/bin:$PATH
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
