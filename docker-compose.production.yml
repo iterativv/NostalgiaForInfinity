@@ -13,11 +13,10 @@ services:
       - "./user_data/data:/freqtrade/user_data/data"
       - "./configs:/freqtrade/configs"
       - "./${FREQTRADE__STRATEGY:-NostalgiaForInfinityX7}.py:/freqtrade/${FREQTRADE__STRATEGY:-NostalgiaForInfinityX7}.py"
-    env_file:
-      - .env.production
+      - "./config.production.json:/freqtrade/config.production.json"
     command: >
       trade
-      --config /freqtrade/configs/recommended_config.json
+      --config /freqtrade/config.production.json
       --db-url sqlite:////freqtrade/user_data/${FREQTRADE__BOT_NAME:-Example_Test_Account}_${FREQTRADE__EXCHANGE__NAME:-binance}_${FREQTRADE__TRADING_MODE:-futures}-tradesv3.sqlite
       --log-file user_data/logs/${FREQTRADE__BOT_NAME:-Example_Test_Account}-${FREQTRADE__EXCHANGE__NAME:-binance}-${FREQTRADE__STRATEGY:-NostalgiaForInfinityX7}-${FREQTRADE__TRADING_MODE:-futures}.log
       --strategy-path .
