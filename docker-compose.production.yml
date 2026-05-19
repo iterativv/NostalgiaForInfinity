@@ -5,7 +5,7 @@ services:
   freqtrade:
     build:
       context: .
-      dockerfile: ./docker/Dockerfile.custom
+      dockerfile: ./docker/Dockerfile.production
     image: freqtrade_with_numba
     restart: unless-stopped
     volumes:
