@@ -1,19 +1,11 @@
 ARG sourceimage=freqtradeorg/freqtrade
 ARG sourcetag=stable
 
-FROM ${sourceimage}:${sourcetag} AS builder
-
-USER root
-RUN pip install --upgrade pip
-
-USER ftuser
-RUN --mount=type=cache,target=/home/ftuser/.cache/pip \
-    pip install --user --no-build-isolation --no-cache-dir numba
-
 FROM ${sourceimage}:${sourcetag}
 
 USER root
-COPY --from=builder --chown=1000:1000 /home/ftuser/.local /home/ftuser/.local
+RUN pip install --upgrade pip && \
+    pip install --no-build-isolation --no-cache-dir numba
 
 USER ftuser
 ENV PATH=/home/ftuser/.local/bin:$PATH
