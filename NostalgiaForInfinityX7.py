@@ -70,7 +70,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.107"
+    return "v17.4.108"
 
   stoploss = -0.99
 
@@ -48012,11 +48012,9 @@ class NostalgiaForInfinityX7(IStrategy):
       (last_candle["RSI_3"] < 30.0)
       and (last_candle["RSI_3"] > 5.0)
       and (last_candle["RSI_3_15m"] > 10.0)
-      and (last_candle["RSI_3_1h"] > 10.0)
-      and (last_candle["RSI_3_4h"] > 10.0)
       and (last_candle["ROC_9_1h"] > -10.0)
       and (last_candle["ROC_9_4h"] > -25.0)
-      and (last_candle["close"] < (last_candle["low_min_24_1h"] * 1.30))
+      # and (last_candle["close"] < (last_candle["low_min_24_1h"] * 1.30))
       and (last_candle["EMA_26"] > last_candle["EMA_12"])
       and ((last_candle["EMA_26"] - last_candle["EMA_12"]) > (last_candle["open"] * 0.030))
       and ((previous_candle["EMA_26"] - previous_candle["EMA_12"]) > (last_candle["open"] / 100.0))
@@ -48046,14 +48044,12 @@ class NostalgiaForInfinityX7(IStrategy):
       return True
     # g11 — multi-TF RSI + SMA_30 + BBL
     if (
-      (last_candle["RSI_3"] > 10.0)
+      (last_candle["RSI_3"] > 5.0)
       and (last_candle["RSI_3_15m"] > 10.0)
       and (last_candle["RSI_3_1h"] > 10.0)
-      and (last_candle["RSI_3_4h"] > 10.0)
-      and (last_candle["RSI_3_1d"] > 10.0)
-      and (last_candle["STOCHRSIk_14_14_3_3"] < 20.0)
+      and (last_candle["CMF_20"] > 0.0)
       and (last_candle["close"] < (last_candle["SMA_30"] * 0.965))
-      and (last_candle["close"] < (last_candle["BBL_20_2.0"] * 0.999))
+      and (last_candle["close"] < (last_candle["BBL_20_2.0"] * 1.005))
     ):
       self._grind_entry_tag = "g11"
       return True
