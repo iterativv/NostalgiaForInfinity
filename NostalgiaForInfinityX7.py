@@ -70,7 +70,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.105"
+    return "v17.4.107"
 
   stoploss = -0.99
 
@@ -3073,6 +3073,17 @@ class NostalgiaForInfinityX7(IStrategy):
     roc_2 = self.safe_series(pta.roc(close, length=2), idx)
     roc_9 = self.safe_series(pta.roc(close, length=9), idx)
 
+    # Candle %
+    open_safe = open_.replace(0, np.nan)
+    change_pct = ((close - open_safe) / open_safe) * 100.0
+
+    # Wick %
+    max_oc = np.maximum(open_, close).replace(0, np.nan)
+    min_oc = np.minimum(open_, close).replace(0, np.nan)
+
+    top_wick_pct = ((high - max_oc) / max_oc) * 100.0
+    bot_wick_pct = np.abs((low - min_oc) / min_oc) * 100.0
+
     # =========================================================================
     # BUILD COLUMNS
     # =========================================================================
@@ -3081,8 +3092,8 @@ class NostalgiaForInfinityX7(IStrategy):
       # RSI
       "RSI_3": rsi_3,
       "RSI_14": rsi_14,
-      "RSI_3_change_pct": rsi_3.pct_change(fill_method=None) * 100.0,
-      "RSI_14_change_pct": rsi_14.pct_change(fill_method=None) * 100.0,
+      "RSI_3_change_pct": rsi_3.replace(0, np.nan).pct_change(fill_method=None) * 100.0,
+      "RSI_14_change_pct": rsi_14.replace(0, np.nan).pct_change(fill_method=None) * 100.0,
       # Bollinger Bands
       "BBL_20_2.0": bbl,
       "BBU_20_2.0": bbu,
@@ -3104,10 +3115,10 @@ class NostalgiaForInfinityX7(IStrategy):
       "ROC_2": roc_2,
       "ROC_9": roc_9,
       # Candle change
-      "change_pct": ((close - open_) / open_ * 100.0).astype(np.float64),
+      "change_pct": change_pct,
       # Wick %
-      "top_wick_pct": ((high - np.maximum(open_, close)) / np.maximum(open_, close) * 100.0).astype(np.float64),
-      "bot_wick_pct": np.abs((low - np.minimum(open_, close)) / np.minimum(open_, close) * 100.0).astype(np.float64),
+      "top_wick_pct": top_wick_pct,
+      "bot_wick_pct": bot_wick_pct,
       # Highs
       "high_max_6": high.rolling(6).max(),
       "high_max_12": high.rolling(12).max(),
@@ -3143,8 +3154,19 @@ class NostalgiaForInfinityX7(IStrategy):
     # Uncomment during testing:
     #
     # for col in new_cols:
-    #  if not informative_1d[col].index.equals(idx):
-    #    log.warning(f"{col} index misalignment detected!")
+    #  series = informative_1d[col]
+    #
+    #  # Check same index
+    #  if not series.index.equals(idx):
+    #    log.warning(f"[{metadata['pair']}] {col} index misalignment!")
+    #
+    #  # Check length
+    #  if len(series) != len(idx):
+    #    log.warning(f"[{metadata['pair']}] {col} length mismatch!")
+    #
+    #  # Check dtype
+    #  if not pd.api.types.is_numeric_dtype(series):
+    #    log.warning(f"[{metadata['pair']}] {col} non-numeric dtype: {series.dtype}")
 
     # =========================================================================
     # LOGGING
@@ -3248,11 +3270,12 @@ class NostalgiaForInfinityX7(IStrategy):
     cci_20 = self.safe_series(pta.cci(high, low, close, length=20), idx)
 
     # Candle %
-    change_pct = ((close - open_) / open_) * 100.0
+    open_safe = open_.replace(0, np.nan)
+    change_pct = ((close - open_safe) / open_safe) * 100.0
 
     # Wick %
-    max_oc = np.maximum(open_, close)
-    min_oc = np.minimum(open_, close)
+    max_oc = np.maximum(open_, close).replace(0, np.nan)
+    min_oc = np.minimum(open_, close).replace(0, np.nan)
 
     top_wick_pct = ((high - max_oc) / max_oc) * 100.0
     bot_wick_pct = np.abs((low - min_oc) / min_oc) * 100.0
@@ -3265,8 +3288,8 @@ class NostalgiaForInfinityX7(IStrategy):
       # RSI
       "RSI_3": rsi_3,
       "RSI_14": rsi_14,
-      "RSI_3_change_pct": rsi_3.pct_change(fill_method=None) * 100.0,
-      "RSI_14_change_pct": rsi_14.pct_change(fill_method=None) * 100.0,
+      "RSI_3_change_pct": rsi_3.replace(0, np.nan).pct_change(fill_method=None) * 100.0,
+      "RSI_14_change_pct": rsi_14.replace(0, np.nan).pct_change(fill_method=None) * 100.0,
       # EMA
       "EMA_12": ema_12,
       "EMA_200": ema_200,
@@ -3287,22 +3310,22 @@ class NostalgiaForInfinityX7(IStrategy):
       "STOCHk_14_3_3": stoch_k,
       # STOCH RSI
       "STOCHRSIk_14_14_3_3": stochrsi_k,
-      "STOCHRSIk_14_14_3_3_change_pct": stochrsi_k.pct_change(fill_method=None) * 100.0,
+      "STOCHRSIk_14_14_3_3_change_pct": stochrsi_k.replace(0, np.nan).pct_change(fill_method=None) * 100.0,
       # KST
       "KST_10_15_20_30_10_10_10_15": kst_main,
       "KSTs_9": kst_signal,
       # UO
       "UO_7_14_28": uo,
-      "UO_7_14_28_change_pct": uo.pct_change(fill_method=None) * 100.0,
+      "UO_7_14_28_change_pct": uo.replace(0, np.nan).pct_change(fill_method=None) * 100.0,
       # OBV
       "OBV": obv,
-      "OBV_change_pct": obv.pct_change(fill_method=None) * 100.0,
+      "OBV_change_pct": obv.replace(0, np.nan).pct_change(fill_method=None) * 100.0,
       # ROC
       "ROC_2": roc_2,
       "ROC_9": roc_9,
       # CCI
       "CCI_20": cci_20,
-      "CCI_20_change_pct": cci_20.pct_change(fill_method=None) * 100.0,
+      "CCI_20_change_pct": cci_20.replace(0, np.nan).pct_change(fill_method=None) * 100.0,
       # Candle %
       "change_pct": change_pct,
       "change_pct_min_3": change_pct.rolling(3).min(),
@@ -3323,7 +3346,7 @@ class NostalgiaForInfinityX7(IStrategy):
     }
 
     # =========================================================================
-    # CONCAT ONCE (ANTI-FRAGMENTATION)
+    # SINGLE CONCAT (ANTI-FRAGMENTATION)
     # =========================================================================
 
     informative_4h = pd.concat(
@@ -3345,8 +3368,19 @@ class NostalgiaForInfinityX7(IStrategy):
     # Uncomment during testing:
     #
     # for col in new_cols:
-    #  if not informative_4h[col].index.equals(idx):
-    #    log.warning(f"{col} index misalignment detected!")
+    #  series = informative_4h[col]
+    #
+    #  # Check same index
+    #  if not series.index.equals(idx):
+    #    log.warning(f"[{metadata['pair']}] {col} index misalignment!")
+    #
+    #  # Check length
+    #  if len(series) != len(idx):
+    #    log.warning(f"[{metadata['pair']}] {col} length mismatch!")
+    #
+    #  # Check dtype
+    #  if not pd.api.types.is_numeric_dtype(series):
+    #    log.warning(f"[{metadata['pair']}] {col} non-numeric dtype: {series.dtype}")
 
     # =========================================================================
     # LOGGING
@@ -3454,14 +3488,15 @@ class NostalgiaForInfinityX7(IStrategy):
     cci_20 = self.safe_series(pta.cci(high, low, close, length=20), idx)
 
     # Wick %
-    max_oc = np.maximum(open_, close)
-    min_oc = np.minimum(open_, close)
+    max_oc = np.maximum(open_, close).replace(0, np.nan)
+    min_oc = np.minimum(open_, close).replace(0, np.nan)
 
     top_wick_pct = ((high - max_oc) / max_oc) * 100.0
     bot_wick_pct = np.abs((low - min_oc) / min_oc) * 100.0
 
     # Candle %
-    change_pct = (close - open_) / open_ * 100.0
+    open_safe = open_.replace(0, np.nan)
+    change_pct = ((close - open_safe) / open_safe) * 100.0
 
     # =========================================================================
     # BUILD NEW COLUMNS (ANTI-FRAGMENTATION)
@@ -3471,8 +3506,8 @@ class NostalgiaForInfinityX7(IStrategy):
       # RSI
       "RSI_3": rsi_3,
       "RSI_14": rsi_14,
-      "RSI_3_change_pct": (rsi_3.pct_change(fill_method=None) * 100.0),
-      "RSI_14_change_pct": (rsi_14.pct_change(fill_method=None) * 100.0),
+      "RSI_3_change_pct": rsi_3.replace(0, np.nan).pct_change(fill_method=None) * 100.0,
+      "RSI_14_change_pct": rsi_14.replace(0, np.nan).pct_change(fill_method=None) * 100.0,
       # EMA
       "EMA_12": ema_12,
       "EMA_200": ema_200,
@@ -3496,22 +3531,22 @@ class NostalgiaForInfinityX7(IStrategy):
       "STOCHk_14_3_3": stoch_k,
       # STOCH RSI
       "STOCHRSIk_14_14_3_3": stochrsi_k,
-      "STOCHRSIk_14_14_3_3_change_pct": (stochrsi_k.pct_change(fill_method=None) * 100.0),
+      "STOCHRSIk_14_14_3_3_change_pct": stochrsi_k.replace(0, np.nan).pct_change(fill_method=None) * 100.0,
       # KST
       "KST_10_15_20_30_10_10_10_15": kst_main,
       "KSTs_9": kst_signal,
       # UO
       "UO_7_14_28": uo,
-      "UO_7_14_28_change_pct": (uo.pct_change(fill_method=None) * 100.0),
+      "UO_7_14_28_change_pct": uo.replace(0, np.nan).pct_change(fill_method=None) * 100.0,
       # OBV
       "OBV": obv,
-      "OBV_change_pct": (obv.pct_change(fill_method=None) * 100.0),
+      "OBV_change_pct": obv.replace(0, np.nan).pct_change(fill_method=None) * 100.0,
       # ROC
       "ROC_2": roc_2,
       "ROC_9": roc_9,
       # CCI
       "CCI_20": cci_20,
-      "CCI_20_change_pct": (cci_20.pct_change(fill_method=None) * 100.0),
+      "CCI_20_change_pct": cci_20.replace(0, np.nan).pct_change(fill_method=None) * 100.0,
       # Candle %
       "change_pct": change_pct,
       # Wicks
@@ -3528,7 +3563,7 @@ class NostalgiaForInfinityX7(IStrategy):
     }
 
     # =========================================================================
-    # CONCAT ONCE (VERY IMPORTANT)
+    # SINGLE CONCAT (ANTI-FRAGMENTATION)
     # =========================================================================
 
     informative_1h = pd.concat(
@@ -3550,8 +3585,19 @@ class NostalgiaForInfinityX7(IStrategy):
     # Uncomment during testing:
     #
     # for col in new_cols:
-    #  if not informative_1h[col].index.equals(idx):
-    #    log.warning(f"{col} index misalignment detected!")
+    #  series = informative_1h[col]
+    #
+    #  # Check same index
+    #  if not series.index.equals(idx):
+    #    log.warning(f"[{metadata['pair']}] {col} index misalignment!")
+    #
+    #  # Check length
+    #  if len(series) != len(idx):
+    #    log.warning(f"[{metadata['pair']}] {col} length mismatch!")
+    #
+    #  # Check dtype
+    #  if not pd.api.types.is_numeric_dtype(series):
+    #    log.warning(f"[{metadata['pair']}] {col} non-numeric dtype: {series.dtype}")
 
     # =========================================================================
     # LOGGING
@@ -3642,14 +3688,15 @@ class NostalgiaForInfinityX7(IStrategy):
     cci_20 = self.safe_series(pta.cci(high, low, close, length=20), idx)
 
     # Wick %
-    max_oc = np.maximum(open_, close)
-    min_oc = np.minimum(open_, close)
+    max_oc = np.maximum(open_, close).replace(0, np.nan)
+    min_oc = np.minimum(open_, close).replace(0, np.nan)
 
     top_wick_pct = ((high - max_oc) / max_oc) * 100.0
     bot_wick_pct = np.abs((low - min_oc) / min_oc) * 100.0
 
     # Candle %
-    change_pct = (close - open_) / open_ * 100.0
+    open_safe = open_.replace(0, np.nan)
+    change_pct = ((close - open_safe) / open_safe) * 100.0
 
     # =========================================================================
     # BUILD NEW COLUMNS (ANTI-FRAGMENTATION)
@@ -3659,8 +3706,8 @@ class NostalgiaForInfinityX7(IStrategy):
       # RSI
       "RSI_3": rsi_3,
       "RSI_14": rsi_14,
-      "RSI_3_change_pct": (rsi_3.pct_change(fill_method=None) * 100.0),
-      "RSI_14_change_pct": (rsi_14.pct_change(fill_method=None) * 100.0),
+      "RSI_3_change_pct": rsi_3.replace(0, np.nan).pct_change(fill_method=None) * 100.0,
+      "RSI_14_change_pct": rsi_14.replace(0, np.nan).pct_change(fill_method=None) * 100.0,
       # EMA
       "EMA_12": ema_12,
       "EMA_20": ema_20,
@@ -3678,18 +3725,18 @@ class NostalgiaForInfinityX7(IStrategy):
       "STOCHk_14_3_3": stoch_k,
       # STOCH RSI
       "STOCHRSIk_14_14_3_3": stochrsi_k,
-      "STOCHRSIk_14_14_3_3_change_pct": (stochrsi_k.pct_change(fill_method=None) * 100.0),
+      "STOCHRSIk_14_14_3_3_change_pct": stochrsi_k.replace(0, np.nan).pct_change(fill_method=None) * 100.0,
       # UO
       "UO_7_14_28": uo,
-      "UO_7_14_28_change_pct": (uo.pct_change(fill_method=None) * 100.0),
+      "UO_7_14_28_change_pct": uo.replace(0, np.nan).pct_change(fill_method=None) * 100.0,
       # OBV
       "OBV": obv,
-      "OBV_change_pct": (obv.pct_change(fill_method=None) * 100.0),
+      "OBV_change_pct": obv.replace(0, np.nan).pct_change(fill_method=None) * 100.0,
       # ROC
       "ROC_9": roc_9,
       # CCI
       "CCI_20": cci_20,
-      "CCI_20_change_pct": (cci_20.pct_change(fill_method=None) * 100.0),
+      "CCI_20_change_pct": cci_20.replace(0, np.nan).pct_change(fill_method=None) * 100.0,
       # Candle %
       "change_pct": change_pct,
       # Wicks
@@ -3698,7 +3745,7 @@ class NostalgiaForInfinityX7(IStrategy):
     }
 
     # =========================================================================
-    # CONCAT ONCE (VERY IMPORTANT)
+    # SINGLE CONCAT (ANTI-FRAGMENTATION)
     # =========================================================================
 
     informative_15m = pd.concat(
@@ -3720,8 +3767,19 @@ class NostalgiaForInfinityX7(IStrategy):
     # Uncomment during testing:
     #
     # for col in new_cols:
-    #  if not informative_15m[col].index.equals(idx):
-    #    log.warning(f"{col} index misalignment detected!")
+    #  series = informative_15m[col]
+    #
+    #  # Check same index
+    #  if not series.index.equals(idx):
+    #    log.warning(f"[{metadata['pair']}] {col} index misalignment!")
+    #
+    #  # Check length
+    #  if len(series) != len(idx):
+    #    log.warning(f"[{metadata['pair']}] {col} length mismatch!")
+    #
+    #  # Check dtype
+    #  if not pd.api.types.is_numeric_dtype(series):
+    #    log.warning(f"[{metadata['pair']}] {col} non-numeric dtype: {series.dtype}")
 
     # =========================================================================
     # LOGGING
@@ -4132,6 +4190,10 @@ class NostalgiaForInfinityX7(IStrategy):
         metadata,
       )
 
+      if btc_informative.empty:
+        log.warning(f"[{metadata['pair']}] BTC informative {btc_tf} dataframe EMPTY!")
+        continue
+
       df = merge_informative_pair(
         df,
         btc_informative,
@@ -4140,23 +4202,47 @@ class NostalgiaForInfinityX7(IStrategy):
         ffill=True,
       )
 
-      cols_to_drop = btc_drop_map.get(btc_tf)
+      cols_to_drop = btc_drop_map.get(btc_tf, [])
 
-      # MUCH faster than intersection()
       existing_cols = [col for col in cols_to_drop if col in df.columns]
 
       if existing_cols:
-        df.drop(columns=existing_cols, inplace=True)
+        df.drop(
+          columns=existing_cols,
+          inplace=True,
+        )
 
     # =========================================================================
     # INFORMATIVE TIMEFRAMES LOOP
     # =========================================================================
 
     for info_tf in self.info_timeframes:
+      # -----------------------------------------------------------------------
+      # BUILD INFORMATIVE INDICATORS
+      # -----------------------------------------------------------------------
+
       info_indicators = self.info_switcher(
         metadata,
         info_tf,
       )
+
+      # -----------------------------------------------------------------------
+      # VALIDATION BEFORE MERGE
+      # -----------------------------------------------------------------------
+
+      if info_indicators.empty:
+        log.warning(f"[{metadata['pair']}] {info_tf} informative dataframe EMPTY!")
+        continue
+
+      if not info_indicators.index.is_monotonic_increasing:
+        log.warning(f"[{metadata['pair']}] {info_tf} informative index NOT monotonic!")
+
+      if info_indicators.index.has_duplicates:
+        log.warning(f"[{metadata['pair']}] {info_tf} informative index has DUPLICATES!")
+
+      # -----------------------------------------------------------------------
+      # MERGE INFORMATIVE DATA
+      # -----------------------------------------------------------------------
 
       df = merge_informative_pair(
         df,
@@ -4166,6 +4252,41 @@ class NostalgiaForInfinityX7(IStrategy):
         ffill=True,
       )
 
+      # -----------------------------------------------------------------------
+      # POST-MERGE VALIDATION
+      # -----------------------------------------------------------------------
+
+      merged_cols = [f"{col}_{info_tf}" for col in info_indicators.columns if f"{col}_{info_tf}" in df.columns]
+
+      for col in merged_cols:
+        series = df[col]
+
+        # NaN count
+        nan_count = series.isna().sum()
+
+        # Inf count
+        inf_count = np.isinf(series).sum() if pd.api.types.is_numeric_dtype(series) else 0
+
+        # Index alignment
+        aligned = series.index.equals(df.index)
+
+        # -------------------------------------------------------------------
+        # WARNINGS
+        # -------------------------------------------------------------------
+
+        if not aligned:
+          log.warning(f"[{metadata['pair']}] {col} INDEX MISALIGNMENT!")
+
+        if nan_count == len(series):
+          log.warning(f"[{metadata['pair']}] {col} ENTIRELY NaN!")
+
+        if inf_count > 0:
+          log.warning(f"[{metadata['pair']}] {col} contains INF values!")
+
+      # =========================================================================
+      # DROP REDUNDANT INFORMATIVE OHLCV COLUMNS
+      # =========================================================================
+
       cols_to_drop = info_drop_map.get(
         info_tf,
         [f"{col}_{info_tf}" for col in full_ohlcv],
@@ -4174,7 +4295,35 @@ class NostalgiaForInfinityX7(IStrategy):
       existing_cols = [col for col in cols_to_drop if col in df.columns]
 
       if existing_cols:
-        df.drop(columns=existing_cols, inplace=True)
+        df.drop(
+          columns=existing_cols,
+          inplace=True,
+        )
+
+    # =========================================================================
+    # FINAL DATAFRAME VALIDATION
+    # =========================================================================
+
+    if df.empty:
+      log.warning(f"[{metadata['pair']}] Final dataframe EMPTY!")
+
+    if not df.index.is_monotonic_increasing:
+      log.warning(f"[{metadata['pair']}] Final dataframe index NOT monotonic!")
+
+    if df.index.has_duplicates:
+      log.warning(f"[{metadata['pair']}] Final dataframe index has DUPLICATES!")
+
+    # Entirely NaN columns
+    all_nan_cols = [col for col in df.columns if df[col].isna().all()]
+
+    if all_nan_cols:
+      log.warning(f"[{metadata['pair']}] Columns entirely NaN: {all_nan_cols}")
+
+    # Infinite values
+    inf_cols = [col for col in df.columns if pd.api.types.is_numeric_dtype(df[col]) and np.isinf(df[col]).any()]
+
+    if inf_cols:
+      log.warning(f"[{metadata['pair']}] Columns containing inf: {inf_cols}")
 
     # =========================================================================
     # BASE TIMEFRAME INDICATORS
@@ -47818,7 +47967,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and (last_candle["RSI_3_1h"] > 10.0)
       and (last_candle["RSI_3_4h"] > 10.0)
       and (last_candle["RSI_14"] < 35.0)
-      and (last_candle["AROONU_14"] < 25.0)
+      and (last_candle["AROONU_14"] < 30.0)
       and (last_candle["ROC_9_4h"] > -20.0)
       and (last_candle["close"] < (last_candle["low_min_12_4h"] * 1.50))
       and (last_candle["close"] < (last_candle["EMA_9"] * 0.975))
@@ -47828,7 +47977,7 @@ class NostalgiaForInfinityX7(IStrategy):
       return True
     # g6 — RSI_20 falling + SMA_16 drop
     if (
-      (last_candle["RSI_3"] > 10.0)
+      (last_candle["RSI_3"] > 5.0)
       and (last_candle["RSI_3"] < 40.0)
       and (last_candle["RSI_3_15m"] > 15.0)
       and (last_candle["RSI_14"] > 35.0)
@@ -47844,17 +47993,17 @@ class NostalgiaForInfinityX7(IStrategy):
     # g7 — WILLR deep + BBB wide
     if (
       (last_candle["RSI_3"] > 5.0)
-      and (last_candle["RSI_3_15m"] > 10.0)
-      and (last_candle["RSI_3_1h"] > 10.0)
-      and (last_candle["RSI_3_4h"] > 10.0)
+      and (last_candle["RSI_3_15m"] > 20.0)
+      and (last_candle["RSI_3_1h"] > 20.0)
+      and (last_candle["RSI_3_4h"] > 20.0)
       and (last_candle["ROC_9_1h"] > -10.0)
       and (last_candle["ROC_9_4h"] > -10.0)
       and (last_candle["WILLR_14"] < -50.0)
-      and (last_candle["STOCHRSIk_14_14_3_3"] < 20.0)
+      and (last_candle["STOCHRSIk_14_14_3_3"] < 30.0)
       and (last_candle["WILLR_84_1h"] < -70.0)
       and (last_candle["close"] < (last_candle["low_min_24_4h"] * 1.50))
       and (last_candle["BBB_20_2.0_1h"] > 12.0)
-      and (last_candle["close_max_48"] >= (last_candle["close"] * 1.12))
+      and (last_candle["close_max_48"] >= (last_candle["close"] * 1.10))
     ):
       self._grind_entry_tag = "g7"
       return True
@@ -48008,6 +48157,19 @@ class NostalgiaForInfinityX7(IStrategy):
       and ((previous_candle["EMA_26"] - previous_candle["EMA_12"]) > (last_candle["open"] / 100.0))
     ):
       self._grind_entry_tag = "g19"
+      return True
+    # AROONU 4h uptrend pullback recovery
+    if (
+      (last_candle["RSI_3"] > 8.0)
+      and (last_candle["RSI_3_1h"] > 20.0)
+      and (last_candle["RSI_14"] < 42.0)
+      and (last_candle["RSI_14_4h"] > 40.0)
+      and (last_candle["AROONU_14"] < 35.0)
+      and (last_candle["AROONU_14_4h"] > 60.0)
+      and (last_candle["ROC_9_1d"] > -15.0)
+      and (last_candle["close"] < (last_candle["close_max_48"] * 0.95))
+    ):
+      self._grind_entry_tag = "g20"
       return True
 
     self._grind_entry_tag = ""
