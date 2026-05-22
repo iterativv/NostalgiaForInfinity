@@ -139,7 +139,7 @@
   },
   "webhook": {
     "enabled": true,
-    "url": "https://freqtrade-notifier.app.lamualfa.dev/webhook/freqtrade",
+    "url": "https://freqtrade-notifier.lamualfa.dev/webhook/freqtrade",
     "webhookentry": {
       "type": "entry",
       "direction": "{direction}",
@@ -177,6 +177,9 @@
       "stake_currency": "{stake_currency}",
       "current_rate": "{current_rate}",
       "fee_open": "{fee_open}",
+      "fee_close": "{fee_close}",
+      "leverage": "{leverage}",
+      "stoploss_abs": "{stoploss_abs}",
       "open_date": "{open_date}"
     },
     "webhookentrycancel": {
@@ -243,7 +246,10 @@
       "fee_open": "{fee_open}",
       "fee_close": "{fee_close}",
       "open_date": "{open_date}",
-      "close_date": "{close_date}"
+      "close_date": "{close_date}",
+      "stoploss_abs": "{stoploss_abs}",
+      "sub_trade": "{sub_trade}",
+      "is_final_exit": "{is_final_exit}"
     },
     "webhookexitcancel": {
       "type": "exit_cancel",
