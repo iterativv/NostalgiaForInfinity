@@ -7,7 +7,7 @@
   "max_open_trades": 6,
   "stake_currency": "USDT",
   "stake_amount": "unlimited",
-  "tradable_balance_ratio": 0.99,
+  "tradable_balance_ratio": 0.95,
   "fiat_display_currency": "USD",
   "force_entry_enable": true,
   "cancel_open_orders_on_exit": false,
@@ -76,7 +76,7 @@
   "pairlists": [
     {
       "method": "VolumePairList",
-      "number_assets": 100,
+      "number_assets": 60,
       "sort_key": "quoteVolume",
       "refresh_period": 1800
     },
@@ -99,7 +99,7 @@
     },
     {
       "method": "VolumePairList",
-      "number_assets": 80,
+      "number_assets": 40,
       "sort_key": "quoteVolume"
     }
   ],
