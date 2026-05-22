@@ -8,12 +8,13 @@ services:
       dockerfile: ./docker/Dockerfile.production
     image: freqtrade_with_numba
     restart: unless-stopped
+    env_file:
+      - .env.production
     environment:
       - FREQTRADE__API_SERVER__USERNAME=${FREQTRADE__API_SERVER__USERNAME:-}
       - FREQTRADE__API_SERVER__PASSWORD=${FREQTRADE__API_SERVER__PASSWORD:-}
     volumes:
-      - "./user_data:/freqtrade/user_data"
-      - "./user_data/data:/freqtrade/user_data/data"
+      - freqtrade_user_data:/freqtrade/user_data
       - "./configs:/freqtrade/configs"
       - "./${FREQTRADE__STRATEGY:-NostalgiaForInfinityX7}.py:/freqtrade/${FREQTRADE__STRATEGY:-NostalgiaForInfinityX7}.py"
       - "./config.production.json:/freqtrade/config.production.json"
@@ -24,3 +25,6 @@ services:
       --log-file user_data/logs/${FREQTRADE__BOT_NAME:-Example_Test_Account}-${FREQTRADE__EXCHANGE__NAME:-binance}-${FREQTRADE__STRATEGY:-NostalgiaForInfinityX7}-${FREQTRADE__TRADING_MODE:-futures}.log
       --strategy-path .
       -v
+
+volumes:
+  freqtrade_user_data:
