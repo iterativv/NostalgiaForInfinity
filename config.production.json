@@ -146,7 +146,6 @@
       "pair": "{pair}",
       "trade_id": "{trade_id}",
       "exchange": "{exchange}",
-      "timeframe": "{timeframe}",
       "enter_tag": "{enter_tag}",
       "order_type": "{order_type}",
       "stake_amount": "{stake_amount}",
@@ -156,8 +155,6 @@
       "open_rate": "{open_rate}",
       "amount": "{amount}",
       "current_rate": "{current_rate}",
-      "stoploss_abs": "{stoploss_abs}",
-      "fee_open": "{fee_open}",
       "open_date": "{open_date}"
     },
     "webhookentryfill": {
@@ -166,7 +163,6 @@
       "pair": "{pair}",
       "trade_id": "{trade_id}",
       "exchange": "{exchange}",
-      "timeframe": "{timeframe}",
       "enter_tag": "{enter_tag}",
       "order_type": "{order_type}",
       "open_rate": "{open_rate}",
@@ -174,10 +170,7 @@
       "stake_amount": "{stake_amount}",
       "stake_currency": "{stake_currency}",
       "current_rate": "{current_rate}",
-      "fee_open": "{fee_open}",
-      "fee_close": "{fee_close}",
       "leverage": "{leverage}",
-      "stoploss_abs": "{stoploss_abs}",
       "open_date": "{open_date}"
     },
     "webhookentrycancel": {
@@ -186,14 +179,12 @@
       "pair": "{pair}",
       "trade_id": "{trade_id}",
       "exchange": "{exchange}",
-      "timeframe": "{timeframe}",
       "enter_tag": "{enter_tag}",
       "order_type": "{order_type}",
       "limit": "{limit}",
       "stake_amount": "{stake_amount}",
       "stake_currency": "{stake_currency}",
-      "current_rate": "{current_rate}",
-      "fee_open": "{fee_open}"
+      "current_rate": "{current_rate}"
     },
     "webhookexit": {
       "type": "exit",
@@ -201,7 +192,6 @@
       "pair": "{pair}",
       "trade_id": "{trade_id}",
       "exchange": "{exchange}",
-      "timeframe": "{timeframe}",
       "enter_tag": "{enter_tag}",
       "order_type": "{order_type}",
       "exit_reason": "{exit_reason}",
@@ -214,8 +204,6 @@
       "gain": "{gain}",
       "amount": "{amount}",
       "leverage": "{leverage}",
-      "fee_open": "{fee_open}",
-      "fee_close": "{fee_close}",
       "open_date": "{open_date}",
       "close_date": "{close_date}"
     },
@@ -225,7 +213,6 @@
       "pair": "{pair}",
       "trade_id": "{trade_id}",
       "exchange": "{exchange}",
-      "timeframe": "{timeframe}",
       "enter_tag": "{enter_tag}",
       "order_type": "{order_type}",
       "exit_reason": "{exit_reason}",
@@ -238,11 +225,8 @@
       "gain": "{gain}",
       "amount": "{amount}",
       "leverage": "{leverage}",
-      "fee_open": "{fee_open}",
-      "fee_close": "{fee_close}",
       "open_date": "{open_date}",
       "close_date": "{close_date}",
-      "stoploss_abs": "{stoploss_abs}",
       "sub_trade": "{sub_trade}",
       "is_final_exit": "{is_final_exit}"
     },
@@ -252,16 +236,13 @@
       "pair": "{pair}",
       "trade_id": "{trade_id}",
       "exchange": "{exchange}",
-      "timeframe": "{timeframe}",
       "enter_tag": "{enter_tag}",
       "order_type": "{order_type}",
       "exit_reason": "{exit_reason}",
       "order_rate": "{limit}",
       "current_rate": "{current_rate}",
       "profit_amount": "{profit_amount}",
-      "profit_ratio": "{profit_ratio}",
-      "fee_open": "{fee_open}",
-      "fee_close": "{fee_close}"
+      "profit_ratio": "{profit_ratio}"
     },
     "webhookstatus": {
       "type": "status",
