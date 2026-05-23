@@ -3003,7 +3003,6 @@ class NostalgiaForInfinityX7(IStrategy):
   def chaikin_money_flow(
     high: np.ndarray, low: np.ndarray, close: np.ndarray, volume: np.ndarray, timeperiod: int = 20
   ) -> np.ndarray:
-
     hl_range = high - low
     hl_range = np.where(hl_range == 0, np.nan, hl_range)
     mfm = ((close - low) - (high - close)) / hl_range
@@ -4374,7 +4373,6 @@ class NostalgiaForInfinityX7(IStrategy):
   # BTC Indicators
   # ---------------------------------------------------------------------------------------------
   def _btc_info_indicators(self, btc_info_pair: str, btc_info_timeframe: str, metadata: dict) -> DataFrame:
-
     tik = time.perf_counter()
 
     # -------------------------------------------------------------------------
