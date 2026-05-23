@@ -3400,7 +3400,7 @@ class NostalgiaForInfinityX7(IStrategy):
     high_max_6 = ta.MAX(high_np, timeperiod=6)
     high_max_12 = ta.MAX(high_np, timeperiod=12)
     high_max_24 = ta.MAX(high_np, timeperiod=24)
-    #low_min_6 = ta.MIN(low_np, timeperiod=6)
+    # low_min_6 = ta.MIN(low_np, timeperiod=6)
     low_min_12 = ta.MIN(low_np, timeperiod=12)
     low_min_24 = ta.MIN(low_np, timeperiod=24)
     # change_pct_min_3 = ta.MIN(change_pct, timeperiod=3)
@@ -3455,7 +3455,7 @@ class NostalgiaForInfinityX7(IStrategy):
         # "change_pct_max_6": change_pct_max_6,
         #  Wicks %
         "top_wick_pct": top_wick_pct,
-        #"bot_wick_pct": bot_wick_pct,
+        # "bot_wick_pct": bot_wick_pct,
         # Rolling
         "high_max_6": high_max_6,
         "high_max_12": high_max_12,
