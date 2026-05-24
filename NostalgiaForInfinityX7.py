@@ -1718,6 +1718,69 @@ class NostalgiaForInfinityX7(IStrategy):
         filled_exits.append(order)
     return filled_orders, filled_entries, filled_exits
 
+  def trade_order_state(self, trade: "Trade") -> tuple:
+    last_order = trade.orders[-1] if trade.orders else None
+    return (
+      len(trade.orders),
+      getattr(last_order, "id", None),
+      getattr(last_order, "status", None),
+      getattr(last_order, "filled", None),
+    )
+
+  def cache_backtest_profit_snapshot(
+    self,
+    trade: "Trade",
+    current_time: "datetime",
+    exit_rate: float,
+    filled_orders: "Orders",
+    filled_entries: "Orders",
+    filled_exits: "Orders",
+    profit_values: tuple,
+  ) -> None:
+    if not self.is_backtest_mode():
+      return
+
+    trade_key = trade.id if trade.id is not None else id(trade)
+    self._backtest_profit_snapshot = (
+      trade_key,
+      current_time,
+      exit_rate,
+      self.trade_order_state(trade),
+      filled_orders,
+      filled_entries,
+      filled_exits,
+      profit_values,
+    )
+
+  def backtest_profit_snapshot(self, trade: "Trade", current_time: "datetime", exit_rate: float) -> tuple | None:
+    if not self.is_backtest_mode():
+      return None
+
+    snapshot = getattr(self, "_backtest_profit_snapshot", None)
+    if snapshot is None:
+      return None
+
+    (
+      snapshot_trade_id,
+      snapshot_time,
+      snapshot_exit_rate,
+      snapshot_order_state,
+      filled_orders,
+      filled_entries,
+      filled_exits,
+      profit_values,
+    ) = snapshot
+    trade_key = trade.id if trade.id is not None else id(trade)
+    if (
+      snapshot_trade_id == trade_key
+      and snapshot_time == current_time
+      and snapshot_exit_rate == exit_rate
+      and snapshot_order_state == self.trade_order_state(trade)
+    ):
+      return filled_orders, filled_entries, filled_exits, profit_values
+
+    return None
+
   # Calc Total Profit
   # ---------------------------------------------------------------------------------------------
   def calc_total_profit(
@@ -1792,14 +1855,16 @@ class NostalgiaForInfinityX7(IStrategy):
       enter_tag = trade.enter_tag
     enter_tags = enter_tag.split()
 
-    _, filled_entries, filled_exits = self.filled_order_snapshot(trade)
+    filled_orders, filled_entries, filled_exits = self.filled_order_snapshot(trade)
 
     profit_stake = 0.0
     profit_ratio = 0.0
     profit_current_stake_ratio = 0.0
     profit_init_ratio = 0.0
-    profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = self.calc_total_profit(
-      trade, filled_entries, filled_exits, current_rate
+    profit_values = self.calc_total_profit(trade, filled_entries, filled_exits, current_rate)
+    profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = profit_values
+    self.cache_backtest_profit_snapshot(
+      trade, current_time, current_rate, filled_orders, filled_entries, filled_exits, profit_values
     )
 
     max_profit = 0.0
@@ -46592,10 +46657,14 @@ class NostalgiaForInfinityX7(IStrategy):
     if trade.has_open_orders:
       return None
 
-    filled_orders, filled_entries, filled_exits = self.filled_order_snapshot(trade)
+    exit_rate = current_rate
+    profit_snapshot = self.backtest_profit_snapshot(trade, current_time, exit_rate)
+    if profit_snapshot is not None:
+      filled_orders, filled_entries, filled_exits, profit_values = profit_snapshot
+    else:
+      filled_orders, filled_entries, filled_exits = self.filled_order_snapshot(trade)
     count_of_exits = len(filled_exits)
 
-    exit_rate = current_rate
     if self.dp.runmode.value in ("live", "dry_run"):
       ticker = self.dp.ticker(trade.pair)
       if ("bid" in ticker) and ("ask" in ticker):
@@ -46608,9 +46677,9 @@ class NostalgiaForInfinityX7(IStrategy):
             if ticker["bid"] is not None:
               exit_rate = ticker["bid"]
 
-    profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = self.calc_total_profit(
-      trade, filled_entries, filled_exits, exit_rate
-    )
+    if profit_snapshot is None:
+      profit_values = self.calc_total_profit(trade, filled_entries, filled_exits, exit_rate)
+    profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = profit_values
 
     current_stake_amount = trade.amount * exit_rate
     slice_amount = filled_entries[0].cost
@@ -73054,10 +73123,14 @@ class NostalgiaForInfinityX7(IStrategy):
     if trade.has_open_orders:
       return None
 
-    filled_orders, filled_entries, filled_exits = self.filled_order_snapshot(trade)
+    exit_rate = current_rate
+    profit_snapshot = self.backtest_profit_snapshot(trade, current_time, exit_rate)
+    if profit_snapshot is not None:
+      filled_orders, filled_entries, filled_exits, profit_values = profit_snapshot
+    else:
+      filled_orders, filled_entries, filled_exits = self.filled_order_snapshot(trade)
     count_of_exits = len(filled_exits)
 
-    exit_rate = current_rate
     if self.dp.runmode.value in ("live", "dry_run"):
       ticker = self.dp.ticker(trade.pair)
       if ("bid" in ticker) and ("ask" in ticker):
@@ -73070,9 +73143,9 @@ class NostalgiaForInfinityX7(IStrategy):
             if ticker["bid"] is not None:
               exit_rate = ticker["bid"]
 
-    profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = self.calc_total_profit(
-      trade, filled_entries, filled_exits, exit_rate
-    )
+    if profit_snapshot is None:
+      profit_values = self.calc_total_profit(trade, filled_entries, filled_exits, exit_rate)
+    profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = profit_values
 
     current_stake_amount = trade.amount * exit_rate
     slice_amount = filled_entries[0].cost
