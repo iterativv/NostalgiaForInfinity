@@ -74,7 +74,7 @@ These remain identical to the NFI example config:
 - `tradable_balance_ratio`: `0.99`
 - `unfilledtimeout`: entry 3m, exit 2m
 - `order_types`: all `limit`, `stoploss_on_exchange: false`
-- `entry_pricing` / `exit_pricing`: `use_order_book: false`
+- `entry_pricing` / `exit_pricing`: `use_order_book: true` (NFI default is `false`, but Binance futures requires order book pricing — ticker endpoint is unavailable)
 - `rateLimit`: `60`
 - `process_throttle_secs`: `5`
 - `stoploss_on_exchange_interval`: `60`
