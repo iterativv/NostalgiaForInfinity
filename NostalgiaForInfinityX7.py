@@ -5,7 +5,6 @@ import rapidjson
 import numpy as np
 import talib.abstract as ta
 import pandas as pd
-import pandas_ta as pta
 from freqtrade.strategy.interface import IStrategy
 from freqtrade.strategy import merge_informative_pair
 from pandas import DataFrame, Series
@@ -3000,18 +2999,20 @@ class NostalgiaForInfinityX7(IStrategy):
     return list(informative_pairs)
 
   @staticmethod
-  def chaikin_money_flow(
-    high: np.ndarray, low: np.ndarray, close: np.ndarray, volume: np.ndarray, timeperiod: int = 20
-  ) -> np.ndarray:
+  def chaikin_money_flow(high, low, close, volume, timeperiod=20):
     hl_range = high - low
-    hl_range = np.where(hl_range == 0, np.nan, hl_range)
-    mfm = ((close - low) - (high - close)) / hl_range
-    mfv = mfm * volume
-    mfv_sum = pd.Series(mfv).rolling(timeperiod).sum().to_numpy()
-    vol_sum = pd.Series(volume).rolling(timeperiod).sum().to_numpy()
-    cmf = mfv_sum / np.where(vol_sum == 0, np.nan, vol_sum)
+    mfm = np.divide(
+        ((close - low) - (high - close)),
+        hl_range,
+        out=np.full_like(close, np.nan, dtype=np.float64),
+        where=hl_range != 0,
+    )
 
-    return np.nan_to_num(cmf, nan=0.0)
+    mfv = mfm * volume
+    mfv_sum = pd.Series(mfv, copy=False).rolling(timeperiod).sum().to_numpy(copy=False)
+    vol_sum = pd.Series(volume, copy=False).rolling(timeperiod).sum().to_numpy(copy=False)
+
+    return mfv_sum / vol_sum
 
   # Informative 1d Timeframe Indicators
   # ---------------------------------------------------------------------------------------------
@@ -3061,23 +3062,17 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # STOCH
     # =========================================================================
-
-    try:
-      stoch_k, _ = ta.STOCH(
-        high_np, low_np, close_np, fastk_period=14, slowk_period=3, slowk_matype=0, slowd_period=3, slowd_matype=0
-      )
-
-    except Exception:
-      stoch_k = np.full_like(close_np, np.nan)
+    stoch_k, _ = ta.STOCH(high_np, low_np, close_np, fastk_period=14, slowk_period=3, slowk_matype=0, slowd_period=3, slowd_matype=0)
 
     # =========================================================================
     # STOCH RSI
     # =========================================================================
-    rsi_series = pd.Series(rsi_14, copy=False)
-    rsi_min = rsi_series.rolling(14).min()
-    rsi_max = rsi_series.rolling(14).max()
-    stochrsi = ((rsi_series - rsi_min) / (rsi_max - rsi_min).replace(0, np.nan)) * 100.0
-    stochrsi_k = stochrsi.rolling(3).mean().to_numpy()
+    rsi_min = ta.MIN(rsi_14, timeperiod=14)
+    rsi_max = ta.MAX(rsi_14, timeperiod=14)
+    denom = rsi_max - rsi_min
+    denom = np.where(denom == 0, np.nan, denom)
+    stochrsi = ((rsi_14 - rsi_min) / denom) * 100.0
+    stochrsi_k = ta.SMA(stochrsi, timeperiod=3)
 
     # =========================================================================
     # MONEY FLOW
@@ -3315,39 +3310,27 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # STOCH
     # =========================================================================
-    try:
-      stoch_k, _ = ta.STOCH(
-        high_np, low_np, close_np, fastk_period=14, slowk_period=3, slowk_matype=0, slowd_period=3, slowd_matype=0
-      )
-
-    except Exception:
-      stoch_k = np.full_like(close_np, np.nan)
+    stoch_k, _ = ta.STOCH(high_np, low_np, close_np, fastk_period=14, slowk_period=3, slowk_matype=0, slowd_period=3, slowd_matype=0)
 
     # =========================================================================
     # STOCH RSI
     # =========================================================================
-    rsi_series = pd.Series(rsi_14, copy=False)
-    rsi_min = rsi_series.rolling(14).min()
-    rsi_max = rsi_series.rolling(14).max()
-    stochrsi = ((rsi_series - rsi_min) / (rsi_max - rsi_min).replace(0, np.nan)) * 100.0
-    stochrsi_k = stochrsi.rolling(3).mean().to_numpy()
+    rsi_min = ta.MIN(rsi_14, timeperiod=14)
+    rsi_max = ta.MAX(rsi_14, timeperiod=14)
+    denom = rsi_max - rsi_min
+    denom = np.where(denom == 0, np.nan, denom)
+    stochrsi = ((rsi_14 - rsi_min) / denom) * 100.0
+    stochrsi_k = ta.SMA(stochrsi, timeperiod=3)
 
     # =========================================================================
-    # KST (KEEP SAFE - pandas-ta can fail)
+    # KST
     # =========================================================================
-    try:
-      kst = pta.kst(pd.Series(close_np))
-      if isinstance(kst, pd.DataFrame):
-        kst_main = kst["KST_10_15_20_30_10_10_10_15"].to_numpy(copy=False)
-        kst_signal = kst["KSTs_9"].to_numpy(copy=False)
-
-      else:
-        kst_main = np.full_like(close_np, np.nan)
-        kst_signal = np.full_like(close_np, np.nan)
-
-    except Exception:
-      kst_main = np.full_like(close_np, np.nan)
-      kst_signal = np.full_like(close_np, np.nan)
+    kst1 = ta.SMA(ta.ROC(close_np, 10), 10)
+    kst2 = ta.SMA(ta.ROC(close_np, 15), 10)
+    kst3 = ta.SMA(ta.ROC(close_np, 20), 10)
+    kst4 = ta.SMA(ta.ROC(close_np, 30), 15)
+    kst_main = kst1 + (2.0 * kst2) + (3.0 * kst3) + (4.0 * kst4)
+    kst_signal = ta.SMA(kst_main, 9)
 
     # =========================================================================
     # MONEY FLOW
@@ -3627,42 +3610,27 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # STOCH
     # =========================================================================
-
-    try:
-      stoch_k, _ = ta.STOCH(
-        high_np, low_np, close_np, fastk_period=14, slowk_period=3, slowk_matype=0, slowd_period=3, slowd_matype=0
-      )
-
-    except Exception:
-      stoch_k = np.full_like(close_np, np.nan)
+    stoch_k, _ = ta.STOCH(high_np, low_np, close_np, fastk_period=14, slowk_period=3, slowk_matype=0, slowd_period=3, slowd_matype=0)
 
     # =========================================================================
     # STOCH RSI
     # =========================================================================
-
-    rsi_series = pd.Series(rsi_14, copy=False)
-    rsi_min = rsi_series.rolling(14).min()
-    rsi_max = rsi_series.rolling(14).max()
-    stochrsi = ((rsi_series - rsi_min) / (rsi_max - rsi_min).replace(0, np.nan)) * 100.0
-    stochrsi_k = stochrsi.rolling(3).mean().to_numpy()
+    rsi_min = ta.MIN(rsi_14, timeperiod=14)
+    rsi_max = ta.MAX(rsi_14, timeperiod=14)
+    denom = rsi_max - rsi_min
+    denom = np.where(denom == 0, np.nan, denom)
+    stochrsi = ((rsi_14 - rsi_min) / denom) * 100.0
+    stochrsi_k = ta.SMA(stochrsi, timeperiod=3)
 
     # =========================================================================
-    # KST (KEEP SAFE - pandas-ta can fail)
+    # KST
     # =========================================================================
-
-    try:
-      kst = pta.kst(pd.Series(close_np))
-      if isinstance(kst, pd.DataFrame):
-        kst_main = kst["KST_10_15_20_30_10_10_10_15"].to_numpy(copy=False)
-        kst_signal = kst["KSTs_9"].to_numpy(copy=False)
-
-      else:
-        kst_main = np.full_like(close_np, np.nan)
-        kst_signal = np.full_like(close_np, np.nan)
-
-    except Exception:
-      kst_main = np.full_like(close_np, np.nan)
-      kst_signal = np.full_like(close_np, np.nan)
+    kst1 = ta.SMA(ta.ROC(close_np, 10), 10)
+    kst2 = ta.SMA(ta.ROC(close_np, 15), 10)
+    kst3 = ta.SMA(ta.ROC(close_np, 20), 10)
+    kst4 = ta.SMA(ta.ROC(close_np, 30), 15)
+    kst_main = kst1 + (2.0 * kst2) + (3.0 * kst3) + (4.0 * kst4)
+    kst_signal = ta.SMA(kst_main, 9)
 
     # =========================================================================
     # MONEY FLOW
@@ -3909,22 +3877,17 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # STOCH
     # =========================================================================
-    try:
-      stoch_k, _ = ta.STOCH(
-        high_np, low_np, close_np, fastk_period=14, slowk_period=3, slowk_matype=0, slowd_period=3, slowd_matype=0
-      )
-
-    except Exception:
-      stoch_k = np.full_like(close_np, np.nan)
+    stoch_k, _ = ta.STOCH(high_np, low_np, close_np, fastk_period=14, slowk_period=3, slowk_matype=0, slowd_period=3, slowd_matype=0)
 
     # =========================================================================
     # STOCH RSI
     # =========================================================================
-    rsi_series = pd.Series(rsi_14, copy=False)
-    rsi_min = rsi_series.rolling(14).min()
-    rsi_max = rsi_series.rolling(14).max()
-    stochrsi = ((rsi_series - rsi_min) / (rsi_max - rsi_min).replace(0, np.nan)) * 100.0
-    stochrsi_k = stochrsi.rolling(3).mean().to_numpy()
+    rsi_min = ta.MIN(rsi_14, timeperiod=14)
+    rsi_max = ta.MAX(rsi_14, timeperiod=14)
+    denom = rsi_max - rsi_min
+    denom = np.where(denom == 0, np.nan, denom)
+    stochrsi = ((rsi_14 - rsi_min) / denom) * 100.0
+    stochrsi_k = ta.SMA(stochrsi, timeperiod=3)
 
     # =========================================================================
     # MONEY FLOW
@@ -4128,28 +4091,22 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # STOCH RSI
     # =========================================================================
-    rsi_series = pd.Series(rsi_14, copy=False)
-    rsi_min = rsi_series.rolling(14).min()
-    rsi_max = rsi_series.rolling(14).max()
-    stochrsi = ((rsi_series - rsi_min) / (rsi_max - rsi_min).replace(0, np.nan)) * 100.0
-    stochrsi_k = stochrsi.rolling(3).mean().to_numpy()
+    rsi_min = ta.MIN(rsi_14, timeperiod=14)
+    rsi_max = ta.MAX(rsi_14, timeperiod=14)
+    denom = rsi_max - rsi_min
+    denom = np.where(denom == 0, np.nan, denom)
+    stochrsi = ((rsi_14 - rsi_min) / denom) * 100.0
+    stochrsi_k = ta.SMA(stochrsi, timeperiod=3)
 
     # =========================================================================
-    # KST (KEEP SAFE - pandas-ta can fail)
+    # KST
     # =========================================================================
-    try:
-      kst = pta.kst(pd.Series(close_np))
-      if isinstance(kst, pd.DataFrame):
-        kst_main = kst["KST_10_15_20_30_10_10_10_15"].to_numpy(copy=False)
-        kst_signal = kst["KSTs_9"].to_numpy(copy=False)
-
-      else:
-        kst_main = np.full_like(close_np, np.nan)
-        kst_signal = np.full_like(close_np, np.nan)
-
-    except Exception:
-      kst_main = np.full_like(close_np, np.nan)
-      kst_signal = np.full_like(close_np, np.nan)
+    kst1 = ta.SMA(ta.ROC(close_np, 10), 10)
+    kst2 = ta.SMA(ta.ROC(close_np, 15), 10)
+    kst3 = ta.SMA(ta.ROC(close_np, 20), 10)
+    kst4 = ta.SMA(ta.ROC(close_np, 30), 15)
+    kst_main = kst1 + (2.0 * kst2) + (3.0 * kst3) + (4.0 * kst4)
+    kst_signal = ta.SMA(kst_main, 9)
 
     # =========================================================================
     # MONEY FLOW
