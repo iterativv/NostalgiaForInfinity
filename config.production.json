@@ -4,10 +4,10 @@
   "dry_run": true,
   "dry_run_wallet": 250,
   "grinding_enable": true,
-  "max_open_trades": 4,
+  "max_open_trades": 6,
   "stake_currency": "USDT",
   "stake_amount": "unlimited",
-  "tradable_balance_ratio": 0.90,
+  "tradable_balance_ratio": 0.99,
   "fiat_display_currency": "USD",
   "force_entry_enable": true,
   "cancel_open_orders_on_exit": false,
@@ -36,7 +36,7 @@
   },
   "entry_pricing": {
     "price_side": "other",
-    "use_order_book": true,
+    "use_order_book": false,
     "order_book_top": 1,
     "price_last_balance": 0,
     "check_depth_of_market": {
@@ -46,7 +46,7 @@
   },
   "exit_pricing": {
     "price_side": "other",
-    "use_order_book": true,
+    "use_order_book": false,
     "order_book_top": 1,
     "price_last_balance": 0
   },
@@ -66,11 +66,11 @@
     ],
     "ccxt_config": {
       "enableRateLimit": true,
-      "rateLimit": 200
+      "rateLimit": 60
     },
     "ccxt_async_config": {
       "enableRateLimit": true,
-      "rateLimit": 200
+      "rateLimit": 60
     }
   },
   "pairlists": [
@@ -261,6 +261,6 @@
     "password": ""
   },
   "internals": {
-    "process_throttle_secs": 15
+    "process_throttle_secs": 5
   }
 }
