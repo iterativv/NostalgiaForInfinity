@@ -3087,6 +3087,77 @@ class NostalgiaForInfinityX7(IStrategy):
 
     return mfv_sum / vol_sum
 
+  @staticmethod
+  def fast_pct_change(arr: np.ndarray) -> np.ndarray:
+    out = np.empty_like(arr)
+    out[0] = np.nan
+    prev = arr[:-1]
+    np.divide((arr[1:] - prev), prev, out=out[1:], where=prev != 0)
+    out[1:] *= 100.0
+    return out
+
+  @staticmethod
+  def validate_indicators(df: pd.DataFrame, columns: list[str], pair: str, timeframe: str) -> None:
+    expected_len = len(df)
+    for col in columns:
+        # Missing column
+        if col not in df.columns:
+            log.warning(f"[{pair}] [{timeframe}] Missing column: {col}")
+            continue
+
+        series = df[col]
+
+        # Length check
+        if len(series) != expected_len:
+            log.warning(
+                f"[{pair}] [{timeframe}] "
+                f"{col} length mismatch: {len(series)} != {expected_len}"
+            )
+
+        # Dtype check
+        if not pd.api.types.is_numeric_dtype(series):
+            log.warning(
+                f"[{pair}] [{timeframe}] "
+                f"{col} non-numeric dtype: {series.dtype}"
+            )
+            continue
+
+        arr = series.to_numpy(copy=False)
+
+        # Empty array protection
+        if arr.size == 0:
+            log.warning(f"[{pair}] [{timeframe}] {col} empty array")
+            continue
+
+        # Inf check
+        inf_count = np.isinf(arr).sum()
+
+        if inf_count:
+            log.warning(
+                f"[{pair}] [{timeframe}] "
+                f"{col} contains {inf_count} inf values"
+            )
+
+        # NaN diagnostics
+        nan_count = np.isnan(arr).sum()
+
+        if nan_count == expected_len:
+            log.warning(f"[{pair}] [{timeframe}] {col} is ALL NaN")
+
+        elif nan_count:
+            nan_pct = (nan_count / expected_len) * 100.0
+
+            if nan_pct > 50.0:
+                log.warning(
+                    f"[{pair}] [{timeframe}] "
+                    f"{col} has {nan_pct:.1f}% NaN"
+                )
+            else:
+                log.debug(
+                    f"[{pair}] [{timeframe}] "
+                    f"{col} NaNs: {nan_count} ({nan_pct:.1f}%)"
+                )
+
   # Informative 1d Timeframe Indicators
   # ---------------------------------------------------------------------------------------------
   def informative_1d_indicators(self, metadata: dict, info_timeframe) -> DataFrame:
@@ -3110,18 +3181,6 @@ class NostalgiaForInfinityX7(IStrategy):
     low_np = informative_1d["low"].to_numpy(copy=False)
     open_np = informative_1d["open"].to_numpy(copy=False)
     volume_np = informative_1d["volume"].to_numpy(copy=False)
-
-    # =========================================================================
-    # FAST HELPERS
-    # =========================================================================
-
-    def fast_pct_change(arr: np.ndarray) -> np.ndarray:
-      out = np.empty_like(arr)
-      out[0] = np.nan
-      prev = arr[:-1]
-      np.divide((arr[1:] - prev), prev, out=out[1:], where=prev != 0)
-      out[1:] *= 100.0
-      return out
 
     # =========================================================================
     # CORE INDICATORS
@@ -3166,8 +3225,8 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # RSI CHANGE %
     # =========================================================================
-    rsi3_change = fast_pct_change(rsi_3)
-    # rsi14_change = fast_pct_change(rsi_14)
+    rsi3_change = self.fast_pct_change(rsi_3)
+    # rsi14_change = self.fast_pct_change(rsi_14)
 
     # =========================================================================
     # CANDLE %
@@ -3246,86 +3305,47 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Enable ONLY during debugging
     debug = False
-    debug_cols = [
-      # Core indicators
-      "RSI_3",
-      "RSI_14",
-      # "BBL_20_2.0",
-      # "BBU_20_2.0",
-      # "BBB_20_2.0",
-      # Stoch
-      "STOCHk_14_3_3",
-      # Stoch RSI
-      "STOCHRSIk_14_14_3_3",
-      # Money Flow
-      "MFI_14",
-      "CMF_20",
-      # Momentum
-      "WILLR_14",
-      "AROONU_14",
-      "AROOND_14",
-      "ROC_2",
-      "ROC_9",
-      # Change %
-      "RSI_3_change_pct",
-      # "RSI_14_change_pct",
-      # Candle %
-      "change_pct",
-      # Wick %
-      "top_wick_pct",
-      "bot_wick_pct",
-      # Rolling
-      "high_max_6",
-      "high_max_12",
-      "high_max_20",
-      "high_max_30",
-      "low_min_6",
-      "low_min_12",
-      "low_min_20",
-      "low_min_30",
-    ]
-
     if debug:
-      expected_len = len(informative_1d)
-      tf = info_timeframe
+      debug_cols = [
+        # Core indicators
+        "RSI_3",
+        "RSI_14",
+        # "BBL_20_2.0",
+        # "BBU_20_2.0",
+        # "BBB_20_2.0",
+        # Stoch
+        "STOCHk_14_3_3",
+        # Stoch RSI
+        "STOCHRSIk_14_14_3_3",
+        # Money Flow
+        "MFI_14",
+        "CMF_20",
+        # Momentum
+        "WILLR_14",
+        "AROONU_14",
+        "AROOND_14",
+        "ROC_2",
+        "ROC_9",
+        # Change %
+        "RSI_3_change_pct",
+        # "RSI_14_change_pct",
+        # Candle %
+        "change_pct",
+        # Wick %
+        "top_wick_pct",
+        "bot_wick_pct",
+        # Rolling
+        "high_max_6",
+        "high_max_12",
+        "high_max_20",
+        "high_max_30",
+        "low_min_6",
+        "low_min_12",
+        "low_min_20",
+        "low_min_30",
+      ]
 
-      for col in debug_cols:
-        # Missing column
-        if col not in informative_1d.columns:
-          log.warning(f"[{metadata['pair']}] [{tf}] Missing column: {col}")
-          continue
-
-        series = informative_1d[col]
-
-        # Length check
-        if len(series) != expected_len:
-          log.warning(f"[{metadata['pair']}] [{tf}] {col} length mismatch: {len(series)} != {expected_len}")
-
-        # Dtype check
-        if not pd.api.types.is_numeric_dtype(series):
-          log.warning(f"[{metadata['pair']}] [{tf}] {col} non-numeric dtype: {series.dtype}")
-
-        arr = series.to_numpy(copy=False)
-
-        # Inf check
-        inf_count = np.isinf(arr).sum()
-
-        if inf_count > 0:
-          log.warning(f"[{metadata['pair']}] [{tf}] {col} contains {inf_count} inf values")
-
-        # NaN diagnostics
-        nan_count = np.isnan(arr).sum()
-
-        if nan_count == expected_len:
-          log.warning(f"[{metadata['pair']}] [{tf}] {col} is ALL NaN")
-
-        elif nan_count > 0:
-          nan_pct = (nan_count / expected_len) * 100.0
-
-          if nan_pct > 50:
-            log.warning(f"[{metadata['pair']}] [{tf}] {col} has {nan_pct:.1f}% NaN")
-          else:
-            log.debug(f"[{metadata['pair']}] [{tf}] {col} NaNs: {nan_count} ({nan_pct:.1f}%)")
+      self.validate_indicators(df=informative_1d, columns=debug_cols, pair=metadata["pair"], timeframe=info_timeframe)
 
     # =========================================================================
     # LOGGING
@@ -3360,18 +3380,6 @@ class NostalgiaForInfinityX7(IStrategy):
     low_np = informative_4h["low"].to_numpy(copy=False)
     open_np = informative_4h["open"].to_numpy(copy=False)
     volume_np = informative_4h["volume"].to_numpy(copy=False)
-
-    # =========================================================================
-    # FAST HELPERS
-    # =========================================================================
-
-    def fast_pct_change(arr: np.ndarray) -> np.ndarray:
-      out = np.empty_like(arr)
-      out[0] = np.nan
-      prev = arr[:-1]
-      np.divide((arr[1:] - prev), prev, out=out[1:], where=prev != 0)
-      out[1:] *= 100.0
-      return out
 
     # =========================================================================
     # CORE INDICATORS
@@ -3430,12 +3438,12 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # CHANGE %
     # =========================================================================
-    rsi_3_change = fast_pct_change(rsi_3)
-    rsi_14_change = fast_pct_change(rsi_14)
-    stochrsi_change = fast_pct_change(stochrsi_k)
-    # uo_change = fast_pct_change(uo)
-    obv_change = fast_pct_change(obv)
-    cci_change = fast_pct_change(cci_20)
+    rsi_3_change = self.fast_pct_change(rsi_3)
+    rsi_14_change = self.fast_pct_change(rsi_14)
+    stochrsi_change = self.fast_pct_change(stochrsi_k)
+    # uo_change = self.fast_pct_change(uo)
+    obv_change = self.fast_pct_change(obv)
+    cci_change = self.fast_pct_change(cci_20)
 
     # =========================================================================
     # CANDLE %
@@ -3531,101 +3539,61 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Enable ONLY during debugging
     debug = False
-    debug_cols = [
-      # Core indicators
-      "RSI_3",
-      "RSI_14",
-      # "BBL_20_2.0",
-      # "BBU_20_2.0",
-      # "BBB_20_2.0",
-      "AROONU_14",
-      "AROOND_14",
-      # Stoch
-      "STOCHk_14_3_3",
-      # Stoch RSI
-      "STOCHRSIk_14_14_3_3",
-      # KST
-      "KST_10_15_20_30_10_10_10_15",
-      "KSTs_9",
-      # Money Flow
-      "MFI_14",
-      "CMF_20",
-      # Momentum
-      "EMA_12",
-      "EMA_200",
-      "WILLR_14",
-      "UO_7_14_28",
-      # "OBV",
-      "ROC_2",
-      "ROC_9",
-      "CCI_20",
-      # Change %
-      "STOCHRSIk_14_14_3_3_change_pct",
-      "CCI_20_change_pct",
-      "RSI_3_change_pct",
-      "RSI_14_change_pct",
-      # "UO_7_14_28_change_pct",
-      "OBV_change_pct",
-      # Candle %
-      "change_pct",
-      # "change_pct_min_3",
-      # "change_pct_min_6",
-      # "change_pct_max_3",
-      # "change_pct_max_6",
-      # Wicks %
-      # "top_wick_pct",
-      # "bot_wick_pct",
-      # Rolling
-      "high_max_6",
-      "high_max_12",
-      "high_max_24",
-      # "low_min_6",
-      "low_min_12",
-      "low_min_24",
-    ]
-
     if debug:
-      expected_len = len(informative_4h)
-      tf = info_timeframe
+      debug_cols = [
+        # Core indicators
+        "RSI_3",
+        "RSI_14",
+        # "BBL_20_2.0",
+        # "BBU_20_2.0",
+        # "BBB_20_2.0",
+        "AROONU_14",
+        "AROOND_14",
+        # Stoch
+        "STOCHk_14_3_3",
+        # Stoch RSI
+        "STOCHRSIk_14_14_3_3",
+        # KST
+        "KST_10_15_20_30_10_10_10_15",
+        "KSTs_9",
+        # Money Flow
+        "MFI_14",
+        "CMF_20",
+        # Momentum
+        "EMA_12",
+        "EMA_200",
+        "WILLR_14",
+        "UO_7_14_28",
+        # "OBV",
+        "ROC_2",
+        "ROC_9",
+        "CCI_20",
+        # Change %
+        "STOCHRSIk_14_14_3_3_change_pct",
+        "CCI_20_change_pct",
+        "RSI_3_change_pct",
+        "RSI_14_change_pct",
+        # "UO_7_14_28_change_pct",
+        "OBV_change_pct",
+        # Candle %
+        "change_pct",
+        # "change_pct_min_3",
+        # "change_pct_min_6",
+        # "change_pct_max_3",
+        # "change_pct_max_6",
+        # Wicks %
+        # "top_wick_pct",
+        # "bot_wick_pct",
+        # Rolling
+        "high_max_6",
+        "high_max_12",
+        "high_max_24",
+        # "low_min_6",
+        "low_min_12",
+        "low_min_24",
+      ]
 
-      for col in debug_cols:
-        # Missing column
-        if col not in informative_4h.columns:
-          log.warning(f"[{metadata['pair']}] [{tf}] Missing column: {col}")
-          continue
-
-        series = informative_4h[col]
-
-        # Length check
-        if len(series) != expected_len:
-          log.warning(f"[{metadata['pair']}] [{tf}] {col} length mismatch: {len(series)} != {expected_len}")
-
-        # Dtype check
-        if not pd.api.types.is_numeric_dtype(series):
-          log.warning(f"[{metadata['pair']}] [{tf}] {col} non-numeric dtype: {series.dtype}")
-
-        arr = series.to_numpy(copy=False)
-
-        # Inf check
-        inf_count = np.isinf(arr).sum()
-
-        if inf_count > 0:
-          log.warning(f"[{metadata['pair']}] [{tf}] {col} contains {inf_count} inf values")
-
-        # NaN diagnostics
-        nan_count = np.isnan(arr).sum()
-
-        if nan_count == expected_len:
-          log.warning(f"[{metadata['pair']}] [{tf}] {col} is ALL NaN")
-
-        elif nan_count > 0:
-          nan_pct = (nan_count / expected_len) * 100.0
-
-          if nan_pct > 50:
-            log.warning(f"[{metadata['pair']}] [{tf}] {col} has {nan_pct:.1f}% NaN")
-          else:
-            log.debug(f"[{metadata['pair']}] [{tf}] {col} NaNs: {nan_count} ({nan_pct:.1f}%)")
-
+      self.validate_indicators(df=informative_4h, columns=debug_cols, pair=metadata["pair"], timeframe=info_timeframe)
     # =========================================================================
     # LOGGING
     # =========================================================================
@@ -3662,18 +3630,6 @@ class NostalgiaForInfinityX7(IStrategy):
     low_np = informative_1h["low"].to_numpy(copy=False)
     open_np = informative_1h["open"].to_numpy(copy=False)
     volume_np = informative_1h["volume"].to_numpy(copy=False)
-
-    # =========================================================================
-    # FAST HELPERS
-    # =========================================================================
-
-    def fast_pct_change(arr: np.ndarray) -> np.ndarray:
-      out = np.empty_like(arr)
-      out[0] = np.nan
-      prev = arr[:-1]
-      np.divide((arr[1:] - prev), prev, out=out[1:], where=prev != 0)
-      out[1:] *= 100.0
-      return out
 
     # =========================================================================
     # CORE INDICATORS
@@ -3734,12 +3690,12 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # CHANGE %
     # =========================================================================
-    rsi_3_change = fast_pct_change(rsi_3)
-    rsi_14_change = fast_pct_change(rsi_14)
-    # stochrsi_change = fast_pct_change(stochrsi_k)
-    # uo_change = fast_pct_change(uo)
-    # obv_change = fast_pct_change(obv)
-    cci_change = fast_pct_change(cci_20)
+    rsi_3_change = self.fast_pct_change(rsi_3)
+    rsi_14_change = self.fast_pct_change(rsi_14)
+    # stochrsi_change = self.fast_pct_change(stochrsi_k)
+    # uo_change = self.fast_pct_change(uo)
+    # obv_change = self.fast_pct_change(obv)
+    cci_change = self.fast_pct_change(cci_20)
 
     # =========================================================================
     # CANDLE %
@@ -3815,87 +3771,49 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Enable ONLY during debugging
     debug = False
-    debug_cols = [
-      "RSI_3",
-      "RSI_14",
-      "RSI_3_change_pct",
-      "RSI_14_change_pct",
-      "EMA_12",
-      "EMA_200",
-      "SMA_16",
-      "BBL_20_2.0",
-      "BBU_20_2.0",
-      "BBB_20_2.0",
-      "MFI_14",
-      "CMF_20",
-      "WILLR_14",
-      "WILLR_84",
-      "AROONU_14",
-      "AROOND_14",
-      "STOCHk_14_3_3",
-      "STOCHRSIk_14_14_3_3",
-      # "STOCHRSIk_14_14_3_3_change_pct",
-      "KST_10_15_20_30_10_10_10_15",
-      "KSTs_9",
-      "UO_7_14_28",
-      # "UO_7_14_28_change_pct",
-      # "OBV",
-      # "OBV_change_pct",
-      "ROC_2",
-      "ROC_9",
-      "CCI_20",
-      "CCI_20_change_pct",
-      "change_pct",
-      # "top_wick_pct",
-      # "bot_wick_pct",
-      "high_max_6",
-      "high_max_12",
-      "high_max_24",
-      "low_min_6",
-      "low_min_12",
-      "low_min_24",
-    ]
     if debug:
-      expected_len = len(informative_1h)
-      tf = info_timeframe
+      debug_cols = [
+        "RSI_3",
+        "RSI_14",
+        "RSI_3_change_pct",
+        "RSI_14_change_pct",
+        "EMA_12",
+        "EMA_200",
+        "SMA_16",
+        "BBL_20_2.0",
+        "BBU_20_2.0",
+        "BBB_20_2.0",
+        "MFI_14",
+        "CMF_20",
+        "WILLR_14",
+        "WILLR_84",
+        "AROONU_14",
+        "AROOND_14",
+        "STOCHk_14_3_3",
+        "STOCHRSIk_14_14_3_3",
+        # "STOCHRSIk_14_14_3_3_change_pct",
+        "KST_10_15_20_30_10_10_10_15",
+        "KSTs_9",
+        "UO_7_14_28",
+        # "UO_7_14_28_change_pct",
+        # "OBV",
+        # "OBV_change_pct",
+        "ROC_2",
+        "ROC_9",
+        "CCI_20",
+        "CCI_20_change_pct",
+        "change_pct",
+        # "top_wick_pct",
+        # "bot_wick_pct",
+        "high_max_6",
+        "high_max_12",
+        "high_max_24",
+        "low_min_6",
+        "low_min_12",
+        "low_min_24",
+      ]
 
-      for col in debug_cols:
-        # Missing column
-        if col not in informative_1h.columns:
-          log.warning(f"[{metadata['pair']}] [{tf}] Missing column: {col}")
-          continue
-
-        series = informative_1h[col]
-
-        # Length check
-        if len(series) != expected_len:
-          log.warning(f"[{metadata['pair']}] [{tf}] {col} length mismatch: {len(series)} != {expected_len}")
-
-        # Dtype check
-        if not pd.api.types.is_numeric_dtype(series):
-          log.warning(f"[{metadata['pair']}] [{tf}] {col} non-numeric dtype: {series.dtype}")
-
-        arr = series.to_numpy(copy=False)
-
-        # Inf check
-        inf_count = np.isinf(arr).sum()
-
-        if inf_count > 0:
-          log.warning(f"[{metadata['pair']}] [{tf}] {col} contains {inf_count} inf values")
-
-        # NaN diagnostics
-        nan_count = np.isnan(arr).sum()
-
-        if nan_count == expected_len:
-          log.warning(f"[{metadata['pair']}] [{tf}] {col} is ALL NaN")
-
-        elif nan_count > 0:
-          nan_pct = (nan_count / expected_len) * 100.0
-
-          if nan_pct > 50:
-            log.warning(f"[{metadata['pair']}] [{tf}] {col} has {nan_pct:.1f}% NaN")
-          else:
-            log.debug(f"[{metadata['pair']}] [{tf}] {col} NaNs: {nan_count} ({nan_pct:.1f}%)")
+      self.validate_indicators(df=informative_1h, columns=debug_cols, pair=metadata["pair"], timeframe=info_timeframe)
 
     # =========================================================================
     # LOGGING
@@ -3933,18 +3851,6 @@ class NostalgiaForInfinityX7(IStrategy):
     low_np = informative_15m["low"].to_numpy(copy=False)
     open_np = informative_15m["open"].to_numpy(copy=False)
     volume_np = informative_15m["volume"].to_numpy(copy=False)
-
-    # =========================================================================
-    # FAST HELPERS
-    # =========================================================================
-
-    def fast_pct_change(arr: np.ndarray) -> np.ndarray:
-      out = np.empty_like(arr)
-      out[0] = np.nan
-      prev = arr[:-1]
-      np.divide((arr[1:] - prev), prev, out=out[1:], where=prev != 0)
-      out[1:] *= 100.0
-      return out
 
     # =========================================================================
     # CORE INDICATORS
@@ -3991,12 +3897,12 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # CHANGE %
     # =========================================================================
-    rsi_3_change = fast_pct_change(rsi_3)
-    rsi_14_change = fast_pct_change(rsi_14)
-    # stochrsi_change = fast_pct_change(stochrsi_k)
-    uo_change = fast_pct_change(uo)
-    obv_change = fast_pct_change(obv)
-    cci_change = fast_pct_change(cci_20)
+    rsi_3_change = self.fast_pct_change(rsi_3)
+    rsi_14_change = self.fast_pct_change(rsi_14)
+    # stochrsi_change = self.fast_pct_change(stochrsi_k)
+    uo_change = self.fast_pct_change(uo)
+    obv_change = self.fast_pct_change(obv)
+    cci_change = self.fast_pct_change(cci_20)
 
     # =========================================================================
     # CANDLE %
@@ -4049,74 +3955,36 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Enable ONLY during debugging
     debug = False
-    debug_cols = [
-      "RSI_3",
-      "RSI_14",
-      "RSI_3_change_pct",
-      "RSI_14_change_pct",
-      "EMA_12",
-      "EMA_20",
-      "EMA_26",
-      "MFI_14",
-      "CMF_20",
-      "WILLR_14",
-      "AROONU_14",
-      "AROOND_14",
-      "STOCHk_14_3_3",
-      "STOCHRSIk_14_14_3_3",
-      # "STOCHRSIk_14_14_3_3_change_pct",
-      "UO_7_14_28",
-      "UO_7_14_28_change_pct",
-      # "OBV",
-      "OBV_change_pct",
-      "ROC_9",
-      "CCI_20",
-      "CCI_20_change_pct",
-      "change_pct",
-      # "top_wick_pct",
-      # "bot_wick_pct",
-    ]
     if debug:
-      expected_len = len(informative_15m)
-      tf = info_timeframe
+      debug_cols = [
+        "RSI_3",
+        "RSI_14",
+        "RSI_3_change_pct",
+        "RSI_14_change_pct",
+        "EMA_12",
+        "EMA_20",
+        "EMA_26",
+        "MFI_14",
+        "CMF_20",
+        "WILLR_14",
+        "AROONU_14",
+        "AROOND_14",
+        "STOCHk_14_3_3",
+        "STOCHRSIk_14_14_3_3",
+        # "STOCHRSIk_14_14_3_3_change_pct",
+        "UO_7_14_28",
+        "UO_7_14_28_change_pct",
+        # "OBV",
+        "OBV_change_pct",
+        "ROC_9",
+        "CCI_20",
+        "CCI_20_change_pct",
+        "change_pct",
+        # "top_wick_pct",
+        # "bot_wick_pct",
+      ]
 
-      for col in debug_cols:
-        # Missing column
-        if col not in informative_15m.columns:
-          log.warning(f"[{metadata['pair']}] [{tf}] Missing column: {col}")
-          continue
-
-        series = informative_15m[col]
-
-        # Length check
-        if len(series) != expected_len:
-          log.warning(f"[{metadata['pair']}] [{tf}] {col} length mismatch: {len(series)} != {expected_len}")
-
-        # Dtype check
-        if not pd.api.types.is_numeric_dtype(series):
-          log.warning(f"[{metadata['pair']}] [{tf}] {col} non-numeric dtype: {series.dtype}")
-
-        arr = series.to_numpy(copy=False)
-
-        # Inf check
-        inf_count = np.isinf(arr).sum()
-
-        if inf_count > 0:
-          log.warning(f"[{metadata['pair']}] [{tf}] {col} contains {inf_count} inf values")
-
-        # NaN diagnostics
-        nan_count = np.isnan(arr).sum()
-
-        if nan_count == expected_len:
-          log.warning(f"[{metadata['pair']}] [{tf}] {col} is ALL NaN")
-
-        elif nan_count > 0:
-          nan_pct = (nan_count / expected_len) * 100.0
-
-          if nan_pct > 50:
-            log.warning(f"[{metadata['pair']}] [{tf}] {col} has {nan_pct:.1f}% NaN")
-          else:
-            log.debug(f"[{metadata['pair']}] [{tf}] {col} NaNs: {nan_count} ({nan_pct:.1f}%)")
+      self.validate_indicators(df=informative_15m, columns=debug_cols, pair=metadata["pair"], timeframe=info_timeframe)
 
     # =========================================================================
     # LOGGING
@@ -4142,18 +4010,6 @@ class NostalgiaForInfinityX7(IStrategy):
     open_np = df["open"].to_numpy(copy=False)
     volume_np = df["volume"].to_numpy(copy=False)
     volume = df["volume"]
-
-    # =========================================================================
-    # FAST HELPERS
-    # =========================================================================
-
-    def fast_pct_change(arr: np.ndarray) -> np.ndarray:
-      out = np.empty_like(arr)
-      out[0] = np.nan
-      prev = arr[:-1]
-      np.divide((arr[1:] - prev), prev, out=out[1:], where=prev != 0)
-      out[1:] *= 100.0
-      return out
 
     # =========================================================================
     # CORE INDICATORS
@@ -4222,9 +4078,9 @@ class NostalgiaForInfinityX7(IStrategy):
     # CHANGE %
     # =========================================================================
 
-    # rsi_3_change = fast_pct_change(rsi_3)
-    rsi_14_change = fast_pct_change(rsi_14)
-    # obv_change = fast_pct_change(obv)
+    # rsi_3_change = self.fast_pct_change(rsi_3)
+    rsi_14_change = self.fast_pct_change(rsi_14)
+    # obv_change = self.fast_pct_change(obv)
 
     # =========================================================================
     # CANDLE %
@@ -4316,101 +4172,63 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Enable ONLY during debugging
     debug = False
-    debug_cols = [
-      "RSI_3",
-      "RSI_4",
-      "RSI_14",
-      "RSI_20",
-      # "RSI_3_change_pct",
-      "RSI_14_change_pct",
-      # "EMA_3",
-      "EMA_9",
-      "EMA_12",
-      "EMA_16",
-      "EMA_20",
-      "EMA_26",
-      "EMA_50",
-      "EMA_100",
-      "EMA_200",
-      "SMA_9",
-      "SMA_16",
-      "SMA_21",
-      "SMA_30",
-      "SMA_200",
-      "BBL_20_2.0",
-      "BBU_20_2.0",
-      "BBB_20_2.0",
-      "BBL_40_2.0",
-      # "BBM_40_2.0",
-      # "BBU_40_2.0",
-      # "BBB_40_2.0",
-      # "BBP_40_2.0",
-      "BBD_40_2.0",
-      "BBT_40_2.0",
-      "MFI_14",
-      "CMF_20",
-      "WILLR_14",
-      "WILLR_480",
-      "AROONU_14",
-      "AROOND_14",
-      "STOCHRSIk_14_14_3_3",
-      "KST_10_15_20_30_10_10_10_15",
-      "KSTs_9",
-      # "OBV",
-      # "OBV_change_pct",
-      "ROC_2",
-      "ROC_9",
-      "change_pct",
-      "close_delta",
-      "close_max_6",
-      "close_max_12",
-      "close_max_48",
-      "close_min_6",
-      "close_min_12",
-      "close_min_48",
-      "num_empty_288",
-    ]
     if debug:
-      expected_len = len(df)
-      tf = self.timeframe
+      debug_cols = [
+        "RSI_3",
+        "RSI_4",
+        "RSI_14",
+        "RSI_20",
+        # "RSI_3_change_pct",
+        "RSI_14_change_pct",
+        # "EMA_3",
+        "EMA_9",
+        "EMA_12",
+        "EMA_16",
+        "EMA_20",
+        "EMA_26",
+        "EMA_50",
+        "EMA_100",
+        "EMA_200",
+        "SMA_9",
+        "SMA_16",
+        "SMA_21",
+        "SMA_30",
+        "SMA_200",
+        "BBL_20_2.0",
+        "BBU_20_2.0",
+        "BBB_20_2.0",
+        "BBL_40_2.0",
+        # "BBM_40_2.0",
+        # "BBU_40_2.0",
+        # "BBB_40_2.0",
+        # "BBP_40_2.0",
+        "BBD_40_2.0",
+        "BBT_40_2.0",
+        "MFI_14",
+        "CMF_20",
+        "WILLR_14",
+        "WILLR_480",
+        "AROONU_14",
+        "AROOND_14",
+        "STOCHRSIk_14_14_3_3",
+        "KST_10_15_20_30_10_10_10_15",
+        "KSTs_9",
+        # "OBV",
+        # "OBV_change_pct",
+        "ROC_2",
+        "ROC_9",
+        "change_pct",
+        "close_delta",
+        "close_max_6",
+        "close_max_12",
+        "close_max_48",
+        "close_min_6",
+        "close_min_12",
+        "close_min_48",
+        "num_empty_288",
+      ]
 
-      for col in debug_cols:
-        # Missing column
-        if col not in df.columns:
-          log.warning(f"[{metadata['pair']}] [{tf}] Missing column: {col}")
-          continue
-
-        series = df[col]
-
-        # Length check
-        if len(series) != expected_len:
-          log.warning(f"[{metadata['pair']}] [{tf}] {col} length mismatch: {len(series)} != {expected_len}")
-
-        # Dtype check
-        if not pd.api.types.is_numeric_dtype(series):
-          log.warning(f"[{metadata['pair']}] [{tf}] {col} non-numeric dtype: {series.dtype}")
-
-        arr = series.to_numpy(copy=False)
-
-        # Inf check
-        inf_count = np.isinf(arr).sum()
-
-        if inf_count > 0:
-          log.warning(f"[{metadata['pair']}] [{tf}] {col} contains {inf_count} inf values")
-
-        # NaN diagnostics
-        nan_count = np.isnan(arr).sum()
-
-        if nan_count == expected_len:
-          log.warning(f"[{metadata['pair']}] [{tf}] {col} is ALL NaN")
-
-        elif nan_count > 0:
-          nan_pct = (nan_count / expected_len) * 100.0
-
-          if nan_pct > 50:
-            log.warning(f"[{metadata['pair']}] [{tf}] {col} has {nan_pct:.1f}% NaN")
-          else:
-            log.debug(f"[{metadata['pair']}] [{tf}] {col} NaNs: {nan_count} ({nan_pct:.1f}%)")
+      self.validate_indicators(df=df, columns=debug_cols, pair=metadata["pair"], timeframe=self.timeframe)
 
     # =========================================================================
     # GLOBAL PROTECTIONS
@@ -4600,7 +4418,7 @@ class NostalgiaForInfinityX7(IStrategy):
       # MERGE
       # ---------------------------------------------------------------------
 
-      df = merge_informative_pair(df, btc_informative, self.timeframe, btc_tf, ffill=True)
+      df = merge_informative_pair(df, btc_informative, self.timeframe, btc_tf, ffill=False)
 
       # ---------------------------------------------------------------------
       # CLEANUP
@@ -4657,7 +4475,7 @@ class NostalgiaForInfinityX7(IStrategy):
       # MERGE
       # ---------------------------------------------------------------------
 
-      df = merge_informative_pair(df, info_indicators, self.timeframe, info_tf, ffill=True)
+      df = merge_informative_pair(df, info_indicators, self.timeframe, info_tf, ffill=False)
 
       # ---------------------------------------------------------------------
       # CLEANUP
@@ -4666,6 +4484,41 @@ class NostalgiaForInfinityX7(IStrategy):
       merge_date_col = f"date_{info_tf}"
       if merge_date_col in df.columns:
         df.drop(columns=merge_date_col, inplace=True)
+
+    # =========================================================================
+    # FINAL FORWARD FILL (ONCE)
+    # =========================================================================
+    df.ffill(inplace=True)
+
+    # =========================================================================
+    # FINAL DEBUG VALIDATION
+    # =========================================================================
+    if debug:
+      if not df.index.is_monotonic_increasing:
+        log.warning(f"[{metadata['pair']}] FINAL DF index NOT monotonic!")
+
+      if df.index.has_duplicates:
+        log.warning(f"[{metadata['pair']}] FINAL DF index has DUPLICATES!")
+
+      # ---------------------------------------------------------------------
+      # FULL NaN COLUMNS
+      # ---------------------------------------------------------------------
+      full_nan_cols = df.columns[df.isna().all()].tolist()
+      if full_nan_cols:
+        log.warning(f"[{metadata['pair']}] FINAL DF FULL NaN cols: {full_nan_cols}")
+
+      # ---------------------------------------------------------------------
+      # RECENT NaN CHECK
+      # ---------------------------------------------------------------------
+      recent_df = df.tail(50)
+
+      recent_nan_cols = [
+        col for col in recent_df.columns
+        if recent_df[col].isna().any()
+      ]
+
+      if recent_nan_cols:
+        log.warning(f"[{metadata['pair']}] FINAL DF recent NaNs: {recent_nan_cols}")
 
     # =========================================================================
     # BASE TF INDICATORS LAST
