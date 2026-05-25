@@ -3100,63 +3100,48 @@ class NostalgiaForInfinityX7(IStrategy):
   def validate_indicators(df: pd.DataFrame, columns: list[str], pair: str, timeframe: str) -> None:
     expected_len = len(df)
     for col in columns:
-        # Missing column
-        if col not in df.columns:
-            log.warning(f"[{pair}] [{timeframe}] Missing column: {col}")
-            continue
+      # Missing column
+      if col not in df.columns:
+        log.warning(f"[{pair}] [{timeframe}] Missing column: {col}")
+        continue
 
-        series = df[col]
+      series = df[col]
 
-        # Length check
-        if len(series) != expected_len:
-            log.warning(
-                f"[{pair}] [{timeframe}] "
-                f"{col} length mismatch: {len(series)} != {expected_len}"
-            )
+      # Length check
+      if len(series) != expected_len:
+        log.warning(f"[{pair}] [{timeframe}] {col} length mismatch: {len(series)} != {expected_len}")
 
-        # Dtype check
-        if not pd.api.types.is_numeric_dtype(series):
-            log.warning(
-                f"[{pair}] [{timeframe}] "
-                f"{col} non-numeric dtype: {series.dtype}"
-            )
-            continue
+      # Dtype check
+      if not pd.api.types.is_numeric_dtype(series):
+        log.warning(f"[{pair}] [{timeframe}] {col} non-numeric dtype: {series.dtype}")
+        continue
 
-        arr = series.to_numpy(copy=False)
+      arr = series.to_numpy(copy=False)
 
-        # Empty array protection
-        if arr.size == 0:
-            log.warning(f"[{pair}] [{timeframe}] {col} empty array")
-            continue
+      # Empty array protection
+      if arr.size == 0:
+        log.warning(f"[{pair}] [{timeframe}] {col} empty array")
+        continue
 
-        # Inf check
-        inf_count = np.isinf(arr).sum()
+      # Inf check
+      inf_count = np.isinf(arr).sum()
 
-        if inf_count:
-            log.warning(
-                f"[{pair}] [{timeframe}] "
-                f"{col} contains {inf_count} inf values"
-            )
+      if inf_count:
+        log.warning(f"[{pair}] [{timeframe}] {col} contains {inf_count} inf values")
 
-        # NaN diagnostics
-        nan_count = np.isnan(arr).sum()
+      # NaN diagnostics
+      nan_count = np.isnan(arr).sum()
 
-        if nan_count == expected_len:
-            log.warning(f"[{pair}] [{timeframe}] {col} is ALL NaN")
+      if nan_count == expected_len:
+        log.warning(f"[{pair}] [{timeframe}] {col} is ALL NaN")
 
-        elif nan_count:
-            nan_pct = (nan_count / expected_len) * 100.0
+      elif nan_count:
+        nan_pct = (nan_count / expected_len) * 100.0
 
-            if nan_pct > 50.0:
-                log.warning(
-                    f"[{pair}] [{timeframe}] "
-                    f"{col} has {nan_pct:.1f}% NaN"
-                )
-            else:
-                log.debug(
-                    f"[{pair}] [{timeframe}] "
-                    f"{col} NaNs: {nan_count} ({nan_pct:.1f}%)"
-                )
+        if nan_pct > 50.0:
+          log.warning(f"[{pair}] [{timeframe}] {col} has {nan_pct:.1f}% NaN")
+        else:
+          log.debug(f"[{pair}] [{timeframe}] {col} NaNs: {nan_count} ({nan_pct:.1f}%)")
 
   # Informative 1d Timeframe Indicators
   # ---------------------------------------------------------------------------------------------
@@ -4512,10 +4497,7 @@ class NostalgiaForInfinityX7(IStrategy):
       # ---------------------------------------------------------------------
       recent_df = df.tail(50)
 
-      recent_nan_cols = [
-        col for col in recent_df.columns
-        if recent_df[col].isna().any()
-      ]
+      recent_nan_cols = [col for col in recent_df.columns if recent_df[col].isna().any()]
 
       if recent_nan_cols:
         log.warning(f"[{metadata['pair']}] FINAL DF recent NaNs: {recent_nan_cols}")
