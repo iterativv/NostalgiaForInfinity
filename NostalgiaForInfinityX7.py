@@ -48362,8 +48362,6 @@ class NostalgiaForInfinityX7(IStrategy):
     if count_of_entries == 0:
       return None
 
-    if len(filled_orders) < 1:
-      return None
     has_order_tags = False
     if hasattr(filled_orders[0], "ft_order_tag"):
       has_order_tags = True
@@ -48440,6 +48438,7 @@ class NostalgiaForInfinityX7(IStrategy):
         profit_init_ratio,
         current_stake_amount,
         has_order_tags,
+        count_of_exits,
       )
       if rebuy_stake is not None:
         if has_order_tags:
@@ -50556,6 +50555,7 @@ class NostalgiaForInfinityX7(IStrategy):
     profit_init_ratio: float,
     current_stake_amount: float,
     has_order_tags: bool,
+    count_of_exits: int,
     **kwargs,
   ) -> tuple[Optional[float], str, bool]:
     is_backtest = self.dp.runmode.value in ["backtest", "hyperopt"]
@@ -50984,7 +50984,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # The trade already de-risked
     if is_derisk:
       return None, "", is_derisk
-    if not has_order_tags and len(filled_exits) > 0:
+    if not has_order_tags and count_of_exits > 0:
       return None, "", is_derisk
 
     if rebuy_sub_grind_count > 0:
@@ -74500,8 +74500,6 @@ class NostalgiaForInfinityX7(IStrategy):
     if count_of_entries == 0:
       return None
 
-    if len(filled_orders) < 1:
-      return None
     has_order_tags = False
     if hasattr(filled_orders[0], "ft_order_tag"):
       has_order_tags = True
@@ -74578,6 +74576,7 @@ class NostalgiaForInfinityX7(IStrategy):
         profit_init_ratio,
         current_stake_amount,
         has_order_tags,
+        count_of_exits,
       )
       if rebuy_stake is not None:
         if has_order_tags:
@@ -76632,6 +76631,7 @@ class NostalgiaForInfinityX7(IStrategy):
     profit_init_ratio: float,
     current_stake_amount: float,
     has_order_tags: bool,
+    count_of_exits: int,
     **kwargs,
   ) -> tuple[Optional[float], str, bool]:
     is_backtest = self.dp.runmode.value in ["backtest", "hyperopt"]
@@ -77060,7 +77060,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # The trade already de-risked
     if is_derisk:
       return None, "", is_derisk
-    if not has_order_tags and len(filled_exits) > 0:
+    if not has_order_tags and count_of_exits > 0:
       return None, "", is_derisk
 
     if rebuy_sub_grind_count > 0:
