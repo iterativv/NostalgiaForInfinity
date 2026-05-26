@@ -3994,7 +3994,6 @@ class NostalgiaForInfinityX7(IStrategy):
     low_np = df["low"].to_numpy(copy=False)
     open_np = df["open"].to_numpy(copy=False)
     volume_np = df["volume"].to_numpy(copy=False)
-    volume = df["volume"]
 
     # =========================================================================
     # CORE INDICATORS
@@ -4093,7 +4092,7 @@ class NostalgiaForInfinityX7(IStrategy):
     close_min_6 = ta.MIN(close_np, timeperiod=6)
     close_min_12 = ta.MIN(close_np, timeperiod=12)
     close_min_48 = ta.MIN(close_np, timeperiod=48)
-    num_empty_288 = (volume <= 0).rolling(window=288, min_periods=288).sum().to_numpy()
+    num_empty_288 = ta.SUM((volume_np <= 0).astype(np.float64), timeperiod=288)
 
     new_cols = pd.DataFrame(
       {
