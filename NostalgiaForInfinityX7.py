@@ -3083,7 +3083,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     mfv = mfm * volume
     mfv_sum = pd.Series(mfv, copy=False).rolling(timeperiod).sum().to_numpy(copy=False)
-    vol_sum = pd.Series(volume, copy=False).rolling(timeperiod).sum().to_numpy(copy=False)
+    vol_sum = ta.SUM(volume, timeperiod=timeperiod)
 
     return mfv_sum / vol_sum
 
