@@ -69,7 +69,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.119"
+    return "v17.4.120"
 
   stoploss = -0.99
 
@@ -73905,7 +73905,17 @@ class NostalgiaForInfinityX7(IStrategy):
     if (
       (self.system_v3_grind_4_enable)
       # and is_derisk_1_found
-      and is_short_grind_entry
+      # and is_short_grind_entry
+      and (
+        is_short_grind_entry
+        or (
+          (slice_profit_entry > 0.04)
+          and (last_candle["RSI_3"] < 95.0)
+          and (last_candle["RSI_3_15m"] < 90.0)
+          and (last_candle["RSI_14"] > 65.0)
+          and (last_candle["close"] > (last_candle["EMA_20"] * 1.015))
+        )
+      )
       and is_short_extra_checks_entry
       and (grind_4_sub_grind_count < grind_4_max_sub_grinds)
       and (grind_4_sub_grind_count == 0 or (-grind_4_distance_ratio < grind_4_sub_thresholds[grind_4_sub_grind_count]))
