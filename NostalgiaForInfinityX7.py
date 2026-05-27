@@ -3124,6 +3124,15 @@ class NostalgiaForInfinityX7(IStrategy):
     return out
 
   @staticmethod
+  def stochrsi_k(rsi_14: np.ndarray) -> np.ndarray:
+    rsi_min = ta.MIN(rsi_14, timeperiod=14)
+    rsi_max = ta.MAX(rsi_14, timeperiod=14)
+    denom = rsi_max - rsi_min
+    denom = np.where(denom == 0, np.nan, denom)
+    stochrsi = ((rsi_14 - rsi_min) / denom) * 100.0
+    return ta.SMA(stochrsi, timeperiod=3)
+
+  @staticmethod
   def validate_indicators(df: pd.DataFrame, columns: list[str], pair: str, timeframe: str) -> None:
     expected_len = len(df)
     for col in columns:
@@ -3211,12 +3220,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # STOCH RSI
     # =========================================================================
-    rsi_min = ta.MIN(rsi_14, timeperiod=14)
-    rsi_max = ta.MAX(rsi_14, timeperiod=14)
-    denom = rsi_max - rsi_min
-    denom = np.where(denom == 0, np.nan, denom)
-    stochrsi = ((rsi_14 - rsi_min) / denom) * 100.0
-    stochrsi_k = ta.SMA(stochrsi, timeperiod=3)
+    stochrsi_k = self.stochrsi_k(rsi_14)
 
     # =========================================================================
     # MONEY FLOW
@@ -3408,12 +3412,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # STOCH RSI
     # =========================================================================
-    rsi_min = ta.MIN(rsi_14, timeperiod=14)
-    rsi_max = ta.MAX(rsi_14, timeperiod=14)
-    denom = rsi_max - rsi_min
-    denom = np.where(denom == 0, np.nan, denom)
-    stochrsi = ((rsi_14 - rsi_min) / denom) * 100.0
-    stochrsi_k = ta.SMA(stochrsi, timeperiod=3)
+    stochrsi_k = self.stochrsi_k(rsi_14)
 
     # =========================================================================
     # KST
@@ -3656,12 +3655,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # STOCH RSI
     # =========================================================================
-    rsi_min = ta.MIN(rsi_14, timeperiod=14)
-    rsi_max = ta.MAX(rsi_14, timeperiod=14)
-    denom = rsi_max - rsi_min
-    denom = np.where(denom == 0, np.nan, denom)
-    stochrsi = ((rsi_14 - rsi_min) / denom) * 100.0
-    stochrsi_k = ta.SMA(stochrsi, timeperiod=3)
+    stochrsi_k = self.stochrsi_k(rsi_14)
 
     # =========================================================================
     # KST
@@ -3873,12 +3867,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # STOCH RSI
     # =========================================================================
-    rsi_min = ta.MIN(rsi_14, timeperiod=14)
-    rsi_max = ta.MAX(rsi_14, timeperiod=14)
-    denom = rsi_max - rsi_min
-    denom = np.where(denom == 0, np.nan, denom)
-    stochrsi = ((rsi_14 - rsi_min) / denom) * 100.0
-    stochrsi_k = ta.SMA(stochrsi, timeperiod=3)
+    stochrsi_k = self.stochrsi_k(rsi_14)
 
     # =========================================================================
     # MONEY FLOW
@@ -4031,12 +4020,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # STOCH RSI
     # =========================================================================
-    rsi_min = ta.MIN(rsi_14, timeperiod=14)
-    rsi_max = ta.MAX(rsi_14, timeperiod=14)
-    denom = rsi_max - rsi_min
-    denom = np.where(denom == 0, np.nan, denom)
-    stochrsi = ((rsi_14 - rsi_min) / denom) * 100.0
-    stochrsi_k = ta.SMA(stochrsi, timeperiod=3)
+    stochrsi_k = self.stochrsi_k(rsi_14)
 
     # =========================================================================
     # KST
