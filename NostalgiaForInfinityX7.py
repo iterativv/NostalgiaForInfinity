@@ -4232,7 +4232,7 @@ class NostalgiaForInfinityX7(IStrategy):
       df["bt_agefilter_ok"] = False
       df.loc[df.index > (12 * 24 * self.bt_min_age_days), "bt_agefilter_ok"] = True
     else:
-      df["live_data_ok"] = df["volume"].rolling(window=72, min_periods=72).min() > 0
+      df["live_data_ok"] = ta.MIN(volume_np, timeperiod=72) > 0
 
     # =========================================================================
     # LOGGING
