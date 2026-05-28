@@ -69,7 +69,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.121"
+    return "v17.4.122"
 
   stoploss = -0.99
 
@@ -48248,9 +48248,9 @@ class NostalgiaForInfinityX7(IStrategy):
     ):
       self._grind_entry_tag = "g17"
       return True
-    # g18 — moderate loss recovery (slice_profit < -0.04)
+    # g18 — moderate loss recovery (slice_profit < -0.10)
     if (
-      (slice_profit < -0.04)
+      (slice_profit < -0.10)
       and (last_candle["RSI_3"] > 5.0)
       and (last_candle["RSI_3_15m"] > 15.0)
       and (last_candle["RSI_3_1h"] > 20.0)
