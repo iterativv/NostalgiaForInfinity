@@ -3072,6 +3072,16 @@ class NostalgiaForInfinityX7(IStrategy):
     return list(informative_pairs)
 
   @staticmethod
+  def rolling_sum(arr: np.ndarray, timeperiod: int) -> np.ndarray:
+    arr = np.asarray(arr, dtype=np.float64)
+    out = np.full(arr.shape, np.nan, dtype=np.float64)
+    if arr.size < timeperiod:
+      return out
+
+    out[timeperiod - 1 :] = np.convolve(arr, np.ones(timeperiod, dtype=np.float64), mode="valid")
+    return out
+
+  @staticmethod
   def chaikin_money_flow(high, low, close, volume, timeperiod=20):
     hl_range = high - low
     mfm = np.divide(
@@ -3082,7 +3092,7 @@ class NostalgiaForInfinityX7(IStrategy):
     )
 
     mfv = mfm * volume
-    mfv_sum = pd.Series(mfv, copy=False).rolling(timeperiod).sum().to_numpy(copy=False)
+    mfv_sum = __class__.rolling_sum(mfv, timeperiod)
     vol_sum = ta.SUM(volume, timeperiod=timeperiod)
 
     return mfv_sum / vol_sum
