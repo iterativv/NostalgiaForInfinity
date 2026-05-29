@@ -1847,11 +1847,8 @@ class NostalgiaForInfinityX7(IStrategy):
     if (slice_amount * stakes[0] / stake_leverage) >= min_stake:
       return stakes
 
-    scaled_stakes = stakes.copy()
-    multi = min_stake / slice_amount / scaled_stakes[0] * trade_leverage
-    for i, _ in enumerate(scaled_stakes):
-      scaled_stakes[i] *= multi
-    return scaled_stakes
+    multi = min_stake / slice_amount / stakes[0] * trade_leverage
+    return [stake * multi for stake in stakes]
 
   # Custom Exit
   # ---------------------------------------------------------------------------------------------
