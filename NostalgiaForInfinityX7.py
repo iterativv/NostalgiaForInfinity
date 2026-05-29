@@ -12114,8 +12114,9 @@ class NostalgiaForInfinityX7(IStrategy):
     }
 
     # Mode Validation
+    entry_tags = entry_tag.split()
     for mode, config in mode_configs.items():
-      if all(c in config["tags"] for c in entry_tag.split()):
+      if all(c in config["tags"] for c in entry_tags):
         if mode == "grind":
           return self._handle_grind_mode(pair, config, current_time)
         elif mode == "top_coins":
@@ -12506,8 +12507,9 @@ class NostalgiaForInfinityX7(IStrategy):
     if not is_backtest:
       current_free_slots = self.config["max_open_trades"] - Trade.get_open_trade_count()
     # Grind mode
+    pair_coin = metadata["pair"].split("/")[0]
     num_open_long_grind_mode = 0
-    is_pair_long_grind_mode = metadata["pair"].split("/")[0] in self.grind_mode_coins
+    is_pair_long_grind_mode = pair_coin in self.grind_mode_coins
     if not is_backtest:
       open_trades = Trade.get_trades_proxy(is_open=True)
       for open_trade in open_trades:
@@ -12517,8 +12519,8 @@ class NostalgiaForInfinityX7(IStrategy):
           if all(c in self.long_grind_mode_tags for c in enter_tags):
             num_open_long_grind_mode += 1
     # Top Coins mode
-    is_pair_long_top_coins_mode = metadata["pair"].split("/")[0] in self.top_coins_mode_coins
-    is_pair_short_top_coins_mode = metadata["pair"].split("/")[0] in self.top_coins_mode_coins
+    is_pair_long_top_coins_mode = pair_coin in self.top_coins_mode_coins
+    is_pair_short_top_coins_mode = pair_coin in self.top_coins_mode_coins
     # if BTC/ETH stake
     is_btc_stake = self.config["stake_currency"] in self.btc_stakes
     allowed_empty_candles_288 = 144 if is_btc_stake else 60
