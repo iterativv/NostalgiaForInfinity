@@ -12093,36 +12093,14 @@ class NostalgiaForInfinityX7(IStrategy):
     if entry_tag == "force_entry":
       return True
 
-    # Mode configurations (dynamic structure)
-    mode_configs = {
-      "grind": {
-        "tags": self.long_grind_mode_tags,
-        "coins": self.grind_mode_coins,
-        "max_slots": self.grind_mode_max_slots,
-        "log_message": "grind mode",
-      },
-      "top_coins": {
-        "tags": self.long_top_coins_mode_tags,
-        "coins": self.top_coins_mode_coins,
-        "log_message": "top coins mode",
-      },
-      "scalp": {
-        "tags": self.long_scalp_mode_tags,
-        "min_free_slots": self.min_free_slots_scalp_mode,
-        "log_message": "scalp mode",
-      },
-    }
-
     # Mode Validation
     entry_tags = entry_tag.split()
-    for mode, config in mode_configs.items():
-      if all(c in config["tags"] for c in entry_tags):
-        if mode == "grind":
-          return self._handle_grind_mode(pair, config, current_time)
-        elif mode == "top_coins":
-          return self._handle_top_coins_mode(pair, config, current_time)
-        elif mode == "scalp":
-          return self._handle_scalp_mode(pair, config, current_time)
+    if all(c in self.long_grind_mode_tags for c in entry_tags):
+      return self._handle_grind_mode(pair, current_time)
+    if all(c in self.long_top_coins_mode_tags for c in entry_tags):
+      return self._handle_top_coins_mode(pair, current_time)
+    if all(c in self.long_scalp_mode_tags for c in entry_tags):
+      return self._handle_scalp_mode(pair, current_time)
 
     # Long/Short Slot Validation (only in futures mode)
     if self.is_futures_mode:
@@ -12155,30 +12133,32 @@ class NostalgiaForInfinityX7(IStrategy):
 
     return True
 
-  def _handle_grind_mode(self, pair: str, config: dict, current_time: datetime) -> bool:
-    is_pair_grind_mode = pair.partition("/")[0] in config["coins"]
+  def _handle_grind_mode(self, pair: str, current_time: datetime) -> bool:
+    is_pair_grind_mode = pair.partition("/")[0] in self.grind_mode_coins
     if not is_pair_grind_mode:
       log.info(f"[{current_time}] Cancelling entry for {pair} due to not being in grind mode coins list.")
       return False
 
     open_trades = Trade.get_trades_proxy(is_open=True)
-    num_open_grind_mode = sum(1 for t in open_trades if all(c in config["tags"] for c in t.enter_tag.split()))
-    if num_open_grind_mode >= config["max_slots"]:
+    num_open_grind_mode = sum(
+      1 for t in open_trades if all(c in self.long_grind_mode_tags for c in t.enter_tag.split())
+    )
+    if num_open_grind_mode >= self.grind_mode_max_slots:
       log.info(f"[{current_time}] Cancelling entry for {pair} due to grind mode slots limit reached.")
       return False
 
     return True
 
-  def _handle_top_coins_mode(self, pair: str, config: dict, current_time: datetime) -> bool:
-    is_pair_top_coins_mode = pair.partition("/")[0] in config["coins"]
+  def _handle_top_coins_mode(self, pair: str, current_time: datetime) -> bool:
+    is_pair_top_coins_mode = pair.partition("/")[0] in self.top_coins_mode_coins
     if not is_pair_top_coins_mode:
       log.info(f"[{current_time}] Cancelling entry for {pair} due to not being in top coins list.")
       return False
     return True
 
-  def _handle_scalp_mode(self, pair: str, config: dict, current_time: datetime) -> bool:
+  def _handle_scalp_mode(self, pair: str, current_time: datetime) -> bool:
     current_free_slots = self.config["max_open_trades"] - Trade.get_open_trade_count()
-    if current_free_slots < config["min_free_slots"]:
+    if current_free_slots < self.min_free_slots_scalp_mode:
       log.info(f"[{current_time}] Cancelling entry for {pair} due to insufficient free slots.")
       return False
     return True
