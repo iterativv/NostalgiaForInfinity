@@ -12548,7 +12548,7 @@ class NostalgiaForInfinityX7(IStrategy):
     #
 
     for enabled_long_entry_signal in self.long_entry_signal_params:
-      long_entry_condition_index = int(enabled_long_entry_signal.split("_")[3])
+      long_entry_condition_index = int(enabled_long_entry_signal.rsplit("_", 2)[1])
       item_buy_protection_list = [True]
       if self.long_entry_signal_params[f"{enabled_long_entry_signal}"]:
         # Long Entry Conditions Starts Here
@@ -24041,7 +24041,7 @@ class NostalgiaForInfinityX7(IStrategy):
     #
 
     for enabled_short_entry_signal in self.short_entry_signal_params:
-      short_entry_condition_index = int(enabled_short_entry_signal.split("_")[3])
+      short_entry_condition_index = int(enabled_short_entry_signal.rsplit("_", 2)[1])
       item_short_buy_protection_list = [True]
       if self.short_entry_signal_params[f"{enabled_short_entry_signal}"]:
         # Short Entry Conditions Starts Here
