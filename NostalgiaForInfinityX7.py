@@ -12160,7 +12160,7 @@ class NostalgiaForInfinityX7(IStrategy):
     return True
 
   def _handle_grind_mode(self, pair: str, config: dict, current_time: datetime) -> bool:
-    is_pair_grind_mode = pair.split("/")[0] in config["coins"]
+    is_pair_grind_mode = pair.partition("/")[0] in config["coins"]
     if not is_pair_grind_mode:
       log.info(f"[{current_time}] Cancelling entry for {pair} due to not being in grind mode coins list.")
       return False
@@ -12174,7 +12174,7 @@ class NostalgiaForInfinityX7(IStrategy):
     return True
 
   def _handle_top_coins_mode(self, pair: str, config: dict, current_time: datetime) -> bool:
-    is_pair_top_coins_mode = pair.split("/")[0] in config["coins"]
+    is_pair_top_coins_mode = pair.partition("/")[0] in config["coins"]
     if not is_pair_top_coins_mode:
       log.info(f"[{current_time}] Cancelling entry for {pair} due to not being in top coins list.")
       return False
@@ -12514,7 +12514,7 @@ class NostalgiaForInfinityX7(IStrategy):
     if not is_backtest:
       current_free_slots = self.config["max_open_trades"] - Trade.get_open_trade_count()
     # Grind mode
-    pair_coin = metadata["pair"].split("/")[0]
+    pair_coin = metadata["pair"].partition("/")[0]
     num_open_long_grind_mode = 0
     is_pair_long_grind_mode = pair_coin in self.grind_mode_coins
     if not is_backtest:
