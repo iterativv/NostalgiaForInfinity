@@ -44045,18 +44045,16 @@ class NostalgiaForInfinityX7(IStrategy):
     fee_close_rate = trade.fee_close if self.custom_fee_close_rate is None else self.custom_fee_close_rate
 
     grind_1_max_sub_grinds = 0
-    grind_1_stakes = (
-      self.grinding_v2_grind_1_stakes_futures.copy()
-      if self.is_futures_mode
-      else self.grinding_v2_grind_1_stakes_spot.copy()
+    grind_1_stakes = self.scale_stakes_for_min_stake(
+      self.grinding_v2_grind_1_stakes_futures if self.is_futures_mode else self.grinding_v2_grind_1_stakes_spot,
+      slice_amount,
+      min_stake,
+      trade.leverage if self.is_futures_mode else 1.0,
+      trade.leverage,
     )
     grind_1_sub_thresholds = (
       self.grinding_v2_grind_1_thresholds_futures if self.is_futures_mode else self.grinding_v2_grind_1_thresholds_spot
     )
-    if (slice_amount * grind_1_stakes[0] / (trade.leverage if self.is_futures_mode else 1.0)) < min_stake:
-      multi = min_stake / slice_amount / grind_1_stakes[0] * trade.leverage
-      for i, _ in enumerate(grind_1_stakes):
-        grind_1_stakes[i] *= multi
     grind_1_max_sub_grinds = len(grind_1_stakes)
     grind_1_derisk_grinds = (
       self.grinding_v2_grind_1_derisk_futures if self.is_futures_mode else self.grinding_v2_grind_1_derisk_spot
@@ -44068,18 +44066,16 @@ class NostalgiaForInfinityX7(IStrategy):
     )
 
     grind_2_max_sub_grinds = 0
-    grind_2_stakes = (
-      self.grinding_v2_grind_2_stakes_futures.copy()
-      if self.is_futures_mode
-      else self.grinding_v2_grind_2_stakes_spot.copy()
+    grind_2_stakes = self.scale_stakes_for_min_stake(
+      self.grinding_v2_grind_2_stakes_futures if self.is_futures_mode else self.grinding_v2_grind_2_stakes_spot,
+      slice_amount,
+      min_stake,
+      trade.leverage if self.is_futures_mode else 1.0,
+      trade.leverage,
     )
     grind_2_sub_thresholds = (
       self.grinding_v2_grind_2_thresholds_futures if self.is_futures_mode else self.grinding_v2_grind_2_thresholds_spot
     )
-    if (slice_amount * grind_2_stakes[0] / (trade.leverage if self.is_futures_mode else 1.0)) < min_stake:
-      multi = min_stake / slice_amount / grind_2_stakes[0] * trade.leverage
-      for i, _ in enumerate(grind_2_stakes):
-        grind_2_stakes[i] *= multi
     grind_2_max_sub_grinds = len(grind_2_stakes)
     grind_2_derisk_grinds = (
       self.grinding_v2_grind_2_derisk_futures if self.is_futures_mode else self.grinding_v2_grind_2_derisk_spot
@@ -44091,18 +44087,16 @@ class NostalgiaForInfinityX7(IStrategy):
     )
 
     grind_3_max_sub_grinds = 0
-    grind_3_stakes = (
-      self.grinding_v2_grind_3_stakes_futures.copy()
-      if self.is_futures_mode
-      else self.grinding_v2_grind_3_stakes_spot.copy()
+    grind_3_stakes = self.scale_stakes_for_min_stake(
+      self.grinding_v2_grind_3_stakes_futures if self.is_futures_mode else self.grinding_v2_grind_3_stakes_spot,
+      slice_amount,
+      min_stake,
+      trade.leverage if self.is_futures_mode else 1.0,
+      trade.leverage,
     )
     grind_3_sub_thresholds = (
       self.grinding_v2_grind_3_thresholds_futures if self.is_futures_mode else self.grinding_v2_grind_3_thresholds_spot
     )
-    if (slice_amount * grind_3_stakes[0] / (trade.leverage if self.is_futures_mode else 1.0)) < min_stake:
-      multi = min_stake / slice_amount / grind_3_stakes[0] * trade.leverage
-      for i, _ in enumerate(grind_3_stakes):
-        grind_3_stakes[i] *= multi
     grind_3_max_sub_grinds = len(grind_3_stakes)
     grind_3_derisk_grinds = (
       self.grinding_v2_grind_3_derisk_futures if self.is_futures_mode else self.grinding_v2_grind_3_derisk_spot
@@ -44114,18 +44108,16 @@ class NostalgiaForInfinityX7(IStrategy):
     )
 
     grind_4_max_sub_grinds = 0
-    grind_4_stakes = (
-      self.grinding_v2_grind_4_stakes_futures.copy()
-      if self.is_futures_mode
-      else self.grinding_v2_grind_4_stakes_spot.copy()
+    grind_4_stakes = self.scale_stakes_for_min_stake(
+      self.grinding_v2_grind_4_stakes_futures if self.is_futures_mode else self.grinding_v2_grind_4_stakes_spot,
+      slice_amount,
+      min_stake,
+      trade.leverage if self.is_futures_mode else 1.0,
+      trade.leverage,
     )
     grind_4_sub_thresholds = (
       self.grinding_v2_grind_4_thresholds_futures if self.is_futures_mode else self.grinding_v2_grind_4_thresholds_spot
     )
-    if (slice_amount * grind_4_stakes[0] / (trade.leverage if self.is_futures_mode else 1.0)) < min_stake:
-      multi = min_stake / slice_amount / grind_4_stakes[0] * trade.leverage
-      for i, _ in enumerate(grind_4_stakes):
-        grind_4_stakes[i] *= multi
     grind_4_max_sub_grinds = len(grind_4_stakes)
     grind_4_derisk_grinds = (
       self.grinding_v2_grind_4_derisk_futures if self.is_futures_mode else self.grinding_v2_grind_4_derisk_spot
@@ -44137,18 +44129,16 @@ class NostalgiaForInfinityX7(IStrategy):
     )
 
     grind_5_max_sub_grinds = 0
-    grind_5_stakes = (
-      self.grinding_v2_grind_5_stakes_futures.copy()
-      if self.is_futures_mode
-      else self.grinding_v2_grind_5_stakes_spot.copy()
+    grind_5_stakes = self.scale_stakes_for_min_stake(
+      self.grinding_v2_grind_5_stakes_futures if self.is_futures_mode else self.grinding_v2_grind_5_stakes_spot,
+      slice_amount,
+      min_stake,
+      trade.leverage if self.is_futures_mode else 1.0,
+      trade.leverage,
     )
     grind_5_sub_thresholds = (
       self.grinding_v2_grind_5_thresholds_futures if self.is_futures_mode else self.grinding_v2_grind_5_thresholds_spot
     )
-    if (slice_amount * grind_5_stakes[0] / (trade.leverage if self.is_futures_mode else 1.0)) < min_stake:
-      multi = min_stake / slice_amount / grind_5_stakes[0] * trade.leverage
-      for i, _ in enumerate(grind_5_stakes):
-        grind_5_stakes[i] *= multi
     grind_5_max_sub_grinds = len(grind_5_stakes)
     grind_5_derisk_grinds = (
       self.grinding_v2_grind_5_derisk_futures if self.is_futures_mode else self.grinding_v2_grind_5_derisk_spot
@@ -70523,18 +70513,16 @@ class NostalgiaForInfinityX7(IStrategy):
     fee_close_rate = trade.fee_close if self.custom_fee_close_rate is None else self.custom_fee_close_rate
 
     grind_1_max_sub_grinds = 0
-    grind_1_stakes = (
-      self.grinding_v2_grind_1_stakes_futures.copy()
-      if self.is_futures_mode
-      else self.grinding_v2_grind_1_stakes_spot.copy()
+    grind_1_stakes = self.scale_stakes_for_min_stake(
+      self.grinding_v2_grind_1_stakes_futures if self.is_futures_mode else self.grinding_v2_grind_1_stakes_spot,
+      slice_amount,
+      min_stake,
+      trade.leverage if self.is_futures_mode else 1.0,
+      trade.leverage,
     )
     grind_1_sub_thresholds = (
       self.grinding_v2_grind_1_thresholds_futures if self.is_futures_mode else self.grinding_v2_grind_1_thresholds_spot
     )
-    if (slice_amount * grind_1_stakes[0] / (trade.leverage if self.is_futures_mode else 1.0)) < min_stake:
-      multi = min_stake / slice_amount / grind_1_stakes[0] * trade.leverage
-      for i, _ in enumerate(grind_1_stakes):
-        grind_1_stakes[i] *= multi
     grind_1_max_sub_grinds = len(grind_1_stakes)
     grind_1_derisk_grinds = (
       self.grinding_v2_grind_1_derisk_futures if self.is_futures_mode else self.grinding_v2_grind_1_derisk_spot
@@ -70546,18 +70534,16 @@ class NostalgiaForInfinityX7(IStrategy):
     )
 
     grind_2_max_sub_grinds = 0
-    grind_2_stakes = (
-      self.grinding_v2_grind_2_stakes_futures.copy()
-      if self.is_futures_mode
-      else self.grinding_v2_grind_2_stakes_spot.copy()
+    grind_2_stakes = self.scale_stakes_for_min_stake(
+      self.grinding_v2_grind_2_stakes_futures if self.is_futures_mode else self.grinding_v2_grind_2_stakes_spot,
+      slice_amount,
+      min_stake,
+      trade.leverage if self.is_futures_mode else 1.0,
+      trade.leverage,
     )
     grind_2_sub_thresholds = (
       self.grinding_v2_grind_2_thresholds_futures if self.is_futures_mode else self.grinding_v2_grind_2_thresholds_spot
     )
-    if (slice_amount * grind_2_stakes[0] / (trade.leverage if self.is_futures_mode else 1.0)) < min_stake:
-      multi = min_stake / slice_amount / grind_2_stakes[0] * trade.leverage
-      for i, _ in enumerate(grind_2_stakes):
-        grind_2_stakes[i] *= multi
     grind_2_max_sub_grinds = len(grind_2_stakes)
     grind_2_derisk_grinds = (
       self.grinding_v2_grind_2_derisk_futures if self.is_futures_mode else self.grinding_v2_grind_2_derisk_spot
@@ -70569,18 +70555,16 @@ class NostalgiaForInfinityX7(IStrategy):
     )
 
     grind_3_max_sub_grinds = 0
-    grind_3_stakes = (
-      self.grinding_v2_grind_3_stakes_futures.copy()
-      if self.is_futures_mode
-      else self.grinding_v2_grind_3_stakes_spot.copy()
+    grind_3_stakes = self.scale_stakes_for_min_stake(
+      self.grinding_v2_grind_3_stakes_futures if self.is_futures_mode else self.grinding_v2_grind_3_stakes_spot,
+      slice_amount,
+      min_stake,
+      trade.leverage if self.is_futures_mode else 1.0,
+      trade.leverage,
     )
     grind_3_sub_thresholds = (
       self.grinding_v2_grind_3_thresholds_futures if self.is_futures_mode else self.grinding_v2_grind_3_thresholds_spot
     )
-    if (slice_amount * grind_3_stakes[0] / (trade.leverage if self.is_futures_mode else 1.0)) < min_stake:
-      multi = min_stake / slice_amount / grind_3_stakes[0] * trade.leverage
-      for i, _ in enumerate(grind_3_stakes):
-        grind_3_stakes[i] *= multi
     grind_3_max_sub_grinds = len(grind_3_stakes)
     grind_3_derisk_grinds = (
       self.grinding_v2_grind_3_derisk_futures if self.is_futures_mode else self.grinding_v2_grind_3_derisk_spot
@@ -70592,18 +70576,16 @@ class NostalgiaForInfinityX7(IStrategy):
     )
 
     grind_4_max_sub_grinds = 0
-    grind_4_stakes = (
-      self.grinding_v2_grind_4_stakes_futures.copy()
-      if self.is_futures_mode
-      else self.grinding_v2_grind_4_stakes_spot.copy()
+    grind_4_stakes = self.scale_stakes_for_min_stake(
+      self.grinding_v2_grind_4_stakes_futures if self.is_futures_mode else self.grinding_v2_grind_4_stakes_spot,
+      slice_amount,
+      min_stake,
+      trade.leverage if self.is_futures_mode else 1.0,
+      trade.leverage,
     )
     grind_4_sub_thresholds = (
       self.grinding_v2_grind_4_thresholds_futures if self.is_futures_mode else self.grinding_v2_grind_4_thresholds_spot
     )
-    if (slice_amount * grind_4_stakes[0] / (trade.leverage if self.is_futures_mode else 1.0)) < min_stake:
-      multi = min_stake / slice_amount / grind_4_stakes[0] * trade.leverage
-      for i, _ in enumerate(grind_4_stakes):
-        grind_4_stakes[i] *= multi
     grind_4_max_sub_grinds = len(grind_4_stakes)
     grind_4_derisk_grinds = (
       self.grinding_v2_grind_4_derisk_futures if self.is_futures_mode else self.grinding_v2_grind_4_derisk_spot
@@ -70615,18 +70597,16 @@ class NostalgiaForInfinityX7(IStrategy):
     )
 
     grind_5_max_sub_grinds = 0
-    grind_5_stakes = (
-      self.grinding_v2_grind_5_stakes_futures.copy()
-      if self.is_futures_mode
-      else self.grinding_v2_grind_5_stakes_spot.copy()
+    grind_5_stakes = self.scale_stakes_for_min_stake(
+      self.grinding_v2_grind_5_stakes_futures if self.is_futures_mode else self.grinding_v2_grind_5_stakes_spot,
+      slice_amount,
+      min_stake,
+      trade.leverage if self.is_futures_mode else 1.0,
+      trade.leverage,
     )
     grind_5_sub_thresholds = (
       self.grinding_v2_grind_5_thresholds_futures if self.is_futures_mode else self.grinding_v2_grind_5_thresholds_spot
     )
-    if (slice_amount * grind_5_stakes[0] / (trade.leverage if self.is_futures_mode else 1.0)) < min_stake:
-      multi = min_stake / slice_amount / grind_5_stakes[0] * trade.leverage
-      for i, _ in enumerate(grind_5_stakes):
-        grind_5_stakes[i] *= multi
     grind_5_max_sub_grinds = len(grind_5_stakes)
     grind_5_derisk_grinds = (
       self.grinding_v2_grind_5_derisk_futures if self.is_futures_mode else self.grinding_v2_grind_5_derisk_spot
