@@ -50575,35 +50575,31 @@ class NostalgiaForInfinityX7(IStrategy):
     is_backtest = self.dp.runmode.value in ["backtest", "hyperopt"]
 
     max_rebuy_sub_grinds = 0
-    regular_mode_rebuy_stakes = (
-      self.regular_mode_rebuy_stakes_futures.copy()
-      if self.is_futures_mode
-      else self.regular_mode_rebuy_stakes_spot.copy()
+    regular_mode_rebuy_stakes = self.scale_stakes_for_min_stake(
+      self.regular_mode_rebuy_stakes_futures if self.is_futures_mode else self.regular_mode_rebuy_stakes_spot,
+      slice_amount,
+      min_stake,
+      trade.leverage,
+      trade.leverage,
     )
     regular_mode_rebuy_sub_thresholds = (
       self.regular_mode_rebuy_thresholds_futures if self.is_futures_mode else self.regular_mode_rebuy_thresholds_spot
     )
-    if (slice_amount * regular_mode_rebuy_stakes[0] / trade.leverage) < min_stake:
-      multi = min_stake / slice_amount / regular_mode_rebuy_stakes[0] * trade.leverage
-      for i, _ in enumerate(regular_mode_rebuy_stakes):
-        regular_mode_rebuy_stakes[i] *= multi
     max_rebuy_sub_grinds = len(regular_mode_rebuy_stakes)
 
     max_grind_1_sub_grinds = 0
-    regular_mode_grind_1_stakes = (
-      self.regular_mode_grind_1_stakes_futures.copy()
-      if self.is_futures_mode
-      else self.regular_mode_grind_1_stakes_spot.copy()
+    regular_mode_grind_1_stakes = self.scale_stakes_for_min_stake(
+      self.regular_mode_grind_1_stakes_futures if self.is_futures_mode else self.regular_mode_grind_1_stakes_spot,
+      slice_amount,
+      min_stake,
+      trade.leverage,
+      trade.leverage,
     )
     regular_mode_grind_1_sub_thresholds = (
       self.regular_mode_grind_1_thresholds_futures
       if self.is_futures_mode
       else self.regular_mode_grind_1_thresholds_spot
     )
-    if (slice_amount * regular_mode_grind_1_stakes[0] / trade.leverage) < min_stake:
-      multi = min_stake / slice_amount / regular_mode_grind_1_stakes[0] * trade.leverage
-      for i, _ in enumerate(regular_mode_grind_1_stakes):
-        regular_mode_grind_1_stakes[i] *= multi
     max_grind_1_sub_grinds = len(regular_mode_grind_1_stakes)
     regular_mode_grind_1_stop_grinds = (
       self.regular_mode_grind_1_stop_grinds_futures
@@ -50617,20 +50613,18 @@ class NostalgiaForInfinityX7(IStrategy):
     )
 
     max_grind_2_sub_grinds = 0
-    regular_mode_grind_2_stakes = (
-      self.regular_mode_grind_2_stakes_futures.copy()
-      if self.is_futures_mode
-      else self.regular_mode_grind_2_stakes_spot.copy()
+    regular_mode_grind_2_stakes = self.scale_stakes_for_min_stake(
+      self.regular_mode_grind_2_stakes_futures if self.is_futures_mode else self.regular_mode_grind_2_stakes_spot,
+      slice_amount,
+      min_stake,
+      trade.leverage,
+      trade.leverage,
     )
     regular_mode_grind_2_sub_thresholds = (
       self.regular_mode_grind_2_thresholds_futures
       if self.is_futures_mode
       else self.regular_mode_grind_2_thresholds_spot
     )
-    if (slice_amount * regular_mode_grind_2_stakes[0] / trade.leverage) < min_stake:
-      multi = min_stake / slice_amount / regular_mode_grind_2_stakes[0] * trade.leverage
-      for i, _ in enumerate(regular_mode_grind_2_stakes):
-        regular_mode_grind_2_stakes[i] *= multi
     max_grind_2_sub_grinds = len(regular_mode_grind_2_stakes)
     regular_mode_grind_2_stop_grinds = (
       self.regular_mode_grind_2_stop_grinds_futures
@@ -50644,20 +50638,18 @@ class NostalgiaForInfinityX7(IStrategy):
     )
 
     max_grind_3_sub_grinds = 0
-    regular_mode_grind_3_stakes = (
-      self.regular_mode_grind_3_stakes_futures.copy()
-      if self.is_futures_mode
-      else self.regular_mode_grind_3_stakes_spot.copy()
+    regular_mode_grind_3_stakes = self.scale_stakes_for_min_stake(
+      self.regular_mode_grind_3_stakes_futures if self.is_futures_mode else self.regular_mode_grind_3_stakes_spot,
+      slice_amount,
+      min_stake,
+      trade.leverage,
+      trade.leverage,
     )
     regular_mode_grind_3_sub_thresholds = (
       self.regular_mode_grind_3_thresholds_futures
       if self.is_futures_mode
       else self.regular_mode_grind_3_thresholds_spot
     )
-    if (slice_amount * regular_mode_grind_3_stakes[0] / trade.leverage) < min_stake:
-      multi = min_stake / slice_amount / regular_mode_grind_3_stakes[0] * trade.leverage
-      for i, _ in enumerate(regular_mode_grind_3_stakes):
-        regular_mode_grind_3_stakes[i] *= multi
     max_grind_3_sub_grinds = len(regular_mode_grind_3_stakes)
     regular_mode_grind_3_stop_grinds = (
       self.regular_mode_grind_3_stop_grinds_futures
@@ -50671,20 +50663,18 @@ class NostalgiaForInfinityX7(IStrategy):
     )
 
     max_grind_4_sub_grinds = 0
-    regular_mode_grind_4_stakes = (
-      self.regular_mode_grind_4_stakes_futures.copy()
-      if self.is_futures_mode
-      else self.regular_mode_grind_4_stakes_spot.copy()
+    regular_mode_grind_4_stakes = self.scale_stakes_for_min_stake(
+      self.regular_mode_grind_4_stakes_futures if self.is_futures_mode else self.regular_mode_grind_4_stakes_spot,
+      slice_amount,
+      min_stake,
+      trade.leverage,
+      trade.leverage,
     )
     regular_mode_grind_4_sub_thresholds = (
       self.regular_mode_grind_4_thresholds_futures
       if self.is_futures_mode
       else self.regular_mode_grind_4_thresholds_spot
     )
-    if (slice_amount * regular_mode_grind_4_stakes[0] / trade.leverage) < min_stake:
-      multi = min_stake / slice_amount / regular_mode_grind_4_stakes[0] * trade.leverage
-      for i, _ in enumerate(regular_mode_grind_4_stakes):
-        regular_mode_grind_4_stakes[i] *= multi
     max_grind_4_sub_grinds = len(regular_mode_grind_4_stakes)
     regular_mode_grind_4_stop_grinds = (
       self.regular_mode_grind_4_stop_grinds_futures
@@ -50698,20 +50688,18 @@ class NostalgiaForInfinityX7(IStrategy):
     )
 
     max_grind_5_sub_grinds = 0
-    regular_mode_grind_5_stakes = (
-      self.regular_mode_grind_5_stakes_futures.copy()
-      if self.is_futures_mode
-      else self.regular_mode_grind_5_stakes_spot.copy()
+    regular_mode_grind_5_stakes = self.scale_stakes_for_min_stake(
+      self.regular_mode_grind_5_stakes_futures if self.is_futures_mode else self.regular_mode_grind_5_stakes_spot,
+      slice_amount,
+      min_stake,
+      trade.leverage,
+      trade.leverage,
     )
     regular_mode_grind_5_sub_thresholds = (
       self.regular_mode_grind_5_thresholds_futures
       if self.is_futures_mode
       else self.regular_mode_grind_5_thresholds_spot
     )
-    if (slice_amount * regular_mode_grind_5_stakes[0] / trade.leverage) < min_stake:
-      multi = min_stake / slice_amount / regular_mode_grind_5_stakes[0] * trade.leverage
-      for i, _ in enumerate(regular_mode_grind_5_stakes):
-        regular_mode_grind_5_stakes[i] *= multi
     max_grind_5_sub_grinds = len(regular_mode_grind_5_stakes)
     regular_mode_grind_5_stop_grinds = (
       self.regular_mode_grind_5_stop_grinds_futures
@@ -50725,20 +50713,18 @@ class NostalgiaForInfinityX7(IStrategy):
     )
 
     max_grind_6_sub_grinds = 0
-    regular_mode_grind_6_stakes = (
-      self.regular_mode_grind_6_stakes_futures.copy()
-      if self.is_futures_mode
-      else self.regular_mode_grind_6_stakes_spot.copy()
+    regular_mode_grind_6_stakes = self.scale_stakes_for_min_stake(
+      self.regular_mode_grind_6_stakes_futures if self.is_futures_mode else self.regular_mode_grind_6_stakes_spot,
+      slice_amount,
+      min_stake,
+      trade.leverage,
+      trade.leverage,
     )
     regular_mode_grind_6_sub_thresholds = (
       self.regular_mode_grind_6_thresholds_futures
       if self.is_futures_mode
       else self.regular_mode_grind_6_thresholds_spot
     )
-    if (slice_amount * regular_mode_grind_6_stakes[0] / trade.leverage) < min_stake:
-      multi = min_stake / slice_amount / regular_mode_grind_6_stakes[0] * trade.leverage
-      for i, _ in enumerate(regular_mode_grind_6_stakes):
-        regular_mode_grind_6_stakes[i] *= multi
     max_grind_6_sub_grinds = len(regular_mode_grind_6_stakes)
     regular_mode_grind_6_stop_grinds = (
       self.regular_mode_grind_6_stop_grinds_futures
@@ -76656,35 +76642,31 @@ class NostalgiaForInfinityX7(IStrategy):
     is_backtest = self.dp.runmode.value in ["backtest", "hyperopt"]
 
     max_rebuy_sub_grinds = 0
-    regular_mode_rebuy_stakes = (
-      self.regular_mode_rebuy_stakes_futures.copy()
-      if self.is_futures_mode
-      else self.regular_mode_rebuy_stakes_spot.copy()
+    regular_mode_rebuy_stakes = self.scale_stakes_for_min_stake(
+      self.regular_mode_rebuy_stakes_futures if self.is_futures_mode else self.regular_mode_rebuy_stakes_spot,
+      slice_amount,
+      min_stake,
+      trade.leverage,
+      trade.leverage,
     )
     regular_mode_rebuy_sub_thresholds = (
       self.regular_mode_rebuy_thresholds_futures if self.is_futures_mode else self.regular_mode_rebuy_thresholds_spot
     )
-    if (slice_amount * regular_mode_rebuy_stakes[0] / trade.leverage) < min_stake:
-      multi = min_stake / slice_amount / regular_mode_rebuy_stakes[0] * trade.leverage
-      for i, _ in enumerate(regular_mode_rebuy_stakes):
-        regular_mode_rebuy_stakes[i] *= multi
     max_rebuy_sub_grinds = len(regular_mode_rebuy_stakes)
 
     max_grind_1_sub_grinds = 0
-    regular_mode_grind_1_stakes = (
-      self.regular_mode_grind_1_stakes_futures.copy()
-      if self.is_futures_mode
-      else self.regular_mode_grind_1_stakes_spot.copy()
+    regular_mode_grind_1_stakes = self.scale_stakes_for_min_stake(
+      self.regular_mode_grind_1_stakes_futures if self.is_futures_mode else self.regular_mode_grind_1_stakes_spot,
+      slice_amount,
+      min_stake,
+      trade.leverage,
+      trade.leverage,
     )
     regular_mode_grind_1_sub_thresholds = (
       self.regular_mode_grind_1_thresholds_futures
       if self.is_futures_mode
       else self.regular_mode_grind_1_thresholds_spot
     )
-    if (slice_amount * regular_mode_grind_1_stakes[0] / trade.leverage) < min_stake:
-      multi = min_stake / slice_amount / regular_mode_grind_1_stakes[0] * trade.leverage
-      for i, _ in enumerate(regular_mode_grind_1_stakes):
-        regular_mode_grind_1_stakes[i] *= multi
     max_grind_1_sub_grinds = len(regular_mode_grind_1_stakes)
     regular_mode_grind_1_stop_grinds = (
       self.regular_mode_grind_1_stop_grinds_futures
@@ -76698,20 +76680,18 @@ class NostalgiaForInfinityX7(IStrategy):
     )
 
     max_grind_2_sub_grinds = 0
-    regular_mode_grind_2_stakes = (
-      self.regular_mode_grind_2_stakes_futures.copy()
-      if self.is_futures_mode
-      else self.regular_mode_grind_2_stakes_spot.copy()
+    regular_mode_grind_2_stakes = self.scale_stakes_for_min_stake(
+      self.regular_mode_grind_2_stakes_futures if self.is_futures_mode else self.regular_mode_grind_2_stakes_spot,
+      slice_amount,
+      min_stake,
+      trade.leverage,
+      trade.leverage,
     )
     regular_mode_grind_2_sub_thresholds = (
       self.regular_mode_grind_2_thresholds_futures
       if self.is_futures_mode
       else self.regular_mode_grind_2_thresholds_spot
     )
-    if (slice_amount * regular_mode_grind_2_stakes[0] / trade.leverage) < min_stake:
-      multi = min_stake / slice_amount / regular_mode_grind_2_stakes[0] * trade.leverage
-      for i, _ in enumerate(regular_mode_grind_2_stakes):
-        regular_mode_grind_2_stakes[i] *= multi
     max_grind_2_sub_grinds = len(regular_mode_grind_2_stakes)
     regular_mode_grind_2_stop_grinds = (
       self.regular_mode_grind_2_stop_grinds_futures
@@ -76725,20 +76705,18 @@ class NostalgiaForInfinityX7(IStrategy):
     )
 
     max_grind_3_sub_grinds = 0
-    regular_mode_grind_3_stakes = (
-      self.regular_mode_grind_3_stakes_futures.copy()
-      if self.is_futures_mode
-      else self.regular_mode_grind_3_stakes_spot.copy()
+    regular_mode_grind_3_stakes = self.scale_stakes_for_min_stake(
+      self.regular_mode_grind_3_stakes_futures if self.is_futures_mode else self.regular_mode_grind_3_stakes_spot,
+      slice_amount,
+      min_stake,
+      trade.leverage,
+      trade.leverage,
     )
     regular_mode_grind_3_sub_thresholds = (
       self.regular_mode_grind_3_thresholds_futures
       if self.is_futures_mode
       else self.regular_mode_grind_3_thresholds_spot
     )
-    if (slice_amount * regular_mode_grind_3_stakes[0] / trade.leverage) < min_stake:
-      multi = min_stake / slice_amount / regular_mode_grind_3_stakes[0] * trade.leverage
-      for i, _ in enumerate(regular_mode_grind_3_stakes):
-        regular_mode_grind_3_stakes[i] *= multi
     max_grind_3_sub_grinds = len(regular_mode_grind_3_stakes)
     regular_mode_grind_3_stop_grinds = (
       self.regular_mode_grind_3_stop_grinds_futures
@@ -76752,20 +76730,18 @@ class NostalgiaForInfinityX7(IStrategy):
     )
 
     max_grind_4_sub_grinds = 0
-    regular_mode_grind_4_stakes = (
-      self.regular_mode_grind_4_stakes_futures.copy()
-      if self.is_futures_mode
-      else self.regular_mode_grind_4_stakes_spot.copy()
+    regular_mode_grind_4_stakes = self.scale_stakes_for_min_stake(
+      self.regular_mode_grind_4_stakes_futures if self.is_futures_mode else self.regular_mode_grind_4_stakes_spot,
+      slice_amount,
+      min_stake,
+      trade.leverage,
+      trade.leverage,
     )
     regular_mode_grind_4_sub_thresholds = (
       self.regular_mode_grind_4_thresholds_futures
       if self.is_futures_mode
       else self.regular_mode_grind_4_thresholds_spot
     )
-    if (slice_amount * regular_mode_grind_4_stakes[0] / trade.leverage) < min_stake:
-      multi = min_stake / slice_amount / regular_mode_grind_4_stakes[0] * trade.leverage
-      for i, _ in enumerate(regular_mode_grind_4_stakes):
-        regular_mode_grind_4_stakes[i] *= multi
     max_grind_4_sub_grinds = len(regular_mode_grind_4_stakes)
     regular_mode_grind_4_stop_grinds = (
       self.regular_mode_grind_4_stop_grinds_futures
@@ -76779,20 +76755,18 @@ class NostalgiaForInfinityX7(IStrategy):
     )
 
     max_grind_5_sub_grinds = 0
-    regular_mode_grind_5_stakes = (
-      self.regular_mode_grind_5_stakes_futures.copy()
-      if self.is_futures_mode
-      else self.regular_mode_grind_5_stakes_spot.copy()
+    regular_mode_grind_5_stakes = self.scale_stakes_for_min_stake(
+      self.regular_mode_grind_5_stakes_futures if self.is_futures_mode else self.regular_mode_grind_5_stakes_spot,
+      slice_amount,
+      min_stake,
+      trade.leverage,
+      trade.leverage,
     )
     regular_mode_grind_5_sub_thresholds = (
       self.regular_mode_grind_5_thresholds_futures
       if self.is_futures_mode
       else self.regular_mode_grind_5_thresholds_spot
     )
-    if (slice_amount * regular_mode_grind_5_stakes[0] / trade.leverage) < min_stake:
-      multi = min_stake / slice_amount / regular_mode_grind_5_stakes[0] * trade.leverage
-      for i, _ in enumerate(regular_mode_grind_5_stakes):
-        regular_mode_grind_5_stakes[i] *= multi
     max_grind_5_sub_grinds = len(regular_mode_grind_5_stakes)
     regular_mode_grind_5_stop_grinds = (
       self.regular_mode_grind_5_stop_grinds_futures
@@ -76806,20 +76780,18 @@ class NostalgiaForInfinityX7(IStrategy):
     )
 
     max_grind_6_sub_grinds = 0
-    regular_mode_grind_6_stakes = (
-      self.regular_mode_grind_6_stakes_futures.copy()
-      if self.is_futures_mode
-      else self.regular_mode_grind_6_stakes_spot.copy()
+    regular_mode_grind_6_stakes = self.scale_stakes_for_min_stake(
+      self.regular_mode_grind_6_stakes_futures if self.is_futures_mode else self.regular_mode_grind_6_stakes_spot,
+      slice_amount,
+      min_stake,
+      trade.leverage,
+      trade.leverage,
     )
     regular_mode_grind_6_sub_thresholds = (
       self.regular_mode_grind_6_thresholds_futures
       if self.is_futures_mode
       else self.regular_mode_grind_6_thresholds_spot
     )
-    if (slice_amount * regular_mode_grind_6_stakes[0] / trade.leverage) < min_stake:
-      multi = min_stake / slice_amount / regular_mode_grind_6_stakes[0] * trade.leverage
-      for i, _ in enumerate(regular_mode_grind_6_stakes):
-        regular_mode_grind_6_stakes[i] *= multi
     max_grind_6_sub_grinds = len(regular_mode_grind_6_stakes)
     regular_mode_grind_6_stop_grinds = (
       self.regular_mode_grind_6_stop_grinds_futures
