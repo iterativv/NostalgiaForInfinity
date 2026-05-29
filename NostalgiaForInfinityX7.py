@@ -43907,7 +43907,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         and (
-          self.has_valid_entry_conditions(trade, current_rate, last_candle, previous_candle_1, filled_orders) == False
+          self.has_valid_entry_conditions(trade, current_rate, last_candle, previous_candle_1, filled_entries) == False
         )
         # temporary
         and (is_backtest or trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13))
@@ -70340,7 +70340,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         and (
-          self.has_valid_entry_conditions(trade, current_rate, last_candle, previous_candle_1, filled_orders) == False
+          self.has_valid_entry_conditions(trade, current_rate, last_candle, previous_candle_1, filled_entries) == False
         )
         # temporary
         and (is_backtest or trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13))
