@@ -12290,7 +12290,7 @@ class NostalgiaForInfinityX7(IStrategy):
     """Check if there are valid entry conditions"""
     if filled_orders is None:
       filled_orders = trade.select_filled_orders()
-    if len(filled_orders) < 1:
+    if not filled_orders:
       return False
     slice_profit = (exit_rate - filled_orders[-1].safe_price) / filled_orders[-1].safe_price
     if not trade.is_short:
