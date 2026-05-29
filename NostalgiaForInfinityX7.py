@@ -52022,7 +52022,7 @@ class NostalgiaForInfinityX7(IStrategy):
       has_order_tags = True
 
     # The first exit is de-risk (providing the trade is still open)
-    if (count_of_exits > 0) and (filled_exits[0].ft_order_tag in ["derisk_level_3"]):
+    if (count_of_exits > 0) and (filled_exits[0].ft_order_tag == "derisk_level_3"):
       return self.long_grind_adjust_trade_position_v2(
         trade,
         enter_tags,
@@ -52209,7 +52209,7 @@ class NostalgiaForInfinityX7(IStrategy):
       has_order_tags = True
 
     # The first exit is de-risk (providing the trade is still open)
-    if (count_of_exits > 0) and (filled_exits[0].ft_order_tag in ["derisk_level_3"]):
+    if (count_of_exits > 0) and (filled_exits[0].ft_order_tag == "derisk_level_3"):
       return self.long_grind_adjust_trade_position_v3(
         trade,
         enter_tags,
@@ -78074,7 +78074,7 @@ class NostalgiaForInfinityX7(IStrategy):
       has_order_tags = True
 
     # The first exit is de-risk (providing the trade is still open)
-    if (count_of_exits > 0) and (filled_exits[0].ft_order_tag in ["derisk_level_3"]):
+    if (count_of_exits > 0) and (filled_exits[0].ft_order_tag == "derisk_level_3"):
       return self.short_grind_adjust_trade_position_v2(
         trade,
         enter_tags,
