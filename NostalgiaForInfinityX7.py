@@ -1710,10 +1710,13 @@ class NostalgiaForInfinityX7(IStrategy):
     filled_orders = trade.select_filled_orders()
     filled_entries = []
     filled_exits = []
+    entry_side = trade.entry_side
+    exit_side = trade.exit_side
     for order in filled_orders:
-      if order.ft_order_side == trade.entry_side:
+      order_side = order.ft_order_side
+      if order_side == entry_side:
         filled_entries.append(order)
-      elif order.ft_order_side == trade.exit_side:
+      elif order_side == exit_side:
         filled_exits.append(order)
     return filled_orders, filled_entries, filled_exits
 
