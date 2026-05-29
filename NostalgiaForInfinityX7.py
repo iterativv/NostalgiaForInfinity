@@ -977,13 +977,13 @@ class NostalgiaForInfinityX7(IStrategy):
     # OKX, Kraken provides a lower number of candle data per API call
     if self.config["exchange"]["name"] in ["okx", "okex"]:
       self.startup_candle_count = 480
-    elif self.config["exchange"]["name"] in ["kraken"]:
+    elif self.config["exchange"]["name"] == "kraken":
       self.startup_candle_count = 710
-    elif self.config["exchange"]["name"] in ["bybit"]:
+    elif self.config["exchange"]["name"] == "bybit":
       self.startup_candle_count = 199
-    elif self.config["exchange"]["name"] in ["bitget"]:
+    elif self.config["exchange"]["name"] == "bitget":
       self.startup_candle_count = 499
-    elif self.config["exchange"]["name"] in ["bingx"]:
+    elif self.config["exchange"]["name"] == "bingx":
       self.startup_candle_count = 499
 
     if ("trading_mode" in self.config) and (self.config["trading_mode"] in ["futures", "margin"]):
@@ -12264,7 +12264,7 @@ class NostalgiaForInfinityX7(IStrategy):
   # Correct Min Stake
   # ---------------------------------------------------------------------------------------------
   def correct_min_stake(self, min_stake: float) -> float:
-    if self.config["exchange"]["name"] in ["bybit"]:
+    if self.config["exchange"]["name"] == "bybit":
       if self.is_futures_mode:
         if min_stake < 5.0 / self.futures_mode_leverage:
           min_stake = 5.0 / self.futures_mode_leverage
