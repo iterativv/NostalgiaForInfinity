@@ -1899,6 +1899,7 @@ class NostalgiaForInfinityX7(IStrategy):
         profit_init_ratio,
         max_profit,
         max_loss,
+        filled_orders,
         filled_entries,
         filled_exits,
         last_candle,
@@ -2176,6 +2177,7 @@ class NostalgiaForInfinityX7(IStrategy):
         profit_init_ratio,
         max_profit,
         max_loss,
+        filled_orders,
         filled_entries,
         filled_exits,
         last_candle,
@@ -2381,6 +2383,7 @@ class NostalgiaForInfinityX7(IStrategy):
         profit_init_ratio,
         max_profit,
         max_loss,
+        filled_orders,
         filled_entries,
         filled_exits,
         last_candle,
@@ -2423,6 +2426,7 @@ class NostalgiaForInfinityX7(IStrategy):
         profit_init_ratio,
         max_profit,
         max_loss,
+        filled_orders,
         filled_entries,
         filled_exits,
         last_candle,
@@ -12282,9 +12286,12 @@ class NostalgiaForInfinityX7(IStrategy):
     """Check if the current system is v3_2"""
     return trade.get_custom_data(key="system_version") == self.system_v3_2_name
 
-  def has_valid_entry_conditions(self, trade: Trade, exit_rate: float, last_candle, previous_candle) -> bool:
+  def has_valid_entry_conditions(
+    self, trade: Trade, exit_rate: float, last_candle, previous_candle, filled_orders=None
+  ) -> bool:
     """Check if there are valid entry conditions"""
-    filled_orders = trade.select_filled_orders()
+    if filled_orders is None:
+      filled_orders = trade.select_filled_orders()
     if len(filled_orders) < 1:
       return False
     slice_profit = (exit_rate - filled_orders[-1].safe_price) / filled_orders[-1].safe_price
@@ -25999,6 +26006,7 @@ class NostalgiaForInfinityX7(IStrategy):
     profit_init_ratio: float,
     max_profit: float,
     max_loss: float,
+    filled_orders,
     filled_entries,
     filled_exits,
     last_candle,
@@ -43921,7 +43929,9 @@ class NostalgiaForInfinityX7(IStrategy):
             * (self.stop_threshold_doom_futures if self.is_futures_mode else self.stop_threshold_doom_spot)
           )
         )
-        and (self.has_valid_entry_conditions(trade, current_rate, last_candle, previous_candle_1) == False)
+        and (
+          self.has_valid_entry_conditions(trade, current_rate, last_candle, previous_candle_1, filled_orders) == False
+        )
         # temporary
         and (is_backtest or trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13))
       ):
@@ -52417,6 +52427,7 @@ class NostalgiaForInfinityX7(IStrategy):
     profit_init_ratio: float,
     max_profit: float,
     max_loss: float,
+    filled_orders,
     filled_entries,
     filled_exits,
     last_candle,
@@ -70398,7 +70409,9 @@ class NostalgiaForInfinityX7(IStrategy):
             * (self.stop_threshold_doom_futures if self.is_futures_mode else self.stop_threshold_doom_spot)
           )
         )
-        and (self.has_valid_entry_conditions(trade, current_rate, last_candle, previous_candle_1) == False)
+        and (
+          self.has_valid_entry_conditions(trade, current_rate, last_candle, previous_candle_1, filled_orders) == False
+        )
         # temporary
         and (is_backtest or trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13))
       ):
