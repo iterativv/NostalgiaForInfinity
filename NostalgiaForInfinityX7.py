@@ -3177,7 +3177,7 @@ class NostalgiaForInfinityX7(IStrategy):
         if nan_pct > 50.0:
           log.warning(f"[{pair}] [{timeframe}] {col} has {nan_pct:.1f}% NaN")
         else:
-          log.debug(f"[{pair}] [{timeframe}] {col} NaNs: {nan_count} ({nan_pct:.1f}%)")
+          log.debug("[%s] [%s] %s NaNs: %s (%.1f%%)", pair, timeframe, col, nan_count, nan_pct)
 
   # Informative 1d Timeframe Indicators
   # ---------------------------------------------------------------------------------------------
@@ -3367,7 +3367,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     tok = time.perf_counter()
 
-    log.debug(f"[{metadata['pair']}] informative_1d_indicators took: {tok - tik:0.4f} seconds.")
+    log.debug("[%s] informative_1d_indicators took: %.4f seconds.", metadata["pair"], tok - tik)
 
     return informative_1d
 
@@ -3607,7 +3607,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     tok = time.perf_counter()
 
-    log.debug(f"[{metadata['pair']}] informative_4h_indicators took: {tok - tik:0.4f} seconds.")
+    log.debug("[%s] informative_4h_indicators took: %.4f seconds.", metadata["pair"], tok - tik)
 
     return informative_4h
 
@@ -3821,7 +3821,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     tok = time.perf_counter()
 
-    log.debug(f"[{metadata['pair']}] informative_1h_indicators took: {tok - tik:0.4f} seconds.")
+    log.debug("[%s] informative_1h_indicators took: %.4f seconds.", metadata["pair"], tok - tik)
 
     return informative_1h
 
@@ -3985,7 +3985,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     tok = time.perf_counter()
 
-    log.debug(f"[{metadata['pair']}] informative_15m_indicators took: {tok - tik:0.4f} seconds.")
+    log.debug("[%s] informative_15m_indicators took: %.4f seconds.", metadata["pair"], tok - tik)
 
     return informative_15m
 
@@ -4233,7 +4233,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     tok = time.perf_counter()
 
-    log.debug(f"[{metadata['pair']}] base_tf_5m_indicators took: {tok - tik:0.4f} seconds.")
+    log.debug("[%s] base_tf_5m_indicators took: %.4f seconds.", metadata["pair"], tok - tik)
 
     return df
 
@@ -4286,7 +4286,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     tok = time.perf_counter()
 
-    log.debug(f"[{metadata['pair']}] btc_info_{btc_info_timeframe}_indicators took: {tok - tik:0.4f} seconds.")
+    log.debug("[%s] btc_info_%s_indicators took: %.4f seconds.", metadata["pair"], btc_info_timeframe, tok - tik)
 
     return df
 
@@ -12071,7 +12071,7 @@ class NostalgiaForInfinityX7(IStrategy):
       f"{tok_total - tik:0.4f}s"
     )
     tok = time.perf_counter()
-    log.debug(f"[{metadata['pair']}] Populate indicators took a total of: {tok - tik:0.4f} seconds.")
+    log.debug("[%s] Populate indicators took a total of: %.4f seconds.", metadata["pair"], tok - tik)
 
     return df
 
