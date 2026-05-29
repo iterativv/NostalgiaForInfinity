@@ -1808,32 +1808,33 @@ class NostalgiaForInfinityX7(IStrategy):
     total_amount = 0.0
     total_stake = 0.0
     total_profit = 0.0
-    current_stake = 0.0
-    for entry_order in filled_entries:
-      if trade.is_short:
-        entry_stake = entry_order.safe_filled * entry_order.safe_price * (1 - fee_open_rate)
+    if trade.is_short:
+      fee_open_multiplier = 1 - fee_open_rate
+      fee_close_multiplier = 1 + fee_close_rate
+      for entry_order in filled_entries:
+        entry_stake = entry_order.safe_filled * entry_order.safe_price * fee_open_multiplier
         total_amount += entry_order.safe_filled
         total_stake += entry_stake
         total_profit += entry_stake
-      else:
-        entry_stake = entry_order.safe_filled * entry_order.safe_price * (1 + fee_open_rate)
+      for exit_order in filled_exits:
+        exit_stake = exit_order.safe_filled * exit_order.safe_price * fee_close_multiplier
+        total_amount -= exit_order.safe_filled
+        total_profit -= exit_stake
+      current_stake = total_amount * exit_rate * fee_close_multiplier
+      total_profit -= current_stake
+    else:
+      fee_open_multiplier = 1 + fee_open_rate
+      fee_close_multiplier = 1 - fee_close_rate
+      for entry_order in filled_entries:
+        entry_stake = entry_order.safe_filled * entry_order.safe_price * fee_open_multiplier
         total_amount += entry_order.safe_filled
         total_stake += entry_stake
         total_profit -= entry_stake
-    for exit_order in filled_exits:
-      if trade.is_short:
-        exit_stake = exit_order.safe_filled * exit_order.safe_price * (1 + fee_close_rate)
-        total_amount -= exit_order.safe_filled
-        total_profit -= exit_stake
-      else:
-        exit_stake = exit_order.safe_filled * exit_order.safe_price * (1 - fee_close_rate)
+      for exit_order in filled_exits:
+        exit_stake = exit_order.safe_filled * exit_order.safe_price * fee_close_multiplier
         total_amount -= exit_order.safe_filled
         total_profit += exit_stake
-    if trade.is_short:
-      current_stake = total_amount * exit_rate * (1 + fee_close_rate)
-      total_profit -= current_stake
-    else:
-      current_stake = total_amount * exit_rate * (1 - fee_close_rate)
+      current_stake = total_amount * exit_rate * fee_close_multiplier
       total_profit += current_stake
     if self.is_futures_mode:
       total_profit += trade.funding_fees
