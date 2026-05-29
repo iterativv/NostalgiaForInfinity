@@ -1861,12 +1861,12 @@ class NostalgiaForInfinityX7(IStrategy):
     df, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
     if len(df) < 6:
       return None
-    last_candle = df.iloc[-1].squeeze()
-    previous_candle_1 = df.iloc[-2].squeeze()
-    previous_candle_2 = df.iloc[-3].squeeze()
-    previous_candle_3 = df.iloc[-4].squeeze()
-    previous_candle_4 = df.iloc[-5].squeeze()
-    previous_candle_5 = df.iloc[-6].squeeze()
+    last_candle = df.iloc[-1]
+    previous_candle_1 = df.iloc[-2]
+    previous_candle_2 = df.iloc[-3]
+    previous_candle_3 = df.iloc[-4]
+    previous_candle_4 = df.iloc[-5]
+    previous_candle_5 = df.iloc[-6]
 
     enter_tag = "empty"
     if hasattr(trade, "enter_tag") and trade.enter_tag is not None:
@@ -12143,7 +12143,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # Slippage Validation
     df, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
     if len(df) >= 1:
-      last_candle = df.iloc[-1].squeeze()
+      last_candle = df.iloc[-1]
       if (side == "long" and rate > last_candle["close"]) or (side == "short" and rate < last_candle["close"]):
         slippage = (rate / last_candle["close"]) - 1.0
         if (side == "long" and slippage < self.max_slippage) or (side == "short" and slippage > -self.max_slippage):
@@ -43993,8 +43993,8 @@ class NostalgiaForInfinityX7(IStrategy):
     df, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
     if len(df) < 2:
       return None
-    last_candle = df.iloc[-1].squeeze()
-    previous_candle = df.iloc[-2].squeeze()
+    last_candle = df.iloc[-1]
+    previous_candle = df.iloc[-2]
 
     # we already waiting for an order to get filled
     if trade.has_open_orders:
@@ -46402,8 +46402,8 @@ class NostalgiaForInfinityX7(IStrategy):
     df, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
     if len(df) < 2:
       return None
-    last_candle = df.iloc[-1].squeeze()
-    previous_candle = df.iloc[-2].squeeze()
+    last_candle = df.iloc[-1]
+    previous_candle = df.iloc[-2]
 
     # we already waiting for an order to get filled
     if trade.has_open_orders:
@@ -48345,8 +48345,8 @@ class NostalgiaForInfinityX7(IStrategy):
     df, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
     if len(df) < 2:
       return None
-    last_candle = df.iloc[-1].squeeze()
-    previous_candle = df.iloc[-2].squeeze()
+    last_candle = df.iloc[-1]
+    previous_candle = df.iloc[-2]
 
     # we already waiting for an order to get filled
     if trade.has_open_orders:
@@ -52017,8 +52017,8 @@ class NostalgiaForInfinityX7(IStrategy):
     df, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
     if len(df) < 2:
       return None
-    last_candle = df.iloc[-1].squeeze()
-    previous_candle = df.iloc[-2].squeeze()
+    last_candle = df.iloc[-1]
+    previous_candle = df.iloc[-2]
 
     # we already waiting for an order to get filled
     if trade.has_open_orders:
@@ -52204,8 +52204,8 @@ class NostalgiaForInfinityX7(IStrategy):
     df, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
     if len(df) < 2:
       return None
-    last_candle = df.iloc[-1].squeeze()
-    previous_candle = df.iloc[-2].squeeze()
+    last_candle = df.iloc[-1]
+    previous_candle = df.iloc[-2]
 
     # we already waiting for an order to get filled
     if trade.has_open_orders:
@@ -70471,8 +70471,8 @@ class NostalgiaForInfinityX7(IStrategy):
     df, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
     if len(df) < 2:
       return None
-    last_candle = df.iloc[-1].squeeze()
-    previous_candle = df.iloc[-2].squeeze()
+    last_candle = df.iloc[-1]
+    previous_candle = df.iloc[-2]
 
     # we already waiting for an order to get filled
     if trade.has_open_orders:
@@ -72862,8 +72862,8 @@ class NostalgiaForInfinityX7(IStrategy):
     df, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
     if len(df) < 2:
       return None
-    last_candle = df.iloc[-1].squeeze()
-    previous_candle = df.iloc[-2].squeeze()
+    last_candle = df.iloc[-1]
+    previous_candle = df.iloc[-2]
 
     # we already waiting for an order to get filled
     if trade.has_open_orders:
@@ -74483,8 +74483,8 @@ class NostalgiaForInfinityX7(IStrategy):
     df, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
     if len(df) < 2:
       return None
-    last_candle = df.iloc[-1].squeeze()
-    previous_candle = df.iloc[-2].squeeze()
+    last_candle = df.iloc[-1]
+    previous_candle = df.iloc[-2]
 
     # we already waiting for an order to get filled
     if trade.has_open_orders:
@@ -78093,8 +78093,8 @@ class NostalgiaForInfinityX7(IStrategy):
     df, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
     if len(df) < 2:
       return None
-    last_candle = df.iloc[-1].squeeze()
-    previous_candle = df.iloc[-2].squeeze()
+    last_candle = df.iloc[-1]
+    previous_candle = df.iloc[-2]
 
     # we already waiting for an order to get filled
     if trade.has_open_orders:
@@ -78270,8 +78270,8 @@ class NostalgiaForInfinityX7(IStrategy):
     df, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
     if len(df) < 2:
       return None
-    last_candle = df.iloc[-1].squeeze()
-    previous_candle = df.iloc[-2].squeeze()
+    last_candle = df.iloc[-1]
+    previous_candle = df.iloc[-2]
 
     # we already waiting for an order to get filled
     if trade.has_open_orders:
