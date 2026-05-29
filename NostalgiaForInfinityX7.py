@@ -1074,9 +1074,7 @@ class NostalgiaForInfinityX7(IStrategy):
     ]:
       filled_entries = trade.select_filled_orders(trade.entry_side)
       filled_exits = trade.select_filled_orders(trade.exit_side)
-      has_order_tags = False
-      if hasattr(filled_entries[0], "ft_order_tag"):
-        has_order_tags = True
+      has_order_tags = hasattr(filled_entries[0], "ft_order_tag")
       for order in filled_exits:
         order_tag = ""
         if has_order_tags:
@@ -44025,9 +44023,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and all(c in (self.long_rebuy_mode_tags + self.long_grind_mode_tags) for c in enter_tags)
     )
 
-    has_order_tags = False
-    if hasattr(filled_orders[0], "ft_order_tag"):
-      has_order_tags = True
+    has_order_tags = hasattr(filled_orders[0], "ft_order_tag")
 
     fee_open_rate = trade.fee_open if self.custom_fee_open_rate is None else self.custom_fee_open_rate
     fee_close_rate = trade.fee_close if self.custom_fee_close_rate is None else self.custom_fee_close_rate
@@ -46425,9 +46421,7 @@ class NostalgiaForInfinityX7(IStrategy):
     is_system_v3_1 = self.is_system_v3_1(trade)
     is_system_v3_2 = self.is_system_v3_2(trade)
 
-    has_order_tags = False
-    if hasattr(filled_orders[0], "ft_order_tag"):
-      has_order_tags = True
+    has_order_tags = hasattr(filled_orders[0], "ft_order_tag")
 
     fee_open_rate = trade.fee_open if self.custom_fee_open_rate is None else self.custom_fee_open_rate
     fee_close_rate = trade.fee_close if self.custom_fee_close_rate is None else self.custom_fee_close_rate
@@ -48336,9 +48330,7 @@ class NostalgiaForInfinityX7(IStrategy):
     if count_of_entries == 0:
       return None
 
-    has_order_tags = False
-    if hasattr(filled_orders[0], "ft_order_tag"):
-      has_order_tags = True
+    has_order_tags = hasattr(filled_orders[0], "ft_order_tag")
 
     if self.dp.runmode.value in ("live", "dry_run"):
       ticker = self.dp.ticker(trade.pair)
@@ -51997,9 +51989,7 @@ class NostalgiaForInfinityX7(IStrategy):
     if count_of_entries == 0:
       return None
 
-    has_order_tags = False
-    if hasattr(filled_orders[0], "ft_order_tag"):
-      has_order_tags = True
+    has_order_tags = hasattr(filled_orders[0], "ft_order_tag")
 
     # The first exit is de-risk (providing the trade is still open)
     if (count_of_exits > 0) and (filled_exits[0].ft_order_tag == "derisk_level_3"):
@@ -52184,9 +52174,7 @@ class NostalgiaForInfinityX7(IStrategy):
     if count_of_entries == 0:
       return None
 
-    has_order_tags = False
-    if hasattr(filled_orders[0], "ft_order_tag"):
-      has_order_tags = True
+    has_order_tags = hasattr(filled_orders[0], "ft_order_tag")
 
     # The first exit is de-risk (providing the trade is still open)
     if (count_of_exits > 0) and (filled_exits[0].ft_order_tag == "derisk_level_3"):
@@ -70479,9 +70467,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and all(c in (self.short_rebuy_mode_tags + self.short_grind_mode_tags) for c in enter_tags)
     )
 
-    has_order_tags = False
-    if hasattr(filled_orders[0], "ft_order_tag"):
-      has_order_tags = True
+    has_order_tags = hasattr(filled_orders[0], "ft_order_tag")
 
     fee_open_rate = trade.fee_open if self.custom_fee_open_rate is None else self.custom_fee_open_rate
     fee_close_rate = trade.fee_close if self.custom_fee_close_rate is None else self.custom_fee_close_rate
@@ -72861,9 +72847,7 @@ class NostalgiaForInfinityX7(IStrategy):
     is_system_v3_1 = self.is_system_v3_1(trade)
     is_system_v3_2 = self.is_system_v3_2(trade)
 
-    has_order_tags = False
-    if hasattr(filled_orders[0], "ft_order_tag"):
-      has_order_tags = True
+    has_order_tags = hasattr(filled_orders[0], "ft_order_tag")
 
     fee_open_rate = trade.fee_open if self.custom_fee_open_rate is None else self.custom_fee_open_rate
     fee_close_rate = trade.fee_close if self.custom_fee_close_rate is None else self.custom_fee_close_rate
@@ -74450,9 +74434,7 @@ class NostalgiaForInfinityX7(IStrategy):
     if count_of_entries == 0:
       return None
 
-    has_order_tags = False
-    if hasattr(filled_orders[0], "ft_order_tag"):
-      has_order_tags = True
+    has_order_tags = hasattr(filled_orders[0], "ft_order_tag")
 
     if self.dp.runmode.value in ("live", "dry_run"):
       ticker = self.dp.ticker(trade.pair)
@@ -78049,9 +78031,7 @@ class NostalgiaForInfinityX7(IStrategy):
     if count_of_entries == 0:
       return None
 
-    has_order_tags = False
-    if hasattr(filled_orders[0], "ft_order_tag"):
-      has_order_tags = True
+    has_order_tags = hasattr(filled_orders[0], "ft_order_tag")
 
     # The first exit is de-risk (providing the trade is still open)
     if (count_of_exits > 0) and (filled_exits[0].ft_order_tag == "derisk_level_3"):
@@ -78226,9 +78206,7 @@ class NostalgiaForInfinityX7(IStrategy):
     if count_of_entries == 0:
       return None
 
-    has_order_tags = False
-    if hasattr(filled_orders[0], "ft_order_tag"):
-      has_order_tags = True
+    has_order_tags = hasattr(filled_orders[0], "ft_order_tag")
 
     if self.dp.runmode.value in ("live", "dry_run"):
       ticker = self.dp.ticker(trade.pair)
