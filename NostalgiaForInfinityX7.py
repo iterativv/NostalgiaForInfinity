@@ -44364,12 +44364,12 @@ class NostalgiaForInfinityX7(IStrategy):
             is_derisk_1_found = True
             is_derisk_1 = True
             derisk_1_order = order
-        elif order_tag in ["derisk_level_2"]:
+        elif order_tag == "derisk_level_2":
           if not is_derisk_2_found:
             is_derisk_2_found = True
             is_derisk_2 = True
             derisk_2_order = order
-        elif order_tag in ["derisk_level_3"]:
+        elif order_tag == "derisk_level_3":
           if not is_derisk_3_found:
             is_derisk_3_found = True
             is_derisk_3 = True
@@ -44398,7 +44398,7 @@ class NostalgiaForInfinityX7(IStrategy):
         elif not grind_5_is_exit_found and order_tag in ["grind_5_exit", "grind_5_derisk"]:
           grind_5_is_exit_found = True
           grind_5_exit_order = order
-        elif order_tag in ["derisk_global"]:
+        elif order_tag == "derisk_global":
           if not buyback_1_is_exit_found:
             buyback_1_is_exit_found = True
             buyback_1_exit_order = order
@@ -46748,22 +46748,22 @@ class NostalgiaForInfinityX7(IStrategy):
         if has_order_tags:
           if order.ft_order_tag is not None:
             order_tag = order.ft_order_tag.partition(" ")[0]
-        if order_tag in ["derisk_level_1"]:
+        if order_tag == "derisk_level_1":
           if not is_derisk_1_found:
             is_derisk_1_found = True
             is_derisk_1 = True
             derisk_1_order = order
-        elif order_tag in ["derisk_level_2"]:
+        elif order_tag == "derisk_level_2":
           if not is_derisk_2_found:
             is_derisk_2_found = True
             is_derisk_2 = True
             derisk_2_order = order
-        elif order_tag in ["derisk_level_3"]:
+        elif order_tag == "derisk_level_3":
           if not is_derisk_3_found:
             is_derisk_3_found = True
             is_derisk_3 = True
             derisk_3_order = order
-        elif order_tag in ["derisk_level_4"]:
+        elif order_tag == "derisk_level_4":
           if not is_derisk_4_found:
             is_derisk_4_found = True
             is_derisk_4 = True
@@ -46789,7 +46789,7 @@ class NostalgiaForInfinityX7(IStrategy):
         elif not rebuy_is_exit_found and order_tag in ["rebuy_exit", "rebuy_derisk"]:
           rebuy_is_exit_found = True
           rebuy_exit_order = order
-        elif order_tag in ["derisk_global"]:
+        elif order_tag == "derisk_global":
           if not grind_1_is_exit_found:
             grind_1_is_exit_found = True
             grind_1_exit_order = order
@@ -48839,13 +48839,13 @@ class NostalgiaForInfinityX7(IStrategy):
           grind_3_is_sell_found = True
         elif order_tag in ["gd2", "dd2"]:
           grind_2_is_sell_found = True
-        elif order_tag in ["d1"]:
+        elif order_tag == "d1":
           if not is_derisk_1_found:
             is_derisk_1_found = True
             is_derisk_1 = True
             derisk_1_order = order
         elif order_tag in ["p", "r", "d", "dd0", "partial_exit", "force_exit", ""]:
-          if order_tag in ["d"]:
+          if order_tag == "d":
             is_derisk_found = True
             is_derisk = True
           grind_1_is_sell_found = True
@@ -50906,7 +50906,7 @@ class NostalgiaForInfinityX7(IStrategy):
           grind_6_is_sell_found = True
         elif order_tag in ["d", "d1", "dd0", "ddl1", "ddl2", "dd1", "dd2", "dd3", "dd4", "dd5", "dd6"]:
           is_derisk = True
-          if order_tag in ["d1"]:
+          if order_tag == "d1":
             is_derisk_1 = True
           grind_1_is_sell_found = True
           grind_2_is_sell_found = True
@@ -70818,12 +70818,12 @@ class NostalgiaForInfinityX7(IStrategy):
             is_derisk_1_found = True
             is_derisk_1 = True
             derisk_1_order = order
-        elif order_tag in ["derisk_level_2"]:
+        elif order_tag == "derisk_level_2":
           if not is_derisk_2_found:
             is_derisk_2_found = True
             is_derisk_2 = True
             derisk_2_order = order
-        elif order_tag in ["derisk_level_3"]:
+        elif order_tag == "derisk_level_3":
           if not is_derisk_3_found:
             is_derisk_3_found = True
             is_derisk_3 = True
@@ -70852,7 +70852,7 @@ class NostalgiaForInfinityX7(IStrategy):
         elif not grind_5_is_exit_found and order_tag in ["grind_5_exit", "grind_5_derisk"]:
           grind_5_is_exit_found = True
           grind_5_exit_order = order
-        elif order_tag in ["derisk_global"]:
+        elif order_tag == "derisk_global":
           if not buyback_1_is_exit_found:
             buyback_1_is_exit_found = True
             buyback_1_exit_order = order
@@ -73159,17 +73159,17 @@ class NostalgiaForInfinityX7(IStrategy):
         if has_order_tags:
           if order.ft_order_tag is not None:
             order_tag = order.ft_order_tag.partition(" ")[0]
-        if order_tag in ["derisk_level_1"]:
+        if order_tag == "derisk_level_1":
           if not is_derisk_1_found:
             is_derisk_1_found = True
             is_derisk_1 = True
             derisk_1_order = order
-        elif order_tag in ["derisk_level_2"]:
+        elif order_tag == "derisk_level_2":
           if not is_derisk_2_found:
             is_derisk_2_found = True
             is_derisk_2 = True
             derisk_2_order = order
-        elif order_tag in ["derisk_level_3"]:
+        elif order_tag == "derisk_level_3":
           if not is_derisk_3_found:
             is_derisk_3_found = True
             is_derisk_3 = True
@@ -73192,7 +73192,7 @@ class NostalgiaForInfinityX7(IStrategy):
         elif not rebuy_is_exit_found and order_tag in ["rebuy_exit", "rebuy_derisk"]:
           rebuy_is_exit_found = True
           rebuy_exit_order = order
-        elif order_tag in ["derisk_global"]:
+        elif order_tag == "derisk_global":
           if not grind_1_is_exit_found:
             grind_1_is_exit_found = True
             grind_1_exit_order = order
@@ -74953,13 +74953,13 @@ class NostalgiaForInfinityX7(IStrategy):
           grind_3_is_sell_found = True
         elif order_tag in ["gd2", "dd2"]:
           grind_2_is_sell_found = True
-        elif order_tag in ["d1"]:
+        elif order_tag == "d1":
           if not is_derisk_1_found:
             is_derisk_1_found = True
             is_derisk_1 = True
             derisk_1_order = order
         elif order_tag in ["p", "r", "d", "dd0", "partial_exit", "force_exit", ""]:
-          if order_tag in ["d"]:
+          if order_tag == "d":
             is_derisk_found = True
             is_derisk = True
           grind_1_is_sell_found = True
@@ -76958,7 +76958,7 @@ class NostalgiaForInfinityX7(IStrategy):
           grind_6_is_sell_found = True
         elif order_tag in ["d", "d1", "dd0", "ddl1", "ddl2", "dd1", "dd2", "dd3", "dd4", "dd5", "dd6"]:
           is_derisk = True
-          if order_tag in ["d1"]:
+          if order_tag == "d1":
             is_derisk_1 = True
           grind_1_is_sell_found = True
           grind_2_is_sell_found = True
