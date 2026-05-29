@@ -44001,16 +44001,16 @@ class NostalgiaForInfinityX7(IStrategy):
     **kwargs,
   ):
     is_backtest = self.is_backtest_mode()
+    # we already waiting for an order to get filled
+    if trade.has_open_orders:
+      return None
+
     min_stake = self.correct_min_stake(min_stake)
     df, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
     if len(df) < 2:
       return None
     last_candle = df.iloc[-1]
     previous_candle = df.iloc[-2]
-
-    # we already waiting for an order to get filled
-    if trade.has_open_orders:
-      return None
 
     exit_rate = current_rate
     filled_orders, filled_entries, filled_exits, profit_values = self.profit_or_order_snapshot(
@@ -46410,16 +46410,16 @@ class NostalgiaForInfinityX7(IStrategy):
     **kwargs,
   ):
     is_backtest = self.is_backtest_mode()
+    # we already waiting for an order to get filled
+    if trade.has_open_orders:
+      return None
+
     min_stake = self.correct_min_stake(min_stake)
     df, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
     if len(df) < 2:
       return None
     last_candle = df.iloc[-1]
     previous_candle = df.iloc[-2]
-
-    # we already waiting for an order to get filled
-    if trade.has_open_orders:
-      return None
 
     exit_rate = current_rate
     filled_orders, filled_entries, filled_exits, profit_values = self.profit_or_order_snapshot(
@@ -48353,16 +48353,16 @@ class NostalgiaForInfinityX7(IStrategy):
     **kwargs,
   ):
     is_backtest = self.dp.runmode.value in ["backtest", "hyperopt"]
+    # we already waiting for an order to get filled
+    if trade.has_open_orders:
+      return None
+
     min_stake = self.correct_min_stake(min_stake)
     df, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
     if len(df) < 2:
       return None
     last_candle = df.iloc[-1]
     previous_candle = df.iloc[-2]
-
-    # we already waiting for an order to get filled
-    if trade.has_open_orders:
-      return None
 
     exit_rate = current_rate
     filled_orders, filled_entries, filled_exits, profit_values = self.profit_or_order_snapshot(
@@ -52025,16 +52025,16 @@ class NostalgiaForInfinityX7(IStrategy):
   ) -> Optional[float]:
     # min/max stakes include leverage. The return amounts is before leverage.
     min_stake /= trade.leverage
+    # we already waiting for an order to get filled
+    if trade.has_open_orders:
+      return None
+
     max_stake /= trade.leverage
     df, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
     if len(df) < 2:
       return None
     last_candle = df.iloc[-1]
     previous_candle = df.iloc[-2]
-
-    # we already waiting for an order to get filled
-    if trade.has_open_orders:
-      return None
 
     exit_rate = current_rate
     filled_orders, filled_entries, filled_exits, profit_values = self.profit_or_order_snapshot(
@@ -52212,16 +52212,16 @@ class NostalgiaForInfinityX7(IStrategy):
   ) -> Optional[float]:
     # min/max stakes include leverage. The return amounts is before leverage.
     min_stake /= trade.leverage
+    # we already waiting for an order to get filled
+    if trade.has_open_orders:
+      return None
+
     max_stake /= trade.leverage
     df, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
     if len(df) < 2:
       return None
     last_candle = df.iloc[-1]
     previous_candle = df.iloc[-2]
-
-    # we already waiting for an order to get filled
-    if trade.has_open_orders:
-      return None
 
     exit_rate = current_rate
     filled_orders, filled_entries, filled_exits, profit_values = self.profit_or_order_snapshot(
@@ -70482,16 +70482,16 @@ class NostalgiaForInfinityX7(IStrategy):
     **kwargs,
   ):
     is_backtest = self.is_backtest_mode()
+    # we already waiting for an order to get filled
+    if trade.has_open_orders:
+      return None
+
     min_stake = self.correct_min_stake(min_stake)
     df, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
     if len(df) < 2:
       return None
     last_candle = df.iloc[-1]
     previous_candle = df.iloc[-2]
-
-    # we already waiting for an order to get filled
-    if trade.has_open_orders:
-      return None
 
     exit_rate = current_rate
     filled_orders, filled_entries, filled_exits, profit_values = self.profit_or_order_snapshot(
@@ -72873,16 +72873,16 @@ class NostalgiaForInfinityX7(IStrategy):
     **kwargs,
   ):
     is_backtest = self.is_backtest_mode()
+    # we already waiting for an order to get filled
+    if trade.has_open_orders:
+      return None
+
     min_stake = self.correct_min_stake(min_stake)
     df, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
     if len(df) < 2:
       return None
     last_candle = df.iloc[-1]
     previous_candle = df.iloc[-2]
-
-    # we already waiting for an order to get filled
-    if trade.has_open_orders:
-      return None
 
     exit_rate = current_rate
     filled_orders, filled_entries, filled_exits, profit_values = self.profit_or_order_snapshot(
@@ -74494,16 +74494,16 @@ class NostalgiaForInfinityX7(IStrategy):
     **kwargs,
   ):
     is_backtest = self.dp.runmode.value in ["backtest", "hyperopt"]
+    # we already waiting for an order to get filled
+    if trade.has_open_orders:
+      return None
+
     min_stake = self.correct_min_stake(min_stake)
     df, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
     if len(df) < 2:
       return None
     last_candle = df.iloc[-1]
     previous_candle = df.iloc[-2]
-
-    # we already waiting for an order to get filled
-    if trade.has_open_orders:
-      return None
 
     exit_rate = current_rate
     filled_orders, filled_entries, filled_exits, profit_values = self.profit_or_order_snapshot(
@@ -78104,16 +78104,16 @@ class NostalgiaForInfinityX7(IStrategy):
   ) -> Optional[float]:
     # min/max stakes include leverage. The return amounts is before leverage.
     min_stake /= trade.leverage
+    # we already waiting for an order to get filled
+    if trade.has_open_orders:
+      return None
+
     max_stake /= trade.leverage
     df, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
     if len(df) < 2:
       return None
     last_candle = df.iloc[-1]
     previous_candle = df.iloc[-2]
-
-    # we already waiting for an order to get filled
-    if trade.has_open_orders:
-      return None
 
     exit_rate = current_rate
     filled_orders, filled_entries, filled_exits, profit_values = self.profit_or_order_snapshot(
@@ -78281,16 +78281,16 @@ class NostalgiaForInfinityX7(IStrategy):
   ) -> Optional[float]:
     # min/max stakes include leverage. The return amounts is before leverage.
     min_stake /= trade.leverage
+    # we already waiting for an order to get filled
+    if trade.has_open_orders:
+      return None
+
     max_stake /= trade.leverage
     df, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
     if len(df) < 2:
       return None
     last_candle = df.iloc[-1]
     previous_candle = df.iloc[-2]
-
-    # we already waiting for an order to get filled
-    if trade.has_open_orders:
-      return None
 
     exit_rate = current_rate
     filled_orders, filled_entries, filled_exits, profit_values = self.profit_or_order_snapshot(
