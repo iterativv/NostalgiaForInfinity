@@ -3109,6 +3109,12 @@ class NostalgiaForInfinityX7(IStrategy):
     return mfv_sum / vol_sum
 
   @staticmethod
+  def stoch_k(high, low, close):
+    stoch_k = ta.STOCHF(high, low, close, fastk_period=14, fastd_period=3, fastd_matype=0)[1]
+    stoch_k[:17] = np.nan
+    return stoch_k
+
+  @staticmethod
   def fast_pct_change(arr: np.ndarray) -> np.ndarray:
     out = np.empty_like(arr)
     out[0] = np.nan
@@ -3200,9 +3206,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # STOCH
     # =========================================================================
-    stoch_k, _ = ta.STOCH(
-      high_np, low_np, close_np, fastk_period=14, slowk_period=3, slowk_matype=0, slowd_period=3, slowd_matype=0
-    )
+    stoch_k = self.stoch_k(high_np, low_np, close_np)
 
     # =========================================================================
     # STOCH RSI
@@ -3399,9 +3403,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # STOCH
     # =========================================================================
-    stoch_k, _ = ta.STOCH(
-      high_np, low_np, close_np, fastk_period=14, slowk_period=3, slowk_matype=0, slowd_period=3, slowd_matype=0
-    )
+    stoch_k = self.stoch_k(high_np, low_np, close_np)
 
     # =========================================================================
     # STOCH RSI
@@ -3649,9 +3651,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # STOCH
     # =========================================================================
-    stoch_k, _ = ta.STOCH(
-      high_np, low_np, close_np, fastk_period=14, slowk_period=3, slowk_matype=0, slowd_period=3, slowd_matype=0
-    )
+    stoch_k = self.stoch_k(high_np, low_np, close_np)
 
     # =========================================================================
     # STOCH RSI
@@ -3868,9 +3868,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # STOCH
     # =========================================================================
-    stoch_k, _ = ta.STOCH(
-      high_np, low_np, close_np, fastk_period=14, slowk_period=3, slowk_matype=0, slowd_period=3, slowd_matype=0
-    )
+    stoch_k = self.stoch_k(high_np, low_np, close_np)
 
     # =========================================================================
     # STOCH RSI
