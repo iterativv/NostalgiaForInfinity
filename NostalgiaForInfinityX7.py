@@ -1081,10 +1081,7 @@ class NostalgiaForInfinityX7(IStrategy):
         order_tag = ""
         if has_order_tags:
           if order.ft_order_tag is not None:
-            sell_order_tag = order.ft_order_tag
-            order_mode = sell_order_tag.split(" ", 1)
-            if len(order_mode) > 0:
-              order_tag = order_mode[0]
+            order_tag = order.ft_order_tag.partition(" ")[0]
         if order_tag in ["d", "d1", "derisk_level_1", "derisk_level_2", "derisk_level_3"]:
           is_derisk = True
           break
@@ -44360,10 +44357,7 @@ class NostalgiaForInfinityX7(IStrategy):
         order_tag = ""
         if has_order_tags:
           if order.ft_order_tag is not None:
-            sell_order_tag = order.ft_order_tag
-            order_mode = sell_order_tag.split(" ", 1)
-            if len(order_mode) > 0:
-              order_tag = order_mode[0]
+            order_tag = order.ft_order_tag.partition(" ")[0]
         if order_tag in ["derisk_level_1", "d"]:
           if not is_derisk_1_found:
             is_derisk_1_found = True
@@ -46752,10 +46746,7 @@ class NostalgiaForInfinityX7(IStrategy):
         order_tag = ""
         if has_order_tags:
           if order.ft_order_tag is not None:
-            sell_order_tag = order.ft_order_tag
-            order_mode = sell_order_tag.split(" ", 1)
-            if len(order_mode) > 0:
-              order_tag = order_mode[0]
+            order_tag = order.ft_order_tag.partition(" ")[0]
         if order_tag in ["derisk_level_1"]:
           if not is_derisk_1_found:
             is_derisk_1_found = True
@@ -48820,10 +48811,7 @@ class NostalgiaForInfinityX7(IStrategy):
         order_tag = ""
         if has_order_tags:
           if order.ft_order_tag is not None:
-            sell_order_tag = order.ft_order_tag
-            order_mode = sell_order_tag.split(" ", 1)
-            if len(order_mode) > 0:
-              order_tag = order_mode[0]
+            order_tag = order.ft_order_tag.partition(" ")[0]
         if order_tag in ["dl1", "ddl1"]:
           grind_1_derisk_1_is_sell_found = True
         elif order_tag in ["dl2", "ddl2"]:
@@ -48987,10 +48975,7 @@ class NostalgiaForInfinityX7(IStrategy):
           order_tag = ""
           if has_order_tags:
             if order.ft_order_tag is not None:
-              sell_order_tag = order.ft_order_tag
-              order_mode = sell_order_tag.split(" ", 1)
-              if len(order_mode) > 0:
-                order_tag = order_mode[0]
+              order_tag = order.ft_order_tag.partition(" ")[0]
           else:
             # no order tag support, assume the first exit is for the first buy
             is_first_entry_exit_found = True
@@ -50907,10 +50892,7 @@ class NostalgiaForInfinityX7(IStrategy):
         order_tag = ""
         if has_order_tags:
           if order.ft_order_tag is not None:
-            sell_order_tag = order.ft_order_tag
-            order_mode = sell_order_tag.split(" ", 1)
-            if len(order_mode) > 0:
-              order_tag = order_mode[0]
+            order_tag = order.ft_order_tag.partition(" ")[0]
         if order_tag in ["g1", "sg1"]:
           grind_1_is_sell_found = True
         elif order_tag in ["g2", "sg2"]:
@@ -70831,10 +70813,7 @@ class NostalgiaForInfinityX7(IStrategy):
         order_tag = ""
         if has_order_tags:
           if order.ft_order_tag is not None:
-            sell_order_tag = order.ft_order_tag
-            order_mode = sell_order_tag.split(" ", 1)
-            if len(order_mode) > 0:
-              order_tag = order_mode[0]
+            order_tag = order.ft_order_tag.partition(" ")[0]
         if order_tag in ["derisk_level_1", "d"]:
           if not is_derisk_1_found:
             is_derisk_1_found = True
@@ -73180,10 +73159,7 @@ class NostalgiaForInfinityX7(IStrategy):
         order_tag = ""
         if has_order_tags:
           if order.ft_order_tag is not None:
-            sell_order_tag = order.ft_order_tag
-            order_mode = sell_order_tag.split(" ", 1)
-            if len(order_mode) > 0:
-              order_tag = order_mode[0]
+            order_tag = order.ft_order_tag.partition(" ")[0]
         if order_tag in ["derisk_level_1"]:
           if not is_derisk_1_found:
             is_derisk_1_found = True
@@ -74951,10 +74927,7 @@ class NostalgiaForInfinityX7(IStrategy):
         order_tag = ""
         if has_order_tags:
           if order.ft_order_tag is not None:
-            sell_order_tag = order.ft_order_tag
-            order_mode = sell_order_tag.split(" ", 1)
-            if len(order_mode) > 0:
-              order_tag = order_mode[0]
+            order_tag = order.ft_order_tag.partition(" ")[0]
         if order_tag in ["dl1", "ddl1"]:
           grind_1_derisk_1_is_sell_found = True
         elif order_tag in ["dl2", "ddl2"]:
@@ -75118,10 +75091,7 @@ class NostalgiaForInfinityX7(IStrategy):
           order_tag = ""
           if has_order_tags:
             if order.ft_order_tag is not None:
-              sell_order_tag = order.ft_order_tag
-              order_mode = sell_order_tag.split(" ", 1)
-              if len(order_mode) > 0:
-                order_tag = order_mode[0]
+              order_tag = order.ft_order_tag.partition(" ")[0]
           else:
             # no order tag support, assume the first exit is for the first buy
             is_first_entry_exit_found = True
@@ -76976,10 +76946,7 @@ class NostalgiaForInfinityX7(IStrategy):
         order_tag = ""
         if has_order_tags:
           if order.ft_order_tag is not None:
-            sell_order_tag = order.ft_order_tag
-            order_mode = sell_order_tag.split(" ", 1)
-            if len(order_mode) > 0:
-              order_tag = order_mode[0]
+            order_tag = order.ft_order_tag.partition(" ")[0]
         if order_tag in ["g1", "sg1"]:
           grind_1_is_sell_found = True
         elif order_tag in ["g2", "sg2"]:
