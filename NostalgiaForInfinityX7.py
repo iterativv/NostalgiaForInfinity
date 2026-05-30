@@ -2490,18 +2490,18 @@ class NostalgiaForInfinityX7(IStrategy):
     **kwargs,
   ) -> float:
     enter_tags = entry_tag.split()
+
+    def scaled_stake(stake_multiplier: float) -> float:
+      stake = proposed_stake * stake_multiplier
+      return stake if stake > min_stake else min_stake
+
     if side == "long":
       # Rebuy mode
       if all(c in self.long_rebuy_mode_tags for c in enter_tags) or (
         any(c in self.long_rebuy_mode_tags for c in enter_tags)
         and all(c in self.long_rebuy_grind_mode_tags for c in enter_tags)
       ):
-        stake_multiplier = self.system_v3_rebuy_mode_stake_multiplier
-        stake = proposed_stake * stake_multiplier
-        if stake > min_stake:
-          return stake
-        else:
-          return min_stake
+        return scaled_stake(self.system_v3_rebuy_mode_stake_multiplier)
       # Rapid mode
       if (self.system_name_use == self.system_v3_name) and (
         all(c in self.long_rapid_mode_tags for c in enter_tags)
@@ -2515,18 +2515,15 @@ class NostalgiaForInfinityX7(IStrategy):
           if self.is_futures_mode
           else self.rapid_mode_stake_multiplier_spot[0]
         )
-        if (proposed_stake * stake_multiplier) > min_stake:
-          return proposed_stake * stake_multiplier
-        else:
-          return min_stake
+        return scaled_stake(stake_multiplier)
       # Grind mode
       elif all(c in self.long_grind_mode_tags for c in enter_tags):
-        for _, item in enumerate(
+        for item in (
           self.grind_mode_stake_multiplier_futures if self.is_futures_mode else self.grind_mode_stake_multiplier_spot
         ):
-          if (proposed_stake * item) > min_stake:
-            stake_multiplier = item
-            return proposed_stake * stake_multiplier
+          stake = proposed_stake * item
+          if stake > min_stake:
+            return stake
       # Btc mode
       elif all(c in self.long_btc_mode_tags for c in enter_tags):
         stake_multiplier = (
@@ -2537,47 +2534,31 @@ class NostalgiaForInfinityX7(IStrategy):
         return proposed_stake * stake_multiplier
       else:
         if self.system_name_use == self.system_v3_2_name:
-          stake_multiplier = self.system_v3_2_stake_multiplier
-          if (proposed_stake * stake_multiplier) > min_stake:
-            return proposed_stake * stake_multiplier
-          else:
-            return min_stake
+          return scaled_stake(self.system_v3_2_stake_multiplier)
         elif self.system_name_use == self.system_v3_1_name:
-          stake_multiplier = self.system_v3_1_stake_multiplier
-          if (proposed_stake * stake_multiplier) > min_stake:
-            return proposed_stake * stake_multiplier
-          else:
-            return min_stake
+          return scaled_stake(self.system_v3_1_stake_multiplier)
         else:
           stake_multiplier = (
             self.regular_mode_stake_multiplier_futures[0]
             if self.is_futures_mode
             else self.regular_mode_stake_multiplier_spot[0]
           )
-          if (proposed_stake * stake_multiplier) > min_stake:
-            return proposed_stake * stake_multiplier
-          else:
-            return min_stake
+          return scaled_stake(stake_multiplier)
     else:
       # Rebuy mode
       if all(c in self.short_rebuy_mode_tags for c in enter_tags) or (
         any(c in self.short_rebuy_mode_tags for c in enter_tags)
         and all(c in self.short_rebuy_grind_mode_tags for c in enter_tags)
       ):
-        stake_multiplier = self.system_v3_rebuy_mode_stake_multiplier
-        stake = proposed_stake * stake_multiplier
-        if stake > min_stake:
-          return stake
-        else:
-          return min_stake
+        return scaled_stake(self.system_v3_rebuy_mode_stake_multiplier)
       # Grind mode
       elif all(c in self.short_grind_mode_tags for c in enter_tags):
-        for _, item in enumerate(
+        for item in (
           self.grind_mode_stake_multiplier_futures if self.is_futures_mode else self.grind_mode_stake_multiplier_spot
         ):
-          if (proposed_stake * item) > min_stake:
-            stake_multiplier = item
-            return proposed_stake * stake_multiplier
+          stake = proposed_stake * item
+          if stake > min_stake:
+            return stake
       # Rapid mode
       if (self.system_name_use == self.system_v3_name) and (
         all(c in self.short_rapid_mode_tags for c in enter_tags)
@@ -2591,33 +2572,19 @@ class NostalgiaForInfinityX7(IStrategy):
           if self.is_futures_mode
           else self.rapid_mode_stake_multiplier_spot[0]
         )
-        if (proposed_stake * stake_multiplier) > min_stake:
-          return proposed_stake * stake_multiplier
-        else:
-          return min_stake
+        return scaled_stake(stake_multiplier)
       else:
         if self.system_name_use == self.system_v3_2_name:
-          stake_multiplier = self.system_v3_2_stake_multiplier
-          if (proposed_stake * stake_multiplier) > min_stake:
-            return proposed_stake * stake_multiplier
-          else:
-            return min_stake
+          return scaled_stake(self.system_v3_2_stake_multiplier)
         elif self.system_name_use == self.system_v3_1_name:
-          stake_multiplier = self.system_v3_1_stake_multiplier
-          if (proposed_stake * stake_multiplier) > min_stake:
-            return proposed_stake * stake_multiplier
-          else:
-            return min_stake
+          return scaled_stake(self.system_v3_1_stake_multiplier)
         else:
           stake_multiplier = (
             self.regular_mode_stake_multiplier_futures[0]
             if self.is_futures_mode
             else self.regular_mode_stake_multiplier_spot[0]
           )
-          if (proposed_stake * stake_multiplier) > min_stake:
-            return proposed_stake * stake_multiplier
-          else:
-            return min_stake
+          return scaled_stake(stake_multiplier)
 
     return proposed_stake
 
