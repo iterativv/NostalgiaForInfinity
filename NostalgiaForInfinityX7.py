@@ -12270,16 +12270,21 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # By default, no hold should be done
     hold_trade = False
+    profit_values = None
+
+    def get_profit_values():
+      nonlocal profit_values
+      if profit_values is None:
+        filled_entries = trade.select_filled_orders(trade.entry_side)
+        filled_exits = trade.select_filled_orders(trade.exit_side)
+        profit_values = self.calc_total_profit(trade, filled_entries, filled_exits, rate)
+
+      return profit_values
 
     trade_ids: dict = self.hold_trades_cache.data.get("trade_ids")
     if trade_ids and trade.id in trade_ids:
       trade_profit_ratio = trade_ids[trade.id]
-      filled_entries = trade.select_filled_orders(trade.entry_side)
-      filled_exits = trade.select_filled_orders(trade.exit_side)
-      profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = self.calc_total_profit(
-        trade, filled_entries, filled_exits, rate
-      )
-      current_profit_ratio = profit_init_ratio
+      current_profit_ratio = get_profit_values()[3]
       if sell_reason == "force_sell":
         formatted_profit_ratio = f"{trade_profit_ratio * 100}%"
         formatted_current_profit_ratio = f"{current_profit_ratio * 100}%"
@@ -12308,12 +12313,7 @@ class NostalgiaForInfinityX7(IStrategy):
     trade_pairs: dict = self.hold_trades_cache.data.get("trade_pairs")
     if trade_pairs and trade.pair in trade_pairs:
       trade_profit_ratio = trade_pairs[trade.pair]
-      filled_entries = trade.select_filled_orders(trade.entry_side)
-      filled_exits = trade.select_filled_orders(trade.exit_side)
-      profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = self.calc_total_profit(
-        trade, filled_entries, filled_exits, rate
-      )
-      current_profit_ratio = profit_init_ratio
+      current_profit_ratio = get_profit_values()[3]
       if sell_reason == "force_sell":
         formatted_profit_ratio = f"{trade_profit_ratio * 100}%"
         formatted_current_profit_ratio = f"{current_profit_ratio * 100}%"
