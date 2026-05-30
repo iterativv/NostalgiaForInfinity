@@ -43904,6 +43904,14 @@ class NostalgiaForInfinityX7(IStrategy):
     fee_open_rate = trade.fee_open if self.custom_fee_open_rate is None else self.custom_fee_open_rate
     fee_close_rate = trade.fee_close if self.custom_fee_close_rate is None else self.custom_fee_close_rate
     stake_scale_leverage = trade.leverage if self.is_futures_mode else 1.0
+    derisk_flag_timeout = None
+
+    def get_derisk_flag_timeout():
+      nonlocal derisk_flag_timeout
+      if derisk_flag_timeout is None:
+        derisk_flag_timeout = current_time - timedelta(hours=96)
+
+      return derisk_flag_timeout
 
     grind_1_max_sub_grinds = 0
     grind_1_stakes = self.scale_stakes_for_min_stake(
@@ -44435,7 +44443,7 @@ class NostalgiaForInfinityX7(IStrategy):
     ):
       flag_profit = trade.get_custom_data(key="grinding_v2_derisk_level_1_profit")
       flag_time = datetime.fromisoformat(trade.get_custom_data(key="grinding_v2_derisk_level_1_time"))
-      if current_time - timedelta(hours=96) > flag_time:
+      if get_derisk_flag_timeout() > flag_time:
         if profit_stake > flag_profit:
           trade.set_custom_data(key="grinding_v2_derisk_level_1_flag", value=None)
         else:
@@ -44532,7 +44540,7 @@ class NostalgiaForInfinityX7(IStrategy):
     ):
       flag_profit = trade.get_custom_data(key="grinding_v2_derisk_level_2_profit")
       flag_time = datetime.fromisoformat(trade.get_custom_data(key="grinding_v2_derisk_level_2_time"))
-      if current_time - timedelta(hours=96) > flag_time:
+      if get_derisk_flag_timeout() > flag_time:
         if profit_stake > flag_profit:
           trade.set_custom_data(key="grinding_v2_derisk_level_2_flag", value=None)
         else:
@@ -44629,7 +44637,7 @@ class NostalgiaForInfinityX7(IStrategy):
     ):
       flag_profit = trade.get_custom_data(key="grinding_v2_derisk_level_3_profit")
       flag_time = datetime.fromisoformat(trade.get_custom_data(key="grinding_v2_derisk_level_3_time"))
-      if current_time - timedelta(hours=96) > flag_time:
+      if get_derisk_flag_timeout() > flag_time:
         if profit_stake > flag_profit:
           trade.set_custom_data(key="grinding_v2_derisk_level_3_flag", value=None)
         else:
@@ -70300,6 +70308,14 @@ class NostalgiaForInfinityX7(IStrategy):
     fee_open_rate = trade.fee_open if self.custom_fee_open_rate is None else self.custom_fee_open_rate
     fee_close_rate = trade.fee_close if self.custom_fee_close_rate is None else self.custom_fee_close_rate
     stake_scale_leverage = trade.leverage if self.is_futures_mode else 1.0
+    derisk_flag_timeout = None
+
+    def get_derisk_flag_timeout():
+      nonlocal derisk_flag_timeout
+      if derisk_flag_timeout is None:
+        derisk_flag_timeout = current_time - timedelta(hours=96)
+
+      return derisk_flag_timeout
 
     grind_1_max_sub_grinds = 0
     grind_1_stakes = self.scale_stakes_for_min_stake(
@@ -70831,7 +70847,7 @@ class NostalgiaForInfinityX7(IStrategy):
     ):
       flag_profit = trade.get_custom_data(key="grinding_v2_derisk_level_1_profit")
       flag_time = datetime.fromisoformat(trade.get_custom_data(key="grinding_v2_derisk_level_1_time"))
-      if current_time - timedelta(hours=96) > flag_time:
+      if get_derisk_flag_timeout() > flag_time:
         if profit_stake > flag_profit:
           trade.set_custom_data(key="grinding_v2_derisk_level_1_flag", value=None)
         else:
@@ -70928,7 +70944,7 @@ class NostalgiaForInfinityX7(IStrategy):
     ):
       flag_profit = trade.get_custom_data(key="grinding_v2_derisk_level_2_profit")
       flag_time = datetime.fromisoformat(trade.get_custom_data(key="grinding_v2_derisk_level_2_time"))
-      if current_time - timedelta(hours=96) > flag_time:
+      if get_derisk_flag_timeout() > flag_time:
         if profit_stake > flag_profit:
           trade.set_custom_data(key="grinding_v2_derisk_level_2_flag", value=None)
         else:
@@ -71025,7 +71041,7 @@ class NostalgiaForInfinityX7(IStrategy):
     ):
       flag_profit = trade.get_custom_data(key="grinding_v2_derisk_level_3_profit")
       flag_time = datetime.fromisoformat(trade.get_custom_data(key="grinding_v2_derisk_level_3_time"))
-      if current_time - timedelta(hours=96) > flag_time:
+      if get_derisk_flag_timeout() > flag_time:
         if profit_stake > flag_profit:
           trade.set_custom_data(key="grinding_v2_derisk_level_3_flag", value=None)
         else:
