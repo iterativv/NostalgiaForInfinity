@@ -43932,13 +43932,14 @@ class NostalgiaForInfinityX7(IStrategy):
 
     fee_open_rate = trade.fee_open if self.custom_fee_open_rate is None else self.custom_fee_open_rate
     fee_close_rate = trade.fee_close if self.custom_fee_close_rate is None else self.custom_fee_close_rate
+    stake_scale_leverage = trade.leverage if self.is_futures_mode else 1.0
 
     grind_1_max_sub_grinds = 0
     grind_1_stakes = self.scale_stakes_for_min_stake(
       self.grinding_v2_grind_1_stakes_futures if self.is_futures_mode else self.grinding_v2_grind_1_stakes_spot,
       slice_amount,
       min_stake,
-      trade.leverage if self.is_futures_mode else 1.0,
+      stake_scale_leverage,
       trade.leverage,
     )
     grind_1_sub_thresholds = (
@@ -43959,7 +43960,7 @@ class NostalgiaForInfinityX7(IStrategy):
       self.grinding_v2_grind_2_stakes_futures if self.is_futures_mode else self.grinding_v2_grind_2_stakes_spot,
       slice_amount,
       min_stake,
-      trade.leverage if self.is_futures_mode else 1.0,
+      stake_scale_leverage,
       trade.leverage,
     )
     grind_2_sub_thresholds = (
@@ -43980,7 +43981,7 @@ class NostalgiaForInfinityX7(IStrategy):
       self.grinding_v2_grind_3_stakes_futures if self.is_futures_mode else self.grinding_v2_grind_3_stakes_spot,
       slice_amount,
       min_stake,
-      trade.leverage if self.is_futures_mode else 1.0,
+      stake_scale_leverage,
       trade.leverage,
     )
     grind_3_sub_thresholds = (
@@ -44001,7 +44002,7 @@ class NostalgiaForInfinityX7(IStrategy):
       self.grinding_v2_grind_4_stakes_futures if self.is_futures_mode else self.grinding_v2_grind_4_stakes_spot,
       slice_amount,
       min_stake,
-      trade.leverage if self.is_futures_mode else 1.0,
+      stake_scale_leverage,
       trade.leverage,
     )
     grind_4_sub_thresholds = (
@@ -44022,7 +44023,7 @@ class NostalgiaForInfinityX7(IStrategy):
       self.grinding_v2_grind_5_stakes_futures if self.is_futures_mode else self.grinding_v2_grind_5_stakes_spot,
       slice_amount,
       min_stake,
-      trade.leverage if self.is_futures_mode else 1.0,
+      stake_scale_leverage,
       trade.leverage,
     )
     grind_5_sub_thresholds = (
@@ -44230,10 +44231,7 @@ class NostalgiaForInfinityX7(IStrategy):
             grind_5_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
             grind_5_found = True
       elif order.ft_order_side == "sell":
-        if (
-          order is filled_exits[-1]
-          and (order.safe_remaining * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) > min_stake
-        ):
+        if order is filled_exits[-1] and (order.safe_remaining * exit_rate / stake_scale_leverage) > min_stake:
           partial_sell = True
           # break
         order_tag = ""
@@ -46329,6 +46327,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     fee_open_rate = trade.fee_open if self.custom_fee_open_rate is None else self.custom_fee_open_rate
     fee_close_rate = trade.fee_close if self.custom_fee_close_rate is None else self.custom_fee_close_rate
+    stake_scale_leverage = trade.leverage if self.is_futures_mode else 1.0
 
     grind_1_max_sub_grinds = 0
     grind_1_stakes = self.scale_stakes_for_min_stake(
@@ -46356,7 +46355,7 @@ class NostalgiaForInfinityX7(IStrategy):
       self.system_v3_grind_2_stakes_futures if self.is_futures_mode else self.system_v3_grind_2_stakes_spot,
       slice_amount,
       min_stake,
-      trade.leverage if self.is_futures_mode else 1.0,
+      stake_scale_leverage,
       trade.leverage,
     )
     grind_2_sub_thresholds = (
@@ -46377,7 +46376,7 @@ class NostalgiaForInfinityX7(IStrategy):
       self.system_v3_grind_3_stakes_futures if self.is_futures_mode else self.system_v3_grind_3_stakes_spot,
       slice_amount,
       min_stake,
-      trade.leverage if self.is_futures_mode else 1.0,
+      stake_scale_leverage,
       trade.leverage,
     )
     grind_3_sub_thresholds = (
@@ -46398,7 +46397,7 @@ class NostalgiaForInfinityX7(IStrategy):
       self.system_v3_grind_4_stakes_futures if self.is_futures_mode else self.system_v3_grind_4_stakes_spot,
       slice_amount,
       min_stake,
-      trade.leverage if self.is_futures_mode else 1.0,
+      stake_scale_leverage,
       trade.leverage,
     )
     grind_4_sub_thresholds = (
@@ -46419,7 +46418,7 @@ class NostalgiaForInfinityX7(IStrategy):
       self.system_v3_grind_5_stakes_futures if self.is_futures_mode else self.system_v3_grind_5_stakes_spot,
       slice_amount,
       min_stake,
-      trade.leverage if self.is_futures_mode else 1.0,
+      stake_scale_leverage,
       trade.leverage,
     )
     grind_5_sub_thresholds = (
@@ -46616,10 +46615,7 @@ class NostalgiaForInfinityX7(IStrategy):
             rebuy_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
             rebuy_found = True
       elif order.ft_order_side == "sell":
-        if (
-          order is filled_exits[-1]
-          and (order.safe_remaining * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) > min_stake
-        ):
+        if order is filled_exits[-1] and (order.safe_remaining * exit_rate / stake_scale_leverage) > min_stake:
           partial_sell = True
           # break
         order_tag = ""
@@ -70384,13 +70380,14 @@ class NostalgiaForInfinityX7(IStrategy):
 
     fee_open_rate = trade.fee_open if self.custom_fee_open_rate is None else self.custom_fee_open_rate
     fee_close_rate = trade.fee_close if self.custom_fee_close_rate is None else self.custom_fee_close_rate
+    stake_scale_leverage = trade.leverage if self.is_futures_mode else 1.0
 
     grind_1_max_sub_grinds = 0
     grind_1_stakes = self.scale_stakes_for_min_stake(
       self.grinding_v2_grind_1_stakes_futures if self.is_futures_mode else self.grinding_v2_grind_1_stakes_spot,
       slice_amount,
       min_stake,
-      trade.leverage if self.is_futures_mode else 1.0,
+      stake_scale_leverage,
       trade.leverage,
     )
     grind_1_sub_thresholds = (
@@ -70411,7 +70408,7 @@ class NostalgiaForInfinityX7(IStrategy):
       self.grinding_v2_grind_2_stakes_futures if self.is_futures_mode else self.grinding_v2_grind_2_stakes_spot,
       slice_amount,
       min_stake,
-      trade.leverage if self.is_futures_mode else 1.0,
+      stake_scale_leverage,
       trade.leverage,
     )
     grind_2_sub_thresholds = (
@@ -70432,7 +70429,7 @@ class NostalgiaForInfinityX7(IStrategy):
       self.grinding_v2_grind_3_stakes_futures if self.is_futures_mode else self.grinding_v2_grind_3_stakes_spot,
       slice_amount,
       min_stake,
-      trade.leverage if self.is_futures_mode else 1.0,
+      stake_scale_leverage,
       trade.leverage,
     )
     grind_3_sub_thresholds = (
@@ -70453,7 +70450,7 @@ class NostalgiaForInfinityX7(IStrategy):
       self.grinding_v2_grind_4_stakes_futures if self.is_futures_mode else self.grinding_v2_grind_4_stakes_spot,
       slice_amount,
       min_stake,
-      trade.leverage if self.is_futures_mode else 1.0,
+      stake_scale_leverage,
       trade.leverage,
     )
     grind_4_sub_thresholds = (
@@ -70474,7 +70471,7 @@ class NostalgiaForInfinityX7(IStrategy):
       self.grinding_v2_grind_5_stakes_futures if self.is_futures_mode else self.grinding_v2_grind_5_stakes_spot,
       slice_amount,
       min_stake,
-      trade.leverage if self.is_futures_mode else 1.0,
+      stake_scale_leverage,
       trade.leverage,
     )
     grind_5_sub_thresholds = (
@@ -70682,10 +70679,7 @@ class NostalgiaForInfinityX7(IStrategy):
             grind_5_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
             grind_5_found = True
       elif order.ft_order_side == "buy":
-        if (
-          order is filled_exits[-1]
-          and (order.safe_remaining * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) > min_stake
-        ):
+        if order is filled_exits[-1] and (order.safe_remaining * exit_rate / stake_scale_leverage) > min_stake:
           partial_sell = True
           # break
         order_tag = ""
@@ -72763,6 +72757,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     fee_open_rate = trade.fee_open if self.custom_fee_open_rate is None else self.custom_fee_open_rate
     fee_close_rate = trade.fee_close if self.custom_fee_close_rate is None else self.custom_fee_close_rate
+    stake_scale_leverage = trade.leverage if self.is_futures_mode else 1.0
 
     grind_1_max_sub_grinds = 0
     grind_1_stakes = self.scale_stakes_for_min_stake(
@@ -72790,7 +72785,7 @@ class NostalgiaForInfinityX7(IStrategy):
       self.system_v3_grind_2_stakes_futures if self.is_futures_mode else self.system_v3_grind_2_stakes_spot,
       slice_amount,
       min_stake,
-      trade.leverage if self.is_futures_mode else 1.0,
+      stake_scale_leverage,
       trade.leverage,
     )
     grind_2_sub_thresholds = (
@@ -72811,7 +72806,7 @@ class NostalgiaForInfinityX7(IStrategy):
       self.system_v3_grind_3_stakes_futures if self.is_futures_mode else self.system_v3_grind_3_stakes_spot,
       slice_amount,
       min_stake,
-      trade.leverage if self.is_futures_mode else 1.0,
+      stake_scale_leverage,
       trade.leverage,
     )
     grind_3_sub_thresholds = (
@@ -72832,7 +72827,7 @@ class NostalgiaForInfinityX7(IStrategy):
       self.system_v3_grind_4_stakes_futures if self.is_futures_mode else self.system_v3_grind_4_stakes_spot,
       slice_amount,
       min_stake,
-      trade.leverage if self.is_futures_mode else 1.0,
+      stake_scale_leverage,
       trade.leverage,
     )
     grind_4_sub_thresholds = (
@@ -72853,7 +72848,7 @@ class NostalgiaForInfinityX7(IStrategy):
       self.system_v3_grind_5_stakes_futures if self.is_futures_mode else self.system_v3_grind_5_stakes_spot,
       slice_amount,
       min_stake,
-      trade.leverage if self.is_futures_mode else 1.0,
+      stake_scale_leverage,
       trade.leverage,
     )
     grind_5_sub_thresholds = (
@@ -73025,10 +73020,7 @@ class NostalgiaForInfinityX7(IStrategy):
             rebuy_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
             rebuy_found = True
       elif order.ft_order_side == "buy":
-        if (
-          order is filled_exits[-1]
-          and (order.safe_remaining * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) > min_stake
-        ):
+        if order is filled_exits[-1] and (order.safe_remaining * exit_rate / stake_scale_leverage) > min_stake:
           partial_sell = True
           # break
         order_tag = ""
