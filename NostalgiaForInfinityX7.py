@@ -89,6 +89,11 @@ class NostalgiaForInfinityX7(IStrategy):
   # BTC informatives
   btc_info_timeframes = ["5m", "15m", "1h", "4h", "1d"]
 
+  stable_stake_currencies = frozenset(
+    ("USDT", "BUSD", "USDC", "DAI", "TUSD", "FDUSD", "PAX", "USD", "EUR", "GBP", "TRY")
+  )
+  informative_ohlcv_columns = frozenset(("open", "high", "low", "close", "volume"))
+
   # Backtest Age Filter emulation
   has_bt_agefilter = False
   bt_min_age_days = 3
@@ -3045,6 +3050,28 @@ class NostalgiaForInfinityX7(IStrategy):
 
     return msg
 
+  def btc_informative_pair(self) -> str:
+    stake_currency = self.config["stake_currency"]
+    is_futures = self.config.get("trading_mode") in ("futures", "margin")
+
+    if stake_currency in self.stable_stake_currencies:
+      return f"BTC/{stake_currency}:{stake_currency}" if is_futures else f"BTC/{stake_currency}"
+
+    return "BTC/USDT:USDT" if is_futures else "BTC/USDT"
+
+  def prepare_informative_merge(self, informative: DataFrame, keep_ohlcv=None) -> DataFrame:
+    if informative.empty:
+      return informative
+
+    keep_ohlcv = keep_ohlcv or ()
+    keep_cols = [
+      column
+      for column in informative.columns
+      if column == "date" or column not in self.informative_ohlcv_columns or column in keep_ohlcv
+    ]
+
+    return informative[keep_cols]
+
   # Informative Pairs
   # ---------------------------------------------------------------------------------------------
   def informative_pairs(self):
@@ -3058,28 +3085,7 @@ class NostalgiaForInfinityX7(IStrategy):
     for info_timeframe in self.info_timeframes:
       informative_pairs.update((pair, info_timeframe) for pair in pairs)
 
-    if self.config["stake_currency"] in [
-      "USDT",
-      "BUSD",
-      "USDC",
-      "DAI",
-      "TUSD",
-      "FDUSD",
-      "PAX",
-      "USD",
-      "EUR",
-      "GBP",
-      "TRY",
-    ]:
-      if self.config.get("trading_mode") in ["futures", "margin"]:
-        btc_info_pair = f"BTC/{self.config['stake_currency']}:{self.config['stake_currency']}"
-      else:
-        btc_info_pair = f"BTC/{self.config['stake_currency']}"
-    else:
-      if self.config.get("trading_mode") in ["futures", "margin"]:
-        btc_info_pair = "BTC/USDT:USDT"
-      else:
-        btc_info_pair = "BTC/USDT"
+    btc_info_pair = self.btc_informative_pair()
 
     informative_pairs.update((btc_info_pair, btc_info_timeframe) for btc_info_timeframe in self.btc_info_timeframes)
 
@@ -4318,54 +4324,13 @@ class NostalgiaForInfinityX7(IStrategy):
     # CONFIG
     # =========================================================================
 
-    stake_currency = self.config["stake_currency"]
-    trading_mode = self.config.get("trading_mode", "")
-    is_futures = trading_mode in ("futures", "margin")
-
     debug = False
 
     # =========================================================================
     # BTC INFORMATIVE PAIR
     # =========================================================================
 
-    stable_currencies = {
-      "USDT",
-      "BUSD",
-      "USDC",
-      "DAI",
-      "TUSD",
-      "FDUSD",
-      "PAX",
-      "USD",
-      "EUR",
-      "GBP",
-      "TRY",
-    }
-
-    if stake_currency in stable_currencies:
-      btc_info_pair = f"BTC/{stake_currency}:{stake_currency}" if is_futures else f"BTC/{stake_currency}"
-
-    else:
-      btc_info_pair = "BTC/USDT:USDT" if is_futures else "BTC/USDT"
-
-    # =========================================================================
-    # CONSTANTS
-    # =========================================================================
-
-    OHLCV_COLS = {"open", "high", "low", "close", "volume"}
-
-    # =========================================================================
-    # HELPER
-    # =========================================================================
-
-    def prepare_informative(informative: DataFrame, tf: str, keep_ohlcv: set[str] | None = None) -> DataFrame:
-      if informative.empty:
-        return informative
-
-      keep_ohlcv = keep_ohlcv or set()
-      keep_cols = [c for c in informative.columns if (c == "date" or c not in OHLCV_COLS or c in keep_ohlcv)]
-
-      return informative[keep_cols]
+    btc_info_pair = self.btc_informative_pair()
 
     # =========================================================================
     # BTC INFORMATIVE LOOP
@@ -4402,7 +4367,7 @@ class NostalgiaForInfinityX7(IStrategy):
       # REMOVE UNUSED OHLCV BEFORE MERGE
       # ---------------------------------------------------------------------
 
-      btc_informative = prepare_informative(informative=btc_informative, tf=btc_tf, keep_ohlcv=set())  # Keep none
+      btc_informative = self.prepare_informative_merge(btc_informative)
 
       # ---------------------------------------------------------------------
       # MERGE
@@ -4459,7 +4424,7 @@ class NostalgiaForInfinityX7(IStrategy):
       else:
         keep_ohlcv = set()
 
-      info_indicators = prepare_informative(informative=info_indicators, tf=info_tf, keep_ohlcv=keep_ohlcv)
+      info_indicators = self.prepare_informative_merge(info_indicators, keep_ohlcv)
 
       # ---------------------------------------------------------------------
       # MERGE
