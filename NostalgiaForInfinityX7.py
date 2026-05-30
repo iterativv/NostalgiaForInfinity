@@ -1708,14 +1708,16 @@ class NostalgiaForInfinityX7(IStrategy):
     filled_orders = trade.select_filled_orders()
     filled_entries = []
     filled_exits = []
+    append_entry = filled_entries.append
+    append_exit = filled_exits.append
     entry_side = trade.entry_side
     exit_side = trade.exit_side
     for order in filled_orders:
       order_side = order.ft_order_side
       if order_side == entry_side:
-        filled_entries.append(order)
+        append_entry(order)
       elif order_side == exit_side:
-        filled_exits.append(order)
+        append_exit(order)
     return filled_orders, filled_entries, filled_exits
 
   def trade_order_state(self, trade: "Trade") -> tuple:
@@ -1813,13 +1815,15 @@ class NostalgiaForInfinityX7(IStrategy):
       fee_open_multiplier = 1 - fee_open_rate
       fee_close_multiplier = 1 + fee_close_rate
       for entry_order in filled_entries:
-        entry_stake = entry_order.safe_filled * entry_order.safe_price * fee_open_multiplier
-        total_amount += entry_order.safe_filled
+        filled = entry_order.safe_filled
+        entry_stake = filled * entry_order.safe_price * fee_open_multiplier
+        total_amount += filled
         total_stake += entry_stake
         total_profit += entry_stake
       for exit_order in filled_exits:
-        exit_stake = exit_order.safe_filled * exit_order.safe_price * fee_close_multiplier
-        total_amount -= exit_order.safe_filled
+        filled = exit_order.safe_filled
+        exit_stake = filled * exit_order.safe_price * fee_close_multiplier
+        total_amount -= filled
         total_profit -= exit_stake
       current_stake = total_amount * exit_rate * fee_close_multiplier
       total_profit -= current_stake
@@ -1827,13 +1831,15 @@ class NostalgiaForInfinityX7(IStrategy):
       fee_open_multiplier = 1 + fee_open_rate
       fee_close_multiplier = 1 - fee_close_rate
       for entry_order in filled_entries:
-        entry_stake = entry_order.safe_filled * entry_order.safe_price * fee_open_multiplier
-        total_amount += entry_order.safe_filled
+        filled = entry_order.safe_filled
+        entry_stake = filled * entry_order.safe_price * fee_open_multiplier
+        total_amount += filled
         total_stake += entry_stake
         total_profit -= entry_stake
       for exit_order in filled_exits:
-        exit_stake = exit_order.safe_filled * exit_order.safe_price * fee_close_multiplier
-        total_amount -= exit_order.safe_filled
+        filled = exit_order.safe_filled
+        exit_stake = filled * exit_order.safe_price * fee_close_multiplier
+        total_amount -= filled
         total_profit += exit_stake
       current_stake = total_amount * exit_rate * fee_close_multiplier
       total_profit += current_stake
