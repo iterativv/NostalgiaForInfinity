@@ -28205,1667 +28205,1368 @@ class NostalgiaForInfinityX7(IStrategy):
     current_time: "datetime",
     buy_tag,
   ) -> tuple:
+    last_willr_14 = last_candle["WILLR_14"]
+    last_rsi_3 = last_candle["RSI_3"]
+    last_roc_9_1d = last_candle["ROC_9_1d"]
+    last_stochrsi_k_4h = last_candle["STOCHRSIk_14_14_3_3_4h"]
+    last_rsi_3_1h = last_candle["RSI_3_1h"]
+    last_aroonu_14_4h = last_candle["AROONU_14_4h"]
+    last_rsi_14 = last_candle["RSI_14"]
+    last_roc_9_4h = last_candle["ROC_9_4h"]
+    last_stochrsi_k_1d = last_candle["STOCHRSIk_14_14_3_3_1d"]
+    last_stochrsi_k_1h = last_candle["STOCHRSIk_14_14_3_3_1h"]
+    last_rsi_3_4h = last_candle["RSI_3_4h"]
+    last_willr_480 = last_candle["WILLR_480"]
+
     if 0.01 > current_profit >= 0.001:
-      if (last_candle["WILLR_480"] > -0.1) and (last_candle["WILLR_14"] >= -1.0) and (last_candle["RSI_14"] > 75.0):
+      if (last_willr_480 > -0.1) and (last_willr_14 >= -1.0) and (last_rsi_14 > 75.0):
         return True, f"exit_{mode_name}_w_0_1"
-      elif (last_candle["WILLR_14"] >= -1.0) and (last_candle["RSI_14"] > 84.0):
+      elif (last_willr_14 >= -1.0) and (last_rsi_14 > 84.0):
         return True, f"exit_{mode_name}_w_0_2"
-      elif (last_candle["WILLR_14"] >= -1.0) and (last_candle["RSI_14"] < 40.0):
+      elif (last_willr_14 >= -1.0) and (last_rsi_14 < 40.0):
         return True, f"exit_{mode_name}_w_0_3"
       elif (
-        (last_candle["WILLR_14"] >= -1.0)
-        and (last_candle["RSI_14"] > 80.0)
+        (last_willr_14 >= -1.0)
+        and (last_rsi_14 > 80.0)
         and (last_candle["ROC_9_1h"] < -0.0)
-        and (last_candle["ROC_9_4h"] > 20.0)
+        and (last_roc_9_4h > 20.0)
       ):
         return True, f"exit_{mode_name}_w_0_4"
       elif (
-        (last_candle["RSI_3"] > 99.0)
-        and (last_candle["WILLR_14"] > -4.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 50.0))
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 70.0)
+        (last_rsi_3 > 99.0)
+        and (last_willr_14 > -4.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 50.0))
+        and (last_stochrsi_k_4h > 70.0)
       ):
         return True, f"exit_{mode_name}_w_0_5"
       elif (
-        (last_candle["RSI_3"] > 98.0)
-        and (last_candle["WILLR_14"] > -1.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] < -5.0))
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 80.0)
+        (last_rsi_3 > 98.0)
+        and (last_willr_14 > -1.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d < -5.0))
+        and (last_stochrsi_k_1h > 80.0)
       ):
         return True, f"exit_{mode_name}_w_0_6"
       elif (
-        (last_candle["RSI_3"] > 90.0)
-        and (last_candle["WILLR_14"] > -2.0)
+        (last_rsi_3 > 90.0)
+        and (last_willr_14 > -2.0)
         and (last_candle["RSI_14_4h"] > 60.0)
         and (last_candle["CMF_20_1h"] < -0.0)
         and (last_candle["CMF_20_4h"] < -0.0)
       ):
         return True, f"exit_{mode_name}_w_0_7"
-      elif (
-        (last_candle["RSI_3"] > 90.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (last_candle["RSI_3_1h"] < 25.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 20.0)
-      ):
+      elif (last_rsi_3 > 90.0) and (last_willr_14 > -2.0) and (last_rsi_3_1h < 25.0) and (last_stochrsi_k_1h > 20.0):
         return True, f"exit_{mode_name}_w_0_8"
       elif (
-        (last_candle["RSI_3"] > 88.0)
-        and (last_candle["WILLR_14"] > -1.0)
+        (last_rsi_3 > 88.0)
+        and (last_willr_14 > -1.0)
         and (last_candle["ROC_9_1h"] < -5.0)
-        and (last_candle["ROC_9_4h"] > 10.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 40.0)
+        and (last_roc_9_4h > 10.0)
+        and (last_stochrsi_k_4h > 40.0)
       ):
         return True, f"exit_{mode_name}_w_0_9"
       elif (
-        (last_candle["RSI_3"] > 96.0)
-        and (last_candle["WILLR_14"] > -16.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
+        (last_rsi_3 > 96.0)
+        and (last_willr_14 > -16.0)
+        and (last_aroonu_14_4h > 50.0)
         and (last_candle["CCI_20_change_pct_4h"] < -0.0)
-        and (
-          isinstance(last_candle["STOCHRSIk_14_14_3_3_1d"], np.float64)
-          and (last_candle["STOCHRSIk_14_14_3_3_1d"] > 90.0)
-        )
+        and (isinstance(last_stochrsi_k_1d, np.float64) and (last_stochrsi_k_1d > 90.0))
       ):
         return True, f"exit_{mode_name}_w_0_10"
-      elif (
-        (last_candle["RSI_3"] > 98.0)
-        and (last_candle["WILLR_14"] > -1.0)
-        and (last_candle["RSI_3_1h"] < 30.0)
-        and (last_candle["RSI_3_4h"] < 25.0)
-      ):
+      elif (last_rsi_3 > 98.0) and (last_willr_14 > -1.0) and (last_rsi_3_1h < 30.0) and (last_rsi_3_4h < 25.0):
         return True, f"exit_{mode_name}_w_0_11"
-      elif (
-        (last_candle["RSI_3"] > 99.0)
-        and (last_candle["WILLR_14"] > -1.0)
-        and (last_candle["RSI_3_4h"] < 40.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
-      ):
+      elif (last_rsi_3 > 99.0) and (last_willr_14 > -1.0) and (last_rsi_3_4h < 40.0) and (last_aroonu_14_4h > 50.0):
         return True, f"exit_{mode_name}_w_0_12"
       elif (
-        (last_candle["RSI_3"] > 99.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (last_candle["RSI_3_1h"] < 50.0)
-        and (last_candle["RSI_3_4h"] < 50.0)
-        and (
-          isinstance(last_candle["STOCHRSIk_14_14_3_3_1d"], np.float64)
-          and (last_candle["STOCHRSIk_14_14_3_3_1d"] > 70.0)
-        )
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 50.0))
+        (last_rsi_3 > 99.0)
+        and (last_willr_14 > -2.0)
+        and (last_rsi_3_1h < 50.0)
+        and (last_rsi_3_4h < 50.0)
+        and (isinstance(last_stochrsi_k_1d, np.float64) and (last_stochrsi_k_1d > 70.0))
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 50.0))
       ):
         return True, f"exit_{mode_name}_w_0_13"
       elif (
-        (last_candle["RSI_3"] > 95.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (last_candle["RSI_3_1h"] < 60.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 80.0))
+        (last_rsi_3 > 95.0)
+        and (last_willr_14 > -2.0)
+        and (last_rsi_3_1h < 60.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 80.0))
       ):
         return True, f"exit_{mode_name}_w_0_14"
       elif (
-        (last_candle["RSI_3"] > 95.0)
-        and (last_candle["WILLR_480"] > -25.0)
-        and (last_candle["RSI_14"] < 48.0)
+        (last_rsi_3 > 95.0)
+        and (last_willr_480 > -25.0)
+        and (last_rsi_14 < 48.0)
         and (last_candle["RSI_14_4h"] > 70.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 80.0)
-        and (isinstance(last_candle["ROC_9_4h"], np.float64) and (last_candle["ROC_9_4h"] > 100.0))
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 100.0))
+        and (last_stochrsi_k_4h > 80.0)
+        and (isinstance(last_roc_9_4h, np.float64) and (last_roc_9_4h > 100.0))
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 100.0))
       ):
         return True, f"exit_{mode_name}_w_0_15"
       elif (
-        (last_candle["RSI_3"] > 88.0)
-        and (last_candle["WILLR_14"] > -1.0)
-        and (last_candle["RSI_3_1h"] < 40.0)
-        and (last_candle["AROONU_14_4h"] > 75.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 30.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 30.0)
+        (last_rsi_3 > 88.0)
+        and (last_willr_14 > -1.0)
+        and (last_rsi_3_1h < 40.0)
+        and (last_aroonu_14_4h > 75.0)
+        and (last_stochrsi_k_1h > 30.0)
+        and (last_stochrsi_k_4h > 30.0)
       ):
         return True, f"exit_{mode_name}_w_0_16"
       elif (
-        (last_candle["RSI_3"] > 98.0)
-        and (last_candle["WILLR_14"] > -4.0)
-        and (last_candle["AROONU_14_4h"] > 75.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 70.0)
+        (last_rsi_3 > 98.0) and (last_willr_14 > -4.0) and (last_aroonu_14_4h > 75.0) and (last_stochrsi_k_4h > 70.0)
       ):
         return True, f"exit_{mode_name}_w_0_17"
       elif (
-        (last_candle["RSI_3"] > 90.0)
-        and (last_candle["WILLR_14"] > -20.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
+        (last_rsi_3 > 90.0)
+        and (last_willr_14 > -20.0)
+        and (last_aroonu_14_4h > 50.0)
         and (last_candle["top_wick_pct_1d"] > 20.0)
       ):
         return True, f"exit_{mode_name}_w_0_18"
     elif 0.02 > current_profit >= 0.01:
-      if last_candle["WILLR_480"] > -0.2:
+      if last_willr_480 > -0.2:
         return True, f"exit_{mode_name}_w_1_1"
-      elif (last_candle["WILLR_14"] >= -1.0) and (last_candle["RSI_14"] > 78.0):
+      elif (last_willr_14 >= -1.0) and (last_rsi_14 > 78.0):
         return True, f"exit_{mode_name}_w_1_2"
-      elif (last_candle["WILLR_14"] >= -2.0) and (last_candle["RSI_14"] < 46.0):
+      elif (last_willr_14 >= -2.0) and (last_rsi_14 < 46.0):
         return True, f"exit_{mode_name}_w_1_3"
       elif (
-        (last_candle["WILLR_14"] >= -2.0)
-        and (last_candle["RSI_14"] > 78.0)
+        (last_willr_14 >= -2.0)
+        and (last_rsi_14 > 78.0)
         and (last_candle["ROC_9_1h"] < -0.0)
-        and (last_candle["ROC_9_4h"] > 20.0)
+        and (last_roc_9_4h > 20.0)
       ):
         return True, f"exit_{mode_name}_w_1_4"
       elif (
-        (last_candle["RSI_3"] > 98.0)
-        and (last_candle["WILLR_14"] > -6.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 50.0))
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 70.0)
+        (last_rsi_3 > 98.0)
+        and (last_willr_14 > -6.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 50.0))
+        and (last_stochrsi_k_4h > 70.0)
       ):
         return True, f"exit_{mode_name}_w_1_5"
       elif (
-        (last_candle["RSI_3"] > 96.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] < -5.0))
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 80.0)
+        (last_rsi_3 > 96.0)
+        and (last_willr_14 > -2.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d < -5.0))
+        and (last_stochrsi_k_1h > 80.0)
       ):
         return True, f"exit_{mode_name}_w_1_6"
       elif (
-        (last_candle["RSI_3"] > 88.0)
-        and (last_candle["WILLR_14"] > -4.0)
+        (last_rsi_3 > 88.0)
+        and (last_willr_14 > -4.0)
         and (last_candle["RSI_14_4h"] > 60.0)
         and (last_candle["CMF_20_1h"] < -0.0)
         and (last_candle["CMF_20_4h"] < -0.0)
       ):
         return True, f"exit_{mode_name}_w_1_7"
-      elif (
-        (last_candle["RSI_3"] > 88.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (last_candle["RSI_3_1h"] < 25.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 20.0)
-      ):
+      elif (last_rsi_3 > 88.0) and (last_willr_14 > -2.0) and (last_rsi_3_1h < 25.0) and (last_stochrsi_k_1h > 20.0):
         return True, f"exit_{mode_name}_w_1_8"
       elif (
-        (last_candle["RSI_3"] > 86.0)
-        and (last_candle["WILLR_14"] > -2.0)
+        (last_rsi_3 > 86.0)
+        and (last_willr_14 > -2.0)
         and (last_candle["ROC_9_1h"] < -5.0)
-        and (last_candle["ROC_9_4h"] > 10.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 40.0)
+        and (last_roc_9_4h > 10.0)
+        and (last_stochrsi_k_4h > 40.0)
       ):
         return True, f"exit_{mode_name}_w_1_9"
       elif (
-        (last_candle["RSI_3"] > 94.0)
-        and (last_candle["WILLR_14"] > -18.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
+        (last_rsi_3 > 94.0)
+        and (last_willr_14 > -18.0)
+        and (last_aroonu_14_4h > 50.0)
         and (last_candle["CCI_20_change_pct_4h"] < -0.0)
-        and (
-          isinstance(last_candle["STOCHRSIk_14_14_3_3_1d"], np.float64)
-          and (last_candle["STOCHRSIk_14_14_3_3_1d"] > 90.0)
-        )
+        and (isinstance(last_stochrsi_k_1d, np.float64) and (last_stochrsi_k_1d > 90.0))
       ):
         return True, f"exit_{mode_name}_w_1_10"
-      elif (
-        (last_candle["RSI_3"] > 88.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (last_candle["RSI_3_1h"] < 30.0)
-        and (last_candle["RSI_3_4h"] < 25.0)
-      ):
+      elif (last_rsi_3 > 88.0) and (last_willr_14 > -2.0) and (last_rsi_3_1h < 30.0) and (last_rsi_3_4h < 25.0):
         return True, f"exit_{mode_name}_w_1_11"
-      elif (
-        (last_candle["RSI_3"] > 98.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (last_candle["RSI_3_4h"] < 40.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
-      ):
+      elif (last_rsi_3 > 98.0) and (last_willr_14 > -2.0) and (last_rsi_3_4h < 40.0) and (last_aroonu_14_4h > 50.0):
         return True, f"exit_{mode_name}_w_1_12"
       elif (
-        (last_candle["RSI_3"] > 98.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (last_candle["RSI_3_1h"] < 50.0)
-        and (last_candle["RSI_3_4h"] < 50.0)
-        and (
-          isinstance(last_candle["STOCHRSIk_14_14_3_3_1d"], np.float64)
-          and (last_candle["STOCHRSIk_14_14_3_3_1d"] > 70.0)
-        )
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 50.0))
+        (last_rsi_3 > 98.0)
+        and (last_willr_14 > -2.0)
+        and (last_rsi_3_1h < 50.0)
+        and (last_rsi_3_4h < 50.0)
+        and (isinstance(last_stochrsi_k_1d, np.float64) and (last_stochrsi_k_1d > 70.0))
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 50.0))
       ):
         return True, f"exit_{mode_name}_w_1_13"
       elif (
-        (last_candle["RSI_3"] > 90.0)
-        and (last_candle["WILLR_14"] > -4.0)
-        and (last_candle["RSI_3_1h"] < 60.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 80.0))
+        (last_rsi_3 > 90.0)
+        and (last_willr_14 > -4.0)
+        and (last_rsi_3_1h < 60.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 80.0))
       ):
         return True, f"exit_{mode_name}_w_1_14"
       elif (
-        (last_candle["RSI_3"] > 50.0)
-        and (last_candle["WILLR_480"] > -25.0)
-        and (last_candle["RSI_14"] < 50.0)
+        (last_rsi_3 > 50.0)
+        and (last_willr_480 > -25.0)
+        and (last_rsi_14 < 50.0)
         and (last_candle["RSI_14_4h"] > 70.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 80.0)
-        and (isinstance(last_candle["ROC_9_4h"], np.float64) and (last_candle["ROC_9_4h"] > 100.0))
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 100.0))
+        and (last_stochrsi_k_4h > 80.0)
+        and (isinstance(last_roc_9_4h, np.float64) and (last_roc_9_4h > 100.0))
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 100.0))
       ):
         return True, f"exit_{mode_name}_w_1_15"
       elif (
-        (last_candle["RSI_3"] > 86.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (last_candle["RSI_3_1h"] < 40.0)
-        and (last_candle["AROONU_14_4h"] > 75.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 30.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 30.0)
+        (last_rsi_3 > 86.0)
+        and (last_willr_14 > -2.0)
+        and (last_rsi_3_1h < 40.0)
+        and (last_aroonu_14_4h > 75.0)
+        and (last_stochrsi_k_1h > 30.0)
+        and (last_stochrsi_k_4h > 30.0)
       ):
         return True, f"exit_{mode_name}_w_1_16"
       elif (
-        (last_candle["RSI_3"] > 96.0)
-        and (last_candle["WILLR_14"] > -6.0)
-        and (last_candle["AROONU_14_4h"] > 75.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 70.0)
+        (last_rsi_3 > 96.0) and (last_willr_14 > -6.0) and (last_aroonu_14_4h > 75.0) and (last_stochrsi_k_4h > 70.0)
       ):
         return True, f"exit_{mode_name}_w_1_17"
       elif (
-        (last_candle["RSI_3"] > 88.0)
-        and (last_candle["WILLR_14"] > -20.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
+        (last_rsi_3 > 88.0)
+        and (last_willr_14 > -20.0)
+        and (last_aroonu_14_4h > 50.0)
         and (last_candle["top_wick_pct_1d"] > 20.0)
       ):
         return True, f"exit_{mode_name}_d_1_18"
     elif 0.03 > current_profit >= 0.02:
-      if last_candle["WILLR_480"] > -0.3:
+      if last_willr_480 > -0.3:
         return True, f"exit_{mode_name}_w_2_1"
-      elif (last_candle["WILLR_14"] >= -1.0) and (last_candle["RSI_14"] > 77.0):
+      elif (last_willr_14 >= -1.0) and (last_rsi_14 > 77.0):
         return True, f"exit_{mode_name}_w_2_2"
-      elif (last_candle["WILLR_14"] >= -2.0) and (last_candle["RSI_14"] < 48.0):
+      elif (last_willr_14 >= -2.0) and (last_rsi_14 < 48.0):
         return True, f"exit_{mode_name}_w_2_3"
       elif (
-        (last_candle["WILLR_14"] >= -5.0)
-        and (last_candle["RSI_14"] > 75.0)
+        (last_willr_14 >= -5.0)
+        and (last_rsi_14 > 75.0)
         and (last_candle["ROC_9_1h"] < -0.0)
-        and (last_candle["ROC_9_4h"] > 20.0)
+        and (last_roc_9_4h > 20.0)
       ):
         return True, f"exit_{mode_name}_w_2_4"
       elif (
-        (last_candle["RSI_3"] > 98.0)
-        and (last_candle["WILLR_14"] > -8.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 50.0))
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 70.0)
+        (last_rsi_3 > 98.0)
+        and (last_willr_14 > -8.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 50.0))
+        and (last_stochrsi_k_4h > 70.0)
       ):
         return True, f"exit_{mode_name}_w_2_5"
       elif (
-        (last_candle["RSI_3"] > 94.0)
-        and (last_candle["WILLR_14"] > -4.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] < -5.0))
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 80.0)
+        (last_rsi_3 > 94.0)
+        and (last_willr_14 > -4.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d < -5.0))
+        and (last_stochrsi_k_1h > 80.0)
       ):
         return True, f"exit_{mode_name}_w_2_6"
       elif (
-        (last_candle["RSI_3"] > 86.0)
-        and (last_candle["WILLR_14"] > -6.0)
+        (last_rsi_3 > 86.0)
+        and (last_willr_14 > -6.0)
         and (last_candle["RSI_14_4h"] > 60.0)
         and (last_candle["CMF_20_1h"] < -0.0)
         and (last_candle["CMF_20_4h"] < -0.0)
       ):
         return True, f"exit_{mode_name}_w_2_7"
-      elif (
-        (last_candle["RSI_3"] > 86.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (last_candle["RSI_3_1h"] < 25.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 20.0)
-      ):
+      elif (last_rsi_3 > 86.0) and (last_willr_14 > -2.0) and (last_rsi_3_1h < 25.0) and (last_stochrsi_k_1h > 20.0):
         return True, f"exit_{mode_name}_w_2_8"
       elif (
-        (last_candle["RSI_3"] > 84.0)
-        and (last_candle["WILLR_14"] > -4.0)
+        (last_rsi_3 > 84.0)
+        and (last_willr_14 > -4.0)
         and (last_candle["ROC_9_1h"] < -5.0)
-        and (last_candle["ROC_9_4h"] > 10.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 40.0)
+        and (last_roc_9_4h > 10.0)
+        and (last_stochrsi_k_4h > 40.0)
       ):
         return True, f"exit_{mode_name}_w_2_9"
       elif (
-        (last_candle["RSI_3"] > 92.0)
-        and (last_candle["WILLR_14"] > -20.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
+        (last_rsi_3 > 92.0)
+        and (last_willr_14 > -20.0)
+        and (last_aroonu_14_4h > 50.0)
         and (last_candle["CCI_20_change_pct_4h"] < -0.0)
-        and (
-          isinstance(last_candle["STOCHRSIk_14_14_3_3_1d"], np.float64)
-          and (last_candle["STOCHRSIk_14_14_3_3_1d"] > 90.0)
-        )
+        and (isinstance(last_stochrsi_k_1d, np.float64) and (last_stochrsi_k_1d > 90.0))
       ):
         return True, f"exit_{mode_name}_w_2_10"
-      elif (
-        (last_candle["RSI_3"] > 86.0)
-        and (last_candle["WILLR_14"] > -4.0)
-        and (last_candle["RSI_3_1h"] < 30.0)
-        and (last_candle["RSI_3_4h"] < 25.0)
-      ):
+      elif (last_rsi_3 > 86.0) and (last_willr_14 > -4.0) and (last_rsi_3_1h < 30.0) and (last_rsi_3_4h < 25.0):
         return True, f"exit_{mode_name}_w_2_11"
-      elif (
-        (last_candle["RSI_3"] > 96.0)
-        and (last_candle["WILLR_14"] > -4.0)
-        and (last_candle["RSI_3_4h"] < 40.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
-      ):
+      elif (last_rsi_3 > 96.0) and (last_willr_14 > -4.0) and (last_rsi_3_4h < 40.0) and (last_aroonu_14_4h > 50.0):
         return True, f"exit_{mode_name}_w_2_12"
       elif (
-        (last_candle["RSI_3"] > 96.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (last_candle["RSI_3_1h"] < 50.0)
-        and (last_candle["RSI_3_4h"] < 50.0)
-        and (
-          isinstance(last_candle["STOCHRSIk_14_14_3_3_1d"], np.float64)
-          and (last_candle["STOCHRSIk_14_14_3_3_1d"] > 70.0)
-        )
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 50.0))
+        (last_rsi_3 > 96.0)
+        and (last_willr_14 > -2.0)
+        and (last_rsi_3_1h < 50.0)
+        and (last_rsi_3_4h < 50.0)
+        and (isinstance(last_stochrsi_k_1d, np.float64) and (last_stochrsi_k_1d > 70.0))
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 50.0))
       ):
         return True, f"exit_{mode_name}_w_2_13"
       elif (
-        (last_candle["RSI_3"] > 88.0)
-        and (last_candle["WILLR_14"] > -6.0)
-        and (last_candle["RSI_3_1h"] < 60.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 80.0))
+        (last_rsi_3 > 88.0)
+        and (last_willr_14 > -6.0)
+        and (last_rsi_3_1h < 60.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 80.0))
       ):
         return True, f"exit_{mode_name}_w_2_14"
       elif (
-        (last_candle["RSI_3"] > 48.0)
-        and (last_candle["WILLR_480"] > -25.0)
-        and (last_candle["RSI_14"] < 52.0)
+        (last_rsi_3 > 48.0)
+        and (last_willr_480 > -25.0)
+        and (last_rsi_14 < 52.0)
         and (last_candle["RSI_14_4h"] > 70.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 80.0)
-        and (isinstance(last_candle["ROC_9_4h"], np.float64) and (last_candle["ROC_9_4h"] > 100.0))
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 100.0))
+        and (last_stochrsi_k_4h > 80.0)
+        and (isinstance(last_roc_9_4h, np.float64) and (last_roc_9_4h > 100.0))
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 100.0))
       ):
         return True, f"exit_{mode_name}_w_2_15"
       elif (
-        (last_candle["RSI_3"] > 84.0)
-        and (last_candle["WILLR_14"] > -4.0)
-        and (last_candle["RSI_3_1h"] < 40.0)
-        and (last_candle["AROONU_14_4h"] > 75.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 30.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 30.0)
+        (last_rsi_3 > 84.0)
+        and (last_willr_14 > -4.0)
+        and (last_rsi_3_1h < 40.0)
+        and (last_aroonu_14_4h > 75.0)
+        and (last_stochrsi_k_1h > 30.0)
+        and (last_stochrsi_k_4h > 30.0)
       ):
         return True, f"exit_{mode_name}_w_2_16"
       elif (
-        (last_candle["RSI_3"] > 94.0)
-        and (last_candle["WILLR_14"] > -8.0)
-        and (last_candle["AROONU_14_4h"] > 75.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 70.0)
+        (last_rsi_3 > 94.0) and (last_willr_14 > -8.0) and (last_aroonu_14_4h > 75.0) and (last_stochrsi_k_4h > 70.0)
       ):
         return True, f"exit_{mode_name}_w_2_17"
       elif (
-        (last_candle["RSI_3"] > 86.0)
-        and (last_candle["WILLR_14"] > -20.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
+        (last_rsi_3 > 86.0)
+        and (last_willr_14 > -20.0)
+        and (last_aroonu_14_4h > 50.0)
         and (last_candle["top_wick_pct_1d"] > 20.0)
       ):
         return True, f"exit_{mode_name}_w_2_18"
     elif 0.04 > current_profit >= 0.03:
-      if last_candle["WILLR_480"] > -0.4:
+      if last_willr_480 > -0.4:
         return True, f"exit_{mode_name}_w_3_1"
-      elif (last_candle["WILLR_14"] >= -1.0) and (last_candle["RSI_14"] > 76.0):
+      elif (last_willr_14 >= -1.0) and (last_rsi_14 > 76.0):
         return True, f"exit_{mode_name}_w_3_2"
-      elif (last_candle["WILLR_14"] >= -2.0) and (last_candle["RSI_14"] < 50.0):
+      elif (last_willr_14 >= -2.0) and (last_rsi_14 < 50.0):
         return True, f"exit_{mode_name}_w_3_3"
       elif (
-        (last_candle["WILLR_14"] >= -5.0)
-        and (last_candle["RSI_14"] > 75.0)
+        (last_willr_14 >= -5.0)
+        and (last_rsi_14 > 75.0)
         and (last_candle["ROC_9_1h"] < -0.0)
-        and (last_candle["ROC_9_4h"] > 20.0)
+        and (last_roc_9_4h > 20.0)
       ):
         return True, f"exit_{mode_name}_w_3_4"
       elif (
-        (last_candle["RSI_3"] > 96.0)
-        and (last_candle["WILLR_14"] > -10.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 50.0))
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 70.0)
+        (last_rsi_3 > 96.0)
+        and (last_willr_14 > -10.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 50.0))
+        and (last_stochrsi_k_4h > 70.0)
       ):
         return True, f"exit_{mode_name}_w_3_5"
       elif (
-        (last_candle["RSI_3"] > 92.0)
-        and (last_candle["WILLR_14"] > -6.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] < -5.0))
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 80.0)
+        (last_rsi_3 > 92.0)
+        and (last_willr_14 > -6.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d < -5.0))
+        and (last_stochrsi_k_1h > 80.0)
       ):
         return True, f"exit_{mode_name}_w_3_6"
       elif (
-        (last_candle["RSI_3"] > 84.0)
-        and (last_candle["WILLR_14"] > -8.0)
+        (last_rsi_3 > 84.0)
+        and (last_willr_14 > -8.0)
         and (last_candle["RSI_14_4h"] > 60.0)
         and (last_candle["CMF_20_1h"] < -0.0)
         and (last_candle["CMF_20_4h"] < -0.0)
       ):
         return True, f"exit_{mode_name}_w_3_7"
-      elif (
-        (last_candle["RSI_3"] > 84.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (last_candle["RSI_3_1h"] < 25.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 20.0)
-      ):
+      elif (last_rsi_3 > 84.0) and (last_willr_14 > -2.0) and (last_rsi_3_1h < 25.0) and (last_stochrsi_k_1h > 20.0):
         return True, f"exit_{mode_name}_w_3_8"
       elif (
-        (last_candle["RSI_3"] > 82.0)
-        and (last_candle["WILLR_14"] > -6.0)
+        (last_rsi_3 > 82.0)
+        and (last_willr_14 > -6.0)
         and (last_candle["ROC_9_1h"] < -5.0)
-        and (last_candle["ROC_9_4h"] > 10.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 40.0)
+        and (last_roc_9_4h > 10.0)
+        and (last_stochrsi_k_4h > 40.0)
       ):
         return True, f"exit_{mode_name}_w_3_9"
       elif (
-        (last_candle["RSI_3"] > 90.0)
-        and (last_candle["WILLR_14"] > -22.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
+        (last_rsi_3 > 90.0)
+        and (last_willr_14 > -22.0)
+        and (last_aroonu_14_4h > 50.0)
         and (last_candle["CCI_20_change_pct_4h"] < -0.0)
-        and (
-          isinstance(last_candle["STOCHRSIk_14_14_3_3_1d"], np.float64)
-          and (last_candle["STOCHRSIk_14_14_3_3_1d"] > 90.0)
-        )
+        and (isinstance(last_stochrsi_k_1d, np.float64) and (last_stochrsi_k_1d > 90.0))
       ):
         return True, f"exit_{mode_name}_w_3_10"
-      elif (
-        (last_candle["RSI_3"] > 84.0)
-        and (last_candle["WILLR_14"] > -6.0)
-        and (last_candle["RSI_3_1h"] < 30.0)
-        and (last_candle["RSI_3_4h"] < 25.0)
-      ):
+      elif (last_rsi_3 > 84.0) and (last_willr_14 > -6.0) and (last_rsi_3_1h < 30.0) and (last_rsi_3_4h < 25.0):
         return True, f"exit_{mode_name}_w_3_11"
-      elif (
-        (last_candle["RSI_3"] > 94.0)
-        and (last_candle["WILLR_14"] > -6.0)
-        and (last_candle["RSI_3_4h"] < 40.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
-      ):
+      elif (last_rsi_3 > 94.0) and (last_willr_14 > -6.0) and (last_rsi_3_4h < 40.0) and (last_aroonu_14_4h > 50.0):
         return True, f"exit_{mode_name}_w_3_12"
       elif (
-        (last_candle["RSI_3"] > 94.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (last_candle["RSI_3_1h"] < 50.0)
-        and (last_candle["RSI_3_4h"] < 50.0)
-        and (
-          isinstance(last_candle["STOCHRSIk_14_14_3_3_1d"], np.float64)
-          and (last_candle["STOCHRSIk_14_14_3_3_1d"] > 70.0)
-        )
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 50.0))
+        (last_rsi_3 > 94.0)
+        and (last_willr_14 > -2.0)
+        and (last_rsi_3_1h < 50.0)
+        and (last_rsi_3_4h < 50.0)
+        and (isinstance(last_stochrsi_k_1d, np.float64) and (last_stochrsi_k_1d > 70.0))
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 50.0))
       ):
         return True, f"exit_{mode_name}_w_3_13"
       elif (
-        (last_candle["RSI_3"] > 86.0)
-        and (last_candle["WILLR_14"] > -8.0)
-        and (last_candle["RSI_3_1h"] < 60.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 80.0))
+        (last_rsi_3 > 86.0)
+        and (last_willr_14 > -8.0)
+        and (last_rsi_3_1h < 60.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 80.0))
       ):
         return True, f"exit_{mode_name}_w_3_14"
       elif (
-        (last_candle["RSI_3"] > 46.0)
-        and (last_candle["WILLR_480"] > -25.0)
-        and (last_candle["RSI_14"] < 54.0)
+        (last_rsi_3 > 46.0)
+        and (last_willr_480 > -25.0)
+        and (last_rsi_14 < 54.0)
         and (last_candle["RSI_14_4h"] > 70.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 80.0)
-        and (isinstance(last_candle["ROC_9_4h"], np.float64) and (last_candle["ROC_9_4h"] > 100.0))
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 100.0))
+        and (last_stochrsi_k_4h > 80.0)
+        and (isinstance(last_roc_9_4h, np.float64) and (last_roc_9_4h > 100.0))
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 100.0))
       ):
         return True, f"exit_{mode_name}_w_3_15"
       elif (
-        (last_candle["RSI_3"] > 82.0)
-        and (last_candle["WILLR_14"] > -6.0)
-        and (last_candle["RSI_3_1h"] < 40.0)
-        and (last_candle["AROONU_14_4h"] > 75.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 30.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 30.0)
+        (last_rsi_3 > 82.0)
+        and (last_willr_14 > -6.0)
+        and (last_rsi_3_1h < 40.0)
+        and (last_aroonu_14_4h > 75.0)
+        and (last_stochrsi_k_1h > 30.0)
+        and (last_stochrsi_k_4h > 30.0)
       ):
         return True, f"exit_{mode_name}_w_3_16"
       elif (
-        (last_candle["RSI_3"] > 92.0)
-        and (last_candle["WILLR_14"] > -10.0)
-        and (last_candle["AROONU_14_4h"] > 75.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 70.0)
+        (last_rsi_3 > 92.0) and (last_willr_14 > -10.0) and (last_aroonu_14_4h > 75.0) and (last_stochrsi_k_4h > 70.0)
       ):
         return True, f"exit_{mode_name}_w_3_17"
       elif (
-        (last_candle["RSI_3"] > 84.0)
-        and (last_candle["WILLR_14"] > -20.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
+        (last_rsi_3 > 84.0)
+        and (last_willr_14 > -20.0)
+        and (last_aroonu_14_4h > 50.0)
         and (last_candle["top_wick_pct_1d"] > 20.0)
       ):
         return True, f"exit_{mode_name}_w_3_18"
     elif 0.05 > current_profit >= 0.04:
-      if last_candle["WILLR_480"] > -0.5:
+      if last_willr_480 > -0.5:
         return True, f"exit_{mode_name}_w_4_1"
-      elif (last_candle["WILLR_14"] >= -1.0) and (last_candle["RSI_14"] > 75.0):
+      elif (last_willr_14 >= -1.0) and (last_rsi_14 > 75.0):
         return True, f"exit_{mode_name}_w_4_2"
-      elif (last_candle["WILLR_14"] >= -2.0) and (last_candle["RSI_14"] < 52.0):
+      elif (last_willr_14 >= -2.0) and (last_rsi_14 < 52.0):
         return True, f"exit_{mode_name}_w_4_3"
       elif (
-        (last_candle["WILLR_14"] >= -5.0)
-        and (last_candle["RSI_14"] > 75.0)
+        (last_willr_14 >= -5.0)
+        and (last_rsi_14 > 75.0)
         and (last_candle["ROC_9_1h"] < -0.0)
-        and (last_candle["ROC_9_4h"] > 20.0)
+        and (last_roc_9_4h > 20.0)
       ):
         return True, f"exit_{mode_name}_w_4_4"
       elif (
-        (last_candle["RSI_3"] > 94.0)
-        and (last_candle["WILLR_14"] > -12.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 50.0))
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 70.0)
+        (last_rsi_3 > 94.0)
+        and (last_willr_14 > -12.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 50.0))
+        and (last_stochrsi_k_4h > 70.0)
       ):
         return True, f"exit_{mode_name}_w_4_5"
       elif (
-        (last_candle["RSI_3"] > 90.0)
-        and (last_candle["WILLR_14"] > -8.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] < -5.0))
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 80.0)
+        (last_rsi_3 > 90.0)
+        and (last_willr_14 > -8.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d < -5.0))
+        and (last_stochrsi_k_1h > 80.0)
       ):
         return True, f"exit_{mode_name}_w_4_6"
       elif (
-        (last_candle["RSI_3"] > 82.0)
-        and (last_candle["WILLR_14"] > -10.0)
+        (last_rsi_3 > 82.0)
+        and (last_willr_14 > -10.0)
         and (last_candle["RSI_14_4h"] > 60.0)
         and (last_candle["CMF_20_1h"] < -0.0)
         and (last_candle["CMF_20_4h"] < -0.0)
       ):
         return True, f"exit_{mode_name}_w_4_7"
-      elif (
-        (last_candle["RSI_3"] > 82.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (last_candle["RSI_3_1h"] < 25.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 20.0)
-      ):
+      elif (last_rsi_3 > 82.0) and (last_willr_14 > -2.0) and (last_rsi_3_1h < 25.0) and (last_stochrsi_k_1h > 20.0):
         return True, f"exit_{mode_name}_w_4_8"
       elif (
-        (last_candle["RSI_3"] > 80.0)
-        and (last_candle["WILLR_14"] > -8.0)
+        (last_rsi_3 > 80.0)
+        and (last_willr_14 > -8.0)
         and (last_candle["ROC_9_1h"] < -5.0)
-        and (last_candle["ROC_9_4h"] > 10.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 40.0)
+        and (last_roc_9_4h > 10.0)
+        and (last_stochrsi_k_4h > 40.0)
       ):
         return True, f"exit_{mode_name}_w_4_9"
       elif (
-        (last_candle["RSI_3"] > 88.0)
-        and (last_candle["WILLR_14"] > -24.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
+        (last_rsi_3 > 88.0)
+        and (last_willr_14 > -24.0)
+        and (last_aroonu_14_4h > 50.0)
         and (last_candle["CCI_20_change_pct_4h"] < -0.0)
-        and (
-          isinstance(last_candle["STOCHRSIk_14_14_3_3_1d"], np.float64)
-          and (last_candle["STOCHRSIk_14_14_3_3_1d"] > 90.0)
-        )
+        and (isinstance(last_stochrsi_k_1d, np.float64) and (last_stochrsi_k_1d > 90.0))
       ):
         return True, f"exit_{mode_name}_w_4_10"
-      elif (
-        (last_candle["RSI_3"] > 82.0)
-        and (last_candle["WILLR_14"] > -8.0)
-        and (last_candle["RSI_3_1h"] < 30.0)
-        and (last_candle["RSI_3_4h"] < 25.0)
-      ):
+      elif (last_rsi_3 > 82.0) and (last_willr_14 > -8.0) and (last_rsi_3_1h < 30.0) and (last_rsi_3_4h < 25.0):
         return True, f"exit_{mode_name}_w_4_11"
-      elif (
-        (last_candle["RSI_3"] > 92.0)
-        and (last_candle["WILLR_14"] > -8.0)
-        and (last_candle["RSI_3_4h"] < 40.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
-      ):
+      elif (last_rsi_3 > 92.0) and (last_willr_14 > -8.0) and (last_rsi_3_4h < 40.0) and (last_aroonu_14_4h > 50.0):
         return True, f"exit_{mode_name}_w_4_12"
       elif (
-        (last_candle["RSI_3"] > 92.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (last_candle["RSI_3_1h"] < 50.0)
-        and (last_candle["RSI_3_4h"] < 50.0)
-        and (
-          isinstance(last_candle["STOCHRSIk_14_14_3_3_1d"], np.float64)
-          and (last_candle["STOCHRSIk_14_14_3_3_1d"] > 70.0)
-        )
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 50.0))
+        (last_rsi_3 > 92.0)
+        and (last_willr_14 > -2.0)
+        and (last_rsi_3_1h < 50.0)
+        and (last_rsi_3_4h < 50.0)
+        and (isinstance(last_stochrsi_k_1d, np.float64) and (last_stochrsi_k_1d > 70.0))
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 50.0))
       ):
         return True, f"exit_{mode_name}_w_4_13"
       elif (
-        (last_candle["RSI_3"] > 84.0)
-        and (last_candle["WILLR_14"] > -10.0)
-        and (last_candle["RSI_3_1h"] < 60.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 80.0))
+        (last_rsi_3 > 84.0)
+        and (last_willr_14 > -10.0)
+        and (last_rsi_3_1h < 60.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 80.0))
       ):
         return True, f"exit_{mode_name}_w_4_14"
       elif (
-        (last_candle["RSI_3"] > 44.0)
-        and (last_candle["WILLR_480"] > -25.0)
-        and (last_candle["RSI_14"] < 56.0)
+        (last_rsi_3 > 44.0)
+        and (last_willr_480 > -25.0)
+        and (last_rsi_14 < 56.0)
         and (last_candle["RSI_14_4h"] > 70.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 80.0)
-        and (isinstance(last_candle["ROC_9_4h"], np.float64) and (last_candle["ROC_9_4h"] > 100.0))
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 100.0))
+        and (last_stochrsi_k_4h > 80.0)
+        and (isinstance(last_roc_9_4h, np.float64) and (last_roc_9_4h > 100.0))
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 100.0))
       ):
         return True, f"exit_{mode_name}_w_4_15"
       elif (
-        (last_candle["RSI_3"] > 80.0)
-        and (last_candle["WILLR_14"] > -8.0)
-        and (last_candle["RSI_3_1h"] < 40.0)
-        and (last_candle["AROONU_14_4h"] > 75.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 30.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 30.0)
+        (last_rsi_3 > 80.0)
+        and (last_willr_14 > -8.0)
+        and (last_rsi_3_1h < 40.0)
+        and (last_aroonu_14_4h > 75.0)
+        and (last_stochrsi_k_1h > 30.0)
+        and (last_stochrsi_k_4h > 30.0)
       ):
         return True, f"exit_{mode_name}_w_4_16"
       elif (
-        (last_candle["RSI_3"] > 90.0)
-        and (last_candle["WILLR_14"] > -12.0)
-        and (last_candle["AROONU_14_4h"] > 75.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 70.0)
+        (last_rsi_3 > 90.0) and (last_willr_14 > -12.0) and (last_aroonu_14_4h > 75.0) and (last_stochrsi_k_4h > 70.0)
       ):
         return True, f"exit_{mode_name}_w_4_17"
       elif (
-        (last_candle["RSI_3"] > 82.0)
-        and (last_candle["WILLR_14"] > -20.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
+        (last_rsi_3 > 82.0)
+        and (last_willr_14 > -20.0)
+        and (last_aroonu_14_4h > 50.0)
         and (last_candle["top_wick_pct_1d"] > 20.0)
       ):
         return True, f"exit_{mode_name}_w_4_18"
     elif 0.06 > current_profit >= 0.05:
-      if last_candle["WILLR_480"] > -0.6:
+      if last_willr_480 > -0.6:
         return True, f"exit_{mode_name}_w_5_1"
-      elif (last_candle["WILLR_14"] >= -1.0) and (last_candle["RSI_14"] > 74.0):
+      elif (last_willr_14 >= -1.0) and (last_rsi_14 > 74.0):
         return True, f"exit_{mode_name}_w_5_2"
-      elif (last_candle["WILLR_14"] >= -2.0) and (last_candle["RSI_14"] < 54.0):
+      elif (last_willr_14 >= -2.0) and (last_rsi_14 < 54.0):
         return True, f"exit_{mode_name}_w_5_3"
       elif (
-        (last_candle["WILLR_14"] >= -10.0)
-        and (last_candle["RSI_14"] > 70.0)
+        (last_willr_14 >= -10.0)
+        and (last_rsi_14 > 70.0)
         and (last_candle["ROC_9_1h"] < -0.0)
-        and (last_candle["ROC_9_4h"] > 20.0)
+        and (last_roc_9_4h > 20.0)
       ):
         return True, f"exit_{mode_name}_w_5_4"
       elif (
-        (last_candle["RSI_3"] > 92.0)
-        and (last_candle["WILLR_14"] > -14.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 50.0))
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 70.0)
+        (last_rsi_3 > 92.0)
+        and (last_willr_14 > -14.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 50.0))
+        and (last_stochrsi_k_4h > 70.0)
       ):
         return True, f"exit_{mode_name}_w_5_5"
       elif (
-        (last_candle["RSI_3"] > 88.0)
-        and (last_candle["WILLR_14"] > -10.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] < -5.0))
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 80.0)
+        (last_rsi_3 > 88.0)
+        and (last_willr_14 > -10.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d < -5.0))
+        and (last_stochrsi_k_1h > 80.0)
       ):
         return True, f"exit_{mode_name}_w_5_6"
       elif (
-        (last_candle["RSI_3"] > 80.0)
-        and (last_candle["WILLR_14"] > -12.0)
+        (last_rsi_3 > 80.0)
+        and (last_willr_14 > -12.0)
         and (last_candle["RSI_14_4h"] > 60.0)
         and (last_candle["CMF_20_1h"] < -0.0)
         and (last_candle["CMF_20_4h"] < -0.0)
       ):
         return True, f"exit_{mode_name}_w_5_7"
-      elif (
-        (last_candle["RSI_3"] > 80.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (last_candle["RSI_3_1h"] < 25.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 20.0)
-      ):
+      elif (last_rsi_3 > 80.0) and (last_willr_14 > -2.0) and (last_rsi_3_1h < 25.0) and (last_stochrsi_k_1h > 20.0):
         return True, f"exit_{mode_name}_w_5_8"
       elif (
-        (last_candle["RSI_3"] > 78.0)
-        and (last_candle["WILLR_14"] > -10.0)
+        (last_rsi_3 > 78.0)
+        and (last_willr_14 > -10.0)
         and (last_candle["ROC_9_1h"] < -5.0)
-        and (last_candle["ROC_9_4h"] > 10.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 40.0)
+        and (last_roc_9_4h > 10.0)
+        and (last_stochrsi_k_4h > 40.0)
       ):
         return True, f"exit_{mode_name}_w_5_9"
       elif (
-        (last_candle["RSI_3"] > 86.0)
-        and (last_candle["WILLR_14"] > -26.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
+        (last_rsi_3 > 86.0)
+        and (last_willr_14 > -26.0)
+        and (last_aroonu_14_4h > 50.0)
         and (last_candle["CCI_20_change_pct_4h"] < -0.0)
-        and (
-          isinstance(last_candle["STOCHRSIk_14_14_3_3_1d"], np.float64)
-          and (last_candle["STOCHRSIk_14_14_3_3_1d"] > 90.0)
-        )
+        and (isinstance(last_stochrsi_k_1d, np.float64) and (last_stochrsi_k_1d > 90.0))
       ):
         return True, f"exit_{mode_name}_w_5_10"
-      elif (
-        (last_candle["RSI_3"] > 80.0)
-        and (last_candle["WILLR_14"] > -10.0)
-        and (last_candle["RSI_3_1h"] < 30.0)
-        and (last_candle["RSI_3_4h"] < 25.0)
-      ):
+      elif (last_rsi_3 > 80.0) and (last_willr_14 > -10.0) and (last_rsi_3_1h < 30.0) and (last_rsi_3_4h < 25.0):
         return True, f"exit_{mode_name}_w_5_11"
-      elif (
-        (last_candle["RSI_3"] > 90.0)
-        and (last_candle["WILLR_14"] > -10.0)
-        and (last_candle["RSI_3_4h"] < 40.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
-      ):
+      elif (last_rsi_3 > 90.0) and (last_willr_14 > -10.0) and (last_rsi_3_4h < 40.0) and (last_aroonu_14_4h > 50.0):
         return True, f"exit_{mode_name}_w_5_12"
       elif (
-        (last_candle["RSI_3"] > 90.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (last_candle["RSI_3_1h"] < 50.0)
-        and (last_candle["RSI_3_4h"] < 50.0)
-        and (
-          isinstance(last_candle["STOCHRSIk_14_14_3_3_1d"], np.float64)
-          and (last_candle["STOCHRSIk_14_14_3_3_1d"] > 70.0)
-        )
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 50.0))
+        (last_rsi_3 > 90.0)
+        and (last_willr_14 > -2.0)
+        and (last_rsi_3_1h < 50.0)
+        and (last_rsi_3_4h < 50.0)
+        and (isinstance(last_stochrsi_k_1d, np.float64) and (last_stochrsi_k_1d > 70.0))
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 50.0))
       ):
         return True, f"exit_{mode_name}_w_5_13"
       elif (
-        (last_candle["RSI_3"] > 82.0)
-        and (last_candle["WILLR_14"] > -12.0)
-        and (last_candle["RSI_3_1h"] < 60.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 80.0))
+        (last_rsi_3 > 82.0)
+        and (last_willr_14 > -12.0)
+        and (last_rsi_3_1h < 60.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 80.0))
       ):
         return True, f"exit_{mode_name}_w_5_14"
       elif (
-        (last_candle["RSI_3"] > 42.0)
-        and (last_candle["WILLR_480"] > -25.0)
-        and (last_candle["RSI_14"] < 58.0)
+        (last_rsi_3 > 42.0)
+        and (last_willr_480 > -25.0)
+        and (last_rsi_14 < 58.0)
         and (last_candle["RSI_14_4h"] > 70.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 80.0)
-        and (isinstance(last_candle["ROC_9_4h"], np.float64) and (last_candle["ROC_9_4h"] > 100.0))
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 100.0))
+        and (last_stochrsi_k_4h > 80.0)
+        and (isinstance(last_roc_9_4h, np.float64) and (last_roc_9_4h > 100.0))
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 100.0))
       ):
         return True, f"exit_{mode_name}_w_5_15"
       elif (
-        (last_candle["RSI_3"] > 78.0)
-        and (last_candle["WILLR_14"] > -10.0)
-        and (last_candle["RSI_3_1h"] < 40.0)
-        and (last_candle["AROONU_14_4h"] > 75.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 30.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 30.0)
+        (last_rsi_3 > 78.0)
+        and (last_willr_14 > -10.0)
+        and (last_rsi_3_1h < 40.0)
+        and (last_aroonu_14_4h > 75.0)
+        and (last_stochrsi_k_1h > 30.0)
+        and (last_stochrsi_k_4h > 30.0)
       ):
         return True, f"exit_{mode_name}_w_5_16"
       elif (
-        (last_candle["RSI_3"] > 88.0)
-        and (last_candle["WILLR_14"] > -14.0)
-        and (last_candle["AROONU_14_4h"] > 75.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 70.0)
+        (last_rsi_3 > 88.0) and (last_willr_14 > -14.0) and (last_aroonu_14_4h > 75.0) and (last_stochrsi_k_4h > 70.0)
       ):
         return True, f"exit_{mode_name}_w_5_17"
       elif (
-        (last_candle["RSI_3"] > 80.0)
-        and (last_candle["WILLR_14"] > -20.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
+        (last_rsi_3 > 80.0)
+        and (last_willr_14 > -20.0)
+        and (last_aroonu_14_4h > 50.0)
         and (last_candle["top_wick_pct_1d"] > 20.0)
       ):
         return True, f"exit_{mode_name}_w_5_18"
     elif 0.07 > current_profit >= 0.06:
-      if last_candle["WILLR_480"] > -0.7:
+      if last_willr_480 > -0.7:
         return True, f"exit_{mode_name}_w_6_1"
-      elif (last_candle["WILLR_14"] >= -1.0) and (last_candle["RSI_14"] > 75.0):
+      elif (last_willr_14 >= -1.0) and (last_rsi_14 > 75.0):
         return True, f"exit_{mode_name}_w_6_2"
-      elif (last_candle["WILLR_14"] >= -2.0) and (last_candle["RSI_14"] < 52.0):
+      elif (last_willr_14 >= -2.0) and (last_rsi_14 < 52.0):
         return True, f"exit_{mode_name}_w_6_3"
       elif (
-        (last_candle["WILLR_14"] >= -15.0)
-        and (last_candle["RSI_14"] > 70.0)
+        (last_willr_14 >= -15.0)
+        and (last_rsi_14 > 70.0)
         and (last_candle["ROC_9_1h"] < -0.0)
-        and (last_candle["ROC_9_4h"] > 20.0)
+        and (last_roc_9_4h > 20.0)
       ):
         return True, f"exit_{mode_name}_w_6_4"
       elif (
-        (last_candle["RSI_3"] > 94.0)
-        and (last_candle["WILLR_14"] > -12.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 50.0))
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 70.0)
+        (last_rsi_3 > 94.0)
+        and (last_willr_14 > -12.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 50.0))
+        and (last_stochrsi_k_4h > 70.0)
       ):
         return True, f"exit_{mode_name}_w_6_5"
       elif (
-        (last_candle["RSI_3"] > 90.0)
-        and (last_candle["WILLR_14"] > -8.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] < -5.0))
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 80.0)
+        (last_rsi_3 > 90.0)
+        and (last_willr_14 > -8.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d < -5.0))
+        and (last_stochrsi_k_1h > 80.0)
       ):
         return True, f"exit_{mode_name}_w_6_6"
       elif (
-        (last_candle["RSI_3"] > 82.0)
-        and (last_candle["WILLR_14"] > -10.0)
+        (last_rsi_3 > 82.0)
+        and (last_willr_14 > -10.0)
         and (last_candle["RSI_14_4h"] > 60.0)
         and (last_candle["CMF_20_1h"] < -0.0)
         and (last_candle["CMF_20_4h"] < -0.0)
       ):
         return True, f"exit_{mode_name}_w_6_7"
-      elif (
-        (last_candle["RSI_3"] > 82.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (last_candle["RSI_3_1h"] < 25.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 20.0)
-      ):
+      elif (last_rsi_3 > 82.0) and (last_willr_14 > -2.0) and (last_rsi_3_1h < 25.0) and (last_stochrsi_k_1h > 20.0):
         return True, f"exit_{mode_name}_w_6_8"
       elif (
-        (last_candle["RSI_3"] > 80.0)
-        and (last_candle["WILLR_14"] > -8.0)
+        (last_rsi_3 > 80.0)
+        and (last_willr_14 > -8.0)
         and (last_candle["ROC_9_1h"] < -5.0)
-        and (last_candle["ROC_9_4h"] > 10.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 40.0)
+        and (last_roc_9_4h > 10.0)
+        and (last_stochrsi_k_4h > 40.0)
       ):
         return True, f"exit_{mode_name}_w_6_9"
       elif (
-        (last_candle["RSI_3"] > 88.0)
-        and (last_candle["WILLR_14"] > -24.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
+        (last_rsi_3 > 88.0)
+        and (last_willr_14 > -24.0)
+        and (last_aroonu_14_4h > 50.0)
         and (last_candle["CCI_20_change_pct_4h"] < -0.0)
-        and (
-          isinstance(last_candle["STOCHRSIk_14_14_3_3_1d"], np.float64)
-          and (last_candle["STOCHRSIk_14_14_3_3_1d"] > 90.0)
-        )
+        and (isinstance(last_stochrsi_k_1d, np.float64) and (last_stochrsi_k_1d > 90.0))
       ):
         return True, f"exit_{mode_name}_w_6_10"
-      elif (
-        (last_candle["RSI_3"] > 82.0)
-        and (last_candle["WILLR_14"] > -8.0)
-        and (last_candle["RSI_3_1h"] < 30.0)
-        and (last_candle["RSI_3_4h"] < 25.0)
-      ):
+      elif (last_rsi_3 > 82.0) and (last_willr_14 > -8.0) and (last_rsi_3_1h < 30.0) and (last_rsi_3_4h < 25.0):
         return True, f"exit_{mode_name}_w_6_11"
-      elif (
-        (last_candle["RSI_3"] > 92.0)
-        and (last_candle["WILLR_14"] > -8.0)
-        and (last_candle["RSI_3_4h"] < 40.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
-      ):
+      elif (last_rsi_3 > 92.0) and (last_willr_14 > -8.0) and (last_rsi_3_4h < 40.0) and (last_aroonu_14_4h > 50.0):
         return True, f"exit_{mode_name}_w_6_12"
       elif (
-        (last_candle["RSI_3"] > 92.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (last_candle["RSI_3_1h"] < 50.0)
-        and (last_candle["RSI_3_4h"] < 50.0)
-        and (
-          isinstance(last_candle["STOCHRSIk_14_14_3_3_1d"], np.float64)
-          and (last_candle["STOCHRSIk_14_14_3_3_1d"] > 70.0)
-        )
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 50.0))
+        (last_rsi_3 > 92.0)
+        and (last_willr_14 > -2.0)
+        and (last_rsi_3_1h < 50.0)
+        and (last_rsi_3_4h < 50.0)
+        and (isinstance(last_stochrsi_k_1d, np.float64) and (last_stochrsi_k_1d > 70.0))
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 50.0))
       ):
         return True, f"exit_{mode_name}_w_6_13"
       elif (
-        (last_candle["RSI_3"] > 84.0)
-        and (last_candle["WILLR_14"] > -10.0)
-        and (last_candle["RSI_3_1h"] < 60.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 80.0))
+        (last_rsi_3 > 84.0)
+        and (last_willr_14 > -10.0)
+        and (last_rsi_3_1h < 60.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 80.0))
       ):
         return True, f"exit_{mode_name}_w_6_14"
       elif (
-        (last_candle["RSI_3"] > 44.0)
-        and (last_candle["WILLR_480"] > -25.0)
-        and (last_candle["RSI_14"] < 56.0)
+        (last_rsi_3 > 44.0)
+        and (last_willr_480 > -25.0)
+        and (last_rsi_14 < 56.0)
         and (last_candle["RSI_14_4h"] > 70.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 80.0)
-        and (isinstance(last_candle["ROC_9_4h"], np.float64) and (last_candle["ROC_9_4h"] > 100.0))
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 100.0))
+        and (last_stochrsi_k_4h > 80.0)
+        and (isinstance(last_roc_9_4h, np.float64) and (last_roc_9_4h > 100.0))
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 100.0))
       ):
         return True, f"exit_{mode_name}_w_6_15"
       elif (
-        (last_candle["RSI_3"] > 80.0)
-        and (last_candle["WILLR_14"] > -8.0)
-        and (last_candle["RSI_3_1h"] < 40.0)
-        and (last_candle["AROONU_14_4h"] > 75.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 30.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 30.0)
+        (last_rsi_3 > 80.0)
+        and (last_willr_14 > -8.0)
+        and (last_rsi_3_1h < 40.0)
+        and (last_aroonu_14_4h > 75.0)
+        and (last_stochrsi_k_1h > 30.0)
+        and (last_stochrsi_k_4h > 30.0)
       ):
         return True, f"exit_{mode_name}_w_6_16"
       elif (
-        (last_candle["RSI_3"] > 90.0)
-        and (last_candle["WILLR_14"] > -12.0)
-        and (last_candle["AROONU_14_4h"] > 75.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 70.0)
+        (last_rsi_3 > 90.0) and (last_willr_14 > -12.0) and (last_aroonu_14_4h > 75.0) and (last_stochrsi_k_4h > 70.0)
       ):
         return True, f"exit_{mode_name}_w_6_17"
       elif (
-        (last_candle["RSI_3"] > 82.0)
-        and (last_candle["WILLR_14"] > -20.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
+        (last_rsi_3 > 82.0)
+        and (last_willr_14 > -20.0)
+        and (last_aroonu_14_4h > 50.0)
         and (last_candle["top_wick_pct_1d"] > 20.0)
       ):
         return True, f"exit_{mode_name}_w_6_18"
     elif 0.08 > current_profit >= 0.07:
-      if last_candle["WILLR_480"] > -0.8:
+      if last_willr_480 > -0.8:
         return True, f"exit_{mode_name}_w_7_1"
-      elif (last_candle["WILLR_14"] >= -1.0) and (last_candle["RSI_14"] > 76.0):
+      elif (last_willr_14 >= -1.0) and (last_rsi_14 > 76.0):
         return True, f"exit_{mode_name}_w_7_2"
-      elif (last_candle["WILLR_14"] >= -2.0) and (last_candle["RSI_14"] < 50.0):
+      elif (last_willr_14 >= -2.0) and (last_rsi_14 < 50.0):
         return True, f"exit_{mode_name}_w_7_3"
       elif (
-        (last_candle["WILLR_14"] >= -15.0)
-        and (last_candle["RSI_14"] > 70.0)
+        (last_willr_14 >= -15.0)
+        and (last_rsi_14 > 70.0)
         and (last_candle["ROC_9_1h"] < -0.0)
-        and (last_candle["ROC_9_4h"] > 20.0)
+        and (last_roc_9_4h > 20.0)
       ):
         return True, f"exit_{mode_name}_w_7_4"
       elif (
-        (last_candle["RSI_3"] > 96.0)
-        and (last_candle["WILLR_14"] > -10.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 50.0))
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 70.0)
+        (last_rsi_3 > 96.0)
+        and (last_willr_14 > -10.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 50.0))
+        and (last_stochrsi_k_4h > 70.0)
       ):
         return True, f"exit_{mode_name}_w_7_5"
       elif (
-        (last_candle["RSI_3"] > 92.0)
-        and (last_candle["WILLR_14"] > -6.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] < -5.0))
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 80.0)
+        (last_rsi_3 > 92.0)
+        and (last_willr_14 > -6.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d < -5.0))
+        and (last_stochrsi_k_1h > 80.0)
       ):
         return True, f"exit_{mode_name}_w_7_6"
       elif (
-        (last_candle["RSI_3"] > 84.0)
-        and (last_candle["WILLR_14"] > -8.0)
+        (last_rsi_3 > 84.0)
+        and (last_willr_14 > -8.0)
         and (last_candle["RSI_14_4h"] > 60.0)
         and (last_candle["CMF_20_1h"] < -0.0)
         and (last_candle["CMF_20_4h"] < -0.0)
       ):
         return True, f"exit_{mode_name}_w_7_7"
-      elif (
-        (last_candle["RSI_3"] > 84.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (last_candle["RSI_3_1h"] < 25.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 20.0)
-      ):
+      elif (last_rsi_3 > 84.0) and (last_willr_14 > -2.0) and (last_rsi_3_1h < 25.0) and (last_stochrsi_k_1h > 20.0):
         return True, f"exit_{mode_name}_w_7_8"
       elif (
-        (last_candle["RSI_3"] > 82.0)
-        and (last_candle["WILLR_14"] > -6.0)
+        (last_rsi_3 > 82.0)
+        and (last_willr_14 > -6.0)
         and (last_candle["ROC_9_1h"] < -5.0)
-        and (last_candle["ROC_9_4h"] > 10.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 40.0)
+        and (last_roc_9_4h > 10.0)
+        and (last_stochrsi_k_4h > 40.0)
       ):
         return True, f"exit_{mode_name}_w_7_9"
       elif (
-        (last_candle["RSI_3"] > 90.0)
-        and (last_candle["WILLR_14"] > -22.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
+        (last_rsi_3 > 90.0)
+        and (last_willr_14 > -22.0)
+        and (last_aroonu_14_4h > 50.0)
         and (last_candle["CCI_20_change_pct_4h"] < -0.0)
-        and (
-          isinstance(last_candle["STOCHRSIk_14_14_3_3_1d"], np.float64)
-          and (last_candle["STOCHRSIk_14_14_3_3_1d"] > 90.0)
-        )
+        and (isinstance(last_stochrsi_k_1d, np.float64) and (last_stochrsi_k_1d > 90.0))
       ):
         return True, f"exit_{mode_name}_w_7_10"
-      elif (
-        (last_candle["RSI_3"] > 84.0)
-        and (last_candle["WILLR_14"] > -6.0)
-        and (last_candle["RSI_3_1h"] < 30.0)
-        and (last_candle["RSI_3_4h"] < 25.0)
-      ):
+      elif (last_rsi_3 > 84.0) and (last_willr_14 > -6.0) and (last_rsi_3_1h < 30.0) and (last_rsi_3_4h < 25.0):
         return True, f"exit_{mode_name}_w_7_11"
-      elif (
-        (last_candle["RSI_3"] > 94.0)
-        and (last_candle["WILLR_14"] > -6.0)
-        and (last_candle["RSI_3_4h"] < 40.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
-      ):
+      elif (last_rsi_3 > 94.0) and (last_willr_14 > -6.0) and (last_rsi_3_4h < 40.0) and (last_aroonu_14_4h > 50.0):
         return True, f"exit_{mode_name}_w_7_12"
       elif (
-        (last_candle["RSI_3"] > 94.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (last_candle["RSI_3_1h"] < 50.0)
-        and (last_candle["RSI_3_4h"] < 50.0)
-        and (
-          isinstance(last_candle["STOCHRSIk_14_14_3_3_1d"], np.float64)
-          and (last_candle["STOCHRSIk_14_14_3_3_1d"] > 70.0)
-        )
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 50.0))
+        (last_rsi_3 > 94.0)
+        and (last_willr_14 > -2.0)
+        and (last_rsi_3_1h < 50.0)
+        and (last_rsi_3_4h < 50.0)
+        and (isinstance(last_stochrsi_k_1d, np.float64) and (last_stochrsi_k_1d > 70.0))
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 50.0))
       ):
         return True, f"exit_{mode_name}_w_7_13"
       elif (
-        (last_candle["RSI_3"] > 86.0)
-        and (last_candle["WILLR_14"] > -8.0)
-        and (last_candle["RSI_3_1h"] < 60.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 80.0))
+        (last_rsi_3 > 86.0)
+        and (last_willr_14 > -8.0)
+        and (last_rsi_3_1h < 60.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 80.0))
       ):
         return True, f"exit_{mode_name}_w_7_14"
       elif (
-        (last_candle["RSI_3"] > 46.0)
-        and (last_candle["WILLR_480"] > -25.0)
-        and (last_candle["RSI_14"] < 54.0)
+        (last_rsi_3 > 46.0)
+        and (last_willr_480 > -25.0)
+        and (last_rsi_14 < 54.0)
         and (last_candle["RSI_14_4h"] > 70.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 80.0)
-        and (isinstance(last_candle["ROC_9_4h"], np.float64) and (last_candle["ROC_9_4h"] > 100.0))
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 100.0))
+        and (last_stochrsi_k_4h > 80.0)
+        and (isinstance(last_roc_9_4h, np.float64) and (last_roc_9_4h > 100.0))
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 100.0))
       ):
         return True, f"exit_{mode_name}_w_7_15"
       elif (
-        (last_candle["RSI_3"] > 82.0)
-        and (last_candle["WILLR_14"] > -6.0)
-        and (last_candle["RSI_3_1h"] < 40.0)
-        and (last_candle["AROONU_14_4h"] > 75.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 30.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 30.0)
+        (last_rsi_3 > 82.0)
+        and (last_willr_14 > -6.0)
+        and (last_rsi_3_1h < 40.0)
+        and (last_aroonu_14_4h > 75.0)
+        and (last_stochrsi_k_1h > 30.0)
+        and (last_stochrsi_k_4h > 30.0)
       ):
         return True, f"exit_{mode_name}_w_7_16"
       elif (
-        (last_candle["RSI_3"] > 92.0)
-        and (last_candle["WILLR_14"] > -10.0)
-        and (last_candle["AROONU_14_4h"] > 75.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 70.0)
+        (last_rsi_3 > 92.0) and (last_willr_14 > -10.0) and (last_aroonu_14_4h > 75.0) and (last_stochrsi_k_4h > 70.0)
       ):
         return True, f"exit_{mode_name}_w_7_17"
       elif (
-        (last_candle["RSI_3"] > 84.0)
-        and (last_candle["WILLR_14"] > -20.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
+        (last_rsi_3 > 84.0)
+        and (last_willr_14 > -20.0)
+        and (last_aroonu_14_4h > 50.0)
         and (last_candle["top_wick_pct_1d"] > 20.0)
       ):
         return True, f"exit_{mode_name}_w_7_18"
     elif 0.09 > current_profit >= 0.08:
-      if last_candle["WILLR_480"] > -0.9:
+      if last_willr_480 > -0.9:
         return True, f"exit_{mode_name}_w_8_1"
-      elif (last_candle["WILLR_14"] >= -1.0) and (last_candle["RSI_14"] > 77.0):
+      elif (last_willr_14 >= -1.0) and (last_rsi_14 > 77.0):
         return True, f"exit_{mode_name}_w_8_2"
-      elif (last_candle["WILLR_14"] >= -2.0) and (last_candle["RSI_14"] < 48.0):
+      elif (last_willr_14 >= -2.0) and (last_rsi_14 < 48.0):
         return True, f"exit_{mode_name}_w_8_3"
       elif (
-        (last_candle["WILLR_14"] >= -15.0)
-        and (last_candle["RSI_14"] > 70.0)
+        (last_willr_14 >= -15.0)
+        and (last_rsi_14 > 70.0)
         and (last_candle["ROC_9_1h"] < -0.0)
-        and (last_candle["ROC_9_4h"] > 20.0)
+        and (last_roc_9_4h > 20.0)
       ):
         return True, f"exit_{mode_name}_w_8_4"
       elif (
-        (last_candle["RSI_3"] > 98.0)
-        and (last_candle["WILLR_14"] > -8.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 50.0))
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 70.0)
+        (last_rsi_3 > 98.0)
+        and (last_willr_14 > -8.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 50.0))
+        and (last_stochrsi_k_4h > 70.0)
       ):
         return True, f"exit_{mode_name}_w_8_5"
       elif (
-        (last_candle["RSI_3"] > 94.0)
-        and (last_candle["WILLR_14"] > -4.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] < -5.0))
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 80.0)
+        (last_rsi_3 > 94.0)
+        and (last_willr_14 > -4.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d < -5.0))
+        and (last_stochrsi_k_1h > 80.0)
       ):
         return True, f"exit_{mode_name}_w_8_6"
       elif (
-        (last_candle["RSI_3"] > 86.0)
-        and (last_candle["WILLR_14"] > -6.0)
+        (last_rsi_3 > 86.0)
+        and (last_willr_14 > -6.0)
         and (last_candle["RSI_14_4h"] > 60.0)
         and (last_candle["CMF_20_1h"] < -0.0)
         and (last_candle["CMF_20_4h"] < -0.0)
       ):
         return True, f"exit_{mode_name}_w_8_7"
-      elif (
-        (last_candle["RSI_3"] > 86.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (last_candle["RSI_3_1h"] < 25.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 20.0)
-      ):
+      elif (last_rsi_3 > 86.0) and (last_willr_14 > -2.0) and (last_rsi_3_1h < 25.0) and (last_stochrsi_k_1h > 20.0):
         return True, f"exit_{mode_name}_w_8_8"
       elif (
-        (last_candle["RSI_3"] > 84.0)
-        and (last_candle["WILLR_14"] > -4.0)
+        (last_rsi_3 > 84.0)
+        and (last_willr_14 > -4.0)
         and (last_candle["ROC_9_1h"] < -5.0)
-        and (last_candle["ROC_9_4h"] > 10.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 40.0)
+        and (last_roc_9_4h > 10.0)
+        and (last_stochrsi_k_4h > 40.0)
       ):
         return True, f"exit_{mode_name}_w_8_9"
       elif (
-        (last_candle["RSI_3"] > 92.0)
-        and (last_candle["WILLR_14"] > -20.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
+        (last_rsi_3 > 92.0)
+        and (last_willr_14 > -20.0)
+        and (last_aroonu_14_4h > 50.0)
         and (last_candle["CCI_20_change_pct_4h"] < -0.0)
-        and (
-          isinstance(last_candle["STOCHRSIk_14_14_3_3_1d"], np.float64)
-          and (last_candle["STOCHRSIk_14_14_3_3_1d"] > 90.0)
-        )
+        and (isinstance(last_stochrsi_k_1d, np.float64) and (last_stochrsi_k_1d > 90.0))
       ):
         return True, f"exit_{mode_name}_w_8_10"
-      elif (
-        (last_candle["RSI_3"] > 86.0)
-        and (last_candle["WILLR_14"] > -4.0)
-        and (last_candle["RSI_3_1h"] < 30.0)
-        and (last_candle["RSI_3_4h"] < 25.0)
-      ):
+      elif (last_rsi_3 > 86.0) and (last_willr_14 > -4.0) and (last_rsi_3_1h < 30.0) and (last_rsi_3_4h < 25.0):
         return True, f"exit_{mode_name}_w_8_11"
-      elif (
-        (last_candle["RSI_3"] > 96.0)
-        and (last_candle["WILLR_14"] > -4.0)
-        and (last_candle["RSI_3_4h"] < 40.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
-      ):
+      elif (last_rsi_3 > 96.0) and (last_willr_14 > -4.0) and (last_rsi_3_4h < 40.0) and (last_aroonu_14_4h > 50.0):
         return True, f"exit_{mode_name}_w_8_12"
       elif (
-        (last_candle["RSI_3"] > 96.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (last_candle["RSI_3_1h"] < 50.0)
-        and (last_candle["RSI_3_4h"] < 50.0)
-        and (
-          isinstance(last_candle["STOCHRSIk_14_14_3_3_1d"], np.float64)
-          and (last_candle["STOCHRSIk_14_14_3_3_1d"] > 70.0)
-        )
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 50.0))
+        (last_rsi_3 > 96.0)
+        and (last_willr_14 > -2.0)
+        and (last_rsi_3_1h < 50.0)
+        and (last_rsi_3_4h < 50.0)
+        and (isinstance(last_stochrsi_k_1d, np.float64) and (last_stochrsi_k_1d > 70.0))
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 50.0))
       ):
         return True, f"exit_{mode_name}_w_8_13"
       elif (
-        (last_candle["RSI_3"] > 88.0)
-        and (last_candle["WILLR_14"] > -6.0)
-        and (last_candle["RSI_3_1h"] < 60.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 80.0))
+        (last_rsi_3 > 88.0)
+        and (last_willr_14 > -6.0)
+        and (last_rsi_3_1h < 60.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 80.0))
       ):
         return True, f"exit_{mode_name}_w_8_14"
       elif (
-        (last_candle["RSI_3"] > 48.0)
-        and (last_candle["WILLR_480"] > -25.0)
-        and (last_candle["RSI_14"] < 52.0)
+        (last_rsi_3 > 48.0)
+        and (last_willr_480 > -25.0)
+        and (last_rsi_14 < 52.0)
         and (last_candle["RSI_14_4h"] > 70.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 80.0)
-        and (isinstance(last_candle["ROC_9_4h"], np.float64) and (last_candle["ROC_9_4h"] > 100.0))
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 100.0))
+        and (last_stochrsi_k_4h > 80.0)
+        and (isinstance(last_roc_9_4h, np.float64) and (last_roc_9_4h > 100.0))
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 100.0))
       ):
         return True, f"exit_{mode_name}_w_8_15"
       elif (
-        (last_candle["RSI_3"] > 84.0)
-        and (last_candle["WILLR_14"] > -4.0)
-        and (last_candle["RSI_3_1h"] < 40.0)
-        and (last_candle["AROONU_14_4h"] > 75.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 30.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 30.0)
+        (last_rsi_3 > 84.0)
+        and (last_willr_14 > -4.0)
+        and (last_rsi_3_1h < 40.0)
+        and (last_aroonu_14_4h > 75.0)
+        and (last_stochrsi_k_1h > 30.0)
+        and (last_stochrsi_k_4h > 30.0)
       ):
         return True, f"exit_{mode_name}_w_8_16"
       elif (
-        (last_candle["RSI_3"] > 94.0)
-        and (last_candle["WILLR_14"] > -8.0)
-        and (last_candle["AROONU_14_4h"] > 75.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 70.0)
+        (last_rsi_3 > 94.0) and (last_willr_14 > -8.0) and (last_aroonu_14_4h > 75.0) and (last_stochrsi_k_4h > 70.0)
       ):
         return True, f"exit_{mode_name}_w_8_17"
       elif (
-        (last_candle["RSI_3"] > 86.0)
-        and (last_candle["WILLR_14"] > -20.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
+        (last_rsi_3 > 86.0)
+        and (last_willr_14 > -20.0)
+        and (last_aroonu_14_4h > 50.0)
         and (last_candle["top_wick_pct_1d"] > 20.0)
       ):
         return True, f"exit_{mode_name}_w_8_18"
     elif 0.1 > current_profit >= 0.09:
-      if last_candle["WILLR_480"] > -1.0:
+      if last_willr_480 > -1.0:
         return True, f"exit_{mode_name}_w_9_1"
-      elif (last_candle["WILLR_14"] >= -1.0) and (last_candle["RSI_14"] > 78.0):
+      elif (last_willr_14 >= -1.0) and (last_rsi_14 > 78.0):
         return True, f"exit_{mode_name}_w_9_2"
-      elif (last_candle["WILLR_14"] >= -2.0) and (last_candle["RSI_14"] < 46.0):
+      elif (last_willr_14 >= -2.0) and (last_rsi_14 < 46.0):
         return True, f"exit_{mode_name}_w_9_3"
       elif (
-        (last_candle["WILLR_14"] >= -15.0)
-        and (last_candle["RSI_14"] > 70.0)
+        (last_willr_14 >= -15.0)
+        and (last_rsi_14 > 70.0)
         and (last_candle["ROC_9_1h"] < -0.0)
-        and (last_candle["ROC_9_4h"] > 20.0)
+        and (last_roc_9_4h > 20.0)
       ):
         return True, f"exit_{mode_name}_w_9_4"
       elif (
-        (last_candle["RSI_3"] > 98.0)
-        and (last_candle["WILLR_14"] > -6.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 50.0))
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 70.0)
+        (last_rsi_3 > 98.0)
+        and (last_willr_14 > -6.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 50.0))
+        and (last_stochrsi_k_4h > 70.0)
       ):
         return True, f"exit_{mode_name}_w_9_5"
       elif (
-        (last_candle["RSI_3"] > 96.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] < -5.0))
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 80.0)
+        (last_rsi_3 > 96.0)
+        and (last_willr_14 > -2.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d < -5.0))
+        and (last_stochrsi_k_1h > 80.0)
       ):
         return True, f"exit_{mode_name}_w_9_6"
       elif (
-        (last_candle["RSI_3"] > 88.0)
-        and (last_candle["WILLR_14"] > -4.0)
+        (last_rsi_3 > 88.0)
+        and (last_willr_14 > -4.0)
         and (last_candle["RSI_14_4h"] > 60.0)
         and (last_candle["CMF_20_1h"] < -0.0)
         and (last_candle["CMF_20_4h"] < -0.0)
       ):
         return True, f"exit_{mode_name}_w_9_7"
-      elif (
-        (last_candle["RSI_3"] > 88.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (last_candle["RSI_3_1h"] < 25.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 20.0)
-      ):
+      elif (last_rsi_3 > 88.0) and (last_willr_14 > -2.0) and (last_rsi_3_1h < 25.0) and (last_stochrsi_k_1h > 20.0):
         return True, f"exit_{mode_name}_w_9_8"
       elif (
-        (last_candle["RSI_3"] > 86.0)
-        and (last_candle["WILLR_14"] > -2.0)
+        (last_rsi_3 > 86.0)
+        and (last_willr_14 > -2.0)
         and (last_candle["ROC_9_1h"] < -5.0)
-        and (last_candle["ROC_9_4h"] > 10.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 40.0)
+        and (last_roc_9_4h > 10.0)
+        and (last_stochrsi_k_4h > 40.0)
       ):
         return True, f"exit_{mode_name}_w_9_9"
       elif (
-        (last_candle["RSI_3"] > 94.0)
-        and (last_candle["WILLR_14"] > -18.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
+        (last_rsi_3 > 94.0)
+        and (last_willr_14 > -18.0)
+        and (last_aroonu_14_4h > 50.0)
         and (last_candle["CCI_20_change_pct_4h"] < -0.0)
-        and (
-          isinstance(last_candle["STOCHRSIk_14_14_3_3_1d"], np.float64)
-          and (last_candle["STOCHRSIk_14_14_3_3_1d"] > 90.0)
-        )
+        and (isinstance(last_stochrsi_k_1d, np.float64) and (last_stochrsi_k_1d > 90.0))
       ):
         return True, f"exit_{mode_name}_w_9_10"
-      elif (
-        (last_candle["RSI_3"] > 88.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (last_candle["RSI_3_1h"] < 30.0)
-        and (last_candle["RSI_3_4h"] < 25.0)
-      ):
+      elif (last_rsi_3 > 88.0) and (last_willr_14 > -2.0) and (last_rsi_3_1h < 30.0) and (last_rsi_3_4h < 25.0):
         return True, f"exit_{mode_name}_w_9_11"
-      elif (
-        (last_candle["RSI_3"] > 98.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (last_candle["RSI_3_4h"] < 40.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
-      ):
+      elif (last_rsi_3 > 98.0) and (last_willr_14 > -2.0) and (last_rsi_3_4h < 40.0) and (last_aroonu_14_4h > 50.0):
         return True, f"exit_{mode_name}_w_9_12"
       elif (
-        (last_candle["RSI_3"] > 98.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (last_candle["RSI_3_1h"] < 50.0)
-        and (last_candle["RSI_3_4h"] < 50.0)
-        and (
-          isinstance(last_candle["STOCHRSIk_14_14_3_3_1d"], np.float64)
-          and (last_candle["STOCHRSIk_14_14_3_3_1d"] > 70.0)
-        )
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 50.0))
+        (last_rsi_3 > 98.0)
+        and (last_willr_14 > -2.0)
+        and (last_rsi_3_1h < 50.0)
+        and (last_rsi_3_4h < 50.0)
+        and (isinstance(last_stochrsi_k_1d, np.float64) and (last_stochrsi_k_1d > 70.0))
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 50.0))
       ):
         return True, f"exit_{mode_name}_w_9_13"
       elif (
-        (last_candle["RSI_3"] > 90.0)
-        and (last_candle["WILLR_14"] > -4.0)
-        and (last_candle["RSI_3_1h"] < 60.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 80.0))
+        (last_rsi_3 > 90.0)
+        and (last_willr_14 > -4.0)
+        and (last_rsi_3_1h < 60.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 80.0))
       ):
         return True, f"exit_{mode_name}_w_9_14"
       elif (
-        (last_candle["RSI_3"] > 50.0)
-        and (last_candle["WILLR_480"] > -25.0)
-        and (last_candle["RSI_14"] < 50.0)
+        (last_rsi_3 > 50.0)
+        and (last_willr_480 > -25.0)
+        and (last_rsi_14 < 50.0)
         and (last_candle["RSI_14_4h"] > 70.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 80.0)
-        and (isinstance(last_candle["ROC_9_4h"], np.float64) and (last_candle["ROC_9_4h"] > 100.0))
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 100.0))
+        and (last_stochrsi_k_4h > 80.0)
+        and (isinstance(last_roc_9_4h, np.float64) and (last_roc_9_4h > 100.0))
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 100.0))
       ):
         return True, f"exit_{mode_name}_w_9_15"
       elif (
-        (last_candle["RSI_3"] > 86.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (last_candle["RSI_3_1h"] < 40.0)
-        and (last_candle["AROONU_14_4h"] > 75.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 30.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 30.0)
+        (last_rsi_3 > 86.0)
+        and (last_willr_14 > -2.0)
+        and (last_rsi_3_1h < 40.0)
+        and (last_aroonu_14_4h > 75.0)
+        and (last_stochrsi_k_1h > 30.0)
+        and (last_stochrsi_k_4h > 30.0)
       ):
         return True, f"exit_{mode_name}_w_9_16"
       elif (
-        (last_candle["RSI_3"] > 96.0)
-        and (last_candle["WILLR_14"] > -6.0)
-        and (last_candle["AROONU_14_4h"] > 75.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 70.0)
+        (last_rsi_3 > 96.0) and (last_willr_14 > -6.0) and (last_aroonu_14_4h > 75.0) and (last_stochrsi_k_4h > 70.0)
       ):
         return True, f"exit_{mode_name}_w_9_17"
       elif (
-        (last_candle["RSI_3"] > 88.0)
-        and (last_candle["WILLR_14"] > -20.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
+        (last_rsi_3 > 88.0)
+        and (last_willr_14 > -20.0)
+        and (last_aroonu_14_4h > 50.0)
         and (last_candle["top_wick_pct_1d"] > 20.0)
       ):
         return True, f"exit_{mode_name}_w_9_18"
     elif 0.12 > current_profit >= 0.1:
-      if last_candle["WILLR_480"] > -1.1:
+      if last_willr_480 > -1.1:
         return True, f"exit_{mode_name}_w_10_1"
-      elif (last_candle["WILLR_14"] >= -1.0) and (last_candle["RSI_14"] > 79.0):
+      elif (last_willr_14 >= -1.0) and (last_rsi_14 > 79.0):
         return True, f"exit_{mode_name}_w_10_2"
-      elif (last_candle["WILLR_14"] >= -2.0) and (last_candle["RSI_14"] < 44.0):
+      elif (last_willr_14 >= -2.0) and (last_rsi_14 < 44.0):
         return True, f"exit_{mode_name}_w_10_3"
       elif (
-        (last_candle["WILLR_14"] >= -15.0)
-        and (last_candle["RSI_14"] > 70.0)
+        (last_willr_14 >= -15.0)
+        and (last_rsi_14 > 70.0)
         and (last_candle["ROC_9_1h"] < -0.0)
-        and (last_candle["ROC_9_4h"] > 20.0)
+        and (last_roc_9_4h > 20.0)
       ):
         return True, f"exit_{mode_name}_w_10_4"
       elif (
-        (last_candle["RSI_3"] > 98.0)
-        and (last_candle["WILLR_14"] > -4.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 50.0))
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 70.0)
+        (last_rsi_3 > 98.0)
+        and (last_willr_14 > -4.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 50.0))
+        and (last_stochrsi_k_4h > 70.0)
       ):
         return True, f"exit_{mode_name}_w_10_5"
       elif (
-        (last_candle["RSI_3"] > 98.0)
-        and (last_candle["WILLR_14"] > -1.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] < -5.0))
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 80.0)
+        (last_rsi_3 > 98.0)
+        and (last_willr_14 > -1.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d < -5.0))
+        and (last_stochrsi_k_1h > 80.0)
       ):
         return True, f"exit_{mode_name}_w_10_6"
       elif (
-        (last_candle["RSI_3"] > 90.0)
-        and (last_candle["WILLR_14"] > -2.0)
+        (last_rsi_3 > 90.0)
+        and (last_willr_14 > -2.0)
         and (last_candle["RSI_14_4h"] > 60.0)
         and (last_candle["CMF_20_1h"] < -0.0)
         and (last_candle["CMF_20_4h"] < -0.0)
       ):
         return True, f"exit_{mode_name}_w_10_7"
-      elif (
-        (last_candle["RSI_3"] > 90.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (last_candle["RSI_3_1h"] < 25.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 20.0)
-      ):
+      elif (last_rsi_3 > 90.0) and (last_willr_14 > -2.0) and (last_rsi_3_1h < 25.0) and (last_stochrsi_k_1h > 20.0):
         return True, f"exit_{mode_name}_w_10_8"
       elif (
-        (last_candle["RSI_3"] > 88.0)
-        and (last_candle["WILLR_14"] > -1.0)
+        (last_rsi_3 > 88.0)
+        and (last_willr_14 > -1.0)
         and (last_candle["ROC_9_1h"] < -5.0)
-        and (last_candle["ROC_9_4h"] > 10.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 40.0)
+        and (last_roc_9_4h > 10.0)
+        and (last_stochrsi_k_4h > 40.0)
       ):
         return True, f"exit_{mode_name}_w_10_9"
       elif (
-        (last_candle["RSI_3"] > 96.0)
-        and (last_candle["WILLR_14"] > -16.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
+        (last_rsi_3 > 96.0)
+        and (last_willr_14 > -16.0)
+        and (last_aroonu_14_4h > 50.0)
         and (last_candle["CCI_20_change_pct_4h"] < -0.0)
-        and (
-          isinstance(last_candle["STOCHRSIk_14_14_3_3_1d"], np.float64)
-          and (last_candle["STOCHRSIk_14_14_3_3_1d"] > 90.0)
-        )
+        and (isinstance(last_stochrsi_k_1d, np.float64) and (last_stochrsi_k_1d > 90.0))
       ):
         return True, f"exit_{mode_name}_w_10_10"
-      elif (
-        (last_candle["RSI_3"] > 90.0)
-        and (last_candle["WILLR_14"] > -1.0)
-        and (last_candle["RSI_3_1h"] < 30.0)
-        and (last_candle["RSI_3_4h"] < 25.0)
-      ):
+      elif (last_rsi_3 > 90.0) and (last_willr_14 > -1.0) and (last_rsi_3_1h < 30.0) and (last_rsi_3_4h < 25.0):
         return True, f"exit_{mode_name}_w_10_11"
-      elif (
-        (last_candle["RSI_3"] > 99.0)
-        and (last_candle["WILLR_14"] > -1.0)
-        and (last_candle["RSI_3_4h"] < 40.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
-      ):
+      elif (last_rsi_3 > 99.0) and (last_willr_14 > -1.0) and (last_rsi_3_4h < 40.0) and (last_aroonu_14_4h > 50.0):
         return True, f"exit_{mode_name}_w_10_12"
       elif (
-        (last_candle["RSI_3"] > 99.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (last_candle["RSI_3_1h"] < 50.0)
-        and (last_candle["RSI_3_4h"] < 50.0)
-        and (
-          isinstance(last_candle["STOCHRSIk_14_14_3_3_1d"], np.float64)
-          and (last_candle["STOCHRSIk_14_14_3_3_1d"] > 70.0)
-        )
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 50.0))
+        (last_rsi_3 > 99.0)
+        and (last_willr_14 > -2.0)
+        and (last_rsi_3_1h < 50.0)
+        and (last_rsi_3_4h < 50.0)
+        and (isinstance(last_stochrsi_k_1d, np.float64) and (last_stochrsi_k_1d > 70.0))
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 50.0))
       ):
         return True, f"exit_{mode_name}_w_10_13"
       elif (
-        (last_candle["RSI_3"] > 92.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (last_candle["RSI_3_1h"] < 60.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 80.0))
+        (last_rsi_3 > 92.0)
+        and (last_willr_14 > -2.0)
+        and (last_rsi_3_1h < 60.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 80.0))
       ):
         return True, f"exit_{mode_name}_w_10_14"
       elif (
-        (last_candle["RSI_3"] > 52.0)
-        and (last_candle["WILLR_480"] > -25.0)
-        and (last_candle["RSI_14"] < 48.0)
+        (last_rsi_3 > 52.0)
+        and (last_willr_480 > -25.0)
+        and (last_rsi_14 < 48.0)
         and (last_candle["RSI_14_4h"] > 70.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 80.0)
-        and (isinstance(last_candle["ROC_9_4h"], np.float64) and (last_candle["ROC_9_4h"] > 100.0))
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 100.0))
+        and (last_stochrsi_k_4h > 80.0)
+        and (isinstance(last_roc_9_4h, np.float64) and (last_roc_9_4h > 100.0))
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 100.0))
       ):
         return True, f"exit_{mode_name}_w_10_15"
       elif (
-        (last_candle["RSI_3"] > 88.0)
-        and (last_candle["WILLR_14"] > -1.0)
-        and (last_candle["RSI_3_1h"] < 40.0)
-        and (last_candle["AROONU_14_4h"] > 75.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 30.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 30.0)
+        (last_rsi_3 > 88.0)
+        and (last_willr_14 > -1.0)
+        and (last_rsi_3_1h < 40.0)
+        and (last_aroonu_14_4h > 75.0)
+        and (last_stochrsi_k_1h > 30.0)
+        and (last_stochrsi_k_4h > 30.0)
       ):
         return True, f"exit_{mode_name}_w_10_16"
       elif (
-        (last_candle["RSI_3"] > 98.0)
-        and (last_candle["WILLR_14"] > -4.0)
-        and (last_candle["AROONU_14_4h"] > 75.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 70.0)
+        (last_rsi_3 > 98.0) and (last_willr_14 > -4.0) and (last_aroonu_14_4h > 75.0) and (last_stochrsi_k_4h > 70.0)
       ):
         return True, f"exit_{mode_name}_w_10_17"
       elif (
-        (last_candle["RSI_3"] > 90.0)
-        and (last_candle["WILLR_14"] > -20.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
+        (last_rsi_3 > 90.0)
+        and (last_willr_14 > -20.0)
+        and (last_aroonu_14_4h > 50.0)
         and (last_candle["top_wick_pct_1d"] > 20.0)
       ):
         return True, f"exit_{mode_name}_w_10_18"
     elif 0.2 > current_profit >= 0.12:
-      if last_candle["WILLR_480"] > -0.4:
+      if last_willr_480 > -0.4:
         return True, f"exit_{mode_name}_w_11_1"
-      elif (last_candle["WILLR_14"] >= -1.0) and (last_candle["RSI_14"] > 80.0):
+      elif (last_willr_14 >= -1.0) and (last_rsi_14 > 80.0):
         return True, f"exit_{mode_name}_w_11_2"
-      elif (last_candle["WILLR_14"] >= -2.0) and (last_candle["RSI_14"] < 42.0):
+      elif (last_willr_14 >= -2.0) and (last_rsi_14 < 42.0):
         return True, f"exit_{mode_name}_w_11_3"
       elif (
-        (last_candle["WILLR_14"] >= -15.0)
-        and (last_candle["RSI_14"] > 70.0)
+        (last_willr_14 >= -15.0)
+        and (last_rsi_14 > 70.0)
         and (last_candle["ROC_9_1h"] < -0.0)
-        and (last_candle["ROC_9_4h"] > 20.0)
+        and (last_roc_9_4h > 20.0)
       ):
         return True, f"exit_{mode_name}_w_11_4"
       elif (
-        (last_candle["RSI_3"] > 98.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 50.0))
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 70.0)
+        (last_rsi_3 > 98.0)
+        and (last_willr_14 > -2.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 50.0))
+        and (last_stochrsi_k_4h > 70.0)
       ):
         return True, f"exit_{mode_name}_w_11_5"
       elif (
-        (last_candle["RSI_3"] > 99.0)
-        and (last_candle["WILLR_14"] > -1.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] < -5.0))
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 80.0)
+        (last_rsi_3 > 99.0)
+        and (last_willr_14 > -1.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d < -5.0))
+        and (last_stochrsi_k_1h > 80.0)
       ):
         return True, f"exit_{mode_name}_w_11_6"
       elif (
-        (last_candle["RSI_3"] > 92.0)
-        and (last_candle["WILLR_14"] > -1.0)
+        (last_rsi_3 > 92.0)
+        and (last_willr_14 > -1.0)
         and (last_candle["RSI_14_4h"] > 60.0)
         and (last_candle["CMF_20_1h"] < -0.0)
         and (last_candle["CMF_20_4h"] < -0.0)
       ):
         return True, f"exit_{mode_name}_w_11_7"
-      elif (
-        (last_candle["RSI_3"] > 92.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (last_candle["RSI_3_1h"] < 25.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 20.0)
-      ):
+      elif (last_rsi_3 > 92.0) and (last_willr_14 > -2.0) and (last_rsi_3_1h < 25.0) and (last_stochrsi_k_1h > 20.0):
         return True, f"exit_{mode_name}_w_11_8"
       elif (
-        (last_candle["RSI_3"] > 90.0)
-        and (last_candle["WILLR_14"] > -1.0)
+        (last_rsi_3 > 90.0)
+        and (last_willr_14 > -1.0)
         and (last_candle["ROC_9_1h"] < -5.0)
-        and (last_candle["ROC_9_4h"] > 10.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 40.0)
+        and (last_roc_9_4h > 10.0)
+        and (last_stochrsi_k_4h > 40.0)
       ):
         return True, f"exit_{mode_name}_w_11_9"
       elif (
-        (last_candle["RSI_3"] > 98.0)
-        and (last_candle["WILLR_14"] > -14.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
+        (last_rsi_3 > 98.0)
+        and (last_willr_14 > -14.0)
+        and (last_aroonu_14_4h > 50.0)
         and (last_candle["CCI_20_change_pct_4h"] < -0.0)
-        and (
-          isinstance(last_candle["STOCHRSIk_14_14_3_3_1d"], np.float64)
-          and (last_candle["STOCHRSIk_14_14_3_3_1d"] > 90.0)
-        )
+        and (isinstance(last_stochrsi_k_1d, np.float64) and (last_stochrsi_k_1d > 90.0))
       ):
         return True, f"exit_{mode_name}_w_11_10"
-      elif (
-        (last_candle["RSI_3"] > 92.0)
-        and (last_candle["WILLR_14"] > -1.0)
-        and (last_candle["RSI_3_1h"] < 30.0)
-        and (last_candle["RSI_3_4h"] < 25.0)
-      ):
+      elif (last_rsi_3 > 92.0) and (last_willr_14 > -1.0) and (last_rsi_3_1h < 30.0) and (last_rsi_3_4h < 25.0):
         return True, f"exit_{mode_name}_w_11_11"
-      elif (
-        (last_candle["RSI_3"] > 99.0)
-        and (last_candle["WILLR_14"] > -1.0)
-        and (last_candle["RSI_3_4h"] < 40.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
-      ):
+      elif (last_rsi_3 > 99.0) and (last_willr_14 > -1.0) and (last_rsi_3_4h < 40.0) and (last_aroonu_14_4h > 50.0):
         return True, f"exit_{mode_name}_w_11_12"
       elif (
-        (last_candle["RSI_3"] > 99.0)
-        and (last_candle["WILLR_14"] > -1.0)
-        and (last_candle["RSI_3_1h"] < 50.0)
-        and (last_candle["RSI_3_4h"] < 50.0)
-        and (
-          isinstance(last_candle["STOCHRSIk_14_14_3_3_1d"], np.float64)
-          and (last_candle["STOCHRSIk_14_14_3_3_1d"] > 70.0)
-        )
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 50.0))
+        (last_rsi_3 > 99.0)
+        and (last_willr_14 > -1.0)
+        and (last_rsi_3_1h < 50.0)
+        and (last_rsi_3_4h < 50.0)
+        and (isinstance(last_stochrsi_k_1d, np.float64) and (last_stochrsi_k_1d > 70.0))
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 50.0))
       ):
         return True, f"exit_{mode_name}_w_11_13"
       elif (
-        (last_candle["RSI_3"] > 94.0)
-        and (last_candle["WILLR_14"] > -1.0)
-        and (last_candle["RSI_3_1h"] < 60.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 80.0))
+        (last_rsi_3 > 94.0)
+        and (last_willr_14 > -1.0)
+        and (last_rsi_3_1h < 60.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 80.0))
       ):
         return True, f"exit_{mode_name}_w_11_14"
       elif (
-        (last_candle["RSI_3"] > 54.0)
-        and (last_candle["WILLR_480"] > -25.0)
-        and (last_candle["RSI_14"] < 46.0)
+        (last_rsi_3 > 54.0)
+        and (last_willr_480 > -25.0)
+        and (last_rsi_14 < 46.0)
         and (last_candle["RSI_14_4h"] > 70.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 80.0)
-        and (isinstance(last_candle["ROC_9_4h"], np.float64) and (last_candle["ROC_9_4h"] > 100.0))
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 100.0))
+        and (last_stochrsi_k_4h > 80.0)
+        and (isinstance(last_roc_9_4h, np.float64) and (last_roc_9_4h > 100.0))
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 100.0))
       ):
         return True, f"exit_{mode_name}_w_11_15"
       elif (
-        (last_candle["RSI_3"] > 90.0)
-        and (last_candle["WILLR_14"] > -1.0)
-        and (last_candle["RSI_3_1h"] < 40.0)
-        and (last_candle["AROONU_14_4h"] > 75.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 30.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 30.0)
+        (last_rsi_3 > 90.0)
+        and (last_willr_14 > -1.0)
+        and (last_rsi_3_1h < 40.0)
+        and (last_aroonu_14_4h > 75.0)
+        and (last_stochrsi_k_1h > 30.0)
+        and (last_stochrsi_k_4h > 30.0)
       ):
         return True, f"exit_{mode_name}_w_11_16"
       elif (
-        (last_candle["RSI_3"] > 99.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (last_candle["AROONU_14_4h"] > 75.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 70.0)
+        (last_rsi_3 > 99.0) and (last_willr_14 > -2.0) and (last_aroonu_14_4h > 75.0) and (last_stochrsi_k_4h > 70.0)
       ):
         return True, f"exit_{mode_name}_w_11_17"
       elif (
-        (last_candle["RSI_3"] > 92.0)
-        and (last_candle["WILLR_14"] > -20.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
+        (last_rsi_3 > 92.0)
+        and (last_willr_14 > -20.0)
+        and (last_aroonu_14_4h > 50.0)
         and (last_candle["top_wick_pct_1d"] > 20.0)
       ):
         return True, f"exit_{mode_name}_w_11_18"
     elif current_profit >= 0.2:
-      if last_candle["WILLR_480"] > -0.2:
+      if last_willr_480 > -0.2:
         return True, f"exit_{mode_name}_w_12_1"
-      elif (last_candle["WILLR_14"] >= -1.0) and (last_candle["RSI_14"] > 81.0):
+      elif (last_willr_14 >= -1.0) and (last_rsi_14 > 81.0):
         return True, f"exit_{mode_name}_w_12_2"
-      elif (last_candle["WILLR_14"] >= -2.0) and (last_candle["RSI_14"] < 40.0):
+      elif (last_willr_14 >= -2.0) and (last_rsi_14 < 40.0):
         return True, f"exit_{mode_name}_w_12_3"
       elif (
-        (last_candle["WILLR_14"] >= -1.0)
-        and (last_candle["RSI_14"] > 80.0)
+        (last_willr_14 >= -1.0)
+        and (last_rsi_14 > 80.0)
         and (last_candle["ROC_9_1h"] < -0.0)
-        and (last_candle["ROC_9_4h"] > 20.0)
+        and (last_roc_9_4h > 20.0)
       ):
         return True, f"exit_{mode_name}_w_12_4"
       elif (
-        (last_candle["RSI_3"] > 99.0)
-        and (last_candle["WILLR_14"] > -1.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 50.0))
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 70.0)
+        (last_rsi_3 > 99.0)
+        and (last_willr_14 > -1.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 50.0))
+        and (last_stochrsi_k_4h > 70.0)
       ):
         return True, f"exit_{mode_name}_w_12_5"
       elif (
-        (last_candle["RSI_3"] > 99.0)
-        and (last_candle["WILLR_14"] > -1.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] < -5.0))
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 80.0)
+        (last_rsi_3 > 99.0)
+        and (last_willr_14 > -1.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d < -5.0))
+        and (last_stochrsi_k_1h > 80.0)
       ):
         return True, f"exit_{mode_name}_w_12_6"
       elif (
-        (last_candle["RSI_3"] > 94.0)
-        and (last_candle["WILLR_14"] > -1.0)
+        (last_rsi_3 > 94.0)
+        and (last_willr_14 > -1.0)
         and (last_candle["RSI_14_4h"] > 60.0)
         and (last_candle["CMF_20_1h"] < -0.0)
         and (last_candle["CMF_20_4h"] < -0.0)
       ):
         return True, f"exit_{mode_name}_w_12_7"
-      elif (
-        (last_candle["RSI_3"] > 94.0)
-        and (last_candle["WILLR_14"] > -2.0)
-        and (last_candle["RSI_3_1h"] < 25.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 20.0)
-      ):
+      elif (last_rsi_3 > 94.0) and (last_willr_14 > -2.0) and (last_rsi_3_1h < 25.0) and (last_stochrsi_k_1h > 20.0):
         return True, f"exit_{mode_name}_w_12_8"
       elif (
-        (last_candle["RSI_3"] > 92.0)
-        and (last_candle["WILLR_14"] > -1.0)
+        (last_rsi_3 > 92.0)
+        and (last_willr_14 > -1.0)
         and (last_candle["ROC_9_1h"] < -5.0)
-        and (last_candle["ROC_9_4h"] > 10.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 40.0)
+        and (last_roc_9_4h > 10.0)
+        and (last_stochrsi_k_4h > 40.0)
       ):
         return True, f"exit_{mode_name}_w_12_9"
       elif (
-        (last_candle["RSI_3"] > 99.0)
-        and (last_candle["WILLR_14"] > -12.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
+        (last_rsi_3 > 99.0)
+        and (last_willr_14 > -12.0)
+        and (last_aroonu_14_4h > 50.0)
         and (last_candle["CCI_20_change_pct_4h"] < -0.0)
-        and (
-          isinstance(last_candle["STOCHRSIk_14_14_3_3_1d"], np.float64)
-          and (last_candle["STOCHRSIk_14_14_3_3_1d"] > 90.0)
-        )
+        and (isinstance(last_stochrsi_k_1d, np.float64) and (last_stochrsi_k_1d > 90.0))
       ):
         return True, f"exit_{mode_name}_w_12_10"
-      elif (
-        (last_candle["RSI_3"] > 94.0)
-        and (last_candle["WILLR_14"] > -1.0)
-        and (last_candle["RSI_3_1h"] < 30.0)
-        and (last_candle["RSI_3_4h"] < 25.0)
-      ):
+      elif (last_rsi_3 > 94.0) and (last_willr_14 > -1.0) and (last_rsi_3_1h < 30.0) and (last_rsi_3_4h < 25.0):
         return True, f"exit_{mode_name}_w_12_11"
-      elif (
-        (last_candle["RSI_3"] > 99.0)
-        and (last_candle["WILLR_14"] > -1.0)
-        and (last_candle["RSI_3_4h"] < 40.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
-      ):
+      elif (last_rsi_3 > 99.0) and (last_willr_14 > -1.0) and (last_rsi_3_4h < 40.0) and (last_aroonu_14_4h > 50.0):
         return True, f"exit_{mode_name}_w_12_12"
       elif (
-        (last_candle["RSI_3"] > 99.0)
-        and (last_candle["WILLR_14"] > -1.0)
-        and (last_candle["RSI_3_1h"] < 50.0)
-        and (last_candle["RSI_3_4h"] < 50.0)
-        and (
-          isinstance(last_candle["STOCHRSIk_14_14_3_3_1d"], np.float64)
-          and (last_candle["STOCHRSIk_14_14_3_3_1d"] > 70.0)
-        )
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 50.0))
+        (last_rsi_3 > 99.0)
+        and (last_willr_14 > -1.0)
+        and (last_rsi_3_1h < 50.0)
+        and (last_rsi_3_4h < 50.0)
+        and (isinstance(last_stochrsi_k_1d, np.float64) and (last_stochrsi_k_1d > 70.0))
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 50.0))
       ):
         return True, f"exit_{mode_name}_w_12_13"
       elif (
-        (last_candle["RSI_3"] > 96.0)
-        and (last_candle["WILLR_14"] > -1.0)
-        and (last_candle["RSI_3_1h"] < 60.0)
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 80.0))
+        (last_rsi_3 > 96.0)
+        and (last_willr_14 > -1.0)
+        and (last_rsi_3_1h < 60.0)
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 80.0))
       ):
         return True, f"exit_{mode_name}_w_12_14"
       elif (
-        (last_candle["RSI_3"] > 56.0)
-        and (last_candle["WILLR_480"] > -25.0)
-        and (last_candle["RSI_14"] < 44.0)
+        (last_rsi_3 > 56.0)
+        and (last_willr_480 > -25.0)
+        and (last_rsi_14 < 44.0)
         and (last_candle["RSI_14_4h"] > 70.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 80.0)
-        and (isinstance(last_candle["ROC_9_4h"], np.float64) and (last_candle["ROC_9_4h"] > 100.0))
-        and (isinstance(last_candle["ROC_9_1d"], np.float64) and (last_candle["ROC_9_1d"] > 100.0))
+        and (last_stochrsi_k_4h > 80.0)
+        and (isinstance(last_roc_9_4h, np.float64) and (last_roc_9_4h > 100.0))
+        and (isinstance(last_roc_9_1d, np.float64) and (last_roc_9_1d > 100.0))
       ):
         return True, f"exit_{mode_name}_w_12_15"
       elif (
-        (last_candle["RSI_3"] > 92.0)
-        and (last_candle["WILLR_14"] > -1.0)
-        and (last_candle["RSI_3_1h"] < 40.0)
-        and (last_candle["AROONU_14_4h"] > 75.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 30.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 30.0)
+        (last_rsi_3 > 92.0)
+        and (last_willr_14 > -1.0)
+        and (last_rsi_3_1h < 40.0)
+        and (last_aroonu_14_4h > 75.0)
+        and (last_stochrsi_k_1h > 30.0)
+        and (last_stochrsi_k_4h > 30.0)
       ):
         return True, f"exit_{mode_name}_w_12_16"
       elif (
-        (last_candle["RSI_3"] > 99.0)
-        and (last_candle["WILLR_14"] > -1.0)
-        and (last_candle["AROONU_14_4h"] > 75.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 70.0)
+        (last_rsi_3 > 99.0) and (last_willr_14 > -1.0) and (last_aroonu_14_4h > 75.0) and (last_stochrsi_k_4h > 70.0)
       ):
         return True, f"exit_{mode_name}_w_12_17"
       elif (
-        (last_candle["RSI_3"] > 94.0)
-        and (last_candle["WILLR_14"] > -20.0)
-        and (last_candle["AROONU_14_4h"] > 50.0)
+        (last_rsi_3 > 94.0)
+        and (last_willr_14 > -20.0)
+        and (last_aroonu_14_4h > 50.0)
         and (last_candle["top_wick_pct_1d"] > 20.0)
       ):
         return True, f"exit_{mode_name}_w_12_18"
