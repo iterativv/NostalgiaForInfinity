@@ -50144,168 +50144,146 @@ class NostalgiaForInfinityX7(IStrategy):
   ) -> tuple[Optional[float], str, bool]:
     is_backtest = self.dp.runmode.value in ["backtest", "hyperopt"]
     trade_open_date = None if is_backtest else trade.open_date_utc.replace(tzinfo=None)
-    stake_scale_leverage = trade.leverage if self.is_futures_mode else 1.0
+    is_futures = self.is_futures_mode
+    trade_leverage = trade.leverage
+    stake_scale_leverage = trade_leverage if is_futures else 1.0
 
     max_rebuy_sub_grinds = 0
     regular_mode_rebuy_stakes = self.scale_stakes_for_min_stake(
-      self.regular_mode_rebuy_stakes_futures if self.is_futures_mode else self.regular_mode_rebuy_stakes_spot,
+      self.regular_mode_rebuy_stakes_futures if is_futures else self.regular_mode_rebuy_stakes_spot,
       slice_amount,
       min_stake,
-      trade.leverage,
-      trade.leverage,
+      trade_leverage,
+      trade_leverage,
     )
     regular_mode_rebuy_sub_thresholds = (
-      self.regular_mode_rebuy_thresholds_futures if self.is_futures_mode else self.regular_mode_rebuy_thresholds_spot
+      self.regular_mode_rebuy_thresholds_futures if is_futures else self.regular_mode_rebuy_thresholds_spot
     )
     max_rebuy_sub_grinds = len(regular_mode_rebuy_stakes)
 
     max_grind_1_sub_grinds = 0
     regular_mode_grind_1_stakes = self.scale_stakes_for_min_stake(
-      self.regular_mode_grind_1_stakes_futures if self.is_futures_mode else self.regular_mode_grind_1_stakes_spot,
+      self.regular_mode_grind_1_stakes_futures if is_futures else self.regular_mode_grind_1_stakes_spot,
       slice_amount,
       min_stake,
-      trade.leverage,
-      trade.leverage,
+      trade_leverage,
+      trade_leverage,
     )
     regular_mode_grind_1_sub_thresholds = (
-      self.regular_mode_grind_1_thresholds_futures
-      if self.is_futures_mode
-      else self.regular_mode_grind_1_thresholds_spot
+      self.regular_mode_grind_1_thresholds_futures if is_futures else self.regular_mode_grind_1_thresholds_spot
     )
     max_grind_1_sub_grinds = len(regular_mode_grind_1_stakes)
     regular_mode_grind_1_stop_grinds = (
-      self.regular_mode_grind_1_stop_grinds_futures
-      if self.is_futures_mode
-      else self.regular_mode_grind_1_stop_grinds_spot
+      self.regular_mode_grind_1_stop_grinds_futures if is_futures else self.regular_mode_grind_1_stop_grinds_spot
     )
     regular_mode_grind_1_profit_threshold = (
       self.regular_mode_grind_1_profit_threshold_futures
-      if self.is_futures_mode
+      if is_futures
       else self.regular_mode_grind_1_profit_threshold_spot
     )
 
     max_grind_2_sub_grinds = 0
     regular_mode_grind_2_stakes = self.scale_stakes_for_min_stake(
-      self.regular_mode_grind_2_stakes_futures if self.is_futures_mode else self.regular_mode_grind_2_stakes_spot,
+      self.regular_mode_grind_2_stakes_futures if is_futures else self.regular_mode_grind_2_stakes_spot,
       slice_amount,
       min_stake,
-      trade.leverage,
-      trade.leverage,
+      trade_leverage,
+      trade_leverage,
     )
     regular_mode_grind_2_sub_thresholds = (
-      self.regular_mode_grind_2_thresholds_futures
-      if self.is_futures_mode
-      else self.regular_mode_grind_2_thresholds_spot
+      self.regular_mode_grind_2_thresholds_futures if is_futures else self.regular_mode_grind_2_thresholds_spot
     )
     max_grind_2_sub_grinds = len(regular_mode_grind_2_stakes)
     regular_mode_grind_2_stop_grinds = (
-      self.regular_mode_grind_2_stop_grinds_futures
-      if self.is_futures_mode
-      else self.regular_mode_grind_2_stop_grinds_spot
+      self.regular_mode_grind_2_stop_grinds_futures if is_futures else self.regular_mode_grind_2_stop_grinds_spot
     )
     regular_mode_grind_2_profit_threshold = (
       self.regular_mode_grind_2_profit_threshold_futures
-      if self.is_futures_mode
+      if is_futures
       else self.regular_mode_grind_2_profit_threshold_spot
     )
 
     max_grind_3_sub_grinds = 0
     regular_mode_grind_3_stakes = self.scale_stakes_for_min_stake(
-      self.regular_mode_grind_3_stakes_futures if self.is_futures_mode else self.regular_mode_grind_3_stakes_spot,
+      self.regular_mode_grind_3_stakes_futures if is_futures else self.regular_mode_grind_3_stakes_spot,
       slice_amount,
       min_stake,
-      trade.leverage,
-      trade.leverage,
+      trade_leverage,
+      trade_leverage,
     )
     regular_mode_grind_3_sub_thresholds = (
-      self.regular_mode_grind_3_thresholds_futures
-      if self.is_futures_mode
-      else self.regular_mode_grind_3_thresholds_spot
+      self.regular_mode_grind_3_thresholds_futures if is_futures else self.regular_mode_grind_3_thresholds_spot
     )
     max_grind_3_sub_grinds = len(regular_mode_grind_3_stakes)
     regular_mode_grind_3_stop_grinds = (
-      self.regular_mode_grind_3_stop_grinds_futures
-      if self.is_futures_mode
-      else self.regular_mode_grind_3_stop_grinds_spot
+      self.regular_mode_grind_3_stop_grinds_futures if is_futures else self.regular_mode_grind_3_stop_grinds_spot
     )
     regular_mode_grind_3_profit_threshold = (
       self.regular_mode_grind_3_profit_threshold_futures
-      if self.is_futures_mode
+      if is_futures
       else self.regular_mode_grind_3_profit_threshold_spot
     )
 
     max_grind_4_sub_grinds = 0
     regular_mode_grind_4_stakes = self.scale_stakes_for_min_stake(
-      self.regular_mode_grind_4_stakes_futures if self.is_futures_mode else self.regular_mode_grind_4_stakes_spot,
+      self.regular_mode_grind_4_stakes_futures if is_futures else self.regular_mode_grind_4_stakes_spot,
       slice_amount,
       min_stake,
-      trade.leverage,
-      trade.leverage,
+      trade_leverage,
+      trade_leverage,
     )
     regular_mode_grind_4_sub_thresholds = (
-      self.regular_mode_grind_4_thresholds_futures
-      if self.is_futures_mode
-      else self.regular_mode_grind_4_thresholds_spot
+      self.regular_mode_grind_4_thresholds_futures if is_futures else self.regular_mode_grind_4_thresholds_spot
     )
     max_grind_4_sub_grinds = len(regular_mode_grind_4_stakes)
     regular_mode_grind_4_stop_grinds = (
-      self.regular_mode_grind_4_stop_grinds_futures
-      if self.is_futures_mode
-      else self.regular_mode_grind_4_stop_grinds_spot
+      self.regular_mode_grind_4_stop_grinds_futures if is_futures else self.regular_mode_grind_4_stop_grinds_spot
     )
     regular_mode_grind_4_profit_threshold = (
       self.regular_mode_grind_4_profit_threshold_futures
-      if self.is_futures_mode
+      if is_futures
       else self.regular_mode_grind_4_profit_threshold_spot
     )
 
     max_grind_5_sub_grinds = 0
     regular_mode_grind_5_stakes = self.scale_stakes_for_min_stake(
-      self.regular_mode_grind_5_stakes_futures if self.is_futures_mode else self.regular_mode_grind_5_stakes_spot,
+      self.regular_mode_grind_5_stakes_futures if is_futures else self.regular_mode_grind_5_stakes_spot,
       slice_amount,
       min_stake,
-      trade.leverage,
-      trade.leverage,
+      trade_leverage,
+      trade_leverage,
     )
     regular_mode_grind_5_sub_thresholds = (
-      self.regular_mode_grind_5_thresholds_futures
-      if self.is_futures_mode
-      else self.regular_mode_grind_5_thresholds_spot
+      self.regular_mode_grind_5_thresholds_futures if is_futures else self.regular_mode_grind_5_thresholds_spot
     )
     max_grind_5_sub_grinds = len(regular_mode_grind_5_stakes)
     regular_mode_grind_5_stop_grinds = (
-      self.regular_mode_grind_5_stop_grinds_futures
-      if self.is_futures_mode
-      else self.regular_mode_grind_5_stop_grinds_spot
+      self.regular_mode_grind_5_stop_grinds_futures if is_futures else self.regular_mode_grind_5_stop_grinds_spot
     )
     regular_mode_grind_5_profit_threshold = (
       self.regular_mode_grind_5_profit_threshold_futures
-      if self.is_futures_mode
+      if is_futures
       else self.regular_mode_grind_5_profit_threshold_spot
     )
 
     max_grind_6_sub_grinds = 0
     regular_mode_grind_6_stakes = self.scale_stakes_for_min_stake(
-      self.regular_mode_grind_6_stakes_futures if self.is_futures_mode else self.regular_mode_grind_6_stakes_spot,
+      self.regular_mode_grind_6_stakes_futures if is_futures else self.regular_mode_grind_6_stakes_spot,
       slice_amount,
       min_stake,
-      trade.leverage,
-      trade.leverage,
+      trade_leverage,
+      trade_leverage,
     )
     regular_mode_grind_6_sub_thresholds = (
-      self.regular_mode_grind_6_thresholds_futures
-      if self.is_futures_mode
-      else self.regular_mode_grind_6_thresholds_spot
+      self.regular_mode_grind_6_thresholds_futures if is_futures else self.regular_mode_grind_6_thresholds_spot
     )
     max_grind_6_sub_grinds = len(regular_mode_grind_6_stakes)
     regular_mode_grind_6_stop_grinds = (
-      self.regular_mode_grind_6_stop_grinds_futures
-      if self.is_futures_mode
-      else self.regular_mode_grind_6_stop_grinds_spot
+      self.regular_mode_grind_6_stop_grinds_futures if is_futures else self.regular_mode_grind_6_stop_grinds_spot
     )
     regular_mode_grind_6_profit_threshold = (
       self.regular_mode_grind_6_profit_threshold_futures
-      if self.is_futures_mode
+      if is_futures
       else self.regular_mode_grind_6_profit_threshold_spot
     )
 
@@ -50599,10 +50577,10 @@ class NostalgiaForInfinityX7(IStrategy):
     # Sell remaining if partial fill on exit
     if partial_sell:
       order = filled_exits[-1]
-      sell_amount = order.safe_remaining * exit_rate / trade.leverage
-      if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
-        sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
-      ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
+      sell_amount = order.safe_remaining * exit_rate / trade_leverage
+      if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
+        sell_amount = (trade.amount * exit_rate / trade_leverage) - (min_stake * 1.55)
+      ft_sell_amount = sell_amount * trade_leverage * (trade.stake_amount / trade.amount) / exit_rate
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         self.dp.send_msg(
           f"Exit (remaining) [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {order.safe_remaining} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
@@ -50702,10 +50680,10 @@ class NostalgiaForInfinityX7(IStrategy):
         return buy_amount, order_tag, is_derisk
 
     if (
-      self.is_futures_mode
+      is_futures
       and has_order_tags
       and (not partial_sell)
-      and slice_profit < (-0.65 / trade.leverage)
+      and slice_profit < (-0.65 / trade_leverage)
       and (grind_1_sub_grind_count < max_grind_1_sub_grinds)
     ):
       buy_amount = slice_amount * regular_mode_grind_1_stakes[grind_1_sub_grind_count] / stake_scale_leverage
@@ -50742,10 +50720,10 @@ class NostalgiaForInfinityX7(IStrategy):
     if has_order_tags and grind_1_sub_grind_count > 0:
       grind_profit = (exit_rate - grind_1_current_open_rate) / grind_1_current_open_rate
       if grind_profit > (regular_mode_grind_1_profit_threshold + fee_open_rate + fee_close_rate):
-        sell_amount = grind_1_total_amount * exit_rate / trade.leverage
-        if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
-          sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
-        ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
+        sell_amount = grind_1_total_amount * exit_rate / trade_leverage
+        if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
+          sell_amount = (trade.amount * exit_rate / trade_leverage) - (min_stake * 1.55)
+        ft_sell_amount = sell_amount * trade_leverage * (trade.stake_amount / trade.amount) / exit_rate
         if sell_amount > min_stake and ft_sell_amount > min_stake:
           self.dp.send_msg(
             self.notification_msg(
@@ -50757,13 +50735,13 @@ class NostalgiaForInfinityX7(IStrategy):
               profit_stake=profit_stake,
               profit_ratio=profit_ratio,
               stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
+              grind_profit_stake=grind_profit * sell_amount * trade_leverage,
               grind_profit_pct=grind_profit,
               coin_amount=grind_1_total_amount,
             )
           )
           log.info(
-            f"Grinding exit (g1) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']})"
+            f"Grinding exit (g1) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {self.config['stake_currency']})"
           )
           order_tag = "g1"
           for grind_entry_id in grind_1_buy_orders:
@@ -50780,10 +50758,10 @@ class NostalgiaForInfinityX7(IStrategy):
       # temporary
       and (is_backtest or trade_open_date >= datetime(2024, 4, 16))
     ):
-      sell_amount = grind_1_total_amount * exit_rate / trade.leverage
-      if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
-        sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
-      ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
+      sell_amount = grind_1_total_amount * exit_rate / trade_leverage
+      if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
+        sell_amount = (trade.amount * exit_rate / trade_leverage) - (min_stake * 1.55)
+      ft_sell_amount = sell_amount * trade_leverage * (trade.stake_amount / trade.amount) / exit_rate
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
         if grind_1_current_open_rate > 0.0:
@@ -50802,7 +50780,7 @@ class NostalgiaForInfinityX7(IStrategy):
             profit_stake=profit_stake,
             profit_ratio=profit_ratio,
             stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
+            grind_profit_stake=grind_profit * sell_amount * trade_leverage,
             grind_profit_pct=grind_profit,
             coin_amount=grind_1_total_amount,
           )
@@ -50867,10 +50845,10 @@ class NostalgiaForInfinityX7(IStrategy):
     if has_order_tags and grind_2_sub_grind_count > 0:
       grind_profit = (exit_rate - grind_2_current_open_rate) / grind_2_current_open_rate
       if grind_profit > (regular_mode_grind_2_profit_threshold + fee_open_rate + fee_close_rate):
-        sell_amount = grind_2_total_amount * exit_rate / trade.leverage
-        if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
-          sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
-        ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
+        sell_amount = grind_2_total_amount * exit_rate / trade_leverage
+        if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
+          sell_amount = (trade.amount * exit_rate / trade_leverage) - (min_stake * 1.55)
+        ft_sell_amount = sell_amount * trade_leverage * (trade.stake_amount / trade.amount) / exit_rate
         if sell_amount > min_stake and ft_sell_amount > min_stake:
           self.dp.send_msg(
             self.notification_msg(
@@ -50882,13 +50860,13 @@ class NostalgiaForInfinityX7(IStrategy):
               profit_stake=profit_stake,
               profit_ratio=profit_ratio,
               stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
+              grind_profit_stake=grind_profit * sell_amount * trade_leverage,
               grind_profit_pct=grind_profit,
               coin_amount=grind_2_total_amount,
             )
           )
           log.info(
-            f"Grinding exit (g2) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']})"
+            f"Grinding exit (g2) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {self.config['stake_currency']})"
           )
           order_tag = "g2"
           for grind_entry_id in grind_2_buy_orders:
@@ -50905,10 +50883,10 @@ class NostalgiaForInfinityX7(IStrategy):
       # temporary
       and (is_backtest or trade_open_date >= datetime(2024, 4, 16))
     ):
-      sell_amount = grind_2_total_amount * exit_rate / trade.leverage
-      if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
-        sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
-      ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
+      sell_amount = grind_2_total_amount * exit_rate / trade_leverage
+      if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
+        sell_amount = (trade.amount * exit_rate / trade_leverage) - (min_stake * 1.55)
+      ft_sell_amount = sell_amount * trade_leverage * (trade.stake_amount / trade.amount) / exit_rate
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
         if grind_2_current_open_rate > 0.0:
@@ -50927,7 +50905,7 @@ class NostalgiaForInfinityX7(IStrategy):
             profit_stake=profit_stake,
             profit_ratio=profit_ratio,
             stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
+            grind_profit_stake=grind_profit * sell_amount * trade_leverage,
             grind_profit_pct=grind_profit,
             coin_amount=grind_2_total_amount,
           )
@@ -50992,10 +50970,10 @@ class NostalgiaForInfinityX7(IStrategy):
     if has_order_tags and grind_3_sub_grind_count > 0:
       grind_profit = (exit_rate - grind_3_current_open_rate) / grind_3_current_open_rate
       if grind_profit > (regular_mode_grind_3_profit_threshold + fee_open_rate + fee_close_rate):
-        sell_amount = grind_3_total_amount * exit_rate / trade.leverage
-        if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
-          sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
-        ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
+        sell_amount = grind_3_total_amount * exit_rate / trade_leverage
+        if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
+          sell_amount = (trade.amount * exit_rate / trade_leverage) - (min_stake * 1.55)
+        ft_sell_amount = sell_amount * trade_leverage * (trade.stake_amount / trade.amount) / exit_rate
         if sell_amount > min_stake and ft_sell_amount > min_stake:
           self.dp.send_msg(
             self.notification_msg(
@@ -51007,13 +50985,13 @@ class NostalgiaForInfinityX7(IStrategy):
               profit_stake=profit_stake,
               profit_ratio=profit_ratio,
               stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
+              grind_profit_stake=grind_profit * sell_amount * trade_leverage,
               grind_profit_pct=grind_profit,
               coin_amount=grind_3_total_amount,
             )
           )
           log.info(
-            f"Grinding exit (g3) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']})"
+            f"Grinding exit (g3) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {self.config['stake_currency']})"
           )
           order_tag = "g3"
           for grind_entry_id in grind_3_buy_orders:
@@ -51030,10 +51008,10 @@ class NostalgiaForInfinityX7(IStrategy):
       # temporary
       and (is_backtest or trade_open_date >= datetime(2024, 4, 16))
     ):
-      sell_amount = grind_3_total_amount * exit_rate / trade.leverage
-      if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
-        sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
-      ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
+      sell_amount = grind_3_total_amount * exit_rate / trade_leverage
+      if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
+        sell_amount = (trade.amount * exit_rate / trade_leverage) - (min_stake * 1.55)
+      ft_sell_amount = sell_amount * trade_leverage * (trade.stake_amount / trade.amount) / exit_rate
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
         if grind_3_current_open_rate > 0.0:
@@ -51052,7 +51030,7 @@ class NostalgiaForInfinityX7(IStrategy):
             profit_stake=profit_stake,
             profit_ratio=profit_ratio,
             stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
+            grind_profit_stake=grind_profit * sell_amount * trade_leverage,
             grind_profit_pct=grind_profit,
             coin_amount=grind_3_total_amount,
           )
@@ -51117,10 +51095,10 @@ class NostalgiaForInfinityX7(IStrategy):
     if has_order_tags and grind_4_sub_grind_count > 0:
       grind_profit = (exit_rate - grind_4_current_open_rate) / grind_4_current_open_rate
       if grind_profit > (regular_mode_grind_4_profit_threshold + fee_open_rate + fee_close_rate):
-        sell_amount = grind_4_total_amount * exit_rate / trade.leverage
-        if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
-          sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
-        ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
+        sell_amount = grind_4_total_amount * exit_rate / trade_leverage
+        if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
+          sell_amount = (trade.amount * exit_rate / trade_leverage) - (min_stake * 1.55)
+        ft_sell_amount = sell_amount * trade_leverage * (trade.stake_amount / trade.amount) / exit_rate
         if sell_amount > min_stake and ft_sell_amount > min_stake:
           self.dp.send_msg(
             self.notification_msg(
@@ -51132,13 +51110,13 @@ class NostalgiaForInfinityX7(IStrategy):
               profit_stake=profit_stake,
               profit_ratio=profit_ratio,
               stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
+              grind_profit_stake=grind_profit * sell_amount * trade_leverage,
               grind_profit_pct=grind_profit,
               coin_amount=grind_4_total_amount,
             )
           )
           log.info(
-            f"Grinding exit (g4) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_4_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']})"
+            f"Grinding exit (g4) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_4_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {self.config['stake_currency']})"
           )
           order_tag = "g4"
           for grind_entry_id in grind_4_buy_orders:
@@ -51155,10 +51133,10 @@ class NostalgiaForInfinityX7(IStrategy):
       # temporary
       and (is_backtest or trade_open_date >= datetime(2024, 4, 16))
     ):
-      sell_amount = grind_4_total_amount * exit_rate / trade.leverage
-      if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
-        sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
-      ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
+      sell_amount = grind_4_total_amount * exit_rate / trade_leverage
+      if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
+        sell_amount = (trade.amount * exit_rate / trade_leverage) - (min_stake * 1.55)
+      ft_sell_amount = sell_amount * trade_leverage * (trade.stake_amount / trade.amount) / exit_rate
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
         if grind_4_current_open_rate > 0.0:
@@ -51177,7 +51155,7 @@ class NostalgiaForInfinityX7(IStrategy):
             profit_stake=profit_stake,
             profit_ratio=profit_ratio,
             stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
+            grind_profit_stake=grind_profit * sell_amount * trade_leverage,
             grind_profit_pct=grind_profit,
             coin_amount=grind_4_total_amount,
           )
@@ -51242,10 +51220,10 @@ class NostalgiaForInfinityX7(IStrategy):
     if has_order_tags and grind_5_sub_grind_count > 0:
       grind_profit = (exit_rate - grind_5_current_open_rate) / grind_5_current_open_rate
       if grind_profit > (regular_mode_grind_5_profit_threshold + fee_open_rate + fee_close_rate):
-        sell_amount = grind_5_total_amount * exit_rate / trade.leverage
-        if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
-          sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
-        ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
+        sell_amount = grind_5_total_amount * exit_rate / trade_leverage
+        if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
+          sell_amount = (trade.amount * exit_rate / trade_leverage) - (min_stake * 1.55)
+        ft_sell_amount = sell_amount * trade_leverage * (trade.stake_amount / trade.amount) / exit_rate
         if sell_amount > min_stake and ft_sell_amount > min_stake:
           self.dp.send_msg(
             self.notification_msg(
@@ -51257,13 +51235,13 @@ class NostalgiaForInfinityX7(IStrategy):
               profit_stake=profit_stake,
               profit_ratio=profit_ratio,
               stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
+              grind_profit_stake=grind_profit * sell_amount * trade_leverage,
               grind_profit_pct=grind_profit,
               coin_amount=grind_5_total_amount,
             )
           )
           log.info(
-            f"Grinding exit (g5) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_5_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']})"
+            f"Grinding exit (g5) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_5_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {self.config['stake_currency']})"
           )
           order_tag = "g5"
           for grind_entry_id in grind_5_buy_orders:
@@ -51280,10 +51258,10 @@ class NostalgiaForInfinityX7(IStrategy):
       # temporary
       and (is_backtest or trade_open_date >= datetime(2024, 4, 16))
     ):
-      sell_amount = grind_5_total_amount * exit_rate / trade.leverage
-      if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
-        sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
-      ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
+      sell_amount = grind_5_total_amount * exit_rate / trade_leverage
+      if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
+        sell_amount = (trade.amount * exit_rate / trade_leverage) - (min_stake * 1.55)
+      ft_sell_amount = sell_amount * trade_leverage * (trade.stake_amount / trade.amount) / exit_rate
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
         if grind_5_current_open_rate > 0.0:
@@ -51302,7 +51280,7 @@ class NostalgiaForInfinityX7(IStrategy):
             profit_stake=profit_stake,
             profit_ratio=profit_ratio,
             stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
+            grind_profit_stake=grind_profit * sell_amount * trade_leverage,
             grind_profit_pct=grind_profit,
             coin_amount=grind_5_total_amount,
           )
@@ -51367,10 +51345,10 @@ class NostalgiaForInfinityX7(IStrategy):
     if has_order_tags and grind_6_sub_grind_count > 0:
       grind_profit = (exit_rate - grind_6_current_open_rate) / grind_6_current_open_rate
       if grind_profit > (regular_mode_grind_6_profit_threshold + fee_open_rate + fee_close_rate):
-        sell_amount = grind_6_total_amount * exit_rate / trade.leverage
-        if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
-          sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
-        ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
+        sell_amount = grind_6_total_amount * exit_rate / trade_leverage
+        if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
+          sell_amount = (trade.amount * exit_rate / trade_leverage) - (min_stake * 1.55)
+        ft_sell_amount = sell_amount * trade_leverage * (trade.stake_amount / trade.amount) / exit_rate
         if sell_amount > min_stake and ft_sell_amount > min_stake:
           self.dp.send_msg(
             self.notification_msg(
@@ -51382,13 +51360,13 @@ class NostalgiaForInfinityX7(IStrategy):
               profit_stake=profit_stake,
               profit_ratio=profit_ratio,
               stake_currency=self.config["stake_currency"],
-              grind_profit_stake=grind_profit * sell_amount * trade.leverage,
+              grind_profit_stake=grind_profit * sell_amount * trade_leverage,
               grind_profit_pct=grind_profit,
               coin_amount=grind_6_total_amount,
             )
           )
           log.info(
-            f"Grinding exit (g6) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_6_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']})"
+            f"Grinding exit (g6) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_6_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {self.config['stake_currency']})"
           )
           order_tag = "g6"
           for grind_entry_id in grind_6_buy_orders:
@@ -51405,10 +51383,10 @@ class NostalgiaForInfinityX7(IStrategy):
       # temporary
       and (is_backtest or trade_open_date >= datetime(2024, 4, 16))
     ):
-      sell_amount = grind_6_total_amount * exit_rate / trade.leverage
-      if ((current_stake_amount / trade.leverage) - sell_amount) < (min_stake * 1.55):
-        sell_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
-      ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
+      sell_amount = grind_6_total_amount * exit_rate / trade_leverage
+      if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
+        sell_amount = (trade.amount * exit_rate / trade_leverage) - (min_stake * 1.55)
+      ft_sell_amount = sell_amount * trade_leverage * (trade.stake_amount / trade.amount) / exit_rate
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
         if grind_6_current_open_rate > 0.0:
@@ -51427,7 +51405,7 @@ class NostalgiaForInfinityX7(IStrategy):
             profit_stake=profit_stake,
             profit_ratio=profit_ratio,
             stake_currency=self.config["stake_currency"],
-            grind_profit_stake=grind_profit * sell_amount * trade.leverage,
+            grind_profit_stake=grind_profit * sell_amount * trade_leverage,
             grind_profit_pct=grind_profit,
             coin_amount=grind_6_total_amount,
           )
@@ -51448,17 +51426,17 @@ class NostalgiaForInfinityX7(IStrategy):
         < (
           slice_amount
           * (
-            (self.regular_mode_derisk_futures if self.is_futures_mode else self.regular_mode_derisk_spot)
+            (self.regular_mode_derisk_futures if is_futures else self.regular_mode_derisk_spot)
             if (is_backtest or trade_open_date >= datetime(2024, 9, 13))
-            else (self.regular_mode_derisk_futures_old if self.is_futures_mode else self.regular_mode_derisk_spot_old)
+            else (self.regular_mode_derisk_futures_old if is_futures else self.regular_mode_derisk_spot_old)
           )
-          / trade.leverage
+          / trade_leverage
         )
       )
       and (is_backtest or trade_open_date >= datetime(2024, 9, 13))
     ):
-      sell_amount = trade.amount * exit_rate / trade.leverage - (min_stake * 1.55)
-      ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
+      sell_amount = trade.amount * exit_rate / trade_leverage - (min_stake * 1.55)
+      ft_sell_amount = sell_amount * trade_leverage * (trade.stake_amount / trade.amount) / exit_rate
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
         self.dp.send_msg(
@@ -51488,25 +51466,19 @@ class NostalgiaForInfinityX7(IStrategy):
       < (
         slice_amount
         * (
-          (
-            self.regular_mode_derisk_1_scalp_mode_futures
-            if self.is_futures_mode
-            else self.regular_mode_derisk_1_scalp_mode_spot
-          )
+          (self.regular_mode_derisk_1_scalp_mode_futures if is_futures else self.regular_mode_derisk_1_scalp_mode_spot)
           if is_scalp_mode
           else (
-            (self.regular_mode_derisk_1_futures if self.is_futures_mode else self.regular_mode_derisk_1_spot)
+            (self.regular_mode_derisk_1_futures if is_futures else self.regular_mode_derisk_1_spot)
             if (is_backtest or trade_open_date >= datetime(2024, 9, 13))
-            else (
-              self.regular_mode_derisk_1_futures_old if self.is_futures_mode else self.regular_mode_derisk_1_spot_old
-            )
+            else (self.regular_mode_derisk_1_futures_old if is_futures else self.regular_mode_derisk_1_spot_old)
           )
         )
-        / trade.leverage
+        / trade_leverage
       )
     ):
-      sell_amount = trade.amount * exit_rate / trade.leverage - (min_stake * 1.55)
-      ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
+      sell_amount = trade.amount * exit_rate / trade_leverage - (min_stake * 1.55)
+      ft_sell_amount = sell_amount * trade_leverage * (trade.stake_amount / trade.amount) / exit_rate
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
         self.dp.send_msg(
