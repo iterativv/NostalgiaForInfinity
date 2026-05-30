@@ -43510,6 +43510,10 @@ class NostalgiaForInfinityX7(IStrategy):
       ):
         return True, f"exit_{mode_name}_stoploss_doom"
 
+    last_close = last_candle["close"]
+    last_ema_200 = last_candle["EMA_200"]
+    last_rsi_14 = last_candle["RSI_14"]
+
     # Stoploss u_e
     if (
       self.u_e_stops_enable
@@ -43520,11 +43524,11 @@ class NostalgiaForInfinityX7(IStrategy):
           # / trade.leverage
         )
       )
-      and (last_candle["close"] < last_candle["EMA_200"])
+      and (last_close < last_ema_200)
       and (last_candle["CMF_20"] < -0.0)
-      and (((last_candle["EMA_200"] - last_candle["close"]) / last_candle["close"]) < 0.010)
-      and (last_candle["RSI_14"] > previous_candle_1["RSI_14"])
-      and (last_candle["RSI_14"] > (last_candle["RSI_14_1h"] + 24.0))
+      and (((last_ema_200 - last_close) / last_close) < 0.010)
+      and (last_rsi_14 > previous_candle_1["RSI_14"])
+      and (last_rsi_14 > (last_candle["RSI_14_1h"] + 24.0))
       # and (current_time - timedelta(minutes=720) > trade.open_date_utc)
       # temporary
       and (is_backtest or trade_open_date >= datetime(2025, 4, 3))
