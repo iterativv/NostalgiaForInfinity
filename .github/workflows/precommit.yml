@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 10
-  
+
       - name: Check PR repository
         uses: actions/checkout@v6
         if: github.event_name == 'pull_request'
@@ -28,7 +28,7 @@ jobs:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 10
-  
+
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
