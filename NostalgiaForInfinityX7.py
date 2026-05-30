@@ -28019,16 +28019,20 @@ class NostalgiaForInfinityX7(IStrategy):
     current_time: "datetime",
     buy_tag,
   ) -> tuple:
+    last_rsi_14 = last_candle["RSI_14"]
+    last_close = last_candle["close"]
+    last_ema_200 = last_candle["EMA_200"]
+
     # Sell signal 1
     if (
-      (last_candle["RSI_14"] > 84.0)
-      and (last_candle["close"] > last_candle["BBU_20_2.0"])
+      (last_rsi_14 > 84.0)
+      and (last_close > last_candle["BBU_20_2.0"])
       and (previous_candle_1["close"] > previous_candle_1["BBU_20_2.0"])
       and (previous_candle_2["close"] > previous_candle_2["BBU_20_2.0"])
       and (previous_candle_3["close"] > previous_candle_3["BBU_20_2.0"])
       and (previous_candle_4["close"] > previous_candle_4["BBU_20_2.0"])
     ):
-      if last_candle["close"] > last_candle["EMA_200"]:
+      if last_close > last_ema_200:
         if current_profit > 0.01:
           return True, f"exit_{mode_name}_1_1_1"
       else:
@@ -28037,12 +28041,12 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Sell signal 2
     elif (
-      (last_candle["RSI_14"] > 86.0)
-      and (last_candle["close"] > last_candle["BBU_20_2.0"])
+      (last_rsi_14 > 86.0)
+      and (last_close > last_candle["BBU_20_2.0"])
       and (previous_candle_1["close"] > previous_candle_1["BBU_20_2.0"])
       and (previous_candle_2["close"] > previous_candle_2["BBU_20_2.0"])
     ):
-      if last_candle["close"] > last_candle["EMA_200"]:
+      if last_close > last_ema_200:
         if current_profit > 0.01:
           return True, f"exit_{mode_name}_2_1_1"
       else:
@@ -28050,8 +28054,8 @@ class NostalgiaForInfinityX7(IStrategy):
           return True, f"exit_{mode_name}_2_2_1"
 
     # Sell signal 3
-    elif last_candle["RSI_14"] > 88.0:
-      if last_candle["close"] > last_candle["EMA_200"]:
+    elif last_rsi_14 > 88.0:
+      if last_close > last_ema_200:
         if current_profit > 0.01:
           return True, f"exit_{mode_name}_3_1_1"
       else:
@@ -28059,8 +28063,8 @@ class NostalgiaForInfinityX7(IStrategy):
           return True, f"exit_{mode_name}_3_2_1"
 
     # Sell signal 4
-    elif (last_candle["RSI_14"] > 84.0) and (last_candle["RSI_14_1h"] > 80.0):
-      if last_candle["close"] > last_candle["EMA_200"]:
+    elif (last_rsi_14 > 84.0) and (last_candle["RSI_14_1h"] > 80.0):
+      if last_close > last_ema_200:
         if current_profit > 0.01:
           return True, f"exit_{mode_name}_4_1_1"
       else:
@@ -28068,11 +28072,7 @@ class NostalgiaForInfinityX7(IStrategy):
           return True, f"exit_{mode_name}_4_2_1"
 
     # Sell signal 6
-    elif (
-      (last_candle["close"] < last_candle["EMA_200"])
-      and (last_candle["close"] > last_candle["EMA_50"])
-      and (last_candle["RSI_14"] > 79.0)
-    ):
+    elif (last_close < last_ema_200) and (last_close > last_candle["EMA_50"]) and (last_rsi_14 > 79.0):
       if current_profit > 0.01:
         return True, f"exit_{mode_name}_6_1"
 
@@ -28086,8 +28086,8 @@ class NostalgiaForInfinityX7(IStrategy):
     #       return True, f"exit_{mode_name}_7_2_1"
 
     # Sell signal 8
-    elif last_candle["close"] > last_candle["BBU_20_2.0_1h"] * 1.14:
-      if last_candle["close"] > last_candle["EMA_200"]:
+    elif last_close > last_candle["BBU_20_2.0_1h"] * 1.14:
+      if last_close > last_ema_200:
         if current_profit > 0.01:
           return True, f"exit_{mode_name}_8_1_1"
       else:
@@ -28116,85 +28116,89 @@ class NostalgiaForInfinityX7(IStrategy):
     current_time: "datetime",
     buy_tag,
   ) -> tuple:
-    if last_candle["close"] > last_candle["EMA_200"]:
+    last_rsi_14 = last_candle["RSI_14"]
+    last_close = last_candle["close"]
+    last_ema_200 = last_candle["EMA_200"]
+
+    if last_close > last_ema_200:
       if 0.01 > current_profit >= 0.001:
-        if last_candle["RSI_14"] < 10.0:
+        if last_rsi_14 < 10.0:
           return True, f"exit_{mode_name}_o_0"
       elif 0.02 > current_profit >= 0.01:
-        if last_candle["RSI_14"] < 28.0:
+        if last_rsi_14 < 28.0:
           return True, f"exit_{mode_name}_o_1"
       elif 0.03 > current_profit >= 0.02:
-        if last_candle["RSI_14"] < 30.0:
+        if last_rsi_14 < 30.0:
           return True, f"exit_{mode_name}_o_2"
       elif 0.04 > current_profit >= 0.03:
-        if last_candle["RSI_14"] < 32.0:
+        if last_rsi_14 < 32.0:
           return True, f"exit_{mode_name}_o_3"
       elif 0.05 > current_profit >= 0.04:
-        if last_candle["RSI_14"] < 34.0:
+        if last_rsi_14 < 34.0:
           return True, f"exit_{mode_name}_o_4"
       elif 0.06 > current_profit >= 0.05:
-        if last_candle["RSI_14"] < 36.0:
+        if last_rsi_14 < 36.0:
           return True, f"exit_{mode_name}_o_5"
       elif 0.07 > current_profit >= 0.06:
-        if last_candle["RSI_14"] < 38.0:
+        if last_rsi_14 < 38.0:
           return True, f"exit_{mode_name}_o_6"
       elif 0.08 > current_profit >= 0.07:
-        if last_candle["RSI_14"] < 40.0:
+        if last_rsi_14 < 40.0:
           return True, f"exit_{mode_name}_o_7"
       elif 0.09 > current_profit >= 0.08:
-        if last_candle["RSI_14"] < 42.0:
+        if last_rsi_14 < 42.0:
           return True, f"exit_{mode_name}_o_8"
       elif 0.1 > current_profit >= 0.09:
-        if last_candle["RSI_14"] < 44.0:
+        if last_rsi_14 < 44.0:
           return True, f"exit_{mode_name}_o_9"
       elif 0.12 > current_profit >= 0.1:
-        if last_candle["RSI_14"] < 46.0:
+        if last_rsi_14 < 46.0:
           return True, f"exit_{mode_name}_o_10"
       elif 0.2 > current_profit >= 0.12:
-        if last_candle["RSI_14"] < 44.0:
+        if last_rsi_14 < 44.0:
           return True, f"exit_{mode_name}_o_11"
       elif current_profit >= 0.2:
-        if last_candle["RSI_14"] < 42.0:
+        if last_rsi_14 < 42.0:
           return True, f"exit_{mode_name}_o_12"
-    elif last_candle["close"] < last_candle["EMA_200"]:
+    elif last_close < last_ema_200:
       if 0.01 > current_profit >= 0.001:
-        if last_candle["RSI_14"] < 12.0:
+        if last_rsi_14 < 12.0:
           return True, f"exit_{mode_name}_u_0"
       elif 0.02 > current_profit >= 0.01:
-        if last_candle["RSI_14"] < 30.0:
+        if last_rsi_14 < 30.0:
           return True, f"exit_{mode_name}_u_1"
       elif 0.03 > current_profit >= 0.02:
-        if last_candle["RSI_14"] < 32.0:
+        if last_rsi_14 < 32.0:
           return True, f"exit_{mode_name}_u_2"
       elif 0.04 > current_profit >= 0.03:
-        if last_candle["RSI_14"] < 34.0:
+        if last_rsi_14 < 34.0:
           return True, f"exit_{mode_name}_u_3"
       elif 0.05 > current_profit >= 0.04:
-        if last_candle["RSI_14"] < 36.0:
+        if last_rsi_14 < 36.0:
           return True, f"exit_{mode_name}_u_4"
       elif 0.06 > current_profit >= 0.05:
-        if last_candle["RSI_14"] < 38.0:
+        if last_rsi_14 < 38.0:
           return True, f"exit_{mode_name}_u_5"
       elif 0.07 > current_profit >= 0.06:
-        if last_candle["RSI_14"] < 40.0:
+        if last_rsi_14 < 40.0:
           return True, f"exit_{mode_name}_u_6"
       elif 0.08 > current_profit >= 0.07:
-        if last_candle["RSI_14"] < 42.0:
+        if last_rsi_14 < 42.0:
           return True, f"exit_{mode_name}_u_7"
       elif 0.09 > current_profit >= 0.08:
-        if last_candle["RSI_14"] < 44.0:
+        if last_rsi_14 < 44.0:
           return True, f"exit_{mode_name}_u_8"
       elif 0.1 > current_profit >= 0.09:
-        if last_candle["RSI_14"] < 46.0:
+        if last_rsi_14 < 46.0:
           return True, f"exit_{mode_name}_u_9"
       elif 0.12 > current_profit >= 0.1:
-        if last_candle["RSI_14"] < 48.0:
+        if last_rsi_14 < 48.0:
           return True, f"exit_{mode_name}_u_10"
       elif 0.2 > current_profit >= 0.12:
-        if last_candle["RSI_14"] < 46.0:
+        if last_rsi_14 < 46.0:
           return True, f"exit_{mode_name}_u_11"
       elif current_profit >= 0.2:
-        if last_candle["RSI_14"] < 44.0:
+        if last_rsi_14 < 44.0:
           return True, f"exit_{mode_name}_u_12"
 
     #  Here ends exit signal conditions for long_exit_main
@@ -54486,16 +54490,20 @@ class NostalgiaForInfinityX7(IStrategy):
     current_time: "datetime",
     buy_tag,
   ) -> tuple:
+    last_rsi_14 = last_candle["RSI_14"]
+    last_close = last_candle["close"]
+    last_ema_200 = last_candle["EMA_200"]
+
     # Sell signal 1
     if (
-      (last_candle["RSI_14"] < 16.0)
-      and (last_candle["close"] < last_candle["BBL_20_2.0"])
+      (last_rsi_14 < 16.0)
+      and (last_close < last_candle["BBL_20_2.0"])
       and (previous_candle_1["close"] < previous_candle_1["BBL_20_2.0"])
       and (previous_candle_2["close"] < previous_candle_2["BBL_20_2.0"])
       and (previous_candle_3["close"] < previous_candle_3["BBL_20_2.0"])
       and (previous_candle_4["close"] < previous_candle_4["BBL_20_2.0"])
     ):
-      if last_candle["close"] < last_candle["EMA_200"]:
+      if last_close < last_ema_200:
         if current_profit > 0.01:
           return True, f"exit_{mode_name}_1_1_1"
       else:
@@ -54504,12 +54512,12 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Sell signal 2
     elif (
-      (last_candle["RSI_14"] < 14.0)
-      and (last_candle["close"] < last_candle["BBL_20_2.0"])
+      (last_rsi_14 < 14.0)
+      and (last_close < last_candle["BBL_20_2.0"])
       and (previous_candle_1["close"] < previous_candle_1["BBL_20_2.0"])
       and (previous_candle_2["close"] < previous_candle_2["BBL_20_2.0"])
     ):
-      if last_candle["close"] < last_candle["EMA_200"]:
+      if last_close < last_ema_200:
         if current_profit > 0.01:
           return True, f"exit_{mode_name}_2_1_1"
       else:
@@ -54517,8 +54525,8 @@ class NostalgiaForInfinityX7(IStrategy):
           return True, f"exit_{mode_name}_2_2_1"
 
     # Sell signal 3
-    elif last_candle["RSI_14"] < 12.0:
-      if last_candle["close"] < last_candle["EMA_200"]:
+    elif last_rsi_14 < 12.0:
+      if last_close < last_ema_200:
         if current_profit > 0.01:
           return True, f"exit_{mode_name}_3_1_1"
       else:
@@ -54526,8 +54534,8 @@ class NostalgiaForInfinityX7(IStrategy):
           return True, f"exit_{mode_name}_3_2_1"
 
     # Sell signal 4
-    elif (last_candle["RSI_14"] < 16.0) and (last_candle["RSI_14_1h"] < 20.0):
-      if last_candle["close"] < last_candle["EMA_200"]:
+    elif (last_rsi_14 < 16.0) and (last_candle["RSI_14_1h"] < 20.0):
+      if last_close < last_ema_200:
         if current_profit > 0.01:
           return True, f"exit_{mode_name}_4_1_1"
       else:
@@ -54535,11 +54543,7 @@ class NostalgiaForInfinityX7(IStrategy):
           return True, f"exit_{mode_name}_4_2_1"
 
     # Sell signal 6
-    elif (
-      (last_candle["close"] > last_candle["EMA_200"])
-      and (last_candle["close"] < last_candle["EMA_50"])
-      and (last_candle["RSI_14"] < 21.0)
-    ):
+    elif (last_close > last_ema_200) and (last_close < last_candle["EMA_50"]) and (last_rsi_14 < 21.0):
       if current_profit > 0.01:
         return True, f"exit_{mode_name}_6_1"
 
@@ -54553,8 +54557,8 @@ class NostalgiaForInfinityX7(IStrategy):
     #       return True, f"exit_{mode_name}_7_2_1"
 
     # Sell signal 8
-    elif last_candle["close"] < last_candle["BBL_20_2.0_1h"] * 0.86:
-      if last_candle["close"] < last_candle["EMA_200"]:
+    elif last_close < last_candle["BBL_20_2.0_1h"] * 0.86:
+      if last_close < last_ema_200:
         if current_profit > 0.01:
           return True, f"exit_{mode_name}_8_1_1"
       else:
@@ -54583,85 +54587,89 @@ class NostalgiaForInfinityX7(IStrategy):
     current_time: "datetime",
     buy_tag,
   ) -> tuple:
-    if last_candle["close"] < last_candle["EMA_200"]:
+    last_rsi_14 = last_candle["RSI_14"]
+    last_close = last_candle["close"]
+    last_ema_200 = last_candle["EMA_200"]
+
+    if last_close < last_ema_200:
       if 0.01 > current_profit >= 0.001:
-        if last_candle["RSI_14"] > 90.0:
+        if last_rsi_14 > 90.0:
           return True, f"exit_{mode_name}_o_0"
       elif 0.02 > current_profit >= 0.01:
-        if last_candle["RSI_14"] > 72.0:
+        if last_rsi_14 > 72.0:
           return True, f"exit_{mode_name}_o_1"
       elif 0.03 > current_profit >= 0.02:
-        if last_candle["RSI_14"] > 70.0:
+        if last_rsi_14 > 70.0:
           return True, f"exit_{mode_name}_o_2"
       elif 0.04 > current_profit >= 0.03:
-        if last_candle["RSI_14"] > 68.0:
+        if last_rsi_14 > 68.0:
           return True, f"exit_{mode_name}_o_3"
       elif 0.05 > current_profit >= 0.04:
-        if last_candle["RSI_14"] > 66.0:
+        if last_rsi_14 > 66.0:
           return True, f"exit_{mode_name}_o_4"
       elif 0.06 > current_profit >= 0.05:
-        if last_candle["RSI_14"] > 64.0:
+        if last_rsi_14 > 64.0:
           return True, f"exit_{mode_name}_o_5"
       elif 0.07 > current_profit >= 0.06:
-        if last_candle["RSI_14"] > 62.0:
+        if last_rsi_14 > 62.0:
           return True, f"exit_{mode_name}_o_6"
       elif 0.08 > current_profit >= 0.07:
-        if last_candle["RSI_14"] > 60.0:
+        if last_rsi_14 > 60.0:
           return True, f"exit_{mode_name}_o_7"
       elif 0.09 > current_profit >= 0.08:
-        if last_candle["RSI_14"] > 58.0:
+        if last_rsi_14 > 58.0:
           return True, f"exit_{mode_name}_o_8"
       elif 0.1 > current_profit >= 0.09:
-        if last_candle["RSI_14"] > 56.0:
+        if last_rsi_14 > 56.0:
           return True, f"exit_{mode_name}_o_9"
       elif 0.12 > current_profit >= 0.1:
-        if last_candle["RSI_14"] > 54.0:
+        if last_rsi_14 > 54.0:
           return True, f"exit_{mode_name}_o_10"
       elif 0.2 > current_profit >= 0.12:
-        if last_candle["RSI_14"] > 56.0:
+        if last_rsi_14 > 56.0:
           return True, f"exit_{mode_name}_o_11"
       elif current_profit >= 0.2:
-        if last_candle["RSI_14"] > 58.0:
+        if last_rsi_14 > 58.0:
           return True, f"exit_{mode_name}_o_12"
-    elif last_candle["close"] > last_candle["EMA_200"]:
+    elif last_close > last_ema_200:
       if 0.01 > current_profit >= 0.001:
-        if last_candle["RSI_14"] > 88.0:
+        if last_rsi_14 > 88.0:
           return True, f"exit_{mode_name}_u_0"
       elif 0.02 > current_profit >= 0.01:
-        if last_candle["RSI_14"] > 70.0:
+        if last_rsi_14 > 70.0:
           return True, f"exit_{mode_name}_u_1"
       elif 0.03 > current_profit >= 0.02:
-        if last_candle["RSI_14"] > 68.0:
+        if last_rsi_14 > 68.0:
           return True, f"exit_{mode_name}_u_2"
       elif 0.04 > current_profit >= 0.03:
-        if last_candle["RSI_14"] > 66.0:
+        if last_rsi_14 > 66.0:
           return True, f"exit_{mode_name}_u_3"
       elif 0.05 > current_profit >= 0.04:
-        if last_candle["RSI_14"] > 64.0:
+        if last_rsi_14 > 64.0:
           return True, f"exit_{mode_name}_u_4"
       elif 0.06 > current_profit >= 0.05:
-        if last_candle["RSI_14"] > 62.0:
+        if last_rsi_14 > 62.0:
           return True, f"exit_{mode_name}_u_5"
       elif 0.07 > current_profit >= 0.06:
-        if last_candle["RSI_14"] > 60.0:
+        if last_rsi_14 > 60.0:
           return True, f"exit_{mode_name}_u_6"
       elif 0.08 > current_profit >= 0.07:
-        if last_candle["RSI_14"] > 58.0:
+        if last_rsi_14 > 58.0:
           return True, f"exit_{mode_name}_u_7"
       elif 0.09 > current_profit >= 0.08:
-        if last_candle["RSI_14"] > 56.0:
+        if last_rsi_14 > 56.0:
           return True, f"exit_{mode_name}_u_8"
       elif 0.1 > current_profit >= 0.09:
-        if last_candle["RSI_14"] > 54.0:
+        if last_rsi_14 > 54.0:
           return True, f"exit_{mode_name}_u_9"
       elif 0.12 > current_profit >= 0.1:
-        if last_candle["RSI_14"] > 52.0:
+        if last_rsi_14 > 52.0:
           return True, f"exit_{mode_name}_u_10"
       elif 0.2 > current_profit >= 0.12:
-        if last_candle["RSI_14"] > 54.0:
+        if last_rsi_14 > 54.0:
           return True, f"exit_{mode_name}_u_11"
       elif current_profit >= 0.2:
-        if last_candle["RSI_14"] > 56.0:
+        if last_rsi_14 > 56.0:
           return True, f"exit_{mode_name}_u_12"
 
     #  Here ends exit signal conditions for short_exit_main
