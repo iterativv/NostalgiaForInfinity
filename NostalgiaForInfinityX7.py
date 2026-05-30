@@ -52447,7 +52447,10 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Extra sell logic
     if not sell:
-      if (0.09 >= profit_init_ratio > 0.02) and (last_candle["RSI_14"] < 22.0):
+      last_rsi_14 = last_candle["RSI_14"]
+      last_rsi_3 = last_candle["RSI_3"]
+      last_rsi_3_15m = last_candle["RSI_3_15m"]
+      if (0.09 >= profit_init_ratio > 0.02) and (last_rsi_14 < 22.0):
         sell, signal_name = True, f"exit_{mode_name}_q_1"
 
       elif (0.09 >= profit_init_ratio > 0.02) and (last_candle["MFI_14"] < 16.0):
@@ -52458,22 +52461,22 @@ class NostalgiaForInfinityX7(IStrategy):
 
       elif (
         (0.09 >= profit_init_ratio > 0.02)
-        and (last_candle["RSI_14"] <= 18.0)
-        and (last_candle["RSI_3"] < 10.0)
-        and (last_candle["RSI_3_15m"] < 10.0)
+        and (last_rsi_14 <= 18.0)
+        and (last_rsi_3 < 10.0)
+        and (last_rsi_3_15m < 10.0)
       ):
         sell, signal_name = True, f"exit_{mode_name}_q_4"
-      elif (0.09 >= profit_init_ratio > 0.02) and (last_candle["RSI_3_15m"] < 4.0):
+      elif (0.09 >= profit_init_ratio > 0.02) and (last_rsi_3_15m < 4.0):
         sell, signal_name = True, f"exit_{mode_name}_q_5"
-      elif (0.09 >= profit_init_ratio > 0.02) and (last_candle["RSI_3"] < 15.0) and (last_candle["RSI_3_15m"] < 15.0):
+      elif (0.09 >= profit_init_ratio > 0.02) and (last_rsi_3 < 15.0) and (last_rsi_3_15m < 15.0):
         sell, signal_name = True, f"exit_{mode_name}_q_6"
-      elif (0.09 >= profit_init_ratio > 0.02) and (last_candle["RSI_3"] < 10.0) and (last_candle["RSI_3_15m"] < 20.0):
+      elif (0.09 >= profit_init_ratio > 0.02) and (last_rsi_3 < 10.0) and (last_rsi_3_15m < 20.0):
         sell, signal_name = True, f"exit_{mode_name}_q_7"
-      elif (0.09 >= profit_init_ratio > 0.02) and (last_candle["RSI_3"] < 8.0) and (last_candle["RSI_3_15m"] < 25.0):
+      elif (0.09 >= profit_init_ratio > 0.02) and (last_rsi_3 < 8.0) and (last_rsi_3_15m < 25.0):
         sell, signal_name = True, f"exit_{mode_name}_q_8"
-      elif (0.09 >= profit_init_ratio > 0.02) and (last_candle["RSI_3"] < 6.0) and (last_candle["RSI_3_15m"] < 30.0):
+      elif (0.09 >= profit_init_ratio > 0.02) and (last_rsi_3 < 6.0) and (last_rsi_3_15m < 30.0):
         sell, signal_name = True, f"exit_{mode_name}_q_9"
-      elif (0.09 >= profit_init_ratio > 0.02) and (last_candle["RSI_3"] < 1.0):
+      elif (0.09 >= profit_init_ratio > 0.02) and (last_rsi_3 < 1.0):
         sell, signal_name = True, f"exit_{mode_name}_q_10"
 
     cache = self.target_profit_cache
@@ -53248,7 +53251,10 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Extra exit logic
     if not sell:
-      if (0.09 >= profit_init_ratio > 0.005) and (last_candle["RSI_14"] < 22.0):
+      last_rsi_14 = last_candle["RSI_14"]
+      last_rsi_3 = last_candle["RSI_3"]
+      last_rsi_3_15m = last_candle["RSI_3_15m"]
+      if (0.09 >= profit_init_ratio > 0.005) and (last_rsi_14 < 22.0):
         sell, signal_name = True, f"exit_{mode_name}_rpd_1"
       elif (0.09 >= profit_init_ratio > 0.005) and (last_candle["MFI_14"] < 16.0):
         sell, signal_name = True, f"exit_{mode_name}_rpd_2"
@@ -53256,22 +53262,22 @@ class NostalgiaForInfinityX7(IStrategy):
         sell, signal_name = True, f"exit_{mode_name}_rpd_3"
       elif (
         (0.09 >= profit_init_ratio > 0.005)
-        and (last_candle["RSI_14"] <= 28.0)
-        and (last_candle["RSI_3"] < 10.0)
-        and (last_candle["RSI_3_15m"] < 10.0)
+        and (last_rsi_14 <= 28.0)
+        and (last_rsi_3 < 10.0)
+        and (last_rsi_3_15m < 10.0)
       ):
         sell, signal_name = True, f"exit_{mode_name}_rpd_4"
-      elif (0.09 >= profit_init_ratio > 0.005) and (last_candle["RSI_3_15m"] < 4.0):
+      elif (0.09 >= profit_init_ratio > 0.005) and (last_rsi_3_15m < 4.0):
         sell, signal_name = True, f"exit_{mode_name}_rpd_5"
-      elif (0.09 >= profit_init_ratio > 0.005) and (last_candle["RSI_3"] < 15.0) and (last_candle["RSI_3_15m"] < 15.0):
+      elif (0.09 >= profit_init_ratio > 0.005) and (last_rsi_3 < 15.0) and (last_rsi_3_15m < 15.0):
         sell, signal_name = True, f"exit_{mode_name}_rpd_6"
-      elif (0.09 >= profit_init_ratio > 0.005) and (last_candle["RSI_3"] < 10.0) and (last_candle["RSI_3_15m"] < 20.0):
+      elif (0.09 >= profit_init_ratio > 0.005) and (last_rsi_3 < 10.0) and (last_rsi_3_15m < 20.0):
         sell, signal_name = True, f"exit_{mode_name}_rpd_7"
-      elif (0.09 >= profit_init_ratio > 0.005) and (last_candle["RSI_3"] < 8.0) and (last_candle["RSI_3_15m"] < 25.0):
+      elif (0.09 >= profit_init_ratio > 0.005) and (last_rsi_3 < 8.0) and (last_rsi_3_15m < 25.0):
         sell, signal_name = True, f"exit_{mode_name}_rpd_8"
-      elif (0.09 >= profit_init_ratio > 0.005) and (last_candle["RSI_3"] < 6.0) and (last_candle["RSI_3_15m"] < 30.0):
+      elif (0.09 >= profit_init_ratio > 0.005) and (last_rsi_3 < 6.0) and (last_rsi_3_15m < 30.0):
         sell, signal_name = True, f"exit_{mode_name}_rpd_9"
-      elif (0.09 >= profit_init_ratio > 0.005) and (last_candle["RSI_3"] < 1.0):
+      elif (0.09 >= profit_init_ratio > 0.005) and (last_rsi_3 < 1.0):
         sell, signal_name = True, f"exit_{mode_name}_rpd_10"
 
       entry_cost = filled_entries[0].cost
