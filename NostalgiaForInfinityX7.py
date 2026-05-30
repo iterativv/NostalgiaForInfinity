@@ -75857,6 +75857,16 @@ class NostalgiaForInfinityX7(IStrategy):
   def short_grind_entry(
     self, last_candle: Series, previous_candle: Series, slice_profit: float, is_derisk: bool
   ) -> float:
+    last_rsi_14 = last_candle["RSI_14"]
+    last_rsi_3_15m = last_candle["RSI_3_15m"]
+    last_rsi_3_1h = last_candle["RSI_3_1h"]
+    last_rsi_3_4h = last_candle["RSI_3_4h"]
+    last_close = last_candle["close"]
+    last_ema_12 = last_candle["EMA_12"]
+    last_ema_26 = last_candle["EMA_26"]
+    last_rsi_3 = last_candle["RSI_3"]
+    last_open = last_candle["open"]
+
     if (
       (last_candle["protections_short_global"] == True)
       and (last_candle["protections_short_rebuy"] == True)
@@ -75865,63 +75875,63 @@ class NostalgiaForInfinityX7(IStrategy):
       and (
         (last_candle["enter_short"] == True)
         or (
-          (last_candle["RSI_14"] > 64.0)
-          and (last_candle["RSI_3"] < 90.0)
-          and (last_candle["RSI_3_15m"] < 90.0)
+          (last_rsi_14 > 64.0)
+          and (last_rsi_3 < 90.0)
+          and (last_rsi_3_15m < 90.0)
           and (last_candle["AROOND_14"] < 25.0)
           and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 30.0)
           and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 30.0)
-          and (last_candle["close"] > (last_candle["EMA_16"] * 1.020))
+          and (last_close > (last_candle["EMA_16"] * 1.020))
         )
         or (
-          (last_candle["RSI_14"] > 64.0)
-          and (last_candle["RSI_3_15m"] < 95.0)
-          and (last_candle["RSI_3_1h"] < 95.0)
-          and (last_candle["RSI_3_4h"] < 95.0)
-          and (last_candle["EMA_12"] > last_candle["EMA_26"])
-          and ((last_candle["EMA_12"] - last_candle["EMA_26"]) > (last_candle["open"] * 0.030))
-          and ((previous_candle["EMA_12"] - previous_candle["EMA_26"]) > (last_candle["open"] / 100.0))
+          (last_rsi_14 > 64.0)
+          and (last_rsi_3_15m < 95.0)
+          and (last_rsi_3_1h < 95.0)
+          and (last_rsi_3_4h < 95.0)
+          and (last_ema_12 > last_ema_26)
+          and ((last_ema_12 - last_ema_26) > (last_open * 0.030))
+          and ((previous_candle["EMA_12"] - previous_candle["EMA_26"]) > (last_open / 100.0))
         )
         or (
-          (last_candle["RSI_14"] > 64.0)
-          and (last_candle["RSI_3"] < 95.0)
-          and (last_candle["RSI_3_15m"] < 90.0)
-          and (last_candle["RSI_3_1h"] < 90.0)
-          and (last_candle["RSI_3_4h"] < 90.0)
-          and (last_candle["EMA_12"] > last_candle["EMA_26"])
-          and ((last_candle["EMA_12"] - last_candle["EMA_26"]) > (last_candle["open"] * 0.020))
-          and ((previous_candle["EMA_12"] - previous_candle["EMA_26"]) > (last_candle["open"] / 100.0))
+          (last_rsi_14 > 64.0)
+          and (last_rsi_3 < 95.0)
+          and (last_rsi_3_15m < 90.0)
+          and (last_rsi_3_1h < 90.0)
+          and (last_rsi_3_4h < 90.0)
+          and (last_ema_12 > last_ema_26)
+          and ((last_ema_12 - last_ema_26) > (last_open * 0.020))
+          and ((previous_candle["EMA_12"] - previous_candle["EMA_26"]) > (last_open / 100.0))
         )
         or (
-          (last_candle["RSI_14"] > 64.0)
-          and (last_candle["RSI_3"] < 84.0)
+          (last_rsi_14 > 64.0)
+          and (last_rsi_3 < 84.0)
           and (last_candle["AROOND_14_15m"] < 25.0)
-          and (last_candle["close"] > (last_candle["EMA_12"] * 1.016))
+          and (last_close > (last_ema_12 * 1.016))
         )
         or (
-          (last_candle["RSI_14"] > 64.0)
-          and (last_candle["RSI_3_15m"] < 90.0)
-          and (last_candle["RSI_3_1h"] < 90.0)
-          and (last_candle["RSI_3_4h"] < 90.0)
+          (last_rsi_14 > 64.0)
+          and (last_rsi_3_15m < 90.0)
+          and (last_rsi_3_1h < 90.0)
+          and (last_rsi_3_4h < 90.0)
           and (last_candle["AROONU_14_1h"] < last_candle["AROOND_14_1h"])
           and (last_candle["AROONU_14_4h"] < last_candle["AROOND_14_4h"])
-          and (last_candle["close"] > (last_candle["EMA_26"] * 1.022))
-          and (last_candle["close"] > (last_candle["BBL_20_2.0"] * 1.001))
+          and (last_close > (last_ema_26 * 1.022))
+          and (last_close > (last_candle["BBL_20_2.0"] * 1.001))
         )
         or (
-          (last_candle["RSI_14"] > 64.0)
-          and (last_candle["RSI_3_1h"] < 80.0)
-          and (last_candle["RSI_3_4h"] < 80.0)
+          (last_rsi_14 > 64.0)
+          and (last_rsi_3_1h < 80.0)
+          and (last_rsi_3_4h < 80.0)
           and (last_candle["RSI_14_1h"] > 20.0)
           and (last_candle["RSI_14_4h"] > 40.0)
           and (last_candle["AROONU_14"] < last_candle["AROOND_14"])
           and (previous_candle["AROONU_14"] > previous_candle["AROOND_14"])
         )
         or (
-          (last_candle["RSI_14"] > 64.0)
-          and (last_candle["RSI_3_15m"] < 85.0)
-          and (last_candle["RSI_3_1h"] < 80.0)
-          and (last_candle["RSI_3_4h"] < 80.0)
+          (last_rsi_14 > 64.0)
+          and (last_rsi_3_15m < 85.0)
+          and (last_rsi_3_1h < 80.0)
+          and (last_rsi_3_4h < 80.0)
           and (last_candle["RSI_14_1h"] > 20.0)
           and (last_candle["RSI_14_4h"] > 40.0)
           and (last_candle["KST_10_15_20_30_10_10_10_15"] < last_candle["KSTs_9"])
@@ -75929,15 +75939,15 @@ class NostalgiaForInfinityX7(IStrategy):
         )
         or (
           is_derisk
-          and (last_candle["RSI_3"] < 80.0)
-          and (last_candle["RSI_3_15m"] < 80.0)
-          and (last_candle["RSI_3_1h"] < 80.0)
-          and (last_candle["RSI_3_4h"] < 80.0)
-          and (last_candle["RSI_14"] > 64.0)
+          and (last_rsi_3 < 80.0)
+          and (last_rsi_3_15m < 80.0)
+          and (last_rsi_3_1h < 80.0)
+          and (last_rsi_3_4h < 80.0)
+          and (last_rsi_14 > 64.0)
           and (last_candle["AROOND_14"] < 25.0)
           and (last_candle["AROOND_14_15m"] < 25.0)
           and (last_candle["STOCHRSIk_14_14_3_3_15m"] > 50.0)
-          and (last_candle["close"] > (last_candle["EMA_20"] * 1.020))
+          and (last_close > (last_candle["EMA_20"] * 1.020))
         )
       )
     ):
