@@ -12400,12 +12400,11 @@ class NostalgiaForInfinityX7(IStrategy):
 
     for enabled_long_entry_signal in self.long_entry_signal_params:
       long_entry_condition_index = int(enabled_long_entry_signal.rsplit("_", 2)[1])
-      item_buy_protection_list = [True]
       if self.long_entry_signal_params[enabled_long_entry_signal]:
         # Long Entry Conditions Starts Here
         # -----------------------------------------------------------------------------------------
         long_entry_logic = []
-        long_entry_logic.append(reduce(lambda x, y: x & y, item_buy_protection_list))
+        long_entry_logic.append(True)
 
         # Condition #1 - Normal mode (Long).
         if long_entry_condition_index == 1:
@@ -23893,7 +23892,6 @@ class NostalgiaForInfinityX7(IStrategy):
 
     for enabled_short_entry_signal in self.short_entry_signal_params:
       short_entry_condition_index = int(enabled_short_entry_signal.rsplit("_", 2)[1])
-      item_short_buy_protection_list = [True]
       if self.short_entry_signal_params[enabled_short_entry_signal]:
         # Short Entry Conditions Starts Here
         # -----------------------------------------------------------------------------------------
@@ -23901,7 +23899,7 @@ class NostalgiaForInfinityX7(IStrategy):
         # Please dont change these comment descriptions. With these descriptions we are comparing long/short positions.
 
         short_entry_logic = []
-        short_entry_logic.append(reduce(lambda x, y: x & y, item_short_buy_protection_list))
+        short_entry_logic.append(True)
 
         # Condition #501 - Normal mode (Short).
         if short_entry_condition_index == 501:
