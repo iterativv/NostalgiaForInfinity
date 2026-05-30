@@ -52787,9 +52787,10 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Stoplosses
     if not sell:
+      entry_cost = filled_entries[0].cost
       if is_system_v3_2:
         if profit_stake < -(
-          filled_entries[0].cost
+          entry_cost
           * (
             self.system_v3_2_stop_threshold_futures_rebuy
             if self.is_futures_mode
@@ -52800,7 +52801,7 @@ class NostalgiaForInfinityX7(IStrategy):
           sell, signal_name = True, f"exit_{self.short_rebuy_mode_name}_stoploss_doom"
       elif is_system_v3_1:
         if profit_stake < -(
-          filled_entries[0].cost
+          entry_cost
           * (
             self.system_v3_1_stop_threshold_futures_rebuy
             if self.is_futures_mode
@@ -52811,7 +52812,7 @@ class NostalgiaForInfinityX7(IStrategy):
           sell, signal_name = True, f"exit_{self.short_rebuy_mode_name}_stoploss_doom"
       elif is_system_v3:
         if profit_stake < -(
-          filled_entries[0].cost
+          entry_cost
           * (
             self.system_v3_stop_threshold_futures_rebuy
             if self.is_futures_mode
@@ -52824,7 +52825,7 @@ class NostalgiaForInfinityX7(IStrategy):
         if (
           profit_stake
           < -(
-            filled_entries[0].cost
+            entry_cost
             * (self.stop_threshold_futures_rebuy if self.is_futures_mode else self.stop_threshold_spot_rebuy)
             / trade.leverage
           )
@@ -53323,12 +53324,13 @@ class NostalgiaForInfinityX7(IStrategy):
       elif (0.09 >= profit_init_ratio > 0.005) and (last_candle["RSI_3"] < 1.0):
         sell, signal_name = True, f"exit_{self.short_rapid_mode_name}_rpd_10"
 
+      entry_cost = filled_entries[0].cost
       if is_system_v3_2:
         # Stoplosses
         if self.system_v3_2_stops_enable and (
           profit_stake
           < -(
-            filled_entries[0].cost
+            entry_cost
             * (
               self.system_v3_2_stop_threshold_rapid_futures
               if self.is_futures_mode
@@ -53343,7 +53345,7 @@ class NostalgiaForInfinityX7(IStrategy):
         if self.stops_enable and (
           profit_stake
           < -(
-            filled_entries[0].cost
+            entry_cost
             * (
               self.system_v3_1_stop_threshold_rapid_futures
               if self.is_futures_mode
@@ -53358,7 +53360,7 @@ class NostalgiaForInfinityX7(IStrategy):
         if self.stops_enable and (
           profit_stake
           < -(
-            filled_entries[0].cost
+            entry_cost
             * (
               self.system_v3_stop_threshold_rapid_futures
               if self.is_futures_mode
@@ -53376,7 +53378,7 @@ class NostalgiaForInfinityX7(IStrategy):
             and (
               profit_stake
               < -(
-                filled_entries[0].cost
+                entry_cost
                 * (self.stop_threshold_rapid_futures if self.is_futures_mode else self.stop_threshold_rapid_spot)
               )
             )
@@ -53912,12 +53914,13 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Extra exit logic
     if not sell:
+      entry_cost = filled_entries[0].cost
       if is_system_v3_2:
         # Stoplosses
         if self.system_v3_2_stops_enable and (
           profit_stake
           < -(
-            filled_entries[0].cost
+            entry_cost
             * (
               self.system_v3_2_stop_threshold_scalp_futures
               if self.is_futures_mode
@@ -53930,7 +53933,7 @@ class NostalgiaForInfinityX7(IStrategy):
       elif is_system_v3_1:
         # Stoplosses
         if profit_stake < -(
-          filled_entries[0].cost
+          entry_cost
           * (
             self.system_v3_1_stop_threshold_scalp_futures
             if self.is_futures_mode
@@ -53942,7 +53945,7 @@ class NostalgiaForInfinityX7(IStrategy):
       elif is_system_v3:
         # Stoplosses
         if profit_stake < -(
-          filled_entries[0].cost
+          entry_cost
           * (
             self.system_v3_stop_threshold_scalp_futures
             if self.is_futures_mode
@@ -53954,8 +53957,7 @@ class NostalgiaForInfinityX7(IStrategy):
       else:
         # Stoplosses
         if profit_stake < -(
-          filled_entries[0].cost
-          * (self.stop_threshold_scalp_futures if self.is_futures_mode else self.stop_threshold_scalp_spot)
+          entry_cost * (self.stop_threshold_scalp_futures if self.is_futures_mode else self.stop_threshold_scalp_spot)
           # / (trade.leverage if self.is_futures_mode else 1.0)
         ):
           sell, signal_name = True, f"exit_{self.short_scalp_mode_name}_stoploss_doom"
