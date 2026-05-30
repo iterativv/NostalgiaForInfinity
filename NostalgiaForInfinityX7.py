@@ -28022,13 +28022,18 @@ class NostalgiaForInfinityX7(IStrategy):
     last_rsi_14 = last_candle["RSI_14"]
     last_close = last_candle["close"]
     last_ema_200 = last_candle["EMA_200"]
+    last_bbu_20 = last_candle["BBU_20_2.0"]
+    previous_1_close = previous_candle_1["close"]
+    previous_1_bbu_20 = previous_candle_1["BBU_20_2.0"]
+    previous_2_close = previous_candle_2["close"]
+    previous_2_bbu_20 = previous_candle_2["BBU_20_2.0"]
 
     # Sell signal 1
     if (
       (last_rsi_14 > 84.0)
-      and (last_close > last_candle["BBU_20_2.0"])
-      and (previous_candle_1["close"] > previous_candle_1["BBU_20_2.0"])
-      and (previous_candle_2["close"] > previous_candle_2["BBU_20_2.0"])
+      and (last_close > last_bbu_20)
+      and (previous_1_close > previous_1_bbu_20)
+      and (previous_2_close > previous_2_bbu_20)
       and (previous_candle_3["close"] > previous_candle_3["BBU_20_2.0"])
       and (previous_candle_4["close"] > previous_candle_4["BBU_20_2.0"])
     ):
@@ -28042,9 +28047,9 @@ class NostalgiaForInfinityX7(IStrategy):
     # Sell signal 2
     elif (
       (last_rsi_14 > 86.0)
-      and (last_close > last_candle["BBU_20_2.0"])
-      and (previous_candle_1["close"] > previous_candle_1["BBU_20_2.0"])
-      and (previous_candle_2["close"] > previous_candle_2["BBU_20_2.0"])
+      and (last_close > last_bbu_20)
+      and (previous_1_close > previous_1_bbu_20)
+      and (previous_2_close > previous_2_bbu_20)
     ):
       if last_close > last_ema_200:
         if current_profit > 0.01:
