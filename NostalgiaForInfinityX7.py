@@ -50377,6 +50377,7 @@ class NostalgiaForInfinityX7(IStrategy):
   ) -> tuple[Optional[float], str, bool]:
     is_backtest = self.dp.runmode.value in ["backtest", "hyperopt"]
     trade_open_date = None if is_backtest else trade.open_date_utc.replace(tzinfo=None)
+    stake_scale_leverage = trade.leverage if self.is_futures_mode else 1.0
 
     max_rebuy_sub_grinds = 0
     regular_mode_rebuy_stakes = self.scale_stakes_for_min_stake(
@@ -50700,10 +50701,7 @@ class NostalgiaForInfinityX7(IStrategy):
             rebuy_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
             rebuy_found = True
       elif order.ft_order_side == "sell":
-        if (
-          order is filled_exits[-1]
-          and (order.safe_remaining * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) > min_stake
-        ):
+        if order is filled_exits[-1] and (order.safe_remaining * exit_rate / stake_scale_leverage) > min_stake:
           partial_sell = True
           break
         order_tag = ""
@@ -50863,11 +50861,7 @@ class NostalgiaForInfinityX7(IStrategy):
         and ((current_time - timedelta(hours=12) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.06))
         and is_long_grind_entry
       ):
-        buy_amount = (
-          slice_amount
-          * regular_mode_rebuy_stakes[rebuy_sub_grind_count]
-          / (trade.leverage if self.is_futures_mode else 1.0)
-        )
+        buy_amount = slice_amount * regular_mode_rebuy_stakes[rebuy_sub_grind_count] / stake_scale_leverage
         if buy_amount > max_stake:
           buy_amount = max_stake
         if buy_amount < (min_stake * 1.5):
@@ -50910,11 +50904,7 @@ class NostalgiaForInfinityX7(IStrategy):
         and ((num_open_grinds == 0) or (slice_profit < -0.03))
         and is_long_grind_entry
       ):
-        buy_amount = (
-          slice_amount
-          * regular_mode_grind_1_stakes[grind_1_sub_grind_count]
-          / (trade.leverage if self.is_futures_mode else 1.0)
-        )
+        buy_amount = slice_amount * regular_mode_grind_1_stakes[grind_1_sub_grind_count] / stake_scale_leverage
         if buy_amount < (min_stake * 1.5):
           buy_amount = min_stake * 1.5
         if buy_amount > max_stake:
@@ -50951,11 +50941,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and slice_profit < (-0.65 / trade.leverage)
       and (grind_1_sub_grind_count < max_grind_1_sub_grinds)
     ):
-      buy_amount = (
-        slice_amount
-        * regular_mode_grind_1_stakes[grind_1_sub_grind_count]
-        / (trade.leverage if self.is_futures_mode else 1.0)
-      )
+      buy_amount = slice_amount * regular_mode_grind_1_stakes[grind_1_sub_grind_count] / stake_scale_leverage
       if buy_amount < (min_stake * 1.5):
         buy_amount = min_stake * 1.5
       if buy_amount > max_stake:
@@ -51080,11 +51066,7 @@ class NostalgiaForInfinityX7(IStrategy):
         and ((num_open_grinds == 0) or (slice_profit < -0.03))
         and is_long_grind_entry
       ):
-        buy_amount = (
-          slice_amount
-          * regular_mode_grind_2_stakes[grind_2_sub_grind_count]
-          / (trade.leverage if self.is_futures_mode else 1.0)
-        )
+        buy_amount = slice_amount * regular_mode_grind_2_stakes[grind_2_sub_grind_count] / stake_scale_leverage
         if buy_amount < (min_stake * 1.5):
           buy_amount = min_stake * 1.5
         if buy_amount > max_stake:
@@ -51209,11 +51191,7 @@ class NostalgiaForInfinityX7(IStrategy):
         and ((num_open_grinds == 0) or (slice_profit < -0.03))
         and is_long_grind_entry
       ):
-        buy_amount = (
-          slice_amount
-          * regular_mode_grind_3_stakes[grind_3_sub_grind_count]
-          / (trade.leverage if self.is_futures_mode else 1.0)
-        )
+        buy_amount = slice_amount * regular_mode_grind_3_stakes[grind_3_sub_grind_count] / stake_scale_leverage
         if buy_amount < (min_stake * 1.5):
           buy_amount = min_stake * 1.5
         if buy_amount > max_stake:
@@ -51338,11 +51316,7 @@ class NostalgiaForInfinityX7(IStrategy):
         and ((num_open_grinds == 0) or (slice_profit < -0.03))
         and is_long_grind_entry
       ):
-        buy_amount = (
-          slice_amount
-          * regular_mode_grind_4_stakes[grind_4_sub_grind_count]
-          / (trade.leverage if self.is_futures_mode else 1.0)
-        )
+        buy_amount = slice_amount * regular_mode_grind_4_stakes[grind_4_sub_grind_count] / stake_scale_leverage
         if buy_amount < (min_stake * 1.5):
           buy_amount = min_stake * 1.5
         if buy_amount > max_stake:
@@ -51467,11 +51441,7 @@ class NostalgiaForInfinityX7(IStrategy):
         and ((num_open_grinds == 0) or (slice_profit < -0.03))
         and is_long_grind_entry
       ):
-        buy_amount = (
-          slice_amount
-          * regular_mode_grind_5_stakes[grind_5_sub_grind_count]
-          / (trade.leverage if self.is_futures_mode else 1.0)
-        )
+        buy_amount = slice_amount * regular_mode_grind_5_stakes[grind_5_sub_grind_count] / stake_scale_leverage
         if buy_amount < (min_stake * 1.5):
           buy_amount = min_stake * 1.5
         if buy_amount > max_stake:
@@ -51596,11 +51566,7 @@ class NostalgiaForInfinityX7(IStrategy):
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
         and (is_long_grind_entry)
       ):
-        buy_amount = (
-          slice_amount
-          * regular_mode_grind_6_stakes[grind_6_sub_grind_count]
-          / (trade.leverage if self.is_futures_mode else 1.0)
-        )
+        buy_amount = slice_amount * regular_mode_grind_6_stakes[grind_6_sub_grind_count] / stake_scale_leverage
         if buy_amount < (min_stake * 1.5):
           buy_amount = min_stake * 1.5
         if buy_amount > max_stake:
@@ -51878,6 +51844,7 @@ class NostalgiaForInfinityX7(IStrategy):
     )
 
     current_stake_amount = trade.amount * current_rate
+    stake_scale_leverage = trade.leverage if self.is_futures_mode else 1.0
 
     rebuy_mode_stakes = self.rebuy_mode_stakes_futures if self.is_futures_mode else self.rebuy_mode_stakes_spot
     max_sub_grinds = len(rebuy_mode_stakes)
@@ -51897,7 +51864,7 @@ class NostalgiaForInfinityX7(IStrategy):
         total_amount += order.safe_filled
         total_cost += order.safe_filled * order.safe_price
       elif order.ft_order_side == "sell":
-        if (order.safe_remaining * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) > min_stake:
+        if (order.safe_remaining * exit_rate / stake_scale_leverage) > min_stake:
           partial_sell = True
         break
     if sub_grind_count > 0:
@@ -52064,6 +52031,7 @@ class NostalgiaForInfinityX7(IStrategy):
     )
 
     current_stake_amount = trade.amount * current_rate
+    stake_scale_leverage = trade.leverage if self.is_futures_mode else 1.0
 
     rebuy_mode_stakes = (
       self.system_v3_rebuy_mode_stakes_futures if self.is_futures_mode else self.system_v3_rebuy_mode_stakes_spot
@@ -52087,7 +52055,7 @@ class NostalgiaForInfinityX7(IStrategy):
         total_amount += order.safe_filled
         total_cost += order.safe_filled * order.safe_price
       elif order.ft_order_side == "sell":
-        if (order.safe_remaining * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) > min_stake:
+        if (order.safe_remaining * exit_rate / stake_scale_leverage) > min_stake:
           partial_sell = True
         break
     if sub_grind_count > 0:
@@ -76399,6 +76367,7 @@ class NostalgiaForInfinityX7(IStrategy):
   ) -> tuple[Optional[float], str, bool]:
     is_backtest = self.dp.runmode.value in ["backtest", "hyperopt"]
     trade_open_date = None if is_backtest else trade.open_date_utc.replace(tzinfo=None)
+    stake_scale_leverage = trade.leverage if self.is_futures_mode else 1.0
 
     max_rebuy_sub_grinds = 0
     regular_mode_rebuy_stakes = self.scale_stakes_for_min_stake(
@@ -76722,10 +76691,7 @@ class NostalgiaForInfinityX7(IStrategy):
             rebuy_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
             rebuy_found = True
       elif order.ft_order_side == "buy":
-        if (
-          order is filled_exits[-1]
-          and (order.safe_remaining * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) > min_stake
-        ):
+        if order is filled_exits[-1] and (order.safe_remaining * exit_rate / stake_scale_leverage) > min_stake:
           partial_sell = True
           break
         order_tag = ""
@@ -76885,11 +76851,7 @@ class NostalgiaForInfinityX7(IStrategy):
         and ((current_time - timedelta(hours=12) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.06))
         and is_short_grind_entry
       ):
-        buy_amount = (
-          slice_amount
-          * regular_mode_rebuy_stakes[rebuy_sub_grind_count]
-          / (trade.leverage if self.is_futures_mode else 1.0)
-        )
+        buy_amount = slice_amount * regular_mode_rebuy_stakes[rebuy_sub_grind_count] / stake_scale_leverage
         if buy_amount > max_stake:
           buy_amount = max_stake
         if buy_amount < (min_stake * 1.5):
@@ -76932,11 +76894,7 @@ class NostalgiaForInfinityX7(IStrategy):
         and ((num_open_grinds == 0) or (slice_profit > 0.03))
         and is_short_grind_entry
       ):
-        buy_amount = (
-          slice_amount
-          * regular_mode_grind_1_stakes[grind_1_sub_grind_count]
-          / (trade.leverage if self.is_futures_mode else 1.0)
-        )
+        buy_amount = slice_amount * regular_mode_grind_1_stakes[grind_1_sub_grind_count] / stake_scale_leverage
         if buy_amount < (min_stake * 1.5):
           buy_amount = min_stake * 1.5
         if buy_amount > max_stake:
@@ -76973,11 +76931,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and slice_profit > (0.65 / trade.leverage)
       and (grind_1_sub_grind_count < max_grind_1_sub_grinds)
     ):
-      buy_amount = (
-        slice_amount
-        * regular_mode_grind_1_stakes[grind_1_sub_grind_count]
-        / (trade.leverage if self.is_futures_mode else 1.0)
-      )
+      buy_amount = slice_amount * regular_mode_grind_1_stakes[grind_1_sub_grind_count] / stake_scale_leverage
       if buy_amount < (min_stake * 1.5):
         buy_amount = min_stake * 1.5
       if buy_amount > max_stake:
@@ -77102,11 +77056,7 @@ class NostalgiaForInfinityX7(IStrategy):
         and ((num_open_grinds == 0) or (slice_profit > 0.03))
         and is_short_grind_entry
       ):
-        buy_amount = (
-          slice_amount
-          * regular_mode_grind_2_stakes[grind_2_sub_grind_count]
-          / (trade.leverage if self.is_futures_mode else 1.0)
-        )
+        buy_amount = slice_amount * regular_mode_grind_2_stakes[grind_2_sub_grind_count] / stake_scale_leverage
         if buy_amount < (min_stake * 1.5):
           buy_amount = min_stake * 1.5
         if buy_amount > max_stake:
@@ -77231,11 +77181,7 @@ class NostalgiaForInfinityX7(IStrategy):
         and ((num_open_grinds == 0) or (slice_profit > 0.03))
         and is_short_grind_entry
       ):
-        buy_amount = (
-          slice_amount
-          * regular_mode_grind_3_stakes[grind_3_sub_grind_count]
-          / (trade.leverage if self.is_futures_mode else 1.0)
-        )
+        buy_amount = slice_amount * regular_mode_grind_3_stakes[grind_3_sub_grind_count] / stake_scale_leverage
         if buy_amount < (min_stake * 1.5):
           buy_amount = min_stake * 1.5
         if buy_amount > max_stake:
@@ -77360,11 +77306,7 @@ class NostalgiaForInfinityX7(IStrategy):
         and ((num_open_grinds == 0) or (slice_profit > 0.03))
         and is_short_grind_entry
       ):
-        buy_amount = (
-          slice_amount
-          * regular_mode_grind_4_stakes[grind_4_sub_grind_count]
-          / (trade.leverage if self.is_futures_mode else 1.0)
-        )
+        buy_amount = slice_amount * regular_mode_grind_4_stakes[grind_4_sub_grind_count] / stake_scale_leverage
         if buy_amount < (min_stake * 1.5):
           buy_amount = min_stake * 1.5
         if buy_amount > max_stake:
@@ -77489,11 +77431,7 @@ class NostalgiaForInfinityX7(IStrategy):
         and ((num_open_grinds == 0) or (slice_profit > 0.03))
         and is_short_grind_entry
       ):
-        buy_amount = (
-          slice_amount
-          * regular_mode_grind_5_stakes[grind_5_sub_grind_count]
-          / (trade.leverage if self.is_futures_mode else 1.0)
-        )
+        buy_amount = slice_amount * regular_mode_grind_5_stakes[grind_5_sub_grind_count] / stake_scale_leverage
         if buy_amount < (min_stake * 1.5):
           buy_amount = min_stake * 1.5
         if buy_amount > max_stake:
@@ -77618,11 +77556,7 @@ class NostalgiaForInfinityX7(IStrategy):
         # and ((num_open_grinds == 0) or (slice_profit > 0.03))
         and (is_short_grind_entry)
       ):
-        buy_amount = (
-          slice_amount
-          * regular_mode_grind_6_stakes[grind_6_sub_grind_count]
-          / (trade.leverage if self.is_futures_mode else 1.0)
-        )
+        buy_amount = slice_amount * regular_mode_grind_6_stakes[grind_6_sub_grind_count] / stake_scale_leverage
         if buy_amount < (min_stake * 1.5):
           buy_amount = min_stake * 1.5
         if buy_amount > max_stake:
@@ -77900,6 +77834,7 @@ class NostalgiaForInfinityX7(IStrategy):
     )
 
     current_stake_amount = trade.amount * current_rate
+    stake_scale_leverage = trade.leverage if self.is_futures_mode else 1.0
 
     rebuy_mode_stakes = self.rebuy_mode_stakes_futures if self.is_futures_mode else self.rebuy_mode_stakes_spot
     max_sub_grinds = len(rebuy_mode_stakes)
@@ -77919,7 +77854,7 @@ class NostalgiaForInfinityX7(IStrategy):
         total_amount += order.safe_filled
         total_cost += order.safe_filled * order.safe_price
       elif order.ft_order_side == "buy":
-        if (order.safe_remaining * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) > min_stake:
+        if (order.safe_remaining * exit_rate / stake_scale_leverage) > min_stake:
           partial_sell = True
         break
     if sub_grind_count > 0:
@@ -78060,6 +77995,7 @@ class NostalgiaForInfinityX7(IStrategy):
     )
 
     current_stake_amount = trade.amount * current_rate
+    stake_scale_leverage = trade.leverage if self.is_futures_mode else 1.0
 
     rebuy_mode_stakes = (
       self.system_v3_rebuy_mode_stakes_futures if self.is_futures_mode else self.system_v3_rebuy_mode_stakes_spot
@@ -78083,7 +78019,7 @@ class NostalgiaForInfinityX7(IStrategy):
         total_amount += order.safe_filled
         total_cost += order.safe_filled * order.safe_price
       elif order.ft_order_side == "buy":
-        if (order.safe_remaining * exit_rate / (trade.leverage if self.is_futures_mode else 1.0)) > min_stake:
+        if (order.safe_remaining * exit_rate / stake_scale_leverage) > min_stake:
           partial_sell = True
         break
     if sub_grind_count > 0:
