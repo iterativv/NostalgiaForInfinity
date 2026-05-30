@@ -43901,12 +43901,13 @@ class NostalgiaForInfinityX7(IStrategy):
     if self.dp.runmode.value in ("live", "dry_run"):
       ticker = self.dp.ticker(trade.pair)
       if ("bid" in ticker) and ("ask" in ticker):
+        exit_price_side = self.config["exit_pricing"]["price_side"]
         if trade.is_short:
-          if self.config["exit_pricing"]["price_side"] in ["ask", "other"]:
+          if exit_price_side in ["ask", "other"]:
             if ticker["ask"] is not None:
               exit_rate = ticker["ask"]
         else:
-          if self.config["exit_pricing"]["price_side"] in ["bid", "other"]:
+          if exit_price_side in ["bid", "other"]:
             if ticker["bid"] is not None:
               exit_rate = ticker["bid"]
 
@@ -46295,12 +46296,13 @@ class NostalgiaForInfinityX7(IStrategy):
     if self.dp.runmode.value in ("live", "dry_run"):
       ticker = self.dp.ticker(trade.pair)
       if ("bid" in ticker) and ("ask" in ticker):
+        exit_price_side = self.config["exit_pricing"]["price_side"]
         if trade.is_short:
-          if self.config["exit_pricing"]["price_side"] in ["ask", "other"]:
+          if exit_price_side in ["ask", "other"]:
             if ticker["ask"] is not None:
               exit_rate = ticker["ask"]
         else:
-          if self.config["exit_pricing"]["price_side"] in ["bid", "other"]:
+          if exit_price_side in ["bid", "other"]:
             if ticker["bid"] is not None:
               exit_rate = ticker["bid"]
 
@@ -48238,12 +48240,13 @@ class NostalgiaForInfinityX7(IStrategy):
     if self.dp.runmode.value in ("live", "dry_run"):
       ticker = self.dp.ticker(trade.pair)
       if ("bid" in ticker) and ("ask" in ticker):
+        exit_price_side = self.config["exit_pricing"]["price_side"]
         if trade.is_short:
-          if self.config["exit_pricing"]["price_side"] in ["ask", "other"]:
+          if exit_price_side in ["ask", "other"]:
             if ticker["ask"] is not None:
               exit_rate = ticker["ask"]
         else:
-          if self.config["exit_pricing"]["price_side"] in ["bid", "other"]:
+          if exit_price_side in ["bid", "other"]:
             if ticker["bid"] is not None:
               exit_rate = ticker["bid"]
 
@@ -51914,12 +51917,13 @@ class NostalgiaForInfinityX7(IStrategy):
     if self.dp.runmode.value in ("live", "dry_run"):
       ticker = self.dp.ticker(trade.pair)
       if ("bid" in ticker) and ("ask" in ticker):
+        exit_price_side = self.config["exit_pricing"]["price_side"]
         if trade.is_short:
-          if self.config["exit_pricing"]["price_side"] in ["ask", "other"]:
+          if exit_price_side in ["ask", "other"]:
             if ticker["ask"] is not None:
               exit_rate = ticker["ask"]
         else:
-          if self.config["exit_pricing"]["price_side"] in ["bid", "other"]:
+          if exit_price_side in ["bid", "other"]:
             if ticker["bid"] is not None:
               exit_rate = ticker["bid"]
 
@@ -52099,12 +52103,13 @@ class NostalgiaForInfinityX7(IStrategy):
     if self.dp.runmode.value in ("live", "dry_run"):
       ticker = self.dp.ticker(trade.pair)
       if ("bid" in ticker) and ("ask" in ticker):
+        exit_price_side = self.config["exit_pricing"]["price_side"]
         if trade.is_short:
-          if self.config["exit_pricing"]["price_side"] in ["ask", "other"]:
+          if exit_price_side in ["ask", "other"]:
             if ticker["ask"] is not None:
               exit_rate = ticker["ask"]
         else:
-          if self.config["exit_pricing"]["price_side"] in ["bid", "other"]:
+          if exit_price_side in ["bid", "other"]:
             if ticker["bid"] is not None:
               exit_rate = ticker["bid"]
 
@@ -70348,12 +70353,13 @@ class NostalgiaForInfinityX7(IStrategy):
     if self.dp.runmode.value in ("live", "dry_run"):
       ticker = self.dp.ticker(trade.pair)
       if ("bid" in ticker) and ("ask" in ticker):
+        exit_price_side = self.config["exit_pricing"]["price_side"]
         if trade.is_short:
-          if self.config["exit_pricing"]["price_side"] in ["ask", "other"]:
+          if exit_price_side in ["ask", "other"]:
             if ticker["ask"] is not None:
               exit_rate = ticker["ask"]
         else:
-          if self.config["exit_pricing"]["price_side"] in ["bid", "other"]:
+          if exit_price_side in ["bid", "other"]:
             if ticker["bid"] is not None:
               exit_rate = ticker["bid"]
 
@@ -72724,12 +72730,13 @@ class NostalgiaForInfinityX7(IStrategy):
     if self.dp.runmode.value in ("live", "dry_run"):
       ticker = self.dp.ticker(trade.pair)
       if ("bid" in ticker) and ("ask" in ticker):
+        exit_price_side = self.config["exit_pricing"]["price_side"]
         if trade.is_short:
-          if self.config["exit_pricing"]["price_side"] in ["ask", "other"]:
+          if exit_price_side in ["ask", "other"]:
             if ticker["ask"] is not None:
               exit_rate = ticker["ask"]
         else:
-          if self.config["exit_pricing"]["price_side"] in ["bid", "other"]:
+          if exit_price_side in ["bid", "other"]:
             if ticker["bid"] is not None:
               exit_rate = ticker["bid"]
 
@@ -74345,12 +74352,13 @@ class NostalgiaForInfinityX7(IStrategy):
     if self.dp.runmode.value in ("live", "dry_run"):
       ticker = self.dp.ticker(trade.pair)
       if ("bid" in ticker) and ("ask" in ticker):
+        exit_price_side = self.config["exit_pricing"]["price_side"]
         if trade.is_short:
-          if self.config["exit_pricing"]["price_side"] in ["ask", "other"]:
+          if exit_price_side in ["ask", "other"]:
             if ticker["ask"] is not None:
               exit_rate = ticker["ask"]
         else:
-          if self.config["exit_pricing"]["price_side"] in ["bid", "other"]:
+          if exit_price_side in ["bid", "other"]:
             if ticker["bid"] is not None:
               exit_rate = ticker["bid"]
 
@@ -77959,12 +77967,13 @@ class NostalgiaForInfinityX7(IStrategy):
     if self.dp.runmode.value in ("live", "dry_run"):
       ticker = self.dp.ticker(trade.pair)
       if ("bid" in ticker) and ("ask" in ticker):
+        exit_price_side = self.config["exit_pricing"]["price_side"]
         if trade.is_short:
-          if self.config["exit_pricing"]["price_side"] in ["ask", "other"]:
+          if exit_price_side in ["ask", "other"]:
             if ticker["ask"] is not None:
               exit_rate = ticker["ask"]
         else:
-          if self.config["exit_pricing"]["price_side"] in ["bid", "other"]:
+          if exit_price_side in ["bid", "other"]:
             if ticker["bid"] is not None:
               exit_rate = ticker["bid"]
 
@@ -78118,12 +78127,13 @@ class NostalgiaForInfinityX7(IStrategy):
     if self.dp.runmode.value in ("live", "dry_run"):
       ticker = self.dp.ticker(trade.pair)
       if ("bid" in ticker) and ("ask" in ticker):
+        exit_price_side = self.config["exit_pricing"]["price_side"]
         if trade.is_short:
-          if self.config["exit_pricing"]["price_side"] in ["ask", "other"]:
+          if exit_price_side in ["ask", "other"]:
             if ticker["ask"] is not None:
               exit_rate = ticker["ask"]
         else:
-          if self.config["exit_pricing"]["price_side"] in ["bid", "other"]:
+          if exit_price_side in ["bid", "other"]:
             if ticker["bid"] is not None:
               exit_rate = ticker["bid"]
 
