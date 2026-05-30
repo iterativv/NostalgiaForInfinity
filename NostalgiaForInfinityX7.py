@@ -139,6 +139,34 @@ class NostalgiaForInfinityX7(IStrategy):
   # Long scalp mode tags
   long_scalp_mode_tags = ["161", "162", "163"]
 
+  long_rebuy_grind_mode_tags = long_rebuy_mode_tags + long_grind_mode_tags
+  long_scalp_rebuy_grind_mode_tags = long_scalp_mode_tags + long_rebuy_mode_tags + long_grind_mode_tags
+  long_rapid_rebuy_grind_mode_tags = long_rapid_mode_tags + long_rebuy_mode_tags + long_grind_mode_tags
+  long_rapid_rebuy_grind_scalp_mode_tags = (
+    long_rapid_mode_tags + long_rebuy_mode_tags + long_grind_mode_tags + long_scalp_mode_tags
+  )
+  long_adjust_mode_tags = (
+    long_normal_mode_tags
+    + long_pump_mode_tags
+    + long_quick_mode_tags
+    + long_high_profit_mode_tags
+    + long_rapid_mode_tags
+    + long_top_coins_mode_tags
+    + long_scalp_mode_tags
+  )
+  long_known_mode_tags = (
+    long_normal_mode_tags
+    + long_pump_mode_tags
+    + long_quick_mode_tags
+    + long_rebuy_mode_tags
+    + long_high_profit_mode_tags
+    + long_rapid_mode_tags
+    + long_grind_mode_tags
+    + long_btc_mode_tags
+    + long_top_coins_mode_tags
+    + long_scalp_mode_tags
+  )
+
   long_normal_mode_name = "long_normal"
   long_pump_mode_name = "long_pump"
   long_quick_mode_name = "long_quick"
@@ -170,6 +198,40 @@ class NostalgiaForInfinityX7(IStrategy):
   short_top_coins_mode_tags = ["641", "642"]
   # Short scalp mode tags
   short_scalp_mode_tags = ["661"]
+
+  short_rebuy_grind_mode_tags = short_rebuy_mode_tags + short_grind_mode_tags
+  short_scalp_rebuy_grind_mode_tags = short_scalp_mode_tags + short_rebuy_mode_tags + short_grind_mode_tags
+  short_rapid_rebuy_grind_mode_tags = short_rapid_mode_tags + short_rebuy_mode_tags + short_grind_mode_tags
+  short_adjust_mode_tags = (
+    short_normal_mode_tags
+    + short_pump_mode_tags
+    + short_quick_mode_tags
+    + short_high_profit_mode_tags
+    + short_rapid_mode_tags
+    + short_top_coins_mode_tags
+    + short_scalp_mode_tags
+  )
+  short_known_mode_tags = (
+    short_normal_mode_tags
+    + short_pump_mode_tags
+    + short_quick_mode_tags
+    + short_rebuy_mode_tags
+    + short_high_profit_mode_tags
+    + short_rapid_mode_tags
+    + short_grind_mode_tags
+    + short_top_coins_mode_tags
+    + short_scalp_mode_tags
+  )
+  short_exit_known_mode_tags = (
+    short_normal_mode_tags
+    + short_pump_mode_tags
+    + short_quick_mode_tags
+    + short_rebuy_mode_tags
+    + short_high_profit_mode_tags
+    + short_rapid_mode_tags
+    + short_grind_mode_tags
+    + short_scalp_mode_tags
+  )
 
   short_normal_mode_name = "short_normal"
   short_pump_mode_name = "short_pump"
@@ -1096,13 +1158,11 @@ class NostalgiaForInfinityX7(IStrategy):
       is_rapid_mode = all(c in self.long_rapid_mode_tags for c in enter_tags)
       is_rebuy_mode = all(c in self.long_rebuy_mode_tags for c in enter_tags) or (
         any(c in self.long_rebuy_mode_tags for c in enter_tags)
-        and all(c in (self.long_rebuy_mode_tags + self.long_grind_mode_tags) for c in enter_tags)
+        and all(c in self.long_rebuy_grind_mode_tags for c in enter_tags)
       )
       is_scalp_mode = all(c in self.long_scalp_mode_tags for c in enter_tags) or (
         any(c in self.long_scalp_mode_tags for c in enter_tags)
-        and all(
-          c in (self.long_scalp_mode_tags + self.long_rebuy_mode_tags + self.long_grind_mode_tags) for c in enter_tags
-        )
+        and all(c in self.long_scalp_rebuy_grind_mode_tags for c in enter_tags)
       )
       if profit_init_ratio > 0.0:
         # profit is over the threshold, don't exit
@@ -1977,7 +2037,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # Long Rebuy mode
     if all(c in self.long_rebuy_mode_tags for c in enter_tags) or (
       any(c in self.long_rebuy_mode_tags for c in enter_tags)
-      and all(c in (self.long_rebuy_mode_tags + self.long_grind_mode_tags) for c in enter_tags)
+      and all(c in self.long_rebuy_grind_mode_tags for c in enter_tags)
     ):
       sell, signal_name = self.long_exit_rebuy(
         pair,
@@ -2033,13 +2093,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # Long rapid mode
     if all(c in self.long_rapid_mode_tags for c in enter_tags) or (
       any(c in self.long_rapid_mode_tags for c in enter_tags)
-      and all(
-        c
-        in (
-          self.long_rapid_mode_tags + self.long_rebuy_mode_tags + self.long_grind_mode_tags + self.long_scalp_mode_tags
-        )
-        for c in enter_tags
-      )
+      and all(c in self.long_rapid_rebuy_grind_scalp_mode_tags for c in enter_tags)
     ):
       sell, signal_name = self.long_exit_rapid(
         pair,
@@ -2147,9 +2201,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # Long scalp mode
     if all(c in self.long_scalp_mode_tags for c in enter_tags) or (
       any(c in self.long_scalp_mode_tags for c in enter_tags)
-      and all(
-        c in (self.long_scalp_mode_tags + self.long_rebuy_mode_tags + self.long_grind_mode_tags) for c in enter_tags
-      )
+      and all(c in self.long_scalp_rebuy_grind_mode_tags for c in enter_tags)
     ):
       sell, signal_name = self.long_exit_scalp(
         pair,
@@ -2338,9 +2390,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # Short scalp mode
     if all(c in self.short_scalp_mode_tags for c in enter_tags) or (
       any(c in self.short_scalp_mode_tags for c in enter_tags)
-      and all(
-        c in (self.short_scalp_mode_tags + self.short_rebuy_mode_tags + self.short_grind_mode_tags) for c in enter_tags
-      )
+      and all(c in self.short_scalp_rebuy_grind_mode_tags for c in enter_tags)
     ):
       sell, signal_name = self.short_exit_scalp(
         pair,
@@ -2367,24 +2417,7 @@ class NostalgiaForInfinityX7(IStrategy):
         return f"{signal_name} ( {enter_tag})"
 
     # Trades not opened by X7
-    if not trade.is_short and (
-      not any(
-        c
-        in (
-          self.long_normal_mode_tags
-          + self.long_pump_mode_tags
-          + self.long_quick_mode_tags
-          + self.long_rebuy_mode_tags
-          + self.long_high_profit_mode_tags
-          + self.long_rapid_mode_tags
-          + self.long_grind_mode_tags
-          + self.long_btc_mode_tags
-          + self.long_top_coins_mode_tags
-          + self.long_scalp_mode_tags
-        )
-        for c in enter_tags
-      )
-    ):
+    if not trade.is_short and (not any(c in self.long_known_mode_tags for c in enter_tags)):
       # use normal mode for such trades
       sell, signal_name = self.long_exit_normal(
         pair,
@@ -2412,22 +2445,7 @@ class NostalgiaForInfinityX7(IStrategy):
         return f"{signal_name} ( {enter_tag})"
 
     # Trades not opened by X7
-    if trade.is_short and (
-      not any(
-        c
-        in (
-          self.short_normal_mode_tags
-          + self.short_pump_mode_tags
-          + self.short_quick_mode_tags
-          + self.short_rebuy_mode_tags
-          + self.short_high_profit_mode_tags
-          + self.short_rapid_mode_tags
-          + self.short_grind_mode_tags
-          + self.short_scalp_mode_tags
-        )
-        for c in enter_tags
-      )
-    ):
+    if trade.is_short and (not any(c in self.short_exit_known_mode_tags for c in enter_tags)):
       # use normal mode for such trades
       sell, signal_name = self.short_exit_normal(
         pair,
@@ -2476,7 +2494,7 @@ class NostalgiaForInfinityX7(IStrategy):
       # Rebuy mode
       if all(c in self.long_rebuy_mode_tags for c in enter_tags) or (
         any(c in self.long_rebuy_mode_tags for c in enter_tags)
-        and all(c in (self.long_rebuy_mode_tags + self.long_grind_mode_tags) for c in enter_tags)
+        and all(c in self.long_rebuy_grind_mode_tags for c in enter_tags)
       ):
         stake_multiplier = self.system_v3_rebuy_mode_stake_multiplier
         stake = proposed_stake * stake_multiplier
@@ -2489,10 +2507,7 @@ class NostalgiaForInfinityX7(IStrategy):
         all(c in self.long_rapid_mode_tags for c in enter_tags)
         or (
           any(c in self.long_rapid_mode_tags for c in enter_tags)
-          and all(
-            c in (self.long_rapid_mode_tags + self.long_rebuy_mode_tags + self.long_grind_mode_tags)
-            for c in enter_tags
-          )
+          and all(c in self.long_rapid_rebuy_grind_mode_tags for c in enter_tags)
         )
       ):
         stake_multiplier = (
@@ -2547,7 +2562,7 @@ class NostalgiaForInfinityX7(IStrategy):
       # Rebuy mode
       if all(c in self.short_rebuy_mode_tags for c in enter_tags) or (
         any(c in self.short_rebuy_mode_tags for c in enter_tags)
-        and all(c in (self.short_rebuy_mode_tags + self.short_grind_mode_tags) for c in enter_tags)
+        and all(c in self.short_rebuy_grind_mode_tags for c in enter_tags)
       ):
         stake_multiplier = self.system_v3_rebuy_mode_stake_multiplier
         stake = proposed_stake * stake_multiplier
@@ -2568,10 +2583,7 @@ class NostalgiaForInfinityX7(IStrategy):
         all(c in self.short_rapid_mode_tags for c in enter_tags)
         or (
           any(c in self.short_rapid_mode_tags for c in enter_tags)
-          and all(
-            c in (self.short_rapid_mode_tags + self.short_rebuy_mode_tags + self.short_grind_mode_tags)
-            for c in enter_tags
-          )
+          and all(c in self.short_rapid_rebuy_grind_mode_tags for c in enter_tags)
         )
       ):
         stake_multiplier = (
@@ -2658,7 +2670,7 @@ class NostalgiaForInfinityX7(IStrategy):
       all(c in self.long_rebuy_mode_tags for c in enter_tags)
       or (
         any(c in self.long_rebuy_mode_tags for c in enter_tags)
-        and all(c in (self.long_rebuy_mode_tags + self.long_grind_mode_tags) for c in enter_tags)
+        and all(c in self.long_rebuy_grind_mode_tags for c in enter_tags)
       )
     ):
       if is_system_v3 or is_system_v3_1 or is_system_v3_2:
@@ -2693,7 +2705,7 @@ class NostalgiaForInfinityX7(IStrategy):
       all(c in self.short_rebuy_mode_tags for c in enter_tags)
       or (
         any(c in self.short_rebuy_mode_tags for c in enter_tags)
-        and all(c in (self.short_rebuy_mode_tags + self.short_grind_mode_tags) for c in enter_tags)
+        and all(c in self.short_rebuy_grind_mode_tags for c in enter_tags)
       )
     ):
       if is_system_v3 or is_system_v3_1 or is_system_v3_2:
@@ -2728,33 +2740,8 @@ class NostalgiaForInfinityX7(IStrategy):
     # Grinding
     elif not trade.is_short:
       if not is_long_grind_mode and not is_long_btc_mode and (is_system_v3 or is_system_v3_1 or is_system_v3_2):
-        if any(
-          c
-          in (
-            self.long_normal_mode_tags
-            + self.long_pump_mode_tags
-            + self.long_quick_mode_tags
-            + self.long_high_profit_mode_tags
-            + self.long_rapid_mode_tags
-            + self.long_top_coins_mode_tags
-            + self.long_scalp_mode_tags
-          )
-          for c in enter_tags
-        ) or not any(
-          c
-          in (
-            self.long_normal_mode_tags
-            + self.long_pump_mode_tags
-            + self.long_quick_mode_tags
-            + self.long_rebuy_mode_tags
-            + self.long_high_profit_mode_tags
-            + self.long_rapid_mode_tags
-            + self.long_grind_mode_tags
-            + self.long_btc_mode_tags
-            + self.long_top_coins_mode_tags
-            + self.long_scalp_mode_tags
-          )
-          for c in enter_tags
+        if any(c in self.long_adjust_mode_tags for c in enter_tags) or not any(
+          c in self.long_known_mode_tags for c in enter_tags
         ):
           return self.long_grind_adjust_trade_position_v3(
             trade,
@@ -2783,33 +2770,8 @@ class NostalgiaForInfinityX7(IStrategy):
           current_entry_profit,
           current_exit_profit,
         )
-      elif any(
-        c
-        in (
-          self.long_normal_mode_tags
-          + self.long_pump_mode_tags
-          + self.long_quick_mode_tags
-          + self.long_high_profit_mode_tags
-          + self.long_rapid_mode_tags
-          + self.long_top_coins_mode_tags
-          + self.long_scalp_mode_tags
-        )
-        for c in enter_tags
-      ) or not any(
-        c
-        in (
-          self.long_normal_mode_tags
-          + self.long_pump_mode_tags
-          + self.long_quick_mode_tags
-          + self.long_rebuy_mode_tags
-          + self.long_high_profit_mode_tags
-          + self.long_rapid_mode_tags
-          + self.long_grind_mode_tags
-          + self.long_btc_mode_tags
-          + self.long_top_coins_mode_tags
-          + self.long_scalp_mode_tags
-        )
-        for c in enter_tags
+      elif any(c in self.long_adjust_mode_tags for c in enter_tags) or not any(
+        c in self.long_known_mode_tags for c in enter_tags
       ):
         return self.long_grind_adjust_trade_position_v2(
           trade,
@@ -2827,32 +2789,8 @@ class NostalgiaForInfinityX7(IStrategy):
 
     elif trade.is_short:
       if not is_short_grind_mode and (is_system_v3 or is_system_v3_1 or is_system_v3_2):
-        if any(
-          c
-          in (
-            self.short_normal_mode_tags
-            + self.short_pump_mode_tags
-            + self.short_quick_mode_tags
-            + self.short_high_profit_mode_tags
-            + self.short_rapid_mode_tags
-            + self.short_top_coins_mode_tags
-            + self.short_scalp_mode_tags
-          )
-          for c in enter_tags
-        ) or not any(
-          c
-          in (
-            self.short_normal_mode_tags
-            + self.short_pump_mode_tags
-            + self.short_quick_mode_tags
-            + self.short_rebuy_mode_tags
-            + self.short_high_profit_mode_tags
-            + self.short_rapid_mode_tags
-            + self.short_grind_mode_tags
-            + self.short_top_coins_mode_tags
-            + self.short_scalp_mode_tags
-          )
-          for c in enter_tags
+        if any(c in self.short_adjust_mode_tags for c in enter_tags) or not any(
+          c in self.short_known_mode_tags for c in enter_tags
         ):
           return self.short_grind_adjust_trade_position_v3(
             trade,
@@ -2882,32 +2820,8 @@ class NostalgiaForInfinityX7(IStrategy):
           current_exit_profit,
         )
       else:
-        if any(
-          c
-          in (
-            self.short_normal_mode_tags
-            + self.short_pump_mode_tags
-            + self.short_quick_mode_tags
-            + self.short_high_profit_mode_tags
-            + self.short_rapid_mode_tags
-            + self.short_top_coins_mode_tags
-            + self.short_scalp_mode_tags
-          )
-          for c in enter_tags
-        ) or not any(
-          c
-          in (
-            self.short_normal_mode_tags
-            + self.short_pump_mode_tags
-            + self.short_quick_mode_tags
-            + self.short_rebuy_mode_tags
-            + self.short_high_profit_mode_tags
-            + self.short_rapid_mode_tags
-            + self.short_grind_mode_tags
-            + self.short_top_coins_mode_tags
-            + self.short_scalp_mode_tags
-          )
-          for c in enter_tags
+        if any(c in self.short_adjust_mode_tags for c in enter_tags) or not any(
+          c in self.short_known_mode_tags for c in enter_tags
         ):
           return self.short_grind_adjust_trade_position_v2(
             trade,
