@@ -2897,22 +2897,23 @@ class NostalgiaForInfinityX7(IStrategy):
     """
 
     # Headers for different message types
-    headers = {
-      "grinding-entry": f"✅ ​**Grinding entry:** `({tag})`\n",
-      "grinding-exit": f"❎​ ​**Grinding exit:** `({tag})`\n",
-      "grinding-derisk": f"❌​​ ​**Grinding de-risk:** `({tag})`\n",
-      "grinding-stop": f"❌ ​**Grinding stop exit:** `({tag})`\n",
-      "buyback-entry": f"✅ ​**Buyback entry:** `({tag})`\n",
-      "buyback-exit": f"❎​​ ​**Buyback exit:** `({tag})`\n",
-      "buyback-derisk": f"❌​​ ​**Buyback de-risk:** `({tag})`\n",
-      "re-entry": f"✅ ​**Re-entry:** `({tag})`\n",
-      "de-risk": f"❌​​ ​**De-risk:** `({tag})`\n",
-      "rebuy-derisk": f"❌​​ ​**Rebuy de-risk:** `({tag})`\n",
-      "rebuy": f"✅ ​**Rebuy:** `({tag})`\n",
+    header_labels = {
+      "grinding-entry": "✅ ​**Grinding entry:** ",
+      "grinding-exit": "❎​ ​**Grinding exit:** ",
+      "grinding-derisk": "❌​​ ​**Grinding de-risk:** ",
+      "grinding-stop": "❌ ​**Grinding stop exit:** ",
+      "buyback-entry": "✅ ​**Buyback entry:** ",
+      "buyback-exit": "❎​​ ​**Buyback exit:** ",
+      "buyback-derisk": "❌​​ ​**Buyback de-risk:** ",
+      "re-entry": "✅ ​**Re-entry:** ",
+      "de-risk": "❌​​ ​**De-risk:** ",
+      "rebuy-derisk": "❌​​ ​**Rebuy de-risk:** ",
+      "rebuy": "✅ ​**Rebuy:** ",
     }
 
     # Start with the header
-    msg = headers.get(msg_type, None)
+    header_label = header_labels.get(msg_type, None)
+    msg = None if header_label is None else f"{header_label}`({tag})`\n"
 
     # Add exchange information
     exchange_name = getattr(self, "config", {}).get("exchange", {}).get("name", "Unknown").capitalize()
