@@ -11986,8 +11986,9 @@ class NostalgiaForInfinityX7(IStrategy):
     df, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
     if len(df) >= 1:
       last_candle = df.iloc[-1]
-      if (side == "long" and rate > last_candle["close"]) or (side == "short" and rate < last_candle["close"]):
-        slippage = (rate / last_candle["close"]) - 1.0
+      last_close = last_candle["close"]
+      if (side == "long" and rate > last_close) or (side == "short" and rate < last_close):
+        slippage = (rate / last_close) - 1.0
         if (side == "long" and slippage < self.max_slippage) or (side == "short" and slippage > -self.max_slippage):
           return True
         else:
