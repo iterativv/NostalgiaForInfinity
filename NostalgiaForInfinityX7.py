@@ -1129,6 +1129,16 @@ class NostalgiaForInfinityX7(IStrategy):
     previous_time_profit_reached,
     enter_tags,
   ) -> tuple:
+    remove_profit_target = self._remove_profit_target
+    derisk_enable = self.derisk_enable
+    is_futures_mode = self.is_futures_mode
+    long_rapid_mode_tags = self.long_rapid_mode_tags
+    long_rebuy_mode_tags = self.long_rebuy_mode_tags
+    long_rebuy_grind_mode_tags = self.long_rebuy_grind_mode_tags
+    long_scalp_mode_tags = self.long_scalp_mode_tags
+    long_scalp_rebuy_grind_mode_tags = self.long_scalp_rebuy_grind_mode_tags
+    trade_leverage = trade.leverage
+
     is_backtest = self.is_backtest_mode()
     is_system_v3, is_system_v3_1, is_system_v3_2 = self.get_system_version_flags(trade)
     is_derisk = False
@@ -1155,80 +1165,79 @@ class NostalgiaForInfinityX7(IStrategy):
       if is_system_v3 or is_system_v3_1 or is_system_v3_2:
         return True, previous_sell_reason
 
-      is_rapid_mode = all(c in self.long_rapid_mode_tags for c in enter_tags)
-      is_rebuy_mode = all(c in self.long_rebuy_mode_tags for c in enter_tags) or (
-        any(c in self.long_rebuy_mode_tags for c in enter_tags)
-        and all(c in self.long_rebuy_grind_mode_tags for c in enter_tags)
+      is_rapid_mode = all(c in long_rapid_mode_tags for c in enter_tags)
+      is_rebuy_mode = all(c in long_rebuy_mode_tags for c in enter_tags) or (
+        any(c in long_rebuy_mode_tags for c in enter_tags) and all(c in long_rebuy_grind_mode_tags for c in enter_tags)
       )
-      is_scalp_mode = all(c in self.long_scalp_mode_tags for c in enter_tags) or (
-        any(c in self.long_scalp_mode_tags for c in enter_tags)
-        and all(c in self.long_scalp_rebuy_grind_mode_tags for c in enter_tags)
+      is_scalp_mode = all(c in long_scalp_mode_tags for c in enter_tags) or (
+        any(c in long_scalp_mode_tags for c in enter_tags)
+        and all(c in long_scalp_rebuy_grind_mode_tags for c in enter_tags)
       )
       if profit_init_ratio > 0.0:
         # profit is over the threshold, don't exit
-        self._remove_profit_target(pair)
+        remove_profit_target(pair)
         return False, None
       elif is_derisk:
-        self._remove_profit_target(pair)
+        remove_profit_target(pair)
         return False, None
-      elif self.derisk_enable and (current_time - timedelta(minutes=60) > previous_time_profit_reached):
+      elif derisk_enable and (current_time - timedelta(minutes=60) > previous_time_profit_reached):
         if profit_ratio < previous_profit:
           return True, previous_sell_reason
         elif profit_ratio > previous_profit:
-          self._remove_profit_target(pair)
+          remove_profit_target(pair)
           return False, None
       elif (
-        not self.derisk_enable
+        not derisk_enable
         and not is_rapid_mode
         and not is_rebuy_mode
         and not is_scalp_mode
         and (
           profit_init_ratio
-          <= -(self.stop_threshold_doom_futures if self.is_futures_mode else self.stop_threshold_doom_spot)
+          <= -(self.stop_threshold_doom_futures if is_futures_mode else self.stop_threshold_doom_spot)
         )
       ):
         return True, previous_sell_reason
       elif (
-        not self.derisk_enable
+        not derisk_enable
         and is_rapid_mode
         and (
           profit_init_ratio
-          <= -(self.stop_threshold_rapid_futures if self.is_futures_mode else self.stop_threshold_rapid_spot)
+          <= -(self.stop_threshold_rapid_futures if is_futures_mode else self.stop_threshold_rapid_spot)
         )
       ):
         return True, previous_sell_reason
       elif (
-        not self.derisk_enable
+        not derisk_enable
         and is_rebuy_mode
         and (
           profit_init_ratio
-          <= -(self.stop_threshold_futures_rebuy if self.is_futures_mode else self.stop_threshold_spot_rebuy)
+          <= -(self.stop_threshold_futures_rebuy if is_futures_mode else self.stop_threshold_spot_rebuy)
         )
       ):
         return True, previous_sell_reason
       elif (
-        not self.derisk_enable
+        not derisk_enable
         and is_scalp_mode
         and (
           profit_init_ratio
-          <= -(self.stop_threshold_scalp_futures if self.is_futures_mode else self.stop_threshold_scalp_spot)
+          <= -(self.stop_threshold_scalp_futures if is_futures_mode else self.stop_threshold_scalp_spot)
         )
       ):
         return True, previous_sell_reason
     elif previous_sell_reason == f"exit_{mode_name}_stoploss_u_e":
       if profit_init_ratio > 0.0:
         # profit is over the threshold, don't exit
-        self._remove_profit_target(pair)
+        remove_profit_target(pair)
         return False, None
       elif is_derisk:
-        self._remove_profit_target(pair)
+        remove_profit_target(pair)
         return False, None
-      elif profit_ratio < (previous_profit - (0.04 / trade.leverage)):
+      elif profit_ratio < (previous_profit - (0.04 / trade_leverage)):
         return True, previous_sell_reason
     elif previous_sell_reason == f"exit_profit_{mode_name}_max":
       if profit_init_ratio < -0.08:
         # profit is under the threshold, cancel it
-        self._remove_profit_target(pair)
+        remove_profit_target(pair)
         return False, None
 
       last_rsi_14 = last_candle["RSI_14"]
@@ -1501,7 +1510,7 @@ class NostalgiaForInfinityX7(IStrategy):
           elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h < -40.0):
             return True, f"exit_profit_{mode_name}_t_12_3"
       else:
-        is_scalp_mode = all(c in self.long_scalp_mode_tags for c in enter_tags)
+        is_scalp_mode = all(c in long_scalp_mode_tags for c in enter_tags)
         if is_scalp_mode:
           if 0.001 <= profit_init_ratio < 0.01:
             if profit_init_ratio < (previous_profit - 0.008):
