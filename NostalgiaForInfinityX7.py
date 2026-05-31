@@ -43387,6 +43387,10 @@ class NostalgiaForInfinityX7(IStrategy):
     current_time: "datetime",
     buy_tag,
   ) -> tuple:
+    is_futures_mode = self.is_futures_mode
+    doom_stops_enable = self.doom_stops_enable
+    trade_leverage = trade.leverage
+
     is_backtest = self.is_backtest_mode()
     trade_open_date = None if is_backtest else trade.open_date_utc.replace(tzinfo=None)
     is_system_v3, is_system_v3_1, is_system_v3_2 = self.get_system_version_flags(trade)
@@ -43402,52 +43406,48 @@ class NostalgiaForInfinityX7(IStrategy):
           entry_cost
           * (
             self.system_v3_2_stop_threshold_doom_futures
-            if self.is_futures_mode
+            if is_futures_mode
             else self.system_v3_2_stop_threshold_doom_spot
           )
-          / trade.leverage
+          / trade_leverage
         )
       ):
         return True, f"exit_{mode_name}_stoploss_doom"
     elif is_system_v3_1:
       # Stoploss doom
-      if self.doom_stops_enable and (
+      if doom_stops_enable and (
         profit_stake
         < -(
           entry_cost
           * (
             self.system_v3_1_stop_threshold_doom_futures
-            if self.is_futures_mode
+            if is_futures_mode
             else self.system_v3_1_stop_threshold_doom_spot
           )
-          / trade.leverage
+          / trade_leverage
         )
       ):
         return True, f"exit_{mode_name}_stoploss_doom"
     elif is_system_v3:
       # Stoploss doom
-      if self.doom_stops_enable and (
+      if doom_stops_enable and (
         profit_stake
         < -(
           entry_cost
           * (
-            self.system_v3_stop_threshold_doom_futures
-            if self.is_futures_mode
-            else self.system_v3_stop_threshold_doom_spot
+            self.system_v3_stop_threshold_doom_futures if is_futures_mode else self.system_v3_stop_threshold_doom_spot
           )
-          / trade.leverage
+          / trade_leverage
         )
       ):
         return True, f"exit_{mode_name}_stoploss_doom"
     else:
       # Stoploss doom
       if (
-        self.doom_stops_enable
+        doom_stops_enable
         and (
           profit_stake
-          < -(
-            entry_cost * (self.stop_threshold_doom_futures if self.is_futures_mode else self.stop_threshold_doom_spot)
-          )
+          < -(entry_cost * (self.stop_threshold_doom_futures if is_futures_mode else self.stop_threshold_doom_spot))
         )
         and (
           self.has_valid_entry_conditions(trade, current_rate, last_candle, previous_candle_1, filled_orders) == False
@@ -43467,7 +43467,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and (
         profit_stake
         < -(
-          entry_cost * (self.stop_threshold_futures if self.is_futures_mode else self.stop_threshold_spot)
+          entry_cost * (self.stop_threshold_futures if is_futures_mode else self.stop_threshold_spot)
           # / trade.leverage
         )
       )
