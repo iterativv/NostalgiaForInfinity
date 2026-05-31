@@ -1930,6 +1930,20 @@ class NostalgiaForInfinityX7(IStrategy):
   def custom_exit(
     self, pair: str, trade: "Trade", current_time: "datetime", current_rate: float, current_profit: float, **kwargs
   ):
+    calc_total_profit = self.calc_total_profit
+    cache_backtest_profit_snapshot = self.cache_backtest_profit_snapshot
+    filled_order_snapshot = self.filled_order_snapshot
+    long_normal_mode_tags = self.long_normal_mode_tags
+    long_pump_mode_tags = self.long_pump_mode_tags
+    long_quick_mode_tags = self.long_quick_mode_tags
+    long_rebuy_mode_tags = self.long_rebuy_mode_tags
+    long_exit_normal = self.long_exit_normal
+    long_exit_pump = self.long_exit_pump
+    long_exit_quick = self.long_exit_quick
+    short_exit_normal = self.short_exit_normal
+    short_scalp_mode_tags = self.short_scalp_mode_tags
+    long_scalp_mode_tags = self.long_scalp_mode_tags
+
     df, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
     if len(df) < 6:
       return None
@@ -1945,15 +1959,15 @@ class NostalgiaForInfinityX7(IStrategy):
       enter_tag = trade.enter_tag
     enter_tags = enter_tag.split()
 
-    filled_orders, filled_entries, filled_exits = self.filled_order_snapshot(trade)
+    filled_orders, filled_entries, filled_exits = filled_order_snapshot(trade)
 
     profit_stake = 0.0
     profit_ratio = 0.0
     profit_current_stake_ratio = 0.0
     profit_init_ratio = 0.0
-    profit_values = self.calc_total_profit(trade, filled_entries, filled_exits, current_rate)
+    profit_values = calc_total_profit(trade, filled_entries, filled_exits, current_rate)
     profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = profit_values
-    self.cache_backtest_profit_snapshot(
+    cache_backtest_profit_snapshot(
       trade, current_time, current_rate, filled_orders, filled_entries, filled_exits, profit_values
     )
 
@@ -1961,8 +1975,8 @@ class NostalgiaForInfinityX7(IStrategy):
     max_loss = 0.0
 
     # Long Normal mode
-    if any(c in self.long_normal_mode_tags for c in enter_tags):
-      sell, signal_name = self.long_exit_normal(
+    if any(c in long_normal_mode_tags for c in enter_tags):
+      sell, signal_name = long_exit_normal(
         pair,
         current_rate,
         profit_stake,
@@ -1988,8 +2002,8 @@ class NostalgiaForInfinityX7(IStrategy):
         return f"{signal_name} ( {enter_tag})"
 
     # Long Pump mode
-    if any(c in self.long_pump_mode_tags for c in enter_tags):
-      sell, signal_name = self.long_exit_pump(
+    if any(c in long_pump_mode_tags for c in enter_tags):
+      sell, signal_name = long_exit_pump(
         pair,
         current_rate,
         profit_stake,
@@ -2015,8 +2029,8 @@ class NostalgiaForInfinityX7(IStrategy):
         return f"{signal_name} ( {enter_tag})"
 
     # Long Quick mode
-    if any(c in self.long_quick_mode_tags for c in enter_tags):
-      sell, signal_name = self.long_exit_quick(
+    if any(c in long_quick_mode_tags for c in enter_tags):
+      sell, signal_name = long_exit_quick(
         pair,
         current_rate,
         profit_stake,
@@ -2042,8 +2056,8 @@ class NostalgiaForInfinityX7(IStrategy):
         return f"{signal_name} ( {enter_tag})"
 
     # Long Rebuy mode
-    if all(c in self.long_rebuy_mode_tags for c in enter_tags) or (
-      any(c in self.long_rebuy_mode_tags for c in enter_tags)
+    if all(c in long_rebuy_mode_tags for c in enter_tags) or (
+      any(c in long_rebuy_mode_tags for c in enter_tags)
       and all(c in self.long_rebuy_grind_mode_tags for c in enter_tags)
     ):
       sell, signal_name = self.long_exit_rebuy(
@@ -2206,8 +2220,8 @@ class NostalgiaForInfinityX7(IStrategy):
         return f"{signal_name} ( {enter_tag})"
 
     # Long scalp mode
-    if all(c in self.long_scalp_mode_tags for c in enter_tags) or (
-      any(c in self.long_scalp_mode_tags for c in enter_tags)
+    if all(c in long_scalp_mode_tags for c in enter_tags) or (
+      any(c in long_scalp_mode_tags for c in enter_tags)
       and all(c in self.long_scalp_rebuy_grind_mode_tags for c in enter_tags)
     ):
       sell, signal_name = self.long_exit_scalp(
@@ -2236,7 +2250,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Short normal mode
     if any(c in self.short_normal_mode_tags for c in enter_tags):
-      sell, signal_name = self.short_exit_normal(
+      sell, signal_name = short_exit_normal(
         pair,
         current_rate,
         profit_stake,
@@ -2395,8 +2409,8 @@ class NostalgiaForInfinityX7(IStrategy):
         return f"{signal_name} ( {enter_tag})"
 
     # Short scalp mode
-    if all(c in self.short_scalp_mode_tags for c in enter_tags) or (
-      any(c in self.short_scalp_mode_tags for c in enter_tags)
+    if all(c in short_scalp_mode_tags for c in enter_tags) or (
+      any(c in short_scalp_mode_tags for c in enter_tags)
       and all(c in self.short_scalp_rebuy_grind_mode_tags for c in enter_tags)
     ):
       sell, signal_name = self.short_exit_scalp(
@@ -2426,7 +2440,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # Trades not opened by X7
     if not trade.is_short and (not any(c in self.long_known_mode_tags for c in enter_tags)):
       # use normal mode for such trades
-      sell, signal_name = self.long_exit_normal(
+      sell, signal_name = long_exit_normal(
         pair,
         current_rate,
         profit_stake,
@@ -2454,7 +2468,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # Trades not opened by X7
     if trade.is_short and (not any(c in self.short_exit_known_mode_tags for c in enter_tags)):
       # use normal mode for such trades
-      sell, signal_name = self.short_exit_normal(
+      sell, signal_name = short_exit_normal(
         pair,
         current_rate,
         profit_stake,
