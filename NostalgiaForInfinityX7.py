@@ -77669,21 +77669,31 @@ def pivot_points(df: DataFrame, mode="fibonacci") -> Series:
 # ---------------------------------------------------------------------------------------------
 def heikin_ashi(df, smooth_inputs=False, smooth_outputs=False, length=10):
   df = df[["open", "close", "high", "low"]].copy().fillna(0)
-  if smooth_inputs:
-    df["open_s"] = ta.EMA(df["open"], timeframe=length)
-    df["high_s"] = ta.EMA(df["high"], timeframe=length)
-    df["low_s"] = ta.EMA(df["low"], timeframe=length)
-    df["close_s"] = ta.EMA(df["close"], timeframe=length)
+  df_open = df["open"]
+  df_high = df["high"]
+  df_low = df["low"]
+  df_close = df["close"]
 
-    open_ha = (df["open_s"].shift(1) + df["close_s"].shift(1)) / 2
+  if smooth_inputs:
+    df["open_s"] = ta.EMA(df_open, timeframe=length)
+    df["high_s"] = ta.EMA(df_high, timeframe=length)
+    df["low_s"] = ta.EMA(df_low, timeframe=length)
+    df["close_s"] = ta.EMA(df_close, timeframe=length)
+
+    df_open_s = df["open_s"]
+    df_high_s = df["high_s"]
+    df_low_s = df["low_s"]
+    df_close_s = df["close_s"]
+
+    open_ha = (df_open_s.shift(1) + df_close_s.shift(1)) / 2
     high_ha = df.loc[:, ["high_s", "open_s", "close_s"]].max(axis=1)
     low_ha = df.loc[:, ["low_s", "open_s", "close_s"]].min(axis=1)
-    close_ha = (df["open_s"] + df["high_s"] + df["low_s"] + df["close_s"]) / 4
+    close_ha = (df_open_s + df_high_s + df_low_s + df_close_s) / 4
   else:
-    open_ha = (df["open"].shift(1) + df["close"].shift(1)) / 2
+    open_ha = (df_open.shift(1) + df_close.shift(1)) / 2
     high_ha = df.loc[:, ["high", "open", "close"]].max(axis=1)
     low_ha = df.loc[:, ["low", "open", "close"]].min(axis=1)
-    close_ha = (df["open"] + df["high"] + df["low"] + df["close"]) / 4
+    close_ha = (df_open + df_high + df_low + df_close) / 4
 
   open_ha = open_ha.fillna(0)
   high_ha = high_ha.fillna(0)
