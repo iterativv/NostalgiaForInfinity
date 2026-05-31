@@ -77858,15 +77858,19 @@ class Cache:
 
   def _load(self):
     # This method only exists to simplify unit testing
-    with self.path.open("r") as rfh:
+    cache_path = self.path
+    rapidjson_load_kwargs = self.rapidjson_load_kwargs
+    process_loaded_data = self.process_loaded_data
+
+    with cache_path.open("r") as rfh:
       try:
-        data = rapidjson.load(rfh, **self.rapidjson_load_kwargs())
+        data = rapidjson.load(rfh, **rapidjson_load_kwargs())
       except rapidjson.JSONDecodeError as exc:
-        log.error("Failed to load JSON from %s: %s", self.path, exc)
+        log.error("Failed to load JSON from %s: %s", cache_path, exc)
       else:
-        self.data = self.process_loaded_data(data)
+        self.data = process_loaded_data(data)
         self._previous_data = copy.deepcopy(self.data)
-        self._mtime = self.path.stat().st_mtime_ns
+        self._mtime = cache_path.stat().st_mtime_ns
 
   def _save(self):
     # This method only exists to simplify unit testing
