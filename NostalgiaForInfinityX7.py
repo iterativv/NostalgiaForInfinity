@@ -2523,6 +2523,19 @@ class NostalgiaForInfinityX7(IStrategy):
     side: str,
     **kwargs,
   ) -> float:
+    long_rebuy_mode_tags = self.long_rebuy_mode_tags
+    long_rebuy_grind_mode_tags = self.long_rebuy_grind_mode_tags
+    system_v3_rebuy_mode_stake_multiplier = self.system_v3_rebuy_mode_stake_multiplier
+    system_v3_name = self.system_v3_name
+    system_v3_2_name = self.system_v3_2_name
+    system_v3_2_stake_multiplier = self.system_v3_2_stake_multiplier
+    system_v3_1_name = self.system_v3_1_name
+    system_v3_1_stake_multiplier = self.system_v3_1_stake_multiplier
+    long_rapid_mode_tags = self.long_rapid_mode_tags
+    short_rebuy_mode_tags = self.short_rebuy_mode_tags
+    short_rebuy_grind_mode_tags = self.short_rebuy_grind_mode_tags
+    short_rapid_mode_tags = self.short_rapid_mode_tags
+
     enter_tags = entry_tag.split()
     is_futures_mode = self.is_futures_mode
     system_name_use = self.system_name_use
@@ -2539,16 +2552,15 @@ class NostalgiaForInfinityX7(IStrategy):
 
     if side == "long":
       # Rebuy mode
-      if all(c in self.long_rebuy_mode_tags for c in enter_tags) or (
-        any(c in self.long_rebuy_mode_tags for c in enter_tags)
-        and all(c in self.long_rebuy_grind_mode_tags for c in enter_tags)
+      if all(c in long_rebuy_mode_tags for c in enter_tags) or (
+        any(c in long_rebuy_mode_tags for c in enter_tags) and all(c in long_rebuy_grind_mode_tags for c in enter_tags)
       ):
-        return scaled_stake(self.system_v3_rebuy_mode_stake_multiplier)
+        return scaled_stake(system_v3_rebuy_mode_stake_multiplier)
       # Rapid mode
-      if (system_name_use == self.system_v3_name) and (
-        all(c in self.long_rapid_mode_tags for c in enter_tags)
+      if (system_name_use == system_v3_name) and (
+        all(c in long_rapid_mode_tags for c in enter_tags)
         or (
-          any(c in self.long_rapid_mode_tags for c in enter_tags)
+          any(c in long_rapid_mode_tags for c in enter_tags)
           and all(c in self.long_rapid_rebuy_grind_mode_tags for c in enter_tags)
         )
       ):
@@ -2569,10 +2581,10 @@ class NostalgiaForInfinityX7(IStrategy):
         )
         return proposed_stake * stake_multiplier
       else:
-        if system_name_use == self.system_v3_2_name:
-          return scaled_stake(self.system_v3_2_stake_multiplier)
-        elif system_name_use == self.system_v3_1_name:
-          return scaled_stake(self.system_v3_1_stake_multiplier)
+        if system_name_use == system_v3_2_name:
+          return scaled_stake(system_v3_2_stake_multiplier)
+        elif system_name_use == system_v3_1_name:
+          return scaled_stake(system_v3_1_stake_multiplier)
         else:
           stake_multiplier = (
             regular_mode_stake_multiplier_futures[0] if is_futures_mode else regular_mode_stake_multiplier_spot[0]
@@ -2580,11 +2592,11 @@ class NostalgiaForInfinityX7(IStrategy):
           return scaled_stake(stake_multiplier)
     else:
       # Rebuy mode
-      if all(c in self.short_rebuy_mode_tags for c in enter_tags) or (
-        any(c in self.short_rebuy_mode_tags for c in enter_tags)
-        and all(c in self.short_rebuy_grind_mode_tags for c in enter_tags)
+      if all(c in short_rebuy_mode_tags for c in enter_tags) or (
+        any(c in short_rebuy_mode_tags for c in enter_tags)
+        and all(c in short_rebuy_grind_mode_tags for c in enter_tags)
       ):
-        return scaled_stake(self.system_v3_rebuy_mode_stake_multiplier)
+        return scaled_stake(system_v3_rebuy_mode_stake_multiplier)
       # Grind mode
       elif all(c in self.short_grind_mode_tags for c in enter_tags):
         for item in grind_mode_stake_multiplier_futures if is_futures_mode else grind_mode_stake_multiplier_spot:
@@ -2592,10 +2604,10 @@ class NostalgiaForInfinityX7(IStrategy):
           if stake > min_stake:
             return stake
       # Rapid mode
-      if (system_name_use == self.system_v3_name) and (
-        all(c in self.short_rapid_mode_tags for c in enter_tags)
+      if (system_name_use == system_v3_name) and (
+        all(c in short_rapid_mode_tags for c in enter_tags)
         or (
-          any(c in self.short_rapid_mode_tags for c in enter_tags)
+          any(c in short_rapid_mode_tags for c in enter_tags)
           and all(c in self.short_rapid_rebuy_grind_mode_tags for c in enter_tags)
         )
       ):
@@ -2604,10 +2616,10 @@ class NostalgiaForInfinityX7(IStrategy):
         )
         return scaled_stake(stake_multiplier)
       else:
-        if system_name_use == self.system_v3_2_name:
-          return scaled_stake(self.system_v3_2_stake_multiplier)
-        elif system_name_use == self.system_v3_1_name:
-          return scaled_stake(self.system_v3_1_stake_multiplier)
+        if system_name_use == system_v3_2_name:
+          return scaled_stake(system_v3_2_stake_multiplier)
+        elif system_name_use == system_v3_1_name:
+          return scaled_stake(system_v3_1_stake_multiplier)
         else:
           stake_multiplier = (
             regular_mode_stake_multiplier_futures[0] if is_futures_mode else regular_mode_stake_multiplier_spot[0]
