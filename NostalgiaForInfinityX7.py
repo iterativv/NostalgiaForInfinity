@@ -2599,13 +2599,19 @@ class NostalgiaForInfinityX7(IStrategy):
   # ---------------------------------------------------------------------------------------------
   def order_filled(self, pair: str, trade: Trade, order: Order, current_time: datetime, **kwargs) -> None:
     # Check if it's the first entry
+    system_name_use = self.system_name_use
+    system_v3_2_name = self.system_v3_2_name
+    system_v3_1_name = self.system_v3_1_name
+    system_v3_name = self.system_v3_name
+    set_custom_data = trade.set_custom_data
+
     if trade.nr_of_successful_entries == 1:
-      if self.system_name_use == self.system_v3_2_name:
-        trade.set_custom_data(key="system_version", value=self.system_v3_2_name)
-      elif self.system_name_use == self.system_v3_1_name:
-        trade.set_custom_data(key="system_version", value=self.system_v3_1_name)
-      elif self.system_name_use == self.system_v3_name:
-        trade.set_custom_data(key="system_version", value=self.system_v3_name)
+      if system_name_use == system_v3_2_name:
+        set_custom_data(key="system_version", value=system_v3_2_name)
+      elif system_name_use == system_v3_1_name:
+        set_custom_data(key="system_version", value=system_v3_1_name)
+      elif system_name_use == system_v3_name:
+        set_custom_data(key="system_version", value=system_v3_name)
     return None
 
   # Adjust Trade Position
