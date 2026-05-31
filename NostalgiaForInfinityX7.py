@@ -77898,6 +77898,8 @@ class HoldsCache(Cache):
     raise RuntimeError("The holds cache does not allow programatical save")
 
   def process_loaded_data(self, data):
+    cache_path = self.path
+
     trade_ids = data.get("trade_ids")
     trade_pairs = data.get("trade_pairs")
 
@@ -77914,14 +77916,14 @@ class HoldsCache(Cache):
         # New syntax
         for trade_id, profit_ratio in trade_ids.items():
           if not isinstance(trade_id, int):
-            log.error("The trade_id(%s) defined under 'trade_ids' in %s is not an integer", trade_id, self.path)
+            log.error("The trade_id(%s) defined under 'trade_ids' in %s is not an integer", trade_id, cache_path)
             continue
           if not isinstance(profit_ratio, float):
             log.error(
               "The 'profit_ratio' config value(%s) for trade_id %s in %s is not a float",
               profit_ratio,
               trade_id,
-              self.path,
+              cache_path,
             )
           if trade_id in open_trades:
             formatted_profit_ratio = f"{profit_ratio * 100}%"
@@ -77935,20 +77937,20 @@ class HoldsCache(Cache):
             log.warning(
               "The trade_id(%s) is no longer open. Please remove it from 'trade_ids' in %s",
               trade_id,
-              self.path,
+              cache_path,
             )
       else:
         # Initial Syntax
         profit_ratio = data.get("profit_ratio")
         if profit_ratio:
           if not isinstance(profit_ratio, float):
-            log.error("The 'profit_ratio' config value(%s) in %s is not a float", profit_ratio, self.path)
+            log.error("The 'profit_ratio' config value(%s) in %s is not a float", profit_ratio, cache_path)
         else:
           profit_ratio = 0.005
         formatted_profit_ratio = f"{profit_ratio * 100}%"
         for trade_id in trade_ids:
           if not isinstance(trade_id, int):
-            log.error("The trade_id(%s) defined under 'trade_ids' in %s is not an integer", trade_id, self.path)
+            log.error("The trade_id(%s) defined under 'trade_ids' in %s is not an integer", trade_id, cache_path)
             continue
           if trade_id in open_trades:
             log.warning(
@@ -77961,21 +77963,21 @@ class HoldsCache(Cache):
             log.warning(
               "The trade_id(%s) is no longer open. Please remove it from 'trade_ids' in %s",
               trade_id,
-              self.path,
+              cache_path,
             )
 
     r_trade_pairs = {}
     if trade_pairs:
       for trade_pair, profit_ratio in trade_pairs.items():
         if not isinstance(trade_pair, str):
-          log.error("The trade_pair(%s) defined under 'trade_pairs' in %s is not a string", trade_pair, self.path)
+          log.error("The trade_pair(%s) defined under 'trade_pairs' in %s is not a string", trade_pair, cache_path)
           continue
         if "/" not in trade_pair:
           log.error(
             "The trade_pair(%s) defined under 'trade_pairs' in %s does not look like "
             "a valid '<TOKEN_NAME>/<STAKE_CURRENCY>' formatted pair.",
             trade_pair,
-            self.path,
+            cache_path,
           )
           continue
         if not isinstance(profit_ratio, float):
@@ -77983,7 +77985,7 @@ class HoldsCache(Cache):
             "The 'profit_ratio' config value(%s) for trade_pair %s in %s is not a float",
             profit_ratio,
             trade_pair,
-            self.path,
+            cache_path,
           )
         formatted_profit_ratio = f"{profit_ratio * 100}%"
         if trade_pair in open_trades:
