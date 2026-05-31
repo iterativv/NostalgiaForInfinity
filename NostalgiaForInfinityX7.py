@@ -12155,15 +12155,19 @@ class NostalgiaForInfinityX7(IStrategy):
   def update_signals_from_config(self, config):
     # Update long entry signal parameters (if they exist in the config)
     if hasattr(self, "long_entry_signal_params") and "long_entry_signal_params" in config:
-      for condition_key in self.long_entry_signal_params:
-        if condition_key in config["long_entry_signal_params"]:
-          self.long_entry_signal_params[condition_key] = config["long_entry_signal_params"][condition_key]
+      long_entry_signal_params = self.long_entry_signal_params
+      config_long_entry_signal_params = config["long_entry_signal_params"]
+      for condition_key in long_entry_signal_params:
+        if condition_key in config_long_entry_signal_params:
+          long_entry_signal_params[condition_key] = config_long_entry_signal_params[condition_key]
 
     # Update short entry signal parameters (if they exist in the config)
     if hasattr(self, "short_entry_signal_params") and "short_entry_signal_params" in config:
-      for condition_key in self.short_entry_signal_params:
-        if condition_key in config["short_entry_signal_params"]:
-          self.short_entry_signal_params[condition_key] = config["short_entry_signal_params"][condition_key]
+      short_entry_signal_params = self.short_entry_signal_params
+      config_short_entry_signal_params = config["short_entry_signal_params"]
+      for condition_key in short_entry_signal_params:
+        if condition_key in config_short_entry_signal_params:
+          short_entry_signal_params[condition_key] = config_short_entry_signal_params[condition_key]
 
   # Set Profit Target
   # ---------------------------------------------------------------------------------------------
