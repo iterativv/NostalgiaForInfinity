@@ -12258,9 +12258,11 @@ class NostalgiaForInfinityX7(IStrategy):
   # Remove Profit Target
   # ---------------------------------------------------------------------------------------------
   def _remove_profit_target(self, pair: str):
-    if self.target_profit_cache is not None:
-      self.target_profit_cache.data.pop(pair, None)
-      self.target_profit_cache.save()
+    target_profit_cache = self.target_profit_cache
+
+    if target_profit_cache is not None:
+      target_profit_cache.data.pop(pair, None)
+      target_profit_cache.save()
 
   # Get Hold Trades Config File
   # ---------------------------------------------------------------------------------------------
