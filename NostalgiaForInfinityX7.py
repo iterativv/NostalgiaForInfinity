@@ -2651,6 +2651,11 @@ class NostalgiaForInfinityX7(IStrategy):
     current_exit_profit: float,
     **kwargs,
   ):
+    long_adjust_mode_tags = self.long_adjust_mode_tags
+    long_known_mode_tags = self.long_known_mode_tags
+    short_adjust_mode_tags = self.short_adjust_mode_tags
+    short_known_mode_tags = self.short_known_mode_tags
+
     trade_is_short = trade.is_short
     long_grind_mode_tags = self.long_grind_mode_tags
     long_btc_mode_tags = self.long_btc_mode_tags
@@ -2751,8 +2756,8 @@ class NostalgiaForInfinityX7(IStrategy):
     # Grinding
     elif not trade_is_short:
       if not is_long_grind_mode and not is_long_btc_mode and (is_system_v3 or is_system_v3_1 or is_system_v3_2):
-        if any(c in self.long_adjust_mode_tags for c in enter_tags) or not any(
-          c in self.long_known_mode_tags for c in enter_tags
+        if any(c in long_adjust_mode_tags for c in enter_tags) or not any(
+          c in long_known_mode_tags for c in enter_tags
         ):
           return self.long_grind_adjust_trade_position_v3(
             trade,
@@ -2781,8 +2786,8 @@ class NostalgiaForInfinityX7(IStrategy):
           current_entry_profit,
           current_exit_profit,
         )
-      elif any(c in self.long_adjust_mode_tags for c in enter_tags) or not any(
-        c in self.long_known_mode_tags for c in enter_tags
+      elif any(c in long_adjust_mode_tags for c in enter_tags) or not any(
+        c in long_known_mode_tags for c in enter_tags
       ):
         return self.long_grind_adjust_trade_position_v2(
           trade,
@@ -2800,8 +2805,8 @@ class NostalgiaForInfinityX7(IStrategy):
 
     elif trade_is_short:
       if not is_short_grind_mode and (is_system_v3 or is_system_v3_1 or is_system_v3_2):
-        if any(c in self.short_adjust_mode_tags for c in enter_tags) or not any(
-          c in self.short_known_mode_tags for c in enter_tags
+        if any(c in short_adjust_mode_tags for c in enter_tags) or not any(
+          c in short_known_mode_tags for c in enter_tags
         ):
           return self.short_grind_adjust_trade_position_v3(
             trade,
@@ -2831,8 +2836,8 @@ class NostalgiaForInfinityX7(IStrategy):
           current_exit_profit,
         )
       else:
-        if any(c in self.short_adjust_mode_tags for c in enter_tags) or not any(
-          c in self.short_known_mode_tags for c in enter_tags
+        if any(c in short_adjust_mode_tags for c in enter_tags) or not any(
+          c in short_known_mode_tags for c in enter_tags
         ):
           return self.short_grind_adjust_trade_position_v2(
             trade,
