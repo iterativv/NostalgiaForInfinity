@@ -77516,6 +77516,11 @@ def range_percent_change(self, df: DataFrame, method, length: int) -> float:
   :param method: High to Low / Open to Close
   :param length: int The length to look back
   """
+  df_high = df["high"]
+  df_low = df["low"]
+  df_open = df["open"]
+  df_close = df["close"]
+
   if method == "HL":
     return (df["high"].rolling(length).max() - df["low"].rolling(length).min()) / df["low"].rolling(length).min()
   elif method == "OC":
@@ -77533,6 +77538,9 @@ def top_percent_change(self, df: DataFrame, length: int) -> float:
   :param df: DataFrame The original OHLC df
   :param length: int The length to look back
   """
+  df_open = df["open"]
+  df_close = df["close"]
+
   if length == 0:
     return (df["open"] - df["close"]) / df["close"]
   else:
