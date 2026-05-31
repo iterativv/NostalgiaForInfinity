@@ -27317,6 +27317,8 @@ class NostalgiaForInfinityX7(IStrategy):
     current_time: "datetime",
     enter_tags,
   ) -> tuple:
+    is_futures_mode = self.is_futures_mode
+
     mark_profit_target = self.mark_profit_target
     set_profit_target = self._set_profit_target
     exit_profit_target = self.exit_profit_target
@@ -27402,28 +27404,26 @@ class NostalgiaForInfinityX7(IStrategy):
           stop_enabled = self.system_v3_2_stops_enable
           stop_threshold = (
             self.system_v3_2_stop_threshold_rapid_futures
-            if self.is_futures_mode
+            if is_futures_mode
             else self.system_v3_2_stop_threshold_rapid_spot
           )
         elif is_system_v3_1:
           stop_enabled = self.stops_enable
           stop_threshold = (
             self.system_v3_1_stop_threshold_rapid_futures
-            if self.is_futures_mode
+            if is_futures_mode
             else self.system_v3_1_stop_threshold_rapid_spot
           )
         elif is_system_v3:
           stop_enabled = self.stops_enable
           stop_threshold = (
             self.system_v3_stop_threshold_rapid_futures
-            if self.is_futures_mode
+            if is_futures_mode
             else self.system_v3_stop_threshold_rapid_spot
           )
         else:
           stop_enabled = self.stops_enable
-          stop_threshold = (
-            self.stop_threshold_rapid_futures if self.is_futures_mode else self.stop_threshold_rapid_spot
-          )
+          stop_threshold = self.stop_threshold_rapid_futures if is_futures_mode else self.stop_threshold_rapid_spot
 
         if stop_enabled:
           stoploss_value = -(entry_cost * stop_threshold / leverage)
