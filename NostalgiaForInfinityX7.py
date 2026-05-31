@@ -52855,6 +52855,9 @@ class NostalgiaForInfinityX7(IStrategy):
     current_time: "datetime",
     enter_tags,
   ) -> tuple:
+    is_futures_mode = self.is_futures_mode
+    trade_leverage = trade.leverage
+
     mark_profit_target = self.mark_profit_target
     set_profit_target = self._set_profit_target
     exit_profit_target = self.exit_profit_target
@@ -52944,10 +52947,10 @@ class NostalgiaForInfinityX7(IStrategy):
           entry_cost
           * (
             self.system_v3_2_stop_threshold_futures_rebuy
-            if self.is_futures_mode
+            if is_futures_mode
             else self.system_v3_2_stop_threshold_spot_rebuy
           )
-          / trade.leverage
+          / trade_leverage
         ):
           sell, signal_name = True, f"exit_{mode_name}_stoploss_doom"
       elif is_system_v3_1:
@@ -52955,10 +52958,10 @@ class NostalgiaForInfinityX7(IStrategy):
           entry_cost
           * (
             self.system_v3_1_stop_threshold_futures_rebuy
-            if self.is_futures_mode
+            if is_futures_mode
             else self.system_v3_1_stop_threshold_spot_rebuy
           )
-          / trade.leverage
+          / trade_leverage
         ):
           sell, signal_name = True, f"exit_{mode_name}_stoploss_doom"
       elif is_system_v3:
@@ -52966,10 +52969,10 @@ class NostalgiaForInfinityX7(IStrategy):
           entry_cost
           * (
             self.system_v3_stop_threshold_futures_rebuy
-            if self.is_futures_mode
+            if is_futures_mode
             else self.system_v3_stop_threshold_spot_rebuy
           )
-          / trade.leverage
+          / trade_leverage
         ):
           sell, signal_name = True, f"exit_{mode_name}_stoploss_doom"
       else:
@@ -52977,8 +52980,8 @@ class NostalgiaForInfinityX7(IStrategy):
           profit_stake
           < -(
             entry_cost
-            * (self.stop_threshold_futures_rebuy if self.is_futures_mode else self.stop_threshold_spot_rebuy)
-            / trade.leverage
+            * (self.stop_threshold_futures_rebuy if is_futures_mode else self.stop_threshold_spot_rebuy)
+            / trade_leverage
           )
           # temporary
           and (is_backtest or trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13))
