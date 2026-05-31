@@ -12449,6 +12449,11 @@ class NostalgiaForInfinityX7(IStrategy):
   # Populate Entry Trend
   # ---------------------------------------------------------------------------------------------
   def populate_entry_trend(self, df: DataFrame, metadata: dict) -> DataFrame:
+    config = self.config
+    long_entry_signal_params = self.long_entry_signal_params
+    short_entry_signal_params = self.short_entry_signal_params
+    top_coins_mode_coins = self.top_coins_mode_coins
+
     long_entry_conditions = []
     short_entry_conditions = []
 
@@ -12458,9 +12463,9 @@ class NostalgiaForInfinityX7(IStrategy):
 
     is_backtest = self.dp.runmode.value in ["backtest", "hyperopt", "plot", "webserver"]
     # the number of free slots
-    current_free_slots = self.config["max_open_trades"]
+    current_free_slots = config["max_open_trades"]
     if not is_backtest:
-      current_free_slots = self.config["max_open_trades"] - Trade.get_open_trade_count()
+      current_free_slots = config["max_open_trades"] - Trade.get_open_trade_count()
     # Grind mode
     pair_coin = metadata["pair"].partition("/")[0]
     num_open_long_grind_mode = 0
@@ -12474,10 +12479,10 @@ class NostalgiaForInfinityX7(IStrategy):
           if all(c in self.long_grind_mode_tags for c in enter_tags):
             num_open_long_grind_mode += 1
     # Top Coins mode
-    is_pair_long_top_coins_mode = pair_coin in self.top_coins_mode_coins
-    is_pair_short_top_coins_mode = pair_coin in self.top_coins_mode_coins
+    is_pair_long_top_coins_mode = pair_coin in top_coins_mode_coins
+    is_pair_short_top_coins_mode = pair_coin in top_coins_mode_coins
     # if BTC/ETH stake
-    is_btc_stake = self.config["stake_currency"] in self.btc_stakes
+    is_btc_stake = config["stake_currency"] in self.btc_stakes
     allowed_empty_candles_288 = 144 if is_btc_stake else 60
 
     ###############################################################################################
@@ -12497,9 +12502,9 @@ class NostalgiaForInfinityX7(IStrategy):
     # |________/\______/|__/  \__/\______/       |________|__/  \__/  |__/  |________|__/  |__/
     #
 
-    for enabled_long_entry_signal in self.long_entry_signal_params:
+    for enabled_long_entry_signal in long_entry_signal_params:
       long_entry_condition_index = int(enabled_long_entry_signal.rsplit("_", 2)[1])
-      if self.long_entry_signal_params[enabled_long_entry_signal]:
+      if long_entry_signal_params[enabled_long_entry_signal]:
         # Long Entry Conditions Starts Here
         # -----------------------------------------------------------------------------------------
         long_entry_logic = []
@@ -23995,9 +24000,9 @@ class NostalgiaForInfinityX7(IStrategy):
     #   \$$$$$$ \$$   \$$ \$$$$$$ \$$   \$$  \$$          \$$$$$$$$\$$   \$$   \$$   \$$$$$$$$\$$   \$$
     #
 
-    for enabled_short_entry_signal in self.short_entry_signal_params:
+    for enabled_short_entry_signal in short_entry_signal_params:
       short_entry_condition_index = int(enabled_short_entry_signal.rsplit("_", 2)[1])
-      if self.short_entry_signal_params[enabled_short_entry_signal]:
+      if short_entry_signal_params[enabled_short_entry_signal]:
         # Short Entry Conditions Starts Here
         # -----------------------------------------------------------------------------------------
         # IMPORTANT: Short Condition Descriptions are not for shorts. These are for longs but completely mirrored opposite side
