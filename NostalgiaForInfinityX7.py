@@ -12215,14 +12215,16 @@ class NostalgiaForInfinityX7(IStrategy):
   # Load Hold Trades Config
   # ---------------------------------------------------------------------------------------------
   def load_hold_trades_config(self):
-    if self.hold_trades_cache is None:
+    hold_trades_cache = self.hold_trades_cache
+    if hold_trades_cache is None:
       hold_trades_config_file = self.get_hold_trades_config_file()
       if hold_trades_config_file:
         log.warning("Loading hold support data from %s", hold_trades_config_file)
-        self.hold_trades_cache = HoldsCache(hold_trades_config_file)
+        hold_trades_cache = HoldsCache(hold_trades_config_file)
+        self.hold_trades_cache = hold_trades_cache
 
-    if self.hold_trades_cache:
-      self.hold_trades_cache.load()
+    if hold_trades_cache:
+      hold_trades_cache.load()
 
   # Should Hold Trade
   # ---------------------------------------------------------------------------------------------
