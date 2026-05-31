@@ -4291,6 +4291,8 @@ class NostalgiaForInfinityX7(IStrategy):
   # ---------------------------------------------------------------------------------------------
   def populate_indicators(self, df: DataFrame, metadata: dict) -> DataFrame:
     tik = time.perf_counter()
+    prepare_informative_merge = self.prepare_informative_merge
+    base_timeframe = self.timeframe
 
     # =========================================================================
     # CONFIG
@@ -4339,13 +4341,13 @@ class NostalgiaForInfinityX7(IStrategy):
       # REMOVE UNUSED OHLCV BEFORE MERGE
       # ---------------------------------------------------------------------
 
-      btc_informative = self.prepare_informative_merge(btc_informative)
+      btc_informative = prepare_informative_merge(btc_informative)
 
       # ---------------------------------------------------------------------
       # MERGE
       # ---------------------------------------------------------------------
 
-      df = merge_informative_pair(df, btc_informative, self.timeframe, btc_tf, ffill=False)
+      df = merge_informative_pair(df, btc_informative, base_timeframe, btc_tf, ffill=False)
 
       # ---------------------------------------------------------------------
       # CLEANUP
@@ -4396,13 +4398,13 @@ class NostalgiaForInfinityX7(IStrategy):
       else:
         keep_ohlcv = set()
 
-      info_indicators = self.prepare_informative_merge(info_indicators, keep_ohlcv)
+      info_indicators = prepare_informative_merge(info_indicators, keep_ohlcv)
 
       # ---------------------------------------------------------------------
       # MERGE
       # ---------------------------------------------------------------------
 
-      df = merge_informative_pair(df, info_indicators, self.timeframe, info_tf, ffill=False)
+      df = merge_informative_pair(df, info_indicators, base_timeframe, info_tf, ffill=False)
 
       # ---------------------------------------------------------------------
       # CLEANUP
