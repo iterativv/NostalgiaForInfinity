@@ -1943,6 +1943,9 @@ class NostalgiaForInfinityX7(IStrategy):
   def custom_exit(
     self, pair: str, trade: "Trade", current_time: "datetime", current_rate: float, current_profit: float, **kwargs
   ):
+    trade_is_short = trade.is_short
+    long_rapid_mode_tags = self.long_rapid_mode_tags
+
     calc_total_profit = self.calc_total_profit
     cache_backtest_profit_snapshot = self.cache_backtest_profit_snapshot
     filled_order_snapshot = self.filled_order_snapshot
@@ -2125,8 +2128,8 @@ class NostalgiaForInfinityX7(IStrategy):
         return f"{signal_name} ( {enter_tag})"
 
     # Long rapid mode
-    if all(c in self.long_rapid_mode_tags for c in enter_tags) or (
-      any(c in self.long_rapid_mode_tags for c in enter_tags)
+    if all(c in long_rapid_mode_tags for c in enter_tags) or (
+      any(c in long_rapid_mode_tags for c in enter_tags)
       and all(c in self.long_rapid_rebuy_grind_scalp_mode_tags for c in enter_tags)
     ):
       sell, signal_name = self.long_exit_rapid(
@@ -2451,7 +2454,7 @@ class NostalgiaForInfinityX7(IStrategy):
         return f"{signal_name} ( {enter_tag})"
 
     # Trades not opened by X7
-    if not trade.is_short and (not any(c in self.long_known_mode_tags for c in enter_tags)):
+    if not trade_is_short and (not any(c in self.long_known_mode_tags for c in enter_tags)):
       # use normal mode for such trades
       sell, signal_name = long_exit_normal(
         pair,
@@ -2479,7 +2482,7 @@ class NostalgiaForInfinityX7(IStrategy):
         return f"{signal_name} ( {enter_tag})"
 
     # Trades not opened by X7
-    if trade.is_short and (not any(c in self.short_exit_known_mode_tags for c in enter_tags)):
+    if trade_is_short and (not any(c in self.short_exit_known_mode_tags for c in enter_tags)):
       # use normal mode for such trades
       sell, signal_name = short_exit_normal(
         pair,
