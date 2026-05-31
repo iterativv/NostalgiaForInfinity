@@ -45611,6 +45611,14 @@ class NostalgiaForInfinityX7(IStrategy):
   def long_buyback_entry_v2(
     self, last_candle: Series, previous_candle: Series, slice_profit: float, is_derisk: bool
   ) -> float:
+    last_rsi_3_1d = last_candle["RSI_3_1d"]
+    last_roc_9_1h = last_candle["ROC_9_1h"]
+    last_roc_9_4h = last_candle["ROC_9_4h"]
+    last_close_max_48 = last_candle["close_max_48"]
+    last_high_max_6_1h = last_candle["high_max_6_1h"]
+    last_high_max_12_1h = last_candle["high_max_12_1h"]
+    last_open = last_candle["open"]
+
     last_ema_12 = last_candle["EMA_12"]
     last_ema_26 = last_candle["EMA_26"]
     last_roc_9_1d = last_candle["ROC_9_1d"]
@@ -45643,9 +45651,9 @@ class NostalgiaForInfinityX7(IStrategy):
         and (last_candle["STOCHRSIk_14_14_3_3_15m"] < 20.0)
         # and (last_candle["STOCHRSIk_14_14_3_3_1h"] < 30.0)
         # and (last_candle["STOCHRSIk_14_14_3_3_4h"] < 30.0)
-        and (last_close > (last_candle["close_max_48"] * 0.90))
-        and (last_close > (last_candle["high_max_6_1h"] * 0.85))
-        and (last_close > (last_candle["high_max_12_1h"] * 0.80))
+        and (last_close > (last_close_max_48 * 0.90))
+        and (last_close > (last_high_max_6_1h * 0.85))
+        and (last_close > (last_high_max_12_1h * 0.80))
         # and (last_candle["close"] < (last_candle["low_min_24_4h"] * 1.20))
         and (last_close < (last_candle["EMA_16"] * 0.980))
       )
@@ -45662,8 +45670,8 @@ class NostalgiaForInfinityX7(IStrategy):
         # and (last_candle["ROC_9_4h"] > -10.0)
         and (last_roc_9_1d > -5.0)
         and (last_ema_26 > last_ema_12)
-        and ((last_ema_26 - last_ema_12) > (last_candle["open"] * 0.020))
-        and ((previous_candle["EMA_26"] - previous_candle["EMA_12"]) > (last_candle["open"] / 100.0))
+        and ((last_ema_26 - last_ema_12) > (last_open * 0.020))
+        and ((previous_candle["EMA_26"] - previous_candle["EMA_12"]) > (last_open / 100.0))
       )
       or (
         (last_rsi_14 < 36.0)
@@ -45671,19 +45679,19 @@ class NostalgiaForInfinityX7(IStrategy):
         and (last_rsi_3_15m > 10.0)
         and (last_rsi_3_1h > 10.0)
         and (last_rsi_3_4h > 10.0)
-        and (last_candle["RSI_3_1d"] > 10.0)
+        and (last_rsi_3_1d > 10.0)
         and (last_roc_2_1h > -5.0)
         and (last_roc_2_4h > -5.0)
         and (last_candle["ROC_2_1d"] > -5.0)
-        and (last_candle["ROC_9_1h"] > -5.0)
-        and (last_candle["ROC_9_4h"] > -5.0)
+        and (last_roc_9_1h > -5.0)
+        and (last_roc_9_4h > -5.0)
         and (last_roc_9_1d > -10.0)
         # and (last_candle["ROC_9_4h"] < 40.0)
         # and (last_candle["ROC_9_1d"] < 50.0)
         and (last_candle["AROONU_14_15m"] < 25.0)
-        and (last_close > (last_candle["close_max_48"] * 0.90))
-        and (last_close > (last_candle["high_max_6_1h"] * 0.85))
-        and (last_close > (last_candle["high_max_12_1h"] * 0.80))
+        and (last_close > (last_close_max_48 * 0.90))
+        and (last_close > (last_high_max_6_1h * 0.85))
+        and (last_close > (last_high_max_12_1h * 0.80))
         # and (last_candle["close"] < (last_candle["low_min_24_4h"] * 1.20))
         and (last_close < (last_ema_12 * 0.980))
       )
@@ -45692,12 +45700,12 @@ class NostalgiaForInfinityX7(IStrategy):
         and (last_rsi_3_15m > 10.0)
         and (last_rsi_3_1h > 10.0)
         and (last_rsi_3_4h > 10.0)
-        and (last_candle["RSI_3_1d"] > 10.0)
+        and (last_rsi_3_1d > 10.0)
         and (last_roc_2_1h > -5.0)
         and (last_roc_2_4h > -5.0)
         # and (last_candle["ROC_2_1d"] > -5.0)
-        and (last_candle["ROC_9_1h"] > -5.0)
-        and (last_candle["ROC_9_4h"] > -5.0)
+        and (last_roc_9_1h > -5.0)
+        and (last_roc_9_4h > -5.0)
         and (last_roc_9_1d > -5.0)
         and (last_candle["STOCHRSIk_14_14_3_3_1h"] < 80.0)
         and (last_candle["STOCHRSIk_14_14_3_3_4h"] < 70.0)
