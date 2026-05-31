@@ -12270,6 +12270,10 @@ class NostalgiaForInfinityX7(IStrategy):
   # Should Hold Trade
   # ---------------------------------------------------------------------------------------------
   def _should_hold_trade(self, trade: "Trade", rate: float, sell_reason: str) -> bool:
+    calc_total_profit = self.calc_total_profit
+    trade_id = trade.id
+    trade_pair = trade.pair
+
     if self.config["runmode"].value not in ("live", "dry_run"):
       return False
 
@@ -12279,11 +12283,13 @@ class NostalgiaForInfinityX7(IStrategy):
     # Just to be sure our hold data is loaded, should be a no-op call after the first bot loop
     self.load_hold_trades_config()
 
-    if not self.hold_trades_cache:
+    hold_trades_cache = self.hold_trades_cache
+    if not hold_trades_cache:
       # Cache hasn't been setup, likely because the corresponding file does not exist, sell
       return False
 
-    if not self.hold_trades_cache.data:
+    hold_trades_data = hold_trades_cache.data
+    if not hold_trades_data:
       # We have no pairs we want to hold until profit, sell
       return False
 
@@ -12296,13 +12302,13 @@ class NostalgiaForInfinityX7(IStrategy):
       if profit_values is None:
         filled_entries = trade.select_filled_orders(trade.entry_side)
         filled_exits = trade.select_filled_orders(trade.exit_side)
-        profit_values = self.calc_total_profit(trade, filled_entries, filled_exits, rate)
+        profit_values = calc_total_profit(trade, filled_entries, filled_exits, rate)
 
       return profit_values
 
-    trade_ids: dict = self.hold_trades_cache.data.get("trade_ids")
-    if trade_ids and trade.id in trade_ids:
-      trade_profit_ratio = trade_ids[trade.id]
+    trade_ids: dict = hold_trades_data.get("trade_ids")
+    if trade_ids and trade_id in trade_ids:
+      trade_profit_ratio = trade_ids[trade_id]
       current_profit_ratio = get_profit_values()[3]
       if sell_reason == "force_sell":
         formatted_profit_ratio = f"{trade_profit_ratio * 100}%"
@@ -12329,9 +12335,9 @@ class NostalgiaForInfinityX7(IStrategy):
       # This pair is on the list to hold, and we haven't reached minimum profit, hold
       hold_trade = True
 
-    trade_pairs: dict = self.hold_trades_cache.data.get("trade_pairs")
-    if trade_pairs and trade.pair in trade_pairs:
-      trade_profit_ratio = trade_pairs[trade.pair]
+    trade_pairs: dict = hold_trades_data.get("trade_pairs")
+    if trade_pairs and trade_pair in trade_pairs:
+      trade_profit_ratio = trade_pairs[trade_pair]
       current_profit_ratio = get_profit_values()[3]
       if sell_reason == "force_sell":
         formatted_profit_ratio = f"{trade_profit_ratio * 100}%"
