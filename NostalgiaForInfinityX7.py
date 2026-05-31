@@ -77590,9 +77590,13 @@ class Cache:
 
   def _save(self):
     # This method only exists to simplify unit testing
-    rapidjson.dump(self.data, self.path.open("w"), **self.rapidjson_dump_kwargs())
-    self._mtime = self.path.stat().st_mtime
-    self._previous_data = copy.deepcopy(self.data)
+    cache_path = self.path
+    cache_data = self.data
+    rapidjson_dump_kwargs = self.rapidjson_dump_kwargs
+
+    rapidjson.dump(cache_data, cache_path.open("w"), **rapidjson_dump_kwargs())
+    self._mtime = cache_path.stat().st_mtime
+    self._previous_data = copy.deepcopy(cache_data)
 
 
 class HoldsCache(Cache):
