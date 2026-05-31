@@ -12120,6 +12120,12 @@ class NostalgiaForInfinityX7(IStrategy):
     current_time: datetime,
     **kwargs,
   ) -> bool:
+    trade_realized_profit = trade.realized_profit
+    trade_stake_amount = trade.stake_amount
+    trade_is_short = trade.is_short
+    trade_liquidation_price = trade.liquidation_price
+    trade_open_rate = trade.open_rate
+
     is_backtest = self.is_backtest_mode()
     # Allow force exits
     if exit_reason != "force_exit":
@@ -12129,18 +12135,18 @@ class NostalgiaForInfinityX7(IStrategy):
         # log.info(f"[{current_time}] Cancelling {exit_reason} exit for {pair}")
         is_liquidation = False
         if self.is_futures_mode and is_backtest:
-          if (trade.is_short and rate > trade.liquidation_price) or (
-            not trade.is_short and rate < trade.liquidation_price
+          if (trade_is_short and rate > trade_liquidation_price) or (
+            not trade_is_short and rate < trade_liquidation_price
           ):
             is_liquidation = True
         if not is_liquidation:
           return False
       if self.exit_profit_only:
         profit = 0.0
-        if trade.realized_profit != 0.0:
-          profit = ((rate - trade.open_rate) / trade.open_rate) * trade.stake_amount * (1 - trade.fee_close)
-          profit = profit + trade.realized_profit
-          profit = profit / trade.stake_amount
+        if trade_realized_profit != 0.0:
+          profit = ((rate - trade_open_rate) / trade_open_rate) * trade_stake_amount * (1 - trade.fee_close)
+          profit = profit + trade_realized_profit
+          profit = profit / trade_stake_amount
         else:
           profit = trade.calc_profit_ratio(rate)
         if profit < self.exit_profit_offset:
