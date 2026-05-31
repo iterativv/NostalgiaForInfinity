@@ -3279,11 +3279,17 @@ class NostalgiaForInfinityX7(IStrategy):
   # ---------------------------------------------------------------------------------------------
   def informative_4h_indicators(self, metadata: dict, info_timeframe) -> DataFrame:
     tik = time.perf_counter()
+    dp = self.dp
+    fast_pct_change = self.fast_pct_change
+    stoch_k_func = self.stoch_k
+    stochrsi_k_func = self.stochrsi_k
+    chaikin_money_flow = self.chaikin_money_flow
+    validate_indicators = self.validate_indicators
 
-    assert self.dp, "DataProvider is required for multiple timeframes."
+    assert dp, "DataProvider is required for multiple timeframes."
 
     # Get dataframe
-    informative_4h = self.dp.get_pair_dataframe(pair=metadata["pair"], timeframe=info_timeframe)
+    informative_4h = dp.get_pair_dataframe(pair=metadata["pair"], timeframe=info_timeframe)
 
     # Empty dataframe protection
     if informative_4h.empty:
@@ -3311,12 +3317,12 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # STOCH
     # =========================================================================
-    stoch_k = self.stoch_k(high_np, low_np, close_np)
+    stoch_k = stoch_k_func(high_np, low_np, close_np)
 
     # =========================================================================
     # STOCH RSI
     # =========================================================================
-    stochrsi_k = self.stochrsi_k(rsi_14)
+    stochrsi_k = stochrsi_k_func(rsi_14)
 
     # =========================================================================
     # KST
@@ -3332,7 +3338,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # MONEY FLOW
     # =========================================================================
     mfi_14 = ta.MFI(high_np, low_np, close_np, volume_np, timeperiod=14)
-    cmf_20 = self.chaikin_money_flow(high_np, low_np, close_np, volume_np, timeperiod=20)
+    cmf_20 = chaikin_money_flow(high_np, low_np, close_np, volume_np, timeperiod=20)
 
     # =========================================================================
     # MOMENTUM
@@ -3349,12 +3355,12 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # CHANGE %
     # =========================================================================
-    rsi_3_change = self.fast_pct_change(rsi_3)
-    rsi_14_change = self.fast_pct_change(rsi_14)
-    stochrsi_change = self.fast_pct_change(stochrsi_k)
+    rsi_3_change = fast_pct_change(rsi_3)
+    rsi_14_change = fast_pct_change(rsi_14)
+    stochrsi_change = fast_pct_change(stochrsi_k)
     # uo_change = self.fast_pct_change(uo)
-    obv_change = self.fast_pct_change(obv)
-    cci_change = self.fast_pct_change(cci_20)
+    obv_change = fast_pct_change(obv)
+    cci_change = fast_pct_change(cci_20)
 
     # =========================================================================
     # CANDLE %
@@ -3504,7 +3510,7 @@ class NostalgiaForInfinityX7(IStrategy):
         "low_min_24",
       ]
 
-      self.validate_indicators(df=informative_4h, columns=debug_cols, pair=metadata["pair"], timeframe=info_timeframe)
+      validate_indicators(df=informative_4h, columns=debug_cols, pair=metadata["pair"], timeframe=info_timeframe)
     # =========================================================================
     # LOGGING
     # =========================================================================
