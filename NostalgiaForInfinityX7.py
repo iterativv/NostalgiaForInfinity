@@ -1872,8 +1872,12 @@ class NostalgiaForInfinityX7(IStrategy):
     :param exit_rate: The exit rate.
     :return tuple: The total profit in stake, ratio, ratio based on current stake, and ratio based on the first entry stake.
     """
-    fee_open_rate = trade.fee_open if self.custom_fee_open_rate is None else self.custom_fee_open_rate
-    fee_close_rate = trade.fee_close if self.custom_fee_close_rate is None else self.custom_fee_close_rate
+    custom_fee_open_rate = self.custom_fee_open_rate
+    custom_fee_close_rate = self.custom_fee_close_rate
+    is_futures_mode = self.is_futures_mode
+
+    fee_open_rate = trade.fee_open if custom_fee_open_rate is None else custom_fee_open_rate
+    fee_close_rate = trade.fee_close if custom_fee_close_rate is None else custom_fee_close_rate
 
     total_amount = 0.0
     total_stake = 0.0
@@ -1910,7 +1914,7 @@ class NostalgiaForInfinityX7(IStrategy):
         total_profit += exit_stake
       current_stake = total_amount * exit_rate * fee_close_multiplier
       total_profit += current_stake
-    if self.is_futures_mode:
+    if is_futures_mode:
       total_profit += trade.funding_fees
     total_profit_ratio = total_profit / total_stake
     current_profit_ratio = total_profit / current_stake
