@@ -1797,9 +1797,11 @@ class NostalgiaForInfinityX7(IStrategy):
     return filled_orders, filled_entries, filled_exits
 
   def trade_order_state(self, trade: "Trade") -> tuple:
-    last_order = trade.orders[-1] if trade.orders else None
+    orders = trade.orders
+
+    last_order = orders[-1] if orders else None
     return (
-      len(trade.orders),
+      len(orders),
       getattr(last_order, "id", None),
       getattr(last_order, "status", None),
       getattr(last_order, "filled", None),
