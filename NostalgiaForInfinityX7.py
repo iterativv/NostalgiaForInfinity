@@ -77202,13 +77202,19 @@ class NostalgiaForInfinityX7(IStrategy):
     **kwargs,
   ) -> Optional[float]:
     # min/max stakes include leverage. The return amounts is before leverage.
-    min_stake /= trade.leverage
+    dp = self.dp
+    is_futures_mode = self.is_futures_mode
+    trade_pair = trade.pair
+    trade_amount = trade.amount
+    trade_leverage = trade.leverage
+
+    min_stake /= trade_leverage
     # we already waiting for an order to get filled
     if trade.has_open_orders:
       return None
 
-    max_stake /= trade.leverage
-    df, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
+    max_stake /= trade_leverage
+    df, _ = dp.get_analyzed_dataframe(trade_pair, self.timeframe)
     if len(df) < 2:
       return None
     last_candle = df.iloc[-1]
@@ -77242,8 +77248,8 @@ class NostalgiaForInfinityX7(IStrategy):
         current_exit_profit,
       )
 
-    if self.dp.runmode.value in ("live", "dry_run"):
-      ticker = self.dp.ticker(trade.pair)
+    if dp.runmode.value in ("live", "dry_run"):
+      ticker = dp.ticker(trade_pair)
       if ("bid" in ticker) and ("ask" in ticker):
         exit_price_side = self.config["exit_pricing"]["price_side"]
         if trade.is_short:
@@ -77266,13 +77272,13 @@ class NostalgiaForInfinityX7(IStrategy):
       ((exit_rate - filled_exits[-1].safe_price) / filled_exits[-1].safe_price) if count_of_exits > 0 else 0.0
     )
 
-    current_stake_amount = trade.amount * current_rate
-    stake_scale_leverage = trade.leverage if self.is_futures_mode else 1.0
+    current_stake_amount = trade_amount * current_rate
+    stake_scale_leverage = trade_leverage if is_futures_mode else 1.0
 
-    rebuy_mode_stakes = self.rebuy_mode_stakes_futures if self.is_futures_mode else self.rebuy_mode_stakes_spot
+    rebuy_mode_stakes = self.rebuy_mode_stakes_futures if is_futures_mode else self.rebuy_mode_stakes_spot
     max_sub_grinds = len(rebuy_mode_stakes)
     rebuy_mode_sub_thresholds = (
-      self.rebuy_mode_thresholds_futures if self.is_futures_mode else self.rebuy_mode_thresholds_spot
+      self.rebuy_mode_thresholds_futures if is_futures_mode else self.rebuy_mode_thresholds_spot
     )
     partial_sell = False
     sub_grind_count = 0
@@ -77307,16 +77313,16 @@ class NostalgiaForInfinityX7(IStrategy):
         and (last_candle["ROC_2"] < 0.0)
         and (last_candle["close"] > (last_candle["EMA_26"] * 1.012))
       ):
-        buy_amount = slice_amount * rebuy_mode_stakes[sub_grind_count] / trade.leverage
+        buy_amount = slice_amount * rebuy_mode_stakes[sub_grind_count] / trade_leverage
         if buy_amount < (min_stake * 1.5):
           buy_amount = min_stake * 1.5
         if buy_amount > max_stake:
           return None
-        self.dp.send_msg(
+        dp.send_msg(
           self.notification_msg(
             "rebuy",
             tag="r",
-            pair=trade.pair,
+            pair=trade_pair,
             rate=current_rate,
             stake_amount=buy_amount,
             profit_stake=profit_stake,
@@ -77335,15 +77341,15 @@ class NostalgiaForInfinityX7(IStrategy):
     if self.derisk_enable and (
       profit_stake
       < (
-        slice_amount * (self.rebuy_mode_derisk_futures if self.is_futures_mode else self.rebuy_mode_derisk_spot)
+        slice_amount * (self.rebuy_mode_derisk_futures if is_futures_mode else self.rebuy_mode_derisk_spot)
         # / (trade.leverage if self.is_futures_mode else 1.0)
       )
     ):
-      sell_amount = trade.amount * exit_rate / trade.leverage - (min_stake * 1.55)
-      ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
+      sell_amount = trade_amount * exit_rate / trade_leverage - (min_stake * 1.55)
+      ft_sell_amount = sell_amount * trade_leverage * (trade.stake_amount / trade_amount) / exit_rate
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
-        self.dp.send_msg(
+        dp.send_msg(
           f"❌​​ ​**Rebuy De-risk:** `Level 3`\n"
           f"🪙​ **Pair:** `{trade.pair}`\n"
           f"〽️​ **Rate:** `{exit_rate}`\n"
