@@ -77628,6 +77628,11 @@ def ewo(df, ema1_length=5, ema2_length=35):
 # Pivot Points - 3 variants - daily recommended
 # ---------------------------------------------------------------------------------------------
 def pivot_points(df: DataFrame, mode="fibonacci") -> Series:
+  df_high = df["high"]
+  df_low = df["low"]
+  df_close = df["close"]
+  df_open = df["open"]
+
   if mode == "simple":
     hlc3_pivot = (df["high"] + df["low"] + df["close"]).shift(1) / 3
     res1 = hlc3_pivot * 2 - df["low"].shift(1)
