@@ -43576,6 +43576,7 @@ class NostalgiaForInfinityX7(IStrategy):
     last_open = last_candle["open"]
     last_stochrsi_k = last_candle["STOCHRSIk_14_14_3_3"]
     last_roc_9_4h = last_candle["ROC_9_4h"]
+    last_willr_14 = last_candle["WILLR_14"]
 
     if last_candle["protections_long_global"] != True:
       return False
