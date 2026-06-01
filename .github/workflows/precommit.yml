@@ -1,19 +1,46 @@
 name: Changed Files Pre-Commit Check
 
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: write
+
+env:
+  PRE_COMMIT_COLOR: always
 
 jobs:
-  Pre-Commit:
+  pre-commit:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout repository for main repository
+        if: github.event_name != 'pull_request'
+        uses: actions/checkout@v6
         with:
           fetch-depth: 10
-      - uses: actions/setup-python@v6
+
+      - name: Check PR repository
+        uses: actions/checkout@v6
+        if: github.event_name == 'pull_request'
         with:
-          python-version: "3.12"
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 10
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Install pre-commit
+        run: pip install pre-commit
+
       - id: changed-files
-        name: Check changed files
+        name: Determine changed files
+        if: github.event_name == 'pull_request'
         uses: dorny/paths-filter@v4
         with:
           token: ${{ github.token }}
@@ -21,16 +48,44 @@ jobs:
           filters: |
             repo:
               - added|modified: ['**']
-      - run: echo "PY=$(python --version --version | sha256sum | cut -d' ' -f1)" >> $GITHUB_ENV
-      - uses: actions/cache@v5
+
+      - name: Generate cache key
+        run: echo "PY=$(python -VV | sha256sum | cut -d' ' -f1)" >> $GITHUB_ENV
+
+      - name: Cache pre-commit environments
+        uses: actions/cache@v5
         with:
           path: ~/.cache/pre-commit
           key: pre-commit|${{ env.PY }}|${{ hashFiles('.pre-commit-config.yaml') }}
-      - name: Check ALL Files On Branch
-        uses: pre-commit/action@v3.0.1
-        if: github.event_name != 'pull_request'
-      - name: Check Changed Files On PR
-        uses: pre-commit/action@v3.0.1
+
+      - name: Run pre-commit (allow autofixes) for PR
         if: github.event_name == 'pull_request'
+        run: |
+          pre-commit run --files ${{ steps.changed-files.outputs.repo_files }} || true
+
+      - name: Commit fixes for PR
+        if: github.event_name == 'pull_request'
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
-          extra_args: --files ${{ steps.changed-files.outputs.repo_files }}
+          commit_message: "apply pre-commit fixes for PR"
+
+      - name: Verify pre-commit passes for PR
+        if: github.event_name == 'pull_request'
+        run: |
+          pre-commit run --files ${{ steps.changed-files.outputs.repo_files }}
+
+      - name: Run pre-commit on Push
+        if: github.event_name != 'pull_request'
+        run: |
+          pre-commit run --all-files
+
+      # - name: Commit fixes on Push
+      #   if: github.event_name != 'pull_request'
+      #   uses: stefanzweifel/git-auto-commit-action@v7
+      #   with:
+      #    commit_message: "apply pre-commit fixes"
+
+      #- name: Verify pre-commit passes for Push
+      #  if: github.event_name != 'pull_request'
+      #  run: |
+      #    pre-commit run --files ${{ steps.changed-files.outputs.repo_files }}
