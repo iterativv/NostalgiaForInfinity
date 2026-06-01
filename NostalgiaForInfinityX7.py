@@ -2609,6 +2609,11 @@ class NostalgiaForInfinityX7(IStrategy):
     short_rebuy_mode_tags = self.short_rebuy_mode_tags
     short_rebuy_grind_mode_tags = self.short_rebuy_grind_mode_tags
     short_rapid_mode_tags = self.short_rapid_mode_tags
+    long_rapid_rebuy_grind_mode_tags = self.long_rapid_rebuy_grind_mode_tags
+    long_grind_mode_tags = self.long_grind_mode_tags
+    long_btc_mode_tags = self.long_btc_mode_tags
+    short_rapid_rebuy_grind_mode_tags = self.short_rapid_rebuy_grind_mode_tags
+    short_grind_mode_tags = self.short_grind_mode_tags
 
     enter_tags = entry_tag.split()
     is_futures_mode = self.is_futures_mode
@@ -2635,7 +2640,7 @@ class NostalgiaForInfinityX7(IStrategy):
         all(c in long_rapid_mode_tags for c in enter_tags)
         or (
           any(c in long_rapid_mode_tags for c in enter_tags)
-          and all(c in self.long_rapid_rebuy_grind_mode_tags for c in enter_tags)
+          and all(c in long_rapid_rebuy_grind_mode_tags for c in enter_tags)
         )
       ):
         stake_multiplier = (
@@ -2643,13 +2648,13 @@ class NostalgiaForInfinityX7(IStrategy):
         )
         return scaled_stake(stake_multiplier)
       # Grind mode
-      elif all(c in self.long_grind_mode_tags for c in enter_tags):
+      elif all(c in long_grind_mode_tags for c in enter_tags):
         for item in grind_mode_stake_multiplier_futures if is_futures_mode else grind_mode_stake_multiplier_spot:
           stake = proposed_stake * item
           if stake > min_stake:
             return stake
       # Btc mode
-      elif all(c in self.long_btc_mode_tags for c in enter_tags):
+      elif all(c in long_btc_mode_tags for c in enter_tags):
         stake_multiplier = (
           grind_mode_stake_multiplier_futures[0] if is_futures_mode else grind_mode_stake_multiplier_spot[0]
         )
@@ -2672,7 +2677,7 @@ class NostalgiaForInfinityX7(IStrategy):
       ):
         return scaled_stake(system_v3_rebuy_mode_stake_multiplier)
       # Grind mode
-      elif all(c in self.short_grind_mode_tags for c in enter_tags):
+      elif all(c in short_grind_mode_tags for c in enter_tags):
         for item in grind_mode_stake_multiplier_futures if is_futures_mode else grind_mode_stake_multiplier_spot:
           stake = proposed_stake * item
           if stake > min_stake:
@@ -2682,7 +2687,7 @@ class NostalgiaForInfinityX7(IStrategy):
         all(c in short_rapid_mode_tags for c in enter_tags)
         or (
           any(c in short_rapid_mode_tags for c in enter_tags)
-          and all(c in self.short_rapid_rebuy_grind_mode_tags for c in enter_tags)
+          and all(c in short_rapid_rebuy_grind_mode_tags for c in enter_tags)
         )
       ):
         stake_multiplier = (
