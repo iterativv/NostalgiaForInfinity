@@ -40516,6 +40516,10 @@ class NostalgiaForInfinityX7(IStrategy):
     trade_leverage = trade.leverage
     trade_get_custom_data = trade.get_custom_data
     trade_set_custom_data = trade.set_custom_data
+    trade_is_short = trade.is_short
+    derisk_enable = self.derisk_enable
+    long_rebuy_mode_tags = self.long_rebuy_mode_tags
+    long_grind_mode_tags = self.long_grind_mode_tags
 
     min_stake = self.correct_min_stake(min_stake)
     df, _ = dp.get_analyzed_dataframe(trade_pair, self.timeframe)
@@ -40534,7 +40538,7 @@ class NostalgiaForInfinityX7(IStrategy):
       ticker = dp.ticker(trade_pair)
       if ("bid" in ticker) and ("ask" in ticker):
         exit_price_side = self.config["exit_pricing"]["price_side"]
-        if trade.is_short:
+        if trade_is_short:
           if exit_price_side in ["ask", "other"]:
             if ticker["ask"] is not None:
               exit_rate = ticker["ask"]
@@ -40555,9 +40559,9 @@ class NostalgiaForInfinityX7(IStrategy):
       ((exit_rate - filled_exits[-1].safe_price) / filled_exits[-1].safe_price) if count_of_exits > 0 else 0.0
     )
 
-    is_rebuy_mode = all(c in self.long_rebuy_mode_tags for c in enter_tags) or (
-      any(c in self.long_rebuy_mode_tags for c in enter_tags)
-      and all(c in (self.long_rebuy_mode_tags + self.long_grind_mode_tags) for c in enter_tags)
+    is_rebuy_mode = all(c in long_rebuy_mode_tags for c in enter_tags) or (
+      any(c in long_rebuy_mode_tags for c in enter_tags)
+      and all(c in (long_rebuy_mode_tags + long_grind_mode_tags) for c in enter_tags)
     )
 
     has_order_tags = hasattr(filled_orders[0], "ft_order_tag")
@@ -41055,8 +41059,8 @@ class NostalgiaForInfinityX7(IStrategy):
         is_futures
         and trade.liquidation_price is not None
         and (
-          (trade.is_short and current_rate > trade.liquidation_price * 0.90)
-          or (not trade.is_short and current_rate < trade.liquidation_price * 1.10)
+          (trade_is_short and current_rate > trade.liquidation_price * 0.90)
+          or (not trade_is_short and current_rate < trade.liquidation_price * 1.10)
         )
         and (slice_profit < -0.03)
         and (last_candle["RSI_3"] > 10.0)
@@ -41072,7 +41076,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # flag it
     if (
-      self.derisk_enable
+      derisk_enable
       and self.grinding_v2_derisk_level_1_enable
       and (not is_derisk_1_found)
       and not is_rebuy_mode
@@ -41092,7 +41096,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     flag_is_derisk_level_1 = False
     if (
-      self.derisk_enable
+      derisk_enable
       and self.grinding_v2_derisk_level_1_enable
       and (not is_derisk_1_found)
       and not is_rebuy_mode
@@ -41107,7 +41111,7 @@ class NostalgiaForInfinityX7(IStrategy):
           flag_is_derisk_level_1 = True
 
     if (
-      self.derisk_enable
+      derisk_enable
       and self.grinding_v2_derisk_level_1_enable
       and (not is_derisk_1_found)
       and not is_rebuy_mode
@@ -41159,7 +41163,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # flag it
     if (
-      self.derisk_enable
+      derisk_enable
       and self.grinding_v2_derisk_level_2_enable
       and (not is_derisk_2_found)
       and not is_rebuy_mode
@@ -41179,7 +41183,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     flag_is_derisk_level_2 = False
     if (
-      self.derisk_enable
+      derisk_enable
       and self.grinding_v2_derisk_level_2_enable
       and (not is_derisk_2_found)
       and not is_rebuy_mode
@@ -41194,7 +41198,7 @@ class NostalgiaForInfinityX7(IStrategy):
           flag_is_derisk_level_2 = True
 
     if (
-      self.derisk_enable
+      derisk_enable
       and self.grinding_v2_derisk_level_2_enable
       and (not is_derisk_2_found)
       and not is_rebuy_mode
@@ -41246,7 +41250,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # flag it
     if (
-      self.derisk_enable
+      derisk_enable
       and self.grinding_v2_derisk_level_3_enable
       and (not is_derisk_3_found)
       and not is_rebuy_mode
@@ -41266,7 +41270,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     flag_is_derisk_level_3 = False
     if (
-      self.derisk_enable
+      derisk_enable
       and self.grinding_v2_derisk_level_3_enable
       and (not is_derisk_3_found)
       and not is_rebuy_mode
@@ -41281,7 +41285,7 @@ class NostalgiaForInfinityX7(IStrategy):
           flag_is_derisk_level_3 = True
 
     if (
-      self.derisk_enable
+      derisk_enable
       and self.grinding_v2_derisk_level_3_enable
       and (not is_derisk_3_found)
       and not is_rebuy_mode
