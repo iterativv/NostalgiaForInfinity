@@ -41523,6 +41523,8 @@ class NostalgiaForInfinityX7(IStrategy):
     last_aroonu_14_15m = last_candle["AROONU_14_15m"]
     last_stochrsi_k = last_candle["STOCHRSIk_14_14_3_3"]
     last_stochrsi_k_15m = last_candle["STOCHRSIk_14_14_3_3_15m"]
+    last_stochrsi_k_1h = last_candle["STOCHRSIk_14_14_3_3_1h"]
+    last_stochrsi_k_4h = last_candle["STOCHRSIk_14_14_3_3_4h"]
     last_roc_2_1d = last_candle["ROC_2_1d"]
     last_ema_16 = last_candle["EMA_16"]
 
@@ -41652,6 +41654,7 @@ class NostalgiaForInfinityX7(IStrategy):
     last_stochrsi_k_15m = last_candle["STOCHRSIk_14_14_3_3_15m"]
     last_stochrsi_k_1h = last_candle["STOCHRSIk_14_14_3_3_1h"]
     last_stochrsi_k_4h = last_candle["STOCHRSIk_14_14_3_3_4h"]
+    last_willr_14 = last_candle["WILLR_14"]
     last_ema_16 = last_candle["EMA_16"]
 
     if (last_protections_long_global == True) and (
@@ -41905,6 +41908,7 @@ class NostalgiaForInfinityX7(IStrategy):
   ) -> float:
     last_rsi_3 = last_candle["RSI_3"]
     last_rsi_14 = last_candle["RSI_14"]
+    last_willr_14 = last_candle["WILLR_14"]
 
     if (
       (last_rsi_3 > 99.0)
@@ -45983,6 +45987,8 @@ class NostalgiaForInfinityX7(IStrategy):
     last_ema_26 = last_candle["EMA_26"]
     last_ema_12 = last_candle["EMA_12"]
     last_rsi_3 = last_candle["RSI_3"]
+    last_stochrsi_k_1h = last_candle["STOCHRSIk_14_14_3_3_1h"]
+    last_stochrsi_k_4h = last_candle["STOCHRSIk_14_14_3_3_4h"]
     last_open = last_candle["open"]
 
     if (
@@ -48581,6 +48587,7 @@ class NostalgiaForInfinityX7(IStrategy):
       last_rsi_14 = last_candle["RSI_14"]
       last_rsi_3 = last_candle["RSI_3"]
       last_rsi_3_15m = last_candle["RSI_3_15m"]
+      last_willr_14 = last_candle["WILLR_14"]
       if (0.09 >= profit_init_ratio > 0.02) and (last_rsi_14 < 22.0):
         sell, signal_name = True, f"exit_{mode_name}_q_1"
 
@@ -49404,6 +49411,7 @@ class NostalgiaForInfinityX7(IStrategy):
       last_rsi_14 = last_candle["RSI_14"]
       last_rsi_3 = last_candle["RSI_3"]
       last_rsi_3_15m = last_candle["RSI_3_15m"]
+      last_willr_14 = last_candle["WILLR_14"]
       if (0.09 >= profit_init_ratio > 0.005) and (last_rsi_14 < 22.0):
         sell, signal_name = True, f"exit_{mode_name}_rpd_1"
       elif (0.09 >= profit_init_ratio > 0.005) and (last_candle["MFI_14"] < 16.0):
