@@ -51618,6 +51618,8 @@ class NostalgiaForInfinityX7(IStrategy):
     **kwargs,
   ) -> Optional[float]:
     # min/max stakes include leverage. The return amounts is before leverage.
+    config = self.config
+
     dp = self.dp
     is_futures_mode = self.is_futures_mode
     trade_pair = trade.pair
@@ -51667,7 +51669,7 @@ class NostalgiaForInfinityX7(IStrategy):
     if dp.runmode.value in ("live", "dry_run"):
       ticker = dp.ticker(trade_pair)
       if ("bid" in ticker) and ("ask" in ticker):
-        exit_price_side = self.config["exit_pricing"]["price_side"]
+        exit_price_side = config["exit_pricing"]["price_side"]
         if trade.is_short:
           if exit_price_side in ["ask", "other"]:
             if ticker["ask"] is not None:
@@ -51753,7 +51755,7 @@ class NostalgiaForInfinityX7(IStrategy):
             stake_amount=buy_amount,
             profit_stake=profit_stake,
             profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
+            stake_currency=config["stake_currency"],
           )
         )
         log.info(
