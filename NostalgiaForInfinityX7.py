@@ -69174,6 +69174,8 @@ class NostalgiaForInfinityX7(IStrategy):
 
     is_futures = self.is_futures_mode
     trade_leverage = trade.leverage
+    trade_get_custom_data = trade.get_custom_data
+    trade_set_custom_data = trade.set_custom_data
 
     min_stake = self.correct_min_stake(min_stake)
     df, _ = dp.get_analyzed_dataframe(trade_pair, self.timeframe)
@@ -69734,7 +69736,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and self.grinding_v2_derisk_level_1_enable
       and (not is_derisk_1_found)
       and not is_rebuy_mode
-      and (trade.get_custom_data(key="grinding_v2_derisk_level_1_flag") is None)
+      and (trade_get_custom_data(key="grinding_v2_derisk_level_1_flag") is None)
       and (
         profit_stake
         < (
@@ -69744,9 +69746,9 @@ class NostalgiaForInfinityX7(IStrategy):
         / trade_leverage
       )
     ):
-      trade.set_custom_data(key="grinding_v2_derisk_level_1_flag", value=True)
-      trade.set_custom_data(key="grinding_v2_derisk_level_1_profit", value=profit_stake)
-      trade.set_custom_data(key="grinding_v2_derisk_level_1_time", value=current_time.isoformat())
+      trade_set_custom_data(key="grinding_v2_derisk_level_1_flag", value=True)
+      trade_set_custom_data(key="grinding_v2_derisk_level_1_profit", value=profit_stake)
+      trade_set_custom_data(key="grinding_v2_derisk_level_1_time", value=current_time.isoformat())
 
     flag_is_derisk_level_1 = False
     if (
@@ -69754,13 +69756,13 @@ class NostalgiaForInfinityX7(IStrategy):
       and self.grinding_v2_derisk_level_1_enable
       and (not is_derisk_1_found)
       and not is_rebuy_mode
-      and (trade.get_custom_data(key="grinding_v2_derisk_level_1_flag") is True)
+      and (trade_get_custom_data(key="grinding_v2_derisk_level_1_flag") is True)
     ):
-      flag_profit = trade.get_custom_data(key="grinding_v2_derisk_level_1_profit")
-      flag_time = datetime.fromisoformat(trade.get_custom_data(key="grinding_v2_derisk_level_1_time"))
+      flag_profit = trade_get_custom_data(key="grinding_v2_derisk_level_1_profit")
+      flag_time = datetime.fromisoformat(trade_get_custom_data(key="grinding_v2_derisk_level_1_time"))
       if get_derisk_flag_timeout() > flag_time:
         if profit_stake > flag_profit:
-          trade.set_custom_data(key="grinding_v2_derisk_level_1_flag", value=None)
+          trade_set_custom_data(key="grinding_v2_derisk_level_1_flag", value=None)
         else:
           flag_is_derisk_level_1 = True
 
@@ -69821,7 +69823,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and self.grinding_v2_derisk_level_2_enable
       and (not is_derisk_2_found)
       and not is_rebuy_mode
-      and (trade.get_custom_data(key="grinding_v2_derisk_level_2_flag") is None)
+      and (trade_get_custom_data(key="grinding_v2_derisk_level_2_flag") is None)
       and (
         profit_stake
         < (
@@ -69831,9 +69833,9 @@ class NostalgiaForInfinityX7(IStrategy):
         / trade_leverage
       )
     ):
-      trade.set_custom_data(key="grinding_v2_derisk_level_2_flag", value=True)
-      trade.set_custom_data(key="grinding_v2_derisk_level_2_profit", value=profit_stake)
-      trade.set_custom_data(key="grinding_v2_derisk_level_2_time", value=current_time.isoformat())
+      trade_set_custom_data(key="grinding_v2_derisk_level_2_flag", value=True)
+      trade_set_custom_data(key="grinding_v2_derisk_level_2_profit", value=profit_stake)
+      trade_set_custom_data(key="grinding_v2_derisk_level_2_time", value=current_time.isoformat())
 
     flag_is_derisk_level_2 = False
     if (
@@ -69841,13 +69843,13 @@ class NostalgiaForInfinityX7(IStrategy):
       and self.grinding_v2_derisk_level_2_enable
       and (not is_derisk_2_found)
       and not is_rebuy_mode
-      and (trade.get_custom_data(key="grinding_v2_derisk_level_2_flag") is True)
+      and (trade_get_custom_data(key="grinding_v2_derisk_level_2_flag") is True)
     ):
-      flag_profit = trade.get_custom_data(key="grinding_v2_derisk_level_2_profit")
-      flag_time = datetime.fromisoformat(trade.get_custom_data(key="grinding_v2_derisk_level_2_time"))
+      flag_profit = trade_get_custom_data(key="grinding_v2_derisk_level_2_profit")
+      flag_time = datetime.fromisoformat(trade_get_custom_data(key="grinding_v2_derisk_level_2_time"))
       if get_derisk_flag_timeout() > flag_time:
         if profit_stake > flag_profit:
-          trade.set_custom_data(key="grinding_v2_derisk_level_2_flag", value=None)
+          trade_set_custom_data(key="grinding_v2_derisk_level_2_flag", value=None)
         else:
           flag_is_derisk_level_2 = True
 
@@ -69908,7 +69910,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and self.grinding_v2_derisk_level_3_enable
       and (not is_derisk_3_found)
       and not is_rebuy_mode
-      and (trade.get_custom_data(key="grinding_v2_derisk_level_3_flag") is None)
+      and (trade_get_custom_data(key="grinding_v2_derisk_level_3_flag") is None)
       and (
         profit_stake
         < (
@@ -69918,9 +69920,9 @@ class NostalgiaForInfinityX7(IStrategy):
         / trade_leverage
       )
     ):
-      trade.set_custom_data(key="grinding_v2_derisk_level_3_flag", value=True)
-      trade.set_custom_data(key="grinding_v2_derisk_level_3_profit", value=profit_stake)
-      trade.set_custom_data(key="grinding_v2_derisk_level_3_time", value=current_time.isoformat())
+      trade_set_custom_data(key="grinding_v2_derisk_level_3_flag", value=True)
+      trade_set_custom_data(key="grinding_v2_derisk_level_3_profit", value=profit_stake)
+      trade_set_custom_data(key="grinding_v2_derisk_level_3_time", value=current_time.isoformat())
 
     flag_is_derisk_level_3 = False
     if (
@@ -69928,13 +69930,13 @@ class NostalgiaForInfinityX7(IStrategy):
       and self.grinding_v2_derisk_level_3_enable
       and (not is_derisk_3_found)
       and not is_rebuy_mode
-      and (trade.get_custom_data(key="grinding_v2_derisk_level_3_flag") is True)
+      and (trade_get_custom_data(key="grinding_v2_derisk_level_3_flag") is True)
     ):
-      flag_profit = trade.get_custom_data(key="grinding_v2_derisk_level_3_profit")
-      flag_time = datetime.fromisoformat(trade.get_custom_data(key="grinding_v2_derisk_level_3_time"))
+      flag_profit = trade_get_custom_data(key="grinding_v2_derisk_level_3_profit")
+      flag_time = datetime.fromisoformat(trade_get_custom_data(key="grinding_v2_derisk_level_3_time"))
       if get_derisk_flag_timeout() > flag_time:
         if profit_stake > flag_profit:
-          trade.set_custom_data(key="grinding_v2_derisk_level_3_flag", value=None)
+          trade_set_custom_data(key="grinding_v2_derisk_level_3_flag", value=None)
         else:
           flag_is_derisk_level_3 = True
 
