@@ -2040,8 +2040,10 @@ class NostalgiaForInfinityX7(IStrategy):
     previous_candle_5 = df.iloc[-6]
 
     enter_tag = "empty"
-    if hasattr(trade, "enter_tag") and trade.enter_tag is not None:
-      enter_tag = trade.enter_tag
+    if hasattr(trade, "enter_tag"):
+      trade_enter_tag = trade.enter_tag
+      if trade_enter_tag is not None:
+        enter_tag = trade_enter_tag
     enter_tags = enter_tag.split()
 
     filled_orders, filled_entries, filled_exits = filled_order_snapshot(trade)
@@ -2755,8 +2757,10 @@ class NostalgiaForInfinityX7(IStrategy):
       return None
 
     enter_tag = "empty"
-    if hasattr(trade, "enter_tag") and trade.enter_tag is not None:
-      enter_tag = trade.enter_tag
+    if hasattr(trade, "enter_tag"):
+      trade_enter_tag = trade.enter_tag
+      if trade_enter_tag is not None:
+        enter_tag = trade_enter_tag
     enter_tags = enter_tag.split()
 
     is_backtest = self.is_backtest_mode()
