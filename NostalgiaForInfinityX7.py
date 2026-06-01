@@ -12514,9 +12514,12 @@ class NostalgiaForInfinityX7(IStrategy):
 
       return profit_values
 
-    trade_ids: dict = hold_trades_data.get("trade_ids")
-    if trade_ids and trade_id in trade_ids:
-      trade_profit_ratio = trade_ids[trade_id]
+    for hold_key_name, hold_key in (("trade_ids", trade_id), ("trade_pairs", trade_pair)):
+      hold_targets: dict = hold_trades_data.get(hold_key_name)
+      if not hold_targets or hold_key not in hold_targets:
+        continue
+
+      trade_profit_ratio = hold_targets[hold_key]
       current_profit_ratio = get_profit_values()[3]
       if sell_reason == "force_sell":
         formatted_profit_ratio = f"{trade_profit_ratio * 100}%"
@@ -12529,7 +12532,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
         return False
       elif current_profit_ratio >= trade_profit_ratio:
-        # This pair is on the list to hold, and we reached minimum profit, sell
+        # This trade is on the list to hold, and we reached minimum profit, sell
         formatted_profit_ratio = f"{trade_profit_ratio * 100}%"
         formatted_current_profit_ratio = f"{current_profit_ratio * 100}%"
         log.warning(
@@ -12540,36 +12543,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
         return False
 
-      # This pair is on the list to hold, and we haven't reached minimum profit, hold
-      hold_trade = True
-
-    trade_pairs: dict = hold_trades_data.get("trade_pairs")
-    if trade_pairs and trade_pair in trade_pairs:
-      trade_profit_ratio = trade_pairs[trade_pair]
-      current_profit_ratio = get_profit_values()[3]
-      if sell_reason == "force_sell":
-        formatted_profit_ratio = f"{trade_profit_ratio * 100}%"
-        formatted_current_profit_ratio = f"{current_profit_ratio * 100}%"
-        log.warning(
-          "Force selling %s even though the current profit of %s < %s",
-          trade,
-          formatted_current_profit_ratio,
-          formatted_profit_ratio,
-        )
-        return False
-      elif current_profit_ratio >= trade_profit_ratio:
-        # This pair is on the list to hold, and we reached minimum profit, sell
-        formatted_profit_ratio = f"{trade_profit_ratio * 100}%"
-        formatted_current_profit_ratio = f"{current_profit_ratio * 100}%"
-        log.warning(
-          "Selling %s because the current profit of %s >= %s",
-          trade,
-          formatted_current_profit_ratio,
-          formatted_profit_ratio,
-        )
-        return False
-
-      # This pair is on the list to hold, and we haven't reached minimum profit, hold
+      # This trade is on the list to hold, and we haven't reached minimum profit, hold
       hold_trade = True
 
     return hold_trade
