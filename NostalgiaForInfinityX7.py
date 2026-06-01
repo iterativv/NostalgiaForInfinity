@@ -19,6 +19,63 @@ log = logging.getLogger(__name__)
 # log.setLevel(logging.DEBUG)
 warnings.simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 
+
+def _is_entry_bool_scalar(condition) -> bool:
+  return isinstance(condition, (bool, np.bool_))
+
+
+def _entry_bool_array(condition):
+  if isinstance(condition, np.ndarray):
+    return condition.astype(bool, copy=False)
+  if isinstance(condition, (pd.Series, pd.Index)):
+    return condition.to_numpy(dtype=bool, copy=False)
+  return np.asarray(condition, dtype=bool)
+
+
+def _and_entry_conditions(conditions):
+  arrays = []
+  has_false = False
+  for condition in conditions:
+    if _is_entry_bool_scalar(condition):
+      if not condition:
+        has_false = True
+      continue
+    arrays.append(_entry_bool_array(condition))
+  if not arrays:
+    return not has_false
+  if has_false:
+    return np.zeros_like(arrays[0], dtype=bool)
+  if len(arrays) == 1:
+    return arrays[0]
+  return np.logical_and.reduce(arrays)
+
+
+def _or_entry_conditions(conditions):
+  arrays = []
+  has_true = False
+  for condition in conditions:
+    if _is_entry_bool_scalar(condition):
+      if condition:
+        has_true = True
+      continue
+    arrays.append(_entry_bool_array(condition))
+  if not arrays:
+    return has_true
+  if has_true:
+    return np.ones_like(arrays[0], dtype=bool)
+  if len(arrays) == 1:
+    return arrays[0]
+  return np.logical_or.reduce(arrays)
+
+
+def _append_entry_tag(entry_tags, mask, tag: str) -> None:
+  if _is_entry_bool_scalar(mask):
+    if mask:
+      entry_tags[:] = entry_tags + tag
+    return
+  entry_tags[mask] = entry_tags[mask] + tag
+
+
 #############################################################################################################
 ##                 NostalgiaForInfinityX7 by iterativ                                                      ##
 ##            https://github.com/iterativv/NostalgiaForInfinity                                            ##
@@ -12558,7 +12615,7 @@ class NostalgiaForInfinityX7(IStrategy):
     long_entry_conditions = []
     short_entry_conditions = []
 
-    df.loc[:, "enter_tag"] = ""
+    entry_tags = np.full(len(df), "", dtype=object)
     df.loc[:, "enter_long"] = 0
     df.loc[:, "enter_short"] = 0
 
@@ -24076,13 +24133,13 @@ class NostalgiaForInfinityX7(IStrategy):
         ###############################################################################################
 
         long_entry_logic.append(df["volume"] > 0)
-        item_long_entry = reduce(lambda x, y: x & y, long_entry_logic)
-        df.loc[item_long_entry, "enter_tag"] += f"{long_entry_condition_index} "
+        item_long_entry = _and_entry_conditions(long_entry_logic)
+        _append_entry_tag(entry_tags, item_long_entry, f"{long_entry_condition_index} ")
         long_entry_conditions.append(item_long_entry)
         df.loc[:, "enter_long"] = item_long_entry.astype(int)
 
     if long_entry_conditions:
-      df.loc[:, "enter_long"] = reduce(lambda x, y: x | y, long_entry_conditions).astype(int)
+      df.loc[:, "enter_long"] = _or_entry_conditions(long_entry_conditions).astype(int)
 
     ###############################################################################################
 
@@ -26007,14 +26064,15 @@ class NostalgiaForInfinityX7(IStrategy):
         ###############################################################################################
 
         short_entry_logic.append(df["volume"] > 0)
-        item_short_entry = reduce(lambda x, y: x & y, short_entry_logic)
-        df.loc[item_short_entry, "enter_tag"] += f"{short_entry_condition_index} "
+        item_short_entry = _and_entry_conditions(short_entry_logic)
+        _append_entry_tag(entry_tags, item_short_entry, f"{short_entry_condition_index} ")
         short_entry_conditions.append(item_short_entry)
         df.loc[:, "enter_short"] = item_short_entry.astype(int)
 
     if short_entry_conditions:
-      df.loc[:, "enter_short"] = reduce(lambda x, y: x | y, short_entry_conditions).astype(int)
+      df.loc[:, "enter_short"] = _or_entry_conditions(short_entry_conditions).astype(int)
 
+    df.loc[:, "enter_tag"] = entry_tags
     return df
 
   ###############################################################################################
