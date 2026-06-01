@@ -45036,6 +45036,10 @@ class NostalgiaForInfinityX7(IStrategy):
     if count_of_entries == 0:
       return None
 
+    first_filled_entry = filled_entries[0]
+    last_filled_entry = filled_entries[-1]
+    last_filled_order = filled_orders[-1]
+
     has_order_tags = hasattr(filled_orders[0], "ft_order_tag")
 
     if dp.runmode.value in ("live", "dry_run"):
@@ -45055,15 +45059,15 @@ class NostalgiaForInfinityX7(IStrategy):
       profit_values = self.calc_total_profit(trade, filled_entries, filled_exits, exit_rate)
     profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = profit_values
 
-    slice_amount = filled_entries[0].cost
-    slice_profit = (exit_rate - filled_orders[-1].safe_price) / filled_orders[-1].safe_price
-    slice_profit_entry = (exit_rate - filled_entries[-1].safe_price) / filled_entries[-1].safe_price
+    slice_amount = first_filled_entry.cost
+    slice_profit = (exit_rate - last_filled_order.safe_price) / last_filled_order.safe_price
+    slice_profit_entry = (exit_rate - last_filled_entry.safe_price) / last_filled_entry.safe_price
     slice_profit_exit = (
       ((exit_rate - filled_exits[-1].safe_price) / filled_exits[-1].safe_price) if count_of_exits > 0 else 0.0
     )
 
     current_stake_amount = trade_amount * current_rate
-    is_derisk = trade_amount < (filled_entries[0].safe_filled * 0.95)
+    is_derisk = trade_amount < (first_filled_entry.safe_filled * 0.95)
     is_derisk_calc = False
     is_rebuy_mode = all(c in self.long_rebuy_mode_tags for c in enter_tags) or (
       any(c in self.long_rebuy_mode_tags for c in enter_tags)
@@ -45133,7 +45137,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
 
     is_not_trade_max_stake = current_stake_amount < (
-      (filled_entries[0].cost * self.grinding_v1_max_stake)
+      (first_filled_entry.cost * self.grinding_v1_max_stake)
       / (
         (self.grind_mode_stake_multiplier_futures[0] if is_futures else self.grind_mode_stake_multiplier_spot[0])
         if is_grind_mode
@@ -45632,7 +45636,7 @@ class NostalgiaForInfinityX7(IStrategy):
           return -ft_sell_amount
 
     if is_grind_mode and (
-      (filled_entries[0].safe_filled * (trade_stake_amount / trade_amount) - (min_stake * 1.5)) > min_stake
+      (first_filled_entry.safe_filled * (trade_stake_amount / trade_amount) - (min_stake * 1.5)) > min_stake
     ):
       is_first_entry_exit_found = False
       for order in filled_orders:
@@ -45648,7 +45652,7 @@ class NostalgiaForInfinityX7(IStrategy):
             is_first_entry_exit_found = True
             break
       if not is_first_entry_exit_found:
-        first_entry = filled_entries[0]
+        first_entry = first_filled_entry
         first_entry_distance_ratio = (exit_rate - first_entry.safe_price) / first_entry.safe_price
         # First entry exit
         if first_entry_distance_ratio > (
@@ -45750,11 +45754,11 @@ class NostalgiaForInfinityX7(IStrategy):
           )
           or ((is_derisk or is_derisk_calc) and grind_1_derisk_1_sub_grind_count == 0)
         )
-        and (grind_entry_retry_time > filled_entries[-1].order_filled_utc)
-        and ((grind_force_order_age_time > filled_orders[-1].order_filled_utc) or (slice_profit < -0.06))
+        and (grind_entry_retry_time > last_filled_entry.order_filled_utc)
+        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or (slice_profit < -0.06))
         and (
           (num_open_grinds == 0)
-          or (grind_order_age_time > filled_orders[-1].order_filled_utc)
+          or (grind_order_age_time > last_filled_order.order_filled_utc)
           or (slice_profit < -0.06)
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
@@ -45897,11 +45901,11 @@ class NostalgiaForInfinityX7(IStrategy):
           )
           or ((is_derisk or is_derisk_calc) and grind_2_derisk_1_sub_grind_count == 0)
         )
-        and (grind_entry_retry_time > filled_entries[-1].order_filled_utc)
-        and ((grind_force_order_age_time > filled_orders[-1].order_filled_utc) or (slice_profit < -0.06))
+        and (grind_entry_retry_time > last_filled_entry.order_filled_utc)
+        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or (slice_profit < -0.06))
         and (
           (num_open_grinds == 0)
-          or (grind_order_age_time > filled_orders[-1].order_filled_utc)
+          or (grind_order_age_time > last_filled_order.order_filled_utc)
           or (slice_profit < -0.06)
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
@@ -46035,11 +46039,11 @@ class NostalgiaForInfinityX7(IStrategy):
           or ((is_derisk or is_derisk_calc) and grind_1_sub_grind_count == 0)
           or (is_grind_mode and grind_1_sub_grind_count == 0)
         )
-        and (grind_entry_retry_time > filled_entries[-1].order_filled_utc)
-        and ((grind_force_order_age_time > filled_orders[-1].order_filled_utc) or (slice_profit < -0.06))
+        and (grind_entry_retry_time > last_filled_entry.order_filled_utc)
+        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or (slice_profit < -0.06))
         and (
           (num_open_grinds == 0)
-          or (grind_order_age_time > filled_orders[-1].order_filled_utc)
+          or (grind_order_age_time > last_filled_order.order_filled_utc)
           or (slice_profit < -0.06)
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
@@ -46214,11 +46218,11 @@ class NostalgiaForInfinityX7(IStrategy):
           or ((is_derisk or is_derisk_calc) and grind_2_sub_grind_count == 0)
           or (is_grind_mode and grind_2_sub_grind_count == 0)
         )
-        and (grind_entry_retry_time > filled_entries[-1].order_filled_utc)
-        and ((grind_force_order_age_time > filled_orders[-1].order_filled_utc) or (slice_profit < -0.06))
+        and (grind_entry_retry_time > last_filled_entry.order_filled_utc)
+        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or (slice_profit < -0.06))
         and (
           (num_open_grinds == 0)
-          or (grind_order_age_time > filled_orders[-1].order_filled_utc)
+          or (grind_order_age_time > last_filled_order.order_filled_utc)
           or (slice_profit < -0.06)
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
@@ -46352,11 +46356,11 @@ class NostalgiaForInfinityX7(IStrategy):
           or ((is_derisk or is_derisk_calc) and grind_3_sub_grind_count == 0)
           or (is_grind_mode and grind_3_sub_grind_count == 0)
         )
-        and (grind_entry_retry_time > filled_entries[-1].order_filled_utc)
-        and ((grind_force_order_age_time > filled_orders[-1].order_filled_utc) or (slice_profit < -0.06))
+        and (grind_entry_retry_time > last_filled_entry.order_filled_utc)
+        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or (slice_profit < -0.06))
         and (
           (num_open_grinds == 0)
-          or (grind_order_age_time > filled_orders[-1].order_filled_utc)
+          or (grind_order_age_time > last_filled_order.order_filled_utc)
           or (slice_profit < -0.06)
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
@@ -46490,11 +46494,11 @@ class NostalgiaForInfinityX7(IStrategy):
           or ((is_derisk or is_derisk_calc) and grind_4_sub_grind_count == 0)
           or (is_grind_mode and grind_4_sub_grind_count == 0)
         )
-        and (grind_entry_retry_time > filled_entries[-1].order_filled_utc)
-        and ((grind_force_order_age_time > filled_orders[-1].order_filled_utc) or (slice_profit < -0.06))
+        and (grind_entry_retry_time > last_filled_entry.order_filled_utc)
+        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or (slice_profit < -0.06))
         and (
           (num_open_grinds == 0)
-          or (grind_order_age_time > filled_orders[-1].order_filled_utc)
+          or (grind_order_age_time > last_filled_order.order_filled_utc)
           or (slice_profit < -0.06)
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
@@ -46628,11 +46632,11 @@ class NostalgiaForInfinityX7(IStrategy):
           or ((is_derisk or is_derisk_calc) and grind_5_sub_grind_count == 0)
           or (is_grind_mode and grind_5_sub_grind_count == 0)
         )
-        and (grind_entry_retry_time > filled_entries[-1].order_filled_utc)
-        and ((grind_force_order_age_time > filled_orders[-1].order_filled_utc) or (slice_profit < -0.06))
+        and (grind_entry_retry_time > last_filled_entry.order_filled_utc)
+        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or (slice_profit < -0.06))
         and (
           (num_open_grinds == 0)
-          or (grind_order_age_time > filled_orders[-1].order_filled_utc)
+          or (grind_order_age_time > last_filled_order.order_filled_utc)
           or (slice_profit < -0.06)
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
@@ -46766,11 +46770,11 @@ class NostalgiaForInfinityX7(IStrategy):
           or ((is_derisk or is_derisk_calc) and grind_6_sub_grind_count == 0)
           or (is_grind_mode and grind_6_sub_grind_count == 0)
         )
-        and (grind_entry_retry_time > filled_entries[-1].order_filled_utc)
-        and ((grind_force_order_age_time > filled_orders[-1].order_filled_utc) or (slice_profit < -0.06))
+        and (grind_entry_retry_time > last_filled_entry.order_filled_utc)
+        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or (slice_profit < -0.06))
         and (
           (num_open_grinds == 0)
-          or (grind_order_age_time > filled_orders[-1].order_filled_utc)
+          or (grind_order_age_time > last_filled_order.order_filled_utc)
           or (slice_profit < -0.06)
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
@@ -46906,11 +46910,11 @@ class NostalgiaForInfinityX7(IStrategy):
       )
     ):
       if (
-        (grind_entry_retry_time > filled_entries[-1].order_filled_utc)
-        and ((grind_force_order_age_time > filled_orders[-1].order_filled_utc) or (slice_profit < -0.06))
+        (grind_entry_retry_time > last_filled_entry.order_filled_utc)
+        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or (slice_profit < -0.06))
         and (
           (num_open_grinds == 0)
-          or (grind_order_age_time > filled_orders[-1].order_filled_utc)
+          or (grind_order_age_time > last_filled_order.order_filled_utc)
           or (slice_profit < -0.06)
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
