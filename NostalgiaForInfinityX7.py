@@ -12256,6 +12256,8 @@ class NostalgiaForInfinityX7(IStrategy):
           )
           return False
 
+    max_slippage = self.max_slippage
+
     # Slippage Validation
     df, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
     if len(df) >= 1:
@@ -12263,7 +12265,7 @@ class NostalgiaForInfinityX7(IStrategy):
       last_close = last_candle["close"]
       if (side == "long" and rate > last_close) or (side == "short" and rate < last_close):
         slippage = (rate / last_close) - 1.0
-        if (side == "long" and slippage < self.max_slippage) or (side == "short" and slippage > -self.max_slippage):
+        if (side == "long" and slippage < max_slippage) or (side == "short" and slippage > -max_slippage):
           return True
         else:
           log.warning(f"[{current_time}] Cancelling entry for {pair} due to slippage {(slippage * 100.0):.2f}%")
