@@ -1031,10 +1031,11 @@ class NostalgiaForInfinityX7(IStrategy):
       "max_slippage",
     ]
 
-    if "ccxt_config" not in config["exchange"]:
-      config["exchange"]["ccxt_config"] = {}
-    if "ccxt_async_config" not in config["exchange"]:
-      config["exchange"]["ccxt_async_config"] = {}
+    exchange_config = config["exchange"]
+    if "ccxt_config" not in exchange_config:
+      exchange_config["ccxt_config"] = {}
+    if "ccxt_async_config" not in exchange_config:
+      exchange_config["ccxt_async_config"] = {}
 
     options = {
       "brokerId": None,
@@ -1047,70 +1048,77 @@ class NostalgiaForInfinityX7(IStrategy):
       },
     }
 
-    config["exchange"]["ccxt_config"]["options"] = options
-    config["exchange"]["ccxt_async_config"]["options"] = options
+    exchange_config["ccxt_config"]["options"] = options
+    exchange_config["ccxt_async_config"]["options"] = options
     super().__init__(config)
-    if ("exit_profit_only" in self.config and self.config["exit_profit_only"]) or (
-      "sell_profit_only" in self.config and self.config["sell_profit_only"]
+
+    strategy_config = self.config
+    if ("exit_profit_only" in strategy_config and strategy_config["exit_profit_only"]) or (
+      "sell_profit_only" in strategy_config and strategy_config["sell_profit_only"]
     ):
       self.exit_profit_only = True
 
     # Advanced configuration mode. Allows to change any parameter.
-    is_config_advanced_mode = "nfi_advanced_mode" in self.config and self.config["nfi_advanced_mode"] == True
+    is_config_advanced_mode = "nfi_advanced_mode" in strategy_config and strategy_config["nfi_advanced_mode"] == True
     if is_config_advanced_mode:
       log.warning("The advanced configuration mode is enabled. I hope you know what you are doing.")
 
     # Configuration from the nfi_parameters block. New config style.
-    if "nfi_parameters" in self.config and type(self.config["nfi_parameters"]) is dict:
-      for nfi_param in self.config["nfi_parameters"]:
+    nfi_parameters = strategy_config.get("nfi_parameters")
+    if type(nfi_parameters) is dict:
+      for nfi_param in nfi_parameters:
         if nfi_param in ["long_entry_signal_params", "short_entry_signal_params"]:
           continue
         if (nfi_param in NFI_SAFE_PARAMETERS or is_config_advanced_mode) and hasattr(self, nfi_param):
           log.info(
-            f'Parameter {nfi_param} changed from "{getattr(self, nfi_param)}" to "{self.config["nfi_parameters"][nfi_param]}".'
+            f'Parameter {nfi_param} changed from "{getattr(self, nfi_param)}" to "{nfi_parameters[nfi_param]}".'
           )
-          setattr(self, nfi_param, self.config["nfi_parameters"][nfi_param])
+          setattr(self, nfi_param, nfi_parameters[nfi_param])
         else:
           log.warning(f"Invalid or unsafe parameter: {nfi_param}.")
 
-      self.update_signals_from_config(self.config["nfi_parameters"])
+      self.update_signals_from_config(nfi_parameters)
 
     # Parameter settings. Backward compatibility with the old configuration style.
     for nfi_param in NFI_SAFE_PARAMETERS:
-      if (nfi_param in self.config) and hasattr(self, nfi_param):
-        setattr(self, nfi_param, self.config[nfi_param])
+      if (nfi_param in strategy_config) and hasattr(self, nfi_param):
+        setattr(self, nfi_param, strategy_config[nfi_param])
 
     if self.target_profit_cache is None:
       bot_name = ""
-      if "bot_name" in self.config:
-        bot_name = self.config["bot_name"] + "-"
+      if "bot_name" in strategy_config:
+        bot_name = strategy_config["bot_name"] + "-"
+      exchange_name = strategy_config["exchange"]["name"]
+      runmode_value = strategy_config["runmode"].value
       self.target_profit_cache = Cache(
-        self.config["user_data_dir"]
+        strategy_config["user_data_dir"]
         / (
           "nfix7-profit_max-"
           + bot_name
-          + self.config["exchange"]["name"]
+          + exchange_name
           + "-"
-          + self.config["stake_currency"]
-          + ("-(backtest)" if (self.config["runmode"].value == "backtest") else "")
-          + ("-(hyperopt)" if (self.config["runmode"].value == "hyperopt") else "")
+          + strategy_config["stake_currency"]
+          + ("-(backtest)" if (runmode_value == "backtest") else "")
+          + ("-(hyperopt)" if (runmode_value == "hyperopt") else "")
           + ".json"
         )
       )
+    else:
+      exchange_name = strategy_config["exchange"]["name"]
 
     # OKX, Kraken provides a lower number of candle data per API call
-    if self.config["exchange"]["name"] in ["okx", "okex"]:
+    if exchange_name in ["okx", "okex"]:
       self.startup_candle_count = 480
-    elif self.config["exchange"]["name"] == "kraken":
+    elif exchange_name == "kraken":
       self.startup_candle_count = 710
-    elif self.config["exchange"]["name"] == "bybit":
+    elif exchange_name == "bybit":
       self.startup_candle_count = 199
-    elif self.config["exchange"]["name"] == "bitget":
+    elif exchange_name == "bitget":
       self.startup_candle_count = 499
-    elif self.config["exchange"]["name"] == "bingx":
+    elif exchange_name == "bingx":
       self.startup_candle_count = 499
 
-    if ("trading_mode" in self.config) and (self.config["trading_mode"] in ["futures", "margin"]):
+    if ("trading_mode" in strategy_config) and (strategy_config["trading_mode"] in ["futures", "margin"]):
       self.is_futures_mode = True
       self.can_short = True
 
@@ -1118,7 +1126,7 @@ class NostalgiaForInfinityX7(IStrategy):
     self.target_profit_cache.save()
 
     # Parameter settings. Backward compatibility with the old configuration style.
-    self.update_signals_from_config(self.config)
+    self.update_signals_from_config(strategy_config)
 
   # Plot configuration for FreqUI
   # ---------------------------------------------------------------------------------------------
