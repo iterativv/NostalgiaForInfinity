@@ -2769,6 +2769,7 @@ class NostalgiaForInfinityX7(IStrategy):
     is_short_grind_mode = all(c in short_grind_mode_tags for c in enter_tags)
     is_v2_date = is_backtest or trade.open_date_utc.replace(tzinfo=None) >= datetime(2025, 2, 13)
     is_system_v3, is_system_v3_1, is_system_v3_2 = self.get_system_version_flags(trade)
+    is_system_v3_family = is_system_v3 or is_system_v3_1 or is_system_v3_2
 
     # Rebuy mode
     if not trade_is_short and (
@@ -2777,7 +2778,7 @@ class NostalgiaForInfinityX7(IStrategy):
         any(c in long_rebuy_mode_tags for c in enter_tags) and all(c in long_rebuy_grind_mode_tags for c in enter_tags)
       )
     ):
-      if is_system_v3 or is_system_v3_1 or is_system_v3_2:
+      if is_system_v3_family:
         return long_rebuy_adjust_trade_position_v3(
           trade,
           enter_tags,
@@ -2812,7 +2813,7 @@ class NostalgiaForInfinityX7(IStrategy):
         and all(c in short_rebuy_grind_mode_tags for c in enter_tags)
       )
     ):
-      if is_system_v3 or is_system_v3_1 or is_system_v3_2:
+      if is_system_v3_family:
         return short_rebuy_adjust_trade_position_v3(
           trade,
           enter_tags,
@@ -2843,7 +2844,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Grinding
     elif not trade_is_short:
-      if not is_long_grind_mode and not is_long_btc_mode and (is_system_v3 or is_system_v3_1 or is_system_v3_2):
+      if not is_long_grind_mode and not is_long_btc_mode and (is_system_v3_family):
         if any(c in long_adjust_mode_tags for c in enter_tags) or not any(
           c in long_known_mode_tags for c in enter_tags
         ):
@@ -2892,7 +2893,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
 
     elif trade_is_short:
-      if not is_short_grind_mode and (is_system_v3 or is_system_v3_1 or is_system_v3_2):
+      if not is_short_grind_mode and (is_system_v3_family):
         if any(c in short_adjust_mode_tags for c in enter_tags) or not any(
           c in short_known_mode_tags for c in enter_tags
         ):
