@@ -41772,9 +41772,15 @@ class NostalgiaForInfinityX7(IStrategy):
     last_roc_2_4h = last_candle["ROC_2_4h"]
     last_roc_9_1h = last_candle["ROC_9_1h"]
     last_roc_9_4h = last_candle["ROC_9_4h"]
+    last_protections_long_global = last_candle["protections_long_global"]
+    last_enter_long = last_candle["enter_long"]
+    last_stochrsi_k_15m = last_candle["STOCHRSIk_14_14_3_3_15m"]
+    last_stochrsi_k_1h = last_candle["STOCHRSIk_14_14_3_3_1h"]
+    last_stochrsi_k_4h = last_candle["STOCHRSIk_14_14_3_3_4h"]
+    last_ema_16 = last_candle["EMA_16"]
 
-    if (last_candle["protections_long_global"] == True) and (
-      (last_candle["enter_long"] == True)
+    if (last_protections_long_global == True) and (
+      (last_enter_long == True)
       or (
         (last_rsi_14 < 46.0)
         and (last_rsi_3 > 10.0)
@@ -41797,7 +41803,7 @@ class NostalgiaForInfinityX7(IStrategy):
         and (last_close > (last_high_max_6_1h * 0.85))
         and (last_close > (last_high_max_12_1h * 0.80))
         and (last_close < (last_low_min_24_4h * 1.20))
-        and (last_close < (last_candle["EMA_16"] * 0.968))
+        and (last_close < (last_ema_16 * 0.968))
       )
       or (
         (last_rsi_14 < 36.0)
@@ -42002,7 +42008,7 @@ class NostalgiaForInfinityX7(IStrategy):
         and (last_aroonu_14 < 25.0)
         and (last_aroonu_14_15m < 30.0)
         and (last_stochrsik_14_14_3_3 < 20.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_15m"] < 30.0)
+        and (last_stochrsi_k_15m < 30.0)
         and (last_rsi_14_1h < 50.0)
         and (last_candle["RSI_14_4h"] < 50.0)
       )
