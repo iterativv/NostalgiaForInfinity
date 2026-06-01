@@ -66986,9 +66986,16 @@ class NostalgiaForInfinityX7(IStrategy):
     last_roc_2_4h = last_candle["ROC_2_4h"]
     last_roc_9_1h = last_candle["ROC_9_1h"]
     last_roc_9_4h = last_candle["ROC_9_4h"]
+    last_protections_short_global = last_candle["protections_short_global"]
+    last_enter_short = last_candle["enter_short"]
+    last_stochrsi_k_15m = last_candle["STOCHRSIk_14_14_3_3_15m"]
+    last_stochrsi_k_1h = last_candle["STOCHRSIk_14_14_3_3_1h"]
+    last_stochrsi_k_4h = last_candle["STOCHRSIk_14_14_3_3_4h"]
+    last_low_min_24_4h = last_candle["low_min_24_4h"]
+    last_ema_16 = last_candle["EMA_16"]
 
-    if (last_candle["protections_short_global"] == True) and (
-      (last_candle["enter_short"] == True)
+    if (last_protections_short_global == True) and (
+      (last_enter_short == True)
       or (
         (last_rsi_14 > 54.0)
         and (last_rsi_3 < 90.0)
@@ -67011,7 +67018,7 @@ class NostalgiaForInfinityX7(IStrategy):
         and (last_close < (last_low_min_6_1h * 1.18))
         and (last_close < (last_low_min_12_1h * 1.25))
         and (last_close > (last_high_max_24_4h * 0.85))
-        and (last_close > (last_candle["EMA_16"] * 1.032))
+        and (last_close > (last_ema_16 * 1.032))
       )
       or (
         (last_rsi_14 > 64.0)
@@ -67164,7 +67171,7 @@ class NostalgiaForInfinityX7(IStrategy):
         (last_rsi_3 < 95.0)
         and (last_rsi_3_15m < 75.0)
         and (last_rsi_3_1h < 70.0)
-        and (last_close > (last_candle["low_min_24_4h"] * 1.10))
+        and (last_close > (last_low_min_24_4h * 1.10))
         and (last_close > (last_close_min_48 * 1.10))
         and (last_close < (last_candle["close_max_12"] * 0.92))
       )
@@ -67216,7 +67223,7 @@ class NostalgiaForInfinityX7(IStrategy):
         and (last_aroond_14 < 25.0)
         and (last_aroond_14_15m < 30.0)
         and (last_stochrsik_14_14_3_3 > 80.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_15m"] > 70.0)
+        and (last_stochrsi_k_15m > 70.0)
         and (last_rsi_14_1h > 50.0)
         and (last_candle["RSI_14_4h"] > 50.0)
       )
