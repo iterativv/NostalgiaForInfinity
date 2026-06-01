@@ -26258,6 +26258,7 @@ class NostalgiaForInfinityX7(IStrategy):
     enter_tags,
   ) -> tuple:
     is_futures_mode = self.is_futures_mode
+    stops_enable = self.stops_enable
 
     mark_profit_target = self.mark_profit_target
     set_profit_target = self._set_profit_target
@@ -26348,21 +26349,21 @@ class NostalgiaForInfinityX7(IStrategy):
             else self.system_v3_2_stop_threshold_rapid_spot
           )
         elif is_system_v3_1:
-          stop_enabled = self.stops_enable
+          stop_enabled = stops_enable
           stop_threshold = (
             self.system_v3_1_stop_threshold_rapid_futures
             if is_futures_mode
             else self.system_v3_1_stop_threshold_rapid_spot
           )
         elif is_system_v3:
-          stop_enabled = self.stops_enable
+          stop_enabled = stops_enable
           stop_threshold = (
             self.system_v3_stop_threshold_rapid_futures
             if is_futures_mode
             else self.system_v3_stop_threshold_rapid_spot
           )
         else:
-          stop_enabled = self.stops_enable
+          stop_enabled = stops_enable
           stop_threshold = self.stop_threshold_rapid_futures if is_futures_mode else self.stop_threshold_rapid_spot
 
         if stop_enabled:
@@ -52293,6 +52294,7 @@ class NostalgiaForInfinityX7(IStrategy):
     enter_tags,
   ) -> tuple:
     is_futures_mode = self.is_futures_mode
+    stops_enable = self.stops_enable
     trade_leverage = trade.leverage
 
     mark_profit_target = self.mark_profit_target
@@ -52428,7 +52430,7 @@ class NostalgiaForInfinityX7(IStrategy):
           sell, signal_name = True, f"exit_{mode_name}_stoploss_doom"
       elif is_system_v3_1:
         # Stoplosses
-        if self.stops_enable and (
+        if stops_enable and (
           profit_stake
           < -(
             entry_cost
@@ -52443,7 +52445,7 @@ class NostalgiaForInfinityX7(IStrategy):
           sell, signal_name = True, f"exit_{mode_name}_stoploss_doom"
       elif is_system_v3:
         # Stoplosses
-        if self.stops_enable and (
+        if stops_enable and (
           profit_stake
           < -(
             entry_cost
@@ -52460,7 +52462,7 @@ class NostalgiaForInfinityX7(IStrategy):
         # Stoplosses
         if (
           (
-            self.stops_enable
+            stops_enable
             and (
               profit_stake
               < -(
