@@ -12421,7 +12421,8 @@ class NostalgiaForInfinityX7(IStrategy):
       filled_orders = trade.select_filled_orders()
     if not filled_orders:
       return False
-    slice_profit = (exit_rate - filled_orders[-1].safe_price) / filled_orders[-1].safe_price
+    last_filled_price = filled_orders[-1].safe_price
+    slice_profit = (exit_rate - last_filled_price) / last_filled_price
     if not trade.is_short:
       return last_candle["enter_long"] or self.long_grind_entry(last_candle, previous_candle, slice_profit, False)
     else:
