@@ -12195,11 +12195,14 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Mode Validation
     entry_tags = entry_tag.split()
-    if all(c in self.long_grind_mode_tags for c in entry_tags):
+    long_grind_mode_tags = self.long_grind_mode_tags
+    long_top_coins_mode_tags = self.long_top_coins_mode_tags
+    long_scalp_mode_tags = self.long_scalp_mode_tags
+    if all(c in long_grind_mode_tags for c in entry_tags):
       return self._handle_grind_mode(pair, current_time)
-    if all(c in self.long_top_coins_mode_tags for c in entry_tags):
+    if all(c in long_top_coins_mode_tags for c in entry_tags):
       return self._handle_top_coins_mode(pair, current_time)
-    if all(c in self.long_scalp_mode_tags for c in entry_tags):
+    if all(c in long_scalp_mode_tags for c in entry_tags):
       return self._handle_scalp_mode(pair, current_time)
 
     # Long/Short Slot Validation (only in futures mode)
@@ -12235,16 +12238,18 @@ class NostalgiaForInfinityX7(IStrategy):
     return True
 
   def _handle_grind_mode(self, pair: str, current_time: datetime) -> bool:
-    is_pair_grind_mode = pair.partition("/")[0] in self.grind_mode_coins
+    grind_mode_coins = self.grind_mode_coins
+    grind_mode_max_slots = self.grind_mode_max_slots
+    long_grind_mode_tags = self.long_grind_mode_tags
+
+    is_pair_grind_mode = pair.partition("/")[0] in grind_mode_coins
     if not is_pair_grind_mode:
       log.info(f"[{current_time}] Cancelling entry for {pair} due to not being in grind mode coins list.")
       return False
 
     open_trades = Trade.get_trades_proxy(is_open=True)
-    num_open_grind_mode = sum(
-      1 for t in open_trades if all(c in self.long_grind_mode_tags for c in t.enter_tag.split())
-    )
-    if num_open_grind_mode >= self.grind_mode_max_slots:
+    num_open_grind_mode = sum(1 for t in open_trades if all(c in long_grind_mode_tags for c in t.enter_tag.split()))
+    if num_open_grind_mode >= grind_mode_max_slots:
       log.info(f"[{current_time}] Cancelling entry for {pair} due to grind mode slots limit reached.")
       return False
 
@@ -12338,9 +12343,11 @@ class NostalgiaForInfinityX7(IStrategy):
     **kwargs,
   ) -> float:
     enter_tags = entry_tag.split()
-    if all(c in self.long_rebuy_mode_tags for c in enter_tags):
+    long_rebuy_mode_tags = self.long_rebuy_mode_tags
+    long_grind_mode_tags = self.long_grind_mode_tags
+    if all(c in long_rebuy_mode_tags for c in enter_tags):
       return self.futures_mode_leverage_rebuy_mode
-    elif all(c in self.long_grind_mode_tags for c in enter_tags):
+    elif all(c in long_grind_mode_tags for c in enter_tags):
       return self.futures_mode_leverage_grind_mode
     return self.futures_mode_leverage
 
