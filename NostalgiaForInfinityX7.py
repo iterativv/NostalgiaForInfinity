@@ -71059,6 +71059,7 @@ class NostalgiaForInfinityX7(IStrategy):
     is_futures = self.is_futures_mode
     trade_leverage = trade.leverage
     stake_scale_leverage = trade_leverage if is_futures else 1.0
+    regular_mode_use_grind_stops = self.regular_mode_use_grind_stops
 
     last_filled_entry = filled_entries[-1]
     last_filled_order = filled_orders[-1]
@@ -71667,7 +71668,7 @@ class NostalgiaForInfinityX7(IStrategy):
     if (
       (
         (grind_1_sub_grind_count > 0)
-        and self.regular_mode_use_grind_stops
+        and regular_mode_use_grind_stops
         and ((-(exit_rate - grind_1_current_open_rate) / grind_1_current_open_rate) < regular_mode_grind_1_stop_grinds)
       )
       # temporary
@@ -71792,7 +71793,7 @@ class NostalgiaForInfinityX7(IStrategy):
     if (
       (
         (grind_2_sub_grind_count > 0)
-        and self.regular_mode_use_grind_stops
+        and regular_mode_use_grind_stops
         and ((-(exit_rate - grind_2_current_open_rate) / grind_2_current_open_rate) < regular_mode_grind_2_stop_grinds)
       )
       # temporary
@@ -71917,7 +71918,7 @@ class NostalgiaForInfinityX7(IStrategy):
     if (
       (
         (grind_3_sub_grind_count > 0)
-        and self.regular_mode_use_grind_stops
+        and regular_mode_use_grind_stops
         and ((-(exit_rate - grind_3_current_open_rate) / grind_3_current_open_rate) < regular_mode_grind_3_stop_grinds)
       )
       # temporary
@@ -72042,7 +72043,7 @@ class NostalgiaForInfinityX7(IStrategy):
     if (
       (
         (grind_4_sub_grind_count > 0)
-        and self.regular_mode_use_grind_stops
+        and regular_mode_use_grind_stops
         and ((-(exit_rate - grind_4_current_open_rate) / grind_4_current_open_rate) < regular_mode_grind_4_stop_grinds)
       )
       # temporary
@@ -72167,7 +72168,7 @@ class NostalgiaForInfinityX7(IStrategy):
     if (
       (
         (grind_5_sub_grind_count > 0)
-        and self.regular_mode_use_grind_stops
+        and regular_mode_use_grind_stops
         and ((-(exit_rate - grind_5_current_open_rate) / grind_5_current_open_rate) < regular_mode_grind_5_stop_grinds)
       )
       # temporary
@@ -72292,7 +72293,7 @@ class NostalgiaForInfinityX7(IStrategy):
     if (
       (
         (grind_6_sub_grind_count > 0)
-        and self.regular_mode_use_grind_stops
+        and regular_mode_use_grind_stops
         and ((-(exit_rate - grind_6_current_open_rate) / grind_6_current_open_rate) < regular_mode_grind_6_stop_grinds)
       )
       # temporary
