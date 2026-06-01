@@ -51625,7 +51625,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Rebuy (r) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"Rebuy (r) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         if has_order_tags:
           return buy_amount, "r"
@@ -51645,14 +51645,14 @@ class NostalgiaForInfinityX7(IStrategy):
         grind_profit = 0.0
         dp.send_msg(
           f"❌​​ ​**Rebuy De-risk:** `Level 3`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
+          f"🪙​ **Pair:** `{trade_pair}`\n"
           f"〽️​ **Rate:** `{exit_rate}`\n"
           f"💰 **Stake amount:** `{sell_amount}`\n"
           f"💵​ **Profit (stake):** `{profit_stake}`\n"
           f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
         )
         log.info(
-          f"Rebuy De-risk Level 3 [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"Rebuy De-risk Level 3 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         if has_order_tags:
           return -ft_sell_amount, "derisk_level_3"
@@ -77414,7 +77414,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Rebuy (r) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"Rebuy (r) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         if has_order_tags:
           return buy_amount, "r"
@@ -77434,14 +77434,14 @@ class NostalgiaForInfinityX7(IStrategy):
         grind_profit = 0.0
         dp.send_msg(
           f"❌​​ ​**Rebuy De-risk:** `Level 3`\n"
-          f"🪙​ **Pair:** `{trade.pair}`\n"
+          f"🪙​ **Pair:** `{trade_pair}`\n"
           f"〽️​ **Rate:** `{exit_rate}`\n"
           f"💰 **Stake amount:** `{sell_amount}`\n"
           f"💵​ **Profit (stake):** `{profit_stake}`\n"
           f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
         )
         log.info(
-          f"Rebuy De-risk Level 3 [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"Rebuy De-risk Level 3 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         if has_order_tags:
           return -ft_sell_amount, "derisk_level_3"
