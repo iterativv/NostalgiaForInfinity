@@ -47713,7 +47713,11 @@ class NostalgiaForInfinityX7(IStrategy):
     if count_of_entries == 0:
       return None
 
-    has_order_tags = hasattr(filled_orders[0], "ft_order_tag")
+    first_filled_order = filled_orders[0]
+    last_filled_order = filled_orders[-1]
+    last_filled_entry = filled_entries[-1]
+
+    has_order_tags = hasattr(first_filled_order, "ft_order_tag")
 
     # The first exit is de-risk (providing the trade is still open)
     if (count_of_exits > 0) and (filled_exits[0].ft_order_tag == "derisk_level_3"):
@@ -47749,8 +47753,8 @@ class NostalgiaForInfinityX7(IStrategy):
     profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = profit_values
 
     slice_amount = filled_entries[0].cost
-    slice_profit = (exit_rate - filled_orders[-1].safe_price) / filled_orders[-1].safe_price
-    slice_profit_entry = (exit_rate - filled_entries[-1].safe_price) / filled_entries[-1].safe_price
+    slice_profit = (exit_rate - last_filled_order.safe_price) / last_filled_order.safe_price
+    slice_profit_entry = (exit_rate - last_filled_entry.safe_price) / last_filled_entry.safe_price
     slice_profit_exit = (
       ((exit_rate - filled_exits[-1].safe_price) / filled_exits[-1].safe_price) if count_of_exits > 0 else 0.0
     )
@@ -47773,7 +47777,7 @@ class NostalgiaForInfinityX7(IStrategy):
     current_grind_stake = 0.0
     current_grind_stake_profit = 0.0
     for order in reversed(filled_orders):
-      if (order.ft_order_side == "buy") and (order is not filled_orders[0]):
+      if (order.ft_order_side == "buy") and (order is not first_filled_order):
         sub_grind_count += 1
         total_amount += order.safe_filled
         total_cost += order.safe_filled * order.safe_price
