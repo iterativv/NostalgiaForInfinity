@@ -1203,6 +1203,7 @@ class NostalgiaForInfinityX7(IStrategy):
     long_scalp_mode_tags = self.long_scalp_mode_tags
     long_scalp_rebuy_grind_mode_tags = self.long_scalp_rebuy_grind_mode_tags
     trade_leverage = trade.leverage
+    select_filled_orders = trade.select_filled_orders
 
     is_backtest = self.is_backtest_mode()
     is_system_v3, is_system_v3_1, is_system_v3_2 = self.get_system_version_flags(trade)
@@ -1212,9 +1213,10 @@ class NostalgiaForInfinityX7(IStrategy):
       f"exit_{mode_name}_stoploss",
       f"exit_{mode_name}_stoploss_u_e",
     ]:
-      filled_entries = trade.select_filled_orders(trade.entry_side)
-      filled_exits = trade.select_filled_orders(trade.exit_side)
-      has_order_tags = hasattr(filled_entries[0], "ft_order_tag")
+      filled_entries = select_filled_orders(trade.entry_side)
+      filled_exits = select_filled_orders(trade.exit_side)
+      first_filled_entry = filled_entries[0]
+      has_order_tags = hasattr(first_filled_entry, "ft_order_tag")
       for order in filled_exits:
         order_tag = ""
         if has_order_tags:
@@ -1224,7 +1226,7 @@ class NostalgiaForInfinityX7(IStrategy):
           is_derisk = True
           break
       if not is_derisk:
-        is_derisk = trade.amount < (filled_entries[0].safe_filled * 0.95)
+        is_derisk = trade.amount < (first_filled_entry.safe_filled * 0.95)
     if previous_sell_reason in [f"exit_{mode_name}_stoploss_doom", f"exit_{mode_name}_stoploss"]:
       # return right away for system v3
       if is_system_v3 or is_system_v3_1 or is_system_v3_2:
