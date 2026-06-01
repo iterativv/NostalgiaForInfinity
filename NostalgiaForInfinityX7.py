@@ -126,7 +126,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.127"
+    return "v17.4.128"
 
   stoploss = -0.99
 
@@ -43770,14 +43770,20 @@ class NostalgiaForInfinityX7(IStrategy):
       self._grind_entry_tag = "g13"
       return True
     # g14 — SMA_9 cross SMA_21 + 4h uptrend (trend follower)
-    # if (
-    #   (last_rsi_3 > 5.0)
-    #   and (previous_candle["SMA_9"] < previous_candle["SMA_21"])
-    #   and (last_candle["SMA_9"] > last_candle["SMA_21"])
-    #   and (last_candle["EMA_12_4h"] > last_candle["EMA_200_4h"])
-    # ):
-    #   self._grind_entry_tag = "g14"
-    #   return True
+    if (
+      (last_rsi_3 > 5.0)
+      and (last_rsi_3_15m > 20.0)
+      and (last_rsi_3_1h > 30.0)
+      and (last_rsi_3_4h > 30.0)
+      and (last_candle["AROONU_14_15m"] < 50.0)
+      and (last_candle["STOCHRSIk_14_14_3_3_15m"] < 70.0)
+      and (previous_candle["SMA_9"] < previous_candle["SMA_21"])
+      and (last_candle["SMA_9"] > last_candle["SMA_21"])
+      and (last_candle["EMA_12_4h"] > last_candle["EMA_200_4h"])
+      and (last_close > (last_candle["close_max_48"] * 0.90))
+    ):
+      self._grind_entry_tag = "g14"
+      return True
     # g15 — deep loss recovery (slice_profit < -0.16)
     if (
       (slice_profit < -0.16)
