@@ -75344,6 +75344,9 @@ class NostalgiaForInfinityX7(IStrategy):
     trade_leverage = trade.leverage
     stake_scale_leverage = trade_leverage if is_futures else 1.0
 
+    last_filled_entry = filled_entries[-1]
+    last_filled_order = filled_orders[-1]
+
     max_rebuy_sub_grinds = 0
     regular_mode_rebuy_stakes = scale_stakes_for_min_stake(
       self.regular_mode_rebuy_stakes_futures if is_futures else self.regular_mode_rebuy_stakes_spot,
@@ -75798,8 +75801,8 @@ class NostalgiaForInfinityX7(IStrategy):
           (-rebuy_distance_ratio if (rebuy_sub_grind_count > 0) else profit_init_ratio)
           < (regular_mode_rebuy_sub_thresholds[rebuy_sub_grind_count])
         )
-        and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
-        and ((current_time - timedelta(hours=12) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.06))
+        and (current_time - timedelta(minutes=10) > last_filled_entry.order_filled_utc)
+        and ((current_time - timedelta(hours=12) > last_filled_order.order_filled_utc) or (slice_profit > 0.06))
         and is_short_grind_entry
       ):
         buy_amount = slice_amount * regular_mode_rebuy_stakes[rebuy_sub_grind_count] / stake_scale_leverage
@@ -75835,11 +75838,11 @@ class NostalgiaForInfinityX7(IStrategy):
           (-grind_1_distance_ratio if (grind_1_sub_grind_count > 0) else profit_init_ratio)
           < (regular_mode_grind_1_sub_thresholds[grind_1_sub_grind_count])
         )
-        and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
-        and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
+        and (current_time - timedelta(minutes=10) > last_filled_entry.order_filled_utc)
+        and ((current_time - timedelta(hours=2) > last_filled_order.order_filled_utc) or (slice_profit > 0.02))
         and (
           (num_open_grinds == 0)
-          or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
+          or (current_time - timedelta(hours=6) > last_filled_order.order_filled_utc)
           or (slice_profit > 0.06)
         )
         and ((num_open_grinds == 0) or (slice_profit > 0.03))
@@ -75997,11 +76000,11 @@ class NostalgiaForInfinityX7(IStrategy):
           (-grind_2_distance_ratio if (grind_2_sub_grind_count > 0) else profit_init_ratio)
           < (regular_mode_grind_2_sub_thresholds[grind_2_sub_grind_count])
         )
-        and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
-        and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
+        and (current_time - timedelta(minutes=10) > last_filled_entry.order_filled_utc)
+        and ((current_time - timedelta(hours=2) > last_filled_order.order_filled_utc) or (slice_profit > 0.02))
         and (
           (num_open_grinds == 0)
-          or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
+          or (current_time - timedelta(hours=6) > last_filled_order.order_filled_utc)
           or (slice_profit > 0.06)
         )
         and ((num_open_grinds == 0) or (slice_profit > 0.03))
@@ -76122,11 +76125,11 @@ class NostalgiaForInfinityX7(IStrategy):
           (-grind_3_distance_ratio if (grind_3_sub_grind_count > 0) else profit_init_ratio)
           < (regular_mode_grind_3_sub_thresholds[grind_3_sub_grind_count])
         )
-        and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
-        and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
+        and (current_time - timedelta(minutes=10) > last_filled_entry.order_filled_utc)
+        and ((current_time - timedelta(hours=2) > last_filled_order.order_filled_utc) or (slice_profit > 0.02))
         and (
           (num_open_grinds == 0)
-          or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
+          or (current_time - timedelta(hours=6) > last_filled_order.order_filled_utc)
           or (slice_profit > 0.06)
         )
         and ((num_open_grinds == 0) or (slice_profit > 0.03))
@@ -76247,11 +76250,11 @@ class NostalgiaForInfinityX7(IStrategy):
           (-grind_4_distance_ratio if (grind_4_sub_grind_count > 0) else profit_init_ratio)
           < (regular_mode_grind_4_sub_thresholds[grind_4_sub_grind_count])
         )
-        and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
-        and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
+        and (current_time - timedelta(minutes=10) > last_filled_entry.order_filled_utc)
+        and ((current_time - timedelta(hours=2) > last_filled_order.order_filled_utc) or (slice_profit > 0.02))
         and (
           (num_open_grinds == 0)
-          or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
+          or (current_time - timedelta(hours=6) > last_filled_order.order_filled_utc)
           or (slice_profit > 0.06)
         )
         and ((num_open_grinds == 0) or (slice_profit > 0.03))
@@ -76372,11 +76375,11 @@ class NostalgiaForInfinityX7(IStrategy):
           (-grind_5_distance_ratio if (grind_5_sub_grind_count > 0) else profit_init_ratio)
           < (regular_mode_grind_5_sub_thresholds[grind_5_sub_grind_count])
         )
-        and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
-        and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
+        and (current_time - timedelta(minutes=10) > last_filled_entry.order_filled_utc)
+        and ((current_time - timedelta(hours=2) > last_filled_order.order_filled_utc) or (slice_profit > 0.02))
         and (
           (num_open_grinds == 0)
-          or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
+          or (current_time - timedelta(hours=6) > last_filled_order.order_filled_utc)
           or (slice_profit > 0.06)
         )
         and ((num_open_grinds == 0) or (slice_profit > 0.03))
@@ -76497,11 +76500,11 @@ class NostalgiaForInfinityX7(IStrategy):
           (-grind_6_distance_ratio if (grind_6_sub_grind_count > 0) else profit_init_ratio)
           < (regular_mode_grind_6_sub_thresholds[grind_6_sub_grind_count])
         )
-        and (current_time - timedelta(minutes=10) > filled_entries[-1].order_filled_utc)
-        and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
+        and (current_time - timedelta(minutes=10) > last_filled_entry.order_filled_utc)
+        and ((current_time - timedelta(hours=2) > last_filled_order.order_filled_utc) or (slice_profit > 0.02))
         and (
           (num_open_grinds == 0)
-          or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
+          or (current_time - timedelta(hours=6) > last_filled_order.order_filled_utc)
           or (slice_profit > 0.06)
         )
         # and ((num_open_grinds == 0) or (slice_profit > 0.03))
