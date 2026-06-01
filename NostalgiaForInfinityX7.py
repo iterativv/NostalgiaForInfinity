@@ -126,7 +126,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.126"
+    return "v17.4.127"
 
   stoploss = -0.99
 
@@ -41923,6 +41923,7 @@ class NostalgiaForInfinityX7(IStrategy):
   ) -> float:
     last_rsi_3 = last_candle["RSI_3"]
     last_rsi_14 = last_candle["RSI_14"]
+    last_willr_14 = last_candle["WILLR_14"]
 
     if (
       (last_rsi_3 > 99.0)
