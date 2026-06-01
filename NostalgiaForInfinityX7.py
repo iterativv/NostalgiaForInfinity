@@ -52863,6 +52863,12 @@ class NostalgiaForInfinityX7(IStrategy):
     last_roc_9_1d = last_candle["ROC_9_1d"]
     last_rsi_3_1h = last_candle["RSI_3_1h"]
     last_rsi_14 = last_candle["RSI_14"]
+    last_rsi_3_4h = last_candle["RSI_3_4h"]
+    last_willr_14 = last_candle["WILLR_14"]
+    last_stochrsi_k_4h = last_candle["STOCHRSIk_14_14_3_3_4h"]
+    last_stochrsi_k_1h = last_candle["STOCHRSIk_14_14_3_3_1h"]
+    last_stochrsi_k_1d = last_candle["STOCHRSIk_14_14_3_3_1d"]
+    last_roc_9_4h = last_candle["ROC_9_4h"]
     if 0.01 > current_profit >= 0.001:
       if (
         (last_willr_14 < -99.0)
