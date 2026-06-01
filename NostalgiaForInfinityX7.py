@@ -3219,7 +3219,8 @@ class NostalgiaForInfinityX7(IStrategy):
     assert self.dp, "DataProvider is required for multiple timeframes."
 
     # Get dataframe
-    informative_1d = self.dp.get_pair_dataframe(pair=metadata["pair"], timeframe=info_timeframe)
+    metadata_pair = metadata["pair"]
+    informative_1d = self.dp.get_pair_dataframe(pair=metadata_pair, timeframe=info_timeframe)
 
     # Empty dataframe protection
     if informative_1d.empty:
@@ -3391,7 +3392,7 @@ class NostalgiaForInfinityX7(IStrategy):
         "low_min_30",
       ]
 
-      self.validate_indicators(df=informative_1d, columns=debug_cols, pair=metadata["pair"], timeframe=info_timeframe)
+      self.validate_indicators(df=informative_1d, columns=debug_cols, pair=metadata_pair, timeframe=info_timeframe)
 
     # =========================================================================
     # LOGGING
@@ -3399,7 +3400,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     tok = time.perf_counter()
 
-    log.debug("[%s] informative_1d_indicators took: %.4f seconds.", metadata["pair"], tok - tik)
+    log.debug("[%s] informative_1d_indicators took: %.4f seconds.", metadata_pair, tok - tik)
 
     return informative_1d
 
@@ -3417,7 +3418,8 @@ class NostalgiaForInfinityX7(IStrategy):
     assert dp, "DataProvider is required for multiple timeframes."
 
     # Get dataframe
-    informative_4h = dp.get_pair_dataframe(pair=metadata["pair"], timeframe=info_timeframe)
+    metadata_pair = metadata["pair"]
+    informative_4h = dp.get_pair_dataframe(pair=metadata_pair, timeframe=info_timeframe)
 
     # Empty dataframe protection
     if informative_4h.empty:
@@ -3638,14 +3640,14 @@ class NostalgiaForInfinityX7(IStrategy):
         "low_min_24",
       ]
 
-      validate_indicators(df=informative_4h, columns=debug_cols, pair=metadata["pair"], timeframe=info_timeframe)
+      validate_indicators(df=informative_4h, columns=debug_cols, pair=metadata_pair, timeframe=info_timeframe)
     # =========================================================================
     # LOGGING
     # =========================================================================
 
     tok = time.perf_counter()
 
-    log.debug("[%s] informative_4h_indicators took: %.4f seconds.", metadata["pair"], tok - tik)
+    log.debug("[%s] informative_4h_indicators took: %.4f seconds.", metadata_pair, tok - tik)
 
     return informative_4h
 
@@ -3666,7 +3668,8 @@ class NostalgiaForInfinityX7(IStrategy):
     # GET DATAFRAME
     # =========================================================================
 
-    informative_1h = dp.get_pair_dataframe(pair=metadata["pair"], timeframe=info_timeframe)
+    metadata_pair = metadata["pair"]
+    informative_1h = dp.get_pair_dataframe(pair=metadata_pair, timeframe=info_timeframe)
 
     # Empty dataframe protection
     if informative_1h.empty:
@@ -3857,7 +3860,7 @@ class NostalgiaForInfinityX7(IStrategy):
         "low_min_24",
       ]
 
-      validate_indicators(df=informative_1h, columns=debug_cols, pair=metadata["pair"], timeframe=info_timeframe)
+      validate_indicators(df=informative_1h, columns=debug_cols, pair=metadata_pair, timeframe=info_timeframe)
 
     # =========================================================================
     # LOGGING
@@ -3865,7 +3868,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     tok = time.perf_counter()
 
-    log.debug("[%s] informative_1h_indicators took: %.4f seconds.", metadata["pair"], tok - tik)
+    log.debug("[%s] informative_1h_indicators took: %.4f seconds.", metadata_pair, tok - tik)
 
     return informative_1h
 
@@ -3886,7 +3889,8 @@ class NostalgiaForInfinityX7(IStrategy):
     # GET DATAFRAME
     # =========================================================================
 
-    informative_15m = dp.get_pair_dataframe(pair=metadata["pair"], timeframe=info_timeframe)
+    metadata_pair = metadata["pair"]
+    informative_15m = dp.get_pair_dataframe(pair=metadata_pair, timeframe=info_timeframe)
 
     # Empty dataframe protection
     if informative_15m.empty:
@@ -4027,7 +4031,7 @@ class NostalgiaForInfinityX7(IStrategy):
         # "bot_wick_pct",
       ]
 
-      validate_indicators(df=informative_15m, columns=debug_cols, pair=metadata["pair"], timeframe=info_timeframe)
+      validate_indicators(df=informative_15m, columns=debug_cols, pair=metadata_pair, timeframe=info_timeframe)
 
     # =========================================================================
     # LOGGING
@@ -4035,7 +4039,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     tok = time.perf_counter()
 
-    log.debug("[%s] informative_15m_indicators took: %.4f seconds.", metadata["pair"], tok - tik)
+    log.debug("[%s] informative_15m_indicators took: %.4f seconds.", metadata_pair, tok - tik)
 
     return informative_15m
 
@@ -4043,6 +4047,7 @@ class NostalgiaForInfinityX7(IStrategy):
   # ---------------------------------------------------------------------------------------------
   def base_tf_5m_indicators(self, metadata: dict, df: DataFrame) -> DataFrame:
     tik = time.perf_counter()
+    metadata_pair = metadata["pair"]
 
     # =========================================================================
     # BASE DATA
@@ -4265,7 +4270,7 @@ class NostalgiaForInfinityX7(IStrategy):
         "num_empty_288",
       ]
 
-      self.validate_indicators(df=df, columns=debug_cols, pair=metadata["pair"], timeframe=self.timeframe)
+      self.validate_indicators(df=df, columns=debug_cols, pair=metadata_pair, timeframe=self.timeframe)
 
     # =========================================================================
     # GLOBAL PROTECTIONS
@@ -4283,7 +4288,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     tok = time.perf_counter()
 
-    log.debug("[%s] base_tf_5m_indicators took: %.4f seconds.", metadata["pair"], tok - tik)
+    log.debug("[%s] base_tf_5m_indicators took: %.4f seconds.", metadata_pair, tok - tik)
 
     return df
 
@@ -4305,6 +4310,7 @@ class NostalgiaForInfinityX7(IStrategy):
   # ---------------------------------------------------------------------------------------------
   def _btc_info_indicators(self, btc_info_pair: str, btc_info_timeframe: str, metadata: dict) -> DataFrame:
     tik = time.perf_counter()
+    metadata_pair = metadata["pair"]
 
     # -------------------------------------------------------------------------
     # LOAD DATA
@@ -4336,7 +4342,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     tok = time.perf_counter()
 
-    log.debug("[%s] btc_info_%s_indicators took: %.4f seconds.", metadata["pair"], btc_info_timeframe, tok - tik)
+    log.debug("[%s] btc_info_%s_indicators took: %.4f seconds.", metadata_pair, btc_info_timeframe, tok - tik)
 
     return df
 
