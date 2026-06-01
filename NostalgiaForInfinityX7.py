@@ -68918,6 +68918,9 @@ class NostalgiaForInfinityX7(IStrategy):
       return None
 
     is_futures = self.is_futures_mode
+    derisk_use_grind_stops = self.derisk_use_grind_stops
+    short_rebuy_mode_tags = self.short_rebuy_mode_tags
+    short_grind_mode_tags = self.short_grind_mode_tags
     trade_leverage = trade.leverage
 
     min_stake = self.correct_min_stake(min_stake)
@@ -68970,11 +68973,11 @@ class NostalgiaForInfinityX7(IStrategy):
     current_stake_amount = trade_amount * current_rate
     is_derisk = trade_amount < (first_filled_entry.safe_filled * 0.95)
     is_derisk_calc = False
-    is_rebuy_mode = all(c in self.short_rebuy_mode_tags for c in enter_tags) or (
-      any(c in self.short_rebuy_mode_tags for c in enter_tags)
-      and all(c in (self.short_rebuy_mode_tags + self.short_grind_mode_tags) for c in enter_tags)
+    is_rebuy_mode = all(c in short_rebuy_mode_tags for c in enter_tags) or (
+      any(c in short_rebuy_mode_tags for c in enter_tags)
+      and all(c in (short_rebuy_mode_tags + short_grind_mode_tags) for c in enter_tags)
     )
-    is_grind_mode = all(c in self.short_grind_mode_tags for c in enter_tags)
+    is_grind_mode = all(c in short_grind_mode_tags for c in enter_tags)
 
     fee_open_rate = trade_fee_open if self.custom_fee_open_rate is None else self.custom_fee_open_rate
     fee_close_rate = trade_fee_close if self.custom_fee_close_rate is None else self.custom_fee_close_rate
@@ -69594,7 +69597,7 @@ class NostalgiaForInfinityX7(IStrategy):
             else:
               return -ft_sell_amount
         # First entry de-risk
-        if self.derisk_use_grind_stops and (
+        if derisk_use_grind_stops and (
           first_entry_distance_ratio
           < (
             self.grind_mode_first_entry_stop_threshold_spot
@@ -69735,7 +69738,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Grind stop
     if (
-      self.derisk_use_grind_stops
+      derisk_use_grind_stops
       and (grind_1_derisk_1_sub_grind_count > 0)
       # and (
       #   (-(exit_rate - grind_1_derisk_1_current_open_rate) / grind_1_derisk_1_current_open_rate)
@@ -69882,7 +69885,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Grind stop
     if (
-      self.derisk_use_grind_stops
+      derisk_use_grind_stops
       and (grind_2_derisk_1_sub_grind_count > 0)
       # and (
       #   (-(exit_rate - grind_2_derisk_1_current_open_rate) / grind_2_derisk_1_current_open_rate)
@@ -70062,7 +70065,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Grind stop
     if (
-      self.derisk_use_grind_stops
+      derisk_use_grind_stops
       and (
         (grind_1_sub_grind_count > 0)
         # and ((-(exit_rate - grind_1_current_open_rate) / grind_1_current_open_rate) < grind_1_stop_grinds)
@@ -70200,7 +70203,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Grind stop
     if (
-      self.derisk_use_grind_stops
+      derisk_use_grind_stops
       and (
         (grind_2_sub_grind_count > 0)
         # and ((-(exit_rate - grind_2_current_open_rate) / grind_2_current_open_rate) < grind_2_stop_grinds)
@@ -70338,7 +70341,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Grind stop
     if (
-      self.derisk_use_grind_stops
+      derisk_use_grind_stops
       and (
         (grind_3_sub_grind_count > 0)
         # and ((-(exit_rate - grind_3_current_open_rate) / grind_3_current_open_rate) < grind_3_stop_grinds)
@@ -70476,7 +70479,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Grind stop
     if (
-      self.derisk_use_grind_stops
+      derisk_use_grind_stops
       and (
         (grind_4_sub_grind_count > 0)
         # and ((-(exit_rate - grind_4_current_open_rate) / grind_4_current_open_rate) < grind_4_stop_grinds)
@@ -70614,7 +70617,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Grind stop
     if (
-      self.derisk_use_grind_stops
+      derisk_use_grind_stops
       and (
         (grind_5_sub_grind_count > 0)
         # and ((-(exit_rate - grind_5_current_open_rate) / grind_5_current_open_rate) < grind_5_stop_grinds)
@@ -70752,7 +70755,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Grind stop
     if (
-      self.derisk_use_grind_stops
+      derisk_use_grind_stops
       and (
         (grind_6_sub_grind_count > 0)
         # and ((-(exit_rate - grind_6_current_open_rate) / grind_6_current_open_rate) < grind_6_stop_grinds)
