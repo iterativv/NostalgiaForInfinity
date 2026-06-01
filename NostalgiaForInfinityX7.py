@@ -77946,17 +77946,18 @@ def pivot_points(df: DataFrame, mode="fibonacci") -> Series:
   df_open = df["open"]
 
   if mode == "simple":
-    hlc3_pivot = (df["high"] + df["low"] + df["close"]).shift(1) / 3
-    res1 = hlc3_pivot * 2 - df["low"].shift(1)
-    sup1 = hlc3_pivot * 2 - df["high"].shift(1)
-    res2 = hlc3_pivot + (df["high"] - df["low"]).shift()
-    sup2 = hlc3_pivot - (df["high"] - df["low"]).shift()
-    res3 = hlc3_pivot * 2 + (df["high"] - 2 * df["low"]).shift()
-    sup3 = hlc3_pivot * 2 - (2 * df["high"] - df["low"]).shift()
+    hlc3_pivot = (df_high + df_low + df_close).shift(1) / 3
+    res1 = hlc3_pivot * 2 - df_low.shift(1)
+    sup1 = hlc3_pivot * 2 - df_high.shift(1)
+    high_low_range = df_high - df_low
+    res2 = hlc3_pivot + high_low_range.shift()
+    sup2 = hlc3_pivot - high_low_range.shift()
+    res3 = hlc3_pivot * 2 + (df_high - 2 * df_low).shift()
+    sup3 = hlc3_pivot * 2 - (2 * df_high - df_low).shift()
     return hlc3_pivot, res1, res2, res3, sup1, sup2, sup3
   elif mode == "fibonacci":
-    hlc3_pivot = (df["high"] + df["low"] + df["close"]).shift(1) / 3
-    hl_range = (df["high"] - df["low"]).shift(1)
+    hlc3_pivot = (df_high + df_low + df_close).shift(1) / 3
+    hl_range = (df_high - df_low).shift(1)
     res1 = hlc3_pivot + 0.382 * hl_range
     sup1 = hlc3_pivot - 0.382 * hl_range
     res2 = hlc3_pivot + 0.618 * hl_range
@@ -77965,17 +77966,17 @@ def pivot_points(df: DataFrame, mode="fibonacci") -> Series:
     sup3 = hlc3_pivot - 1 * hl_range
     return hlc3_pivot, res1, res2, res3, sup1, sup2, sup3
   elif mode == "DeMark":
-    demark_pivot_lt = df["low"] * 2 + df["high"] + df["close"]
-    demark_pivot_eq = df["close"] * 2 + df["low"] + df["high"]
-    demark_pivot_gt = df["high"] * 2 + df["low"] + df["close"]
+    demark_pivot_lt = df_low * 2 + df_high + df_close
+    demark_pivot_eq = df_close * 2 + df_low + df_high
+    demark_pivot_gt = df_high * 2 + df_low + df_close
     demark_pivot = np.where(
-      (df["close"] < df["open"]),
+      (df_close < df_open),
       demark_pivot_lt,
-      np.where((df["close"] > df["open"]), demark_pivot_gt, demark_pivot_eq),
+      np.where((df_close > df_open), demark_pivot_gt, demark_pivot_eq),
     )
     dm_pivot = demark_pivot / 4
-    dm_res = demark_pivot / 2 - df["low"]
-    dm_sup = demark_pivot / 2 - df["high"]
+    dm_res = demark_pivot / 2 - df_low
+    dm_sup = demark_pivot / 2 - df_high
     return dm_pivot, dm_res, dm_sup
 
 
@@ -78041,9 +78042,11 @@ def range_percent_change(self, df: DataFrame, method, length: int) -> float:
   df_close = df["close"]
 
   if method == "HL":
-    return (df["high"].rolling(length).max() - df["low"].rolling(length).min()) / df["low"].rolling(length).min()
+    low_min = df_low.rolling(length).min()
+    return (df_high.rolling(length).max() - low_min) / low_min
   elif method == "OC":
-    return (df["open"].rolling(length).max() - df["close"].rolling(length).min()) / df["close"].rolling(length).min()
+    close_min = df_close.rolling(length).min()
+    return (df_open.rolling(length).max() - close_min) / close_min
   else:
     raise ValueError(f"Method {method} not defined!")
 
@@ -78061,9 +78064,9 @@ def top_percent_change(self, df: DataFrame, length: int) -> float:
   df_close = df["close"]
 
   if length == 0:
-    return (df["open"] - df["close"]) / df["close"]
+    return (df_open - df_close) / df_close
   else:
-    return (df["open"].rolling(length).max() - df["close"]) / df["close"]
+    return (df_open.rolling(length).max() - df_close) / df_close
 
 
 # +---------------------------------------------------------------------------+
