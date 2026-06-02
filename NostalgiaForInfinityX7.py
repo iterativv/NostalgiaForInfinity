@@ -25121,7 +25121,8 @@ class NostalgiaForInfinityX7(IStrategy):
     # Cached target profit data
     cache = self.target_profit_cache
     cache_data = cache.data if cache is not None else None
-    target_data = cache_data.get(pair) if cache_data else None
+    profit_target_get = cache_data.get if cache_data is not None else None
+    target_data = profit_target_get(pair) if profit_target_get is not None else None
 
     # Profit target logic
     if target_data:
@@ -25409,7 +25410,8 @@ class NostalgiaForInfinityX7(IStrategy):
     # -------------------------------------------------------------------------
     cache = self.target_profit_cache
     cache_data = cache.data if cache is not None else None
-    target_data = cache_data.get(pair) if cache_data else None
+    profit_target_get = cache_data.get if cache_data is not None else None
+    target_data = profit_target_get(pair) if profit_target_get is not None else None
 
     # -------------------------------------------------------------------------
     # Profit target logic
@@ -25696,7 +25698,8 @@ class NostalgiaForInfinityX7(IStrategy):
     # Profit Target Signal
     cache = self.target_profit_cache
     cache_data = cache.data if cache is not None else None
-    target_data = cache_data.get(pair) if cache_data else None
+    profit_target_get = cache_data.get if cache_data is not None else None
+    target_data = profit_target_get(pair) if profit_target_get is not None else None
 
     if target_data:
       previous_rate = target_data["rate"]
@@ -25944,7 +25947,8 @@ class NostalgiaForInfinityX7(IStrategy):
     # Profit Target Signal
     cache = self.target_profit_cache
     cache_data = cache.data if cache is not None else None
-    target_data = cache_data.get(pair) if cache_data else None
+    profit_target_get = cache_data.get if cache_data is not None else None
+    target_data = profit_target_get(pair) if profit_target_get is not None else None
 
     if target_data:
       previous_rate = target_data["rate"]
@@ -26136,7 +26140,8 @@ class NostalgiaForInfinityX7(IStrategy):
     mode = self.long_rapid_mode_name
     cache = self.target_profit_cache
     cache_data = cache.data if cache is not None else None
-    pair_cache = cache_data.get(pair) if cache_data else None
+    profit_target_get = cache_data.get if cache_data is not None else None
+    pair_cache = profit_target_get(pair) if profit_target_get is not None else None
 
     sell = False
     signal_name = None
@@ -26501,7 +26506,8 @@ class NostalgiaForInfinityX7(IStrategy):
 
     cache = self.target_profit_cache
     cache_data = cache.data if cache is not None else None
-    pair_cache = cache_data.get(pair) if cache_data else None
+    profit_target_get = cache_data.get if cache_data is not None else None
+    pair_cache = profit_target_get(pair) if profit_target_get is not None else None
 
     sell = False
     signal_name = None
@@ -26813,7 +26819,8 @@ class NostalgiaForInfinityX7(IStrategy):
     # Profit Target Signal
     cache = self.target_profit_cache
     cache_data = cache.data if cache is not None else None
-    pair_data = cache_data.get(pair) if cache_data and pair in cache_data else None
+    profit_target_get = cache_data.get if cache_data is not None else None
+    pair_data = profit_target_get(pair) if profit_target_get is not None else None
 
     if pair_data:
       previous_rate = pair_data["rate"]
