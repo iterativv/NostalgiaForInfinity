@@ -4386,6 +4386,7 @@ class NostalgiaForInfinityX7(IStrategy):
     tik = time.perf_counter()
     prepare_informative_merge = self.prepare_informative_merge
     base_timeframe = self.timeframe
+    metadata_pair = metadata["pair"]
 
     # =========================================================================
     # CONFIG
@@ -4415,7 +4416,7 @@ class NostalgiaForInfinityX7(IStrategy):
       # ---------------------------------------------------------------------
 
       if btc_informative.empty:
-        log.warning(f"[{metadata['pair']}] BTC informative {btc_tf} EMPTY!")
+        log.warning(f"[{metadata_pair}] BTC informative {btc_tf} EMPTY!")
 
         continue
 
@@ -4425,10 +4426,10 @@ class NostalgiaForInfinityX7(IStrategy):
 
       if debug:
         if not btc_informative.index.is_monotonic_increasing:
-          log.warning(f"[{metadata['pair']}] BTC {btc_tf} index NOT monotonic!")
+          log.warning(f"[{metadata_pair}] BTC {btc_tf} index NOT monotonic!")
 
         if btc_informative.index.has_duplicates:
-          log.warning(f"[{metadata['pair']}] BTC {btc_tf} index has DUPLICATES!")
+          log.warning(f"[{metadata_pair}] BTC {btc_tf} index has DUPLICATES!")
 
       # ---------------------------------------------------------------------
       # REMOVE UNUSED OHLCV BEFORE MERGE
@@ -4463,7 +4464,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
       if info_indicators.empty:
         if debug:
-          log.warning(f"[{metadata['pair']}] {info_tf} informative EMPTY!")
+          log.warning(f"[{metadata_pair}] {info_tf} informative EMPTY!")
 
         continue
 
@@ -4473,14 +4474,14 @@ class NostalgiaForInfinityX7(IStrategy):
 
       if debug:
         if not info_indicators.index.is_monotonic_increasing:
-          log.warning(f"[{metadata['pair']}] {info_tf} index NOT monotonic!")
+          log.warning(f"[{metadata_pair}] {info_tf} index NOT monotonic!")
 
         if info_indicators.index.has_duplicates:
-          log.warning(f"[{metadata['pair']}] {info_tf} index has DUPLICATES!")
+          log.warning(f"[{metadata_pair}] {info_tf} index has DUPLICATES!")
 
         nan_cols = info_indicators.columns[info_indicators.isna().all()].tolist()
         if nan_cols:
-          log.warning(f"[{metadata['pair']}] {info_tf} FULL NaN cols: {nan_cols}")
+          log.warning(f"[{metadata_pair}] {info_tf} FULL NaN cols: {nan_cols}")
 
       # ---------------------------------------------------------------------
       # KEEP ONLY REQUIRED OHLCV
@@ -4517,17 +4518,17 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     if debug:
       if not df.index.is_monotonic_increasing:
-        log.warning(f"[{metadata['pair']}] FINAL DF index NOT monotonic!")
+        log.warning(f"[{metadata_pair}] FINAL DF index NOT monotonic!")
 
       if df.index.has_duplicates:
-        log.warning(f"[{metadata['pair']}] FINAL DF index has DUPLICATES!")
+        log.warning(f"[{metadata_pair}] FINAL DF index has DUPLICATES!")
 
       # ---------------------------------------------------------------------
       # FULL NaN COLUMNS
       # ---------------------------------------------------------------------
       full_nan_cols = df.columns[df.isna().all()].tolist()
       if full_nan_cols:
-        log.warning(f"[{metadata['pair']}] FINAL DF FULL NaN cols: {full_nan_cols}")
+        log.warning(f"[{metadata_pair}] FINAL DF FULL NaN cols: {full_nan_cols}")
 
       # ---------------------------------------------------------------------
       # RECENT NaN CHECK
@@ -4537,7 +4538,7 @@ class NostalgiaForInfinityX7(IStrategy):
       recent_nan_cols = [col for col in recent_df.columns if recent_df[col].isna().any()]
 
       if recent_nan_cols:
-        log.warning(f"[{metadata['pair']}] FINAL DF recent NaNs: {recent_nan_cols}")
+        log.warning(f"[{metadata_pair}] FINAL DF recent NaNs: {recent_nan_cols}")
 
     # =========================================================================
     # BASE TF INDICATORS LAST
@@ -12206,7 +12207,7 @@ class NostalgiaForInfinityX7(IStrategy):
     tok_after_protections = time.perf_counter()
     tok_total = time.perf_counter()
     log.debug(
-      f"[{metadata['pair']}] "
+      f"[{metadata_pair}] "
       f"populate_indicators pre-protections: "
       f"{tok_before_protections - tik:0.4f}s | "
       f"protections: "
@@ -12215,7 +12216,7 @@ class NostalgiaForInfinityX7(IStrategy):
       f"{tok_total - tik:0.4f}s"
     )
     tok = time.perf_counter()
-    log.debug("[%s] Populate indicators took a total of: %.4f seconds.", metadata["pair"], tok - tik)
+    log.debug("[%s] Populate indicators took a total of: %.4f seconds.", metadata_pair, tok - tik)
 
     return df
 
