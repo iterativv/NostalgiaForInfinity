@@ -47372,9 +47372,11 @@ class NostalgiaForInfinityX7(IStrategy):
     slice_amount = filled_entries[0].cost
     slice_profit = (exit_rate - last_filled_order.safe_price) / last_filled_order.safe_price
     slice_profit_entry = (exit_rate - last_filled_entry.safe_price) / last_filled_entry.safe_price
-    slice_profit_exit = (
-      ((exit_rate - filled_exits[-1].safe_price) / filled_exits[-1].safe_price) if count_of_exits > 0 else 0.0
-    )
+    if count_of_exits > 0:
+      last_filled_exit_price = filled_exits[-1].safe_price
+      slice_profit_exit = (exit_rate - last_filled_exit_price) / last_filled_exit_price
+    else:
+      slice_profit_exit = 0.0
 
     current_stake_amount = trade_amount * current_rate
     stake_scale_leverage = trade_leverage if is_futures_mode else 1.0
@@ -70033,9 +70035,11 @@ class NostalgiaForInfinityX7(IStrategy):
     slice_amount = filled_entries[0].cost
     slice_profit = (exit_rate - last_filled_order.safe_price) / last_filled_order.safe_price
     slice_profit_entry = (exit_rate - last_filled_entry.safe_price) / last_filled_entry.safe_price
-    slice_profit_exit = (
-      ((exit_rate - filled_exits[-1].safe_price) / filled_exits[-1].safe_price) if count_of_exits > 0 else 0.0
-    )
+    if count_of_exits > 0:
+      last_filled_exit_price = filled_exits[-1].safe_price
+      slice_profit_exit = (exit_rate - last_filled_exit_price) / last_filled_exit_price
+    else:
+      slice_profit_exit = 0.0
 
     current_stake_amount = trade_amount * current_rate
     stake_scale_leverage = trade_leverage if is_futures_mode else 1.0
