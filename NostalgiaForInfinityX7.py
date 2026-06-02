@@ -4566,6 +4566,12 @@ class NostalgiaForInfinityX7(IStrategy):
     protection_aroonu_14_1h = df["AROONU_14_1h"].to_numpy(copy=False)
     protection_stochrsik_14_14_3_3_1h = df["STOCHRSIk_14_14_3_3_1h"].to_numpy(copy=False)
     protection_stochrsik_14_14_3_3_4h = df["STOCHRSIk_14_14_3_3_4h"].to_numpy(copy=False)
+    # Hoist long protection high STOCHRSI 4h comparison masks
+    stochrsi_k_4h_lt_60 = protection_stochrsik_14_14_3_3_4h < 60.0
+    stochrsi_k_4h_lt_70 = protection_stochrsik_14_14_3_3_4h < 70.0
+    stochrsi_k_4h_lt_80 = protection_stochrsik_14_14_3_3_4h < 80.0
+    stochrsi_k_4h_lt_85 = protection_stochrsik_14_14_3_3_4h < 85.0
+    stochrsi_k_4h_lt_90 = protection_stochrsik_14_14_3_3_4h < 90.0
     protection_roc_9_4h = df["ROC_9_4h"].to_numpy(copy=False)
     protection_cmf_20_1d = df["CMF_20_1d"].to_numpy(copy=False)
     protection_roc_9_15m = df["ROC_9_15m"].to_numpy(copy=False)
@@ -4697,7 +4703,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_3_4h > 55.0)
         | rsi_14_4h_lt_50
         | (protection_aroonu_14_4h < 80.0)
-        | (protection_stochrsik_14_14_3_3_4h < 70.0)
+        | stochrsi_k_4h_lt_70
       )
       # 5m & 15m & 1h & 4h down move, 15m & 1h & 4h still not low enough, 15m & 4h high
       & (
@@ -4710,7 +4716,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_4h_lt_30
         | (protection_aroonu_14_15m < 60.0)
         | (protection_stochrsik_14_14_3_3_15m < 50.0)
-        | (protection_stochrsik_14_14_3_3_4h < 80.0)
+        | stochrsi_k_4h_lt_80
       )
       # 5m & 15m & 4h down move, 15m & 1h & 4h still high, 15m & 1h still high
       & (
@@ -4742,7 +4748,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_1h_lt_40
         | rsi_14_4h_lt_40
         | (protection_stochrsik_14_14_3_3_15m < 60.0)
-        | (protection_stochrsik_14_14_3_3_4h < 70.0)
+        | stochrsi_k_4h_lt_70
       )
       # 5m & 15m & 1h & 4h down move, 15m & 1h & 4h still high, 15m & 4h high
       & (
@@ -4831,7 +4837,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_aroonu_14_15m < 40.0)
         | (protection_aroonu_14_4h < 80.0)
         | (protection_stochrsik_14_14_3_3_15m < 20.0)
-        | (protection_stochrsik_14_14_3_3_4h < 80.0)
+        | stochrsi_k_4h_lt_80
         | (protection_roc_9_4h < 30.0)
       )
       # 15m & 1h & 4h down move, 1h still high, 15m & 1h downtrend
@@ -5126,7 +5132,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_aroonu_14_1h < 20.0)
         | (protection_aroonu_14_4h < 20.0)
         | (protection_stochrsik_14_14_3_3_1h < 20.0)
-        | (protection_stochrsik_14_14_3_3_4h < 90.0)
+        | stochrsi_k_4h_lt_90
       )
       # 15m & 1h & 4h down move, 1h & 4h still not low enough, 15m & 1h & 4h downtrend
       & (
@@ -5177,7 +5183,7 @@ class NostalgiaForInfinityX7(IStrategy):
         (protection_rsi_3_15m > 5.0)
         | (protection_rsi_3_1h > 15.0)
         | (protection_aroonu_14_1h < 80.0)
-        | (protection_stochrsik_14_14_3_3_4h < 80.0)
+        | stochrsi_k_4h_lt_80
       )
       # 15m & 1h & 4h down move, 1h still not low enough, 4h still high, 15m still not low enough, 1d high & overbought
       & (
@@ -5243,7 +5249,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_1h_lt_30
         | rsi_14_4h_lt_30
         | (protection_cmf_20_4h > -0.20)
-        | (protection_stochrsik_14_14_3_3_4h < 70.0)
+        | stochrsi_k_4h_lt_70
       )
       # 15m & 1h & 4h down move, 1h high, 4h downtrend
       & (
@@ -5294,7 +5300,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_1h_lt_40
         | rsi_14_4h_lt_50
         | (protection_aroonu_14_4h < 80.0)
-        | (protection_stochrsik_14_14_3_3_4h < 80.0)
+        | stochrsi_k_4h_lt_80
       )
       # 15m & 1h & 3h down move, 1h & 4h still not low enough, 15m downtrend, 1h still high
       & (
@@ -5491,7 +5497,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_4h_lt_30
         | (protection_aroonu_14_1h < 40.0)
         | (protection_aroonu_14_4h < 80.0)
-        | (protection_stochrsik_14_14_3_3_4h < 70.0)
+        | stochrsi_k_4h_lt_70
       )
       # 15m & 1h & 4h down move, 15m & 1h & 4h still not low enough, 15m & 1h downtrend, 15m still not low enough
       & (
@@ -5546,7 +5552,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_1h_lt_40
         | (protection_rsi_14_4h < 80.0)
         | (protection_aroonu_14_4h < 80.0)
-        | (protection_stochrsik_14_14_3_3_4h < 80.0)
+        | stochrsi_k_4h_lt_80
         | (protection_roc_9_4h < 80.0)
       )
       # 15m & 1h & 4h down move, 15m & 1h still not low enough, 4h still high, 4h overbought
@@ -5602,7 +5608,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_4h_lt_50
         | (protection_cmf_20_1h > -0.4)
         | (protection_aroonu_14_4h < 80.0)
-        | (protection_stochrsik_14_14_3_3_4h < 70.0)
+        | stochrsi_k_4h_lt_70
       )
       # 15m & 1h & 4h down move, 1h & 4h still not low enough, 1h & 4h downtrend, 15m & 1h & 4h still not low enough
       & (
@@ -5715,7 +5721,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_1h_lt_40
         | (protection_rsi_14_4h < 70.0)
         | (protection_aroonu_14_4h < 80.0)
-        | (protection_stochrsik_14_14_3_3_4h < 90.0)
+        | stochrsi_k_4h_lt_90
         | (protection_roc_9_4h < 25.0)
       )
       # 15m & 1h down move, 15m still not low enough, 1h & 4h high, 1h & 1d overbought
@@ -5866,7 +5872,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_15m_lt_30
         | (protection_rsi_14_1h < 35.0)
         | (protection_stochrsik_14_14_3_3_15m < 30.0)
-        | (protection_stochrsik_14_14_3_3_4h < 85.0)
+        | stochrsi_k_4h_lt_85
       )
       # 15m & 1h & 4h & 1d down move, 15m & 1 & 4h still not low enough, 1h still high, 4h high
       & (
@@ -5878,7 +5884,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_1h_lt_30
         | rsi_14_4h_lt_30
         | (protection_stochrsik_14_14_3_3_1h < 40.0)
-        | (protection_stochrsik_14_14_3_3_4h < 60.0)
+        | stochrsi_k_4h_lt_60
       )
       # 15m & 1h & 4h down move, 15m still not low enough, 1h still high, 4h high & overbought
       & (
@@ -6288,7 +6294,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_aroonu_14_15m < 30.0)
         | (protection_aroonu_14_1h < 30.0)
         | (protection_aroonu_14_4h < 60.0)
-        | (protection_stochrsik_14_14_3_3_4h < 90.0)
+        | stochrsi_k_4h_lt_90
       )
       # 15m & 1h down move, 15m still not low enough, 1h still high, 4h high. 4h overbought
       & (
@@ -6367,7 +6373,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_cmf_20_15m > -0.25)
         | (protection_aroonu_14_1h < 50.0)
         | (protection_aroonu_14_4h < 100.0)
-        | (protection_stochrsik_14_14_3_3_4h < 90.0)
+        | stochrsi_k_4h_lt_90
       )
       # 15m & 1h & 4h & 1d down move, 15m still not low enough, 1h & 4h still high, 4h high, 1d overbought
       & (
@@ -6626,7 +6632,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_aroonu_14_15m < 40.0)
         | (protection_aroonu_14_1h < 40.0)
         | (protection_aroonu_14_4h < 85.0)
-        | (protection_stochrsik_14_14_3_3_4h < 85.0)
+        | stochrsi_k_4h_lt_85
         | (protection_roc_9_4h < 10.0)
       )
       # 15m & 1h & 4h & 1d down move, 1h still high, 4h still not low enough, 4h downtrend
@@ -6682,7 +6688,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_aroonu_14_1h < 50.0)
         | (protection_stochrsik_14_14_3_3_15m < 30.0)
         | (protection_stochrsik_14_14_3_3_1h < 30.0)
-        | (protection_stochrsik_14_14_3_3_4h < 80.0)
+        | stochrsi_k_4h_lt_80
       )
       # 15m & 1h & 4h down move, 4h downtrend, 1h high, 4h downtrend
       & (
@@ -6740,7 +6746,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_1h_lt_30
         | rsi_14_4h_lt_30
         | (protection_stochrsik_14_14_3_3_1h < 70.0)
-        | (protection_stochrsik_14_14_3_3_4h < 80.0)
+        | stochrsi_k_4h_lt_80
         | (protection_roc_9_1h < 10.0)
       )
       # 15m & 1h down move, 15m still not low enough, 1h still high, 4h high, 15m still high, 4h overbought
@@ -6753,7 +6759,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_aroonu_14_15m < 50.0)
         | (protection_aroonu_14_4h < 85.0)
         | (protection_stochrsik_14_14_3_3_1h < 30.0)
-        | (protection_stochrsik_14_14_3_3_4h < 70.0)
+        | stochrsi_k_4h_lt_70
         | (protection_roc_9_4h < 20.0)
       )
       # 15m & 1h & 4h down move, 15m & 1h & 4h still high, 15m still high, 1h & 4h high
@@ -6767,7 +6773,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_aroonu_14_15m < 50.0)
         | (protection_aroonu_14_1h < 85.0)
         | (protection_stochrsik_14_14_3_3_1h < 40.0)
-        | (protection_stochrsik_14_14_3_3_4h < 80.0)
+        | stochrsi_k_4h_lt_80
       )
       # 15m & 1h & 4h down move, 15m still not low enough, 1h & 4h high, 4h overbought
       & (
@@ -6780,7 +6786,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_aroonu_14_1h < 60.0)
         | (protection_aroonu_14_4h < 60.0)
         | (protection_stochrsik_14_14_3_3_1h < 70.0)
-        | (protection_stochrsik_14_14_3_3_4h < 70.0)
+        | stochrsi_k_4h_lt_70
         | (protection_roc_9_4h < 10.0)
       )
       # 15m & 1h & 1d down move, 15m still not low enough, 1h & 4h high, 1d overbought
@@ -6969,7 +6975,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_3_1d > 5.0)
         | rsi_14_15m_lt_30
         | (protection_stochrsik_14_14_3_3_1h < 70.0)
-        | (protection_stochrsik_14_14_3_3_4h < 70.0)
+        | stochrsi_k_4h_lt_70
       )
       # 15m & 1d down move, 15m still not low enough, 1h & 4h high
       & (
@@ -6982,7 +6988,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_aroonu_14_1h < 60.0)
         | (protection_aroonu_14_4h < 100.0)
         | (protection_stochrsik_14_14_3_3_1h < 50.0)
-        | (protection_stochrsik_14_14_3_3_4h < 80.0)
+        | stochrsi_k_4h_lt_80
       )
       # 15m down move, 15m & 1h & 4h still not low enough, 15m & 1h downtrend, 15m & 1h high
       & (
@@ -7054,7 +7060,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_aroonu_14_1h < 80.0)
         | (protection_aroonu_14_4h < 100.0)
         | (protection_stochrsik_14_14_3_3_1h < 80.0)
-        | (protection_stochrsik_14_14_3_3_4h < 90.0)
+        | stochrsi_k_4h_lt_90
         | (protection_roc_9_1h < 20.0)
         | (protection_roc_9_4h < 20.0)
       )
@@ -7234,7 +7240,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_cmf_20_15m > -0.15)
         | (protection_cmf_20_1h > -0.15)
         | (protection_cmf_20_4h > -0.15)
-        | (protection_stochrsik_14_14_3_3_4h < 80.0)
+        | stochrsi_k_4h_lt_80
       )
       # 15m & 1h down move, 15m still not low enough, 1h & 4h still high, 15m & 4h high
       & (
@@ -7244,7 +7250,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_1h_lt_40
         | rsi_14_4h_lt_50
         | (protection_aroonu_14_15m < 75.0)
-        | (protection_stochrsik_14_14_3_3_4h < 90.0)
+        | stochrsi_k_4h_lt_90
       )
       # 15m & 1h down move, 1h still not low enough, 1h still high, 4h high & overbought, 1d downtrend
       & (
@@ -7254,7 +7260,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_1h_lt_40
         | rsi_14_4h_lt_50
         | (protection_aroonu_14_4h < 80.0)
-        | (protection_stochrsik_14_14_3_3_4h < 90.0)
+        | stochrsi_k_4h_lt_90
         | (protection_roc_9_4h < 40.0)
         | (protection_roc_9_1d > -50.0)
       )
@@ -7679,7 +7685,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_cmf_20_15m > -0.10)
         | (protection_cmf_20_1h > -0.20)
         | (protection_stochrsik_14_14_3_3_15m < 50.0)
-        | (protection_stochrsik_14_14_3_3_4h < 70.0)
+        | stochrsi_k_4h_lt_70
       )
       # 15m & 1h down move, 15m & 1h still high, 4h high, 15m still high, 1h & 4h high
       & (
@@ -7813,7 +7819,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_14_4h < 75.0)
         | (protection_aroonu_14_4h < 70.0)
         | (protection_stochrsik_14_14_3_3_15m < 20.0)
-        | (protection_stochrsik_14_14_3_3_4h < 70.0)
+        | stochrsi_k_4h_lt_70
         | (protection_roc_9_4h < 100.0)
       )
       # 15m & 1h down move, 15m still not low enough, 1h & 4h still high, 15m downtrend, 4h high & overbought
@@ -7987,7 +7993,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_14_4h < 80.0)
         | (protection_aroonu_14_4h < 80.0)
         | (protection_stochrsik_14_14_3_3_1h < 40.0)
-        | (protection_stochrsik_14_14_3_3_4h < 90.0)
+        | stochrsi_k_4h_lt_90
         | (protection_roc_9_4h < 75.0)
       )
       # 15m down move, 15m & 1h & 4h high, 1h & 4h overbought
@@ -8162,7 +8168,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_4h_lt_40
         | (protection_aroonu_14_1h < 50.0)
         | (protection_stochrsik_14_14_3_3_15m < 30.0)
-        | (protection_stochrsik_14_14_3_3_4h < 80.0)
+        | stochrsi_k_4h_lt_80
         | (protection_roc_9_4h < 25.0)
       )
       # 15m & 1h & 4h down move, 15m still not low enough, 1h & 4h still high, 15m still not low, 4h high, 1h still high
@@ -8281,7 +8287,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_cmf_20_4h > -0.1)
         | (protection_cmf_20_1d > -0.1)
         | (protection_aroonu_14_1h < 75.0)
-        | (protection_stochrsik_14_14_3_3_4h < 70.0)
+        | stochrsi_k_4h_lt_70
         | (protection_roc_2_1d > -20.0)
       )
       # 15m & 1h down move, 15m still not low enough, 1h & 4h still high, 15m & 1h & 4h downtrend, 4h high
@@ -8318,7 +8324,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_aroonu_14_1h < 50.0)
         | (protection_aroonu_14_4h < 90.0)
         | (protection_stochrsik_14_14_3_3_15m < 30.0)
-        | (protection_stochrsik_14_14_3_3_4h < 90.0)
+        | stochrsi_k_4h_lt_90
         | (protection_roc_9_1h < 20.0)
         | (protection_roc_9_4h < 60.0)
       )
@@ -8432,7 +8438,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_4h_lt_40
         | (protection_cmf_20_15m > -0.25)
         | (protection_aroonu_14_15m < 50.0)
-        | (protection_stochrsik_14_14_3_3_4h < 70.0)
+        | stochrsi_k_4h_lt_70
       )
       # 15m & 1h & 4h down move, 15m still not low enough, 1h still high, 4h high & overbought
       & (
@@ -8456,7 +8462,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_4h_lt_40
         | (protection_aroonu_14_15m < 40.0)
         | (protection_aroonu_14_4h < 80.0)
-        | (protection_stochrsik_14_14_3_3_4h < 70.0)
+        | stochrsi_k_4h_lt_70
         | (protection_roc_9_4h < 10.0)
       )
       # 15m & 1h & 1d down move, 15m & 1h & 4h still high, 15m & 1d downtrend
@@ -8481,7 +8487,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_4h_lt_40
         | (protection_aroonu_14_15m < 60.0)
         | (protection_stochrsik_14_14_3_3_1h < 60.0)
-        | (protection_stochrsik_14_14_3_3_4h < 80.0)
+        | stochrsi_k_4h_lt_80
         | (protection_roc_9_1d > -50.0)
       )
       # 15m & 1h down move, 15m & 1h & 4h still high, 1h & 4h high, 4h overbought
@@ -8494,7 +8500,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_aroonu_14_1h < 70.0)
         | (protection_aroonu_14_4h < 70.0)
         | (protection_stochrsik_14_14_3_3_1h < 70.0)
-        | (protection_stochrsik_14_14_3_3_4h < 80.0)
+        | stochrsi_k_4h_lt_80
         | (protection_roc_9_4h < 30.0)
       )
       # 15m & 1h & 4h & 1d down move, 15m & 1h still not low enough, 4h still high, 4h downtrend, 4h high, 1d overbought
@@ -8522,7 +8528,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_aroonu_14_1h < 40.0)
         | (protection_aroonu_14_4h < 50.0)
         | (protection_stochrsik_14_14_3_3_1h < 40.0)
-        | (protection_stochrsik_14_14_3_3_4h < 70.0)
+        | stochrsi_k_4h_lt_70
       )
       # 15m & 1h & 4h down move, 15m & 1h & 4h still high, 15m & 1h high, 4h overbought
       & (
@@ -8613,7 +8619,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_aroonu_14_15m < 60.0)
         | (protection_stochrsik_14_14_3_3_15m < 40.0)
         | (protection_stochrsik_14_14_3_3_1h < 60.0)
-        | (protection_stochrsik_14_14_3_3_4h < 80.0)
+        | stochrsi_k_4h_lt_80
         | (protection_roc_9_4h > -15.0)
       )
       # 15m & 1h down move, 15m & 1h still high, 4h high, 1h & 4h high, 4h overbought
@@ -8626,7 +8632,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_aroonu_14_1h < 80.0)
         | (protection_aroonu_14_4h < 100.0)
         | (protection_stochrsik_14_14_3_3_1h < 50.0)
-        | (protection_stochrsik_14_14_3_3_4h < 90.0)
+        | stochrsi_k_4h_lt_90
         | (protection_roc_9_4h < 60.0)
       )
       # 15m & 1h down move, 15m & 1hstill high, 4h downtrend, 15m still high, 1h high
@@ -8806,7 +8812,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_aroonu_14_1h < 70.0)
         | (protection_aroonu_14_4h < 70.0)
         | (protection_stochrsik_14_14_3_3_1h < 50.0)
-        | (protection_stochrsik_14_14_3_3_4h < 80.0)
+        | stochrsi_k_4h_lt_80
         | (protection_roc_9_4h < 20.0)
       )
       # 15m down move, 15m & 1h & 4h still high, 15m & 1h downtrend, 4h high, 15m & 1h still high
@@ -8831,7 +8837,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_aroonu_14_1h < 70.0)
         | (protection_aroonu_14_4h < 100.0)
         | (protection_stochrsik_14_14_3_3_1h < 30.0)
-        | (protection_stochrsik_14_14_3_3_4h < 80.0)
+        | stochrsi_k_4h_lt_80
         | (protection_roc_9_4h < 25.0)
       )
       # 15m down move, 15m still high, 1h & 4h high, 4h overbought
@@ -9064,7 +9070,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_aroonu_14_15m < 60.0)
         | (protection_aroonu_14_4h < 60.0)
         | (protection_stochrsik_14_14_3_3_1h < 30.0)
-        | (protection_stochrsik_14_14_3_3_4h < 70.0)
+        | stochrsi_k_4h_lt_70
       )
       # 15m & 1h down move, 15m & 1h & 4h still high, 1h & 4h downtrend, 15m & 1h high
       & (
@@ -9100,7 +9106,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_aroonu_14_15m < 50.0)
         | (protection_aroonu_14_1h < 50.0)
         | (protection_stochrsik_14_14_3_3_15m < 50.0)
-        | (protection_stochrsik_14_14_3_3_4h < 70.0)
+        | stochrsi_k_4h_lt_70
       )
       # 15m & 1h & 4h down move, 15m still not low enough, 1h & 4h still high, 15h & 4h high
       & (
@@ -9330,7 +9336,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_aroonu_14_1h < 60.0)
         | (protection_aroonu_14_4h < 85.0)
         | (protection_stochrsik_14_14_3_3_1h < 50.0)
-        | (protection_stochrsik_14_14_3_3_4h < 70.0)
+        | stochrsi_k_4h_lt_70
         | (protection_roc_9_4h < 25.0)
       )
       # 15m & 1h & 4h down move, 15m & 1h still not low enough, 4h still high, 4h downtrend, 1h still high
@@ -9451,7 +9457,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_aroonu_14_15m < 70.0)
         | (protection_aroonu_14_4h < 90.0)
         | (protection_stochrsik_14_14_3_3_15m < 50.0)
-        | (protection_stochrsik_14_14_3_3_4h < 80.0)
+        | stochrsi_k_4h_lt_80
       )
       # 15m & 4h down move, 15m still not low enough, 1h & 4h still high, 15m & 4h high, 1d overbought
       & (
@@ -9473,7 +9479,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_aroonu_14_1h < 80.0)
         | (protection_aroonu_14_4h < 100.0)
         | (protection_stochrsik_14_14_3_3_1h < 80.0)
-        | (protection_stochrsik_14_14_3_3_4h < 80.0)
+        | stochrsi_k_4h_lt_80
       )
       # 15m down move, 15m & 1h & 4h still high, 15m high, 15m & 1h still high, 4h high, 4h overbought
       & (
@@ -9484,7 +9490,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_aroonu_14_15m < 70.0)
         | (protection_stochrsik_14_14_3_3_15m < 40.0)
         | (protection_stochrsik_14_14_3_3_1h < 40.0)
-        | (protection_stochrsik_14_14_3_3_4h < 70.0)
+        | stochrsi_k_4h_lt_70
         | (protection_roc_9_4h < 20.0)
       )
       # 15m & 1h down move, 15m & 1h still high, 1h & 4h high, 4h overbought
@@ -9542,7 +9548,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_14_4h < 80.0)
         | (protection_aroonu_14_15m < 60.0)
         | (protection_aroonu_14_4h < 70.0)
-        | (protection_stochrsik_14_14_3_3_4h < 80.0)
+        | stochrsi_k_4h_lt_80
         | (protection_roc_9_4h < 40.0)
       )
       # 15m & 1h & 4h down move, 15m & 1h high
@@ -9579,7 +9585,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_aroonu_14_15m < 60.0)
         | (protection_aroonu_14_1h < 85.0)
         | (protection_stochrsik_14_14_3_3_1h < 40.0)
-        | (protection_stochrsik_14_14_3_3_4h < 70.0)
+        | stochrsi_k_4h_lt_70
       )
       # 15m & 1h & 4h down move, 15m & 1h & 4h still high, 15m & 4h high, 4h & 1d overbought
       & (
@@ -9806,7 +9812,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_aroonu_14_1h < 80.0)
         | (protection_aroonu_14_4h < 100.0)
         | (protection_stochrsik_14_14_3_3_1h < 60.0)
-        | (protection_stochrsik_14_14_3_3_4h < 60.0)
+        | stochrsi_k_4h_lt_60
         | (protection_roc_9_1h < 20.0)
         | (protection_roc_9_4h < 20.0)
       )
@@ -10085,7 +10091,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_cmf_20_1h > -0.10)
         | (protection_cmf_20_4h > -0.10)
         | (protection_aroonu_14_4h < 80.0)
-        | (protection_stochrsik_14_14_3_3_4h < 90.0)
+        | stochrsi_k_4h_lt_90
       )
       # 15m & 1h down move, 15m & 1h & 4h still high, 1h & 4h & 1d downtrend, 1h & 4h high
       & (
@@ -10107,7 +10113,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_1h_lt_50
         | (protection_rsi_14_4h < 60.0)
         | (protection_aroonu_14_4h < 80.0)
-        | (protection_stochrsik_14_14_3_3_4h < 80.0)
+        | stochrsi_k_4h_lt_80
         | (protection_roc_9_1h < 30.0)
         | (protection_roc_9_4h < 100.0)
       )
@@ -10286,7 +10292,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_3_4h > 40.0)
         | (protection_aroonu_14_1h < 40.0)
         | (protection_aroonu_14_4h < 40.0)
-        | (protection_stochrsik_14_14_3_3_4h < 70.0)
+        | stochrsi_k_4h_lt_70
         | (protection_roc_9_15m > -10.0)
         | (protection_roc_9_1h > -20.0)
       )
@@ -10425,7 +10431,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_1h_lt_50
         | (protection_rsi_14_4h < 70.0)
         | (protection_aroonu_14_4h < 80.0)
-        | (protection_stochrsik_14_14_3_3_4h < 80.0)
+        | stochrsi_k_4h_lt_80
         | (protection_roc_9_4h < 80.0)
       )
       # 1h & 4h & 1d down move, 15m & 1h & 4h still not low enough, 4h still high
@@ -10626,7 +10632,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_aroonu_14_15m < 80.0)
         | (protection_stochrsik_14_14_3_3_15m < 50.0)
         | (protection_stochrsik_14_14_3_3_1h < 50.0)
-        | (protection_stochrsik_14_14_3_3_4h < 80.0)
+        | stochrsi_k_4h_lt_80
         | (protection_roc_9_4h < 20.0)
         | (protection_roc_9_1d < 30.0)
       )
@@ -10679,7 +10685,7 @@ class NostalgiaForInfinityX7(IStrategy):
       # 1d down move, 4h high, 1h & 4h downtrend
       & (
         (protection_rsi_3_1d > 5.0)
-        | (protection_stochrsik_14_14_3_3_4h < 70.0)
+        | stochrsi_k_4h_lt_70
         | (protection_roc_9_1h > -10.0)
         | (protection_roc_9_4h > -10.0)
       )
@@ -10980,7 +10986,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_3_15m_gt_10
         | (protection_rsi_14_1h < 70.0)
         | (protection_rsi_14_4h < 80.0)
-        | (protection_stochrsik_14_14_3_3_4h < 90.0)
+        | stochrsi_k_4h_lt_90
         | (protection_roc_9_1d < 40.0)
       )
       # 1d green with top wick, 15m down move, 15m & 1h still high, 4h & 1d high, 4h overbought
@@ -11355,7 +11361,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_3_1h > 40.0)
         | rsi_3_4h_gt_60
         | (protection_rsi_3_1d > 10.0)
-        | (protection_stochrsik_14_14_3_3_4h < 80.0)
+        | stochrsi_k_4h_lt_80
       )
       # drop in last 6 days, 15m & 1h & 4h & 1d down move, 1d high, 4h downtrend
       & (
@@ -11402,7 +11408,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_3_15m_gt_15
         | (protection_rsi_3_1d > 15.0)
         | (protection_stochrsik_14_14_3_3_1h < 40.0)
-        | (protection_stochrsik_14_14_3_3_4h < 60.0)
+        | stochrsi_k_4h_lt_60
         | (protection_roc_9_4h > -25.0)
       )
       # drop in last 6 days, 15m & 1h down move, 15m & 1h still not low enough, 15m & 1h & 4h & 1d downtrend
@@ -11460,7 +11466,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_1h_lt_30
         | rsi_14_4h_lt_30
         | (protection_stochrsik_14_14_3_3_1h < 40.0)
-        | (protection_stochrsik_14_14_3_3_4h < 70.0)
+        | stochrsi_k_4h_lt_70
       )
       # drop in last 20 days, 15m & 1h & 1d down move, 15m still not low enough, 1h high
       & (
