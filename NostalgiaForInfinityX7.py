@@ -39829,18 +39829,23 @@ class NostalgiaForInfinityX7(IStrategy):
       )
     )
     is_long_buyback_entry = self.long_buyback_entry_v2(last_candle, previous_candle, slice_profit, True)
+    last_rsi_3 = last_candle["RSI_3"]
+    last_rsi_3_15m = last_candle["RSI_3_15m"]
+    last_rsi_3_1h = last_candle["RSI_3_1h"]
+    last_aroonu_14 = last_candle["AROONU_14"]
+    last_aroonu_14_15m = last_candle["AROONU_14_15m"]
     is_long_grind_entry = (
       self.long_grind_entry_v2(last_candle, previous_candle, slice_profit, True)
       or (
         (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
         and (num_open_grinds_and_buybacks == 0)
         and (
-          (last_candle["RSI_3"] > 10.0)
-          and (last_candle["RSI_3_15m"] > 20.0)
-          and (last_candle["RSI_3_1h"] > 20.0)
-          and (last_candle["RSI_3_1h"] > 20.0)
-          and (last_candle["AROONU_14"] < 50.0)
-          and (last_candle["AROONU_14_15m"] < 50.0)
+          (last_rsi_3 > 10.0)
+          and (last_rsi_3_15m > 20.0)
+          and (last_rsi_3_1h > 20.0)
+          and (last_rsi_3_1h > 20.0)
+          and (last_aroonu_14 < 50.0)
+          and (last_aroonu_14_15m < 50.0)
         )
       )
       or (
@@ -39851,12 +39856,12 @@ class NostalgiaForInfinityX7(IStrategy):
           or (not trade_is_short and current_rate < trade.liquidation_price * 1.10)
         )
         and (slice_profit < -0.03)
-        and (last_candle["RSI_3"] > 10.0)
-        and (last_candle["RSI_3_15m"] > 20.0)
+        and (last_rsi_3 > 10.0)
+        and (last_rsi_3_15m > 20.0)
         # and (last_candle["RSI_3_1h"] > 20.0)
         # and (last_candle["RSI_3_1h"] > 20.0)
-        and (last_candle["AROONU_14"] < 50.0)
-        and (last_candle["AROONU_14_15m"] < 50.0)
+        and (last_aroonu_14 < 50.0)
+        and (last_aroonu_14_15m < 50.0)
       )
     )
 
@@ -62907,18 +62912,23 @@ class NostalgiaForInfinityX7(IStrategy):
       )
     )
     is_short_buyback_entry = self.short_buyback_entry_v2(last_candle, previous_candle, slice_profit, True)
+    last_rsi_3 = last_candle["RSI_3"]
+    last_rsi_3_15m = last_candle["RSI_3_15m"]
+    last_rsi_3_1h = last_candle["RSI_3_1h"]
+    last_aroond_14 = last_candle["AROOND_14"]
+    last_aroond_14_15m = last_candle["AROOND_14_15m"]
     is_short_grind_entry = (
       self.short_grind_entry_v2(last_candle, previous_candle, slice_profit, True)
       or (
         (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
         and (num_open_grinds_and_buybacks == 0)
         and (
-          (last_candle["RSI_3"] < 90.0)
-          and (last_candle["RSI_3_15m"] < 80.0)
-          and (last_candle["RSI_3_1h"] < 80.0)
-          and (last_candle["RSI_3_1h"] < 80.0)
-          and (last_candle["AROOND_14"] < 50.0)
-          and (last_candle["AROOND_14_15m"] < 50.0)
+          (last_rsi_3 < 90.0)
+          and (last_rsi_3_15m < 80.0)
+          and (last_rsi_3_1h < 80.0)
+          and (last_rsi_3_1h < 80.0)
+          and (last_aroond_14 < 50.0)
+          and (last_aroond_14_15m < 50.0)
         )
       )
       or (
@@ -62929,12 +62939,12 @@ class NostalgiaForInfinityX7(IStrategy):
           or (not trade_is_short and current_rate < trade.liquidation_price * 1.10)
         )
         and (slice_profit > 0.03)
-        and (last_candle["RSI_3"] < 90.0)
-        and (last_candle["RSI_3_15m"] < 80.0)
+        and (last_rsi_3 < 90.0)
+        and (last_rsi_3_15m < 80.0)
         # and (last_candle["RSI_3_1h"] < 80.0)
         # and (last_candle["RSI_3_1h"] < 80.0)
-        and (last_candle["AROOND_14"] < 50.0)
-        and (last_candle["AROOND_14_15m"] < 50.0)
+        and (last_aroond_14 < 50.0)
+        and (last_aroond_14_15m < 50.0)
       )
     )
 
