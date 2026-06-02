@@ -46138,6 +46138,7 @@ class NostalgiaForInfinityX7(IStrategy):
     regular_mode_use_grind_stops = self.regular_mode_use_grind_stops
 
     last_filled_entry = filled_entries[-1]
+    first_filled_order = filled_orders[0]
     last_filled_order = filled_orders[-1]
 
     max_rebuy_sub_grinds = 0
@@ -46353,7 +46354,7 @@ class NostalgiaForInfinityX7(IStrategy):
     grind_6_buy_orders = []
     grind_6_distance_ratio = 0.0
     for order in reversed(filled_orders):
-      if (order.ft_order_side == "buy") and (order is not filled_orders[0]):
+      if (order.ft_order_side == "buy") and (order is not first_filled_order):
         order_tag = ""
         if has_order_tags:
           if order.ft_order_tag is not None:
@@ -46495,7 +46496,7 @@ class NostalgiaForInfinityX7(IStrategy):
         ]:
           rebuy_is_sell_found = True
         if not is_derisk:
-          start_amount = filled_orders[0].safe_filled
+          start_amount = first_filled_order.safe_filled
           current_amount = 0.0
           for order2 in filled_orders:
             if order2.ft_order_side == "buy":
@@ -69039,6 +69040,7 @@ class NostalgiaForInfinityX7(IStrategy):
     regular_mode_use_grind_stops = self.regular_mode_use_grind_stops
 
     last_filled_entry = filled_entries[-1]
+    first_filled_order = filled_orders[0]
     last_filled_order = filled_orders[-1]
 
     max_rebuy_sub_grinds = 0
@@ -69254,7 +69256,7 @@ class NostalgiaForInfinityX7(IStrategy):
     grind_6_buy_orders = []
     grind_6_distance_ratio = 0.0
     for order in reversed(filled_orders):
-      if (order.ft_order_side == "sell") and (order is not filled_orders[0]):
+      if (order.ft_order_side == "sell") and (order is not first_filled_order):
         order_tag = ""
         if has_order_tags:
           if order.ft_order_tag is not None:
@@ -69396,7 +69398,7 @@ class NostalgiaForInfinityX7(IStrategy):
         ]:
           rebuy_is_sell_found = True
         if not is_derisk:
-          start_amount = filled_orders[0].safe_filled
+          start_amount = first_filled_order.safe_filled
           current_amount = 0.0
           for order2 in filled_orders:
             if order2.ft_order_side == "sell":
