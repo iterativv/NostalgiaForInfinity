@@ -12653,6 +12653,12 @@ class NostalgiaForInfinityX7(IStrategy):
     stochrsi_k_1d = df["STOCHRSIk_14_14_3_3_1d"]
     rsi_3 = df["RSI_3"]
     close = df["close"]
+    ema_26 = df["EMA_26"]
+    ema_12 = df["EMA_12"]
+    ema_20 = df["EMA_20"]
+    ema_9 = df["EMA_9"]
+    sma_16 = df["SMA_16"]
+    sma_200 = df["SMA_200"]
     roc_9_15m = df["ROC_9_15m"]
     rsi_14_4h = df["RSI_14_4h"]
 
@@ -13096,9 +13102,9 @@ class NostalgiaForInfinityX7(IStrategy):
 
           # Logic
           long_entry_logic.append(
-            (df["EMA_26"] > df["EMA_12"])
-            & ((df["EMA_26"] - df["EMA_12"]) > (df["open"] * 0.034))
-            & ((df["EMA_26"].shift() - df["EMA_12"].shift()) > (df["open"] / 100.0))
+            (ema_26 > ema_12)
+            & ((ema_26 - ema_12) > (df["open"] * 0.034))
+            & ((ema_26.shift() - ema_12.shift()) > (df["open"] / 100.0))
             & (close < (df["BBL_20_2.0"] * 0.999))
           )
 
@@ -13808,7 +13814,7 @@ class NostalgiaForInfinityX7(IStrategy):
             & (df["STOCHRSIk_14_14_3_3"] < 30.0)
             # & (rsi_3_15m > 5.0)
             & (aroonu_14_15m < 50.0)
-            & (close < (df["EMA_20"] * 0.948))
+            & (close < (ema_20 * 0.948))
           )
 
         # Condition #3 - Normal mode (Long).
@@ -14483,7 +14489,7 @@ class NostalgiaForInfinityX7(IStrategy):
             & (df["RSI_14"] > 30.0)
             & (df["AROONU_14"] < 20.0)
             & (df["STOCHRSIk_14_14_3_3"] < 20.0)
-            & (close < df["SMA_16"] * 0.965)
+            & (close < sma_16 * 0.965)
             & (close < df["SMA_16_1h"] * 0.985)
           )
 
@@ -14769,10 +14775,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
           # Logic
           long_entry_logic.append(
-            (df["AROONU_14"] < 25.0)
-            & (aroonu_14_15m < 25.0)
-            & (close < (df["EMA_9"] * 0.946))
-            & (close < (df["EMA_20"] * 0.960))
+            (df["AROONU_14"] < 25.0) & (aroonu_14_15m < 25.0) & (close < (ema_9 * 0.946)) & (close < (ema_20 * 0.960))
           )
 
         # Condition #5 - Normal mode (Long).
@@ -15116,9 +15119,9 @@ class NostalgiaForInfinityX7(IStrategy):
             (rsi_3 < 50.0)
             & (df["AROONU_14"] < 25.0)
             & (df["STOCHRSIk_14_14_3_3"] < 30.0)
-            & (df["EMA_26"] > df["EMA_12"])
-            & ((df["EMA_26"] - df["EMA_12"]) > (df["open"] * 0.020))
-            & ((df["EMA_26"].shift() - df["EMA_12"].shift()) > (df["open"] / 100.0))
+            & (ema_26 > ema_12)
+            & ((ema_26 - ema_12) > (df["open"] * 0.020))
+            & ((ema_26.shift() - ema_12.shift()) > (df["open"] / 100.0))
           )
 
         # Condition #6 - Normal mode (Long).
@@ -15873,7 +15876,7 @@ class NostalgiaForInfinityX7(IStrategy):
             & (df["AROONU_14"] < 25.0)
             & (df["STOCHRSIk_14_14_3_3"] < 20.0)
             & (aroonu_14_15m < 50.0)
-            & (close < df["SMA_16"] * 0.960)
+            & (close < sma_16 * 0.960)
           )
 
         # Condition #21 - Pump mode (Long).
@@ -16723,7 +16726,7 @@ class NostalgiaForInfinityX7(IStrategy):
             & (df["RSI_14"] < 36.0)
             & (df["AROONU_14"] < 25.0)
             & (df["AROOND_14"] > 75.0)
-            & (df["EMA_9"] < (df["EMA_26"] * 0.960))
+            & (ema_9 < (ema_26 * 0.960))
           )
 
         # Condition #42 - Quick mode (Long).
@@ -17773,10 +17776,10 @@ class NostalgiaForInfinityX7(IStrategy):
             (df["RSI_14"] < 40.0)
             & (df["MFI_14"] < 40.0)
             & (df["AROONU_14"] < 25.0)
-            & (df["EMA_26"] > df["EMA_12"])
-            & ((df["EMA_26"] - df["EMA_12"]) > (df["open"] * 0.024))
-            & ((df["EMA_26"].shift() - df["EMA_12"].shift()) > (df["open"] / 100.0))
-            & (close < (df["EMA_20"] * 0.960))
+            & (ema_26 > ema_12)
+            & ((ema_26 - ema_12) > (df["open"] * 0.024))
+            & ((ema_26.shift() - ema_12.shift()) > (df["open"] / 100.0))
+            & (close < (ema_20 * 0.960))
             & (close < (df["BBL_20_2.0"] * 0.999))
           )
 
@@ -18963,9 +18966,9 @@ class NostalgiaForInfinityX7(IStrategy):
             (rsi_3 < 50.0)
             & (df["AROONU_14"] < 25.0)
             & (df["STOCHRSIk_14_14_3_3"] < 30.0)
-            & (df["EMA_26"] > df["EMA_12"])
-            & ((df["EMA_26"] - df["EMA_12"]) > (df["open"] * 0.030))
-            & ((df["EMA_26"].shift() - df["EMA_12"].shift()) > (df["open"] / 100.0))
+            & (ema_26 > ema_12)
+            & ((ema_26 - ema_12) > (df["open"] * 0.030))
+            & ((ema_26.shift() - ema_12.shift()) > (df["open"] / 100.0))
           )
 
         # Condition #62 - Rebuy mode (Long).
@@ -19814,9 +19817,9 @@ class NostalgiaForInfinityX7(IStrategy):
             (rsi_3 > 0.0)
             & (rsi_3 < 50.0)
             & (df["AROONU_14"] < 25.0)
-            & (df["EMA_26"] > df["EMA_12"])
-            & ((df["EMA_26"] - df["EMA_12"]) > (df["open"] * 0.022))
-            & ((df["EMA_26"].shift() - df["EMA_12"].shift()) > (df["open"] / 100.0))
+            & (ema_26 > ema_12)
+            & ((ema_26 - ema_12) > (df["open"] * 0.022))
+            & ((ema_26.shift() - ema_12.shift()) > (df["open"] / 100.0))
           )
 
         # Condition #101 - Rapid mode (Long).
@@ -20128,7 +20131,7 @@ class NostalgiaForInfinityX7(IStrategy):
           long_entry_logic.append(df["RSI_14"] < 36.0)
           long_entry_logic.append(df["AROONU_14"] < 25.0)
           long_entry_logic.append(df["STOCHRSIk_14_14_3_3"] < 20.0)
-          long_entry_logic.append(close < (df["SMA_16"] * 0.946))
+          long_entry_logic.append(close < (sma_16 * 0.946))
           long_entry_logic.append(aroonu_14_15m < 50.0)
 
         # Condition #102 - Rapid mode (Long).
@@ -20480,7 +20483,7 @@ class NostalgiaForInfinityX7(IStrategy):
           long_entry_logic.append(df["WILLR_14"] < -95.0)
           long_entry_logic.append(df["STOCHRSIk_14_14_3_3"] < 10.0)
           long_entry_logic.append(close < (df["BBL_20_2.0"] * 0.999))
-          long_entry_logic.append(close < (df["EMA_20"] * 0.960))
+          long_entry_logic.append(close < (ema_20 * 0.960))
 
         # Condition #103 - Rapid mode (Long).
         if long_entry_condition_index == 103:
@@ -20675,7 +20678,7 @@ class NostalgiaForInfinityX7(IStrategy):
           long_entry_logic.append(df["RSI_14"] > 35.0)
           long_entry_logic.append(df["RSI_20"] < df["RSI_20"].shift(1))
           long_entry_logic.append(df["AROONU_14"] < 25.0)
-          long_entry_logic.append(close < df["SMA_16"] * 0.960)
+          long_entry_logic.append(close < sma_16 * 0.960)
 
         # Condition #104 - Rapid mode (Long).
         if long_entry_condition_index == 104:
@@ -20947,7 +20950,7 @@ class NostalgiaForInfinityX7(IStrategy):
             (df["STOCHRSIk_14_14_3_3"] < 20.0)
             & (df["WILLR_14"] < -80.0)
             & (df["AROONU_14"] < 25.0)
-            & (close < (df["EMA_20"] * 0.978))
+            & (close < (ema_20 * 0.978))
           )
 
         # Condition #141 - Top Coins mode (Long).
@@ -21387,7 +21390,7 @@ class NostalgiaForInfinityX7(IStrategy):
             (df["RSI_20"] < df["RSI_20"].shift(1))
             & (rsi_3 < 30.0)
             & (df["AROONU_14"] < 25.0)
-            & (close < df["SMA_16"] * 0.960)
+            & (close < sma_16 * 0.960)
           )
 
         # Condition #142 - Top Coins mode (Long).
@@ -21800,7 +21803,7 @@ class NostalgiaForInfinityX7(IStrategy):
             & (df["RSI_4"] < 46.0)
             # & (df["STOCHRSIk_14_14_3_3"] < 20.0)
             & (df["RSI_20"] < df["RSI_20"].shift(1))
-            & (close < df["SMA_16"] * 0.960)
+            & (close < sma_16 * 0.960)
           )
 
         # Condition #143 - Top Coins mode (Long).
@@ -22011,9 +22014,9 @@ class NostalgiaForInfinityX7(IStrategy):
           long_entry_logic.append(
             (rsi_3 < 40.0)
             & (df["STOCHRSIk_14_14_3_3"] < 20.0)
-            & (df["EMA_26"] > df["EMA_12"])
-            & ((df["EMA_26"] - df["EMA_12"]) > (df["open"] * 0.020))
-            & ((df["EMA_26"].shift() - df["EMA_12"].shift()) > (df["open"] / 100.0))
+            & (ema_26 > ema_12)
+            & ((ema_26 - ema_12) > (df["open"] * 0.020))
+            & ((ema_26.shift() - ema_12.shift()) > (df["open"] / 100.0))
           )
 
         # Condition #144 - Top Coins mode (Long).
@@ -22733,11 +22736,11 @@ class NostalgiaForInfinityX7(IStrategy):
           long_entry_logic.append(aroonu_14_15m < 90.0)
           long_entry_logic.append(stochrsi_k_15m < 90.0)
           long_entry_logic.append(
-            (df["SMA_21"].shift(1) < df["SMA_200"].shift(1).infer_objects(copy=False).fillna(value=np.nan))
-            & df["SMA_200"].shift(1).notna()
+            (df["SMA_21"].shift(1) < sma_200.shift(1).infer_objects(copy=False).fillna(value=np.nan))
+            & sma_200.shift(1).notna()
           )
           long_entry_logic.append(
-            (df["SMA_21"] > df["SMA_200"].infer_objects(copy=False).fillna(value=np.nan)) & df["SMA_200"].notna()
+            (df["SMA_21"] > sma_200.infer_objects(copy=False).fillna(value=np.nan)) & sma_200.notna()
           )
           long_entry_logic.append(
             (close > df["EMA_200_1h"].infer_objects(copy=False).fillna(value=np.nan)) & df["EMA_200_1h"].notna()
@@ -22932,9 +22935,9 @@ class NostalgiaForInfinityX7(IStrategy):
             (df["AROONU_14"] < 25.0)
             & (df["AROOND_14"] > 75.0)
             & (df["STOCHRSIk_14_14_3_3"] < 30.0)
-            & (df["EMA_26"] > df["EMA_12"])
-            & ((df["EMA_26"] - df["EMA_12"]) > (df["open"] * 0.030))
-            & ((df["EMA_26"].shift() - df["EMA_12"].shift()) > (df["open"] / 100.0))
+            & (ema_26 > ema_12)
+            & ((ema_26 - ema_12) > (df["open"] * 0.030))
+            & ((ema_26.shift() - ema_12.shift()) > (df["open"] / 100.0))
             & (close < df["SMA_9"])
           )
 
@@ -23064,9 +23067,7 @@ class NostalgiaForInfinityX7(IStrategy):
             # 15m down move, 4h high & overbought
             & ((rsi_3_15m > 15.0) | (stochrsi_k_4h < 90.0) | (roc_9_4h < 25.0))
             # 15m down move, 4h high
-            & (
-              (rsi_3_15m > 15.0) | (rsi_14_4h < 70.0) | (stochrsi_k_4h < 90.0) | (df["EMA_9"] < (df["EMA_26"] * 0.972))
-            )
+            & ((rsi_3_15m > 15.0) | (rsi_14_4h < 70.0) | (stochrsi_k_4h < 90.0) | (ema_9 < (ema_26 * 0.972)))
             # 15m down move, 4h high and downtrend
             & ((rsi_3_15m > 15.0) | (df["CMF_20_4h"] > -0.2) | (aroonu_14_4h < 80.0))
             # 15m down move, 1h high, 4h overbought
@@ -23348,7 +23349,7 @@ class NostalgiaForInfinityX7(IStrategy):
             & (df["AROONU_14"] < 25.0)
             & (df["AROOND_14"] > 75.0)
             & (df["STOCHRSIk_14_14_3_3"] < 20.0)
-            & (df["EMA_9"] < (df["EMA_26"] * 0.982))
+            & (ema_9 < (ema_26 * 0.982))
             & (close < df["SMA_9"])
           )
 
@@ -23633,9 +23634,9 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append((close < (df["close_min_48"] * 1.50)) | (aroonu_14_15m > 50.0))
 
           # Logic
-          short_entry_logic.append(df["EMA_12"] > df["EMA_26"])
-          short_entry_logic.append((df["EMA_12"] - df["EMA_26"]) > (df["open"] * 0.030))
-          short_entry_logic.append((df["EMA_12"].shift() - df["EMA_26"].shift()) > (df["open"] / 100.0))
+          short_entry_logic.append(ema_12 > ema_26)
+          short_entry_logic.append((ema_12 - ema_26) > (df["open"] * 0.030))
+          short_entry_logic.append((ema_12.shift() - ema_26.shift()) > (df["open"] / 100.0))
           short_entry_logic.append(close > (df["BBU_20_2.0"] * 1.004))
 
         # Condition #502 - Normal mode (Short).
@@ -23814,7 +23815,7 @@ class NostalgiaForInfinityX7(IStrategy):
           # Logic
           short_entry_logic.append(df["AROOND_14"] < 25.0)
           short_entry_logic.append(df["STOCHRSIk_14_14_3_3"] > 80.0)
-          short_entry_logic.append(close > (df["EMA_20"] * 1.060))
+          short_entry_logic.append(close > (ema_20 * 1.060))
           short_entry_logic.append(close > (df["BBU_20_2.0"] * 0.995))
           short_entry_logic.append(df["AROOND_14_15m"] < 25.0)
 
@@ -23973,7 +23974,7 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(df["RSI_20"] > df["RSI_20"].shift(1))
           short_entry_logic.append(df["RSI_4"] > 54.0)
           short_entry_logic.append(df["AROOND_14"] < 25.0)
-          short_entry_logic.append(close > df["SMA_16"] * 1.058)
+          short_entry_logic.append(close > sma_16 * 1.058)
 
         # Condition #504 - Normal mode (Short).
         if short_entry_condition_index == 504:
@@ -24012,8 +24013,8 @@ class NostalgiaForInfinityX7(IStrategy):
           # Logic
           short_entry_logic.append(df["AROOND_14"] < 25.0)
           short_entry_logic.append(df["AROOND_14_15m"] < 25.0)
-          short_entry_logic.append(close > (df["EMA_9"] * 1.058))
-          short_entry_logic.append(close > (df["EMA_20"] * 1.040))
+          short_entry_logic.append(close > (ema_9 * 1.058))
+          short_entry_logic.append(close > (ema_20 * 1.040))
 
         # Condition #541 - Quick mode (Short).
         if short_entry_condition_index == 541:
@@ -24135,7 +24136,7 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(df["RSI_14"] > 64.0)
           short_entry_logic.append(df["AROOND_14"] < 25.0)
           short_entry_logic.append(df["AROONU_14"] > 75.0)
-          short_entry_logic.append(df["EMA_9"] > (df["EMA_26"] * 1.040))
+          short_entry_logic.append(ema_9 > (ema_26 * 1.040))
 
         # Condition #542 - Quick mode (Short).
         if short_entry_condition_index == 542:
@@ -24360,10 +24361,10 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(df["RSI_14"] > 60.0)
           short_entry_logic.append(df["MFI_14"] > 60.0)
           short_entry_logic.append(df["AROOND_14"] < 25.0)
-          short_entry_logic.append(df["EMA_26"] < df["EMA_12"])
-          short_entry_logic.append((df["EMA_26"] - df["EMA_12"]) > (df["open"] * 0.024))
-          short_entry_logic.append((df["EMA_26"].shift() - df["EMA_12"].shift()) > (df["open"] / 100.0))
-          short_entry_logic.append(close < (df["EMA_20"] * 0.958))
+          short_entry_logic.append(ema_26 < ema_12)
+          short_entry_logic.append((ema_26 - ema_12) > (df["open"] * 0.024))
+          short_entry_logic.append((ema_26.shift() - ema_12.shift()) > (df["open"] / 100.0))
+          short_entry_logic.append(close < (ema_20 * 0.958))
           short_entry_logic.append(close < (df["BBL_20_2.0"] * 0.992))
 
         # # Condition #620 - Grind mode (Short).
@@ -24439,7 +24440,7 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(df["RSI_20"] > df["RSI_20"].shift(1))
           short_entry_logic.append(rsi_3 > 70.0)
           short_entry_logic.append(df["AROOND_14"] < 25.0)
-          short_entry_logic.append(close > df["SMA_16"] * 1.044)
+          short_entry_logic.append(close > sma_16 * 1.044)
 
         # Condition #642 - Top Coins mode (Short).
         if short_entry_condition_index == 642:
@@ -24556,7 +24557,7 @@ class NostalgiaForInfinityX7(IStrategy):
           # Logic
           short_entry_logic.append(df["RSI_4"] > 54.0)
           short_entry_logic.append(df["RSI_20"] > df["RSI_20"].shift(1))
-          short_entry_logic.append(close > df["SMA_16"] * 1.042)
+          short_entry_logic.append(close > sma_16 * 1.042)
 
         # Condition #661 - Scalp mode (Short).
         if short_entry_condition_index == 661:
@@ -24693,9 +24694,9 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(df["RSI_14"] > 50.0)
           short_entry_logic.append(df["AROOND_14_15m"] < 90.0)
           short_entry_logic.append(stochrsi_k_15m > 10.0)
-          if isinstance(df["SMA_200"].iloc[-1], np.float64):
-            short_entry_logic.append(df["SMA_21"].shift(1) > df["SMA_200"].shift(1))
-            short_entry_logic.append(df["SMA_21"] < df["SMA_200"])
+          if isinstance(sma_200.iloc[-1], np.float64):
+            short_entry_logic.append(df["SMA_21"].shift(1) > sma_200.shift(1))
+            short_entry_logic.append(df["SMA_21"] < sma_200)
           else:
             short_entry_logic.append(pd.Series([False]))
           if isinstance(df["EMA_200_1h"].iloc[-1], np.float64):
