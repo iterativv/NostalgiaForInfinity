@@ -4561,6 +4561,19 @@ class NostalgiaForInfinityX7(IStrategy):
     protection_stochrsik_14_14_3_3_1d = df["STOCHRSIk_14_14_3_3_1d"].to_numpy(copy=False)
     protection_aroonu_14_15m = df["AROONU_14_15m"].to_numpy(copy=False)
     protection_cmf_20_15m = df["CMF_20_15m"].to_numpy(copy=False)
+    # Reuse long protection CMF 15m comparison masks
+    cmf_20_15m_gt_neg_0 = protection_cmf_20_15m > -0.0
+    cmf_20_15m_gt_neg_010 = protection_cmf_20_15m > -0.10
+    cmf_20_15m_gt_neg_015 = protection_cmf_20_15m > -0.15
+    cmf_20_15m_gt_neg_020 = protection_cmf_20_15m > -0.20
+    cmf_20_15m_gt_neg_02 = protection_cmf_20_15m > -0.2
+    cmf_20_15m_gt_neg_025 = protection_cmf_20_15m > -0.25
+    cmf_20_15m_gt_neg_030 = protection_cmf_20_15m > -0.30
+    cmf_20_15m_gt_neg_03 = protection_cmf_20_15m > -0.3
+    cmf_20_15m_gt_neg_035 = protection_cmf_20_15m > -0.35
+    cmf_20_15m_gt_neg_040 = protection_cmf_20_15m > -0.40
+    cmf_20_15m_gt_neg_050 = protection_cmf_20_15m > -0.50
+    cmf_20_15m_gt_neg_05 = protection_cmf_20_15m > -0.5
     protection_aroonu_14_4h = df["AROONU_14_4h"].to_numpy(copy=False)
     protection_roc_9_1d = df["ROC_9_1d"].to_numpy(copy=False)
     protection_aroonu_14_1h = df["AROONU_14_1h"].to_numpy(copy=False)
@@ -4674,7 +4687,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_3_15m_gt_10
         | (protection_rsi_3_1h > 40.0)
         | (protection_rsi_3_4h > 55.0)
-        | (protection_cmf_20_15m > -0.25)
+        | cmf_20_15m_gt_neg_025
         | (protection_aroonu_14_4h < 60.0)
         | (protection_roc_9_1d < 80.0)
       )
@@ -4848,7 +4861,7 @@ class NostalgiaForInfinityX7(IStrategy):
         (protection_rsi_3_15m > 3.0)
         | (protection_rsi_3_1h > 5.0)
         | (protection_rsi_3_4h > 30.0)
-        | (protection_cmf_20_15m > -0.20)
+        | cmf_20_15m_gt_neg_020
         | (protection_aroonu_14_1h < 50.0)
         | (protection_stochrsik_14_14_3_3_4h < 30.0)
       )
@@ -4857,7 +4870,7 @@ class NostalgiaForInfinityX7(IStrategy):
         (protection_rsi_3_15m > 3.0)
         | (protection_rsi_3_1h > 10.0)
         | (protection_rsi_3_4h > 15.0)
-        | (protection_cmf_20_15m > -0.30)
+        | cmf_20_15m_gt_neg_030
         | (protection_aroonu_14_1h < 20.0)
         | (protection_aroonu_14_4h < 20.0)
       )
@@ -4866,7 +4879,7 @@ class NostalgiaForInfinityX7(IStrategy):
         (protection_rsi_3_15m > 3.0)
         | (protection_rsi_3_1h > 10.0)
         | (protection_rsi_3_4h > 15.0)
-        | (protection_cmf_20_15m > -0.30)
+        | cmf_20_15m_gt_neg_030
         | (protection_stochrsik_14_14_3_3_15m < 20.0)
         | (protection_stochrsik_14_14_3_3_1h < 20.0)
       )
@@ -4877,7 +4890,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_3_4h > 35.0)
         | rsi_14_1h_lt_40
         | rsi_14_4h_lt_50
-        | (protection_cmf_20_15m > -0.20)
+        | cmf_20_15m_gt_neg_020
         | (protection_roc_9_4h < 15.0)
       )
       # 15m & 1h & 4h down move, 15m & 1h downtrend, 1h & 4h still not low enough
@@ -4885,7 +4898,7 @@ class NostalgiaForInfinityX7(IStrategy):
         (protection_rsi_3_15m > 3.0)
         | (protection_rsi_3_1h > 10.0)
         | (protection_rsi_3_4h > 40.0)
-        | (protection_cmf_20_15m > -0.20)
+        | cmf_20_15m_gt_neg_020
         | (protection_cmf_20_1h > -0.20)
         | (protection_stochrsik_14_14_3_3_1h < 30.0)
         | (protection_stochrsik_14_14_3_3_4h < 30.0)
@@ -4906,7 +4919,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_3_4h > 25.0)
         | rsi_14_1h_lt_30
         | rsi_14_4h_lt_40
-        | (protection_cmf_20_15m > -0.25)
+        | cmf_20_15m_gt_neg_025
         | (protection_aroonu_14_4h < 25.0)
       )
       # 15m & 1h & 4h down move, 1h & 4h still not low enough, 15m still not low enough
@@ -4925,7 +4938,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_3_4h > 20.0)
         | (protection_rsi_14_1h < 20.0)
         | (protection_rsi_14_4h < 20.0)
-        | (protection_cmf_20_15m > -0.20)
+        | cmf_20_15m_gt_neg_020
         | (protection_cmf_20_1h > -0.25)
         | (protection_cmf_20_4h > -0.25)
         | (protection_stochrsik_14_14_3_3_1h < 30.0)
@@ -4980,7 +4993,7 @@ class NostalgiaForInfinityX7(IStrategy):
         (protection_rsi_3_15m > 5.0)
         | (protection_rsi_3_1h > 5.0)
         | (protection_rsi_3_4h > 20.0)
-        | (protection_cmf_20_15m > -0.15)
+        | cmf_20_15m_gt_neg_015
         | (protection_cmf_20_1h > -0.15)
         | (protection_cmf_20_4h > -0.15)
         | (protection_aroonu_14_1h < 20.0)
@@ -4992,7 +5005,7 @@ class NostalgiaForInfinityX7(IStrategy):
         (protection_rsi_3_15m > 5.0)
         | (protection_rsi_3_1h > 5.0)
         | (protection_rsi_3_4h > 20.0)
-        | (protection_cmf_20_15m > -0.20)
+        | cmf_20_15m_gt_neg_020
         | (protection_cmf_20_1h > -0.15)
         | (protection_cmf_20_4h > -0.10)
         | (protection_aroonu_14_1h < 40.0)
@@ -5005,7 +5018,7 @@ class NostalgiaForInfinityX7(IStrategy):
         (protection_rsi_3_15m > 5.0)
         | (protection_rsi_3_1h > 5.0)
         | (protection_rsi_3_4h > 20.0)
-        | (protection_cmf_20_15m > -0.20)
+        | cmf_20_15m_gt_neg_020
         | (protection_cmf_20_1h > -0.25)
         | (protection_stochrsik_14_14_3_3_15m < 20.0)
         | (protection_stochrsik_14_14_3_3_4h < 20.0)
@@ -5015,7 +5028,7 @@ class NostalgiaForInfinityX7(IStrategy):
         (protection_rsi_3_15m > 5.0)
         | (protection_rsi_3_1h > 5.0)
         | (protection_rsi_3_4h > 20.0)
-        | (protection_cmf_20_15m > -0.40)
+        | cmf_20_15m_gt_neg_040
         | (protection_cmf_20_1h > -0.40)
         | (protection_stochrsik_14_14_3_3_15m < 20.0)
       )
@@ -5035,7 +5048,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_3_1h > 5.0)
         | (protection_rsi_3_4h > 25.0)
         | (protection_rsi_3_1d > 30.0)
-        | (protection_cmf_20_15m > -0.20)
+        | cmf_20_15m_gt_neg_020
         | (protection_stochrsik_14_14_3_3_15m < 10.0)
         | (protection_roc_9_1h > -10.0)
       )
@@ -5044,7 +5057,7 @@ class NostalgiaForInfinityX7(IStrategy):
         (protection_rsi_3_15m > 5.0)
         | (protection_rsi_3_1h > 5.0)
         | (protection_rsi_3_4h > 25.0)
-        | (protection_cmf_20_15m > -0.30)
+        | cmf_20_15m_gt_neg_030
         | (protection_cmf_20_1h > -0.30)
         | (protection_cmf_20_4h > -0.30)
         | (protection_stochrsik_14_14_3_3_15m < 20.0)
@@ -5054,7 +5067,7 @@ class NostalgiaForInfinityX7(IStrategy):
         (protection_rsi_3_15m > 5.0)
         | (protection_rsi_3_1h > 5.0)
         | (protection_rsi_3_4h > 25.0)
-        | (protection_cmf_20_15m > -0.20)
+        | cmf_20_15m_gt_neg_020
         | (protection_cmf_20_1h > -0.20)
         | (protection_aroonu_14_15m < 50.0)
       )
@@ -5064,7 +5077,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_3_1h > 5.0)
         | (protection_rsi_3_4h > 30.0)
         | (protection_rsi_3_1d > 40.0)
-        | (protection_cmf_20_15m > -0.30)
+        | cmf_20_15m_gt_neg_030
         | (protection_roc_9_1d < 100.0)
       )
       # 15m & 1h & 4h down move, 15m & 1h & 4h downtrend, 15m & 4h still not low enough
@@ -5072,7 +5085,7 @@ class NostalgiaForInfinityX7(IStrategy):
         (protection_rsi_3_15m > 5.0)
         | (protection_rsi_3_1h > 5.0)
         | (protection_rsi_3_4h > 30.0)
-        | (protection_cmf_20_15m > -0.15)
+        | cmf_20_15m_gt_neg_015
         | (protection_cmf_20_1h > -0.15)
         | (protection_cmf_20_4h > -0.20)
         | (protection_stochrsik_14_14_3_3_15m < 10.0)
@@ -5083,7 +5096,7 @@ class NostalgiaForInfinityX7(IStrategy):
         (protection_rsi_3_15m > 5.0)
         | (protection_rsi_3_1h > 5.0)
         | (protection_rsi_3_4h > 40.0)
-        | (protection_cmf_20_15m > -0.10)
+        | cmf_20_15m_gt_neg_010
         | (protection_cmf_20_1h > -0.20)
         | (protection_cmf_20_4h > -0.30)
         | (protection_aroonu_14_1h < 30.0)
@@ -5094,7 +5107,7 @@ class NostalgiaForInfinityX7(IStrategy):
         (protection_rsi_3_15m > 5.0)
         | (protection_rsi_3_1h > 5.0)
         | (protection_rsi_14_1h < 20.0)
-        | (protection_cmf_20_15m > -0.25)
+        | cmf_20_15m_gt_neg_025
         | (protection_cmf_20_1h > -0.40)
         | (protection_stochrsik_14_14_3_3_4h < 50.0)
       )
@@ -5103,7 +5116,7 @@ class NostalgiaForInfinityX7(IStrategy):
         (protection_rsi_3_15m > 5.0)
         | (protection_rsi_3_1h > 10.0)
         | (protection_rsi_3_4h > 30.0)
-        | (protection_cmf_20_15m > -0.30)
+        | cmf_20_15m_gt_neg_030
         | (protection_cmf_20_1h > -0.30)
         | (protection_stochrsik_14_14_3_3_1h < 50.0)
       )
@@ -5113,7 +5126,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_3_1h > 10.0)
         | (protection_rsi_3_4h > 55.0)
         | (protection_rsi_3_1d > 55.0)
-        | (protection_cmf_20_15m > -0.30)
+        | cmf_20_15m_gt_neg_030
         | (protection_aroonu_14_1h < 40.0)
         | (protection_stochrsik_14_14_3_3_1h < 20.0)
         | (protection_stochrsik_14_14_3_3_4h < 20.0)
@@ -5135,7 +5148,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_3_4h > 25.0)
         | (protection_rsi_14_1h < 20.0)
         | rsi_14_4h_lt_30
-        | (protection_cmf_20_15m > -0.25)
+        | cmf_20_15m_gt_neg_025
         | (protection_cmf_20_1h > -0.25)
         | (protection_cmf_20_4h > -0.15)
       )
@@ -5146,7 +5159,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_3_4h > 30.0)
         | rsi_14_1h_lt_30
         | rsi_14_4h_lt_30
-        | (protection_cmf_20_15m > -0.20)
+        | cmf_20_15m_gt_neg_020
         | (protection_cmf_20_1h > -0.20)
         | (protection_cmf_20_4h > -0.20)
         | (protection_aroonu_14_1h < 50.0)
@@ -5158,7 +5171,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_3_4h > 35.0)
         | (protection_rsi_14_1h < 20.0)
         | rsi_14_4h_lt_30
-        | (protection_cmf_20_15m > -0.10)
+        | cmf_20_15m_gt_neg_010
         | (protection_cmf_20_4h > -0.20)
         | (protection_stochrsik_14_14_3_3_15m < 20.0)
         | (protection_stochrsik_14_14_3_3_4h < 30.0)
@@ -5195,7 +5208,7 @@ class NostalgiaForInfinityX7(IStrategy):
         (protection_rsi_3_15m > 5.0)
         | (protection_rsi_3_1h > 20.0)
         | (protection_rsi_3_4h > 40.0)
-        | (protection_cmf_20_15m > -0.30)
+        | cmf_20_15m_gt_neg_030
         | (protection_aroonu_14_1h < 50.0)
         | (protection_stochrsik_14_14_3_3_15m < 20.0)
       )
@@ -5214,7 +5227,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_3_1h > 20.0)
         | (protection_rsi_3_4h > 25.0)
         | (protection_rsi_3_1d > 5.0)
-        | (protection_cmf_20_15m > -0.40)
+        | cmf_20_15m_gt_neg_040
       )
       # 15m & 1h down move, 15m still not low enough, 1h still high, 4h high, 15m still high, 4h overbought
       & (
@@ -5231,7 +5244,7 @@ class NostalgiaForInfinityX7(IStrategy):
         (protection_rsi_3_15m > 5.0)
         | (protection_rsi_3_1h > 25.0)
         | (protection_rsi_3_4h > 25.0)
-        | (protection_cmf_20_15m > -0.30)
+        | cmf_20_15m_gt_neg_030
         | (protection_aroonu_14_4h < 80.0)
       )
       # 15m & 1h & 4h down move, 15m & 1h & 4h still not low enough, 4h downtrend, 4h high
@@ -5260,7 +5273,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_3_4h > 50.0)
         | rsi_14_1h_lt_40
         | rsi_14_4h_lt_50
-        | (protection_cmf_20_15m > -0.25)
+        | cmf_20_15m_gt_neg_025
         | (protection_aroonu_14_4h < 50.0)
         | (protection_stochrsik_14_14_3_3_4h < 50.0)
       )
@@ -5303,7 +5316,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_3_4h > 35.0)
         | rsi_14_1h_lt_30
         | rsi_14_4h_lt_30
-        | (protection_cmf_20_15m > -0.30)
+        | cmf_20_15m_gt_neg_030
         | (protection_stochrsik_14_14_3_3_1h < 50.0)
       )
       # 15m & 1h & 4h down move, 1h & 4h still high, 1d overbought
@@ -5357,7 +5370,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_3_4h > 65.0)
         | rsi_14_1h_lt_40
         | rsi_14_4h_lt_40
-        | (protection_cmf_20_15m > -0.40)
+        | cmf_20_15m_gt_neg_040
         | (protection_aroonu_14_1h < 50.0)
       )
       # 15m & 4h down move, 15m & 1h still not low enough, 4h still high, 1h & 4h still not low enough, 1d overbought
@@ -5399,7 +5412,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_3_4h > 10.0)
         | (protection_rsi_14_1h < 10.0)
         | (protection_rsi_14_4h < 20.0)
-        | (protection_cmf_20_15m > -0.15)
+        | cmf_20_15m_gt_neg_015
         | (protection_cmf_20_1h > -0.15)
         | (protection_cmf_20_4h > -0.15)
         | (protection_roc_9_1h > -20.0)
@@ -5411,7 +5424,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_3_1h > 10.0)
         | (protection_rsi_3_4h > 15.0)
         | rsi_14_4h_lt_40
-        | (protection_cmf_20_15m > -0.20)
+        | cmf_20_15m_gt_neg_020
         | (protection_cmf_20_1h > -0.20)
         | (protection_cmf_20_4h > -0.20)
       )
@@ -5420,7 +5433,7 @@ class NostalgiaForInfinityX7(IStrategy):
         (rsi_3_15m_gt_10)
         | (protection_rsi_3_1h > 10.0)
         | (protection_rsi_3_4h > 15.0)
-        | (protection_cmf_20_15m > -0.25)
+        | cmf_20_15m_gt_neg_025
         | (protection_cmf_20_1h > -0.15)
         | (protection_cmf_20_4h > -0.15)
         | (protection_aroonu_14_4h < 40.0)
@@ -5430,7 +5443,7 @@ class NostalgiaForInfinityX7(IStrategy):
         (rsi_3_15m_gt_10)
         | (protection_rsi_3_1h > 10.0)
         | (protection_rsi_3_4h > 15.0)
-        | (protection_cmf_20_15m > -0.30)
+        | cmf_20_15m_gt_neg_030
         | (protection_cmf_20_1h > -0.40)
         | (protection_stochrsik_14_14_3_3_15m < 50.0)
       )
@@ -5458,7 +5471,7 @@ class NostalgiaForInfinityX7(IStrategy):
         (rsi_3_15m_gt_10)
         | (protection_rsi_3_1h > 10.0)
         | (protection_rsi_3_4h > 20.0)
-        | (protection_cmf_20_15m > -0.20)
+        | cmf_20_15m_gt_neg_020
         | (protection_cmf_20_1h > -0.25)
         | (protection_cmf_20_4h > -0.25)
         | (protection_stochrsik_14_14_3_3_15m < 50.0)
@@ -5478,7 +5491,7 @@ class NostalgiaForInfinityX7(IStrategy):
         (rsi_3_15m_gt_10)
         | (protection_rsi_3_1h > 10.0)
         | (protection_rsi_3_4h > 25.0)
-        | (protection_cmf_20_15m > -0.20)
+        | cmf_20_15m_gt_neg_020
         | (protection_cmf_20_1h > -0.20)
         | (protection_cmf_20_4h > -0.20)
         | (protection_aroonu_14_4h < 70.0)
@@ -5501,7 +5514,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_14_15m < 10.0)
         | (protection_rsi_14_1h < 20.0)
         | rsi_14_4h_lt_30
-        | (protection_cmf_20_15m > -0.20)
+        | cmf_20_15m_gt_neg_020
         | (protection_cmf_20_1h > -0.15)
         | (protection_stochrsik_14_14_3_3_15m < 20.0)
       )
@@ -5513,7 +5526,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_15m_lt_20
         | rsi_14_1h_lt_30
         | rsi_14_4h_lt_30
-        | (protection_cmf_20_15m > -0.15)
+        | cmf_20_15m_gt_neg_015
         | (protection_cmf_20_1h > -0.25)
         | (protection_aroonu_14_4h < 40.0)
         | (protection_roc_9_4h > -20.0)
@@ -5568,7 +5581,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_15m_lt_20
         | (protection_rsi_14_1h < 20.0)
         | rsi_14_4h_lt_30
-        | (protection_cmf_20_15m > -0.25)
+        | cmf_20_15m_gt_neg_025
         | (protection_cmf_20_1h > -0.25)
         | (protection_stochrsik_14_14_3_3_15m < 20.0)
       )
@@ -5580,7 +5593,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_15m_lt_20
         | rsi_14_1h_lt_30
         | rsi_14_4h_lt_30
-        | (protection_cmf_20_15m > -0.25)
+        | cmf_20_15m_gt_neg_025
         | (protection_cmf_20_1h > -0.25)
         | (protection_cmf_20_4h > -0.25)
         | (protection_stochrsik_14_14_3_3_1h < 30.0)
@@ -5622,7 +5635,7 @@ class NostalgiaForInfinityX7(IStrategy):
         (rsi_3_15m_gt_10)
         | (protection_rsi_3_1h > 20.0)
         | (protection_rsi_3_4h > 20.0)
-        | (protection_cmf_20_15m > -0.20)
+        | cmf_20_15m_gt_neg_020
         | (protection_cmf_20_1h > -0.30)
         | (protection_cmf_20_4h > -0.30)
         | (protection_stochrsik_14_14_3_3_15m < 50.0)
@@ -5751,7 +5764,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_15m_lt_20
         | rsi_14_1h_lt_30
         | rsi_14_4h_lt_40
-        | (protection_cmf_20_15m > -0.10)
+        | cmf_20_15m_gt_neg_010
         | (protection_cmf_20_1h > -0.20)
         | (protection_aroonu_14_4h < 20.0)
         | (protection_roc_9_4h > -10.0)
@@ -5763,7 +5776,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_3_4h > 25.0)
         | rsi_14_1h_lt_30
         | rsi_14_4h_lt_30
-        | (protection_cmf_20_15m > -0.30)
+        | cmf_20_15m_gt_neg_030
         | (protection_aroonu_14_4h < 60.0)
         | (protection_roc_9_1d < 25.0)
       )
@@ -5784,7 +5797,7 @@ class NostalgiaForInfinityX7(IStrategy):
         (rsi_3_15m_gt_10)
         | (protection_rsi_3_1h > 25.0)
         | (protection_rsi_3_4h > 25.0)
-        | (protection_cmf_20_15m > -0.20)
+        | cmf_20_15m_gt_neg_020
         | (protection_cmf_20_1h > -0.20)
         | (protection_cmf_20_4h > -0.20)
         | (protection_aroonu_14_1h < 25.0)
@@ -5824,7 +5837,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_15m_lt_20
         | rsi_14_1h_lt_30
         | rsi_14_4h_lt_40
-        | (protection_cmf_20_15m > -0.30)
+        | cmf_20_15m_gt_neg_030
         | (protection_cmf_20_1h > -0.25)
       )
       # 15m & 1h & 4h down move, 1h & 4h still high, 4h high, 4h & 1d overbought
@@ -5845,7 +5858,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_3_4h_gt_60
         | rsi_14_1h_lt_40
         | rsi_14_4h_lt_50
-        | (protection_cmf_20_15m > -0.25)
+        | cmf_20_15m_gt_neg_025
         | (protection_aroonu_14_4h < 80.0)
       )
       # 15m & 1h down move, 4h high, 1d downtrend, 1h still not low enough, 1d overbought
@@ -5911,7 +5924,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_15m_lt_20
         | rsi_14_1h_lt_30
         | rsi_14_4h_lt_30
-        | (protection_cmf_20_15m > -0.30)
+        | cmf_20_15m_gt_neg_030
         | (protection_cmf_20_1h > -0.10)
         | (protection_cmf_20_4h > -0.10)
         | (protection_stochrsik_14_14_3_3_1h < 50.0)
@@ -5934,7 +5947,7 @@ class NostalgiaForInfinityX7(IStrategy):
         (rsi_3_15m_gt_10)
         | (protection_rsi_3_1h > 40.0)
         | rsi_14_4h_lt_50
-        | (protection_cmf_20_15m > -0.3)
+        | cmf_20_15m_gt_neg_03
         | (protection_aroonu_14_1h < 60.0)
         | (protection_aroonu_14_1d < 90.0)
         | (protection_stochrsik_14_14_3_3_1d < 80.0)
@@ -5969,7 +5982,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_3_4h > 65.0)
         | rsi_14_1h_lt_40
         | rsi_14_4h_lt_40
-        | (protection_cmf_20_15m > -0.20)
+        | cmf_20_15m_gt_neg_020
         | (protection_cmf_20_1h > -0.20)
         | (protection_cmf_20_4h > -0.25)
         | (protection_stochrsik_14_14_3_3_1h < 40.0)
@@ -6006,7 +6019,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_3_4h > 50.0)
         | (protection_rsi_14_1h < 20.0)
         | rsi_14_4h_lt_30
-        | (protection_cmf_20_15m > -0.40)
+        | cmf_20_15m_gt_neg_040
         | (protection_cmf_20_4h > -0.20)
         | (protection_aroonu_14_1h < 40.0)
         | (protection_stochrsik_14_14_3_3_4h < 40.0)
@@ -6241,7 +6254,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_3_1h > 15.0)
         | (protection_rsi_3_4h > 35.0)
         | (protection_rsi_3_1d > 50.0)
-        | (protection_cmf_20_15m > -0.20)
+        | cmf_20_15m_gt_neg_020
         | (protection_aroonu_14_15m < 60.0)
         | (protection_aroonu_14_4h < 70.0)
         | (protection_roc_9_1d > -40.0)
@@ -6254,7 +6267,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_3_1d > 40.0)
         | (protection_rsi_14_15m > 20.0)
         | rsi_14_4h_lt_30
-        | (protection_cmf_20_15m > -0.25)
+        | cmf_20_15m_gt_neg_025
         | (protection_cmf_20_1h > -0.20)
         | (protection_cmf_20_4h > -0.0)
         | (protection_aroonu_14_4h < 20.0)
@@ -6309,7 +6322,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_15m_lt_20
         | rsi_14_1h_lt_30
         | rsi_14_4h_lt_40
-        | (protection_cmf_20_15m > -0.50)
+        | cmf_20_15m_gt_neg_050
       )
       # 15m & 1h & 4h down move, 15m & 1h & 4h still not low enough, 15m high, 1h still high
       & (
@@ -6330,7 +6343,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_15m_lt_20
         | rsi_14_1h_lt_30
         | rsi_14_4h_lt_40
-        | (protection_cmf_20_15m > -0.30)
+        | cmf_20_15m_gt_neg_030
         | (protection_aroonu_14_4h < 60.0)
         | (protection_roc_9_1h > -10.0)
       )
@@ -6364,7 +6377,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_15m_lt_30
         | rsi_14_1h_lt_50
         | rsi_14_4h_lt_50
-        | (protection_cmf_20_15m > -0.25)
+        | cmf_20_15m_gt_neg_025
         | (protection_aroonu_14_1h < 50.0)
         | (protection_aroonu_14_4h < 100.0)
         | (protection_stochrsik_14_14_3_3_4h < 90.0)
@@ -6434,7 +6447,7 @@ class NostalgiaForInfinityX7(IStrategy):
         (rsi_3_15m_gt_15)
         | rsi_3_1h_gt_30
         | (protection_rsi_3_4h > 30.0)
-        | (protection_cmf_20_15m > -0.20)
+        | cmf_20_15m_gt_neg_020
         | (protection_stochrsik_14_14_3_3_15m < 20.0)
         | (protection_stochrsik_14_14_3_3_1h < 20.0)
         | (protection_roc_9_1h > -10.0)
@@ -6650,7 +6663,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_3_1d > 30.0)
         | (protection_rsi_14_1h < 35.0)
         | (protection_rsi_14_4h < 35.0)
-        | (protection_cmf_20_15m > -0.30)
+        | cmf_20_15m_gt_neg_030
         | (protection_cmf_20_1h > -0.30)
         | (protection_cmf_20_4h > -0.30)
         | (protection_cci_20_1h < -200.0)
@@ -6849,7 +6862,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_15m_lt_40
         | rsi_14_1h_lt_50
         | rsi_14_4h_lt_50
-        | (protection_cmf_20_15m > -0.25)
+        | cmf_20_15m_gt_neg_025
         | (protection_aroonu_14_1h < 80.0)
         | (protection_aroonu_14_4h < 100.0)
         | (protection_roc_9_4h < 25.0)
@@ -6880,7 +6893,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_14_15m < 10.0)
         | (protection_rsi_14_1h < 10.0)
         | (protection_rsi_14_4h < 10.0)
-        | (protection_cmf_20_15m > -0.10)
+        | cmf_20_15m_gt_neg_010
         | (protection_cmf_20_4h > -0.20)
         | (protection_stochrsik_14_14_3_3_1h < 30.0)
         | (protection_stochrsik_14_14_3_3_4h < 20.0)
@@ -6895,7 +6908,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_14_15m > 25.0)
         | rsi_14_1h_lt_30
         | rsi_14_4h_lt_30
-        | (protection_cmf_20_15m > -0.3)
+        | cmf_20_15m_gt_neg_03
         | (protection_cmf_20_1d > -0.3)
         | (protection_aroonu_14_15m < 30.0)
       )
@@ -6917,7 +6930,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_15m_lt_30
         | rsi_14_1h_lt_40
         | rsi_14_4h_lt_40
-        | (protection_cmf_20_15m > -0.20)
+        | cmf_20_15m_gt_neg_020
         | (protection_cmf_20_1h > -0.20)
         | (protection_stochrsik_14_14_3_3_15m < 20.0)
         | (protection_stochrsik_14_14_3_3_1h < 40.0)
@@ -6990,7 +7003,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_15m_lt_30
         | rsi_14_1h_lt_30
         | rsi_14_4h_lt_30
-        | (protection_cmf_20_15m > -0.20)
+        | cmf_20_15m_gt_neg_020
         | (protection_cmf_20_1h > -0.20)
         | (protection_aroonu_14_15m < 60.0)
         | (protection_aroonu_14_1h < 100.0)
@@ -7080,7 +7093,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_3_1h > 15.0)
         | (protection_rsi_3_4h > 45.0)
         | (protection_rsi_3_1d > 45.0)
-        | (protection_cmf_20_15m > -0.40)
+        | cmf_20_15m_gt_neg_040
         | (protection_aroonu_14_1h < 20.0)
         | (protection_stochrsik_14_14_3_3_1h < 15.0)
         | (protection_stochrsik_14_14_3_3_4h < 15.0)
@@ -7092,7 +7105,7 @@ class NostalgiaForInfinityX7(IStrategy):
         (rsi_3_15m_gt_20)
         | (protection_rsi_3_1h > 20.0)
         | (protection_rsi_3_4h > 20.0)
-        | (protection_cmf_20_15m > -0.3)
+        | cmf_20_15m_gt_neg_03
         | (protection_aroonu_14_1h < 50.0)
         | (protection_aroonu_14_4h < 50.0)
         | (protection_stochrsik_14_14_3_3_15m < 40.0)
@@ -7156,7 +7169,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_3_1d > 50.0)
         | (protection_rsi_14_1h < 20.0)
         | rsi_14_4h_lt_30
-        | (protection_cmf_20_15m > -0.40)
+        | cmf_20_15m_gt_neg_040
         | (protection_cmf_20_1h > -0.25)
         | (protection_stochrsik_14_14_3_3_1h < 20.0)
         | (protection_stochrsik_14_14_3_3_4h < 20.0)
@@ -7192,7 +7205,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_15m_lt_30
         | rsi_14_1h_lt_30
         | rsi_14_4h_lt_30
-        | (protection_cmf_20_15m > -0.10)
+        | cmf_20_15m_gt_neg_010
         | (protection_cmf_20_1h > -0.10)
         | (protection_cmf_20_4h > -0.10)
         | (protection_roc_9_1d < 50.0)
@@ -7217,7 +7230,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_15m_lt_20
         | rsi_14_1h_lt_40
         | rsi_14_4h_lt_50
-        | (protection_cmf_20_15m > -0.10)
+        | cmf_20_15m_gt_neg_010
         | (protection_cmf_20_1h > -0.15)
         | (protection_aroonu_14_15m < 20.0)
         | (protection_aroonu_14_1h < 30.0)
@@ -7231,7 +7244,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_15m_lt_30
         | rsi_14_1h_lt_40
         | rsi_14_4h_lt_50
-        | (protection_cmf_20_15m > -0.15)
+        | cmf_20_15m_gt_neg_015
         | (protection_cmf_20_1h > -0.15)
         | (protection_cmf_20_4h > -0.15)
         | (protection_stochrsik_14_14_3_3_4h < 80.0)
@@ -7275,7 +7288,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_3_1d > 55.0)
         | rsi_14_1h_lt_40
         | rsi_14_4h_lt_50
-        | (protection_cmf_20_15m > -0.3)
+        | cmf_20_15m_gt_neg_03
         | (protection_roc_9_1d < 80.0)
       )
       # 15m & 1h & 4h & 1d down move, 15m & 1h still high, 4h downtrend
@@ -7334,7 +7347,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_3_4h > 40.0)
         | rsi_14_1h_lt_40
         | rsi_14_4h_lt_50
-        | (protection_cmf_20_15m > -0.20)
+        | cmf_20_15m_gt_neg_020
         | (protection_cmf_20_1h > -0.20)
         | (protection_aroonu_14_1h < 50.0)
         | (protection_aroonu_14_4h < 60.0)
@@ -7426,7 +7439,7 @@ class NostalgiaForInfinityX7(IStrategy):
         (rsi_3_15m_gt_20)
         | (protection_rsi_3_1h > 35.0)
         | (protection_rsi_3_4h > 40.0)
-        | (protection_cmf_20_15m > -0.10)
+        | cmf_20_15m_gt_neg_010
         | (protection_cmf_20_1h > -0.20)
         | (protection_cmf_20_4h > -0.20)
         | (protection_aroonu_14_4h < 40.0)
@@ -7453,7 +7466,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_14_15m < 25.0)
         | rsi_14_1h_lt_50
         | rsi_14_4h_lt_50
-        | (protection_cmf_20_15m > -0.10)
+        | cmf_20_15m_gt_neg_010
         | (protection_aroonu_14_4h < 80.0)
       )
       # 15m & 1h & 4h down move, 15m & 1h & 4h still high, 4h high & overbought
@@ -7532,7 +7545,7 @@ class NostalgiaForInfinityX7(IStrategy):
         (rsi_3_15m_gt_20)
         | (protection_rsi_3_1h > 40.0)
         | (protection_rsi_3_4h > 40.0)
-        | (protection_cmf_20_15m > -0.20)
+        | cmf_20_15m_gt_neg_020
         | (protection_aroonu_14_15m < 50.0)
         | (protection_roc_9_1d < 100.0)
       )
@@ -7613,7 +7626,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_15m_lt_30
         | rsi_14_1h_lt_50
         | rsi_14_4h_lt_50
-        | (protection_cmf_20_15m > -0.20)
+        | cmf_20_15m_gt_neg_020
         | (protection_aroonu_14_1h < 70.0)
         | (protection_aroonu_14_4h < 100.0)
         | (protection_roc_9_4h < 40.0)
@@ -7676,7 +7689,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_15m_lt_30
         | rsi_14_1h_lt_40
         | rsi_14_4h_lt_40
-        | (protection_cmf_20_15m > -0.10)
+        | cmf_20_15m_gt_neg_010
         | (protection_cmf_20_1h > -0.20)
         | (protection_stochrsik_14_14_3_3_15m < 50.0)
         | (protection_stochrsik_14_14_3_3_4h < 70.0)
@@ -7720,7 +7733,7 @@ class NostalgiaForInfinityX7(IStrategy):
         (rsi_3_15m_gt_20)
         | (protection_rsi_3_1h > 55.0)
         | (protection_rsi_3_4h > 55.0)
-        | (protection_cmf_20_15m > -0.25)
+        | cmf_20_15m_gt_neg_025
         | (protection_cmf_20_1h > -0.10)
         | (protection_cmf_20_4h > -0.10)
         | (protection_aroonu_14_15m < 60.0)
@@ -7823,7 +7836,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_15m_lt_30
         | rsi_14_1h_lt_50
         | rsi_14_4h_lt_50
-        | (protection_cmf_20_15m > -0.20)
+        | cmf_20_15m_gt_neg_020
         | (protection_aroonu_14_15m < 50.0)
         | (protection_aroonu_14_1h < 50.0)
         | (protection_aroonu_14_4h < 90.0)
@@ -8112,7 +8125,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_3_1h_gt_30
         | (protection_rsi_3_4h > 30.0)
         | (protection_rsi_3_1d > 30.0)
-        | (protection_cmf_20_15m > -0.30)
+        | cmf_20_15m_gt_neg_030
         | (protection_cmf_20_1h > -0.40)
         | (protection_cmf_20_4h > -0.40)
         | (protection_roc_9_4h > -40.0)
@@ -8136,7 +8149,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_15m_lt_30
         | rsi_14_1h_lt_30
         | rsi_14_4h_lt_30
-        | (protection_cmf_20_15m > -0.25)
+        | cmf_20_15m_gt_neg_025
         | (protection_aroonu_14_1h < 50.0)
         | (protection_stochrsik_14_14_3_3_1h < 50.0)
       )
@@ -8147,7 +8160,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_3_4h > 40.0)
         | rsi_14_1h_lt_30
         | rsi_14_4h_lt_40
-        | (protection_cmf_20_15m > -0.30)
+        | cmf_20_15m_gt_neg_030
         | (protection_aroonu_14_15m < 20.0)
         | (protection_aroonu_14_1h < 30.0)
         | (protection_aroonu_14_4h < 50.0)
@@ -8291,7 +8304,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_15m_lt_30
         | rsi_14_1h_lt_40
         | rsi_14_4h_lt_50
-        | (protection_cmf_20_15m > -0.25)
+        | cmf_20_15m_gt_neg_025
         | (protection_cmf_20_1h > -0.10)
         | (protection_cmf_20_4h > -0.10)
         | (protection_aroonu_14_1h < 30.0)
@@ -8379,7 +8392,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_15m_lt_30
         | rsi_14_1h_lt_40
         | (protection_rsi_14_4h < 60.0)
-        | (protection_cmf_20_15m > -0.20)
+        | cmf_20_15m_gt_neg_020
         | (protection_cmf_20_1h > -0.20)
         | (protection_aroonu_14_15m < 50.0)
         | (protection_stochrsik_14_14_3_3_1h < 50.0)
@@ -8430,7 +8443,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_15m_lt_30
         | rsi_14_1h_lt_40
         | rsi_14_4h_lt_40
-        | (protection_cmf_20_15m > -0.25)
+        | cmf_20_15m_gt_neg_025
         | (protection_aroonu_14_15m < 50.0)
         | (protection_stochrsik_14_14_3_3_4h < 70.0)
       )
@@ -8815,7 +8828,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_15m_lt_40
         | rsi_14_1h_lt_50
         | rsi_14_4h_lt_50
-        | (protection_cmf_20_15m > -0.20)
+        | cmf_20_15m_gt_neg_020
         | (protection_cmf_20_1h > -0.10)
         | (protection_aroonu_14_4h < 70.0)
         | (protection_stochrsik_14_14_3_3_15m < 40.0)
@@ -8872,7 +8885,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_14_15m < 10.0)
         | (protection_rsi_14_1h < 20.0)
         | (protection_rsi_14_4h < 20.0)
-        | (protection_cmf_20_15m > -0.30)
+        | cmf_20_15m_gt_neg_030
         | (protection_cmf_20_4h > -0.30)
         | (protection_stochrsik_14_14_3_3_1h < 30.0)
         | (protection_stochrsik_14_14_3_3_4h < 30.0)
@@ -8913,7 +8926,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_15m_lt_20
         | (protection_rsi_14_1h < 20.0)
         | rsi_14_4h_lt_50
-        | (protection_cmf_20_15m > -0.35)
+        | cmf_20_15m_gt_neg_035
         | (protection_roc_9_1h > -10.0)
         | (protection_roc_9_4h > -15.0)
       )
@@ -8954,7 +8967,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_15m_lt_30
         | rsi_14_1h_lt_40
         | rsi_14_4h_lt_40
-        | (protection_cmf_20_15m > -0.15)
+        | cmf_20_15m_gt_neg_015
         | (protection_aroonu_14_4h < 70.0)
         | (protection_cci_20_1h < -100.0)
         | (protection_cci_20_4h < 0.0)
@@ -9013,7 +9026,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_15m_lt_30
         | rsi_14_1h_lt_40
         | rsi_14_4h_lt_50
-        | (protection_cmf_20_15m > -0.25)
+        | cmf_20_15m_gt_neg_025
         | (protection_cmf_20_1h > -0.30)
         | (protection_aroonu_14_15m < 60.0)
         | (protection_aroonu_14_4h < 60.0)
@@ -9247,7 +9260,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_15m_lt_20
         | rsi_14_1h_lt_50
         | rsi_14_4h_lt_50
-        | (protection_cmf_20_15m > -0.25)
+        | cmf_20_15m_gt_neg_025
         | (protection_aroonu_14_15m < 50.0)
         | (protection_aroonu_14_1h < 100.0)
       )
@@ -9291,7 +9304,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_3_1h > 55.0)
         | (protection_rsi_3_4h > 55.0)
         | (protection_rsi_3_1d > 55.0)
-        | (protection_cmf_20_15m > -0.25)
+        | cmf_20_15m_gt_neg_025
         | (protection_cmf_20_4h > -0.20)
         | (protection_aroonu_14_15m < 60.0)
         | (protection_aroonu_14_1h < 100.0)
@@ -9816,7 +9829,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_15m_lt_40
         | rsi_14_1h_lt_50
         | (protection_rsi_14_4h < 60.0)
-        | (protection_cmf_20_15m > -0.10)
+        | cmf_20_15m_gt_neg_010
         | (protection_aroonu_14_15m < 70.0)
         | (protection_roc_9_1h < 15.0)
         | (protection_roc_9_4h < 80.0)
@@ -9829,7 +9842,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_15m_lt_30
         | rsi_14_1h_lt_40
         | rsi_14_4h_lt_50
-        | (protection_cmf_20_15m > -0.30)
+        | cmf_20_15m_gt_neg_030
         | (protection_aroonu_14_4h < 70.0)
         | (protection_roc_9_4h < 70.0)
       )
@@ -9860,7 +9873,7 @@ class NostalgiaForInfinityX7(IStrategy):
         (protection_rsi_3_15m > 40.0)
         | (protection_rsi_3_1h > 40.0)
         | (protection_rsi_3_4h > 45.0)
-        | (protection_cmf_20_15m > -0.40)
+        | cmf_20_15m_gt_neg_040
         | (protection_cmf_20_1h > -0.40)
         | (protection_cmf_20_4h > -0.40)
         | (protection_aroonu_14_4h < 75.0)
@@ -10081,7 +10094,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_15m_lt_40
         | rsi_14_1h_lt_40
         | rsi_14_4h_lt_50
-        | (protection_cmf_20_15m > -0.10)
+        | cmf_20_15m_gt_neg_010
         | (protection_cmf_20_1h > -0.10)
         | (protection_cmf_20_4h > -0.10)
         | (protection_aroonu_14_4h < 80.0)
@@ -10164,7 +10177,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_15m_lt_30
         | rsi_14_1h_lt_30
         | rsi_14_4h_lt_30
-        | (protection_cmf_20_15m > -0.15)
+        | cmf_20_15m_gt_neg_015
         | (protection_cmf_20_1h > -0.25)
         | (protection_cmf_20_4h > -0.35)
         | (protection_stochrsik_14_14_3_3_15m < 20.0)
@@ -10201,7 +10214,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_14_15m_lt_30
         | rsi_14_1h_lt_40
         | rsi_14_4h_lt_50
-        | (protection_cmf_20_15m > -0.10)
+        | cmf_20_15m_gt_neg_010
         | (protection_aroonu_14_1h < 30.0)
         | (protection_aroonu_14_4h < 85.0)
         | (protection_stochrsik_14_14_3_3_15m < 70.0)
@@ -10258,7 +10271,7 @@ class NostalgiaForInfinityX7(IStrategy):
       & (
         (protection_rsi_3_1h > 5.0)
         | (protection_rsi_3_4h > 20.0)
-        | (protection_cmf_20_15m > -0.20)
+        | cmf_20_15m_gt_neg_020
         | (protection_cmf_20_1h > -0.20)
         | (protection_cmf_20_4h > -0.20)
         | (protection_aroonu_14_1h < 50.0)
@@ -10268,7 +10281,7 @@ class NostalgiaForInfinityX7(IStrategy):
       & (
         (protection_rsi_3_1h > 5.0)
         | (protection_rsi_3_4h > 20.0)
-        | (protection_cmf_20_15m > -0.40)
+        | cmf_20_15m_gt_neg_040
         | (protection_cmf_20_1h > -0.40)
         | (protection_roc_9_4h > -20.0)
       )
@@ -10304,7 +10317,7 @@ class NostalgiaForInfinityX7(IStrategy):
       & (
         (protection_rsi_3_1h > 10.0)
         | (protection_rsi_3_4h > 20.0)
-        | (protection_cmf_20_15m > -0.0)
+        | cmf_20_15m_gt_neg_0
         | (protection_cmf_20_1h > -0.30)
         | (protection_cmf_20_4h > -0.30)
         | (protection_aroonu_14_1h < 60.0)
@@ -10385,7 +10398,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_14_15m < 10.0)
         | (protection_rsi_14_1h < 20.0)
         | rsi_14_4h_lt_30
-        | (protection_cmf_20_15m > -0.30)
+        | cmf_20_15m_gt_neg_030
         | (protection_cmf_20_1h > -0.30)
         | (protection_stochrsik_14_14_3_3_1h < 40.0)
       )
@@ -10413,7 +10426,7 @@ class NostalgiaForInfinityX7(IStrategy):
       & (
         (protection_rsi_3_1h > 25.0)
         | (protection_rsi_3_4h > 25.0)
-        | (protection_cmf_20_15m > -0.5)
+        | cmf_20_15m_gt_neg_05
         | (protection_cmf_20_1h > -0.3)
         | (protection_cmf_20_4h > -0.3)
         | (protection_aroonu_14_1h < 50.0)
@@ -10496,7 +10509,7 @@ class NostalgiaForInfinityX7(IStrategy):
       # 4h down move, 15m downtrend, 15m still not low enough, 1h high
       & (
         (protection_rsi_3_4h > 3.0)
-        | (protection_cmf_20_15m > -0.20)
+        | cmf_20_15m_gt_neg_020
         | (protection_stochrsik_14_14_3_3_15m < 20.0)
         | (protection_stochrsik_14_14_3_3_1h < 70.0)
       )
@@ -10552,7 +10565,7 @@ class NostalgiaForInfinityX7(IStrategy):
       # 4h down mnove, 15m & 1h & 4h downtrend, 15m high, 4h downtrend
       & (
         (protection_rsi_3_4h > 10.0)
-        | (protection_cmf_20_15m > -0.25)
+        | cmf_20_15m_gt_neg_025
         | (protection_cmf_20_1h > -0.10)
         | (protection_cmf_20_4h > -0.10)
         | (protection_aroonu_14_15m < 60.0)
@@ -10866,7 +10879,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | (protection_rsi_3_1h > 20.0)
         | rsi_14_1h_lt_30
         | rsi_14_4h_lt_40
-        | (protection_cmf_20_15m > -0.30)
+        | cmf_20_15m_gt_neg_030
         | (protection_aroonu_14_1h < 50.0)
       )
       # 1d P&D, 15m down move, 1h high
@@ -11209,7 +11222,7 @@ class NostalgiaForInfinityX7(IStrategy):
         (protection_top_wick_pct_1d < 20.0)
         | (protection_rsi_3_1h > 10.0)
         | (protection_rsi_3_4h > 45.0)
-        | (protection_cmf_20_15m > -0.2)
+        | cmf_20_15m_gt_neg_02
         | (protection_aroonu_14_4h < 50.0)
         | (protection_roc_9_1d < 80.0)
       )
@@ -11227,7 +11240,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_3_15m_gt_10
         | rsi_3_1h_gt_30
         | (protection_rsi_3_4h > 50.0)
-        | (protection_cmf_20_15m > -0.25)
+        | cmf_20_15m_gt_neg_025
         | (protection_cmf_20_1h > -0.25)
         | (protection_aroonu_14_4h < 50.0)
       )
@@ -11411,7 +11424,7 @@ class NostalgiaForInfinityX7(IStrategy):
         | rsi_3_15m_gt_25
         | rsi_3_1h_gt_30
         | rsi_14_15m_lt_30
-        | (protection_cmf_20_15m > -0.10)
+        | cmf_20_15m_gt_neg_010
         | (protection_cmf_20_1h > -0.10)
         | (protection_cmf_20_4h > -0.40)
         | (protection_cmf_20_1d > -0.50)
