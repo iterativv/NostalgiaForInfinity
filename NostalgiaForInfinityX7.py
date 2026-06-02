@@ -43776,6 +43776,12 @@ class NostalgiaForInfinityX7(IStrategy):
     fee_open_rate = trade_fee_open if self.custom_fee_open_rate is None else self.custom_fee_open_rate
     fee_close_rate = trade_fee_close if self.custom_fee_close_rate is None else self.custom_fee_close_rate
     stake_scale_leverage = trade_leverage if is_futures else 1.0
+    grind_mode_stake_multipliers = (
+      self.grind_mode_stake_multiplier_futures if is_futures else self.grind_mode_stake_multiplier_spot
+    )
+    regular_mode_stake_multipliers = (
+      self.regular_mode_stake_multiplier_futures if is_futures else self.regular_mode_stake_multiplier_spot
+    )
     grind_entry_retry_time = current_time - timedelta(minutes=10)
     grind_order_age_time = current_time - timedelta(hours=6)
     grind_force_order_age_time = current_time - timedelta(hours=24)
@@ -43785,9 +43791,7 @@ class NostalgiaForInfinityX7(IStrategy):
       slice_amount /= self.rebuy_mode_stake_multiplier
     # Grind mode
     elif is_grind_mode:
-      slice_amount /= (
-        self.grind_mode_stake_multiplier_futures[0] if is_futures else self.grind_mode_stake_multiplier_spot[0]
-      )
+      slice_amount /= grind_mode_stake_multipliers[0]
     elif not is_derisk and (is_backtest or trade_open_date >= datetime(2024, 2, 5)):
       rebuy_stake, order_tag, is_derisk_calc = self.long_adjust_trade_position_no_derisk(
         trade,
@@ -43830,17 +43834,11 @@ class NostalgiaForInfinityX7(IStrategy):
     if not is_rebuy_mode and not is_grind_mode:
       # First entry is lower now, therefore the grinds must adjust
       if is_backtest or trade_open_date >= datetime(2024, 4, 16):
-        slice_amount /= (
-          self.regular_mode_stake_multiplier_futures[0] if is_futures else self.regular_mode_stake_multiplier_spot[0]
-        )
+        slice_amount /= regular_mode_stake_multipliers[0]
 
     is_not_trade_max_stake = current_stake_amount < (
       (first_filled_entry.cost * self.grinding_v1_max_stake)
-      / (
-        (self.grind_mode_stake_multiplier_futures[0] if is_futures else self.grind_mode_stake_multiplier_spot[0])
-        if is_grind_mode
-        else 1.0
-      )
+      / (grind_mode_stake_multipliers[0] if is_grind_mode else 1.0)
     )
 
     grind_1_max_sub_grinds = 0
@@ -66509,6 +66507,12 @@ class NostalgiaForInfinityX7(IStrategy):
     fee_open_rate = trade_fee_open if self.custom_fee_open_rate is None else self.custom_fee_open_rate
     fee_close_rate = trade_fee_close if self.custom_fee_close_rate is None else self.custom_fee_close_rate
     stake_scale_leverage = trade_leverage if is_futures else 1.0
+    grind_mode_stake_multipliers = (
+      self.grind_mode_stake_multiplier_futures if is_futures else self.grind_mode_stake_multiplier_spot
+    )
+    regular_mode_stake_multipliers = (
+      self.regular_mode_stake_multiplier_futures if is_futures else self.regular_mode_stake_multiplier_spot
+    )
     grind_entry_retry_time = current_time - timedelta(minutes=10)
     grind_order_age_time = current_time - timedelta(hours=6)
     grind_force_order_age_time = current_time - timedelta(hours=24)
@@ -66518,9 +66522,7 @@ class NostalgiaForInfinityX7(IStrategy):
       slice_amount /= self.rebuy_mode_stake_multiplier
     # Grind mode
     elif is_grind_mode:
-      slice_amount /= (
-        self.grind_mode_stake_multiplier_futures[0] if is_futures else self.grind_mode_stake_multiplier_spot[0]
-      )
+      slice_amount /= grind_mode_stake_multipliers[0]
     elif not is_derisk and (is_backtest or trade_open_date >= datetime(2024, 2, 5)):
       rebuy_stake, order_tag, is_derisk_calc = self.short_adjust_trade_position_no_derisk(
         trade,
@@ -66563,17 +66565,11 @@ class NostalgiaForInfinityX7(IStrategy):
     if not is_rebuy_mode and not is_grind_mode:
       # First entry is lower now, therefore the grinds must adjust
       if is_backtest or trade_open_date >= datetime(2024, 4, 16):
-        slice_amount /= (
-          self.regular_mode_stake_multiplier_futures[0] if is_futures else self.regular_mode_stake_multiplier_spot[0]
-        )
+        slice_amount /= regular_mode_stake_multipliers[0]
 
     is_not_trade_max_stake = current_stake_amount < (
       (first_filled_entry.cost * self.grinding_v1_max_stake)
-      / (
-        (self.grind_mode_stake_multiplier_futures[0] if is_futures else self.grind_mode_stake_multiplier_spot[0])
-        if is_grind_mode
-        else 1.0
-      )
+      / (grind_mode_stake_multipliers[0] if is_grind_mode else 1.0)
     )
 
     grind_1_max_sub_grinds = 0
