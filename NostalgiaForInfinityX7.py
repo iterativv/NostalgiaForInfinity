@@ -46138,6 +46138,7 @@ class NostalgiaForInfinityX7(IStrategy):
     regular_mode_use_grind_stops = self.regular_mode_use_grind_stops
 
     last_filled_entry = filled_entries[-1]
+    first_filled_order = filled_orders[0]
     last_filled_order = filled_orders[-1]
 
     max_rebuy_sub_grinds = 0
@@ -46353,58 +46354,63 @@ class NostalgiaForInfinityX7(IStrategy):
     grind_6_buy_orders = []
     grind_6_distance_ratio = 0.0
     for order in reversed(filled_orders):
-      if (order.ft_order_side == "buy") and (order is not filled_orders[0]):
+      order_side = order.ft_order_side
+      if (order_side == "buy") and (order is not first_filled_order):
         order_tag = ""
         if has_order_tags:
-          if order.ft_order_tag is not None:
-            order_tag = order.ft_order_tag
+          order_ft_tag = order.ft_order_tag
+          if order_ft_tag is not None:
+            order_tag = order_ft_tag
+        order_safe_filled = order.safe_filled
+        order_safe_price = order.safe_price
+        order_id = order.id
         if not grind_1_is_sell_found and order_tag == "g1":
           grind_1_sub_grind_count += 1
-          grind_1_total_amount += order.safe_filled
-          grind_1_total_cost += order.safe_filled * order.safe_price
-          grind_1_buy_orders.append(order.id)
+          grind_1_total_amount += order_safe_filled
+          grind_1_total_cost += order_safe_filled * order_safe_price
+          grind_1_buy_orders.append(order_id)
           if not grind_1_found:
-            grind_1_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
+            grind_1_distance_ratio = (exit_rate - order_safe_price) / order_safe_price
             grind_1_found = True
         elif not grind_2_is_sell_found and order_tag == "g2":
           grind_2_sub_grind_count += 1
-          grind_2_total_amount += order.safe_filled
-          grind_2_total_cost += order.safe_filled * order.safe_price
-          grind_2_buy_orders.append(order.id)
+          grind_2_total_amount += order_safe_filled
+          grind_2_total_cost += order_safe_filled * order_safe_price
+          grind_2_buy_orders.append(order_id)
           if not grind_2_found:
-            grind_2_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
+            grind_2_distance_ratio = (exit_rate - order_safe_price) / order_safe_price
             grind_2_found = True
         elif not grind_3_is_sell_found and order_tag == "g3":
           grind_3_sub_grind_count += 1
-          grind_3_total_amount += order.safe_filled
-          grind_3_total_cost += order.safe_filled * order.safe_price
-          grind_3_buy_orders.append(order.id)
+          grind_3_total_amount += order_safe_filled
+          grind_3_total_cost += order_safe_filled * order_safe_price
+          grind_3_buy_orders.append(order_id)
           if not grind_3_found:
-            grind_3_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
+            grind_3_distance_ratio = (exit_rate - order_safe_price) / order_safe_price
             grind_3_found = True
         elif not grind_4_is_sell_found and order_tag == "g4":
           grind_4_sub_grind_count += 1
-          grind_4_total_amount += order.safe_filled
-          grind_4_total_cost += order.safe_filled * order.safe_price
-          grind_4_buy_orders.append(order.id)
+          grind_4_total_amount += order_safe_filled
+          grind_4_total_cost += order_safe_filled * order_safe_price
+          grind_4_buy_orders.append(order_id)
           if not grind_4_found:
-            grind_4_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
+            grind_4_distance_ratio = (exit_rate - order_safe_price) / order_safe_price
             grind_4_found = True
         elif not grind_5_is_sell_found and order_tag == "g5":
           grind_5_sub_grind_count += 1
-          grind_5_total_amount += order.safe_filled
-          grind_5_total_cost += order.safe_filled * order.safe_price
-          grind_5_buy_orders.append(order.id)
+          grind_5_total_amount += order_safe_filled
+          grind_5_total_cost += order_safe_filled * order_safe_price
+          grind_5_buy_orders.append(order_id)
           if not grind_5_found:
-            grind_5_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
+            grind_5_distance_ratio = (exit_rate - order_safe_price) / order_safe_price
             grind_5_found = True
         elif not grind_6_is_sell_found and order_tag == "g6":
           grind_6_sub_grind_count += 1
-          grind_6_total_amount += order.safe_filled
-          grind_6_total_cost += order.safe_filled * order.safe_price
-          grind_6_buy_orders.append(order.id)
+          grind_6_total_amount += order_safe_filled
+          grind_6_total_cost += order_safe_filled * order_safe_price
+          grind_6_buy_orders.append(order_id)
           if not grind_6_found:
-            grind_6_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
+            grind_6_distance_ratio = (exit_rate - order_safe_price) / order_safe_price
             grind_6_found = True
         elif not rebuy_is_sell_found and order_tag not in [
           "g1",
@@ -46431,20 +46437,21 @@ class NostalgiaForInfinityX7(IStrategy):
           "gmd0",
         ]:
           rebuy_sub_grind_count += 1
-          rebuy_total_amount += order.safe_filled
-          rebuy_total_cost += order.safe_filled * order.safe_price
-          rebuy_buy_orders.append(order.id)
+          rebuy_total_amount += order_safe_filled
+          rebuy_total_cost += order_safe_filled * order_safe_price
+          rebuy_buy_orders.append(order_id)
           if not rebuy_found:
-            rebuy_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
+            rebuy_distance_ratio = (exit_rate - order_safe_price) / order_safe_price
             rebuy_found = True
-      elif order.ft_order_side == "sell":
+      elif order_side == "sell":
         if order is filled_exits[-1] and (order.safe_remaining * exit_rate / stake_scale_leverage) > min_stake:
           partial_sell = True
           break
         order_tag = ""
         if has_order_tags:
-          if order.ft_order_tag is not None:
-            order_tag = order.ft_order_tag.partition(" ")[0]
+          order_ft_tag = order.ft_order_tag
+          if order_ft_tag is not None:
+            order_tag = order_ft_tag.partition(" ")[0]
         if order_tag in ["g1", "sg1"]:
           grind_1_is_sell_found = True
         elif order_tag in ["g2", "sg2"]:
@@ -46495,7 +46502,7 @@ class NostalgiaForInfinityX7(IStrategy):
         ]:
           rebuy_is_sell_found = True
         if not is_derisk:
-          start_amount = filled_orders[0].safe_filled
+          start_amount = first_filled_order.safe_filled
           current_amount = 0.0
           for order2 in filled_orders:
             if order2.ft_order_side == "buy":
@@ -69039,6 +69046,7 @@ class NostalgiaForInfinityX7(IStrategy):
     regular_mode_use_grind_stops = self.regular_mode_use_grind_stops
 
     last_filled_entry = filled_entries[-1]
+    first_filled_order = filled_orders[0]
     last_filled_order = filled_orders[-1]
 
     max_rebuy_sub_grinds = 0
@@ -69254,58 +69262,63 @@ class NostalgiaForInfinityX7(IStrategy):
     grind_6_buy_orders = []
     grind_6_distance_ratio = 0.0
     for order in reversed(filled_orders):
-      if (order.ft_order_side == "sell") and (order is not filled_orders[0]):
+      order_side = order.ft_order_side
+      if (order_side == "sell") and (order is not first_filled_order):
         order_tag = ""
         if has_order_tags:
-          if order.ft_order_tag is not None:
-            order_tag = order.ft_order_tag
+          order_ft_tag = order.ft_order_tag
+          if order_ft_tag is not None:
+            order_tag = order_ft_tag
+        order_safe_filled = order.safe_filled
+        order_safe_price = order.safe_price
+        order_id = order.id
         if not grind_1_is_sell_found and order_tag == "g1":
           grind_1_sub_grind_count += 1
-          grind_1_total_amount += order.safe_filled
-          grind_1_total_cost += order.safe_filled * order.safe_price
-          grind_1_buy_orders.append(order.id)
+          grind_1_total_amount += order_safe_filled
+          grind_1_total_cost += order_safe_filled * order_safe_price
+          grind_1_buy_orders.append(order_id)
           if not grind_1_found:
-            grind_1_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
+            grind_1_distance_ratio = (exit_rate - order_safe_price) / order_safe_price
             grind_1_found = True
         elif not grind_2_is_sell_found and order_tag == "g2":
           grind_2_sub_grind_count += 1
-          grind_2_total_amount += order.safe_filled
-          grind_2_total_cost += order.safe_filled * order.safe_price
-          grind_2_buy_orders.append(order.id)
+          grind_2_total_amount += order_safe_filled
+          grind_2_total_cost += order_safe_filled * order_safe_price
+          grind_2_buy_orders.append(order_id)
           if not grind_2_found:
-            grind_2_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
+            grind_2_distance_ratio = (exit_rate - order_safe_price) / order_safe_price
             grind_2_found = True
         elif not grind_3_is_sell_found and order_tag == "g3":
           grind_3_sub_grind_count += 1
-          grind_3_total_amount += order.safe_filled
-          grind_3_total_cost += order.safe_filled * order.safe_price
-          grind_3_buy_orders.append(order.id)
+          grind_3_total_amount += order_safe_filled
+          grind_3_total_cost += order_safe_filled * order_safe_price
+          grind_3_buy_orders.append(order_id)
           if not grind_3_found:
-            grind_3_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
+            grind_3_distance_ratio = (exit_rate - order_safe_price) / order_safe_price
             grind_3_found = True
         elif not grind_4_is_sell_found and order_tag == "g4":
           grind_4_sub_grind_count += 1
-          grind_4_total_amount += order.safe_filled
-          grind_4_total_cost += order.safe_filled * order.safe_price
-          grind_4_buy_orders.append(order.id)
+          grind_4_total_amount += order_safe_filled
+          grind_4_total_cost += order_safe_filled * order_safe_price
+          grind_4_buy_orders.append(order_id)
           if not grind_4_found:
-            grind_4_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
+            grind_4_distance_ratio = (exit_rate - order_safe_price) / order_safe_price
             grind_4_found = True
         elif not grind_5_is_sell_found and order_tag == "g5":
           grind_5_sub_grind_count += 1
-          grind_5_total_amount += order.safe_filled
-          grind_5_total_cost += order.safe_filled * order.safe_price
-          grind_5_buy_orders.append(order.id)
+          grind_5_total_amount += order_safe_filled
+          grind_5_total_cost += order_safe_filled * order_safe_price
+          grind_5_buy_orders.append(order_id)
           if not grind_5_found:
-            grind_5_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
+            grind_5_distance_ratio = (exit_rate - order_safe_price) / order_safe_price
             grind_5_found = True
         elif not grind_6_is_sell_found and order_tag == "g6":
           grind_6_sub_grind_count += 1
-          grind_6_total_amount += order.safe_filled
-          grind_6_total_cost += order.safe_filled * order.safe_price
-          grind_6_buy_orders.append(order.id)
+          grind_6_total_amount += order_safe_filled
+          grind_6_total_cost += order_safe_filled * order_safe_price
+          grind_6_buy_orders.append(order_id)
           if not grind_6_found:
-            grind_6_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
+            grind_6_distance_ratio = (exit_rate - order_safe_price) / order_safe_price
             grind_6_found = True
         elif not rebuy_is_sell_found and order_tag not in [
           "g1",
@@ -69332,20 +69345,21 @@ class NostalgiaForInfinityX7(IStrategy):
           "gmd0",
         ]:
           rebuy_sub_grind_count += 1
-          rebuy_total_amount += order.safe_filled
-          rebuy_total_cost += order.safe_filled * order.safe_price
-          rebuy_buy_orders.append(order.id)
+          rebuy_total_amount += order_safe_filled
+          rebuy_total_cost += order_safe_filled * order_safe_price
+          rebuy_buy_orders.append(order_id)
           if not rebuy_found:
-            rebuy_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
+            rebuy_distance_ratio = (exit_rate - order_safe_price) / order_safe_price
             rebuy_found = True
-      elif order.ft_order_side == "buy":
+      elif order_side == "buy":
         if order is filled_exits[-1] and (order.safe_remaining * exit_rate / stake_scale_leverage) > min_stake:
           partial_sell = True
           break
         order_tag = ""
         if has_order_tags:
-          if order.ft_order_tag is not None:
-            order_tag = order.ft_order_tag.partition(" ")[0]
+          order_ft_tag = order.ft_order_tag
+          if order_ft_tag is not None:
+            order_tag = order_ft_tag.partition(" ")[0]
         if order_tag in ["g1", "sg1"]:
           grind_1_is_sell_found = True
         elif order_tag in ["g2", "sg2"]:
@@ -69396,7 +69410,7 @@ class NostalgiaForInfinityX7(IStrategy):
         ]:
           rebuy_is_sell_found = True
         if not is_derisk:
-          start_amount = filled_orders[0].safe_filled
+          start_amount = first_filled_order.safe_filled
           current_amount = 0.0
           for order2 in filled_orders:
             if order2.ft_order_side == "sell":
