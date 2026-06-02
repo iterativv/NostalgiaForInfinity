@@ -3223,12 +3223,18 @@ class NostalgiaForInfinityX7(IStrategy):
   # ---------------------------------------------------------------------------------------------
   def informative_1d_indicators(self, metadata: dict, info_timeframe) -> DataFrame:
     tik = time.perf_counter()
+    dp = self.dp
+    fast_pct_change = self.fast_pct_change
+    stoch_k_func = self.stoch_k
+    stochrsi_k_func = self.stochrsi_k
+    chaikin_money_flow = self.chaikin_money_flow
+    validate_indicators = self.validate_indicators
 
-    assert self.dp, "DataProvider is required for multiple timeframes."
+    assert dp, "DataProvider is required for multiple timeframes."
 
     # Get dataframe
     metadata_pair = metadata["pair"]
-    informative_1d = self.dp.get_pair_dataframe(pair=metadata_pair, timeframe=info_timeframe)
+    informative_1d = dp.get_pair_dataframe(pair=metadata_pair, timeframe=info_timeframe)
 
     # Empty dataframe protection
     if informative_1d.empty:
@@ -3256,19 +3262,19 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # STOCH
     # =========================================================================
-    stoch_k = self.stoch_k(high_np, low_np, close_np)
+    stoch_k = stoch_k_func(high_np, low_np, close_np)
 
     # =========================================================================
     # STOCH RSI
     # =========================================================================
-    stochrsi_k = self.stochrsi_k(rsi_14)
+    stochrsi_k = stochrsi_k_func(rsi_14)
 
     # =========================================================================
     # MONEY FLOW
     # =========================================================================
 
     mfi_14 = ta.MFI(high_np, low_np, close_np, volume_np, timeperiod=14)
-    cmf_20 = self.chaikin_money_flow(high_np, low_np, close_np, volume_np, timeperiod=20)
+    cmf_20 = chaikin_money_flow(high_np, low_np, close_np, volume_np, timeperiod=20)
 
     # =========================================================================
     # MOMENTUM
@@ -3280,7 +3286,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # RSI CHANGE %
     # =========================================================================
-    rsi3_change = self.fast_pct_change(rsi_3)
+    rsi3_change = fast_pct_change(rsi_3)
     # rsi14_change = self.fast_pct_change(rsi_14)
 
     # =========================================================================
@@ -3400,7 +3406,7 @@ class NostalgiaForInfinityX7(IStrategy):
         "low_min_30",
       ]
 
-      self.validate_indicators(df=informative_1d, columns=debug_cols, pair=metadata_pair, timeframe=info_timeframe)
+      validate_indicators(df=informative_1d, columns=debug_cols, pair=metadata_pair, timeframe=info_timeframe)
 
     # =========================================================================
     # LOGGING
@@ -4056,6 +4062,10 @@ class NostalgiaForInfinityX7(IStrategy):
   def base_tf_5m_indicators(self, metadata: dict, df: DataFrame) -> DataFrame:
     tik = time.perf_counter()
     metadata_pair = metadata["pair"]
+    fast_pct_change = self.fast_pct_change
+    stochrsi_k_func = self.stochrsi_k
+    chaikin_money_flow = self.chaikin_money_flow
+    validate_indicators = self.validate_indicators
 
     # =========================================================================
     # BASE DATA
@@ -4083,7 +4093,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # STOCH RSI
     # =========================================================================
-    stochrsi_k = self.stochrsi_k(rsi_14)
+    stochrsi_k = stochrsi_k_func(rsi_14)
 
     # =========================================================================
     # KST
@@ -4099,7 +4109,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # MONEY FLOW
     # =========================================================================
     mfi_14 = ta.MFI(high_np, low_np, close_np, volume_np, timeperiod=14)
-    cmf_20 = self.chaikin_money_flow(high_np, low_np, close_np, volume_np, timeperiod=20)
+    cmf_20 = chaikin_money_flow(high_np, low_np, close_np, volume_np, timeperiod=20)
 
     # =========================================================================
     # MOMENTUM
@@ -4129,7 +4139,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
 
     # rsi_3_change = self.fast_pct_change(rsi_3)
-    rsi_14_change = self.fast_pct_change(rsi_14)
+    rsi_14_change = fast_pct_change(rsi_14)
     # obv_change = self.fast_pct_change(obv)
 
     # =========================================================================
@@ -4278,7 +4288,7 @@ class NostalgiaForInfinityX7(IStrategy):
         "num_empty_288",
       ]
 
-      self.validate_indicators(df=df, columns=debug_cols, pair=metadata_pair, timeframe=self.timeframe)
+      validate_indicators(df=df, columns=debug_cols, pair=metadata_pair, timeframe=self.timeframe)
 
     # =========================================================================
     # GLOBAL PROTECTIONS
