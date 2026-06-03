@@ -12173,6 +12173,8 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Mode Validation
     entry_tags = entry_tag.split()
+    is_long_side = side == "long"
+    is_short_side = side == "short"
     long_grind_mode_tags = self.long_grind_mode_tags
     long_top_coins_mode_tags = self.long_top_coins_mode_tags
     long_scalp_mode_tags = self.long_scalp_mode_tags
@@ -12186,9 +12188,9 @@ class NostalgiaForInfinityX7(IStrategy):
     # Long/Short Slot Validation (only in futures mode)
     if self.is_futures_mode:
       max_side_trades = 0
-      if side == "long":
+      if is_long_side:
         max_side_trades = self.futures_max_open_trades_long
-      elif side == "short":
+      elif is_short_side:
         max_side_trades = self.futures_max_open_trades_short
 
       if max_side_trades != 0:
@@ -12207,9 +12209,9 @@ class NostalgiaForInfinityX7(IStrategy):
     if len(df) >= 1:
       last_candle = df.iloc[-1]
       last_close = last_candle["close"]
-      if (side == "long" and rate > last_close) or (side == "short" and rate < last_close):
+      if (is_long_side and rate > last_close) or (is_short_side and rate < last_close):
         slippage = (rate / last_close) - 1.0
-        if (side == "long" and slippage < max_slippage) or (side == "short" and slippage > -max_slippage):
+        if (is_long_side and slippage < max_slippage) or (is_short_side and slippage > -max_slippage):
           return True
         else:
           log.warning(f"[{current_time}] Cancelling entry for {pair} due to slippage {(slippage * 100.0):.2f}%")
