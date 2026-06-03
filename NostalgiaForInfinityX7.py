@@ -64441,6 +64441,9 @@ class NostalgiaForInfinityX7(IStrategy):
   def short_buyback_entry_v2(
     self, last_candle: Series, previous_candle: Series, slice_profit: float, is_derisk: bool
   ) -> float:
+    previous_ema_12 = previous_candle["EMA_12"]
+    previous_ema_26 = previous_candle["EMA_26"]
+
     last_rsi_3_1d = last_candle["RSI_3_1d"]
     last_roc_9_1h = last_candle["ROC_9_1h"]
     last_roc_9_4h = last_candle["ROC_9_4h"]
@@ -64467,8 +64470,11 @@ class NostalgiaForInfinityX7(IStrategy):
     last_aroond_14_15m = last_candle["AROOND_14_15m"]
     last_stochrsi_k = last_candle["STOCHRSIk_14_14_3_3"]
     last_stochrsi_k_15m = last_candle["STOCHRSIk_14_14_3_3_15m"]
+    last_stochrsi_k_1h = last_candle["STOCHRSIk_14_14_3_3_1h"]
+    last_stochrsi_k_4h = last_candle["STOCHRSIk_14_14_3_3_4h"]
     last_roc_2_1d = last_candle["ROC_2_1d"]
     last_ema_16 = last_candle["EMA_16"]
+    last_bbu_20 = last_candle["BBU_20_2.0"]
 
     if (last_protections_short_global == True) and (
       (last_enter_short == True)
@@ -64509,7 +64515,7 @@ class NostalgiaForInfinityX7(IStrategy):
         and (last_roc_9_1d < 5.0)
         and (last_ema_12 > last_ema_26)
         and ((last_ema_12 - last_ema_26) > (last_open * 0.020))
-        and ((previous_candle["EMA_12"] - previous_candle["EMA_26"]) > (last_open / 100.0))
+        and ((previous_ema_12 - previous_ema_26) > (last_open / 100.0))
       )
       or (
         (last_rsi_14 > 64.0)
@@ -64545,13 +64551,13 @@ class NostalgiaForInfinityX7(IStrategy):
         and (last_roc_9_1h < 5.0)
         and (last_roc_9_4h < 5.0)
         and (last_roc_9_1d < 5.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_1h"] > 20.0)
-        and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 30.0)
+        and (last_stochrsi_k_1h > 20.0)
+        and (last_stochrsi_k_4h > 30.0)
         # and (last_candle["close"] > (last_candle["close_max_48"] * 0.90))
         # and (last_candle["close"] < (last_candle["low_min_6_1h"] * 1.18))
         # and (last_candle["close"] < (last_candle["low_min_12_1h"] * 1.25))
         and (last_close > (last_ema_26 * 1.040))
-        and (last_close > (last_candle["BBU_20_2.0"] * 1.001))
+        and (last_close > (last_bbu_20 * 1.001))
       )
     ):
       return True
