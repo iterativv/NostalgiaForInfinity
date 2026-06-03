@@ -12598,6 +12598,7 @@ class NostalgiaForInfinityX7(IStrategy):
     stochrsi_k_4h_lt_90 = stochrsi_k_4h < 90.0
     rsi_3 = df["RSI_3"]
     close = df["close"]
+    open_rate = df["open"]
     roc_9_15m = df["ROC_9_15m"]
     rsi_14_4h = df["RSI_14_4h"]
     roc_2_1d = df["ROC_2_1d"]
@@ -13119,8 +13120,8 @@ class NostalgiaForInfinityX7(IStrategy):
           # Logic
           long_entry_logic.append(
             (ema_26 > ema_12)
-            & ((ema_26 - ema_12) > (df["open"] * 0.034))
-            & ((ema_26.shift() - ema_12.shift()) > (df["open"] / 100.0))
+            & ((ema_26 - ema_12) > (open_rate * 0.034))
+            & ((ema_26.shift() - ema_12.shift()) > (open_rate / 100.0))
             & (close < (df["BBL_20_2.0"] * 0.999))
           )
 
@@ -15140,8 +15141,8 @@ class NostalgiaForInfinityX7(IStrategy):
             & (aroonu_14 < 25.0)
             & (stochrsi_k < 30.0)
             & (ema_26 > ema_12)
-            & ((ema_26 - ema_12) > (df["open"] * 0.020))
-            & ((ema_26.shift() - ema_12.shift()) > (df["open"] / 100.0))
+            & ((ema_26 - ema_12) > (open_rate * 0.020))
+            & ((ema_26.shift() - ema_12.shift()) > (open_rate / 100.0))
           )
 
         # Condition #6 - Normal mode (Long).
@@ -17797,8 +17798,8 @@ class NostalgiaForInfinityX7(IStrategy):
             & (mfi_14 < 40.0)
             & (aroonu_14 < 25.0)
             & (ema_26 > ema_12)
-            & ((ema_26 - ema_12) > (df["open"] * 0.024))
-            & ((ema_26.shift() - ema_12.shift()) > (df["open"] / 100.0))
+            & ((ema_26 - ema_12) > (open_rate * 0.024))
+            & ((ema_26.shift() - ema_12.shift()) > (open_rate / 100.0))
             & (close < (ema_20 * 0.960))
             & (close < (df["BBL_20_2.0"] * 0.999))
           )
@@ -18979,8 +18980,8 @@ class NostalgiaForInfinityX7(IStrategy):
             & (aroonu_14 < 25.0)
             & (stochrsi_k < 30.0)
             & (ema_26 > ema_12)
-            & ((ema_26 - ema_12) > (df["open"] * 0.030))
-            & ((ema_26.shift() - ema_12.shift()) > (df["open"] / 100.0))
+            & ((ema_26 - ema_12) > (open_rate * 0.030))
+            & ((ema_26.shift() - ema_12.shift()) > (open_rate / 100.0))
           )
 
         # Condition #62 - Rebuy mode (Long).
@@ -19830,8 +19831,8 @@ class NostalgiaForInfinityX7(IStrategy):
             & (rsi_3 < 50.0)
             & (aroonu_14 < 25.0)
             & (ema_26 > ema_12)
-            & ((ema_26 - ema_12) > (df["open"] * 0.022))
-            & ((ema_26.shift() - ema_12.shift()) > (df["open"] / 100.0))
+            & ((ema_26 - ema_12) > (open_rate * 0.022))
+            & ((ema_26.shift() - ema_12.shift()) > (open_rate / 100.0))
           )
 
         # Condition #101 - Rapid mode (Long).
@@ -22005,8 +22006,8 @@ class NostalgiaForInfinityX7(IStrategy):
             (rsi_3 < 40.0)
             & (stochrsi_k < 20.0)
             & (ema_26 > ema_12)
-            & ((ema_26 - ema_12) > (df["open"] * 0.020))
-            & ((ema_26.shift() - ema_12.shift()) > (df["open"] / 100.0))
+            & ((ema_26 - ema_12) > (open_rate * 0.020))
+            & ((ema_26.shift() - ema_12.shift()) > (open_rate / 100.0))
           )
 
         # Condition #144 - Top Coins mode (Long).
@@ -22926,8 +22927,8 @@ class NostalgiaForInfinityX7(IStrategy):
             & (aroond_14 > 75.0)
             & (stochrsi_k < 30.0)
             & (ema_26 > ema_12)
-            & ((ema_26 - ema_12) > (df["open"] * 0.030))
-            & ((ema_26.shift() - ema_12.shift()) > (df["open"] / 100.0))
+            & ((ema_26 - ema_12) > (open_rate * 0.030))
+            & ((ema_26.shift() - ema_12.shift()) > (open_rate / 100.0))
             & (close < df["SMA_9"])
           )
 
@@ -23637,8 +23638,8 @@ class NostalgiaForInfinityX7(IStrategy):
 
           # Logic
           short_entry_logic.append(ema_12 > ema_26)
-          short_entry_logic.append((ema_12 - ema_26) > (df["open"] * 0.030))
-          short_entry_logic.append((ema_12.shift() - ema_26.shift()) > (df["open"] / 100.0))
+          short_entry_logic.append((ema_12 - ema_26) > (open_rate * 0.030))
+          short_entry_logic.append((ema_12.shift() - ema_26.shift()) > (open_rate / 100.0))
           short_entry_logic.append(close > (df["BBU_20_2.0"] * 1.004))
 
         # Condition #502 - Normal mode (Short).
@@ -24334,8 +24335,8 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(mfi_14 > 60.0)
           short_entry_logic.append(aroond_14 < 25.0)
           short_entry_logic.append(ema_26 < ema_12)
-          short_entry_logic.append((ema_26 - ema_12) > (df["open"] * 0.024))
-          short_entry_logic.append((ema_26.shift() - ema_12.shift()) > (df["open"] / 100.0))
+          short_entry_logic.append((ema_26 - ema_12) > (open_rate * 0.024))
+          short_entry_logic.append((ema_26.shift() - ema_12.shift()) > (open_rate / 100.0))
           short_entry_logic.append(close < (ema_20 * 0.958))
           short_entry_logic.append(close < (df["BBL_20_2.0"] * 0.992))
 
