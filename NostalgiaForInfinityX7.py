@@ -4491,7 +4491,8 @@ class NostalgiaForInfinityX7(IStrategy):
     # df["WILLR_480_1h"] = df["WILLR_480_1h"].astype(np.float64).replace(to_replace=[np.nan, None], value=(-50.0))
     # df["WILLR_480_4h"] = df["WILLR_480_4h"].astype(np.float64).replace(to_replace=[np.nan, None], value=(-50.0))
     # df["RSI_14_1d"] = df["RSI_14_1d"].astype(np.float64).replace(to_replace=[np.nan, None], value=(50.0))
-    df["RSI_14_1h"] = df["RSI_14_1h"].fillna(50.0)
+    rsi_14_1h = df["RSI_14_1h"].fillna(50.0)
+    df["RSI_14_1h"] = rsi_14_1h
 
     tok_before_protections = time.perf_counter()
 
@@ -4500,7 +4501,7 @@ class NostalgiaForInfinityX7(IStrategy):
     protection_rsi_3_1h = df["RSI_3_1h"].to_numpy(copy=False)
     protection_rsi_3_4h = df["RSI_3_4h"].to_numpy(copy=False)
     protection_rsi_3_1d = df["RSI_3_1d"].to_numpy(copy=False)
-    protection_rsi_14_1h = df["RSI_14_1h"].to_numpy(copy=False)
+    protection_rsi_14_1h = rsi_14_1h.to_numpy(copy=False)
     protection_rsi_14_4h = df["RSI_14_4h"].to_numpy(copy=False)
     protection_rsi_14_1d = df["RSI_14_1d"].to_numpy(copy=False)
     protection_cci_20_1h = df["CCI_20_1h"].to_numpy(copy=False)
