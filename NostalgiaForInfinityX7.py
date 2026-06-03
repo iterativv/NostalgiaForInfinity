@@ -20,62 +20,6 @@ log = logging.getLogger(__name__)
 warnings.simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 
 
-def _is_entry_bool_scalar(condition) -> bool:
-  return isinstance(condition, (bool, np.bool_))
-
-
-def _entry_bool_array(condition):
-  if isinstance(condition, np.ndarray):
-    return condition.astype(bool, copy=False)
-  if isinstance(condition, (pd.Series, pd.Index)):
-    return condition.to_numpy(dtype=bool, copy=False)
-  return np.asarray(condition, dtype=bool)
-
-
-def _and_entry_conditions(conditions):
-  arrays = []
-  has_false = False
-  for condition in conditions:
-    if _is_entry_bool_scalar(condition):
-      if not condition:
-        has_false = True
-      continue
-    arrays.append(_entry_bool_array(condition))
-  if not arrays:
-    return not has_false
-  if has_false:
-    return np.zeros_like(arrays[0], dtype=bool)
-  if len(arrays) == 1:
-    return arrays[0]
-  return np.logical_and.reduce(arrays)
-
-
-def _or_entry_conditions(conditions):
-  arrays = []
-  has_true = False
-  for condition in conditions:
-    if _is_entry_bool_scalar(condition):
-      if condition:
-        has_true = True
-      continue
-    arrays.append(_entry_bool_array(condition))
-  if not arrays:
-    return has_true
-  if has_true:
-    return np.ones_like(arrays[0], dtype=bool)
-  if len(arrays) == 1:
-    return arrays[0]
-  return np.logical_or.reduce(arrays)
-
-
-def _append_entry_tag(entry_tags, mask, tag: str) -> None:
-  if _is_entry_bool_scalar(mask):
-    if mask:
-      entry_tags[:] = entry_tags + tag
-    return
-  entry_tags[mask] = entry_tags[mask] + tag
-
-
 #############################################################################################################
 ##                 NostalgiaForInfinityX7 by iterativ                                                      ##
 ##            https://github.com/iterativv/NostalgiaForInfinity                                            ##
@@ -70501,6 +70445,62 @@ def top_percent_change(self, df: DataFrame, length: int) -> float:
     return (df_open - df_close) / df_close
   else:
     return (df_open.rolling(length).max() - df_close) / df_close
+
+
+def _is_entry_bool_scalar(condition) -> bool:
+  return isinstance(condition, (bool, np.bool_))
+
+
+def _entry_bool_array(condition):
+  if isinstance(condition, np.ndarray):
+    return condition.astype(bool, copy=False)
+  if isinstance(condition, (pd.Series, pd.Index)):
+    return condition.to_numpy(dtype=bool, copy=False)
+  return np.asarray(condition, dtype=bool)
+
+
+def _and_entry_conditions(conditions):
+  arrays = []
+  has_false = False
+  for condition in conditions:
+    if _is_entry_bool_scalar(condition):
+      if not condition:
+        has_false = True
+      continue
+    arrays.append(_entry_bool_array(condition))
+  if not arrays:
+    return not has_false
+  if has_false:
+    return np.zeros_like(arrays[0], dtype=bool)
+  if len(arrays) == 1:
+    return arrays[0]
+  return np.logical_and.reduce(arrays)
+
+
+def _or_entry_conditions(conditions):
+  arrays = []
+  has_true = False
+  for condition in conditions:
+    if _is_entry_bool_scalar(condition):
+      if condition:
+        has_true = True
+      continue
+    arrays.append(_entry_bool_array(condition))
+  if not arrays:
+    return has_true
+  if has_true:
+    return np.ones_like(arrays[0], dtype=bool)
+  if len(arrays) == 1:
+    return arrays[0]
+  return np.logical_or.reduce(arrays)
+
+
+def _append_entry_tag(entry_tags, mask, tag: str) -> None:
+  if _is_entry_bool_scalar(mask):
+    if mask:
+      entry_tags[:] = entry_tags + tag
+    return
+  entry_tags[mask] = entry_tags[mask] + tag
 
 
 # +---------------------------------------------------------------------------+
