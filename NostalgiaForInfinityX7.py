@@ -2562,6 +2562,9 @@ class NostalgiaForInfinityX7(IStrategy):
     enter_tags = entry_tag.split()
     is_futures_mode = self.is_futures_mode
     system_name_use = self.system_name_use
+    system_name_is_v3 = system_name_use == system_v3_name
+    system_name_is_v3_1 = system_name_use == system_v3_1_name
+    system_name_is_v3_2 = system_name_use == system_v3_2_name
     grind_mode_stake_multiplier_futures = self.grind_mode_stake_multiplier_futures
     grind_mode_stake_multiplier_spot = self.grind_mode_stake_multiplier_spot
     rapid_mode_stake_multiplier_futures = self.rapid_mode_stake_multiplier_futures
@@ -2589,7 +2592,7 @@ class NostalgiaForInfinityX7(IStrategy):
       ):
         return scaled_stake(system_v3_rebuy_mode_stake_multiplier)
       # Rapid mode
-      if (system_name_use == system_v3_name) and (
+      if system_name_is_v3 and (
         all(c in long_rapid_mode_tags for c in enter_tags)
         or (
           any(c in long_rapid_mode_tags for c in enter_tags)
@@ -2607,9 +2610,9 @@ class NostalgiaForInfinityX7(IStrategy):
       elif all(c in long_btc_mode_tags for c in enter_tags):
         return proposed_stake * grind_mode_stake_multipliers[0]
       else:
-        if system_name_use == system_v3_2_name:
+        if system_name_is_v3_2:
           return scaled_stake(system_v3_2_stake_multiplier)
-        elif system_name_use == system_v3_1_name:
+        elif system_name_is_v3_1:
           return scaled_stake(system_v3_1_stake_multiplier)
         else:
           return scaled_stake(regular_mode_stake_multipliers[0])
@@ -2627,7 +2630,7 @@ class NostalgiaForInfinityX7(IStrategy):
           if stake > min_stake:
             return stake
       # Rapid mode
-      if (system_name_use == system_v3_name) and (
+      if system_name_is_v3 and (
         all(c in short_rapid_mode_tags for c in enter_tags)
         or (
           any(c in short_rapid_mode_tags for c in enter_tags)
@@ -2636,9 +2639,9 @@ class NostalgiaForInfinityX7(IStrategy):
       ):
         return scaled_stake(rapid_mode_stake_multipliers[0])
       else:
-        if system_name_use == system_v3_2_name:
+        if system_name_is_v3_2:
           return scaled_stake(system_v3_2_stake_multiplier)
-        elif system_name_use == system_v3_1_name:
+        elif system_name_is_v3_1:
           return scaled_stake(system_v3_1_stake_multiplier)
         else:
           return scaled_stake(regular_mode_stake_multipliers[0])
