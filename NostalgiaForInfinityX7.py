@@ -70411,7 +70411,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Rebuy (r) [{current_time}] [{trade.pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"Rebuy (r) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         if has_order_tags:
           return buy_amount, "r"
