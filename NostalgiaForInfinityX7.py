@@ -43762,7 +43762,8 @@ class NostalgiaForInfinityX7(IStrategy):
     trade_fee_open = trade.fee_open
     trade_fee_close = trade.fee_close
 
-    is_backtest = dp.runmode.value in ["backtest", "hyperopt"]
+    runmode_value = dp.runmode.value
+    is_backtest = runmode_value in ["backtest", "hyperopt"]
     trade_open_date = None if is_backtest else trade.open_date_utc.replace(tzinfo=None)
     # we already waiting for an order to get filled
     if trade.has_open_orders:
@@ -43797,7 +43798,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     has_order_tags = hasattr(filled_orders[0], "ft_order_tag")
 
-    if dp.runmode.value in ("live", "dry_run"):
+    if runmode_value in ("live", "dry_run"):
       ticker = dp.ticker(trade_pair)
       if ("bid" in ticker) and ("ask" in ticker):
         exit_price_side = self.config["exit_pricing"]["price_side"]
@@ -66616,7 +66617,8 @@ class NostalgiaForInfinityX7(IStrategy):
     trade_fee_open = trade.fee_open
     trade_fee_close = trade.fee_close
 
-    is_backtest = dp.runmode.value in ["backtest", "hyperopt"]
+    runmode_value = dp.runmode.value
+    is_backtest = runmode_value in ["backtest", "hyperopt"]
     trade_open_date = None if is_backtest else trade.open_date_utc.replace(tzinfo=None)
     # we already waiting for an order to get filled
     if trade.has_open_orders:
@@ -66651,7 +66653,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     has_order_tags = hasattr(filled_orders[0], "ft_order_tag")
 
-    if dp.runmode.value in ("live", "dry_run"):
+    if runmode_value in ("live", "dry_run"):
       ticker = dp.ticker(trade_pair)
       if ("bid" in ticker) and ("ask" in ticker):
         exit_price_side = self.config["exit_pricing"]["price_side"]
