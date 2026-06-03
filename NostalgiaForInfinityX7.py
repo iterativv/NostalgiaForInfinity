@@ -62524,10 +62524,15 @@ class NostalgiaForInfinityX7(IStrategy):
       profit_values = self.calc_total_profit(trade, filled_entries, filled_exits, exit_rate)
     profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = profit_values
 
+    first_filled_order = filled_orders[0]
+    last_filled_order = filled_orders[-1]
+    first_filled_entry = filled_entries[0]
+    last_filled_entry = filled_entries[-1]
+
     current_stake_amount = trade_amount * exit_rate
-    slice_amount = filled_entries[0].cost
-    slice_profit = (exit_rate - filled_orders[-1].safe_price) / filled_orders[-1].safe_price
-    slice_profit_entry = (exit_rate - filled_entries[-1].safe_price) / filled_entries[-1].safe_price
+    slice_amount = first_filled_entry.cost
+    slice_profit = (exit_rate - last_filled_order.safe_price) / last_filled_order.safe_price
+    slice_profit_entry = (exit_rate - last_filled_entry.safe_price) / last_filled_entry.safe_price
     slice_profit_exit = (
       ((exit_rate - filled_exits[-1].safe_price) / filled_exits[-1].safe_price) if count_of_exits > 0 else 0.0
     )
@@ -62537,7 +62542,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and all(c in (short_rebuy_mode_tags + short_grind_mode_tags) for c in enter_tags)
     )
 
-    has_order_tags = hasattr(filled_orders[0], "ft_order_tag")
+    has_order_tags = hasattr(first_filled_order, "ft_order_tag")
 
     fee_open_rate = trade_fee_open if self.custom_fee_open_rate is None else self.custom_fee_open_rate
     fee_close_rate = trade_fee_close if self.custom_fee_close_rate is None else self.custom_fee_close_rate
@@ -62770,7 +62775,7 @@ class NostalgiaForInfinityX7(IStrategy):
     grind_5_exit_order = None
     grind_5_exit_distance_ratio = 0.0
     for order in reversed(filled_orders):
-      if (order.ft_order_side == "sell") and (order is not filled_orders[0]):
+      if (order.ft_order_side == "sell") and (order is not first_filled_order):
         order_tag = ""
         if has_order_tags:
           if order.ft_order_tag is not None:
@@ -63005,11 +63010,11 @@ class NostalgiaForInfinityX7(IStrategy):
     )
 
     is_short_extra_checks_entry = (
-      (current_time - timedelta(minutes=5) > filled_entries[-1].order_filled_utc)
-      and ((current_time - timedelta(hours=2) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.06))
+      (current_time - timedelta(minutes=5) > last_filled_entry.order_filled_utc)
+      and ((current_time - timedelta(hours=2) > last_filled_order.order_filled_utc) or (slice_profit > 0.06))
       and (
-        (current_stake_amount < (filled_entries[0].cost * 0.50))
-        or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
+        (current_stake_amount < (first_filled_entry.cost * 0.50))
+        or (current_time - timedelta(hours=6) > last_filled_order.order_filled_utc)
         or (slice_profit > 0.06)
       )
     )
@@ -63107,7 +63112,7 @@ class NostalgiaForInfinityX7(IStrategy):
     ):
       sell_amount = (
         (
-          filled_entries[0].safe_filled
+          first_filled_entry.safe_filled
           * (
             self.grinding_v2_derisk_level_1_stake_futures if is_futures else self.grinding_v2_derisk_level_1_stake_spot
           )
@@ -63194,7 +63199,7 @@ class NostalgiaForInfinityX7(IStrategy):
     ):
       sell_amount = (
         (
-          filled_entries[0].safe_filled
+          first_filled_entry.safe_filled
           * (
             self.grinding_v2_derisk_level_2_stake_futures if is_futures else self.grinding_v2_derisk_level_2_stake_spot
           )
@@ -63281,7 +63286,7 @@ class NostalgiaForInfinityX7(IStrategy):
     ):
       sell_amount = (
         (
-          filled_entries[0].safe_filled
+          first_filled_entry.safe_filled
           * (
             self.grinding_v2_derisk_level_3_stake_futures if is_futures else self.grinding_v2_derisk_level_3_stake_spot
           )
