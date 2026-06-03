@@ -70,7 +70,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.130"
+    return "v17.4.131"
 
   stoploss = -0.99
 
@@ -43585,10 +43585,8 @@ class NostalgiaForInfinityX7(IStrategy):
     # g14 — SMA_9 cross SMA_21 + 4h uptrend (trend follower)
     if (
       (last_rsi_3 > 5.0)
-      and (last_rsi_3_15m > 20.0)
-      and (last_rsi_3_1h > 30.0)
-      and (last_rsi_3_4h > 30.0)
       and (last_candle["AROONU_14_15m"] < 50.0)
+      and (last_candle["STOCHRSIk_14_14_3_3"] < 40.0)
       and (last_candle["STOCHRSIk_14_14_3_3_15m"] < 70.0)
       and (previous_candle["SMA_9"] < previous_candle["SMA_21"])
       and (last_candle["SMA_9"] > last_candle["SMA_21"])
