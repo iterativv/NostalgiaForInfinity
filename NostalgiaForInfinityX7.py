@@ -41316,6 +41316,9 @@ class NostalgiaForInfinityX7(IStrategy):
   def long_buyback_entry_v2(
     self, last_candle: Series, previous_candle: Series, slice_profit: float, is_derisk: bool
   ) -> float:
+    previous_ema_26 = previous_candle["EMA_26"]
+    previous_ema_12 = previous_candle["EMA_12"]
+
     last_rsi_3_1d = last_candle["RSI_3_1d"]
     last_roc_9_1h = last_candle["ROC_9_1h"]
     last_roc_9_4h = last_candle["ROC_9_4h"]
@@ -41346,6 +41349,7 @@ class NostalgiaForInfinityX7(IStrategy):
     last_stochrsi_k_4h = last_candle["STOCHRSIk_14_14_3_3_4h"]
     last_roc_2_1d = last_candle["ROC_2_1d"]
     last_ema_16 = last_candle["EMA_16"]
+    last_bbl_20 = last_candle["BBL_20_2.0"]
 
     if (last_protections_long_global == True) and (
       (last_enter_long == True)
@@ -41386,7 +41390,7 @@ class NostalgiaForInfinityX7(IStrategy):
         and (last_roc_9_1d > -5.0)
         and (last_ema_26 > last_ema_12)
         and ((last_ema_26 - last_ema_12) > (last_open * 0.020))
-        and ((previous_candle["EMA_26"] - previous_candle["EMA_12"]) > (last_open / 100.0))
+        and ((previous_ema_26 - previous_ema_12) > (last_open / 100.0))
       )
       or (
         (last_rsi_14 < 36.0)
@@ -41428,7 +41432,7 @@ class NostalgiaForInfinityX7(IStrategy):
         # and (last_candle["close"] > (last_candle["high_max_6_1h"] * 0.85))
         # and (last_candle["close"] > (last_candle["high_max_12_1h"] * 0.80))
         and (last_close < (last_ema_26 * 0.960))
-        and (last_close < (last_candle["BBL_20_2.0"] * 0.999))
+        and (last_close < (last_bbl_20 * 0.999))
       )
     ):
       return True
