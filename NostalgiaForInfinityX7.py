@@ -40436,14 +40436,15 @@ class NostalgiaForInfinityX7(IStrategy):
     is_not_trade_max_stake = (current_stake_amount < (slice_amount * self.grinding_v2_max_stake)) and (
       num_open_grinds_and_buybacks < self.grinding_v2_max_grinds_and_buybacks
     )
+    slice_profit_lt_neg_0_06 = slice_profit < -0.06
 
     is_long_extra_checks_entry = (
       (current_time - timedelta(minutes=5) > last_filled_entry.order_filled_utc)
-      and ((current_time - timedelta(hours=2) > last_filled_order.order_filled_utc) or (slice_profit < -0.06))
+      and ((current_time - timedelta(hours=2) > last_filled_order.order_filled_utc) or slice_profit_lt_neg_0_06)
       and (
         (current_stake_amount < (first_filled_entry.cost * 0.50))
         or (current_time - timedelta(hours=6) > last_filled_order.order_filled_utc)
-        or (slice_profit < -0.06)
+        or slice_profit_lt_neg_0_06
       )
     )
     is_long_buyback_entry = self.long_buyback_entry_v2(last_candle, previous_candle, slice_profit, True)
@@ -45069,6 +45070,8 @@ class NostalgiaForInfinityX7(IStrategy):
               return -ft_sell_amount
 
     is_long_grind_entry = self.long_grind_entry(last_candle, previous_candle, slice_profit, True)
+    slice_profit_lt_neg_0_06 = slice_profit < -0.06
+    num_open_grinds_eq_0 = num_open_grinds == 0
 
     # Grinding derisk 1
     # Buy
@@ -45089,11 +45092,11 @@ class NostalgiaForInfinityX7(IStrategy):
           or ((is_derisk or is_derisk_calc) and grind_1_derisk_1_sub_grind_count == 0)
         )
         and (grind_entry_retry_time > last_filled_entry.order_filled_utc)
-        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or (slice_profit < -0.06))
+        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or slice_profit_lt_neg_0_06)
         and (
-          (num_open_grinds == 0)
+          num_open_grinds_eq_0
           or (grind_order_age_time > last_filled_order.order_filled_utc)
-          or (slice_profit < -0.06)
+          or slice_profit_lt_neg_0_06
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
         and is_long_grind_entry
@@ -45236,11 +45239,11 @@ class NostalgiaForInfinityX7(IStrategy):
           or ((is_derisk or is_derisk_calc) and grind_2_derisk_1_sub_grind_count == 0)
         )
         and (grind_entry_retry_time > last_filled_entry.order_filled_utc)
-        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or (slice_profit < -0.06))
+        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or slice_profit_lt_neg_0_06)
         and (
-          (num_open_grinds == 0)
+          num_open_grinds_eq_0
           or (grind_order_age_time > last_filled_order.order_filled_utc)
-          or (slice_profit < -0.06)
+          or slice_profit_lt_neg_0_06
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
         and is_long_grind_entry
@@ -45374,11 +45377,11 @@ class NostalgiaForInfinityX7(IStrategy):
           or (is_grind_mode and grind_1_sub_grind_count == 0)
         )
         and (grind_entry_retry_time > last_filled_entry.order_filled_utc)
-        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or (slice_profit < -0.06))
+        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or slice_profit_lt_neg_0_06)
         and (
-          (num_open_grinds == 0)
+          num_open_grinds_eq_0
           or (grind_order_age_time > last_filled_order.order_filled_utc)
-          or (slice_profit < -0.06)
+          or slice_profit_lt_neg_0_06
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
         and is_long_grind_entry
@@ -45553,11 +45556,11 @@ class NostalgiaForInfinityX7(IStrategy):
           or (is_grind_mode and grind_2_sub_grind_count == 0)
         )
         and (grind_entry_retry_time > last_filled_entry.order_filled_utc)
-        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or (slice_profit < -0.06))
+        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or slice_profit_lt_neg_0_06)
         and (
-          (num_open_grinds == 0)
+          num_open_grinds_eq_0
           or (grind_order_age_time > last_filled_order.order_filled_utc)
-          or (slice_profit < -0.06)
+          or slice_profit_lt_neg_0_06
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
         and is_long_grind_entry
@@ -45691,11 +45694,11 @@ class NostalgiaForInfinityX7(IStrategy):
           or (is_grind_mode and grind_3_sub_grind_count == 0)
         )
         and (grind_entry_retry_time > last_filled_entry.order_filled_utc)
-        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or (slice_profit < -0.06))
+        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or slice_profit_lt_neg_0_06)
         and (
-          (num_open_grinds == 0)
+          num_open_grinds_eq_0
           or (grind_order_age_time > last_filled_order.order_filled_utc)
-          or (slice_profit < -0.06)
+          or slice_profit_lt_neg_0_06
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
         and is_long_grind_entry
@@ -45829,11 +45832,11 @@ class NostalgiaForInfinityX7(IStrategy):
           or (is_grind_mode and grind_4_sub_grind_count == 0)
         )
         and (grind_entry_retry_time > last_filled_entry.order_filled_utc)
-        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or (slice_profit < -0.06))
+        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or slice_profit_lt_neg_0_06)
         and (
-          (num_open_grinds == 0)
+          num_open_grinds_eq_0
           or (grind_order_age_time > last_filled_order.order_filled_utc)
-          or (slice_profit < -0.06)
+          or slice_profit_lt_neg_0_06
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
         and is_long_grind_entry
@@ -45967,11 +45970,11 @@ class NostalgiaForInfinityX7(IStrategy):
           or (is_grind_mode and grind_5_sub_grind_count == 0)
         )
         and (grind_entry_retry_time > last_filled_entry.order_filled_utc)
-        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or (slice_profit < -0.06))
+        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or slice_profit_lt_neg_0_06)
         and (
-          (num_open_grinds == 0)
+          num_open_grinds_eq_0
           or (grind_order_age_time > last_filled_order.order_filled_utc)
-          or (slice_profit < -0.06)
+          or slice_profit_lt_neg_0_06
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
         and is_long_grind_entry
@@ -46105,11 +46108,11 @@ class NostalgiaForInfinityX7(IStrategy):
           or (is_grind_mode and grind_6_sub_grind_count == 0)
         )
         and (grind_entry_retry_time > last_filled_entry.order_filled_utc)
-        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or (slice_profit < -0.06))
+        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or slice_profit_lt_neg_0_06)
         and (
-          (num_open_grinds == 0)
+          num_open_grinds_eq_0
           or (grind_order_age_time > last_filled_order.order_filled_utc)
-          or (slice_profit < -0.06)
+          or slice_profit_lt_neg_0_06
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
         and is_long_grind_entry
@@ -46245,11 +46248,11 @@ class NostalgiaForInfinityX7(IStrategy):
     ):
       if (
         (grind_entry_retry_time > last_filled_entry.order_filled_utc)
-        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or (slice_profit < -0.06))
+        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or slice_profit_lt_neg_0_06)
         and (
-          (num_open_grinds == 0)
+          num_open_grinds_eq_0
           or (grind_order_age_time > last_filled_order.order_filled_utc)
-          or (slice_profit < -0.06)
+          or slice_profit_lt_neg_0_06
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
         and (
@@ -63854,14 +63857,15 @@ class NostalgiaForInfinityX7(IStrategy):
     is_not_trade_max_stake = (current_stake_amount < (slice_amount * self.grinding_v2_max_stake)) and (
       num_open_grinds_and_buybacks < self.grinding_v2_max_grinds_and_buybacks
     )
+    slice_profit_gt_0_06 = slice_profit > 0.06
 
     is_short_extra_checks_entry = (
       (current_time - timedelta(minutes=5) > last_filled_entry.order_filled_utc)
-      and ((current_time - timedelta(hours=2) > last_filled_order.order_filled_utc) or (slice_profit > 0.06))
+      and ((current_time - timedelta(hours=2) > last_filled_order.order_filled_utc) or slice_profit_gt_0_06)
       and (
         (current_stake_amount < (first_filled_entry.cost * 0.50))
         or (current_time - timedelta(hours=6) > last_filled_order.order_filled_utc)
-        or (slice_profit > 0.06)
+        or slice_profit_gt_0_06
       )
     )
     is_short_buyback_entry = self.short_buyback_entry_v2(last_candle, previous_candle, slice_profit, True)
@@ -68143,6 +68147,8 @@ class NostalgiaForInfinityX7(IStrategy):
               return -ft_sell_amount
 
     is_short_grind_entry = self.short_grind_entry(last_candle, previous_candle, slice_profit, True)
+    slice_profit_gt_0_06 = slice_profit > 0.06
+    num_open_grinds_eq_0 = num_open_grinds == 0
 
     # Grinding derisk 1
     # Buy
@@ -68163,11 +68169,9 @@ class NostalgiaForInfinityX7(IStrategy):
           or ((is_derisk or is_derisk_calc) and grind_1_derisk_1_sub_grind_count == 0)
         )
         and (grind_entry_retry_time > last_filled_entry.order_filled_utc)
-        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or (slice_profit > 0.06))
+        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or slice_profit_gt_0_06)
         and (
-          (num_open_grinds == 0)
-          or (grind_order_age_time > last_filled_order.order_filled_utc)
-          or (slice_profit > 0.06)
+          num_open_grinds_eq_0 or (grind_order_age_time > last_filled_order.order_filled_utc) or slice_profit_gt_0_06
         )
         # and ((num_open_grinds == 0) or (slice_profit > 0.03))
         and is_short_grind_entry
@@ -68310,11 +68314,9 @@ class NostalgiaForInfinityX7(IStrategy):
           or ((is_derisk or is_derisk_calc) and grind_2_derisk_1_sub_grind_count == 0)
         )
         and (grind_entry_retry_time > last_filled_entry.order_filled_utc)
-        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or (slice_profit > 0.06))
+        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or slice_profit_gt_0_06)
         and (
-          (num_open_grinds == 0)
-          or (grind_order_age_time > last_filled_order.order_filled_utc)
-          or (slice_profit > 0.06)
+          num_open_grinds_eq_0 or (grind_order_age_time > last_filled_order.order_filled_utc) or slice_profit_gt_0_06
         )
         # and ((num_open_grinds == 0) or (slice_profit > 0.03))
         and is_short_grind_entry
@@ -68448,11 +68450,9 @@ class NostalgiaForInfinityX7(IStrategy):
           or (is_grind_mode and grind_1_sub_grind_count == 0)
         )
         and (grind_entry_retry_time > last_filled_entry.order_filled_utc)
-        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or (slice_profit > 0.06))
+        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or slice_profit_gt_0_06)
         and (
-          (num_open_grinds == 0)
-          or (grind_order_age_time > last_filled_order.order_filled_utc)
-          or (slice_profit > 0.06)
+          num_open_grinds_eq_0 or (grind_order_age_time > last_filled_order.order_filled_utc) or slice_profit_gt_0_06
         )
         # and ((num_open_grinds == 0) or (slice_profit > 0.03))
         and is_short_grind_entry
@@ -68627,11 +68627,9 @@ class NostalgiaForInfinityX7(IStrategy):
           or (is_grind_mode and grind_2_sub_grind_count == 0)
         )
         and (grind_entry_retry_time > last_filled_entry.order_filled_utc)
-        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or (slice_profit > 0.06))
+        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or slice_profit_gt_0_06)
         and (
-          (num_open_grinds == 0)
-          or (grind_order_age_time > last_filled_order.order_filled_utc)
-          or (slice_profit > 0.06)
+          num_open_grinds_eq_0 or (grind_order_age_time > last_filled_order.order_filled_utc) or slice_profit_gt_0_06
         )
         # and ((num_open_grinds == 0) or (slice_profit > 0.03))
         and is_short_grind_entry
@@ -68765,11 +68763,9 @@ class NostalgiaForInfinityX7(IStrategy):
           or (is_grind_mode and grind_3_sub_grind_count == 0)
         )
         and (grind_entry_retry_time > last_filled_entry.order_filled_utc)
-        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or (slice_profit > 0.06))
+        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or slice_profit_gt_0_06)
         and (
-          (num_open_grinds == 0)
-          or (grind_order_age_time > last_filled_order.order_filled_utc)
-          or (slice_profit > 0.06)
+          num_open_grinds_eq_0 or (grind_order_age_time > last_filled_order.order_filled_utc) or slice_profit_gt_0_06
         )
         # and ((num_open_grinds == 0) or (slice_profit > 0.03))
         and is_short_grind_entry
@@ -68903,11 +68899,9 @@ class NostalgiaForInfinityX7(IStrategy):
           or (is_grind_mode and grind_4_sub_grind_count == 0)
         )
         and (grind_entry_retry_time > last_filled_entry.order_filled_utc)
-        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or (slice_profit > 0.06))
+        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or slice_profit_gt_0_06)
         and (
-          (num_open_grinds == 0)
-          or (grind_order_age_time > last_filled_order.order_filled_utc)
-          or (slice_profit > 0.06)
+          num_open_grinds_eq_0 or (grind_order_age_time > last_filled_order.order_filled_utc) or slice_profit_gt_0_06
         )
         # and ((num_open_grinds == 0) or (slice_profit > 0.03))
         and is_short_grind_entry
@@ -69041,11 +69035,9 @@ class NostalgiaForInfinityX7(IStrategy):
           or (is_grind_mode and grind_5_sub_grind_count == 0)
         )
         and (grind_entry_retry_time > last_filled_entry.order_filled_utc)
-        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or (slice_profit > 0.06))
+        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or slice_profit_gt_0_06)
         and (
-          (num_open_grinds == 0)
-          or (grind_order_age_time > last_filled_order.order_filled_utc)
-          or (slice_profit > 0.06)
+          num_open_grinds_eq_0 or (grind_order_age_time > last_filled_order.order_filled_utc) or slice_profit_gt_0_06
         )
         # and ((num_open_grinds == 0) or (slice_profit > 0.03))
         and is_short_grind_entry
@@ -69179,11 +69171,9 @@ class NostalgiaForInfinityX7(IStrategy):
           or (is_grind_mode and grind_6_sub_grind_count == 0)
         )
         and (grind_entry_retry_time > last_filled_entry.order_filled_utc)
-        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or (slice_profit > 0.06))
+        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or slice_profit_gt_0_06)
         and (
-          (num_open_grinds == 0)
-          or (grind_order_age_time > last_filled_order.order_filled_utc)
-          or (slice_profit > 0.06)
+          num_open_grinds_eq_0 or (grind_order_age_time > last_filled_order.order_filled_utc) or slice_profit_gt_0_06
         )
         # and ((num_open_grinds == 0) or (slice_profit > 0.03))
         and is_short_grind_entry
@@ -69319,11 +69309,9 @@ class NostalgiaForInfinityX7(IStrategy):
     ):
       if (
         (grind_entry_retry_time > last_filled_entry.order_filled_utc)
-        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or (slice_profit > 0.06))
+        and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or slice_profit_gt_0_06)
         and (
-          (num_open_grinds == 0)
-          or (grind_order_age_time > last_filled_order.order_filled_utc)
-          or (slice_profit > 0.06)
+          num_open_grinds_eq_0 or (grind_order_age_time > last_filled_order.order_filled_utc) or slice_profit_gt_0_06
         )
         # and ((num_open_grinds == 0) or (slice_profit > 0.03))
         and (
