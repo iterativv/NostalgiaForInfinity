@@ -46508,6 +46508,18 @@ class NostalgiaForInfinityX7(IStrategy):
     last_stochrsi_k_4h = last_candle["STOCHRSIk_14_14_3_3_4h"]
     last_open = last_candle["open"]
 
+    # Reused long regular grind-entry thresholds
+    last_rsi_14_lt_36 = last_rsi_14 < 36.0
+    last_rsi_3_4h_gt_20 = last_rsi_3_4h > 20.0
+    last_rsi_3_1h_gt_20 = last_rsi_3_1h > 20.0
+    last_rsi_3_15m_gt_10 = last_rsi_3_15m > 10.0
+    last_rsi_3_4h_gt_10 = last_rsi_3_4h > 10.0
+    last_rsi_3_1h_gt_10 = last_rsi_3_1h > 10.0
+    last_rsi_14_4h_lt_60 = last_rsi_14_4h < 60.0
+    last_rsi_14_1h_lt_80 = last_rsi_14_1h < 80.0
+    last_aroonu_14_15m_lt_25 = last_aroonu_14_15m < 25.0
+    last_aroonu_14_lt_25 = last_aroonu_14 < 25.0
+
     if (
       (last_candle["protections_long_global"] == True)
       and (last_candle["protections_long_rebuy"] == True)
@@ -46516,16 +46528,16 @@ class NostalgiaForInfinityX7(IStrategy):
       and (
         (last_candle["enter_long"] == True)
         or (
-          (last_rsi_14 < 36.0)
+          (last_rsi_14_lt_36)
           and (last_rsi_3 > 10.0)
-          and (last_rsi_3_15m > 10.0)
-          and (last_aroonu_14 < 25.0)
+          and (last_rsi_3_15m_gt_10)
+          and (last_aroonu_14_lt_25)
           and (last_stochrsi_k_1h < 70.0)
           and (last_stochrsi_k_4h < 70.0)
           and (last_close < (last_candle["EMA_16"] * 0.980))
         )
         or (
-          (last_rsi_14 < 36.0)
+          (last_rsi_14_lt_36)
           and (last_rsi_3_15m > 5.0)
           and (last_rsi_3_1h > 5.0)
           and (last_rsi_3_4h > 5.0)
@@ -46534,47 +46546,47 @@ class NostalgiaForInfinityX7(IStrategy):
           and ((previous_ema_26 - previous_ema_12) > (last_open / 100.0))
         )
         or (
-          (last_rsi_14 < 36.0)
+          (last_rsi_14_lt_36)
           and (last_rsi_3 > 5.0)
-          and (last_rsi_3_15m > 10.0)
-          and (last_rsi_3_1h > 10.0)
-          and (last_rsi_3_4h > 10.0)
+          and (last_rsi_3_15m_gt_10)
+          and (last_rsi_3_1h_gt_10)
+          and (last_rsi_3_4h_gt_10)
           and (last_ema_26 > last_ema_12)
           and ((last_ema_26 - last_ema_12) > (last_open * 0.020))
           and ((previous_ema_26 - previous_ema_12) > (last_open / 100.0))
         )
         or (
-          (last_rsi_14 < 36.0)
+          (last_rsi_14_lt_36)
           and (last_rsi_3 > 16.0)
-          and (last_aroonu_14_15m < 25.0)
+          and (last_aroonu_14_15m_lt_25)
           and (last_close < (last_ema_12 * 0.984))
         )
         or (
-          (last_rsi_14 < 36.0)
-          and (last_rsi_3_15m > 10.0)
-          and (last_rsi_3_1h > 10.0)
-          and (last_rsi_3_4h > 10.0)
+          (last_rsi_14_lt_36)
+          and (last_rsi_3_15m_gt_10)
+          and (last_rsi_3_1h_gt_10)
+          and (last_rsi_3_4h_gt_10)
           and (last_candle["AROONU_14_1h"] > last_candle["AROOND_14_1h"])
           and (last_candle["AROONU_14_4h"] > last_candle["AROOND_14_4h"])
           and (last_close < (last_ema_26 * 0.978))
           and (last_close < (last_candle["BBL_20_2.0"] * 0.999))
         )
         or (
-          (last_rsi_14 < 36.0)
-          and (last_rsi_3_1h > 20.0)
-          and (last_rsi_3_4h > 20.0)
-          and (last_rsi_14_1h < 80.0)
-          and (last_rsi_14_4h < 60.0)
+          (last_rsi_14_lt_36)
+          and (last_rsi_3_1h_gt_20)
+          and (last_rsi_3_4h_gt_20)
+          and (last_rsi_14_1h_lt_80)
+          and (last_rsi_14_4h_lt_60)
           and (last_aroonu_14 > last_candle["AROOND_14"])
           and (previous_candle["AROONU_14"] < previous_candle["AROOND_14"])
         )
         or (
-          (last_rsi_14 < 36.0)
+          (last_rsi_14_lt_36)
           and (last_rsi_3_15m > 15.0)
-          and (last_rsi_3_1h > 20.0)
-          and (last_rsi_3_4h > 20.0)
-          and (last_rsi_14_1h < 80.0)
-          and (last_rsi_14_4h < 60.0)
+          and (last_rsi_3_1h_gt_20)
+          and (last_rsi_3_4h_gt_20)
+          and (last_rsi_14_1h_lt_80)
+          and (last_rsi_14_4h_lt_60)
           and (last_candle["KST_10_15_20_30_10_10_10_15"] > last_candle["KSTs_9"])
           and (previous_candle["KST_10_15_20_30_10_10_10_15"] < previous_candle["KSTs_9"])
         )
@@ -46582,11 +46594,11 @@ class NostalgiaForInfinityX7(IStrategy):
           is_derisk
           and (last_rsi_3 > 20.0)
           and (last_rsi_3_15m > 20.0)
-          and (last_rsi_3_1h > 20.0)
-          and (last_rsi_3_4h > 20.0)
-          and (last_rsi_14 < 36.0)
-          and (last_aroonu_14 < 25.0)
-          and (last_aroonu_14_15m < 25.0)
+          and (last_rsi_3_1h_gt_20)
+          and (last_rsi_3_4h_gt_20)
+          and (last_rsi_14_lt_36)
+          and (last_aroonu_14_lt_25)
+          and (last_aroonu_14_15m_lt_25)
           and (last_candle["STOCHRSIk_14_14_3_3_15m"] < 50.0)
           and (last_close < (last_candle["EMA_20"] * 0.980))
         )
