@@ -12613,6 +12613,8 @@ class NostalgiaForInfinityX7(IStrategy):
     aroond_14_4h = df["AROOND_14_4h"]
     aroonu_14 = df["AROONU_14"]
     bbb_20_2_0_1h = df["BBB_20_2.0_1h"]
+    bbl_20_2_0 = df["BBL_20_2.0"]
+    bbu_20_2_0 = df["BBU_20_2.0"]
     cci_20_change_pct_1h = df["CCI_20_change_pct_1h"]
     cci_20_change_pct_4h = df["CCI_20_change_pct_4h"]
     change_pct_1d = df["change_pct_1d"]
@@ -12627,6 +12629,8 @@ class NostalgiaForInfinityX7(IStrategy):
     ema_12 = df["EMA_12"]
     ema_20 = df["EMA_20"]
     ema_26 = df["EMA_26"]
+    ema_200_1h = df["EMA_200_1h"]
+    ema_200_4h = df["EMA_200_4h"]
     ema_9 = df["EMA_9"]
     high_max_12_1d = df["high_max_12_1d"]
     high_max_12_4h = df["high_max_12_4h"]
@@ -12653,6 +12657,7 @@ class NostalgiaForInfinityX7(IStrategy):
     rsi_3_change_pct_4h = df["RSI_3_change_pct_4h"]
     rsi_4 = df["RSI_4"]
     sma_16 = df["SMA_16"]
+    sma_21 = df["SMA_21"]
     sma_200 = df["SMA_200"]
     stochrsi_k = df["STOCHRSIk_14_14_3_3"]
     top_wick_pct_1d = df["top_wick_pct_1d"]
@@ -13122,7 +13127,7 @@ class NostalgiaForInfinityX7(IStrategy):
             (ema_26 > ema_12)
             & ((ema_26 - ema_12) > (open_rate * 0.034))
             & ((ema_26.shift() - ema_12.shift()) > (open_rate / 100.0))
-            & (close < (df["BBL_20_2.0"] * 0.999))
+            & (close < (bbl_20_2_0 * 0.999))
           )
 
         # Condition #2 - Normal mode (Long).
@@ -17801,7 +17806,7 @@ class NostalgiaForInfinityX7(IStrategy):
             & ((ema_26 - ema_12) > (open_rate * 0.024))
             & ((ema_26.shift() - ema_12.shift()) > (open_rate / 100.0))
             & (close < (ema_20 * 0.960))
-            & (close < (df["BBL_20_2.0"] * 0.999))
+            & (close < (bbl_20_2_0 * 0.999))
           )
 
         # Condition #44 - Quick mode (Long).
@@ -20489,7 +20494,7 @@ class NostalgiaForInfinityX7(IStrategy):
           # Logic
           long_entry_logic.append(willr_14 < -95.0)
           long_entry_logic.append(stochrsi_k < 10.0)
-          long_entry_logic.append(close < (df["BBL_20_2.0"] * 0.999))
+          long_entry_logic.append(close < (bbl_20_2_0 * 0.999))
           long_entry_logic.append(close < (ema_20 * 0.960))
 
         # Condition #103 - Rapid mode (Long).
@@ -22727,17 +22732,15 @@ class NostalgiaForInfinityX7(IStrategy):
           long_entry_logic.append(aroonu_14_15m < 90.0)
           long_entry_logic.append(stochrsi_k_15m < 90.0)
           long_entry_logic.append(
-            (df["SMA_21"].shift(1) < sma_200.shift(1).infer_objects(copy=False).fillna(value=np.nan))
+            (sma_21.shift(1) < sma_200.shift(1).infer_objects(copy=False).fillna(value=np.nan))
             & sma_200.shift(1).notna()
           )
+          long_entry_logic.append((sma_21 > sma_200.infer_objects(copy=False).fillna(value=np.nan)) & sma_200.notna())
           long_entry_logic.append(
-            (df["SMA_21"] > sma_200.infer_objects(copy=False).fillna(value=np.nan)) & sma_200.notna()
+            (close > ema_200_1h.infer_objects(copy=False).fillna(value=np.nan)) & ema_200_1h.notna()
           )
           long_entry_logic.append(
-            (close > df["EMA_200_1h"].infer_objects(copy=False).fillna(value=np.nan)) & df["EMA_200_1h"].notna()
-          )
-          long_entry_logic.append(
-            (close > df["EMA_200_4h"].infer_objects(copy=False).fillna(value=np.nan)) & df["EMA_200_4h"].notna()
+            (close > ema_200_4h.infer_objects(copy=False).fillna(value=np.nan)) & ema_200_4h.notna()
           )
           long_entry_logic.append(df["BBB_20_2.0"] > 1.5)
           long_entry_logic.append(bbb_20_2_0_1h > 6.0)
@@ -23640,7 +23643,7 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(ema_12 > ema_26)
           short_entry_logic.append((ema_12 - ema_26) > (open_rate * 0.030))
           short_entry_logic.append((ema_12.shift() - ema_26.shift()) > (open_rate / 100.0))
-          short_entry_logic.append(close > (df["BBU_20_2.0"] * 1.004))
+          short_entry_logic.append(close > (bbu_20_2_0 * 1.004))
 
         # Condition #502 - Normal mode (Short).
         if short_entry_condition_index == 502:
@@ -23819,7 +23822,7 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(aroond_14 < 25.0)
           short_entry_logic.append(stochrsi_k > 80.0)
           short_entry_logic.append(close > (ema_20 * 1.060))
-          short_entry_logic.append(close > (df["BBU_20_2.0"] * 0.995))
+          short_entry_logic.append(close > (bbu_20_2_0 * 0.995))
           short_entry_logic.append(aroond_14_15m < 25.0)
 
         # Condition #503 - Normal mode (Short).
@@ -24338,7 +24341,7 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append((ema_26 - ema_12) > (open_rate * 0.024))
           short_entry_logic.append((ema_26.shift() - ema_12.shift()) > (open_rate / 100.0))
           short_entry_logic.append(close < (ema_20 * 0.958))
-          short_entry_logic.append(close < (df["BBL_20_2.0"] * 0.992))
+          short_entry_logic.append(close < (bbl_20_2_0 * 0.992))
 
         # # Condition #620 - Grind mode (Short).
         # if short_entry_condition_index == 620:
@@ -24668,16 +24671,16 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(aroond_14_15m < 90.0)
           short_entry_logic.append(stochrsi_k_15m > 10.0)
           if isinstance(sma_200.iloc[-1], np.float64):
-            short_entry_logic.append(df["SMA_21"].shift(1) > sma_200.shift(1))
-            short_entry_logic.append(df["SMA_21"] < sma_200)
+            short_entry_logic.append(sma_21.shift(1) > sma_200.shift(1))
+            short_entry_logic.append(sma_21 < sma_200)
           else:
             short_entry_logic.append(pd.Series([False]))
-          if isinstance(df["EMA_200_1h"].iloc[-1], np.float64):
-            short_entry_logic.append(close < df["EMA_200_1h"])
+          if isinstance(ema_200_1h.iloc[-1], np.float64):
+            short_entry_logic.append(close < ema_200_1h)
           else:
             short_entry_logic.append(pd.Series([False]))
-          if isinstance(df["EMA_200_4h"].iloc[-1], np.float64):
-            short_entry_logic.append(close < df["EMA_200_4h"])
+          if isinstance(ema_200_4h.iloc[-1], np.float64):
+            short_entry_logic.append(close < ema_200_4h)
           else:
             short_entry_logic.append(pd.Series([False]))
           short_entry_logic.append(bbb_20_2_0_1h > 4.0)
