@@ -41716,13 +41716,16 @@ class NostalgiaForInfinityX7(IStrategy):
     last_rsi_3 = last_candle["RSI_3"]
     last_rsi_14 = last_candle["RSI_14"]
     last_willr_14 = last_candle["WILLR_14"]
+    last_stochrsi_k = last_candle["STOCHRSIk_14_14_3_3"]
+    last_close = last_candle["close"]
+    last_bbu_20 = last_candle["BBU_20_2.0"]
 
     if (
       (last_rsi_3 > 99.0)
       or (last_rsi_14 > 70.0)
       or (last_willr_14 > -0.1)
-      or (last_candle["STOCHRSIk_14_14_3_3"] > 95.0)
-      or (last_candle["close"] > (last_candle["BBU_20_2.0"] * 1.01))
+      or (last_stochrsi_k > 95.0)
+      or (last_close > (last_bbu_20 * 1.01))
       or ((last_rsi_3 > 90.0) and (last_rsi_14 < 50.0))
     ):
       return True
@@ -41735,13 +41738,16 @@ class NostalgiaForInfinityX7(IStrategy):
     last_rsi_3 = last_candle["RSI_3"]
     last_rsi_14 = last_candle["RSI_14"]
     last_willr_14 = last_candle["WILLR_14"]
+    last_stochrsi_k = last_candle["STOCHRSIk_14_14_3_3"]
+    last_close = last_candle["close"]
+    last_bbu_20 = last_candle["BBU_20_2.0"]
 
     if (
       (last_rsi_3 > 99.0)
       or (last_rsi_14 > 70.0)
       or (last_willr_14 > -0.1)
-      or (last_candle["STOCHRSIk_14_14_3_3"] > 95.0)
-      or (last_candle["close"] > (last_candle["BBU_20_2.0"] * 1.01))
+      or (last_stochrsi_k > 95.0)
+      or (last_close > (last_bbu_20 * 1.01))
       or ((last_rsi_3 > 90.0) and (last_rsi_14 < 50.0))
     ):
       return True
@@ -64824,13 +64830,17 @@ class NostalgiaForInfinityX7(IStrategy):
   ) -> float:
     last_rsi_3 = last_candle["RSI_3"]
     last_rsi_14 = last_candle["RSI_14"]
+    last_willr_14 = last_candle["WILLR_14"]
+    last_stochrsi_k = last_candle["STOCHRSIk_14_14_3_3"]
+    last_close = last_candle["close"]
+    last_bbl_20 = last_candle["BBL_20_2.0"]
 
     if (
       (last_rsi_3 < 1.0)
       or (last_rsi_14 < 30.0)
-      or (last_candle["WILLR_14"] < -99.9)
-      or (last_candle["STOCHRSIk_14_14_3_3"] > 5.0)
-      or (last_candle["close"] < (last_candle["BBL_20_2.0"] * 0.99))
+      or (last_willr_14 < -99.9)
+      or (last_stochrsi_k > 5.0)
+      or (last_close < (last_bbl_20 * 0.99))
       or ((last_rsi_3 < 10.0) and (last_rsi_14 > 50.0))
     ):
       return True
@@ -64842,13 +64852,17 @@ class NostalgiaForInfinityX7(IStrategy):
   ) -> float:
     last_rsi_3 = last_candle["RSI_3"]
     last_rsi_14 = last_candle["RSI_14"]
+    last_willr_14 = last_candle["WILLR_14"]
+    last_stochrsi_k = last_candle["STOCHRSIk_14_14_3_3"]
+    last_close = last_candle["close"]
+    last_bbl_20 = last_candle["BBL_20_2.0"]
 
     if (
       (last_rsi_3 < 1.0)
       or (last_rsi_14 < 30.0)
-      or (last_candle["WILLR_14"] < -99.9)
-      or (last_candle["STOCHRSIk_14_14_3_3"] < 5.0)
-      or (last_candle["close"] < (last_candle["BBL_20_2.0"] * 0.99))
+      or (last_willr_14 < -99.9)
+      or (last_stochrsi_k < 5.0)
+      or (last_close < (last_bbl_20 * 0.99))
       or ((last_rsi_3 < 10.0) and (last_rsi_14 > 50.0))
     ):
       return True
