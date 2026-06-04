@@ -42544,7 +42544,8 @@ class NostalgiaForInfinityX7(IStrategy):
     dp = self.dp
     send_msg = self.dp.send_msg
     notification_msg = self.notification_msg
-    stake_currency = self.config["stake_currency"]
+    config = self.config
+    stake_currency = config["stake_currency"]
     is_futures_mode = self.is_futures_mode
     scale_stakes_for_min_stake = self.scale_stakes_for_min_stake
     trade_pair = trade.pair
@@ -42575,7 +42576,7 @@ class NostalgiaForInfinityX7(IStrategy):
     if dp.runmode.value in ("live", "dry_run"):
       ticker = dp.ticker(trade_pair)
       if ("bid" in ticker) and ("ask" in ticker):
-        exit_price_side = self.config["exit_pricing"]["price_side"]
+        exit_price_side = config["exit_pricing"]["price_side"]
         if trade.is_short:
           if exit_price_side in ["ask", "other"]:
             if ticker["ask"] is not None:
@@ -66079,7 +66080,8 @@ class NostalgiaForInfinityX7(IStrategy):
     dp = self.dp
     send_msg = self.dp.send_msg
     notification_msg = self.notification_msg
-    stake_currency = self.config["stake_currency"]
+    config = self.config
+    stake_currency = config["stake_currency"]
     is_futures_mode = self.is_futures_mode
     scale_stakes_for_min_stake = self.scale_stakes_for_min_stake
     trade_pair = trade.pair
@@ -66110,7 +66112,7 @@ class NostalgiaForInfinityX7(IStrategy):
     if dp.runmode.value in ("live", "dry_run"):
       ticker = dp.ticker(trade_pair)
       if ("bid" in ticker) and ("ask" in ticker):
-        exit_price_side = self.config["exit_pricing"]["price_side"]
+        exit_price_side = config["exit_pricing"]["price_side"]
         if trade.is_short:
           if exit_price_side in ["ask", "other"]:
             if ticker["ask"] is not None:
