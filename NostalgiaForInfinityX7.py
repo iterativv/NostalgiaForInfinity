@@ -46555,6 +46555,11 @@ class NostalgiaForInfinityX7(IStrategy):
     stake_scale_leverage = trade_leverage if is_futures else 1.0
     regular_mode_use_grind_stops = self.regular_mode_use_grind_stops
 
+    # Reused no-derisk slice-profit gates
+    slice_profit_lt_neg_0_02 = slice_profit < -0.02
+    slice_profit_lt_neg_0_03 = slice_profit < -0.03
+    slice_profit_lt_neg_0_06 = slice_profit < -0.06
+
     last_filled_entry = filled_entries[-1]
     first_filled_order = filled_orders[0]
     last_filled_order = filled_orders[-1]
@@ -47020,7 +47025,7 @@ class NostalgiaForInfinityX7(IStrategy):
           < (regular_mode_rebuy_sub_thresholds[rebuy_sub_grind_count])
         )
         and (current_time - timedelta(minutes=10) > last_filled_entry.order_filled_utc)
-        and ((current_time - timedelta(hours=12) > last_filled_order.order_filled_utc) or (slice_profit < -0.06))
+        and ((current_time - timedelta(hours=12) > last_filled_order.order_filled_utc) or (slice_profit_lt_neg_0_06))
         and is_long_grind_entry
       ):
         buy_amount = slice_amount * regular_mode_rebuy_stakes[rebuy_sub_grind_count] / stake_scale_leverage
@@ -47057,13 +47062,13 @@ class NostalgiaForInfinityX7(IStrategy):
           < (regular_mode_grind_1_sub_thresholds[grind_1_sub_grind_count])
         )
         and (current_time - timedelta(minutes=10) > last_filled_entry.order_filled_utc)
-        and ((current_time - timedelta(hours=2) > last_filled_order.order_filled_utc) or (slice_profit < -0.02))
+        and ((current_time - timedelta(hours=2) > last_filled_order.order_filled_utc) or (slice_profit_lt_neg_0_02))
         and (
           (num_open_grinds == 0)
           or (current_time - timedelta(hours=6) > last_filled_order.order_filled_utc)
-          or (slice_profit < -0.06)
+          or (slice_profit_lt_neg_0_06)
         )
-        and ((num_open_grinds == 0) or (slice_profit < -0.03))
+        and ((num_open_grinds == 0) or (slice_profit_lt_neg_0_03))
         and is_long_grind_entry
       ):
         buy_amount = slice_amount * regular_mode_grind_1_stakes[grind_1_sub_grind_count] / stake_scale_leverage
@@ -47219,13 +47224,13 @@ class NostalgiaForInfinityX7(IStrategy):
           < (regular_mode_grind_2_sub_thresholds[grind_2_sub_grind_count])
         )
         and (current_time - timedelta(minutes=10) > last_filled_entry.order_filled_utc)
-        and ((current_time - timedelta(hours=2) > last_filled_order.order_filled_utc) or (slice_profit < -0.02))
+        and ((current_time - timedelta(hours=2) > last_filled_order.order_filled_utc) or (slice_profit_lt_neg_0_02))
         and (
           (num_open_grinds == 0)
           or (current_time - timedelta(hours=6) > last_filled_order.order_filled_utc)
-          or (slice_profit < -0.06)
+          or (slice_profit_lt_neg_0_06)
         )
-        and ((num_open_grinds == 0) or (slice_profit < -0.03))
+        and ((num_open_grinds == 0) or (slice_profit_lt_neg_0_03))
         and is_long_grind_entry
       ):
         buy_amount = slice_amount * regular_mode_grind_2_stakes[grind_2_sub_grind_count] / stake_scale_leverage
@@ -47344,13 +47349,13 @@ class NostalgiaForInfinityX7(IStrategy):
           < (regular_mode_grind_3_sub_thresholds[grind_3_sub_grind_count])
         )
         and (current_time - timedelta(minutes=10) > last_filled_entry.order_filled_utc)
-        and ((current_time - timedelta(hours=2) > last_filled_order.order_filled_utc) or (slice_profit < -0.02))
+        and ((current_time - timedelta(hours=2) > last_filled_order.order_filled_utc) or (slice_profit_lt_neg_0_02))
         and (
           (num_open_grinds == 0)
           or (current_time - timedelta(hours=6) > last_filled_order.order_filled_utc)
-          or (slice_profit < -0.06)
+          or (slice_profit_lt_neg_0_06)
         )
-        and ((num_open_grinds == 0) or (slice_profit < -0.03))
+        and ((num_open_grinds == 0) or (slice_profit_lt_neg_0_03))
         and is_long_grind_entry
       ):
         buy_amount = slice_amount * regular_mode_grind_3_stakes[grind_3_sub_grind_count] / stake_scale_leverage
@@ -47469,13 +47474,13 @@ class NostalgiaForInfinityX7(IStrategy):
           < (regular_mode_grind_4_sub_thresholds[grind_4_sub_grind_count])
         )
         and (current_time - timedelta(minutes=10) > last_filled_entry.order_filled_utc)
-        and ((current_time - timedelta(hours=2) > last_filled_order.order_filled_utc) or (slice_profit < -0.02))
+        and ((current_time - timedelta(hours=2) > last_filled_order.order_filled_utc) or (slice_profit_lt_neg_0_02))
         and (
           (num_open_grinds == 0)
           or (current_time - timedelta(hours=6) > last_filled_order.order_filled_utc)
-          or (slice_profit < -0.06)
+          or (slice_profit_lt_neg_0_06)
         )
-        and ((num_open_grinds == 0) or (slice_profit < -0.03))
+        and ((num_open_grinds == 0) or (slice_profit_lt_neg_0_03))
         and is_long_grind_entry
       ):
         buy_amount = slice_amount * regular_mode_grind_4_stakes[grind_4_sub_grind_count] / stake_scale_leverage
@@ -47594,13 +47599,13 @@ class NostalgiaForInfinityX7(IStrategy):
           < (regular_mode_grind_5_sub_thresholds[grind_5_sub_grind_count])
         )
         and (current_time - timedelta(minutes=10) > last_filled_entry.order_filled_utc)
-        and ((current_time - timedelta(hours=2) > last_filled_order.order_filled_utc) or (slice_profit < -0.02))
+        and ((current_time - timedelta(hours=2) > last_filled_order.order_filled_utc) or (slice_profit_lt_neg_0_02))
         and (
           (num_open_grinds == 0)
           or (current_time - timedelta(hours=6) > last_filled_order.order_filled_utc)
-          or (slice_profit < -0.06)
+          or (slice_profit_lt_neg_0_06)
         )
-        and ((num_open_grinds == 0) or (slice_profit < -0.03))
+        and ((num_open_grinds == 0) or (slice_profit_lt_neg_0_03))
         and is_long_grind_entry
       ):
         buy_amount = slice_amount * regular_mode_grind_5_stakes[grind_5_sub_grind_count] / stake_scale_leverage
@@ -47719,13 +47724,13 @@ class NostalgiaForInfinityX7(IStrategy):
           < (regular_mode_grind_6_sub_thresholds[grind_6_sub_grind_count])
         )
         and (current_time - timedelta(minutes=10) > last_filled_entry.order_filled_utc)
-        and ((current_time - timedelta(hours=2) > last_filled_order.order_filled_utc) or (slice_profit < -0.02))
+        and ((current_time - timedelta(hours=2) > last_filled_order.order_filled_utc) or (slice_profit_lt_neg_0_02))
         and (
           (num_open_grinds == 0)
           or (current_time - timedelta(hours=6) > last_filled_order.order_filled_utc)
-          or (slice_profit < -0.06)
+          or (slice_profit_lt_neg_0_06)
         )
-        # and ((num_open_grinds == 0) or (slice_profit < -0.03))
+        # and ((num_open_grinds == 0) or (slice_profit_lt_neg_0_03))
         and (is_long_grind_entry)
       ):
         buy_amount = slice_amount * regular_mode_grind_6_stakes[grind_6_sub_grind_count] / stake_scale_leverage
@@ -69565,6 +69570,11 @@ class NostalgiaForInfinityX7(IStrategy):
     stake_scale_leverage = trade_leverage if is_futures else 1.0
     regular_mode_use_grind_stops = self.regular_mode_use_grind_stops
 
+    # Reused no-derisk slice-profit gates
+    slice_profit_gt_0_02 = slice_profit > 0.02
+    slice_profit_gt_0_03 = slice_profit > 0.03
+    slice_profit_gt_0_06 = slice_profit > 0.06
+
     last_filled_entry = filled_entries[-1]
     first_filled_order = filled_orders[0]
     last_filled_order = filled_orders[-1]
@@ -70030,7 +70040,7 @@ class NostalgiaForInfinityX7(IStrategy):
           < (regular_mode_rebuy_sub_thresholds[rebuy_sub_grind_count])
         )
         and (current_time - timedelta(minutes=10) > last_filled_entry.order_filled_utc)
-        and ((current_time - timedelta(hours=12) > last_filled_order.order_filled_utc) or (slice_profit > 0.06))
+        and ((current_time - timedelta(hours=12) > last_filled_order.order_filled_utc) or (slice_profit_gt_0_06))
         and is_short_grind_entry
       ):
         buy_amount = slice_amount * regular_mode_rebuy_stakes[rebuy_sub_grind_count] / stake_scale_leverage
@@ -70067,13 +70077,13 @@ class NostalgiaForInfinityX7(IStrategy):
           < (regular_mode_grind_1_sub_thresholds[grind_1_sub_grind_count])
         )
         and (current_time - timedelta(minutes=10) > last_filled_entry.order_filled_utc)
-        and ((current_time - timedelta(hours=2) > last_filled_order.order_filled_utc) or (slice_profit > 0.02))
+        and ((current_time - timedelta(hours=2) > last_filled_order.order_filled_utc) or (slice_profit_gt_0_02))
         and (
           (num_open_grinds == 0)
           or (current_time - timedelta(hours=6) > last_filled_order.order_filled_utc)
-          or (slice_profit > 0.06)
+          or (slice_profit_gt_0_06)
         )
-        and ((num_open_grinds == 0) or (slice_profit > 0.03))
+        and ((num_open_grinds == 0) or (slice_profit_gt_0_03))
         and is_short_grind_entry
       ):
         buy_amount = slice_amount * regular_mode_grind_1_stakes[grind_1_sub_grind_count] / stake_scale_leverage
@@ -70229,13 +70239,13 @@ class NostalgiaForInfinityX7(IStrategy):
           < (regular_mode_grind_2_sub_thresholds[grind_2_sub_grind_count])
         )
         and (current_time - timedelta(minutes=10) > last_filled_entry.order_filled_utc)
-        and ((current_time - timedelta(hours=2) > last_filled_order.order_filled_utc) or (slice_profit > 0.02))
+        and ((current_time - timedelta(hours=2) > last_filled_order.order_filled_utc) or (slice_profit_gt_0_02))
         and (
           (num_open_grinds == 0)
           or (current_time - timedelta(hours=6) > last_filled_order.order_filled_utc)
-          or (slice_profit > 0.06)
+          or (slice_profit_gt_0_06)
         )
-        and ((num_open_grinds == 0) or (slice_profit > 0.03))
+        and ((num_open_grinds == 0) or (slice_profit_gt_0_03))
         and is_short_grind_entry
       ):
         buy_amount = slice_amount * regular_mode_grind_2_stakes[grind_2_sub_grind_count] / stake_scale_leverage
@@ -70354,13 +70364,13 @@ class NostalgiaForInfinityX7(IStrategy):
           < (regular_mode_grind_3_sub_thresholds[grind_3_sub_grind_count])
         )
         and (current_time - timedelta(minutes=10) > last_filled_entry.order_filled_utc)
-        and ((current_time - timedelta(hours=2) > last_filled_order.order_filled_utc) or (slice_profit > 0.02))
+        and ((current_time - timedelta(hours=2) > last_filled_order.order_filled_utc) or (slice_profit_gt_0_02))
         and (
           (num_open_grinds == 0)
           or (current_time - timedelta(hours=6) > last_filled_order.order_filled_utc)
-          or (slice_profit > 0.06)
+          or (slice_profit_gt_0_06)
         )
-        and ((num_open_grinds == 0) or (slice_profit > 0.03))
+        and ((num_open_grinds == 0) or (slice_profit_gt_0_03))
         and is_short_grind_entry
       ):
         buy_amount = slice_amount * regular_mode_grind_3_stakes[grind_3_sub_grind_count] / stake_scale_leverage
@@ -70479,13 +70489,13 @@ class NostalgiaForInfinityX7(IStrategy):
           < (regular_mode_grind_4_sub_thresholds[grind_4_sub_grind_count])
         )
         and (current_time - timedelta(minutes=10) > last_filled_entry.order_filled_utc)
-        and ((current_time - timedelta(hours=2) > last_filled_order.order_filled_utc) or (slice_profit > 0.02))
+        and ((current_time - timedelta(hours=2) > last_filled_order.order_filled_utc) or (slice_profit_gt_0_02))
         and (
           (num_open_grinds == 0)
           or (current_time - timedelta(hours=6) > last_filled_order.order_filled_utc)
-          or (slice_profit > 0.06)
+          or (slice_profit_gt_0_06)
         )
-        and ((num_open_grinds == 0) or (slice_profit > 0.03))
+        and ((num_open_grinds == 0) or (slice_profit_gt_0_03))
         and is_short_grind_entry
       ):
         buy_amount = slice_amount * regular_mode_grind_4_stakes[grind_4_sub_grind_count] / stake_scale_leverage
@@ -70604,13 +70614,13 @@ class NostalgiaForInfinityX7(IStrategy):
           < (regular_mode_grind_5_sub_thresholds[grind_5_sub_grind_count])
         )
         and (current_time - timedelta(minutes=10) > last_filled_entry.order_filled_utc)
-        and ((current_time - timedelta(hours=2) > last_filled_order.order_filled_utc) or (slice_profit > 0.02))
+        and ((current_time - timedelta(hours=2) > last_filled_order.order_filled_utc) or (slice_profit_gt_0_02))
         and (
           (num_open_grinds == 0)
           or (current_time - timedelta(hours=6) > last_filled_order.order_filled_utc)
-          or (slice_profit > 0.06)
+          or (slice_profit_gt_0_06)
         )
-        and ((num_open_grinds == 0) or (slice_profit > 0.03))
+        and ((num_open_grinds == 0) or (slice_profit_gt_0_03))
         and is_short_grind_entry
       ):
         buy_amount = slice_amount * regular_mode_grind_5_stakes[grind_5_sub_grind_count] / stake_scale_leverage
@@ -70729,13 +70739,13 @@ class NostalgiaForInfinityX7(IStrategy):
           < (regular_mode_grind_6_sub_thresholds[grind_6_sub_grind_count])
         )
         and (current_time - timedelta(minutes=10) > last_filled_entry.order_filled_utc)
-        and ((current_time - timedelta(hours=2) > last_filled_order.order_filled_utc) or (slice_profit > 0.02))
+        and ((current_time - timedelta(hours=2) > last_filled_order.order_filled_utc) or (slice_profit_gt_0_02))
         and (
           (num_open_grinds == 0)
           or (current_time - timedelta(hours=6) > last_filled_order.order_filled_utc)
-          or (slice_profit > 0.06)
+          or (slice_profit_gt_0_06)
         )
-        # and ((num_open_grinds == 0) or (slice_profit > 0.03))
+        # and ((num_open_grinds == 0) or (slice_profit_gt_0_03))
         and (is_short_grind_entry)
       ):
         buy_amount = slice_amount * regular_mode_grind_6_stakes[grind_6_sub_grind_count] / stake_scale_leverage
