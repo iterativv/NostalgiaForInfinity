@@ -1257,6 +1257,13 @@ class NostalgiaForInfinityX7(IStrategy):
       last_cmf_20_1h = last_candle["CMF_20_1h"]
       last_cmf_20_4h = last_candle["CMF_20_4h"]
       last_roc_9_4h = last_candle["ROC_9_4h"]
+      last_cmf_20_gt_0 = last_cmf_20 > 0.0
+      last_cmf_20_1h_gt_0 = last_cmf_20_1h > 0.0
+      last_cmf_20_4h_gt_0 = last_cmf_20_4h > 0.0
+      last_rsi_14_gt_50 = last_rsi_14 > 50.0
+      last_rsi_14_lt_50 = last_rsi_14 < 50.0
+      last_roc_9_4h_gt_40 = last_roc_9_4h > 40.0
+      last_roc_9_4h_lt_neg_40 = last_roc_9_4h < -40.0
       if trade.is_short:
         is_scalp_mode = all(c in self.short_scalp_mode_tags for c in enter_tags)
         if is_scalp_mode:
@@ -1302,223 +1309,223 @@ class NostalgiaForInfinityX7(IStrategy):
         elif 0.001 <= profit_init_ratio < 0.01:
           if (
             profit_init_ratio < (previous_profit - 0.03)
-            and (last_rsi_14 > 50.0)
+            and (last_rsi_14_gt_50)
             and (last_rsi_14 > previous_rsi_14)
-            and (last_cmf_20 > 0.0)
+            and (last_cmf_20_gt_0)
           ):
             return True, f"exit_profit_{mode_name}_t_0_1"
           elif (
             profit_init_ratio < (previous_profit - 0.03)
-            and (last_cmf_20 > 0.0)
-            and (last_cmf_20_1h > 0.0)
-            and (last_cmf_20_4h > 0.0)
+            and (last_cmf_20_gt_0)
+            and (last_cmf_20_1h_gt_0)
+            and (last_cmf_20_4h_gt_0)
           ):
             return True, f"exit_profit_{mode_name}_t_0_2"
-          elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h < -40.0):
+          elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h_lt_neg_40):
             return True, f"exit_profit_{mode_name}_t_0_3"
         elif 0.01 <= profit_init_ratio < 0.02:
           if (
             profit_init_ratio < (previous_profit - 0.03)
-            and (last_rsi_14 > 50.0)
+            and (last_rsi_14_gt_50)
             and (last_rsi_14 > previous_rsi_14)
-            and (last_cmf_20 > 0.0)
+            and (last_cmf_20_gt_0)
           ):
             return True, f"exit_profit_{mode_name}_t_1_1"
           elif (
             profit_init_ratio < (previous_profit - 0.03)
-            and (last_cmf_20 > 0.0)
-            and (last_cmf_20_1h > 0.0)
-            and (last_cmf_20_4h > 0.0)
+            and (last_cmf_20_gt_0)
+            and (last_cmf_20_1h_gt_0)
+            and (last_cmf_20_4h_gt_0)
           ):
             return True, f"exit_profit_{mode_name}_t_1_2"
-          elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h < -40.0):
+          elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h_lt_neg_40):
             return True, f"exit_profit_{mode_name}_t_1_3"
         elif 0.02 <= profit_init_ratio < 0.03:
           if (
             profit_init_ratio < (previous_profit - 0.03)
-            and (last_rsi_14 > 50.0)
+            and (last_rsi_14_gt_50)
             and (last_rsi_14 > previous_rsi_14)
-            and (last_cmf_20 > 0.0)
+            and (last_cmf_20_gt_0)
           ):
             return True, f"exit_profit_{mode_name}_t_2_1"
           elif (
             profit_init_ratio < (previous_profit - 0.03)
-            and (last_cmf_20 > 0.0)
-            and (last_cmf_20_1h > 0.0)
-            and (last_cmf_20_4h > 0.0)
+            and (last_cmf_20_gt_0)
+            and (last_cmf_20_1h_gt_0)
+            and (last_cmf_20_4h_gt_0)
           ):
             return True, f"exit_profit_{mode_name}_t_2_2"
-          elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h < -40.0):
+          elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h_lt_neg_40):
             return True, f"exit_profit_{mode_name}_t_2_3"
         elif 0.03 <= profit_init_ratio < 0.04:
           if (
             profit_init_ratio < (previous_profit - 0.03)
-            and (last_rsi_14 > 50.0)
+            and (last_rsi_14_gt_50)
             and (last_rsi_14 > previous_rsi_14)
-            and (last_cmf_20 > 0.0)
+            and (last_cmf_20_gt_0)
           ):
             return True, f"exit_profit_{mode_name}_t_3_1"
           elif (
             profit_init_ratio < (previous_profit - 0.03)
-            and (last_cmf_20 > 0.0)
-            and (last_cmf_20_1h > 0.0)
-            and (last_cmf_20_4h > 0.0)
+            and (last_cmf_20_gt_0)
+            and (last_cmf_20_1h_gt_0)
+            and (last_cmf_20_4h_gt_0)
           ):
             return True, f"exit_profit_{mode_name}_t_3_2"
-          elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h < -40.0):
+          elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h_lt_neg_40):
             return True, f"exit_profit_{mode_name}_t_3_3"
         elif 0.04 <= profit_init_ratio < 0.05:
           if (
             profit_init_ratio < (previous_profit - 0.03)
-            and (last_rsi_14 > 50.0)
+            and (last_rsi_14_gt_50)
             and (last_rsi_14 > previous_rsi_14)
-            and (last_cmf_20 > 0.0)
+            and (last_cmf_20_gt_0)
           ):
             return True, f"exit_profit_{mode_name}_t_4_1"
           elif (
             profit_init_ratio < (previous_profit - 0.03)
-            and (last_cmf_20 > 0.0)
-            and (last_cmf_20_1h > 0.0)
-            and (last_cmf_20_4h > 0.0)
+            and (last_cmf_20_gt_0)
+            and (last_cmf_20_1h_gt_0)
+            and (last_cmf_20_4h_gt_0)
           ):
             return True, f"exit_profit_{mode_name}_t_4_2"
-          elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h < -40.0):
+          elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h_lt_neg_40):
             return True, f"exit_profit_{mode_name}_t_4_3"
         elif 0.05 <= profit_init_ratio < 0.06:
           if (
             profit_init_ratio < (previous_profit - 0.03)
-            and (last_rsi_14 > 50.0)
+            and (last_rsi_14_gt_50)
             and (last_rsi_14 > previous_rsi_14)
-            and (last_cmf_20 > 0.0)
+            and (last_cmf_20_gt_0)
           ):
             return True, f"exit_profit_{mode_name}_t_5_1"
           elif (
             profit_init_ratio < (previous_profit - 0.03)
-            and (last_cmf_20 > 0.0)
-            and (last_cmf_20_1h > 0.0)
-            and (last_cmf_20_4h > 0.0)
+            and (last_cmf_20_gt_0)
+            and (last_cmf_20_1h_gt_0)
+            and (last_cmf_20_4h_gt_0)
           ):
             return True, f"exit_profit_{mode_name}_t_5_2"
-          elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h < -40.0):
+          elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h_lt_neg_40):
             return True, f"exit_profit_{mode_name}_t_5_3"
         elif 0.06 <= profit_init_ratio < 0.07:
           if (
             profit_init_ratio < (previous_profit - 0.03)
-            and (last_rsi_14 > 50.0)
+            and (last_rsi_14_gt_50)
             and (last_rsi_14 > previous_rsi_14)
-            and (last_cmf_20 > 0.0)
+            and (last_cmf_20_gt_0)
           ):
             return True, f"exit_profit_{mode_name}_t_6_1"
           elif (
             profit_init_ratio < (previous_profit - 0.03)
-            and (last_cmf_20 > 0.0)
-            and (last_cmf_20_1h > 0.0)
-            and (last_cmf_20_4h > 0.0)
+            and (last_cmf_20_gt_0)
+            and (last_cmf_20_1h_gt_0)
+            and (last_cmf_20_4h_gt_0)
           ):
             return True, f"exit_profit_{mode_name}_t_6_2"
-          elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h < -40.0):
+          elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h_lt_neg_40):
             return True, f"exit_profit_{mode_name}_t_6_3"
         elif 0.07 <= profit_init_ratio < 0.08:
           if (
             profit_init_ratio < (previous_profit - 0.03)
-            and (last_rsi_14 > 50.0)
+            and (last_rsi_14_gt_50)
             and (last_rsi_14 > previous_rsi_14)
-            and (last_cmf_20 > 0.0)
+            and (last_cmf_20_gt_0)
           ):
             return True, f"exit_profit_{mode_name}_t_7_1"
           elif (
             profit_init_ratio < (previous_profit - 0.03)
-            and (last_cmf_20 > 0.0)
-            and (last_cmf_20_1h > 0.0)
-            and (last_cmf_20_4h > 0.0)
+            and (last_cmf_20_gt_0)
+            and (last_cmf_20_1h_gt_0)
+            and (last_cmf_20_4h_gt_0)
           ):
             return True, f"exit_profit_{mode_name}_t_7_2"
-          elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h < -40.0):
+          elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h_lt_neg_40):
             return True, f"exit_profit_{mode_name}_t_7_3"
         elif 0.08 <= profit_init_ratio < 0.09:
           if (
             profit_init_ratio < (previous_profit - 0.03)
-            and (last_rsi_14 > 50.0)
+            and (last_rsi_14_gt_50)
             and (last_rsi_14 > previous_rsi_14)
-            and (last_cmf_20 > 0.0)
+            and (last_cmf_20_gt_0)
           ):
             return True, f"exit_profit_{mode_name}_t_8_1"
           elif (
             profit_init_ratio < (previous_profit - 0.03)
-            and (last_cmf_20 > 0.0)
-            and (last_cmf_20_1h > 0.0)
-            and (last_cmf_20_4h > 0.0)
+            and (last_cmf_20_gt_0)
+            and (last_cmf_20_1h_gt_0)
+            and (last_cmf_20_4h_gt_0)
           ):
             return True, f"exit_profit_{mode_name}_t_8_2"
-          elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h < -40.0):
+          elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h_lt_neg_40):
             return True, f"exit_profit_{mode_name}_t_8_3"
         elif 0.09 <= profit_init_ratio < 0.10:
           if (
             profit_init_ratio < (previous_profit - 0.03)
-            and (last_rsi_14 > 50.0)
+            and (last_rsi_14_gt_50)
             and (last_rsi_14 > previous_rsi_14)
-            and (last_cmf_20 > 0.0)
+            and (last_cmf_20_gt_0)
           ):
             return True, f"exit_profit_{mode_name}_t_9_1"
           elif (
             profit_init_ratio < (previous_profit - 0.03)
-            and (last_cmf_20 > 0.0)
-            and (last_cmf_20_1h > 0.0)
-            and (last_cmf_20_4h > 0.0)
+            and (last_cmf_20_gt_0)
+            and (last_cmf_20_1h_gt_0)
+            and (last_cmf_20_4h_gt_0)
           ):
             return True, f"exit_profit_{mode_name}_t_9_2"
-          elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h < -40.0):
+          elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h_lt_neg_40):
             return True, f"exit_profit_{mode_name}_t_9_3"
         elif 0.10 <= profit_init_ratio < 0.11:
           if (
             profit_init_ratio < (previous_profit - 0.03)
-            and (last_rsi_14 > 50.0)
+            and (last_rsi_14_gt_50)
             and (last_rsi_14 > previous_rsi_14)
-            and (last_cmf_20 > 0.0)
+            and (last_cmf_20_gt_0)
           ):
             return True, f"exit_profit_{mode_name}_t_10_1"
           elif (
             profit_init_ratio < (previous_profit - 0.03)
-            and (last_cmf_20 > 0.0)
-            and (last_cmf_20_1h > 0.0)
-            and (last_cmf_20_4h > 0.0)
+            and (last_cmf_20_gt_0)
+            and (last_cmf_20_1h_gt_0)
+            and (last_cmf_20_4h_gt_0)
           ):
             return True, f"exit_profit_{mode_name}_t_10_2"
-          elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h < -40.0):
+          elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h_lt_neg_40):
             return True, f"exit_profit_{mode_name}_t_10_3"
         elif 0.11 <= profit_init_ratio < 0.12:
           if (
             profit_init_ratio < (previous_profit - 0.03)
-            and (last_rsi_14 > 50.0)
+            and (last_rsi_14_gt_50)
             and (last_rsi_14 > previous_rsi_14)
-            and (last_cmf_20 > 0.0)
+            and (last_cmf_20_gt_0)
           ):
             return True, f"exit_profit_{mode_name}_t_11_1"
           elif (
             profit_init_ratio < (previous_profit - 0.03)
-            and (last_cmf_20 > 0.0)
-            and (last_cmf_20_1h > 0.0)
-            and (last_cmf_20_4h > 0.0)
+            and (last_cmf_20_gt_0)
+            and (last_cmf_20_1h_gt_0)
+            and (last_cmf_20_4h_gt_0)
           ):
             return True, f"exit_profit_{mode_name}_t_11_2"
-          elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h < -40.0):
+          elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h_lt_neg_40):
             return True, f"exit_profit_{mode_name}_t_11_3"
         elif 0.12 <= profit_init_ratio:
           if (
             profit_init_ratio < (previous_profit - 0.03)
-            and (last_rsi_14 > 50.0)
+            and (last_rsi_14_gt_50)
             and (last_rsi_14 > previous_rsi_14)
-            and (last_cmf_20 > 0.0)
+            and (last_cmf_20_gt_0)
           ):
             return True, f"exit_profit_{mode_name}_t_12_1"
           elif (
             profit_init_ratio < (previous_profit - 0.03)
-            and (last_cmf_20 > 0.0)
-            and (last_cmf_20_1h > 0.0)
-            and (last_cmf_20_4h > 0.0)
+            and (last_cmf_20_gt_0)
+            and (last_cmf_20_1h_gt_0)
+            and (last_cmf_20_4h_gt_0)
           ):
             return True, f"exit_profit_{mode_name}_t_12_2"
-          elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h < -40.0):
+          elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h_lt_neg_40):
             return True, f"exit_profit_{mode_name}_t_12_3"
       else:
         is_scalp_mode = all(c in long_scalp_mode_tags for c in enter_tags)
@@ -1566,7 +1573,7 @@ class NostalgiaForInfinityX7(IStrategy):
           if 0.001 <= profit_init_ratio < 0.01:
             if (
               profit_init_ratio < (previous_profit - 0.03)
-              and (last_rsi_14 < 50.0)
+              and (last_rsi_14_lt_50)
               and (last_rsi_14 < previous_rsi_14)
               and (last_cmf_20 < -0.0)
             ):
@@ -1578,12 +1585,12 @@ class NostalgiaForInfinityX7(IStrategy):
               and (last_cmf_20_4h < -0.0)
             ):
               return True, f"exit_profit_{mode_name}_t_0_2"
-            elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h > 40.0):
+            elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h_gt_40):
               return True, f"exit_profit_{mode_name}_t_0_3"
           elif 0.01 <= profit_init_ratio < 0.02:
             if (
               profit_init_ratio < (previous_profit - 0.03)
-              and (last_rsi_14 < 50.0)
+              and (last_rsi_14_lt_50)
               and (last_rsi_14 < previous_rsi_14)
               and (last_cmf_20 < -0.0)
             ):
@@ -1595,12 +1602,12 @@ class NostalgiaForInfinityX7(IStrategy):
               and (last_cmf_20_4h < -0.0)
             ):
               return True, f"exit_profit_{mode_name}_t_1_2"
-            elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h > 40.0):
+            elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h_gt_40):
               return True, f"exit_profit_{mode_name}_t_1_3"
           elif 0.02 <= profit_init_ratio < 0.03:
             if (
               profit_init_ratio < (previous_profit - 0.03)
-              and (last_rsi_14 < 50.0)
+              and (last_rsi_14_lt_50)
               and (last_rsi_14 < previous_rsi_14)
               and (last_cmf_20 < -0.0)
             ):
@@ -1612,12 +1619,12 @@ class NostalgiaForInfinityX7(IStrategy):
               and (last_cmf_20_4h < -0.0)
             ):
               return True, f"exit_profit_{mode_name}_t_2_2"
-            elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h > 40.0):
+            elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h_gt_40):
               return True, f"exit_profit_{mode_name}_t_2_3"
           elif 0.03 <= profit_init_ratio < 0.04:
             if (
               profit_init_ratio < (previous_profit - 0.03)
-              and (last_rsi_14 < 50.0)
+              and (last_rsi_14_lt_50)
               and (last_rsi_14 < previous_rsi_14)
               and (last_cmf_20 < -0.0)
             ):
@@ -1629,12 +1636,12 @@ class NostalgiaForInfinityX7(IStrategy):
               and (last_cmf_20_4h < -0.0)
             ):
               return True, f"exit_profit_{mode_name}_t_3_2"
-            elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h > 40.0):
+            elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h_gt_40):
               return True, f"exit_profit_{mode_name}_t_3_3"
           elif 0.04 <= profit_init_ratio < 0.05:
             if (
               profit_init_ratio < (previous_profit - 0.03)
-              and (last_rsi_14 < 50.0)
+              and (last_rsi_14_lt_50)
               and (last_rsi_14 < previous_rsi_14)
               and (last_cmf_20 < -0.0)
             ):
@@ -1646,12 +1653,12 @@ class NostalgiaForInfinityX7(IStrategy):
               and (last_cmf_20_4h < -0.0)
             ):
               return True, f"exit_profit_{mode_name}_t_4_2"
-            elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h > 40.0):
+            elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h_gt_40):
               return True, f"exit_profit_{mode_name}_t_4_3"
           elif 0.05 <= profit_init_ratio < 0.06:
             if (
               profit_init_ratio < (previous_profit - 0.03)
-              and (last_rsi_14 < 50.0)
+              and (last_rsi_14_lt_50)
               and (last_rsi_14 < previous_rsi_14)
               and (last_cmf_20 < -0.0)
             ):
@@ -1663,12 +1670,12 @@ class NostalgiaForInfinityX7(IStrategy):
               and (last_cmf_20_4h < -0.0)
             ):
               return True, f"exit_profit_{mode_name}_t_5_2"
-            elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h > 40.0):
+            elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h_gt_40):
               return True, f"exit_profit_{mode_name}_t_5_3"
           elif 0.06 <= profit_init_ratio < 0.07:
             if (
               profit_init_ratio < (previous_profit - 0.03)
-              and (last_rsi_14 < 50.0)
+              and (last_rsi_14_lt_50)
               and (last_rsi_14 < previous_rsi_14)
               and (last_cmf_20 < -0.0)
             ):
@@ -1680,12 +1687,12 @@ class NostalgiaForInfinityX7(IStrategy):
               and (last_cmf_20_4h < -0.0)
             ):
               return True, f"exit_profit_{mode_name}_t_6_2"
-            elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h > 40.0):
+            elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h_gt_40):
               return True, f"exit_profit_{mode_name}_t_6_3"
           elif 0.07 <= profit_init_ratio < 0.08:
             if (
               profit_init_ratio < (previous_profit - 0.03)
-              and (last_rsi_14 < 50.0)
+              and (last_rsi_14_lt_50)
               and (last_rsi_14 < previous_rsi_14)
               and (last_cmf_20 < -0.0)
             ):
@@ -1697,12 +1704,12 @@ class NostalgiaForInfinityX7(IStrategy):
               and (last_cmf_20_4h < -0.0)
             ):
               return True, f"exit_profit_{mode_name}_t_7_2"
-            elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h > 40.0):
+            elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h_gt_40):
               return True, f"exit_profit_{mode_name}_t_7_3"
           elif 0.08 <= profit_init_ratio < 0.09:
             if (
               profit_init_ratio < (previous_profit - 0.03)
-              and (last_rsi_14 < 50.0)
+              and (last_rsi_14_lt_50)
               and (last_rsi_14 < previous_rsi_14)
               and (last_cmf_20 < -0.0)
             ):
@@ -1714,12 +1721,12 @@ class NostalgiaForInfinityX7(IStrategy):
               and (last_cmf_20_4h < -0.0)
             ):
               return True, f"exit_profit_{mode_name}_t_8_2"
-            elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h > 40.0):
+            elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h_gt_40):
               return True, f"exit_profit_{mode_name}_t_8_3"
           elif 0.09 <= profit_init_ratio < 0.10:
             if (
               profit_init_ratio < (previous_profit - 0.03)
-              and (last_rsi_14 < 50.0)
+              and (last_rsi_14_lt_50)
               and (last_rsi_14 < previous_rsi_14)
               and (last_cmf_20 < -0.0)
             ):
@@ -1731,12 +1738,12 @@ class NostalgiaForInfinityX7(IStrategy):
               and (last_cmf_20_4h < -0.0)
             ):
               return True, f"exit_profit_{mode_name}_t_9_2"
-            elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h > 40.0):
+            elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h_gt_40):
               return True, f"exit_profit_{mode_name}_t_9_3"
           elif 0.10 <= profit_init_ratio < 0.11:
             if (
               profit_init_ratio < (previous_profit - 0.03)
-              and (last_rsi_14 < 50.0)
+              and (last_rsi_14_lt_50)
               and (last_rsi_14 < previous_rsi_14)
               and (last_cmf_20 < -0.0)
             ):
@@ -1748,12 +1755,12 @@ class NostalgiaForInfinityX7(IStrategy):
               and (last_cmf_20_4h < -0.0)
             ):
               return True, f"exit_profit_{mode_name}_t_10_2"
-            elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h > 40.0):
+            elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h_gt_40):
               return True, f"exit_profit_{mode_name}_t_10_3"
           elif 0.11 <= profit_init_ratio < 0.12:
             if (
               profit_init_ratio < (previous_profit - 0.03)
-              and (last_rsi_14 < 50.0)
+              and (last_rsi_14_lt_50)
               and (last_rsi_14 < previous_rsi_14)
               and (last_cmf_20 < -0.0)
             ):
@@ -1765,12 +1772,12 @@ class NostalgiaForInfinityX7(IStrategy):
               and (last_cmf_20_4h < -0.0)
             ):
               return True, f"exit_profit_{mode_name}_t_11_2"
-            elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h > 40.0):
+            elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h_gt_40):
               return True, f"exit_profit_{mode_name}_t_11_3"
           elif 0.12 <= profit_init_ratio:
             if (
               profit_init_ratio < (previous_profit - 0.03)
-              and (last_rsi_14 < 50.0)
+              and (last_rsi_14_lt_50)
               and (last_rsi_14 < previous_rsi_14)
               and (last_cmf_20 < -0.0)
             ):
@@ -1782,7 +1789,7 @@ class NostalgiaForInfinityX7(IStrategy):
               and (last_cmf_20_4h < -0.0)
             ):
               return True, f"exit_profit_{mode_name}_t_12_2"
-            elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h > 40.0):
+            elif profit_init_ratio < (previous_profit - 0.05) and (last_roc_9_4h_gt_40):
               return True, f"exit_profit_{mode_name}_t_12_3"
     else:
       return False, None
