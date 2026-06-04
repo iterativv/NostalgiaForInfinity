@@ -23457,27 +23457,28 @@ class NostalgiaForInfinityX7(IStrategy):
     #   \$$$$$$ \$$   \$$ \$$$$$$ \$$   \$$  \$$          \$$$$$$$$\$$   \$$   \$$   \$$$$$$$$\$$   \$$
     #
 
-    # Reused short entry threshold masks
-    rsi_3_15m_lt_95 = rsi_3_15m < 95.0
-    rsi_3_1h_lt_95 = rsi_3_1h < 95.0
-    rsi_3_15m_lt_90 = rsi_3_15m < 90.0
-    rsi_3_1h_lt_90 = rsi_3_1h < 90.0
-    rsi_3_4h_lt_85 = rsi_3_4h < 85.0
-    stochrsi_k_1h_gt_50 = stochrsi_k_1h > 50.0
-    stochrsi_k_4h_gt_50 = stochrsi_k_4h > 50.0
-    rsi_3_15m_lt_85 = rsi_3_15m < 85.0
-    rsi_3_4h_lt_90 = rsi_3_4h < 90.0
-    rsi_3_1h_lt_80 = rsi_3_1h < 80.0
-    stochrsi_k_4h_gt_30 = stochrsi_k_4h > 30.0
-    rsi_3_1h_lt_85 = rsi_3_1h < 85.0
-    rsi_3_4h_lt_95 = rsi_3_4h < 95.0
-    stochrsi_k_1h_gt_70 = stochrsi_k_1h > 70.0
-    stochrsi_k_1h_gt_30 = stochrsi_k_1h > 30.0
-    stochrsi_k_15m_gt_50 = stochrsi_k_15m > 50.0
-    rsi_3_4h_lt_80 = rsi_3_4h < 80.0
-    roc_9_4h_lt_20 = roc_9_4h < 20.0
-    stochrsi_k_4h_gt_70 = stochrsi_k_4h > 70.0
     rsi_3_lt_90 = rsi_3 < 90.0
+    rsi_3_15m_lt_85 = rsi_3_15m < 85.0
+    rsi_3_15m_lt_90 = rsi_3_15m < 90.0
+    rsi_3_15m_lt_95 = rsi_3_15m < 95.0
+    rsi_3_1h_lt_80 = rsi_3_1h < 80.0
+    rsi_3_1h_lt_85 = rsi_3_1h < 85.0
+    rsi_3_1h_lt_90 = rsi_3_1h < 90.0
+    rsi_3_1h_lt_95 = rsi_3_1h < 95.0
+    rsi_3_4h_lt_80 = rsi_3_4h < 80.0
+    rsi_3_4h_lt_85 = rsi_3_4h < 85.0
+    rsi_3_4h_lt_90 = rsi_3_4h < 90.0
+    rsi_3_4h_lt_95 = rsi_3_4h < 95.0
+
+    roc_9_4h_lt_20 = roc_9_4h < 20.0
+
+    stochrsi_k_15m_gt_50 = stochrsi_k_15m > 50.0
+    stochrsi_k_1h_gt_30 = stochrsi_k_1h > 30.0
+    stochrsi_k_1h_gt_50 = stochrsi_k_1h > 50.0
+    stochrsi_k_1h_gt_70 = stochrsi_k_1h > 70.0
+    stochrsi_k_4h_gt_30 = stochrsi_k_4h > 30.0
+    stochrsi_k_4h_gt_50 = stochrsi_k_4h > 50.0
+    stochrsi_k_4h_gt_70 = stochrsi_k_4h > 70.0
 
     for enabled_short_entry_signal in short_entry_signal_params:
       short_entry_condition_index = int(enabled_short_entry_signal.rsplit("_", 2)[1])
