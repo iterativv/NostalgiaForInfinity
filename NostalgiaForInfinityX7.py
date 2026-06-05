@@ -12352,7 +12352,7 @@ class NostalgiaForInfinityX7(IStrategy):
   def correct_min_stake(self, min_stake: float) -> float:
     if self.config["exchange"]["name"] == "bybit":
       if self.is_futures_mode:
-        if min_stake < 5.0 / self.futures_mode_leverage:
+        if (min_stake is None) or (min_stake < 5.0 / self.futures_mode_leverage):
           min_stake = 5.0 / self.futures_mode_leverage
     elif self.config["exchange"]["name"] == "krakenfutures":
       if self.is_futures_mode:
