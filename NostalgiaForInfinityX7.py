@@ -19829,6 +19829,8 @@ class NostalgiaForInfinityX7(IStrategy):
             & ((rsi_3_4h > 60.0) | (stochrsi_k_1h < 90.0) | (roc_9_1d_lt_30))
             # 4h down move, 4h high & overbought
             & ((rsi_3_4h > 60.0) | (stochrsi_k_4h_lt_70) | (roc_9_4h_lt_20))
+            # 1d down move, 1h & 4h still not low enough
+            & ((rsi_3_1d > 5.0) | (stochrsi_k_1h < 20.0) | (stochrsi_k_4h < 20.0))
             # 1d down move, 1h high & overbought
             & ((rsi_3_1d > 35.0) | (stochrsi_k_1h < 90.0) | (roc_9_1h_lt_10))
             # 1d down move, 1h high & overbought
