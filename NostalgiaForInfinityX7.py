@@ -70,7 +70,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.136"
+    return "v17.4.137"
 
   stoploss = -0.99
 
@@ -12354,6 +12354,10 @@ class NostalgiaForInfinityX7(IStrategy):
       if self.is_futures_mode:
         if min_stake < 5.0 / self.futures_mode_leverage:
           min_stake = 5.0 / self.futures_mode_leverage
+    elif self.config["exchange"]["name"] == "krakenfutures":
+      if self.is_futures_mode:
+        if (min_stake is None) or (min_stake < 5.0 / self.futures_mode_leverage):
+          min_stake = 5.0 / self.futures_mode_leverage
     return min_stake
 
   def is_backtest_mode(self) -> bool:
@@ -12710,6 +12714,7 @@ class NostalgiaForInfinityX7(IStrategy):
     rsi_3_1d_gt_15 = rsi_3_1d > 15.0
     rsi_3_1d_gt_20 = rsi_3_1d > 20.0
     rsi_3_1d_gt_25 = rsi_3_1d > 25.0
+    rsi_3_1d_gt_50 = rsi_3_1d > 50.0
     rsi_3_1d_gt_60 = rsi_3_1d > 60.0
 
     aroonu_14_15m_lt_50 = aroonu_14_15m < 50.0
@@ -12731,6 +12736,15 @@ class NostalgiaForInfinityX7(IStrategy):
     aroonu_14_1d_lt_90 = aroonu_14_1d < 90.0
     aroonu_14_1d_lt_100 = aroonu_14_1d < 100.0
 
+    stochrsi_k_1h_lt_50 = stochrsi_k_1h < 50.0
+    stochrsi_k_1h_lt_70 = stochrsi_k_1h < 70.0
+    stochrsi_k_1h_lt_80 = stochrsi_k_1h < 80.0
+    stochrsi_k_4h_lt_50 = stochrsi_k_4h < 50.0
+    stochrsi_k_4h_lt_70 = stochrsi_k_4h < 70.0
+    stochrsi_k_4h_lt_80 = stochrsi_k_4h < 80.0
+    stochrsi_k_4h_lt_90 = stochrsi_k_4h < 90.0
+    stochrsi_k_1d_lt_90 = stochrsi_k_1d < 90.0
+
     roc_9_1h_lt_10 = roc_9_1h < 10.0
     roc_9_4h_gt_neg_30 = roc_9_4h > -30.0
     roc_9_4h_gt_neg_20 = roc_9_4h > -20.0
@@ -12748,15 +12762,6 @@ class NostalgiaForInfinityX7(IStrategy):
     roc_9_1d_lt_50 = roc_9_1d < 50.0
     roc_9_1d_lt_80 = roc_9_1d < 80.0
     roc_9_1d_lt_100 = roc_9_1d < 100.0
-
-    stochrsi_k_1h_lt_50 = stochrsi_k_1h < 50.0
-    stochrsi_k_1h_lt_70 = stochrsi_k_1h < 70.0
-    stochrsi_k_1h_lt_80 = stochrsi_k_1h < 80.0
-    stochrsi_k_4h_lt_50 = stochrsi_k_4h < 50.0
-    stochrsi_k_4h_lt_70 = stochrsi_k_4h < 70.0
-    stochrsi_k_4h_lt_80 = stochrsi_k_4h < 80.0
-    stochrsi_k_4h_lt_90 = stochrsi_k_4h < 90.0
-    stochrsi_k_1d_lt_90 = stochrsi_k_1d < 90.0
 
     is_backtest = self.dp.runmode.value in ["backtest", "hyperopt", "plot", "webserver"]
     # the number of free slots
