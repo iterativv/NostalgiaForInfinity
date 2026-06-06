@@ -18476,270 +18476,274 @@ class NostalgiaForInfinityX7(IStrategy):
           long_entry_logic.append(protections_long_global == True)
 
           # 5m & 1h down move
-          long_entry_logic.append(rsi_3_15m_gt_3 | (rsi_3_1h_gt_5))
-          # 15m & 4h down move, 4h still high
-          long_entry_logic.append(rsi_3_15m_gt_3 | rsi_3_4h_gt_20 | (aroonu_14_4h_lt_40))
-          # 15m & 4h down move
-          long_entry_logic.append((rsi_3_15m_gt_5) | (rsi_3_4h_gt_10))
-          # 15m & 4h down move, 4h still high
-          long_entry_logic.append((rsi_3_15m_gt_5) | rsi_3_4h_gt_20 | (aroonu_14_4h_lt_40))
-          # 15m & 4h down move, 4h still high
-          long_entry_logic.append((rsi_3_15m_gt_5) | (rsi_3_4h_gt_30) | (aroonu_14_4h_lt_50))
-          # 15m & 1h & 4h down move
-          long_entry_logic.append((rsi_3_15m_gt_10) | (rsi_3_1h_gt_10) | (rsi_3_4h_gt_30))
-          # 15m & 1h down move, 4h still not low enough
-          long_entry_logic.append((rsi_3_15m_gt_10) | (rsi_3_1h_gt_10) | (rsi_14_4h < 30.0))
-          # 15m & 1h & 4h down move
-          long_entry_logic.append((rsi_3_15m_gt_10) | rsi_3_1h_gt_20 | rsi_3_4h_gt_20)
-          # 15m & 1h down move, 1h still high
-          long_entry_logic.append((rsi_3_15m_gt_10) | rsi_3_1h_gt_20 | (aroonu_14_1h < 40.0))
-          # 15m & 1h down move, 4h still high
-          long_entry_logic.append((rsi_3_15m_gt_10) | (rsi_3_1h_gt_25) | (stochrsi_k_4h < 40.0))
-          # 15m & 4h down move, 1d high
-          long_entry_logic.append((rsi_3_15m_gt_10) | (rsi_3_4h_gt_15) | (stochrsi_k_1d_lt_90))
-          # 15m & 4h down move, 4h downtrend
-          long_entry_logic.append((rsi_3_15m_gt_10) | (rsi_3_4h_gt_15) | (roc_9_4h > -20.0))
-          # 15m & 4h down move, 4h still high
-          long_entry_logic.append((rsi_3_15m_gt_10) | rsi_3_4h_gt_20 | (aroonu_14_4h_lt_50))
-          # 15m & 4h down move, 4h still not low enough
-          long_entry_logic.append((rsi_3_15m_gt_10) | rsi_3_4h_gt_20 | (stochrsi_k_4h < 30.0))
-          # 15m & 4h down move, 1d high
-          long_entry_logic.append((rsi_3_15m_gt_10) | (rsi_3_4h_gt_30) | (stochrsi_k_1d_lt_90))
-          # 15m down move, 4h still high, 1d high
-          long_entry_logic.append((rsi_3_15m_gt_10) | (aroonu_14_4h_lt_50) | (aroonu_14_1d_lt_90))
-          # 15m & 1h down move, 4h high
-          long_entry_logic.append((rsi_3_15m_gt_15) | rsi_3_1h_gt_20 | (aroonu_14_4h_lt_60))
-          # 15m & 4h down move, 1h still high
-          long_entry_logic.append((rsi_3_15m_gt_15) | (rsi_3_4h_gt_15) | (aroonu_14_1h < 40.0))
-          # 15m & 1h & 1d down move, 1h still not low enough, 1d high
           long_entry_logic.append(
-            (rsi_3_15m_gt_20) | rsi_3_1h_gt_20 | (rsi_3_1d > 30.0) | (rsi_14_1h < 30.0) | (aroonu_14_1d_lt_80)
+            (rsi_3_15m_gt_3 | (rsi_3_1h_gt_5))
+            # 15m & 4h down move, 4h still high
+            & (rsi_3_15m_gt_3 | rsi_3_4h_gt_20 | (aroonu_14_4h_lt_40))
+            # 15m & 4h down move
+            & ((rsi_3_15m_gt_5) | (rsi_3_4h_gt_10))
+            # 15m & 4h down move, 4h still high
+            & ((rsi_3_15m_gt_5) | rsi_3_4h_gt_20 | (aroonu_14_4h_lt_40))
+            # 15m & 4h down move, 4h still high
+            & ((rsi_3_15m_gt_5) | (rsi_3_4h_gt_30) | (aroonu_14_4h_lt_50))
+            # 15m & 1h & 4h down move
+            & ((rsi_3_15m_gt_10) | (rsi_3_1h_gt_10) | (rsi_3_4h_gt_30))
+            # 15m & 1h down move, 4h still not low enough
+            & ((rsi_3_15m_gt_10) | (rsi_3_1h_gt_10) | (rsi_14_4h < 30.0))
+            # 15m & 1h & 4h down move
+            & ((rsi_3_15m_gt_10) | rsi_3_1h_gt_20 | rsi_3_4h_gt_20)
+            # 15m & 1h down move, 1h still high
+            & ((rsi_3_15m_gt_10) | rsi_3_1h_gt_20 | (aroonu_14_1h < 40.0))
+            # 15m & 1h down move, 4h still high
+            & ((rsi_3_15m_gt_10) | (rsi_3_1h_gt_25) | (stochrsi_k_4h < 40.0))
+            # 15m & 4h down move, 1d high
+            & ((rsi_3_15m_gt_10) | (rsi_3_4h_gt_15) | (stochrsi_k_1d_lt_90))
+            # 15m & 4h down move, 4h downtrend
+            & ((rsi_3_15m_gt_10) | (rsi_3_4h_gt_15) | (roc_9_4h > -20.0))
+            # 15m & 4h down move, 4h still high
+            & ((rsi_3_15m_gt_10) | rsi_3_4h_gt_20 | (aroonu_14_4h_lt_50))
+            # 15m & 4h down move, 4h still not low enough
+            & ((rsi_3_15m_gt_10) | rsi_3_4h_gt_20 | (stochrsi_k_4h < 30.0))
+            # 15m & 4h down move, 1d high
+            & ((rsi_3_15m_gt_10) | (rsi_3_4h_gt_30) | (stochrsi_k_1d_lt_90))
+            # 15m down move, 4h still high, 1d high
+            & ((rsi_3_15m_gt_10) | (aroonu_14_4h_lt_50) | (aroonu_14_1d_lt_90))
+            # 15m & 1h down move, 4h high
+            & ((rsi_3_15m_gt_15) | rsi_3_1h_gt_20 | (aroonu_14_4h_lt_60))
+            # 15m & 4h down move, 1h still high
+            & ((rsi_3_15m_gt_15) | (rsi_3_4h_gt_15) | (aroonu_14_1h < 40.0))
+            # 15m & 1h & 1d down move, 1h still not low enough, 1d high
+            & ((rsi_3_15m_gt_20) | rsi_3_1h_gt_20 | (rsi_3_1d > 30.0) | (rsi_14_1h < 30.0) | (aroonu_14_1d_lt_80))
+            # 15m & 1h down move, 4h still high, 4h overbought
+            & ((rsi_3_15m_gt_20) | rsi_3_1h_gt_20 | (aroonu_14_4h_lt_50) | (roc_9_4h_lt_10))
+            # 15m & 1h down move, 4h high
+            & ((rsi_3_15m_gt_20) | rsi_3_1h_gt_20 | aroonu_14_4h_lt_70)
+            # 15m down move, 1h & 4h still high
+            & ((rsi_3_15m_gt_20) | (aroonu_14_1h < 40.0) | (stochrsi_k_4h_lt_50))
+            # 15m & 1h & 4h down move, 1d high
+            & ((rsi_3_15m_gt_25) | (rsi_3_1h_gt_25) | (rsi_3_4h_gt_25) | (roc_9_1d < 70.0))
+            # 15m & 4h down move, 4h high
+            & ((rsi_3_15m_gt_25) | (rsi_3_4h > 45.0) | (aroonu_14_4h < 85.0))
+            # 15m & 1h down move, 15m still not low enough
+            & ((rsi_3_15m_gt_30) | (rsi_3_1h_gt_30) | (aroonu_14_15m < 15.0))
+            # 15m & 1h down move, 1h high
+            & ((rsi_3_15m_gt_30) | (rsi_3_1h_gt_35) | aroonu_14_1h_lt_80)
+            # 1h down move, 1h still not low enough, 1d high
+            & ((rsi_3_1h_gt_3) | (aroonu_14_1h < 20.0) | (aroonu_14_1d_lt_90))
+            # 1h & 4h down move
+            & ((rsi_3_1h_gt_5) | (rsi_3_4h_gt_10))
+            # 1h & 4h down move, 4h downtrend
+            & ((rsi_3_1h_gt_5) | (rsi_3_4h_gt_15) | (roc_9_4h_gt_neg_30))
+            # 1h & 4h down move, 4h still not low enough
+            & ((rsi_3_1h_gt_5) | (rsi_3_4h_gt_30) | (stochrsi_k_4h < 30.0))
+            # 1h & 1d down move, 1d high
+            & ((rsi_3_1h_gt_5) | (rsi_3_1d > 45.0) | (aroonu_14_1d_lt_80))
+            # 1h down move, 4h high
+            & ((rsi_3_1h_gt_5) | aroonu_14_4h_lt_70)
+            # 1h down move, 1d still high
+            & ((rsi_3_1h_gt_5) | (stochrsi_k_1d < 50.0))
+            # 1h & 4h down move, 4h still not low enough
+            & ((rsi_3_1h_gt_10) | rsi_3_4h_gt_20 | (rsi_14_4h < 30.0))
+            # 1h & 4h down move, 4h still not low enough
+            & ((rsi_3_1h_gt_10) | (rsi_3_4h_gt_30) | (rsi_14_4h < 40.0))
+            # 1h & 4h down move, 4h still not low enough
+            & ((rsi_3_1h_gt_10) | (rsi_3_4h_gt_30) | (aroonu_14_4h < 30.0))
+            # 1h & 4h & 1d down move
+            & ((rsi_3_1h_gt_10) | (rsi_3_4h_gt_30) | (rsi_3_1d > 30.0))
+            # 1h & 4h down move, 1d overbought
+            & ((rsi_3_1h_gt_10) | (rsi_3_4h_gt_35) | roc_9_1d_lt_50)
+            # 1h & 4h down move, 4h high
+            & ((rsi_3_1h_gt_10) | (rsi_3_4h > 45.0) | aroonu_14_4h_lt_70)
+            # 1h & 4h down move, 4h still high
+            & ((rsi_3_1h_gt_10) | (rsi_3_4h_gt_50) | (stochrsi_k_4h < 40.0))
+            # 1h & 1d down move, 4h still not low enough
+            & ((rsi_3_1h_gt_10) | (rsi_3_1d_gt_25) | (stochrsi_k_4h < 30.0))
+            # 1h & 1d down move, 4h still high
+            & ((rsi_3_1h_gt_10) | (rsi_3_1d > 30.0) | (aroonu_14_4h_lt_50))
+            # 1h & 1d down move, 4h still high
+            & ((rsi_3_1h_gt_10) | (rsi_3_1d > 45.0) | (rsi_14_4h < 40.0))
+            # 1h down move, 1h still high
+            & ((rsi_3_1h_gt_10) | (aroonu_14_1h_lt_50))
+            # 1h down move, 4h still high, 1d high
+            & ((rsi_3_1h_gt_10) | (aroonu_14_4h_lt_60) | (aroonu_14_1d_lt_90))
+            # 1h down move, 1d high & overbought
+            & ((rsi_3_1h_gt_10) | (aroonu_14_1d_lt_80) | (roc_9_1d_lt_30))
+            # 1h & 4h down move, 1d stll high
+            & ((rsi_3_1h_gt_15) | (rsi_3_4h_gt_15) | (rsi_14_1d < 40.0))
+            # 1h & 4h & 1d down move
+            & ((rsi_3_1h_gt_15) | rsi_3_4h_gt_20 | (rsi_3_1d > 30.0))
+            # 1h & 4h down move, 4h still not low enough
+            & ((rsi_3_1h_gt_15) | rsi_3_4h_gt_20 | (aroonu_14_4h < 30.0))
+            # 1h & 4h down move, 1d overbought
+            & ((rsi_3_1h_gt_15) | rsi_3_4h_gt_20 | roc_9_1d_lt_50)
+            # 1h & 4h & 1d down move
+            & ((rsi_3_1h_gt_15) | (rsi_3_4h_gt_25) | (rsi_3_1d_gt_25))
+            # 1h & 4h down move, 1d high
+            & ((rsi_3_1h_gt_15) | (rsi_3_4h_gt_30) | (stochrsi_k_1d < 80.0))
+            # 1h & 4h down move, 1h & 4h still high
+            & ((rsi_3_1h_gt_15) | (rsi_3_4h_gt_40) | (rsi_14_1h < 40.0) | (rsi_14_4h < 50.0))
+            # 1h & 4h down move, 4h still high
+            & ((rsi_3_1h_gt_15) | (rsi_3_4h > 45.0) | (stochrsi_k_4h_lt_50))
+            # 1h & 4h down move, 4h still high
+            & ((rsi_3_1h_gt_15) | (rsi_3_4h_gt_50) | (aroonu_14_4h_lt_40))
+            # 1h & 1d down move, 1d still high
+            & ((rsi_3_1h_gt_15) | (rsi_3_1d_gt_15) | (aroonu_14_1d < 50.0))
+            # 1h down move, 1h still high, 1d overbought
+            & ((rsi_3_1h_gt_15) | (aroonu_14_1h < 40.0) | roc_9_1d_lt_50)
+            # 1h down move, 1d high, 4h downtrend
+            & ((rsi_3_1h_gt_15) | (aroonu_14_1d_lt_70) | (roc_9_4h > -20.0))
+            # 1h down move, 1d high & overbought
+            & ((rsi_3_1h_gt_15) | (aroonu_14_1d_lt_80) | (roc_9_1d_lt_30))
+            # 1h down move, 4h high
+            & ((rsi_3_1h_gt_15) | (stochrsi_k_4h_lt_70))
+            # 1h & 4h down move, 1h still not low enough
+            & (rsi_3_1h_gt_20 | rsi_3_4h_gt_20 | (aroonu_14_1h < 30.0))
+            # 1h & 4h down move, 4h still high
+            & (rsi_3_1h_gt_20 | rsi_3_4h_gt_20 | (rsi_14_4h < 40.0))
+            # 1h & 4h down move, 4h still high
+            & (rsi_3_1h_gt_20 | rsi_3_4h_gt_20 | (aroonu_14_4h_lt_50))
+            # 1h & 4h down move, 1d downtrend
+            & (rsi_3_1h_gt_20 | rsi_3_4h_gt_20 | (roc_9_1d_gt_neg_30))
+            # 1h & 4h down move, 1d high
+            & (rsi_3_1h_gt_20 | (rsi_3_4h_gt_35) | (aroonu_14_1d_lt_80))
+            # 1h & 4h down move, 4h high
+            & (rsi_3_1h_gt_20 | (rsi_3_4h > 45.0) | (aroonu_14_4h < 65.0))
+            # 1h & 1d down move, 1d high
+            & (rsi_3_1h_gt_20 | (rsi_3_1d_gt_20) | (aroonu_14_1d_lt_70))
+            # 1h down move, 1h still high, 1d high
+            & (rsi_3_1h_gt_20 | (aroonu_14_1h < 40.0) | (aroonu_14_1d_lt_90))
+            # 4h down move, 4h still high, 1d high
+            & (rsi_3_4h_gt_20 | (aroonu_14_4h_lt_50) | aroonu_14_1d_lt_100)
+            # 1h down move, 4h still high, 1d downtrend
+            & (rsi_3_1h_gt_20 | (stochrsi_k_4h < 40.0) | (roc_9_1d > -25.0))
+            # 1h down move, 4h & 1d high
+            & (rsi_3_1h_gt_20 | (stochrsi_k_4h_lt_50) | (stochrsi_k_1d < 80.0))
+            # 1h & 4h down move, 1h still high
+            & ((rsi_3_1h_gt_25) | (rsi_3_4h_gt_35) | (aroonu_14_1h < 40.0))
+            # 1h & 4h down move, 4h high
+            & ((rsi_3_1h_gt_25) | (rsi_3_4h_gt_40) | aroonu_14_4h_lt_70)
+            # 1h down move, 15m still not low enough, 4h high
+            & ((rsi_3_1h_gt_25) | (rsi_14_15m < 30.0) | (stochrsi_k_4h < 60.0))
+            # 1h & 4h down move, 4h still high
+            & ((rsi_3_1h_gt_25) | (rsi_3_4h_gt_35) | (stochrsi_k_4h_lt_50))
+            # 1h down move, 1h high
+            & ((rsi_3_1h_gt_25) | (aroonu_14_1h < 60.0))
+            # 1h down move, 4h high
+            & ((rsi_3_1h_gt_25) | aroonu_14_4h_lt_80)
+            # 1h & 1d down move, 1d high
+            & ((rsi_3_1h_gt_30) | (rsi_3_1d > 45.0) | (aroonu_14_1d_lt_80))
+            # 1h down move, 4h & 1d high
+            & ((rsi_3_1h_gt_30) | aroonu_14_4h_lt_70 | aroonu_14_1d_lt_100)
+            # 1h down move, 4h high, 1d downtrend
+            & ((rsi_3_1h_gt_30) | aroonu_14_4h_lt_100 | (roc_9_1d > -30.0))
+            # 1h down move, 4h high
+            & ((rsi_3_1h_gt_30) | (stochrsi_k_4h_lt_90))
+            # 1h & 4h down move, 4h high
+            & ((rsi_3_1h_gt_35) | (rsi_3_4h > 55.0) | aroonu_14_4h_lt_80)
+            # 1h down move, 1h & 4h high
+            & ((rsi_3_1h_gt_35) | aroonu_14_1h_lt_70 | (aroonu_14_4h_lt_90))
+            # 1h down move, 4h high, 4h downtrend
+            & ((rsi_3_1h_gt_35) | aroonu_14_4h_lt_70 | (cmf_20_4h > -0.30))
+            # 1h down move, 1d high, 4h overbought
+            & ((rsi_3_1h_gt_35) | (aroonu_14_1d_lt_90) | (roc_9_4h_lt_40))
+            # 1h down move, 1h high, 1d overbought
+            & ((rsi_3_1h_gt_40) | aroonu_14_1h_lt_70 | (roc_9_1d_lt_20))
+            # 1h down move, 1h & 4h high
+            & ((rsi_3_1h_gt_50) | aroonu_14_1h_lt_70 | aroonu_14_4h_lt_100)
+            # 1h down move, 1h overbought
+            & ((rsi_3_1h_gt_50) | (roc_9_1h < 40.0))
+            # 4h & 1d down move, 1d high
+            & ((rsi_3_4h_gt_5) | (rsi_3_1d > 30.0) | (aroonu_14_1d_lt_70))
+            # 4h down move, 1h & 4h downtrend
+            & ((rsi_3_4h_gt_5) | (roc_9_1h > -15.0) | (roc_9_4h_gt_neg_20))
+            # 4h & 1d down move
+            & ((rsi_3_4h_gt_10) | (rsi_3_1d_gt_20))
+            # 4h & 1d down move, 1d high
+            & ((rsi_3_4h_gt_10) | (rsi_3_1d > 50.0) | (aroonu_14_1d_lt_90))
+            # 4h down move, 4h & 1d still high
+            & ((rsi_3_4h_gt_10) | (aroonu_14_4h_lt_50) | (aroonu_14_1d < 50.0))
+            # 4h & 1d down move, 1d low
+            & ((rsi_3_4h_gt_15) | (rsi_3_1d_gt_25) | (cmf_20_1d > -0.2))
+            # 4h & 1d down move, 1d still high
+            & ((rsi_3_4h_gt_15) | (rsi_3_1d > 30.0) | (aroonu_14_1d < 50.0))
+            # 4h & 1d down move, 1d overbought
+            & (rsi_3_4h_gt_20 | (rsi_3_1d > 45.0) | (roc_9_1d_lt_40))
+            # 4h down move, 4h still not low enough, 1d downtrend
+            & (rsi_3_4h_gt_20 | (stochrsi_k_4h < 30.0) | (roc_9_1d_gt_neg_20))
+            # 4h down move, 4h & 1d downtrend
+            & (rsi_3_4h_gt_20 | (roc_9_4h_gt_neg_20) | (roc_9_1d_gt_neg_20))
+            # 4h down move, 4h high
+            & ((rsi_3_4h_gt_30) | (aroonu_14_4h_lt_90))
+            # 4h down move, 4h & 1d high
+            & ((rsi_3_4h_gt_35) | (aroonu_14_4h_lt_60) | (stochrsi_k_1d_lt_90))
+            # 4h down move, 1d high, 4h overbought
+            & ((rsi_3_4h > 45.0) | aroonu_14_1d_lt_100 | (roc_9_4h_lt_10))
+            # 4h down move, 4h overbought
+            & ((rsi_3_4h > 60.0) | (roc_9_4h_lt_40))
+            # 1d down move, 4h & 1d downtrend
+            & ((rsi_3_1d_gt_10) | (roc_9_4h_gt_neg_20) | (roc_9_1d_gt_neg_20))
+            # 15m down move, 1d high, 1d downtrend
+            & ((rsi_3_1d_gt_15) | (aroonu_14_1d_lt_70) | (roc_9_1d_gt_neg_40))
+            # 1d down move, 1d high, 1d downtrend
+            & ((rsi_3_1d_gt_25) | (aroonu_14_1d_lt_80) | (roc_9_1d_gt_neg_30))
+            # 4h & 1d high, 4h overbought
+            & (aroonu_14_4h_lt_80 | aroonu_14_1d_lt_100 | (roc_9_4h < 20.0))
+            # 4h high, 1h overbought
+            & (aroonu_14_4h_lt_80 | (roc_9_1h < 40.0))
+            # 4h high, 4h overbought
+            & (aroonu_14_4h_lt_80 | (roc_9_4h_lt_40))
+            # 4h high, 1h overbought
+            & ((stochrsi_k_4h_lt_70) | (roc_9_1h < 40.0))
+            # 4h high, 4h overbought
+            & ((stochrsi_k_4h_lt_70) | (roc_9_4h_lt_40))
+            # 4h high, 4h overbought, 1d downtrend
+            & ((stochrsi_k_4h < 90.0) | (roc_9_4h_lt_20) | (roc_9_1d_gt_neg_20))
+            # 1d green, 4h down move, 4h still high
+            & ((change_pct_1d < 40.0) | (rsi_3_4h_gt_35) | (aroonu_14_4h_lt_40))
+            # 4h top wick, 1h down move, 1h still high
+            & ((df["top_wick_pct_4h"] < 20.0) | (rsi_3_1h_gt_45) | (aroonu_14_1h_lt_50))
+            # pump, drop but not yet near the previous lows
+            & (
+              (((high_max_6_1d - df["low_min_6_1d"]) / df["low_min_6_1d"]) < 2.0)
+              | (close > (high_max_12_4h * 0.50))
+              | (close < (low_min_24_4h * 1.05))
+            )
+            # 1d overbought, drop but not yet near the previous lows
+            & (roc_9_1d_lt_50 | (close > (high_max_6_1d * 0.70)) | (close < (low_min_12_1d * 1.25)))
+            # 1d overbought, drop but not yet near the previous lows
+            & (
+              (((high_max_12_1d - low_min_12_1d) / low_min_12_1d) < 2.5)
+              | (close > (high_max_6_1d * 0.60))
+              | (close < (low_min_12_1d * 1.25))
+            )
+            # big drop in the last 2 days, 1d down move
+            & ((close > (high_max_12_4h * 0.30)) | (rsi_3_1d > 30.0))
+            # big drop in the last 12 days, 1h down move
+            & ((close > (high_max_12_1d * 0.30)) | rsi_3_1h_gt_20)
+            # big drop in the last 12 days, 4h still high
+            & ((close > (high_max_12_1d * 0.40)) | (stochrsi_k_4h_lt_50))
+            # big drop in the last 20 days, 1h down move
+            & ((close > (high_max_20_1d * 0.40)) | (rsi_3_1h_gt_10))
+            # big drop in the last 20 days, 4h down move
+            & ((close > (high_max_20_1d * 0.10)) | (rsi_3_4h_gt_25))
+            # big drop in the last 30 days, 4h down move
+            & ((close > (high_max_30_1d * 0.40)) | (rsi_3_4h_gt_15))
+            # big drop in the last 30 days, 4h still not low enough
+            & ((close > (high_max_30_1d * 0.25)) | (stochrsi_k_4h < 30.0))
           )
-          # 15m & 1h down move, 4h still high, 4h overbought
-          long_entry_logic.append((rsi_3_15m_gt_20) | rsi_3_1h_gt_20 | (aroonu_14_4h_lt_50) | (roc_9_4h_lt_10))
-          # 15m & 1h down move, 4h high
-          long_entry_logic.append((rsi_3_15m_gt_20) | rsi_3_1h_gt_20 | aroonu_14_4h_lt_70)
-          # 15m down move, 1h & 4h still high
-          long_entry_logic.append((rsi_3_15m_gt_20) | (aroonu_14_1h < 40.0) | (stochrsi_k_4h_lt_50))
-          # 15m & 1h & 4h down move, 1d high
-          long_entry_logic.append((rsi_3_15m_gt_25) | (rsi_3_1h_gt_25) | (rsi_3_4h_gt_25) | (roc_9_1d < 70.0))
-          # 15m & 4h down move, 4h high
-          long_entry_logic.append((rsi_3_15m_gt_25) | (rsi_3_4h > 45.0) | (aroonu_14_4h < 85.0))
-          # 15m & 1h down move, 15m still not low enough
-          long_entry_logic.append((rsi_3_15m_gt_30) | (rsi_3_1h_gt_30) | (aroonu_14_15m < 15.0))
-          # 15m & 1h down move, 1h high
-          long_entry_logic.append((rsi_3_15m_gt_30) | (rsi_3_1h_gt_35) | aroonu_14_1h_lt_80)
-          # 1h down move, 1h still not low enough, 1d high
-          long_entry_logic.append((rsi_3_1h_gt_3) | (aroonu_14_1h < 20.0) | (aroonu_14_1d_lt_90))
-          # 1h & 4h down move
-          long_entry_logic.append((rsi_3_1h_gt_5) | (rsi_3_4h_gt_10))
-          # 1h & 4h down move, 4h downtrend
-          long_entry_logic.append((rsi_3_1h_gt_5) | (rsi_3_4h_gt_15) | (roc_9_4h_gt_neg_30))
-          # 1h & 4h down move, 4h still not low enough
-          long_entry_logic.append((rsi_3_1h_gt_5) | (rsi_3_4h_gt_30) | (stochrsi_k_4h < 30.0))
-          # 1h & 1d down move, 1d high
-          long_entry_logic.append((rsi_3_1h_gt_5) | (rsi_3_1d > 45.0) | (aroonu_14_1d_lt_80))
-          # 1h down move, 4h high
-          long_entry_logic.append((rsi_3_1h_gt_5) | aroonu_14_4h_lt_70)
-          # 1h down move, 1d still high
-          long_entry_logic.append((rsi_3_1h_gt_5) | (stochrsi_k_1d < 50.0))
-          # 1h & 4h down move, 4h still not low enough
-          long_entry_logic.append((rsi_3_1h_gt_10) | rsi_3_4h_gt_20 | (rsi_14_4h < 30.0))
-          # 1h & 4h down move, 4h still not low enough
-          long_entry_logic.append((rsi_3_1h_gt_10) | (rsi_3_4h_gt_30) | (rsi_14_4h < 40.0))
-          # 1h & 4h down move, 4h still not low enough
-          long_entry_logic.append((rsi_3_1h_gt_10) | (rsi_3_4h_gt_30) | (aroonu_14_4h < 30.0))
-          # 1h & 4h & 1d down move
-          long_entry_logic.append((rsi_3_1h_gt_10) | (rsi_3_4h_gt_30) | (rsi_3_1d > 30.0))
-          # 1h & 4h down move, 1d overbought
-          long_entry_logic.append((rsi_3_1h_gt_10) | (rsi_3_4h_gt_35) | roc_9_1d_lt_50)
-          # 1h & 4h down move, 4h high
-          long_entry_logic.append((rsi_3_1h_gt_10) | (rsi_3_4h > 45.0) | aroonu_14_4h_lt_70)
-          # 1h & 4h down move, 4h still high
-          long_entry_logic.append((rsi_3_1h_gt_10) | (rsi_3_4h_gt_50) | (stochrsi_k_4h < 40.0))
-          # 1h & 1d down move, 4h still not low enough
-          long_entry_logic.append((rsi_3_1h_gt_10) | (rsi_3_1d_gt_25) | (stochrsi_k_4h < 30.0))
-          # 1h & 1d down move, 4h still high
-          long_entry_logic.append((rsi_3_1h_gt_10) | (rsi_3_1d > 30.0) | (aroonu_14_4h_lt_50))
-          # 1h down move, 1h still high
-          long_entry_logic.append((rsi_3_1h_gt_10) | (aroonu_14_1h_lt_50))
-          # 1h down move, 4h still high, 1d high
-          long_entry_logic.append((rsi_3_1h_gt_10) | (aroonu_14_4h_lt_60) | (aroonu_14_1d_lt_90))
-          # 1h down move, 1d high & overbought
-          long_entry_logic.append((rsi_3_1h_gt_10) | (aroonu_14_1d_lt_80) | (roc_9_1d_lt_30))
-          # 1h & 4h down move, 1d stll high
-          long_entry_logic.append((rsi_3_1h_gt_15) | (rsi_3_4h_gt_15) | (rsi_14_1d < 40.0))
-          # 1h & 4h & 1d down move
-          long_entry_logic.append((rsi_3_1h_gt_15) | rsi_3_4h_gt_20 | (rsi_3_1d > 30.0))
-          # 1h & 4h down move, 4h still not low enough
-          long_entry_logic.append((rsi_3_1h_gt_15) | rsi_3_4h_gt_20 | (aroonu_14_4h < 30.0))
-          # 1h & 4h down move, 1d overbought
-          long_entry_logic.append((rsi_3_1h_gt_15) | rsi_3_4h_gt_20 | roc_9_1d_lt_50)
-          # 1h & 4h & 1d down move
-          long_entry_logic.append((rsi_3_1h_gt_15) | (rsi_3_4h_gt_25) | (rsi_3_1d_gt_25))
-          # 1h & 4h down move, 1d high
-          long_entry_logic.append((rsi_3_1h_gt_15) | (rsi_3_4h_gt_30) | (stochrsi_k_1d < 80.0))
-          # 1h & 4h down move, 1h & 4h still high
-          long_entry_logic.append((rsi_3_1h_gt_15) | (rsi_3_4h_gt_40) | (rsi_14_1h < 40.0) | (rsi_14_4h < 50.0))
-          # 1h & 4h down move, 4h still high
-          long_entry_logic.append((rsi_3_1h_gt_15) | (rsi_3_4h > 45.0) | (stochrsi_k_4h_lt_50))
-          # 1h & 4h down move, 4h still high
-          long_entry_logic.append((rsi_3_1h_gt_15) | (rsi_3_4h_gt_50) | (aroonu_14_4h_lt_40))
-          # 1h & 1d down move, 1d still high
-          long_entry_logic.append((rsi_3_1h_gt_15) | (rsi_3_1d_gt_15) | (aroonu_14_1d < 50.0))
-          # 1h down move, 1h still high, 1d overbought
-          long_entry_logic.append((rsi_3_1h_gt_15) | (aroonu_14_1h < 40.0) | roc_9_1d_lt_50)
-          # 1h down move, 1d high, 4h downtrend
-          long_entry_logic.append((rsi_3_1h_gt_15) | (aroonu_14_1d_lt_70) | (roc_9_4h > -20.0))
-          # 1h down move, 1d high & overbought
-          long_entry_logic.append((rsi_3_1h_gt_15) | (aroonu_14_1d_lt_80) | (roc_9_1d_lt_30))
-          # 1h down move, 4h high
-          long_entry_logic.append((rsi_3_1h_gt_15) | (stochrsi_k_4h_lt_70))
-          # 1h & 4h down move, 1h still not low enough
-          long_entry_logic.append(rsi_3_1h_gt_20 | rsi_3_4h_gt_20 | (aroonu_14_1h < 30.0))
-          # 1h & 4h down move, 4h still high
-          long_entry_logic.append(rsi_3_1h_gt_20 | rsi_3_4h_gt_20 | (rsi_14_4h < 40.0))
-          # 1h & 4h down move, 4h still high
-          long_entry_logic.append(rsi_3_1h_gt_20 | rsi_3_4h_gt_20 | (aroonu_14_4h_lt_50))
-          # 1h & 4h down move, 1d downtrend
-          long_entry_logic.append(rsi_3_1h_gt_20 | rsi_3_4h_gt_20 | (roc_9_1d_gt_neg_30))
-          # 1h & 4h down move, 1d high
-          long_entry_logic.append(rsi_3_1h_gt_20 | (rsi_3_4h_gt_35) | (aroonu_14_1d_lt_80))
-          # 1h & 4h down move, 4h high
-          long_entry_logic.append(rsi_3_1h_gt_20 | (rsi_3_4h > 45.0) | (aroonu_14_4h < 65.0))
-          # 1h & 1d down move, 1d high
-          long_entry_logic.append(rsi_3_1h_gt_20 | (rsi_3_1d_gt_20) | (aroonu_14_1d_lt_70))
-          # 1h down move, 1h still high, 1d high
-          long_entry_logic.append(rsi_3_1h_gt_20 | (aroonu_14_1h < 40.0) | (aroonu_14_1d_lt_90))
-          # 4h down move, 4h still high, 1d high
-          long_entry_logic.append(rsi_3_4h_gt_20 | (aroonu_14_4h_lt_50) | aroonu_14_1d_lt_100)
-          # 1h down move, 4h still high, 1d downtrend
-          long_entry_logic.append(rsi_3_1h_gt_20 | (stochrsi_k_4h < 40.0) | (roc_9_1d > -25.0))
-          # 1h down move, 4h & 1d high
-          long_entry_logic.append(rsi_3_1h_gt_20 | (stochrsi_k_4h_lt_50) | (stochrsi_k_1d < 80.0))
-          # 1h & 4h down move, 1h still high
-          long_entry_logic.append((rsi_3_1h_gt_25) | (rsi_3_4h_gt_35) | (aroonu_14_1h < 40.0))
-          # 1h & 4h down move, 4h high
-          long_entry_logic.append((rsi_3_1h_gt_25) | (rsi_3_4h_gt_40) | aroonu_14_4h_lt_70)
-          # 1h down move, 15m still not low enough, 4h high
-          long_entry_logic.append((rsi_3_1h_gt_25) | (rsi_14_15m < 30.0) | (stochrsi_k_4h < 60.0))
-          # 1h & 4h down move, 4h still high
-          long_entry_logic.append((rsi_3_1h_gt_25) | (rsi_3_4h_gt_35) | (stochrsi_k_4h_lt_50))
-          # 1h down move, 1h high
-          long_entry_logic.append((rsi_3_1h_gt_25) | (aroonu_14_1h < 60.0))
-          # 1h down move, 4h high
-          long_entry_logic.append((rsi_3_1h_gt_25) | aroonu_14_4h_lt_80)
-          # 1h & 1d down move, 1d high
-          long_entry_logic.append((rsi_3_1h_gt_30) | (rsi_3_1d > 45.0) | (aroonu_14_1d_lt_80))
-          # 1h down move, 4h & 1d high
-          long_entry_logic.append((rsi_3_1h_gt_30) | aroonu_14_4h_lt_70 | aroonu_14_1d_lt_100)
-          # 1h down move, 4h high, 1d downtrend
-          long_entry_logic.append((rsi_3_1h_gt_30) | aroonu_14_4h_lt_100 | (roc_9_1d > -30.0))
-          # 1h down move, 4h high
-          long_entry_logic.append((rsi_3_1h_gt_30) | (stochrsi_k_4h_lt_90))
-          # 1h & 4h down move, 4h high
-          long_entry_logic.append((rsi_3_1h_gt_35) | (rsi_3_4h > 55.0) | aroonu_14_4h_lt_80)
-          # 1h down move, 1h & 4h high
-          long_entry_logic.append((rsi_3_1h_gt_35) | aroonu_14_1h_lt_70 | (aroonu_14_4h_lt_90))
-          # 1h down move, 4h high, 4h downtrend
-          long_entry_logic.append((rsi_3_1h_gt_35) | aroonu_14_4h_lt_70 | (cmf_20_4h > -0.30))
-          # 1h down move, 1d high, 4h overbought
-          long_entry_logic.append((rsi_3_1h_gt_35) | (aroonu_14_1d_lt_90) | (roc_9_4h_lt_40))
-          # 1h down move, 1h high, 1d overbought
-          long_entry_logic.append((rsi_3_1h_gt_40) | aroonu_14_1h_lt_70 | (roc_9_1d_lt_20))
-          # 1h down move, 1h & 4h high
-          long_entry_logic.append((rsi_3_1h_gt_50) | aroonu_14_1h_lt_70 | aroonu_14_4h_lt_100)
-          # 1h down move, 1h overbought
-          long_entry_logic.append((rsi_3_1h_gt_50) | (roc_9_1h < 40.0))
-          # 4h & 1d down move, 1d high
-          long_entry_logic.append((rsi_3_4h_gt_5) | (rsi_3_1d > 30.0) | (aroonu_14_1d_lt_70))
-          # 4h down move, 1h & 4h downtrend
-          long_entry_logic.append((rsi_3_4h_gt_5) | (roc_9_1h > -15.0) | (roc_9_4h_gt_neg_20))
-          # 4h & 1d down move
-          long_entry_logic.append((rsi_3_4h_gt_10) | (rsi_3_1d_gt_20))
-          # 4h & 1d down move, 1d high
-          long_entry_logic.append((rsi_3_4h_gt_10) | (rsi_3_1d > 50.0) | (aroonu_14_1d_lt_90))
-          # 4h down move, 4h & 1d still high
-          long_entry_logic.append((rsi_3_4h_gt_10) | (aroonu_14_4h_lt_50) | (aroonu_14_1d < 50.0))
-          # 4h & 1d down move, 1d low
-          long_entry_logic.append((rsi_3_4h_gt_15) | (rsi_3_1d_gt_25) | (cmf_20_1d > -0.2))
-          # 4h & 1d down move, 1d still high
-          long_entry_logic.append((rsi_3_4h_gt_15) | (rsi_3_1d > 30.0) | (aroonu_14_1d < 50.0))
-          # 4h & 1d down move, 1d overbought
-          long_entry_logic.append(rsi_3_4h_gt_20 | (rsi_3_1d > 45.0) | (roc_9_1d_lt_40))
-          # 4h down move, 4h still not low enough, 1d downtrend
-          long_entry_logic.append(rsi_3_4h_gt_20 | (stochrsi_k_4h < 30.0) | (roc_9_1d_gt_neg_20))
-          # 4h down move, 4h & 1d downtrend
-          long_entry_logic.append(rsi_3_4h_gt_20 | (roc_9_4h_gt_neg_20) | (roc_9_1d_gt_neg_20))
-          # 4h down move, 4h high
-          long_entry_logic.append((rsi_3_4h_gt_30) | (aroonu_14_4h_lt_90))
-          # 4h down move, 4h & 1d high
-          long_entry_logic.append((rsi_3_4h_gt_35) | (aroonu_14_4h_lt_60) | (stochrsi_k_1d_lt_90))
-          # 4h down move, 1d high, 4h overbought
-          long_entry_logic.append((rsi_3_4h > 45.0) | aroonu_14_1d_lt_100 | (roc_9_4h_lt_10))
-          # 4h down move, 4h overbought
-          long_entry_logic.append((rsi_3_4h > 60.0) | (roc_9_4h_lt_40))
-          # 1d down move, 4h & 1d downtrend
-          long_entry_logic.append((rsi_3_1d_gt_10) | (roc_9_4h_gt_neg_20) | (roc_9_1d_gt_neg_20))
-          # 15m down move, 1d high, 1d downtrend
-          long_entry_logic.append((rsi_3_1d_gt_15) | (aroonu_14_1d_lt_70) | (roc_9_1d_gt_neg_40))
-          # 1d down move, 1d high, 1d downtrend
-          long_entry_logic.append((rsi_3_1d_gt_25) | (aroonu_14_1d_lt_80) | (roc_9_1d_gt_neg_30))
-          # 4h & 1d high, 4h overbought
-          long_entry_logic.append(aroonu_14_4h_lt_80 | aroonu_14_1d_lt_100 | (roc_9_4h < 20.0))
-          # 4h high, 1h overbought
-          long_entry_logic.append(aroonu_14_4h_lt_80 | (roc_9_1h < 40.0))
-          # 4h high, 4h overbought
-          long_entry_logic.append(aroonu_14_4h_lt_80 | (roc_9_4h_lt_40))
-          # 4h high, 1h overbought
-          long_entry_logic.append((stochrsi_k_4h_lt_70) | (roc_9_1h < 40.0))
-          # 4h high, 4h overbought
-          long_entry_logic.append((stochrsi_k_4h_lt_70) | (roc_9_4h_lt_40))
-          # 4h high, 4h overbought, 1d downtrend
-          long_entry_logic.append((stochrsi_k_4h < 90.0) | (roc_9_4h_lt_20) | (roc_9_1d_gt_neg_20))
-          # 1d green, 4h down move, 4h still high
-          long_entry_logic.append((change_pct_1d < 40.0) | (rsi_3_4h_gt_35) | (aroonu_14_4h_lt_40))
-          # 4h top wick, 1h down move, 1h still high
-          long_entry_logic.append((df["top_wick_pct_4h"] < 20.0) | (rsi_3_1h_gt_45) | (aroonu_14_1h_lt_50))
-          # pump, drop but not yet near the previous lows
-          long_entry_logic.append(
-            (((high_max_6_1d - df["low_min_6_1d"]) / df["low_min_6_1d"]) < 2.0)
-            | (close > (high_max_12_4h * 0.50))
-            | (close < (low_min_24_4h * 1.05))
-          )
-          # 1d overbought, drop but not yet near the previous lows
-          long_entry_logic.append(roc_9_1d_lt_50 | (close > (high_max_6_1d * 0.70)) | (close < (low_min_12_1d * 1.25)))
-          # 1d overbought, drop but not yet near the previous lows
-          long_entry_logic.append(
-            (((high_max_12_1d - low_min_12_1d) / low_min_12_1d) < 2.5)
-            | (close > (high_max_6_1d * 0.60))
-            | (close < (low_min_12_1d * 1.25))
-          )
-          # big drop in the last 2 days, 1d down move
-          long_entry_logic.append((close > (high_max_12_4h * 0.30)) | (rsi_3_1d > 30.0))
-          # big drop in the last 12 days, 1h down move
-          long_entry_logic.append((close > (high_max_12_1d * 0.30)) | rsi_3_1h_gt_20)
-          # big drop in the last 12 days, 4h still high
-          long_entry_logic.append((close > (high_max_12_1d * 0.40)) | (stochrsi_k_4h_lt_50))
-          # big drop in the last 20 days, 1h down move
-          long_entry_logic.append((close > (high_max_20_1d * 0.40)) | (rsi_3_1h_gt_10))
-          # big drop in the last 20 days, 4h down move
-          long_entry_logic.append((close > (high_max_20_1d * 0.10)) | (rsi_3_4h_gt_25))
-          # big drop in the last 30 days, 4h down move
-          long_entry_logic.append((close > (high_max_30_1d * 0.40)) | (rsi_3_4h_gt_15))
-          # big drop in the last 30 days, 4h still not low enough
-          long_entry_logic.append((close > (high_max_30_1d * 0.25)) | (stochrsi_k_4h < 30.0))
 
           # Logic
-          long_entry_logic.append(rsi_3 < 40.0)
-          long_entry_logic.append(rsi_3_15m < 50.0)
-          long_entry_logic.append(df["WILLR_14_15m"] < -50.0)
-          long_entry_logic.append(aroonu_14_15m < 25.0)
-          long_entry_logic.append(stochrsi_k_15m < 20.0)
-          long_entry_logic.append(willr_84_1h < -70.0)
-          long_entry_logic.append(stochrsi_k_1h < 20.0)
-          long_entry_logic.append(bbb_20_2_0_1h > 12.0)
-          long_entry_logic.append(close_max_48 >= (close * 1.10))
+          long_entry_logic.append(
+            (rsi_3 < 40.0)
+            & (rsi_3_15m < 50.0)
+            & (df["WILLR_14_15m"] < -50.0)
+            & (aroonu_14_15m < 25.0)
+            & (stochrsi_k_15m < 20.0)
+            & (willr_84_1h < -70.0)
+            & (stochrsi_k_1h < 20.0)
+            & (bbb_20_2_0_1h > 12.0)
+            & (close_max_48 >= (close * 1.10))
+          )
 
         # Condition #61 - Rebuy mode (Long).
         if long_entry_condition_index == 61:
