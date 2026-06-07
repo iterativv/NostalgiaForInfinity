@@ -1,6 +1,11 @@
 site_name: NostalgiaForInfinity
 use_directory_urls: true
 repo_url: https://github.com/iterativv/NostalgiaForInfinity
+markdown_extensions:
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
+  - attr_list
 theme:
   name: material
   features:
@@ -33,8 +38,112 @@ theme:
         name: Switch to system preference
 nav:
   - Home: index.md
-  - Features: features.md
-  - Installation:
+  - Installation (Simple):
       - With Docker: installation/docker.md
       - Without Docker: installation/without-docker.md
-  - Backtesting: backtesting.md
+
+  - Project Overview:
+      - Overview: project-overview.md
+      - Installation (Advanced): installation-and-setup.md
+      - Best Practices: best-practices.md
+      - API Reference: api-reference.md
+
+  - Backtest Results:
+      - Binance Futures:
+        - 2024 Global Summary: backtest-results/binance-futures/summary.md
+        - 2024 Monthly Results:
+          - January: backtest-results/binance-futures/2024/january.md
+          - February: backtest-results/binance-futures/2024/february.md
+          - March: backtest-results/binance-futures/2024/march.md
+          - April: backtest-results/binance-futures/2024/april.md
+          - May: backtest-results/binance-futures/2024/may.md
+          - June: backtest-results/binance-futures/2024/june.md
+          - July: backtest-results/binance-futures/2024/july.md
+          - August: backtest-results/binance-futures/2024/august.md
+          - September: backtest-results/binance-futures/2024/september.md
+          - October: backtest-results/binance-futures/2024/october.md
+          - November: backtest-results/binance-futures/2024/november.md
+          - December: backtest-results/binance-futures/2024/december.md
+      - Binance Spot:
+        - 2024 Global Summary: backtest-results/binance-spot/summary.md
+        - 2024 Monthly Results:
+          - January: backtest-results/binance-spot/2024/january.md
+          - February: backtest-results/binance-spot/2024/february.md
+          - March: backtest-results/binance-spot/2024/march.md
+          - April: backtest-results/binance-spot/2024/april.md
+          - May: backtest-results/binance-spot/2024/may.md
+          - June: backtest-results/binance-spot/2024/june.md
+          - July: backtest-results/binance-spot/2024/july.md
+          - August: backtest-results/binance-spot/2024/august.md
+          - September: backtest-results/binance-spot/2024/september.md
+          - October: backtest-results/binance-spot/2024/october.md
+          - November: backtest-results/binance-spot/2024/november.md
+          - December: backtest-results/binance-spot/2024/december.md
+      - Kucoin Spot:
+        - 2024 Global Summary: backtest-results/kucoin-spot/summary.md
+        - 2024 Monthly Results:
+          - January: backtest-results/kucoin-spot/2024/january.md
+          - February: backtest-results/kucoin-spot/2024/february.md
+          - March: backtest-results/kucoin-spot/2024/march.md
+          - April: backtest-results/kucoin-spot/2024/april.md
+          - May: backtest-results/kucoin-spot/2024/may.md
+          - June: backtest-results/kucoin-spot/2024/june.md
+          - July: backtest-results/kucoin-spot/2024/july.md
+          - August: backtest-results/kucoin-spot/2024/august.md
+          - September: backtest-results/kucoin-spot/2024/september.md
+          - October: backtest-results/kucoin-spot/2024/october.md
+          - November: backtest-results/kucoin-spot/2024/november.md
+          - December: backtest-results/kucoin-spot/2024/december.md
+
+  - Backtesting:
+      - Backtesting: backtesting/backtesting.md
+      - Execution: backtesting/backtesting-execution.md
+      - Data & Config: backtesting/backtesting-data-and-configuration.md
+      - Analysis & Visualization: backtesting/backtesting-analysis-and-visualization.md
+
+  - Configuration:
+      - Config Guide: configuration-guide/configuration-guide.md
+      - Advanced: configuration-guide/advanced-configuration.md
+      - Pair Lists: configuration-guide/pair-list-management.md
+      - Blacklist: configuration-guide/blacklist-management.md
+      - Hierarchy: configuration-guide/configuration-hierarchy.md
+
+  - Position Management:
+      - Overview: position-management/position-management.md
+      - Derisking: position-management/derisking-system.md
+      - Grinding: position-management/grinding-mechanism.md
+      - Rebuy Logic: position-management/rebuy-logic.md
+
+  - Technical Architecture:
+      - Overview: technical-architecture/technical-architecture.md
+      - System Design: technical-architecture/architecture-overview.md
+      - Data Flow: technical-architecture/data-flow-and-processing.md
+      - Integration: technical-architecture/integration-points.md
+      - Scalability: technical-architecture/scalability-and-performance.md
+      - Design Patterns: technical-architecture/design-patterns.md
+
+  - Trading Modes:
+      - Overview: trading-modes/trading-modes.md
+
+      - Long:
+          - Overview: trading-modes/long-trading-modes/long-trading-modes.md
+          - Grind: trading-modes/long-trading-modes/grind-long-mode.md
+          - Normal: trading-modes/long-trading-modes/normal-long-mode.md
+          - Pump: trading-modes/long-trading-modes/pump-long-mode.md
+          - Quick: trading-modes/long-trading-modes/quick-long-mode.md
+          - Rapid: trading-modes/long-trading-modes/rapid-long-mode.md
+          - Rebuy: trading-modes/long-trading-modes/rebuy-long-mode.md
+          - Scalp: trading-modes/long-trading-modes/scalp-long-mode.md
+
+      - Short:
+          - Overview: trading-modes/short-trading-modes/short-trading-modes.md
+          - Grind: trading-modes/short-trading-modes/short-grind-mode.md
+          - Normal: trading-modes/short-trading-modes/short-normal-mode.md
+          - Pump: trading-modes/short-trading-modes/short-pump-mode.md
+          - Quick: trading-modes/short-trading-modes/short-quick-mode.md
+          - Rapid: trading-modes/short-trading-modes/short-rapid-mode.md
+          - Rebuy: trading-modes/short-trading-modes/short-rebuy-mode.md
+          - Scalp: trading-modes/short-trading-modes/short-scalp-mode.md
+
+  - Nostalgia Strategy:
+      - Architecture: nostalgia-for-infinity-x6-architecture.md
