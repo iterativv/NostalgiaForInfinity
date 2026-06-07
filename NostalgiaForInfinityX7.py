@@ -70,7 +70,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.157"
+    return "v17.4.158"
 
   stoploss = -0.99
 
@@ -64180,35 +64180,35 @@ class NostalgiaForInfinityX7(IStrategy):
     if buyback_1_sub_grind_count > 0:
       buyback_1_current_open_rate = buyback_1_total_cost / buyback_1_total_amount
       buyback_1_current_grind_stake = buyback_1_total_amount * exit_rate * (1 - trade_fee_close)
-      buyback_1_current_grind_stake_profit = buyback_1_current_grind_stake - buyback_1_total_cost
+      buyback_1_current_grind_stake_profit = buyback_1_total_cost - buyback_1_current_grind_stake
     if buyback_2_sub_grind_count > 0:
       buyback_2_current_open_rate = buyback_2_total_cost / buyback_2_total_amount
       buyback_2_current_grind_stake = buyback_2_total_amount * exit_rate * (1 - trade_fee_close)
-      buyback_2_current_grind_stake_profit = buyback_2_current_grind_stake - buyback_2_total_cost
+      buyback_2_current_grind_stake_profit = buyback_2_total_cost - buyback_2_current_grind_stake
     if buyback_3_sub_grind_count > 0:
       buyback_3_current_open_rate = buyback_3_total_cost / buyback_3_total_amount
       buyback_3_current_grind_stake = buyback_3_total_amount * exit_rate * (1 - trade_fee_close)
-      buyback_3_current_grind_stake_profit = buyback_3_current_grind_stake - buyback_3_total_cost
+      buyback_3_current_grind_stake_profit = buyback_3_total_cost - buyback_3_current_grind_stake
     if grind_1_sub_grind_count > 0:
       grind_1_current_open_rate = grind_1_total_cost / grind_1_total_amount
       grind_1_current_grind_stake = grind_1_total_amount * exit_rate * (1 - trade_fee_close)
-      grind_1_current_grind_stake_profit = grind_1_current_grind_stake - grind_1_total_cost
+      grind_1_current_grind_stake_profit = grind_1_total_cost - grind_1_current_grind_stake
     if grind_2_sub_grind_count > 0:
       grind_2_current_open_rate = grind_2_total_cost / grind_2_total_amount
       grind_2_current_grind_stake = grind_2_total_amount * exit_rate * (1 - trade_fee_close)
-      grind_2_current_grind_stake_profit = grind_2_current_grind_stake - grind_2_total_cost
+      grind_2_current_grind_stake_profit = grind_2_total_cost - grind_2_current_grind_stake
     if grind_3_sub_grind_count > 0:
       grind_3_current_open_rate = grind_3_total_cost / grind_3_total_amount
       grind_3_current_grind_stake = grind_3_total_amount * exit_rate * (1 - trade_fee_close)
-      grind_3_current_grind_stake_profit = grind_3_current_grind_stake - grind_3_total_cost
+      grind_3_current_grind_stake_profit = grind_3_total_cost - grind_3_current_grind_stake
     if grind_4_sub_grind_count > 0:
       grind_4_current_open_rate = grind_4_total_cost / grind_4_total_amount
       grind_4_current_grind_stake = grind_4_total_amount * exit_rate * (1 - trade_fee_close)
-      grind_4_current_grind_stake_profit = grind_4_current_grind_stake - grind_4_total_cost
+      grind_4_current_grind_stake_profit = grind_4_total_cost - grind_4_current_grind_stake
     if grind_5_sub_grind_count > 0:
       grind_5_current_open_rate = grind_5_total_cost / grind_5_total_amount
       grind_5_current_grind_stake = grind_5_total_amount * exit_rate * (1 - trade_fee_close)
-      grind_5_current_grind_stake_profit = grind_5_current_grind_stake - grind_5_total_cost
+      grind_5_current_grind_stake_profit = grind_5_total_cost - grind_5_current_grind_stake
 
     if grind_1_is_exit_found:
       grind_1_exit_distance_ratio = (exit_rate - grind_1_exit_order.safe_price) / grind_1_exit_order.safe_price
@@ -66610,27 +66610,27 @@ class NostalgiaForInfinityX7(IStrategy):
     if grind_1_sub_grind_count > 0:
       grind_1_current_open_rate = grind_1_total_cost / grind_1_total_amount
       grind_1_current_grind_stake = grind_1_total_amount * exit_rate * (1 - trade_fee_close)
-      grind_1_current_grind_stake_profit = grind_1_current_grind_stake - grind_1_total_cost
+      grind_1_current_grind_stake_profit = grind_1_total_cost - grind_1_current_grind_stake
     if grind_2_sub_grind_count > 0:
       grind_2_current_open_rate = grind_2_total_cost / grind_2_total_amount
       grind_2_current_grind_stake = grind_2_total_amount * exit_rate * (1 - trade_fee_close)
-      grind_2_current_grind_stake_profit = grind_2_current_grind_stake - grind_2_total_cost
+      grind_2_current_grind_stake_profit = grind_2_total_cost - grind_2_current_grind_stake
     if grind_3_sub_grind_count > 0:
       grind_3_current_open_rate = grind_3_total_cost / grind_3_total_amount
       grind_3_current_grind_stake = grind_3_total_amount * exit_rate * (1 - trade_fee_close)
-      grind_3_current_grind_stake_profit = grind_3_current_grind_stake - grind_3_total_cost
+      grind_3_current_grind_stake_profit = grind_3_total_cost - grind_3_current_grind_stake
     if grind_4_sub_grind_count > 0:
       grind_4_current_open_rate = grind_4_total_cost / grind_4_total_amount
       grind_4_current_grind_stake = grind_4_total_amount * exit_rate * (1 - trade_fee_close)
-      grind_4_current_grind_stake_profit = grind_4_current_grind_stake - grind_4_total_cost
+      grind_4_current_grind_stake_profit = grind_4_total_cost - grind_4_current_grind_stake
     if grind_5_sub_grind_count > 0:
       grind_5_current_open_rate = grind_5_total_cost / grind_5_total_amount
       grind_5_current_grind_stake = grind_5_total_amount * exit_rate * (1 - trade_fee_close)
-      grind_5_current_grind_stake_profit = grind_5_current_grind_stake - grind_5_total_cost
+      grind_5_current_grind_stake_profit = grind_5_total_cost - grind_5_current_grind_stake
     if rebuy_sub_grind_count > 0:
       rebuy_current_open_rate = rebuy_total_cost / rebuy_total_amount
       rebuy_current_grind_stake = rebuy_total_amount * exit_rate * (1 - trade_fee_close)
-      rebuy_current_grind_stake_profit = rebuy_current_grind_stake - rebuy_total_cost
+      rebuy_current_grind_stake_profit = rebuy_total_cost - rebuy_current_grind_stake
 
     if grind_1_is_exit_found:
       grind_1_exit_distance_ratio = (exit_rate - grind_1_exit_order.safe_price) / grind_1_exit_order.safe_price
