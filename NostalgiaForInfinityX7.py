@@ -981,19 +981,41 @@ class NostalgiaForInfinityX7(IStrategy):
     if "ccxt_async_config" not in exchange_config:
       exchange_config["ccxt_async_config"] = {}
 
-    options = {
-      "brokerId": None,
-      "broker": {"spot": None, "margin": None, "future": None, "delivery": None},
-      "partner": {
-        "spot": {"id": None, "key": None},
-        "future": {"id": None, "key": None},
-        "id": None,
-        "key": None,
-      },
+    nfi_ccxt_broker_options = {
+      "spot": None,
+      "margin": None,
+      "future": None,
+      "delivery": None,
+      "swap": None,
+      "option": None,
+      "inverse": None,
+    }
+    nfi_ccxt_partner_options = {
+      "spot": {"id": None, "key": None},
+      "future": {"id": None, "key": None},
+      "id": None,
+      "key": None,
     }
 
-    exchange_config["ccxt_config"]["options"] = options
-    exchange_config["ccxt_async_config"]["options"] = options
+    for ccxt_config_key in ["ccxt_config", "ccxt_async_config"]:
+      configured_options = exchange_config[ccxt_config_key].get("options")
+      options = {
+        "brokerId": None,
+        "broker": dict(nfi_ccxt_broker_options),
+        "partner": dict(nfi_ccxt_partner_options),
+      }
+
+      if type(configured_options) is dict:
+        configured_broker = configured_options.get("broker")
+        configured_partner = configured_options.get("partner")
+
+        options.update({key: value for key, value in configured_options.items() if key not in ["broker", "partner"]})
+        if type(configured_broker) is dict:
+          options["broker"].update(configured_broker)
+        if type(configured_partner) is dict:
+          options["partner"].update(configured_partner)
+
+      exchange_config[ccxt_config_key]["options"] = options
     super().__init__(config)
 
     strategy_config = self.config
