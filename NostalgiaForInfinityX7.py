@@ -88,7 +88,8 @@ class NostalgiaForInfinityX7(IStrategy):
   info_timeframes = ["15m", "1h", "4h", "1d"]
 
   # BTC informatives
-  btc_info_timeframes = ["5m", "15m", "1h", "4h", "1d"]
+  # btc_info_timeframes = ["5m", "15m", "1h", "4h", "1d"]
+  btc_info_timeframes = ["1h", "4h", "1d"]
 
   stable_stake_currencies = frozenset(
     ("USDT", "BUSD", "USDC", "DAI", "TUSD", "FDUSD", "PAX", "USD", "EUR", "GBP", "TRY")
@@ -4258,6 +4259,342 @@ class NostalgiaForInfinityX7(IStrategy):
 
     return df
 
+  # BTC Informative 1d Timeframe Indicators
+  # ---------------------------------------------------------------------------------------------
+  def btc_informative_1d_indicators(self, btc_pair: str, btc_info_timeframe: str) -> DataFrame:
+    tik = time.perf_counter()
+    dp = self.dp
+    validate_indicators = self.validate_indicators
+
+    assert dp, "DataProvider is required for multiple timeframes."
+
+    # =========================================================================
+    # GET DATAFRAME
+    # =========================================================================
+    btc_informative_1d = dp.get_pair_dataframe(pair=btc_pair, timeframe=btc_info_timeframe)
+
+    # Empty dataframe protection
+    if btc_informative_1d.empty:
+      return btc_informative_1d
+
+    # =========================================================================
+    # BASE DATA
+    # =========================================================================
+
+    close_np = btc_informative_1d["close"].to_numpy(copy=False)
+    # high_np = btc_informative_1d["high"].to_numpy(copy=False)
+    # low_np = btc_informative_1d["low"].to_numpy(copy=False)
+    # open_np = btc_informative_1d["open"].to_numpy(copy=False)
+    # volume_np = btc_informative_1d["volume"].to_numpy(copy=False)
+
+    # =========================================================================
+    # MOMENTUM
+    # =========================================================================
+    ema_200 = ta.EMA(close_np, timeperiod=200)
+    new_cols = pd.DataFrame(
+      {
+        "BTC_EMA_200": ema_200,
+      },
+      index=btc_informative_1d.index,
+    )
+
+    btc_informative_1d = pd.concat([btc_informative_1d, new_cols], axis=1, copy=False)
+
+    # Enable ONLY during debugging
+    debug = False
+    if debug:
+      debug_cols = [
+        "BTC_RSI_14",
+        "BTC_EMA_200",
+        "BTC_ROC_3",
+      ]
+
+      validate_indicators(df=btc_informative_1d, columns=debug_cols, pair=btc_pair, timeframe=btc_info_timeframe)
+
+    # =========================================================================
+    # LOGGING
+    # =========================================================================
+
+    tok = time.perf_counter()
+
+    log.debug("[%s] btc_informative_1d_indicators took: %.4f seconds.", btc_pair, tok - tik)
+
+    return btc_informative_1d
+
+  # BTC Informative 4h Timeframe Indicators
+  # ---------------------------------------------------------------------------------------------
+  def btc_informative_4h_indicators(self, btc_pair: str, btc_info_timeframe: str) -> DataFrame:
+    tik = time.perf_counter()
+    dp = self.dp
+    validate_indicators = self.validate_indicators
+
+    assert dp, "DataProvider is required for multiple timeframes."
+
+    # =========================================================================
+    # GET DATAFRAME
+    # =========================================================================
+    btc_informative_4h = dp.get_pair_dataframe(pair=btc_pair, timeframe=btc_info_timeframe)
+
+    # Empty dataframe protection
+    if btc_informative_4h.empty:
+      return btc_informative_4h
+
+    # =========================================================================
+    # BASE DATA
+    # =========================================================================
+
+    close_np = btc_informative_4h["close"].to_numpy(copy=False)
+    # high_np = btc_informative_4h["high"].to_numpy(copy=False)
+    # low_np = btc_informative_4h["low"].to_numpy(copy=False)
+    # open_np = btc_informative_4h["open"].to_numpy(copy=False)
+    # volume_np = btc_informative_4h["volume"].to_numpy(copy=False)
+
+    # =========================================================================
+    # CORE INDICATORS
+    # =========================================================================
+    rsi_14 = ta.RSI(close_np, timeperiod=14)
+
+    new_cols = pd.DataFrame(
+      {
+        "BTC_RSI_14": rsi_14,
+      },
+      index=btc_informative_4h.index,
+    )
+
+    btc_informative_4h = pd.concat([btc_informative_4h, new_cols], axis=1, copy=False)
+
+    # Enable ONLY during debugging
+    debug = False
+    if debug:
+      debug_cols = [
+        "BTC_RSI_14",
+      ]
+
+      validate_indicators(df=btc_informative_4h, columns=debug_cols, pair=btc_pair, timeframe=btc_info_timeframe)
+
+    # =========================================================================
+    # LOGGING
+    # =========================================================================
+
+    tok = time.perf_counter()
+
+    log.debug("[%s] btc_informative_4h_indicators took: %.4f seconds.", btc_pair, tok - tik)
+
+    return btc_informative_4h
+
+  # BTC Informative 1h Timeframe Indicators
+  # ---------------------------------------------------------------------------------------------
+  def btc_informative_1h_indicators(self, btc_pair: str, btc_info_timeframe: str) -> DataFrame:
+    tik = time.perf_counter()
+    dp = self.dp
+    validate_indicators = self.validate_indicators
+
+    assert dp, "DataProvider is required for multiple timeframes."
+
+    # =========================================================================
+    # GET DATAFRAME
+    # =========================================================================
+    btc_informative_1h = dp.get_pair_dataframe(pair=btc_pair, timeframe=btc_info_timeframe)
+
+    # Empty dataframe protection
+    if btc_informative_1h.empty:
+      return btc_informative_1h
+
+    # =========================================================================
+    # BASE DATA
+    # =========================================================================
+
+    close_np = btc_informative_1h["close"].to_numpy(copy=False)
+    # high_np = btc_informative_1h["high"].to_numpy(copy=False)
+    # low_np = btc_informative_1h["low"].to_numpy(copy=False)
+    # open_np = btc_informative_1h["open"].to_numpy(copy=False)
+    # volume_np = btc_informative_1h["volume"].to_numpy(copy=False)
+
+    # =========================================================================
+    # CORE INDICATORS
+    # =========================================================================
+    rsi_14 = ta.RSI(close_np, timeperiod=14)
+
+    # =========================================================================
+    # MOMENTUM
+    # =========================================================================
+    ema_20 = ta.EMA(close_np, timeperiod=20)
+    roc_3 = ta.ROC(close_np, timeperiod=3)
+
+    new_cols = pd.DataFrame(
+      {
+        "BTC_RSI_14": rsi_14,
+        "BTC_EMA_20": ema_20,
+        "BTC_ROC_3": roc_3,
+      },
+      index=btc_informative_1h.index,
+    )
+
+    btc_informative_1h = pd.concat([btc_informative_1h, new_cols], axis=1, copy=False)
+
+    # Enable ONLY during debugging
+    debug = False
+    if debug:
+      debug_cols = [
+        "BTC_RSI_14",
+        "BTC_EMA_20",
+        "BTC_ROC_3",
+      ]
+
+      validate_indicators(df=btc_informative_1h, columns=debug_cols, pair=btc_pair, timeframe=btc_info_timeframe)
+
+    # =========================================================================
+    # LOGGING
+    # =========================================================================
+
+    tok = time.perf_counter()
+
+    log.debug("[%s] btc_informative_1h_indicators took: %.4f seconds.", btc_pair, tok - tik)
+
+    return btc_informative_1h
+
+  # BTC Informative 15m Timeframe Indicators
+  # ---------------------------------------------------------------------------------------------
+  def btc_informative_15m_indicators(self, btc_pair: str, btc_info_timeframe: str) -> DataFrame:
+    tik = time.perf_counter()
+    dp = self.dp
+    validate_indicators = self.validate_indicators
+
+    assert dp, "DataProvider is required for multiple timeframes."
+
+    # =========================================================================
+    # GET DATAFRAME
+    # =========================================================================
+    btc_informative_15m = dp.get_pair_dataframe(pair=btc_pair, timeframe=btc_info_timeframe)
+
+    # Empty dataframe protection
+    if btc_informative_15m.empty:
+      return btc_informative_15m
+
+    # =========================================================================
+    # BASE DATA
+    # =========================================================================
+
+    close_np = btc_informative_15m["close"].to_numpy(copy=False)
+    # high_np = btc_informative_15m["high"].to_numpy(copy=False)
+    # low_np = btc_informative_15m["low"].to_numpy(copy=False)
+    # open_np = btc_informative_15m["open"].to_numpy(copy=False)
+    # volume_np = btc_informative_15m["volume"].to_numpy(copy=False)
+
+    # =========================================================================
+    # CORE INDICATORS
+    # =========================================================================
+    rsi_14 = ta.RSI(close_np, timeperiod=14)
+
+    # =========================================================================
+    # MOMENTUM
+    # =========================================================================
+    ema_20 = ta.EMA(close_np, timeperiod=20)
+    roc_3 = ta.ROC(close_np, timeperiod=3)
+
+    new_cols = pd.DataFrame(
+      {
+        "BTC_RSI_14": rsi_14,
+        "BTC_EMA_20": ema_20,
+        "BTC_ROC_3": roc_3,
+      },
+      index=btc_informative_15m.index,
+    )
+
+    btc_informative_15m = pd.concat([btc_informative_15m, new_cols], axis=1, copy=False)
+
+    # Enable ONLY during debugging
+    debug = False
+    if debug:
+      debug_cols = [
+        "BTC_RSI_14",
+        "BTC_EMA_20",
+        "BTC_ROC_3",
+      ]
+
+      validate_indicators(df=btc_informative_15m, columns=debug_cols, pair=btc_pair, timeframe=btc_info_timeframe)
+
+    # =========================================================================
+    # LOGGING
+    # =========================================================================
+
+    tok = time.perf_counter()
+
+    log.debug("[%s] btc_informative_15m_indicators took: %.4f seconds.", btc_pair, tok - tik)
+
+    return btc_informative_15m
+
+  # BTC Informative 5m Timeframe Indicators
+  # ---------------------------------------------------------------------------------------------
+  def btc_informative_5m_indicators(self, btc_pair: str, btc_info_timeframe: str) -> DataFrame:
+    tik = time.perf_counter()
+    dp = self.dp
+    validate_indicators = self.validate_indicators
+
+    assert dp, "DataProvider is required for multiple timeframes."
+
+    # =========================================================================
+    # GET DATAFRAME
+    # =========================================================================
+    btc_informative_5m = dp.get_pair_dataframe(pair=btc_pair, timeframe=btc_info_timeframe)
+
+    # Empty dataframe protection
+    if btc_informative_5m.empty:
+      return btc_informative_5m
+
+    # =========================================================================
+    # BASE DATA
+    # =========================================================================
+
+    close_np = btc_informative_5m["close"].to_numpy(copy=False)
+    # high_np = btc_informative_5m["high"].to_numpy(copy=False)
+    # low_np = btc_informative_5m["low"].to_numpy(copy=False)
+    # open_np = btc_informative_5m["open"].to_numpy(copy=False)
+    # volume_np = btc_informative_5m["volume"].to_numpy(copy=False)
+
+    # =========================================================================
+    # CORE INDICATORS
+    # =========================================================================
+    rsi_14 = ta.RSI(close_np, timeperiod=14)
+
+    # =========================================================================
+    # MOMENTUM
+    # =========================================================================
+    ema_20 = ta.EMA(close_np, timeperiod=20)
+    roc_3 = ta.ROC(close_np, timeperiod=3)
+
+    new_cols = pd.DataFrame(
+      {
+        "BTC_RSI_14": rsi_14,
+        "BTC_EMA_20": ema_20,
+        "BTC_ROC_3": roc_3,
+      },
+      index=btc_informative_5m.index,
+    )
+
+    btc_informative_5m = pd.concat([btc_informative_5m, new_cols], axis=1, copy=False)
+
+    # Enable ONLY during debugging
+    debug = False
+    if debug:
+      debug_cols = [
+        "BTC_RSI_14",
+        "BTC_EMA_20",
+        "BTC_ROC_3",
+      ]
+
+      validate_indicators(df=btc_informative_5m, columns=debug_cols, pair=btc_pair, timeframe=btc_info_timeframe)
+
+    # =========================================================================
+    # LOGGING
+    # =========================================================================
+
+    tok = time.perf_counter()
+
+    log.debug("[%s] btc_informative_5m_indicators took: %.4f seconds.", btc_pair, tok - tik)
+
+    return btc_informative_5m
+
   # Coin Pair Indicator Switch Case
   # ---------------------------------------------------------------------------------------------
   def info_switcher(self, metadata: dict, info_timeframe) -> DataFrame:
@@ -4272,61 +4609,21 @@ class NostalgiaForInfinityX7(IStrategy):
     else:
       raise RuntimeError(f"{info_timeframe} not supported as informative timeframe for BTC pair.")
 
-  # BTC Indicators
-  # ---------------------------------------------------------------------------------------------
-  def _btc_info_indicators(self, btc_info_pair: str, btc_info_timeframe: str, metadata: dict) -> DataFrame:
-    tik = time.perf_counter()
-    metadata_pair = metadata["pair"]
-
-    # -------------------------------------------------------------------------
-    # LOAD DATA
-    # -------------------------------------------------------------------------
-
-    df = self.dp.get_pair_dataframe(btc_info_pair, btc_info_timeframe)
-
-    # -------------------------------------------------------------------------
-    # OPTIONAL INDICATORS
-    # -------------------------------------------------------------------------
-
-    # Example:
-    #
-    # if btc_info_timeframe == "1d":
-    #     df["btc_RSI_14"] = ta.RSI(df, timeperiod=14)
-
-    # -------------------------------------------------------------------------
-    # FAST PREFIX RENAME
-    # -------------------------------------------------------------------------
-
-    df.rename(
-      columns=lambda s: f"btc_{s}" if s != "date" else s,
-      inplace=True,
-    )
-
-    # -------------------------------------------------------------------------
-    # DEBUG TIMER
-    # -------------------------------------------------------------------------
-
-    tok = time.perf_counter()
-
-    log.debug("[%s] btc_info_%s_indicators took: %.4f seconds.", metadata_pair, btc_info_timeframe, tok - tik)
-
-    return df
-
   # BTC Indicator Switch Case
   # ---------------------------------------------------------------------------------------------
-  def btc_info_switcher(self, btc_info_pair, btc_info_timeframe, metadata: dict) -> DataFrame:
-    supported_timeframes = {
-      "1d",
-      "4h",
-      "1h",
-      "15m",
-      "5m",
-    }
-
-    if btc_info_timeframe not in supported_timeframes:
+  def btc_info_switcher(self, btc_pair: str, btc_info_timeframe) -> DataFrame:
+    if btc_info_timeframe == "1d":
+      return self.btc_informative_1d_indicators(btc_pair, btc_info_timeframe)
+    elif btc_info_timeframe == "4h":
+      return self.btc_informative_4h_indicators(btc_pair, btc_info_timeframe)
+    elif btc_info_timeframe == "1h":
+      return self.btc_informative_1h_indicators(btc_pair, btc_info_timeframe)
+    # elif btc_info_timeframe == "15m":
+    # return self.btc_informative_15m_indicators(btc_pair, btc_info_timeframe)
+    # elif btc_info_timeframe == "5m":
+    # return self.btc_informative_5m_indicators(btc_pair, btc_info_timeframe)
+    else:
       raise RuntimeError(f"{btc_info_timeframe} not supported as informative timeframe for BTC pair.")
-
-    return self._btc_info_indicators(btc_info_pair, btc_info_timeframe, metadata)
 
   # Populate Indicators
   # ---------------------------------------------------------------------------------------------
@@ -4355,8 +4652,7 @@ class NostalgiaForInfinityX7(IStrategy):
     for btc_tf in self.btc_info_timeframes:
       btc_informative = self.btc_info_switcher(
         btc_info_pair,
-        btc_tf,
-        metadata,
+        btc_tf
       )
 
       # ---------------------------------------------------------------------
@@ -4390,6 +4686,9 @@ class NostalgiaForInfinityX7(IStrategy):
       # ---------------------------------------------------------------------
 
       df = merge_informative_pair(df, btc_informative, base_timeframe, btc_tf, ffill=False)
+      # rsi_col = f"BTC_RSI_14_{btc_tf}"
+      # if rsi_col in df.columns:
+      # log.warning("MERGE CHECK | %s=%s", rsi_col, df[rsi_col].iloc[-1])
 
       # ---------------------------------------------------------------------
       # CLEANUP
@@ -4460,6 +4759,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # FINAL FORWARD FILL (ONCE)
     # =========================================================================
     df.ffill(inplace=True)
+    # log.warning("FINAL BTC_RSI_14_4h=%s", df["BTC_RSI_14_4h"].iloc[-1])
 
     # =========================================================================
     # FINAL DEBUG VALIDATION
