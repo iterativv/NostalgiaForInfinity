@@ -4650,10 +4650,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
 
     for btc_tf in self.btc_info_timeframes:
-      btc_informative = self.btc_info_switcher(
-        btc_info_pair,
-        btc_tf
-      )
+      btc_informative = self.btc_info_switcher(btc_info_pair, btc_tf)
 
       # ---------------------------------------------------------------------
       # EMPTY CHECK
@@ -44680,6 +44677,7 @@ class NostalgiaForInfinityX7(IStrategy):
     last_ema_12 = last_candle["EMA_12"]
     last_open = last_candle["open"]
     last_stochrsi_k = last_candle["STOCHRSIk_14_14_3_3"]
+    last_roc_9_1h = last_candle["ROC_9_1h"]
     last_roc_9_4h = last_candle["ROC_9_4h"]
     last_willr_14 = last_candle["WILLR_14"]
 
