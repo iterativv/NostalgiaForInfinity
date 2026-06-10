@@ -11,7 +11,7 @@
 ## Table of Contents
 1. [Introduction](#introduction)
 2. [Short Rebuy Mechanism Overview](#short-rebuy-mechanism-overview)
-3. [State Management via `self.rebuy_state`](#state-management-via-selfrebuystate)
+3. [State Management via `self.rebuy_state`](#state-rebuy-state)
 4. [Configuration Parameters](#configuration-parameters)
 5. [Entry and Exit Logic](#entry-and-exit-logic)
 6. [Position Sizing and Risk Exposure](#position-sizing-and-risk-exposure)
@@ -53,7 +53,7 @@ I --> B
 **Diagram sources**
 - [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40347-L40581)
 
-## State Management via `self.rebuy_state`
+## State Management via `self.rebuy_state` {#state-rebuy-state}
 Although the provided code does not explicitly define a `self.rebuy_state` variable, the system maintains state implicitly through the trade object, cache mechanisms, and signal tagging. The `Trade` object tracks entry fills, profit ratios, and current stake, which are used to determine whether a rebuy condition should be evaluated.
 
 The `target_profit_cache` plays a critical role in state tracking by storing:
