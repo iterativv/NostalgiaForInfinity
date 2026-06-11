@@ -81,7 +81,7 @@
       "method": "VolumePairList",
       "number_assets": 60,
       "sort_key": "quoteVolume",
-      "refresh_period": 1800
+      "refresh_period": 3600
     },
     { "method": "FullTradesFilter" },
     { "method": "AgeFilter", "min_days_listed": 60 },
@@ -98,11 +98,11 @@
       "lookback_days": 3,
       "min_rate_of_change": 0.03,
       "max_rate_of_change": 2.0,
-      "refresh_period": 1800
+      "refresh_period": 3600
     },
     {
       "method": "VolumePairList",
-      "number_assets": 48,
+      "number_assets": 40,
       "sort_key": "quoteVolume"
     }
   ],
