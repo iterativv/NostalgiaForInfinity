@@ -23,7 +23,9 @@
       // Tokenized stocks (ON-suffix variant on Bitget)
       "(AAPL|AMD|AMZN|GOOGL|IAU|ITOT|IVV|IWM|META|MSFT|NVDA|QQQ|SLV|SPY|TSLA)ON/.*",
       // Tokenized stocks on futures using native stock ticker (Reddit, Redwire, Rocket Lab, Red Cat, Rigetti)
-      "(RCAT|RDDT|RDW|RGTI|RKLB)/.*"
+      "(RCAT|RDDT|RDW|RGTI|RKLB)/.*",
+      // Bitget tokenized stocks (rB/rD/rO/rT base coins with areaSymbol=yes)
+      "(RB|RD|RO|RT)/.*"
     ]
   }
 }
