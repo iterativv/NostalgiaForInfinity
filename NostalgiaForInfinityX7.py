@@ -43140,6 +43140,13 @@ class NostalgiaForInfinityX7(IStrategy):
       or (last_stochrsi_k > 95.0)
       or (last_close > (last_bbu_20 * 1.01))
       or ((last_rsi_3 > 90.0) and (last_rsi_14 < 50.0))
+      or (
+        (last_rsi_3 > 80.0)
+        and (last_candle["RSI_3_1h"] < 20.0)
+        and (last_candle["RSI_3_4h"] < 20.0)
+        and (last_candle["ROC_9_1d"] > -10.0)
+        and (last_candle["BTC_RSI_14_4h"] < 35.0)
+      )
     ):
       return True
 
