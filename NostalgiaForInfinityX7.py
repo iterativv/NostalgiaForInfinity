@@ -25868,12 +25868,12 @@ class NostalgiaForInfinityX7(IStrategy):
     cache_data = cache.data if cache is not None else None
     profit_target_get = cache_data.get if cache_data is not None else None
     target_data = profit_target_get(pair) if profit_target_get is not None else None
+    previous_profit = target_data["profit"] if target_data else None
+    previous_sell_reason = target_data["sell_reason"] if target_data else ""
 
     # Profit target logic
     if target_data:
       previous_rate = target_data["rate"]
-      previous_profit = target_data["profit"]
-      previous_sell_reason = target_data["sell_reason"]
 
       previous_time_profit_reached = datetime.fromisoformat(target_data["time_profit_reached"])
 
@@ -25948,8 +25948,6 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Sell triggered
     if sell and signal_name is not None:
-      previous_profit = target_data["profit"] if target_data else None
-
       if signal_name in (stoploss_doom, stoploss_ue):
         mark_pair, mark_signal = mark_profit_target(
           mode_name,
@@ -26004,8 +26002,6 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Update cached max profit
     elif profit_init_ratio >= 0.005:
-      previous_profit = target_data["profit"] if target_data else None
-
       if previous_profit is None or previous_profit < profit_init_ratio:
         set_profit_target(
           pair,
@@ -26157,14 +26153,14 @@ class NostalgiaForInfinityX7(IStrategy):
     cache_data = cache.data if cache is not None else None
     profit_target_get = cache_data.get if cache_data is not None else None
     target_data = profit_target_get(pair) if profit_target_get is not None else None
+    previous_profit = target_data["profit"] if target_data else None
+    previous_sell_reason = target_data["sell_reason"] if target_data else ""
 
     # -------------------------------------------------------------------------
     # Profit target logic
     # -------------------------------------------------------------------------
     if target_data:
       previous_rate = target_data["rate"]
-      previous_profit = target_data["profit"]
-      previous_sell_reason = target_data["sell_reason"]
 
       previous_time_profit_reached = datetime.fromisoformat(target_data["time_profit_reached"])
 
@@ -26241,9 +26237,6 @@ class NostalgiaForInfinityX7(IStrategy):
     # Sell triggered logic
     # -------------------------------------------------------------------------
     if sell and signal_name is not None:
-      previous_profit = target_data["profit"] if target_data else None
-      previous_sell_reason = target_data["sell_reason"] if target_data else ""
-
       if signal_name in (stoploss_doom, stoploss_ue) and previous_sell_reason not in (
         stoploss_doom,
         f"exit_profit_{mode_name}_stoploss_u_e",
@@ -26303,8 +26296,6 @@ class NostalgiaForInfinityX7(IStrategy):
     # Update max cached profit
     # -------------------------------------------------------------------------
     elif profit_init_ratio >= 0.005:
-      previous_profit = target_data["profit"] if target_data else None
-
       if previous_profit is None or previous_profit < profit_init_ratio:
         set_profit_target(
           pair,
@@ -26445,11 +26436,11 @@ class NostalgiaForInfinityX7(IStrategy):
     cache_data = cache.data if cache is not None else None
     profit_target_get = cache_data.get if cache_data is not None else None
     target_data = profit_target_get(pair) if profit_target_get is not None else None
+    previous_profit = target_data["profit"] if target_data else None
+    previous_sell_reason = target_data["sell_reason"] if target_data else ""
 
     if target_data:
       previous_rate = target_data["rate"]
-      previous_profit = target_data["profit"]
-      previous_sell_reason = target_data["sell_reason"]
       previous_time_profit_reached = datetime.fromisoformat(target_data["time_profit_reached"])
 
       sell_max, signal_name_max = exit_profit_target(
@@ -26523,8 +26514,6 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Add the pair to the list, if a sell triggered and conditions met
     if sell and signal_name is not None:
-      previous_profit = target_data["profit"] if target_data else None
-
       if signal_name in (stoploss_doom, stoploss_u_e):
         mark_pair, mark_signal = mark_profit_target(
           mode_name,
@@ -26577,8 +26566,6 @@ class NostalgiaForInfinityX7(IStrategy):
 
     else:
       if profit_init_ratio >= 0.005:
-        previous_profit = target_data["profit"] if target_data else None
-
         if (previous_profit is None) or (previous_profit < profit_init_ratio):
           set_profit_target(
             pair,
@@ -26694,11 +26681,11 @@ class NostalgiaForInfinityX7(IStrategy):
     cache_data = cache.data if cache is not None else None
     profit_target_get = cache_data.get if cache_data is not None else None
     target_data = profit_target_get(pair) if profit_target_get is not None else None
+    previous_profit = target_data["profit"] if target_data else None
+    previous_sell_reason = target_data["sell_reason"] if target_data else ""
 
     if target_data:
       previous_rate = target_data["rate"]
-      previous_profit = target_data["profit"]
-      previous_sell_reason = target_data["sell_reason"]
       previous_time_profit_reached = datetime.fromisoformat(target_data["time_profit_reached"])
 
       sell_max, signal_name_max = exit_profit_target(
@@ -26772,8 +26759,6 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Add the pair to the list, if a sell triggered and conditions met
     if sell and signal_name is not None:
-      previous_profit = target_data["profit"] if target_data else None
-
       if signal_name in (stoploss_doom, stoploss_u_e):
         mark_pair, mark_signal = mark_profit_target(
           mode_name,
@@ -26826,8 +26811,6 @@ class NostalgiaForInfinityX7(IStrategy):
 
     else:
       if profit_init_ratio >= 0.03:
-        previous_profit = target_data["profit"] if target_data else None
-
         if (previous_profit is None) or (previous_profit < profit_init_ratio):
           set_profit_target(
             pair,
@@ -26887,6 +26870,8 @@ class NostalgiaForInfinityX7(IStrategy):
     cache_data = cache.data if cache is not None else None
     profit_target_get = cache_data.get if cache_data is not None else None
     pair_cache = profit_target_get(pair) if profit_target_get is not None else None
+    previous_profit = pair_cache["profit"] if pair_cache else None
+    previous_sell_reason = pair_cache["sell_reason"] if pair_cache else ""
 
     sell = False
     signal_name = None
@@ -26996,8 +26981,6 @@ class NostalgiaForInfinityX7(IStrategy):
     # Profit Target Signal
     if pair_cache:
       previous_rate = pair_cache["rate"]
-      previous_profit = pair_cache["profit"]
-      previous_sell_reason = pair_cache["sell_reason"]
       previous_time_profit_reached = datetime.fromisoformat(pair_cache["time_profit_reached"])
 
       sell_max, signal_name_max = exit_profit_target(
@@ -27071,9 +27054,6 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Add the pair to the list, if a sell triggered and conditions met
     if sell and signal_name is not None:
-      previous_profit = pair_cache["profit"] if pair_cache else None
-      previous_sell_reason = pair_cache["sell_reason"] if pair_cache else ""
-
       protected_signals = {
         f"exit_{mode}_stoploss_doom",
         f"exit_{mode}_stoploss_u_e",
@@ -27135,8 +27115,6 @@ class NostalgiaForInfinityX7(IStrategy):
           return True, signal_name
 
     elif profit_init_ratio >= 0.005:
-      previous_profit = pair_cache["profit"] if pair_cache else None
-
       if previous_profit is None or previous_profit < profit_init_ratio:
         set_profit_target(
           pair,
@@ -27253,6 +27231,8 @@ class NostalgiaForInfinityX7(IStrategy):
     cache_data = cache.data if cache is not None else None
     profit_target_get = cache_data.get if cache_data is not None else None
     pair_cache = profit_target_get(pair) if profit_target_get is not None else None
+    previous_profit = pair_cache["profit"] if pair_cache else None
+    previous_sell_reason = pair_cache["sell_reason"] if pair_cache else ""
 
     sell = False
     signal_name = None
@@ -27313,8 +27293,6 @@ class NostalgiaForInfinityX7(IStrategy):
     # Profit Target Signal
     if pair_cache:
       previous_rate = pair_cache["rate"]
-      previous_profit = pair_cache["profit"]
-      previous_sell_reason = pair_cache["sell_reason"]
       previous_time_profit_reached = datetime.fromisoformat(pair_cache["time_profit_reached"])
 
       sell_max, signal_name_max = exit_profit_target(
@@ -27388,9 +27366,6 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Add the pair to the list, if a sell triggered and conditions met
     if sell and signal_name is not None:
-      previous_profit = pair_cache["profit"] if pair_cache else None
-      previous_sell_reason = pair_cache["sell_reason"] if pair_cache else ""
-
       protected_signals = {
         f"exit_{mode}_stoploss_doom",
         f"exit_{mode}_stoploss_u_e",
@@ -27433,8 +27408,6 @@ class NostalgiaForInfinityX7(IStrategy):
           return True, signal_name
 
     elif profit_init_ratio >= 0.005:
-      previous_profit = pair_cache["profit"] if pair_cache else None
-
       if previous_profit is None or previous_profit < profit_init_ratio:
         set_profit_target(
           pair,
@@ -27566,11 +27539,11 @@ class NostalgiaForInfinityX7(IStrategy):
     cache_data = cache.data if cache is not None else None
     profit_target_get = cache_data.get if cache_data is not None else None
     pair_data = profit_target_get(pair) if profit_target_get is not None else None
+    previous_profit = pair_data["profit"] if pair_data else None
+    previous_sell_reason = pair_data["sell_reason"] if pair_data else ""
 
     if pair_data:
       previous_rate = pair_data["rate"]
-      previous_profit = pair_data["profit"]
-      previous_sell_reason = pair_data["sell_reason"]
       previous_time_profit_reached = datetime.fromisoformat(pair_data["time_profit_reached"])
 
       sell_max, signal_name_max = exit_profit_target(
@@ -27633,8 +27606,6 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Add the pair to the list, if a sell triggered and conditions met
     if sell and signal_name is not None:
-      previous_profit = pair_data["profit"] if pair_data else None
-
       if signal_name in {
         f"exit_{mode}_stoploss_doom",
         f"exit_{mode}_stoploss_u_e",
@@ -27680,8 +27651,6 @@ class NostalgiaForInfinityX7(IStrategy):
 
     else:
       if profit_init_ratio >= 0.005:
-        previous_profit = pair_data["profit"] if pair_data else None
-
         if (previous_profit is None) or (previous_profit < profit_init_ratio):
           mark_signal = f"exit_profit_{mode}_max"
           set_profit_target(pair, mark_signal, current_rate, profit_init_ratio, current_time)
