@@ -70,7 +70,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.216"
+    return "v17.4.217"
 
   stoploss = -0.99
 
@@ -12610,6 +12610,36 @@ class NostalgiaForInfinityX7(IStrategy):
 
     self._remove_profit_target(pair)
     return True
+
+    # Check Entry Timeout
+    # ---------------------------------------------------------------------------------------------
+    def check_entry_timeout(self, pair: str, trade: Trade, order: Order, current_time: datetime, **kwargs) -> bool:
+      ob = self.dp.orderbook(pair, 1)
+      bids = ob["bids"][0][0]
+      asks = ob["asks"][0][0]
+      # Cancel order if price is more than 3% difference.
+      if trade.is_short:
+        if asks < order.price * 0.97:
+          return True
+      else:
+        if bids > order.price * 1.03:
+          return True
+      return False
+
+    # Check Exit Timeout
+    # ---------------------------------------------------------------------------------------------
+    def check_exit_timeout(self, pair: str, trade: Trade, order: Order, current_time: datetime, **kwargs) -> bool:
+      ob = self.dp.orderbook(pair, 1)
+      bids = ob["bids"][0][0]
+      asks = ob["asks"][0][0]
+      # Cancel order if price is more than 3% difference.
+      if trade.is_short:
+        if bids > order.price * 1.03:
+          return True
+      else:
+        if asks < order.price * 0.97:
+          return True
+      return False
 
   # Bot Loop Start
   # ---------------------------------------------------------------------------------------------
