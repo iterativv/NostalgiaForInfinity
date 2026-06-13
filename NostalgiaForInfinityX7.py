@@ -70,7 +70,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.225"
+    return "v17.4.226"
 
   stoploss = -0.99
 
@@ -43543,6 +43543,9 @@ class NostalgiaForInfinityX7(IStrategy):
       any(c in self.long_rebuy_mode_tags for c in enter_tags)
       and all(c in (self.long_rebuy_mode_tags + self.long_grind_mode_tags) for c in enter_tags)
     )
+    # Rebuy mode, the first entry is lower than normal slot stake
+    if is_rebuy_mode:
+      slice_amount /= self.system_v3_rebuy_mode_stake_multiplier
 
     is_system_v3, is_system_v3_1, is_system_v3_2 = self.get_system_version_flags(trade)
 
@@ -43985,9 +43988,6 @@ class NostalgiaForInfinityX7(IStrategy):
       + rebuy_sub_grind_count
     )
 
-    # Rebuy mode, the first entry is lower than normal slot stake
-    if is_rebuy_mode:
-      slice_amount /= self.system_v3_rebuy_mode_stake_multiplier
     # not reached the max allowed stake for all grinds
     is_not_trade_max_stake_v3 = current_stake_amount < (slice_amount * self.system_v3_max_stake)
     is_not_trade_max_stake_v3_1 = current_stake_amount < (slice_amount * self.system_v3_1_max_stake)
@@ -67222,6 +67222,9 @@ class NostalgiaForInfinityX7(IStrategy):
       any(c in self.short_rebuy_mode_tags for c in enter_tags)
       and all(c in (self.short_rebuy_mode_tags + self.short_grind_mode_tags) for c in enter_tags)
     )
+    # Rebuy mode, the first entry is lower than normal slot stake
+    if is_rebuy_mode:
+      slice_amount /= self.system_v3_rebuy_mode_stake_multiplier
 
     is_system_v3, is_system_v3_1, is_system_v3_2 = self.get_system_version_flags(trade)
 
@@ -67608,9 +67611,6 @@ class NostalgiaForInfinityX7(IStrategy):
       + rebuy_sub_grind_count
     )
 
-    # Rebuy mode, the first entry is lower than normal slot stake
-    if is_rebuy_mode:
-      slice_amount /= self.system_v3_rebuy_mode_stake_multiplier
     # not reached the max allowed stake for all grinds
     is_not_trade_max_stake_v3 = current_stake_amount < (slice_amount * self.system_v3_max_stake)
     is_not_trade_max_stake_v3_1 = current_stake_amount < (slice_amount * self.system_v3_1_max_stake)
