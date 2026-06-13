@@ -70,7 +70,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.224"
+    return "v17.4.225"
 
   stoploss = -0.99
 
@@ -45484,7 +45484,7 @@ class NostalgiaForInfinityX7(IStrategy):
     grind_open_orders,
     trade: Trade,
   ) -> tuple:
-    if grind_profit_rate < grind_exit_profit_threshold:
+    if grind_profit_rate < (grind_exit_profit_threshold + fee_open_rate + fee_close_rate):
       return None, None
 
     last_rsi_3 = last_candle["RSI_3"]
@@ -45529,6 +45529,7 @@ class NostalgiaForInfinityX7(IStrategy):
     #   if grind_profit_rate < (max_profit_rate - 0.055):
     #     is_trailing_exit = True
     # is_trailing_exit = grind_profit_rate > 0.04
+
     if is_normal_exit or is_trailing_exit:
       exit_amount = grind_total_amount * exit_rate / trade.leverage
       if ((current_stake_amount / trade.leverage) - exit_amount) < (min_stake * 1.55):
