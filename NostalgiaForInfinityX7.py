@@ -12992,6 +12992,7 @@ class NostalgiaForInfinityX7(IStrategy):
   # Populate Entry Trend
   # ---------------------------------------------------------------------------------------------
   def populate_entry_trend(self, df: DataFrame, metadata: dict) -> DataFrame:
+    tik = time.perf_counter()
     config = self.config
     long_entry_signal_params = self.long_entry_signal_params
     short_entry_signal_params = self.short_entry_signal_params
@@ -13003,87 +13004,101 @@ class NostalgiaForInfinityX7(IStrategy):
     entry_tags = np.full(len(df), "", dtype=object)
     df.loc[:, "enter_long"] = 0
     df.loc[:, "enter_short"] = 0
-    rsi_3_1h = df["RSI_3_1h"]
-    rsi_3_15m = df["RSI_3_15m"]
-    rsi_3_4h = df["RSI_3_4h"]
-    roc_9_1d = df["ROC_9_1d"]
-    aroonu_14_4h = df["AROONU_14_4h"]
-    roc_9_4h = df["ROC_9_4h"]
-    aroonu_14_1h = df["AROONU_14_1h"]
-    stochrsi_k_4h = df["STOCHRSIk_14_14_3_3_4h"]
-    stochrsi_k_1h = df["STOCHRSIk_14_14_3_3_1h"]
-    aroonu_14_1d = df["AROONU_14_1d"]
-    rsi_3_1d = df["RSI_3_1d"]
-    aroonu_14_15m = df["AROONU_14_15m"]
-    roc_9_1h = df["ROC_9_1h"]
-    stochrsi_k_15m = df["STOCHRSIk_14_14_3_3_15m"]
-    stochrsi_k_1d = df["STOCHRSIk_14_14_3_3_1d"]
-    rsi_3 = df["RSI_3"]
+    rsi_3_1h = df["RSI_3_1h"].to_numpy(copy=False)
+    rsi_3_15m = df["RSI_3_15m"].to_numpy(copy=False)
+    rsi_3_4h = df["RSI_3_4h"].to_numpy(copy=False)
+    roc_9_1d = df["ROC_9_1d"].to_numpy(copy=False)
+    aroonu_14_4h = df["AROONU_14_4h"].to_numpy(copy=False)
+    aroonu_14_4h_shift = df["AROONU_14_4h"]
+    roc_9_4h = df["ROC_9_4h"].to_numpy(copy=False)
+    roc_9_4h_shift = df["ROC_9_4h"]
+    aroonu_14_1h = df["AROONU_14_1h"].to_numpy(copy=False)
+    stochrsi_k_4h = df["STOCHRSIk_14_14_3_3_4h"].to_numpy(copy=False)
+    stochrsi_k_1h = df["STOCHRSIk_14_14_3_3_1h"].to_numpy(copy=False)
+    aroonu_14_1d = df["AROONU_14_1d"].to_numpy(copy=False)
+    rsi_3_1d = df["RSI_3_1d"].to_numpy(copy=False)
+    aroonu_14_15m = df["AROONU_14_15m"].to_numpy(copy=False)
+    roc_9_1h = df["ROC_9_1h"].to_numpy(copy=False)
+    stochrsi_k_15m = df["STOCHRSIk_14_14_3_3_15m"].to_numpy(copy=False)
+    stochrsi_k_1d = df["STOCHRSIk_14_14_3_3_1d"].to_numpy(copy=False)
+    rsi_3 = df["RSI_3"].to_numpy(copy=False)
     close = df["close"]
-    open_rate = df["open"]
-    roc_9_15m = df["ROC_9_15m"]
-    rsi_14_4h = df["RSI_14_4h"]
-    roc_2_1d = df["ROC_2_1d"]
-    uo_7_14_28_4h = df["UO_7_14_28_4h"]
-    willr_84_1h = df["WILLR_84_1h"]
-    mfi_14 = df["MFI_14"]
+    open_rate = df["open"].to_numpy(copy=False)
+    roc_9_15m = df["ROC_9_15m"].to_numpy(copy=False)
+    rsi_14_4h = df["RSI_14_4h"].to_numpy(copy=False)
+    rsi_14_4h_shift = df["RSI_14_4h"]
+    roc_2_1d = df["ROC_2_1d"].to_numpy(copy=False)
+    uo_7_14_28_4h = df["UO_7_14_28_4h"].to_numpy(copy=False)
+    willr_84_1h = df["WILLR_84_1h"].to_numpy(copy=False)
+    mfi_14 = df["MFI_14"].to_numpy(copy=False)
 
     # Reused entry Series and comparison masks
-    aroond_14 = df["AROOND_14"]
-    aroond_14_15m = df["AROOND_14_15m"]
-    aroond_14_1h = df["AROOND_14_1h"]
-    aroond_14_4h = df["AROOND_14_4h"]
-    aroonu_14 = df["AROONU_14"]
-    bbb_20_2_0_1h = df["BBB_20_2.0_1h"]
-    bbl_20_2_0 = df["BBL_20_2.0"]
-    bbu_20_2_0 = df["BBU_20_2.0"]
-    cci_20_change_pct_1h = df["CCI_20_change_pct_1h"]
-    cci_20_change_pct_4h = df["CCI_20_change_pct_4h"]
-    change_pct_1d = df["change_pct_1d"]
-    change_pct_1h = df["change_pct_1h"]
-    change_pct_4h = df["change_pct_4h"]
-    close_max_12 = df["close_max_12"]
-    close_max_48 = df["close_max_48"]
-    cmf_20_15m = df["CMF_20_15m"]
-    cmf_20_1d = df["CMF_20_1d"]
-    cmf_20_1h = df["CMF_20_1h"]
-    cmf_20_4h = df["CMF_20_4h"]
-    ema_12 = df["EMA_12"]
-    ema_20 = df["EMA_20"]
-    ema_26 = df["EMA_26"]
-    ema_200_1h = df["EMA_200_1h"]
-    ema_200_4h = df["EMA_200_4h"]
-    ema_9 = df["EMA_9"]
-    high_max_12_1d = df["high_max_12_1d"]
-    high_max_12_4h = df["high_max_12_4h"]
-    high_max_20_1d = df["high_max_20_1d"]
-    high_max_24_4h = df["high_max_24_4h"]
-    high_max_30_1d = df["high_max_30_1d"]
-    high_max_6_1d = df["high_max_6_1d"]
-    high_max_6_4h = df["high_max_6_4h"]
-    low_min_12_1d = df["low_min_12_1d"]
-    low_min_24_4h = df["low_min_24_4h"]
-    mfi_14_15m = df["MFI_14_15m"]
-    mfi_14_1h = df["MFI_14_1h"]
-    num_empty_288 = df["num_empty_288"]
+    aroond_14 = df["AROOND_14"].to_numpy(copy=False)
+    aroond_14_15m = df["AROOND_14_15m"].to_numpy(copy=False)
+    aroond_14_1h = df["AROOND_14_1h"].to_numpy(copy=False)
+    aroond_14_4h = df["AROOND_14_4h"].to_numpy(copy=False)
+    aroonu_14 = df["AROONU_14"].to_numpy(copy=False)
+    bbb_20_2_0_1h = df["BBB_20_2.0_1h"].to_numpy(copy=False)
+    bbl_20_2_0 = df["BBL_20_2.0"].to_numpy(copy=False)
+    bbu_20_2_0 = df["BBU_20_2.0"].to_numpy(copy=False)
+    cci_20_change_pct_1h = df["CCI_20_change_pct_1h"].to_numpy(copy=False)
+    cci_20_change_pct_4h = df["CCI_20_change_pct_4h"].to_numpy(copy=False)
+    change_pct_1d = df["change_pct_1d"].to_numpy(copy=False)
+    change_pct_1d_shift = df["change_pct_1d"]
+    change_pct_1h = df["change_pct_1h"].to_numpy(copy=False)
+    change_pct_1h_shift = df["change_pct_1h"]
+    change_pct_4h = df["change_pct_4h"].to_numpy(copy=False)
+    change_pct_4h_shift = df["change_pct_4h"]
+    close_max_12 = df["close_max_12"].to_numpy(copy=False)
+    close_max_48 = df["close_max_48"].to_numpy(copy=False)
+    cmf_20_15m = df["CMF_20_15m"].to_numpy(copy=False)
+    cmf_20_1d = df["CMF_20_1d"].to_numpy(copy=False)
+    cmf_20_1h = df["CMF_20_1h"].to_numpy(copy=False)
+    cmf_20_4h = df["CMF_20_4h"].to_numpy(copy=False)
+    ema_12 = df["EMA_12"].to_numpy(copy=False)
+    ema_12_shift = df["EMA_12"]
+    ema_20 = df["EMA_20"].to_numpy(copy=False)
+    ema_26 = df["EMA_26"].to_numpy(copy=False)
+    ema_26_shift = df["EMA_26"]
+    ema_200_1h = df["EMA_200_1h"].to_numpy(copy=False)
+    ema_200_1h_infer = df["EMA_200_1h"]
+    ema_200_4h = df["EMA_200_4h"].to_numpy(copy=False)
+    ema_200_4h_infer = df["EMA_200_4h"]
+    ema_9 = df["EMA_9"].to_numpy(copy=False)
+    high_max_12_1d = df["high_max_12_1d"].to_numpy(copy=False)
+    high_max_12_4h = df["high_max_12_4h"].to_numpy(copy=False)
+    high_max_20_1d = df["high_max_20_1d"].to_numpy(copy=False)
+    high_max_24_4h = df["high_max_24_4h"].to_numpy(copy=False)
+    high_max_30_1d = df["high_max_30_1d"].to_numpy(copy=False)
+    high_max_6_1d = df["high_max_6_1d"].to_numpy(copy=False)
+    high_max_6_4h = df["high_max_6_4h"].to_numpy(copy=False)
+    low_min_12_1d = df["low_min_12_1d"].to_numpy(copy=False)
+    low_min_24_4h = df["low_min_24_4h"].to_numpy(copy=False)
+    mfi_14_15m = df["MFI_14_15m"].to_numpy(copy=False)
+    mfi_14_1h = df["MFI_14_1h"].to_numpy(copy=False)
+    num_empty_288 = df["num_empty_288"].to_numpy(copy=False)
     protections_long_global = df["protections_long_global"]
     protections_short_global = df["protections_short_global"]
-    roc_2 = df["ROC_2"]
-    roc_9 = df["ROC_9"]
-    rsi_14 = df["RSI_14"]
-    rsi_14_15m = df["RSI_14_15m"]
-    rsi_14_1d = df["RSI_14_1d"]
-    rsi_14_1h = df["RSI_14_1h"]
-    rsi_20 = df["RSI_20"]
-    rsi_3_change_pct_1h = df["RSI_3_change_pct_1h"]
-    rsi_3_change_pct_4h = df["RSI_3_change_pct_4h"]
-    rsi_4 = df["RSI_4"]
-    sma_16 = df["SMA_16"]
-    sma_21 = df["SMA_21"]
+    roc_2 = df["ROC_2"].to_numpy(copy=False)
+    roc_9 = df["ROC_9"].to_numpy(copy=False)
+    rsi_14 = df["RSI_14"].to_numpy(copy=False)
+    rsi_14_15m = df["RSI_14_15m"].to_numpy(copy=False)
+    rsi_14_1d = df["RSI_14_1d"].to_numpy(copy=False)
+    rsi_14_1h = df["RSI_14_1h"].to_numpy(copy=False)
+    rsi_14_1h_shift = df["RSI_14_1h"]
+    rsi_20 = df["RSI_20"].to_numpy(copy=False)
+    rsi_20_shift = df["RSI_20"]
+    rsi_3_change_pct_1h = df["RSI_3_change_pct_1h"].to_numpy(copy=False)
+    rsi_3_change_pct_4h = df["RSI_3_change_pct_4h"].to_numpy(copy=False)
+    rsi_4 = df["RSI_4"].to_numpy(copy=False)
+    sma_16 = df["SMA_16"].to_numpy(copy=False)
+    sma_21 = df["SMA_21"].to_numpy(copy=False)
+    sma_21_shift = df["SMA_21"]
     sma_200 = df["SMA_200"]
-    stochrsi_k = df["STOCHRSIk_14_14_3_3"]
-    top_wick_pct_1d = df["top_wick_pct_1d"]
-    willr_14 = df["WILLR_14"]
+    stochrsi_k = df["STOCHRSIk_14_14_3_3"].to_numpy(copy=False)
+    top_wick_pct_1d = df["top_wick_pct_1d"].to_numpy(copy=False)
+    top_wick_pct_1d_shift = df["top_wick_pct_1d"]
+    willr_14 = df["WILLR_14"].to_numpy(copy=False)
 
     rsi_3_gt_3 = rsi_3 > 3.0
     rsi_3_gt_5 = rsi_3 > 5.0
@@ -13876,7 +13891,7 @@ class NostalgiaForInfinityX7(IStrategy):
             # 1h & 4h overbought, 1d downtrend
             & ((roc_9_1h_lt_20) | (roc_9_4h_lt_20) | (roc_9_1d_gt_neg_40))
             # 1d P&D, 1d downtrend
-            & ((change_pct_1d_gt_neg_5) | (change_pct_1d.shift(288) < 30.0) | (cmf_20_1d_gt_neg_0_0))
+            & ((change_pct_1d_gt_neg_5) | (change_pct_1d_shift.shift(288) < 30.0) | (cmf_20_1d_gt_neg_0_0))
             # 1d green with top wick, 1h down move
             & ((change_pct_1d < 20.0) | (top_wick_pct_1d_lt_15) | rsi_3_1h_gt_20)
             # 1d green with top wick, 4h high
@@ -13901,7 +13916,7 @@ class NostalgiaForInfinityX7(IStrategy):
           long_entry_logic.append(
             (ema_26 > ema_12)
             & ((ema_26 - ema_12) > (open_rate * 0.034))
-            & ((ema_26.shift() - ema_12.shift()) > (open_rate / 100.0))
+            & ((ema_26_shift.shift() - ema_12_shift.shift()) > (open_rate / 100.0))
             & (close < (bbl_20_2_0 * 0.999))
           )
 
@@ -15296,13 +15311,13 @@ class NostalgiaForInfinityX7(IStrategy):
             # 1d still high, 4h & 1d downtrend
             & ((stochrsi_k_1d_lt_50) | (roc_9_4h_gt_neg_30) | (roc_9_1d_gt_neg_30))
             # 1d P&D, 4h downtrend
-            & ((change_pct_1d_gt_neg_50) | (change_pct_1d.shift(288) < 50.0) | (rsi_3_4h_gt_15))
+            & ((change_pct_1d_gt_neg_50) | (change_pct_1d_shift.shift(288) < 50.0) | (rsi_3_4h_gt_15))
             # 1d P&D, 15m high
-            & ((change_pct_1d_gt_neg_20) | (change_pct_1d.shift(288) < 20.0) | (aroonu_14_15m_lt_70))
+            & ((change_pct_1d_gt_neg_20) | (change_pct_1d_shift.shift(288) < 20.0) | (aroonu_14_15m_lt_70))
             # 1d red with top wick, 4h high
             & ((change_pct_1d_gt_neg_20) | (top_wick_pct_1d_lt_20) | aroonu_14_4h_lt_80)
             # 1d red, previous 1d top wick, 15m high
-            & ((change_pct_1d_gt_neg_10) | (top_wick_pct_1d.shift(288) < 40.0) | (aroonu_14_15m_lt_70))
+            & ((change_pct_1d_gt_neg_10) | (top_wick_pct_1d_shift.shift(288) < 40.0) | (aroonu_14_15m_lt_70))
             # 1d green with top wick, 4h overbought
             & ((change_pct_1d_lt_15) | (top_wick_pct_1d_lt_15) | (roc_9_4h_lt_20))
             # 1d green, 15m down move, 1h high
@@ -15317,7 +15332,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
           # Logic
           long_entry_logic.append(
-            (rsi_20 < rsi_20.shift(1))
+            (rsi_20 < rsi_20_shift.shift(1))
             & (rsi_4 < 45.0)
             & (rsi_14 > 30.0)
             & (aroonu_14 < 20.0)
@@ -15958,7 +15973,7 @@ class NostalgiaForInfinityX7(IStrategy):
             # 1d high, 4h & 1d overbought
             & ((stochrsi_k_1d_lt_90) | (roc_9_4h_lt_40) | (roc_9_1d_lt_100))
             # 1d P&D, dh downtrend
-            & ((change_pct_1d_gt_neg_50) | (change_pct_1d.shift(288) < 50.0) | (rsi_3_4h_gt_15))
+            & ((change_pct_1d_gt_neg_50) | (change_pct_1d_shift.shift(288) < 50.0) | (rsi_3_4h_gt_15))
             # big drop in the last 20 days, 1d high, 1d downtrend
             & ((close > (high_max_20_1d * 0.20)) | (stochrsi_k_1d_lt_70) | (roc_9_1d_gt_neg_15))
             # drop in last 20 days, 1h high, 1d downtrend
@@ -15974,7 +15989,7 @@ class NostalgiaForInfinityX7(IStrategy):
             & (stochrsi_k_lt_30)
             & (ema_26 > ema_12)
             & ((ema_26 - ema_12) > (open_rate * 0.020))
-            & ((ema_26.shift() - ema_12.shift()) > (open_rate / 100.0))
+            & ((ema_26_shift.shift() - ema_12_shift.shift()) > (open_rate / 100.0))
           )
 
         # Condition #6 - Normal mode (Long).
@@ -16739,7 +16754,7 @@ class NostalgiaForInfinityX7(IStrategy):
             # 1d hihg, 1h & 1d overbought
             & ((stochrsi_k_1d_lt_90) | (roc_9_1h_lt_30) | (roc_9_1d_lt_100))
             # 1d P&D, dh downtrend
-            & ((change_pct_1d_gt_neg_50) | (change_pct_1d.shift(288) < 50.0) | (rsi_3_4h_gt_15))
+            & ((change_pct_1d_gt_neg_50) | (change_pct_1d_shift.shift(288) < 50.0) | (rsi_3_4h_gt_15))
             # big drop in the last 20 days, 1d high, 1d downtrend
             & ((close > (high_max_20_1d * 0.20)) | (stochrsi_k_1d_lt_70) | (roc_9_1d_gt_neg_15))
             # drop in last 20 days, 1h high, 1d downtrend
@@ -16750,7 +16765,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
           # Logic
           long_entry_logic.append(
-            (rsi_20 < rsi_20.shift(1))
+            (rsi_20 < rsi_20_shift.shift(1))
             & (rsi_3_lt_46)
             & (aroonu_14_lt_25)
             & (stochrsi_k_lt_20)
@@ -17612,7 +17627,7 @@ class NostalgiaForInfinityX7(IStrategy):
             # 1d high, 4h & 1d overbought
             & ((stochrsi_k_1d_lt_90) | (roc_9_4h_lt_100) | (roc_9_1d_lt_100))
             # 1d P&D, 4h overbought
-            & ((change_pct_1d_gt_neg_10) | (change_pct_1d.shift(288) < 30.0) | (roc_9_4h_lt_10))
+            & ((change_pct_1d_gt_neg_10) | (change_pct_1d_shift.shift(288) < 30.0) | (roc_9_4h_lt_10))
             # big drop in the last 20 days, 1d high, 1d downtrend
             & ((close > (high_max_20_1d * 0.20)) | (stochrsi_k_1d_lt_70) | (roc_9_1d_gt_neg_15))
           )
@@ -18703,7 +18718,7 @@ class NostalgiaForInfinityX7(IStrategy):
             & (aroonu_14_lt_25)
             & (ema_26 > ema_12)
             & ((ema_26 - ema_12) > (open_rate * 0.024))
-            & ((ema_26.shift() - ema_12.shift()) > (open_rate / 100.0))
+            & ((ema_26_shift.shift() - ema_12_shift.shift()) > (open_rate / 100.0))
             & (close < (ema_20 * 0.960))
             & (close < (bbl_20_2_0 * 0.999))
           )
@@ -19911,7 +19926,7 @@ class NostalgiaForInfinityX7(IStrategy):
             & (stochrsi_k_lt_30)
             & (ema_26 > ema_12)
             & ((ema_26 - ema_12) > (open_rate * 0.030))
-            & ((ema_26.shift() - ema_12.shift()) > (open_rate / 100.0))
+            & ((ema_26_shift.shift() - ema_12_shift.shift()) > (open_rate / 100.0))
           )
 
         # Condition #62 - Rebuy mode (Long).
@@ -20784,7 +20799,7 @@ class NostalgiaForInfinityX7(IStrategy):
             & (aroonu_14_lt_25)
             & (ema_26 > ema_12)
             & ((ema_26 - ema_12) > (open_rate * 0.022))
-            & ((ema_26.shift() - ema_12.shift()) > (open_rate / 100.0))
+            & ((ema_26_shift.shift() - ema_12_shift.shift()) > (open_rate / 100.0))
           )
 
         # Condition #101 - Rapid mode (Long).
@@ -21042,7 +21057,7 @@ class NostalgiaForInfinityX7(IStrategy):
             # 1d down move, 4h high, 1d overbought
             & ((rsi_3_1d_gt_45) | (stochrsi_k_4h_lt_90) | (roc_9_1d_lt_10))
             # 4h still high, 4h moving lower, 4h overbought
-            & ((aroonu_14_4h_lt_50) | (aroonu_14_4h > aroonu_14_4h.shift(48)) | (roc_9_4h_lt_40))
+            & ((aroonu_14_4h_lt_50) | (aroonu_14_4h > aroonu_14_4h_shift.shift(48)) | (roc_9_4h_lt_40))
             # 1h high, 1d downtrend
             & ((aroonu_14_1d_lt_70) | (roc_9_1d_gt_neg_30))
             # 1d high, 4h & 1d overbought
@@ -21653,7 +21668,7 @@ class NostalgiaForInfinityX7(IStrategy):
           long_entry_logic.append(
             (rsi_4 < 45.0)
             & (rsi_14 > 35.0)
-            & (rsi_20 < rsi_20.shift(1))
+            & (rsi_20 < rsi_20_shift.shift(1))
             & (aroonu_14_lt_25)
             & (close < sma_16 * 0.960)
           )
@@ -22370,7 +22385,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
           # Logic
           long_entry_logic.append(
-            (rsi_20 < rsi_20.shift(1)) & (rsi_3 < 30.0) & (aroonu_14_lt_25) & (close < sma_16 * 0.960)
+            (rsi_20 < rsi_20_shift.shift(1)) & (rsi_3 < 30.0) & (aroonu_14_lt_25) & (close < sma_16 * 0.960)
           )
 
         # Condition #142 - Top Coins mode (Long).
@@ -22804,7 +22819,7 @@ class NostalgiaForInfinityX7(IStrategy):
             (rsi_3_gt_5)
             & (rsi_4 < 46.0)
             # & (stochrsi_k < 20.0)
-            & (rsi_20 < rsi_20.shift(1))
+            & (rsi_20 < rsi_20_shift.shift(1))
             & (close < sma_16 * 0.960)
           )
 
@@ -23034,7 +23049,7 @@ class NostalgiaForInfinityX7(IStrategy):
             & (stochrsi_k_lt_20)
             & (ema_26 > ema_12)
             & ((ema_26 - ema_12) > (open_rate * 0.020))
-            & ((ema_26.shift() - ema_12.shift()) > (open_rate / 100.0))
+            & ((ema_26_shift.shift() - ema_12_shift.shift()) > (open_rate / 100.0))
           )
 
         # Condition #144 - Top Coins mode (Long).
@@ -23306,7 +23321,7 @@ class NostalgiaForInfinityX7(IStrategy):
             # 4h & 1d overbought
             & ((roc_9_4h_lt_100) | (roc_9_1d_lt_200))
             # 1d P&D, 4h overbought
-            & ((change_pct_1d_gt_neg_10) | (change_pct_1d.shift(288) < 50.0) | (roc_9_4h_lt_30))
+            & ((change_pct_1d_gt_neg_10) | (change_pct_1d_shift.shift(288) < 50.0) | (roc_9_4h_lt_30))
           )
 
           # Logic
@@ -23776,15 +23791,15 @@ class NostalgiaForInfinityX7(IStrategy):
           long_entry_logic.append(aroonu_14_15m_lt_90)
           long_entry_logic.append(stochrsi_k_15m < 90.0)
           long_entry_logic.append(
-            (sma_21.shift(1) < sma_200.shift(1).infer_objects(copy=False).fillna(value=np.nan))
+            (sma_21_shift.shift(1) < sma_200.shift(1).infer_objects(copy=False).fillna(value=np.nan))
             & sma_200.shift(1).notna()
           )
           long_entry_logic.append((sma_21 > sma_200.infer_objects(copy=False).fillna(value=np.nan)) & sma_200.notna())
           long_entry_logic.append(
-            (close > ema_200_1h.infer_objects(copy=False).fillna(value=np.nan)) & ema_200_1h.notna()
+            (close > ema_200_1h_infer.infer_objects(copy=False).fillna(value=np.nan)) & ema_200_1h_infer.notna()
           )
           long_entry_logic.append(
-            (close > ema_200_4h.infer_objects(copy=False).fillna(value=np.nan)) & ema_200_4h.notna()
+            (close > ema_200_4h_infer.infer_objects(copy=False).fillna(value=np.nan)) & ema_200_4h_infer.notna()
           )
           long_entry_logic.append(df["BBB_20_2.0"] > 1.5)
           long_entry_logic.append(bbb_20_2_0_1h > 6.0)
@@ -23951,9 +23966,9 @@ class NostalgiaForInfinityX7(IStrategy):
             # 1h & 4h overbought
             & ((roc_9_1h_lt_100) | (roc_9_4h_lt_100))
             # 1h P&D, 1h down move
-            & ((change_pct_1h > -10.0) | (change_pct_1h.shift(12) < 10.0) | (rsi_3_1h_gt_50))
+            & ((change_pct_1h > -10.0) | (change_pct_1h_shift.shift(12) < 10.0) | (rsi_3_1h_gt_50))
             # 4h P&D, 4h high
-            & ((change_pct_4h > -15.0) | (change_pct_4h.shift(48) < 30.0) | (aroonu_14_4h_lt_90))
+            & ((change_pct_4h > -15.0) | (change_pct_4h_shift.shift(48) < 30.0) | (aroonu_14_4h_lt_90))
             # 4h green, 15m & 1h down move
             & ((change_pct_4h < 10.0) | (rsi_3_15m_gt_10) | (rsi_3_1h_gt_35))
             # 4h green, 1h down move
@@ -23987,7 +24002,7 @@ class NostalgiaForInfinityX7(IStrategy):
             & (stochrsi_k_lt_30)
             & (ema_26 > ema_12)
             & ((ema_26 - ema_12) > (open_rate * 0.030))
-            & ((ema_26.shift() - ema_12.shift()) > (open_rate / 100.0))
+            & ((ema_26_shift.shift() - ema_12_shift.shift()) > (open_rate / 100.0))
             & (close < df["SMA_9"])
           )
 
@@ -24362,13 +24377,13 @@ class NostalgiaForInfinityX7(IStrategy):
             # 1d red, 1h down move, 1h still high
             & ((change_pct_1d_gt_neg_15) | (rsi_3_1h_gt_25) | (aroonu_14_1h_lt_50))
             # 1d P&D, 1h high
-            & ((change_pct_1d_gt_neg_15) | (change_pct_1d.shift(288) < 15.0) | (stochrsi_k_1h_lt_80))
+            & ((change_pct_1d_gt_neg_15) | (change_pct_1d_shift.shift(288) < 15.0) | (stochrsi_k_1h_lt_80))
             # 1d P&D, 1d downtrend
-            & ((change_pct_1d_gt_neg_5) | (change_pct_1d.shift(288) < 30.0) | (cmf_20_1d_gt_neg_0_10))
+            & ((change_pct_1d_gt_neg_5) | (change_pct_1d_shift.shift(288) < 30.0) | (cmf_20_1d_gt_neg_0_10))
             # 1d P&D, 15m high
-            & ((change_pct_1d_gt_neg_10) | (change_pct_1d.shift(288) < 40.0) | (aroonu_14_15m_lt_50))
+            & ((change_pct_1d_gt_neg_10) | (change_pct_1d_shift.shift(288) < 40.0) | (aroonu_14_15m_lt_50))
             # 1d P&D, 1h high
-            & ((change_pct_1d_gt_neg_10) | (change_pct_1d.shift(288) < 40.0) | (stochrsi_k_1h_lt_70))
+            & ((change_pct_1d_gt_neg_10) | (change_pct_1d_shift.shift(288) < 40.0) | (stochrsi_k_1h_lt_70))
             # 1d red with top wick, 1h high
             & ((change_pct_1d_gt_neg_10) | (top_wick_pct_1d_lt_10) | aroonu_14_1h_lt_80)
             # 1d green, 4m down move, 4h high
@@ -24705,7 +24720,7 @@ class NostalgiaForInfinityX7(IStrategy):
           # Logic
           short_entry_logic.append(ema_12 > ema_26)
           short_entry_logic.append((ema_12 - ema_26) > (open_rate * 0.030))
-          short_entry_logic.append((ema_12.shift() - ema_26.shift()) > (open_rate / 100.0))
+          short_entry_logic.append((ema_12_shift.shift() - ema_26_shift.shift()) > (open_rate / 100.0))
           short_entry_logic.append(close > (bbu_20_2_0 * 1.004))
 
         # Condition #502 - Normal mode (Short).
@@ -25011,7 +25026,7 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append((roc_2_1d < 10.0) | roc_9_1d_gt_neg_50 | (stochrsi_k_1h > 5.0))
           # 1h red, previous 1h green, 1h overbought
           short_entry_logic.append(
-            (change_pct_1h < 1.0) | (change_pct_1h.shift(12) > -5.0) | (rsi_14_1h.shift(12) < 80.0)
+            (change_pct_1h < 1.0) | (change_pct_1h_shift.shift(12) > -5.0) | (rsi_14_1h_shift.shift(12) < 80.0)
           )
           # 1h red, 1h stil high, 4h downtrend
           short_entry_logic.append((change_pct_1h < 5.0) | (stochrsi_k_1h_gt_50) | (roc_9_4h_gt_neg_25))
@@ -25019,7 +25034,7 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append((change_pct_4h < 5.0) | (rsi_3_15m_lt_90) | (stochrsi_k_4h_gt_30))
           # 4h red, previous 4h green, 4h overbought
           short_entry_logic.append(
-            (change_pct_4h < 5.0) | (change_pct_4h.shift(48) > -5.0) | (roc_9_4h.shift(48) > -25.0)
+            (change_pct_4h < 5.0) | (change_pct_4h_shift.shift(48) > -5.0) | (roc_9_4h_shift.shift(48) > -25.0)
           )
           # 4h red, 4h still not low enough, 1h downtrend, 1h overbought
           short_entry_logic.append(
@@ -25028,13 +25043,13 @@ class NostalgiaForInfinityX7(IStrategy):
           # 4h red, 4h still high, 1d downtrend
           short_entry_logic.append((change_pct_4h < 10.0) | (stochrsi_k_4h_gt_30) | (roc_9_1d_lt_40))
           # 1d P&D, 1d overbought
-          short_entry_logic.append((change_pct_1d_lt_10) | (change_pct_1d.shift(288) > -10.0) | (roc_9_1d_gt_neg_100))
+          short_entry_logic.append((change_pct_1d_lt_10) | (change_pct_1d_shift.shift(288) > -10.0) | (roc_9_1d_gt_neg_100))
           # 1d P&D, 4h still high
-          short_entry_logic.append((change_pct_1d_lt_15) | (change_pct_1d.shift(288) > -15.0) | (aroond_14_4h_lt_50))
+          short_entry_logic.append((change_pct_1d_lt_15) | (change_pct_1d_shift.shift(288) > -15.0) | (aroond_14_4h_lt_50))
           short_entry_logic.append((rsi_3_1h_lt_90) | (rsi_3_4h_lt_95) | (cci_20_change_pct_4h_lt_0))
 
           # Logic
-          short_entry_logic.append(rsi_20 > rsi_20.shift(1))
+          short_entry_logic.append(rsi_20 > rsi_20_shift.shift(1))
           short_entry_logic.append(rsi_4 > 54.0)
           short_entry_logic.append(aroond_14_lt_25)
           short_entry_logic.append(close > sma_16 * 1.058)
@@ -25133,7 +25148,7 @@ class NostalgiaForInfinityX7(IStrategy):
           # 1h & 4h down move, 4h still not low enough
           short_entry_logic.append((rsi_3_1h_lt_95) | (rsi_3_change_pct_4h < 65.0) | (stochrsi_k_4h_gt_70))
           # 1h down move, 4h down move, 4h P&D
-          short_entry_logic.append((rsi_3_1h_lt_90) | (rsi_3_change_pct_4h < 70.0) | (rsi_14_4h.shift(48) > 30.0))
+          short_entry_logic.append((rsi_3_1h_lt_90) | (rsi_3_change_pct_4h < 70.0) | (rsi_14_4h_shift.shift(48) > 30.0))
           # 1h & 4h down move, 4h still not low enough, 1d still high
           short_entry_logic.append(
             (rsi_3_1h_lt_90) | (rsi_3_change_pct_4h < 50.0) | (aroond_14_4h_lt_25) | (stochrsi_k_1d_gt_60)
@@ -25162,21 +25177,21 @@ class NostalgiaForInfinityX7(IStrategy):
           # 4h down move, 1d P&D
           short_entry_logic.append((roc_9_4h_lt_20) | (roc_2_1d < 20.0) | roc_9_1d_gt_neg_50)
           # 1h P&D, 4h overbought
-          short_entry_logic.append((change_pct_1h < 2.0) | (change_pct_1h.shift(12) > 2.0) | (rsi_14_4h_gt_20))
+          short_entry_logic.append((change_pct_1h < 2.0) | (change_pct_1h_shift.shift(12) > 2.0) | (rsi_14_4h_gt_20))
           # 1h P&D, 1d overbought
-          short_entry_logic.append((change_pct_1h < 5.0) | (change_pct_1h.shift(12) > -5.0) | (roc_9_1d_gt_neg_100))
+          short_entry_logic.append((change_pct_1h < 5.0) | (change_pct_1h_shift.shift(12) > -5.0) | (roc_9_1d_gt_neg_100))
           # 1h & 4h red, 1h not low enough
           short_entry_logic.append((change_pct_1h < 10.0) | (change_pct_4h < 10.0) | (mfi_14_1h > 50.0))
           # 1h red, 1h still not low enough, 1d down move
           short_entry_logic.append((change_pct_1h < 15.0) | (mfi_14_1h > 50.0) | (rsi_3_1d_lt_90))
           # 4h red, previous 4h green, 4h overbought
           short_entry_logic.append(
-            (change_pct_4h < 5.0) | (change_pct_4h.shift(48) > -5.0) | (rsi_14_4h.shift(48) > 20.0)
+            (change_pct_4h < 5.0) | (change_pct_4h_shift.shift(48) > -5.0) | (rsi_14_4h_shift.shift(48) > 20.0)
           )
           # 1d P&D, 1d overbought
-          short_entry_logic.append((change_pct_1d_lt_10) | (change_pct_1d.shift(288) > -10.0) | (roc_9_1d_gt_neg_100))
+          short_entry_logic.append((change_pct_1d_lt_10) | (change_pct_1d_shift.shift(288) > -10.0) | (roc_9_1d_gt_neg_100))
           # 1d P&D, 4h still high
-          short_entry_logic.append((change_pct_1d_lt_15) | (change_pct_1d.shift(288) > -15.0) | (aroond_14_4h_lt_50))
+          short_entry_logic.append((change_pct_1d_lt_15) | (change_pct_1d_shift.shift(288) > -15.0) | (aroond_14_4h_lt_50))
 
           # Logic
           short_entry_logic.append(rsi_14 > 64.0)
@@ -25389,7 +25404,7 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append((roc_9_4h_gt_neg_50) | (stochrsi_k_1h_gt_70) | roc_9_1d_lt_50)
           # 4h red, previous 4h green, 4h overbought
           short_entry_logic.append(
-            (change_pct_4h < 5.0) | (change_pct_4h.shift(48) > -5.0) | (rsi_14_4h.shift(48) > 20.0)
+            (change_pct_4h < 5.0) | (change_pct_4h_shift.shift(48) > -5.0) | (rsi_14_4h_shift.shift(48) > 20.0)
           )
           # 4h red, 4h moving down, 4h still high, 1d downtrend
           short_entry_logic.append(
@@ -25402,7 +25417,7 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(aroond_14_lt_25)
           short_entry_logic.append(ema_26 < ema_12)
           short_entry_logic.append((ema_26 - ema_12) > (open_rate * 0.024))
-          short_entry_logic.append((ema_26.shift() - ema_12.shift()) > (open_rate / 100.0))
+          short_entry_logic.append((ema_26_shift.shift() - ema_12_shift.shift()) > (open_rate / 100.0))
           short_entry_logic.append(close < (ema_20 * 0.958))
           short_entry_logic.append(close < (bbl_20_2_0 * 0.992))
 
@@ -25476,7 +25491,7 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append((rsi_3_4h < 15.0) | (stochrsi_k_15m_gt_30) | (stochrsi_k_4h_gt_80))
 
           # Logic
-          short_entry_logic.append(rsi_20 > rsi_20.shift(1))
+          short_entry_logic.append(rsi_20 > rsi_20_shift.shift(1))
           short_entry_logic.append(rsi_3 > 70.0)
           short_entry_logic.append(aroond_14_lt_25)
           short_entry_logic.append(close > sma_16 * 1.044)
@@ -25589,11 +25604,11 @@ class NostalgiaForInfinityX7(IStrategy):
           # 1d red, 1d high
           short_entry_logic.append((change_pct_1d < 5.0) | (stochrsi_k_1d_gt_20))
           # 1d P&D, 1d high
-          short_entry_logic.append((change_pct_1d_lt_10) | (change_pct_1d.shift(288) > -10.0) | (stochrsi_k_1d_gt_50))
+          short_entry_logic.append((change_pct_1d_lt_10) | (change_pct_1d_shift.shift(288) > -10.0) | (stochrsi_k_1d_gt_50))
 
           # Logic
           short_entry_logic.append(rsi_4 > 54.0)
-          short_entry_logic.append(rsi_20 > rsi_20.shift(1))
+          short_entry_logic.append(rsi_20 > rsi_20_shift.shift(1))
           short_entry_logic.append(close > sma_16 * 1.042)
 
         # Condition #661 - Scalp mode (Short).
@@ -25732,7 +25747,7 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(aroond_14_15m < 90.0)
           short_entry_logic.append(stochrsi_k_15m > 10.0)
           if isinstance(sma_200.iloc[-1], np.float64):
-            short_entry_logic.append(sma_21.shift(1) > sma_200.shift(1))
+            short_entry_logic.append(sma_21_shift.shift(1) > sma_200.shift(1))
             short_entry_logic.append(sma_21 < sma_200)
           else:
             short_entry_logic.append(pd.Series([False]))
@@ -25762,6 +25777,8 @@ class NostalgiaForInfinityX7(IStrategy):
       df.loc[:, "enter_short"] = _or_entry_conditions(short_entry_conditions).astype(int)
 
     df.loc[:, "enter_tag"] = entry_tags
+    tok = time.perf_counter()
+    log.debug("populate_entry_trend took a total of: %.4f seconds.", tok - tik)
     return df
 
   ###############################################################################################
