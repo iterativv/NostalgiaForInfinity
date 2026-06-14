@@ -70,7 +70,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.226"
+    return "v17.4.227"
 
   stoploss = -0.99
 
@@ -3507,6 +3507,8 @@ class NostalgiaForInfinityX7(IStrategy):
     # MOMENTUM
     # =========================================================================
     ema_12 = ta.EMA(close_np, timeperiod=12)
+    ema_50 = ta.EMA(close_np, timeperiod=50)
+    ema_100 = ta.EMA(close_np, timeperiod=100)
     ema_200 = ta.EMA(close_np, timeperiod=200)
     willr_14 = ta.WILLR(high_np, low_np, close_np, timeperiod=14)
     uo = ta.ULTOSC(high_np, low_np, close_np)
@@ -3581,6 +3583,8 @@ class NostalgiaForInfinityX7(IStrategy):
         "CMF_20": cmf_20,
         # Momentum
         "EMA_12": ema_12,
+        "EMA_50": ema_50,
+        "EMA_100": ema_100,
         "EMA_200": ema_200,
         "WILLR_14": willr_14,
         "UO_7_14_28": uo,
@@ -3641,6 +3645,8 @@ class NostalgiaForInfinityX7(IStrategy):
         "CMF_20",
         # Momentum
         "EMA_12",
+        "EMA_50",
+        "EMA_100",
         "EMA_200",
         "WILLR_14",
         "UO_7_14_28",
@@ -45409,8 +45415,9 @@ class NostalgiaForInfinityX7(IStrategy):
       and (last_rsi_14 < 42.0)
       and (last_candle["RSI_14_4h"] > 50.0)
       and (last_candle["AROONU_14"] < 30.0)
-      and (last_candle["AROONU_14_4h"] > 70.0)
-      and (last_candle["ROC_9_1d"] > -15.0)
+      and (last_candle["AROONU_14_4h"] > 50.0)
+      and (last_roc_9_1d > -15.0)
+      and (last_candle["EMA_50_4h"] > last_candle["EMA_100_4h"])
       and (last_close < (last_candle["close_max_48"] * 0.95))
     ):
       self._grind_entry_tag = "g20"
