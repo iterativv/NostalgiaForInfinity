@@ -13003,87 +13003,87 @@ class NostalgiaForInfinityX7(IStrategy):
     entry_tags = np.full(len(df), "", dtype=object)
     df.loc[:, "enter_long"] = 0
     df.loc[:, "enter_short"] = 0
-    rsi_3_1h = df["RSI_3_1h"]
-    rsi_3_15m = df["RSI_3_15m"]
-    rsi_3_4h = df["RSI_3_4h"]
-    roc_9_1d = df["ROC_9_1d"]
+    rsi_3_1h = df["RSI_3_1h"].to_numpy(copy=False)
+    rsi_3_15m = df["RSI_3_15m"].to_numpy(copy=False)
+    rsi_3_4h = df["RSI_3_4h"].to_numpy(copy=False)
+    roc_9_1d = df["ROC_9_1d"].to_numpy(copy=False)
     aroonu_14_4h = df["AROONU_14_4h"]
-    roc_9_4h = df["ROC_9_4h"]
-    aroonu_14_1h = df["AROONU_14_1h"]
-    stochrsi_k_4h = df["STOCHRSIk_14_14_3_3_4h"]
-    stochrsi_k_1h = df["STOCHRSIk_14_14_3_3_1h"]
-    aroonu_14_1d = df["AROONU_14_1d"]
-    rsi_3_1d = df["RSI_3_1d"]
-    aroonu_14_15m = df["AROONU_14_15m"]
-    roc_9_1h = df["ROC_9_1h"]
-    stochrsi_k_15m = df["STOCHRSIk_14_14_3_3_15m"]
-    stochrsi_k_1d = df["STOCHRSIk_14_14_3_3_1d"]
-    rsi_3 = df["RSI_3"]
+    roc_9_4h = df["ROC_9_4h"].to_numpy(copy=False)
+    aroonu_14_1h = df["AROONU_14_1h"].to_numpy(copy=False)
+    stochrsi_k_4h = df["STOCHRSIk_14_14_3_3_4h"].to_numpy(copy=False)
+    stochrsi_k_1h = df["STOCHRSIk_14_14_3_3_1h"].to_numpy(copy=False)
+    aroonu_14_1d = df["AROONU_14_1d"].to_numpy(copy=False)
+    rsi_3_1d = df["RSI_3_1d"].to_numpy(copy=False)
+    aroonu_14_15m = df["AROONU_14_15m"].to_numpy(copy=False)
+    roc_9_1h = df["ROC_9_1h"].to_numpy(copy=False)
+    stochrsi_k_15m = df["STOCHRSIk_14_14_3_3_15m"].to_numpy(copy=False)
+    stochrsi_k_1d = df["STOCHRSIk_14_14_3_3_1d"].to_numpy(copy=False)
+    rsi_3 = df["RSI_3"].to_numpy(copy=False)
     close = df["close"]
-    open_rate = df["open"]
-    roc_9_15m = df["ROC_9_15m"]
-    rsi_14_4h = df["RSI_14_4h"]
-    roc_2_1d = df["ROC_2_1d"]
-    uo_7_14_28_4h = df["UO_7_14_28_4h"]
-    willr_84_1h = df["WILLR_84_1h"]
-    mfi_14 = df["MFI_14"]
+    open_rate = df["open"].to_numpy(copy=False)
+    roc_9_15m = df["ROC_9_15m"].to_numpy(copy=False)
+    rsi_14_4h = df["RSI_14_4h"].to_numpy(copy=False)
+    roc_2_1d = df["ROC_2_1d"].to_numpy(copy=False)
+    uo_7_14_28_4h = df["UO_7_14_28_4h"].to_numpy(copy=False)
+    willr_84_1h = df["WILLR_84_1h"].to_numpy(copy=False)
+    mfi_14 = df["MFI_14"].to_numpy(copy=False)
 
     # Reused entry Series and comparison masks
-    aroond_14 = df["AROOND_14"]
-    aroond_14_15m = df["AROOND_14_15m"]
-    aroond_14_1h = df["AROOND_14_1h"]
-    aroond_14_4h = df["AROOND_14_4h"]
-    aroonu_14 = df["AROONU_14"]
-    bbb_20_2_0_1h = df["BBB_20_2.0_1h"]
-    bbl_20_2_0 = df["BBL_20_2.0"]
-    bbu_20_2_0 = df["BBU_20_2.0"]
-    cci_20_change_pct_1h = df["CCI_20_change_pct_1h"]
-    cci_20_change_pct_4h = df["CCI_20_change_pct_4h"]
+    aroond_14 = df["AROOND_14"].to_numpy(copy=False)
+    aroond_14_15m = df["AROOND_14_15m"].to_numpy(copy=False)
+    aroond_14_1h = df["AROOND_14_1h"].to_numpy(copy=False)
+    aroond_14_4h = df["AROOND_14_4h"].to_numpy(copy=False)
+    aroonu_14 = df["AROONU_14"].to_numpy(copy=False)
+    bbb_20_2_0_1h = df["BBB_20_2.0_1h"].to_numpy(copy=False)
+    bbl_20_2_0 = df["BBL_20_2.0"].to_numpy(copy=False)
+    bbu_20_2_0 = df["BBU_20_2.0"].to_numpy(copy=False)
+    cci_20_change_pct_1h = df["CCI_20_change_pct_1h"].to_numpy(copy=False)
+    cci_20_change_pct_4h = df["CCI_20_change_pct_4h"].to_numpy(copy=False)
     change_pct_1d = df["change_pct_1d"]
     change_pct_1h = df["change_pct_1h"]
     change_pct_4h = df["change_pct_4h"]
-    close_max_12 = df["close_max_12"]
-    close_max_48 = df["close_max_48"]
-    cmf_20_15m = df["CMF_20_15m"]
-    cmf_20_1d = df["CMF_20_1d"]
-    cmf_20_1h = df["CMF_20_1h"]
-    cmf_20_4h = df["CMF_20_4h"]
+    close_max_12 = df["close_max_12"].to_numpy(copy=False)
+    close_max_48 = df["close_max_48"].to_numpy(copy=False)
+    cmf_20_15m = df["CMF_20_15m"].to_numpy(copy=False)
+    cmf_20_1d = df["CMF_20_1d"].to_numpy(copy=False)
+    cmf_20_1h = df["CMF_20_1h"].to_numpy(copy=False)
+    cmf_20_4h = df["CMF_20_4h"].to_numpy(copy=False)
     ema_12 = df["EMA_12"]
-    ema_20 = df["EMA_20"]
+    ema_20 = df["EMA_20"].to_numpy(copy=False)
     ema_26 = df["EMA_26"]
     ema_200_1h = df["EMA_200_1h"]
     ema_200_4h = df["EMA_200_4h"]
-    ema_9 = df["EMA_9"]
-    high_max_12_1d = df["high_max_12_1d"]
-    high_max_12_4h = df["high_max_12_4h"]
-    high_max_20_1d = df["high_max_20_1d"]
-    high_max_24_4h = df["high_max_24_4h"]
-    high_max_30_1d = df["high_max_30_1d"]
-    high_max_6_1d = df["high_max_6_1d"]
-    high_max_6_4h = df["high_max_6_4h"]
-    low_min_12_1d = df["low_min_12_1d"]
-    low_min_24_4h = df["low_min_24_4h"]
-    mfi_14_15m = df["MFI_14_15m"]
-    mfi_14_1h = df["MFI_14_1h"]
-    num_empty_288 = df["num_empty_288"]
+    ema_9 = df["EMA_9"].to_numpy(copy=False)
+    high_max_12_1d = df["high_max_12_1d"].to_numpy(copy=False)
+    high_max_12_4h = df["high_max_12_4h"].to_numpy(copy=False)
+    high_max_20_1d = df["high_max_20_1d"].to_numpy(copy=False)
+    high_max_24_4h = df["high_max_24_4h"].to_numpy(copy=False)
+    high_max_30_1d = df["high_max_30_1d"].to_numpy(copy=False)
+    high_max_6_1d = df["high_max_6_1d"].to_numpy(copy=False)
+    high_max_6_4h = df["high_max_6_4h"].to_numpy(copy=False)
+    low_min_12_1d = df["low_min_12_1d"].to_numpy(copy=False)
+    low_min_24_4h = df["low_min_24_4h"].to_numpy(copy=False)
+    mfi_14_15m = df["MFI_14_15m"].to_numpy(copy=False)
+    mfi_14_1h = df["MFI_14_1h"].to_numpy(copy=False)
+    num_empty_288 = df["num_empty_288"].to_numpy(copy=False)
     protections_long_global = df["protections_long_global"]
     protections_short_global = df["protections_short_global"]
-    roc_2 = df["ROC_2"]
-    roc_9 = df["ROC_9"]
-    rsi_14 = df["RSI_14"]
-    rsi_14_15m = df["RSI_14_15m"]
-    rsi_14_1d = df["RSI_14_1d"]
-    rsi_14_1h = df["RSI_14_1h"]
+    roc_2 = df["ROC_2"].to_numpy(copy=False)
+    roc_9 = df["ROC_9"].to_numpy(copy=False)
+    rsi_14 = df["RSI_14"].to_numpy(copy=False)
+    rsi_14_15m = df["RSI_14_15m"].to_numpy(copy=False)
+    rsi_14_1d = df["RSI_14_1d"].to_numpy(copy=False)
+    rsi_14_1h = df["RSI_14_1h"].to_numpy(copy=False)
     rsi_20 = df["RSI_20"]
-    rsi_3_change_pct_1h = df["RSI_3_change_pct_1h"]
-    rsi_3_change_pct_4h = df["RSI_3_change_pct_4h"]
-    rsi_4 = df["RSI_4"]
-    sma_16 = df["SMA_16"]
+    rsi_3_change_pct_1h = df["RSI_3_change_pct_1h"].to_numpy(copy=False)
+    rsi_3_change_pct_4h = df["RSI_3_change_pct_4h"].to_numpy(copy=False)
+    rsi_4 = df["RSI_4"].to_numpy(copy=False)
+    sma_16 = df["SMA_16"].to_numpy(copy=False)
     sma_21 = df["SMA_21"]
     sma_200 = df["SMA_200"]
-    stochrsi_k = df["STOCHRSIk_14_14_3_3"]
+    stochrsi_k = df["STOCHRSIk_14_14_3_3"].to_numpy(copy=False)
     top_wick_pct_1d = df["top_wick_pct_1d"]
-    willr_14 = df["WILLR_14"]
+    willr_14 = df["WILLR_14"].to_numpy(copy=False)
 
     rsi_3_gt_3 = rsi_3 > 3.0
     rsi_3_gt_5 = rsi_3 > 5.0
