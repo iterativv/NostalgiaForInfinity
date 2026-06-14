@@ -70,7 +70,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.232"
+    return "v17.4.233"
 
   stoploss = -0.99
 
@@ -45206,7 +45206,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and (last_candle["AROONU_14_15m"] < 25.0)
       and (last_roc_9_1h > -15.0)
       and (last_roc_9_4h > -15.0)
-      # and (last_close > (last_candle["close_max_48"] * 0.90))
+      and (last_close > (last_candle["close_max_48"] * 0.85))
       and (last_close < (last_ema_12 * 0.980))
     ):
       self._grind_entry_tag = "g3"
