@@ -25043,9 +25043,13 @@ class NostalgiaForInfinityX7(IStrategy):
           # 4h red, 4h still high, 1d downtrend
           short_entry_logic.append((change_pct_4h < 10.0) | (stochrsi_k_4h_gt_30) | (roc_9_1d_lt_40))
           # 1d P&D, 1d overbought
-          short_entry_logic.append((change_pct_1d_lt_10) | (change_pct_1d_shift.shift(288) > -10.0) | (roc_9_1d_gt_neg_100))
+          short_entry_logic.append(
+            (change_pct_1d_lt_10) | (change_pct_1d_shift.shift(288) > -10.0) | (roc_9_1d_gt_neg_100)
+          )
           # 1d P&D, 4h still high
-          short_entry_logic.append((change_pct_1d_lt_15) | (change_pct_1d_shift.shift(288) > -15.0) | (aroond_14_4h_lt_50))
+          short_entry_logic.append(
+            (change_pct_1d_lt_15) | (change_pct_1d_shift.shift(288) > -15.0) | (aroond_14_4h_lt_50)
+          )
           short_entry_logic.append((rsi_3_1h_lt_90) | (rsi_3_4h_lt_95) | (cci_20_change_pct_4h_lt_0))
 
           # Logic
@@ -25148,7 +25152,9 @@ class NostalgiaForInfinityX7(IStrategy):
           # 1h & 4h down move, 4h still not low enough
           short_entry_logic.append((rsi_3_1h_lt_95) | (rsi_3_change_pct_4h < 65.0) | (stochrsi_k_4h_gt_70))
           # 1h down move, 4h down move, 4h P&D
-          short_entry_logic.append((rsi_3_1h_lt_90) | (rsi_3_change_pct_4h < 70.0) | (rsi_14_4h_shift.shift(48) > 30.0))
+          short_entry_logic.append(
+            (rsi_3_1h_lt_90) | (rsi_3_change_pct_4h < 70.0) | (rsi_14_4h_shift.shift(48) > 30.0)
+          )
           # 1h & 4h down move, 4h still not low enough, 1d still high
           short_entry_logic.append(
             (rsi_3_1h_lt_90) | (rsi_3_change_pct_4h < 50.0) | (aroond_14_4h_lt_25) | (stochrsi_k_1d_gt_60)
@@ -25179,7 +25185,9 @@ class NostalgiaForInfinityX7(IStrategy):
           # 1h P&D, 4h overbought
           short_entry_logic.append((change_pct_1h < 2.0) | (change_pct_1h_shift.shift(12) > 2.0) | (rsi_14_4h_gt_20))
           # 1h P&D, 1d overbought
-          short_entry_logic.append((change_pct_1h < 5.0) | (change_pct_1h_shift.shift(12) > -5.0) | (roc_9_1d_gt_neg_100))
+          short_entry_logic.append(
+            (change_pct_1h < 5.0) | (change_pct_1h_shift.shift(12) > -5.0) | (roc_9_1d_gt_neg_100)
+          )
           # 1h & 4h red, 1h not low enough
           short_entry_logic.append((change_pct_1h < 10.0) | (change_pct_4h < 10.0) | (mfi_14_1h > 50.0))
           # 1h red, 1h still not low enough, 1d down move
@@ -25189,9 +25197,13 @@ class NostalgiaForInfinityX7(IStrategy):
             (change_pct_4h < 5.0) | (change_pct_4h_shift.shift(48) > -5.0) | (rsi_14_4h_shift.shift(48) > 20.0)
           )
           # 1d P&D, 1d overbought
-          short_entry_logic.append((change_pct_1d_lt_10) | (change_pct_1d_shift.shift(288) > -10.0) | (roc_9_1d_gt_neg_100))
+          short_entry_logic.append(
+            (change_pct_1d_lt_10) | (change_pct_1d_shift.shift(288) > -10.0) | (roc_9_1d_gt_neg_100)
+          )
           # 1d P&D, 4h still high
-          short_entry_logic.append((change_pct_1d_lt_15) | (change_pct_1d_shift.shift(288) > -15.0) | (aroond_14_4h_lt_50))
+          short_entry_logic.append(
+            (change_pct_1d_lt_15) | (change_pct_1d_shift.shift(288) > -15.0) | (aroond_14_4h_lt_50)
+          )
 
           # Logic
           short_entry_logic.append(rsi_14 > 64.0)
@@ -25604,7 +25616,9 @@ class NostalgiaForInfinityX7(IStrategy):
           # 1d red, 1d high
           short_entry_logic.append((change_pct_1d < 5.0) | (stochrsi_k_1d_gt_20))
           # 1d P&D, 1d high
-          short_entry_logic.append((change_pct_1d_lt_10) | (change_pct_1d_shift.shift(288) > -10.0) | (stochrsi_k_1d_gt_50))
+          short_entry_logic.append(
+            (change_pct_1d_lt_10) | (change_pct_1d_shift.shift(288) > -10.0) | (stochrsi_k_1d_gt_50)
+          )
 
           # Logic
           short_entry_logic.append(rsi_4 > 54.0)
