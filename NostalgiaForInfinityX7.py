@@ -25765,11 +25765,11 @@ class NostalgiaForInfinityX7(IStrategy):
             short_entry_logic.append(sma_21 < sma_200)
           else:
             short_entry_logic.append(pd.Series([False]))
-          if isinstance(ema_200_1h.iloc[-1], np.float64):
+          if isinstance(ema_200_1h_infer.iloc[-1], np.float64):
             short_entry_logic.append(close < ema_200_1h)
           else:
             short_entry_logic.append(pd.Series([False]))
-          if isinstance(ema_200_4h.iloc[-1], np.float64):
+          if isinstance(ema_200_4h_infer.iloc[-1], np.float64):
             short_entry_logic.append(close < ema_200_4h)
           else:
             short_entry_logic.append(pd.Series([False]))
@@ -44031,36 +44031,36 @@ class NostalgiaForInfinityX7(IStrategy):
     is_not_trade_max_stake_v3 = current_stake_amount < (slice_amount * self.system_v3_max_stake)
     is_not_trade_max_stake_v3_1 = current_stake_amount < (slice_amount * self.system_v3_1_max_stake)
 
-    grind_1_cluster_max_profit_stake = trade.get_custom_data(key=f"grind_1_cluster_max_profit_stake") or 0.0
-    grind_1_cluster_max_profit_rate = trade.get_custom_data(key=f"grind_1_cluster_max_profit_rate") or 0.0
+    grind_1_cluster_max_profit_stake = trade.get_custom_data(key="grind_1_cluster_max_profit_stake") or 0.0
+    grind_1_cluster_max_profit_rate = trade.get_custom_data(key="grind_1_cluster_max_profit_rate") or 0.0
     if grind_1_current_grind_profit_stake > grind_1_cluster_max_profit_stake:
       trade.set_custom_data(key="grind_1_cluster_max_profit_stake", value=grind_1_current_grind_profit_stake)
     if grind_1_current_grind_profit_rate > grind_1_cluster_max_profit_rate:
       trade.set_custom_data(key="grind_1_cluster_max_profit_rate", value=grind_1_current_grind_profit_rate)
 
-    grind_2_cluster_max_profit_stake = trade.get_custom_data(key=f"grind_2_cluster_max_profit_stake") or 0.0
-    grind_2_cluster_max_profit_rate = trade.get_custom_data(key=f"grind_2_cluster_max_profit_rate") or 0.0
+    grind_2_cluster_max_profit_stake = trade.get_custom_data(key="grind_2_cluster_max_profit_stake") or 0.0
+    grind_2_cluster_max_profit_rate = trade.get_custom_data(key="grind_2_cluster_max_profit_rate") or 0.0
     if grind_2_current_grind_profit_stake > grind_2_cluster_max_profit_stake:
       trade.set_custom_data(key="grind_2_cluster_max_profit_stake", value=grind_2_current_grind_profit_stake)
     if grind_2_current_grind_profit_rate > grind_2_cluster_max_profit_rate:
       trade.set_custom_data(key="grind_2_cluster_max_profit_rate", value=grind_2_current_grind_profit_rate)
 
-    grind_3_cluster_max_profit_stake = trade.get_custom_data(key=f"grind_3_cluster_max_profit_stake") or 0.0
-    grind_3_cluster_max_profit_rate = trade.get_custom_data(key=f"grind_3_cluster_max_profit_rate") or 0.0
+    grind_3_cluster_max_profit_stake = trade.get_custom_data(key="grind_3_cluster_max_profit_stake") or 0.0
+    grind_3_cluster_max_profit_rate = trade.get_custom_data(key="grind_3_cluster_max_profit_rate") or 0.0
     if grind_3_current_grind_profit_stake > grind_3_cluster_max_profit_stake:
       trade.set_custom_data(key="grind_3_cluster_max_profit_stake", value=grind_3_current_grind_profit_stake)
     if grind_3_current_grind_profit_rate > grind_3_cluster_max_profit_rate:
       trade.set_custom_data(key="grind_3_cluster_max_profit_rate", value=grind_3_current_grind_profit_rate)
 
-    grind_4_cluster_max_profit_stake = trade.get_custom_data(key=f"grind_4_cluster_max_profit_stake") or 0.0
-    grind_4_cluster_max_profit_rate = trade.get_custom_data(key=f"grind_4_cluster_max_profit_rate") or 0.0
+    grind_4_cluster_max_profit_stake = trade.get_custom_data(key="grind_4_cluster_max_profit_stake") or 0.0
+    grind_4_cluster_max_profit_rate = trade.get_custom_data(key="grind_4_cluster_max_profit_rate") or 0.0
     if grind_4_current_grind_profit_stake > grind_4_cluster_max_profit_stake:
       trade.set_custom_data(key="grind_4_cluster_max_profit_stake", value=grind_4_current_grind_profit_stake)
     if grind_4_current_grind_profit_rate > grind_4_cluster_max_profit_rate:
       trade.set_custom_data(key="grind_4_cluster_max_profit_rate", value=grind_4_current_grind_profit_rate)
 
-    grind_5_cluster_max_profit_stake = trade.get_custom_data(key=f"grind_5_cluster_max_profit_stake") or 0.0
-    grind_5_cluster_max_profit_rate = trade.get_custom_data(key=f"grind_5_cluster_max_profit_rate") or 0.0
+    grind_5_cluster_max_profit_stake = trade.get_custom_data(key="grind_5_cluster_max_profit_stake") or 0.0
+    grind_5_cluster_max_profit_rate = trade.get_custom_data(key="grind_5_cluster_max_profit_rate") or 0.0
     if grind_5_current_grind_profit_stake > grind_5_cluster_max_profit_stake:
       trade.set_custom_data(key="grind_5_cluster_max_profit_stake", value=grind_5_current_grind_profit_stake)
     if grind_5_current_grind_profit_rate > grind_5_cluster_max_profit_rate:
