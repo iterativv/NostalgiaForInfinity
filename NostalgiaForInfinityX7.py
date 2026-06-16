@@ -70,7 +70,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.236"
+    return "v17.4.237"
 
   stoploss = -0.99
 
@@ -23871,8 +23871,8 @@ class NostalgiaForInfinityX7(IStrategy):
             & ((rsi_3_15m_gt_30) | (aroonu_14_15m_lt_50) | (stochrsi_k_1d_lt_70) | (roc_9_1d_gt_neg_15))
             # 15m down move, 1h & 4h high
             & ((rsi_3_15m_gt_35) | (aroonu_14_1h_lt_80) | (rsi_14_4h_lt_80))
-            # 15m & 1h & 4h down move, 4h still not low enough, 1d high
-            & ((rsi_3_15m_gt_30) | (rsi_3_1h_gt_30) | (rsi_3_4h_gt_40) | (stochrsi_k_4h_lt_30) | (aroonu_14_1d_lt_100))
+            # 15m & 1h & 4h down move, 1d high, 4h still not low enough
+            & ((rsi_3_15m_gt_30) | (rsi_3_1h_gt_30) | (rsi_3_4h_gt_40) | (aroonu_14_1d_lt_100) | (stochrsi_k_4h_lt_30))
             # 1h & 4h down move, 15m stil high
             & ((rsi_3_1h_gt_3) | (rsi_3_4h_gt_10) | (stochrsi_k_15m_lt_50))
             # 1h & 4h down move, 1h still high
@@ -23999,6 +23999,8 @@ class NostalgiaForInfinityX7(IStrategy):
             & ((change_pct_1d_lt_40) | (rsi_3_4h_gt_35) | (aroonu_14_4h_lt_50))
             # 1d green with top wick, 4h down move
             & ((change_pct_1d_lt_40) | (top_wick_pct_1d_lt_8) | (rsi_3_4h_gt_55))
+            # 1d top wick, 1h & 4h down move, 1d high
+            & ((top_wick_pct_1d_lt_20) | (rsi_3_1h_gt_30) | (rsi_3_4h_gt_40) | (aroonu_14_1d_lt_100))
             # 1d top wick, 4h still high
             & ((top_wick_pct_1d_lt_50) | (aroonu_14_4h_lt_50))
             # big drop in last 4 days, 1d down move
