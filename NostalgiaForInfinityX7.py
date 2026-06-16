@@ -13689,7 +13689,7 @@ class NostalgiaForInfinityX7(IStrategy):
             # 15m & 4h down move, 15m still high
             & ((rsi_3_15m_gt_20) | (rsi_3_4h_gt_35) | (aroonu_14_15m_lt_40))
             # 15m down move, 1h & 4h high
-            & ((rsi_3_15m_gt_20) | (aroonu_14_1h_lt_100) | aroonu_14_4h_lt_100)
+            & ((rsi_3_15m_gt_20) | (aroonu_14_1h_lt_100) | (aroonu_14_4h_lt_100))
             # 15m down move, 1h high & overbought
             & ((rsi_3_15m_gt_20) | (aroonu_14_1h_lt_100) | (roc_9_1h_lt_20))
             # 15m down move, 4h high & overbought
@@ -13705,7 +13705,7 @@ class NostalgiaForInfinityX7(IStrategy):
             # 1h & 4h down move, 1d high
             & ((rsi_3_1h_gt_3) | (rsi_3_4h_gt_15) | (aroonu_14_1d_lt_90))
             # 1h & 4h down move, 1d high
-            & ((rsi_3_1h_gt_3) | (rsi_3_4h_gt_25) | aroonu_14_1d_lt_100)
+            & ((rsi_3_1h_gt_3) | (rsi_3_4h_gt_25) | (aroonu_14_1d_lt_100))
             # 1h & 1d down move, 4h still high
             & ((rsi_3_1h_gt_3) | (rsi_3_1d_gt_15) | (stochrsi_k_4h_lt_50))
             # 1h & 4h down move, 1d overbought
@@ -13902,6 +13902,8 @@ class NostalgiaForInfinityX7(IStrategy):
             & ((change_pct_1d_lt_40) | (rsi_3_1h_gt_25) | (cmf_20_1d_gt_neg_0_20))
             # 1d green with top wick, 4h overbought
             & ((change_pct_1d_lt_50) | (top_wick_pct_1d_lt_30) | (roc_9_4h_lt_80))
+            # 1d top wick, 1h & 4h down move, 1d high
+            & ((top_wick_pct_1d_lt_20) | (rsi_3_1h_gt_30) | (rsi_3_4h_gt_40) | (aroonu_14_1d_lt_100))
             # big drop in the last hour, 15m downtrend
             & ((close > (close_max_12 * 0.65)) | (cmf_20_15m_gt_neg_0_50))
             # big drop in the last 6 hours, 1h down move, 1h high
