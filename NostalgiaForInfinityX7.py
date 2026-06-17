@@ -67247,8 +67247,8 @@ class NostalgiaForInfinityX7(IStrategy):
     trade: Trade,
   ) -> tuple:
     # Short profit_rate = (exit - open) / open is NEGATIVE when profitable.
-    # Block exit if rate is not negative enough (i.e., rate too high vs threshold).
-    if grind_profit_rate > (grind_exit_profit_threshold - fee_open_rate - fee_close_rate):
+    # Mirror of long with -grind_profit_rate (so the operator semantics stay symmetric).
+    if -grind_profit_rate < (grind_exit_profit_threshold + fee_open_rate + fee_close_rate):
       return None, None
 
     last_rsi_3 = last_candle["RSI_3"]
@@ -67277,22 +67277,22 @@ class NostalgiaForInfinityX7(IStrategy):
       is_normal_exit = True
 
     is_trailing_exit = False
-    # if -0.02 < grind_profit_rate <= -0.01:
-    #   if grind_profit_rate > (max_profit_rate + 0.025):
+    # if 0.01 <= -grind_profit_rate < 0.02:
+    #   if -grind_profit_rate < (-max_profit_rate - 0.025):
     #     is_trailing_exit = True
-    # elif -0.05 <= grind_profit_rate <= -0.02:
-    #   if grind_profit_rate > (max_profit_rate + 0.035):
+    # elif 0.02 <= -grind_profit_rate <= 0.05:
+    #   if -grind_profit_rate < (-max_profit_rate - 0.035):
     #     is_trailing_exit = True
-    # elif -0.08 <= grind_profit_rate <= -0.05:
-    #   if grind_profit_rate > (max_profit_rate + 0.045):
+    # elif 0.05 <= -grind_profit_rate <= 0.08:
+    #   if -grind_profit_rate < (-max_profit_rate - 0.045):
     #     is_trailing_exit = True
-    # elif -0.12 <= grind_profit_rate <= -0.08:
-    #   if grind_profit_rate > (max_profit_rate + 0.050):
+    # elif 0.08 <= -grind_profit_rate <= 0.12:
+    #   if -grind_profit_rate < (-max_profit_rate - 0.050):
     #     is_trailing_exit = True
-    # elif grind_profit_rate <= -0.12:
-    #   if grind_profit_rate > (max_profit_rate + 0.055):
+    # elif 0.12 <= -grind_profit_rate:
+    #   if -grind_profit_rate < (-max_profit_rate - 0.055):
     #     is_trailing_exit = True
-    # is_trailing_exit = grind_profit_rate < -0.04
+    # is_trailing_exit = -grind_profit_rate > 0.04
 
     if is_normal_exit or is_trailing_exit:
       exit_amount = grind_total_amount * exit_rate / trade.leverage
