@@ -70,7 +70,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.242"
+    return "v17.4.243"
 
   stoploss = -0.99
 
@@ -612,18 +612,18 @@ class NostalgiaForInfinityX7(IStrategy):
 
   system_v3_2_stake_multiplier = 1.0
   system_v3_2_derisk_level_1_enable = True
-  system_v3_2_derisk_level_1_spot = [-0.04, -0.08]
-  system_v3_2_derisk_level_1_futures = [-0.12, -0.24]
+  system_v3_2_derisk_level_1_spot = [-0.06, -0.12]
+  system_v3_2_derisk_level_1_futures = [-0.18, -0.35]
   system_v3_2_derisk_level_1_stake_spot = 0.20
   system_v3_2_derisk_level_1_stake_futures = 0.20
   system_v3_2_derisk_level_2_enable = True
-  system_v3_2_derisk_level_2_spot = [-0.04, -0.12]
-  system_v3_2_derisk_level_2_futures = [-0.12, -0.36]
+  system_v3_2_derisk_level_2_spot = [-0.08, -0.18]
+  system_v3_2_derisk_level_2_futures = [-0.24, -0.54]
   system_v3_2_derisk_level_2_stake_spot = 0.30
   system_v3_2_derisk_level_2_stake_futures = 0.30
   system_v3_2_derisk_level_3_enable = True
-  system_v3_2_derisk_level_3_spot = [-0.04, -0.16]
-  system_v3_2_derisk_level_3_futures = [-0.12, -0.48]
+  system_v3_2_derisk_level_3_spot = [-0.10, -0.20]
+  system_v3_2_derisk_level_3_futures = [-0.30, -0.60]
   system_v3_2_derisk_level_3_stake_spot = 0.50
   system_v3_2_derisk_level_3_stake_futures = 0.50
   system_v3_2_derisk_level_4_enable = False
@@ -44102,8 +44102,12 @@ class NostalgiaForInfinityX7(IStrategy):
 
     is_long_extra_checks_entry = (
       grind_entry_retry_time > filled_entries[-1].order_filled_utc
-      # and ((current_time - timedelta(minutes=15) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.06) or (num_open_grinds_and_buybacks < 1))
-      # and ((current_time - timedelta(hours=1) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.03) or (is_derisk_3))
+      # and ((current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
+      and (
+        (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
+        or (slice_profit < -0.06)
+        or (is_derisk_3)
+      )
       # and (
       #   (current_stake_amount < (filled_entries[0].cost * 0.50))
       #   or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -44859,17 +44863,22 @@ class NostalgiaForInfinityX7(IStrategy):
       # and (
       #   is_long_grind_entry
       #   or (
-      #     (slice_profit < -0.04)
-      #     and (last_candle["RSI_3"] > 5.0)
-      #     and (last_candle["RSI_3_15m"] > 10.0)
-      #     and (last_candle["RSI_14"] < 35.0)
-      #     and (last_candle["close"] < (last_candle["EMA_20"] * 0.985))
+      #     (slice_profit < -0.06)
+      #     and (last_candle["RSI_3"] > 10.0)
+      #     and (last_candle["RSI_3_15m"] > 15.0)
+      #     and (last_candle["RSI_3_1h"] > 25.0)
+      #     and (last_candle["RSI_3_4h"] > 25.0)
+      #     and (last_candle["RSI_14"] < 45.0)
+      #     and (last_candle["close"] < (last_candle["EMA_20"] * 0.980))
       #   )
       #   or (
-      #     (slice_profit < -0.06)
-      #     and (grind_5_sub_grind_count > 0)
-      #     and (last_candle["RSI_14"] < 35.0)
-      #     and (last_candle["close"] < (last_candle["EMA_20"] * 0.985))
+      #     (num_open_grinds_and_buybacks == 0)
+      #     and (last_candle["RSI_3"] > 10.0)
+      #     and (last_candle["RSI_3_15m"] > 15.0)
+      #     and (last_candle["RSI_3_1h"] > 25.0)
+      #     and (last_candle["RSI_3_4h"] > 25.0)
+      #     and (last_candle["RSI_14"] < 40.0)
+      #     and (last_candle["close"] < (last_candle["EMA_20"] * 0.980))
       #   )
       # )
       and is_long_extra_checks_entry
@@ -67844,6 +67853,11 @@ class NostalgiaForInfinityX7(IStrategy):
     is_short_extra_checks_entry = (
       grind_entry_retry_time > filled_entries[-1].order_filled_utc
       # and ((current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
+      and (
+        (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
+        or (slice_profit > 0.06)
+        or (is_derisk_3)
+      )
       # and (
       #   (current_stake_amount < (filled_entries[0].cost * 0.50))
       #   or (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
