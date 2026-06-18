@@ -23422,13 +23422,15 @@ class NostalgiaForInfinityX7(IStrategy):
             # 5m down move, 15m & 1h high
             & ((rsi_3_gt_10) | (aroonu_14_15m_lt_85) | (aroonu_14_1h_lt_100))
             # 15m & 1h & 4h down move
-            & (rsi_3_15m_gt_3 | (rsi_3_1h_gt_3) | (rsi_3_4h_gt_5))
+            & ((rsi_3_15m_gt_3) | (rsi_3_1h_gt_3) | (rsi_3_4h_gt_5))
             # 15m & 1h down move, 1h downtrend
-            & (rsi_3_15m_gt_3 | (rsi_3_1h_gt_3) | (roc_9_1h_gt_neg_20))
+            & ((rsi_3_15m_gt_3) | (rsi_3_1h_gt_3) | (roc_9_1h_gt_neg_20))
             # 15m & 1h down move, 1h still not low enough
-            & (rsi_3_15m_gt_3 | (rsi_3_1h_gt_10) | (stochrsi_k_1h_lt_20))
+            & ((rsi_3_15m_gt_3) | (rsi_3_1h_gt_10) | (stochrsi_k_1h_lt_20))
+            # 15m & 1h down move, 1h still high
+            & ((rsi_3_15m_gt_3) | (rsi_3_1h_gt_15) | (stochrsi_k_1h_lt_50))
             # 15m & 1h down move, 4h high
-            & ((rsi_3_15m_gt_5) | (rsi_3_1h_gt_10) | aroonu_14_4h_lt_70)
+            & ((rsi_3_15m_gt_5) | (rsi_3_1h_gt_10) | (aroonu_14_4h_lt_70))
             # 15m & 1h down move, 1h high
             & ((rsi_3_15m_gt_10) | (rsi_3_1h_gt_35) | aroonu_14_1h_lt_70)
             # 15m & 4h down move, 4h still not low enough
@@ -23448,9 +23450,9 @@ class NostalgiaForInfinityX7(IStrategy):
             # 15m down move, 1h high, 1d downtrend
             & ((rsi_3_15m_gt_15) | (aroonu_14_1h_lt_90) | (roc_9_1d_gt_neg_30))
             # 15m & 1h down move, 1d downtrend
-            & ((rsi_3_15m_gt_20) | rsi_3_1h_gt_20 | (roc_9_1d_gt_neg_30))
+            & ((rsi_3_15m_gt_20) | (rsi_3_1h_gt_20) | (roc_9_1d_gt_neg_30))
             # 15m & 4h down move, 15m still high
-            & ((rsi_3_15m_gt_20) | rsi_3_4h_gt_20 | (stochrsi_k_15m_lt_50))
+            & ((rsi_3_15m_gt_20) | (rsi_3_4h_gt_20) | (stochrsi_k_15m_lt_50))
             # 15m down move, 15m & 1h high
             & ((rsi_3_15m_gt_20) | (aroonu_14_15m_lt_70) | (aroonu_14_1h_lt_100))
             # 15m & 1h down move, 15m still high
