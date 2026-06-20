@@ -12752,15 +12752,11 @@ class NostalgiaForInfinityX7(IStrategy):
 
   # Correct Min Stake
   # ---------------------------------------------------------------------------------------------
-  def correct_min_stake(self, min_stake: float) -> float:
-    if self.config["exchange"]["name"] == "bybit":
-      if self.is_futures_mode:
-        if (min_stake is None) or (min_stake < 5.0 / self.futures_mode_leverage):
-          min_stake = 5.0 / self.futures_mode_leverage
-    elif self.config["exchange"]["name"] == "krakenfutures":
-      if self.is_futures_mode:
-        if (min_stake is None) or (min_stake < 5.0 / self.futures_mode_leverage):
-          min_stake = 5.0 / self.futures_mode_leverage
+  def correct_min_stake(self, min_stake: Optional[float], trade_leverage: Optional[float] = None) -> Optional[float]:
+    if self.is_futures_mode and self.config["exchange"]["name"] in ("binance", "bybit", "krakenfutures"):
+      min_futures_stake = 5.0 / (trade_leverage if trade_leverage is not None else self.futures_mode_leverage)
+      if (min_stake is None) or (min_stake < min_futures_stake):
+        min_stake = min_futures_stake
     return min_stake
 
   def is_backtest_mode(self) -> bool:
@@ -41178,7 +41174,7 @@ class NostalgiaForInfinityX7(IStrategy):
     long_rebuy_mode_tags = self.long_rebuy_mode_tags
     long_grind_mode_tags = self.long_grind_mode_tags
 
-    min_stake = self.correct_min_stake(min_stake)
+    min_stake = self.correct_min_stake(min_stake, trade_leverage)
     df, _ = dp.get_analyzed_dataframe(trade_pair, self.timeframe)
     if len(df) < 2:
       return None
@@ -43690,7 +43686,7 @@ class NostalgiaForInfinityX7(IStrategy):
     if trade.has_open_orders:
       return None
 
-    min_stake = self.correct_min_stake(min_stake)
+    min_stake = self.correct_min_stake(min_stake, trade_leverage)
     df, _ = dp.get_analyzed_dataframe(trade_pair, self.timeframe)
     if len(df) < 2:
       return None
@@ -45803,7 +45799,7 @@ class NostalgiaForInfinityX7(IStrategy):
     long_grind_mode_tags = self.long_grind_mode_tags
     trade_leverage = trade.leverage
 
-    min_stake = self.correct_min_stake(min_stake)
+    min_stake = self.correct_min_stake(min_stake, trade_leverage)
     df, _ = dp.get_analyzed_dataframe(trade_pair, self.timeframe)
     if len(df) < 2:
       return None
@@ -64892,7 +64888,7 @@ class NostalgiaForInfinityX7(IStrategy):
     short_rebuy_mode_tags = self.short_rebuy_mode_tags
     short_grind_mode_tags = self.short_grind_mode_tags
 
-    min_stake = self.correct_min_stake(min_stake)
+    min_stake = self.correct_min_stake(min_stake, trade_leverage)
     df, _ = dp.get_analyzed_dataframe(trade_pair, self.timeframe)
     if len(df) < 2:
       return None
@@ -67486,7 +67482,7 @@ class NostalgiaForInfinityX7(IStrategy):
     if trade.has_open_orders:
       return None
 
-    min_stake = self.correct_min_stake(min_stake)
+    min_stake = self.correct_min_stake(min_stake, trade_leverage)
     df, _ = dp.get_analyzed_dataframe(trade_pair, self.timeframe)
     if len(df) < 2:
       return None
@@ -69129,7 +69125,7 @@ class NostalgiaForInfinityX7(IStrategy):
     short_grind_mode_tags = self.short_grind_mode_tags
     trade_leverage = trade.leverage
 
-    min_stake = self.correct_min_stake(min_stake)
+    min_stake = self.correct_min_stake(min_stake, trade_leverage)
     df, _ = dp.get_analyzed_dataframe(trade_pair, self.timeframe)
     if len(df) < 2:
       return None
