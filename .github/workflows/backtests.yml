@@ -107,7 +107,26 @@ jobs:
           jq --arg proxy "$PROXY" \
             '.exchange.ccxt_config = { http_proxy: $proxy }' \
             configs/proxy-binance.json > tmp.json && mv tmp.json configs/proxy-binance.json
+      - name: Verify if the proxy works
+        env:
+          PROXY: ${{ secrets.FREQTRADE_PROXY }}
+        run: |
+          HTTP_CODE=$(curl \
+            --proxy "$PROXY" \
+            -s \
+            -o /dev/null \
+            -w "%{http_code}" \
+            https://api.binance.com/api/v3/ping)
 
+          echo "HTTP response: $HTTP_CODE"
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::error::Proxy test failed (HTTP $HTTP_CODE)"
+            exit 1
+          fi
+
+          echo "✅ Proxy works"
+  
       - name: Pull docker image
         run: |
           docker pull ghcr.io/iterativv/ci-strategy-backtesting:latest
@@ -182,6 +201,26 @@ jobs:
           jq --arg proxy "$PROXY" \
             '.exchange.ccxt_config = { http_proxy: $proxy }' \
             configs/proxy-binance.json > tmp.json && mv tmp.json configs/proxy-binance.json
+
+      - name: Verify if the proxy works
+        env:
+          PROXY: ${{ secrets.FREQTRADE_PROXY2 }}
+        run: |
+          HTTP_CODE=$(curl \
+            --proxy "$PROXY" \
+            -s \
+            -o /dev/null \
+            -w "%{http_code}" \
+            https://api.binance.com/api/v3/ping)
+
+          echo "HTTP response: $HTTP_CODE"
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::error::Proxy test failed (HTTP $HTTP_CODE)"
+            exit 1
+          fi
+
+          echo "✅ Proxy works"
 
       - name: Pull docker image
         run: |
