@@ -97,7 +97,6 @@ class Backtest:
       "--export=signals",
       f"--log-file=user_data/logs/backtesting-{exchange}-{trading_mode}-{start_date}-{end_date}.log",
       f"--export-directory={str(export_dir)}",
-      f"--export-filename={json_filename}",
     ]
 
     if pairlist is None:
