@@ -7,6 +7,53 @@ on:
       - 'NostalgiaForInfinityX7.py'
 
 jobs:
+
+  # Check Binance Proxys
+  Check-Binance-Proxy-Spot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify Binance Spot Proxy
+        env:
+          PROXY: ${{ secrets.FREQTRADE_PROXY }}
+        run: |
+          HTTP_CODE=$(curl \
+            --proxy "$PROXY" \
+            -s \
+            -o /dev/null \
+            -w "%{http_code}" \
+            https://api.binance.com/api/v3/ping)
+
+          echo "HTTP response: $HTTP_CODE"
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::error::Proxy test failed (HTTP $HTTP_CODE)"
+            exit 1
+          fi
+
+          echo "✅ Proxy works"
+  Check-Binance-Proxy-Futures:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify Binance Futures Proxy
+        env:
+          PROXY: ${{ secrets.FREQTRADE_PROXY2 }}
+        run: |
+          HTTP_CODE=$(curl \
+            --proxy "$PROXY" \
+            -s \
+            -o /dev/null \
+            -w "%{http_code}" \
+            https://api.binance.com/api/v3/ping)
+
+          echo "HTTP response: $HTTP_CODE"
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::error::Proxy test failed (HTTP $HTTP_CODE)"
+            exit 1
+          fi
+
+          echo "✅ Proxy works"
+
   # Backtest Jobs
   Backtest-Kucoin-Spot:
     runs-on: ubuntu-latest
@@ -76,6 +123,7 @@ jobs:
           path: artifacts/
 
   Backtest-Binance-Spot:
+    needs: Check-Binance-Proxy-Spot
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -151,6 +199,7 @@ jobs:
           path: artifacts/
 
   Backtest-Binance-Futures:
+    needs: Check-Binance-Proxy-Futures
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
