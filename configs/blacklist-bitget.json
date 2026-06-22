@@ -24,6 +24,8 @@
       "R[A-Z]{2,6}STOCK/.*",
       // Tokenized stocks (STOCK suffix on futures — QNTSTOCK, BBSTOCK, NOKSTOCK, SATSSTOCK, STXSTOCK)
       ".*STOCK/.*",
+      // Tokenized stocks (direct ticker, no STOCK suffix)
+      "(NVDA|AAPL|AMD|ARM|ASTS|CRWV|DELL|GOOGL|IREN|LITE|MRVL|MSFT|MSTR|MU|NBIS|QCOM|SNDK|SOXL|SPCX)/.*",
       // Tokenized stocks (ON-suffix variant on Bitget)
       "(AAPL|AMD|AMZN|GOOGL|IAU|ITOT|IVV|IWM|META|MSFT|NVDA|QQQ|SLV|SPY|TSLA)ON/.*",
       // Tokenized stocks on futures using native stock ticker (Reddit, Redwire, Rocket Lab, Red Cat, Rigetti)
