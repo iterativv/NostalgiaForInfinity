@@ -21,6 +21,8 @@
       "(MKR|OMNI)/.*",
       // Tokenized stocks (STOCK suffix — universal forward-protection)
       ".*STOCK/.*",
+      // Tokenized stocks (direct ticker, no STOCK suffix)
+      "(NVDA|AAPL|AMD|ARM|ASTS|CRWV|DELL|GOOGL|IREN|LITE|MRVL|MSFT|MSTR|MU|NBIS|QCOM|SNDK|SOXL|SPCX)/.*",
       // Tokenized stocks (3L/3S leverage)
       "(AAPL|ACN|AMZN|BABA|CRCL|DASH|GOOGL|INTC|JPM|LIT|META|MRVL|MSTR|NVDA|QQQ|SLV|SNDK|SPY|TSLA)(3L|3S)/.*",
       // Tokenized stocks (X-suffix)

@@ -21,7 +21,9 @@
       // Delisting
       "(MKR|OMNI)/.*",
       // Tokenized stocks (STOCK suffix — universal forward-protection)
-      ".*STOCK/.*"
+      ".*STOCK/.*",
+      // Tokenized stocks (direct ticker, no STOCK suffix)
+      "(NVDA|AAPL|AMD|ARM|ASTS|CRWV|DELL|GOOGL|IREN|LITE|MRVL|MSFT|MSTR|MU|NBIS|QCOM|SNDK|SOXL|SPCX)/.*"
     ]
   }
 }
