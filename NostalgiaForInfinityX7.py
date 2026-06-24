@@ -70,7 +70,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.276"
+    return "v17.4.277"
 
   stoploss = -0.99
 
@@ -45183,28 +45183,17 @@ class NostalgiaForInfinityX7(IStrategy):
     if (
       (self.system_v3_grind_5_enable)
       # and is_derisk_1_found
-      and is_long_grind_entry
-      # and (
-      #   is_long_grind_entry
-      #   or (
-      #     (slice_profit < -0.06)
-      #     and (last_candle["RSI_3"] > 10.0)
-      #     and (last_candle["RSI_3_15m"] > 15.0)
-      #     and (last_candle["RSI_3_1h"] > 25.0)
-      #     and (last_candle["RSI_3_4h"] > 25.0)
-      #     and (last_candle["RSI_14"] < 45.0)
-      #     and (last_candle["close"] < (last_candle["EMA_20"] * 0.980))
-      #   )
-      #   or (
-      #     (num_open_grinds_and_buybacks == 0)
-      #     and (last_candle["RSI_3"] > 10.0)
-      #     and (last_candle["RSI_3_15m"] > 15.0)
-      #     and (last_candle["RSI_3_1h"] > 25.0)
-      #     and (last_candle["RSI_3_4h"] > 25.0)
-      #     and (last_candle["RSI_14"] < 40.0)
-      #     and (last_candle["close"] < (last_candle["EMA_20"] * 0.980))
-      #   )
-      # )
+      # and is_long_grind_entry
+      and (
+        is_long_grind_entry
+        or (
+          (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
+          and (slice_profit_entry < -0.06)
+          and (last_candle["RSI_3"] > 10.0)
+          and (last_candle["RSI_3_15m"] > 20.0)
+          and (last_candle["AROONU_14"] < 50.0)
+        )
+      )
       and is_long_extra_checks_entry
       and (grind_5_sub_grind_count < grind_5_max_sub_grinds)
       and (grind_5_sub_grind_count == 0 or (grind_5_distance_ratio < grind_5_sub_thresholds[grind_5_sub_grind_count]))
@@ -68872,7 +68861,17 @@ class NostalgiaForInfinityX7(IStrategy):
     if (
       (self.system_v3_grind_5_enable)
       # and is_derisk_1_found
-      and is_short_grind_entry
+      # and is_short_grind_entry
+      and (
+        is_short_grind_entry
+        or (
+          (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
+          and (slice_profit_entry > 0.06)
+          and (last_candle["RSI_3"] < 90.0)
+          and (last_candle["RSI_3_15m"] < 80.0)
+          and (last_candle["AROOND_14"] < 50.0)
+        )
+      )
       and is_short_extra_checks_entry
       and (grind_5_sub_grind_count < grind_5_max_sub_grinds)
       and (grind_5_sub_grind_count == 0 or (-grind_5_distance_ratio < grind_5_sub_thresholds[grind_5_sub_grind_count]))
