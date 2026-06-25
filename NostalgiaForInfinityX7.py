@@ -20970,6 +20970,10 @@ class NostalgiaForInfinityX7(IStrategy):
             # Daily positive
             & (roc_9_1d > 0.0)
             & (rsi_14_1d > 45.0)
+            # 4h extreme overbought, 1d big rally, 4h money outflow = blow-off top
+            & ((stochrsi_k_4h_lt_90) | (roc_9_1d_lt_20) | (cmf_20_4h_gt_neg_0_0))
+            # 15m euphoria spike without 4h confirmation = spike top fake breakout
+            & ((rsi_3_15m < 90.0) | (stochrsi_k_4h > 30.0))
           )
 
           # Logic — Breakout above BB upper with momentum
@@ -25859,6 +25863,16 @@ class NostalgiaForInfinityX7(IStrategy):
             & (aroonu_14_1h < 40.0)
             # Daily momentum negative
             & (roc_9_1d < 0.0)
+            # 1h + 4h capitulation oversold = double-exhaustion bottom
+            & ((rsi_3_4h_gt_5) | (rsi_3_1h_gt_5) | (stochrsi_k_1h_gt_10))
+            # 4h still in oversold zone post first leg + 1d sustained drop = continuation V-trap
+            & ((rsi_3_4h_gt_20) | (stochrsi_k_4h > 10.0) | (rsi_3_1d_gt_40))
+            # 1d capitulation but 4h mid = bottom formation, skip shorts
+            & ((rsi_3_1d_gt_20) | (stochrsi_k_4h_lt_50) | (rsi_3_4h_gt_60))
+            # 4h crash already extreme (>50% drop) = oversold bottom, dead cat
+            & ((roc_9_4h_gt_neg_50) | (rsi_3_4h_gt_15) | (stochrsi_k_4h_gt_10))
+            # 1d ultra-capitulation (STOCHRSIk = 0, RSI_3 < 10) = absolute bottom
+            & ((rsi_3_1d_gt_10) | (stochrsi_k_1d > 5.0) | (rsi_3_4h_gt_40))
           )
 
           # Logic — Breakdown below BB lower in downtrend
@@ -25889,6 +25903,14 @@ class NostalgiaForInfinityX7(IStrategy):
             & (rsi_14_1h < 45.0)
             & (willr_14_1h < -50.0)
             & (aroonu_14_4h < 35.0)
+            # 4h capitulation oversold + 15m strong rally start = V-reversal trap
+            & ((rsi_3_4h_gt_5) | (stochrsi_k_15m < 90.0) | (aroonu_14_15m_lt_100))
+            # 4h capitulation, 15m sustained overbought rally = V-reversal late stage
+            & ((rsi_3_4h_gt_5) | (stochrsi_k_15m_lt_80) | (aroonu_14_15m_lt_80))
+            # 4h oversold + 15m maxed out (STOCHRSIk = 100) = V-reversal already topped
+            & ((rsi_3_4h_gt_15) | (stochrsi_k_15m < 90.0) | (aroonu_14_15m_lt_90))
+            # 4h still oversold + 15m STOCHRSIk peaked = top distribution near recent levels
+            & ((rsi_3_4h_gt_15) | (stochrsi_k_15m < 90.0))
           )
 
           # Logic — Bounce that fails to reclaim resistance
