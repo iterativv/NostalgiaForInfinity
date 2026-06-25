@@ -127,7 +127,7 @@ class NostalgiaForInfinityX7(IStrategy):
   # Long Quick mode tags
   long_quick_mode_tags = ["41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53"]
   # Long rebuy mode tags
-  long_rebuy_mode_tags = ["61", "62", "63"]
+  long_rebuy_mode_tags = ["61", "62", "63", "65"]
   # Long high profit mode tags
   long_high_profit_mode_tags = ["81", "82"]
   # Long rapid mode tags
@@ -189,7 +189,7 @@ class NostalgiaForInfinityX7(IStrategy):
   # Short Quick mode tags
   short_quick_mode_tags = ["541", "542", "543", "544", "545", "546", "547", "548", "549", "550"]
   # Short rebuy mode tags
-  short_rebuy_mode_tags = ["561"]
+  short_rebuy_mode_tags = ["561", "562", "563"]
   # Short mode tags
   short_high_profit_mode_tags = ["581", "582"]
   # Short rapid mode tags
@@ -882,6 +882,7 @@ class NostalgiaForInfinityX7(IStrategy):
     "long_entry_condition_61_enable": True,
     "long_entry_condition_62_enable": True,
     "long_entry_condition_63_enable": True,
+    "long_entry_condition_65_enable": False,
     "long_entry_condition_101_enable": True,
     "long_entry_condition_102_enable": True,
     "long_entry_condition_103_enable": True,
@@ -908,6 +909,8 @@ class NostalgiaForInfinityX7(IStrategy):
     # "short_entry_condition_541_enable": True,
     "short_entry_condition_542_enable": True,
     # "short_entry_condition_543_enable": True,
+    "short_entry_condition_562_enable": False,
+    "short_entry_condition_563_enable": False,
     # "short_entry_condition_603_enable": True,
     # "short_entry_condition_641_enable": True,
     # "short_entry_condition_642_enable": True,
@@ -13034,6 +13037,7 @@ class NostalgiaForInfinityX7(IStrategy):
     aroond_14_1h = df["AROOND_14_1h"].to_numpy(copy=False)
     aroond_14_4h = df["AROOND_14_4h"].to_numpy(copy=False)
     aroonu_14 = df["AROONU_14"].to_numpy(copy=False)
+    bbb_20_2_0 = df["BBB_20_2.0"].to_numpy(copy=False)
     bbb_20_2_0_1h = df["BBB_20_2.0_1h"].to_numpy(copy=False)
     bbl_20_2_0 = df["BBL_20_2.0"].to_numpy(copy=False)
     bbu_20_2_0 = df["BBU_20_2.0"].to_numpy(copy=False)
@@ -13047,15 +13051,18 @@ class NostalgiaForInfinityX7(IStrategy):
     change_pct_4h_shift = df["change_pct_4h"]
     close_max_12 = df["close_max_12"].to_numpy(copy=False)
     close_max_48 = df["close_max_48"].to_numpy(copy=False)
+    cmf_20 = df["CMF_20"].to_numpy(copy=False)
     cmf_20_15m = df["CMF_20_15m"].to_numpy(copy=False)
     cmf_20_1d = df["CMF_20_1d"].to_numpy(copy=False)
     cmf_20_1h = df["CMF_20_1h"].to_numpy(copy=False)
     cmf_20_4h = df["CMF_20_4h"].to_numpy(copy=False)
     ema_12 = df["EMA_12"].to_numpy(copy=False)
     ema_12_shift = df["EMA_12"]
+    ema_12_4h = df["EMA_12_4h"].to_numpy(copy=False)
     ema_20 = df["EMA_20"].to_numpy(copy=False)
     ema_26 = df["EMA_26"].to_numpy(copy=False)
     ema_26_shift = df["EMA_26"]
+    ema_200 = df["EMA_200"].to_numpy(copy=False)
     ema_200_1h = df["EMA_200_1h"].to_numpy(copy=False)
     ema_200_1h_infer = df["EMA_200_1h"]
     ema_200_4h = df["EMA_200_4h"].to_numpy(copy=False)
@@ -13095,6 +13102,8 @@ class NostalgiaForInfinityX7(IStrategy):
     top_wick_pct_1d = df["top_wick_pct_1d"].to_numpy(copy=False)
     top_wick_pct_1d_shift = df["top_wick_pct_1d"]
     willr_14 = df["WILLR_14"].to_numpy(copy=False)
+    willr_14_1h = df["WILLR_14_1h"].to_numpy(copy=False)
+    obv_change_pct_15m = df["OBV_change_pct_15m"].to_numpy(copy=False)
 
     rsi_3_gt_3 = rsi_3 > 3.0
     rsi_3_gt_5 = rsi_3 > 5.0
@@ -20941,6 +20950,33 @@ class NostalgiaForInfinityX7(IStrategy):
             & ((ema_26_shift.shift() - ema_12_shift.shift()) > (open_rate / 100.0))
           )
 
+        # Condition #65 - Breakout mode (Long).
+        if long_entry_condition_index == 65:
+          # Protections
+          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          long_entry_logic.append(protections_long_global == True)
+
+          long_entry_logic.append(
+            # Trend confirmation
+            (ema_12_4h > ema_200_4h)
+            # 4h momentum strong but not extreme
+            & (rsi_14_4h > 50.0)
+            & (rsi_14_4h < 68.0)
+            # Daily positive
+            & (roc_9_1d > 0.0)
+            & (rsi_14_1d > 45.0)
+          )
+
+          # Logic — Breakout above BB upper with momentum
+          long_entry_logic.append(close > bbu_20_2_0)
+          long_entry_logic.append(rsi_14 > 60.0)
+          long_entry_logic.append(rsi_14 < 78.0)
+          long_entry_logic.append(rsi_3 > 70.0)
+          long_entry_logic.append(ema_12 > ema_26)
+          long_entry_logic.append(bbb_20_2_0 > 10.0)
+          long_entry_logic.append(obv_change_pct_15m > 0.0)
+          long_entry_logic.append(mfi_14 > 50.0)
+
         # Condition #101 - Rapid mode (Long).
         if long_entry_condition_index == 101:
           # Protections
@@ -25790,6 +25826,68 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append((ema_26_shift.shift() - ema_12_shift.shift()) > (open_rate / 100.0))
           short_entry_logic.append(close < (ema_20 * 0.958))
           short_entry_logic.append(close < (bbl_20_2_0 * 0.992))
+
+        # Condition #562 - Trend Breakdown mode (Short).
+        if short_entry_condition_index == 562:
+          # Protections
+          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          short_entry_logic.append(protections_short_global == True)
+          short_entry_logic.append(roc_9_1d < 5.0)
+          short_entry_logic.append(rsi_14_4h < 48.0)
+          short_entry_logic.append(rsi_14_1d < 50.0)
+          short_entry_logic.append(rsi_14_1d > 25.0)
+
+          short_entry_logic.append(
+            # Downtrend confirmation (higher TF)
+            (ema_12_4h < ema_200_4h)
+            & (rsi_14_4h < 42.0)
+            & (aroonu_14_4h < 35.0)
+            & (roc_9_4h < -2.0)
+            # 1h also bearish
+            & (rsi_14_1h < 42.0)
+            & (aroonu_14_1h < 40.0)
+            # Daily momentum negative
+            & (roc_9_1d < 0.0)
+          )
+
+          # Logic — Breakdown below BB lower in downtrend
+          short_entry_logic.append(close < bbl_20_2_0)
+          short_entry_logic.append(rsi_14 < 32.0)
+          short_entry_logic.append(rsi_14 > 15.0)
+          short_entry_logic.append(ema_12 < ema_26)
+          short_entry_logic.append(rsi_3 < 20.0)
+          short_entry_logic.append(cmf_20 < -0.08)
+          short_entry_logic.append(obv_change_pct_15m < 0.0)
+          short_entry_logic.append(rsi_3_15m < 35.0)
+
+        # Condition #563 - Dead Cat Bounce mode (Short).
+        if short_entry_condition_index == 563:
+          # Protections
+          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          short_entry_logic.append(protections_short_global == True)
+          short_entry_logic.append(roc_9_1d < 5.0)
+          short_entry_logic.append(rsi_14_1d < 45.0)
+          short_entry_logic.append(roc_9_1d < 0.0)
+
+          short_entry_logic.append(
+            # Context: recent large drop, 4h downtrend
+            (roc_9_4h < -8.0)
+            & (ema_12_4h < ema_200_4h)
+            & (rsi_14_4h < 40.0)
+            # 1h still bearish
+            & (rsi_14_1h < 45.0)
+            & (willr_14_1h < -50.0)
+            & (aroonu_14_4h < 35.0)
+          )
+
+          # Logic — Bounce that fails to reclaim resistance
+          short_entry_logic.append(rsi_14 > 55.0)
+          short_entry_logic.append(rsi_14 < 68.0)
+          short_entry_logic.append(close < ema_200)
+          short_entry_logic.append(close > ema_12)
+          short_entry_logic.append(rsi_3 < 35.0)
+          short_entry_logic.append(cci_20_change_pct_1h < 0.0)
+          short_entry_logic.append(mfi_14_1h < 45.0)
 
         # # Condition #620 - Grind mode (Short).
         # if short_entry_condition_index == 620:
