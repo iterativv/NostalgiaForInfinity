@@ -187,9 +187,9 @@ class NostalgiaForInfinityX7(IStrategy):
   # Short Pump mode tags
   short_pump_mode_tags = ["521", "522", "523", "524", "525", "526"]
   # Short Quick mode tags
-  short_quick_mode_tags = ["541", "542", "543", "544", "545", "546", "547", "550"]
+  short_quick_mode_tags = ["541", "542", "543", "544", "545", "546", "547", "548", "549", "550"]
   # Short rebuy mode tags
-  short_rebuy_mode_tags = ["548", "549", "561"]
+  short_rebuy_mode_tags = ["561", "562", "563"]
   # Short mode tags
   short_high_profit_mode_tags = ["581", "582"]
   # Short rapid mode tags
@@ -909,8 +909,8 @@ class NostalgiaForInfinityX7(IStrategy):
     # "short_entry_condition_541_enable": True,
     "short_entry_condition_542_enable": True,
     # "short_entry_condition_543_enable": True,
-    "short_entry_condition_548_enable": False,
-    "short_entry_condition_549_enable": False,
+    "short_entry_condition_562_enable": False,
+    "short_entry_condition_563_enable": False,
     # "short_entry_condition_603_enable": True,
     # "short_entry_condition_641_enable": True,
     # "short_entry_condition_642_enable": True,
@@ -25827,8 +25827,8 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(close < (ema_20 * 0.958))
           short_entry_logic.append(close < (bbl_20_2_0 * 0.992))
 
-        # Condition #548 - Trend Breakdown mode (Short).
-        if short_entry_condition_index == 548:
+        # Condition #562 - Trend Breakdown mode (Short).
+        if short_entry_condition_index == 562:
           # Protections
           short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           short_entry_logic.append(protections_short_global == True)
@@ -25860,8 +25860,8 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(obv_change_pct_15m < 0.0)
           short_entry_logic.append(rsi_3_15m < 35.0)
 
-        # Condition #549 - Dead Cat Bounce mode (Short).
-        if short_entry_condition_index == 549:
+        # Condition #563 - Dead Cat Bounce mode (Short).
+        if short_entry_condition_index == 563:
           # Protections
           short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           short_entry_logic.append(protections_short_global == True)
