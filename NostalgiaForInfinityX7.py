@@ -4574,7 +4574,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # ============================================================
     for frames in (btc_frames, info_frames):
       for tf, frame in frames.items():
-        df = merge_informative_pair(df,frame, base_timeframe, tf, ffill=False)
+        df = merge_informative_pair(df, frame, base_timeframe, tf, ffill=False)
         col = f"date_{tf}"
         if col in df.columns:
           df.drop(columns=col, inplace=True)
@@ -4624,7 +4624,11 @@ class NostalgiaForInfinityX7(IStrategy):
       final_nan = recent.isna().sum()
       final_nan = final_nan[final_nan > 0]
       if not final_nan.empty:
-        log.warning("[%s] Unexpected indicator NaNs in recent candles:\n%s", metadata_pair, final_nan.sort_values(ascending=False).to_string())
+        log.warning(
+          "[%s] Unexpected indicator NaNs in recent candles:\n%s",
+          metadata_pair,
+          final_nan.sort_values(ascending=False).to_string(),
+        )
 
     # df["zlma_50_1h"] = df["zlma_50_1h"].astype(np.float64).replace(to_replace=[np.nan, None], value=(0.0))
     # df["CTI_20_1d"] = df["CTI_20_1d"].astype(np.float64).replace(to_replace=[np.nan, None], value=(0.0))
