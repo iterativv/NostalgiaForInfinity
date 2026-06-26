@@ -25690,6 +25690,8 @@ class NostalgiaForInfinityX7(IStrategy):
             & ((rsi_3_4h_gt_15) | (stochrsi_k_15m < 90.0) | (aroonu_14_15m_lt_90))
             # 4h still oversold + 15m STOCHRSIk peaked = top distribution near recent levels
             & ((rsi_3_4h_gt_15) | (stochrsi_k_15m < 90.0))
+            # 1d ultra-capitulation (STOCHRSIk = 0, RSI_3 < 10) = absolute bottom
+            & ((rsi_3_1d_gt_10) | (stochrsi_k_1d > 5.0) | (rsi_3_4h_gt_40))
           )
 
           # Logic — Bounce that fails to reclaim resistance
