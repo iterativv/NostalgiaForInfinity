@@ -70,7 +70,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.282"
+    return "v17.4.283"
 
   stoploss = -0.99
 
@@ -1947,7 +1947,7 @@ class NostalgiaForInfinityX7(IStrategy):
         total_profit += exit_stake
       current_stake = total_amount * exit_rate * fee_close_multiplier
       total_profit += current_stake
-    if is_futures_mode:
+    if is_futures_mode and trade.funding_fees is not None:
       total_profit += trade.funding_fees
     total_profit_ratio = total_profit / total_stake
     current_profit_ratio = total_profit / current_stake
