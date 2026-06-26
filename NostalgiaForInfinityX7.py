@@ -70,7 +70,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.287"
+    return "v17.4.288"
 
   stoploss = -0.99
 
@@ -2696,6 +2696,8 @@ class NostalgiaForInfinityX7(IStrategy):
       filled_entries = trade.select_filled_orders(trade.entry_side)
 
       order_tag = order.ft_order_tag
+      if order_tag is None:
+        return None
       order_mode = order_tag.split(" ", 1)
       order_tags = []
       if len(order_mode) > 0:
