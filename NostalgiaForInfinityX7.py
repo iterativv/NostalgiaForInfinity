@@ -20747,6 +20747,8 @@ class NostalgiaForInfinityX7(IStrategy):
             & ((stochrsi_k_4h_lt_90) | (roc_9_1d_lt_20) | (cmf_20_4h_gt_neg_0_0))
             # 15m euphoria spike without 4h confirmation = spike top fake breakout
             & ((rsi_3_15m < 90.0) | (stochrsi_k_4h > 30.0))
+            # 1d parabolic pump (huge ROC + extreme RSI_14) = exhaustion top
+            & ((rsi_14_1d < 75.0) | (roc_9_1d < 30.0))
           )
 
           # Logic — Breakout above BB upper with momentum
@@ -25662,6 +25664,14 @@ class NostalgiaForInfinityX7(IStrategy):
             & ((roc_9_1d > -25.0) | (stochrsi_k_1h < 60.0))
             # 15m + 1h ultra-capitulation = V-bottom forming regardless of CMF
             & ((rsi_3_15m_gt_10) | (rsi_3_1h_gt_15))
+            # 4h STOCHRSIk still extreme + 1h moderate = second leg waiting bounce
+            & ((stochrsi_k_4h > 10.0) | (rsi_3_1h_gt_30))
+            # 1d STOCHRSIk floor + 1d CMF positive = institutional buying after crash
+            & ((stochrsi_k_1d > 5.0) | (cmf_20_1d < 0.0) | (rsi_3_4h_gt_45))
+            # 1d big crash + 1h moderate overbought = bull pullback after sell-off
+            & ((roc_9_1d > -22.0) | (stochrsi_k_1h < 70.0))
+            # 1h overbought + 1d CMF positive = bull pullback bouncing on inflow
+            & ((stochrsi_k_1h < 70.0) | (cmf_20_1d < 0.0))
           )
 
           # Logic — Breakdown below BB lower in downtrend
