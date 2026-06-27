@@ -70,7 +70,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.292"
+    return "v17.4.293"
 
   stoploss = -0.99
 
@@ -14529,17 +14529,19 @@ class NostalgiaForInfinityX7(IStrategy):
             # 5m down move, 15m & 1d high
             & ((rsi_3_gt_10) | (aroonu_14_15m_lt_70) | aroonu_14_1d_lt_100)
             # 5m down move, 1h & 1d high
-            & ((rsi_3_gt_15) | aroonu_14_1h_lt_80 | (aroonu_14_1d_lt_90))
+            & ((rsi_3_gt_15) | (aroonu_14_1h_lt_80) | (aroonu_14_1d_lt_90))
             # 15m & 1h dowbn move, 1d high
             & ((rsi_3_15m_gt_5) | (rsi_3_1h_gt_25) | (stochrsi_k_1d_lt_90))
             # 15m & 1d down move, 1h high
             & ((rsi_3_15m_gt_5) | (rsi_3_1d_gt_15) | (stochrsi_k_1h_lt_60))
+            # 15m & 1h & 4h down move, 1d downtrend
+            & ((rsi_3_15m_gt_10) | (rsi_3_1h_gt_20) | (rsi_3_4h_gt_20) | (roc_9_1d_gt_neg_50))
             # 15m & 1h down move, 15m still high
             & ((rsi_3_15m_gt_10) | (rsi_3_1h_gt_35) | (aroonu_14_15m_lt_50))
             # 15m & 1h down move, 1h still high
             & ((rsi_3_15m_gt_10) | (rsi_3_4h_gt_10) | (stochrsi_k_1h_lt_40))
             # 15m & 4h down move, 15m still high
-            & ((rsi_3_15m_gt_10) | rsi_3_4h_gt_20 | (aroonu_14_15m_lt_50))
+            & ((rsi_3_15m_gt_10) | (rsi_3_4h_gt_20) | (aroonu_14_15m_lt_50))
             # 15m down move, 15m still high, 1h high
             & ((rsi_3_15m_gt_10) | (aroonu_14_15m_lt_40) | (stochrsi_k_1h_lt_90))
             # 15m down move, 15m still high, 1h high
