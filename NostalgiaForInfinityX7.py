@@ -19236,10 +19236,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
           # Logic
           long_entry_logic.append(
-            (rsi_3_lt_50)
-            & (aroonu_14_15m_lt_25)
-            & (stochrsi_k_15m_lt_20)
-            & (close_15m < (ema_20_15m * 0.924))
+            (rsi_3_lt_50) & (aroonu_14_15m_lt_25) & (stochrsi_k_15m_lt_20) & (close_15m < (ema_20_15m * 0.924))
           )
 
         # Condition #46 - Quick mode (Long).
@@ -25576,9 +25573,7 @@ class NostalgiaForInfinityX7(IStrategy):
           # 1d bot wick, 4h still not high enough
           short_entry_logic.append((bot_wick_pct_1d < 30.0) | (stochrsi_k_4h_gt_80))
           # rise in the last 12 hours, relatively stable before the 12 hours
-          short_entry_logic.append(
-            (close < (low_min_12_1h * 1.30)) | (low_min_12_1h > (low_min_24_1h * 1.10))
-          )
+          short_entry_logic.append((close < (low_min_12_1h * 1.30)) | (low_min_12_1h > (low_min_24_1h * 1.10)))
           # big pump in the last 30 days, 4h up move
           short_entry_logic.append((close < (low_min_30_1d * 4.0)) | (rsi_3_4h_lt_85))
 
@@ -45542,6 +45537,7 @@ class NostalgiaForInfinityX7(IStrategy):
     prev_rsi_20 = previous_candle["RSI_20"]
     prev_ema_26 = previous_candle["EMA_26"]
     prev_ema_12 = previous_candle["EMA_12"]
+
     if last_candle["protections_long_global"] != True:
       return False
     # g0 — signal entry
