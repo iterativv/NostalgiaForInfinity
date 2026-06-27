@@ -70,7 +70,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.293"
+    return "v17.4.294"
 
   stoploss = -0.99
 
@@ -27067,7 +27067,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # Stoplosses
     if not sell:
       leverage = trade.leverage
-      entry_cost = (filled_entries[0].safe_filled * filled_entries[0].safe_price)
+      entry_cost = filled_entries[0].safe_filled * filled_entries[0].safe_price
 
       is_system_v3, is_system_v3_1, is_system_v3_2 = self.get_system_version_flags(trade)
 
@@ -27613,7 +27613,7 @@ class NostalgiaForInfinityX7(IStrategy):
             break
 
       if not sell:
-        entry_cost = (filled_entries[0].safe_filled * filled_entries[0].safe_price)
+        entry_cost = filled_entries[0].safe_filled * filled_entries[0].safe_price
         leverage = trade.leverage
         stop_threshold = None
         stop_enabled = False
@@ -28174,7 +28174,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Extra exit logic
     if not sell:
-      entry_cost = (filled_entries[0].safe_filled * filled_entries[0].safe_price)
+      entry_cost = filled_entries[0].safe_filled * filled_entries[0].safe_price
       leverage = trade.leverage
 
       if is_system_v3_2:
@@ -41214,7 +41214,7 @@ class NostalgiaForInfinityX7(IStrategy):
     if not self.stops_enable:
       return False, None
 
-    entry_cost = (filled_entries[0].safe_filled * filled_entries[0].safe_price)
+    entry_cost = filled_entries[0].safe_filled * filled_entries[0].safe_price
     if is_system_v3_2:
       # Stoploss doom
       if self.system_v3_2_stops_enable and (
@@ -41406,7 +41406,7 @@ class NostalgiaForInfinityX7(IStrategy):
     last_filled_entry = filled_entries[-1]
 
     current_stake_amount = trade_amount * exit_rate
-    slice_amount = (first_filled_entry.safe_filled * first_filled_entry.safe_price)
+    slice_amount = first_filled_entry.safe_filled * first_filled_entry.safe_price
     slice_profit = (exit_rate - last_filled_order.safe_price) / last_filled_order.safe_price
     slice_profit_entry = (exit_rate - last_filled_entry.safe_price) / last_filled_entry.safe_price
     slice_profit_exit = (
@@ -43913,7 +43913,7 @@ class NostalgiaForInfinityX7(IStrategy):
     profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = profit_values
 
     current_stake_amount = trade_amount * exit_rate
-    slice_amount = (filled_entries[0].safe_filled * filled_entries[0].safe_price)
+    slice_amount = filled_entries[0].safe_filled * filled_entries[0].safe_price
     slice_profit = (exit_rate - filled_orders[-1].safe_price) / filled_orders[-1].safe_price
     slice_profit_entry = (exit_rate - filled_entries[-1].safe_price) / filled_entries[-1].safe_price
     slice_profit_exit = (
@@ -46057,7 +46057,7 @@ class NostalgiaForInfinityX7(IStrategy):
       profit_values = self.calc_total_profit(trade, filled_entries, filled_exits, exit_rate)
     profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = profit_values
 
-    slice_amount = (first_filled_entry.safe_filled * first_filled_entry.safe_price)
+    slice_amount = first_filled_entry.safe_filled * first_filled_entry.safe_price
     slice_profit = (exit_rate - last_filled_order.safe_price) / last_filled_order.safe_price
     slice_profit_entry = (exit_rate - last_filled_entry.safe_price) / last_filled_entry.safe_price
     slice_profit_exit = (
@@ -49691,7 +49691,7 @@ class NostalgiaForInfinityX7(IStrategy):
       profit_values = self.calc_total_profit(trade, filled_entries, filled_exits, exit_rate)
     profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = profit_values
 
-    slice_amount = (filled_entries[0].safe_filled * filled_entries[0].safe_price)
+    slice_amount = filled_entries[0].safe_filled * filled_entries[0].safe_price
     slice_profit = (exit_rate - last_filled_order.safe_price) / last_filled_order.safe_price
     slice_profit_entry = (exit_rate - last_filled_entry.safe_price) / last_filled_entry.safe_price
     if count_of_exits > 0:
@@ -49890,7 +49890,7 @@ class NostalgiaForInfinityX7(IStrategy):
       profit_values = self.calc_total_profit(trade, filled_entries, filled_exits, exit_rate)
     profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = profit_values
 
-    slice_amount = (filled_entries[0].safe_filled * filled_entries[0].safe_price)
+    slice_amount = filled_entries[0].safe_filled * filled_entries[0].safe_price
     slice_profit = (exit_rate - last_filled_order.safe_price) / last_filled_order.safe_price
     slice_profit_entry = (exit_rate - last_filled_entry.safe_price) / last_filled_entry.safe_price
     slice_profit_exit = (
@@ -50994,7 +50994,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Stoplosses
     if not sell:
-      entry_cost = (filled_entries[0].safe_filled * filled_entries[0].safe_price)
+      entry_cost = filled_entries[0].safe_filled * filled_entries[0].safe_price
       if is_system_v3_2:
         if profit_stake < -(
           entry_cost
@@ -51565,7 +51565,7 @@ class NostalgiaForInfinityX7(IStrategy):
       elif (0.09 >= profit_init_ratio > 0.005) and (last_rsi_3 < 1.0):
         sell, signal_name = True, f"exit_{mode_name}_rpd_10"
 
-      entry_cost = (filled_entries[0].safe_filled * filled_entries[0].safe_price)
+      entry_cost = filled_entries[0].safe_filled * filled_entries[0].safe_price
       if is_system_v3_2:
         # Stoplosses
         if self.system_v3_2_stops_enable and (
@@ -52183,7 +52183,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Extra exit logic
     if not sell:
-      entry_cost = (filled_entries[0].safe_filled * filled_entries[0].safe_price)
+      entry_cost = filled_entries[0].safe_filled * filled_entries[0].safe_price
       if is_system_v3_2:
         # Stoplosses
         if self.system_v3_2_stops_enable and (
@@ -64949,7 +64949,7 @@ class NostalgiaForInfinityX7(IStrategy):
     if not self.stops_enable:
       return False, None
 
-    entry_cost = (filled_entries[0].safe_filled * filled_entries[0].safe_price)
+    entry_cost = filled_entries[0].safe_filled * filled_entries[0].safe_price
     if is_system_v3_2:
       # Stoploss doom
       if self.system_v3_2_stops_enable and (
@@ -65142,7 +65142,7 @@ class NostalgiaForInfinityX7(IStrategy):
     last_filled_entry = filled_entries[-1]
 
     current_stake_amount = trade_amount * exit_rate
-    slice_amount = (first_filled_entry.safe_filled * first_filled_entry.safe_price)
+    slice_amount = first_filled_entry.safe_filled * first_filled_entry.safe_price
     slice_profit = (exit_rate - last_filled_order.safe_price) / last_filled_order.safe_price
     slice_profit_entry = (exit_rate - last_filled_entry.safe_price) / last_filled_entry.safe_price
     slice_profit_exit = (
@@ -67731,7 +67731,7 @@ class NostalgiaForInfinityX7(IStrategy):
     profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = profit_values
 
     current_stake_amount = trade_amount * exit_rate
-    slice_amount = (filled_entries[0].safe_filled * filled_entries[0].safe_price)
+    slice_amount = filled_entries[0].safe_filled * filled_entries[0].safe_price
     slice_profit = (exit_rate - filled_orders[-1].safe_price) / filled_orders[-1].safe_price
     slice_profit_entry = (exit_rate - filled_entries[-1].safe_price) / filled_entries[-1].safe_price
     slice_profit_exit = (
@@ -69393,7 +69393,7 @@ class NostalgiaForInfinityX7(IStrategy):
       profit_values = self.calc_total_profit(trade, filled_entries, filled_exits, exit_rate)
     profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = profit_values
 
-    slice_amount = (first_filled_entry.safe_filled * first_filled_entry.safe_price)
+    slice_amount = first_filled_entry.safe_filled * first_filled_entry.safe_price
     slice_profit = (exit_rate - last_filled_order.safe_price) / last_filled_order.safe_price
     slice_profit_entry = (exit_rate - last_filled_entry.safe_price) / last_filled_entry.safe_price
     slice_profit_exit = (
@@ -72945,7 +72945,7 @@ class NostalgiaForInfinityX7(IStrategy):
       profit_values = self.calc_total_profit(trade, filled_entries, filled_exits, exit_rate)
     profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = profit_values
 
-    slice_amount = (filled_entries[0].safe_filled * filled_entries[0].safe_price)
+    slice_amount = filled_entries[0].safe_filled * filled_entries[0].safe_price
     slice_profit = (exit_rate - last_filled_order.safe_price) / last_filled_order.safe_price
     slice_profit_entry = (exit_rate - last_filled_entry.safe_price) / last_filled_entry.safe_price
     if count_of_exits > 0:
@@ -73118,7 +73118,7 @@ class NostalgiaForInfinityX7(IStrategy):
       profit_values = self.calc_total_profit(trade, filled_entries, filled_exits, exit_rate)
     profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = profit_values
 
-    slice_amount = (filled_entries[0].safe_filled * filled_entries[0].safe_price)
+    slice_amount = filled_entries[0].safe_filled * filled_entries[0].safe_price
     slice_profit = (exit_rate - last_filled_order.safe_price) / last_filled_order.safe_price
     slice_profit_entry = (exit_rate - last_filled_entry.safe_price) / last_filled_entry.safe_price
     slice_profit_exit = (
