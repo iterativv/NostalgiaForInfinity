@@ -69082,14 +69082,12 @@ class NostalgiaForInfinityX7(IStrategy):
     last_rsi_14_4h = last_candle["RSI_14_4h"]
     last_stochrsik_15m = last_candle["STOCHRSIk_14_14_3_3_15m"]
 
-
     prev_sma_9 = previous_candle["SMA_9"]
     prev_sma_21 = previous_candle["SMA_21"]
     prev_rsi_20 = previous_candle["RSI_20"]
 
     prev_ema_26 = previous_candle["EMA_26"]
     prev_ema_12 = previous_candle["EMA_12"]
-
 
     if (last_candle["protections_short_global"] == True) and (
       (last_candle["enter_short"] == True)
