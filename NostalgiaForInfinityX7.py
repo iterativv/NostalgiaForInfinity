@@ -3151,53 +3151,104 @@ class NostalgiaForInfinityX7(IStrategy):
 
   @staticmethod
   def rolling_sum(arr: np.ndarray, timeperiod: int) -> np.ndarray:
+    """
+    Compute a rolling sum over a fixed window size.
+
+    Returns an array where each element contains the sum of the
+    previous `timeperiod` values. Values before the first complete
+    window are set to NaN.
+
+    NaN values inside the input are treated as 0 to prevent a single
+    invalid candle from contaminating the entire rolling window.
+    """
     arr = np.asarray(arr, dtype=np.float64)
     out = np.full(arr.shape, np.nan, dtype=np.float64)
     if arr.size < timeperiod:
       return out
 
-    out[timeperiod - 1 :] = np.convolve(arr, np.ones(timeperiod, dtype=np.float64), mode="valid")
+    # Treat NaNs as 0 to avoid contaminating entire windows
+    arr_clean = np.nan_to_num(arr, nan=0.0)
+
+    csum = np.cumsum(arr_clean, dtype=np.float64)
+    csum[timeperiod:] = csum[timeperiod:] - csum[:-timeperiod]
+    out[timeperiod - 1:] = csum[timeperiod - 1:]
+
     return out
 
   @staticmethod
-  def chaikin_money_flow(high, low, close, volume, timeperiod=20):
+  def chaikin_money_flow(high: np.ndarray, low: np.ndarray, close: np.ndarray, volume: np.ndarray, timeperiod: int = 20) -> np.ndarray:
+    """
+    Candles where high == low are treated as neutral money flow (0)
+    to avoid NaN propagation.
+    """
     hl_range = high - low
-    mfm = np.divide(
-      ((close - low) - (high - close)),
-      hl_range,
-      out=np.full_like(close, np.nan, dtype=np.float64),
-      where=hl_range != 0,
+    mfm = np.zeros_like(close, dtype=np.float64)
+
+    valid = hl_range != 0
+    mfm[valid] = (
+      ((close[valid] - low[valid]) -
+      (high[valid] - close[valid]))
+      / hl_range[valid]
     )
 
     mfv = mfm * volume
     mfv_sum = __class__.rolling_sum(mfv, timeperiod)
+
     vol_sum = ta.SUM(volume, timeperiod=timeperiod)
+    vol_sum = np.where(vol_sum == 0, np.nan, vol_sum)
 
     return mfv_sum / vol_sum
 
   @staticmethod
-  def stoch_k(high, low, close):
-    stoch_k = ta.STOCHF(high, low, close, fastk_period=14, fastd_period=3, fastd_matype=0)[1]
-    stoch_k[:17] = np.nan
-    return stoch_k
-
-  @staticmethod
   def fast_pct_change(arr: np.ndarray) -> np.ndarray:
-    out = np.empty_like(arr)
-    out[0] = np.nan
+    """
+    Compute the percentage change between consecutive values.
+
+    The first element is set to NaN. Division-by-zero cases also
+    return NaN instead of producing invalid or infinite values.
+    """
+    arr = np.asarray(arr, dtype=np.float64)
+    out = np.full(arr.shape, np.nan, dtype=np.float64)
     prev = arr[:-1]
     np.divide((arr[1:] - prev), prev, out=out[1:], where=prev != 0)
     out[1:] *= 100.0
+
     return out
+
 
   @staticmethod
   def stochrsi_k(rsi_14: np.ndarray) -> np.ndarray:
+    """
+    Calculate the %K line of the Stochastic RSI.
+
+    Stochastic RSI normalizes RSI values relative to their recent
+    14-period range, then applies a 3-period SMA smoothing.
+
+    Periods where the RSI range is zero are marked as NaN to prevent
+    invalid values from producing misleading momentum signals.
+    """
     rsi_min = ta.MIN(rsi_14, timeperiod=14)
     rsi_max = ta.MAX(rsi_14, timeperiod=14)
     denom = rsi_max - rsi_min
     denom = np.where(denom == 0, np.nan, denom)
     stochrsi = ((rsi_14 - rsi_min) / denom) * 100.0
+
     return ta.SMA(stochrsi, timeperiod=3)
+
+  @staticmethod
+  def calc_kst(close: np.ndarray, ta_roc, ta_sma) -> tuple[np.ndarray, np.ndarray]:
+    roc10 = ta_roc(close, 10)
+    roc15 = ta_roc(close, 15)
+    roc20 = ta_roc(close, 20)
+    roc30 = ta_roc(close, 30)
+    kst1 = ta_sma(roc10, 10)
+    kst2 = ta_sma(roc15, 10)
+    kst3 = ta_sma(roc20, 10)
+    kst4 = ta_sma(roc30, 15)
+    kst_main = kst1 + (2.0 * kst2) + (3.0 * kst3) + (4.0 * kst4)
+    kst_signal = ta_sma(kst_main, 9)
+
+    return kst_main, kst_signal
 
   @staticmethod
   def validate_indicators(df: pd.DataFrame, columns: list[str], pair: str, timeframe: str) -> None:
@@ -3249,10 +3300,11 @@ class NostalgiaForInfinityX7(IStrategy):
   # Informative 1d Timeframe Indicators
   # ---------------------------------------------------------------------------------------------
   def informative_1d_indicators(self, metadata: dict, info_timeframe) -> DataFrame:
-    tik = time.perf_counter()
+    debug_time = False
+    if debug_time:
+      tik = time.perf_counter()
     dp = self.dp
     fast_pct_change = self.fast_pct_change
-    stoch_k_func = self.stoch_k
     stochrsi_k_func = self.stochrsi_k
     chaikin_money_flow = self.chaikin_money_flow
     validate_indicators = self.validate_indicators
@@ -3291,7 +3343,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # STOCH
     # =========================================================================
-    stoch_k = stoch_k_func(high_np, low_np, close_np)
+    stoch_k = ta.STOCH(high_np, low_np, close_np, fastk_period=14, slowk_period=3, slowk_matype=0, slowd_period=3, slowd_matype=0)[0]
     stochrsi_k = stochrsi_k_func(rsi_14)
 
     # =========================================================================
@@ -3407,21 +3459,24 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # LOGGING
     # =========================================================================
-    tok = time.perf_counter()
-    log.debug("[%s] informative_1d_indicators took: %.4f seconds.", metadata_pair, tok - tik)
+    if debug_time:
+      tok = time.perf_counter()
+      log.debug("[%s] informative_1d_indicators took: %.4f seconds.", metadata_pair, tok - tik)
 
     return informative_1d
 
   # Informative 4h Timeframe Indicators
   # ---------------------------------------------------------------------------------------------
   def informative_4h_indicators(self, metadata: dict, info_timeframe) -> DataFrame:
-    tik = time.perf_counter()
+    debug_time = False
+    if debug_time:
+      tik = time.perf_counter()
     dp = self.dp
     fast_pct_change = self.fast_pct_change
-    stoch_k_func = self.stoch_k
     stochrsi_k_func = self.stochrsi_k
     chaikin_money_flow = self.chaikin_money_flow
     validate_indicators = self.validate_indicators
+    calc_kst = self.calc_kst
     ta_rsi = ta.RSI
     ta_aroon = ta.AROON
     ta_sma = ta.SMA
@@ -3459,18 +3514,13 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # STOCH
     # =========================================================================
-    stoch_k = stoch_k_func(high_np, low_np, close_np)
+    stoch_k = ta.STOCH(high_np, low_np, close_np, fastk_period=14, slowk_period=3, slowk_matype=0, slowd_period=3, slowd_matype=0)[0]
     stochrsi_k = stochrsi_k_func(rsi_14)
 
     # =========================================================================
     # KST
     # =========================================================================
-    kst1 = ta_sma(ta_roc(close_np, 10), 10)
-    kst2 = ta_sma(ta_roc(close_np, 15), 10)
-    kst3 = ta_sma(ta_roc(close_np, 20), 10)
-    kst4 = ta_sma(ta_roc(close_np, 30), 15)
-    kst_main = kst1 + (2.0 * kst2) + (3.0 * kst3) + (4.0 * kst4)
-    kst_signal = ta_sma(kst_main, 9)
+    kst_main, kst_signal = calc_kst(close_np, ta_roc, ta_sma)
 
     # =========================================================================
     # MONEY FLOW
@@ -3487,7 +3537,6 @@ class NostalgiaForInfinityX7(IStrategy):
     ema_200 = ta_ema(close_np, timeperiod=200)
     willr_14 = ta.WILLR(high_np, low_np, close_np, timeperiod=14)
     uo = ta.ULTOSC(high_np, low_np, close_np)
-    obv = ta.OBV(close_np, volume_np)
     roc_2 = ta_roc(close_np, timeperiod=2)
     roc_9 = ta_roc(close_np, timeperiod=9)
     cci_20 = ta.CCI(high_np, low_np, close_np, timeperiod=20)
@@ -3498,7 +3547,6 @@ class NostalgiaForInfinityX7(IStrategy):
     rsi_3_change = fast_pct_change(rsi_3)
     rsi_14_change = fast_pct_change(rsi_14)
     stochrsi_change = fast_pct_change(stochrsi_k)
-    obv_change = fast_pct_change(obv)
     cci_change = fast_pct_change(cci_20)
 
     # =========================================================================
@@ -3551,7 +3599,6 @@ class NostalgiaForInfinityX7(IStrategy):
         "CCI_20_change_pct": cci_change,
         "RSI_3_change_pct": rsi_3_change,
         "RSI_14_change_pct": rsi_14_change,
-        "OBV_change_pct": obv_change,
         "change_pct": change_pct,
         "top_wick_pct": top_wick_pct,
         "high_max_6": high_max_6,
@@ -3605,21 +3652,24 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # LOGGING
     # =========================================================================
-    tok = time.perf_counter()
-    log.debug("[%s] informative_4h_indicators took: %.4f seconds.", metadata_pair, tok - tik)
+    if debug_time:
+      tok = time.perf_counter()
+      log.debug("[%s] informative_4h_indicators took: %.4f seconds.", metadata_pair, tok - tik)
 
     return informative_4h
 
   # Informative 1h Timeframe Indicators
   # ---------------------------------------------------------------------------------------------
   def informative_1h_indicators(self, metadata: dict, info_timeframe) -> DataFrame:
-    tik = time.perf_counter()
+    debug_time = False
+    if debug_time:
+      tik = time.perf_counter()
     dp = self.dp
     fast_pct_change = self.fast_pct_change
-    stoch_k_func = self.stoch_k
     stochrsi_k_func = self.stochrsi_k
     chaikin_money_flow = self.chaikin_money_flow
     validate_indicators = self.validate_indicators
+    calc_kst = self.calc_kst
     ta_rsi = ta.RSI
     ta_bbands = ta.BBANDS
     ta_aroon = ta.AROON
@@ -3664,18 +3714,13 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # STOCH
     # =========================================================================
-    stoch_k = stoch_k_func(high_np, low_np, close_np)
+    stoch_k = ta.STOCH(high_np, low_np, close_np, fastk_period=14, slowk_period=3, slowk_matype=0, slowd_period=3, slowd_matype=0)[0]
     stochrsi_k = stochrsi_k_func(rsi_14)
 
     # =========================================================================
     # KST
     # =========================================================================
-    kst1 = ta_sma(ta_roc(close_np, 10), 10)
-    kst2 = ta_sma(ta_roc(close_np, 15), 10)
-    kst3 = ta_sma(ta_roc(close_np, 20), 10)
-    kst4 = ta_sma(ta_roc(close_np, 30), 15)
-    kst_main = kst1 + (2.0 * kst2) + (3.0 * kst3) + (4.0 * kst4)
-    kst_signal = ta_sma(kst_main, 9)
+    kst_main, kst_signal = calc_kst(close_np, ta_roc, ta_sma)
 
     # =========================================================================
     # MONEY FLOW
@@ -3802,18 +3847,20 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # LOGGING
     # =========================================================================
-    tok = time.perf_counter()
-    log.debug("[%s] informative_1h_indicators took: %.4f seconds.", metadata_pair, tok - tik)
+    if debug_time:
+      tok = time.perf_counter()
+      log.debug("[%s] informative_1h_indicators took: %.4f seconds.", metadata_pair, tok - tik)
 
     return informative_1h
 
   # Informative 15m Timeframe Indicators
   # ---------------------------------------------------------------------------------------------
   def informative_15m_indicators(self, metadata: dict, info_timeframe) -> DataFrame:
-    tik = time.perf_counter()
+    debug_time = False
+    if debug_time:
+      tik = time.perf_counter()
     dp = self.dp
     fast_pct_change = self.fast_pct_change
-    stoch_k_func = self.stoch_k
     stochrsi_k_func = self.stochrsi_k
     chaikin_money_flow = self.chaikin_money_flow
     validate_indicators = self.validate_indicators
@@ -3853,7 +3900,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # STOCH
     # =========================================================================
-    stoch_k = stoch_k_func(high_np, low_np, close_np)
+    stoch_k = ta.STOCH(high_np, low_np, close_np, fastk_period=14, slowk_period=3, slowk_matype=0, slowd_period=3, slowd_matype=0)[0]
     stochrsi_k = stochrsi_k_func(rsi_14)
 
     # =========================================================================
@@ -3950,20 +3997,24 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # LOGGING
     # =========================================================================
-    tok = time.perf_counter()
-    log.debug("[%s] informative_15m_indicators took: %.4f seconds.", metadata_pair, tok - tik)
+    if debug_time:
+      tok = time.perf_counter()
+      log.debug("[%s] informative_15m_indicators took: %.4f seconds.", metadata_pair, tok - tik)
 
     return informative_15m
 
   # Coin Pair Base Timeframe Indicators
   # ---------------------------------------------------------------------------------------------
   def base_tf_5m_indicators(self, metadata: dict, df: DataFrame) -> DataFrame:
-    tik = time.perf_counter()
+    debug_time = False
+    if debug_time:
+      tik = time.perf_counter()
     metadata_pair = metadata["pair"]
     fast_pct_change = self.fast_pct_change
     stochrsi_k_func = self.stochrsi_k
     chaikin_money_flow = self.chaikin_money_flow
     validate_indicators = self.validate_indicators
+    calc_kst = self.calc_kst
     ta_rsi = ta.RSI
     ta_bbands = ta.BBANDS
     ta_aroon = ta.AROON
@@ -4003,12 +4054,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # KST
     # =========================================================================
-    kst1 = ta_sma(ta_roc(close_np, 10), 10)
-    kst2 = ta_sma(ta_roc(close_np, 15), 10)
-    kst3 = ta_sma(ta_roc(close_np, 20), 10)
-    kst4 = ta_sma(ta_roc(close_np, 30), 15)
-    kst_main = kst1 + (2.0 * kst2) + (3.0 * kst3) + (4.0 * kst4)
-    kst_signal = ta_sma(kst_main, 9)
+    kst_main, kst_signal = calc_kst(close_np, ta_roc, ta_sma)
 
     # =========================================================================
     # MONEY FLOW
@@ -4051,9 +4097,9 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # Close delta
     # =========================================================================
-    close_delta = np.empty_like(close_np)
+    close_delta = np.empty_like(close_np, dtype=np.float64)
     close_delta[0] = np.nan
-    close_delta[1:] = np.abs(close_np[1:] - close_np[:-1])
+    close_delta[1:] = np.abs(np.diff(close_np))
 
     # =========================================================================
     # Rolling values
@@ -4182,15 +4228,18 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # LOGGING
     # =========================================================================
-    tok = time.perf_counter()
-    log.debug("[%s] base_tf_5m_indicators took: %.4f seconds.", metadata_pair, tok - tik)
+    if debug_time:
+      tok = time.perf_counter()
+      log.debug("[%s] base_tf_5m_indicators took: %.4f seconds.", metadata_pair, tok - tik)
 
     return df
 
   # BTC Informative 1d Timeframe Indicators
   # ---------------------------------------------------------------------------------------------
   def btc_informative_1d_indicators(self, btc_pair: str, btc_info_timeframe: str) -> DataFrame:
-    tik = time.perf_counter()
+    debug_time = False
+    if debug_time:
+      tik = time.perf_counter()
     dp = self.dp
     validate_indicators = self.validate_indicators
 
@@ -4239,15 +4288,18 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # LOGGING
     # =========================================================================
-    tok = time.perf_counter()
-    log.debug("[%s] btc_informative_1d_indicators took: %.4f seconds.", btc_pair, tok - tik)
+    if debug_time:
+      tok = time.perf_counter()
+      log.debug("[%s] btc_informative_1d_indicators took: %.4f seconds.", btc_pair, tok - tik)
 
     return btc_informative_1d
 
   # BTC Informative 4h Timeframe Indicators
   # ---------------------------------------------------------------------------------------------
   def btc_informative_4h_indicators(self, btc_pair: str, btc_info_timeframe: str) -> DataFrame:
-    tik = time.perf_counter()
+    debug_time = False
+    if debug_time:
+      tik = time.perf_counter()
     dp = self.dp
     validate_indicators = self.validate_indicators
 
@@ -4297,15 +4349,18 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # LOGGING
     # =========================================================================
-    tok = time.perf_counter()
-    log.debug("[%s] btc_informative_4h_indicators took: %.4f seconds.", btc_pair, tok - tik)
+    if debug_time:
+      tok = time.perf_counter()
+      log.debug("[%s] btc_informative_4h_indicators took: %.4f seconds.", btc_pair, tok - tik)
 
     return btc_informative_4h
 
   # BTC Informative 1h Timeframe Indicators
   # ---------------------------------------------------------------------------------------------
   def btc_informative_1h_indicators(self, btc_pair: str, btc_info_timeframe: str) -> DataFrame:
-    tik = time.perf_counter()
+    debug_time = False
+    if debug_time:
+      tik = time.perf_counter()
     dp = self.dp
     validate_indicators = self.validate_indicators
 
@@ -4365,15 +4420,18 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # LOGGING
     # =========================================================================
-    tok = time.perf_counter()
-    log.debug("[%s] btc_informative_1h_indicators took: %.4f seconds.", btc_pair, tok - tik)
+    if debug_time:
+      tok = time.perf_counter()
+      log.debug("[%s] btc_informative_1h_indicators took: %.4f seconds.", btc_pair, tok - tik)
 
     return btc_informative_1h
 
   # BTC Informative 15m Timeframe Indicators
   # ---------------------------------------------------------------------------------------------
   def btc_informative_15m_indicators(self, btc_pair: str, btc_info_timeframe: str) -> DataFrame:
-    tik = time.perf_counter()
+    debug_time = False
+    if debug_time:
+      tik = time.perf_counter()
     dp = self.dp
     validate_indicators = self.validate_indicators
 
@@ -4433,15 +4491,18 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # LOGGING
     # =========================================================================
-    tok = time.perf_counter()
-    log.debug("[%s] btc_informative_15m_indicators took: %.4f seconds.", btc_pair, tok - tik)
+    if debug_time:
+      tok = time.perf_counter()
+      log.debug("[%s] btc_informative_15m_indicators took: %.4f seconds.", btc_pair, tok - tik)
 
     return btc_informative_15m
 
   # BTC Informative 5m Timeframe Indicators
   # ---------------------------------------------------------------------------------------------
   def btc_informative_5m_indicators(self, btc_pair: str, btc_info_timeframe: str) -> DataFrame:
-    tik = time.perf_counter()
+    debug_time = False
+    if debug_time:
+      tik = time.perf_counter()
     dp = self.dp
     validate_indicators = self.validate_indicators
 
@@ -4501,8 +4562,9 @@ class NostalgiaForInfinityX7(IStrategy):
     # =========================================================================
     # LOGGING
     # =========================================================================
-    tok = time.perf_counter()
-    log.debug("[%s] btc_informative_5m_indicators took: %.4f seconds.", btc_pair, tok - tik)
+    if debug_time:
+      tok = time.perf_counter()
+      log.debug("[%s] btc_informative_5m_indicators took: %.4f seconds.", btc_pair, tok - tik)
 
     return btc_informative_5m
 
