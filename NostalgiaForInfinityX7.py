@@ -1969,21 +1969,38 @@ class NostalgiaForInfinityX7(IStrategy):
     self, pair: str, trade: "Trade", current_time: "datetime", current_rate: float, current_profit: float, **kwargs
   ):
     trade_is_short = trade.is_short
-    long_rapid_mode_tags = self.long_rapid_mode_tags
 
-    calc_total_profit = self.calc_total_profit
-    cache_backtest_profit_snapshot = self.cache_backtest_profit_snapshot
-    filled_order_snapshot = self.filled_order_snapshot
     long_normal_mode_tags = self.long_normal_mode_tags
     long_pump_mode_tags = self.long_pump_mode_tags
     long_quick_mode_tags = self.long_quick_mode_tags
     long_rebuy_mode_tags = self.long_rebuy_mode_tags
+    long_rebuy_grind_mode_tags = self.long_rebuy_grind_mode_tags
+    long_high_profit_mode_tags = self.long_high_profit_mode_tags
+    long_rapid_mode_tags = self.long_rapid_mode_tags
+    long_rapid_rebuy_grind_scalp_mode_tags = self.long_rapid_rebuy_grind_scalp_mode_tags
+    long_grind_mode_tags = self.long_grind_mode_tags
+    long_btc_mode_tags = self.long_btc_mode_tags
+    long_top_coins_mode_tags = self.long_top_coins_mode_tags
+    long_scalp_mode_tags = self.long_scalp_mode_tags
+    long_scalp_rebuy_grind_mode_tags = self.long_scalp_rebuy_grind_mode_tags
+    long_known_mode_tags = self.long_known_mode_tags
+    short_normal_mode_tags = self.short_normal_mode_tags
+    short_pump_mode_tags = self.short_pump_mode_tags
+    short_quick_mode_tags = self.short_quick_mode_tags
+    short_rebuy_mode_tags = self.short_rebuy_mode_tags
+    short_high_profit_mode_tags = self.short_high_profit_mode_tags
+    short_rapid_mode_tags = self.short_rapid_mode_tags
+    short_scalp_mode_tags = self.short_scalp_mode_tags
+    short_scalp_rebuy_grind_mode_tags = self.short_scalp_rebuy_grind_mode_tags
+    short_exit_known_mode_tags = self.short_exit_known_mode_tags
+
+    calc_total_profit = self.calc_total_profit
+    cache_backtest_profit_snapshot = self.cache_backtest_profit_snapshot
+    filled_order_snapshot = self.filled_order_snapshot
     long_exit_normal = self.long_exit_normal
     long_exit_pump = self.long_exit_pump
     long_exit_quick = self.long_exit_quick
     short_exit_normal = self.short_exit_normal
-    short_scalp_mode_tags = self.short_scalp_mode_tags
-    long_scalp_mode_tags = self.long_scalp_mode_tags
 
     df, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
     if len(df) < 6:
@@ -2100,8 +2117,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Long Rebuy mode
     if all(c in long_rebuy_mode_tags for c in enter_tags) or (
-      any(c in long_rebuy_mode_tags for c in enter_tags)
-      and all(c in self.long_rebuy_grind_mode_tags for c in enter_tags)
+      any(c in long_rebuy_mode_tags for c in enter_tags) and all(c in long_rebuy_grind_mode_tags for c in enter_tags)
     ):
       sell, signal_name = self.long_exit_rebuy(
         pair,
@@ -2128,7 +2144,7 @@ class NostalgiaForInfinityX7(IStrategy):
         return f"{signal_name} ( {enter_tag})"
 
     # Long high profit mode
-    if any(c in self.long_high_profit_mode_tags for c in enter_tags):
+    if any(c in long_high_profit_mode_tags for c in enter_tags):
       sell, signal_name = self.long_exit_high_profit(
         pair,
         current_rate,
@@ -2157,7 +2173,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # Long rapid mode
     if all(c in long_rapid_mode_tags for c in enter_tags) or (
       any(c in long_rapid_mode_tags for c in enter_tags)
-      and all(c in self.long_rapid_rebuy_grind_scalp_mode_tags for c in enter_tags)
+      and all(c in long_rapid_rebuy_grind_scalp_mode_tags for c in enter_tags)
     ):
       sell, signal_name = self.long_exit_rapid(
         pair,
@@ -2184,7 +2200,7 @@ class NostalgiaForInfinityX7(IStrategy):
         return f"{signal_name} ( {enter_tag})"
 
     # Long grind mode
-    if all(c in self.long_grind_mode_tags for c in enter_tags):
+    if all(c in long_grind_mode_tags for c in enter_tags):
       sell, signal_name = self.long_exit_grind(
         pair,
         current_rate,
@@ -2210,7 +2226,7 @@ class NostalgiaForInfinityX7(IStrategy):
         return f"{signal_name} ( {enter_tag})"
 
     # Long btc mode
-    if all(c in self.long_btc_mode_tags for c in enter_tags):
+    if all(c in long_btc_mode_tags for c in enter_tags):
       sell, signal_name = self.long_exit_btc(
         pair,
         current_rate,
@@ -2236,7 +2252,7 @@ class NostalgiaForInfinityX7(IStrategy):
         return f"{signal_name} ( {enter_tag})"
 
     # Long Top Coins mode
-    if any(c in self.long_top_coins_mode_tags for c in enter_tags):
+    if any(c in long_top_coins_mode_tags for c in enter_tags):
       sell, signal_name = self.long_exit_top_coins(
         pair,
         current_rate,
@@ -2265,7 +2281,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # Long scalp mode
     if all(c in long_scalp_mode_tags for c in enter_tags) or (
       any(c in long_scalp_mode_tags for c in enter_tags)
-      and all(c in self.long_scalp_rebuy_grind_mode_tags for c in enter_tags)
+      and all(c in long_scalp_rebuy_grind_mode_tags for c in enter_tags)
     ):
       sell, signal_name = self.long_exit_scalp(
         pair,
@@ -2292,7 +2308,7 @@ class NostalgiaForInfinityX7(IStrategy):
         return f"{signal_name} ( {enter_tag})"
 
     # Short normal mode
-    if any(c in self.short_normal_mode_tags for c in enter_tags):
+    if any(c in short_normal_mode_tags for c in enter_tags):
       sell, signal_name = short_exit_normal(
         pair,
         current_rate,
@@ -2319,7 +2335,7 @@ class NostalgiaForInfinityX7(IStrategy):
         return f"{signal_name} ( {enter_tag})"
 
     # Short Pump mode
-    if any(c in self.short_pump_mode_tags for c in enter_tags):
+    if any(c in short_pump_mode_tags for c in enter_tags):
       sell, signal_name = self.short_exit_pump(
         pair,
         current_rate,
@@ -2346,7 +2362,7 @@ class NostalgiaForInfinityX7(IStrategy):
         return f"{signal_name} ( {enter_tag})"
 
     # Short Quick mode
-    if any(c in self.short_quick_mode_tags for c in enter_tags):
+    if any(c in short_quick_mode_tags for c in enter_tags):
       sell, signal_name = self.short_exit_quick(
         pair,
         current_rate,
@@ -2373,7 +2389,7 @@ class NostalgiaForInfinityX7(IStrategy):
         return f"{signal_name} ( {enter_tag})"
 
     # Short Rebuy mode
-    if all(c in self.short_rebuy_mode_tags for c in enter_tags):
+    if all(c in short_rebuy_mode_tags for c in enter_tags):
       sell, signal_name = self.short_exit_rebuy(
         pair,
         current_rate,
@@ -2399,7 +2415,7 @@ class NostalgiaForInfinityX7(IStrategy):
         return f"{signal_name} ( {enter_tag})"
 
     # Short high profit mode
-    if any(c in self.short_high_profit_mode_tags for c in enter_tags):
+    if any(c in short_high_profit_mode_tags for c in enter_tags):
       sell, signal_name = self.short_exit_high_profit(
         pair,
         current_rate,
@@ -2426,7 +2442,7 @@ class NostalgiaForInfinityX7(IStrategy):
         return f"{signal_name} ( {enter_tag})"
 
     # Short rapid mode
-    if any(c in self.short_rapid_mode_tags for c in enter_tags):
+    if any(c in short_rapid_mode_tags for c in enter_tags):
       sell, signal_name = self.short_exit_rapid(
         pair,
         current_rate,
@@ -2454,7 +2470,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # Short scalp mode
     if all(c in short_scalp_mode_tags for c in enter_tags) or (
       any(c in short_scalp_mode_tags for c in enter_tags)
-      and all(c in self.short_scalp_rebuy_grind_mode_tags for c in enter_tags)
+      and all(c in short_scalp_rebuy_grind_mode_tags for c in enter_tags)
     ):
       sell, signal_name = self.short_exit_scalp(
         pair,
@@ -2481,7 +2497,7 @@ class NostalgiaForInfinityX7(IStrategy):
         return f"{signal_name} ( {enter_tag})"
 
     # Trades not opened by X7
-    if not trade_is_short and (not any(c in self.long_known_mode_tags for c in enter_tags)):
+    if not trade_is_short and (not any(c in long_known_mode_tags for c in enter_tags)):
       # use normal mode for such trades
       sell, signal_name = long_exit_normal(
         pair,
@@ -2509,7 +2525,7 @@ class NostalgiaForInfinityX7(IStrategy):
         return f"{signal_name} ( {enter_tag})"
 
     # Trades not opened by X7
-    if trade_is_short and (not any(c in self.short_exit_known_mode_tags for c in enter_tags)):
+    if trade_is_short and (not any(c in short_exit_known_mode_tags for c in enter_tags)):
       # use normal mode for such trades
       sell, signal_name = short_exit_normal(
         pair,
