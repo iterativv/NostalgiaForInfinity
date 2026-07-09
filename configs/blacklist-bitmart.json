@@ -18,7 +18,7 @@
       // Low cap (out of CoinGecko top-750)
       "(ACE|ACH|AGLD|AGT|AKE|ALAB|ALICE|BB|BEL|BLESS|BLUAI|BOBA|BTR|CGNX|DOLO|DOOD|DYM|EDEN|ENSO|EPIC|EVAA|EWY|F|HEI|HFT|HMSTR|INFQ|KAT|LAYER|LIGHT|LRC|MAGIC|MYX|NG|OFC|OL|ONE|OPN|PARTI|PIXEL|PLAY|PORTAL|PROM|PUMPFUN|QQQ|RARE|RECALL|RESOLV|RLS|SAGA|SATS|SHIB1000|SPACE|SPORTFUN|SPY|TLM|TNSR|TON|TWLO|USO|VANRY|WCT|WET|XAI|XCU|YB|YGG|ZKP|AIN|EDGE|SAHARA)/.*",
       // Delisting
-      "(MKR|OMNI)/.*",
+      "(MKR|OMNI|INDAON)/.*",
       // Tokenized stocks (STOCK suffix — universal forward-protection)
       ".*STOCK/.*",
       // Tokenized stocks (direct ticker, no STOCK suffix)
