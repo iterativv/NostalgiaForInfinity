@@ -46387,7 +46387,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and (last_aroonu_14 < 30.0)
       and (last_aroonu_14_4h > 50.0)
       and (last_roc_9_1d > -15.0)
-      and ((last_candle["STOCHRSIk_14_14_3_3_4h"] < 90.0) or (last_roc_9_4h < 30.0))
+      and ((last_stochrsi_k_4h < 90.0) or (last_roc_9_4h < 30.0))
       and (last_ema_50_4h > last_ema_100_4h)
       and (last_close < (last_close_max_48 * 0.95))
     ):
@@ -69632,13 +69632,17 @@ class NostalgiaForInfinityX7(IStrategy):
     last_ema_200_4h = last_candle["EMA_200_4h"]
     last_aroond_14 = last_candle["AROOND_14"]
     last_aroond_14_15m = last_candle["AROOND_14_15m"]
+    last_aroond_14_1h = last_candle["AROOND_14_1h"]
     last_aroond_14_4h = last_candle["AROOND_14_4h"]
+    last_aroond_14_1d = last_candle["AROOND_14_1d"]
     last_roc_9_1h = last_candle["ROC_9_1h"]
     last_roc_9_4h = last_candle["ROC_9_4h"]
     last_roc_9_1d = last_candle["ROC_9_1d"]
     last_stochrsi_k = last_candle["STOCHRSIk_14_14_3_3"]
     last_stochrsik_15m = last_candle["STOCHRSIk_14_14_3_3_15m"]
     last_stochrsi_k_1h = last_candle["STOCHRSIk_14_14_3_3_1h"]
+    last_stochrsi_k_4h = last_candle["STOCHRSIk_14_14_3_3_4h"]
+    last_stochrsi_k_1d = last_candle["STOCHRSIk_14_14_3_3_1d"]
     last_willr_14 = last_candle["WILLR_14"]
     last_willr_84_1h = last_candle["WILLR_84_1h"]
     last_bbu = last_candle["BBU_20_2.0"]
@@ -69695,9 +69699,12 @@ class NostalgiaForInfinityX7(IStrategy):
       and (last_rsi_3_4h < 85.0)
       and (last_rsi_14 > 65.0)
       and (last_aroond_14_15m < 25.0)
+      and (last_stochrsik_15m > 30.0)
       and (last_stochrsi_k_1h > 10.0)
       and (last_roc_9_1h < 15.0)
       and (last_roc_9_4h < 15.0)
+      and ((last_rsi_3_1h < 80.0) or (last_rsi_3_1d < 80.0))
+      and ((last_rsi_3_4h < 70.0) or (last_stochrsi_k_4h > 40.0))
       and (last_close < (last_close_min_48 * 1.15))
       and (last_close > (last_ema_12 * 1.020))
     ):
@@ -69744,6 +69751,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and (last_roc_9_1h < 20.0)
       and (last_roc_9_4h < 20.0)
       and (last_aroond_14 < 25.0)
+      and ((last_aroond_14_1d < 100.0) or (last_roc_9_1d > -50.0))
       and (last_close > (last_high_max_12_4h * 0.40))
       and (last_rsi_20 > prev_rsi_20)
       and (last_close > (last_sma_16 * 1.040))
@@ -69850,6 +69858,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and (last_aroond_14_15m < 50.0)
       and (last_stochrsi_k > 60.0)
       and (last_stochrsik_15m > 30.0)
+      and ((last_rsi_3_1h < 60.0) or (last_aroond_14_1h < 80.0))
       and (prev_sma_9 > prev_sma_21)
       and (last_sma_9 < last_sma_21)
       and (last_ema_12_4h < last_ema_200_4h)
@@ -69867,6 +69876,9 @@ class NostalgiaForInfinityX7(IStrategy):
       and (last_aroond_14_15m < 30.0)
       and (last_stochrsi_k > 70.0)
       and (last_stochrsik_15m > 70.0)
+      and ((last_rsi_3_1h < 70.0) or (last_stochrsi_k_1h > 20.0))
+      and ((last_rsi_3_4h < 70.0) or (last_stochrsi_k_4h > 20.0))
+      and ((last_rsi_3_1d < 70.0) or (last_stochrsi_k_1d > 20.0))
     ):
       self._grind_entry_tag = "g15"
       return True
@@ -69929,7 +69941,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and (last_aroond_14 < 30.0)
       and (last_aroond_14_4h > 50.0)
       and (last_roc_9_1d < 15.0)
-      and (last_candle["STOCHRSIk_14_14_3_3_4h"] > 10.0)
+      and ((last_stochrsi_k_4h > 10.0) or (last_roc_9_4h > -30.0))
       and (last_ema_50_4h < last_ema_100_4h)
       and (last_close > (last_close_min_48 * 1.05))
     ):
