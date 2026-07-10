@@ -70,7 +70,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.381"
+    return "v17.4.382"
 
   stoploss = -0.99
 
@@ -73788,6 +73788,22 @@ class NostalgiaForInfinityX7(IStrategy):
 
     has_order_tags = hasattr(first_filled_order, "ft_order_tag")
 
+    # The first exit is de-risk (providing the trade is still open)
+    if (count_of_exits > 0) and (filled_exits[0].ft_order_tag == "derisk_level_3"):
+      return self.short_grind_adjust_trade_position_v3(
+        trade,
+        enter_tags,
+        current_time,
+        current_rate,
+        current_profit,
+        min_stake,
+        max_stake,
+        current_entry_rate,
+        current_exit_rate,
+        current_entry_profit,
+        current_exit_profit,
+      )
+
     if dp.runmode.value in ("live", "dry_run"):
       ticker = dp.ticker(trade_pair)
       if ("bid" in ticker) and ("ask" in ticker):
@@ -73882,6 +73898,34 @@ class NostalgiaForInfinityX7(IStrategy):
           return buy_amount, "r"
         else:
           return buy_amount
+
+    if self.derisk_enable and (
+      profit_stake
+      < (
+        slice_amount
+        * (self.system_v3_rebuy_mode_derisk_futures if is_futures_mode else self.system_v3_rebuy_mode_derisk_spot)
+      )
+      / trade_leverage
+    ):
+      sell_amount = trade_amount * exit_rate / trade_leverage - (min_stake * 1.55)
+      ft_sell_amount = sell_amount * trade_leverage * (trade.stake_amount / trade_amount) / exit_rate
+      if sell_amount > min_stake and ft_sell_amount > min_stake:
+        grind_profit = 0.0
+        dp.send_msg(
+          f"❌​​ ​**Rebuy De-risk:** `Level 3`\n"
+          f"🪙​ **Pair:** `{trade_pair}`\n"
+          f"〽️​ **Rate:** `{exit_rate}`\n"
+          f"💰 **Stake amount:** `{sell_amount}`\n"
+          f"💵​ **Profit (stake):** `{profit_stake}`\n"
+          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
+        )
+        log.info(
+          f"Rebuy De-risk Level 3 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        )
+        if has_order_tags:
+          return -ft_sell_amount, "derisk_level_3"
+        else:
+          return -ft_sell_amount
 
     return None
 
