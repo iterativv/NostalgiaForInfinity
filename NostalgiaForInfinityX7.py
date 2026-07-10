@@ -51579,7 +51579,7 @@ class NostalgiaForInfinityX7(IStrategy):
     if not sell:
       entry_cost = filled_entries[0].safe_filled * filled_entries[0].safe_price
       if is_system_v3_2:
-        if profit_stake < -(
+        if self.system_v3_2_stops_enable and profit_stake < -(
           entry_cost
           * (
             self.system_v3_2_stop_threshold_futures_rebuy
