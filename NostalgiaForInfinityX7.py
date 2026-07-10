@@ -70,7 +70,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.382"
+    return "v17.4.383"
 
   stoploss = -0.99
 
@@ -13131,20 +13131,29 @@ class NostalgiaForInfinityX7(IStrategy):
     aroond_14_4h_lt_80 = aroond_14_4h < 80.0
     aroond_14_4h_lt_85 = aroond_14_4h < 85.0
     aroonu_14_gt_75 = aroonu_14 > 75.0
+    aroonu_14_15m_gt_0 = aroonu_14_15m > 0.0
+    aroonu_14_15m_gt_10 = aroonu_14_15m > 10.0
     aroonu_14_15m_gt_20 = aroonu_14_15m > 20.0
     aroonu_14_15m_gt_40 = aroonu_14_15m > 40.0
     aroonu_14_15m_gt_50 = aroonu_14_15m > 50.0
     aroonu_14_15m_gt_60 = aroonu_14_15m > 60.0
+    aroonu_14_1h_gt_0 = aroonu_14_1h > 0.0
+    aroonu_14_1h_gt_10 = aroonu_14_1h > 10.0
     aroonu_14_1h_gt_20 = aroonu_14_1h > 20.0
     aroonu_14_1h_gt_30 = aroonu_14_1h > 30.0
     aroonu_14_1h_gt_40 = aroonu_14_1h > 40.0
     aroonu_14_1h_gt_60 = aroonu_14_1h > 60.0
+    aroonu_14_4h_gt_0 = aroonu_14_4h > 0.0
     aroonu_14_4h_gt_10 = aroonu_14_4h > 10.0
     aroonu_14_4h_gt_20 = aroonu_14_4h > 20.0
     aroonu_14_4h_gt_30 = aroonu_14_4h > 30.0
     aroonu_14_4h_gt_50 = aroonu_14_4h > 50.0
     aroonu_14_4h_gt_70 = aroonu_14_4h > 70.0
     aroonu_14_4h_gt_80 = aroonu_14_4h > 80.0
+    aroonu_14_1d_gt_0 = aroonu_14_1d > 0.0
+    aroonu_14_1d_gt_10 = aroonu_14_1d > 10.0
+    aroonu_14_1d_gt_20 = aroonu_14_1d > 20.0
+    aroonu_14_1d_gt_30 = aroonu_14_1d > 30.0
     aroonu_14_1d_gt_50 = aroonu_14_1d > 50.0
     aroonu_14_lt_25 = aroonu_14 < 25.0
     aroonu_14_lt_30 = aroonu_14 < 30.0
@@ -13199,12 +13208,15 @@ class NostalgiaForInfinityX7(IStrategy):
     cmf_20_15m_gt_neg_0_35 = cmf_20_15m > -0.35
     cmf_20_15m_gt_neg_0_40 = cmf_20_15m > -0.40
     cmf_20_15m_gt_neg_0_50 = cmf_20_15m > -0.50
+    cmf_20_15m_lt_0_10 = cmf_20_15m < 0.10
+    cmf_20_15m_lt_0_20 = cmf_20_15m < 0.20
     cmf_20_15m_lt_0_30 = cmf_20_15m < 0.30
     cmf_20_1h_gt_neg_0_10 = cmf_20_1h > -0.10
     cmf_20_1h_gt_neg_0_20 = cmf_20_1h > -0.20
     cmf_20_1h_gt_neg_0_25 = cmf_20_1h > -0.25
     cmf_20_1h_gt_neg_0_30 = cmf_20_1h > -0.30
     cmf_20_1h_gt_neg_0_40 = cmf_20_1h > -0.40
+    cmf_20_1h_lt_0_10 = cmf_20_1h < 0.10
     cmf_20_1h_lt_0_20 = cmf_20_1h < 0.20
     cmf_20_1h_lt_0_30 = cmf_20_1h < 0.30
     cmf_20_4h_gt_neg_0_0 = cmf_20_4h > -0.0
@@ -13226,7 +13238,8 @@ class NostalgiaForInfinityX7(IStrategy):
     stochrsi_k_lt_20 = stochrsi_k < 20.0
     stochrsi_k_lt_30 = stochrsi_k < 30.0
     stochrsi_k_gt_80 = stochrsi_k > 80.0
-    stochrsi_k_15m_lt_20 = stochrsi_k_15m < 20.0
+    stochrsi_k_15m_gt_10 = stochrsi_k_15m > 10.0
+    stochrsi_k_15m_gt_20 = stochrsi_k_15m > 20.0
     stochrsi_k_15m_gt_30 = stochrsi_k_15m > 30.0
     stochrsi_k_15m_gt_40 = stochrsi_k_15m > 40.0
     stochrsi_k_15m_gt_60 = stochrsi_k_15m > 60.0
@@ -13240,6 +13253,7 @@ class NostalgiaForInfinityX7(IStrategy):
     stochrsi_k_4h_gt_75 = stochrsi_k_4h > 75.0
     stochrsi_k_4h_gt_80 = stochrsi_k_4h > 80.0
     stochrsi_k_4h_gt_90 = stochrsi_k_4h > 90.0
+    stochrsi_k_15m_lt_20 = stochrsi_k_15m < 20.0
     stochrsi_k_15m_lt_30 = stochrsi_k_15m < 30.0
     stochrsi_k_15m_lt_40 = stochrsi_k_15m < 40.0
     stochrsi_k_15m_lt_50 = stochrsi_k_15m < 50.0
@@ -13270,6 +13284,7 @@ class NostalgiaForInfinityX7(IStrategy):
     stochrsi_k_4h_lt_70 = stochrsi_k_4h < 70.0
     stochrsi_k_4h_lt_80 = stochrsi_k_4h < 80.0
     stochrsi_k_4h_lt_90 = stochrsi_k_4h < 90.0
+    stochrsi_k_1d_gt_10 = stochrsi_k_1d > 10.0
     stochrsi_k_1d_gt_20 = stochrsi_k_1d > 20.0
     stochrsi_k_1d_gt_30 = stochrsi_k_1d > 30.0
     stochrsi_k_1d_gt_50 = stochrsi_k_1d > 50.0
@@ -26282,25 +26297,104 @@ class NostalgiaForInfinityX7(IStrategy):
             & ((roc_9_1d > -25.0) | (stochrsi_k_1h < 60.0))
             # 15m + 1h ultra-capitulation = V-bottom forming regardless of CMF
             & ((rsi_3_15m_gt_10) | (rsi_3_1h_gt_15))
+            # 1h overbought + 1d CMF positive = bull pullback bouncing on inflow
+            & ((stochrsi_k_1h < 70.0) | (cmf_20_1d < 0.0))
             # 4h STOCHRSIk still extreme + 1h moderate = second leg waiting bounce
             & ((stochrsi_k_4h > 10.0) | (rsi_3_1h_gt_30))
             # 1d STOCHRSIk floor + 1d CMF positive = institutional buying after crash
             & ((stochrsi_k_1d > 5.0) | (cmf_20_1d < 0.0) | (rsi_3_4h_gt_45))
             # 1d big crash + 1h moderate overbought = bull pullback after sell-off
             & ((roc_9_1d > -22.0) | (stochrsi_k_1h < 70.0))
-            # 1h overbought + 1d CMF positive = bull pullback bouncing on inflow
-            & ((stochrsi_k_1h < 70.0) | (cmf_20_1d < 0.0))
+            ##########################################################################################################
+            # 15m & 1d down move, 15m & 1d low
+            & ((rsi_3_15m_gt_5) | (rsi_3_1d_gt_15) | (stochrsi_k_15m_gt_10) | (stochrsi_k_1d_gt_30))
+            # 15m & 4h down move, 15m & 1h & 4h low
+            & (
+              (rsi_3_15m_gt_15) | (rsi_3_4h_gt_25) | (aroonu_14_15m_gt_0) | (aroonu_14_1h_gt_0) | (aroonu_14_4h_gt_20)
+            )
+            # 15m & 4h down move, 15m & 4h low
+            & ((rsi_3_15m_gt_15) | (rsi_3_4h_gt_25) | (aroonu_14_15m_gt_0) | (aroonu_14_4h_gt_10))
+            # 15m & 1d down move, 15m & 1d low
+            & ((rsi_3_15m_gt_15) | (rsi_3_1d_gt_15) | (aroonu_14_15m_gt_10) | (aroonu_14_1d_gt_20))
+            # 15m & 4h down move, 15m & 4h low
+            & ((rsi_3_15m_gt_20) | (rsi_3_4h_gt_40) | (stochrsi_k_15m_gt_20) | (stochrsi_k_4h_gt_20))
+            # 15m & 1h down move, 15m & 1h low
+            & ((rsi_3_15m_gt_25) | (rsi_3_1h_gt_25) | (stochrsi_k_15m_gt_10) | (stochrsi_k_1h_gt_20))
+            # 15m & 4h down move, 15m & 4h low
+            & ((rsi_3_15m_gt_25) | (rsi_3_4h_gt_35) | (stochrsi_k_15m_gt_10) | (stochrsi_k_4h_gt_10))
+            # 1h down move, 1h & 4h low
+            & ((rsi_3_1h_gt_5) | (stochrsi_k_1h_gt_10) | (stochrsi_k_4h_gt_20))
+            # 1h & 4h & 1d down move, 4h & 1d oversold
+            & ((rsi_3_1h_gt_10) | (rsi_3_4h_gt_20) | (rsi_3_1d_gt_20) | (roc_9_4h_gt_neg_30) | (roc_9_1d_gt_neg_40))
+            # 1h & 4h down move, 1h low
+            & ((rsi_3_1h_gt_10) | (rsi_3_4h_gt_15) | (stochrsi_k_1h_gt_10))
+            # 1h & 4h down move, 1h & 4h low
+            & ((rsi_3_1h_gt_15) | (rsi_3_4h_gt_15) | (stochrsi_k_1h_gt_30) | (stochrsi_k_4h_gt_30))
+            # 1h & 4h & 1d down move, 1h & 1d low
+            & ((rsi_3_1h_gt_15) | (rsi_3_4h_gt_25) | (rsi_3_1d_gt_30) | (stochrsi_k_1h_gt_10) | (stochrsi_k_1d_gt_10))
+            # 1h down move, 15m & 1h low
+            & ((rsi_3_1h_gt_15) | (aroonu_14_15m_gt_20) | (aroonu_14_1h_gt_20))
+            # 1h & 4h down move, 1h & 4h & 1d low
+            & (
+              (rsi_3_1h_gt_20) | (rsi_3_4h_gt_20) | (aroonu_14_1h_gt_20) | (aroonu_14_4h_gt_20) | (aroonu_14_1d_gt_20)
+            )
+            # 1h & 4h down move, 1h & 4h low, 1d downtrend
+            & (
+              (rsi_3_1h_gt_20)
+              | (rsi_3_4h_gt_20)
+              | (stochrsi_k_1h_gt_10)
+              | (stochrsi_k_1d_gt_10)
+              | (roc_9_1d_gt_neg_30)
+            )
+            # 1h & 4h down move, 1h & 4h low
+            & ((rsi_3_1h_gt_20) | (rsi_3_4h_gt_25) | (aroonu_14_1h_gt_0) | (aroonu_14_4h_gt_20))
+            # 1h & 1d down move, 1h & 1d low
+            & ((rsi_3_1h_gt_20) | (rsi_3_1d_gt_20) | (aroonu_14_1h_gt_10) | (aroonu_14_1d_gt_10))
+            # 4h & 1d down move, 1d low
+            & ((rsi_3_4h_gt_15) | (rsi_3_1d_gt_15) | (stochrsi_k_1d_gt_10))
+            # 4h & 1d down move, 4h & 1d low
+            & ((rsi_3_4h_gt_15) | (rsi_3_1d_gt_20) | (stochrsi_k_4h_gt_20) | (stochrsi_k_1d_gt_20))
+            # 4h down move, 15m & 4h low
+            & ((rsi_3_4h_gt_15) | (aroonu_14_15m_gt_0) | (aroonu_14_4h_gt_10))
+            # 4h down move, 1h & 4h & 1d low
+            & ((rsi_3_4h_gt_20) | (aroonu_14_1h_gt_0) | (aroonu_14_4h_gt_20) | (aroonu_14_1d_gt_30))
+            # 4h & 1d down move, 4h & 1d low
+            & ((rsi_3_4h_gt_25) | (rsi_3_1d_gt_25) | (aroonu_14_4h_gt_0) | (aroonu_14_1d_gt_0))
+            # 4h & 1d down move, 4h & 1d low
+            & ((rsi_3_4h_gt_30) | (rsi_3_1d_gt_30) | (aroonu_14_4h_gt_10) | (aroonu_14_1d_gt_10))
+            # 1d down move, 1d low, 1d oversold
+            & ((rsi_3_1d_gt_10) | (stochrsi_k_1d_gt_20) | (roc_9_1d_gt_neg_20))
+            # 1d down move, 15m & 1h uptrend, 1d low
+            & ((rsi_3_1d_gt_15) | (cmf_20_15m_lt_0_20) | (cmf_20_1h_lt_0_20) | (stochrsi_k_1d_gt_20))
+            # 1d down move, 4h & 1d low
+            & ((rsi_3_1d_gt_15) | (aroonu_14_4h_gt_0) | (aroonu_14_1d_gt_0))
+            # 1d down move, 1h & 1d low
+            & ((rsi_3_1d_gt_15) | (stochrsi_k_1h_gt_10) | (stochrsi_k_1d_gt_20))
+            # 1d down move, 4h & 1d low
+            & ((rsi_3_1d_gt_15) | (stochrsi_k_4h_gt_20) | (stochrsi_k_1d_gt_30))
+            # 1d down move, 1h & 4h low
+            & ((rsi_3_1d_gt_20) | (aroonu_14_1h_gt_10) | (aroonu_14_4h_gt_10))
+            # 1d down move, 15m uptrend, 1d low
+            & ((rsi_3_1d_gt_20) | (cmf_20_15m_lt_0_10) | (aroonu_14_1d_gt_0))
+            # 1d down move, 15m & 1h & 1d low
+            & ((rsi_3_1d_gt_25) | (aroonu_14_15m_gt_10) | (aroonu_14_1h_gt_10) | (aroonu_14_1d_gt_20))
+            # 1d down move, 15m & 1d low
+            & ((rsi_3_1d_gt_25) | (stochrsi_k_15m_gt_10) | (stochrsi_k_1d_gt_20))
+            # 1h & 4h low
+            & ((aroonu_14_1h_gt_0) | (aroonu_14_4h_gt_0))
           )
 
           # Logic — Breakdown below BB lower in downtrend
-          short_entry_logic.append(close < bbl_20_2_0)
-          short_entry_logic.append(rsi_14 < 32.0)
-          short_entry_logic.append(rsi_14 > 15.0)
-          short_entry_logic.append(ema_12 < ema_26)
-          short_entry_logic.append(rsi_3 < 20.0)
-          short_entry_logic.append(cmf_20 < -0.08)
-          short_entry_logic.append(obv_change_pct_15m < 0.0)
-          short_entry_logic.append(rsi_3_15m < 35.0)
+          short_entry_logic.append(
+            (rsi_3 < 20.0)
+            & (rsi_3_15m < 35.0)
+            & (rsi_14 > 15.0)
+            & (rsi_14 < 32.0)
+            & (cmf_20 < -0.08)
+            & (obv_change_pct_15m < 0.0)
+            & (ema_12 < ema_26)
+            & (close < bbl_20_2_0)
+          )
 
         # Condition #563 - Dead Cat Bounce mode (Short).
         if short_entry_condition_index == 563:
