@@ -68310,9 +68310,12 @@ class NostalgiaForInfinityX7(IStrategy):
     grind_open_orders,
     trade: Trade,
   ) -> tuple:
-    # Short profit_rate = (exit - open) / open is NEGATIVE when profitable.
-    # Mirror of long with -grind_profit_rate (so the operator semantics stay symmetric).
-    if -grind_profit_rate < (grind_exit_profit_threshold + fee_open_rate + fee_close_rate):
+
+    # Normalize so profit is always positive when the short is profitable.
+    profit = -grind_profit_rate
+
+    # Not enough profit after fees.
+    if profit < (grind_exit_profit_threshold + fee_open_rate + fee_close_rate):
       return None, None
 
     last_rsi_3 = last_candle["RSI_3"]
@@ -68322,8 +68325,7 @@ class NostalgiaForInfinityX7(IStrategy):
     last_close = last_candle["close"]
     last_bbl_20 = last_candle["BBL_20_2.0"]
 
-    is_normal_exit = False
-    if (
+    is_normal_exit = (
       (last_rsi_3 < 1.0)
       or (last_rsi_14 < 30.0)
       or (last_willr_14 < -99.9)
@@ -68337,32 +68339,30 @@ class NostalgiaForInfinityX7(IStrategy):
         and (last_candle["ROC_9_1d"] < 10.0)
         and (last_candle["BTC_RSI_14_4h"] > 65.0)
       )
-    ):
-      is_normal_exit = True
+    )
 
     is_trailing_exit = False
-    # if 0.01 <= -grind_profit_rate < 0.02:
-    #   if -grind_profit_rate < (-max_profit_rate - 0.025):
-    #     is_trailing_exit = True
-    # elif 0.02 <= -grind_profit_rate <= 0.05:
-    #   if -grind_profit_rate < (-max_profit_rate - 0.035):
-    #     is_trailing_exit = True
-    # elif 0.05 <= -grind_profit_rate <= 0.08:
-    #   if -grind_profit_rate < (-max_profit_rate - 0.045):
-    #     is_trailing_exit = True
-    # elif 0.08 <= -grind_profit_rate <= 0.12:
-    #   if -grind_profit_rate < (-max_profit_rate - 0.050):
-    #     is_trailing_exit = True
-    # elif 0.12 <= -grind_profit_rate:
-    #   if -grind_profit_rate < (-max_profit_rate - 0.055):
-    #     is_trailing_exit = True
-    # is_trailing_exit = -grind_profit_rate > 0.04
+
+    # max_profit = -max_profit_rate
+    # drawdown = max_profit - profit
+    #
+    # if 0.01 <= profit < 0.02:
+    #     is_trailing_exit = drawdown >= 0.025
+    # elif 0.02 <= profit < 0.05:
+    #     is_trailing_exit = drawdown >= 0.035
+    # elif 0.05 <= profit < 0.08:
+    #     is_trailing_exit = drawdown >= 0.045
+    # elif 0.08 <= profit < 0.12:
+    #     is_trailing_exit = drawdown >= 0.050
+    # elif profit >= 0.12:
+    #     is_trailing_exit = drawdown >= 0.055
 
     if is_normal_exit or is_trailing_exit:
       exit_amount = grind_total_amount * exit_rate / trade.leverage
       if ((current_stake_amount / trade.leverage) - exit_amount) < (min_stake * 1.55):
         exit_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
-      ft_exit_amount = exit_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
+
+      ft_exit_amount = (exit_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate)
       if exit_amount > min_stake and ft_exit_amount > min_stake:
         self.dp.send_msg(
           self.notification_msg(
@@ -68375,16 +68375,19 @@ class NostalgiaForInfinityX7(IStrategy):
             profit_ratio=profit_ratio,
             stake_currency=self.config["stake_currency"],
             grind_profit_stake=grind_profit_stake,
-            grind_profit_pct=grind_profit_rate,
+            grind_profit_pct=profit,
             coin_amount=grind_total_amount,
           )
         )
+
         log.info(
-          f"short_grind_exit_v3 Grinding exit ({name}) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {exit_amount} | Coin amount: {grind_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit_rate * 100.0):.2f}% ({grind_profit_stake} {self.config['stake_currency']})"
+          f"short_grind_exit_v3 Grinding exit ({name}) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {exit_amount} | Coin amount: {grind_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(profit * 100.0):.2f}% ({grind_profit_stake} {self.config['stake_currency']})"
         )
+
         order_tag = tag
         for grind_entry in grind_open_orders:
           order_tag += " " + str(grind_entry.id)
+
         return -ft_exit_amount, order_tag
 
     return None, None
