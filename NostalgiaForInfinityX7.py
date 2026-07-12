@@ -42721,7 +42721,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"De-risk Level 1 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"long_grind_v2 De-risk Level 1 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         return -ft_sell_amount, "derisk_level_1"
 
@@ -42808,7 +42808,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"De-risk Level 2 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"long_grind_v2 De-risk Level 2 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         return -ft_sell_amount, "derisk_level_2"
 
@@ -42895,7 +42895,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"De-risk Level 3 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"long_grind_v2 De-risk Level 3 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         return -ft_sell_amount, "derisk_level_3"
 
@@ -42929,7 +42929,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"De-risk Global [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"long_grind_v2 De-risk Global [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         return -ft_sell_amount, "derisk_global"
 
@@ -42962,7 +42962,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
       )
       log.info(
-        f"Grinding entry (grind_1_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        f"long_grind_v2 Grinding entry (grind_1_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
       )
       order_tag = "grind_1_entry"
       if has_order_tags:
@@ -42996,7 +42996,7 @@ class NostalgiaForInfinityX7(IStrategy):
             )
           )
           log.info(
-            f"Grinding exit (grind_1_exit) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+            f"long_grind_v2 Grinding exit (grind_1_exit) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
           )
           order_tag = "grind_1_exit"
           for grind_entry_id in grind_1_buy_orders:
@@ -43046,7 +43046,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding de-risk (grind_1_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_1_current_grind_stake_profit} {stake_currency})"
+          f"long_grind_v2 Grinding de-risk (grind_1_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_1_current_grind_stake_profit} {stake_currency})"
         )
         order_tag = "grind_1_derisk"
         for grind_entry_id in grind_1_buy_orders:
@@ -43085,7 +43085,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
       )
       log.info(
-        f"Grinding entry (grind_2_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        f"long_grind_v2 Grinding entry (grind_2_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
       )
       order_tag = "grind_2_entry"
       if has_order_tags:
@@ -43119,7 +43119,7 @@ class NostalgiaForInfinityX7(IStrategy):
             )
           )
           log.info(
-            f"Grinding exit (grind_2_exit) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+            f"long_grind_v2 Grinding exit (grind_2_exit) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
           )
           order_tag = "grind_2_exit"
           for grind_entry_id in grind_2_buy_orders:
@@ -43169,7 +43169,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding de-risk (grind_2_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_2_current_grind_stake_profit} {stake_currency})"
+          f"long_grind_v2 Grinding de-risk (grind_2_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_2_current_grind_stake_profit} {stake_currency})"
         )
         order_tag = "grind_2_derisk"
         for grind_entry_id in grind_2_buy_orders:
@@ -43208,7 +43208,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
       )
       log.info(
-        f"Grinding entry (grind_3_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        f"long_grind_v2 Grinding entry (grind_3_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
       )
       order_tag = "grind_3_entry"
       if has_order_tags:
@@ -43242,7 +43242,7 @@ class NostalgiaForInfinityX7(IStrategy):
             )
           )
           log.info(
-            f"Grinding exit (grind_3_exit) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+            f"long_grind_v2 Grinding exit (grind_3_exit) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
           )
           order_tag = "grind_3_exit"
           for grind_entry_id in grind_3_buy_orders:
@@ -43292,7 +43292,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding de-risk (grind_3_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_3_current_grind_stake_profit} {stake_currency})"
+          f"long_grind_v2 Grinding de-risk (grind_3_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_3_current_grind_stake_profit} {stake_currency})"
         )
         order_tag = "grind_3_derisk"
         for grind_entry_id in grind_3_buy_orders:
@@ -43358,7 +43358,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
       )
       log.info(
-        f"Grinding entry (grind_4_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        f"long_grind_v2 Grinding entry (grind_4_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
       )
       order_tag = "grind_4_entry"
       if has_order_tags:
@@ -43392,7 +43392,7 @@ class NostalgiaForInfinityX7(IStrategy):
             )
           )
           log.info(
-            f"Grinding exit (grind_4_exit) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_4_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+            f"long_grind_v2 Grinding exit (grind_4_exit) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_4_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
           )
           order_tag = "grind_4_exit"
           for grind_entry_id in grind_4_buy_orders:
@@ -43442,7 +43442,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding de-risk (grind_4_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_4_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_4_current_grind_stake_profit} {stake_currency})"
+          f"long_grind_v2 Grinding de-risk (grind_4_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_4_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_4_current_grind_stake_profit} {stake_currency})"
         )
         order_tag = "grind_4_derisk"
         for grind_entry_id in grind_4_buy_orders:
@@ -43496,7 +43496,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
       )
       log.info(
-        f"Grinding entry (grind_5_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        f"long_grind_v2 Grinding entry (grind_5_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
       )
       order_tag = "grind_5_entry"
       if has_order_tags:
@@ -43530,7 +43530,7 @@ class NostalgiaForInfinityX7(IStrategy):
             )
           )
           log.info(
-            f"Grinding exit (grind_5_exit) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_5_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+            f"long_grind_v2 Grinding exit (grind_5_exit) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_5_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
           )
           order_tag = "grind_5_exit"
           for grind_entry_id in grind_5_buy_orders:
@@ -43580,7 +43580,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding de-risk (grind_5_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_5_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_5_current_grind_stake_profit} {stake_currency})"
+          f"long_grind_v2 Grinding de-risk (grind_5_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_5_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_5_current_grind_stake_profit} {stake_currency})"
         )
         order_tag = "grind_5_derisk"
         for grind_entry_id in grind_5_buy_orders:
@@ -43630,7 +43630,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
       )
       log.info(
-        f"Buyback entry (buyback_1_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        f"long_grind_v2 Buyback entry (buyback_1_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
       )
       order_tag = "buyback_1_entry"
       if has_order_tags:
@@ -43673,7 +43673,7 @@ class NostalgiaForInfinityX7(IStrategy):
             )
           )
           log.info(
-            f"Buyback exit (buyback_1_exit) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+            f"long_grind_v2 Buyback exit (buyback_1_exit) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
           )
           order_tag = "buyback_1_exit"
           for grind_entry_id in buyback_1_buy_orders:
@@ -43734,7 +43734,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Buyback de-risk (buyback_1_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({buyback_1_current_grind_stake_profit} {stake_currency})"
+          f"long_grind_v2 Buyback de-risk (buyback_1_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({buyback_1_current_grind_stake_profit} {stake_currency})"
         )
         order_tag = "buyback_1_derisk"
         for grind_entry_id in buyback_1_buy_orders:
@@ -43784,7 +43784,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
       )
       log.info(
-        f"Buyback entry (buyback_2_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        f"long_grind_v2 Buyback entry (buyback_2_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
       )
       order_tag = "buyback_2_entry"
       if has_order_tags:
@@ -43827,7 +43827,7 @@ class NostalgiaForInfinityX7(IStrategy):
             )
           )
           log.info(
-            f"Buyback exit (buyback_2_exit) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+            f"long_grind_v2 Buyback exit (buyback_2_exit) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
           )
           order_tag = "buyback_2_exit"
           for grind_entry_id in buyback_2_buy_orders:
@@ -43888,7 +43888,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Buyback de-risk (buyback_2_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({buyback_2_current_grind_stake_profit} {stake_currency})"
+          f"long_grind_v2 Buyback de-risk (buyback_2_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({buyback_2_current_grind_stake_profit} {stake_currency})"
         )
         order_tag = "buyback_2_derisk"
         for grind_entry_id in buyback_2_buy_orders:
@@ -43938,7 +43938,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
       )
       log.info(
-        f"Buyback entry (buyback_3_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        f"long_grind_v2 Buyback entry (buyback_3_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
       )
       order_tag = "buyback_3_entry"
       if has_order_tags:
@@ -43981,7 +43981,7 @@ class NostalgiaForInfinityX7(IStrategy):
             )
           )
           log.info(
-            f"Buyback exit (buyback_3_exit) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+            f"long_grind_v2 Buyback exit (buyback_3_exit) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
           )
           order_tag = "buyback_3_exit"
           for grind_entry_id in buyback_3_buy_orders:
@@ -44042,7 +44042,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Buyback de-risk (buyback_3_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({buyback_3_current_grind_stake_profit} {stake_currency})"
+          f"long_grind_v2 Buyback de-risk (buyback_3_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({buyback_3_current_grind_stake_profit} {stake_currency})"
         )
         order_tag = "buyback_3_derisk"
         for grind_entry_id in buyback_3_buy_orders:
@@ -45206,7 +45206,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"De-risk Level 1 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"long_grind_v3 De-risk Level 1 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         return -ft_sell_amount, "derisk_level_1"
 
@@ -45275,7 +45275,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"De-risk Level 2 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"long_grind_v3 De-risk Level 2 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         return -ft_sell_amount, "derisk_level_2"
 
@@ -45344,7 +45344,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"De-risk Level 3 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"long_grind_v3 De-risk Level 3 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         return -ft_sell_amount, "derisk_level_3"
 
@@ -45396,7 +45396,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"De-risk Level 4 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"long_grind_v3 De-risk Level 4 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         return -ft_sell_amount, "derisk_level_4"
 
@@ -45429,7 +45429,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
       )
       log.info(
-        f"Grinding entry (grind_1_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Tag: {self._grind_entry_tag}"
+        f"long_grind_v3 Grinding entry (grind_1_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Tag: {self._grind_entry_tag}"
       )
       order_tag = "grind_1_entry"
       if has_order_tags:
@@ -45503,7 +45503,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding de-risk (grind_1_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_1_current_grind_profit_stake} {stake_currency})"
+          f"long_grind_v3 Grinding de-risk (grind_1_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_1_current_grind_profit_stake} {stake_currency})"
         )
         order_tag = "grind_1_derisk"
         for grind_entry_id in grind_1_buy_orders:
@@ -45542,7 +45542,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
       )
       log.info(
-        f"Grinding entry (grind_2_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Tag: {self._grind_entry_tag}"
+        f"long_grind_v3 Grinding entry (grind_2_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Tag: {self._grind_entry_tag}"
       )
       order_tag = "grind_2_entry"
       if has_order_tags:
@@ -45616,7 +45616,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding de-risk (grind_2_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_2_current_grind_profit_stake} {stake_currency})"
+          f"long_grind_v3 Grinding de-risk (grind_2_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_2_current_grind_profit_stake} {stake_currency})"
         )
         order_tag = "grind_2_derisk"
         for grind_entry_id in grind_2_buy_orders:
@@ -45655,7 +45655,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
       )
       log.info(
-        f"Grinding entry (grind_3_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Tag: {self._grind_entry_tag}"
+        f"long_grind_v3 Grinding entry (grind_3_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Tag: {self._grind_entry_tag}"
       )
       order_tag = "grind_3_entry"
       if has_order_tags:
@@ -45729,7 +45729,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding de-risk (grind_3_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_3_current_grind_profit_stake} {stake_currency})"
+          f"long_grind_v3 Grinding de-risk (grind_3_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_3_current_grind_profit_stake} {stake_currency})"
         )
         order_tag = "grind_3_derisk"
         for grind_entry_id in grind_3_buy_orders:
@@ -45784,7 +45784,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
       )
       log.info(
-        f"Grinding entry (grind_4_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Tag: {self._grind_entry_tag}"
+        f"long_grind_v3 Grinding entry (grind_4_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Tag: {self._grind_entry_tag}"
       )
       order_tag = "grind_4_entry"
       if has_order_tags:
@@ -45858,7 +45858,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding de-risk (grind_4_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_4_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_4_current_grind_profit_stake} {stake_currency})"
+          f"long_grind_v3 Grinding de-risk (grind_4_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_4_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_4_current_grind_profit_stake} {stake_currency})"
         )
         order_tag = "grind_4_derisk"
         for grind_entry_id in grind_4_buy_orders:
@@ -45907,7 +45907,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
       )
       log.info(
-        f"Grinding entry (grind_5_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Tag: {self._grind_entry_tag}"
+        f"long_grind_v3 Grinding entry (grind_5_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Tag: {self._grind_entry_tag}"
       )
       order_tag = "grind_5_entry"
       if has_order_tags:
@@ -45981,7 +45981,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding de-risk (grind_5_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_5_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_5_current_grind_profit_stake} {stake_currency})"
+          f"long_grind_v3 Grinding de-risk (grind_5_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_5_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_5_current_grind_profit_stake} {stake_currency})"
         )
         order_tag = "grind_5_derisk"
         for grind_entry_id in grind_5_buy_orders:
@@ -46042,7 +46042,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
       )
       log.info(
-        f"Buyback entry (buyback_1_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        f"long_grind_v3 Buyback entry (buyback_1_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
       )
       order_tag = "buyback_1_entry"
       if has_order_tags:
@@ -46085,7 +46085,7 @@ class NostalgiaForInfinityX7(IStrategy):
     #         )
     #       )
     #       log.info(
-    #         f"Buyback exit (buyback_1_exit) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']})"
+    #         f"long_grind_v3 Buyback exit (buyback_1_exit) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade.leverage} {self.config['stake_currency']})"
     #       )
     #       order_tag = "buyback_1_exit"
     #       for grind_entry_id in buyback_1_buy_orders:
@@ -46145,7 +46145,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Buyback de-risk (buyback_1_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({buyback_1_current_grind_stake_profit} {stake_currency})"
+          f"long_grind_v3 Buyback de-risk (buyback_1_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({buyback_1_current_grind_stake_profit} {stake_currency})"
         )
         order_tag = "buyback_1_derisk"
         for grind_entry_id in buyback_1_buy_orders:
@@ -46184,7 +46184,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
       )
       log.info(
-        f"Rebuy (rebuy_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        f"long_grind_v3 Rebuy (rebuy_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
       )
       if has_order_tags:
         return buy_amount, "rebuy_entry"
@@ -46692,7 +46692,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding exit ({name}) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {exit_amount} | Coin amount: {grind_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit_rate * 100.0):.2f}% ({grind_profit_stake} {self.config['stake_currency']})"
+          f"long_grind_exit_v3 Grinding exit ({name}) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {exit_amount} | Coin amount: {grind_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit_rate * 100.0):.2f}% ({grind_profit_stake} {self.config['stake_currency']})"
         )
         order_tag = tag
         for grind_entry in grind_open_orders:
@@ -47410,7 +47410,7 @@ class NostalgiaForInfinityX7(IStrategy):
               )
             )
             log.info(
-              f"Grinding exit (gm0) [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {coin_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+              f"long_grind Grinding exit (gm0) [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {coin_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
             )
             order_tag = "gm0"
             for grind_entry_id in grind_1_buy_orders:
@@ -47451,7 +47451,7 @@ class NostalgiaForInfinityX7(IStrategy):
               )
             )
             log.info(
-              f"Grinding de-risk (gmd0) [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {coin_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+              f"long_grind Grinding de-risk (gmd0) [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {coin_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
             )
             order_tag = "gmd0"
             for grind_entry_id in grind_1_buy_orders:
@@ -47518,7 +47518,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding entry (dl1) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_1_derisk_1_current_grind_stake_profit} {stake_currency})"
+          f"long_grind Grinding entry (dl1) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_1_derisk_1_current_grind_stake_profit} {stake_currency})"
         )
         order_tag = "dl1"
         if has_order_tags:
@@ -47551,7 +47551,7 @@ class NostalgiaForInfinityX7(IStrategy):
             )
           )
           log.info(
-            f"Grinding exit (dl1) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_derisk_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+            f"long_grind Grinding exit (dl1) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_derisk_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
           )
           order_tag = "dl1"
           for grind_entry_id in grind_1_derisk_1_buy_orders:
@@ -47602,7 +47602,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding stop exit (ddl1) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_derisk_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
+          f"long_grind Grinding stop exit (ddl1) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_derisk_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
         )
         order_tag = "ddl1"
         for grind_entry_id in grind_1_derisk_1_buy_orders:
@@ -47665,7 +47665,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding entry (dl2) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_2_derisk_1_current_grind_stake_profit} {stake_currency})"
+          f"long_grind Grinding entry (dl2) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_2_derisk_1_current_grind_stake_profit} {stake_currency})"
         )
         order_tag = "dl2"
         if has_order_tags:
@@ -47698,7 +47698,7 @@ class NostalgiaForInfinityX7(IStrategy):
             )
           )
           log.info(
-            f"Grinding exit (dl2) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_derisk_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+            f"long_grind Grinding exit (dl2) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_derisk_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
           )
           order_tag = "dl2"
           for grind_entry_id in grind_2_derisk_1_buy_orders:
@@ -47749,7 +47749,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding stop exit (ddl2) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_derisk_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
+          f"long_grind Grinding stop exit (ddl2) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_derisk_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
         )
         order_tag = "ddl2"
         for grind_entry_id in grind_2_derisk_1_buy_orders:
@@ -47804,7 +47804,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding entry (gd1) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_1_current_grind_stake_profit} {stake_currency})"
+          f"long_grind Grinding entry (gd1) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_1_current_grind_stake_profit} {stake_currency})"
         )
         order_tag = "gd1"
         if has_order_tags:
@@ -47845,7 +47845,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
       )
       log.info(
-        f"Grinding entry (gd1) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_1_current_grind_stake_profit} {stake_currency})"
+        f"long_grind Grinding entry (gd1) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_1_current_grind_stake_profit} {stake_currency})"
       )
       order_tag = "gd1"
       if has_order_tags:
@@ -47878,7 +47878,7 @@ class NostalgiaForInfinityX7(IStrategy):
             )
           )
           log.info(
-            f"Grinding exit (gd1) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+            f"long_grind Grinding exit (gd1) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
           )
           order_tag = "gd1"
           for grind_entry_id in grind_1_buy_orders:
@@ -47928,7 +47928,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding stop exit (dd1) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
+          f"long_grind Grinding stop exit (dd1) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
         )
         order_tag = "dd1"
         for grind_entry_id in grind_1_buy_orders:
@@ -47983,7 +47983,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding entry (gd2) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_2_current_grind_stake_profit} {stake_currency})"
+          f"long_grind Grinding entry (gd2) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_2_current_grind_stake_profit} {stake_currency})"
         )
         order_tag = "gd2"
         if has_order_tags:
@@ -48016,7 +48016,7 @@ class NostalgiaForInfinityX7(IStrategy):
             )
           )
           log.info(
-            f"Grinding exit (gd2) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+            f"long_grind Grinding exit (gd2) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
           )
           order_tag = "gd2"
           for grind_entry_id in grind_2_buy_orders:
@@ -48066,7 +48066,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding stop exit (dd2) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
+          f"long_grind Grinding stop exit (dd2) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
         )
         order_tag = "dd2"
         for grind_entry_id in grind_2_buy_orders:
@@ -48121,7 +48121,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding entry (gd3) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_3_current_grind_stake_profit} {stake_currency})"
+          f"long_grind Grinding entry (gd3) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_3_current_grind_stake_profit} {stake_currency})"
         )
         order_tag = "gd3"
         if has_order_tags:
@@ -48154,7 +48154,7 @@ class NostalgiaForInfinityX7(IStrategy):
             )
           )
           log.info(
-            f"Grinding exit (gd3) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+            f"long_grind Grinding exit (gd3) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
           )
           order_tag = "gd3"
           for grind_entry_id in grind_3_buy_orders:
@@ -48204,7 +48204,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding stop exit (dd3) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
+          f"long_grind Grinding stop exit (dd3) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
         )
         order_tag = "dd3"
         for grind_entry_id in grind_3_buy_orders:
@@ -48259,7 +48259,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding entry (gd4) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_4_current_grind_stake_profit} {stake_currency})"
+          f"long_grind Grinding entry (gd4) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_4_current_grind_stake_profit} {stake_currency})"
         )
         order_tag = "gd4"
         if has_order_tags:
@@ -48292,7 +48292,7 @@ class NostalgiaForInfinityX7(IStrategy):
             )
           )
           log.info(
-            f"Grinding exit (gd4) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_4_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+            f"long_grind Grinding exit (gd4) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_4_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
           )
           order_tag = "gd4"
           for grind_entry_id in grind_4_buy_orders:
@@ -48342,7 +48342,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding stop exit (dd4) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_4_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
+          f"long_grind Grinding stop exit (dd4) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_4_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
         )
         order_tag = "dd4"
         for grind_entry_id in grind_4_buy_orders:
@@ -48397,7 +48397,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding entry (gd5) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_5_current_grind_stake_profit} {stake_currency})"
+          f"long_grind Grinding entry (gd5) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_5_current_grind_stake_profit} {stake_currency})"
         )
         order_tag = "gd5"
         if has_order_tags:
@@ -48430,7 +48430,7 @@ class NostalgiaForInfinityX7(IStrategy):
             )
           )
           log.info(
-            f"Grinding exit (gd5) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_5_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+            f"long_grind Grinding exit (gd5) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_5_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
           )
           order_tag = "gd5"
           for grind_entry_id in grind_5_buy_orders:
@@ -48480,7 +48480,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding stop exit (dd5) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_5_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
+          f"long_grind Grinding stop exit (dd5) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_5_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
         )
         order_tag = "dd5"
         for grind_entry_id in grind_5_buy_orders:
@@ -48535,7 +48535,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding entry (gd6) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_6_current_grind_stake_profit} {stake_currency})"
+          f"long_grind Grinding entry (gd6) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_6_current_grind_stake_profit} {stake_currency})"
         )
         order_tag = "gd6"
         if has_order_tags:
@@ -48568,7 +48568,7 @@ class NostalgiaForInfinityX7(IStrategy):
             )
           )
           log.info(
-            f"Grinding exit (gd6) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_6_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+            f"long_grind Grinding exit (gd6) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_6_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
           )
           order_tag = "gd6"
           for grind_entry_id in grind_6_buy_orders:
@@ -48618,7 +48618,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding stop exit (dd6) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_6_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
+          f"long_grind Grinding stop exit (dd6) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_6_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
         )
         order_tag = "dd6"
         for grind_entry_id in grind_6_buy_orders:
@@ -48680,7 +48680,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Re-entry (d1) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({derisk_1_current_grind_stake_profit} {stake_currency})"
+          f"long_grind Re-entry (d1) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({derisk_1_current_grind_stake_profit} {stake_currency})"
         )
         order_tag = "d1"
         if has_order_tags:
@@ -48720,7 +48720,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"De-risk (d1) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"long_grind De-risk (d1) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         return -ft_sell_amount, "d1"
 
@@ -48749,7 +48749,7 @@ class NostalgiaForInfinityX7(IStrategy):
     #       f"De-risk [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
     #     )
     #     log.info(
-    #       f"De-risk [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+    #       f"long_grind De-risk [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
     #     )
     #     return -ft_sell_amount, "d", is_derisk
 
@@ -48764,10 +48764,10 @@ class NostalgiaForInfinityX7(IStrategy):
     #   ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
     #   if sell_amount > min_stake and ft_sell_amount > min_stake:
     #     self.dp.send_msg(
-    #       f"De-risk (dd0) [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+    #       f"long_grind De-risk (dd0) [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
     #     )
     #     log.info(
-    #       f"De-risk (dd0) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+    #       f"long_grind De-risk (dd0) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
     #     )
     #     order_tag = "dd0"
     #     for grind_entry_id in (
@@ -50686,7 +50686,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Rebuy (r) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"long_rebuy_v3 Rebuy (r) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         if has_order_tags:
           return buy_amount, "r"
@@ -50714,7 +50714,7 @@ class NostalgiaForInfinityX7(IStrategy):
           f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
         )
         log.info(
-          f"Rebuy De-risk Level 3 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"short_rebuy_v3 Rebuy De-risk Level 3 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         if has_order_tags:
           return -ft_sell_amount, "derisk_level_3"
@@ -66476,7 +66476,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"De-risk Level 1 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"short_grind_v2 De-risk Level 1 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         return -ft_sell_amount, "derisk_level_1"
 
@@ -66563,7 +66563,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"De-risk Level 2 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"short_grind_v2 De-risk Level 2 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         return -ft_sell_amount, "derisk_level_2"
 
@@ -66650,7 +66650,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"De-risk Level 3 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"short_grind_v2 De-risk Level 3 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         return -ft_sell_amount, "derisk_level_3"
 
@@ -66684,7 +66684,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"De-risk Global [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"short_grind_v2 De-risk Global [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         return -ft_sell_amount, "derisk_global"
 
@@ -66717,7 +66717,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
       )
       log.info(
-        f"Grinding entry (grind_1_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        f"short_grind_v2 Grinding entry (grind_1_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
       )
       order_tag = "grind_1_entry"
       if has_order_tags:
@@ -66751,7 +66751,7 @@ class NostalgiaForInfinityX7(IStrategy):
             )
           )
           log.info(
-            f"Grinding exit (grind_1_exit) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+            f"short_grind_v2 Grinding exit (grind_1_exit) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
           )
           order_tag = "grind_1_exit"
           for grind_entry_id in grind_1_buy_orders:
@@ -66801,7 +66801,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding de-risk (grind_1_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
+          f"short_grind_v2 Grinding de-risk (grind_1_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
         )
         order_tag = "grind_1_derisk"
         for grind_entry_id in grind_1_buy_orders:
@@ -66840,7 +66840,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
       )
       log.info(
-        f"Grinding entry (grind_2_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        f"short_grind_v2 Grinding entry (grind_2_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
       )
       order_tag = "grind_2_entry"
       if has_order_tags:
@@ -66874,7 +66874,7 @@ class NostalgiaForInfinityX7(IStrategy):
             )
           )
           log.info(
-            f"Grinding exit (grind_2_exit) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+            f"short_grind_v2 Grinding exit (grind_2_exit) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
           )
           order_tag = "grind_2_exit"
           for grind_entry_id in grind_2_buy_orders:
@@ -66924,7 +66924,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding de-risk (grind_2_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
+          f"short_grind_v2 Grinding de-risk (grind_2_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
         )
         order_tag = "grind_2_derisk"
         for grind_entry_id in grind_2_buy_orders:
@@ -66963,7 +66963,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
       )
       log.info(
-        f"Grinding entry (grind_3_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        f"short_grind_v2 Grinding entry (grind_3_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
       )
       order_tag = "grind_3_entry"
       if has_order_tags:
@@ -66997,7 +66997,7 @@ class NostalgiaForInfinityX7(IStrategy):
             )
           )
           log.info(
-            f"Grinding exit (grind_3_exit) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+            f"short_grind_v2 Grinding exit (grind_3_exit) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
           )
           order_tag = "grind_3_exit"
           for grind_entry_id in grind_3_buy_orders:
@@ -67047,7 +67047,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding de-risk (grind_3_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
+          f"short_grind_v2 Grinding de-risk (grind_3_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
         )
         order_tag = "grind_3_derisk"
         for grind_entry_id in grind_3_buy_orders:
@@ -67101,7 +67101,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
       )
       log.info(
-        f"Grinding entry (grind_4_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        f"short_grind_v2 Grinding entry (grind_4_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
       )
       order_tag = "grind_4_entry"
       if has_order_tags:
@@ -67135,7 +67135,7 @@ class NostalgiaForInfinityX7(IStrategy):
             )
           )
           log.info(
-            f"Grinding exit (grind_4_exit) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_4_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+            f"short_grind_v2 Grinding exit (grind_4_exit) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_4_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
           )
           order_tag = "grind_4_exit"
           for grind_entry_id in grind_4_buy_orders:
@@ -67185,7 +67185,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding de-risk (grind_4_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_4_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
+          f"short_grind_v2 Grinding de-risk (grind_4_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_4_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
         )
         order_tag = "grind_4_derisk"
         for grind_entry_id in grind_4_buy_orders:
@@ -67239,7 +67239,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
       )
       log.info(
-        f"Grinding entry (grind_5_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        f"short_grind_v2 Grinding entry (grind_5_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
       )
       order_tag = "grind_5_entry"
       if has_order_tags:
@@ -67273,7 +67273,7 @@ class NostalgiaForInfinityX7(IStrategy):
             )
           )
           log.info(
-            f"Grinding exit (grind_5_exit) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_5_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+            f"short_grind_v2 Grinding exit (grind_5_exit) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_5_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
           )
           order_tag = "grind_5_exit"
           for grind_entry_id in grind_5_buy_orders:
@@ -67323,7 +67323,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding de-risk (grind_5_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_5_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
+          f"short_grind_v2 Grinding de-risk (grind_5_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_5_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
         )
         order_tag = "grind_5_derisk"
         for grind_entry_id in grind_5_buy_orders:
@@ -67373,7 +67373,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
       )
       log.info(
-        f"Buyback entry (buyback_1_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        f"short_grind_v2 Buyback entry (buyback_1_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
       )
       order_tag = "buyback_1_entry"
       if has_order_tags:
@@ -67416,7 +67416,7 @@ class NostalgiaForInfinityX7(IStrategy):
             )
           )
           log.info(
-            f"Buyback exit (buyback_1_exit) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+            f"short_grind_v2 Buyback exit (buyback_1_exit) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
           )
           order_tag = "buyback_1_exit"
           for grind_entry_id in buyback_1_buy_orders:
@@ -67475,7 +67475,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Buyback de-risk (buyback_1_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
+          f"short_grind_v2 Buyback de-risk (buyback_1_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
         )
         order_tag = "buyback_1_derisk"
         for grind_entry_id in buyback_1_buy_orders:
@@ -67525,7 +67525,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
       )
       log.info(
-        f"Buyback entry (buyback_2_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        f"short_grind_v2 Buyback entry (buyback_2_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
       )
       order_tag = "buyback_2_entry"
       if has_order_tags:
@@ -67568,7 +67568,7 @@ class NostalgiaForInfinityX7(IStrategy):
             )
           )
           log.info(
-            f"Buyback exit (buyback_2_exit) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+            f"short_grind_v2 Buyback exit (buyback_2_exit) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
           )
           order_tag = "buyback_2_exit"
           for grind_entry_id in buyback_2_buy_orders:
@@ -67627,7 +67627,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Buyback de-risk (buyback_2_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
+          f"short_grind_v2 Buyback de-risk (buyback_2_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
         )
         order_tag = "buyback_2_derisk"
         for grind_entry_id in buyback_2_buy_orders:
@@ -67677,7 +67677,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
       )
       log.info(
-        f"Buyback entry (buyback_3_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        f"short_grind_v2 Buyback entry (buyback_3_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
       )
       order_tag = "buyback_3_entry"
       if has_order_tags:
@@ -67720,7 +67720,7 @@ class NostalgiaForInfinityX7(IStrategy):
             )
           )
           log.info(
-            f"Buyback exit (buyback_3_exit) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+            f"short_grind_v2 Buyback exit (buyback_3_exit) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
           )
           order_tag = "buyback_3_exit"
           for grind_entry_id in buyback_3_buy_orders:
@@ -67779,7 +67779,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Buyback de-risk (buyback_3_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
+          f"short_grind_v2 Buyback de-risk (buyback_3_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {buyback_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
         )
         order_tag = "buyback_3_derisk"
         for grind_entry_id in buyback_3_buy_orders:
@@ -68380,7 +68380,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding exit ({name}) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {exit_amount} | Coin amount: {grind_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit_rate * 100.0):.2f}% ({grind_profit_stake} {self.config['stake_currency']})"
+          f"short_grind_exit_v3 Grinding exit ({name}) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {exit_amount} | Coin amount: {grind_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit_rate * 100.0):.2f}% ({grind_profit_stake} {self.config['stake_currency']})"
         )
         order_tag = tag
         for grind_entry in grind_open_orders:
@@ -68988,7 +68988,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"De-risk Level 1 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"short_grind_v3 De-risk Level 1 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         return -ft_sell_amount, "derisk_level_1"
 
@@ -69057,7 +69057,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"De-risk Level 2 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"short_grind_v3 De-risk Level 2 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         return -ft_sell_amount, "derisk_level_2"
 
@@ -69126,7 +69126,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"De-risk Level 3 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"short_grind_v3 De-risk Level 3 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         return -ft_sell_amount, "derisk_level_3"
 
@@ -69159,7 +69159,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
       )
       log.info(
-        f"Grinding entry (grind_1_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Tag: {self._grind_entry_tag}"
+        f"short_grind_v3 Grinding entry (grind_1_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Tag: {self._grind_entry_tag}"
       )
       order_tag = "grind_1_entry"
       if has_order_tags:
@@ -69233,7 +69233,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding de-risk (grind_1_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_1_current_grind_profit_stake} {stake_currency})"
+          f"short_grind_v3 Grinding de-risk (grind_1_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_1_current_grind_profit_stake} {stake_currency})"
         )
         order_tag = "grind_1_derisk"
         for grind_entry_id in grind_1_buy_orders:
@@ -69272,7 +69272,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
       )
       log.info(
-        f"Grinding entry (grind_2_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Tag: {self._grind_entry_tag}"
+        f"short_grind_v3 Grinding entry (grind_2_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Tag: {self._grind_entry_tag}"
       )
       order_tag = "grind_2_entry"
       if has_order_tags:
@@ -69346,7 +69346,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding de-risk (grind_2_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_2_current_grind_profit_stake} {stake_currency})"
+          f"short_grind_v3 Grinding de-risk (grind_2_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_2_current_grind_profit_stake} {stake_currency})"
         )
         order_tag = "grind_2_derisk"
         for grind_entry_id in grind_2_buy_orders:
@@ -69385,7 +69385,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
       )
       log.info(
-        f"Grinding entry (grind_3_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Tag: {self._grind_entry_tag}"
+        f"short_grind_v3 Grinding entry (grind_3_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Tag: {self._grind_entry_tag}"
       )
       order_tag = "grind_3_entry"
       if has_order_tags:
@@ -69459,7 +69459,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding de-risk (grind_3_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_3_current_grind_profit_stake} {stake_currency})"
+          f"short_grind_v3 Grinding de-risk (grind_3_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_3_current_grind_profit_stake} {stake_currency})"
         )
         order_tag = "grind_3_derisk"
         for grind_entry_id in grind_3_buy_orders:
@@ -69514,7 +69514,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
       )
       log.info(
-        f"Grinding entry (grind_4_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Tag: {self._grind_entry_tag}"
+        f"short_grind_v3 Grinding entry (grind_4_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Tag: {self._grind_entry_tag}"
       )
       order_tag = "grind_4_entry"
       if has_order_tags:
@@ -69588,7 +69588,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding de-risk (grind_4_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_4_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_4_current_grind_profit_stake} {stake_currency})"
+          f"short_grind_v3 Grinding de-risk (grind_4_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_4_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_4_current_grind_profit_stake} {stake_currency})"
         )
         order_tag = "grind_4_derisk"
         for grind_entry_id in grind_4_buy_orders:
@@ -69637,7 +69637,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
       )
       log.info(
-        f"Grinding entry (grind_5_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Tag: {self._grind_entry_tag}"
+        f"short_grind_v3 Grinding entry (grind_5_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Tag: {self._grind_entry_tag}"
       )
       order_tag = "grind_5_entry"
       if has_order_tags:
@@ -69711,7 +69711,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding de-risk (grind_5_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_5_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_5_current_grind_profit_stake} {stake_currency})"
+          f"short_grind_v3 Grinding de-risk (grind_5_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_5_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_5_current_grind_profit_stake} {stake_currency})"
         )
         order_tag = "grind_5_derisk"
         for grind_entry_id in grind_5_buy_orders:
@@ -69750,7 +69750,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
       )
       log.info(
-        f"Rebuy (rebuy_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        f"short_grind_v3 Rebuy (rebuy_entry) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
       )
       if has_order_tags:
         return buy_amount, "rebuy_entry"
@@ -70850,7 +70850,7 @@ class NostalgiaForInfinityX7(IStrategy):
               )
             )
             log.info(
-              f"Grinding exit (gm0) [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {coin_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+              f"short_grind Grinding exit (gm0) [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {coin_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
             )
             order_tag = "gm0"
             for grind_entry_id in grind_1_buy_orders:
@@ -70891,7 +70891,7 @@ class NostalgiaForInfinityX7(IStrategy):
               )
             )
             log.info(
-              f"Grinding de-risk (gmd0) [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {coin_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+              f"short_grind Grinding de-risk (gmd0) [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {coin_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
             )
             order_tag = "gmd0"
             for grind_entry_id in grind_1_buy_orders:
@@ -70956,7 +70956,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding entry (dl1) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_1_derisk_1_current_grind_stake_profit} {stake_currency})"
+          f"short_grind Grinding entry (dl1) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_1_derisk_1_current_grind_stake_profit} {stake_currency})"
         )
         order_tag = "dl1"
         if has_order_tags:
@@ -70989,7 +70989,7 @@ class NostalgiaForInfinityX7(IStrategy):
             )
           )
           log.info(
-            f"Grinding exit (dl1) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_derisk_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+            f"short_grind Grinding exit (dl1) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_derisk_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
           )
           order_tag = "dl1"
           for grind_entry_id in grind_1_derisk_1_buy_orders:
@@ -71040,7 +71040,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding stop exit (ddl1) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_derisk_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
+          f"short_grind Grinding stop exit (ddl1) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_derisk_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
         )
         order_tag = "ddl1"
         for grind_entry_id in grind_1_derisk_1_buy_orders:
@@ -71101,7 +71101,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding entry (dl2) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_2_derisk_1_current_grind_stake_profit} {stake_currency})"
+          f"short_grind Grinding entry (dl2) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_2_derisk_1_current_grind_stake_profit} {stake_currency})"
         )
         order_tag = "dl2"
         if has_order_tags:
@@ -71134,7 +71134,7 @@ class NostalgiaForInfinityX7(IStrategy):
             )
           )
           log.info(
-            f"Grinding exit (dl2) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_derisk_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+            f"short_grind Grinding exit (dl2) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_derisk_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
           )
           order_tag = "dl2"
           for grind_entry_id in grind_2_derisk_1_buy_orders:
@@ -71185,7 +71185,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding stop exit (ddl2) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_derisk_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
+          f"short_grind Grinding stop exit (ddl2) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_derisk_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
         )
         order_tag = "ddl2"
         for grind_entry_id in grind_2_derisk_1_buy_orders:
@@ -71238,7 +71238,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding entry (gd1) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_1_current_grind_stake_profit} {stake_currency})"
+          f"short_grind Grinding entry (gd1) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_1_current_grind_stake_profit} {stake_currency})"
         )
         order_tag = "gd1"
         if has_order_tags:
@@ -71279,7 +71279,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
       )
       log.info(
-        f"Grinding entry (gd1) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_1_current_grind_stake_profit} {stake_currency})"
+        f"short_grind Grinding entry (gd1) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_1_current_grind_stake_profit} {stake_currency})"
       )
       order_tag = "gd1"
       if has_order_tags:
@@ -71312,7 +71312,7 @@ class NostalgiaForInfinityX7(IStrategy):
             )
           )
           log.info(
-            f"Grinding exit (gd1) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+            f"short_grind Grinding exit (gd1) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
           )
           order_tag = "gd1"
           for grind_entry_id in grind_1_buy_orders:
@@ -71362,7 +71362,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding stop exit (dd1) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
+          f"short_grind Grinding stop exit (dd1) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_1_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
         )
         order_tag = "dd1"
         for grind_entry_id in grind_1_buy_orders:
@@ -71415,7 +71415,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding entry (gd2) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_2_current_grind_stake_profit} {stake_currency})"
+          f"short_grind Grinding entry (gd2) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_2_current_grind_stake_profit} {stake_currency})"
         )
         order_tag = "gd2"
         if has_order_tags:
@@ -71448,7 +71448,7 @@ class NostalgiaForInfinityX7(IStrategy):
             )
           )
           log.info(
-            f"Grinding exit (gd2) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+            f"short_grind Grinding exit (gd2) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
           )
           order_tag = "gd2"
           for grind_entry_id in grind_2_buy_orders:
@@ -71498,7 +71498,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding stop exit (dd2) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
+          f"short_grind Grinding stop exit (dd2) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_2_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
         )
         order_tag = "dd2"
         for grind_entry_id in grind_2_buy_orders:
@@ -71551,7 +71551,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding entry (gd3) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_3_current_grind_stake_profit} {stake_currency})"
+          f"short_grind Grinding entry (gd3) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_3_current_grind_stake_profit} {stake_currency})"
         )
         order_tag = "gd3"
         if has_order_tags:
@@ -71584,7 +71584,7 @@ class NostalgiaForInfinityX7(IStrategy):
             )
           )
           log.info(
-            f"Grinding exit (gd3) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+            f"short_grind Grinding exit (gd3) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
           )
           order_tag = "gd3"
           for grind_entry_id in grind_3_buy_orders:
@@ -71634,7 +71634,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding stop exit (dd3) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
+          f"short_grind Grinding stop exit (dd3) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_3_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
         )
         order_tag = "dd3"
         for grind_entry_id in grind_3_buy_orders:
@@ -71687,7 +71687,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding entry (gd4) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_4_current_grind_stake_profit} {stake_currency})"
+          f"short_grind Grinding entry (gd4) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_4_current_grind_stake_profit} {stake_currency})"
         )
         order_tag = "gd4"
         if has_order_tags:
@@ -71720,7 +71720,7 @@ class NostalgiaForInfinityX7(IStrategy):
             )
           )
           log.info(
-            f"Grinding exit (gd4) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_4_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+            f"short_grind Grinding exit (gd4) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_4_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
           )
           order_tag = "gd4"
           for grind_entry_id in grind_4_buy_orders:
@@ -71770,7 +71770,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding stop exit (dd4) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_4_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
+          f"short_grind Grinding stop exit (dd4) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_4_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
         )
         order_tag = "dd4"
         for grind_entry_id in grind_4_buy_orders:
@@ -71823,7 +71823,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding entry (gd5) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_5_current_grind_stake_profit} {stake_currency})"
+          f"short_grind Grinding entry (gd5) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_5_current_grind_stake_profit} {stake_currency})"
         )
         order_tag = "gd5"
         if has_order_tags:
@@ -71856,7 +71856,7 @@ class NostalgiaForInfinityX7(IStrategy):
             )
           )
           log.info(
-            f"Grinding exit (gd5) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_5_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+            f"short_grind Grinding exit (gd5) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_5_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
           )
           order_tag = "gd5"
           for grind_entry_id in grind_5_buy_orders:
@@ -71906,7 +71906,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding stop exit (dd5) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_5_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
+          f"short_grind Grinding stop exit (dd5) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_5_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
         )
         order_tag = "dd5"
         for grind_entry_id in grind_5_buy_orders:
@@ -71959,7 +71959,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding entry (gd6) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_6_current_grind_stake_profit} {stake_currency})"
+          f"short_grind Grinding entry (gd6) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_6_current_grind_stake_profit} {stake_currency})"
         )
         order_tag = "gd6"
         if has_order_tags:
@@ -71992,7 +71992,7 @@ class NostalgiaForInfinityX7(IStrategy):
             )
           )
           log.info(
-            f"Grinding exit (gd6) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_6_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
+            f"short_grind Grinding exit (gd6) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_6_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_profit * sell_amount * trade_leverage} {stake_currency})"
           )
           order_tag = "gd6"
           for grind_entry_id in grind_6_buy_orders:
@@ -72042,7 +72042,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Grinding stop exit (dd6) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_6_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
+          f"short_grind Grinding stop exit (dd6) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Coin amount: {grind_6_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}%"
         )
         order_tag = "dd6"
         for grind_entry_id in grind_6_buy_orders:
@@ -72102,7 +72102,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Re-entry (d1) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({derisk_1_current_grind_stake_profit} {stake_currency})"
+          f"short_grind Re-entry (d1) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({derisk_1_current_grind_stake_profit} {stake_currency})"
         )
         order_tag = "d1"
         if has_order_tags:
@@ -72142,7 +72142,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"De-risk (d1) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"short_grind De-risk (d1) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         return -ft_sell_amount, "d1"
 
@@ -74034,7 +74034,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
         log.info(
-          f"Rebuy (r) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"short_rebuy_v3 Rebuy (r) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         if has_order_tags:
           return buy_amount, "r"
@@ -74062,7 +74062,7 @@ class NostalgiaForInfinityX7(IStrategy):
           f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
         )
         log.info(
-          f"Rebuy De-risk Level 3 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"short_rebuy_v3 Rebuy De-risk Level 3 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         if has_order_tags:
           return -ft_sell_amount, "derisk_level_3"
