@@ -68312,9 +68312,12 @@ class NostalgiaForInfinityX7(IStrategy):
     grind_open_orders,
     trade: Trade,
   ) -> tuple:
-    # Short profit_rate = (exit - open) / open is NEGATIVE when profitable.
-    # Mirror of long with -grind_profit_rate (so the operator semantics stay symmetric).
-    if -grind_profit_rate < (grind_exit_profit_threshold + fee_open_rate + fee_close_rate):
+
+    # Normalize so profit is always positive when the short is profitable.
+    profit = -grind_profit_rate
+
+    # Not enough profit after fees.
+    if profit < (grind_exit_profit_threshold + fee_open_rate + fee_close_rate):
       return None, None
 
     last_rsi_3 = last_candle["RSI_3"]
@@ -68343,6 +68346,8 @@ class NostalgiaForInfinityX7(IStrategy):
       is_normal_exit = True
 
     is_trailing_exit = False
+    # max_profit = -max_profit_rate
+    # drawdown = max_profit - profit
     # if 0.01 <= -grind_profit_rate < 0.02:
     #   if -grind_profit_rate < (-max_profit_rate - 0.025):
     #     is_trailing_exit = True
@@ -68377,12 +68382,12 @@ class NostalgiaForInfinityX7(IStrategy):
             profit_ratio=profit_ratio,
             stake_currency=self.config["stake_currency"],
             grind_profit_stake=grind_profit_stake,
-            grind_profit_pct=grind_profit_rate,
+            grind_profit_pct=profit,
             coin_amount=grind_total_amount,
           )
         )
         log.info(
-          f"Grinding exit ({name}) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {exit_amount} | Coin amount: {grind_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit_rate * 100.0):.2f}% ({grind_profit_stake} {self.config['stake_currency']})"
+          f"Grinding exit ({name}) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {exit_amount} | Coin amount: {grind_total_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(profit * 100.0):.2f}% ({grind_profit_stake} {self.config['stake_currency']})"
         )
         order_tag = tag
         for grind_entry in grind_open_orders:
