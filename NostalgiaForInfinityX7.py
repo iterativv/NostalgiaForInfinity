@@ -47541,7 +47541,9 @@ class NostalgiaForInfinityX7(IStrategy):
             else:
               return -ft_sell_amount
 
-    is_long_grind_entry = self.long_grind_entry(last_candle, previous_candle, slice_profit, True)
+    is_long_grind_entry = self.long_grind_entry_v3(
+      last_candle, previous_candle, num_open_grinds, slice_profit, slice_profit_entry, slice_profit_exit, True
+    )  # 120 grinds via the v3 entry set (g0..g23) instead of the legacy grind mode
     slice_profit_lt_neg_0_06 = slice_profit < -0.06
     num_open_grinds_eq_0 = num_open_grinds == 0
 
