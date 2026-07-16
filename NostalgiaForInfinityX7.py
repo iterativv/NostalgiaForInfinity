@@ -70268,6 +70268,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and ((last_rsi_3_1d < 85.0) or (last_stochrsi_k_1h > 20.0))
       and ((last_rsi_3_1d < 70.0) or (last_aroond_14_1h < 100.0))
       and ((last_rsi_3_1d < 70.0) or (last_aroond_14_4h < 100.0))
+      and ((last_rsi_3_1d < 50.0) or (last_stochrsi_k_1h > 20.0) or (last_stochrsi_k_4h > 10.0))
       and ((last_aroond_14_15m < 100.0) or (last_aroond_14_1h < 100.0))
       and ((last_aroond_14_15m < 100.0) or (last_aroond_14_4h < 100.0))
       and ((last_aroond_14_15m < 100.0) or (last_aroond_14_1d < 100.0))
