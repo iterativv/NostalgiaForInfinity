@@ -68465,7 +68465,6 @@ class NostalgiaForInfinityX7(IStrategy):
     grind_open_orders,
     trade: Trade,
   ) -> tuple:
-
     # Normalize so profit is always positive when the short is profitable.
     profit = -grind_profit_rate
 
