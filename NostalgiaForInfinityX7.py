@@ -26480,33 +26480,35 @@ class NostalgiaForInfinityX7(IStrategy):
             # 1d ultra-capitulation (STOCHRSIk = 0, RSI_3 < 10) = absolute bottom
             & ((rsi_3_1d_gt_10) | (stochrsi_k_1d > 5.0) | (rsi_3_4h_gt_40))
             # 1d already recovering (RSI_3 elevated + STOCHRSIk not low) = real recovery, not dead-cat
-            & ((rsi_3_1d < 30.0) | (stochrsi_k_1d < 40.0))
+            & ((rsi_3_1d < 30.0) | (stochrsi_k_1d_lt_40))
             # 4h RSI still elevated (both 14 and 3-period) = 4h not bearish enough = real recovery
-            & ((rsi_14_4h < 37.0) | (rsi_3_4h < 37.0))
+            & ((rsi_14_4h < 35.0) | (rsi_3_4h < 35.0))
             # SCENARIO: 1d not-yet-recovered gate OR 4h reclaiming = failed dead-cat vs real recovery
-            & ((rsi_14_1d < 44.0) | (rsi_14_4h > 24.0))
+            & ((rsi_14_1d < 40.0) | (rsi_14_4h > 25.0))
             # SCENARIO: 1d ultra-capitulated (RSI_3 at absolute bottom) = due for a bounce that liquidates the short
-            & (rsi_3_1d > 5.0)
+            & (rsi_3_1d_gt_5)
             # SCENARIO: 4h reclaiming OR 4h money-flow leaving = bounce building, not a dead-cat
-            & ((rsi_14_4h > 24.0) | (mfi_14_4h < 41.0))
+            & ((rsi_14_4h > 25.0) | (mfi_14_4h < 40.0))
             # SCENARIO: 4h money inflow at a 1d stoch-bottom = accumulation, bounce building
-            & ((stochrsi_k_1d > 0.0) | (cci_20_change_pct_1h < -4.0))
+            & ((stochrsi_k_1d > 0.0) | (cci_20_change_pct_1h < -5.0))
             # SCENARIO: 1d downside stalling + short-term ultra-oversold = sellers exhausted, reversal
-            & ((roc_9_1d < -5.0) | (rsi_3 > 28.0))
+            & ((roc_9_1d < -5.0) | (rsi_3 > 30.0))
             # SCENARIO: 1d/4h ultra-capitulated but 1h already recovering = bottom in, bounce started
-            & ((rsi_14_1h < 43.0) | (rsi_14_4h > 24.0))
+            & ((rsi_14_1h < 40.0) | (rsi_14_4h > 25.0))
             # SCENARIO: 4h crashed hard + 1h bouncing = V-reversal after capitulation, pump liquidates short
-            & ((rsi_3_1d > 9.0) | (roc_9_4h > -23.0) | (rsi_14_1h < 40.0))
+            & ((rsi_3_1d_gt_10) | (roc_9_4h > -20.0) | (rsi_14_1h < 40.0))
             # SCENARIO: 1d massive crash + 1h uptrend birth = capitulation bottom reversing
-            & ((roc_9_1d > -42.0) | (aroonu_14_1h < 42.0))
+            & ((roc_9_1d > -40.0) | (aroonu_14_1h < 40.0))
             # SCENARIO: overbought entry + 4h momentum still up = shorting into a trend bounce
-            & ((rsi_14 < 66.0) | (rsi_3_4h < 39.0))
+            & ((rsi_14 < 65.0) | (rsi_3_4h < 35.0))
             # SCENARIO: 1d stoch at absolute bottom + 1d RSI mid = mixed, due-for-bounce zone
-            & ((stochrsi_k_1d > 0.0) | (rsi_14_1d < 43.0))
+            & ((stochrsi_k_1d > 0.0) | (rsi_14_1d < 40.0))
             # SCENARIO: 4h absolute-oversold selloff = capitulation exhaustion, sharp bounce
-            & ((rsi_3_4h > 3.0) | (roc_9_4h > -25.0))
+            & ((rsi_3_4h_gt_5) | (roc_9_4h > -25.0))
             # SCENARIO: 1d ultra-cap + 1h CCI recovering = capitulation bottom bouncing
-            & ((rsi_3_1d > 9.0) | (cci_20_change_pct_1h > -38.0) | (rsi_3_4h > 17.0))
+            & ((rsi_3_1d_gt_10) | (cci_20_change_pct_1h > -35.0) | (rsi_3_4h_gt_20))
+            # USELESS: multi-TF deep capitulation (1d crashed + 4h money-out + 4h stoch floor + 4h no-uptrend) = bounce liquidates short
+            & ((roc_9_1d > -25.0) | (mfi_14_4h > 20.0) | (stochrsi_k_4h_gt_10) | (aroonu_14_4h_gt_10))
           )
 
           # Logic — Bounce that fails to reclaim resistance
