@@ -910,6 +910,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # "short_entry_condition_541_enable": True,
     "short_entry_condition_542_enable": True,
     # "short_entry_condition_543_enable": True,
+    "short_entry_condition_561_enable": False,
     "short_entry_condition_562_enable": True,
     "short_entry_condition_563_enable": False,
     # "short_entry_condition_603_enable": True,
@@ -26298,6 +26299,58 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append((ema_26_shift.shift() - ema_12_shift.shift()) > (open_rate / 100.0))
           short_entry_logic.append(close < (ema_20 * 0.958))
           short_entry_logic.append(close < (bbl_20_2_0 * 0.992))
+
+        # Condition #561 - Downtrend Pullback / Continuation mode (Short). Mirror of code-64.
+        if short_entry_condition_index == 561:
+          # Protections
+          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+
+          short_entry_logic.append(
+            # Trend confirmation (higher TF must be bearish)
+            (ema_12_4h < ema_200_4h)
+            # 4h up move, 15m still maxed
+            & ((rsi_3_4h > 10.0) | (stochrsi_k_15m < 90.0))
+            # exhausted crash (daily deep-down) + 4h bouncing = squeeze trap
+            & ((rsi_3_4h < 30.0) | (roc_9_4h < -15.0) | (roc_9_1d > -30.0))
+            # bounce with 4h not dropping on any 4h momentum (short into strength) = squeeze trap
+            & ((roc_9_4h < -12.0) | (rsi_3_4h < 25.0) | (rsi_14_4h < 26.0))
+            # 1h & 4h both bounced
+            & ((rsi_14_1h < 45.0) | (rsi_14_4h < 38.0))
+            # 1h & 4h both bounced
+            & ((rsi_14_1h < 41.0) | (rsi_14_4h < 38.0))
+            # 5m stoch high, 4h only mild down
+            & ((stochrsi_k < 80.0) | (roc_9_4h < -15.0))
+            # 15m maxed, 1h weak (escape strong downtrends)
+            & ((stochrsi_k_15m < 96.0) | (rsi_14_1h > 40.0) | (roc_9_1d < -25.0))
+            # 15m maxed, 4h weak (escape strong downtrends)
+            & ((stochrsi_k_15m < 96.0) | (rsi_14_4h > 38.0) | (roc_9_1d < -25.0))
+            # weak 4h down, 15m maxed (CPI squeeze)
+            & ((roc_9_4h < -5.0) | (stochrsi_k_15m < 95.0))
+            # 4h downtrend active
+            & (aroond_14_4h > 50.0)
+            # 4h not capitulated
+            & (rsi_3_4h > 14.0)
+            # Daily not pumping
+            & (roc_9_1d < 5.0)
+            # Daily not a capitulation-crash bottom
+            & (roc_9_1d > -35.0)
+          )
+
+          # Logic — Bounce in downtrend
+          short_entry_logic.append(
+            (rsi_3 < 90.0)
+            & (rsi_3_15m_lt_80)
+            # & (rsi_3_1h < 80.0)
+            & (rsi_14 > 55.0)
+            & (willr_14 > -30.0)
+            & (willr_14 < -15.0)
+            & (stochrsi_k > 70.0)
+            & (aroond_14_15m < 90.0)
+            & (stochrsi_k_15m_gt_20)
+            & (close > ema_12)
+            & (close < ema_200)
+            & (close < (bbu_20_2_0 * 0.99))
+          )
 
         # Condition #562 - Trend Breakdown mode (Short).
         if short_entry_condition_index == 562:
