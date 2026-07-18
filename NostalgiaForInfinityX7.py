@@ -26312,24 +26312,54 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(
             # Trend confirmation (higher TF must be bearish)
             (ema_12_4h < ema_200_4h)
+            # --- 5m / base bounce over-recovered or near top (rsi_3, rsi_14, willr) ---
+            # shallow daily + very strong 5m bounce + steep 4h drop (violent dead-cat)
+            & ((rsi_3 < 65.0) | (roc_9_1d < -25.0) | (roc_9_4h > -20.0))
+            # very strong 5m bounce (80+) reaching near top (willr high)
+            & ((rsi_3 < 80.0) | (willr_14 < -20.0))
+            # base RSI over-recovered (60+) + near-top bounce (willr high)
+            & ((rsi_14 < 60.0) | (willr_14 < -22.0))
+            # strong bounce (rsi_3 55+) + mild 4h drop + moderate daily = squeeze trap
+            & ((rsi_3 < 55.0) | (roc_9_4h < -12.0) | (roc_9_1d > -15.0))
+            # --- 4h momentum still up / not dropping (rsi_3_4h, roc_9_4h) ---
             # 4h up move, 15m still maxed
             & ((rsi_3_4h > 10.0) | (stochrsi_k_15m < 90.0))
-            # exhausted crash (daily deep-down) + 4h bouncing = squeeze trap
+            # bounce with 4h not dropping on any 4h momentum (short into strength)
+            & ((rsi_3_4h < 25.0) | (roc_9_4h < -12.0) | (rsi_14_4h < 26.0))
+            # exhausted crash (daily deep-down) + 4h bouncing
             & ((rsi_3_4h < 30.0) | (roc_9_4h < -15.0) | (roc_9_1d > -30.0))
-            # bounce with 4h not dropping on any 4h momentum (short into strength) = squeeze trap
-            & ((roc_9_4h < -12.0) | (rsi_3_4h < 25.0) | (rsi_14_4h < 26.0))
-            # 1h & 4h both bounced
-            & ((rsi_14_1h < 45.0) | (rsi_14_4h < 38.0))
-            # 1h & 4h both bounced
+            # deep daily crash + 4h flat / not dropping (exhausted crash bounce)
+            & ((roc_9_4h < -10.0) | (roc_9_1d > -25.0))
+            # weak 4h down, 15m maxed (CPI squeeze)
+            & ((roc_9_4h < -5.0) | (stochrsi_k_15m < 95.0))
+            # --- 1h & 4h RSI both bounced (mirror of 64) ---
+            # 1h & 4h both bounced (LINK)
             & ((rsi_14_1h < 41.0) | (rsi_14_4h < 38.0))
+            # 1h & 4h both bounced (SOL)
+            & ((rsi_14_1h < 45.0) | (rsi_14_4h < 38.0))
+            # --- 4h RSI elevated (not oversold) across daily contexts (rsi_14_4h) ---
+            # deep-daily bounce, 4h not oversold, willr mid-band (-22..-20) = squeeze trap (narrow window)
+            & ((rsi_14_4h < 28.0) | (willr_14 < -22.0) | (willr_14 > -20.0) | (roc_9_1d > -20.0))
+            # deep-daily dead-cat, 4h mid (rsi_3_4h~30, roc_9_4h~-16, rsi_14_4h~30) — walks willr band on re-entry (multi-TF net)
+            & ((rsi_3_4h < 25.0) | (rsi_3_4h > 35.0) | (roc_9_4h < -20.0) | (roc_9_1d > -20.0) | (rsi_14_4h < 30.0))
+            # shallow daily + 4h not oversold + weak 5m bounce
+            & ((rsi_14_4h < 28.0) | (roc_9_1d < -15.0) | (rsi_3 > 60.0))
+            # flat daily (no daily downtrend) + 4h RSI still elevated
+            & ((rsi_14_4h < 30.0) | (roc_9_1d < -10.0))
+            # deep daily crash + 4h RSI elevated (33+)
+            & ((rsi_14_4h < 33.0) | (roc_9_1d > -25.0))
+            # deep daily crash + 4h RSI elevated (35+)
+            & ((rsi_14_4h < 35.0) | (roc_9_1d > -25.0))
+            # --- 5m / 15m stoch maxed (stochrsi) ---
             # 5m stoch high, 4h only mild down
             & ((stochrsi_k < 80.0) | (roc_9_4h < -15.0))
             # 15m maxed, 1h weak (escape strong downtrends)
             & ((stochrsi_k_15m < 96.0) | (rsi_14_1h > 40.0) | (roc_9_1d < -25.0))
             # 15m maxed, 4h weak (escape strong downtrends)
             & ((stochrsi_k_15m < 96.0) | (rsi_14_4h > 38.0) | (roc_9_1d < -25.0))
-            # weak 4h down, 15m maxed (CPI squeeze)
-            & ((roc_9_4h < -5.0) | (stochrsi_k_15m < 95.0))
+            # --- multi-TF net (moderate bounce indistinguishable from wins on any single TF) ---
+            & ((stochrsi_k_15m > 90.0) | (rsi_3 > 60.0) | (rsi_3_4h > 35.0) | (rsi_14_4h < 25.0) | (roc_9_1d > -25.0) | (roc_9_4h < -20.0))
+            # --- structural regime bounds ---
             # 4h downtrend active
             & (aroond_14_4h > 50.0)
             # 4h not capitulated
