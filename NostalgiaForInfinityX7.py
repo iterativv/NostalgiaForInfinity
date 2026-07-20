@@ -42761,7 +42761,15 @@ class NostalgiaForInfinityX7(IStrategy):
     last_aroonu_14 = last_candle["AROONU_14"]
     last_aroonu_14_15m = last_candle["AROONU_14_15m"]
     is_long_grind_entry = (
-      self.long_grind_entry_v2(last_candle, previous_candle, slice_profit, True)
+      self.long_grind_entry_v3(
+        last_candle,
+        previous_candle,
+        num_open_grinds_and_buybacks,
+        slice_profit,
+        slice_profit_entry,
+        slice_profit_exit,
+        True,
+      )
       or (
         (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
         and (num_open_grinds_and_buybacks == 0)
