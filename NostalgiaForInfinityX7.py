@@ -13124,6 +13124,7 @@ class NostalgiaForInfinityX7(IStrategy):
     rsi_14_1d_gt_10 = rsi_14_1d > 10.0
     rsi_14_1d_gt_40 = rsi_14_1d > 40.0
     rsi_14_1d_gt_50 = rsi_14_1d > 50.0
+    rsi_14_1d_gt_60 = rsi_14_1d > 60.0
     rsi_14_1d_lt_40 = rsi_14_1d < 40.0
     rsi_14_1d_lt_50 = rsi_14_1d < 50.0
     rsi_14_1d_lt_60 = rsi_14_1d < 60.0
@@ -13242,6 +13243,7 @@ class NostalgiaForInfinityX7(IStrategy):
     cmf_20_4h_gt_neg_0_35 = cmf_20_4h > -0.35
     cmf_20_4h_gt_neg_0_40 = cmf_20_4h > -0.40
     cmf_20_4h_gt_neg_0_50 = cmf_20_4h > -0.50
+    cmf_20_4h_lt_0_15 = cmf_20_4h < 0.15
     cmf_20_1d_gt_neg_0_0 = cmf_20_1d > -0.0
     cmf_20_1d_gt_neg_0_10 = cmf_20_1d > -0.10
     cmf_20_1d_gt_neg_0_20 = cmf_20_1d > -0.20
@@ -13303,6 +13305,7 @@ class NostalgiaForInfinityX7(IStrategy):
     stochrsi_k_1d_gt_10 = stochrsi_k_1d > 10.0
     stochrsi_k_1d_gt_20 = stochrsi_k_1d > 20.0
     stochrsi_k_1d_gt_30 = stochrsi_k_1d > 30.0
+    stochrsi_k_1d_gt_40 = stochrsi_k_1d > 40.0
     stochrsi_k_1d_gt_50 = stochrsi_k_1d > 50.0
     stochrsi_k_1d_gt_60 = stochrsi_k_1d > 60.0
     stochrsi_k_1d_gt_70 = stochrsi_k_1d > 70.0
@@ -21437,6 +21440,22 @@ class NostalgiaForInfinityX7(IStrategy):
             & ((roc_9_1d_lt_40) | (rsi_3_1h_gt_60) | (stochrsi_k_15m_lt_50))
             # P19 - mature 4h move without short-term continuation
             & ((aroonu_14_4h_lt_70) | (rsi_3_4h_gt_65) | (stochrsi_k_1h_lt_50))
+            # Five-minute rollover with crowded 4h flow and compressed 1h bandwidth
+            & ((rsi_14_change_pct > 0.0) | (rsi_14_1d_gt_60) | (cmf_20_4h_lt_0_15) | (bbb_20_2_0_1h > 20.0))
+            # Daily short-RSI rollover without a strong daily ROC escape
+            & (
+              (rsi_3_1d_gt_65)
+              | (rsi_3_change_pct_1d > -20.0)
+              | (stochrsi_k_1d_lt_70)
+              | (rsi_14_1d_lt_60)
+              | (roc_9_1d > 30.0)
+            )
+            # Weak 1h breakout without daily stochastic or ROC participation
+            & ((rsi_14_1h > 65.0) | (stochrsi_k_1d_gt_40) | (roc_9_1d > 25.0))
+            # Low daily stochastic state with a 15m OBV spike
+            & ((stochrsi_k_1d_gt_70) | (obv_change_pct_15m < 50.0))
+            # Short-term Aroon spike without 4h or daily short-RSI continuation
+            & ((aroonu_14_15m_lt_60) | (rsi_3_1d_gt_65) | (rsi_3_4h_gt_55))
           )
 
           # Logic — Breakout above BB upper with momentum
@@ -28117,6 +28136,13 @@ class NostalgiaForInfinityX7(IStrategy):
     ):
       if sell and signal_name is not None:
         return True, signal_name
+
+    if (
+      enter_tags == ["65"]
+      and (current_time - trade.open_date_utc).total_seconds() >= 90 * 60
+      and profit_init_ratio >= 0.0125
+    ):
+      return True, "exit_long_rebuy_signal65_early_recovery"
 
     # Here ends exit signal conditions for long_exit_rebuy
     return False, None
