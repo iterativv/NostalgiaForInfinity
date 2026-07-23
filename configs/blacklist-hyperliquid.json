@@ -18,6 +18,8 @@
       "(ACE|ACH|AGLD|AGT|AKE|ALAB|ALICE|BB|BEL|BLESS|BLUAI|BOBA|BTR|CGNX|COLLECT|DOLO|DOOD|DYM|EDEN|ENSO|EPIC|EVAA|EWY|F|HEI|HFT|HMSTR|INFQ|KAT|LAYER|LIGHT|LRC|MAGIC|MYX|NG|OFC|OL|ONE|OPN|PIXEL|PLAY|PORTAL|PROM|PUMPFUN|QQQ|RARE|RECALL|RESOLV|RLS|SAGA|SATS|SHIB1000|SPACE|SPORTFUN|SPY|TLM|TNSR|TON|TWLO|USO|VANRY|WCT|WET|XAI|XCU|YB|YGG|ZKP|AIN|EDGE|SAHARA)/.*",
       // Delisting
       "(MKR|OMNI)/.*",
+      // Hacked/depeg (2026-07-24, protocol-destroying, off our venues): BLC (algo-stablecoin depeg ~99.9% to ~0), AFX (~$24M key-compromise drain), VRSC (bridge exploit)
+      "(BLC|AFX|VRSC)/.*",
       // Hacked / high-risk (2026-07)
       "(NIGHT)/.*",
       // Tokenized stocks (STOCK suffix — universal forward-protection)
