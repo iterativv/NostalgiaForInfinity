@@ -19,8 +19,8 @@
       "(ACE|ACH|AGLD|AGT|AKE|ALAB|ALICE|BB|BEL|BLESS|BLUAI|BOBA|BTR|CGNX|COLLECT|DOLO|DOOD|DYM|EDEN|ENSO|EPIC|EVAA|EWY|F|HEI|HFT|HMSTR|INFQ|KAT|KORU|LAYER|LIGHT|LRC|MAGIC|MYX|NG|OFC|OL|ONE|OPN|PIXEL|PLAY|PORTAL|PROM|PUMPFUN|QQQ|RARE|RECALL|RESOLV|RLS|SAGA|SATS|SHIB1000|SOXS|SPACE|SPORTFUN|SPY|TLM|TNSR|TON|TWLO|USO|VANRY|WCT|WET|XAI|XCU|YB|YGG|ZKP|AIN|EDGE|SAHARA|UB)/.*",
       // Delisting
       "(MKR|OMNI)/.*",
-      // Bad/troubled coins (2026-07-24): MOVE (repeated ~99% drops, MM-scandal history, crypto.com delist), B2 (exploit + already -26%/24h), BLC (stablecoin depeg ~0), AFX ($24M drain), VRSC (bridge exploit)
-      "(MOVE|BLC|AFX|VRSC|B2)/.*",
+      // Hacked/depeg (2026-07-24, protocol-destroying): BLC (algo-stablecoin depeg ~99.9% to ~0), AFX (~$24M key-compromise drain), VRSC (bridge exploit). [MOVE+B2 left out per iterativ — bad coins but each won once; B2 watch-list]
+      "(BLC|AFX|VRSC)/.*",
       // Hacked/high-risk (2026-07) + ROAM KuCoin-futures delist
       "(NIGHT|ROAM)/.*",
       // Tokenized stocks (STOCK suffix — universal forward-protection)
