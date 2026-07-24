@@ -70,7 +70,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.433"
+    return "v17.4.434"
 
   stoploss = -0.99
 
@@ -46987,6 +46987,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and (last_close > (last_low_min_12_4h * 1.10))
       and (last_close > (last_ema_20 * 0.97))
       and (last_close < (last_ema_20 * 1.02))
+      and ((last_rsi_3_1h > 30.0) or (last_stochrsi_k_1d < 80.0))
       and ((last_rsi_3_4h > 50.0) or (last_aroonu_14_1h < 100.0))
       and ((last_rsi_3_1d > 10.0) or (last_aroonu_14_1d < 70.0))
       and ((last_rsi_3_1d > 40.0) or (last_stochrsi_k_1h < 80.0))
@@ -47020,6 +47021,8 @@ class NostalgiaForInfinityX7(IStrategy):
       # extended zone: above g22's 1.02*EMA cap = continuation confirmed, not a reclaim
       and (last_close >= (last_ema_20 * 1.02))
       and (last_close < (last_ema_20 * 1.12))
+      and ((last_rsi_3_1h > 45.0) or (last_aroonu_14_4h < 80.0))
+      and ((last_rsi_3_4h > 40.0) or (last_stochrsi_k_15m < 90.0))
       and ((last_rsi_3_4h > 50.0) or (last_aroonu_14_4h < 70.0))
       and ((last_rsi_3_1d > 15.0) or (last_stochrsi_k_1h < 80.0))
       and ((last_rsi_3_1d > 30.0) or (last_aroonu_14_1h < 100.0))
@@ -47028,14 +47031,60 @@ class NostalgiaForInfinityX7(IStrategy):
       and ((last_aroonu_14_15m < 100.0) or (last_aroonu_14_1h < 100.0))
       and ((last_aroonu_14_15m < 100.0) or (last_aroonu_14_4h < 100.0))
       and ((last_aroonu_14_15m < 100.0) or (last_aroonu_14_1d < 100.0))
+      and ((last_aroonu_14_15m < 100.0) or (last_stochrsi_k_15m < 90.0) or (last_stochrsi_k_1d < 80.0))
       and ((last_aroonu_14_15m < 100.0) or (last_stochrsi_k_1h < 80.0))
+      and ((last_aroonu_14_1h < 100.0) or (last_aroonu_14_4h < 100.0))
+      and ((last_aroonu_14_4h < 100.0) or (last_stochrsi_k_4h < 90.0))
       and ((last_aroonu_14_4h < 70.0) or (last_roc_9_1d < 50.0))
+      and ((last_aroonu_14_1d < 100.0) or (last_stochrsi_k_15m < 90.0))
       and ((last_stochrsi_k_15m < 80.0) or (last_stochrsi_k_1h < 90.0))
       and ((last_stochrsi_k_15m < 90.0) or (last_aroonu_14_1h < 100.0))
       and ((last_stochrsi_k_15m < 90.0) or (last_stochrsi_k_4h < 90.0))
       and ((last_stochrsi_k_1h < 90.0) or (last_stochrsi_k_4h < 90.0))
     ):
       self._grind_entry_tag = "g23"
+      return True
+    # g24 — trend-pullback continuation add: the zone ABOVE the 4h 200-EMA that g22 explicitly sacrifices.
+    if (
+      # momentum healthy on the pullback: RSI holds up (a real reversal cracks RSI hard)
+      (last_rsi_3 > 20.0)
+      and (last_rsi_3_15m > 20.0)
+      and (last_rsi_14 > 40.0)
+      # trend intact + this is a PULLBACK not a reversal: 4h still rising, 1h not in freefall
+      and (last_roc_9_1h > -10.0)
+      and (last_roc_9_4h > 0.0)
+      and (last_roc_9_4h < 25.0)  # anti-parabolic blow-off top
+      # bull scope-gate: confirmed 4h uptrend + price above the 200-EMA regime (complements g22's <200EMA)
+      and (last_ema_12_4h > last_ema_200_4h)
+      and (last_close > last_ema_200_4h)
+      # shallow pullback to the short EMA — buy the dip WITHIN the trend, never the top nor a deep dump
+      and (last_close < (last_ema_20 * 1.01))
+      and (last_close > (last_ema_20 * 0.94))
+      and ((last_rsi_3_15m > 40.0) or (last_stochrsi_k_15m < 70.0))
+      and ((last_rsi_3_1h > 25.0) or (last_aroonu_14_1h < 80.0))
+      and ((last_rsi_3_4h > 50.0) or (last_stochrsi_k_4h < 80.0))
+      and ((last_rsi_14_1h < 70.0) or (last_stochrsi_k_4h < 90.0))
+      and ((last_aroonu_14_15m < 100.0) or (last_aroonu_14_1h < 100.0))
+      and ((last_aroonu_14_15m < 100.0) or (last_aroonu_14_4h < 100.0))
+      and ((last_aroonu_14_15m < 100.0) or (last_stochrsi_k_1h < 90.0))
+      and ((last_aroonu_14_15m < 100.0) or (last_stochrsi_k_4h < 90.0))
+      and ((last_aroonu_14_15m < 100.0) or (last_stochrsi_k_1d < 80.0))
+      and ((last_aroonu_14_1h < 100.0) or (last_stochrsi_k_4h < 90.0))
+      and ((last_aroonu_14_1h < 100.0) or (last_stochrsi_k_1d < 90.0))
+      and ((last_aroonu_14_4h < 100.0) or (last_aroonu_14_1d < 100.0))
+      and ((last_aroonu_14_4h < 100.0) or (last_stochrsi_k_1h < 90.0))
+      and ((last_aroonu_14_4h < 100.0) or (last_stochrsi_k_4h < 90.0))
+      and ((last_aroonu_14_1d < 100.0) or (last_stochrsi_k_15m < 90.0))
+      and ((last_aroonu_14_1d < 100.0) or (last_stochrsi_k_1h < 90.0))
+      and ((last_aroonu_14_1d < 100.0) or (last_stochrsi_k_4h < 90.0))
+      # do not buy an overbought top on the bounce
+      and ((last_stochrsi_k < 90.0) or (last_rsi_14 < 70.0))
+      and ((last_stochrsi_k_15m < 90.0) or (last_stochrsi_k_1d < 90.0))
+      and ((last_stochrsi_k_1h < 90.0) or (last_roc_9_4h < 15.0))
+      and ((last_stochrsi_k_4h < 90.0) or (last_roc_9_4h < 15.0))
+      and ((last_stochrsi_k_4h < 90.0) or (last_roc_9_1d > -15.0))
+    ):
+      self._grind_entry_tag = "g24"
       return True
 
     self._grind_entry_tag = ""
