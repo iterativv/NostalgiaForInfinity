@@ -70,7 +70,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.442"
+    return "v17.4.443"
 
   stoploss = -0.99
 
@@ -12567,6 +12567,9 @@ class NostalgiaForInfinityX7(IStrategy):
   # Check Exit Timeout
   # ---------------------------------------------------------------------------------------------
   def check_exit_timeout(self, pair: str, trade: Trade, order: Order, current_time: datetime, **kwargs) -> bool:
+    # If force exit skip the check
+    if order.ft_order_tag is not None and order.ft_order_tag == "force_exit":
+      return False
     ob = self.dp.orderbook(pair, 1)
     bids = ob["bids"][0][0]
     asks = ob["asks"][0][0]
