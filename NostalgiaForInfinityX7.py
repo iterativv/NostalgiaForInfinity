@@ -70561,6 +70561,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and (last_close < (last_close_min_48 * 1.10))
       and ((last_rsi_3_1h < 70.0) or (last_stochrsi_k_1h > 30.0))
       and ((last_rsi_3_1d < 75.0) or (last_stochrsi_k_1h > 20.0))
+      and ((last_stochrsi_k_1h > 20.0) or (last_stochrsi_k_1d > 10.0))
     ):
       self._grind_entry_tag = "g14"
       return True
@@ -70685,6 +70686,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and ((last_roc_9_1d < 20.0) or (last_aroond_14_4h < 100.0))
       and ((last_roc_9_1d < 20.0) or (last_stochrsi_k_4h > 10.0))
       and ((last_roc_9_1d < 30.0) or (last_stochrsi_k_1h > 10.0))
+      and ((last_rsi_3_1h < 70.0) or (last_stochrsi_k_1d > 20.0))
     ):
       self._grind_entry_tag = "g22"
       return True
@@ -70715,8 +70717,59 @@ class NostalgiaForInfinityX7(IStrategy):
       and ((last_stochrsik_15m > 10.0) or (last_aroond_14_1h < 100.0))
       and ((last_stochrsik_15m > 10.0) or (last_stochrsi_k_4h > 10.0))
       and ((last_stochrsi_k_1h > 10.0) or (last_stochrsi_k_4h > 10.0))
+      and ((last_rsi_3_1h < 55.0) or (last_aroond_14_4h < 80.0))
+      and ((last_rsi_3_4h < 60.0) or (last_stochrsik_15m > 10.0))
+      and ((last_aroond_14_15m < 100.0) or (last_stochrsik_15m > 10.0) or (last_stochrsi_k_1d > 20.0))
+      and ((last_aroond_14_15m < 100.0) or (last_stochrsi_k_4h > 10.0))
+      and ((last_aroond_14_1h < 100.0) or (last_aroond_14_4h < 100.0))
+      and ((last_aroond_14_4h < 100.0) or (last_stochrsi_k_1h > 10.0))
+      and ((last_aroond_14_4h < 100.0) or (last_stochrsi_k_4h > 10.0))
+      and ((last_aroond_14_1d < 100.0) or (last_stochrsik_15m > 10.0))
     ):
       self._grind_entry_tag = "g23"
+      return True
+
+    # g24 mirror — downtrend-continuation short-add: the zone BELOW the 4h 200-EMA that g22 sacrifices (mirror of long g24).
+    if (
+      # momentum healthy on the bounce: RSI holds down (a real reversal spikes RSI hard)
+      (last_rsi_3 < 80.0)
+      and (last_rsi_3_15m < 80.0)
+      and (last_rsi_14 < 60.0)
+      # trend intact + this is a BOUNCE not a reversal: 4h still falling, 1h not in melt-up
+      and (last_roc_9_1h < 10.0)
+      and (last_roc_9_4h < 0.0)
+      and (last_roc_9_4h > -25.0)  # anti-capitulation blow-off bottom
+      # bear scope-gate: confirmed 4h downtrend + price below the 200-EMA regime (complements g22's >200EMA)
+      and (last_ema_12_4h < last_ema_200_4h)
+      and (last_close < last_ema_200_4h)
+      # shallow bounce to the short EMA — short the bounce WITHIN the trend, never the bottom nor a deep pump
+      and (last_close > (last_ema_20 * 0.99))
+      and (last_close < (last_ema_20 * 1.06))
+      and ((last_rsi_3_15m < 60.0) or (last_stochrsik_15m > 30.0))
+      and ((last_rsi_3_1h < 75.0) or (last_aroond_14_1h < 80.0))
+      and ((last_rsi_3_4h < 50.0) or (last_stochrsi_k_4h > 20.0))
+      and ((last_rsi_14_1h > 30.0) or (last_stochrsi_k_4h > 10.0))
+      and ((last_aroond_14_15m < 100.0) or (last_aroond_14_1h < 100.0))
+      and ((last_aroond_14_15m < 100.0) or (last_aroond_14_4h < 100.0))
+      and ((last_aroond_14_15m < 100.0) or (last_stochrsi_k_1h > 10.0))
+      and ((last_aroond_14_15m < 100.0) or (last_stochrsi_k_4h > 10.0))
+      and ((last_aroond_14_15m < 100.0) or (last_stochrsi_k_1d > 20.0))
+      and ((last_aroond_14_1h < 100.0) or (last_stochrsi_k_4h > 10.0))
+      and ((last_aroond_14_1h < 100.0) or (last_stochrsi_k_1d > 10.0))
+      and ((last_aroond_14_4h < 100.0) or (last_aroond_14_1d < 100.0))
+      and ((last_aroond_14_4h < 100.0) or (last_stochrsi_k_1h > 10.0))
+      and ((last_aroond_14_4h < 100.0) or (last_stochrsi_k_4h > 10.0))
+      and ((last_aroond_14_1d < 100.0) or (last_stochrsik_15m > 10.0))
+      and ((last_aroond_14_1d < 100.0) or (last_stochrsi_k_1h > 10.0))
+      and ((last_aroond_14_1d < 100.0) or (last_stochrsi_k_4h > 10.0))
+      # do not short an oversold bottom on the bounce
+      and ((last_stochrsi_k > 10.0) or (last_rsi_14 > 30.0))
+      and ((last_stochrsik_15m > 10.0) or (last_stochrsi_k_1d > 10.0))
+      and ((last_stochrsi_k_1h > 10.0) or (last_roc_9_4h > -15.0))
+      and ((last_stochrsi_k_4h > 10.0) or (last_roc_9_4h > -15.0))
+      and ((last_stochrsi_k_4h > 10.0) or (last_roc_9_1d < 15.0))
+    ):
+      self._grind_entry_tag = "g24"
       return True
 
     self._grind_entry_tag = ""
