@@ -2,7 +2,7 @@
   "exchange": {
     "pair_blacklist": [
       // Exchange
-      "(BNB)/.*",
+      "(RIF|BNB)/.*",
       "(1000.*).*/.*",
       // Leverage
       ".*(_PREMIUM|BEAR|BULL|HALF|HEDGE|UP|DOWN|[1235][SL])/.*",

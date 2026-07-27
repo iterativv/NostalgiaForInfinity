@@ -2,7 +2,7 @@
   "exchange": {
     "pair_blacklist": [
       // Exchange Tokens
-      "(MX)/.*",
+      "(RIF|MX)/.*",
       // Leverage tokens
       ".*(3L|3S|5L|5S)/.*",
       // Fiat
