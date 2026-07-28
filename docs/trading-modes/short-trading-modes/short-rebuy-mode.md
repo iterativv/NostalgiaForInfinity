@@ -69,7 +69,7 @@ This cached state allows the system to:
 For example, in the `short_exit_rebuy` function, the system checks if the current profit exceeds the previously cached profit before updating the target:
 ```python
 if (previous_profit is None) or (previous_profit < profit_init_ratio):
-    mark_pair, mark_signal = self.mark_profit_target(...)
+  mark_pair, mark_signal = self.mark_profit_target(...)
 ```
 
 This ensures that the bot only acts when there is a meaningful change in the trade’s profitability, avoiding unnecessary noise in ranging markets.

@@ -149,11 +149,11 @@ Prevents trading undesirable assets:
 Due to API limitations on historical data retrieval, the required warm-up period varies:
 ```python
 if self.config["exchange"]["name"] in ["okx", "okex"]:
-    self.startup_candle_count = 480
+  self.startup_candle_count = 480
 elif self.config["exchange"]["name"] in ["kraken"]:
-    self.startup_candle_count = 710
+  self.startup_candle_count = 710
 elif self.config["exchange"]["name"] in ["bybit"]:
-    self.startup_candle_count = 199
+  self.startup_candle_count = 199
 ```
 
 This ensures sufficient data for indicator calculation on exchanges with limited API depth.
@@ -162,9 +162,9 @@ This ensures sufficient data for indicator calculation on exchanges with limited
 Fine-tunes exchange adapter behavior:
 ```python
 config["exchange"]["ccxt_config"]["options"] = {
-    "brokerId": None,
-    "broker": {"spot": None, "future": None},
-    "partner": {"spot": {"id": None, "key": None}}
+  "brokerId": None,
+  "broker": {"spot": None, "future": None},
+  "partner": {"spot": {"id": None, "key": None}},
 }
 ```
 
@@ -292,11 +292,11 @@ To incorporate alternative data (e.g., on-chain metrics, sentiment):
 1. **Implement Informative Pair**:
    ```python
    def informative_pairs(self):
-       pairs = super().informative_pairs()
-       # Add custom data feed
-       pairs.append(("BTC/USDT", "1d"))
-       pairs.append(("ONCHAIN_DATA", "1d"))
-       return pairs
+     pairs = super().informative_pairs()
+     # Add custom data feed
+     pairs.append(("BTC/USDT", "1d"))
+     pairs.append(("ONCHAIN_DATA", "1d"))
+     return pairs
    ```
 2. **Fetch and Process Data**: Use `self.dp.get_pair_dataframe()` to retrieve external data
 3. **Merge with Price Data**: Use `merge_informative_pair()` to align timeframes

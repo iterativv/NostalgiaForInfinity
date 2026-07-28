@@ -123,18 +123,18 @@ The `NostalgiaForInfinityX6` class is the central component, encapsulating all t
 
 ```python
 def __init__(self, config: dict) -> None:
-    # A list of parameters that can be changed through the config.
-    NFI_SAFE_PARAMETERS = [
-      "num_cores_indicators_calc",
-      "custom_fee_open_rate",
-      "custom_fee_close_rate",
-      # ... other parameters
-    ]
+  # A list of parameters that can be changed through the config.
+  NFI_SAFE_PARAMETERS = [
+    "num_cores_indicators_calc",
+    "custom_fee_open_rate",
+    "custom_fee_close_rate",
+    # ... other parameters
+  ]
 
-    # Set up CCXT options
-    if "ccxt_config" not in config["exchange"]:
-      config["exchange"]["ccxt_config"] = {}
-    # ... (rest of the initialization)
+  # Set up CCXT options
+  if "ccxt_config" not in config["exchange"]:
+    config["exchange"]["ccxt_config"] = {}
+  # ... (rest of the initialization)
 ```
 
 **Section sources**
@@ -197,26 +197,26 @@ The position management system is one of the most advanced features of NFI-X6. I
 
 ```python
 def adjust_trade_position(
-    self,
-    trade: Trade,
-    current_time: datetime,
-    current_rate: float,
-    current_profit: float,
-    min_stake: Optional[float],
-    max_stake: float,
-    # ... other parameters
+  self,
+  trade: Trade,
+  current_time: datetime,
+  current_rate: float,
+  current_profit: float,
+  min_stake: Optional[float],
+  max_stake: float,
+  # ... other parameters
 ):
-    if self.position_adjustment_enable == False:
-      return None
+  if self.position_adjustment_enable == False:
+    return None
 
-    # ... logic to determine which adjustment function to call
-    if not trade.is_short and (all(c in self.long_rebuy_mode_tags for c in enter_tags)):
-      return self.long_rebuy_adjust_trade_position(...)
-    elif not trade.is_short:
-      if is_long_grind_mode or not is_v2_date:
-        return self.long_grind_adjust_trade_position(...)
-      else:
-        return self.long_grind_adjust_trade_position_v2(...)
+  # ... logic to determine which adjustment function to call
+  if not trade.is_short and (all(c in self.long_rebuy_mode_tags for c in enter_tags)):
+    return self.long_rebuy_adjust_trade_position(...)
+  elif not trade.is_short:
+    if is_long_grind_mode or not is_v2_date:
+      return self.long_grind_adjust_trade_position(...)
+    else:
+      return self.long_grind_adjust_trade_position_v2(...)
 ```
 
 **Section sources**

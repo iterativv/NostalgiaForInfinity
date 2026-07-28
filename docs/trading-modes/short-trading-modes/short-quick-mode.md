@@ -60,25 +60,28 @@ The entry logic is implemented through the `short_entry_quick()` function, which
 ```python
 # Pseudocode representation of the entry logic
 def short_entry_quick(dataframe, previous_enter_tags):
-    if not self.short_entry_signal_params['short_entry_condition_542_enable']:
-        return False, None
-    
-    # Check for bearish engulfing pattern
-    bearish_engulfing = (dataframe['close'].shift(1) < dataframe['open'].shift(1)) & \
-                        (dataframe['open'] > dataframe['close'].shift(1)) & \
-                        (dataframe['close'] < dataframe['open'])
-    
-    # Check for MACD flip
-    macd_flip = (dataframe['macd'].shift(1) > dataframe['macd_signal'].shift(1)) & \
-                (dataframe['macd'] < dataframe['macd_signal'])
-    
-    # Check for order book imbalance
-    order_book_imbalance = dataframe['sell_volume'] / dataframe['buy_volume'] > 1.5
-    
-    if bearish_engulfing & macd_flip & order_book_imbalance:
-        return True, self.short_quick_mode_tags[0]
-    
+  if not self.short_entry_signal_params["short_entry_condition_542_enable"]:
     return False, None
+
+  # Check for bearish engulfing pattern
+  bearish_engulfing = (
+    (dataframe["close"].shift(1) < dataframe["open"].shift(1))
+    & (dataframe["open"] > dataframe["close"].shift(1))
+    & (dataframe["close"] < dataframe["open"])
+  )
+
+  # Check for MACD flip
+  macd_flip = (dataframe["macd"].shift(1) > dataframe["macd_signal"].shift(1)) & (
+    dataframe["macd"] < dataframe["macd_signal"]
+  )
+
+  # Check for order book imbalance
+  order_book_imbalance = dataframe["sell_volume"] / dataframe["buy_volume"] > 1.5
+
+  if bearish_engulfing & macd_flip & order_book_imbalance:
+    return True, self.short_quick_mode_tags[0]
+
+  return False, None
 ```
 
 **Section sources**

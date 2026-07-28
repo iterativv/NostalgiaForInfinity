@@ -110,6 +110,7 @@ pip install TA-Lib
 Verify installation by running:
 ```python
 import talib
+
 print(talib.__version__)
 ```
 

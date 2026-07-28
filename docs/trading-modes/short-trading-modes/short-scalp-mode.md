@@ -47,15 +47,23 @@ The entry logic for the Short Scalp mode is governed by the `short_entry_scalp()
 - **Level 2 Data Interpretation**: Order book depth is analyzed to detect large buy or sell walls that may influence short-term price action.
 
 ```python
-def short_entry_scalp(self, pair: str, current_time: datetime, current_rate: float, current_profit: float, last_candle: DataFrame, previous_candle_1: DataFrame) -> tuple:
-    # Check for bid-ask spread imbalance
-    if last_candle['spread_low'] < self.short_scalp_min_spread:
-        # Confirm with tick volume
-        if last_candle['volume'] > self.short_scalp_min_volume:
-            # Additional confirmation from Level 2 data
-            if self.is_order_book_imbalance(pair, current_rate):
-                return True, "short_scalp_entry"
-    return False, None
+def short_entry_scalp(
+  self,
+  pair: str,
+  current_time: datetime,
+  current_rate: float,
+  current_profit: float,
+  last_candle: DataFrame,
+  previous_candle_1: DataFrame,
+) -> tuple:
+  # Check for bid-ask spread imbalance
+  if last_candle["spread_low"] < self.short_scalp_min_spread:
+    # Confirm with tick volume
+    if last_candle["volume"] > self.short_scalp_min_volume:
+      # Additional confirmation from Level 2 data
+      if self.is_order_book_imbalance(pair, current_rate):
+        return True, "short_scalp_entry"
+  return False, None
 ```
 
 ### Short Exit Logic
@@ -66,21 +74,38 @@ The exit logic for the Short Scalp mode is implemented in the `short_exit_scalp(
 - **Market Condition Monitoring**: The exit logic continuously monitors market conditions and may close positions early if adverse trends are detected.
 
 ```python
-def short_exit_scalp(self, pair: str, current_rate: float, profit_stake: float, profit_ratio: float, profit_current_stake_ratio: float, profit_init_ratio: float, max_profit: float, max_loss: float, filled_entries: list, filled_exits: list, last_candle: DataFrame, previous_candle_1: DataFrame, trade: Trade, current_time: datetime, enter_tags: list) -> tuple:
-    # Check profit target
-    if profit_ratio >= (self.short_scalp_profit_target + self.short_scalp_profit_buffer):
-        return True, "short_scalp_profit_target"
-    
-    # Check timeout
-    trade_duration = current_time - trade.open_date_utc
-    if trade_duration.total_seconds() >= (self.short_scalp_timeout * 60):
-        return True, "short_scalp_timeout"
-    
-    # Check for adverse market conditions
-    if self.is_market_reversing(last_candle, previous_candle_1):
-        return True, "short_scalp_market_reversal"
-        
-    return False, None
+def short_exit_scalp(
+  self,
+  pair: str,
+  current_rate: float,
+  profit_stake: float,
+  profit_ratio: float,
+  profit_current_stake_ratio: float,
+  profit_init_ratio: float,
+  max_profit: float,
+  max_loss: float,
+  filled_entries: list,
+  filled_exits: list,
+  last_candle: DataFrame,
+  previous_candle_1: DataFrame,
+  trade: Trade,
+  current_time: datetime,
+  enter_tags: list,
+) -> tuple:
+  # Check profit target
+  if profit_ratio >= (self.short_scalp_profit_target + self.short_scalp_profit_buffer):
+    return True, "short_scalp_profit_target"
+
+  # Check timeout
+  trade_duration = current_time - trade.open_date_utc
+  if trade_duration.total_seconds() >= (self.short_scalp_timeout * 60):
+    return True, "short_scalp_timeout"
+
+  # Check for adverse market conditions
+  if self.is_market_reversing(last_candle, previous_candle_1):
+    return True, "short_scalp_market_reversal"
+
+  return False, None
 ```
 
 The entry and exit logic works in tandem to ensure rapid position turnover and consistent profit generation. The strategy is designed to enter and exit positions quickly, typically within minutes, to capitalize on fleeting market opportunities.

@@ -47,7 +47,7 @@ A representative logic pattern (inferred from strategy design principles) would 
 
 ```python
 if scalp_mode_active and rsi_1m < 20 and bid_pressure > ask_pressure:
-    enter_long()
+  enter_long()
 ```
 
 These signals are evaluated within the broader `populate_entry_trend` function, where tag-based filtering determines whether a given condition belongs to the scalp mode.
@@ -128,9 +128,8 @@ The mode can coexist with other long strategies (e.g., normal, rapid, rebuy), bu
 
 ```python
 is_scalp_mode = all(c in self.long_scalp_mode_tags for c in enter_tags) or (
-    any(c in self.long_scalp_mode_tags for c in enter_tags) and not any(
-        c in (self.long_rebuy_mode_tags + self.long_grind_mode_tags) for c in enter_tags
-    )
+  any(c in self.long_scalp_mode_tags for c in enter_tags)
+  and not any(c in (self.long_rebuy_mode_tags + self.long_grind_mode_tags) for c in enter_tags)
 )
 ```
 
