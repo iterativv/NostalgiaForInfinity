@@ -76,7 +76,9 @@ For example, in spot mode, the multiplier array is `[0.20, 0.30, 0.40, 0.50, 0.6
 
 The actual stake for each grind level is calculated based on the slice amount (initial entry cost) and adjusted for minimum stake requirements:
 ```python
-slice_amount /= (self.grind_mode_stake_multiplier_futures[0] if self.is_futures_mode else self.grind_mode_stake_multiplier_spot[0])
+slice_amount /= (
+  self.grind_mode_stake_multiplier_futures[0] if self.is_futures_mode else self.grind_mode_stake_multiplier_spot[0]
+)
 ```
 
 This ensures that even small accounts can participate in the grind process without violating exchange minimums.

@@ -54,29 +54,29 @@ For example, the code snippet below shows how the strategy routes to the `long_e
 ```python
 # Long Normal mode
 if any(c in self.long_normal_mode_tags for c in enter_tags):
-    sell, signal_name = self.long_exit_normal(
-        pair,
-        current_rate,
-        profit_stake,
-        profit_ratio,
-        profit_current_stake_ratio,
-        profit_init_ratio,
-        max_profit,
-        max_loss,
-        filled_entries,
-        filled_exits,
-        last_candle,
-        previous_candle_1,
-        previous_candle_2,
-        previous_candle_3,
-        previous_candle_4,
-        previous_candle_5,
-        trade,
-        current_time,
-        enter_tags,
-    )
-    if sell and (signal_name is not None):
-        return f"{signal_name} ( {enter_tag})"
+  sell, signal_name = self.long_exit_normal(
+    pair,
+    current_rate,
+    profit_stake,
+    profit_ratio,
+    profit_current_stake_ratio,
+    profit_init_ratio,
+    max_profit,
+    max_loss,
+    filled_entries,
+    filled_exits,
+    last_candle,
+    previous_candle_1,
+    previous_candle_2,
+    previous_candle_3,
+    previous_candle_4,
+    previous_candle_5,
+    trade,
+    current_time,
+    enter_tags,
+  )
+  if sell and (signal_name is not None):
+    return f"{signal_name} ( {enter_tag})"
 ```
 
 This approach allows the strategy to encapsulate the complex exit logic for each mode within its own dedicated method (e.g., `long_exit_normal`, `long_exit_pump`), promoting code organization and maintainability. The `custom_exit` method then acts as a dispatcher, ensuring the correct behavior is executed for each trade based on its configuration.
@@ -116,7 +116,7 @@ if "nfi_parameters" in self.config and type(self.config["nfi_parameters"]) is di
       continue
     if (nfi_param in NFI_SAFE_PARAMETERS or is_config_advanced_mode) and hasattr(self, nfi_param):
       log.info(
-        f'Parameter {nfi_param} changed from "{getattr(self, nfi_param)}" to "{self.config["nfi_parameters"][nfi_param]}".' 
+        f'Parameter {nfi_param} changed from "{getattr(self, nfi_param)}" to "{self.config["nfi_parameters"][nfi_param]}".'
       )
       setattr(self, nfi_param, self.config["nfi_parameters"][nfi_param])
     else:

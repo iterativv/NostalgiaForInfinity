@@ -165,20 +165,31 @@ The derisking system is implemented through several key functions in the Nostalg
 The main derisking logic is contained in the `long_adjust_trade_position_no_derisk` and `short_adjust_trade_position_no_derisk` methods, which handle position adjustments for long and short positions respectively.
 
 ```python
-def long_adjust_trade_position_no_derisk(self, trade: Trade, current_time: datetime,
-                                       current_rate: float, current_profit: float,
-                                       min_stake: float, max_stake: float,
-                                       current_entry_rate: float, current_exit_rate: float,
-                                       current_entry_profit: float, last_candle: DataFrame,
-                                       previous_candle_1: DataFrame, previous_candle_2: DataFrame,
-                                       previous_candle_3: DataFrame, previous_candle_4: DataFrame,
-                                       previous_candle_5: DataFrame, trade_data: dict):
-    """
-    Adjust positions for long trades without derisking
-    """
-    # Implementation details for position adjustment
-    # without activating derisk mode
-    pass
+def long_adjust_trade_position_no_derisk(
+  self,
+  trade: Trade,
+  current_time: datetime,
+  current_rate: float,
+  current_profit: float,
+  min_stake: float,
+  max_stake: float,
+  current_entry_rate: float,
+  current_exit_rate: float,
+  current_entry_profit: float,
+  last_candle: DataFrame,
+  previous_candle_1: DataFrame,
+  previous_candle_2: DataFrame,
+  previous_candle_3: DataFrame,
+  previous_candle_4: DataFrame,
+  previous_candle_5: DataFrame,
+  trade_data: dict,
+):
+  """
+  Adjust positions for long trades without derisking
+  """
+  # Implementation details for position adjustment
+  # without activating derisk mode
+  pass
 ```
 
 ### Derisk Trigger Calculation
@@ -186,30 +197,25 @@ The derisking system triggers when profit_stake falls below the calculated deris
 
 ```python
 # Actual implementation from long_adjust_trade_position_no_derisk (L40676-40691)
-if (
-  self.derisk_enable
-  and (
-    profit_stake
-    < (
-      slice_amount
-      * (
-        (self.regular_mode_derisk_futures if self.is_futures_mode
-         else self.regular_mode_derisk_spot)
-        if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
-        else (self.regular_mode_derisk_futures_old if self.is_futures_mode
-              else self.regular_mode_derisk_spot_old)
-      )
-      / trade.leverage
+if self.derisk_enable and (
+  profit_stake
+  < (
+    slice_amount
+    * (
+      (self.regular_mode_derisk_futures if self.is_futures_mode else self.regular_mode_derisk_spot)
+      if (trade.open_date_utc.replace(tzinfo=None) >= datetime(2024, 9, 13) or is_backtest)
+      else (self.regular_mode_derisk_futures_old if self.is_futures_mode else self.regular_mode_derisk_spot_old)
     )
+    / trade.leverage
   )
 ):
-    # Calculate partial sell amount
-    sell_amount = trade.amount * exit_rate / trade.leverage - (min_stake * 1.55)
-    ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
+  # Calculate partial sell amount
+  sell_amount = trade.amount * exit_rate / trade.leverage - (min_stake * 1.55)
+  ft_sell_amount = sell_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
 
-    if sell_amount > min_stake and ft_sell_amount > min_stake:
-        # Execute partial exit with "d" tag
-        return -ft_sell_amount, "d", is_derisk
+  if sell_amount > min_stake and ft_sell_amount > min_stake:
+    # Execute partial exit with "d" tag
+    return -ft_sell_amount, "d", is_derisk
 ```
 
 ### Multi-Level Derisking (Grinding v2)
@@ -224,14 +230,13 @@ if (
   and profit_stake
   < (
     slice_amount
-    * (self.grinding_v2_derisk_level_1_futures[0] if self.is_futures_mode
-       else self.grinding_v2_derisk_level_1_spot[0])
+    * (self.grinding_v2_derisk_level_1_futures[0] if self.is_futures_mode else self.grinding_v2_derisk_level_1_spot[0])
   )
 ):
-    # Set flag to track that level 1 threshold has been crossed
-    trade.set_custom_data(key="grinding_v2_derisk_level_1_flag", value=True)
-    trade.set_custom_data(key="grinding_v2_derisk_level_1_profit", value=profit_stake)
-    trade.set_custom_data(key="grinding_v2_derisk_level_1_time", value=current_time.isoformat())
+  # Set flag to track that level 1 threshold has been crossed
+  trade.set_custom_data(key="grinding_v2_derisk_level_1_flag", value=True)
+  trade.set_custom_data(key="grinding_v2_derisk_level_1_profit", value=profit_stake)
+  trade.set_custom_data(key="grinding_v2_derisk_level_1_time", value=current_time.isoformat())
 ```
 
 The implementation considers various trading modes and their specific parameters, ensuring that derisking behavior is appropriate for the current market context.

@@ -30,9 +30,9 @@ The primary short entry conditions are controlled by the `short_entry_signal_par
 
 ```python
 short_entry_signal_params = {
-    "short_entry_condition_501_enable": True,
-    "short_entry_condition_502_enable": True,
-    "short_entry_condition_542_enable": True,
+  "short_entry_condition_501_enable": True,
+  "short_entry_condition_502_enable": True,
+  "short_entry_condition_542_enable": True,
 }
 ```
 
@@ -45,27 +45,27 @@ The entry logic for Condition 501 (Normal mode) includes protections against emp
 
 ```python
 if short_entry_condition_index == 501:
-    short_entry_logic.append(df["num_empty_288"] <= allowed_empty_candles_288)
-    short_entry_logic.append(df["protections_short_global"] == True)
-    short_entry_logic.append(df["global_protections_short_pump"] == True)
-    short_entry_logic.append(df["global_protections_short_dump"] == True)
-    short_entry_logic.append(df["RSI_3_1h"] >= 5.0)
-    short_entry_logic.append(df["RSI_3_4h"] >= 20.0)
-    short_entry_logic.append(df["RSI_3_1d"] >= 20.0)
-    short_entry_logic.append(df["EMA_12"] > df["EMA_26"])
-    short_entry_logic.append((df["EMA_12"] - df["EMA_26"]) > (df["open"] * 0.030))
-    short_entry_logic.append(df["close"] > (df["BBU_20_2.0"] * 1.001))
+  short_entry_logic.append(df["num_empty_288"] <= allowed_empty_candles_288)
+  short_entry_logic.append(df["protections_short_global"] == True)
+  short_entry_logic.append(df["global_protections_short_pump"] == True)
+  short_entry_logic.append(df["global_protections_short_dump"] == True)
+  short_entry_logic.append(df["RSI_3_1h"] >= 5.0)
+  short_entry_logic.append(df["RSI_3_4h"] >= 20.0)
+  short_entry_logic.append(df["RSI_3_1d"] >= 20.0)
+  short_entry_logic.append(df["EMA_12"] > df["EMA_26"])
+  short_entry_logic.append((df["EMA_12"] - df["EMA_26"]) > (df["open"] * 0.030))
+  short_entry_logic.append(df["close"] > (df["BBU_20_2.0"] * 1.001))
 ```
 
 Similarly, Condition 542 (Quick mode) uses Williams %R, Aroon, and Stochastic RSI to detect overbought conditions and potential reversals.
 
 ```python
 if short_entry_condition_index == 542:
-    short_entry_logic.append(df["WILLR_14"] > -50.0)
-    short_entry_logic.append(df["AROONU_14"] > 75.0)
-    short_entry_logic.append(df["AROOND_14"] < 25.0)
-    short_entry_logic.append(df["STOCHRSIk_14_14_3_3"] > 80.0)
-    short_entry_logic.append(df["close_min_48"] <= (df["close"] * 0.90))
+  short_entry_logic.append(df["WILLR_14"] > -50.0)
+  short_entry_logic.append(df["AROONU_14"] > 75.0)
+  short_entry_logic.append(df["AROOND_14"] < 25.0)
+  short_entry_logic.append(df["STOCHRSIk_14_14_3_3"] > 80.0)
+  short_entry_logic.append(df["close_min_48"] <= (df["close"] * 0.90))
 ```
 
 These conditions are combined using logical AND operations, and the resulting signal is stored in the `enter_short` column of the DataFrame.
@@ -163,8 +163,8 @@ The strategy differentiates between spot and futures markets in several key aspe
 The strategy automatically detects the trading mode based on the exchange configuration:
 ```python
 if ("trading_mode" in self.config) and (self.config["trading_mode"] in ["futures", "margin"]):
-    self.is_futures_mode = True
-    self.can_short = True
+  self.is_futures_mode = True
+  self.can_short = True
 ```
 
 This allows the strategy to adapt its risk parameters and position sizing based on the market type.

@@ -252,12 +252,12 @@ The strategy implementation includes exchange-specific adjustments for:
 
 ```python
 if self.config["exchange"]["name"] in ["okx", "okex"]:
-    self.startup_candle_count = 480
+  self.startup_candle_count = 480
 elif self.config["exchange"]["name"] in ["kraken"]:
-    self.startup_candle_count = 710
+  self.startup_candle_count = 710
 elif ("trading_mode" in self.config) and (self.config["trading_mode"] in ["futures", "margin"]):
-    self.is_futures_mode = True
-    self.can_short = True
+  self.is_futures_mode = True
+  self.can_short = True
 ```
 
 **Section sources**

@@ -76,7 +76,7 @@ A representative conditional block from the strategy logic (simplified) would re
 
 ```python
 if rapid_mode_active and macd_histogram > rapid_trigger_level:
-    enter_long()
+  enter_long()
 ```
 
 This bypasses slower-moving averages or consolidation filters used in normal mode, allowing the strategy to react within a single 5-minute candle.
@@ -114,7 +114,7 @@ The exit function evaluates conditions like RSI overbought levels (>80) or price
 
 ```python
 if current_profit > 0.05 and rsi_14 > 80:
-    exit_trade(partial=True)
+  exit_trade(partial=True)
 ```
 
 This prevents giving back profits during sudden reversals.

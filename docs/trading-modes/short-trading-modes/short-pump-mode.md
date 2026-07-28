@@ -70,9 +70,9 @@ These parameters are indirectly controlled through the broader `short_entry_sign
 
 ```python
 short_entry_signal_params = {
-    "short_entry_condition_501_enable": True,
-    "short_entry_condition_502_enable": True,
-    "short_entry_condition_542_enable": True,
+  "short_entry_condition_501_enable": True,
+  "short_entry_condition_502_enable": True,
+  "short_entry_condition_542_enable": True,
 }
 ```
 
@@ -151,7 +151,7 @@ Shorting after a pump carries significant risk due to the potential for continue
 
 The strategy also includes global protections via:
 ```python
-df["global_protections_short_pump"] = (...)
+df["global_protections_short_pump"] = ...
 ```
 Which evaluates broader market conditions before allowing pump-based shorts.
 

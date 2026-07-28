@@ -193,38 +193,38 @@ The `Backtest` class in `helpers.py` orchestrates this integration:
 
 ```python
 class Backtest:
-    def __call__(
-        self,
-        start_date,
-        end_date,
-        pairlist=None,
-        exchange=None,
-        trading_mode=None,
-    ):
-        # Construct command line with appropriate configuration files
-        cmdline = [
-            "freqtrade",
-            "backtesting",
-            "--strategy=NostalgiaForInfinityX6",
-            f"--timerange={start_date}-{end_date}",
-            "--user-data-dir=user_data",
-            "--config=configs/exampleconfig.json",
-            "--config=configs/exampleconfig_secret.json",
-            f"--config=configs/trading_mode-{trading_mode}.json",
-            f"--config=configs/blacklist-{exchange}.json",
-            "--breakdown=day",
-            "--export=signals",
-            f"--log-file=user_data/logs/backtesting-{exchange}-{trading_mode}-{start_date}-{end_date}.log",
-        ]
-        
-        if pairlist is None:
-            cmdline.append(f"--config={exchange_config}")
-        else:
-            # Handle custom pairlist
-            pairlist_config = {"exchange": {"name": exchange, "pair_whitelist": pairlist}}
-            pairlist_config_file = tmp_path / "test-pairlist.json"
-            pairlist_config_file.write(json.dumps(pairlist_config))
-            cmdline.append(f"--config={pairlist_config_file}")
+  def __call__(
+    self,
+    start_date,
+    end_date,
+    pairlist=None,
+    exchange=None,
+    trading_mode=None,
+  ):
+    # Construct command line with appropriate configuration files
+    cmdline = [
+      "freqtrade",
+      "backtesting",
+      "--strategy=NostalgiaForInfinityX6",
+      f"--timerange={start_date}-{end_date}",
+      "--user-data-dir=user_data",
+      "--config=configs/exampleconfig.json",
+      "--config=configs/exampleconfig_secret.json",
+      f"--config=configs/trading_mode-{trading_mode}.json",
+      f"--config=configs/blacklist-{exchange}.json",
+      "--breakdown=day",
+      "--export=signals",
+      f"--log-file=user_data/logs/backtesting-{exchange}-{trading_mode}-{start_date}-{end_date}.log",
+    ]
+
+    if pairlist is None:
+      cmdline.append(f"--config={exchange_config}")
+    else:
+      # Handle custom pairlist
+      pairlist_config = {"exchange": {"name": exchange, "pair_whitelist": pairlist}}
+      pairlist_config_file = tmp_path / "test-pairlist.json"
+      pairlist_config_file.write(json.dumps(pairlist_config))
+      cmdline.append(f"--config={pairlist_config_file}")
 ```
 
 ### Execution Flow
@@ -284,14 +284,14 @@ The `BacktestResults` class in `helpers.py` provides validation through structur
 ```python
 @attr.s(frozen=True)
 class BacktestResults:
-    def _set_results(self):
-        strategy_data = self.raw_data.get("strategy")
-        if isinstance(strategy_data, dict):
-            return strategy_data.get("NostalgiaForInfinityX6")
-        elif isinstance(strategy_data, str) and strategy_data == "NostalgiaForInfinityX6":
-            return self.raw_data.get("NostalgiaForInfinityX6")
-        else:
-            raise TypeError(f"Unsupported 'strategy' value: {strategy_data!r}")
+  def _set_results(self):
+    strategy_data = self.raw_data.get("strategy")
+    if isinstance(strategy_data, dict):
+      return strategy_data.get("NostalgiaForInfinityX6")
+    elif isinstance(strategy_data, str) and strategy_data == "NostalgiaForInfinityX6":
+      return self.raw_data.get("NostalgiaForInfinityX6")
+    else:
+      raise TypeError(f"Unsupported 'strategy' value: {strategy_data!r}")
 ```
 
 This ensures that only properly formatted and expected results are processed.

@@ -49,7 +49,7 @@ The entry logic for Quick Long Mode is optimized for speed and responsiveness. I
 A key code excerpt from `NostalgiaForInfinityX6.py` demonstrates this logic:
 ```python
 if fast_ema_cross and volume_spike and not self.pump_mode_active:
-    return True
+  return True
 ```
 This conditional check ensures that a trade is initiated only when there is a clear upward momentum signal confirmed by volume, while avoiding overlap with Pump Mode trades that could distort price action.
 

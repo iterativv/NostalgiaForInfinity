@@ -236,7 +236,7 @@ Key debugging techniques include:
 The strategy includes runtime validation:
 ```python
 if "nfi_advanced_mode" in self.config and self.config["nfi_advanced_mode"] == True:
-    log.warning("The advanced configuration mode is enabled. I hope you know what you are doing.")
+  log.warning("The advanced configuration mode is enabled. I hope you know what you are doing.")
 ```
 
 This warning alerts users when potentially dangerous advanced features are activated, encouraging careful review of configuration changes.

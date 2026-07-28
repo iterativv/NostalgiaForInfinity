@@ -58,32 +58,32 @@ The project is not structured into modules but into methods within a single clas
 
 ```python
 class NostalgiaForInfinityX6(IStrategy):
-    # 1. CONFIGURATION PARAMETERS (~800 lines)
-    #    - Stoploss, timeframe, modes, etc.
-    #    - Organized by feature (grinding, derisk, etc.)
+  # 1. CONFIGURATION PARAMETERS (~800 lines)
+  #    - Stoploss, timeframe, modes, etc.
+  #    - Organized by feature (grinding, derisk, etc.)
 
-    # 2. INITIALIZATION
-    #    - __init__(...)
-    #    - plot_config(...)
+  # 2. INITIALIZATION
+  #    - __init__(...)
+  #    - plot_config(...)
 
-    # 3. CORE FREQTRADE OVERRIDE METHODS
-    #    - populate_indicators(...)
-    - populate_entry_trend(...)
-    - populate_exit_trend(...) # Note: This is not used; exit logic is in custom_exit
-    - custom_exit(...)
-    - custom_stake_amount(...)
-    - adjust_trade_position(...)
+  # 3. CORE FREQTRADE OVERRIDE METHODS
+  #    - populate_indicators(...)
+  -populate_entry_trend(...)
+  -populate_exit_trend(...)  # Note: This is not used; exit logic is in custom_exit
+  -custom_exit(...)
+  -custom_stake_amount(...)
+  -adjust_trade_position(...)
 
-    # 4. CUSTOM EXIT LOGIC
-    #    - A large number of methods for handling exits for each mode
-    #    - e.g., long_exit_normal(...), long_exit_pump(...), short_exit_quick(...)
+  # 4. CUSTOM EXIT LOGIC
+  #    - A large number of methods for handling exits for each mode
+  #    - e.g., long_exit_normal(...), long_exit_pump(...), short_exit_quick(...)
 
-    # 5. INDICATOR POPULATION LOGIC
-    #    - Methods called by populate_indicators to generate specific indicators
-    #    - e.g., _populate_indicators_main(...), _populate_indicators_btc_info(...)
+  # 5. INDICATOR POPULATION LOGIC
+  #    - Methods called by populate_indicators to generate specific indicators
+  #    - e.g., _populate_indicators_main(...), _populate_indicators_btc_info(...)
 
-    # 6. HELPER FUNCTIONS
-    #    - e.g., calc_total_profit(...), mark_profit_target(...)
+  # 6. HELPER FUNCTIONS
+  #    - e.g., calc_total_profit(...), mark_profit_target(...)
 ```
 
 ### Key "Modules" (Methods) and Their Purpose

@@ -48,9 +48,9 @@ While the exact implementation of volume and momentum thresholds is not fully vi
 
 ```python
 if current_volume > pump_volume_threshold and price_change_15m > pump_momentum_level:
-    # Additional confirmation from higher timeframes
-    if informative_1h_rsi < 70 and not overbought_on_daily:
-        enter_long()
+  # Additional confirmation from higher timeframes
+  if informative_1h_rsi < 70 and not overbought_on_daily:
+    enter_long()
 ```
 
 In the actual codebase, this would be implemented within the `populate_entry_trend` method, where each condition is evaluated using data from multiple timeframes (5m, 15m, 1h, 4h, 1d). The use of informative pairs allows the strategy to confirm momentum across different granularities.
