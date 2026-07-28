@@ -4623,7 +4623,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # return self.btc_informative_1d_indicators(btc_pair, btc_info_timeframe)
     if btc_info_timeframe == "4h":
       return self.btc_informative_4h_indicators(btc_pair, btc_info_timeframe)
-    #elif btc_info_timeframe == "1h":
+    # elif btc_info_timeframe == "1h":
     # return self.btc_informative_1h_indicators(btc_pair, btc_info_timeframe)
     # elif btc_info_timeframe == "15m":
     # return self.btc_informative_15m_indicators(btc_pair, btc_info_timeframe)
