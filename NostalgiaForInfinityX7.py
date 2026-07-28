@@ -57,6 +57,7 @@ warnings.simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 ##  OKX: https://www.okx.com/join/11749725931 (20% discount on trading fees)                               ##
 ##  MEXC: https://promote.mexc.com/b/nfinfinity (10% discount on trading fees)                             ##
 ##  ByBit: https://partner.bybit.com/b/nfi                                                                 ##
+##  ByBit.EU: https://partner.bybit.eu/b/NFINFINITY                                                        ##
 ##  Bitget: https://bonus.bitget.com/nfinfinity (lifetime 20% +10% extra spot rebate)                      ##
 ##  Kraken: https://proinvite.kraken.com/9f1e/cctimhte                                                     ##
 ##  BitMart: https://www.bitmart.com/invite/nfinfinity (20% lifetime discount on trading fees)             ##
