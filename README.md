@@ -79,6 +79,7 @@ If you like to help, you can also use the following links to sign up to various 
 - [OKX: (20% discount on trading fees)](https://www.okx.com/join/11749725931)
 - [MEXC: (10% discount on trading fees)](https://promote.mexc.com/b/nfinfinity)
 - [ByBit: (signup bonuses)](https://partner.bybit.com/b/nfi)
+- [ByBit.EU: (signup bonuses)](https://partner.bybit.eu/b/NFINFINITY)
 - [Bitget: (lifetime 20% rebate all plus 10% discount on spot fees)](https://bonus.bitget.com/nfinfinity)
 - [Kraken: ](https://proinvite.kraken.com/9f1e/cctimhte)
 - [BitMart: (20% lifetime discount on trading fees)](https://www.bitmart.com/invite/nfinfinity)
