@@ -71,7 +71,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.482"
+    return "v17.4.483"
 
   stoploss = -0.99
 
@@ -21603,6 +21603,8 @@ class NostalgiaForInfinityX7(IStrategy):
             # Short-term Aroon spike without 4h or daily short-RSI continuation
             & ((aroonu_14_15m_lt_60) | (rsi_3_1d_gt_65) | (rsi_3_4h_gt_55))
             ####################################################################
+            # 15m up move, 15m high, 1h high
+            & ((rsi_3_15m_lt_90) | (aroonu_14_15m_lt_100) | (aroonu_14_1h_lt_100))
             # 15m up move, 1d high, 1h & 1d overbought
             & ((rsi_3_15m_lt_90) | (aroonu_14_1d_lt_100) | (roc_9_1h_lt_10) | (roc_9_1d_lt_20))
             # 15m up move, 15m high, 4h high
