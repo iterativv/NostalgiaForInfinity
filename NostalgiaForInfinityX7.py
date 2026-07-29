@@ -28465,7 +28465,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and (current_time - trade.open_date_utc).total_seconds() >= 90 * 60
       and profit_init_ratio >= 0.0125
     ):
-      return True, "exit_long_rebuy_signal65_early_recovery"
+      return True, "exit_long_rebuy_e_r"
 
     # Here ends exit signal conditions for long_exit_rebuy
     return False, None
