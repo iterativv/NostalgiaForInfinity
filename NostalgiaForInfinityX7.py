@@ -3515,6 +3515,7 @@ class NostalgiaForInfinityX7(IStrategy):
     ta_ema = ta.EMA
     ta_max = ta.MAX
     ta_min = ta.MIN
+    ta_bbands = ta.BBANDS
 
     assert dp, "DataProvider is required for multiple timeframes."
 
@@ -3541,6 +3542,8 @@ class NostalgiaForInfinityX7(IStrategy):
     rsi_3 = ta_rsi(close_np, timeperiod=3)
     rsi_14 = ta_rsi(close_np, timeperiod=14)
     aroon_down, aroon_up = ta_aroon(high_np, low_np, timeperiod=14)
+    bb_upper_20, _, bb_lower_20 = ta_bbands(close_np, timeperiod=20, nbdevup=2.0, nbdevdn=2.0, matype=0)
+    bbp_20 = (close_np - bb_lower_20) / np.where(bb_upper_20 - bb_lower_20 == 0, np.nan, bb_upper_20 - bb_lower_20)
 
     # =========================================================================
     # STOCH
@@ -3611,6 +3614,7 @@ class NostalgiaForInfinityX7(IStrategy):
         "RSI_14": rsi_14,
         "AROONU_14": aroon_up,
         "AROOND_14": aroon_down,
+        "BBP_20_2.0": bbp_20,
         "STOCHk_14_3_3": stoch_k,
         "STOCHRSIk_14_14_3_3": stochrsi_k,
         "KST_10_15_20_30_10_10_10_15": kst_main,
@@ -4116,11 +4120,13 @@ class NostalgiaForInfinityX7(IStrategy):
     willr_480 = ta_willr(high_np, low_np, close_np, timeperiod=480)
     roc_2 = ta_roc(close_np, timeperiod=2)
     roc_9 = ta_roc(close_np, timeperiod=9)
+    obv = ta.OBV(close_np, volume_np)
 
     # =========================================================================
     # CHANGE %
     # =========================================================================
     rsi_14_change = fast_pct_change(rsi_14)
+    obv_change = fast_pct_change(obv)
 
     # =========================================================================
     # CANDLE %
@@ -4184,6 +4190,7 @@ class NostalgiaForInfinityX7(IStrategy):
         "ROC_2": roc_2,
         "ROC_9": roc_9,
         "change_pct": change_pct,
+        "OBV_change_pct": obv_change,
         "close_delta": close_delta,
         "close_max_6": close_max_6,
         "close_max_12": close_max_12,
