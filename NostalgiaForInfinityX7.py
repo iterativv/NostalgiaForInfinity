@@ -885,13 +885,13 @@ class NostalgiaForInfinityX7(IStrategy):
     "long_entry_condition_62_enable": True,
     "long_entry_condition_63_enable": True,
     "long_entry_condition_64_enable": True,
-    "long_entry_condition_65_enable": False,
+    "long_entry_condition_65_enable": True,
     "long_entry_condition_101_enable": True,
     "long_entry_condition_102_enable": True,
     "long_entry_condition_103_enable": True,
     "long_entry_condition_104_enable": True,
     "long_entry_condition_120_enable": True,
-    "long_entry_condition_121_enable": False,
+    "long_entry_condition_121_enable": True,
     "long_entry_condition_141_enable": True,
     "long_entry_condition_142_enable": True,
     "long_entry_condition_143_enable": True,
@@ -912,9 +912,9 @@ class NostalgiaForInfinityX7(IStrategy):
     # "short_entry_condition_541_enable": True,
     "short_entry_condition_542_enable": True,
     # "short_entry_condition_543_enable": True,
-    "short_entry_condition_561_enable": False,
+    "short_entry_condition_561_enable": True,
     "short_entry_condition_562_enable": True,
-    "short_entry_condition_563_enable": False,
+    "short_entry_condition_563_enable": True,
     # "short_entry_condition_603_enable": True,
     # "short_entry_condition_641_enable": True,
     # "short_entry_condition_642_enable": True,
@@ -3515,6 +3515,7 @@ class NostalgiaForInfinityX7(IStrategy):
     ta_ema = ta.EMA
     ta_max = ta.MAX
     ta_min = ta.MIN
+    ta_bbands = ta.BBANDS
 
     assert dp, "DataProvider is required for multiple timeframes."
 
@@ -3541,6 +3542,8 @@ class NostalgiaForInfinityX7(IStrategy):
     rsi_3 = ta_rsi(close_np, timeperiod=3)
     rsi_14 = ta_rsi(close_np, timeperiod=14)
     aroon_down, aroon_up = ta_aroon(high_np, low_np, timeperiod=14)
+    bb_upper_20, _, bb_lower_20 = ta_bbands(close_np, timeperiod=20, nbdevup=2.0, nbdevdn=2.0, matype=0)
+    bbp_20 = (close_np - bb_lower_20) / np.where(bb_upper_20 - bb_lower_20 == 0, np.nan, bb_upper_20 - bb_lower_20)
 
     # =========================================================================
     # STOCH
@@ -3611,6 +3614,7 @@ class NostalgiaForInfinityX7(IStrategy):
         "RSI_14": rsi_14,
         "AROONU_14": aroon_up,
         "AROOND_14": aroon_down,
+        "BBP_20_2.0": bbp_20,
         "STOCHk_14_3_3": stoch_k,
         "STOCHRSIk_14_14_3_3": stochrsi_k,
         "KST_10_15_20_30_10_10_10_15": kst_main,
@@ -3710,6 +3714,7 @@ class NostalgiaForInfinityX7(IStrategy):
     ta_willr = ta.WILLR
     ta_max = ta.MAX
     ta_min = ta.MIN
+    ta_bbands = ta.BBANDS
 
     assert dp, "DataProvider is required for multiple timeframes."
 
@@ -3741,6 +3746,8 @@ class NostalgiaForInfinityX7(IStrategy):
     bb_upper, bb_middle, bb_lower = ta_bbands(close_np, timeperiod=20, nbdevup=2.0, nbdevdn=2.0, matype=0)
     bb_middle_safe = np.where(bb_middle == 0, np.nan, bb_middle)
     aroon_down, aroon_up = ta_aroon(high_np, low_np, timeperiod=14)
+    bb_upper_20, _, bb_lower_20 = ta_bbands(close_np, timeperiod=20, nbdevup=2.0, nbdevdn=2.0, matype=0)
+    bbp_20 = (close_np - bb_lower_20) / np.where(bb_upper_20 - bb_lower_20 == 0, np.nan, bb_upper_20 - bb_lower_20)
 
     # =========================================================================
     # STOCH
@@ -3813,6 +3820,7 @@ class NostalgiaForInfinityX7(IStrategy):
         "WILLR_84": willr_84,
         "AROONU_14": aroon_up,
         "AROOND_14": aroon_down,
+        "BBP_20_2.0": bbp_20,
         "STOCHk_14_3_3": stoch_k,
         "STOCHRSIk_14_14_3_3": stochrsi_k,
         "KST_10_15_20_30_10_10_10_15": kst_main,
@@ -3899,6 +3907,7 @@ class NostalgiaForInfinityX7(IStrategy):
     ta_aroon = ta.AROON
     ta_ema = ta.EMA
     ta_min = ta.MIN
+    ta_bbands = ta.BBANDS
     ta_max = ta.MAX
     ta_sma = ta.SMA
 
@@ -3930,6 +3939,8 @@ class NostalgiaForInfinityX7(IStrategy):
     rsi_3 = ta_rsi(close_np, timeperiod=3)
     rsi_14 = ta_rsi(close_np, timeperiod=14)
     aroon_down, aroon_up = ta_aroon(high_np, low_np, timeperiod=14)
+    bb_upper_20, _, bb_lower_20 = ta_bbands(close_np, timeperiod=20, nbdevup=2.0, nbdevdn=2.0, matype=0)
+    bbp_20 = (close_np - bb_lower_20) / np.where(bb_upper_20 - bb_lower_20 == 0, np.nan, bb_upper_20 - bb_lower_20)
 
     # =========================================================================
     # STOCH
@@ -3984,6 +3995,7 @@ class NostalgiaForInfinityX7(IStrategy):
         "WILLR_14": willr_14,
         "AROONU_14": aroon_up,
         "AROOND_14": aroon_down,
+        "BBP_20_2.0": bbp_20,
         "STOCHk_14_3_3": stoch_k,
         "STOCHRSIk_14_14_3_3": stochrsi_k,
         "UO_7_14_28": uo,
@@ -4116,11 +4128,13 @@ class NostalgiaForInfinityX7(IStrategy):
     willr_480 = ta_willr(high_np, low_np, close_np, timeperiod=480)
     roc_2 = ta_roc(close_np, timeperiod=2)
     roc_9 = ta_roc(close_np, timeperiod=9)
+    obv = ta.OBV(close_np, volume_np)
 
     # =========================================================================
     # CHANGE %
     # =========================================================================
     rsi_14_change = fast_pct_change(rsi_14)
+    obv_change = fast_pct_change(obv)
 
     # =========================================================================
     # CANDLE %
@@ -4184,6 +4198,7 @@ class NostalgiaForInfinityX7(IStrategy):
         "ROC_2": roc_2,
         "ROC_9": roc_9,
         "change_pct": change_pct,
+        "OBV_change_pct": obv_change,
         "close_delta": close_delta,
         "close_max_6": close_max_6,
         "close_max_12": close_max_12,
