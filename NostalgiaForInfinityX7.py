@@ -71,7 +71,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.486"
+    return "v17.4.487"
 
   stoploss = -0.99
 
@@ -3183,7 +3183,7 @@ class NostalgiaForInfinityX7(IStrategy):
     csum[:, timeperiod:] -= csum[:, :-timeperiod]
 
     out = np.full(stacked.shape, np.nan, dtype=np.float64)
-    out[:, timeperiod - 1:] = csum[:, timeperiod - 1:]
+    out[:, timeperiod - 1 :] = csum[:, timeperiod - 1 :]
     mfv_sum, vol_sum = out[0], out[1]
     vol_sum = np.where(vol_sum == 0, np.nan, vol_sum)
     return mfv_sum / vol_sum
