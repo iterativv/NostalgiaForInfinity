@@ -1,6 +1,8 @@
 {
   "exchange": {
     "pair_blacklist": [
+      // FIGHT all-12 + IDOL (MEET48) — iterativ 2026-08-02
+      "(FIGHT|IDOL)/.*",
       // Exchange Tokens
       // Leverage tokens
       ".*(5L|5S|3L|3S|2L|2S)/.*",
