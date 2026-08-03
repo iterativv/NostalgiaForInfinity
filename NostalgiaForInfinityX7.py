@@ -51342,7 +51342,7 @@ class NostalgiaForInfinityX7(IStrategy):
     trade_amount = trade.amount
     trade_leverage = trade.leverage
 
-    min_stake /= trade_leverage
+    min_stake = self.correct_min_stake(min_stake, trade_leverage)
     # we already waiting for an order to get filled
     if trade.has_open_orders:
       return None
@@ -74823,7 +74823,7 @@ class NostalgiaForInfinityX7(IStrategy):
     trade_amount = trade.amount
     trade_leverage = trade.leverage
 
-    min_stake /= trade_leverage
+    min_stake = self.correct_min_stake(min_stake, trade_leverage)
     # we already waiting for an order to get filled
     if trade.has_open_orders:
       return None
