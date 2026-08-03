@@ -1,6 +1,8 @@
 {
   "exchange": {
     "pair_blacklist": [
+      // Binance delist 2026-08-17 (full-coin) — iterativ 2026-08-03
+      "(ACX|VIC)/.*",
       // FIGHT all-12 + IDOL (MEET48) — iterativ 2026-08-02
       "IDOL/.*",
       // Exchange Tokens
