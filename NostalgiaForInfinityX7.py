@@ -71,7 +71,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.495"
+    return "v17.4.496"
 
   stoploss = -0.99
 
@@ -51499,11 +51499,11 @@ class NostalgiaForInfinityX7(IStrategy):
     trade_amount = trade.amount
     trade_leverage = trade.leverage
 
-    min_stake /= trade_leverage
     # we already waiting for an order to get filled
     if trade.has_open_orders:
       return None
 
+    min_stake = self.correct_min_stake(min_stake, trade_leverage)
     max_stake /= trade_leverage
     df, _ = dp.get_analyzed_dataframe(trade_pair, self.timeframe)
     if len(df) < 2:
@@ -74970,11 +74970,11 @@ class NostalgiaForInfinityX7(IStrategy):
     trade_amount = trade.amount
     trade_leverage = trade.leverage
 
-    min_stake /= trade_leverage
     # we already waiting for an order to get filled
     if trade.has_open_orders:
       return None
 
+    min_stake = self.correct_min_stake(min_stake, trade_leverage)
     max_stake /= trade_leverage
     df, _ = dp.get_analyzed_dataframe(trade_pair, self.timeframe)
     if len(df) < 2:
