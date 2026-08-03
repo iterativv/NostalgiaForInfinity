@@ -3854,7 +3854,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     return informative_1h
 
-    # Informative 15m Timeframe Indicators
+  # Informative 15m Timeframe Indicators
   # ---------------------------------------------------------------------------------------------
   def informative_15m_indicators(self, metadata: dict, info_timeframe) -> DataFrame:
     debug_time = False
