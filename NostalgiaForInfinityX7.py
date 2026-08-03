@@ -4130,7 +4130,7 @@ class NostalgiaForInfinityX7(IStrategy):
     vol_ema_20 = ta_ema(volume_np, timeperiod=20)
     #_vol_std_20 = pd.Series(volume_np).rolling(20).std().to_numpy()
     # TA-Lib uses population std; adjust to match Pandas rolling std (ddof=1)
-    vol_std_20 = ta.STDDEV(volume_np, timeperiod=20, nbdev=1) * np.sqrt(20.0 / 19.0)
+    vol_std_20 = ta.STDDEV(volume_np, timeperiod=20, nbdev=1.0) * np.sqrt(20.0 / 19.0)
     large_bubble_thr = vol_ema_20 + 3.0 * vol_std_20
     hl_range = high_np - low_np
     hl_range_safe = np.where(hl_range == 0.0, np.nan, hl_range)
