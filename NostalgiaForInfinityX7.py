@@ -3919,6 +3919,8 @@ class NostalgiaForInfinityX7(IStrategy):
     ema_12 = ta_ema(close_np, timeperiod=12)
     ema_20 = ta_ema(close_np, timeperiod=20)
     ema_26 = ta_ema(close_np, timeperiod=26)
+    ema_50 = ta_ema(close_np, timeperiod=50)
+    ema_200 = ta_ema(close_np, timeperiod=200)
     willr_14 = ta.WILLR(high_np, low_np, close_np, timeperiod=14)
     uo = ta.ULTOSC(high_np, low_np, close_np)
     obv = ta.OBV(close_np, volume_np)
@@ -3949,6 +3951,8 @@ class NostalgiaForInfinityX7(IStrategy):
         "EMA_12": ema_12,
         "EMA_20": ema_20,
         "EMA_26": ema_26,
+        "EMA_50": ema_50,
+        "EMA_200": ema_200,
         "MFI_14": mfi_14,
         "CMF_20": cmf_20,
         "WILLR_14": willr_14,
@@ -3980,6 +3984,8 @@ class NostalgiaForInfinityX7(IStrategy):
         "EMA_12",
         "EMA_20",
         "EMA_26",
+        "EMA_50",
+        "EMA_200",
         "MFI_14",
         "CMF_20",
         "WILLR_14",
@@ -4118,6 +4124,19 @@ class NostalgiaForInfinityX7(IStrategy):
     close_min_48 = ta_min(close_np, timeperiod=48)
     num_empty_288 = ta.SUM((volume_np <= 0).astype(np.float64), timeperiod=288)
 
+    # =========================================================================
+    # Leviathan volume/CVD-imitation columns
+    # =========================================================================
+    vol_ema_20 = ta_ema(volume_np, timeperiod=20)
+    #_vol_std_20 = pd.Series(volume_np).rolling(20).std().to_numpy()
+    # TA-Lib uses population std; adjust to match Pandas rolling std (ddof=1)
+    vol_std_20 = ta.STDDEV(volume_np, timeperiod=20, nbdev=1.0) * np.sqrt(20.0 / 19.0)
+    large_bubble_thr = vol_ema_20 + 3.0 * vol_std_20
+    hl_range = high_np - low_np
+    hl_range_safe = np.where(hl_range == 0.0, np.nan, hl_range)
+    cvd_buy_vol = volume_np * (close_np - low_np) / hl_range_safe
+    cvd_sell_vol = volume_np * (high_np - close_np) / hl_range_safe
+
     new_cols = pd.DataFrame(
       {
         "RSI_3": rsi_3,
@@ -4165,6 +4184,9 @@ class NostalgiaForInfinityX7(IStrategy):
         "close_min_12": close_min_12,
         "close_min_48": close_min_48,
         "num_empty_288": num_empty_288,
+        "LARGE_BUBBLE_THR": large_bubble_thr,
+        "CVD_BUY_VOL": cvd_buy_vol,
+        "CVD_SELL_VOL": cvd_sell_vol,
       },
       index=df.index,
     )
@@ -4219,6 +4241,9 @@ class NostalgiaForInfinityX7(IStrategy):
         "close_min_12",
         "close_min_48",
         "num_empty_288",
+        "LARGE_BUBBLE_THR",
+        "CVD_BUY_VOL",
+        "CVD_SELL_VOL",
       ]
 
       validate_indicators(df=df, columns=debug_cols, pair=metadata_pair, timeframe=self.timeframe)
@@ -12877,6 +12902,9 @@ class NostalgiaForInfinityX7(IStrategy):
     uo_7_14_28_4h = np_view("UO_7_14_28_4h")
     willr_84_1h = np_view("WILLR_84_1h")
     mfi_14 = np_view("MFI_14")
+    large_bubble_thr = np_view("LARGE_BUBBLE_THR")
+    cvd_buy_vol = np_view("CVD_BUY_VOL")
+    cvd_sell_vol = np_view("CVD_SELL_VOL")
 
     # Reused entry Series and comparison masks
     aroond_14 = np_view("AROOND_14")
