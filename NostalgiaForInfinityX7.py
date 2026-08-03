@@ -1078,6 +1078,9 @@ class NostalgiaForInfinityX7(IStrategy):
     # Parameter settings. Backward compatibility with the old configuration style.
     self.update_signals_from_config(strategy_config)
 
+    # Issue #1026: track last time we refreshed the region-based blacklist
+    self._last_region_blacklist_check = 0
+
   # Plot configuration for FreqUI
   # ---------------------------------------------------------------------------------------------
   @property
@@ -12581,12 +12584,68 @@ class NostalgiaForInfinityX7(IStrategy):
 
   # Bot Loop Start
   # ---------------------------------------------------------------------------------------------
+  # Auto-blacklist unavailable assets (Issue #1026)
+  # ---------------------------------------------------------------------------------------------
+  def _refresh_region_blacklist(self, current_time: datetime) -> None:
+    """Automatically blacklist assets that are listed but not tradable in the
+    user's region (e.g. restricted in the UK). This avoids wasting pairlist
+    cycles on coins that will only fail at order placement time.
+
+    Checks the current whitelist against the exchange's market status. Pairs
+    that are missing or not in an active/open state are added to the exchange
+    blacklist so they are excluded from future whitelist generation.
+    """
+    # Throttle: refresh at most once per hour (mirrors pairlist refresh cadence)
+    if current_time.timestamp() - self._last_region_blacklist_check < 3600:
+      return
+    self._last_region_blacklist_check = current_time.timestamp()
+
+    try:
+      whitelist = self.dp.current_whitelist()
+    except Exception:
+      return
+
+    if not whitelist:
+      return
+
+    exchange_cfg = self.config["exchange"]
+    blacklist = set(exchange_cfg.get("pair_blacklist", []) or [])
+
+    try:
+      markets = self.exchange.get_markets()
+    except Exception as e:
+      log.warning(f"[{current_time}] Region blacklist check skipped (market fetch failed): {e}")
+      return
+
+    newly_blacklisted = []
+    for pair in whitelist:
+      market = markets.get(pair)
+      # Pair not returned by the exchange at all -> not tradable in this region
+      if market is None:
+        if pair not in blacklist:
+          newly_blacklisted.append(pair)
+        continue
+      # Explicit non-active status (e.g. 'closed', 'halted') -> not tradable
+      status = (market.get("info", {}) or {}).get("status") or market.get("status")
+      if isinstance(status, str) and status.lower() not in ("open", "active", "enable", "enabled", ""):
+        if pair not in blacklist:
+          newly_blacklisted.append(pair)
+
+    if newly_blacklisted:
+      blacklist.update(newly_blacklisted)
+      exchange_cfg["pair_blacklist"] = sorted(blacklist)
+      for pair in newly_blacklisted:
+        log.info(f"[{current_time}] Auto-blacklisted unavailable asset (Issue #1026): {pair}")
+
   def bot_loop_start(self, current_time: datetime, **kwargs) -> None:
     if self.config["runmode"].value not in ("live", "dry_run"):
       return super().bot_loop_start(datetime, **kwargs)
 
     if self.hold_support_enabled:
       self.load_hold_trades_config()
+
+    # Issue #1026: keep region-unavailable assets out of the whitelist
+    self._refresh_region_blacklist(current_time)
 
     return super().bot_loop_start(current_time, **kwargs)
 
