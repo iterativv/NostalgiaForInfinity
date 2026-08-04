@@ -31,6 +31,8 @@
       "(NIGHT)/.*",
       // Delist notice (2026-07-24)
       "(SOLANGELES|MCN|STBU)/.*",
+      // MEXC futures delist 2026-07-27: GIGA (BOB from same notice already covered above)
+      "(GIGA)/.*",
       // Tokenized stocks (STOCK suffix — universal forward-protection)
       ".*STOCK/.*",
       // Tokenized stocks (direct ticker, no STOCK suffix)
