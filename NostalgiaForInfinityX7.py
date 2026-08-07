@@ -70993,6 +70993,12 @@ class NostalgiaForInfinityX7(IStrategy):
     last_bbu = last_candle["BBU_20_2.0"]
     last_bbb_1h = last_candle["BBB_20_2.0_1h"]
     last_cmf_20 = last_candle["CMF_20"]
+    last_aroonu_14 = last_candle["AROONU_14"]
+    last_aroonu_14_15m = last_candle["AROONU_14_15m"]
+    last_aroonu_14_1d = last_candle["AROONU_14_1d"]
+    last_aroonu_14_1h = last_candle["AROONU_14_1h"]
+    last_aroonu_14_4h = last_candle["AROONU_14_4h"]
+    last_stochrsi_k_15m = last_candle["STOCHRSIk_14_14_3_3_15m"]
     prev_rsi_20 = previous_candle["RSI_20"]
     prev_sma_9 = previous_candle["SMA_9"]
     prev_sma_21 = previous_candle["SMA_21"]
@@ -71018,6 +71024,12 @@ class NostalgiaForInfinityX7(IStrategy):
       and (last_close < (last_close_min_48 * 1.10))
       and (last_close > (last_high_max_24_4h * 0.40))
       and (last_close > (last_ema_16 * 1.025))
+      and (last_aroonu_14 > 75.0)
+      and (last_close < (last_close_min_48 * 1.1000))
+      and (last_close > (last_high_max_24_4h * 0.4000))
+      and (last_close > (last_ema_16 * 1.0250))
+      and ((last_rsi_3_1h < 65.0) or (last_aroonu_14_1h > 0.0))
+      and ((last_aroonu_14_1d > 0.0) or (last_stochrsi_k_1h > 10.0))
     ):
       self._grind_entry_tag = "g1"
       return True
@@ -71196,6 +71208,9 @@ class NostalgiaForInfinityX7(IStrategy):
       and (prev_sma_9 > prev_sma_21)
       and (last_sma_9 < last_sma_21)
       and (last_close > (last_ema_100 * 1.025))
+      and (last_stochrsi_k_15m > 20.0)
+      and (last_close > (last_ema_100 * 1.0250))
+      and ((last_rsi_3_4h < 60.0) or (last_roc_9_4h > -30.0))
     ):
       self._grind_entry_tag = "g13"
       return True
@@ -71253,6 +71268,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and (last_rsi_14 > 70.0)
       and (last_stochrsi_k > 70.0)
       and (last_close > (last_ema_20 * 1.025))
+      and (last_close > (last_ema_20 * 1.0250))
     ):
       self._grind_entry_tag = "g17"
       return True
@@ -71297,6 +71313,15 @@ class NostalgiaForInfinityX7(IStrategy):
       and ((last_rsi_3_1h < 50.0) or (last_roc_9_1d > -60.0))
       and ((last_rsi_3_4h < 60.0) or (last_aroond_14_4h < 90.0))
       and ((last_rsi_3_4h < 55.0) or (last_aroond_14_4h < 100.0))
+      and (last_aroonu_14 > 70.0)
+      and (last_aroonu_14_4h < 50.0)
+      and (last_close > (last_close_min_48 * 1.0500))
+      and ((last_rsi_3_15m < 80.0) or (last_stochrsi_k_4h > 10.0))
+      and ((last_rsi_3_1h < 70.0) or (last_roc_9_4h > -30.0) or (last_roc_9_1d > -30.0))
+      and ((last_rsi_3_4h < 60.0) or (last_aroonu_14_4h > 10.0))
+      and ((last_rsi_3_4h < 55.0) or (last_aroonu_14_4h > 0.0))
+      and ((last_rsi_3_4h < 40.0) or (last_roc_9_4h > -40.0))
+      and ((last_aroonu_14_4h > 0.0) or (last_stochrsi_k_1d > 20.0))
     ):
       self._grind_entry_tag = "g20"
       return True
@@ -71338,6 +71363,21 @@ class NostalgiaForInfinityX7(IStrategy):
       and ((last_roc_9_1d < 20.0) or (last_stochrsi_k_4h > 10.0))
       and ((last_roc_9_1d < 30.0) or (last_stochrsi_k_1h > 10.0))
       and ((last_rsi_3_1h < 70.0) or (last_stochrsi_k_1d > 20.0))
+      and (last_aroonu_14_4h > 50.0)
+      and (last_close < (last_high_max_12_4h * 0.9000))
+      and (last_close < (last_ema_20 * 1.0300))
+      and (last_close > (last_ema_20 * 0.9800))
+      and ((last_rsi_3_1h < 65.0) or (last_aroonu_14_1d > 0.0))
+      and ((last_rsi_3_4h < 50.0) or (last_aroonu_14_1h > 0.0))
+      and ((last_rsi_3_1d < 90.0) or (last_aroonu_14_1d > 30.0))
+      and ((last_rsi_3_1d < 90.0) or (last_stochrsi_k_4h > 30.0))
+      and ((last_rsi_3_1d < 55.0) or (last_aroonu_14_1h > 0.0))
+      and ((last_rsi_3_1d < 55.0) or (last_aroonu_14_4h > 0.0))
+      and ((last_rsi_3_1d < 35.0) or (last_aroonu_14_1h > 30.0) or (last_aroonu_14_1d > 10.0))
+      and ((last_aroonu_14_15m > 20.0) or (last_stochrsi_k_15m > 20.0))
+      and ((last_aroonu_14_15m > 20.0) or (last_aroonu_14_1h > 0.0))
+      and ((last_aroonu_14_15m > 0.0) or (last_stochrsi_k_4h > 10.0))
+      and ((last_roc_9_1d < 20.0) or (last_aroonu_14_4h > 0.0))
     ):
       self._grind_entry_tag = "g22"
       return True
@@ -71376,6 +71416,24 @@ class NostalgiaForInfinityX7(IStrategy):
       and ((last_aroond_14_4h < 100.0) or (last_stochrsi_k_1h > 10.0))
       and ((last_aroond_14_4h < 100.0) or (last_stochrsi_k_4h > 10.0))
       and ((last_aroond_14_1d < 100.0) or (last_stochrsik_15m > 10.0))
+      and (last_close < (last_high_max_12_4h * 0.9000))
+      and (last_close > (last_ema_20 * 0.8800))
+      and ((last_rsi_3_1h < 55.0) or (last_aroonu_14_4h > 20.0))
+      and ((last_rsi_3_4h < 60.0) or (last_stochrsi_k_15m > 10.0))
+      and ((last_rsi_3_4h < 50.0) or (last_aroonu_14_4h > 30.0))
+      and ((last_rsi_3_1d < 70.0) or (last_aroonu_14_1h > 0.0))
+      and ((last_rsi_3_1d < 70.0) or (last_aroonu_14_4h > 0.0))
+      and ((last_rsi_3_1d < 45.0) or (last_aroonu_14_15m > 0.0) or (last_stochrsi_k_15m > 10.0))
+      and ((last_aroonu_14_15m > 0.0) or (last_stochrsi_k_15m > 10.0) or (last_stochrsi_k_1d > 20.0))
+      and ((last_aroonu_14_15m > 0.0) or (last_stochrsi_k_1h > 20.0))
+      and ((last_aroonu_14_15m > 0.0) or (last_stochrsi_k_4h > 10.0))
+      and ((last_aroonu_14_4h > 30.0) or (last_roc_9_1d > -50.0))
+      and ((last_aroonu_14_4h > 0.0) or (last_stochrsi_k_1h > 10.0))
+      and ((last_aroonu_14_4h > 0.0) or (last_stochrsi_k_4h > 10.0))
+      and ((last_aroonu_14_1d > 0.0) or (last_stochrsi_k_15m > 10.0))
+      and ((last_stochrsi_k_15m > 20.0) or (last_stochrsi_k_1h > 10.0))
+      and ((last_stochrsi_k_15m > 10.0) or (last_aroonu_14_1h > 0.0))
+      and ((last_stochrsi_k_15m > 10.0) or (last_stochrsi_k_4h > 10.0))
     ):
       self._grind_entry_tag = "g23"
       return True
@@ -71419,8 +71477,98 @@ class NostalgiaForInfinityX7(IStrategy):
       and ((last_stochrsi_k_1h > 10.0) or (last_roc_9_4h > -15.0))
       and ((last_stochrsi_k_4h > 10.0) or (last_roc_9_4h > -15.0))
       and ((last_stochrsi_k_4h > 10.0) or (last_roc_9_1d < 15.0))
+      and (last_close > (last_ema_20 * 0.9900))
+      and (last_close < (last_ema_20 * 1.0600))
+      and ((last_rsi_3_15m < 60.0) or (last_stochrsi_k_15m > 30.0))
+      and ((last_rsi_3_1h < 85.0) or (last_aroonu_14_4h > 30.0))
+      and ((last_rsi_3_1h < 75.0) or (last_rsi_3_1d < 55.0) or (last_aroonu_14_1d > 30.0))
+      and ((last_rsi_3_1h < 75.0) or (last_aroonu_14_1h > 20.0))
+      and ((last_rsi_3_1h < 70.0) or (last_stochrsi_k_1d > 10.0) or (last_roc_9_1d > -10.0))
+      and ((last_rsi_3_1h < 65.0) or (last_stochrsi_k_1d > 10.0) or (last_roc_9_1d > -20.0))
+      and ((last_rsi_3_1h < 60.0) or (last_aroonu_14_4h > 0.0))
+      and ((last_rsi_3_1h < 60.0) or (last_stochrsi_k_1d > 20.0) or (last_roc_9_1d > -50.0))
+      and ((last_rsi_3_1h < 65.0) or (last_rsi_3_4h < 50.0) or (last_stochrsi_k_4h > 20.0))
+      and ((last_rsi_3_1h < 60.0) or (last_rsi_3_4h < 45.0) or (last_aroonu_14_4h > 10.0))
+      and ((last_rsi_3_1h < 40.0) or (last_stochrsi_k_1h > 40.0) or (last_stochrsi_k_1d > 10.0))
+      and ((last_rsi_3_1h < 35.0) or (last_aroonu_14_1h > 30.0) or (last_aroonu_14_1d > 10.0))
+      and ((last_rsi_3_4h < 75.0) or (last_roc_9_1d > -30.0))
+      and ((last_rsi_3_4h < 55.0) or (last_aroonu_14_4h > 30.0))
+      and ((last_rsi_3_1d < 65.0) or (last_stochrsi_k_15m > 10.0))
+      and ((last_rsi_3_1d < 65.0) or (last_stochrsi_k_1h > 10.0))
+      and ((last_rsi_3_1d < 65.0) or (last_stochrsi_k_4h > 20.0))
+      and ((last_aroonu_14_15m > 10.0) or (last_aroonu_14_1h > 0.0) or (last_stochrsi_k_1h > 20.0))
+      and ((last_aroonu_14_15m > 0.0) or (last_stochrsi_k_1h > 10.0))
+      and ((last_aroonu_14_15m > 0.0) or (last_stochrsi_k_4h > 10.0))
+      and ((last_aroonu_14_15m > 0.0) or (last_stochrsi_k_1d > 20.0))
+      and ((last_aroonu_14_1h > 0.0) or (last_stochrsi_k_4h > 10.0))
+      and ((last_aroonu_14_1h > 0.0) or (last_stochrsi_k_1d > 10.0))
+      and ((last_aroonu_14_4h > 20.0) or (last_aroonu_14_1d > 0.0) or (last_roc_9_1d > -20.0))
+      and ((last_aroonu_14_4h > 10.0) or (last_roc_9_1d > -30.0))
+      and ((last_aroonu_14_4h > 0.0) or (last_stochrsi_k_1h > 10.0))
+      and ((last_aroonu_14_4h > 0.0) or (last_stochrsi_k_4h > 10.0))
+      and ((last_aroonu_14_1d > 0.0) or (last_stochrsi_k_15m > 10.0))
+      and ((last_aroonu_14_1d > 0.0) or (last_stochrsi_k_1h > 10.0))
+      and ((last_aroonu_14_1d > 0.0) or (last_stochrsi_k_4h > 10.0))
+      and ((last_aroonu_14_1d > 0.0) or (last_roc_9_4h > -15.0) or (last_roc_9_1d > -50.0))
+      and ((last_stochrsi_k_15m > 10.0) or (last_stochrsi_k_1h > 10.0))
+      and ((last_stochrsi_k_15m > 10.0) or (last_stochrsi_k_1d > 10.0))
+      and ((last_stochrsi_k_1h > 20.0) or (last_stochrsi_k_1d > 10.0))
+      and ((last_stochrsi_k_1h > 20.0) or (last_roc_9_1d < 20.0))
+      and ((last_stochrsi_k_1d > 10.0) or (last_roc_9_4h > -20.0))
     ):
       self._grind_entry_tag = "g24"
+      return True
+
+    # g27 — coil (mirror of long g27)
+    if (
+      (last_rsi_3 < 85.0)
+      and (last_rsi_3_15m < 85.0)
+      and (last_rsi_14 < 60.0)
+      and (last_rsi_14_1h < 60.0)
+      # the coil signature: 1h momentum negative-to-flat under a flat price
+      and (last_roc_9_1h < 15.0)
+      and (last_roc_9_1h > -2.0)
+      and (last_close < (last_ema_20 * 1.0200))
+      and (last_close > (last_ema_20 * 0.9800))
+      # squeeze integrity: regime still broken, 4h reclaim HELD, not dripping to new lows
+      and (last_close > last_ema_200_4h)
+      and (last_close < (last_high_max_12_4h * 0.9000))
+      and (last_close < (last_close_max_12 * 0.9950))
+      # general protections first
+      and ((last_rsi_3_15m < 80.0) or (last_stochrsi_k_4h > 10.0))
+      and ((last_rsi_3_1h < 85.0) or (last_aroonu_14_4h > 30.0))
+      and ((last_rsi_3_1h < 80.0) or (last_stochrsi_k_1h > 20.0))
+      and ((last_rsi_3_1h < 80.0) or (last_stochrsi_k_4h > 20.0))
+      and ((last_rsi_3_1h < 75.0) or (last_stochrsi_k_4h > 10.0))
+      and ((last_rsi_3_1h < 65.0) or (last_aroonu_14_1h > 30.0))
+      and ((last_rsi_3_1h < 55.0) or (last_stochrsi_k_4h > 10.0))
+      and ((last_rsi_3_4h < 65.0) or (last_stochrsi_k_4h > 30.0))
+      and ((last_rsi_3_4h < 60.0) or (last_aroonu_14_4h > 30.0))
+      and ((last_rsi_3_4h < 35.0) or (last_aroonu_14_1h > 30.0) or (last_stochrsi_k_4h > 10.0))
+      and ((last_rsi_3_4h < 35.0) or (last_aroonu_14_4h > 20.0) or (last_stochrsi_k_4h > 30.0))
+      and ((last_rsi_3_1d < 90.0) or (last_aroonu_14_1h > 10.0))
+      and ((last_rsi_3_1d < 90.0) or (last_aroonu_14_1h > 10.0))
+      and ((last_rsi_3_1d < 90.0) or (last_stochrsi_k_1h > 20.0))
+      and ((last_rsi_3_1d < 90.0) or (last_stochrsi_k_4h > 30.0))
+      and ((last_rsi_3_1d < 80.0) or (last_aroonu_14_1d > 10.0))
+      and ((last_rsi_3_1d < 70.0) or (last_aroonu_14_15m > 0.0))
+      and ((last_rsi_3_1d < 70.0) or (last_stochrsi_k_4h > 10.0))
+      and ((last_aroonu_14_15m > 20.0) or (last_stochrsi_k_15m > 30.0))
+      and ((last_aroonu_14_15m > 20.0) or (last_aroonu_14_1h > 0.0))
+      and ((last_aroonu_14_15m > 0.0) or (last_stochrsi_k_4h > 10.0))
+      and ((last_aroonu_14_1h > 0.0) or (last_aroonu_14_1d > 0.0))
+      and ((last_aroonu_14_4h > 30.0) or (last_roc_9_1d > -50.0))
+      and ((last_aroonu_14_4h > 10.0) or (last_stochrsi_k_4h > 10.0))
+      and ((last_aroonu_14_4h > 10.0) or (last_roc_9_4h > -10.0))
+      and ((last_stochrsi_k_1h > 30.0) or (last_stochrsi_k_4h > 20.0))
+      and ((last_stochrsi_k_1h > 10.0) or (last_roc_9_4h < 20.0))
+      and ((last_roc_9_1d < 40.0) or (last_aroonu_14_1h > 10.0))
+      and ((last_roc_9_1d < 40.0) or (last_stochrsi_k_1h > 20.0))
+      and ((last_roc_9_1d < 25.0) or (last_stochrsi_k_15m > 10.0))
+      and ((last_roc_9_1d < 25.0) or (last_aroonu_14_4h > 20.0))
+      and ((last_roc_9_1d < 15.0) or (last_stochrsi_k_4h > 20.0))
+    ):
+      self._grind_entry_tag = "g27"
       return True
 
     self._grind_entry_tag = ""
