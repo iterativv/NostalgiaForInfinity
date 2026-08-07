@@ -71,7 +71,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.510"
+    return "v17.4.511"
 
   stoploss = -0.99
 
@@ -26708,10 +26708,16 @@ class NostalgiaForInfinityX7(IStrategy):
           # --- Regime / momentum squeeze guards ---
           short_entry_logic.append(roc_9_1d < 35.0)  # 1d pump-exhaustion ceiling (+35%+ = still ripping)
           short_entry_logic.append(roc_9_1d > -12.0)  # 1d crash floor (bounce squeeze)
-          short_entry_logic.append((roc_9_4h < 3.0) | (roc_9_4h > 10.0))  # 4h-ROC mid-band = still climbing; safe = cooled(<3) | blow-off(>10)
+          short_entry_logic.append(
+            (roc_9_4h < 3.0) | (roc_9_4h > 10.0)
+          )  # 4h-ROC mid-band = still climbing; safe = cooled(<3) | blow-off(>10)
           short_entry_logic.append(roc_9_4h < 20.0)  # caps the blow-off branch at +20%
-          short_entry_logic.append((rsi_3_4h < 78.0) | (cci_20_1h < 140.0) | (mfi_14_1h < 78.0))  # extreme multi-TF momentum top
-          short_entry_logic.append((roc_9_1d < 15.0) | (rsi_14_4h < 65.0) | (aroonu_14_4h < 55.0))  # 1d-pump + 4h-strong top
+          short_entry_logic.append(
+            (rsi_3_4h < 78.0) | (cci_20_1h < 140.0) | (mfi_14_1h < 78.0)
+          )  # extreme multi-TF momentum top
+          short_entry_logic.append(
+            (roc_9_1d < 15.0) | (rsi_14_4h < 65.0) | (aroonu_14_4h < 55.0)
+          )  # 1d-pump + 4h-strong top
           # --- Logic (entry trigger) ---
           short_entry_logic.append(rsi_14 > 72.0)
           short_entry_logic.append(stochrsi_k > 85.0)
@@ -26737,8 +26743,12 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(roc_9_1d < 2.0)  # 1d still rising = uptrend-dip, not a breakdown
           short_entry_logic.append((roc_9_1h > 1.5) | (aroonu_14_4h > 85.0) | (roc_9_4h < 3.0))  # uptrend-dip squeeze
           short_entry_logic.append(aroonu_14_4h > 25.0)  # aroon-up spent = late / weak breakdown
-          short_entry_logic.append((roc_9_4h < 3.5) | (rsi_3_4h < 50.0) | (roc_9_1h > 8.0))  # all-highs squeeze (each win escapes one clause)
-          short_entry_logic.append((roc_9_4h < 2.5) | (rsi_14_4h < 58.0))  # 4h still up + 4h-RSI mid = breakdown not confirmed
+          short_entry_logic.append(
+            (roc_9_4h < 3.5) | (rsi_3_4h < 50.0) | (roc_9_1h > 8.0)
+          )  # all-highs squeeze (each win escapes one clause)
+          short_entry_logic.append(
+            (roc_9_4h < 2.5) | (rsi_14_4h < 58.0)
+          )  # 4h still up + 4h-RSI mid = breakdown not confirmed
           # --- Logic (entry trigger) ---
           short_entry_logic.append(rsi_3 < 30.0)
           short_entry_logic.append(rsi_14_1h > 55.0)
@@ -26762,14 +26772,26 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(roc_9_4h < 22.0)
           short_entry_logic.append(rsi_14_4h < 65.0)
           # --- Regime guards (crash / trend squeeze avoidance) ---
-          short_entry_logic.append(rsi_14_4h > 22.0)  # oversold floor: no short into a washed-out 4h (dead-cat-bounce top)
+          short_entry_logic.append(
+            rsi_14_4h > 22.0
+          )  # oversold floor: no short into a washed-out 4h (dead-cat-bounce top)
           short_entry_logic.append(roc_9_1d > -22.0)  # deep-crash floor: -22%+ 1d crash = V-recovery squeeze
-          short_entry_logic.append((aroonu_14_1d > 15.0) | (stochrsi_k_4h < 45.0))  # no 1d-trend + 4h-overbought bounce = bull squeeze
-          short_entry_logic.append((aroonu_14_1d < 95.0) | (roc_9_4h > -3.0))  # very-strong 1d trend + 4h pullback = short into uptrend = squeeze
+          short_entry_logic.append(
+            (aroonu_14_1d > 15.0) | (stochrsi_k_4h < 45.0)
+          )  # no 1d-trend + 4h-overbought bounce = bull squeeze
+          short_entry_logic.append(
+            (aroonu_14_1d < 95.0) | (roc_9_4h > -3.0)
+          )  # very-strong 1d trend + 4h pullback = short into uptrend = squeeze
           # --- Momentum / overbought squeeze guards ---
-          short_entry_logic.append((rsi_3_4h < 75.0) | (stochrsi_k_4h < 78.0))  # 4h double-overbought = too tight = pops
-          short_entry_logic.append((roc_9_4h < 4.0) | (rsi_14_4h < 52.0))  # premature: 4h still climbing = top unconfirmed
-          short_entry_logic.append((roc_9_1h < 6.0) | (rsi_14_1h < 63.0))  # 1h dead-cat-pump, 4h unconfirmed = squeeze continues
+          short_entry_logic.append(
+            (rsi_3_4h < 75.0) | (stochrsi_k_4h < 78.0)
+          )  # 4h double-overbought = too tight = pops
+          short_entry_logic.append(
+            (roc_9_4h < 4.0) | (rsi_14_4h < 52.0)
+          )  # premature: 4h still climbing = top unconfirmed
+          short_entry_logic.append(
+            (roc_9_1h < 6.0) | (rsi_14_1h < 63.0)
+          )  # 1h dead-cat-pump, 4h unconfirmed = squeeze continues
           # --- Per-loss fine-tune (residual 2021 bull-market tops) ---
           short_entry_logic.append((roc_9_1d > -12.0) | (roc_9_4h < 8.0) | (roc_9_1h > 6.0))
           short_entry_logic.append((roc_9_1d > -18.0) | (roc_9_4h > -3.0) | (aroonu_14_1d > 8.0))
@@ -27041,8 +27063,8 @@ class NostalgiaForInfinityX7(IStrategy):
             & ((rsi_3_15m_gt_15) | (rsi_14_1h_lt_40) | (stochrsi_k_15m_gt_10) | (stochrsi_k_1h_gt_30))
             # 15m & 4h down move, 1h downtrend not confirmed, 1d low
             & ((rsi_3_15m_gt_15) | (rsi_3_4h_gt_25) | (stochrsi_k_1h_lt_40) | (stochrsi_k_1d_gt_20))
-            # 15m & 4h & 1d down move, 4h downtrend not confirmed, 15m low
-            & ((rsi_3_15m_gt_20) | (rsi_3_4h_gt_30) | (rsi_3_1d_gt_30) | (rsi_14_4h_lt_40) | (stochrsi_k_15m_gt_20))
+            # 15m & 1h & 4h down move, 15m & 1h low
+            & ((rsi_3_15m_gt_20) | (rsi_3_1h_gt_20) | (rsi_3_4h_gt_20) | (aroonu_14_15m_gt_20) | (aroonu_14_1h_gt_20))
             # 15m & 1h & 4h down move, 4h low
             & ((rsi_3_15m_gt_20) | (rsi_3_1h_gt_20) | (rsi_3_4h_gt_30) | (aroonu_14_4h_gt_20) | (stochrsi_k_4h_gt_20))
             # 15m & 1h & 4h down move, 15m low, 4h low
@@ -27071,6 +27093,8 @@ class NostalgiaForInfinityX7(IStrategy):
             & ((rsi_3_15m_gt_20) | (rsi_3_4h_gt_25) | (rsi_3_1d_gt_25) | (aroonu_14_1h_gt_0) | (aroonu_14_1d_gt_30))
             # 15m & 4h & 1d down move, 4h & 1d low
             & ((rsi_3_15m_gt_20) | (rsi_3_4h_gt_25) | (rsi_3_1d_gt_25) | (aroonu_14_4h_gt_0) | (aroonu_14_1d_gt_20))
+            # 15m & 4h & 1d down move, 4h downtrend not confirmed, 15m low
+            & ((rsi_3_15m_gt_20) | (rsi_3_4h_gt_30) | (rsi_3_1d_gt_30) | (rsi_14_4h_lt_40) | (stochrsi_k_15m_gt_20))
             # 15m & 4h & 1d down move, 4h low, 1d oversold
             & ((rsi_3_15m_gt_20) | (rsi_3_4h_gt_30) | (rsi_3_1d_gt_30) | (stochrsi_k_4h_gt_20) | (roc_9_1d_gt_neg_10))
             # 15m & 4h down move, 15m & 4h low
