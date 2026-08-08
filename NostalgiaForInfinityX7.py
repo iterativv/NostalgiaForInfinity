@@ -141,7 +141,7 @@ class NostalgiaForInfinityX7(IStrategy):
   # Long top coins mode tags
   long_top_coins_mode_tags = ["141", "142", "143", "144", "145"]
   # Long scalp mode tags
-  long_scalp_mode_tags = ["161", "162", "163"]
+  long_scalp_mode_tags = ["161", "162", "163", "164"]
 
   long_rebuy_grind_mode_tags = long_rebuy_mode_tags + long_grind_mode_tags
   long_scalp_rebuy_grind_mode_tags = long_scalp_mode_tags + long_rebuy_mode_tags + long_grind_mode_tags
@@ -201,7 +201,7 @@ class NostalgiaForInfinityX7(IStrategy):
   # Short top coins mode tags
   short_top_coins_mode_tags = ["641", "642"]
   # Short scalp mode tags
-  short_scalp_mode_tags = ["661"]
+  short_scalp_mode_tags = ["661", "662"]
 
   short_rebuy_grind_mode_tags = short_rebuy_mode_tags + short_grind_mode_tags
   short_scalp_rebuy_grind_mode_tags = short_scalp_mode_tags + short_rebuy_mode_tags + short_grind_mode_tags
@@ -903,6 +903,7 @@ class NostalgiaForInfinityX7(IStrategy):
     "long_entry_condition_163_enable": True,
     "long_entry_condition_192_enable": False,
     "long_entry_condition_193_enable": False,
+    "long_entry_condition_164_enable": False,
   }
 
   short_entry_signal_params = {
@@ -923,6 +924,7 @@ class NostalgiaForInfinityX7(IStrategy):
     "short_entry_condition_563_enable": False,
     "short_entry_condition_592_enable": False,
     "short_entry_condition_593_enable": False,
+    "short_entry_condition_662_enable": False,
     # "short_entry_condition_603_enable": True,
     # "short_entry_condition_641_enable": True,
     # "short_entry_condition_642_enable": True,
@@ -4153,6 +4155,12 @@ class NostalgiaForInfinityX7(IStrategy):
     quad_high_max_12 = pd.Series(high_np).rolling(12).max().to_numpy()
     quad_s93_min_12 = pd.Series(quad_s93).rolling(12).min().to_numpy()
     quad_s93_max_12 = pd.Series(quad_s93).rolling(12).max().to_numpy()
+    # 4h opening-range (UTC day) — signals 164/662 (experimental, Data Trader port)
+    _or_day = df["date"].dt.floor("1D")
+    _or_first4h = df["date"].dt.hour < 4
+    _or_valid = df["date"].dt.hour >= 4
+    orange_h_col = df["high"].where(_or_first4h).groupby(_or_day).transform("max").where(_or_valid).to_numpy()
+    orange_l_col = df["low"].where(_or_first4h).groupby(_or_day).transform("min").where(_or_valid).to_numpy()
     new_cols = pd.DataFrame(
       {
         "RSI_3": rsi_3,
@@ -4203,6 +4211,8 @@ class NostalgiaForInfinityX7(IStrategy):
         "LARGE_BUBBLE_THR": large_bubble_thr,
         "CVD_BUY_VOL": cvd_buy_vol,
         "CVD_SELL_VOL": cvd_sell_vol,
+        "ORANGE_H": orange_h_col,
+        "ORANGE_L": orange_l_col,
         "STOCH_9_3": quad_s93,
         "STOCH_14_3": quad_s143,
         "STOCH_4_4": quad_s44,
@@ -12916,6 +12926,10 @@ class NostalgiaForInfinityX7(IStrategy):
     stochrsi_k_1d = np_view("STOCHRSIk_14_14_3_3_1d")
     rsi_3 = np_view("RSI_3")
     close = np_view("close")
+    orange_h = np_view("ORANGE_H")
+    orange_l = np_view("ORANGE_L")
+    willr_14_4h = np_view("WILLR_14_4h")
+    stoch_k_4h = np_view("STOCHk_14_3_3_4h")
     stoch_9_3 = np_view("STOCH_9_3")
     stoch_14_3 = np_view("STOCH_14_3")
     stoch_4_4 = np_view("STOCH_4_4")
@@ -25850,6 +25864,17 @@ class NostalgiaForInfinityX7(IStrategy):
           long_entry_logic.append(quad_low_min_12 < np_shift(quad_low_min_12, 12))
           long_entry_logic.append(quad_s93_min_12 > np_shift(quad_s93_min_12, 12))
 
+        # Condition #164 - 4h opening-range fakeout (Long, experimental).
+        if long_entry_condition_index == 164:
+          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          long_entry_logic.append(protections_long_global == True)
+          # only fade a downside break into an already-deeply-sold 4h (a flush into oversold = spring)
+          long_entry_logic.append((willr_14_4h < -70.0) | (stoch_k_4h < 40.0))
+          # prev 5m candle CLOSED below the day's first-4h range low; current closes back INSIDE
+          long_entry_logic.append(np_shift(close, 1) < orange_l)
+          long_entry_logic.append(close > orange_l)
+          long_entry_logic.append(close < orange_h)
+
         long_entry_logic.append(df["volume"] > 0)
         item_long_entry = _and_entry_conditions(long_entry_logic)
         _append_entry_tag(entry_tags, item_long_entry, f"{long_entry_condition_index} ")
@@ -27857,6 +27882,17 @@ class NostalgiaForInfinityX7(IStrategy):
           # price HIGHER-HIGH across swing windows while stoch makes a LOWER-HIGH (real divergence)
           short_entry_logic.append(quad_high_max_12 > np_shift(quad_high_max_12, 12))
           short_entry_logic.append(quad_s93_max_12 < np_shift(quad_s93_max_12, 12))
+
+        # Condition #662 - 4h opening-range fakeout (Short, experimental).
+        if short_entry_condition_index == 662:
+          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          short_entry_logic.append(protections_short_global == True)
+          # don't fade an upside break out of a washed 4h with money outflow (that break is a real reversal rally)
+          short_entry_logic.append((stochrsi_k_4h > 50.0) | (cmf_20_4h > -0.05))
+          # prev 5m candle CLOSED above the day's first-4h range high; current closes back INSIDE
+          short_entry_logic.append(np_shift(close, 1) > orange_h)
+          short_entry_logic.append(close < orange_h)
+          short_entry_logic.append(close > orange_l)
 
         short_entry_logic.append(df["volume"] > 0)
         item_short_entry = _and_entry_conditions(short_entry_logic)
