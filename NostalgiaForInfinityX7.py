@@ -13,6 +13,7 @@ from freqtrade.persistence import Trade, Order
 from datetime import datetime, timedelta
 import time
 from typing import Optional
+from dataclasses import dataclass
 import warnings
 
 log = logging.getLogger(__name__)
@@ -65,6 +66,17 @@ warnings.simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 ##         (Welcome Bonus worth 241 USDT upon completion of a deposit and trade)                           ##
 ##  Bitvavo: https://bitvavo.com/invite?a=D22103A4BC (no fees for the first € 10000)                       ##
 #############################################################################################################
+
+
+@dataclass(frozen=True)
+class _NFIInformativeContext:
+  source: DataFrame
+  index: object
+  open: np.ndarray
+  high: np.ndarray
+  low: np.ndarray
+  close: np.ndarray
+  volume: np.ndarray
 
 
 class NostalgiaForInfinityX7(IStrategy):
@@ -3300,725 +3312,468 @@ class NostalgiaForInfinityX7(IStrategy):
     out[periods:] = arr[:-periods]
     return out
 
-  # Informative 1d Timeframe Indicators
-  # ---------------------------------------------------------------------------------------------
-  def informative_1d_indicators(self, metadata: dict, info_timeframe) -> DataFrame:
+  @staticmethod
+  def _nfix7_common_raw_values(context):
+    rsi_3 = ta.RSI(context.close, timeperiod=3)
+    rsi_14 = ta.RSI(context.close, timeperiod=14)
+    aroon_down, aroon_up = ta.AROON(context.high, context.low, timeperiod=14)
+    _, stoch_k = ta.STOCHF(
+      context.high,
+      context.low,
+      context.close,
+      fastk_period=14,
+      fastd_period=3,
+      fastd_matype=0,
+    )
+    mfi_14 = ta.MFI(context.high, context.low, context.close, context.volume, timeperiod=14)
+    willr_14 = ta.WILLR(context.high, context.low, context.close, timeperiod=14)
+    roc_9 = ta.ROC(context.close, timeperiod=9)
+    open_safe = np.where(context.open == 0, np.nan, context.open)
+    change_pct = ((context.close - context.open) / open_safe) * 100.0
+    return {
+      "RSI_3": rsi_3,
+      "RSI_14": rsi_14,
+      "AROONU_14": aroon_up,
+      "AROOND_14": aroon_down,
+      "STOCHk_14_3_3": stoch_k,
+      "MFI_14": mfi_14,
+      "WILLR_14": willr_14,
+      "ROC_9": roc_9,
+      "change_pct": change_pct,
+    }
+
+  @staticmethod
+  def _nfix7_assemble_common_values(raw, *, rsi3_change, stochrsi_k, cmf):
+    return {
+      "RSI_3": raw["RSI_3"],
+      "RSI_14": raw["RSI_14"],
+      "RSI_3_change_pct": rsi3_change,
+      "AROONU_14": raw["AROONU_14"],
+      "AROOND_14": raw["AROOND_14"],
+      "STOCHk_14_3_3": raw["STOCHk_14_3_3"],
+      "STOCHRSIk_14_14_3_3": stochrsi_k,
+      "MFI_14": raw["MFI_14"],
+      "CMF_20": cmf,
+      "WILLR_14": raw["WILLR_14"],
+      "ROC_9": raw["ROC_9"],
+      "change_pct": raw["change_pct"],
+    }
+
+  def _nfix7_build_1d_columns(self, context):
+    raw = NostalgiaForInfinityX7._nfix7_common_raw_values(context)
+    roc_2 = ta.ROC(context.close, timeperiod=2)
+    max_oc = np.maximum(context.open, context.close)
+    min_oc = np.minimum(context.open, context.close)
+    max_oc_calc = np.where(max_oc == 0, np.nan, max_oc)
+    min_oc_calc = np.where(min_oc == 0, np.nan, min_oc)
+    top_wick_pct = ((context.high - max_oc) / max_oc_calc) * 100.0
+    bot_wick_pct = np.abs(((context.low - min_oc) / min_oc_calc) * 100.0)
+    high_max_6 = ta.MAX(context.high, timeperiod=6)
+    high_max_12 = ta.MAX(context.high, timeperiod=12)
+    high_max_20 = ta.MAX(context.high, timeperiod=20)
+    high_max_30 = ta.MAX(context.high, timeperiod=30)
+    low_min_6 = ta.MIN(context.low, timeperiod=6)
+    low_min_12 = ta.MIN(context.low, timeperiod=12)
+    low_min_20 = ta.MIN(context.low, timeperiod=20)
+    low_min_30 = ta.MIN(context.low, timeperiod=30)
+
+    stochrsi_k = self.stochrsi_k(raw["RSI_14"], ta.MIN, ta.MAX, ta.SMA)
+    cmf_20 = self.chaikin_money_flow(
+      context.high,
+      context.low,
+      context.close,
+      context.volume,
+      timeperiod=20,
+    )
+    rsi3_change = self.fast_pct_change(raw["RSI_3"])
+    common = NostalgiaForInfinityX7._nfix7_assemble_common_values(
+      raw,
+      rsi3_change=rsi3_change,
+      stochrsi_k=stochrsi_k,
+      cmf=cmf_20,
+    )
+    columns_map = {
+      "RSI_3": common["RSI_3"],
+      "RSI_14": common["RSI_14"],
+      "STOCHk_14_3_3": common["STOCHk_14_3_3"],
+      "STOCHRSIk_14_14_3_3": common["STOCHRSIk_14_14_3_3"],
+      "MFI_14": common["MFI_14"],
+      "CMF_20": common["CMF_20"],
+      "WILLR_14": common["WILLR_14"],
+      "AROONU_14": common["AROONU_14"],
+      "AROOND_14": common["AROOND_14"],
+      "ROC_2": roc_2,
+      "ROC_9": common["ROC_9"],
+      "RSI_3_change_pct": common["RSI_3_change_pct"],
+      "change_pct": common["change_pct"],
+      "top_wick_pct": top_wick_pct,
+      "bot_wick_pct": bot_wick_pct,
+      "high_max_6": high_max_6,
+      "high_max_12": high_max_12,
+      "high_max_20": high_max_20,
+      "high_max_30": high_max_30,
+      "low_min_6": low_min_6,
+      "low_min_12": low_min_12,
+      "low_min_20": low_min_20,
+      "low_min_30": low_min_30,
+    }
+    debug_cols = list(columns_map)
+    return columns_map, debug_cols, "[%s] informative_1d_indicators took: %.4f seconds."
+
+  def _nfix7_build_4h_columns(self, context):
+    raw = NostalgiaForInfinityX7._nfix7_common_raw_values(context)
+    bb_upper_20, _, bb_lower_20 = ta.BBANDS(
+      context.close,
+      timeperiod=20,
+      nbdevup=2.0,
+      nbdevdn=2.0,
+      matype=0,
+    )
+    bb_range = bb_upper_20 - bb_lower_20
+    bbp_20 = (context.close - bb_lower_20) / np.where(bb_range == 0, np.nan, bb_range)
+    ema_12 = ta.EMA(context.close, timeperiod=12)
+    ema_50 = ta.EMA(context.close, timeperiod=50)
+    ema_100 = ta.EMA(context.close, timeperiod=100)
+    ema_200 = ta.EMA(context.close, timeperiod=200)
+    uo = ta.ULTOSC(context.high, context.low, context.close)
+    roc_2 = ta.ROC(context.close, timeperiod=2)
+    cci_20 = ta.CCI(context.high, context.low, context.close, timeperiod=20)
+    max_oc = np.maximum(context.open, context.close)
+    max_oc_calc = np.where(max_oc == 0, np.nan, max_oc)
+    top_wick_pct = ((context.high - max_oc) / max_oc_calc) * 100.0
+    high_max_6 = ta.MAX(context.high, timeperiod=6)
+    high_max_12 = ta.MAX(context.high, timeperiod=12)
+    high_max_24 = ta.MAX(context.high, timeperiod=24)
+    low_min_12 = ta.MIN(context.low, timeperiod=12)
+    low_min_24 = ta.MIN(context.low, timeperiod=24)
+
+    stochrsi_k = self.stochrsi_k(raw["RSI_14"], ta.MIN, ta.MAX, ta.SMA)
+    kst_main, kst_signal = self.calc_kst(context.close, ta.ROC, ta.SMA)
+    cmf_20 = self.chaikin_money_flow(
+      context.high,
+      context.low,
+      context.close,
+      context.volume,
+      timeperiod=20,
+    )
+    rsi_3_change = self.fast_pct_change(raw["RSI_3"])
+    rsi_14_change = self.fast_pct_change(raw["RSI_14"])
+    stochrsi_change = self.fast_pct_change(stochrsi_k)
+    cci_change = self.fast_pct_change(cci_20)
+    common = NostalgiaForInfinityX7._nfix7_assemble_common_values(
+      raw,
+      rsi3_change=rsi_3_change,
+      stochrsi_k=stochrsi_k,
+      cmf=cmf_20,
+    )
+    columns_map = {
+      "RSI_3": common["RSI_3"],
+      "RSI_14": common["RSI_14"],
+      "AROONU_14": common["AROONU_14"],
+      "AROOND_14": common["AROOND_14"],
+      "BBP_20_2.0": bbp_20,
+      "STOCHk_14_3_3": common["STOCHk_14_3_3"],
+      "STOCHRSIk_14_14_3_3": common["STOCHRSIk_14_14_3_3"],
+      "KST_10_15_20_30_10_10_10_15": kst_main,
+      "KSTs_9": kst_signal,
+      "MFI_14": common["MFI_14"],
+      "CMF_20": common["CMF_20"],
+      "EMA_12": ema_12,
+      "EMA_50": ema_50,
+      "EMA_100": ema_100,
+      "EMA_200": ema_200,
+      "WILLR_14": common["WILLR_14"],
+      "UO_7_14_28": uo,
+      "ROC_2": roc_2,
+      "ROC_9": common["ROC_9"],
+      "CCI_20": cci_20,
+      "STOCHRSIk_14_14_3_3_change_pct": stochrsi_change,
+      "CCI_20_change_pct": cci_change,
+      "RSI_3_change_pct": common["RSI_3_change_pct"],
+      "RSI_14_change_pct": rsi_14_change,
+      "change_pct": common["change_pct"],
+      "top_wick_pct": top_wick_pct,
+      "high_max_6": high_max_6,
+      "high_max_12": high_max_12,
+      "high_max_24": high_max_24,
+      "low_min_12": low_min_12,
+      "low_min_24": low_min_24,
+    }
+    debug_cols = [
+      "RSI_3",
+      "RSI_14",
+      "AROONU_14",
+      "AROOND_14",
+      "STOCHk_14_3_3",
+      "STOCHRSIk_14_14_3_3",
+      "KST_10_15_20_30_10_10_10_15",
+      "KSTs_9",
+      "MFI_14",
+      "CMF_20",
+      "EMA_12",
+      "EMA_50",
+      "EMA_100",
+      "EMA_200",
+      "WILLR_14",
+      "UO_7_14_28",
+      "ROC_2",
+      "ROC_9",
+      "CCI_20",
+      "STOCHRSIk_14_14_3_3_change_pct",
+      "CCI_20_change_pct",
+      "RSI_3_change_pct",
+      "RSI_14_change_pct",
+      "OBV_change_pct",
+      "change_pct",
+      "high_max_6",
+      "high_max_12",
+      "high_max_24",
+      "low_min_12",
+      "low_min_24",
+    ]
+    return columns_map, debug_cols, "[%s] informative_4h_indicators took: %.4f seconds."
+
+  def _nfix7_build_1h_columns(self, context):
+    raw = NostalgiaForInfinityX7._nfix7_common_raw_values(context)
+    bb_upper, bb_middle, bb_lower = ta.BBANDS(
+      context.close,
+      timeperiod=20,
+      nbdevup=2.0,
+      nbdevdn=2.0,
+      matype=0,
+    )
+    bb_middle_safe = np.where(bb_middle == 0, np.nan, bb_middle)
+    bbb_20 = ((bb_upper - bb_lower) / bb_middle_safe) * 100.0
+    ema_12 = ta.EMA(context.close, timeperiod=12)
+    ema_200 = ta.EMA(context.close, timeperiod=200)
+    sma_16 = ta.SMA(context.close, timeperiod=16)
+    willr_84 = ta.WILLR(context.high, context.low, context.close, timeperiod=84)
+    uo = ta.ULTOSC(context.high, context.low, context.close)
+    roc_2 = ta.ROC(context.close, timeperiod=2)
+    cci_20 = ta.CCI(context.high, context.low, context.close, timeperiod=20)
+    high_max_6 = ta.MAX(context.high, timeperiod=6)
+    high_max_12 = ta.MAX(context.high, timeperiod=12)
+    high_max_24 = ta.MAX(context.high, timeperiod=24)
+    low_min_6 = ta.MIN(context.low, timeperiod=6)
+    low_min_12 = ta.MIN(context.low, timeperiod=12)
+    low_min_24 = ta.MIN(context.low, timeperiod=24)
+
+    stochrsi_k = self.stochrsi_k(raw["RSI_14"], ta.MIN, ta.MAX, ta.SMA)
+    kst_main, kst_signal = self.calc_kst(context.close, ta.ROC, ta.SMA)
+    cmf_20 = self.chaikin_money_flow(
+      context.high,
+      context.low,
+      context.close,
+      context.volume,
+      timeperiod=20,
+    )
+    rsi_3_change = self.fast_pct_change(raw["RSI_3"])
+    rsi_14_change = self.fast_pct_change(raw["RSI_14"])
+    cci_change = self.fast_pct_change(cci_20)
+    common = NostalgiaForInfinityX7._nfix7_assemble_common_values(
+      raw,
+      rsi3_change=rsi_3_change,
+      stochrsi_k=stochrsi_k,
+      cmf=cmf_20,
+    )
+    columns_map = {
+      "RSI_3": common["RSI_3"],
+      "RSI_14": common["RSI_14"],
+      "RSI_3_change_pct": common["RSI_3_change_pct"],
+      "RSI_14_change_pct": rsi_14_change,
+      "EMA_12": ema_12,
+      "EMA_200": ema_200,
+      "SMA_16": sma_16,
+      "BBL_20_2.0": bb_lower,
+      "BBU_20_2.0": bb_upper,
+      "BBB_20_2.0": bbb_20,
+      "MFI_14": common["MFI_14"],
+      "CMF_20": common["CMF_20"],
+      "WILLR_14": common["WILLR_14"],
+      "WILLR_84": willr_84,
+      "AROONU_14": common["AROONU_14"],
+      "AROOND_14": common["AROOND_14"],
+      "STOCHk_14_3_3": common["STOCHk_14_3_3"],
+      "STOCHRSIk_14_14_3_3": common["STOCHRSIk_14_14_3_3"],
+      "KST_10_15_20_30_10_10_10_15": kst_main,
+      "KSTs_9": kst_signal,
+      "UO_7_14_28": uo,
+      "ROC_2": roc_2,
+      "ROC_9": common["ROC_9"],
+      "CCI_20": cci_20,
+      "CCI_20_change_pct": cci_change,
+      "change_pct": common["change_pct"],
+      "high_max_6": high_max_6,
+      "high_max_12": high_max_12,
+      "high_max_24": high_max_24,
+      "low_min_6": low_min_6,
+      "low_min_12": low_min_12,
+      "low_min_24": low_min_24,
+    }
+    debug_cols = list(columns_map)
+    return columns_map, debug_cols, "[%s] informative_1h_indicators took: %.4f seconds."
+
+  def _nfix7_build_15m_columns(self, context):
+    raw = NostalgiaForInfinityX7._nfix7_common_raw_values(context)
+    ema_12 = ta.EMA(context.close, timeperiod=12)
+    ema_20 = ta.EMA(context.close, timeperiod=20)
+    ema_26 = ta.EMA(context.close, timeperiod=26)
+    ema_50 = ta.EMA(context.close, timeperiod=50)
+    ema_200 = ta.EMA(context.close, timeperiod=200)
+    uo = ta.ULTOSC(context.high, context.low, context.close)
+    obv = ta.OBV(context.close, context.volume)
+    cci_20 = ta.CCI(context.high, context.low, context.close, timeperiod=20)
+
+    stochrsi_k = self.stochrsi_k(raw["RSI_14"], ta.MIN, ta.MAX, ta.SMA)
+    cmf_20 = self.chaikin_money_flow(
+      context.high,
+      context.low,
+      context.close,
+      context.volume,
+      timeperiod=20,
+    )
+    rsi_3_change = self.fast_pct_change(raw["RSI_3"])
+    rsi_14_change = self.fast_pct_change(raw["RSI_14"])
+    uo_change = self.fast_pct_change(uo)
+    obv_change = self.fast_pct_change(obv)
+    cci_change = self.fast_pct_change(cci_20)
+    common = NostalgiaForInfinityX7._nfix7_assemble_common_values(
+      raw,
+      rsi3_change=rsi_3_change,
+      stochrsi_k=stochrsi_k,
+      cmf=cmf_20,
+    )
+    columns_map = {
+      "RSI_3": common["RSI_3"],
+      "RSI_14": common["RSI_14"],
+      "RSI_3_change_pct": common["RSI_3_change_pct"],
+      "RSI_14_change_pct": rsi_14_change,
+      "EMA_12": ema_12,
+      "EMA_20": ema_20,
+      "EMA_26": ema_26,
+      "EMA_50": ema_50,
+      "EMA_200": ema_200,
+      "MFI_14": common["MFI_14"],
+      "CMF_20": common["CMF_20"],
+      "WILLR_14": common["WILLR_14"],
+      "AROONU_14": common["AROONU_14"],
+      "AROOND_14": common["AROOND_14"],
+      "STOCHk_14_3_3": common["STOCHk_14_3_3"],
+      "STOCHRSIk_14_14_3_3": common["STOCHRSIk_14_14_3_3"],
+      "UO_7_14_28": uo,
+      "UO_7_14_28_change_pct": uo_change,
+      "OBV_change_pct": obv_change,
+      "ROC_9": common["ROC_9"],
+      "CCI_20": cci_20,
+      "CCI_20_change_pct": cci_change,
+      "change_pct": common["change_pct"],
+    }
+    debug_cols = list(columns_map)
+    return columns_map, debug_cols, "[%s] informative_15m_indicators took: %.4f seconds."
+
+  def _nfix7_informative_indicators_impl(
+    self,
+    metadata: dict,
+    *,
+    loaded_timeframe: str,
+    profile: str,
+  ) -> DataFrame:
+    if profile not in ("1d", "4h", "1h", "15m"):
+      raise RuntimeError(f"{profile} not supported as informative profile.")
+
+    debug = False
     debug_time = False
     if debug_time:
       tik = time.perf_counter()
+
     dp = self.dp
-    fast_pct_change = self.fast_pct_change
-    stochrsi_k_func = self.stochrsi_k
-    chaikin_money_flow = self.chaikin_money_flow
-    validate_indicators = self.validate_indicators
-    ta_rsi = ta.RSI
-    ta_aroon = ta.AROON
-    ta_roc = ta.ROC
-    ta_min = ta.MIN
-    ta_max = ta.MAX
-    ta_sma = ta.SMA
-
     assert dp, "DataProvider is required for multiple timeframes."
-
-    # Get dataframe
     metadata_pair = metadata["pair"]
-    informative_1d = dp.get_pair_dataframe(pair=metadata_pair, timeframe=info_timeframe)
+    source = dp.get_pair_dataframe(pair=metadata_pair, timeframe=loaded_timeframe)
+    if source.empty:
+      return source
 
-    # Empty dataframe protection
-    if informative_1d.empty:
-      return informative_1d
-
-    # =========================================================================
-    # BASE DATA
-    # =========================================================================
-    close_np = informative_1d["close"].to_numpy(copy=False)
-    high_np = informative_1d["high"].to_numpy(copy=False)
-    low_np = informative_1d["low"].to_numpy(copy=False)
-    open_np = informative_1d["open"].to_numpy(copy=False)
-    volume_np = informative_1d["volume"].to_numpy(copy=False)
-
-    # =========================================================================
-    # CORE INDICATORS
-    # =========================================================================
-    rsi_3 = ta_rsi(close_np, timeperiod=3)
-    rsi_14 = ta_rsi(close_np, timeperiod=14)
-    aroon_down, aroon_up = ta_aroon(high_np, low_np, timeperiod=14)
-
-    # =========================================================================
-    # STOCH
-    # =========================================================================
-    _, stoch_k = ta.STOCHF(high_np, low_np, close_np, fastk_period=14, fastd_period=3, fastd_matype=0)
-    stochrsi_k = stochrsi_k_func(rsi_14, ta_min, ta_max, ta_sma)
-
-    # =========================================================================
-    # MONEY FLOW
-    # =========================================================================
-    mfi_14 = ta.MFI(high_np, low_np, close_np, volume_np, timeperiod=14)
-    cmf_20 = chaikin_money_flow(high_np, low_np, close_np, volume_np, timeperiod=20)
-
-    # =========================================================================
-    # MOMENTUM
-    # =========================================================================
-    willr_14 = ta.WILLR(high_np, low_np, close_np, timeperiod=14)
-    roc_2 = ta_roc(close_np, timeperiod=2)
-    roc_9 = ta_roc(close_np, timeperiod=9)
-
-    # =========================================================================
-    # RSI CHANGE %
-    # =========================================================================
-    rsi3_change = fast_pct_change(rsi_3)
-
-    # =========================================================================
-    # CANDLE %
-    # =========================================================================
-    open_safe = np.where(open_np == 0, np.nan, open_np)
-    change_pct = ((close_np - open_np) / open_safe) * 100.0
-
-    # =========================================================================
-    # WICK %
-    # =========================================================================
-    max_oc = np.maximum(open_np, close_np)
-    min_oc = np.minimum(open_np, close_np)
-    max_oc_calc = np.where(max_oc == 0, np.nan, max_oc)
-    min_oc_calc = np.where(min_oc == 0, np.nan, min_oc)
-    top_wick_pct = ((high_np - max_oc) / max_oc_calc) * 100.0
-    bot_wick_pct = np.abs(((low_np - min_oc) / min_oc_calc) * 100.0)
-
-    # =========================================================================
-    # HIGH / LOW ROLLING
-    # =========================================================================
-    high_max_6 = ta_max(high_np, timeperiod=6)
-    high_max_12 = ta_max(high_np, timeperiod=12)
-    high_max_20 = ta_max(high_np, timeperiod=20)
-    high_max_30 = ta_max(high_np, timeperiod=30)
-    low_min_6 = ta_min(low_np, timeperiod=6)
-    low_min_12 = ta_min(low_np, timeperiod=12)
-    low_min_20 = ta_min(low_np, timeperiod=20)
-    low_min_30 = ta_min(low_np, timeperiod=30)
-
-    # =========================================================================
-    # ASSIGN DATAFRAME
-    # =========================================================================
-    new_cols = pd.DataFrame(
-      {
-        "RSI_3": rsi_3,
-        "RSI_14": rsi_14,
-        "STOCHk_14_3_3": stoch_k,
-        "STOCHRSIk_14_14_3_3": stochrsi_k,
-        "MFI_14": mfi_14,
-        "CMF_20": cmf_20,
-        "WILLR_14": willr_14,
-        "AROONU_14": aroon_up,
-        "AROOND_14": aroon_down,
-        "ROC_2": roc_2,
-        "ROC_9": roc_9,
-        "RSI_3_change_pct": rsi3_change,
-        "change_pct": change_pct,
-        "top_wick_pct": top_wick_pct,
-        "bot_wick_pct": bot_wick_pct,
-        "high_max_6": high_max_6,
-        "high_max_12": high_max_12,
-        "high_max_20": high_max_20,
-        "high_max_30": high_max_30,
-        "low_min_6": low_min_6,
-        "low_min_12": low_min_12,
-        "low_min_20": low_min_20,
-        "low_min_30": low_min_30,
-      },
-      index=informative_1d.index,
+    context = _NFIInformativeContext(
+      source=source,
+      index=source.index,
+      open=source["open"].to_numpy(copy=False),
+      high=source["high"].to_numpy(copy=False),
+      low=source["low"].to_numpy(copy=False),
+      close=source["close"].to_numpy(copy=False),
+      volume=source["volume"].to_numpy(copy=False),
     )
-    informative_1d = pd.concat([informative_1d, new_cols], axis=1, copy=False)
+    builders = {
+      "1d": NostalgiaForInfinityX7._nfix7_build_1d_columns,
+      "4h": NostalgiaForInfinityX7._nfix7_build_4h_columns,
+      "1h": NostalgiaForInfinityX7._nfix7_build_1h_columns,
+      "15m": NostalgiaForInfinityX7._nfix7_build_15m_columns,
+    }
+    builder = builders[profile]
+    columns_map, debug_cols, timing_label = builder(self, context)
+    generated = pd.DataFrame(columns_map, index=source.index)
+    result = pd.concat([source, generated], axis=1, copy=False)
 
-    # Enable ONLY during debugging
-    debug = False
     if debug:
-      debug_cols = [
-        "RSI_3",
-        "RSI_14",
-        "STOCHk_14_3_3",
-        "STOCHRSIk_14_14_3_3",
-        "MFI_14",
-        "CMF_20",
-        "WILLR_14",
-        "AROONU_14",
-        "AROOND_14",
-        "ROC_2",
-        "ROC_9",
-        "RSI_3_change_pct",
-        "change_pct",
-        "top_wick_pct",
-        "bot_wick_pct",
-        "high_max_6",
-        "high_max_12",
-        "high_max_20",
-        "high_max_30",
-        "low_min_6",
-        "low_min_12",
-        "low_min_20",
-        "low_min_30",
-      ]
-
-      validate_indicators(df=informative_1d, columns=debug_cols, pair=metadata_pair, timeframe=info_timeframe)
-
-    # =========================================================================
-    # LOGGING
-    # =========================================================================
+      self.validate_indicators(
+        df=result,
+        columns=debug_cols,
+        pair=metadata_pair,
+        timeframe=loaded_timeframe,
+      )
     if debug_time:
       tok = time.perf_counter()
-      log.debug("[%s] informative_1d_indicators took: %.4f seconds.", metadata_pair, tok - tik)
+      log.debug(timing_label, metadata_pair, tok - tik)
+    return result
 
-    return informative_1d
+  def informative_indicators(self, metadata: dict, info_timeframe: str) -> DataFrame:
+    if info_timeframe not in ("1d", "4h", "1h", "15m"):
+      raise RuntimeError(f"{info_timeframe} not supported as informative profile.")
+    return NostalgiaForInfinityX7._nfix7_informative_indicators_impl(
+      self,
+      metadata,
+      loaded_timeframe=info_timeframe,
+      profile=info_timeframe,
+    )
+
+  # Informative 1d Timeframe Indicators
+  # ---------------------------------------------------------------------------------------------
+  def informative_1d_indicators(self, metadata: dict, info_timeframe) -> DataFrame:
+    return NostalgiaForInfinityX7._nfix7_informative_indicators_impl(
+      self,
+      metadata,
+      loaded_timeframe=info_timeframe,
+      profile="1d",
+    )
 
   # Informative 4h Timeframe Indicators
   # ---------------------------------------------------------------------------------------------
   def informative_4h_indicators(self, metadata: dict, info_timeframe) -> DataFrame:
-    debug_time = False
-    if debug_time:
-      tik = time.perf_counter()
-    dp = self.dp
-    fast_pct_change = self.fast_pct_change
-    stochrsi_k_func = self.stochrsi_k
-    chaikin_money_flow = self.chaikin_money_flow
-    validate_indicators = self.validate_indicators
-    calc_kst = self.calc_kst
-    ta_rsi = ta.RSI
-    ta_aroon = ta.AROON
-    ta_sma = ta.SMA
-    ta_roc = ta.ROC
-    ta_ema = ta.EMA
-    ta_max = ta.MAX
-    ta_min = ta.MIN
-    ta_bbands = ta.BBANDS
-
-    assert dp, "DataProvider is required for multiple timeframes."
-
-    # Get dataframe
-    metadata_pair = metadata["pair"]
-    informative_4h = dp.get_pair_dataframe(pair=metadata_pair, timeframe=info_timeframe)
-
-    # Empty dataframe protection
-    if informative_4h.empty:
-      return informative_4h
-
-    # =========================================================================
-    # BASE DATA
-    # =========================================================================
-    close_np = informative_4h["close"].to_numpy(copy=False)
-    high_np = informative_4h["high"].to_numpy(copy=False)
-    low_np = informative_4h["low"].to_numpy(copy=False)
-    open_np = informative_4h["open"].to_numpy(copy=False)
-    volume_np = informative_4h["volume"].to_numpy(copy=False)
-
-    # =========================================================================
-    # CORE INDICATORS
-    # =========================================================================
-    rsi_3 = ta_rsi(close_np, timeperiod=3)
-    rsi_14 = ta_rsi(close_np, timeperiod=14)
-    aroon_down, aroon_up = ta_aroon(high_np, low_np, timeperiod=14)
-    bb_upper_20, _, bb_lower_20 = ta_bbands(close_np, timeperiod=20, nbdevup=2.0, nbdevdn=2.0, matype=0)
-    bbp_20 = (close_np - bb_lower_20) / np.where(bb_upper_20 - bb_lower_20 == 0, np.nan, bb_upper_20 - bb_lower_20)
-
-    # =========================================================================
-    # STOCH
-    # =========================================================================
-    _, stoch_k = ta.STOCHF(high_np, low_np, close_np, fastk_period=14, fastd_period=3, fastd_matype=0)
-    stochrsi_k = stochrsi_k_func(rsi_14, ta_min, ta_max, ta_sma)
-
-    # =========================================================================
-    # KST
-    # =========================================================================
-    kst_main, kst_signal = calc_kst(close_np, ta_roc, ta_sma)
-
-    # =========================================================================
-    # MONEY FLOW
-    # =========================================================================
-    mfi_14 = ta.MFI(high_np, low_np, close_np, volume_np, timeperiod=14)
-    cmf_20 = chaikin_money_flow(high_np, low_np, close_np, volume_np, timeperiod=20)
-
-    # =========================================================================
-    # MOMENTUM
-    # =========================================================================
-    ema_12 = ta_ema(close_np, timeperiod=12)
-    ema_50 = ta_ema(close_np, timeperiod=50)
-    ema_100 = ta_ema(close_np, timeperiod=100)
-    ema_200 = ta_ema(close_np, timeperiod=200)
-    willr_14 = ta.WILLR(high_np, low_np, close_np, timeperiod=14)
-    uo = ta.ULTOSC(high_np, low_np, close_np)
-    roc_2 = ta_roc(close_np, timeperiod=2)
-    roc_9 = ta_roc(close_np, timeperiod=9)
-    cci_20 = ta.CCI(high_np, low_np, close_np, timeperiod=20)
-
-    # =========================================================================
-    # CHANGE %
-    # =========================================================================
-    rsi_3_change = fast_pct_change(rsi_3)
-    rsi_14_change = fast_pct_change(rsi_14)
-    stochrsi_change = fast_pct_change(stochrsi_k)
-    cci_change = fast_pct_change(cci_20)
-
-    # =========================================================================
-    # CANDLE %
-    # =========================================================================
-    open_safe = np.where(open_np == 0, np.nan, open_np)
-    change_pct = ((close_np - open_np) / open_safe) * 100.0
-
-    # =========================================================================
-    # WICK %
-    # =========================================================================
-    max_oc = np.maximum(open_np, close_np)
-    max_oc_calc = np.where(max_oc == 0, np.nan, max_oc)
-    top_wick_pct = ((high_np - max_oc) / max_oc_calc) * 100.0
-
-    # =========================================================================
-    # ROLLING
-    # =========================================================================
-    high_max_6 = ta_max(high_np, timeperiod=6)
-    high_max_12 = ta_max(high_np, timeperiod=12)
-    high_max_24 = ta_max(high_np, timeperiod=24)
-    low_min_12 = ta_min(low_np, timeperiod=12)
-    low_min_24 = ta_min(low_np, timeperiod=24)
-
-    # =========================================================================
-    # ASSIGN DATAFRAME
-    # =========================================================================
-    new_cols = pd.DataFrame(
-      {
-        "RSI_3": rsi_3,
-        "RSI_14": rsi_14,
-        "AROONU_14": aroon_up,
-        "AROOND_14": aroon_down,
-        "BBP_20_2.0": bbp_20,
-        "STOCHk_14_3_3": stoch_k,
-        "STOCHRSIk_14_14_3_3": stochrsi_k,
-        "KST_10_15_20_30_10_10_10_15": kst_main,
-        "KSTs_9": kst_signal,
-        "MFI_14": mfi_14,
-        "CMF_20": cmf_20,
-        "EMA_12": ema_12,
-        "EMA_50": ema_50,
-        "EMA_100": ema_100,
-        "EMA_200": ema_200,
-        "WILLR_14": willr_14,
-        "UO_7_14_28": uo,
-        "ROC_2": roc_2,
-        "ROC_9": roc_9,
-        "CCI_20": cci_20,
-        "STOCHRSIk_14_14_3_3_change_pct": stochrsi_change,
-        "CCI_20_change_pct": cci_change,
-        "RSI_3_change_pct": rsi_3_change,
-        "RSI_14_change_pct": rsi_14_change,
-        "change_pct": change_pct,
-        "top_wick_pct": top_wick_pct,
-        "high_max_6": high_max_6,
-        "high_max_12": high_max_12,
-        "high_max_24": high_max_24,
-        "low_min_12": low_min_12,
-        "low_min_24": low_min_24,
-      },
-      index=informative_4h.index,
+    return NostalgiaForInfinityX7._nfix7_informative_indicators_impl(
+      self,
+      metadata,
+      loaded_timeframe=info_timeframe,
+      profile="4h",
     )
-
-    informative_4h = pd.concat([informative_4h, new_cols], axis=1, copy=False)
-
-    # Enable ONLY during debugging
-    debug = False
-    if debug:
-      debug_cols = [
-        "RSI_3",
-        "RSI_14",
-        "AROONU_14",
-        "AROOND_14",
-        "STOCHk_14_3_3",
-        "STOCHRSIk_14_14_3_3",
-        "KST_10_15_20_30_10_10_10_15",
-        "KSTs_9",
-        "MFI_14",
-        "CMF_20",
-        "EMA_12",
-        "EMA_50",
-        "EMA_100",
-        "EMA_200",
-        "WILLR_14",
-        "UO_7_14_28",
-        "ROC_2",
-        "ROC_9",
-        "CCI_20",
-        "STOCHRSIk_14_14_3_3_change_pct",
-        "CCI_20_change_pct",
-        "RSI_3_change_pct",
-        "RSI_14_change_pct",
-        "OBV_change_pct",
-        "change_pct",
-        "high_max_6",
-        "high_max_12",
-        "high_max_24",
-        "low_min_12",
-        "low_min_24",
-      ]
-
-      validate_indicators(df=informative_4h, columns=debug_cols, pair=metadata_pair, timeframe=info_timeframe)
-    # =========================================================================
-    # LOGGING
-    # =========================================================================
-    if debug_time:
-      tok = time.perf_counter()
-      log.debug("[%s] informative_4h_indicators took: %.4f seconds.", metadata_pair, tok - tik)
-
-    return informative_4h
 
   # Informative 1h Timeframe Indicators
   # ---------------------------------------------------------------------------------------------
   def informative_1h_indicators(self, metadata: dict, info_timeframe) -> DataFrame:
-    debug_time = False
-    if debug_time:
-      tik = time.perf_counter()
-    dp = self.dp
-    fast_pct_change = self.fast_pct_change
-    stochrsi_k_func = self.stochrsi_k
-    chaikin_money_flow = self.chaikin_money_flow
-    validate_indicators = self.validate_indicators
-    calc_kst = self.calc_kst
-    ta_rsi = ta.RSI
-    ta_bbands = ta.BBANDS
-    ta_aroon = ta.AROON
-    ta_sma = ta.SMA
-    ta_roc = ta.ROC
-    ta_ema = ta.EMA
-    ta_willr = ta.WILLR
-    ta_max = ta.MAX
-    ta_min = ta.MIN
-
-    assert dp, "DataProvider is required for multiple timeframes."
-
-    # =========================================================================
-    # GET DATAFRAME
-    # =========================================================================
-
-    metadata_pair = metadata["pair"]
-    informative_1h = dp.get_pair_dataframe(pair=metadata_pair, timeframe=info_timeframe)
-
-    # Empty dataframe protection
-    if informative_1h.empty:
-      return informative_1h
-
-    # =========================================================================
-    # BASE DATA
-    # =========================================================================
-    close_np = informative_1h["close"].to_numpy(copy=False)
-    high_np = informative_1h["high"].to_numpy(copy=False)
-    low_np = informative_1h["low"].to_numpy(copy=False)
-    open_np = informative_1h["open"].to_numpy(copy=False)
-    volume_np = informative_1h["volume"].to_numpy(copy=False)
-
-    # =========================================================================
-    # CORE INDICATORS
-    # =========================================================================
-    rsi_3 = ta_rsi(close_np, timeperiod=3)
-    rsi_14 = ta_rsi(close_np, timeperiod=14)
-    bb_upper, bb_middle, bb_lower = ta_bbands(close_np, timeperiod=20, nbdevup=2.0, nbdevdn=2.0, matype=0)
-    bb_middle_safe = np.where(bb_middle == 0, np.nan, bb_middle)
-    aroon_down, aroon_up = ta_aroon(high_np, low_np, timeperiod=14)
-
-    # =========================================================================
-    # STOCH
-    # =========================================================================
-    _, stoch_k = ta.STOCHF(high_np, low_np, close_np, fastk_period=14, fastd_period=3, fastd_matype=0)
-    stochrsi_k = stochrsi_k_func(rsi_14, ta_min, ta_max, ta_sma)
-
-    # =========================================================================
-    # KST
-    # =========================================================================
-    kst_main, kst_signal = calc_kst(close_np, ta_roc, ta_sma)
-
-    # =========================================================================
-    # MONEY FLOW
-    # =========================================================================
-    mfi_14 = ta.MFI(high_np, low_np, close_np, volume_np, timeperiod=14)
-    cmf_20 = chaikin_money_flow(high_np, low_np, close_np, volume_np, timeperiod=20)
-
-    # =========================================================================
-    # MOMENTUM
-    # =========================================================================
-    ema_12 = ta_ema(close_np, timeperiod=12)
-    ema_200 = ta_ema(close_np, timeperiod=200)
-    sma_16 = ta_sma(close_np, timeperiod=16)
-    willr_14 = ta_willr(high_np, low_np, close_np, timeperiod=14)
-    willr_84 = ta_willr(high_np, low_np, close_np, timeperiod=84)
-    uo = ta.ULTOSC(high_np, low_np, close_np)
-    roc_2 = ta_roc(close_np, timeperiod=2)
-    roc_9 = ta_roc(close_np, timeperiod=9)
-    cci_20 = ta.CCI(high_np, low_np, close_np, timeperiod=20)
-
-    # =========================================================================
-    # CHANGE %
-    # =========================================================================
-    rsi_3_change = fast_pct_change(rsi_3)
-    rsi_14_change = fast_pct_change(rsi_14)
-    cci_change = fast_pct_change(cci_20)
-
-    # =========================================================================
-    # CANDLE %
-    # =========================================================================
-    open_safe = np.where(open_np == 0, np.nan, open_np)
-    change_pct = ((close_np - open_np) / open_safe) * 100.0
-
-    # =========================================================================
-    # ROLLING
-    # =========================================================================
-    high_max_6 = ta_max(high_np, timeperiod=6)
-    high_max_12 = ta_max(high_np, timeperiod=12)
-    high_max_24 = ta_max(high_np, timeperiod=24)
-    low_min_6 = ta_min(low_np, timeperiod=6)
-    low_min_12 = ta_min(low_np, timeperiod=12)
-    low_min_24 = ta_min(low_np, timeperiod=24)
-
-    new_cols = pd.DataFrame(
-      {
-        "RSI_3": rsi_3,
-        "RSI_14": rsi_14,
-        "RSI_3_change_pct": rsi_3_change,
-        "RSI_14_change_pct": rsi_14_change,
-        "EMA_12": ema_12,
-        "EMA_200": ema_200,
-        "SMA_16": sma_16,
-        "BBL_20_2.0": bb_lower,
-        "BBU_20_2.0": bb_upper,
-        "BBB_20_2.0": ((bb_upper - bb_lower) / bb_middle_safe) * 100.0,
-        "MFI_14": mfi_14,
-        "CMF_20": cmf_20,
-        "WILLR_14": willr_14,
-        "WILLR_84": willr_84,
-        "AROONU_14": aroon_up,
-        "AROOND_14": aroon_down,
-        "STOCHk_14_3_3": stoch_k,
-        "STOCHRSIk_14_14_3_3": stochrsi_k,
-        "KST_10_15_20_30_10_10_10_15": kst_main,
-        "KSTs_9": kst_signal,
-        "UO_7_14_28": uo,
-        "ROC_2": roc_2,
-        "ROC_9": roc_9,
-        "CCI_20": cci_20,
-        "CCI_20_change_pct": cci_change,
-        "change_pct": change_pct,
-        "high_max_6": high_max_6,
-        "high_max_12": high_max_12,
-        "high_max_24": high_max_24,
-        "low_min_6": low_min_6,
-        "low_min_12": low_min_12,
-        "low_min_24": low_min_24,
-      },
-      index=informative_1h.index,
+    return NostalgiaForInfinityX7._nfix7_informative_indicators_impl(
+      self,
+      metadata,
+      loaded_timeframe=info_timeframe,
+      profile="1h",
     )
-
-    informative_1h = pd.concat([informative_1h, new_cols], axis=1, copy=False)
-
-    # Enable ONLY during debugging
-    debug = False
-    if debug:
-      debug_cols = [
-        "RSI_3",
-        "RSI_14",
-        "RSI_3_change_pct",
-        "RSI_14_change_pct",
-        "EMA_12",
-        "EMA_200",
-        "SMA_16",
-        "BBL_20_2.0",
-        "BBU_20_2.0",
-        "BBB_20_2.0",
-        "MFI_14",
-        "CMF_20",
-        "WILLR_14",
-        "WILLR_84",
-        "AROONU_14",
-        "AROOND_14",
-        "STOCHk_14_3_3",
-        "STOCHRSIk_14_14_3_3",
-        "KST_10_15_20_30_10_10_10_15",
-        "KSTs_9",
-        "UO_7_14_28",
-        "ROC_2",
-        "ROC_9",
-        "CCI_20",
-        "CCI_20_change_pct",
-        "change_pct",
-        "high_max_6",
-        "high_max_12",
-        "high_max_24",
-        "low_min_6",
-        "low_min_12",
-        "low_min_24",
-      ]
-
-      validate_indicators(df=informative_1h, columns=debug_cols, pair=metadata_pair, timeframe=info_timeframe)
-
-    # =========================================================================
-    # LOGGING
-    # =========================================================================
-    if debug_time:
-      tok = time.perf_counter()
-      log.debug("[%s] informative_1h_indicators took: %.4f seconds.", metadata_pair, tok - tik)
-
-    return informative_1h
 
   # Informative 15m Timeframe Indicators
   # ---------------------------------------------------------------------------------------------
   def informative_15m_indicators(self, metadata: dict, info_timeframe) -> DataFrame:
-    debug_time = False
-    if debug_time:
-      tik = time.perf_counter()
-    dp = self.dp
-    fast_pct_change = self.fast_pct_change
-    stochrsi_k_func = self.stochrsi_k
-    chaikin_money_flow = self.chaikin_money_flow
-    validate_indicators = self.validate_indicators
-    ta_rsi = ta.RSI
-    ta_aroon = ta.AROON
-    ta_ema = ta.EMA
-    ta_min = ta.MIN
-    ta_max = ta.MAX
-    ta_sma = ta.SMA
-
-    assert dp, "DataProvider is required for multiple timeframes."
-
-    # =========================================================================
-    # GET DATAFRAME
-    # =========================================================================
-
-    metadata_pair = metadata["pair"]
-    informative_15m = dp.get_pair_dataframe(pair=metadata_pair, timeframe=info_timeframe)
-
-    # Empty dataframe protection
-    if informative_15m.empty:
-      return informative_15m
-
-    # =========================================================================
-    # BASE DATA
-    # =========================================================================
-    close_np = informative_15m["close"].to_numpy(copy=False)
-    high_np = informative_15m["high"].to_numpy(copy=False)
-    low_np = informative_15m["low"].to_numpy(copy=False)
-    open_np = informative_15m["open"].to_numpy(copy=False)
-    volume_np = informative_15m["volume"].to_numpy(copy=False)
-
-    # =========================================================================
-    # CORE INDICATORS
-    # =========================================================================
-    rsi_3 = ta_rsi(close_np, timeperiod=3)
-    rsi_14 = ta_rsi(close_np, timeperiod=14)
-    aroon_down, aroon_up = ta_aroon(high_np, low_np, timeperiod=14)
-
-    # =========================================================================
-    # STOCH
-    # =========================================================================
-    _, stoch_k = ta.STOCHF(high_np, low_np, close_np, fastk_period=14, fastd_period=3, fastd_matype=0)
-    stochrsi_k = stochrsi_k_func(rsi_14, ta_min, ta_max, ta_sma)
-
-    # =========================================================================
-    # MONEY FLOW
-    # =========================================================================
-    mfi_14 = ta.MFI(high_np, low_np, close_np, volume_np, timeperiod=14)
-    cmf_20 = chaikin_money_flow(high_np, low_np, close_np, volume_np, timeperiod=20)
-
-    # =========================================================================
-    # MOMENTUM
-    # =========================================================================
-    ema_12 = ta_ema(close_np, timeperiod=12)
-    ema_20 = ta_ema(close_np, timeperiod=20)
-    ema_26 = ta_ema(close_np, timeperiod=26)
-    ema_50 = ta_ema(close_np, timeperiod=50)
-    ema_200 = ta_ema(close_np, timeperiod=200)
-    willr_14 = ta.WILLR(high_np, low_np, close_np, timeperiod=14)
-    uo = ta.ULTOSC(high_np, low_np, close_np)
-    obv = ta.OBV(close_np, volume_np)
-    roc_9 = ta.ROC(close_np, timeperiod=9)
-    cci_20 = ta.CCI(high_np, low_np, close_np, timeperiod=20)
-
-    # =========================================================================
-    # CHANGE %
-    # =========================================================================
-    rsi_3_change = fast_pct_change(rsi_3)
-    rsi_14_change = fast_pct_change(rsi_14)
-    uo_change = fast_pct_change(uo)
-    obv_change = fast_pct_change(obv)
-    cci_change = fast_pct_change(cci_20)
-
-    # =========================================================================
-    # CANDLE %
-    # =========================================================================
-    open_safe = np.where(open_np == 0, np.nan, open_np)
-    change_pct = ((close_np - open_np) / open_safe) * 100.0
-
-    new_cols = pd.DataFrame(
-      {
-        "RSI_3": rsi_3,
-        "RSI_14": rsi_14,
-        "RSI_3_change_pct": rsi_3_change,
-        "RSI_14_change_pct": rsi_14_change,
-        "EMA_12": ema_12,
-        "EMA_20": ema_20,
-        "EMA_26": ema_26,
-        "EMA_50": ema_50,
-        "EMA_200": ema_200,
-        "MFI_14": mfi_14,
-        "CMF_20": cmf_20,
-        "WILLR_14": willr_14,
-        "AROONU_14": aroon_up,
-        "AROOND_14": aroon_down,
-        "STOCHk_14_3_3": stoch_k,
-        "STOCHRSIk_14_14_3_3": stochrsi_k,
-        "UO_7_14_28": uo,
-        "UO_7_14_28_change_pct": uo_change,
-        "OBV_change_pct": obv_change,
-        "ROC_9": roc_9,
-        "CCI_20": cci_20,
-        "CCI_20_change_pct": cci_change,
-        "change_pct": change_pct,
-      },
-      index=informative_15m.index,
+    return NostalgiaForInfinityX7._nfix7_informative_indicators_impl(
+      self,
+      metadata,
+      loaded_timeframe=info_timeframe,
+      profile="15m",
     )
-
-    informative_15m = pd.concat([informative_15m, new_cols], axis=1, copy=False)
-
-    # Enable ONLY during debugging
-    debug = False
-    if debug:
-      debug_cols = [
-        "RSI_3",
-        "RSI_14",
-        "RSI_3_change_pct",
-        "RSI_14_change_pct",
-        "EMA_12",
-        "EMA_20",
-        "EMA_26",
-        "EMA_50",
-        "EMA_200",
-        "MFI_14",
-        "CMF_20",
-        "WILLR_14",
-        "AROONU_14",
-        "AROOND_14",
-        "STOCHk_14_3_3",
-        "STOCHRSIk_14_14_3_3",
-        "UO_7_14_28",
-        "UO_7_14_28_change_pct",
-        "OBV_change_pct",
-        "ROC_9",
-        "CCI_20",
-        "CCI_20_change_pct",
-        "change_pct",
-      ]
-
-      validate_indicators(df=informative_15m, columns=debug_cols, pair=metadata_pair, timeframe=info_timeframe)
-
-    # =========================================================================
-    # LOGGING
-    # =========================================================================
-    if debug_time:
-      tok = time.perf_counter()
-      log.debug("[%s] informative_15m_indicators took: %.4f seconds.", metadata_pair, tok - tik)
-
-    return informative_15m
 
   # Coin Pair Base Timeframe Indicators
   # ---------------------------------------------------------------------------------------------
