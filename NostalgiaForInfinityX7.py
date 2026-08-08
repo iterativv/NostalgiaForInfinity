@@ -141,7 +141,7 @@ class NostalgiaForInfinityX7(IStrategy):
   # Long top coins mode tags
   long_top_coins_mode_tags = ["141", "142", "143", "144", "145"]
   # Long scalp mode tags
-  long_scalp_mode_tags = ["161", "162", "163", "164"]
+  long_scalp_mode_tags = ["161", "162", "163", "164", "165"]
 
   long_rebuy_grind_mode_tags = long_rebuy_mode_tags + long_grind_mode_tags
   long_scalp_rebuy_grind_mode_tags = long_scalp_mode_tags + long_rebuy_mode_tags + long_grind_mode_tags
@@ -201,7 +201,7 @@ class NostalgiaForInfinityX7(IStrategy):
   # Short top coins mode tags
   short_top_coins_mode_tags = ["641", "642"]
   # Short scalp mode tags
-  short_scalp_mode_tags = ["661", "662"]
+  short_scalp_mode_tags = ["661", "662", "663"]
 
   short_rebuy_grind_mode_tags = short_rebuy_mode_tags + short_grind_mode_tags
   short_scalp_rebuy_grind_mode_tags = short_scalp_mode_tags + short_rebuy_mode_tags + short_grind_mode_tags
@@ -904,6 +904,7 @@ class NostalgiaForInfinityX7(IStrategy):
     "long_entry_condition_192_enable": False,
     "long_entry_condition_193_enable": False,
     "long_entry_condition_164_enable": False,
+    "long_entry_condition_165_enable": False,
   }
 
   short_entry_signal_params = {
@@ -925,6 +926,7 @@ class NostalgiaForInfinityX7(IStrategy):
     "short_entry_condition_592_enable": False,
     "short_entry_condition_593_enable": False,
     "short_entry_condition_662_enable": False,
+    "short_entry_condition_663_enable": False,
     # "short_entry_condition_603_enable": True,
     # "short_entry_condition_641_enable": True,
     # "short_entry_condition_642_enable": True,
@@ -25875,6 +25877,25 @@ class NostalgiaForInfinityX7(IStrategy):
           long_entry_logic.append(close > orange_l)
           long_entry_logic.append(close < orange_h)
 
+        # Condition #165 - Fib golden-pocket continuation (Long, experimental, RAW — The Moving Average port).
+        if long_entry_condition_index == 165:
+          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          long_entry_logic.append(protections_long_global == True)
+          # trend filter (video: "only clear trends") + impulse quality (never draw fibs in chop)
+          long_entry_logic.append(ema_12_4h > ema_200_4h)
+          # R1 (eyeball): only a CLEAN ACTIVE uptrend — whipsaw chop (RIVER) has rsi_4h ~50 and stale 4h highs
+          long_entry_logic.append(rsi_14_4h > 55.0)
+          long_entry_logic.append(aroonu_14_4h > 70.0)
+          # R1: anti-blow-off — don't buy the retrace of a parabolic final leg (ARIA top)
+          long_entry_logic.append(roc_9_1d < 30.0)
+          long_entry_logic.append((close_max_48 - close_min_48) > (close_min_48 * 0.04))
+          # golden pocket: FIRST entry into the 0.5-0.618 retrace band of the 48-candle impulse (from above)
+          _fib_rng_165 = close_max_48 - close_min_48
+          _fib_retr_165 = (close_max_48 - close) / _fib_rng_165
+          long_entry_logic.append(np_shift(_fib_retr_165, 1) < 0.5)
+          long_entry_logic.append(_fib_retr_165 >= 0.5)
+          long_entry_logic.append(_fib_retr_165 <= 0.618)
+
         long_entry_logic.append(df["volume"] > 0)
         item_long_entry = _and_entry_conditions(long_entry_logic)
         _append_entry_tag(entry_tags, item_long_entry, f"{long_entry_condition_index} ")
@@ -27893,6 +27914,24 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(np_shift(close, 1) > orange_h)
           short_entry_logic.append(close < orange_h)
           short_entry_logic.append(close > orange_l)
+
+        # Condition #663 - Fib golden-pocket continuation (Short, experimental, RAW — mirror).
+        if short_entry_condition_index == 663:
+          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          short_entry_logic.append(protections_short_global == True)
+          short_entry_logic.append(ema_12_4h < ema_200_4h)
+          # R1 (eyeball): only a clean active downtrend
+          short_entry_logic.append(rsi_14_4h < 45.0)
+          short_entry_logic.append(aroond_14_4h > 70.0)
+          # R1: anti-capitulation mirror
+          short_entry_logic.append(roc_9_1d > -30.0)
+          short_entry_logic.append((close_max_48 - close_min_48) > (close_min_48 * 0.04))
+          # FIRST entry into the 0.5-0.618 retrace band of the down-impulse (from below)
+          _fib_rng_663 = close_max_48 - close_min_48
+          _fib_retr_663 = (close - close_min_48) / _fib_rng_663
+          short_entry_logic.append(np_shift(_fib_retr_663, 1) < 0.5)
+          short_entry_logic.append(_fib_retr_663 >= 0.5)
+          short_entry_logic.append(_fib_retr_663 <= 0.618)
 
         short_entry_logic.append(df["volume"] > 0)
         item_short_entry = _and_entry_conditions(short_entry_logic)
