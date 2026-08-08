@@ -887,6 +887,9 @@ class NostalgiaForInfinityX7(IStrategy):
     "long_entry_condition_63_enable": True,
     "long_entry_condition_64_enable": True,
     "long_entry_condition_65_enable": True,
+    "long_entry_condition_67_enable": False,
+    "long_entry_condition_70_enable": False,
+    "long_entry_condition_71_enable": False,
     "long_entry_condition_101_enable": True,
     "long_entry_condition_102_enable": True,
     "long_entry_condition_103_enable": True,
@@ -12980,7 +12983,13 @@ class NostalgiaForInfinityX7(IStrategy):
     bbb_20_2_0_1h = np_view("BBB_20_2.0_1h")
     bbl_20_2_0 = np_view("BBL_20_2.0")
     bbu_20_2_0 = np_view("BBU_20_2.0")
-    bbp_20_2_0 = (close - bbl_20_2_0) / (bbu_20_2_0 - bbl_20_2_0)
+    _bb_rng = bbu_20_2_0 - bbl_20_2_0
+    bbp_20_2_0 = np.divide(close - bbl_20_2_0, _bb_rng, out=np.full_like(_bb_rng, np.nan), where=_bb_rng != 0)
+    # 1h band position for confluence signals (67/70/71 family)
+    bbl_20_2_0_1h = np_view("BBL_20_2.0_1h")
+    bbu_20_2_0_1h = np_view("BBU_20_2.0_1h")
+    _bb_rng_1h = bbu_20_2_0_1h - bbl_20_2_0_1h
+    bbp_20_2_0_1h = np.divide(close - bbl_20_2_0_1h, _bb_rng_1h, out=np.full_like(_bb_rng_1h, np.nan), where=_bb_rng_1h != 0)
     cci_20_change_pct_1h = np_view("CCI_20_change_pct_1h")
     cci_20_1h = np_view("CCI_20_1h")
     cci_20_4h = np_view("CCI_20_4h")
@@ -13026,6 +13035,8 @@ class NostalgiaForInfinityX7(IStrategy):
     num_empty_288 = np_view("num_empty_288")
     protections_long_global = np_view("protections_long_global")
     protections_short_global = np_view("protections_short_global")
+    global_protections_long_pump = np_view("global_protections_long_pump")
+    global_protections_long_dump = np_view("global_protections_long_dump")
     global_protections_short_pump = np_view("global_protections_short_pump")
     global_protections_short_dump = np_view("global_protections_short_dump")
     roc_2 = np_view("ROC_2")
@@ -21975,6 +21986,143 @@ class NostalgiaForInfinityX7(IStrategy):
             & (close > bbu_20_2_0)
             & (ema_12 > ema_26)
           )
+
+        # Condition #67 - Momentum Continuation (Long, experimental).
+        if long_entry_condition_index == 67:
+          # Protections
+          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          long_entry_logic.append(protections_long_global == True)
+          long_entry_logic.append(
+            ((roc_9_1d > -5.0) | (rsi_3_1d > 40.0))
+            & ((roc_9_4h > -3.0) | (rsi_3_4h > 50.0))
+            & (roc_9_1d < 25.0)
+            & (roc_9_4h < 15.0)
+            & (roc_9_1h < 10.0)
+            & (rsi_3 < 88.0)
+            & (rsi_3_15m < 85.0)
+            & (rsi_3_1h < 80.0)
+            & (rsi_3_4h < 80.0)
+            & (stochrsi_k < 90.0)
+            & (stochrsi_k_1h < 85.0)
+            & (stochrsi_k_4h < 85.0)
+            & (willr_14 < -10.0)
+            & (mfi_14 > 40.0)
+            & (cmf_20 > -0.10)
+            & (bbb_20_2_0 < 20.0)
+            & (close < (close_max_48 * 0.985))
+            & ((rsi_3 > 10.0) | (rsi_3_1h > 20.0) | (roc_9_1d > 0.0))
+            & ((rsi_3_15m > 10.0) | (rsi_3_1h > 15.0) | (roc_9_4h > -5.0))
+            & ((rsi_3_1h > 20.0) | (rsi_3_4h > 25.0) | (aroonu_14_4h < 60.0))
+            & ((rsi_3_15m > 20.0) | (rsi_3_1h > 30.0) | (rsi_3_4h > 35.0))
+            # 1h already rolling over — continuation into a fading hour
+            & ((willr_14_1h > -35.0) | (aroonu_14_4h > 60.0) | (rsi_3_1h > 65.0))
+            # washed-out daily + rolling 4h — the trend is already dead
+            & ((rsi_3_1d > 40.0) | (roc_9_4h > 2.0) | (cci_20_4h > -20.0))
+          )
+          # Logic — full EMA-fan alignment, mature uptrend continuation
+          long_entry_logic.append(((ema_9 - ema_50) / close * 100.0) > 0.5)
+          long_entry_logic.append(rsi_14_1d > 50.0)
+          long_entry_logic.append(rsi_3_1h < 80.0)
+          long_entry_logic.append(cmf_20_1h > 0.0)
+          long_entry_logic.append(close > ema_9)
+          long_entry_logic.append(close > ema_12)
+          long_entry_logic.append(close > ema_26)
+          long_entry_logic.append(close > ema_50)
+          long_entry_logic.append(close > ema_200)
+          long_entry_logic.append(ema_9 > ema_26)
+          long_entry_logic.append(ema_26 > ema_200)
+          long_entry_logic.append(rsi_14 > 55.0)
+          long_entry_logic.append(rsi_14 < 65.0)
+          long_entry_logic.append(aroonu_14 > 75.0)
+          long_entry_logic.append(rsi_14_1h > 50.0)
+          long_entry_logic.append(rsi_14_1h < 70.0)
+          long_entry_logic.append(rsi_14_4h > 48.0)
+          long_entry_logic.append(rsi_14_4h < 68.0)
+          long_entry_logic.append(bbp_20_2_0 > 0.55)
+          long_entry_logic.append(bbp_20_2_0 < 0.85)
+          long_entry_logic.append(obv_change_pct > 0.0)
+          long_entry_logic.append(willr_14 > -40.0)
+          long_entry_logic.append(willr_14 < -15.0)
+
+        # Condition #70 - CCI Divergence + AROON Trend Birth (Long, experimental).
+        if long_entry_condition_index == 70:
+          # Protections
+          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          long_entry_logic.append(protections_long_global == True)
+          long_entry_logic.append(global_protections_long_pump == True)
+          long_entry_logic.append(global_protections_long_dump == True)
+          long_entry_logic.append(rsi_14_1d > 30.0)
+          long_entry_logic.append(roc_9_1d > -20.0)
+          long_entry_logic.append(rsi_14_4h > 25.0)
+          long_entry_logic.append(
+            (ema_12_4h > ema_200_4h) | (rsi_14_4h > 35.0) | (roc_9_4h > -5.0)
+          )
+          long_entry_logic.append(
+            ((rsi_3 > 3.0) | (rsi_3_15m > 5.0) | (rsi_3_1h > 10.0))
+            & ((rsi_3_15m > 5.0) | (rsi_3_1h > 15.0) | (aroonu_14_4h < 90.0))
+            & ((rsi_3_1h > 10.0) | (rsi_3_4h > 20.0) | (stochrsi_k_4h < 60.0))
+            & ((rsi_3_15m > 10.0) | (rsi_3_4h > 25.0) | (roc_9_1d > -10.0))
+          )
+          long_entry_logic.append(
+            (rsi_3_1d > 20.0) | (roc_2_1d > -3.0) | (cmf_20_1d > -0.10)
+          )
+          # deep daily outflow (distribution) with no washout — knife, not a dip
+          long_entry_logic.append(
+            (cmf_20_1d > -0.30) | (rsi_3_1d > 65.0) | (roc_9_4h < -15.0)
+          )
+          # Logic — 1h CCI recovering from oversold + fresh 15m AROON upswing
+          long_entry_logic.append(cci_20_1h < -50.0)
+          long_entry_logic.append(cci_20_1h > -200.0)
+          long_entry_logic.append(cci_20_change_pct_1h > 0.0)
+          long_entry_logic.append(aroonu_14_15m > 50.0)
+          long_entry_logic.append(aroonu_14 > 25.0)
+          long_entry_logic.append(rsi_14 < 45.0)
+          long_entry_logic.append(rsi_14 > 20.0)
+          long_entry_logic.append(mfi_14 > 30.0)
+          long_entry_logic.append(cmf_20_1h > -0.05)
+          long_entry_logic.append(close < (close_max_48 * 0.95))
+          long_entry_logic.append(close > close_min_48)
+          long_entry_logic.append(stochrsi_k < 30.0)
+
+        # Condition #71 - MFI/CMF Double Divergence + BB Reversion (Long, experimental).
+        if long_entry_condition_index == 71:
+          # Protections
+          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          long_entry_logic.append(protections_long_global == True)
+          long_entry_logic.append(global_protections_long_pump == True)
+          long_entry_logic.append(global_protections_long_dump == True)
+          long_entry_logic.append(rsi_14_1d > 30.0)
+          long_entry_logic.append(roc_9_1d > -20.0)
+          long_entry_logic.append(
+            (ema_12_4h > ema_200_4h) | (rsi_14_4h > 40.0)
+          )
+          long_entry_logic.append(
+            ((rsi_3 > 2.0) | (rsi_3_15m > 5.0) | (aroonu_14_1h < 80.0))
+            & ((rsi_3_15m > 5.0) | (rsi_3_1h > 10.0) | (roc_9_4h > -10.0))
+            & ((rsi_3_1h > 8.0) | (rsi_3_4h > 15.0) | (stochrsi_k_1d < 50.0))
+            & ((rsi_3_15m > 8.0) | (cmf_20_4h > -0.15) | (aroonu_14_4h < 70.0))
+            & ((rsi_3_4h > 15.0) | (roc_9_1d > -15.0))
+          )
+          long_entry_logic.append(
+            (rsi_14_1h > 22.0) | (rsi_14_4h > 25.0)
+          )
+          # post-pump slow bleed: daily still inflated while 4h drifts slightly
+          # negative (0..-15) = distribution, not a dip; real dips wash out below -15
+          long_entry_logic.append(
+            (roc_9_1d < 25.0) | (roc_9_4h > 0.0) | (roc_9_4h < -15.0)
+          )
+          # Logic — MFI & CMF both positive (accumulation) at the BB lower band
+          long_entry_logic.append(mfi_14 > 30.0)
+          long_entry_logic.append(cmf_20 > 0.02)
+          long_entry_logic.append(willr_14 < -80.0)
+          long_entry_logic.append(willr_14_1h < -45.0)
+          long_entry_logic.append(close < (bbl_20_2_0 * 1.015))
+          long_entry_logic.append(bbb_20_2_0 > 6.0)
+          long_entry_logic.append(rsi_14 < 40.0)
+          long_entry_logic.append(rsi_14 > 15.0)
+          long_entry_logic.append(rsi_3 > 3.0)
+          long_entry_logic.append(rsi_14_1h > 25.0)
+          long_entry_logic.append(bbp_20_2_0_1h > 0.05)
 
         # Condition #101 - Rapid mode (Long).
         if long_entry_condition_index == 101:
