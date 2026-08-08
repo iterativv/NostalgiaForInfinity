@@ -141,7 +141,7 @@ class NostalgiaForInfinityX7(IStrategy):
   # Long top coins mode tags
   long_top_coins_mode_tags = ["141", "142", "143", "144", "145"]
   # Long scalp mode tags
-  long_scalp_mode_tags = ["161", "162", "163", "164", "165", "166", "167"]
+  long_scalp_mode_tags = ["161", "162", "163", "164", "165", "166", "167", "168"]
 
   long_rebuy_grind_mode_tags = long_rebuy_mode_tags + long_grind_mode_tags
   long_scalp_rebuy_grind_mode_tags = long_scalp_mode_tags + long_rebuy_mode_tags + long_grind_mode_tags
@@ -201,7 +201,7 @@ class NostalgiaForInfinityX7(IStrategy):
   # Short top coins mode tags
   short_top_coins_mode_tags = ["641", "642"]
   # Short scalp mode tags
-  short_scalp_mode_tags = ["661", "662", "663", "664", "665"]
+  short_scalp_mode_tags = ["661", "662", "663", "664", "665", "666"]
 
   short_rebuy_grind_mode_tags = short_rebuy_mode_tags + short_grind_mode_tags
   short_scalp_rebuy_grind_mode_tags = short_scalp_mode_tags + short_rebuy_mode_tags + short_grind_mode_tags
@@ -910,6 +910,7 @@ class NostalgiaForInfinityX7(IStrategy):
     "long_entry_condition_165_enable": False,
     "long_entry_condition_166_enable": False,
     "long_entry_condition_167_enable": False,
+    "long_entry_condition_168_enable": False,
   }
 
   short_entry_signal_params = {
@@ -934,6 +935,7 @@ class NostalgiaForInfinityX7(IStrategy):
     "short_entry_condition_663_enable": False,
     "short_entry_condition_664_enable": False,
     "short_entry_condition_665_enable": False,
+    "short_entry_condition_666_enable": False,
     # "short_entry_condition_603_enable": True,
     # "short_entry_condition_641_enable": True,
     # "short_entry_condition_642_enable": True,
@@ -4184,12 +4186,21 @@ class NostalgiaForInfinityX7(IStrategy):
     _eng_pc = pd.Series(close_np).shift(1).to_numpy()
     engulf_bull_col = ((_eng_pc < _eng_po) & (close_np > open_np) & (close_np >= _eng_po) & (open_np <= _eng_pc)).astype(float)
     engulf_bear_col = ((_eng_pc > _eng_po) & (close_np < open_np) & (close_np <= _eng_po) & (open_np >= _eng_pc)).astype(float)
+
+    # Swing-failure pattern (SFP) — signals 168/666 (experimental): sweep & reclaim of the prior 48-candle extreme
+    _sfp_prev_low = pd.Series(low_np).rolling(48).min().shift(1).to_numpy()
+    _sfp_prev_high = pd.Series(high_np).rolling(48).max().shift(1).to_numpy()
+    sfp_bull_col = ((low_np < _sfp_prev_low) & (close_np > _sfp_prev_low)).astype(float)
+    sfp_bear_col = ((high_np > _sfp_prev_high) & (close_np < _sfp_prev_high)).astype(float)
     new_cols = pd.DataFrame(
       {
         "RSI_3": rsi_3,
         "RSI_4": rsi_4,
         "ENGULF_BULL": engulf_bull_col,
         "ENGULF_BEAR": engulf_bear_col,
+
+        "SFP_BULL": sfp_bull_col,
+        "SFP_BEAR": sfp_bear_col,
         "RSI_14": rsi_14,
         "RSI_20": rsi_20,
         "RSI_14_change_pct": rsi_14_change,
@@ -13050,6 +13061,9 @@ class NostalgiaForInfinityX7(IStrategy):
 
     engulf_bull = np_view("ENGULF_BULL")
     engulf_bear = np_view("ENGULF_BEAR")
+
+    sfp_bull = np_view("SFP_BULL")
+    sfp_bear = np_view("SFP_BEAR")
     global_protections_short_pump = np_view("global_protections_short_pump")
     global_protections_short_dump = np_view("global_protections_short_dump")
     roc_2 = np_view("ROC_2")
@@ -26024,6 +26038,13 @@ class NostalgiaForInfinityX7(IStrategy):
           long_entry_logic.append(rsi_14 > 50.0)
           long_entry_logic.append(engulf_bull > 0.5)
 
+        # Condition #168 - Swing-failure pattern (Long, experimental, RAW — liquidity-sweep reclaim).
+        if long_entry_condition_index == 168:
+          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          long_entry_logic.append(protections_long_global == True)
+          # prior 48-candle low swept by the wick, candle closes back above it
+          long_entry_logic.append(sfp_bull > 0.5)
+
         # Condition #192 - Quad-rotation stochastic pullback (Long, experimental).
         if long_entry_condition_index == 192:
           # --- Protections ---
@@ -28078,6 +28099,13 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(close < ema_200)
           short_entry_logic.append(rsi_14 < 50.0)
           short_entry_logic.append(engulf_bear > 0.5)
+
+        # Condition #666 - Swing-failure pattern (Short, experimental, RAW — mirror).
+        if short_entry_condition_index == 666:
+          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          short_entry_logic.append(protections_short_global == True)
+          # prior 48-candle high swept by the wick, candle closes back below it
+          short_entry_logic.append(sfp_bear > 0.5)
 
         # Condition #592 - Quad-rotation stochastic pullback (Short, experimental).
         if short_entry_condition_index == 592:
