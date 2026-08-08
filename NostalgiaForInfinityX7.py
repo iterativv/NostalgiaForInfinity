@@ -901,6 +901,8 @@ class NostalgiaForInfinityX7(IStrategy):
     "long_entry_condition_161_enable": True,
     "long_entry_condition_162_enable": True,
     "long_entry_condition_163_enable": True,
+    "long_entry_condition_192_enable": False,
+    "long_entry_condition_193_enable": False,
   }
 
   short_entry_signal_params = {
@@ -919,6 +921,8 @@ class NostalgiaForInfinityX7(IStrategy):
     "short_entry_condition_561_enable": False,
     "short_entry_condition_562_enable": True,
     "short_entry_condition_563_enable": False,
+    "short_entry_condition_592_enable": False,
+    "short_entry_condition_593_enable": False,
     # "short_entry_condition_603_enable": True,
     # "short_entry_condition_641_enable": True,
     # "short_entry_condition_642_enable": True,
@@ -4140,6 +4144,15 @@ class NostalgiaForInfinityX7(IStrategy):
     cvd_buy_vol = volume_np * (close_np - low_np) / hl_range_safe
     cvd_sell_vol = volume_np * (high_np - close_np) / hl_range_safe
 
+    # Quad-rotation raw stochastics + pivot windows (signals 192/193 long, 592/593 short — experimental)
+    quad_s93 = ta.STOCHF(high_np, low_np, close_np, fastk_period=9, fastd_period=3, fastd_matype=0)[0]
+    quad_s143 = ta.STOCHF(high_np, low_np, close_np, fastk_period=14, fastd_period=3, fastd_matype=0)[0]
+    quad_s44 = ta.STOCHF(high_np, low_np, close_np, fastk_period=4, fastd_period=4, fastd_matype=0)[0]
+    quad_s6010 = ta.STOCHF(high_np, low_np, close_np, fastk_period=60, fastd_period=10, fastd_matype=0)[0]
+    quad_low_min_12 = pd.Series(low_np).rolling(12).min().to_numpy()
+    quad_high_max_12 = pd.Series(high_np).rolling(12).max().to_numpy()
+    quad_s93_min_12 = pd.Series(quad_s93).rolling(12).min().to_numpy()
+    quad_s93_max_12 = pd.Series(quad_s93).rolling(12).max().to_numpy()
     new_cols = pd.DataFrame(
       {
         "RSI_3": rsi_3,
@@ -4190,6 +4203,14 @@ class NostalgiaForInfinityX7(IStrategy):
         "LARGE_BUBBLE_THR": large_bubble_thr,
         "CVD_BUY_VOL": cvd_buy_vol,
         "CVD_SELL_VOL": cvd_sell_vol,
+        "STOCH_9_3": quad_s93,
+        "STOCH_14_3": quad_s143,
+        "STOCH_4_4": quad_s44,
+        "STOCH_60_10": quad_s6010,
+        "QUAD_LOW_MIN_12": quad_low_min_12,
+        "QUAD_HIGH_MAX_12": quad_high_max_12,
+        "QUAD_S93_MIN_12": quad_s93_min_12,
+        "QUAD_S93_MAX_12": quad_s93_max_12,
       },
       index=df.index,
     )
@@ -12895,6 +12916,14 @@ class NostalgiaForInfinityX7(IStrategy):
     stochrsi_k_1d = np_view("STOCHRSIk_14_14_3_3_1d")
     rsi_3 = np_view("RSI_3")
     close = np_view("close")
+    stoch_9_3 = np_view("STOCH_9_3")
+    stoch_14_3 = np_view("STOCH_14_3")
+    stoch_4_4 = np_view("STOCH_4_4")
+    stoch_60_10 = np_view("STOCH_60_10")
+    quad_low_min_12 = np_view("QUAD_LOW_MIN_12")
+    quad_high_max_12 = np_view("QUAD_HIGH_MAX_12")
+    quad_s93_min_12 = np_view("QUAD_S93_MIN_12")
+    quad_s93_max_12 = np_view("QUAD_S93_MAX_12")
     bbp_20_2_0_4h = np_view("BBP_20_2.0_4h")
     obv_change_pct = np_view("OBV_change_pct")
     open_rate = np_view("open")
@@ -25788,6 +25817,39 @@ class NostalgiaForInfinityX7(IStrategy):
 
         ###############################################################################################
 
+        # Condition #192 - Quad-rotation stochastic pullback (Long, experimental).
+        if long_entry_condition_index == 192:
+          # --- Protections ---
+          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          long_entry_logic.append(protections_long_global == True)
+          # Round 1 (API3 loss): block long-divergence with no reversal signs (knife)
+          long_entry_logic.append((rsi_3_15m > 30.0) | (roc_9_1h > 1.0) | (aroond_14 < 90.0) | (cmf_20 > 0.12))
+          # Round 2 (SOL x2 loss): block mid-1h-RSI (55-65) downtrend dip (not oversold enough to bounce)
+          long_entry_logic.append((rsi_14_1h < 55.0) | (rsi_14_1h > 65.0) | (roc_9_1d > 0.0))
+          # Round 3 (RUNE loss): 1d capitulation + money outflow = knife; need 1d alive OR inflow
+          long_entry_logic.append((rsi_3_1d > 15.0) | (cmf_20 > -0.10))
+          # --- Logic: embedded up-regime + quad-oversold pullback + 5-candle shift kink ---
+          long_entry_logic.append(stoch_60_10 > 80.0)
+          long_entry_logic.append(stoch_9_3 < 20.0)
+          long_entry_logic.append(stoch_14_3 < 20.0)
+          long_entry_logic.append(stoch_4_4 < 20.0)
+          long_entry_logic.append(close < np_shift(close, 5))
+          long_entry_logic.append(stoch_9_3 > np_shift(stoch_9_3, 5))
+
+        # Condition #193 - Quad-rotation TRUE pivot divergence (Long, experimental).
+        if long_entry_condition_index == 193:
+          # --- Protections ---
+          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          long_entry_logic.append(protections_long_global == True)
+          # --- Logic: embedded up-regime + quad-oversold + two-pivot bullish divergence ---
+          long_entry_logic.append(stoch_60_10 > 80.0)
+          long_entry_logic.append(stoch_9_3 < 20.0)
+          long_entry_logic.append(stoch_14_3 < 20.0)
+          long_entry_logic.append(stoch_4_4 < 20.0)
+          # price LOWER-LOW across swing windows while stoch makes a HIGHER-LOW (real divergence)
+          long_entry_logic.append(quad_low_min_12 < np_shift(quad_low_min_12, 12))
+          long_entry_logic.append(quad_s93_min_12 > np_shift(quad_s93_min_12, 12))
+
         long_entry_logic.append(df["volume"] > 0)
         item_long_entry = _and_entry_conditions(long_entry_logic)
         _append_entry_tag(entry_tags, item_long_entry, f"{long_entry_condition_index} ")
@@ -27755,6 +27817,46 @@ class NostalgiaForInfinityX7(IStrategy):
         # SHORT ENTRY CONDITIONS ENDS HERE
 
         ###############################################################################################
+
+        # Condition #592 - Quad-rotation stochastic pullback (Short, experimental).
+        if short_entry_condition_index == 592:
+          # --- Protections ---
+          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          short_entry_logic.append(protections_short_global == True)
+          # Round 1 (GRIFFAIN loss): block short while uptrend still has legs
+          short_entry_logic.append((roc_9_1d < 2.5) | (aroonu_14 < 100.0) | (aroonu_14_1h < 65.0) | (roc_9_1h < -5.5) | (cmf_20 < 0.0) | (rsi_14_1h > 40.0))
+          # Round 2 (XRP loss)
+          short_entry_logic.append((roc_9_1d < 2.0) | (rsi_14_1h > 42.0) | (rsi_3_15m > 65.0) | (cmf_20 > 0.15) | (aroonu_14_1h > 40.0) | (roc_9_1h < -5.0))
+          # Round 3 (API3/UNI loss)
+          short_entry_logic.append((roc_9_1d < 0.0) | (roc_9_1h < -5.0) | (rsi_14_1h > 32.0) | (mfi_14_15m > 25.0))
+          # Round 4 (EIGEN/DODOX loss)
+          short_entry_logic.append((cmf_20 < 0.15) | (roc_9_1d < -3.0) | (roc_9_1d > 5.0) | (rsi_14_1h > 50.0))
+          # Round 5 (CHZ loss): deep 1d downtrend + heavy money INFLOW at entry = squeeze fuel
+          short_entry_logic.append((mfi_14 < 70.0) | (roc_9_1d > -10.0))
+          # --- Logic: embedded down-regime + quad-overbought bounce + 5-candle shift kink ---
+          short_entry_logic.append(stoch_60_10 < 20.0)
+          short_entry_logic.append(stoch_9_3 > 80.0)
+          short_entry_logic.append(stoch_14_3 > 80.0)
+          short_entry_logic.append(stoch_4_4 > 80.0)
+          short_entry_logic.append(close > np_shift(close, 5))
+          short_entry_logic.append(stoch_9_3 < np_shift(stoch_9_3, 5))
+
+        # Condition #593 - Quad-rotation TRUE pivot divergence (Short, experimental).
+        if short_entry_condition_index == 593:
+          # --- Protections ---
+          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          short_entry_logic.append(protections_short_global == True)
+          # Round 1 (UNI loss): 1h washed-out + 1d overbought & rising = bounce squeeze; need 1h strength
+          # OR 1d not stretched OR 1d already down OR 4h stoch off the floor
+          short_entry_logic.append((rsi_14_1h > 30.0) | (stochrsi_k_1d < 80.0) | (roc_9_1d < 0.0) | (stochrsi_k_4h > 10.0))
+          # --- Logic: embedded down-regime + quad-overbought + two-pivot bearish divergence ---
+          short_entry_logic.append(stoch_60_10 < 20.0)
+          short_entry_logic.append(stoch_9_3 > 80.0)
+          short_entry_logic.append(stoch_14_3 > 80.0)
+          short_entry_logic.append(stoch_4_4 > 80.0)
+          # price HIGHER-HIGH across swing windows while stoch makes a LOWER-HIGH (real divergence)
+          short_entry_logic.append(quad_high_max_12 > np_shift(quad_high_max_12, 12))
+          short_entry_logic.append(quad_s93_max_12 < np_shift(quad_s93_max_12, 12))
 
         short_entry_logic.append(df["volume"] > 0)
         item_short_entry = _and_entry_conditions(short_entry_logic)
