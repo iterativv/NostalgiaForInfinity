@@ -141,7 +141,7 @@ class NostalgiaForInfinityX7(IStrategy):
   # Long top coins mode tags
   long_top_coins_mode_tags = ["141", "142", "143", "144", "145"]
   # Long scalp mode tags
-  long_scalp_mode_tags = ["161", "162", "163", "164", "165"]
+  long_scalp_mode_tags = ["161", "162", "163", "164", "165", "166"]
 
   long_rebuy_grind_mode_tags = long_rebuy_mode_tags + long_grind_mode_tags
   long_scalp_rebuy_grind_mode_tags = long_scalp_mode_tags + long_rebuy_mode_tags + long_grind_mode_tags
@@ -201,7 +201,7 @@ class NostalgiaForInfinityX7(IStrategy):
   # Short top coins mode tags
   short_top_coins_mode_tags = ["641", "642"]
   # Short scalp mode tags
-  short_scalp_mode_tags = ["661", "662", "663"]
+  short_scalp_mode_tags = ["661", "662", "663", "664"]
 
   short_rebuy_grind_mode_tags = short_rebuy_mode_tags + short_grind_mode_tags
   short_scalp_rebuy_grind_mode_tags = short_scalp_mode_tags + short_rebuy_mode_tags + short_grind_mode_tags
@@ -908,6 +908,7 @@ class NostalgiaForInfinityX7(IStrategy):
     "long_entry_condition_193_enable": False,
     "long_entry_condition_164_enable": False,
     "long_entry_condition_165_enable": False,
+    "long_entry_condition_166_enable": False,
   }
 
   short_entry_signal_params = {
@@ -930,6 +931,7 @@ class NostalgiaForInfinityX7(IStrategy):
     "short_entry_condition_593_enable": False,
     "short_entry_condition_662_enable": False,
     "short_entry_condition_663_enable": False,
+    "short_entry_condition_664_enable": False,
     # "short_entry_condition_603_enable": True,
     # "short_entry_condition_641_enable": True,
     # "short_entry_condition_642_enable": True,
@@ -4166,6 +4168,14 @@ class NostalgiaForInfinityX7(IStrategy):
     _or_valid = df["date"].dt.hour >= 4
     orange_h_col = df["high"].where(_or_first4h).groupby(_or_day).transform("max").where(_or_valid).to_numpy()
     orange_l_col = df["low"].where(_or_first4h).groupby(_or_day).transform("min").where(_or_valid).to_numpy()
+
+    # Squeeze Momentum (LazyBear) — signals 166/664 (experimental): BB inside Keltner = coil
+    _sq_ma = pd.Series(close_np).rolling(20).mean()
+    _sq_rng = pd.Series(high_np - low_np).rolling(20).mean()
+    _sq_kc_u = (_sq_ma + 1.5 * _sq_rng).to_numpy()
+    _sq_kc_l = (_sq_ma - 1.5 * _sq_rng).to_numpy()
+    sqz_on_col = ((bb_lower_20 > _sq_kc_l) & (bb_upper_20 < _sq_kc_u)).astype(float)
+    sqz_cnt24_col = pd.Series(sqz_on_col).rolling(24).sum().to_numpy()
     new_cols = pd.DataFrame(
       {
         "RSI_3": rsi_3,
@@ -4218,6 +4228,9 @@ class NostalgiaForInfinityX7(IStrategy):
         "CVD_SELL_VOL": cvd_sell_vol,
         "ORANGE_H": orange_h_col,
         "ORANGE_L": orange_l_col,
+
+        "SQZ_ON": sqz_on_col,
+        "SQZ_CNT_24": sqz_cnt24_col,
         "STOCH_9_3": quad_s93,
         "STOCH_14_3": quad_s143,
         "STOCH_4_4": quad_s44,
@@ -12935,6 +12948,9 @@ class NostalgiaForInfinityX7(IStrategy):
     orange_l = np_view("ORANGE_L")
     willr_14_4h = np_view("WILLR_14_4h")
     stoch_k_4h = np_view("STOCHk_14_3_3_4h")
+
+    sqz_on = np_view("SQZ_ON")
+    sqz_cnt_24 = np_view("SQZ_CNT_24")
     stoch_9_3 = np_view("STOCH_9_3")
     stoch_14_3 = np_view("STOCH_14_3")
     stoch_4_4 = np_view("STOCH_4_4")
@@ -26044,6 +26060,17 @@ class NostalgiaForInfinityX7(IStrategy):
           long_entry_logic.append(_fib_retr_165 >= 0.5)
           long_entry_logic.append(_fib_retr_165 <= 0.618)
 
+        # Condition #166 - Squeeze Momentum release (Long, experimental, RAW — LazyBear port).
+        if long_entry_condition_index == 166:
+          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          long_entry_logic.append(protections_long_global == True)
+          # squeeze RELEASE this candle after a coil (>=12 of the prior 24 candles squeezed)
+          long_entry_logic.append(np_shift(sqz_on, 1) > 0.5)
+          long_entry_logic.append(sqz_on < 0.5)
+          long_entry_logic.append(np_shift(sqz_cnt_24, 1) >= 12.0)
+          # expansion direction: close breaks through the upper band
+          long_entry_logic.append(close > bbu_20_2_0)
+
         long_entry_logic.append(df["volume"] > 0)
         item_long_entry = _and_entry_conditions(long_entry_logic)
         _append_entry_tag(entry_tags, item_long_entry, f"{long_entry_condition_index} ")
@@ -28080,6 +28107,16 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(np_shift(_fib_retr_663, 1) < 0.5)
           short_entry_logic.append(_fib_retr_663 >= 0.5)
           short_entry_logic.append(_fib_retr_663 <= 0.618)
+
+        # Condition #664 - Squeeze Momentum release (Short, experimental, RAW — mirror).
+        if short_entry_condition_index == 664:
+          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          short_entry_logic.append(protections_short_global == True)
+          short_entry_logic.append(np_shift(sqz_on, 1) > 0.5)
+          short_entry_logic.append(sqz_on < 0.5)
+          short_entry_logic.append(np_shift(sqz_cnt_24, 1) >= 12.0)
+          # expansion direction: close breaks through the lower band
+          short_entry_logic.append(close < bbl_20_2_0)
 
         short_entry_logic.append(df["volume"] > 0)
         item_short_entry = _and_entry_conditions(short_entry_logic)
