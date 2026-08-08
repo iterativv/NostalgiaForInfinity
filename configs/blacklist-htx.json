@@ -34,7 +34,7 @@
       // Tokenized stocks (STOCK suffix — universal forward-protection)
       ".*STOCK/.*",
       // Tokenized stocks (direct ticker, no STOCK suffix)
-      "(NVDA|AAPL|AMD|ARM|ASTS|CRWV|DELL|GOOGL|IREN|LITE|MRVL|MSFT|MSTR|MU|NBIS|QCOM|SNDK|SPCX|AAOI|APLD|AVGO|BABA|BE|COHR|IONQ|META|SQQQ|TQQQ|TSM|AMZN|COIN|CRCL|HOOD|INTC|PLTR|TSLA)/.*",
+      "(AAPL|AMD|ARM|ASTS|CRWV|DELL|GOOGL|IREN|LITE|MRVL|MU|NBIS|QCOM|SNDK|SPCX|AAOI|APLD|AVGO|BABA|BE|COHR|IONQ|META|SQQQ|TQQQ|TSM|AMZN|HOOD|INTC|PLTR|TSLA)/.*",
       // Commodities (tokenized energy/metal perps — crypto gold XAUT/PAXG kept above)
       "(CL|BZ|NATGAS|XPT)/.*",
       // Tokenized stocks (X-suffix)
