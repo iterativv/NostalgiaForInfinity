@@ -141,7 +141,7 @@ class NostalgiaForInfinityX7(IStrategy):
   # Long top coins mode tags
   long_top_coins_mode_tags = ["141", "142", "143", "144", "145"]
   # Long scalp mode tags
-  long_scalp_mode_tags = ["161", "162", "163", "164", "165", "166"]
+  long_scalp_mode_tags = ["161", "162", "163", "164", "165", "166", "167"]
 
   long_rebuy_grind_mode_tags = long_rebuy_mode_tags + long_grind_mode_tags
   long_scalp_rebuy_grind_mode_tags = long_scalp_mode_tags + long_rebuy_mode_tags + long_grind_mode_tags
@@ -201,7 +201,7 @@ class NostalgiaForInfinityX7(IStrategy):
   # Short top coins mode tags
   short_top_coins_mode_tags = ["641", "642"]
   # Short scalp mode tags
-  short_scalp_mode_tags = ["661", "662", "663", "664"]
+  short_scalp_mode_tags = ["661", "662", "663", "664", "665"]
 
   short_rebuy_grind_mode_tags = short_rebuy_mode_tags + short_grind_mode_tags
   short_scalp_rebuy_grind_mode_tags = short_scalp_mode_tags + short_rebuy_mode_tags + short_grind_mode_tags
@@ -909,6 +909,7 @@ class NostalgiaForInfinityX7(IStrategy):
     "long_entry_condition_164_enable": False,
     "long_entry_condition_165_enable": False,
     "long_entry_condition_166_enable": False,
+    "long_entry_condition_167_enable": False,
   }
 
   short_entry_signal_params = {
@@ -932,6 +933,7 @@ class NostalgiaForInfinityX7(IStrategy):
     "short_entry_condition_662_enable": False,
     "short_entry_condition_663_enable": False,
     "short_entry_condition_664_enable": False,
+    "short_entry_condition_665_enable": False,
     # "short_entry_condition_603_enable": True,
     # "short_entry_condition_641_enable": True,
     # "short_entry_condition_642_enable": True,
@@ -4176,10 +4178,18 @@ class NostalgiaForInfinityX7(IStrategy):
     _sq_kc_l = (_sq_ma - 1.5 * _sq_rng).to_numpy()
     sqz_on_col = ((bb_lower_20 > _sq_kc_l) & (bb_upper_20 < _sq_kc_u)).astype(float)
     sqz_cnt24_col = pd.Series(sqz_on_col).rolling(24).sum().to_numpy()
+
+    # Engulfing candle pattern — signals 167/665 (experimental): opposite-color body engulf
+    _eng_po = pd.Series(open_np).shift(1).to_numpy()
+    _eng_pc = pd.Series(close_np).shift(1).to_numpy()
+    engulf_bull_col = ((_eng_pc < _eng_po) & (close_np > open_np) & (close_np >= _eng_po) & (open_np <= _eng_pc)).astype(float)
+    engulf_bear_col = ((_eng_pc > _eng_po) & (close_np < open_np) & (close_np <= _eng_po) & (open_np >= _eng_pc)).astype(float)
     new_cols = pd.DataFrame(
       {
         "RSI_3": rsi_3,
         "RSI_4": rsi_4,
+        "ENGULF_BULL": engulf_bull_col,
+        "ENGULF_BEAR": engulf_bear_col,
         "RSI_14": rsi_14,
         "RSI_20": rsi_20,
         "RSI_14_change_pct": rsi_14_change,
@@ -13037,6 +13047,9 @@ class NostalgiaForInfinityX7(IStrategy):
     protections_short_global = np_view("protections_short_global")
     global_protections_long_pump = np_view("global_protections_long_pump")
     global_protections_long_dump = np_view("global_protections_long_dump")
+
+    engulf_bull = np_view("ENGULF_BULL")
+    engulf_bear = np_view("ENGULF_BEAR")
     global_protections_short_pump = np_view("global_protections_short_pump")
     global_protections_short_dump = np_view("global_protections_short_dump")
     roc_2 = np_view("ROC_2")
@@ -25997,6 +26010,20 @@ class NostalgiaForInfinityX7(IStrategy):
 
         ###############################################################################################
 
+        # Condition #167 - Engulfing continuation (Long, experimental, RAW — TradingLab port).
+        if long_entry_condition_index == 167:
+          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          long_entry_logic.append(protections_long_global == True)
+          # daily not floored — no continuation in a dead daily
+          long_entry_logic.append(stochrsi_k_1d > 20.0)
+          # 1h momentum actually up, 4h not overheated (anti-chase)
+          long_entry_logic.append(rsi_3_1h > 55.0)
+          long_entry_logic.append(roc_9_4h < 8.0)
+          # uptrend regime + momentum side + bullish engulfing close
+          long_entry_logic.append(close > ema_200)
+          long_entry_logic.append(rsi_14 > 50.0)
+          long_entry_logic.append(engulf_bull > 0.5)
+
         # Condition #192 - Quad-rotation stochastic pullback (Long, experimental).
         if long_entry_condition_index == 192:
           # --- Protections ---
@@ -28038,6 +28065,19 @@ class NostalgiaForInfinityX7(IStrategy):
         # SHORT ENTRY CONDITIONS ENDS HERE
 
         ###############################################################################################
+
+        # Condition #665 - Engulfing continuation (Short, experimental, RAW — mirror).
+        if short_entry_condition_index == 665:
+          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          short_entry_logic.append(protections_short_global == True)
+          # breakdown must be real: price already in the lower half of the range,
+          # 15m momentum actually down (losses were top-of-range fake breakdowns)
+          short_entry_logic.append(willr_14 < -50.0)
+          short_entry_logic.append(rsi_3_15m < 45.0)
+          # downtrend regime + momentum side + bearish engulfing close
+          short_entry_logic.append(close < ema_200)
+          short_entry_logic.append(rsi_14 < 50.0)
+          short_entry_logic.append(engulf_bear > 0.5)
 
         # Condition #592 - Quad-rotation stochastic pullback (Short, experimental).
         if short_entry_condition_index == 592:
