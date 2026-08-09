@@ -71,7 +71,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.515"
+    return "v17.4.516"
 
   stoploss = -0.99
 
@@ -4207,8 +4207,12 @@ class NostalgiaForInfinityX7(IStrategy):
     # Engulfing candle pattern — signals 167/665 (experimental): opposite-color body engulf
     _eng_po = pd.Series(open_np).shift(1).to_numpy()
     _eng_pc = pd.Series(close_np).shift(1).to_numpy()
-    engulf_bull_col = ((_eng_pc < _eng_po) & (close_np > open_np) & (close_np >= _eng_po) & (open_np <= _eng_pc)).astype(float)
-    engulf_bear_col = ((_eng_pc > _eng_po) & (close_np < open_np) & (close_np <= _eng_po) & (open_np >= _eng_pc)).astype(float)
+    engulf_bull_col = (
+      (_eng_pc < _eng_po) & (close_np > open_np) & (close_np >= _eng_po) & (open_np <= _eng_pc)
+    ).astype(float)
+    engulf_bear_col = (
+      (_eng_pc > _eng_po) & (close_np < open_np) & (close_np <= _eng_po) & (open_np >= _eng_pc)
+    ).astype(float)
 
     # Swing-failure pattern (SFP) — signals 168/666 (experimental): sweep & reclaim of the prior 48-candle extreme
     _sfp_prev_low = pd.Series(low_np).rolling(48).min().shift(1).to_numpy()
@@ -4218,7 +4222,9 @@ class NostalgiaForInfinityX7(IStrategy):
     # 1h inside-bar breakout — signals 169/667 (experimental): source insists on 1h+ candles
     _ib_hr = df["date"].dt.floor("1h")
     _ib_agg = df.groupby(_ib_hr).agg(_ib_hh=("high", "max"), _ib_ll=("low", "min"))
-    _ib_agg["_ib_flag"] = (_ib_agg["_ib_hh"] < _ib_agg["_ib_hh"].shift(1)) & (_ib_agg["_ib_ll"] > _ib_agg["_ib_ll"].shift(1))
+    _ib_agg["_ib_flag"] = (_ib_agg["_ib_hh"] < _ib_agg["_ib_hh"].shift(1)) & (
+      _ib_agg["_ib_ll"] > _ib_agg["_ib_ll"].shift(1)
+    )
     _ib_agg["_ib_mh"] = _ib_agg["_ib_hh"].shift(1)
     _ib_agg["_ib_ml"] = _ib_agg["_ib_ll"].shift(1)
     _ib_prev_hr = _ib_hr - pd.Timedelta(hours=1)
@@ -4237,10 +4243,14 @@ class NostalgiaForInfinityX7(IStrategy):
     ph_cross_cnt12_col = pd.Series(_ph_cross).rolling(12).sum().to_numpy()
     # pump character: height above the 24h low + prior-hour activity (both PRE-ignition)
     _ph_low288 = pd.Series(low_np).rolling(288).min().to_numpy()
-    ph_base_pos_col = np.divide(close_np - _ph_low288, close_np, out=np.full_like(close_np, np.nan), where=close_np > 0) * 100.0
+    ph_base_pos_col = (
+      np.divide(close_np - _ph_low288, close_np, out=np.full_like(close_np, np.nan), where=close_np > 0) * 100.0
+    )
     _ph_h12 = pd.Series(high_np).rolling(12).max().shift(1).to_numpy()
     _ph_l12 = pd.Series(low_np).rolling(12).min().shift(1).to_numpy()
-    ph_pre_tight_col = np.divide(_ph_h12 - _ph_l12, close_np, out=np.full_like(close_np, np.nan), where=close_np > 0) * 100.0
+    ph_pre_tight_col = (
+      np.divide(_ph_h12 - _ph_l12, close_np, out=np.full_like(close_np, np.nan), where=close_np > 0) * 100.0
+    )
     # Marubozu — signals 172/670 (experimental): full-body candle = pure momentum ignition
     _mrb_rng = high_np - low_np
     _mrb_body_ratio = np.divide(np.abs(close_np - open_np), _mrb_rng, out=np.zeros_like(_mrb_rng), where=_mrb_rng > 0)
@@ -4254,10 +4264,16 @@ class NostalgiaForInfinityX7(IStrategy):
     _pb_lower = np.minimum(open_np, close_np) - low_np
     _pb_upper = high_np - np.maximum(open_np, close_np)
     _pb_body_safe = np.where(_pb_body > 0, _pb_body, np.nan)
-    hammer_col = np.nan_to_num(((_pb_lower > 2.0 * _pb_body_safe) & (_pb_upper < 0.5 * _pb_body_safe)
-                  & (_pb_lower > close_np * 0.004)).astype(float))
-    star_col = np.nan_to_num(((_pb_upper > 2.0 * _pb_body_safe) & (_pb_lower < 0.5 * _pb_body_safe)
-                & (_pb_upper > close_np * 0.004)).astype(float))
+    hammer_col = np.nan_to_num(
+      ((_pb_lower > 2.0 * _pb_body_safe) & (_pb_upper < 0.5 * _pb_body_safe) & (_pb_lower > close_np * 0.004)).astype(
+        float
+      )
+    )
+    star_col = np.nan_to_num(
+      ((_pb_upper > 2.0 * _pb_body_safe) & (_pb_lower < 0.5 * _pb_body_safe) & (_pb_upper > close_np * 0.004)).astype(
+        float
+      )
+    )
     # Donchian 7-day channel — signals 8/506 (experimental): turtle-style macro breakout
     dc_high_7d_col = pd.Series(close_np).rolling(2016).max().shift(1).to_numpy()
     dc_low_7d_col = pd.Series(close_np).rolling(2016).min().shift(1).to_numpy()
@@ -4282,7 +4298,6 @@ class NostalgiaForInfinityX7(IStrategy):
         "DC_LOW_7D": dc_low_7d_col,
         "ENGULF_BULL": engulf_bull_col,
         "ENGULF_BEAR": engulf_bear_col,
-
         "SFP_BULL": sfp_bull_col,
         "SFP_BEAR": sfp_bear_col,
         "RSI_14": rsi_14,
@@ -4333,7 +4348,6 @@ class NostalgiaForInfinityX7(IStrategy):
         "CVD_SELL_VOL": cvd_sell_vol,
         "ORANGE_H": orange_h_col,
         "ORANGE_L": orange_l_col,
-
         "SQZ_ON": sqz_on_col,
         "SQZ_CNT_24": sqz_cnt24_col,
         "STOCH_9_3": quad_s93,
@@ -13096,7 +13110,9 @@ class NostalgiaForInfinityX7(IStrategy):
     bbl_20_2_0_1h = np_view("BBL_20_2.0_1h")
     bbu_20_2_0_1h = np_view("BBU_20_2.0_1h")
     _bb_rng_1h = bbu_20_2_0_1h - bbl_20_2_0_1h
-    bbp_20_2_0_1h = np.divide(close - bbl_20_2_0_1h, _bb_rng_1h, out=np.full_like(_bb_rng_1h, np.nan), where=_bb_rng_1h != 0)
+    bbp_20_2_0_1h = np.divide(
+      close - bbl_20_2_0_1h, _bb_rng_1h, out=np.full_like(_bb_rng_1h, np.nan), where=_bb_rng_1h != 0
+    )
     cci_20_change_pct_1h = np_view("CCI_20_change_pct_1h")
     cci_20_1h = np_view("CCI_20_1h")
     cci_20_4h = np_view("CCI_20_4h")
@@ -22185,22 +22201,16 @@ class NostalgiaForInfinityX7(IStrategy):
           long_entry_logic.append(rsi_14_1d > 30.0)
           long_entry_logic.append(roc_9_1d > -20.0)
           long_entry_logic.append(rsi_14_4h > 25.0)
-          long_entry_logic.append(
-            (ema_12_4h > ema_200_4h) | (rsi_14_4h > 35.0) | (roc_9_4h > -5.0)
-          )
+          long_entry_logic.append((ema_12_4h > ema_200_4h) | (rsi_14_4h > 35.0) | (roc_9_4h > -5.0))
           long_entry_logic.append(
             ((rsi_3 > 3.0) | (rsi_3_15m > 5.0) | (rsi_3_1h > 10.0))
             & ((rsi_3_15m > 5.0) | (rsi_3_1h > 15.0) | (aroonu_14_4h < 90.0))
             & ((rsi_3_1h > 10.0) | (rsi_3_4h > 20.0) | (stochrsi_k_4h < 60.0))
             & ((rsi_3_15m > 10.0) | (rsi_3_4h > 25.0) | (roc_9_1d > -10.0))
           )
-          long_entry_logic.append(
-            (rsi_3_1d > 20.0) | (roc_2_1d > -3.0) | (cmf_20_1d > -0.10)
-          )
+          long_entry_logic.append((rsi_3_1d > 20.0) | (roc_2_1d > -3.0) | (cmf_20_1d > -0.10))
           # deep daily outflow (distribution) with no washout — knife, not a dip
-          long_entry_logic.append(
-            (cmf_20_1d > -0.30) | (rsi_3_1d > 65.0) | (roc_9_4h < -15.0)
-          )
+          long_entry_logic.append((cmf_20_1d > -0.30) | (rsi_3_1d > 65.0) | (roc_9_4h < -15.0))
           # Logic — 1h CCI recovering from oversold + fresh 15m AROON upswing
           long_entry_logic.append(cci_20_1h < -50.0)
           long_entry_logic.append(cci_20_1h > -200.0)
@@ -22224,9 +22234,7 @@ class NostalgiaForInfinityX7(IStrategy):
           long_entry_logic.append(global_protections_long_dump == True)
           long_entry_logic.append(rsi_14_1d > 30.0)
           long_entry_logic.append(roc_9_1d > -20.0)
-          long_entry_logic.append(
-            (ema_12_4h > ema_200_4h) | (rsi_14_4h > 40.0)
-          )
+          long_entry_logic.append((ema_12_4h > ema_200_4h) | (rsi_14_4h > 40.0))
           long_entry_logic.append(
             ((rsi_3 > 2.0) | (rsi_3_15m > 5.0) | (aroonu_14_1h < 80.0))
             & ((rsi_3_15m > 5.0) | (rsi_3_1h > 10.0) | (roc_9_4h > -10.0))
@@ -22234,14 +22242,10 @@ class NostalgiaForInfinityX7(IStrategy):
             & ((rsi_3_15m > 8.0) | (cmf_20_4h > -0.15) | (aroonu_14_4h < 70.0))
             & ((rsi_3_4h > 15.0) | (roc_9_1d > -15.0))
           )
-          long_entry_logic.append(
-            (rsi_14_1h > 22.0) | (rsi_14_4h > 25.0)
-          )
+          long_entry_logic.append((rsi_14_1h > 22.0) | (rsi_14_4h > 25.0))
           # post-pump slow bleed: daily still inflated while 4h drifts slightly
           # negative (0..-15) = distribution, not a dip; real dips wash out below -15
-          long_entry_logic.append(
-            (roc_9_1d < 25.0) | (roc_9_4h > 0.0) | (roc_9_4h < -15.0)
-          )
+          long_entry_logic.append((roc_9_1d < 25.0) | (roc_9_4h > 0.0) | (roc_9_4h < -15.0))
           # Logic — MFI & CMF both positive (accumulation) at the BB lower band
           long_entry_logic.append(mfi_14 > 30.0)
           long_entry_logic.append(cmf_20 > 0.02)
@@ -22960,9 +22964,11 @@ class NostalgiaForInfinityX7(IStrategy):
           long_entry_logic.append(protections_long_global == True)
 
           long_entry_logic.append(roc_2 > -0.0)
-          # 15m down move, 4h high, 1d overbought
           long_entry_logic.append(
-            ((rsi_3_15m_gt_10) | (stochrsi_k_4h_lt_70) | (roc_9_1d_lt_80))
+            # 15m down move, 1h high & overbought
+            ((rsi_3_15m_gt_10) | (stochrsi_k_1h_lt_90) | (roc_9_1h_lt_10))
+            # 15m down move, 4h high, 1d overbought
+            & ((rsi_3_15m_gt_10) | (stochrsi_k_4h_lt_70) | (roc_9_1d_lt_80))
             # 15m & 1h & 4h & 1d down move, 1d high
             & ((rsi_3_15m_gt_15) | (rsi_3_1h_gt_30) | (rsi_3_4h_gt_40) | (rsi_3_1d_gt_40) | (aroonu_14_1d_lt_80))
             # 15m & 1h & 1d down move, 1h & 1d high
@@ -26261,7 +26267,6 @@ class NostalgiaForInfinityX7(IStrategy):
           long_entry_logic.append(((high_px - low_px) / close) < 0.025)
           long_entry_logic.append(roc_9_4h < 20.0)
 
-
         # Condition #192 - Quad-rotation stochastic pullback (Long, experimental).
         if long_entry_condition_index == 192:
           # --- Protections ---
@@ -28395,16 +28400,29 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(np_shift(close, 1) >= dc_low_7d)
           short_entry_logic.append(close < dc_low_7d)
 
-
         # Condition #592 - Quad-rotation stochastic pullback (Short, experimental).
         if short_entry_condition_index == 592:
           # --- Protections ---
           short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           short_entry_logic.append(protections_short_global == True)
           # Round 1 (GRIFFAIN loss): block short while uptrend still has legs
-          short_entry_logic.append((roc_9_1d < 2.5) | (aroonu_14 < 100.0) | (aroonu_14_1h < 65.0) | (roc_9_1h < -5.5) | (cmf_20 < 0.0) | (rsi_14_1h > 40.0))
+          short_entry_logic.append(
+            (roc_9_1d < 2.5)
+            | (aroonu_14 < 100.0)
+            | (aroonu_14_1h < 65.0)
+            | (roc_9_1h < -5.5)
+            | (cmf_20 < 0.0)
+            | (rsi_14_1h > 40.0)
+          )
           # Round 2 (XRP loss)
-          short_entry_logic.append((roc_9_1d < 2.0) | (rsi_14_1h > 42.0) | (rsi_3_15m > 65.0) | (cmf_20 > 0.15) | (aroonu_14_1h > 40.0) | (roc_9_1h < -5.0))
+          short_entry_logic.append(
+            (roc_9_1d < 2.0)
+            | (rsi_14_1h > 42.0)
+            | (rsi_3_15m > 65.0)
+            | (cmf_20 > 0.15)
+            | (aroonu_14_1h > 40.0)
+            | (roc_9_1h < -5.0)
+          )
           # Round 3 (API3/UNI loss)
           short_entry_logic.append((roc_9_1d < 0.0) | (roc_9_1h < -5.0) | (rsi_14_1h > 32.0) | (mfi_14_15m > 25.0))
           # Round 4 (EIGEN/DODOX loss)
@@ -28426,7 +28444,9 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(protections_short_global == True)
           # Round 1 (UNI loss): 1h washed-out + 1d overbought & rising = bounce squeeze; need 1h strength
           # OR 1d not stretched OR 1d already down OR 4h stoch off the floor
-          short_entry_logic.append((rsi_14_1h > 30.0) | (stochrsi_k_1d < 80.0) | (roc_9_1d < 0.0) | (stochrsi_k_4h > 10.0))
+          short_entry_logic.append(
+            (rsi_14_1h > 30.0) | (stochrsi_k_1d < 80.0) | (roc_9_1d < 0.0) | (stochrsi_k_4h > 10.0)
+          )
           # --- Logic: embedded down-regime + quad-overbought + two-pivot bearish divergence ---
           short_entry_logic.append(stoch_60_10 < 20.0)
           short_entry_logic.append(stoch_9_3 > 80.0)
