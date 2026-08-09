@@ -141,7 +141,7 @@ class NostalgiaForInfinityX7(IStrategy):
   # Long top coins mode tags
   long_top_coins_mode_tags = ["141", "142", "143", "144", "145"]
   # Long scalp mode tags
-  long_scalp_mode_tags = ["161", "162", "163", "164", "165", "166", "167", "168", "169", "170", "171", "172"]
+  long_scalp_mode_tags = ["161", "162", "163", "164", "165", "166", "167", "168", "169", "170", "171", "172", "173"]
 
   long_rebuy_grind_mode_tags = long_rebuy_mode_tags + long_grind_mode_tags
   long_scalp_rebuy_grind_mode_tags = long_scalp_mode_tags + long_rebuy_mode_tags + long_grind_mode_tags
@@ -201,7 +201,7 @@ class NostalgiaForInfinityX7(IStrategy):
   # Short top coins mode tags
   short_top_coins_mode_tags = ["641", "642"]
   # Short scalp mode tags
-  short_scalp_mode_tags = ["661", "662", "663", "664", "665", "666", "667", "670", "669"]
+  short_scalp_mode_tags = ["661", "662", "663", "664", "665", "666", "667", "670", "669", "671"]
 
   short_rebuy_grind_mode_tags = short_rebuy_mode_tags + short_grind_mode_tags
   short_scalp_rebuy_grind_mode_tags = short_scalp_mode_tags + short_rebuy_mode_tags + short_grind_mode_tags
@@ -916,6 +916,7 @@ class NostalgiaForInfinityX7(IStrategy):
     "long_entry_condition_170_enable": False,
     "long_entry_condition_171_enable": False,
     "long_entry_condition_172_enable": False,
+    "long_entry_condition_173_enable": False,
   }
 
   short_entry_signal_params = {
@@ -945,6 +946,7 @@ class NostalgiaForInfinityX7(IStrategy):
     "short_entry_condition_667_enable": False,
     "short_entry_condition_670_enable": False,
     "short_entry_condition_669_enable": False,
+    "short_entry_condition_671_enable": False,
     # "short_entry_condition_603_enable": True,
     # "short_entry_condition_641_enable": True,
     # "short_entry_condition_642_enable": True,
@@ -4235,6 +4237,15 @@ class NostalgiaForInfinityX7(IStrategy):
     mrb_bear_col = ((close_np < open_np) & (_mrb_body_ratio > 0.9) & (_mrb_body_pct > 0.005)).astype(float)
     # Dump hunter — signal 669 (experimental): mirror of the pump hunter (171)
     dh_prev_min_col = pd.Series(close_np).rolling(48).min().shift(1).to_numpy()
+    # Pin-bar / hammer — signals 173/671 (experimental): long rejection wick = a completed fact
+    _pb_body = np.abs(close_np - open_np)
+    _pb_lower = np.minimum(open_np, close_np) - low_np
+    _pb_upper = high_np - np.maximum(open_np, close_np)
+    _pb_body_safe = np.where(_pb_body > 0, _pb_body, np.nan)
+    hammer_col = np.nan_to_num(((_pb_lower > 2.0 * _pb_body_safe) & (_pb_upper < 0.5 * _pb_body_safe)
+                  & (_pb_lower > close_np * 0.004)).astype(float))
+    star_col = np.nan_to_num(((_pb_upper > 2.0 * _pb_body_safe) & (_pb_lower < 0.5 * _pb_body_safe)
+                & (_pb_upper > close_np * 0.004)).astype(float))
     new_cols = pd.DataFrame(
       {
         "RSI_3": rsi_3,
@@ -4250,6 +4261,8 @@ class NostalgiaForInfinityX7(IStrategy):
         "MRB_BULL": mrb_bull_col,
         "MRB_BEAR": mrb_bear_col,
         "DH_PREV_MIN": dh_prev_min_col,
+        "PB_HAMMER": hammer_col,
+        "PB_STAR": star_col,
         "ENGULF_BULL": engulf_bull_col,
         "ENGULF_BEAR": engulf_bear_col,
 
@@ -13131,6 +13144,8 @@ class NostalgiaForInfinityX7(IStrategy):
     mrb_bull = np_view("MRB_BULL")
     mrb_bear = np_view("MRB_BEAR")
     dh_prev_min = np_view("DH_PREV_MIN")
+    pb_hammer = np_view("PB_HAMMER")
+    pb_star = np_view("PB_STAR")
     global_protections_short_pump = np_view("global_protections_short_pump")
     global_protections_short_dump = np_view("global_protections_short_dump")
     roc_2 = np_view("ROC_2")
@@ -26179,6 +26194,13 @@ class NostalgiaForInfinityX7(IStrategy):
           long_entry_logic.append(ema_12_4h > ema_200_4h)
           # full-body green candle: body >90% of range and a meaningful size
           long_entry_logic.append(mrb_bull > 0.5)
+        # Condition #173 - Hammer pin-bar (Long, experimental, RAW — rejection wick at a dip).
+        if long_entry_condition_index == 173:
+          # dip context: near the 4h low, 5m washed
+          long_entry_logic.append(close < (close_min_48 * 1.03))
+          long_entry_logic.append(rsi_3 < 40.0)
+          # the fact: long lower rejection wick, tiny upper wick
+          long_entry_logic.append(pb_hammer > 0.5)
 
         # Condition #192 - Quad-rotation stochastic pullback (Long, experimental).
         if long_entry_condition_index == 192:
@@ -28279,6 +28301,13 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(close < dh_prev_min)
           # ...on explosive volume (dump signature)
           short_entry_logic.append(vol_rel > 3.0)
+        # Condition #671 - Shooting-star pin-bar (Short, experimental, RAW — mirror at a top).
+        if short_entry_condition_index == 671:
+          # top context: near the 4h high, 5m hot
+          short_entry_logic.append(close > (close_max_48 * 0.97))
+          short_entry_logic.append(rsi_3 > 60.0)
+          # the fact: long upper rejection wick, tiny lower wick
+          short_entry_logic.append(pb_star > 0.5)
 
         # Condition #592 - Quad-rotation stochastic pullback (Short, experimental).
         if short_entry_condition_index == 592:
