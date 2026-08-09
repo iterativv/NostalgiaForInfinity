@@ -185,7 +185,7 @@ class NostalgiaForInfinityX7(IStrategy):
   # Shorting
 
   # Short normal mode tags
-  short_normal_mode_tags = ["501", "502"]
+  short_normal_mode_tags = ["501", "502", "505"]
   # Short Pump mode tags
   short_pump_mode_tags = ["521", "522", "523", "524", "525", "526"]
   # Short Quick mode tags
@@ -874,6 +874,7 @@ class NostalgiaForInfinityX7(IStrategy):
     "long_entry_condition_4_enable": True,
     "long_entry_condition_5_enable": True,
     "long_entry_condition_6_enable": True,
+    "long_entry_condition_7_enable": False,
     "long_entry_condition_21_enable": True,
     "long_entry_condition_41_enable": True,
     "long_entry_condition_42_enable": True,
@@ -926,6 +927,7 @@ class NostalgiaForInfinityX7(IStrategy):
     "short_entry_condition_502_enable": True,
     # "short_entry_condition_503_enable": True,
     # "short_entry_condition_504_enable": True,
+    "short_entry_condition_505_enable": False,
     # "short_entry_condition_541_enable": True,
     "short_entry_condition_542_enable": True,
     "short_entry_condition_543_enable": False,
@@ -3602,6 +3604,11 @@ class NostalgiaForInfinityX7(IStrategy):
     low_min_12 = ta_min(low_np, timeperiod=12)
     low_min_24 = ta_min(low_np, timeperiod=24)
 
+    # ADX/DMI — trend strength + direction (signals 7/505 experimental; NFI's first ADX use)
+    adx_14 = ta.ADX(high_np, low_np, close_np, timeperiod=14)
+    plus_di_14 = ta.PLUS_DI(high_np, low_np, close_np, timeperiod=14)
+    minus_di_14 = ta.MINUS_DI(high_np, low_np, close_np, timeperiod=14)
+
     # =========================================================================
     # ASSIGN DATAFRAME
     # =========================================================================
@@ -3609,6 +3616,9 @@ class NostalgiaForInfinityX7(IStrategy):
       {
         "RSI_3": rsi_3,
         "RSI_14": rsi_14,
+        "ADX_14": adx_14,
+        "PLUS_DI_14": plus_di_14,
+        "MINUS_DI_14": minus_di_14,
         "AROONU_14": aroon_up,
         "AROOND_14": aroon_down,
         "BBP_20_2.0": bbp_20,
@@ -13146,6 +13156,9 @@ class NostalgiaForInfinityX7(IStrategy):
     dh_prev_min = np_view("DH_PREV_MIN")
     pb_hammer = np_view("PB_HAMMER")
     pb_star = np_view("PB_STAR")
+    adx_14_4h = np_view("ADX_14_4h")
+    plus_di_14_4h = np_view("PLUS_DI_14_4h")
+    minus_di_14_4h = np_view("MINUS_DI_14_4h")
     global_protections_short_pump = np_view("global_protections_short_pump")
     global_protections_short_dump = np_view("global_protections_short_dump")
     roc_2 = np_view("ROC_2")
@@ -26201,6 +26214,13 @@ class NostalgiaForInfinityX7(IStrategy):
           long_entry_logic.append(rsi_3 < 40.0)
           # the fact: long lower rejection wick, tiny upper wick
           long_entry_logic.append(pb_hammer > 0.5)
+        # Condition #7 - ADX trend-birth (Long, experimental, RAW — 4h trend ignition; big-win lane).
+        if long_entry_condition_index == 7:
+          # 4h ADX crossing UP through 20 = a trend being born (not yet mature)
+          long_entry_logic.append(adx_14_4h > 20.0)
+          long_entry_logic.append(np_shift(adx_14_4h, 48) <= 20.0)
+          # direction: bulls own it
+          long_entry_logic.append(plus_di_14_4h > minus_di_14_4h)
 
         # Condition #192 - Quad-rotation stochastic pullback (Long, experimental).
         if long_entry_condition_index == 192:
@@ -26747,7 +26767,7 @@ class NostalgiaForInfinityX7(IStrategy):
           )
 
         # Condition #503 - Normal mode (Short).
-        if short_entry_condition_index == 503:
+        if short_entry_condition_index == 505:
           # Protections
           short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
 
@@ -28308,6 +28328,11 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(rsi_3 > 60.0)
           # the fact: long upper rejection wick, tiny lower wick
           short_entry_logic.append(pb_star > 0.5)
+        # Condition #505 - ADX trend-birth (Short, experimental, RAW — mirror).
+        if short_entry_condition_index == 505:
+          short_entry_logic.append(adx_14_4h > 20.0)
+          short_entry_logic.append(np_shift(adx_14_4h, 48) <= 20.0)
+          short_entry_logic.append(minus_di_14_4h > plus_di_14_4h)
 
         # Condition #592 - Quad-rotation stochastic pullback (Short, experimental).
         if short_entry_condition_index == 592:
