@@ -141,7 +141,7 @@ class NostalgiaForInfinityX7(IStrategy):
   # Long top coins mode tags
   long_top_coins_mode_tags = ["141", "142", "143", "144", "145"]
   # Long scalp mode tags
-  long_scalp_mode_tags = ["161", "162", "163", "164", "165", "166", "167", "168", "169", "170"]
+  long_scalp_mode_tags = ["161", "162", "163", "164", "165", "166", "167", "168", "169", "170", "171"]
 
   long_rebuy_grind_mode_tags = long_rebuy_mode_tags + long_grind_mode_tags
   long_scalp_rebuy_grind_mode_tags = long_scalp_mode_tags + long_rebuy_mode_tags + long_grind_mode_tags
@@ -914,6 +914,7 @@ class NostalgiaForInfinityX7(IStrategy):
     "long_entry_condition_168_enable": False,
     "long_entry_condition_169_enable": False,
     "long_entry_condition_170_enable": False,
+    "long_entry_condition_171_enable": False,
   }
 
   short_entry_signal_params = {
@@ -4212,6 +4213,17 @@ class NostalgiaForInfinityX7(IStrategy):
     # relative volume: current candle volume vs its 24h average (confirmation qualifier, not a trigger)
     _vol_ma = pd.Series(volume_np).rolling(288).mean().to_numpy()
     vol_rel_col = np.divide(volume_np, _vol_ma, out=np.full_like(_vol_ma, np.nan), where=_vol_ma > 0)
+    # Pump hunter — signal 171 (experimental): rolling 24h return + relative volume + first-fire dedup
+    _ph_prev_max = pd.Series(close_np).rolling(48).max().shift(1).to_numpy()
+    _ph_cross = ((close_np > _ph_prev_max) & (np.roll(close_np, 1) <= _ph_prev_max)).astype(float)
+    _ph_cross[0] = 0.0
+    ph_cross_cnt12_col = pd.Series(_ph_cross).rolling(12).sum().to_numpy()
+    # pump character: height above the 24h low + prior-hour activity (both PRE-ignition)
+    _ph_low288 = pd.Series(low_np).rolling(288).min().to_numpy()
+    ph_base_pos_col = np.divide(close_np - _ph_low288, close_np, out=np.full_like(close_np, np.nan), where=close_np > 0) * 100.0
+    _ph_h12 = pd.Series(high_np).rolling(12).max().shift(1).to_numpy()
+    _ph_l12 = pd.Series(low_np).rolling(12).min().shift(1).to_numpy()
+    ph_pre_tight_col = np.divide(_ph_h12 - _ph_l12, close_np, out=np.full_like(close_np, np.nan), where=close_np > 0) * 100.0
     new_cols = pd.DataFrame(
       {
         "RSI_3": rsi_3,
@@ -4221,6 +4233,9 @@ class NostalgiaForInfinityX7(IStrategy):
         "IB_MOTHER_L": ib_mother_l_col,
         "ROC_288": roc_288_col,
         "VOL_REL": vol_rel_col,
+        "PH_CROSS_CNT_12": ph_cross_cnt12_col,
+        "PH_BASE_POS": ph_base_pos_col,
+        "PH_PRE_TIGHT": ph_pre_tight_col,
         "ENGULF_BULL": engulf_bull_col,
         "ENGULF_BEAR": engulf_bear_col,
 
@@ -13095,6 +13110,10 @@ class NostalgiaForInfinityX7(IStrategy):
     roc_288 = np_view("ROC_288")
     vol_rel = np_view("VOL_REL")
     high_px = np_view("high")
+    ph_cross_cnt_12 = np_view("PH_CROSS_CNT_12")
+    ph_base_pos = np_view("PH_BASE_POS")
+    ph_pre_tight = np_view("PH_PRE_TIGHT")
+    low_px = np_view("low")
     global_protections_short_pump = np_view("global_protections_short_pump")
     global_protections_short_dump = np_view("global_protections_short_dump")
     roc_2 = np_view("ROC_2")
@@ -26119,6 +26138,19 @@ class NostalgiaForInfinityX7(IStrategy):
           # the right side of the V: FIRST confirmed green close above the prior candle's high
           long_entry_logic.append(close > open_rate)
           long_entry_logic.append(close > np_shift(high_px, 1))
+        # Condition #171 - Pump hunter (Long, experimental, RAW — ignition candle rider).
+        if long_entry_condition_index == 171:
+          # calm base: not already pumped over the rolling 24h (ride ignition, don't chase)
+          long_entry_logic.append(roc_288 < 10.0)
+          # ignition: green candle CROSSING above the prior 48-candle high...
+          long_entry_logic.append(np_shift(close, 1) <= np_shift(close_max_48, 1))
+          long_entry_logic.append(close > np_shift(close_max_48, 1))
+          # ...on explosive volume (pump signature)
+          long_entry_logic.append(vol_rel > 3.0)
+          # NOTE: the measured PUMP CHARACTER columns (PH_BASE_POS d=0.95, PH_PRE_TIGHT d=0.65,
+          # PH_CROSS_CNT_12 first-fire counter) are defined above and ready for your protection
+          # pass — shipped RAW per our measurements (character gates halved damage but the raw
+          # form carries the highest WR; full matrix in the PR)
 
         # Condition #192 - Quad-rotation stochastic pullback (Long, experimental).
         if long_entry_condition_index == 192:
