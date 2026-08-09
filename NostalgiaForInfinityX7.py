@@ -894,6 +894,7 @@ class NostalgiaForInfinityX7(IStrategy):
     "long_entry_condition_102_enable": True,
     "long_entry_condition_103_enable": True,
     "long_entry_condition_104_enable": True,
+    "long_entry_condition_105_enable": False,
     "long_entry_condition_120_enable": True,
     "long_entry_condition_121_enable": False,
     "long_entry_condition_141_enable": True,
@@ -931,6 +932,7 @@ class NostalgiaForInfinityX7(IStrategy):
     "short_entry_condition_563_enable": False,
     "short_entry_condition_592_enable": False,
     "short_entry_condition_593_enable": False,
+    "short_entry_condition_605_enable": False,
     "short_entry_condition_662_enable": False,
     "short_entry_condition_663_enable": False,
     "short_entry_condition_664_enable": False,
@@ -23320,6 +23322,19 @@ class NostalgiaForInfinityX7(IStrategy):
             & (((ema_50 - ema_200) / close * 100.0) < -5.5)
           )
 
+        # Condition #105 - Williams %R snapback (Long, experimental — Goodwin mean-reversion port).
+        if long_entry_condition_index == 105:
+          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          long_entry_logic.append(protections_long_global == True)
+          # money still flowing in on the hour and a healthy 4h — no dip-buying a bleed
+          long_entry_logic.append(cmf_20_1h > -0.02)
+          long_entry_logic.append(rsi_14_4h > 45.0)
+          # 1h close crosses INTO the oversold extreme (source strategy runs on 30m/1h scale)
+          long_entry_logic.append(willr_14_1h < -90.0)
+          long_entry_logic.append(np_shift(willr_14_1h, 12) >= -90.0)
+          # mean-revert WITH the daily trend: only long when the day is up
+          long_entry_logic.append(change_pct_1d > 0.0)
+
         # Condition #120 - Grind mode (Long).
         if long_entry_condition_index == 120:
           # Protections
@@ -27930,6 +27945,18 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(rsi_4 > 54.0)
           short_entry_logic.append(rsi_20 > rsi_20_shift_1)
           short_entry_logic.append(close > sma_16 * 1.042)
+
+        # Condition #605 - Williams %R snapback (Short, experimental — mirror).
+        if short_entry_condition_index == 605:
+          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          short_entry_logic.append(protections_short_global == True)
+          # never fade the bounce of a fully-capitulated daily (violent squeeze habitat)
+          short_entry_logic.append(rsi_3_1d > 12.0)
+          # 1h close crosses INTO the overbought extreme
+          short_entry_logic.append(willr_14_1h > -10.0)
+          short_entry_logic.append(np_shift(willr_14_1h, 12) <= -10.0)
+          # mean-revert WITH the daily trend: only short when the day is down
+          short_entry_logic.append(change_pct_1d < 0.0)
 
         # Condition #661 - Scalp mode (Short).
         if short_entry_condition_index == 661:
