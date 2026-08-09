@@ -201,7 +201,7 @@ class NostalgiaForInfinityX7(IStrategy):
   # Short top coins mode tags
   short_top_coins_mode_tags = ["641", "642"]
   # Short scalp mode tags
-  short_scalp_mode_tags = ["661", "662", "663", "664", "665", "666", "667", "670"]
+  short_scalp_mode_tags = ["661", "662", "663", "664", "665", "666", "667", "670", "669"]
 
   short_rebuy_grind_mode_tags = short_rebuy_mode_tags + short_grind_mode_tags
   short_scalp_rebuy_grind_mode_tags = short_scalp_mode_tags + short_rebuy_mode_tags + short_grind_mode_tags
@@ -944,6 +944,7 @@ class NostalgiaForInfinityX7(IStrategy):
     "short_entry_condition_666_enable": False,
     "short_entry_condition_667_enable": False,
     "short_entry_condition_670_enable": False,
+    "short_entry_condition_669_enable": False,
     # "short_entry_condition_603_enable": True,
     # "short_entry_condition_641_enable": True,
     # "short_entry_condition_642_enable": True,
@@ -4232,6 +4233,8 @@ class NostalgiaForInfinityX7(IStrategy):
     _mrb_body_pct = np.divide(np.abs(close_np - open_np), close_np, out=np.zeros_like(close_np), where=close_np > 0)
     mrb_bull_col = ((close_np > open_np) & (_mrb_body_ratio > 0.9) & (_mrb_body_pct > 0.005)).astype(float)
     mrb_bear_col = ((close_np < open_np) & (_mrb_body_ratio > 0.9) & (_mrb_body_pct > 0.005)).astype(float)
+    # Dump hunter — signal 669 (experimental): mirror of the pump hunter (171)
+    dh_prev_min_col = pd.Series(close_np).rolling(48).min().shift(1).to_numpy()
     new_cols = pd.DataFrame(
       {
         "RSI_3": rsi_3,
@@ -4246,6 +4249,7 @@ class NostalgiaForInfinityX7(IStrategy):
         "PH_PRE_TIGHT": ph_pre_tight_col,
         "MRB_BULL": mrb_bull_col,
         "MRB_BEAR": mrb_bear_col,
+        "DH_PREV_MIN": dh_prev_min_col,
         "ENGULF_BULL": engulf_bull_col,
         "ENGULF_BEAR": engulf_bear_col,
 
@@ -13126,6 +13130,7 @@ class NostalgiaForInfinityX7(IStrategy):
     low_px = np_view("low")
     mrb_bull = np_view("MRB_BULL")
     mrb_bear = np_view("MRB_BEAR")
+    dh_prev_min = np_view("DH_PREV_MIN")
     global_protections_short_pump = np_view("global_protections_short_pump")
     global_protections_short_dump = np_view("global_protections_short_dump")
     roc_2 = np_view("ROC_2")
@@ -28264,6 +28269,16 @@ class NostalgiaForInfinityX7(IStrategy):
         if short_entry_condition_index == 670:
           short_entry_logic.append(rsi_14 < 50.0)
           short_entry_logic.append(mrb_bear > 0.5)
+        # Condition #669 - Dump hunter (Short, experimental, RAW — crash ignition, mirror of 171).
+        if short_entry_condition_index == 669:
+          # calm base: not already crashed over the rolling 24h (ride ignition, don't chase)
+          short_entry_logic.append(roc_288 > -10.0)
+          # ignition: red candle CROSSING below the prior 48-candle low...
+          short_entry_logic.append(close < open_rate)
+          short_entry_logic.append(np_shift(close, 1) >= dh_prev_min)
+          short_entry_logic.append(close < dh_prev_min)
+          # ...on explosive volume (dump signature)
+          short_entry_logic.append(vol_rel > 3.0)
 
         # Condition #592 - Quad-rotation stochastic pullback (Short, experimental).
         if short_entry_condition_index == 592:
