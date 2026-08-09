@@ -185,7 +185,7 @@ class NostalgiaForInfinityX7(IStrategy):
   # Shorting
 
   # Short normal mode tags
-  short_normal_mode_tags = ["501", "502", "505"]
+  short_normal_mode_tags = ["501", "502", "505", "506"]
   # Short Pump mode tags
   short_pump_mode_tags = ["521", "522", "523", "524", "525", "526"]
   # Short Quick mode tags
@@ -875,6 +875,7 @@ class NostalgiaForInfinityX7(IStrategy):
     "long_entry_condition_5_enable": True,
     "long_entry_condition_6_enable": True,
     "long_entry_condition_7_enable": False,
+    "long_entry_condition_8_enable": False,
     "long_entry_condition_21_enable": True,
     "long_entry_condition_41_enable": True,
     "long_entry_condition_42_enable": True,
@@ -928,6 +929,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # "short_entry_condition_503_enable": True,
     # "short_entry_condition_504_enable": True,
     "short_entry_condition_505_enable": False,
+    "short_entry_condition_506_enable": False,
     # "short_entry_condition_541_enable": True,
     "short_entry_condition_542_enable": True,
     "short_entry_condition_543_enable": False,
@@ -4256,6 +4258,9 @@ class NostalgiaForInfinityX7(IStrategy):
                   & (_pb_lower > close_np * 0.004)).astype(float))
     star_col = np.nan_to_num(((_pb_upper > 2.0 * _pb_body_safe) & (_pb_lower < 0.5 * _pb_body_safe)
                 & (_pb_upper > close_np * 0.004)).astype(float))
+    # Donchian 7-day channel — signals 8/506 (experimental): turtle-style macro breakout
+    dc_high_7d_col = pd.Series(close_np).rolling(2016).max().shift(1).to_numpy()
+    dc_low_7d_col = pd.Series(close_np).rolling(2016).min().shift(1).to_numpy()
     new_cols = pd.DataFrame(
       {
         "RSI_3": rsi_3,
@@ -4273,6 +4278,8 @@ class NostalgiaForInfinityX7(IStrategy):
         "DH_PREV_MIN": dh_prev_min_col,
         "PB_HAMMER": hammer_col,
         "PB_STAR": star_col,
+        "DC_HIGH_7D": dc_high_7d_col,
+        "DC_LOW_7D": dc_low_7d_col,
         "ENGULF_BULL": engulf_bull_col,
         "ENGULF_BEAR": engulf_bear_col,
 
@@ -13042,6 +13049,8 @@ class NostalgiaForInfinityX7(IStrategy):
     stochrsi_k_1d = np_view("STOCHRSIk_14_14_3_3_1d")
     rsi_3 = np_view("RSI_3")
     close = np_view("close")
+    high_px = np_view("high")
+    low_px = np_view("low")
     orange_h = np_view("ORANGE_H")
     orange_l = np_view("ORANGE_L")
     willr_14_4h = np_view("WILLR_14_4h")
@@ -13159,6 +13168,8 @@ class NostalgiaForInfinityX7(IStrategy):
     adx_14_4h = np_view("ADX_14_4h")
     plus_di_14_4h = np_view("PLUS_DI_14_4h")
     minus_di_14_4h = np_view("MINUS_DI_14_4h")
+    dc_high_7d = np_view("DC_HIGH_7D")
+    dc_low_7d = np_view("DC_LOW_7D")
     global_protections_short_pump = np_view("global_protections_short_pump")
     global_protections_short_dump = np_view("global_protections_short_dump")
     roc_2 = np_view("ROC_2")
@@ -26221,6 +26232,15 @@ class NostalgiaForInfinityX7(IStrategy):
           long_entry_logic.append(np_shift(adx_14_4h, 48) <= 20.0)
           # direction: bulls own it
           long_entry_logic.append(plus_di_14_4h > minus_di_14_4h)
+        # Condition #8 - Donchian 7-day breakout (Long, experimental — turtle-style; big-win lane).
+        if long_entry_condition_index == 8:
+          # first close above the prior 7-DAY high (macro breakout event)
+          long_entry_logic.append(np_shift(close, 1) <= dc_high_7d)
+          long_entry_logic.append(close > dc_high_7d)
+          # not a one-candle spike fake, and the 4h is not already overheated
+          # (measured on the export W/L split; real run: tag 8 84.0%->88.3% WR, damage -50.4K->-27.7K)
+          long_entry_logic.append(((high_px - low_px) / close) < 0.025)
+          long_entry_logic.append(roc_9_4h < 20.0)
 
         # Condition #192 - Quad-rotation stochastic pullback (Long, experimental).
         if long_entry_condition_index == 192:
@@ -28333,6 +28353,10 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(adx_14_4h > 20.0)
           short_entry_logic.append(np_shift(adx_14_4h, 48) <= 20.0)
           short_entry_logic.append(minus_di_14_4h > plus_di_14_4h)
+        # Condition #506 - Donchian 7-day breakdown (Short, experimental, RAW — mirror).
+        if short_entry_condition_index == 506:
+          short_entry_logic.append(np_shift(close, 1) >= dc_low_7d)
+          short_entry_logic.append(close < dc_low_7d)
 
         # Condition #592 - Quad-rotation stochastic pullback (Short, experimental).
         if short_entry_condition_index == 592:
