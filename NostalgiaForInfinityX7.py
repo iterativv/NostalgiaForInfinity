@@ -141,7 +141,7 @@ class NostalgiaForInfinityX7(IStrategy):
   # Long top coins mode tags
   long_top_coins_mode_tags = ["141", "142", "143", "144", "145"]
   # Long scalp mode tags
-  long_scalp_mode_tags = ["161", "162", "163", "164", "165", "166", "167", "168"]
+  long_scalp_mode_tags = ["161", "162", "163", "164", "165", "166", "167", "168", "169"]
 
   long_rebuy_grind_mode_tags = long_rebuy_mode_tags + long_grind_mode_tags
   long_scalp_rebuy_grind_mode_tags = long_scalp_mode_tags + long_rebuy_mode_tags + long_grind_mode_tags
@@ -201,7 +201,7 @@ class NostalgiaForInfinityX7(IStrategy):
   # Short top coins mode tags
   short_top_coins_mode_tags = ["641", "642"]
   # Short scalp mode tags
-  short_scalp_mode_tags = ["661", "662", "663", "664", "665", "666"]
+  short_scalp_mode_tags = ["661", "662", "663", "664", "665", "666", "667"]
 
   short_rebuy_grind_mode_tags = short_rebuy_mode_tags + short_grind_mode_tags
   short_scalp_rebuy_grind_mode_tags = short_scalp_mode_tags + short_rebuy_mode_tags + short_grind_mode_tags
@@ -912,6 +912,7 @@ class NostalgiaForInfinityX7(IStrategy):
     "long_entry_condition_166_enable": False,
     "long_entry_condition_167_enable": False,
     "long_entry_condition_168_enable": False,
+    "long_entry_condition_169_enable": False,
   }
 
   short_entry_signal_params = {
@@ -938,6 +939,7 @@ class NostalgiaForInfinityX7(IStrategy):
     "short_entry_condition_664_enable": False,
     "short_entry_condition_665_enable": False,
     "short_entry_condition_666_enable": False,
+    "short_entry_condition_667_enable": False,
     # "short_entry_condition_603_enable": True,
     # "short_entry_condition_641_enable": True,
     # "short_entry_condition_642_enable": True,
@@ -4194,10 +4196,23 @@ class NostalgiaForInfinityX7(IStrategy):
     _sfp_prev_high = pd.Series(high_np).rolling(48).max().shift(1).to_numpy()
     sfp_bull_col = ((low_np < _sfp_prev_low) & (close_np > _sfp_prev_low)).astype(float)
     sfp_bear_col = ((high_np > _sfp_prev_high) & (close_np < _sfp_prev_high)).astype(float)
+    # 1h inside-bar breakout — signals 169/667 (experimental): source insists on 1h+ candles
+    _ib_hr = df["date"].dt.floor("1h")
+    _ib_agg = df.groupby(_ib_hr).agg(_ib_hh=("high", "max"), _ib_ll=("low", "min"))
+    _ib_agg["_ib_flag"] = (_ib_agg["_ib_hh"] < _ib_agg["_ib_hh"].shift(1)) & (_ib_agg["_ib_ll"] > _ib_agg["_ib_ll"].shift(1))
+    _ib_agg["_ib_mh"] = _ib_agg["_ib_hh"].shift(1)
+    _ib_agg["_ib_ml"] = _ib_agg["_ib_ll"].shift(1)
+    _ib_prev_hr = _ib_hr - pd.Timedelta(hours=1)
+    ib_ready_col = _ib_prev_hr.map(_ib_agg["_ib_flag"]).eq(True).astype(float).to_numpy()
+    ib_mother_h_col = _ib_prev_hr.map(_ib_agg["_ib_mh"]).to_numpy()
+    ib_mother_l_col = _ib_prev_hr.map(_ib_agg["_ib_ml"]).to_numpy()
     new_cols = pd.DataFrame(
       {
         "RSI_3": rsi_3,
         "RSI_4": rsi_4,
+        "IB_READY": ib_ready_col,
+        "IB_MOTHER_H": ib_mother_h_col,
+        "IB_MOTHER_L": ib_mother_l_col,
         "ENGULF_BULL": engulf_bull_col,
         "ENGULF_BEAR": engulf_bear_col,
 
@@ -13066,6 +13081,9 @@ class NostalgiaForInfinityX7(IStrategy):
 
     sfp_bull = np_view("SFP_BULL")
     sfp_bear = np_view("SFP_BEAR")
+    ib_ready = np_view("IB_READY")
+    ib_mother_h = np_view("IB_MOTHER_H")
+    ib_mother_l = np_view("IB_MOTHER_L")
     global_protections_short_pump = np_view("global_protections_short_pump")
     global_protections_short_dump = np_view("global_protections_short_dump")
     roc_2 = np_view("ROC_2")
@@ -26060,6 +26078,20 @@ class NostalgiaForInfinityX7(IStrategy):
           # prior 48-candle low swept by the wick, candle closes back above it
           long_entry_logic.append(sfp_bull > 0.5)
 
+        # Condition #169 - 1h inside-bar breakout (Long, experimental, RAW — TradingLab port).
+        if long_entry_condition_index == 169:
+          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          long_entry_logic.append(protections_long_global == True)
+          # trend side (source: trade only WITH the trend)
+          long_entry_logic.append(close > ema_200)
+          # 4h must participate in the breakout (fresh 4h upswing, not a stale drift)
+          long_entry_logic.append(aroonu_14_4h > 50.0)
+          long_entry_logic.append(stochrsi_k_4h > 55.0)
+          # last completed 1h candle was an inside bar; this 5m candle CROSSES above the mother high
+          long_entry_logic.append(ib_ready > 0.5)
+          long_entry_logic.append(np_shift(close, 1) <= ib_mother_h)
+          long_entry_logic.append(close > ib_mother_h)
+
         # Condition #192 - Quad-rotation stochastic pullback (Long, experimental).
         if long_entry_condition_index == 192:
           # --- Protections ---
@@ -28133,6 +28165,18 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(protections_short_global == True)
           # prior 48-candle high swept by the wick, candle closes back below it
           short_entry_logic.append(sfp_bear > 0.5)
+
+        # Condition #667 - 1h inside-bar breakout (Short, experimental, RAW — mirror).
+        if short_entry_condition_index == 667:
+          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          short_entry_logic.append(protections_short_global == True)
+          short_entry_logic.append(close < ema_200)
+          # don't short a breakdown when the daily cycle already sits low (bounce zone)
+          short_entry_logic.append(stochrsi_k_1d < 48.0)
+          # last completed 1h candle was an inside bar; this 5m candle CROSSES below the mother low
+          short_entry_logic.append(ib_ready > 0.5)
+          short_entry_logic.append(np_shift(close, 1) >= ib_mother_l)
+          short_entry_logic.append(close < ib_mother_l)
 
         # Condition #592 - Quad-rotation stochastic pullback (Short, experimental).
         if short_entry_condition_index == 592:
