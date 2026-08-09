@@ -141,7 +141,7 @@ class NostalgiaForInfinityX7(IStrategy):
   # Long top coins mode tags
   long_top_coins_mode_tags = ["141", "142", "143", "144", "145"]
   # Long scalp mode tags
-  long_scalp_mode_tags = ["161", "162", "163", "164", "165", "166", "167", "168", "169"]
+  long_scalp_mode_tags = ["161", "162", "163", "164", "165", "166", "167", "168", "169", "170"]
 
   long_rebuy_grind_mode_tags = long_rebuy_mode_tags + long_grind_mode_tags
   long_scalp_rebuy_grind_mode_tags = long_scalp_mode_tags + long_rebuy_mode_tags + long_grind_mode_tags
@@ -913,6 +913,7 @@ class NostalgiaForInfinityX7(IStrategy):
     "long_entry_condition_167_enable": False,
     "long_entry_condition_168_enable": False,
     "long_entry_condition_169_enable": False,
+    "long_entry_condition_170_enable": False,
   }
 
   short_entry_signal_params = {
@@ -4206,6 +4207,11 @@ class NostalgiaForInfinityX7(IStrategy):
     ib_ready_col = _ib_prev_hr.map(_ib_agg["_ib_flag"]).eq(True).astype(float).to_numpy()
     ib_mother_h_col = _ib_prev_hr.map(_ib_agg["_ib_mh"]).to_numpy()
     ib_mother_l_col = _ib_prev_hr.map(_ib_agg["_ib_ml"]).to_numpy()
+    # Crash-bounce hunter — signal 170 (experimental): rolling 24h return for capitulation context
+    roc_288_col = ta_roc(close_np, timeperiod=288)
+    # relative volume: current candle volume vs its 24h average (confirmation qualifier, not a trigger)
+    _vol_ma = pd.Series(volume_np).rolling(288).mean().to_numpy()
+    vol_rel_col = np.divide(volume_np, _vol_ma, out=np.full_like(_vol_ma, np.nan), where=_vol_ma > 0)
     new_cols = pd.DataFrame(
       {
         "RSI_3": rsi_3,
@@ -4213,6 +4219,8 @@ class NostalgiaForInfinityX7(IStrategy):
         "IB_READY": ib_ready_col,
         "IB_MOTHER_H": ib_mother_h_col,
         "IB_MOTHER_L": ib_mother_l_col,
+        "ROC_288": roc_288_col,
+        "VOL_REL": vol_rel_col,
         "ENGULF_BULL": engulf_bull_col,
         "ENGULF_BEAR": engulf_bear_col,
 
@@ -13084,6 +13092,9 @@ class NostalgiaForInfinityX7(IStrategy):
     ib_ready = np_view("IB_READY")
     ib_mother_h = np_view("IB_MOTHER_H")
     ib_mother_l = np_view("IB_MOTHER_L")
+    roc_288 = np_view("ROC_288")
+    vol_rel = np_view("VOL_REL")
+    high_px = np_view("high")
     global_protections_short_pump = np_view("global_protections_short_pump")
     global_protections_short_dump = np_view("global_protections_short_dump")
     roc_2 = np_view("ROC_2")
@@ -26091,6 +26102,23 @@ class NostalgiaForInfinityX7(IStrategy):
           long_entry_logic.append(ib_ready > 0.5)
           long_entry_logic.append(np_shift(close, 1) <= ib_mother_h)
           long_entry_logic.append(close > ib_mother_h)
+        # Condition #170 - Crash-bounce hunter (Long, experimental — capitulation relief rally).
+        if long_entry_condition_index == 170:
+          # capitulation context: crashed hard over the rolling 24h, daily fully washed
+          long_entry_logic.append(roc_288 < -15.0)
+          # ...but not a free-fall (deeper than -30 keeps falling)
+          long_entry_logic.append(roc_288 > -30.0)
+          long_entry_logic.append(rsi_3_1d < 15.0)
+          # fresh bounce only — 1h still deeply down; a half-recovered 1h means we are late
+          # (losses entered the SECOND leg / dead-cat top)
+          long_entry_logic.append(roc_9_1h < -5.0)
+          # real buyers on the reclaim candle: ~1.3x+ its 24h average volume
+          long_entry_logic.append(vol_rel > 1.3)
+          # still near the bottom (not already rallied away)
+          long_entry_logic.append(close < (close_min_48 * 1.08))
+          # the right side of the V: FIRST confirmed green close above the prior candle's high
+          long_entry_logic.append(close > open_rate)
+          long_entry_logic.append(close > np_shift(high_px, 1))
 
         # Condition #192 - Quad-rotation stochastic pullback (Long, experimental).
         if long_entry_condition_index == 192:
