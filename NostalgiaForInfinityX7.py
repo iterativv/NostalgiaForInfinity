@@ -141,7 +141,7 @@ class NostalgiaForInfinityX7(IStrategy):
   # Long top coins mode tags
   long_top_coins_mode_tags = ["141", "142", "143", "144", "145"]
   # Long scalp mode tags
-  long_scalp_mode_tags = ["161", "162", "163", "164", "165", "166", "167", "168", "169", "170", "171"]
+  long_scalp_mode_tags = ["161", "162", "163", "164", "165", "166", "167", "168", "169", "170", "171", "172"]
 
   long_rebuy_grind_mode_tags = long_rebuy_mode_tags + long_grind_mode_tags
   long_scalp_rebuy_grind_mode_tags = long_scalp_mode_tags + long_rebuy_mode_tags + long_grind_mode_tags
@@ -201,7 +201,7 @@ class NostalgiaForInfinityX7(IStrategy):
   # Short top coins mode tags
   short_top_coins_mode_tags = ["641", "642"]
   # Short scalp mode tags
-  short_scalp_mode_tags = ["661", "662", "663", "664", "665", "666", "667"]
+  short_scalp_mode_tags = ["661", "662", "663", "664", "665", "666", "667", "670"]
 
   short_rebuy_grind_mode_tags = short_rebuy_mode_tags + short_grind_mode_tags
   short_scalp_rebuy_grind_mode_tags = short_scalp_mode_tags + short_rebuy_mode_tags + short_grind_mode_tags
@@ -915,6 +915,7 @@ class NostalgiaForInfinityX7(IStrategy):
     "long_entry_condition_169_enable": False,
     "long_entry_condition_170_enable": False,
     "long_entry_condition_171_enable": False,
+    "long_entry_condition_172_enable": False,
   }
 
   short_entry_signal_params = {
@@ -942,6 +943,7 @@ class NostalgiaForInfinityX7(IStrategy):
     "short_entry_condition_665_enable": False,
     "short_entry_condition_666_enable": False,
     "short_entry_condition_667_enable": False,
+    "short_entry_condition_670_enable": False,
     # "short_entry_condition_603_enable": True,
     # "short_entry_condition_641_enable": True,
     # "short_entry_condition_642_enable": True,
@@ -4224,6 +4226,12 @@ class NostalgiaForInfinityX7(IStrategy):
     _ph_h12 = pd.Series(high_np).rolling(12).max().shift(1).to_numpy()
     _ph_l12 = pd.Series(low_np).rolling(12).min().shift(1).to_numpy()
     ph_pre_tight_col = np.divide(_ph_h12 - _ph_l12, close_np, out=np.full_like(close_np, np.nan), where=close_np > 0) * 100.0
+    # Marubozu — signals 172/670 (experimental): full-body candle = pure momentum ignition
+    _mrb_rng = high_np - low_np
+    _mrb_body_ratio = np.divide(np.abs(close_np - open_np), _mrb_rng, out=np.zeros_like(_mrb_rng), where=_mrb_rng > 0)
+    _mrb_body_pct = np.divide(np.abs(close_np - open_np), close_np, out=np.zeros_like(close_np), where=close_np > 0)
+    mrb_bull_col = ((close_np > open_np) & (_mrb_body_ratio > 0.9) & (_mrb_body_pct > 0.005)).astype(float)
+    mrb_bear_col = ((close_np < open_np) & (_mrb_body_ratio > 0.9) & (_mrb_body_pct > 0.005)).astype(float)
     new_cols = pd.DataFrame(
       {
         "RSI_3": rsi_3,
@@ -4236,6 +4244,8 @@ class NostalgiaForInfinityX7(IStrategy):
         "PH_CROSS_CNT_12": ph_cross_cnt12_col,
         "PH_BASE_POS": ph_base_pos_col,
         "PH_PRE_TIGHT": ph_pre_tight_col,
+        "MRB_BULL": mrb_bull_col,
+        "MRB_BEAR": mrb_bear_col,
         "ENGULF_BULL": engulf_bull_col,
         "ENGULF_BEAR": engulf_bear_col,
 
@@ -13114,6 +13124,8 @@ class NostalgiaForInfinityX7(IStrategy):
     ph_base_pos = np_view("PH_BASE_POS")
     ph_pre_tight = np_view("PH_PRE_TIGHT")
     low_px = np_view("low")
+    mrb_bull = np_view("MRB_BULL")
+    mrb_bear = np_view("MRB_BEAR")
     global_protections_short_pump = np_view("global_protections_short_pump")
     global_protections_short_dump = np_view("global_protections_short_dump")
     roc_2 = np_view("ROC_2")
@@ -26151,6 +26163,17 @@ class NostalgiaForInfinityX7(IStrategy):
           # PH_CROSS_CNT_12 first-fire counter) are defined above and ready for your protection
           # pass — shipped RAW per our measurements (character gates halved damage but the raw
           # form carries the highest WR; full matrix in the PR)
+        # Condition #172 - Marubozu momentum (Long, experimental — full-body ignition).
+        if long_entry_condition_index == 172:
+          # trend side + momentum side (the frame proven on the engulfing pair)
+          long_entry_logic.append(rsi_14 > 50.0)
+          # hourly money-flow must support the ignition (no conviction candle in a bleed)
+          long_entry_logic.append(cmf_20_1h > 0.02)
+          # 4h trend must agree — conviction candles inside brief above-EMA windows of a
+          # chronic downtrend are traps (the SOON cluster, verified on the chart)
+          long_entry_logic.append(ema_12_4h > ema_200_4h)
+          # full-body green candle: body >90% of range and a meaningful size
+          long_entry_logic.append(mrb_bull > 0.5)
 
         # Condition #192 - Quad-rotation stochastic pullback (Long, experimental).
         if long_entry_condition_index == 192:
@@ -28237,6 +28260,10 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(ib_ready > 0.5)
           short_entry_logic.append(np_shift(close, 1) >= ib_mother_l)
           short_entry_logic.append(close < ib_mother_l)
+        # Condition #670 - Marubozu momentum (Short, experimental, RAW — mirror).
+        if short_entry_condition_index == 670:
+          short_entry_logic.append(rsi_14 < 50.0)
+          short_entry_logic.append(mrb_bear > 0.5)
 
         # Condition #592 - Quad-rotation stochastic pullback (Short, experimental).
         if short_entry_condition_index == 592:
