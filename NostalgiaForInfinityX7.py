@@ -876,6 +876,9 @@ class NostalgiaForInfinityX7(IStrategy):
     "long_entry_condition_6_enable": True,
     "long_entry_condition_7_enable": False,
     "long_entry_condition_8_enable": False,
+    "long_entry_condition_9_enable": False,
+    "long_entry_condition_10_enable": False,
+    "long_entry_condition_11_enable": False,
     "long_entry_condition_21_enable": True,
     "long_entry_condition_41_enable": True,
     "long_entry_condition_42_enable": True,
@@ -889,9 +892,6 @@ class NostalgiaForInfinityX7(IStrategy):
     "long_entry_condition_63_enable": True,
     "long_entry_condition_64_enable": True,
     "long_entry_condition_65_enable": True,
-    "long_entry_condition_67_enable": False,
-    "long_entry_condition_70_enable": False,
-    "long_entry_condition_71_enable": False,
     "long_entry_condition_101_enable": True,
     "long_entry_condition_102_enable": True,
     "long_entry_condition_103_enable": True,
@@ -907,8 +907,6 @@ class NostalgiaForInfinityX7(IStrategy):
     "long_entry_condition_161_enable": True,
     "long_entry_condition_162_enable": True,
     "long_entry_condition_163_enable": True,
-    "long_entry_condition_192_enable": False,
-    "long_entry_condition_193_enable": False,
     "long_entry_condition_164_enable": False,
     "long_entry_condition_165_enable": False,
     "long_entry_condition_166_enable": False,
@@ -919,6 +917,8 @@ class NostalgiaForInfinityX7(IStrategy):
     "long_entry_condition_171_enable": False,
     "long_entry_condition_172_enable": False,
     "long_entry_condition_173_enable": False,
+    "long_entry_condition_192_enable": False,
+    "long_entry_condition_193_enable": False,
   }
 
   short_entry_signal_params = {
@@ -941,20 +941,20 @@ class NostalgiaForInfinityX7(IStrategy):
     "short_entry_condition_563_enable": False,
     "short_entry_condition_592_enable": False,
     "short_entry_condition_593_enable": False,
+    # "short_entry_condition_603_enable": True,
     "short_entry_condition_605_enable": False,
+    # "short_entry_condition_641_enable": True,
+    # "short_entry_condition_642_enable": True,
+    # "short_entry_condition_661_enable": True,
     "short_entry_condition_662_enable": False,
     "short_entry_condition_663_enable": False,
     "short_entry_condition_664_enable": False,
     "short_entry_condition_665_enable": False,
     "short_entry_condition_666_enable": False,
     "short_entry_condition_667_enable": False,
-    "short_entry_condition_670_enable": False,
     "short_entry_condition_669_enable": False,
+    "short_entry_condition_670_enable": False,
     "short_entry_condition_671_enable": False,
-    # "short_entry_condition_603_enable": True,
-    # "short_entry_condition_641_enable": True,
-    # "short_entry_condition_642_enable": True,
-    # "short_entry_condition_661_enable": True,
   }
 
   #############################################################
@@ -17162,6 +17162,155 @@ class NostalgiaForInfinityX7(IStrategy):
             & (close < sma_16 * 0.960)
           )
 
+        # Condition #7 - ADX trend-birth (Long, experimental, RAW — 4h trend ignition; big-win lane).
+        if long_entry_condition_index == 7:
+          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          long_entry_logic.append(protections_long_global == True)
+          # 4h ADX crossing UP through 20 = a trend being born (not yet mature)
+          long_entry_logic.append(adx_14_4h > 20.0)
+          long_entry_logic.append(np_shift(adx_14_4h, 48) <= 20.0)
+          # direction: bulls own it
+          long_entry_logic.append(plus_di_14_4h > minus_di_14_4h)
+          long_entry_logic.append(close > ema_200)
+
+        # Condition #8 - Donchian 7-day breakout (Long, experimental — turtle-style; big-win lane).
+        if long_entry_condition_index == 8:
+          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          long_entry_logic.append(protections_long_global == True)
+          # first close above the prior 7-DAY high (macro breakout event)
+          long_entry_logic.append(close > open_rate)
+          long_entry_logic.append(np_shift(close, 1) <= dc_high_7d)
+          long_entry_logic.append(close > dc_high_7d)
+          # not a one-candle spike fake, and the 4h is not already overheated
+          # (measured on the export W/L split; real run: tag 8 84.0%->88.3% WR, damage -50.4K->-27.7K)
+          long_entry_logic.append(((high_px - low_px) / close) < 0.025)
+          long_entry_logic.append(roc_9_4h < 20.0)
+
+        # Condition #9 - Momentum Continuation (Long, experimental).
+        if long_entry_condition_index == 9:
+          # Protections
+          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          long_entry_logic.append(protections_long_global == True)
+          long_entry_logic.append(
+            ((roc_9_1d > -5.0) | (rsi_3_1d > 40.0))
+            & ((roc_9_4h > -3.0) | (rsi_3_4h > 50.0))
+            & (roc_9_1d < 25.0)
+            & (roc_9_4h < 15.0)
+            & (roc_9_1h < 10.0)
+            & (rsi_3 < 88.0)
+            & (rsi_3_15m < 85.0)
+            & (rsi_3_1h < 80.0)
+            & (rsi_3_4h < 80.0)
+            & (stochrsi_k < 90.0)
+            & (stochrsi_k_1h < 85.0)
+            & (stochrsi_k_4h < 85.0)
+            & (willr_14 < -10.0)
+            & (mfi_14 > 40.0)
+            & (cmf_20 > -0.10)
+            & (bbb_20_2_0 < 20.0)
+            & (close < (close_max_48 * 0.985))
+            & ((rsi_3 > 10.0) | (rsi_3_1h > 20.0) | (roc_9_1d > 0.0))
+            & ((rsi_3_15m > 10.0) | (rsi_3_1h > 15.0) | (roc_9_4h > -5.0))
+            & ((rsi_3_1h > 20.0) | (rsi_3_4h > 25.0) | (aroonu_14_4h < 60.0))
+            & ((rsi_3_15m > 20.0) | (rsi_3_1h > 30.0) | (rsi_3_4h > 35.0))
+            # 1h already rolling over — continuation into a fading hour
+            & ((willr_14_1h > -35.0) | (aroonu_14_4h > 60.0) | (rsi_3_1h > 65.0))
+            # washed-out daily + rolling 4h — the trend is already dead
+            & ((rsi_3_1d > 40.0) | (roc_9_4h > 2.0) | (cci_20_4h > -20.0))
+          )
+          # Logic — full EMA-fan alignment, mature uptrend continuation
+          long_entry_logic.append(((ema_9 - ema_50) / close * 100.0) > 0.5)
+          long_entry_logic.append(rsi_14_1d > 50.0)
+          long_entry_logic.append(rsi_3_1h < 80.0)
+          long_entry_logic.append(cmf_20_1h > 0.0)
+          long_entry_logic.append(close > ema_9)
+          long_entry_logic.append(close > ema_12)
+          long_entry_logic.append(close > ema_26)
+          long_entry_logic.append(close > ema_50)
+          long_entry_logic.append(close > ema_200)
+          long_entry_logic.append(ema_9 > ema_26)
+          long_entry_logic.append(ema_26 > ema_200)
+          long_entry_logic.append(rsi_14 > 55.0)
+          long_entry_logic.append(rsi_14 < 65.0)
+          long_entry_logic.append(aroonu_14 > 75.0)
+          long_entry_logic.append(rsi_14_1h > 50.0)
+          long_entry_logic.append(rsi_14_1h < 70.0)
+          long_entry_logic.append(rsi_14_4h > 48.0)
+          long_entry_logic.append(rsi_14_4h < 68.0)
+          long_entry_logic.append(bbp_20_2_0 > 0.55)
+          long_entry_logic.append(bbp_20_2_0 < 0.85)
+          long_entry_logic.append(obv_change_pct > 0.0)
+          long_entry_logic.append(willr_14 > -40.0)
+          long_entry_logic.append(willr_14 < -15.0)
+
+        # Condition #10 - CCI Divergence + AROON Trend Birth (Long, experimental).
+        if long_entry_condition_index == 10:
+          # Protections
+          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          long_entry_logic.append(protections_long_global == True)
+          long_entry_logic.append(global_protections_long_pump == True)
+          long_entry_logic.append(global_protections_long_dump == True)
+          long_entry_logic.append(rsi_14_1d > 30.0)
+          long_entry_logic.append(roc_9_1d > -20.0)
+          long_entry_logic.append(rsi_14_4h > 25.0)
+          long_entry_logic.append((ema_12_4h > ema_200_4h) | (rsi_14_4h > 35.0) | (roc_9_4h > -5.0))
+          long_entry_logic.append(
+            ((rsi_3 > 3.0) | (rsi_3_15m > 5.0) | (rsi_3_1h > 10.0))
+            & ((rsi_3_15m > 5.0) | (rsi_3_1h > 15.0) | (aroonu_14_4h < 90.0))
+            & ((rsi_3_1h > 10.0) | (rsi_3_4h > 20.0) | (stochrsi_k_4h < 60.0))
+            & ((rsi_3_15m > 10.0) | (rsi_3_4h > 25.0) | (roc_9_1d > -10.0))
+          )
+          long_entry_logic.append((rsi_3_1d > 20.0) | (roc_2_1d > -3.0) | (cmf_20_1d > -0.10))
+          # deep daily outflow (distribution) with no washout — knife, not a dip
+          long_entry_logic.append((cmf_20_1d > -0.30) | (rsi_3_1d > 65.0) | (roc_9_4h < -15.0))
+          # Logic — 1h CCI recovering from oversold + fresh 15m AROON upswing
+          long_entry_logic.append(cci_20_1h < -50.0)
+          long_entry_logic.append(cci_20_1h > -200.0)
+          long_entry_logic.append(cci_20_change_pct_1h > 0.0)
+          long_entry_logic.append(aroonu_14_15m > 50.0)
+          long_entry_logic.append(aroonu_14 > 25.0)
+          long_entry_logic.append(rsi_14 < 45.0)
+          long_entry_logic.append(rsi_14 > 20.0)
+          long_entry_logic.append(mfi_14 > 30.0)
+          long_entry_logic.append(cmf_20_1h > -0.05)
+          long_entry_logic.append(close < (close_max_48 * 0.95))
+          long_entry_logic.append(close > close_min_48)
+          long_entry_logic.append(stochrsi_k < 30.0)
+
+        # Condition #11 - MFI/CMF Double Divergence + BB Reversion (Long, experimental).
+        if long_entry_condition_index == 11:
+          # Protections
+          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          long_entry_logic.append(protections_long_global == True)
+          long_entry_logic.append(global_protections_long_pump == True)
+          long_entry_logic.append(global_protections_long_dump == True)
+          long_entry_logic.append(rsi_14_1d > 30.0)
+          long_entry_logic.append(roc_9_1d > -20.0)
+          long_entry_logic.append((ema_12_4h > ema_200_4h) | (rsi_14_4h > 40.0))
+          long_entry_logic.append(
+            ((rsi_3 > 2.0) | (rsi_3_15m > 5.0) | (aroonu_14_1h < 80.0))
+            & ((rsi_3_15m > 5.0) | (rsi_3_1h > 10.0) | (roc_9_4h > -10.0))
+            & ((rsi_3_1h > 8.0) | (rsi_3_4h > 15.0) | (stochrsi_k_1d < 50.0))
+            & ((rsi_3_15m > 8.0) | (cmf_20_4h > -0.15) | (aroonu_14_4h < 70.0))
+            & ((rsi_3_4h > 15.0) | (roc_9_1d > -15.0))
+          )
+          long_entry_logic.append((rsi_14_1h > 22.0) | (rsi_14_4h > 25.0))
+          # post-pump slow bleed: daily still inflated while 4h drifts slightly
+          # negative (0..-15) = distribution, not a dip; real dips wash out below -15
+          long_entry_logic.append((roc_9_1d < 25.0) | (roc_9_4h > 0.0) | (roc_9_4h < -15.0))
+          # Logic — MFI & CMF both positive (accumulation) at the BB lower band
+          long_entry_logic.append(mfi_14 > 30.0)
+          long_entry_logic.append(cmf_20 > 0.02)
+          long_entry_logic.append(willr_14 < -80.0)
+          long_entry_logic.append(willr_14_1h < -45.0)
+          long_entry_logic.append(close < (bbl_20_2_0 * 1.015))
+          long_entry_logic.append(bbb_20_2_0 > 6.0)
+          long_entry_logic.append(rsi_14 < 40.0)
+          long_entry_logic.append(rsi_14 > 15.0)
+          long_entry_logic.append(rsi_3 > 3.0)
+          long_entry_logic.append(rsi_14_1h > 25.0)
+          long_entry_logic.append(bbp_20_2_0_1h > 0.05)
+
         # Condition #21 - Pump mode (Long).
         if long_entry_condition_index == 21:
           # Protections
@@ -22138,131 +22287,6 @@ class NostalgiaForInfinityX7(IStrategy):
             & (ema_12 > ema_26)
           )
 
-        # Condition #67 - Momentum Continuation (Long, experimental).
-        if long_entry_condition_index == 67:
-          # Protections
-          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
-          long_entry_logic.append(protections_long_global == True)
-          long_entry_logic.append(
-            ((roc_9_1d > -5.0) | (rsi_3_1d > 40.0))
-            & ((roc_9_4h > -3.0) | (rsi_3_4h > 50.0))
-            & (roc_9_1d < 25.0)
-            & (roc_9_4h < 15.0)
-            & (roc_9_1h < 10.0)
-            & (rsi_3 < 88.0)
-            & (rsi_3_15m < 85.0)
-            & (rsi_3_1h < 80.0)
-            & (rsi_3_4h < 80.0)
-            & (stochrsi_k < 90.0)
-            & (stochrsi_k_1h < 85.0)
-            & (stochrsi_k_4h < 85.0)
-            & (willr_14 < -10.0)
-            & (mfi_14 > 40.0)
-            & (cmf_20 > -0.10)
-            & (bbb_20_2_0 < 20.0)
-            & (close < (close_max_48 * 0.985))
-            & ((rsi_3 > 10.0) | (rsi_3_1h > 20.0) | (roc_9_1d > 0.0))
-            & ((rsi_3_15m > 10.0) | (rsi_3_1h > 15.0) | (roc_9_4h > -5.0))
-            & ((rsi_3_1h > 20.0) | (rsi_3_4h > 25.0) | (aroonu_14_4h < 60.0))
-            & ((rsi_3_15m > 20.0) | (rsi_3_1h > 30.0) | (rsi_3_4h > 35.0))
-            # 1h already rolling over — continuation into a fading hour
-            & ((willr_14_1h > -35.0) | (aroonu_14_4h > 60.0) | (rsi_3_1h > 65.0))
-            # washed-out daily + rolling 4h — the trend is already dead
-            & ((rsi_3_1d > 40.0) | (roc_9_4h > 2.0) | (cci_20_4h > -20.0))
-          )
-          # Logic — full EMA-fan alignment, mature uptrend continuation
-          long_entry_logic.append(((ema_9 - ema_50) / close * 100.0) > 0.5)
-          long_entry_logic.append(rsi_14_1d > 50.0)
-          long_entry_logic.append(rsi_3_1h < 80.0)
-          long_entry_logic.append(cmf_20_1h > 0.0)
-          long_entry_logic.append(close > ema_9)
-          long_entry_logic.append(close > ema_12)
-          long_entry_logic.append(close > ema_26)
-          long_entry_logic.append(close > ema_50)
-          long_entry_logic.append(close > ema_200)
-          long_entry_logic.append(ema_9 > ema_26)
-          long_entry_logic.append(ema_26 > ema_200)
-          long_entry_logic.append(rsi_14 > 55.0)
-          long_entry_logic.append(rsi_14 < 65.0)
-          long_entry_logic.append(aroonu_14 > 75.0)
-          long_entry_logic.append(rsi_14_1h > 50.0)
-          long_entry_logic.append(rsi_14_1h < 70.0)
-          long_entry_logic.append(rsi_14_4h > 48.0)
-          long_entry_logic.append(rsi_14_4h < 68.0)
-          long_entry_logic.append(bbp_20_2_0 > 0.55)
-          long_entry_logic.append(bbp_20_2_0 < 0.85)
-          long_entry_logic.append(obv_change_pct > 0.0)
-          long_entry_logic.append(willr_14 > -40.0)
-          long_entry_logic.append(willr_14 < -15.0)
-
-        # Condition #70 - CCI Divergence + AROON Trend Birth (Long, experimental).
-        if long_entry_condition_index == 70:
-          # Protections
-          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
-          long_entry_logic.append(protections_long_global == True)
-          long_entry_logic.append(global_protections_long_pump == True)
-          long_entry_logic.append(global_protections_long_dump == True)
-          long_entry_logic.append(rsi_14_1d > 30.0)
-          long_entry_logic.append(roc_9_1d > -20.0)
-          long_entry_logic.append(rsi_14_4h > 25.0)
-          long_entry_logic.append((ema_12_4h > ema_200_4h) | (rsi_14_4h > 35.0) | (roc_9_4h > -5.0))
-          long_entry_logic.append(
-            ((rsi_3 > 3.0) | (rsi_3_15m > 5.0) | (rsi_3_1h > 10.0))
-            & ((rsi_3_15m > 5.0) | (rsi_3_1h > 15.0) | (aroonu_14_4h < 90.0))
-            & ((rsi_3_1h > 10.0) | (rsi_3_4h > 20.0) | (stochrsi_k_4h < 60.0))
-            & ((rsi_3_15m > 10.0) | (rsi_3_4h > 25.0) | (roc_9_1d > -10.0))
-          )
-          long_entry_logic.append((rsi_3_1d > 20.0) | (roc_2_1d > -3.0) | (cmf_20_1d > -0.10))
-          # deep daily outflow (distribution) with no washout — knife, not a dip
-          long_entry_logic.append((cmf_20_1d > -0.30) | (rsi_3_1d > 65.0) | (roc_9_4h < -15.0))
-          # Logic — 1h CCI recovering from oversold + fresh 15m AROON upswing
-          long_entry_logic.append(cci_20_1h < -50.0)
-          long_entry_logic.append(cci_20_1h > -200.0)
-          long_entry_logic.append(cci_20_change_pct_1h > 0.0)
-          long_entry_logic.append(aroonu_14_15m > 50.0)
-          long_entry_logic.append(aroonu_14 > 25.0)
-          long_entry_logic.append(rsi_14 < 45.0)
-          long_entry_logic.append(rsi_14 > 20.0)
-          long_entry_logic.append(mfi_14 > 30.0)
-          long_entry_logic.append(cmf_20_1h > -0.05)
-          long_entry_logic.append(close < (close_max_48 * 0.95))
-          long_entry_logic.append(close > close_min_48)
-          long_entry_logic.append(stochrsi_k < 30.0)
-
-        # Condition #71 - MFI/CMF Double Divergence + BB Reversion (Long, experimental).
-        if long_entry_condition_index == 71:
-          # Protections
-          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
-          long_entry_logic.append(protections_long_global == True)
-          long_entry_logic.append(global_protections_long_pump == True)
-          long_entry_logic.append(global_protections_long_dump == True)
-          long_entry_logic.append(rsi_14_1d > 30.0)
-          long_entry_logic.append(roc_9_1d > -20.0)
-          long_entry_logic.append((ema_12_4h > ema_200_4h) | (rsi_14_4h > 40.0))
-          long_entry_logic.append(
-            ((rsi_3 > 2.0) | (rsi_3_15m > 5.0) | (aroonu_14_1h < 80.0))
-            & ((rsi_3_15m > 5.0) | (rsi_3_1h > 10.0) | (roc_9_4h > -10.0))
-            & ((rsi_3_1h > 8.0) | (rsi_3_4h > 15.0) | (stochrsi_k_1d < 50.0))
-            & ((rsi_3_15m > 8.0) | (cmf_20_4h > -0.15) | (aroonu_14_4h < 70.0))
-            & ((rsi_3_4h > 15.0) | (roc_9_1d > -15.0))
-          )
-          long_entry_logic.append((rsi_14_1h > 22.0) | (rsi_14_4h > 25.0))
-          # post-pump slow bleed: daily still inflated while 4h drifts slightly
-          # negative (0..-15) = distribution, not a dip; real dips wash out below -15
-          long_entry_logic.append((roc_9_1d < 25.0) | (roc_9_4h > 0.0) | (roc_9_4h < -15.0))
-          # Logic — MFI & CMF both positive (accumulation) at the BB lower band
-          long_entry_logic.append(mfi_14 > 30.0)
-          long_entry_logic.append(cmf_20 > 0.02)
-          long_entry_logic.append(willr_14 < -80.0)
-          long_entry_logic.append(willr_14_1h < -45.0)
-          long_entry_logic.append(close < (bbl_20_2_0 * 1.015))
-          long_entry_logic.append(bbb_20_2_0 > 6.0)
-          long_entry_logic.append(rsi_14 < 40.0)
-          long_entry_logic.append(rsi_14 > 15.0)
-          long_entry_logic.append(rsi_3 > 3.0)
-          long_entry_logic.append(rsi_14_1h > 25.0)
-          long_entry_logic.append(bbp_20_2_0_1h > 0.05)
-
         # Condition #101 - Rapid mode (Long).
         if long_entry_condition_index == 101:
           # Protections
@@ -26153,6 +26177,47 @@ class NostalgiaForInfinityX7(IStrategy):
 
         ###############################################################################################
 
+        # Condition #164 - 4h opening-range fakeout (Long, experimental).
+        if long_entry_condition_index == 164:
+          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          long_entry_logic.append(protections_long_global == True)
+          # only fade a downside break into an already-deeply-sold 4h (a flush into oversold = spring)
+          long_entry_logic.append((willr_14_4h < -70.0) | (stoch_k_4h < 40.0))
+          # prev 5m candle CLOSED below the day's first-4h range low; current closes back INSIDE
+          long_entry_logic.append(np_shift(close, 1) < orange_l)
+          long_entry_logic.append(close > orange_l)
+          long_entry_logic.append(close < orange_h)
+
+        # Condition #165 - Fib golden-pocket continuation (Long, experimental, RAW — The Moving Average port).
+        if long_entry_condition_index == 165:
+          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          long_entry_logic.append(protections_long_global == True)
+          # trend filter (video: "only clear trends") + impulse quality (never draw fibs in chop)
+          long_entry_logic.append(ema_12_4h > ema_200_4h)
+          # R1 (eyeball): only a CLEAN ACTIVE uptrend — whipsaw chop (RIVER) has rsi_4h ~50 and stale 4h highs
+          long_entry_logic.append(rsi_14_4h > 55.0)
+          long_entry_logic.append(aroonu_14_4h > 70.0)
+          # R1: anti-blow-off — don't buy the retrace of a parabolic final leg (ARIA top)
+          long_entry_logic.append(roc_9_1d < 30.0)
+          long_entry_logic.append((close_max_48 - close_min_48) > (close_min_48 * 0.04))
+          # golden pocket: FIRST entry into the 0.5-0.618 retrace band of the 48-candle impulse (from above)
+          _fib_rng_165 = close_max_48 - close_min_48
+          _fib_retr_165 = (close_max_48 - close) / _fib_rng_165
+          long_entry_logic.append(np_shift(_fib_retr_165, 1) < 0.5)
+          long_entry_logic.append(_fib_retr_165 >= 0.5)
+          long_entry_logic.append(_fib_retr_165 <= 0.618)
+
+        # Condition #166 - Squeeze Momentum release (Long, experimental, RAW — LazyBear port).
+        if long_entry_condition_index == 166:
+          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          long_entry_logic.append(protections_long_global == True)
+          # squeeze RELEASE this candle after a coil (>=12 of the prior 24 candles squeezed)
+          long_entry_logic.append(np_shift(sqz_on, 1) > 0.5)
+          long_entry_logic.append(sqz_on < 0.5)
+          long_entry_logic.append(np_shift(sqz_cnt_24, 1) >= 12.0)
+          # expansion direction: close breaks through the upper band
+          long_entry_logic.append(close > bbu_20_2_0)
+
         # Condition #167 - Engulfing continuation (Long, experimental, RAW — TradingLab port).
         if long_entry_condition_index == 167:
           long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
@@ -26249,30 +26314,6 @@ class NostalgiaForInfinityX7(IStrategy):
           # the fact: long lower rejection wick, tiny upper wick
           long_entry_logic.append(pb_hammer > 0.5)
 
-        # Condition #7 - ADX trend-birth (Long, experimental, RAW — 4h trend ignition; big-win lane).
-        if long_entry_condition_index == 7:
-          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
-          long_entry_logic.append(protections_long_global == True)
-          # 4h ADX crossing UP through 20 = a trend being born (not yet mature)
-          long_entry_logic.append(adx_14_4h > 20.0)
-          long_entry_logic.append(np_shift(adx_14_4h, 48) <= 20.0)
-          # direction: bulls own it
-          long_entry_logic.append(plus_di_14_4h > minus_di_14_4h)
-          long_entry_logic.append(close > ema_200)
-
-        # Condition #8 - Donchian 7-day breakout (Long, experimental — turtle-style; big-win lane).
-        if long_entry_condition_index == 8:
-          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
-          long_entry_logic.append(protections_long_global == True)
-          # first close above the prior 7-DAY high (macro breakout event)
-          long_entry_logic.append(close > open_rate)
-          long_entry_logic.append(np_shift(close, 1) <= dc_high_7d)
-          long_entry_logic.append(close > dc_high_7d)
-          # not a one-candle spike fake, and the 4h is not already overheated
-          # (measured on the export W/L split; real run: tag 8 84.0%->88.3% WR, damage -50.4K->-27.7K)
-          long_entry_logic.append(((high_px - low_px) / close) < 0.025)
-          long_entry_logic.append(roc_9_4h < 20.0)
-
         # Condition #192 - Quad-rotation stochastic pullback (Long, experimental).
         if long_entry_condition_index == 192:
           # --- Protections ---
@@ -26305,47 +26346,6 @@ class NostalgiaForInfinityX7(IStrategy):
           # price LOWER-LOW across swing windows while stoch makes a HIGHER-LOW (real divergence)
           long_entry_logic.append(quad_low_min_12 < np_shift(quad_low_min_12, 12))
           long_entry_logic.append(quad_s93_min_12 > np_shift(quad_s93_min_12, 12))
-
-        # Condition #164 - 4h opening-range fakeout (Long, experimental).
-        if long_entry_condition_index == 164:
-          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
-          long_entry_logic.append(protections_long_global == True)
-          # only fade a downside break into an already-deeply-sold 4h (a flush into oversold = spring)
-          long_entry_logic.append((willr_14_4h < -70.0) | (stoch_k_4h < 40.0))
-          # prev 5m candle CLOSED below the day's first-4h range low; current closes back INSIDE
-          long_entry_logic.append(np_shift(close, 1) < orange_l)
-          long_entry_logic.append(close > orange_l)
-          long_entry_logic.append(close < orange_h)
-
-        # Condition #165 - Fib golden-pocket continuation (Long, experimental, RAW — The Moving Average port).
-        if long_entry_condition_index == 165:
-          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
-          long_entry_logic.append(protections_long_global == True)
-          # trend filter (video: "only clear trends") + impulse quality (never draw fibs in chop)
-          long_entry_logic.append(ema_12_4h > ema_200_4h)
-          # R1 (eyeball): only a CLEAN ACTIVE uptrend — whipsaw chop (RIVER) has rsi_4h ~50 and stale 4h highs
-          long_entry_logic.append(rsi_14_4h > 55.0)
-          long_entry_logic.append(aroonu_14_4h > 70.0)
-          # R1: anti-blow-off — don't buy the retrace of a parabolic final leg (ARIA top)
-          long_entry_logic.append(roc_9_1d < 30.0)
-          long_entry_logic.append((close_max_48 - close_min_48) > (close_min_48 * 0.04))
-          # golden pocket: FIRST entry into the 0.5-0.618 retrace band of the 48-candle impulse (from above)
-          _fib_rng_165 = close_max_48 - close_min_48
-          _fib_retr_165 = (close_max_48 - close) / _fib_rng_165
-          long_entry_logic.append(np_shift(_fib_retr_165, 1) < 0.5)
-          long_entry_logic.append(_fib_retr_165 >= 0.5)
-          long_entry_logic.append(_fib_retr_165 <= 0.618)
-
-        # Condition #166 - Squeeze Momentum release (Long, experimental, RAW — LazyBear port).
-        if long_entry_condition_index == 166:
-          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
-          long_entry_logic.append(protections_long_global == True)
-          # squeeze RELEASE this candle after a coil (>=12 of the prior 24 candles squeezed)
-          long_entry_logic.append(np_shift(sqz_on, 1) > 0.5)
-          long_entry_logic.append(sqz_on < 0.5)
-          long_entry_logic.append(np_shift(sqz_cnt_24, 1) >= 12.0)
-          # expansion direction: close breaks through the upper band
-          long_entry_logic.append(close > bbu_20_2_0)
 
         long_entry_logic.append(df["volume"] > 0)
         item_long_entry = _and_entry_conditions(long_entry_logic)
@@ -26999,6 +26999,23 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(aroond_14_15m_lt_25)
           short_entry_logic.append(close > (ema_9 * 1.058))
           short_entry_logic.append(close > (ema_20 * 1.040))
+
+        # Condition #505 - ADX trend-birth (Short, experimental, RAW — mirror).
+        if short_entry_condition_index == 505:
+          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          short_entry_logic.append(protections_short_global == True)
+          short_entry_logic.append(adx_14_4h > 20.0)
+          short_entry_logic.append(np_shift(adx_14_4h, 48) <= 20.0)
+          short_entry_logic.append(minus_di_14_4h > plus_di_14_4h)
+          short_entry_logic.append(close < ema_200)
+
+        # Condition #506 - Donchian 7-day breakdown (Short, experimental, RAW — mirror).
+        if short_entry_condition_index == 506:
+          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          short_entry_logic.append(protections_short_global == True)
+          short_entry_logic.append(close < open_rate)
+          short_entry_logic.append(np_shift(close, 1) >= dc_low_7d)
+          short_entry_logic.append(close < dc_low_7d)
 
         # Condition #541 - Quick mode (Short).
         if short_entry_condition_index == 541:
@@ -27969,6 +27986,74 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(cci_20_change_pct_1h < 0.0)
           short_entry_logic.append(mfi_14_1h < 45.0)
 
+        # Condition #592 - Quad-rotation stochastic pullback (Short, experimental).
+        if short_entry_condition_index == 592:
+          # --- Protections ---
+          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          short_entry_logic.append(protections_short_global == True)
+          # Round 1 (GRIFFAIN loss): block short while uptrend still has legs
+          short_entry_logic.append(
+            (roc_9_1d < 2.5)
+            | (aroonu_14 < 100.0)
+            | (aroonu_14_1h < 65.0)
+            | (roc_9_1h < -5.5)
+            | (cmf_20 < 0.0)
+            | (rsi_14_1h > 40.0)
+          )
+          # Round 2 (XRP loss)
+          short_entry_logic.append(
+            (roc_9_1d < 2.0)
+            | (rsi_14_1h > 42.0)
+            | (rsi_3_15m > 65.0)
+            | (cmf_20 > 0.15)
+            | (aroonu_14_1h > 40.0)
+            | (roc_9_1h < -5.0)
+          )
+          # Round 3 (API3/UNI loss)
+          short_entry_logic.append((roc_9_1d < 0.0) | (roc_9_1h < -5.0) | (rsi_14_1h > 32.0) | (mfi_14_15m > 25.0))
+          # Round 4 (EIGEN/DODOX loss)
+          short_entry_logic.append((cmf_20 < 0.15) | (roc_9_1d < -3.0) | (roc_9_1d > 5.0) | (rsi_14_1h > 50.0))
+          # Round 5 (CHZ loss): deep 1d downtrend + heavy money INFLOW at entry = squeeze fuel
+          short_entry_logic.append((mfi_14 < 70.0) | (roc_9_1d > -10.0))
+          # --- Logic: embedded down-regime + quad-overbought bounce + 5-candle shift kink ---
+          short_entry_logic.append(stoch_60_10 < 20.0)
+          short_entry_logic.append(stoch_9_3 > 80.0)
+          short_entry_logic.append(stoch_14_3 > 80.0)
+          short_entry_logic.append(stoch_4_4 > 80.0)
+          short_entry_logic.append(close > np_shift(close, 5))
+          short_entry_logic.append(stoch_9_3 < np_shift(stoch_9_3, 5))
+
+        # Condition #593 - Quad-rotation TRUE pivot divergence (Short, experimental).
+        if short_entry_condition_index == 593:
+          # --- Protections ---
+          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          short_entry_logic.append(protections_short_global == True)
+          # Round 1 (UNI loss): 1h washed-out + 1d overbought & rising = bounce squeeze; need 1h strength
+          # OR 1d not stretched OR 1d already down OR 4h stoch off the floor
+          short_entry_logic.append(
+            (rsi_14_1h > 30.0) | (stochrsi_k_1d < 80.0) | (roc_9_1d < 0.0) | (stochrsi_k_4h > 10.0)
+          )
+          # --- Logic: embedded down-regime + quad-overbought + two-pivot bearish divergence ---
+          short_entry_logic.append(stoch_60_10 < 20.0)
+          short_entry_logic.append(stoch_9_3 > 80.0)
+          short_entry_logic.append(stoch_14_3 > 80.0)
+          short_entry_logic.append(stoch_4_4 > 80.0)
+          # price HIGHER-HIGH across swing windows while stoch makes a LOWER-HIGH (real divergence)
+          short_entry_logic.append(quad_high_max_12 > np_shift(quad_high_max_12, 12))
+          short_entry_logic.append(quad_s93_max_12 < np_shift(quad_s93_max_12, 12))
+
+        # Condition #605 - Williams %R snapback (Short, experimental — mirror).
+        if short_entry_condition_index == 605:
+          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          short_entry_logic.append(protections_short_global == True)
+          # never fade the bounce of a fully-capitulated daily (violent squeeze habitat)
+          short_entry_logic.append(rsi_3_1d > 12.0)
+          # 1h close crosses INTO the overbought extreme
+          short_entry_logic.append(willr_14_1h > -10.0)
+          short_entry_logic.append(np_shift(willr_14_1h, 12) <= -10.0)
+          # mean-revert WITH the daily trend: only short when the day is down
+          short_entry_logic.append(change_pct_1d < 0.0)
+
         # # Condition #620 - Grind mode (Short).
         # if short_entry_condition_index == 620:
         #   # Protections
@@ -28159,18 +28244,6 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(rsi_20 > rsi_20_shift_1)
           short_entry_logic.append(close > sma_16 * 1.042)
 
-        # Condition #605 - Williams %R snapback (Short, experimental — mirror).
-        if short_entry_condition_index == 605:
-          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
-          short_entry_logic.append(protections_short_global == True)
-          # never fade the bounce of a fully-capitulated daily (violent squeeze habitat)
-          short_entry_logic.append(rsi_3_1d > 12.0)
-          # 1h close crosses INTO the overbought extreme
-          short_entry_logic.append(willr_14_1h > -10.0)
-          short_entry_logic.append(np_shift(willr_14_1h, 12) <= -10.0)
-          # mean-revert WITH the daily trend: only short when the day is down
-          short_entry_logic.append(change_pct_1d < 0.0)
-
         # Condition #661 - Scalp mode (Short).
         if short_entry_condition_index == 661:
           # Protections
@@ -28327,141 +28400,6 @@ class NostalgiaForInfinityX7(IStrategy):
 
         ###############################################################################################
 
-        # Condition #665 - Engulfing continuation (Short, experimental, RAW — mirror).
-        if short_entry_condition_index == 665:
-          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
-          short_entry_logic.append(protections_short_global == True)
-          # breakdown must be real: price already in the lower half of the range,
-          # 15m momentum actually down (losses were top-of-range fake breakdowns)
-          short_entry_logic.append(willr_14 < -50.0)
-          short_entry_logic.append(rsi_3_15m < 45.0)
-          # downtrend regime + momentum side + bearish engulfing close
-          short_entry_logic.append(close < ema_200)
-          short_entry_logic.append(rsi_14 < 50.0)
-          short_entry_logic.append(engulf_bear > 0.5)
-
-        # Condition #666 - Swing-failure pattern (Short, experimental, RAW — mirror).
-        if short_entry_condition_index == 666:
-          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
-          short_entry_logic.append(protections_short_global == True)
-          # prior 48-candle high swept by the wick, candle closes back below it
-          short_entry_logic.append(sfp_bear > 0.5)
-
-        # Condition #667 - 1h inside-bar breakout (Short, experimental, RAW — mirror).
-        if short_entry_condition_index == 667:
-          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
-          short_entry_logic.append(protections_short_global == True)
-          short_entry_logic.append(close < ema_200)
-          # don't short a breakdown when the daily cycle already sits low (bounce zone)
-          short_entry_logic.append(stochrsi_k_1d < 48.0)
-          # last completed 1h candle was an inside bar; this 5m candle CROSSES below the mother low
-          short_entry_logic.append(ib_ready > 0.5)
-          short_entry_logic.append(np_shift(close, 1) >= ib_mother_l)
-          short_entry_logic.append(close < ib_mother_l)
-        # Condition #670 - Marubozu momentum (Short, experimental, RAW — mirror).
-        if short_entry_condition_index == 670:
-          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
-          short_entry_logic.append(protections_short_global == True)
-          short_entry_logic.append(close < ema_200)
-          short_entry_logic.append(rsi_14 < 50.0)
-          short_entry_logic.append(mrb_bear > 0.5)
-
-        # Condition #669 - Dump hunter (Short, experimental, RAW — crash ignition, mirror of 171).
-        if short_entry_condition_index == 669:
-          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
-          short_entry_logic.append(protections_short_global == True)
-          # calm base: not already crashed over the rolling 24h (ride ignition, don't chase)
-          short_entry_logic.append(roc_288 > -10.0)
-          # ignition: red candle CROSSING below the prior 48-candle low...
-          short_entry_logic.append(close < open_rate)
-          short_entry_logic.append(np_shift(close, 1) >= dh_prev_min)
-          short_entry_logic.append(close < dh_prev_min)
-          # ...on explosive volume (dump signature)
-          short_entry_logic.append(vol_rel > 3.0)
-
-        # Condition #671 - Shooting-star pin-bar (Short, experimental, RAW — mirror at a top).
-        if short_entry_condition_index == 671:
-          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
-          short_entry_logic.append(protections_short_global == True)
-          # top context: near the 4h high, 5m hot
-          short_entry_logic.append(close > (close_max_48 * 0.97))
-          short_entry_logic.append(rsi_3 > 60.0)
-          # the fact: long upper rejection wick, tiny lower wick
-          short_entry_logic.append(pb_star > 0.5)
-
-        # Condition #505 - ADX trend-birth (Short, experimental, RAW — mirror).
-        if short_entry_condition_index == 505:
-          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
-          short_entry_logic.append(protections_short_global == True)
-          short_entry_logic.append(adx_14_4h > 20.0)
-          short_entry_logic.append(np_shift(adx_14_4h, 48) <= 20.0)
-          short_entry_logic.append(minus_di_14_4h > plus_di_14_4h)
-          short_entry_logic.append(close < ema_200)
-
-        # Condition #506 - Donchian 7-day breakdown (Short, experimental, RAW — mirror).
-        if short_entry_condition_index == 506:
-          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
-          short_entry_logic.append(protections_short_global == True)
-          short_entry_logic.append(close < open_rate)
-          short_entry_logic.append(np_shift(close, 1) >= dc_low_7d)
-          short_entry_logic.append(close < dc_low_7d)
-
-        # Condition #592 - Quad-rotation stochastic pullback (Short, experimental).
-        if short_entry_condition_index == 592:
-          # --- Protections ---
-          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
-          short_entry_logic.append(protections_short_global == True)
-          # Round 1 (GRIFFAIN loss): block short while uptrend still has legs
-          short_entry_logic.append(
-            (roc_9_1d < 2.5)
-            | (aroonu_14 < 100.0)
-            | (aroonu_14_1h < 65.0)
-            | (roc_9_1h < -5.5)
-            | (cmf_20 < 0.0)
-            | (rsi_14_1h > 40.0)
-          )
-          # Round 2 (XRP loss)
-          short_entry_logic.append(
-            (roc_9_1d < 2.0)
-            | (rsi_14_1h > 42.0)
-            | (rsi_3_15m > 65.0)
-            | (cmf_20 > 0.15)
-            | (aroonu_14_1h > 40.0)
-            | (roc_9_1h < -5.0)
-          )
-          # Round 3 (API3/UNI loss)
-          short_entry_logic.append((roc_9_1d < 0.0) | (roc_9_1h < -5.0) | (rsi_14_1h > 32.0) | (mfi_14_15m > 25.0))
-          # Round 4 (EIGEN/DODOX loss)
-          short_entry_logic.append((cmf_20 < 0.15) | (roc_9_1d < -3.0) | (roc_9_1d > 5.0) | (rsi_14_1h > 50.0))
-          # Round 5 (CHZ loss): deep 1d downtrend + heavy money INFLOW at entry = squeeze fuel
-          short_entry_logic.append((mfi_14 < 70.0) | (roc_9_1d > -10.0))
-          # --- Logic: embedded down-regime + quad-overbought bounce + 5-candle shift kink ---
-          short_entry_logic.append(stoch_60_10 < 20.0)
-          short_entry_logic.append(stoch_9_3 > 80.0)
-          short_entry_logic.append(stoch_14_3 > 80.0)
-          short_entry_logic.append(stoch_4_4 > 80.0)
-          short_entry_logic.append(close > np_shift(close, 5))
-          short_entry_logic.append(stoch_9_3 < np_shift(stoch_9_3, 5))
-
-        # Condition #593 - Quad-rotation TRUE pivot divergence (Short, experimental).
-        if short_entry_condition_index == 593:
-          # --- Protections ---
-          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
-          short_entry_logic.append(protections_short_global == True)
-          # Round 1 (UNI loss): 1h washed-out + 1d overbought & rising = bounce squeeze; need 1h strength
-          # OR 1d not stretched OR 1d already down OR 4h stoch off the floor
-          short_entry_logic.append(
-            (rsi_14_1h > 30.0) | (stochrsi_k_1d < 80.0) | (roc_9_1d < 0.0) | (stochrsi_k_4h > 10.0)
-          )
-          # --- Logic: embedded down-regime + quad-overbought + two-pivot bearish divergence ---
-          short_entry_logic.append(stoch_60_10 < 20.0)
-          short_entry_logic.append(stoch_9_3 > 80.0)
-          short_entry_logic.append(stoch_14_3 > 80.0)
-          short_entry_logic.append(stoch_4_4 > 80.0)
-          # price HIGHER-HIGH across swing windows while stoch makes a LOWER-HIGH (real divergence)
-          short_entry_logic.append(quad_high_max_12 > np_shift(quad_high_max_12, 12))
-          short_entry_logic.append(quad_s93_max_12 < np_shift(quad_s93_max_12, 12))
-
         # Condition #662 - 4h opening-range fakeout (Short, experimental).
         if short_entry_condition_index == 662:
           short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
@@ -28500,6 +28438,68 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(np_shift(sqz_cnt_24, 1) >= 12.0)
           # expansion direction: close breaks through the lower band
           short_entry_logic.append(close < bbl_20_2_0)
+
+        # Condition #665 - Engulfing continuation (Short, experimental, RAW — mirror).
+        if short_entry_condition_index == 665:
+          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          short_entry_logic.append(protections_short_global == True)
+          # breakdown must be real: price already in the lower half of the range,
+          # 15m momentum actually down (losses were top-of-range fake breakdowns)
+          short_entry_logic.append(willr_14 < -50.0)
+          short_entry_logic.append(rsi_3_15m < 45.0)
+          # downtrend regime + momentum side + bearish engulfing close
+          short_entry_logic.append(close < ema_200)
+          short_entry_logic.append(rsi_14 < 50.0)
+          short_entry_logic.append(engulf_bear > 0.5)
+
+        # Condition #666 - Swing-failure pattern (Short, experimental, RAW — mirror).
+        if short_entry_condition_index == 666:
+          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          short_entry_logic.append(protections_short_global == True)
+          # prior 48-candle high swept by the wick, candle closes back below it
+          short_entry_logic.append(sfp_bear > 0.5)
+
+        # Condition #667 - 1h inside-bar breakout (Short, experimental, RAW — mirror).
+        if short_entry_condition_index == 667:
+          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          short_entry_logic.append(protections_short_global == True)
+          short_entry_logic.append(close < ema_200)
+          # don't short a breakdown when the daily cycle already sits low (bounce zone)
+          short_entry_logic.append(stochrsi_k_1d < 48.0)
+          # last completed 1h candle was an inside bar; this 5m candle CROSSES below the mother low
+          short_entry_logic.append(ib_ready > 0.5)
+          short_entry_logic.append(np_shift(close, 1) >= ib_mother_l)
+          short_entry_logic.append(close < ib_mother_l)
+        # Condition #669 - Dump hunter (Short, experimental, RAW — crash ignition, mirror of 171).
+        if short_entry_condition_index == 669:
+          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          short_entry_logic.append(protections_short_global == True)
+          # calm base: not already crashed over the rolling 24h (ride ignition, don't chase)
+          short_entry_logic.append(roc_288 > -10.0)
+          # ignition: red candle CROSSING below the prior 48-candle low...
+          short_entry_logic.append(close < open_rate)
+          short_entry_logic.append(np_shift(close, 1) >= dh_prev_min)
+          short_entry_logic.append(close < dh_prev_min)
+          # ...on explosive volume (dump signature)
+          short_entry_logic.append(vol_rel > 3.0)
+
+        # Condition #670 - Marubozu momentum (Short, experimental, RAW — mirror).
+        if short_entry_condition_index == 670:
+          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          short_entry_logic.append(protections_short_global == True)
+          short_entry_logic.append(close < ema_200)
+          short_entry_logic.append(rsi_14 < 50.0)
+          short_entry_logic.append(mrb_bear > 0.5)
+
+        # Condition #671 - Shooting-star pin-bar (Short, experimental, RAW — mirror at a top).
+        if short_entry_condition_index == 671:
+          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          short_entry_logic.append(protections_short_global == True)
+          # top context: near the 4h high, 5m hot
+          short_entry_logic.append(close > (close_max_48 * 0.97))
+          short_entry_logic.append(rsi_3 > 60.0)
+          # the fact: long upper rejection wick, tiny lower wick
+          short_entry_logic.append(pb_star > 0.5)
 
         short_entry_logic.append(df["volume"] > 0)
         item_short_entry = _and_entry_conditions(short_entry_logic)
