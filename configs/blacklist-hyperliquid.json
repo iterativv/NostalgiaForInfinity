@@ -1,6 +1,8 @@
 {
   "exchange": {
     "pair_blacklist": [
+      // Parabolic squeeze — 542 shorts liquidated on 4 accounts, 2026-08-07 (+801%/7d)
+      "(TUT)/.*",
       // Declining alt (2026-08-07; binance already covers via FAN group)
       "(CHZ)/.*",
       // Binance delist 2026-08-17 (full-coin) — iterativ 2026-08-03
