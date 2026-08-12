@@ -1,6 +1,8 @@
 {
   "exchange": {
     "pair_blacklist": [
+      // Binance monitoring tag 2026-08 (delisting-risk watchlist)
+      "(LSK|STX)/.*",
       // Parabolic squeeze — 542 shorts liquidated on 4 accounts, 2026-08-07 (+801%/7d)
       "(TUT)/.*",
       // Declining alt (2026-08-07; binance already covers via FAN group)
