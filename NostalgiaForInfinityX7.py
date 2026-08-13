@@ -13243,6 +13243,10 @@ class NostalgiaForInfinityX7(IStrategy):
     low_min_12_1h = np_view("low_min_12_1h")
     low_min_30_1d = np_view("low_min_30_1d")
     rsi_14_change_pct_4h = np_view("RSI_14_change_pct_4h")
+    stochk_14_3_3_4h = np_view("STOCHk_14_3_3_4h")
+    uo_7_14_28_change_pct_15m = np_view("UO_7_14_28_change_pct_15m")
+    stochrsi_k_change_pct_4h = np_view("STOCHRSIk_14_14_3_3_change_pct_4h")
+    willr_480 = np_view("WILLR_480")
     rsi_3_change_pct_15m = np_view("RSI_3_change_pct_15m")
     close_max_6 = np_view("close_max_6")
     bbd_40_2_0 = np_view("BBD_40_2.0")
@@ -28518,12 +28522,54 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(protections_short_global == True)
           # calm base: not already crashed over the rolling 24h (ride ignition, don't chase)
           short_entry_logic.append(roc_288 > -10.0)
-          # ignition: red candle CROSSING below the prior 48-candle low...
-          short_entry_logic.append(close < open_rate)
+          # ignition: red candle with a real body CROSSING below the prior 48-candle low...
+          # (a doji-sized "breakdown" has no follow-through: bodies under 0.3% are net negative)
+          short_entry_logic.append(close < (open_rate * 0.997))
           short_entry_logic.append(np_shift(close, 1) >= dh_prev_min)
           short_entry_logic.append(close < dh_prev_min)
-          # ...on explosive volume (dump signature)
+          # ...on explosive volume (dump signature). 3.0 is load-bearing: lowering it to 2.0 adds
+          # 95 trades and costs ~92% of the tag's profit (measured 2026-08-13)
           short_entry_logic.append(vol_rel > 3.0)
+          # do not short a floor that is already washed out on the 4h: the worst losses entered
+          # with the 4h stochastic pinned at the bottom (PLAY -1785 at 7.11, ALCH -1159 at 5.19)
+          short_entry_logic.append(stochk_14_3_3_4h > 12.0)
+          # and do not short into a 4h that is already turning back up: the remaining losses were
+          # breakdowns sold while the higher timeframe was recovering, and they were bought back
+          # (KOMA -2725, DODOX -2051, CLANKER -1850). Three angles on the same rollover state.
+          short_entry_logic.append(stochrsi_k_change_pct_4h < 25.0)
+          short_entry_logic.append(rsi_14_change_pct_4h < 8.0)
+          short_entry_logic.append(uo_7_14_28_4h > 35.0)
+          # same rollover state one timeframe down: the 15m oscillator must not be jumping up
+          # while the 5m breaks (NAORIS -3581, G -2655, SOL -2003 all entered mid-bounce)
+          short_entry_logic.append(uo_7_14_28_change_pct_15m < 10.0)
+          # and the hourly must not have started bouncing already (replaces an earlier KST clause;
+          # measured slightly better than it and on an indicator we are not planning to drop)
+          short_entry_logic.append(roc_2_1h < 0.5)
+          # nor when the 4h has just printed a high: fading a breakdown while the higher timeframe
+          # is making new highs is fading the trend, and it is where the fat losses sit
+          # (DODOX -3314 entered at AROONU_14_4h 78.6, the 60-80 band alone is -10.9K over 126 trades)
+          short_entry_logic.append(aroonu_14_4h < 50.0)
+          # nor while hourly money flow is still at or above neutral: the buyers are still there,
+          # and every one of PLAY's worst shorts was sold into that state (MFI_14_1h 55-61)
+          short_entry_logic.append(mfi_14_1h < 50.0)
+          # same on the 4h: DODOX's remaining losses were all sold with 4h money flow still rich
+          # (MFI_14_4h 58-76 against a 49.5 winner median)
+          short_entry_logic.append(mfi_14_4h < 55.0)
+          # and there must still be room below: an RSI_3 pinned at zero means the 5m is already
+          # fully washed out (our PH_BASE_POS measurement in the core language), and a pair coming
+          # straight out of a long squeeze has no established down-leg to ride
+          short_entry_logic.append(rsi_3 > 0.4)
+          short_entry_logic.append(sqz_cnt_24 < 23.0)
+          # three angles on the same requirement — there has to be room left underneath:
+          # not pinned at the 40h extreme low, the 15m not fully washed, and a measurable
+          # distance above the rolling 24h base (our own pump-hunter column, short side)
+          short_entry_logic.append(willr_480 > -99.5)
+          short_entry_logic.append(rsi_14_15m > 17.0)
+          short_entry_logic.append(ph_base_pos > 0.03)
+          # the pre-break base must have been tight (our pump-hunter coil measure, short side) and
+          # the hourly CCI must not be snapping upward as we sell
+          short_entry_logic.append(ph_pre_tight > 0.4)
+          short_entry_logic.append(cci_20_change_pct_1h < 500.0)
 
         # Condition #670 - Marubozu momentum (Short, experimental, RAW — mirror).
         if short_entry_condition_index == 670:
