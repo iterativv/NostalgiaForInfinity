@@ -28653,7 +28653,7 @@ class NostalgiaForInfinityX7(IStrategy):
             & ((mfi_14 < 35.0) | (mfi_14_15m < 30.0) | (quad_s93_max_12 > 60.0))
             # no fresh 15m low while the 4h low is recent, hourly CCI already recovering and the
             # 15m RSI not low: the 15m has finished its leg (4 losses, free in all three years)
-            & (aroond_14_15m_lt_80 | (cci_20_1h > -175.0) | (rsi_14_15m < 35.0))
+            & (aroond_14_15m_lt_80 | (cci_20_1h > -175.0) | rsi_14_15m_lt_35)
             # the 15m has dropped but its RSI is not low, price is pinned at the 15m floor and
             # the hour is flat: the move already happened on the fast timeframe (5 losses)
             & ((roc_9_15m < -2.5) | (willr_14_15m < -75.0) | (change_pct_1h > -1.5))
@@ -28698,7 +28698,7 @@ class NostalgiaForInfinityX7(IStrategy):
             & ((cmf_20_1h > -0.25) | (rsi_3_change_pct_15m > -70.0) | (stochrsi_k_change_pct_4h > -40.0))
             # hourly money flow still neutral while the hour is no longer falling and the 5m is
             # not washed: nothing is actually selling (3 losses, free in all three years)
-            & ((cmf_20_1h > -0.05) | (roc_9_1h < 0.0) | (rsi_3 > 5.0))
+            & ((cmf_20_1h > -0.05) | (roc_9_1h < 0.0) | rsi_3_gt_5)
             # the hour is not falling, its RSI is mid-range, the daily candle has a long lower
             # wick and the 4h is flat: a market being bought on every dip (5 losses)
             & ((roc_9_1h < -1.0) | (bot_wick_pct_1d < 4.0) | (change_pct_4h > -1.5))
@@ -28770,7 +28770,7 @@ class NostalgiaForInfinityX7(IStrategy):
             # a fully washed 4h on a pair whose DAILY has just printed a high: that is a dip inside
             # a strong uptrend, not a breakdown. Blocked trades average -3.5% in the 2021 bull and
             # +1.4% in 2026 (well under the tag average), so it costs nothing and saves the bull
-            & ((stochrsi_k_4h > 10.0) | aroonu_14_1d_lt_85)
+            & (stochrsi_k_4h_gt_10 | aroonu_14_1d_lt_85)
             # the 4h oscillator has stopped falling, the 4h low is not fresh, and the hourly
             # oscillator is already at the floor (SOL 2021 -815,130; 1W/0L | 3W/0L | 0W/4L)
             & ((stochrsi_k_change_pct_4h < 10.0) | (aroond_14_4h > 20.0) | stochrsi_k_1h_lt_30)
