@@ -2,7 +2,7 @@
   "exchange": {
     "pair_blacklist": [
       // Binance monitoring tag 2026-08-11 (delisting-risk watchlist, batch 2)
-      "(GLMR|ICX|MOVR|SOPH)/.*",
+      "(GLMR|ICX|MOVR|SOPH|SYN|COOKIE|DODO|DODOX|STORJ)/.*",
       // Binance monitoring tag 2026-08 (delisting-risk watchlist)
       "(LSK|STX)/.*",
       // Parabolic squeeze — 542 shorts liquidated on 4 accounts, 2026-08-07 (+801%/7d)
