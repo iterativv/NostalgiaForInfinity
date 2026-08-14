@@ -13243,6 +13243,8 @@ class NostalgiaForInfinityX7(IStrategy):
     low_min_12_1h = np_view("low_min_12_1h")
     low_min_30_1d = np_view("low_min_30_1d")
     rsi_14_change_pct_4h = np_view("RSI_14_change_pct_4h")
+    stochk_14_3_3_1h = np_view("STOCHk_14_3_3_1h")
+    uo_7_14_28_15m = np_view("UO_7_14_28_15m")
     stochk_14_3_3_4h = np_view("STOCHk_14_3_3_4h")
     uo_7_14_28_change_pct_15m = np_view("UO_7_14_28_change_pct_15m")
     stochrsi_k_change_pct_4h = np_view("STOCHRSIk_14_14_3_3_change_pct_4h")
@@ -26322,12 +26324,59 @@ class NostalgiaForInfinityX7(IStrategy):
           long_entry_logic.append(protections_long_global == True)
           # calm base: not already pumped over the rolling 24h (ride ignition, don't chase)
           long_entry_logic.append(roc_288 < 10.0)
-          # ignition: green candle CROSSING above the prior 48-candle high...
-          long_entry_logic.append(close > open_rate)
+          # ignition: green candle with a real body, closing in its upper half, CROSSING above
+          # the prior 48-candle high (a doji-sized "ignition" or one that closes back in the lower
+          # half of its own range has no follow-through: measured -4,693 and -4,587 respectively)
+          long_entry_logic.append(close > (open_rate * 1.002))
+          long_entry_logic.append(close > ((high_px + low_px) / 2.0))
           long_entry_logic.append(np_shift(close, 1) <= np_shift(close_max_48, 1))
           long_entry_logic.append(close > np_shift(close_max_48, 1))
-          # ...on explosive volume (pump signature)
-          long_entry_logic.append(vol_rel > 3.0)
+          # ...on explosive volume (pump signature). Unlike the dump hunter, where 3.0 is the
+          # sweet spot, the pump side loses in the 3-4x band (-5,767 over 343 trades) — the
+          # ignition needs real participation, not a routine tick up in volume
+          long_entry_logic.append(vol_rel > 4.0)
+          # do not buy an ignition while the higher timeframes are caving: the 4h RSI must not be
+          # collapsing, hourly money flow must not be drained, and the pair must not already be
+          # deep in the red over the rolling 24h (the mirror of what the dump hunter needs)
+          long_entry_logic.append(rsi_14_change_pct_4h > -15.0)
+          long_entry_logic.append(mfi_14_1h > 25.0)
+          long_entry_logic.append(roc_288 > -6.0)
+          # nor after the hourly momentum has already tripled (late chase), nor with the daily
+          # pinned at its floor, nor out of an hourly base too tight to have a move in it
+          long_entry_logic.append(rsi_3_change_pct_1h < 200.0)
+          long_entry_logic.append(rsi_3_1d > 8.0)
+          long_entry_logic.append(bbb_20_2_0_1h > 2.0)
+          # and not at the very top of the multi-day hourly range: buying an ignition there is the
+          # late chase that produced the fattest losses (WILLR_84_1h at the ceiling)
+          long_entry_logic.append(willr_84_1h < -1.9)
+          long_entry_logic.append(stochrsi_k_4h > 2.0)
+          long_entry_logic.append(ph_base_pos > 2.0)
+          # no 4h rejection wick over the ignition, 15m momentum not caving, and not pinned at the
+          # 40h extreme high (the long-side reading of the room-to-move check)
+          long_entry_logic.append(top_wick_pct_4h < 3.0)
+          long_entry_logic.append(rsi_3_change_pct_15m > -40.0)
+          # the 15m must not be in a dead zone and the 5m must not already have gone vertical
+          long_entry_logic.append(uo_7_14_28_15m > 43.0)
+          long_entry_logic.append(rsi_14_change_pct < 55.0)
+          # the hourly stochastic must not be parked at the ceiling and the 4h oscillator must not
+          # already have exploded (the long-side reading of the dump hunter's rollover check)
+          long_entry_logic.append(stochk_14_3_3_1h < 95.0)
+          long_entry_logic.append(stochrsi_k_change_pct_4h < 250.0)
+          # the ignition must actually be up on the candle, and the 5m oscillator must not be
+          # already maxed out when we buy it
+          long_entry_logic.append(change_pct > 0.22)
+          long_entry_logic.append(stochrsi_k < 100.0)
+          # nor with the rotation stochastic already maxed, the 4h momentum caved, or 15m volume
+          # flow collapsing under the ignition
+          long_entry_logic.append(quad_s93_max_12 < 100.0)
+          long_entry_logic.append(rsi_3_change_pct_4h > -50.0)
+          long_entry_logic.append(obv_change_pct_15m > -32.0)
+          # and the hourly must not be washed out underneath the ignition — together with the
+          # ceiling checks above this brackets the 1h into a band instead of an extreme
+          long_entry_logic.append(stoch_4_4 > 59.0)
+          long_entry_logic.append(willr_14_1h > -82.0)
+          long_entry_logic.append(stochrsi_k_1h > 6.0)
+          long_entry_logic.append(willr_480 < -1.4)
           # NOTE: the measured PUMP CHARACTER columns (PH_BASE_POS d=0.95, PH_PRE_TIGHT d=0.65,
           # PH_CROSS_CNT_12 first-fire counter) are defined above and ready for your protection
           # pass — shipped RAW per our measurements (character gates halved damage but the raw
