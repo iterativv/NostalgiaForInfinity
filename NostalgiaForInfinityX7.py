@@ -13238,6 +13238,9 @@ class NostalgiaForInfinityX7(IStrategy):
     rsi_3_change_pct_1d = np_view("RSI_3_change_pct_1d")
     rsi_14_change_pct_1h = np_view("RSI_14_change_pct_1h")
     roc_2_1h = np_view("ROC_2_1h")
+    roc_2_4h = np_view("ROC_2_4h")
+    change_pct_15m = np_view("change_pct_15m")
+    cci_20_15m = np_view("CCI_20_15m")
     aroond_14_1d = np_view("AROOND_14_1d")
     bot_wick_pct_1d = np_view("bot_wick_pct_1d")
     low_min_12_1h = np_view("low_min_12_1h")
@@ -26397,63 +26400,161 @@ class NostalgiaForInfinityX7(IStrategy):
 
         # Condition #171 - Pump hunter (Long, experimental, RAW — ignition candle rider).
         if long_entry_condition_index == 171:
+          # Protections
           long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           long_entry_logic.append(protections_long_global == True)
-          # calm base: not already pumped over the rolling 24h (ride ignition, don't chase)
-          long_entry_logic.append(roc_288 < 10.0)
-          # ignition: green candle with a real body, closing in its upper half, CROSSING above
-          # the prior 48-candle high (a doji-sized "ignition" or one that closes back in the lower
-          # half of its own range has no follow-through: measured -4,693 and -4,587 respectively)
-          long_entry_logic.append(close > (open_rate * 1.002))
-          long_entry_logic.append(close > ((high_px + low_px) / 2.0))
-          long_entry_logic.append(np_shift(close, 1) <= np_shift(close_max_48, 1))
-          long_entry_logic.append(close > np_shift(close_max_48, 1))
-          # ...on explosive volume (pump signature). Unlike the dump hunter, where 3.0 is the
-          # sweet spot, the pump side loses in the 3-4x band (-5,767 over 343 trades) — the
-          # ignition needs real participation, not a routine tick up in volume
-          long_entry_logic.append(vol_rel > 4.0)
-          # do not buy an ignition while the higher timeframes are caving: the 4h RSI must not be
-          # collapsing, hourly money flow must not be drained, and the pair must not already be
-          # deep in the red over the rolling 24h (the mirror of what the dump hunter needs)
-          long_entry_logic.append(rsi_14_change_pct_4h > -15.0)
-          long_entry_logic.append(mfi_14_1h > 25.0)
-          long_entry_logic.append(roc_288 > -6.0)
-          # nor after the hourly momentum has already tripled (late chase), nor with the daily
-          # pinned at its floor, nor out of an hourly base too tight to have a move in it
-          long_entry_logic.append(rsi_3_change_pct_1h < 200.0)
-          long_entry_logic.append(rsi_3_1d > 8.0)
-          long_entry_logic.append(bbb_20_2_0_1h > 2.0)
-          # and not at the very top of the multi-day hourly range: buying an ignition there is the
-          # late chase that produced the fattest losses (WILLR_84_1h at the ceiling)
-          long_entry_logic.append(willr_84_1h < -1.9)
-          long_entry_logic.append(stochrsi_k_4h > 2.0)
-          long_entry_logic.append(ph_base_pos > 2.0)
-          # no 4h rejection wick over the ignition, 15m momentum not caving, and not pinned at the
-          # 40h extreme high (the long-side reading of the room-to-move check)
-          long_entry_logic.append(top_wick_pct_4h < 3.0)
-          long_entry_logic.append(rsi_3_change_pct_15m > -40.0)
-          # the 15m must not be in a dead zone and the 5m must not already have gone vertical
-          long_entry_logic.append(uo_7_14_28_15m > 43.0)
-          long_entry_logic.append(rsi_14_change_pct < 55.0)
-          # the hourly stochastic must not be parked at the ceiling and the 4h oscillator must not
-          # already have exploded (the long-side reading of the dump hunter's rollover check)
-          long_entry_logic.append(stochk_14_3_3_1h < 95.0)
-          long_entry_logic.append(stochrsi_k_change_pct_4h < 250.0)
-          # the ignition must actually be up on the candle, and the 5m oscillator must not be
-          # already maxed out when we buy it
-          long_entry_logic.append(change_pct > 0.22)
-          long_entry_logic.append(stochrsi_k < 100.0)
-          # nor with the rotation stochastic already maxed, the 4h momentum caved, or 15m volume
-          # flow collapsing under the ignition
-          long_entry_logic.append(quad_s93_max_12 < 100.0)
-          long_entry_logic.append(rsi_3_change_pct_4h > -50.0)
-          long_entry_logic.append(obv_change_pct_15m > -32.0)
-          # and the hourly must not be washed out underneath the ignition — together with the
-          # ceiling checks above this brackets the 1h into a band instead of an extreme
-          long_entry_logic.append(stoch_4_4 > 59.0)
-          long_entry_logic.append(willr_14_1h > -82.0)
-          long_entry_logic.append(stochrsi_k_1h > 6.0)
-          long_entry_logic.append(willr_480 < -1.4)
+
+          long_entry_logic.append(
+            # --- 5m: the ignition candle has to be a real move on a base that is not collapsing
+            (roc_2 > 0.5)
+            # the base is overbought, its 14 barely moved and the 12-candle floor is already high:
+            # a stalled push, not an ignition
+            & ((rsi_4 > 85.0) | (rsi_14_change_pct < 16.0) | (quad_s93_min_12 < 40.0))
+            & (rsi_14_change_pct < 30.0)
+            & (cmf_20 > 0.05)
+            # the base low is stale, the 4h CCI is positive and 15m money flow is rich: buying
+            # into a market that has already been bid up
+            & ((aroond_14 < 70.0) | (cci_20_4h < 0.0) | (mfi_14_15m > 65.0))
+            # no fresh 4h low, the 15m oscillator is not up and the candle itself is small:
+            # an ignition without any of its usual company
+            & ((aroond_14_4h > 0.0) | stochrsi_k_15m_gt_60 | (change_pct > 0.5))
+            & (stoch_9_3 > 80.0)
+            & (willr_14 < -5.0)
+            # price pinned at the top of its own 14-bar range, the 4h RSI already rising and
+            # 15m money flow not rich: the ignition is the last buyer, not the first
+            & ((willr_14 > -15.0) | (rsi_14_change_pct_4h < 8.0) | (cmf_20_15m > 0.15))
+            # the base ROC is not extended — unless the 15m momentum is genuinely turning up
+            & ((roc_9 < 5.0) | (rsi_3_change_pct_15m > 20.0))
+            # the ignition is not the first cross of a loose base: either the coil has crossed
+            # a few times already, or the base was tight to begin with
+            & ((ph_cross_cnt_12 < 5.0) | (ph_pre_tight < 5.0))
+            # --- 15m: the fast timeframe must confirm, not cave
+            & (rsi_3_change_pct_15m > -10.0)
+            # the 15m RSI is genuinely turning up, or the hour is hot while the 4h is not
+            & ((rsi_14_change_pct_15m > 10.0) | rsi_3_1h_gt_60 | rsi_3_4h_lt_60)
+            # 15m money flow is not pouring in, the 15m is not overheated and the 12-candle
+            # low sits high in its range: the ignition has no fuel under it
+            & ((cmf_20_15m > 0.2) | (mfi_14_15m < 80.0) | (quad_s93_min_12 < 70.0))
+            # the base RSI is not stretched, or the 15m is quiet with rich money flow
+            & ((mfi_14_15m > 65.0) | (rsi_14_change_pct < 20.0) | (change_pct_15m < 1.0))
+            # daily money flow is alive, the 15m RSI is rising, or the 15m oscillator is maxed
+            & ((mfi_14_1d > 30.0) | (rsi_14_change_pct_15m > 5.0) | stochrsi_k_15m_gt_90)
+            # no fresh 15m low, 4h direction weak and the 4h RSI already mid-band: nothing is
+            # actually leading this ignition
+            & ((aroond_14_15m < 20.0) | (minus_di_14_4h < 20.0) | rsi_14_4h_lt_50)
+            # the 15m CCI is extreme and rising while volume is only ordinary: a spike on the
+            # oscillator, not in the tape
+            & ((cci_20_15m < 250.0) | (cci_20_change_pct_15m < 225.0) | (vol_rel > 8.0))
+            # the 15m CCI is not snapping up while the day has already fallen
+            & ((cci_20_change_pct_15m < 50.0) | (change_pct_1d > -5.0))
+            & (cci_20_change_pct_15m < 500.0)
+            & (willr_14_15m > -50.0)
+            # volume is not pouring into the 15m — unless the daily candle has a real lower
+            # wick, i.e. the day was already bought once
+            & ((obv_change_pct_15m < 15.0) | (bot_wick_pct_1d > 1.0))
+            & (sqz_cnt_24 < 15.0)
+            # the 40-candle band is not wide, or the 15m RSI is genuinely strong
+            & ((bbd_40_2_0 < 15.0) | (rsi_14_15m > 60.0))
+            # --- 1h: the hour must not already have tripled its momentum
+            & (rsi_3_change_pct_1h < 100.0)
+            # hourly money flow is not rich — unless the 4h oscillator is still falling, where
+            # a rich hour is the start of the move rather than its end
+            & ((mfi_14_1h < 60.0) | (stochrsi_k_change_pct_4h > -25.0))
+            & (mfi_14_1h > 45.0)
+            # the hour has made a recent low, or the 4h CCI has not collapsed under it
+            & ((aroond_14_1h > 30.0) | (cci_20_change_pct_4h > -600.0))
+            # the 4h low is not fresh, hourly money flow is thin and the daily RSI_3 is snapping
+            # up: the higher timeframes are not behind this move
+            & ((aroond_14_4h > 20.0) | (cmf_20_1h > 0.05) | (rsi_3_change_pct_1d < 50.0))
+            & ((aroond_14_4h > 20.0) | (rsi_3_change_pct_1d < 50.0) | (vol_rel < 6.0))
+            # the hourly CCI is positive, or the 4h has not just jumped
+            & ((cci_20_1h > 50.0) | (roc_2_4h < 2.0))
+            # --- 4h: the higher timeframe must be in shape and must not have exploded
+            # the 4h RSI_3 is exploding while daily money flow is rich and the 4h sits at its
+            # low: a spike into a market that is already fully bid
+            & ((rsi_3_change_pct_4h < 100.0) | (mfi_14_1d < 70.0) | (willr_14_4h > -50.0))
+            # same spike with the base stochastic maxed and the 12-candle low already high
+            & ((rsi_3_change_pct_4h < 125.0) | (stoch_4_4 < 85.0) | (quad_s93_min_12 < 30.0))
+            & (rsi_3_change_pct_4h < 150.0)
+            & (rsi_3_change_pct_4h > -30.0)
+            # the 4h RSI is rising, the hour has already tripled its momentum, and the hourly
+            # stochastic is below mid-band: the move is late on every reading
+            & ((rsi_14_change_pct_4h < 5.0) | (rsi_3_change_pct_1h < 30.0) | (stochk_14_3_3_1h > 50.0))
+            # 15m flow thin while the 4h has already jumped and shows no rejection wick:
+            # entering an extended higher timeframe
+            & ((cmf_20_15m > 0.05) | (rsi_14_change_pct_4h < 15.0) | (top_wick_pct_4h > 1.0))
+            # 4h money flow is not deeply negative — unless the day itself has already dropped,
+            # where negative 4h flow is the wash rather than the trend
+            & ((cmf_20_4h > -0.2) | (roc_2_1d < -2.0))
+            # 4h money flow is healthy, or the day has not already run
+            & ((mfi_14_4h > 40.0) | roc_9_1d_lt_15)
+            # 4h money flow is healthy, or volume is still coming in
+            & ((mfi_14_4h > 45.0) | (obv_change_pct > -5.0))
+            # the 4h low is genuinely fresh, the day has fallen and the base ROC is up: buying
+            # a bounce inside a falling day
+            & ((aroond_14_4h > 60.0) | (roc_2_1d > -5.0) | (roc_9 > 1.0))
+            & (stochk_14_3_3_4h < 90.0)
+            & (stochrsi_k_4h < 95.0)
+            & (stochrsi_k_change_pct_4h < 180.0)
+            & (cci_20_4h < 100.0)
+            & (cci_20_4h > -100.0)
+            # the 4h CCI is not collapsing — unless volume is still coming in, or hourly money
+            # flow is not yet rich
+            & ((cci_20_change_pct_4h < 50.0) | (obv_change_pct > -10.0))
+            & ((cci_20_change_pct_4h < 50.0) | cmf_20_1h_lt_0_30)
+            # the 4h is not pinned at its low — unless the day is quiet enough for it to matter
+            & ((willr_14_4h > -60.0) | (change_pct_1d < 2.0))
+            # the 4h has turned up but on weak money flow with a flat hour: a hollow recovery
+            & ((roc_2_1h > 0.5) | (mfi_14_4h > 40.0) | cci_20_change_pct_4h_lt_0)
+            # a big 15m candle chasing a 4h that already ran, with the hour not confirming
+            & ((change_pct_15m < 1.5) | (stochk_14_3_3_1h > 60.0) | (rsi_3_4h < 65.0))
+            # the base is off its floor on a small candle while the 4h stochastic is maxed:
+            # a tired push under a ceiling
+            & ((ph_base_pos > 4.0) | (change_pct < 1.0) | stochrsi_k_4h_lt_80)
+            & (plus_di_14_4h > 15.0)
+            # 4h direction is real, or the day has not already run
+            & ((plus_di_14_4h > 20.0) | roc_9_1d_lt_15)
+            & (top_wick_pct_4h < 2.0)
+            # --- 1d: the day must not be caving underneath the ignition
+            # 15m money flow already rich, no 4h rejection wick and the day pinned at its high
+            & (cmf_20_15m_lt_0_30 | (top_wick_pct_4h < 0.5) | aroonu_14_1d_lt_100)
+            # the daily low is not fresh, or the 15m CCI has genuinely turned up
+            & ((aroond_14_1d > 0.0) | (rsi_3_15m > 80.0))
+            # price is not at the very top of its 40h range while the day is already up
+            & ((willr_480 > -15.0) | (change_pct_1d < 5.0))
+            # the ignition candle is small, the 15m ultimate oscillator is caving and the day
+            # already printed an upper wick
+            & ((roc_2 < 1.5) | (uo_7_14_28_change_pct_15m > -5.0) | (top_wick_pct_1d > 1.5))
+            & (roc_2_1d > -10.0)
+            # the base has no push left and the day is a doji-ish candle rejected on both ends
+            & ((roc_9 > 2.0) | (bot_wick_pct_1d < 4.0) | (top_wick_pct_1d < 2.0))
+            & (roc_9_1d > -30.0)
+            & (change_pct_1d > -10.0)
+            # the base is barely off its floor, the 15m is accelerating hard and the day printed
+            # a long upper wick: a spike into supply
+            & ((ph_base_pos > 3.0) | (rsi_3_change_pct_15m < 60.0) | (top_wick_pct_1d < 1.5))
+            # 4h directional strength is real, or the day has not fallen far
+            & ((plus_di_14_4h > 20.0) | (change_pct_1d > -5.0))
+          )
+
+          # Logic
+          long_entry_logic.append(
+            # calm base: not already pumped over the rolling 24h (ride the ignition, don't chase)
+            (roc_288 < 8.0)
+            # ignition: green candle with a real body, closing in its upper half, CROSSING above
+            # the prior 48-candle high (a doji-sized ignition, or one closing back in the lower
+            # half of its own range, has no follow-through: -4,693 and -4,587 respectively)
+            & (close > (open_rate * 1.002))
+            & (close > ((high_px + low_px) / 2.0))
+            & (np_shift(close, 1) <= np_shift(close_max_48, 1))
+            & (close > np_shift(close_max_48, 1))
+            # ...on explosive volume. Unlike the dump hunter, where 3.0 is the sweet spot, the
+            # pump side loses in the 3-4x band (-5,767 over 343 trades): the ignition needs real
+            # participation, not a routine tick up in volume
+            & (vol_rel > 4.0)
+          )
+
+
           # NOTE: the measured PUMP CHARACTER columns (PH_BASE_POS d=0.95, PH_PRE_TIGHT d=0.65,
           # PH_CROSS_CNT_12 first-fire counter) are defined above and ready for your protection
           # pass — shipped RAW per our measurements (character gates halved damage but the raw
