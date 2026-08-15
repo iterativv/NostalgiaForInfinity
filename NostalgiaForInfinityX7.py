@@ -129,7 +129,7 @@ class NostalgiaForInfinityX7(IStrategy):
   # Long Quick mode tags
   long_quick_mode_tags = ["41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53"]
   # Long rebuy mode tags
-  long_rebuy_mode_tags = ["61", "62", "63", "64", "65"]
+  long_rebuy_mode_tags = ["61", "62", "63", "64", "65", "68"]
   # Long high profit mode tags
   long_high_profit_mode_tags = ["81", "82"]
   # Long rapid mode tags
@@ -750,7 +750,6 @@ class NostalgiaForInfinityX7(IStrategy):
     "CAKE",
     "CRV",
     "DOGE",
-    "DOT",
     "DYDX",
     "ETC",
     "ETH",
@@ -892,6 +891,7 @@ class NostalgiaForInfinityX7(IStrategy):
     "long_entry_condition_63_enable": True,
     "long_entry_condition_64_enable": True,
     "long_entry_condition_65_enable": True,
+    "long_entry_condition_68_enable": False,
     "long_entry_condition_101_enable": True,
     "long_entry_condition_102_enable": True,
     "long_entry_condition_103_enable": True,
@@ -22384,6 +22384,33 @@ class NostalgiaForInfinityX7(IStrategy):
             & (close > bbu_20_2_0)
             & (ema_12 > ema_26)
           )
+
+        # Condition #68 - Triple Oversold Flush + Volume Accumulation (Long).
+        if long_entry_condition_index == 68:
+          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          long_entry_logic.append(protections_long_global == True)
+          long_entry_logic.append(global_protections_long_pump == True)
+          long_entry_logic.append(global_protections_long_dump == True)
+          long_entry_logic.append(rsi_14_1d > 25.0)
+          long_entry_logic.append(rsi_14_4h > 20.0)
+          long_entry_logic.append(roc_9_1d > -25.0)
+          long_entry_logic.append(
+            ((rsi_3 > 2.0) | (rsi_3_15m > 5.0) | (rsi_3_1h > 10.0))
+            & ((rsi_3_15m > 3.0) | (rsi_3_1h > 10.0) | (aroonu_14_4h < 90.0))
+            & ((rsi_3_1h > 5.0) | (rsi_3_4h > 15.0) | (stochrsi_k_4h < 50.0))
+            & ((rsi_3_15m > 5.0) | (rsi_3_4h > 20.0) | (roc_9_1d > -15.0))
+            & ((rsi_3_1h > 10.0) | (roc_9_4h > -15.0) | (cmf_20_4h > -0.20))
+          )
+          long_entry_logic.append((rsi_14_1h > 25.0) | (rsi_14_4h > 25.0) | (rsi_3_1d > 15.0))
+          long_entry_logic.append(rsi_3 < 5.0)
+          long_entry_logic.append(rsi_14 < 28.0)
+          long_entry_logic.append(stochrsi_k < 3.0)
+          long_entry_logic.append(willr_14 < -97.0)
+          long_entry_logic.append(cmf_20 > 0.05)
+          long_entry_logic.append(mfi_14 > 25.0)
+          long_entry_logic.append(close < bbl_20_2_0)
+          long_entry_logic.append(rsi_14_1h > 35.0)
+          long_entry_logic.append(aroonu_14_4h > 25.0)
 
         # Condition #101 - Rapid mode (Long).
         if long_entry_condition_index == 101:
@@ -50749,6 +50776,14 @@ class NostalgiaForInfinityX7(IStrategy):
         else:
           return -ft_sell_amount
 
+    gd5_liquidation_rescue_eligible = (
+      is_futures
+      and (slice_profit_entry < -0.12)
+      and (trade.liquidation_price is not None)
+      and (current_rate < trade.liquidation_price * 1.20)
+      and (trade.get_custom_data(key="gd5_liquidation_rescue_used") is None)
+    )
+
     # Grinding 5
     # Buy
     if has_order_tags and (not partial_sell) and (grind_5_sub_grind_count < grind_5_max_sub_grinds):
@@ -50766,9 +50801,12 @@ class NostalgiaForInfinityX7(IStrategy):
           or slice_profit_lt_neg_0_06
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
-        and is_long_grind_entry
+        and (is_long_grind_entry or gd5_liquidation_rescue_eligible)
         and is_not_trade_max_stake
       ):
+        if gd5_liquidation_rescue_eligible:
+          trade.set_custom_data(key="gd5_liquidation_rescue_used", value=True)
+
         buy_amount = slice_amount * grind_5_stakes[grind_5_sub_grind_count] / stake_scale_leverage
         if buy_amount < (min_stake * 1.5):
           buy_amount = min_stake * 1.5
@@ -74417,6 +74455,14 @@ class NostalgiaForInfinityX7(IStrategy):
         else:
           return -ft_sell_amount
 
+    gd5_liquidation_rescue_eligible = (
+      is_futures
+      and (slice_profit_entry > 0.12)
+      and (trade.liquidation_price is not None)
+      and (current_rate > trade.liquidation_price * 0.80)
+      and (trade.get_custom_data(key="gd5_liquidation_rescue_used") is None)
+    )
+
     # Grinding 5
     # Buy
     if has_order_tags and (not partial_sell) and (grind_5_sub_grind_count < grind_5_max_sub_grinds):
@@ -74432,9 +74478,12 @@ class NostalgiaForInfinityX7(IStrategy):
           num_open_grinds_eq_0 or (grind_order_age_time > last_filled_order.order_filled_utc) or slice_profit_gt_0_06
         )
         # and ((num_open_grinds == 0) or (slice_profit > 0.03))
-        and is_short_grind_entry
+        and (is_short_grind_entry or gd5_liquidation_rescue_eligible)
         and is_not_trade_max_stake
       ):
+        if gd5_liquidation_rescue_eligible:
+          trade.set_custom_data(key="gd5_liquidation_rescue_used", value=True)
+
         buy_amount = slice_amount * grind_5_stakes[grind_5_sub_grind_count] / stake_scale_leverage
         if buy_amount < (min_stake * 1.5):
           buy_amount = min_stake * 1.5
