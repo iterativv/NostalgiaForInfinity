@@ -750,7 +750,6 @@ class NostalgiaForInfinityX7(IStrategy):
     "CAKE",
     "CRV",
     "DOGE",
-    "DOT",
     "DYDX",
     "ETC",
     "ETH",
@@ -50648,6 +50647,14 @@ class NostalgiaForInfinityX7(IStrategy):
         else:
           return -ft_sell_amount
 
+    gd5_liquidation_rescue_eligible = (
+      is_futures
+      and (slice_profit_entry < -0.12)
+      and (trade.liquidation_price is not None)
+      and (current_rate < trade.liquidation_price * 1.20)
+      and (trade.get_custom_data(key="gd5_liquidation_rescue_used") is None)
+    )
+
     # Grinding 5
     # Buy
     if has_order_tags and (not partial_sell) and (grind_5_sub_grind_count < grind_5_max_sub_grinds):
@@ -50665,9 +50672,12 @@ class NostalgiaForInfinityX7(IStrategy):
           or slice_profit_lt_neg_0_06
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
-        and is_long_grind_entry
+        and (is_long_grind_entry or gd5_liquidation_rescue_eligible)
         and is_not_trade_max_stake
       ):
+        if gd5_liquidation_rescue_eligible:
+          trade.set_custom_data(key="gd5_liquidation_rescue_used", value=True)
+
         buy_amount = slice_amount * grind_5_stakes[grind_5_sub_grind_count] / stake_scale_leverage
         if buy_amount < (min_stake * 1.5):
           buy_amount = min_stake * 1.5
@@ -74316,6 +74326,14 @@ class NostalgiaForInfinityX7(IStrategy):
         else:
           return -ft_sell_amount
 
+    gd5_liquidation_rescue_eligible = (
+      is_futures
+      and (slice_profit_entry > 0.12)
+      and (trade.liquidation_price is not None)
+      and (current_rate > trade.liquidation_price * 0.80)
+      and (trade.get_custom_data(key="gd5_liquidation_rescue_used") is None)
+    )
+
     # Grinding 5
     # Buy
     if has_order_tags and (not partial_sell) and (grind_5_sub_grind_count < grind_5_max_sub_grinds):
@@ -74331,9 +74349,12 @@ class NostalgiaForInfinityX7(IStrategy):
           num_open_grinds_eq_0 or (grind_order_age_time > last_filled_order.order_filled_utc) or slice_profit_gt_0_06
         )
         # and ((num_open_grinds == 0) or (slice_profit > 0.03))
-        and is_short_grind_entry
+        and (is_short_grind_entry or gd5_liquidation_rescue_eligible)
         and is_not_trade_max_stake
       ):
+        if gd5_liquidation_rescue_eligible:
+          trade.set_custom_data(key="gd5_liquidation_rescue_used", value=True)
+
         buy_amount = slice_amount * grind_5_stakes[grind_5_sub_grind_count] / stake_scale_leverage
         if buy_amount < (min_stake * 1.5):
           buy_amount = min_stake * 1.5
