@@ -71,7 +71,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.542"
+    return "v17.4.543"
 
   stoploss = -0.99
 
@@ -26553,7 +26553,6 @@ class NostalgiaForInfinityX7(IStrategy):
             # participation, not a routine tick up in volume
             & (vol_rel > 4.0)
           )
-
 
           # NOTE: the measured PUMP CHARACTER columns (PH_BASE_POS d=0.95, PH_PRE_TIGHT d=0.65,
           # PH_CROSS_CNT_12 first-fire counter) are defined above and ready for your protection
