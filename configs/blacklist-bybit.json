@@ -7,6 +7,8 @@
       "(LSK|STX)/.*",
       // Parabolic squeeze — 542 shorts liquidated on 4 accounts, 2026-08-07 (+801%/7d)
       "(TUT)/.*",
+      // Pump-and-dump knives — APR +192% then -68% (2026-08-12/15), VELVET -46% in an hour (2026-07-24)
+      "(APR|VELVET)/.*",
       // Declining alt (2026-08-07; binance already covers via FAN group)
       "(CHZ)/.*",
       // Binance delist 2026-08-17 (full-coin) — iterativ 2026-08-03
