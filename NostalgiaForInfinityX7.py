@@ -27376,11 +27376,26 @@ class NostalgiaForInfinityX7(IStrategy):
 
         # Condition #506 - Donchian 7-day breakdown (Short, experimental, RAW — mirror).
         if short_entry_condition_index == 506:
+          # Protections
           short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           short_entry_logic.append(protections_short_global == True)
-          short_entry_logic.append(close < open_rate)
-          short_entry_logic.append(np_shift(close, 1) >= dc_low_7d)
-          short_entry_logic.append(close < dc_low_7d)
+
+          short_entry_logic.append(
+            # the day is still up while the last 24h flushed hard
+            ((roc_9_1d < 0.0) | (roc_288 > -15.0))
+            # a vertical ten-minute drop while the 4h high is over a day old
+            & ((roc_2 > -5.0) | (aroonu_14_4h > 40.0))
+            # 1h money exhausted after a two-day drop
+            & ((mfi_14_1h > 25.0) | (roc_2_1d > -7.0))
+          )
+
+          # Logic
+          short_entry_logic.append(
+            # first close below the prior 7-day low
+            (close < open_rate)
+            & (np_shift(close, 1) >= dc_low_7d)
+            & (close < dc_low_7d)
+          )
 
         # Condition #541 - Quick mode (Short).
         if short_entry_condition_index == 541:
