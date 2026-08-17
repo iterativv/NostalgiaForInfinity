@@ -71,7 +71,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.546"
+    return "v17.4.547"
 
   stoploss = -0.99
 
@@ -27392,9 +27392,7 @@ class NostalgiaForInfinityX7(IStrategy):
           # Logic
           short_entry_logic.append(
             # first close below the prior 7-day low
-            (close < open_rate)
-            & (np_shift(close, 1) >= dc_low_7d)
-            & (close < dc_low_7d)
+            (close < open_rate) & (np_shift(close, 1) >= dc_low_7d) & (close < dc_low_7d)
           )
 
         # Condition #541 - Quick mode (Short).
