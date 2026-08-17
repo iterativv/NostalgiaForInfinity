@@ -27148,12 +27148,70 @@ class NostalgiaForInfinityX7(IStrategy):
 
         # Condition #505 - ADX trend-birth (Short, experimental, RAW — mirror).
         if short_entry_condition_index == 505:
+          # Protections
           short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           short_entry_logic.append(protections_short_global == True)
-          short_entry_logic.append(adx_14_4h > 20.0)
-          short_entry_logic.append(np_shift(adx_14_4h, 48) <= 20.0)
-          short_entry_logic.append(minus_di_14_4h > plus_di_14_4h)
-          short_entry_logic.append(close < ema_200)
+
+          short_entry_logic.append(
+            # 5m thrust up while price is already well off its 40h low
+            ((rsi_3 < 85.0) | (willr_480 < -75.0))
+            # 15m printing a fresh low with the 5m bid
+            & ((cmf_20 < 0.15) | aroond_14_15m_lt_80)
+            # 15m at its low with a fresh 5m high
+            & ((aroonu_14 < 95.0) | (willr_14_15m > -60.0))
+            # 15m stoch on the floor while the 5m has lifted
+            & ((stochrsi_k < 50.0) | (stochk_14_3_3_15m > 10.0))
+            # 15m falling fast while the 5m is off its low
+            & ((willr_14 < -30.0) | (roc_9_15m > -2.0))
+            # 1h stoch on the floor while the 5m dumps
+            & ((cmf_20 > -0.3) | (stochk_14_3_3_1h > 10.0))
+            # 1h snapback off an oversold low
+            & (stochrsi_k_1h_lt_60 | (rsi_14_1h > 40.0))
+            # 1h squeezed flat with money coming in
+            & ((bbb_20_2_0_1h > 5.0) | (mfi_14_1h < 55.0))
+            # 15m recovered with the 4h pinned at its floor
+            & ((rsi_3_15m < 30.0) | (willr_14_4h > -95.0))
+            # 1h selling into a 4h that is not weak
+            & ((cmf_20_1h > -0.25) | (uo_7_14_28_4h < 45.0))
+            # 15m bid into a 4h that has already dropped
+            & ((mfi_14_15m < 55.0) | (roc_2_4h > -3.0))
+            # 4h high recent, 4h still no selling
+            & (aroonu_14_4h_lt_50 | (mfi_14_4h < 35.0))
+            # 1h stretched while the 4h RSI_3 collapses
+            & ((uo_7_14_28_1h < 55.0) | (rsi_3_change_pct_4h > -30.0))
+            # 15m and 4h both flat — nothing is going down
+            & ((roc_9_15m < -0.5) | (roc_9_4h < -1.0))
+            # 1h up inside a 4h that has already dropped
+            & ((change_pct_1h < 0.0) | (change_pct_4h > -5.0))
+            # 1d strong with buyers defending a long lower wick
+            & ((rsi_14_1d < 55.0) | (bot_wick_pct_1d < 1.5))
+            # 15m selling into a flat day
+            & ((cmf_20_15m > -0.25) | (change_pct_1d < -1.0))
+            # 15m bid while the day collapses
+            & ((cmf_20_15m < 0.15) | (rsi_3_change_pct_1d > -50.0))
+            # 1h bid while the two-day drift is flat
+            & ((mfi_14_1h < 45.0) | (roc_2_1d < -3.0))
+            # 15m bouncing hard, 1d pinned at its low
+            & (aroonu_14_15m_lt_80 | (willr_14_1d > -90.0))
+            # 1d down move spent, 1h off the floor
+            & (stochrsi_k_1h_lt_20 | rsi_3_1d_gt_20)
+            # 1d printing a fresh 14-day low while its stoch is not washed out
+            & ((stochk_14_3_3_1d < 40.0) | (aroond_14_1d < 90.0))
+            # 1d strong underneath a topped-out fast stoch
+            & ((stoch_4_4 < 80.0) | (rsi_14_1d < 55.0))
+            # 4h already down hard under a day that is still firm
+            & ((change_pct_4h > -5.0) | rsi_14_1d_lt_50)
+          )
+
+          # Logic
+          short_entry_logic.append(
+            # 4h trend birth: ADX up through 20 after 8 quiet days
+            (adx_14_4h > 20.0)
+            & (np_shift(adx_14_4h, 48) <= 20.0)
+            # pointing down, under the 200 EMA
+            & (minus_di_14_4h > plus_di_14_4h)
+            & (close < ema_200)
+          )
 
         # Condition #506 - Donchian 7-day breakdown (Short, experimental, RAW — mirror).
         if short_entry_condition_index == 506:
