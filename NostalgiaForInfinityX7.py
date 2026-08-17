@@ -13120,6 +13120,7 @@ class NostalgiaForInfinityX7(IStrategy):
     low_min_12_1h = np_view("low_min_12_1h")
     low_min_30_1d = np_view("low_min_30_1d")
     rsi_14_change_pct_4h = np_view("RSI_14_change_pct_4h")
+    stochk_14_3_3_15m = np_view("STOCHk_14_3_3_15m")
     stochk_14_3_3_1h = np_view("STOCHk_14_3_3_1h")
     uo_7_14_28_15m = np_view("UO_7_14_28_15m")
     stochk_14_3_3_4h = np_view("STOCHk_14_3_3_4h")
@@ -27155,54 +27156,212 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(protections_short_global == True)
 
           short_entry_logic.append(
-            # 5m thrust up while price is already well off its 40h low
-            ((rsi_3 < 85.0) | (willr_480 < -75.0))
-            # 15m printing a fresh low with the 5m bid
-            & ((cmf_20 < 0.15) | aroond_14_15m_lt_80)
-            # 15m at its low with a fresh 5m high
+            # 5m no recent low, 15m money coming in, 1h pinned at its low
+            ((aroond_14 > 5.0) | (mfi_14_15m < 40.0) | (willr_14_1h > -85.0))
+            # 5m no recent low, 15m weak, 4h stoch lifted
+            & ((aroond_14 > 5.0) | (rsi_14_15m > 40.0) | (stochrsi_k_4h < 40.0))
+            # 5m a fresh high, 15m pinned at its low
             & ((aroonu_14 < 95.0) | (willr_14_15m > -60.0))
-            # 15m stoch on the floor while the 5m has lifted
-            & ((stochrsi_k < 50.0) | (stochk_14_3_3_15m > 10.0))
-            # 15m falling fast while the 5m is off its low
-            & ((willr_14 < -30.0) | (roc_9_15m > -2.0))
-            # 1h stoch on the floor while the 5m dumps
+            # 5m no recent high, 15m rising
+            & ((aroonu_14 > 5.0) | (roc_9_15m < 1.5))
+            # 5m a fresh high, 15m stoch on the floor
+            & (aroonu_14_lt_30 | (stochrsi_k_15m > 5.0))
+            # 5m money coming in, 15m a fresh low
+            & ((cmf_20 < 0.15) | aroond_14_15m_lt_80)
+            # 5m money going out, 1h stoch on the floor
             & ((cmf_20 > -0.3) | (stochk_14_3_3_1h > 10.0))
-            # 1h snapback off an oversold low
-            & (stochrsi_k_1h_lt_60 | (rsi_14_1h > 40.0))
-            # 1h squeezed flat with money coming in
-            & ((bbb_20_2_0_1h > 5.0) | (mfi_14_1h < 55.0))
-            # 15m recovered with the 4h pinned at its floor
-            & ((rsi_3_15m < 30.0) | (willr_14_4h > -95.0))
-            # 1h selling into a 4h that is not weak
-            & ((cmf_20_1h > -0.25) | (uo_7_14_28_4h < 45.0))
-            # 15m bid into a 4h that has already dropped
-            & ((mfi_14_15m < 55.0) | (roc_2_4h > -3.0))
-            # 4h high recent, 4h still no selling
-            & (aroonu_14_4h_lt_50 | (mfi_14_4h < 35.0))
-            # 1h stretched while the 4h RSI_3 collapses
-            & ((uo_7_14_28_1h < 55.0) | (rsi_3_change_pct_4h > -30.0))
-            # 15m and 4h both flat — nothing is going down
-            & ((roc_9_15m < -0.5) | (roc_9_4h < -1.0))
-            # 1h up inside a 4h that has already dropped
-            & ((change_pct_1h < 0.0) | (change_pct_4h > -5.0))
-            # 1d strong with buyers defending a long lower wick
-            & ((rsi_14_1d < 55.0) | (bot_wick_pct_1d < 1.5))
-            # 15m selling into a flat day
-            & ((cmf_20_15m > -0.25) | (change_pct_1d < -1.0))
-            # 15m bid while the day collapses
-            & ((cmf_20_15m < 0.15) | (rsi_3_change_pct_1d > -50.0))
-            # 1h bid while the two-day drift is flat
-            & ((mfi_14_1h < 45.0) | (roc_2_1d < -3.0))
-            # 15m bouncing hard, 1d pinned at its low
-            & (aroonu_14_15m_lt_80 | (willr_14_1d > -90.0))
-            # 1d down move spent, 1h off the floor
-            & (stochrsi_k_1h_lt_20 | rsi_3_1d_gt_20)
-            # 1d printing a fresh 14-day low while its stoch is not washed out
-            & ((stochk_14_3_3_1d < 40.0) | (aroond_14_1d < 90.0))
-            # 1d strong underneath a topped-out fast stoch
+            # 5m money coming in, 4h stoch lifted, 4h money gone
+            & ((mfi_14 < 35.0) | (stochrsi_k_4h < 40.0) | (mfi_14_4h > 25.0))
+            # 5m money back in, 15m still reading oversold, 1d stochastic low
+            & ((mfi_14 < 50.0) | (cci_20_15m > -75.0) | (stochk_14_3_3_1d > 50.0))
+            # 5m money gone, 15m no recent low, 15m weak
+            & ((mfi_14 > 15.0) | (aroond_14_15m > 10.0) | (rsi_14_15m > 35.0))
+            # 5m money gone, 4h RSI climbing
+            & ((mfi_14 > 15.0) | (rsi_14_change_pct_4h < 10.0))
+            # 5m money gone, 15m money coming in
+            & ((mfi_14 > 25.0) | (mfi_14_15m < 55.0))
+            # 5m money gone, 15m stretched
+            & ((mfi_14 > 25.0) | (rsi_14_15m < 45.0))
+            # 5m money gone, 15m rising
+            & ((mfi_14 > 40.0) | (roc_9_15m < 1.5))
+            # 5m rising, 1d stoch lifted
+            & ((roc_2 < 0.5) | (stochrsi_k_1d < 80.0))
+            # 5m rising, 1h stoch lifted, 1h money gone
+            & ((roc_2 < 0.5) | (stochrsi_k_1h < 30.0) | (mfi_14_1h > 30.0))
+            # up over 24h, 15m money coming in, 1d thrusting up
+            & ((roc_288 < -2.0) | (mfi_14_15m < 40.0) | (rsi_3_1d < 40.0))
+            # down over 24h, 5m a fresh high, 15m falling hard
+            & ((roc_288 > -15.0) | (aroonu_14 < 85.0) | rsi_3_15m_gt_50)
+            # down over 24h, 15m money gone
+            & ((roc_288 > -15.0) | (mfi_14_15m > 15.0))
+            # down over 24h, 1h money gone, 4h rising
+            & ((roc_288 > -15.0) | (mfi_14_1h > 15.0) | (roc_2_4h < -5.0))
+            # down over 24h, 15m stretched, 1h money gone
+            & ((roc_288 > -15.0) | (rsi_14_15m < 40.0) | (mfi_14_1h > 20.0))
+            # 5m rising, 15m RSI climbing, 15m pinned at its low
+            & ((roc_9 < 0.5) | (rsi_14_change_pct_15m < 15.0) | (willr_14_15m > -70.0))
+            # 5m falling, 15m thrusting up, 1h money gone
+            & ((roc_9 > -4.0) | (rsi_3_15m < 20.0) | (mfi_14_1h > 15.0))
+            # 5m stretched, down over 24h, 15m no recent low
+            & ((rsi_14 < 60.0) | (roc_288 > -5.0) | (aroond_14_15m > 20.0))
+            # 5m weak, 15m near the top of its range
+            & ((rsi_14 > 40.0) | (willr_14_15m < -40.0))
+            # 5m stretched, 1h no recent low
+            & ((rsi_20 < 55.0) | (aroond_14_1h > 35.0))
+            # 5m weak, 1h no recent low, 4h a fresh high
+            & ((rsi_20 > 30.0) | (aroond_14_1h > 65.0) | (aroonu_14_4h < 50.0))
+            # 5m thrusting up, 15m money gone, 4h near the top of its range
+            & ((rsi_3 < 70.0) | (mfi_14_15m > 30.0) | (willr_14_4h < -70.0))
+            # 5m thrusting up, well up its 40h range
+            & ((rsi_3 < 85.0) | (willr_480 < -75.0))
+            # 5m thrusting up, 1h pinned at its low
+            & ((rsi_4 < 70.0) | (willr_14_1h > -90.0))
+            # 5m fast stoch topped, 1d stretched
             & ((stoch_4_4 < 80.0) | (rsi_14_1d < 55.0))
-            # 4h already down hard under a day that is still firm
+            # 5m stoch lifted, 15m stoch on the floor
+            & ((stochrsi_k < 50.0) | (stochk_14_3_3_15m > 10.0))
+            # 5m stoch lifted, up over 24h, 15m pinned at its low
+            & ((stochrsi_k < 95.0) | (roc_288 < -5.0) | (willr_14_15m > -70.0))
+            # 5m near the top of its range, 15m falling
+            & ((willr_14 < -30.0) | (roc_9_15m > -2.0))
+            # 5m pinned at its low, 15m thrusting up
+            & ((willr_14 > -80.0) | rsi_3_15m_lt_60)
+            # 5m pinned at its low, 5m money coming in, 15m money gone
+            & ((willr_14 > -90.0) | (mfi_14 < 55.0) | (mfi_14_15m > 45.0))
+            # 5m pinned at its low, 15m rising
+            & ((willr_14 > -90.0) | (roc_9_15m < 1.5))
+            # well up its 40h range, 1h a fresh high
+            & ((willr_480 < -60.0) | (aroonu_14_1h < 55.0))
+            # at its 40h floor, 4h thrusting up, 1d near the top of its range
+            & ((willr_480 > -85.0) | (rsi_3_4h < 35.0) | (willr_14_1d < -50.0))
+            # 15m no recent low, 15m falling hard, 1d falling hard
+            & ((aroond_14_15m > 10.0) | (rsi_3_15m > 25.0) | (rsi_3_1d > 15.0))
+            # 15m no recent low, 1h stretched, 1h money gone
+            & ((aroond_14_15m > 5.0) | (rsi_14_1h < 45.0) | (mfi_14_1h > 35.0))
+            # 15m no recent low, 1h at its 3-day floor
+            & ((aroond_14_15m > 5.0) | (willr_84_1h > -95.0))
+            # 15m a fresh low, 4h money coming in, 1d stoch lifted
+            & (aroond_14_15m_lt_80 | (cmf_20_4h < 0.0) | stochrsi_k_1d_lt_80)
+            # 15m a fresh high, 1h RSI collapsing, 1h stoch lifted
+            & ((aroonu_14_15m < 15.0) | (rsi_14_change_pct_1h > -20.0) | stochrsi_k_1h_lt_40)
+            # 15m a fresh high, 1h no recent low
+            & ((aroonu_14_15m < 65.0) | (aroond_14_1h > 35.0))
+            # 15m a fresh high, 1d pinned at its low
+            & (aroonu_14_15m_lt_80 | (willr_14_1d > -90.0))
+            # 15m a fresh high, 1h well up its 3-day range, 4h falling hard
+            & (aroonu_14_15m_lt_80 | (willr_84_1h < -80.0) | rsi_3_4h_gt_15)
+            # 15m money coming in, 1d RSI_3 collapsing
+            & ((cmf_20_15m < 0.15) | (rsi_3_change_pct_1d > -50.0))
+            # 15m money going out, 1d up
+            & ((cmf_20_15m > -0.25) | (change_pct_1d < -1.0))
+            # 15m money going out, 1h stoch lifted, 1h at its 3-day floor
+            & ((cmf_20_15m > 0.0) | (stochrsi_k_1h < 80.0) | (willr_84_1h > -85.0))
+            # 15m money coming in, 15m RSI_3 jumping, 1d falling
+            & ((mfi_14_15m < 30.0) | (rsi_3_change_pct_15m < 80.0) | (roc_2_1d > -10.0))
+            # 15m money coming in, 1h rising, 1d stoch on the floor
+            & ((mfi_14_15m < 55.0) | (roc_2_1h < 1.5) | (stochrsi_k_1d > 25.0))
+            # 15m money coming in, 4h falling
+            & ((mfi_14_15m < 55.0) | (roc_2_4h > -3.0))
+            # 15m money coming in, 1h a fresh high
+            & ((mfi_14_15m < 60.0) | (aroonu_14_1h < 55.0))
+            # 15m money gone, 1h weak, 4h money gone
+            & ((mfi_14_15m > 20.0) | (rsi_14_1h > 15.0) | (mfi_14_4h > 20.0))
+            # 15m money gone, 4h falling, 1d rising
+            & ((mfi_14_15m > 25.0) | (roc_9_4h > -15.0) | (roc_9_1d < 15.0))
+            # 15m rising, 4h rising
+            & ((roc_9_15m < -0.5) | (roc_9_4h < -1.0))
+            # 15m rising, 1d stoch on the floor, 1d a fresh high
+            & ((roc_9_15m < 1.5) | (stochrsi_k_1d > 25.0) | (aroonu_14_1d < 35.0))
+            # 15m falling, 15m money coming in, 1h stretched
+            & ((roc_9_15m > -2.0) | (cmf_20_15m < 0.0) | (rsi_14_1h < 45.0))
+            # 15m RSI collapsing, 1h stoch lifted, 1h RSI climbing
+            & ((rsi_14_change_pct_15m > 5.0) | (stochrsi_k_1h < 80.0) | (rsi_14_change_pct_1h < 20.0))
+            # 15m thrusting up, 1h at its 3-day floor, 4h a fresh high
+            & ((rsi_3_15m < 20.0) | (willr_84_1h > -95.0) | (aroonu_14_4h < 50.0))
+            # 15m thrusting up, 4h pinned at its low
+            & ((rsi_3_15m < 30.0) | (willr_14_4h > -95.0))
+            # 15m thrusting up, 1h a fresh high, 4h stoch collapsing
+            & ((rsi_3_15m < 55.0) | (aroonu_14_1h < 30.0) | (stochrsi_k_change_pct_4h > -100.0))
+            # 15m thrusting up, 15m a fresh high, 1d stoch on the floor
+            & ((rsi_3_15m < 70.0) | (aroonu_14_15m < 80.0) | (stochrsi_k_1d > 25.0))
+            # 15m falling hard, 15m no recent low, 1d thrusting up
+            & ((rsi_3_15m > 20.0) | (aroond_14_15m > 20.0) | (rsi_3_1d < 45.0))
+            # 15m falling hard, 4h money coming in, 1d money coming in
+            & ((rsi_3_15m > 25.0) | (mfi_14_4h < 35.0) | (mfi_14_1d < 70.0))
+            # 15m falling hard, 1h money coming in, 1d near the top of its range
+            & ((rsi_3_15m > 30.0) | (mfi_14_1h < 45.0) | (willr_14_1d < -50.0))
+            # 15m falling hard, 4h falling, 1d rising
+            & (rsi_3_15m_gt_15 | (roc_9_4h > -15.0) | roc_9_1d_lt_15)
+            # 15m thrusting up, 15m a fresh low
+            & (rsi_3_15m_lt_60 | aroond_14_15m_lt_80)
+            # 15m thrusting up, 1d stoch on the floor
+            & (rsi_3_15m_lt_75 | stochrsi_k_1d_gt_20)
+            # 15m RSI_3 jumping, 1h pinned at its low, 1h no recent high
+            & ((rsi_3_change_pct_15m < 50.0) | (willr_14_1h > -95.0) | (aroonu_14_1h > 5.0))
+            # 15m stoch on the floor, 1h money coming in
+            & ((stochrsi_k_15m > 5.0) | (mfi_14_1h < 50.0))
+            # 15m near the top of its range, 15m stoch on the floor
+            & ((willr_14_15m < -20.0) | (stochrsi_k_15m > 65.0))
+            # 15m pinned at its low, 15m no recent low, 4h money coming in
+            & ((willr_14_15m > -40.0) | (aroond_14_15m > 20.0) | (mfi_14_4h < 45.0))
+            # 1h a fresh high, 4h pinned at its low, 1d stretched
+            & ((aroonu_14_1h < 50.0) | (willr_14_4h > -90.0) | (rsi_14_1d < 50.0))
+            # 1h a fresh high, 4h RSI climbing
+            & ((aroonu_14_1h < 55.0) | (rsi_14_change_pct_4h < 10.0))
+            # 1h at a recent high, 4h fall flat, 4h money spent
+            & (aroonu_14_1h_lt_25 | (roc_9_4h < -5.0) | (mfi_14_4h > 25.0))
+            # 1h squeezed flat, 1h money coming in
+            & ((bbb_20_2_0_1h > 5.0) | (mfi_14_1h < 55.0))
+            # 1h up, 4h down
+            & ((change_pct_1h < 0.0) | (change_pct_4h > -5.0))
+            # 1h money coming in, 4h falling, 4h stoch lifted
+            & ((cmf_20_1h < 0.0) | (roc_9_4h > -10.0) | (stochrsi_k_4h < 15.0))
+            # 1h money coming in, 1h at its 3-day floor, 1d thrusting up
+            & ((cmf_20_1h < 0.0) | (willr_84_1h > -90.0) | (rsi_3_1d < 45.0))
+            # 1h money going out, 4h strong
+            & ((cmf_20_1h > -0.25) | (uo_7_14_28_4h < 45.0))
+            # 1h money coming in, 1d thrusting up
+            & ((mfi_14_1h < 40.0) | (rsi_3_1d < 45.0))
+            # 1h money coming in, 1d rising
+            & ((mfi_14_1h < 45.0) | (roc_2_1d < -3.0))
+            # 1h money gone, 4h stretched, 1d stoch lifted
+            & ((mfi_14_1h > 15.0) | (rsi_14_4h < 35.0) | (stochrsi_k_1d < 80.0))
+            # 1h fall stalled, 4h at a fresh high
+            & ((roc_9_1h < -5.0) | aroonu_14_4h_lt_60)
+            # 1h stoch lifted, 1h falling hard, 4h a fresh high
+            & ((stochrsi_k_1h < 55.0) | (rsi_3_1h > 10.0) | (aroonu_14_4h < 50.0))
+            # 1h stoch lifted, 4h RSI collapsing, 1d falling hard
+            & ((stochrsi_k_1h < 80.0) | (rsi_14_change_pct_4h > -5.0) | (rsi_3_1d > 25.0))
+            # 1h stoch lifted, 1d falling hard
+            & (stochrsi_k_1h_lt_20 | rsi_3_1d_gt_20)
+            # 1h stoch lifted, 1h weak
+            & (stochrsi_k_1h_lt_60 | (rsi_14_1h > 40.0))
+            # 1h stoch lifted, 1h falling
+            & (stochrsi_k_1h_lt_80 | (roc_2_1h > -2.5))
+            # 1h strong, 4h RSI_3 collapsing
+            & ((uo_7_14_28_1h < 55.0) | (rsi_3_change_pct_4h > -30.0))
+            # 1h well up its 3-day range, 1h a fresh high, 4h money coming in
+            & ((willr_84_1h < -70.0) | (aroonu_14_1h < 50.0) | (mfi_14_4h < 45.0))
+            # 1h at its 3-day floor, 4h thrusting up
+            & ((willr_84_1h > -95.0) | (rsi_3_4h < 30.0))
+            # 4h at a fresh 14-period low, 4h momentum not spent, the day barely down
+            & ((aroond_14_4h < 95.0) | (rsi_3_4h < 30.0) | (roc_9_1d < -5.0))
+            # 4h no recent high, 1d stretched, 1d a long lower wick
+            & (aroonu_14_4h_gt_30 | (rsi_14_1d < 55.0) | (bot_wick_pct_1d < 1.5))
+            # 4h a fresh high, 4h money coming in
+            & (aroonu_14_4h_lt_50 | (mfi_14_4h < 35.0))
+            # 4h down, 1d stretched
             & ((change_pct_4h > -5.0) | rsi_14_1d_lt_50)
+            # 4h money gone, 4h falling
+            & ((mfi_14_4h > 15.0) | (roc_9_4h > -10.0))
+            # 4h stretched, 1d rising
+            & ((rsi_14_4h < 45.0) | (roc_9_1d < 5.0))
+            # 1d money leaving and 1d washed out, but price not near its 1d low
+            & ((cmf_20_1d > -0.05) | rsi_3_1d_gt_30 | (willr_14_1d < -80.0))
+            # 1d stoch lifted, 1d a fresh low
+            & ((stochk_14_3_3_1d < 40.0) | (aroond_14_1d < 90.0))
+            # 1d near the top of its range, 1d falling
+            & ((willr_14_1d < -45.0) | (roc_2_1d > -10.0))
           )
 
           # Logic
