@@ -26488,9 +26488,9 @@ class NostalgiaForInfinityX7(IStrategy):
             # a 1d capitulation with money leaving at the same time — a knife, not a dip (RUNE)
             & ((cmf_20 > -0.10) | (rsi_3_1d > 15.0))
             # the 15m money flow collapsing under a 4h that is still stretched (ETH 22-04)
-            & ((obv_change_pct_15m > -64.2) | (willr_14_4h < -20.0))
+            & ((obv_change_pct_15m > -60.0) | (willr_14_4h < -20.0))
             # the 15m momentum snapping higher right before the top (LINK 24-03)
-            & ((uo_7_14_28_change_pct_15m < 19.0) | (mfi_14_15m < 85.0))
+            & ((uo_7_14_28_change_pct_15m < 15.0) | (mfi_14_15m < 85.0))
             # the hour is rising, the 4h has not stopped making lows, and the day shows no inflow —
             # a dead-cat fade rather than a reversal (DOT 21, ETH 24, LINK 24, DOGE 25, GALA 26)
             & ((cci_20_change_pct_1h_lt_0) | (aroond_14_4h_lt_80) | (mfi_14_1d > 45.0))
@@ -26501,7 +26501,7 @@ class NostalgiaForInfinityX7(IStrategy):
             & ((rsi_14_1h < 55.0) | (rsi_14_1h > 65.0) | (roc_9_1d > 0.0))
             # a fade at a 4h top that is already stretched, with the hour hot — chasing the top
             # (CRV 21-09, CRV 25-03, AXS 25-08)
-            & ((rsi_14_1h < 75.0) | (roc_9_4h < 13.0))
+            & ((rsi_14_1h < 70.0) | (roc_9_4h < 13.0))
             # the 1h RSI collapsing at the entry candle — a knife, not a dip (LINK 24-06)
             & ((rsi_3_change_pct_1h > -30.0) | (rsi_3_1h < 50.0))
             # the 4h actively collapsing — a knife, not a dip (XRP 21-04)
