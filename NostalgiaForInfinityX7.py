@@ -2577,7 +2577,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     def scaled_stake(stake_multiplier: float) -> float:
       stake = proposed_stake * stake_multiplier
-      return stake if stake > min_stake else min_stake
+      return stake if (min_stake is None) or (stake > min_stake) else min_stake
 
     if side == "long":
       # Rebuy mode
@@ -2598,7 +2598,7 @@ class NostalgiaForInfinityX7(IStrategy):
       elif all(c in long_grind_mode_tags for c in enter_tags):
         for item in grind_mode_stake_multipliers:
           stake = proposed_stake * item
-          if stake > min_stake:
+          if (min_stake is None) or (stake > min_stake):
             return stake
       # Btc mode
       elif all(c in long_btc_mode_tags for c in enter_tags):
@@ -2621,7 +2621,7 @@ class NostalgiaForInfinityX7(IStrategy):
       elif all(c in short_grind_mode_tags for c in enter_tags):
         for item in grind_mode_stake_multipliers:
           stake = proposed_stake * item
-          if stake > min_stake:
+          if (min_stake is None) or (stake > min_stake):
             return stake
       # Rapid mode
       if system_name_is_v3 and (
