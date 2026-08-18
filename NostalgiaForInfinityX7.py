@@ -2066,6 +2066,13 @@ class NostalgiaForInfinityX7(IStrategy):
       trade, current_time, current_rate, filled_orders, filled_entries, filled_exits, profit_values
     )
 
+    # Signal 192 (Quad pullback long) tight doom stop: every 192 loss bottoms at a
+    # 11.8-14% price drop (the shared 0.35 doom threshold) while winners' max adverse
+    # excursion sits below 9.63% price. Scoping 192's doom to -0.30 margin (~10% price
+    # at 3x) flips the tag net-positive without touching any other signal's exit.
+    if "192" in enter_tags and current_profit <= -0.30:
+      return f"exit_long_normal_stoploss_doom ( {enter_tag})"
+
     max_profit = 0.0
     max_loss = 0.0
 
@@ -26474,6 +26481,25 @@ class NostalgiaForInfinityX7(IStrategy):
           long_entry_logic.append((rsi_14_1h < 55.0) | (rsi_14_1h > 65.0) | (roc_9_1d > 0.0))
           # Round 3 (RUNE loss): 1d capitulation + money outflow = knife; need 1d alive OR inflow
           long_entry_logic.append((rsi_3_1d > 15.0) | (cmf_20 > -0.10))
+          # Round 4 (5-regime group: SAND 21, AXS 24, AVAX 24, GALA 25): quad-oversold pullback into a
+          # weak 1d with no hourly money flow = falling-knife day; need 1d alive OR hourly inflow
+          long_entry_logic.append((rsi_14_1d >= 40.0) | (cmf_20_1h >= 0.0))
+          # Round 5 (4h-exhausted group: CRV 21-09, CRV 25-03, AXS 25-08): quad-oversold fade at a 4h
+          # top already stretched (1h hot + 4h ROC rising) = chasing the top; need 1h cool OR 4h flat
+          long_entry_logic.append((rsi_14_1h < 74.0) | (roc_9_4h < 13.0))
+          # Round 6 (XRP 21-04): 4h actively collapsing (rate-of-change -16) = knife, not a dip
+          long_entry_logic.append(roc_9_4h > -15.0)
+          # Round 7 (ETH 22-04): 15m money-flow collapse (OBV -64 pct) at a 4h still-stretched top
+          long_entry_logic.append(obv_change_pct_15m > -64.2)
+          # Round 8 (LINK 24-03): pullback entered while the 15m momentum was snapping higher
+          # (UO change 19) right before the top; block entries with that hot 15m momentum
+          long_entry_logic.append(uo_7_14_28_change_pct_15m < 19.0)
+          # Round 9 (LINK 24-06): 1h RSI collapsing >-30 pct at entry = falling knife, not a dip
+          long_entry_logic.append(rsi_3_change_pct_1h > -30.0)
+          # Round 10 (5-regime group: DOT 21, ETH 24, LINK 24, DOGE 25, GALA 26): pullback entered
+          # with 1h momentum already weakening (CCI change negative) OR a 4h still in downtrend
+          # (Aroon-D < 80) OR no 1d money inflow (MFI <= 45) = dead-cat fade, not a reversal.
+          long_entry_logic.append((cci_20_change_pct_1h_lt_0) | (aroond_14_4h_lt_80) | (mfi_14_1d > 45.0))
           # --- Logic: embedded up-regime + quad-oversold pullback + 5-candle shift kink ---
           long_entry_logic.append(stoch_60_10 > 80.0)
           long_entry_logic.append(stoch_9_3 < 20.0)
