@@ -27407,12 +27407,42 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(protections_short_global == True)
 
           short_entry_logic.append(
-            # the day is still up while the last 24h flushed hard
-            ((roc_9_1d < 0.0) | (roc_288 > -15.0))
+            # 1h money draining and the 5m washed out, but the 15m is not making fresh lows
+            ((mfi_14 > 30) | (willr_14_15m < -95) | (cmf_20_1h > -0.3))
+            # a 7-day low broken on drained 5m money while the two days above it rose and the daily sits mid-range
+            & ((mfi_14 > 20) | (roc_2_1d < 2) | (willr_14_1d < -60))
             # a vertical ten-minute drop while the 4h high is over a day old
             & ((roc_2 > -5.0) | (aroonu_14_4h > 40.0))
+            # the nine-day trend is still up while the last 24h flushed hard
+            & ((roc_288 > -15.0) | (roc_9_1d < 0.0))
+            # the 15m has stopped making new lows and money is still flowing into it, and the 5m breaks a 7-day low anyway
+            & ((aroond_14_15m > 50) | (mfi_14_15m < 40))
+            # nothing is making new lows — not the hour, not the day — and the 15m just printed a fresh high, yet the 5m breaks a 7-day low
+            & (aroonu_14_15m_lt_50 | (aroond_14_1h > 25) | (aroond_14_1d > 15))
+            # the daily is being bought and has not made a low in two weeks, and the 15m just printed a fresh high
+            & ((aroonu_14_15m < 45) | (aroond_14_1d > 25) | (mfi_14_1d < 65))
+            # 15m money out and the 4h downtrend set, but the 15m has already lifted off the floor
+            & ((cmf_20_15m > -0.3) | (mfi_14_15m < 15) | (minus_di_14_4h < 30))
+            # money is leaving on the 15m while the 4h is mid-range and has made no new low — a liquidity flush, not a breakdown
+            & ((cmf_20_15m > -0.3) | (aroond_14_4h > 35) | (willr_14_4h < -60))
+            # 15m money still flowing while the 4h is drained and its downtrend set
+            & ((mfi_14_15m < 25) | (cmf_20_4h > -0.2) | (minus_di_14_4h < 30))
             # 1h money exhausted after a two-day drop
             & ((mfi_14_1h > 25.0) | (roc_2_1d > -7.0))
+            # the hour has turned up hard — momentum, its rate of change and the oscillator all lifted — and the 5m sells the 7-day low into it
+            & ((rsi_3_1h < 25) | (rsi_3_change_pct_1h < 65) | (stochrsi_k_1h < 45))
+            # momentum has exploded upward on the hour and the day at once, and the 5m sells the 7-day low into the bounce
+            & ((rsi_3_change_pct_1h < 200) | (rsi_3_change_pct_1d < 300))
+            # the 7-day low breaks while neither the hourly nor the 4h is anywhere near oversold
+            & (stochrsi_k_1h_lt_40 | (stochrsi_k_4h < 35))
+            # the 4h has already rallied hard — oscillator topped, no new 4h low for days — and the 5m breaks a 7-day low against it
+            & ((adx_14_4h < 40) | (aroond_14_4h > 30) | (stochrsi_k_4h < 75))
+            # the 4h is drained but has printed no new low for days — the decline has stalled, and the 5m sells the 7-day low into the stall
+            & ((aroond_14_4h > 20) | (mfi_14_4h > 25))
+            # the 4h has already snapped up while the day is still washed out
+            & ((rsi_3_change_pct_4h < 65) | rsi_3_1d_gt_30)
+            # the 4h stochastic is pinned at the floor and the day is washed out, but the daily stochastic has not followed
+            & ((stochk_14_3_3_4h > 15) | rsi_3_1d_gt_30 | (stochk_14_3_3_1d < 35))
           )
 
           # Logic
