@@ -2069,7 +2069,12 @@ class NostalgiaForInfinityX7(IStrategy):
     # Signal 192 (Quad pullback long) tight doom stop: every 192 loss bottoms at a
     # 11.8-14% price drop (the shared 0.35 doom threshold) while winners' max adverse
     # excursion sits below 9.63% price. Scoping 192's doom to -0.30 margin (~10% price
-    # at 3x) flips the tag net-positive without touching any other signal's exit.
+    # at 3x, ~30% at 1x) flips the tag net-positive. NOTE: this fires on ANY trade
+    # carrying 192 as one of several tags, and it returns before long_exit_normal, so
+    # for 192 it pre-empts the de-risk ladder (measured on a gms0 replica with derisk
+    # off; production runs derisk on, where the ladder exists for exactly this zone).
+    # On spot the -0.30 is looser than the existing doom thresholds (0.12 spot / 0.35
+    # futures) and effectively never binds.
     if "192" in enter_tags and current_profit <= -0.30:
       return f"exit_long_normal_stoploss_doom ( {enter_tag})"
 
@@ -26472,41 +26477,46 @@ class NostalgiaForInfinityX7(IStrategy):
 
         # Condition #192 - Quad-rotation stochastic pullback (Long, experimental).
         if long_entry_condition_index == 192:
-          # --- Protections ---
+          # Protections
           long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           long_entry_logic.append(protections_long_global == True)
-          # Round 1 (API3 loss): block long-divergence with no reversal signs (knife)
-          long_entry_logic.append((rsi_3_15m > 30.0) | (roc_9_1h > 1.0) | (aroond_14 < 90.0) | (cmf_20 > 0.12))
-          # Round 2 (SOL x2 loss): block mid-1h-RSI (55-65) downtrend dip (not oversold enough to bounce)
-          long_entry_logic.append((rsi_14_1h < 55.0) | (rsi_14_1h > 65.0) | (roc_9_1d > 0.0))
-          # Round 3 (RUNE loss): 1d capitulation + money outflow = knife; need 1d alive OR inflow
-          long_entry_logic.append((rsi_3_1d > 15.0) | (cmf_20 > -0.10))
-          # Round 4 (5-regime group: SAND 21, AXS 24, AVAX 24, GALA 25): quad-oversold pullback into a
-          # weak 1d with no hourly money flow = falling-knife day; need 1d alive OR hourly inflow
-          long_entry_logic.append((rsi_14_1d >= 40.0) | (cmf_20_1h >= 0.0))
-          # Round 5 (4h-exhausted group: CRV 21-09, CRV 25-03, AXS 25-08): quad-oversold fade at a 4h
-          # top already stretched (1h hot + 4h ROC rising) = chasing the top; need 1h cool OR 4h flat
-          long_entry_logic.append((rsi_14_1h < 74.0) | (roc_9_4h < 13.0))
-          # Round 6 (XRP 21-04): 4h actively collapsing (rate-of-change -16) = knife, not a dip
-          long_entry_logic.append(roc_9_4h > -15.0)
-          # Round 7 (ETH 22-04): 15m money-flow collapse (OBV -64 pct) at a 4h still-stretched top
-          long_entry_logic.append(obv_change_pct_15m > -64.2)
-          # Round 8 (LINK 24-03): pullback entered while the 15m momentum was snapping higher
-          # (UO change 19) right before the top; block entries with that hot 15m momentum
-          long_entry_logic.append(uo_7_14_28_change_pct_15m < 19.0)
-          # Round 9 (LINK 24-06): 1h RSI collapsing >-30 pct at entry = falling knife, not a dip
-          long_entry_logic.append(rsi_3_change_pct_1h > -30.0)
-          # Round 10 (5-regime group: DOT 21, ETH 24, LINK 24, DOGE 25, GALA 26): pullback entered
-          # with 1h momentum already weakening (CCI change negative) OR a 4h still in downtrend
-          # (Aroon-D < 80) OR no 1d money inflow (MFI <= 45) = dead-cat fade, not a reversal.
-          long_entry_logic.append((cci_20_change_pct_1h_lt_0) | (aroond_14_4h_lt_80) | (mfi_14_1d > 45.0))
-          # --- Logic: embedded up-regime + quad-oversold pullback + 5-candle shift kink ---
-          long_entry_logic.append(stoch_60_10 > 80.0)
-          long_entry_logic.append(stoch_9_3 < 20.0)
-          long_entry_logic.append(stoch_14_3 < 20.0)
-          long_entry_logic.append(stoch_4_4 < 20.0)
-          long_entry_logic.append(close < np_shift(close, 5))
-          long_entry_logic.append(stoch_9_3 > np_shift(stoch_9_3, 5))
+
+          long_entry_logic.append(
+            # a long-divergence entry with nothing turning: 5m trend still down, no money coming in,
+            # the 15m dead and the hour not rising (API3)
+            ((aroond_14 < 90.0) | (cmf_20 > 0.12) | (rsi_3_15m > 30.0) | (roc_9_1h > 1.0))
+            # a 1d capitulation with money leaving at the same time — a knife, not a dip (RUNE)
+            & ((cmf_20 > -0.10) | (rsi_3_1d > 15.0))
+            # the 15m money flow collapsing under a 4h that is still stretched (ETH 22-04)
+            & ((obv_change_pct_15m > -64.2) | (willr_14_4h < -20.0))
+            # the 15m momentum snapping higher right before the top (LINK 24-03)
+            & ((uo_7_14_28_change_pct_15m < 19.0) | (mfi_14_15m < 85.0))
+            # the hour is rising, the 4h has not stopped making lows, and the day shows no inflow —
+            # a dead-cat fade rather than a reversal (DOT 21, ETH 24, LINK 24, DOGE 25, GALA 26)
+            & ((cci_20_change_pct_1h_lt_0) | (aroond_14_4h_lt_80) | (mfi_14_1d > 45.0))
+            # a pullback into a weak day with no hourly money behind it — a falling-knife day
+            # (SAND 21, AXS 24, AVAX 24, GALA 25)
+            & ((cmf_20_1h >= 0.0) | (rsi_14_1d >= 40.0))
+            # a mid-range 1h RSI dip inside a 1d downtrend: not oversold enough to bounce (SOL x2)
+            & ((rsi_14_1h < 55.0) | (rsi_14_1h > 65.0) | (roc_9_1d > 0.0))
+            # a fade at a 4h top that is already stretched, with the hour hot — chasing the top
+            # (CRV 21-09, CRV 25-03, AXS 25-08)
+            & ((rsi_14_1h < 75.0) | (roc_9_4h < 13.0))
+            # the 1h RSI collapsing at the entry candle — a knife, not a dip (LINK 24-06)
+            & ((rsi_3_change_pct_1h > -30.0) | (rsi_3_1h < 50.0))
+            # the 4h actively collapsing — a knife, not a dip (XRP 21-04)
+            & ((roc_9_4h > -15.0) | (rsi_14_4h > 40.0))
+          )
+
+          # Logic: embedded up-regime + quad-oversold pullback + 5-candle shift kink
+          long_entry_logic.append(
+            (stoch_60_10 > 80.0)
+            & (stoch_9_3 < 20.0)
+            & (stoch_14_3 < 20.0)
+            & (stoch_4_4 < 20.0)
+            & (close < np_shift(close, 5))
+            & (stoch_9_3 > np_shift(stoch_9_3, 5))
+          )
 
         # Condition #193 - Quad-rotation TRUE pivot divergence (Long, experimental).
         if long_entry_condition_index == 193:
