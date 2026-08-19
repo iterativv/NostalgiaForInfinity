@@ -15,7 +15,6 @@
       "(FIGHT|IDOL)/.*",
       // Exchange
       "(RIF|BNB)/.*",
-      "(1000.*).*/.*",
       // Leverage
       ".*(_PREMIUM|BEAR|BULL|HALF|HEDGE|UP|DOWN|[1235][SL])/.*",
       // Fiat
