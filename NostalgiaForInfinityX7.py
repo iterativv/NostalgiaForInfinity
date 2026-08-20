@@ -71,7 +71,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.550"
+    return "v17.4.551"
 
   stoploss = -0.99
 
@@ -48150,6 +48150,11 @@ class NostalgiaForInfinityX7(IStrategy):
         derisk_2_stake = self.system_v3_derisk_level_2_stake_spot
         derisk_3_threshold = self.system_v3_derisk_level_3_spot[1]
         derisk_3_stake = self.system_v3_derisk_level_3_stake_spot
+    elif is_system_v3_1:
+      derisk_1_enable = False
+      derisk_2_enable = False
+      derisk_3_enable = False
+      derisk_4_enable = False
     elif is_system_v3_2:
       derisk_1_enable = self.system_v3_2_derisk_level_1_enable
       derisk_2_enable = self.system_v3_2_derisk_level_2_enable
