@@ -59,7 +59,7 @@ warnings.simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 ##  ByBit: https://partner.bybit.com/b/nfi                                                                 ##
 ##  ByBit.EU: https://partner.bybit.eu/b/NFINFINITY                                                        ##
 ##  Bitget: https://bonus.bitget.com/nfinfinity (lifetime 20% +10% extra spot rebate)                      ##
-##  Kraken: https://proinvite.kraken.com/9f1e/cctimhte                                                     ##
+##  Kraken: https://proinvite.kraken.com/rrru/m021lz9e                                                     ##
 ##  BitMart: https://www.bitmart.com/invite/nfinfinity (20% lifetime discount on trading fees)             ##
 ##  HTX: https://www.htx.com/invite/en-us/1f?invite_code=ubpt2223                                          ##
 ##         (Welcome Bonus worth 241 USDT upon completion of a deposit and trade)                           ##
