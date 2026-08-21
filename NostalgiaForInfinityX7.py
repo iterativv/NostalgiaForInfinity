@@ -71,7 +71,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.559"
+    return "v17.4.560"
 
   stoploss = -0.99
 
@@ -25219,6 +25219,8 @@ class NostalgiaForInfinityX7(IStrategy):
             & ((rsi_3_1h_gt_20) | (rsi_3_4h_gt_40) | (aroonu_14_1d_lt_100) | (roc_9_1d_lt_50))
             # 1h & 4h down move, 4h high
             & ((rsi_3_1h_gt_20) | (rsi_3_4h_gt_45) | (stochrsi_k_4h_lt_80))
+            # 1h & 4h down move, 4h high & overbought
+            & ((rsi_3_1h_gt_20) | (rsi_3_4h_gt_50) | (aroonu_14_4h_lt_70) | (roc_9_4h_lt_30))
             # 1h & 1d down move, 4h still high
             & ((rsi_3_1h_gt_20) | (rsi_3_1d_gt_20) | (stochrsi_k_4h_lt_50))
             # 1h & 1d down move, 1h still high
@@ -29493,11 +29495,7 @@ class NostalgiaForInfinityX7(IStrategy):
           # Logic
           short_entry_logic.append(
             # a bearish engulfing inside a downtrend, in the lower half of the range
-            (close < ema_200)
-            & (rsi_14 < 50.0)
-            & (willr_14 < -50.0)
-            & (rsi_3_15m < 45.0)
-            & (engulf_bear > 0.5)
+            (close < ema_200) & (rsi_14 < 50.0) & (willr_14 < -50.0) & (rsi_3_15m < 45.0) & (engulf_bear > 0.5)
           )
 
         # Condition #666 - Swing-failure pattern (Short, experimental, RAW — mirror).
