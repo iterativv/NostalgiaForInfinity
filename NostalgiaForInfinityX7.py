@@ -29451,16 +29451,54 @@ class NostalgiaForInfinityX7(IStrategy):
 
         # Condition #665 - Engulfing continuation (Short, experimental, RAW — mirror).
         if short_entry_condition_index == 665:
+          # Protections
           short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           short_entry_logic.append(protections_short_global == True)
-          # breakdown must be real: price already in the lower half of the range,
-          # 15m momentum actually down (losses were top-of-range fake breakdowns)
-          short_entry_logic.append(willr_14 < -50.0)
-          short_entry_logic.append(rsi_3_15m < 45.0)
-          # downtrend regime + momentum side + bearish engulfing close
-          short_entry_logic.append(close < ema_200)
-          short_entry_logic.append(rsi_14 < 50.0)
-          short_entry_logic.append(engulf_bear > 0.5)
+
+          short_entry_logic.append(
+            # daily money flowing in and 4h not oversold
+            ((cmf_20_1d > 0.05) | (rsi_14_4h_lt_40))
+            # 5m money flowing in and 1h money flowing in
+            & ((mfi_14 < 30) | (mfi_14_1h < 40))
+            # 5m no recent low, daily oversold and 15m stochastic at the floor
+            & ((aroond_14 > 40) | (rsi_14_1d > 35) | (stochrsi_k_15m_gt_40))
+            # the last 24h fell hard and the 4h cycle is turning up
+            & ((roc_288 > -11.0) | (cci_20_change_pct_4h < -10.0))
+            # 4h a trend established, money flowing in and 5m falling
+            & ((adx_14_4h < 40) | (cmf_20_4h_lt_0_15) | (roc_9 > -2))
+            # below-average volume and 1h momentum alive
+            & ((vol_rel > 1.25) | (rsi_3_1h < 20))
+            # the two-day window off its floor and tightly squeezed
+            & ((willr_84_1h < -75) | (sqz_cnt_24 < 10))
+            # 15m money flowing in, 4h downtrend weak and oscillator lifting
+            & ((cmf_20_15m_lt_0_10) | (minus_di_14_4h > 25) | (uo_7_14_28_change_pct_15m < 5))
+            # 1h a recent low, falling and stochastic high
+            & ((aroond_14_1h < 80) | (roc_9_1h > -7) | (stochrsi_k_1h_lt_30))
+            # 1h at an extreme low and daily a long lower wick
+            & ((cci_20_1h > -175.0) | (bot_wick_pct_1d < 3))
+            # 4h money leaving and 1h at the floor of its range
+            & ((cmf_20_4h > -0.05) | (willr_14_1h < -75))
+            # 4h momentum alive and stochastic turning up
+            & ((rsi_3_4h < 65) | (stochrsi_k_change_pct_4h < 5))
+            # 4h momentum falling and daily no upper wick
+            & ((rsi_14_change_pct_4h > -15.0) | (top_wick_pct_1d > 1.5))
+            # 4h no trend established and stochastic falling hard
+            & ((adx_14_4h > 20) | (stochrsi_k_change_pct_4h > -70.0))
+            # 4h money flowing in and high in its range
+            & ((mfi_14_4h < 55) | (willr_14_4h > -40))
+            # 4h no recent low and money flowing in
+            & ((aroond_14_4h > 5) | (cmf_20_4h < 0.05))
+          )
+
+          # Logic
+          short_entry_logic.append(
+            # a bearish engulfing inside a downtrend, in the lower half of the range
+            (close < ema_200)
+            & (rsi_14 < 50.0)
+            & (willr_14 < -50.0)
+            & (rsi_3_15m < 45.0)
+            & (engulf_bear > 0.5)
+          )
 
         # Condition #666 - Swing-failure pattern (Short, experimental, RAW — mirror).
         if short_entry_condition_index == 666:
