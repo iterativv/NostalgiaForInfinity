@@ -26541,14 +26541,34 @@ class NostalgiaForInfinityX7(IStrategy):
           # --- Protections ---
           long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           long_entry_logic.append(protections_long_global == True)
+          long_entry_logic.append(
+            # Negative 15m flow is ongoing sell pressure, not a pivot recovery (COMP/BAND/MTL);
+            # require short-term money flow to turn positive.
+            (cmf_20_15m > 0.0)
+            # A divergence in trendless 4h chop has no recovery structure; require a real trend.
+            & (adx_14_4h > 20.0)
+            # A 4h candle already down 8% is a falling knife (RUNE 2024-06), not a pivot.
+            & (change_pct_4h > -8.0)
+            # A hot 15m pulse inside an unrecovered day is a false counter-trend bounce (1INCH
+            # 2022-12); need 15m relief OR cooler momentum OR daily recovery.
+            & ((willr_14_15m > -40.0) | (uo_7_14_28_15m < 50.0) | (stochrsi_k_1d > 25.0))
+            # Positive hourly flow without a price response while the day is pinned is trapped
+            # inflow (EGLD 2022-11, MTL/ZEN 2024); need low flow OR hourly lift OR a daily reset.
+            & ((cmf_20_1h < 0.05) | (stochk_14_3_3_1h > 80.0) | stochrsi_k_1d_gt_10)
+            # Daily capitulation with no sustained 1h/4h flow is a dead-cat bounce (THETA/EGLD
+            # 2024, BAND/ZEN 2026); need hourly inflow OR positive 4h flow OR daily RSI recovery.
+            & ((cmf_20_1h > 0.15) | (cmf_20_4h > 0.0) | rsi_3_1d_gt_20)
+          )
           # --- Logic: embedded up-regime + quad-oversold + two-pivot bullish divergence ---
-          long_entry_logic.append(stoch_60_10 > 80.0)
-          long_entry_logic.append(stoch_9_3 < 20.0)
-          long_entry_logic.append(stoch_14_3 < 20.0)
-          long_entry_logic.append(stoch_4_4 < 20.0)
-          # price LOWER-LOW across swing windows while stoch makes a HIGHER-LOW (real divergence)
-          long_entry_logic.append(quad_low_min_12 < np_shift(quad_low_min_12, 12))
-          long_entry_logic.append(quad_s93_min_12 > np_shift(quad_s93_min_12, 12))
+          long_entry_logic.append(
+            (stoch_60_10 > 80.0)
+            & (stoch_9_3 < 20.0)
+            & (stoch_14_3 < 20.0)
+            & (stoch_4_4 < 20.0)
+            # Price makes a lower low while stochastic makes a higher low (real divergence).
+            & (quad_low_min_12 < np_shift(quad_low_min_12, 12))
+            & (quad_s93_min_12 > np_shift(quad_s93_min_12, 12))
+          )
 
         long_entry_logic.append(df["volume"] > 0)
         item_long_entry = _and_entry_conditions(long_entry_logic)
@@ -29971,7 +29991,7 @@ class NostalgiaForInfinityX7(IStrategy):
     if short_entry_conditions:
       df.loc[:, "enter_short"] = _or_entry_conditions(short_entry_conditions).astype(int)
 
-    df.loc[:, "enter_tag"] = entry_tags
+    df.loc[:, "enter_tag"] = pd.array(entry_tags, dtype="string")
     if debug:
       tok = time.perf_counter()
       log.debug("populate_entry_trend took a total of: %.4f seconds.", tok - tik)
