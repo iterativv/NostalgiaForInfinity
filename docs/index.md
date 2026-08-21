@@ -35,7 +35,7 @@ If you like to help, you can also use the following links to sign up to various 
 - [ByBit: (signup bonuses)](https://partner.bybit.com/b/nfi)
 - [ByBit.EU: (signup bonuses)](https://partner.bybit.eu/b/NFINFINITY)
 - [Bitget: (lifetime 20% rebate all plus 10% discount on spot fees)](https://bonus.bitget.com/nfinfinity)
-- [Kraken: ](https://proinvite.kraken.com/9f1e/cctimhte)
+- [Kraken: ](https://proinvite.kraken.com/rrru/m021lz9e)
 - [BitMart: (20% lifetime discount on trading fees)](https://www.bitmart.com/invite/nfinfinity)
 - [HTX: (Welcome Bonus worth 241 USDT upon completion of a deposit and trade)](https://www.htx.com/invite/en-us/1f?invite_code=ubpt2223)
 - [ByBit: (no fees for the first € 10000)](https://bitvavo.com/invite?a=D22103A4BC)
