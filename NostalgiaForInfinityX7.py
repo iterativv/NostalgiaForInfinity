@@ -29474,7 +29474,7 @@ class NostalgiaForInfinityX7(IStrategy):
             # daily money flowing in and 4h not oversold
             ((cmf_20_1d > 0.05) | (rsi_14_4h_lt_40))
             # 5m money flowing in and 1h money flowing in
-                        # 15m volume flow rising, 4h not extended and 5m stochastic high
+            # 15m volume flow rising, 4h not extended and 5m stochastic high
             & ((stochrsi_k < 50) | (obv_change_pct_15m < 7) | (cci_20_4h < 105))
             # None
             & ((stoch_4_4 < 45) | (change_pct_1h < 0.5) | (rsi_3_change_pct_1d < -25))
