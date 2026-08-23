@@ -26288,17 +26288,103 @@ class NostalgiaForInfinityX7(IStrategy):
 
         # Condition #167 - Engulfing continuation (Long, experimental, RAW — TradingLab port).
         if long_entry_condition_index == 167:
+          # Protections
           long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           long_entry_logic.append(protections_long_global == True)
-          # daily not floored — no continuation in a dead daily
-          long_entry_logic.append(stochrsi_k_1d > 20.0)
-          # 1h momentum actually up, 4h not overheated (anti-chase)
-          long_entry_logic.append(rsi_3_1h > 55.0)
-          long_entry_logic.append(roc_9_4h < 8.0)
-          # uptrend regime + momentum side + bullish engulfing close
-          long_entry_logic.append(close > ema_200)
-          long_entry_logic.append(rsi_14 > 50.0)
-          long_entry_logic.append(engulf_bull > 0.5)
+
+          long_entry_logic.append(
+            # daily in its lower half, no recent 1h low, 5m cutting a fresh one
+            # 1h & 4h have both already run, 1h bands still wide from it
+            ((bbb_20_2_0 < 9) | (roc_9_1h < 14) | (change_pct_4h < 5))
+            # a strong 5m candle with the 4h oscillator not even positive
+            & ((change_pct < 1) | (cci_20_4h > 50))
+            # 4h & 5m money both saturated — no one left to buy the continuation
+            & ((cmf_20 < 0.2) | (mfi_14_4h < 85))
+            # 1d oscillator at its ceiling, no new 1d high in a fortnight, money already in
+            & ((cmf_20 < 0.3) | (aroonu_14_1d > 5) | (stochrsi_k_1d < 85))
+            # 1h money saturated and the last 24h went nowhere
+            & ((roc_288 > 2) | (mfi_14_1h < 70))
+            # 4h RSI jumping a fifth in one bar with the 5m RSI only just over the line
+            & ((rsi_14 > 55) | (rsi_14_change_pct_4h < 21))
+            # the hour has already run and the fast tape underneath is not confirming it
+            & ((rsi_4 > 50) | (roc_9_1h < 3))
+            # 5m stochastic in its lower half, neither 1h nor 1d strong enough to carry it
+            & ((stoch_4_4 > 45) | (rsi_14_1h > 60) | (rsi_14_1d > 55))
+            # a dead tape bought at the top of its own noise — flat 1h bands, thin candle, fast stochastic high
+            & ((stoch_4_4 < 65) | (vol_rel > 1) | (bbb_20_2_0_1h > 12))
+            # nothing rising — 5h stochastic under half, 15m middling, 4h up-side weak
+            & ((stoch_60_10 > 45) | (rsi_3_15m > 55) | (plus_di_14_4h > 30))
+            # a listless tape — no 4h money, no 4h trend, a thin entry candle
+            & ((vol_rel > 0.5) | (adx_14_4h > 30) | (cmf_20_4h > 0.05))
+            # a volume spike under a 1d bar that already printed a long lower wick
+            & ((vol_rel < 3.5) | (bot_wick_pct_1d < 5))
+            # 15m stretched, 1h still low in its range, 4h down-side still stronger
+            & ((cci_20_15m < 25) | (willr_14_1h > -60) | (minus_di_14_4h < 15))
+            # 15m oscillator collapsing under a 4h bar with a long upper wick
+            & ((cci_20_change_pct_15m > -165) | (top_wick_pct_4h < 6))
+            # 15m money in but its stochastic on the floor, under an already-high 1h
+            & ((cmf_20_15m < 0) | (stochk_14_3_3_15m > 30) | (stochk_14_3_3_1h < 65))
+            # a 15m momentum spike bought without the 15m money to back it, inside a daily that is not strong
+            & ((mfi_14_15m > 85) | (rsi_3_15m < 85) | (rsi_14_1d > 55))
+            # the 4h bar jumped without its stochastic confirming, no 15m money left
+            & ((mfi_14_15m > 45) | (change_pct_4h < 5) | (stochrsi_k_4h > 80))
+            # no 1d high in a fortnight, 1h falling, 15m momentum and RSI both flat
+            & ((rsi_14_15m > 65) | (rsi_3_15m < 80) | (aroond_14_1h < 40) | (aroonu_14_1d > 20))
+            # a bounce bought while the daily has rolled over, the 4h is weak and 15m momentum is already down
+            & ((rsi_3_15m > 45) | (rsi_14_4h > 55) | (aroonu_14_1d > 5))
+            # the momentum clocks disagree — 15m spent, 1h dead, 4h high
+            & ((rsi_3_15m < 75) | (rsi_3_1h > 35) | (rsi_3_4h < 65))
+            # no push in the quarter-hour and no money coming into the hour
+            & ((rsi_3_15m > 50) | (mfi_14_1h > 40))
+            # the quarter-hour is weak while the hour has already run
+            & ((stochrsi_k_15m > 40) | (roc_2_1h < 5))
+            # 1d stochastic pinned high while its StochRSI has already turned down
+            & ((uo_7_14_28_15m > 45) | (stochk_14_3_3_1d < 80) | (stochrsi_k_1d > 60))
+            # a quiet tape already bought — narrow 1h bands, money in on 1h and 1d
+            & ((bbb_20_2_0_1h > 14) | (mfi_14_1h < 55) | (mfi_14_1d < 45))
+            # 1h stochastic at its ceiling with the 1h CCI still accelerating into it
+            & ((cci_20_change_pct_1h < 70) | (stochrsi_k_1h < 90))
+            # no 1h money, 1h oscillator not high, 4h leg barely moved
+            & ((cmf_20_1h > 0.05) | (stochrsi_k_1h > 80) | (roc_9_4h > 10))
+            # 1d already overbought, no 1h money behind it, no upper wick to say it was tested
+            & ((mfi_14_1h > 55) | (rsi_14_1d < 80) | (top_wick_pct_1d > 5))
+            # an hourly already overbought inside a 4h trend that has run a long way
+            & ((rsi_14_1h < 75) | (adx_14_4h < 45))
+            # 1h strong but off its high, bought with 1d money flow already saturated
+            & ((rsi_14_1h > 70) | (willr_14_1h < -30) | (mfi_14_1d < 85))
+            # 1h short-term momentum more than doubled while the 4h RSI is also jumping
+            & ((rsi_3_change_pct_1h < 110) | (rsi_14_change_pct_4h < 2))
+            # the hour's momentum has just spiked while the 4h is already extended
+            & ((rsi_3_change_pct_1h < 75) | (roc_2_4h < 3))
+            # still well off the two-day high, 1d momentum tripled, 1d stochastic low
+            & ((willr_84_1h > -15) | (rsi_3_change_pct_1d < 145) | (stochk_14_3_3_1d > 45))
+            # a 4h trend that has already run hard and is still accelerating
+            & ((adx_14_4h < 45) | (rsi_3_change_pct_4h < 15))
+            # a 4h stretched far above its mean while daily money is leaving
+            & ((cci_20_4h < 225) | (cmf_20_1d > 0))
+            # a 5m bounce bought while the 4h leg is falling and the 4h down-trend is the strong side
+            & ((minus_di_14_4h < 20) | (roc_9_4h > -5))
+            # a day that has gone vertical while the 4h has no directional strength behind it
+            & ((plus_di_14_4h > 20) | (roc_9_1d < 30))
+            # a blow-off day bought at the top — 1d up hundreds of percent, 4h pinned
+            & ((rsi_14_4h < 90) | (roc_9_1d < 100))
+            # a 1d neither moving nor holding — momentum middling, the 1d low still fresh
+            & ((aroond_14_1d < 65) | (rsi_3_1d > 55))
+          )
+
+          # Logic
+          long_entry_logic.append(
+            # a bullish engulfing inside an uptrend, in the upper half of the range, with the daily
+            # leg rising and the 4h both making recent highs and swinging up in its own range
+            (close > ema_200)
+            & (rsi_14 > 50.0)
+            & (willr_14 > -50.0)
+            & (aroonu_14_4h > 45.0)
+            & (stochrsi_k_4h > 50.0)
+            & (change_pct_15m < 2.0)
+            & (roc_9_1d > 0.0)
+            & (engulf_bull > 0.5)
+          )
 
         # Condition #168 - Swing-failure pattern (Long, experimental, RAW — liquidity-sweep reclaim).
         if long_entry_condition_index == 168:
