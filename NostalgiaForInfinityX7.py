@@ -71,7 +71,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.4.564"
+    return "v17.4.565"
 
   stoploss = -0.99
 
@@ -4114,8 +4114,12 @@ class NostalgiaForInfinityX7(IStrategy):
     _eng_po[0] = _eng_pc[0] = np.nan
     _eng_po[1:] = open_np[:-1]
     _eng_pc[1:] = close_np[:-1]
-    engulf_bull_col = ((_eng_pc < _eng_po) & (close_np > open_np) & (close_np >= _eng_po) & (open_np <= _eng_pc)).astype(float)
-    engulf_bear_col = ((_eng_pc > _eng_po) & (close_np < open_np) & (close_np <= _eng_po) & (open_np >= _eng_pc)).astype(float)
+    engulf_bull_col = (
+      (_eng_pc < _eng_po) & (close_np > open_np) & (close_np >= _eng_po) & (open_np <= _eng_pc)
+    ).astype(float)
+    engulf_bear_col = (
+      (_eng_pc > _eng_po) & (close_np < open_np) & (close_np <= _eng_po) & (open_np >= _eng_pc)
+    ).astype(float)
 
     # _eng_po = pd.Series(open_np).shift(1).to_numpy()
     # _eng_pc = pd.Series(close_np).shift(1).to_numpy()
@@ -4171,11 +4175,15 @@ class NostalgiaForInfinityX7(IStrategy):
     ph_cross_cnt12_col = ta_sum(_ph_cross, timeperiod=12)
     # Pump character: height above the 24h low
     _ph_low288 = ta_min(low_np, timeperiod=288)
-    ph_base_pos_col = np.divide(close_np - _ph_low288, close_np, out=np.full_like(close_np, np.nan), where=close_np > 0) * 100.0
+    ph_base_pos_col = (
+      np.divide(close_np - _ph_low288, close_np, out=np.full_like(close_np, np.nan), where=close_np > 0) * 100.0
+    )
     # Prior 12-candle range, excluding current candle
     _ph_h12 = np_shift(ta_max(high_np, timeperiod=12), 1)
     _ph_l12 = np_shift(ta_min(low_np, timeperiod=12), 1)
-    ph_pre_tight_col = np.divide(_ph_h12 - _ph_l12, close_np, out=np.full_like(close_np, np.nan), where=close_np > 0) * 100.0
+    ph_pre_tight_col = (
+      np.divide(_ph_h12 - _ph_l12, close_np, out=np.full_like(close_np, np.nan), where=close_np > 0) * 100.0
+    )
 
     # _ph_prev_max = pd.Series(close_np).rolling(48).max().shift(1).to_numpy()
     # _ph_cross = ((close_np > _ph_prev_max) & (np.roll(close_np, 1) <= _ph_prev_max)).astype(float)
@@ -4210,20 +4218,24 @@ class NostalgiaForInfinityX7(IStrategy):
     _pb_lower = np.minimum(open_np, close_np) - low_np
     _pb_upper = high_np - np.maximum(open_np, close_np)
     _pb_body_safe = np.where(_pb_body > 0, _pb_body, np.nan)
-    hammer_col = ((_pb_lower > 2.0 * _pb_body_safe) & (_pb_upper < 0.5 * _pb_body_safe) & (_pb_lower > close_np * 0.004)).astype(float)
-    star_col = ((_pb_upper > 2.0 * _pb_body_safe) & (_pb_lower < 0.5 * _pb_body_safe) & (_pb_upper > close_np * 0.004)).astype(float)
-  
+    hammer_col = (
+      (_pb_lower > 2.0 * _pb_body_safe) & (_pb_upper < 0.5 * _pb_body_safe) & (_pb_lower > close_np * 0.004)
+    ).astype(float)
+    star_col = (
+      (_pb_upper > 2.0 * _pb_body_safe) & (_pb_lower < 0.5 * _pb_body_safe) & (_pb_upper > close_np * 0.004)
+    ).astype(float)
+
     # dh_prev_min_col = pd.Series(close_np).rolling(48).min().shift(1).to_numpy()
     # Pin-bar / hammer — signals 173/671 (experimental): long rejection wick = a completed fact
     # _pb_body = np.abs(close_np - open_np)
     # _pb_lower = np.minimum(open_np, close_np) - low_np
     # _pb_upper = high_np - np.maximum(open_np, close_np)
     # _pb_body_safe = np.where(_pb_body > 0, _pb_body, np.nan)
-    #hammer_col = np.nan_to_num(
+    # hammer_col = np.nan_to_num(
     # ((_pb_lower > 2.0 * _pb_body_safe) & (_pb_upper < 0.5 * _pb_body_safe) & (_pb_lower > close_np * 0.004)).astype(
     #    float
     #  )
-    #)
+    # )
     # star_col = np.nan_to_num(
     #  ((_pb_upper > 2.0 * _pb_body_safe) & (_pb_lower < 0.5 * _pb_body_safe) & (_pb_upper > close_np * 0.004)).astype(
     #    float
@@ -28933,6 +28945,8 @@ class NostalgiaForInfinityX7(IStrategy):
             & ((rsi_3_1h_gt_10) | (rsi_3_1d_gt_30) | (aroonu_14_1d_gt_0) | (stochrsi_k_1h_gt_20))
             # 1h down move, 15m low, 4h oversold
             & ((rsi_3_1h_gt_10) | (aroonu_14_15m_gt_0) | (roc_9_4h_gt_neg_20))
+            # 1h down move, 4h low
+            & ((rsi_3_1h_gt_10) | (aroonu_14_4h_gt_0))
             # 1h down move, 1h low, 4h low
             & ((rsi_3_1h_gt_10) | (aroonu_14_4h_gt_10) | (stochrsi_k_1h_gt_10))
             # 1h & 4h down move, 1h & 4h low
