@@ -26384,7 +26384,6 @@ class NostalgiaForInfinityX7(IStrategy):
           long_entry_logic.append(protections_long_global == True)
 
           long_entry_logic.append(
-            # daily in its lower half, no recent 1h low, 5m cutting a fresh one
             # 1h & 4h have both already run, 1h bands still wide from it
             ((bbb_20_2_0 < 9) | (roc_9_1h < 14) | (change_pct_4h < 5))
             # a strong 5m candle with the 4h oscillator not even positive
