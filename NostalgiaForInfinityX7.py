@@ -16326,6 +16326,8 @@ class NostalgiaForInfinityX7(IStrategy):
             & ((aroonu_14_1h_lt_80) | (aroonu_14_1d_lt_80) | (roc_9_1d_lt_200))
             # 1h high, 1h overbought
             & ((aroonu_14_1h_lt_80) | (roc_9_1h_lt_10))
+            # 1h high, 4h & 1d downtrend
+            & ((aroonu_14_1h_lt_80) | (roc_9_4h_gt_neg_40) | (roc_9_1d_gt_neg_40))
             # 4h still high, 5m downtrend
             & ((aroonu_14_4h_lt_40) | (roc_9 > -40.0))
             # 4h & 1d high, 4h overbought
@@ -16348,8 +16350,12 @@ class NostalgiaForInfinityX7(IStrategy):
             & ((aroonu_14_1d_lt_100) | (roc_9_1h_gt_neg_30) | (roc_9_1d_lt_100))
             # 1d high, 4h & 1d overbought
             & ((aroonu_14_1d_lt_100) | (roc_9_4h_lt_20) | (roc_9_1d_lt_80))
+            # 1d high, 1d downtrend
+            & ((aroonu_14_1d_lt_80) | (roc_9_1d_gt_neg_40))
             # 15m high, 4h & 1d downtrend
             & ((stochrsi_k_15m_lt_70) | (roc_9_4h_gt_neg_30) | (roc_9_1d_gt_neg_30))
+            # 1h high, 4h & 1d downtrend
+            & ((stochrsi_k_1h_lt_80) | (roc_9_4h_gt_neg_40) | (roc_9_1d_gt_neg_40))
             # 1h high, 4h & 1d overbought
             & ((stochrsi_k_1h_lt_90) | (roc_9_4h_lt_20) | (roc_9_1d_lt_100))
             # 4h high, 1h overbought, 1d downtrend
