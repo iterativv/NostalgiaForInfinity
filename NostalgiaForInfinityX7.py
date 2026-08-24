@@ -17132,9 +17132,11 @@ class NostalgiaForInfinityX7(IStrategy):
             # 1h high, 4h & 1d overbought
             & ((aroonu_14_1h_lt_90) | (roc_9_4h_lt_10) | (roc_9_1d_lt_15))
             # 4h & 1d high, 4h overbought
-            & (aroonu_14_4h_lt_70 | aroonu_14_1d_lt_100 | (roc_9_4h_lt_50))
+            & (aroonu_14_4h_lt_70 | (aroonu_14_1d_lt_100) | (roc_9_4h_lt_50))
             # 4h & 1d high, 1d overbought
-            & (aroonu_14_4h_lt_70 | aroonu_14_1d_lt_100 | (roc_9_1d_lt_20))
+            & (aroonu_14_4h_lt_70 | (aroonu_14_1d_lt_100) | (roc_9_1d_lt_20))
+            # 4h high, 1h & 4h & 1d overbought
+            & ((aroonu_14_4h_lt_80) | (roc_9_1h_lt_10) | (roc_9_4h_lt_20) | (roc_9_1d_lt_50))
             # 4h & 1d high, 4h overbought
             & ((aroonu_14_4h_lt_90) | aroonu_14_1d_lt_100 | (roc_9_4h_lt_30))
             # 4h high, 4h overbought, 1d downtrend
