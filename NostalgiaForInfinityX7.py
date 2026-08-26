@@ -17080,23 +17080,25 @@ class NostalgiaForInfinityX7(IStrategy):
             # 4h down move, 1h high, 1d downtrend
             & ((rsi_3_4h_gt_50) | (stochrsi_k_1h_lt_80) | (roc_9_1d_gt_neg_30))
             # 4h down move, 4h high & overbought
-            & ((rsi_3_4h_gt_55) | aroonu_14_4h_lt_70 | (roc_9_4h_lt_20))
+            & ((rsi_3_4h_gt_55) | (aroonu_14_4h_lt_70) | (roc_9_4h_lt_20))
             # 4h down move, 4h high, 1d overbought
-            & ((rsi_3_4h_gt_55) | aroonu_14_4h_lt_70 | (roc_9_1d_lt_100))
+            & ((rsi_3_4h_gt_55) | (aroonu_14_4h_lt_70) | (roc_9_1d_lt_100))
             # 4h down move, 1d high & overbought
             & ((rsi_3_4h_gt_55) | (aroonu_14_1d_lt_90) | (roc_9_1d_lt_60))
             # 4h down move, 4h & 1d high
-            & ((rsi_3_4h_gt_60) | aroonu_14_4h_lt_70 | (aroonu_14_1d_lt_70))
+            & ((rsi_3_4h_gt_60) | (aroonu_14_4h_lt_70) | (aroonu_14_1d_lt_70))
             # 4h down move, 1d high, 4h overbought
-            & ((rsi_3_4h_gt_60) | aroonu_14_1d_lt_100 | (roc_9_4h_lt_10))
+            & ((rsi_3_4h_gt_60) | (aroonu_14_1d_lt_100) | (roc_9_4h_lt_10))
             # 4h down move, 1d high & overbought
-            & ((rsi_3_4h_gt_60) | aroonu_14_1d_lt_100 | (roc_9_1d_lt_200))
+            & ((rsi_3_4h_gt_60) | (aroonu_14_1d_lt_100) | (roc_9_1d_lt_200))
             # 4h down move, 4h still high, 4h overbought
             & ((rsi_3_4h_gt_60) | (stochrsi_k_4h_lt_50) | (roc_9_4h_lt_10))
             # 4h down move, 4h high, 1d overbought
             & ((rsi_3_4h_gt_65) | (aroonu_14_4h_lt_75) | (roc_9_1d_lt_30))
             # 4h down move, 4h high & overbought
-            & ((rsi_3_4h_gt_65) | aroonu_14_4h_lt_80 | (roc_9_4h_lt_20))
+            & ((rsi_3_4h_gt_65) | (aroonu_14_4h_lt_80) | (roc_9_4h_lt_20))
+            # 4h up move, 1d downtrend, 4h high
+            & ((rsi_3_4h_lt_90) | (cmf_20_1d_gt_neg_0_25) | (aroonu_14_4h_lt_100))
             # 1d down move, 1d still not low enough, 1d downtrend
             & ((rsi_3_1d_gt_5) | (aroonu_14_1d < 20.0) | (roc_9_1d_gt_neg_20))
             # 1d down move, 15m still high
