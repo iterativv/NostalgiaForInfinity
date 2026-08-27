@@ -1,6 +1,9 @@
 {
   "exchange": {
     "pair_blacklist": [
+      // Kraken scheduled delisting cycle 2026-08-27 (iterativ). The other six of the batch —
+      // IR, VANRY, MIR, RIZE, EPT and ACA — are already covered above.
+      "(XTER|GAIA|SCA|BNC|SBR|RBC|JUNO|HDX|MULTI|MAT|CQT|CXT|BKS|VULT|M)/.*",
       // Binance spot delist 2026-09-03 (periodic review) — ICX and STORJ already covered above
       "(SCRT)/.*",
       // Binance monitoring tag 2026-08-11 (delisting-risk watchlist, batch 2)
