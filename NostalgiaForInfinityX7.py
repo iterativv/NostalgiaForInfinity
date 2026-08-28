@@ -26411,26 +26411,8 @@ class NostalgiaForInfinityX7(IStrategy):
           long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           long_entry_logic.append(protections_long_global == True)
 
-          long_entry_logic.append(
-            # 4h downside pressure while the long window stays near highs = distribution rollover.
-            ((willr_480 < -15) | (minus_di_14_4h < 20))
-            # 15m momentum floor during deep daily decline with an RSI snap = failed dead-cat bounce.
-            & ((stochrsi_k_15m_gt_20) | (roc_9_1d > -8) | (rsi_3_change_pct_1d < 10))
-            # 4h momentum snap with sustained hourly outflow = unsupported rebound.
-            & ((cmf_20_1h > -0.1) | (rsi_3_change_pct_4h < 70))
-            # Muted 4h momentum without hourly flow or a fresh 4h impulse = unsupported continuation.
-            & ((cmf_20_1h > 0.05) | (change_pct_4h > 2.5) | (roc_9_4h > 9.5))
-            # Hourly RSI acceleration without 4h trend strength = unsupported momentum burst.
-            & ((rsi_3_change_pct_1h < 15) | (adx_14_4h > 40))
-            # Persistent 4h RSI acceleration without 4h trend strength = repeated unsupported momentum burst.
-            & ((adx_14_4h > 35) | (rsi_3_change_pct_4h < 20))
-            # 4h downside pressure with sustained 4h outflow = continuation lower.
-            & ((cmf_20_4h > -0.05) | (minus_di_14_4h < 20))
-            # Daily price surge without daily money flow = distribution spike.
-            & ((change_pct_1d < 20) | (cmf_20_1d > 0.1))
-            # Daily momentum floor during deep daily decline despite an RSI snap = failed rebound.
-            & ((roc_9_1d > -8) | (rsi_3_change_pct_1d < 10) | (stochrsi_k_1d_gt_10))
-          )
+          # Require a mature squeeze, daily money-flow reset, or washed-out 4h range around the retracement.
+          long_entry_logic.append((sqz_cnt_24 > 14) | (mfi_14_1d < 45.0) | (willr_14_4h < -50.0))
 
           # Logic
           # trend filter (video: "only clear trends") + impulse quality (never draw fibs in chop)
