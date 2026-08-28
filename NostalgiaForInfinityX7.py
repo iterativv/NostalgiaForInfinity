@@ -284,6 +284,18 @@ class NostalgiaForInfinityX7(IStrategy):
   doom_stops_enable = True
   u_e_stops_enable = False
 
+  # Bad-trade controller. Opt-in: the measured benefit is regime- and whitelist-dependent.
+  bad_trade_controller_enable = False
+  bad_trade_controller_structure_break_exit_enable = True
+  bad_trade_controller_long_grind_stake_boost_enable = True
+  bad_trade_controller_long_grind_stake_multiplier = 1.5
+  bad_trade_controller_structure_break_ema_gap_pct = 35.0
+  bad_trade_controller_structure_break_min_adverse_move_pct = 25.0
+  bad_trade_controller_stale_exit_enable = True
+  bad_trade_controller_stale_min_age_days = 14.0
+  bad_trade_controller_stale_max_daily_range_pct = 7.0
+  bad_trade_controller_stale_min_adverse_move_pct = 10.0
+
   # Grinding
   grinding_v1_max_stake = 1.0  # ratio of first entry
   derisk_use_grind_stops = True
@@ -1017,6 +1029,16 @@ class NostalgiaForInfinityX7(IStrategy):
       "grind_mode_max_slots",
       "grind_mode_coins",
       "max_slippage",
+      "bad_trade_controller_enable",
+      "bad_trade_controller_structure_break_exit_enable",
+      "bad_trade_controller_long_grind_stake_boost_enable",
+      "bad_trade_controller_long_grind_stake_multiplier",
+      "bad_trade_controller_structure_break_ema_gap_pct",
+      "bad_trade_controller_structure_break_min_adverse_move_pct",
+      "bad_trade_controller_stale_exit_enable",
+      "bad_trade_controller_stale_min_age_days",
+      "bad_trade_controller_stale_max_daily_range_pct",
+      "bad_trade_controller_stale_min_adverse_move_pct",
     ]
 
     exchange_config = config["exchange"]
@@ -1858,6 +1880,107 @@ class NostalgiaForInfinityX7(IStrategy):
         append_exit(order)
     return filled_orders, filled_entries, filled_exits
 
+  @staticmethod
+  def _bad_trade_controller_ema_gap_and_adverse_move(
+    trade: "Trade", current_rate: float, last_candle, filled_entries: "Orders"
+  ) -> tuple:
+    """Return position-signed daily EMA gap and adverse move from the first filled entry."""
+    ema_50_1d = last_candle.get("EMA_50_1d")
+    ema_200_1d = last_candle.get("EMA_200_1d")
+    if (
+      ema_50_1d is None
+      or ema_200_1d is None
+      or not np.isfinite(ema_50_1d)
+      or not np.isfinite(ema_200_1d)
+      or ema_200_1d <= 0.0
+    ):
+      daily_ema_gap_pct = None
+    else:
+      daily_ema_gap_pct = (ema_50_1d / ema_200_1d - 1.0) * 100.0
+      if trade.is_short:
+        daily_ema_gap_pct = -daily_ema_gap_pct
+
+    if not filled_entries:
+      return daily_ema_gap_pct, None
+    first_entry_rate = filled_entries[0].safe_price
+    if first_entry_rate is None or not np.isfinite(first_entry_rate) or first_entry_rate <= 0.0:
+      return daily_ema_gap_pct, None
+    first_entry_adverse_move_pct = (
+      ((current_rate - first_entry_rate) if trade.is_short else (first_entry_rate - current_rate))
+      / first_entry_rate
+      * 100.0
+    )
+    return daily_ema_gap_pct, first_entry_adverse_move_pct
+
+  def _bad_trade_controller_exit_reason(
+    self,
+    trade: "Trade",
+    current_time: "datetime",
+    current_rate: float,
+    last_candle,
+    filled_entries: "Orders",
+  ) -> Optional[str]:
+    """Return an opt-in structure-break or stale-position exit reason."""
+    daily_ema_gap_pct, first_entry_adverse_move_pct = self._bad_trade_controller_ema_gap_and_adverse_move(
+      trade, current_rate, last_candle, filled_entries
+    )
+    if first_entry_adverse_move_pct is None or not np.isfinite(first_entry_adverse_move_pct):
+      return None
+    if (
+      self.bad_trade_controller_structure_break_exit_enable
+      and daily_ema_gap_pct is not None
+      and daily_ema_gap_pct <= -self.bad_trade_controller_structure_break_ema_gap_pct
+      and first_entry_adverse_move_pct >= self.bad_trade_controller_structure_break_min_adverse_move_pct
+    ):
+      return f"exit_bad_trade_broken_{first_entry_adverse_move_pct:.0f}pct"
+
+    daily_range_pct_14_1d = last_candle.get("RANGE_PCT_14_1d")
+    trade_age_days = (current_time - trade.open_date_utc).total_seconds() / 86400.0
+    if (
+      self.bad_trade_controller_stale_exit_enable
+      and daily_range_pct_14_1d is not None
+      and np.isfinite(daily_range_pct_14_1d)
+      and daily_range_pct_14_1d < self.bad_trade_controller_stale_max_daily_range_pct
+      and first_entry_adverse_move_pct >= self.bad_trade_controller_stale_min_adverse_move_pct
+      and trade_age_days >= self.bad_trade_controller_stale_min_age_days
+    ):
+      return f"exit_bad_trade_abandon_{trade_age_days:.0f}d"
+    return None
+
+  def _boost_bad_trade_long_grind_stake(self, trade: "Trade", current_rate: float, max_stake: float, grind_adjustment):
+    """Boost positive long-grind entries only, preserving the adjustment tag and limits."""
+    if (
+      not self.bad_trade_controller_enable
+      or not self.bad_trade_controller_long_grind_stake_boost_enable
+      or trade.is_short
+      or grind_adjustment is None
+    ):
+      return grind_adjustment
+    grind_stake = grind_adjustment[0] if isinstance(grind_adjustment, tuple) else grind_adjustment
+    if grind_stake <= 0.0:
+      return grind_adjustment
+    analyzed_dataframe, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
+    if len(analyzed_dataframe) < 1:
+      return grind_adjustment
+    filled_entries = trade.select_filled_orders(trade.entry_side)
+    daily_ema_gap_pct, _ = self._bad_trade_controller_ema_gap_and_adverse_move(
+      trade, current_rate, analyzed_dataframe.iloc[-1], filled_entries
+    )
+    if daily_ema_gap_pct is None or daily_ema_gap_pct <= 0.0:
+      return grind_adjustment
+    boosted_grind_stake = min(grind_stake * self.bad_trade_controller_long_grind_stake_multiplier, max_stake)
+    if boosted_grind_stake <= grind_stake:
+      return grind_adjustment
+    log.info(
+      "Bad-trade long-grind stake boost [%s] | tag %s | %.2f -> %.2f | daily EMA gap %.1f%%",
+      trade.pair,
+      trade.enter_tag,
+      grind_stake,
+      boosted_grind_stake,
+      daily_ema_gap_pct,
+    )
+    return (boosted_grind_stake, *grind_adjustment[1:]) if isinstance(grind_adjustment, tuple) else boosted_grind_stake
+
   def trade_order_state(self, trade: "Trade") -> tuple:
     orders = trade.orders
 
@@ -2065,6 +2188,13 @@ class NostalgiaForInfinityX7(IStrategy):
     cache_backtest_profit_snapshot(
       trade, current_time, current_rate, filled_orders, filled_entries, filled_exits, profit_values
     )
+
+    if self.bad_trade_controller_enable and current_profit < 0.0:
+      bad_trade_exit_reason = self._bad_trade_controller_exit_reason(
+        trade, current_time, current_rate, last_candle, filled_entries
+      )
+      if bad_trade_exit_reason is not None:
+        return f"{bad_trade_exit_reason} ( {enter_tag})"
 
     # Signal 192 (Quad pullback long) tight doom stop: every 192 loss bottoms at a
     # 11.8-14% price drop (the shared 0.35 doom threshold) while winners' max adverse
@@ -2833,25 +2963,29 @@ class NostalgiaForInfinityX7(IStrategy):
           is_long_known_mode = any(c in self.long_known_mode_tags for c in enter_tags)
 
           if is_long_adjust_mode or not is_long_known_mode:
-            return self.long_grind_adjust_trade_position_v3(*args)
+            grind_adjustment = self.long_grind_adjust_trade_position_v3(*args)
+            return self._boost_bad_trade_long_grind_stake(trade, current_rate, max_stake, grind_adjustment)
 
         # ---------------------------------------------------------------------
         # LEGACY GRIND
         # ---------------------------------------------------------------------
         elif is_long_grind_mode or is_long_btc_mode or not is_v2_date:
-          return self.long_grind_adjust_trade_position(*args)
+          grind_adjustment = self.long_grind_adjust_trade_position(*args)
+          return self._boost_bad_trade_long_grind_stake(trade, current_rate, max_stake, grind_adjustment)
 
       # -----------------------------------------------------------------------
       # V2 / LEGACY ROUTING
       # -----------------------------------------------------------------------
       if is_long_grind_mode or is_long_btc_mode or not is_v2_date:
-        return self.long_grind_adjust_trade_position(*args)
+        grind_adjustment = self.long_grind_adjust_trade_position(*args)
+        return self._boost_bad_trade_long_grind_stake(trade, current_rate, max_stake, grind_adjustment)
 
       is_long_adjust_mode = any(c in self.long_adjust_mode_tags for c in enter_tags)
       is_long_known_mode = any(c in self.long_known_mode_tags for c in enter_tags)
 
       if is_long_adjust_mode or not is_long_known_mode:
-        return self.long_grind_adjust_trade_position_v2(*args)
+        grind_adjustment = self.long_grind_adjust_trade_position_v2(*args)
+        return self._boost_bad_trade_long_grind_stake(trade, current_rate, max_stake, grind_adjustment)
 
     # =========================================================================
     # SHORT
@@ -3300,6 +3434,16 @@ class NostalgiaForInfinityX7(IStrategy):
     low_min_20 = ta_min(low_np, timeperiod=20)
     low_min_30 = ta_min(low_np, timeperiod=30)
 
+    bad_trade_controller_indicators = {}
+    if self.bad_trade_controller_enable:
+      nonzero_low_np = np.where(low_np == 0.0, np.nan, low_np)
+      daily_range_pct_np = (high_np - low_np) / nonzero_low_np * 100.0
+      bad_trade_controller_indicators = {
+        "EMA_50": ta.EMA(close_np, timeperiod=50),
+        "EMA_200": ta.EMA(close_np, timeperiod=200),
+        "RANGE_PCT_14": ta_sma(daily_range_pct_np, timeperiod=14),
+      }
+
     # =========================================================================
     # ASSIGN DATAFRAME
     # =========================================================================
@@ -3328,6 +3472,7 @@ class NostalgiaForInfinityX7(IStrategy):
         "low_min_12": low_min_12,
         "low_min_20": low_min_20,
         "low_min_30": low_min_30,
+        **bad_trade_controller_indicators,
       },
       index=informative_1d.index,
     )
@@ -3361,6 +3506,8 @@ class NostalgiaForInfinityX7(IStrategy):
         "low_min_20",
         "low_min_30",
       ]
+      if self.bad_trade_controller_enable:
+        debug_cols.extend(["EMA_50", "EMA_200", "RANGE_PCT_14"])
 
       self.validate_indicators(df=informative_1d, columns=debug_cols, pair=metadata_pair, timeframe=info_timeframe)
 
