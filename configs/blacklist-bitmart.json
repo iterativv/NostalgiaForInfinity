@@ -1,6 +1,10 @@
 {
   "exchange": {
     "pair_blacklist": [
+      // OpenGradient market maker impaired — the team said on 2026-08-10 its market-making
+      // funds are stuck on BitMart, which began winding down on 07-26. Book is thin
+      // ($11.8M across the three venues) and the token is -84% from its April high.
+      "(OPG)/.*",
       // Collapse after a 215% day — -46.1% and -31.5% on consecutive days, -64.3% off
       // its 10-day high (2026-08-26/28)
       "(TAC)/.*",
