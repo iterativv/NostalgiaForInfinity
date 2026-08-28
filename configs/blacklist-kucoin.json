@@ -1,6 +1,9 @@
 {
   "exchange": {
     "pair_blacklist": [
+      // Collapse after a 215% day — -46.1% and -31.5% on consecutive days, -64.3% off
+      // its 10-day high (2026-08-26/28)
+      "(TAC)/.*",
       // Binance spot delist 2026-09-03 (periodic review) — ICX and STORJ already covered above
       "(SCRT)/.*",
       // Binance monitoring tag 2026-08-11 (delisting-risk watchlist, batch 2)

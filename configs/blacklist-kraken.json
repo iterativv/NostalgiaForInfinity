@@ -1,6 +1,9 @@
 {
   "exchange": {
     "pair_blacklist": [
+      // Collapse after a 215% day — -46.1% and -31.5% on consecutive days, -64.3% off
+      // its 10-day high (2026-08-26/28)
+      "(TAC)/.*",
       // Kraken scheduled delisting cycle 2026-08-27 (iterativ). The other six of the batch —
       // IR, VANRY, MIR, RIZE, EPT and ACA — are already covered above.
       "(XTER|GAIA|SCA|BNC|SBR|RBC|JUNO|HDX|MULTI|MAT|CQT|CXT|BKS|VULT|M)/.*",
