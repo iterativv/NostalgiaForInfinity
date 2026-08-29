@@ -2859,7 +2859,7 @@ class NostalgiaForInfinityX7(IStrategy):
       #  trade.set_custom_data(key="grind_4_cluster_max_profit_stake", value=0.0)
       #  trade.set_custom_data(key="grind_4_cluster_max_profit_rate", value=0.0)
 
-      #elif order_mode in ["grind_5_exit"]:
+      # elif order_mode in ["grind_5_exit"]:
       #  trade.set_custom_data(key="grind_5_cluster_max_profit_stake", value=0.0)
       #  trade.set_custom_data(key="grind_5_cluster_max_profit_rate", value=0.0)
       # elif order_mode in ["grind_5_derisk"]:
@@ -48725,9 +48725,7 @@ class NostalgiaForInfinityX7(IStrategy):
     )
 
     is_long_rebuy_entry = (
-      self.long_rebuy_entry_v3(last_candle, previous_candle, slice_profit, True)
-      if is_system_v3_1
-      else False
+      self.long_rebuy_entry_v3(last_candle, previous_candle, slice_profit, True) if is_system_v3_1 else False
     )
     stake_fmt = ".8f" if stake_currency in ("BTC", "ETH", "BNB", "SOL") else ".3f"
     send_notifications = not is_backtest
@@ -72552,7 +72550,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and not is_rebuy_mode
       and profit_stake < slice_amount * derisk_1_threshold / trade_leverage
     ):
-      sell_amount =filled_entries[0].safe_filled * derisk_1_stake * exit_rate / trade_leverage
+      sell_amount = filled_entries[0].safe_filled * derisk_1_stake * exit_rate / trade_leverage
       if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
         sell_amount = (trade_amount * exit_rate / trade_leverage) - (min_stake * 1.55)
       ft_sell_amount = sell_amount * trade_leverage * (trade_stake_amount / trade_amount) / exit_rate
