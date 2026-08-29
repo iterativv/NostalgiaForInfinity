@@ -54315,6 +54315,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # min/max stakes include leverage. The return amounts is before leverage.
     dp = self.dp
     is_futures_mode = self.is_futures_mode
+    config = self.config
     trade_pair = trade.pair
     trade_amount = trade.amount
     trade_leverage = trade.leverage
@@ -54325,12 +54326,6 @@ class NostalgiaForInfinityX7(IStrategy):
 
     min_stake = self.correct_min_stake(min_stake, trade_leverage)
     max_stake /= trade_leverage
-    df, _ = dp.get_analyzed_dataframe(trade_pair, self.timeframe)
-    if len(df) < 2:
-      return None
-    last_candle = df.iloc[-1]
-    previous_candle = df.iloc[-2]
-
     exit_rate = current_rate
     filled_orders, filled_entries, filled_exits, profit_values = self.profit_or_order_snapshot(
       trade, current_time, exit_rate
@@ -54366,7 +54361,7 @@ class NostalgiaForInfinityX7(IStrategy):
     if dp.runmode.value in ("live", "dry_run"):
       ticker = dp.ticker(trade_pair)
       if ("bid" in ticker) and ("ask" in ticker):
-        exit_price_side = self.config["exit_pricing"]["price_side"]
+        exit_price_side = config["exit_pricing"]["price_side"]
         if trade.is_short:
           if exit_price_side in ["ask", "other"]:
             if ticker["ask"] is not None:
@@ -54390,13 +54385,13 @@ class NostalgiaForInfinityX7(IStrategy):
     current_stake_amount = trade_amount * current_rate
     stake_scale_leverage = trade_leverage if is_futures_mode else 1.0
 
-    rebuy_mode_stakes = (
-      self.system_v3_rebuy_mode_stakes_futures if is_futures_mode else self.system_v3_rebuy_mode_stakes_spot
-    )
+    if is_futures_mode:
+      rebuy_mode_stakes = self.system_v3_rebuy_mode_stakes_futures
+      rebuy_mode_sub_thresholds = self.system_v3_rebuy_mode_thresholds_futures
+    else:
+      rebuy_mode_stakes = self.system_v3_rebuy_mode_stakes_spot
+      rebuy_mode_sub_thresholds = self.system_v3_rebuy_mode_thresholds_spot
     max_sub_grinds = len(rebuy_mode_stakes)
-    rebuy_mode_sub_thresholds = (
-      self.system_v3_rebuy_mode_thresholds_futures if is_futures_mode else self.system_v3_rebuy_mode_thresholds_spot
-    )
     partial_sell = False
     sub_grind_count = 0
     total_amount = 0.0
@@ -54417,8 +54412,11 @@ class NostalgiaForInfinityX7(IStrategy):
       current_open_rate = total_cost / total_amount
       current_grind_stake = total_amount * exit_rate * (1 - trade.fee_close)
       current_grind_stake_profit = current_grind_stake - total_cost
-    stake_fmt = ".8f" if self.config["stake_currency"] in ("BTC", "ETH", "BNB", "SOL") else ".3f"
     if (not partial_sell) and (sub_grind_count < max_sub_grinds):
+      df, _ = dp.get_analyzed_dataframe(trade_pair, self.timeframe)
+      if len(df) < 1:
+        return None
+      last_candle = df.iloc[-1]
       if (
         ((0 <= sub_grind_count < max_sub_grinds) and (slice_profit_entry < rebuy_mode_sub_thresholds[sub_grind_count]))
         and (last_candle["protections_long_global"] == True)
@@ -54433,23 +54431,27 @@ class NostalgiaForInfinityX7(IStrategy):
           and (last_candle["close"] < (last_candle["EMA_26"] * 0.988))
         )
       ):
+        stake_currency = config["stake_currency"]
+        stake_fmt = ".8f" if stake_currency in ("BTC", "ETH", "BNB", "SOL") else ".3f"
+        send_notifications = not self.is_backtest_mode()
         buy_amount = slice_amount * rebuy_mode_stakes[sub_grind_count] / trade_leverage
         if buy_amount < (min_stake * 1.5):
           buy_amount = min_stake * 1.5
         if buy_amount > max_stake:
           return None
-        dp.send_msg(
-          self.notification_msg(
-            "rebuy",
-            tag="r",
-            pair=trade_pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
+        if send_notifications:
+          dp.send_msg(
+            self.notification_msg(
+              "rebuy",
+              tag="r",
+              pair=trade_pair,
+              rate=current_rate,
+              stake_amount=buy_amount,
+              profit_stake=profit_stake,
+              profit_ratio=profit_ratio,
+              stake_currency=stake_currency,
+            )
           )
-        )
         log.info(
           f"Rebuy (r) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
@@ -54469,15 +54471,19 @@ class NostalgiaForInfinityX7(IStrategy):
       sell_amount = trade_amount * exit_rate / trade_leverage - (min_stake * 1.55)
       ft_sell_amount = sell_amount * trade_leverage * (trade.stake_amount / trade_amount) / exit_rate
       if sell_amount > min_stake and ft_sell_amount > min_stake:
+        stake_currency = config["stake_currency"]
+        stake_fmt = ".8f" if stake_currency in ("BTC", "ETH", "BNB", "SOL") else ".3f"
+        send_notifications = not self.is_backtest_mode()
         grind_profit = 0.0
-        dp.send_msg(
-          f"❌​​ ​**Rebuy De-risk:** `Level 3`\n"
-          f"🪙​ **Pair:** `{trade_pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount:{stake_fmt}}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake:{stake_fmt}}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
-        )
+        if send_notifications:
+          dp.send_msg(
+            f"❌​​ ​**Rebuy De-risk:** `Level 3`\n"
+            f"🪙​ **Pair:** `{trade_pair}`\n"
+            f"〽️​ **Rate:** `{exit_rate}`\n"
+            f"💰 **Stake amount:** `{sell_amount:{stake_fmt}}`\n"
+            f"💵​ **Profit (stake):** `{profit_stake:{stake_fmt}}`\n"
+            f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
+          )
         log.info(
           f"Rebuy De-risk Level 3 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
@@ -77695,6 +77701,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # min/max stakes include leverage. The return amounts is before leverage.
     dp = self.dp
     is_futures_mode = self.is_futures_mode
+    config = self.config
     trade_pair = trade.pair
     trade_amount = trade.amount
     trade_leverage = trade.leverage
@@ -77705,12 +77712,6 @@ class NostalgiaForInfinityX7(IStrategy):
 
     min_stake = self.correct_min_stake(min_stake, trade_leverage)
     max_stake /= trade_leverage
-    df, _ = dp.get_analyzed_dataframe(trade_pair, self.timeframe)
-    if len(df) < 2:
-      return None
-    last_candle = df.iloc[-1]
-    previous_candle = df.iloc[-2]
-
     exit_rate = current_rate
     filled_orders, filled_entries, filled_exits, profit_values = self.profit_or_order_snapshot(
       trade, current_time, exit_rate
@@ -77746,7 +77747,7 @@ class NostalgiaForInfinityX7(IStrategy):
     if dp.runmode.value in ("live", "dry_run"):
       ticker = dp.ticker(trade_pair)
       if ("bid" in ticker) and ("ask" in ticker):
-        exit_price_side = self.config["exit_pricing"]["price_side"]
+        exit_price_side = config["exit_pricing"]["price_side"]
         if trade.is_short:
           if exit_price_side in ["ask", "other"]:
             if ticker["ask"] is not None:
@@ -77770,13 +77771,13 @@ class NostalgiaForInfinityX7(IStrategy):
     current_stake_amount = trade_amount * current_rate
     stake_scale_leverage = trade_leverage if is_futures_mode else 1.0
 
-    rebuy_mode_stakes = (
-      self.system_v3_rebuy_mode_stakes_futures if is_futures_mode else self.system_v3_rebuy_mode_stakes_spot
-    )
+    if is_futures_mode:
+      rebuy_mode_stakes = self.system_v3_rebuy_mode_stakes_futures
+      rebuy_mode_sub_thresholds = self.system_v3_rebuy_mode_thresholds_futures
+    else:
+      rebuy_mode_stakes = self.system_v3_rebuy_mode_stakes_spot
+      rebuy_mode_sub_thresholds = self.system_v3_rebuy_mode_thresholds_spot
     max_sub_grinds = len(rebuy_mode_stakes)
-    rebuy_mode_sub_thresholds = (
-      self.system_v3_rebuy_mode_thresholds_futures if is_futures_mode else self.system_v3_rebuy_mode_thresholds_spot
-    )
     partial_sell = False
     sub_grind_count = 0
     total_amount = 0.0
@@ -77797,14 +77798,17 @@ class NostalgiaForInfinityX7(IStrategy):
       current_open_rate = total_cost / total_amount
       current_grind_stake = total_amount * exit_rate * (1 - trade.fee_close)
       current_grind_stake_profit = current_grind_stake - total_cost
-    stake_fmt = ".8f" if self.config["stake_currency"] in ("BTC", "ETH", "BNB", "SOL") else ".3f"
     if (not partial_sell) and (sub_grind_count < max_sub_grinds):
+      df, _ = dp.get_analyzed_dataframe(trade_pair, self.timeframe)
+      if len(df) < 1:
+        return None
+      last_candle = df.iloc[-1]
       if (
         (
           (0 <= sub_grind_count < max_sub_grinds)
           and (-slice_profit_entry < rebuy_mode_sub_thresholds[sub_grind_count])
         )
-        and (last_candle["protections_long_global"] == True)
+        and (last_candle["protections_short_global"] == True)
         and (
           (last_candle["RSI_3"] < 90.0)
           and (last_candle["RSI_3_15m"] < 90.0)
@@ -77818,18 +77822,22 @@ class NostalgiaForInfinityX7(IStrategy):
           buy_amount = min_stake * 1.5
         if buy_amount > max_stake:
           return None
-        dp.send_msg(
-          self.notification_msg(
-            "rebuy",
-            tag="r",
-            pair=trade_pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
+        stake_currency = config["stake_currency"]
+        stake_fmt = ".8f" if stake_currency in ("BTC", "ETH", "BNB", "SOL") else ".3f"
+        send_notifications = not self.is_backtest_mode()
+        if send_notifications:
+          dp.send_msg(
+            self.notification_msg(
+              "rebuy",
+              tag="r",
+              pair=trade_pair,
+              rate=current_rate,
+              stake_amount=buy_amount,
+              profit_stake=profit_stake,
+              profit_ratio=profit_ratio,
+              stake_currency=stake_currency,
+            )
           )
-        )
         log.info(
           f"Rebuy (r) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
@@ -77849,15 +77857,19 @@ class NostalgiaForInfinityX7(IStrategy):
       sell_amount = trade_amount * exit_rate / trade_leverage - (min_stake * 1.55)
       ft_sell_amount = sell_amount * trade_leverage * (trade.stake_amount / trade_amount) / exit_rate
       if sell_amount > min_stake and ft_sell_amount > min_stake:
+        stake_currency = config["stake_currency"]
+        stake_fmt = ".8f" if stake_currency in ("BTC", "ETH", "BNB", "SOL") else ".3f"
+        send_notifications = not self.is_backtest_mode()
         grind_profit = 0.0
-        dp.send_msg(
-          f"❌​​ ​**Rebuy De-risk:** `Level 3`\n"
-          f"🪙​ **Pair:** `{trade_pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount:{stake_fmt}}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake:{stake_fmt}}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
-        )
+        if send_notifications:
+          dp.send_msg(
+            f"❌​​ ​**Rebuy De-risk:** `Level 3`\n"
+            f"🪙​ **Pair:** `{trade_pair}`\n"
+            f"〽️​ **Rate:** `{exit_rate}`\n"
+            f"💰 **Stake amount:** `{sell_amount:{stake_fmt}}`\n"
+            f"💵​ **Profit (stake):** `{profit_stake:{stake_fmt}}`\n"
+            f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
+          )
         log.info(
           f"Rebuy De-risk Level 3 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
