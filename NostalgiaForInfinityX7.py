@@ -1061,7 +1061,7 @@ class NostalgiaForInfinityX7(IStrategy):
     exchange_config["ccxt_config"]["options"] = options
     exchange_config["ccxt_async_config"]["options"] = options
     super().__init__(config)
-
+    self._grind_entry_tag = ""
     strategy_config = self.config
     if ("exit_profit_only" in strategy_config and strategy_config["exit_profit_only"]) or (
       "sell_profit_only" in strategy_config and strategy_config["sell_profit_only"]
@@ -2795,20 +2795,20 @@ class NostalgiaForInfinityX7(IStrategy):
       elif system_name_use == system_v3_name:
         set_custom_data(key="system_version", value=system_v3_name)
         # set initial data for the trade
-        trade.set_custom_data(key="grind_1_cluster_max_profit_stake", value=0.0)
-        trade.set_custom_data(key="grind_1_cluster_max_profit_rate", value=0.0)
+        # trade.set_custom_data(key="grind_1_cluster_max_profit_stake", value=0.0)
+        # trade.set_custom_data(key="grind_1_cluster_max_profit_rate", value=0.0)
 
-        trade.set_custom_data(key="grind_2_cluster_max_profit_stake", value=0.0)
-        trade.set_custom_data(key="grind_2_cluster_max_profit_rate", value=0.0)
+        # trade.set_custom_data(key="grind_2_cluster_max_profit_stake", value=0.0)
+        # trade.set_custom_data(key="grind_2_cluster_max_profit_rate", value=0.0)
 
-        trade.set_custom_data(key="grind_3_cluster_max_profit_stake", value=0.0)
-        trade.set_custom_data(key="grind_3_cluster_max_profit_rate", value=0.0)
+        # trade.set_custom_data(key="grind_3_cluster_max_profit_stake", value=0.0)
+        # trade.set_custom_data(key="grind_3_cluster_max_profit_rate", value=0.0)
 
-        trade.set_custom_data(key="grind_4_cluster_max_profit_stake", value=0.0)
-        trade.set_custom_data(key="grind_4_cluster_max_profit_rate", value=0.0)
+        # trade.set_custom_data(key="grind_4_cluster_max_profit_stake", value=0.0)
+        # trade.set_custom_data(key="grind_4_cluster_max_profit_rate", value=0.0)
 
-        trade.set_custom_data(key="grind_5_cluster_max_profit_stake", value=0.0)
-        trade.set_custom_data(key="grind_5_cluster_max_profit_rate", value=0.0)
+        # trade.set_custom_data(key="grind_5_cluster_max_profit_stake", value=0.0)
+        # trade.set_custom_data(key="grind_5_cluster_max_profit_rate", value=0.0)
 
     if system_name_use == system_v3_2_name:
       filled_entries = trade.select_filled_orders(trade.entry_side)
@@ -2831,40 +2831,40 @@ class NostalgiaForInfinityX7(IStrategy):
         trade.set_custom_data(key="derisk_level_3", value=True)
 
       # elif order_mode in ["grind_1_entry"]:
-      elif order_mode in ["grind_1_exit"]:
-        trade.set_custom_data(key="grind_1_cluster_max_profit_stake", value=0.0)
-        trade.set_custom_data(key="grind_1_cluster_max_profit_rate", value=0.0)
-      elif order_mode in ["grind_1_derisk"]:
-        trade.set_custom_data(key="grind_1_cluster_max_profit_stake", value=0.0)
-        trade.set_custom_data(key="grind_1_cluster_max_profit_rate", value=0.0)
+      # elif order_mode in ["grind_1_exit"]:
+      #  trade.set_custom_data(key="grind_1_cluster_max_profit_stake", value=0.0)
+      #  trade.set_custom_data(key="grind_1_cluster_max_profit_rate", value=0.0)
+      # elif order_mode in ["grind_1_derisk"]:
+      #  trade.set_custom_data(key="grind_1_cluster_max_profit_stake", value=0.0)
+      #  trade.set_custom_data(key="grind_1_cluster_max_profit_rate", value=0.0)
 
-      elif order_mode in ["grind_2_exit"]:
-        trade.set_custom_data(key="grind_2_cluster_max_profit_stake", value=0.0)
-        trade.set_custom_data(key="grind_2_cluster_max_profit_rate", value=0.0)
-      elif order_mode in ["grind_2_derisk"]:
-        trade.set_custom_data(key="grind_2_cluster_max_profit_stake", value=0.0)
-        trade.set_custom_data(key="grind_2_cluster_max_profit_rate", value=0.0)
+      # elif order_mode in ["grind_2_exit"]:
+      #  trade.set_custom_data(key="grind_2_cluster_max_profit_stake", value=0.0)
+      #  trade.set_custom_data(key="grind_2_cluster_max_profit_rate", value=0.0)
+      # elif order_mode in ["grind_2_derisk"]:
+      #  trade.set_custom_data(key="grind_2_cluster_max_profit_stake", value=0.0)
+      #  trade.set_custom_data(key="grind_2_cluster_max_profit_rate", value=0.0)
 
-      elif order_mode in ["grind_3_exit"]:
-        trade.set_custom_data(key="grind_3_cluster_max_profit_stake", value=0.0)
-        trade.set_custom_data(key="grind_3_cluster_max_profit_rate", value=0.0)
-      elif order_mode in ["grind_3_derisk"]:
-        trade.set_custom_data(key="grind_3_cluster_max_profit_stake", value=0.0)
-        trade.set_custom_data(key="grind_3_cluster_max_profit_rate", value=0.0)
+      # elif order_mode in ["grind_3_exit"]:
+      #  trade.set_custom_data(key="grind_3_cluster_max_profit_stake", value=0.0)
+      #  trade.set_custom_data(key="grind_3_cluster_max_profit_rate", value=0.0)
+      # elif order_mode in ["grind_3_derisk"]:
+      #  trade.set_custom_data(key="grind_3_cluster_max_profit_stake", value=0.0)
+      #  trade.set_custom_data(key="grind_3_cluster_max_profit_rate", value=0.0)
 
-      elif order_mode in ["grind_4_exit"]:
-        trade.set_custom_data(key="grind_4_cluster_max_profit_stake", value=0.0)
-        trade.set_custom_data(key="grind_4_cluster_max_profit_rate", value=0.0)
-      elif order_mode in ["grind_4_derisk"]:
-        trade.set_custom_data(key="grind_4_cluster_max_profit_stake", value=0.0)
-        trade.set_custom_data(key="grind_4_cluster_max_profit_rate", value=0.0)
+      # elif order_mode in ["grind_4_exit"]:
+      #  trade.set_custom_data(key="grind_4_cluster_max_profit_stake", value=0.0)
+      #  trade.set_custom_data(key="grind_4_cluster_max_profit_rate", value=0.0)
+      # elif order_mode in ["grind_4_derisk"]:
+      #  trade.set_custom_data(key="grind_4_cluster_max_profit_stake", value=0.0)
+      #  trade.set_custom_data(key="grind_4_cluster_max_profit_rate", value=0.0)
 
-      elif order_mode in ["grind_5_exit"]:
-        trade.set_custom_data(key="grind_5_cluster_max_profit_stake", value=0.0)
-        trade.set_custom_data(key="grind_5_cluster_max_profit_rate", value=0.0)
-      elif order_mode in ["grind_5_derisk"]:
-        trade.set_custom_data(key="grind_5_cluster_max_profit_stake", value=0.0)
-        trade.set_custom_data(key="grind_5_cluster_max_profit_rate", value=0.0)
+      #elif order_mode in ["grind_5_exit"]:
+      #  trade.set_custom_data(key="grind_5_cluster_max_profit_stake", value=0.0)
+      #  trade.set_custom_data(key="grind_5_cluster_max_profit_rate", value=0.0)
+      # elif order_mode in ["grind_5_derisk"]:
+      #  trade.set_custom_data(key="grind_5_cluster_max_profit_stake", value=0.0)
+      #  trade.set_custom_data(key="grind_5_cluster_max_profit_rate", value=0.0)
 
     return None
 
@@ -48654,40 +48654,40 @@ class NostalgiaForInfinityX7(IStrategy):
     is_not_trade_max_stake_v3 = current_stake_amount < (slice_amount * self.system_v3_max_stake)
     is_not_trade_max_stake_v3_1 = current_stake_amount < (slice_amount * self.system_v3_1_max_stake)
 
-    grind_1_cluster_max_profit_stake = trade.get_custom_data(key="grind_1_cluster_max_profit_stake") or 0.0
-    grind_1_cluster_max_profit_rate = trade.get_custom_data(key="grind_1_cluster_max_profit_rate") or 0.0
-    if grind_1_current_grind_profit_stake > grind_1_cluster_max_profit_stake:
-      trade.set_custom_data(key="grind_1_cluster_max_profit_stake", value=grind_1_current_grind_profit_stake)
-    if grind_1_current_grind_profit_rate > grind_1_cluster_max_profit_rate:
-      trade.set_custom_data(key="grind_1_cluster_max_profit_rate", value=grind_1_current_grind_profit_rate)
+    # grind_1_cluster_max_profit_stake = trade.get_custom_data(key="grind_1_cluster_max_profit_stake") or 0.0
+    # grind_1_cluster_max_profit_rate = trade.get_custom_data(key="grind_1_cluster_max_profit_rate") or 0.0
+    # if grind_1_current_grind_profit_stake > grind_1_cluster_max_profit_stake:
+    #  trade.set_custom_data(key="grind_1_cluster_max_profit_stake", value=grind_1_current_grind_profit_stake)
+    # if grind_1_current_grind_profit_rate > grind_1_cluster_max_profit_rate:
+    #  trade.set_custom_data(key="grind_1_cluster_max_profit_rate", value=grind_1_current_grind_profit_rate)
 
-    grind_2_cluster_max_profit_stake = trade.get_custom_data(key="grind_2_cluster_max_profit_stake") or 0.0
-    grind_2_cluster_max_profit_rate = trade.get_custom_data(key="grind_2_cluster_max_profit_rate") or 0.0
-    if grind_2_current_grind_profit_stake > grind_2_cluster_max_profit_stake:
-      trade.set_custom_data(key="grind_2_cluster_max_profit_stake", value=grind_2_current_grind_profit_stake)
-    if grind_2_current_grind_profit_rate > grind_2_cluster_max_profit_rate:
-      trade.set_custom_data(key="grind_2_cluster_max_profit_rate", value=grind_2_current_grind_profit_rate)
+    # grind_2_cluster_max_profit_stake = trade.get_custom_data(key="grind_2_cluster_max_profit_stake") or 0.0
+    # grind_2_cluster_max_profit_rate = trade.get_custom_data(key="grind_2_cluster_max_profit_rate") or 0.0
+    # if grind_2_current_grind_profit_stake > grind_2_cluster_max_profit_stake:
+    #  trade.set_custom_data(key="grind_2_cluster_max_profit_stake", value=grind_2_current_grind_profit_stake)
+    # if grind_2_current_grind_profit_rate > grind_2_cluster_max_profit_rate:
+    #  trade.set_custom_data(key="grind_2_cluster_max_profit_rate", value=grind_2_current_grind_profit_rate)
 
-    grind_3_cluster_max_profit_stake = trade.get_custom_data(key="grind_3_cluster_max_profit_stake") or 0.0
-    grind_3_cluster_max_profit_rate = trade.get_custom_data(key="grind_3_cluster_max_profit_rate") or 0.0
-    if grind_3_current_grind_profit_stake > grind_3_cluster_max_profit_stake:
-      trade.set_custom_data(key="grind_3_cluster_max_profit_stake", value=grind_3_current_grind_profit_stake)
-    if grind_3_current_grind_profit_rate > grind_3_cluster_max_profit_rate:
-      trade.set_custom_data(key="grind_3_cluster_max_profit_rate", value=grind_3_current_grind_profit_rate)
+    # grind_3_cluster_max_profit_stake = trade.get_custom_data(key="grind_3_cluster_max_profit_stake") or 0.0
+    # grind_3_cluster_max_profit_rate = trade.get_custom_data(key="grind_3_cluster_max_profit_rate") or 0.0
+    # if grind_3_current_grind_profit_stake > grind_3_cluster_max_profit_stake:
+    #  trade.set_custom_data(key="grind_3_cluster_max_profit_stake", value=grind_3_current_grind_profit_stake)
+    # if grind_3_current_grind_profit_rate > grind_3_cluster_max_profit_rate:
+    #  trade.set_custom_data(key="grind_3_cluster_max_profit_rate", value=grind_3_current_grind_profit_rate)
 
-    grind_4_cluster_max_profit_stake = trade.get_custom_data(key="grind_4_cluster_max_profit_stake") or 0.0
-    grind_4_cluster_max_profit_rate = trade.get_custom_data(key="grind_4_cluster_max_profit_rate") or 0.0
-    if grind_4_current_grind_profit_stake > grind_4_cluster_max_profit_stake:
-      trade.set_custom_data(key="grind_4_cluster_max_profit_stake", value=grind_4_current_grind_profit_stake)
-    if grind_4_current_grind_profit_rate > grind_4_cluster_max_profit_rate:
-      trade.set_custom_data(key="grind_4_cluster_max_profit_rate", value=grind_4_current_grind_profit_rate)
+    # grind_4_cluster_max_profit_stake = trade.get_custom_data(key="grind_4_cluster_max_profit_stake") or 0.0
+    # grind_4_cluster_max_profit_rate = trade.get_custom_data(key="grind_4_cluster_max_profit_rate") or 0.0
+    # if grind_4_current_grind_profit_stake > grind_4_cluster_max_profit_stake:
+    #  trade.set_custom_data(key="grind_4_cluster_max_profit_stake", value=grind_4_current_grind_profit_stake)
+    # if grind_4_current_grind_profit_rate > grind_4_cluster_max_profit_rate:
+    #  trade.set_custom_data(key="grind_4_cluster_max_profit_rate", value=grind_4_current_grind_profit_rate)
 
-    grind_5_cluster_max_profit_stake = trade.get_custom_data(key="grind_5_cluster_max_profit_stake") or 0.0
-    grind_5_cluster_max_profit_rate = trade.get_custom_data(key="grind_5_cluster_max_profit_rate") or 0.0
-    if grind_5_current_grind_profit_stake > grind_5_cluster_max_profit_stake:
-      trade.set_custom_data(key="grind_5_cluster_max_profit_stake", value=grind_5_current_grind_profit_stake)
-    if grind_5_current_grind_profit_rate > grind_5_cluster_max_profit_rate:
-      trade.set_custom_data(key="grind_5_cluster_max_profit_rate", value=grind_5_current_grind_profit_rate)
+    # grind_5_cluster_max_profit_stake = trade.get_custom_data(key="grind_5_cluster_max_profit_stake") or 0.0
+    # grind_5_cluster_max_profit_rate = trade.get_custom_data(key="grind_5_cluster_max_profit_rate") or 0.0
+    # if grind_5_current_grind_profit_stake > grind_5_cluster_max_profit_stake:
+    #  trade.set_custom_data(key="grind_5_cluster_max_profit_stake", value=grind_5_current_grind_profit_stake)
+    # if grind_5_current_grind_profit_rate > grind_5_cluster_max_profit_rate:
+    #  trade.set_custom_data(key="grind_5_cluster_max_profit_rate", value=grind_5_current_grind_profit_rate)
 
     is_long_extra_checks_entry = (
       grind_entry_retry_time > filled_entries[-1].order_filled_utc
@@ -48704,17 +48704,31 @@ class NostalgiaForInfinityX7(IStrategy):
       # )
     )
     # is_long_extra_checks_entry = True
-    is_long_grind_entry = self.long_grind_entry_v3(
-      last_candle,
-      previous_candle,
-      num_open_grinds_and_buybacks,
-      slice_profit,
-      slice_profit_entry,
-      slice_profit_exit,
-      True,
+    is_long_grind_entry = (
+      self.long_grind_entry_v3(
+        last_candle,
+        previous_candle,
+        num_open_grinds_and_buybacks,
+        slice_profit,
+        slice_profit_entry,
+        slice_profit_exit,
+        True,
+      )
+      if is_long_extra_checks_entry
+      else False
     )
-    is_long_buyback_entry = self.long_buyback_entry_v3(last_candle, previous_candle, slice_profit, True)
-    is_long_rebuy_entry = self.long_rebuy_entry_v3(last_candle, previous_candle, slice_profit, True)
+
+    is_long_buyback_entry = (
+      self.long_buyback_entry_v3(last_candle, previous_candle, slice_profit, True)
+      if (self.system_v3_buyback_1_enable and is_system_v3_2 and is_derisk_4_found)
+      else False
+    )
+
+    is_long_rebuy_entry = (
+      self.long_rebuy_entry_v3(last_candle, previous_candle, slice_profit, True)
+      if is_system_v3_1
+      else False
+    )
     stake_fmt = ".8f" if stake_currency in ("BTC", "ETH", "BNB", "SOL") else ".3f"
     send_notifications = not is_backtest
     # =========================================================================
@@ -48907,11 +48921,11 @@ class NostalgiaForInfinityX7(IStrategy):
     if (
       (self.system_v3_grind_1_enable)
       # and is_derisk_1_found
-      and is_long_grind_entry
       and is_long_extra_checks_entry
       and (grind_1_sub_grind_count < grind_1_max_sub_grinds)
       and (grind_1_sub_grind_count == 0 or (grind_1_distance_ratio < grind_1_sub_thresholds[grind_1_sub_grind_count]))
       and is_not_trade_max_stake_v3
+      and is_long_grind_entry
     ):
       buy_amount = slice_amount * grind_1_stakes[grind_1_sub_grind_count] / trade_leverage
       if buy_amount < (min_stake * 1.5):
@@ -48955,8 +48969,8 @@ class NostalgiaForInfinityX7(IStrategy):
         "grind_1_exit",
         fee_open_rate,
         fee_close_rate,
-        grind_1_cluster_max_profit_stake,
-        grind_1_cluster_max_profit_rate,
+        # grind_1_cluster_max_profit_stake,
+        # grind_1_cluster_max_profit_rate,
         grind_1_current_grind_profit_stake,
         grind_1_current_grind_profit_rate,
         grind_1_total_amount,
@@ -49022,11 +49036,11 @@ class NostalgiaForInfinityX7(IStrategy):
     if (
       (self.system_v3_grind_2_enable)
       # and is_derisk_1_found
-      and is_long_grind_entry
       and is_long_extra_checks_entry
       and (grind_2_sub_grind_count < grind_2_max_sub_grinds)
       and (grind_2_sub_grind_count == 0 or (grind_2_distance_ratio < grind_2_sub_thresholds[grind_2_sub_grind_count]))
       and is_not_trade_max_stake_v3
+      and is_long_grind_entry
     ):
       buy_amount = slice_amount * grind_2_stakes[grind_2_sub_grind_count] / trade_leverage
       if buy_amount < (min_stake * 1.5):
@@ -49070,8 +49084,8 @@ class NostalgiaForInfinityX7(IStrategy):
         "grind_2_exit",
         fee_open_rate,
         fee_close_rate,
-        grind_2_cluster_max_profit_stake,
-        grind_2_cluster_max_profit_rate,
+        # grind_2_cluster_max_profit_stake,
+        # grind_2_cluster_max_profit_rate,
         grind_2_current_grind_profit_stake,
         grind_2_current_grind_profit_rate,
         grind_2_total_amount,
@@ -49137,11 +49151,11 @@ class NostalgiaForInfinityX7(IStrategy):
     if (
       (self.system_v3_grind_3_enable)
       # and is_derisk_1_found
-      and is_long_grind_entry
       and is_long_extra_checks_entry
       and (grind_3_sub_grind_count < grind_3_max_sub_grinds)
       and (grind_3_sub_grind_count == 0 or (grind_3_distance_ratio < grind_3_sub_thresholds[grind_3_sub_grind_count]))
       and is_not_trade_max_stake_v3
+      and is_long_grind_entry
     ):
       buy_amount = slice_amount * grind_3_stakes[grind_3_sub_grind_count] / trade_leverage
       if buy_amount < (min_stake * 1.5):
@@ -49185,8 +49199,8 @@ class NostalgiaForInfinityX7(IStrategy):
         "grind_3_exit",
         fee_open_rate,
         fee_close_rate,
-        grind_3_cluster_max_profit_stake,
-        grind_3_cluster_max_profit_rate,
+        # grind_3_cluster_max_profit_stake,
+        # grind_3_cluster_max_profit_rate,
         grind_3_current_grind_profit_stake,
         grind_3_current_grind_profit_rate,
         grind_3_total_amount,
@@ -49253,6 +49267,10 @@ class NostalgiaForInfinityX7(IStrategy):
       (self.system_v3_grind_4_enable)
       # and is_derisk_1_found
       # and is_long_grind_entry
+      and is_long_extra_checks_entry
+      and (grind_4_sub_grind_count < grind_4_max_sub_grinds)
+      and (grind_4_sub_grind_count == 0 or (grind_4_distance_ratio < grind_4_sub_thresholds[grind_4_sub_grind_count]))
+      and is_not_trade_max_stake_v3
       and (
         is_long_grind_entry
         or (
@@ -49269,10 +49287,6 @@ class NostalgiaForInfinityX7(IStrategy):
           and (last_candle["close"] < (last_candle["EMA_20"] * 0.980))
         )
       )
-      and is_long_extra_checks_entry
-      and (grind_4_sub_grind_count < grind_4_max_sub_grinds)
-      and (grind_4_sub_grind_count == 0 or (grind_4_distance_ratio < grind_4_sub_thresholds[grind_4_sub_grind_count]))
-      and is_not_trade_max_stake_v3
     ):
       buy_amount = slice_amount * grind_4_stakes[grind_4_sub_grind_count] / trade_leverage
       if buy_amount < (min_stake * 1.5):
@@ -49316,8 +49330,8 @@ class NostalgiaForInfinityX7(IStrategy):
         "grind_4_exit",
         fee_open_rate,
         fee_close_rate,
-        grind_4_cluster_max_profit_stake,
-        grind_4_cluster_max_profit_rate,
+        # grind_4_cluster_max_profit_stake,
+        # grind_4_cluster_max_profit_rate,
         grind_4_current_grind_profit_stake,
         grind_4_current_grind_profit_rate,
         grind_4_total_amount,
@@ -49384,6 +49398,10 @@ class NostalgiaForInfinityX7(IStrategy):
       (self.system_v3_grind_5_enable)
       # and is_derisk_1_found
       # and is_long_grind_entry
+      and is_long_extra_checks_entry
+      and (grind_5_sub_grind_count < grind_5_max_sub_grinds)
+      and (grind_5_sub_grind_count == 0 or (grind_5_distance_ratio < grind_5_sub_thresholds[grind_5_sub_grind_count]))
+      and is_not_trade_max_stake_v3
       and (
         is_long_grind_entry
         or (
@@ -49403,10 +49421,6 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
       )
-      and is_long_extra_checks_entry
-      and (grind_5_sub_grind_count < grind_5_max_sub_grinds)
-      and (grind_5_sub_grind_count == 0 or (grind_5_distance_ratio < grind_5_sub_thresholds[grind_5_sub_grind_count]))
-      and is_not_trade_max_stake_v3
     ):
       buy_amount = slice_amount * grind_5_stakes[grind_5_sub_grind_count] / trade_leverage
       if buy_amount < (min_stake * 1.5):
@@ -49450,8 +49464,8 @@ class NostalgiaForInfinityX7(IStrategy):
         "grind_5_exit",
         fee_open_rate,
         fee_close_rate,
-        grind_5_cluster_max_profit_stake,
-        grind_5_cluster_max_profit_rate,
+        # grind_5_cluster_max_profit_stake,
+        # grind_5_cluster_max_profit_rate,
         grind_5_current_grind_profit_stake,
         grind_5_current_grind_profit_rate,
         grind_5_total_amount,
@@ -49518,7 +49532,6 @@ class NostalgiaForInfinityX7(IStrategy):
       self.system_v3_buyback_1_enable
       and is_system_v3_2
       and is_derisk_4_found
-      and is_long_buyback_entry
       # and is_long_extra_checks_entry
       and (buyback_1_current_open_rate == 0)
       and (
@@ -49540,6 +49553,7 @@ class NostalgiaForInfinityX7(IStrategy):
         )
       )
       and is_not_trade_max_stake_v3
+      and is_long_buyback_entry
     ):
       buy_amount = (
         slice_amount
@@ -49682,12 +49696,12 @@ class NostalgiaForInfinityX7(IStrategy):
 
     if (
       is_system_v3_1
-      and is_long_rebuy_entry
       and (
         (0 <= rebuy_sub_grind_count < rebuy_max_sub_grinds)
         and (slice_profit_entry < rebuy_sub_thresholds[rebuy_sub_grind_count])
       )
       and is_not_trade_max_stake_v3_1
+      and is_long_rebuy_entry
     ):
       buy_amount = slice_amount * rebuy_stakes[rebuy_sub_grind_count] / trade_leverage
       if buy_amount < (min_stake * 1.5):
@@ -50362,8 +50376,8 @@ class NostalgiaForInfinityX7(IStrategy):
     tag: str,
     fee_open_rate: float,
     fee_close_rate: float,
-    max_profit: float,
-    max_profit_rate: float,
+    # max_profit: float,
+    # max_profit_rate: float,
     grind_profit_stake: float,
     grind_profit_rate: float,
     grind_total_amount: float,
@@ -71853,8 +71867,8 @@ class NostalgiaForInfinityX7(IStrategy):
     tag: str,
     fee_open_rate: float,
     fee_close_rate: float,
-    max_profit: float,
-    max_profit_rate: float,
+    # max_profit: float,
+    # max_profit_rate: float,
     grind_profit_stake: float,
     grind_profit_rate: float,
     grind_total_amount: float,
@@ -71913,30 +71927,35 @@ class NostalgiaForInfinityX7(IStrategy):
     #   if -grind_profit_rate < (-max_profit_rate - 0.055):
     #     is_trailing_exit = True
     # is_trailing_exit = -grind_profit_rate > 0.04
-    stake_fmt = ".8f" if self.config["stake_currency"] in ("BTC", "ETH", "BNB", "SOL") else ".3f"
     if is_normal_exit or is_trailing_exit:
-      exit_amount = grind_total_amount * exit_rate / trade.leverage
-      if ((current_stake_amount / trade.leverage) - exit_amount) < (min_stake * 1.55):
-        exit_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
-      ft_exit_amount = exit_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
+      stake_currency = self.config["stake_currency"]
+      stake_fmt = ".8f" if stake_currency in ("BTC", "ETH", "BNB", "SOL") else ".3f"
+      trade_pair = trade.pair
+      trade_leverage = trade.leverage
+      trade_amount = trade.amount
+      trade_stake_amount = trade.stake_amount
+      exit_amount = grind_total_amount * exit_rate / trade_leverage
+      if ((current_stake_amount / trade_leverage) - exit_amount) < (min_stake * 1.55):
+        exit_amount = (trade_amount * exit_rate / trade_leverage) - (min_stake * 1.55)
+      ft_exit_amount = exit_amount * trade_leverage * (trade_stake_amount / trade_amount) / exit_rate
       if exit_amount > min_stake and ft_exit_amount > min_stake:
         self.dp.send_msg(
           self.notification_msg(
             "grinding-exit",
             tag=name,
-            pair=trade.pair,
+            pair=trade_pair,
             rate=exit_rate,
             stake_amount=exit_amount,
             profit_stake=profit_stake,
             profit_ratio=profit_ratio,
-            stake_currency=self.config["stake_currency"],
+            stake_currency=stake_currency,
             grind_profit_stake=grind_profit_stake,
             grind_profit_pct=profit,
             coin_amount=grind_total_amount,
           )
         )
         log.info(
-          f"Grinding exit ({name}) [{current_time}] [{trade.pair}] | Rate: {exit_rate} | Stake amount: {exit_amount:{stake_fmt}} | Coin amount: {grind_total_amount} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(profit * 100.0):.2f}% ({grind_profit_stake:{stake_fmt}} {self.config['stake_currency']})"
+          f"Grinding exit ({name}) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {exit_amount:{stake_fmt}} | Coin amount: {grind_total_amount} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(profit * 100.0):.2f}% ({grind_profit_stake:{stake_fmt}} {stake_currency})"
         )
         order_tag = tag
         for grind_entry in grind_open_orders:
@@ -72037,116 +72056,96 @@ class NostalgiaForInfinityX7(IStrategy):
     stake_scale_leverage = trade_leverage if is_futures_mode else 1.0
     grind_entry_retry_time = current_time - timedelta(minutes=5)
 
+    # =========================================================================
+    # GRINDING CONFIGURATION
+    # =========================================================================
+    if is_futures_mode:
+      grind_1_stakes = self.system_v3_grind_1_stakes_futures
+      grind_1_sub_thresholds = self.system_v3_grind_1_thresholds_futures
+      grind_1_derisk_grinds = self.system_v3_grind_1_derisk_futures
+      grind_1_profit_threshold = self.system_v3_grind_1_profit_threshold_futures
+
+      grind_2_stakes = self.system_v3_grind_2_stakes_futures
+      grind_2_sub_thresholds = self.system_v3_grind_2_thresholds_futures
+      grind_2_derisk_grinds = self.system_v3_grind_2_derisk_futures
+      grind_2_profit_threshold = self.system_v3_grind_2_profit_threshold_futures
+
+      grind_3_stakes = self.system_v3_grind_3_stakes_futures
+      grind_3_sub_thresholds = self.system_v3_grind_3_thresholds_futures
+      grind_3_derisk_grinds = self.system_v3_grind_3_derisk_futures
+      grind_3_profit_threshold = self.system_v3_grind_3_profit_threshold_futures
+
+      grind_4_stakes = self.system_v3_grind_4_stakes_futures
+      grind_4_sub_thresholds = self.system_v3_grind_4_thresholds_futures
+      grind_4_derisk_grinds = self.system_v3_grind_4_derisk_futures
+      grind_4_profit_threshold = self.system_v3_grind_4_profit_threshold_futures
+
+      grind_5_stakes = self.system_v3_grind_5_stakes_futures
+      grind_5_sub_thresholds = self.system_v3_grind_5_thresholds_futures
+      grind_5_derisk_grinds = self.system_v3_grind_5_derisk_futures
+      grind_5_profit_threshold = self.system_v3_grind_5_profit_threshold_futures
+
+      rebuy_stakes = self.system_v3_1_rebuy_stakes_futures
+      rebuy_sub_thresholds = self.system_v3_1_rebuy_thresholds_futures
+    else:
+      grind_1_stakes = self.system_v3_grind_1_stakes_spot
+      grind_1_sub_thresholds = self.system_v3_grind_1_thresholds_spot
+      grind_1_derisk_grinds = self.system_v3_grind_1_derisk_spot
+      grind_1_profit_threshold = self.system_v3_grind_1_profit_threshold_spot
+
+      grind_2_stakes = self.system_v3_grind_2_stakes_spot
+      grind_2_sub_thresholds = self.system_v3_grind_2_thresholds_spot
+      grind_2_derisk_grinds = self.system_v3_grind_2_derisk_spot
+      grind_2_profit_threshold = self.system_v3_grind_2_profit_threshold_spot
+
+      grind_3_stakes = self.system_v3_grind_3_stakes_spot
+      grind_3_sub_thresholds = self.system_v3_grind_3_thresholds_spot
+      grind_3_derisk_grinds = self.system_v3_grind_3_derisk_spot
+      grind_3_profit_threshold = self.system_v3_grind_3_profit_threshold_spot
+
+      grind_4_stakes = self.system_v3_grind_4_stakes_spot
+      grind_4_sub_thresholds = self.system_v3_grind_4_thresholds_spot
+      grind_4_derisk_grinds = self.system_v3_grind_4_derisk_spot
+      grind_4_profit_threshold = self.system_v3_grind_4_profit_threshold_spot
+
+      grind_5_stakes = self.system_v3_grind_5_stakes_spot
+      grind_5_sub_thresholds = self.system_v3_grind_5_thresholds_spot
+      grind_5_derisk_grinds = self.system_v3_grind_5_derisk_spot
+      grind_5_profit_threshold = self.system_v3_grind_5_profit_threshold_spot
+
+      rebuy_stakes = self.system_v3_1_rebuy_stakes_spot
+      rebuy_sub_thresholds = self.system_v3_1_rebuy_thresholds_spot
     grind_1_max_sub_grinds = 0
     grind_1_stakes = scale_stakes_for_min_stake(
-      self.system_v3_grind_1_stakes_futures if is_futures_mode else self.system_v3_grind_1_stakes_spot,
-      slice_amount,
-      min_stake,
-      trade_leverage,
-      trade_leverage,
-    )
-    grind_1_sub_thresholds = (
-      self.system_v3_grind_1_thresholds_futures if is_futures_mode else self.system_v3_grind_1_thresholds_spot
+      grind_1_stakes, slice_amount, min_stake, trade_leverage, trade_leverage
     )
     grind_1_max_sub_grinds = len(grind_1_stakes)
-    grind_1_derisk_grinds = (
-      self.system_v3_grind_1_derisk_futures if is_futures_mode else self.system_v3_grind_1_derisk_spot
-    )
-    grind_1_profit_threshold = (
-      self.system_v3_grind_1_profit_threshold_futures
-      if is_futures_mode
-      else self.system_v3_grind_1_profit_threshold_spot
-    )
 
     grind_2_max_sub_grinds = 0
     grind_2_stakes = scale_stakes_for_min_stake(
-      self.system_v3_grind_2_stakes_futures if is_futures_mode else self.system_v3_grind_2_stakes_spot,
-      slice_amount,
-      min_stake,
-      stake_scale_leverage,
-      trade_leverage,
-    )
-    grind_2_sub_thresholds = (
-      self.system_v3_grind_2_thresholds_futures if is_futures_mode else self.system_v3_grind_2_thresholds_spot
+      grind_2_stakes, slice_amount, min_stake, stake_scale_leverage, trade_leverage
     )
     grind_2_max_sub_grinds = len(grind_2_stakes)
-    grind_2_derisk_grinds = (
-      self.system_v3_grind_2_derisk_futures if is_futures_mode else self.system_v3_grind_2_derisk_spot
-    )
-    grind_2_profit_threshold = (
-      self.system_v3_grind_2_profit_threshold_futures
-      if is_futures_mode
-      else self.system_v3_grind_2_profit_threshold_spot
-    )
 
     grind_3_max_sub_grinds = 0
     grind_3_stakes = scale_stakes_for_min_stake(
-      self.system_v3_grind_3_stakes_futures if is_futures_mode else self.system_v3_grind_3_stakes_spot,
-      slice_amount,
-      min_stake,
-      stake_scale_leverage,
-      trade_leverage,
-    )
-    grind_3_sub_thresholds = (
-      self.system_v3_grind_3_thresholds_futures if is_futures_mode else self.system_v3_grind_3_thresholds_spot
+      grind_3_stakes, slice_amount, min_stake, stake_scale_leverage, trade_leverage
     )
     grind_3_max_sub_grinds = len(grind_3_stakes)
-    grind_3_derisk_grinds = (
-      self.system_v3_grind_3_derisk_futures if is_futures_mode else self.system_v3_grind_3_derisk_spot
-    )
-    grind_3_profit_threshold = (
-      self.system_v3_grind_3_profit_threshold_futures
-      if is_futures_mode
-      else self.system_v3_grind_3_profit_threshold_spot
-    )
 
     grind_4_max_sub_grinds = 0
     grind_4_stakes = scale_stakes_for_min_stake(
-      self.system_v3_grind_4_stakes_futures if is_futures_mode else self.system_v3_grind_4_stakes_spot,
-      slice_amount,
-      min_stake,
-      stake_scale_leverage,
-      trade_leverage,
-    )
-    grind_4_sub_thresholds = (
-      self.system_v3_grind_4_thresholds_futures if is_futures_mode else self.system_v3_grind_4_thresholds_spot
+      grind_4_stakes, slice_amount, min_stake, stake_scale_leverage, trade_leverage
     )
     grind_4_max_sub_grinds = len(grind_4_stakes)
-    grind_4_derisk_grinds = (
-      self.system_v3_grind_4_derisk_futures if is_futures_mode else self.system_v3_grind_4_derisk_spot
-    )
-    grind_4_profit_threshold = (
-      self.system_v3_grind_4_profit_threshold_futures
-      if is_futures_mode
-      else self.system_v3_grind_4_profit_threshold_spot
-    )
 
     grind_5_max_sub_grinds = 0
     grind_5_stakes = scale_stakes_for_min_stake(
-      self.system_v3_grind_5_stakes_futures if is_futures_mode else self.system_v3_grind_5_stakes_spot,
-      slice_amount,
-      min_stake,
-      stake_scale_leverage,
-      trade_leverage,
-    )
-    grind_5_sub_thresholds = (
-      self.system_v3_grind_5_thresholds_futures if is_futures_mode else self.system_v3_grind_5_thresholds_spot
+      grind_5_stakes, slice_amount, min_stake, stake_scale_leverage, trade_leverage
     )
     grind_5_max_sub_grinds = len(grind_5_stakes)
-    grind_5_derisk_grinds = (
-      self.system_v3_grind_5_derisk_futures if is_futures_mode else self.system_v3_grind_5_derisk_spot
-    )
-    grind_5_profit_threshold = (
-      self.system_v3_grind_5_profit_threshold_futures
-      if is_futures_mode
-      else self.system_v3_grind_5_profit_threshold_spot
-    )
 
-    rebuy_stakes = self.system_v3_1_rebuy_stakes_futures if is_futures_mode else self.system_v3_1_rebuy_stakes_spot
     rebuy_max_sub_grinds = len(rebuy_stakes)
-    rebuy_sub_thresholds = (
-      self.system_v3_1_rebuy_thresholds_futures if is_futures_mode else self.system_v3_1_rebuy_thresholds_spot
-    )
 
     is_derisk_1 = False
     is_derisk_1_found = False  # derisk_level_1 de-risk exit
@@ -72426,40 +72425,40 @@ class NostalgiaForInfinityX7(IStrategy):
     is_not_trade_max_stake_v3 = current_stake_amount < (slice_amount * self.system_v3_max_stake)
     is_not_trade_max_stake_v3_1 = current_stake_amount < (slice_amount * self.system_v3_1_max_stake)
 
-    grind_1_cluster_max_profit_stake = trade.get_custom_data(key="grind_1_cluster_max_profit_stake") or 0.0
-    grind_1_cluster_max_profit_rate = trade.get_custom_data(key="grind_1_cluster_max_profit_rate") or 0.0
-    if grind_1_current_grind_profit_stake > grind_1_cluster_max_profit_stake:
-      trade.set_custom_data(key="grind_1_cluster_max_profit_stake", value=grind_1_current_grind_profit_stake)
-    if grind_1_current_grind_profit_rate < grind_1_cluster_max_profit_rate:
-      trade.set_custom_data(key="grind_1_cluster_max_profit_rate", value=grind_1_current_grind_profit_rate)
+    # grind_1_cluster_max_profit_stake = trade.get_custom_data(key="grind_1_cluster_max_profit_stake") or 0.0
+    # grind_1_cluster_max_profit_rate = trade.get_custom_data(key="grind_1_cluster_max_profit_rate") or 0.0
+    # if grind_1_current_grind_profit_stake > grind_1_cluster_max_profit_stake:
+    #  trade.set_custom_data(key="grind_1_cluster_max_profit_stake", value=grind_1_current_grind_profit_stake)
+    # if grind_1_current_grind_profit_rate < grind_1_cluster_max_profit_rate:
+    #  trade.set_custom_data(key="grind_1_cluster_max_profit_rate", value=grind_1_current_grind_profit_rate)
 
-    grind_2_cluster_max_profit_stake = trade.get_custom_data(key="grind_2_cluster_max_profit_stake") or 0.0
-    grind_2_cluster_max_profit_rate = trade.get_custom_data(key="grind_2_cluster_max_profit_rate") or 0.0
-    if grind_2_current_grind_profit_stake > grind_2_cluster_max_profit_stake:
-      trade.set_custom_data(key="grind_2_cluster_max_profit_stake", value=grind_2_current_grind_profit_stake)
-    if grind_2_current_grind_profit_rate < grind_2_cluster_max_profit_rate:
-      trade.set_custom_data(key="grind_2_cluster_max_profit_rate", value=grind_2_current_grind_profit_rate)
+    # grind_2_cluster_max_profit_stake = trade.get_custom_data(key="grind_2_cluster_max_profit_stake") or 0.0
+    # grind_2_cluster_max_profit_rate = trade.get_custom_data(key="grind_2_cluster_max_profit_rate") or 0.0
+    # if grind_2_current_grind_profit_stake > grind_2_cluster_max_profit_stake:
+    #  trade.set_custom_data(key="grind_2_cluster_max_profit_stake", value=grind_2_current_grind_profit_stake)
+    # if grind_2_current_grind_profit_rate < grind_2_cluster_max_profit_rate:
+    #  trade.set_custom_data(key="grind_2_cluster_max_profit_rate", value=grind_2_current_grind_profit_rate)
 
-    grind_3_cluster_max_profit_stake = trade.get_custom_data(key="grind_3_cluster_max_profit_stake") or 0.0
-    grind_3_cluster_max_profit_rate = trade.get_custom_data(key="grind_3_cluster_max_profit_rate") or 0.0
-    if grind_3_current_grind_profit_stake > grind_3_cluster_max_profit_stake:
-      trade.set_custom_data(key="grind_3_cluster_max_profit_stake", value=grind_3_current_grind_profit_stake)
-    if grind_3_current_grind_profit_rate < grind_3_cluster_max_profit_rate:
-      trade.set_custom_data(key="grind_3_cluster_max_profit_rate", value=grind_3_current_grind_profit_rate)
+    # grind_3_cluster_max_profit_stake = trade.get_custom_data(key="grind_3_cluster_max_profit_stake") or 0.0
+    # grind_3_cluster_max_profit_rate = trade.get_custom_data(key="grind_3_cluster_max_profit_rate") or 0.0
+    # if grind_3_current_grind_profit_stake > grind_3_cluster_max_profit_stake:
+    #  trade.set_custom_data(key="grind_3_cluster_max_profit_stake", value=grind_3_current_grind_profit_stake)
+    # if grind_3_current_grind_profit_rate < grind_3_cluster_max_profit_rate:
+    #  trade.set_custom_data(key="grind_3_cluster_max_profit_rate", value=grind_3_current_grind_profit_rate)
 
-    grind_4_cluster_max_profit_stake = trade.get_custom_data(key="grind_4_cluster_max_profit_stake") or 0.0
-    grind_4_cluster_max_profit_rate = trade.get_custom_data(key="grind_4_cluster_max_profit_rate") or 0.0
-    if grind_4_current_grind_profit_stake > grind_4_cluster_max_profit_stake:
-      trade.set_custom_data(key="grind_4_cluster_max_profit_stake", value=grind_4_current_grind_profit_stake)
-    if grind_4_current_grind_profit_rate < grind_4_cluster_max_profit_rate:
-      trade.set_custom_data(key="grind_4_cluster_max_profit_rate", value=grind_4_current_grind_profit_rate)
+    # grind_4_cluster_max_profit_stake = trade.get_custom_data(key="grind_4_cluster_max_profit_stake") or 0.0
+    # grind_4_cluster_max_profit_rate = trade.get_custom_data(key="grind_4_cluster_max_profit_rate") or 0.0
+    # if grind_4_current_grind_profit_stake > grind_4_cluster_max_profit_stake:
+    #  trade.set_custom_data(key="grind_4_cluster_max_profit_stake", value=grind_4_current_grind_profit_stake)
+    # if grind_4_current_grind_profit_rate < grind_4_cluster_max_profit_rate:
+    #  trade.set_custom_data(key="grind_4_cluster_max_profit_rate", value=grind_4_current_grind_profit_rate)
 
-    grind_5_cluster_max_profit_stake = trade.get_custom_data(key="grind_5_cluster_max_profit_stake") or 0.0
-    grind_5_cluster_max_profit_rate = trade.get_custom_data(key="grind_5_cluster_max_profit_rate") or 0.0
-    if grind_5_current_grind_profit_stake > grind_5_cluster_max_profit_stake:
-      trade.set_custom_data(key="grind_5_cluster_max_profit_stake", value=grind_5_current_grind_profit_stake)
-    if grind_5_current_grind_profit_rate < grind_5_cluster_max_profit_rate:
-      trade.set_custom_data(key="grind_5_cluster_max_profit_rate", value=grind_5_current_grind_profit_rate)
+    # grind_5_cluster_max_profit_stake = trade.get_custom_data(key="grind_5_cluster_max_profit_stake") or 0.0
+    # grind_5_cluster_max_profit_rate = trade.get_custom_data(key="grind_5_cluster_max_profit_rate") or 0.0
+    # if grind_5_current_grind_profit_stake > grind_5_cluster_max_profit_stake:
+    #  trade.set_custom_data(key="grind_5_cluster_max_profit_stake", value=grind_5_current_grind_profit_stake)
+    # if grind_5_current_grind_profit_rate < grind_5_cluster_max_profit_rate:
+    #  trade.set_custom_data(key="grind_5_cluster_max_profit_rate", value=grind_5_current_grind_profit_rate)
 
     is_short_extra_checks_entry = (
       grind_entry_retry_time > filled_entries[-1].order_filled_utc
@@ -72476,211 +72475,168 @@ class NostalgiaForInfinityX7(IStrategy):
       # )
     )
     # is_short_extra_checks_entry = True
-    is_short_grind_entry = self.short_grind_entry_v3(last_candle, previous_candle, slice_profit, True)
-    is_short_rebuy_entry = self.short_rebuy_entry_v3(last_candle, previous_candle, slice_profit, True)
-    stake_fmt = ".8f" if self.config["stake_currency"] in ("BTC", "ETH", "BNB", "SOL") else ".3f"
-    # De-risk level 1
-
-    if (
-      self.derisk_enable
-      and (
-        (is_system_v3 and self.system_v3_derisk_level_1_enable)
-        or (is_system_v3_2 and self.system_v3_2_derisk_level_1_enable)
+    is_short_grind_entry = (
+      self.short_grind_entry_v3(
+        last_candle,
+        previous_candle,
+        slice_profit,
+        True,
       )
+      if is_short_extra_checks_entry
+      else False
+    )
+    is_short_rebuy_entry = (
+      self.short_rebuy_entry_v3(
+        last_candle,
+        previous_candle,
+        slice_profit,
+        True,
+      )
+      if is_system_v3_1
+      else False
+    )
+    stake_fmt = ".8f" if stake_currency in ("BTC", "ETH", "BNB", "SOL") else ".3f"
+    send_notifications = not is_backtest
+    # =========================================================================
+    # DE-RISK CONFIGURATION
+    # =========================================================================
+
+    if is_system_v3:
+      derisk_1_enable = self.system_v3_derisk_level_1_enable
+      derisk_2_enable = self.system_v3_derisk_level_2_enable
+      derisk_3_enable = self.system_v3_derisk_level_3_enable
+      if is_futures_mode:
+        derisk_1_threshold = self.system_v3_derisk_level_1_futures[1]
+        derisk_1_stake = self.system_v3_derisk_level_1_stake_futures
+        derisk_2_threshold = self.system_v3_derisk_level_2_futures[1]
+        derisk_2_stake = self.system_v3_derisk_level_2_stake_futures
+        derisk_3_threshold = self.system_v3_derisk_level_3_futures[1]
+        derisk_3_stake = self.system_v3_derisk_level_3_stake_futures
+      else:
+        derisk_1_threshold = self.system_v3_derisk_level_1_spot[1]
+        derisk_1_stake = self.system_v3_derisk_level_1_stake_spot
+        derisk_2_threshold = self.system_v3_derisk_level_2_spot[1]
+        derisk_2_stake = self.system_v3_derisk_level_2_stake_spot
+        derisk_3_threshold = self.system_v3_derisk_level_3_spot[1]
+        derisk_3_stake = self.system_v3_derisk_level_3_stake_spot
+    elif is_system_v3_1:
+      derisk_1_enable = False
+      derisk_2_enable = False
+      derisk_3_enable = False
+    elif is_system_v3_2:
+      derisk_1_enable = self.system_v3_2_derisk_level_1_enable
+      derisk_2_enable = self.system_v3_2_derisk_level_2_enable
+      derisk_3_enable = self.system_v3_2_derisk_level_3_enable
+      if is_futures_mode:
+        derisk_1_threshold = self.system_v3_2_derisk_level_1_futures[1]
+        derisk_1_stake = self.system_v3_2_derisk_level_1_stake_futures
+        derisk_2_threshold = self.system_v3_2_derisk_level_2_futures[1]
+        derisk_2_stake = self.system_v3_2_derisk_level_2_stake_futures
+        derisk_3_threshold = self.system_v3_2_derisk_level_3_futures[1]
+        derisk_3_stake = self.system_v3_2_derisk_level_3_stake_futures
+      else:
+        derisk_1_threshold = self.system_v3_2_derisk_level_1_spot[1]
+        derisk_1_stake = self.system_v3_2_derisk_level_1_stake_spot
+        derisk_2_threshold = self.system_v3_2_derisk_level_2_spot[1]
+        derisk_2_stake = self.system_v3_2_derisk_level_2_stake_spot
+        derisk_3_threshold = self.system_v3_2_derisk_level_3_spot[1]
+        derisk_3_stake = self.system_v3_2_derisk_level_3_stake_spot
+    derisk_enable = self.derisk_enable
+    # ---------------------------------------------------------------------
+    # De-risk level 1
+    # ---------------------------------------------------------------------
+    if (
+      derisk_enable
+      and derisk_1_enable
       and not is_derisk_1_found
       and not is_rebuy_mode
-      and (
-        profit_stake
-        < (
-          slice_amount
-          * (
-            (self.system_v3_derisk_level_1_futures[1] if is_futures_mode else self.system_v3_derisk_level_1_spot[1])
-            if is_system_v3
-            else (
-              self.system_v3_2_derisk_level_1_futures[1]
-              if is_futures_mode
-              else self.system_v3_2_derisk_level_1_spot[1]
-            )
-          )
-        )
-        / trade_leverage
-      )
+      and profit_stake < slice_amount * derisk_1_threshold / trade_leverage
     ):
-      sell_amount = (
-        (
-          filled_entries[0].safe_filled
-          * (
-            (
-              self.system_v3_derisk_level_1_stake_futures
-              if is_futures_mode
-              else self.system_v3_derisk_level_1_stake_spot
-            )
-            if is_system_v3
-            else (
-              self.system_v3_2_derisk_level_1_stake_futures
-              if is_futures_mode
-              else self.system_v3_2_derisk_level_1_stake_spot
-            )
-          )
-        )
-        * exit_rate
-        / trade_leverage
-      )
+      sell_amount =filled_entries[0].safe_filled * derisk_1_stake * exit_rate / trade_leverage
       if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
         sell_amount = (trade_amount * exit_rate / trade_leverage) - (min_stake * 1.55)
       ft_sell_amount = sell_amount * trade_leverage * (trade_stake_amount / trade_amount) / exit_rate
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
-        send_msg(
-          notification_msg(
-            "de-risk",
-            tag="Level 1",
-            pair=trade_pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=stake_currency,
+        if send_notifications:
+          send_msg(
+            notification_msg(
+              "de-risk",
+              tag="Level 1",
+              pair=trade_pair,
+              rate=exit_rate,
+              stake_amount=sell_amount,
+              profit_stake=profit_stake,
+              profit_ratio=profit_ratio,
+              stake_currency=stake_currency,
+            )
           )
-        )
         log.info(
           f"De-risk Level 1 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         return -ft_sell_amount, "derisk_level_1"
-
+    # ---------------------------------------------------------------------
     # De-risk level 2
-
+    # ---------------------------------------------------------------------
     if (
-      self.derisk_enable
-      and (
-        (is_system_v3 and self.system_v3_derisk_level_2_enable)
-        or (is_system_v3_2 and self.system_v3_2_derisk_level_2_enable)
-      )
+      derisk_enable
+      and derisk_2_enable
       and not is_derisk_2_found
       and not is_rebuy_mode
-      and (
-        profit_stake
-        < (
-          slice_amount
-          * (
-            (self.system_v3_derisk_level_2_futures[1] if is_futures_mode else self.system_v3_derisk_level_2_spot[1])
-            if is_system_v3
-            else (
-              self.system_v3_2_derisk_level_2_futures[1]
-              if is_futures_mode
-              else self.system_v3_2_derisk_level_2_spot[1]
-            )
-          )
-        )
-        / trade_leverage
-      )
+      and profit_stake < slice_amount * derisk_2_threshold / trade_leverage
     ):
-      sell_amount = (
-        (
-          filled_entries[0].safe_filled
-          * (
-            (
-              self.system_v3_derisk_level_2_stake_futures
-              if is_futures_mode
-              else self.system_v3_derisk_level_2_stake_spot
-            )
-            if is_system_v3
-            else (
-              self.system_v3_2_derisk_level_2_stake_futures
-              if is_futures_mode
-              else self.system_v3_2_derisk_level_2_stake_spot
-            )
-          )
-        )
-        * exit_rate
-        / trade_leverage
-      )
+      sell_amount = filled_entries[0].safe_filled * derisk_2_stake * exit_rate / trade_leverage
       if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
         sell_amount = (trade_amount * exit_rate / trade_leverage) - (min_stake * 1.55)
       ft_sell_amount = sell_amount * trade_leverage * (trade_stake_amount / trade_amount) / exit_rate
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
-        send_msg(
-          notification_msg(
-            "de-risk",
-            tag="Level 2",
-            pair=trade_pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=stake_currency,
+        if send_notifications:
+          send_msg(
+            notification_msg(
+              "de-risk",
+              tag="Level 2",
+              pair=trade_pair,
+              rate=exit_rate,
+              stake_amount=sell_amount,
+              profit_stake=profit_stake,
+              profit_ratio=profit_ratio,
+              stake_currency=stake_currency,
+            )
           )
-        )
         log.info(
           f"De-risk Level 2 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         return -ft_sell_amount, "derisk_level_2"
-
+    # ---------------------------------------------------------------------
     # De-risk level 3
-
+    # ---------------------------------------------------------------------
     if (
-      self.derisk_enable
-      and (
-        (is_system_v3 and self.system_v3_derisk_level_3_enable)
-        or (is_system_v3_2 and self.system_v3_2_derisk_level_3_enable)
-      )
+      derisk_enable
+      and derisk_3_enable
       and not is_derisk_3_found
       and not is_rebuy_mode
-      and (
-        profit_stake
-        < (
-          slice_amount
-          * (
-            (self.system_v3_derisk_level_3_futures[1] if is_futures_mode else self.system_v3_derisk_level_3_spot[1])
-            if is_system_v3
-            else (
-              self.system_v3_2_derisk_level_3_futures[1]
-              if is_futures_mode
-              else self.system_v3_2_derisk_level_3_spot[1]
-            )
-          )
-        )
-        / trade_leverage
-      )
+      and profit_stake < slice_amount * derisk_3_threshold / trade_leverage
     ):
-      sell_amount = (
-        (
-          filled_entries[0].safe_filled
-          * (
-            (
-              self.system_v3_derisk_level_3_stake_futures
-              if is_futures_mode
-              else self.system_v3_derisk_level_3_stake_spot
-            )
-            if is_system_v3
-            else (
-              self.system_v3_2_derisk_level_3_stake_futures
-              if is_futures_mode
-              else self.system_v3_2_derisk_level_3_stake_spot
-            )
-          )
-        )
-        * exit_rate
-        / trade_leverage
-      )
+      sell_amount = filled_entries[0].safe_filled * derisk_3_stake * exit_rate / trade_leverage
       if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
         sell_amount = (trade_amount * exit_rate / trade_leverage) - (min_stake * 1.55)
       ft_sell_amount = sell_amount * trade_leverage * (trade_stake_amount / trade_amount) / exit_rate
       if sell_amount > min_stake and ft_sell_amount > min_stake:
         grind_profit = 0.0
-        send_msg(
-          notification_msg(
-            "de-risk",
-            tag="Level 3",
-            pair=trade_pair,
-            rate=exit_rate,
-            stake_amount=sell_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=stake_currency,
+        if send_notifications:
+          send_msg(
+            notification_msg(
+              "de-risk",
+              tag="Level 3",
+              pair=trade_pair,
+              rate=exit_rate,
+              stake_amount=sell_amount,
+              profit_stake=profit_stake,
+              profit_ratio=profit_ratio,
+              stake_currency=stake_currency,
+            )
           )
-        )
         log.info(
           f"De-risk Level 3 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
@@ -72691,11 +72647,11 @@ class NostalgiaForInfinityX7(IStrategy):
     if (
       (self.system_v3_grind_1_enable)
       # and is_derisk_1_found
-      and is_short_grind_entry
       and is_short_extra_checks_entry
       and (grind_1_sub_grind_count < grind_1_max_sub_grinds)
       and (grind_1_sub_grind_count == 0 or (-grind_1_distance_ratio < grind_1_sub_thresholds[grind_1_sub_grind_count]))
       and is_not_trade_max_stake_v3
+      and is_short_grind_entry
     ):
       buy_amount = slice_amount * grind_1_stakes[grind_1_sub_grind_count] / trade_leverage
       if buy_amount < (min_stake * 1.5):
@@ -72738,8 +72694,8 @@ class NostalgiaForInfinityX7(IStrategy):
         "grind_1_exit",
         fee_open_rate,
         fee_close_rate,
-        grind_1_cluster_max_profit_stake,
-        grind_1_cluster_max_profit_rate,
+        # grind_1_cluster_max_profit_stake,
+        # grind_1_cluster_max_profit_rate,
         grind_1_current_grind_profit_stake,
         grind_1_current_grind_profit_rate,
         grind_1_total_amount,
@@ -72804,11 +72760,11 @@ class NostalgiaForInfinityX7(IStrategy):
     if (
       (self.system_v3_grind_2_enable)
       # and is_derisk_1_found
-      and is_short_grind_entry
       and is_short_extra_checks_entry
       and (grind_2_sub_grind_count < grind_2_max_sub_grinds)
       and (grind_2_sub_grind_count == 0 or (-grind_2_distance_ratio < grind_2_sub_thresholds[grind_2_sub_grind_count]))
       and is_not_trade_max_stake_v3
+      and is_short_grind_entry
     ):
       buy_amount = slice_amount * grind_2_stakes[grind_2_sub_grind_count] / trade_leverage
       if buy_amount < (min_stake * 1.5):
@@ -72851,8 +72807,8 @@ class NostalgiaForInfinityX7(IStrategy):
         "grind_2_exit",
         fee_open_rate,
         fee_close_rate,
-        grind_2_cluster_max_profit_stake,
-        grind_2_cluster_max_profit_rate,
+        # grind_2_cluster_max_profit_stake,
+        # grind_2_cluster_max_profit_rate,
         grind_2_current_grind_profit_stake,
         grind_2_current_grind_profit_rate,
         grind_2_total_amount,
@@ -72917,11 +72873,11 @@ class NostalgiaForInfinityX7(IStrategy):
     if (
       (self.system_v3_grind_3_enable)
       # and is_derisk_1_found
-      and is_short_grind_entry
       and is_short_extra_checks_entry
       and (grind_3_sub_grind_count < grind_3_max_sub_grinds)
       and (grind_3_sub_grind_count == 0 or (-grind_3_distance_ratio < grind_3_sub_thresholds[grind_3_sub_grind_count]))
       and is_not_trade_max_stake_v3
+      and is_short_grind_entry
     ):
       buy_amount = slice_amount * grind_3_stakes[grind_3_sub_grind_count] / trade_leverage
       if buy_amount < (min_stake * 1.5):
@@ -72964,8 +72920,8 @@ class NostalgiaForInfinityX7(IStrategy):
         "grind_3_exit",
         fee_open_rate,
         fee_close_rate,
-        grind_3_cluster_max_profit_stake,
-        grind_3_cluster_max_profit_rate,
+        # grind_3_cluster_max_profit_stake,
+        # grind_3_cluster_max_profit_rate,
         grind_3_current_grind_profit_stake,
         grind_3_current_grind_profit_rate,
         grind_3_total_amount,
@@ -73031,6 +72987,10 @@ class NostalgiaForInfinityX7(IStrategy):
       (self.system_v3_grind_4_enable)
       # and is_derisk_1_found
       # and is_short_grind_entry
+      and is_short_extra_checks_entry
+      and (grind_4_sub_grind_count < grind_4_max_sub_grinds)
+      and (grind_4_sub_grind_count == 0 or (-grind_4_distance_ratio < grind_4_sub_thresholds[grind_4_sub_grind_count]))
+      and is_not_trade_max_stake_v3
       and (
         is_short_grind_entry
         or (
@@ -73047,10 +73007,6 @@ class NostalgiaForInfinityX7(IStrategy):
           and (last_candle["close"] > (last_candle["EMA_20"] * 1.020))
         )
       )
-      and is_short_extra_checks_entry
-      and (grind_4_sub_grind_count < grind_4_max_sub_grinds)
-      and (grind_4_sub_grind_count == 0 or (-grind_4_distance_ratio < grind_4_sub_thresholds[grind_4_sub_grind_count]))
-      and is_not_trade_max_stake_v3
     ):
       buy_amount = slice_amount * grind_4_stakes[grind_4_sub_grind_count] / trade_leverage
       if buy_amount < (min_stake * 1.5):
@@ -73093,8 +73049,8 @@ class NostalgiaForInfinityX7(IStrategy):
         "grind_4_exit",
         fee_open_rate,
         fee_close_rate,
-        grind_4_cluster_max_profit_stake,
-        grind_4_cluster_max_profit_rate,
+        # grind_4_cluster_max_profit_stake,
+        # grind_4_cluster_max_profit_rate,
         grind_4_current_grind_profit_stake,
         grind_4_current_grind_profit_rate,
         grind_4_total_amount,
@@ -73160,6 +73116,10 @@ class NostalgiaForInfinityX7(IStrategy):
       (self.system_v3_grind_5_enable)
       # and is_derisk_1_found
       # and is_short_grind_entry
+      and is_short_extra_checks_entry
+      and (grind_5_sub_grind_count < grind_5_max_sub_grinds)
+      and (grind_5_sub_grind_count == 0 or (-grind_5_distance_ratio < grind_5_sub_thresholds[grind_5_sub_grind_count]))
+      and is_not_trade_max_stake_v3
       and (
         is_short_grind_entry
         or (
@@ -73179,10 +73139,6 @@ class NostalgiaForInfinityX7(IStrategy):
           )
         )
       )
-      and is_short_extra_checks_entry
-      and (grind_5_sub_grind_count < grind_5_max_sub_grinds)
-      and (grind_5_sub_grind_count == 0 or (-grind_5_distance_ratio < grind_5_sub_thresholds[grind_5_sub_grind_count]))
-      and is_not_trade_max_stake_v3
     ):
       buy_amount = slice_amount * grind_5_stakes[grind_5_sub_grind_count] / trade_leverage
       if buy_amount < (min_stake * 1.5):
@@ -73225,8 +73181,8 @@ class NostalgiaForInfinityX7(IStrategy):
         "grind_5_exit",
         fee_open_rate,
         fee_close_rate,
-        grind_5_cluster_max_profit_stake,
-        grind_5_cluster_max_profit_rate,
+        # grind_5_cluster_max_profit_stake,
+        # grind_5_cluster_max_profit_rate,
         grind_5_current_grind_profit_stake,
         grind_5_current_grind_profit_rate,
         grind_5_total_amount,
@@ -73290,12 +73246,12 @@ class NostalgiaForInfinityX7(IStrategy):
 
     if (
       is_system_v3_1
-      and is_short_rebuy_entry
       and (
         (0 <= rebuy_sub_grind_count < rebuy_max_sub_grinds)
         and (slice_profit_entry < rebuy_sub_thresholds[rebuy_sub_grind_count])
       )
       and is_not_trade_max_stake_v3_1
+      and is_short_rebuy_entry
     ):
       buy_amount = slice_amount * rebuy_stakes[rebuy_sub_grind_count] / trade_leverage
       if buy_amount < (min_stake * 1.5):
@@ -73327,6 +73283,12 @@ class NostalgiaForInfinityX7(IStrategy):
   def short_grind_entry_v3(
     self, last_candle: Series, previous_candle: Series, slice_profit: float, is_derisk: bool
   ) -> float:
+    if last_candle["protections_short_global"] != True:
+      return False
+    # g0 — signal entry
+    if last_candle["enter_short"] == True:
+      self._grind_entry_tag = "g0"
+      return True
     last_close = last_candle["close"]
     last_open = last_candle["open"]
     last_close_max_12 = last_candle["close_max_12"]
@@ -73380,13 +73342,6 @@ class NostalgiaForInfinityX7(IStrategy):
     prev_sma_21 = previous_candle["SMA_21"]
     prev_ema_12 = previous_candle["EMA_12"]
     prev_ema_26 = previous_candle["EMA_26"]
-
-    if last_candle["protections_short_global"] != True:
-      return False
-    # g0 — signal entry
-    if last_candle["enter_short"] == True:
-      self._grind_entry_tag = "g0"
-      return True
     # g1 — AROONU rally + EMA_16 rise (mirror long g1)
     if (
       (last_rsi_3 < 90.0)
