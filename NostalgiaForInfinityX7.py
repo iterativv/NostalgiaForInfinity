@@ -48217,9 +48217,7 @@ class NostalgiaForInfinityX7(IStrategy):
     last_rsi_14 = last_candle["RSI_14"]
     last_close = last_candle["close"]
     last_ema_20 = last_candle["EMA_20"]
-    last_ema_26 = last_candle["EMA_26"]
     last_aroonu_14 = last_candle["AROONU_14"]
-    last_aroonu_14_15m = last_candle["AROONU_14_15m"]
     last_willr_14 = last_candle["WILLR_14"]
     last_stochrsi_k = last_candle["STOCHRSIk_14_14_3_3"]
     last_bbu_20 = last_candle["BBU_20_2.0"]
@@ -49626,7 +49624,7 @@ class NostalgiaForInfinityX7(IStrategy):
       buyback_1_stake = self.system_v3_buyback_1_stake_spot
       buyback_1_derisk = self.system_v3_buyback_1_derisk_spot
     is_long_buyback_entry = (
-      self.long_buyback_entry_v3(last_rsi_3, last_rsi_3_15m, last_aroonu_14, last_aroonu_14_15m, slice_profit, True)
+      self.long_buyback_entry_v3(last_candle, previous_candle, slice_profit, True)
       if (self.system_v3_buyback_1_enable and is_system_v3_2 and is_derisk_4_found)
       else False
     )
@@ -49777,9 +49775,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
     # Rebuy
     is_long_rebuy_entry = (
-      self.long_rebuy_entry_v3(last_rsi_3, last_rsi_3_15m, last_aroonu_14, last_aroonu_14_15m, last_close, last_ema_26, slice_profit, True)
-      if is_system_v3_1
-      else False
+      self.long_rebuy_entry_v3(last_candle, previous_candle, slice_profit, True) if is_system_v3_1 else False
     )
     if (
       is_system_v3_1
@@ -50514,21 +50510,15 @@ class NostalgiaForInfinityX7(IStrategy):
     return False
 
   def long_buyback_entry_v3(
-    self,
-    last_rsi_3: float,
-    last_rsi_3_15m: float,
-    last_aroonu_14: float,
-    last_aroonu_14_15m: float,
-    slice_profit: float,
-    is_derisk: bool
+    self, last_candle: Series, previous_candle: Series, slice_profit: float, is_derisk: bool
   ) -> float:
     if (last_candle["protections_long_global"] == True) and (
       (last_candle["enter_long"] == True)
       or (
-        (last_rsi_3 > 10.0)
-        and (last_rsi_3_15m > 10.0)
-        and (last_aroonu_14 < 30.0)
-        and (last_aroonu_14_15m < 30.0)
+        (last_candle["RSI_3"] > 10.0)
+        and (last_candle["RSI_3_15m"] > 10.0)
+        and (last_candle["AROONU_14"] < 30.0)
+        and (last_candle["AROONU_14_15m"] < 30.0)
       )
     ):
       return True
@@ -50536,24 +50526,16 @@ class NostalgiaForInfinityX7(IStrategy):
     return False
 
   def long_rebuy_entry_v3(
-    self,
-    last_rsi_3: float,
-    last_rsi_3_15m: float,
-    last_aroonu_14: float,
-    last_aroonu_14_15m: float,
-    last_close: float,
-    last_ema_26: float,
-    slice_profit: float,
-    is_derisk: bool
+    self, last_candle: Series, previous_candle: Series, slice_profit: float, is_derisk: bool
   ) -> float:
     if (last_candle["protections_long_global"] == True) and (
       (last_candle["enter_long"] == True)
       or (
-        (last_rsi_3 > 10.0)
-        and (last_rsi_3_15m > 10.0)
-        and (last_aroonu_14 < 30.0)
-        and (last_aroonu_14_15m < 30.0)
-        and (last_close < (last_ema_26 * 0.988))
+        (last_candle["RSI_3"] > 10.0)
+        and (last_candle["RSI_3_15m"] > 10.0)
+        and (last_candle["AROONU_14"] < 30.0)
+        and (last_candle["AROONU_14_15m"] < 30.0)
+        and (last_candle["close"] < (last_candle["EMA_26"] * 0.988))
       )
     ):
       return True
