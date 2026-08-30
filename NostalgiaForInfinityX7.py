@@ -29850,23 +29850,46 @@ class NostalgiaForInfinityX7(IStrategy):
           short_entry_logic.append(close < orange_h)
           short_entry_logic.append(close > orange_l)
 
-        # Condition #663 - Fib golden-pocket continuation (Short, experimental, RAW — mirror).
+        # Condition #663 - Fib golden-pocket continuation (Short, experimental, protected).
         if short_entry_condition_index == 663:
+          # Protections
           short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           short_entry_logic.append(protections_short_global == True)
+
+          short_entry_logic.append(
+            # Mar/May fast break in 4h trend: +DI4h >= 15, ROC2_4h >= -4, RSI change <= -12; need relief
+            ((rsi_14_change_pct > -12) | (plus_di_14_4h < 15) | (roc_2_4h < -4))
+            # Aug/Dec no-flow bounce: Aroon-up1h >= 30, CMF15m <= -0.05, WILLR15m <= -35; need one escape
+            & ((cmf_20_15m > -0.05) | (willr_14_15m > -35) | aroonu_14_1h_lt_30)
+            # Sep/Dec outflow bounce: 1h Aroon-up >= 20, CMF <= -0.15, RSI surge >= 20; need one escape
+            & (aroonu_14_1h_lt_20 | (cmf_20_1h > -0.15) | (rsi_14_change_pct_1h < 20))
+            # Dec-20 crash rebound: 4h ROC <= -14, 1h RSI acceleration >= 50; need either side softer
+            & ((rsi_14_change_pct_1h < 50) | (roc_2_4h > -14))
+          )
+
+          # Logic
           short_entry_logic.append(ema_12_4h < ema_200_4h)
           # R1 (eyeball): only a clean active downtrend
           short_entry_logic.append(rsi_14_4h < 45.0)
           short_entry_logic.append(aroond_14_4h > 70.0)
           # R1: anti-capitulation mirror
           short_entry_logic.append(roc_9_1d > -30.0)
-          short_entry_logic.append((close_max_48 - close_min_48) > (close_min_48 * 0.04))
-          # FIRST entry into the 0.5-0.618 retrace band of the down-impulse (from below)
-          _fib_rng_663 = close_max_48 - close_min_48
-          _fib_retr_663 = (close - close_min_48) / _fib_rng_663
-          short_entry_logic.append(np_shift(_fib_retr_663, 1) < 0.5)
+          _fib_high_wick_663 = ta.MAX(high_px, timeperiod=48)
+          _fib_low_wick_663 = ta.MIN(low_px, timeperiod=48)
+          _fib_high_index_663 = ta.MAXINDEX(high_px, timeperiod=48)
+          _fib_low_index_663 = ta.MININDEX(low_px, timeperiod=48)
+          _fib_ordered_663 = np.where(_fib_high_index_663 < _fib_low_index_663, 1.0, 0.0)
+          _fib_rng_663 = _fib_high_wick_663 - _fib_low_wick_663
+          _fib_retr_663 = (close - _fib_low_wick_663) / _fib_rng_663
+          _fib_retr_prev_663 = np_shift(_fib_retr_663, 1)
+          short_entry_logic.append(_fib_rng_663 > (_fib_low_wick_663 * 0.04))
+          # The engulfing candle closes back through the wick-anchored pocket's 0.618 edge.
+          short_entry_logic.append(_fib_ordered_663 > 0.5)
+          short_entry_logic.append(_fib_retr_prev_663 >= 0.618)
+          short_entry_logic.append(_fib_retr_prev_663 <= 0.786)
           short_entry_logic.append(_fib_retr_663 >= 0.5)
-          short_entry_logic.append(_fib_retr_663 <= 0.618)
+          short_entry_logic.append(_fib_retr_663 < 0.618)
+          short_entry_logic.append(engulf_bear > 0.5)
 
         # Condition #664 - Squeeze Momentum release (Short, experimental, RAW — mirror).
         if short_entry_condition_index == 664:
