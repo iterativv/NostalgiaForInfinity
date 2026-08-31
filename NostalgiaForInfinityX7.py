@@ -49643,14 +49643,11 @@ class NostalgiaForInfinityX7(IStrategy):
       and is_derisk_4_found
       # and is_long_extra_checks_entry
       and (buyback_1_current_open_rate == 0)
-      and (
-        buyback_1_exit_distance_ratio < buyback_1_threshold
-        or buyback_1_exit_distance_ratio > buyback_1_distance
-      )
+      and (buyback_1_exit_distance_ratio < buyback_1_threshold or buyback_1_exit_distance_ratio > buyback_1_distance)
       and is_not_trade_max_stake_v3
       and is_long_buyback_entry
     ):
-      buy_amount = (slice_amount* buyback_1_stake / trade_leverage)
+      buy_amount = slice_amount * buyback_1_stake / trade_leverage
       if buy_amount < (min_stake * 1.5):
         buy_amount = min_stake * 1.5
       if buy_amount > max_stake:
@@ -49736,10 +49733,7 @@ class NostalgiaForInfinityX7(IStrategy):
     if (
       system_v3_buyback_1_use_derisk
       and (buyback_1_sub_grind_count > 0)
-      and (
-        buyback_1_current_grind_stake_profit
-        < (slice_amount * buyback_1_derisk)
-      )
+      and (buyback_1_current_grind_stake_profit < (slice_amount * buyback_1_derisk))
     ):
       sell_amount = buyback_1_total_amount * exit_rate / trade_leverage
       if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
