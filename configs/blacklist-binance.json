@@ -25,7 +25,8 @@
       // Exchange
       "(RIF|BNB)/.*",
       // Leverage
-      ".*(_PREMIUM|BEAR|BULL|HALF|HEDGE|UP|DOWN|[1235][SL])/.*",
+      ".*(_PREMIUM|BEAR|BULL|HALF|HEDGE|[1235][SL])/.*",
+      ".{3,}(UP|DOWN)/.*",
       // Fiat
       "(ARS|AUD|BIDR|BRZ|BRL|CAD|CHF|EUR|GBP|HKD|IDRT|JPY|NGN|PLN|RON|RUB|SGD|TRY|UAH|USD|ZAR)/.*",
       // Stable
