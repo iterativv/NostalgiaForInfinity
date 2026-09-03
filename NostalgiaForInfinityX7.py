@@ -71,7 +71,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.5.14"
+    return "v17.5.15"
 
   stoploss = -0.99
 
@@ -27389,14 +27389,18 @@ class NostalgiaForInfinityX7(IStrategy):
             & ((rsi_14_4h_gt_80) | (roc_9_4h_lt_40) | (cci_20_change_pct_4h_lt_0))
             # 15m & 1h uptrend, 4h still low
             & ((cmf_20_15m_lt_0_30) | (cmf_20_1h_lt_0_30) | (stochrsi_k_4h_gt_60))
+            # 15m & 1h uptrend
+            & ((aroonu_14_15m_lt_100) | (aroonu_14_1h_lt_100))
             # 15m uptrend, 1h low
             & ((aroonu_14_15m_lt_100) | (stochrsi_k_1h_gt_20))
+            # 15m uptrend, 1d uptrend
+            & ((aroonu_14_15m_lt_100) | (roc_9_1d_lt_60))
             # 1h & 4h uptrend
-            & ((aroonu_14_1h_lt_100) | aroonu_14_4h_lt_100)
+            & ((aroonu_14_1h_lt_100) | (aroonu_14_4h_lt_100))
             # 1h uptrend, 4h uptrend
             & ((aroonu_14_1h_lt_100) | (roc_9_4h_lt_20))
             # 4h uptrend, 1d uptrend
-            & (aroonu_14_4h_lt_100 | aroonu_14_1d_lt_100)
+            & (aroonu_14_4h_lt_100 | (aroonu_14_1d_lt_100))
             # 4h uptrend, 15m uptrend
             & (aroonu_14_4h_lt_100 | (roc_9_15m < 10.0))
             # 4h uptrend, 1h uptrend
