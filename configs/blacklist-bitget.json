@@ -27,7 +27,8 @@
       // Exchange Tokens
       "BGB/.*",
       // Leverage tokens
-      ".*(3L|3S|5L|5S|UP|DOWN)/.*",
+      ".*(3L|3S|5L|5S)/.*",
+      ".{3,}(UP|DOWN)/.*",
       // Fiat
       "(RCCL|RTRV|RTXSTOCK|RIF|AUD|BRZ|CAD|CHF|EUR|GBP|HKD|IDRT|JPY|NGN|RUB|SGD|TRY|UAH|USD|ZAR)/.*",
       // Stable tokens
