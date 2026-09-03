@@ -20285,8 +20285,8 @@ class NostalgiaForInfinityX7(IStrategy):
           long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           long_entry_logic.append(protections_long_global == True)
 
-          # 5m & 1h down move
           long_entry_logic.append(
+            # 5m & 1h down move
             ((rsi_3_15m_gt_3) | (rsi_3_1h_gt_5))
             # 15m & 4h down move, 4h still high
             & ((rsi_3_15m_gt_3) | (rsi_3_4h_gt_20) | (aroonu_14_4h_lt_40))
@@ -20342,6 +20342,8 @@ class NostalgiaForInfinityX7(IStrategy):
             & ((rsi_3_15m_gt_25) | (rsi_3_1h_gt_25) | (rsi_3_4h_gt_40) | (aroonu_14_1h_lt_50) | (aroonu_14_1d_lt_80))
             # 15m & 1h & 4h down move, 4h & 1d overbought
             & ((rsi_3_15m_gt_25) | (rsi_3_1h_gt_25) | (rsi_3_4h_gt_50) | (roc_9_4h_lt_10) | (roc_9_1d_lt_20))
+            # 15m & 1h & 4h & 1d down move, 4h high
+            & ((rsi_3_15m_gt_25) | (rsi_3_1h_gt_30) | (rsi_3_4h_gt_40) | (rsi_3_1d_gt_60) | (aroonu_14_4h_lt_70))
             # 15m & 4h down move, 4h high
             & ((rsi_3_15m_gt_25) | (rsi_3_4h_gt_45) | (aroonu_14_4h_lt_85))
             # 15m & 1h down move, 15m still not low enough
