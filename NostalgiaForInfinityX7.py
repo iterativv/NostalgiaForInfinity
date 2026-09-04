@@ -74139,13 +74139,16 @@ class NostalgiaForInfinityX7(IStrategy):
       and (last_rsi_14_1h < 55.0)
       and (last_roc_9_1h < 0.0)
       and (last_roc_9_4h < 10.0)
-      # anti-capitulation: even at a formed top, a capitulative 4h overshoot reverses (dead-bounce).
+      # anti-capitulative: even at a formed top, a capitulative 4h overshoot reverses (dead-bounce).
+      # cross-coin (SFP/CELR/DYDX/APE): cuts 17 severe at ~1% good cost within breakdown-starts.
       and (last_roc_9_4h > -25.0)
       # breakdown-started gate: only rebuild once the 4h top is IN (not still making new highs).
-      # AROONU high = a fresh 4h high was just made = still pumping; require it high = top formed.
+      # g22's job is the breakdown rebuild — NOT entering mid-pump (that's g1..g21). AROOND low =
+      # a fresh 4h high was just made = still pumping; require it high = top formed = breakdown start.
       and (last_aroonu_14_4h > 50.0)
-      # aggressive risk-free: g22 fires ONLY well above the 4h 200-EMA (fresh breakdown zone). The
-      # near/below-EMA overextended-drop zone is where dead-bounces live — g23 (extended-continuation)
+      # aggressive risk-free: g22 fires ONLY deep above the 4h 200-EMA (fresh breakdown zone). The
+      # near/below-EMA overextended-pullback zone is where dead-cats live AND where g22's late-breakdown
+      # adds sit — we sacrifice those wins on purpose, because g23 (extended-continuation, ~0.2% severe)
       # backstops the real breakdowns below. So g22 stays clean, g23 captures the continuation.
       and (last_close > last_ema_200_4h)
       and (last_close < (last_high_max_12_4h * 0.90))
@@ -74188,7 +74191,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and (last_rsi_14_1h < 50.0)
       and (last_roc_9_1h < 0.0)
       and (last_roc_9_4h < 0.0)
-      # anti-capitulation blow-off + anti-exhaustion bottom
+      # anti-capitulative blow-off + anti-exhaustion bottom
       and (last_roc_9_4h > -25.0)
       and ((last_stochrsi_k > 3.0) or (last_rsi_14 > 20.0))
       and (last_close < (last_high_max_12_4h * 0.90))
@@ -74205,6 +74208,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and ((last_rsi_3_1d < 70.0) or (last_aroonu_14_4h > 0.0))
       and ((last_rsi_3_1d < 50.0) or (last_stochrsi_k_1h > 20.0) or (last_stochrsi_k_4h > 10.0))
       and ((last_rsi_3_1d < 45.0) or (last_aroonu_14_15m > 0.0) or (last_stochrsi_k_15m > 10.0))
+      and ((last_aroonu_14_15m > 20.0) or (last_aroonu_14_1h > 0.0) or (last_roc_9_1d > -10.0))
       and ((last_aroonu_14_15m > 10.0) or (last_stochrsi_k_4h > 10.0))
       and ((last_aroonu_14_15m > 0.0) or (last_aroonu_14_1h > 0.0))
       and ((last_aroonu_14_15m > 0.0) or (last_aroonu_14_4h > 0.0))
@@ -74225,6 +74229,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and ((last_stochrsi_k_15m > 10.0) or (last_stochrsi_k_4h > 10.0))
       and ((last_stochrsi_k_1h > 10.0) or (last_stochrsi_k_4h > 10.0))
       and ((last_stochrsi_k_1h > 10.0) or (last_stochrsi_k_4h > 10.0))
+      and ((last_stochrsi_k_1h > 10.0) or (last_stochrsi_k_1d > 10.0))
     ):
       self._grind_entry_tag = "g23"
       return True
@@ -74232,7 +74237,7 @@ class NostalgiaForInfinityX7(IStrategy):
     # g24 — downtrend-bounce continuation add: the zone BELOW the 4h 200-EMA that g22 explicitly sacrifices.
     # (mirror long g24)
     if (
-      # momentum healthy on the bounce: RSI holds down (a real reversal spikes RSI hard)
+      # momentum healthy on the bounce: RSI holds up (a real reversal cracks RSI hard)
       (last_rsi_3 < 80.0)
       and (last_rsi_3_15m < 80.0)
       and (last_rsi_14 < 60.0)
@@ -74240,10 +74245,10 @@ class NostalgiaForInfinityX7(IStrategy):
       and (last_roc_9_1h < 10.0)
       and (last_roc_9_4h < 0.0)
       and (last_roc_9_4h > -25.0)  # anti-parabolic blow-off top
-      # bear scope-gate: confirmed 4h downtrend + price below the 200-EMA regime (complements g22's >200EMA)
+      # bear scope-gate: confirmed 4h downtrend + price below the 200-EMA regime (complements g22's <200EMA)
       and (last_ema_12_4h < last_ema_200_4h)
       and (last_close < last_ema_200_4h)
-      # shallow bounce to the short EMA — short the bounce WITHIN the trend, never the bottom nor a deep dump
+      # shallow bounce to the short EMA — sell the dip WITHIN the trend, never the bottom nor a deep pump
       and (last_close > (last_ema_20 * 0.99))
       and (last_close < (last_ema_20 * 1.06))
       and ((last_rsi_3_15m < 60.0) or (last_stochrsi_k_15m > 30.0))
@@ -74270,6 +74275,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and ((last_rsi_3_1h < 55.0) or (last_aroonu_14_4h > 20.0) or (last_roc_9_1d > -10.0))
       and ((last_rsi_3_1h < 50.0) or (last_aroonu_14_1h > 20.0) or (last_stochrsi_k_4h > 30.0))
       and ((last_rsi_3_1h < 50.0) or (last_rsi_3_4h < 45.0) or (last_stochrsi_k_4h > 30.0))
+      and ((last_rsi_3_1h < 50.0) or (last_aroonu_14_1h > 30.0) or (last_aroonu_14_1d > 30.0))
       and ((last_rsi_3_1h < 50.0) or (last_aroonu_14_4h > 20.0) or (last_aroonu_14_1d > 0.0))
       and ((last_rsi_3_1h < 50.0) or (last_aroonu_14_4h > 10.0) or (last_stochrsi_k_4h > 10.0))
       and ((last_rsi_3_1h < 45.0) or (last_rsi_3_4h < 45.0) or (last_stochrsi_k_15m > 30.0))
@@ -74282,7 +74288,6 @@ class NostalgiaForInfinityX7(IStrategy):
       and ((last_rsi_3_1h < 35.0) or (last_aroonu_14_1h > 0.0) or (last_stochrsi_k_4h > 30.0))
       and ((last_rsi_3_4h < 75.0) or (last_roc_9_1d > -30.0))
       and ((last_rsi_3_4h < 60.0) or (last_rsi_3_1d < 40.0) or (last_aroonu_14_1d > 0.0))
-      # do not short an oversold bottom on the bounce
       and ((last_rsi_3_4h < 60.0) or (last_aroonu_14_15m > 30.0) or (last_aroonu_14_1d > 10.0))
       and ((last_rsi_3_4h < 60.0) or (last_aroonu_14_1d > 10.0) or (last_roc_9_1d > -10.0))
       and ((last_rsi_3_4h < 60.0) or (last_stochrsi_k_15m > 40.0) or (last_aroonu_14_1d > 10.0))
@@ -74299,6 +74304,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and ((last_rsi_3_1d < 65.0) or (last_stochrsi_k_1h > 10.0))
       and ((last_rsi_3_1d < 65.0) or (last_stochrsi_k_4h > 20.0))
       and ((last_rsi_3_1d < 55.0) or (last_stochrsi_k_1h > 30.0) or (last_stochrsi_k_4h > 20.0))
+      and ((last_rsi_3_1d < 50.0) or (last_stochrsi_k_15m > 10.0) or (last_roc_9_1d > -10.0))
       and ((last_rsi_3_1d < 40.0) or (last_aroonu_14_1h > 20.0) or (last_aroonu_14_1d > 0.0))
       and ((last_rsi_14_1h > 30.0) or (last_stochrsi_k_4h > 10.0))
       and ((last_aroonu_14_15m > 20.0) or (last_aroonu_14_1h > 20.0) or (last_aroonu_14_4h > 20.0))
@@ -74329,9 +74335,11 @@ class NostalgiaForInfinityX7(IStrategy):
       and ((last_aroonu_14_1d > 0.0) or (last_stochrsi_k_1h > 10.0))
       and ((last_aroonu_14_1d > 0.0) or (last_stochrsi_k_4h > 10.0))
       and ((last_aroonu_14_1d > 0.0) or (last_roc_9_4h > -15.0) or (last_roc_9_1d > -50.0))
+      # do not sell an oversold bottom on the pullback
       and ((last_stochrsi_k > 10.0) or (last_rsi_14 > 30.0))
       and ((last_stochrsi_k_15m > 20.0) or (last_stochrsi_k_1h > 20.0) or (last_roc_9_1d > -10.0))
       and ((last_stochrsi_k_15m > 20.0) or (last_aroonu_14_1d > 0.0))
+      and ((last_stochrsi_k_15m > 20.0) or (last_stochrsi_k_1d > 10.0) or (last_roc_9_1d > -20.0))
       and ((last_stochrsi_k_15m > 10.0) or (last_stochrsi_k_1h > 10.0))
       and ((last_stochrsi_k_15m > 10.0) or (last_stochrsi_k_1d > 10.0))
       and ((last_stochrsi_k_1h > 20.0) or (last_stochrsi_k_1d > 10.0))
@@ -74355,14 +74363,16 @@ class NostalgiaForInfinityX7(IStrategy):
       and (last_roc_9_1h > -2.0)
       and (last_close < (last_ema_20 * 1.02))
       and (last_close > (last_ema_20 * 0.98))
-      # squeeze integrity: regime still broken, 4h reclaim HELD, not dripping to new lows
+      # squeeze integrity: regime still broken, 4h rejection HELD, not dripping to new highs
       and (last_close > last_ema_200_4h)
       and (last_close < (last_high_max_12_4h * 0.90))
       and (last_close < (last_close_max_12 * 0.995))
       # general protections first
       and ((last_rsi_3_15m < 80.0) or (last_stochrsi_k_4h > 10.0))
       and ((last_rsi_3_1h < 85.0) or (last_aroonu_14_4h > 30.0))
+      and ((last_rsi_3_1h < 80.0) or (last_rsi_3_4h < 80.0) or (last_aroonu_14_1d > 10.0))
       and ((last_rsi_3_1h < 80.0) or (last_stochrsi_k_1h > 20.0))
+      and ((last_rsi_3_1h < 70.0) or (last_rsi_3_1d < 70.0) or (last_stochrsi_k_1h > 30.0))
       and ((last_rsi_3_1h < 65.0) or (last_aroonu_14_1h > 30.0))
       and ((last_rsi_3_1h < 65.0) or (last_aroonu_14_4h > 30.0))
       and ((last_rsi_3_1h < 60.0) or (last_aroonu_14_4h > 20.0))
@@ -74379,6 +74389,7 @@ class NostalgiaForInfinityX7(IStrategy):
       and ((last_rsi_3_1h < 40.0) or (last_rsi_3_1d < 40.0) or (last_aroonu_14_1h > 20.0))
       and ((last_rsi_3_1h < 40.0) or (last_stochrsi_k_4h > 30.0) or (last_stochrsi_k_1d > 20.0))
       and ((last_rsi_3_1h < 40.0) or (last_stochrsi_k_4h > 20.0) or (last_roc_9_4h > -10.0))
+      and ((last_rsi_3_4h < 90.0) or (last_rsi_3_1d < 60.0) or (last_stochrsi_k_15m > 20.0))
       and ((last_rsi_3_4h < 75.0) or (last_stochrsi_k_4h > 50.0) or (last_roc_9_4h > -10.0))
       and ((last_rsi_3_4h < 65.0) or (last_stochrsi_k_4h > 30.0))
       and ((last_rsi_3_4h < 60.0) or (last_rsi_3_1d < 60.0) or (last_aroonu_14_15m > 30.0))
@@ -74394,11 +74405,11 @@ class NostalgiaForInfinityX7(IStrategy):
       and ((last_rsi_3_4h < 35.0) or (last_aroonu_14_1h > 30.0) or (last_stochrsi_k_4h > 10.0))
       and ((last_rsi_3_4h < 35.0) or (last_aroonu_14_4h > 20.0) or (last_stochrsi_k_4h > 30.0))
       and ((last_rsi_3_4h < 35.0) or (last_stochrsi_k_4h > 10.0) or (last_roc_9_4h > -10.0))
-      and ((last_rsi_3_1d < 90.0) or (last_aroonu_14_1h > 10.0))
-      and ((last_rsi_3_1d < 90.0) or (last_stochrsi_k_1h > 20.0))
       and ((last_rsi_3_1d < 90.0) or (last_stochrsi_k_4h > 30.0))
       and ((last_rsi_3_1d < 80.0) or (last_aroonu_14_1d > 10.0))
       and ((last_rsi_3_1d < 75.0) or (last_stochrsi_k_15m > 30.0))
+      and ((last_rsi_3_1d < 75.0) or (last_aroonu_14_1h > 30.0))
+      and ((last_rsi_3_1d < 75.0) or (last_stochrsi_k_1h > 10.0))
       and ((last_rsi_3_1d < 70.0) or (last_aroonu_14_15m > 0.0))
       and ((last_rsi_3_1d < 70.0) or (last_stochrsi_k_4h > 10.0))
       and ((last_aroonu_14_15m > 30.0) or (last_aroonu_14_1h > 0.0) or (last_stochrsi_k_1d > 20.0))
@@ -74407,6 +74418,8 @@ class NostalgiaForInfinityX7(IStrategy):
       and ((last_aroonu_14_15m > 20.0) or (last_aroonu_14_1h > 0.0))
       and ((last_aroonu_14_15m > 0.0) or (last_aroonu_14_4h > 10.0))
       and ((last_aroonu_14_15m > 0.0) or (last_stochrsi_k_4h > 10.0))
+      and ((last_aroonu_14_1h > 20.0) or (last_aroonu_14_4h > 0.0) or (last_stochrsi_k_1h > 20.0))
+      and ((last_aroonu_14_1h > 20.0) or (last_stochrsi_k_4h > 0.0) or (last_stochrsi_k_4h > 20.0))
       and ((last_aroonu_14_1h > 20.0) or (last_stochrsi_k_4h > 10.0) or (last_roc_9_4h > -10.0))
       and ((last_aroonu_14_1h > 0.0) or (last_aroonu_14_1d > 0.0))
       and ((last_aroonu_14_1h > 0.0) or (last_stochrsi_k_15m > 20.0))
