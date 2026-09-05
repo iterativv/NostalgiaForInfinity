@@ -21978,6 +21978,8 @@ class NostalgiaForInfinityX7(IStrategy):
             & ((rsi_3_1h_gt_25) | (rsi_3_4h_gt_50) | (aroonu_14_4h_lt_85))
             # 1h & 4h down move, 1d overbought
             & ((rsi_3_1h_gt_25) | (rsi_3_4h_gt_50) | (roc_9_1d_lt_100))
+            # 1h & 1d down move, 1h high, 4h downtrend
+            & ((rsi_3_1h_gt_25) | (rsi_3_1d_gt_25) | (stochrsi_k_1h_lt_70) | (roc_9_4h_gt_neg_20))
             # 1h down move, 1h & 1d high
             & ((rsi_3_1h_gt_25) | (aroonu_14_1h_lt_70) | (aroonu_14_1d_lt_90))
             # 1h down move, 1h still not low enough, 4h still high
