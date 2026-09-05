@@ -22677,6 +22677,8 @@ class NostalgiaForInfinityX7(IStrategy):
             # Short-term Aroon spike without 4h or daily short-RSI continuation
             & ((aroonu_14_15m_lt_60) | (rsi_3_1d_gt_65) | (rsi_3_4h_gt_55))
             ####################################################################
+            # 15m up move, 15m high, 4h high & overbought
+            & ((rsi_3_15m_lt_85) | (stochrsi_k_15m_lt_70) | (stochrsi_k_4h_lt_80) | (roc_9_4h_lt_30))
             # 15m up move, 15m high, 1h high
             & ((rsi_3_15m_lt_90) | (aroonu_14_15m_lt_100) | (aroonu_14_1h_lt_100))
             # 15m up move, 1d high, 1h & 1d overbought
