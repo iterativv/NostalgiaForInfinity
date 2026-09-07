@@ -14,6 +14,11 @@
       "(GLMR|ICX|MOVR|SOPH|SYN|COOKIE|DODO|DODOX|STORJ)/.*",
       // Binance monitoring tag 2026-08 (delisting-risk watchlist)
       "(LSK|STX)/.*",
+      // CJK meme cluster — same family as 币安人生 (already listed below). Chinese-meme perps
+      // with 67-129% single-day ranges and -30% to -99% off their highs (2026-09-07):
+      // 龙虾 -41.9%/121% day, 我踏马来了 -80.7%/129% day, 牛来 -35.0%/70% day, 哈基米 -29.9%/67% day.
+      // Spot-only siblings are further gone: 老子 -93.4%, 人生K线 -93.5%/855% day, 小股东 -98.9%, 旺财 -93.3%/1175% day.
+      "(龙虾|哈基米|牛来|我踏马来了|老子|人生K线|小股东|旺财)/.*",
       // Parabolic squeeze — 542 shorts liquidated on 4 accounts, 2026-08-07 (+801%/7d)
       "(TUT)/.*",
       // Pump-and-dump knives — APR +192% then -68% (2026-08-12/15), VELVET -46% in an hour (2026-07-24)
