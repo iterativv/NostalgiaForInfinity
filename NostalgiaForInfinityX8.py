@@ -71,7 +71,7 @@ class NostalgiaForInfinityX8(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v18.0.2"
+    return "v18.0.3"
 
   stoploss = -0.99
 
@@ -19239,6 +19239,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((rsi_3_15m_gt_20) | (aroonu_14_1d_lt_100) | (roc_9_4h_lt_30))
             # 15m down move, 1h high & overbought
             & ((rsi_3_15m_gt_20) | (stochrsi_k_1h_lt_80) | (roc_9_1h_lt_10))
+            # 15m & 1h down move, 1h still high, 4h high & overbought
+            & ((rsi_3_15m_gt_25) | (rsi_3_1h_gt_30) | (aroonu_14_1h_lt_50) | (aroonu_14_4h_lt_90) | (roc_9_4h_lt_10))
             # 15m & 1h down move, 15m still high, 4h high
             & ((rsi_3_15m_gt_25) | (rsi_3_1h_gt_45) | (rsi_14_15m_lt_40) | (aroonu_14_4h_lt_100))
             # 15m & 1h & 4h down move, 1h high
@@ -25538,7 +25540,6 @@ class NostalgiaForInfinityX8(IStrategy):
     #  Here ends exit signal conditions for long_exit_dec
 
     return False, None
-
 
   # Long Exit Stop Loss
   # ---------------------------------------------------------------------------------------------
