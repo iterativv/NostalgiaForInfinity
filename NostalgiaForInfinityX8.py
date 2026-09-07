@@ -25473,28 +25473,28 @@ class NostalgiaForInfinityX8(IStrategy):
       if (last_stochrsi_k > 90.0) and (last_willr_480 > -1.0) and (last_aroonu_14_4h > 90.0):
         return True, f"exit_{mode_name}_w_4_1"
     elif 0.06 > current_profit >= 0.05:
-      if (last_stochrsi_k > 90.0) and (last_willr_480 > -10.0) and (last_aroonu_14_4h > 90.0):
+      if (last_stochrsi_k > 90.0) and (last_willr_480 > -1.0) and (last_aroonu_14_4h > 90.0):
         return True, f"exit_{mode_name}_w_5_1"
     elif 0.07 > current_profit >= 0.06:
-      if (last_stochrsi_k > 90.0) and (last_willr_480 > -10.0) and (last_aroonu_14_4h > 90.0):
+      if (last_stochrsi_k > 90.0) and (last_willr_480 > -1.0) and (last_aroonu_14_4h > 90.0):
         return True, f"exit_{mode_name}_w_6_1"
     elif 0.08 > current_profit >= 0.07:
-      if (last_stochrsi_k > 90.0) and (last_willr_480 > -10.0) and (last_aroonu_14_4h > 90.0):
+      if (last_stochrsi_k > 90.0) and (last_willr_480 > -1.0) and (last_aroonu_14_4h > 90.0):
         return True, f"exit_{mode_name}_w_7_1"
     elif 0.09 > current_profit >= 0.08:
-      if (last_stochrsi_k > 90.0) and (last_willr_480 > -10.0) and (last_aroonu_14_4h > 90.0):
+      if (last_stochrsi_k > 90.0) and (last_willr_480 > -1.0) and (last_aroonu_14_4h > 90.0):
         return True, f"exit_{mode_name}_w_8_1"
     elif 0.1 > current_profit >= 0.09:
-      if (last_stochrsi_k > 90.0) and (last_willr_480 > -10.0) and (last_aroonu_14_4h > 90.0):
+      if (last_stochrsi_k > 90.0) and (last_willr_480 > -1.0) and (last_aroonu_14_4h > 90.0):
         return True, f"exit_{mode_name}_w_9_1"
     elif 0.12 > current_profit >= 0.1:
-      if (last_stochrsi_k > 90.0) and (last_willr_480 > -10.0) and (last_aroonu_14_4h > 90.0):
+      if (last_stochrsi_k > 90.0) and (last_willr_480 > -1.0) and (last_aroonu_14_4h > 90.0):
         return True, f"exit_{mode_name}_w_10_1"
     elif 0.2 > current_profit >= 0.12:
-      if (last_stochrsi_k > 90.0) and (last_willr_480 > -10.0) and (last_aroonu_14_4h > 90.0):
+      if (last_stochrsi_k > 90.0) and (last_willr_480 > -1.0) and (last_aroonu_14_4h > 90.0):
         return True, f"exit_{mode_name}_w_11_1"
     elif current_profit >= 0.2:
-      if (last_stochrsi_k > 90.0) and (last_willr_480 > -10.0) and (last_aroonu_14_4h > 90.0):
+      if (last_stochrsi_k > 90.0) and (last_willr_480 > -1.0) and (last_aroonu_14_4h > 90.0):
         return True, f"exit_{mode_name}_w_12_1"
 
     #  Here ends exit signal conditions for long_exit_williams_r
@@ -39771,28 +39771,28 @@ class NostalgiaForInfinityX8(IStrategy):
       if (last_stochrsi_k < 5.0) and (last_willr_480 < -99.0) and (last_aroonu_14_4h < 5.0):
         return True, f"exit_{mode_name}_w_4_1"
     elif 0.06 > current_profit >= 0.05:
-      if (last_stochrsi_k < 10.0) and (last_willr_480 < -90.0) and (last_aroonu_14_4h < 10.0):
+      if (last_stochrsi_k < 10.0) and (last_willr_480 < -99.0) and (last_aroonu_14_4h < 10.0):
         return True, f"exit_{mode_name}_w_5_1"
     elif 0.07 > current_profit >= 0.06:
-      if (last_stochrsi_k < 10.0) and (last_willr_480 < -90.0) and (last_aroonu_14_4h < 10.0):
+      if (last_stochrsi_k < 10.0) and (last_willr_480 < -99.0) and (last_aroonu_14_4h < 10.0):
         return True, f"exit_{mode_name}_w_6_1"
     elif 0.08 > current_profit >= 0.07:
-      if (last_stochrsi_k < 10.0) and (last_willr_480 < -90.0) and (last_aroonu_14_4h < 10.0):
+      if (last_stochrsi_k < 10.0) and (last_willr_480 < -99.0) and (last_aroonu_14_4h < 10.0):
         return True, f"exit_{mode_name}_w_7_1"
     elif 0.09 > current_profit >= 0.08:
-      if (last_stochrsi_k < 10.0) and (last_willr_480 < -90.0) and (last_aroonu_14_4h < 10.0):
+      if (last_stochrsi_k < 10.0) and (last_willr_480 < -99.0) and (last_aroonu_14_4h < 10.0):
         return True, f"exit_{mode_name}_w_8_1"
     elif 0.1 > current_profit >= 0.09:
-      if (last_stochrsi_k < 10.0) and (last_willr_480 < -90.0) and (last_aroonu_14_4h < 10.0):
+      if (last_stochrsi_k < 10.0) and (last_willr_480 < -99.0) and (last_aroonu_14_4h < 10.0):
         return True, f"exit_{mode_name}_w_9_1"
     elif 0.12 > current_profit >= 0.1:
-      if (last_stochrsi_k < 10.0) and (last_willr_480 < -90.0) and (last_aroonu_14_4h < 10.0):
+      if (last_stochrsi_k < 10.0) and (last_willr_480 < -99.0) and (last_aroonu_14_4h < 10.0):
         return True, f"exit_{mode_name}_w_10_1"
     elif 0.2 > current_profit >= 0.12:
-      if (last_stochrsi_k < 10.0) and (last_willr_480 < -90.0) and (last_aroonu_14_4h < 10.0):
+      if (last_stochrsi_k < 10.0) and (last_willr_480 < -99.0) and (last_aroonu_14_4h < 10.0):
         return True, f"exit_{mode_name}_w_11_1"
     elif current_profit >= 0.2:
-      if (last_stochrsi_k < 10.0) and (last_willr_480 < -90.0) and (last_aroonu_14_4h < 10.0):
+      if (last_stochrsi_k < 10.0) and (last_willr_480 < -99.0) and (last_aroonu_14_4h < 10.0):
         return True, f"exit_{mode_name}_w_12_1"
 
     #  Here ends exit signal conditions for short_exit_williams_r
