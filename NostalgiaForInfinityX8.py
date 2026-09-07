@@ -71,7 +71,7 @@ class NostalgiaForInfinityX8(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v18.0.3"
+    return "v18.0.4"
 
   stoploss = -0.99
 
@@ -25456,7 +25456,7 @@ class NostalgiaForInfinityX8(IStrategy):
       if (last_stochrsi_k > 95.0) and (last_willr_480 > -1.0) and (last_aroonu_14_4h > 95.0):
         return True, f"exit_{mode_name}_w_3_1"
     elif 0.05 > current_profit >= 0.04:
-      if (last_stochrsi_k > 90.0) and (last_willr_480 > -10.0) and (last_aroonu_14_4h > 90.0):
+      if (last_stochrsi_k > 90.0) and (last_willr_480 > -1.0) and (last_aroonu_14_4h > 90.0):
         return True, f"exit_{mode_name}_w_4_1"
     elif 0.06 > current_profit >= 0.05:
       if (last_stochrsi_k > 90.0) and (last_willr_480 > -10.0) and (last_aroonu_14_4h > 90.0):
