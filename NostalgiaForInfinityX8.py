@@ -71,7 +71,7 @@ class NostalgiaForInfinityX8(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v18.0.4"
+    return "v18.0.5"
 
   stoploss = -0.99
 
@@ -25502,8 +25502,11 @@ class NostalgiaForInfinityX8(IStrategy):
     buy_tag,
   ) -> tuple:
     last_sma_200_dec = last_candle["SMA_200_dec_24"]
+    last_rsi_14 = last_candle["RSI_14"]
     last_stochrsi_k = last_candle["STOCHRSIk_14_14_3_3"]
     last_aroonu_14 = last_candle["AROONU_14"]
+    last_willr_480 = last_candle["WILLR_480"]
+    last_aroonu_14_4h = last_candle["AROONU_14_4h"]
     last_sma_200_dec_1h = last_candle["SMA_200_dec_12_1h"]
     last_sma_200_dec_4h = last_candle["SMA_200_dec_6_4h"]
 
@@ -25512,6 +25515,7 @@ class NostalgiaForInfinityX8(IStrategy):
         last_sma_200_dec
         and last_sma_200_dec_1h
         and last_sma_200_dec_4h
+        and (last_rsi_14 > 82.0)
         and (last_stochrsi_k > 95.0)
         and (last_aroonu_14 > 95.0)
       ):
@@ -25521,6 +25525,7 @@ class NostalgiaForInfinityX8(IStrategy):
         last_sma_200_dec
         and last_sma_200_dec_1h
         and last_sma_200_dec_4h
+        and (last_rsi_14 > 80.0)
         and (last_stochrsi_k > 95.0)
         and (last_aroonu_14 > 95.0)
       ):
@@ -25530,15 +25535,16 @@ class NostalgiaForInfinityX8(IStrategy):
         last_sma_200_dec
         and last_sma_200_dec_1h
         and last_sma_200_dec_4h
+        and (last_rsi_14 > 78.0)
         and (last_stochrsi_k > 95.0)
         and (last_aroonu_14 > 95.0)
       ):
         return True, f"exit_{mode_name}_d_2_1"
     elif 0.04 > current_profit >= 0.03:
-      if last_sma_200_dec and (last_stochrsi_k > 95.0) and (last_aroonu_14 > 90.0):
+      if last_sma_200_dec and (last_rsi_14 > 76.0) and (last_stochrsi_k > 95.0) and (last_aroonu_14 > 90.0):
         return True, f"exit_{mode_name}_d_3_1"
     elif 0.05 > current_profit >= 0.04:
-      if last_sma_200_dec and (last_stochrsi_k > 92.0) and (last_aroonu_14 > 90.0):
+      if last_sma_200_dec and (last_rsi_14 > 74.0) and (last_stochrsi_k > 92.0) and (last_aroonu_14 > 90.0):
         return True, f"exit_{mode_name}_d_4_1"
     elif 0.06 > current_profit >= 0.05:
       if last_sma_200_dec and (last_stochrsi_k > 90.0) and (last_aroonu_14 > 90.0):
