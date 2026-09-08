@@ -57,6 +57,10 @@
       "(SOLANGELES|MCN|STBU)/.*",
       // MEXC futures delist 2026-07-27: GIGA (BOB from same notice already covered above)
       "(GIGA)/.*",
+      // MEXC futures delist 2026-09-09 07:00 UTC (announced 09-05): MEXC-only listings, all under
+      // $80k daily volume and -66% to -95% off their highs; UTILITY printed a 538% day inside the
+      // last month, EGG 163%. HFT from the same notice is already covered above.
+      "(ROAM|UTILITY|EGG|GAIB|CUPSEY)/.*",
       // Tokenized stocks (STOCK suffix — universal forward-protection)
       ".*STOCK/.*",
       // Tokenized stocks (direct ticker, no STOCK suffix)
