@@ -86,7 +86,7 @@ class Backtest:
     cmdline = [
       "freqtrade",
       "backtesting",
-      "--strategy=NostalgiaForInfinityX7",
+      "--strategy=NostalgiaForInfinityX8",
       f"--timerange={start_date}-{end_date}",
       "--user-data-dir=user_data",
       "--config=configs/exampleconfig.json",
@@ -191,13 +191,13 @@ class BacktestResults:
     strategy_data = self.raw_data.get("strategy")
 
     if isinstance(strategy_data, dict):
-      # Expected structure: {"strategy": {"NostalgiaForInfinityX7": {...}}}
-      return strategy_data.get("NostalgiaForInfinityX7")
+      # Expected structure: {"strategy": {"NostalgiaForInfinityX8": {...}}}
+      return strategy_data.get("NostalgiaForInfinityX8")
 
-    elif isinstance(strategy_data, str) and strategy_data == "NostalgiaForInfinityX7":
-      # Fallback structure: {"strategy": "NostalgiaForInfinityX7"}
+    elif isinstance(strategy_data, str) and strategy_data == "NostalgiaForInfinityX8":
+      # Fallback structure: {"strategy": "NostalgiaForInfinityX8"}
       # Then use the top-level key instead
-      return self.raw_data.get("NostalgiaForInfinityX7")
+      return self.raw_data.get("NostalgiaForInfinityX8")
 
     else:
       raise TypeError(f"Unsupported 'strategy' value: {strategy_data!r}. Expected a dict or strategy name.")

@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'NostalgiaForInfinityX7.py'
+      - 'NostalgiaForInfinityX8.py'
 
 jobs:
 
@@ -61,6 +61,7 @@ jobs:
       fail-fast: false
       matrix:
         TIMERANGE:
+          - 20260801-20260901
           - 20260701-20260801
           - 20260601-20260701
           - 20260501-20260601
@@ -81,7 +82,7 @@ jobs:
           - 20250201-20250301
           - 20250101-20250201
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Pull docker image
         run: |
           docker pull ghcr.io/iterativv/ci-strategy-backtesting:latest
@@ -131,6 +132,7 @@ jobs:
       fail-fast: false
       matrix:
         TIMERANGE:
+          - 20260801-20260901
           - 20260701-20260801
           - 20260601-20260701
           - 20260501-20260601
@@ -151,7 +153,7 @@ jobs:
           - 20250201-20250301
           - 20250101-20250201
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Inject Proxy Config
         env:
           PROXY: ${{ secrets.FREQTRADE_PROXY }}
@@ -209,6 +211,7 @@ jobs:
       fail-fast: false
       matrix:
         TIMERANGE:
+          - 20260801-20260901
           - 20260701-20260801
           - 20260601-20260701
           - 20260501-20260601
@@ -229,7 +232,7 @@ jobs:
           - 20250201-20250301
           - 20250101-20250201
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Inject Proxy Config
         env:
           PROXY: ${{ secrets.FREQTRADE_PROXY2 }}
@@ -316,9 +319,9 @@ jobs:
       contents: write
       actions: read
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: "3.13"
           cache: 'pip'
