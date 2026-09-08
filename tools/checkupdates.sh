@@ -23,6 +23,9 @@ GITHUB_USER="iterativv"
 GITHUB_REPO="NostalgiaForInfinity"
 DEFAULT_BRANCH="main"
 git_branch="$DEFAULT_BRANCH"
+ENV_FILE="$SCRIPT_DIR/.env"
+
+configured_strategy=$(grep -E '^FREQTRADE__STRATEGY=' "$ENV_FILE" | cut -d '=' -f2-)
 
 # Functions
 log() {
@@ -58,6 +61,35 @@ ensure_strategy_symlink() {
     ln -s "$relative_target" "$link"
 
     log "Created strategy symlink: $link -> $relative_target"
+}
+
+check_x8_migration() {
+    local env_file="$SCRIPT_DIR/../.env"
+    local configured_strategy
+
+    if [ ! -f "$env_file" ]; then
+        log ".env file not found. Skipping X8 migration check."
+        return 0
+    fi
+
+    # Read Freqtrade's actual configured strategy without sourcing .env
+    configured_strategy=$(grep -E '^FREQTRADE__STRATEGY=' "$env_file" | head -n 1 | cut -d '=' -f2-)
+
+    log "Freqtrade strategy: $configured_strategy"
+    log "Updater strategy: $strategy_file"
+
+    # User has migrated Freqtrade to X8,
+    # but updater is still configured for X7
+    if [[ "$configured_strategy" == "NostalgiaForInfinityX8" ]] && [[ "$strategy_file" == "NostalgiaForInfinityX7.py" ]]; then
+        log "X8 is configured in .env, but config.cfg is still using X7."
+        
+        # Telegram notification here
+        if [[ -n "$telegram_bot_token" && -n "$telegram_chat_id" ]]; then
+            curl -s -X POST "https://api.telegram.org/bot$telegram_bot_token/sendMessage" \
+                -d "chat_id=$telegram_chat_id&text=Warning: Freqtrade is configured for X8, but updater is still using X7. Please update config.cfg." || \
+                log "Failed to send Telegram notification."
+        fi
+    fi
 }
 
 update_files() {
@@ -174,7 +206,7 @@ fi
 
 log "Reading configuration from $CONFIG_FILE"
 source "$CONFIG_FILE"
-
+check_x8_migration
 # Set defaults if not configured
 update_mode=${update_mode:-releases}
 
