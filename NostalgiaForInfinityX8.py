@@ -8050,6 +8050,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((rsi_3_1h_gt_45) | (stochrsi_k_1h_lt_40) | (roc_9_1d_lt_200))
             # 1h down move, 1d high & overbought
             & ((rsi_3_1h_gt_45) | (stochrsi_k_1d_lt_80) | (roc_9_1d_lt_10))
+            # 1h & 4h & 1d down move, 1h high, 1d overbought
+            & ((rsi_3_1h_gt_50) | (rsi_3_4h_gt_60) | (rsi_3_1d_gt_60) | (aroonu_14_1h_lt_80) | (roc_9_1d_lt_60))
             # 1h down move, 15m & 1h high
             & ((rsi_3_1h_gt_50) | (aroonu_14_15m_lt_70) | (aroonu_14_1h_lt_100))
             # 1h down move, 1h high, 4h overbought
