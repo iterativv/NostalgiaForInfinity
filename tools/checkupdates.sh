@@ -121,10 +121,10 @@ if [ ! -f "$CONFIG_FILE" ]; then
     fi
 
     # Prompt user for configuration values
-    echo "Enter strategy files (default: NostalgiaForInfinityX7.py)."
+    echo "Enter strategy files (default: NostalgiaForInfinityX8.py)."
     echo "You can use commas, spaces, or press Enter to accept the default value:"
     read -p "Strategy files: " strategy_file
-    strategy_file=${strategy_file:-NostalgiaForInfinityX7.py}
+    strategy_file=${strategy_file:-NostalgiaForInfinityX8.py}
     validate_file_extension "$strategy_file" ".py" || { log "Invalid strategy file extension."; exit 1; }
 
     read -p "Enable cleanup of extracted and downloaded folders? (y/n, default: y): " cleanup_old_files
