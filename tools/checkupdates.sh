@@ -23,6 +23,9 @@ GITHUB_USER="iterativv"
 GITHUB_REPO="NostalgiaForInfinity"
 DEFAULT_BRANCH="main"
 git_branch="$DEFAULT_BRANCH"
+ENV_FILE="$SCRIPT_DIR/.env"
+
+configured_strategy=$(grep -E '^FREQTRADE__STRATEGY=' "$ENV_FILE" | cut -d '=' -f2-)
 
 # Functions
 log() {
@@ -33,6 +36,59 @@ check_dependency() {
     if ! command -v "$1" &> /dev/null; then
         log "Dependency '$1' is not installed. Please install it first."
         exit 1
+    fi
+}
+
+ensure_strategy_symlink() {
+    local target="$SCRIPT_DIR/../NostalgiaForInfinityX8.py"
+    local link="$SCRIPT_DIR/../user_data/strategies/NostalgiaForInfinityX8.py"
+
+    # The target as stored inside the symlink
+    local relative_target="../../NostalgiaForInfinityX8.py"
+
+    # Symlink already exists and points to the correct relative target
+    if [ -L "$link" ] && [ "$(readlink "$link")" = "$relative_target" ]; then
+        log "Strategy symlink already exists and is correct."
+        return 0
+    fi
+
+    # Something exists at the link location, but it's wrong
+    if [ -e "$link" ] || [ -L "$link" ]; then
+        log "Incorrect strategy symlink/file found. Fixing it..."
+        rm -f "$link"
+    fi
+
+    ln -s "$relative_target" "$link"
+
+    log "Created strategy symlink: $link -> $relative_target"
+}
+
+check_x8_migration() {
+    local env_file="$SCRIPT_DIR/../.env"
+    local configured_strategy
+
+    if [ ! -f "$env_file" ]; then
+        log ".env file not found. Skipping X8 migration check."
+        return 0
+    fi
+
+    # Read Freqtrade's actual configured strategy without sourcing .env
+    configured_strategy=$(grep -E '^FREQTRADE__STRATEGY=' "$env_file" | head -n 1 | cut -d '=' -f2-)
+
+    log "Freqtrade strategy: $configured_strategy"
+    log "Updater strategy: $strategy_file"
+
+    # User has migrated Freqtrade to X8,
+    # but updater is still configured for X7
+    if [[ "$configured_strategy" == "NostalgiaForInfinityX8" ]] && [[ "$strategy_file" == "NostalgiaForInfinityX7.py" ]]; then
+        log "X8 is configured in .env, but config.cfg is still using X7."
+        
+        # Telegram notification here
+        if [[ -n "$telegram_bot_token" && -n "$telegram_chat_id" ]]; then
+            curl -s -X POST "https://api.telegram.org/bot$telegram_bot_token/sendMessage" \
+                -d "chat_id=$telegram_chat_id&text=Warning: Freqtrade is configured for X8, but updater is still using X7. Please update config.cfg." || \
+                log "Failed to send Telegram notification."
+        fi
     fi
 }
 
@@ -98,6 +154,9 @@ validate_file_extension() {
 # Main Script
 log "=== Starting update script ==="
 
+# Ensure strategy symlink exists and is correct
+ensure_strategy_symlink
+
 # Check dependencies
 for dependency in jq curl unzip; do
     check_dependency "$dependency"
@@ -121,10 +180,10 @@ if [ ! -f "$CONFIG_FILE" ]; then
     fi
 
     # Prompt user for configuration values
-    echo "Enter strategy files (default: NostalgiaForInfinityX7.py)."
+    echo "Enter strategy files (default: NostalgiaForInfinityX8.py)."
     echo "You can use commas, spaces, or press Enter to accept the default value:"
     read -p "Strategy files: " strategy_file
-    strategy_file=${strategy_file:-NostalgiaForInfinityX7.py}
+    strategy_file=${strategy_file:-NostalgiaForInfinityX8.py}
     validate_file_extension "$strategy_file" ".py" || { log "Invalid strategy file extension."; exit 1; }
 
     read -p "Enable cleanup of extracted and downloaded folders? (y/n, default: y): " cleanup_old_files
@@ -147,7 +206,7 @@ fi
 
 log "Reading configuration from $CONFIG_FILE"
 source "$CONFIG_FILE"
-
+check_x8_migration
 # Set defaults if not configured
 update_mode=${update_mode:-releases}
 
