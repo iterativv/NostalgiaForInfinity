@@ -36,6 +36,30 @@ check_dependency() {
     fi
 }
 
+ensure_strategy_symlink() {
+    local target="$SCRIPT_DIR/../NostalgiaForInfinityX8.py"
+    local link="$SCRIPT_DIR/../user_data/strategies/NostalgiaForInfinityX8.py"
+
+    # The target as stored inside the symlink
+    local relative_target="../../NostalgiaForInfinityX8.py"
+
+    # Symlink already exists and points to the correct relative target
+    if [ -L "$link" ] && [ "$(readlink "$link")" = "$relative_target" ]; then
+        log "Strategy symlink already exists and is correct."
+        return 0
+    fi
+
+    # Something exists at the link location, but it's wrong
+    if [ -e "$link" ] || [ -L "$link" ]; then
+        log "Incorrect strategy symlink/file found. Fixing it..."
+        rm -f "$link"
+    fi
+
+    ln -s "$relative_target" "$link"
+
+    log "Created strategy symlink: $link -> $relative_target"
+}
+
 update_files() {
     local file_type="$1"
     local files="$2"
@@ -97,6 +121,9 @@ validate_file_extension() {
 
 # Main Script
 log "=== Starting update script ==="
+
+# Ensure strategy symlink exists and is correct
+ensure_strategy_symlink
 
 # Check dependencies
 for dependency in jq curl unzip; do
