@@ -15476,6 +15476,10 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((rsi_3_1h > 10.0) | (roc_9_4h > -15.0) | (cmf_20_4h > -0.20))
           )
           long_entry_logic.append((rsi_14_1h > 25.0) | (rsi_14_4h > 25.0) | (rsi_3_1d > 15.0))
+          # Daily selling pressure with a strong recent 4h rebound.
+          long_entry_logic.append(aroonu_14_4h_lt_80 | (roc_9_1d > -10.0) | cmf_20_1d_gt_neg_0_0)
+          # Hourly momentum weakened while daily fast momentum remains elevated.
+          long_entry_logic.append((rsi_14_1h > 45.0) | (rsi_3_1d < 75.0))
           long_entry_logic.append(rsi_3 < 5.0)
           long_entry_logic.append(rsi_14 < 28.0)
           long_entry_logic.append(stochrsi_k < 3.0)
@@ -15484,7 +15488,6 @@ class NostalgiaForInfinityX8(IStrategy):
           long_entry_logic.append(mfi_14 > 25.0)
           long_entry_logic.append(close < bbl_20_2_0)
           long_entry_logic.append(rsi_14_1h > 35.0)
-          long_entry_logic.append(aroonu_14_4h > 25.0)
 
         # Condition #101 - Rapid mode (Long).
         if long_entry_condition_index == 101:
