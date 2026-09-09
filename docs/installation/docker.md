@@ -201,6 +201,29 @@ Example_Test_Account_binance_futures-NostalgiaForInfinityX6  | 2024-11-25 23:30:
 http://0.0.0.0:8080
  system is up and running
 
+## Automatic Updates (Standalone Script)
+
+For users who are not using the Docker Compose updater, the repository also includes the [`tools/checkupdates.sh`](../../tools/checkupdates.sh) script.
+
+**What this script does:**
+- Checks the NFI repository for updates and downloads the latest release or main branch commit
+- Extracts the archive and updates the strategy files and all blacklist JSON files
+- Cleans up downloaded and extracted files
+- Optionally restarts a Docker container and sends Telegram notifications
+
+The script supports two update modes:
+- `releases` - Use official GitHub releases and update to the latest stable release
+- `commits` - Use the latest commit from the main branch
+
+**How to automate the update process:**
+1. Run the script manually first to create the configuration file and select your preferred update mode.
+2. After the configuration file is created, set up a cron job to run the script periodically.
+3. Run `crontab -e` and add a line such as the following to run the script every hour:
+
+```cron
+0 * * * * /path/to/your/script/checkupdates.sh
+```
+
 ## Automatic Updates (Docker)
 
 The repository includes an `nfi-updater` sidecar service for Docker Compose users that keeps the strategy, blacklist, and pairlist automatically up to date without manual intervention.
@@ -236,27 +259,4 @@ COMPOSE_PROJECT_NAME=nostalgiaforinfinity
 
 ```bash
 docker compose logs -f nfi-updater
-```
-
-## Automatic Updates (Standalone Script)
-
-For users who are not using the Docker Compose updater, the repository also includes the [`tools/checkupdates.sh`](../../tools/checkupdates.sh) script.
-
-**What this script does:**
-- Checks the NFI repository for updates and downloads the latest release or main branch commit
-- Extracts the archive and updates the strategy files and all blacklist JSON files
-- Cleans up downloaded and extracted files
-- Optionally restarts a Docker container and sends Telegram notifications
-
-The script supports two update modes:
-- `releases` - Use official GitHub releases and update to the latest stable release
-- `commits` - Use the latest commit from the main branch
-
-**How to automate the update process:**
-1. Run the script manually first to create the configuration file and select your preferred update mode.
-2. After the configuration file is created, set up a cron job to run the script periodically.
-3. Run `crontab -e` and add a line such as the following to run the script every hour:
-
-```cron
-0 * * * * /path/to/your/script/checkupdates.sh
 ```
