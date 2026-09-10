@@ -3052,6 +3052,17 @@ class NostalgiaForInfinityX8(IStrategy):
     return out
 
   @staticmethod
+  def obv_change_pct(obv: np.ndarray) -> np.ndarray:
+    """Measure OBV movement relative to the magnitude of its previous value."""
+    obv = np.asarray(obv, dtype=np.float64)
+    out = np.full(obv.shape, np.nan, dtype=np.float64)
+    prev = obv[:-1]
+    valid = np.isfinite(prev) & np.isfinite(obv[1:]) & (prev != 0)
+    np.divide(obv[1:] - prev, np.abs(prev), out=out[1:], where=valid)
+    out[1:] *= 100.0
+    return out
+
+  @staticmethod
   def stochrsi_k(rsi_14: np.ndarray, ta_min: np.ndarray, ta_max: np.ndarray, ta_sma: np.ndarray) -> np.ndarray:
     """
     Calculate the %K line of the Stochastic RSI.
@@ -3808,7 +3819,7 @@ class NostalgiaForInfinityX8(IStrategy):
     rsi_3_change = fast_pct_change(rsi_3)
     rsi_14_change = fast_pct_change(rsi_14)
     uo_change = fast_pct_change(uo)
-    obv_change = fast_pct_change(obv)
+    obv_change = self.obv_change_pct(obv)
     cci_change = fast_pct_change(cci_20)
 
     # =========================================================================
@@ -3990,7 +4001,7 @@ class NostalgiaForInfinityX8(IStrategy):
     # CHANGE %
     # =========================================================================
     rsi_14_change = fast_pct_change(rsi_14)
-    obv_change = fast_pct_change(obv)
+    obv_change = self.obv_change_pct(obv)
 
     # =========================================================================
     # CANDLE %
