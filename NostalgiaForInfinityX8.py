@@ -19765,6 +19765,7 @@ class NostalgiaForInfinityX8(IStrategy):
         if long_entry_condition_index == 165:
           long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           long_entry_logic.append(protections_long_global == True)
+          long_entry_logic.append((sqz_cnt_24 > 14) | (mfi_14_1d < 45.0) | (willr_14_4h < -50.0))
           # trend filter (video: "only clear trends") + impulse quality (never draw fibs in chop)
           long_entry_logic.append(ema_12_4h > ema_200_4h)
           # R1 (eyeball): only a CLEAN ACTIVE uptrend — whipsaw chop (RIVER) has rsi_4h ~50 and stale 4h highs
