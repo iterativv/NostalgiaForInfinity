@@ -21,8 +21,9 @@
       "(龙虾|哈基米|牛来|我踏马来了|老子|人生K线|小股东|旺财)/.*",
       // Parabolic squeeze — 542 shorts liquidated on 4 accounts, 2026-08-07 (+801%/7d)
       "(TUT)/.*",
-      // Pump-and-dump knives — APR +192% then -68% (2026-08-12/15), VELVET -46% in an hour (2026-07-24)
-      "(APR|VELVET)/.*",
+      // Pump-and-dump knives — APR +192% then -68% (2026-08-12/15), VELVET -46% in an hour (2026-07-24),
+      // JCT -82.4% off its 2026-06-13 peak, single-day ranges of 96%, 96% and 83% (2026-09-10)
+      "(APR|JCT|VELVET)/.*",
       // Binance delist 2026-08-17 (full-coin) — iterativ 2026-08-03
       "(ACX|PIVX|VIC)/.*",
       // FIGHT all-12 + IDOL (MEET48) — iterativ 2026-08-02
