@@ -20066,6 +20066,14 @@ class NostalgiaForInfinityX8(IStrategy):
           # --- Protections ---
           long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           long_entry_logic.append(protections_long_global == True)
+          long_entry_logic.append(
+            (cmf_20_15m > 0.0)
+            & (adx_14_4h > 20.0)
+            & (change_pct_4h > -8.0)
+            & ((willr_14_15m > -40.0) | (uo_7_14_28_15m < 50.0) | (stochrsi_k_1d > 25.0))
+            & ((cmf_20_1h < 0.05) | (stochk_14_3_3_1h > 80.0) | stochrsi_k_1d_gt_10)
+            & ((cmf_20_1h > 0.15) | (cmf_20_4h > 0.0) | rsi_3_1d_gt_20)
+          )
           # --- Logic: embedded up-regime + quad-oversold + two-pivot bullish divergence ---
           long_entry_logic.append(stoch_60_10 > 80.0)
           long_entry_logic.append(stoch_9_3 < 20.0)
