@@ -720,6 +720,24 @@ class NostalgiaForInfinityX8(IStrategy):
   bad_trade_controller_stale_min_age_days = 14.0
   bad_trade_controller_stale_max_daily_range_pct = 7.0
   bad_trade_controller_stale_min_adverse_move_pct = 10.0
+  # De-risk hold. A position that reaches a de-risk level while its own daily trend is still intact
+  # is usually an overshoot that comes back; one that reaches it during a real daily breakdown is
+  # not. Measured on the seven-year gms0 baseline with the ladder's real fires: the one fire the
+  # rule holds (DOGE 2024-04-05, ROC_9_1d -1.3) recovered and the year closes +$617; the fires it
+  # lets through include Black Thursday (ADA 2020-03-13, ROC_9_1d -52), where holding on a washed-out
+  # 15m instead turned a +$21 exit into a -$1,827 stop. Every year without a fire is bit-identical.
+  # The fast readings (RSI_14_15m, CMF_20_1h) were measured and rejected: they fire hardest exactly
+  # when they are most wrong, inside a crash. The short side is the mirror (the coin not ripping up).
+  bad_trade_controller_derisk_hold_enable = False
+  bad_trade_controller_derisk_hold_short_enable = False
+  bad_trade_controller_derisk_hold_roc_9_1d = -10.0
+  # Capitulation add gate. Past the near end of the de-risk range, no grind add while the 4h is at
+  # capitulation. Rebuilding every loss slice by slice over six years, adds made there lose (long
+  # -$382 / short -$749 across 108 slices) while adds made in an orderly decline pay (+$15,559
+  # across 503), and capitulation is where the runaway stake growth happens (INJ 58 adds, 28x).
+  # Short side mirrors the threshold (100 - value).
+  bad_trade_controller_capitulation_add_gate_enable = False
+  bad_trade_controller_capitulation_add_gate_mfi_14_4h = 30.0
 
   system_v4_stops_enable = False
   system_v4_stop_threshold_doom_spot = 0.14
@@ -1153,6 +1171,11 @@ class NostalgiaForInfinityX8(IStrategy):
       "bad_trade_controller_stale_min_age_days",
       "bad_trade_controller_stale_max_daily_range_pct",
       "bad_trade_controller_stale_min_adverse_move_pct",
+      "bad_trade_controller_derisk_hold_enable",
+      "bad_trade_controller_derisk_hold_short_enable",
+      "bad_trade_controller_derisk_hold_roc_9_1d",
+      "bad_trade_controller_capitulation_add_gate_enable",
+      "bad_trade_controller_capitulation_add_gate_mfi_14_4h",
     ]
 
     exchange_config = config["exchange"]
@@ -1698,6 +1721,27 @@ class NostalgiaForInfinityX8(IStrategy):
     ):
       return f"exit_bad_trade_abandon_{trade_age_days:.0f}d"
     return None
+
+  def _bad_trade_controller_derisk_hold(self, last_candle, is_short: bool = False) -> bool:
+    """Hold a de-risk level only while the daily trend is still intact (mirror for shorts)."""
+    enabled = self.bad_trade_controller_derisk_hold_short_enable if is_short else self.bad_trade_controller_derisk_hold_enable
+    if not enabled or last_candle is None:
+      return False
+    roc_9_1d = last_candle.get("ROC_9_1d")
+    if roc_9_1d is None or not np.isfinite(roc_9_1d):
+      return False
+    bound = self.bad_trade_controller_derisk_hold_roc_9_1d
+    return (roc_9_1d < -bound) if is_short else (roc_9_1d > bound)
+
+  def _bad_trade_controller_capitulation(self, last_candle, is_short: bool = False) -> bool:
+    """True while the 4h is at capitulation, where a grind add has been measured to lose."""
+    if not self.bad_trade_controller_capitulation_add_gate_enable or last_candle is None:
+      return False
+    mfi_14_4h = last_candle.get("MFI_14_4h")
+    if mfi_14_4h is None or not np.isfinite(mfi_14_4h):
+      return False
+    bound = self.bad_trade_controller_capitulation_add_gate_mfi_14_4h
+    return (mfi_14_4h > 100.0 - bound) if is_short else (mfi_14_4h < bound)
 
   def trade_order_state(self, trade: "Trade") -> tuple:
     orders = trade.orders
@@ -31511,6 +31555,12 @@ class NostalgiaForInfinityX8(IStrategy):
       slice_profit_exit,
       True,
     )
+    # past the near end of the de-risk range, no grind add while the 4h is at capitulation
+    if (
+      profit_stake < slice_amount * (self.system_v4_derisk_level_1_futures[0] if is_futures_mode else self.system_v4_derisk_level_1_spot[0]) / trade_leverage
+      and self._bad_trade_controller_capitulation(last_candle, False)
+    ):
+      is_long_grind_entry = False
     is_long_buyback_entry = self.long_buyback_entry_v4(last_candle, previous_candle, slice_profit, True)
     is_long_rebuy_entry = self.long_rebuy_entry_v4(last_candle, previous_candle, slice_profit, True)
     stake_fmt = ".8f" if stake_currency in ("BTC", "ETH", "BNB", "SOL") else ".3f"
@@ -31547,6 +31597,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and derisk_1_enable
       and not (is_derisk_1_found)
       and not is_rebuy_mode
+      and not self._bad_trade_controller_derisk_hold(last_candle, False)
       and profit_stake < slice_amount * derisk_1_threshold / trade_leverage
     ):
       sell_amount = filled_entries[0].safe_filled * derisk_1_stake * exit_rate / trade_leverage
@@ -31580,6 +31631,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and derisk_2_enable
       and not is_derisk_2_found
       and not is_rebuy_mode
+      and not self._bad_trade_controller_derisk_hold(last_candle, False)
       and profit_stake < slice_amount * derisk_2_threshold / trade_leverage
     ):
       sell_amount = filled_entries[0].safe_filled * derisk_2_stake * exit_rate / trade_leverage
@@ -31613,6 +31665,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and derisk_3_enable
       and not is_derisk_3_found
       and not is_rebuy_mode
+      and not self._bad_trade_controller_derisk_hold(last_candle, False)
       and profit_stake < slice_amount * derisk_3_threshold / trade_leverage
     ):
       sell_amount = filled_entries[0].safe_filled * derisk_3_stake * exit_rate / trade_leverage
@@ -45533,6 +45586,12 @@ class NostalgiaForInfinityX8(IStrategy):
     )
     # is_short_extra_checks_entry = True
     is_short_grind_entry = self.short_grind_entry_v4(last_candle, previous_candle, slice_profit, True)
+    # past the near end of the de-risk range, no grind add while the 4h is at capitulation
+    if (
+      profit_stake < slice_amount * (self.system_v4_derisk_level_1_futures[0] if is_futures_mode else self.system_v4_derisk_level_1_spot[0]) / trade_leverage
+      and self._bad_trade_controller_capitulation(last_candle, True)
+    ):
+      is_short_grind_entry = False
     is_short_rebuy_entry = self.short_rebuy_entry_v4(last_candle, previous_candle, slice_profit, True)
     stake_fmt = ".8f" if self.config["stake_currency"] in ("BTC", "ETH", "BNB", "SOL") else ".3f"
     # De-risk level 1
@@ -45542,6 +45601,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and (is_system_v4 and self.system_v4_derisk_level_1_enable)
       and not is_derisk_1_found
       and not is_rebuy_mode
+      and not self._bad_trade_controller_derisk_hold(last_candle, True)
       and (
         profit_stake
         < (
@@ -45608,6 +45668,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and (is_system_v4 and self.system_v4_derisk_level_2_enable)
       and not is_derisk_2_found
       and not is_rebuy_mode
+      and not self._bad_trade_controller_derisk_hold(last_candle, True)
       and (
         profit_stake
         < (
@@ -45674,6 +45735,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and (is_system_v4 and self.system_v4_derisk_level_3_enable)
       and not is_derisk_3_found
       and not is_rebuy_mode
+      and not self._bad_trade_controller_derisk_hold(last_candle, True)
       and (
         profit_stake
         < (
