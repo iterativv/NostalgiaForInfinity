@@ -15364,6 +15364,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((aroonu_14_15m_lt_70) | (aroonu_14_1h_lt_100) | (aroonu_14_4h_lt_100))
             # 15m & 4h & 1d high, 4h overbought
             & ((aroonu_14_15m_lt_70) | (aroonu_14_4h_lt_80) | (aroonu_14_1d_lt_100) | (roc_9_4h_lt_50))
+            # 15m & 4h & 1d high, 4h overbought
+            & ((aroonu_14_15m_lt_70) | (aroonu_14_4h_lt_100) | (aroonu_14_1d_lt_100) | (roc_9_4h_lt_10))
             # 15m high, 4h high, 1d overbought
             & ((aroonu_14_15m_lt_70) | (stochrsi_k_4h_lt_80) | (roc_9_1d_lt_50))
             # 15m high, 4h high, 4h & 1d overbought
