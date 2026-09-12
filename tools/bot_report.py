@@ -20,9 +20,9 @@ Only percentages/ratios, counts, dates, pairs and reasons are kept. Use
 that file.
 
 Examples:
-  python tools/generate_instance_report.py --url http://127.0.0.1:8080 \\
+  python tools/bot_report.py --url http://127.0.0.1:8080 \\
       --username freqtrader --password secret -o report.json
-  FREQTRADE_API_URL=http://bot:8080 python tools/generate_instance_report.py
+  FREQTRADE_API_URL=http://bot:8080 python tools/bot_report.py
 """
 
 from __future__ import annotations
@@ -227,7 +227,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     "-o",
     "--output",
     default=None,
-    help="Output JSON file (default: freqtrade-instance-report-<timestamp>.json).",
+    help="Output JSON file (default: bot-report-<timestamp>.json).",
   )
   parser.add_argument(
     "--trades-limit",
@@ -284,7 +284,7 @@ def collect_report(api: FreqtradeApi, redactor: Redactor, trades_limit: int) -> 
     fetch("balance", "balance")
 
   metadata = {
-    "tool": "tools/generate_instance_report.py",
+    "tool": "tools/bot_report.py",
     "tool_version": TOOL_VERSION,
     "generated_at_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
     "freqtrade_version": (version or {}).get("version"),
@@ -310,9 +310,7 @@ def main(argv: list[str] | None = None) -> int:
   api = FreqtradeApi(args.url, args.username, args.password, args.timeout, not args.no_verify_tls)
   report = collect_report(api, redactor, args.trades_limit)
 
-  output = args.output or "freqtrade-instance-report-{}.json".format(
-    datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-  )
+  output = args.output or "bot-report-{}.json".format(datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ"))
   with open(output, "w", encoding="utf-8") as file:
     json.dump(report, file, indent=2, ensure_ascii=False)
     file.write("\n")
