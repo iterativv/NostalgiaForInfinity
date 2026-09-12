@@ -1226,6 +1226,29 @@ code {
   vertical-align: middle;
 }
 
+/* Danger action inside the redaction confirm dialog. */
+button.danger {
+  background-color: var(--destructive);
+  color: var(--primary-foreground);
+}
+button.danger:hover {
+  background-color: color-mix(in srgb, var(--destructive) 90%, transparent);
+}
+#redact-confirm footer {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+/* Collapsed redaction review inside the result card. */
+details.redaction-review ul {
+  max-height: 16rem;
+  margin-bottom: 0;
+}
+details.redaction-review li {
+  overflow-wrap: anywhere;
+}
+
 /* Tooltips: the framework renders them on one line (nowrap); let the longer
    field hints wrap into a readable box instead. */
 [tooltip-top]::after {
@@ -1309,7 +1332,7 @@ code {
       </fieldset>
       <button type="submit" id="btn-export">Export report</button>
       <button type="button" id="btn-test" secondary tooltip-top="Uses the URL and credentials above: one request checks reachability, CORS headers and authentication.">Test connection</button>
-      <small><strong>Export report</strong> walks every endpoint — including the full closed-trade history — and saves the JSON file. <strong>Test connection</strong> checks the URL, CORS and credentials with a single request.</small>
+      <small><strong>Export report</strong> walks every endpoint — including the full closed-trade history — then lets you review what was redacted before saving. <strong>Test connection</strong> checks the URL, CORS and credentials with a single request.</small>
     </form>
   </section>
 
@@ -1326,14 +1349,31 @@ code {
     <article id="result-body"></article>
   </section>
 
+  <dialog id="redact-confirm">
+    <h3>Disable redaction?</h3>
+    <p>The report will contain balances, absolute PnL and credentials — anyone you share it
+    with learns the size of your account. Only continue for private diagnostics you keep to
+    yourself.</p>
+    <footer>
+      <button type="button" id="redact-keep" secondary>Keep redaction (recommended)</button>
+      <button type="button" id="redact-disable" class="danger">Disable redaction</button>
+    </footer>
+  </dialog>
+
   <details>
-    <summary>Setup — letting this page talk to your bot</summary>
+    <summary>Setup — how to run this page and let it talk to your bot</summary>
     <ol>
       <li>Enable the freqtrade REST API (<code>"api_server": {"enabled": true, …}</code> with
         <code>username</code>/<code>password</code>) in your bot's config.</li>
-      <li>Browsers enforce CORS: add this page's exact origin (no trailing slash) —
+      <li><strong>Recommended — run this page locally.</strong> Download the file and open it
+        straight from disk, or serve it from the same machine with
+        <code>python -m http.server</code>, then point the form at
+        <code>http://127.0.0.1:8080</code>. This works with plain-HTTP bots, needs no CORS
+        setup, and the credentials you type never leave your machine.</li>
+      <li><strong>Or host the page publicly</strong> (e.g. GitHub Pages) and allow that origin.
+        Browsers enforce CORS: add the page's exact origin (no trailing slash) —
         <code id="page-origin">https://YOURNAME.github.io</code> — to
-        <code>CORS_origins</code> in the same <code>api_server</code> block and restart the bot:
+        <code>CORS_origins</code> in the <code>api_server</code> block and restart the bot:
         <pre><code>"api_server": {
     "enabled": true,
     "listen_ip_address": "127.0.0.1",
@@ -1342,14 +1382,17 @@ code {
     "password": "…",
     "CORS_origins": ["<span id="page-origin-snippet">https://YOURNAME.github.io</span>"]
 }</code></pre>
-        Without this entry the bot answers without the CORS headers browsers require, and every
-        request from this page fails before reaching freqtrade.</li>
-      <li>If this page is served over HTTPS and your bot is plain HTTP, browsers usually allow
-        <code>http://127.0.0.1</code> / <code>http://localhost</code> as an exception (Chrome may
-        additionally ask for a local-network permission). Remote bots over plain HTTP will be
-        blocked as mixed content — put them behind a TLS reverse proxy. Certificates must be
-        valid; this page cannot skip verification (there is no <code>--no-verify-tls</code> in a
-        browser).</li>
+        Keep in mind: an HTTPS page cannot reach a plain-HTTP bot at all (no CORS entry fixes
+        that — the local option above is the answer), the entry grants <em>every</em> page on
+        that origin access to the bot API — not just this tool — and it should be removed again
+        once the report is exported.</li>
+      <li><strong>Trust and TLS.</strong> These credentials give full control of the bot — the
+        same API also exposes <code>forceexit</code> and <code>stop</code> — so treat the origin
+        you put in <code>CORS_origins</code> as a standing trust decision and prefer running the
+        page locally if you do not fully control that origin. Certificates must be valid:
+        browsers reject self-signed ones and this page cannot skip verification (there is no
+        <code>--no-verify-tls</code> in a browser), so self-signed setups should run the page
+        locally or use a properly trusted reverse proxy.</li>
     </ol>
   </details>
 
@@ -1475,17 +1518,21 @@ function isAllowedNumber(path, key) {
   return false;
 }
 
-/* Mirrors Redactor.walk: recursively redacts sensitive fields, keeps structure. */
+/* Mirrors Redactor.walk: recursively redacts sensitive fields, keeps structure.
+ * state.paths records every redacted key path so the UI can show exactly what
+ * was removed before the report leaves the browser. */
 function redactWalk(obj, key, path, state) {
   if (!state.enabled) return obj;
   const fullPath = path && key ? `${path}.${key}` : (key || path);
   if (key && isSensitive(key, obj)) {
     state.count += 1;
+    state.paths.push(fullPath);
     return REDACTED;
   }
   if (typeof obj === "boolean") return obj;
   if (typeof obj === "number" && key && !isAllowedNumber(fullPath, key)) {
     state.count += 1;
+    state.paths.push(fullPath);
     return REDACTED;
   }
   if (obj !== null && typeof obj === "object") {
@@ -1783,7 +1830,7 @@ async function collectReport(api, redacted, tradesLimit, window, progress) {
   progress.step(redacted
     ? "Redacting confidential fields (credentials, money values, identifiers) …"
     : "Redaction disabled — keeping absolute values …");
-  const state = { enabled: redacted, count: 0 };
+  const state = { enabled: redacted, count: 0, paths: [] };
   const report = {};
   for (const section of Object.keys(raw)) {
     report[section] = redactWalk(raw[section], "", "", state);
@@ -1801,7 +1848,9 @@ async function collectReport(api, redacted, tradesLimit, window, progress) {
     failed_endpoints: failed,
   };
   if (windowed) metadata.closed_trades_window = WINDOW_LABELS[window];
-  return { report_metadata: metadata, ...report };
+  /* report_metadata stays the first key, matching the CLI's output order. */
+  const ordered = { report_metadata: metadata, ...report };
+  return { report: ordered, redactedPaths: state.paths };
 }
 
 const nullProgress = { setTotal() {}, addTotal() {}, step() {}, done() {} };
@@ -1811,11 +1860,11 @@ const nullProgress = { setTotal() {}, addTotal() {}, step() {}, done() {} };
 async function runExport(opts, progress) {
   progress = progress || nullProgress;
   const api = new FreqtradeApi(opts);
-  const report = await collectReport(api, opts.redact, opts.tradesLimit === undefined ? null : opts.tradesLimit, opts.window || "all", progress);
+  const { report, redactedPaths } = await collectReport(api, opts.redact, opts.tradesLimit === undefined ? null : opts.tradesLimit, opts.window || "all", progress);
   progress.step("Serializing JSON and preparing the download …");
   const json = JSON.stringify(report, null, 2) + "\n";
   const filename = `bot-report-${stamp()}.json`;
-  return { report, json, filename };
+  return { report, json, filename, redactedPaths };
 }
 
 function stamp() {
@@ -1859,7 +1908,7 @@ function el(tag, attrs, children) {
   return node;
 }
 
-function renderSuccess(container, report, filename, json) {
+function renderSuccess(container, report, filename, json, redactedPaths) {
   const meta = report.report_metadata;
   const failed = meta.failed_endpoints;
   const children = [];
@@ -1891,10 +1940,26 @@ function renderSuccess(container, report, filename, json) {
     tr.append(el("th", { scope: "row" }, [label]), el("td", { class: cls }, [String(value)]));
     tbody.append(tr);
   }
-  table.append(tbody, el("caption", {}, [`Saved as ${filename}`]));
+  table.append(tbody, el("caption", {}, [`File name: ${filename}`]));
   children.push(table);
 
-  const button = el("button", { type: "button" }, ["Download again"]);
+  /* Review-before-download: show exactly which key paths were redacted so the
+     user can confirm what left their machine before saving the file. */
+  if (meta.redacted && redactedPaths && redactedPaths.length > 0) {
+    const counts = new Map();
+    for (const p of redactedPaths) counts.set(p, (counts.get(p) || 0) + 1);
+    const review = el("details", { class: "redaction-review" });
+    review.append(el("summary", {}, [`Review what was redacted (${meta.redacted_field_count} fields)`]));
+    const list = el("ul", { "scroll-y": "" });
+    for (const path of [...counts.keys()].sort()) {
+      const n = counts.get(path);
+      list.append(el("li", {}, [n > 1 ? `${path} — ×${n}` : path]));
+    }
+    review.append(list);
+    children.push(review);
+  }
+
+  const button = el("button", { type: "button" }, ["Download report"]);
   button.addEventListener("click", () => saveJson(json, filename));
   children.push(button);
   container.replaceChildren(...children);
@@ -1906,6 +1971,16 @@ function renderFailure(container, err) {
     el("p", { class: "text-danger" }, [err.friendly || String(err)]),
     el("p", { class: "text-neutral" }, ["Fix the cause and try again. Nothing was written to disk."]),
   );
+}
+
+function saveJson(json, filename) {
+  const blob = new Blob([json], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = el("a", { href: url, download: filename });
+  document.body.append(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
 }
 
 function renderConnectionHelp(container, diagnosis) {
@@ -2085,11 +2160,10 @@ async function onExport(form) {
   }
   await withBusyUi(form, "Connecting to the bot — GET /api/v1/ping …", async (resultTitle, resultBody, progress) => {
     try {
-      const { report, json, filename } = await runExport(opts, progress);
-      saveJson(json, filename);
-      resultTitle.textContent = "Export finished";
+      const { report, json, filename, redactedPaths } = await runExport(opts, progress);
+      resultTitle.textContent = "Report ready";
       resultTitle.className = "text-success";
-      renderSuccess(resultBody, report, filename, json);
+      renderSuccess(resultBody, report, filename, json, redactedPaths);
     } catch (err) {
       resultTitle.textContent = "Export failed";
       resultTitle.className = "text-danger";
@@ -2141,6 +2215,29 @@ if (typeof document !== "undefined") {
       document.getElementById("page-origin-snippet").textContent = origin;
     }
     document.getElementById("f-url").placeholder = defaultBaseUrl();
+    /* Unchecking redaction is gated behind an explicit dialog confirmation. */
+    const redactCheckbox = document.getElementById("f-redact");
+    const confirmDialog = document.getElementById("redact-confirm");
+    let redactApproved = false;
+    redactCheckbox.addEventListener("change", () => {
+      if (redactCheckbox.checked) return;
+      /* every open starts unapproved — a past approval must not carry over */
+      redactApproved = false;
+      confirmDialog.showModal();
+    });
+    document.getElementById("redact-disable").addEventListener("click", () => {
+      redactApproved = true;
+      confirmDialog.close();
+    });
+    document.getElementById("redact-keep").addEventListener("click", () => {
+      redactApproved = false;
+      redactCheckbox.checked = true;
+      confirmDialog.close();
+    });
+    /* Esc-close safety net: an unapproved dismissal restores redaction. */
+    confirmDialog.addEventListener("close", () => {
+      if (!redactApproved) redactCheckbox.checked = true;
+    });
     const form = document.getElementById("connect");
     form.addEventListener("submit", (event) => {
       event.preventDefault();
