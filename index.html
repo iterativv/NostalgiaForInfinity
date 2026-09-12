@@ -1131,7 +1131,8 @@ button {
   display: block;
 }
 #connect input[type='text'],
-#connect input[type='password'] {
+#connect input[type='password'],
+#connect select {
   display: block;
   width: 100%;
   margin-top: 0.35rem;
@@ -1174,8 +1175,14 @@ p.error, li.error {
 #progress-step {
   min-height: 1.5rem;
 }
+/* Code never wraps: inline code becomes a horizontally scrollable chip so the
+   text is always on one line and fully readable; pre>code stays a block. */
 code {
-  word-break: break-all;
+  display: inline-block;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow-x: auto;
+  vertical-align: middle;
 }
 
 /* Tooltips: the framework renders them on one line (nowrap); let the longer
@@ -1194,6 +1201,7 @@ code {
 @media (max-width: 600px) {
   #connect input[type='text'],
   #connect input[type='password'],
+  #connect select,
   #connect button,
   #result-body button {
     font-size: 1rem;
@@ -1248,16 +1256,19 @@ code {
         <legend>Export options</legend>
         <label tooltip-top="Tool option, not a config value: same as --redact / --no-redact in tools/bot_report.py"><input type="checkbox" id="f-redact" checked>
           Redact confidential fields (recommended — required before sharing the report)</label>
-        <label tooltip-top="Tool option, not a config value: same as --trades-limit in tools/bot_report.py — empty means the full paginated history">Trades limit — safety cap on closed trades (empty = full paginated history)
-          <input type="text" id="f-limit" inputmode="numeric" pattern="[0-9]*" placeholder="all">
-        </label>
-        <label tooltip-top="Tool option, not a config value: same as --timeout in tools/bot_report.py — applied to each HTTP request">Per-request timeout, seconds
-          <input type="text" id="f-timeout" inputmode="numeric" pattern="[0-9]*" value="30">
+        <label tooltip-top="Web-only filter: the full history is always fetched, then only trades closed within the window are kept. All time matches the CLI output.">Closed trades window
+          <select id="f-window">
+            <option value="all" selected>All time</option>
+            <option value="day">Last day</option>
+            <option value="week">Last week</option>
+            <option value="month">Last month</option>
+            <option value="year">Last year</option>
+          </select>
         </label>
       </fieldset>
       <button type="submit" id="btn-export">Export report</button>
-      <button type="button" id="btn-test" secondary>Test connection</button>
-      <small><strong>Export report</strong> walks every endpoint and saves the JSON file. <strong>Test connection</strong> only checks the URL, CORS and credentials.</small>
+      <button type="button" id="btn-test" secondary tooltip-top="Uses the URL and credentials above: one request checks reachability, CORS headers and authentication.">Test connection</button>
+      <small><strong>Export report</strong> walks every endpoint — including the full closed-trade history — and saves the JSON file. <strong>Test connection</strong> checks the URL, CORS and credentials with a single request.</small>
     </form>
   </section>
 
@@ -1332,6 +1343,7 @@ code {
 
 const API_PREFIX = "/api/v1";
 const TRADES_PAGE_SIZE = 500;
+const REQUEST_TIMEOUT = 120; // seconds, per HTTP request
 const TOOL_VERSION = "1.3.0";
 const REDACTED = "<redacted>";
 const MAX_DAILY_DAYS = 3650;
@@ -1486,7 +1498,7 @@ class TimeoutError extends Error {
 class FreqtradeApi {
   constructor(opts) {
     this.base = opts.url.replace(/\/+$/, "");
-    this.timeoutMs = (opts.timeout ?? 30) * 1000;
+    this.timeoutMs = (opts.timeout ?? REQUEST_TIMEOUT) * 1000;
     this.auth = null;
     if (opts.username || opts.password) {
       this.auth = "Basic " + b64Utf8(`${opts.username || ""}:${opts.password || ""}`);
@@ -1663,9 +1675,10 @@ async function fetchTradeHistory(api, cap, failed, progress) {
 }
 
 /* Mirrors collect_report: same endpoint sequence, same parameters. */
-async function collectReport(api, redacted, tradesLimit, progress) {
+async function collectReport(api, redacted, tradesLimit, window, progress) {
   const raw = {};
   const failed = [];
+  const windowed = window !== "all";
 
   const fetchSection = async (section, endpoint, params) => {
     progress.step(`GET ${API_PREFIX}/${endpoint} — ${section} …`);
@@ -1685,7 +1698,7 @@ async function collectReport(api, redacted, tradesLimit, progress) {
     }
   };
 
-  progress.setTotal(20 + (redacted ? 0 : 1));
+  progress.setTotal(20 + (redacted ? 0 : 1) + (windowed ? 1 : 0));
   progress.step("Connecting to the bot — GET /api/v1/ping …");
   await api.get("ping");
   progress.done();
@@ -1705,6 +1718,16 @@ async function collectReport(api, redacted, tradesLimit, progress) {
   await fetchSection("monthly_performance", "monthly", { timescale: Math.min(Math.floor(days / 30) + 2, MAX_MONTHLY_MONTHS) });
 
   raw.closed_trades = await fetchTradeHistory(api, tradesLimit, failed, progress);
+  if (windowed) {
+    progress.step(`Filtering closed trades to the ${WINDOW_LABELS[window]} …`);
+    const cutoff = Date.now() - WINDOW_MS[window];
+    raw.closed_trades.trades = raw.closed_trades.trades.filter((trade) => {
+      const closedAt = parseUtcTimestamp(trade.close_date);
+      return !Number.isNaN(closedAt) && closedAt >= cutoff;
+    });
+    raw.closed_trades.trades_count = raw.closed_trades.trades.length;
+    progress.done();
+  }
 
   await fetchSection("whitelist", "whitelist");
   await fetchSection("blacklist", "blacklist");
@@ -1736,6 +1759,7 @@ async function collectReport(api, redacted, tradesLimit, progress) {
     skipped_endpoints: redacted ? ["balance", "logs"] : [],
     failed_endpoints: failed,
   };
+  if (windowed) metadata.closed_trades_window = WINDOW_LABELS[window];
   return { report_metadata: metadata, ...report };
 }
 
@@ -1746,7 +1770,7 @@ const nullProgress = { setTotal() {}, addTotal() {}, step() {}, done() {} };
 async function runExport(opts, progress) {
   progress = progress || nullProgress;
   const api = new FreqtradeApi(opts);
-  const report = await collectReport(api, opts.redact, opts.tradesLimit === undefined ? null : opts.tradesLimit, progress);
+  const report = await collectReport(api, opts.redact, opts.tradesLimit === undefined ? null : opts.tradesLimit, opts.window || "all", progress);
   progress.step("Serializing JSON and preparing the download …");
   const json = JSON.stringify(report, null, 2) + "\n";
   const filename = `bot-report-${stamp()}.json`;
@@ -1812,7 +1836,8 @@ function renderSuccess(container, report, filename, json) {
   const rows = [
     ["Freqtrade version", meta.freqtrade_version ?? "unknown"],
     ["Generated at (UTC)", meta.generated_at_utc],
-    ["Closed trades", `${report.closed_trades.trades_count} exported / ${report.closed_trades.total_trades} total`],
+    ["Closed trades", `${report.closed_trades.trades_count} exported / ${report.closed_trades.total_trades} total` +
+      (meta.closed_trades_window ? ` — ${meta.closed_trades_window}` : "")],
     ["Fields redacted", meta.redacted ? meta.redacted_field_count : "redaction disabled"],
     ["Skipped endpoints", meta.skipped_endpoints.length ? meta.skipped_endpoints.join(", ") : "none"],
     ["Failed endpoints", failed.length ? failed.map((f) => f.endpoint).join(", ") : "none"],
@@ -1865,24 +1890,45 @@ function defaultBaseUrl() {
   return /^https?:\/\//.test(window.location.origin) ? window.location.origin : "http://127.0.0.1:8080";
 }
 
+/* Web-only closed-trades window presets: the freqtrade API cannot filter
+   /trades by date, so the full history is fetched and filtered client-side. */
+const WINDOW_MS = {
+  day: 24 * 3600000,
+  week: 7 * 24 * 3600000,
+  month: 30 * 24 * 3600000,
+  year: 365 * 24 * 3600000,
+};
+const WINDOW_LABELS = {
+  all: "all time",
+  day: "last 24 hours",
+  week: "last 7 days",
+  month: "last 30 days",
+  year: "last 365 days",
+};
+
+/* freqtrade returns naive UTC timestamps like "2026-09-01 15:00:00"; parse
+   them as UTC instead of letting Date.parse guess the local zone. */
+function parseUtcTimestamp(value) {
+  if (typeof value !== "string") return NaN;
+  const iso = value.includes("T") ? value : value.replace(" ", "T");
+  const zoned = /[zZ]$|[+-]\d{2}:?\d{2}$/.test(iso) ? iso : `${iso}Z`;
+  return Date.parse(zoned);
+}
+
 function readFormOptions() {
   const url = document.getElementById("f-url").value.trim() || defaultBaseUrl();
-  const limitRaw = document.getElementById("f-limit").value.trim();
-  const tradesLimit = limitRaw === "" ? null : Number(limitRaw);
-  const timeout = Number(document.getElementById("f-timeout").value);
+  const win = document.getElementById("f-window").value;
   let error = null;
   if (!/^https?:\/\//i.test(url)) {
     error = `The API base URL must start with http:// or https:// — got "${url}".`;
-  } else if (tradesLimit !== null && (!Number.isInteger(tradesLimit) || tradesLimit < 1)) {
-    error = "Trades limit must be a positive whole number (or empty for the full history).";
   }
   return {
     url,
     username: document.getElementById("f-user").value.trim() || null,
     password: document.getElementById("f-pass").value || null,
     redact: document.getElementById("f-redact").checked,
-    tradesLimit,
-    timeout: timeout > 0 ? timeout : 30,
+    window: WINDOW_MS[win] ? win : "all",
+    timeout: REQUEST_TIMEOUT,
     error,
   };
 }
