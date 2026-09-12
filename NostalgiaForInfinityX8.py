@@ -20086,6 +20086,7 @@ class NostalgiaForInfinityX8(IStrategy):
             # participation, not a routine tick up in volume
             & (vol_rel > 4.0)
           )
+          long_entry_logic.append((cci_20_15m > 130) | (aroond_14_1d > 5) | (aroonu_14_1d < 80))
 
           # NOTE: the measured PUMP CHARACTER columns (PH_BASE_POS d=0.95, PH_PRE_TIGHT d=0.65,
           # PH_CROSS_CNT_12 first-fire counter) are defined above and ready for your protection
