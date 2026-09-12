@@ -1192,7 +1192,8 @@ code {
     <ol>
       <li>Enable the freqtrade REST API (<code>"api_server": {"enabled": true, …}</code> with
         <code>username</code>/<code>password</code>) in your bot's config.</li>
-      <li>Browsers enforce CORS: add this page's exact origin (no trailing slash) to
+      <li>Browsers enforce CORS: add this page's exact origin (no trailing slash) —
+        <code id="page-origin">https://YOURNAME.github.io</code> — to
         <code>CORS_origins</code> in the same <code>api_server</code> block and restart the bot:
         <pre><code>"api_server": {
     "enabled": true,
@@ -1200,7 +1201,7 @@ code {
     "listen_port": 8080,
     "username": "freqtrader",
     "password": "…",
-    "CORS_origins": ["https://YOURNAME.github.io"]
+    "CORS_origins": ["<span id="page-origin-snippet">https://YOURNAME.github.io</span>"]
 }</code></pre>
         Without this entry the bot answers without the CORS headers browsers require, and every
         request from this page fails before reaching freqtrade.</li>
@@ -1810,6 +1811,13 @@ async function onExport(form) {
 
 if (typeof document !== "undefined") {
   const start = () => {
+    /* Only swap the guide's generic example for a real origin over http(s);
+     * file:// has no usable origin, so the generic example stays. */
+    const origin = window.location.origin;
+    if (/^https?:\/\//.test(origin)) {
+      document.getElementById("page-origin").textContent = origin;
+      document.getElementById("page-origin-snippet").textContent = origin;
+    }
     document.getElementById("f-url").placeholder = defaultBaseUrl();
     const form = document.getElementById("connect");
     form.addEventListener("submit", (event) => {
