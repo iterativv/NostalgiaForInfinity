@@ -1,0 +1,1817 @@
+<!doctype html>
+<!--
+  Freqtrade Bot Report — in-browser port of tools/bot_report.py
+
+  Single-file tool: the styling and all logic are embedded below, there is no
+  build step and no external dependency. The page only ever talks to the
+  freqtrade REST API URL entered into the form (read-only GET requests to
+  /api/v1/*). Everything else — fetching, derivation of relative fields,
+  redaction, JSON serialization and saving — happens locally in the browser.
+
+  Styling: shadcn-classless by fordus (https://github.com/fordus/shadcn-classless),
+  MIT licensed, embedded verbatim except for the Google Fonts @import, which was
+  removed so that the page loads no third-party resources at all.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src http: https:; img-src data:; base-uri 'none'; form-action 'none'">
+<title>Freqtrade Bot Report — in-browser export</title>
+<meta name="description" content="Generate a redacted freqtrade bot report entirely in your browser. No server sees your data — the only endpoint contacted is your own bot's REST API.">
+<style>
+:root {
+  --radius: 0.5rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.141 0.005 285.823);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.141 0.005 285.823);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.141 0.005 285.823);
+  --primary: oklch(0.21 0.006 285.885);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.967 0.001 286.375);
+  --secondary-foreground: oklch(0.21 0.006 285.885);
+  --muted: oklch(0.967 0.001 286.375);
+  --muted-foreground: oklch(0.552 0.016 285.938);
+  --accent: oklch(0.967 0.001 286.375);
+  --accent-foreground: oklch(0.21 0.006 285.885);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border-color: oklch(0.92 0.004 286.32);
+  --input: oklch(0.92 0.004 286.32);
+  --ring: oklch(0.705 0.015 286.067);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.141 0.005 285.823);
+  --sidebar-primary: oklch(0.21 0.006 285.885);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.967 0.001 286.375);
+  --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
+  --sidebar-border: oklch(0.92 0.004 286.32);
+  --sidebar-ring: oklch(0.705 0.015 286.067);
+
+  --shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0px 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+  --loading-icon-url: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='50' r='40' stroke='rgb(184, 184, 184)' stroke-width='20' fill='none' stroke-linecap='round' stroke-dasharray='200' stroke-dashoffset='100'%3E%3CanimateTransform attributeName='transform' type='rotate' from='0 50 50' to='360 50 50' dur='1s' repeatCount='indefinite'/%3E%3C/circle%3E%3C/svg%3E");
+
+  --border: 1px solid var(--border-color);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: oklch(0.141 0.005 285.823);
+    --foreground: oklch(0.985 0 0);
+    --card: oklch(0.21 0.006 285.885);
+    --card-foreground: oklch(0.985 0 0);
+    --popover: oklch(0.21 0.006 285.885);
+    --popover-foreground: oklch(0.985 0 0);
+    --primary: oklch(0.92 0.004 286.32);
+    --primary-foreground: oklch(0.21 0.006 285.885);
+    --secondary: oklch(0.274 0.006 286.033);
+    --secondary-foreground: oklch(0.985 0 0);
+    --muted: oklch(0.274 0.006 286.033);
+    --muted-foreground: oklch(0.705 0.015 286.067);
+    --accent: oklch(0.274 0.006 286.033);
+    --accent-foreground: oklch(0.985 0 0);
+    --destructive: oklch(0.704 0.191 22.216);
+    --border-color: oklch(1 0 0 / 10%);
+    --input: oklch(1 0 0 / 15%);
+    --ring: oklch(0.552 0.016 285.938);
+    --chart-1: oklch(0.488 0.243 264.376);
+    --chart-2: oklch(0.696 0.17 162.48);
+    --chart-3: oklch(0.769 0.188 70.08);
+    --chart-4: oklch(0.627 0.265 303.9);
+    --chart-5: oklch(0.645 0.246 16.439);
+    --sidebar: oklch(0.21 0.006 285.885);
+    --sidebar-foreground: oklch(0.985 0 0);
+    --sidebar-primary: oklch(0.488 0.243 264.376);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.274 0.006 286.033);
+    --sidebar-accent-foreground: oklch(0.985 0 0);
+    --sidebar-border: oklch(1 0 0 / 10%);
+    --sidebar-ring: oklch(0.552 0.016 285.938);
+    --border: 1px solid var(--border-color);
+  }
+}
+
+html {
+  color-scheme: light dark;
+}
+
+html[data-theme='light'] {
+  color-scheme: light;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.141 0.005 285.823);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.141 0.005 285.823);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.141 0.005 285.823);
+  --primary: oklch(0.21 0.006 285.885);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.967 0.001 286.375);
+  --secondary-foreground: oklch(0.21 0.006 285.885);
+  --muted: oklch(0.967 0.001 286.375);
+  --muted-foreground: oklch(0.552 0.016 285.938);
+  --accent: oklch(0.967 0.001 286.375);
+  --accent-foreground: oklch(0.21 0.006 285.885);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border-color: oklch(0.92 0.004 286.32);
+  --input: oklch(0.92 0.004 286.32);
+  --ring: oklch(0.705 0.015 286.067);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.141 0.005 285.823);
+  --sidebar-primary: oklch(0.21 0.006 285.885);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.967 0.001 286.375);
+  --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
+  --sidebar-border: oklch(0.92 0.004 286.32);
+  --sidebar-ring: oklch(0.705 0.015 286.067);
+  --shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0px 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --border: 1px solid var(--border-color);
+}
+
+html[data-theme='dark'] {
+  color-scheme: dark;
+}
+
+html[data-theme='dark'] {
+  --background: oklch(0.141 0.005 285.823);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.21 0.006 285.885);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.21 0.006 285.885);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.92 0.004 286.32);
+  --primary-foreground: oklch(0.21 0.006 285.885);
+  --secondary: oklch(0.274 0.006 286.033);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.274 0.006 286.033);
+  --muted-foreground: oklch(0.705 0.015 286.067);
+  --accent: oklch(0.274 0.006 286.033);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border-color: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.552 0.016 285.938);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.21 0.006 285.885);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.274 0.006 286.033);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.552 0.016 285.938);
+  --border: 1px solid var(--border-color);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+
+  scrollbar-width: auto;
+  scrollbar-color: var(--muted-foreground) var(--muted);
+}
+
+*::-webkit-scrollbar {
+  width: 12px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--muted-foreground);
+  border-radius: 6px;
+  border: 2px solid var(--background);
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--foreground);
+}
+*::-webkit-scrollbar-track {
+  background: var(--muted);
+  border-radius: 6px;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+    'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
+  line-height: 1.5;
+  padding: 2rem 1rem 1rem 1rem;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  max-width: 900px;
+  margin: 0 auto;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-bottom: 0.5em;
+  font-weight: 700;
+}
+
+h1 {
+  letter-spacing: -0.025em;
+  font-weight: 700;
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+h2 {
+  letter-spacing: -0.025em;
+  font-weight: 600;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+h3 {
+  letter-spacing: -0.025em;
+  font-weight: 600;
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
+h4 {
+  letter-spacing: -0.025em;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.75rem;
+}
+
+h5 {
+  font-size: 15px;
+}
+
+h6 {
+  font-size: 14px;
+}
+
+p {
+  margin: 1em 0;
+}
+a {
+  color: var(--primary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+a:hover {
+  text-decoration: underline;
+  color: color-mix(in srgb, var(--primary) 80%, transparent);
+}
+a:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+ul,
+ol {
+  margin-bottom: 1em;
+  padding-left: 1.5em;
+}
+header {
+  margin-bottom: 2rem;
+}
+header h1 {
+  font-size: 2rem;
+}
+nav ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  gap: 1rem;
+}
+section {
+  margin-bottom: 2rem;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+input[type='password'],
+input[type='text'],
+input[type='date'],
+input[type='color'],
+input[type='time'],
+input[type='file'],
+input[type='search'],
+input[type='email'],
+select,
+textarea {
+  font-weight: 500;
+  font: inherit;
+  padding: 0.5rem;
+  border: var(--border);
+  border-radius: var(--radius);
+  background-color: var(--background);
+  color: var(--foreground);
+  font-size: 0.875rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input[type='password']:focus,
+input[type='text']:focus,
+input[type='date']:focus,
+input[type='time']:focus,
+input[type='search']:focus,
+input[type='email']:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--ring);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 15%, transparent);
+}
+input[type='color'] {
+  appearance: none;
+  cursor: pointer;
+  outline-style: none;
+  padding: initial;
+  max-width: initial;
+  border: none;
+  outline: none;
+  -webkit-appearance: none;
+  border-radius: var(--radius);
+}
+input[type='color']::-webkit-color-swatch {
+  border: none;
+  border-radius: var(--radius);
+}
+input[type='color']::-moz-color-swatch {
+  border-radius: var(--radius);
+  border-style: none;
+  border: none;
+}
+
+/** --- BUTTONS --- */
+input[type='reset'],
+input[type='submit'],
+input[type='button'],
+button {
+  font: inherit;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  transition: background-color 0.2s ease-in-out;
+}
+
+/** Primary */
+button {
+  border: none;
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  &:hover {
+    background-color: color-mix(in srgb, var(--primary) 90%, transparent);
+  }
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 30%, transparent);
+  }
+  &:active {
+    transform: scale(0.98);
+  }
+}
+/** Secondary */
+button[secondary] {
+  background-color: var(--secondary);
+  color: var(--secondary-foreground);
+  &:hover {
+    background-color: color-mix(in srgb, var(--secondary) 90%, transparent);
+  }
+}
+
+/** Outline */
+input[type='submit'] {
+  border: var(--border);
+  background-color: transparent;
+  color: var(--foreground);
+  &:hover {
+    background-color: color-mix(in srgb, var(--muted) 90%, transparent);
+  }
+}
+
+/** Ghost */
+input[type='button'] {
+  border: none;
+  background-color: transparent;
+  color: var(--foreground);
+  &:hover {
+    background-color: var(--muted);
+  }
+}
+
+/** Desctructive */
+input[type='reset'] {
+  border: none;
+  background-color: var(--destructive);
+  color: var(--primary-foreground);
+  &:hover {
+    background-color: color-mix(in srgb, var(--destructive) 90%, transparent);
+  }
+}
+
+fieldset {
+  border: var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+fieldset[role='group'] {
+  border: none;
+  padding: 1rem;
+  display: flex;
+  gap: 0;
+  > * {
+    border-radius: 0;
+    &:first-child {
+      border-top-left-radius: var(--radius);
+      border-bottom-left-radius: var(--radius);
+      border-right: 0;
+    }
+    &:last-child {
+      border-top-right-radius: var(--radius);
+      border-bottom-right-radius: var(--radius);
+      border-right: var(--border);
+    }
+  }
+}
+
+fieldset[role='otp'] {
+  border: none;
+  padding: 1rem;
+  display: flex;
+  gap: 0;
+
+  > input {
+    border-radius: 0;
+    width: 1rem;
+    text-align: center;
+    border-right: 0;
+
+    &:first-child {
+      border-top-left-radius: var(--radius);
+      border-bottom-left-radius: var(--radius);
+      border-right: 0;
+    }
+    &:last-child {
+      border-top-right-radius: var(--radius);
+      border-bottom-right-radius: var(--radius);
+      border-right: var(--border);
+    }
+  }
+}
+legend {
+  padding: 0 0.5rem;
+}
+label {
+  display: block;
+  * {
+    vertical-align: middle;
+  }
+}
+small {
+  color: var(--muted-foreground);
+}
+figure {
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+}
+
+img[avatar] {
+  border-radius: 50%;
+}
+
+figcaption {
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  color: var(--muted-foreground);
+}
+blockquote {
+  border-left: 4px solid var(--border-color);
+  padding-left: 1rem;
+  font-style: italic;
+  > footer {
+    text-align: center;
+  }
+}
+[type='checkbox'],
+[type='radio'] {
+  margin-right: 0.5rem;
+}
+progress {
+  width: 100%;
+}
+dialog {
+  background-color: var(--background);
+  color: var(--foreground);
+  border: var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin: auto;
+}
+dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+details {
+  border: var(--border);
+  border-radius: var(--radius);
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+}
+summary {
+  cursor: pointer;
+  font-weight: bold;
+}
+article {
+  border: var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+footer {
+  margin-top: 2rem;
+  color: var(--muted-foreground);
+}
+[aria-busy='true'] {
+  opacity: 0.7;
+  cursor: progress;
+}
+[aria-busy='spinner'] {
+  opacity: 0.7;
+  cursor: progress;
+  &::before {
+    content: var(--loading-icon-url);
+    padding-right: 1rem;
+  }
+}
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  body {
+    padding: 0.5rem;
+  }
+  nav ul {
+    flex-direction: column;
+  }
+}
+
+input[type='file']::file-selector-button {
+  border: none;
+  background-color: var(--background);
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+:disabled,
+[disabled] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled {
+  pointer-events: none;
+}
+
+input[type='radio'],
+input[type='checkbox'],
+input[type='range'] {
+  accent-color: var(--primary);
+  background-color: var(--background);
+}
+
+/** Toggles */
+input[type='checkbox'][icon] {
+  display: none;
+  + * {
+    cursor: pointer;
+    border-radius: var(--radius);
+    padding: 0.5rem;
+    box-sizing: border-box;
+
+    &:hover {
+      background-color: var(--border-color);
+    }
+  }
+}
+input[type='checkbox'][icon] {
+  display: none;
+  + * {
+    cursor: pointer;
+    border-radius: var(--radius);
+    width: 2rem;
+    height: 2rem;
+    padding: 0.5rem;
+
+    &:hover {
+      background-color: var(--border-color);
+      stroke: var(--muted-foreground);
+    }
+  }
+}
+input[type='checkbox'][icon]:checked {
+  + * {
+    background-color: var(--border-color);
+
+    &:hover {
+      stroke: var(--accent-foreground);
+    }
+  }
+}
+
+/** Badge */
+kbd {
+  padding: 0.125rem 0.625rem;
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  border-radius: 6px;
+  font-weight: bold;
+}
+kbd[secondary] {
+  background-color: var(--secondary);
+  color: var(--secondary-foreground);
+}
+kbd[outline] {
+  background-color: var(--background);
+  color: var(--primary);
+  border: var(--border);
+}
+kbd[destructive] {
+  background-color: var(--destructive);
+  color: var(--primary-foreground);
+}
+
+table {
+  caption-side: bottom;
+  border-collapse: collapse;
+
+  caption {
+    color: var(--muted-foreground);
+    margin-top: 1rem;
+  }
+
+  th {
+    color: var(--muted-foreground);
+  }
+
+  tr {
+    border-bottom: var(--border);
+  }
+  tr:hover {
+    background-color: hsl(var(--muted) / 0.5);
+  }
+
+  td,
+  th {
+    vertical-align: middle;
+    padding: 0.5rem;
+    text-align: start;
+  }
+
+  tfoot {
+    background-color: var(--muted);
+  }
+}
+
+dialog[drawer] {
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  top: auto;
+  bottom: 0;
+  max-height: 50vh;
+
+  resize: vertical; /** Check if we can set the resize handle position to the top left/right */
+
+  &[open] {
+    animation: slideup 0.2s ease-in forwards;
+  }
+}
+
+dialog > header {
+  margin: 0;
+}
+/** Sheet */
+dialog[sheet-top],
+dialog[sheet-bottom],
+dialog[sheet-left],
+dialog[sheet-right] {
+  border-radius: 0;
+  margin: 0;
+}
+
+dialog[sheet-top],
+dialog[sheet-bottom] {
+  width: 100vw;
+  max-height: 50vh;
+}
+
+dialog[sheet-left],
+dialog[sheet-right] {
+  height: 100vh;
+  max-width: 50vw;
+}
+
+dialog[sheet-top][open] {
+  animation: slidedown 0.2s ease-in forwards;
+}
+
+dialog[sheet-bottom][open] {
+  animation: slideup 0.2s ease-in forwards;
+  top: auto;
+  bottom: 0;
+}
+dialog[sheet-left][open] {
+  animation: slideright 0.2s ease-in forwards;
+}
+
+dialog[sheet-right][open] {
+  animation: slideleft 0.2s ease-in forwards;
+  left: auto;
+  right: 0;
+}
+
+@keyframes slideup {
+  0% {
+    transform: translateY(100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+@keyframes slidedown {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+@keyframes slideleft {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+@keyframes slideright {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/** Progress */
+progress {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background-color: var(--muted);
+  border: 0;
+}
+progress[value]::-webkit-progress-value {
+  border-radius: 9999px;
+  background-color: var(--primary);
+}
+
+::-webkit-progress-bar {
+  border-radius: 9999px;
+  background-color: var(--muted);
+}
+::-moz-progress-bar {
+  border-radius: 9999px;
+  background-color: var(--primary);
+}
+
+progress:indeterminate {
+  background: var(--muted)
+    linear-gradient(to right, var(--primary) 35%, var(--muted) 35%) top
+    left/150% 150% no-repeat;
+  animation: progress-indeterminate 1.5s linear infinite;
+}
+progress:indeterminate::-webkit-progress-bar {
+  background-color: transparent;
+}
+progress:indeterminate::-moz-progress-bar {
+  background-color: transparent;
+}
+
+@keyframes progress-indeterminate {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+hr {
+  border: 0;
+  height: 1px;
+  margin: 1rem 0;
+  background-color: var(--border-color);
+  flex-shrink: 0;
+}
+
+hr[vertical] {
+  width: 1px;
+  height: auto;
+  margin: 0 1rem;
+}
+
+/** Breadcrumbs */
+nav {
+  display: flex;
+  align-items: center;
+  --separator: attr(breadcrumb, '>');
+  > a {
+    padding: 0 0.625rem 0 0;
+    color: var(--muted-foreground);
+    &::after {
+      padding: 0 0 0 0.625rem;
+      display: inline-block;
+      content: var(--separator);
+    }
+    &:last-child {
+      color: var(--foreground);
+      &::after {
+        content: '';
+      }
+    }
+  }
+  &:hover::after {
+    text-decoration: none;
+  }
+}
+
+/** Skeleton */
+div[skeleton] {
+  background-color: var(--input);
+  animation: shimmer 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  border-radius: var(--radius);
+  opacity: 1;
+  * {
+    display: none;
+  }
+}
+@keyframes shimmer {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/** Popover */
+[popover] {
+  inset: unset;
+  position: absolute;
+
+  bottom: calc(anchor(top) + 5px);
+  justify-self: anchor-center;
+  margin: 0;
+
+  border: var(--border);
+  border-radius: var(--radius);
+  padding: 0.5rem;
+}
+
+/** Tooltip */
+[tooltip-top],
+[tooltip-bottom],
+[tooltip-left],
+[tooltip-right] {
+  position: relative;
+
+  &::after {
+    position: absolute;
+    white-space: nowrap;
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+
+    padding: 6px 8px;
+    font-size: 0.875em;
+    border-radius: var(--radius);
+
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  &:hover::after {
+    opacity: 1;
+  }
+}
+
+[tooltip-top]::after {
+  content: attr(tooltip-top);
+  left: 50%;
+  top: -0.8rem;
+  transform: translateX(-50%) translateY(-100%);
+}
+[tooltip-bottom]::after {
+  content: attr(tooltip-bottom);
+  left: 50%;
+  top: calc(100% + 0.8rem);
+  transform: translateX(-50%) translateY(0%);
+}
+[tooltip-left]::after {
+  content: attr(tooltip-left);
+  left: -0.3rem;
+  top: 50%;
+  transform: translateX(-100%) translateY(-50%);
+}
+[tooltip-right]::after {
+  content: attr(tooltip-right);
+  left: calc(100% + 0.3rem);
+  top: 50%;
+  margin-left: 0.3rem;
+  transform: translateX(0%) translateY(-50%);
+}
+
+/** Code */
+pre {
+  border-radius: var(--radius);
+  > code {
+    display: block;
+    overflow-x: auto;
+  }
+}
+code {
+  border: var(--border);
+  border-radius: var(--radius);
+
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  padding: 0.2rem;
+}
+
+/** Toast */
+dialog[sonner],
+dialog[toast] {
+  padding: 1rem;
+  padding-right: 1.5rem;
+
+  top: auto;
+  bottom: 1rem;
+  left: auto;
+  right: 1rem;
+
+  &::backdrop {
+    opacity: 0;
+  }
+}
+
+dialog[toast] {
+  box-shadow: var(--shadow);
+
+  &[open] {
+    animation: slideup 0.2s ease-in forwards, fad-in 0.2s ease-in forwards;
+  }
+}
+
+dialog[sonner] {
+  background-color: transparent;
+  border: none;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.5rem;
+  transition: gap 0.15s ease-in;
+
+  > li {
+    animation: slideup 0.2s ease-in forwards, fad-in 0.2s ease-in forwards;
+
+    background-color: var(--background);
+    counter-increment: sonner-counter;
+    padding: 1rem;
+    padding-right: 1.5rem;
+    border: var(--border);
+    border-radius: var(--radius);
+    list-style: none;
+
+    &:hover {
+      scale: 1.1;
+    }
+  }
+}
+
+@keyframes fad-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/** Sidebar */
+aside {
+  background-color: var(--sidebar);
+  border: 1px solid var(--sidebar-border);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  position: relative;
+  padding: 0.5rem;
+
+  > main {
+    flex-grow: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  > header,
+  > footer {
+    position: sticky;
+  }
+}
+
+/** Menubar */
+menu {
+  display: flex;
+  flex-direction: row;
+  border: var(--border);
+  border-radius: var(--radius);
+  width: fit-content;
+  > li {
+    padding: 0.25rem 0.75rem;
+    list-style: none;
+  }
+}
+
+/** Scrollarea */
+*[scroll-x] {
+  overflow-x: scroll;
+}
+
+*[scroll-y] {
+  overflow-y: scroll;
+}
+
+</style>
+<style>
+/* Page-specific additions on top of shadcn-classless (kept minimal). */
+#privacy-note {
+  border-left: 4px solid var(--primary);
+}
+#privacy-note h3 {
+  margin-bottom: 0.25rem;
+}
+dl.kv {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.25rem 1.5rem;
+  margin: 1rem 0;
+}
+dl.kv dt {
+  color: var(--muted-foreground);
+}
+p.error, li.error {
+  color: var(--destructive);
+}
+#progress-step {
+  min-height: 1.5rem;
+}
+code {
+  word-break: break-all;
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>Freqtrade Bot Report</h1>
+  <p><small>In-browser port of <code>tools/bot_report.py</code> — exports a redacted JSON
+  telemetry report from a running freqtrade REST API, so strategy developers can review how a
+  strategy behaves in production. Everything runs locally in this browser tab.</small></p>
+</header>
+
+<main>
+  <article id="privacy-note">
+    <h3>No server sees your data</h3>
+    <p>This page is a single static file with all logic embedded. <strong>It makes no network
+    call to any server except the freqtrade API URL you enter below.</strong> There is no CDN,
+    no fonts, no analytics, no uploads, nothing stored: the report is generated in your browser
+    and saved straight to your disk. Closing the tab discards everything, including your
+    credentials.</p>
+    <p><strong>You can verify this:</strong> press <kbd>F12</kbd> to open your browser DevTools,
+    switch to the <em>Network</em> tab, and reload this page. You will see zero requests until
+    you click <em>Export report</em>, and afterwards only requests to your bot's address from
+    the form. The page also ships a strict Content-Security-Policy, so the browser itself
+    blocks anything else.</p>
+  </article>
+
+  <section>
+    <h2>Bot connection</h2>
+    <form id="connect">
+      <label>API base URL
+        <input type="text" id="f-url" value="http://127.0.0.1:8080" placeholder="http://127.0.0.1:8080" spellcheck="false">
+      </label>
+      <fieldset>
+        <legend>Credentials (HTTP Basic, as in your <code>api_server</code> config)</legend>
+        <label>Username
+          <input type="text" id="f-user" autocomplete="off" spellcheck="false">
+        </label>
+        <label>Password
+          <input type="password" id="f-pass">
+        </label>
+      </fieldset>
+      <fieldset>
+        <legend>Export options</legend>
+        <label><input type="checkbox" id="f-redact" checked>
+          Redact confidential fields (recommended — required before sharing the report)</label>
+        <label>Trades limit — safety cap on closed trades (empty = full paginated history)
+          <input type="number" id="f-limit" min="1" step="1" inputmode="numeric" placeholder="all">
+        </label>
+        <label>Per-request timeout, seconds
+          <input type="number" id="f-timeout" min="1" step="1" inputmode="numeric" value="30">
+        </label>
+      </fieldset>
+      <button type="submit" id="btn-export">Export report</button>
+    </form>
+  </section>
+
+  <section id="progress" hidden>
+    <h2 aria-busy="true">Exporting…</h2>
+    <p id="progress-step" aria-busy="spinner">Connecting…</p>
+    <progress id="progress-bar" max="1" value="0"></progress>
+  </section>
+
+  <section id="result" hidden>
+    <h2 id="result-title"></h2>
+    <div id="result-body"></div>
+  </section>
+
+  <details>
+    <summary>Setup — letting this page talk to your bot</summary>
+    <ol>
+      <li>Enable the freqtrade REST API (<code>"api_server": {"enabled": true, …}</code> with
+        <code>username</code>/<code>password</code>) in your bot's config.</li>
+      <li>Browsers enforce CORS: add this page's exact origin (no trailing slash) to
+        <code>CORS_origins</code> in the same <code>api_server</code> block and restart the bot:
+        <pre><code>"api_server": {
+    "enabled": true,
+    "listen_ip_address": "127.0.0.1",
+    "listen_port": 8080,
+    "username": "freqtrader",
+    "password": "…",
+    "CORS_origins": ["https://YOURNAME.github.io"]
+}</code></pre>
+        Without this entry the bot answers without the CORS headers browsers require, and every
+        request from this page fails before reaching freqtrade.</li>
+      <li>If this page is served over HTTPS and your bot is plain HTTP, browsers usually allow
+        <code>http://127.0.0.1</code> / <code>http://localhost</code> as an exception (Chrome may
+        additionally ask for a local-network permission). Remote bots over plain HTTP will be
+        blocked as mixed content — put them behind a TLS reverse proxy. Certificates must be
+        valid; this page cannot skip verification (there is no <code>--no-verify-tls</code> in a
+        browser).</li>
+    </ol>
+  </details>
+
+  <details>
+    <summary>What gets redacted?</summary>
+    <p>Credentials and keys (any field whose name contains <code>key</code>, <code>secret</code>,
+    <code>token</code>, <code>password</code>, <code>chat</code>, <code>webhook</code> or
+    <code>credential</code>; the whole <code>ccxt_config</code> objects), exchange order/account
+    identifiers, absolute money values (balances, stakes, costs, absolute PnL, funding fees,
+    drawdown water marks) and personal/machine-specific values (bot name, local paths).
+    Numeric redaction is fail-closed: a number is kept only when its key is recognized as safe,
+    so fields freqtrade adds in the future are hidden until reviewed. Scale-invariant relative
+    ratios are computed <em>before</em> redaction so the report stays useful without revealing
+    the account size. Full field reference: <a href="tools/bot_report.md">tools/bot_report.md</a>.</p>
+  </details>
+</main>
+
+<footer>
+  <small>Single-file tool, no build step, no dependencies. Read-only: it only ever issues
+  <code>GET</code> requests to <code>/api/v1/*</code>. Styling:
+  <a href="https://github.com/fordus/shadcn-classless">shadcn-classless</a> (MIT, embedded — no
+  external stylesheet is loaded).</small>
+</footer>
+
+<script>
+"use strict";
+
+/* =========================================================================
+ * Logic ported 1:1 from tools/bot_report.py (TOOL_VERSION 1.3.0).
+ * Pure functions live at the top; DOM wiring only runs in a browser.
+ * ========================================================================= */
+
+const API_PREFIX = "/api/v1";
+const TRADES_PAGE_SIZE = 500;
+const TOOL_VERSION = "1.3.0";
+const REDACTED = "<redacted>";
+const MAX_DAILY_DAYS = 3650;
+const MAX_WEEKLY_WEEKS = 520;
+const MAX_MONTHLY_MONTHS = 240;
+
+/* Keys that are always redacted regardless of their value. */
+const WHOLE_KEY_REDACT = new Set([
+  "bot_name", "ccxt_async_config", "ccxt_config", "db_url", "exportfilename",
+  "log_configfile", "logfile", "open_order", "open_orders", "strategy_path",
+  "uid", "user_data_dir",
+]);
+
+/* Key tokens (key split on non-alphanumerics) that mark credentials / personal data. */
+const SECRET_TOKENS = new Set([
+  "chat", "credential", "key", "passwd", "password", "secret", "token", "webhook",
+]);
+
+/* A key is treated as an identifier when it has an "id" token plus one of these.
+ * Local counters (trade_id, id) stay, exchange/account identifiers do not. */
+const ID_CONTEXT_TOKENS = new Set([
+  "account", "client", "order", "telegram", "user",
+]);
+
+/* Keys whose values can reveal the account balance / absolute PnL. */
+const MONEY_EXACT_KEYS = new Set([
+  "abs_profit", "amount", "amount_requested", "available_capital", "cost",
+  "current_drawdown_high", "current_drawdown_low", "drawdown_high", "drawdown_low",
+  "dry_run_wallet", "expectancy", "fiat_value", "filled", "funding_fee",
+  "funding_fees", "ft_fee_base", "max_stake_amount", "open_trade_value",
+  "profit_all_coin", "profit_all_fiat", "profit_closed_coin", "profit_closed_fiat",
+  "realized_profit", "remaining", "safe_cost", "stake_amount", "starting_balance",
+  "total_capital", "total_stake", "trading_volume",
+]);
+
+const MONEY_KEY_SUFFIXES = [
+  "_abs", "_balance", "_coin", "_cost", "_dist", "_fee", "_fiat", "_stake_amount", "_wallet",
+];
+/* Absolute price levels, not money: stop_loss_abs describes the market, not the account. */
+const MONEY_SUFFIX_EXCEPTIONS = new Set(["initial_stop_loss_abs", "stop_loss_abs"]);
+/* Money-like keys where a string value is behavior (e.g. "unlimited"), not an amount. */
+const MONEY_ONLY_NUMERIC_KEYS = new Set(["dry_run_wallet", "max_stake_amount", "stake_amount"]);
+
+/* Fail-closed numeric redaction: report sections whose numbers are safe as a whole. */
+const NUMBER_SAFE_SECTIONS = new Set(["config", "system_info", "plot_config"]);
+
+/* Key tokens that mark numbers safe to keep. Deny rules always take precedence. */
+const ALLOWED_NUMBER_TOKENS = new Set([
+  "average", "count", "current", "decimals", "duration", "interval", "length",
+  "max", "offset", "pct", "percent", "precision", "price", "rate", "ratio",
+  "share", "timestamp", "total", "ts", "version",
+]);
+
+/* Individual numeric keys that are safe but carry none of the tokens above. */
+const ALLOWED_NUMBER_KEYS = new Set([
+  "close_profit", "contract_size", "cagr", "calmar", "fee_close", "fee_open",
+  "initial_stop_loss_abs", "leverage", "losing_trades", "max_drawdown",
+  "current_drawdown", "nr_of_successful_entries", "nr_of_successful_exits",
+  "profit", "profit_factor", "rel_profit", "sharpe", "sortino", "sqn",
+  "stop_loss_abs", "timeframe", "winrate", "winning_trades",
+]);
+
+function keyTokens(key) {
+  return key.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+}
+
+function isSensitive(key, value) {
+  const lowered = key.toLowerCase();
+  const parts = keyTokens(key);
+  if (parts.length === 0 || MONEY_SUFFIX_EXCEPTIONS.has(lowered)) return false;
+  if (WHOLE_KEY_REDACT.has(lowered)) return true;
+  if (parts.some((part) => SECRET_TOKENS.has(part))) return true;
+  if (parts.includes("id") && parts.some((part) => ID_CONTEXT_TOKENS.has(part))) return true;
+  /* Ratios/percentages are never account balance, even when they mention money words. */
+  if (parts.includes("ratio") || parts[parts.length - 1] === "pct" || parts[parts.length - 1] === "percent") return false;
+  if (MONEY_EXACT_KEYS.has(lowered) || MONEY_KEY_SUFFIXES.some((suffix) => lowered.endsWith(suffix))) {
+    if (MONEY_ONLY_NUMERIC_KEYS.has(lowered)) return typeof value === "number";
+    return true;
+  }
+  return false;
+}
+
+function isAllowedNumber(path, key) {
+  /* Fail-closed: unknown keys are redacted. */
+  if (NUMBER_SAFE_SECTIONS.has(path.split(".")[0])) return true;
+  if (keyTokens(key).some((token) => ALLOWED_NUMBER_TOKENS.has(token))) return true;
+  if (ALLOWED_NUMBER_KEYS.has(key) || key.endsWith("_id") || key === "id") return true;
+  return false;
+}
+
+/* Mirrors Redactor.walk: recursively redacts sensitive fields, keeps structure. */
+function redactWalk(obj, key, path, state) {
+  if (!state.enabled) return obj;
+  const fullPath = path && key ? `${path}.${key}` : (key || path);
+  if (key && isSensitive(key, obj)) {
+    state.count += 1;
+    return REDACTED;
+  }
+  if (typeof obj === "boolean") return obj;
+  if (typeof obj === "number" && key && !isAllowedNumber(fullPath, key)) {
+    state.count += 1;
+    return REDACTED;
+  }
+  if (obj !== null && typeof obj === "object") {
+    if (Array.isArray(obj)) {
+      return obj.map((item) => redactWalk(item, key, fullPath, state));
+    }
+    const out = {};
+    for (const name of Object.keys(obj)) {
+      out[name] = redactWalk(obj[name], String(name), fullPath, state);
+    }
+    return out;
+  }
+  return obj;
+}
+
+/* ---------------------------------------------------------------- errors */
+
+class ApiError extends Error {
+  constructor(endpoint, status) {
+    super(`${endpoint} failed with HTTP ${status}`);
+    this.endpoint = endpoint;
+    this.status = status;
+    this.friendly = `${API_PREFIX}/${endpoint} answered with HTTP ${status}.`;
+  }
+}
+
+class AuthError extends Error {
+  constructor(base) {
+    super(`authentication failed for ${base}`);
+    this.friendly = "Authentication failed: check the username and password against your bot's api_server config.";
+  }
+}
+
+class NetworkError extends Error {
+  constructor(base, cause) {
+    super(`cannot reach freqtrade API at ${base}`, { cause });
+    this.friendly = `Cannot reach the freqtrade API at ${base}. The browser blocked the request or the bot is offline. Most common causes: missing "CORS_origins" entry for this page in the bot's api_server config, or a plain-HTTP bot URL blocked as mixed content (see Setup below). Details in the DevTools console.`;
+  }
+}
+
+class TimeoutError extends Error {
+  constructor(endpoint, seconds) {
+    super(`${endpoint} timed out after ${seconds}s`);
+    this.friendly = `Request to ${API_PREFIX}/${endpoint} timed out after ${seconds}s. The bot may be busy, offline, or the timeout is too small.`;
+  }
+}
+
+/* ------------------------------------------------------------ api client */
+
+/* Mirrors FreqtradeApi: minimal read-only client for the freqtrade REST API. */
+class FreqtradeApi {
+  constructor(opts) {
+    this.base = opts.url.replace(/\/+$/, "");
+    this.timeoutMs = (opts.timeout ?? 30) * 1000;
+    this.auth = null;
+    if (opts.username || opts.password) {
+      this.auth = "Basic " + b64Utf8(`${opts.username || ""}:${opts.password || ""}`);
+    }
+  }
+
+  async get(endpoint, params) {
+    let url = `${this.base}${API_PREFIX}/${endpoint}`;
+    if (params) url += "?" + new URLSearchParams(params).toString();
+    const headers = { "Accept": "application/json" };
+    if (this.auth) headers["Authorization"] = this.auth;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), this.timeoutMs);
+    let response;
+    try {
+      response = await fetch(url, { method: "GET", headers, signal: controller.signal, credentials: "omit" });
+    } catch (err) {
+      if (err && err.name === "AbortError") throw new TimeoutError(endpoint, this.timeoutMs / 1000);
+      throw new NetworkError(this.base, err);
+    } finally {
+      clearTimeout(timer);
+    }
+    if (response.status === 401) throw new AuthError(this.base);
+    if (!response.ok) throw new ApiError(endpoint, response.status);
+    return response.json();
+  }
+}
+
+function b64Utf8(text) {
+  const bytes = new TextEncoder().encode(text);
+  let binary = "";
+  for (const byte of bytes) binary += String.fromCharCode(byte);
+  return btoa(binary);
+}
+
+/* -------------------------------------------------------- derived fields */
+
+function safeDiv(numerator, denominator) {
+  if (numerator === null || numerator === undefined || denominator === null || denominator === undefined) return null;
+  if (typeof numerator !== "number" || typeof denominator !== "number") return null;
+  if (denominator === 0) return null;
+  if (!Number.isFinite(numerator / denominator)) return null;
+  return Math.round((numerator / denominator) * 1e6) / 1e6;
+}
+
+/* Build a day -> starting-balance lookup from /daily rows (null if unavailable). */
+function balanceLookup(dailyRows) {
+  const mapping = new Map();
+  for (const row of dailyRows || []) {
+    if (!row || typeof row !== "object") continue;
+    const day = row.date;
+    const balance = row.starting_balance;
+    if (day && typeof balance === "number") mapping.set(String(day).slice(0, 10), balance);
+  }
+  if (mapping.size === 0) return null;
+  const days = Array.from(mapping.keys()).sort();
+  return function lookup(dateStr) {
+    const day = String(dateStr).slice(0, 10);
+    if (mapping.has(day)) return mapping.get(day);
+    if (day < days[0]) return mapping.get(days[0]);
+    for (let i = days.length - 1; i >= 0; i--) {
+      if (days[i] < day) return mapping.get(days[i]);
+    }
+    return mapping.get(days[0]);
+  };
+}
+
+function isEntryOrder(order, isShort) {
+  if ("ft_is_entry" in order) return Boolean(order.ft_is_entry);
+  return (order.ft_order_side === "buy") !== Boolean(isShort);
+}
+
+/* Mirrors add_derived_fields: scale-invariant ratios, computed before redaction.
+ * All derived keys carry a "ratio" or "share" token so redaction keeps them. */
+function addDerivedFields(raw, nowIso) {
+  const lookup = balanceLookup((raw.daily_performance || {}).data);
+  const balanceNow = lookup ? lookup(nowIso || new Date().toISOString()) : null;
+
+  const tradeCounts = raw.trade_counts;
+  if (tradeCounts !== null && typeof tradeCounts === "object" && !Array.isArray(tradeCounts)) {
+    tradeCounts.total_stake_to_account_balance_ratio = safeDiv(tradeCounts.total_stake, balanceNow);
+  }
+
+  const profitSummary = raw.profit_summary;
+  if (profitSummary !== null && typeof profitSummary === "object" && !Array.isArray(profitSummary)) {
+    profitSummary.trading_volume_to_account_balance_ratio = safeDiv(profitSummary.trading_volume, balanceNow);
+  }
+
+  const openTrades = Array.isArray(raw.open_trades) ? raw.open_trades : [];
+  const closedTrades = Array.isArray((raw.closed_trades || {}).trades) ? raw.closed_trades.trades : [];
+  const trades = openTrades.concat(closedTrades);
+  for (const trade of trades) {
+    if (trade === null || typeof trade !== "object" || Array.isArray(trade)) continue;
+    const stake = trade.stake_amount;
+    const balanceAtOpen = lookup ? lookup(trade.open_date) : null;
+    trade.stake_amount_to_account_balance_ratio = safeDiv(stake, balanceAtOpen);
+    let absProfit;
+    let balanceAtClose;
+    if (trade.close_date) {
+      absProfit = trade.close_profit_abs;
+      balanceAtClose = lookup ? lookup(trade.close_date) : null;
+    } else {
+      absProfit = trade.profit_abs;
+      balanceAtClose = balanceNow;
+    }
+    trade.profit_to_account_balance_ratio = safeDiv(absProfit, balanceAtClose);
+    trade.funding_fees_to_stake_amount_ratio = safeDiv(trade.funding_fees, stake);
+
+    const isShort = Boolean(trade.is_short);
+    const orders = (Array.isArray(trade.orders) ? trade.orders : []).filter((o) => o !== null && typeof o === "object" && !Array.isArray(o));
+    const filledBySide = { true: 0, false: 0 };
+    for (const order of orders) {
+      const filled = order.filled;
+      if (typeof filled === "number" && filled > 0) {
+        filledBySide[isEntryOrder(order, isShort)] += filled;
+      }
+    }
+    for (const order of orders) {
+      order.funding_fee_to_order_cost_ratio = safeDiv(order.funding_fee, order.cost);
+      const sideFilled = filledBySide[isEntryOrder(order, isShort)];
+      order.order_filled_share_of_trade_side = safeDiv(order.filled, sideFilled || null);
+    }
+  }
+}
+
+/* Days since the first trade, for full-history daily/weekly/monthly windows. */
+function historyDays(firstTradeDate, nowMs) {
+  const match = /^\d{4}-\d{2}-\d{2}/.exec(String(firstTradeDate === null || firstTradeDate === undefined ? "" : firstTradeDate));
+  if (!match) return 8;
+  const start = new Date(`${match[0]}T00:00:00Z`);
+  if (Number.isNaN(start.getTime())) return 8;
+  const days = Math.floor(((nowMs === undefined ? Date.now() : nowMs) - start.getTime()) / 86400000) + 2;
+  return Math.min(Math.max(days, 8), MAX_DAILY_DAYS);
+}
+
+/* -------------------------------------------------------------- fetching */
+
+/* Mirrors fetch_trade_history: full closed-trade history via /trades + offset. */
+async function fetchTradeHistory(api, cap, failed, progress) {
+  const trades = [];
+  const seen = new Set();
+  let offset = 0;
+  let total = null;
+  let pageNo = 0;
+  while (cap === null || trades.length < cap) {
+    pageNo += 1;
+    progress.step(`Fetching closed trades — page ${pageNo}${total !== null ? `, ${Math.min(offset, total)} of ${total}` : ""} …`);
+    let page;
+    try {
+      page = await api.get("trades", { limit: TRADES_PAGE_SIZE, offset });
+    } catch (err) {
+      if (err instanceof ApiError) {
+        failed.push({ endpoint: "trades", http_status: err.status });
+        console.warn(`warning: trades failed with HTTP ${err.status}`);
+        progress.done();
+        break;
+      }
+      throw err;
+    }
+    page = page || {};
+    const batch = page.trades || [];
+    const fresh = batch.filter((t) => t !== null && typeof t === "object" && !Array.isArray(t) && !seen.has(t.trade_id));
+    for (const t of fresh) seen.add(t.trade_id);
+    trades.push(...fresh);
+    if (page.total_trades !== undefined) total = page.total_trades;
+    if (total !== null && pageNo === 1) progress.addTotal(Math.max(Math.ceil(total / TRADES_PAGE_SIZE) - 1, 0));
+    offset += batch.length;
+    progress.done();
+    if (batch.length === 0 || (total !== null && offset >= total)) break;
+  }
+  const capped = cap !== null ? trades.slice(0, cap) : trades;
+  capped.sort((a, b) => (a.trade_id || 0) - (b.trade_id || 0));
+  return { trades: capped, trades_count: capped.length, total_trades: total || capped.length };
+}
+
+/* Mirrors collect_report: same endpoint sequence, same parameters. */
+async function collectReport(api, redacted, tradesLimit, progress) {
+  const raw = {};
+  const failed = [];
+
+  const fetchSection = async (section, endpoint, params) => {
+    progress.step(`GET ${API_PREFIX}/${endpoint} — ${section} …`);
+    try {
+      const data = await api.get(endpoint, params);
+      raw[section] = data;
+      progress.done();
+      return data;
+    } catch (err) {
+      if (err instanceof ApiError) {
+        failed.push({ endpoint, http_status: err.status });
+        console.warn(`warning: ${endpoint} failed with HTTP ${err.status}`);
+        progress.done();
+        return null;
+      }
+      throw err;
+    }
+  };
+
+  progress.setTotal(20 + (redacted ? 0 : 1));
+  progress.step("Connecting to the bot — GET /api/v1/ping …");
+  await api.get("ping");
+  progress.done();
+
+  const version = await fetchSection("freqtrade_version", "version");
+  await fetchSection("config", "show_config");
+  await fetchSection("health", "health");
+  await fetchSection("system_info", "sysinfo");
+  await fetchSection("open_trades", "status");
+  await fetchSection("trade_counts", "count");
+  await fetchSection("profit_summary", "profit");
+  await fetchSection("performance_per_pair", "performance");
+
+  const days = historyDays((raw.profit_summary || {}).first_trade_date);
+  await fetchSection("daily_performance", "daily", { timescale: days });
+  await fetchSection("weekly_performance", "weekly", { timescale: Math.min(Math.floor(days / 7) + 2, MAX_WEEKLY_WEEKS) });
+  await fetchSection("monthly_performance", "monthly", { timescale: Math.min(Math.floor(days / 30) + 2, MAX_MONTHLY_MONTHS) });
+
+  raw.closed_trades = await fetchTradeHistory(api, tradesLimit, failed, progress);
+
+  await fetchSection("whitelist", "whitelist");
+  await fetchSection("blacklist", "blacklist");
+  await fetchSection("pair_locks", "locks");
+  await fetchSection("plot_config", "plot_config");
+  if (!redacted) await fetchSection("balance", "balance");
+
+  progress.step("Computing derived relative fields (stake/profit/funding ratios) …");
+  addDerivedFields(raw);
+  progress.done();
+
+  progress.step(redacted
+    ? "Redacting confidential fields (credentials, money values, identifiers) …"
+    : "Redaction disabled — keeping absolute values …");
+  const state = { enabled: redacted, count: 0 };
+  const report = {};
+  for (const section of Object.keys(raw)) {
+    report[section] = redactWalk(raw[section], "", "", state);
+  }
+  progress.done();
+
+  const metadata = {
+    tool: "web/index.html (tools/bot_report.py port)",
+    tool_version: TOOL_VERSION,
+    generated_at_utc: new Date().toISOString().replace(/\.\d{3}Z$/, "+00:00"),
+    freqtrade_version: (version || {}).version,
+    redacted,
+    redacted_field_count: state.count,
+    skipped_endpoints: redacted ? ["balance", "logs"] : [],
+    failed_endpoints: failed,
+  };
+  return { report_metadata: metadata, ...report };
+}
+
+const nullProgress = { setTotal() {}, addTotal() {}, step() {}, done() {} };
+
+/* Full pipeline: collect -> derive -> redact -> serialize.
+ * Used by both the page and the equivalence tests. */
+async function runExport(opts, progress) {
+  progress = progress || nullProgress;
+  const api = new FreqtradeApi(opts);
+  const report = await collectReport(api, opts.redact, opts.tradesLimit === undefined ? null : opts.tradesLimit, progress);
+  progress.step("Serializing JSON and preparing the download …");
+  const json = JSON.stringify(report, null, 2) + "\n";
+  const filename = `bot-report-${stamp()}.json`;
+  return { report, json, filename };
+}
+
+function stamp() {
+  return new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
+}
+
+/* ------------------------------------------------------------- DOM layer */
+
+function makeProgress() {
+  const section = document.getElementById("progress");
+  const stepEl = document.getElementById("progress-step");
+  const bar = document.getElementById("progress-bar");
+  section.hidden = false;
+  bar.max = 1;
+  bar.value = 0;
+  stepEl.setAttribute("aria-busy", "spinner");
+  stepEl.textContent = "";
+  return {
+    setTotal(n) { bar.max = n; },
+    addTotal(n) { bar.max = Number(bar.max) + n; },
+    step(label) { stepEl.textContent = label; },
+    done() { bar.value = Number(bar.value) + 1; },
+    finish() { section.hidden = true; stepEl.removeAttribute("aria-busy"); stepEl.textContent = ""; },
+  };
+}
+
+function setFormDisabled(form, disabled) {
+  for (const el of form.querySelectorAll("input, button")) el.disabled = disabled;
+}
+
+function el(tag, attrs, children) {
+  const node = document.createElement(tag);
+  for (const [name, value] of Object.entries(attrs || {})) {
+    if (name === "class") node.className = value;
+    else if (name === "html") node.innerHTML = value;
+    else node.setAttribute(name, value);
+  }
+  for (const child of children || []) {
+    node.append(child);
+  }
+  return node;
+}
+
+function renderSuccess(container, report, filename, json) {
+  const meta = report.report_metadata;
+  const failed = meta.failed_endpoints;
+  const children = [];
+
+  if (!meta.redacted) {
+    children.push(el("p", { class: "error" },
+      "Redaction was disabled — this report contains balances, absolute PnL and credentials. Use it for private diagnostics only, never share it."));
+  }
+  if (failed.length > 0) {
+    children.push(el("p", { class: "error" },
+      `${failed.length} endpoint(s) failed and were skipped: ` +
+      failed.map((f) => `${f.endpoint} (HTTP ${f.http_status})`).join(", ") + "."));
+  }
+
+  const dl = el("dl", { class: "kv" });
+  const add = (dt, dd) => { dl.append(el("dt", {}, [String(dt)]), el("dd", {}, [String(dd)])); };
+  add("Freqtrade version", meta.freqtrade_version ?? "unknown");
+  add("Generated at (UTC)", meta.generated_at_utc);
+  add("Closed trades", `${report.closed_trades.trades_count} exported / ${report.closed_trades.total_trades} total`);
+  add("Fields redacted", meta.redacted ? meta.redacted_field_count : "redaction disabled");
+  add("Skipped endpoints", meta.skipped_endpoints.length ? meta.skipped_endpoints.join(", ") : "none");
+  add("Failed endpoints", failed.length ? failed.map((f) => f.endpoint).join(", ") : "none");
+  add("Saved as", filename);
+  children.push(dl);
+
+  const button = el("button", { type: "button" }, ["Download again"]);
+  button.addEventListener("click", () => saveJson(json, filename));
+  children.push(button);
+  container.replaceChildren(...children);
+}
+
+function renderFailure(container, err) {
+  console.error("Export failed:", err);
+  container.replaceChildren(
+    el("p", { class: "error" }, err.friendly || String(err)),
+    el("p", {}, ["Fix the cause and try again. Nothing was written to disk."]),
+  );
+}
+
+function saveJson(json, filename) {
+  const blob = new Blob([json], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = el("a", { href: url, download: filename });
+  document.body.append(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
+}
+
+async function onExport(form) {
+  const progressSection = document.getElementById("progress");
+  const resultSection = document.getElementById("result");
+  const resultBody = document.getElementById("result-body");
+  const resultTitle = document.getElementById("result-title");
+  const button = document.getElementById("btn-export");
+
+  const url = document.getElementById("f-url").value.trim();
+  if (!/^https?:\/\//i.test(url)) {
+    resultSection.hidden = false;
+    resultTitle.textContent = "Export failed";
+    renderFailure(resultBody, { friendly: "The API base URL must start with http:// or https://." });
+    return;
+  }
+  const limitRaw = document.getElementById("f-limit").value.trim();
+  const opts = {
+    url,
+    username: document.getElementById("f-user").value.trim() || null,
+    password: document.getElementById("f-pass").value || null,
+    redact: document.getElementById("f-redact").checked,
+    tradesLimit: limitRaw === "" ? null : Number(limitRaw),
+    timeout: Number(document.getElementById("f-timeout").value) || 30,
+  };
+
+  resultSection.hidden = true;
+  setFormDisabled(form, true);
+  button.setAttribute("aria-busy", "true");
+  const progress = makeProgress();
+  try {
+    const { report, json, filename } = await runExport(opts, progress);
+    saveJson(json, filename);
+    resultTitle.textContent = "Export finished";
+    renderSuccess(resultBody, report, filename, json);
+  } catch (err) {
+    resultTitle.textContent = "Export failed";
+    renderFailure(resultBody, err);
+  } finally {
+    progress.finish();
+    progressSection.hidden = true;
+    button.removeAttribute("aria-busy");
+    setFormDisabled(form, false);
+    resultSection.hidden = false;
+  }
+}
+
+if (typeof document !== "undefined") {
+  const start = () => {
+    const form = document.getElementById("connect");
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      onExport(form);
+    });
+  };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
+  else start();
+}
+</script>
+</body>
+</html>
