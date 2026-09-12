@@ -1169,11 +1169,26 @@ table.summary td {
 #privacy-note h2 {
   margin-bottom: 0.25rem;
 }
-p.error, li.error {
-  color: var(--destructive);
+/* Semantic status colors. The framework only ships --destructive; success and
+   warning get matching oklch tokens (light + dark). Danger reuses --destructive,
+   neutral reuses --muted-foreground, so both adapt to dark mode for free. */
+:root {
+  --success: oklch(0.627 0.17 149.2);
+  --warning: oklch(0.666 0.179 58.3);
 }
+@media (prefers-color-scheme: dark) {
+  :root {
+    --success: oklch(0.772 0.164 151.8);
+    --warning: oklch(0.828 0.156 77.6);
+  }
+}
+.text-success { color: var(--success); }
+.text-warning { color: var(--warning); }
+.text-danger { color: var(--destructive); }
+.text-neutral { color: var(--muted-foreground); }
 #progress-step {
   min-height: 1.5rem;
+  color: var(--muted-foreground);
 }
 /* Code never wraps: inline code becomes a horizontally scrollable chip so the
    text is always on one line and fully readable; pre>code stays a block. */
@@ -1824,29 +1839,30 @@ function renderSuccess(container, report, filename, json) {
   const children = [];
 
   if (!meta.redacted) {
-    children.push(el("p", { class: "error" },
+    children.push(el("p", { class: "text-warning" },
       "Redaction was disabled — this report contains balances, absolute PnL and credentials. Use it for private diagnostics only, never share it."));
   }
   if (failed.length > 0) {
-    children.push(el("p", { class: "error" },
+    children.push(el("p", { class: "text-warning" },
       `${failed.length} endpoint(s) failed and were skipped: ` +
       failed.map((f) => `${f.endpoint} (HTTP ${f.http_status})`).join(", ") + "."));
   }
 
   const rows = [
-    ["Freqtrade version", meta.freqtrade_version ?? "unknown"],
-    ["Generated at (UTC)", meta.generated_at_utc],
+    ["Freqtrade version", meta.freqtrade_version ?? "unknown", ""],
+    ["Generated at (UTC)", meta.generated_at_utc, ""],
     ["Closed trades", `${report.closed_trades.trades_count} exported / ${report.closed_trades.total_trades} total` +
-      (meta.closed_trades_window ? ` — ${meta.closed_trades_window}` : "")],
-    ["Fields redacted", meta.redacted ? meta.redacted_field_count : "redaction disabled"],
-    ["Skipped endpoints", meta.skipped_endpoints.length ? meta.skipped_endpoints.join(", ") : "none"],
-    ["Failed endpoints", failed.length ? failed.map((f) => f.endpoint).join(", ") : "none"],
+      (meta.closed_trades_window ? ` — ${meta.closed_trades_window}` : ""), ""],
+    ["Fields redacted", meta.redacted ? meta.redacted_field_count : "redaction disabled", ""],
+    ["Skipped endpoints", meta.skipped_endpoints.length ? meta.skipped_endpoints.join(", ") : "none", ""],
+    ["Failed endpoints", failed.length ? failed.map((f) => f.endpoint).join(", ") : "none",
+      failed.length ? "text-warning" : "text-neutral"],
   ];
   const table = el("table", { class: "summary" });
   const tbody = el("tbody", {});
-  for (const [label, value] of rows) {
+  for (const [label, value, cls] of rows) {
     const tr = el("tr", {});
-    tr.append(el("th", { scope: "row" }, [label]), el("td", {}, [String(value)]));
+    tr.append(el("th", { scope: "row" }, [label]), el("td", { class: cls }, [String(value)]));
     tbody.append(tr);
   }
   table.append(tbody, el("caption", {}, [`Saved as ${filename}`]));
@@ -1861,19 +1877,19 @@ function renderSuccess(container, report, filename, json) {
 function renderFailure(container, err) {
   console.error("Export failed:", err);
   container.replaceChildren(
-    el("p", { class: "error" }, err.friendly || String(err)),
-    el("p", {}, ["Fix the cause and try again. Nothing was written to disk."]),
+    el("p", { class: "text-danger" }, [err.friendly || String(err)]),
+    el("p", { class: "text-neutral" }, ["Fix the cause and try again. Nothing was written to disk."]),
   );
 }
 
-function saveJson(json, filename) {
-  const blob = new Blob([json], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const link = el("a", { href: url, download: filename });
-  document.body.append(link);
-  link.click();
-  link.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 10000);
+function renderConnectionHelp(container, diagnosis) {
+  const list = el("ol", {});
+  for (const step of diagnosis.steps) list.append(el("li", {}, [step]));
+  const children = [el("p", { class: "text-danger" }, [diagnosis.headline]), el("p", { class: "text-neutral" }, ["Do this:"]), list];
+  if (diagnosis.snippet) {
+    children.push(el("pre", {}, [el("code", {}, [diagnosis.snippet])]));
+  }
+  container.replaceChildren(...children);
 }
 
 /* Default API URL: the page's own origin when served over http(s) — handy when
@@ -2004,16 +2020,6 @@ function describeConnectionFailure(url) {
   };
 }
 
-function renderConnectionHelp(container, diagnosis) {
-  const list = el("ol", {});
-  for (const step of diagnosis.steps) list.append(el("li", {}, [step]));
-  const children = [el("p", { class: "error" }, [diagnosis.headline]), el("p", {}, ["Do this:"]), list];
-  if (diagnosis.snippet) {
-    children.push(el("pre", {}, [el("code", {}, [diagnosis.snippet])]));
-  }
-  container.replaceChildren(...children);
-}
-
 async function withBusyUi(form, initialStep, action) {
   const progressSection = document.getElementById("progress");
   const resultSection = document.getElementById("result");
@@ -2038,8 +2044,10 @@ async function withBusyUi(form, initialStep, action) {
 }
 
 function optionsErrorUi(opts, title) {
+  const titleEl = document.getElementById("result-title");
+  titleEl.textContent = title;
+  titleEl.className = "text-danger";
   document.getElementById("result").hidden = false;
-  document.getElementById("result-title").textContent = title;
   renderFailure(document.getElementById("result-body"), { friendly: opts.error });
 }
 
@@ -2054,9 +2062,11 @@ async function onExport(form) {
       const { report, json, filename } = await runExport(opts, progress);
       saveJson(json, filename);
       resultTitle.textContent = "Export finished";
+      resultTitle.className = "text-success";
       renderSuccess(resultBody, report, filename, json);
     } catch (err) {
       resultTitle.textContent = "Export failed";
+      resultTitle.className = "text-danger";
       if (err instanceof NetworkError) {
         progress.step("Diagnosing the connection problem …");
         renderConnectionHelp(resultBody, await diagnoseConnection(opts));
@@ -2078,11 +2088,13 @@ async function onTestConnection(form) {
       const api = new FreqtradeApi(opts);
       const version = await api.get("version");
       resultTitle.textContent = "Connection OK";
+      resultTitle.className = "text-success";
       resultBody.replaceChildren(
-        el("p", {}, [`freqtrade ${version.version || "unknown"} answered at ${opts.url} — CORS and credentials work. You can export the report now.`]),
+        el("p", { class: "text-success" }, [`freqtrade ${version.version || "unknown"} answered at ${opts.url} — CORS and credentials work. You can export the report now.`]),
       );
     } catch (err) {
       resultTitle.textContent = "Connection failed";
+      resultTitle.className = "text-danger";
       if (err instanceof NetworkError) {
         progress.step("Diagnosing the connection problem …");
         renderConnectionHelp(resultBody, await diagnoseConnection(opts));
