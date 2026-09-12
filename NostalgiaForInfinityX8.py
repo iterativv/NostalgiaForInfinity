@@ -21047,6 +21047,10 @@ class NostalgiaForInfinityX8(IStrategy):
             & (stochrsi_k_1h_lt_20 | rsi_3_1d_gt_20)
             # 1h stoch lifted, 1h weak
             & (stochrsi_k_1h_lt_60 | (rsi_14_1h > 40.0))
+            # base money flow mid-range, base stochastic high, no new hourly high
+            & ((mfi_14 < 65) | (stoch_9_3 > 45) | aroonu_14_1h_gt_10)
+            # base RSI barely moving, price off its 40h floor, the hour at a fresh high
+            & ((rsi_14_change_pct < 15) | (willr_480 > -90) | (aroonu_14_1h < 5))
             # 1h stoch lifted, 1h falling
             & (stochrsi_k_1h_lt_80 | (roc_2_1h > -2.5))
             # 1h strong, 4h RSI_3 collapsing
