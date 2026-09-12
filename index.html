@@ -1202,6 +1202,7 @@ code {
         </label>
       </fieldset>
       <button type="submit" id="btn-export">Export report</button>
+      <button type="button" id="btn-test" secondary>Test connection</button>
     </form>
   </section>
 
@@ -1793,42 +1794,130 @@ function defaultBaseUrl() {
   return /^https?:\/\//.test(window.location.origin) ? window.location.origin : "http://127.0.0.1:8080";
 }
 
-async function onExport(form) {
-  const progressSection = document.getElementById("progress");
-  const resultSection = document.getElementById("result");
-  const resultBody = document.getElementById("result-body");
-  const resultTitle = document.getElementById("result-title");
-  const button = document.getElementById("btn-export");
+/* Default API URL: the page's own origin when served over http(s) — handy when
+ * the page is hosted next to the bot's reverse proxy — otherwise the freqtrade
+ * default (file:// and about:blank have no usable origin). */
+function defaultBaseUrl() {
+  return /^https?:\/\//.test(window.location.origin) ? window.location.origin : "http://127.0.0.1:8080";
+}
 
+function readFormOptions() {
   const url = document.getElementById("f-url").value.trim() || defaultBaseUrl();
-  if (!/^https?:\/\//i.test(url)) {
-    resultSection.hidden = false;
-    resultTitle.textContent = "Export failed";
-    renderFailure(resultBody, { friendly: "The API base URL must start with http:// or https://." });
-    return;
-  }
   const limitRaw = document.getElementById("f-limit").value.trim();
-  const opts = {
+  const tradesLimit = limitRaw === "" ? null : Number(limitRaw);
+  const timeout = Number(document.getElementById("f-timeout").value);
+  let error = null;
+  if (!/^https?:\/\//i.test(url)) {
+    error = `The API base URL must start with http:// or https:// — got "${url}".`;
+  } else if (tradesLimit !== null && (!Number.isInteger(tradesLimit) || tradesLimit < 1)) {
+    error = "Trades limit must be a positive whole number (or empty for the full history).";
+  }
+  return {
     url,
     username: document.getElementById("f-user").value.trim() || null,
     password: document.getElementById("f-pass").value || null,
     redact: document.getElementById("f-redact").checked,
-    tradesLimit: limitRaw === "" ? null : Number(limitRaw),
-    timeout: Number(document.getElementById("f-timeout").value) || 30,
+    tradesLimit,
+    timeout: timeout > 0 ? timeout : 30,
+    error,
   };
+}
+
+/* A blocked request is ambiguous from inside the page: CORS misconfiguration,
+ * an offline bot, and mixed-content blocking all reject identically. A no-cors
+ * request needs no CORS headers, so it resolves whenever *anything* is
+ * listening at the target and rejects only on network-level failures — that
+ * distinction tells us whether the fix is config (CORS) or connectivity. */
+async function probeReachable(baseUrl, timeoutMs) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    await fetch(`${baseUrl}${API_PREFIX}/ping`, { mode: "no-cors", cache: "no-store", signal: controller.signal });
+    return true;
+  } catch (err) {
+    return false;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function diagnoseConnection(opts) {
+  const reachable = await probeReachable(opts.url, Math.min(opts.timeout * 1000, 8000));
+  if (reachable) return describeCorsBlock(opts.url);
+  return describeConnectionFailure(opts.url);
+}
+
+function describeCorsBlock(url) {
+  const origin = /^https?:\/\//.test(window.location.origin) ? window.location.origin : "<this page's origin>";
+  return {
+    kind: "cors",
+    headline: `Something answered at ${url}, but it did not send the CORS headers this page needs — almost always the missing "CORS_origins" entry in the bot's api_server config.`,
+    steps: [
+      `Add this page's exact origin "${origin}" (no trailing slash) to the bot's config:`,
+      "Restart freqtrade — config changes only apply after a restart.",
+      "Press Test connection again; it should report Connection OK before you export.",
+    ],
+    snippet: `"CORS_origins": ["${origin}"]`,
+  };
+}
+
+function describeConnectionFailure(url) {
+  let target = null;
+  try {
+    target = new URL(url);
+  } catch (err) {}
+  const pageHttps = window.location.protocol === "https:";
+  const targetHttp = target !== null && target.protocol === "http:";
+  const loopback = target !== null && (["127.0.0.1", "localhost", "::1"].includes(target.hostname) || target.hostname.endsWith(".localhost"));
+
+  if (pageHttps && targetHttp && !loopback) {
+    return {
+      kind: "mixed-content",
+      headline: `The browser blocked the request to ${url} as mixed content: an HTTPS page cannot call a plain-HTTP server on a non-local host.`,
+      steps: [
+        "Put the bot's API behind a TLS reverse proxy (Caddy, nginx, …) with a valid certificate and use its https:// URL here — browsers reject self-signed certificates and this page cannot skip verification.",
+        "Alternatively run the export with tools/bot_report.py, which has no browser restrictions.",
+      ],
+    };
+  }
+  return {
+    kind: "unreachable",
+    headline: `Nothing answered at ${url}, so the bot is offline, the URL/port is wrong, or the browser blocked the request.`,
+    steps: [
+      "Check the bot is running and the REST API is enabled (\"api_server\": {\"enabled\": true, …}).",
+      "Check the URL, port, and scheme — the freqtrade defaults are http://127.0.0.1:8080 with the username/password from the same config block.",
+      "If the URL uses https://, the certificate must be valid; browsers reject self-signed ones and this page cannot skip verification.",
+      loopback
+        ? "If the bot runs in Docker, 127.0.0.1 inside the container is not your machine — publish the port and point this page at the host."
+        : "If a firewall or VPN sits between this browser and the bot, allow the port there.",
+    ],
+  };
+}
+
+function renderConnectionHelp(container, diagnosis) {
+  const list = el("ol", {});
+  for (const step of diagnosis.steps) list.append(el("li", {}, [step]));
+  const children = [el("p", { class: "error" }, [diagnosis.headline]), el("p", {}, ["Do this:"]), list];
+  if (diagnosis.snippet) {
+    children.push(el("pre", {}, [el("code", {}, [diagnosis.snippet])]));
+  }
+  container.replaceChildren(...children);
+}
+
+async function withBusyUi(form, initialStep, action) {
+  const progressSection = document.getElementById("progress");
+  const resultSection = document.getElementById("result");
+  const resultTitle = document.getElementById("result-title");
+  const resultBody = document.getElementById("result-body");
+  const button = document.getElementById("btn-export");
 
   resultSection.hidden = true;
   setFormDisabled(form, true);
   button.setAttribute("aria-busy", "true");
   const progress = makeProgress();
+  progress.step(initialStep);
   try {
-    const { report, json, filename } = await runExport(opts, progress);
-    saveJson(json, filename);
-    resultTitle.textContent = "Export finished";
-    renderSuccess(resultBody, report, filename, json);
-  } catch (err) {
-    resultTitle.textContent = "Export failed";
-    renderFailure(resultBody, err);
+    await action(resultTitle, resultBody, progress);
   } finally {
     progress.finish();
     progressSection.hidden = true;
@@ -1836,6 +1925,62 @@ async function onExport(form) {
     setFormDisabled(form, false);
     resultSection.hidden = false;
   }
+}
+
+function optionsErrorUi(opts, title) {
+  document.getElementById("result").hidden = false;
+  document.getElementById("result-title").textContent = title;
+  renderFailure(document.getElementById("result-body"), { friendly: opts.error });
+}
+
+async function onExport(form) {
+  const opts = readFormOptions();
+  if (opts.error) {
+    optionsErrorUi(opts, "Export failed");
+    return;
+  }
+  await withBusyUi(form, "Connecting to the bot — GET /api/v1/ping …", async (resultTitle, resultBody, progress) => {
+    try {
+      const { report, json, filename } = await runExport(opts, progress);
+      saveJson(json, filename);
+      resultTitle.textContent = "Export finished";
+      renderSuccess(resultBody, report, filename, json);
+    } catch (err) {
+      resultTitle.textContent = "Export failed";
+      if (err instanceof NetworkError) {
+        progress.step("Diagnosing the connection problem …");
+        renderConnectionHelp(resultBody, await diagnoseConnection(opts));
+      } else {
+        renderFailure(resultBody, err);
+      }
+    }
+  });
+}
+
+async function onTestConnection(form) {
+  const opts = readFormOptions();
+  if (opts.error) {
+    optionsErrorUi(opts, "Connection test failed");
+    return;
+  }
+  await withBusyUi(form, "Testing connection — GET /api/v1/version …", async (resultTitle, resultBody, progress) => {
+    try {
+      const api = new FreqtradeApi(opts);
+      const version = await api.get("version");
+      resultTitle.textContent = "Connection OK";
+      resultBody.replaceChildren(
+        el("p", {}, [`freqtrade ${version.version || "unknown"} answered at ${opts.url} — CORS and credentials work. You can export the report now.`]),
+      );
+    } catch (err) {
+      resultTitle.textContent = "Connection failed";
+      if (err instanceof NetworkError) {
+        progress.step("Diagnosing the connection problem …");
+        renderConnectionHelp(resultBody, await diagnoseConnection(opts));
+      } else {
+        renderFailure(resultBody, err);
+      }
+    }
+  });
 }
 
 if (typeof document !== "undefined") {
@@ -1853,6 +1998,7 @@ if (typeof document !== "undefined") {
       event.preventDefault();
       onExport(form);
     });
+    document.getElementById("btn-test").addEventListener("click", () => onTestConnection(form));
   };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
   else start();
