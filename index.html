@@ -1098,6 +1098,25 @@ menu {
 <style>
 /* Page-specific additions on top of shadcn-classless (kept minimal). */
 
+/* Relax the type scale, all in rem (root stays at the browser default):
+   body 1rem -> 0.875rem (16 -> 14px), h1 2rem -> 1.75rem (32 -> 28px),
+   h2 1.25rem -> 1.125rem (20 -> 18px), hints -> 0.8125rem (13px). */
+body {
+  font-size: 0.875rem;
+}
+h1, header h1 {
+  font-size: 1.75rem;
+}
+h2 {
+  font-size: 1.125rem;
+}
+small {
+  font-size: 0.8125rem;
+}
+button {
+  font-size: 0.875rem;
+}
+
 /* Form: labels and inputs on separate rows, inputs full width; fieldsets
    group connection, credentials and options as vertical stacks. */
 #connect {
@@ -1159,11 +1178,14 @@ code {
   word-break: break-all;
 }
 
-/* Small screens: keep input font-size >= 16px so iOS Safari does not zoom
-   into fields on focus. */
+/* Small screens: keep controls at 1rem (16px) — iOS Safari zooms into fields
+   on focus below that threshold, which is jarring even though the surrounding
+   text is now 14px. */
 @media (max-width: 600px) {
-  input[type='text'],
-  input[type='password'] {
+  #connect input[type='text'],
+  #connect input[type='password'],
+  #connect button,
+  #result-body button {
     font-size: 1rem;
   }
 }
