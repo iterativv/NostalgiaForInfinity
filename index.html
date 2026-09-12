@@ -1112,6 +1112,10 @@ dl.kv {
 dl.kv dt {
   color: var(--muted-foreground);
 }
+dl.kv dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
 p.error, li.error {
   color: var(--destructive);
 }
@@ -1120,6 +1124,31 @@ p.error, li.error {
 }
 code {
   word-break: break-all;
+}
+
+/* Small screens: stack form groups and key-value rows so nothing is squeezed
+   into a row; keep input font-size >= 16px so iOS Safari does not zoom into
+   fields on focus. */
+@media (max-width: 600px) {
+  form fieldset {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  dl.kv {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  dl.kv dt {
+    margin-top: 0.5rem;
+  }
+  input[type='text'],
+  input[type='password'],
+  input[type='number'] {
+    font-size: 1rem;
+  }
+  #result button {
+    width: 100%;
+  }
 }
 </style>
 </head>
