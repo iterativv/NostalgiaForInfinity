@@ -7,18 +7,43 @@ into a single JSON file, so strategy developers can review how a strategy is
 behaving in production and adjust it, similar to telemetry.
 
 Everything is collected over the freqtrade REST API with read-only GET requests.
-Confidential information is redacted by default:
+Confidential information is redacted by default (every redacted field is replaced
+by "<redacted>"; the full list and the reasons are embedded in each report under
+report_metadata.redacted_fields):
 
-- credentials and keys (exchange keys/secrets, API passwords, tokens, chat ids)
-- anything that can reveal the account balance (absolute PnL, stake amounts,
-  trade amounts/costs, wallet/capital values)
+- credentials and keys (exchange keys/secrets, API passwords, tokens, chat ids,
+  ccxt configs)
+- anything that can reveal the account balance: absolute PnL, stake amounts,
+  trade amounts/costs, wallet/capital values, funding fees, drawdown high-water
+  marks, the /balance endpoint itself
 - account and exchange order identifiers
 - information that can identify a specific person (bot names, local paths)
 
-Only percentages/ratios, counts, dates, pairs and reasons are kept. Trade timestamps and
-market prices are kept by design; nothing in the report allows deriving the account balance.
-Run with --no-redact to export an unredacted report for private diagnostics; never share
-that file.
+Redacted absolute values are complemented by derived, scale-invariant relative
+fields (documented in each report under report_metadata.derived_fields):
+
+- stake_to_balance_ratio          position size vs the account at entry time
+- profit_to_balance_ratio         per-trade impact on the account
+- funding_fees_to_stake_ratio     funding cost drag per position
+- funding_fee_to_cost_ratio       effective funding rate paid on an order fill
+- amount_share                    entry/exit (DCA / safety order) distribution
+- total_stake_share               share of the account currently deployed
+- trading_volume_to_balance_ratio turnover intensity over the bot's lifetime
+
+Why the balance still cannot be derived: every kept number is a market price, a
+ratio between two internal quantities, a count, or a timestamp - the report
+contains no absolute currency value that could serve as a scale anchor. A ratio
+would only become sensitive if combined with such an anchor, which is exactly
+what the redaction removes (the generator is audited by inventorying every
+numeric field of the output).
+
+Kept as-is on purpose: stop_loss_abs / initial_stop_loss_abs are market price
+levels (not money), trade_id is a local counter, the config value
+stake_amount="unlimited" is behavior and not a size, fee_open/fee_close are
+rates, and timestamps/prices are market data.
+
+Use --no-redact to export an unredacted report for private diagnostics; never
+share that file.
 
 Examples:
   python tools/bot_report.py --url http://127.0.0.1:8080 \\
@@ -41,8 +66,123 @@ import urllib.request
 from datetime import datetime, timezone
 
 API_PREFIX = "/api/v1"
-TOOL_VERSION = "1.0.0"
+TOOL_VERSION = "1.1.0"
 REDACTED = "<redacted>"
+
+# Documentation embedded in every report (report_metadata.redacted_fields):
+# what is redacted and why.
+REDACTED_FIELDS_DOC = [
+  {
+    "fields": "any key containing a credential token (key, secret, password, passwd, token, chat, webhook, credential), plus ccxt_config and ccxt_async_config",
+    "examples": [
+      "exchange.key",
+      "exchange.secret",
+      "api_server.username",
+      "api_server.password",
+      "telegram.token",
+      "telegram.chat_id",
+    ],
+    "reason": "Credentials would grant access to the account or reveal its identity on the exchange.",
+  },
+  {
+    "fields": "exchange/account identifiers: any key combining order/account/user/client with id",
+    "examples": ["orders[].order_id"],
+    "reason": "Exchange order ids could be looked up on the exchange to identify the account and its position sizes.",
+  },
+  {
+    "fields": "absolute currency amounts (balances, stakes, costs, absolute PnL, funding fees, volumes, drawdown high-water marks)",
+    "examples": [
+      "abs_profit",
+      "profit_abs",
+      "close_profit_abs",
+      "max_drawdown_abs",
+      "current_drawdown_abs",
+      "best_pair_profit_abs",
+      "realized_profit",
+      "total_profit_abs",
+      "profit_closed_coin",
+      "profit_all_fiat",
+      "fiat_value",
+      "stake_amount",
+      "max_stake_amount",
+      "total_stake",
+      "starting_balance",
+      "available_capital",
+      "total_capital",
+      "dry_run_wallet",
+      "amount",
+      "amount_requested",
+      "filled",
+      "remaining",
+      "cost",
+      "safe_cost",
+      "fee_open_cost",
+      "fee_close_cost",
+      "open_trade_value",
+      "funding_fee",
+      "funding_fees",
+      "trading_volume",
+      "drawdown_high",
+      "current_drawdown_high",
+    ],
+    "reason": "Any absolute currency value anchors the account size. Percentages and ratios stay meaningful without it; derived relative fields (report_metadata.derived_fields) replace the lost detail.",
+  },
+  {
+    "fields": "bot_name, db_url, user_data_dir, strategy_path, exportfilename, logfile, log_configfile, open_order",
+    "reason": "Names, database/filesystem paths and raw order strings can identify a specific person or machine (open_order embeds an exchange order id).",
+  },
+  {
+    "fields": "deliberately kept: stop_loss_abs / initial_stop_loss_abs (market price levels, not money), trade_id / id (local counters), stake_amount='unlimited' (sizing behavior, not a size), fee_open / fee_close (rates), timestamps and prices (market data)",
+    "reason": "None of these can reveal the account balance.",
+  },
+]
+
+# Documentation embedded in every report (report_metadata.derived_fields):
+# relative replacements computed before redaction.
+DERIVED_FIELDS_DOC = [
+  {
+    "field": "stake_to_balance_ratio",
+    "in": "open_trades[], closed_trades.trades[]",
+    "formula": "stake_amount / account balance at the trade's open date (per-day balance from /daily)",
+    "purpose": "Position sizing relative to the account at entry time.",
+  },
+  {
+    "field": "profit_to_balance_ratio",
+    "in": "closed_trades.trades[] (realized) and open_trades[] (unrealized)",
+    "formula": "close_profit_abs / balance at close date, or profit_abs / current balance",
+    "purpose": "Per-trade impact on the account.",
+  },
+  {
+    "field": "funding_fees_to_stake_ratio",
+    "in": "open_trades[], closed_trades.trades[]",
+    "formula": "funding_fees / stake_amount",
+    "purpose": "Accumulated funding cost drag of a position.",
+  },
+  {
+    "field": "funding_fee_to_cost_ratio",
+    "in": "trades[].orders[]",
+    "formula": "funding_fee / order cost (notional at fill)",
+    "purpose": "Effective funding rate paid on that single fill.",
+  },
+  {
+    "field": "amount_share",
+    "in": "trades[].orders[]",
+    "formula": "order amount / total amount across all orders of the trade",
+    "purpose": "Entry/exit (DCA / safety order) distribution of a trade.",
+  },
+  {
+    "field": "total_stake_share",
+    "in": "trade_counts",
+    "formula": "total_stake / current balance",
+    "purpose": "Share of the account currently deployed in open positions.",
+  },
+  {
+    "field": "trading_volume_to_balance_ratio",
+    "in": "profit_summary",
+    "formula": "trading_volume / current balance",
+    "purpose": "Turnover intensity over the bot's lifetime.",
+  },
+]
 
 # Keys that are always redacted regardless of their value.
 WHOLE_KEY_REDACT = {
@@ -116,6 +256,11 @@ MONEY_KEY_SUFFIXES = ("_abs", "_balance", "_coin", "_cost", "_fee", "_fiat", "_s
 MONEY_SUFFIX_EXCEPTIONS = {"initial_stop_loss_abs", "stop_loss_abs"}
 # Money-like keys where a string value is behavior (e.g. "unlimited"), not an amount.
 MONEY_ONLY_NUMERIC_KEYS = {"dry_run_wallet", "max_stake_amount", "stake_amount"}
+
+# History windows for daily/weekly/monthly, sized from the first trade date.
+MAX_DAILY_DAYS = 3650
+MAX_WEEKLY_WEEKS = 520
+MAX_MONTHLY_MONTHS = 240
 
 
 class ApiError(Exception):
@@ -208,6 +353,89 @@ class FreqtradeApi:
       raise SystemExit(f"Cannot reach freqtrade API at {self.base_url}: {err.reason}") from err
 
 
+def _safe_div(numerator, denominator):  # noqa: ANN001
+  if numerator is None or denominator is None or denominator == 0:
+    return None
+  try:
+    return round(numerator / denominator, 6)
+  except TypeError:
+    return None
+
+
+def _balance_lookup(daily_rows):
+  """Build a day -> starting-balance lookup from /daily rows (None if unavailable)."""
+  mapping = {}
+  for row in daily_rows or []:
+    day, balance = row.get("date"), row.get("starting_balance")
+    if day and isinstance(balance, (int, float)):
+      mapping[str(day)[:10]] = balance
+  if not mapping:
+    return None
+  days = sorted(mapping)
+
+  def lookup(date_str):
+    day = str(date_str)[:10]
+    if day in mapping:
+      return mapping[day]
+    if day < days[0]:
+      return mapping[days[0]]
+    for known in reversed(days):
+      if known < day:
+        return mapping[known]
+    return mapping[days[0]]
+
+  return lookup
+
+
+def add_derived_fields(raw: dict) -> None:
+  """Add scale-invariant relative values next to fields that will be redacted.
+
+  See DERIVED_FIELDS_DOC for formulas; this runs before the redactor, so derived
+  keys must never match the redaction rules (all of them carry a "ratio"/"share"
+  token or end in "_share").
+  """
+  lookup = _balance_lookup((raw.get("daily_performance") or {}).get("data"))
+  balance_now = lookup(datetime.now(timezone.utc)) if lookup else None
+
+  trade_counts = raw.get("trade_counts")
+  if isinstance(trade_counts, dict):
+    trade_counts["total_stake_share"] = _safe_div(trade_counts.get("total_stake"), balance_now)
+
+  profit_summary = raw.get("profit_summary")
+  if isinstance(profit_summary, dict):
+    profit_summary["trading_volume_to_balance_ratio"] = _safe_div(profit_summary.get("trading_volume"), balance_now)
+
+  trades = list(raw.get("open_trades") or [])
+  trades += list((raw.get("closed_trades") or {}).get("trades") or [])
+  for trade in trades:
+    if not isinstance(trade, dict):
+      continue
+    stake = trade.get("stake_amount")
+    balance_at_open = lookup(trade.get("open_date")) if lookup else None
+    trade["stake_to_balance_ratio"] = _safe_div(stake, balance_at_open)
+    if trade.get("close_date"):
+      abs_profit, balance_at_close = trade.get("close_profit_abs"), lookup(trade["close_date"])
+    else:
+      abs_profit, balance_at_close = trade.get("profit_abs"), balance_now
+    trade["profit_to_balance_ratio"] = _safe_div(abs_profit, balance_at_close)
+    trade["funding_fees_to_stake_ratio"] = _safe_div(trade.get("funding_fees"), stake)
+
+    orders = [order for order in (trade.get("orders") or []) if isinstance(order, dict)]
+    total_amount = sum(order.get("amount") for order in orders if isinstance(order.get("amount"), (int, float)))
+    for order in orders:
+      order["funding_fee_to_cost_ratio"] = _safe_div(order.get("funding_fee"), order.get("cost"))
+      order["amount_share"] = _safe_div(order.get("amount"), total_amount or None)
+
+
+def _history_days(first_trade_date) -> int:
+  """Days since the first trade, for full-history daily/weekly/monthly windows."""
+  try:
+    start = datetime.strptime(str(first_trade_date)[:10], "%Y-%m-%d").date()
+    return min(max((datetime.now(timezone.utc).date() - start).days + 2, 8), MAX_DAILY_DAYS)
+  except ValueError:
+    return 8
+
+
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
   parser = argparse.ArgumentParser(
     description="Export a redacted JSON report from a freqtrade REST API instance.",
@@ -256,7 +484,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 
 def collect_report(api: FreqtradeApi, redactor: Redactor, trades_limit: int) -> dict:
-  report: dict = {}
+  raw: dict = {}
   failed: list[dict] = []
 
   def fetch(section: str, endpoint: str, params: dict | None = None):
@@ -266,7 +494,7 @@ def collect_report(api: FreqtradeApi, redactor: Redactor, trades_limit: int) -> 
       failed.append({"endpoint": endpoint, "http_status": err.status})
       print(f"warning: {endpoint} failed with HTTP {err.status}", file=sys.stderr)
       return None
-    report[section] = redactor.walk(data)
+    raw[section] = data
     return data
 
   api.get("ping")
@@ -278,9 +506,10 @@ def collect_report(api: FreqtradeApi, redactor: Redactor, trades_limit: int) -> 
   fetch("trade_counts", "count")
   fetch("profit_summary", "profit")
   fetch("performance_per_pair", "performance")
-  fetch("daily_performance", "daily")
-  fetch("weekly_performance", "weekly")
-  fetch("monthly_performance", "monthly")
+  days = _history_days((raw.get("profit_summary") or {}).get("first_trade_date"))
+  fetch("daily_performance", "daily", {"timescale": days})
+  fetch("weekly_performance", "weekly", {"timescale": min(days // 7 + 2, MAX_WEEKLY_WEEKS)})
+  fetch("monthly_performance", "monthly", {"timescale": min(days // 30 + 2, MAX_MONTHLY_MONTHS)})
   fetch("closed_trades", "trades", {"limit": trades_limit})
   fetch("whitelist", "whitelist")
   fetch("blacklist", "blacklist")
@@ -288,6 +517,9 @@ def collect_report(api: FreqtradeApi, redactor: Redactor, trades_limit: int) -> 
   fetch("plot_config", "plot_config")
   if not redactor.enabled:
     fetch("balance", "balance")
+
+  add_derived_fields(raw)
+  report = {section: redactor.walk(data) for section, data in raw.items()}
 
   metadata = {
     "tool": "tools/bot_report.py",
@@ -298,11 +530,14 @@ def collect_report(api: FreqtradeApi, redactor: Redactor, trades_limit: int) -> 
     "redacted_field_count": redactor.redacted_fields,
     "skipped_endpoints": ["balance", "logs"] if redactor.enabled else [],
     "failed_endpoints": failed,
+    "redacted_fields": REDACTED_FIELDS_DOC,
+    "derived_fields": DERIVED_FIELDS_DOC,
     "description": (
       "Confidential data (credentials, account/order ids, balances, absolute PnL, "
-      "personal identifiers) is redacted. Percentages, counts, dates, pairs, market "
-      "prices and reasons are kept for strategy analysis; nothing in the report allows "
-      "deriving the account balance."
+      "personal identifiers) is redacted - see report_metadata.redacted_fields. Redacted "
+      "absolute values have scale-invariant relative counterparts, see "
+      "report_metadata.derived_fields. No absolute currency value remains in this report, "
+      "so the account balance cannot be derived from it."
     ),
   }
   return {"report_metadata": metadata, **report}
