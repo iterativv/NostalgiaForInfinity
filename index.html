@@ -1178,6 +1178,16 @@ code {
   word-break: break-all;
 }
 
+/* Tooltips: the framework renders them on one line (nowrap); let the longer
+   field hints wrap into a readable box instead. */
+[tooltip-top]::after {
+  white-space: normal;
+  width: max-content;
+  max-width: min(24rem, 90vw);
+  text-align: left;
+  line-height: 1.4;
+}
+
 /* Small screens: keep controls at 1rem (16px) — iOS Safari zooms into fields
    on focus below that threshold, which is jarring even though the surrounding
    text is now 14px. */
@@ -1219,29 +1229,29 @@ code {
     <form id="connect">
       <fieldset>
         <legend>Bot connection</legend>
-        <label>API base URL
+        <label tooltip-top="From your config.json: api_server.listen_ip_address + listen_port — default http://127.0.0.1:8080">API base URL
           <input type="text" id="f-url" placeholder="http://127.0.0.1:8080" spellcheck="false">
         </label>
         <small>Root of the freqtrade REST API — scheme, host and port only. The default install listens on <code>http://127.0.0.1:8080</code>.</small>
       </fieldset>
       <fieldset>
         <legend>Credentials</legend>
-        <label>Username
+        <label tooltip-top="From your config.json: api_server.username">Username
           <input type="text" id="f-user" autocomplete="off" spellcheck="false">
         </label>
-        <label>Password
+        <label tooltip-top="From your config.json: api_server.password">Password
           <input type="password" id="f-pass">
         </label>
         <small>The same values as in your <code>api_server</code> config, sent as HTTP Basic auth on each request — never stored, never sent anywhere else.</small>
       </fieldset>
       <fieldset>
         <legend>Export options</legend>
-        <label><input type="checkbox" id="f-redact" checked>
+        <label tooltip-top="Tool option, not a config value: same as --redact / --no-redact in tools/bot_report.py"><input type="checkbox" id="f-redact" checked>
           Redact confidential fields (recommended — required before sharing the report)</label>
-        <label>Trades limit — safety cap on closed trades (empty = full paginated history)
+        <label tooltip-top="Tool option, not a config value: same as --trades-limit in tools/bot_report.py — empty means the full paginated history">Trades limit — safety cap on closed trades (empty = full paginated history)
           <input type="text" id="f-limit" inputmode="numeric" pattern="[0-9]*" placeholder="all">
         </label>
-        <label>Per-request timeout, seconds
+        <label tooltip-top="Tool option, not a config value: same as --timeout in tools/bot_report.py — applied to each HTTP request">Per-request timeout, seconds
           <input type="text" id="f-timeout" inputmode="numeric" pattern="[0-9]*" value="30">
         </label>
       </fieldset>
