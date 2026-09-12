@@ -1150,7 +1150,7 @@ code {
     <h2>Bot connection</h2>
     <form id="connect">
       <label>API base URL
-        <input type="text" id="f-url" value="http://127.0.0.1:8080" placeholder="http://127.0.0.1:8080" spellcheck="false">
+        <input type="text" id="f-url" placeholder="http://127.0.0.1:8080" spellcheck="false">
       </label>
       <fieldset>
         <legend>Credentials (HTTP Basic, as in your <code>api_server</code> config)</legend>
@@ -1756,6 +1756,13 @@ function saveJson(json, filename) {
   setTimeout(() => URL.revokeObjectURL(url), 10000);
 }
 
+/* Default API URL: the page's own origin when served over http(s) — handy when
+ * the page is hosted next to the bot's reverse proxy — otherwise the freqtrade
+ * default (file:// and about:blank have no usable origin). */
+function defaultBaseUrl() {
+  return /^https?:\/\//.test(window.location.origin) ? window.location.origin : "http://127.0.0.1:8080";
+}
+
 async function onExport(form) {
   const progressSection = document.getElementById("progress");
   const resultSection = document.getElementById("result");
@@ -1763,7 +1770,7 @@ async function onExport(form) {
   const resultTitle = document.getElementById("result-title");
   const button = document.getElementById("btn-export");
 
-  const url = document.getElementById("f-url").value.trim();
+  const url = document.getElementById("f-url").value.trim() || defaultBaseUrl();
   if (!/^https?:\/\//i.test(url)) {
     resultSection.hidden = false;
     resultTitle.textContent = "Export failed";
@@ -1803,6 +1810,7 @@ async function onExport(form) {
 
 if (typeof document !== "undefined") {
   const start = () => {
+    document.getElementById("f-url").placeholder = defaultBaseUrl();
     const form = document.getElementById("connect");
     form.addEventListener("submit", (event) => {
       event.preventDefault();
