@@ -15,8 +15,9 @@ Confidential information is redacted by default:
 - account and exchange order identifiers
 - information that can identify a specific person (bot names, local paths)
 
-Only percentages/ratios, counts, dates, pairs and reasons are kept. Use
---no-redact to export an unredacted report for private diagnostics; never share
+Only percentages/ratios, counts, dates, pairs and reasons are kept. Trade timestamps and
+market prices are kept by design; nothing in the report allows deriving the account balance.
+Run with --no-redact to export an unredacted report for private diagnostics; never share
 that file.
 
 Examples:
@@ -87,9 +88,12 @@ MONEY_EXACT_KEYS = {
   "amount_requested",
   "available_capital",
   "cost",
+  "current_drawdown_high",
+  "drawdown_high",
   "dry_run_wallet",
   "fiat_value",
   "filled",
+  "funding_fee",
   "funding_fees",
   "max_stake_amount",
   "open_trade_value",
@@ -107,7 +111,7 @@ MONEY_EXACT_KEYS = {
   "trading_volume",
 }
 
-MONEY_KEY_SUFFIXES = ("_abs", "_balance", "_coin", "_cost", "_fiat", "_stake_amount", "_wallet")
+MONEY_KEY_SUFFIXES = ("_abs", "_balance", "_coin", "_cost", "_fee", "_fiat", "_stake_amount", "_wallet")
 # Absolute price levels, not money: stop_loss_abs describes the market, not the account.
 MONEY_SUFFIX_EXCEPTIONS = {"initial_stop_loss_abs", "stop_loss_abs"}
 # Money-like keys where a string value is behavior (e.g. "unlimited"), not an amount.
@@ -237,9 +241,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
   )
   parser.add_argument("--timeout", type=float, default=30.0, help="Per-request timeout in seconds.")
   parser.add_argument(
-    "--no-redact",
-    action="store_true",
-    help="Disable redaction and include balance/absolute values. For private diagnostics only.",
+    "--redact",
+    action=argparse.BooleanOptionalAction,
+    default=True,
+    help="Redact confidential information (default: enabled). Use --no-redact to include "
+    "balances/absolute values for private diagnostics; never share that output.",
   )
   parser.add_argument("--no-verify-tls", action="store_true", help="Skip TLS certificate verification.")
   args = parser.parse_args(argv)
@@ -294,8 +300,9 @@ def collect_report(api: FreqtradeApi, redactor: Redactor, trades_limit: int) -> 
     "failed_endpoints": failed,
     "description": (
       "Confidential data (credentials, account/order ids, balances, absolute PnL, "
-      "personal identifiers) is redacted. Percentages, counts, dates, pairs and "
-      "reasons are kept for strategy analysis."
+      "personal identifiers) is redacted. Percentages, counts, dates, pairs, market "
+      "prices and reasons are kept for strategy analysis; nothing in the report allows "
+      "deriving the account balance."
     ),
   }
   return {"report_metadata": metadata, **report}
@@ -303,8 +310,8 @@ def collect_report(api: FreqtradeApi, redactor: Redactor, trades_limit: int) -> 
 
 def main(argv: list[str] | None = None) -> int:
   args = parse_args(argv)
-  redactor = Redactor(enabled=not args.no_redact)
-  if args.no_redact:
+  redactor = Redactor(enabled=args.redact)
+  if not args.redact:
     print("warning: redaction disabled - the report will contain confidential data, do not share it.", file=sys.stderr)
 
   api = FreqtradeApi(args.url, args.username, args.password, args.timeout, not args.no_verify_tls)
