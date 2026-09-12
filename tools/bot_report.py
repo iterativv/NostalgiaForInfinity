@@ -13,10 +13,16 @@ by "<redacted>"; the full field reference is tools/bot_report.md):
 - credentials and keys (exchange keys/secrets, API passwords, tokens, chat ids,
   ccxt configs)
 - anything that can reveal the account balance: absolute PnL, stake amounts,
-  trade amounts/costs, wallet/capital values, funding fees, drawdown high-water
-  marks, the /balance endpoint itself
+  trade amounts/costs, wallet/capital values, funding fees, drawdown high/low
+  water marks, stoploss distances that encode money on some freqtrade versions,
+  the /balance endpoint itself
 - account and exchange order identifiers
 - information that can identify a specific person (bot names, local paths)
+
+Redaction of numbers is fail-closed: a number is kept only when its key is
+recognized as safe (prices, ratios/percentages, counts, durations, timestamps,
+precision values, or values under the config/system_info/plot_config sections).
+Any numeric field freqtrade adds in the future is redacted until allow-listed.
 
 Redacted absolute values are complemented by derived, scale-invariant relative
 fields (formulas in tools/bot_report.md):
@@ -25,7 +31,7 @@ fields (formulas in tools/bot_report.md):
 - profit_to_account_balance_ratio            per-trade impact on the account
 - funding_fees_to_stake_amount_ratio         funding cost drag per position
 - funding_fee_to_order_cost_ratio            effective funding rate paid on an order fill
-- order_amount_share_of_trade                entry/exit (DCA / safety order) distribution
+- order_filled_share_of_trade_side           entry/exit (DCA / safety order) distribution
 - total_stake_to_account_balance_ratio       share of the account currently deployed
 - trading_volume_to_account_balance_ratio    turnover intensity over the bot's lifetime
 
@@ -34,15 +40,17 @@ ratio between two internal quantities, a count, or a timestamp - the report
 contains no absolute currency value that could serve as a scale anchor. A ratio
 would only become sensitive if combined with such an anchor, which is exactly
 what the redaction removes (the generator is audited by inventorying every
-numeric field of the output).
+numeric field of the output and by testing known derivation chains, e.g.
+stoploss_entry_dist / stoploss_entry_dist_ratio).
 
 Kept as-is on purpose: stop_loss_abs / initial_stop_loss_abs are market price
 levels (not money), trade_id is a local counter, the config value
 stake_amount="unlimited" is behavior and not a size, fee_open/fee_close are
 rates, and timestamps/prices are market data.
 
-Use --no-redact to export an unredacted report for private diagnostics; never
-share that file.
+Closed trades are exported in full by paginating /trades; --trades-limit only
+acts as a safety cap. Use --no-redact to export an unredacted report for private
+diagnostics; never share that file.
 
 Examples:
   python tools/bot_report.py --url http://127.0.0.1:8080 \\
@@ -65,7 +73,8 @@ import urllib.request
 from datetime import datetime, timezone
 
 API_PREFIX = "/api/v1"
-TOOL_VERSION = "1.2.0"
+TRADES_PAGE_SIZE = 500
+TOOL_VERSION = "1.3.0"
 REDACTED = "<redacted>"
 
 # Keys that are always redacted regardless of their value.
@@ -78,6 +87,7 @@ WHOLE_KEY_REDACT = {
   "log_configfile",
   "logfile",
   "open_order",
+  "open_orders",
   "strategy_path",
   "uid",
   "user_data_dir",
@@ -113,12 +123,16 @@ MONEY_EXACT_KEYS = {
   "available_capital",
   "cost",
   "current_drawdown_high",
+  "current_drawdown_low",
   "drawdown_high",
+  "drawdown_low",
   "dry_run_wallet",
+  "expectancy",
   "fiat_value",
   "filled",
   "funding_fee",
   "funding_fees",
+  "ft_fee_base",
   "max_stake_amount",
   "open_trade_value",
   "profit_all_coin",
@@ -135,11 +149,78 @@ MONEY_EXACT_KEYS = {
   "trading_volume",
 }
 
-MONEY_KEY_SUFFIXES = ("_abs", "_balance", "_coin", "_cost", "_fee", "_fiat", "_stake_amount", "_wallet")
+MONEY_KEY_SUFFIXES = (
+  "_abs",
+  "_balance",
+  "_coin",
+  "_cost",
+  "_dist",
+  "_fee",
+  "_fiat",
+  "_stake_amount",
+  "_wallet",
+)
 # Absolute price levels, not money: stop_loss_abs describes the market, not the account.
 MONEY_SUFFIX_EXCEPTIONS = {"initial_stop_loss_abs", "stop_loss_abs"}
 # Money-like keys where a string value is behavior (e.g. "unlimited"), not an amount.
 MONEY_ONLY_NUMERIC_KEYS = {"dry_run_wallet", "max_stake_amount", "stake_amount"}
+
+# Fail-closed numeric redaction: report sections whose numbers are safe as a whole
+# (strategy parameters, hardware stats, indicator plot definitions), checked after
+# the deny rules above.
+NUMBER_SAFE_SECTIONS = {"config", "system_info", "plot_config"}
+
+# Key tokens that mark numbers safe to keep (ratios, market prices, counts,
+# durations, timestamps, precisions). The deny rules always take precedence.
+ALLOWED_NUMBER_TOKENS = {
+  "average",
+  "count",
+  "current",
+  "decimals",
+  "duration",
+  "interval",
+  "length",
+  "max",
+  "offset",
+  "pct",
+  "percent",
+  "precision",
+  "price",
+  "rate",
+  "ratio",
+  "share",
+  "timestamp",
+  "total",
+  "ts",
+  "version",
+}
+
+# Individual numeric keys that are safe but carry none of the tokens above.
+ALLOWED_NUMBER_KEYS = {
+  "close_profit",
+  "contract_size",
+  "cagr",
+  "calmar",
+  "fee_close",
+  "fee_open",
+  "initial_stop_loss_abs",
+  "leverage",
+  "losing_trades",
+  "max_drawdown",
+  "current_drawdown",
+  "nr_of_successful_entries",
+  "nr_of_successful_exits",
+  "profit",
+  "profit_factor",
+  "rel_profit",
+  "sharpe",
+  "sortino",
+  "sqn",
+  "stop_loss_abs",
+  "timeframe",
+  "winrate",
+  "winning_trades",
+}
 
 # History windows for daily/weekly/monthly, sized from the first trade date.
 MAX_DAILY_DAYS = 3650
@@ -181,6 +262,17 @@ def is_sensitive(key: str, value) -> bool:
   return False
 
 
+def is_allowed_number(path: str, key: str) -> bool:
+  """Whether a numeric value may be kept (fail-closed: unknown keys are redacted)."""
+  if path.split(".", 1)[0] in NUMBER_SAFE_SECTIONS:
+    return True
+  if ALLOWED_NUMBER_TOKENS.intersection(key_tokens(key)):
+    return True
+  if key in ALLOWED_NUMBER_KEYS or key.endswith("_id") or key == "id":
+    return True
+  return False
+
+
 class Redactor:
   """Recursively redacts sensitive fields while keeping the JSON structure intact."""
 
@@ -188,16 +280,22 @@ class Redactor:
     self.enabled = enabled
     self.redacted_fields = 0
 
-  def walk(self, obj, key: str = ""):
+  def walk(self, obj, key: str = "", path: str = ""):
     if not self.enabled:
       return obj
+    full_path = f"{path}.{key}" if path and key else (key or path)
     if key and is_sensitive(key, obj):
       self.redacted_fields += 1
       return REDACTED
+    if isinstance(obj, bool):
+      return obj
+    if isinstance(obj, (int, float)) and key and not is_allowed_number(full_path, key):
+      self.redacted_fields += 1
+      return REDACTED
     if isinstance(obj, dict):
-      return {name: self.walk(value, str(name)) for name, value in obj.items()}
+      return {name: self.walk(value, str(name), full_path) for name, value in obj.items()}
     if isinstance(obj, list):
-      return [self.walk(item, key) for item in obj]
+      return [self.walk(item, key, full_path) for item in obj]
     return obj
 
 
@@ -237,7 +335,7 @@ class FreqtradeApi:
       raise SystemExit(f"Cannot reach freqtrade API at {self.base_url}: {err.reason}") from err
 
 
-def _safe_div(numerator, denominator):  # noqa: ANN001
+def _safe_div(numerator, denominator):
   if numerator is None or denominator is None or denominator == 0:
     return None
   try:
@@ -271,12 +369,18 @@ def _balance_lookup(daily_rows):
   return lookup
 
 
+def _is_entry_order(order: dict, is_short: bool) -> bool:
+  if "ft_is_entry" in order:
+    return bool(order.get("ft_is_entry"))
+  return (order.get("ft_order_side") == "buy") != bool(is_short)
+
+
 def add_derived_fields(raw: dict) -> None:
   """Add scale-invariant relative values next to fields that will be redacted.
 
   Formulas are documented in tools/bot_report.md; this runs before the redactor,
   so derived keys must never match the redaction rules (all of them carry a
-  "ratio" token, or are named *_share_of_trade).
+  "ratio" or "share" token).
   """
   lookup = _balance_lookup((raw.get("daily_performance") or {}).get("data"))
   balance_now = lookup(datetime.now(timezone.utc)) if lookup else None
@@ -306,11 +410,17 @@ def add_derived_fields(raw: dict) -> None:
     trade["profit_to_account_balance_ratio"] = _safe_div(abs_profit, balance_at_close)
     trade["funding_fees_to_stake_amount_ratio"] = _safe_div(trade.get("funding_fees"), stake)
 
+    is_short = bool(trade.get("is_short"))
     orders = [order for order in (trade.get("orders") or []) if isinstance(order, dict)]
-    total_amount = sum(order.get("amount") for order in orders if isinstance(order.get("amount"), (int, float)))
+    filled_by_side = {True: 0.0, False: 0.0}
+    for order in orders:
+      filled = order.get("filled")
+      if isinstance(filled, (int, float)) and filled > 0:
+        filled_by_side[_is_entry_order(order, is_short)] += filled
     for order in orders:
       order["funding_fee_to_order_cost_ratio"] = _safe_div(order.get("funding_fee"), order.get("cost"))
-      order["order_amount_share_of_trade"] = _safe_div(order.get("amount"), total_amount or None)
+      side_filled = filled_by_side[_is_entry_order(order, is_short)]
+      order["order_filled_share_of_trade_side"] = _safe_div(order.get("filled"), side_filled or None)
 
 
 def _history_days(first_trade_date) -> int:
@@ -320,6 +430,32 @@ def _history_days(first_trade_date) -> int:
     return min(max((datetime.now(timezone.utc).date() - start).days + 2, 8), MAX_DAILY_DAYS)
   except ValueError:
     return 8
+
+
+def fetch_trade_history(api: FreqtradeApi, cap: int | None, failed: list[dict]) -> dict:
+  """Fetch the full closed-trade history by paginating /trades with offset."""
+  trades: list = []
+  seen: set = set()
+  offset, total = 0, None
+  while cap is None or len(trades) < cap:
+    try:
+      page = api.get("trades", {"limit": TRADES_PAGE_SIZE, "offset": offset})
+    except ApiError as err:
+      failed.append({"endpoint": "trades", "http_status": err.status})
+      print(f"warning: trades failed with HTTP {err.status}", file=sys.stderr)
+      break
+    batch = page.get("trades") or []
+    fresh = [trade for trade in batch if isinstance(trade, dict) and trade.get("trade_id") not in seen]
+    seen.update(trade.get("trade_id") for trade in fresh)
+    trades.extend(fresh)
+    total = page.get("total_trades", total)
+    offset += len(batch)
+    if not batch or (total is not None and offset >= total):
+      break
+  if cap is not None:
+    trades = trades[:cap]
+  trades.sort(key=lambda trade: trade.get("trade_id") or 0)
+  return {"trades": trades, "trades_count": len(trades), "total_trades": total or len(trades)}
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -350,8 +486,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
   parser.add_argument(
     "--trades-limit",
     type=int,
-    default=500,
-    help="How many recent closed trades to export (default: %(default)s).",
+    default=None,
+    help="Safety cap on exported closed trades (default: full history, paginated).",
   )
   parser.add_argument("--timeout", type=float, default=30.0, help="Per-request timeout in seconds.")
   parser.add_argument(
@@ -369,7 +505,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
   return args
 
 
-def collect_report(api: FreqtradeApi, redactor: Redactor, trades_limit: int) -> dict:
+def collect_report(api: FreqtradeApi, redactor: Redactor, trades_limit: int | None) -> dict:
   raw: dict = {}
   failed: list[dict] = []
 
@@ -396,7 +532,7 @@ def collect_report(api: FreqtradeApi, redactor: Redactor, trades_limit: int) -> 
   fetch("daily_performance", "daily", {"timescale": days})
   fetch("weekly_performance", "weekly", {"timescale": min(days // 7 + 2, MAX_WEEKLY_WEEKS)})
   fetch("monthly_performance", "monthly", {"timescale": min(days // 30 + 2, MAX_MONTHLY_MONTHS)})
-  fetch("closed_trades", "trades", {"limit": trades_limit})
+  raw["closed_trades"] = fetch_trade_history(api, trades_limit, failed)
   fetch("whitelist", "whitelist")
   fetch("blacklist", "blacklist")
   fetch("pair_locks", "locks")
@@ -435,7 +571,10 @@ def main(argv: list[str] | None = None) -> int:
     file.write("\n")
 
   failed = len(report["report_metadata"]["failed_endpoints"])
-  print(f"Report written to {output} ({redactor.redacted_fields} fields redacted, {failed} endpoints failed)")
+  print(
+    f"Report written to {output} ({redactor.redacted_fields} fields redacted, "
+    f"{report['closed_trades']['trades_count']} closed trades, {failed} endpoints failed)"
+  )
   return 0
 
 
