@@ -1097,24 +1097,57 @@ menu {
 </style>
 <style>
 /* Page-specific additions on top of shadcn-classless (kept minimal). */
+
+/* Form: labels and inputs on separate rows, inputs full width; fieldsets
+   group connection, credentials and options as vertical stacks. */
+#connect {
+  max-width: 40rem;
+}
+#connect fieldset {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.9rem;
+}
+#connect label {
+  display: block;
+}
+#connect input[type='text'],
+#connect input[type='password'] {
+  display: block;
+  width: 100%;
+  margin-top: 0.35rem;
+}
+#connect small {
+  display: block;
+  margin-top: 0.4rem;
+}
+#connect button {
+  width: 100%;
+}
+#result-body button {
+  width: 100%;
+}
+
+/* Export summary table: shrink-to-fit label column, wrapping values. */
+table.summary {
+  width: 100%;
+  margin: 0.5rem 0 1rem;
+}
+table.summary th {
+  font-weight: 500;
+  white-space: nowrap;
+  width: 1%;
+  padding-right: 1.5rem;
+}
+table.summary td {
+  overflow-wrap: anywhere;
+}
+
 #privacy-note {
   border-left: 4px solid var(--primary);
 }
-#privacy-note h3 {
+#privacy-note h2 {
   margin-bottom: 0.25rem;
-}
-dl.kv {
-  display: grid;
-  grid-template-columns: max-content 1fr;
-  gap: 0.25rem 1.5rem;
-  margin: 1rem 0;
-}
-dl.kv dt {
-  color: var(--muted-foreground);
-}
-dl.kv dd {
-  margin: 0;
-  overflow-wrap: anywhere;
 }
 p.error, li.error {
   color: var(--destructive);
@@ -1126,28 +1159,12 @@ code {
   word-break: break-all;
 }
 
-/* Small screens: stack form groups and key-value rows so nothing is squeezed
-   into a row; keep input font-size >= 16px so iOS Safari does not zoom into
-   fields on focus. */
+/* Small screens: keep input font-size >= 16px so iOS Safari does not zoom
+   into fields on focus. */
 @media (max-width: 600px) {
-  form fieldset {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  dl.kv {
-    grid-template-columns: 1fr;
-    gap: 0;
-  }
-  dl.kv dt {
-    margin-top: 0.5rem;
-  }
   input[type='text'],
-  input[type='password'],
-  input[type='number'] {
+  input[type='password'] {
     font-size: 1rem;
-  }
-  #result button {
-    width: 100%;
   }
 }
 </style>
@@ -1162,7 +1179,7 @@ code {
 
 <main>
   <article id="privacy-note">
-    <h3>No server sees your data</h3>
+    <h2>No server sees your data</h2>
     <p>This page is a single static file with all logic embedded. <strong>It makes no network
     call to any server except the freqtrade API URL you enter below.</strong> There is no CDN,
     no fonts, no analytics, no uploads, nothing stored: the report is generated in your browser
@@ -1176,45 +1193,53 @@ code {
   </article>
 
   <section>
-    <h2>Bot connection</h2>
+    <h2>Generate report</h2>
     <form id="connect">
-      <label>API base URL
-        <input type="text" id="f-url" placeholder="http://127.0.0.1:8080" spellcheck="false">
-      </label>
       <fieldset>
-        <legend>Credentials (HTTP Basic, as in your <code>api_server</code> config)</legend>
+        <legend>Bot connection</legend>
+        <label>API base URL
+          <input type="text" id="f-url" placeholder="http://127.0.0.1:8080" spellcheck="false">
+        </label>
+        <small>Root of the freqtrade REST API — scheme, host and port only. The default install listens on <code>http://127.0.0.1:8080</code>.</small>
+      </fieldset>
+      <fieldset>
+        <legend>Credentials</legend>
         <label>Username
           <input type="text" id="f-user" autocomplete="off" spellcheck="false">
         </label>
         <label>Password
           <input type="password" id="f-pass">
         </label>
+        <small>The same values as in your <code>api_server</code> config, sent as HTTP Basic auth on each request — never stored, never sent anywhere else.</small>
       </fieldset>
       <fieldset>
         <legend>Export options</legend>
         <label><input type="checkbox" id="f-redact" checked>
           Redact confidential fields (recommended — required before sharing the report)</label>
         <label>Trades limit — safety cap on closed trades (empty = full paginated history)
-          <input type="number" id="f-limit" min="1" step="1" inputmode="numeric" placeholder="all">
+          <input type="text" id="f-limit" inputmode="numeric" pattern="[0-9]*" placeholder="all">
         </label>
         <label>Per-request timeout, seconds
-          <input type="number" id="f-timeout" min="1" step="1" inputmode="numeric" value="30">
+          <input type="text" id="f-timeout" inputmode="numeric" pattern="[0-9]*" value="30">
         </label>
       </fieldset>
       <button type="submit" id="btn-export">Export report</button>
       <button type="button" id="btn-test" secondary>Test connection</button>
+      <small><strong>Export report</strong> walks every endpoint and saves the JSON file. <strong>Test connection</strong> only checks the URL, CORS and credentials.</small>
     </form>
   </section>
 
   <section id="progress" hidden>
-    <h2 aria-busy="true">Exporting…</h2>
-    <p id="progress-step" aria-busy="spinner">Connecting…</p>
-    <progress id="progress-bar" max="1" value="0"></progress>
+    <article aria-busy="true">
+      <h2>Exporting…</h2>
+      <p id="progress-step" aria-busy="spinner">Connecting…</p>
+      <progress id="progress-bar" max="1" value="0"></progress>
+    </article>
   </section>
 
   <section id="result" hidden>
     <h2 id="result-title"></h2>
-    <div id="result-body"></div>
+    <article id="result-body"></article>
   </section>
 
   <details>
@@ -1752,16 +1777,23 @@ function renderSuccess(container, report, filename, json) {
       failed.map((f) => `${f.endpoint} (HTTP ${f.http_status})`).join(", ") + "."));
   }
 
-  const dl = el("dl", { class: "kv" });
-  const add = (dt, dd) => { dl.append(el("dt", {}, [String(dt)]), el("dd", {}, [String(dd)])); };
-  add("Freqtrade version", meta.freqtrade_version ?? "unknown");
-  add("Generated at (UTC)", meta.generated_at_utc);
-  add("Closed trades", `${report.closed_trades.trades_count} exported / ${report.closed_trades.total_trades} total`);
-  add("Fields redacted", meta.redacted ? meta.redacted_field_count : "redaction disabled");
-  add("Skipped endpoints", meta.skipped_endpoints.length ? meta.skipped_endpoints.join(", ") : "none");
-  add("Failed endpoints", failed.length ? failed.map((f) => f.endpoint).join(", ") : "none");
-  add("Saved as", filename);
-  children.push(dl);
+  const rows = [
+    ["Freqtrade version", meta.freqtrade_version ?? "unknown"],
+    ["Generated at (UTC)", meta.generated_at_utc],
+    ["Closed trades", `${report.closed_trades.trades_count} exported / ${report.closed_trades.total_trades} total`],
+    ["Fields redacted", meta.redacted ? meta.redacted_field_count : "redaction disabled"],
+    ["Skipped endpoints", meta.skipped_endpoints.length ? meta.skipped_endpoints.join(", ") : "none"],
+    ["Failed endpoints", failed.length ? failed.map((f) => f.endpoint).join(", ") : "none"],
+  ];
+  const table = el("table", { class: "summary" });
+  const tbody = el("tbody", {});
+  for (const [label, value] of rows) {
+    const tr = el("tr", {});
+    tr.append(el("th", { scope: "row" }, [label]), el("td", {}, [String(value)]));
+    tbody.append(tr);
+  }
+  table.append(tbody, el("caption", {}, [`Saved as ${filename}`]));
+  children.push(table);
 
   const button = el("button", { type: "button" }, ["Download again"]);
   button.addEventListener("click", () => saveJson(json, filename));
