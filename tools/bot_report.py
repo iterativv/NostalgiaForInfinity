@@ -416,14 +416,6 @@ def collect_report(api: FreqtradeApi, redactor: Redactor, trades_limit: int) -> 
     "redacted_field_count": redactor.redacted_fields,
     "skipped_endpoints": ["balance", "logs"] if redactor.enabled else [],
     "failed_endpoints": failed,
-    "description": (
-      "Confidential data (credentials, account/order ids, balances, absolute PnL, "
-      "personal identifiers) is redacted with '<redacted>'. Redacted absolute values have "
-      "scale-invariant relative counterparts (the *_to_account_balance_ratio, "
-      "*_to_stake_amount_ratio, *_to_order_cost_ratio and *_share_of_trade fields). No "
-      "absolute currency value remains in this report, so the account balance cannot be "
-      "derived from it. Full field reference: tools/bot_report.md"
-    ),
   }
   return {"report_metadata": metadata, **report}
 
