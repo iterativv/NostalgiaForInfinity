@@ -1190,6 +1190,32 @@ table.summary td {
   min-height: 1.5rem;
   color: var(--muted-foreground);
 }
+
+/* Per-field collapsible hints: clicking the ⓘ line expands the description.
+   Overrides the framework's bordered accordion look for these inline hints. */
+details.field-help {
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  margin: 0.3rem 0 0;
+}
+details.field-help summary {
+  list-style: none;
+  display: inline-block;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  color: var(--muted-foreground);
+}
+details.field-help summary::-webkit-details-marker {
+  display: none;
+}
+details.field-help[open] summary {
+  color: var(--foreground);
+}
+details.field-help small {
+  display: block;
+  margin-top: 0.25rem;
+}
 /* Code never wraps: inline code becomes a horizontally scrollable chip so the
    text is always on one line and fully readable; pre>code stays a block. */
 code {
@@ -1252,26 +1278,42 @@ code {
     <form id="connect">
       <fieldset>
         <legend>Bot connection</legend>
-        <label tooltip-top="From your config.json: api_server.listen_ip_address + listen_port — default http://127.0.0.1:8080">API base URL
+        <label>API base URL
           <input type="text" id="f-url" placeholder="http://127.0.0.1:8080" spellcheck="false">
         </label>
+        <details class="field-help">
+          <summary>ⓘ from the freqtrade config</summary>
+          <small>From your config.json: <code>api_server.listen_ip_address</code> + <code>listen_port</code> — default <code>http://127.0.0.1:8080</code>.</small>
+        </details>
         <small>Root of the freqtrade REST API — scheme, host and port only. The default install listens on <code>http://127.0.0.1:8080</code>.</small>
       </fieldset>
       <fieldset>
         <legend>Credentials</legend>
-        <label tooltip-top="From your config.json: api_server.username">Username
+        <label>Username
           <input type="text" id="f-user" autocomplete="off" spellcheck="false">
         </label>
-        <label tooltip-top="From your config.json: api_server.password">Password
+        <details class="field-help">
+          <summary>ⓘ from the freqtrade config</summary>
+          <small>From your config.json: <code>api_server.username</code>.</small>
+        </details>
+        <label>Password
           <input type="password" id="f-pass">
         </label>
+        <details class="field-help">
+          <summary>ⓘ from the freqtrade config</summary>
+          <small>From your config.json: <code>api_server.password</code>.</small>
+        </details>
         <small>The same values as in your <code>api_server</code> config, sent as HTTP Basic auth on each request — never stored, never sent anywhere else.</small>
       </fieldset>
       <fieldset>
         <legend>Export options</legend>
-        <label tooltip-top="Tool option, not a config value: same as --redact / --no-redact in tools/bot_report.py"><input type="checkbox" id="f-redact" checked>
+        <label><input type="checkbox" id="f-redact" checked>
           Redact confidential fields (recommended — required before sharing the report)</label>
-        <label tooltip-top="Web-only filter: the full history is always fetched, then only trades closed within the window are kept. All time matches the CLI output.">Closed trades window
+        <details class="field-help">
+          <summary>ⓘ about this option</summary>
+          <small>Tool option, not a config value — same as <code>--redact</code> / <code>--no-redact</code> in <code>tools/bot_report.py</code>.</small>
+        </details>
+        <label>Closed trades window
           <select id="f-window">
             <option value="all" selected>All time</option>
             <option value="day">Last day</option>
@@ -1280,6 +1322,10 @@ code {
             <option value="year">Last year</option>
           </select>
         </label>
+        <details class="field-help">
+          <summary>ⓘ about this option</summary>
+          <small>Web-only filter: the full history is always fetched, then only trades closed within the window are kept. All time matches the CLI output.</small>
+        </details>
       </fieldset>
       <button type="submit" id="btn-export">Export report</button>
       <button type="button" id="btn-test" secondary tooltip-top="Uses the URL and credentials above: one request checks reachability, CORS headers and authentication.">Test connection</button>
