@@ -3098,14 +3098,33 @@ class NostalgiaForInfinityX8(IStrategy):
     return out
 
   @staticmethod
-  def obv_change_pct(obv: np.ndarray) -> np.ndarray:
-    """Measure OBV movement relative to the magnitude of its previous value."""
-    obv = np.asarray(obv, dtype=np.float64)
-    out = np.full(obv.shape, np.nan, dtype=np.float64)
-    prev = obv[:-1]
-    valid = np.isfinite(prev) & np.isfinite(obv[1:]) & (prev != 0)
-    np.divide(obv[1:] - prev, np.abs(prev), out=out[1:], where=valid)
-    out[1:] *= 100.0
+  def obv_volume_pct(close: np.ndarray, volume: np.ndarray) -> np.ndarray:
+    """Measure signed volume relative to its 20-candle mean, independently of older history."""
+    close = np.asarray(close, dtype=np.float64)
+    volume = np.asarray(volume, dtype=np.float64)
+    out = np.full(close.shape, np.nan, dtype=np.float64)
+    if close.size < 20:
+      return out
+
+    # Sum each window in the same order, without carrying a sum from older candles.
+    count = close.size - 19
+    average_volume = np.zeros(count, dtype=np.float64)
+    for offset in range(20):
+      average_volume += volume[offset : offset + count]
+    average_volume /= 20.0
+
+    current = close[19:]
+    previous = close[18:-1]
+    delta = np.where(current > previous, volume[19:], np.where(current < previous, -volume[19:], 0.0))
+    valid = (
+      np.isfinite(current)
+      & np.isfinite(previous)
+      & np.isfinite(delta)
+      & np.isfinite(average_volume)
+      & (average_volume > 0)
+    )
+    np.divide(delta, average_volume, out=out[19:], where=valid)
+    out[19:] *= 100.0
     return out
 
   @staticmethod
@@ -3855,7 +3874,6 @@ class NostalgiaForInfinityX8(IStrategy):
     ema_200 = ta_ema(close_np, timeperiod=200)
     willr_14 = ta.WILLR(high_np, low_np, close_np, timeperiod=14)
     uo = ta.ULTOSC(high_np, low_np, close_np)
-    obv = ta.OBV(close_np, volume_np)
     roc_9 = ta.ROC(close_np, timeperiod=9)
     cci_20 = ta.CCI(high_np, low_np, close_np, timeperiod=20)
 
@@ -3865,7 +3883,7 @@ class NostalgiaForInfinityX8(IStrategy):
     rsi_3_change = fast_pct_change(rsi_3)
     rsi_14_change = fast_pct_change(rsi_14)
     uo_change = fast_pct_change(uo)
-    obv_change = self.obv_change_pct(obv)
+    obv_change = self.obv_volume_pct(close_np, volume_np)
     cci_change = fast_pct_change(cci_20)
 
     # =========================================================================
@@ -3967,7 +3985,6 @@ class NostalgiaForInfinityX8(IStrategy):
     ta_max = ta.MAX
     ta_min = ta.MIN
     ta_stochf = ta.STOCHF
-    ta_obv = ta.OBV
     ta_mfi = ta.MFI
     ta_sum = ta.SUM
     ta_stddev = ta.STDDEV
@@ -4041,13 +4058,12 @@ class NostalgiaForInfinityX8(IStrategy):
     willr_480 = ta_willr(high_np, low_np, close_np, timeperiod=480)
     roc_2 = ta_roc(close_np, timeperiod=2)
     roc_9 = ta_roc(close_np, timeperiod=9)
-    obv = ta_obv(close_np, volume_np)
 
     # =========================================================================
     # CHANGE %
     # =========================================================================
     rsi_14_change = fast_pct_change(rsi_14)
-    obv_change = self.obv_change_pct(obv)
+    obv_change = self.obv_volume_pct(close_np, volume_np)
 
     # =========================================================================
     # CANDLE %
@@ -15503,7 +15519,7 @@ class NostalgiaForInfinityX8(IStrategy):
             )
             # Weak 1h breakout without daily stochastic or ROC participation
             & ((rsi_14_1h > 65.0) | (stochrsi_k_1d_gt_40) | (roc_9_1d > 25.0))
-            # Low daily stochastic state with a 15m OBV spike
+            # Low daily stochastic state: require positive 15m volume below half its 20-candle mean.
             & ((stochrsi_k_1d_gt_70) | (obv_change_pct_15m < 50.0))
             # Short-term Aroon spike without 4h or daily short-RSI continuation
             & ((aroonu_14_15m_lt_60) | (rsi_3_1d_gt_65) | (rsi_3_4h_gt_55))
