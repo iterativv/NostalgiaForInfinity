@@ -1468,6 +1468,10 @@ class NostalgiaForInfinityX8(IStrategy):
       last_rsi_14_lt_50 = last_rsi_14 < 50.0
       last_roc_9_4h_gt_40 = last_roc_9_4h > 40.0
       last_roc_9_4h_lt_neg_40 = last_roc_9_4h < -40.0
+      sell_stall, signal_name_stall = self.exit_profit_stall(mode_name, profit_init_ratio, last_candle, trade)
+      if sell_stall and (signal_name_stall is not None):
+        return True, signal_name_stall
+
       if trade.is_short:
         is_scalp_mode = all(c in self.short_scalp_mode_tags for c in enter_tags)
         if is_scalp_mode:
@@ -1634,6 +1638,38 @@ class NostalgiaForInfinityX8(IStrategy):
               return True, f"exit_profit_{mode_name}_t_12_1"
     else:
       return False, None
+
+    return False, None
+
+  def exit_profit_stall(
+    self,
+    mode_name: str,
+    profit_init_ratio: float,
+    last_candle,
+    trade: Trade,
+  ) -> tuple:
+    """Release a trailed trade once the move stops printing new extremes.
+
+    The other exits here decide whether the top is in. This one does not try: it asks whether the
+    move is still making progress, which is an observation rather than a forecast. WILLR_14 sits at
+    the ceiling of its 14-bar range while a trade keeps printing highs and falls away when it stops,
+    so a vertical run is never cut short while a stall is caught within a few candles. Shared by both
+    directions, because `exit_profit_target` is.
+
+    Reached only from the trailing branch of `exit_profit_target`, which matters: a trade there has
+    already been handed to the trailing target, so this can change how the ladder lets go of one but
+    can never take a trade from `*_exit_dec`. Measured over the round, the same rule was worth +285 a
+    fire where it displaced the ladder and -240 where it displaced dec.
+
+    The threshold is deliberately quieter than any offline sweep asks for. WILLR_14 runs from -100 at
+    the floor to 0 at the ceiling, so a more negative number waits longer; every offline pass prefers
+    the loose end and every real run prefers the quiet one. Opening it to the 3-8% band took 2024
+    from 6 fires to 26 and from -1.17% to -11.66%.
+    """
+    if profit_init_ratio >= 0.08:
+      last_willr_14 = last_candle["WILLR_14"]
+      if (last_willr_14 > -80.0) if trade.is_short else (last_willr_14 < -20.0):
+        return True, f"exit_profit_{mode_name}_stall"
 
     return False, None
 
