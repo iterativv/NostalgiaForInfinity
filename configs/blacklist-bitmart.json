@@ -1,6 +1,10 @@
 {
   "exchange": {
     "pair_blacklist": [
+      // Falling knife on a thin book — -94.9% off its 2025-12-07 high of 0.25287, and
+      // -31.4% on 2026-09-13 alone with a 62% intraday range. Spot-only (no perp on any
+      // venue) and the book is ~$0.4M/day across bybit, gate, mexc and kucoin.
+      "(LAVA)/.*",
       // OpenGradient market maker impaired — the team said on 2026-08-10 its market-making
       // funds are stuck on BitMart, which began winding down on 07-26. Book is thin
       // ($11.8M across the three venues) and the token is -84% from its April high.
