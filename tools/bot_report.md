@@ -157,6 +157,10 @@ forbidden absolute-money keys and the rendered text for digit-adjacent
 currency codes, and reports the result above the preview. The JSON export
 schema is unchanged by this feature.
 
+The image footer carries the page URL as a provenance watermark; it can be
+disabled with the Watermark checkbox. Pages opened from disk show a neutral
+label instead, so no local filesystem path leaks into the shared image.
+
 ## Why the balance cannot be derived
 
 Every kept number is a market price, a ratio between two internal quantities, a

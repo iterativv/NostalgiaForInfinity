@@ -1451,6 +1451,24 @@ details.redaction-review li {
 #share-controls select {
   width: auto;
 }
+#share-card .sc-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+  padding-top: 8px;
+  border-top: 1px solid #232840;
+  color: #5b6274;
+  font-size: 10.5px;
+}
+#share-card .sc-wm {
+  color: #6b7390;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 60%;
+}
 #share-foot {
   color: var(--muted-foreground);
 }
@@ -1549,6 +1567,8 @@ details.redaction-review li {
             <option value="50">50</option>
           </select>
         </label>
+        <label><input type="checkbox" id="share-watermark" checked>
+          Watermark (page URL)</label>
         <button type="button" id="share-png">Download PNG</button>
         <button type="button" id="share-svg" secondary>Download SVG</button>
       </div>
@@ -1639,6 +1659,9 @@ details.redaction-review li {
         trade by trade.</li>
       <li><strong>Wallet history</strong> → <strong>indexed equity (start = 100)</strong>: identical shape,
         no currency values.</li>
+      <li><strong>Watermark</strong> → the image footer shows the page URL as provenance (switch off
+        with the <em>Watermark</em> checkbox). Pages opened from disk show a neutral label instead,
+        so no local filesystem path leaks into the shared image.</li>
     </ul>
     <p>The image is built exclusively from ratios, percentages, counts, market prices and dates. A
     relative-only audit runs before every render and its result is shown above the preview.</p>
@@ -2234,7 +2257,7 @@ function saveJson(json, filename) {
  */
 
 const SHARE_TS_LABEL = { daily: "Days", weekly: "Weeks", monthly: "Months" };
-const shareState = { report: null, timescale: "monthly", recent: 10 };
+const shareState = { report: null, timescale: "monthly", recent: 10, watermark: true };
 
 /* Exact key names that must never appear in image data. The audit scans the
  * built image model for these before every render. */
@@ -2602,6 +2625,21 @@ function shareFilename(ext) {
   return `bot-dashboard-${stamp()}.${ext}`;
 }
 
+/* Watermark provenance: the page URL (origin + path, never query or hash).
+ * file:// and other opaque origins would expose local filesystem paths, so
+ * they fall back to a neutral label instead of leaking into a shared image.
+ * Takes an optional location-like for testability; defaults to the live one. */
+function shareWatermarkText(loc) {
+  const l = loc || (typeof window !== "undefined" ? window.location : null);
+  if (l && /^https?:$/.test(String(l.protocol || "")) && l.host) {
+    return `${l.protocol}//${l.host}${String(l.pathname || "/")}`;
+  }
+  if (l && /^file:/i.test(String(l.href || l.protocol || ""))) {
+    return "Freqtrade Bot Report · generated locally";
+  }
+  return "Freqtrade Bot Report";
+}
+
 /* ------------------------------------------------------- share DOM layer */
 
 function pillEl(ratio) {
@@ -2766,6 +2804,14 @@ function renderShareCard(data) {
   const grid = el("div", { class: "sc-grid" });
   grid.append(left, right);
   card.replaceChildren(top, grid);
+  if (shareState.watermark) {
+    const foot = el("div", { class: "sc-foot" });
+    foot.append(
+      el("span", {}, ["Relative values only — no account size"]),
+      el("span", { class: "sc-wm" }, [shareWatermarkText()]),
+    );
+    card.append(foot);
+  }
 }
 
 function setShareAudit(data) {
@@ -2824,6 +2870,14 @@ function wireShareControls() {
   document.getElementById("share-recent").addEventListener("change", (event) => {
     if (!shareState.report) return;
     shareState.recent = Number(event.target.value) || 10;
+    const data = buildShareData(shareState.report);
+    renderShareCard(data);
+    setShareAudit(data);
+  });
+  shareState.watermark = document.getElementById("share-watermark").checked;
+  document.getElementById("share-watermark").addEventListener("change", (event) => {
+    shareState.watermark = event.target.checked;
+    if (!shareState.report) return;
     const data = buildShareData(shareState.report);
     renderShareCard(data);
     setShareAudit(data);
