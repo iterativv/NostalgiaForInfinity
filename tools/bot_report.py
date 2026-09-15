@@ -348,6 +348,8 @@ def _balance_lookup(daily_rows):
   """Build a day -> starting-balance lookup from /daily rows (None if unavailable)."""
   mapping = {}
   for row in daily_rows or []:
+    if not isinstance(row, dict):
+      continue
     day, balance = row.get("date"), row.get("starting_balance")
     if day and isinstance(balance, (int, float)):
       mapping[str(day)[:10]] = balance
@@ -404,7 +406,8 @@ def add_derived_fields(raw: dict) -> None:
     balance_at_open = lookup(trade.get("open_date")) if lookup else None
     trade["stake_amount_to_account_balance_ratio"] = _safe_div(stake, balance_at_open)
     if trade.get("close_date"):
-      abs_profit, balance_at_close = trade.get("close_profit_abs"), lookup(trade["close_date"])
+      abs_profit = trade.get("close_profit_abs")
+      balance_at_close = lookup(trade["close_date"]) if lookup else None
     else:
       abs_profit, balance_at_close = trade.get("profit_abs"), balance_now
     trade["profit_to_account_balance_ratio"] = _safe_div(abs_profit, balance_at_close)

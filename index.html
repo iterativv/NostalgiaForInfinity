@@ -2588,7 +2588,7 @@ function comboChartSvg(points) {
   for (const t of chartTicks(lo, hi, 4)) {
     const y = Y(t).toFixed(1);
     s += `<line x1="${PL}" y1="${y}" x2="${W - PR}" y2="${y}" stroke="#2b3145" stroke-width="1"/>`;
-    s += `<text x="${PL - 5}" y="${(Number(y) + 3).toFixed(1)}" text-anchor="end" font-size="9" fill="#8b93ad">${t.toFixed(dec)}</text>`;
+    s += `<text x="${PL - 5}" y="${(Number(y) + 3).toFixed(1)}" text-anchor="end" font-size="9" fill="#8b93ad">${(t === 0 ? 0 : t).toFixed(dec)}</text>`;
   }
   s += `<text x="${W - PR + 5}" y="${(Yc(maxC) + 3).toFixed(1)}" text-anchor="start" font-size="9" fill="#5b6274">${maxC}</text>`;
   s += `<text x="${W - PR + 5}" y="${(PT + ih + 3).toFixed(1)}" text-anchor="start" font-size="9" fill="#5b6274">0</text>`;
@@ -2630,7 +2630,10 @@ function curveChartSvg(series, color, base, suffix, withFill) {
   const Y = (v) => PT + ih * (1 - (v - lo) / (hi - lo));
   const range = hi - lo;
   const dec = suffix === "%" ? (range > 20 ? 0 : 1) : (range > 60 ? 0 : 1);
-  const fmt = (v) => suffix === "%" ? `${v.toFixed(dec)}` : `${Math.round(v)}`;
+  const fmt = (v) => {
+    const z = v === 0 ? 0 : v;
+    return suffix === "%" ? `${z.toFixed(dec)}` : `${Math.round(z)}`;
+  };
   let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img">`;
   for (const t of chartTicks(lo, hi, 4)) {
     const y = Y(t).toFixed(1);
@@ -2733,7 +2736,7 @@ function renderShareCard(data) {
   ])]));
   const compRow = el("tr", {}, [
     tdEl("Bot"),
-    tdEl(`${data.openCount} / ${data.closedCount}`, "num", "open / closed trades"),
+    tdEl(`${data.openCount} / ${data.closedCount}`, "num", `open now / closed (${data.window})`),
     tdEl([pillEl(data.openAcct), data.openAcct !== null
       ? el("span", { class: "sub" }, ["acct impact"]) : "—"], "num"),
     tdEl([pillEl(data.closedAcct),
@@ -2820,6 +2823,7 @@ function renderShareCard(data) {
   const cumNote = el("div", { class: "sc-note" }, [data.cum.basis === "trade"
     ? "Trade-basis compounding (account size unavailable for this window)."
     : "Cumulative account impact %, compounded trade by trade."]);
+  const cumTitle = data.window === "all time" ? "Cumulative Profit" : `Cumulative Profit (${data.window})`;
 
   const eqSeries = data.equity.map((p) => ({ x: p.date, y: p.indexed }));
   const eqBody = eqSeries.length > 0
@@ -2843,7 +2847,7 @@ function renderShareCard(data) {
   const right = el("div", { class: "sc-col" });
   right.append(
     scPanel(`Profit over time (${SHARE_TS_LABEL[shareState.timescale]})`, [comboLegend, comboBody]),
-    scPanel("Cumulative Profit", [cumBody, cumNote]),
+    scPanel(cumTitle, [cumBody, cumNote]),
     scPanel("Indexed Equity (start = 100)", [eqBody, eqNote]),
   );
   if (!data.redacted) {
