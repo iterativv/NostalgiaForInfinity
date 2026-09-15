@@ -66,6 +66,10 @@
       // $80k daily volume and -66% to -95% off their highs; UTILITY printed a 538% day inside the
       // last month, EGG 163%. HFT from the same notice is already covered above.
       "(ROAM|UTILITY|EGG|GAIB|CUPSEY)/.*",
+      // MEXC futures delist 2026-09-15 07:00 UTC (announced 09-11): MEXC-only perps, all under
+      // $85k daily volume and -56% to -98% off their highs; PISTACIO printed a 174% day inside the
+      // last month, CLAN 141%.
+      "(PISTACIO|ALIGN|CLAN|STONKBROKER|QUID)/.*",
       // Tokenized stocks (STOCK suffix — universal forward-protection)
       ".*STOCK/.*",
       // Tokenized stocks (direct ticker, no STOCK suffix)
