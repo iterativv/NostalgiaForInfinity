@@ -133,6 +133,30 @@ Closed trades are exported in full: `/trades` is paginated with `offset` until
 the reported `total_trades` is reached, so reports are not capped at the API's
 500-trade page size. `--trades-limit` only acts as a safety cap.
 
+## Shareable dashboard image (`index.html` only)
+
+After an export, `index.html` renders a freqUI-style dashboard snapshot (bot
+comparison, open/closed trades, profit over time, cumulative profit, indexed
+equity) that can be downloaded as a PNG/SVG image. It is built **exclusively**
+from scale-invariant fields already present in the report — ratios,
+percentages, counts, market prices and dates (`rel_profit`, `close_profit`,
+`profit_ratio`, the derived `*_ratio` fields) — and never reads absolute
+money values, so the account size cannot be derived from the image:
+
+| freqUI shows | image shows instead |
+|---|---|
+| Balance | equity change vs the start, in % (compounded from `rel_profit`) |
+| Absolute profit (`-19.37% (-51.882)`) | % only (per-trade return + account impact %) |
+| Amount / stake amount | stake as % of the account at entry |
+| Profit over time (absolute axis) | relative profit % + trade count |
+| Cumulative profit (absolute) | cumulative account impact %, compounded |
+| Wallet history (currency values) | indexed equity (start = 100) |
+
+A relative-only audit runs before every render: it scans the image model for
+forbidden absolute-money keys and the rendered text for digit-adjacent
+currency codes, and reports the result above the preview. The JSON export
+schema is unchanged by this feature.
+
 ## Why the balance cannot be derived
 
 Every kept number is a market price, a ratio between two internal quantities, a

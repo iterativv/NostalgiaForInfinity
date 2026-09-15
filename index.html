@@ -7,6 +7,9 @@
   freqtrade REST API URL entered into the form (read-only GET requests to
   /api/v1/*). Everything else — fetching, derivation of relative fields,
   redaction, JSON serialization and saving — happens locally in the browser.
+  After an export it also renders a privacy-safe freqUI-style dashboard
+  snapshot (relative values only: no balances, stakes, costs, absolute profit
+  or wallet values) that can be downloaded as a PNG/SVG image for sharing.
 
   Styling: shadcn-classless by fordus (https://github.com/fordus/shadcn-classless),
   MIT licensed, embedded verbatim except for the Google Fonts @import, which was
@@ -1272,6 +1275,186 @@ details.redaction-review li {
   }
 }
 </style>
+<style id="share-css">
+/* Privacy-safe dashboard snapshot (freqUI-style, relative values only).
+   Single source of truth for both the live preview and the exported
+   PNG/SVG: the exporter inlines this exact block into the SVG, so the image
+   matches the preview without external resources. No id/class names here may
+   carry currency codes or absolute-money wording. */
+#share-scroll {
+  overflow-x: auto;
+}
+#share-card {
+  width: 1280px;
+  background: #14161f;
+  color: #e7eaf3;
+  border: 1px solid #2b3145;
+  border-radius: 12px;
+  padding: 16px;
+  font-size: 12px;
+  line-height: 1.45;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu, Cantarell, sans-serif;
+}
+#share-card .sc-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+#share-card .sc-brand {
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+}
+#share-card .sc-badge {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #0ecb81;
+  border: 1px solid #0e8f5f;
+  border-radius: 999px;
+  padding: 2px 10px;
+  vertical-align: middle;
+}
+#share-card .sc-meta {
+  color: #9aa1b8;
+  font-size: 11px;
+}
+#share-card .sc-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 12px;
+}
+#share-card .sc-col {
+  min-width: 0;
+}
+#share-card .sc-panel {
+  background: #1a1e2b;
+  border: 1px solid #2b3145;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  min-width: 0;
+}
+#share-card .sc-panel h4 {
+  margin: 0 0 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #c9cfe3;
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+#share-card table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11.5px;
+}
+#share-card th {
+  color: #8b93ad;
+  font-weight: 600;
+  text-align: left;
+  padding: 4px 6px;
+  border-bottom: 1px solid #2b3145;
+  white-space: nowrap;
+}
+#share-card td {
+  padding: 5px 6px;
+  border-bottom: 1px solid #232840;
+  color: #dfe3f0;
+  vertical-align: middle;
+}
+#share-card tr:last-child td {
+  border-bottom: none;
+}
+#share-card tr:hover {
+  background: transparent;
+}
+#share-card .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+#share-card .pill {
+  display: inline-block;
+  border: 1px solid;
+  border-radius: 6px;
+  padding: 1px 8px;
+  font-weight: 700;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+#share-card .pill-pos {
+  color: #0ecb81;
+  border-color: #0e8f5f;
+  background: rgba(14, 203, 129, 0.08);
+}
+#share-card .pill-neg {
+  color: #f6465d;
+  border-color: #a02c3d;
+  background: rgba(246, 70, 93, 0.08);
+}
+#share-card .pill-flat {
+  color: #9aa1b8;
+  border-color: #3a4157;
+}
+#share-card .sub {
+  display: block;
+  font-size: 10px;
+  color: #8b93ad;
+  font-weight: 400;
+}
+#share-card .sc-note {
+  color: #8b93ad;
+  font-size: 10.5px;
+  margin-top: 6px;
+}
+#share-card .sc-empty {
+  color: #8b93ad;
+  font-size: 11.5px;
+  padding: 18px 0;
+  text-align: center;
+}
+#share-card .sc-legend {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  color: #9aa1b8;
+  font-size: 10.5px;
+  margin-bottom: 4px;
+}
+#share-card .dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 4px;
+  vertical-align: baseline;
+}
+#share-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+#share-controls .tab[aria-pressed='true'] {
+  outline: 2px solid var(--ring);
+  outline-offset: 1px;
+}
+#share-controls label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+#share-controls select {
+  width: auto;
+}
+#share-foot {
+  color: var(--muted-foreground);
+}
+</style>
 </head>
 <body>
 <header>
@@ -1349,6 +1532,35 @@ details.redaction-review li {
     <article id="result-body"></article>
   </section>
 
+  <section id="share" hidden>
+    <h2>Dashboard image <small>privacy-safe, freqUI-style</small></h2>
+    <article>
+      <div id="share-controls">
+        <fieldset role="group" aria-label="Profit-over-time timescale">
+          <button type="button" class="tab" id="share-tab-days" aria-pressed="false">Days</button>
+          <button type="button" class="tab" id="share-tab-weeks" aria-pressed="false">Weeks</button>
+          <button type="button" class="tab" id="share-tab-months" aria-pressed="true">Months</button>
+        </fieldset>
+        <label>Recent closed trades
+          <select id="share-recent">
+            <option value="5">5</option>
+            <option value="10" selected>10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+          </select>
+        </label>
+        <button type="button" id="share-png">Download PNG</button>
+        <button type="button" id="share-svg" secondary>Download SVG</button>
+      </div>
+      <p id="share-audit"><small></small></p>
+      <div id="share-scroll" scroll-x><div id="share-card"></div></div>
+      <p id="share-foot"><small>The image shows <strong>relative values only</strong> — trade returns in %,
+      position sizes as % of the account, growth vs the start in %, indexed equity (start = 100) and trade
+      counts. Balances, stakes, costs, absolute profit, fees and wallet values are never rendered, so the
+      account size cannot be derived from it.</small></p>
+    </article>
+  </section>
+
   <dialog id="redact-confirm">
     <h3>Disable redaction?</h3>
     <p>The report will contain balances, absolute PnL and credentials — anyone you share it
@@ -1407,6 +1619,29 @@ details.redaction-review li {
     so fields freqtrade adds in the future are hidden until reviewed. Scale-invariant relative
     ratios are computed <em>before</em> redaction so the report stays useful without revealing
     the account size. Full field reference: <a href="tools/bot_report.md">tools/bot_report.md</a>.</p>
+  </details>
+
+  <details>
+    <summary>Dashboard image — what does it show instead of the absolute values?</summary>
+    <p>After a successful export the page renders a freqUI-style dashboard snapshot that is safe to
+    share as a PNG/SVG image. Every absolute-money field is replaced by a scale-invariant relative
+    value, so the account size cannot be derived from the image:</p>
+    <ul>
+      <li><strong>Balance</strong> column → <strong>equity change vs the start</strong> in %
+        (compounded from per-period relative profit — no balance is ever read for the image).</li>
+      <li><strong>Absolute profit</strong> (e.g. <code>-19.37% (-51.882)</code>) → <strong>% only</strong>:
+        per-trade return plus its impact on the account in %.</li>
+      <li><strong>Amount / stake amount</strong> columns → <strong>stake as % of the account</strong>
+        at entry time.</li>
+      <li><strong>Profit over time</strong> → <strong>relative profit %</strong> per day/week/month plus
+        trade count (no absolute axis).</li>
+      <li><strong>Cumulative profit</strong> → <strong>cumulative account impact %</strong>, compounded
+        trade by trade.</li>
+      <li><strong>Wallet history</strong> → <strong>indexed equity (start = 100)</strong>: identical shape,
+        no currency values.</li>
+    </ul>
+    <p>The image is built exclusively from ratios, percentages, counts, market prices and dates. A
+    relative-only audit runs before every render and its result is shown above the preview.</p>
   </details>
 </main>
 
@@ -1983,6 +2218,701 @@ function saveJson(json, filename) {
   setTimeout(() => URL.revokeObjectURL(url), 10000);
 }
 
+/* --------------------------------------- shareable dashboard image (web-only)
+ *
+ * freqUI-style snapshot built EXCLUSIVELY from scale-invariant fields, so the
+ * image can be shared without revealing the account size.
+ *   Read: dates, counts, pairs, market prices (open/current/close rates),
+ *         ratios and percentages (rel_profit, close_profit, profit_ratio,
+ *         profit_pct, ...), the derived *_ratio fields (position size vs the
+ *         account, per-trade account impact), exit reasons, local trade ids.
+ *   Never read: balances, stakes, costs, absolute PnL, fees, wallet/capital
+ *         values, fiat/coin amounts. No currency code is rendered anywhere.
+ * The JSON export is untouched; the image is an additional artifact rendered
+ * from the same in-memory report. Pure helpers (no DOM) live first so they
+ * stay testable outside the browser; DOM wiring is at the bottom.
+ */
+
+const SHARE_TS_LABEL = { daily: "Days", weekly: "Weeks", monthly: "Months" };
+const shareState = { report: null, timescale: "monthly", recent: 10 };
+
+/* Exact key names that must never appear in image data. The audit scans the
+ * built image model for these before every render. */
+const SHARE_FORBIDDEN_KEYS = new Set([
+  "abs_profit", "amount", "amount_requested", "available_capital", "balance",
+  "capital", "close_profit_abs", "coin", "cost", "current_drawdown_high",
+  "current_drawdown_low", "drawdown_high", "drawdown_low", "dry_run_wallet",
+  "expectancy", "fee", "fiat", "fiat_value", "filled", "funding_fee",
+  "funding_fees", "max_stake_amount", "open_trade_value", "profit_abs",
+  "profit_all_coin", "profit_all_fiat", "profit_closed_coin", "profit_closed_fiat",
+  "realized_profit", "remaining", "safe_cost", "stake_amount", "starting_balance",
+  "total_capital", "total_stake", "trading_volume", "wallet",
+]);
+
+function numOrNull(value) {
+  return (typeof value === "number" && Number.isFinite(value)) ? value : null;
+}
+
+function firstNum(...values) {
+  for (const value of values) {
+    const n = numOrNull(value);
+    if (n !== null) return n;
+  }
+  return null;
+}
+
+/* Percent-scale API field (e.g. profit_pct == 2.5 means 2.5%) to ratio. */
+function pctFieldToRatio(value) {
+  const n = numOrNull(value);
+  return n === null ? null : n / 100;
+}
+
+function fmtPct(ratio, digits) {
+  if (ratio === null || ratio === undefined || !Number.isFinite(ratio)) return "—";
+  const d = digits === undefined ? 2 : digits;
+  const sign = ratio > 0 ? "+" : "";
+  return `${sign}${(ratio * 100).toFixed(d)}%`;
+}
+
+/* Market price formatting (public market data, not account size). */
+function fmtRate(value) {
+  const n = numOrNull(value);
+  if (n === null) return "—";
+  const mag = Math.abs(n);
+  let text;
+  if (mag >= 1000) text = n.toFixed(2);
+  else if (mag >= 1) text = n.toFixed(4);
+  else text = n.toFixed(6);
+  return text.replace(/(\.\d*?)0+$/, "$1").replace(/\.$/, "");
+}
+
+function shortDate(value) {
+  return String(value === null || value === undefined ? "" : value).slice(0, 10);
+}
+
+function shortDateTime(value) {
+  return String(value === null || value === undefined ? "" : value).slice(0, 16).replace("T", " ");
+}
+
+function escXml(value) {
+  return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+/* Per-period series from a redacted daily/weekly/monthly section. Uses only
+ * rel_profit (period profit relative to the period starting balance) and
+ * trade_count — both scale-invariant. */
+function periodPoints(report, section) {
+  const rows = (report && report[section] && report[section].data) || [];
+  return (Array.isArray(rows) ? rows : [])
+    .filter((row) => row !== null && typeof row === "object" && !Array.isArray(row))
+    .map((row) => ({
+      date: shortDate(row.date),
+      rel: numOrNull(row.rel_profit),
+      count: (typeof row.trade_count === "number" && Number.isFinite(row.trade_count)) ? row.trade_count : 0,
+    }))
+    .filter((point) => point.date && point.rel !== null)
+    .sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
+}
+
+function openPoint(trade) {
+  return {
+    id: (trade.trade_id === undefined || trade.trade_id === null) ? "—" : trade.trade_id,
+    pair: typeof trade.pair === "string" ? trade.pair : "—",
+    side: trade.is_short ? "Short" : "Long",
+    openRate: numOrNull(trade.open_rate),
+    endRate: numOrNull(trade.current_rate),
+    tradeRatio: firstNum(trade.profit_ratio, pctFieldToRatio(trade.profit_pct), trade.total_profit_ratio),
+    acct: numOrNull(trade.profit_to_account_balance_ratio),
+    stake: numOrNull(trade.stake_amount_to_account_balance_ratio),
+    openDate: shortDateTime(trade.open_date),
+    endDate: "",
+    exit: "",
+  };
+}
+
+function closedPoint(trade) {
+  const closeDate = trade.close_date === undefined || trade.close_date === null ? "" : String(trade.close_date);
+  return {
+    id: (trade.trade_id === undefined || trade.trade_id === null) ? "—" : trade.trade_id,
+    pair: typeof trade.pair === "string" ? trade.pair : "—",
+    side: trade.is_short ? "Short" : "Long",
+    openRate: numOrNull(trade.open_rate),
+    endRate: firstNum(trade.close_rate, trade.close_rate_requested),
+    tradeRatio: firstNum(trade.close_profit, pctFieldToRatio(trade.close_profit_pct)),
+    acct: numOrNull(trade.profit_to_account_balance_ratio),
+    stake: numOrNull(trade.stake_amount_to_account_balance_ratio),
+    openDate: shortDateTime(trade.open_date),
+    endDate: shortDateTime(closeDate),
+    closeTs: parseUtcTimestamp(closeDate),
+    exit: typeof trade.exit_reason === "string" && trade.exit_reason ? trade.exit_reason : "—",
+  };
+}
+
+/* Compounded growth from per-period relative profits:
+ * balance_T = balance_0 * prod(1 + rel_t), so no absolute anchor is needed. */
+function equityFromRel(points) {
+  let growth = 1;
+  return points.map((point) => {
+    growth *= (1 + point.rel);
+    return { date: point.date, growth: growth - 1, indexed: growth * 100 };
+  });
+}
+
+/* Trade-by-trade cumulative account impact (compounded). Falls back to
+ * compounding per-trade returns when account-relative ratios are missing
+ * (e.g. no daily history to normalize against) — still relative, flagged. */
+function cumFromRatios(closedAsc) {
+  const withAcct = closedAsc.filter((t) => t.acct !== null);
+  const basis = withAcct.length > 0 ? "account" : "trade";
+  const source = basis === "account" ? withAcct : closedAsc.filter((t) => t.tradeRatio !== null);
+  let growth = 1;
+  const points = source.map((t) => {
+    growth *= (1 + (basis === "account" ? t.acct : t.tradeRatio));
+    return { x: shortDate(t.endDate) || `#${t.id}`, y: growth - 1 };
+  });
+  return { points, basis: points.length > 0 ? basis : null };
+}
+
+/* Build the image model from the (possibly redacted) report. Only safe keys
+ * are picked — even an unredacted report cannot leak through this path. */
+function buildShareData(report) {
+  const safe = report && typeof report === "object" ? report : {};
+  const meta = (safe.report_metadata && typeof safe.report_metadata === "object") ? safe.report_metadata : {};
+  const profit = (safe.profit_summary && typeof safe.profit_summary === "object") ? safe.profit_summary : {};
+  const counts = (safe.trade_counts && typeof safe.trade_counts === "object") ? safe.trade_counts : {};
+
+  const open = (Array.isArray(safe.open_trades) ? safe.open_trades : [])
+    .filter((t) => t !== null && typeof t === "object" && !Array.isArray(t))
+    .map(openPoint);
+  const closedRaw = ((safe.closed_trades && typeof safe.closed_trades === "object") ? safe.closed_trades.trades : []);
+  const closed = (Array.isArray(closedRaw) ? closedRaw : [])
+    .filter((t) => t !== null && typeof t === "object" && !Array.isArray(t))
+    .map(closedPoint);
+  const closedAsc = closed.slice().sort((a, b) => {
+    const at = Number.isFinite(a.closeTs) ? a.closeTs : -Infinity;
+    const bt = Number.isFinite(b.closeTs) ? b.closeTs : -Infinity;
+    if (at !== bt) return at - bt;
+    return (typeof a.id === "number" ? a.id : 0) - (typeof b.id === "number" ? b.id : 0);
+  });
+
+  const sumAcct = (list) => {
+    let sum = 0, n = 0;
+    for (const t of list) {
+      if (t.acct !== null) { sum += t.acct; n += 1; }
+    }
+    return n > 0 ? sum : null;
+  };
+  const openAcct = sumAcct(open);
+  let closedAcct = sumAcct(closed);
+  let closedBasis = closedAcct !== null ? "account" : null;
+  if (closedAcct === null) {
+    const fallback = numOrNull(profit.profit_closed_ratio);
+    if (fallback !== null) { closedAcct = fallback; closedBasis = "trade"; }
+  }
+
+  let wins = (typeof profit.winning_trades === "number" && Number.isFinite(profit.winning_trades))
+    ? profit.winning_trades : null;
+  let losses = (typeof profit.losing_trades === "number" && Number.isFinite(profit.losing_trades))
+    ? profit.losing_trades : null;
+  if (wins === null || losses === null) {
+    wins = 0; losses = 0;
+    for (const t of closed) {
+      if (t.tradeRatio === null) continue;
+      if (t.tradeRatio > 0) wins += 1;
+      else if (t.tradeRatio < 0) losses += 1;
+    }
+  }
+
+  const daily = periodPoints(safe, "daily_performance");
+  const weekly = periodPoints(safe, "weekly_performance");
+  const monthly = periodPoints(safe, "monthly_performance");
+  const equitySource = daily.length > 0 ? daily : weekly.length > 0 ? weekly : monthly;
+  const equity = equityFromRel(equitySource);
+  const growth = equity.length > 0 ? equity[equity.length - 1].growth : null;
+
+  const closedTotal = (safe.closed_trades && typeof safe.closed_trades.trades_count === "number")
+    ? safe.closed_trades.trades_count : closed.length;
+
+  return {
+    version: typeof meta.freqtrade_version === "string" ? meta.freqtrade_version : "unknown",
+    generatedAt: typeof meta.generated_at_utc === "string" ? meta.generated_at_utc : "",
+    window: typeof meta.closed_trades_window === "string" ? meta.closed_trades_window : "all time",
+    redacted: meta.redacted !== false,
+    openCount: open.length,
+    closedCount: closedTotal,
+    wins, losses,
+    openAcct, closedAcct, closedBasis,
+    growth,
+    deployed: numOrNull(counts.total_stake_to_account_balance_ratio),
+    daily, weekly, monthly,
+    equity,
+    open, closedAsc,
+    cum: cumFromRatios(closedAsc),
+  };
+}
+
+function collectShareKeys(value, out) {
+  if (Array.isArray(value)) {
+    for (const item of value) collectShareKeys(item, out);
+  } else if (value !== null && typeof value === "object") {
+    for (const key of Object.keys(value)) {
+      out.add(key);
+      collectShareKeys(value[key], out);
+    }
+  }
+}
+
+/* Fail-closed audit of the image model: every key must be known-safe. */
+function auditShareData(data) {
+  const keys = new Set();
+  collectShareKeys(data, keys);
+  const forbidden = [...keys].filter((key) => SHARE_FORBIDDEN_KEYS.has(key));
+  return { checked: keys.size, forbidden };
+}
+
+/* Rendered-text scan: flag absolute-money adjacency (digits next to a
+ * currency code or $). Pair names alone (HYPE/USDT) never match — only a
+ * number glued to a currency does. */
+function auditRenderedText(text) {
+  const hits = [];
+  const re = /\d[\d.,]*\s*(USDT|USDC|USD|EUR|BTC|ETH|BNB|SOL|fiat)\b|\$\s*\d|\b\d+\s*\$/gi;
+  let match;
+  while ((match = re.exec(text)) !== null) hits.push(match[0]);
+  return hits;
+}
+
+function chartTicks(lo, hi, n) {
+  if (!(hi > lo)) return [lo];
+  const step0 = (hi - lo) / n;
+  const mag = Math.pow(10, Math.floor(Math.log10(step0)));
+  const norm = step0 / mag;
+  const step = (norm >= 5 ? 5 : norm >= 2 ? 2 : 1) * mag;
+  const ticks = [];
+  for (let v = Math.ceil(lo / step) * step; v <= hi + 1e-12; v += step) {
+    ticks.push(Math.round(v / step) * step);
+  }
+  return ticks.length > 0 ? ticks : [lo, hi];
+}
+
+function xLabelIdx(n, maxLabels) {
+  if (n <= maxLabels) return Array.from({ length: n }, (_, i) => i);
+  const out = [];
+  for (let k = 0; k < maxLabels; k++) out.push(Math.round((k * (n - 1)) / (maxLabels - 1)));
+  return [...new Set(out)];
+}
+
+function shortTick(date) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(date));
+  return m ? `${m[2]}-${m[3]}` : String(date).slice(0, 10);
+}
+
+/* Bars (trade count, right axis) + relative-profit line (left axis). */
+function comboChartSvg(points) {
+  const W = 400, H = 238, PL = 48, PR = 38, PT = 12, PB = 26;
+  const iw = W - PL - PR, ih = H - PT - PB;
+  const n = points.length;
+  const pcts = points.map((p) => p.rel * 100);
+  const counts = points.map((p) => p.count);
+  let lo = Math.min(0, ...pcts), hi = Math.max(0, ...pcts);
+  if (!(hi > lo)) hi = lo + 1;
+  const pad = (hi - lo) * 0.12 || 1;
+  lo -= pad; hi += pad;
+  const maxC = Math.max(1, ...counts);
+  const X = (i) => PL + (n === 1 ? iw / 2 : (iw * i) / (n - 1));
+  const Y = (v) => PT + ih * (1 - (v - lo) / (hi - lo));
+  const Yc = (c) => PT + ih * (1 - c / maxC);
+  const dec = (hi - lo) > 20 ? 0 : 1;
+  let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Relative profit over time">`;
+  for (const t of chartTicks(lo, hi, 4)) {
+    const y = Y(t).toFixed(1);
+    s += `<line x1="${PL}" y1="${y}" x2="${W - PR}" y2="${y}" stroke="#2b3145" stroke-width="1"/>`;
+    s += `<text x="${PL - 5}" y="${(Number(y) + 3).toFixed(1)}" text-anchor="end" font-size="9" fill="#8b93ad">${t.toFixed(dec)}</text>`;
+  }
+  s += `<text x="${W - PR + 5}" y="${(Yc(maxC) + 3).toFixed(1)}" text-anchor="start" font-size="9" fill="#5b6274">${maxC}</text>`;
+  s += `<text x="${W - PR + 5}" y="${(PT + ih + 3).toFixed(1)}" text-anchor="start" font-size="9" fill="#5b6274">0</text>`;
+  const bw = n > 1 ? Math.max(3, Math.min(16, (iw / n) * 0.5)) : 16;
+  points.forEach((p, i) => {
+    const y = Yc(p.count);
+    s += `<rect x="${(X(i) - bw / 2).toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(PT + ih - y, 0).toFixed(1)}" fill="rgba(148,163,184,0.4)" rx="1"/>`;
+  });
+  const zy = Y(0).toFixed(1);
+  s += `<line x1="${PL}" y1="${zy}" x2="${W - PR}" y2="${zy}" stroke="#5b6274" stroke-width="1" stroke-dasharray="4 3"/>`;
+  if (n > 1) {
+    for (let i = 1; i < n; i++) {
+      const stroke = pcts[i] >= 0 ? "#0ecb81" : "#f6465d";
+      s += `<line x1="${X(i - 1).toFixed(1)}" y1="${Y(pcts[i - 1]).toFixed(1)}" x2="${X(i).toFixed(1)}" y2="${Y(pcts[i]).toFixed(1)}" stroke="${stroke}" stroke-width="1.6"/>`;
+    }
+  }
+  points.forEach((p, i) => {
+    const fill = pcts[i] >= 0 ? "#0ecb81" : "#f6465d";
+    s += `<circle cx="${X(i).toFixed(1)}" cy="${Y(pcts[i]).toFixed(1)}" r="2.4" fill="${fill}"/>`;
+  });
+  for (const i of xLabelIdx(n, 5)) {
+    s += `<text x="${X(i).toFixed(1)}" y="${H - 8}" text-anchor="middle" font-size="9" fill="#8b93ad">${escXml(shortTick(points[i].date))}</text>`;
+  }
+  s += "</svg>";
+  return s;
+}
+
+/* Single-series curve (cumulative impact % or indexed equity). */
+function curveChartSvg(series, color, base, suffix, withFill) {
+  const W = 400, H = 238, PL = 48, PR = 14, PT = 12, PB = 26;
+  const iw = W - PL - PR, ih = H - PT - PB;
+  const n = series.length;
+  const ys = series.map((p) => p.y);
+  let lo = Math.min(base, ...ys), hi = Math.max(base, ...ys);
+  if (!(hi > lo)) hi = lo + 1;
+  const pad = (hi - lo) * 0.12 || 1;
+  lo -= pad; hi += pad;
+  const X = (i) => PL + (n === 1 ? iw / 2 : (iw * i) / (n - 1));
+  const Y = (v) => PT + ih * (1 - (v - lo) / (hi - lo));
+  const range = hi - lo;
+  const dec = suffix === "%" ? (range > 20 ? 0 : 1) : (range > 60 ? 0 : 1);
+  const fmt = (v) => suffix === "%" ? `${v.toFixed(dec)}` : `${Math.round(v)}`;
+  let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img">`;
+  for (const t of chartTicks(lo, hi, 4)) {
+    const y = Y(t).toFixed(1);
+    s += `<line x1="${PL}" y1="${y}" x2="${W - PR}" y2="${y}" stroke="#2b3145" stroke-width="1"/>`;
+    s += `<text x="${PL - 5}" y="${(Number(y) + 3).toFixed(1)}" text-anchor="end" font-size="9" fill="#8b93ad">${fmt(t)}</text>`;
+  }
+  const by = Y(base).toFixed(1);
+  s += `<line x1="${PL}" y1="${by}" x2="${W - PR}" y2="${by}" stroke="#5b6274" stroke-width="1" stroke-dasharray="4 3"/>`;
+  if (n === 1) {
+    s += `<circle cx="${X(0).toFixed(1)}" cy="${Y(ys[0]).toFixed(1)}" r="2.6" fill="${color}"/>`;
+  } else {
+    let d = "";
+    series.forEach((p, i) => { d += `${i === 0 ? "M" : "L"}${X(i).toFixed(1)},${Y(p.y).toFixed(1)}`; });
+    if (withFill) {
+      s += `<path d="${d}L${X(n - 1).toFixed(1)},${(PT + ih).toFixed(1)}L${X(0).toFixed(1)},${(PT + ih).toFixed(1)}Z" fill="${color}" opacity="0.12" stroke="none"/>`;
+    }
+    s += `<path d="${d}" fill="none" stroke="${color}" stroke-width="1.6"/>`;
+    series.forEach((p, i) => {
+      s += `<circle cx="${X(i).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="2" fill="${color}"/>`;
+    });
+  }
+  for (const i of xLabelIdx(n, 5)) {
+    s += `<text x="${X(i).toFixed(1)}" y="${H - 8}" text-anchor="middle" font-size="9" fill="#8b93ad">${escXml(shortTick(series[i].x))}</text>`;
+  }
+  s += "</svg>";
+  return s;
+}
+
+function shareFilename(ext) {
+  return `bot-dashboard-${stamp()}.${ext}`;
+}
+
+/* ------------------------------------------------------- share DOM layer */
+
+function pillEl(ratio) {
+  if (ratio === null || ratio === undefined || !Number.isFinite(ratio)) {
+    return el("span", { class: "pill pill-flat" }, ["—"]);
+  }
+  const cls = ratio > 0 ? "pill pill-pos" : ratio < 0 ? "pill pill-neg" : "pill pill-flat";
+  const arrow = ratio > 0 ? "▲ " : ratio < 0 ? "▼ " : "";
+  return el("span", { class: cls }, [`${arrow}${fmtPct(ratio)}`]);
+}
+
+function thEl(label, cls, title) {
+  const attrs = {};
+  if (cls) attrs.class = cls;
+  if (title) attrs.title = title;
+  return el("th", attrs, [label]);
+}
+
+function tdEl(content, cls, title) {
+  const attrs = {};
+  if (cls) attrs.class = cls;
+  if (title) attrs.title = title;
+  return el("td", attrs, Array.isArray(content) ? content : [content]);
+}
+
+function scPanel(title, children) {
+  const panel = el("div", { class: "sc-panel" });
+  panel.append(el("h4", {}, [title]));
+  for (const child of children) panel.append(child);
+  return panel;
+}
+
+function scEmpty(text) {
+  return el("div", { class: "sc-empty" }, [text]);
+}
+
+function renderShareCard(data) {
+  const card = document.getElementById("share-card");
+  const metaLine = `freqtrade ${data.version} · ${data.generatedAt.slice(0, 16).replace("T", " ")} · ${data.window}`;
+
+  const top = el("div", { class: "sc-top" });
+  const brand = el("div", { class: "sc-brand" }, ["Bot performance"]);
+  brand.append(el("span", { class: "sc-badge" }, ["RELATIVE ONLY"]));
+  top.append(brand, el("div", { class: "sc-meta" }, [metaLine]));
+
+  /* Bot comparison: Balance becomes equity change vs start; absolute profit
+   * cells become account-impact % pills. */
+  const compTable = el("table", {});
+  compTable.append(el("thead", {}, [el("tr", {}, [
+    thEl("Bot"), thEl("Trades", "num", "open / closed"), thEl("Open Profit", "num"),
+    thEl("Closed Profit", "num"), thEl("Equity Δ", "num", "change vs start, compounded"),
+    thEl("W/L", "num", "won / lost"),
+  ])]));
+  const compRow = el("tr", {}, [
+    tdEl("Bot"),
+    tdEl(`${data.openCount} / ${data.closedCount}`, "num", "open / closed trades"),
+    tdEl([pillEl(data.openAcct), data.openAcct !== null
+      ? el("span", { class: "sub" }, ["acct impact"]) : "—"], "num"),
+    tdEl([pillEl(data.closedAcct),
+      el("span", { class: "sub" }, [data.closedBasis === "trade" ? "trade basis" : "acct impact"])], "num"),
+    tdEl([pillEl(data.growth), el("span", { class: "sub" }, ["vs start"])], "num"),
+    tdEl(`${data.wins} / ${data.losses}`, "num", "won / lost"),
+  ]);
+  compTable.append(el("tbody", {}, [compRow]));
+  const compNote = el("div", { class: "sc-note" }, [
+    data.deployed !== null ? `Currently deployed: ${fmtPct(data.deployed)} of the account. ` : "",
+    "No balances, stakes or absolute profit are shown.",
+  ]);
+
+  /* Open trades: amounts/stakes replaced by stake-as-%-of-account. */
+  const openHeads = ["ID", "Pair", "Side", "Stake %", "Open rate", "Current rate", "Profit", "Open date"];
+  const openTable = el("table", {});
+  openTable.append(el("thead", {}, [el("tr", {}, [
+    thEl("ID", "num"), thEl("Pair"), thEl("Side"), thEl("Stake %", "num", "stake as % of the account at entry"),
+    thEl("Open rate", "num"), thEl("Current rate", "num"), thEl("Profit", "num"), thEl("Open date"),
+  ])]));
+  const openBody = el("tbody", {});
+  for (const t of data.open) {
+    const profitCell = [pillEl(t.tradeRatio)];
+    if (t.acct !== null) profitCell.push(el("span", { class: "sub" }, [`acct ${fmtPct(t.acct)}`]));
+    openBody.append(el("tr", {}, [
+      tdEl(String(t.id), "num"), tdEl(t.pair), tdEl(t.side),
+      tdEl(t.stake !== null ? fmtPct(t.stake) : "—", "num"),
+      tdEl(fmtRate(t.openRate), "num"), tdEl(fmtRate(t.endRate), "num"),
+      tdEl(profitCell, "num"), tdEl(t.openDate),
+    ]));
+  }
+  openTable.append(openBody);
+
+  /* Closed trades: most recent first, absolute columns replaced as above. */
+  const closedDesc = data.closedAsc.slice().sort((a, b) => {
+    const at = Number.isFinite(a.closeTs) ? a.closeTs : -Infinity;
+    const bt = Number.isFinite(b.closeTs) ? b.closeTs : -Infinity;
+    return bt - at;
+  });
+  const shown = closedDesc.slice(0, shareState.recent);
+  const closedTable = el("table", {});
+  closedTable.append(el("thead", {}, [el("tr", {}, [
+    thEl("ID", "num"), thEl("Pair"), thEl("Side"), thEl("Stake %", "num", "stake as % of the account at entry"),
+    thEl("Open rate", "num"), thEl("Close rate", "num"), thEl("Profit", "num"),
+    thEl("Open date"), thEl("Close date"), thEl("Exit"),
+  ])]));
+  const closedBody = el("tbody", {});
+  for (const t of shown) {
+    const profitCell = [pillEl(t.tradeRatio)];
+    if (t.acct !== null) profitCell.push(el("span", { class: "sub" }, [`acct ${fmtPct(t.acct)}`]));
+    closedBody.append(el("tr", {}, [
+      tdEl(String(t.id), "num"), tdEl(t.pair), tdEl(t.side),
+      tdEl(t.stake !== null ? fmtPct(t.stake) : "—", "num"),
+      tdEl(fmtRate(t.openRate), "num"), tdEl(fmtRate(t.endRate), "num"),
+      tdEl(profitCell, "num"), tdEl(t.openDate), tdEl(t.endDate), tdEl(t.exit),
+    ]));
+  }
+  closedTable.append(closedBody);
+  const closedNoteText = data.closedAsc.length === 0
+    ? "No closed trades in this window."
+    : (data.closedAsc.length > shown.length
+      ? `Showing the ${shown.length} most recent of ${data.closedAsc.length} exported closed trades — the rest are in the JSON report.`
+      : `${data.closedAsc.length} closed trade(s) in this window.`);
+
+  /* Right column: relative charts. */
+  const tsPoints = shareState.timescale === "daily" ? data.daily
+    : shareState.timescale === "weekly" ? data.weekly : data.monthly;
+  const comboLegend = el("div", { class: "sc-legend" });
+  comboLegend.append(
+    el("span", { html: '<span class="dot" style="background:#0ecb81"></span>Relative profit %' }),
+    el("span", { html: '<span class="dot" style="background:#9499ad"></span>Trade count' }),
+  );
+  const comboBody = tsPoints.length > 0
+    ? el("div", { html: comboChartSvg(tsPoints) })
+    : scEmpty(`No ${SHARE_TS_LABEL[shareState.timescale].toLowerCase()} data.`);
+
+  const cumSeries = data.cum.points.map((p) => ({ x: p.x, y: p.y * 100 }));
+  const cumBody = cumSeries.length > 0
+    ? el("div", { html: curveChartSvg(cumSeries, "#e7eaf3", 0, "%", false) })
+    : scEmpty("No per-trade account impact available.");
+  const cumNote = el("div", { class: "sc-note" }, [data.cum.basis === "trade"
+    ? "Trade-basis compounding (account size unavailable for this window)."
+    : "Cumulative account impact %, compounded trade by trade."]);
+
+  const eqSeries = data.equity.map((p) => ({ x: p.date, y: p.indexed }));
+  const eqBody = eqSeries.length > 0
+    ? el("div", { html: curveChartSvg(eqSeries, "#3b82f6", 100, "", true) })
+    : scEmpty("No period history to index.");
+
+  const left = el("div", { class: "sc-col" });
+  left.append(
+    scPanel("Bot comparison", [compTable, compNote]),
+    scPanel("Open Trades", [data.open.length > 0 ? openTable : scEmpty("No open trades.")]),
+    scPanel(`Closed Trades (${data.window})`, [shown.length > 0 ? closedTable : scEmpty(closedNoteText),
+      shown.length > 0 && data.closedAsc.length > shown.length ? el("div", { class: "sc-note" }, [closedNoteText]) : ""]),
+  );
+  const right = el("div", { class: "sc-col" });
+  right.append(
+    scPanel(`Profit over time (${SHARE_TS_LABEL[shareState.timescale]})`, [comboLegend, comboBody]),
+    scPanel("Cumulative Profit", [cumBody, cumNote]),
+    scPanel("Indexed Equity (start = 100)", [eqBody]),
+  );
+  if (!data.redacted) {
+    right.append(el("div", { class: "sc-note" }, ["Source JSON is unredacted — the image still shows relative values only."]));
+  }
+  const grid = el("div", { class: "sc-grid" });
+  grid.append(left, right);
+  card.replaceChildren(top, grid);
+}
+
+function setShareAudit(data) {
+  const audit = auditShareData(data);
+  const text = document.getElementById("share-card").textContent || "";
+  const hits = auditRenderedText(text);
+  const points = data.daily.length + data.weekly.length + data.monthly.length
+    + data.cum.points.length + data.equity.length;
+  const small = document.querySelector("#share-audit small");
+  if (audit.forbidden.length > 0 || hits.length > 0) {
+    small.textContent = `Relative-only audit FAILED — refusing to look shareable: `
+      + `${audit.forbidden.length > 0 ? `forbidden fields (${audit.forbidden.join(", ")})` : ""}`
+      + `${hits.length > 0 ? ` absolute-money text (${hits.slice(0, 3).join("; ")})` : ""}.`;
+    small.className = "text-danger";
+    return false;
+  }
+  small.textContent = `Relative-only audit passed — ${audit.checked} model keys checked, `
+    + `${points} plotted points across ${data.open.length + data.closedAsc.length} trades, `
+    + `0 absolute-money fields and 0 absolute-money texts. Safe to share.`;
+  small.className = "text-success";
+  return true;
+}
+
+function renderShareImage(report) {
+  shareState.report = report;
+  const data = buildShareData(report);
+  renderShareCard(data);
+  document.getElementById("share").hidden = false;
+  setShareAudit(data);
+}
+
+function hideShare() {
+  shareState.report = null;
+  document.getElementById("share").hidden = true;
+}
+
+function refreshShareTimescale(ts) {
+  if (!shareState.report) return;
+  shareState.timescale = ts;
+  const btnFor = { daily: "days", weekly: "weeks", monthly: "months" };
+  for (const [key, btn] of Object.entries(btnFor)) {
+    document.getElementById(`share-tab-${btn}`).setAttribute("aria-pressed", key === ts ? "true" : "false");
+  }
+  const data = buildShareData(shareState.report);
+  renderShareCard(data);
+  setShareAudit(data);
+}
+
+function wireShareControls() {
+  if (document.getElementById("share-png").dataset.wired) return;
+  document.getElementById("share-png").dataset.wired = "1";
+  const tabs = { days: "daily", weeks: "weekly", months: "monthly" };
+  for (const [btn, ts] of Object.entries(tabs)) {
+    document.getElementById(`share-tab-${btn}`).addEventListener("click", () => refreshShareTimescale(ts));
+  }
+  document.getElementById("share-recent").addEventListener("change", (event) => {
+    if (!shareState.report) return;
+    shareState.recent = Number(event.target.value) || 10;
+    const data = buildShareData(shareState.report);
+    renderShareCard(data);
+    setShareAudit(data);
+  });
+  document.getElementById("share-png").addEventListener("click", (event) => downloadSharePng(event.target));
+  document.getElementById("share-svg").addEventListener("click", (event) => downloadShareSvg(event.target));
+}
+
+/* Serialize the preview card into a standalone SVG (page CSS inlined, no
+ * external resources) for the PNG/SVG download. Uses a data: URL so the
+ * page Content-Security-Policy (img-src data:) is respected. */
+function shareSvgText() {
+  const node = document.getElementById("share-card");
+  const css = document.getElementById("share-css").textContent;
+  const w = node.offsetWidth, h = node.offsetHeight;
+  const clone = node.cloneNode(true);
+  clone.setAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+  const html = new XMLSerializer().serializeToString(clone);
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">`
+    + `<style>${css}</style>`
+    + `<foreignObject x="0" y="0" width="${w}" height="${h}">${html}</foreignObject></svg>`;
+  return { svg, w, h };
+}
+
+function setShareBusy(btn, busy, label) {
+  for (const id of ["share-png", "share-svg"]) document.getElementById(id).disabled = busy;
+  if (busy) btn.setAttribute("aria-busy", "true");
+  else btn.removeAttribute("aria-busy");
+  if (label) document.querySelector("#share-audit small").textContent = label;
+}
+
+async function downloadSharePng(btn) {
+  if (!shareState.report) return;
+  setShareBusy(btn, true, "Rendering PNG…");
+  try {
+    const { svg, w, h } = shareSvgText();
+    const url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+    const img = new Image();
+    await new Promise((resolve, reject) => {
+      img.onload = resolve;
+      img.onerror = () => reject(new Error("render"));
+      img.src = url;
+    });
+    const scale = 2;
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(w * scale, 1);
+    canvas.height = Math.max(h * scale, 1);
+    const ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#14161f";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
+    if (!blob) throw new Error("render");
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = shareFilename("png");
+    document.body.append(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(link.href), 10000);
+    setShareAudit(buildShareData(shareState.report));
+  } catch (err) {
+    console.error("Share PNG failed:", err);
+    setShareBusy(btn, false);
+    document.querySelector("#share-audit small").textContent =
+      "PNG rendering was blocked by this browser (foreignObject export). The SVG download below uses the same image and always works — convert it to PNG locally.";
+  } finally {
+    setShareBusy(btn, false);
+  }
+}
+
+function downloadShareSvg(btn) {
+  if (!shareState.report) return;
+  setShareBusy(btn, true);
+  try {
+    const { svg } = shareSvgText();
+    const blob = new Blob([svg], { type: "image/svg+xml" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = shareFilename("svg");
+    document.body.append(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(link.href), 10000);
+  } finally {
+    setShareBusy(btn, false);
+  }
+}
+
 function renderConnectionHelp(container, diagnosis) {
   const list = el("ol", {});
   for (const step of diagnosis.steps) list.append(el("li", {}, [step]));
@@ -2156,6 +3086,7 @@ async function onExport(form) {
   const opts = readFormOptions();
   if (opts.error) {
     optionsErrorUi(opts, "Export failed");
+    hideShare();
     return;
   }
   await withBusyUi(form, "Connecting to the bot — GET /api/v1/ping …", async (resultTitle, resultBody, progress) => {
@@ -2164,7 +3095,9 @@ async function onExport(form) {
       resultTitle.textContent = "Report ready";
       resultTitle.className = "text-success";
       renderSuccess(resultBody, report, filename, json, redactedPaths);
+      renderShareImage(report);
     } catch (err) {
+      hideShare();
       resultTitle.textContent = "Export failed";
       resultTitle.className = "text-danger";
       if (err instanceof NetworkError) {
@@ -2239,6 +3172,7 @@ if (typeof document !== "undefined") {
       if (!redactApproved) redactCheckbox.checked = true;
     });
     const form = document.getElementById("connect");
+    wireShareControls();
     form.addEventListener("submit", (event) => {
       event.preventDefault();
       onExport(form);
