@@ -10,8 +10,9 @@
   After an export it also renders a privacy-safe freqUI-style dashboard
   snapshot (relative values only: no balances, stakes, costs, absolute profit
   or wallet values) that can be downloaded as a PNG/SVG image for sharing.
-  It can optionally remember the connection (URL + credentials) in this
-  browser's local storage after a successful connection — off by default.
+  Credentials are never stored by the page itself; the form is password-manager
+  friendly (proper autocomplete plus the Credential Management API), so Chrome
+  can save and refill them with your permission.
 
   Styling: shadcn-classless by fordus (https://github.com/fordus/shadcn-classless),
   MIT licensed, embedded verbatim except for the Google Fonts @import, which was
@@ -1489,11 +1490,10 @@ details.redaction-review li {
     <h2>No server sees your data</h2>
     <p>This page is a single static file with all logic embedded. <strong>It makes no network
     call to any server except the freqtrade API URL you enter below.</strong> There is no CDN,
-    no fonts, no analytics and no uploads: the report is generated in your browser
-    and saved straight to your disk. By default nothing is stored — closing the tab discards
-    everything, including your credentials. Only if you tick <em>Remember connection</em> are the
-    URL, username and password kept (unencrypted) in this browser's local storage, and only after
-    a successful connection; <em>Forget saved connection</em> deletes them again.</p>
+    no fonts, no analytics and no uploads, nothing stored: the report is generated in your browser
+    and saved straight to your disk. Closing the tab discards everything, including your
+    credentials. Your browser's own password manager may offer to save the login for convenience —
+    that storage belongs to the browser, not this page.</p>
     <p><strong>You can verify this:</strong> press <kbd>F12</kbd> to open your browser DevTools,
     switch to the <em>Network</em> tab, and reload this page. You will see zero requests until
     you click <em>Export report</em>, and afterwards only requests to your bot's address from
@@ -1514,10 +1514,10 @@ details.redaction-review li {
       <fieldset>
         <legend>Credentials</legend>
         <label>Username<span class="field-info" tabindex="0" role="note" aria-label="From your config.json: api_server.username" tooltip-top="From your config.json: api_server.username">i</span>
-          <input type="text" id="f-user" autocomplete="off" spellcheck="false">
+          <input type="text" id="f-user" autocomplete="username" spellcheck="false">
         </label>
         <label>Password<span class="field-info" tabindex="0" role="note" aria-label="From your config.json: api_server.password" tooltip-top="From your config.json: api_server.password">i</span>
-          <input type="password" id="f-pass">
+          <input type="password" id="f-pass" autocomplete="current-password">
         </label>
         <small>The same values as in your <code>api_server</code> config, sent as HTTP Basic auth on each request — never stored, never sent anywhere else.</small>
       </fieldset>
@@ -1534,15 +1534,6 @@ details.redaction-review li {
             <option value="year">Last year</option>
           </select>
         </label>
-      </fieldset>
-      <fieldset>
-        <legend>Remember connection</legend>
-        <label><input type="checkbox" id="f-remember">
-          Remember URL, username and password in this browser<span class="field-info" tabindex="0" role="note" aria-label="Tool option, stored only in this browser after a successful connection — never sent anywhere except your bot." tooltip-top="Tool option, stored only in this browser after a successful connection — never sent anywhere except your bot.">i</span></label>
-        <small>Saved only after a successful <em>Test connection</em> or <em>Export report</em>, as plain
-        unencrypted text in this browser's local storage on this site. Anyone with access to this browser
-        profile — or any other page on the same site — can read it. Uncheck to stop saving.</small>
-        <button type="button" id="btn-forget" secondary hidden>Forget saved connection</button>
       </fieldset>
       <button type="submit" id="btn-export">Export report</button>
       <button type="button" id="btn-test" secondary tooltip-top="Uses the URL and credentials above: one request checks reachability, CORS headers and authentication.">Test connection</button>
@@ -3047,105 +3038,73 @@ function readFormOptions() {
   };
 }
 
-/* ------------------------------------------------------- remembered connection
- * Opt-in persistence of the API URL + credentials, written only after a
- * successful Test connection or Export. Stored as plain unencrypted text in
- * localStorage: anyone (or any page on the same origin) with access to this
- * browser profile can read it — which is why it is off by default and has a
- * Forget button. Pure helpers take the storage object so they stay testable;
- * the DOM layer below passes window.localStorage. */
+/* ------------------------------------------------- browser password manager
+ * This page never stores credentials itself. Instead the form uses real
+ * username/password semantics (autocomplete attributes on a submit form) so
+ * Chrome's password manager can offer to save and fill them, and the
+ * Credential Management API explicitly stores the verified login after a
+ * successful Test connection / Export and silently refills it on the next
+ * visit. Everything here is best-effort: unsupported browsers simply get the
+ * plain form with no behavior change. */
 
-const SAVED_CONNECTION_KEY = "freqtrade-bot-report.connection.v1";
-
-function storageGet(storage, key) {
+function passwordCredentialCtor() {
   try {
-    return storage.getItem(key);
-  } catch (err) {
-    return null;
-  }
+    if (typeof window !== "undefined" && typeof window.PasswordCredential !== "undefined") {
+      return window.PasswordCredential;
+    }
+  } catch (err) {}
+  return null;
 }
 
-function storageSet(storage, key, value) {
+/* Build the credential to store from verified form values (pure, testable).
+ * The API URL rides along in the display name so saved entries stay
+ * recognizable when several bots are used. Null unless complete. */
+function credentialFields(opts) {
+  const id = (opts && typeof opts.username === "string") ? opts.username.trim() : "";
+  const password = (opts && typeof opts.password === "string") ? opts.password : "";
+  if (!id || !password) return null;
+  return {
+    id,
+    name: (opts && typeof opts.url === "string") ? opts.url : "",
+    password,
+  };
+}
+
+/* Hand the verified login to the browser's password manager (fire-and-forget,
+ * call only on success). Resolves false when unavailable or declined. */
+async function credentialStore(opts) {
+  const Ctor = passwordCredentialCtor();
   try {
-    storage.setItem(key, value);
+    if (!Ctor || typeof navigator === "undefined" || !navigator.credentials
+        || typeof navigator.credentials.store !== "function") return false;
+    const fields = credentialFields(opts);
+    if (!fields) return false;
+    await navigator.credentials.store(new Ctor(fields));
     return true;
   } catch (err) {
     return false;
   }
 }
 
-function storageDel(storage, key) {
+/* Silently refill a previously saved login, if exactly one is available
+ * (fire-and-forget at startup; never shows browser UI on its own). */
+async function credentialFill() {
   try {
-    storage.removeItem(key);
+    if (typeof navigator === "undefined" || !navigator.credentials
+        || typeof navigator.credentials.get !== "function") return false;
+    const cred = await navigator.credentials.get({ password: true, mediation: "silent" });
+    if (!cred) return false;
+    if (typeof cred.id === "string" && cred.id) document.getElementById("f-user").value = cred.id;
+    if (typeof cred.password === "string" && cred.password) {
+      document.getElementById("f-pass").value = cred.password;
+    }
+    if (typeof cred.name === "string" && /^https?:\/\//i.test(cred.name)) {
+      document.getElementById("f-url").value = cred.name;
+    }
     return true;
   } catch (err) {
     return false;
   }
-}
-
-function loadSavedConnection(storage) {
-  const raw = storageGet(storage, SAVED_CONNECTION_KEY);
-  if (!raw) return null;
-  try {
-    const data = JSON.parse(raw);
-    if (!data || typeof data !== "object" || Array.isArray(data)) return null;
-    return {
-      url: typeof data.url === "string" ? data.url : "",
-      username: typeof data.username === "string" ? data.username : "",
-      password: typeof data.password === "string" ? data.password : "",
-    };
-  } catch (err) {
-    return null;
-  }
-}
-
-function saveConnection(storage, conn) {
-  const safe = conn && typeof conn === "object" ? conn : {};
-  return storageSet(storage, SAVED_CONNECTION_KEY, JSON.stringify({
-    url: typeof safe.url === "string" ? safe.url : "",
-    username: typeof safe.username === "string" ? safe.username : "",
-    password: typeof safe.password === "string" ? safe.password : "",
-  }));
-}
-
-function browserStorage() {
-  try {
-    return window.localStorage;
-  } catch (err) {
-    return null;
-  }
-}
-
-function refreshForgetButton() {
-  const btn = document.getElementById("btn-forget");
-  const storage = browserStorage();
-  btn.hidden = !(storage && loadSavedConnection(storage));
-}
-
-/* Prefill the form from a previously saved connection, if any. */
-function prefillSavedConnection() {
-  const storage = browserStorage();
-  if (!storage) return;
-  const saved = loadSavedConnection(storage);
-  if (!saved) return;
-  if (saved.url) document.getElementById("f-url").value = saved.url;
-  if (saved.username) document.getElementById("f-user").value = saved.username;
-  if (saved.password) document.getElementById("f-pass").value = saved.password;
-  document.getElementById("f-remember").checked = true;
-  refreshForgetButton();
-}
-
-/* Persist the just-verified connection — call only on success. */
-function maybeRememberConnection(opts) {
-  if (!document.getElementById("f-remember").checked) return;
-  const storage = browserStorage();
-  if (!storage) return;
-  saveConnection(storage, {
-    url: opts.url,
-    username: opts.username || "",
-    password: opts.password || "",
-  });
-  refreshForgetButton();
 }
 
 /* A blocked request is ambiguous from inside the page: CORS misconfiguration,
@@ -3264,7 +3223,7 @@ async function onExport(form) {
       resultTitle.className = "text-success";
       renderSuccess(resultBody, report, filename, json, redactedPaths);
       renderShareImage(report);
-      maybeRememberConnection(opts);
+      credentialStore(opts);
     } catch (err) {
       hideShare();
       resultTitle.textContent = "Export failed";
@@ -3294,7 +3253,7 @@ async function onTestConnection(form) {
       resultBody.replaceChildren(
         el("p", { class: "text-success" }, [`freqtrade ${version.version || "unknown"} answered at ${opts.url} — CORS and credentials work. You can export the report now.`]),
       );
-      maybeRememberConnection(opts);
+      credentialStore(opts);
     } catch (err) {
       resultTitle.textContent = "Connection failed";
       resultTitle.className = "text-danger";
@@ -3343,14 +3302,7 @@ if (typeof document !== "undefined") {
     });
     const form = document.getElementById("connect");
     wireShareControls();
-    prefillSavedConnection();
-    refreshForgetButton();
-    document.getElementById("btn-forget").addEventListener("click", () => {
-      const storage = browserStorage();
-      if (storage) storageDel(storage, SAVED_CONNECTION_KEY);
-      document.getElementById("f-remember").checked = false;
-      refreshForgetButton();
-    });
+    credentialFill();
     form.addEventListener("submit", (event) => {
       event.preventDefault();
       onExport(form);
