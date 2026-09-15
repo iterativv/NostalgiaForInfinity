@@ -1367,15 +1367,20 @@ details.redaction-review li {
   font-weight: 600;
   text-align: left;
   padding: 4px 6px;
+  border-bottom: 1px solid #232a3d;
   white-space: nowrap;
 }
 #share-card td {
   padding: 5px 6px;
+  border-bottom: 1px solid #1d2231;
   color: #dfe3f0;
   vertical-align: middle;
   white-space: nowrap;
 }
 #share-card tr {
+  border-bottom: none;
+}
+#share-card tr:last-child td {
   border-bottom: none;
 }
 #share-card tr:hover {
@@ -2483,6 +2488,13 @@ function buildShareData(report) {
   const meta = (safe.report_metadata && typeof safe.report_metadata === "object") ? safe.report_metadata : {};
   const profit = (safe.profit_summary && typeof safe.profit_summary === "object") ? safe.profit_summary : {};
   const counts = (safe.trade_counts && typeof safe.trade_counts === "object") ? safe.trade_counts : {};
+  /* Strategy identity comes from /show_config (kept by redaction: neither the
+   * name nor the version is sensitive). Displayed next to the freqtrade
+   * version so the image says what actually produced it. */
+  const config = (safe.config && typeof safe.config === "object") ? safe.config : {};
+  const strategy = typeof config.strategy === "string" && config.strategy ? config.strategy : null;
+  const strategyVersion = (typeof config.strategy_version === "string" || typeof config.strategy_version === "number")
+    && String(config.strategy_version) ? String(config.strategy_version) : null;
 
   const open = (Array.isArray(safe.open_trades) ? safe.open_trades : [])
     .filter((t) => t !== null && typeof t === "object" && !Array.isArray(t))
@@ -2574,6 +2586,7 @@ function buildShareData(report) {
 
   return {
     version: typeof meta.freqtrade_version === "string" ? meta.freqtrade_version : "unknown",
+    strategy, strategyVersion,
     generatedAt: typeof meta.generated_at_utc === "string" ? meta.generated_at_utc : "",
     window: typeof meta.closed_trades_window === "string" ? meta.closed_trades_window : "all time",
     redacted: meta.redacted !== false,
@@ -2811,7 +2824,9 @@ function scEmpty(text) {
 
 function renderShareCard(data) {
   const card = document.getElementById("share-card");
-  const metaLine = `freqtrade ${data.version} · ${data.generatedAt.slice(0, 16).replace("T", " ")} · ${data.window}`;
+  const strat = data.strategy
+    ? ` · ${data.strategy}${data.strategyVersion ? ` ${data.strategyVersion}` : ""}` : "";
+  const metaLine = `freqtrade ${data.version}${strat} · ${data.generatedAt.slice(0, 16).replace("T", " ")} · ${data.window}`;
 
   const top = el("div", { class: "sc-top" });
   const brand = el("div", { class: "sc-brand" }, ["Bot performance"]);
