@@ -149,7 +149,7 @@ money values, so the account size cannot be derived from the image:
 | Absolute profit (`-19.37% (-51.882)`) | % only: closed profit vs the start (`profit_closed_ratio`), open-trade impact vs the current balance |
 | Amount / stake amount | stake as % of the account at entry |
 | Profit over time (absolute axis) | relative profit % + trade count |
-| Cumulative profit (absolute) | cumulative account impact %, compounded, with a dotted tip for the floating open impact (red = loss) |
+| Cumulative profit (absolute) | cumulative closed profit vs the start (per-trade impact rescaled by the balance history — same shape, same endpoint), dotted tip lands on the total return including open trades |
 | Wallet history (currency values) | indexed equity (start = 100) from realized history, final point pinned to the total return so it includes open trades |
 
 A relative-only audit runs before every render: it scans the image model for
