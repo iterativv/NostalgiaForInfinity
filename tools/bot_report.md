@@ -145,12 +145,12 @@ money values, so the account size cannot be derived from the image:
 
 | freqUI shows | image shows instead |
 |---|---|
-| Balance | equity change vs the start, in % (compounded from `rel_profit`) |
-| Absolute profit (`-19.37% (-51.882)`) | % only (per-trade return + account impact %) |
+| Balance | total return vs the start, in % (`profit_all_ratio` — closed + open trades, exactly as `/profit` reports) |
+| Absolute profit (`-19.37% (-51.882)`) | % only: closed profit vs the start (`profit_closed_ratio`), open-trade impact vs the current balance |
 | Amount / stake amount | stake as % of the account at entry |
 | Profit over time (absolute axis) | relative profit % + trade count |
 | Cumulative profit (absolute) | cumulative account impact %, compounded |
-| Wallet history (currency values) | indexed equity (start = 100) |
+| Wallet history (currency values) | indexed equity (start = 100) from realized history, final point pinned to the total return so it includes open trades |
 
 A relative-only audit runs before every render: it scans the image model for
 forbidden absolute-money keys and the rendered text for digit-adjacent

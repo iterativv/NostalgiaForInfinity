@@ -1361,18 +1361,13 @@ details.redaction-review li {
   font-weight: 600;
   text-align: left;
   padding: 4px 6px;
-  border-bottom: 1px solid #2b3145;
   white-space: nowrap;
 }
 #share-card td {
   padding: 5px 6px;
-  border-bottom: 1px solid #232840;
   color: #dfe3f0;
   vertical-align: middle;
   white-space: nowrap;
-}
-#share-card tr:last-child td {
-  border-bottom: none;
 }
 #share-card tr:hover {
   background: transparent;
@@ -1486,7 +1481,7 @@ details.redaction-review li {
 }
 #share-card .sc-wm-overlay span {
   transform: rotate(-24deg);
-  font-size: 72px;
+  font-size: 60px;
   font-weight: 800;
   letter-spacing: 0.04em;
   white-space: nowrap;
@@ -1672,19 +1667,19 @@ details.redaction-review li {
     share as a PNG/SVG image. Every absolute-money field is replaced by a scale-invariant relative
     value, so the account size cannot be derived from the image:</p>
     <ul>
-      <li><strong>Balance</strong> column → <strong>equity change vs the start</strong> in %
-        (compounded from per-period relative profit — no balance is ever read for the image).</li>
+      <li><strong>Balance</strong> column → <strong>total return vs the start</strong> in %
+        (<code>profit_all_ratio</code>: closed + open trades, exactly as <code>/profit</code> reports).</li>
       <li><strong>Absolute profit</strong> (e.g. <code>-19.37% (-51.882)</code>) → <strong>% only</strong>:
-        per-trade return plus its impact on the account in %.</li>
+        closed profit vs the start, open-trade impact vs the current balance.</li>
       <li><strong>Amount / stake amount</strong> columns → <strong>stake as % of the account</strong>
         at entry time.</li>
       <li><strong>Profit over time</strong> → <strong>relative profit %</strong> per day/week/month plus
         trade count (no absolute axis).</li>
       <li><strong>Cumulative profit</strong> → <strong>cumulative account impact %</strong>, compounded
         trade by trade.</li>
-      <li><strong>Wallet history</strong> → <strong>indexed equity (start = 100)</strong>: identical shape,
-        no currency values.</li>
-      <li><strong>Watermark</strong> → a diagonal host overlay plus the page URL in the image footer
+      <li><strong>Wallet history</strong> → <strong>indexed equity (start = 100)</strong> from realized
+        history, with the final point pinned to the total return so open trades are included.</li>
+      <li><strong>Watermark</strong> → a diagonal full-URL overlay plus the page URL in the image footer
         as provenance (switch both off with the <em>Watermark</em> checkbox). Pages opened from disk
         show a neutral label instead, so no local filesystem path leaks into the shared image.</li>
     </ul>
@@ -2452,11 +2447,15 @@ function buildShareData(report) {
     return n > 0 ? sum : null;
   };
   const openAcct = sumAcct(open);
-  let closedAcct = sumAcct(closed);
-  let closedBasis = closedAcct !== null ? "account" : null;
+  /* freqtrade headline first: profit_closed_ratio is the total closed profit
+   * vs the starting capital — exactly what /profit and freqUI report. Only
+   * when the summary is missing do we fall back to summing per-trade ratios
+   * against the balance at each close (a different, explicitly labeled basis). */
+  let closedAcct = numOrNull(profit.profit_closed_ratio);
+  let closedBasis = closedAcct !== null ? "start" : null;
   if (closedAcct === null) {
-    const fallback = numOrNull(profit.profit_closed_ratio);
-    if (fallback !== null) { closedAcct = fallback; closedBasis = "trade"; }
+    closedAcct = sumAcct(closed);
+    closedBasis = closedAcct !== null ? "account" : null;
   }
 
   let wins = (typeof profit.winning_trades === "number" && Number.isFinite(profit.winning_trades))
@@ -2477,7 +2476,21 @@ function buildShareData(report) {
   const monthly = periodPoints(safe, "monthly_performance");
   const equitySource = daily.length > 0 ? daily : weekly.length > 0 ? weekly : monthly;
   const equity = equityFromRel(equitySource);
-  const growth = equity.length > 0 ? equity[equity.length - 1].growth : null;
+  /* freqtrade headline first: profit_all_ratio is (closed + currently open)
+   * profit vs the starting capital — the actual total return, including the
+   * unrealized PnL that the per-period realized series cannot see. The
+   * compounded daily series stays as the realized-only fallback and as the
+   * history behind the indexed curve, whose final point is then pinned to the
+   * headline so curve and Equity Δ agree. */
+  let growth = numOrNull(profit.profit_all_ratio);
+  let growthBasis = growth !== null ? "all" : null;
+  if (growth === null && equity.length > 0) {
+    growth = equity[equity.length - 1].growth;
+    growthBasis = "realized";
+  }
+  if (growthBasis === "all" && equity.length > 0) {
+    equity.push({ date: "now", growth, indexed: (growth + 1) * 100 });
+  }
 
   const closedTotal = (safe.closed_trades && typeof safe.closed_trades.trades_count === "number")
     ? safe.closed_trades.trades_count : closed.length;
@@ -2491,7 +2504,7 @@ function buildShareData(report) {
     closedCount: closedTotal,
     wins, losses,
     openAcct, closedAcct, closedBasis,
-    growth,
+    growth, growthBasis,
     deployed: numOrNull(counts.total_stake_to_account_balance_ratio),
     daily, weekly, monthly,
     equity,
@@ -2665,13 +2678,6 @@ function shareWatermarkText(loc) {
   return "Freqtrade Bot Report";
 }
 
-/* Short watermark for the diagonal overlay: host only (or neutral label). */
-function shareWatermarkShort(loc) {
-  const l = loc || (typeof window !== "undefined" ? window.location : null);
-  if (l && /^https?:$/.test(String(l.protocol || "")) && l.host) return String(l.host);
-  return "Freqtrade Bot Report";
-}
-
 /* ------------------------------------------------------- share DOM layer */
 
 function pillEl(ratio) {
@@ -2731,8 +2737,11 @@ function renderShareCard(data) {
     tdEl([pillEl(data.openAcct), data.openAcct !== null
       ? el("span", { class: "sub" }, ["acct impact"]) : "—"], "num"),
     tdEl([pillEl(data.closedAcct),
-      el("span", { class: "sub" }, [data.closedBasis === "trade" ? "trade basis" : "acct impact"])], "num"),
-    tdEl([pillEl(data.growth), el("span", { class: "sub" }, ["vs start"])], "num"),
+      el("span", { class: "sub" }, [data.closedBasis === "start" ? "vs start"
+        : data.closedBasis === "account" ? "acct impact" : "—"])], "num"),
+    tdEl([pillEl(data.growth),
+      el("span", { class: "sub" }, [data.growthBasis === "all" ? "vs start, incl. open"
+        : data.growthBasis === "realized" ? "realized" : "—"])], "num"),
     tdEl(`${data.wins} / ${data.losses}`, "num", "won / lost"),
   ]);
   compTable.append(el("tbody", {}, [compRow]));
@@ -2816,19 +2825,26 @@ function renderShareCard(data) {
   const eqBody = eqSeries.length > 0
     ? el("div", { html: curveChartSvg(eqSeries, "#3b82f6", 100, "", true) })
     : scEmpty("No period history to index.");
+  const eqNote = el("div", { class: "sc-note" }, [data.growthBasis === "all"
+    ? "Realized history; final point includes open trades."
+    : "Realized history (open trades excluded)."]);
+
+  const closedTitle = data.closedAsc.length > shown.length
+    ? `Closed Trades (recent ${shown.length} of ${data.closedAsc.length} · ${data.window})`
+    : `Closed Trades (${data.closedAsc.length} · ${data.window})`;
 
   const left = el("div", { class: "sc-col" });
   left.append(
     scPanel("Bot comparison", [compTable, compNote]),
     scPanel("Open Trades", [data.open.length > 0 ? openTable : scEmpty("No open trades.")]),
-    scPanel(`Closed Trades (${data.window})`, [shown.length > 0 ? closedTable : scEmpty(closedNoteText),
+    scPanel(closedTitle, [shown.length > 0 ? closedTable : scEmpty(closedNoteText),
       shown.length > 0 && data.closedAsc.length > shown.length ? el("div", { class: "sc-note" }, [closedNoteText]) : ""]),
   );
   const right = el("div", { class: "sc-col" });
   right.append(
     scPanel(`Profit over time (${SHARE_TS_LABEL[shareState.timescale]})`, [comboLegend, comboBody]),
     scPanel("Cumulative Profit", [cumBody, cumNote]),
-    scPanel("Indexed Equity (start = 100)", [eqBody]),
+    scPanel("Indexed Equity (start = 100)", [eqBody, eqNote]),
   );
   if (!data.redacted) {
     right.append(el("div", { class: "sc-note" }, ["Source JSON is unredacted — the image still shows relative values only."]));
@@ -2838,7 +2854,7 @@ function renderShareCard(data) {
   card.replaceChildren(top, grid);
   if (shareState.watermark) {
     const overlay = el("div", { class: "sc-wm-overlay", "aria-hidden": "true" });
-    overlay.append(el("span", {}, [shareWatermarkShort()]));
+    overlay.append(el("span", {}, [shareWatermarkText()]));
     card.append(overlay);
     const foot = el("div", { class: "sc-foot" });
     foot.append(
