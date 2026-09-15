@@ -26394,8 +26394,6 @@ class NostalgiaForInfinityX8(IStrategy):
     last_rsi_14 = last_candle["RSI_14"]
     last_stochrsi_k = last_candle["STOCHRSIk_14_14_3_3"]
     last_aroonu_14 = last_candle["AROONU_14"]
-    last_willr_480 = last_candle["WILLR_480"]
-    last_aroonu_14_4h = last_candle["AROONU_14_4h"]
     last_sma_200_dec_1h = last_candle["SMA_200_dec_12_1h"]
     last_sma_200_dec_4h = last_candle["SMA_200_dec_6_4h"]
     last_rsi_3 = last_candle["RSI_3"]
@@ -40812,6 +40810,9 @@ class NostalgiaForInfinityX8(IStrategy):
     last_aroonu_14 = last_candle["AROONU_14"]
     last_sma_200_inc_1h = last_candle["SMA_200_inc_12_1h"]
     last_sma_200_inc_4h = last_candle["SMA_200_inc_6_4h"]
+    last_rsi_3 = last_candle["RSI_3"]
+    last_rsi_3_1h = last_candle["RSI_3_1h"]
+    last_rsi_3_4h = last_candle["RSI_3_4h"]
 
     if 0.01 > current_profit >= 0.001:
       if (
@@ -40823,6 +40824,15 @@ class NostalgiaForInfinityX8(IStrategy):
         and (last_aroonu_14 < 5.0)
       ):
         return True, f"exit_{mode_name}_d_0_1"
+      if (
+        (last_rsi_3 < 2.0)
+        and (last_stochrsi_k < 2.0)
+        and (last_rsi_3_4h > 70.0)
+        and (last_rsi_3_1h > 80.0)
+        and last_sma_200_inc
+        and last_sma_200_inc_1h
+      ):
+        return True, f"exit_{mode_name}_d_0_2"
     elif 0.02 > current_profit >= 0.01:
       if (
         last_sma_200_inc
@@ -40833,6 +40843,15 @@ class NostalgiaForInfinityX8(IStrategy):
         and (last_aroonu_14 < 5.0)
       ):
         return True, f"exit_{mode_name}_d_1_1"
+      if (
+        (last_rsi_3 < 2.0)
+        and (last_stochrsi_k < 2.0)
+        and (last_rsi_3_4h > 70.0)
+        and (last_rsi_3_1h > 80.0)
+        and last_sma_200_inc
+        and last_sma_200_inc_1h
+      ):
+        return True, f"exit_{mode_name}_d_1_2"
     elif 0.03 > current_profit >= 0.02:
       if (
         last_sma_200_inc
@@ -40843,36 +40862,125 @@ class NostalgiaForInfinityX8(IStrategy):
         and (last_aroonu_14 < 5.0)
       ):
         return True, f"exit_{mode_name}_d_2_1"
+      if (
+        (last_rsi_3 < 2.0)
+        and (last_stochrsi_k < 2.0)
+        and (last_rsi_3_4h > 70.0)
+        and (last_rsi_3_1h > 80.0)
+        and last_sma_200_inc
+        and last_sma_200_inc_1h
+      ):
+        return True, f"exit_{mode_name}_d_2_2"
     elif 0.04 > current_profit >= 0.03:
       if last_sma_200_inc and (last_rsi_14 < 24.0) and (last_stochrsi_k < 5.0) and (last_aroonu_14 < 10.0):
         return True, f"exit_{mode_name}_d_3_1"
+      if (
+        (last_rsi_3 < 5.0)
+        and (last_stochrsi_k < 10.0)
+        and (last_rsi_3_4h > 70.0)
+        and last_sma_200_inc
+        and last_sma_200_inc_1h
+      ):
+        return True, f"exit_{mode_name}_d_3_2"
     elif 0.05 > current_profit >= 0.04:
       if last_sma_200_inc and (last_rsi_14 < 26.0) and (last_stochrsi_k < 8.0) and (last_aroonu_14 < 10.0):
         return True, f"exit_{mode_name}_d_4_1"
+      if (
+        (last_rsi_3 < 5.0)
+        and (last_stochrsi_k < 10.0)
+        and (last_rsi_3_4h > 70.0)
+        and last_sma_200_inc
+        and last_sma_200_inc_1h
+      ):
+        return True, f"exit_{mode_name}_d_4_2"
     elif 0.06 > current_profit >= 0.05:
-      if last_sma_200_inc and (last_stochrsi_k < 10.0) and (last_aroonu_14 < 10.0):
+      if last_sma_200_inc and (last_stochrsi_k < 5.0) and (last_aroonu_14 < 10.0):
         return True, f"exit_{mode_name}_d_5_1"
+      if (
+        (last_rsi_3 < 5.0)
+        and (last_stochrsi_k < 10.0)
+        and (last_rsi_3_4h > 70.0)
+        and last_sma_200_inc
+        and last_sma_200_inc_1h
+      ):
+        return True, f"exit_{mode_name}_d_5_2"
     elif 0.07 > current_profit >= 0.06:
-      if last_sma_200_inc or ((last_stochrsi_k < 10.0) and (last_aroonu_14 < 10.0)):
+      if last_sma_200_inc or ((last_stochrsi_k < 5.0) and (last_aroonu_14 < 10.0)):
         return True, f"exit_{mode_name}_d_6_1"
+      if (
+        (last_rsi_3 < 5.0)
+        and (last_stochrsi_k < 10.0)
+        and (last_rsi_3_4h > 70.0)
+        and last_sma_200_inc
+        and last_sma_200_inc_1h
+      ):
+        return True, f"exit_{mode_name}_d_6_2"
     elif 0.08 > current_profit >= 0.07:
-      if last_sma_200_inc or ((last_stochrsi_k < 10.0) and (last_aroonu_14 < 10.0)):
+      if last_sma_200_inc or ((last_stochrsi_k < 5.0) and (last_aroonu_14 < 10.0)):
         return True, f"exit_{mode_name}_d_7_1"
+      if (
+        (last_rsi_3 < 5.0)
+        and (last_stochrsi_k < 10.0)
+        and (last_rsi_3_4h > 70.0)
+        and last_sma_200_inc
+        and last_sma_200_inc_1h
+      ):
+        return True, f"exit_{mode_name}_d_7_2"
     elif 0.09 > current_profit >= 0.08:
-      if last_sma_200_inc or ((last_stochrsi_k < 10.0) and (last_aroonu_14 < 10.0)):
+      if last_sma_200_inc or ((last_stochrsi_k < 5.0) and (last_aroonu_14 < 10.0)):
         return True, f"exit_{mode_name}_d_8_1"
+      if (
+        (last_rsi_3 < 5.0)
+        and (last_stochrsi_k < 10.0)
+        and (last_rsi_3_4h > 70.0)
+        and last_sma_200_inc
+        and last_sma_200_inc_1h
+      ):
+        return True, f"exit_{mode_name}_d_8_2"
     elif 0.1 > current_profit >= 0.09:
-      if last_sma_200_inc or ((last_stochrsi_k < 10.0) and (last_aroonu_14 < 10.0)):
+      if last_sma_200_inc or ((last_stochrsi_k < 5.0) and (last_aroonu_14 < 10.0)):
         return True, f"exit_{mode_name}_d_9_1"
+      if (
+        (last_rsi_3 < 5.0)
+        and (last_stochrsi_k < 10.0)
+        and (last_rsi_3_4h > 70.0)
+        and last_sma_200_inc
+        and last_sma_200_inc_1h
+      ):
+        return True, f"exit_{mode_name}_d_9_2"
     elif 0.12 > current_profit >= 0.1:
-      if last_sma_200_inc or ((last_stochrsi_k < 10.0) and (last_aroonu_14 < 10.0)):
+      if last_sma_200_inc or ((last_stochrsi_k < 5.0) and (last_aroonu_14 < 10.0)):
         return True, f"exit_{mode_name}_d_10_1"
+      if (
+        (last_rsi_3 < 5.0)
+        and (last_stochrsi_k < 10.0)
+        and (last_rsi_3_4h > 70.0)
+        and last_sma_200_inc
+        and last_sma_200_inc_1h
+      ):
+        return True, f"exit_{mode_name}_d_10_2"
     elif 0.2 > current_profit >= 0.12:
-      if last_sma_200_inc or ((last_stochrsi_k < 10.0) and (last_aroonu_14 < 10.0)):
+      if last_sma_200_inc or ((last_stochrsi_k < 5.0) and (last_aroonu_14 < 10.0)):
         return True, f"exit_{mode_name}_d_11_1"
+      if (
+        (last_rsi_3 < 5.0)
+        and (last_stochrsi_k < 10.0)
+        and (last_rsi_3_4h > 70.0)
+        and last_sma_200_inc
+        and last_sma_200_inc_1h
+      ):
+        return True, f"exit_{mode_name}_d_11_2"
     elif current_profit >= 0.2:
-      if last_sma_200_inc or ((last_stochrsi_k < 10.0) and (last_aroonu_14 < 10.0)):
+      if last_sma_200_inc or ((last_stochrsi_k < 5.0) and (last_aroonu_14 < 10.0)):
         return True, f"exit_{mode_name}_d_12_1"
+      if (
+        (last_rsi_3 < 5.0)
+        and (last_stochrsi_k < 10.0)
+        and (last_rsi_3_4h > 70.0)
+        and last_sma_200_inc
+        and last_sma_200_inc_1h
+      ):
+        return True, f"exit_{mode_name}_d_12_2"
 
     #  Here ends exit signal conditions for short_exit_dec
 
