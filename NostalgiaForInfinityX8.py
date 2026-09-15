@@ -26394,8 +26394,6 @@ class NostalgiaForInfinityX8(IStrategy):
     last_rsi_14 = last_candle["RSI_14"]
     last_stochrsi_k = last_candle["STOCHRSIk_14_14_3_3"]
     last_aroonu_14 = last_candle["AROONU_14"]
-    last_willr_480 = last_candle["WILLR_480"]
-    last_aroonu_14_4h = last_candle["AROONU_14_4h"]
     last_sma_200_dec_1h = last_candle["SMA_200_dec_12_1h"]
     last_sma_200_dec_4h = last_candle["SMA_200_dec_6_4h"]
     last_rsi_3 = last_candle["RSI_3"]
