@@ -26482,7 +26482,7 @@ class NostalgiaForInfinityX8(IStrategy):
       ):
         return True, f"exit_{mode_name}_d_4_2"
     elif 0.06 > current_profit >= 0.05:
-      if last_sma_200_dec and (last_stochrsi_k > 90.0) and (last_aroonu_14 > 90.0):
+      if last_sma_200_dec and (last_stochrsi_k > 95.0) and (last_aroonu_14 > 90.0):
         return True, f"exit_{mode_name}_d_5_1"
       if (
         (last_rsi_3 > 95.0)
@@ -26493,7 +26493,7 @@ class NostalgiaForInfinityX8(IStrategy):
       ):
         return True, f"exit_{mode_name}_d_5_2"
     elif 0.07 > current_profit >= 0.06:
-      if last_sma_200_dec or ((last_stochrsi_k > 90.0) and (last_aroonu_14 > 90.0)):
+      if last_sma_200_dec or ((last_stochrsi_k > 95.0) and (last_aroonu_14 > 90.0)):
         return True, f"exit_{mode_name}_d_6_1"
       if (
         (last_rsi_3 > 95.0)
@@ -26504,7 +26504,7 @@ class NostalgiaForInfinityX8(IStrategy):
       ):
         return True, f"exit_{mode_name}_d_6_2"
     elif 0.08 > current_profit >= 0.07:
-      if last_sma_200_dec or ((last_stochrsi_k > 90.0) and (last_aroonu_14 > 90.0)):
+      if last_sma_200_dec or ((last_stochrsi_k > 95.0) and (last_aroonu_14 > 90.0)):
         return True, f"exit_{mode_name}_d_7_1"
       if (
         (last_rsi_3 > 95.0)
@@ -26515,7 +26515,7 @@ class NostalgiaForInfinityX8(IStrategy):
       ):
         return True, f"exit_{mode_name}_d_7_2"
     elif 0.09 > current_profit >= 0.08:
-      if last_sma_200_dec or ((last_stochrsi_k > 90.0) and (last_aroonu_14 > 90.0)):
+      if last_sma_200_dec or ((last_stochrsi_k > 95.0) and (last_aroonu_14 > 90.0)):
         return True, f"exit_{mode_name}_d_8_1"
       if (
         (last_rsi_3 > 95.0)
@@ -26526,7 +26526,7 @@ class NostalgiaForInfinityX8(IStrategy):
       ):
         return True, f"exit_{mode_name}_d_8_2"
     elif 0.1 > current_profit >= 0.09:
-      if last_sma_200_dec or ((last_stochrsi_k > 90.0) and (last_aroonu_14 > 90.0)):
+      if last_sma_200_dec or ((last_stochrsi_k > 95.0) and (last_aroonu_14 > 90.0)):
         return True, f"exit_{mode_name}_d_9_1"
       if (
         (last_rsi_3 > 95.0)
@@ -26537,7 +26537,7 @@ class NostalgiaForInfinityX8(IStrategy):
       ):
         return True, f"exit_{mode_name}_d_9_2"
     elif 0.12 > current_profit >= 0.1:
-      if last_sma_200_dec or ((last_stochrsi_k > 90.0) and (last_aroonu_14 > 90.0)):
+      if last_sma_200_dec or ((last_stochrsi_k > 95.0) and (last_aroonu_14 > 90.0)):
         return True, f"exit_{mode_name}_d_10_1"
       if (
         (last_rsi_3 > 95.0)
@@ -26548,7 +26548,7 @@ class NostalgiaForInfinityX8(IStrategy):
       ):
         return True, f"exit_{mode_name}_d_10_2"
     elif 0.2 > current_profit >= 0.12:
-      if last_sma_200_dec or ((last_stochrsi_k > 90.0) and (last_aroonu_14 > 90.0)):
+      if last_sma_200_dec or ((last_stochrsi_k > 95.0) and (last_aroonu_14 > 90.0)):
         return True, f"exit_{mode_name}_d_11_1"
       if (
         (last_rsi_3 > 95.0)
@@ -26559,7 +26559,7 @@ class NostalgiaForInfinityX8(IStrategy):
       ):
         return True, f"exit_{mode_name}_d_11_2"
     elif current_profit >= 0.2:
-      if last_sma_200_dec or ((last_stochrsi_k > 90.0) and (last_aroonu_14 > 90.0)):
+      if last_sma_200_dec or ((last_stochrsi_k > 95.0) and (last_aroonu_14 > 90.0)):
         return True, f"exit_{mode_name}_d_12_1"
       if (
         (last_rsi_3 > 95.0)
