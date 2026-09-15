@@ -122,11 +122,11 @@ a timescale covering the whole bot history).
 | field | appears in | formula | purpose |
 |---|---|---|---|
 | `stake_amount_to_account_balance_ratio` | `open_trades[]`, `closed_trades.trades[]` | `stake_amount / account balance at the trade's open date` | position sizing relative to the account at entry time |
-| `profit_to_account_balance_ratio` | `closed_trades.trades[]`, `open_trades[]` | `close_profit_abs / balance at close date`, or `profit_abs / current balance` | per-trade impact on the account |
+| `profit_to_account_balance_ratio` | `closed_trades.trades[]`, `open_trades[]` | `close_profit_abs / balance at close date`, or `total_profit_abs` (falling back to `profit_abs`) `/ current balance` for open trades | per-trade impact on the account (open uses the total — realized grind exits + unrealized — matching `/profit profit_all`, since `profit_abs` alone understated open loss by ~60% on a futures grind bot) |
 | `funding_fees_to_stake_amount_ratio` | `open_trades[]`, `closed_trades.trades[]` | `funding_fees / stake_amount` | accumulated funding cost drag of a position |
 | `funding_fee_to_order_cost_ratio` | `trades[].orders[]` | `funding_fee / order cost (notional at fill)` | effective funding rate paid on that single fill |
 | `order_filled_share_of_trade_side` | `trades[].orders[]` | `order filled amount / total filled amount of the trade's orders on the same side (entries or exits)` | entry/exit (DCA / safety order) distribution of a trade |
-| `total_stake_to_account_balance_ratio` | `trade_counts` | `total_stake / current balance` | share of the account currently deployed in open positions |
+| `total_stake_to_account_balance_ratio` | `trade_counts` | sum of open `stake_amount` (collateral) `/ current balance` (falls back to `total_stake` only when open detail is missing) | share of the account currently deployed in open positions (`/count total_stake` is open notional `open_rate*amount` and exceeds collateral by the leverage factor on futures) |
 | `trading_volume_to_account_balance_ratio` | `profit_summary` | `trading_volume / current balance` | turnover intensity over the bot's lifetime |
 
 Closed trades are exported in full: `/trades` is paginated with `offset` until
@@ -146,11 +146,11 @@ money values, so the account size cannot be derived from the image:
 | freqUI shows | image shows instead |
 |---|---|
 | Balance | total return vs the start, in % (`profit_all_ratio` — closed + open trades, exactly as `/profit` reports) |
-| Absolute profit (`-19.37% (-51.882)`) | % only: closed profit vs the start (`profit_closed_ratio`), open-trade impact vs the current balance |
-| Amount / stake amount | stake as % of the account at entry |
+| Absolute profit (`-19.37% (-51.882)`) | % only: closed profit vs the start (`profit_closed_ratio`), open-trade impact (total incl. realized) vs the current balance |
+| Amount / stake amount | stake as % of the account at entry; Currently deployed is open collateral vs the current balance |
 | Profit over time (absolute axis) | relative profit % + trade count |
-| Cumulative profit (absolute) | cumulative closed profit vs the start (per-trade impact rescaled by the balance history — same shape, same endpoint), dotted tip lands on the total return including open trades |
-| Wallet history (currency values) | indexed equity (start = 100) from realized history, final point pinned to the total return so it includes open trades |
+| Cumulative profit (absolute) | cumulative closed profit vs the start (per-trade impact rescaled by the balance history — same shape, endpoint within rounding), dotted tip lands on the total return including open trades; windowed when a closed-trades window is active, summed fallback (labeled) without daily coverage |
+| Wallet history (currency values) | indexed equity (start = 100) from realized history, dotted tip to the total return so it includes open trades |
 
 A relative-only audit runs before every render: it scans the image model for
 forbidden absolute-money keys and the rendered text for digit-adjacent
