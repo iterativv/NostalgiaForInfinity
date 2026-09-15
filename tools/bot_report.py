@@ -348,6 +348,8 @@ def _balance_lookup(daily_rows):
   """Build a day -> starting-balance lookup from /daily rows (None if unavailable)."""
   mapping = {}
   for row in daily_rows or []:
+    if not isinstance(row, dict):
+      continue
     day, balance = row.get("date"), row.get("starting_balance")
     if day and isinstance(balance, (int, float)):
       mapping[str(day)[:10]] = balance
@@ -385,9 +387,20 @@ def add_derived_fields(raw: dict) -> None:
   lookup = _balance_lookup((raw.get("daily_performance") or {}).get("data"))
   balance_now = lookup(datetime.now(timezone.utc)) if lookup else None
 
+  # Collateral share currently deployed: sum of open-trade stake (collateral),
+  # not /count total_stake which is open notional (open_rate*amount) and exceeds
+  # collateral by the leverage factor on futures (e.g. 281% vs 94% here).
+  open_list = [t for t in (raw.get("open_trades") or []) if isinstance(t, dict)]
   trade_counts = raw.get("trade_counts")
   if isinstance(trade_counts, dict):
-    trade_counts["total_stake_to_account_balance_ratio"] = _safe_div(trade_counts.get("total_stake"), balance_now)
+    collateral = 0.0
+    for t in open_list:
+      stake = t.get("stake_amount")
+      if isinstance(stake, (int, float)) and not isinstance(stake, bool):
+        collateral += stake
+    # Fall back to total_stake (notional) only when no open-trade detail is available.
+    deployed_base = collateral if collateral > 0 else trade_counts.get("total_stake")
+    trade_counts["total_stake_to_account_balance_ratio"] = _safe_div(deployed_base, balance_now)
 
   profit_summary = raw.get("profit_summary")
   if isinstance(profit_summary, dict):
@@ -404,9 +417,17 @@ def add_derived_fields(raw: dict) -> None:
     balance_at_open = lookup(trade.get("open_date")) if lookup else None
     trade["stake_amount_to_account_balance_ratio"] = _safe_div(stake, balance_at_open)
     if trade.get("close_date"):
-      abs_profit, balance_at_close = trade.get("close_profit_abs"), lookup(trade["close_date"])
+      abs_profit = trade.get("close_profit_abs")
+      balance_at_close = lookup(trade["close_date"]) if lookup else None
     else:
-      abs_profit, balance_at_close = trade.get("profit_abs"), balance_now
+      # Open trades: freqtrade's /profit headline (profit_all) uses total_profit
+      # (realized grind exits + unrealized), while profit_abs is unrealized only.
+      # On this futures bot unrealized summed to -21.2 vs true open -52.7, so the
+      # unrealized-only value understates the open impact by ~60%. Prefer the total.
+      abs_profit = trade.get("total_profit_abs")
+      if not isinstance(abs_profit, (int, float)) or isinstance(abs_profit, bool):
+        abs_profit = trade.get("profit_abs")
+      balance_at_close = balance_now
     trade["profit_to_account_balance_ratio"] = _safe_div(abs_profit, balance_at_close)
     trade["funding_fees_to_stake_amount_ratio"] = _safe_div(trade.get("funding_fees"), stake)
 
