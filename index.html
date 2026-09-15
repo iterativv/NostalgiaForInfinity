@@ -1343,12 +1343,19 @@ details.redaction-review li {
   min-width: 0;
 }
 #share-card .sc-panel h4 {
-  margin: 0 0 8px;
+  margin: 0;
   font-size: 12.5px;
   font-weight: 600;
   color: #c9cfe3;
   text-align: center;
   letter-spacing: 0.02em;
+}
+#share-card .sc-desc {
+  margin: 2px 0 8px;
+  font-size: 10.5px;
+  font-weight: 400;
+  color: #8b93ad;
+  text-align: center;
 }
 #share-card table {
   width: 100%;
@@ -2714,9 +2721,10 @@ function tdEl(content, cls, title) {
   return el("td", attrs, Array.isArray(content) ? content : [content]);
 }
 
-function scPanel(title, children) {
+function scPanel(title, desc, children) {
   const panel = el("div", { class: "sc-panel" });
   panel.append(el("h4", {}, [title]));
+  if (desc) panel.append(el("div", { class: "sc-desc" }, [desc]));
   for (const child of children) panel.append(child);
   return panel;
 }
@@ -2851,16 +2859,20 @@ function renderShareCard(data) {
 
   const left = el("div", { class: "sc-col" });
   left.append(
-    scPanel("Bot comparison", [compTable, compNote]),
-    scPanel("Open Trades", [data.open.length > 0 ? openTable : scEmpty("No open trades.")]),
-    scPanel(closedTitle, [shown.length > 0 ? closedTable : scEmpty(closedNoteText),
+    scPanel("Bot comparison", "Totals across the account — everything in %", [compTable, compNote]),
+    scPanel("Open Trades", "Live positions · size and profit as % of the account",
+      [data.open.length > 0 ? openTable : scEmpty("No open trades.")]),
+    scPanel(closedTitle, "Recently closed trades · returns in %",
+      [shown.length > 0 ? closedTable : scEmpty(closedNoteText),
       shown.length > 0 && data.closedAsc.length > shown.length ? el("div", { class: "sc-note" }, [closedNoteText]) : ""]),
   );
+  const perUnit = { daily: "day", weekly: "week", monthly: "month" }[shareState.timescale];
   const right = el("div", { class: "sc-col" });
   right.append(
-    scPanel(`Profit over time (${SHARE_TS_LABEL[shareState.timescale]})`, [comboLegend, comboBody]),
-    scPanel(cumTitle, [cumBody, cumNote]),
-    scPanel("Indexed Equity (start = 100)", [eqBody, eqNote]),
+    scPanel(`Profit over time (${SHARE_TS_LABEL[shareState.timescale]})`,
+      `Relative profit % and trade count per ${perUnit}`, [comboLegend, comboBody]),
+    scPanel(cumTitle, "Account impact compounded trade by trade", [cumBody, cumNote]),
+    scPanel("Indexed Equity (start = 100)", "Growth indexed to 100 at the start", [eqBody, eqNote]),
   );
   if (!data.redacted) {
     right.append(el("div", { class: "sc-note" }, ["Source JSON is unredacted — the image still shows relative values only."]));
