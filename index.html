@@ -1288,7 +1288,9 @@ details.redaction-review li {
   overflow-x: auto;
 }
 #share-card {
-  width: 1280px;
+  width: max-content;
+  min-width: 1280px;
+  position: relative;
   background: #14161f;
   color: #e7eaf3;
   border: 1px solid #2b3145;
@@ -1327,7 +1329,7 @@ details.redaction-review li {
 }
 #share-card .sc-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: minmax(0, 1fr) 424px;
   gap: 12px;
 }
 #share-card .sc-col {
@@ -1367,6 +1369,7 @@ details.redaction-review li {
   border-bottom: 1px solid #232840;
   color: #dfe3f0;
   vertical-align: middle;
+  white-space: nowrap;
 }
 #share-card tr:last-child td {
   border-bottom: none;
@@ -1468,9 +1471,26 @@ details.redaction-review li {
 #share-card .sc-wm {
   color: #6b7390;
   white-space: nowrap;
+}
+#share-card .sc-wm-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 60%;
+  pointer-events: none;
+}
+#share-card .sc-wm-overlay span {
+  transform: rotate(-24deg);
+  font-size: 72px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  color: rgba(231, 234, 243, 0.05);
 }
 #share-foot {
   color: var(--muted-foreground);
@@ -1574,6 +1594,7 @@ details.redaction-review li {
         <label><input type="checkbox" id="share-watermark" checked>
           Watermark (page URL)</label>
         <button type="button" id="share-png">Download PNG</button>
+        <button type="button" id="share-copy" secondary>Copy PNG</button>
         <button type="button" id="share-svg" secondary>Download SVG</button>
       </div>
       <p id="share-audit"><small></small></p>
@@ -1663,9 +1684,9 @@ details.redaction-review li {
         trade by trade.</li>
       <li><strong>Wallet history</strong> → <strong>indexed equity (start = 100)</strong>: identical shape,
         no currency values.</li>
-      <li><strong>Watermark</strong> → the image footer shows the page URL as provenance (switch off
-        with the <em>Watermark</em> checkbox). Pages opened from disk show a neutral label instead,
-        so no local filesystem path leaks into the shared image.</li>
+      <li><strong>Watermark</strong> → a diagonal host overlay plus the page URL in the image footer
+        as provenance (switch both off with the <em>Watermark</em> checkbox). Pages opened from disk
+        show a neutral label instead, so no local filesystem path leaks into the shared image.</li>
     </ul>
     <p>The image is built exclusively from ratios, percentages, counts, market prices and dates. A
     relative-only audit runs before every render and its result is shown above the preview.</p>
@@ -2644,6 +2665,13 @@ function shareWatermarkText(loc) {
   return "Freqtrade Bot Report";
 }
 
+/* Short watermark for the diagonal overlay: host only (or neutral label). */
+function shareWatermarkShort(loc) {
+  const l = loc || (typeof window !== "undefined" ? window.location : null);
+  if (l && /^https?:$/.test(String(l.protocol || "")) && l.host) return String(l.host);
+  return "Freqtrade Bot Report";
+}
+
 /* ------------------------------------------------------- share DOM layer */
 
 function pillEl(ratio) {
@@ -2809,6 +2837,9 @@ function renderShareCard(data) {
   grid.append(left, right);
   card.replaceChildren(top, grid);
   if (shareState.watermark) {
+    const overlay = el("div", { class: "sc-wm-overlay", "aria-hidden": "true" });
+    overlay.append(el("span", {}, [shareWatermarkShort()]));
+    card.append(overlay);
     const foot = el("div", { class: "sc-foot" });
     foot.append(
       el("span", {}, ["Relative values only — no account size"]),
@@ -2887,6 +2918,7 @@ function wireShareControls() {
     setShareAudit(data);
   });
   document.getElementById("share-png").addEventListener("click", (event) => downloadSharePng(event.target));
+  document.getElementById("share-copy").addEventListener("click", (event) => copySharePng(event.target));
   document.getElementById("share-svg").addEventListener("click", (event) => downloadShareSvg(event.target));
 }
 
@@ -2907,32 +2939,39 @@ function shareSvgText() {
 }
 
 function setShareBusy(btn, busy, label) {
-  for (const id of ["share-png", "share-svg"]) document.getElementById(id).disabled = busy;
+  for (const id of ["share-png", "share-copy", "share-svg"]) {
+    document.getElementById(id).disabled = busy;
+  }
   if (busy) btn.setAttribute("aria-busy", "true");
   else btn.removeAttribute("aria-busy");
   if (label) document.querySelector("#share-audit small").textContent = label;
+}
+
+/* Render the preview card to an opaque canvas (shared by download + copy). */
+async function renderShareCanvas(scale) {
+  const { svg, w, h } = shareSvgText();
+  const url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+  const img = new Image();
+  await new Promise((resolve, reject) => {
+    img.onload = resolve;
+    img.onerror = () => reject(new Error("render"));
+    img.src = url;
+  });
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.max(Math.round(w * scale), 1);
+  canvas.height = Math.max(Math.round(h * scale), 1);
+  const ctx = canvas.getContext("2d");
+  ctx.fillStyle = "#14161f";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  return canvas;
 }
 
 async function downloadSharePng(btn) {
   if (!shareState.report) return;
   setShareBusy(btn, true, "Rendering PNG…");
   try {
-    const { svg, w, h } = shareSvgText();
-    const url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
-    const img = new Image();
-    await new Promise((resolve, reject) => {
-      img.onload = resolve;
-      img.onerror = () => reject(new Error("render"));
-      img.src = url;
-    });
-    const scale = 2;
-    const canvas = document.createElement("canvas");
-    canvas.width = Math.max(w * scale, 1);
-    canvas.height = Math.max(h * scale, 1);
-    const ctx = canvas.getContext("2d");
-    ctx.fillStyle = "#14161f";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    const canvas = await renderShareCanvas(2);
     const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
     if (!blob) throw new Error("render");
     const link = document.createElement("a");
@@ -2948,6 +2987,33 @@ async function downloadSharePng(btn) {
     setShareBusy(btn, false);
     document.querySelector("#share-audit small").textContent =
       "PNG rendering was blocked by this browser (foreignObject export). The SVG download below uses the same image and always works — convert it to PNG locally.";
+  } finally {
+    setShareBusy(btn, false);
+  }
+}
+
+/* Copy the rendered image to the clipboard for pasting into chats. Needs a
+ * secure context (HTTPS/localhost) plus clipboard permission; otherwise the
+ * Download PNG button is the fallback. */
+async function copySharePng(btn) {
+  if (!shareState.report) return;
+  setShareBusy(btn, true, "Copying PNG…");
+  try {
+    if (typeof navigator === "undefined" || !navigator.clipboard
+        || typeof navigator.clipboard.write !== "function"
+        || typeof ClipboardItem === "undefined") {
+      throw new Error("clipboard-unsupported");
+    }
+    const canvas = await renderShareCanvas(2);
+    const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
+    if (!blob) throw new Error("render");
+    await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+    setShareAudit(buildShareData(shareState.report));
+    document.querySelector("#share-audit small").textContent += " Image copied — paste it anywhere.";
+  } catch (err) {
+    console.error("Share copy failed:", err);
+    document.querySelector("#share-audit small").textContent =
+      "Copy was blocked by this browser (clipboard needs HTTPS or localhost plus permission). Use Download PNG instead.";
   } finally {
     setShareBusy(btn, false);
   }
