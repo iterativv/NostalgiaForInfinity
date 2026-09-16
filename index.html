@@ -1472,6 +1472,16 @@ details.redaction-review li {
   color: #8b93ad;
   font-weight: 400;
 }
+/* Strategy tags / labels render as inline code. */
+#share-card code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 10.5px;
+  background: rgba(148, 163, 184, 0.12);
+  border: 1px solid #2b3145;
+  border-radius: 4px;
+  padding: 0 5px;
+  white-space: nowrap;
+}
 #share-card tr.order-sub td {
   background: rgba(148, 163, 184, 0.05);
   font-size: 10.5px;
@@ -3099,13 +3109,13 @@ function statBlock(label, value, subs) {
 function tagTableEl(rows) {
   const table = el("table", {});
   table.append(el("thead", {}, [el("tr", {}, [
-    thEl("Tag"), thEl("Trades", "num"), thEl("Total", "num", "summed account impact over closed trades"),
-    thEl("Avg / trade", "num", "average account impact per trade"), thEl("W / L", "num", "won / lost"),
+    thEl("Tag"), thEl("Trades", "num"), thEl("Total PnL", "num", "summed account impact over closed trades"),
+    thEl("Avg PnL", "num", "average account impact per trade"), thEl("W / L", "num", "won / lost"),
   ])]));
   const body = el("tbody", {});
   for (const r of rows) {
     body.append(el("tr", {}, [
-      tdEl(r.tag),
+      tdEl([el("code", {}, [r.tag])]),
       tdEl(String(r.count), "num"),
       tdEl([pillEl(r.total),
         el("span", { class: "sub" }, [r.basis === "account" ? "acct total" : "trade sum"])], "num"),
@@ -3137,10 +3147,10 @@ function renderShareCard(data) {
       `open / closed (${data.window})`,
       `W ${data.wins} · L ${data.losses}`,
     ]),
-    statBlock("Open Profit", [pillEl(data.openAcct)], [
+    statBlock("Open PnL", [pillEl(data.openAcct)], [
       data.openAcct !== null ? "acct impact, incl. realized" : "—",
     ]),
-    statBlock("Closed Profit", [pillEl(data.closedAcct)], [
+    statBlock("Closed PnL", [pillEl(data.closedAcct)], [
       data.closedBasis === "start" ? "vs start"
         : data.closedBasis === "start-window" ? `vs start (${data.window})`
         : data.closedBasis === "account" ? "acct impact" : "—",
@@ -3156,15 +3166,16 @@ function renderShareCard(data) {
   ]);
 
   /* Open trades: amounts/stakes replaced by stake-as-%-of-account.
-   * Each position is followed by its own muted sub-rows (one per order, up to
-   * 3), aligned to the parent columns. Per-order stake/PnL are absolute and
-   * stay redacted: share-of-side is the relative size proxy, and orders carry
-   * no individual profit. */
-  const openHeads = ["ID", "Pair", "Side", "Stake %", "Open rate", "Current rate", "Profit", "Open date"];
+   * Each position is followed by its own muted sub-rows, aligned to the parent
+   * columns: first the hidden-orders count (earlier fills not shown), then the
+   * last 3 orders oldest-first with their position number (#n of N).
+   * Per-order stake/PnL are absolute and stay redacted: share-of-side is the
+   * relative size proxy, and orders carry no individual profit. */
+  const openHeads = ["ID", "Pair", "Side", "Stake %", "Open rate", "Current rate", "PnL", "Open date"];
   const openTable = el("table", {});
   openTable.append(el("thead", {}, [el("tr", {}, [
     thEl("ID", "num"), thEl("Pair"), thEl("Side"), thEl("Stake %", "num", "stake as % of the account at entry"),
-    thEl("Open rate", "num"), thEl("Current rate", "num"), thEl("Profit", "num"), thEl("Open date"),
+    thEl("Open rate", "num"), thEl("Current rate", "num"), thEl("PnL", "num", "total return on the position"), thEl("Open date"),
   ])]));
   const openBody = el("tbody", {});
   for (const t of data.open) {
@@ -3177,6 +3188,13 @@ function renderShareCard(data) {
       tdEl(profitCell, "num"), tdEl(t.openDate),
     ]));
     const orders = Array.isArray(t.lastOrders) ? t.lastOrders : [];
+    if (typeof t.hiddenOrders === "number" && t.hiddenOrders > 0) {
+      const more = t.hiddenOrders === 1 ? "+1 more order" : `+${t.hiddenOrders} more orders`;
+      openBody.append(el("tr", { class: "order-sub" }, [
+        tdEl("↳", "num"),
+        el("td", { colspan: "7" }, [more]),
+      ]));
+    }
     for (const o of orders) {
       const shareCell = (o.share !== null && Number.isFinite(o.share))
         ? [`${(o.share * 100).toFixed(2)}%`, el("span", { class: "sub" }, ["of side"])]
@@ -3186,20 +3204,13 @@ function renderShareCard(data) {
         : [o.date];
       openBody.append(el("tr", { class: "order-sub" }, [
         tdEl(`↳#${o.n}`, "num", `order ${o.n} of ${o.total}`),
-        tdEl(o.tag, "", "order tag"),
+        tdEl([el("code", {}, [o.tag])], "", "order tag"),
         tdEl(o.side),
         tdEl(shareCell, "num", "share of the trade side"),
         tdEl(o.price !== null ? fmtRate(o.price) : "—", "num", "order price"),
         tdEl("—", "num"),
         tdEl("—", "num"),
         tdEl(dateCell),
-      ]));
-    }
-    if (typeof t.hiddenOrders === "number" && t.hiddenOrders > 0) {
-      const more = t.hiddenOrders === 1 ? "+1 more order" : `+${t.hiddenOrders} more orders`;
-      openBody.append(el("tr", { class: "order-sub" }, [
-        tdEl("↳", "num"),
-        el("td", { colspan: "7" }, [more]),
       ]));
     }
   }
@@ -3215,7 +3226,7 @@ function renderShareCard(data) {
   const closedTable = el("table", {});
   closedTable.append(el("thead", {}, [el("tr", {}, [
     thEl("ID", "num"), thEl("Pair"), thEl("Side"), thEl("Stake %", "num", "stake as % of the account at entry"),
-    thEl("Open rate", "num"), thEl("Close rate", "num"), thEl("Profit", "num"),
+    thEl("Open rate", "num"), thEl("Close rate", "num"), thEl("PnL", "num", "return on the trade"),
     thEl("Open date"), thEl("Close date"), thEl("Exit"),
   ])]));
   const closedBody = el("tbody", {});
@@ -3226,7 +3237,7 @@ function renderShareCard(data) {
       tdEl(String(t.id), "num"), tdEl(t.pair), tdEl(t.side),
       tdEl(t.stake !== null ? fmtPct(t.stake) : "—", "num"),
       tdEl(fmtRate(t.openRate), "num"), tdEl(fmtRate(t.endRate), "num"),
-      tdEl(profitCell, "num"), tdEl(t.openDate), tdEl(t.endDate), tdEl(t.exit),
+      tdEl(profitCell, "num"), tdEl(t.openDate), tdEl(t.endDate), tdEl([el("code", {}, [t.exit])]),
     ]));
   }
   closedTable.append(closedBody);
