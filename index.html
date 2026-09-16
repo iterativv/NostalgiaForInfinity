@@ -2369,7 +2369,8 @@ function saveJson(json, filename) {
  *         *_ratio fields (position size vs the account, per-trade account impact,
  *         per-order share of side), exit reasons, local trade ids, order sides
  *         (ft_order_side), order type/status and full order tags (ft_order_tag,
- *         last 3 per open trade as sub-rows; top 3 gainers/losers).
+ *         last 3 per open trade as sub-rows; top 3 gainers/losers ranked by
+ *         per-trade average).
  *   Never read: balances, stakes, costs, absolute PnL, fees, wallet/capital
  *         values, fiat/coin amounts. No currency code is rendered anywhere.
  * The JSON export is untouched; the image is an additional artifact rendered
@@ -2578,57 +2579,68 @@ function orderTagsOf(trade) {
 }
 
 /* Top 3 gainers / losers by full order tag (ft_order_tag, e.g. grind_2_entry)
- * over closed trades. Each trade contributes its full result once per distinct
- * tag it used, so "Trades" means trades that touched the tag. Ranking uses
- * summed per-trade account impact (relative, shareable); when no account
- * impact is available it falls back to summed per-trade stake returns. */
+ * over closed trades. Each trade is counted once per distinct tag it used, so
+ * the sums are NOT portfolio totals (one trade's result appears under every
+ * tag it touched) — ranking therefore uses the per-trade average, which,
+ * unlike the sum, is not inflated by how often a tag appears. Basis is chosen
+ * once for the whole window (account impact when available, else summed stake
+ * returns) so rows never mix units in one ranking. Flat (0) counts as a win,
+ * matching freqtrade's own won/lost convention. */
 function tagLeaderboard(closedAsc) {
+  const list = Array.isArray(closedAsc) ? closedAsc : [];
+  const useAcct = list.some((t) => Number.isFinite(t.acct));
+  const basis = list.length > 0 ? (useAcct ? "account" : "trade") : null;
   const byTag = new Map();
   const bump = (tag, t) => {
     const key = typeof tag === "string" && tag ? tag : "—";
     let g = byTag.get(key);
     if (!g) {
-      g = { tag: key, count: 0, wins: 0, losses: 0, acctSum: 0, acctN: 0, tradeSum: 0, tradeN: 0 };
+      g = { tag: key, count: 0, wins: 0, losses: 0, sum: 0, n: 0 };
       byTag.set(key, g);
     }
     g.count += 1;
     /* Finite-only: stray strings/NaN must never poison the sums (a poisoned
      * sum would render the pill blank). */
+    const v = useAcct ? t.acct : t.tradeRatio;
+    if (Number.isFinite(v)) {
+      g.sum += v;
+      g.n += 1;
+    }
     if (Number.isFinite(t.tradeRatio)) {
-      g.tradeSum += t.tradeRatio;
-      g.tradeN += 1;
       if (t.tradeRatio >= 0) g.wins += 1;
       else g.losses += 1;
     }
-    if (Number.isFinite(t.acct)) {
-      g.acctSum += t.acct;
-      g.acctN += 1;
-    }
   };
-  for (const t of closedAsc || []) {
+  for (const t of list) {
     const tags = Array.isArray(t.orderTags) && t.orderTags.length > 0
       ? [...new Set(t.orderTags.filter((x) => typeof x === "string" && x))]
       : [(typeof t.tag === "string" && t.tag ? t.tag : "—")];
     for (const tag of tags) bump(tag, t);
   }
-  const rows = [...byTag.values()].map((g) => {
-    const useAcct = g.acctN > 0;
-    const total = useAcct ? g.acctSum : (g.tradeN > 0 ? g.tradeSum : 0);
-    const denom = useAcct ? g.acctN : g.tradeN;
-    const avg = denom > 0 ? total / denom : null;
-    return { tag: g.tag, count: g.count, wins: g.wins, losses: g.losses, total, avg, basis: useAcct ? "account" : "trade" };
-  });
-  rows.sort((a, b) => b.total - a.total);
-  const gainers = rows.filter((r) => r.total > 0).slice(0, 3);
-  const losers = rows.slice().sort((a, b) => a.total - b.total).filter((r) => r.total < 0).slice(0, 3);
+  const rows = [...byTag.values()].map((g) => ({
+    tag: g.tag,
+    count: g.count,
+    wins: g.wins,
+    losses: g.losses,
+    unrated: g.count - g.wins - g.losses,
+    total: g.sum,
+    avg: g.n > 0 ? g.sum / g.n : null,
+  }));
+  /* Null averages sort last on both ends so unrated tags never top a board. */
+  const byAvgDesc = (a, b) => (b.avg === null ? -Infinity : b.avg) - (a.avg === null ? -Infinity : a.avg);
+  const byAvgAsc = (a, b) => (a.avg === null ? Infinity : a.avg) - (b.avg === null ? Infinity : b.avg);
+  const desc = rows.slice().sort(byAvgDesc);
+  const gainers = desc.filter((r) => r.avg !== null && r.avg > 0).slice(0, 3);
+  const losers = rows.slice().sort(byAvgAsc).filter((r) => r.avg !== null && r.avg < 0).slice(0, 3);
   // Fall back to top/bottom 3 overall when fewer than 3 strictly positive/negative.
-  const top = rows.slice(0, 3);
-  const bottom = rows.slice().sort((a, b) => a.total - b.total).slice(0, 3);
+  const top = desc.slice(0, 3);
+  const bottom = rows.slice().sort(byAvgAsc).slice(0, 3);
   return {
     gainers: gainers.length > 0 ? gainers : [],
     losers: losers.length > 0 ? losers : [],
     top, bottom,
     totalTags: rows.length,
+    basis,
   };
 }
 
@@ -3114,21 +3126,29 @@ function statBlock(label, value, subs) {
   return block;
 }
 
-function tagTableEl(rows) {
+function tagTableEl(rows, basis) {
+  const sumTip = basis === "account"
+    ? "sum of per-trade account impacts over trades touching the tag (each trade counted once per tag it used — not a portfolio total)"
+    : "sum of per-trade stake returns over trades touching the tag (each trade counted once per tag it used — not a portfolio total)";
+  const avgTip = basis === "account"
+    ? "average account impact per trade touching the tag"
+    : "average stake return per trade touching the tag (no account data)";
   const table = el("table", {});
   table.append(el("thead", {}, [el("tr", {}, [
-    thEl("Tag"), thEl("Trades", "num"), thEl("Total PnL", "num", "summed account impact over closed trades"),
-    thEl("Avg PnL", "num", "average account impact per trade"), thEl("W / L", "num", "won / lost"),
+    thEl("Tag"), thEl("Trades", "num"), thEl("Sum PnL", "num", sumTip),
+    thEl("Avg PnL", "num", avgTip), thEl("W / L", "num", "won / lost (flat counts as win)"),
   ])]));
   const body = el("tbody", {});
   for (const r of rows) {
+    const wlTitle = r.unrated > 0
+      ? `won / lost (flat counts as win) · ${r.unrated} trade(s) without profit data`
+      : "won / lost (flat counts as win)";
     body.append(el("tr", {}, [
       tdEl([el("code", {}, [r.tag])]),
       tdEl(String(r.count), "num"),
-      tdEl([pillEl(r.total)], "num",
-        r.basis === "account" ? "summed account impact" : "summed stake returns (no account data)"),
+      tdEl([pillEl(r.total)], "num", sumTip),
       tdEl(r.avg !== null ? pillEl(r.avg) : "—", "num"),
-      tdEl(`${r.wins} / ${r.losses}`, "num"),
+      tdEl(`${r.wins} / ${r.losses}`, "num", wlTitle),
     ]));
   }
   table.append(body);
@@ -3179,7 +3199,6 @@ function renderShareCard(data) {
    * last 3 orders oldest-first with their position number (#n of N).
    * Per-order stake/PnL are absolute and stay redacted: share-of-side is the
    * relative size proxy, and orders carry no individual profit. */
-  const openHeads = ["ID", "Pair", "Side", "Stake %", "Open rate", "Current rate", "PnL", "Open date"];
   const openTable = el("table", {});
   openTable.append(el("thead", {}, [el("tr", {}, [
     thEl("ID", "num"), thEl("Pair"), thEl("Side"), thEl("Stake %", "num", "stake as % of the account at entry"),
@@ -3213,7 +3232,7 @@ function renderShareCard(data) {
       openBody.append(el("tr", { class: "order-sub" }, [
         tdEl(`↳#${o.n}`, "num", `order ${o.n} of ${o.total}`),
         tdEl([el("code", {}, [o.tag])], "", "order tag"),
-        tdEl(o.side),
+        tdEl(o.side === "—" ? "—" : (o.side.charAt(0).toUpperCase() + o.side.slice(1)), "", "order side"),
         tdEl(shareCell, "num", "share of the trade side"),
         tdEl(o.price !== null ? fmtRate(o.price) : "—", "num", "order price"),
         tdEl("—", "num"),
@@ -3301,11 +3320,16 @@ function renderShareCard(data) {
     : `Closed Trades (${data.closedAsc.length} · ${data.window})`;
 
   const perUnit = { daily: "day", weekly: "week", monthly: "month" }[shareState.timescale];
-  const gainersRows = (data.tags && Array.isArray(data.tags.top)) ? data.tags.top : [];
-  const losersRows = (data.tags && Array.isArray(data.tags.bottom)) ? data.tags.bottom : [];
+  const tagInfo = (data.tags && typeof data.tags === "object") ? data.tags : null;
+  const gainersRows = (tagInfo && tagInfo.gainers && tagInfo.gainers.length > 0) ? tagInfo.gainers
+    : ((tagInfo && Array.isArray(tagInfo.top)) ? tagInfo.top : []);
+  const losersRows = (tagInfo && tagInfo.losers && tagInfo.losers.length > 0) ? tagInfo.losers
+    : ((tagInfo && Array.isArray(tagInfo.bottom)) ? tagInfo.bottom : []);
+  const tagBasis = (tagInfo && tagInfo.basis === "trade") ? "trade" : "account";
+  const tagMetric = tagBasis === "account" ? "avg account impact" : "avg stake return";
   const tagNote = data.closedAsc.length === 0
     ? "No closed trades in this window."
-    : `${(data.tags && data.tags.totalTags) || 0} tags in this window · ranked by summed account impact.`;
+    : `${(tagInfo && tagInfo.totalTags) || 0} tags in this window · ranked by ${tagMetric} per trade · sums count each trade once per tag used.`;
   /* Full rows first: Bot comparison, Open Trades, Closed Trades. The rest
    * tiles by info type: tag tables 1/2 + 1/2, charts 1/3 + 1/3 + 1/3. */
   const compPanel = scPanel("Bot comparison", "Totals across the account — everything in %", [compStats, compNote]);
@@ -3314,11 +3338,11 @@ function renderShareCard(data) {
   const closedPanel = scPanel(closedTitle, "Recently closed trades · returns in %",
     [shown.length > 0 ? closedTable : scEmpty(closedNoteText),
     shown.length > 0 && data.closedAsc.length > shown.length ? el("div", { class: "sc-note" }, [closedNoteText]) : ""]);
-  const gainerPanel = scPanel("Top 3 Gainer Tags", "Best order tags by summed account impact · closed trades · trades touching the tag",
-    [gainersRows.length > 0 ? tagTableEl(gainersRows) : scEmpty("No closed trades."),
+  const gainerPanel = scPanel("Top 3 Gainer Tags", `Best order tags by ${tagMetric} · each trade counted once per tag it used`,
+    [gainersRows.length > 0 ? tagTableEl(gainersRows, tagBasis) : scEmpty("No closed trades."),
     el("div", { class: "sc-note" }, [tagNote])]);
-  const loserPanel = scPanel("Top 3 Loser Tags", "Worst order tags by summed account impact · closed trades · trades touching the tag",
-    [losersRows.length > 0 ? tagTableEl(losersRows) : scEmpty("No closed trades."),
+  const loserPanel = scPanel("Top 3 Loser Tags", `Worst order tags by ${tagMetric} · each trade counted once per tag it used`,
+    [losersRows.length > 0 ? tagTableEl(losersRows, tagBasis) : scEmpty("No closed trades."),
     el("div", { class: "sc-note" }, [tagNote])]);
   const profitPanel = scPanel(`Profit over time (${SHARE_TS_LABEL[shareState.timescale]})`,
     `Relative profit % and trade count per ${perUnit}`, [comboLegend, comboBody]);
