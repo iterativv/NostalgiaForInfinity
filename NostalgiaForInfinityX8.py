@@ -20093,6 +20093,9 @@ class NostalgiaForInfinityX8(IStrategy):
             & (cmf_20_15m_lt_0_30 | (top_wick_pct_4h < 0.5) | aroonu_14_1d_lt_100)
             # the daily low is not fresh, or the 15m CCI has genuinely turned up
             & ((aroond_14_1d > 0.0) | (rsi_3_15m > 80.0))
+            # the 15m CCI is not hot, the daily low is stale and the day sits near its high:
+            # an ignition into a daily move that has already run
+            & ((cci_20_15m > 130.0) | (aroond_14_1d > 5.0) | (aroonu_14_1d < 80.0))
             # price is not at the very top of its 40h range while the day is already up
             & ((willr_480 > -15.0) | (change_pct_1d < 5.0))
             # the ignition candle is small, the 15m ultimate oscillator is caving and the day
@@ -20126,7 +20129,6 @@ class NostalgiaForInfinityX8(IStrategy):
             # participation, not a routine tick up in volume
             & (vol_rel > 4.0)
           )
-          long_entry_logic.append((cci_20_15m > 130) | (aroond_14_1d > 5) | (aroonu_14_1d < 80))
 
           # NOTE: the measured PUMP CHARACTER columns (PH_BASE_POS d=0.95, PH_PRE_TIGHT d=0.65,
           # PH_CROSS_CNT_12 first-fire counter) are defined above and ready for your protection
