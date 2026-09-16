@@ -1573,8 +1573,8 @@ details.redaction-review li {
         </fieldset>
         <label>Recent closed trades
           <select id="share-recent">
-            <option value="5">5</option>
-            <option value="10" selected>10</option>
+            <option value="5" selected>5</option>
+            <option value="10">10</option>
             <option value="20">20</option>
             <option value="50">50</option>
           </select>
@@ -2279,10 +2279,12 @@ function saveJson(json, filename) {
  *
  * freqUI-style snapshot built EXCLUSIVELY from scale-invariant fields, so the
  * image can be shared without revealing the account size.
- *   Read: dates, counts, pairs, market prices (open/current/close rates),
- *         ratios and percentages (rel_profit, close_profit, profit_ratio,
- *         profit_pct, ...), the derived *_ratio fields (position size vs the
- *         account, per-trade account impact), exit reasons, local trade ids.
+ *   Read: dates, counts, pairs, market prices (open/current/close rates,
+ *         order prices via safe_price), ratios and percentages (rel_profit,
+ *         close_profit, profit_ratio, profit_pct, ...), the derived *_ratio
+ *         fields (position size vs the account, per-trade account impact),
+ *         exit reasons, local trade ids, order sides (ft_order_side) and
+ *         order tags (ft_order_tag, last 3 per open trade).
  *   Never read: balances, stakes, costs, absolute PnL, fees, wallet/capital
  *         values, fiat/coin amounts. No currency code is rendered anywhere.
  * The JSON export is untouched; the image is an additional artifact rendered
@@ -2291,7 +2293,7 @@ function saveJson(json, filename) {
  */
 
 const SHARE_TS_LABEL = { daily: "Days", weekly: "Weeks", monthly: "Months" };
-const shareState = { report: null, timescale: "monthly", recent: 10, watermark: true };
+const shareState = { report: null, timescale: "monthly", recent: 5, watermark: true };
 
 /* Exact key names that must never appear in image data. The audit scans the
  * built image model for these before every render. */
@@ -2388,7 +2390,28 @@ function openPoint(trade) {
     openDate: shortDateTime(trade.open_date),
     endDate: "",
     exit: "",
+    lastOrders: lastOrdersOf(trade),
   };
+}
+
+/* Last 3 orders of a trade, oldest first. Only scale-invariant fields are kept
+ * (side, entry/exit tag, market price) so the dashboard image stays shareable:
+ * amounts, costs, filled quantities and order ids are never picked up. */
+function lastOrdersOf(trade) {
+  const raw = Array.isArray(trade.orders) ? trade.orders : [];
+  const rows = [];
+  for (const o of raw) {
+    if (o === null || typeof o !== "object" || Array.isArray(o)) continue;
+    const side = typeof o.ft_order_side === "string" && o.ft_order_side ? o.ft_order_side : "—";
+    let tag = typeof o.ft_order_tag === "string" ? o.ft_order_tag.trim() : "";
+    if (!tag || tag === REDACTED) tag = "—";
+    const price = firstNum(numOrNull(o.safe_price), numOrNull(o.average), numOrNull(o.price));
+    let ts = numOrNull(o.order_filled_timestamp);
+    if (ts === null) ts = numOrNull(o.order_timestamp);
+    rows.push({ side, tag, price, ts: ts === null ? -Infinity : ts });
+  }
+  rows.sort((a, b) => a.ts - b.ts);
+  return rows.slice(-3).map(({ side, tag, price }) => ({ side, tag, price }));
 }
 
 function closedPoint(trade) {
@@ -2918,21 +2941,25 @@ function renderShareCard(data) {
   ]);
 
   /* Open trades: amounts/stakes replaced by stake-as-%-of-account. */
-  const openHeads = ["ID", "Pair", "Side", "Stake %", "Open rate", "Current rate", "Profit", "Open date"];
+  const openHeads = ["ID", "Pair", "Side", "Stake %", "Open rate", "Current rate", "Profit", "Open date", "Last 3 orders"];
   const openTable = el("table", {});
   openTable.append(el("thead", {}, [el("tr", {}, [
     thEl("ID", "num"), thEl("Pair"), thEl("Side"), thEl("Stake %", "num", "stake as % of the account at entry"),
     thEl("Open rate", "num"), thEl("Current rate", "num"), thEl("Profit", "num"), thEl("Open date"),
+    thEl("Last 3 orders", "", "most recent orders: side, entry/exit tag and market price"),
   ])]));
   const openBody = el("tbody", {});
   for (const t of data.open) {
     const profitCell = [pillEl(t.tradeRatio)];
     if (t.acct !== null) profitCell.push(el("span", { class: "sub" }, [`acct ${fmtPct(t.acct)}`]));
+    const ordersCell = (Array.isArray(t.lastOrders) && t.lastOrders.length > 0)
+      ? t.lastOrders.map((o) => el("div", {}, [`${o.side} ${o.tag} @ ${o.price !== null ? fmtRate(o.price) : "—"}`]))
+      : ["—"];
     openBody.append(el("tr", {}, [
       tdEl(String(t.id), "num"), tdEl(t.pair), tdEl(t.side),
       tdEl(t.stake !== null ? fmtPct(t.stake) : "—", "num"),
       tdEl(fmtRate(t.openRate), "num"), tdEl(fmtRate(t.endRate), "num"),
-      tdEl(profitCell, "num"), tdEl(t.openDate),
+      tdEl(profitCell, "num"), tdEl(t.openDate), tdEl(ordersCell),
     ]));
   }
   openTable.append(openBody);
@@ -3102,7 +3129,7 @@ function wireShareControls() {
   }
   document.getElementById("share-recent").addEventListener("change", (event) => {
     if (!shareState.report) return;
-    shareState.recent = Number(event.target.value) || 10;
+    shareState.recent = Number(event.target.value) || 5;
     const data = buildShareData(shareState.report);
     renderShareCard(data);
     setShareAudit(data);
