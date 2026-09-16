@@ -2284,7 +2284,8 @@ function saveJson(json, filename) {
  *         close_profit, profit_ratio, profit_pct, ...), the derived *_ratio
  *         fields (position size vs the account, per-trade account impact),
  *         exit reasons, local trade ids, order sides (ft_order_side) and
- *         order tags (ft_order_tag, last 3 per open trade).
+ *         order tags (ft_order_tag, last 3 per open trade), entry tags
+ *         (enter_tag, top 3 gainers/losers).
  *   Never read: balances, stakes, costs, absolute PnL, fees, wallet/capital
  *         values, fiat/coin amounts. No currency code is rendered anywhere.
  * The JSON export is untouched; the image is an additional artifact rendered
@@ -2390,8 +2391,16 @@ function openPoint(trade) {
     openDate: shortDateTime(trade.open_date),
     endDate: "",
     exit: "",
+    tag: normalizeTag(trade.enter_tag),
     lastOrders: lastOrdersOf(trade),
   };
+}
+
+/* Entry/exit tags are strategy labels, not money — safe to show. */
+function normalizeTag(value) {
+  const s = typeof value === "string" ? value.trim() : "";
+  if (!s || s === REDACTED) return "—";
+  return s;
 }
 
 /* Last 3 orders of a trade, oldest first. Only scale-invariant fields are kept
@@ -2429,6 +2438,52 @@ function closedPoint(trade) {
     endDate: shortDateTime(closeDate),
     closeTs: parseUtcTimestamp(closeDate),
     exit: typeof trade.exit_reason === "string" && trade.exit_reason ? trade.exit_reason : "—",
+    tag: normalizeTag(trade.enter_tag),
+  };
+}
+
+/* Top 3 gainers / losers by entry tag over closed trades. Ranking uses summed
+ * per-trade account impact (relative, shareable); when no account impact is
+ * available it falls back to summed per-trade stake returns. */
+function tagLeaderboard(closedAsc) {
+  const byTag = new Map();
+  for (const t of closedAsc || []) {
+    const tag = typeof t.tag === "string" && t.tag ? t.tag : "—";
+    let g = byTag.get(tag);
+    if (!g) {
+      g = { tag, count: 0, wins: 0, losses: 0, acctSum: 0, acctN: 0, tradeSum: 0, tradeN: 0 };
+      byTag.set(tag, g);
+    }
+    g.count += 1;
+    if (t.tradeRatio !== null && t.tradeRatio !== undefined) {
+      g.tradeSum += t.tradeRatio;
+      g.tradeN += 1;
+      if (t.tradeRatio >= 0) g.wins += 1;
+      else g.losses += 1;
+    }
+    if (t.acct !== null && t.acct !== undefined) {
+      g.acctSum += t.acct;
+      g.acctN += 1;
+    }
+  }
+  const rows = [...byTag.values()].map((g) => {
+    const useAcct = g.acctN > 0;
+    const total = useAcct ? g.acctSum : (g.tradeN > 0 ? g.tradeSum : 0);
+    const denom = useAcct ? g.acctN : g.tradeN;
+    const avg = denom > 0 ? total / denom : null;
+    return { tag: g.tag, count: g.count, wins: g.wins, losses: g.losses, total, avg, basis: useAcct ? "account" : "trade" };
+  });
+  rows.sort((a, b) => b.total - a.total);
+  const gainers = rows.filter((r) => r.total > 0).slice(0, 3);
+  const losers = rows.slice().sort((a, b) => a.total - b.total).filter((r) => r.total < 0).slice(0, 3);
+  // Fall back to top/bottom 3 overall when fewer than 3 strictly positive/negative.
+  const top = rows.slice(0, 3);
+  const bottom = rows.slice().sort((a, b) => a.total - b.total).slice(0, 3);
+  return {
+    gainers: gainers.length > 0 ? gainers : [],
+    losers: losers.length > 0 ? losers : [],
+    top, bottom,
+    totalTags: rows.length,
   };
 }
 
@@ -2679,6 +2734,7 @@ function buildShareData(report) {
     equity, equityFloat,
     open, closedAsc,
     cum, cumFloat,
+    tags: tagLeaderboard(closedAsc),
   };
 }
 
@@ -2901,6 +2957,27 @@ function scEmpty(text) {
   return el("div", { class: "sc-empty" }, [text]);
 }
 
+function tagTableEl(rows) {
+  const table = el("table", {});
+  table.append(el("thead", {}, [el("tr", {}, [
+    thEl("Tag"), thEl("Trades", "num"), thEl("Total", "num", "summed account impact over closed trades"),
+    thEl("Avg / trade", "num", "average account impact per trade"), thEl("W / L", "num", "won / lost"),
+  ])]));
+  const body = el("tbody", {});
+  for (const r of rows) {
+    body.append(el("tr", {}, [
+      tdEl(r.tag),
+      tdEl(String(r.count), "num"),
+      tdEl([pillEl(r.total),
+        el("span", { class: "sub" }, [r.basis === "account" ? "acct total" : "trade sum"])], "num"),
+      tdEl(r.avg !== null ? pillEl(r.avg) : "—", "num"),
+      tdEl(`${r.wins} / ${r.losses}`, "num"),
+    ]));
+  }
+  table.append(body);
+  return table;
+}
+
 function renderShareCard(data) {
   const card = document.getElementById("share-card");
   const strat = data.strategy
@@ -3041,6 +3118,11 @@ function renderShareCard(data) {
     : `Closed Trades (${data.closedAsc.length} · ${data.window})`;
 
   const left = el("div", { class: "sc-col" });
+  const gainersRows = (data.tags && Array.isArray(data.tags.top)) ? data.tags.top : [];
+  const losersRows = (data.tags && Array.isArray(data.tags.bottom)) ? data.tags.bottom : [];
+  const tagNote = data.closedAsc.length === 0
+    ? "No closed trades in this window."
+    : `${(data.tags && data.tags.totalTags) || 0} tags in this window · ranked by summed account impact.`;
   left.append(
     scPanel("Bot comparison", "Totals across the account — everything in %", [compTable, compNote]),
     scPanel("Open Trades", "Live positions · size and total profit (incl. realized) as % of the account",
@@ -3048,6 +3130,12 @@ function renderShareCard(data) {
     scPanel(closedTitle, "Recently closed trades · returns in %",
       [shown.length > 0 ? closedTable : scEmpty(closedNoteText),
       shown.length > 0 && data.closedAsc.length > shown.length ? el("div", { class: "sc-note" }, [closedNoteText]) : ""]),
+    scPanel("Top 3 Gainer Tags", "Best entry tags by summed account impact · closed trades",
+      [gainersRows.length > 0 ? tagTableEl(gainersRows) : scEmpty("No closed trades."),
+      el("div", { class: "sc-note" }, [tagNote])]),
+    scPanel("Top 3 Loser Tags", "Worst entry tags by summed account impact · closed trades",
+      [losersRows.length > 0 ? tagTableEl(losersRows) : scEmpty("No closed trades."),
+      el("div", { class: "sc-note" }, [tagNote])]),
   );
   const perUnit = { daily: "day", weekly: "week", monthly: "month" }[shareState.timescale];
   const right = el("div", { class: "sc-col" });
