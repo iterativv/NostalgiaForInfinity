@@ -1334,6 +1334,26 @@ details.redaction-review li {
 #share-card .sc-col {
   min-width: 0;
 }
+/* Full-width rows (Bot comparison, Open, Closed) stack directly on the card;
+ * the rest tiles by info type: tag tables side by side (1/2 each), charts
+ * side by side (1/3 each). */
+#share-card .sc-grid-2 {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+  margin-bottom: 12px;
+}
+#share-card .sc-grid-3 {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+  margin-bottom: 12px;
+}
+#share-card .sc-grid-2 .sc-panel,
+#share-card .sc-grid-3 .sc-panel {
+  margin-bottom: 0;
+  min-width: 0;
+}
 #share-card .sc-panel {
   background: #1a1e2b;
   border: 1px solid #2b3145;
@@ -1419,6 +1439,22 @@ details.redaction-review li {
   font-size: 10px;
   color: #8b93ad;
   font-weight: 400;
+}
+#share-card tr.order-sub td {
+  background: rgba(148, 163, 184, 0.05);
+  font-size: 10.5px;
+  color: #9aa1b8;
+  border-bottom: 1px dashed #232a3d;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+#share-card tr.order-sub td:first-child {
+  color: #5b6274;
+  text-align: right;
+  padding-right: 2px;
+}
+#share-card tr.order-sub td:last-child {
+  white-space: nowrap;
 }
 #share-card .sc-note {
   color: #8b93ad;
@@ -2284,8 +2320,8 @@ function saveJson(json, filename) {
  *         close_profit, profit_ratio, profit_pct, ...), the derived *_ratio
  *         fields (position size vs the account, per-trade account impact),
  *         exit reasons, local trade ids, order sides (ft_order_side) and
- *         order tags (ft_order_tag, last 3 per open trade), entry tags
- *         (enter_tag, top 3 gainers/losers).
+ *         full order tags (ft_order_tag, last 3 per open trade as sub-rows;
+ *         top 3 gainers/losers).
  *   Never read: balances, stakes, costs, absolute PnL, fees, wallet/capital
  *         values, fiat/coin amounts. No currency code is rendered anywhere.
  * The JSON export is untouched; the image is an additional artifact rendered
@@ -2439,20 +2475,45 @@ function closedPoint(trade) {
     closeTs: parseUtcTimestamp(closeDate),
     exit: typeof trade.exit_reason === "string" && trade.exit_reason ? trade.exit_reason : "—",
     tag: normalizeTag(trade.enter_tag),
+    orderTags: orderTagsOf(trade),
   };
 }
 
-/* Top 3 gainers / losers by entry tag over closed trades. Ranking uses summed
- * per-trade account impact (relative, shareable); when no account impact is
- * available it falls back to summed per-trade stake returns. */
+/* Distinct full order tags (ft_order_tag, e.g. grind_2_entry) used by a trade.
+ * Falls back to the entry tag so every trade is counted even when orders are
+ * missing. Only labels are kept — never amounts or ids. */
+function orderTagsOf(trade) {
+  const out = [];
+  const seen = new Set();
+  const raw = Array.isArray(trade.orders) ? trade.orders : [];
+  for (const o of raw) {
+    if (o === null || typeof o !== "object" || Array.isArray(o)) continue;
+    const tag = normalizeTag(o.ft_order_tag);
+    if (tag === "—" || seen.has(tag)) continue;
+    seen.add(tag);
+    out.push(tag);
+  }
+  if (out.length === 0) {
+    const fallback = normalizeTag(trade.enter_tag);
+    if (fallback !== "—") out.push(fallback);
+    else out.push("—");
+  }
+  return out;
+}
+
+/* Top 3 gainers / losers by full order tag (ft_order_tag, e.g. grind_2_entry)
+ * over closed trades. Each trade contributes its full result once per distinct
+ * tag it used, so "Trades" means trades that touched the tag. Ranking uses
+ * summed per-trade account impact (relative, shareable); when no account
+ * impact is available it falls back to summed per-trade stake returns. */
 function tagLeaderboard(closedAsc) {
   const byTag = new Map();
-  for (const t of closedAsc || []) {
-    const tag = typeof t.tag === "string" && t.tag ? t.tag : "—";
-    let g = byTag.get(tag);
+  const bump = (tag, t) => {
+    const key = typeof tag === "string" && tag ? tag : "—";
+    let g = byTag.get(key);
     if (!g) {
-      g = { tag, count: 0, wins: 0, losses: 0, acctSum: 0, acctN: 0, tradeSum: 0, tradeN: 0 };
-      byTag.set(tag, g);
+      g = { tag: key, count: 0, wins: 0, losses: 0, acctSum: 0, acctN: 0, tradeSum: 0, tradeN: 0 };
+      byTag.set(key, g);
     }
     g.count += 1;
     if (t.tradeRatio !== null && t.tradeRatio !== undefined) {
@@ -2465,6 +2526,12 @@ function tagLeaderboard(closedAsc) {
       g.acctSum += t.acct;
       g.acctN += 1;
     }
+  };
+  for (const t of closedAsc || []) {
+    const tags = Array.isArray(t.orderTags) && t.orderTags.length > 0
+      ? [...new Set(t.orderTags.filter((x) => typeof x === "string" && x))]
+      : [(typeof t.tag === "string" && t.tag ? t.tag : "—")];
+    for (const tag of tags) bump(tag, t);
   }
   const rows = [...byTag.values()].map((g) => {
     const useAcct = g.acctN > 0;
@@ -3017,27 +3084,33 @@ function renderShareCard(data) {
     "No balances, stakes or absolute profit are shown.",
   ]);
 
-  /* Open trades: amounts/stakes replaced by stake-as-%-of-account. */
-  const openHeads = ["ID", "Pair", "Side", "Stake %", "Open rate", "Current rate", "Profit", "Open date", "Last 3 orders"];
+  /* Open trades: amounts/stakes replaced by stake-as-%-of-account.
+   * Each position is followed by its own sub-rows (one per order, up to 3). */
+  const openHeads = ["ID", "Pair", "Side", "Stake %", "Open rate", "Current rate", "Profit", "Open date"];
   const openTable = el("table", {});
   openTable.append(el("thead", {}, [el("tr", {}, [
     thEl("ID", "num"), thEl("Pair"), thEl("Side"), thEl("Stake %", "num", "stake as % of the account at entry"),
     thEl("Open rate", "num"), thEl("Current rate", "num"), thEl("Profit", "num"), thEl("Open date"),
-    thEl("Last 3 orders", "", "most recent orders: side, entry/exit tag and market price"),
   ])]));
   const openBody = el("tbody", {});
   for (const t of data.open) {
     const profitCell = [pillEl(t.tradeRatio)];
     if (t.acct !== null) profitCell.push(el("span", { class: "sub" }, [`acct ${fmtPct(t.acct)}`]));
-    const ordersCell = (Array.isArray(t.lastOrders) && t.lastOrders.length > 0)
-      ? t.lastOrders.map((o) => el("div", {}, [`${o.side} ${o.tag} @ ${o.price !== null ? fmtRate(o.price) : "—"}`]))
-      : ["—"];
     openBody.append(el("tr", {}, [
       tdEl(String(t.id), "num"), tdEl(t.pair), tdEl(t.side),
       tdEl(t.stake !== null ? fmtPct(t.stake) : "—", "num"),
       tdEl(fmtRate(t.openRate), "num"), tdEl(fmtRate(t.endRate), "num"),
-      tdEl(profitCell, "num"), tdEl(t.openDate), tdEl(ordersCell),
+      tdEl(profitCell, "num"), tdEl(t.openDate),
     ]));
+    const orders = Array.isArray(t.lastOrders) ? t.lastOrders : [];
+    for (const o of orders) {
+      const row = el("tr", { class: "order-sub" });
+      const marker = el("td", { class: "num" }, ["↳"]);
+      const detail = el("td", { colspan: "7" },
+        [`${o.side} ${o.tag} @ ${o.price !== null ? fmtRate(o.price) : "—"}`]);
+      row.append(marker, detail);
+      openBody.append(row);
+    }
   }
   openTable.append(openBody);
 
@@ -3117,40 +3190,38 @@ function renderShareCard(data) {
     ? `Closed Trades (recent ${shown.length} of ${data.closedAsc.length} · ${data.window})`
     : `Closed Trades (${data.closedAsc.length} · ${data.window})`;
 
-  const left = el("div", { class: "sc-col" });
+  const perUnit = { daily: "day", weekly: "week", monthly: "month" }[shareState.timescale];
   const gainersRows = (data.tags && Array.isArray(data.tags.top)) ? data.tags.top : [];
   const losersRows = (data.tags && Array.isArray(data.tags.bottom)) ? data.tags.bottom : [];
   const tagNote = data.closedAsc.length === 0
     ? "No closed trades in this window."
     : `${(data.tags && data.tags.totalTags) || 0} tags in this window · ranked by summed account impact.`;
-  left.append(
-    scPanel("Bot comparison", "Totals across the account — everything in %", [compTable, compNote]),
-    scPanel("Open Trades", "Live positions · size and total profit (incl. realized) as % of the account",
-      [data.open.length > 0 ? openTable : scEmpty("No open trades.")]),
-    scPanel(closedTitle, "Recently closed trades · returns in %",
-      [shown.length > 0 ? closedTable : scEmpty(closedNoteText),
-      shown.length > 0 && data.closedAsc.length > shown.length ? el("div", { class: "sc-note" }, [closedNoteText]) : ""]),
-    scPanel("Top 3 Gainer Tags", "Best entry tags by summed account impact · closed trades",
-      [gainersRows.length > 0 ? tagTableEl(gainersRows) : scEmpty("No closed trades."),
-      el("div", { class: "sc-note" }, [tagNote])]),
-    scPanel("Top 3 Loser Tags", "Worst entry tags by summed account impact · closed trades",
-      [losersRows.length > 0 ? tagTableEl(losersRows) : scEmpty("No closed trades."),
-      el("div", { class: "sc-note" }, [tagNote])]),
-  );
-  const perUnit = { daily: "day", weekly: "week", monthly: "month" }[shareState.timescale];
-  const right = el("div", { class: "sc-col" });
-  right.append(
-    scPanel(`Profit over time (${SHARE_TS_LABEL[shareState.timescale]})`,
-      `Relative profit % and trade count per ${perUnit}`, [comboLegend, comboBody]),
-    scPanel(cumTitle, "Account impact summed trade by trade", [cumBody, cumNote]),
-    scPanel("Indexed Equity (start = 100)", "Growth indexed to 100 at the start", [eqBody, eqNote]),
-  );
+  /* Full rows first: Bot comparison, Open Trades, Closed Trades. The rest
+   * tiles by info type: tag tables 1/2 + 1/2, charts 1/3 + 1/3 + 1/3. */
+  const compPanel = scPanel("Bot comparison", "Totals across the account — everything in %", [compTable, compNote]);
+  const openPanel = scPanel("Open Trades", "Live positions · size and total profit (incl. realized) as % of the account",
+    [data.open.length > 0 ? openTable : scEmpty("No open trades.")]);
+  const closedPanel = scPanel(closedTitle, "Recently closed trades · returns in %",
+    [shown.length > 0 ? closedTable : scEmpty(closedNoteText),
+    shown.length > 0 && data.closedAsc.length > shown.length ? el("div", { class: "sc-note" }, [closedNoteText]) : ""]);
+  const gainerPanel = scPanel("Top 3 Gainer Tags", "Best order tags by summed account impact · closed trades · trades touching the tag",
+    [gainersRows.length > 0 ? tagTableEl(gainersRows) : scEmpty("No closed trades."),
+    el("div", { class: "sc-note" }, [tagNote])]);
+  const loserPanel = scPanel("Top 3 Loser Tags", "Worst order tags by summed account impact · closed trades · trades touching the tag",
+    [losersRows.length > 0 ? tagTableEl(losersRows) : scEmpty("No closed trades."),
+    el("div", { class: "sc-note" }, [tagNote])]);
+  const profitPanel = scPanel(`Profit over time (${SHARE_TS_LABEL[shareState.timescale]})`,
+    `Relative profit % and trade count per ${perUnit}`, [comboLegend, comboBody]);
+  const cumPanel = scPanel(cumTitle, "Account impact summed trade by trade", [cumBody, cumNote]);
+  const eqPanel = scPanel("Indexed Equity (start = 100)", "Growth indexed to 100 at the start", [eqBody, eqNote]);
+  const grid2 = el("div", { class: "sc-grid-2" });
+  grid2.append(gainerPanel, loserPanel);
+  const grid3 = el("div", { class: "sc-grid-3" });
+  grid3.append(profitPanel, cumPanel, eqPanel);
+  card.replaceChildren(top, compPanel, openPanel, closedPanel, grid2, grid3);
   if (!data.redacted) {
-    right.append(el("div", { class: "sc-note" }, ["Source JSON is unredacted — the image still shows relative values only."]));
+    card.append(el("div", { class: "sc-note" }, ["Source JSON is unredacted — the image still shows relative values only."]));
   }
-  const grid = el("div", { class: "sc-grid" });
-  grid.append(left, right);
-  card.replaceChildren(top, grid);
   if (shareState.watermark) {
     const foot = el("div", { class: "sc-foot" });
     const wm = shareWatermarkText();
