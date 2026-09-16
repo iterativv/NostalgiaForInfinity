@@ -1283,7 +1283,13 @@ details.redaction-review li {
    Single source of truth for both the live preview and the exported
    PNG/SVG: the exporter inlines this exact block into the SVG, so the image
    matches the preview without external resources. No id/class names here may
-   carry currency codes or absolute-money wording. */
+   carry currency codes or absolute-money wording.
+   The page framework resets * to border-box, which is NOT inlined here — so
+   scope the same reset to the card or the export re-lays-out in content-box
+   and overflows the measured box (right edge cropped). */
+#share-card, #share-card * {
+  box-sizing: border-box;
+}
 #share-scroll {
   overflow-x: auto;
 }
