@@ -2586,13 +2586,15 @@ function tagLeaderboard(closedAsc) {
       byTag.set(key, g);
     }
     g.count += 1;
-    if (t.tradeRatio !== null && t.tradeRatio !== undefined) {
+    /* Finite-only: stray strings/NaN must never poison the sums (a poisoned
+     * sum would render the pill blank). */
+    if (Number.isFinite(t.tradeRatio)) {
       g.tradeSum += t.tradeRatio;
       g.tradeN += 1;
       if (t.tradeRatio >= 0) g.wins += 1;
       else g.losses += 1;
     }
-    if (t.acct !== null && t.acct !== undefined) {
+    if (Number.isFinite(t.acct)) {
       g.acctSum += t.acct;
       g.acctN += 1;
     }
@@ -3117,8 +3119,8 @@ function tagTableEl(rows) {
     body.append(el("tr", {}, [
       tdEl([el("code", {}, [r.tag])]),
       tdEl(String(r.count), "num"),
-      tdEl([pillEl(r.total),
-        el("span", { class: "sub" }, [r.basis === "account" ? "acct total" : "trade sum"])], "num"),
+      tdEl([pillEl(r.total)], "num",
+        r.basis === "account" ? "summed account impact" : "summed stake returns (no account data)"),
       tdEl(r.avg !== null ? pillEl(r.avg) : "—", "num"),
       tdEl(`${r.wins} / ${r.losses}`, "num"),
     ]));
