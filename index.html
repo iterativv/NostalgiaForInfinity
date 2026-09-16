@@ -3416,9 +3416,19 @@ function wireShareControls() {
 function shareSvgText() {
   const node = document.getElementById("share-card");
   const css = document.getElementById("share-css").textContent;
-  const w = node.offsetWidth, h = node.offsetHeight;
+  /* Measure the full laid-out size: offsetWidth/offsetHeight are integers, so
+   * fractional layout pixels get rounded off and the raster ends up a few px
+   * narrower than the on-page card (right/bottom edge cropped). Ceil the
+   * scroll size and keep a small safety margin (invisible: same #14161f as
+   * the card background and canvas fill). */
+  const w = Math.ceil(Math.max(node.offsetWidth, node.scrollWidth)) + 2;
+  const h = Math.ceil(Math.max(node.offsetHeight, node.scrollHeight)) + 2;
   const clone = node.cloneNode(true);
   clone.setAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+  /* Pin the clone to the measured box so the foreignObject layout matches the
+   * on-page layout exactly instead of re-solving max-content differently. */
+  clone.style.width = `${w}px`;
+  clone.style.minWidth = "0";
   const html = new XMLSerializer().serializeToString(clone);
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">`
     + `<style>${css}</style>`
