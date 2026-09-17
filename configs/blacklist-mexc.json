@@ -1,6 +1,10 @@
 {
   "exchange": {
     "pair_blacklist": [
+      // MEXC perp delisting 2026-09-18 (spot stays listed) — -97.3% off its 0.01017 high in the
+      // 24 days since listing (2026-08-24), -33.3% and -38.8% on 09-15/16, book ~$50k/day.
+      // MEXC-only: no other venue in this config set lists it.
+      "(CC1)/.*",
       // Collapse on a thin book — -73.9% on 2026-09-16 with a 406% intraday range, after nine
       // flat days between 0.195 and 0.218. -93.6% off its 0.81 high (listed 2026-05-20) and the
       // book is ~$0.32M/day. MEXC-only: no other venue in this config set lists it.
