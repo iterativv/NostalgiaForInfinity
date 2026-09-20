@@ -20044,141 +20044,197 @@ class NostalgiaForInfinityX8(IStrategy):
           # Protections
           long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           long_entry_logic.append(protections_long_global == True)
-
           long_entry_logic.append(
-            # --- 5m: the ignition candle has to be a real move on a base that is not collapsing
-            (roc_2 > 0.5)
-            # the base is overbought, its 14 barely moved and the 12-candle floor is already high:
-            # a stalled push, not an ignition
-            & ((rsi_4 > 85.0) | (rsi_14_change_pct < 16.0) | (quad_s93_min_12 < 40.0))
-            & (rsi_14_change_pct < 30.0)
-            & (cmf_20 > 0.05)
-            # the base low is stale, the 4h CCI is positive and 15m money flow is rich: buying
-            # into a market that has already been bid up
-            & ((aroond_14 < 70.0) | (cci_20_4h < 0.0) | (mfi_14_15m > 65.0))
-            # no fresh 4h low, the 15m oscillator is not up and the candle itself is small:
-            # an ignition without any of its usual company
-            & ((aroond_14_4h > 0.0) | stochrsi_k_15m_gt_60 | (change_pct > 0.5))
-            & (stoch_9_3 > 80.0)
-            & (willr_14 < -5.0)
-            # price pinned at the top of its own 14-bar range, the 4h RSI already rising and
-            # 15m money flow not rich: the ignition is the last buyer, not the first
-            & ((willr_14 > -15.0) | (rsi_14_change_pct_4h < 8.0) | (cmf_20_15m > 0.15))
-            # the base ROC is not extended — unless the 15m momentum is genuinely turning up
-            & ((roc_9 < 5.0) | (rsi_3_change_pct_15m > 20.0))
-            # the ignition is not the first cross of a loose base: either the coil has crossed
-            # a few times already, or the base was tight to begin with
-            & ((ph_cross_cnt_12 < 5.0) | (ph_pre_tight < 5.0))
-            # --- 15m: the fast timeframe must confirm, not cave
-            & (rsi_3_change_pct_15m > -10.0)
-            # the 15m RSI is genuinely turning up, or the hour is hot while the 4h is not
-            & ((rsi_14_change_pct_15m > 10.0) | rsi_3_1h_gt_60 | rsi_3_4h_lt_60)
-            # 15m money flow is not pouring in, the 15m is not overheated and the 12-candle
-            # low sits high in its range: the ignition has no fuel under it
-            & ((cmf_20_15m > 0.2) | (mfi_14_15m < 80.0) | (quad_s93_min_12 < 70.0))
-            # the base RSI is not stretched, or the 15m is quiet with rich money flow
-            & ((mfi_14_15m > 65.0) | (rsi_14_change_pct < 20.0) | (change_pct_15m < 1.0))
-            # daily money flow is alive, the 15m RSI is rising, or the 15m oscillator is maxed
-            & ((mfi_14_1d > 30.0) | (rsi_14_change_pct_15m > 5.0) | stochrsi_k_15m_gt_90)
-            # no fresh 15m low, 4h direction weak and the 4h RSI already mid-band: nothing is
-            # actually leading this ignition
-            & ((aroond_14_15m < 20.0) | (minus_di_14_4h < 20.0) | rsi_14_4h_lt_50)
-            # the 15m CCI is extreme and rising while volume is only ordinary: a spike on the
-            # oscillator, not in the tape
-            & ((cci_20_15m < 250.0) | (cci_20_change_pct_15m < 225.0) | (vol_rel > 8.0))
-            # the 15m CCI is not snapping up while the day has already fallen
-            & ((cci_20_change_pct_15m < 50.0) | (change_pct_1d > -5.0))
-            & (cci_20_change_pct_15m < 500.0)
-            & (willr_14_15m > -50.0)
-            # volume is not pouring into the 15m — unless the daily candle has a real lower
-            # wick, i.e. the day was already bought once
-            & ((obv_change_pct_15m < 15.0) | (bot_wick_pct_1d > 1.0))
-            & (sqz_cnt_24 < 15.0)
-            # the 40-candle band is not wide, or the 15m RSI is genuinely strong
-            & ((bbd_40_2_0 < 15.0) | (rsi_14_15m > 60.0))
-            # --- 1h: the hour must not already have tripled its momentum
-            & (rsi_3_change_pct_1h < 100.0)
-            # hourly money flow is not rich — unless the 4h oscillator is still falling, where
-            # a rich hour is the start of the move rather than its end
-            & ((mfi_14_1h < 60.0) | (stochrsi_k_change_pct_4h > -25.0))
-            & (mfi_14_1h > 45.0)
-            # the hour has made a recent low, or the 4h CCI has not collapsed under it
-            & ((aroond_14_1h > 30.0) | (cci_20_change_pct_4h > -600.0))
-            # the 4h low is not fresh, hourly money flow is thin and the daily RSI_3 is snapping
-            # up: the higher timeframes are not behind this move
-            & ((aroond_14_4h > 20.0) | (cmf_20_1h > 0.05) | (rsi_3_change_pct_1d < 50.0))
-            & ((aroond_14_4h > 20.0) | (rsi_3_change_pct_1d < 50.0) | (vol_rel < 6.0))
-            # the hourly CCI is positive, or the 4h has not just jumped
-            & ((cci_20_1h > 50.0) | (roc_2_4h < 2.0))
-            # --- 4h: the higher timeframe must be in shape and must not have exploded
-            # the 4h RSI_3 is exploding while daily money flow is rich and the 4h sits at its
-            # low: a spike into a market that is already fully bid
-            & ((rsi_3_change_pct_4h < 100.0) | (mfi_14_1d < 70.0) | (willr_14_4h > -50.0))
-            # same spike with the base stochastic maxed and the 12-candle low already high
-            & ((rsi_3_change_pct_4h < 125.0) | (stoch_4_4 < 85.0) | (quad_s93_min_12 < 30.0))
-            & (rsi_3_change_pct_4h < 150.0)
-            & (rsi_3_change_pct_4h > -30.0)
-            # the 4h RSI is rising, the hour has already tripled its momentum, and the hourly
-            # stochastic is below mid-band: the move is late on every reading
-            & ((rsi_14_change_pct_4h < 5.0) | (rsi_3_change_pct_1h < 30.0) | (stochk_14_3_3_1h > 50.0))
-            # 15m flow thin while the 4h has already jumped and shows no rejection wick:
-            # entering an extended higher timeframe
-            & ((cmf_20_15m > 0.05) | (rsi_14_change_pct_4h < 15.0) | (top_wick_pct_4h > 1.0))
-            # 4h money flow is not deeply negative — unless the day itself has already dropped,
-            # where negative 4h flow is the wash rather than the trend
-            & ((cmf_20_4h > -0.2) | (roc_2_1d < -2.0))
-            # 4h money flow is healthy, or the day has not already run
-            & ((mfi_14_4h > 40.0) | roc_9_1d_lt_15)
-            # 4h money flow is healthy, or volume is still coming in
-            & ((mfi_14_4h > 45.0) | (obv_change_pct > -5.0))
-            # the 4h low is genuinely fresh, the day has fallen and the base ROC is up: buying
-            # a bounce inside a falling day
-            & ((aroond_14_4h > 60.0) | (roc_2_1d > -5.0) | (roc_9 > 1.0))
-            & (stochk_14_3_3_4h < 90.0)
-            & (stochrsi_k_4h < 95.0)
-            & (stochrsi_k_change_pct_4h < 180.0)
-            & (cci_20_4h < 100.0)
-            & (cci_20_4h > -100.0)
-            # the 4h CCI is not collapsing — unless volume is still coming in, or hourly money
-            # flow is not yet rich
-            & ((cci_20_change_pct_4h < 50.0) | (obv_change_pct > -10.0))
-            & ((cci_20_change_pct_4h < 50.0) | cmf_20_1h_lt_0_30)
-            # the 4h is not pinned at its low — unless the day is quiet enough for it to matter
-            & ((willr_14_4h > -60.0) | (change_pct_1d < 2.0))
-            # the 4h has turned up but on weak money flow with a flat hour: a hollow recovery
-            & ((roc_2_1h > 0.5) | (mfi_14_4h > 40.0) | cci_20_change_pct_4h_lt_0)
-            # a big 15m candle chasing a 4h that already ran, with the hour not confirming
-            & ((change_pct_15m < 1.5) | (stochk_14_3_3_1h > 60.0) | (rsi_3_4h < 65.0))
-            # the base is off its floor on a small candle while the 4h stochastic is maxed:
-            # a tired push under a ceiling
-            & ((ph_base_pos > 4.0) | (change_pct < 1.0) | stochrsi_k_4h_lt_80)
-            & (plus_di_14_4h > 15.0)
-            # 4h direction is real, or the day has not already run
-            & ((plus_di_14_4h > 20.0) | roc_9_1d_lt_15)
-            & (top_wick_pct_4h < 2.0)
-            # --- 1d: the day must not be caving underneath the ignition
-            # 15m money flow already rich, no 4h rejection wick and the day pinned at its high
-            & (cmf_20_15m_lt_0_30 | (top_wick_pct_4h < 0.5) | aroonu_14_1d_lt_100)
-            # the daily low is not fresh, or the 15m CCI has genuinely turned up
-            & ((aroond_14_1d > 0.0) | (rsi_3_15m > 80.0))
-            # the 15m CCI is not hot, the daily low is stale and the day sits near its high:
-            # an ignition into a daily move that has already run
-            & ((cci_20_15m > 130.0) | (aroond_14_1d > 5.0) | (aroonu_14_1d < 80.0))
-            # price is not at the very top of its 40h range while the day is already up
-            & ((willr_480 > -15.0) | (change_pct_1d < 5.0))
-            # the ignition candle is small, the 15m ultimate oscillator is caving and the day
-            # already printed an upper wick
-            & ((roc_2 < 1.5) | (uo_7_14_28_change_pct_15m > -5.0) | (top_wick_pct_1d > 1.5))
-            & (roc_2_1d > -10.0)
-            # the base has no push left and the day is a doji-ish candle rejected on both ends
-            & ((roc_9 > 2.0) | (bot_wick_pct_1d < 4.0) | (top_wick_pct_1d < 2.0))
-            & (roc_9_1d > -30.0)
-            & (change_pct_1d > -10.0)
-            # the base is barely off its floor, the 15m is accelerating hard and the day printed
-            # a long upper wick: a spike into supply
-            & ((ph_base_pos > 3.0) | (rsi_3_change_pct_15m < 60.0) | (top_wick_pct_1d < 1.5))
-            # 4h directional strength is real, or the day has not fallen far
-            & ((plus_di_14_4h > 20.0) | (change_pct_1d > -5.0))
+            # 15m & 1h down move, 15m high
+            ((rsi_3_15m_gt_50) | (aroonu_14_15m_lt_80) | (rsi_3_1h_gt_65))
+            # 15m down move, 15m & 1h high
+            & ((rsi_3_15m_gt_50) | (aroonu_14_15m_lt_80) | (stochrsi_k_1h_lt_80))
+            # 15m & 4h & 1d down move
+            & ((rsi_3_15m_gt_50) | (rsi_3_4h_gt_10) | (rsi_3_1d_gt_30))
+            # 15m down move, 15m & 1d high
+            & ((rsi_3_15m_gt_50) | (stochrsi_k_15m_lt_60) | (stochrsi_k_1d_lt_80))
+            # 15m & 4h down move, 1h high
+            & ((rsi_3_15m_gt_50) | (stochrsi_k_1h_lt_60) | (rsi_3_4h_gt_30))
+            # 15m & 1h down move, 15m high
+            & ((rsi_3_15m_gt_55) | (stochrsi_k_15m_lt_60) | (rsi_3_1h_gt_40))
+            # 15m down move & high, 1h still high
+            & ((rsi_3_15m_gt_55) | (stochrsi_k_15m_lt_70) | (stochrsi_k_1h_lt_40))
+            # 15m & 4h still high, 1d down move
+            & ((aroonu_14_15m_lt_40) | (aroonu_14_4h_lt_50) | (rsi_3_1d_gt_45))
+            # 15m still high, 4h high, 1d down move
+            & ((aroonu_14_15m_lt_40) | (aroonu_14_4h_lt_60) | (rsi_3_1d_gt_40))
+            # 15m still high, 4h high, 1d down move
+            & ((aroonu_14_15m_lt_40) | (aroonu_14_4h_lt_60) | (rsi_3_1d_gt_45))
+            # 15m high, 1h down move
+            & ((aroonu_14_15m_lt_60) | (stochrsi_k_15m_lt_80) | (rsi_3_1h_gt_40))
+            # 15m high, 1d still not low enough & downtrend
+            & ((aroonu_14_15m_lt_80) | (aroonu_14_1d_lt_30) | (roc_9_1d_gt_neg_20))
+            # 15m high, 4h still high, 1d down move
+            & ((aroonu_14_15m_lt_80) | (aroonu_14_4h_lt_50) | (rsi_3_1d_gt_40))
+            # 15m & 1d high, 1d down move
+            & ((aroonu_14_15m_lt_80) | (rsi_3_1d_gt_30) | (aroonu_14_1d_lt_80))
+            # 15m high, 1d down move & still high
+            & ((aroonu_14_15m_lt_80) | (rsi_3_1d_gt_30) | (stochrsi_k_1d_lt_40))
+            # 15m high, 1h & 4h down move
+            & ((aroonu_14_15m_lt_80) | (rsi_3_1h_gt_10) | (rsi_3_4h_gt_10))
+            # 15m high, 1h down move, 1d downtrend
+            & ((aroonu_14_15m_lt_80) | (rsi_3_1h_gt_30) | (roc_9_1d_gt_neg_30))
+            # 15m high, 1h & 1d down move
+            & ((aroonu_14_15m_lt_80) | (rsi_3_1h_gt_65) | (rsi_3_1d_gt_10))
+            # 15m & 1h high, 4h downtrend
+            & ((aroonu_14_15m_lt_80) | (stochrsi_k_1h_lt_80) | (roc_9_4h_gt_neg_15))
+            # 15m high, 4h still high, 1d down move
+            & ((aroonu_14_15m_lt_80) | (stochrsi_k_4h_lt_50) | (rsi_3_1d_gt_20))
+            # 15m & 1d high, 1d down move
+            & ((stochrsi_k_15m_lt_60) | (rsi_3_1d_gt_65) | (stochrsi_k_1d_lt_80))
+            # 15m high, 1d down move & still not low enough
+            & ((stochrsi_k_15m_lt_70) | (rsi_3_1d_gt_20) | (aroonu_14_1d_lt_30))
+            # 15m & 1d high, 1d down move
+            & ((stochrsi_k_15m_lt_70) | (rsi_3_1d_gt_50) | (stochrsi_k_1d_lt_80))
+            # 15m high, 1h down move, 1d downtrend
+            & ((stochrsi_k_15m_lt_70) | (rsi_3_1h_gt_40) | (roc_9_1d_gt_neg_15))
+            # 15m & 1h & 1d high
+            & ((stochrsi_k_15m_lt_70) | (stochrsi_k_1h_lt_80) | (aroonu_14_1d_lt_80))
+            # 15m & 1h & 1d high
+            & ((stochrsi_k_15m_lt_70) | (stochrsi_k_1h_lt_80) | (stochrsi_k_1d_lt_60))
+            # 15m & 1d high, 1h still high
+            & ((stochrsi_k_15m_lt_80) | (aroonu_14_1h_lt_50) | (stochrsi_k_1d_lt_60))
+            # 15m & 1h & 1d high
+            & ((stochrsi_k_15m_lt_80) | (aroonu_14_1h_lt_75) | (stochrsi_k_1d_lt_80))
+            # 15m high, 4h still high & still not low enough
+            & ((stochrsi_k_15m_lt_80) | (aroonu_14_4h_lt_40) | (stochrsi_k_4h_lt_30))
+            # 15m high, 1d down move & still not low enough
+            & ((stochrsi_k_15m_lt_80) | (rsi_3_1d_gt_20) | (stochrsi_k_1d_lt_30))
+            # 15m & 1d high, 1d down move
+            & ((stochrsi_k_15m_lt_80) | (rsi_3_1d_gt_30) | (aroonu_14_1d_lt_60))
+            # 15m high, 1h down move, 4h still not low enough
+            & ((stochrsi_k_15m_lt_80) | (rsi_3_1h_gt_65) | (stochrsi_k_4h_lt_30))
+            # 15m high, 4h down move & still not low enough
+            & ((stochrsi_k_15m_lt_80) | (rsi_3_4h_gt_30) | (stochrsi_k_4h_lt_20))
+            # 15m high, 4h down move & still high
+            & ((stochrsi_k_15m_lt_80) | (rsi_3_4h_gt_30) | (stochrsi_k_4h_lt_40))
+            # 15m high, 1h & 4h still high
+            & ((stochrsi_k_15m_lt_80) | (stochrsi_k_1h_lt_40) | (aroonu_14_4h_lt_40))
+            # 15m & 1h & 1d high
+            & ((stochrsi_k_15m_lt_80) | (stochrsi_k_1h_lt_60) | (stochrsi_k_1d_lt_90))
+            # 15m & 1h high, 4h still not low enough
+            & ((stochrsi_k_15m_lt_80) | (stochrsi_k_1h_lt_80) | (aroonu_14_4h_lt_30))
+            # 15m & 1h high, 4h down move
+            & ((stochrsi_k_15m_lt_80) | (stochrsi_k_1h_lt_80) | (rsi_3_4h_gt_60))
+            # 15m high, 4h still not low enough, 1d overbought
+            & ((stochrsi_k_15m_lt_80) | (stochrsi_k_4h_lt_10) | (roc_9_1d_lt_40))
+            # 15m high, 4h still high, 1d down move
+            & ((stochrsi_k_15m_lt_80) | (stochrsi_k_4h_lt_40) | (rsi_3_1d_gt_60))
+            # 1h & 1d down move, 1h still not low enough
+            & ((rsi_3_1h_gt_10) | (aroonu_14_1h_lt_20) | (rsi_3_1d_gt_60))
+            # 1h & 4h & 1d down move
+            & ((rsi_3_1h_gt_20) | (rsi_3_4h_gt_30) | (rsi_3_1d_gt_20))
+            # 1h & 1d down move, 1d high
+            & ((rsi_3_1h_gt_30) | (rsi_3_1d_gt_60) | (stochrsi_k_1d_lt_80))
+            # 1h & 1d down move, 4h still not low enough
+            & ((rsi_3_1h_gt_30) | (stochrsi_k_4h_lt_10) | (rsi_3_1d_gt_30))
+            # 1h & 1d down move, 1d high
+            & ((rsi_3_1h_gt_40) | (rsi_3_1d_gt_50) | (stochrsi_k_1d_lt_60))
+            # 1h down move & high, 1d still high
+            & ((rsi_3_1h_gt_40) | (stochrsi_k_1h_lt_60) | (aroonu_14_1d_lt_50))
+            # 1h & 1d down move, 4h still not low enough
+            & ((rsi_3_1h_gt_40) | (stochrsi_k_4h_lt_30) | (rsi_3_1d_gt_20))
+            # 1h down move, 1h & 1d still high
+            & ((rsi_3_1h_gt_50) | (stochrsi_k_1h_lt_40) | (stochrsi_k_1d_lt_40))
+            # 1h down move, 1h & 1d high
+            & ((rsi_3_1h_gt_50) | (stochrsi_k_1h_lt_60) | (aroonu_14_1d_lt_60))
+            # 1h down move & still high, 1d overbought
+            & ((rsi_3_1h_gt_60) | (stochrsi_k_1h_lt_40) | (roc_9_1d_lt_10))
+            # 1h down move & still high, 1d high
+            & ((rsi_3_1h_gt_60) | (stochrsi_k_1h_lt_40) | (stochrsi_k_1d_lt_80))
+            # 1h down move & high, 1d still high
+            & ((rsi_3_1h_gt_60) | (stochrsi_k_1h_lt_60) | (stochrsi_k_1d_lt_40))
+            # 1h down move & high, 4h still not low enough
+            & ((rsi_3_1h_gt_60) | (stochrsi_k_1h_lt_60) | (stochrsi_k_4h_lt_30))
+            # 1h & 1d down move, 1h still not low enough
+            & ((rsi_3_1h_gt_65) | (aroonu_14_1h_lt_20) | (rsi_3_1d_gt_30))
+            # 1h down move & high, 4h still not low enough
+            & ((rsi_3_1h_gt_65) | (aroonu_14_1h_lt_75) | (stochrsi_k_4h_lt_20))
+            # 1h down move & high, 1d still high
+            & ((rsi_3_1h_gt_65) | (stochrsi_k_1h_lt_80) | (stochrsi_k_1d_lt_40))
+            # 1h down move, 4h still not low enough, 1d high
+            & ((rsi_3_1h_gt_65) | (stochrsi_k_4h_lt_30) | (stochrsi_k_1d_lt_80))
+            # 1h still not low enough, 4h still high, 1d overbought
+            & ((aroonu_14_1h_lt_25) | (aroonu_14_4h_lt_50) | (roc_9_1d_lt_70))
+            # 1h still not low enough, 1d down move & high
+            & ((aroonu_14_1h_lt_25) | (rsi_3_1d_gt_40) | (stochrsi_k_1d_lt_60))
+            # 1h still not low enough, 4h & 1d down move
+            & ((aroonu_14_1h_lt_25) | (rsi_3_4h_gt_50) | (rsi_3_1d_gt_20))
+            # 1h still not low enough & still high, 4h down move
+            & ((aroonu_14_1h_lt_25) | (stochrsi_k_1h_lt_40) | (rsi_3_4h_gt_30))
+            # 1h still high, 1d down move & high
+            & ((aroonu_14_1h_lt_50) | (rsi_3_1d_gt_60) | (stochrsi_k_1d_lt_80))
+            # 1h still high, 4h down move, 1d downtrend
+            & ((aroonu_14_1h_lt_50) | (rsi_3_4h_gt_40) | (roc_9_1d_gt_neg_10))
+            # 1h still high, 4h down move & still not low enough
+            & ((aroonu_14_1h_lt_50) | (rsi_3_4h_gt_40) | (stochrsi_k_4h_lt_30))
+            # 1h & 4h high
+            & ((aroonu_14_1h_lt_60) | (stochrsi_k_1h_lt_60) | (aroonu_14_4h_lt_60))
+            # 1h & 1d high, 4h still high
+            & ((aroonu_14_1h_lt_75) | (aroonu_14_4h_lt_40) | (stochrsi_k_1d_lt_60))
+            # 1h high, 1d down move & still not low enough
+            & ((aroonu_14_1h_lt_75) | (rsi_3_1d_gt_20) | (stochrsi_k_1d_lt_20))
+            # 1h high, 1d down move & still high
+            & ((aroonu_14_1h_lt_75) | (rsi_3_1d_gt_40) | (stochrsi_k_1d_lt_40))
+            # 1h high, 1d still not low enough & downtrend
+            & ((aroonu_14_1h_lt_75) | (stochrsi_k_1d_lt_20) | (roc_9_1d_gt_neg_10))
+            # 1h high, 4h still high
+            & ((aroonu_14_1h_lt_75) | (stochrsi_k_1h_lt_60) | (stochrsi_k_4h_lt_40))
+            # 1h high, 4h still not low enough, 1d down move
+            & ((aroonu_14_1h_lt_75) | (stochrsi_k_4h_lt_30) | (rsi_3_1d_gt_40))
+            # 1h & 4h still high, 4h still not low enough
+            & ((stochrsi_k_1h_lt_40) | (aroonu_14_4h_lt_20) | (stochrsi_k_4h_lt_40))
+            # 1h still high, 4h still not low enough, 1d high
+            & ((stochrsi_k_1h_lt_40) | (aroonu_14_4h_lt_30) | (aroonu_14_1d_lt_75))
+            # 1h & 4h still high, 1d high
+            & ((stochrsi_k_1h_lt_40) | (aroonu_14_4h_lt_50) | (stochrsi_k_1d_lt_60))
+            # 1h & 1d high, 4h still not low enough
+            & ((stochrsi_k_1h_lt_60) | (aroonu_14_4h_lt_20) | (stochrsi_k_1d_lt_80))
+            # 1h & 1d high, 4h still not low enough
+            & ((stochrsi_k_1h_lt_60) | (aroonu_14_4h_lt_30) | (stochrsi_k_1d_lt_60))
+            # 1h high, 4h & 1d still high
+            & ((stochrsi_k_1h_lt_60) | (aroonu_14_4h_lt_50) | (aroonu_14_1d_lt_50))
+            # 1h high, 4h down move, 1d still not low enough
+            & ((stochrsi_k_1h_lt_60) | (rsi_3_4h_gt_20) | (stochrsi_k_1d_lt_20))
+            # 1h & 1d high, 4h still not low enough
+            & ((stochrsi_k_1h_lt_60) | (stochrsi_k_4h_lt_30) | (aroonu_14_1d_lt_60))
+            # 1h & 1d high, 1d down move
+            & ((stochrsi_k_1h_lt_80) | (rsi_3_1d_gt_40) | (stochrsi_k_1d_lt_60))
+            # 1h high, 4h still not low enough, 1d still high
+            & ((stochrsi_k_1h_lt_80) | (stochrsi_k_4h_lt_20) | (aroonu_14_1d_lt_40))
+            # 1h high, 4h still not low enough, 1d still high
+            & ((stochrsi_k_1h_lt_80) | (stochrsi_k_4h_lt_20) | (aroonu_14_1d_lt_50))
+            # 4h down move, 1d high & downtrend
+            & ((rsi_3_4h_gt_10) | (aroonu_14_1d_lt_75) | (roc_9_1d_gt_neg_10))
+            # 4h & 1d down move, 1d still high
+            & ((rsi_3_4h_gt_10) | (rsi_3_1d_gt_40) | (stochrsi_k_1d_lt_40))
+            # 4h down move & still not low enough, 1d high
+            & ((rsi_3_4h_gt_20) | (aroonu_14_4h_lt_30) | (stochrsi_k_1d_lt_80))
+            # 4h down move & still not low enough, 1d downtrend
+            & ((rsi_3_4h_gt_20) | (stochrsi_k_4h_lt_20) | (roc_9_1d_gt_neg_10))
+            # 4h down move & still not low enough, 1d downtrend
+            & ((rsi_3_4h_gt_30) | (aroonu_14_4h_lt_30) | (roc_9_1d_gt_neg_10))
+            # 4h & 1d down move, 1d still high
+            & ((rsi_3_4h_gt_40) | (rsi_3_1d_gt_30) | (stochrsi_k_1d_lt_40))
+            # 4h down move, 1d still high & downtrend
+            & ((rsi_3_4h_gt_40) | (stochrsi_k_1d_lt_40) | (roc_9_1d_gt_neg_10))
+            # 4h & 1d down move, 4h still high
+            & ((rsi_3_4h_gt_40) | (stochrsi_k_4h_lt_50) | (rsi_3_1d_gt_60))
+            # 4h still high, 1d down move & still not low enough
+            & ((aroonu_14_4h_lt_40) | (rsi_3_1d_gt_40) | (stochrsi_k_1d_lt_30))
+            # 4h still high, 1d high & overbought
+            & ((aroonu_14_4h_lt_50) | (stochrsi_k_1d_lt_80) | (roc_9_1d_lt_40))
+            # 4h high
+            & (aroonu_14_4h_lt_75)
+            # 4h still not low enough, 1d high
+            & ((stochrsi_k_4h_lt_20) | (aroonu_14_1d_lt_75) | (stochrsi_k_1d_lt_80))
+            # 4h still high
+            & (stochrsi_k_4h_lt_60)
           )
 
           # Logic
@@ -20197,11 +20253,6 @@ class NostalgiaForInfinityX8(IStrategy):
             # participation, not a routine tick up in volume
             & (vol_rel > 4.0)
           )
-
-          # NOTE: the measured PUMP CHARACTER columns (PH_BASE_POS d=0.95, PH_PRE_TIGHT d=0.65,
-          # PH_CROSS_CNT_12 first-fire counter) are defined above and ready for your protection
-          # pass — shipped RAW per our measurements (character gates halved damage but the raw
-          # form carries the highest WR; full matrix in the PR)
 
         # Condition #172 - Marubozu momentum (Long, experimental — full-body ignition).
         if long_entry_condition_index == 172:
