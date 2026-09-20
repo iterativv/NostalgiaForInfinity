@@ -3098,6 +3098,22 @@ class NostalgiaForInfinityX8(IStrategy):
     return out
 
   @staticmethod
+  def obv_direction(close: np.ndarray, volume: np.ndarray) -> np.ndarray:
+    """Return the sign of this candle's OBV movement without a cumulative denominator."""
+    close = np.asarray(close, dtype=np.float64)
+    volume = np.asarray(volume, dtype=np.float64)
+    out = np.full(close.shape, np.nan, dtype=np.float64)
+    if close.size < 2:
+      return out
+
+    current = close[1:]
+    previous = close[:-1]
+    movement = np.where(current > previous, volume[1:], np.where(current < previous, -volume[1:], 0.0))
+    valid = np.isfinite(current) & np.isfinite(previous) & np.isfinite(volume[1:])
+    np.copyto(out[1:], np.sign(movement), where=valid)
+    return out
+
+  @staticmethod
   def obv_change_pct(obv: np.ndarray) -> np.ndarray:
     """Measure OBV movement relative to the magnitude of its previous value."""
     obv = np.asarray(obv, dtype=np.float64)
@@ -3895,6 +3911,7 @@ class NostalgiaForInfinityX8(IStrategy):
         "UO_7_14_28": uo,
         "UO_7_14_28_change_pct": uo_change,
         "OBV_change_pct": obv_change,
+        "OBV_direction": self.obv_direction(close_np, volume_np),
         "ROC_9": roc_9,
         "CCI_20": cci_20,
         "CCI_20_change_pct": cci_change,
@@ -4349,6 +4366,7 @@ class NostalgiaForInfinityX8(IStrategy):
         "ROC_9": roc_9,
         "change_pct": change_pct,
         "OBV_change_pct": obv_change,
+        "OBV_direction": self.obv_direction(close_np, volume_np),
         "close_delta": close_delta,
         "close_max_6": close_max_6,
         "close_max_12": close_max_12,
@@ -5827,6 +5845,7 @@ class NostalgiaForInfinityX8(IStrategy):
     quad_s93_max_12 = np_view("QUAD_S93_MAX_12")
     bbp_20_2_0_4h = np_view("BBP_20_2.0_4h")
     obv_change_pct = np_view("OBV_change_pct")
+    obv_direction = np_view("OBV_direction")
     open_rate = np_view("open")
     roc_9_15m = np_view("ROC_9_15m")
     rsi_14_4h = np_view("RSI_14_4h")
@@ -5957,6 +5976,7 @@ class NostalgiaForInfinityX8(IStrategy):
     willr_14 = np_view("WILLR_14")
     willr_14_1h = np_view("WILLR_14_1h")
     obv_change_pct_15m = np_view("OBV_change_pct_15m")
+    obv_direction_15m = np_view("OBV_direction_15m")
     high_max_6_1h = np_view("high_max_6_1h")
     high_max_12_1h = np_view("high_max_12_1h")
     high_max_24_1h = np_view("high_max_24_1h")
@@ -10240,7 +10260,7 @@ class NostalgiaForInfinityX8(IStrategy):
           long_entry_logic.append(rsi_14_4h < 68.0)
           long_entry_logic.append(bbp_20_2_0 > 0.55)
           long_entry_logic.append(bbp_20_2_0 < 0.85)
-          long_entry_logic.append(obv_change_pct > 0.0)
+          long_entry_logic.append(obv_direction > 0.0)
           long_entry_logic.append(willr_14 > -40.0)
           long_entry_logic.append(willr_14 < -15.0)
 
@@ -13652,7 +13672,7 @@ class NostalgiaForInfinityX8(IStrategy):
             & (stochrsi_k > 20.0)
             & (stochrsi_k < 80.0)
             & (roc_9_1d > -25.0)
-            & (obv_change_pct > 0.0)
+            & (obv_direction > 0.0)
             & (ema_12 > ema_26)
             & (np_shift(ema_12, 3) < np_shift(ema_26, 3))
             & (ema_12_4h < ema_200_4h)
@@ -15680,7 +15700,7 @@ class NostalgiaForInfinityX8(IStrategy):
             & (rsi_14 < 78.0)
             & (mfi_14 > 50.0)
             & (bbb_20_2_0 > 10.0)
-            & (obv_change_pct_15m > 0.0)
+            & (obv_direction_15m > 0.0)
             & (close > bbu_20_2_0)
             & (ema_12 > ema_26)
           )
@@ -22208,7 +22228,7 @@ class NostalgiaForInfinityX8(IStrategy):
           short_entry_logic.append(willr_14_1h > -20.0)
           short_entry_logic.append(aroonu_14_1h > 70.0)
           short_entry_logic.append(bbb_20_2_0_1h > 8.0)
-          short_entry_logic.append(obv_change_pct < 0.0)
+          short_entry_logic.append(obv_direction < 0.0)
           short_entry_logic.append(cci_20_4h < 120.0)
 
         # Condition #546 - BB Upper Rejection + Multi-TF Overbought Stack (Short).
@@ -22244,7 +22264,7 @@ class NostalgiaForInfinityX8(IStrategy):
           short_entry_logic.append(willr_14_1h > -15.0)
           short_entry_logic.append(rsi_14 > 68.0)
           short_entry_logic.append((rsi_14_15m > 60.0) | (rsi_14_1h > 58.0))
-          short_entry_logic.append(obv_change_pct < 0.0)
+          short_entry_logic.append(obv_direction < 0.0)
           short_entry_logic.append(close > (close_max_48 * 0.98))
 
         # Condition #561 - Downtrend Pullback / Continuation mode (Short). Mirror of code-64.
@@ -23015,7 +23035,7 @@ class NostalgiaForInfinityX8(IStrategy):
             & (rsi_14 > 15.0)
             & (rsi_14 < 32.0)
             & (cmf_20 < -0.08)
-            & (obv_change_pct_15m < 0.0)
+            & (obv_direction_15m < 0.0)
             & (ema_12 < ema_26)
             & (close < bbl_20_2_0)
           )
