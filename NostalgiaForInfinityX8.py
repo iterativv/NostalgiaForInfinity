@@ -20300,32 +20300,19 @@ class NostalgiaForInfinityX8(IStrategy):
           # Protections
           long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           long_entry_logic.append(protections_long_global == True)
-
           long_entry_logic.append(
-            # a long-divergence entry with nothing turning: 5m trend still down, no money coming in,
-            # the 15m dead and the hour not rising (API3)
-            ((aroond_14 < 90.0) | (cmf_20 > 0.12) | (rsi_3_15m > 30.0) | (roc_9_1h > 1.0))
-            # a 1d capitulation with money leaving at the same time — a knife, not a dip (RUNE)
-            & ((cmf_20 > -0.10) | (rsi_3_1d > 15.0))
-            # the 15m money flow collapsing under a 4h that is still stretched (ETH 22-04)
-            & ((obv_change_pct_15m > -60.0) | (willr_14_4h < -20.0))
-            # the 15m momentum snapping higher right before the top (LINK 24-03)
-            & ((uo_7_14_28_change_pct_15m < 15.0) | (mfi_14_15m < 85.0))
-            # the hour is rising, the 4h has not stopped making lows, and the day shows no inflow —
-            # a dead-cat fade rather than a reversal (DOT 21, ETH 24, LINK 24, DOGE 25, GALA 26)
-            & ((cci_20_change_pct_1h_lt_0) | (aroond_14_4h_lt_80) | (mfi_14_1d > 45.0))
-            # a pullback into a weak day with no hourly money behind it — a falling-knife day
-            # (SAND 21, AXS 24, AVAX 24, GALA 25)
-            & ((cmf_20_1h >= 0.0) | (rsi_14_1d >= 40.0))
-            # a mid-range 1h RSI dip inside a 1d downtrend: not oversold enough to bounce (SOL x2)
-            & ((rsi_14_1h < 55.0) | (rsi_14_1h > 65.0) | (roc_9_1d > 0.0))
-            # a fade at a 4h top that is already stretched, with the hour hot — chasing the top
-            # (CRV 21-09, CRV 25-03, AXS 25-08)
-            & ((rsi_14_1h < 70.0) | (roc_9_4h < 13.0))
-            # the 1h RSI collapsing at the entry candle — a knife, not a dip (LINK 24-06)
-            & ((rsi_3_change_pct_1h > -30.0) | (rsi_3_1h < 50.0))
-            # the 4h actively collapsing — a knife, not a dip (XRP 21-04)
-            & ((roc_9_4h > -15.0) | (rsi_14_4h > 40.0))
+            # 5m & 15m down move, 15m high   [weak]
+            ((rsi_3_gt_10) | (rsi_3_15m_gt_35) | (aroonu_14_15m_lt_70))
+            # 5m & 1h & 4h still not low enough
+            & ((aroonu_14_lt_25) | (aroonu_14_1h_lt_20) | (stochrsi_k_4h_lt_20))
+            # 15m spent while the day is not yet stretched
+            & ((rsi_3_15m_gt_30) | (stochrsi_k_1d_lt_90))
+            # 15m down move, 15m & 1h high
+            & ((rsi_3_15m_gt_55) | (stochrsi_k_15m_lt_80) | (aroonu_14_1h_lt_75))
+            # 15m high, 4h still not low enough, 1d down move
+            & ((aroonu_14_15m_lt_70) | (aroonu_14_4h_lt_20) | (rsi_3_1d_gt_20))
+            # 1h trend intact, day not washed out
+            & ((aroonu_14_1h_lt_25) | (rsi_3_1d_gt_10))
           )
 
           # Logic
@@ -20344,14 +20331,11 @@ class NostalgiaForInfinityX8(IStrategy):
           # Protections
           long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           long_entry_logic.append(protections_long_global == True)
-
           long_entry_logic.append(
-            (cmf_20_15m > 0.0)
-            & (adx_14_4h > 20.0)
-            & (change_pct_4h > -8.0)
-            & ((willr_14_15m > -40.0) | (uo_7_14_28_15m < 50.0) | (stochrsi_k_1d > 25.0))
-            & ((cmf_20_1h < 0.05) | (stochk_14_3_3_1h > 80.0) | stochrsi_k_1d_gt_10)
-            & ((cmf_20_1h > 0.15) | (cmf_20_4h > 0.0) | rsi_3_1d_gt_20)
+            (
+              # 15m & 1d down move, 15m high   [weak]
+              (rsi_3_15m_gt_20) | (aroonu_14_15m_lt_80) | (rsi_3_1d_gt_20)
+            )
           )
 
           # Logic
@@ -23110,32 +23094,15 @@ class NostalgiaForInfinityX8(IStrategy):
           # Protections
           short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           short_entry_logic.append(protections_short_global == True)
-
           short_entry_logic.append(
-            # Round 1 (GRIFFAIN loss): block short while uptrend still has legs
-            (
-              (roc_9_1d < 2.5)
-              | (aroonu_14 < 100.0)
-              | (aroonu_14_1h < 65.0)
-              | (roc_9_1h < -5.5)
-              | (cmf_20 < 0.0)
-              | (rsi_14_1h > 40.0)
-            )
-            # Round 2 (XRP loss)
-            & (
-              (roc_9_1d < 2.0)
-              | (rsi_14_1h > 42.0)
-              | (rsi_3_15m > 65.0)
-              | (cmf_20 > 0.15)
-              | (aroonu_14_1h > 40.0)
-              | (roc_9_1h < -5.0)
-            )
-            # Round 3 (API3/UNI loss)
-            & ((roc_9_1d < 0.0) | (roc_9_1h < -5.0) | (rsi_14_1h > 32.0) | (mfi_14_15m > 25.0))
-            # Round 4 (EIGEN/DODOX loss)
-            & ((cmf_20 < 0.15) | (roc_9_1d < -3.0) | (roc_9_1d > 5.0) | (rsi_14_1h > 50.0))
-            # Round 5 (CHZ loss): deep 1d downtrend + heavy money INFLOW at entry = squeeze fuel
-            & ((mfi_14 < 70.0) | (roc_9_1d > -10.0))
+            # 15m low & still high, 4h up move   [weak]
+            ((aroonu_14_15m_gt_10) | (stochrsi_k_15m_gt_30) | (rsi_3_4h_lt_80))
+            # 15m low & still high, 1d uptrend
+            & ((aroonu_14_15m_gt_10) | (stochrsi_k_15m_gt_50) | (aroonu_14_1d_lt_30))
+            # 15m uptrend & still high, 1h low   [weak]
+            & ((aroonu_14_15m_lt_20) | (stochrsi_k_15m_gt_40) | (aroonu_14_1h_gt_10))
+            # 1h uptrend & low, 4h still not low enough
+            & ((aroonu_14_1h_lt_20) | (stochrsi_k_1h_gt_20) | (stochrsi_k_4h_gt_80))
           )
 
           # Logic
@@ -23154,11 +23121,13 @@ class NostalgiaForInfinityX8(IStrategy):
           # Protections
           short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           short_entry_logic.append(protections_short_global == True)
-
           short_entry_logic.append(
-            # Round 1 (UNI loss): 1h washed-out + 1d overbought & rising = bounce squeeze; need 1h strength
-            # OR 1d not stretched OR 1d already down OR 4h stoch off the floor
-            (rsi_14_1h > 30.0) | (stochrsi_k_1d < 80.0) | (roc_9_1d < 0.0) | (stochrsi_k_4h > 10.0)
+            # 15m down move & uptrend, 1h low   [weak]
+            ((rsi_3_15m_lt_75) | (aroonu_14_15m_lt_20) | (aroonu_14_1h_gt_10))
+            # 15m & 1d low, 1h uptrend
+            & ((stochrsi_k_15m_gt_20) | (aroonu_14_1h_lt_30) | (stochrsi_k_1d_gt_20))
+            # 15m not rich, 4h trend not up
+            & ((stochrsi_k_15m_gt_50) | (aroonu_14_4h_gt_50))
           )
 
           # Logic
