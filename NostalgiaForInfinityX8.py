@@ -5891,6 +5891,7 @@ class NostalgiaForInfinityX8(IStrategy):
     ema_200 = np_view("EMA_200")
     ema_200_1h = np_view("EMA_200_1h")
     ema_200_4h = np_view("EMA_200_4h")
+    ema_200_1d = np_view("EMA_200_1d")
     ema_9 = np_view("EMA_9")
     high_max_12_1d = np_view("high_max_12_1d")
     high_max_12_4h = np_view("high_max_12_4h")
@@ -17020,6 +17021,34 @@ class NostalgiaForInfinityX8(IStrategy):
           # Protections
           long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           long_entry_logic.append(protections_long_global == True)
+          long_entry_logic.append(
+            # 5m down move, 15m high
+            ((rsi_3_gt_10) | (aroonu_14_15m_lt_75))
+            # 5m still not low enough, 15m downtrend
+            & ((aroonu_14_lt_25) | (roc_9_15m > -7.0))
+            # 15m & 1d down move
+            & ((rsi_3_15m_gt_15) | (rsi_3_1d_gt_45))
+            # 15m & 1d down move, 1d high
+            & ((rsi_3_15m_gt_30) | (rsi_3_1d_gt_60) | (stochrsi_k_1d_lt_70))
+            # 15m high, 1h still not low enough, 4h downtrend
+            & ((aroonu_14_15m_lt_80) | (stochrsi_k_1h_lt_20) | (roc_9_4h > 2.0))
+            # 5m overbought, 15m still not low enough
+            & ((roc_9 < 0.5) | (aroonu_14_15m_lt_20))
+            # 15m still not low enough, 4h downtrend
+            & ((stochrsi_k_15m_lt_30) | (roc_9_4h > 0.0))
+            # 15m still not low enough, 1d down move
+            & ((stochrsi_k_15m_lt_30) | (rsi_3_1d_gt_45))
+            # 1h low, 4h down move, 1d up move
+            & ((aroonu_14_1h_gt_10) | (rsi_3_4h_gt_30) | (rsi_3_1d_lt_80))
+            # 1h high, 4h downtrend
+            & ((aroonu_14_1h_lt_60) | (roc_9_4h > -3.0))
+            # 4h & 1d high
+            & ((stochrsi_k_4h_lt_80) | (stochrsi_k_1d_lt_90))
+            # 15m downtrend, 4h overbought
+            & ((roc_9_15m > -3.0) | (roc_9_4h_lt_50))
+            # 1d down move & high
+            & ((rsi_3_1d_gt_55) | (stochrsi_k_1d_lt_70))
+          )
 
           # Logic
           long_entry_logic.append(
@@ -17031,6 +17060,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & (np_shift(willr_14_1h, 12) >= -90.0)
             # mean-revert WITH the daily trend: only long when the day is up
             & (change_pct_1d > 0.0)
+            # only above the daily 200 EMA: in a bear market the snapback does not come
+            & (close > ema_200_1d)
           )
 
         # Condition #120 - Grind mode (Long).
