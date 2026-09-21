@@ -10159,6 +10159,82 @@ class NostalgiaForInfinityX8(IStrategy):
           # Protections
           long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           long_entry_logic.append(protections_long_global == True)
+          long_entry_logic.append(
+            # 5m hot, 15m trend absent, hour overbought
+            ((rsi_3_lt_50) | (aroonu_14_15m_gt_40) | (rsi_3_1h_lt_80))
+            # 5m still not low enough, 15m down move, 4h high
+            & ((aroonu_14_lt_25) | (rsi_3_15m_gt_30) | (aroonu_14_4h_lt_100))
+            # 5m still not low enough, 15m down move & high
+            & ((aroonu_14_lt_25) | (rsi_3_15m_gt_55) | (stochrsi_k_15m_lt_80))
+            # 5m still not low enough, 15m high, 4h down move
+            & ((aroonu_14_lt_25) | (stochrsi_k_15m_lt_60) | (rsi_3_4h_gt_60))
+            # 5m still not low enough, 15m down move, 1d high
+            & ((aroonu_14_lt_30) | (rsi_3_15m_gt_50) | (stochrsi_k_1d_lt_90))
+            # 5m still not low enough, 15m & 1h down move
+            & ((aroonu_14_lt_30) | (rsi_3_15m_gt_55) | (rsi_3_1h_gt_60))
+            # 5m still not low enough, 15m high, 4h down move
+            & ((aroonu_14_lt_30) | (stochrsi_k_15m_lt_60) | (rsi_3_4h_gt_65))
+            # 5m still not low enough, 15m down move, 1d high
+            & ((stochrsi_k_lt_20) | (rsi_3_15m_gt_50) | (aroonu_14_1d_lt_80))
+            # 5m still not low enough, 1h & 4h down move
+            & ((stochrsi_k_lt_20) | (rsi_3_1h_gt_50) | (rsi_3_4h_gt_65))
+            # 5m not low after a day that already ran 40%
+            & ((stochrsi_k_lt_30) | (roc_9_1d_lt_40))
+            # 5m still not low enough, 1h & 1d overbought
+            & ((stochrsi_k_lt_30) | (roc_9_1h_lt_10) | (roc_9_1d_lt_15))
+            # 5m still not low enough, 1h & 1d high
+            & ((stochrsi_k_lt_30) | (stochrsi_k_1h_lt_80) | (stochrsi_k_1d_lt_70))
+            # 15m down move & still not low enough, 1h high
+            & ((rsi_3_15m_gt_20) | (stochrsi_k_15m_lt_20) | (stochrsi_k_1h_lt_60))
+            # 15m down move & still not low enough, 1h overbought
+            & ((rsi_3_15m_gt_30) | (stochrsi_k_15m_lt_20) | (roc_9_1h_lt_20))
+            # 15m & 1h down move, 15m still high
+            & ((rsi_3_15m_gt_30) | (stochrsi_k_15m_lt_40) | (rsi_3_1h_gt_65))
+            # 15m & 1d down move, 4h high
+            & ((rsi_3_15m_gt_40) | (aroonu_14_4h_lt_100) | (rsi_3_1d_gt_55))
+            # 15m spent after a 4h run already that large
+            & ((rsi_3_15m_gt_40) | (roc_9_4h_lt_70))
+            # 15m & 1h down move, 4h high
+            & ((rsi_3_15m_gt_40) | (rsi_3_1h_gt_40) | (stochrsi_k_4h_lt_70))
+            # 15m down move & still high, 1h high
+            & ((rsi_3_15m_gt_40) | (stochrsi_k_15m_lt_40) | (aroonu_14_1h_lt_90))
+            # a 4h birth on a hot day after the 15m and 1h push has already died — the top of a one-day relief rip
+            & ((rsi_3_15m_gt_50) | (aroonu_14_1h_gt_60) | (stochrsi_k_1h_gt_40) | (rsi_3_1d_lt_80))
+            # 15m & 1h down move, 1d overbought
+            & ((rsi_3_15m_gt_50) | (rsi_3_1h_gt_40) | (roc_9_1d_lt_10))
+            # 15m & 1h & 1d down move
+            & ((rsi_3_15m_gt_50) | (rsi_3_1h_gt_60) | (rsi_3_1d_gt_55))
+            # 15m still high, 4h high, 1d down move
+            & ((aroonu_14_15m_lt_40) | (aroonu_14_4h_lt_100) | (rsi_3_1d_gt_55))
+            # 15m at its ceiling while the 4h is not strong
+            & ((aroonu_14_15m_lt_80) | (rsi_3_4h_gt_65))
+            # 15m high, 1h down move
+            & ((aroonu_14_15m_lt_80) | (stochrsi_k_15m_lt_60) | (rsi_3_1h_gt_60))
+            # 15m still high, 1h down move, 1d high
+            & ((stochrsi_k_15m_lt_40) | (rsi_3_1h_gt_65) | (aroonu_14_1d_lt_80))
+            # 15m high, 1h down move, 1d still high
+            & ((stochrsi_k_15m_lt_60) | (rsi_3_1h_gt_65) | (aroonu_14_1d_lt_40))
+            # 15m high, 1d still high
+            & ((stochrsi_k_15m_lt_80) | (aroonu_14_1d_lt_40) | (stochrsi_k_1d_lt_50))
+            # 15m & 1h high, 1d overbought
+            & ((stochrsi_k_15m_lt_80) | (aroonu_14_1h_lt_90) | (roc_9_1d_lt_10))
+            # 1h down move, 4h high, 1d still high
+            & ((rsi_3_1h_gt_40) | (stochrsi_k_4h_lt_80) | (aroonu_14_1d_lt_40))
+            # 1h & 4h down move, 1d high
+            & ((rsi_3_1h_gt_60) | (rsi_3_4h_gt_65) | (stochrsi_k_1d_lt_80))
+            # 1h down move, 1d still high & overbought
+            & ((rsi_3_1h_gt_60) | (stochrsi_k_1d_lt_40) | (roc_9_1d_lt_15))
+            # 1h down move, 4h & 1d high
+            & ((rsi_3_1h_gt_65) | (stochrsi_k_4h_lt_90) | (stochrsi_k_1d_lt_70))
+            # 1h & 1d overbought, 4h high
+            & ((roc_9_1h_lt_10) | (stochrsi_k_4h_lt_90) | (roc_9_1d_lt_15))
+            # day washed out while the 1d trend sits at its high
+            & ((rsi_3_1d_gt_25) | (aroonu_14_1d_lt_75))
+            # day's momentum gone while the day is stretched
+            & ((rsi_3_1d_gt_45) | (stochrsi_k_1d_lt_70))
+            # daily RSI_3 tripled in one candle, 15m not holding it: a relief rip
+            & ((rsi_14_15m > 60) | (rsi_3_change_pct_1d < 300))
+          )
 
           # Logic
           long_entry_logic.append(
@@ -10168,6 +10244,9 @@ class NostalgiaForInfinityX8(IStrategy):
             # direction: bulls own it
             & (plus_di_14_4h > minus_di_14_4h)
             & (close > ema_200)
+            # the 4h regime has to agree: a bounce inside a collapse puts price over the 5m
+            # EMA200 for minutes, which is where every loss in the crash window came from
+            & (ema_12_4h > ema_200_4h)
           )
 
         # Condition #8 - Donchian 7-day breakout (Long, experimental — turtle-style; big-win lane).
