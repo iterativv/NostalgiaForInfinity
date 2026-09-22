@@ -23491,16 +23491,74 @@ class NostalgiaForInfinityX8(IStrategy):
           # Protections
           short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           short_entry_logic.append(protections_short_global == True)
+          short_entry_logic.append(
+            # 5m up move, 1h & 4h low   [weak]
+            ((rsi_3_lt_90) | (aroonu_14_1h_gt_20) | (aroonu_14_4h_gt_30))
+            # 5m low, 15m uptrend, 4h high   [weak]
+            & ((aroonu_14_gt_75) | (aroonu_14_15m_lt_90) | (stochrsi_k_4h_gt_10))
+            # 5m low & still not low enough, 1d still high
+            & ((aroonu_14_gt_75) | (stochrsi_k_gt_80) | (stochrsi_k_1d_gt_30))
+            # 5m still not low enough, 15m uptrend, 4h up move
+            & ((stochrsi_k_gt_80) | (aroonu_14_15m_lt_90) | (rsi_3_4h_lt_70))
+            # 5m still not low enough, 4h & 1d low
+            & ((stochrsi_k_gt_80) | (aroonu_14_4h_gt_10) | (aroonu_14_1d_gt_20))
+            # 5m still not low enough, 15m down move & still not high enough   [weak]
+            & ((stochrsi_k_gt_80) | (rsi_3_15m_lt_85) | (stochrsi_k_15m_gt_70))
+            # 5m & 15m & 1h still not low enough   [weak]
+            & ((stochrsi_k_gt_80) | (stochrsi_k_15m_gt_90) | (stochrsi_k_1h_gt_80))
+            # 15m & 4h up move, 15m still high   [weak]
+            & ((rsi_3_15m_lt_80) | (stochrsi_k_15m_gt_40) | (rsi_3_4h_lt_70))
+            # 15m up move & still high, 1h low   [weak]
+            & ((rsi_3_15m_lt_80) | (stochrsi_k_15m_gt_60) | (aroonu_14_1h_gt_20))
+            # 15m down move & uptrend, 4h up move   [weak]
+            & ((rsi_3_15m_lt_85) | (aroonu_14_15m_lt_100) | (rsi_3_4h_lt_80))
+            # 15m down move, 4h low & high
+            & ((rsi_3_15m_lt_85) | (aroonu_14_4h_gt_10) | (stochrsi_k_4h_gt_10))
+            # 15m down move & still not low enough, 1h low   [weak]
+            & ((rsi_3_15m_lt_85) | (stochrsi_k_15m_gt_80) | (aroonu_14_1h_gt_20))
+            # 15m up move, 4h low, 1d still high
+            & ((rsi_3_15m_lt_90) | (aroonu_14_4h_gt_20) | (stochrsi_k_1d_gt_30))
+            # 15m & 1h & 4h up move   [weak]
+            & ((rsi_3_15m_lt_90) | (rsi_3_1h_lt_90) | (rsi_3_4h_lt_70))
+            # 15m & 1d uptrend, 1d still high   [weak]
+            & ((aroonu_14_15m_lt_100) | (aroonu_14_1d_lt_80) | (stochrsi_k_1d_gt_50))
+            # 15m uptrend & still high, 4h low
+            & ((aroonu_14_15m_lt_100) | (stochrsi_k_15m_gt_60) | (stochrsi_k_4h_gt_20))
+            # 15m uptrend, 4h low & high   [weak]
+            & ((aroonu_14_15m_lt_90) | (aroonu_14_4h_gt_10) | (stochrsi_k_4h_gt_10))
+            # 15m still high, 4h & 1d low   [weak]
+            & ((stochrsi_k_15m_gt_50) | (stochrsi_k_4h_gt_20) | (aroonu_14_1d_gt_30))
+            # 15m still not high enough, 1h uptrend, 4h up move   [weak]
+            & ((stochrsi_k_15m_gt_70) | (aroonu_14_1h_lt_75) | (rsi_3_4h_lt_80))
+            # 15m still not low enough, 1d low
+            & ((stochrsi_k_15m_gt_80) | (aroonu_14_1d_gt_20) | (stochrsi_k_1d_gt_20))
+            # 1h up move & still not low enough, 4h still high
+            & ((rsi_3_1h_lt_80) | (stochrsi_k_1h_gt_90) | (stochrsi_k_4h_gt_30))
+            # 1h down move & still not low enough, 4h up move
+            & ((rsi_3_1h_lt_85) | (stochrsi_k_1h_gt_90) | (rsi_3_4h_lt_70))
+            # 1h & 4h low, 1d uptrend
+            & ((aroonu_14_1h_gt_20) | (aroonu_14_4h_gt_10) | (aroonu_14_1d_lt_80))
+            # 1h still not low enough, 4h low & still high
+            & ((stochrsi_k_1h_gt_80) | (aroonu_14_4h_gt_10) | (stochrsi_k_4h_gt_40))
+            # 4h up move & uptrend, 1d still high
+            & ((rsi_3_4h_lt_70) | (aroonu_14_4h_lt_20) | (stochrsi_k_1d_gt_50))
+            # 4h up move & uptrend, 1d low   [weak]
+            & ((rsi_3_4h_lt_80) | (aroonu_14_4h_lt_20) | (aroonu_14_1d_gt_30))
+          )
 
           # Logic
           short_entry_logic.append(
-            # never fade the bounce of a fully-capitulated daily (violent squeeze habitat)
-            (rsi_3_1d > 12.0)
+            # yesterday was a clearly weak day: fade the pop in the direction of the day
+            (change_pct_1d < -5.0)
+            # but not a capitulated day: a pop there is the relief squeeze
+            & (rsi_3_1d > 20.0)
             # 1h close crosses INTO the overbought extreme
             & (willr_14_1h > -10.0)
             & (np_shift(willr_14_1h, 12) <= -10.0)
-            # mean-revert WITH the daily trend: only short when the day is down
-            & (change_pct_1d < 0.0)
+            # 4h trend must agree: the pop is against it
+            & (ema_12_4h < ema_200_4h)
+            # only below the daily 200 EMA: in a bull market the pop is the trend
+            & (close < ema_200_1d)
           )
 
         # # Condition #620 - Grind mode (Short).
