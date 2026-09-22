@@ -24430,6 +24430,94 @@ class NostalgiaForInfinityX8(IStrategy):
           # Protections
           short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           short_entry_logic.append(protections_short_global == True)
+          short_entry_logic.append(
+            # 5m up move, 1h still high, 1d low
+            ((rsi_3_lt_90) | (stochrsi_k_1h_gt_60) | (aroonu_14_1d_gt_20))
+            # 5m & 4h low, 1h uptrend
+            & ((aroonu_14_gt_75) | (roc_9_1h_lt_10) | (aroonu_14_4h_gt_20))
+            # 5m & 1d low, 15m up move
+            & ((aroonu_14_gt_75) | (rsi_3_15m_lt_60) | (aroonu_14_1d_gt_10))
+            # 5m & 4h low, 1h up move
+            & ((aroonu_14_gt_75) | (rsi_3_1h_lt_80) | (aroonu_14_4h_gt_20))
+            # 5m low, 4h up move & uptrend
+            & ((aroonu_14_gt_75) | (rsi_3_4h_lt_40) | (aroonu_14_4h_lt_40))
+            # 5m & 1h still not low enough, 1h uptrend
+            & ((stochrsi_k_gt_80) | (aroonu_14_1h_lt_75) | (stochrsi_k_1h_gt_80))
+            # 5m still not low enough, 15m up move & still high
+            & ((stochrsi_k_gt_80) | (rsi_3_15m_lt_60) | (stochrsi_k_15m_gt_60))
+            # 5m still not low enough, 15m & 1h up move
+            & ((stochrsi_k_gt_80) | (rsi_3_15m_lt_90) | (rsi_3_1h_lt_60))
+            # 15m up move & low, 4h uptrend
+            & ((rsi_3_15m_lt_60) | (aroonu_14_15m_gt_20) | (roc_9_4h_lt_15))
+            # 15m up move & still high, 1h uptrend
+            & ((rsi_3_15m_lt_60) | (stochrsi_k_15m_gt_50) | (aroonu_14_1h_lt_75))
+            # 15m & 1h up move, 15m still not high enough
+            & ((rsi_3_15m_lt_60) | (stochrsi_k_15m_gt_70) | (rsi_3_1h_lt_90))
+            # 15m up move & still high, 4h still not low enough
+            & ((rsi_3_15m_lt_70) | (stochrsi_k_15m_gt_40) | (stochrsi_k_4h_gt_80))
+            # 15m & 1h & 4h up move
+            & ((rsi_3_15m_lt_80) | (rsi_3_1h_lt_90) | (rsi_3_4h_lt_70))
+            # 15m & 4h up move, 1d uptrend
+            & ((rsi_3_15m_lt_80) | (rsi_3_4h_lt_60) | (aroonu_14_1d_lt_90))
+            # 15m & 4h up move, 15m still not high enough
+            & ((rsi_3_15m_lt_80) | (stochrsi_k_15m_gt_70) | (rsi_3_4h_lt_90))
+            # 15m & 1h up move, 4h low
+            & ((rsi_3_15m_lt_90) | (rsi_3_1h_lt_80) | (aroonu_14_4h_gt_30))
+            # 15m up move, 1h & 4h still high
+            & ((rsi_3_15m_lt_90) | (stochrsi_k_1h_gt_40) | (stochrsi_k_4h_gt_40))
+            # 15m low, 1d uptrend & still high
+            & ((aroonu_14_15m_gt_20) | (aroonu_14_1d_lt_70) | (stochrsi_k_1d_gt_60))
+            # 15m & 4h low, 4h uptrend
+            & ((aroonu_14_15m_gt_20) | (aroonu_14_4h_lt_50) | (stochrsi_k_4h_gt_20))
+            # 15m low & still high, 1h up move
+            & ((aroonu_14_15m_gt_20) | (stochrsi_k_15m_gt_50) | (rsi_3_1h_lt_40))
+            # 15m & 4h low, 1h up move
+            & ((aroonu_14_15m_gt_60) | (rsi_3_1h_lt_70) | (aroonu_14_4h_gt_50))
+            # 15m uptrend, 1h still high, 4h up move
+            & ((aroonu_14_15m_lt_25) | (stochrsi_k_1h_gt_40) | (rsi_3_4h_lt_50))
+            # 15m uptrend, 1h still high, 1d low
+            & ((aroonu_14_15m_lt_25) | (stochrsi_k_1h_gt_40) | (stochrsi_k_1d_gt_20))
+            # 15m & 1d uptrend, 15m still high
+            & ((aroonu_14_15m_lt_50) | (stochrsi_k_15m_gt_30) | (aroonu_14_1d_lt_90))
+            # 15m uptrend, 1h still high, 4h up move
+            & ((aroonu_14_15m_lt_75) | (stochrsi_k_1h_gt_60) | (rsi_3_4h_lt_60))
+            # 15m still high, 1h uptrend, 1d low
+            & ((stochrsi_k_15m_gt_30) | (aroonu_14_1h_lt_50) | (aroonu_14_1d_gt_10))
+            # 15m still high, 1h up move, 4h still not low enough
+            & ((stochrsi_k_15m_gt_30) | (rsi_3_1h_lt_40) | (stochrsi_k_4h_gt_80))
+            # 15m still high, 1h still not low enough, 1d low
+            & ((stochrsi_k_15m_gt_30) | (stochrsi_k_1h_gt_80) | (stochrsi_k_1d_gt_20))
+            # 15m still high, 4h uptrend, 1d low
+            & ((stochrsi_k_15m_gt_40) | (aroonu_14_4h_lt_30) | (stochrsi_k_1d_gt_20))
+            # 15m & 1h still high, 1d low
+            & ((stochrsi_k_15m_gt_40) | (stochrsi_k_1h_gt_60) | (aroonu_14_1d_gt_10))
+            # 15m still not low enough, 1h & 1d low
+            & ((stochrsi_k_15m_gt_80) | (stochrsi_k_1h_gt_20) | (stochrsi_k_1d_gt_20))
+            # 15m still not low enough, 1h uptrend, 4h low
+            & ((stochrsi_k_15m_gt_90) | (aroonu_14_1h_lt_50) | (stochrsi_k_4h_gt_20))
+            # 1h up move & still high, 1d uptrend
+            & ((rsi_3_1h_lt_40) | (stochrsi_k_1h_gt_40) | (aroonu_14_1d_lt_30))
+            # 1h up move & still not high enough, 4h low
+            & ((rsi_3_1h_lt_60) | (stochrsi_k_1h_gt_70) | (aroonu_14_4h_gt_20))
+            # 1h up move, 4h low, 1d still high
+            & ((rsi_3_1h_lt_60) | (stochrsi_k_4h_gt_20) | (stochrsi_k_1d_gt_40))
+            # 1h low, 4h uptrend
+            & ((aroonu_14_1h_gt_20) | (stochrsi_k_1h_gt_20) | (aroonu_14_4h_lt_50))
+            # 1h & 1d low, 4h up move
+            & ((aroonu_14_1h_gt_60) | (rsi_3_4h_lt_50) | (stochrsi_k_1d_gt_20))
+            # 1h uptrend & still not low enough, 1d low
+            & ((aroonu_14_1h_lt_50) | (stochrsi_k_1h_gt_80) | (stochrsi_k_1d_gt_20))
+            # 1h & 4h uptrend, 1h still not low enough
+            & ((aroonu_14_1h_lt_75) | (stochrsi_k_1h_gt_80) | (aroonu_14_4h_lt_50))
+            # 1h & 1d low, 4h uptrend
+            & ((stochrsi_k_1h_gt_20) | (aroonu_14_4h_lt_30) | (stochrsi_k_1d_gt_20))
+            # 1h still high, 4h & 1d low
+            & ((stochrsi_k_1h_gt_40) | (aroonu_14_4h_gt_20) | (aroonu_14_1d_gt_20))
+            # 4h up move, 4h & 1d uptrend
+            & ((rsi_3_4h_lt_40) | (aroonu_14_4h_lt_40) | (aroonu_14_1d_lt_40))
+            # 4h & 1d low, 1d uptrend
+            & ((stochrsi_k_4h_gt_20) | (aroonu_14_1d_lt_40) | (stochrsi_k_1d_gt_20))
+          )
 
           # Logic
           short_entry_logic.append(
@@ -24438,6 +24526,14 @@ class NostalgiaForInfinityX8(IStrategy):
             & (rsi_3 > 60.0)
             # the fact: long upper rejection wick, tiny lower wick
             & (pb_star > 0.5)
+            # ...and it does not close at a new 4h closing high: that is strength, not rejection
+            & (close < close_max_48)
+            # 4h trend must agree — a rejection inside a 4h uptrend gets taken out
+            & (ema_12_4h < ema_200_4h)
+            # only below the daily 200 EMA: in a bull market the top keeps breaking
+            & (close < ema_200_1d)
+            # not after a 24h crash: a wick there is the relief bounce off the low
+            & (roc_288 > -15.0)
           )
 
         short_entry_logic.append(df["volume"] > 0)
