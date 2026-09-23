@@ -21583,7 +21583,6 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((aroonu_14_4h_gt_20) | (aroonu_14_1d_gt_10) | (stochrsi_k_1d_gt_10))
           )
 
-
           # Logic
           short_entry_logic.append(
             # 4h trend birth: ADX crossing up through 20 on the latest 4h candle
