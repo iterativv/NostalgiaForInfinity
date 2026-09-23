@@ -23660,12 +23660,60 @@ class NostalgiaForInfinityX8(IStrategy):
           # Protections
           short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           short_entry_logic.append(protections_short_global == True)
+          short_entry_logic.append(
+            # 5m & 4h uptrend, 15m still high
+            ((aroonu_14_lt_30) | (stochrsi_k_15m_gt_60) | (aroonu_14_4h_lt_30))
+            # 15m up move, 4h low, 1d still high
+            & ((rsi_3_15m_lt_50) | (stochrsi_k_4h_gt_20) | (stochrsi_k_1d_gt_30))
+            # 15m low, 1h & 1d uptrend
+            & ((aroonu_14_15m_gt_30) | (aroonu_14_1h_lt_80) | (aroonu_14_1d_lt_30))
+            # 15m low, 1h up move & still not low enough
+            & ((aroonu_14_15m_gt_40) | (rsi_3_1h_lt_60) | (stochrsi_k_1h_gt_80))
+            # 15m uptrend, 1h still high, 4h up move
+            & ((aroonu_14_15m_lt_40) | (stochrsi_k_1h_gt_60) | (rsi_3_4h_lt_60))
+            # 15m uptrend, 15m & 4h low
+            & ((aroonu_14_15m_lt_50) | (stochrsi_k_15m_gt_20) | (stochrsi_k_4h_gt_20))
+            # 15m & 1d uptrend, 1h low
+            & ((aroonu_14_15m_lt_50) | (stochrsi_k_1h_gt_20) | (aroonu_14_1d_lt_30))
+            # 15m & 1h uptrend, 4h low
+            & ((aroonu_14_15m_lt_60) | (aroonu_14_1h_lt_20) | (stochrsi_k_4h_gt_20))
+            # 15m uptrend & still high, 1h low
+            & ((aroonu_14_15m_lt_70) | (stochrsi_k_15m_gt_50) | (aroonu_14_1h_gt_10))
+            # 15m uptrend, 4h still high, 1d low   [weak]
+            & ((aroonu_14_15m_lt_90) | (stochrsi_k_4h_gt_40) | (aroonu_14_1d_gt_20))
+            # 15m high, 4h low, 1d uptrend
+            & ((stochrsi_k_15m_gt_10) | (stochrsi_k_4h_gt_20) | (aroonu_14_1d_lt_40))
+            # 15m & 1h low, 1h uptrend
+            & ((stochrsi_k_15m_gt_20) | (aroonu_14_1h_lt_30) | (stochrsi_k_1h_gt_20))
+            # 15m & 1d low, 1h up move
+            & ((stochrsi_k_15m_gt_20) | (rsi_3_1h_lt_60) | (aroonu_14_1d_gt_10))
+            # 15m still high, 1d uptrend & high
+            & ((stochrsi_k_15m_gt_30) | (aroonu_14_1d_lt_70) | (stochrsi_k_1d_gt_10))
+            # 15m & 1h still high, 1h up move
+            & ((stochrsi_k_15m_gt_50) | (rsi_3_1h_lt_50) | (stochrsi_k_1h_gt_60))
+            # 1h up move, 1h & 1d uptrend   [weak]
+            & ((rsi_3_1h_lt_40) | (aroonu_14_1h_lt_40) | (roc_9_1d_lt_10))
+            # 1h up move & uptrend & still not low enough
+            & ((rsi_3_1h_lt_50) | (aroonu_14_1h_lt_50) | (stochrsi_k_1h_gt_80))
+            # 1h & 4h low, 1d uptrend   [weak]
+            & ((aroonu_14_1h_gt_30) | (aroonu_14_4h_gt_0) | (aroonu_14_1d_lt_80))
+            # 1h & 4h uptrend, 1h low
+            & ((aroonu_14_1h_lt_50) | (stochrsi_k_1h_gt_20) | (aroonu_14_4h_lt_20))
+            # 4h up move & uptrend, 1d low
+            & ((rsi_3_4h_lt_60) | (aroonu_14_4h_lt_20) | (stochrsi_k_1d_gt_20))
+            # the 1h has already dumped while the 4h is not weak: a late break into a bounce
+            & ((cmf_20_1h > -0.2) | (mfi_14_4h < 30.0))
+            # the 4h money flow is still healthy: no breakdown behind this break
+            & (mfi_14_4h < 50.0)
+          )
 
           # Logic
           short_entry_logic.append(
             (close < ema_200)
             # don't short a breakdown when the daily cycle already sits low (bounce zone)
-            & (stochrsi_k_1d < 48.0)
+            & (stochrsi_k_1d < 45.0)
+            # the 4h has to be in on it: no recent 4h high behind the break
+            & (aroonu_14_4h_lt_40)
             # last completed 1h candle was an inside bar; this 5m candle CROSSES below the mother low
             & (ib_ready > 0.5)
             & (np_shift(close, 1) >= ib_mother_l)
