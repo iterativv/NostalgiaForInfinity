@@ -71,7 +71,7 @@ class NostalgiaForInfinityX7(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v17.5.108"
+    return "v17.5.109"
 
   stoploss = -0.99
 
@@ -26775,13 +26775,15 @@ class NostalgiaForInfinityX7(IStrategy):
             # 1d downtrend, 1d high & overbought
             & ((cmf_20_1d_gt_neg_0_30) | (aroonu_14_1d_lt_85) | (roc_9_1d_lt_100))
             # 1h & 4h high, 1d overbought
-            & (aroonu_14_1h_lt_70 | aroonu_14_4h_lt_70 | (roc_9_1d_lt_30))
+            & (aroonu_14_1h_lt_70 | (aroonu_14_4h_lt_70) | (roc_9_1d_lt_30))
+            # 1h & 4h high & overbought
+            & ((aroonu_14_1h_lt_70) | (aroonu_14_4h_lt_100) | (roc_9_1h_lt_30) | (roc_9_4h_lt_30))
             # 1h & 4h high, 1d overbought
             & ((aroonu_14_1h_lt_90) | (aroonu_14_4h_lt_90) | (roc_9_1d_lt_20))
             # 1h & 4h high
-            & ((aroonu_14_1h_lt_100) | aroonu_14_4h_lt_100)
+            & ((aroonu_14_1h_lt_100) | (aroonu_14_4h_lt_100))
             # 4h & 1d high, 4h overbought
-            & (aroonu_14_4h_lt_80 | aroonu_14_1d_lt_100 | (roc_9_4h_lt_30))
+            & (aroonu_14_4h_lt_80 | (aroonu_14_1d_lt_100) | (roc_9_4h_lt_30))
             # 4h high, 4h & 1d overbought
             & (aroonu_14_4h_lt_80 | (roc_9_4h_lt_20) | (roc_9_1d_lt_20))
             # 1d still high, 1h & 4h downtrend
