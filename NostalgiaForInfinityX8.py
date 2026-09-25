@@ -22394,50 +22394,39 @@ class NostalgiaForInfinityX8(IStrategy):
         # two bull-market failure modes that squeeze a short: deep-crash dead-cat bounces and
         # strong-uptrend pullbacks. 2022 + 2021 both 100% WR / 0 loss after guards.
         if short_entry_condition_index == 545:
-          # --- Global / base protections ---
+          # Protections
           short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           short_entry_logic.append(protections_short_global == True)
-          short_entry_logic.append(roc_9_1d < 30.0)
-          short_entry_logic.append(roc_9_4h < 22.0)
-          short_entry_logic.append(rsi_14_4h < 65.0)
-          # --- Regime guards (crash / trend squeeze avoidance) ---
+
           short_entry_logic.append(
-            rsi_14_4h > 22.0
-          )  # oversold floor: no short into a washed-out 4h (dead-cat-bounce top)
-          short_entry_logic.append(roc_9_1d > -22.0)  # deep-crash floor: -22%+ 1d crash = V-recovery squeeze
+            # 15m up move & still not low enough, 4h uptrend
+            ((rsi_3_15m_lt_95) | (stochrsi_k_15m_gt_90) | (aroonu_14_4h_lt_20))
+            # 15m up move, 4h uptrend & still not high enough   [weak]
+            & ((rsi_3_15m_lt_97) | (aroonu_14_4h_lt_60) | (stochrsi_k_4h_gt_70))
+            # 15m still high, 1h still not low enough, 4h down move   [weak]
+            & ((stochrsi_k_15m_gt_60) | (stochrsi_k_1h_gt_80) | (rsi_3_4h_lt_75))
+            # 15m still not high enough, 4h up move & low   [weak]
+            & ((stochrsi_k_15m_gt_70) | (rsi_3_4h_lt_80) | (aroonu_14_4h_gt_20))
+            # 1h down move, 4h up move & low   [weak]
+            & ((rsi_3_1h_lt_85) | (rsi_3_4h_lt_70) | (stochrsi_k_4h_gt_20))
+          )
+          # Logic
           short_entry_logic.append(
-            (aroonu_14_1d > 15.0) | (stochrsi_k_4h < 45.0)
-          )  # no 1d-trend + 4h-overbought bounce = bull squeeze
-          short_entry_logic.append(
-            (aroonu_14_1d < 95.0) | (roc_9_4h > -3.0)
-          )  # very-strong 1d trend + 4h pullback = short into uptrend = squeeze
-          # --- Momentum / overbought squeeze guards ---
-          short_entry_logic.append(
-            (rsi_3_4h < 75.0) | (stochrsi_k_4h < 78.0)
-          )  # 4h double-overbought = too tight = pops
-          short_entry_logic.append(
-            (roc_9_4h < 4.0) | (rsi_14_4h < 52.0)
-          )  # premature: 4h still climbing = top unconfirmed
-          short_entry_logic.append(
-            (roc_9_1h < 6.0) | (rsi_14_1h < 63.0)
-          )  # 1h dead-cat-pump, 4h unconfirmed = squeeze continues
-          # --- Per-loss fine-tune (residual 2021 bull-market tops) ---
-          short_entry_logic.append((roc_9_1d > -12.0) | (roc_9_4h < 8.0) | (roc_9_1h > 6.0))
-          short_entry_logic.append((roc_9_1d > -18.0) | (roc_9_4h > -3.0) | (aroonu_14_1d > 8.0))
-          short_entry_logic.append((roc_9_1d > -20.0) | (roc_9_4h > -13.0) | (roc_9_1h < 8.0))
-          short_entry_logic.append((roc_9_1d < 6.0) | (roc_9_4h > -16.0) | (rsi_14_1h > 57.0))
-          short_entry_logic.append((roc_9_1d > -4.0) | (roc_9_4h < -2.0) | (rsi_3_4h < 75.0))
-          # --- Logic (entry trigger) ---
-          short_entry_logic.append(bbb_20_2_0 > 4.0)
-          short_entry_logic.append(stochrsi_k_1h > 30.0)
-          short_entry_logic.append(close > (bbu_20_2_0 * 1.002))
-          short_entry_logic.append(rsi_14 > 65.0)
-          short_entry_logic.append(rsi_14_4h < 60.0)
-          short_entry_logic.append(willr_14_1h > -20.0)
-          short_entry_logic.append(aroonu_14_1h > 70.0)
-          short_entry_logic.append(bbb_20_2_0_1h > 8.0)
-          short_entry_logic.append(obv_change_pct < 0.0)
-          short_entry_logic.append(cci_20_4h < 120.0)
+            # room to fall — a wide band on both timeframes
+            (bbb_20_2_0 > 4.0)
+            & (bbb_20_2_0_1h > 8.0)
+            # price pushed clear of the upper band, short-term overbought
+            & (close > (bbu_20_2_0 * 1.002))
+            & (rsi_14 > 75.0)
+            & (stochrsi_k_1h > 30.0)
+            # 1h at the top of its range
+            & (willr_14_1h > -20.0)
+            & (aroonu_14_1h > 70.0)
+            # the higher timeframes do not confirm the push — this is distribution
+            & (rsi_14_4h < 60.0)
+            & (cci_20_4h < 120.0)
+            & (obv_change_pct < 0.0)
+          )
 
         # Condition #546 - BB Upper Rejection + Multi-TF Overbought Stack (Short).
         # Shorts a hard rejection off BB-upper (bbp > 0.92, roc_2 < 0) with a multi-TF overbought
