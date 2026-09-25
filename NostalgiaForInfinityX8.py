@@ -22534,36 +22534,45 @@ class NostalgiaForInfinityX8(IStrategy):
         # stack. The doc overbought-stack guard plus per-loss CCI/momentum guards reject blow-off
         # tops that keep ripping (high-CCI squeeze). 2022 + 2021: 100% WR / 0 loss.
         if short_entry_condition_index == 546:
-          # --- Global / base protections ---
+          # Protections
           short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           short_entry_logic.append(protections_short_global == True)
-          short_entry_logic.append(roc_9_1d < 30.0)
-          short_entry_logic.append(roc_9_4h < 18.0)
-          short_entry_logic.append(rsi_14_4h < 70.0)
-          # --- Overbought-stack guard (multi-TF, buffered) ---
+
           short_entry_logic.append(
-            ((rsi_3 < 93.0) | (rsi_3_15m < 88.0) | (aroonu_14_4h < 75.0))
-            & ((rsi_3_15m < 90.0) | (rsi_3_1h < 85.0) | (stochrsi_k_4h > 40.0))
-            & ((rsi_3_1h < 88.0) | (rsi_3_4h < 80.0) | (roc_9_1d < 20.0))
+            # 15m & 4h up move, 1d uptrend   [weak]
+            ((rsi_3_15m_lt_97) | (rsi_3_4h_lt_70) | (aroonu_14_1d_lt_40))
+            # 1h up move & still not low enough, 1d still high
+            & ((rsi_3_1h_lt_90) | (stochrsi_k_1h_gt_90) | (stochrsi_k_1d_gt_60))
+            # 4h & 1d low
+            & ((aroonu_14_4h_gt_10) | (stochrsi_k_4h_gt_20) | (aroonu_14_1d_gt_20))
+            # 4h & 1d low, 1d uptrend
+            & ((aroonu_14_4h_gt_30) | (aroonu_14_1d_lt_40) | (stochrsi_k_1d_gt_20))
+            # 1h up move, 1h & 4h uptrend   [weak]
+            & ((rsi_3_1h_lt_95) | (aroonu_14_1h_lt_90) | (aroonu_14_4h_lt_30))
+            # 15m up move, 4h & 1d uptrend   [weak]
+            & ((rsi_3_15m_lt_97) | (aroonu_14_4h_lt_40) | (aroonu_14_1d_lt_60))
+            # 15m & 1h & 4h up move   [weak]
+            & ((rsi_3_15m_lt_97) | (rsi_3_1h_lt_95) | (rsi_3_4h_lt_60))
+            # 1h up move, 4h uptrend & low   [weak]
+            & ((rsi_3_1h_lt_80) | (aroonu_14_4h_lt_30) | (stochrsi_k_4h_gt_20))
           )
-          # --- Per-loss fine-tune (blow-off tops / weak bounces) ---
-          short_entry_logic.append((cci_20_1h < 250.0) | (roc_9_1h < 7.0))  # CCI-blow-off top
-          short_entry_logic.append((cci_20_1h < 180.0) | (roc_9_4h < 5.0))  # high-CCI momentum top
-          short_entry_logic.append((stochrsi_k_4h < 80.0) | (cci_20_1h < 130.0))  # 4h-overbought top
-          short_entry_logic.append((rsi_3_4h < 85.0) | (cci_20_1h < 200.0))  # extreme RSI3 + CCI top
-          short_entry_logic.append((roc_9_4h > -3.0) | (rsi_3_4h > 40.0))  # weak-momentum bounce (both low = squeeze)
-          short_entry_logic.append((roc_9_4h < 12.0) | (rsi_3_4h < 90.0))  # parabolic blow-off top
-          # --- Logic (entry trigger) ---
-          short_entry_logic.append(bbp_20_2_0 > 0.92)
-          short_entry_logic.append(roc_2 < 0.0)
-          short_entry_logic.append(bbb_20_2_0 > 4.0)
-          short_entry_logic.append(stochrsi_k > 85.0)
-          short_entry_logic.append(stochrsi_k_1h > 70.0)
-          short_entry_logic.append(willr_14_1h > -15.0)
-          short_entry_logic.append(rsi_14 > 68.0)
-          short_entry_logic.append((rsi_14_15m > 60.0) | (rsi_14_1h > 58.0))
-          short_entry_logic.append(obv_change_pct < 0.0)
-          short_entry_logic.append(close > (close_max_48 * 0.98))
+          # Logic
+          short_entry_logic.append(
+            # the 4h has already turned down — selling a top into a rising 4h is the squeeze
+            (roc_9_4h < 0.0)
+            # rejected at the top of a wide band, right under the 48-candle high
+            & (bbp_20_2_0 > 0.92)
+            & (bbb_20_2_0 > 4.0)
+            & (close > (close_max_48 * 0.98))
+            & (roc_2 < 0.0)
+            # overbought on 5m and 1h at once
+            & (stochrsi_k > 85.0)
+            & (rsi_14 > 68.0)
+            & (stochrsi_k_1h > 70.0)
+            & (willr_14_1h > -15.0)
+            # and the push is not being paid for
+            & (obv_change_pct < 0.0)
+          )
 
         # Condition #561 - Downtrend Pullback / Continuation mode (Short). Mirror of code-64.
         if short_entry_condition_index == 561:
