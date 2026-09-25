@@ -20237,14 +20237,61 @@ class NostalgiaForInfinityX8(IStrategy):
           # Protections
           long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           long_entry_logic.append(protections_long_global == True)
+          long_entry_logic.append(
+            # 5m still not low enough, 15m & 1d down move   [weak]
+            ((stochrsi_k_lt_20) | (rsi_3_15m_gt_40) | (rsi_3_1d_gt_30))
+            # 5m still not low enough, 15m down move & high
+            & ((stochrsi_k_lt_30) | (rsi_3_15m_gt_40) | (aroonu_14_15m_lt_90))
+            # 5m still not low enough, 15m & 4h down move
+            & ((stochrsi_k_lt_30) | (rsi_3_15m_gt_40) | (rsi_3_4h_gt_50))
+            # 15m & 1d down move, 1d overbought   [weak]
+            & ((rsi_3_15m_gt_40) | (rsi_3_1d_gt_65) | (roc_9_1d_lt_100))
+            # 15m & 4h down move, 4h high
+            & ((rsi_3_15m_gt_40) | (rsi_3_4h_gt_50) | (aroonu_14_4h_lt_90))
+            # 15m down move & high, 1h still high
+            & ((rsi_3_15m_gt_40) | (stochrsi_k_15m_lt_80) | (stochrsi_k_1h_lt_50))
+            # 15m & 1d down move, 1d high
+            & ((rsi_3_15m_gt_50) | (rsi_3_1d_gt_40) | (stochrsi_k_1d_lt_70))
+            # 15m & 1d down move, 1d overbought   [weak]
+            & ((rsi_3_15m_gt_55) | (rsi_3_1d_gt_50) | (roc_9_1d_lt_60))
+            # 15m down move & high, 1d downtrend
+            & ((rsi_3_15m_gt_55) | (stochrsi_k_15m_lt_80) | (roc_9_1d_gt_neg_10))
+            # 15m high, 1h down move, 4h downtrend
+            & ((aroonu_14_15m_lt_70) | (rsi_3_1h_gt_65) | (roc_9_4h_gt_neg_10))
+            # 15m high, 4h overbought, 1d downtrend
+            & ((stochrsi_k_15m_lt_60) | (roc_9_4h_lt_5) | (roc_9_1d_gt_neg_10))
+            # 1h down move, 1d downtrend
+            & ((rsi_3_1h_gt_60) | (roc_9_1d_gt_neg_10))
+            # 1h & 1d down move, 1d high
+            & ((rsi_3_1h_gt_60) | (rsi_3_1d_gt_60) | (stochrsi_k_1d_lt_90))
+            # 1h down move & high, 4h overbought
+            & ((rsi_3_1h_gt_60) | (stochrsi_k_1h_lt_80) | (roc_9_4h_lt_25))
+            # 1h down move, 1d downtrend
+            & ((rsi_3_1h_gt_65) | (roc_9_1d_gt_neg_10))
+            # 1h & 1d down move, 1d high
+            & ((rsi_3_1h_gt_65) | (rsi_3_1d_gt_60) | (stochrsi_k_1d_lt_90))
+            # 1h & 1d down move, 4h high
+            & ((rsi_3_1h_gt_65) | (stochrsi_k_4h_lt_80) | (rsi_3_1d_gt_40))
+            # 1h high, 4h overbought, 1d down move
+            & ((aroonu_14_1h_lt_80) | (roc_9_4h_lt_15) | (rsi_3_1d_gt_40))
+            # 4h & 1d down move, 4h high
+            & ((rsi_3_4h_gt_50) | (aroonu_14_4h_lt_80) | (rsi_3_1d_gt_65))
+            # 4h down move, 1d still not low enough & downtrend
+            & ((rsi_3_4h_gt_60) | (aroonu_14_1d_lt_30) | (roc_9_1d_gt_neg_10))
+            # 4h & 1d downtrend
+            & ((roc_9_4h_gt_neg_10) | (roc_9_1d_gt_neg_10))
+            # 4h overbought, 1d downtrend
+            & ((roc_9_4h_lt_25) | (roc_9_1d_gt_neg_10))
+            # 1d high & downtrend
+            & ((stochrsi_k_1d_lt_70) | (roc_9_1d_gt_neg_10))
+          )
 
           # Logic
           long_entry_logic.append(
-            # daily not floored — no continuation in a dead daily
-            (stochrsi_k_1d > 20.0)
-            # 1h momentum actually up, 4h not overheated (anti-chase)
+            # the daily is genuinely up, not merely off its floor
+            (stochrsi_k_1d > 50.0)
+            # 1h momentum actually up
             & (rsi_3_1h > 55.0)
-            & (roc_9_4h < 8.0)
             # uptrend regime + momentum side + bullish engulfing close
             & (close > ema_200)
             & (rsi_14 > 50.0)
