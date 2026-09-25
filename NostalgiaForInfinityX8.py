@@ -22329,34 +22329,37 @@ class NostalgiaForInfinityX8(IStrategy):
         # BB-upper and momentum rolling over (cci_change < 0). Guards reject spikes that keep
         # running (mid-band 4h ROC / extreme multi-TF momentum = squeeze). 2022 + 2021: 100% WR.
         if short_entry_condition_index == 543:
-          # --- Global / base protections ---
+          # Protections
           short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           short_entry_logic.append(protections_short_global == True)
-          short_entry_logic.append(cci_20_4h < 220.0)
-          short_entry_logic.append(rsi_14_1h < 72.0)
-          # --- Regime / momentum squeeze guards ---
-          short_entry_logic.append(roc_9_1d < 35.0)  # 1d pump-exhaustion ceiling (+35%+ = still ripping)
-          short_entry_logic.append(roc_9_1d > -12.0)  # 1d crash floor (bounce squeeze)
+
           short_entry_logic.append(
-            (roc_9_4h < 3.0) | (roc_9_4h > 10.0)
-          )  # 4h-ROC mid-band = still climbing; safe = cooled(<3) | blow-off(>10)
-          short_entry_logic.append(roc_9_4h < 20.0)  # caps the blow-off branch at +20%
+            # 5m up move, 4h & 1d still high
+            ((rsi_3_lt_97) | (stochrsi_k_4h_gt_30) | (stochrsi_k_1d_gt_30))
+            # 15m up move & still high, 1h low   [weak]
+            & ((rsi_3_15m_lt_80) | (stochrsi_k_15m_gt_40) | (aroonu_14_1h_gt_60))
+            # 15m & 1h low, 4h still high
+            & ((aroonu_14_15m_gt_60) | (aroonu_14_1h_gt_20) | (stochrsi_k_4h_gt_30))
+            # 1h up move & still not low enough, 4h low
+            & ((rsi_3_1h_lt_60) | (stochrsi_k_1h_gt_80) | (aroonu_14_4h_gt_10))
+          )
+          # Logic
           short_entry_logic.append(
-            (rsi_3_4h < 78.0) | (cci_20_1h < 140.0) | (mfi_14_1h < 78.0)
-          )  # extreme multi-TF momentum top
-          short_entry_logic.append(
-            (roc_9_1d < 15.0) | (rsi_14_4h < 65.0) | (aroonu_14_4h < 55.0)
-          )  # 1d-pump + 4h-strong top
-          # --- Logic (entry trigger) ---
-          short_entry_logic.append(rsi_14 > 72.0)
-          short_entry_logic.append(stochrsi_k > 85.0)
-          short_entry_logic.append(willr_14 > -10.0)
-          short_entry_logic.append(close > (bbu_20_2_0 * 1.005))
-          short_entry_logic.append(cci_20_change_pct_1h < 0.0)
-          short_entry_logic.append(rsi_3 > 85.0)
-          short_entry_logic.append(cmf_20 < 0.25)
-          short_entry_logic.append(mfi_14 < 65.0)
-          short_entry_logic.append(close > (close_max_48 * 0.99))
+            # the 4h has already turned down — exhaustion into a rising 4h is the squeeze
+            (roc_9_4h < 0.0)
+            # price is at the top of the 48-candle range and clear of the upper band
+            & (close > (close_max_48 * 0.99))
+            & (close > (bbu_20_2_0 * 1.005))
+            # 5m is stretched on every reading
+            & (rsi_3 > 85.0)
+            & (rsi_14 > 72.0)
+            & (stochrsi_k > 85.0)
+            & (willr_14 > -10.0)
+            # but the money is not there and the 1h is already rolling over
+            & (cmf_20 < 0.25)
+            & (mfi_14 < 65.0)
+            & (cci_20_change_pct_1h < 0.0)
+          )
 
         # Condition #544 - Momentum Breakdown / Rollover Continuation (Short).
         # Shorts a confirmed 4h momentum rollover (ema_12 < ema_26, rsi_3 flushed under 30). The
