@@ -22560,25 +22560,29 @@ class NostalgiaForInfinityX8(IStrategy):
           # Protections
           short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           short_entry_logic.append(protections_short_global == True)
-
           short_entry_logic.append(
+            # 15m up move, 4h & 1d uptrend   [weak]
+            ((rsi_3_15m_lt_97) | (aroonu_14_4h_lt_40) | (aroonu_14_1d_lt_60))
+            # 15m & 1h & 4h up move   [weak]
+            & ((rsi_3_15m_lt_97) | (rsi_3_1h_lt_95) | (rsi_3_4h_lt_60))
             # 15m & 4h up move, 1d uptrend   [weak]
-            ((rsi_3_15m_lt_97) | (rsi_3_4h_lt_70) | (aroonu_14_1d_lt_40))
+            & ((rsi_3_15m_lt_97) | (rsi_3_4h_lt_70) | (aroonu_14_1d_lt_40))
+            # 15m still high, 4h down move
+            & ((stochrsi_k_15m_gt_60) | (rsi_3_4h_gt_60))
+            # 1h down move, 4h up move
+            & ((rsi_3_1h_gt_65) | (rsi_3_4h_lt_50))
+            # 1h up move, 4h uptrend & low   [weak]
+            & ((rsi_3_1h_lt_80) | (aroonu_14_4h_lt_30) | (stochrsi_k_4h_gt_20))
             # 1h up move & still not low enough, 1d still high
             & ((rsi_3_1h_lt_90) | (stochrsi_k_1h_gt_90) | (stochrsi_k_1d_gt_60))
+            # 1h up move, 1h & 4h uptrend   [weak]
+            & ((rsi_3_1h_lt_95) | (aroonu_14_1h_lt_90) | (aroonu_14_4h_lt_30))
             # 4h & 1d low
             & ((aroonu_14_4h_gt_10) | (stochrsi_k_4h_gt_20) | (aroonu_14_1d_gt_20))
             # 4h & 1d low, 1d uptrend
             & ((aroonu_14_4h_gt_30) | (aroonu_14_1d_lt_40) | (stochrsi_k_1d_gt_20))
-            # 1h up move, 1h & 4h uptrend   [weak]
-            & ((rsi_3_1h_lt_95) | (aroonu_14_1h_lt_90) | (aroonu_14_4h_lt_30))
-            # 15m up move, 4h & 1d uptrend   [weak]
-            & ((rsi_3_15m_lt_97) | (aroonu_14_4h_lt_40) | (aroonu_14_1d_lt_60))
-            # 15m & 1h & 4h up move   [weak]
-            & ((rsi_3_15m_lt_97) | (rsi_3_1h_lt_95) | (rsi_3_4h_lt_60))
-            # 1h up move, 4h uptrend & low   [weak]
-            & ((rsi_3_1h_lt_80) | (aroonu_14_4h_lt_30) | (stochrsi_k_4h_gt_20))
           )
+
           # Logic
           short_entry_logic.append(
             # the 4h has already turned down — selling a top into a rising 4h is the squeeze
