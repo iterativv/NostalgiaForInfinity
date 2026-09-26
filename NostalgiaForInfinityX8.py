@@ -22352,10 +22352,11 @@ class NostalgiaForInfinityX8(IStrategy):
           # Protections
           short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           short_entry_logic.append(protections_short_global == True)
-
           short_entry_logic.append(
             # 5m up move, 4h & 1d still high
             ((rsi_3_lt_97) | (stochrsi_k_4h_gt_30) | (stochrsi_k_1d_gt_30))
+            # 15m up move, 4h not falling
+            & ((rsi_3_15m_lt_75) | (rsi_3_4h_gt_10))
             # 15m up move & still high, 1h low   [weak]
             & ((rsi_3_15m_lt_80) | (stochrsi_k_15m_gt_40) | (aroonu_14_1h_gt_60))
             # 15m & 1h low, 4h still high
@@ -22363,6 +22364,7 @@ class NostalgiaForInfinityX8(IStrategy):
             # 1h up move & still not low enough, 4h low
             & ((rsi_3_1h_lt_60) | (stochrsi_k_1h_gt_80) | (aroonu_14_4h_gt_10))
           )
+
           # Logic
           short_entry_logic.append(
             # the 4h has already turned down — exhaustion into a rising 4h is the squeeze
