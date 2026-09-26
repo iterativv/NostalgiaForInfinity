@@ -1031,6 +1031,7 @@ class NostalgiaForInfinityX8(IStrategy):
     "long_entry_condition_45_enable": True,
     "long_entry_condition_46_enable": True,
     "long_entry_condition_47_enable": True,
+    "long_entry_condition_48_enable": False,
     "long_entry_condition_61_enable": True,
     "long_entry_condition_62_enable": True,
     "long_entry_condition_63_enable": True,
@@ -1081,6 +1082,7 @@ class NostalgiaForInfinityX8(IStrategy):
     "short_entry_condition_544_enable": False,
     "short_entry_condition_545_enable": False,
     "short_entry_condition_546_enable": False,
+    "short_entry_condition_548_enable": False,
     "short_entry_condition_561_enable": False,
     "short_entry_condition_562_enable": True,
     "short_entry_condition_563_enable": False,
@@ -13752,6 +13754,61 @@ class NostalgiaForInfinityX8(IStrategy):
             & (close < (close_max_48 * 0.97))
           )
 
+        # Condition #48 - Market-order bubble on a 15m trend pullback (Long, experimental).
+        if long_entry_condition_index == 48:
+          # Protections
+          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          long_entry_logic.append(protections_long_global == True)
+          long_entry_logic.append(
+            # 5m & 4h down move, 1h still high
+            ((rsi_3_gt_15) | (stochrsi_k_1h_lt_40) | (rsi_3_4h_gt_50))
+            # 5m still not low enough, 15m & 1h down move
+            & ((stochrsi_k_lt_20) | (rsi_3_15m_gt_10) | (rsi_3_1h_gt_20))
+            # 5m still not low enough, 4h high, 1d overbought
+            & ((stochrsi_k_lt_20) | (stochrsi_k_4h_lt_70) | (roc_9_1d_lt_60))
+            # 15m & 1d down move, 15m high
+            & ((rsi_3_15m_gt_30) | (stochrsi_k_15m_lt_60) | (rsi_3_1d_gt_65))
+            # 15m down move & high, 1h still not low enough
+            & ((rsi_3_15m_gt_50) | (stochrsi_k_15m_lt_80) | (stochrsi_k_1h_lt_20))
+            # 15m still not low enough, 4h down move & high
+            & ((aroonu_14_15m_lt_20) | (rsi_3_4h_gt_60) | (stochrsi_k_4h_lt_90))
+            # 15m still high, 1h down move, 4h overbought
+            & ((aroonu_14_15m_lt_40) | (rsi_3_1h_gt_30) | (roc_9_4h_lt_15))
+            # 15m & 1h high, 1h down move
+            & ((aroonu_14_15m_lt_60) | (rsi_3_1h_gt_50) | (stochrsi_k_1h_lt_80))
+            # 15m & 4h high, 4h down move
+            & ((aroonu_14_15m_lt_80) | (rsi_3_4h_gt_65) | (stochrsi_k_4h_lt_90))
+            # 15m high, 1h still high, 4h down move
+            & ((aroonu_14_15m_lt_80) | (stochrsi_k_1h_lt_50) | (rsi_3_4h_gt_60))
+            # 15m high, 1h down move & still not low enough
+            & ((stochrsi_k_15m_lt_60) | (rsi_3_1h_gt_50) | (stochrsi_k_1h_lt_30))
+            # 1h down move, 4h high, 1d overbought
+            & ((rsi_3_1h_gt_20) | (aroonu_14_4h_lt_90) | (roc_9_1d_lt_30))
+            # 1h & 1d down move, 1h high
+            & ((rsi_3_1h_gt_40) | (aroonu_14_1h_lt_80) | (rsi_3_1d_gt_55))
+            # 1h & 4h high, 4h down move
+            & ((aroonu_14_1h_lt_60) | (rsi_3_4h_gt_50) | (stochrsi_k_4h_lt_70))
+            # 1h still high, 4h & 1d down move
+            & ((stochrsi_k_1h_lt_40) | (rsi_3_4h_gt_60) | (rsi_3_1d_gt_65))
+            # 1h & 4h high, 4h down move
+            & ((stochrsi_k_1h_lt_70) | (rsi_3_4h_gt_65) | (aroonu_14_4h_lt_90))
+          )
+
+          # Logic
+          long_entry_logic.append(
+            # the 1d is rising and not floored — a 15m pullback inside a falling daily is a knife
+            (roc_9_1d > 0.0)
+            & (stochrsi_k_1d > 50.0)
+            & (rsi_14_1d > 50.0)
+            # 15m in an uptrend, price back at the 50 EMA but still above the 200
+            & (ema_50_15m > ema_200_15m)
+            & (close <= (ema_50_15m * 1.002))
+            & (close > ema_200_15m)
+            # a market-order bubble, and the buyers are the ones making it
+            & (volume > large_bubble_thr)
+            & (cvd_buy_vol > cvd_sell_vol)
+          )
+
         # Condition #61 - Rebuy mode (Long).
         if long_entry_condition_index == 61:
           # Protections
@@ -22575,6 +22632,84 @@ class NostalgiaForInfinityX8(IStrategy):
             & (willr_14_1h > -15.0)
             # and the push is not being paid for
             & (obv_change_pct < 0.0)
+          )
+
+        # Condition #548 - Market-order bubble on a 15m trend pullback (Short, experimental).
+        if short_entry_condition_index == 548:
+          # Protections
+          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          short_entry_logic.append(protections_short_global == True)
+          short_entry_logic.append(
+            # 5m & 1h up move, 1d oversold
+            ((rsi_3_lt_90) | (rsi_3_1h_lt_50) | (roc_9_1d_gt_neg_25))
+            # 5m low, 15m up move, 1h still high
+            & ((aroonu_14_gt_75) | (rsi_3_15m_lt_60) | (stochrsi_k_1h_gt_40))
+            # 15m down move, 4h uptrend
+            & ((rsi_3_15m_gt_30) | (aroonu_14_4h_lt_30))
+            # 15m & 4h down move
+            & ((rsi_3_15m_gt_40) | (rsi_3_4h_gt_40))
+            # 15m down move & uptrend, 4h low
+            & ((rsi_3_15m_gt_50) | (aroonu_14_15m_lt_50) | (stochrsi_k_4h_gt_20))
+            # 15m down move & uptrend, 4h still high
+            & ((rsi_3_15m_gt_50) | (aroonu_14_15m_lt_75) | (stochrsi_k_4h_gt_40))
+            # 15m up move, 4h low, 1d uptrend
+            & ((rsi_3_15m_lt_50) | (stochrsi_k_4h_gt_20) | (aroonu_14_1d_lt_40))
+            # 15m & 4h up move, 1h down move
+            & ((rsi_3_15m_lt_70) | (rsi_3_1h_gt_40) | (rsi_3_4h_lt_70))
+            # 15m up move, 4h still high, 1d oversold
+            & ((rsi_3_15m_lt_70) | (stochrsi_k_4h_gt_40) | (roc_9_1d_gt_neg_30))
+            # 15m up move, 1h still high, 1d low
+            & ((rsi_3_15m_lt_90) | (stochrsi_k_1h_gt_40) | (aroonu_14_1d_gt_0))
+            # 15m low, 4h uptrend, 1d down move
+            & ((aroonu_14_15m_gt_50) | (aroonu_14_4h_lt_20) | (rsi_3_1d_gt_10))
+            # 15m & 4h uptrend, 15m still high
+            & ((aroonu_14_15m_lt_75) | (stochrsi_k_15m_gt_60) | (aroonu_14_4h_lt_20))
+            # 15m still not low enough, 1h uptrend, 4h down move
+            & ((stochrsi_k_15m_gt_70) | (aroonu_14_1h_lt_60) | (rsi_3_4h_gt_40))
+            # 15m still not low enough, 1h low, 1d down move
+            & ((stochrsi_k_15m_gt_90) | (stochrsi_k_1h_gt_20) | (rsi_3_1d_gt_10))
+            # 1h down move & low, 4h up move
+            & ((rsi_3_1h_gt_40) | (aroonu_14_1h_gt_10) | (rsi_3_4h_lt_40))
+            # 1h up move & still high, 1d low
+            & ((rsi_3_1h_lt_60) | (stochrsi_k_1h_gt_30) | (aroonu_14_1d_gt_0))
+            # 1h & 4h up move, 1h uptrend
+            & ((rsi_3_1h_lt_70) | (aroonu_14_1h_lt_40) | (rsi_3_4h_lt_60))
+            # 1h up move, 1h & 4h low
+            & ((rsi_3_1h_lt_80) | (aroonu_14_1h_gt_10) | (aroonu_14_4h_gt_10))
+            # 1h low, 4h up move & uptrend
+            & ((aroonu_14_1h_gt_20) | (rsi_3_4h_lt_40) | (aroonu_14_4h_lt_30))
+            # 1h uptrend, 4h down move
+            & ((aroonu_14_1h_lt_60) | (rsi_3_4h_gt_20))
+            # 1h uptrend, 4h down move, 1d oversold
+            & ((aroonu_14_1h_lt_60) | (rsi_3_4h_gt_50) | (roc_9_1d_gt_neg_20))
+            # 1h uptrend & still high, 1d oversold
+            & ((aroonu_14_1h_lt_70) | (stochrsi_k_1h_gt_50) | (roc_9_1d_gt_neg_30))
+            # 1h still high, 1d down move & low
+            & ((stochrsi_k_1h_gt_30) | (rsi_3_1d_gt_20) | (aroonu_14_1d_gt_0))
+            # 1h still high, 4h low, 1d oversold
+            & ((stochrsi_k_1h_gt_40) | (stochrsi_k_4h_gt_20) | (roc_9_1d_gt_neg_20))
+            # 1h still high, 4h up move, 1d low
+            & ((stochrsi_k_1h_gt_50) | (rsi_3_4h_lt_40) | (aroonu_14_1d_gt_0))
+            # 4h up move & still high
+            & ((rsi_3_4h_lt_70) | (stochrsi_k_4h_gt_60))
+          )
+
+          # Logic
+          short_entry_logic.append(
+            # the 1d has rolled over — a 15m bounce inside a rising daily runs the short over
+            (stochrsi_k_1d < 50.0)
+            # the 1h bounce has not gone far — a recovered 1h is what runs the short over
+            & (stochrsi_k_1h < 80.0)
+            # neither the 4h nor the 1d is making new highs
+            & (aroonu_14_4h < 50.0)
+            & (aroonu_14_1d < 50.0)
+            # 15m in a downtrend, price back at the 50 EMA but still below the 200
+            & (ema_50_15m < ema_200_15m)
+            & (close >= (ema_50_15m * 0.998))
+            & (close < ema_200_15m)
+            # a market-order bubble, and the sellers are the ones making it
+            & (volume > large_bubble_thr)
+            & (cvd_sell_vol > cvd_buy_vol)
           )
 
         # Condition #561 - Downtrend Pullback / Continuation mode (Short). Mirror of code-64.
