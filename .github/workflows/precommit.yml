@@ -6,6 +6,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: read
 
 env:
   PRE_COMMIT_COLOR: always
@@ -15,18 +16,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository for main repository
-        if: github.event_name != 'pull_request'
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 10
-
-      - name: Check PR repository
-        uses: actions/checkout@v6
+      - name: Checkout PR repository
         if: github.event_name == 'pull_request'
+        uses: actions/checkout@v6
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 10
+          token: ${{ github.token }}
+
+      - name: Checkout repository
+        if: github.event_name != 'pull_request'
+        uses: actions/checkout@v6
+        with:
           fetch-depth: 10
 
       - name: Set up Python
@@ -50,7 +52,8 @@ jobs:
               - added|modified: ['**']
 
       - name: Generate cache key
-        run: echo "PY=$(python -VV | sha256sum | cut -d' ' -f1)" >> $GITHUB_ENV
+        run: |
+          echo "PY=$(python -VV | sha256sum | cut -d' ' -f1)" >> "$GITHUB_ENV"
 
       - name: Cache pre-commit environments
         uses: actions/cache@v5
@@ -58,34 +61,31 @@ jobs:
           path: ~/.cache/pre-commit
           key: pre-commit|${{ env.PY }}|${{ hashFiles('.pre-commit-config.yaml') }}
 
-      - name: Run pre-commit (allow autofixes) for PR
+      - name: Run pre-commit and apply fixes
         if: github.event_name == 'pull_request'
         run: |
           pre-commit run --files ${{ steps.changed-files.outputs.repo_files }} || true
 
-      - name: Commit fixes for PR
+      - name: Show changes
+        if: github.event_name == 'pull_request'
+        run: |
+          git status --short
+          git diff --stat
+
+      - name: Commit and push fixes
         if: github.event_name == 'pull_request'
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
-          commit_message: "apply pre-commit fixes for PR"
+          commit_message: "chore: apply pre-commit fixes"
+          commit_user_name: "github-actions[bot]"
+          commit_user_email: "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Verify pre-commit passes for PR
+      - name: Verify pre-commit
         if: github.event_name == 'pull_request'
         run: |
           pre-commit run --files ${{ steps.changed-files.outputs.repo_files }}
 
-      - name: Run pre-commit on Push
+      - name: Run pre-commit on push
         if: github.event_name != 'pull_request'
         run: |
           pre-commit run --all-files
-
-      # - name: Commit fixes on Push
-      #   if: github.event_name != 'pull_request'
-      #   uses: stefanzweifel/git-auto-commit-action@v7
-      #   with:
-      #    commit_message: "apply pre-commit fixes"
-
-      #- name: Verify pre-commit passes for Push
-      #  if: github.event_name != 'pull_request'
-      #  run: |
-      #    pre-commit run --files ${{ steps.changed-files.outputs.repo_files }}
