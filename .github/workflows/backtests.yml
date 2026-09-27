@@ -83,13 +83,14 @@ jobs:
           - 20250101-20250201
     steps:
       - uses: actions/checkout@v7
-      - name: Pull docker image
+      - name: Pull docker images
         run: |
-          docker pull ghcr.io/iterativv/ci-strategy-backtesting:latest
+          docker pull ghcr.io/iterativv/ci-strategy-backtesting:latest &
+          docker pull ghcr.io/iterativv/market-data:kucoin-spot &
+          wait
 
       - name: Pull Market data and copy to user_data/data
         run: |
-          docker pull ghcr.io/iterativv/market-data:kucoin-spot
           mkdir -p user_data/data
           docker run --rm -v "$PWD/user_data/data:/host_data" ghcr.io/iterativv/market-data:kucoin-spot \
             bash -c "cp -r /data/* /host_data/"
@@ -109,7 +110,7 @@ jobs:
             ghcr.io/iterativv/ci-strategy-backtesting:latest \
             python -m pytest \
             tests/backtests \
-            -ra -vv -s \
+            -ra \
             --log-cli-level=info \
             --artifacts-path=artifacts/ \
             -p no:cacheprovider \
@@ -164,11 +165,11 @@ jobs:
 
       - name: Pull docker image
         run: |
-          docker pull ghcr.io/iterativv/ci-strategy-backtesting:latest
-
+          docker pull ghcr.io/iterativv/ci-strategy-backtesting:latest &
+          docker pull ghcr.io/iterativv/market-data:binance-spot &
+          wait
       - name: Pull Market data and copy to user_data/data
         run: |
-          docker pull ghcr.io/iterativv/market-data:binance-spot
           mkdir -p user_data/data
           docker run --rm -v "$PWD/user_data/data:/host_data" ghcr.io/iterativv/market-data:binance-spot \
             bash -c "cp -r /data/* /host_data/"
@@ -188,7 +189,7 @@ jobs:
             ghcr.io/iterativv/ci-strategy-backtesting:latest \
             python -m pytest \
             tests/backtests \
-            -ra -vv -s \
+            -ra \
             --log-cli-level=info \
             --artifacts-path=artifacts/ \
             -p no:cacheprovider \
@@ -243,11 +244,12 @@ jobs:
 
       - name: Pull docker image
         run: |
-          docker pull ghcr.io/iterativv/ci-strategy-backtesting:latest
+          docker pull ghcr.io/iterativv/ci-strategy-backtesting:latest &
+          docker pull ghcr.io/iterativv/market-data:binance-futures &
+          wait
 
       - name: Pull Market data and copy to user_data/data
         run: |
-          docker pull ghcr.io/iterativv/market-data:binance-futures
           mkdir -p user_data/data
           docker run --rm -v "$PWD/user_data/data:/host_data" ghcr.io/iterativv/market-data:binance-futures \
             bash -c "cp -r /data/* /host_data/"
@@ -267,7 +269,7 @@ jobs:
             ghcr.io/iterativv/ci-strategy-backtesting:latest \
             python -m pytest \
             tests/backtests \
-            -ra -vv -s \
+            -ra \
             --log-cli-level=info \
             --artifacts-path=artifacts/ \
             -p no:cacheprovider \
@@ -329,44 +331,54 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          python -m pip install --upgrade pip
           python -m pip install -r tests/ci-requirements.txt
 
-      - name: Download Previous Kucoin CI Artifacts
+      - name: Download Previous CI Artifacts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -euo pipefail
+      
           python .github/workflows/scripts/download-previous-artifacts.py \
             --repo=${{ github.event.repository.full_name }} \
             --branch=main \
             --workflow=backtests.yml \
             --exchange=kucoin \
             --tradingmode=spot \
-            --artifact=kucoin-spot-testrun-artifacts downloaded-results
-
-      - name: Download Previous Binance Spot CI Artifacts
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
+            --artifact=kucoin-spot-testrun-artifacts \
+            downloaded-results &
+      
+          pid1=$!
+      
           python .github/workflows/scripts/download-previous-artifacts.py \
             --repo=${{ github.event.repository.full_name }} \
             --branch=main \
             --workflow=backtests.yml \
             --exchange=binance \
             --tradingmode=spot \
-            --artifact=binance-spot-testrun-artifacts downloaded-results
-
-      - name: Download Previous Binance Futures CI Artifacts
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
+            --artifact=binance-spot-testrun-artifacts \
+            downloaded-results &
+      
+          pid2=$!
+      
           python .github/workflows/scripts/download-previous-artifacts.py \
             --repo=${{ github.event.repository.full_name }} \
             --branch=main \
             --workflow=backtests.yml \
             --exchange=binance \
             --tradingmode=futures \
-            --artifact=binance-futures-testrun-artifacts downloaded-results
+            --artifact=binance-futures-testrun-artifacts \
+            downloaded-results &
+      
+          pid3=$!
+      
+          # Wait for all three, while ensuring any failure fails the step.
+          status=0
+          wait "$pid1" || status=1
+          wait "$pid2" || status=1
+          wait "$pid3" || status=1
+      
+          exit "$status"
 
       - name: Download Current Binance Futures CI Artifacts
         uses: actions/download-artifact@v8
