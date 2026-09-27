@@ -1,4 +1,180 @@
 ## Without Docker
+
+After cloning the repository, there are only a few steps required to run NostalgiaForInfinity without Docker.
+
+### Clone repo
+
+Clone the NFI repository:
+
+```bash
+git clone https://github.com/iterativv/NostalgiaForInfinity
+```
+
+### Enter repo
+
+Navigate into the repository:
+
+```bash
+cd NostalgiaForInfinity
+```
+
+### Copy the recommended configuration
+
+Copy the recommended configuration to your `user_data` directory:
+
+```bash
+cp configs/recommended_config.json user_data/config.json
+```
+
+### Copy the private configuration
+
+NFI keeps sensitive information such as your exchange API credentials in a separate configuration file.
+
+Copy the example private configuration:
+
+```bash
+cp configs/exampleconfig_secret.json user_data/private_config.json
+```
+
+### Edit `user_data/private_config.json`
+
+Open the private configuration file:
+
+```bash
+nano user_data/private_config.json
+```
+
+This file contains your private settings, including your exchange API credentials and API server authentication.
+
+A basic example:
+
+```json
+{
+    "bot_name": "freqtrade",
+    "stake_currency": "USDT",
+    "fiat_display_currency": "USD",
+
+    "dry_run": true,
+
+    "exchange": {
+        "name": "binance",
+        "key": "YOUR_EXCHANGE_API_KEY",
+        "secret": "YOUR_EXCHANGE_API_SECRET",
+        "ccxt_config": {},
+        "ccxt_async_config": {},
+        "pair_whitelist": []
+    },
+
+    "telegram": {
+        "enabled": false,
+        "token": "",
+        "chat_id": ""
+    },
+
+    "api_server": {
+        "enabled": true,
+        "listen_ip_address": "127.0.0.1",
+        "listen_port": 8080,
+        "verbosity": "error",
+        "enable_openapi": false,
+        "jwt_secret_key": "CHANGE_THIS_TO_A_RANDOM_SECRET",
+        "CORS_origins": [],
+        "username": "user",
+        "password": "CHANGE_THIS_PASSWORD"
+    },
+
+    "initial_state": "running",
+    "force_entry_enable": true,
+
+    "internals": {
+        "process_throttle_secs": 5
+    }
+}
+```
+
+For complete information about Freqtrade configuration options, see the [Freqtrade configuration documentation](https://www.freqtrade.io/en/stable/configuration/).
+
+> **Security:** Keep `private_config.json` private. Do not commit your exchange API key, API secret, passwords, or other credentials to GitHub.
+
+### Edit `user_data/config.json`
+
+Next, open the main NFI configuration:
+
+```bash
+nano user_data/config.json
+```
+
+The configuration should load the NFI strategy and the required NFI configuration files:
+
+```json
+{
+    "strategy": "NostalgiaForInfinityX8",
+
+    "add_config_files": [
+        "../configs/trading_mode-spot.json",
+        "../configs/pairlist-volume-binance-usdt.json",
+        "../configs/blacklist-binance.json",
+        "../configs/exampleconfig.json",
+        "private_config.json"
+    ]
+}
+```
+
+The `private_config.json` file is loaded separately so that sensitive information does not need to be stored in the main configuration.
+
+If you are using futures instead of spot trading, change the trading-mode configuration accordingly and make sure your exchange supports futures trading.
+
+See the [Freqtrade exchange documentation](https://www.freqtrade.io/en/stable/exchanges/) for supported exchanges.
+
+### Start Freqtrade
+
+From the NFI directory, start Freqtrade:
+
+```bash
+freqtrade trade --config user_data/config.json
+```
+
+If everything is configured correctly, Freqtrade will load the NFI strategy and start the bot.
+
+You should see output similar to the Docker installation, including messages showing that:
+
+* the configuration was loaded,
+* `NostalgiaForInfinityX8` was loaded,
+* the configured exchange was detected,
+* the pairlist was loaded,
+* the API server was started, if enabled,
+* and the bot entered the `RUNNING` state.
+
+### Open the Freqtrade web interface
+
+If the API server is enabled and configured to listen on port `8080`, open:
+
+```text
+http://127.0.0.1:8080
+```
+
+The Freqtrade web interface should then be available.
+
+### Dry run
+
+For your first setup, keep:
+
+```json
+"dry_run": true
+```
+
+This allows you to verify that the configuration, exchange connection, strategy, and pairlist are working without placing real trades.
+
+Only change this to:
+
+```json
+"dry_run": false
+```
+
+once you have completed your testing and are ready to enable live trading.
+
+
+## Without Docker
  after cloning repo there are only few steps:
 
 ### **clone repo**
@@ -112,7 +288,7 @@ cp configs/exampleconfig_secret.json user_data/private_config.json
   // copy configs/exampleconfig_secret.json to user_data/config-private.json
   // Change     "dry_run": true, to     "dry_run": false, after testing
 
-  "strategy": "NostalgiaForInfinityX6",
+  "strategy": "NostalgiaForInfinityX8",
   "add_config_files": [
     "../configs/trading_mode-spot.json",
     "../configs/pairlist-volume-binance-usdt.json",

@@ -2,7 +2,7 @@
 
 <cite>
 **Referenced Files in This Document**   
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 </cite>
 
 ## Table of Contents
@@ -18,7 +18,7 @@
 
 ## Rapid Long Mode
 
-The **Rapid Long Mode** in the NostalgiaForInfinityX6 (NFI-X6) strategy is designed for ultra-fast execution in response to strong, immediate bullish signals. It operates with higher aggression compared to standard long modes and is typically activated during sudden price surges, such as those following major protocol announcements or market-moving news. This mode bypasses multiple confirmation layers used in normal trading logic, relying instead on primary momentum indicators to trigger entries with minimal delay.
+The **Rapid Long Mode** in the NostalgiaForInfinityX8 (NFI-X8) strategy is designed for ultra-fast execution in response to strong, immediate bullish signals. It operates with higher aggression compared to standard long modes and is typically activated during sudden price surges, such as those following major protocol announcements or market-moving news. This mode bypasses multiple confirmation layers used in normal trading logic, relying instead on primary momentum indicators to trigger entries with minimal delay.
 
 Rapid Long Mode is identified by specific **enter_tags** assigned to trades. These tags are defined in the strategy as:
 
@@ -31,7 +31,7 @@ When a trade is tagged with any of these identifiers (e.g., `"101"`), the strate
 This mode is particularly effective in **futures trading environments** where leverage can amplify gains during sharp upward movements. However, due to its low-latency nature, it also carries increased risk of false positives and slippage, requiring careful configuration and monitoring.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L125)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L125)
 
 ## Configuration Parameters
 
@@ -53,8 +53,8 @@ These parameters control how much capital is allocated per trade and when protec
 The strategy uses these flags to determine whether post-entry risk management features like trailing stops or partial exits should be active.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L125-L134)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L200-L210)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L125-L134)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L200-L210)
 
 ## Entry Signal Logic
 
@@ -84,8 +84,8 @@ This bypasses slower-moving averages or consolidation filters used in normal mod
 The use of **tag-based routing** ensures that once a rapid signal is detected, the trade is classified correctly and subsequent logic (exit, derisking) follows the rapid mode path.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L624-L627)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L897)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L624-L627)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L897)
 
 ## Position Sizing and Risk Control
 
@@ -100,7 +100,7 @@ This ensures that even with fast execution, the strategy does not over-leverage 
 Additionally, the strategy checks for available free slots before entering new rapid trades, especially when combined with other modes like rebuy or grind.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L200-L205)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L200-L205)
 
 ## Exit Strategy
 
@@ -120,8 +120,8 @@ if current_profit > 0.05 and rsi_14 > 80:
 This prevents giving back profits during sudden reversals.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1726-L1731)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L2146-L2149)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1726-L1731)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L2146-L2149)
 
 ## Interaction with Grinding and Derisking
 
@@ -134,7 +134,7 @@ Rapid Long Mode interacts selectively with other strategy components:
 This selective interaction ensures that the strategy remains aggressive on entry but conservative on risk management.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L190-L195)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L190-L195)
 
 ## Practical Example: Flash Rally on OKX Futures
 
@@ -150,8 +150,8 @@ This selective interaction ensures that the strategy remains aggressive on entry
 This sequence demonstrates how Rapid Long Mode captures short-term alpha while minimizing exposure to reversal risk.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L624-L627)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L200-L210)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L624-L627)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L200-L210)
 
 ## Common Pitfalls and Tuning Tips
 
@@ -166,8 +166,8 @@ This sequence demonstrates how Rapid Long Mode captures short-term alpha while m
 - **Enable Conditions Selectively**: Disable `long_entry_condition_104` if it generates too many false signals during low-volume periods.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L624-L627)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L200-L205)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L624-L627)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L200-L205)
 
 ## Performance Considerations
 
@@ -181,4 +181,4 @@ Optimal performance of Rapid Long Mode depends on several technical factors:
 For exchanges like **OKX**, which provide fewer candles per API call, the `startup_candle_count` is reduced to 480 to ensure timely initialization.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1000-L1010)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1000-L1010)

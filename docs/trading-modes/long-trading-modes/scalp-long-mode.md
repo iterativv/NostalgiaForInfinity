@@ -2,7 +2,7 @@
 
 <cite>
 **Referenced Files in This Document**   
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 </cite>
 
 ## Table of Contents
@@ -19,7 +19,7 @@
 
 ## Objective and Strategy Overview
 
-The **Scalp Long Mode** in the NostalgiaForInfinityX6 (NFIX6) strategy is designed to capture small, frequent profits from minor price fluctuations, typically within minutes. This mode targets high-turnover trading by entering and exiting positions rapidly based on short-term market inefficiencies.
+The **Scalp Long Mode** in the NostalgiaForInfinityX8 (NFIX6) strategy is designed to capture small, frequent profits from minor price fluctuations, typically within minutes. This mode targets high-turnover trading by entering and exiting positions rapidly based on short-term market inefficiencies.
 
 Scalp Long Mode operates under the tag identifiers `161`, `162`, and `163`, which are defined in the strategy as:
 
@@ -31,7 +31,7 @@ long_scalp_mode_name = "long_scalp"
 This mode is optimized for speed and precision, making it suitable for environments with low latency and high liquidity. It does not rely on long-term trends or momentum but instead exploits micro-price movements using real-time indicators.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L131-L141)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L131-L141)
 
 ## Entry Signal Logic
 
@@ -53,8 +53,8 @@ if scalp_mode_active and rsi_1m < 20 and bid_pressure > ask_pressure:
 These signals are evaluated within the broader `populate_entry_trend` function, where tag-based filtering determines whether a given condition belongs to the scalp mode.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L633-L635)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L902-L905)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L633-L635)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L902-L905)
 
 ## Configuration Parameters
 
@@ -75,7 +75,7 @@ Key configuration parameters for Scalp Long Mode are embedded within the strateg
 These parameters ensure that scalp trades are tightly controlled and automatically managed without manual intervention.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L756-L765)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L756-L765)
 
 ## Position Sizing and Risk Management
 
@@ -91,7 +91,7 @@ Risk is further mitigated through:
 This approach prioritizes capital preservation over aggressive profit-taking, aligning with the high-frequency, low-risk nature of scalping.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L756)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L756)
 
 ## Exit Strategy and Stop-Loss Mechanism
 
@@ -116,7 +116,7 @@ if previous_sell_reason in [f"exit_{self.long_scalp_mode_name}_stoploss_u_e"]:
 This ensures disciplined risk control and avoids revenge trading.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L17518-L17589)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L17518-L17589)
 
 ## Interaction with Other Modes
 
@@ -136,8 +136,8 @@ is_scalp_mode = all(c in self.long_scalp_mode_tags for c in enter_tags) or (
 This prevents mode interference and maintains strategy integrity.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L902-L905)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1813-L1816)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L902-L905)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1813-L1816)
 
 ## Practical Deployment Example
 
@@ -159,8 +159,8 @@ It enters a small position (e.g., 1–2% of portfolio) and sets a stop-loss at -
 This cycle repeats frequently throughout the day, capitalizing on repetitive micro-patterns.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1238)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1813)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1238)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1813)
 
 ## Common Pitfalls and Performance Considerations
 
@@ -189,8 +189,8 @@ num_cores_indicators_calc = 4  # Adjust based on hardware
 ```
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L45)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L750)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L45)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L750)
 
 ## Tuning Recommendations
 
@@ -223,5 +223,5 @@ Example config override:
 These adjustments help maintain profitability while adapting to changing market regimes.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L756)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L633-L635)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L756)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L633-L635)

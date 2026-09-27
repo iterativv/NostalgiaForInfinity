@@ -2,7 +2,7 @@
 
 <cite>
 **Referenced Files in This Document**   
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 - [README.md](file://README.md)
 </cite>
 
@@ -18,10 +18,10 @@
 9. [Common Issues and Optimization](#common-issues-and-optimization)
 
 ## Introduction
-The NostalgiaForInfinityX6 strategy implements an advanced position management system designed to optimize trade performance through dynamic adjustments based on market conditions. This document details the three core mechanisms: Grinding (averaging down losing positions), Derisking (locking in profits), and Rebuy (adding to winning positions). These systems are integrated within the Freqtrade framework and leverage price action, technical indicators, and configurable thresholds to make real-time trading decisions.
+The NostalgiaForInfinityX8 strategy implements an advanced position management system designed to optimize trade performance through dynamic adjustments based on market conditions. This document details the three core mechanisms: Grinding (averaging down losing positions), Derisking (locking in profits), and Rebuy (adding to winning positions). These systems are integrated within the Freqtrade framework and leverage price action, technical indicators, and configurable thresholds to make real-time trading decisions.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1-L100)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1-L100)
 - [README.md](file://README.md#L1-L10)
 
 ## Grinding Mechanism
@@ -32,7 +32,7 @@ The grinding mechanism allows the strategy to average down on losing positions b
 Grinding is controlled through a series of configuration parameters that define the behavior for different market conditions. The strategy supports multiple grinding levels, each with specific stake amounts and price thresholds.
 
 ```python
-# Example grinding configuration from NostalgiaForInfinityX6.py
+# Example grinding configuration from NostalgiaForInfinityX8.py
 grind_1_stakes_spot = [0.24, 0.26, 0.28]
 grind_1_sub_thresholds_spot = [-0.12, -0.16, -0.20]
 grind_1_profit_threshold_spot = 0.018
@@ -68,10 +68,10 @@ EvaluateExit --> End([Position Management])
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L500-L600)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L500-L600)
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L500-L800)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L500-L800)
 
 ## Derisking Mechanism
 
@@ -84,7 +84,7 @@ Derisking is implemented through multiple approaches:
 - Complete position exit under adverse conditions
 
 ```python
-# Example derisk configuration from NostalgiaForInfinityX6.py
+# Example derisk configuration from NostalgiaForInfinityX8.py
 regular_mode_derisk_1_spot = -0.24
 regular_mode_derisk_spot = -0.24
 grinding_v2_derisk_level_1_spot = -0.12
@@ -121,10 +121,10 @@ ClosedPosition --> [*]
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1500-L1600)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1500-L1600)
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1500-L1800)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1500-L1800)
 
 ## Rebuy Mechanism
 
@@ -140,7 +140,7 @@ Rebuy functionality is controlled by:
 - Maximum of 2 additional entries (rebuy_mode_stakes has 2 elements)
 
 ```python
-# Example rebuy configuration from NostalgiaForInfinityX6.py
+# Example rebuy configuration from NostalgiaForInfinityX8.py
 rebuy_mode_stake_multiplier = 0.35
 rebuy_mode_thresholds_spot = [-0.08, -0.10]  # Triggered at -8% and -10% loss
 rebuy_mode_stakes_spot = [1.0, 1.0]  # Each rebuy is 1x the initial stake
@@ -181,11 +181,11 @@ MonitorPosition --> End([Position Management])
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40764-L40947) - long_rebuy_adjust_trade_position
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40764-L40947) - long_rebuy_adjust_trade_position
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40764-L40947) - Rebuy mechanism implementation
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L481-L488) - Rebuy configuration parameters
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40764-L40947) - Rebuy mechanism implementation
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L481-L488) - Rebuy configuration parameters
 
 ## Position State Model
 
@@ -227,10 +227,10 @@ L --> K
 The state model ensures that position management decisions are consistent and based on predefined rules rather than emotional trading.
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L2500-L2600)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L2500-L2600)
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L2500-L2800)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L2500-L2800)
 
 ## Dynamic Position Sizing
 
@@ -261,7 +261,7 @@ Different position management modes use specific sizing strategies:
 The dynamic sizing system ensures that risk is properly managed across different market conditions and strategy modes.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L2800-L3100)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L2800-L3100)
 
 ## Integration with Freqtrade API
 
@@ -285,7 +285,7 @@ def adjust_trade_position(self, trade: Trade, current_time: datetime, current_ra
 The integration allows for seamless operation within the Freqtrade ecosystem while providing the advanced position management features.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L3100-L3400)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L3100-L3400)
 
 ## Configuration and Usage Patterns
 
@@ -320,7 +320,7 @@ Aggressive configurations aim for higher returns:
 ```
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L100-L500)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L100-L500)
 
 ## Common Issues and Optimization
 
@@ -339,4 +339,4 @@ Aggressive configurations aim for higher returns:
 The strategy includes extensive logging and notification features to monitor position management activities and optimize performance over time.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L3400-L3700)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L3400-L3700)

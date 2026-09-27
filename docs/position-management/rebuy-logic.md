@@ -2,7 +2,7 @@
 
 <cite>
 **Referenced Files in This Document**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40764-L40947) - long_rebuy_adjust_trade_position method
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40764-L40947) - long_rebuy_adjust_trade_position method
 - [test_NFIX6.py](file://tests/unit/test_NFIX6.py#L58-L124)
 - [exampleconfig-rebuy.json](file://configs/exampleconfig-rebuy.json#L1-L98)
 </cite>
@@ -19,12 +19,12 @@
 9. [Troubleshooting Common Issues](#troubleshooting-common-issues)
 
 ## Introduction
-**Important Clarification**: Despite its name suggesting "buying back" into profitable positions, the rebuy logic in NostalgiaForInfinityX6 actually functions as a **controlled averaging down strategy** for losing positions. It adds to positions when they are in loss (typically -8% to -10%), not when winning.
+**Important Clarification**: Despite its name suggesting "buying back" into profitable positions, the rebuy logic in NostalgiaForInfinityX8 actually functions as a **controlled averaging down strategy** for losing positions. It adds to positions when they are in loss (typically -8% to -10%), not when winning.
 
 The rebuy mechanism operates through the `long_rebuy_adjust_trade_position` method, which evaluates losing positions for additional entries based on profit degradation thresholds and strict technical indicator confirmations. This approach aims to reduce average entry price while maintaining disciplined risk management, deploying additional capital only when indicators suggest potential reversal. The system implements a conservative approach with maximum 2 additional entries, using larger position sizes (1.0x initial stake) compared to grinding strategies.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40764-L40947)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40764-L40947)
 
 ## Rebuy Mechanism Overview
 The rebuy mechanism operates through the `long_rebuy_adjust_trade_position` method, which evaluates **losing positions** for additional entries when profit falls below negative thresholds (-8%, -10%). The system triggers rebuys when `slice_profit_entry < rebuy_mode_thresholds[sub_grind_count]`, meaning the position must be in loss before additional capital is deployed.
@@ -68,10 +68,10 @@ ReturnNegativeAmount --> End
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40764-L40947)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40764-L40947)
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40764-L40947)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40764-L40947)
 
 ## Configuration Parameters
 The rebuy functionality is controlled through several key configuration parameters that determine entry frequency, size, and risk management:
@@ -106,7 +106,7 @@ The strategy configuration also includes exchange-specific settings that affect 
 ```
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40764-L40947)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40764-L40947)
 - [exampleconfig-rebuy.json](file://configs/exampleconfig-rebuy.json#L0-L98)
 
 ## Entry Conditions and Confirmation Requirements
@@ -144,10 +144,10 @@ D --> |No| F[No Action]
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40764-L40947)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40764-L40947)
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40764-L40947)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40764-L40947)
 
 ## Position Sizing and Stake Management
 The rebuy mechanism implements sophisticated position sizing that adapts to both spot and futures trading modes. The system calculates stake amounts based on the initial entry slice while respecting exchange-specific constraints.
@@ -172,7 +172,7 @@ The system also implements de-risking when the total profit stake falls below th
 This dual approach allows the strategy to both scale into winning positions and systematically reduce exposure when market conditions deteriorate.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40764-L40947)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40764-L40947)
 
 ## Integration with Exchange Constraints
 The rebuy mechanism is designed to operate within the constraints of various cryptocurrency exchanges, particularly regarding order execution, rate limiting, and API capabilities.
@@ -198,7 +198,7 @@ The strategy also accounts for exchange-specific candle data limitations:
 These adaptations ensure reliable indicator calculations across different exchange APIs.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40764-L40947)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40764-L40947)
 - [exampleconfig-rebuy.json](file://configs/exampleconfig-rebuy.json#L0-L98)
 
 ## Performance Considerations
@@ -222,7 +222,7 @@ The system mitigates these risks through:
 - **Minimum Stake Enforcement**: Prevents uneconomical micro-transactions
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40764-L40947)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40764-L40947)
 
 ## Best Practices and Tuning Guidelines
 Optimal rebuy performance requires careful parameter tuning based on market conditions and trading objectives.
@@ -256,7 +256,7 @@ rebuy_mode_stakes_futures = [0.7, 0.7]
 Monitor the `rebuy_mode_min_free_slots` parameter (default: 2) to ensure sufficient capital allocation flexibility across the portfolio.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40764-L40947)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40764-L40947)
 
 ## Troubleshooting Common Issues
 Several common issues may arise when implementing the rebuy logic, along with their solutions.
@@ -292,5 +292,5 @@ The system includes comprehensive logging and notification features to help diag
 - **Profit Tracking**: Comprehensive profit calculation and reporting
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40764-L40947)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40764-L40947)
 - [test_NFIX6.py](file://tests/unit/test_NFIX6.py#L58-L124)

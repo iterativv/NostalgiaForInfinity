@@ -2,7 +2,7 @@
 
 <cite>
 **Referenced Files in This Document**   
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 </cite>
 
 ## Table of Contents
@@ -15,16 +15,16 @@
 
 ## Short Trading Modes Overview
 
-The NostalgiaForInfinityX6 strategy supports multiple short trading modes designed to capitalize on bearish market conditions. These modes mirror their long counterparts in structure but are specifically tailored for short positions. The supported short modes include Normal, Pump, Quick, Rebuy, Rapid, Grind, and Scalp. Each mode is identified by unique entry condition tags and operates under specific logic to detect and act on downward price momentum.
+The NostalgiaForInfinityX8 strategy supports multiple short trading modes designed to capitalize on bearish market conditions. These modes mirror their long counterparts in structure but are specifically tailored for short positions. The supported short modes include Normal, Pump, Quick, Rebuy, Rapid, Grind, and Scalp. Each mode is identified by unique entry condition tags and operates under specific logic to detect and act on downward price momentum.
 
 Short modes are activated when the market exhibits signs of a downtrend, such as bearish momentum, volume spikes during price declines, or overbought conditions reversing. The strategy uses a combination of technical indicators across multiple timeframes (5m, 15m, 1h, 4h, 1d) to confirm entry signals. Unlike long modes, short entries require confirmation of selling pressure and weakening bullish sentiment.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L13853-L15529)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L13853-L15529)
 
 ## Short Entry Logic and Conditions
 
-Short entry conditions are defined within the `populate_entry_trend` method of the `NostalgiaForInfinityX6` class. The logic is structured around a series of RSI, Stochastic RSI, Aroon, and EMA-based conditions that detect bearish momentum across various timeframes.
+Short entry conditions are defined within the `populate_entry_trend` method of the `NostalgiaForInfinityX8` class. The logic is structured around a series of RSI, Stochastic RSI, Aroon, and EMA-based conditions that detect bearish momentum across various timeframes.
 
 The primary short entry conditions are controlled by the `short_entry_signal_params` dictionary, which enables or disables specific conditions. For example:
 
@@ -71,7 +71,7 @@ if short_entry_condition_index == 542:
 These conditions are combined using logical AND operations, and the resulting signal is stored in the `enter_short` column of the DataFrame.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L13865-L15529)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L13865-L15529)
 
 ## Configuration Parameters for Short Modes
 
@@ -107,7 +107,7 @@ grind_1_profit_threshold_futures = 0.018
 These parameters control the size and timing of additional entries in a grinding strategy, allowing the position to average down during continued downtrends.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L150-L300)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L150-L300)
 
 ## Position Adjustment and Risk Management
 
@@ -137,7 +137,7 @@ grinding_v2_grind_1_thresholds_spot = [-0.06, -0.07, -0.08, -0.09]
 These parameters define the stake size and price thresholds for each additional entry in the grinding sequence.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L300-L500)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L300-L500)
 
 ## Spot vs Futures Market Behavior
 
@@ -170,7 +170,7 @@ if ("trading_mode" in self.config) and (self.config["trading_mode"] in ["futures
 This allows the strategy to adapt its risk parameters and position sizing based on the market type.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L100-L150)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L100-L150)
 
 ## Risk Management and Common Issues
 
@@ -204,4 +204,4 @@ stop_threshold_doom_futures = 0.20
 This ensures that positions are closed quickly if the market moves sharply against the short position.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L50-L100)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L50-L100)

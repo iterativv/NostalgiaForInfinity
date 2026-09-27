@@ -5,7 +5,7 @@
 - [pairlist-static-binance-spot-usdt.json](file://configs/pairlist-static-binance-spot-usdt.json)
 - [pairlist-volume-binance-usdt.json](file://configs/pairlist-volume-binance-usdt.json)
 - [pairlist-backtest-static-binance-spot-usdt.json](file://configs/pairlist-backtest-static-binance-spot-usdt.json)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 </cite>
 
 ## Table of Contents
@@ -21,10 +21,10 @@
 10. [Performance Considerations and Optimization](#performance-considerations-and-optimization)
 
 ## Introduction
-This document provides a comprehensive guide to pair list management within the NostalgiaForInfinityX6 trading strategy framework. It details the three primary types of pair lists: static, volume-ranked dynamic, and backtest-specific configurations. These mechanisms enable traders to control which cryptocurrency trading pairs are considered for entry signals, ensuring alignment with liquidity requirements, risk profiles, and testing consistency. The system leverages Freqtrade's pairlist functionality to filter and rank assets based on exchange-specific criteria.
+This document provides a comprehensive guide to pair list management within the NostalgiaForInfinityX8 trading strategy framework. It details the three primary types of pair lists: static, volume-ranked dynamic, and backtest-specific configurations. These mechanisms enable traders to control which cryptocurrency trading pairs are considered for entry signals, ensuring alignment with liquidity requirements, risk profiles, and testing consistency. The system leverages Freqtrade's pairlist functionality to filter and rank assets based on exchange-specific criteria.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1-L100)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1-L100)
 
 ## Pair List Types and Usage
 The pair list system supports three distinct modes of operation, each designed for specific use cases in live trading and historical analysis.
@@ -230,7 +230,7 @@ This standardized approach enables consistent configuration management across di
 - [pairlist-backtest-static-binance-spot-usdt.json](file://configs/pairlist-backtest-static-binance-spot-usdt.json)
 
 ## Strategy Integration and Dynamic Loading
-The NostalgiaForInfinityX6 strategy dynamically loads pair lists based on trading mode and exchange context.
+The NostalgiaForInfinityX8 strategy dynamically loads pair lists based on trading mode and exchange context.
 
 ### Configuration-Driven Loading
 The strategy reads pair list configurations from the `configs/` directory, with selection determined by:
@@ -261,7 +261,7 @@ elif ("trading_mode" in self.config) and (self.config["trading_mode"] in ["futur
 ```
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1000-L1100)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1000-L1100)
 
 ## Creating Custom Pair Lists
 Creating custom pair lists involves following established patterns and conventions.
@@ -330,7 +330,7 @@ The system works in conjunction with blacklist files (e.g., `blacklist-binance.j
 - Pairs with known issues
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L50-L100)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L50-L100)
 
 ## Performance Considerations and Optimization
 Pair list configuration significantly impacts strategy performance and resource usage.
@@ -356,4 +356,4 @@ Based on the strategy documentation:
 The system's design balances comprehensive market coverage with efficient resource utilization, ensuring reliable operation across different hardware configurations.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L20-L50)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L20-L50)

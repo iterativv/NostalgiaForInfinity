@@ -1,12 +1,12 @@
-# NostalgiaForInfinityX6 Brownfield Architecture Document
+# NostalgiaForInfinityX8 Brownfield Architecture Document
 
 ## Introduction
 
-This document captures the CURRENT STATE of the `NostalgiaForInfinityX6.py` Freqtrade strategy codebase. It serves as a reference for AI agents and developers to understand its structure, conventions, technical debt, and real-world patterns before making modifications. The strategy is a monolithic, highly complex, and configurable system for algorithmic trading.
+This document captures the CURRENT STATE of the `NostalgiaForInfinityX8.py` Freqtrade strategy codebase. It serves as a reference for AI agents and developers to understand its structure, conventions, technical debt, and real-world patterns before making modifications. The strategy is a monolithic, highly complex, and configurable system for algorithmic trading.
 
 ### Document Scope
 
-This is a comprehensive documentation of the entire `NostalgiaForInfinityX6.py` file, as no specific enhancement or PRD was provided. The focus is on understanding the existing system as-is.
+This is a comprehensive documentation of the entire `NostalgiaForInfinityX8.py` file, as no specific enhancement or PRD was provided. The focus is on understanding the existing system as-is.
 
 ### Change Log
 
@@ -16,9 +16,9 @@ This is a comprehensive documentation of the entire `NostalgiaForInfinityX6.py` 
 
 ## Quick Reference - Key Methods
 
-The entire logic is contained within the `NostalgiaForInfinityX6.py` file and the `NostalgiaForInfinityX6` class.
+The entire logic is contained within the `NostalgiaForInfinityX8.py` file and the `NostalgiaForInfinityX8` class.
 
-- **Main Entry / Class**: `NostalgiaForInfinityX6(IStrategy)`
+- **Main Entry / Class**: `NostalgiaForInfinityX8(IStrategy)`
 - **Configuration**: The first ~800 lines of the class definition are dedicated to default parameters.
 - **Initialization**: `__init__(self, config: dict)` - Handles loading user configuration overrides.
 - **Core Business Logic (Indicators)**: `populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame` - The heart of the data processing, where all technical indicators are calculated.
@@ -31,7 +31,7 @@ The entire logic is contained within the `NostalgiaForInfinityX6.py` file and th
 
 ### Technical Summary
 
-NostalgiaForInfinityX6 is an advanced, single-file algorithmic trading strategy written in Python for the Freqtrade platform. It supports both spot and futures markets and features a multi-layered system of trading modes, each with its own entry, exit, and position management logic. It is designed to be highly configurable but is also extremely complex as a result.
+NostalgiaForInfinityX8 is an advanced, single-file algorithmic trading strategy written in Python for the Freqtrade platform. It supports both spot and futures markets and features a multi-layered system of trading modes, each with its own entry, exit, and position management logic. It is designed to be highly configurable but is also extremely complex as a result.
 
 ### Actual Tech Stack
 
@@ -46,7 +46,7 @@ NostalgiaForInfinityX6 is an advanced, single-file algorithmic trading strategy 
 
 ### Repository Structure Reality Check
 
-- **Type**: Single-file strategy. All logic is encapsulated within `NostalgiaForInfinityX6.py`.
+- **Type**: Single-file strategy. All logic is encapsulated within `NostalgiaForInfinityX8.py`.
 - **Package Manager**: `pip` (via `requirements.txt`, though not provided, it is standard for Freqtrade).
 - **Notable**: The project's complexity is managed internally within one file through parameters and conditional logic, rather than through a modular file structure.
 
@@ -57,7 +57,7 @@ NostalgiaForInfinityX6 is an advanced, single-file algorithmic trading strategy 
 The project is not structured into modules but into methods within a single class.
 
 ```python
-class NostalgiaForInfinityX6(IStrategy):
+class NostalgiaForInfinityX8(IStrategy):
   # 1. CONFIGURATION PARAMETERS (~800 lines)
   #    - Stoploss, timeframe, modes, etc.
   #    - Organized by feature (grinding, derisk, etc.)
@@ -131,7 +131,7 @@ The strategy implements the `IStrategy` interface provided by the Freqtrade plat
 ### Local Development Setup
 
 1.  A working Freqtrade installation is required.
-2.  The `NostalgiaForInfinityX6.py` file must be placed in the `user_data/strategies/` directory of the Freqtrade instance.
+2.  The `NostalgiaForInfinityX8.py` file must be placed in the `user_data/strategies/` directory of the Freqtrade instance.
 3.  A `config.json` file is needed to configure the bot (stake currency, exchange, pair list, etc.).
 4.  The strategy's many parameters can be overridden in the `config.json` under the `"strategy_list"` or a root `"nfi_parameters"` block.
 
@@ -153,8 +153,8 @@ The strategy implements the `IStrategy` interface provided by the Freqtrade plat
 
 ```bash
 # Run a backtest
-freqtrade backtesting --strategy NostalgiaForInfinityX6 --config config.json
+freqtrade backtesting --strategy NostalgiaForInfinityX8 --config config.json
 
 # Run the bot in dry-run mode
-freqtrade trade --strategy NostalgiaForInfinityX6 --config config.json --db-url sqlite:///tradesv3.sqlite
+freqtrade trade --strategy NostalgiaForInfinityX8 --config config.json --db-url sqlite:///tradesv3.sqlite
 ```

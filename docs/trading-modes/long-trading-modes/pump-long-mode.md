@@ -2,7 +2,7 @@
 
 <cite>
 **Referenced Files in This Document**   
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 </cite>
 
 ## Table of Contents
@@ -17,13 +17,13 @@
 9. [Performance Considerations](#performance-considerations)
 
 ## Introduction
-The Pump Long mode in the NostalgiaForInfinityX6 strategy is specifically designed to capture rapid upward price movements, often triggered by sudden news events, social media hype, or strong market sentiment spikes. This mode operates under a distinct set of entry conditions that are more aggressive than the standard long mode, allowing the strategy to enter positions quickly during breakout phases. The primary goal is to ride momentum-driven rallies while managing risk through dynamic exit rules and profit-taking mechanisms.
+The Pump Long mode in the NostalgiaForInfinityX8 strategy is specifically designed to capture rapid upward price movements, often triggered by sudden news events, social media hype, or strong market sentiment spikes. This mode operates under a distinct set of entry conditions that are more aggressive than the standard long mode, allowing the strategy to enter positions quickly during breakout phases. The primary goal is to ride momentum-driven rallies while managing risk through dynamic exit rules and profit-taking mechanisms.
 
 This mode is activated when specific entry tags (e.g., "21", "22") are enabled in the configuration, signaling that the system should look for high-momentum, high-volume setups. It modifies standard thresholds to allow earlier entries, particularly by relaxing RSI constraints and prioritizing volume surges and price acceleration indicators.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L117)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L615)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L117)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L615)
 
 ## Core Configuration Parameters
 The Pump Long mode is governed by a series of dedicated configuration parameters that define its behavior. These settings are part of the broader `long_entry_signal_params` dictionary and are used to enable or disable specific conditions.
@@ -37,8 +37,8 @@ The Pump Long mode is governed by a series of dedicated configuration parameters
 These parameters are typically adjusted within the strategy’s configuration block (`nfi_parameters`) or via the main config file, allowing users to fine-tune sensitivity based on market conditions.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L615)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L117)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L615)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L117)
 
 ## Entry Signal Logic
 The entry logic for Pump Long mode relies on accelerated triggers derived from volume spikes and price momentum. The strategy uses a combination of technical indicators and candlestick patterns to identify breakout opportunities.
@@ -58,8 +58,8 @@ In the actual codebase, this would be implemented within the `populate_entry_tre
 The entry tags `"21", "22", "23", "24", "25", "26"` correspond to variations of the pump detection logic, possibly differing in aggressiveness or confirmation requirements.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L117)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L615)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L117)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L615)
 
 ## Exit Strategy and Profit Targeting
 The exit logic for Pump Long mode is handled by the `long_exit_pump` function, which applies a multi-layered approach to secure profits and manage risk during volatile moves.
@@ -102,10 +102,10 @@ FinalizeExit --> End([Return Sell Signal])
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L15834-L16100)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L15834-L16100)
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L15834-L16100)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L15834-L16100)
 
 ## Position Sizing and Risk Management
 While the Pump Long mode does not have a dedicated stake multiplier parameter like Rapid or Rebuy modes, position sizing is influenced by the overall risk framework of the strategy.
@@ -126,8 +126,8 @@ Pump Long mode interacts with other operational modes in specific ways:
 The strategy ensures mode exclusivity through tag-based routing in the `custom_exit` and `adjust_trade_position` methods.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1619)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L144-L166)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1619)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L144-L166)
 
 ## Practical Example on Gate.io
 Consider a sudden rally in an altcoin like **GALA/USDT** on Gate.io, triggered by a major partnership announcement:

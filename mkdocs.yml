@@ -103,7 +103,7 @@ nav:
 
   - Configuration:
       - Config Guide: configuration-guide/configuration-guide.md
-      - Advanced: configuration-guide/advanced-configuration.md
+      # - Advanced: configuration-guide/advanced-configuration.md
       - Pair Lists: configuration-guide/pair-list-management.md
       - Blacklist: configuration-guide/blacklist-management.md
       - Hierarchy: configuration-guide/configuration-hierarchy.md
@@ -146,4 +146,4 @@ nav:
           - Scalp: trading-modes/short-trading-modes/short-scalp-mode.md
 
   - Nostalgia Strategy:
-      - Architecture: nostalgia-for-infinity-x6-architecture.md
+      - Architecture: nostalgia-for-infinity-x8-architecture.md

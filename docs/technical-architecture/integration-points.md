@@ -2,7 +2,7 @@
 
 <cite>
 **Referenced Files in This Document**   
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 - [docker-compose.yml](file://docker-compose.yml)
 - [docker-compose.tests.yml](file://docker-compose.tests.yml)
 - [configs/trading_mode-futures.json](file://configs/trading_mode-futures.json)
@@ -21,11 +21,11 @@
 
 ## Freqtrade Framework Integration
 
-The NostalgiaForInfinityX6 strategy is built on the Freqtrade framework, a popular open-source cryptocurrency trading bot written in Python. It leverages Freqtrade's modular architecture to define trading logic through a well-defined interface. The strategy inherits from `IStrategy`, which mandates the implementation of specific methods to control entry, exit, and position management logic.
+The NostalgiaForInfinityX8 strategy is built on the Freqtrade framework, a popular open-source cryptocurrency trading bot written in Python. It leverages Freqtrade's modular architecture to define trading logic through a well-defined interface. The strategy inherits from `IStrategy`, which mandates the implementation of specific methods to control entry, exit, and position management logic.
 
 ### Required Strategy Methods and Contracts
 
-The following methods are essential components of the integration contract between NostalgiaForInfinityX6 and the Freqtrade engine:
+The following methods are essential components of the integration contract between NostalgiaForInfinityX8 and the Freqtrade engine:
 
 #### **populate_indicators**
 This method computes technical indicators used for generating trading signals. It receives a DataFrame containing historical price data (OHLCV) and returns the same DataFrame enriched with calculated indicators.
@@ -34,7 +34,7 @@ This method computes technical indicators used for generating trading signals. I
 def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
 ```
 
-In NostalgiaForInfinityX6, this method orchestrates the calculation of indicators across multiple timeframes (5m, 15m, 1h, 4h, 1d) using `pandas_ta`. It also merges BTC/USD data for cross-asset correlation analysis. The method ensures that all necessary indicators such as RSI, EMA, CMF, Bollinger Bands, and Stochastic RSI are precomputed before signal generation.
+In NostalgiaForInfinityX8, this method orchestrates the calculation of indicators across multiple timeframes (5m, 15m, 1h, 4h, 1d) using `pandas_ta`. It also merges BTC/USD data for cross-asset correlation analysis. The method ensures that all necessary indicators such as RSI, EMA, CMF, Bollinger Bands, and Stochastic RSI are precomputed before signal generation.
 
 #### **populate_entry_trend**
 Responsible for generating buy/long or sell/short entry signals based on the indicators computed in `populate_indicators`.
@@ -97,11 +97,11 @@ Stake multipliers vary by mode:
 This allows risk management tailored to each trading scenario.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1000-L3000)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1000-L3000)
 
 ## Exchange Integration and Configuration
 
-NostalgiaForInfinityX6 integrates with multiple cryptocurrency exchanges through Freqtrade's unified exchange adapter layer. This abstraction allows the same strategy code to run across different platforms with minimal changes.
+NostalgiaForInfinityX8 integrates with multiple cryptocurrency exchanges through Freqtrade's unified exchange adapter layer. This abstraction allows the same strategy code to run across different platforms with minimal changes.
 
 ### Supported Exchanges
 The strategy has been tested and configured for the following exchanges:
@@ -171,7 +171,7 @@ config["exchange"]["ccxt_config"]["options"] = {
 This allows setting broker IDs, rate limiting, and other low-level parameters.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L500-L600)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L500-L600)
 - [configs/trading_mode-futures.json](file://configs/trading_mode-futures.json)
 - [configs/trading_mode-spot.json](file://configs/trading_mode-spot.json)
 - [configs/blacklist-binance.json](file://configs/blacklist-binance.json)
@@ -196,7 +196,7 @@ services:
       FREQTRADE__BOT_NAME: Example_Test_Account
       FREQTRADE__EXCHANGE__NAME: binance
       FREQTRADE__TRADING_MODE: futures
-      FREQTRADE__STRATEGY: NostalgiaForInfinityX6
+      FREQTRADE__STRATEGY: NostalgiaForInfinityX8
     command: trade --db-url sqlite:///user_data/tradesv3.sqlite --strategy-path .
 ```
 
@@ -204,7 +204,7 @@ services:
 - **Volume Mounts**: Connect local configuration and strategy files to the container
   - `./user_data:/freqtrade/user_data`: Persistent data storage
   - `./configs:/freqtrade/configs`: Configuration files
-  - `./NostalgiaForInfinityX6.py:/freqtrade/NostalgiaForInfinityX6.py`: Strategy file
+  - `./NostalgiaForInfinityX8.py:/freqtrade/NostalgiaForInfinityX8.py`: Strategy file
 - **Environment Variables**: Control bot behavior without modifying code
   - `FREQTRADE__BOT_NAME`: Distinguishes multiple bot instances
   - `FREQTRADE__EXCHANGE__NAME`: Switches between exchanges
@@ -223,7 +223,7 @@ services:
     image: freqtrade_with_numba
     command: >
       backtesting
-      --strategy-list NostalgiaForInfinityX6
+      --strategy-list NostalgiaForInfinityX8
       --config configs/trading_mode-spot.json
       --config configs/exampleconfig.json
       --config configs/pairlist-backtest-static-binance-spot-usdt.json
@@ -305,7 +305,7 @@ To incorporate alternative data (e.g., on-chain metrics, sentiment):
 ### Custom Strategy Variants
 
 Create specialized versions by:
-- Inheriting from `NostalgiaForInfinityX6`
+- Inheriting from `NostalgiaForInfinityX8`
 - Overriding specific methods (e.g., `adjust_trade_position`)
 - Using configuration parameters to toggle features
 - Deploying with unique strategy names via Docker environment variables
@@ -313,6 +313,6 @@ Create specialized versions by:
 This modular design ensures that core logic remains stable while allowing customization for specific trading objectives or market conditions.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L3000-L3500)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L3000-L3500)
 - [docker-compose.yml](file://docker-compose.yml)
 - [docker-compose.tests.yml](file://docker-compose.tests.yml)

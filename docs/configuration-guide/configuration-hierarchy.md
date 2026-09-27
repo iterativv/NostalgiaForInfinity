@@ -6,7 +6,7 @@
 - [trading_mode-futures.json](file://configs/trading_mode-futures.json)
 - [trading_mode-spot.json](file://configs/trading_mode-spot.json)
 - [exampleconfig.json](file://configs/exampleconfig.json)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 </cite>
 
 ## Table of Contents
@@ -56,14 +56,14 @@ style F fill:#fbf,stroke:#333
 The `recommended_config.json` file serves as the foundation of the configuration hierarchy, defining the core parameters that apply to all trading scenarios. This file contains the essential settings that should remain consistent across different trading environments.
 
 Key parameters defined in the base configuration include:
-- **strategy**: Specifies the trading strategy to be used ("NostalgiaForInfinityX6")
+- **strategy**: Specifies the trading strategy to be used ("NostalgiaForInfinityX8")
 - **add_config_files**: Lists the configuration files to be loaded in sequence, establishing the override order
 
 The base configuration acts as the "single source of truth" for the strategy, ensuring that critical settings like the strategy name are consistently applied across all deployments. It also defines the loading order for additional configuration files, which determines the override priority in the cascading system.
 
 ```json
 {
-  "strategy": "NostalgiaForInfinityX6",
+  "strategy": "NostalgiaForInfinityX8",
   "add_config_files": [
     "../configs/trading_mode-spot.json",
     "../configs/pairlist-volume-binance-usdt.json",
@@ -312,7 +312,7 @@ This will show which configuration files are loaded and in what order, helping i
 **Issue**: Critical parameters are not defined in any configuration file.
 
 **Solution**: Check the strategy code for required parameters:
-- Review the `NostalgiaForInfinityX6.py` file for hardcoded requirements
+- Review the `NostalgiaForInfinityX8.py` file for hardcoded requirements
 - Ensure that `timeframe` is set to "5m" as required by the strategy
 - Verify that `use_exit_signal` is properly configured
 
@@ -329,5 +329,5 @@ The configuration system's modular design makes it easier to isolate and resolve
 **Section sources**
 - [recommended_config.json](file://configs/recommended_config.json#L0-L17)
 - [exampleconfig.json](file://configs/exampleconfig.json#L0-L108)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L0-L799)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L0-L799)
 - [tests/backtests/backtesting-analysis-plot.sh](file://tests/backtests/backtesting-analysis-plot.sh#L149-L181)

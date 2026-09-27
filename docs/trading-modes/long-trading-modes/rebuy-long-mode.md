@@ -2,8 +2,8 @@
 
 <cite>
 **Referenced Files in This Document**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40764-L40947) - long_rebuy_adjust_trade_position method
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L481-L488) - Rebuy configuration parameters
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40764-L40947) - long_rebuy_adjust_trade_position method
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L481-L488) - Rebuy configuration parameters
 - [exampleconfig-rebuy.json](file://configs/exampleconfig-rebuy.json)
 </cite>
 
@@ -24,12 +24,12 @@
 
 **Important Clarification**: Despite its name, the Rebuy Long Mode does NOT re-enter positions after exits. Instead, it functions as a **controlled averaging down strategy** for losing positions, adding capital when the initial position falls into loss (-8% to -10%).
 
-The Rebuy Long Mode in the NostalgiaForInfinityX6 strategy enables the system to add to existing long positions when they enter loss territory, using strict technical indicator confirmation to identify potential reversal points. This functionality is particularly useful in volatile markets where initial entries may face temporary drawdowns before recovering. By allowing additional entries at lower prices with disciplined risk management, the strategy aims to reduce average entry price and improve the break-even point.
+The Rebuy Long Mode in the NostalgiaForInfinityX8 strategy enables the system to add to existing long positions when they enter loss territory, using strict technical indicator confirmation to identify potential reversal points. This functionality is particularly useful in volatile markets where initial entries may face temporary drawdowns before recovering. By allowing additional entries at lower prices with disciplined risk management, the strategy aims to reduce average entry price and improve the break-even point.
 
 The rebuy mechanism implements a conservative approach with maximum 2 additional entries, using larger position sizes (1.0x initial stake) compared to grinding strategies. It is activated when the position's profit falls below negative thresholds: -8% for first rebuy, -10% for second rebuy.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40764-L40947)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40764-L40947)
 
 ## Entry Signal Logic and Rebuy Triggers
 
@@ -58,7 +58,7 @@ This condition checks:
 If these conditions are met, a rebuy order is placed with a stake amount determined by the `rebuy_mode_stakes` parameter.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40764-L40947)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40764-L40947)
 
 ## Configuration Parameters
 
@@ -75,7 +75,7 @@ The Rebuy Long Mode is controlled by several configuration parameters that can b
 These parameters are typically set in the strategy configuration file or via the `nfi_parameters` block in the config.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L2248)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L2248)
 - [exampleconfig-rebuy.json](file://configs/exampleconfig-rebuy.json)
 
 ## Position Sizing and Trade Management
@@ -98,10 +98,10 @@ ExecuteBuy --> End([Rebuy Complete])
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40764-L40947)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40764-L40947)
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40764-L40947)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40764-L40947)
 
 ## Exit Strategy Coordination
 
@@ -120,7 +120,7 @@ if self.derisk_enable and (
 This condition triggers a sell order when the total profit falls below the derisk threshold, helping to protect capital in adverse market conditions.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40764-L40947)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40764-L40947)
 
 ## Interaction with Grinding and Derisking
 
@@ -132,8 +132,8 @@ Rebuy Long Mode works synergistically with the grinding and derisking features o
 The interaction between these features is managed through shared parameters and coordinated logic in the `adjust_trade_position` method, which routes calls to the appropriate adjustment function based on the trade's enter tags.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L2248)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40764-L40947)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L2248)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40764-L40947)
 
 ## Practical Example: Volatile Sideways Market
 
@@ -149,7 +149,7 @@ Consider a scenario on Binance Futures where BTC/USDT is oscillating in a sidewa
 This example demonstrates how Rebuy Long Mode can enhance returns in range-bound markets by capitalizing on predictable price oscillations.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40764-L40947)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40764-L40947)
 
 ## Common Pitfalls and Risk Management
 
@@ -166,7 +166,7 @@ Risk management measures include:
 - Monitoring overall portfolio exposure
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40764-L40947)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40764-L40947)
 
 ## Tuning Recommendations
 
@@ -180,7 +180,7 @@ To optimize Rebuy Long Mode performance:
 Regular backtesting across different market conditions is essential to find optimal parameter values.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40764-L40947)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40764-L40947)
 - [exampleconfig-rebuy.json](file://configs/exampleconfig-rebuy.json)
 
 ## Performance Considerations
@@ -195,4 +195,4 @@ Performance considerations for Rebuy Long Mode include:
 The strategy includes optimizations such as caching profit calculations and using efficient data structures to minimize performance impact.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40764-L40947)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40764-L40947)

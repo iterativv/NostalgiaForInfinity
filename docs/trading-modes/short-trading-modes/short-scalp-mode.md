@@ -2,7 +2,7 @@
 
 <cite>
 **Referenced Files in This Document**   
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 - [pairlist-volume-binance-usdt.json](file://configs/pairlist-volume-binance-usdt.json)
 - [pairlist-volume-okx-usdt.json](file://configs/pairlist-volume-okx-usdt.json)
 - [pairlist-volume-gateio-usdt.json](file://configs/pairlist-volume-gateio-usdt.json)
@@ -24,18 +24,18 @@
 7. [Troubleshooting Guide](#troubleshooting-guide)
 
 ## Introduction
-The Short Scalp trading mode is a specialized strategy within the NostalgiaForInfinityX6 framework designed for ultra-short-term profit-taking in fast-moving markets. This mode leverages microstructure inefficiencies and order book imbalances to generate rapid entry and exit signals. It operates on a 5-minute timeframe and is optimized for futures trading with leverage. The strategy is particularly effective in high-volatility environments where bid-ask spread dynamics and tick volume fluctuations create exploitable opportunities. This document provides a comprehensive analysis of the short scalp mode, including its implementation, configuration, and operational considerations.
+The Short Scalp trading mode is a specialized strategy within the NostalgiaForInfinityX8 framework designed for ultra-short-term profit-taking in fast-moving markets. This mode leverages microstructure inefficiencies and order book imbalances to generate rapid entry and exit signals. It operates on a 5-minute timeframe and is optimized for futures trading with leverage. The strategy is particularly effective in high-volatility environments where bid-ask spread dynamics and tick volume fluctuations create exploitable opportunities. This document provides a comprehensive analysis of the short scalp mode, including its implementation, configuration, and operational considerations.
 
 ## Short Scalp Mode Overview
 
-The Short Scalp mode is one of several shorting strategies implemented in the NostalgiaForInfinityX6 trading system. It is specifically designed for traders seeking to capitalize on brief market inefficiencies through rapid position entry and exit. The mode is identified by the tag "661" in the strategy's configuration, which corresponds to the `short_scalp_mode_tags` parameter in the codebase. This mode operates exclusively in short direction and is optimized for quick profit realization rather than extended position holding.
+The Short Scalp mode is one of several shorting strategies implemented in the NostalgiaForInfinityX8 trading system. It is specifically designed for traders seeking to capitalize on brief market inefficiencies through rapid position entry and exit. The mode is identified by the tag "661" in the strategy's configuration, which corresponds to the `short_scalp_mode_tags` parameter in the codebase. This mode operates exclusively in short direction and is optimized for quick profit realization rather than extended position holding.
 
 The strategy leverages Level 2 market data to identify order book imbalances and uses tick volume analysis to confirm momentum. It is particularly effective in markets with tight spreads and high liquidity, where microstructure inefficiencies can be exploited for profit. The mode is designed to work in conjunction with other short strategies but maintains distinct entry and exit logic to avoid conflicts with longer-term positions.
 
-The Short Scalp mode is integrated into the broader NostalgiaForInfinityX6 architecture, which supports multiple trading modes including normal, pump, quick, rebuy, rapid, grind, and top coins. Each mode has its own set of entry conditions, stake multipliers, and exit criteria. The scalp mode is distinguished by its focus on speed and precision, with minimal profit targets and tight stop-loss parameters.
+The Short Scalp mode is integrated into the broader NostalgiaForInfinityX8 architecture, which supports multiple trading modes including normal, pump, quick, rebuy, rapid, grind, and top coins. Each mode has its own set of entry conditions, stake multipliers, and exit criteria. The scalp mode is distinguished by its focus on speed and precision, with minimal profit targets and tight stop-loss parameters.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L100-L150)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L100-L150)
 
 ## Entry and Exit Logic
 
@@ -111,7 +111,7 @@ def short_exit_scalp(
 The entry and exit logic works in tandem to ensure rapid position turnover and consistent profit generation. The strategy is designed to enter and exit positions quickly, typically within minutes, to capitalize on fleeting market opportunities.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L2000-L2500)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L2000-L2500)
 
 ## Configuration Parameters
 
@@ -166,7 +166,7 @@ The Short Scalp mode is highly configurable through a set of parameters that con
 These parameters work together to define the risk-reward profile of the Short Scalp mode. Traders can adjust them based on their risk tolerance, market conditions, and performance objectives. The configuration system allows for fine-tuning of the strategy to optimize for different market environments and trading goals.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L100-L300)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L100-L300)
 
 ## Integration with Low-Latency Systems
 
@@ -204,12 +204,12 @@ K --> N[High-Speed Execution]
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L2000-L2500)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L2000-L2500)
 
 The integration with low-latency systems ensures that the Short Scalp mode can react quickly to market opportunities, while the isolation from longer-term modes prevents strategy conflicts and ensures consistent performance across different market conditions.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L2000-L2500)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L2000-L2500)
 
 ## Performance Challenges
 
@@ -254,7 +254,7 @@ The Short Scalp mode requires significant computational resources to process mar
 These performance challenges require careful consideration and proactive management to ensure the Short Scalp mode operates effectively in live trading environments. Addressing these issues is essential for maintaining the strategy's edge in fast-moving markets.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L2000-L2500)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L2000-L2500)
 
 ## Troubleshooting Guide
 
@@ -324,4 +324,4 @@ log.debug(f"Short scalp position duration: {trade_duration}, Timeout: {self.shor
 By following this troubleshooting guide, traders can identify and resolve common issues with the Short Scalp mode, ensuring reliable performance in live trading environments.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L2000-L2500)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L2000-L2500)

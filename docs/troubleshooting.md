@@ -2,7 +2,7 @@
 
 <cite>
 **Referenced Files in This Document**   
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 - [test_NFIX6.py](file://tests/unit/test_NFIX6.py)
 - [pytest.ini](file://pytest.ini)
 - [recommended_config.json](file://configs/recommended_config.json)
@@ -37,7 +37,7 @@ When the strategy fails to generate any trades, the most common causes are overl
    - Temporarily enable all entry conditions in `long_entry_signal_params`.
    - Use `test_NFIX6.py` to validate signal generation logic.
 4. **Verify configuration loading**:
-   - Ensure `strategy` is set to `NostalgiaForInfinityX6` in config.
+   - Ensure `strategy` is set to `NostalgiaForInfinityX8` in config.
    - Confirm `timeframe` is set to `5m`.
 
 ### Solutions
@@ -47,7 +47,7 @@ When the strategy fails to generate any trades, the most common causes are overl
 - **Check data availability**: Ensure sufficient historical data exists for the 5m timeframe.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L68-L173)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L68-L173)
 - [recommended_config.json](file://configs/recommended_config.json#L1-L17)
 
 ## Position Not Adjusting
@@ -96,11 +96,11 @@ G --> |No| I[Call Default Adjustment]
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L9091-L16871)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L9091-L16871)
 - [test_NFIX6.py](file://tests/unit/test_NFIX6.py#L46-L107)
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L300-L350)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L300-L350)
 - [test_NFIX6.py](file://tests/unit/test_NFIX6.py#L46-L107)
 
 ## Configuration Not Loading
@@ -177,7 +177,7 @@ Discrepancies between backtest and live trading results are commonly caused by d
 - **Use consistent timeframes**: Ensure backtest and live trading use identical timeframes and data sources.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L250-L260)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L250-L260)
 - [test_winrate_and_drawdown.py](file://tests/backtests/test_winrate_and_drawdown.py#L0-L49)
 
 ## Testing and Validation

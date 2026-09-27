@@ -2,8 +2,8 @@
 
 <cite>
 **Referenced Files in This Document**   
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40347-L40581)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1923)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40347-L40581)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1923)
 - [test_NFIX6.py](file://tests/unit/test_NFIX6.py#L153)
 - [test_NFIX6.py](file://tests/unit/test_NFIX6.py#L225)
 </cite>
@@ -20,12 +20,12 @@
 9. [Conclusion](#conclusion)
 
 ## Introduction
-The Short Rebuy trading mode is an advanced strategy feature in the NostalgiaForInfinityX6 (NFIX6) trading bot designed to optimize short positions by enabling partial profit-taking followed by re-entry at improved prices. This two-phase mechanism enhances capital efficiency and allows traders to capitalize on sustained bearish momentum after securing initial gains. The system is particularly effective in trending markets and integrates tightly with the bot’s broader position adjustment and risk management framework.
+The Short Rebuy trading mode is an advanced strategy feature in the NostalgiaForInfinityX8 (NFIX6) trading bot designed to optimize short positions by enabling partial profit-taking followed by re-entry at improved prices. This two-phase mechanism enhances capital efficiency and allows traders to capitalize on sustained bearish momentum after securing initial gains. The system is particularly effective in trending markets and integrates tightly with the bot’s broader position adjustment and risk management framework.
 
-This document provides a comprehensive analysis of the Short Rebuy mode, focusing on its implementation in the `NostalgiaForInfinityX6.py` strategy file. It details the logic behind `short_exit_rebuy()` and `short_entry_rebuy()` functions, configuration parameters, state tracking, and integration with position sizing. It also highlights key differences between spot and futures implementations and offers best practices for tuning.
+This document provides a comprehensive analysis of the Short Rebuy mode, focusing on its implementation in the `NostalgiaForInfinityX8.py` strategy file. It details the logic behind `short_exit_rebuy()` and `short_entry_rebuy()` functions, configuration parameters, state tracking, and integration with position sizing. It also highlights key differences between spot and futures implementations and offers best practices for tuning.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40347-L40581)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40347-L40581)
 
 ## Short Rebuy Mechanism Overview
 The Short Rebuy mode operates in two distinct phases:
@@ -51,7 +51,7 @@ I --> B
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40347-L40581)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40347-L40581)
 
 ## State Management via `self.rebuy_state` {#state-rebuy-state}
 Although the provided code does not explicitly define a `self.rebuy_state` variable, the system maintains state implicitly through the trade object, cache mechanisms, and signal tagging. The `Trade` object tracks entry fills, profit ratios, and current stake, which are used to determine whether a rebuy condition should be evaluated.
@@ -75,7 +75,7 @@ if (previous_profit is None) or (previous_profit < profit_init_ratio):
 This ensures that the bot only acts when there is a meaningful change in the trade’s profitability, avoiding unnecessary noise in ranging markets.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40347-L40581)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40347-L40581)
 
 ## Configuration Parameters
 The Short Rebuy mode is controlled by several key configuration parameters defined in the strategy class. These can be adjusted in the config file under the `nfi_parameters` block for fine-tuned control.
@@ -102,7 +102,7 @@ These settings control:
 - Derisk thresholds to prevent overexposure
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40347-L40581)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40347-L40581)
 
 ## Entry and Exit Logic
 The entry and exit logic for the Short Rebuy mode is implemented in two primary functions: `short_exit_rebuy()` and `short_entry_rebuy()` (the latter not fully visible in the provided snippet but referenced).
@@ -144,11 +144,11 @@ end
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40347-L40581)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40347-L40581)
 - [test_NFIX6.py](file://tests/unit/test_NFIX6.py#L153)
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40347-L40581)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40347-L40581)
 - [test_NFIX6.py](file://tests/unit/test_NFIX6.py#L153)
 
 ## Position Sizing and Risk Exposure
@@ -166,7 +166,7 @@ This approach ensures that:
 The system also respects `rebuy_mode_min_free_slots`, ensuring that rebuy entries only occur when sufficient trading slots are available, preventing over-leveraging.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40347-L40581)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40347-L40581)
 
 ## Spot vs Futures Implementation Differences
 The Short Rebuy mode behaves differently in spot and futures environments due to leverage, funding rates, and margin mechanics.
@@ -184,7 +184,7 @@ In futures mode, the effective risk is magnified by leverage. For example, a 3x 
 Funding rates in futures can also impact the profitability of holding short positions over time, making timely rebuy decisions more critical.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40347-L40581)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40347-L40581)
 
 ## Common Issues and Best Practices
 ### Common Issues:
@@ -211,11 +211,11 @@ Example configuration for conservative rebuy:
 ```
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40347-L40581)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40347-L40581)
 - [test_NFIX6.py](file://tests/unit/test_NFIX6.py#L225)
 
 ## Conclusion
-The Short Rebuy mode in NostalgiaForInfinityX6 is a sophisticated strategy that enhances short trading performance by combining partial profit-taking with intelligent re-entry logic. It leverages state tracking via cache, configurable thresholds, and tight integration with position sizing to maximize gains in bearish trends while managing risk.
+The Short Rebuy mode in NostalgiaForInfinityX8 is a sophisticated strategy that enhances short trading performance by combining partial profit-taking with intelligent re-entry logic. It leverages state tracking via cache, configurable thresholds, and tight integration with position sizing to maximize gains in bearish trends while managing risk.
 
 By understanding the `short_exit_rebuy()` and `short_entry_rebuy()` logic, traders can fine-tune parameters like `rebuy_mode_thresholds`, `stake_multiplier`, and `derisk` levels to suit their risk profile and market conditions. Special attention should be paid to differences between spot and futures implementations, particularly regarding leverage and funding costs.
 
