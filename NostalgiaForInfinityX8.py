@@ -22895,6 +22895,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((aroonu_14_15m_gt_20) | (stochrsi_k_15m_gt_80) | (roc_9_4h_gt_neg_10))
             # 1h uptrend, 4h oversold
             & ((aroonu_14_1h_lt_30) | (roc_9_4h_gt_neg_20))
+            # both stochastics topped out while the hour is making no new high
+            & ((stochrsi_k_1h_lt_80) | (stochrsi_k_4h_lt_20) | (aroonu_14_1h > 5.0))
           )
 
           # Logic — Bounce in downtrend
