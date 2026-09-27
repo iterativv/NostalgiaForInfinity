@@ -2,7 +2,7 @@
 
 <cite>
 **Referenced Files in This Document**   
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 </cite>
 
 ## Table of Contents
@@ -16,12 +16,12 @@
 
 ## Short Pump Mode
 
-The **Short Pump Mode** is a specialized trading strategy within the NostalgiaForInfinityX6 framework designed to identify and capitalize on overbought market conditions that occur after sharp upward price spikes. This mode targets short-selling opportunities when momentum is likely to reverse due to exhaustion in bullish sentiment.
+The **Short Pump Mode** is a specialized trading strategy within the NostalgiaForInfinityX8 framework designed to identify and capitalize on overbought market conditions that occur after sharp upward price spikes. This mode targets short-selling opportunities when momentum is likely to reverse due to exhaustion in bullish sentiment.
 
 Short Pump Mode is activated using specific entry tags (`short_pump_mode_tags = ["521", "522", "523", "524", "525", "526"]`) and is associated with the mode name `short_pump`. It functions as part of a broader short strategy ecosystem, coordinating with exit logic, position adjustments, and risk management systems.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L148-L165)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L148-L165)
 
 ## Detection Mechanism
 
@@ -53,8 +53,8 @@ ActivateMode --> End
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L148-L165)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L641-L647)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L148-L165)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L641-L647)
 
 ## Entry Logic and Parameters
 
@@ -88,8 +88,8 @@ if any(c in self.short_pump_mode_tags for c in enter_tags):
 This allows the strategy to dynamically apply mode-specific rules during both entry and exit evaluation phases.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1870-L1872)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L641-L647)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1870-L1872)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L641-L647)
 
 ## Integration with Short Strategy Framework
 
@@ -114,8 +114,8 @@ Strategy->>Trade : Close position
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L148-L165)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L39834-L39997)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L148-L165)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L39834-L39997)
 
 ### Position Adjustment
 Position sizing and adjustments are influenced by the active mode. Short Pump Mode may use conservative stake multipliers to account for the high volatility associated with pump events.
@@ -131,8 +131,8 @@ Short Pump Mode respects global risk parameters such as:
 These ensure that even aggressive pump plays are subject to strict stop-loss rules to prevent catastrophic losses during runaway momentum.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L39834-L40045)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1870-L1872)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L39834-L40045)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1870-L1872)
 
 ## Risk Considerations and Mitigation
 
@@ -156,8 +156,8 @@ df["global_protections_short_pump"] = ...
 Which evaluates broader market conditions before allowing pump-based shorts.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L7187-L7187)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L13869-L13869)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L7187-L7187)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L13869-L13869)
 
 ## Configuration Guidance
 
@@ -181,8 +181,8 @@ Optimal configuration of Short Pump Mode varies by market cap and liquidity.
 Always ensure `use_exit_signal = True` and `ignore_roi_if_entry_signal = True` in config to allow proper signal handling.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L641-L647)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L148-L165)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L641-L647)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L148-L165)
 
 ## Common Issues and Solutions
 
@@ -205,5 +205,5 @@ Always ensure `use_exit_signal = True` and `ignore_roi_if_entry_signal = True` i
 Regular backtesting using the provided scripts in `/tests/backtests/` is recommended to fine-tune parameters for current market regimes.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L641-L647)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L148-L165)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L641-L647)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L148-L165)

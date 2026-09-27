@@ -2,8 +2,8 @@
 
 <cite>
 **Referenced Files in This Document**   
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
-- [NostalgiaForInfinityX6.py]</cite>
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
+- [NostalgiaForInfinityX8.py]</cite>
 
 ## Table of Contents
 1. [Introduction](#introduction)
@@ -17,23 +17,23 @@
 9. [Conclusion](#conclusion)
 
 ## Introduction
-The NostalgiaForInfinityX6 (NFI-X6) strategy is a sophisticated trading algorithm designed for the Freqtrade framework. It processes market data across multiple timeframes to generate entry and exit signals for both long and short positions. The strategy leverages technical indicators from TA-Lib, pandas_ta, and numpy to analyze price movements, volatility, and momentum. It supports various trading modes such as normal, pump, quick, rebuy, rapid, grind, and scalp, each with distinct entry and exit conditions. The strategy also incorporates advanced features like position adjustment, grinding, derisking, and stop-loss mechanisms to manage risk and optimize returns. This document provides a comprehensive analysis of the data flow within the NFI-X6 strategy, detailing how raw OHLCV data is transformed into actionable trading signals.
+The NostalgiaForInfinityX8 (NFI-X8) strategy is a sophisticated trading algorithm designed for the Freqtrade framework. It processes market data across multiple timeframes to generate entry and exit signals for both long and short positions. The strategy leverages technical indicators from TA-Lib, pandas_ta, and numpy to analyze price movements, volatility, and momentum. It supports various trading modes such as normal, pump, quick, rebuy, rapid, grind, and scalp, each with distinct entry and exit conditions. The strategy also incorporates advanced features like position adjustment, grinding, derisking, and stop-loss mechanisms to manage risk and optimize returns. This document provides a comprehensive analysis of the data flow within the NFI-X8 strategy, detailing how raw OHLCV data is transformed into actionable trading signals.
 
 ## Project Structure
 The project structure is organized into several directories, each serving a specific purpose:
 - **configs**: Contains configuration files for different exchanges, pair lists, and trading modes.
 - **tests**: Includes backtesting scripts, unit tests, and test data.
 - **tools**: Houses utility scripts for downloading market data.
-- **user_data/strategies**: Contains the main strategy file, NostalgiaForInfinityX6.py.
+- **user_data/strategies**: Contains the main strategy file, NostalgiaForInfinityX8.py.
 - **Root directory**: Includes documentation, Docker configurations, and project metadata.
 
-The strategy file, NostalgiaForInfinityX6.py, is the core component of the project, implementing the trading logic and data processing pipeline.
+The strategy file, NostalgiaForInfinityX8.py, is the core component of the project, implementing the trading logic and data processing pipeline.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 
 ## Core Components
-The NostalgiaForInfinityX6 strategy is implemented as a Python class that inherits from Freqtrade's IStrategy interface. The core components include:
+The NostalgiaForInfinityX8 strategy is implemented as a Python class that inherits from Freqtrade's IStrategy interface. The core components include:
 - **Configuration parameters**: Define the strategy's behavior, such as timeframe, stop-loss, and trading modes.
 - **Indicator calculation**: Compute technical indicators like EMA, RSI, and custom volatility measures.
 - **Signal generation**: Derive entry and exit signals based on configured thresholds and market conditions.
@@ -43,10 +43,10 @@ The NostalgiaForInfinityX6 strategy is implemented as a Python class that inheri
 The strategy processes data in a structured manner, starting with raw OHLCV data and progressing through multiple stages of analysis and decision-making.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 
 ## Architecture Overview
-The NFI-X6 strategy follows a modular architecture, with distinct components responsible for different aspects of the trading process. The data flow begins with the ingestion of raw market data, which is then processed through a series of indicator calculations and signal generation steps. The architecture is designed to be flexible and extensible, allowing for easy customization and optimization.
+The NFI-X8 strategy follows a modular architecture, with distinct components responsible for different aspects of the trading process. The data flow begins with the ingestion of raw market data, which is then processed through a series of indicator calculations and signal generation steps. The architecture is designed to be flexible and extensible, allowing for easy customization and optimization.
 
 ```mermaid
 graph TD
@@ -62,7 +62,7 @@ G --> D
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 
 ## Detailed Component Analysis
 
@@ -82,7 +82,7 @@ The strategy calculates a wide range of technical indicators using TA-Lib, panda
 The indicators are calculated in a vectorized manner using pandas, ensuring efficient processing of large datasets.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 
 ### Signal Generation
 Entry and exit signals are generated based on the calculated indicators and configured thresholds. The strategy supports multiple trading modes, each with its own set of conditions. The entry signals are derived from a combination of indicators and market conditions, while the exit signals are based on profit targets, stop-losses, and market trends.
@@ -90,7 +90,7 @@ Entry and exit signals are generated based on the calculated indicators and conf
 The strategy uses a hierarchical approach to signal generation, with different modes having different priorities and conditions. For example, the long_normal_mode has a set of conditions that must be met for an entry signal, while the long_pump_mode has different conditions for rapid price increases.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 
 ### Position Management
 The strategy includes advanced position management features, such as rebuys, grinds, and derisks. These features allow the strategy to adjust trade positions based on market conditions and performance. For example, the grinding feature enables the strategy to add to winning positions, while the derisk feature reduces exposure during adverse market conditions.
@@ -98,7 +98,7 @@ The strategy includes advanced position management features, such as rebuys, gri
 The position adjustment is controlled by configuration parameters, such as grinding_enable and derisk_enable, which can be set in the strategy's configuration file.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 
 ### Exit Logic
 The exit logic is a critical component of the strategy, determining when to close trades to lock in profits or limit losses. The strategy uses a combination of profit targets, stop-losses, and market conditions to make exit decisions. The exit signals are generated by the custom_exit method, which evaluates the current profit, market conditions, and trade history.
@@ -106,10 +106,10 @@ The exit logic is a critical component of the strategy, determining when to clos
 The strategy supports different exit modes for different trading scenarios, such as normal exits, stop-loss exits, and profit-taking exits. The exit conditions are configurable, allowing users to tailor the strategy to their risk tolerance and trading goals.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 
 ## Dependency Analysis
-The NFI-X6 strategy relies on several external libraries and frameworks:
+The NFI-X8 strategy relies on several external libraries and frameworks:
 - **Freqtrade**: Provides the trading framework and API for interacting with exchanges.
 - **TA-Lib**: Offers a wide range of technical indicators for market analysis.
 - **pandas_ta**: Extends pandas with additional technical analysis functions.
@@ -119,18 +119,18 @@ The NFI-X6 strategy relies on several external libraries and frameworks:
 The strategy also depends on configuration files and market data, which are loaded at runtime. The dependencies are managed through the project's configuration and setup files.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 
 ## Performance Considerations
-The NFI-X6 strategy is designed to handle large datasets efficiently, making it suitable for backtesting with extensive pair lists. The use of vectorized operations in pandas and numpy ensures that indicator calculations are performed quickly, even on large datasets. The strategy also includes performance logging to monitor the execution time of different components.
+The NFI-X8 strategy is designed to handle large datasets efficiently, making it suitable for backtesting with extensive pair lists. The use of vectorized operations in pandas and numpy ensures that indicator calculations are performed quickly, even on large datasets. The strategy also includes performance logging to monitor the execution time of different components.
 
 To optimize performance, the strategy caches calculated indicators and reuses them when possible. This reduces the computational overhead of recalculating indicators for each new candle. Additionally, the strategy can be configured to use multiple cores for indicator calculations, further improving performance.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 
 ## Troubleshooting Guide
-Common issues with the NFI-X6 strategy include:
+Common issues with the NFI-X8 strategy include:
 - **Configuration errors**: Ensure that the configuration file is correctly set up, with the correct timeframe and trading mode.
 - **Indicator calculation errors**: Verify that the required libraries (TA-Lib, pandas_ta, numpy) are installed and properly configured.
 - **Data quality issues**: Check that the market data is complete and accurate, with no missing or corrupted candles.
@@ -139,10 +139,10 @@ Common issues with the NFI-X6 strategy include:
 For detailed troubleshooting, refer to the strategy's documentation and community forums.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 
 ## Conclusion
-The NostalgiaForInfinityX6 strategy is a powerful and flexible trading algorithm that leverages advanced technical analysis and risk management techniques. By processing raw OHLCV data through a series of indicator calculations and signal generation steps, the strategy is able to generate actionable trading signals for both long and short positions. The modular architecture and extensive configuration options make it suitable for a wide range of trading scenarios and market conditions. With proper setup and optimization, the NFI-X6 strategy can be a valuable tool for automated trading.
+The NostalgiaForInfinityX8 strategy is a powerful and flexible trading algorithm that leverages advanced technical analysis and risk management techniques. By processing raw OHLCV data through a series of indicator calculations and signal generation steps, the strategy is able to generate actionable trading signals for both long and short positions. The modular architecture and extensive configuration options make it suitable for a wide range of trading scenarios and market conditions. With proper setup and optimization, the NFI-X8 strategy can be a valuable tool for automated trading.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)

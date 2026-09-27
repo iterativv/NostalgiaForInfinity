@@ -2,7 +2,7 @@
 
 <cite>
 **Referenced Files in This Document**   
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 - [README.md](file://README.md)
 </cite>
 
@@ -18,14 +18,14 @@
 9. [Conclusion](#conclusion)
 
 ## Introduction
-The Derisking System in the NostalgiaForInfinityX6 (NFI-X6) strategy is a critical component designed to protect profits and manage risk exposure during live trading. Built on the Freqtrade framework, this system implements dynamic profit protection mechanisms that activate under predefined market conditions. The derisking logic is particularly important in volatile cryptocurrency markets, where rapid price movements can quickly erase gains if not properly managed. This document provides a comprehensive analysis of how the derisking system operates, including its configuration parameters, implementation details, and integration with the broader trading strategy.
+The Derisking System in the NostalgiaForInfinityX8 (NFI-X8) strategy is a critical component designed to protect profits and manage risk exposure during live trading. Built on the Freqtrade framework, this system implements dynamic profit protection mechanisms that activate under predefined market conditions. The derisking logic is particularly important in volatile cryptocurrency markets, where rapid price movements can quickly erase gains if not properly managed. This document provides a comprehensive analysis of how the derisking system operates, including its configuration parameters, implementation details, and integration with the broader trading strategy.
 
 **Section sources**
 - [README.md](file://README.md#L1-L57)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L0-L799)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L0-L799)
 
 ## Derisking System Overview
-The derisking system in NostalgiaForInfinityX6 is designed to lock in profits by implementing trailing stop-loss mechanisms and executing partial exits when predefined profit thresholds are reached. This system operates as a risk management layer that activates when trades reach certain profitability levels or when market conditions indicate potential reversals. The derisking logic is integrated into the position adjustment framework, allowing for dynamic risk management throughout the lifecycle of a trade.
+The derisking system in NostalgiaForInfinityX8 is designed to lock in profits by implementing trailing stop-loss mechanisms and executing partial exits when predefined profit thresholds are reached. This system operates as a risk management layer that activates when trades reach certain profitability levels or when market conditions indicate potential reversals. The derisking logic is integrated into the position adjustment framework, allowing for dynamic risk management throughout the lifecycle of a trade.
 
 The system employs multiple derisking strategies depending on the trading mode (normal, rebuy, grind, rapid, etc.) and market conditions. For spot trading, derisking typically occurs at lower profit thresholds compared to futures trading, reflecting the different risk profiles and leverage considerations. The derisking mechanism is particularly important in preventing premature exits during strong trending markets while still protecting against significant drawdowns.
 
@@ -45,13 +45,13 @@ I --> J["Trade Exit or Position Reduction"]
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L206-L213)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L206-L213)
 
 ## Derisking Mechanisms
 The derisking system implements several mechanisms to protect profits and manage risk exposure. These mechanisms include trailing stop-loss adjustments, partial profit-taking, and dynamic position management based on price action relative to entry points and technical indicators.
 
 ### Trailing Stop-Loss Mechanism
-The trailing stop-loss mechanism in NFI-X6 dynamically adjusts the stop-loss price based on the highest price reached since entry. When a trade reaches a predefined profit threshold (derisk_threshold), the system activates a trailing stop that follows the price at a specified distance. This allows traders to capture gains during upward trends while protecting against sudden reversals.
+The trailing stop-loss mechanism in NFI-X8 dynamically adjusts the stop-loss price based on the highest price reached since entry. When a trade reaches a predefined profit threshold (derisk_threshold), the system activates a trailing stop that follows the price at a specified distance. This allows traders to capture gains during upward trends while protecting against sudden reversals.
 
 ### Partial Exit Execution
 When profit thresholds are reached, the system can execute partial exits to lock in profits while maintaining exposure to potential further gains. The percentage of position closed (derisk_percent) is configurable and varies depending on the trading mode. For example, in normal mode, the system might close 20-30% of the position when the first profit threshold is reached, then additional portions at higher thresholds.
@@ -68,7 +68,7 @@ This dynamic adjustment ensures that stop-loss levels are not static but adapt t
 ```mermaid
 sequenceDiagram
 participant Price as Price Action
-participant Strategy as NFI-X6 Strategy
+participant Strategy as NFI-X8 Strategy
 participant Freqtrade as Freqtrade Engine
 participant Exchange as Exchange API
 Price->>Strategy : Price reaches derisk_threshold
@@ -82,7 +82,7 @@ Strategy->>Strategy : Adjust stop-loss to trailing mode
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L275-L293)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L275-L293)
 
 ## Configuration Parameters
 The derisking system is controlled by several configurable parameters that allow traders to customize the risk management behavior according to their risk tolerance and market outlook.
@@ -117,7 +117,7 @@ The system uses different derisking parameters for various trading modes:
 These parameters are defined in the strategy class (L206-L488) and can be overridden in the configuration file, allowing for fine-tuning based on market conditions and risk preferences.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L206-L362)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L206-L362)
 
 ## Integration with Freqtrade Exit Signals
 The derisking system is tightly integrated with Freqtrade's exit signal system, leveraging the framework's position adjustment capabilities to implement partial exits and dynamic stop-loss management.
@@ -142,7 +142,7 @@ This integration allows for seamless risk management within the Freqtrade ecosys
 
 ```mermaid
 graph TB
-A[Market Data] --> B[NFI-X6 Strategy]
+A[Market Data] --> B[NFI-X8 Strategy]
 B --> C{Derisk Conditions Met?}
 C --> |Yes| D[Calculate derisk_price]
 D --> E[Generate Exit Signal]
@@ -155,11 +155,11 @@ C --> |No| K[Continue Normal Operation]
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L2232-L2395) - adjust_trade_position dispatcher
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L34686-L40947) - Grinding and rebuy position adjustment methods
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L2232-L2395) - adjust_trade_position dispatcher
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L34686-L40947) - Grinding and rebuy position adjustment methods
 
 ## Code Implementation
-The derisking system is implemented through several key functions in the NostalgiaForInfinityX6 strategy class, primarily within the position adjustment methods.
+The derisking system is implemented through several key functions in the NostalgiaForInfinityX8 strategy class, primarily within the position adjustment methods.
 
 ### Core Derisking Functions
 The main derisking logic is contained in the `long_adjust_trade_position_no_derisk` and `short_adjust_trade_position_no_derisk` methods, which handle position adjustments for long and short positions respectively.
@@ -242,8 +242,8 @@ if (
 The implementation considers various trading modes and their specific parameters, ensuring that derisking behavior is appropriate for the current market context.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L39297-L40760) - long_adjust_trade_position_no_derisk method
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L206-L488) - Derisk configuration parameters
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L39297-L40760) - long_adjust_trade_position_no_derisk method
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L206-L488) - Derisk configuration parameters
 
 ## Common Issues and Optimization Tips
 While the derisking system provides robust risk management, traders may encounter certain issues that affect performance. Understanding these issues and applying optimization techniques can improve the system's effectiveness.
@@ -262,7 +262,7 @@ While the derisking system provides robust risk management, traders may encounte
 Balancing profit protection with ride potential is crucial. Traders should backtest different parameter combinations to find the optimal balance for their specific market conditions and risk tolerance.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L206-L362)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L206-L362)
 
 ## Impact on Portfolio Risk Exposure
 The derisking system significantly reduces overall portfolio risk exposure by systematically locking in profits and limiting potential drawdowns.
@@ -277,9 +277,9 @@ The derisking system significantly reduces overall portfolio risk exposure by sy
 - **Reduced Volatility**: The systematic profit-taking and stop-loss management reduce overall portfolio volatility.
 - **Capital Preservation**: The primary benefit is capital preservation, ensuring that winning trades contribute positively to the overall portfolio performance.
 
-The derisking system transforms the risk profile of the NostalgiaForInfinityX6 strategy from a high-volatility approach to a more balanced risk-reward profile, making it suitable for a wider range of traders and market conditions.
+The derisking system transforms the risk profile of the NostalgiaForInfinityX8 strategy from a high-volatility approach to a more balanced risk-reward profile, making it suitable for a wider range of traders and market conditions.
 
 ## Conclusion
-The derisking system in the NostalgiaForInfinityX6 strategy provides a sophisticated framework for profit protection and risk management. By implementing trailing stop-loss mechanisms, partial exit execution, and dynamic position adjustments, the system effectively locks in profits while maintaining exposure to potential further gains. The integration with Freqtrade's exit signal system allows for seamless implementation within the trading framework, while the configurable parameters enable customization to different risk profiles and market conditions.
+The derisking system in the NostalgiaForInfinityX8 strategy provides a sophisticated framework for profit protection and risk management. By implementing trailing stop-loss mechanisms, partial exit execution, and dynamic position adjustments, the system effectively locks in profits while maintaining exposure to potential further gains. The integration with Freqtrade's exit signal system allows for seamless implementation within the trading framework, while the configurable parameters enable customization to different risk profiles and market conditions.
 
-The system's effectiveness depends on proper parameter tuning and understanding of its behavior in different market environments. Traders should carefully backtest and optimize the derisking parameters to achieve the optimal balance between profit protection and ride potential. When properly configured, the derisking system significantly enhances the risk-adjusted returns of the NostalgiaForInfinityX6 strategy, making it a valuable component of a comprehensive trading approach.
+The system's effectiveness depends on proper parameter tuning and understanding of its behavior in different market environments. Traders should carefully backtest and optimize the derisking parameters to achieve the optimal balance between profit protection and ride potential. When properly configured, the derisking system significantly enhances the risk-adjusted returns of the NostalgiaForInfinityX8 strategy, making it a valuable component of a comprehensive trading approach.

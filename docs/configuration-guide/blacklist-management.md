@@ -6,7 +6,7 @@
 - [blacklist-kucoin.json](file://configs/blacklist-kucoin.json)
 - [blacklist-okx.json](file://configs/blacklist-okx.json)
 - [recommended_config.json](file://configs/recommended_config.json)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 </cite>
 
 ## Table of Contents
@@ -19,7 +19,7 @@
 7. [Conclusion](#conclusion)
 
 ## Introduction
-The NostalgiaForInfinityX6 trading strategy employs a comprehensive blacklist system to exclude high-risk or problematic trading pairs from consideration. This mechanism prevents trades on volatile, illiquid, or manipulated markets by filtering out undesirable assets before entry signals are evaluated. The blacklists are implemented as JSON configuration files, one per exchange, and are integrated into the Freqtrade framework's pair selection process. These files contain regular expression patterns that match against trading pairs to identify and exclude them based on various risk factors such as leverage tokens, stablecoins, fan tokens, and known scam coins.
+The NostalgiaForInfinityX8 trading strategy employs a comprehensive blacklist system to exclude high-risk or problematic trading pairs from consideration. This mechanism prevents trades on volatile, illiquid, or manipulated markets by filtering out undesirable assets before entry signals are evaluated. The blacklists are implemented as JSON configuration files, one per exchange, and are integrated into the Freqtrade framework's pair selection process. These files contain regular expression patterns that match against trading pairs to identify and exclude them based on various risk factors such as leverage tokens, stablecoins, fan tokens, and known scam coins.
 
 **Section sources**
 - [blacklist-binance.json](file://configs/blacklist-binance.json)
@@ -155,7 +155,7 @@ The blacklist functionality is integrated into the Freqtrade framework through t
 
 ```json
 {
-  "strategy": "NostalgiaForInfinityX6",
+  "strategy": "NostalgiaForInfinityX8",
   "add_config_files": [
     "../configs/trading_mode-spot.json",
     "../configs/pairlist-volume-binance-usdt.json",
@@ -190,7 +190,7 @@ end note
 
 **Diagram sources**
 - [recommended_config.json](file://configs/recommended_config.json)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 
 The rationale for maintaining separate blacklists per exchange is due to differing market structures and token availability. Each exchange has unique tokens (exchange tokens, leveraged tokens, etc.) that need to be filtered out, and the blacklist patterns are tailored to these specific characteristics.
 
@@ -257,4 +257,4 @@ Clear any caching mechanisms that might be storing old pair lists. Restart the t
 - [blacklist-binance.json](file://configs/blacklist-binance.json)
 
 ## Conclusion
-The blacklist system in the NostalgiaForInfinityX6 strategy provides a critical layer of risk management by filtering out high-risk trading pairs. By maintaining exchange-specific blacklists with comprehensive patterns for leveraged tokens, stablecoins, fiat pairs, and known scam coins, the strategy avoids volatile and manipulated markets. The integration with Freqtrade's pair filtering system ensures that these exclusions are applied consistently as the final step in pair selection. Regular maintenance and community-driven curation are essential for keeping the blacklists effective against evolving market risks.
+The blacklist system in the NostalgiaForInfinityX8 strategy provides a critical layer of risk management by filtering out high-risk trading pairs. By maintaining exchange-specific blacklists with comprehensive patterns for leveraged tokens, stablecoins, fiat pairs, and known scam coins, the strategy avoids volatile and manipulated markets. The integration with Freqtrade's pair filtering system ensures that these exclusions are applied consistently as the final step in pair selection. Regular maintenance and community-driven curation are essential for keeping the blacklists effective against evolving market risks.

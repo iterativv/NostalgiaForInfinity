@@ -1,4 +1,4 @@
-# NostalgiaForInfinityX6 Performance Improvements PRD
+# NostalgiaForInfinityX8 Performance Improvements PRD
 
 ## Intro Project Analysis and Context
 
@@ -8,7 +8,7 @@
 - IDE-based fresh analysis
 
 #### Current Project State
-NostalgiaForInfinityX6 is an advanced, single-file algorithmic trading strategy for the Freqtrade platform. The strategy is organized within a single large file (approximately 60,000 lines) with approximately 800 lines of configuration parameters and complex trading logic. The strategy supports both spot and futures markets and features a multi-layered system of trading modes.
+NostalgiaForInfinityX8 is an advanced, single-file algorithmic trading strategy for the Freqtrade platform. The strategy is organized within a single large file (approximately 60,000 lines) with approximately 800 lines of configuration parameters and complex trading logic. The strategy supports both spot and futures markets and features a multi-layered system of trading modes.
 
 ### Available Documentation Analysis
 
@@ -25,7 +25,7 @@ NostalgiaForInfinityX6 is an advanced, single-file algorithmic trading strategy 
 - [x] Performance/Scalability Improvements
 
 #### Enhancement Description
-Analysis of the current performance status of the NostalgiaForInfinityX6 strategy and presentation of concrete proposals for performance improvements. Specifically, modularizing the monolithic structure and reducing CPU intensity are targeted.
+Analysis of the current performance status of the NostalgiaForInfinityX8 strategy and presentation of concrete proposals for performance improvements. Specifically, modularizing the monolithic structure and reducing CPU intensity are targeted.
 
 #### Impact Assessment
 - [x] Significant Impact (substantial existing code changes)
@@ -39,7 +39,7 @@ Analysis of the current performance status of the NostalgiaForInfinityX6 strateg
 - Optimize CPU and memory usage
 
 #### Background Context
-NostalgiaForInfinityX6 is a highly complex algorithmic trading strategy developed for the Freqtrade platform. The strategy causes CPU intensity by calculating a large number of technical indicators on every candle. In addition, the monolithic structure makes it difficult to understand and optimize the code. This PRD aims to define the improvements needed to increase the performance of the strategy and make the structure more sustainable.
+NostalgiaForInfinityX8 is a highly complex algorithmic trading strategy developed for the Freqtrade platform. The strategy causes CPU intensity by calculating a large number of technical indicators on every candle. In addition, the monolithic structure makes it difficult to understand and optimize the code. This PRD aims to define the improvements needed to increase the performance of the strategy and make the structure more sustainable.
 
 ### Change Log
 
@@ -117,7 +117,7 @@ NostalgiaForInfinityX6 is a highly complex algorithmic trading strategy develope
 
 ## Epic 1: Performance Improvements and Modular Structure
 
-**Epic Goal**: Increase the performance of the NostalgiaForInfinityX6 strategy and modularize the code structure.
+**Epic Goal**: Increase the performance of the NostalgiaForInfinityX8 strategy and modularize the code structure.
 
 **Integration Requirements**: Existing Freqtrade integration will be maintained, compatibility with configuration parameters will be ensured.
 

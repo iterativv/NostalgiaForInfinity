@@ -2,7 +2,7 @@
 
 <cite>
 **Referenced Files in This Document**   
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 - [download-necessary-exchange-market-data-for-backtests.sh](file://tools/download-necessary-exchange-market-data-for-backtests.sh)
 - [backtesting-all-years-all-pairs.sh](file://tests/backtests/backtesting-all-years-all-pairs.sh)
 - [backtesting-all.sh](file://tests/backtests/backtesting-all.sh)
@@ -30,7 +30,7 @@
 8. [Conclusion](#conclusion)
 
 ## Introduction
-This document provides a comprehensive analysis of the scalability and performance characteristics of the NostalgiaForInfinityX6 trading strategy. The strategy is designed for the Freqtrade crypto bot and implements a complex multi-mode trading system with various entry and exit conditions. The analysis focuses on performance bottlenecks in indicator calculation across large pair lists (e.g., 100+ pairs), optimization strategies, backtesting duration, parallel test execution, memory footprint, and real-time decision making in live trading. The document also covers the impact of configuration choices on computational load and provides benchmarking guidance and monitoring recommendations for production deployments.
+This document provides a comprehensive analysis of the scalability and performance characteristics of the NostalgiaForInfinityX8 trading strategy. The strategy is designed for the Freqtrade crypto bot and implements a complex multi-mode trading system with various entry and exit conditions. The analysis focuses on performance bottlenecks in indicator calculation across large pair lists (e.g., 100+ pairs), optimization strategies, backtesting duration, parallel test execution, memory footprint, and real-time decision making in live trading. The document also covers the impact of configuration choices on computational load and provides benchmarking guidance and monitoring recommendations for production deployments.
 
 ## Project Structure
 The project structure is organized into several key directories that support the strategy's functionality and testing infrastructure. The main components include configuration files, test scripts, tools for data management, and the core strategy implementation.
@@ -53,31 +53,31 @@ C1 --> C1a[backtesting-all-years-all-pairs.sh]
 C1 --> C1b[backtesting-all.sh]
 C1 --> C1c[backtesting-analysis.sh]
 D --> D1[download-necessary-exchange-market-data-for-backtests.sh]
-E --> E1[NostalgiaForInfinityX6.py]
+E --> E1[NostalgiaForInfinityX8.py]
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 - [download-necessary-exchange-market-data-for-backtests.sh](file://tools/download-necessary-exchange-market-data-for-backtests.sh)
 - [backtesting-all-years-all-pairs.sh](file://tests/backtests/backtesting-all-years-all-pairs.sh)
 - [backtesting-all.sh](file://tests/backtests/backtesting-all.sh)
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 - [configs](file://configs)
 - [tests](file://tests)
 - [tools](file://tools)
 
 ## Core Components
-The NostalgiaForInfinityX6 strategy is implemented as a Python class that inherits from Freqtrade's IStrategy interface. The strategy features multiple trading modes (normal, pump, quick, rebuy, rapid, grind, top coins, scalp) with distinct entry and exit conditions. The core functionality includes indicator calculation across multiple timeframes, position adjustment, custom exit logic, and stake amount calculation.
+The NostalgiaForInfinityX8 strategy is implemented as a Python class that inherits from Freqtrade's IStrategy interface. The strategy features multiple trading modes (normal, pump, quick, rebuy, rapid, grind, top coins, scalp) with distinct entry and exit conditions. The core functionality includes indicator calculation across multiple timeframes, position adjustment, custom exit logic, and stake amount calculation.
 
 The strategy uses a comprehensive set of technical indicators including RSI, EMA, BB, MFI, CMF, Williams %R, Stochastic RSI, KST, ROC, AROON, UO, OBV, and CCI across various timeframes (5m, 15m, 1h, 4h, 1d). These indicators are calculated for both the primary trading pairs and BTC/ETH informative pairs to provide market context.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1-L100)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1-L100)
 
 ## Architecture Overview
-The NostalgiaForInfinityX6 strategy follows a modular architecture with clear separation of concerns. The system processes market data through multiple timeframes, calculates indicators, evaluates entry and exit conditions, and manages position adjustments.
+The NostalgiaForInfinityX8 strategy follows a modular architecture with clear separation of concerns. The system processes market data through multiple timeframes, calculates indicators, evaluates entry and exit conditions, and manages position adjustments.
 
 ```mermaid
 graph TD
@@ -104,7 +104,7 @@ N --> O[Notification System]
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1-L100)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1-L100)
 
 ## Detailed Component Analysis
 
@@ -142,7 +142,7 @@ InformativeIndicators --> IndicatorTypes : "calculates"
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L2400-L3200)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L2400-L3200)
 
 #### Performance Monitoring
 The strategy includes performance monitoring for each indicator calculation function, allowing for identification of performance bottlenecks.
@@ -165,7 +165,7 @@ IndicatorCalc-->>Strategy : Return DataFrame
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L2400-L3200)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L2400-L3200)
 
 ### Trading Mode System
 The strategy implements a comprehensive trading mode system with multiple distinct modes for different market conditions.
@@ -219,7 +219,7 @@ TradingModes --> ExitConditions : "triggers"
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1-L1000)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1-L1000)
 
 ### Position Management System
 The position management system handles stake calculation, trade adjustment, and custom exit logic.
@@ -244,12 +244,12 @@ K --> |No| J
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1600-L2400)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1600-L2400)
 
 ## Performance Considerations
 
 ### Indicator Calculation Optimization
-The NostalgiaForInfinityX6 strategy faces significant performance challenges when processing large pair lists (100+ pairs) due to the extensive indicator calculations across multiple timeframes. The primary performance bottlenecks include:
+The NostalgiaForInfinityX8 strategy faces significant performance challenges when processing large pair lists (100+ pairs) due to the extensive indicator calculations across multiple timeframes. The primary performance bottlenecks include:
 
 1. **Multiple Timeframe Processing**: The strategy calculates indicators for five different timeframes (5m, 15m, 1h, 4h, 1d) for each pair, resulting in substantial computational overhead.
 
@@ -326,14 +326,14 @@ For production deployments, implement the following benchmarking and monitoring 
 The backtesting infrastructure and data download tools (`download-necessary-exchange-market-data-for-backtests.sh`) form a critical part of the performance ecosystem, enabling comprehensive testing and optimization of the strategy under various conditions.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 - [download-necessary-exchange-market-data-for-backtests.sh](file://tools/download-necessary-exchange-market-data-for-backtests.sh)
 - [backtesting-all-years-all-pairs.sh](file://tests/backtests/backtesting-all-years-all-pairs.sh)
 - [backtesting-all.sh](file://tests/backtests/backtesting-all.sh)
 - [recommended_config.json](file://configs/recommended_config.json)
 
 ## Troubleshooting Guide
-When experiencing performance issues with the NostalgiaForInfinityX6 strategy, consider the following troubleshooting steps:
+When experiencing performance issues with the NostalgiaForInfinityX8 strategy, consider the following troubleshooting steps:
 
 1. **High CPU Usage**:
    - Check if `num_cores_indicators_calc` is set appropriately (0 disables multi-core processing)
@@ -361,11 +361,11 @@ When experiencing performance issues with the NostalgiaForInfinityX6 strategy, c
    - Consider using exchange-specific optimizations (e.g., the startup_candle_count adjustments for OKX, Kraken, Bybit)
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 - [download-necessary-exchange-market-data-for-backtests.sh](file://tools/download-necessary-exchange-market-data-for-backtests.sh)
 
 ## Conclusion
-The NostalgiaForInfinityX6 strategy is a sophisticated trading system with comprehensive features for different market conditions. While powerful, it presents significant performance challenges when scaling to large pair lists due to its extensive indicator calculations across multiple timeframes.
+The NostalgiaForInfinityX8 strategy is a sophisticated trading system with comprehensive features for different market conditions. While powerful, it presents significant performance challenges when scaling to large pair lists due to its extensive indicator calculations across multiple timeframes.
 
 The key to successful deployment lies in careful configuration and optimization. Using the recommended pair list size of 40-80 pairs, leveraging the parallel backtesting infrastructure, and implementing the suggested performance optimizations can ensure the strategy operates efficiently in both backtesting and live trading environments.
 

@@ -11,7 +11,7 @@
 - [pairs-available-binance-futures-usdt-2023.json](file://tests/backtests/pairs-available-binance-futures-usdt-2023.json)
 - [pairlist-volume-binance-usdt.json](file://configs/pairlist-volume-binance-usdt.json)
 - [trading_mode-futures.json](file://configs/trading_mode-futures.json)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 </cite>
 
 ## Table of Contents
@@ -80,7 +80,7 @@ The backtesting scripts use environment variables for configuration rather than 
 |----------------------|-------------|-------|
 | `EXCHANGE` | binance | Target exchange for testing |
 | `TRADING_MODE` | spot | Trading mode (spot/futures) |
-| `STRATEGY_NAME` | NostalgiaForInfinityX6 | Strategy class name |
+| `STRATEGY_NAME` | NostalgiaForInfinityX8 | Strategy class name |
 | `STRATEGY_VERSION` | auto-detected | Version identifier for results |
 | `TIMERANGE` | none | Time period for testing (e.g., 20230101-) |
 
@@ -214,7 +214,7 @@ This example demonstrates running a backtest for Binance futures with volume-bas
 # Set environment variables
 export EXCHANGE=binance
 export TRADING_MODE=futures
-export STRATEGY_NAME=NostalgiaForInfinityX6
+export STRATEGY_NAME=NostalgiaForInfinityX8
 ```
 
 ### Step 2: Ensure Data Availability
@@ -265,13 +265,13 @@ export TIMERANGE=20230101-20231231
 # Run backtest with volume-based pairlist
 freqtrade backtesting \
   --timerange 20230101-20231231 \
-  --strategy NostalgiaForInfinityX6 \
+  --strategy NostalgiaForInfinityX8 \
   --strategy-path . \
   -c configs/trading_mode-futures.json \
   -c configs/exampleconfig.json \
   -c configs/exampleconfig_secret.json \
   -c configs/pairlist-volume-binance-usdt.json \
-  --export-filename user_data/backtest_results/NostalgiaForInfinityX6-binance-futures-2023.json
+  --export-filename user_data/backtest_results/NostalgiaForInfinityX8-binance-futures-2023.json
 ```
 
 ### Step 5: Analyze Results
@@ -286,7 +286,7 @@ freqtrade backtesting-analysis \
 
 # Generate visualizations
 freqtrade plot-profit --timerange 20230101-20231231 \
-  --strategy NostalgiaForInfinityX6 \
+  --strategy NostalgiaForInfinityX8 \
   -c configs/trading_mode-futures.json \
   -c configs/pairlist-volume-binance-usdt.json
 ```
@@ -385,7 +385,7 @@ Example command:
 freqtrade hyperopt \
   --hyperopt-loss SharpeHyperOptLossDaily \
   --timerange 20210101-20221231 \
-  --strategy NostalgiaForInfinityX6 \
+  --strategy NostalgiaForInfinityX8 \
   -c configs/trading_mode-futures.json \
   -c configs/exampleconfig.json \
   --custom-data-provider "user_data/data"
@@ -416,7 +416,7 @@ The `trading_mode-futures.json` file sets critical parameters:
 - [trading_mode-futures.json](file://configs/trading_mode-futures.json#L1-L6)
 
 ### Strategy Configuration
-Ensure your strategy parameters in `NostalgiaForInfinityX6.py` are appropriate for the market conditions you're testing. Key areas to review:
+Ensure your strategy parameters in `NostalgiaForInfinityX8.py` are appropriate for the market conditions you're testing. Key areas to review:
 - Entry/exit conditions
 - Position sizing
 - Stop-loss and take-profit levels
@@ -433,4 +433,4 @@ Link to configuration files in the `configs/` directory for parameter tuning bef
 **Section sources**
 - [trading_mode-futures.json](file://configs/trading_mode-futures.json#L1-L6)
 - [pairlist-volume-binance-usdt.json](file://configs/pairlist-volume-binance-usdt.json#L1-L40)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)

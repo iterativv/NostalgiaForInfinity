@@ -8,7 +8,7 @@
 - [pyproject.toml](file://pyproject.toml)
 - [configs/recommended_config.json](file://configs/recommended_config.json)
 - [configs/exampleconfig_secret.json](file://configs/exampleconfig_secret.json)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 </cite>
 
 ## Table of Contents
@@ -26,7 +26,7 @@
 
 ## Prerequisites
 
-Before setting up the NostalgiaForInfinityX6 strategy, ensure the following prerequisites are met:
+Before setting up the NostalgiaForInfinityX8 strategy, ensure the following prerequisites are met:
 
 - **Python 3.9+**: The strategy requires Python 3.9 or higher. The `pyproject.toml` file specifies `requires-python = ">=3.12"`, so Python 3.12 or later is recommended.
 - **Freqtrade Installation**: Freqtrade must be installed either locally or via Docker. The repository uses Freqtrade as the trading bot framework.
@@ -39,7 +39,7 @@ Before setting up the NostalgiaForInfinityX6 strategy, ensure the following prer
 
 ## Cloning the Repository
 
-To begin, clone the NostalgiaForInfinityX6 repository from GitHub:
+To begin, clone the NostalgiaForInfinityX8 repository from GitHub:
 
 ```bash
 git clone https://github.com/iterativv/NostalgiaForInfinity.git
@@ -79,7 +79,7 @@ Once activated, all subsequent Python and pip commands will use this isolated en
 
 ## Installing TA-Lib
 
-The NostalgiaForInfinityX6 strategy relies on TA-Lib for technical indicator calculations. Install TA-Lib using the following steps:
+The NostalgiaForInfinityX8 strategy relies on TA-Lib for technical indicator calculations. Install TA-Lib using the following steps:
 
 ### For Windows:
 Download the precompiled TA-Lib wheel from [Christoph Gohlke's website](https://www.lfd.uci.edu/~gohlke/pythonlibs/#ta-lib) and install it using pip:
@@ -115,7 +115,7 @@ print(talib.__version__)
 ```
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L4-L5)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L4-L5)
 
 ## Installing Dependencies via pyproject.toml
 
@@ -146,7 +146,7 @@ The `recommended_config.json` file contains essential settings, including the st
 
 ```json
 {
-  "strategy": "NostalgiaForInfinityX6",
+  "strategy": "NostalgiaForInfinityX8",
   "add_config_files": [
     "../configs/trading_mode-spot.json",
     "../configs/pairlist-volume-binance-usdt.json",
@@ -200,13 +200,13 @@ The `docker-compose.yml` file defines the production setup:
 services:
   freqtrade:
     <<: *common-settings
-    container_name: ${FREQTRADE__BOT_NAME:-Example_Test_Account}_${FREQTRADE__EXCHANGE__NAME:-binance}_${FREQTRADE__TRADING_MODE:-futures}-${FREQTRADE__STRATEGY:-NostalgiaForInfinityX6}
+    container_name: ${FREQTRADE__BOT_NAME:-Example_Test_Account}_${FREQTRADE__EXCHANGE__NAME:-binance}_${FREQTRADE__TRADING_MODE:-futures}-${FREQTRADE__STRATEGY:-NostalgiaForInfinityX8}
     ports:
       - "${FREQTRADE__API_SERVER__LISTEN_PORT:-8080}:${FREQTRADE__API_SERVER__LISTEN_PORT:-8080}"
     command: >
       trade
       --db-url sqlite:////freqtrade/user_data/${FREQTRADE__BOT_NAME:-Example_Test_Account}_${FREQTRADE__EXCHANGE__NAME:-binance}_${FREQTRADE__TRADING_MODE:-futures}-tradesv3.sqlite
-      --log-file user_data/logs/${FREQTRADE__BOT_NAME:-Example_Test_Account}-${FREQTRADE__EXCHANGE__NAME:-binance}-${FREQTRADE__STRATEGY:-NostalgiaForInfinityX6}-${FREQTRADE__TRADING_MODE:-futures}.log
+      --log-file user_data/logs/${FREQTRADE__BOT_NAME:-Example_Test_Account}-${FREQTRADE__EXCHANGE__NAME:-binance}-${FREQTRADE__STRATEGY:-NostalgiaForInfinityX8}-${FREQTRADE__TRADING_MODE:-futures}.log
       --strategy-path .
 ```
 
@@ -241,7 +241,7 @@ Before going live, validate that everything is set up correctly.
 Run the bot in dry-run mode to verify the strategy loads:
 
 ```bash
-freqtrade trade --config user_data/config.json --strategy NostalgiaForInfinityX6 --dry-run
+freqtrade trade --config user_data/config.json --strategy NostalgiaForInfinityX8 --dry-run
 ```
 
 Look for log messages confirming the strategy has been loaded and indicators are being calculated.
@@ -261,13 +261,13 @@ This command checks for syntax errors and missing required fields.
 Perform a backtest to ensure the strategy behaves as expected:
 
 ```bash
-freqtrade backtesting --config user_data/config.json --strategy NostalgiaForInfinityX6 --timerange 20230101-20231231
+freqtrade backtesting --config user_data/config.json --strategy NostalgiaForInfinityX8 --timerange 20230101-20231231
 ```
 
 Review the results in the `user_data/backtest_results/` directory.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L68-L822)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L68-L822)
 - [configs/recommended_config.json](file://configs/recommended_config.json#L1-L18)
 
 ## Troubleshooting Common Issues
@@ -288,13 +288,13 @@ Use a JSON validator to check `config.json` and `config-private.json` for syntax
 
 ### Strategy Not Loading
 
-- Confirm the strategy file `NostalgiaForInfinityX6.py` is located in `user_data/strategies/`.
-- Ensure the class name in the Python file matches the strategy name in the config (`NostalgiaForInfinityX6`).
+- Confirm the strategy file `NostalgiaForInfinityX8.py` is located in `user_data/strategies/`.
+- Ensure the class name in the Python file matches the strategy name in the config (`NostalgiaForInfinityX8`).
 
 **Section sources**
 - [configs/exampleconfig_secret.json](file://configs/exampleconfig_secret.json#L1-L86)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L68-L822)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L68-L822)
 
 ## Security Best Practices
 

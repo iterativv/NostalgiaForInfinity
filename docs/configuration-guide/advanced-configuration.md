@@ -5,7 +5,7 @@
 - [exampleconfig_secret.json](file://configs/exampleconfig_secret.json)
 - [proxy-binance.json](file://configs/proxy-binance.json)
 - [recommended_config.json](file://configs/recommended_config.json)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 </cite>
 
 ## Table of Contents
@@ -18,7 +18,7 @@
 7. [Security and Risk Mitigation](#security-and-risk-mitigation)
 
 ## Introduction
-This document provides a comprehensive guide to advanced configuration options for the NostalgiaForInfinityX6 trading strategy. It covers secure handling of sensitive data, network proxy configuration for restricted regions, and fine-grained control over trading behaviors through complex parameter structures. The documentation focuses on practical implementation details, security best practices, and real-world examples drawn directly from the codebase.
+This document provides a comprehensive guide to advanced configuration options for the NostalgiaForInfinityX8 trading strategy. It covers secure handling of sensitive data, network proxy configuration for restricted regions, and fine-grained control over trading behaviors through complex parameter structures. The documentation focuses on practical implementation details, security best practices, and real-world examples drawn directly from the codebase.
 
 ## Secure Configuration with exampleconfig_secret.json
 
@@ -29,7 +29,7 @@ The `exampleconfig_secret.json` file serves as a template for securely storing s
   "bot_name": "freqtrade",
   "stake_currency": "USDT",
   "fiat_display_currency": "USD",
-  "strategy": "NostalgiaForInfinityX6",
+  "strategy": "NostalgiaForInfinityX8",
   "dry_run": true,
   "exchange": {
     "name": "binance",
@@ -120,7 +120,7 @@ The `recommended_config.json` file provides a foundation for advanced configurat
 
 ```json
 {
-  "strategy": "NostalgiaForInfinityX6",
+  "strategy": "NostalgiaForInfinityX8",
   "add_config_files": [
     "../configs/trading_mode-spot.json",
     "../configs/pairlist-volume-binance-usdt.json",
@@ -145,7 +145,7 @@ The `add_config_files` parameter allows the bot to merge settings from multiple 
 
 ## Custom Parameters and Position Management
 
-The NostalgiaForInfinityX6 strategy implements sophisticated position management through nested custom parameters. These parameters enable fine-grained control over grinding, derisking, and rebuy mechanisms, allowing traders to customize risk exposure and profit-taking behavior.
+The NostalgiaForInfinityX8 strategy implements sophisticated position management through nested custom parameters. These parameters enable fine-grained control over grinding, derisking, and rebuy mechanisms, allowing traders to customize risk exposure and profit-taking behavior.
 
 ### Grinding and Derisking Configuration
 
@@ -199,7 +199,7 @@ These flags control advanced features that can be overridden in configuration:
 - Stop-loss mechanisms for capital preservation
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L68-L822)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L68-L822)
 
 ## Debugging Complex Configurations
 
@@ -243,7 +243,7 @@ This warning alerts users when potentially dangerous advanced features are activ
 
 **Section sources**
 - [exampleconfig_secret.json](file://configs/exampleconfig_secret.json#L5)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L68-L822)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L68-L822)
 
 ## Security and Risk Mitigation
 
@@ -284,4 +284,4 @@ The combination of secure configuration practices, proper file handling, and net
 **Section sources**
 - [exampleconfig_secret.json](file://configs/exampleconfig_secret.json#L1-L86)
 - [proxy-binance.json](file://configs/proxy-binance.json#L1-L14)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L68-L822)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L68-L822)
