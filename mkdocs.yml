@@ -44,7 +44,7 @@ nav:
 
   - Project Overview:
       - Overview: project-overview.md
-      - Installation (Advanced): installation-and-setup.md
+      # - Installation (Advanced): installation-and-setup.md
       - Best Practices: best-practices.md
       - API Reference: api-reference.md
 
@@ -103,7 +103,7 @@ nav:
 
   - Configuration:
       - Config Guide: configuration-guide/configuration-guide.md
-      # - Advanced: configuration-guide/advanced-configuration.md
+      - Advanced: configuration-guide/advanced-configuration.md
       - Pair Lists: configuration-guide/pair-list-management.md
       - Blacklist: configuration-guide/blacklist-management.md
       - Hierarchy: configuration-guide/configuration-hierarchy.md
