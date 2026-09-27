@@ -24611,6 +24611,20 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((cmf_20_4h_lt_0_15) | (roc_9_1d_gt_neg_10) | (stochrsi_k_4h_gt_20))
             # 15m & 1h uptrend gone, 4h low
             & ((aroonu_14_15m_lt_70) | (aroonu_14_1h_lt_70) | (stochrsi_k_4h_gt_40))
+            # the daily oscillator up at its ceiling while 4h money is already leaving
+            & ((stochrsi_k_1d < 60.0) | (cmf_20_4h > -0.1) | (mfi_14_1h < 65.0))
+            # no hourly downtrend, the 4h trend still pointing up and the daily not sold off
+            & ((aroond_14_1h > 35.0) | (plus_di_14_4h > 10.0) | (rsi_3_1d < 25.0))
+            # the 15m oscillator already high, the hourly rsi holding and no daily downtrend
+            & ((uo_7_14_28_15m < 55.0) | (rsi_14_change_pct_1h > -5.0) | (aroond_14_1d > 10.0))
+            # the hour off its low, the daily money flow gone and the hour not falling
+            & ((willr_14_1h > -80.0) | (mfi_14_1d > 45.0) | (roc_9_1h < -1.0))
+            # no daily downtrend, the daily oscillator at its ceiling and the 4h one on the floor
+            & ((aroond_14_1d > 5.0) | (stochrsi_k_1d < 85.0) | (stochrsi_k_4h > 5.0))
+            # the 4h making no new high with its downtrend maxed out and the daily oscillator high
+            & ((aroonu_14_4h > 5.0) | (aroond_14_4h < 90.0) | (stochrsi_k_1d < 60.0))
+            # the 4h fully exhausted: no new high, stochastic on the floor, money flow gone
+            & ((aroonu_14_4h > 5.0) | (stochrsi_k_4h > 5.0) | (mfi_14_4h > 30.0))
           )
 
           # Logic
