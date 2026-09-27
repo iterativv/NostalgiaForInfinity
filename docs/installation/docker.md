@@ -227,28 +227,6 @@ The script supports two update modes:
 
 ## Configuring Trading Mode
 
-First off, cd to your NFI directory location and stop docker compose.
-```bash
-docker compose down
-```
-Now configure environment file.
-```bash
-nano .env
-```
-Select your trading mode, spot or futures.
-Check if your exchange supports futures if you want to use that. [here](https://www.freqtrade.io/en/stable/exchanges/)
-then adapt your exchange to that.
-
-## Live trading
-
-When doing live trading, setting up API can be very different from exchange to exchange, but it is highly recommended to only allow your trading bots IP address and only select the required permissions to make the bot work, (e.g., trade, but not withdraw).
-it is also important to store the api key, api secret inside your .env file. Once you grabbed api key and api secret insert them.
-[Edit your .env file](https://iterativv.github.io/NostalgiaForInfinity/installation/docker/#edit-your-env-file)
-
-
-
-## Configuring Trading Mode
-
 First, navigate to your NFI directory and stop the Docker Compose services:
 
 ```bash
