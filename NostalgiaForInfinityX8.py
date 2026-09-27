@@ -22775,6 +22775,16 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((aroonu_14_15m_lt_75) | (aroonu_14_1d_gt_20) | (stochrsi_k_1d_gt_10))
             # 1h & 4h up move, 4h low   [weak]
             & ((rsi_3_1h_lt_50) | (rsi_3_4h_lt_40) | (aroonu_14_4h_gt_20))
+            # 5m still not low enough, 1h down move, 1d oversold
+            & ((stochrsi_k_gt_80) | (rsi_3_1h_gt_40) | (roc_9_1d_gt_neg_25))
+            # 4h down move, 1d uptrend
+            & ((rsi_3_4h_gt_5) | (aroonu_14_1d_lt_50))
+            # 1h & 4h down move, 1d oversold
+            & ((rsi_3_1h_gt_40) | (rsi_3_4h_gt_10) | (roc_9_1d_gt_neg_30))
+            # 15m low & still not low enough, 4h oversold
+            & ((aroonu_14_15m_gt_20) | (stochrsi_k_15m_gt_80) | (roc_9_4h_gt_neg_10))
+            # 1h uptrend, 4h oversold
+            & ((aroonu_14_1h_lt_30) | (roc_9_4h_gt_neg_20))
           )
 
           # Logic — Bounce in downtrend
