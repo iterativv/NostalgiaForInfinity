@@ -3,7 +3,7 @@
 <cite>
 **Referenced Files in This Document**
 - [README.md](file://README.md)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 - [configs/exampleconfig.json](file://configs/exampleconfig.json)
 - [configs/trading_mode-spot.json](file://configs/trading_mode-spot.json)
 - [configs/trading_mode-futures.json](file://configs/trading_mode-futures.json)
@@ -32,7 +32,7 @@ The strategy processes market data through a comprehensive set of technical indi
 
 **Section sources**
 - [README.md](file://README.md)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L68-L173) - Class definition and trading mode tags
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L70-L248) - Class definition and trading mode tags
 
 ## Project Structure
 
@@ -55,7 +55,7 @@ C --> C1[backtests]
 C --> C2[unit]
 C --> C3[requirements.txt]
 D --> D1[download-necessary-exchange-market-data-for-backtests.sh]
-E --> E1[NostalgiaForInfinityX6.py]
+E --> E1[NostalgiaForInfinityX8.py]
 ```
 
 **Diagram sources**
@@ -72,14 +72,14 @@ E --> E1[NostalgiaForInfinityX6.py]
 
 ## Core Components
 
-The core of the NostalgiaForInfinity strategy resides in the NostalgiaForInfinityX6.py file, which extends Freqtrade's IStrategy interface. The strategy implements comprehensive trading logic for both long and short positions across multiple modes. Key components include signal generation, entry/exit conditions, position adjustment mechanisms, and risk management features.
+The core of the NostalgiaForInfinity strategy resides in the NostalgiaForInfinityX8.py file, which extends Freqtrade's IStrategy interface. The strategy implements comprehensive trading logic for both long and short positions across multiple modes. Key components include signal generation, entry/exit conditions, position adjustment mechanisms, and risk management features.
 
-The strategy requires a 5-minute timeframe and uses multiple informative timeframes (15m, 1h, 4h, 1d) for multi-timeframe analysis. It processes market data using technical indicators from TA-Lib and pandas-ta libraries, including moving averages, RSI, MACD, and custom indicators. The system maintains a startup candle count of 800 to ensure sufficient historical data for indicator calculations.
+The strategy requires a 5-minute timeframe and uses multiple informative timeframes (15m, 1h, 4h, 1d) for multi-timeframe analysis and BTC 4h. It processes market data using technical indicators from TA-Lib and pandas-ta libraries, including moving averages, RSI, MACD, and custom indicators. The system maintains a startup candle count of 800 to ensure sufficient historical data for indicator calculations.
 
 Signal generation is controlled through configuration parameters that enable or disable specific entry conditions. The strategy supports position adjustment through rebuy, grinding, and derisking mechanisms that allow dynamic position sizing based on market conditions and performance.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L68-L822) - Class definition, parameters, and initialization
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L70-L1105) - Class definition, parameters, and initialization
 
 ## Architecture Overview
 
@@ -114,10 +114,10 @@ PM --> RM
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1-L1000)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1-L1000)
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1-L1000)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1-L1000)
 
 ## Detailed Component Analysis
 
@@ -235,10 +235,10 @@ S661A --> End2
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L9091-L16871) - populate_entry_trend method
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L9091-L16871) - populate_entry_trend method
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L9091-L16871) - Entry signal generation logic
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L9091-L16871) - Entry signal generation logic
 
 ## Trading Modes and Strategy Patterns
 
@@ -322,10 +322,10 @@ ModeConfiguration --> ModeParameters : "contains"
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L116-L173) - Trading mode tag definitions
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L116-L173) - Trading mode tag definitions
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L116-L700) - Mode configuration and parameters
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L116-L700) - Mode configuration and parameters
 
 ## Position Management and Risk Control
 
@@ -366,11 +366,11 @@ end
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1581-L2395) - Exit and position adjustment logic
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1581-L2395) - Exit and position adjustment logic
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1581-L2134) - custom_exit method
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L2232-L2395) - adjust_trade_position method
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1581-L2134) - custom_exit method
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L2232-L2395) - adjust_trade_position method
 
 ## Configuration and Integration
 

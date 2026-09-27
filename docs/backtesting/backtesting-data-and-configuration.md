@@ -205,7 +205,7 @@ class Backtest:
     cmdline = [
       "freqtrade",
       "backtesting",
-      "--strategy=NostalgiaForInfinityX6",
+      "--strategy=NostalgiaForInfinityX8",
       f"--timerange={start_date}-{end_date}",
       "--user-data-dir=user_data",
       "--config=configs/exampleconfig.json",
@@ -287,9 +287,9 @@ class BacktestResults:
   def _set_results(self):
     strategy_data = self.raw_data.get("strategy")
     if isinstance(strategy_data, dict):
-      return strategy_data.get("NostalgiaForInfinityX6")
-    elif isinstance(strategy_data, str) and strategy_data == "NostalgiaForInfinityX6":
-      return self.raw_data.get("NostalgiaForInfinityX6")
+      return strategy_data.get("NostalgiaForInfinityX8")
+    elif isinstance(strategy_data, str) and strategy_data == "NostalgiaForInfinityX8":
+      return self.raw_data.get("NostalgiaForInfinityX8")
     else:
       raise TypeError(f"Unsupported 'strategy' value: {strategy_data!r}")
 ```

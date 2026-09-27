@@ -2,7 +2,7 @@
 
 <cite>
 **Referenced Files in This Document**   
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1-L65286)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1-L65286)
 - [test_NFIX6.py](file://tests/unit/test_NFIX6.py#L59-L125)
 </cite>
 
@@ -19,12 +19,12 @@
 10. [Best Practices and Tuning](#best-practices-and-tuning)
 
 ## Introduction
-The Grinding Mechanism in the NostalgiaForInfinityX6 strategy is a sophisticated position averaging system designed to reduce the average entry price of losing trades through controlled, incremental buying. This approach aims to improve profitability by systematically lowering the break-even point while maintaining strict risk controls. The mechanism leverages Freqtrade's position adjustment API to dynamically manage open trades, allowing for multiple entries and exits based on predefined thresholds and market conditions.
+The Grinding Mechanism in the NostalgiaForInfinityX8 strategy is a sophisticated position averaging system designed to reduce the average entry price of losing trades through controlled, incremental buying. This approach aims to improve profitability by systematically lowering the break-even point while maintaining strict risk controls. The mechanism leverages Freqtrade's position adjustment API to dynamically manage open trades, allowing for multiple entries and exits based on predefined thresholds and market conditions.
 
 This document provides a comprehensive analysis of the grinding system, focusing on its implementation, configuration options, and operational logic. It explains how the strategy handles different market scenarios, manages risk exposure, and interacts with exchange APIs to execute trades safely and efficiently.
 
 ## Grinding Mechanism Overview
-The grinding mechanism in NostalgiaForInfinityX6 enables the strategy to average down on losing positions using progressively smaller position sizes. This approach reduces the average entry price while managing risk through predefined thresholds and position sizing rules. The system is activated when a trade enters a loss zone and meets specific entry conditions based on technical indicators and price action.
+The grinding mechanism in NostalgiaForInfinityX8 enables the strategy to average down on losing positions using progressively smaller position sizes. This approach reduces the average entry price while managing risk through predefined thresholds and position sizing rules. The system is activated when a trade enters a loss zone and meets specific entry conditions based on technical indicators and price action.
 
 The mechanism operates through a series of "grind levels," each with its own stake size, entry threshold, and profit target. When a trade reaches a predefined loss threshold, the system places a new buy order with a stake size determined by the current grind level. The stake sizes decrease progressively across levels, preventing excessive capital allocation to a single losing position.
 
@@ -48,10 +48,10 @@ WaitCooldown --> ContinueMonitoring
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L34686-L39203)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L34686-L39203)
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L34686-L39203)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L34686-L39203)
 
 ## Core Components and Configuration
 The grinding mechanism is implemented through several key components and configuration parameters that work together to manage position adjustments. The core functionality is contained in the `long_grind_adjust_trade_position` method, which handles all aspects of the grinding process for long positions.
@@ -67,7 +67,7 @@ The system also supports different grinding modes, including regular grinding, d
 
 ```mermaid
 classDiagram
-class NostalgiaForInfinityX6 {
+class NostalgiaForInfinityX8 {
 +grinding_enable : bool
 +derisk_enable : bool
 +position_adjustment_enable : bool
@@ -101,17 +101,17 @@ class DataFrame {
 +iloc : Indexing
 +squeeze() : Series
 }
-NostalgiaForInfinityX6 --> Trade : "manages"
-NostalgiaForInfinityX6 --> DataFrame : "analyzes"
-NostalgiaForInfinityX6 --> Position Adjustment API : "integrates with"
+NostalgiaForInfinityX8 --> Trade : "manages"
+NostalgiaForInfinityX8 --> DataFrame : "analyzes"
+NostalgiaForInfinityX8 --> Position Adjustment API : "integrates with"
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L2265-L2265)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L34686-L39203)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L2265-L2265)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L34686-L39203)
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L34686-L39203)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L34686-L39203)
 
 ## Position Adjustment Workflow
 The position adjustment workflow in the grinding mechanism follows a systematic process to evaluate and execute additional entries on losing positions. The workflow begins when the `adjust_trade_position` method is called by Freqtrade's position adjustment system, which triggers the appropriate adjustment function based on the trade's entry tags.
@@ -130,7 +130,7 @@ The system implements several safety checks to prevent over-leveraging and ensur
 
 ```mermaid
 sequenceDiagram
-participant Strategy as "NostalgiaForInfinityX6"
+participant Strategy as "NostalgiaForInfinityX8"
 participant Freqtrade as "Freqtrade Engine"
 participant Exchange as "Exchange API"
 participant Trade as "Trade Object"
@@ -152,11 +152,11 @@ end
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L34686-L39203)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L34686-L39203)
 - [test_NFIX6.py](file://tests/unit/test_NFIX6.py#L59-L86)
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L34686-L39203)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L34686-L39203)
 
 ## Grinding Levels and Dynamic Sizing
 The grinding mechanism implements multiple levels of position adjustments, each with progressively smaller stake sizes. This approach allows the strategy to average down on losing positions while reducing risk exposure with each subsequent entry. The system supports up to six grind levels (grind_1 through grind_6), with each level having its own configuration for stake sizes, entry thresholds, and profit targets.
@@ -185,10 +185,10 @@ style H fill:#f96,stroke:#333
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L34686-L39203)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L34686-L39203)
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L34686-L39203)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L34686-L39203)
 
 ## Profit Thresholds and Exit Conditions
 The grinding mechanism employs specific profit thresholds and exit conditions to determine when to close grind positions and realize gains. Each grind level has its own profit threshold that must be exceeded before an exit is triggered, accounting for trading fees to ensure profitability.
@@ -225,10 +225,10 @@ O --> K
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L34686-L39203)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L34686-L39203)
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L34686-L39203)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L34686-L39203)
 
 ## Risk Management and Derisking
 The grinding mechanism incorporates comprehensive risk management features to protect against excessive losses during strong downtrends. The system implements multiple layers of risk controls, including position sizing limits, stop-loss mechanisms, and derisking strategies.
@@ -260,10 +260,10 @@ K --> L[Resume Monitoring]
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L34686-L39203)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L34686-L39203)
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L34686-L39203)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L34686-L39203)
 
 ## Configuration Parameters
 The grinding mechanism is controlled by numerous configuration parameters that allow users to customize its behavior based on their risk tolerance and market conditions. These parameters are divided into several categories:
@@ -295,7 +295,7 @@ Each grind level (1-6) has its own set of parameters:
 These parameters can be adjusted in the strategy configuration to optimize performance for different market conditions and risk profiles. The system also supports advanced configuration through the `nfi_parameters` block, allowing for fine-tuned control over all grinding parameters.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L2265-L2265)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L2265-L2265)
 
 ## Performance and Exchange Considerations
 The grinding mechanism's performance is influenced by several factors related to exchange characteristics and fee structures. The system must account for different exchange requirements, including minimum stake amounts, API rate limits, and data availability.
@@ -317,7 +317,7 @@ Performance optimization strategies include:
 - Optimizing indicator calculations through multi-core processing
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L2265-L2265)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L2265-L2265)
 
 ## Best Practices and Tuning
 Effective use of the grinding mechanism requires careful parameter tuning based on market conditions, volatility, and risk tolerance. The following best practices can help optimize performance:
@@ -349,4 +349,4 @@ Common issues and solutions:
 Regular backtesting and performance analysis are essential for optimizing the grinding mechanism. Users should test different parameter combinations across various market conditions to find the optimal configuration for their trading goals and risk tolerance.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L2265-L2265)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L2265-L2265)

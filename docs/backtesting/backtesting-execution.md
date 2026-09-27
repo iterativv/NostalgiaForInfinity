@@ -8,7 +8,7 @@
 - [backtesting-focus-group.sh](file://tests/backtests/backtesting-focus-group.sh)
 - [download-necessary-exchange-market-data-for-backtests.sh](file://tools/download-necessary-exchange-market-data-for-backtests.sh)
 - [exampleconfig.json](file://configs/exampleconfig.json)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 - [pairlist-backtest-static-focus-group-binance-futures-usdt.json](file://tests/backtests/pairlist-backtest-static-focus-group-binance-futures-usdt.json)
 - [pairs-available-binance-futures-usdt-2019.json](file://tests/backtests/pairs-available-binance-futures-usdt-2019.json)
 </cite>
@@ -171,7 +171,7 @@ The bad buy signal detection process is a critical component of the backtesting 
 The backtesting scripts support extensive parameter customization through environment variables, allowing flexible configuration without modifying script files. Key customizable parameters include:
 - **EXCHANGE**: Specifies the exchange (e.g., binance, kucoin, okx, gateio)
 - **TRADING_MODE**: Sets the trading mode (spot or futures)
-- **STRATEGY_NAME**: Defines the strategy file name (default: NostalgiaForInfinityX6)
+- **STRATEGY_NAME**: Defines the strategy file name (default: NostalgiaForInfinityX8)
 - **STRATEGY_VERSION**: Overrides the strategy version identifier
 - **TIMERANGE**: Limits the backtesting period (e.g., 20230101-20230501)
 

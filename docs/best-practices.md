@@ -2,7 +2,7 @@
 
 <cite>
 **Referenced Files in This Document**   
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 - [recommended_config.json](file://configs/recommended_config.json)
 - [trading_mode-spot.json](file://configs/trading_mode-spot.json)
 - [pairlist-volume-binance-usdt.json](file://configs/pairlist-volume-binance-usdt.json)
@@ -20,7 +20,7 @@
 
 ## Risk Management Principles
 
-Effective risk management is essential when deploying the NostalgiaForInfinityX6 strategy to protect capital and ensure sustainable performance. The following principles should be strictly observed:
+Effective risk management is essential when deploying the NostalgiaForInfinityX8 strategy to protect capital and ensure sustainable performance. The following principles should be strictly observed:
 
 **Position Sizing**: Never risk more than 1-2% of your total trading capital on any single trade. This conservative approach ensures that even a series of losing trades will not significantly deplete your account. For example, with a $10,000 account, the maximum risk per trade should be limited to $100–$200.
 
@@ -45,12 +45,12 @@ F --> G["Monitor Portfolio Exposure"]
 ```
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L116-L173)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L116-L173)
 - [blacklist-binance.json](file://configs/blacklist-binance.json#L1-L21)
 
 ## Performance Optimization Techniques
 
-Optimizing the performance of NostalgiaForInfinityX6 involves careful selection of timeframes, filtering low-volume assets, and avoiding overfitting during backtesting.
+Optimizing the performance of NostalgiaForInfinityX8 involves careful selection of timeframes, filtering low-volume assets, and avoiding overfitting during backtesting.
 
 **Timeframe Selection**: The strategy is designed to operate exclusively on the 5-minute (`timeframe = "5m"`) candle. This short-term timeframe enables rapid response to market movements but requires high-frequency data processing. Using any other timeframe may invalidate the signal logic and lead to poor performance.
 
@@ -72,12 +72,12 @@ E --> F["Avoid Over-Optimization"]
 ```
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L140-L145)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L140-L145)
 - [pairlist-volume-binance-usdt.json](file://configs/pairlist-volume-binance-usdt.json#L2-L40)
 
 ## Monitoring and Maintenance Guidelines
 
-Proper monitoring and regular maintenance are critical for reliable operation of the NostalgiaForInfinityX6 strategy.
+Proper monitoring and regular maintenance are critical for reliable operation of the NostalgiaForInfinityX8 strategy.
 
 **Dry-Run Mode**: Always begin with at least two weeks of dry-run (paper trading) mode. This allows you to validate trade execution logic, monitor signal frequency, and assess risk exposure without financial risk. Set `"dry_run": true` in your configuration until consistent performance is observed.
 
@@ -90,7 +90,7 @@ Proper monitoring and regular maintenance are critical for reliable operation of
 **Parameter Reviews**: Market conditions evolve, and static parameters may become suboptimal. Schedule weekly or monthly reviews of key settings such as stop thresholds, stake multipliers, and pairlist filters to ensure alignment with current volatility and trends.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L__init__)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L__init__)
 - [recommended_config.json](file://configs/recommended_config.json#L10-L18)
 
 ## Security Best Practices
@@ -121,7 +121,7 @@ E --> F["Never Commit Secrets to Git"]
 
 **Section sources**
 - [recommended_config.json](file://configs/recommended_config.json#L1-L18)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L__init__)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L__init__)
 
 ## Psychological Aspects and Intervention Protocols
 
@@ -144,14 +144,14 @@ This structured approach prevents reactive decision-making and supports long-ter
 
 **Section sources**
 - [README.md](file://README.md#L15-L30)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L130-L135)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L130-L135)
 
 ## Configuration and Implementation Guidance
 
-To implement the NostalgiaForInfinityX6 strategy correctly, follow the configuration structure provided in the repository.
+To implement the NostalgiaForInfinityX8 strategy correctly, follow the configuration structure provided in the repository.
 
 The `recommended_config.json` serves as the base configuration and includes:
-- Strategy name: `"NostalgiaForInfinityX6"`
+- Strategy name: `"NostalgiaForInfinityX8"`
 - Modular configuration via `add_config_files` that combines:
   - Trading mode (spot/futures)
   - Dynamic pairlist
@@ -161,7 +161,7 @@ The `recommended_config.json` serves as the base configuration and includes:
 Example configuration structure:
 ```json
 {
-  "strategy": "NostalgiaForInfinityX6",
+  "strategy": "NostalgiaForInfinityX8",
   "add_config_files": [
     "../configs/trading_mode-futures.json",
     "../configs/pairlist-volume-binance-usdt.json",

@@ -2,7 +2,7 @@
 
 <cite>
 **Referenced Files in This Document**   
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1-L65286)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1-L65286)
 </cite>
 
 ## Table of Contents
@@ -20,19 +20,19 @@
 12. [Performance Considerations](#performance-considerations)
 
 ## Introduction
-The Grind Long Mode is a specialized trading strategy within the NostalgiaForInfinityX6 (NFI-X6) framework designed to manage positions during slow, grinding uptrends characterized by frequent pullbacks. This mode enables incremental profit accumulation by allowing staggered entries and systematic exits. It is particularly effective in accumulation phases where price progresses upward with volatility, offering opportunities to average in at lower prices and scale out progressively.
+The Grind Long Mode is a specialized trading strategy within the NostalgiaForInfinityX8 (NFI-X8) framework designed to manage positions during slow, grinding uptrends characterized by frequent pullbacks. This mode enables incremental profit accumulation by allowing staggered entries and systematic exits. It is particularly effective in accumulation phases where price progresses upward with volatility, offering opportunities to average in at lower prices and scale out progressively.
 
-This document provides a comprehensive analysis of the Grind Long Mode, detailing its logic, configuration, and practical application. The implementation is deeply integrated into the core functionality of NFI-X6, leveraging dynamic position adjustment and risk management mechanisms.
+This document provides a comprehensive analysis of the Grind Long Mode, detailing its logic, configuration, and practical application. The implementation is deeply integrated into the core functionality of NFI-X8, leveraging dynamic position adjustment and risk management mechanisms.
 
 ## Grind Long Mode Overview
 The Grind Long Mode is activated when a trade's entry tag includes the identifier "120", which corresponds to the `long_grind_mode_tags` defined in the strategy. This mode is specifically engineered for prolonged bullish trends with high volatility, where the price frequently retraces before continuing upward.
 
 The primary objective is to accumulate profit incrementally by entering additional positions during micro-dips and exiting portions of the position at predefined profit thresholds. This approach reduces reliance on a single exit point and allows the strategy to capture gains across multiple price levels.
 
-The mode operates under the broader position adjustment framework of NFI-X6, where `position_adjustment_enable` must be set to `True`. The logic is executed within the `long_grind_adjust_trade_position` method, which evaluates current market conditions, profit levels, and historical entry points to determine whether to add to or reduce the position.
+The mode operates under the broader position adjustment framework of NFI-X8, where `position_adjustment_enable` must be set to `True`. The logic is executed within the `long_grind_adjust_trade_position` method, which evaluates current market conditions, profit levels, and historical entry points to determine whether to add to or reduce the position.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L35655-L35854)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L35655-L35854)
 
 ## Entry Signal Adaptation
 Entry signals in Grind Long Mode are adapted to allow for staggered entries based on micro-dips or consolidation breaks. The strategy does not rely on a single entry but instead monitors for continued favorable conditions after the initial entry.
@@ -47,7 +47,7 @@ The code excerpt below illustrates the conditional check for enabling the Grind 
 After the first entry, the strategy evaluates whether additional entries are justified based on stake multipliers and price thresholds. The `grind_mode_stake_multiplier_spot` or `grind_mode_stake_multiplier_futures` arrays define the fraction of the initial stake to be used for each subsequent entry, depending on the trading mode (spot or futures).
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L333-L335)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L333-L335)
 
 ## Configuration Parameters
 Several key configuration parameters control the behavior of the Grind Long Mode. These parameters are defined at the class level and can be overridden via the strategy configuration.
@@ -67,7 +67,7 @@ The maximum number of grind slots is controlled by `grind_mode_max_slots`, which
 Additional grind levels (e.g., `grind_1_stakes_spot`, `grind_2_stakes_spot`) define the stake distribution and thresholds for deeper averaging. Each grind level has its own stake size, profit threshold, and stop condition.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L333-L360)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L333-L360)
 
 ## Position Sizing and Distribution
 Position sizing in Grind Long Mode is distributed across multiple entries using predefined stake multipliers. The initial entry uses the full stake, while subsequent entries use a fraction defined by the `grind_mode_stake_multiplier_spot` or `grind_mode_stake_multiplier_futures` array.
@@ -84,7 +84,7 @@ slice_amount /= (
 This ensures that even small accounts can participate in the grind process without violating exchange minimums.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L35700-L35710)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L35700-L35710)
 
 ## Exit Strategy and Profit Targets
 The exit strategy in Grind Long Mode is segmented into partial exits at incremental profit targets. Each grind level has a corresponding profit threshold (`grind_X_profit_threshold`) that triggers a sell when reached.
@@ -96,10 +96,10 @@ The exit logic is implemented in the `custom_exit` method, which calls `long_exi
 Partial exits are also triggered by derisk conditions, where the position is reduced to lock in profits if the price retraces significantly.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L35655-L35854)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L35655-L35854)
 
 ## Integration with Grinding Mechanism
-The Grind Long Mode is deeply integrated with the core grinding mechanism of NFI-X6. The `long_grind_adjust_trade_position` function is responsible for evaluating whether to add to or reduce the position based on current market data.
+The Grind Long Mode is deeply integrated with the core grinding mechanism of NFI-X8. The `long_grind_adjust_trade_position` function is responsible for evaluating whether to add to or reduce the position based on current market data.
 
 The function retrieves the latest candle data and calculates profit metrics using filled orders. It distinguishes between different grind levels by inspecting the `ft_order_tag` of filled buy orders. Tags like "gd2", "gd3", etc., indicate which grind level the order belongs to.
 
@@ -131,10 +131,10 @@ ReturnStake --> End
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L35655-L35854)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L35655-L35854)
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L35655-L35854)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L35655-L35854)
 
 ## Derisking Mechanism
 The derisking mechanism in Grind Long Mode is designed to progressively reduce exposure as the position builds or when adverse price action occurs. Derisking is triggered when the current profit falls below a specified threshold, such as `regular_mode_derisk_spot` (-0.24 for spot) or `regular_mode_derisk_futures` (-0.60 for futures).
@@ -144,7 +144,7 @@ When derisking is activated, the strategy places sell orders to reduce the posit
 The derisk level can also be global, controlled by `grinding_v2_derisk_global_enable`, which applies a uniform derisk threshold across all grind levels. This provides an additional layer of risk management during market downturns.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L35655-L35854)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L35655-L35854)
 
 ## Practical Example on Kraken USDT Pairs
 Consider a scenario on Kraken using the BTC/USDT pair during a prolonged accumulation phase. The price is in a slow uptrend with frequent 5-10% pullbacks.
@@ -158,7 +158,7 @@ Consider a scenario on Kraken using the BTC/USDT pair during a prolonged accumul
 This approach allows the strategy to accumulate a larger position at lower average cost while systematically capturing profits.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L35655-L35854)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L35655-L35854)
 
 ## Common Pitfalls and Mitigation
 ### Over-Averaging in Downtrends
@@ -177,7 +177,7 @@ Volatility can trigger unnecessary grind entries during sideways movement.
 **Mitigation**: Combine with higher timeframe trend filters (e.g., 1h or 4h) to ensure alignment with the overall trend.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L333-L360)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L333-L360)
 
 ## Tuning Recommendations
 ### Buffer Sizing
@@ -193,7 +193,7 @@ Tune `grind_mode_stake_multiplier_spot` to reflect risk tolerance. Aggressive tr
 Adjust `grind_profit_ratio` based on trading frequency. Lower thresholds (e.g., 1.0%) increase turnover; higher thresholds (e.g., 2.5%) favor longer holds.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L333-L360)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L333-L360)
 
 ## Performance Considerations
 ### Balance Allocation
@@ -209,4 +209,4 @@ Kraken and other exchanges with limited API candle data (e.g., 710 candles) requ
 Use realistic slippage settings (`max_slippage = 0.01`) to simulate actual execution conditions, especially during volatile grind entries.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L333-L360)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L333-L360)

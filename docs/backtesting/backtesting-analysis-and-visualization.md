@@ -5,7 +5,7 @@
 - [backtesting-analysis.sh](file://tests/backtests/backtesting-analysis.sh)
 - [backtesting-analysis-plot.sh](file://tests/backtests/backtesting-analysis-plot.sh)
 - [README.md](file://README.md)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 - [test_winrate_and_drawdown_week.py](file://tests/backtests/test_winrate_and_drawdown_week.py)
 - [test_winrate_and_drawdown_quarter.py](file://tests/backtests/test_winrate_and_drawdown_quarter.py)
 - [test_winrate_and_drawdown_year.py](file://tests/backtests/test_winrate_and_drawdown_year.py)
@@ -48,7 +48,7 @@ J --> K[backtesting-analysis.sh]
 J --> L[backtesting-analysis-plot.sh]
 J --> M[test_winrate_and_drawdown_*.py]
 D --> N[download-necessary-exchange-market-data-for-backtests.sh]
-E --> O[NostalgiaForInfinityX6.py]
+E --> O[NostalgiaForInfinityX8.py]
 ```
 
 **Diagram sources**
@@ -57,15 +57,15 @@ E --> O[NostalgiaForInfinityX6.py]
 - [user_data/strategies](file://user_data/strategies)
 
 ## Core Components
-The core components of the backtesting analysis system include the main strategy file `NostalgiaForInfinityX6.py`, the analysis scripts `backtesting-analysis.sh` and `backtesting-analysis-plot.sh`, and a suite of Python test files for time-based performance validation. The strategy implements technical indicators and trading logic for cryptocurrency markets. The shell scripts automate the execution of Freqtrade commands for backtesting, analysis, and visualization. The test files validate key performance metrics across different time granularities, ensuring consistency in strategy behavior.
+The core components of the backtesting analysis system include the main strategy file `NostalgiaForInfinityX8.py`, the analysis scripts `backtesting-analysis.sh` and `backtesting-analysis-plot.sh`, and a suite of Python test files for time-based performance validation. The strategy implements technical indicators and trading logic for cryptocurrency markets. The shell scripts automate the execution of Freqtrade commands for backtesting, analysis, and visualization. The test files validate key performance metrics across different time granularities, ensuring consistency in strategy behavior.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 - [backtesting-analysis.sh](file://tests/backtests/backtesting-analysis.sh)
 - [backtesting-analysis-plot.sh](file://tests/backtests/backtesting-analysis-plot.sh)
 
 ## Backtesting Analysis Script Functionality
-The `backtesting-analysis.sh` script automates the process of running backtests and analyzing results for the NostalgiaForInfinityX6 strategy. It supports configurable parameters through environment variables such as `EXCHANGE`, `TRADING_MODE`, `STRATEGY_NAME`, `STRATEGY_VERSION`, and `TIMERANGE`. The script dynamically determines the appropriate configuration files based on these parameters and executes Freqtrade backtesting with detailed signal export. Key features include:
+The `backtesting-analysis.sh` script automates the process of running backtests and analyzing results for the NostalgiaForInfinityX8 strategy. It supports configurable parameters through environment variables such as `EXCHANGE`, `TRADING_MODE`, `STRATEGY_NAME`, `STRATEGY_VERSION`, and `TIMERANGE`. The script dynamically determines the appropriate configuration files based on these parameters and executes Freqtrade backtesting with detailed signal export. Key features include:
 
 - **Dynamic Configuration**: Uses environment variables to determine exchange, trading mode, and time range
 - **Comprehensive Signal Export**: Runs backtesting with `--export signals` and high-resolution timeframe detail (1m)

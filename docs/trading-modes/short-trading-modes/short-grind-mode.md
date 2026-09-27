@@ -2,7 +2,7 @@
 
 <cite>
 **Referenced Files in This Document**   
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 </cite>
 
 ## Table of Contents
@@ -17,10 +17,10 @@
 9. [Conclusion](#conclusion)
 
 ## Introduction
-The Short Grind Mode is a dynamic trading strategy implemented within the NostalgiaForInfinityX6 trading bot. It is designed to improve average entry prices during sustained downtrends by executing incremental short entries as the price declines. This approach allows traders to scale into positions gradually, reducing the risk of entering at a local high and improving overall profitability when the downtrend continues. The strategy is particularly effective in volatile markets where sharp price drops are common.
+The Short Grind Mode is a dynamic trading strategy implemented within the NostalgiaForInfinityX8 trading bot. It is designed to improve average entry prices during sustained downtrends by executing incremental short entries as the price declines. This approach allows traders to scale into positions gradually, reducing the risk of entering at a local high and improving overall profitability when the downtrend continues. The strategy is particularly effective in volatile markets where sharp price drops are common.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L158)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L158)
 
 ## Short Grind Mode Overview
 The Short Grind Mode is a specialized trading mode that focuses on shorting assets during downtrends. It uses a series of predefined conditions to determine when to enter and exit trades, with the goal of maximizing profits while minimizing risk. The strategy is based on the principle of averaging down, where additional positions are opened as the price moves in the desired direction. This allows the trader to lower the average entry price and increase the potential for profit.
@@ -50,10 +50,10 @@ N --> O[End]
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L158)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L158)
 
 ## Entry Logic and Trigger Conditions
-The entry logic for the Short Grind Mode is defined in the `short_grind_entry` and `short_grind_entry_v2` functions within the NostalgiaForInfinityX6.py file. These functions evaluate a series of technical indicators and market conditions to determine whether an entry signal is present.
+The entry logic for the Short Grind Mode is defined in the `short_grind_entry` and `short_grind_entry_v2` functions within the NostalgiaForInfinityX8.py file. These functions evaluate a series of technical indicators and market conditions to determine whether an entry signal is present.
 
 The primary entry conditions include:
 - RSI_14 > 64.0
@@ -76,8 +76,8 @@ The `short_grind_entry_v2` function includes additional conditions that are more
 These conditions are designed to filter out false signals and ensure that the trade is only taken when there is a high probability of a continued downtrend.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L61659-L61758)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L59329-L59428)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L61659-L61758)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L59329-L59428)
 
 ## Position Scaling and Incremental Entries
 The Short Grind Mode uses a position scaling strategy to add incremental entries as the price declines. This is achieved through the use of predefined stake multipliers and thresholds. The strategy allows for multiple grinds, each with its own stake size and entry threshold.
@@ -94,8 +94,8 @@ The entry thresholds are defined by the `grind_1_sub_thresholds_spot` and `grind
 The maximum number of grinds is controlled by the `grind_mode_max_slots` parameter. Once this limit is reached, no further entries will be made, regardless of how far the price drops.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L7732)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L58080)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L7732)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L58080)
 
 ## Configuration Parameters
 The Short Grind Mode is highly configurable, with a range of parameters that can be adjusted to suit different market conditions and trading styles. The key configuration parameters include:
@@ -111,8 +111,8 @@ The `short_grind_max_grinds` parameter is particularly important, as it determin
 The `short_grind_exit_delay` parameter is used to prevent premature exits in response to short-term price fluctuations. By introducing a delay, the strategy can avoid exiting a position during a temporary price rebound, allowing the trade to continue if the downtrend resumes.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L158)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L7732)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L158)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L7732)
 
 ## Risk Management and Derisking
 Risk management is a critical component of the Short Grind Mode. The strategy includes several mechanisms to control risk and protect against large losses. These include stop-loss orders, position sizing, and derisking triggers.
@@ -126,8 +126,8 @@ Derisking triggers are used to reduce the position size when certain conditions 
 The strategy also includes a `grinding_enable` parameter, which allows the trader to disable the grinding feature if desired. This can be useful in markets where the price is moving too quickly for the strategy to keep up.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L158)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L61659-L61758)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L158)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L61659-L61758)
 
 ## Spot vs. Futures Market Behavior
 The Short Grind Mode behaves differently in spot and futures markets due to the differences in margin efficiency and liquidation risks. In spot markets, the trader must have the full amount of capital available to open a position. This means that the position size is limited by the available capital, and there is no risk of liquidation.
@@ -139,8 +139,8 @@ The strategy accounts for these differences by using different stake multipliers
 The strategy also includes a `futures_mode_leverage` parameter, which determines the amount of leverage used in futures markets. This parameter can be adjusted to suit the trader's risk tolerance and the market conditions.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L158)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L61659-L61758)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L158)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L61659-L61758)
 
 ## Common Pitfalls and Mitigation Strategies
 One of the main pitfalls of the Short Grind Mode is the risk of "catching a falling knife" in a reversal scenario. This occurs when the price appears to be in a downtrend, but then suddenly reverses and moves sharply in the opposite direction. If the strategy has scaled into a short position, this can result in large losses.
@@ -152,8 +152,8 @@ Another common pitfall is overexposure, where the strategy opens too many positi
 Finally, the strategy includes a `hold_support_enabled` parameter, which allows the trader to pause the strategy during periods of high volatility or uncertainty. This can be useful in preventing trades during news events or other market disruptions.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L158)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L61659-L61758)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L158)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L61659-L61758)
 
 ## Conclusion
 The Short Grind Mode is a powerful trading strategy that can be used to improve average entry prices during sustained downtrends. By scaling into positions gradually, the strategy reduces the risk of entering at a local high and increases the potential for profit. The strategy is highly configurable, with a range of parameters that can be adjusted to suit different market conditions and trading styles.

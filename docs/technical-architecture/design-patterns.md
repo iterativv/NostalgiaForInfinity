@@ -2,7 +2,7 @@
 
 <cite>
 **Referenced Files in This Document**   
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 </cite>
 
 ## Table of Contents
@@ -14,11 +14,11 @@
 6. [Conclusion](#conclusion)
 
 ## Introduction
-The NostalgiaForInfinityX6 strategy is a sophisticated trading algorithm implemented within the Freqtrade framework. It leverages several key software design patterns to achieve a high degree of flexibility, maintainability, and performance. This document details the implementation of the Strategy, Configuration, and Cache patterns, which are central to its operation. These patterns enable the strategy to support multiple trading modes, allow for non-code customization via configuration files, and optimize computational performance through caching.
+The NostalgiaForInfinityX8 strategy is a sophisticated trading algorithm implemented within the Freqtrade framework. It leverages several key software design patterns to achieve a high degree of flexibility, maintainability, and performance. This document details the implementation of the Strategy, Configuration, and Cache patterns, which are central to its operation. These patterns enable the strategy to support multiple trading modes, allow for non-code customization via configuration files, and optimize computational performance through caching.
 
 ## Strategy Pattern for Trading Modes
 
-The NostalgiaForInfinityX6 strategy employs the **Strategy pattern** to support multiple, distinct trading behaviors, referred to as "modes." These modes include Normal, Pump, Quick, Rebuy, Rapid, Grind, and Scalp, each designed for different market conditions and risk profiles.
+The NostalgiaForInfinityX8 strategy employs the **Strategy pattern** to support multiple, distinct trading behaviors, referred to as "modes." These modes include Normal, Pump, Quick, Rebuy, Rapid, Grind, and Scalp, each designed for different market conditions and risk profiles.
 
 The implementation of this pattern is centered around the use of **tag-based mode identification**. The strategy defines a series of class-level lists, such as `long_normal_mode_tags`, `long_pump_mode_tags`, and `long_scalp_mode_tags`, which contain string identifiers (e.g., "1", "21", "161"). When a trade is opened, an `enter_tag` is assigned to it, which is a space-separated string of these identifiers.
 
@@ -47,7 +47,7 @@ L --> M[Exit Trade]
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1600-L2399)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1600-L2399)
 
 For example, the code snippet below shows how the strategy routes to the `long_exit_normal` method if any of the normal mode tags are found in the `enter_tag`:
 
@@ -82,7 +82,7 @@ if any(c in self.long_normal_mode_tags for c in enter_tags):
 This approach allows the strategy to encapsulate the complex exit logic for each mode within its own dedicated method (e.g., `long_exit_normal`, `long_exit_pump`), promoting code organization and maintainability. The `custom_exit` method then acts as a dispatcher, ensuring the correct behavior is executed for each trade based on its configuration.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1600-L2399)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1600-L2399)
 
 ## Configuration Pattern for Runtime Parameters
 
@@ -104,7 +104,7 @@ H --> |No| J[Use default value]
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L800-L1599)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L800-L1599)
 
 During initialization, the strategy first checks for the presence of an `nfi_parameters` dictionary in the configuration. If found, it iterates over each parameter. If the parameter name is in the `NFI_SAFE_PARAMETERS` list (or if an advanced mode is enabled), the strategy uses the value from the config, overriding the default class attribute. This is done using Python's `setattr` function.
 
@@ -126,7 +126,7 @@ if "nfi_parameters" in self.config and type(self.config["nfi_parameters"]) is di
 This pattern provides a powerful way for users to customize the strategy's behavior. For instance, a user can adjust the `futures_mode_leverage` or `stop_threshold_spot` directly from their configuration file, enabling non-code customization of critical trading logic. This separation of configuration from code enhances maintainability and allows for easy experimentation with different parameter sets.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L800-L1599)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L800-L1599)
 
 ## Cache Pattern for Indicator Optimization
 
@@ -154,7 +154,7 @@ C --> |No| K[Return cached DataFrame]
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L3200-L4799)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L3200-L4799)
 
 Furthermore, the strategy uses a dedicated `Cache` object to store profit targets. This is initialized in the `__init__` method and saved to a JSON file. This cache persists across bot restarts, allowing the strategy to remember its previous profit targets.
 
@@ -181,11 +181,11 @@ if self.target_profit_cache is None:
 By caching both the results of indicator calculations and persistent state data, the strategy significantly reduces computational overhead, leading to faster execution and more efficient backtesting.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L3200-L4799)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L3200-L4799)
 
 ## Extensibility and Integration Points
 
-The design patterns used in NostalgiaForInfinityX6 create clear integration points for users who wish to extend the system.
+The design patterns used in NostalgiaForInfinityX8 create clear integration points for users who wish to extend the system.
 
 1.  **Adding New Trading Modes:** Users can extend the strategy by defining new mode tags (e.g., `long_my_mode_tags = ["201", "202"]`) and creating corresponding `long_exit_my_mode` and `short_exit_my_mode` methods. The `custom_exit` method can then be updated to include a new `if` block that checks for these tags and calls the new exit logic. This leverages the existing Strategy pattern.
 
@@ -196,4 +196,4 @@ The design patterns used in NostalgiaForInfinityX6 create clear integration poin
 These integration points demonstrate how the patterns of Strategy, Configuration, and Caching work together to create a highly extensible and maintainable trading system.
 
 ## Conclusion
-The NostalgiaForInfinityX6 strategy effectively utilizes the Strategy, Configuration, and Cache design patterns to create a robust and flexible trading algorithm. The Strategy pattern enables dynamic behavior selection through tag-based mode switching, allowing for diverse trading tactics. The Configuration pattern provides a safe and structured way to override parameters at runtime, facilitating easy customization without code changes. Finally, the Cache pattern optimizes performance by minimizing redundant calculations and persisting state, which is crucial for efficient backtesting and live trading. Together, these patterns ensure the strategy is both powerful and maintainable.
+The NostalgiaForInfinityX8 strategy effectively utilizes the Strategy, Configuration, and Cache design patterns to create a robust and flexible trading algorithm. The Strategy pattern enables dynamic behavior selection through tag-based mode switching, allowing for diverse trading tactics. The Configuration pattern provides a safe and structured way to override parameters at runtime, facilitating easy customization without code changes. Finally, the Cache pattern optimizes performance by minimizing redundant calculations and persisting state, which is crucial for efficient backtesting and live trading. Together, these patterns ensure the strategy is both powerful and maintainable.

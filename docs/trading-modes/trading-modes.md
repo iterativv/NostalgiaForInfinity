@@ -2,7 +2,7 @@
 
 <cite>
 **Referenced Files in This Document**   
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 </cite>
 
 ## Table of Contents
@@ -21,21 +21,21 @@
 
 ## Trading Modes Overview
 
-The NostalgiaForInfinityX6 strategy implements a comprehensive multi-mode trading system designed to adapt to different market conditions and risk profiles. Each trading mode represents a distinct approach to market entry, position management, and exit strategy. The modes are implemented through a tagging system that assigns specific numerical identifiers to trades, allowing the strategy to apply mode-specific logic for entry conditions, stop-loss behavior, take-profit targets, and position adjustments.
+The NostalgiaForInfinityX8 strategy implements a comprehensive multi-mode trading system designed to adapt to different market conditions and risk profiles. Each trading mode represents a distinct approach to market entry, position management, and exit strategy. The modes are implemented through a tagging system that assigns specific numerical identifiers to trades, allowing the strategy to apply mode-specific logic for entry conditions, stop-loss behavior, take-profit targets, and position adjustments.
 
 The strategy supports both long and short positions across all modes, with separate parameter sets and logic paths for each direction. This modular design enables traders to fine-tune their approach based on market regime, volatility levels, and risk tolerance. The modes are designed to work independently or in combination, though certain modes are mutually exclusive due to conflicting position management philosophies.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L150-L225)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L150-L225)
 
 ## Mode Selection and Configuration
 
-Trading modes in NostalgiaForInfinityX6 are selected through configuration parameters that determine which entry conditions are enabled and how position adjustments are handled. The primary mechanism for mode selection is through the `entry_mode` configuration parameter, which maps to specific sets of entry condition tags.
+Trading modes in NostalgiaForInfinityX8 are selected through configuration parameters that determine which entry conditions are enabled and how position adjustments are handled. The primary mechanism for mode selection is through the `entry_mode` configuration parameter, which maps to specific sets of entry condition tags.
 
 Each mode is associated with a unique set of numerical tags that are assigned to trades when specific entry conditions are met. These tags then determine which exit functions and position adjustment functions are called during the trade lifecycle. The mode selection process occurs in the `populate_entry_trend` method, where different entry conditions are evaluated based on the configured mode.
 
 ```python
-# Mode tag definitions in NostalgiaForInfinityX6.py
+# Mode tag definitions in NostalgiaForInfinityX8.py
 long_normal_mode_tags = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"]
 long_pump_mode_tags = ["21", "22", "23", "24", "25", "26"]
 long_quick_mode_tags = ["41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53"]
@@ -48,12 +48,12 @@ long_scalp_mode_tags = ["161", "162", "163"]
 The configuration system allows for both simple mode selection and advanced parameter tuning. Traders can enable or disable specific entry conditions through the `long_entry_signal_params` and `short_entry_signal_params` dictionaries in the configuration. This provides granular control over which market signals trigger entries for each mode.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L150-L225)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1150-L1200)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L150-L225)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1150-L1200)
 
 ## Normal Mode
 
-Normal mode serves as the baseline trend-following strategy in NostalgiaForInfinityX6. It is designed for standard market conditions where price movements follow established trends with moderate volatility. This mode implements a conservative approach to entries and exits, focusing on capturing sustained price movements while minimizing false signals.
+Normal mode serves as the baseline trend-following strategy in NostalgiaForInfinityX8. It is designed for standard market conditions where price movements follow established trends with moderate volatility. This mode implements a conservative approach to entries and exits, focusing on capturing sustained price movements while minimizing false signals.
 
 The Normal mode uses entry tags 1-13 and is activated when the corresponding entry conditions are enabled in the configuration. It relies on a combination of technical indicators including moving averages, RSI, and Bollinger Bands to identify trend direction and momentum. The entry logic typically requires confirmation across multiple timeframes to reduce the risk of entering during market noise or consolidation periods.
 
@@ -62,8 +62,8 @@ For long positions, Normal mode looks for bullish trend confirmation with increa
 Normal mode is suitable for traders with moderate risk tolerance who prefer a balanced approach to position sizing and trade duration. It performs best in trending markets and may experience drawdowns during sideways or choppy market conditions.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L150-L160)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1150-L1200)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L150-L160)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1150-L1200)
 
 ## Pump Mode
 
@@ -76,8 +76,8 @@ Position sizing in Pump mode is typically smaller than in Normal mode to account
 This mode is most effective during periods of high market volatility and should be used cautiously during stable market conditions, as it may generate frequent false signals. Traders using Pump mode should have a higher risk tolerance and be prepared for potentially larger drawdowns in exchange for the possibility of higher returns during strong trending markets.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L153-L155)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1150-L1200)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L153-L155)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1150-L1200)
 
 ## Quick Mode
 
@@ -90,8 +90,8 @@ Position sizing in Quick mode is typically moderate, with stop-loss levels set v
 Quick mode is suitable for traders with a higher risk tolerance who can actively monitor their positions and are comfortable with a higher frequency of trades. It performs best in markets with consistent volatility and clear short-term trends, but may struggle during periods of low volatility or choppy price action.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L156-L158)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1150-L1200)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L156-L158)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1150-L1200)
 
 ## Rebuy Mode
 
@@ -104,9 +104,9 @@ For long positions, Rebuy mode looks for oversold conditions or support levels w
 Rebuy mode includes specific risk management features to prevent excessive exposure. The `rebuy_mode_min_free_slots` parameter limits the number of concurrent rebuy trades, while the `rebuy_mode_derisk` parameter defines the profit threshold at which the position should be exited to lock in gains. This mode is most effective in ranging or mildly trending markets where price frequently retraces before continuing in the primary direction.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L159-L161)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L2213-L2412)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L39323-L39500)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L159-L161)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L2213-L2412)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L39323-L39500)
 
 ## Rapid Mode
 
@@ -119,8 +119,8 @@ Position sizing in Rapid mode is typically small to moderate, with extremely tig
 Rapid mode is suitable for traders with a high risk tolerance and the ability to monitor markets closely. It performs best in highly liquid markets with consistent volatility, but can generate excessive transaction costs and slippage in less liquid markets. The mode includes specific parameters like `rapid_mode_stake_multiplier` to control position sizing and `stop_threshold_rapid` to manage risk exposure.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L163-L165)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1150-L1200)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L163-L165)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1150-L1200)
 
 ## Grind Mode
 
@@ -133,9 +133,9 @@ Grind mode includes sophisticated position management features through the `long
 Risk management in Grind mode is critical due to the inherent risk of trading against the trend. The strategy includes multiple stop-loss levels and profit targets to protect against breakout moves that invalidate the range hypothesis. The `grind_mode_max_slots` parameter limits the number of concurrent grind trades to prevent overexposure to range-bound assets.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L166-L170)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L2213-L2412)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L35655-L36000)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L166-L170)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L2213-L2412)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L35655-L36000)
 
 ## Scalp Mode
 
@@ -148,12 +148,12 @@ Position sizing in Scalp mode is typically small to minimize risk on each trade,
 Scalp mode includes specific parameters to manage its unique risk profile. The `min_free_slots_scalp_mode` parameter ensures sufficient capital is available for scalp opportunities, while the `stop_threshold_scalp` parameter defines the maximum allowable loss before exiting a position. This mode is most effective in highly liquid markets with tight bid-ask spreads and consistent volatility.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L171-L173)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1150-L1200)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L171-L173)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1150-L1200)
 
 ## Position Management and Mode Interaction
 
-The NostalgiaForInfinityX6 strategy implements sophisticated position management features that interact with trading modes to optimize risk and return. The `adjust_trade_position` method serves as the central hub for position adjustments, routing trades to mode-specific adjustment functions based on their entry tags.
+The NostalgiaForInfinityX8 strategy implements sophisticated position management features that interact with trading modes to optimize risk and return. The `adjust_trade_position` method serves as the central hub for position adjustments, routing trades to mode-specific adjustment functions based on their entry tags.
 
 ```python
 def adjust_trade_position(
@@ -217,12 +217,12 @@ The position management system includes several key features that interact with 
 Certain modes have exclusive interactions that prevent them from being combined. For example, Rebuy mode and Grind mode are mutually exclusive because they implement different approaches to position averaging. The strategy enforces these exclusivities through conditional logic in the `adjust_trade_position` method.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L2213-L2412)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L35655-L36000)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L2213-L2412)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L35655-L36000)
 
 ## Mode-Specific Parameters
 
-Each trading mode in NostalgiaForInfinityX6 has a dedicated set of parameters that control its behavior, risk profile, and performance characteristics. These parameters are defined as class attributes and can be overridden through the strategy configuration.
+Each trading mode in NostalgiaForInfinityX8 has a dedicated set of parameters that control its behavior, risk profile, and performance characteristics. These parameters are defined as class attributes and can be overridden through the strategy configuration.
 
 The parameter structure follows a consistent naming convention that includes the mode name, parameter type, and market type (spot or futures). For example, `grind_1_stakes_spot` defines the stake sizes for the first grind level in spot markets, while `grind_1_stakes_futures` defines the same parameter for futures markets.
 
@@ -241,12 +241,12 @@ Key parameter categories include:
 These parameters are tuned based on extensive backtesting to optimize risk-reward ratios for each mode. Traders can adjust them through the configuration system to align with their risk tolerance and market expectations. The parameters are also differentiated between spot and futures trading to account for differences in leverage, fees, and market dynamics.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L226-L500)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L35655-L36000)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L226-L500)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L35655-L36000)
 
 ## Common Issues and Best Practices
 
-Several common issues can arise when using the multi-mode trading system in NostalgiaForInfinityX6, particularly related to mode switching, parameter conflicts, and performance degradation in unsuitable market conditions.
+Several common issues can arise when using the multi-mode trading system in NostalgiaForInfinityX8, particularly related to mode switching, parameter conflicts, and performance degradation in unsuitable market conditions.
 
 **Mode switching during active trades**: One potential issue is changing the active trading mode while positions are open. This can lead to inconsistent behavior as the strategy may apply logic from the previous mode while new entries follow the new mode. Best practice is to avoid changing modes until all positions are closed, or to use separate strategy instances for different modes.
 
@@ -266,5 +266,5 @@ Several common issues can arise when using the multi-mode trading system in Nost
 Traders should align their mode selection with their risk tolerance, time horizon, and market outlook. Regular performance review and parameter optimization are essential for maintaining optimal results across changing market conditions.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L150-L225)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L2213-L2412)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L150-L225)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L2213-L2412)

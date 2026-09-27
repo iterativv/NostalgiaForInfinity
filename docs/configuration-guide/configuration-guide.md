@@ -8,7 +8,7 @@
 - [pairlist-volume-binance-usdt.json](file://configs/pairlist-volume-binance-usdt.json)
 - [blacklist-binance.json](file://configs/blacklist-binance.json)
 - [proxy-binance.json](file://configs/proxy-binance.json)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 </cite>
 
 ## Table of Contents
@@ -22,7 +22,7 @@
 
 ## Configuration Hierarchy and Override System
 
-The configuration system in NostalgiaForInfinityX6 follows a hierarchical override model, where base settings are progressively refined by more specific configuration files. The root of this hierarchy is **recommended_config.json**, which defines the default strategy and includes a list of additional configuration files via the **add_config_files** parameter.
+The configuration system in NostalgiaForInfinityX8 follows a hierarchical override model, where base settings are progressively refined by more specific configuration files. The root of this hierarchy is **recommended_config.json**, which defines the default strategy and includes a list of additional configuration files via the **add_config_files** parameter.
 
 Each file listed in **add_config_files** is loaded in sequence, with later files overriding earlier ones. This allows for layered configuration where:
 - Base parameters are defined in **recommended_config.json**
@@ -41,7 +41,7 @@ For example, the **trading_mode-futures.json** file sets **trading_mode** to "fu
 Configuration files follow the JSON format and contain specific sections that control different aspects of the trading strategy. Key structural elements include:
 
 ### Timeframe Configuration
-The **timeframe** parameter defines the candlestick interval used for analysis. In NostalgiaForInfinityX6, this is hardcoded to "5m" (5 minutes) in the strategy file, making it a critical parameter that should not be overridden in configuration files.
+The **timeframe** parameter defines the candlestick interval used for analysis. In NostalgiaForInfinityX8, this is hardcoded to "5m" (5 minutes) in the strategy file, making it a critical parameter that should not be overridden in configuration files.
 
 ### Trade Management Parameters
 - **max_open_trades**: Controls the maximum number of concurrent trades (not explicitly set in base config, allowing system defaults)
@@ -61,7 +61,7 @@ The strategy processes these parameters during initialization, validating them a
 
 **Section sources**
 - [recommended_config.json](file://configs/recommended_config.json#L0-L17)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L100-L150)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L100-L150)
 
 ## Pair List Management
 
@@ -89,7 +89,7 @@ Files prefixed with **pairlist-backtest-static-** are designed for backtesting s
 
 **Section sources**
 - [pairlist-volume-binance-usdt.json](file://configs/pairlist-volume-binance-usdt.json#L0-L40)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L80-L90)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L80-L90)
 
 ## Blacklist Configuration
 
@@ -148,8 +148,8 @@ For example, the grinding system has multiple levels (grind_1 through grind_6) w
 These parameters can be overridden individually, allowing fine-tuned control over risk management behavior.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L150-L200)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L2000-L2100)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L150-L200)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L2000-L2100)
 
 ## Best Practices and Common Pitfalls
 
@@ -176,5 +176,5 @@ These parameters can be overridden individually, allowing fine-tuned control ove
 Following these guidelines ensures a stable, predictable trading environment while leveraging the full flexibility of the hierarchical configuration system.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1000-L1100)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1000-L1100)
 - [recommended_config.json](file://configs/recommended_config.json#L0-L17)

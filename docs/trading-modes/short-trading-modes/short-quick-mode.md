@@ -2,7 +2,7 @@
 
 <cite>
 **Referenced Files in This Document**   
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py)
 </cite>
 
 ## Table of Contents
@@ -16,13 +16,13 @@
 8. [Troubleshooting Guide](#troubleshooting-guide)
 
 ## Introduction
-The Short Quick Mode is a specialized trading strategy within the NostalgiaForInfinityX6 framework designed to capture rapid bearish reversals in short timeframes. This mode is optimized for fast execution and tight profit targets, making it ideal for traders seeking to exploit brief downside momentum in volatile markets. The strategy leverages technical indicators, candlestick patterns, and order book dynamics to generate high-confidence short signals.
+The Short Quick Mode is a specialized trading strategy within the NostalgiaForInfinityX8 framework designed to capture rapid bearish reversals in short timeframes. This mode is optimized for fast execution and tight profit targets, making it ideal for traders seeking to exploit brief downside momentum in volatile markets. The strategy leverages technical indicators, candlestick patterns, and order book dynamics to generate high-confidence short signals.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L150-L166)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L150-L166)
 
 ## Short Quick Mode Overview
-Short Quick Mode is one of several shorting strategies in the NostalgiaForInfinityX6 system, specifically tailored for capturing rapid price declines. It operates on a 5-minute timeframe and is designed to enter and exit positions quickly, typically within a few candles. The mode is identified by its unique tag system, with entry tags ranging from "541" to "550".
+Short Quick Mode is one of several shorting strategies in the NostalgiaForInfinityX8 system, specifically tailored for capturing rapid price declines. It operates on a 5-minute timeframe and is designed to enter and exit positions quickly, typically within a few candles. The mode is identified by its unique tag system, with entry tags ranging from "541" to "550".
 
 This mode is particularly effective in high-volatility environments where bearish reversals occur suddenly and with significant momentum. The strategy is designed to be aggressive in its entry timing but conservative in its profit targets, aiming for quick wins rather than extended holds.
 
@@ -41,10 +41,10 @@ EarlyExit --> End
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L150-L166)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L150-L166)
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L150-L166)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L150-L166)
 
 ## Signal Generation Logic
 The signal generation for Short Quick Mode is based on a combination of technical indicators and market structure analysis. The primary entry condition (short_entry_condition_541) is currently disabled by default in the configuration, while short_entry_condition_542 is enabled.
@@ -85,8 +85,8 @@ def short_entry_quick(dataframe, previous_enter_tags):
 ```
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L645-L647)
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L1896)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L645-L647)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L1896)
 
 ## Configuration Parameters
 Several key configuration parameters control the behavior of Short Quick Mode:
@@ -115,14 +115,14 @@ class ShortQuickMode {
 +function short_entry_quick()
 +function exit_short_quick()
 }
-ShortQuickMode --> NostalgiaForInfinityX6 : "extends"
+ShortQuickMode --> NostalgiaForInfinityX8 : "extends"
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L150-L166)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L150-L166)
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L150-L166)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L150-L166)
 
 ## Entry and Exit Mechanisms
 The entry mechanism for Short Quick Mode is triggered when the configured conditions are met, typically involving a combination of technical indicators and price action signals. Once entered, the position is monitored closely with tight profit targets and time-based exit conditions.
@@ -164,13 +164,13 @@ end
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40181-L40207)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40181-L40207)
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L40181-L40207)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L40181-L40207)
 
 ## Integration with Other Short Modes
-Short Quick Mode operates alongside other shorting strategies in the NostalgiaForInfinityX6 system, including Short Normal, Short Pump, and Short Rapid modes. Each mode has its own distinct tag system and entry conditions, allowing them to operate independently while sharing the same underlying infrastructure.
+Short Quick Mode operates alongside other shorting strategies in the NostalgiaForInfinityX8 system, including Short Normal, Short Pump, and Short Rapid modes. Each mode has its own distinct tag system and entry conditions, allowing them to operate independently while sharing the same underlying infrastructure.
 
 The integration is managed through the tag system, where each trade is assigned one or more tags indicating which strategy generated the signal. This allows the exit logic to properly handle positions opened by different modes and apply the appropriate exit rules.
 
@@ -178,7 +178,7 @@ When multiple short modes generate signals simultaneously, the system can either
 
 ```mermaid
 graph LR
-A[NostalgiaForInfinityX6] --> B[Short Normal Mode]
+A[NostalgiaForInfinityX8] --> B[Short Normal Mode]
 A --> C[Short Pump Mode]
 A --> D[Short Quick Mode]
 A --> E[Short Rapid Mode]
@@ -190,10 +190,10 @@ style D fill:green,stroke:#333,stroke-width:2px
 ```
 
 **Diagram sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L150-L166)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L150-L166)
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L150-L166)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L150-L166)
 
 ## Performance Considerations
 Short Quick Mode is highly sensitive to latency and execution speed due to its focus on capturing rapid price movements. The following performance factors should be considered:
@@ -206,7 +206,7 @@ Short Quick Mode is highly sensitive to latency and execution speed due to its f
 To optimize performance, it is recommended to use this mode primarily with high-volume pairs and to ensure a low-latency connection to the exchange API.
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L150-L166)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L150-L166)
 
 ## Troubleshooting Guide
 Common issues with Short Quick Mode and their solutions:
@@ -246,4 +246,4 @@ Common issues with Short Quick Mode and their solutions:
 - Review indicator parameters and adjust if necessary
 
 **Section sources**
-- [NostalgiaForInfinityX6.py](file://NostalgiaForInfinityX6.py#L150-L166)
+- [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L150-L166)
