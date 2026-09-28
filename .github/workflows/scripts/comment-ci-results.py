@@ -37,7 +37,7 @@ def delete_previous_comments(commit, created_comment_ids, targets):
 
 
 def comment_results(options, results_data):
-  gh = github.Github(os.environ["GITHUB_TOKEN"])
+  gh = github.Github(auth=github.Auth.Token(os.environ["GITHUB_TOKEN"]), per_page=100)
   repo = gh.get_repo(options.repo)
   commit = repo.get_commit(os.environ["GITHUB_SHA"])
   print(f"Loaded Commit: {commit}", file=sys.stderr, flush=True)
@@ -146,10 +146,10 @@ def comment_results(options, results_data):
           comment_body += "No backtest output found.\n"
         comment_body += "</details>\n"
         comment_body += "\n\n"
-        time.sleep(0.1)
         comment = commit.create_comment(comment_body.rstrip())
         print(f"Created Comment: {comment}", file=sys.stderr, flush=True)
         comment_ids.add(comment.id)
+        time.sleep(0.8)
 
 
 def main():

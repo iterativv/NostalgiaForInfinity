@@ -82,7 +82,7 @@ check_x8_migration() {
     # but updater is still configured for X7
     if [[ "$configured_strategy" == "NostalgiaForInfinityX8" ]] && [[ "$strategy_file" == "NostalgiaForInfinityX7.py" ]]; then
         log "X8 is configured in .env, but config.cfg is still using X7."
-        
+
         # Telegram notification here
         if [[ -n "$telegram_bot_token" && -n "$telegram_chat_id" ]]; then
             curl -s -X POST "https://api.telegram.org/bot$telegram_bot_token/sendMessage" \

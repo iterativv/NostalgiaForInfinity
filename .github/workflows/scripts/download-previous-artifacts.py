@@ -4,9 +4,9 @@ import os
 import sys
 import requests
 import zipfile
-import io
 import pathlib
 import github
+from concurrent.futures import ThreadPoolExecutor
 from github.GithubException import GithubException
 
 
@@ -34,20 +34,18 @@ def find_workflow_by_filename(repo, workflow_filename):
 
 
 def get_run_for_commit(workflow, commit_sha):
-  for run in workflow.get_runs():
-    if run.head_sha == commit_sha:
-      return run
-  return None
-
-
-def download_and_extract_artifact(response_content, outdir, outfile):
-  with zipfile.ZipFile(io.BytesIO(response_content)) as zf:
-    zf.extractall(outdir)
-    print(f"Extracted {outfile.resolve()} to {outdir.resolve()}", file=sys.stderr, flush=True)
+  return next(iter(workflow.get_runs(head_sha=commit_sha)), None)
 
 
 def find_previous_run(repo, workflow, branch, current_run_created_at, artifact_name):
   print(f"Looking for previous runs for workflow '{workflow.name}' on branch '{branch}'", file=sys.stderr, flush=True)
+
+  comments_cache = {}
+
+  def has_commit_comments(sha):
+    if sha not in comments_cache:
+      comments_cache[sha] = repo.get_commit(sha).get_comments().totalCount > 0
+    return comments_cache[sha]
 
   for run in workflow.get_runs(branch=branch):
     if run.created_at >= current_run_created_at:
@@ -55,22 +53,56 @@ def find_previous_run(repo, workflow, branch, current_run_created_at, artifact_n
     print(f"Checking run {run.id} on {run.head_sha}", file=sys.stderr, flush=True)
 
     try:
-      commit = repo.get_commit(run.head_sha)
-      comments = commit.get_comments()
-      if comments.totalCount == 0:
+      artifact_url = get_artifact_url(run, artifact_name)
+      if not artifact_url:
+        continue
+
+      if not has_commit_comments(run.head_sha):
         print(f"Skipping run {run.id} — no commit comments on {run.head_sha}", file=sys.stderr, flush=True)
         continue
 
-      artifact_url = get_artifact_url(run, artifact_name)
-      if artifact_url:
-        print(f"Found matching run {run.id} with artifact '{artifact_name}'", file=sys.stderr, flush=True)
-        return run.head_sha, artifact_url
+      print(f"Found matching run {run.id} with artifact '{artifact_name}'", file=sys.stderr, flush=True)
+      return run.head_sha, artifact_url
     except Exception as e:
       print(f"Error checking run {run.id}: {e}", file=sys.stderr, flush=True)
       continue
 
   print("No suitable previous run found.", file=sys.stderr, flush=True)
   return None, None
+
+
+def download_one(name, url, options):
+  print(f"Downloading artifact {name} from {url}", file=sys.stderr, flush=True)
+  try:
+    outdir = options.path / name.lower()
+    outfile = outdir / f"{name}-{options.artifact}.zip"
+
+    with requests.get(
+      url, headers={"Authorization": f"Bearer {os.environ['GITHUB_TOKEN']}"}, timeout=30, stream=True
+    ) as response:
+      if response.status_code != 200:
+        print(
+          f"Failed to download artifact {name}: {response.status_code} {response.reason}", file=sys.stderr, flush=True
+        )
+        return
+
+      outdir.mkdir(exist_ok=True)
+
+      # Stream to disk instead of holding the whole zip in memory.
+      with open(outfile, "wb") as f:
+        for chunk in response.iter_content(chunk_size=1024 * 1024):
+          f.write(chunk)
+
+    try:
+      with zipfile.ZipFile(outfile) as zf:
+        zf.extractall(outdir)
+    finally:
+      # The original never kept the zip on disk; preserve that.
+      outfile.unlink(missing_ok=True)
+
+    print(f"Extracted {outfile.resolve()} to {outdir.resolve()}", file=sys.stderr, flush=True)
+  except Exception as e:
+    print(f"Error downloading artifact for {name}: {e}", file=sys.stderr, flush=True)
 
 
 def download_previous_artifacts(repo, options):
@@ -127,26 +159,13 @@ def download_previous_artifacts(repo, options):
 
   print(f"Found {len(runs)} artifacts to download", file=sys.stderr, flush=True)
 
-  # Download and extract artifacts
+  # Download and extract artifacts in parallel
   reports_info = {}
 
-  for name, (_sha, url) in runs.items():
-    print(f"Downloading artifact {name} from {url}", file=sys.stderr, flush=True)
-    try:
-      response = requests.get(url, headers={"Authorization": f"Bearer {os.environ['GITHUB_TOKEN']}"}, timeout=30)
-      if response.status_code != 200:
-        print(
-          f"Failed to download artifact {name}: {response.status_code} {response.reason}", file=sys.stderr, flush=True
-        )
-        continue
-
-      outdir = options.path / name.lower()
-      outdir.mkdir(exist_ok=True)
-      outfile = outdir / f"{name}-{options.artifact}.zip"
-      download_and_extract_artifact(response.content, outdir, outfile)
-
-    except Exception as e:
-      print(f"Error downloading artifact for {name}: {e}", file=sys.stderr, flush=True)
+  with ThreadPoolExecutor(max_workers=4) as pool:
+    futures = [pool.submit(download_one, name, url, options) for name, (_sha, url) in runs.items()]
+    for future in futures:
+      future.result()
 
   reports_info_path = options.path / "reports-info.json"
   if reports_info_path.exists():
@@ -181,7 +200,7 @@ def main():
   options = parser.parse_args()
   options.path.mkdir(parents=True, exist_ok=True)
 
-  gh = github.Github(os.environ["GITHUB_TOKEN"])
+  gh = github.Github(auth=github.Auth.Token(os.environ["GITHUB_TOKEN"]), per_page=100)
   repo = gh.get_repo(options.repo)
   print(f"Loaded Repository: {repo.full_name}", file=sys.stderr, flush=True)
 
