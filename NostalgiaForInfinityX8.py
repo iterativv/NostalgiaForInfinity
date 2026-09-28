@@ -51,16 +51,15 @@ warnings.simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 ##                                                                                                         ##
 ##               REFERRAL LINKS                                                                            ##
 ##                                                                                                         ##
-##  Gate: https://www.gate.io/share/nfinfinity (20% lifetime discount on trading fees)                     ##
+##  Kucoin: https://www.kucoin.com/r/af/QBSSS5J2 (20% lifetime discount on trading fees)                   ##
+##  Gate: https://www.gate.com/share/NFINFITY (20% lifetime discount on trading fees)                      ##
 ##  ByBit: https://partner.bybit.com/b/nfi                                                                 ##
 ##  ByBit.EU: https://partner.bybit.eu/b/NFINFINITY                                                        ##
 ##  Bitget: https://bonus.bitget.com/nfinfinity (lifetime 20% +10% extra spot rebate)                      ##
 ##  Kraken: https://proinvite.kraken.com/rrru/hn3g8qxg (lifetime 20% cashback)                             ##
-##  Kucoin: https://www.kucoin.com/r/af/QBSSS5J2 (20% lifetime discount on trading fees)                   ##
-##  OKX: https://www.okx.com/join/11749725931 (20% discount on trading fees)                               ##
 ##  MEXC: https://promote.mexc.com/b/nfinfinity (10% discount on trading fees)                             ##
-##  HTX: https://www.htx.com/invite/en-us/1f?invite_code=ubpt2223                                          ##
-##         (Welcome Bonus worth 241 USDT upon completion of a deposit and trade)                           ##
+##  OKX: https://www.okx.com/join/11749725931 (20% discount on trading fees)                               ##
+##  HTX: https://www.htx.com/invite/en-us/1f?invite_code=ubpt2223 (signup bonuses)                         ##
 ##  Bitvavo: https://bitvavo.com/invite?a=D22103A4BC (no fees for the first € 10000)                       ##
 ##  Binance: https://www.binance.com/join?ref=C68K26A9 (20% discount on trading fees)                      ##
 ##  BitMart: https://www.bitmart.com/invite/nfinfinity (20% lifetime discount on trading fees)             ##
