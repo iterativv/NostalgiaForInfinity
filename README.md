@@ -96,18 +96,18 @@ This is where we chat, hangout and contribute as a community (both links is the 
 ## Referral Links
 If you like to help, you can also use the following links to sign up to various exchanges:
 
-- [Binance: (20% discount on trading fees)](https://www.binance.com/join?ref=C68K26A9)
 - [Kucoin: (20% lifetime discount on trading fees)](https://www.kucoin.com/r/af/QBSSS5J2)
-- [Gate: (20% lifetime discount on trading fees)](https://www.gate.io/share/nfinfinity)
-- [OKX: (20% discount on trading fees)](https://www.okx.com/join/11749725931)
-- [MEXC: (10% discount on trading fees)](https://promote.mexc.com/b/nfinfinity)
+- [Gate: (20% lifetime discount on trading fees)](https://www.gate.com/share/NFINFITY)
 - [ByBit: (signup bonuses)](https://partner.bybit.com/b/nfi)
 - [ByBit.EU: (signup bonuses)](https://partner.bybit.eu/b/NFINFINITY)
 - [Bitget: (lifetime 20% rebate all plus 10% discount on spot fees)](https://bonus.bitget.com/nfinfinity)
-- [Kraken: ](https://proinvite.kraken.com/rrru/m021lz9e)
+- [Kraken: (lifetime 20% cashback)](https://proinvite.kraken.com/rrru/hn3g8qxg)
+- [MEXC: (10% discount on trading fees)](https://promote.mexc.com/b/nfinfinity)
+- [OKX: (20% discount on trading fees)](https://www.okx.com/join/11749725931)
+- [HTX: (signup bonuses)](https://www.htx.com/invite/en-us/1f?invite_code=ubpt2223)
+- [Bitvavo: (no fees for the first € 10000)](https://bitvavo.com/invite?a=D22103A4BC)
 - [BitMart: (20% lifetime discount on trading fees)](https://www.bitmart.com/invite/nfinfinity)
-- [HTX: (Welcome Bonus worth 241 USDT upon completion of a deposit and trade)](https://www.htx.com/invite/en-us/1f?invite_code=ubpt2223)
-- [ByBit: (no fees for the first € 10000)](https://bitvavo.com/invite?a=D22103A4BC)
+- [Binance: (20% discount on trading fees)](https://www.binance.com/join?ref=C68K26A9)
 
 ## Donations
 Absolutely not required. However, will be accepted as a token of appreciation.
