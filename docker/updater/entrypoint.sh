@@ -7,7 +7,7 @@ set -e
 
 echo "================================================"
 echo " NFI Updater starting"
-echo " Strategy  : ${STRATEGY:-NostalgiaForInfinityX7}"
+echo " Strategy  : ${STRATEGY:-NostalgiaForInfinityX8}"
 echo " Exchange  : ${EXCHANGE:-binance}"
 echo " Cron      : ${NFI_UPDATE_CRON:-0 10 * * *}"
 echo " Timezone  : ${TZ:-UTC}"
