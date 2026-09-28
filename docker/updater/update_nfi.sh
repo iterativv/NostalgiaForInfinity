@@ -2,7 +2,7 @@
 
 # --- Configuration (all values come from environment variables set in docker-compose.yml) ---
 
-STRATEGY="${STRATEGY:-NostalgiaForInfinityX7}"
+STRATEGY="${STRATEGY:-NostalgiaForInfinityX8}"
 EXCHANGE="${EXCHANGE:-binance}"
 
 # Project root is mounted at /data inside this container
