@@ -1,9 +1,6 @@
 name: Release Drafter
 
-on:
-  push:
-    branches:
-      - main
+on: {}
 
 permissions:
   contents: write
