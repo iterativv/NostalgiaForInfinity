@@ -338,7 +338,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-      
+
           python .github/workflows/scripts/download-previous-artifacts.py \
             --repo=${{ github.event.repository.full_name }} \
             --branch=main \
@@ -347,9 +347,9 @@ jobs:
             --tradingmode=spot \
             --artifact=kucoin-spot-testrun-artifacts \
             downloaded-results &
-      
+
           pid1=$!
-      
+
           python .github/workflows/scripts/download-previous-artifacts.py \
             --repo=${{ github.event.repository.full_name }} \
             --branch=main \
@@ -358,9 +358,9 @@ jobs:
             --tradingmode=spot \
             --artifact=binance-spot-testrun-artifacts \
             downloaded-results &
-      
+
           pid2=$!
-      
+
           python .github/workflows/scripts/download-previous-artifacts.py \
             --repo=${{ github.event.repository.full_name }} \
             --branch=main \
@@ -369,15 +369,15 @@ jobs:
             --tradingmode=futures \
             --artifact=binance-futures-testrun-artifacts \
             downloaded-results &
-      
+
           pid3=$!
-      
+
           # Wait for all three, while ensuring any failure fails the step.
           status=0
           wait "$pid1" || status=1
           wait "$pid2" || status=1
           wait "$pid3" || status=1
-      
+
           exit "$status"
 
       - name: Download Current Binance Futures CI Artifacts
