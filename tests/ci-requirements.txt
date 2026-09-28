@@ -1,2 +1,2 @@
-pygithub==2.6.1
+pygithub==2.10.0
 pre-commit
