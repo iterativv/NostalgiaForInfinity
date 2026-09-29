@@ -1,6 +1,14 @@
 {
   "exchange": {
     "pair_blacklist": [
+      // Tokenized stock split reads as a -67% crash. KIOXIA (Kioxia Holdings, TSE 285A) did
+      // a 3-for-1 split on 2026-09-29: the whole move happened inside one 5m candle at
+      // 00:20 UTC, 343.47 -> 111.81, and the book has been flat since. The candle is a
+      // corporate action, but the indicators cannot tell — three hours later ROC_288 still
+      // read -67.1% and price sat 67% under its 24h high, which is a textbook capitulation
+      // that never happened. Bitget's bot bought that phantom dip on signal 44. Listed on
+      // bitget, gate, htx and okx as KIOXIA, on mexc as KIOXIASTOCK.
+      "(KIOXIA|KIOXIASTOCK)/.*",
       // Falling knife on a thin book — -94.9% off its 2025-12-07 high of 0.25287, and
       // -31.4% on 2026-09-13 alone with a 62% intraday range. Spot-only (no perp on any
       // venue) and the book is ~$0.4M/day across bybit, gate, mexc and kucoin.
