@@ -28,7 +28,7 @@ The `exampleconfig_secret.json` file serves as a template for securely storing s
 {
   "bot_name": "freqtrade",
   "stake_currency": "USDT",
-  "fiat_display_currency": "USD",
+  "fiat_display_currency": "",
   "strategy": "NostalgiaForInfinityX8",
   "dry_run": true,
   "exchange": {

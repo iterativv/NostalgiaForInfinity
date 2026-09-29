@@ -52,7 +52,7 @@ A basic example:
 {
     "bot_name": "freqtrade",
     "stake_currency": "USDT",
-    "fiat_display_currency": "USD",
+    "fiat_display_currency": "",
 
     "dry_run": true,
 
@@ -201,7 +201,7 @@ cp configs/exampleconfig_secret.json user_data/private_config.json
 {
   "bot_name": "freqtrade", // name your bot
   "stake_currency": "USDT",
-  "fiat_display_currency": "USD",
+  "fiat_display_currency": "",
   "dry_run": true, // change after your tests
   "cancel_open_orders_on_exit": false,
   "entry_pricing": {
