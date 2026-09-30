@@ -1,6 +1,7 @@
 name: Release Drafter
 
-on: {}
+on:
+  workflow_dispatch:
 
 permissions:
   contents: write
