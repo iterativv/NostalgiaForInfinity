@@ -24307,6 +24307,28 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((top_wick_pct_4h > 0.5) | (mfi_14_1d < 60.0) | (rsi_3_1d_gt_20) | (aroonu_14_15m_gt_50))
           )
 
+          # Low coil floor with deeply oversold daily RSI
+          short_entry_logic.append((quad_s93_min_12 > 10) | rsi_3_1d_gt_10)
+          # Stalled 15m highs with 4h highs present and exhausted 4h StochRSI
+          short_entry_logic.append(aroonu_14_15m_gt_10 | (aroonu_14_4h < 15) | (stochrsi_k_4h > 5))
+          # Deep 1h ROC decline with 4h highs still present
+          short_entry_logic.append(roc_9_1h_gt_neg_10 | (aroonu_14_4h < 15))
+          # Oversold 4h RSI while daily StochRSI remains elevated
+          short_entry_logic.append((rsi_14_4h > 25) | stochrsi_k_1d_lt_50)
+          # Low coil floor during a deep daily ROC decline
+          short_entry_logic.append((quad_s93_min_12 > 10) | (roc_9_1d > -22))
+          # 15m and 1h RSI rebound over exhausted 4h StochRSI
+          short_entry_logic.append((rsi_3_15m < 45) | rsi_3_1h_lt_55 | (stochrsi_k_4h > 5))
+          # Fast RSI percentage surge with weak 4h money flow
+          short_entry_logic.append((rsi_14_change_pct < 40) | (mfi_14_4h > 30))
+          # Weak 15m Williams position during a deep daily ROC decline
+          short_entry_logic.append((willr_14_15m > -35) | roc_9_1d_gt_neg_25)
+          # Recent 5m and 4h highs with elevated 15m StochRSI after a 4h ROC decline
+          short_entry_logic.append((aroonu_14 < 60) | (stochrsi_k_15m < 85) | aroonu_14_4h_lt_60 | (roc_9_4h > -5))
+          # Recent highs across timeframes with oscillators above their low bands
+          short_entry_logic.append(
+            (aroonu_14 < 5) | (rsi_3_15m < 25) | (aroonu_14_4h < 55) | (stochrsi_k_4h < 25) | (aroonu_14_1d < 45)
+          )
           # Logic
           short_entry_logic.append(
             # 4h trend birth: ADX crossing up through 20 on the latest 4h candle
