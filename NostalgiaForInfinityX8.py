@@ -3213,6 +3213,9 @@ class NostalgiaForInfinityX8(IStrategy):
     ta_min = ta.MIN
     ta_max = ta.MAX
     ta_sma = ta.SMA
+    ta_stochf = ta.STOCHF
+    ta_mfi = ta.MFI
+    ta_willr = ta.WILLR
 
     assert dp, "DataProvider is required for multiple timeframes."
 
@@ -3243,19 +3246,19 @@ class NostalgiaForInfinityX8(IStrategy):
     # =========================================================================
     # STOCH
     # =========================================================================
-    _, stoch_k = ta.STOCHF(high_np, low_np, close_np, fastk_period=14, fastd_period=3, fastd_matype=0)
+    _, stoch_k = ta_stochf(high_np, low_np, close_np, fastk_period=14, fastd_period=3, fastd_matype=0)
     stochrsi_k = stochrsi_k_func(rsi_14, ta_min, ta_max, ta_sma)
 
     # =========================================================================
     # MONEY FLOW
     # =========================================================================
-    mfi_14 = ta.MFI(high_np, low_np, close_np, volume_np, timeperiod=14)
+    mfi_14 = ta_mfi(high_np, low_np, close_np, volume_np, timeperiod=14)
     cmf_20 = chaikin_money_flow(high_np, low_np, close_np, volume_np, timeperiod=20)
 
     # =========================================================================
     # MOMENTUM
     # =========================================================================
-    willr_14 = ta.WILLR(high_np, low_np, close_np, timeperiod=14)
+    willr_14 = ta_willr(high_np, low_np, close_np, timeperiod=14)
     roc_2 = ta_roc(close_np, timeperiod=2)
     roc_9 = ta_roc(close_np, timeperiod=9)
 
@@ -3389,6 +3392,7 @@ class NostalgiaForInfinityX8(IStrategy):
     stochrsi_k_func = self.stochrsi_k
     chaikin_money_flow = self.chaikin_money_flow
     calc_kst = self.calc_kst
+    np_shift = self.np_shift
     ta_rsi = ta.RSI
     ta_aroon = ta.AROON
     ta_sma = ta.SMA
@@ -3397,6 +3401,14 @@ class NostalgiaForInfinityX8(IStrategy):
     ta_max = ta.MAX
     ta_min = ta.MIN
     ta_bbands = ta.BBANDS
+    ta_stochf = ta.STOCHF
+    ta_mfi = ta.MFI
+    ta_willr = ta.WILLR
+    ta_ultosc = ta.ULTOSC
+    ta_cci = ta.CCI
+    ta_adx = ta.ADX
+    ta_plus_di = ta.PLUS_DI
+    ta_minus_di = ta.MINUS_DI
 
     assert dp, "DataProvider is required for multiple timeframes."
 
@@ -3429,7 +3441,7 @@ class NostalgiaForInfinityX8(IStrategy):
     # =========================================================================
     # STOCH
     # =========================================================================
-    _, stoch_k = ta.STOCHF(high_np, low_np, close_np, fastk_period=14, fastd_period=3, fastd_matype=0)
+    _, stoch_k = ta_stochf(high_np, low_np, close_np, fastk_period=14, fastd_period=3, fastd_matype=0)
     stochrsi_k = stochrsi_k_func(rsi_14, ta_min, ta_max, ta_sma)
 
     # =========================================================================
@@ -3440,7 +3452,7 @@ class NostalgiaForInfinityX8(IStrategy):
     # =========================================================================
     # MONEY FLOW
     # =========================================================================
-    mfi_14 = ta.MFI(high_np, low_np, close_np, volume_np, timeperiod=14)
+    mfi_14 = ta_mfi(high_np, low_np, close_np, volume_np, timeperiod=14)
     cmf_20 = chaikin_money_flow(high_np, low_np, close_np, volume_np, timeperiod=20)
 
     # =========================================================================
@@ -3449,16 +3461,17 @@ class NostalgiaForInfinityX8(IStrategy):
     ema_12 = ta_ema(close_np, timeperiod=12)
     sma_200 = ta_sma(close_np, timeperiod=200)
     # SMA_200 below where it was 6 candles back = the slow trend is rolling over.
-    sma_200_dec_6 = sma_200 < self.np_shift(sma_200, 6)
-    sma_200_inc_6 = sma_200 > self.np_shift(sma_200, 6)
+    sma_200_prev = np_shift(sma_200, 6)
+    sma_200_dec_6 = sma_200 < sma_200_prev
+    sma_200_inc_6 = sma_200 > sma_200_prev
     ema_50 = ta_ema(close_np, timeperiod=50)
     ema_100 = ta_ema(close_np, timeperiod=100)
     ema_200 = ta_ema(close_np, timeperiod=200)
-    willr_14 = ta.WILLR(high_np, low_np, close_np, timeperiod=14)
-    uo = ta.ULTOSC(high_np, low_np, close_np)
+    willr_14 = ta_willr(high_np, low_np, close_np, timeperiod=14)
+    uo = ta_ultosc(high_np, low_np, close_np)
     roc_2 = ta_roc(close_np, timeperiod=2)
     roc_9 = ta_roc(close_np, timeperiod=9)
-    cci_20 = ta.CCI(high_np, low_np, close_np, timeperiod=20)
+    cci_20 = ta_cci(high_np, low_np, close_np, timeperiod=20)
 
     # =========================================================================
     # CHANGE %
@@ -3491,9 +3504,9 @@ class NostalgiaForInfinityX8(IStrategy):
     low_min_24 = ta_min(low_np, timeperiod=24)
 
     # ADX/DMI — trend strength + direction (signals 7/505 experimental; NFI's first ADX use)
-    adx_14 = ta.ADX(high_np, low_np, close_np, timeperiod=14)
-    plus_di_14 = ta.PLUS_DI(high_np, low_np, close_np, timeperiod=14)
-    minus_di_14 = ta.MINUS_DI(high_np, low_np, close_np, timeperiod=14)
+    adx_14 = ta_adx(high_np, low_np, close_np, timeperiod=14)
+    plus_di_14 = ta_plus_di(high_np, low_np, close_np, timeperiod=14)
+    minus_di_14 = ta_minus_di(high_np, low_np, close_np, timeperiod=14)
 
     # =========================================================================
     # ASSIGN DATAFRAME
@@ -3599,6 +3612,7 @@ class NostalgiaForInfinityX8(IStrategy):
     stochrsi_k_func = self.stochrsi_k
     chaikin_money_flow = self.chaikin_money_flow
     calc_kst = self.calc_kst
+    np_shift = self.np_shift
     ta_rsi = ta.RSI
     ta_bbands = ta.BBANDS
     ta_aroon = ta.AROON
@@ -3608,6 +3622,10 @@ class NostalgiaForInfinityX8(IStrategy):
     ta_willr = ta.WILLR
     ta_max = ta.MAX
     ta_min = ta.MIN
+    ta_stochf = ta.STOCHF
+    ta_mfi = ta.MFI
+    ta_cci = ta.CCI
+    ta_ultosc = ta.ULTOSC
 
     assert dp, "DataProvider is required for multiple timeframes."
 
@@ -3643,7 +3661,7 @@ class NostalgiaForInfinityX8(IStrategy):
     # =========================================================================
     # STOCH
     # =========================================================================
-    _, stoch_k = ta.STOCHF(high_np, low_np, close_np, fastk_period=14, fastd_period=3, fastd_matype=0)
+    _, stoch_k = ta_stochf(high_np, low_np, close_np, fastk_period=14, fastd_period=3, fastd_matype=0)
     stochrsi_k = stochrsi_k_func(rsi_14, ta_min, ta_max, ta_sma)
 
     # =========================================================================
@@ -3654,7 +3672,7 @@ class NostalgiaForInfinityX8(IStrategy):
     # =========================================================================
     # MONEY FLOW
     # =========================================================================
-    mfi_14 = ta.MFI(high_np, low_np, close_np, volume_np, timeperiod=14)
+    mfi_14 = ta_mfi(high_np, low_np, close_np, volume_np, timeperiod=14)
     cmf_20 = chaikin_money_flow(high_np, low_np, close_np, volume_np, timeperiod=20)
 
     # =========================================================================
@@ -3665,14 +3683,15 @@ class NostalgiaForInfinityX8(IStrategy):
     sma_16 = ta_sma(close_np, timeperiod=16)
     sma_200 = ta_sma(close_np, timeperiod=200)
     # SMA_200 below where it was 12 candles back = the slow trend is rolling over.
-    sma_200_dec_12 = sma_200 < self.np_shift(sma_200, 12)
-    sma_200_inc_12 = sma_200 > self.np_shift(sma_200, 12)
+    sma_200_prev = np_shift(sma_200, 12)
+    sma_200_dec_12 = sma_200 < sma_200_prev
+    sma_200_inc_12 = sma_200 > sma_200_prev
     willr_14 = ta_willr(high_np, low_np, close_np, timeperiod=14)
     willr_84 = ta_willr(high_np, low_np, close_np, timeperiod=84)
-    uo = ta.ULTOSC(high_np, low_np, close_np)
+    uo = ta_ultosc(high_np, low_np, close_np)
     roc_2 = ta_roc(close_np, timeperiod=2)
     roc_9 = ta_roc(close_np, timeperiod=9)
-    cci_20 = ta.CCI(high_np, low_np, close_np, timeperiod=20)
+    cci_20 = ta_cci(high_np, low_np, close_np, timeperiod=20)
 
     # =========================================================================
     # CHANGE %
@@ -3798,12 +3817,20 @@ class NostalgiaForInfinityX8(IStrategy):
     fast_pct_change = self.fast_pct_change
     stochrsi_k_func = self.stochrsi_k
     chaikin_money_flow = self.chaikin_money_flow
+    obv_change_pct = self.obv_change_pct
     ta_rsi = ta.RSI
     ta_aroon = ta.AROON
     ta_ema = ta.EMA
     ta_min = ta.MIN
     ta_max = ta.MAX
     ta_sma = ta.SMA
+    ta_stochf = ta.STOCHF
+    ta_mfi = ta.MFI
+    ta_willr = ta.WILLR
+    ta_ultosc = ta.ULTOSC
+    ta_obv = ta.OBV
+    ta_roc = ta.ROC
+    ta_cci = ta.CCI
 
     assert dp, "DataProvider is required for multiple timeframes."
 
@@ -3837,13 +3864,13 @@ class NostalgiaForInfinityX8(IStrategy):
     # =========================================================================
     # STOCH
     # =========================================================================
-    _, stoch_k = ta.STOCHF(high_np, low_np, close_np, fastk_period=14, fastd_period=3, fastd_matype=0)
+    _, stoch_k = ta_stochf(high_np, low_np, close_np, fastk_period=14, fastd_period=3, fastd_matype=0)
     stochrsi_k = stochrsi_k_func(rsi_14, ta_min, ta_max, ta_sma)
 
     # =========================================================================
     # MONEY FLOW
     # =========================================================================
-    mfi_14 = ta.MFI(high_np, low_np, close_np, volume_np, timeperiod=14)
+    mfi_14 = ta_mfi(high_np, low_np, close_np, volume_np, timeperiod=14)
     cmf_20 = chaikin_money_flow(high_np, low_np, close_np, volume_np, timeperiod=20)
 
     # =========================================================================
@@ -3854,11 +3881,11 @@ class NostalgiaForInfinityX8(IStrategy):
     ema_26 = ta_ema(close_np, timeperiod=26)
     ema_50 = ta_ema(close_np, timeperiod=50)
     ema_200 = ta_ema(close_np, timeperiod=200)
-    willr_14 = ta.WILLR(high_np, low_np, close_np, timeperiod=14)
-    uo = ta.ULTOSC(high_np, low_np, close_np)
-    obv = ta.OBV(close_np, volume_np)
-    roc_9 = ta.ROC(close_np, timeperiod=9)
-    cci_20 = ta.CCI(high_np, low_np, close_np, timeperiod=20)
+    willr_14 = ta_willr(high_np, low_np, close_np, timeperiod=14)
+    uo = ta_ultosc(high_np, low_np, close_np)
+    obv = ta_obv(close_np, volume_np)
+    roc_9 = ta_roc(close_np, timeperiod=9)
+    cci_20 = ta_cci(high_np, low_np, close_np, timeperiod=20)
 
     # =========================================================================
     # CHANGE %
@@ -3866,7 +3893,7 @@ class NostalgiaForInfinityX8(IStrategy):
     rsi_3_change = fast_pct_change(rsi_3)
     rsi_14_change = fast_pct_change(rsi_14)
     uo_change = fast_pct_change(uo)
-    obv_change = self.obv_change_pct(obv)
+    obv_change = obv_change_pct(obv)
     cci_change = fast_pct_change(cci_20)
 
     # =========================================================================
@@ -3946,6 +3973,14 @@ class NostalgiaForInfinityX8(IStrategy):
 
     return informative_15m
 
+  @staticmethod
+  def run_index(key: np.ndarray) -> tuple:
+    """Start index and run id of each run of equal keys (key must be sorted)."""
+    change = np.empty(key.size, dtype=bool)
+    change[0] = True
+    change[1:] = key[1:] != key[:-1]
+    return np.flatnonzero(change), np.cumsum(change) - 1
+
   # Coin Pair Base Timeframe Indicators
   # ---------------------------------------------------------------------------------------------
   def base_tf_5m_indicators(self, metadata: dict, df: DataFrame) -> DataFrame:
@@ -3958,6 +3993,7 @@ class NostalgiaForInfinityX8(IStrategy):
     chaikin_money_flow = self.chaikin_money_flow
     calc_kst = self.calc_kst
     np_shift = self.np_shift
+    obv_change_pct = self.obv_change_pct
     ta_rsi = ta.RSI
     ta_bbands = ta.BBANDS
     ta_aroon = ta.AROON
@@ -4003,6 +4039,7 @@ class NostalgiaForInfinityX8(IStrategy):
     bbb_20 = ((bb_upper_20 - bb_lower_20) / bb_middle_20_safe) * 100.0
     bbd_40 = np.abs(bb_middle_40 - bb_lower_40)
     bbt_40 = np.abs(close_np - bb_lower_40)
+
     # =========================================================================
     # STOCH RSI
     # =========================================================================
@@ -4036,8 +4073,9 @@ class NostalgiaForInfinityX8(IStrategy):
     sma_30 = ta_sma(close_np, timeperiod=30)
     sma_200 = ta_sma(close_np, timeperiod=200)
     # SMA_200 below where it was 24 candles back = the slow trend is rolling over.
-    sma_200_dec_24 = sma_200 < np_shift(sma_200, 24)
-    sma_200_inc_24 = sma_200 > np_shift(sma_200, 24)
+    sma_200_prev = np_shift(sma_200, 24)
+    sma_200_dec_24 = sma_200 < sma_200_prev
+    sma_200_inc_24 = sma_200 > sma_200_prev
     willr_14 = ta_willr(high_np, low_np, close_np, timeperiod=14)
     willr_480 = ta_willr(high_np, low_np, close_np, timeperiod=480)
     roc_2 = ta_roc(close_np, timeperiod=2)
@@ -4048,7 +4086,7 @@ class NostalgiaForInfinityX8(IStrategy):
     # CHANGE %
     # =========================================================================
     rsi_14_change = fast_pct_change(rsi_14)
-    obv_change = self.obv_change_pct(obv)
+    obv_change = obv_change_pct(obv)
 
     # =========================================================================
     # CANDLE %
@@ -4078,11 +4116,10 @@ class NostalgiaForInfinityX8(IStrategy):
     # Leviathan volume/CVD-imitation columns
     # =========================================================================
     vol_ema_20 = ta_ema(volume_np, timeperiod=20)
-    # _vol_std_20 = pd.Series(volume_np).rolling(20).std().to_numpy()
-    # TA-Lib uses population std; adjust to match Pandas rolling std (ddof=1)
     vol_std_20 = ta_stddev(volume_np, timeperiod=20, nbdev=1.0) * np.sqrt(20.0 / 19.0)
     large_bubble_thr = vol_ema_20 + 3.0 * vol_std_20
     hl_range = high_np - low_np
+    body = np.abs(close_np - open_np)
     hl_range_safe = np.where(hl_range == 0.0, np.nan, hl_range)
     cvd_buy_vol = volume_np * (close_np - low_np) / hl_range_safe
     cvd_sell_vol = volume_np * (high_np - close_np) / hl_range_safe
@@ -4098,37 +4135,31 @@ class NostalgiaForInfinityX8(IStrategy):
     quad_high_max_12 = ta_max(high_np, timeperiod=12)
     quad_s93_min_12 = ta_min(quad_s93, timeperiod=12)
     quad_s93_max_12 = ta_max(quad_s93, timeperiod=12)
-    # quad_low_min_12 = pd.Series(low_np).rolling(12).min().to_numpy()
-    # quad_high_max_12 = pd.Series(high_np).rolling(12).max().to_numpy()
-    # quad_s93_min_12 = pd.Series(quad_s93).rolling(12).min().to_numpy()
-    # quad_s93_max_12 = pd.Series(quad_s93).rolling(12).max().to_numpy()
 
     # =========================================================================
     # 4H OPENING RANGE (UTC day) — signals 164/662 (experimental, Data Trader port)
     # =========================================================================
-    _or_day = df["date"].dt.floor("1D")
-    _or_first4h = df["date"].dt.hour < 4
-    _or_valid = df["date"].dt.hour >= 4
-    orange_h_col = (
-      df["high"].where(_or_first4h).groupby(_or_day).transform("max").where(_or_valid).to_numpy(copy=False)
-    )
-    orange_l_col = df["low"].where(_or_first4h).groupby(_or_day).transform("min").where(_or_valid).to_numpy(copy=False)
+    _HOUR_NS = 3_600_000_000_000
+    _DAY_NS = 86_400_000_000_000
+    _t_ns = df["date"].dt.tz_localize(None).to_numpy().astype("datetime64[ns]").view("int64")
+    _day_key = _t_ns // _DAY_NS
+    _hour_of_day = (_t_ns - _day_key * _DAY_NS) // _HOUR_NS
+    _or_first4h = _hour_of_day < 4
+    _day_starts, _day_id = self.run_index(_day_key)
+    _day_h = np.fmax.reduceat(np.where(_or_first4h, high_np, np.nan), _day_starts)
+    _day_l = np.fmin.reduceat(np.where(_or_first4h, low_np, np.nan), _day_starts)
+    orange_h_col = np.where(_or_first4h, np.nan, _day_h[_day_id])
+    orange_l_col = np.where(_or_first4h, np.nan, _day_l[_day_id])
 
     # =========================================================================
     # SQUEEZE MOMENTUM (LazyBear) — signals 166/664 (experimental): BB inside Keltner = coil
     # =========================================================================
     _sq_ma = ta_sma(close_np, timeperiod=20)
-    _sq_rng = ta_sma(high_np - low_np, timeperiod=20)
+    _sq_rng = ta_sma(hl_range, timeperiod=20)
     _sq_kc_u = _sq_ma + 1.5 * _sq_rng
     _sq_kc_l = _sq_ma - 1.5 * _sq_rng
     sqz_on_col = ((bb_lower_20 > _sq_kc_l) & (bb_upper_20 < _sq_kc_u)).astype(np.float64)
     sqz_cnt24_col = ta_sum(sqz_on_col, timeperiod=24)
-    # _sq_ma = pd.Series(close_np).rolling(20).mean()
-    # _sq_rng = pd.Series(high_np - low_np).rolling(20).mean()
-    # _sq_kc_u = (_sq_ma + 1.5 * _sq_rng).to_numpy()
-    # _sq_kc_l = (_sq_ma - 1.5 * _sq_rng).to_numpy()
-    # sqz_on_col = ((bb_lower_20 > _sq_kc_l) & (bb_upper_20 < _sq_kc_u)).astype(float)
-    # sqz_cnt24_col = pd.Series(sqz_on_col).rolling(24).sum().to_numpy()
 
     # =========================================================================
     # Engulfing candle pattern — signals 167/665 (experimental): opposite-color body engulf
@@ -4145,15 +4176,6 @@ class NostalgiaForInfinityX8(IStrategy):
       (_eng_pc > _eng_po) & (close_np < open_np) & (close_np <= _eng_po) & (open_np >= _eng_pc)
     ).astype(float)
 
-    # _eng_po = pd.Series(open_np).shift(1).to_numpy()
-    # _eng_pc = pd.Series(close_np).shift(1).to_numpy()
-    # engulf_bull_col = (
-    # (_eng_pc < _eng_po) & (close_np > open_np) & (close_np >= _eng_po) & (open_np <= _eng_pc)
-    # ).astype(float)
-    # engulf_bear_col = (
-    # (_eng_pc > _eng_po) & (close_np < open_np) & (close_np <= _eng_po) & (open_np >= _eng_pc)
-    # ).astype(float)
-
     # =========================================================================
     # Swing-failure pattern (SFP) — signals 168/666 (experimental): sweep & reclaim of the prior 48-candle extreme
     # =========================================================================
@@ -4161,28 +4183,20 @@ class NostalgiaForInfinityX8(IStrategy):
     _sfp_prev_high = np_shift(ta_max(high_np, timeperiod=48), 1)
     sfp_bull_col = ((low_np < _sfp_prev_low) & (close_np > _sfp_prev_low)).astype(float)
     sfp_bear_col = ((high_np > _sfp_prev_high) & (close_np < _sfp_prev_high)).astype(float)
-    # _sfp_prev_low = pd.Series(low_np).rolling(48).min().shift(1).to_numpy()
-    # _sfp_prev_high = pd.Series(high_np).rolling(48).max().shift(1).to_numpy()
-    # sfp_bull_col = ((low_np < _sfp_prev_low) & (close_np > _sfp_prev_low)).astype(float)
-    # sfp_bear_col = ((high_np > _sfp_prev_high) & (close_np < _sfp_prev_high)).astype(float)
 
     # =========================================================================
     # 1h inside-bar breakout — signals 169/667 (experimental): source insists on 1h+ candles
     # =========================================================================
-    _ib_hr = df["date"].dt.floor("1h")
-    _ib_agg = df.groupby(_ib_hr, sort=False, observed=True)[["high", "low"]].agg(["max", "min"])
-    _ib_hh = _ib_agg["high"]["max"].to_numpy()
-    _ib_ll = _ib_agg["low"]["min"].to_numpy()
-    # Inside-bar status of each hour relative to its previous hour.
+    _t_ns = df["date"].dt.tz_localize(None).to_numpy().astype("datetime64[ns]").view("int64")
+    _hr_starts, _ib_codes = self.run_index(_t_ns // _HOUR_NS)
+    _ib_hh = np.fmax.reduceat(high_np, _hr_starts)
+    _ib_ll = np.fmin.reduceat(low_np, _hr_starts)
     _ib_flag = np.zeros(len(_ib_hh), dtype=np.float64)
     _ib_flag[1:] = (_ib_hh[1:] < _ib_hh[:-1]) & (_ib_ll[1:] > _ib_ll[:-1])
-    # Mother candle for each hour.
     _ib_mh = np.full(len(_ib_hh), np.nan, dtype=np.float64)
     _ib_ml = np.full(len(_ib_hh), np.nan, dtype=np.float64)
     _ib_mh[1:] = _ib_hh[:-1]
     _ib_ml[1:] = _ib_ll[:-1]
-    # We need the PREVIOUS hour's values for the current 5m candle.
-    _ib_codes = _ib_hr.factorize(sort=False)[0]
     _ib_prev_codes = _ib_codes - 1
     _ib_valid = _ib_prev_codes >= 0
     ib_ready_col = np.zeros(len(df), dtype=np.float64)
@@ -4196,60 +4210,38 @@ class NostalgiaForInfinityX8(IStrategy):
     # Crash-bounce hunter — signal 170 (experimental): rolling 24h return for capitulation context
     # =========================================================================
     roc_288_col = ta_roc(close_np, timeperiod=288)
-    # relative volume: current candle volume vs its 24h average (confirmation qualifier, not a trigger)
     _vol_ma = ta_sma(volume_np, timeperiod=288)
-    # _vol_ma = pd.Series(volume_np).rolling(288).mean().to_numpy()
     vol_rel_col = np.divide(volume_np, _vol_ma, out=np.full_like(_vol_ma, np.nan), where=_vol_ma > 0)
 
     # =========================================================================
     # Pump hunter — signal 171 (experimental): rolling 24h return + relative volume + first-fire dedup
     # =========================================================================
-    _ph_prev_max = np_shift(ta_max(close_np, timeperiod=48), 1)
-    _ph_cross = ((close_np > _ph_prev_max) & (np_shift(close_np, 1) <= _ph_prev_max)).astype(float)
-    _ph_cross[0] = 0.0
+    _ph_prev_max = np_shift(close_max_48, 1)
+    _ph_cross = ((close_np > _ph_prev_max) & (_eng_pc <= _ph_prev_max)).astype(float)
+    _ph_h12 = np_shift(quad_high_max_12, 1)
+    _ph_l12 = np_shift(quad_low_min_12, 1)
     ph_cross_cnt12_col = ta_sum(_ph_cross, timeperiod=12)
-    # Pump character: height above the 24h low
     _ph_low288 = ta_min(low_np, timeperiod=288)
     ph_base_pos_col = (
       np.divide(close_np - _ph_low288, close_np, out=np.full_like(close_np, np.nan), where=close_np > 0) * 100.0
     )
-    # Prior 12-candle range, excluding current candle
-    _ph_h12 = np_shift(ta_max(high_np, timeperiod=12), 1)
-    _ph_l12 = np_shift(ta_min(low_np, timeperiod=12), 1)
     ph_pre_tight_col = (
       np.divide(_ph_h12 - _ph_l12, close_np, out=np.full_like(close_np, np.nan), where=close_np > 0) * 100.0
     )
 
-    # _ph_prev_max = pd.Series(close_np).rolling(48).max().shift(1).to_numpy()
-    # _ph_cross = ((close_np > _ph_prev_max) & (np.roll(close_np, 1) <= _ph_prev_max)).astype(float)
-    # _ph_cross[0] = 0.0
-    # ph_cross_cnt12_col = pd.Series(_ph_cross).rolling(12).sum().to_numpy()
-    # pump character: height above the 24h low + prior-hour activity (both PRE-ignition)
-    # _ph_low288 = pd.Series(low_np).rolling(288).min().to_numpy()
-    # ph_base_pos_col = (
-    # np.divide(close_np - _ph_low288, close_np, out=np.full_like(close_np, np.nan), where=close_np > 0) * 100.0
-    # )
-    # _ph_h12 = pd.Series(high_np).rolling(12).max().shift(1).to_numpy()
-    # _ph_l12 = pd.Series(low_np).rolling(12).min().shift(1).to_numpy()
-    # ph_pre_tight_col = (
-    # np.divide(_ph_h12 - _ph_l12, close_np, out=np.full_like(close_np, np.nan), where=close_np > 0) * 100.0
-    # )
-
     # =========================================================================
     # Marubozu — signals 172/670 (experimental): full-body candle = pure momentum ignition
     # =========================================================================
-    _mrb_rng = high_np - low_np
-    _mrb_body_ratio = np.divide(np.abs(close_np - open_np), _mrb_rng, out=np.zeros_like(_mrb_rng), where=_mrb_rng > 0)
-    _mrb_body_pct = np.divide(np.abs(close_np - open_np), close_np, out=np.zeros_like(close_np), where=close_np > 0)
+    _mrb_rng = hl_range
+    _mrb_body_ratio = np.divide(body, _mrb_rng, out=np.zeros_like(_mrb_rng), where=_mrb_rng > 0)
+    _mrb_body_pct = np.divide(body, close_np, out=np.zeros_like(close_np), where=close_np > 0)
     mrb_bull_col = ((close_np > open_np) & (_mrb_body_ratio > 0.9) & (_mrb_body_pct > 0.005)).astype(float)
     mrb_bear_col = ((close_np < open_np) & (_mrb_body_ratio > 0.9) & (_mrb_body_pct > 0.005)).astype(float)
-
     # =========================================================================
     # Dump hunter — signal 669 (experimental): mirror of the pump hunter (171)
     # =========================================================================
-    dh_prev_min_col = np_shift(ta_min(close_np, timeperiod=48), 1)
-    # Pin-bar / hammer
-    _pb_body = np.abs(close_np - open_np)
+    dh_prev_min_col = np_shift(close_min_48, 1)
+    _pb_body = body
     _pb_lower = np.minimum(open_np, close_np) - low_np
     _pb_upper = high_np - np.maximum(open_np, close_np)
     _pb_body_safe = np.where(_pb_body > 0, _pb_body, np.nan)
@@ -4260,30 +4252,11 @@ class NostalgiaForInfinityX8(IStrategy):
       (_pb_upper > 2.0 * _pb_body_safe) & (_pb_lower < 0.5 * _pb_body_safe) & (_pb_upper > close_np * 0.004)
     ).astype(float)
 
-    # dh_prev_min_col = pd.Series(close_np).rolling(48).min().shift(1).to_numpy()
-    # Pin-bar / hammer — signals 173/671 (experimental): long rejection wick = a completed fact
-    # _pb_body = np.abs(close_np - open_np)
-    # _pb_lower = np.minimum(open_np, close_np) - low_np
-    # _pb_upper = high_np - np.maximum(open_np, close_np)
-    # _pb_body_safe = np.where(_pb_body > 0, _pb_body, np.nan)
-    # hammer_col = np.nan_to_num(
-    # ((_pb_lower > 2.0 * _pb_body_safe) & (_pb_upper < 0.5 * _pb_body_safe) & (_pb_lower > close_np * 0.004)).astype(
-    #    float
-    #  )
-    # )
-    # star_col = np.nan_to_num(
-    #  ((_pb_upper > 2.0 * _pb_body_safe) & (_pb_lower < 0.5 * _pb_body_safe) & (_pb_upper > close_np * 0.004)).astype(
-    #    float
-    #  )
-    # )
-
     # =========================================================================
     # Donchian 7-day channel — signals 8/506 (experimental): turtle-style macro breakout
     # =========================================================================
     dc_high_7d_col = np_shift(ta_max(close_np, timeperiod=2016), 1)
     dc_low_7d_col = np_shift(ta_min(close_np, timeperiod=2016), 1)
-    # dc_high_7d_col = pd.Series(close_np).rolling(2016).max().shift(1).to_numpy()
-    # dc_low_7d_col = pd.Series(close_np).rolling(2016).min().shift(1).to_numpy()
 
     # =========================================================================
     # Assign dataframes
