@@ -27718,10 +27718,22 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((rsi_3_lt_40) | (rsi_3_4h_lt_40))
             # 5m up move, 15m low, 1h high
             & ((rsi_3_lt_40) | (stochrsi_k_15m_gt_20) | (stochrsi_k_1h_gt_10))
+            # 5m up move, 15m uptrend
+            & ((rsi_3_lt_46) | (aroonu_14_15m_lt_40))
             # 5m up move, 1h low, 1d oversold
             & ((rsi_3_lt_46) | (aroonu_14_1h_gt_10) | (roc_9_1d_gt_neg_30))
             # 5m up move, 4h uptrend
             & ((rsi_3_lt_46) | (aroonu_14_4h_lt_30))
+            # 5m up move, 15m low
+            & ((rsi_3_lt_50) | (aroonu_14_15m_gt_20))
+            # 5m & 15m up move
+            & ((rsi_3_lt_50) | (rsi_3_15m < 35))
+            # 5m up move, 1h down move
+            & ((rsi_3_lt_50) | (rsi_3_1h_gt_10))
+            # the base still strong, the 15m not down and the daily making new highs
+            & ((rsi_20 < 45.0) | (rsi_3_15m_gt_25) | (aroonu_14_1d_lt_30))
+            # money already leaving the base, the daily stochastic not yet on the floor and the hour topped out
+            & ((mfi_14 < 40.0) | (stochrsi_k_1d_lt_30) | (stochrsi_k_1h_lt_60))
             # 5m uptrend, 15m low
             & ((aroonu_14_lt_25) | (aroonu_14_15m_gt_10) | (stochrsi_k_15m_gt_20))
             # 5m & 15m uptrend, 4h oversold
@@ -27766,6 +27778,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((aroonu_14_lt_30) | (roc_9_1h_gt_neg_10) | (aroonu_14_4h_gt_0))
             # 5m uptrend, 15m down move, 1d low
             & ((aroonu_14_lt_30) | (rsi_3_15m_gt_10) | (aroonu_14_1d_gt_10))
+            # 5m uptrend, 15m down move, 1d oversold
+            & ((aroonu_14_lt_30) | (rsi_3_15m_gt_15) | (roc_9_1d_gt_neg_25))
             # 5m uptrend, 1d down move & low
             & ((aroonu_14_lt_30) | (rsi_3_1d_gt_5) | (aroonu_14_1d_gt_10))
             # 5m & 1h uptrend, 1h down move
@@ -27788,8 +27802,22 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((aroonu_14_lt_30) | (stochrsi_k_15m_gt_60) | (rsi_3_4h_gt_5))
             # base stochastic on the floor, its 15m oscillator collapsing and no 4h downtrend to carry the short
             & ((stochrsi_k_lt_30) | (uo_7_14_28_change_pct_15m > -15.0) | (aroond_14_4h > 50.0))
-            # the base still strong, the 15m not down and the daily making new highs
-            & ((rsi_20 < 45.0) | (rsi_3_15m_gt_25) | (aroonu_14_1d_lt_30))
+            # 5m uptrend, 4h oversold
+            & ((roc_9 < 0.5) | (roc_9_4h_gt_neg_20))
+            # the base has already fallen hard while the 15m is turning up
+            & ((roc_9 > -15.0) | (rsi_3_15m < 35.0))
+            # 15m up move & uptrend
+            & ((rsi_3_15m < 35) | (aroonu_14_15m_lt_80))
+            # 15m up move, 15m & 1h uptrend
+            & ((rsi_3_15m < 40) | (aroonu_14_15m_lt_40) | (aroonu_14_1h_lt_25))
+            # 15m up move, 1h & 4h uptrend
+            & ((rsi_3_15m < 40) | (aroonu_14_1h_lt_20) | (aroonu_14_4h_lt_30))
+            # 15m & 1d up move, 4h uptrend
+            & ((rsi_3_15m < 40) | (aroonu_14_4h_lt_30) | (rsi_3_1d_lt_35))
+            # the 15m has moved up, the hourly cci is rising and its oscillator is already high
+            & ((rsi_3_15m < 40.0) | (cci_20_change_pct_1h_lt_0) | (uo_7_14_28_15m < 55.0))
+            # the 15m flat, the daily already sold off and 4h money flow still present
+            & ((rsi_3_15m < 40.0) | (rsi_3_1d_gt_10) | (mfi_14_4h < 40.0))
             # 15m & 1d down move, 1h low
             & ((rsi_3_15m_gt_10) | (aroonu_14_1h_gt_10) | (rsi_3_1d_gt_5))
             # 15m & 1h down move, 4h low
@@ -27798,6 +27826,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((rsi_3_15m_gt_15) | (stochrsi_k_4h_gt_20) | (roc_9_1d_gt_neg_30))
             # the 15m flat, the hour making new highs and the 4h stochastic not yet topped out
             & ((rsi_3_15m_gt_20) | (aroonu_14_1h_lt_75) | (stochrsi_k_4h < 75.0))
+            # 15m down move, 1h up move
+            & ((rsi_3_15m_gt_20) | (rsi_3_1h_lt_65))
             # 15m down move, 1h low, 1d uptrend
             & ((rsi_3_15m_gt_25) | (aroonu_14_1h_gt_10) | (aroonu_14_1d_lt_50))
             # 15m down move, 1h & 1d uptrend
@@ -27806,18 +27836,28 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((rsi_3_15m_gt_25) | (rsi_3_1h_lt_40) | (roc_9_1h_gt_neg_10))
             # the 15m flat, the 4h not sold off and the daily stochastic still mid-range
             & ((rsi_3_15m_gt_25) | (rsi_3_4h_lt_40) | (stochrsi_k_1d_lt_30))
+            # 15m down move & uptrend
+            & ((rsi_3_15m_gt_3) | (aroonu_14_15m_lt_40))
             # 15m down move, 1d uptrend & oversold
             & ((rsi_3_15m_gt_30) | (aroonu_14_1d_lt_30) | (roc_9_1d_gt_neg_25))
             # 15m & 4h down move, 1h up move
             & ((rsi_3_15m_gt_30) | (rsi_3_1h_lt_40) | (rsi_3_4h_gt_10))
+            # 15m down move, 1h up move
+            & ((rsi_3_15m_gt_30) | (rsi_3_1h_lt_50))
+            # 15m & 1h down move
+            & ((rsi_3_15m_gt_30) | (rsi_3_1h_lt_75))
             # 15m & 4h down move, 1h uptrend
             & ((rsi_3_15m_gt_35) | (aroonu_14_1h_lt_40) | (rsi_3_4h_gt_15))
             # 15m down move, 1h low, 4h high
             & ((rsi_3_15m_gt_5) | (aroonu_14_1h_gt_10) | (stochrsi_k_4h_gt_10))
+            # shorting into a washed-out market: 15m money leaving, the daily stochastic on the floor and the daily itself not yet sold off
+            & ((mfi_14_15m > 30.0) | (stochk_14_3_3_1d > 30.0) | (rsi_3_1d_lt_35))
             # 15m low, 1h & 1d uptrend
             & ((aroonu_14_15m_gt_10) | (aroonu_14_1h_lt_40) | (aroonu_14_1d_lt_30))
             # no 15m high at all, the 4h making new highs and its stochastic already low
             & ((aroonu_14_15m_gt_10) | (aroonu_14_4h_lt_30) | (stochrsi_k_4h_lt_40))
+            # 15m low, 1h down move & uptrend
+            & ((aroonu_14_15m_gt_10) | (rsi_3_1h_gt_25) | (roc_9_1h < 0))
             # 15m low, 1h up move, 4h uptrend
             & ((aroonu_14_15m_gt_10) | (rsi_3_1h_lt_40) | (aroonu_14_4h_lt_20))
             # 15m low, 1h up move & uptrend
@@ -27846,6 +27886,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((aroonu_14_15m_lt_30) | (aroonu_14_1h_lt_40) | (rsi_3_1d_gt_5))
             # 15m & 4h uptrend, 4h high
             & ((aroonu_14_15m_lt_30) | (aroonu_14_4h_lt_30) | (stochrsi_k_4h_gt_10))
+            # 15m & 1h uptrend, 1h down move
+            & ((aroonu_14_15m_lt_30) | (rsi_3_1h_gt_25) | (roc_9_1h < 0))
             # 15m & 4h uptrend, 4h down move
             & ((aroonu_14_15m_lt_30) | (rsi_3_4h_gt_15) | (aroonu_14_4h_lt_30))
             # 15m & 4h uptrend, 4h down move
@@ -27858,8 +27900,14 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((aroonu_14_15m_lt_30) | (stochrsi_k_15m_gt_30) | (stochrsi_k_1h_gt_10))
             # the 15m making new highs with both stochastics topped out
             & ((aroonu_14_15m_lt_30) | (stochrsi_k_15m_lt_70) | (stochrsi_k_4h_lt_80))
+            # 15m uptrend, 1h high, 4h down move
+            & ((aroonu_14_15m_lt_30) | (stochrsi_k_1h_gt_10) | (rsi_3_4h_gt_10))
+            # 15m & 1h uptrend, 1h still high
+            & ((aroonu_14_15m_lt_40) | (aroonu_14_1h_lt_25) | (stochrsi_k_1h_gt_30))
             # 15m & 1h uptrend, 1d low
             & ((aroonu_14_15m_lt_40) | (aroonu_14_1h_lt_40) | (aroonu_14_1d_gt_10))
+            # 15m uptrend, 1h down move
+            & ((aroonu_14_15m_lt_40) | (rsi_3_1h_gt_20))
             # 15m uptrend, 4h down move, 1d high
             & ((aroonu_14_15m_lt_40) | (rsi_3_4h_gt_15) | (stochrsi_k_1d_gt_10))
             # 15m & 4h uptrend, 15m low
@@ -27868,6 +27916,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((aroonu_14_15m_lt_40) | (stochrsi_k_15m_gt_20) | (stochrsi_k_4h_gt_30))
             # 15m uptrend & still high, 4h high
             & ((aroonu_14_15m_lt_40) | (stochrsi_k_15m_gt_40) | (stochrsi_k_4h_gt_10))
+            # 15m uptrend, 1h high
+            & ((aroonu_14_15m_lt_40) | (stochrsi_k_1h_gt_10))
             # 15m & 1h uptrend, 4h low
             & ((aroonu_14_15m_lt_50) | (aroonu_14_1h_lt_30) | (aroonu_14_4h_gt_0))
             # 15m uptrend & still not low enough, 4h down move
@@ -27890,8 +27940,20 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((aroonu_14_15m_lt_70) | (aroonu_14_1h_lt_20) | (stochrsi_k_4h_gt_20))
             # 15m uptrend & still high
             & ((aroonu_14_15m_lt_70) | (stochrsi_k_15m_gt_30))
+            # 15m uptrend, 1h down move
+            & ((aroonu_14_15m_lt_75) | (rsi_3_1h_gt_25))
+            # 15m uptrend, 4h down move
+            & ((aroonu_14_15m_lt_75) | (rsi_3_4h_gt_5))
+            # 15m uptrend, 1d up move
+            & ((aroonu_14_15m_lt_80) | (rsi_3_1d_lt_35))
+            # 15m uptrend, 1h still high
+            & ((aroonu_14_15m_lt_80) | (stochrsi_k_1h_gt_40))
+            # 15m uptrend, 4h down move
+            & ((aroonu_14_15m_lt_90) | (rsi_3_4h_gt_15))
             # 15m uptrend, 4h high
             & ((aroonu_14_15m_lt_90) | (stochrsi_k_4h_gt_10))
+            # no 15m downtrend, the daily money flow at the floor and the daily itself at its low
+            & ((aroond_14_15m > 30.0) | (mfi_14_1d > 25.0) | (willr_14_1d > -95.0))
             # 15m downtrend already maxed out and its oscillator still high
             & ((aroond_14_15m_lt_80) | (uo_7_14_28_15m < 55.0))
             # 15m high, 1d uptrend
@@ -27958,6 +28020,14 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((stochrsi_k_15m_lt_80) | (aroonu_14_4h_lt_20) | (stochrsi_k_1d_lt_40))
             # both stochastics topped out while 4h money flow is already gone
             & ((stochrsi_k_15m_lt_80) | (stochrsi_k_4h_lt_80) | (mfi_14_4h < 40.0))
+            # 15m in the upper half of its range while the 4h stochastic is topped out
+            & ((willr_14_15m < -50.0) | (stochrsi_k_4h_lt_70))
+            # 15m already running up, the daily deeply down and the 4h making no new high
+            & ((roc_9_15m < 1.5) | (roc_9_1d_gt_neg_15) | (aroonu_14_4h < 10.0))
+            # 15m uptrend, 1d oversold
+            & ((roc_9_15m < 1.5) | (roc_9_1d_gt_neg_25))
+            # 15m turned up, the 4h making new highs and its money flow still there
+            & ((roc_9_15m > -3.0) | (aroonu_14_4h_lt_30) | (mfi_14_4h < 50.0))
             # the hour flat, the daily running up and no 4h trend behind the short
             & ((rsi_3_1h_gt_10) | (roc_9_1d_lt_10) | (adx_14_4h > 20.0))
             # the hour has not moved down, its stochastic already on the floor and the base making no new high
@@ -27982,6 +28052,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((rsi_3_1h_lt_40) | (aroonu_14_4h_lt_30) | (aroonu_14_1d_lt_40))
             # the hour already sold off, the daily out of money flow and the hourly cci jumping
             & ((rsi_3_1h_lt_40) | (mfi_14_1d > 20.0) | (cci_20_change_pct_1h < 20.0))
+            # 1h up move, 1d overbought
+            & ((rsi_3_1h_lt_40) | (roc_9_1d_gt_neg_70))
             # 1h up move, 1d down move & uptrend
             & ((rsi_3_1h_lt_40) | (rsi_3_1d_gt_15) | (aroonu_14_1d_lt_30))
             # 1h up move, 4h down move, 1d low
@@ -28010,6 +28082,10 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((rsi_3_1h_lt_60) | (rsi_3_4h_lt_40) | (stochrsi_k_4h_gt_30))
             # 1h up move & uptrend
             & ((rsi_3_1h_lt_70) | (aroonu_14_1h_lt_20))
+            # hourly money flow still strong, the 4h flow not yet negative and the hour making no new high: the move is already over
+            & ((mfi_14_1h < 40.0) | (cmf_20_4h < -0.1) | (aroonu_14_1h > 5.0))
+            # hourly money flow holding, its stochastics off the floor and the other one topped out
+            & ((mfi_14_1h < 45.0) | (stochk_14_3_3_1h > 15.0) | (stochrsi_k_1h_lt_30))
             # 1h & 1d low, 4h up move
             & ((aroonu_14_1h_gt_10) | (rsi_3_4h_lt_40) | (aroonu_14_1d_gt_10))
             # 1h low, 4h up move, 1d uptrend
@@ -28022,6 +28098,10 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((aroonu_14_1h_lt_20) | (aroonu_14_4h_gt_0) | (roc_9_1d_lt_0))
             # 1h & 4h & 1d uptrend
             & ((aroonu_14_1h_lt_20) | (aroonu_14_4h_lt_30) | (aroonu_14_1d_lt_30))
+            # 1h & 4h uptrend, 1d down move
+            & ((aroonu_14_1h_lt_20) | (aroonu_14_4h_lt_30) | (rsi_3_1d_gt_10))
+            # 1h & 1d uptrend
+            & ((aroonu_14_1h_lt_30) | (aroonu_14_1d_lt_40))
             # 1h uptrend, 4h oversold
             & ((aroonu_14_1h_lt_30) | (roc_9_4h_gt_neg_20))
             # 1h & 1d uptrend, 1h high
@@ -28054,8 +28134,10 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((aroonu_14_1h_lt_60) | (stochrsi_k_1h_gt_60) | (aroonu_14_4h_lt_30))
             # 1h uptrend, 1d low
             & ((aroonu_14_1h_lt_70) | (aroonu_14_1d_gt_20))
-            # hourly money flow holding, its stochastics off the floor and the other one topped out
-            & ((mfi_14_1h < 45.0) | (stochk_14_3_3_1h > 15.0) | (stochrsi_k_1h_lt_30))
+            # no 1h downtrend, the 4h flat and money still coming in on the hour
+            & ((aroond_14_1h > 65.0) | (rsi_3_4h_gt_5) | (cmf_20_1h < -0.1))
+            # the hourly stochastic pinned at zero, 4h money flow gone and the daily range twice its usual width
+            & ((stochrsi_k_1h > 5.0) | (mfi_14_4h > 30.0) | (range_pct_14_1d < 25.0))
             # the hour on the floor, the daily collapsed and the hourly oscillator low too
             & ((stochrsi_k_1h_gt_10) | (roc_9_1d_gt_neg_25) | (uo_7_14_28_1h < 50.0))
             # 1h & 4h low, 4h down move
@@ -28064,10 +28146,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((stochrsi_k_1h_gt_20) | (rsi_3_4h_lt_40))
             # 1h still high, 4h up move
             & ((stochrsi_k_1h_gt_40) | (rsi_3_4h_lt_50))
-            # the 15m has moved up, the hourly cci is rising and its oscillator is already high
-            & ((rsi_3_15m < 40.0) | (cci_20_change_pct_1h_lt_0) | (uo_7_14_28_15m < 55.0))
-            # no 1h downtrend, the 4h flat and money still coming in on the hour
-            & ((aroond_14_1h > 65.0) | (rsi_3_4h_gt_5) | (cmf_20_1h < -0.1))
+            # 1h uptrend, 4h & 1d down move
+            & ((roc_9_1h < -1) | (rsi_3_4h_gt_15) | (rsi_3_1d_gt_10))
             # the 4h has not moved down, the day closed strongly up and no 4h trend behind the short
             & ((rsi_3_4h_gt_15) | (change_pct_1d < 5.0) | (adx_14_4h > 35.0))
             # 4h down move & low, 1d uptrend
@@ -28078,10 +28158,16 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((rsi_3_4h_gt_5) | (aroonu_14_4h_lt_30) | (aroonu_14_1d_lt_50))
             # 4h up move, 1d uptrend
             & ((rsi_3_4h_lt_40) | (aroonu_14_1d_lt_40))
+            # 4h up move, 1d overbought
+            & ((rsi_3_4h_lt_40) | (roc_9_1d_gt_neg_70))
             # 4h up move, 1d low
             & ((rsi_3_4h_lt_50) | (aroonu_14_1d_gt_10))
             # 4h up move, 1d still high
             & ((rsi_3_4h_lt_70) | (stochrsi_k_1d_gt_40))
+            # 4h money flow holding, the daily out of it and the 4h not yet washed out
+            & ((mfi_14_4h < 40.0) | (mfi_14_1d > 20.0) | (cci_20_4h > -225.0))
+            # 4h money flow holding up while its rsi has collapsed
+            & ((mfi_14_4h < 40.0) | (rsi_14_change_pct_4h > -15.0))
             # 4h low & oversold, 1d down move
             & ((aroonu_14_4h_gt_0) | (roc_9_4h_gt_neg_25) | (rsi_3_1d_gt_5))
             # 4h low & oversold, 1d down move
@@ -28094,50 +28180,30 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((aroonu_14_4h_lt_30) | (aroonu_14_1d_lt_40) | (stochrsi_k_1d_gt_10))
             # 4h & 1d uptrend, 1d low
             & ((aroonu_14_4h_lt_40) | (aroonu_14_1d_lt_40) | (stochrsi_k_1d_gt_20))
-            # 15m turned up, the 4h making new highs and its money flow still there
-            & ((roc_9_15m > -3.0) | (aroonu_14_4h_lt_30) | (mfi_14_4h < 50.0))
+            # 4h uptrend, 1d down move
+            & ((aroonu_14_4h_lt_40) | (rsi_3_1d_gt_10))
             # 4h high, 1d uptrend
             & ((stochrsi_k_4h_gt_10) | (aroonu_14_1d_lt_70))
             # the 4h stochastic high, the daily aroon-up floored and daily money still coming in
             & ((stochrsi_k_4h_lt_50) | (aroonu_14_1d_gt_10) | (cmf_20_1d < 0.1))
-            # the 15m oscillator collapsing while both 4h stochastics are already at their floor
-            & ((uo_7_14_28_change_pct_15m > -15.0) | (stochrsi_k_4h_lt_30) | (stochk_14_3_3_4h < 40.0))
-            # 15m in the upper half of its range while the 4h stochastic is topped out
-            & ((willr_14_15m < -50.0) | (stochrsi_k_4h_lt_70))
-            # the 15m cci collapsing, the daily already sold off and 4h money flow still present
-            & ((cci_20_change_pct_15m > -195.0) | (rsi_3_1d_gt_10) | (mfi_14_4h < 25.0))
-            # shorting into a washed-out market: 15m money leaving, the daily stochastic on the floor and the daily itself not yet sold off
-            & ((mfi_14_15m > 30.0) | (stochk_14_3_3_1d > 30.0) | (rsi_3_1d_lt_35))
-            # the 15m flat, the daily already sold off and 4h money flow still present
-            & ((rsi_3_15m < 40.0) | (rsi_3_1d_gt_10) | (mfi_14_4h < 40.0))
-            # money already leaving the base, the daily stochastic not yet on the floor and the hour topped out
-            & ((mfi_14 < 40.0) | (stochrsi_k_1d_lt_30) | (stochrsi_k_1h_lt_60))
-            # 15m already running up, the daily deeply down and the 4h making no new high
-            & ((roc_9_15m < 1.5) | (roc_9_1d_gt_neg_15) | (aroonu_14_4h < 10.0))
-            # no 15m downtrend, the daily money flow at the floor and the daily itself at its low
-            & ((aroond_14_15m > 30.0) | (mfi_14_1d > 25.0) | (willr_14_1d > -95.0))
-            # the daily fully exhausted on both aroon and stochastic while its money flow has not turned
-            & ((aroonu_14_1d > 5.0) | (stochrsi_k_1d > 5.0) | (cmf_20_1d < -0.05))
             # money still flowing in on the hour while the 4h trend is already strong
             & ((cmf_20_1h_lt_0_10) | (adx_14_4h < 40.0))
-            # hourly money flow still strong, the 4h flow not yet negative and the hour making no new high: the move is already over
-            & ((mfi_14_1h < 40.0) | (cmf_20_4h < -0.1) | (aroonu_14_1h > 5.0))
-            # 4h money flow holding, the daily out of it and the 4h not yet washed out
-            & ((mfi_14_4h < 40.0) | (mfi_14_1d > 20.0) | (cci_20_4h > -225.0))
-            # 4h money flow holding up while its rsi has collapsed
-            & ((mfi_14_4h < 40.0) | (rsi_14_change_pct_4h > -15.0))
-            # the 12-candle ceiling already maxed, the 15m washed out and 4h money flow still present
-            & ((quad_s93_max_12 < 95.0) | (rsi_14_15m > 30.0) | (mfi_14_4h < 40.0))
-            # the base has already fallen hard while the 15m is turning up
-            & ((roc_9 > -15.0) | (rsi_3_15m < 35.0))
+            # 1d down move & uptrend
+            & ((rsi_3_1d_gt_25) | (roc_9_1d_lt_20))
             # the daily oversold on both rsi and money flow while its aroon-up is still up there
             & ((rsi_14_1d > 30.0) | (mfi_14_1d > 30.0) | (aroonu_14_1d < 25.0))
-            # the 15m rsi_3 has jumped, no 4h trend behind it and 4h money flow still there
-            & ((rsi_3_change_pct_15m < 70.0) | (adx_14_4h > 20.0) | (mfi_14_4h < 55.0))
+            # the daily fully exhausted on both aroon and stochastic while its money flow has not turned
+            & ((aroonu_14_1d > 5.0) | (stochrsi_k_1d > 5.0) | (cmf_20_1d < -0.05))
+            # the 12-candle ceiling already maxed, the 15m washed out and 4h money flow still present
+            & ((quad_s93_max_12 < 95.0) | (rsi_14_15m > 30.0) | (mfi_14_4h < 40.0))
             # a long squeeze behind it, the 4h oscillator high and no daily downtrend
             & ((sqz_cnt_24 < 20.0) | (uo_7_14_28_4h < 55.0) | (aroond_14_1d > 55.0))
-            # the hourly stochastic pinned at zero, 4h money flow gone and the daily range twice its usual width
-            & ((stochrsi_k_1h > 5.0) | (mfi_14_4h > 30.0) | (range_pct_14_1d < 25.0))
+            # the 15m cci collapsing, the daily already sold off and 4h money flow still present
+            & ((cci_20_change_pct_15m > -195.0) | (rsi_3_1d_gt_10) | (mfi_14_4h < 25.0))
+            # the 15m rsi_3 has jumped, no 4h trend behind it and 4h money flow still there
+            & ((rsi_3_change_pct_15m < 70.0) | (adx_14_4h > 20.0) | (mfi_14_4h < 55.0))
+            # the 15m oscillator collapsing while both 4h stochastics are already at their floor
+            & ((uo_7_14_28_change_pct_15m > -15.0) | (stochrsi_k_4h_lt_30) | (stochk_14_3_3_4h < 40.0))
           )
 
           # Logic
