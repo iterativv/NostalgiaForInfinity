@@ -25989,19 +25989,43 @@ class NostalgiaForInfinityX8(IStrategy):
           # Protections
           short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           short_entry_logic.append(protections_short_global == True)
-
           short_entry_logic.append(
+            # 15m up move, 4h uptrend, 1d down move
+            ((rsi_3_15m_lt_95) | (roc_9_4h_lt_5) | (rsi_3_1d_gt_30))
+            # 15m & 4h up move, 4h uptrend
+            & ((rsi_3_15m_lt_95) | (rsi_3_4h_lt_80) | (aroonu_14_4h_lt_20))
             # 15m up move & still not low enough, 4h uptrend
-            ((rsi_3_15m_lt_95) | (stochrsi_k_15m_gt_90) | (aroonu_14_4h_lt_20))
+            & ((rsi_3_15m_lt_95) | (stochrsi_k_15m_gt_90) | (aroonu_14_4h_lt_20))
+            # 15m up move, 1d uptrend & still high
+            & ((rsi_3_15m_lt_97) | (aroonu_14_1d_lt_60) | (stochrsi_k_1d_gt_40))
             # 15m up move, 4h uptrend & still not high enough
             & ((rsi_3_15m_lt_97) | (aroonu_14_4h_lt_60) | (stochrsi_k_4h_gt_70))
+            # 15m up move, 1h up move
+            & ((rsi_3_15m_lt_97) | (rsi_3_1h > 90.0))
             # 15m still high, 1h still not low enough, 4h down move
             & ((stochrsi_k_15m_gt_60) | (stochrsi_k_1h_gt_80) | (rsi_3_4h_lt_75))
+            # 15m still not low enough, 4h down move & uptrend
+            & ((stochrsi_k_15m_gt_70) | (rsi_3_4h_gt_50) | (aroonu_14_4h_lt_60))
             # 15m still not high enough, 4h up move & low
             & ((stochrsi_k_15m_gt_70) | (rsi_3_4h_lt_80) | (aroonu_14_4h_gt_20))
+            # 1h & 4h & 1d down move
+            & ((rsi_3_1h_lt_85) | (rsi_3_4h_gt_40) | (rsi_3_1d_gt_20))
             # 1h down move, 4h up move & low
             & ((rsi_3_1h_lt_85) | (rsi_3_4h_lt_70) | (stochrsi_k_4h_gt_20))
+            # 1h & 4h up move, 1d high
+            & ((rsi_3_1h_lt_95) | (rsi_3_4h_lt_80) | (stochrsi_k_1d_gt_10))
+            # 4h up move & still high, 1d high
+            & ((rsi_3_4h_lt_60) | (stochrsi_k_4h_gt_40) | (stochrsi_k_1d_gt_10))
+            # 4h up move & still high, 1d down move
+            & ((rsi_3_4h_lt_70) | (stochrsi_k_4h_gt_60) | (rsi_3_1d_gt_20))
+            # 4h & 1d uptrend, 4h oversold
+            & ((aroonu_14_4h_lt_20) | (roc_9_4h_gt_neg_10) | (roc_9_1d_lt_30))
+            # 4h & 1d uptrend, 1d down move
+            & ((aroonu_14_4h_lt_20) | (rsi_3_1d_gt_30) | (roc_9_1d_lt_0))
+            # 4h still not low enough, 1d low & uptrend
+            & ((stochrsi_k_4h_gt_80) | (aroonu_14_1d_gt_50) | (roc_9_1d_lt_20))
           )
+
           # Logic
           short_entry_logic.append(
             # room to fall — a wide band on both timeframes
