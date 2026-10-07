@@ -39492,6 +39492,9 @@ class NostalgiaForInfinityX8(IStrategy):
     trade_fee_open = trade.fee_open
     trade_fee_close = trade.fee_close
 
+    # Reset so the log "Tag:" never shows a value left over from another pair's previous call
+    self._grind_entry_tag = ""
+
     is_backtest = self.is_backtest_mode()
     # we already waiting for an order to get filled
     if trade.has_open_orders:
@@ -39501,8 +39504,15 @@ class NostalgiaForInfinityX8(IStrategy):
     df, _ = dp.get_analyzed_dataframe(trade_pair, self.timeframe)
     if len(df) < 2:
       return None
-    last_candle = df.iloc[-1]
-    previous_candle = df.iloc[-2]
+    last_candle = None
+    previous_candle = None
+
+    def load_candles():
+      # Only the (expensive on wide frames) row extraction is deferred; the frame is already fetched.
+      nonlocal last_candle, previous_candle
+      if last_candle is None:
+        last_candle = df.iloc[-1]
+        previous_candle = df.iloc[-2]
 
     exit_rate = current_rate
     filled_orders, filled_entries, filled_exits, profit_values = self.profit_or_order_snapshot(
@@ -40018,22 +40028,92 @@ class NostalgiaForInfinityX8(IStrategy):
       # )
     )
     # is_long_extra_checks_entry = True
-    is_long_grind_entry = self.long_grind_entry_v4(
-      last_candle,
-      previous_candle,
-      num_open_grinds_and_buybacks,
-      slice_profit,
-      slice_profit_entry,
-      slice_profit_exit,
-      True,
-    )
-    # past the near end of the de-risk range, no grind add while the 4h is at capitulation
-    if profit_stake < slice_amount * (
-      self.system_v4_derisk_level_1_futures[0] if is_futures_mode else self.system_v4_derisk_level_1_spot[0]
-    ) / trade_leverage and self._bad_trade_controller_capitulation(last_candle, False):
-      is_long_grind_entry = False
-    is_long_buyback_entry = self.long_buyback_entry_v4(last_candle, previous_candle, slice_profit, True)
-    is_long_rebuy_entry = self.long_rebuy_entry_v4(last_candle, previous_candle, slice_profit, True)
+    is_long_grind_entry = None
+    is_long_buyback_entry = None
+    is_derisk_hold = None
+
+    def long_grind_entry_signal():
+      nonlocal is_long_grind_entry
+      if is_long_grind_entry is None:
+        load_candles()
+        is_long_grind_entry = self.long_grind_entry_v4(
+          last_candle,
+          previous_candle,
+          num_open_grinds_and_buybacks,
+          slice_profit,
+          slice_profit_entry,
+          slice_profit_exit,
+          True,
+        )
+        # past the near end of the de-risk range, no grind add while the 4h is at capitulation
+        if profit_stake < slice_amount * (
+          self.system_v4_derisk_level_1_futures[0] if is_futures_mode else self.system_v4_derisk_level_1_spot[0]
+        ) / trade_leverage and self._bad_trade_controller_capitulation(last_candle, False):
+          is_long_grind_entry = False
+      return is_long_grind_entry
+
+    def long_grind_4_fallback_entry():
+      if slice_profit_entry >= -0.06:
+        return False
+      load_candles()
+      if (
+        (last_candle["RSI_3"] > 5.0)
+        and (last_candle["RSI_3_15m"] > 10.0)
+        and (last_candle["RSI_14"] < 35.0)
+        and (last_candle["close"] < (last_candle["EMA_20"] * 0.985))
+      ):
+        self._grind_entry_tag = "g4_fb1"
+        return True
+      if (
+        (num_open_grinds_and_buybacks == 0)
+        and (last_candle["RSI_14"] < 30.0)
+        and (last_candle["close"] < (last_candle["EMA_20"] * 0.980))
+      ):
+        self._grind_entry_tag = "g4_fb2"
+        return True
+      return False
+
+    def long_grind_5_fallback_entry():
+      if not (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found) or slice_profit_entry >= -0.06:
+        return False
+      load_candles()
+      if (
+        (last_candle["RSI_3"] > 10.0)
+        and (last_candle["RSI_3_15m"] > 20.0)
+        and (last_candle["AROONU_14"] < 50.0)
+      ):
+        self._grind_entry_tag = "g5_fb1"
+        return True
+      return False
+
+    def long_grind_5_liquidation_entry():
+      if not (
+        is_futures_mode
+        and (slice_profit_entry < -0.15)
+        and (trade.liquidation_price is not None)
+      ):
+        return False
+      if (trade.is_short and current_rate > trade.liquidation_price * 0.80) or (
+        not trade.is_short and current_rate < trade.liquidation_price * 1.20
+      ):
+        self._grind_entry_tag = "g5_liq1"
+        return True
+      return False
+
+    def long_buyback_entry_signal():
+      nonlocal is_long_buyback_entry
+      if is_long_buyback_entry is None:
+        load_candles()
+        is_long_buyback_entry = self.long_buyback_entry_v4(last_candle, previous_candle, slice_profit, True)
+      return is_long_buyback_entry
+
+    def derisk_hold():
+      nonlocal is_derisk_hold
+      if is_derisk_hold is None:
+        load_candles()
+        is_derisk_hold = self._bad_trade_controller_derisk_hold(last_candle, False)
+      return is_derisk_hold
+
     stake_fmt = ".8f" if stake_currency in ("BTC", "ETH", "BNB", "SOL") else ".3f"
     send_notifications = not is_backtest
     # =========================================================================
@@ -40068,8 +40148,8 @@ class NostalgiaForInfinityX8(IStrategy):
       and derisk_1_enable
       and not (is_derisk_1_found)
       and not is_rebuy_mode
-      and not self._bad_trade_controller_derisk_hold(last_candle, False)
       and profit_stake < slice_amount * derisk_1_threshold / trade_leverage
+      and not derisk_hold()
     ):
       sell_amount = filled_entries[0].safe_filled * derisk_1_stake * exit_rate / trade_leverage
       if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
@@ -40102,8 +40182,8 @@ class NostalgiaForInfinityX8(IStrategy):
       and derisk_2_enable
       and not is_derisk_2_found
       and not is_rebuy_mode
-      and not self._bad_trade_controller_derisk_hold(last_candle, False)
       and profit_stake < slice_amount * derisk_2_threshold / trade_leverage
+      and not derisk_hold()
     ):
       sell_amount = filled_entries[0].safe_filled * derisk_2_stake * exit_rate / trade_leverage
       if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
@@ -40136,8 +40216,8 @@ class NostalgiaForInfinityX8(IStrategy):
       and derisk_3_enable
       and not is_derisk_3_found
       and not is_rebuy_mode
-      and not self._bad_trade_controller_derisk_hold(last_candle, False)
       and profit_stake < slice_amount * derisk_3_threshold / trade_leverage
+      and not derisk_hold()
     ):
       sell_amount = filled_entries[0].safe_filled * derisk_3_stake * exit_rate / trade_leverage
       if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
@@ -40201,11 +40281,11 @@ class NostalgiaForInfinityX8(IStrategy):
     if (
       (self.system_v4_grind_1_enable)
       # and is_derisk_1_found
-      and is_long_grind_entry
       and is_long_extra_checks_entry
       and (grind_1_sub_grind_count < grind_1_max_sub_grinds)
       and (grind_1_sub_grind_count == 0 or (grind_1_distance_ratio < grind_1_sub_thresholds[grind_1_sub_grind_count]))
       and is_not_trade_max_stake_v4
+      and long_grind_entry_signal()
     ):
       buy_amount = slice_amount * grind_1_stakes[grind_1_sub_grind_count] / trade_leverage
       if buy_amount < (min_stake * 1.5):
@@ -40234,7 +40314,8 @@ class NostalgiaForInfinityX8(IStrategy):
       else:
         return buy_amount
 
-    if grind_1_sub_grind_count > 0:
+    if grind_1_sub_grind_count > 0 and not (grind_1_current_grind_profit_rate < (grind_1_profit_threshold + fee_open_rate + fee_close_rate)):
+      load_candles()
       ft_exit_amount, tag = self.long_grind_exit_v4(
         last_candle,
         previous_candle,
@@ -40316,11 +40397,11 @@ class NostalgiaForInfinityX8(IStrategy):
     if (
       (self.system_v4_grind_2_enable)
       # and is_derisk_1_found
-      and is_long_grind_entry
       and is_long_extra_checks_entry
       and (grind_2_sub_grind_count < grind_2_max_sub_grinds)
       and (grind_2_sub_grind_count == 0 or (grind_2_distance_ratio < grind_2_sub_thresholds[grind_2_sub_grind_count]))
       and is_not_trade_max_stake_v4
+      and long_grind_entry_signal()
     ):
       buy_amount = slice_amount * grind_2_stakes[grind_2_sub_grind_count] / trade_leverage
       if buy_amount < (min_stake * 1.5):
@@ -40349,7 +40430,8 @@ class NostalgiaForInfinityX8(IStrategy):
       else:
         return buy_amount
 
-    if grind_2_sub_grind_count > 0:
+    if grind_2_sub_grind_count > 0 and not (grind_2_current_grind_profit_rate < (grind_2_profit_threshold + fee_open_rate + fee_close_rate)):
+      load_candles()
       ft_exit_amount, tag = self.long_grind_exit_v4(
         last_candle,
         previous_candle,
@@ -40431,11 +40513,11 @@ class NostalgiaForInfinityX8(IStrategy):
     if (
       (self.system_v4_grind_3_enable)
       # and is_derisk_1_found
-      and is_long_grind_entry
       and is_long_extra_checks_entry
       and (grind_3_sub_grind_count < grind_3_max_sub_grinds)
       and (grind_3_sub_grind_count == 0 or (grind_3_distance_ratio < grind_3_sub_thresholds[grind_3_sub_grind_count]))
       and is_not_trade_max_stake_v4
+      and long_grind_entry_signal()
     ):
       buy_amount = slice_amount * grind_3_stakes[grind_3_sub_grind_count] / trade_leverage
       if buy_amount < (min_stake * 1.5):
@@ -40464,7 +40546,8 @@ class NostalgiaForInfinityX8(IStrategy):
       else:
         return buy_amount
 
-    if grind_3_sub_grind_count > 0:
+    if grind_3_sub_grind_count > 0 and not (grind_3_current_grind_profit_rate < (grind_3_profit_threshold + fee_open_rate + fee_close_rate)):
+      load_candles()
       ft_exit_amount, tag = self.long_grind_exit_v4(
         last_candle,
         previous_candle,
@@ -40547,26 +40630,11 @@ class NostalgiaForInfinityX8(IStrategy):
       (self.system_v4_grind_4_enable)
       # and is_derisk_1_found
       # and is_long_grind_entry
-      and (
-        is_long_grind_entry
-        or (
-          (slice_profit_entry < -0.06)
-          and (last_candle["RSI_3"] > 5.0)
-          and (last_candle["RSI_3_15m"] > 10.0)
-          and (last_candle["RSI_14"] < 35.0)
-          and (last_candle["close"] < (last_candle["EMA_20"] * 0.985))
-        )
-        or (
-          (slice_profit_entry < -0.06)
-          and (num_open_grinds_and_buybacks == 0)
-          and (last_candle["RSI_14"] < 30.0)
-          and (last_candle["close"] < (last_candle["EMA_20"] * 0.980))
-        )
-      )
       and is_long_extra_checks_entry
       and (grind_4_sub_grind_count < grind_4_max_sub_grinds)
       and (grind_4_sub_grind_count == 0 or (grind_4_distance_ratio < grind_4_sub_thresholds[grind_4_sub_grind_count]))
       and is_not_trade_max_stake_v4
+      and (long_grind_4_fallback_entry() or long_grind_entry_signal())
     ):
       buy_amount = slice_amount * grind_4_stakes[grind_4_sub_grind_count] / trade_leverage
       if buy_amount < (min_stake * 1.5):
@@ -40595,7 +40663,8 @@ class NostalgiaForInfinityX8(IStrategy):
       else:
         return buy_amount
 
-    if grind_4_sub_grind_count > 0:
+    if grind_4_sub_grind_count > 0 and not (grind_4_current_grind_profit_rate < (grind_4_profit_threshold + fee_open_rate + fee_close_rate)):
+      load_candles()
       ft_exit_amount, tag = self.long_grind_exit_v4(
         last_candle,
         previous_candle,
@@ -40678,29 +40747,15 @@ class NostalgiaForInfinityX8(IStrategy):
       (self.system_v4_grind_5_enable)
       # and is_derisk_1_found
       # and is_long_grind_entry
-      and (
-        is_long_grind_entry
-        or (
-          (is_derisk_1_found or is_derisk_2_found or is_derisk_3_found)
-          and (slice_profit_entry < -0.06)
-          and (last_candle["RSI_3"] > 10.0)
-          and (last_candle["RSI_3_15m"] > 20.0)
-          and (last_candle["AROONU_14"] < 50.0)
-        )
-        or (
-          (self.is_futures_mode)
-          and (slice_profit_entry < -0.15)
-          and (trade.liquidation_price is not None)
-          and (
-            (trade.is_short and current_rate > trade.liquidation_price * 0.80)
-            or (not trade.is_short and current_rate < trade.liquidation_price * 1.20)
-          )
-        )
-      )
       and is_long_extra_checks_entry
       and (grind_5_sub_grind_count < grind_5_max_sub_grinds)
       and (grind_5_sub_grind_count == 0 or (grind_5_distance_ratio < grind_5_sub_thresholds[grind_5_sub_grind_count]))
       and is_not_trade_max_stake_v4
+      and (
+        long_grind_5_fallback_entry()
+        or long_grind_5_liquidation_entry()
+        or long_grind_entry_signal()
+      )
     ):
       buy_amount = slice_amount * grind_5_stakes[grind_5_sub_grind_count] / trade_leverage
       if buy_amount < (min_stake * 1.5):
@@ -40729,7 +40784,8 @@ class NostalgiaForInfinityX8(IStrategy):
       else:
         return buy_amount
 
-    if grind_5_sub_grind_count > 0:
+    if grind_5_sub_grind_count > 0 and not (grind_5_current_grind_profit_rate < (grind_5_profit_threshold + fee_open_rate + fee_close_rate)):
+      load_candles()
       ft_exit_amount, tag = self.long_grind_exit_v4(
         last_candle,
         previous_candle,
@@ -40812,7 +40868,6 @@ class NostalgiaForInfinityX8(IStrategy):
       self.system_v4_buyback_1_enable
       and is_system_v4
       and is_derisk_4_found
-      and is_long_buyback_entry
       # and is_long_extra_checks_entry
       and (buyback_1_current_open_rate == 0)
       and (
@@ -40834,6 +40889,7 @@ class NostalgiaForInfinityX8(IStrategy):
         )
       )
       and is_not_trade_max_stake_v4
+      and long_buyback_entry_signal()
     ):
       buy_amount = (
         slice_amount
@@ -41784,8 +41840,9 @@ class NostalgiaForInfinityX8(IStrategy):
     grind_open_orders,
     trade: Trade,
   ) -> tuple:
-    if grind_profit_rate < (grind_exit_profit_threshold + fee_open_rate + fee_close_rate):
-      return None, None
+    # Already guarded.
+    # if grind_profit_rate < (grind_exit_profit_threshold + fee_open_rate + fee_close_rate):
+    # return None, None
 
     last_rsi_3 = last_candle["RSI_3"]
     last_rsi_14 = last_candle["RSI_14"]
