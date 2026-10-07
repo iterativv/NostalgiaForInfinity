@@ -28641,14 +28641,10 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((aroonu_14_lt_25) | (rsi_3_4h_lt_40) | (aroonu_14_1d_gt_10))
             # 5m uptrend, 4h up move & low
             & ((aroonu_14_lt_25) | (rsi_3_4h_lt_40) | (stochrsi_k_4h_gt_20))
-            # 5m uptrend, 15m low, 1h high
-            & ((aroonu_14_lt_25) | (stochrsi_k_15m_gt_20) | (stochrsi_k_1h_gt_10))
             # 5m uptrend, 15m still high, 1h low
             & ((aroonu_14_lt_25) | (stochrsi_k_15m_gt_30) | (aroonu_14_1h_gt_0))
             # 5m uptrend, 15m still high, 1d oversold
             & ((aroonu_14_lt_25) | (stochrsi_k_15m_gt_30) | (roc_9_1d_gt_neg_20))
-            # 5m uptrend, 15m still high, 1h high
-            & ((aroonu_14_lt_25) | (stochrsi_k_15m_gt_30) | (stochrsi_k_1h_gt_10))
             # 5m & 1d uptrend, 15m still high
             & ((aroonu_14_lt_25) | (stochrsi_k_15m_gt_40) | (aroonu_14_1d_lt_40))
             # 5m uptrend, 15m still high, 4h down move
@@ -28691,8 +28687,6 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((aroonu_14_lt_30) | (rsi_3_1d_gt_5) | (aroonu_14_1d_gt_10))
             # 5m uptrend, 1h down move, 1d up move
             & ((aroonu_14_lt_30) | (rsi_3_1h_gt_10) | (rsi_3_1d_lt_35))
-            # 5m & 1h uptrend, 1h down move
-            & ((aroonu_14_lt_30) | (rsi_3_1h_gt_15) | (aroonu_14_1h_lt_40))
             # 5m uptrend, 1h & 1d up move
             & ((aroonu_14_lt_30) | (rsi_3_1h_lt_40) | (rsi_3_1d_lt_35))
             # 5m uptrend, 1h down move, 4h low
@@ -28701,18 +28695,10 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((aroonu_14_lt_30) | (rsi_3_4h_lt_50) | (stochrsi_k_4h_gt_30))
             # 5m uptrend, 15m high, 1h low
             & ((aroonu_14_lt_30) | (stochrsi_k_15m_gt_10) | (aroonu_14_1h_gt_10))
-            # 5m uptrend, 15m & 1h low
-            & ((aroonu_14_lt_30) | (stochrsi_k_15m_gt_20) | (aroonu_14_1h_gt_0))
             # 5m uptrend, 15m low, 1d high
             & ((aroonu_14_lt_30) | (stochrsi_k_15m_gt_20) | (stochrsi_k_1d_gt_10))
-            # 5m & 1d uptrend, 15m still high
-            & ((aroonu_14_lt_30) | (stochrsi_k_15m_gt_30) | (aroonu_14_1d_lt_50))
-            # 5m uptrend, 15m still high, 4h low
-            & ((aroonu_14_lt_30) | (stochrsi_k_15m_gt_30) | (stochrsi_k_4h_gt_20))
             # 5m uptrend, 15m & 4h still high
             & ((aroonu_14_lt_30) | (stochrsi_k_15m_gt_30) | (stochrsi_k_4h_gt_30))
-            # 5m uptrend, 15m still high, 4h high
-            & ((aroonu_14_lt_30) | (stochrsi_k_15m_gt_40) | (stochrsi_k_4h_gt_10))
             # 5m uptrend, 15m still high, 4h low
             & ((aroonu_14_lt_30) | (stochrsi_k_15m_gt_40) | (stochrsi_k_4h_gt_20))
             # 5m & 1d uptrend, 15m still high
@@ -28723,8 +28709,6 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((aroonu_14_lt_30) | (stochrsi_k_15m_gt_60) | (aroonu_14_4h_gt_0))
             # 5m & 4h uptrend, 15m still high
             & ((aroonu_14_lt_30) | (stochrsi_k_15m_gt_60) | (aroonu_14_4h_lt_40))
-            # 5m uptrend, 15m still high, 4h down move
-            & ((aroonu_14_lt_30) | (stochrsi_k_15m_gt_60) | (rsi_3_4h_gt_5))
             # 5m uptrend, 1d high & oversold
             & ((aroonu_14_lt_30) | (stochrsi_k_1d_gt_10) | (roc_9_1d_gt_neg_20))
             # 5m uptrend, 1h low, 1d down move
@@ -28783,8 +28767,6 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((rsi_3_15m_gt_20) | (aroonu_14_1h_lt_75) | (stochrsi_k_4h < 75.0))
             # 15m down move, 4h low, 1d up move
             & ((rsi_3_15m_gt_20) | (aroonu_14_4h_gt_0) | (rsi_3_1d_lt_35))
-            # 15m down move, 1h up move
-            & ((rsi_3_15m_gt_20) | (rsi_3_1h_lt_65))
             # 15m & 4h down move, 1d uptrend
             & ((rsi_3_15m_gt_20) | (rsi_3_4h_gt_15) | (aroonu_14_1d_lt_30))
             # 15m down move, 1h low, 1d uptrend
@@ -28817,8 +28799,6 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((rsi_3_15m_gt_30) | (rsi_3_1h_lt_40) | (rsi_3_4h_gt_10))
             # 15m down move, 1h up move
             & ((rsi_3_15m_gt_30) | (rsi_3_1h_lt_50))
-            # 15m & 1h down move
-            & ((rsi_3_15m_gt_30) | (rsi_3_1h_lt_75))
             # 15m & 4h down move, 1d uptrend
             & ((rsi_3_15m_gt_30) | (rsi_3_4h_gt_5) | (aroonu_14_1d_lt_50))
             # 15m & 1d down move, 4h up move
@@ -28921,8 +28901,6 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((aroonu_14_15m_lt_30) | (aroonu_14_1h_lt_25) | (stochrsi_k_1h_gt_30))
             # 15m & 1h uptrend, 4h still high
             & ((aroonu_14_15m_lt_30) | (aroonu_14_1h_lt_30) | (stochrsi_k_4h_gt_30))
-            # 15m & 1h uptrend, 1d down move
-            & ((aroonu_14_15m_lt_30) | (aroonu_14_1h_lt_40) | (rsi_3_1d_gt_5))
             # 15m & 4h uptrend, 4h high
             & ((aroonu_14_15m_lt_30) | (aroonu_14_4h_lt_30) | (stochrsi_k_4h_gt_10))
             # 15m & 1h uptrend, 1h down move
@@ -28933,28 +28911,18 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((aroonu_14_15m_lt_30) | (rsi_3_4h_gt_10) | (roc_9_1d_gt_neg_20))
             # 15m & 4h uptrend, 4h down move
             & ((aroonu_14_15m_lt_30) | (rsi_3_4h_gt_15) | (aroonu_14_4h_lt_30))
-            # 15m & 4h uptrend, 4h down move
-            & ((aroonu_14_15m_lt_30) | (rsi_3_4h_gt_5) | (aroonu_14_4h_lt_30))
             # 15m uptrend, 4h up move
             & ((aroonu_14_15m_lt_30) | (rsi_3_4h_lt_50))
             # 15m uptrend & high, 1h low
             & ((aroonu_14_15m_lt_30) | (stochrsi_k_15m_gt_10) | (aroonu_14_1h_gt_0))
             # 15m & 4h uptrend, 15m still high
             & ((aroonu_14_15m_lt_30) | (stochrsi_k_15m_gt_30) | (aroonu_14_4h_lt_30))
-            # 15m uptrend & still high, 1h high
-            & ((aroonu_14_15m_lt_30) | (stochrsi_k_15m_gt_30) | (stochrsi_k_1h_gt_10))
             # the 15m making new highs with both stochastics topped out
             & ((aroonu_14_15m_lt_30) | (stochrsi_k_15m_lt_70) | (stochrsi_k_4h_lt_80))
-            # 15m uptrend, 1h high, 4h down move
-            & ((aroonu_14_15m_lt_30) | (stochrsi_k_1h_gt_10) | (rsi_3_4h_gt_10))
             # 15m uptrend, 1h low, 4h down move
             & ((aroonu_14_15m_lt_30) | (stochrsi_k_1h_gt_20) | (rsi_3_4h_gt_10))
             # 15m uptrend, 1h still high, 1d low
             & ((aroonu_14_15m_lt_30) | (stochrsi_k_1h_gt_30) | (stochrsi_k_1d_gt_20))
-            # 15m & 1h uptrend, 1h still high
-            & ((aroonu_14_15m_lt_40) | (aroonu_14_1h_lt_25) | (stochrsi_k_1h_gt_30))
-            # 15m & 1h uptrend, 1d low
-            & ((aroonu_14_15m_lt_40) | (aroonu_14_1h_lt_40) | (aroonu_14_1d_gt_10))
             # 15m uptrend, 1h down move
             & ((aroonu_14_15m_lt_40) | (rsi_3_1h_gt_20))
             # 15m uptrend, 4h down move, 1d high
@@ -28969,8 +28937,6 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((aroonu_14_15m_lt_40) | (stochrsi_k_15m_gt_60) | (rsi_3_4h_gt_15))
             # 15m uptrend, 1h high
             & ((aroonu_14_15m_lt_40) | (stochrsi_k_1h_gt_10))
-            # 15m uptrend, 1h low, 1d high
-            & ((aroonu_14_15m_lt_40) | (stochrsi_k_1h_gt_20) | (stochrsi_k_1d_gt_10))
             # 15m uptrend, 4h high, 1d oversold
             & ((aroonu_14_15m_lt_40) | (stochrsi_k_4h_gt_10) | (roc_9_1d_gt_neg_25))
             # 15m & 1h uptrend, 4h low
@@ -29039,16 +29005,12 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((stochrsi_k_15m_gt_10) | (aroonu_14_1h_lt_25) | (rsi_3_1d_gt_10))
             # 15m high, 1h uptrend, 1d low
             & ((stochrsi_k_15m_gt_10) | (aroonu_14_1h_lt_30) | (aroonu_14_1d_gt_10))
-            # 15m high, 1h uptrend, 1d low
-            & ((stochrsi_k_15m_gt_10) | (aroonu_14_1h_lt_40) | (aroonu_14_1d_gt_10))
             # 15m high, 1h uptrend & low
             & ((stochrsi_k_15m_gt_10) | (aroonu_14_1h_lt_40) | (stochrsi_k_1h_gt_20))
             # 15m high, 4h uptrend, 1d down move
             & ((stochrsi_k_15m_gt_10) | (aroonu_14_4h_lt_20) | (rsi_3_1d_gt_15))
             # 15m high, 4h & 1d uptrend
             & ((stochrsi_k_15m_gt_10) | (aroonu_14_4h_lt_30) | (aroonu_14_1d_lt_30))
-            # 15m & 4h high, 4h uptrend
-            & ((stochrsi_k_15m_gt_10) | (aroonu_14_4h_lt_30) | (stochrsi_k_4h_gt_10))
             # 15m high, 4h uptrend & still high
             & ((stochrsi_k_15m_gt_10) | (aroonu_14_4h_lt_30) | (stochrsi_k_4h_gt_40))
             # 15m stochastic on the floor, the daily collapsed and no hourly downtrend
@@ -29067,8 +29029,6 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((stochrsi_k_15m_gt_10) | (stochrsi_k_1h_gt_10) | (aroonu_14_1d_gt_10))
             # 15m high, 1h still high, 4h low
             & ((stochrsi_k_15m_gt_10) | (stochrsi_k_1h_gt_40) | (stochrsi_k_4h_gt_20))
-            # 15m & 4h high, 1d oversold
-            & ((stochrsi_k_15m_gt_10) | (stochrsi_k_4h_gt_10) | (roc_9_1d_gt_neg_25))
             # 15m high, 4h still high, 1d uptrend
             & ((stochrsi_k_15m_gt_10) | (stochrsi_k_4h_gt_50) | (aroonu_14_1d_lt_50))
             # 15m & 1d low, 1d uptrend
@@ -29077,8 +29037,6 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((stochrsi_k_15m_gt_20) | (aroonu_14_1h_gt_0) | (rsi_3_1d_gt_30))
             # 15m & 1h low, 1h still high
             & ((stochrsi_k_15m_gt_20) | (aroonu_14_1h_gt_0) | (stochrsi_k_1h_gt_30))
-            # 15m & 1h low, 4h up move
-            & ((stochrsi_k_15m_gt_20) | (aroonu_14_1h_gt_10) | (rsi_3_4h_lt_40))
             # 15m low, 1h uptrend, 1d high
             & ((stochrsi_k_15m_gt_20) | (aroonu_14_1h_lt_20) | (stochrsi_k_1d_gt_10))
             # 15m & 1d low, 1h uptrend
@@ -29112,12 +29070,6 @@ class NostalgiaForInfinityX8(IStrategy):
             # 15m still high, 4h uptrend & high
             & ((stochrsi_k_15m_gt_30) | (aroonu_14_4h_lt_30) | (stochrsi_k_4h_gt_10))
             # 15m still high, 4h down move, 1d uptrend
-            & ((stochrsi_k_15m_gt_30) | (rsi_3_4h_gt_10) | (aroonu_14_1d_lt_30))
-            # 15m still high, 4h down move, 1d uptrend
-            & ((stochrsi_k_15m_gt_30) | (rsi_3_4h_gt_15) | (aroonu_14_1d_lt_30))
-            # 15m still high, 4h down move, 1d uptrend
-            & ((stochrsi_k_15m_gt_30) | (rsi_3_4h_gt_20) | (aroonu_14_1d_lt_30))
-            # 15m still high, 4h down move, 1d uptrend
             & ((stochrsi_k_15m_gt_30) | (rsi_3_4h_gt_30) | (aroonu_14_1d_lt_30))
             # 15m still high, 1h high, 1d uptrend
             & ((stochrsi_k_15m_gt_30) | (stochrsi_k_1h_gt_10) | (aroonu_14_1d_lt_30))
@@ -29144,13 +29096,9 @@ class NostalgiaForInfinityX8(IStrategy):
             # 15m still high, 1h down move, 1d uptrend
             & ((stochrsi_k_15m_gt_50) | (rsi_3_1h_gt_10) | (aroonu_14_1d_lt_50))
             # 15m & 1h still high, 1h up move
-            & ((stochrsi_k_15m_gt_50) | (rsi_3_1h_lt_40) | (stochrsi_k_1h_gt_30))
-            # 15m & 1h still high, 1h up move
             & ((stochrsi_k_15m_gt_50) | (rsi_3_1h_lt_40) | (stochrsi_k_1h_gt_50))
             # 15m still high, 1h up move, 4h low
             & ((stochrsi_k_15m_gt_50) | (rsi_3_1h_lt_50) | (aroonu_14_4h_gt_20))
-            # 15m still high, 4h down move, 1d uptrend
-            & ((stochrsi_k_15m_gt_50) | (rsi_3_4h_gt_10) | (aroonu_14_1d_lt_70))
             # 15m still high, 4h down move, 1d uptrend
             & ((stochrsi_k_15m_gt_50) | (rsi_3_4h_gt_25) | (aroonu_14_1d_lt_30))
             # 15m still high, 4h down move, 1d uptrend
@@ -29181,8 +29129,6 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((rsi_3_1h_gt_10) | (roc_9_1d_lt_10) | (adx_14_4h > 20.0))
             # 1h down move, 4h oversold, 1d uptrend
             & ((rsi_3_1h_gt_10) | (roc_9_4h_gt_neg_10) | (aroonu_14_1d_lt_30))
-            # 1h & 4h down move, 1d uptrend
-            & ((rsi_3_1h_gt_10) | (rsi_3_4h_gt_10) | (aroonu_14_1d_lt_30))
             # the hour has not moved down, its stochastic already on the floor and the base making no new high
             & ((rsi_3_1h_gt_10) | (stochk_14_3_3_1h < 30.0) | (aroonu_14 < 10.0))
             # 1h & 1d down move, 4h low
@@ -29201,8 +29147,6 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((rsi_3_1h_gt_30) | (rsi_3_4h_lt_40) | (aroonu_14_4h_gt_0))
             # 1h & 1d down move, 1d uptrend
             & ((rsi_3_1h_gt_35) | (rsi_3_1d_gt_25) | (roc_9_1d_lt_0))
-            # 1h down move & low, 1d oversold
-            & ((rsi_3_1h_gt_5) | (aroonu_14_1h_gt_10) | (roc_9_1d_gt_neg_25))
             # 1h & 4h down move, 1h uptrend
             & ((rsi_3_1h_gt_5) | (aroonu_14_1h_lt_25) | (rsi_3_4h_gt_5))
             # 1h down move & uptrend, 1d high
@@ -29313,8 +29257,6 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((aroonu_14_1h_lt_30) | (aroonu_14_4h_lt_20) | (stochrsi_k_1d_gt_10))
             # 1h uptrend, 4h oversold
             & ((aroonu_14_1h_lt_30) | (roc_9_4h_gt_neg_20))
-            # 1h & 1d uptrend, 1h high
-            & ((aroonu_14_1h_lt_30) | (stochrsi_k_1h_gt_10) | (aroonu_14_1d_lt_40))
             # 1h & 4h uptrend, 1h low
             & ((aroonu_14_1h_lt_30) | (stochrsi_k_1h_gt_20) | (aroonu_14_4h_lt_30))
             # 1h uptrend & low, 4h down move
@@ -29323,8 +29265,6 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((aroonu_14_1h_lt_30) | (stochrsi_k_1h_gt_30) | (aroonu_14_1d_lt_30))
             # 1h & 1d uptrend, 4h high
             & ((aroonu_14_1h_lt_30) | (stochrsi_k_4h_gt_10) | (aroonu_14_1d_lt_30))
-            # 1h & 1d uptrend, 4h still high
-            & ((aroonu_14_1h_lt_30) | (stochrsi_k_4h_gt_40) | (aroonu_14_1d_lt_60))
             # 1h & 4h uptrend
             & ((aroonu_14_1h_lt_40) | (aroonu_14_4h_lt_40))
             # 1h uptrend, 1d up move & low
@@ -29333,8 +29273,6 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((aroonu_14_1h_lt_40) | (rsi_3_4h_lt_40) | (aroonu_14_1d_gt_10))
             # 1h & 4h uptrend, 1h high
             & ((aroonu_14_1h_lt_40) | (stochrsi_k_1h_gt_10) | (aroonu_14_4h_lt_20))
-            # 1h & 1d uptrend
-            & ((aroonu_14_1h_lt_50) | (aroonu_14_1d_lt_40))
             # 1h uptrend & still high, 1d low
             & ((aroonu_14_1h_lt_50) | (stochrsi_k_1h_gt_30) | (aroonu_14_1d_gt_10))
             # 1h uptrend, 4h high
@@ -29399,8 +29337,6 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((mfi_14_4h < 40.0) | (mfi_14_1d > 20.0) | (cci_20_4h > -225.0))
             # 4h money flow holding up while its rsi has collapsed
             & ((mfi_14_4h < 40.0) | (rsi_14_change_pct_4h > -15.0))
-            # 4h low & oversold, 1d down move
-            & ((aroonu_14_4h_gt_0) | (roc_9_4h_gt_neg_25) | (rsi_3_1d_gt_5))
             # 4h low & oversold, 1d down move
             & ((aroonu_14_4h_gt_10) | (roc_9_4h_gt_neg_20) | (rsi_3_1d_gt_5))
             # 4h low, 1d up move & high
