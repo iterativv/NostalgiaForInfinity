@@ -26282,8 +26282,6 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((rsi_3_15m_lt_75) | (aroonu_14_15m_gt_20) | (rsi_3_1h_lt_50))
             # 15m down move & low, 4h still high
             & ((rsi_3_15m_lt_75) | (aroonu_14_15m_gt_20) | (stochrsi_k_4h_gt_40))
-            # 15m down move, 1h high, 1d low
-            & ((rsi_3_15m_lt_75) | (stochrsi_k_1h_gt_10) | (stochrsi_k_1d_gt_20))
             # 15m down move, 1h & 1d low
             & ((rsi_3_15m_lt_75) | (stochrsi_k_1h_gt_20) | (stochrsi_k_1d_gt_20))
             # 15m down move, 4h still high, 1d low
@@ -26313,15 +26311,11 @@ class NostalgiaForInfinityX8(IStrategy):
             # 15m low, 4h & 1d uptrend
             & ((aroonu_14_15m_gt_50) | (aroonu_14_4h_lt_20) | (aroonu_14_1d_lt_30))
             # 15m & 1d low, 4h high
-            & ((aroonu_14_15m_gt_60) | (stochrsi_k_4h_gt_10) | (aroonu_14_1d_gt_10))
-            # 15m & 1d low, 4h high
             & ((aroonu_14_15m_gt_60) | (stochrsi_k_4h_gt_10) | (aroonu_14_1d_gt_20))
             # 15m uptrend, 1h up move & low
             & ((aroonu_14_15m_lt_20) | (rsi_3_1h_lt_50) | (stochrsi_k_1h_gt_20))
             # 15m uptrend, 4h up move, 1d high
             & ((aroonu_14_15m_lt_20) | (rsi_3_4h_lt_40) | (stochrsi_k_1d_gt_10))
-            # 15m uptrend & still high, 4h low
-            & ((aroonu_14_15m_lt_50) | (stochrsi_k_15m_gt_60) | (aroonu_14_4h_gt_10))
             # 15m uptrend & still high, 4h low
             & ((aroonu_14_15m_lt_50) | (stochrsi_k_15m_gt_60) | (aroonu_14_4h_gt_20))
             # 15m & 4h uptrend, 1h still high
@@ -26354,8 +26348,6 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((rsi_3_1h_lt_60) | (aroonu_14_1d_gt_10) | (stochrsi_k_1d_gt_10))
             # 1h up move, 4h low
             & ((rsi_3_1h_lt_60) | (aroonu_14_4h_gt_10) | (stochrsi_k_4h_gt_20))
-            # 1h up move & still high, 4h low
-            & ((rsi_3_1h_lt_60) | (stochrsi_k_1h_gt_60) | (aroonu_14_4h_gt_30))
             # 1h up move, 4h high, 1d uptrend
             & ((rsi_3_1h_lt_60) | (stochrsi_k_4h_gt_10) | (aroonu_14_1d_lt_50))
             # 1h low, 1h & 1d high
