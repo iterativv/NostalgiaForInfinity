@@ -26099,8 +26099,6 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((rsi_3_15m_lt_95) | (aroonu_14_4h_lt_30))
             # 15m up move, 1h & 4h uptrend
             & ((rsi_3_15m_lt_97) | (aroonu_14_1h_lt_80) | (aroonu_14_4h_lt_20))
-            # 15m up move, 4h & 1d uptrend
-            & ((rsi_3_15m_lt_97) | (aroonu_14_4h_lt_40) | (aroonu_14_1d_lt_60))
             # 15m & 1h & 4h up move
             & ((rsi_3_15m_lt_97) | (rsi_3_1h_lt_95) | (rsi_3_4h_lt_60))
             # 15m & 4h up move, 1d uptrend
