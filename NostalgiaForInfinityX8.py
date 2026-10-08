@@ -27788,20 +27788,26 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((rsi_3_15m_lt_70) | (roc_2_1h < 5.0) | (rsi_3 > 30.0))
             # 5m down move, 15m up move, 1d downtrend
             & ((rsi_3_15m_lt_70) | (roc_9_1d_gt_neg_40) | (rsi_3 > 30.0))
+            # 15m low, 1h down move & uptrend
+            & ((aroonu_14_15m_gt_40) | (rsi_3_1h_gt_45) | (aroonu_14_1h_lt_40))
+            # 15m uptrend & still not low enough, 1h down move
+            & ((aroonu_14_15m_lt_80) | (stochrsi_k_15m_gt_90) | (rsi_3_1h_gt_50))
+            # 15m uptrend, 4h high, 1d low
+            & ((aroonu_14_15m_lt_80) | (stochrsi_k_4h_gt_10) | (aroonu_14_1d_gt_10))
+            # 1h up move, 4h low
+            & ((rsi_3_1h_lt_50) | (aroonu_14_4h_gt_20) | (stochrsi_k_4h_gt_20))
             # 1h still not low enough, 4h still low
             & ((rsi_14_1h_lt_40) | (rsi_14_4h > 25.0))
             # 1h still bearish
             & (rsi_14_1h < 45.0)
+            # 1h still high, 4h & 1d oversold
+            & ((stochrsi_k_1h_gt_50) | (roc_9_4h_gt_neg_10) | (roc_9_1d_gt_neg_15))
             # 1h WILLR high
             & (willr_14_1h < -50.0)
-            # 15m still high & high, 4h down move
-            & ((rsi_3_4h_gt_15) | (stochrsi_k_15m < 90.0) | (aroonu_14_15m_lt_90))
             # 15m still high, 4h down move
             & ((rsi_3_4h_gt_15) | (stochrsi_k_15m < 90.0))
             # 4h down move & downtrend
-            & ((rsi_3_4h_gt_5) | (roc_9_4h > -25.0))
-            # 15m still high & high, 4h down move
-            & ((rsi_3_4h_gt_5) | (stochrsi_k_15m < 90.0) | (aroonu_14_15m_lt_100))
+            & ((rsi_3_4h_gt_5) | (roc_9_4h_gt_neg_25))
             # 15m still high & high, 4h down move
             & ((rsi_3_4h_gt_5) | (stochrsi_k_15m_lt_80) | (aroonu_14_15m_lt_80))
             # 4h still not low enough & up move
@@ -27809,7 +27815,9 @@ class NostalgiaForInfinityX8(IStrategy):
             # 4h still low & still not low enough
             & ((rsi_14_4h > 25.0) | (mfi_14_4h < 40.0))
             # 4h RSI high
-            & (rsi_14_4h < 40.0)
+            & (rsi_14_4h_lt_40)
+            # 4h low, 1d uptrend & oversold
+            & ((aroonu_14_4h_gt_20) | (aroonu_14_1d_lt_30) | (roc_9_1d_gt_neg_10))
             # 4h uptrend
             & (aroonu_14_4h < 35.0)
             # Context: recent large drop, 4h downtrend
@@ -27819,13 +27827,15 @@ class NostalgiaForInfinityX8(IStrategy):
             # 1h falling, 4h down move, 1d down move
             & ((rsi_3_1d_gt_10) | (cci_20_change_pct_1h > -35.0) | (rsi_3_4h_gt_20))
             # 1h still not low enough, 4h downtrend, 1d down move
-            & ((rsi_3_1d_gt_10) | (roc_9_4h > -20.0) | (rsi_14_1h_lt_40))
+            & ((rsi_3_1d_gt_10) | (roc_9_4h_gt_neg_20) | (rsi_14_1h_lt_40))
             # 4h down move, 1d down move & low
             & ((rsi_3_1d_gt_10) | (stochrsi_k_1d > 5.0) | (rsi_3_4h_gt_40))
             # 1d down move
             & (rsi_3_1d_gt_5)
             # 4h still low, 1d still not low enough
             & ((rsi_14_1d_lt_40) | (rsi_14_4h > 25.0))
+            # and the daily is weak with it
+            & (rsi_14_1d < 45.0)
             # 1h rising, 1d low
             & ((stochrsi_k_1d > 0.0) | (cci_20_change_pct_1h < -5.0))
             # 1d low & still not low enough
@@ -27833,25 +27843,31 @@ class NostalgiaForInfinityX8(IStrategy):
             # 5m down move, 1d overbought
             & ((roc_9_1d < -5.0) | (rsi_3 > 30.0))
             # 4h still low & low, 1d downtrend
-            & ((roc_9_1d > -25.0) | (mfi_14_4h > 20.0) | (stochrsi_k_4h_gt_10) | (aroonu_14_4h_gt_10))
+            & ((roc_9_1d_gt_neg_25) | (mfi_14_4h > 20.0) | (stochrsi_k_4h_gt_10) | (aroonu_14_4h_gt_10))
             # 1h high, 1d downtrend
-            & ((roc_9_1d > -40.0) | (aroonu_14_1h_lt_40))
-            & (ema_12_4h < ema_200_4h)
+            & ((roc_9_1d_gt_neg_40) | (aroonu_14_1h_lt_40))
+            # the day itself is falling, not merely off its high
+            & (roc_9_1d_lt_0)
           )
-          short_entry_logic.append(roc_9_1d < 5.0)
-          short_entry_logic.append(rsi_14_1d < 45.0)
-          short_entry_logic.append(roc_9_1d < 0.0)
 
           # Logic — Bounce that fails to reclaim resistance
-          short_entry_logic.append(rsi_14 > 55.0)
-          short_entry_logic.append(rsi_14 < 68.0)
-          short_entry_logic.append(close < ema_200)
-          short_entry_logic.append(close > ema_12)
-          short_entry_logic.append(rsi_3 < 35.0)
-          short_entry_logic.append(cci_20_change_pct_1h < 0.0)
-          short_entry_logic.append(mfi_14_1h < 45.0)
+          short_entry_logic.append(
+            # the 4h is in a downtrend: a failed bounce only means anything there
+            (ema_12_4h < ema_200_4h)
+            # bounced into the 55-68 band but no further: strength without a breakout
+            & (rsi_14 > 55.0)
+            & (rsi_14 < 68.0)
+            # still under the 200 EMA, so the bounce is inside a downtrend
+            & (close < ema_200)
+            # but above the fast EMA, so the bounce is actually happening
+            & (close > ema_12)
+            # the 5m leg is already rolling over
+            & (rsi_3 < 35.0)
+            # and the hour is turning down with it: CCI falling, money leaving
+            & (cci_20_change_pct_1h < 0.0)
+            & (mfi_14_1h < 45.0)
+          )
 
-        # Condition #592 - Quad-rotation stochastic pullback (Short, experimental).
         if short_entry_condition_index == 592:
           # Protections
           short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
