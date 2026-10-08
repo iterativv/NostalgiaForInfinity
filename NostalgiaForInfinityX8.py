@@ -40179,6 +40179,41 @@ class NostalgiaForInfinityX8(IStrategy):
             if ticker["bid"] is not None:
               exit_rate = ticker["bid"]
 
+    # Finish managed partial exits before allowing another de-risk or grind.
+    partial_exit = filled_exits[-1] if filled_exits else None
+    if partial_exit is not None and partial_exit.safe_remaining > 0.0:
+      partial_exit_tag = partial_exit.ft_order_tag or ""
+      if partial_exit_tag.partition(" ")[0] in (
+        "derisk_level_1",
+        "derisk_level_2",
+        "derisk_level_3",
+        "derisk_level_4",
+        "derisk_global",
+        "grind_1_exit",
+        "grind_1_derisk",
+        "grind_2_exit",
+        "grind_2_derisk",
+        "grind_3_exit",
+        "grind_3_derisk",
+        "grind_4_exit",
+        "grind_4_derisk",
+        "grind_5_exit",
+        "grind_5_derisk",
+      ):
+        partial_exit_amount = min(partial_exit.safe_remaining, trade_amount)
+        exit_amount = partial_exit_amount * exit_rate / trade_leverage
+        ft_exit_amount = partial_exit_amount * trade_stake_amount / trade_amount
+        remaining_stake = (trade_amount - partial_exit_amount) * exit_rate / trade_leverage
+        partial_exit_min_stake = min_stake or 0.0
+        if (
+          exit_amount > partial_exit_min_stake
+          and ft_exit_amount > partial_exit_min_stake
+          and (remaining_stake == 0.0 or remaining_stake >= partial_exit_min_stake * 1.55)
+        ):
+          return -ft_exit_amount, partial_exit_tag
+        # Do not clip the recovery: a fully filled clipped order would hide the leftover.
+        return None
+
     if profit_values is None:
       profit_values = self.calc_total_profit(trade, filled_entries, filled_exits, exit_rate)
     profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = profit_values
@@ -40479,9 +40514,6 @@ class NostalgiaForInfinityX8(IStrategy):
             rebuy_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
             rebuy_found = True
       elif order.ft_order_side == "sell":
-        if order is filled_exits[-1] and (order.safe_remaining * exit_rate / stake_scale_leverage) > min_stake:
-          partial_sell = True
-          # break
         order_tag = ""
         if has_order_tags:
           if order.ft_order_tag is not None:
@@ -54433,6 +54465,41 @@ class NostalgiaForInfinityX8(IStrategy):
             if ticker["bid"] is not None:
               exit_rate = ticker["bid"]
 
+    # Finish managed partial exits before allowing another de-risk or grind.
+    partial_exit = filled_exits[-1] if filled_exits else None
+    if partial_exit is not None and partial_exit.safe_remaining > 0.0:
+      partial_exit_tag = partial_exit.ft_order_tag or ""
+      if partial_exit_tag.partition(" ")[0] in (
+        "derisk_level_1",
+        "derisk_level_2",
+        "derisk_level_3",
+        "derisk_level_4",
+        "derisk_global",
+        "grind_1_exit",
+        "grind_1_derisk",
+        "grind_2_exit",
+        "grind_2_derisk",
+        "grind_3_exit",
+        "grind_3_derisk",
+        "grind_4_exit",
+        "grind_4_derisk",
+        "grind_5_exit",
+        "grind_5_derisk",
+      ):
+        partial_exit_amount = min(partial_exit.safe_remaining, trade_amount)
+        exit_amount = partial_exit_amount * exit_rate / trade_leverage
+        ft_exit_amount = partial_exit_amount * trade_stake_amount / trade_amount
+        remaining_stake = (trade_amount - partial_exit_amount) * exit_rate / trade_leverage
+        partial_exit_min_stake = min_stake or 0.0
+        if (
+          exit_amount > partial_exit_min_stake
+          and ft_exit_amount > partial_exit_min_stake
+          and (remaining_stake == 0.0 or remaining_stake >= partial_exit_min_stake * 1.55)
+        ):
+          return -ft_exit_amount, partial_exit_tag
+        # Do not clip the recovery: a fully filled clipped order would hide the leftover.
+        return None
+
     if profit_values is None:
       profit_values = self.calc_total_profit(trade, filled_entries, filled_exits, exit_rate)
     profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = profit_values
@@ -54712,9 +54779,6 @@ class NostalgiaForInfinityX8(IStrategy):
             rebuy_distance_ratio = (exit_rate - order.safe_price) / order.safe_price
             rebuy_found = True
       elif order.ft_order_side == "buy":
-        if order is filled_exits[-1] and (order.safe_remaining * exit_rate / stake_scale_leverage) > min_stake:
-          partial_sell = True
-          # break
         order_tag = ""
         if has_order_tags:
           if order.ft_order_tag is not None:
