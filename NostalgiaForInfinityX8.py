@@ -2589,6 +2589,14 @@ class NostalgiaForInfinityX8(IStrategy):
   # Order filled Callback
   # ---------------------------------------------------------------------------------------------
   def order_filled(self, pair: str, trade: Trade, order: Order, current_time: datetime, **kwargs) -> None:
+    # Backtesting calls this before closing the trade; live trading calls it after.
+    if not trade.is_open or (
+      self.is_backtest_mode()
+      and order.ft_order_side == trade.exit_side
+      and order.safe_amount_after_fee == trade.amount
+    ):
+      self._remove_profit_target(pair)
+
     # Check if it's the first entry
     system_name_use = self.system_name_use
     system_v3_2_name = self.system_v3_2_name
@@ -5436,7 +5444,6 @@ class NostalgiaForInfinityX8(IStrategy):
         if profit < self.exit_profit_offset:
           return False
 
-    self._remove_profit_target(pair)
     return True
 
   # Check Entry Timeout
