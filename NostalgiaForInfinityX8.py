@@ -140,7 +140,22 @@ class NostalgiaForInfinityX8(IStrategy):
   # Long top coins mode tags
   long_top_coins_mode_tags = ["141", "142", "143", "144", "145"]
   # Long scalp mode tags
-  long_scalp_mode_tags = ["161", "162", "163", "164", "165", "166", "167", "168", "169", "170", "171", "172", "173"]
+  long_scalp_mode_tags = [
+    "161",
+    "162",
+    "163",
+    "164",
+    "165",
+    "166",
+    "167",
+    "168",
+    "169",
+    "170",
+    "171",
+    "172",
+    "173",
+    "174",
+  ]
 
   long_rebuy_grind_mode_tags = long_rebuy_mode_tags + long_grind_mode_tags
   long_scalp_rebuy_grind_mode_tags = long_scalp_mode_tags + long_rebuy_mode_tags + long_grind_mode_tags
@@ -1062,6 +1077,7 @@ class NostalgiaForInfinityX8(IStrategy):
     "long_entry_condition_171_enable": False,
     "long_entry_condition_172_enable": False,
     "long_entry_condition_173_enable": False,
+    "long_entry_condition_174_enable": False,
     "long_entry_condition_192_enable": False,
     "long_entry_condition_193_enable": False,
   }
@@ -3646,6 +3662,8 @@ class NostalgiaForInfinityX8(IStrategy):
 
     # Empty dataframe protection
     if informative_1h.empty:
+      if self.long_entry_signal_params["long_entry_condition_174_enable"]:
+        informative_1h["s174_event"] = Series(index=informative_1h.index, dtype=bool)
       return informative_1h
 
     # =========================================================================
@@ -3763,6 +3781,34 @@ class NostalgiaForInfinityX8(IStrategy):
       },
       index=informative_1h.index,
     )
+
+    if self.long_entry_signal_params["long_entry_condition_174_enable"]:
+      # Closed-hour 20-candle breakout after a strictly narrower prior NR4 candle.
+      prices = informative_1h[["open", "high", "low", "close", "volume"]]
+      valid = (
+        prices.notna().all(axis=1)
+        & ~prices.isin([np.inf, -np.inf]).any(axis=1)
+        & (prices > 0).all(axis=1)
+        & (informative_1h["high"] >= informative_1h[["open", "close", "low"]].max(axis=1))
+        & (informative_1h["low"] <= informative_1h[["open", "close"]].min(axis=1))
+      )
+      contiguous = informative_1h["date"].diff().eq(timedelta(hours=1))
+      ready = valid.rolling(21, min_periods=21).sum().eq(21) & contiguous.rolling(20, min_periods=20).sum().eq(20)
+      previous_close = informative_1h["close"].shift(1)
+      true_range = DataFrame(
+        {
+          "range": informative_1h["high"] - informative_1h["low"],
+          "high_gap": (informative_1h["high"] - previous_close).abs(),
+          "low_gap": (informative_1h["low"] - previous_close).abs(),
+        }
+      ).max(axis=1)
+      atr = true_range.ewm(alpha=1 / 20, adjust=False, min_periods=20).mean().shift(1)
+      prior_high = informative_1h["high"].rolling(20, min_periods=20).max().shift(1)
+      state = ready & np.isfinite(atr) & (atr > 0) & (informative_1h["close"] > prior_high)
+      hourly_range = informative_1h["high"] - informative_1h["low"]
+      prior_range = hourly_range.shift(1)
+      nr4 = (prior_range > 0) & (prior_range < hourly_range.shift(2).rolling(3, min_periods=3).min())
+      new_cols["s174_event"] = state & ~state.shift(1, fill_value=False) & nr4
 
     informative_1h = pd.concat([informative_1h, new_cols], axis=1, copy=False)
 
@@ -6452,6 +6498,9 @@ class NostalgiaForInfinityX8(IStrategy):
 
     for enabled_long_entry_signal in long_entry_signal_params:
       long_entry_condition_index = int(enabled_long_entry_signal.rsplit("_", 2)[1])
+      # Signal 174 is admitted after both sides below, preserving all existing entry priority.
+      if long_entry_condition_index == 174:
+        continue
       if long_entry_signal_params[enabled_long_entry_signal]:
         # Long Entry Conditions Starts Here
         # -----------------------------------------------------------------------------------------
@@ -32828,6 +32877,47 @@ class NostalgiaForInfinityX8(IStrategy):
 
     if short_entry_conditions:
       df.loc[:, "enter_short"] = _or_entry_conditions(short_entry_conditions).astype(int)
+
+    # Condition #174 - Closed-hour NR4 breakout, scalp mode (Long).
+    # Only unused rows qualify: never replace a native long/short entry or add a co-tag.
+    if long_entry_signal_params["long_entry_condition_174_enable"]:
+      long_entry_174 = (
+        (np_view("enter_long") == 0)
+        & (np_view("enter_short") == 0)
+        & (entry_tags == "")
+        & df["date"].eq(df["date_1h"] + timedelta(minutes=55)).to_numpy()
+        & df["s174_event_1h"].eq(True).to_numpy()
+        & (np_view("EMA_12_1h") > ema_200_1h)
+        & (ema_12_4h > ema_200_4h)
+        & np.isfinite(volume)
+        & (volume > 0)
+        # OR3 protections: strict comparisons preserve NaN-as-false clause semantics.
+        & ((cmf_20_15m_lt_0_10) | (rsi_14_1d_lt_80))
+        & ((adx_14_4h > 20.0) | (rsi_3 > 60.0) | (rsi_3_change_pct_1h < 30.0))
+        & ((adx_14_4h > 20.0) | (rsi_3_1d < 85.0))
+        & ((aroonu_14_4h > 40.0) | (stochrsi_k_1d > 35.0) | (aroond_14_1d > 20.0))
+        & ((aroonu_14_4h < 95.0) | (rsi_3_1d_gt_30) | (stochrsi_k_4h > 95.0))
+        & ((aroond_14_1d > 5.0) | (cmf_20_4h > -0.05) | (stochrsi_k_1d_gt_50))
+        & ((rsi_14_change_pct_1h < 20.0) | (rsi_3_15m > 75.0))
+        & ((rsi_3 > 40.0) | (stochrsi_k_15m < 90.0) | (willr_14_1h > -10.0))
+        & ((roc_9_1h < 5.0) | (stochrsi_k > 60.0) | (stochrsi_k_15m < 95.0))
+        & ((aroond_14_15m_lt_25) | (quad_s93_min_12 > 20.0) | (willr_84_1h > -30.0))
+        & ((ph_cross_cnt_12 < 6.0) | (stochrsi_k_1h_gt_70))
+        & ((cmf_20_1h_lt_0_20) | (rsi_3_1h > 80.0))
+        & ((stochrsi_k_1h > 55.0) | (vol_rel < 2.0))
+        & ((aroond_14_1h > 35.0) | (aroonu_14 < 95.0) | (ph_cross_cnt_12 < 6.0))
+        & ((roc_9_1h < 5.0) | (rsi_3_change_pct_15m < 50.0))
+        & ((aroonu_14_15m > 95.0) | (stochrsi_k_1h_gt_70))
+        & ((rsi_14_1h > 65.0) | (stoch_4_4 > 80.0))
+        & ((cci_20_4h < 120.0) | (cmf_20_1d_lt_0_10))
+        & ((quad_s93_min_12 > 25.0) | (roc_9_4h > 2.0))
+        & ((adx_14_4h > 20.0) | (quad_s93_min_12 > 35.0))
+        & ((aroonu_14_15m > 95.0) | (stochrsi_k_4h > 65.0))
+        & ((aroonu_14 < 95.0) | (rsi_3_4h_lt_90))
+        & ((top_wick_pct_4h < 0.744219) | (rsi_14_1d_gt_60))
+      )
+      df.loc[long_entry_174, "enter_long"] = 1
+      _append_entry_tag(entry_tags, long_entry_174, "174 ")
 
     df.loc[:, "enter_tag"] = entry_tags
     if debug:
