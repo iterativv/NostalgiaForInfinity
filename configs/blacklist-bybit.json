@@ -33,6 +33,16 @@
       "(龙虾|哈基米|牛来|我踏马来了|老子|人生K线|小股东|旺财)/.*",
       // Parabolic squeeze — 542 shorts liquidated on 4 accounts, 2026-08-07 (+801%/7d)
       "(TUT)/.*",
+      // Operator winding down — Blur announced on 2026-10-12 that its frontend is deprecated on
+      // 11-12 and that Blend stopped matching new NFT loans the same day. -34.3% in 24h, -40.5%
+      // over the week, -52.2% off its high, and still ~$38M/day on Binance perps, so it keeps
+      // being selectable on the way down. The market contracts stay on-chain; the team has
+      // stepped back from the product.
+      "(BLUR)/.*",
+      // Parabolic squeeze in a newly eligible listing — 486.7% range inside the 2026-10-12 21:00
+      // hour (0.3785 -> 0.8542 -> 0.1456 -> 0.2002, +126% then -83%), 64 days since listing and
+      // -72.8% off its high on ~$196M/day
+      "(DOS)/.*",
       // Pump-and-dump knives — APR +192% then -68% (2026-08-12/15), VELVET -46% in an hour (2026-07-24),
       // JCT -82.4% off its 2026-06-13 peak, single-day ranges of 96%, 96% and 83% (2026-09-10)
       "(APR|JCT|VELVET)/.*",
