@@ -70,7 +70,7 @@ class NostalgiaForInfinityX8(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v18.0.125"
+    return "v18.0.126"
 
   stoploss = -0.99
 
@@ -20910,6 +20910,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((top_wick_pct_1d_lt_30) | (stochrsi_k_4h_lt_50))
             # 1d top wick, 1h down move
             & ((top_wick_pct_1d_lt_50) | (rsi_3_1h_gt_30))
+            # big drop in last hough, 4h down move, 1h still not low enough
+            & ((close > (close_max_12 * 0.90)) | (rsi_3_4h_gt_10) | (stochrsi_k_1h_lt_30))
             # big drop in the last 12 days, 1h down move, 1h high
             & ((close > (high_max_12_1d * 0.35)) | (rsi_3_1h_gt_35) | aroonu_14_1h_lt_70)
             # big drop in the last 20 days, 1h down move, 1h high
