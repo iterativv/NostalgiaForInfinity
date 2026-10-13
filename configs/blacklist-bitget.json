@@ -56,6 +56,12 @@
       "BGB/.*",
       // Leverage tokens
       ".*(3L|3S|5L|5S)/.*",
+      // CSOP 2x leveraged ETFs, Bitget only. Bitget bakes the fund's denomination
+      // currency into the base, so these end in HKD and the leverage marker sits in the
+      // middle: the end-anchored rule above cannot reach them, and it has no 2L/2S arm
+      // either. The same two funds are already covered on binance and bybit, where they
+      // list as CSOPSKHYNIX2L and CSOPSAMSUNG2L and the suffix rules do catch them.
+      "(CSOPSK2LHKD|CSOPSS2LHKD)/.*",
       ".{3,}(UP|DOWN)/.*",
       // Fiat
       "(RCCL|RTRV|RTXSTOCK|RIF|AUD|BRZ|CAD|CHF|EUR|GBP|HKD|IDRT|JPY|NGN|RUB|SGD|TRY|UAH|USD|ZAR)/.*",
