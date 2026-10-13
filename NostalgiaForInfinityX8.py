@@ -11699,6 +11699,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((stochrsi_k_1d_lt_90) | (roc_9_4h_lt_100) | (roc_9_1d_lt_100))
             # 1d P&D, 4h overbought
             & ((change_pct_1d_gt_neg_10) | (change_pct_1d_shift_288 < 30.0) | (roc_9_4h_lt_10))
+            # big drop in last hough, 4h down move, 1h still not low enough
+            & ((close > (close_max_12 * 0.90)) | (rsi_3_4h_gt_10) | (stochrsi_k_1h_lt_30))
             # big drop in the last 20 days, 1d high, 1d downtrend
             & ((close > (high_max_20_1d * 0.20)) | (stochrsi_k_1d_lt_70) | (roc_9_1d_gt_neg_15))
           )
