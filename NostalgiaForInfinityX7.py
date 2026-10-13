@@ -23516,7 +23516,9 @@ class NostalgiaForInfinityX7(IStrategy):
             # 1h down move, drop but not yet near the previous lows
             & ((rsi_3_1h_gt_30) | (close > (high_max_12_4h * 0.50)) | (close < (low_min_24_4h * 1.25)))
             # 1d overbought, drop but not yet near the previous lows
-            & (roc_9_1d_lt_50 | (close > (high_max_6_1d * 0.70)) | (close < (low_min_12_1d * 1.25)))
+            & ((roc_9_1d_lt_50) | (close > (high_max_6_1d * 0.70)) | (close < (low_min_12_1d * 1.25)))
+            # big drop in last hough, 4h down move, 1h still not low enough
+            & ((close > (close_max_12 * 0.90)) | (rsi_3_4h_gt_10) | (stochrsi_k_1h_lt_30))
             # big drop in last 6 hours, 1d overbought
             & ((close > (high_max_6_1h * 0.65)) | roc_9_1d_lt_50)
             # big drop in last 4 hours, 4h still not low enough
