@@ -22535,6 +22535,8 @@ class NostalgiaForInfinityX7(IStrategy):
             & ((change_pct_1d_lt_30) | (top_wick_pct_1d_lt_20) | aroonu_14_4h_lt_80)
             # 1d top wick, 4h down move, 1d overbought
             & ((top_wick_pct_1d_lt_50) | (rsi_3_4h_gt_35) | (roc_9_1d_lt_60))
+            # big drop in last hough, 4h down move, 1h still not low enough
+            & ((close > (close_max_12 * 0.90)) | (rsi_3_4h_gt_10) | (stochrsi_k_1h_lt_30))
             # drop in last 20 days, 4h high
             & ((close > (high_max_20_1d * 0.10)) | (stochrsi_k_4h_lt_90))
             # drop in last 20 days, 1h high, 1d downtrend
