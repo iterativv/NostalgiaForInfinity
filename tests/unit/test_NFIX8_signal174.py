@@ -40,8 +40,9 @@ def test_hourly_breakout_emits_only_first_closed_hour(hourly_strategy):
   # Given: two consecutive breakouts, both preceded by a narrower candle.
   # When: the real informative indicator pipeline calculates the event.
   result = hourly_strategy.informative_1h_indicators({"pair": "BTC/USDT:USDT"}, "1h")
-  # Then: the continuing breakout does not re-arm the event.
-  assert result.index[result["s174_event"]].tolist() == [220]
+  # Then: the continuing breakout does not re-arm the event. The column is 0/1 float and is
+  # read `> 0.5`, like the other pattern columns, so select on it the same way.
+  assert result.index[result["s174_event"] > 0.5].tolist() == [220]
 
 
 @pytest.mark.parametrize("defect", ["gap", "equal_range", "equal_high", "zero_volume", "nan", "infinity"])
@@ -80,8 +81,11 @@ def test_hourly_breakout_is_disabled_by_default(hourly_strategy):
   hourly_strategy.long_entry_signal_params = NostalgiaForInfinityX8.long_entry_signal_params.copy()
   # When: indicators are calculated without enabling 174.
   result = hourly_strategy.informative_1h_indicators({"pair": "BTC/USDT:USDT"}, "1h")
-  # Then: no additional event column is introduced.
-  assert "s174_event" not in result
+  # Then: the entry stays off, while the pattern column is still computed — unconditionally,
+  # as 0/1 float — like the other dispatch-loop signals.
+  assert NostalgiaForInfinityX8.long_entry_signal_params["long_entry_condition_174_enable"] is False
+  assert result["s174_event"].dtype == "float64"
+  assert set(result["s174_event"].unique()) <= {0.0, 1.0}
 
 
 def test_hourly_breakout_empty_frame(hourly_frame, hourly_strategy):
@@ -89,5 +93,5 @@ def test_hourly_breakout_empty_frame(hourly_frame, hourly_strategy):
   hourly_strategy.dp = SimpleNamespace(get_pair_dataframe=lambda **kwargs: hourly_frame.iloc[:0].copy())
   # When: the real informative path executes.
   result = hourly_strategy.informative_1h_indicators({"pair": "BTC/USDT:USDT"}, "1h")
-  # Then: it remains empty and provides the enabled event column.
-  assert result.empty and result["s174_event"].dtype == bool
+  # Then: it remains empty and provides the event column, as 0/1 float.
+  assert result.empty and result["s174_event"].dtype == "float64"

@@ -1,0 +1,40 @@
+name: Unit Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Pull test image
+        run: docker pull ghcr.io/iterativv/ci-strategy-backtesting:latest
+
+      - name: Run unit tests
+        run: |
+          mkdir -p artifacts && chmod 777 artifacts
+          docker run -v "$PWD:/testing" \
+            --rm \
+            -w /testing \
+            --entrypoint "" \
+            -e "COLUMNS=240" \
+            ghcr.io/iterativv/ci-strategy-backtesting:latest \
+            python -m pytest tests/unit tests/tools \
+              -ra \
+              --log-cli-level=info \
+              --artifacts-path=artifacts/ \
+              -p no:cacheprovider \
+              -n auto \
+              --junitxml=artifacts/unit-report.xml
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: unit-tests-report
+          path: artifacts/unit-report.xml
