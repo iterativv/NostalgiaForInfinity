@@ -1,0 +1,46 @@
+.nfi-hero {
+  display: flex;
+  align-items: center;
+  gap: clamp(1.5rem, 5vw, 4rem);
+  padding: clamp(1rem, 5vw, 3rem) 0;
+}
+
+.nfi-hero__logo {
+  width: min(38%, 19rem);
+  height: auto;
+  flex: 0 0 auto;
+  border-radius: 50%;
+}
+
+.nfi-hero__content h1 {
+  margin-bottom: 0.5rem;
+  font-size: clamp(1.75rem, 2.8vw, 2.4rem);
+}
+
+.nfi-hero__tagline {
+  font-size: 1.15rem;
+}
+
+.nfi-hero__badges,
+.nfi-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.nfi-hero__badges img {
+  display: block;
+}
+
+@media screen and (max-width: 600px) {
+  .nfi-hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nfi-hero__logo {
+    width: min(65%, 14rem);
+  }
+}

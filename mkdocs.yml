@@ -8,6 +8,8 @@ markdown_extensions:
   - attr_list
 theme:
   name: material
+  logo: assets/infinity.png
+  favicon: assets/infinity.png
   features:
     - content.code.annotate
     - search.share
@@ -36,6 +38,8 @@ theme:
       toggle:
         icon: material/brightness-4
         name: Switch to system preference
+extra_css:
+  - stylesheets/extra.css
 nav:
   - Home: index.md
   - Installation (Simple):
