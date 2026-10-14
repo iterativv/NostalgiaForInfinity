@@ -1,0 +1,202 @@
+name: NFI X7 Informative Indicators Tests
+
+on:
+  pull_request:
+    paths:
+      - NostalgiaForInfinityX7.py
+      - tests/unit/test_NFIX7_informative_indicators.py
+      - tests/differential/test_NFIX7_informative_equivalence.py
+      - tests/differential/verify_nfix7_evidence.py
+      - .github/workflows/unit-tests.yml
+      - docker/Dockerfile.custom
+      - tests/requirements.txt
+      - docker-compose.tests.yml
+
+permissions:
+  contents: read
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    env:
+      BASE_SHA: ${{ github.event.pull_request.base.sha }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+
+    steps:
+      - name: Checkout exact pull-request head
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Run immutable #450 evidence gates
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f \
+            artifacts/focused.xml artifacts/full-unit.xml artifacts/differential.xml \
+            artifacts/nfix7-informative-raw.json \
+            artifacts/nfix7-informative-equivalence.json
+
+          test "$(git rev-parse HEAD)" = "$HEAD_SHA"
+          test "$BASE_SHA" != "$HEAD_SHA"
+          git fetch --no-tags origin "$BASE_SHA"
+          test "$(git rev-parse "$BASE_SHA^{commit}")" = "$BASE_SHA"
+          test "$(git rev-parse "$HEAD_SHA^{commit}")" = "$HEAD_SHA"
+
+          ALLOWED_PATHS=(
+            NostalgiaForInfinityX7.py
+            tests/unit/test_NFIX7_informative_indicators.py
+            tests/differential/test_NFIX7_informative_equivalence.py
+            tests/differential/verify_nfix7_evidence.py
+            .github/workflows/unit-tests.yml
+          )
+          IFS=$'\t' read -r CHANGED_PATHS_JSON CHANGED_PATHS_SHA256 < <(
+          python3 - "$BASE_SHA" "$HEAD_SHA" "${ALLOWED_PATHS[@]}" <<'PY'
+          import hashlib, json, subprocess, sys
+          base, head = sys.argv[1:3]
+          expected = sorted(sys.argv[3:])
+          raw = subprocess.check_output([
+              "git", "-c", "diff.renames=false", "diff",
+              "--name-only", "-z", base, head,
+          ])
+          actual = sorted(path.decode("utf-8") for path in raw.split(b"\0") if path)
+          if actual != expected:
+              raise SystemExit(f"scope mismatch: expected={expected!r} actual={actual!r}")
+          payload = "\0".join(actual).encode("utf-8")
+          print(json.dumps(actual, separators=(",", ":")), hashlib.sha256(payload).hexdigest(), sep="\t")
+          PY
+          )
+
+          mkdir -p artifacts artifacts/nfix7-baseline
+          chmod 0777 artifacts
+          git show "$BASE_SHA:NostalgiaForInfinityX7.py" \
+            > artifacts/nfix7-baseline/NostalgiaForInfinityX7.py
+          BASE_SOURCE_SHA256=$(sha256sum artifacts/nfix7-baseline/NostalgiaForInfinityX7.py | cut -d' ' -f1)
+
+          PRECOMMIT_VENV=/tmp/nfix7-precommit-4.6.1
+          python3 -m venv --clear "$PRECOMMIT_VENV"
+          "$PRECOMMIT_VENV/bin/python" -m pip install \
+            --disable-pip-version-check 'pre-commit==4.6.1'
+          PRE_COMMIT_VERSION=$("$PRECOMMIT_VENV/bin/pre-commit" --version)
+          test "$PRE_COMMIT_VERSION" = 'pre-commit 4.6.1'
+
+          python3 -m py_compile NostalgiaForInfinityX7.py
+          "$PRECOMMIT_VENV/bin/pre-commit" run --files \
+            NostalgiaForInfinityX7.py \
+            tests/unit/test_NFIX7_informative_indicators.py \
+            tests/differential/test_NFIX7_informative_equivalence.py \
+            tests/differential/verify_nfix7_evidence.py \
+            .github/workflows/unit-tests.yml
+          git diff --check
+          test "$(git rev-parse HEAD)" = "$HEAD_SHA"
+          test -z "$(git status --porcelain=v1 --untracked-files=all)"
+          git diff --exit-code "$HEAD_SHA" --
+          git diff --cached --exit-code "$HEAD_SHA" --
+
+          FEATURE_SOURCE_SHA256=$(sha256sum NostalgiaForInfinityX7.py | cut -d' ' -f1)
+          test "$BASE_SOURCE_SHA256" != "$FEATURE_SOURCE_SHA256"
+          FEATURE_BUNDLE_SHA256=$(python3 - "${ALLOWED_PATHS[@]}" <<'PY'
+          import hashlib, pathlib, sys
+          digest = hashlib.sha256()
+          for raw_path in sorted(sys.argv[1:]):
+              path = pathlib.Path(raw_path)
+              data = path.read_bytes()
+              name = path.as_posix().encode("utf-8")
+              digest.update(len(name).to_bytes(8, "big")); digest.update(name)
+              digest.update(len(data).to_bytes(8, "big")); digest.update(data)
+          print(digest.hexdigest())
+          PY
+          )
+
+          TEST_IMAGE_TAG="nfi-x7-issue450-tests:${HEAD_SHA}"
+          docker build -f docker/Dockerfile.custom -t "$TEST_IMAGE_TAG" .
+          TEST_IMAGE_ID=$(docker image inspect "$TEST_IMAGE_TAG" --format '{{.Id}}')
+          test -n "$TEST_IMAGE_ID"
+
+          docker run --rm -v "$PWD:/testing" -w /testing --entrypoint "" \
+            "$TEST_IMAGE_ID" python -m pytest -o addopts="" -o xfail_strict=true \
+            tests/unit/test_NFIX7_informative_indicators.py -q \
+            --junitxml=/testing/artifacts/focused.xml
+
+          docker run --rm -v "$PWD:/testing" -w /testing --entrypoint "" \
+            "$TEST_IMAGE_ID" python -m pytest -o addopts="" tests/unit -q \
+            --junitxml=/testing/artifacts/full-unit.xml
+
+          docker run --rm -v "$PWD:/testing" -w /testing --entrypoint "" \
+            -e NFI_BASE_STRATEGY=/testing/artifacts/nfix7-baseline/NostalgiaForInfinityX7.py \
+            -e NFI_EVIDENCE_MODE=pull-request \
+            -e NFI_BASE_SHA="$BASE_SHA" -e NFI_HEAD_SHA="$HEAD_SHA" \
+            -e NFI_BASE_SOURCE_SHA256="$BASE_SOURCE_SHA256" \
+            -e NFI_FEATURE_SOURCE_SHA256="$FEATURE_SOURCE_SHA256" \
+            -e NFI_FEATURE_BUNDLE_SHA256="$FEATURE_BUNDLE_SHA256" \
+            -e NFI_CHANGED_PATHS_JSON="$CHANGED_PATHS_JSON" \
+            -e NFI_CHANGED_PATHS_SHA256="$CHANGED_PATHS_SHA256" \
+            -e NFI_TEST_IMAGE_ID="$TEST_IMAGE_ID" \
+            -e NFI_PRE_COMMIT_VERSION="$PRE_COMMIT_VERSION" \
+            "$TEST_IMAGE_ID" python -m pytest -o addopts="" -o xfail_strict=true \
+            tests/differential/test_NFIX7_informative_equivalence.py -q \
+            --junitxml=/testing/artifacts/differential.xml
+
+          test "$(git rev-parse HEAD)" = "$HEAD_SHA"
+          test -z "$(git status --porcelain=v1 --untracked-files=all)"
+          git diff --exit-code "$HEAD_SHA" --
+          git diff --cached --exit-code "$HEAD_SHA" --
+          python3 - \
+            "$BASE_SHA" "$HEAD_SHA" \
+            "$FEATURE_SOURCE_SHA256" "$FEATURE_BUNDLE_SHA256" \
+            "$CHANGED_PATHS_JSON" "$CHANGED_PATHS_SHA256" \
+            "${ALLOWED_PATHS[@]}" <<'PY'
+          import hashlib, json, pathlib, subprocess, sys
+          base, head, expected_source, expected_bundle, expected_json, expected_path_hash = sys.argv[1:7]
+          allowed = sorted(sys.argv[7:])
+          source = hashlib.sha256(pathlib.Path("NostalgiaForInfinityX7.py").read_bytes()).hexdigest()
+          assert source == expected_source
+          raw = subprocess.check_output([
+              "git", "-c", "diff.renames=false", "diff",
+              "--name-only", "-z", base, head,
+          ])
+          paths = sorted(path.decode("utf-8") for path in raw.split(b"\0") if path)
+          assert paths == allowed
+          actual_json = json.dumps(paths, separators=(",", ":"))
+          assert actual_json == expected_json
+          assert hashlib.sha256("\0".join(paths).encode("utf-8")).hexdigest() == expected_path_hash
+          digest = hashlib.sha256()
+          for raw_path in paths:
+              path = pathlib.Path(raw_path)
+              data = path.read_bytes()
+              name = path.as_posix().encode("utf-8")
+              digest.update(len(name).to_bytes(8, "big")); digest.update(name)
+              digest.update(len(data).to_bytes(8, "big")); digest.update(data)
+          assert digest.hexdigest() == expected_bundle
+          PY
+          test "$(git rev-parse HEAD)" = "$HEAD_SHA"
+
+          docker run --rm -v "$PWD:/testing" -w /testing --entrypoint "" \
+            "$TEST_IMAGE_ID" python tests/differential/verify_nfix7_evidence.py \
+            --focused artifacts/focused.xml \
+            --full-unit artifacts/full-unit.xml \
+            --differential artifacts/differential.xml \
+            --raw artifacts/nfix7-informative-raw.json \
+            --output artifacts/nfix7-informative-equivalence.json \
+            --mode pull-request --base-sha "$BASE_SHA" --head-sha "$HEAD_SHA" \
+            --base-source-sha256 "$BASE_SOURCE_SHA256" \
+            --feature-source-sha256 "$FEATURE_SOURCE_SHA256" \
+            --feature-bundle-sha256 "$FEATURE_BUNDLE_SHA256" \
+            --changed-paths-json "$CHANGED_PATHS_JSON" \
+            --changed-paths-sha256 "$CHANGED_PATHS_SHA256" \
+            --image-id "$TEST_IMAGE_ID" \
+            --pre-commit-version "$PRE_COMMIT_VERSION"
+
+      - name: Upload #450 test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nfix7-informative-indicators-${{ github.event.pull_request.head.sha }}
+          if-no-files-found: warn
+          path: |
+            artifacts/focused.xml
+            artifacts/full-unit.xml
+            artifacts/differential.xml
+            artifacts/nfix7-informative-raw.json
+            artifacts/nfix7-informative-equivalence.json
