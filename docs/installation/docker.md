@@ -204,7 +204,7 @@ http://0.0.0.0:8080
 
 ## Automatic Updates (Standalone Script) (Recommended)
 
-For users who are not using the Docker Compose updater, the repository also includes the [`tools/checkupdates.sh`](../../tools/checkupdates.sh) script.
+For users who are not using the Docker Compose updater, the repository also includes the [`tools/checkupdates.sh`](https://github.com/iterativv/NostalgiaForInfinity/blob/main/tools/checkupdates.sh) script.
 
 **What this script does:**
 - Checks the NFI repository for updates and downloads the latest release or main branch commit
