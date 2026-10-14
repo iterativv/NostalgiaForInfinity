@@ -41541,7 +41541,7 @@ class NostalgiaForInfinityX8(IStrategy):
       derisk_1_enable = self.system_v4_derisk_level_1_enable
       derisk_2_enable = self.system_v4_derisk_level_2_enable
       derisk_3_enable = self.system_v4_derisk_level_3_enable
-      derisk_4_enable = False
+      derisk_4_enable = self.system_v4_derisk_level_4_enable
       if is_futures_mode:
         derisk_1_threshold = self.system_v4_derisk_level_1_futures[1]
         derisk_1_stake = self.system_v4_derisk_level_1_stake_futures
@@ -41549,6 +41549,8 @@ class NostalgiaForInfinityX8(IStrategy):
         derisk_2_stake = self.system_v4_derisk_level_2_stake_futures
         derisk_3_threshold = self.system_v4_derisk_level_3_futures[1]
         derisk_3_stake = self.system_v4_derisk_level_3_stake_futures
+        derisk_4_threshold = self.system_v4_derisk_level_4_futures[1]
+        derisk_4_stake = self.system_v4_derisk_level_4_stake_futures
       else:
         derisk_1_threshold = self.system_v4_derisk_level_1_spot[1]
         derisk_1_stake = self.system_v4_derisk_level_1_stake_spot
@@ -41556,6 +41558,8 @@ class NostalgiaForInfinityX8(IStrategy):
         derisk_2_stake = self.system_v4_derisk_level_2_stake_spot
         derisk_3_threshold = self.system_v4_derisk_level_3_spot[1]
         derisk_3_stake = self.system_v4_derisk_level_3_stake_spot
+        derisk_4_threshold = self.system_v4_derisk_level_4_spot[1]
+        derisk_4_stake = self.system_v4_derisk_level_4_stake_spot
     derisk_enable = self.derisk_enable
     # ---------------------------------------------------------------------
     # De-risk level 1
