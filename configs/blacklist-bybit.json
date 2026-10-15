@@ -39,6 +39,13 @@
       // being selectable on the way down. The market contracts stay on-chain; the team has
       // stepped back from the product.
       "(BLUR)/.*",
+      // The network itself is being wound down — Blast announced on 2026-10-02 that the L2 is
+      // shutting down and told users to bridge back to Ethereum mainnet by 10-26; assets left on
+      // it after that are stranded. Bybit pulled the BLASTUSDT perp on 10-04 and no perp remains
+      // on binance, bybit or bitget. What is left is thin spot — ~$0.04M/day on gate and ~$0.08M
+      // on kucoin — at 0.000043, -87.6% over 30 days and -92.9% off its high. Unlike BLUR this is
+      // not a frontend shutting while the contracts live on; the chain is going away.
+      "(BLAST)/.*",
       // Parabolic squeeze in a newly eligible listing — 486.7% range inside the 2026-10-12 21:00
       // hour (0.3785 -> 0.8542 -> 0.1456 -> 0.2002, +126% then -83%), 64 days since listing and
       // -72.8% off its high on ~$196M/day
