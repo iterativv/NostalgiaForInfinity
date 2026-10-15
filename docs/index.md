@@ -1,3 +1,30 @@
+<div class="nfi-hero">
+  <img class="nfi-hero__logo" src="assets/infinity.png" alt="NostalgiaForInfinity infinity logo">
+  <div class="nfi-hero__content">
+    <h1>NostalgiaForInfinity</h1>
+    <p class="nfi-hero__tagline">A trading strategy for the Freqtrade crypto bot.</p>
+    <div class="nfi-hero__badges">
+      <a href="https://github.com/iterativv/NostalgiaForInfinity"><img src="https://img.shields.io/github/stars/iterativv/NostalgiaForInfinity?style=flat-square&label=GitHub%20stars" alt="GitHub stars"></a>
+      <a href="https://www.freqtrade.io"><img src="https://img.shields.io/badge/powered%20by-Freqtrade-blue?style=flat-square" alt="Powered by Freqtrade"></a>
+    </div>
+    <div class="nfi-hero__actions">
+      <a class="md-button md-button--primary" href="installation/docker/">Get started</a>
+      <a class="md-button" href="https://github.com/iterativv/NostalgiaForInfinity">View on GitHub</a>
+    </div>
+  </div>
+</div>
+
+## Documentation
+
+Choose a guide to get started or explore the strategy:
+
+- [Install with Docker](installation/docker.md)
+- [Install without Docker](installation/without-docker.md)
+- [Project overview](project-overview.md)
+- [Trading modes](trading-modes/trading-modes.md)
+- [Backtesting](backtesting/backtesting.md)
+- [Configuration guide](configuration-guide/configuration-guide.md)
+
 ## Introduction
 
 Trading strategy for the [Freqtrade](https://www.freqtrade.io) crypto bot. For backtesting results, check out the comments in the individual [commit](https://github.com/iterativv/NostalgiaForInfinity/commits/main) page.
