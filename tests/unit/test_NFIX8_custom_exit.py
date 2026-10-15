@@ -76,8 +76,12 @@ def test_short_top_coins_reaches_existing_exit_signal(exit_strategy, enter_tag):
 
 @pytest.mark.parametrize("enter_tag", ["641", "642", "641 642"])
 def test_short_top_coins_without_exit_keeps_its_profit_target(exit_strategy, enter_tag):
+  # Every sub-handler of the top coins path is mocked: this test is about routing, not about
+  # the candle columns the handlers read.
   exit_strategy.short_exit_signals = MagicMock(return_value=(False, None))
   exit_strategy.short_exit_main = MagicMock(return_value=(False, None))
+  exit_strategy.short_exit_williams_r = MagicMock(return_value=(False, None))
+  exit_strategy.short_exit_dec = MagicMock(return_value=(False, None))
   exit_strategy.short_exit_stoploss = MagicMock(return_value=(False, None))
   exit_strategy.short_exit_normal.return_value = (True, "exit_short_normal_test")
 
