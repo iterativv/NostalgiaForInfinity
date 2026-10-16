@@ -466,7 +466,7 @@ class NostalgiaForInfinityX8(IStrategy):
   grinding_v2_derisk_level_1_futures = [-0.18, -0.35]
   grinding_v2_derisk_level_2_enable = True
   grinding_v2_derisk_level_2_spot = [-0.08, -0.18]
-  grinding_v2_derisk_level_2_futures = [-0.16, -0.54]
+  grinding_v2_derisk_level_2_futures = [-0.24, -0.54]
   grinding_v2_derisk_level_3_enable = True
   grinding_v2_derisk_level_3_spot = [-0.10, -0.20]
   grinding_v2_derisk_level_3_futures = [-0.30, -0.60]
@@ -2502,7 +2502,7 @@ class NostalgiaForInfinityX8(IStrategy):
     short_rapid_rebuy_grind_mode_tags = self.short_rapid_rebuy_grind_mode_tags
     short_grind_mode_tags = self.short_grind_mode_tags
 
-    enter_tags = entry_tag.split()
+    enter_tags = (entry_tag or "empty").split()
     is_futures_mode = self.is_futures_mode
     system_name_use = self.system_name_use
     system_name_is_v3 = system_name_use == system_v3_name
@@ -5364,7 +5364,7 @@ class NostalgiaForInfinityX8(IStrategy):
       return True
 
     # Mode Validation
-    entry_tags = entry_tag.split()
+    entry_tags = (entry_tag or "empty").split()
     is_long_side = side == "long"
     is_short_side = side == "short"
     long_grind_mode_tags = self.long_grind_mode_tags
@@ -5548,7 +5548,7 @@ class NostalgiaForInfinityX8(IStrategy):
     side: str,
     **kwargs,
   ) -> float:
-    enter_tags = entry_tag.split()
+    enter_tags = (entry_tag or "empty").split()
     long_rebuy_mode_tags = self.long_rebuy_mode_tags
     long_grind_mode_tags = self.long_grind_mode_tags
     if all(c in long_rebuy_mode_tags for c in enter_tags):
