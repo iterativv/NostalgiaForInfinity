@@ -4163,6 +4163,8 @@ class NostalgiaForInfinityX8(IStrategy):
     close_min_6 = ta_min(close_np, timeperiod=6)
     close_min_12 = ta_min(close_np, timeperiod=12)
     close_min_48 = ta_min(close_np, timeperiod=48)
+    # TAG562 filter: distance from 30d high (8640 x 5m). Shorts only well into breakdown.
+    dist_hh_30d = close_np / pd.Series(high_np).rolling(8640, min_periods=1).max().to_numpy() - 1.0
     num_empty_288 = ta_sum((volume_np <= 0).astype(np.float64), timeperiod=288)
 
     # =========================================================================
@@ -4383,6 +4385,7 @@ class NostalgiaForInfinityX8(IStrategy):
         "close_min_6": close_min_6,
         "close_min_12": close_min_12,
         "close_min_48": close_min_48,
+        "dist_hh_30d": dist_hh_30d,
         "num_empty_288": num_empty_288,
         "LARGE_BUBBLE_THR": large_bubble_thr,
         "CVD_BUY_VOL": cvd_buy_vol,
@@ -6011,6 +6014,7 @@ class NostalgiaForInfinityX8(IStrategy):
     close_min_6 = np_view("close_min_6")
     close_min_12 = np_view("close_min_12")
     close_min_48 = np_view("close_min_48")
+    dist_hh_30d = np_view("dist_hh_30d")
     uo_7_14_28_1h = np_view("UO_7_14_28_1h")
     rsi_14_change_pct = np_view("RSI_14_change_pct")
     range_pct_14_1d = np_view("RANGE_PCT_14_1d")
@@ -28132,6 +28136,7 @@ class NostalgiaForInfinityX8(IStrategy):
           short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           short_entry_logic.append(protections_short_global == True)
           short_entry_logic.append(roc_9_1d < 5.0)
+          short_entry_logic.append(dist_hh_30d < -0.12)  # TAG562: no shorts within 12% of 30d high
           short_entry_logic.append(rsi_14_4h < 48.0)
           short_entry_logic.append(rsi_14_1d < 50.0)
           short_entry_logic.append(rsi_14_1d > 25.0)
