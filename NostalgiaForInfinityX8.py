@@ -28137,9 +28137,7 @@ class NostalgiaForInfinityX8(IStrategy):
           short_entry_logic.append(protections_short_global == True)
           short_entry_logic.append(roc_9_1d < 5.0)
           # TAG562: no shorts within 12% of the 30d high, read off the 1d frame
-          short_entry_logic.append(
-            ((close / high_max_30_1d - 1.0) < -0.12) | np.isnan(high_max_30_1d)
-          )
+          short_entry_logic.append(((close / high_max_30_1d - 1.0) < -0.12) | np.isnan(high_max_30_1d))
           # TAG562-R2: no shorts into weekly rips, read off the 1d frame
           short_entry_logic.append((roc_7_1d < 8.0) | np.isnan(roc_7_1d))
           short_entry_logic.append(rsi_14_4h < 48.0)
