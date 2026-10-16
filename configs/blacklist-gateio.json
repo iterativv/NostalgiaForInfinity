@@ -46,6 +46,13 @@
       // on kucoin — at 0.000043, -87.6% over 30 days and -92.9% off its high. Unlike BLUR this is
       // not a frontend shutting while the contracts live on; the chain is going away.
       "(BLAST)/.*",
+      // Vesting pool drained — IMO was one of ten tokens hit by the UNCX Vesting V2 exploit that
+      // started on 2026-10-14. No keys were compromised: the contract's own bookkeeping let an
+      // attacker withdraw tokens backing other users' deposits, and copycat wallets grew the
+      // initial $86k on Ethereum to ~$1.49M across four chains. The candles carry the date — IMO
+      // ran 4-10% daily ranges until 10-14, then -16.7% on a 51.2% range and another 46.9% range
+      // the next day. Listed on mexc only, ~$0.02M/day.
+      "(IMO)/.*",
       // Parabolic squeeze in a newly eligible listing — 486.7% range inside the 2026-10-12 21:00
       // hour (0.3785 -> 0.8542 -> 0.1456 -> 0.2002, +126% then -83%), 64 days since listing and
       // -72.8% off its high on ~$196M/day
