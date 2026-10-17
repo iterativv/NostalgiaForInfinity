@@ -20,6 +20,14 @@
       // Collapse after a 215% day — -46.1% and -31.5% on consecutive days, -64.3% off
       // its 10-day high (2026-08-26/28)
       "(TAC)/.*",
+      // Falling knife since its September perp listings — protocol token of a
+      // stablecoin platform (mints USST/YLD), not a stable itself. CoinGecko #1141,
+      // ~$11.5M mcap, -96.2% off its $0.599 ATH (2025-09). Binance futures listed
+      // 2026-09-16; one month later -20% net with a +22.4% dead-cat (10-15) and a
+      // -20% round-trip the next day (10-16, 22% intraday range). Reachable by a
+      // USDT-M perp bot today ($67.2M/24h Binance, $12.0M Bybit, $7.4M BingX;
+      // perps also on gate, mexc, kucoin; spot on kraken USD/EUR).
+      "(STBL)/.*",
       // Kraken scheduled delisting cycle 2026-08-27 (iterativ). The other six of the batch —
       // IR, VANRY, MIR, RIZE, EPT and ACA — are already covered above.
       "(XTER|GAIA|SCA|BNC|SBR|RBC|JUNO|HDX|MULTI|MAT|CQT|CXT|BKS|VULT|M)/.*",
