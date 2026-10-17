@@ -70,6 +70,21 @@
       // thin: no binance perp at all, bybit ~$0.3M/day and bitget ~$0.9M/day, and the bybit perp
       // is already -33.8% below its own first candle 66 days ago.
       "(AEON)/.*",
+      // Caught our own bots — NXPC printed a 63.2% intraday range on 2026-10-15 while closing
+      // +4.3%, the huge-swing-flat-close shape a 3-day RangeStabilityFilter cannot see. Two of
+      // three bots entered on that exact day and were -22.4% and -36.9% two days later. It is
+      // -61.2% off its high and -41.3% below its own first candle 250 days ago, and the book has
+      // thinned to ~$15.6M on binance, $3.0M on bybit and $1.1M on bitget.
+      "(NXPC)/.*",
+      // Seven years of exposed keys — Zilliqa disclosed a nonce-generation flaw in its Ledger app
+      // that lets a private key be recovered from public signatures after about five native
+      // transactions. The app drew enough randomness but copied the wrong 32 bytes into Schnorr
+      // signing, so the nonce repeats. Every version shipped from 2019 to 2026 is affected and
+      // exploitation was observed on 2026-07-19; native transactions are suspended and affected
+      // keys must be retired (EVM transactions are unaffected). Upbit flagged ZIL a cautionary
+      // asset, froze deposits and withdrawals and delists on 11-16; Bithumb is delisting too.
+      // -50.1% off its high and -34.1% over the week, still ~$37.6M/day on binance perps.
+      "(ZIL)/.*",
       // Parabolic squeeze in a newly eligible listing — 486.7% range inside the 2026-10-12 21:00
       // hour (0.3785 -> 0.8542 -> 0.1456 -> 0.2002, +126% then -83%), 64 days since listing and
       // -72.8% off its high on ~$196M/day
