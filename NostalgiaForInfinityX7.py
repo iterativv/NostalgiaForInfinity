@@ -55506,7 +55506,7 @@ class NostalgiaForInfinityX7(IStrategy):
     current_exit_profit: float,
     **kwargs,
   ) -> Optional[float]:
-    # min/max stakes include leverage. The return amounts is before leverage.
+    # Stake limits and rebuy amounts are margin, before leverage.
     config = self.config
 
     dp = self.dp
@@ -55520,7 +55520,6 @@ class NostalgiaForInfinityX7(IStrategy):
     if trade.has_open_orders:
       return None
 
-    max_stake /= trade_leverage
     df, _ = dp.get_analyzed_dataframe(trade_pair, self.timeframe)
     if len(df) < 2:
       return None
@@ -55544,6 +55543,7 @@ class NostalgiaForInfinityX7(IStrategy):
     has_order_tags = hasattr(first_filled_order, "ft_order_tag")
 
     # The first exit is de-risk (providing the trade is still open)
+    # Preserve the existing grind handoff budget after de-risk.
     if (count_of_exits > 0) and (filled_exits[0].ft_order_tag == "derisk_level_3"):
       return self.long_grind_adjust_trade_position_v2(
         trade,
@@ -55552,7 +55552,7 @@ class NostalgiaForInfinityX7(IStrategy):
         current_rate,
         current_profit,
         min_stake,
-        max_stake,
+        max_stake / trade_leverage,
         current_entry_rate,
         current_exit_rate,
         current_entry_profit,
@@ -55706,7 +55706,7 @@ class NostalgiaForInfinityX7(IStrategy):
     current_exit_profit: float,
     **kwargs,
   ) -> Optional[float]:
-    # min/max stakes include leverage. The return amounts is before leverage.
+    # Stake limits and rebuy amounts are margin, before leverage.
     dp = self.dp
     is_futures_mode = self.is_futures_mode
     config = self.config
@@ -55719,7 +55719,6 @@ class NostalgiaForInfinityX7(IStrategy):
       return None
 
     min_stake = self.correct_min_stake(min_stake, trade_leverage)
-    max_stake /= trade_leverage
     exit_rate = current_rate
     filled_orders, filled_entries, filled_exits, profit_values = self.profit_or_order_snapshot(
       trade, current_time, exit_rate
@@ -55737,6 +55736,7 @@ class NostalgiaForInfinityX7(IStrategy):
     has_order_tags = hasattr(first_filled_order, "ft_order_tag")
 
     # The first exit is de-risk (providing the trade is still open)
+    # Preserve the existing grind handoff budget after de-risk.
     if (count_of_exits > 0) and (filled_exits[0].ft_order_tag == "derisk_level_3"):
       return self.long_grind_adjust_trade_position_v3(
         trade,
@@ -55745,7 +55745,7 @@ class NostalgiaForInfinityX7(IStrategy):
         current_rate,
         current_profit,
         min_stake,
-        max_stake,
+        max_stake / trade_leverage,
         current_entry_rate,
         current_exit_rate,
         current_entry_profit,
@@ -78950,7 +78950,7 @@ class NostalgiaForInfinityX7(IStrategy):
     current_exit_profit: float,
     **kwargs,
   ) -> Optional[float]:
-    # min/max stakes include leverage. The return amounts is before leverage.
+    # Stake limits and rebuy amounts are margin, before leverage.
     config = self.config
 
     dp = self.dp
@@ -78964,7 +78964,6 @@ class NostalgiaForInfinityX7(IStrategy):
     if trade.has_open_orders:
       return None
 
-    max_stake /= trade_leverage
     df, _ = dp.get_analyzed_dataframe(trade_pair, self.timeframe)
     if len(df) < 2:
       return None
@@ -78988,6 +78987,7 @@ class NostalgiaForInfinityX7(IStrategy):
     has_order_tags = hasattr(first_filled_order, "ft_order_tag")
 
     # The first exit is de-risk (providing the trade is still open)
+    # Preserve the existing grind handoff budget after de-risk.
     if (count_of_exits > 0) and (filled_exits[0].ft_order_tag == "derisk_level_3"):
       return self.short_grind_adjust_trade_position_v2(
         trade,
@@ -78996,7 +78996,7 @@ class NostalgiaForInfinityX7(IStrategy):
         current_rate,
         current_profit,
         min_stake,
-        max_stake,
+        max_stake / trade_leverage,
         current_entry_rate,
         current_exit_rate,
         current_entry_profit,
@@ -79140,7 +79140,7 @@ class NostalgiaForInfinityX7(IStrategy):
     current_exit_profit: float,
     **kwargs,
   ) -> Optional[float]:
-    # min/max stakes include leverage. The return amounts is before leverage.
+    # Stake limits and rebuy amounts are margin, before leverage.
     dp = self.dp
     is_futures_mode = self.is_futures_mode
     config = self.config
@@ -79153,7 +79153,6 @@ class NostalgiaForInfinityX7(IStrategy):
       return None
 
     min_stake = self.correct_min_stake(min_stake, trade_leverage)
-    max_stake /= trade_leverage
     exit_rate = current_rate
     filled_orders, filled_entries, filled_exits, profit_values = self.profit_or_order_snapshot(
       trade, current_time, exit_rate
@@ -79171,6 +79170,7 @@ class NostalgiaForInfinityX7(IStrategy):
     has_order_tags = hasattr(first_filled_order, "ft_order_tag")
 
     # The first exit is de-risk (providing the trade is still open)
+    # Preserve the existing grind handoff budget after de-risk.
     if (count_of_exits > 0) and (filled_exits[0].ft_order_tag == "derisk_level_3"):
       return self.short_grind_adjust_trade_position_v3(
         trade,
@@ -79179,7 +79179,7 @@ class NostalgiaForInfinityX7(IStrategy):
         current_rate,
         current_profit,
         min_stake,
-        max_stake,
+        max_stake / trade_leverage,
         current_entry_rate,
         current_exit_rate,
         current_entry_profit,

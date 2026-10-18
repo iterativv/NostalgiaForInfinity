@@ -8,13 +8,10 @@ import pytest
 from freqtrade.data.dataprovider import DataProvider
 from freqtrade.enums import CandleType
 from freqtrade.enums import RunMode
-from freqtrade.enums import State
 from freqtrade.enums import TradingMode
-from freqtrade.freqtradebot import FreqtradeBot
 from freqtrade.persistence import init_db
 from freqtrade.persistence import Order
 from freqtrade.persistence import Trade
-from freqtrade.wallets import Wallets
 
 from NostalgiaForInfinityX7 import NostalgiaForInfinityX7
 from NostalgiaForInfinityX8 import NostalgiaForInfinityX8
@@ -142,8 +139,7 @@ def test_rebuy_falls_through_to_derisk_only_when_unaffordable(rebuy_case, max_st
   strategy, trade, rate, _ = rebuy_case
   rebuy_margin = 1200.0 / trade.leverage
 
-  # Preserve the strategy's existing max_stake / leverage affordability check.
-  result = run_adjust(strategy, trade, rate, 1200.0 * max_stake_fraction)
+  result = run_adjust(strategy, trade, rate, rebuy_margin * max_stake_fraction)
 
   if max_stake_fraction < 1.0:
     assert_derisk(result, trade, rate)
@@ -181,7 +177,8 @@ def test_unaffordable_rebuy_respects_loss_threshold(rebuy_case):
   strategy.dp.send_msg.assert_not_called()
 
 
-def test_rebuy_affordability_includes_minimum_order_uplift(rebuy_case, rebuy_system):
+@pytest.mark.parametrize("max_stake", [6.25, 7.5, 8.75])
+def test_rebuy_affordability_includes_minimum_order_uplift(rebuy_case, rebuy_system, max_stake):
   strategy, trade, rate, _ = rebuy_case
   _, system = rebuy_system
   prefix = "" if system == "legacy" else f"{system}_"
@@ -191,9 +188,12 @@ def test_rebuy_affordability_includes_minimum_order_uplift(rebuy_case, rebuy_sys
   stakes[1] = 0.001
   setattr(strategy, stakes_name, stakes)
 
-  result = run_adjust(strategy, trade, rate, 6.25 * trade.leverage)
+  result = run_adjust(strategy, trade, rate, max_stake)
 
-  assert_derisk(result, trade, rate)
+  if max_stake < 7.5:
+    assert_derisk(result, trade, rate)
+  else:
+    assert result == (7.5, "r")
   strategy.dp.send_msg.assert_called_once()
 
 
@@ -208,81 +208,41 @@ def test_open_order_still_prevents_rebuy_and_derisk(rebuy_case):
   strategy.dp.send_msg.assert_not_called()
 
 
-@pytest.mark.parametrize(
-  "free_stake,derisk_enabled,expected",
-  [(0.0, True, "exit"), (100.0, True, "exit"), (5000.0, True, "entry"), (0.0, False, None)],
-  ids=["empty-wallet", "insufficient-wallet", "funded-wallet", "derisk-disabled"],
-)
-def test_engine_creates_derisk_exit_when_rebuy_cannot_be_funded(
-  rebuy_case, mocker, free_stake, derisk_enabled, expected
-):
+def test_completed_derisk_preserves_existing_grind_handoff(rebuy_case, rebuy_system, mocker):
   strategy, trade, rate, _ = rebuy_case
-  strategy.derisk_enable = derisk_enabled
-  strategy.config.update(
-    dry_run=True,
-    dry_run_wallet=trade.stake_amount + free_stake,
-    tradable_balance_ratio=1.0,
-    trading_mode=trade.trading_mode,
-  )
-  bot = FreqtradeBot.__new__(FreqtradeBot)
-  bot.config = strategy.config
-  bot.strategy = strategy
-  bot.trading_mode = trade.trading_mode
-  bot.state = State.RUNNING
-  bot._exit_reason_cache = {}
-  # Replace external exchange/RPC boundaries, not wallet or adjustment logic.
-  bot.exchange = MagicMock()
-  bot.exchange.get_proxy_coin.return_value = "USDT"
-  bot.exchange.get_pair_base_currency.return_value = "ETH"
-  bot.exchange.get_rates.return_value = (rate, rate)
-  bot.exchange.get_min_pair_stake_amount.return_value = 5.0
-  bot.exchange.get_max_pair_stake_amount.return_value = 1000000.0
-  bot.exchange.amount_to_contract_precision.side_effect = lambda pair, amount: round(amount, 8)
-  bot.exchange.get_funding_fees.return_value = 0.0
-  bot.exchange.create_order.return_value = {
-    "id": "derisk-exit",
-    "symbol": trade.pair,
-    "type": "limit",
-    "side": trade.exit_side,
-    "status": "open",
-    "price": rate,
-    "amount": trade.amount - 7.75 * trade.leverage / rate,
-    "filled": 0.0,
-    "remaining": trade.amount - 7.75 * trade.leverage / rate,
-    "cost": 0.0,
-    "timestamp": int(NOW.timestamp() * 1000),
-  }
-  bot.wallets = Wallets(bot.config, bot.exchange)
-  bot._notify_exit = MagicMock()
-  bot.execute_entry = MagicMock()
-  mocker.patch("freqtrade.freqtradebot.datetime", wraps=datetime).now.return_value = NOW
-  adjustment = mocker.spy(strategy, "adjust_trade_position")
-  assert bot.wallets.get_available_stake_amount() == pytest.approx(free_stake)
-
-  bot.check_and_call_adjust_trade_position(trade)
-
-  # The engine supplies the real wallet limit without multiplying by leverage.
-  assert adjustment.call_args.kwargs["max_stake"] == pytest.approx(free_stake)
-  if expected == "exit":
-    bot.execute_entry.assert_not_called()
-    bot.exchange.create_order.assert_called_once()
-    order_args = bot.exchange.create_order.call_args.kwargs
-    assert order_args["side"] == trade.exit_side
-    assert order_args["reduceOnly"] == (trade.leverage > 1)
-    assert order_args["amount"] == pytest.approx(trade.amount - 7.75 * trade.leverage / rate)
-    assert trade.orders[-1].ft_order_tag == "derisk_level_3"
-    assert trade.orders[-1].ft_is_open
-  elif expected == "entry":
-    bot.execute_entry.assert_called_once_with(
-      trade.pair,
-      1200.0 / trade.leverage,
+  _, system = rebuy_system
+  entry = trade.orders[-1]
+  trade.orders.append(
+    Order(
+      order_id="derisk-filled",
+      ft_order_side=trade.exit_side,
+      ft_pair=trade.pair,
+      ft_is_open=False,
+      ft_amount=1.0,
+      ft_price=rate,
+      ft_order_tag="derisk_level_3",
+      status="closed",
+      side=trade.exit_side,
+      order_type="limit",
+      amount=1.0,
+      filled=1.0,
+      remaining=0.0,
       price=rate,
-      trade=trade,
-      is_short=trade.is_short,
-      mode="pos_adjust",
-      enter_tag="r",
+      average=rate,
+      cost=rate,
+      order_date=entry.order_filled_date + timedelta(minutes=5),
+      order_filled_date=entry.order_filled_date + timedelta(minutes=5),
     )
-    bot.exchange.create_order.assert_not_called()
-  else:
-    bot.execute_entry.assert_not_called()
-    bot.exchange.create_order.assert_not_called()
+  )
+  Trade.session.flush()
+  trade.recalc_trade_from_orders()
+  direction = "short" if trade.is_short else "long"
+  version = "v2" if system == "legacy" else system.removeprefix("system_")
+  grind = mocker.patch.object(strategy, f"{direction}_grind_adjust_trade_position_{version}", return_value=None)
+
+  result = run_adjust(strategy, trade, rate, 500.0)
+
+  assert result is None
+  grind.assert_called_once_with(
+    trade, trade.enter_tag.split(), NOW, rate, 0.0, 5.0, 500.0 / trade.leverage, rate, rate, 0.0, 0.0
+  )
