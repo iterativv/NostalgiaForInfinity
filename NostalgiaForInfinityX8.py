@@ -47068,6 +47068,8 @@ class NostalgiaForInfinityX8(IStrategy):
       return None
 
     max_stake /= trade_leverage
+    df, _ = dp.get_analyzed_dataframe(trade_pair, self.timeframe)
+
     exit_rate = current_rate
     filled_orders, filled_entries, filled_exits, profit_values = self.profit_or_order_snapshot(
       trade, current_time, exit_rate
@@ -47145,7 +47147,6 @@ class NostalgiaForInfinityX8(IStrategy):
         else:
           return -ft_sell_amount
 
-    df, _ = dp.get_analyzed_dataframe(trade_pair, self.timeframe)
     if len(df) < 2:
       return None
     last_candle = df.iloc[-1]
@@ -61042,6 +61043,8 @@ class NostalgiaForInfinityX8(IStrategy):
       return None
 
     max_stake /= trade_leverage
+    df, _ = dp.get_analyzed_dataframe(trade_pair, self.timeframe)
+
     exit_rate = current_rate
     filled_orders, filled_entries, filled_exits, profit_values = self.profit_or_order_snapshot(
       trade, current_time, exit_rate
@@ -61119,7 +61122,6 @@ class NostalgiaForInfinityX8(IStrategy):
         else:
           return -ft_sell_amount
 
-    df, _ = dp.get_analyzed_dataframe(trade_pair, self.timeframe)
     if len(df) < 2:
       return None
     last_candle = df.iloc[-1]
