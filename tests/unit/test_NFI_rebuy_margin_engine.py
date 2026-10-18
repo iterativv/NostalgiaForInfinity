@@ -50,7 +50,10 @@ def test_engine_preserves_rebuy_and_derisk_routing(
   exchange_limit = rebuy_margin * exchange_ratio
   affordable = min(free_stake, exchange_limit) >= rebuy_margin
   expected = "entry" if affordable and rebuy_signal else None
-  if not rebuy_signal:
+  if rebuy_signal:
+    # Exercise affordability without assuming a rebuy/de-risk priority.
+    rate = 125.0 if trade.is_short else 79.0
+  else:
     dataframe["RSI_3"] = 100.0 if trade.is_short else 0.0
     if derisk_enabled:
       expected = "exit"

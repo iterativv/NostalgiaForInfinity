@@ -137,6 +137,7 @@ def assert_derisk(result, trade, rate, min_stake=5.0):
 @pytest.mark.parametrize("max_stake_fraction", [0.0, 0.5, 0.999, 1.0, 2.0])
 def test_rebuy_uses_margin_limit_and_preserves_unfunded_hold(rebuy_case, max_stake_fraction):
   strategy, trade, rate, _ = rebuy_case
+  strategy.derisk_enable = False
   rebuy_margin = 1200.0 / trade.leverage
 
   result = run_adjust(strategy, trade, rate, rebuy_margin * max_stake_fraction)
@@ -181,6 +182,7 @@ def test_unaffordable_rebuy_respects_loss_threshold(rebuy_case):
 @pytest.mark.parametrize("max_stake", [6.25, 7.5, 8.75])
 def test_rebuy_affordability_includes_minimum_order_uplift(rebuy_case, rebuy_system, max_stake):
   strategy, trade, rate, _ = rebuy_case
+  strategy.derisk_enable = False
   _, system = rebuy_system
   prefix = "" if system == "legacy" else f"{system}_"
   market = "futures" if strategy.is_futures_mode else "spot"
