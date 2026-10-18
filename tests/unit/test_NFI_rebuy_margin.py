@@ -135,17 +135,18 @@ def assert_derisk(result, trade, rate, min_stake=5.0):
 
 
 @pytest.mark.parametrize("max_stake_fraction", [0.0, 0.5, 0.999, 1.0, 2.0])
-def test_rebuy_falls_through_to_derisk_only_when_unaffordable(rebuy_case, max_stake_fraction):
+def test_rebuy_uses_margin_limit_and_preserves_unfunded_hold(rebuy_case, max_stake_fraction):
   strategy, trade, rate, _ = rebuy_case
   rebuy_margin = 1200.0 / trade.leverage
 
   result = run_adjust(strategy, trade, rate, rebuy_margin * max_stake_fraction)
 
   if max_stake_fraction < 1.0:
-    assert_derisk(result, trade, rate)
+    assert result is None
+    strategy.dp.send_msg.assert_not_called()
   else:
     assert result == (rebuy_margin, "r")
-  strategy.dp.send_msg.assert_called_once()
+    strategy.dp.send_msg.assert_called_once()
 
 
 def test_rebuy_false_indicator_already_allows_derisk(rebuy_case):
@@ -191,10 +192,11 @@ def test_rebuy_affordability_includes_minimum_order_uplift(rebuy_case, rebuy_sys
   result = run_adjust(strategy, trade, rate, max_stake)
 
   if max_stake < 7.5:
-    assert_derisk(result, trade, rate)
+    assert result is None
+    strategy.dp.send_msg.assert_not_called()
   else:
     assert result == (7.5, "r")
-  strategy.dp.send_msg.assert_called_once()
+    strategy.dp.send_msg.assert_called_once()
 
 
 def test_open_order_still_prevents_rebuy_and_derisk(rebuy_case):

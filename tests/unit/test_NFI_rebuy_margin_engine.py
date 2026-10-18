@@ -15,17 +15,18 @@ rebuy_system = rebuy_tests.rebuy_system
 
 
 @pytest.mark.parametrize(
-  "funding_ratio,exchange_ratio,derisk_enabled",
+  "funding_ratio,exchange_ratio,derisk_enabled,rebuy_signal",
   [
-    (0.0, 100.0, True),
-    (0.999, 100.0, True),
-    (1.0, 100.0, True),
-    (1.25, 100.0, True),
-    (2.999, 100.0, True),
-    (3.0, 100.0, True),
-    (0.0, 100.0, False),
-    (1.25, 100.0, False),
-    (1.25, 0.5, True),
+    (0.0, 100.0, True, True),
+    (0.999, 100.0, True, True),
+    (1.0, 100.0, True, True),
+    (1.25, 100.0, True, True),
+    (2.999, 100.0, True, True),
+    (3.0, 100.0, True, True),
+    (0.0, 100.0, False, True),
+    (1.25, 100.0, False, True),
+    (1.25, 0.5, True, True),
+    (0.0, 100.0, True, False),
   ],
   ids=[
     "empty",
@@ -37,17 +38,22 @@ rebuy_system = rebuy_tests.rebuy_system
     "disabled-empty",
     "disabled-funded",
     "exchange-limit",
+    "native-derisk",
   ],
 )
-def test_engine_creates_derisk_exit_when_rebuy_cannot_be_funded(
-  rebuy_case, mocker, funding_ratio, exchange_ratio, derisk_enabled
+def test_engine_preserves_rebuy_and_derisk_routing(
+  rebuy_case, mocker, funding_ratio, exchange_ratio, derisk_enabled, rebuy_signal
 ):
-  strategy, trade, rate, _ = rebuy_case
+  strategy, trade, rate, dataframe = rebuy_case
   rebuy_margin = 1200.0 / trade.leverage
   free_stake = rebuy_margin * funding_ratio
   exchange_limit = rebuy_margin * exchange_ratio
   affordable = min(free_stake, exchange_limit) >= rebuy_margin
-  expected = "entry" if affordable else ("exit" if derisk_enabled else None)
+  expected = "entry" if affordable and rebuy_signal else None
+  if not rebuy_signal:
+    dataframe["RSI_3"] = 100.0 if trade.is_short else 0.0
+    if derisk_enabled:
+      expected = "exit"
   strategy.derisk_enable = derisk_enabled
   strategy.config.update(
     dry_run=True,

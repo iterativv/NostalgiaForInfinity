@@ -47182,26 +47182,27 @@ class NostalgiaForInfinityX8(IStrategy):
         buy_amount = slice_amount * rebuy_mode_stakes[sub_grind_count] / trade_leverage
         if buy_amount < (min_stake * 1.5):
           buy_amount = min_stake * 1.5
-        if buy_amount <= max_stake:
-          dp.send_msg(
-            self.notification_msg(
-              "rebuy",
-              tag="r",
-              pair=trade_pair,
-              rate=current_rate,
-              stake_amount=buy_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=config["stake_currency"],
-            )
+        if buy_amount > max_stake:
+          return None
+        dp.send_msg(
+          self.notification_msg(
+            "rebuy",
+            tag="r",
+            pair=trade_pair,
+            rate=current_rate,
+            stake_amount=buy_amount,
+            profit_stake=profit_stake,
+            profit_ratio=profit_ratio,
+            stake_currency=config["stake_currency"],
           )
-          log.info(
-            f"Rebuy (r) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
-          )
-          if has_order_tags:
-            return buy_amount, "r"
-          else:
-            return buy_amount
+        )
+        log.info(
+          f"Rebuy (r) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        )
+        if has_order_tags:
+          return buy_amount, "r"
+        else:
+          return buy_amount
 
     if self.derisk_enable and (
       profit_stake
@@ -47374,27 +47375,28 @@ class NostalgiaForInfinityX8(IStrategy):
         buy_amount = slice_amount * rebuy_mode_stakes[sub_grind_count] / trade_leverage
         if buy_amount < (min_stake * 1.5):
           buy_amount = min_stake * 1.5
-        if buy_amount <= max_stake:
-          if send_notifications:
-            dp.send_msg(
-              self.notification_msg(
-                "rebuy",
-                tag="r",
-                pair=trade_pair,
-                rate=current_rate,
-                stake_amount=buy_amount,
-                profit_stake=profit_stake,
-                profit_ratio=profit_ratio,
-                stake_currency=stake_currency,
-              )
+        if buy_amount > max_stake:
+          return None
+        if send_notifications:
+          dp.send_msg(
+            self.notification_msg(
+              "rebuy",
+              tag="r",
+              pair=trade_pair,
+              rate=current_rate,
+              stake_amount=buy_amount,
+              profit_stake=profit_stake,
+              profit_ratio=profit_ratio,
+              stake_currency=stake_currency,
             )
-          log.info(
-            f"Rebuy (r) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}%"
           )
-          if has_order_tags:
-            return buy_amount, "r"
-          else:
-            return buy_amount
+        log.info(
+          f"Rebuy (r) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}%"
+        )
+        if has_order_tags:
+          return buy_amount, "r"
+        else:
+          return buy_amount
 
     if self.derisk_enable and (
       profit_stake
@@ -47570,27 +47572,28 @@ class NostalgiaForInfinityX8(IStrategy):
           buy_amount = slice_amount * rebuy_mode_stakes[sub_grind_count] / trade_leverage
           if buy_amount < (min_stake * 1.5):
             buy_amount = min_stake * 1.5
-          if buy_amount <= max_stake:
-            if send_notifications:
-              dp.send_msg(
-                self.notification_msg(
-                  "rebuy",
-                  tag="r",
-                  pair=trade_pair,
-                  rate=current_rate,
-                  stake_amount=buy_amount,
-                  profit_stake=profit_stake,
-                  profit_ratio=profit_ratio,
-                  stake_currency=stake_currency,
-                )
+          if buy_amount > max_stake:
+            return None
+          if send_notifications:
+            dp.send_msg(
+              self.notification_msg(
+                "rebuy",
+                tag="r",
+                pair=trade_pair,
+                rate=current_rate,
+                stake_amount=buy_amount,
+                profit_stake=profit_stake,
+                profit_ratio=profit_ratio,
+                stake_currency=stake_currency,
               )
-            log.info(
-              f"Rebuy (r) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}%"
             )
-            if has_order_tags:
-              return buy_amount, "r"
-            else:
-              return buy_amount
+          log.info(
+            f"Rebuy (r) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}%"
+          )
+          if has_order_tags:
+            return buy_amount, "r"
+          else:
+            return buy_amount
 
     if self.derisk_enable and (
       profit_stake
@@ -61143,26 +61146,27 @@ class NostalgiaForInfinityX8(IStrategy):
         buy_amount = slice_amount * rebuy_mode_stakes[sub_grind_count] / trade_leverage
         if buy_amount < (min_stake * 1.5):
           buy_amount = min_stake * 1.5
-        if buy_amount <= max_stake:
-          dp.send_msg(
-            self.notification_msg(
-              "rebuy",
-              tag="r",
-              pair=trade_pair,
-              rate=current_rate,
-              stake_amount=buy_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=config["stake_currency"],
-            )
+        if buy_amount > max_stake:
+          return None
+        dp.send_msg(
+          self.notification_msg(
+            "rebuy",
+            tag="r",
+            pair=trade_pair,
+            rate=current_rate,
+            stake_amount=buy_amount,
+            profit_stake=profit_stake,
+            profit_ratio=profit_ratio,
+            stake_currency=config["stake_currency"],
           )
-          log.info(
-            f"Rebuy (r) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
-          )
-          if has_order_tags:
-            return buy_amount, "r"
-          else:
-            return buy_amount
+        )
+        log.info(
+          f"Rebuy (r) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+        )
+        if has_order_tags:
+          return buy_amount, "r"
+        else:
+          return buy_amount
 
     if self.derisk_enable and (
       profit_stake
@@ -61332,30 +61336,31 @@ class NostalgiaForInfinityX8(IStrategy):
         buy_amount = slice_amount * rebuy_mode_stakes[sub_grind_count] / trade_leverage
         if buy_amount < (min_stake * 1.5):
           buy_amount = min_stake * 1.5
-        if buy_amount <= max_stake:
-          stake_currency = config["stake_currency"]
-          stake_fmt = ".8f" if stake_currency in ("BTC", "ETH", "BNB", "SOL") else ".3f"
-          send_notifications = not self.is_backtest_mode()
-          if send_notifications:
-            dp.send_msg(
-              self.notification_msg(
-                "rebuy",
-                tag="r",
-                pair=trade_pair,
-                rate=current_rate,
-                stake_amount=buy_amount,
-                profit_stake=profit_stake,
-                profit_ratio=profit_ratio,
-                stake_currency=stake_currency,
-              )
+        if buy_amount > max_stake:
+          return None
+        stake_currency = config["stake_currency"]
+        stake_fmt = ".8f" if stake_currency in ("BTC", "ETH", "BNB", "SOL") else ".3f"
+        send_notifications = not self.is_backtest_mode()
+        if send_notifications:
+          dp.send_msg(
+            self.notification_msg(
+              "rebuy",
+              tag="r",
+              pair=trade_pair,
+              rate=current_rate,
+              stake_amount=buy_amount,
+              profit_stake=profit_stake,
+              profit_ratio=profit_ratio,
+              stake_currency=stake_currency,
             )
-          log.info(
-            f"Rebuy (r) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}%"
           )
-          if has_order_tags:
-            return buy_amount, "r"
-          else:
-            return buy_amount
+        log.info(
+          f"Rebuy (r) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}%"
+        )
+        if has_order_tags:
+          return buy_amount, "r"
+        else:
+          return buy_amount
 
     if self.derisk_enable and (
       profit_stake
@@ -61527,30 +61532,31 @@ class NostalgiaForInfinityX8(IStrategy):
           buy_amount = slice_amount * rebuy_mode_stakes[sub_grind_count] / trade_leverage
           if buy_amount < (min_stake * 1.5):
             buy_amount = min_stake * 1.5
-          if buy_amount <= max_stake:
-            stake_currency = config["stake_currency"]
-            stake_fmt = ".8f" if stake_currency in ("BTC", "ETH", "BNB", "SOL") else ".3f"
-            send_notifications = not self.is_backtest_mode()
-            if send_notifications:
-              dp.send_msg(
-                self.notification_msg(
-                  "rebuy",
-                  tag="r",
-                  pair=trade_pair,
-                  rate=current_rate,
-                  stake_amount=buy_amount,
-                  profit_stake=profit_stake,
-                  profit_ratio=profit_ratio,
-                  stake_currency=stake_currency,
-                )
+          if buy_amount > max_stake:
+            return None
+          stake_currency = config["stake_currency"]
+          stake_fmt = ".8f" if stake_currency in ("BTC", "ETH", "BNB", "SOL") else ".3f"
+          send_notifications = not self.is_backtest_mode()
+          if send_notifications:
+            dp.send_msg(
+              self.notification_msg(
+                "rebuy",
+                tag="r",
+                pair=trade_pair,
+                rate=current_rate,
+                stake_amount=buy_amount,
+                profit_stake=profit_stake,
+                profit_ratio=profit_ratio,
+                stake_currency=stake_currency,
               )
-            log.info(
-              f"Rebuy (r) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}%"
             )
-            if has_order_tags:
-              return buy_amount, "r"
-            else:
-              return buy_amount
+          log.info(
+            f"Rebuy (r) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}%"
+          )
+          if has_order_tags:
+            return buy_amount, "r"
+          else:
+            return buy_amount
 
     if self.derisk_enable and (
       profit_stake
