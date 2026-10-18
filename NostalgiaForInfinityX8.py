@@ -784,6 +784,13 @@ class NostalgiaForInfinityX8(IStrategy):
   system_v4_derisk_level_4_stake_spot = 1.0
   system_v4_derisk_level_4_stake_futures = 1.0
 
+  # De-risk thresholds are a price distance from the entry: abs(threshold) / leverage.
+  # When enabled, the levels are measured on the current position size, so that distance
+  # stays constant and every level remains reachable before the liquidation price
+  # (grinds and earlier de-risk cuts no longer push the deeper levels out of reach).
+  derisk_size_aware_long = True
+  derisk_size_aware_short = True
+
   system_v4_grind_1_enable = True
   system_v4_grind_1_stakes_spot = [0.20, 0.20, 0.20, 0.20, 0.20]
   system_v4_grind_1_thresholds_spot = [-0.06, -0.07, -0.08, -0.09, -0.10]
@@ -1359,6 +1366,8 @@ class NostalgiaForInfinityX8(IStrategy):
     enter_tags,
   ) -> tuple:
     remove_profit_target = self._remove_profit_target
+    # De-risk thresholds are a price distance from the entry; measuring them on the
+    # current position size keeps every level reachable before the liquidation price.
     derisk_enable = self.derisk_enable
     is_futures_mode = self.is_futures_mode
     long_rapid_mode_tags = self.long_rapid_mode_tags
@@ -35963,6 +35972,8 @@ class NostalgiaForInfinityX8(IStrategy):
     trade_get_custom_data = trade.get_custom_data
     trade_set_custom_data = trade.set_custom_data
     trade_is_short = trade.is_short
+    # De-risk thresholds are a price distance from the entry; measuring them on the
+    # current position size keeps every level reachable before the liquidation price.
     derisk_enable = self.derisk_enable
     long_rebuy_mode_tags = self.long_rebuy_mode_tags
     long_grind_mode_tags = self.long_grind_mode_tags
@@ -36537,6 +36548,14 @@ class NostalgiaForInfinityX8(IStrategy):
       )
     )
 
+    # De-risk thresholds are a price distance: measure them on the current position
+    # size, so every level stays reachable while the position grows (grinds) or
+    # shrinks (partial de-risk cuts).
+    if self.derisk_size_aware_long:
+      derisk_slice_amount = trade.amount * trade.open_rate
+    else:
+      derisk_slice_amount = slice_amount
+
     # De-risk level 1
 
     # flag it
@@ -36549,7 +36568,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and (
         profit_stake
         < (
-          slice_amount
+          derisk_slice_amount
           * (self.grinding_v2_derisk_level_1_futures[0] if is_futures else self.grinding_v2_derisk_level_1_spot[0])
         )
         / trade_leverage
@@ -36585,7 +36604,7 @@ class NostalgiaForInfinityX8(IStrategy):
         or (
           profit_stake
           < (
-            slice_amount
+            derisk_slice_amount
             * (self.grinding_v2_derisk_level_1_futures[1] if is_futures else self.grinding_v2_derisk_level_1_spot[1])
           )
           / trade_leverage
@@ -36636,7 +36655,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and (
         profit_stake
         < (
-          slice_amount
+          derisk_slice_amount
           * (self.grinding_v2_derisk_level_2_futures[0] if is_futures else self.grinding_v2_derisk_level_2_spot[0])
         )
         / trade_leverage
@@ -36672,7 +36691,7 @@ class NostalgiaForInfinityX8(IStrategy):
         or (
           profit_stake
           < (
-            slice_amount
+            derisk_slice_amount
             * (self.grinding_v2_derisk_level_2_futures[1] if is_futures else self.grinding_v2_derisk_level_2_spot[1])
           )
           / trade_leverage
@@ -36723,7 +36742,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and (
         profit_stake
         < (
-          slice_amount
+          derisk_slice_amount
           * (self.grinding_v2_derisk_level_3_futures[0] if is_futures else self.grinding_v2_derisk_level_3_spot[0])
         )
         / trade_leverage
@@ -36759,7 +36778,7 @@ class NostalgiaForInfinityX8(IStrategy):
         or (
           profit_stake
           < (
-            slice_amount
+            derisk_slice_amount
             * (self.grinding_v2_derisk_level_3_futures[1] if is_futures else self.grinding_v2_derisk_level_3_spot[1])
           )
           / trade_leverage
@@ -39073,6 +39092,12 @@ class NostalgiaForInfinityX8(IStrategy):
         derisk_3_stake = self.system_v3_2_derisk_level_3_stake_spot
         derisk_4_threshold = self.system_v3_2_derisk_level_4_spot[1]
         derisk_4_stake = self.system_v3_2_derisk_level_4_stake_spot
+    # De-risk thresholds are a price distance from the entry; measuring them on the
+    # current position size keeps every level reachable before the liquidation price.
+    if self.derisk_size_aware_long:
+      derisk_slice_amount = trade_amount * trade.open_rate
+    else:
+      derisk_slice_amount = slice_amount
     derisk_enable = self.derisk_enable
     # ---------------------------------------------------------------------
     # De-risk level 1
@@ -39082,7 +39107,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and derisk_1_enable
       and not (is_derisk_1_found)
       and not is_rebuy_mode
-      and profit_stake < slice_amount * derisk_1_threshold / trade_leverage
+      and profit_stake < derisk_slice_amount * derisk_1_threshold / trade_leverage
     ):
       sell_amount = filled_entries[0].safe_filled * derisk_1_stake * exit_rate / trade_leverage
       if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
@@ -39115,7 +39140,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and derisk_2_enable
       and not is_derisk_2_found
       and not is_rebuy_mode
-      and profit_stake < slice_amount * derisk_2_threshold / trade_leverage
+      and profit_stake < derisk_slice_amount * derisk_2_threshold / trade_leverage
     ):
       sell_amount = filled_entries[0].safe_filled * derisk_2_stake * exit_rate / trade_leverage
       if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
@@ -39148,7 +39173,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and derisk_3_enable
       and not is_derisk_3_found
       and not is_rebuy_mode
-      and profit_stake < slice_amount * derisk_3_threshold / trade_leverage
+      and profit_stake < derisk_slice_amount * derisk_3_threshold / trade_leverage
     ):
       sell_amount = filled_entries[0].safe_filled * derisk_3_stake * exit_rate / trade_leverage
       if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
@@ -39181,7 +39206,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and derisk_4_enable
       and not is_derisk_4_found
       and not is_rebuy_mode
-      and profit_stake < (slice_amount * derisk_4_threshold / trade_leverage)
+      and profit_stake < (derisk_slice_amount * derisk_4_threshold / trade_leverage)
     ):
       sell_amount = filled_entries[0].safe_filled * derisk_4_stake * exit_rate / trade_leverage
       if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
@@ -41594,6 +41619,12 @@ class NostalgiaForInfinityX8(IStrategy):
         derisk_3_stake = self.system_v4_derisk_level_3_stake_spot
         derisk_4_threshold = self.system_v4_derisk_level_4_spot[1]
         derisk_4_stake = self.system_v4_derisk_level_4_stake_spot
+    # De-risk thresholds are a price distance from the entry; measuring them on the
+    # current position size keeps every level reachable before the liquidation price.
+    if self.derisk_size_aware_long:
+      derisk_slice_amount = trade_amount * trade.open_rate
+    else:
+      derisk_slice_amount = slice_amount
     derisk_enable = self.derisk_enable
     # ---------------------------------------------------------------------
     # De-risk level 1
@@ -41603,7 +41634,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and derisk_1_enable
       and not (is_derisk_1_found)
       and not is_rebuy_mode
-      and profit_stake < slice_amount * derisk_1_threshold / trade_leverage
+      and profit_stake < derisk_slice_amount * derisk_1_threshold / trade_leverage
       and not derisk_hold()
     ):
       sell_amount = filled_entries[0].safe_filled * derisk_1_stake * exit_rate / trade_leverage
@@ -41637,7 +41668,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and derisk_2_enable
       and not is_derisk_2_found
       and not is_rebuy_mode
-      and profit_stake < slice_amount * derisk_2_threshold / trade_leverage
+      and profit_stake < derisk_slice_amount * derisk_2_threshold / trade_leverage
       and not derisk_hold()
     ):
       sell_amount = filled_entries[0].safe_filled * derisk_2_stake * exit_rate / trade_leverage
@@ -41671,7 +41702,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and derisk_3_enable
       and not is_derisk_3_found
       and not is_rebuy_mode
-      and profit_stake < slice_amount * derisk_3_threshold / trade_leverage
+      and profit_stake < derisk_slice_amount * derisk_3_threshold / trade_leverage
       and not derisk_hold()
     ):
       sell_amount = filled_entries[0].safe_filled * derisk_3_stake * exit_rate / trade_leverage
@@ -41705,7 +41736,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and derisk_4_enable
       and not is_derisk_4_found
       and not is_rebuy_mode
-      and profit_stake < (slice_amount * derisk_4_threshold / trade_leverage)
+      and profit_stake < (derisk_slice_amount * derisk_4_threshold / trade_leverage)
     ):
       sell_amount = filled_entries[0].safe_filled * derisk_4_stake * exit_rate / trade_leverage
       if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
@@ -50515,6 +50546,8 @@ class NostalgiaForInfinityX8(IStrategy):
     trade_get_custom_data = trade.get_custom_data
     trade_set_custom_data = trade.set_custom_data
     trade_is_short = trade.is_short
+    # De-risk thresholds are a price distance from the entry; measuring them on the
+    # current position size keeps every level reachable before the liquidation price.
     derisk_enable = self.derisk_enable
     short_rebuy_mode_tags = self.short_rebuy_mode_tags
     short_grind_mode_tags = self.short_grind_mode_tags
@@ -51081,6 +51114,14 @@ class NostalgiaForInfinityX8(IStrategy):
       )
     )
 
+    # De-risk thresholds are a price distance: measure them on the current position
+    # size, so every level stays reachable while the position grows (grinds) or
+    # shrinks (partial de-risk cuts).
+    if self.derisk_size_aware_short:
+      derisk_slice_amount = trade.amount * trade.open_rate
+    else:
+      derisk_slice_amount = slice_amount
+
     # De-risk level 1
 
     # flag it
@@ -51093,7 +51134,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and (
         profit_stake
         < (
-          slice_amount
+          derisk_slice_amount
           * (self.grinding_v2_derisk_level_1_futures[0] if is_futures else self.grinding_v2_derisk_level_1_spot[0])
         )
         / trade_leverage
@@ -51129,7 +51170,7 @@ class NostalgiaForInfinityX8(IStrategy):
         or (
           profit_stake
           < (
-            slice_amount
+            derisk_slice_amount
             * (self.grinding_v2_derisk_level_1_futures[1] if is_futures else self.grinding_v2_derisk_level_1_spot[1])
           )
           / trade_leverage
@@ -51180,7 +51221,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and (
         profit_stake
         < (
-          slice_amount
+          derisk_slice_amount
           * (self.grinding_v2_derisk_level_2_futures[0] if is_futures else self.grinding_v2_derisk_level_2_spot[0])
         )
         / trade_leverage
@@ -51216,7 +51257,7 @@ class NostalgiaForInfinityX8(IStrategy):
         or (
           profit_stake
           < (
-            slice_amount
+            derisk_slice_amount
             * (self.grinding_v2_derisk_level_2_futures[1] if is_futures else self.grinding_v2_derisk_level_2_spot[1])
           )
           / trade_leverage
@@ -51267,7 +51308,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and (
         profit_stake
         < (
-          slice_amount
+          derisk_slice_amount
           * (self.grinding_v2_derisk_level_3_futures[0] if is_futures else self.grinding_v2_derisk_level_3_spot[0])
         )
         / trade_leverage
@@ -51303,7 +51344,7 @@ class NostalgiaForInfinityX8(IStrategy):
         or (
           profit_stake
           < (
-            slice_amount
+            derisk_slice_amount
             * (self.grinding_v2_derisk_level_3_futures[1] if is_futures else self.grinding_v2_derisk_level_3_spot[1])
           )
           / trade_leverage
@@ -53615,6 +53656,14 @@ class NostalgiaForInfinityX8(IStrategy):
     is_short_grind_entry = self.short_grind_entry_v3(last_candle, previous_candle, slice_profit, True)
     is_short_rebuy_entry = self.short_rebuy_entry_v3(last_candle, previous_candle, slice_profit, True)
     stake_fmt = ".8f" if self.config["stake_currency"] in ("BTC", "ETH", "BNB", "SOL") else ".3f"
+    # De-risk thresholds are a price distance: measure them on the current position
+    # size, so every level stays reachable while the position grows (grinds) or
+    # shrinks (partial de-risk cuts).
+    if self.derisk_size_aware_short:
+      derisk_slice_amount = trade.amount * trade.open_rate
+    else:
+      derisk_slice_amount = slice_amount
+
     # De-risk level 1
 
     if (
@@ -53628,7 +53677,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and (
         profit_stake
         < (
-          slice_amount
+          derisk_slice_amount
           * (
             (self.system_v3_derisk_level_1_futures[1] if is_futures_mode else self.system_v3_derisk_level_1_spot[1])
             if is_system_v3
@@ -53697,7 +53746,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and (
         profit_stake
         < (
-          slice_amount
+          derisk_slice_amount
           * (
             (self.system_v3_derisk_level_2_futures[1] if is_futures_mode else self.system_v3_derisk_level_2_spot[1])
             if is_system_v3
@@ -53766,7 +53815,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and (
         profit_stake
         < (
-          slice_amount
+          derisk_slice_amount
           * (
             (self.system_v3_derisk_level_3_futures[1] if is_futures_mode else self.system_v3_derisk_level_3_spot[1])
             if is_system_v3
@@ -55864,6 +55913,12 @@ class NostalgiaForInfinityX8(IStrategy):
         derisk_2_stake = self.system_v4_2_derisk_level_2_stake_spot
         derisk_3_threshold = self.system_v4_2_derisk_level_3_spot[1]
         derisk_3_stake = self.system_v4_2_derisk_level_3_stake_spot
+    # De-risk thresholds are a price distance from the entry; measuring them on the
+    # current position size keeps every level reachable before the liquidation price.
+    if self.derisk_size_aware_short:
+      derisk_slice_amount = trade_amount * trade.open_rate
+    else:
+      derisk_slice_amount = slice_amount
     derisk_enable = self.derisk_enable
     # ---------------------------------------------------------------------
     # De-risk level 1
@@ -55873,7 +55928,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and derisk_1_enable
       and not is_derisk_1_found
       and not is_rebuy_mode
-      and profit_stake < slice_amount * derisk_1_threshold / trade_leverage
+      and profit_stake < derisk_slice_amount * derisk_1_threshold / trade_leverage
       and not derisk_hold()
     ):
       sell_amount = filled_entries[0].safe_filled * derisk_1_stake * exit_rate / trade_leverage
@@ -55907,7 +55962,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and derisk_2_enable
       and not is_derisk_2_found
       and not is_rebuy_mode
-      and profit_stake < slice_amount * derisk_2_threshold / trade_leverage
+      and profit_stake < derisk_slice_amount * derisk_2_threshold / trade_leverage
       and not derisk_hold()
     ):
       sell_amount = filled_entries[0].safe_filled * derisk_2_stake * exit_rate / trade_leverage
@@ -55941,7 +55996,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and derisk_3_enable
       and not is_derisk_3_found
       and not is_rebuy_mode
-      and profit_stake < slice_amount * derisk_3_threshold / trade_leverage
+      and profit_stake < derisk_slice_amount * derisk_3_threshold / trade_leverage
       and not derisk_hold()
     ):
       sell_amount = filled_entries[0].safe_filled * derisk_3_stake * exit_rate / trade_leverage
