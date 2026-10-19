@@ -266,6 +266,14 @@ class NostalgiaForInfinityX8(IStrategy):
   futures_mode_leverage_rebuy_mode = 3.0
   futures_mode_leverage_grind_mode = 3.0
 
+  # Optional direction/mode overrides. None preserves the existing leverage selection.
+  futures_mode_leverage_long = None
+  futures_mode_leverage_long_rebuy_mode = None
+  futures_mode_leverage_long_grind_mode = None
+  futures_mode_leverage_short = None
+  futures_mode_leverage_short_rebuy_mode = None
+  futures_mode_leverage_short_grind_mode = None
+
   # Limit the number of long/short trades for futures (0 for no limit)
   futures_max_open_trades_long = 0
   futures_max_open_trades_short = 0
@@ -1162,6 +1170,12 @@ class NostalgiaForInfinityX8(IStrategy):
       "futures_mode_leverage",
       "futures_mode_leverage_rebuy_mode",
       "futures_mode_leverage_grind_mode",
+      "futures_mode_leverage_long",
+      "futures_mode_leverage_long_rebuy_mode",
+      "futures_mode_leverage_long_grind_mode",
+      "futures_mode_leverage_short",
+      "futures_mode_leverage_short_rebuy_mode",
+      "futures_mode_leverage_short_grind_mode",
       "futures_max_open_trades_long",
       "futures_max_open_trades_short",
       "stop_threshold_doom_spot",
@@ -5552,6 +5566,23 @@ class NostalgiaForInfinityX8(IStrategy):
     **kwargs,
   ) -> float:
     enter_tags = (entry_tag or "empty").split()
+    if side == "long":
+      if all(c in self.long_rebuy_mode_tags for c in enter_tags):
+        leverage_override = self.futures_mode_leverage_long_rebuy_mode
+      elif all(c in self.long_grind_mode_tags for c in enter_tags):
+        leverage_override = self.futures_mode_leverage_long_grind_mode
+      else:
+        leverage_override = self.futures_mode_leverage_long
+    else:
+      if all(c in self.short_rebuy_mode_tags for c in enter_tags):
+        leverage_override = self.futures_mode_leverage_short_rebuy_mode
+      elif all(c in self.short_grind_mode_tags for c in enter_tags):
+        leverage_override = self.futures_mode_leverage_short_grind_mode
+      else:
+        leverage_override = self.futures_mode_leverage_short
+    if leverage_override is not None:
+      return leverage_override
+
     long_rebuy_mode_tags = self.long_rebuy_mode_tags
     long_grind_mode_tags = self.long_grind_mode_tags
     if all(c in long_rebuy_mode_tags for c in enter_tags):
