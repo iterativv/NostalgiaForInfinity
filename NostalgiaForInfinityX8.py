@@ -70,7 +70,7 @@ class NostalgiaForInfinityX8(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v18.0.142"
+    return "v18.0.143"
 
   stoploss = -0.99
 
@@ -265,6 +265,14 @@ class NostalgiaForInfinityX8(IStrategy):
   futures_mode_leverage = 3.0
   futures_mode_leverage_rebuy_mode = 3.0
   futures_mode_leverage_grind_mode = 3.0
+
+  # Optional direction/mode overrides. None preserves the existing leverage selection.
+  futures_mode_leverage_long = None
+  futures_mode_leverage_long_rebuy_mode = None
+  futures_mode_leverage_long_grind_mode = None
+  futures_mode_leverage_short = None
+  futures_mode_leverage_short_rebuy_mode = None
+  futures_mode_leverage_short_grind_mode = None
 
   # Limit the number of long/short trades for futures (0 for no limit)
   futures_max_open_trades_long = 0
@@ -1162,6 +1170,12 @@ class NostalgiaForInfinityX8(IStrategy):
       "futures_mode_leverage",
       "futures_mode_leverage_rebuy_mode",
       "futures_mode_leverage_grind_mode",
+      "futures_mode_leverage_long",
+      "futures_mode_leverage_long_rebuy_mode",
+      "futures_mode_leverage_long_grind_mode",
+      "futures_mode_leverage_short",
+      "futures_mode_leverage_short_rebuy_mode",
+      "futures_mode_leverage_short_grind_mode",
       "futures_max_open_trades_long",
       "futures_max_open_trades_short",
       "stop_threshold_doom_spot",
@@ -5552,6 +5566,23 @@ class NostalgiaForInfinityX8(IStrategy):
     **kwargs,
   ) -> float:
     enter_tags = (entry_tag or "empty").split()
+    if side == "long":
+      if all(c in self.long_rebuy_mode_tags for c in enter_tags):
+        leverage_override = self.futures_mode_leverage_long_rebuy_mode
+      elif all(c in self.long_grind_mode_tags for c in enter_tags):
+        leverage_override = self.futures_mode_leverage_long_grind_mode
+      else:
+        leverage_override = self.futures_mode_leverage_long
+    else:
+      if all(c in self.short_rebuy_mode_tags for c in enter_tags):
+        leverage_override = self.futures_mode_leverage_short_rebuy_mode
+      elif all(c in self.short_grind_mode_tags for c in enter_tags):
+        leverage_override = self.futures_mode_leverage_short_grind_mode
+      else:
+        leverage_override = self.futures_mode_leverage_short
+    if leverage_override is not None:
+      return leverage_override
+
     long_rebuy_mode_tags = self.long_rebuy_mode_tags
     long_grind_mode_tags = self.long_grind_mode_tags
     if all(c in long_rebuy_mode_tags for c in enter_tags):
@@ -6268,6 +6299,7 @@ class NostalgiaForInfinityX8(IStrategy):
     aroonu_14_1d_lt_90 = aroonu_14_1d < 90.0
     aroonu_14_1d_lt_100 = aroonu_14_1d < 100.0
 
+    cmf_20_15m_gt_neg_0_10 = cmf_20_15m > -0.10
     cmf_20_15m_gt_neg_0_20 = cmf_20_15m > -0.20
     cmf_20_15m_gt_neg_0_30 = cmf_20_15m > -0.30
     cmf_20_15m_gt_neg_0_35 = cmf_20_15m > -0.35
@@ -27022,6 +27054,10 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((rsi_3_15m_lt_85) | (stochrsi_k_15m_gt_80) | (aroonu_14_4h_gt_50))
             # 15m up move, 4h overbought
             & ((rsi_3_15m_lt_85) | (roc_9_4h_lt_50))
+            # 15m & 1h up move, 15m & 1h uptrend
+            & ((rsi_3_15m_lt_80) | (rsi_3_1h_lt_80) | (aroonu_14_15m_lt_100) | (aroonu_14_1h_lt_100))
+            # 15m & 1h up move, 1h uptrend, 4h uptrend
+            & ((rsi_3_15m_lt_80) | (rsi_3_1h_lt_80) | (aroonu_14_1h_lt_100) | (roc_9_4h_lt_10))
             # 15m & 1h up move, 15m still low
             & ((rsi_3_15m_lt_70) | (rsi_3_1h_lt_70) | (aroonu_14_15m_gt_40))
             # 15m & 1h up move, 15m still low
@@ -47053,7 +47089,7 @@ class NostalgiaForInfinityX8(IStrategy):
     current_exit_profit: float,
     **kwargs,
   ) -> Optional[float]:
-    # min/max stakes include leverage. The return amounts is before leverage.
+    # Stake limits and rebuy amounts are margin, before leverage.
     config = self.config
 
     dp = self.dp
@@ -47067,7 +47103,6 @@ class NostalgiaForInfinityX8(IStrategy):
     if trade.has_open_orders:
       return None
 
-    max_stake /= trade_leverage
     df, _ = dp.get_analyzed_dataframe(trade_pair, self.timeframe)
 
     exit_rate = current_rate
@@ -47087,7 +47122,10 @@ class NostalgiaForInfinityX8(IStrategy):
     has_order_tags = hasattr(first_filled_order, "ft_order_tag")
 
     # The first exit is de-risk (providing the trade is still open)
+    # Preserve the existing grind handoff budget after de-risk.
     if (count_of_exits > 0) and (filled_exits[0].ft_order_tag == "derisk_level_3"):
+      if len(df) < 2:
+        return None
       return self.long_grind_adjust_trade_position_v2(
         trade,
         enter_tags,
@@ -47095,7 +47133,7 @@ class NostalgiaForInfinityX8(IStrategy):
         current_rate,
         current_profit,
         min_stake,
-        max_stake,
+        max_stake / trade_leverage,
         current_entry_rate,
         current_exit_rate,
         current_entry_profit,
@@ -47120,38 +47158,6 @@ class NostalgiaForInfinityX8(IStrategy):
     profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = profit_values
 
     slice_amount = filled_entries[0].safe_filled * filled_entries[0].safe_price
-    if self.derisk_enable and (
-      profit_stake
-      < (
-        slice_amount * (self.rebuy_mode_derisk_futures if is_futures_mode else self.rebuy_mode_derisk_spot)
-        # / (trade.leverage if self.is_futures_mode else 1.0)
-      )
-    ):
-      sell_amount = trade_amount * exit_rate / trade_leverage - (min_stake * 1.55)
-      ft_sell_amount = sell_amount * trade_leverage * (trade.stake_amount / trade_amount) / exit_rate
-      if sell_amount > min_stake and ft_sell_amount > min_stake:
-        grind_profit = 0.0
-        dp.send_msg(
-          f"❌​​ ​**Rebuy De-risk:** `Level 3`\n"
-          f"🪙​ **Pair:** `{trade_pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
-        )
-        log.info(
-          f"Rebuy De-risk Level 3 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
-        )
-        if has_order_tags:
-          return -ft_sell_amount, "derisk_level_3"
-        else:
-          return -ft_sell_amount
-
-    if len(df) < 2:
-      return None
-    last_candle = df.iloc[-1]
-    previous_candle = df.iloc[-2]
-
     slice_profit = (exit_rate - last_filled_order.safe_price) / last_filled_order.safe_price
     slice_profit_entry = (exit_rate - last_filled_entry.safe_price) / last_filled_entry.safe_price
     if count_of_exits > 0:
@@ -47189,7 +47195,9 @@ class NostalgiaForInfinityX8(IStrategy):
       current_grind_stake = total_amount * exit_rate * (1 - trade.fee_close)
       current_grind_stake_profit = current_grind_stake - total_cost
 
-    if (not partial_sell) and (sub_grind_count < max_sub_grinds):
+    if (len(df) >= 2) and (not partial_sell) and (sub_grind_count < max_sub_grinds):
+      last_candle = df.iloc[-1]
+      previous_candle = df.iloc[-2]
       if (
         ((0 <= sub_grind_count < max_sub_grinds) and (slice_profit_entry < rebuy_mode_sub_thresholds[sub_grind_count]))
         # and (
@@ -47214,27 +47222,53 @@ class NostalgiaForInfinityX8(IStrategy):
         buy_amount = slice_amount * rebuy_mode_stakes[sub_grind_count] / trade_leverage
         if buy_amount < (min_stake * 1.5):
           buy_amount = min_stake * 1.5
-        if buy_amount > max_stake:
-          return None
-        dp.send_msg(
-          self.notification_msg(
-            "rebuy",
-            tag="r",
-            pair=trade_pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=config["stake_currency"],
+        if buy_amount <= max_stake:
+          dp.send_msg(
+            self.notification_msg(
+              "rebuy",
+              tag="r",
+              pair=trade_pair,
+              rate=current_rate,
+              stake_amount=buy_amount,
+              profit_stake=profit_stake,
+              profit_ratio=profit_ratio,
+              stake_currency=config["stake_currency"],
+            )
           )
+          log.info(
+            f"Rebuy (r) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          )
+          if has_order_tags:
+            return buy_amount, "r"
+          else:
+            return buy_amount
+
+    if self.derisk_enable and (
+      profit_stake
+      < (
+        slice_amount * (self.rebuy_mode_derisk_futures if is_futures_mode else self.rebuy_mode_derisk_spot)
+        # / (trade.leverage if self.is_futures_mode else 1.0)
+      )
+    ):
+      sell_amount = trade_amount * exit_rate / trade_leverage - (min_stake * 1.55)
+      ft_sell_amount = sell_amount * trade_leverage * (trade.stake_amount / trade_amount) / exit_rate
+      if sell_amount > min_stake and ft_sell_amount > min_stake:
+        grind_profit = 0.0
+        dp.send_msg(
+          f"❌​​ ​**Rebuy De-risk:** `Level 3`\n"
+          f"🪙​ **Pair:** `{trade_pair}`\n"
+          f"〽️​ **Rate:** `{exit_rate}`\n"
+          f"💰 **Stake amount:** `{sell_amount}`\n"
+          f"💵​ **Profit (stake):** `{profit_stake}`\n"
+          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
         )
         log.info(
-          f"Rebuy (r) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"Rebuy De-risk Level 3 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         if has_order_tags:
-          return buy_amount, "r"
+          return -ft_sell_amount, "derisk_level_3"
         else:
-          return buy_amount
+          return -ft_sell_amount
 
     return None
 
@@ -47255,7 +47289,7 @@ class NostalgiaForInfinityX8(IStrategy):
     current_exit_profit: float,
     **kwargs,
   ) -> Optional[float]:
-    # min/max stakes include leverage. The return amounts is before leverage.
+    # Stake limits and rebuy amounts are margin, before leverage.
     dp = self.dp
     is_futures_mode = self.is_futures_mode
     config = self.config
@@ -47268,7 +47302,6 @@ class NostalgiaForInfinityX8(IStrategy):
       return None
 
     min_stake = self.correct_min_stake(min_stake, trade_leverage)
-    max_stake /= trade_leverage
     exit_rate = current_rate
     filled_orders, filled_entries, filled_exits, profit_values = self.profit_or_order_snapshot(
       trade, current_time, exit_rate
@@ -47286,6 +47319,7 @@ class NostalgiaForInfinityX8(IStrategy):
     has_order_tags = hasattr(first_filled_order, "ft_order_tag")
 
     # The first exit is de-risk (providing the trade is still open)
+    # Preserve the existing grind handoff budget after de-risk.
     if (count_of_exits > 0) and (filled_exits[0].ft_order_tag == "derisk_level_3"):
       return self.long_grind_adjust_trade_position_v3(
         trade,
@@ -47294,7 +47328,7 @@ class NostalgiaForInfinityX8(IStrategy):
         current_rate,
         current_profit,
         min_stake,
-        max_stake,
+        max_stake / trade_leverage,
         current_entry_rate,
         current_exit_rate,
         current_entry_profit,
@@ -47319,38 +47353,6 @@ class NostalgiaForInfinityX8(IStrategy):
     profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = profit_values
 
     slice_amount = filled_entries[0].safe_filled * filled_entries[0].safe_price
-    if self.derisk_enable and (
-      profit_stake
-      < (
-        slice_amount
-        * (self.system_v3_rebuy_mode_derisk_futures if is_futures_mode else self.system_v3_rebuy_mode_derisk_spot)
-      )
-      / trade_leverage
-    ):
-      sell_amount = trade_amount * exit_rate / trade_leverage - (min_stake * 1.55)
-      ft_sell_amount = sell_amount * trade_leverage * (trade.stake_amount / trade_amount) / exit_rate
-      if sell_amount > min_stake and ft_sell_amount > min_stake:
-        stake_currency = config["stake_currency"]
-        stake_fmt = ".8f" if stake_currency in ("BTC", "ETH", "BNB", "SOL") else ".3f"
-        send_notifications = not self.is_backtest_mode()
-        grind_profit = 0.0
-        if send_notifications:
-          dp.send_msg(
-            f"❌​​ ​**Rebuy De-risk:** `Level 3`\n"
-            f"🪙​ **Pair:** `{trade_pair}`\n"
-            f"〽️​ **Rate:** `{exit_rate}`\n"
-            f"💰 **Stake amount:** `{sell_amount:{stake_fmt}}`\n"
-            f"💵​ **Profit (stake):** `{profit_stake:{stake_fmt}}`\n"
-            f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
-          )
-        log.info(
-          f"Rebuy De-risk Level 3 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}%"
-        )
-        if has_order_tags:
-          return -ft_sell_amount, "derisk_level_3"
-        else:
-          return -ft_sell_amount
-
     slice_profit = (exit_rate - last_filled_order.safe_price) / last_filled_order.safe_price
     slice_profit_entry = (exit_rate - last_filled_entry.safe_price) / last_filled_entry.safe_price
     slice_profit_exit = (
@@ -47389,140 +47391,58 @@ class NostalgiaForInfinityX8(IStrategy):
       current_grind_stake_profit = current_grind_stake - total_cost
     if (not partial_sell) and (sub_grind_count < max_sub_grinds):
       df, _ = dp.get_analyzed_dataframe(trade_pair, self.timeframe)
-      if len(df) < 1:
-        return None
-      last_candle = df.iloc[-1]
-      if (
-        ((0 <= sub_grind_count < max_sub_grinds) and (slice_profit_entry < rebuy_mode_sub_thresholds[sub_grind_count]))
-        and (last_candle["protections_long_global"] == True)
-        and (
-          (last_candle["RSI_3"] > 10.0)
-          and (last_candle["RSI_3_15m"] > 10.0)
-          and (last_candle["AROONU_14"] < 30.0)
-          and (last_candle["AROONU_14_15m"] < 30.0)
-          # and (last_candle["ROC_9"] > -5.0)
-          # and (last_candle["ROC_9_15m"] > -5.0)
-          # and (last_candle["close"] > (last_candle["close_max_12"] * 0.99))
-          and (last_candle["close"] < (last_candle["EMA_26"] * 0.988))
-        )
-      ):
-        stake_currency = config["stake_currency"]
-        stake_fmt = ".8f" if stake_currency in ("BTC", "ETH", "BNB", "SOL") else ".3f"
-        send_notifications = not self.is_backtest_mode()
-        buy_amount = slice_amount * rebuy_mode_stakes[sub_grind_count] / trade_leverage
-        if buy_amount < (min_stake * 1.5):
-          buy_amount = min_stake * 1.5
-        if buy_amount > max_stake:
-          return None
-        if send_notifications:
-          dp.send_msg(
-            self.notification_msg(
-              "rebuy",
-              tag="r",
-              pair=trade_pair,
-              rate=current_rate,
-              stake_amount=buy_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=stake_currency,
-            )
+      if len(df) >= 1:
+        last_candle = df.iloc[-1]
+        if (
+          (
+            (0 <= sub_grind_count < max_sub_grinds)
+            and (slice_profit_entry < rebuy_mode_sub_thresholds[sub_grind_count])
           )
-        log.info(
-          f"Rebuy (r) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}%"
-        )
-        if has_order_tags:
-          return buy_amount, "r"
-        else:
-          return buy_amount
+          and (last_candle["protections_long_global"] == True)
+          and (
+            (last_candle["RSI_3"] > 10.0)
+            and (last_candle["RSI_3_15m"] > 10.0)
+            and (last_candle["AROONU_14"] < 30.0)
+            and (last_candle["AROONU_14_15m"] < 30.0)
+            # and (last_candle["ROC_9"] > -5.0)
+            # and (last_candle["ROC_9_15m"] > -5.0)
+            # and (last_candle["close"] > (last_candle["close_max_12"] * 0.99))
+            and (last_candle["close"] < (last_candle["EMA_26"] * 0.988))
+          )
+        ):
+          stake_currency = config["stake_currency"]
+          stake_fmt = ".8f" if stake_currency in ("BTC", "ETH", "BNB", "SOL") else ".3f"
+          send_notifications = not self.is_backtest_mode()
+          buy_amount = slice_amount * rebuy_mode_stakes[sub_grind_count] / trade_leverage
+          if buy_amount < (min_stake * 1.5):
+            buy_amount = min_stake * 1.5
+          if buy_amount <= max_stake:
+            if send_notifications:
+              dp.send_msg(
+                self.notification_msg(
+                  "rebuy",
+                  tag="r",
+                  pair=trade_pair,
+                  rate=current_rate,
+                  stake_amount=buy_amount,
+                  profit_stake=profit_stake,
+                  profit_ratio=profit_ratio,
+                  stake_currency=stake_currency,
+                )
+              )
+            log.info(
+              f"Rebuy (r) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}%"
+            )
+            if has_order_tags:
+              return buy_amount, "r"
+            else:
+              return buy_amount
 
-    return None
-
-  # Long Rebuy Adjust Trade Position v4
-  # ---------------------------------------------------------------------------------------------
-  def long_rebuy_adjust_trade_position_v4(
-    self,
-    trade: Trade,
-    enter_tags,
-    current_time: datetime,
-    current_rate: float,
-    current_profit: float,
-    min_stake: Optional[float],
-    max_stake: float,
-    current_entry_rate: float,
-    current_exit_rate: float,
-    current_entry_profit: float,
-    current_exit_profit: float,
-    **kwargs,
-  ) -> Optional[float]:
-    # min/max stakes include leverage. The return amounts is before leverage.
-    dp = self.dp
-    is_futures_mode = self.is_futures_mode
-    config = self.config
-    trade_pair = trade.pair
-    trade_amount = trade.amount
-    trade_leverage = trade.leverage
-
-    # we already waiting for an order to get filled
-    if trade.has_open_orders:
-      return None
-
-    min_stake = self.correct_min_stake(min_stake, trade_leverage)
-    max_stake /= trade_leverage
-    exit_rate = current_rate
-    filled_orders, filled_entries, filled_exits, profit_values = self.profit_or_order_snapshot(
-      trade, current_time, exit_rate
-    )
-    count_of_entries = trade.nr_of_successful_entries
-    count_of_exits = trade.nr_of_successful_exits
-
-    if count_of_entries == 0:
-      return None
-
-    first_filled_order = filled_orders[0]
-    last_filled_order = filled_orders[-1]
-    last_filled_entry = filled_entries[-1]
-
-    has_order_tags = hasattr(first_filled_order, "ft_order_tag")
-
-    # The first exit is de-risk (providing the trade is still open)
-    if (count_of_exits > 0) and (filled_exits[0].ft_order_tag == "derisk_level_3"):
-      return self.long_grind_adjust_trade_position_v4(
-        trade,
-        enter_tags,
-        current_time,
-        current_rate,
-        current_profit,
-        min_stake,
-        max_stake,
-        current_entry_rate,
-        current_exit_rate,
-        current_entry_profit,
-        current_exit_profit,
-      )
-
-    if dp.runmode.value in ("live", "dry_run"):
-      ticker = dp.ticker(trade_pair)
-      if ("bid" in ticker) and ("ask" in ticker):
-        exit_price_side = config["exit_pricing"]["price_side"]
-        if trade.is_short:
-          if exit_price_side in ["ask", "other"]:
-            if ticker["ask"] is not None:
-              exit_rate = ticker["ask"]
-        else:
-          if exit_price_side in ["bid", "other"]:
-            if ticker["bid"] is not None:
-              exit_rate = ticker["bid"]
-
-    if profit_values is None:
-      profit_values = self.calc_total_profit(trade, filled_entries, filled_exits, exit_rate)
-    profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = profit_values
-
-    slice_amount = filled_entries[0].safe_filled * filled_entries[0].safe_price
     if self.derisk_enable and (
       profit_stake
       < (
         slice_amount
-        * (self.system_v4_rebuy_mode_derisk_futures if is_futures_mode else self.system_v4_rebuy_mode_derisk_spot)
+        * (self.system_v3_rebuy_mode_derisk_futures if is_futures_mode else self.system_v3_rebuy_mode_derisk_spot)
       )
       / trade_leverage
     ):
@@ -47550,6 +47470,89 @@ class NostalgiaForInfinityX8(IStrategy):
         else:
           return -ft_sell_amount
 
+    return None
+
+  # Long Rebuy Adjust Trade Position v4
+  # ---------------------------------------------------------------------------------------------
+  def long_rebuy_adjust_trade_position_v4(
+    self,
+    trade: Trade,
+    enter_tags,
+    current_time: datetime,
+    current_rate: float,
+    current_profit: float,
+    min_stake: Optional[float],
+    max_stake: float,
+    current_entry_rate: float,
+    current_exit_rate: float,
+    current_entry_profit: float,
+    current_exit_profit: float,
+    **kwargs,
+  ) -> Optional[float]:
+    # Stake limits and rebuy amounts are margin, before leverage.
+    dp = self.dp
+    is_futures_mode = self.is_futures_mode
+    config = self.config
+    trade_pair = trade.pair
+    trade_amount = trade.amount
+    trade_leverage = trade.leverage
+
+    # we already waiting for an order to get filled
+    if trade.has_open_orders:
+      return None
+
+    min_stake = self.correct_min_stake(min_stake, trade_leverage)
+    exit_rate = current_rate
+    filled_orders, filled_entries, filled_exits, profit_values = self.profit_or_order_snapshot(
+      trade, current_time, exit_rate
+    )
+    count_of_entries = trade.nr_of_successful_entries
+    count_of_exits = trade.nr_of_successful_exits
+
+    if count_of_entries == 0:
+      return None
+
+    first_filled_order = filled_orders[0]
+    last_filled_order = filled_orders[-1]
+    last_filled_entry = filled_entries[-1]
+
+    has_order_tags = hasattr(first_filled_order, "ft_order_tag")
+
+    # The first exit is de-risk (providing the trade is still open)
+    # Preserve the existing grind handoff budget after de-risk.
+    if (count_of_exits > 0) and (filled_exits[0].ft_order_tag == "derisk_level_3"):
+      return self.long_grind_adjust_trade_position_v4(
+        trade,
+        enter_tags,
+        current_time,
+        current_rate,
+        current_profit,
+        min_stake,
+        max_stake / trade_leverage,
+        current_entry_rate,
+        current_exit_rate,
+        current_entry_profit,
+        current_exit_profit,
+      )
+
+    if dp.runmode.value in ("live", "dry_run"):
+      ticker = dp.ticker(trade_pair)
+      if ("bid" in ticker) and ("ask" in ticker):
+        exit_price_side = config["exit_pricing"]["price_side"]
+        if trade.is_short:
+          if exit_price_side in ["ask", "other"]:
+            if ticker["ask"] is not None:
+              exit_rate = ticker["ask"]
+        else:
+          if exit_price_side in ["bid", "other"]:
+            if ticker["bid"] is not None:
+              exit_rate = ticker["bid"]
+
+    if profit_values is None:
+      profit_values = self.calc_total_profit(trade, filled_entries, filled_exits, exit_rate)
+    profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = profit_values
+
+    slice_amount = filled_entries[0].safe_filled * filled_entries[0].safe_price
     slice_profit = (exit_rate - last_filled_order.safe_price) / last_filled_order.safe_price
     slice_profit_entry = (exit_rate - last_filled_entry.safe_price) / last_filled_entry.safe_price
     slice_profit_exit = (
@@ -47589,48 +47592,78 @@ class NostalgiaForInfinityX8(IStrategy):
     if (not partial_sell) and (sub_grind_count < max_sub_grinds):
       if (0 <= sub_grind_count < max_sub_grinds) and (slice_profit_entry < rebuy_mode_sub_thresholds[sub_grind_count]):
         df, _ = dp.get_analyzed_dataframe(trade_pair, self.timeframe)
-        if len(df) < 1:
-          return None
-        last_candle = df.iloc[-1]
-        if (
-          (last_candle["protections_long_global"] == True)
-          and (last_candle["RSI_3"] > 10.0)
-          and (last_candle["RSI_3_15m"] > 10.0)
-          and (last_candle["AROONU_14"] < 30.0)
-          and (last_candle["AROONU_14_15m"] < 30.0)
-          # and (last_candle["ROC_9"] > -5.0)
-          # and (last_candle["ROC_9_15m"] > -5.0)
-          # and (last_candle["close"] > (last_candle["close_max_12"] * 0.99))
-          and (last_candle["close"] < (last_candle["EMA_26"] * 0.988))
-        ):
-          stake_currency = config["stake_currency"]
-          stake_fmt = ".8f" if stake_currency in ("BTC", "ETH", "BNB", "SOL") else ".3f"
-          send_notifications = not self.is_backtest_mode()
-          buy_amount = slice_amount * rebuy_mode_stakes[sub_grind_count] / trade_leverage
-          if buy_amount < (min_stake * 1.5):
-            buy_amount = min_stake * 1.5
-          if buy_amount > max_stake:
-            return None
-          if send_notifications:
-            dp.send_msg(
-              self.notification_msg(
-                "rebuy",
-                tag="r",
-                pair=trade_pair,
-                rate=current_rate,
-                stake_amount=buy_amount,
-                profit_stake=profit_stake,
-                profit_ratio=profit_ratio,
-                stake_currency=stake_currency,
+        if len(df) >= 1:
+          last_candle = df.iloc[-1]
+          if (
+            (last_candle["protections_long_global"] == True)
+            and (last_candle["RSI_3"] > 10.0)
+            and (last_candle["RSI_3_15m"] > 10.0)
+            and (last_candle["AROONU_14"] < 30.0)
+            and (last_candle["AROONU_14_15m"] < 30.0)
+            # and (last_candle["ROC_9"] > -5.0)
+            # and (last_candle["ROC_9_15m"] > -5.0)
+            # and (last_candle["close"] > (last_candle["close_max_12"] * 0.99))
+            and (last_candle["close"] < (last_candle["EMA_26"] * 0.988))
+          ):
+            stake_currency = config["stake_currency"]
+            stake_fmt = ".8f" if stake_currency in ("BTC", "ETH", "BNB", "SOL") else ".3f"
+            send_notifications = not self.is_backtest_mode()
+            buy_amount = slice_amount * rebuy_mode_stakes[sub_grind_count] / trade_leverage
+            if buy_amount < (min_stake * 1.5):
+              buy_amount = min_stake * 1.5
+            if buy_amount <= max_stake:
+              if send_notifications:
+                dp.send_msg(
+                  self.notification_msg(
+                    "rebuy",
+                    tag="r",
+                    pair=trade_pair,
+                    rate=current_rate,
+                    stake_amount=buy_amount,
+                    profit_stake=profit_stake,
+                    profit_ratio=profit_ratio,
+                    stake_currency=stake_currency,
+                  )
+                )
+              log.info(
+                f"Rebuy (r) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}%"
               )
-            )
-          log.info(
-            f"Rebuy (r) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}%"
+              if has_order_tags:
+                return buy_amount, "r"
+              else:
+                return buy_amount
+
+    if self.derisk_enable and (
+      profit_stake
+      < (
+        slice_amount
+        * (self.system_v4_rebuy_mode_derisk_futures if is_futures_mode else self.system_v4_rebuy_mode_derisk_spot)
+      )
+      / trade_leverage
+    ):
+      sell_amount = trade_amount * exit_rate / trade_leverage - (min_stake * 1.55)
+      ft_sell_amount = sell_amount * trade_leverage * (trade.stake_amount / trade_amount) / exit_rate
+      if sell_amount > min_stake and ft_sell_amount > min_stake:
+        stake_currency = config["stake_currency"]
+        stake_fmt = ".8f" if stake_currency in ("BTC", "ETH", "BNB", "SOL") else ".3f"
+        send_notifications = not self.is_backtest_mode()
+        grind_profit = 0.0
+        if send_notifications:
+          dp.send_msg(
+            f"❌​​ ​**Rebuy De-risk:** `Level 3`\n"
+            f"🪙​ **Pair:** `{trade_pair}`\n"
+            f"〽️​ **Rate:** `{exit_rate}`\n"
+            f"💰 **Stake amount:** `{sell_amount:{stake_fmt}}`\n"
+            f"💵​ **Profit (stake):** `{profit_stake:{stake_fmt}}`\n"
+            f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
           )
-          if has_order_tags:
-            return buy_amount, "r"
-          else:
-            return buy_amount
+        log.info(
+          f"Rebuy De-risk Level 3 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}%"
+        )
+        if has_order_tags:
+          return -ft_sell_amount, "derisk_level_3"
+        else:
+          return -ft_sell_amount
 
     return None
 
@@ -61028,7 +61061,7 @@ class NostalgiaForInfinityX8(IStrategy):
     current_exit_profit: float,
     **kwargs,
   ) -> Optional[float]:
-    # min/max stakes include leverage. The return amounts is before leverage.
+    # Stake limits and rebuy amounts are margin, before leverage.
     config = self.config
 
     dp = self.dp
@@ -61042,7 +61075,6 @@ class NostalgiaForInfinityX8(IStrategy):
     if trade.has_open_orders:
       return None
 
-    max_stake /= trade_leverage
     df, _ = dp.get_analyzed_dataframe(trade_pair, self.timeframe)
 
     exit_rate = current_rate
@@ -61062,7 +61094,10 @@ class NostalgiaForInfinityX8(IStrategy):
     has_order_tags = hasattr(first_filled_order, "ft_order_tag")
 
     # The first exit is de-risk (providing the trade is still open)
+    # Preserve the existing grind handoff budget after de-risk.
     if (count_of_exits > 0) and (filled_exits[0].ft_order_tag == "derisk_level_3"):
+      if len(df) < 2:
+        return None
       return self.short_grind_adjust_trade_position_v2(
         trade,
         enter_tags,
@@ -61070,7 +61105,7 @@ class NostalgiaForInfinityX8(IStrategy):
         current_rate,
         current_profit,
         min_stake,
-        max_stake,
+        max_stake / trade_leverage,
         current_entry_rate,
         current_exit_rate,
         current_entry_profit,
@@ -61095,38 +61130,6 @@ class NostalgiaForInfinityX8(IStrategy):
     profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = profit_values
 
     slice_amount = filled_entries[0].safe_filled * filled_entries[0].safe_price
-    if self.derisk_enable and (
-      profit_stake
-      < (
-        slice_amount * (self.rebuy_mode_derisk_futures if is_futures_mode else self.rebuy_mode_derisk_spot)
-        # / (trade.leverage if self.is_futures_mode else 1.0)
-      )
-    ):
-      sell_amount = trade_amount * exit_rate / trade_leverage - (min_stake * 1.55)
-      ft_sell_amount = sell_amount * trade_leverage * (trade.stake_amount / trade_amount) / exit_rate
-      if sell_amount > min_stake and ft_sell_amount > min_stake:
-        grind_profit = 0.0
-        dp.send_msg(
-          f"❌​​ ​**Rebuy De-risk:** `Level 3`\n"
-          f"🪙​ **Pair:** `{trade_pair}`\n"
-          f"〽️​ **Rate:** `{exit_rate}`\n"
-          f"💰 **Stake amount:** `{sell_amount}`\n"
-          f"💵​ **Profit (stake):** `{profit_stake}`\n"
-          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
-        )
-        log.info(
-          f"Rebuy De-risk Level 3 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
-        )
-        if has_order_tags:
-          return -ft_sell_amount, "derisk_level_3"
-        else:
-          return -ft_sell_amount
-
-    if len(df) < 2:
-      return None
-    last_candle = df.iloc[-1]
-    previous_candle = df.iloc[-2]
-
     slice_profit = (exit_rate - last_filled_order.safe_price) / last_filled_order.safe_price
     slice_profit_entry = (exit_rate - last_filled_entry.safe_price) / last_filled_entry.safe_price
     if count_of_exits > 0:
@@ -61164,7 +61167,9 @@ class NostalgiaForInfinityX8(IStrategy):
       current_grind_stake = total_amount * exit_rate * (1 - trade.fee_close)
       current_grind_stake_profit = current_grind_stake - total_cost
 
-    if (not partial_sell) and (sub_grind_count < max_sub_grinds):
+    if (len(df) >= 2) and (not partial_sell) and (sub_grind_count < max_sub_grinds):
+      last_candle = df.iloc[-1]
+      previous_candle = df.iloc[-2]
       if (
         (0 <= sub_grind_count < max_sub_grinds) and (-slice_profit_entry < rebuy_mode_sub_thresholds[sub_grind_count])
       ) and (
@@ -61179,27 +61184,53 @@ class NostalgiaForInfinityX8(IStrategy):
         buy_amount = slice_amount * rebuy_mode_stakes[sub_grind_count] / trade_leverage
         if buy_amount < (min_stake * 1.5):
           buy_amount = min_stake * 1.5
-        if buy_amount > max_stake:
-          return None
-        dp.send_msg(
-          self.notification_msg(
-            "rebuy",
-            tag="r",
-            pair=trade_pair,
-            rate=current_rate,
-            stake_amount=buy_amount,
-            profit_stake=profit_stake,
-            profit_ratio=profit_ratio,
-            stake_currency=config["stake_currency"],
+        if buy_amount <= max_stake:
+          dp.send_msg(
+            self.notification_msg(
+              "rebuy",
+              tag="r",
+              pair=trade_pair,
+              rate=current_rate,
+              stake_amount=buy_amount,
+              profit_stake=profit_stake,
+              profit_ratio=profit_ratio,
+              stake_currency=config["stake_currency"],
+            )
           )
+          log.info(
+            f"Rebuy (r) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          )
+          if has_order_tags:
+            return buy_amount, "r"
+          else:
+            return buy_amount
+
+    if self.derisk_enable and (
+      profit_stake
+      < (
+        slice_amount * (self.rebuy_mode_derisk_futures if is_futures_mode else self.rebuy_mode_derisk_spot)
+        # / (trade.leverage if self.is_futures_mode else 1.0)
+      )
+    ):
+      sell_amount = trade_amount * exit_rate / trade_leverage - (min_stake * 1.55)
+      ft_sell_amount = sell_amount * trade_leverage * (trade.stake_amount / trade_amount) / exit_rate
+      if sell_amount > min_stake and ft_sell_amount > min_stake:
+        grind_profit = 0.0
+        dp.send_msg(
+          f"❌​​ ​**Rebuy De-risk:** `Level 3`\n"
+          f"🪙​ **Pair:** `{trade_pair}`\n"
+          f"〽️​ **Rate:** `{exit_rate}`\n"
+          f"💰 **Stake amount:** `{sell_amount}`\n"
+          f"💵​ **Profit (stake):** `{profit_stake}`\n"
+          f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
         )
         log.info(
-          f"Rebuy (r) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
+          f"Rebuy De-risk Level 3 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount} | Profit (stake): {profit_stake} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         if has_order_tags:
-          return buy_amount, "r"
+          return -ft_sell_amount, "derisk_level_3"
         else:
-          return buy_amount
+          return -ft_sell_amount
 
     return None
 
@@ -61220,7 +61251,7 @@ class NostalgiaForInfinityX8(IStrategy):
     current_exit_profit: float,
     **kwargs,
   ) -> Optional[float]:
-    # min/max stakes include leverage. The return amounts is before leverage.
+    # Stake limits and rebuy amounts are margin, before leverage.
     dp = self.dp
     is_futures_mode = self.is_futures_mode
     config = self.config
@@ -61233,7 +61264,6 @@ class NostalgiaForInfinityX8(IStrategy):
       return None
 
     min_stake = self.correct_min_stake(min_stake, trade_leverage)
-    max_stake /= trade_leverage
     exit_rate = current_rate
     filled_orders, filled_entries, filled_exits, profit_values = self.profit_or_order_snapshot(
       trade, current_time, exit_rate
@@ -61251,6 +61281,7 @@ class NostalgiaForInfinityX8(IStrategy):
     has_order_tags = hasattr(first_filled_order, "ft_order_tag")
 
     # The first exit is de-risk (providing the trade is still open)
+    # Preserve the existing grind handoff budget after de-risk.
     if (count_of_exits > 0) and (filled_exits[0].ft_order_tag == "derisk_level_3"):
       return self.short_grind_adjust_trade_position_v3(
         trade,
@@ -61259,7 +61290,7 @@ class NostalgiaForInfinityX8(IStrategy):
         current_rate,
         current_profit,
         min_stake,
-        max_stake,
+        max_stake / trade_leverage,
         current_entry_rate,
         current_exit_rate,
         current_entry_profit,
@@ -61284,38 +61315,6 @@ class NostalgiaForInfinityX8(IStrategy):
     profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = profit_values
 
     slice_amount = filled_entries[0].safe_filled * filled_entries[0].safe_price
-    if self.derisk_enable and (
-      profit_stake
-      < (
-        slice_amount
-        * (self.system_v3_rebuy_mode_derisk_futures if is_futures_mode else self.system_v3_rebuy_mode_derisk_spot)
-      )
-      / trade_leverage
-    ):
-      sell_amount = trade_amount * exit_rate / trade_leverage - (min_stake * 1.55)
-      ft_sell_amount = sell_amount * trade_leverage * (trade.stake_amount / trade_amount) / exit_rate
-      if sell_amount > min_stake and ft_sell_amount > min_stake:
-        stake_currency = config["stake_currency"]
-        stake_fmt = ".8f" if stake_currency in ("BTC", "ETH", "BNB", "SOL") else ".3f"
-        send_notifications = not self.is_backtest_mode()
-        grind_profit = 0.0
-        if send_notifications:
-          dp.send_msg(
-            f"❌​​ ​**Rebuy De-risk:** `Level 3`\n"
-            f"🪙​ **Pair:** `{trade_pair}`\n"
-            f"〽️​ **Rate:** `{exit_rate}`\n"
-            f"💰 **Stake amount:** `{sell_amount:{stake_fmt}}`\n"
-            f"💵​ **Profit (stake):** `{profit_stake:{stake_fmt}}`\n"
-            f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
-          )
-        log.info(
-          f"Rebuy De-risk Level 3 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}%"
-        )
-        if has_order_tags:
-          return -ft_sell_amount, "derisk_level_3"
-        else:
-          return -ft_sell_amount
-
     slice_profit = (exit_rate - last_filled_order.safe_price) / last_filled_order.safe_price
     slice_profit_entry = (exit_rate - last_filled_entry.safe_price) / last_filled_entry.safe_price
     slice_profit_exit = (
@@ -61354,140 +61353,55 @@ class NostalgiaForInfinityX8(IStrategy):
       current_grind_stake_profit = current_grind_stake - total_cost
     if (not partial_sell) and (sub_grind_count < max_sub_grinds):
       df, _ = dp.get_analyzed_dataframe(trade_pair, self.timeframe)
-      if len(df) < 1:
-        return None
-      last_candle = df.iloc[-1]
-      if (
-        (
-          (0 <= sub_grind_count < max_sub_grinds)
-          and (-slice_profit_entry < rebuy_mode_sub_thresholds[sub_grind_count])
-        )
-        and (last_candle["protections_short_global"] == True)
-        and (
-          (last_candle["RSI_3"] < 90.0)
-          and (last_candle["RSI_3_15m"] < 90.0)
-          and (last_candle["AROOND_14"] < 30.0)
-          and (last_candle["AROOND_14_15m"] < 30.0)
-          and (last_candle["close"] < (last_candle["EMA_26"] * 1.012))
-        )
-      ):
-        buy_amount = slice_amount * rebuy_mode_stakes[sub_grind_count] / trade_leverage
-        if buy_amount < (min_stake * 1.5):
-          buy_amount = min_stake * 1.5
-        if buy_amount > max_stake:
-          return None
-        stake_currency = config["stake_currency"]
-        stake_fmt = ".8f" if stake_currency in ("BTC", "ETH", "BNB", "SOL") else ".3f"
-        send_notifications = not self.is_backtest_mode()
-        if send_notifications:
-          dp.send_msg(
-            self.notification_msg(
-              "rebuy",
-              tag="r",
-              pair=trade_pair,
-              rate=current_rate,
-              stake_amount=buy_amount,
-              profit_stake=profit_stake,
-              profit_ratio=profit_ratio,
-              stake_currency=stake_currency,
-            )
+      if len(df) >= 1:
+        last_candle = df.iloc[-1]
+        if (
+          (
+            (0 <= sub_grind_count < max_sub_grinds)
+            and (-slice_profit_entry < rebuy_mode_sub_thresholds[sub_grind_count])
           )
-        log.info(
-          f"Rebuy (r) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}%"
-        )
-        if has_order_tags:
-          return buy_amount, "r"
-        else:
-          return buy_amount
+          and (last_candle["protections_short_global"] == True)
+          and (
+            (last_candle["RSI_3"] < 90.0)
+            and (last_candle["RSI_3_15m"] < 90.0)
+            and (last_candle["AROOND_14"] < 30.0)
+            and (last_candle["AROOND_14_15m"] < 30.0)
+            and (last_candle["close"] < (last_candle["EMA_26"] * 1.012))
+          )
+        ):
+          buy_amount = slice_amount * rebuy_mode_stakes[sub_grind_count] / trade_leverage
+          if buy_amount < (min_stake * 1.5):
+            buy_amount = min_stake * 1.5
+          if buy_amount <= max_stake:
+            stake_currency = config["stake_currency"]
+            stake_fmt = ".8f" if stake_currency in ("BTC", "ETH", "BNB", "SOL") else ".3f"
+            send_notifications = not self.is_backtest_mode()
+            if send_notifications:
+              dp.send_msg(
+                self.notification_msg(
+                  "rebuy",
+                  tag="r",
+                  pair=trade_pair,
+                  rate=current_rate,
+                  stake_amount=buy_amount,
+                  profit_stake=profit_stake,
+                  profit_ratio=profit_ratio,
+                  stake_currency=stake_currency,
+                )
+              )
+            log.info(
+              f"Rebuy (r) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}%"
+            )
+            if has_order_tags:
+              return buy_amount, "r"
+            else:
+              return buy_amount
 
-    return None
-
-  # Short Rebuy Adjust Trade Position v4
-  # ---------------------------------------------------------------------------------------------
-  def short_rebuy_adjust_trade_position_v4(
-    self,
-    trade: Trade,
-    enter_tags,
-    current_time: datetime,
-    current_rate: float,
-    current_profit: float,
-    min_stake: Optional[float],
-    max_stake: float,
-    current_entry_rate: float,
-    current_exit_rate: float,
-    current_entry_profit: float,
-    current_exit_profit: float,
-    **kwargs,
-  ) -> Optional[float]:
-    # min/max stakes include leverage. The return amounts is before leverage.
-    dp = self.dp
-    is_futures_mode = self.is_futures_mode
-    config = self.config
-    trade_pair = trade.pair
-    trade_amount = trade.amount
-    trade_leverage = trade.leverage
-
-    # we already waiting for an order to get filled
-    if trade.has_open_orders:
-      return None
-
-    min_stake = self.correct_min_stake(min_stake, trade_leverage)
-    max_stake /= trade_leverage
-    exit_rate = current_rate
-    filled_orders, filled_entries, filled_exits, profit_values = self.profit_or_order_snapshot(
-      trade, current_time, exit_rate
-    )
-    count_of_entries = trade.nr_of_successful_entries
-    count_of_exits = trade.nr_of_successful_exits
-
-    if count_of_entries == 0:
-      return None
-
-    first_filled_order = filled_orders[0]
-    last_filled_order = filled_orders[-1]
-    last_filled_entry = filled_entries[-1]
-
-    has_order_tags = hasattr(first_filled_order, "ft_order_tag")
-
-    # The first exit is de-risk (providing the trade is still open)
-    if (count_of_exits > 0) and (filled_exits[0].ft_order_tag == "derisk_level_3"):
-      return self.short_grind_adjust_trade_position_v4(
-        trade,
-        enter_tags,
-        current_time,
-        current_rate,
-        current_profit,
-        min_stake,
-        max_stake,
-        current_entry_rate,
-        current_exit_rate,
-        current_entry_profit,
-        current_exit_profit,
-      )
-
-    if dp.runmode.value in ("live", "dry_run"):
-      ticker = dp.ticker(trade_pair)
-      if ("bid" in ticker) and ("ask" in ticker):
-        exit_price_side = config["exit_pricing"]["price_side"]
-        if trade.is_short:
-          if exit_price_side in ["ask", "other"]:
-            if ticker["ask"] is not None:
-              exit_rate = ticker["ask"]
-        else:
-          if exit_price_side in ["bid", "other"]:
-            if ticker["bid"] is not None:
-              exit_rate = ticker["bid"]
-
-    if profit_values is None:
-      profit_values = self.calc_total_profit(trade, filled_entries, filled_exits, exit_rate)
-    profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = profit_values
-
-    slice_amount = filled_entries[0].safe_filled * filled_entries[0].safe_price
     if self.derisk_enable and (
       profit_stake
       < (
         slice_amount
-        * (self.system_v4_rebuy_mode_derisk_futures if is_futures_mode else self.system_v4_rebuy_mode_derisk_spot)
+        * (self.system_v3_rebuy_mode_derisk_futures if is_futures_mode else self.system_v3_rebuy_mode_derisk_spot)
       )
       / trade_leverage
     ):
@@ -61515,6 +61429,89 @@ class NostalgiaForInfinityX8(IStrategy):
         else:
           return -ft_sell_amount
 
+    return None
+
+  # Short Rebuy Adjust Trade Position v4
+  # ---------------------------------------------------------------------------------------------
+  def short_rebuy_adjust_trade_position_v4(
+    self,
+    trade: Trade,
+    enter_tags,
+    current_time: datetime,
+    current_rate: float,
+    current_profit: float,
+    min_stake: Optional[float],
+    max_stake: float,
+    current_entry_rate: float,
+    current_exit_rate: float,
+    current_entry_profit: float,
+    current_exit_profit: float,
+    **kwargs,
+  ) -> Optional[float]:
+    # Stake limits and rebuy amounts are margin, before leverage.
+    dp = self.dp
+    is_futures_mode = self.is_futures_mode
+    config = self.config
+    trade_pair = trade.pair
+    trade_amount = trade.amount
+    trade_leverage = trade.leverage
+
+    # we already waiting for an order to get filled
+    if trade.has_open_orders:
+      return None
+
+    min_stake = self.correct_min_stake(min_stake, trade_leverage)
+    exit_rate = current_rate
+    filled_orders, filled_entries, filled_exits, profit_values = self.profit_or_order_snapshot(
+      trade, current_time, exit_rate
+    )
+    count_of_entries = trade.nr_of_successful_entries
+    count_of_exits = trade.nr_of_successful_exits
+
+    if count_of_entries == 0:
+      return None
+
+    first_filled_order = filled_orders[0]
+    last_filled_order = filled_orders[-1]
+    last_filled_entry = filled_entries[-1]
+
+    has_order_tags = hasattr(first_filled_order, "ft_order_tag")
+
+    # The first exit is de-risk (providing the trade is still open)
+    # Preserve the existing grind handoff budget after de-risk.
+    if (count_of_exits > 0) and (filled_exits[0].ft_order_tag == "derisk_level_3"):
+      return self.short_grind_adjust_trade_position_v4(
+        trade,
+        enter_tags,
+        current_time,
+        current_rate,
+        current_profit,
+        min_stake,
+        max_stake / trade_leverage,
+        current_entry_rate,
+        current_exit_rate,
+        current_entry_profit,
+        current_exit_profit,
+      )
+
+    if dp.runmode.value in ("live", "dry_run"):
+      ticker = dp.ticker(trade_pair)
+      if ("bid" in ticker) and ("ask" in ticker):
+        exit_price_side = config["exit_pricing"]["price_side"]
+        if trade.is_short:
+          if exit_price_side in ["ask", "other"]:
+            if ticker["ask"] is not None:
+              exit_rate = ticker["ask"]
+        else:
+          if exit_price_side in ["bid", "other"]:
+            if ticker["bid"] is not None:
+              exit_rate = ticker["bid"]
+
+    if profit_values is None:
+      profit_values = self.calc_total_profit(trade, filled_entries, filled_exits, exit_rate)
+    profit_stake, profit_ratio, profit_current_stake_ratio, profit_init_ratio = profit_values
+
+    slice_amount = filled_entries[0].safe_filled * filled_entries[0].safe_price
     slice_profit = (exit_rate - last_filled_order.safe_price) / last_filled_order.safe_price
     slice_profit_entry = (exit_rate - last_filled_entry.safe_price) / last_filled_entry.safe_price
     slice_profit_exit = (
@@ -61556,45 +61553,75 @@ class NostalgiaForInfinityX8(IStrategy):
         -slice_profit_entry < rebuy_mode_sub_thresholds[sub_grind_count]
       ):
         df, _ = dp.get_analyzed_dataframe(trade_pair, self.timeframe)
-        if len(df) < 1:
-          return None
-        last_candle = df.iloc[-1]
-        if (
-          (last_candle["protections_short_global"] == True)
-          and (last_candle["RSI_3"] < 90.0)
-          and (last_candle["RSI_3_15m"] < 90.0)
-          and (last_candle["AROOND_14"] < 30.0)
-          and (last_candle["AROOND_14_15m"] < 30.0)
-          and (last_candle["close"] < (last_candle["EMA_26"] * 1.012))
-        ):
-          buy_amount = slice_amount * rebuy_mode_stakes[sub_grind_count] / trade_leverage
-          if buy_amount < (min_stake * 1.5):
-            buy_amount = min_stake * 1.5
-          if buy_amount > max_stake:
-            return None
-          stake_currency = config["stake_currency"]
-          stake_fmt = ".8f" if stake_currency in ("BTC", "ETH", "BNB", "SOL") else ".3f"
-          send_notifications = not self.is_backtest_mode()
-          if send_notifications:
-            dp.send_msg(
-              self.notification_msg(
-                "rebuy",
-                tag="r",
-                pair=trade_pair,
-                rate=current_rate,
-                stake_amount=buy_amount,
-                profit_stake=profit_stake,
-                profit_ratio=profit_ratio,
-                stake_currency=stake_currency,
+        if len(df) >= 1:
+          last_candle = df.iloc[-1]
+          if (
+            (last_candle["protections_short_global"] == True)
+            and (last_candle["RSI_3"] < 90.0)
+            and (last_candle["RSI_3_15m"] < 90.0)
+            and (last_candle["AROOND_14"] < 30.0)
+            and (last_candle["AROOND_14_15m"] < 30.0)
+            and (last_candle["close"] < (last_candle["EMA_26"] * 1.012))
+          ):
+            buy_amount = slice_amount * rebuy_mode_stakes[sub_grind_count] / trade_leverage
+            if buy_amount < (min_stake * 1.5):
+              buy_amount = min_stake * 1.5
+            if buy_amount <= max_stake:
+              stake_currency = config["stake_currency"]
+              stake_fmt = ".8f" if stake_currency in ("BTC", "ETH", "BNB", "SOL") else ".3f"
+              send_notifications = not self.is_backtest_mode()
+              if send_notifications:
+                dp.send_msg(
+                  self.notification_msg(
+                    "rebuy",
+                    tag="r",
+                    pair=trade_pair,
+                    rate=current_rate,
+                    stake_amount=buy_amount,
+                    profit_stake=profit_stake,
+                    profit_ratio=profit_ratio,
+                    stake_currency=stake_currency,
+                  )
+                )
+              log.info(
+                f"Rebuy (r) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}%"
               )
-            )
-          log.info(
-            f"Rebuy (r) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}%"
+              if has_order_tags:
+                return buy_amount, "r"
+              else:
+                return buy_amount
+
+    if self.derisk_enable and (
+      profit_stake
+      < (
+        slice_amount
+        * (self.system_v4_rebuy_mode_derisk_futures if is_futures_mode else self.system_v4_rebuy_mode_derisk_spot)
+      )
+      / trade_leverage
+    ):
+      sell_amount = trade_amount * exit_rate / trade_leverage - (min_stake * 1.55)
+      ft_sell_amount = sell_amount * trade_leverage * (trade.stake_amount / trade_amount) / exit_rate
+      if sell_amount > min_stake and ft_sell_amount > min_stake:
+        stake_currency = config["stake_currency"]
+        stake_fmt = ".8f" if stake_currency in ("BTC", "ETH", "BNB", "SOL") else ".3f"
+        send_notifications = not self.is_backtest_mode()
+        grind_profit = 0.0
+        if send_notifications:
+          dp.send_msg(
+            f"❌​​ ​**Rebuy De-risk:** `Level 3`\n"
+            f"🪙​ **Pair:** `{trade_pair}`\n"
+            f"〽️​ **Rate:** `{exit_rate}`\n"
+            f"💰 **Stake amount:** `{sell_amount:{stake_fmt}}`\n"
+            f"💵​ **Profit (stake):** `{profit_stake:{stake_fmt}}`\n"
+            f"💸 **Profit (percent):** `{(profit_ratio * 100.0):.2f}%`"
           )
-          if has_order_tags:
-            return buy_amount, "r"
-          else:
-            return buy_amount
+        log.info(
+          f"Rebuy De-risk Level 3 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}%"
+        )
+        if has_order_tags:
+          return -ft_sell_amount, "derisk_level_3"
+        else:
+          return -ft_sell_amount
 
     return None
 

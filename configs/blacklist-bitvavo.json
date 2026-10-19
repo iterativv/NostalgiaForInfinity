@@ -73,6 +73,19 @@
       // -61.2% off its high and -41.3% below its own first candle 250 days ago, and the book has
       // thinned to ~$15.6M on binance, $3.0M on bybit and $1.1M on bitget.
       "(NXPC)/.*",
+      // Supply minted out from under it — on 2026-10-17 an attacker minted 10,000,000 unauthorized
+      // CYS on BNB Smart Chain through the Cysic bridge and sold 7.2M of them within five minutes,
+      // moving ~306.6 ETH (~$727k) to Ethereum before the receiving address was frozen. The mint is
+      // a property of the token rather than of any venue. -93.7% off its high and -70.4% below its
+      // own first candle; the hack day printed a 30.8% range and the next day closed -9.9%. Perp on
+      // binance (~$4.1M), bybit (~$0.8M) and bitget (~$0.5M), plus spot on gate, mexc and kucoin.
+      "(CYS)/.*",
+      // The chain stopped — Qubic halted its mainnet on 2026-10-18 at tick 85,371,949 after an
+      // attacker drained 1,404 wallets of ~2.94 trillion QU (~$1.3M) between 23:42 UTC on 10-17 and
+      // 01:26 UTC on 10-18. The flaw sits outside the protocol: some wallets generated predictable
+      // recovery phrases. 87.1% of the funds were frozen on-chain, 12.9% had reached MEXC. Lists as
+      // QUBIC, spot only on bitget, gate and mexc at ~$0.1-0.2M, no perp anywhere.
+      "(QUBIC)/.*",
       // Parabolic squeeze in a newly eligible listing — 486.7% range inside the 2026-10-12 21:00
       // hour (0.3785 -> 0.8542 -> 0.1456 -> 0.2002, +126% then -83%), 64 days since listing and
       // -72.8% off its high on ~$196M/day
