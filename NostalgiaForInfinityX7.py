@@ -24470,6 +24470,7 @@ class NostalgiaForInfinityX7(IStrategy):
         # Condition #120 - Grind mode (Long).
         if long_entry_condition_index == 120:
           # Protections
+          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           long_entry_logic.append(num_open_long_grind_mode < self.grind_mode_max_slots)
           long_entry_logic.append(protections_long_global == True)
           long_entry_logic.append(is_pair_long_grind_mode)
@@ -32014,7 +32015,7 @@ class NostalgiaForInfinityX7(IStrategy):
         previous_sell_reason
         not in [
           f"exit_{mode_name}_stoploss_doom",
-          f"exit_profit_{mode_name}_stoploss_u_e",
+          f"exit_{mode_name}_stoploss_u_e",
         ]
       ):
         mark_pair, mark_signal = mark_profit_target(
@@ -32527,7 +32528,7 @@ class NostalgiaForInfinityX7(IStrategy):
     if sell and signal_name is not None:
       if signal_name in (stoploss_doom, stoploss_ue) and previous_sell_reason not in (
         stoploss_doom,
-        f"exit_profit_{mode_name}_stoploss_u_e",
+        f"exit_{mode_name}_stoploss_u_e",
       ):
         mark_pair, mark_signal = mark_profit_target(
           mode_name,
@@ -33328,7 +33329,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
       blocked_previous_signals = {
         f"exit_{mode}_stoploss_doom",
-        f"exit_profit_{mode}_stoploss_u_e",
+        f"exit_{mode}_stoploss_u_e",
       }
 
       if signal_name in protected_signals and previous_sell_reason not in blocked_previous_signals:
@@ -33620,7 +33621,7 @@ class NostalgiaForInfinityX7(IStrategy):
 
       blocked_previous_signals = {
         f"exit_{mode}_stoploss_doom",
-        f"exit_profit_{mode}_stoploss_u_e",
+        f"exit_{mode}_stoploss_u_e",
       }
 
       target_profit = profit_ratio if signal_name in protected_signals else profit_init_ratio
@@ -56120,7 +56121,7 @@ class NostalgiaForInfinityX7(IStrategy):
         previous_sell_reason
         not in [
           f"exit_{mode_name}_stoploss_doom",
-          f"exit_profit_{mode_name}_stoploss_u_e",
+          f"exit_{mode_name}_stoploss_u_e",
         ]
       ):
         mark_pair, mark_signal = mark_profit_target(
@@ -56647,7 +56648,7 @@ class NostalgiaForInfinityX7(IStrategy):
         previous_sell_reason
         not in [
           f"exit_{mode_name}_stoploss_doom",
-          f"exit_profit_{mode_name}_stoploss_u_e",
+          f"exit_{mode_name}_stoploss_u_e",
         ]
       ):
         mark_pair, mark_signal = mark_profit_target(
@@ -57474,7 +57475,7 @@ class NostalgiaForInfinityX7(IStrategy):
         previous_sell_reason
         not in [
           f"exit_{mode_name}_stoploss_doom",
-          f"exit_profit_{mode_name}_stoploss_u_e",
+          f"exit_{mode_name}_stoploss_u_e",
         ]
       ):
         mark_pair, mark_signal = mark_profit_target(
@@ -57749,7 +57750,7 @@ class NostalgiaForInfinityX7(IStrategy):
         previous_sell_reason
         not in [
           f"exit_{mode_name}_stoploss_doom",
-          f"exit_profit_{mode_name}_stoploss_u_e",
+          f"exit_{mode_name}_stoploss_u_e",
         ]
       ):
         mark_pair, mark_signal = mark_profit_target(
@@ -73865,6 +73866,7 @@ class NostalgiaForInfinityX7(IStrategy):
         last_candle,
         previous_candle,
         slice_profit,
+        slice_profit_entry,
         True,
       )
       if is_short_extra_checks_entry
@@ -74666,7 +74668,12 @@ class NostalgiaForInfinityX7(IStrategy):
     return None
 
   def short_grind_entry_v3(
-    self, last_candle: Series, previous_candle: Series, slice_profit: float, is_derisk: bool
+    self,
+    last_candle: Series,
+    previous_candle: Series,
+    slice_profit: float,
+    slice_profit_entry: float,
+    is_derisk: bool,
   ) -> float:
     if last_candle["protections_short_global"] != True:
       return False
@@ -74945,9 +74952,9 @@ class NostalgiaForInfinityX7(IStrategy):
     ):
       self._grind_entry_tag = "g14"
       return True
-    # g15 — deep loss recovery (slice_profit < -0.16) (mirror long g15)
+    # g15 — deep loss recovery (slice_profit > 0.16, positive = adverse move for a short) (mirror long g15)
     if (
-      (slice_profit < -0.16)
+      (slice_profit > 0.16)
       and (last_rsi_3 < 95.0)
       and (last_rsi_3_15m < 90.0)
       and (last_rsi_14 > 60.0)
@@ -74986,9 +74993,9 @@ class NostalgiaForInfinityX7(IStrategy):
     ):
       self._grind_entry_tag = "g17"
       return True
-    # g18 — moderate loss recovery (slice_profit < -0.10) (mirror long g18)
+    # g18 — moderate loss recovery (slice_profit > 0.10, positive = adverse move for a short) (mirror long g18)
     if (
-      (slice_profit < -0.10)
+      (slice_profit > 0.10)
       and (last_rsi_3 < 95.0)
       and (last_rsi_3_15m < 85.0)
       and (last_rsi_3_1h < 80.0)
@@ -74999,9 +75006,9 @@ class NostalgiaForInfinityX7(IStrategy):
     ):
       self._grind_entry_tag = "g18"
       return True
-    # g19 — EMA_12/26 wide gap (slice_profit < -0.06) (mirror long g19)
+    # g19 — EMA_12/26 wide gap (slice_profit > 0.06, positive = adverse move for a short) (mirror long g19)
     if (
-      (slice_profit < -0.06)
+      (slice_profit > 0.06)
       and (last_rsi_3 > 70.0)
       and (last_rsi_3 < 95.0)
       and (last_rsi_3_15m < 90.0)
@@ -75035,9 +75042,9 @@ class NostalgiaForInfinityX7(IStrategy):
     ):
       self._grind_entry_tag = "g20"
       return True
-    # g21 — EMA_20 rise (slice_profit < -0.02) (mirror long g21)
+    # g21 — EMA_20 rise (slice_profit_entry > 0.02, positive = adverse move for a short) (mirror long g21)
     if (
-      (slice_profit < -0.02)
+      (slice_profit_entry > 0.02)
       and (last_rsi_3 < 90.0)
       and (last_rsi_3_15m < 85.0)
       and (last_rsi_14 > 65.0)
