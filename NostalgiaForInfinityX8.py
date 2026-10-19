@@ -53647,7 +53647,9 @@ class NostalgiaForInfinityX8(IStrategy):
       # )
     )
     # is_short_extra_checks_entry = True
-    is_short_grind_entry = self.short_grind_entry_v3(last_candle, previous_candle, slice_profit, True)
+    is_short_grind_entry = self.short_grind_entry_v3(
+      last_candle, previous_candle, slice_profit, slice_profit_entry, True
+    )
     is_short_rebuy_entry = self.short_rebuy_entry_v3(last_candle, previous_candle, slice_profit, True)
     stake_fmt = ".8f" if self.config["stake_currency"] in ("BTC", "ETH", "BNB", "SOL") else ".3f"
     # De-risk level 1
@@ -54496,7 +54498,12 @@ class NostalgiaForInfinityX8(IStrategy):
     return None
 
   def short_grind_entry_v3(
-    self, last_candle: Series, previous_candle: Series, slice_profit: float, is_derisk: bool
+    self,
+    last_candle: Series,
+    previous_candle: Series,
+    slice_profit: float,
+    slice_profit_entry: float,
+    is_derisk: bool,
   ) -> float:
     if last_candle["protections_short_global"] != True:
       return False
@@ -54867,9 +54874,9 @@ class NostalgiaForInfinityX8(IStrategy):
     ):
       self._grind_entry_tag = "g20"
       return True
-    # g21 — EMA_20 rise (slice_profit > 0.02, positive = adverse move for a short) (mirror long g21)
+    # g21 — EMA_20 rise (slice_profit_entry > 0.02, positive = adverse move for a short) (mirror long g21)
     if (
-      (slice_profit > 0.02)
+      (slice_profit_entry > 0.02)
       and (last_rsi_3 < 90.0)
       and (last_rsi_3_15m < 85.0)
       and (last_rsi_14 > 65.0)
@@ -55800,7 +55807,9 @@ class NostalgiaForInfinityX8(IStrategy):
       nonlocal is_short_grind_entry
       if is_short_grind_entry is None:
         load_candles()
-        is_short_grind_entry = self.short_grind_entry_v4(last_candle, previous_candle, slice_profit, True)
+        is_short_grind_entry = self.short_grind_entry_v4(
+          last_candle, previous_candle, slice_profit, slice_profit_entry, True
+        )
         # past the near end of the de-risk range, no grind add while the 4h is at capitulation
         if profit_stake < slice_amount * (
           self.system_v4_derisk_level_1_futures[0] if is_futures_mode else self.system_v4_derisk_level_1_spot[0]
@@ -56634,7 +56643,12 @@ class NostalgiaForInfinityX8(IStrategy):
     return None
 
   def short_grind_entry_v4(
-    self, last_candle: Series, previous_candle: Series, slice_profit: float, is_derisk: bool
+    self,
+    last_candle: Series,
+    previous_candle: Series,
+    slice_profit: float,
+    slice_profit_entry: float,
+    is_derisk: bool,
   ) -> float:
     if last_candle["protections_short_global"] != True:
       return False
@@ -57005,9 +57019,9 @@ class NostalgiaForInfinityX8(IStrategy):
     ):
       self._grind_entry_tag = "g20"
       return True
-    # g21 — EMA_20 rise (slice_profit > 0.02, positive = adverse move for a short) (mirror long g21)
+    # g21 — EMA_20 rise (slice_profit_entry > 0.02, positive = adverse move for a short) (mirror long g21)
     if (
-      (slice_profit > 0.02)
+      (slice_profit_entry > 0.02)
       and (last_rsi_3 < 90.0)
       and (last_rsi_3_15m < 85.0)
       and (last_rsi_14 > 65.0)

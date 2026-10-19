@@ -7,7 +7,8 @@ so no candle fixture is needed and the checks stay fast.
 
 H1  short_grind_entry_v3/_v4 compare `slice_profit` with the LONG sign. `slice_profit` is the raw
     price change, so for a SHORT a positive value is the adverse move (price rose = loss). The four
-    "loss recovery" signals must therefore test `>`.
+    "loss recovery" signals must therefore test `>`. The short g21 must also measure from the same
+    base as the long one (`slice_profit_entry`), so the two sides stay exact mirrors.
 H2  Every cached `*_stoploss_u_e` reason must be built as `exit_<mode>_stoploss_u_e` (that is what
     every producer writes). A `exit_profit_<mode>_...` spelling silently disables the exclusion
     guard, so an armed u_e stop gets re-marked and postponed instead of respected.
@@ -22,19 +23,17 @@ STRATEGY_PATH = Path(__file__).parents[2] / "NostalgiaForInfinityX8.py"
 
 
 def _strategy_class(tree):
-  return next(
-    node for node in tree.body if isinstance(node, ast.ClassDef) and "NostalgiaForInfinity" in node.name
-  )
+  return next(node for node in tree.body if isinstance(node, ast.ClassDef) and "NostalgiaForInfinity" in node.name)
 
 
 def _function(cls, name):
   return next(node for node in cls.body if isinstance(node, ast.FunctionDef) and node.name == name)
 
 
-def _slice_profit_compares(function):
+def _slice_profit_compares(function, names=("slice_profit",)):
   compares = []
   for node in ast.walk(function):
-    if isinstance(node, ast.Compare) and isinstance(node.left, ast.Name) and node.left.id == "slice_profit":
+    if isinstance(node, ast.Compare) and isinstance(node.left, ast.Name) and node.left.id in names:
       compares.append(node)
   return compares
 
@@ -55,7 +54,7 @@ def test_short_grind_entry_treats_a_price_rise_as_the_adverse_move():
   cls = _strategy_class(tree)
 
   for name in ("short_grind_entry_v3", "short_grind_entry_v4"):
-    compares = _slice_profit_compares(_function(cls, name))
+    compares = _slice_profit_compares(_function(cls, name), ("slice_profit", "slice_profit_entry"))
     assert compares, f"{name}: no slice_profit condition found"
     thresholds = set()
     for node in compares:
@@ -76,12 +75,46 @@ def test_long_grind_entry_still_treats_a_price_drop_as_the_adverse_move():
   cls = _strategy_class(tree)
 
   for name in ("long_grind_entry_v3", "long_grind_entry_v4"):
-    compares = _slice_profit_compares(_function(cls, name))
+    compares = _slice_profit_compares(_function(cls, name), ("slice_profit", "slice_profit_entry"))
     assert compares, f"{name}: no slice_profit condition found"
     for node in compares:
       assert isinstance(node.ops[0], ast.Lt), f"{name}:{node.lineno}: the long side must compare with <"
       value = _constant_value(node.comparators[0])
       assert value is not None and value < 0, f"{name}:{node.lineno}: threshold must be negative"
+
+
+def _signed_thresholds(function):
+  """(left-hand variable, abs(threshold)) pairs and the operators used, for one grind entry signal."""
+  pairs = set()
+  operators = set()
+  for node in _slice_profit_compares(function, ("slice_profit", "slice_profit_entry")):
+    value = _constant_value(node.comparators[0])
+    if value is None:
+      continue
+    pairs.add((node.left.id, round(abs(value), 4)))
+    operators.add(type(node.ops[0]).__name__)
+  return pairs, operators
+
+
+def test_long_and_short_grind_entry_are_exact_mirrors():
+  """Both sides must use the same bases and thresholds; only the comparison sign flips (H1 follow-up)."""
+  tree = ast.parse(STRATEGY_PATH.read_text(encoding="utf-8"))
+  cls = _strategy_class(tree)
+
+  expected = {
+    ("slice_profit", 0.16),
+    ("slice_profit", 0.10),
+    ("slice_profit", 0.06),
+    ("slice_profit_entry", 0.02),
+  }
+  for version in ("v3", "v4"):
+    long_pairs, long_ops = _signed_thresholds(_function(cls, f"long_grind_entry_{version}"))
+    short_pairs, short_ops = _signed_thresholds(_function(cls, f"short_grind_entry_{version}"))
+    assert long_pairs == short_pairs == expected, (
+      f"{version}: grind entry signals diverged: long={sorted(long_pairs)} short={sorted(short_pairs)}"
+    )
+    assert long_ops == {"Lt"}, f"{version}: the long side must compare with <, got {sorted(long_ops)}"
+    assert short_ops == {"Gt"}, f"{version}: the short side must compare with >, got {sorted(short_ops)}"
 
 
 def _fstring_template(node):
@@ -99,9 +132,7 @@ def test_cached_stoploss_u_e_reason_uses_the_produced_name():
     if isinstance(node, ast.JoinedStr) and "stoploss_u_e" in _fstring_template(node)
   }
   bad = sorted(template for template in templates if "exit_profit_" in template)
-  assert not bad, (
-    f"cached u_e stop built with the exit_profit_ prefix, which no producer ever writes: {bad}"
-  )
+  assert not bad, f"cached u_e stop built with the exit_profit_ prefix, which no producer ever writes: {bad}"
   assert any(template.startswith("exit_{...}_stoploss_u_e") for template in templates), (
     f"no canonical exit_<mode>_stoploss_u_e name found: {sorted(templates)}"
   )
