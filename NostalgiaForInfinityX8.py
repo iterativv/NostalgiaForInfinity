@@ -3273,6 +3273,8 @@ class NostalgiaForInfinityX8(IStrategy):
     low_np = informative_1d["low"].to_numpy(copy=False)
     open_np = informative_1d["open"].to_numpy(copy=False)
     volume_np = informative_1d["volume"].to_numpy(copy=False)
+    atr_14_1d = ta.ATR(high_np, low_np, close_np, timeperiod=14)
+    adx_14_1d = ta.ADX(high_np, low_np, close_np, timeperiod=14)
 
     # =========================================================================
     # CORE INDICATORS
@@ -3378,6 +3380,8 @@ class NostalgiaForInfinityX8(IStrategy):
       index=informative_1d.index,
     )
     informative_1d = pd.concat([informative_1d, new_cols], axis=1, copy=False)
+    informative_1d["ADX_14"] = adx_14_1d
+    informative_1d["ATR_PCT_14"] = atr_14_1d / np.maximum(close_np, 1e-12) * 100.0
 
     # Enable ONLY during debugging
     debug = False
@@ -4087,6 +4091,7 @@ class NostalgiaForInfinityX8(IStrategy):
     low_np = df["low"].to_numpy(copy=False)
     open_np = df["open"].to_numpy(copy=False)
     volume_np = df["volume"].to_numpy(copy=False)
+    atr_14 = ta.ATR(high_np, low_np, close_np, timeperiod=14)
 
     # =========================================================================
     # CORE INDICATORS
@@ -4421,6 +4426,7 @@ class NostalgiaForInfinityX8(IStrategy):
     )
 
     df = pd.concat([df, new_cols], axis=1, copy=False)
+    df["ATR_14"] = atr_14
 
     # Enable ONLY during debugging
     debug = False
@@ -30112,6 +30118,17 @@ class NostalgiaForInfinityX8(IStrategy):
             & (close < bbl_20_2_0)
             # the 4h is falling into the release — a coil breaking against a rising 4h is a fake one
             & (roc_9_4h < 0.0)
+            # the break has to be deep once volatility is taken out: a shallow break just mean-reverts.
+            & ((close - ema_20) / np_view("ATR_14") < -1.2)
+            # a squeezed pair whose daily range is already in the top decile releases violently.
+            & (np_view("ATR_PCT_14_1d") < 10.0)
+            # an exhausted daily trend (stretched ADX) is where these shorts get run over.
+            & (np_view("ADX_14_1d") < 45.0)
+            # never short a pair that has already collapsed: 9 days of the daily EMA50 must not
+            # be in free fall (this is what the 2024 losses had in common).
+            & ((np_view("EMA_50_1d") / np_shift(np_view("EMA_50_1d"), 2592) - 1.0) * 100.0 > -7.611)
+            # and the last nine daily candles did not collapse either.
+            & (np_view("ROC_9_1d") > -2.6)
           )
 
         # Condition #665 - Engulfing continuation (Short, experimental, RAW — mirror).
