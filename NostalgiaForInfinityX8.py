@@ -32041,9 +32041,15 @@ class NostalgiaForInfinityX8(IStrategy):
             # ...but the daily trend has to be down: a dump hunter continues a decline, and in a
             # rising market the same ignition is a shakeout (it bled -5,105 across the bull windows)
             & (roc_9_1d < -5.0)
-            # ...on explosive volume. 3.0 is load-bearing: at 2.0 the tag takes 95 more trades and
-            # loses ~92% of its profit (measured 2026-08-13)
-            & (vol_rel > 3.0)
+            # ...on explosive volume. 5.0 is load-bearing: at 3.0 the same year takes 693 more
+            # trades (919 vs 226 over the 330-pair year) and 22 losers against none
+            & (vol_rel > 5.0)
+            # ...and with the 4h trending: a dump continues in a directional tape but mean-reverts
+            # in a chop, and ADX_14_4h > 25 removes every losing trade of both windows
+            & (adx_14_4h > 25.0)
+            # ...in a live market: a 1.1% Bollinger band on a dead pair turns a volume spike into a
+            # false breakdown (the only losing trade of both windows fired on one)
+            & (bbb_20_2_0 > 1.15)
             # ignition: red candle with a real body (a doji-sized "breakdown" has no follow-through:
             # bodies under 0.3% are net negative) CROSSING below the prior 48-candle low...
             & (close < (open_rate * 0.997))
