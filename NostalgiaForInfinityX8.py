@@ -3273,7 +3273,6 @@ class NostalgiaForInfinityX8(IStrategy):
     low_np = informative_1d["low"].to_numpy(copy=False)
     open_np = informative_1d["open"].to_numpy(copy=False)
     volume_np = informative_1d["volume"].to_numpy(copy=False)
-    atr_14_1d = ta.ATR(high_np, low_np, close_np, timeperiod=14)
     adx_14_1d = ta.ADX(high_np, low_np, close_np, timeperiod=14)
 
     # =========================================================================
@@ -3381,7 +3380,6 @@ class NostalgiaForInfinityX8(IStrategy):
     )
     informative_1d = pd.concat([informative_1d, new_cols], axis=1, copy=False)
     informative_1d["ADX_14"] = adx_14_1d
-    informative_1d["ATR_PCT_14"] = atr_14_1d / np.maximum(close_np, 1e-12) * 100.0
 
     # Enable ONLY during debugging
     debug = False
@@ -5868,6 +5866,9 @@ class NostalgiaForInfinityX8(IStrategy):
     stochrsi_k_4h = np_view("STOCHRSIk_14_14_3_3_4h")
     stochrsi_k_1h = np_view("STOCHRSIk_14_14_3_3_1h")
     aroonu_14_1d = np_view("AROONU_14_1d")
+    ema_50_1d = np_view("EMA_50_1d")
+    adx_14_1d = np_view("ADX_14_1d")
+    atr_14 = np_view("ATR_14")
     rsi_3_1d = np_view("RSI_3_1d")
     aroonu_14_15m = np_view("AROONU_14_15m")
     roc_9_1h = np_view("ROC_9_1h")
@@ -6476,6 +6477,12 @@ class NostalgiaForInfinityX8(IStrategy):
     roc_9_1d_lt_100 = roc_9_1d < 100.0
     roc_9_1d_lt_150 = roc_9_1d < 150.0
     roc_9_1d_lt_200 = roc_9_1d < 200.0
+    roc_9_1d_gt_neg_2_6 = roc_9_1d > -2.6
+    adx_14_1d_lt_45 = adx_14_1d < 45.0
+    ema_50_1d_slope_9 = (ema_50_1d / np_shift(ema_50_1d, 2592) - 1.0) * 100.0
+    ema_50_1d_slope_9_gt_neg_7_5 = ema_50_1d_slope_9 > -7.5
+    ema_20_dist_atr = (close - ema_20) / atr_14
+    ema_20_dist_atr_lt_neg_1_2 = ema_20_dist_atr < -1.2
     cci_20_change_pct_1h_gt_neg_0 = cci_20_change_pct_1h > -0.0
     cci_20_change_pct_1h_lt_neg_0 = cci_20_change_pct_1h < -0.0
     cci_20_change_pct_1h_lt_0 = cci_20_change_pct_1h < 0.0
@@ -30119,16 +30126,14 @@ class NostalgiaForInfinityX8(IStrategy):
             # the 4h is falling into the release — a coil breaking against a rising 4h is a fake one
             & (roc_9_4h < 0.0)
             # the break has to be deep once volatility is taken out: a shallow break just mean-reverts.
-            & ((close - ema_20) / np_view("ATR_14") < -1.2)
-            # a squeezed pair whose daily range is already in the top decile releases violently.
-            & (np_view("ATR_PCT_14_1d") < 10.0)
+            & (ema_20_dist_atr_lt_neg_1_2)
             # an exhausted daily trend (stretched ADX) is where these shorts get run over.
-            & (np_view("ADX_14_1d") < 45.0)
+            & (adx_14_1d_lt_45)
             # never short a pair that has already collapsed: 9 days of the daily EMA50 must not
             # be in free fall (this is what the 2024 losses had in common).
-            & ((np_view("EMA_50_1d") / np_shift(np_view("EMA_50_1d"), 2592) - 1.0) * 100.0 > -7.611)
+            & (ema_50_1d_slope_9_gt_neg_7_5)
             # and the last nine daily candles did not collapse either.
-            & (np_view("ROC_9_1d") > -2.6)
+            & (roc_9_1d_gt_neg_2_6)
           )
 
         # Condition #665 - Engulfing continuation (Short, experimental, RAW — mirror).
