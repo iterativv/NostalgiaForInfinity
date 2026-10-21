@@ -32032,6 +32032,25 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((stochrsi_k_4h_gt_20) | (aroonu_14_1d_lt_40) | (stochrsi_k_1d_gt_30))
             # 4h & 1d low, 1d up move
             & ((stochrsi_k_4h_gt_20) | (rsi_3_1d_lt_35) | (stochrsi_k_1d_gt_20))
+            # Per-loss chains, read one by one on the 330-pair year (2025-09..2026-08).
+            # Each chain is satisfied by any of its three clauses, so it only blocks the
+            # entries where all three are absent. Every threshold survives a one-step nudge.
+            # TIA 2026-03-08 (bled to abandon_38d): huge volume in wide bands while price was
+            # still near its 1h EMA200 - the dump had room to bounce
+            & ((vol_rel <= 8.0) | (bbb_20_2_0 <= 3.0) | (close <= (ema_200_1h * 0.96)))
+            # ALGO / APE 2025-12-23 (both bled through the December cascade): dead-flat 5m tape
+            # (no band width, price mid-band, RSI pinned at the floor) is a pair that cannot
+            # follow through on a breakdown
+            & ((bbb_20_2_0 >= 1.0) | (bbp_20_2_0 <= -0.2) | (rsi_14 >= 30.0))
+            # COW 2026-03-28 (abandon_14d): the ignition fired with the daily already exhausted
+            # (ROC_9_1d below -15) and the 5m already oversold - a chase, not an ignition
+            & ((bbb_20_2_0 >= 1.0) | (rsi_14 >= 30.0) | (roc_9_1d >= -15.0))
+            # SUSHI 2026-08-31 (force_exit at the window edge): compressed bands, no 5m washout
+            # and a daily that is not oversold - the pair had nothing left to drop
+            & ((bbb_20_2_0 >= 1.0) | (willr_14 <= -75.0) | (rsi_14_1d <= 45.0))
+            # the ignition itself: volume under 4x, no 5m oversold and a 4h ADX under 18 means
+            # the tape was not moving - the breakdown is noise on a dead pair
+            & ((vol_rel >= 4.0) | (willr_14 <= -80.0) | (adx_14_4h >= 18.0))
           )
 
           # Logic
@@ -32041,15 +32060,9 @@ class NostalgiaForInfinityX8(IStrategy):
             # ...but the daily trend has to be down: a dump hunter continues a decline, and in a
             # rising market the same ignition is a shakeout (it bled -5,105 across the bull windows)
             & (roc_9_1d < -5.0)
-            # ...on explosive volume. 5.0 is load-bearing: at 3.0 the same year takes 693 more
-            # trades (919 vs 226 over the 330-pair year) and 22 losers against none
-            & (vol_rel > 5.0)
-            # ...and with the 4h trending: a dump continues in a directional tape but mean-reverts
-            # in a chop, and ADX_14_4h > 25 removes every losing trade of both windows
-            & (adx_14_4h > 25.0)
-            # ...in a live market: a 1.1% Bollinger band on a dead pair turns a volume spike into a
-            # false breakdown (the only losing trade of both windows fired on one)
-            & (bbb_20_2_0 > 1.15)
+            # ...on explosive volume. 3.0 is load-bearing: at 2.0 the tag takes 95 more trades and
+            # loses ~92% of its profit (measured 2026-08-13)
+            & (vol_rel > 3.0)
             # ignition: red candle with a real body (a doji-sized "breakdown" has no follow-through:
             # bodies under 0.3% are net negative) CROSSING below the prior 48-candle low...
             & (close < (open_rate * 0.997))
