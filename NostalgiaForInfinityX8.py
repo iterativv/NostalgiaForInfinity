@@ -28020,6 +28020,21 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((aroonu_14_4h_lt_20) | (aroonu_14_1d_lt_30) | (stochrsi_k_1d_gt_10))
             # 4h & 1d low, 1d down move
             & ((stochrsi_k_4h_gt_20) | (rsi_3_1d_gt_30) | (aroonu_14_1d_gt_10))
+            # per-loss chains, one faded entry each, in the protection palette
+            # 15m low, 1h high & 4h overbought
+            & ((aroonu_14_15m_gt_10) | (aroonu_14_1h_lt_70) | (stochrsi_k_4h_lt_70))
+            # 1h high then oversold, 4h oversold
+            & ((aroonu_14_1h_lt_70) | (stochrsi_k_1h_gt_50) | (stochrsi_k_4h_gt_60))
+            # 15m high then oversold, 1d low
+            & ((aroonu_14_15m_lt_70) | (stochrsi_k_15m_gt_60) | (rsi_3_1d_gt_5))
+            # 1h overbought, 4h oversold, 1d low
+            & ((rsi_3_1h_lt_85) | (stochrsi_k_4h_gt_40) | (aroonu_14_1d_gt_10))
+            # 15m & 4h overbought, 1h oversold
+            & ((stochrsi_k_15m_lt_60) | (rsi_3_1h_gt_40) | (rsi_3_4h_lt_60))
+            # 15m & 1h overbought, 1h high
+            & ((rsi_3_15m_lt_70) | (rsi_3_1h_lt_80) | (aroonu_14_1h_lt_30))
+            # 1h & 4h overbought, 1d low
+            & ((rsi_3_1h_lt_70) | (stochrsi_k_4h_lt_80) | (rsi_3_1d_gt_15))
           )
 
           # Logic
