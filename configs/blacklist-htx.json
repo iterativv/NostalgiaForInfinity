@@ -93,6 +93,14 @@
       // Pump-and-dump knives — APR +192% then -68% (2026-08-12/15), VELVET -46% in an hour (2026-07-24),
       // JCT -82.4% off its 2026-06-13 peak, single-day ranges of 96%, 96% and 83% (2026-09-10)
       "(APR|JCT|VELVET)/.*",
+      // Post-pump perp — binance futures listed it on 2026-06-04 and it ran 75x to a 2.7536 high on
+      // 2026-10-14, then gave back 47.2% in eight sessions. The last ten daily candles printed
+      // 27-66% ranges: 10-21 swept 2.1569 -> 1.3000 (65.9%) and closed -19.9%, 10-22 ran
+      // 1.8438 -> 1.2569 (46.7%) and is -13.8% on the day; the worst open-to-close day was -39.6%
+      // and the widest range +170%. Perp on binance (~$203M/day), bybit (~$46M), mexc (~$32M),
+      // gate (~$31M), bitget (~$15M), kucoin and okx (perp listed 2026-10-22); spot on bitget,
+      // gate, mexc and htx, and the perp trades ~12% under spot.
+      "(BTW)/.*",
       // Declining alt (2026-08-07; binance already covers via FAN group)
       "(CHZ)/.*",
       // Binance delist 2026-08-17 (full-coin) — iterativ 2026-08-03
