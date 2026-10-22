@@ -28016,6 +28016,21 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((aroonu_14_4h_lt_20) | (aroonu_14_1d_lt_30) | (stochrsi_k_1d_gt_10))
             # 4h & 1d low, 1d down move
             & ((stochrsi_k_4h_gt_20) | (rsi_3_1d_gt_30) | (aroonu_14_1d_gt_10))
+            # --- per-loss chains, one per entry-side loser measured on the 330-pair year ---
+            # KAIA 2025-12-27: quiet, low-range tape with the daily still weak
+            & ((bbb_20_2_0 >= 0.8) | (mfi_14 >= 25.0) | (rsi_14_1d >= 30.0))
+            # 1000RATS 2026-01-01: no volume to speak of, and the pair already far under its daily 200
+            & ((vol_rel <= 5.0) | (willr_14 <= -60.0) | (close <= (ema_200_1d * 0.90)))
+            # MTL 2025-11-23: already oversold on the 5m with the daily weak
+            & ((mfi_14 >= 25.0) | (willr_14 <= -85.0) | (rsi_14_1d >= 30.0))
+            # RAYSOL 2025-12-24: flat 4h with no trend to pull back from
+            & ((willr_14 >= -85.0) | (adx_14_4h >= 15.0) | (rsi_14_1d >= 45.0))
+            # RONIN 2026-08-04: compressed tape, huge volume, no 4h trend
+            & ((vol_rel <= 8.0) | (bbb_20_2_0 >= 0.8) | (adx_14_4h >= 15.0))
+            # ANKR 2026-02-03: volume spike into an already oversold 5m
+            & ((vol_rel <= 3.0) | (willr_14 >= -85.0) | (rsi_14_1d >= 35.0))
+            # DOT 2025-12-26: price still far over its 1h 200 with the daily weak
+            & ((vol_rel >= 3.0) | (rsi_14_1d >= 30.0) | (close <= (ema_200_1h * 0.94)))
           )
 
           # Logic
