@@ -1,68 +1,91 @@
-"""Guards for the 669 dump-hunter short signal (per-loss protection chains)."""
-
-import ast
 from pathlib import Path
+import re
 
 STRATEGY = Path(__file__).resolve().parents[2] / "NostalgiaForInfinityX8.py"
+SRC = STRATEGY.read_text()
+
+CHAINS = [
+  "((stochrsi_k_15m_gt_30) | (aroonu_14_1h_lt_25) | (stochrsi_k_1d_lt_60))",
+  "((rsi_3_gt_10) | (aroonu_14_15m_gt_40) | (aroonu_14_1d_lt_80))",
+  "((stochrsi_k_1h_lt_50) | (aroonu_14_4h_lt_60) | (aroonu_14_1d_lt_30))",
+  "((stochrsi_k_15m_lt_40) | (aroonu_14_4h_lt_80) | (aroonu_14_1d_gt_10))",
+  "((rsi_3_15m_gt_5) | (aroonu_14_15m_gt_10) | (aroonu_14_4h_lt_40))",
+  "((stochrsi_k_15m_lt_70) | (aroonu_14_4h_gt_10) | (stochrsi_k_4h_gt_20))",
+  "((aroonu_14_15m_lt_20) | (rsi_3_1h_gt_20) | (stochrsi_k_1h_lt_60))",
+]
+PALETTE = ("rsi_3", "aroonu_14", "stochrsi_k", "roc_9")
+TF_ORDER = {"": 0, "_15m": 1, "_1h": 2, "_4h": 3, "_1d": 4}
+FAM_ORDER = {name: i for i, name in enumerate(PALETTE)}
 
 
-def _block_source() -> str:
-  src = STRATEGY.read_text()
-  start = src.index("# Condition #669 - Dump hunter")
-  end = src.index("# Condition #670 - Marubozu momentum", start)
-  return src[start:end]
+def _chain_lines():
+  lines = SRC.splitlines()
+  start = next(i for i, line in enumerate(lines) if "Per-loss chains" in line)
+  out = []
+  for line in lines[start + 1 :]:
+    text = line.strip()
+    if text.startswith("& (("):
+      out.append(text[2:])
+    elif text.startswith("#") or not text:
+      continue
+    elif out:
+      break
+  return out
 
 
-def test_signal_definition_keeps_the_factory_volume_threshold():
-  block = _block_source()
-  logic = block[block.index("# Logic") :]
-  assert "& (vol_rel > 3.0)" in logic
-  assert "& (vol_rel > 5.0)" not in logic
-  assert "adx_14_4h > 25.0" not in logic
-  assert "bbb_20_2_0 > 1.15" not in logic
+def _clauses(line):
+  return re.findall(r"\(([a-z0-9_]+)\)", line)
 
 
-def test_protection_chains_are_present():
-  block = _block_source()
-  protections = block[: block.index("# Logic")]
-  chains = [
-    "((vol_rel <= 8.0) | (bbb_20_2_0 <= 3.0) | (close <= (ema_200_1h * 0.96)))",
-    "((bbb_20_2_0 >= 1.0) | (bbp_20_2_0 <= -0.2) | (rsi_14 >= 30.0))",
-    "((bbb_20_2_0 >= 1.0) | (rsi_14 >= 30.0) | (roc_9_1d >= -15.0))",
-    "((bbb_20_2_0 >= 1.0) | (willr_14 <= -75.0) | (rsi_14_1d <= 45.0))",
-    "((vol_rel >= 4.0) | (willr_14 <= -80.0) | (adx_14_4h >= 18.0))",
-  ]
-  for chain in chains:
-    assert chain in protections, chain
+def _family(name):
+  return next(f for f in PALETTE if name.startswith(f))
 
 
-def test_protection_columns_are_extracted_before_use():
-  src = STRATEGY.read_text()
-  tree = ast.parse(src)
-  populate = next(
-    node for node in ast.walk(tree) if isinstance(node, ast.FunctionDef) and node.name == "populate_entry_trend"
-  )
-  assigned = {
-    target.id
-    for node in ast.walk(populate)
-    if isinstance(node, ast.Assign)
-    for target in node.targets
-    if isinstance(target, ast.Name)
-  }
-  for name in (
-    "vol_rel",
-    "bbb_20_2_0",
-    "bbp_20_2_0",
-    "rsi_14",
-    "willr_14",
-    "roc_9_1d",
-    "rsi_14_1d",
-    "adx_14_4h",
-    "ema_200_1h",
-  ):
-    assert name in assigned, name
+def _rank(name):
+  family = _family(name)
+  rest = name[len(family) :]
+  tf = next((t for t in ("_15m", "_1h", "_4h", "_1d") if rest.startswith(t)), "")
+  return TF_ORDER[tf], FAM_ORDER[family]
+
+
+def test_seven_per_loss_chains_are_present():
+  assert _chain_lines() == CHAINS
+
+
+def test_chains_are_three_palette_booleans_each():
+  for line in _chain_lines():
+    names = _clauses(line)
+    assert len(names) == 3, line
+    for name in names:
+      assert name.startswith(PALETTE), name
+
+
+def test_chains_have_no_raw_comparison():
+  for line in _chain_lines():
+    assert not re.search(r"[<>]\s*-?\d", line), line
+
+
+def test_chain_clauses_are_ordered_low_to_high_timeframe():
+  for line in _chain_lines():
+    ranks = [_rank(name) for name in _clauses(line)]
+    assert ranks == sorted(ranks), line
+
+
+def test_palette_booleans_are_defined_in_the_file():
+  used = {name for line in _chain_lines() for name in _clauses(line)}
+  assert len(used) == 21
+  for name in used:
+    assert re.search(r"^\s+" + name + r" = ", SRC, re.MULTILINE), name
+
+
+def test_signal_logic_is_untouched():
+  assert "vol_rel > 3.0" in SRC
+  lines = SRC.splitlines()
+  logic = next(i for i, line in enumerate(lines) if line.strip() == "# Logic" and i > 32000)
+  body = "\n".join(lines[logic : logic + 20])
+  for cached in ("rsi_3", "stochrsi_k", "aroonu_14"):
+    assert cached not in body
 
 
 def test_signal_is_disabled_by_default():
-  src = STRATEGY.read_text()
-  assert '"short_entry_condition_669_enable": False' in src
+  assert '"short_entry_condition_669_enable": False' in SRC
