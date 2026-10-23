@@ -28258,6 +28258,12 @@ class NostalgiaForInfinityX8(IStrategy):
           short_entry_logic.append(rsi_14_4h < 48.0)
           short_entry_logic.append(rsi_14_1d < 50.0)
           short_entry_logic.append(rsi_14_1d > 25.0)
+          # 4h stochastic on the floor + fresh 15m high = flush spent, bounce running
+          short_entry_logic.append((aroonu_14_15m_lt_75) | (rsi_3_4h_gt_25) | (stochrsi_k_4h_lt_20))
+          # 4h high two days old + 1h already ran = the seller arrives late
+          short_entry_logic.append((aroonu_14_1h_lt_30) | (stochrsi_k_1h_lt_60) | (aroonu_14_4h_gt_30))
+          # 1h capitulation under a daily still near its high = dip in an uptrend
+          short_entry_logic.append((rsi_3_1h_gt_35) | (aroonu_14_1h_gt_20) | (aroonu_14_1d_lt_60))
 
           short_entry_logic.append(
             # Downtrend confirmation (higher TF)
