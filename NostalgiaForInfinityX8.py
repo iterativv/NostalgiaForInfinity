@@ -28056,17 +28056,11 @@ class NostalgiaForInfinityX8(IStrategy):
             # 1h & 4h overbought, 1d low
             & ((rsi_3_1h_lt_70) | (stochrsi_k_4h_lt_80) | (rsi_3_1d_gt_15))
             # 1h down move, 1h high, 4h down move
-            & ((rsi_3_1h_gt_45) | (aroonu_14_1h_lt_40) | (rsi_3_4h_gt_25))
+            & ((rsi_3_1h_gt_45) | (aroonu_14_1h_lt_20) | (rsi_3_4h_gt_25))
             # 15m up move, 1h up move, 1h high
-            & ((rsi_3_15m_lt_75) | (rsi_3_1h_lt_75) | (aroonu_14_1h_lt_40))
-            # 5m up move, 1h up move, 1h high
-            & ((rsi_3_lt_46) | (rsi_3_1h_lt_80) | (aroonu_14_1h_lt_25))
-            # 1h down move, 1h overbought, 4h down move
-            & ((rsi_3_1h_gt_45) | (stochrsi_k_1h_lt_70) | (rsi_3_4h_gt_45))
-            # 5m up move, 15m high, 4h down move
-            & ((rsi_3_lt_90) | (aroonu_14_15m_lt_80) | (rsi_3_4h_gt_30))
+            & ((rsi_3_15m_lt_75) | (rsi_3_1h_lt_70) | (aroonu_14_1h_lt_30))
             # 15m down move, 15m low, 1h oversold
-            & ((rsi_3_15m_gt_45) | (aroonu_14_15m_gt_40) | (stochrsi_k_1h_gt_60))
+            & ((rsi_3_15m_gt_45) | (aroonu_14_15m_gt_40) | (stochrsi_k_1h_gt_50))
           )
 
           # Logic

@@ -14,12 +14,9 @@ CHAINS = [
   "((stochrsi_k_15m_lt_60) | (rsi_3_1h_gt_40) | (rsi_3_4h_lt_60))",
   "((rsi_3_15m_lt_70) | (rsi_3_1h_lt_80) | (aroonu_14_1h_lt_30))",
   "((rsi_3_1h_lt_70) | (stochrsi_k_4h_lt_80) | (rsi_3_1d_gt_15))",
-  "((rsi_3_1h_gt_45) | (aroonu_14_1h_lt_40) | (rsi_3_4h_gt_25))",
-  "((rsi_3_15m_lt_75) | (rsi_3_1h_lt_75) | (aroonu_14_1h_lt_40))",
-  "((rsi_3_lt_46) | (rsi_3_1h_lt_80) | (aroonu_14_1h_lt_25))",
-  "((rsi_3_1h_gt_45) | (stochrsi_k_1h_lt_70) | (rsi_3_4h_gt_45))",
-  "((rsi_3_lt_90) | (aroonu_14_15m_lt_80) | (rsi_3_4h_gt_30))",
-  "((rsi_3_15m_gt_45) | (aroonu_14_15m_gt_40) | (stochrsi_k_1h_gt_60))",
+  "((rsi_3_1h_gt_45) | (aroonu_14_1h_lt_20) | (rsi_3_4h_gt_25))",
+  "((rsi_3_15m_lt_75) | (rsi_3_1h_lt_70) | (aroonu_14_1h_lt_30))",
+  "((rsi_3_15m_gt_45) | (aroonu_14_15m_gt_40) | (stochrsi_k_1h_gt_50))",
 ]
 
 CLAUSE = re.compile(r"\(([a-z0-9_]+_(?:gt|lt)_[a-z0-9_]+)\)")
@@ -73,7 +70,7 @@ def test_chain_clauses_are_ordered_low_to_high_timeframe():
 def test_palette_booleans_are_defined_in_the_file():
   src = STRATEGY.read_text()
   names = {name for chain in CHAINS for name in _clauses(chain)}
-  assert len(names) == 35
+  assert len(names) == 26
   for name in names:
     assert re.search(rf"^\s+{name} = ", src, re.M), name
 
