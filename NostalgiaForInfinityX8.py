@@ -1306,6 +1306,11 @@ class NostalgiaForInfinityX8(IStrategy):
     # Parameter settings. Backward compatibility with the old configuration style.
     self.update_signals_from_config(strategy_config)
 
+    # Signal 170 gates its bounce on Bitcoin's daily capitulation, so it needs the daily frame.
+    # Keep the default build on the single 4h informative until an operator enables the signal.
+    if self.long_entry_signal_params.get("long_entry_condition_170_enable"):
+      self.btc_info_timeframes = ["4h", "1d"]
+
   # Plot configuration for FreqUI
   # ---------------------------------------------------------------------------------------------
   @property
@@ -4527,9 +4532,11 @@ class NostalgiaForInfinityX8(IStrategy):
     # MOMENTUM
     # =========================================================================
     ema_200 = ta.EMA(close_np, timeperiod=200)
+    rsi_3 = ta.RSI(close_np, timeperiod=3)
     new_cols = pd.DataFrame(
       {
         "BTC_EMA_200": ema_200,
+        "BTC_RSI_3": rsi_3,
       },
       index=btc_informative_1d.index,
     )
@@ -4841,8 +4848,8 @@ class NostalgiaForInfinityX8(IStrategy):
   # BTC Indicator Switch Case
   # ---------------------------------------------------------------------------------------------
   def btc_info_switcher(self, btc_pair: str, btc_info_timeframe) -> DataFrame:
-    # if btc_info_timeframe == "1d":
-    # return self.btc_informative_1d_indicators(btc_pair, btc_info_timeframe)
+    if btc_info_timeframe == "1d":
+      return self.btc_informative_1d_indicators(btc_pair, btc_info_timeframe)
     if btc_info_timeframe == "4h":
       return self.btc_informative_4h_indicators(btc_pair, btc_info_timeframe)
     # elif btc_info_timeframe == "1h":
@@ -22930,6 +22937,9 @@ class NostalgiaForInfinityX8(IStrategy):
             # the right side of the V: FIRST confirmed green close above the prior candle's high
             & (close > open_rate)
             & (close > np_shift(high_px, 1))
+            # only after Bitcoin itself has capitulated on the daily: a bounce inside a
+            # still-calm tape is a dead-cat, and that is where the losing entries lived
+            & (np_view("BTC_RSI_3_1d") < 42.0)
           )
 
         # Condition #171 - Pump hunter (Long, experimental, RAW — ignition candle rider).
