@@ -86,6 +86,14 @@
       // recovery phrases. 87.1% of the funds were frozen on-chain, 12.9% had reached MEXC. Lists as
       // QUBIC, spot only on bitget, gate and mexc at ~$0.1-0.2M, no perp anywhere.
       "(QUBIC)/.*",
+      // The chain stopped and the price has not noticed — Initia halted its mainnet on 2026-10-23
+      // after an "infinimint" exploit let an attacker mint 2,000,000 unbacked AUSD and cash out
+      // ~$2.6M. INIT closed that day +15.5% on a 39.0% range and is only -8.9% off its all-time
+      // high, +75.0% above its own first candle 200 days ago and +42.5% over thirty days, so a
+      // 3-day RangeStabilityFilter sees a quiet pair and keeps selecting it. Perp on binance
+      // (~$46.4M), bybit (~$22.1M), bitget (~$3.2M), gate and mexc (~$0.9M each); spot on binance
+      // (~$9.4M), bybit (~$2.9M), htx, kucoin and gate. AUSD, the token minted, is already covered.
+      "(INIT)/.*",
       // Parabolic squeeze in a newly eligible listing — 486.7% range inside the 2026-10-12 21:00
       // hour (0.3785 -> 0.8542 -> 0.1456 -> 0.2002, +126% then -83%), 64 days since listing and
       // -72.8% off its high on ~$196M/day
