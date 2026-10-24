@@ -1292,17 +1292,17 @@ class NostalgiaForInfinityX8(IStrategy):
       exchange_name = strategy_config["exchange"]["name"]
 
     # OKX, Kraken provides a lower number of candle data per API call
-    # at least 600: signal 507's 1d KAMA 153 needs 600 daily candles to settle
+    # bots fetch whole calls (600+ candles everywhere); backtesting signal 507 here needs 600 for the 1d KAMA 153
     if exchange_name in ["okx", "okex"]:
-      self.startup_candle_count = 600
+      self.startup_candle_count = 480
     elif exchange_name == "kraken":
       self.startup_candle_count = 710
     elif exchange_name == "bybit":
-      self.startup_candle_count = 600
+      self.startup_candle_count = 199
     elif exchange_name == "bitget":
-      self.startup_candle_count = 600
+      self.startup_candle_count = 499
     elif exchange_name == "bingx":
-      self.startup_candle_count = 600
+      self.startup_candle_count = 499
 
     if ("trading_mode" in strategy_config) and (strategy_config["trading_mode"] in ["futures", "margin"]):
       self.is_futures_mode = True
