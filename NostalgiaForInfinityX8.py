@@ -8615,6 +8615,8 @@ class NostalgiaForInfinityX8(IStrategy):
           # Protections
           long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           long_entry_logic.append(protections_long_global == True)
+          # Skip overextended drops: entries far below the 5m trend rarely bounce.
+          long_entry_logic.append((close / ema_200 - 1.0) > -0.23)
 
           long_entry_logic.append(
             rsi_3_15m_gt_3
