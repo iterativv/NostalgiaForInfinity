@@ -90,7 +90,7 @@ class NostalgiaForInfinityX8(IStrategy):
   # BTC informatives
   # btc_info_timeframes = ["5m", "15m", "1h", "4h", "1d"]
   # btc_info_timeframes = ["1h", "4h", "1d"]
-  btc_info_timeframes = ["4h"]
+  btc_info_timeframes = ["1h", "4h"]
 
   stable_stake_currencies = frozenset(
     ("USDT", "BUSD", "USDC", "DAI", "TUSD", "FDUSD", "PAX", "USD", "EUR", "GBP", "TRY")
@@ -199,7 +199,8 @@ class NostalgiaForInfinityX8(IStrategy):
   # Shorting
 
   # Short normal mode tags
-  short_normal_mode_tags = ["501", "502", "505", "506"]
+  short_normal_mode_tags = ["501", "502", "505", "506", "507"]
+
   # Short Pump mode tags
   short_pump_mode_tags = ["521", "522", "523", "524", "525", "526"]
   # Short Quick mode tags
@@ -1104,6 +1105,7 @@ class NostalgiaForInfinityX8(IStrategy):
     # "short_entry_condition_504_enable": True,
     "short_entry_condition_505_enable": False,
     "short_entry_condition_506_enable": False,
+    "short_entry_condition_507_enable": True,
     # "short_entry_condition_541_enable": True,
     "short_entry_condition_542_enable": True,
     "short_entry_condition_543_enable": False,
@@ -1290,16 +1292,17 @@ class NostalgiaForInfinityX8(IStrategy):
       exchange_name = strategy_config["exchange"]["name"]
 
     # OKX, Kraken provides a lower number of candle data per API call
+    # at least 600: signal 507's 1d KAMA 153 needs 600 daily candles to settle
     if exchange_name in ["okx", "okex"]:
-      self.startup_candle_count = 480
+      self.startup_candle_count = 600
     elif exchange_name == "kraken":
       self.startup_candle_count = 710
     elif exchange_name == "bybit":
-      self.startup_candle_count = 199
+      self.startup_candle_count = 600
     elif exchange_name == "bitget":
-      self.startup_candle_count = 499
+      self.startup_candle_count = 600
     elif exchange_name == "bingx":
-      self.startup_candle_count = 499
+      self.startup_candle_count = 600
 
     if ("trading_mode" in strategy_config) and (strategy_config["trading_mode"] in ["futures", "margin"]):
       self.is_futures_mode = True
@@ -3258,6 +3261,7 @@ class NostalgiaForInfinityX8(IStrategy):
     ta_sma = ta.SMA
     ta_stochf = ta.STOCHF
     ta_mfi = ta.MFI
+    ta_kama = ta.KAMA
     ta_willr = ta.WILLR
 
     assert dp, "DataProvider is required for multiple timeframes."
@@ -3350,6 +3354,24 @@ class NostalgiaForInfinityX8(IStrategy):
       }
 
     # =========================================================================
+    # Daily downtrend continuation — signal 507: daily KAMA trend, hot-coin filter
+    # =========================================================================
+    kama_40 = ta_kama(close_np, timeperiod=40)
+    kama_153 = ta_kama(close_np, timeperiod=153)
+    # 28 day log return ranked against the coin's own earlier non-overlapping 28 day returns (at least 12 of them)
+    # top third = hot coin, held for 5 days
+    log_close = np.log(np.where(close_np > 0, close_np, np.nan))
+    log_ret_28 = np.full(len(log_close), np.nan)
+    log_ret_28[28:] = log_close[28:] - log_close[:-28]
+    mom_28_hot = np.zeros(len(log_close))
+    for i in range(28, len(log_close)):
+      past = log_ret_28[i - 28 :: -28]
+      past = past[~np.isnan(past)]
+      if len(past) >= 12 and not np.isnan(log_ret_28[i]):
+        mom_28_hot[i] = 1.0 if (past < log_ret_28[i]).mean() >= 2 / 3 else 0.0
+    mom_28_hot = pd.Series(mom_28_hot).rolling(5, min_periods=1).max().to_numpy()
+
+    # =========================================================================
     # ASSIGN DATAFRAME
     # =========================================================================
     new_cols = pd.DataFrame(
@@ -3379,6 +3401,9 @@ class NostalgiaForInfinityX8(IStrategy):
         "low_min_20": low_min_20,
         "low_min_30": low_min_30,
         **bad_trade_exit_indicators,
+        "KAMA_40": kama_40,
+        "KAMA_153": kama_153,
+        "MOM_28_HOT": mom_28_hot,
       },
       index=informative_1d.index,
     )
@@ -3455,6 +3480,7 @@ class NostalgiaForInfinityX8(IStrategy):
     ta_adx = ta.ADX
     ta_plus_di = ta.PLUS_DI
     ta_minus_di = ta.MINUS_DI
+    ta_atr = ta.ATR
 
     assert dp, "DataProvider is required for multiple timeframes."
 
@@ -3555,10 +3581,26 @@ class NostalgiaForInfinityX8(IStrategy):
     minus_di_14 = ta_minus_di(high_np, low_np, close_np, timeperiod=14)
 
     # =========================================================================
+    # Daily downtrend continuation — signal 507: 4h trigger candle
+    # =========================================================================
+    adx_13 = ta_adx(high_np, low_np, close_np, timeperiod=13)
+    atr_14 = ta_atr(high_np, low_np, close_np, timeperiod=14)
+    vol_ma_27 = np_shift(ta_sma(volume_np, timeperiod=27), 1)
+    vol_rel_27 = np.divide(volume_np, vol_ma_27, out=np.full_like(vol_ma_27, np.nan), where=vol_ma_27 > 0)
+    # heikin-ashi without recursion: open = midpoint of the previous candle's open and close
+    ha_open = np.concatenate(([np.nan], (open_np[:-1] + close_np[:-1]) / 2.0))
+    ha_close = (open_np + high_np + low_np + close_np) / 4.0
+
+    # =========================================================================
     # ASSIGN DATAFRAME
     # =========================================================================
     new_cols = pd.DataFrame(
       {
+        "ADX_13": adx_13,
+        "ATR_14": atr_14,
+        "VOL_REL_27": vol_rel_27,
+        "HA_OPEN": ha_open,
+        "HA_CLOSE": ha_close,
         "RSI_3": rsi_3,
         "RSI_14": rsi_14,
         "ADX_14": adx_14,
@@ -3763,8 +3805,20 @@ class NostalgiaForInfinityX8(IStrategy):
     low_min_12 = ta_min(low_np, timeperiod=12)
     low_min_24 = ta_min(low_np, timeperiod=24)
 
+    # =========================================================================
+    # Daily downtrend continuation — signal 507: 1h confirmation
+    # =========================================================================
+    _, _, macdh_12_26_9 = ta.MACD(close_np, fastperiod=12, slowperiod=26, signalperiod=9)
+    plus_di_14 = ta.PLUS_DI(high_np, low_np, close_np, timeperiod=14)
+    minus_di_14 = ta.MINUS_DI(high_np, low_np, close_np, timeperiod=14)
+    dc_low_10 = np_shift(ta_min(low_np, timeperiod=10), 1)
+
     new_cols = pd.DataFrame(
       {
+        "MACDh_12_26_9": macdh_12_26_9,
+        "PLUS_DI_14": plus_di_14,
+        "MINUS_DI_14": minus_di_14,
+        "DC_LOW_10": dc_low_10,
         "RSI_3": rsi_3,
         "RSI_14": rsi_14,
         "RSI_3_change_pct": rsi_3_change,
@@ -4332,6 +4386,8 @@ class NostalgiaForInfinityX8(IStrategy):
     # =========================================================================
     dc_high_7d_col = np_shift(ta_max(close_np, timeperiod=2016), 1)
     dc_low_7d_col = np_shift(ta_min(close_np, timeperiod=2016), 1)
+    # signal 507: high of the previous 20 candles
+    dc_high_20_col = np_shift(ta_max(high_np, timeperiod=20), 1)
 
     # =========================================================================
     # Assign dataframes
@@ -4354,6 +4410,7 @@ class NostalgiaForInfinityX8(IStrategy):
         "PB_HAMMER": hammer_col,
         "PB_STAR": star_col,
         "DC_HIGH_7D": dc_high_7d_col,
+        "DC_HIGH_20": dc_high_20_col,
         "DC_LOW_7D": dc_low_7d_col,
         "ENGULF_BULL": engulf_bull_col,
         "ENGULF_BEAR": engulf_bear_col,
@@ -4850,8 +4907,8 @@ class NostalgiaForInfinityX8(IStrategy):
     # return self.btc_informative_1d_indicators(btc_pair, btc_info_timeframe)
     if btc_info_timeframe == "4h":
       return self.btc_informative_4h_indicators(btc_pair, btc_info_timeframe)
-    # elif btc_info_timeframe == "1h":
-    # return self.btc_informative_1h_indicators(btc_pair, btc_info_timeframe)
+    elif btc_info_timeframe == "1h":
+      return self.btc_informative_1h_indicators(btc_pair, btc_info_timeframe)
     # elif btc_info_timeframe == "15m":
     # return self.btc_informative_15m_indicators(btc_pair, btc_info_timeframe)
     # elif btc_info_timeframe == "5m":
@@ -4896,7 +4953,7 @@ class NostalgiaForInfinityX8(IStrategy):
       if info_df.empty:
         continue
 
-      keep_ohlcv = {"open", "close"} if info_tf == "15m" else set()
+      keep_ohlcv = {"open", "close"} if info_tf == "15m" else {"close"} if info_tf == "4h" else set()
       info_df = prepare_informative_merge(info_df, keep_ohlcv)
       info_frames[info_tf] = info_df
 
@@ -6004,6 +6061,21 @@ class NostalgiaForInfinityX8(IStrategy):
     minus_di_14_4h = np_view("MINUS_DI_14_4h")
     dc_high_7d = np_view("DC_HIGH_7D")
     dc_low_7d = np_view("DC_LOW_7D")
+    kama_40_1d = np_view("KAMA_40_1d")
+    kama_153_1d = np_view("KAMA_153_1d")
+    mom_28_hot_1d = np_view("MOM_28_HOT_1d")
+    close_4h = np_view("close_4h")
+    ha_open_4h = np_view("HA_OPEN_4h")
+    ha_close_4h = np_view("HA_CLOSE_4h")
+    adx_13_4h = np_view("ADX_13_4h")
+    atr_14_4h = np_view("ATR_14_4h")
+    vol_rel_27_4h = np_view("VOL_REL_27_4h")
+    macdh_12_26_9_1h = np_view("MACDh_12_26_9_1h")
+    plus_di_14_1h = np_view("PLUS_DI_14_1h")
+    minus_di_14_1h = np_view("MINUS_DI_14_1h")
+    dc_low_10_1h = np_view("DC_LOW_10_1h")
+    dc_high_20 = np_view("DC_HIGH_20")
+    btc_rsi_14_1h = np_view("BTC_RSI_14_1h")
     global_protections_short_pump = np_view("global_protections_short_pump")
     global_protections_short_dump = np_view("global_protections_short_dump")
     roc_2 = np_view("ROC_2")
@@ -6254,6 +6326,7 @@ class NostalgiaForInfinityX8(IStrategy):
     aroonu_14_1d_gt_0 = aroonu_14_1d > 0.0
     aroonu_14_1d_gt_10 = aroonu_14_1d > 10.0
     aroonu_14_1d_gt_20 = aroonu_14_1d > 20.0
+    aroonu_14_1d_lt_20 = aroonu_14_1d < 20.0
     aroonu_14_1d_gt_30 = aroonu_14_1d > 30.0
     aroonu_14_1d_gt_50 = aroonu_14_1d > 50.0
     aroonu_14_lt_25 = aroonu_14 < 25.0
@@ -25848,6 +25921,52 @@ class NostalgiaForInfinityX8(IStrategy):
             # pointing down, under the 200 EMA
             & (minus_di_14_4h > plus_di_14_4h)
             & (close < ema_200)
+          )
+        # Condition #507 - Daily downtrend continuation (Short).
+        if short_entry_condition_index == 507:
+          # Protections
+          short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          short_entry_logic.append(protections_short_global == True)
+          # not a coin in its own top-third 28 day run within the last 5 days
+          short_entry_logic.append(mom_28_hot_1d < 0.5)
+          short_entry_logic.append(
+            # 4h high, 1d not rolled over
+            ((aroonu_14_4h_lt_70) | (aroonu_14_1d_lt_20))
+            # 4h flush, 1d fresh high
+            & ((rsi_3_4h_gt_10) | (aroonu_14_1d_lt_50))
+            # first dip after a 1d fresh high
+            & ((aroonu_14_1d_lt_40) | (stochrsi_k_1d > 15.0) | (aroond_14_1d > 20.0))
+            # 4h low, 4h bounce started
+            & ((rsi_14_4h > 25.0) | (stochrsi_k_4h_lt_40))
+          )
+
+          # Logic
+          short_entry_logic.append(
+            # daily downtrend: slow KAMA under the fast one, red 4h heikin-ashi candle under the slow KAMA
+            (kama_153_1d < kama_40_1d)
+            & (ha_close_4h < ha_open_4h)
+            & (ha_close_4h < kama_153_1d)
+            # not more than 3 ATR under the slow KAMA
+            & (close_4h > (kama_153_1d - (3.0 * atr_14_4h)))
+            # trending but not exhausted, on rising volume
+            & (adx_13_4h > 10.0)
+            & (adx_13_4h < 55.0)
+            & (vol_rel_27_4h > 1.0)
+            # BTC not strong
+            & (btc_rsi_14_1h < 50.0)
+            # not already 15% under the previous 20 candle high
+            & (close >= (dc_high_20 * 0.85))
+            # not after a 24h crash
+            & (roc_288 > -15.0)
+            # 1h agrees, two of: macd under zero, -di over +di, 4h close under the 1h donchian low, rsi under 50
+            & (
+              ((macdh_12_26_9_1h < 0.0) & (minus_di_14_1h > plus_di_14_1h))
+              | ((macdh_12_26_9_1h < 0.0) & (close_4h < dc_low_10_1h))
+              | ((macdh_12_26_9_1h < 0.0) & (rsi_14_1h < 50.0))
+              | ((minus_di_14_1h > plus_di_14_1h) & (close_4h < dc_low_10_1h))
+              | ((minus_di_14_1h > plus_di_14_1h) & (rsi_14_1h < 50.0))
+              | ((close_4h < dc_low_10_1h) & (rsi_14_1h < 50.0))
+            )
           )
 
         # Condition #506 - Donchian 7-day breakdown (Short, experimental, RAW — mirror).
