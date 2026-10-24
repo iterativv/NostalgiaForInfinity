@@ -1996,7 +1996,7 @@ class NostalgiaForInfinityX8(IStrategy):
       if system_version == self.system_v4_name
       else self.legacy_system_bad_trade_exit_enable
     )
-    if bad_trade_exit_enable and current_profit < 0.0:
+    if bad_trade_exit_enable and profit_stake < 0.0:
       bad_trade_exit_reason = self._bad_trade_controller_exit_reason(
         trade, current_time, current_rate, last_candle, filled_entries
       )
