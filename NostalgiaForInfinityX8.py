@@ -44333,6 +44333,10 @@ class NostalgiaForInfinityX8(IStrategy):
       and (grind_1_derisk_1_sub_grind_count < grind_1_derisk_1_max_sub_grinds)
       and is_not_trade_max_stake
     ):
+      buy_amount = slice_amount * grind_1_derisk_1_stakes[grind_1_derisk_1_sub_grind_count] / stake_scale_leverage
+      if buy_amount < (min_stake * 1.5):
+        buy_amount = min_stake * 1.5
+
       if (
         (
           (
@@ -44350,12 +44354,8 @@ class NostalgiaForInfinityX8(IStrategy):
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
         and is_long_grind_entry
+        and buy_amount <= max_stake
       ):
-        buy_amount = slice_amount * grind_1_derisk_1_stakes[grind_1_derisk_1_sub_grind_count] / stake_scale_leverage
-        if buy_amount < (min_stake * 1.5):
-          buy_amount = min_stake * 1.5
-        if buy_amount > max_stake:
-          return None
         grind_profit = 0.0
         grind_profit_stake = 0.0
         if grind_1_derisk_1_sub_grind_count > 0:
@@ -44480,6 +44480,10 @@ class NostalgiaForInfinityX8(IStrategy):
       and (grind_2_derisk_1_sub_grind_count < grind_2_derisk_1_max_sub_grinds)
       and is_not_trade_max_stake
     ):
+      buy_amount = slice_amount * grind_2_derisk_1_stakes[grind_2_derisk_1_sub_grind_count] / stake_scale_leverage
+      if buy_amount < (min_stake * 1.5):
+        buy_amount = min_stake * 1.5
+
       if (
         (
           (
@@ -44497,12 +44501,8 @@ class NostalgiaForInfinityX8(IStrategy):
         )
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
         and is_long_grind_entry
+        and buy_amount <= max_stake
       ):
-        buy_amount = slice_amount * grind_2_derisk_1_stakes[grind_2_derisk_1_sub_grind_count] / stake_scale_leverage
-        if buy_amount < (min_stake * 1.5):
-          buy_amount = min_stake * 1.5
-        if buy_amount > max_stake:
-          return None
         grind_profit = 0.0
         grind_profit_stake = 0.0
         if grind_2_derisk_1_sub_grind_count > 0:
@@ -44620,6 +44620,10 @@ class NostalgiaForInfinityX8(IStrategy):
     # Grinding 1
     # Buy
     if (not partial_sell) and (grind_1_sub_grind_count < grind_1_max_sub_grinds):
+      buy_amount = slice_amount * grind_1_stakes[grind_1_sub_grind_count] / stake_scale_leverage
+      if buy_amount < (min_stake * 1.5):
+        buy_amount = min_stake * 1.5
+
       if (
         (
           ((grind_1_sub_grind_count > 0) and grind_1_distance_ratio < grind_1_sub_thresholds[grind_1_sub_grind_count])
@@ -44636,12 +44640,8 @@ class NostalgiaForInfinityX8(IStrategy):
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
         and is_long_grind_entry
         and is_not_trade_max_stake
+        and buy_amount <= max_stake
       ):
-        buy_amount = slice_amount * grind_1_stakes[grind_1_sub_grind_count] / stake_scale_leverage
-        if buy_amount < (min_stake * 1.5):
-          buy_amount = min_stake * 1.5
-        if buy_amount > max_stake:
-          return None
         grind_profit = 0.0
         grind_profit_stake = 0.0
         if grind_1_sub_grind_count > 0:
@@ -44681,35 +44681,34 @@ class NostalgiaForInfinityX8(IStrategy):
       buy_amount = slice_amount * grind_1_stakes[grind_1_sub_grind_count] / stake_scale_leverage
       if buy_amount < (min_stake * 1.5):
         buy_amount = min_stake * 1.5
-      if buy_amount > max_stake:
-        return None
-      grind_profit = 0.0
-      grind_profit_stake = 0.0
-      if grind_1_sub_grind_count > 0:
-        grind_profit = (exit_rate - grind_1_current_open_rate) / grind_1_current_open_rate
-        grind_profit_stake = grind_1_current_grind_stake_profit
-      send_msg(
-        notification_msg(
-          "grinding-entry",
-          tag="gd1",
-          pair=trade_pair,
-          rate=current_rate,
-          stake_amount=buy_amount,
-          profit_stake=profit_stake,
-          profit_ratio=profit_ratio,
-          stake_currency=stake_currency,
-          grind_profit_stake=grind_1_current_grind_stake_profit,
-          grind_profit_pct=grind_profit,
+      if buy_amount <= max_stake:
+        grind_profit = 0.0
+        grind_profit_stake = 0.0
+        if grind_1_sub_grind_count > 0:
+          grind_profit = (exit_rate - grind_1_current_open_rate) / grind_1_current_open_rate
+          grind_profit_stake = grind_1_current_grind_stake_profit
+        send_msg(
+          notification_msg(
+            "grinding-entry",
+            tag="gd1",
+            pair=trade_pair,
+            rate=current_rate,
+            stake_amount=buy_amount,
+            profit_stake=profit_stake,
+            profit_ratio=profit_ratio,
+            stake_currency=stake_currency,
+            grind_profit_stake=grind_1_current_grind_stake_profit,
+            grind_profit_pct=grind_profit,
+          )
         )
-      )
-      log.info(
-        f"Grinding entry (gd1) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_1_current_grind_stake_profit:{stake_fmt}} {stake_currency})"
-      )
-      order_tag = "gd1"
-      if has_order_tags:
-        return buy_amount, order_tag
-      else:
-        return buy_amount
+        log.info(
+          f"Grinding entry (gd1) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_1_current_grind_stake_profit:{stake_fmt}} {stake_currency})"
+        )
+        order_tag = "gd1"
+        if has_order_tags:
+          return buy_amount, order_tag
+        else:
+          return buy_amount
 
     # Sell
     if grind_1_sub_grind_count > 0:
@@ -44799,6 +44798,10 @@ class NostalgiaForInfinityX8(IStrategy):
     # Grinding 2
     # Buy
     if has_order_tags and (not partial_sell) and (grind_2_sub_grind_count < grind_2_max_sub_grinds):
+      buy_amount = slice_amount * grind_2_stakes[grind_2_sub_grind_count] / stake_scale_leverage
+      if buy_amount < (min_stake * 1.5):
+        buy_amount = min_stake * 1.5
+
       if (
         (
           ((grind_2_sub_grind_count > 0) and grind_2_distance_ratio < grind_2_sub_thresholds[grind_2_sub_grind_count])
@@ -44815,12 +44818,8 @@ class NostalgiaForInfinityX8(IStrategy):
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
         and is_long_grind_entry
         and is_not_trade_max_stake
+        and buy_amount <= max_stake
       ):
-        buy_amount = slice_amount * grind_2_stakes[grind_2_sub_grind_count] / stake_scale_leverage
-        if buy_amount < (min_stake * 1.5):
-          buy_amount = min_stake * 1.5
-        if buy_amount > max_stake:
-          return None
         grind_profit = 0.0
         grind_profit_stake = 0.0
         if grind_2_sub_grind_count > 0:
@@ -44937,6 +44936,10 @@ class NostalgiaForInfinityX8(IStrategy):
     # Grinding 3
     # Buy
     if has_order_tags and (not partial_sell) and (grind_3_sub_grind_count < grind_3_max_sub_grinds):
+      buy_amount = slice_amount * grind_3_stakes[grind_3_sub_grind_count] / stake_scale_leverage
+      if buy_amount < (min_stake * 1.5):
+        buy_amount = min_stake * 1.5
+
       if (
         (
           ((grind_3_sub_grind_count > 0) and grind_3_distance_ratio < grind_3_sub_thresholds[grind_3_sub_grind_count])
@@ -44953,12 +44956,8 @@ class NostalgiaForInfinityX8(IStrategy):
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
         and is_long_grind_entry
         and is_not_trade_max_stake
+        and buy_amount <= max_stake
       ):
-        buy_amount = slice_amount * grind_3_stakes[grind_3_sub_grind_count] / stake_scale_leverage
-        if buy_amount < (min_stake * 1.5):
-          buy_amount = min_stake * 1.5
-        if buy_amount > max_stake:
-          return None
         grind_profit = 0.0
         grind_profit_stake = 0.0
         if grind_3_sub_grind_count > 0:
@@ -45075,6 +45074,10 @@ class NostalgiaForInfinityX8(IStrategy):
     # Grinding 4
     # Buy
     if has_order_tags and (not partial_sell) and (grind_4_sub_grind_count < grind_4_max_sub_grinds):
+      buy_amount = slice_amount * grind_4_stakes[grind_4_sub_grind_count] / stake_scale_leverage
+      if buy_amount < (min_stake * 1.5):
+        buy_amount = min_stake * 1.5
+
       if (
         (
           ((grind_4_sub_grind_count > 0) and grind_4_distance_ratio < grind_4_sub_thresholds[grind_4_sub_grind_count])
@@ -45091,12 +45094,8 @@ class NostalgiaForInfinityX8(IStrategy):
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
         and is_long_grind_entry
         and is_not_trade_max_stake
+        and buy_amount <= max_stake
       ):
-        buy_amount = slice_amount * grind_4_stakes[grind_4_sub_grind_count] / stake_scale_leverage
-        if buy_amount < (min_stake * 1.5):
-          buy_amount = min_stake * 1.5
-        if buy_amount > max_stake:
-          return None
         grind_profit = 0.0
         grind_profit_stake = 0.0
         if grind_4_sub_grind_count > 0:
@@ -45221,6 +45220,10 @@ class NostalgiaForInfinityX8(IStrategy):
     # Grinding 5
     # Buy
     if has_order_tags and (not partial_sell) and (grind_5_sub_grind_count < grind_5_max_sub_grinds):
+      buy_amount = slice_amount * grind_5_stakes[grind_5_sub_grind_count] / stake_scale_leverage
+      if buy_amount < (min_stake * 1.5):
+        buy_amount = min_stake * 1.5
+
       if (
         (
           ((grind_5_sub_grind_count > 0) and grind_5_distance_ratio < grind_5_sub_thresholds[grind_5_sub_grind_count])
@@ -45237,15 +45240,11 @@ class NostalgiaForInfinityX8(IStrategy):
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
         and (is_long_grind_entry or gd5_liquidation_rescue_eligible)
         and is_not_trade_max_stake
+        and buy_amount <= max_stake
       ):
         if gd5_liquidation_rescue_eligible:
           trade.set_custom_data(key="gd5_liquidation_rescue_used", value=True)
 
-        buy_amount = slice_amount * grind_5_stakes[grind_5_sub_grind_count] / stake_scale_leverage
-        if buy_amount < (min_stake * 1.5):
-          buy_amount = min_stake * 1.5
-        if buy_amount > max_stake:
-          return None
         grind_profit = 0.0
         grind_profit_stake = 0.0
         if grind_5_sub_grind_count > 0:
@@ -45362,6 +45361,10 @@ class NostalgiaForInfinityX8(IStrategy):
     # Grinding 6
     # Buy
     if has_order_tags and (not partial_sell) and (grind_6_sub_grind_count < grind_6_max_sub_grinds):
+      buy_amount = slice_amount * grind_6_stakes[grind_6_sub_grind_count] / stake_scale_leverage
+      if buy_amount < (min_stake * 1.5):
+        buy_amount = min_stake * 1.5
+
       if (
         (
           ((grind_6_sub_grind_count > 0) and grind_6_distance_ratio < grind_6_sub_thresholds[grind_6_sub_grind_count])
@@ -45378,12 +45381,8 @@ class NostalgiaForInfinityX8(IStrategy):
         # and ((num_open_grinds == 0) or (slice_profit < -0.03))
         and is_long_grind_entry
         and is_not_trade_max_stake
+        and buy_amount <= max_stake
       ):
-        buy_amount = slice_amount * grind_6_stakes[grind_6_sub_grind_count] / stake_scale_leverage
-        if buy_amount < (min_stake * 1.5):
-          buy_amount = min_stake * 1.5
-        if buy_amount > max_stake:
-          return None
         grind_profit = 0.0
         grind_profit_stake = 0.0
         if grind_6_sub_grind_count > 0:
@@ -45507,6 +45506,10 @@ class NostalgiaForInfinityX8(IStrategy):
         < (self.regular_mode_derisk_1_reentry_futures if is_futures else self.regular_mode_derisk_1_reentry_spot)
       )
     ):
+      buy_amount = derisk_1_order.safe_filled * derisk_1_order.safe_price
+      if buy_amount < (min_stake * 1.5):
+        buy_amount = min_stake * 1.5
+
       if (
         (grind_entry_retry_time > last_filled_entry.order_filled_utc)
         and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or slice_profit_lt_neg_0_06)
@@ -45523,12 +45526,8 @@ class NostalgiaForInfinityX8(IStrategy):
           and (last_candle["global_protections_long_dump"] == True)
         )
         and is_long_grind_entry
+        and buy_amount <= max_stake
       ):
-        buy_amount = derisk_1_order.safe_filled * derisk_1_order.safe_price
-        if buy_amount < (min_stake * 1.5):
-          buy_amount = min_stake * 1.5
-        if buy_amount > max_stake:
-          return None
         grind_profit = 0.0
         grind_profit_stake = 0.0
         if derisk_1_sub_grind_count > 0:
@@ -58442,6 +58441,10 @@ class NostalgiaForInfinityX8(IStrategy):
       and (grind_1_derisk_1_sub_grind_count < grind_1_derisk_1_max_sub_grinds)
       and is_not_trade_max_stake
     ):
+      buy_amount = slice_amount * grind_1_derisk_1_stakes[grind_1_derisk_1_sub_grind_count] / stake_scale_leverage
+      if buy_amount < (min_stake * 1.5):
+        buy_amount = min_stake * 1.5
+
       if (
         (
           (
@@ -58457,12 +58460,8 @@ class NostalgiaForInfinityX8(IStrategy):
         )
         # and ((num_open_grinds == 0) or (slice_profit > 0.03))
         and is_short_grind_entry
+        and buy_amount <= max_stake
       ):
-        buy_amount = slice_amount * grind_1_derisk_1_stakes[grind_1_derisk_1_sub_grind_count] / stake_scale_leverage
-        if buy_amount < (min_stake * 1.5):
-          buy_amount = min_stake * 1.5
-        if buy_amount > max_stake:
-          return None
         grind_profit = 0.0
         grind_profit_stake = 0.0
         if grind_1_derisk_1_sub_grind_count > 0:
@@ -58587,6 +58586,10 @@ class NostalgiaForInfinityX8(IStrategy):
       and (grind_2_derisk_1_sub_grind_count < grind_2_derisk_1_max_sub_grinds)
       and is_not_trade_max_stake
     ):
+      buy_amount = slice_amount * grind_2_derisk_1_stakes[grind_2_derisk_1_sub_grind_count] / stake_scale_leverage
+      if buy_amount < (min_stake * 1.5):
+        buy_amount = min_stake * 1.5
+
       if (
         (
           (
@@ -58602,12 +58605,8 @@ class NostalgiaForInfinityX8(IStrategy):
         )
         # and ((num_open_grinds == 0) or (slice_profit > 0.03))
         and is_short_grind_entry
+        and buy_amount <= max_stake
       ):
-        buy_amount = slice_amount * grind_2_derisk_1_stakes[grind_2_derisk_1_sub_grind_count] / stake_scale_leverage
-        if buy_amount < (min_stake * 1.5):
-          buy_amount = min_stake * 1.5
-        if buy_amount > max_stake:
-          return None
         grind_profit = 0.0
         grind_profit_stake = 0.0
         if grind_2_derisk_1_sub_grind_count > 0:
@@ -58725,6 +58724,10 @@ class NostalgiaForInfinityX8(IStrategy):
     # Grinding 1
     # Buy
     if (not partial_sell) and (grind_1_sub_grind_count < grind_1_max_sub_grinds):
+      buy_amount = slice_amount * grind_1_stakes[grind_1_sub_grind_count] / stake_scale_leverage
+      if buy_amount < (min_stake * 1.5):
+        buy_amount = min_stake * 1.5
+
       if (
         (
           ((grind_1_sub_grind_count > 0) and -grind_1_distance_ratio < grind_1_sub_thresholds[grind_1_sub_grind_count])
@@ -58739,12 +58742,8 @@ class NostalgiaForInfinityX8(IStrategy):
         # and ((num_open_grinds == 0) or (slice_profit > 0.03))
         and is_short_grind_entry
         and is_not_trade_max_stake
+        and buy_amount <= max_stake
       ):
-        buy_amount = slice_amount * grind_1_stakes[grind_1_sub_grind_count] / stake_scale_leverage
-        if buy_amount < (min_stake * 1.5):
-          buy_amount = min_stake * 1.5
-        if buy_amount > max_stake:
-          return None
         grind_profit = 0.0
         grind_profit_stake = 0.0
         if grind_1_sub_grind_count > 0:
@@ -58784,35 +58783,34 @@ class NostalgiaForInfinityX8(IStrategy):
       buy_amount = slice_amount * grind_1_stakes[grind_1_sub_grind_count] / stake_scale_leverage
       if buy_amount < (min_stake * 1.5):
         buy_amount = min_stake * 1.5
-      if buy_amount > max_stake:
-        return None
-      grind_profit = 0.0
-      grind_profit_stake = 0.0
-      if grind_1_sub_grind_count > 0:
-        grind_profit = -(exit_rate - grind_1_current_open_rate) / grind_1_current_open_rate
-        grind_profit_stake = grind_1_current_grind_stake_profit
-      send_msg(
-        notification_msg(
-          "grinding-entry",
-          tag="gd1",
-          pair=trade_pair,
-          rate=current_rate,
-          stake_amount=buy_amount,
-          profit_stake=profit_stake,
-          profit_ratio=profit_ratio,
-          stake_currency=stake_currency,
-          grind_profit_stake=grind_1_current_grind_stake_profit,
-          grind_profit_pct=grind_profit,
+      if buy_amount <= max_stake:
+        grind_profit = 0.0
+        grind_profit_stake = 0.0
+        if grind_1_sub_grind_count > 0:
+          grind_profit = -(exit_rate - grind_1_current_open_rate) / grind_1_current_open_rate
+          grind_profit_stake = grind_1_current_grind_stake_profit
+        send_msg(
+          notification_msg(
+            "grinding-entry",
+            tag="gd1",
+            pair=trade_pair,
+            rate=current_rate,
+            stake_amount=buy_amount,
+            profit_stake=profit_stake,
+            profit_ratio=profit_ratio,
+            stake_currency=stake_currency,
+            grind_profit_stake=grind_1_current_grind_stake_profit,
+            grind_profit_pct=grind_profit,
+          )
         )
-      )
-      log.info(
-        f"Grinding entry (gd1) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_1_current_grind_stake_profit:{stake_fmt}} {stake_currency})"
-      )
-      order_tag = "gd1"
-      if has_order_tags:
-        return buy_amount, order_tag
-      else:
-        return buy_amount
+        log.info(
+          f"Grinding entry (gd1) [{current_time}] [{trade_pair}] | Rate: {current_rate} | Stake amount: {buy_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_1_current_grind_stake_profit:{stake_fmt}} {stake_currency})"
+        )
+        order_tag = "gd1"
+        if has_order_tags:
+          return buy_amount, order_tag
+        else:
+          return buy_amount
 
     # Sell
     if grind_1_sub_grind_count > 0:
@@ -58902,6 +58900,10 @@ class NostalgiaForInfinityX8(IStrategy):
     # Grinding 2
     # Buy
     if has_order_tags and (not partial_sell) and (grind_2_sub_grind_count < grind_2_max_sub_grinds):
+      buy_amount = slice_amount * grind_2_stakes[grind_2_sub_grind_count] / stake_scale_leverage
+      if buy_amount < (min_stake * 1.5):
+        buy_amount = min_stake * 1.5
+
       if (
         (
           ((grind_2_sub_grind_count > 0) and -grind_2_distance_ratio < grind_2_sub_thresholds[grind_2_sub_grind_count])
@@ -58916,12 +58918,8 @@ class NostalgiaForInfinityX8(IStrategy):
         # and ((num_open_grinds == 0) or (slice_profit > 0.03))
         and is_short_grind_entry
         and is_not_trade_max_stake
+        and buy_amount <= max_stake
       ):
-        buy_amount = slice_amount * grind_2_stakes[grind_2_sub_grind_count] / stake_scale_leverage
-        if buy_amount < (min_stake * 1.5):
-          buy_amount = min_stake * 1.5
-        if buy_amount > max_stake:
-          return None
         grind_profit = 0.0
         grind_profit_stake = 0.0
         if grind_2_sub_grind_count > 0:
@@ -59038,6 +59036,10 @@ class NostalgiaForInfinityX8(IStrategy):
     # Grinding 3
     # Buy
     if has_order_tags and (not partial_sell) and (grind_3_sub_grind_count < grind_3_max_sub_grinds):
+      buy_amount = slice_amount * grind_3_stakes[grind_3_sub_grind_count] / stake_scale_leverage
+      if buy_amount < (min_stake * 1.5):
+        buy_amount = min_stake * 1.5
+
       if (
         (
           ((grind_3_sub_grind_count > 0) and -grind_3_distance_ratio < grind_3_sub_thresholds[grind_3_sub_grind_count])
@@ -59052,12 +59054,8 @@ class NostalgiaForInfinityX8(IStrategy):
         # and ((num_open_grinds == 0) or (slice_profit > 0.03))
         and is_short_grind_entry
         and is_not_trade_max_stake
+        and buy_amount <= max_stake
       ):
-        buy_amount = slice_amount * grind_3_stakes[grind_3_sub_grind_count] / stake_scale_leverage
-        if buy_amount < (min_stake * 1.5):
-          buy_amount = min_stake * 1.5
-        if buy_amount > max_stake:
-          return None
         grind_profit = 0.0
         grind_profit_stake = 0.0
         if grind_3_sub_grind_count > 0:
@@ -59174,6 +59172,10 @@ class NostalgiaForInfinityX8(IStrategy):
     # Grinding 4
     # Buy
     if has_order_tags and (not partial_sell) and (grind_4_sub_grind_count < grind_4_max_sub_grinds):
+      buy_amount = slice_amount * grind_4_stakes[grind_4_sub_grind_count] / stake_scale_leverage
+      if buy_amount < (min_stake * 1.5):
+        buy_amount = min_stake * 1.5
+
       if (
         (
           ((grind_4_sub_grind_count > 0) and -grind_4_distance_ratio < grind_4_sub_thresholds[grind_4_sub_grind_count])
@@ -59188,12 +59190,8 @@ class NostalgiaForInfinityX8(IStrategy):
         # and ((num_open_grinds == 0) or (slice_profit > 0.03))
         and is_short_grind_entry
         and is_not_trade_max_stake
+        and buy_amount <= max_stake
       ):
-        buy_amount = slice_amount * grind_4_stakes[grind_4_sub_grind_count] / stake_scale_leverage
-        if buy_amount < (min_stake * 1.5):
-          buy_amount = min_stake * 1.5
-        if buy_amount > max_stake:
-          return None
         grind_profit = 0.0
         grind_profit_stake = 0.0
         if grind_4_sub_grind_count > 0:
@@ -59318,6 +59316,10 @@ class NostalgiaForInfinityX8(IStrategy):
     # Grinding 5
     # Buy
     if has_order_tags and (not partial_sell) and (grind_5_sub_grind_count < grind_5_max_sub_grinds):
+      buy_amount = slice_amount * grind_5_stakes[grind_5_sub_grind_count] / stake_scale_leverage
+      if buy_amount < (min_stake * 1.5):
+        buy_amount = min_stake * 1.5
+
       if (
         (
           ((grind_5_sub_grind_count > 0) and -grind_5_distance_ratio < grind_5_sub_thresholds[grind_5_sub_grind_count])
@@ -59332,15 +59334,11 @@ class NostalgiaForInfinityX8(IStrategy):
         # and ((num_open_grinds == 0) or (slice_profit > 0.03))
         and (is_short_grind_entry or gd5_liquidation_rescue_eligible)
         and is_not_trade_max_stake
+        and buy_amount <= max_stake
       ):
         if gd5_liquidation_rescue_eligible:
           trade.set_custom_data(key="gd5_liquidation_rescue_used", value=True)
 
-        buy_amount = slice_amount * grind_5_stakes[grind_5_sub_grind_count] / stake_scale_leverage
-        if buy_amount < (min_stake * 1.5):
-          buy_amount = min_stake * 1.5
-        if buy_amount > max_stake:
-          return None
         grind_profit = 0.0
         grind_profit_stake = 0.0
         if grind_5_sub_grind_count > 0:
@@ -59457,6 +59455,10 @@ class NostalgiaForInfinityX8(IStrategy):
     # Grinding 6
     # Buy
     if has_order_tags and (not partial_sell) and (grind_6_sub_grind_count < grind_6_max_sub_grinds):
+      buy_amount = slice_amount * grind_6_stakes[grind_6_sub_grind_count] / stake_scale_leverage
+      if buy_amount < (min_stake * 1.5):
+        buy_amount = min_stake * 1.5
+
       if (
         (
           ((grind_6_sub_grind_count > 0) and -grind_6_distance_ratio < grind_6_sub_thresholds[grind_6_sub_grind_count])
@@ -59471,12 +59473,8 @@ class NostalgiaForInfinityX8(IStrategy):
         # and ((num_open_grinds == 0) or (slice_profit > 0.03))
         and is_short_grind_entry
         and is_not_trade_max_stake
+        and buy_amount <= max_stake
       ):
-        buy_amount = slice_amount * grind_6_stakes[grind_6_sub_grind_count] / stake_scale_leverage
-        if buy_amount < (min_stake * 1.5):
-          buy_amount = min_stake * 1.5
-        if buy_amount > max_stake:
-          return None
         grind_profit = 0.0
         grind_profit_stake = 0.0
         if grind_6_sub_grind_count > 0:
@@ -59600,6 +59598,10 @@ class NostalgiaForInfinityX8(IStrategy):
         < (self.regular_mode_derisk_1_reentry_futures if is_futures else self.regular_mode_derisk_1_reentry_spot)
       )
     ):
+      buy_amount = derisk_1_order.safe_filled * derisk_1_order.safe_price
+      if buy_amount < (min_stake * 1.5):
+        buy_amount = min_stake * 1.5
+
       if (
         (grind_entry_retry_time > last_filled_entry.order_filled_utc)
         and ((grind_force_order_age_time > last_filled_order.order_filled_utc) or slice_profit_gt_0_06)
@@ -59614,12 +59616,8 @@ class NostalgiaForInfinityX8(IStrategy):
           and (last_candle["global_protections_short_dump"] == True)
         )
         and is_short_grind_entry
+        and buy_amount <= max_stake
       ):
-        buy_amount = derisk_1_order.safe_filled * derisk_1_order.safe_price
-        if buy_amount < (min_stake * 1.5):
-          buy_amount = min_stake * 1.5
-        if buy_amount > max_stake:
-          return None
         grind_profit = 0.0
         grind_profit_stake = 0.0
         if derisk_1_sub_grind_count > 0:
