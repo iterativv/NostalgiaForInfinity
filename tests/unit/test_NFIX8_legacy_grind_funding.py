@@ -19,8 +19,9 @@ from NostalgiaForInfinityX8 import NostalgiaForInfinityX8
 NOW = datetime(2026, 10, 24, 12, tzinfo=timezone.utc)
 
 
-def fill(trade, side, amount, price, tag):
+def fill(trade, side, amount, price, tag, filled=None):
   filled_at = trade.open_date_utc + timedelta(hours=12 * len(trade.orders))
+  filled = amount if filled is None else filled
   trade.orders.append(
     Order(
       order_id=f"{trade.id}-{len(trade.orders) + 1}",
@@ -30,15 +31,15 @@ def fill(trade, side, amount, price, tag):
       ft_amount=amount,
       ft_price=price,
       ft_order_tag=tag,
-      status="closed",
+      status="closed" if filled == amount else "canceled",
       side=side,
       order_type="limit",
       amount=amount,
-      filled=amount,
-      remaining=0.0,
+      filled=filled,
+      remaining=amount - filled,
       price=price,
       average=price,
-      cost=amount * price,
+      cost=filled * price,
       order_date=filled_at,
       order_filled_date=filled_at,
     )
@@ -68,7 +69,7 @@ def expected_stop(trade, rate, min_stake=5.0):
   return -stake, tag
 
 
-@pytest.fixture(params=[(False, 1), (False, 3)], ids=["spot", "long"])
+@pytest.fixture(params=[(False, 1), (False, 3), (True, 3)], ids=["spot", "long", "short"])
 def legacy_grind_case(request):
   init_db("sqlite://")
   short, leverage = request.param
@@ -122,7 +123,7 @@ def legacy_grind_case(request):
     strategy.dp._set_cached_df(trade.pair, "5m", frame, strategy.config["candle_type_def"])
     filled_at = trade.open_date_utc + timedelta(hours=12 * len(trade.orders))
     request = adjust((strategy, trade, rate), 1000.0, current_time=filled_at)
-    assert request is not None and request[1].split()[0] == tag
+    assert isinstance(request, tuple) and request[1].split()[0] == tag
     amount = request[0] * leverage / rate if request[0] > 0 else -request[0] * trade.amount / trade.stake_amount
     fill(trade, trade.entry_side if request[0] > 0 else trade.exit_side, amount, rate, request[1])
   rate = second_price * (1 - thresholds[2] + 0.00125 if short else 1 + thresholds[2] - 0.00125)
@@ -219,3 +220,17 @@ def test_unfunded_rescue_does_not_consume_its_one_shot_flag(legacy_grind_case, m
   else:
     assert result is None
     assert trade.get_custom_data("gd5_liquidation_rescue_used") is None
+
+
+def test_partial_exit_recovery_precedes_entry_budget(legacy_grind_case):
+  strategy, trade, rate = legacy_grind_case
+  set_signal(strategy, False)
+  requested = adjust(legacy_grind_case, 0.0)
+  assert requested is not None and requested[0] < 0.0
+  quantity = -requested[0] * trade.amount / trade.stake_amount
+  fill(trade, trade.exit_side, quantity, rate, requested[1], filled=quantity / 2)
+
+  retry = adjust(legacy_grind_case, 0.0)
+
+  assert retry is not None and retry[1] == requested[1]
+  assert -retry[0] * trade.amount / trade.stake_amount == pytest.approx(quantity / 2)
