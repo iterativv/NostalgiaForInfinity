@@ -1105,7 +1105,7 @@ class NostalgiaForInfinityX8(IStrategy):
     # "short_entry_condition_504_enable": True,
     "short_entry_condition_505_enable": False,
     "short_entry_condition_506_enable": False,
-    "short_entry_condition_507_enable": True,
+    "short_entry_condition_507_enable": False,
     # "short_entry_condition_541_enable": True,
     "short_entry_condition_542_enable": True,
     "short_entry_condition_543_enable": False,
@@ -3352,7 +3352,7 @@ class NostalgiaForInfinityX8(IStrategy):
         "RANGE_PCT_14": ta_sma(daily_range_pct_np, timeperiod=14),
       }
 
-    # KAMA 40/153 + hot-coin rank — signal 507: daily downtrend, skip coins in their own top-third 28 d run
+    # KAMA 40/153 + hot-coin rank — signal 507 (experimental): daily downtrend, skip hot coins
     kama_40 = ta_kama(close_np, timeperiod=40)
     kama_153 = ta_kama(close_np, timeperiod=153)
     # 28 d log return vs the coin's earlier non-overlapping 28 d returns (at least 12): top third = hot, held 5 days
@@ -3576,7 +3576,7 @@ class NostalgiaForInfinityX8(IStrategy):
     plus_di_14 = ta_plus_di(high_np, low_np, close_np, timeperiod=14)
     minus_di_14 = ta_minus_di(high_np, low_np, close_np, timeperiod=14)
 
-    # ADX 13, ATR 14, relative volume, heikin-ashi — signal 507: the 4h trigger candle
+    # ADX 13, ATR 14, relative volume, heikin-ashi — signal 507 (experimental): the 4h trigger candle
     adx_13 = ta_adx(high_np, low_np, close_np, timeperiod=13)
     atr_14 = ta_atr(high_np, low_np, close_np, timeperiod=14)
     vol_ma_27 = np_shift(ta_sma(volume_np, timeperiod=27), 1)
@@ -3799,7 +3799,7 @@ class NostalgiaForInfinityX8(IStrategy):
     low_min_12 = ta_min(low_np, timeperiod=12)
     low_min_24 = ta_min(low_np, timeperiod=24)
 
-    # MACD histogram, DMI 14, Donchian 10-candle low — signal 507: 1h confirmation
+    # MACD histogram, DMI 14, Donchian 10-candle low — signal 507 (experimental): 1h confirmation
     _, _, macdh_12_26_9 = ta.MACD(close_np, fastperiod=12, slowperiod=26, signalperiod=9)
     plus_di_14 = ta.PLUS_DI(high_np, low_np, close_np, timeperiod=14)
     minus_di_14 = ta.MINUS_DI(high_np, low_np, close_np, timeperiod=14)
@@ -4380,7 +4380,7 @@ class NostalgiaForInfinityX8(IStrategy):
     dc_low_7d_col = np_shift(ta_min(close_np, timeperiod=2016), 1)
 
     # =========================================================================
-    # Donchian 20-candle high — signal 507: not shorting far under the recent high
+    # Donchian 20-candle high — signal 507 (experimental): not shorting far under the recent high
     # =========================================================================
     dc_high_20_col = np_shift(ta_max(high_np, timeperiod=20), 1)
 
@@ -25917,7 +25917,7 @@ class NostalgiaForInfinityX8(IStrategy):
             & (minus_di_14_4h > plus_di_14_4h)
             & (close < ema_200)
           )
-        # Condition #507 - Daily downtrend continuation (Short).
+        # Condition #507 - Daily downtrend continuation (Short, experimental).
         if short_entry_condition_index == 507:
           # Protections
           short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
