@@ -5,12 +5,14 @@ from pathlib import Path
 
 STRATEGY = Path(__file__).resolve().parents[2] / "NostalgiaForInfinityX8.py"
 
-CHAINS = [
-  "(aroonu_14_15m_lt_75) | (rsi_3_4h_gt_25) | (stochrsi_k_4h_lt_20)",
-  "(aroonu_14_1h_lt_30) | (stochrsi_k_1h_lt_60) | (aroonu_14_4h_gt_30)",
-  "(rsi_3_1h_gt_35) | (aroonu_14_1h_gt_20) | (aroonu_14_1d_lt_60)",
-]
-TF_RANK = {"15m": 0, "1h": 1, "4h": 2, "1d": 3}
+# chain -> the house comment that names the scene it blocks (the case where every clause is false)
+CHAINS = {
+  "(aroonu_14_15m_lt_75) | (rsi_3_4h_gt_25) | (stochrsi_k_4h_lt_20)": "15m high, 4h down move & still high",
+  "(aroonu_14_1h_lt_30) | (stochrsi_k_1h_lt_60) | (aroonu_14_4h_gt_30)": "1h high & still high, 4h low",
+  "(rsi_3_1h_gt_35) | (aroonu_14_1h_gt_20) | (aroonu_14_1d_lt_60)": "1h down move & low, 1d high",
+}
+TF_RANK = {"5m": 0, "15m": 1, "1h": 2, "4h": 3, "1d": 4}
+FAMILY = ["rsi_3", "rsi_14", "cmf_20", "mfi_14", "aroonu_14", "aroond_14", "stochrsi_k", "willr_14", "roc_2", "roc_9"]
 CLAUSE = re.compile(r"\(([a-z0-9_]+)\)")
 
 
@@ -25,26 +27,66 @@ def _block() -> str:
   return src[start:end]
 
 
+def _chain_lines() -> list[str]:
+  """Every protection chain of the block, in file order, as '& ((a) | (b) | (c))'."""
+  chains = []
+  lines = _block().splitlines()
+  for i, line in enumerate(lines):
+    stripped = line.strip()
+    if re.match(r"^& \(\(.*\|", stripped):
+      chains.append(stripped)
+    elif stripped == "& (" and i + 1 < len(lines):
+      chains.append("& (" + lines[i + 1].strip() + ")")
+  return chains
+
+
+def _lead_key(chain: str) -> tuple[int, int] | None:
+  """(timeframe rank, family rank) of a chain's lead clause, as the guide's checker measures it."""
+  lead = re.search(r"\(([a-z][a-z0-9_]*?)_(?:gt|lt)_", chain)
+  if not lead:
+    return None
+  name = lead.group(1)
+  base = re.sub(r"_(15m|1h|4h|1d)$", "", name)
+  tf = (re.search(r"_(15m|1h|4h|1d)$", name) or [None, "5m"])[1]
+  family = next((f for f in FAMILY if base.startswith(f)), base)
+  return TF_RANK.get(tf, 9), FAMILY.index(family) if family in FAMILY else len(FAMILY)
+
+
 def _cached(name: str) -> re.Match | None:
   """A cached boolean: '<name> = <series> <op> <number>' defined once, outside the block."""
   return re.search(rf"^\s{{2,6}}{re.escape(name)} = [a-z0-9_]+ [<>] -?\d+(?:\.\d+)?$", _src(), re.M)
 
 
-def test_the_three_chains_are_appended_to_the_562_protection_list():
+def test_the_three_chains_live_inside_the_protection_append():
   block = _block()
   for chain in CHAINS:
-    assert f"short_entry_logic.append({chain})" in block
+    # Then: they are AND-ed operands of the block's single protection append...
+    assert f"& ({chain})" in block
+    # ...not a second append of their own, which the guide rules out in 6e.
+    assert f"short_entry_logic.append({chain})" not in block
 
 
-def test_the_chains_sit_after_the_existing_protections_and_before_the_logic():
-  # Given: the block's two halves.
+def test_each_chain_carries_the_house_comment_for_the_scene_it_blocks():
   block = _block()
-  anchor = block.index("short_entry_logic.append(rsi_14_1d > 25.0)")
-  logic = block.index("short_entry_logic.append(\n            # Downtrend confirmation")
-  # Then: the new protections are sandwiched between them, so they can only veto.
-  for chain in CHAINS:
-    pos = block.index(f"short_entry_logic.append({chain})")
-    assert anchor < pos < logic
+  for chain, comment in CHAINS.items():
+    # Then: the comment names the blocked state (all three clauses false), not its negation.
+    assert f"# {comment}\n            & ({chain})" in block
+
+
+def test_the_chains_sit_in_their_sorted_position_among_the_other_chains():
+  chains = _chain_lines()
+  for chain, _ in CHAINS.items():
+    idx = next(i for i, c in enumerate(chains) if chain in c)
+    mine = _lead_key(chains[idx])
+    prev = _lead_key(chains[idx - 1]) if idx else None
+    nxt = _lead_key(chains[idx + 1]) if idx + 1 < len(chains) else None
+    # Then: timeframe ascending, and the family clustered within a shared timeframe.
+    if prev is not None:
+      assert prev[0] <= mine[0], (chain, prev, mine)
+      assert prev[0] < mine[0] or prev[1] <= mine[1], (chain, prev, mine)
+    if nxt is not None:
+      assert mine[0] <= nxt[0], (chain, mine, nxt)
+      assert mine[0] < nxt[0] or mine[1] <= nxt[1], (chain, mine, nxt)
 
 
 def test_every_clause_is_a_cached_boolean_not_a_recomputed_indicator():
