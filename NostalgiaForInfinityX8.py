@@ -10347,6 +10347,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((aroonu_14_lt_25) | (rsi_3_15m_gt_30) | (aroonu_14_4h_lt_100))
             # 5m still not low enough, 15m down move, 1h still high
             & ((aroonu_14_lt_25) | (rsi_3_15m_gt_40) | (stochrsi_k_1h_lt_40))
+            # 5m low, 15m down move, 1h still not high
+            & ((aroonu_14_lt_25) | (rsi_3_15m_gt_50) | (stochrsi_k_1h_lt_90))
             # 5m still not low enough, 15m down move & high
             & ((aroonu_14_lt_25) | (rsi_3_15m_gt_55) | (stochrsi_k_15m_lt_80))
             # 5m & 15m still not low enough, 1d down move
@@ -10683,6 +10685,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((rsi_3_1h_gt_60) | (stochrsi_k_1d_lt_40) | (roc_9_1d_lt_15))
             # 1h down move, 4h & 1d high
             & ((rsi_3_1h_gt_65) | (stochrsi_k_4h_lt_90) | (stochrsi_k_1d_lt_70))
+            # 1h money leaving and not yet high
+            & ((cmf_20_1h > -0.15) | (stochrsi_k_1h_lt_90))
             # 1h down move, 1h & 4h high
             & ((aroonu_14_1h_lt_70) | (rsi_3_1h_gt_45) | (stochrsi_k_4h_lt_90))
             # 1h down move & high, 1d still not low enough
@@ -10731,6 +10735,8 @@ class NostalgiaForInfinityX8(IStrategy):
               | (roc_9_4h_lt_10)
               | (stochrsi_k_15m_gt_20)
             )
+            # 1h money leaving, 15m momentum fading
+            & ((uo_7_14_28_change_pct_15m < 13) | (cmf_20_1h > -0.2))
           )
 
           # Logic
