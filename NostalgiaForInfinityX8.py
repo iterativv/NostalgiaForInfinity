@@ -29902,12 +29902,26 @@ class NostalgiaForInfinityX8(IStrategy):
           short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           short_entry_logic.append(protections_short_global == True)
           short_entry_logic.append(
+            # 5m & 15m low, 4h still not low enough
+            ((aroonu_14_gt_75) | (aroonu_14_15m_gt_0) | (stochrsi_k_4h_gt_70))
+            # 15m & 1h down move, 4h low
+            & ((rsi_3_15m_lt_55) | (rsi_3_1h_gt_20) | (aroonu_14_4h_gt_20))
+            # 15m down move & still not low enough, 4h uptrend
+            & ((rsi_3_15m_lt_55) | (stochrsi_k_15m_gt_80) | (roc_9_4h_lt_5))
             # 15m down move & uptrend, 1h low
-            ((rsi_3_15m_lt_75) | (aroonu_14_15m_lt_20) | (aroonu_14_1h_gt_10))
+            & ((rsi_3_15m_lt_75) | (aroonu_14_15m_lt_20) | (aroonu_14_1h_gt_10))
+            # 15m down move & low, 1h up move
+            & ((aroonu_14_15m_gt_0) | (rsi_3_15m_gt_45) | (rsi_3_1h_lt_40))
+            # 15m up move & low, 1h down move
+            & ((aroonu_14_15m_gt_0) | (rsi_3_15m_lt_70) | (rsi_3_1h_gt_10))
+            # 15m uptrend, 1d down move & low
+            & ((aroonu_14_15m_lt_20) | (aroonu_14_1d_gt_50) | (rsi_3_1d_gt_50))
             # 15m & 1d low, 1h uptrend
             & ((stochrsi_k_15m_gt_20) | (aroonu_14_1h_lt_30) | (stochrsi_k_1d_gt_20))
             # 15m not rich, 4h trend not up
             & ((stochrsi_k_15m_gt_50) | (aroonu_14_4h_gt_50))
+            # 1h low & high, 1d uptrend
+            & ((aroonu_14_1h_gt_40) | (stochrsi_k_1h_gt_10) | (roc_9_1d_lt_0))
           )
 
           # Logic
