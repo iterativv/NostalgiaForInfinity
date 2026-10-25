@@ -29850,6 +29850,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((roc_9_1d_gt_neg_40) | (aroonu_14_1h_lt_40))
             # the day itself is falling, not merely off its high
             & (roc_9_1d_lt_0)
+            # 15m uptrend, 1h down move & low
+            & ((aroonu_14_15m_lt_80) | (aroonu_14_1h_gt_10) | (rsi_3_1h_gt_65))
           )
 
           # Logic — Bounce that fails to reclaim resistance
