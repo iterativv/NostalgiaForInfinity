@@ -27697,8 +27697,10 @@ class NostalgiaForInfinityX8(IStrategy):
           short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           short_entry_logic.append(protections_short_global == True)
           short_entry_logic.append(
+            # 5m up move, 4h uptrend & high
+            ((rsi_3_lt_95) | (aroonu_14_4h_lt_60) | (stochrsi_k_4h_gt_10))
             # 5m up move, 4h down move, 1d uptrend
-            ((rsi_3_lt_97) | (rsi_3_4h_gt_20) | (aroonu_14_1d_lt_60))
+            & ((rsi_3_lt_97) | (rsi_3_4h_gt_20) | (aroonu_14_1d_lt_60))
             # 5m up move, 4h low, 1d down move
             & ((rsi_3_lt_97) | (stochrsi_k_4h_gt_20) | (rsi_3_1d_gt_30))
             # 5m up move, 4h & 1d still high
@@ -27707,24 +27709,52 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((rsi_3_lt_98) | (rsi_3_1h_lt_50) | (roc_9_1d_lt_10))
             # 15m up move, 4h not falling
             & ((rsi_3_15m_lt_75) | (rsi_3_4h_gt_10))
+            # 15m up move, 1d down move & uptrend
+            & ((rsi_3_15m_lt_80) | (aroonu_14_1d_lt_80) | (rsi_3_1d_gt_20))
             # 15m up move & still high, 1h low
             & ((rsi_3_15m_lt_80) | (stochrsi_k_15m_gt_40) | (aroonu_14_1h_gt_60))
+            # 15m down move, 1d low & uptrend
+            & ((rsi_3_15m_lt_85) | (aroonu_14_1d_gt_20) | (roc_9_1d_lt_0))
+            # 15m & 4h down move, 1h uptrend
+            & ((rsi_3_15m_lt_85) | (aroonu_14_1h_lt_40) | (rsi_3_4h_gt_30))
             # 15m up move, 1d uptrend & still high
             & ((rsi_3_15m_lt_90) | (aroonu_14_1d_lt_80) | (stochrsi_k_1d_gt_40))
+            # 15m up move, 4h uptrend, 1d down move
+            & ((rsi_3_15m_lt_90) | (aroonu_14_4h_lt_60) | (rsi_3_1d_gt_20))
+            # 15m & 1d up move, 1d still high
+            & ((rsi_3_15m_lt_90) | (rsi_3_1d_lt_35) | (stochrsi_k_1d_gt_40))
+            # 15m up move, 1h & 1d down move
+            & ((rsi_3_15m_lt_90) | (rsi_3_1h_gt_65) | (rsi_3_1d_gt_30))
+            # 15m low, 1d down move & uptrend
+            & ((aroonu_14_15m_gt_20) | (aroonu_14_1d_lt_30) | (rsi_3_1d_gt_20))
             # 15m low & still not low enough, 1h high
             & ((aroonu_14_15m_gt_40) | (stochrsi_k_15m_gt_70) | (stochrsi_k_1h_gt_10))
             # 15m & 1h low, 4h still high
             & ((aroonu_14_15m_gt_60) | (aroonu_14_1h_gt_20) | (stochrsi_k_4h_gt_30))
+            # 15m low, 1h down move
+            & ((aroonu_14_15m_gt_60) | (stochrsi_k_15m_gt_20) | (rsi_3_1h_gt_40))
             # 15m & 1h uptrend, 1h still high
             & ((aroonu_14_15m_lt_60) | (aroonu_14_1h_lt_60) | (stochrsi_k_1h_gt_50))
+            # 15m still not low enough, 1h & 4h down move
+            & ((stochrsi_k_15m_gt_80) | (rsi_3_1h_gt_65) | (rsi_3_4h_gt_20))
             # 15m & 1h still not low enough, 4h down move
             & ((stochrsi_k_15m_gt_80) | (stochrsi_k_1h_gt_70) | (rsi_3_4h_gt_20))
+            # 15m & 1h still not low enough, 4h oversold
+            & ((stochrsi_k_15m_gt_90) | (stochrsi_k_1h_gt_80) | (roc_9_4h_gt_neg_15))
+            # 1h down move, 4h low, 1d still high
+            & ((rsi_3_1h_gt_50) | (stochrsi_k_4h_gt_20) | (stochrsi_k_1d_gt_40))
             # 1h up move & still not low enough, 4h low
             & ((rsi_3_1h_lt_60) | (stochrsi_k_1h_gt_80) | (aroonu_14_4h_gt_10))
+            # 1h up move & still not low enough, 1d uptrend
+            & ((rsi_3_1h_lt_70) | (stochrsi_k_1h_gt_70) | (aroonu_14_1d_lt_80))
             # 1h low, 4h up move & uptrend
             & ((aroonu_14_1h_gt_20) | (rsi_3_4h_lt_50) | (aroonu_14_4h_lt_50))
+            # 1h & 4h up move, 1h low
+            & ((aroonu_14_1h_gt_60) | (rsi_3_1h_lt_60) | (rsi_3_4h_lt_50))
             # 1h uptrend, 4h still high, 1d low
             & ((aroonu_14_1h_lt_20) | (stochrsi_k_4h_gt_40) | (stochrsi_k_1d_gt_20))
+            # 1h & 4h uptrend, 1d down move
+            & ((aroonu_14_1h_lt_60) | (aroonu_14_4h_lt_30) | (rsi_3_1d_gt_30))
             # 4h down move, 1d low & uptrend
             & ((rsi_3_4h_gt_30) | (aroonu_14_1d_gt_20) | (roc_9_1d_lt_0))
           )
