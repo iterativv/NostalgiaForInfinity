@@ -16354,6 +16354,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & (rsi_14_1d > 45.0)
             # 4h extreme overbought, 1d big rally, 4h money outflow = blow-off top
             & ((stochrsi_k_4h_lt_90) | (roc_9_1d_lt_20) | (cmf_20_4h_gt_neg_0_0))
+            # 4h overbought & vertical, 1d not overbought = buying the blow-off top
+            & ((rsi_3_4h_lt_70) | (roc_9_4h_lt_5) | (stochrsi_k_1d_gt_70))
             # 15m euphoria spike without 4h confirmation = spike top fake breakout
             & ((rsi_3_15m < 90.0) | (stochrsi_k_4h > 30.0))
             # 1d parabolic pump (huge ROC + extreme RSI_14) = exhaustion top
