@@ -24836,6 +24836,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((aroonu_14_lt_25) | (rsi_3_15m_gt_55) | (aroonu_14_1h_lt_20))
             # 5m still not low enough, 15m & 4h down move
             & ((aroonu_14_lt_30) | (rsi_3_15m_gt_50) | (rsi_3_4h_gt_40))
+            # 5m still not low enough, 15m still high, 1h high
+            & ((aroonu_14_lt_30) | (stochrsi_k_15m_lt_50) | (stochrsi_k_1h_lt_90))
             # 15m down move, 1h high
             & ((rsi_3_15m_gt_20) | (aroonu_14_1h_lt_75) | (stochrsi_k_1h_lt_80))
             # 15m spent while the day is not yet stretched
@@ -24862,6 +24864,10 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((aroonu_14_15m_lt_70) | (aroonu_14_4h_lt_20) | (rsi_3_1d_gt_20))
             # 15m & 1d high, 4h down move
             & ((aroonu_14_15m_lt_70) | (rsi_3_4h_gt_40) | (stochrsi_k_1d_lt_80))
+            # 15m & 1h high, 1d down move
+            & ((aroonu_14_15m_lt_75) | (aroonu_14_1h_lt_75) | (rsi_3_1d_gt_30))
+            # 15m & 4h high
+            & ((aroonu_14_15m_lt_75) | (stochrsi_k_15m_lt_60) | (stochrsi_k_4h_lt_80))
             # 15m & 1h high
             & ((aroonu_14_15m_lt_75) | (stochrsi_k_15m_lt_80) | (aroonu_14_1h_lt_75))
             # 15m high, 4h & 1d still not low enough
@@ -24870,6 +24876,10 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((aroonu_14_1h_lt_25) | (rsi_3_1d_gt_10))
             # 1h & 4h high, 1d down move
             & ((aroonu_14_1h_lt_75) | (aroonu_14_4h_lt_75) | (rsi_3_1d_gt_50))
+            # 1h high, 1d down move & overbought
+            & ((stochrsi_k_1h_lt_80) | (roc_9_1d_lt_0) | (rsi_3_1d_gt_50))
+            # 4h & 1d down move, 1d still not low enough
+            & ((rsi_3_4h_gt_60) | (rsi_3_1d_gt_30) | (stochrsi_k_1d_lt_20))
           )
 
           # Logic
