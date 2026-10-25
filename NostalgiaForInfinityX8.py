@@ -21877,6 +21877,8 @@ class NostalgiaForInfinityX8(IStrategy):
             )
             # 5m still not low enough, 4h still high, 1d high
             & ((aroonu_14_lt_25) | (stochrsi_k_4h_lt_40) | (aroonu_14_1d_lt_90))
+            # 5m still not low enough, 4h still high & high
+            & ((aroonu_14_lt_30) | (aroonu_14_4h_lt_40) | (stochrsi_k_4h_lt_70))
             # 5m still not low enough, 15m down move, 1d high
             & ((aroonu_14_lt_30) | (rsi_3_15m_gt_55) | (aroonu_14_1d_lt_90))
             # 5m still not low enough, 15m down move, 1h high
@@ -21929,6 +21931,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((stochrsi_k_lt_20) | (rsi_3_15m_gt_55) | (stochrsi_k_15m_lt_80))
             # 5m still not low enough, 1h & 1d down move
             & ((stochrsi_k_lt_20) | (rsi_3_1h_gt_65) | (rsi_3_1d_gt_60))
+            # 5m & 15m still not low enough, 1d high
+            & ((stochrsi_k_lt_30) | (aroonu_14_15m_lt_20) | (stochrsi_k_1d_lt_90))
             # 5m still not low enough, 15m high, 1h still high
             & ((stochrsi_k_lt_30) | (aroonu_14_15m_lt_60) | (stochrsi_k_1h_lt_40))
             # 5m still not low enough, 1d high & overbought
@@ -22085,6 +22089,12 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((aroonu_14_15m_lt_50) | (roc_9_4h_gt_neg_10))
             # 15m & 1h & 4h high
             & ((aroonu_14_15m_lt_60) | (aroonu_14_1h_lt_90) | (stochrsi_k_4h_lt_60))
+            # 15m down move & high, 1h still high
+            & ((aroonu_14_15m_lt_60) | (rsi_3_15m_gt_45) | (stochrsi_k_1h_lt_40))
+            # 15m & 1h high, 15m still high
+            & ((aroonu_14_15m_lt_60) | (stochrsi_k_15m_lt_40) | (stochrsi_k_1h_lt_80))
+            # 15m & 1h & 4h high
+            & ((aroonu_14_15m_lt_60) | (stochrsi_k_1h_lt_70) | (stochrsi_k_4h_lt_80))
             # 15m & 1h high
             & ((aroonu_14_15m_lt_70) | (aroonu_14_1h_lt_90) | (stochrsi_k_1h_lt_90))
             # 15m high, 1h down move, 1d overbought
@@ -22333,6 +22343,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((stochrsi_k_1h_lt_50) | (rsi_3_4h_gt_65) | (roc_9_4h_lt_10))
             # 1h still high, 4h & 1d high
             & ((stochrsi_k_1h_lt_50) | (stochrsi_k_4h_lt_90) | (stochrsi_k_1d_lt_90))
+            # 1h & 1d high, 4h down move
+            & ((stochrsi_k_1h_lt_60) | (rsi_3_4h_gt_65) | (aroonu_14_1d_lt_80))
             # 1h & 4h high, 1d overbought
             & ((stochrsi_k_1h_lt_60) | (stochrsi_k_4h_lt_90) | (roc_9_1d_lt_100))
             # 1h high, 4h down move & overbought
