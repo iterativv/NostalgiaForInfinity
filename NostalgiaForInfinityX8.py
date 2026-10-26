@@ -1783,6 +1783,20 @@ class NostalgiaForInfinityX8(IStrategy):
     bound = self.bad_trade_controller_capitulation_add_gate_mfi_14_4h
     return (mfi_14_4h > 100.0 - bound) if is_short else (mfi_14_4h < bound)
 
+  def _grind_entry_before_derisk(
+    self, is_short: bool, rate: float, grind_open_rate: float, derisk_threshold: float, use_derisk: bool
+  ) -> bool:
+    if not (self.system_v4_grind_entry_before_derisk_enable and use_derisk and grind_open_rate > 0.0):
+      return False
+    distance = self.system_v4_grind_entry_before_derisk_distance
+    if is_short:
+      in_range = grind_open_rate * (1 - derisk_threshold - distance) <= rate < grind_open_rate * (1 - derisk_threshold)
+    else:
+      in_range = grind_open_rate * (1 + derisk_threshold) < rate <= grind_open_rate * (1 + derisk_threshold + distance)
+    if in_range:
+      self._grind_entry_tag = "g_pre_derisk"
+    return in_range
+
   def trade_order_state(self, trade: "Trade") -> tuple:
     orders = trade.orders
 
@@ -42534,20 +42548,6 @@ class NostalgiaForInfinityX8(IStrategy):
 
   # Long Grinding Adjust Trade Position v4
   # ---------------------------------------------------------------------------------------------
-  def _grind_entry_before_derisk(
-    self, is_short: bool, rate: float, grind_open_rate: float, derisk_threshold: float, use_derisk: bool
-  ) -> bool:
-    if not (self.system_v4_grind_entry_before_derisk_enable and use_derisk and grind_open_rate > 0.0):
-      return False
-    distance = self.system_v4_grind_entry_before_derisk_distance
-    if is_short:
-      in_range = grind_open_rate * (1 - derisk_threshold - distance) <= rate < grind_open_rate * (1 - derisk_threshold)
-    else:
-      in_range = grind_open_rate * (1 + derisk_threshold) < rate <= grind_open_rate * (1 + derisk_threshold + distance)
-    if in_range:
-      self._grind_entry_tag = "g_pre_derisk"
-    return in_range
-
   def long_grind_adjust_trade_position_v4(
     self,
     trade: Trade,
