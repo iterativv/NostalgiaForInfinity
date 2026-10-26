@@ -31035,6 +31035,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((stochrsi_k_1h_lt_80) | (roc_9_4h_gt_neg_10) | (stochrsi_k_1d_lt_60))
             # the hour off its low, the daily money flow gone and the hour not falling
             & ((willr_14_1h > -80.0) | (mfi_14_1d > 45.0) | (roc_9_1h < -1.0))
+            # 15m at the floor, 1h money flowing out, 15m not oversold
+            & ((mfi_14_1h > 35.0) | (willr_14_15m > -75.0) | (rsi_14_15m < 45.0))
             # 4h & 1d down move, 1d uptrend
             & ((rsi_3_4h_gt_10) | (rsi_3_1d_gt_20) | (roc_9_1d_lt_0))
             # 4h down move, 4h uptrend gone, 1d uptrend
@@ -31089,6 +31091,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((stochrsi_k_4h_gt_20) | (aroonu_14_1d_lt_40) | (stochrsi_k_1d_gt_40))
             # 4h low, 1d down move & uptrend
             & ((stochrsi_k_4h_gt_20) | (rsi_3_1d_gt_40) | (aroonu_14_1d_lt_40))
+            # 4h momentum low, 1d without a recent high, 15m without a fresh low
+            & ((stochrsi_k_4h_lt_50) | (aroonu_14_1d > 15.0) | (aroond_14_15m > 0.0))
             # 1d down move & uptrend
             & ((rsi_3_1d_gt_20) | (aroonu_14_1d_lt_80))
             # 1d up move & low
@@ -31105,6 +31109,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((cmf_20_4h_lt_0_15) | (roc_9_1d_gt_neg_10) | (stochrsi_k_4h_gt_20))
             # 1d strong down move, or 4h not bouncing
             & ((roc_9_1d < -10.0) | (rsi_3_4h < 50.0))
+            # 1d down move, 1d not high, 1d not overbought
+            & ((roc_9_1d_gt_neg_30) | (rsi_14_1d_gt_60) | (stochrsi_k_1d_gt_70))
           )
 
           # Logic
