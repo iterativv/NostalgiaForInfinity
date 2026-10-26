@@ -62,6 +62,31 @@ def test_grind_reentry_requires_two_percent_from_its_derisk(distance_case, level
 
 
 @pytest.mark.parametrize("level", range(1, 6))
+@pytest.mark.parametrize(
+  "rate,allowed",
+  [(98.9799, True), (98.98, True), (98.9801, False), (103.0199, False), (103.02, True), (103.0201, True)],
+)
+def test_distance_boundary_uses_actual_average_fill_price(distance_case, level, rate, allowed):
+  # Given a de-risk filled at 101, despite its requested limit price of 100.
+  strategy, trade = distance_case
+  setattr(strategy, f"system_v4_grind_{level}_enable", True)
+  entry = add_order(trade, trade.entry_side, f"grind_{level}_entry", 1.0)
+  exit_order = add_order(trade, trade.exit_side, f"grind_{level}_derisk {entry.id}", 1.0)
+  exit_order.average = 101.0
+  exit_order.cost = 101.0
+  trade.recalc_trade_from_orders()
+
+  # When the callback evaluates the exact boundary or its immediate neighbors.
+  result = adjust(distance_case, rate)
+
+  # Then rounding in a divided ratio cannot reject the inclusive boundary.
+  if allowed:
+    assert result is not None and result[0] > 0 and result[1] == f"grind_{level}_entry"
+  else:
+    assert result is None
+
+
+@pytest.mark.parametrize("level", range(1, 6))
 @pytest.mark.parametrize("exit_tag", ["grind_{}_exit", "derisk_level_1", "derisk_global", "exit_normal"])
 def test_non_grind_derisk_exits_do_not_add_distance_gate(distance_case, level, exit_tag):
   strategy, trade = distance_case
