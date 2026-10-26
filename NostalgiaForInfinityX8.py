@@ -32675,6 +32675,8 @@ class NostalgiaForInfinityX8(IStrategy):
           # Logic
           short_entry_logic.append(
             (close < ema_200)
+            # 15m not low, 1h not narrow, 1h not oversold, 1d deep down move
+            & ((stochk_14_3_3_15m < 40.0) | (bbb_20_2_0_1h < 7.0) | (willr_14_1h < -70.0) | (roc_9_1d_gt_neg_20))
             # don't short a breakdown when the daily cycle already sits low (bounce zone)
             & (stochrsi_k_1d < 45.0)
             # the 4h has to be in on it: no recent 4h high behind the break
