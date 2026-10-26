@@ -43441,7 +43441,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and (
         grind_1_exit_order is None
         or grind_1_exit_order.ft_order_tag.partition(" ")[0] != "grind_1_derisk"
-        or abs(grind_1_exit_distance_ratio) >= 0.02
+        or not (grind_1_exit_order.safe_price * 0.98 < exit_rate < grind_1_exit_order.safe_price * 1.02)
       )
       and (grind_1_sub_grind_count < grind_1_max_sub_grinds)
       and (grind_1_sub_grind_count == 0 or (grind_1_distance_ratio < grind_1_sub_thresholds[grind_1_sub_grind_count]))
@@ -43573,7 +43573,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and (
         grind_2_exit_order is None
         or grind_2_exit_order.ft_order_tag.partition(" ")[0] != "grind_2_derisk"
-        or abs(grind_2_exit_distance_ratio) >= 0.02
+        or not (grind_2_exit_order.safe_price * 0.98 < exit_rate < grind_2_exit_order.safe_price * 1.02)
       )
       and (grind_2_sub_grind_count < grind_2_max_sub_grinds)
       and (grind_2_sub_grind_count == 0 or (grind_2_distance_ratio < grind_2_sub_thresholds[grind_2_sub_grind_count]))
@@ -43705,7 +43705,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and (
         grind_3_exit_order is None
         or grind_3_exit_order.ft_order_tag.partition(" ")[0] != "grind_3_derisk"
-        or abs(grind_3_exit_distance_ratio) >= 0.02
+        or not (grind_3_exit_order.safe_price * 0.98 < exit_rate < grind_3_exit_order.safe_price * 1.02)
       )
       and (grind_3_sub_grind_count < grind_3_max_sub_grinds)
       and (grind_3_sub_grind_count == 0 or (grind_3_distance_ratio < grind_3_sub_thresholds[grind_3_sub_grind_count]))
@@ -43838,7 +43838,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and (
         grind_4_exit_order is None
         or grind_4_exit_order.ft_order_tag.partition(" ")[0] != "grind_4_derisk"
-        or abs(grind_4_exit_distance_ratio) >= 0.02
+        or not (grind_4_exit_order.safe_price * 0.98 < exit_rate < grind_4_exit_order.safe_price * 1.02)
       )
       and (grind_4_sub_grind_count < grind_4_max_sub_grinds)
       and (grind_4_sub_grind_count == 0 or (grind_4_distance_ratio < grind_4_sub_thresholds[grind_4_sub_grind_count]))
@@ -43972,7 +43972,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and (
         grind_5_exit_order is None
         or grind_5_exit_order.ft_order_tag.partition(" ")[0] != "grind_5_derisk"
-        or abs(grind_5_exit_distance_ratio) >= 0.02
+        or not (grind_5_exit_order.safe_price * 0.98 < exit_rate < grind_5_exit_order.safe_price * 1.02)
       )
       and (grind_5_sub_grind_count < grind_5_max_sub_grinds)
       and (grind_5_sub_grind_count == 0 or (grind_5_distance_ratio < grind_5_sub_thresholds[grind_5_sub_grind_count]))
@@ -57794,7 +57794,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and (
         grind_1_exit_order is None
         or grind_1_exit_order.ft_order_tag.partition(" ")[0] != "grind_1_derisk"
-        or abs(grind_1_exit_distance_ratio) >= 0.02
+        or not (grind_1_exit_order.safe_price * 0.98 < exit_rate < grind_1_exit_order.safe_price * 1.02)
       )
       and (grind_1_sub_grind_count < grind_1_max_sub_grinds)
       and (grind_1_sub_grind_count == 0 or (-grind_1_distance_ratio < grind_1_sub_thresholds[grind_1_sub_grind_count]))
@@ -57926,7 +57926,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and (
         grind_2_exit_order is None
         or grind_2_exit_order.ft_order_tag.partition(" ")[0] != "grind_2_derisk"
-        or abs(grind_2_exit_distance_ratio) >= 0.02
+        or not (grind_2_exit_order.safe_price * 0.98 < exit_rate < grind_2_exit_order.safe_price * 1.02)
       )
       and (grind_2_sub_grind_count < grind_2_max_sub_grinds)
       and (grind_2_sub_grind_count == 0 or (-grind_2_distance_ratio < grind_2_sub_thresholds[grind_2_sub_grind_count]))
@@ -58058,7 +58058,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and (
         grind_3_exit_order is None
         or grind_3_exit_order.ft_order_tag.partition(" ")[0] != "grind_3_derisk"
-        or abs(grind_3_exit_distance_ratio) >= 0.02
+        or not (grind_3_exit_order.safe_price * 0.98 < exit_rate < grind_3_exit_order.safe_price * 1.02)
       )
       and (grind_3_sub_grind_count < grind_3_max_sub_grinds)
       and (grind_3_sub_grind_count == 0 or (-grind_3_distance_ratio < grind_3_sub_thresholds[grind_3_sub_grind_count]))
@@ -58191,7 +58191,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and (
         grind_4_exit_order is None
         or grind_4_exit_order.ft_order_tag.partition(" ")[0] != "grind_4_derisk"
-        or abs(grind_4_exit_distance_ratio) >= 0.02
+        or not (grind_4_exit_order.safe_price * 0.98 < exit_rate < grind_4_exit_order.safe_price * 1.02)
       )
       and (grind_4_sub_grind_count < grind_4_max_sub_grinds)
       and (grind_4_sub_grind_count == 0 or (-grind_4_distance_ratio < grind_4_sub_thresholds[grind_4_sub_grind_count]))
@@ -58325,7 +58325,7 @@ class NostalgiaForInfinityX8(IStrategy):
       and (
         grind_5_exit_order is None
         or grind_5_exit_order.ft_order_tag.partition(" ")[0] != "grind_5_derisk"
-        or abs(grind_5_exit_distance_ratio) >= 0.02
+        or not (grind_5_exit_order.safe_price * 0.98 < exit_rate < grind_5_exit_order.safe_price * 1.02)
       )
       and (grind_5_sub_grind_count < grind_5_max_sub_grinds)
       and (grind_5_sub_grind_count == 0 or (-grind_5_distance_ratio < grind_5_sub_thresholds[grind_5_sub_grind_count]))
