@@ -74,7 +74,7 @@ def _lead_key(chain: str) -> tuple[int, int]:
 
 
 def test_the_block_has_its_protection_chains():
-  # Then: the mined chains are all there (162 at the time of writing, only ever more).
+  # Then: the mined chains are all there (161 at the time of writing, only ever more).
   assert len(_chains()) >= 160
 
 
