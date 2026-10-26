@@ -23595,6 +23595,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((stochrsi_k_1h_lt_70) | (stochrsi_k_4h_lt_10) | (aroonu_14_1d_lt_30))
             # 1h & 1d high, 1d down move
             & ((stochrsi_k_1h_lt_80) | (rsi_3_1d_gt_40) | (stochrsi_k_1d_lt_60))
+            # 1h money inflow
+            & (mfi_14_1h < 65.0)
             # 4h down move, 1d high & downtrend
             & ((rsi_3_4h_gt_10) | (aroonu_14_1d_lt_75) | (roc_9_1d_gt_neg_10))
             # 4h down move & still high, 1d high
@@ -23613,6 +23615,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((rsi_3_4h_gt_40) | (stochrsi_k_4h_lt_50) | (rsi_3_1d_gt_60))
             # 4h & 1d down move, 1d still not low enough
             & ((rsi_3_4h_gt_50) | (rsi_3_1d_gt_40) | (stochrsi_k_1d_lt_20))
+            # 4h up move
+            & (rsi_3_4h_lt_70)
             # an ignition taken into 4h distribution: money leaving, the stochastic on the floor and no 4h momentum
             & ((cmf_20_4h > -0.2) | (stochrsi_k_4h > 10.0) | (rsi_3_4h > 35.0))
             # 4h still not low enough & high, 1d downtrend
