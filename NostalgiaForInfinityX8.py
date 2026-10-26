@@ -10747,12 +10747,12 @@ class NostalgiaForInfinityX8(IStrategy):
             # direction: bulls own it
             & (plus_di_14_4h > minus_di_14_4h)
             & (close > ema_200)
-            # 5m stochastic off its floor: the first bounce is not the trend
+            # 5m washed out
             & (stoch_60_10 > 40.0)
             # the 4h regime has to agree: a bounce inside a collapse puts price over the 5m
             # EMA200 for minutes, which is where every loss in the crash window came from
             & (ema_12_4h > ema_200_4h)
-            # daily rsi 50 and daily stochastic 40: the daily is not a falling knife
+            # 1d washed out
             & (rsi_14_1d_gt_50)
             & (stochk_14_3_3_1d > 40.0)
           )
