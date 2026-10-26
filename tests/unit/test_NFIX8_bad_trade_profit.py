@@ -111,9 +111,11 @@ def custom_exit(case, rate):
   return strategy.custom_exit(trade.pair, trade, NOW, rate, trade.calc_profit_ratio(rate))
 
 
+@pytest.mark.parametrize("inclusive", [False, True])
 @pytest.mark.parametrize("reason", ["stale", "structure"])
-def test_realized_loss_remains_eligible_when_residual_position_gains(profit_case, reason):
+def test_realized_loss_remains_eligible_when_residual_position_gains(profit_case, reason, inclusive):
   strategy, trade = profit_case
+  strategy.inclusive_bad_trade_exit_enable = inclusive
   rate = losing_history(trade)
   if reason == "structure":
     candle = {"EMA_50_1d": 150.0 if trade.is_short else 50.0, "EMA_200_1d": 100.0}
@@ -193,9 +195,11 @@ def test_stale_conditions_still_apply(profit_case, blocked_by):
   assert custom_exit(profit_case, rate) is None
 
 
+@pytest.mark.parametrize("inclusive", [False, True])
 @pytest.mark.parametrize("net_profit", [-0.1, 0.1])
-def test_gate_uses_net_profit_after_fees_and_funding(profit_case, net_profit):
+def test_gate_uses_net_profit_after_fees_and_funding(profit_case, net_profit, inclusive):
   strategy, trade = profit_case
+  strategy.inclusive_bad_trade_exit_enable = inclusive
   trade.fee_open = trade.fee_close = 0.001
   rate = losing_history(trade)
   fee_cost = 2.7 if trade.is_short else 1.7
@@ -207,3 +211,140 @@ def test_gate_uses_net_profit_after_fees_and_funding(profit_case, net_profit):
   result = custom_exit(profit_case, rate)
 
   assert result == (f"exit_bad_trade_abandon_30d ( {trade.enter_tag})" if expected_profit < 0.0 else None)
+
+
+@pytest.mark.parametrize("inclusive", [False, True])
+@pytest.mark.parametrize("net_zero", [False, True])
+def test_inclusive_policy_can_exit_losing_residual_after_realized_gains(profit_case, inclusive, net_zero):
+  # Given: the callback ratio is negative, but realized gains cover its loss.
+  strategy, trade = profit_case
+  strategy.inclusive_bad_trade_exit_enable = inclusive
+  fill(trade, True, 10.0, 100.0)
+  reduction_rate = (90.0 if trade.is_short else 110.0) if net_zero else (70.0 if trade.is_short else 130.0)
+  fill(trade, False, 9.0, reduction_rate)
+  rate = (190.0 if trade.is_short else 10.0) if net_zero else (120.0 if trade.is_short else 80.0)
+  _, entries, exits = strategy.filled_order_snapshot(trade)
+  assert strategy.calc_total_profit(trade, entries, exits, rate)[0] == (0.0 if net_zero else 250.0)
+  assert trade.calc_profit_ratio(rate) < 0.0
+
+  # When: evaluate the actual callback and unchanged stale helper.
+  result = custom_exit(profit_case, rate)
+
+  # Then: only the explicit opt-in extends eligibility.
+  assert result == (f"exit_bad_trade_abandon_30d ( {trade.enter_tag})" if inclusive else None)
+
+
+@pytest.mark.parametrize("system", ["system_v4", "system_v3_2", "system_v2", None])
+@pytest.mark.parametrize("enabled", [False, True])
+def test_inclusive_residual_loss_respects_system_enable(profit_case, system, enabled):
+  # Given: only the new residual-loss family is eligible.
+  strategy, trade = profit_case
+  strategy.inclusive_bad_trade_exit_enable = True
+  fill(trade, True, 10.0, 100.0)
+  fill(trade, False, 9.0, 70.0 if trade.is_short else 130.0)
+  trade.set_custom_data("system_version", system)
+  strategy.system_v4_bad_trade_exit_enable = enabled if system == "system_v4" else not enabled
+  strategy.legacy_system_bad_trade_exit_enable = not enabled if system == "system_v4" else enabled
+
+  # When: the callback resolves the stored system's existing flag.
+  result = custom_exit(profit_case, 120.0 if trade.is_short else 80.0)
+
+  # Then: opt-in never bypasses the selected controller enable.
+  assert result == (f"exit_bad_trade_abandon_30d ( {trade.enter_tag})" if enabled else None)
+
+
+@pytest.mark.parametrize("breakeven", [False, True])
+def test_inclusive_policy_keeps_nonnegative_boundaries_ineligible(profit_case, breakeven):
+  # Given: first-entry adverse movement can qualify, but neither loss test does.
+  strategy, trade = profit_case
+  strategy.inclusive_bad_trade_exit_enable = True
+  fill(trade, True, 10.0, 128.0)
+  fill(trade, False, 9.0, 128.0)
+  fill(trade, True, 1.0, 256.0 if trade.is_short else 32.0)
+  rate = trade.open_rate if breakeven else (160.0 if trade.is_short else 96.0)
+  _, entries, exits = strategy.filled_order_snapshot(trade)
+  assert trade.calc_profit_ratio(rate) >= 0.0
+  assert strategy.calc_total_profit(trade, entries, exits, rate)[0] >= 0.0
+  if breakeven:
+    assert trade.calc_profit_ratio(rate) == 0.0
+    assert strategy.calc_total_profit(trade, entries, exits, rate)[0] == 0.0
+
+  # When / Then: equality is not a loss and opt-in does not force an exit.
+  assert custom_exit(profit_case, rate) is None
+
+
+@pytest.mark.parametrize("reason", ["stale", "structure"])
+@pytest.mark.parametrize("eligible", [False, True])
+def test_inclusive_policy_keeps_helper_requirements(profit_case, reason, eligible):
+  # Given: a whole-trade winner with a losing residual.
+  strategy, trade = profit_case
+  strategy.inclusive_bad_trade_exit_enable = True
+  fill(trade, True, 10.0, 100.0)
+  fill(trade, False, 9.0, 70.0 if trade.is_short else 130.0)
+  if reason == "stale":
+    trade.open_date = NOW - timedelta(days=30 if eligible else 13)
+    rate = 120.0 if trade.is_short else 80.0
+    expected = "exit_bad_trade_abandon_30d"
+  else:
+    trade.open_date = NOW - timedelta(days=1)
+    candle = {"EMA_50_1d": (150.0 if trade.is_short else 50.0) if eligible else 100.0, "EMA_200_1d": 100.0}
+    strategy.dp._set_cached_df(
+      trade.pair, strategy.timeframe, pd.DataFrame([candle, candle]), strategy.config["candle_type_def"]
+    )
+    rate = 130.0 if trade.is_short else 70.0
+    expected = "exit_bad_trade_broken_30pct"
+
+  # When / Then: the OR gate does not replace the helper's prerequisites.
+  assert custom_exit(profit_case, rate) == (f"{expected} ( {trade.enter_tag})" if eligible else None)
+
+
+def test_inclusive_policy_preserves_downstream_exit_when_helper_declines(profit_case):
+  # Given: admission succeeds, but the position is too young for either helper.
+  strategy, trade = profit_case
+  strategy.inclusive_bad_trade_exit_enable = True
+  fill(trade, True, 10.0, 100.0)
+  fill(trade, False, 9.0, 70.0 if trade.is_short else 130.0)
+  trade.open_date = NOW - timedelta(days=1)
+  quick = strategy.short_exit_quick if trade.is_short else strategy.long_exit_quick
+  quick.return_value = (True, "exit_fixture")
+
+  # When / Then: normal mode routing remains available.
+  assert custom_exit(profit_case, 120.0 if trade.is_short else 80.0) == f"exit_fixture ( {trade.enter_tag})"
+
+
+@pytest.mark.parametrize("inclusive", [False, True])
+def test_inclusive_policy_loads_from_safe_config(profit_case, tmp_path, inclusive):
+  # Given: opt-in is supplied through normal nfi_parameters, not advanced mode.
+  strategy, trade = profit_case
+  config = strategy.config | {
+    "user_data_dir": tmp_path,
+    "nfi_parameters": {"inclusive_bad_trade_exit_enable": inclusive},
+    "trading_mode": "futures" if strategy.is_futures_mode else "spot",
+  }
+  configured = NostalgiaForInfinityX8(config)
+  configured.dp = strategy.dp
+  configured.long_exit_quick = strategy.long_exit_quick
+  configured.short_exit_quick = strategy.short_exit_quick
+  fill(trade, True, 10.0, 100.0)
+  fill(trade, False, 9.0, 70.0 if trade.is_short else 130.0)
+
+  # When / Then: real configuration changes the observable exit decision.
+  result = custom_exit((configured, trade), 120.0 if trade.is_short else 80.0)
+  assert result == (f"exit_bad_trade_abandon_30d ( {trade.enter_tag})" if inclusive else None)
+
+
+def test_inclusive_exit_keeps_confirmation_profit_veto(profit_case, tmp_path):
+  # Given: an inclusive helper exit, with a configured profit requirement unmet.
+  strategy, trade = profit_case
+  strategy.config["user_data_dir"] = tmp_path
+  strategy.inclusive_bad_trade_exit_enable = True
+  strategy.exit_profit_only = True
+  strategy.exit_profit_offset = 10.0
+  fill(trade, True, 10.0, 100.0)
+  fill(trade, False, 9.0, 70.0 if trade.is_short else 130.0)
+  rate = 120.0 if trade.is_short else 80.0
+  reason = custom_exit(profit_case, rate)
+  assert reason == f"exit_bad_trade_abandon_30d ( {trade.enter_tag})"
+
+  # When / Then: a new eligibility route is not permission to bypass confirmation.
+  assert not strategy.confirm_trade_exit(trade.pair, trade, "limit", trade.amount, rate, "gtc", reason, NOW)
