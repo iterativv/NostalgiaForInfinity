@@ -731,6 +731,8 @@ class NostalgiaForInfinityX8(IStrategy):
 
   system_v4_max_stake = 1.0  # ratio of first entry
   system_v4_stake_multiplier = 1.0
+  system_v4_grind_entry_before_derisk_enable = False
+  system_v4_grind_entry_before_derisk_distance = 0.02  # unleveraged price move from the grind average
 
   # Bad-trade exits. Enable for new v4 trades without changing older open trades.
   system_v4_bad_trade_exit_enable = True
@@ -42532,6 +42534,20 @@ class NostalgiaForInfinityX8(IStrategy):
 
   # Long Grinding Adjust Trade Position v4
   # ---------------------------------------------------------------------------------------------
+  def _grind_entry_before_derisk(
+    self, is_short: bool, rate: float, grind_open_rate: float, derisk_threshold: float, use_derisk: bool
+  ) -> bool:
+    if not (self.system_v4_grind_entry_before_derisk_enable and use_derisk and grind_open_rate > 0.0):
+      return False
+    distance = self.system_v4_grind_entry_before_derisk_distance
+    if is_short:
+      in_range = grind_open_rate * (1 - derisk_threshold - distance) <= rate < grind_open_rate * (1 - derisk_threshold)
+    else:
+      in_range = grind_open_rate * (1 + derisk_threshold) < rate <= grind_open_rate * (1 + derisk_threshold + distance)
+    if in_range:
+      self._grind_entry_tag = "g_pre_derisk"
+    return in_range
+
   def long_grind_adjust_trade_position_v4(
     self,
     trade: Trade,
@@ -43418,7 +43434,16 @@ class NostalgiaForInfinityX8(IStrategy):
       and (grind_1_sub_grind_count < grind_1_max_sub_grinds)
       and (grind_1_sub_grind_count == 0 or (grind_1_distance_ratio < grind_1_sub_thresholds[grind_1_sub_grind_count]))
       and is_not_trade_max_stake_v4
-      and long_grind_entry_signal()
+      and (
+        long_grind_entry_signal()
+        or self._grind_entry_before_derisk(
+          False,
+          exit_rate,
+          grind_1_current_open_rate,
+          grind_1_derisk_grinds,
+          self.system_v4_grind_1_use_derisk,
+        )
+      )
     ):
       buy_amount = slice_amount * grind_1_stakes[grind_1_sub_grind_count] / trade_leverage
       if buy_amount < (min_stake * 1.5):
@@ -43536,7 +43561,16 @@ class NostalgiaForInfinityX8(IStrategy):
       and (grind_2_sub_grind_count < grind_2_max_sub_grinds)
       and (grind_2_sub_grind_count == 0 or (grind_2_distance_ratio < grind_2_sub_thresholds[grind_2_sub_grind_count]))
       and is_not_trade_max_stake_v4
-      and long_grind_entry_signal()
+      and (
+        long_grind_entry_signal()
+        or self._grind_entry_before_derisk(
+          False,
+          exit_rate,
+          grind_2_current_open_rate,
+          grind_2_derisk_grinds,
+          self.system_v4_grind_2_use_derisk,
+        )
+      )
     ):
       buy_amount = slice_amount * grind_2_stakes[grind_2_sub_grind_count] / trade_leverage
       if buy_amount < (min_stake * 1.5):
@@ -43654,7 +43688,16 @@ class NostalgiaForInfinityX8(IStrategy):
       and (grind_3_sub_grind_count < grind_3_max_sub_grinds)
       and (grind_3_sub_grind_count == 0 or (grind_3_distance_ratio < grind_3_sub_thresholds[grind_3_sub_grind_count]))
       and is_not_trade_max_stake_v4
-      and long_grind_entry_signal()
+      and (
+        long_grind_entry_signal()
+        or self._grind_entry_before_derisk(
+          False,
+          exit_rate,
+          grind_3_current_open_rate,
+          grind_3_derisk_grinds,
+          self.system_v4_grind_3_use_derisk,
+        )
+      )
     ):
       buy_amount = slice_amount * grind_3_stakes[grind_3_sub_grind_count] / trade_leverage
       if buy_amount < (min_stake * 1.5):
@@ -43773,7 +43816,17 @@ class NostalgiaForInfinityX8(IStrategy):
       and (grind_4_sub_grind_count < grind_4_max_sub_grinds)
       and (grind_4_sub_grind_count == 0 or (grind_4_distance_ratio < grind_4_sub_thresholds[grind_4_sub_grind_count]))
       and is_not_trade_max_stake_v4
-      and (long_grind_4_fallback_entry() or long_grind_entry_signal())
+      and (
+        long_grind_4_fallback_entry()
+        or long_grind_entry_signal()
+        or self._grind_entry_before_derisk(
+          False,
+          exit_rate,
+          grind_4_current_open_rate,
+          grind_4_derisk_grinds,
+          self.system_v4_grind_4_use_derisk,
+        )
+      )
     ):
       buy_amount = slice_amount * grind_4_stakes[grind_4_sub_grind_count] / trade_leverage
       if buy_amount < (min_stake * 1.5):
@@ -43897,6 +43950,13 @@ class NostalgiaForInfinityX8(IStrategy):
         or long_grind_5_liquidation_entry()
         or long_grind_entry_signal()
         or long_grind_5_liquidation_rescue_entry()
+        or self._grind_entry_before_derisk(
+          False,
+          exit_rate,
+          grind_5_current_open_rate,
+          grind_5_derisk_grinds,
+          self.system_v4_grind_5_use_derisk,
+        )
       )
     ):
       buy_amount = slice_amount * grind_5_stakes[grind_5_sub_grind_count] / trade_leverage
@@ -57702,7 +57762,16 @@ class NostalgiaForInfinityX8(IStrategy):
       and (grind_1_sub_grind_count < grind_1_max_sub_grinds)
       and (grind_1_sub_grind_count == 0 or (-grind_1_distance_ratio < grind_1_sub_thresholds[grind_1_sub_grind_count]))
       and is_not_trade_max_stake_v4
-      and short_grind_entry_signal()
+      and (
+        short_grind_entry_signal()
+        or self._grind_entry_before_derisk(
+          True,
+          exit_rate,
+          grind_1_current_open_rate,
+          grind_1_derisk_grinds,
+          self.system_v4_grind_1_use_derisk,
+        )
+      )
     ):
       buy_amount = slice_amount * grind_1_stakes[grind_1_sub_grind_count] / trade_leverage
       if buy_amount < (min_stake * 1.5):
@@ -57820,7 +57889,16 @@ class NostalgiaForInfinityX8(IStrategy):
       and (grind_2_sub_grind_count < grind_2_max_sub_grinds)
       and (grind_2_sub_grind_count == 0 or (-grind_2_distance_ratio < grind_2_sub_thresholds[grind_2_sub_grind_count]))
       and is_not_trade_max_stake_v4
-      and short_grind_entry_signal()
+      and (
+        short_grind_entry_signal()
+        or self._grind_entry_before_derisk(
+          True,
+          exit_rate,
+          grind_2_current_open_rate,
+          grind_2_derisk_grinds,
+          self.system_v4_grind_2_use_derisk,
+        )
+      )
     ):
       buy_amount = slice_amount * grind_2_stakes[grind_2_sub_grind_count] / trade_leverage
       if buy_amount < (min_stake * 1.5):
@@ -57938,7 +58016,16 @@ class NostalgiaForInfinityX8(IStrategy):
       and (grind_3_sub_grind_count < grind_3_max_sub_grinds)
       and (grind_3_sub_grind_count == 0 or (-grind_3_distance_ratio < grind_3_sub_thresholds[grind_3_sub_grind_count]))
       and is_not_trade_max_stake_v4
-      and short_grind_entry_signal()
+      and (
+        short_grind_entry_signal()
+        or self._grind_entry_before_derisk(
+          True,
+          exit_rate,
+          grind_3_current_open_rate,
+          grind_3_derisk_grinds,
+          self.system_v4_grind_3_use_derisk,
+        )
+      )
     ):
       buy_amount = slice_amount * grind_3_stakes[grind_3_sub_grind_count] / trade_leverage
       if buy_amount < (min_stake * 1.5):
@@ -58057,7 +58144,17 @@ class NostalgiaForInfinityX8(IStrategy):
       and (grind_4_sub_grind_count < grind_4_max_sub_grinds)
       and (grind_4_sub_grind_count == 0 or (-grind_4_distance_ratio < grind_4_sub_thresholds[grind_4_sub_grind_count]))
       and is_not_trade_max_stake_v4
-      and (short_grind_4_fallback_entry() or short_grind_entry_signal())
+      and (
+        short_grind_4_fallback_entry()
+        or short_grind_entry_signal()
+        or self._grind_entry_before_derisk(
+          True,
+          exit_rate,
+          grind_4_current_open_rate,
+          grind_4_derisk_grinds,
+          self.system_v4_grind_4_use_derisk,
+        )
+      )
     ):
       buy_amount = slice_amount * grind_4_stakes[grind_4_sub_grind_count] / trade_leverage
       if buy_amount < (min_stake * 1.5):
@@ -58181,6 +58278,13 @@ class NostalgiaForInfinityX8(IStrategy):
         or short_grind_5_liquidation_entry()
         or short_grind_entry_signal()
         or short_grind_5_liquidation_rescue_entry()
+        or self._grind_entry_before_derisk(
+          True,
+          exit_rate,
+          grind_5_current_open_rate,
+          grind_5_derisk_grinds,
+          self.system_v4_grind_5_use_derisk,
+        )
       )
     ):
       buy_amount = slice_amount * grind_5_stakes[grind_5_sub_grind_count] / trade_leverage
