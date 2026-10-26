@@ -14562,6 +14562,10 @@ class NostalgiaForInfinityX8(IStrategy):
             # a market-order bubble, and the buyers are the ones making it
             & (volume > large_bubble_thr)
             & (cvd_buy_vol > cvd_sell_vol)
+            # 5m not high
+            & (rsi_14 < 60.0)
+            # 5m not extended
+            & (change_pct < 0.35)
           )
 
         # Condition #61 - Rebuy mode (Long).
