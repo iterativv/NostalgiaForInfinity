@@ -737,6 +737,8 @@ class NostalgiaForInfinityX8(IStrategy):
   # Bad-trade exits. Enable for new v4 trades without changing older open trades.
   system_v4_bad_trade_exit_enable = True
   legacy_system_bad_trade_exit_enable = False
+  # Also assess a losing residual when realized gains keep the whole trade nonnegative.
+  inclusive_bad_trade_exit_enable = False
   bad_trade_controller_structure_break_exit_enable = True
   bad_trade_controller_structure_break_ema_gap_pct = 35.0
   bad_trade_controller_structure_break_min_adverse_move_pct = 25.0
@@ -1202,6 +1204,7 @@ class NostalgiaForInfinityX8(IStrategy):
       "max_slippage",
       "system_v4_bad_trade_exit_enable",
       "legacy_system_bad_trade_exit_enable",
+      "inclusive_bad_trade_exit_enable",
       "bad_trade_controller_structure_break_exit_enable",
       "bad_trade_controller_structure_break_ema_gap_pct",
       "bad_trade_controller_structure_break_min_adverse_move_pct",
@@ -2012,7 +2015,9 @@ class NostalgiaForInfinityX8(IStrategy):
       if system_version == self.system_v4_name
       else self.legacy_system_bad_trade_exit_enable
     )
-    if bad_trade_exit_enable and profit_stake < 0.0:
+    if bad_trade_exit_enable and (
+      profit_stake < 0.0 or (self.inclusive_bad_trade_exit_enable and current_profit < 0.0)
+    ):
       bad_trade_exit_reason = self._bad_trade_controller_exit_reason(
         trade, current_time, current_rate, last_candle, filled_entries
       )
