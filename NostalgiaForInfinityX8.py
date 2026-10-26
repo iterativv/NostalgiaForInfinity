@@ -26708,8 +26708,6 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((roc_9_4h_gt_neg_15) | (aroonu_14_1d_lt_80) | (stochrsi_k_1d_gt_70))
             # 4h up 5%+, 1d uptrend, 1d up 20%+
             & ((roc_9_4h_lt_5) | (aroonu_14_1d_lt_20) | (roc_9_1d_lt_20))
-            # 4h low, 4h bounce started
-            & ((rsi_14_4h > 25.0) | (stochrsi_k_4h_lt_40))
             # first dip after a 1d fresh high
             & ((aroonu_14_1d_lt_40) | (stochrsi_k_1d > 15.0) | (aroond_14_1d > 20.0))
           )
