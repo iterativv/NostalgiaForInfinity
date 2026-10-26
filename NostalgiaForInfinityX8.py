@@ -14552,9 +14552,9 @@ class NostalgiaForInfinityX8(IStrategy):
           # Logic
           long_entry_logic.append(
             # the 1d is rising and not floored — a 15m pullback inside a falling daily is a knife
-            (roc_9_1d > 0.0)
-            & (stochrsi_k_1d > 50.0)
-            & (rsi_14_1d > 50.0)
+            (roc_9_1d_gt_0)
+            & (stochrsi_k_1d_gt_50)
+            & (rsi_14_1d_gt_50)
             # 15m in an uptrend, price back at the 50 EMA but still above the 200
             & (ema_50_15m > ema_200_15m)
             & (close <= (ema_50_15m * 1.002))
@@ -14562,6 +14562,10 @@ class NostalgiaForInfinityX8(IStrategy):
             # a market-order bubble, and the buyers are the ones making it
             & (volume > large_bubble_thr)
             & (cvd_buy_vol > cvd_sell_vol)
+            # 5m not high
+            & (rsi_14 < 60.0)
+            # 5m not extended
+            & (change_pct < 0.35)
           )
 
         # Condition #61 - Rebuy mode (Long).
