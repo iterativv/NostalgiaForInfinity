@@ -12,7 +12,19 @@ from NostalgiaForInfinityX8 import NostalgiaForInfinityX8
 
 STRATEGY = Path(__file__).resolve().parents[2] / "NostalgiaForInfinityX8.py"
 
+# targeted 2026 round: chain -> the house comment that names the scene it blocks (the case where every clause is false)
+CHAINS = {
+  "(rsi_3_lt_90) | (aroonu_14_15m_lt_25) | (roc_9_4h_gt_neg_10)": "5m overbought, 15m uptrend, 4h down 10%+",
+  "(stochrsi_k_gt_80) | (rsi_3_15m_lt_50) | (aroonu_14_1d_lt_100)": "5m not high, 15m up move, 1d fresh high",
+  "(rsi_3_15m_lt_55) | (rsi_3_1h_gt_40) | (aroonu_14_1d_lt_100)": "15m up move, 1h low, 1d fresh high",
+  "(rsi_3_15m_lt_80) | (aroonu_14_1h_lt_20) | (roc_9_4h_gt_neg_10)": "15m overbought, 1h uptrend, 4h down 10%+",
+  "(aroonu_14_15m_lt_50) | (rsi_3_4h_gt_30) | (aroonu_14_1d_lt_100)": "15m uptrend, 4h low, 1d fresh high",
+  "(aroonu_14_15m_lt_30) | (aroonu_14_4h_lt_30) | (rsi_3_1d_gt_20)": "15m uptrend, 4h uptrend, 1d low",
+  "(aroonu_14_15m_gt_20) | (aroonu_14_4h_gt_0) | (aroonu_14_1d_gt_0)": "15m downtrend, 4h no new high, 1d no new high",
+  "(stochrsi_k_15m_gt_80) | (aroonu_14_1h_gt_0) | (aroonu_14_1d_lt_100)": "15m not high, 1h no new high, 1d fresh high",
+}
 TF_RANK = {"5m": 0, "15m": 1, "1h": 2, "4h": 3, "1d": 4}
+FAMILY = ["rsi_3", "rsi_14", "cmf_20", "mfi_14", "aroonu_14", "aroond_14", "stochrsi_k", "willr_14", "roc_2", "roc_9"]
 CLAUSE = re.compile(r"\(([a-z][a-z0-9_]*)\)")
 
 
@@ -52,9 +64,54 @@ def _timeframe(name: str) -> str:
   return m.group(1) if m else "5m"
 
 
+def _lead_key(chain: str) -> tuple[int, int]:
+  """(timeframe rank, family rank) of a chain's lead clause."""
+  name = re.search(r"\(([a-z][a-z0-9_]*?)_(?:gt|lt)_", chain).group(1)
+  tf = (re.search(r"_(15m|1h|4h|1d)$", name) or [None, "5m"])[1]
+  base = re.sub(r"_(15m|1h|4h|1d)$", "", name)
+  family = next((f for f in FAMILY if base.startswith(f)), base)
+  return TF_RANK[tf], FAMILY.index(family) if family in FAMILY else len(FAMILY)
+
+
 def test_the_block_has_its_protection_chains():
-  # Then: the mined chains are all there (154 at the time of writing, only ever more).
-  assert len(_chains()) >= 150
+  # Then: the mined chains are all there (162 at the time of writing, only ever more).
+  assert len(_chains()) >= 160
+
+
+def test_the_targeted_chains_live_inside_the_protection_append():
+  protections = _protections()
+  for chain in CHAINS:
+    # Then: they are AND-ed operands of the block's single protection append, not an append of their own.
+    assert f"& ({chain})" in protections
+    assert f"short_entry_logic.append({chain})" not in protections
+
+
+def test_each_targeted_chain_carries_the_house_comment_for_the_scene_it_blocks():
+  protections = _protections()
+  for chain, comment in CHAINS.items():
+    # Then: the comment names the blocked state (all three clauses false), not its negation.
+    assert re.search(rf"# {re.escape(comment)}\n\s+& \({re.escape(chain)}\)", protections), chain
+
+
+def test_the_targeted_chains_sit_in_their_sorted_position():
+  chains = _chains()
+  for chain in CHAINS:
+    i = chains.index(chain)
+    mine = _lead_key(chain)
+    # Then: timeframe ascending, and the family clustered within a shared timeframe.
+    if i:
+      assert _lead_key(chains[i - 1]) <= mine, (chains[i - 1], chain)
+    if i + 1 < len(chains):
+      assert mine <= _lead_key(chains[i + 1]), (chain, chains[i + 1])
+
+
+def test_the_targeted_chains_are_three_clauses_on_two_timeframes_or_more():
+  for chain in CHAINS:
+    clauses = CLAUSE.findall(chain)
+    # Then: three cached booleans, at least two frames.
+    assert len(clauses) == 3, chain
+    assert chain == " | ".join(f"({c})" for c in clauses), chain
+    assert len({_timeframe(c) for c in clauses}) >= 2, chain
 
 
 def test_the_chains_live_inside_one_protection_append():
