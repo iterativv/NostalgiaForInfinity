@@ -21,6 +21,11 @@
       // -31.4% on 2026-09-13 alone with a 62% intraday range. Spot-only (no perp on any
       // venue) and the book is ~$0.4M/day across bybit, gate, mexc and kucoin.
       "(LAVA)/.*",
+      // Falling knife on a thin book — -83.5% off its 2026-05-04 high of 0.008, -33.9%
+      // over the last seven days with seven of the last ten days red and -10.0% on
+      // 2026-10-27 alone. Spot-only on gate, the only venue that lists it, and the book
+      // has thinned from ~$0.5M to ~$0.1M/day.
+      "(BELIEVE)/.*",
       // OpenGradient market maker impaired — the team said on 2026-08-10 its market-making
       // funds are stuck on BitMart, which began winding down on 07-26. Book is thin
       // ($11.8M across the three venues) and the token is -84% from its April high.
