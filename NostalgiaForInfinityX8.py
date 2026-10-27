@@ -27850,7 +27850,10 @@ class NostalgiaForInfinityX8(IStrategy):
             & (stochrsi_k_gt_80)
             & (willr_84_1h > -30.0)
             & (stochrsi_k_1h_gt_80)
-            & (bbb_20_2_0_1h > 20.0)
+            & (bbb_20_2_0_1h > 8.0)
+            # 4h downtrend not extreme, 1d range calm
+            & (minus_di_14_4h < 30.0)
+            & (range_pct_14_1d < 22.0)
             & (close_min_48 <= (close * 0.90))
           )
 
