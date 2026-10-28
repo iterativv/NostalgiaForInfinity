@@ -146,6 +146,11 @@ CHAINS = {
   "(stochrsi_k_15m_lt_80) | (roc_9_4h_lt_5) | (stochrsi_k_1d_gt_50) | (top_wick_pct_1d_lt_8)": "15m overbought, 4h up 5%+, 1d not high, 1d top wick 8%+",
   "(stochrsi_k_15m_lt_20) | (aroond_14_1h_lt_70) | (cmf_20_1d_gt_neg_0_20) | (aroonu_14_1d_gt_0) | (stochrsi_k_1d_lt_70)": "15m not low, 1h fresh low, 1d outflow, 1d no new high, 1d high",
   "(stochrsi_k_15m_lt_80) | (aroonu_14_1h_gt_0) | (aroond_14_1h_lt_50) | (cmf_20_1d_lt_0_10) | (aroonu_14_1d_gt_0)": "15m overbought, 1h & 1d no new high, 1h fresh low, 1d inflow",
+  "(rsi_3_15m_gt_45) | (aroonu_14_1h_lt_30) | (stochrsi_k_4h_lt_50) | (cmf_20_1d_lt_0_10) | (stochrsi_k_1d_lt_90)": "15m down move, 1h uptrend, 4h not low, 1d inflow, 1d overbought",
+  "(aroonu_14_15m_gt_0) | (stochrsi_k_15m_lt_80) | (rsi_3_1d_gt_50) | (cmf_20_1d_lt_0_10) | (aroonu_14_1d_gt_0)": "15m & 1d no new high, 15m overbought, 1d down move, 1d inflow",
+  "(cmf_20_15m_gt_neg_0_10) | (stochrsi_k_15m_lt_80) | (aroonu_14_1h_gt_0) | (rsi_3_1d_gt_15) | (aroonu_14_1d_lt_40)": "15m outflow, 15m overbought, 1h no new high, 1d oversold, 1d uptrend",
+  "(stochrsi_k_1h_lt_80) | (rsi_3_4h_gt_35) | (stochrsi_k_4h_lt_20)": "1h overbought, 4h low, 4h not low",
+  "(rsi_14_15m_lt_35) | (aroond_14_4h_lt_25) | (stochrsi_k_4h_lt_60) | (stochrsi_k_1d_lt_90)": "15m not oversold, 4h fresh low, 4h high, 1d overbought",
 }
 TF_RANK = {"5m": 0, "15m": 1, "1h": 2, "4h": 3, "1d": 4}
 FAMILY = ["rsi_3", "rsi_14", "cmf_20", "mfi_14", "aroonu_14", "aroond_14", "stochrsi_k", "willr_14", "roc_2", "roc_9"]
@@ -208,7 +213,7 @@ def _lead_key(chain: str) -> tuple[int, int]:
 
 
 def test_the_block_has_its_protection_chains():
-  # Then: the mined chains are all there (283 at the time of writing, only ever more).
+  # Then: the mined chains are all there (288 at the time of writing, only ever more).
   assert len(_chains()) >= 160
 
 
