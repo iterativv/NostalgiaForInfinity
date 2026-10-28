@@ -24,6 +24,12 @@
       // itself is the reason: it preceded the 2026-08-17 delisting batch for ACX, PIVX,
       // PYR and VANRY, and both still trade as perpetuals on binance, bybit and bitget.
       "(BICO|CVC)/.*",
+      // Thin, long-dead book. kucoin spot turns over $0.10M a day and mexc $0.60M, and the
+      // gate perpetual is effectively inert at 212 USDT in 24 hours. Down 83.9% and 91.3%
+      // off their respective highs and -36% over 90 days, yet +86% over the last 30 on
+      // that book — a size that moves on its own. Not a falling knife, which is why the
+      // 3-day rate of change sits at 0.20 and nothing else screens it out.
+      "(NXT)/.*",
       // OpenGradient market maker impaired — the team said on 2026-08-10 its market-making
       // funds are stuck on BitMart, which began winding down on 07-26. Book is thin
       // ($11.8M across the three venues) and the token is -84% from its April high.
