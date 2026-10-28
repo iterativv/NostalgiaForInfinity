@@ -151,6 +151,33 @@ CHAINS = {
   "(cmf_20_15m_gt_neg_0_10) | (stochrsi_k_15m_lt_80) | (aroonu_14_1h_gt_0) | (rsi_3_1d_gt_15) | (aroonu_14_1d_lt_40)": "15m outflow, 15m overbought, 1h no new high, 1d oversold, 1d uptrend",
   "(stochrsi_k_1h_lt_80) | (rsi_3_4h_gt_35) | (stochrsi_k_4h_lt_20)": "1h overbought, 4h low, 4h not low",
   "(rsi_14_15m_lt_35) | (aroond_14_4h_lt_25) | (stochrsi_k_4h_lt_60) | (stochrsi_k_1d_lt_90)": "15m not oversold, 4h fresh low, 4h high, 1d overbought",
+  "(rsi_3_1h_gt_40) | (aroonu_14_1h_gt_20) | (cmf_20_4h_gt_neg_0_30) | (aroonu_14_4h_gt_0) | (stochrsi_k_1d_gt_10)": "1h & 1d low, 1h downtrend, 4h heavy outflow, 4h no new high",
+  "(cmf_20_15m_lt_0_10) | (aroonu_14_1h_lt_30) | (rsi_14_1d_lt_40) | (aroonu_14_1d_gt_0) | (stochrsi_k_1d_gt_10)": "15m inflow, 1h uptrend, 1d up bias, 1d no new high, 1d low",
+  "(cmf_20_4h_gt_neg_0_20) | (rsi_3_1d_gt_25) | (top_wick_pct_1d_lt_8)": "4h outflow, 1d low, 1d top wick 8%+",
+  "(rsi_3_1h_gt_20) | (aroonu_14_4h_lt_70) | (rsi_14_1d_gt_45) | (stochrsi_k_1d_lt_90)": "1h low, 4h uptrend, 1d deeply oversold, 1d overbought",
+  "(cmf_20_1h_gt_neg_0_20) | (rsi_3_1d_gt_40) | (aroonu_14_1d_lt_100)": "1h outflow, 1d down move, 1d fresh high",
+  "(aroond_14_15m_lt_25) | (stochrsi_k_1h_lt_90) | (aroonu_14_1d_lt_80)": "15m fresh low, 1h overbought, 1d fresh high",
+  "(cmf_20_1h_gt_neg_0_40) | (aroonu_14_1h_lt_60) | (rsi_3_1d_gt_45)": "1h heavy outflow, 1h uptrend, 1d down move",
+  "(aroonu_14_1h_lt_70) | (stochrsi_k_1h_gt_20) | (rsi_14_4h_lt_40) | (stochrsi_k_4h_lt_60) | (aroonu_14_1d_lt_60)": "1h & 1d uptrend, 1h low, 4h up bias, 4h high",
+  "(rsi_3_15m_lt_75) | (stochrsi_k_1h_gt_10) | (cmf_20_4h_gt_neg_0_20) | (rsi_3_1d_gt_20)": "15m overbought, 1h & 1d low, 4h outflow",
+  "(aroond_14_lt_25) | (rsi_3_1h_lt_50) | (cmf_20_1d_gt_neg_0_25) | (roc_9_1d_gt_neg_20)": "5m fresh low, 1h up move, 1d outflow, 1d down 20%+",
+  "(aroonu_14_15m_gt_0) | (aroonu_14_1h_lt_30) | (rsi_3_change_pct_1d_gt_neg_20) | (aroonu_14_1d_gt_0) | (roc_9_1d_gt_neg_20)": "15m & 1d no new high, 1h uptrend, 1d RSI down 20%+, 1d down 20%+",
+  "(aroonu_14_4h_lt_40) | (rsi_3_1d_gt_35) | (cmf_20_1d_gt_neg_0_25) | (change_pct_1d_gt_neg_5)": "4h uptrend, 1d low, 1d outflow, 1d red",
+  "(aroond_14_15m_lt_25) | (aroonu_14_4h_lt_80) | (cmf_20_1d_gt_neg_0_25) | (stochrsi_k_1d_gt_10)": "15m fresh low, 4h fresh high, 1d outflow, 1d low",
+  "(stochrsi_k_15m_lt_80) | (cmf_20_1h_gt_neg_0_25) | (rsi_3_1d_gt_45) | (aroonu_14_1d_lt_80)": "15m overbought, 1h outflow, 1d down move, 1d fresh high",
+  "(stochrsi_k_4h_lt_30) | (rsi_3_1d_gt_20) | (aroonu_14_1d_lt_80)": "4h not low, 1d low, 1d fresh high",
+  "(aroonu_14_15m_lt_80) | (aroonu_14_4h_lt_50) | (rsi_3_1d_gt_35) | (roc_9_1d_gt_neg_20)": "15m fresh high, 4h uptrend, 1d low, 1d down 20%+",
+  "(rsi_14_15m_lt_50) | (aroond_14_1h_lt_70) | (stochrsi_k_1h_lt_70) | (roc_9_1d_gt_neg_20) | (change_pct_1d_gt_neg_10)": "15m up bias, 1h fresh low, 1h high, 1d down 20%+, 1d red",
+  "(cmf_20_15m_gt_neg_0_30) | (aroonu_14_1h_gt_0) | (stochrsi_k_4h_gt_10) | (aroonu_14_1d_gt_0) | (stochrsi_k_1d_gt_50)": "15m heavy outflow, 1h & 1d no new high, 4h low, 1d not high",
+  "(rsi_14_15m_lt_30) | (stochrsi_k_1h_lt_40) | (rsi_3_1d_gt_40) | (cmf_20_1d_lt_0_10) | (stochrsi_k_1d_lt_70)": "15m not oversold, 1h not low, 1d down move, 1d inflow, 1d high",
+  "(cmf_20_15m_gt_neg_0_10) | (stochrsi_k_15m_lt_80) | (aroonu_14_1h_gt_0) | (aroonu_14_1d_gt_0) | (stochrsi_k_1d_lt_60)": "15m outflow, 15m overbought, 1h & 1d no new high, 1d high",
+  "(aroonu_14_15m_gt_40) | (rsi_3_4h_lt_50) | (aroonu_14_4h_gt_0) | (stochrsi_k_1d_lt_40)": "15m not high, 4h up move, 4h no new high, 1d not low",
+  "(aroonu_14_1h_lt_70) | (stochrsi_k_1h_gt_10) | (stochrsi_k_4h_gt_10) | (stochrsi_k_1d_lt_20)": "1h uptrend, 1h & 4h low, 1d not low",
+  "(rsi_3_4h_gt_25) | (stochrsi_k_1d_lt_80) | (top_wick_pct_1d_lt_10)": "4h low, 1d overbought, 1d top wick 10%+",
+  "(aroonu_14_4h_lt_100) | (rsi_3_1d_gt_60) | (stochrsi_k_1d_lt_50)": "4h fresh high, 1d down move, 1d not low",
+  "(aroonu_14_1h_lt_70) | (stochrsi_k_4h_lt_50) | (rsi_3_change_pct_1d_gt_neg_20) | (cmf_20_1d_gt_neg_0_25)": "1h uptrend, 4h not low, 1d RSI down 20%+, 1d outflow",
+  "(rsi_3_1h_lt_40) | (rsi_3_4h_gt_3) | (cmf_20_4h_gt_neg_0_25)": "1h up move, 4h oversold, 4h outflow",
+  "(rsi_3_15m_gt_45) | (rsi_3_1h_lt_50) | (roc_9_1d_gt_neg_25)": "15m down move, 1h up move, 1d down 25%+",
 }
 TF_RANK = {"5m": 0, "15m": 1, "1h": 2, "4h": 3, "1d": 4}
 FAMILY = ["rsi_3", "rsi_14", "cmf_20", "mfi_14", "aroonu_14", "aroond_14", "stochrsi_k", "willr_14", "roc_2", "roc_9"]
@@ -213,7 +240,7 @@ def _lead_key(chain: str) -> tuple[int, int]:
 
 
 def test_the_block_has_its_protection_chains():
-  # Then: the mined chains are all there (288 at the time of writing, only ever more).
+  # Then: the mined chains are all there (315 at the time of writing, only ever more).
   assert len(_chains()) >= 160
 
 
