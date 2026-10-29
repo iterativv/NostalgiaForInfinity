@@ -38,6 +38,23 @@
       // that book — a size that moves on its own. Not a falling knife, which is why the
       // 3-day rate of change sits at 0.20 and nothing else screens it out.
       "(NXT)/.*",
+      // Bybit delisted the perpetual on 2026-10-28 and the chart agrees: -27.2% that day,
+      // -43.7% over the week and 97.7% off its high, on a book that is thin everywhere it
+      // still trades — $0.73M on the bybit perp, $0.18M on bitget and $0.12M on mexc, plus
+      // kucoin and kraken spot. The 3-day rate of change sits at 0.60-0.68, so nothing
+      // else screens it out.
+      "(TMX)/.*",
+      // zkLink Nova bridge drained of ~$786k on 2026-10-28 through a forged batch root,
+      // with the main escrow left unpaused. Spot only on bitget and gate, no perpetual
+      // anywhere, and the book was already gone before the exploit: $0.03M and effectively
+      // nothing, 68-72% off its high and down ~20% on the week into it.
+      "(ZKL)/.*",
+      // Binance ended spot trading on 2026-10-28, the same review that took EPIC. Still
+      // listed on gate, mexc and htx spot with no perpetual anywhere, down 54% over seven
+      // days and 74% over thirty on a $60-83k book. The 3-day rate of change is 0.52-0.54,
+      // below the floor a RangeStabilityFilter would act on — it bleeds steadily rather
+      // than opening wide, which is the class this list exists for.
+      "(QUICK)/.*",
       // OpenGradient market maker impaired — the team said on 2026-08-10 its market-making
       // funds are stuck on BitMart, which began winding down on 07-26. Book is thin
       // ($11.8M across the three venues) and the token is -84% from its April high.
