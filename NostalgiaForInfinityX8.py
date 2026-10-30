@@ -1949,7 +1949,60 @@ class NostalgiaForInfinityX8(IStrategy):
 
   # Custom Exit
   # ---------------------------------------------------------------------------------------------
+  def _g2_is_profit_tracking(self, target, trade: "Trade") -> bool:
+    if target is None:
+      return False
+    reason = target["sell_reason"]
+    return bool(
+      reason.startswith(("exit_long_", "exit_profit_long_"))
+      and "stoploss" not in reason
+      and "doom" not in reason
+      and "abandon" not in reason
+      and np.isfinite(target["profit"])
+      and target["profit"] > 0.0
+      and datetime.fromisoformat(target["time_profit_reached"]) >= trade.open_date_utc
+    )
+
   def custom_exit(
+    self, pair: str, trade: "Trade", current_time: "datetime", current_rate: float, current_profit: float, **kwargs
+  ):
+    if not self.risk_market_relief_exit_enable or trade.is_short:
+      return self._g2_native_custom_exit(pair, trade, current_time, current_rate, current_profit, **kwargs)
+    was_tracking = self._g2_is_profit_tracking(self.target_profit_cache.data.get(pair), trade)
+    native_exit = self._g2_native_custom_exit(pair, trade, current_time, current_rate, current_profit, **kwargs)
+    if native_exit is not None:
+      return native_exit
+    pending = trade.get_custom_data(key="mh_g2_first_target")
+    if pending is not None:
+      return pending
+    target = self.target_profit_cache.data.get(pair)
+    if was_tracking or not self._g2_is_profit_tracking(target, trade):
+      return None
+    if target["time_profit_reached"] != current_time.isoformat():
+      return None
+    frame, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
+    if frame.empty:
+      return None
+    stress = frame.iloc[-1].get("MKT_STRESS_1d")
+    relief = frame.iloc[-1].get("MKT_RELIEF_1d")
+    if (
+      stress is None
+      or relief is None
+      or not np.isfinite(stress)
+      or not np.isfinite(relief)
+      or stress <= 45.0
+      or relief < 80.0
+    ):
+      return None
+    _, entries, exits = self.filled_order_snapshot(trade)
+    lifecycle_profit = self.calc_total_profit(trade, entries, exits, current_rate)[0]
+    if not np.isfinite(lifecycle_profit) or lifecycle_profit <= 0.0:
+      return None
+    reason = "exit_g2_first_" + target["sell_reason"].removeprefix("exit_")
+    trade.set_custom_data(key="mh_g2_first_target", value=reason)
+    return reason
+
+  def _g2_native_custom_exit(
     self, pair: str, trade: "Trade", current_time: "datetime", current_rate: float, current_profit: float, **kwargs
   ):
     trade_is_short = trade.is_short
