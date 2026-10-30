@@ -1016,7 +1016,6 @@ class NostalgiaForInfinityX8(IStrategy):
     "SUI",
     "THETA",
     "TIA",
-    "TON",
     "TRX",
     "UNI",
     "VET",
