@@ -36,6 +36,12 @@
       // kucoin and kraken spot. The 3-day rate of change sits at 0.60-0.68, so nothing
       // else screens it out.
       "(TMX)/.*",
+      // Two venues dropped the perpetual in two days — bybit on 2026-10-28, mexc on
+      // 10-30 — and it stopped being calm while they did: the seven-day move doubled
+      // from -11.4% to -21.6%, thirty days sit at -53% and 79% off the high, and the
+      // binance spot book grew from $0.67M to $1.22M as the price fell. A 3-day rate of
+      // change of 0.30 keeps it under anything a RangeStabilityFilter would act on.
+      "(MITO)/.*",
       // zkLink Nova bridge drained of ~$786k on 2026-10-28 through a forged batch root,
       // with the main escrow left unpaused. Spot only on bitget and gate, no perpetual
       // anywhere, and the book was already gone before the exploit: $0.03M and effectively
