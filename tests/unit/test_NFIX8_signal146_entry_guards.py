@@ -238,3 +238,18 @@ def test_signal_141_is_still_the_block_it_was():
   assert len(chains) == SIGNAL_141_CHAINS, f"signal 141 carries {len(chains)} chains, not {SIGNAL_141_CHAINS}"
   digest = hashlib.sha256("\n".join(block).encode("utf-8")).hexdigest()
   assert digest == SIGNAL_141_DIGEST, "signal 141 is not the block it was before signal 146 existed"
+
+def test_the_btc_rate_of_change_columns_have_a_producer():
+  """A clause that reads a column nobody builds is a KeyError waiting for the knob.
+
+  The ten clauses read `btc_roc_1_5m` and `BTC_ROC_1_4h`. The first is assigned in the entry
+  pipeline, the second comes out of the 4h BTC frame with a timeframe suffix. Every other
+  check in this file is static, so a missing producer passes all of them and only a backtest
+  finds out: this is the test that fails when that plumbing is dropped.
+  """
+  src = STRATEGY.read_text()
+  assert re.search(r'df\["btc_roc_1_5m"\]\s*=', src), "nothing assigns df['btc_roc_1_5m']"
+  assert re.search(r'"BTC_ROC_1":\s*ta\.ROC\(', src), "nothing builds the BTC rate of change column"
+  assert re.search(r"informative_pairs\.add\(\(btc_info_pair, self\.timeframe\)\)", src), (
+    "BTC 5m is never requested as an informative pair"
+  )

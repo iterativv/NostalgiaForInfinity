@@ -4895,6 +4895,26 @@ class NostalgiaForInfinityX8(IStrategy):
     metadata_pair = metadata["pair"]
 
     # ============================================================
+    # BTC CASCADE GUARD: return of the last closed BTC candle
+    # ============================================================
+    btc_5m_df = self.dp.get_pair_dataframe(pair=self.btc_informative_pair(), timeframe=self.timeframe)
+    if btc_5m_df is not None and not btc_5m_df.empty and "close" in btc_5m_df.columns:
+      # the candles may carry "date" as a column, not as the index
+      btc_dates = btc_5m_df["date"] if "date" in btc_5m_df.columns else pd.Series(pd.DatetimeIndex(btc_5m_df.index))
+      btc_roc = (btc_5m_df["close"] / btc_5m_df["close"].shift(1) - 1.0).to_numpy() * 100.0
+      btc_5m_roc = pd.Series(btc_roc, index=pd.DatetimeIndex(btc_dates))
+      base_dates = df["date"] if "date" in df.columns else pd.Series(pd.DatetimeIndex(df.index))
+      labels = pd.DatetimeIndex(base_dates) - pd.Timedelta(minutes=5)
+      aligned = btc_5m_roc.reindex(labels)
+      if float(aligned.isna().mean()) > 0.5 and not getattr(self, "_btc5m_warned", False):
+        log.warning("btc_roc_1_5m unaligned: %.1f%% NaN", float(aligned.isna().mean()) * 100)
+        self._btc5m_warned = True
+      # no BTC data never blocks: the guard does not invent a block
+      df["btc_roc_1_5m"] = aligned.fillna(100.0).to_numpy()
+    else:
+      df["btc_roc_1_5m"] = 100.0
+
+    # ============================================================
     # BTC INFORMATIVE (BATCH PREPARATION)
     # ============================================================
     btc_info_pair = self.btc_informative_pair()
