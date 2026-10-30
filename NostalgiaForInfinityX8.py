@@ -5903,8 +5903,8 @@ class NostalgiaForInfinityX8(IStrategy):
     orange_h = np_view("ORANGE_H")
     orange_l = np_view("ORANGE_L")
     willr_14_4h = np_view("WILLR_14_4h")
-    btc_roc_1_4h = np_view("BTC_ROC_1_4h")
     btc_roc_1_5m = np_view("btc_roc_1_5m")
+    btc_roc_1_4h = np_view("BTC_ROC_1_4h")
     stoch_k_4h = np_view("STOCHk_14_3_3_4h")
 
     sqz_on = np_view("SQZ_ON")
