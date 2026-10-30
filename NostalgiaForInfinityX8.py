@@ -5498,6 +5498,36 @@ class NostalgiaForInfinityX8(IStrategy):
     side: str,
     **kwargs,
   ) -> bool:
+    native = self._b_native_confirm_trade_entry(
+      pair, order_type, amount, rate, time_in_force, current_time, entry_tag, side, **kwargs
+    )
+    if not native or not self.risk_long_slot_cap_enable or side != "long":
+      return native
+
+    df, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
+    if df.empty:
+      return native
+    stress = df.iloc[-1].get("MKT_STRESS_1d")
+    if stress is None or not np.isfinite(stress) or stress <= 45.0:
+      return native
+
+    long_trades = [trade for trade in Trade.get_trades_proxy(is_open=True) if not trade.is_short]
+    if any(trade.pair == pair for trade in long_trades):
+      return native
+    return len(long_trades) < 4
+
+  def _b_native_confirm_trade_entry(
+    self,
+    pair: str,
+    order_type: str,
+    amount: float,
+    rate: float,
+    time_in_force: str,
+    current_time: datetime,
+    entry_tag: Optional[str],
+    side: str,
+    **kwargs,
+  ) -> bool:
     # Force Entry
     if entry_tag == "force_entry":
       return True
