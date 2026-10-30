@@ -1016,7 +1016,6 @@ class NostalgiaForInfinityX8(IStrategy):
     "SUI",
     "THETA",
     "TIA",
-    "TON",
     "TRX",
     "UNI",
     "VET",
@@ -1081,6 +1080,7 @@ class NostalgiaForInfinityX8(IStrategy):
     "long_entry_condition_143_enable": True,
     "long_entry_condition_144_enable": True,
     "long_entry_condition_145_enable": True,
+    "long_entry_condition_146_enable": False,
     "long_entry_condition_161_enable": True,
     "long_entry_condition_162_enable": True,
     "long_entry_condition_163_enable": True,
@@ -3124,6 +3124,8 @@ class NostalgiaForInfinityX8(IStrategy):
     btc_info_pair = self.btc_informative_pair()
 
     informative_pairs.update((btc_info_pair, btc_info_timeframe) for btc_info_timeframe in self.btc_info_timeframes)
+    # BTC on 5m: cascade guard, shared by every entry condition that reads it
+    informative_pairs.add((btc_info_pair, self.timeframe))
 
     return list(informative_pairs)
 
@@ -4615,6 +4617,7 @@ class NostalgiaForInfinityX8(IStrategy):
 
     new_cols = pd.DataFrame(
       {
+        "BTC_ROC_1": ta.ROC(close_np, timeperiod=1),
         "BTC_RSI_14": rsi_14,
       },
       index=btc_informative_4h.index,
@@ -4890,6 +4893,26 @@ class NostalgiaForInfinityX8(IStrategy):
     base_timeframe = self.timeframe
     prepare_informative_merge = self.prepare_informative_merge
     metadata_pair = metadata["pair"]
+
+    # ============================================================
+    # BTC CASCADE GUARD: return of the last closed BTC candle
+    # ============================================================
+    btc_5m_df = self.dp.get_pair_dataframe(pair=self.btc_informative_pair(), timeframe=self.timeframe)
+    if btc_5m_df is not None and not btc_5m_df.empty and "close" in btc_5m_df.columns:
+      # the candles may carry "date" as a column, not as the index
+      btc_dates = btc_5m_df["date"] if "date" in btc_5m_df.columns else pd.Series(pd.DatetimeIndex(btc_5m_df.index))
+      btc_roc = (btc_5m_df["close"] / btc_5m_df["close"].shift(1) - 1.0).to_numpy() * 100.0
+      btc_5m_roc = pd.Series(btc_roc, index=pd.DatetimeIndex(btc_dates))
+      base_dates = df["date"] if "date" in df.columns else pd.Series(pd.DatetimeIndex(df.index))
+      labels = pd.DatetimeIndex(base_dates) - pd.Timedelta(minutes=5)
+      aligned = btc_5m_roc.reindex(labels)
+      if float(aligned.isna().mean()) > 0.5 and not getattr(self, "_btc5m_warned", False):
+        log.warning("btc_roc_1_5m unaligned: %.1f%% NaN", float(aligned.isna().mean()) * 100)
+        self._btc5m_warned = True
+      # no BTC data never blocks: the guard does not invent a block
+      df["btc_roc_1_5m"] = aligned.fillna(100.0).to_numpy()
+    else:
+      df["btc_roc_1_5m"] = 100.0
 
     # ============================================================
     # BTC INFORMATIVE (BATCH PREPARATION)
@@ -5900,6 +5923,8 @@ class NostalgiaForInfinityX8(IStrategy):
     orange_h = np_view("ORANGE_H")
     orange_l = np_view("ORANGE_L")
     willr_14_4h = np_view("WILLR_14_4h")
+    btc_roc_1_5m = np_view("btc_roc_1_5m")
+    btc_roc_1_4h = np_view("BTC_ROC_1_4h")
     stoch_k_4h = np_view("STOCHk_14_3_3_4h")
 
     sqz_on = np_view("SQZ_ON")
@@ -20282,6 +20307,37 @@ class NostalgiaForInfinityX8(IStrategy):
             & (bbt_40_2_0 < bbd_40_2_0 * 0.3)
             & (close < bbl_40_2_0_shift_1)
             & (close <= close_shift_1)
+          )
+
+        # Condition #146 - Top Coins mode (Long).
+        if long_entry_condition_index == 146:
+          # Protections
+          long_entry_logic.append(is_pair_long_top_coins_mode)
+          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          long_entry_logic.append(protections_long_global == True)
+
+          # Logic
+          long_entry_logic.append(
+            # 5m momentum already turning up
+            (rsi_20 < rsi_20_shift_1)
+            # 5m oversold
+            & (rsi_3 < 30.0)
+            # 5m freshness has not been bought yet
+            & (aroonu_14_lt_25)
+            # price still below a stretched 5m mean
+            & (close < sma_16 * 0.960)
+            # tape not falling on the entry bar
+            & (btc_roc_1_5m > -1.2)
+            # 1h momentum has turned
+            & (cci_20_change_pct_1h > -34.7)
+            # 1h range still compressed
+            & (bbb_20_2_0_1h > 5.15)
+            # 4h still oversold
+            & (willr_14_4h < -6.7)
+            # 4h trend pointing down
+            & (aroond_14_4h > 7.1429)
+            # tape not cascading over four hours
+            & (btc_roc_1_4h > -2.2)
           )
 
         # Condition #161 - Scalp mode (Long).
