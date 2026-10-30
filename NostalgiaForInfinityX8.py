@@ -3124,7 +3124,7 @@ class NostalgiaForInfinityX8(IStrategy):
     btc_info_pair = self.btc_informative_pair()
 
     informative_pairs.update((btc_info_pair, btc_info_timeframe) for btc_info_timeframe in self.btc_info_timeframes)
-    # BTC on 5m: liquidation-cascade guard for signal 141
+    # BTC on 5m: cascade guard, shared by every entry condition that reads it
     informative_pairs.add((btc_info_pair, self.timeframe))
 
     return list(informative_pairs)
