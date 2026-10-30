@@ -7,6 +7,7 @@ import talib.abstract as ta
 import pandas as pd
 from freqtrade.strategy.interface import IStrategy
 from freqtrade.strategy import merge_informative_pair
+from freqtrade.exchange import timeframe_to_minutes
 from pandas import DataFrame, Series
 from functools import reduce
 from freqtrade.persistence import Trade, Order
@@ -302,6 +303,7 @@ class NostalgiaForInfinityX8(IStrategy):
 
   # Grinding feature
   grinding_enable = True
+  risk_long_slot_cap_enable = False
   derisk_enable = True
   stops_enable = True
   doom_stops_enable = True
@@ -1193,6 +1195,7 @@ class NostalgiaForInfinityX8(IStrategy):
       "stop_threshold_rapid_futures",
       "stop_threshold_scalp_spot",
       "stop_threshold_scalp_futures",
+      "risk_long_slot_cap_enable",
       "derisk_enable",
       "stops_enable",
       "regular_mode_derisk_1_spot",
@@ -3108,6 +3111,70 @@ class NostalgiaForInfinityX8(IStrategy):
 
     return informative[keep_cols]
 
+  market_health_1d_columns = ("MKT_STRESS",)
+
+  def market_health_1d(self, current_candle: datetime | None = None) -> DataFrame:
+    """Build daily readings from the current whitelist without future-row statistics."""
+    pairs = tuple(sorted(self.dp.current_whitelist()))
+    request_key = (pairs, current_candle)
+    cache = getattr(self, "_market_health_cache", None)
+    if current_candle is not None and cache is not None and cache[0] == request_key:
+      return cache[2]
+
+    btc_pair = self.btc_informative_pair()
+    frames = {pair: self.dp.get_pair_dataframe(pair=pair, timeframe="1d") for pair in sorted(set(pairs) | {btc_pair})}
+    source_key = (
+      pairs,
+      tuple(
+        (
+          pair,
+          ()
+          if frame.empty
+          else (
+            str(frame["date"].dtype),
+            frame["date"].array.asi8.tobytes(),
+            *(
+              (str(frame[column].dtype), frame[column].to_numpy(copy=False).tobytes()) for column in ("high", "close")
+            ),
+          ),
+        )
+        for pair, frame in frames.items()
+      ),
+    )
+    if cache is not None and cache[1] == source_key:
+      self._market_health_cache = (request_key, source_key, cache[2])
+      return cache[2]
+
+    market = DataFrame(columns=["date", *self.market_health_1d_columns])
+    closes = {pair: frames[pair].set_index("date")["close"] for pair in pairs if not frames[pair].empty}
+    if closes and not frames[btc_pair].empty:
+      close = DataFrame(closes).asfreq("1D")
+      high = DataFrame({pair: frames[pair].set_index("date")["high"] for pair in closes}).reindex(close.index)
+      eligible = close.notna() & close.notna().cumsum().ge(50)
+      drawdown = close / high.rolling(30, min_periods=30).max() - 1.0
+      market = DataFrame(index=close.index)
+      market["MKT_STRESS"] = drawdown.lt(-0.25).where(eligible & drawdown.notna()).mean(axis=1) * 100.0
+
+      market = market.rename_axis("date").reset_index()
+
+    self._market_health_cache = (request_key, source_key, market)
+    return market
+
+  def merge_market_health(self, df: DataFrame, daily: DataFrame) -> DataFrame:
+    """Expose completed daily readings after Native fill, without carrying expired values."""
+    columns = self.market_health_1d_columns
+    readings = np.full((len(df), len(columns)), np.nan)
+    if not daily.empty and not df.empty:
+      base_dates = df["date"].to_numpy(dtype="datetime64[ns]")
+      offset = np.timedelta64(1440 - timeframe_to_minutes(self.timeframe), "m")
+      available = daily["date"].to_numpy(dtype="datetime64[ns]") + offset
+      positions = np.searchsorted(available, base_dates, side="right") - 1
+      matched = np.flatnonzero(positions >= 0)
+      matched = matched[(base_dates[matched] - available[positions[matched]]) <= offset]
+      for index, column in enumerate(columns):
+        readings[matched, index] = daily[column].to_numpy(copy=False)[positions[matched]]
+    return pd.concat([df, DataFrame(readings, index=df.index, columns=[f"{column}_1d" for column in columns])], axis=1)
+
   # Informative Pairs
   # ---------------------------------------------------------------------------------------------
   def informative_pairs(self):
@@ -3126,6 +3193,8 @@ class NostalgiaForInfinityX8(IStrategy):
     informative_pairs.update((btc_info_pair, btc_info_timeframe) for btc_info_timeframe in self.btc_info_timeframes)
     # BTC on 5m: cascade guard, shared by every entry condition that reads it
     informative_pairs.add((btc_info_pair, self.timeframe))
+    if self.risk_long_slot_cap_enable:
+      informative_pairs.add((btc_info_pair, "1d"))
 
     return list(informative_pairs)
 
@@ -4996,6 +5065,10 @@ class NostalgiaForInfinityX8(IStrategy):
     # BASE TF (LAST)
     # ============================================================
     df = self.base_tf_5m_indicators(metadata, df)
+
+    if self.risk_long_slot_cap_enable:
+      market = self.market_health_1d(df["date"].iloc[-1] if not df.empty else None)
+      df = self.merge_market_health(df, market)
 
     # ============================================================
     # FINAL INDICATOR VALIDATION
