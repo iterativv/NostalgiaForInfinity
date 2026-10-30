@@ -50,6 +50,10 @@
       // binance spot book grew from $0.67M to $1.22M as the price fell. A 3-day rate of
       // change of 0.30 keeps it under anything a RangeStabilityFilter would act on.
       "(MITO)/.*",
+      // -40.1% over seven days and -70.0% over thirty, on a 3-day rate of change of 1.16
+      // — it opens wide and stays wide, so a RangeStabilityFilter already screens it out
+      // where one is configured. The list covers the venues and setups where it is not.
+      "(INTW)/.*",
       // zkLink Nova bridge drained of ~$786k on 2026-10-28 through a forged batch root,
       // with the main escrow left unpaused. Spot only on bitget and gate, no perpetual
       // anywhere, and the book was already gone before the exploit: $0.03M and effectively
