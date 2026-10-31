@@ -40,8 +40,8 @@ def adjust(case, rate, max_stake=10000.0):
   return strategy.adjust_trade_position(trade, NOW, rate, profit, 5.0, max_stake, rate, rate, profit, profit)
 
 
-def test_feature_is_opt_in():
-  assert NostalgiaForInfinityX8.system_v4_grind_entry_before_derisk_enable is False
+def test_feature_is_enabled_by_default():
+  assert NostalgiaForInfinityX8.system_v4_grind_entry_before_derisk_enable is True
   assert NostalgiaForInfinityX8.system_v4_grind_entry_before_derisk_distance == 0.02
 
 
