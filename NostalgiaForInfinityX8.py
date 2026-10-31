@@ -14,6 +14,9 @@ from datetime import datetime, timedelta
 import time
 from typing import Optional
 import warnings
+from collections.abc import Mapping as _RMapping, Sequence as _RSequence
+from dataclasses import dataclass as _r_dataclass
+from types import MappingProxyType as _RMappingProxyType
 
 log = logging.getLogger(__name__)
 # log.setLevel(logging.DEBUG)
@@ -106,6 +109,9 @@ class NostalgiaForInfinityX8(IStrategy):
 
   # Do you want to use the hold feature? (with hold-trades.json)
   hold_support_enabled = True
+
+  # Optional residual up-alarm profit recovery.
+  risk_residual_first_target_exit_enable = False
 
   # Run "populate_indicators()" only for new candle.
   process_only_new_candles = True
@@ -1174,6 +1180,7 @@ class NostalgiaForInfinityX8(IStrategy):
     # A list of parameters that can be changed through the config.
     NFI_SAFE_PARAMETERS = [
       "num_cores_indicators_calc",
+      "risk_residual_first_target_exit_enable",
       "custom_fee_open_rate",
       "custom_fee_close_rate",
       "futures_mode_leverage",
@@ -1944,9 +1951,120 @@ class NostalgiaForInfinityX8(IStrategy):
     multi = min_stake / slice_amount / stakes[0] * trade_leverage
     return [stake * multi for stake in stakes]
 
+  def _r_is_profit_tracking(self, target, trade: "Trade") -> bool:
+    if target is None:
+      return False
+    reason = target["sell_reason"]
+    return bool(
+      reason.startswith(("exit_long_", "exit_profit_long_"))
+      and "stoploss" not in reason
+      and "doom" not in reason
+      and "abandon" not in reason
+      and np.isfinite(target["profit"])
+      and target["profit"] > 0.0
+      and datetime.fromisoformat(target["time_profit_reached"]) >= trade.open_date_utc
+    )
+
+  def _r_merge_hourly(self, df: DataFrame, metadata: dict) -> DataFrame:
+    if df.empty:
+      return df
+    whitelist = tuple(sorted(self.dp.current_whitelist()))
+    if not whitelist or len(set(whitelist)) != len(whitelist):
+      raise ValueError("R requires a nonempty unique fixed whitelist")
+    if hasattr(self, "_r_whitelist") and whitelist != self._r_whitelist:
+      raise ValueError("R whitelist changes require a new explicit strategy epoch")
+    pair = metadata["pair"]
+    if pair not in whitelist:
+      raise ValueError("R output pair must belong to the fixed whitelist")
+    offline = self.dp.runmode.value in ("backtest", "hyperopt", "plot", "webserver")
+    cutoff = (pd.Timestamp(df["date"].iloc[-1]) + pd.Timedelta(minutes=5)).floor("h")
+    if not hasattr(self, "_r_cutoff") or cutoff > self._r_cutoff:
+      # Fetch the WHOLE cross-section before the owner commits even one hour.
+      frames = {name: self.dp.get_pair_dataframe(name, "1h") for name in whitelist}
+      if offline:
+        ends = [
+          pd.Timestamp(frame["date"].iloc[-1]) + pd.Timedelta(hours=1) for frame in frames.values() if not frame.empty
+        ]
+        cutoff = max([cutoff, *ends]).floor("h")
+      if not hasattr(self, "_r_hourly_owner"):
+        self._r_hourly_owner = RHourlyState(whitelist, retain_history=offline)
+      snapshot = self._r_hourly_owner.update(frames, whitelist, cutoff)
+      self._r_whitelist = whitelist
+      self._r_cutoff = cutoff
+      if offline:
+        self._r_hourly_surface = snapshot
+      else:
+        # Keep the rolling merge surface, not the raw provider histories. The
+        # owner's rings/CUSUM survive; only old rendered output is discarded.
+        oldest = pd.Timestamp(df["date"].iloc[0]) - pd.Timedelta(hours=1)
+        previous = getattr(self, "_r_hourly_surface", {})
+        self._r_hourly_surface = {
+          name: tuple(row for row in previous.get(name, ()) if row.R_AVAILABLE_AT >= oldest) + snapshot[name]
+          for name in whitelist
+        }
+    # A shorter offline pair callback reads retained causal history; it must
+    # never send its earlier endpoint back into the shared owner.
+    rows = self._r_hourly_surface[pair]
+    names = [name for name in HourlyReading.__dataclass_fields__ if name != "date"]
+    result = df.copy()
+    if not rows:
+      for name in names:
+        result[name] = pd.NaT if name == "R_AVAILABLE_AT" else (False if name == "R_UP_ALARM" else np.nan)
+      return result
+    hourly = DataFrame.from_records([{name: getattr(row, name) for name in names} for row in rows])
+    closes = DataFrame({"_r_close": pd.to_datetime(df["date"], utc=True) + pd.Timedelta(minutes=5)})
+    merged = pd.merge_asof(closes, hourly, left_on="_r_close", right_on="R_AVAILABLE_AT", direction="backward")
+    fresh = merged["R_AVAILABLE_AT"].notna() & (merged["_r_close"] < merged["R_AVAILABLE_AT"] + pd.Timedelta(hours=1))
+    for name in names:
+      if name == "R_UP_ALARM":
+        result[name] = (merged[name].eq(True) & fresh).to_numpy()
+      else:
+        result[name] = merged[name].where(fresh).array
+    return result
+
   # Custom Exit
   # ---------------------------------------------------------------------------------------------
   def custom_exit(
+    self, pair: str, trade: "Trade", current_time: "datetime", current_rate: float, current_profit: float, **kwargs
+  ):
+    if not self.risk_residual_first_target_exit_enable or trade.is_short:
+      return self._r_native_custom_exit(pair, trade, current_time, current_rate, current_profit, **kwargs)
+    was_tracking = self._r_is_profit_tracking(self.target_profit_cache.data.get(pair), trade)
+    native_exit = self._r_native_custom_exit(pair, trade, current_time, current_rate, current_profit, **kwargs)
+    if native_exit is not None:
+      return native_exit
+    pending = trade.get_custom_data(key="mh_r_first_target")
+    if pending is not None:
+      return pending
+    target = self.target_profit_cache.data.get(pair)
+    if was_tracking or not self._r_is_profit_tracking(target, trade):
+      return None
+    if target["time_profit_reached"] != current_time.isoformat():
+      return None
+    frame, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
+    if frame.empty or "date" not in frame:
+      return None
+    now = pd.Timestamp(current_time)
+    completed = frame.loc[pd.to_datetime(frame["date"], utc=True) + pd.Timedelta(minutes=5) <= now]
+    if completed.empty:
+      return None
+    candle = completed.iloc[-1]
+    available = candle.get("R_AVAILABLE_AT")
+    alarm = candle.get("R_UP_ALARM")
+    if available is None or pd.isna(available) or alarm is None or pd.isna(alarm) or not bool(alarm):
+      return None
+    available = pd.Timestamp(available)
+    if available.tzinfo is None or not (available <= now < available + pd.Timedelta(hours=1)):
+      return None
+    _, entries, exits = self.filled_order_snapshot(trade)
+    lifecycle_profit = self.calc_total_profit(trade, entries, exits, current_rate)[0]
+    if not np.isfinite(lifecycle_profit) or lifecycle_profit <= 0.0:
+      return None
+    reason = "exit_r_first_" + target["sell_reason"].removeprefix("exit_")
+    trade.set_custom_data(key="mh_r_first_target", value=reason)
+    return reason
+
+  def _r_native_custom_exit(
     self, pair: str, trade: "Trade", current_time: "datetime", current_rate: float, current_profit: float, **kwargs
   ):
     trade_is_short = trade.is_short
@@ -4886,6 +5004,12 @@ class NostalgiaForInfinityX8(IStrategy):
   # Populate Indicators
   # ---------------------------------------------------------------------------------------------
   def populate_indicators(self, df: DataFrame, metadata: dict) -> DataFrame:
+    df = self._r_native_populate_indicators(df, metadata)
+    if self.risk_residual_first_target_exit_enable:
+      return self._r_merge_hourly(df, metadata)
+    return df
+
+  def _r_native_populate_indicators(self, df: DataFrame, metadata: dict) -> DataFrame:
     debug = False
     debug_time = True
     if debug_time:
@@ -63902,3 +64026,204 @@ class HoldsCache(Cache):
         pass
       _data[key] = value
     return _data
+
+
+# Causal hourly residual state for the optional profit exit.
+
+_R_HOUR = pd.Timedelta(hours=1)
+_R_WINDOW = 720
+
+
+@_r_dataclass(frozen=True, slots=True)
+class HourlyReading:
+  date: pd.Timestamp
+  R_AVAILABLE_AT: pd.Timestamp
+  R_MARKET_COUNT: int
+  R_MARKET_RETURN: float
+  R_RETURN: float
+  R_BETA: float
+  R_RESIDUAL: float
+  R_SCALE: float
+  R_Z: float
+  R_CUSUM: float
+  R_UP_ALARM: bool
+
+
+def _r_cusum(previous: float, z: float) -> tuple[float, bool]:
+  if not np.isfinite(z):
+    return 0.0, False
+  state = max(0.0, previous + z - 0.5)
+  alarm = state > 5.0
+  return (0.0 if alarm else state), alarm
+
+
+class RHourlyState:
+  """One single-threaded epoch; a new owner never implies restart continuity.
+
+  update() returns immutable per-pair tuples. Default output is the latest
+  advancing call's delta; retain_history=True returns the entire epoch.
+  Repeated closed hours return the SAME object. Inspect R_AVAILABLE_AT before
+  consuming a detector pulse; a repeated snapshot is not another event.
+  """
+
+  def __init__(self, output_pairs: _RSequence[str], *, retain_history: bool = False):
+    self._pairs = tuple(output_pairs)
+    if not self._pairs or len(set(self._pairs)) != len(self._pairs):
+      raise ValueError("output_pairs must be nonempty and unique")
+    self._retain_history = retain_history
+    self._whitelist: tuple[str, ...] | None = None
+    self._cutoff: pd.Timestamp | None = None
+    self._last: pd.Timestamp | None = None
+    self._raw: dict[pd.Timestamp, np.ndarray] = {}
+    self._market = np.full(_R_WINDOW, np.nan)
+    self._returns = np.full((_R_WINDOW, len(self._pairs)), np.nan)
+    self._residuals = np.full_like(self._returns, np.nan)
+    self._state = np.zeros(len(self._pairs))
+    self._slot = 0
+    self._rows: dict[str, list[HourlyReading]] = {pair: [] for pair in self._pairs}
+    self._snapshot: _RMapping[str, tuple[HourlyReading, ...]] = _RMappingProxyType({pair: () for pair in self._pairs})
+
+  def update(
+    self,
+    frames: _RMapping[str, pd.DataFrame],
+    whitelist: _RSequence[str],
+    closed_at: pd.Timestamp,
+  ) -> _RMapping[str, tuple[HourlyReading, ...]]:
+    """Commit each newly closed hour once, validating overlap before mutation.
+
+    Source rows must be sorted, unique and timezone-aware. Supplied revisions
+    inside the retained 721-hour overlap raise. Earlier rows are ignored;
+    accepting corrections or another whitelist requires a new explicit epoch.
+    Missing new rows are committed unknown, including all-market missing hours.
+    """
+    pairs = tuple(sorted(whitelist))
+    if len(set(pairs)) != len(pairs) or not set(self._pairs).issubset(pairs):
+      raise ValueError("Whitelist must be unique and contain every output pair")
+    if self._whitelist is not None and pairs != self._whitelist:
+      raise ValueError("Whitelist changes require a new explicit epoch")
+    cutoff = pd.Timestamp(closed_at)
+    if pd.isna(cutoff) or cutoff.tzinfo is None:
+      raise ValueError("closed_at must be a finite timezone-aware timestamp")
+    cutoff = cutoff.tz_convert("UTC")
+    if self._cutoff is not None and cutoff < self._cutoff:
+      raise ValueError("closed_at cannot move backward within an epoch")
+    end = cutoff.floor("h") - _R_HOUR
+    oldest = next(iter(self._raw)) if self._raw else None
+    prepared: dict[str, dict[pd.Timestamp, float]] = {}
+    first: pd.Timestamp | None = None
+
+    # Validate all inputs before changing any epoch state. Only the retained
+    # overlap and unseen close slice is copied, never a full old close history.
+    for column, pair in enumerate(pairs):
+      source = frames.get(pair)
+      if source is None or source.empty:
+        prepared[pair] = {}
+        continue
+      dates = pd.DatetimeIndex(source["date"])
+      if dates.tz is None:
+        raise ValueError("Candle dates must be timezone-aware")
+      dates = dates.tz_convert("UTC")
+      if not dates.is_monotonic_increasing or not dates.is_unique or dates.hasnans:
+        raise ValueError("Candle dates must be sorted, unique and finite")
+      start = 0 if oldest is None else dates.searchsorted(oldest)
+      stop = dates.searchsorted(end, side="right")
+      selected = dates[start:stop]
+      if not selected.equals(selected.floor("h")):
+        raise ValueError("Candle dates must be exactly hourly")
+      values = source["close"].iloc[start:stop].to_numpy(dtype=float, copy=True)
+      values[~(np.isfinite(values) & (values > 0.0))] = np.nan
+      prepared[pair] = dict(zip(selected, values, strict=True))
+      if len(selected) and (first is None or selected[0] < first):
+        first = selected[0]
+      for stamp, value in prepared[pair].items():
+        if stamp in self._raw:
+          committed = self._raw[stamp][column]
+          if not (value == committed or (np.isnan(value) and np.isnan(committed))):
+            raise ValueError(f"Committed close revision for {pair} at {stamp}")
+
+    self._whitelist = pairs
+    self._cutoff = cutoff
+    if self._last is None:
+      if first is None:
+        return self._snapshot
+      stamp = first
+    else:
+      stamp = self._last + _R_HOUR
+    if stamp > end:
+      return self._snapshot
+
+    positions = [pairs.index(pair) for pair in self._pairs]
+    rows: dict[str, list[HourlyReading]] = {pair: [] for pair in self._pairs}
+    previous = self._raw[self._last] if self._last is not None else np.full(len(pairs), np.nan)
+    while stamp <= end:
+      closes = np.array([prepared[pair].get(stamp, np.nan) for pair in pairs])
+      with np.errstate(divide="ignore", invalid="ignore", over="ignore"):
+        all_returns = closes / previous - 1.0
+      all_returns[~np.isfinite(all_returns)] = np.nan
+      valid = all_returns[np.isfinite(all_returns)]
+      market = float(np.median(valid)) if len(valid) else float("nan")
+      returns = all_returns[positions]
+      beta = np.full(len(self._pairs), np.nan)
+      scale = np.full(len(self._pairs), np.nan)
+
+      # These rings contain only PREVIOUS hours; append current observations
+      # after calculating both normalizers. No chunk-dependent rolling sums.
+      with np.errstate(divide="ignore", invalid="ignore", over="ignore"):
+        if np.isfinite(self._market).all():
+          centered_market = self._market - np.mean(self._market)
+          variance = np.sum(centered_market * centered_market) / (_R_WINDOW - 1)
+          if np.isfinite(variance) and variance > 0.0:
+            finite = np.isfinite(self._returns).all(axis=0)
+            centered_returns = self._returns[:, finite] - np.mean(
+              self._returns[:, finite],
+              axis=0,
+            )
+            covariance = np.sum(
+              centered_returns * centered_market[:, None],
+              axis=0,
+            ) / (_R_WINDOW - 1)
+            beta[finite] = covariance / variance
+        beta[~np.isfinite(beta)] = np.nan
+        residual = returns - beta * market
+        residual[~np.isfinite(residual)] = np.nan
+        finite = np.isfinite(self._residuals).all(axis=0)
+        scale[finite] = np.std(self._residuals[:, finite], axis=0, ddof=1)
+        scale[~(np.isfinite(scale) & (scale > 0.0))] = np.nan
+        z = residual / scale
+        z[~np.isfinite(z)] = np.nan
+
+      for column, pair in enumerate(self._pairs):
+        state, alarm = _r_cusum(float(self._state[column]), float(z[column]))
+        self._state[column] = state
+        rows[pair].append(
+          HourlyReading(
+            date=stamp,
+            R_AVAILABLE_AT=stamp + _R_HOUR,
+            R_MARKET_COUNT=len(valid),
+            R_MARKET_RETURN=market,
+            R_RETURN=float(returns[column]),
+            R_BETA=float(beta[column]),
+            R_RESIDUAL=float(residual[column]),
+            R_SCALE=float(scale[column]),
+            R_Z=float(z[column]),
+            R_CUSUM=state,
+            R_UP_ALARM=alarm,
+          )
+        )
+      self._market[self._slot] = market
+      self._returns[self._slot] = returns
+      self._residuals[self._slot] = residual
+      self._slot = (self._slot + 1) % _R_WINDOW
+      self._raw[stamp] = closes
+      if len(self._raw) > _R_WINDOW + 1:
+        del self._raw[next(iter(self._raw))]
+      self._last = stamp
+      previous = closes
+      stamp += _R_HOUR
+
+    if self._retain_history:
+      for pair in self._pairs:
+        self._rows[pair].extend(rows[pair])
+      rows = self._rows
+    self._snapshot = _RMappingProxyType({pair: tuple(rows[pair]) for pair in self._pairs})
+    return self._snapshot
