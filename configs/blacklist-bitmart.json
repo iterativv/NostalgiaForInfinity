@@ -18,6 +18,18 @@
       // 2026-10-27 alone. Spot-only on gate, the only venue that lists it, and the book
       // has thinned from ~$0.5M to ~$0.1M/day.
       "(BELIEVE)/.*",
+      // Leveraged products, 2x and 3x. The exchanges label the class but not the multiple:
+      // bybit carries symbolType=ETF, binance contractType=TRADIFI_PERPETUAL, bitget isRwa=YES,
+      // and SOXL's market payload is indistinguishable from QQQ's. SOXL is 3x semiconductors,
+      // SOXS -3x, TMF 3x treasuries, TZA -3x small caps, KORU 3x Korea, SPXL 3x S&P; the rest
+      // are 2x single-stock funds (NVDL, TSLL, MSTU, MSFU, CONL, AAPU, AMZU, GGLL, METU, AGPU,
+      // MVLL, MUU, SKUU/SKDD, INTW), 2x index or rates (QLD, TBT) and UVXY on volatility.
+      // On a 3x futures account a SOXL entry is 9x on a semiconductor index. TQQQ and SQQQ were
+      // already here; these are the rest of the class.
+      // The suffixed symbols are the same products under venue-specific naming — ...B on binance
+      // spot, ...G on gate spot, ...ON and ...STOCK on mexc — and the 3L/3S pairs on gate are
+      // leveraged tokens written on top of an already-leveraged fund.
+      "(AAPU|AGPU|AGPUB|AGPUSTOCK|AMZU|CONL|CSOPSAMSUNG2L|CSOPSKHYNIX2L|GGLL|INTW|INTWB|INTWG|KORU|KORU3L|KORU3S|KORUB|KORUG|METU|MSFU|MSTU|MUU|MUU3L|MUU3S|MUUB|MUUG|MVLL|MVLLB|MVLLG|NVDL|QLD|SKDD|SKDDB|SKUU|SKUUB|SOXL|SOXL3L|SOXL3S|SOXLB|SOXLG|SOXLON|SOXS|SOXS3L|SOXS3S|SOXSB|SOXSG|SOXSON|SPXL|TBT|TMF|TMFB|TSLL|TZA|UVXY|UVXYB)/.*",
       // Binance put both under its Monitoring Tag on 2026-10-09. Neither is a falling
       // knife — they bleed slowly on a thin book: BICO -24.4% over 30 days on $1.2M/day,
       // CVC -19.0% on $2.5M/day, both with a 3-day rate of change under 0.15. The tag
@@ -42,6 +54,10 @@
       // binance spot book grew from $0.67M to $1.22M as the price fell. A 3-day rate of
       // change of 0.30 keeps it under anything a RangeStabilityFilter would act on.
       "(MITO)/.*",
+      // -40.1% over seven days and -70.0% over thirty, on a 3-day rate of change of 1.16
+      // — it opens wide and stays wide, so a RangeStabilityFilter already screens it out
+      // where one is configured. The list covers the venues and setups where it is not.
+      "(INTW)/.*",
       // zkLink Nova bridge drained of ~$786k on 2026-10-28 through a forged batch root,
       // with the main escrow left unpaused. Spot only on bitget and gate, no perpetual
       // anywhere, and the book was already gone before the exploit: $0.03M and effectively
