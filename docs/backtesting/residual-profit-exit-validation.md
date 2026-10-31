@@ -229,7 +229,7 @@ verified for every new account.
 
 `residual-profit-exit-validation.json` contains the account and signal-cohort
 metrics, complete change classifications, source/runtime identities, original
-configs, exchange snapshots and 546 annual data-file hashes.
+configs, exchange snapshots and 582 annual data-file hashes.
 `residual-profit-exit-ledgers.json` contains every comparison trade and both
 minified and full actual Order records. It is compact machine-readable JSON;
 requested amounts and actual filled quantities remain distinct.
@@ -250,7 +250,7 @@ runtime, code/evidence hashes and result. This separately qualifies the enabled
 path for 2020; the other accounts were not rerun through this public wrapper.
 
 From this PR's root, set `DATA_DIR` to the 2020 directory containing `futures/`
-and its 63 matching files, and `OUTPUT_DIR` to a writable output parent:
+and its 99 matching files, and `OUTPUT_DIR` to a writable output parent:
 
 ```bash
 : "${DATA_DIR:?Set DATA_DIR to the matching annual data directory}"
