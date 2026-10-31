@@ -84,6 +84,7 @@ class LegacyGrindDemandSnapshot(TypedDict):
   ledger: tuple
   min_stake: float
   demand: LegacyGrindDemandState
+  timing_boundaries: tuple[datetime, datetime, datetime]
 
 
 class NostalgiaForInfinityX8(IStrategy):
@@ -2083,6 +2084,8 @@ class NostalgiaForInfinityX8(IStrategy):
     """Start one full-close intent only after all original exit decisions returned None."""
     episode = self._legacy_grind_demand_episode(trade)
     if episode is None or self._legacy_grind_demand_ledger(trade) != snapshot["ledger"]:
+      return None
+    if any(snapshot["time"] <= boundary < current_time for boundary in snapshot["timing_boundaries"]):
       return None
     rate = snapshot["rate"]
     if trade.amount * rate / trade.leverage > 1.55 * snapshot["min_stake"]:
@@ -47463,6 +47466,11 @@ class NostalgiaForInfinityX8(IStrategy):
         ledger=self._legacy_grind_demand_ledger(trade),
         min_stake=min_stake,
         demand=request[2],
+        timing_boundaries=(
+          last_filled_entry.order_filled_utc + (current_time - grind_entry_retry_time),
+          last_filled_order.order_filled_utc + (current_time - grind_order_age_time),
+          last_filled_order.order_filled_utc + (current_time - grind_force_order_age_time),
+        ),
       )
     return None
 

@@ -211,3 +211,27 @@ def test_snapshot_is_consumed_even_when_native_exit_wins(case):
   # The realized gm0 gain still exceeds 25% even when the remainder marks at 11.
   assert case.exit(rate=11.0) == "exit_long_grind_g ( 120)"
   assert case.trade.get_custom_data(KEY) is None
+
+
+@pytest.mark.parametrize("exit_second", [2, 3, 6])
+def test_snapshot_preserves_original_retry_time_boundary(case, exit_second):
+  boundary = DUE + timedelta(seconds=3)
+  entry_time = boundary - timedelta(minutes=10)
+  case.entry.order_date = case.entry.order_filled_date = entry_time
+  case.gm0.order_date = case.gm0.order_filled_date = entry_time + timedelta(minutes=1)
+  case.trade.open_date = entry_time
+  case.strategy.long_grind_entry_v3 = MagicMock(return_value=True)
+  case.strategy.long_grind_entry_v4 = MagicMock(return_value=True)
+  assert case.demand() is False
+  assert case.adjust(DUE + timedelta(seconds=1), rate=9.0) is None
+  assert case.strategy._legacy_grind_demand_snapshot is not None
+  exit_time = DUE + timedelta(seconds=exit_second)
+
+  result = case.exit(exit_time, rate=9.0)
+
+  if exit_time <= boundary:
+    assert result == EXIT
+  else:
+    assert result is None
+    assert case.trade.get_custom_data(KEY) is None
+    assert case.adjust(exit_time, rate=9.0) == (400.0, "gd1")
