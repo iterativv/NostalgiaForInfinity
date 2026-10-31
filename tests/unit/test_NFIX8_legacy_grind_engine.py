@@ -3,6 +3,7 @@ from unittest.mock import MagicMock
 
 import pytest
 from freqtrade.enums import State
+from freqtrade.exchange import Exchange
 from freqtrade.freqtradebot import FreqtradeBot
 from freqtrade.wallets import Wallets
 
@@ -19,10 +20,14 @@ legacy_grind_case = funding_tests.legacy_grind_case
   ids=["empty", "below-wallet", "funded", "exact-exchange", "below-exchange"],
 )
 @pytest.mark.parametrize("entry_signal", [False, True])
+@pytest.mark.parametrize("exchange_name", ["binance", "okx"])
+@pytest.mark.parametrize("exchange_minimum", [None, 0.0, 5.0])
 def test_engine_reaches_stop_when_addition_cannot_execute(
-  legacy_grind_case, mocker, funding_ratio, exchange_ratio, entry_signal
+  legacy_grind_case, mocker, funding_ratio, exchange_ratio, entry_signal, exchange_name, exchange_minimum
 ):
   strategy, trade, rate = legacy_grind_case
+  strategy.config["exchange"]["name"] = exchange_name
+  trade.exchange = exchange_name
   funding_tests.set_signal(strategy, entry_signal)
   entry_stake = 140.0 / trade.leverage
   free_stake = entry_stake * funding_ratio
@@ -44,7 +49,15 @@ def test_engine_reaches_stop_when_addition_cannot_execute(
   bot.exchange.get_proxy_coin.return_value = "USDT"
   bot.exchange.get_pair_base_currency.return_value = "ETH"
   bot.exchange.get_rates.return_value = (rate, rate)
-  bot.exchange.get_min_pair_stake_amount.return_value = 5.0
+  if exchange_minimum is None:
+    # Use the real producer for valid market metadata with no declared minimum.
+    limits = Exchange.__new__(Exchange)
+    limits._exchange_ws = None
+    limits._config = {}
+    limits._markets = {trade.pair: {"limits": {"cost": {"min": None}, "amount": {"min": None}}}}
+    bot.exchange.get_min_pair_stake_amount.side_effect = limits.get_min_pair_stake_amount
+  else:
+    bot.exchange.get_min_pair_stake_amount.return_value = exchange_minimum
   bot.exchange.get_max_pair_stake_amount.return_value = exchange_limit
   bot.exchange.amount_to_contract_precision.side_effect = lambda pair, amount: round(amount, 8)
   bot.exchange.get_funding_fees.return_value = 0.0
@@ -75,6 +88,7 @@ def test_engine_reaches_stop_when_addition_cannot_execute(
   bot.check_and_call_adjust_trade_position(trade)
 
   assert adjustment.call_args.kwargs["max_stake"] == pytest.approx(min(free_stake, exchange_limit))
+  assert adjustment.call_args.kwargs["min_stake"] == exchange_minimum
   if entry_signal and min(funding_ratio, exchange_ratio) >= 1.0:
     bot.execute_entry.assert_called_once_with(
       trade.pair,
@@ -90,7 +104,10 @@ def test_engine_reaches_stop_when_addition_cannot_execute(
     bot.execute_entry.assert_not_called()
     bot.exchange.create_order.assert_called_once()
     order_args = bot.exchange.create_order.call_args.kwargs
-    stake, tag = funding_tests.expected_stop(trade, rate)
+    minimum = 0.0 if exchange_minimum is None else exchange_minimum
+    if strategy.is_futures_mode and exchange_name == "binance":
+      minimum = max(minimum, 5.0 / trade.leverage)
+    stake, tag = funding_tests.expected_stop(trade, rate, min_stake=minimum)
     expected_quantity = -stake * trade.amount / trade.stake_amount
     assert order_args["side"] == trade.exit_side
     assert order_args["reduceOnly"] == (trade.leverage > 1)
