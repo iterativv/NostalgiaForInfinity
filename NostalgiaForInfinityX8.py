@@ -5646,12 +5646,12 @@ class NostalgiaForInfinityX8(IStrategy):
 
   # Correct Min Stake
   # ---------------------------------------------------------------------------------------------
-  def correct_min_stake(self, min_stake: Optional[float], trade_leverage: Optional[float] = None) -> Optional[float]:
+  def correct_min_stake(self, min_stake: Optional[float], trade_leverage: Optional[float] = None) -> float:
     if self.is_futures_mode and self.config["exchange"]["name"] in ("binance", "bybit", "krakenfutures"):
       min_futures_stake = 5.0 / (trade_leverage if trade_leverage is not None else self.futures_mode_leverage)
       if (min_stake is None) or (min_stake < min_futures_stake):
         min_stake = min_futures_stake
-    return min_stake
+    return min_stake if min_stake is not None else 0.0
 
   def is_backtest_mode(self) -> bool:
     """Check if the current run mode is backtest or hyperopt"""
