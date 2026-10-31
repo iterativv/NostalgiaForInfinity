@@ -1,0 +1,229 @@
+{
+  "schema_version": 1,
+  "kind": "correctness_reproduction_and_separately_labelled_historical_context",
+  "current": {
+    "base_commit": "d0b321a2ffb07300c8fe3c20ecdc824d8d2c781a",
+    "strategy_version": "v18.0.183",
+    "base_source_sha256": "093633ec4cf2336f243d21465fb3c457a0566de2f881301f9ee0c9a42956923c",
+    "candidate_source_sha256": "80f824e879493babf42cb861d751aa077bcc475ccacf08ae62ebf7abd26eeb8f",
+    "runtime": {
+      "freqtrade": "2026.8",
+      "python": "3.14.7",
+      "ccxt": "4.5.76",
+      "local_test_image_id": "sha256:e051757d9663ce1c2789bf0ac273ab0f332cc1a2803d1ebc5b6e22842be36786"
+    },
+    "cases": {
+      "native": {
+        "tests": 336,
+        "passed": 244,
+        "failures": 92,
+        "errors": 0,
+        "skipped": 0
+      },
+      "candidate": {
+        "tests": 336,
+        "passed": 336,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "callback_tests": 186,
+      "engine_tests": 150
+    },
+    "source_invariant": {
+      "changed_functions": [
+        "long_grind_adjust_trade_position_v4",
+        "short_grind_adjust_trade_position_v4"
+      ],
+      "changed_guards_per_function": 5,
+      "inverse_restores_entire_upstream_ast": true
+    },
+    "junit_sha256": {
+      "native": "64f387fc4698e426894103d2c50a624d317164fabd61b7c29f086f8dc5d01dc5",
+      "candidate": "ec8a204adabc364a647c1f160ef97d4cde37b42efcd0fa5363219049f1642435"
+    },
+    "tests": [
+      "tests/unit/test_NFIX8_v4_grind_funding.py",
+      "tests/unit/test_NFIX8_v4_grind_funding_engine.py"
+    ],
+    "exchange_boundary": "Mocked external exchange and RPC; real wallet/callback/order-model logic; emitted reduction order open and unfilled",
+    "public_ci_reproduction": {
+      "image": "ghcr.io/iterativv/ci-strategy-backtesting@sha256:c356a7900503e964e0cbe7d92a499171c4090998e9bdf0efa76053b27d249107",
+      "platform": "linux/amd64",
+      "runtime": {
+        "freqtrade": "2026.9",
+        "python": "3.14.7",
+        "ccxt": "4.5.84"
+      },
+      "native": {
+        "tests": 336,
+        "passed": 244,
+        "failures": 92,
+        "errors": 0,
+        "skipped": 0
+      },
+      "candidate": {
+        "tests": 336,
+        "passed": 336,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "junit_sha256": {
+        "native": "96f87135e184724982fb3d1be2f1d14c7745533218baa602bf2d1d211ae91bd0",
+        "candidate": "138ae6b45231774035f560a07a3a64bec0983cc12ca4daa206401a29c26c93d6"
+      }
+    },
+    "full_repository_suite": {
+      "image": "ghcr.io/iterativv/ci-strategy-backtesting@sha256:c356a7900503e964e0cbe7d92a499171c4090998e9bdf0efa76053b27d249107",
+      "tests": 2857,
+      "passed": 2857,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "warnings": 14,
+      "junit_sha256": "716baabdb96488358d9d5c0268af3cd1adef45c095e7b84e0d0510c7a99d1113",
+      "scope": "tests/unit tests/tools",
+      "baseline_test_alignment": {
+        "commit": "cc4ffebce26942548b9e7267341e841242c24a97",
+        "native_file_cases_passed": 582,
+        "reason": "Upstream a32fd54a enabled the flag; rename the stale test and assert the existing True default without changing production."
+      }
+    }
+  },
+  "historical": {
+    "status": "VERIFIED_HISTORICAL_EVIDENCE_ONLY",
+    "native_base": "0d2ad91498ef44cd405427e14cd0d821a2699a61",
+    "version": "v18.0.158",
+    "candidate_commit": "f299d9e4156087ac625c608523d224568f5e5c93",
+    "native_source_sha256": "7ee10f90d931491a7fdd568b4f2331ac111fb3f290007073fe1a1fbc7a2a40ad",
+    "candidate_source_sha256": "27028621687fd7a93c727f1bc0de1fac7504d4e2f450cd8dd55a58781853caf7",
+    "image": "freqtradeorg/freqtrade@sha256:4d23160b501d2b34579e76f57ad75edfa274967cd0dd824ff1c1b86d8c166ab4",
+    "config": {
+      "wallet_usdt": 100000,
+      "stake": "unlimited",
+      "slots": 6,
+      "leverage": 3,
+      "pairs": 19,
+      "timeframe": "5m",
+      "fee_per_side": 0.0005,
+      "independent_annual_wallets": true
+    },
+    "periods": [
+      {
+        "period": "20240101-20250101",
+        "native": {
+          "trades": 139,
+          "wins": 137,
+          "losses": 2,
+          "pnl_usdt": "385847.79232610005",
+          "losing_trade_pnl_usdt": "-8360.0373190899977",
+          "equity_dd_percent": 27.10837151890486,
+          "equity_dd_usdt_at_percent_peak": 37519.70045452655,
+          "max_dollar_dd_usdt": 48726.3588289101,
+          "all_slots_loss_minutes": 375,
+          "force_exits": 0,
+          "liquidations": 0
+        },
+        "modified": {
+          "trades": 139,
+          "wins": 137,
+          "losses": 2,
+          "pnl_usdt": "385847.79232610005",
+          "losing_trade_pnl_usdt": "-8360.0373190899977",
+          "equity_dd_percent": 27.10837151890486,
+          "equity_dd_usdt_at_percent_peak": 37519.70045452655,
+          "max_dollar_dd_usdt": 48726.3588289101,
+          "all_slots_loss_minutes": 375,
+          "force_exits": 0,
+          "liquidations": 0
+        },
+        "trades_orders_equal": true,
+        "equity_trace_equal": true,
+        "new_trades": 0,
+        "omitted_trades": 0,
+        "truncated_trades": 0,
+        "changed_positions": 0
+      },
+      {
+        "period": "20250101-20260101",
+        "native": {
+          "trades": 142,
+          "wins": 140,
+          "losses": 2,
+          "pnl_usdt": "342747.41409544",
+          "losing_trade_pnl_usdt": "-17331.9206883399975",
+          "equity_dd_percent": 20.85405264361571,
+          "equity_dd_usdt_at_percent_peak": 29012.126487849993,
+          "max_dollar_dd_usdt": 29012.126487849993,
+          "all_slots_loss_minutes": 65,
+          "force_exits": 0,
+          "liquidations": 0
+        },
+        "modified": {
+          "trades": 142,
+          "wins": 140,
+          "losses": 2,
+          "pnl_usdt": "342747.41409544",
+          "losing_trade_pnl_usdt": "-17331.9206883399975",
+          "equity_dd_percent": 20.85405264361571,
+          "equity_dd_usdt_at_percent_peak": 29012.126487849993,
+          "max_dollar_dd_usdt": 29012.126487849993,
+          "all_slots_loss_minutes": 65,
+          "force_exits": 0,
+          "liquidations": 0
+        },
+        "trades_orders_equal": true,
+        "equity_trace_equal": true,
+        "new_trades": 0,
+        "omitted_trades": 0,
+        "truncated_trades": 0,
+        "changed_positions": 0
+      },
+      {
+        "period": "20260101-20260806",
+        "native": {
+          "trades": 31,
+          "wins": 30,
+          "losses": 1,
+          "pnl_usdt": "34490.43964978001",
+          "losing_trade_pnl_usdt": "-157.99909885",
+          "equity_dd_percent": 5.860388707319735,
+          "equity_dd_usdt_at_percent_peak": 7556.892619920007,
+          "max_dollar_dd_usdt": 7556.892619920007,
+          "all_slots_loss_minutes": 0,
+          "force_exits": 1,
+          "liquidations": 0
+        },
+        "modified": {
+          "trades": 31,
+          "wins": 30,
+          "losses": 1,
+          "pnl_usdt": "34490.43964978001",
+          "losing_trade_pnl_usdt": "-157.99909885",
+          "equity_dd_percent": 5.860388707319735,
+          "equity_dd_usdt_at_percent_peak": 7556.892619920007,
+          "max_dollar_dd_usdt": 7556.892619920007,
+          "all_slots_loss_minutes": 0,
+          "force_exits": 1,
+          "liquidations": 0
+        },
+        "trades_orders_equal": true,
+        "equity_trace_equal": true,
+        "new_trades": 0,
+        "omitted_trades": 0,
+        "truncated_trades": 0,
+        "changed_positions": 0
+      }
+    ],
+    "verified_pin_count": 39,
+    "pin_mismatches": [],
+    "metrics_sha256": "358912495b2c520c18135a3654a10184d25ea527a9825f1e7735bc8ad894673b",
+    "limits": [
+      "Old-source parity only, not new-base market execution or profitability",
+      "No change in executed trades, orders or equity in the three periods",
+      "Exposed periods; no holdout or pooled return claim",
+      "Original economic-improvement publication gate did not pass; this current request targets reproduced correctness"
+    ]
+  }
+}
