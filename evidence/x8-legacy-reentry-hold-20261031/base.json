@@ -1,0 +1,78 @@
+{
+  "trading_mode": "futures",
+  "margin_mode": "isolated",
+  "max_open_trades": 6,
+  "stake_currency": "USDT",
+  "stake_amount": "unlimited",
+  "tradable_balance_ratio": 0.99,
+  "timeframe": "5m",
+  "dry_run_wallet": 100000,
+  "cancel_open_orders_on_exit": false,
+  "unfilledtimeout": {
+    "entry": 10,
+    "exit": 10,
+    "exit_timeout_count": 0,
+    "unit": "minutes"
+  },
+  "entry_pricing": {
+    "price_side": "other",
+    "use_order_book": true,
+    "order_book_top": 1
+  },
+  "exit_pricing": {
+    "price_side": "other",
+    "use_order_book": true,
+    "order_book_top": 1
+  },
+  "pairlists": [
+    {
+      "method": "StaticPairList"
+    }
+  ],
+  "dataformat_ohlcv": "feather",
+  "exchange": {
+    "name": "binance",
+    "pair_whitelist": [
+      "BTC/USDT:USDT",
+      "ETH/USDT:USDT",
+      "SOL/USDT:USDT",
+      "XRP/USDT:USDT",
+      "BNB/USDT:USDT",
+      "DOGE/USDT:USDT",
+      "ADA/USDT:USDT",
+      "AVAX/USDT:USDT",
+      "LINK/USDT:USDT",
+      "SAND/USDT:USDT",
+      "AXS/USDT:USDT",
+      "INJ/USDT:USDT",
+      "AAVE/USDT:USDT",
+      "RUNE/USDT:USDT",
+      "FIL/USDT:USDT",
+      "GALA/USDT:USDT",
+      "DOT/USDT:USDT",
+      "ALGO/USDT:USDT",
+      "CRV/USDT:USDT"
+    ],
+    "pair_blacklist": []
+  },
+  "dry_run": true,
+  "fee": 0.0005,
+  "use_exit_signal": true,
+  "exit_profit_only": false,
+  "ignore_roi_if_entry_signal": true,
+  "telegram": {
+    "enabled": false,
+    "token": "",
+    "chat_id": ""
+  },
+  "position_adjustment_enable": true,
+  "nfi_advanced_mode": true,
+  "nfi_parameters": {
+    "position_adjustment_enable": true,
+    "grinding_enable": true,
+    "num_cores_indicators_calc": 2,
+    "futures_mode_leverage": 3,
+    "futures_mode_leverage_rebuy_mode": 3,
+    "futures_mode_leverage_grind_mode": 3
+  }
+}
