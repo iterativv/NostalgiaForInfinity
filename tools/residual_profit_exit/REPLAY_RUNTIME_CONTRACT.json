@@ -1,0 +1,31 @@
+{
+  "freqtrade": "2026.8",
+  "ccxt": "4.5.76",
+  "sources": {
+    "exchange": {
+      "path": "/freqtrade/freqtrade/exchange/exchange.py",
+      "sha256": "7789f81eb7420bdfa8f3fe108f624351c04e34a53b007b0f2b6f0b4dc35a2d21"
+    },
+    "backtesting": {
+      "path": "/freqtrade/freqtrade/optimize/backtesting.py",
+      "sha256": "2420410f96451cb993a7b475e9f7a4232d89480185cc25c59da8883551be6384"
+    },
+    "binance": {
+      "path": "/freqtrade/freqtrade/exchange/binance.py",
+      "sha256": "2858b325c4effac384303af3b679ad89b7cc2c84132a387e3d2ad4511fcb5ffc"
+    }
+  },
+  "market_fields": [
+    "symbol",
+    "base",
+    "quote",
+    "settle",
+    "type",
+    "active",
+    "contractSize",
+    "linear",
+    "inverse",
+    "precision",
+    "limits"
+  ]
+}
