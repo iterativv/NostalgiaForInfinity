@@ -22,7 +22,7 @@ def level(request):
   return request.param
 
 
-@pytest.fixture(params=[(False, 1.0), (False, 3.0)], ids=["spot", "long"])
+@pytest.fixture(params=[(False, 1.0), (False, 3.0), (True, 3.0)], ids=["spot", "long", "short"])
 def v4_case(request, level):
   init_db("sqlite://")
   engine = Trade.session.get_bind()
@@ -190,7 +190,7 @@ def test_post_derisk_rebuy_handoff_reaches_existing_reduction(v4_case, level):
 
 
 @pytest.mark.parametrize("level", [5])
-@pytest.mark.parametrize("v4_case", [(False, 3.0)], indirect=True)
+@pytest.mark.parametrize("v4_case", [(False, 3.0), (True, 3.0)], indirect=True)
 @pytest.mark.parametrize("funded", [False, True])
 def test_liquidation_entry_keeps_funded_size_and_unfunded_fallthrough(v4_case, level, funded):
   strategy, trade, _ = v4_case
@@ -209,7 +209,7 @@ def test_liquidation_entry_keeps_funded_size_and_unfunded_fallthrough(v4_case, l
 
 
 @pytest.mark.parametrize("level", [1])
-@pytest.mark.parametrize("v4_case", [(False, 3.0)], indirect=True)
+@pytest.mark.parametrize("v4_case", [(False, 3.0), (True, 3.0)], indirect=True)
 def test_forced_derisk_keeps_priority_without_entry_funds(v4_case, level):
   strategy, trade, _ = v4_case
   strategy.derisk_enable = True
