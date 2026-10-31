@@ -12,7 +12,7 @@ from functools import reduce
 from freqtrade.persistence import Trade, Order
 from datetime import datetime, timedelta
 import time
-from typing import Optional
+from typing import Optional, TypedDict
 import warnings
 
 log = logging.getLogger(__name__)
@@ -64,6 +64,26 @@ warnings.simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 ##  Binance: https://www.binance.com/join?ref=C68K26A9 (20% discount on trading fees)                      ##
 ##  BitMart: https://www.bitmart.com/invite/nfinfinity (20% lifetime discount on trading fees)             ##
 #############################################################################################################
+
+
+class LegacyGrindDemandState(TypedDict):
+  owner_id: int
+  entry_id: int
+  gm0_id: int
+  order_count: int
+  demand_pair: str
+  due_candle: int
+  closing: bool
+  intent_time: str | None
+
+
+class LegacyGrindDemandSnapshot(TypedDict):
+  trade_id: int
+  time: datetime
+  rate: float
+  ledger: tuple
+  min_stake: float
+  demand: LegacyGrindDemandState
 
 
 class NostalgiaForInfinityX8(IStrategy):
@@ -911,6 +931,7 @@ class NostalgiaForInfinityX8(IStrategy):
   grind_mode_first_entry_stop_threshold_spot = -0.20
   grind_mode_first_entry_stop_threshold_futures = -0.20
   grind_mode_max_slots = 1
+  legacy_grind_demand_exit_enable = True
   grind_mode_coins = [
     "AAVE",
     "ADA",
@@ -1200,6 +1221,7 @@ class NostalgiaForInfinityX8(IStrategy):
       "regular_mode_derisk_1_futures",
       "regular_mode_derisk_futures",
       "grind_mode_max_slots",
+      "legacy_grind_demand_exit_enable",
       "grind_mode_coins",
       "max_slippage",
       "system_v4_bad_trade_exit_enable",
@@ -1944,12 +1966,150 @@ class NostalgiaForInfinityX8(IStrategy):
     multi = min_stake / slice_amount / stakes[0] * trade_leverage
     return [stake * multi for stake in stakes]
 
+  def _legacy_grind_demand_episode(self, trade: Trade) -> tuple[Order, Order] | None:
+    """Identify the first completed gm0 remainder from actual filled orders."""
+    if trade.is_short or (trade.enter_tag or "").split() != ["120"]:
+      return None
+    if not trade.is_open or trade.amount <= 0.0 or trade.has_open_orders:
+      return None
+    filled = trade.select_filled_orders()
+    if len(filled) != 2:
+      return None
+    entry, gm0 = filled
+    if (
+      entry.ft_order_side != trade.entry_side
+      or gm0.ft_order_side != trade.exit_side
+      or gm0.ft_order_tag != "gm0"
+      or entry.status != "closed"
+      or gm0.status != "closed"
+      or entry.safe_remaining != 0.0
+      or gm0.safe_remaining != 0.0
+    ):
+      return None
+    return entry, gm0
+
+  def _legacy_grind_demand_ledger(self, trade: Trade) -> tuple:
+    """Fingerprint actual state, without allocating inventory to logical lots."""
+    return (
+      tuple(
+        (
+          o.id,
+          o.ft_order_side,
+          o.ft_order_tag,
+          o.status,
+          o.ft_is_open,
+          o.safe_filled,
+          o.safe_amount_after_fee,
+          o.safe_price,
+          o.funding_fee,
+        )
+        for o in trade.orders
+      ),
+      trade.is_open,
+      trade.amount,
+      trade.stake_amount,
+      trade.open_rate,
+      trade.leverage,
+      trade.realized_profit,
+      trade.funding_fees,
+      trade.fee_open,
+      trade.fee_close,
+    )
+
+  def _legacy_grind_demand_record(self, open_trades: list[Trade], pair: str, current_time: datetime) -> None:
+    """Record one actual dedicated-slot rejection; preserve original event order."""
+    owners = [t for t in open_trades if not t.is_short and (t.enter_tag or "").split() == ["120"]]
+    if len(owners) != 1 or owners[0].pair == pair:
+      return
+    owner = owners[0]
+    episode = self._legacy_grind_demand_episode(owner)
+    if episode is None:
+      return
+    candle = int(current_time.timestamp()) // 300 * 300
+    existing: LegacyGrindDemandState | None = owner.get_custom_data(key="legacy_grind_demand_exit")
+    if existing is not None and (existing["closing"] or existing["due_candle"] >= candle):
+      return
+    entry, gm0 = episode
+    token: LegacyGrindDemandState = {
+      "owner_id": owner.id,
+      "entry_id": entry.id,
+      "gm0_id": gm0.id,
+      "order_count": len(owner.orders),
+      "demand_pair": pair,
+      "due_candle": candle + 300,
+      "closing": False,
+      "intent_time": None,
+    }
+    owner.set_custom_data(key="legacy_grind_demand_exit", value=token)
+
+  def _legacy_grind_demand_prepare(self, trade: Trade, current_time: datetime) -> None:
+    """Consume a pending token once, before the original adjustment decides."""
+    self._legacy_grind_demand_request = None
+    self._legacy_grind_demand_snapshot = None
+    token: LegacyGrindDemandState | None = trade.get_custom_data(key="legacy_grind_demand_exit")
+    if token is None or token["closing"]:
+      return
+    candle = int(current_time.timestamp()) // 300 * 300
+    if self.legacy_grind_demand_exit_enable and candle < token["due_candle"]:
+      return
+    trade.set_custom_data(key="legacy_grind_demand_exit", value=None)
+    episode = self._legacy_grind_demand_episode(trade)
+    if (
+      not self.legacy_grind_demand_exit_enable
+      or candle != token["due_candle"]
+      or episode is None
+      or token["owner_id"] != trade.id
+      or token["order_count"] != len(trade.orders)
+      or (token["entry_id"], token["gm0_id"]) != (episode[0].id, episode[1].id)
+    ):
+      return
+    self._legacy_grind_demand_request = (trade.id, current_time, token)
+
+  def _legacy_grind_demand_adjust(
+    self, trade: Trade, result: tuple[float, str] | float | None
+  ) -> tuple[float, str] | float | None:
+    """Keep reductions/risk management available while a persisted close is pending."""
+    if trade.is_short or (trade.enter_tag or "").split() != ["120"]:
+      return result
+    token: LegacyGrindDemandState | None = trade.get_custom_data(key="legacy_grind_demand_exit")
+    if token is None or not token["closing"] or result is None:
+      return result
+    amount = result[0] if isinstance(result, tuple) else result
+    return None if amount > 0.0 else result
+
+  def _legacy_grind_demand_start_exit(
+    self, trade: Trade, snapshot: LegacyGrindDemandSnapshot, current_time: datetime
+  ) -> str | None:
+    """Start one full-close intent only after all original exit decisions returned None."""
+    episode = self._legacy_grind_demand_episode(trade)
+    if episode is None or self._legacy_grind_demand_ledger(trade) != snapshot["ledger"]:
+      return None
+    rate = snapshot["rate"]
+    if trade.amount * rate / trade.leverage > 1.55 * snapshot["min_stake"]:
+      return None
+    realized_funding = sum((order.funding_fee or 0.0) for order in episode)
+    mark = trade.realized_profit + trade.calculate_profit(rate).profit_abs - realized_funding
+    if mark <= 0.0:
+      return None
+    closing: LegacyGrindDemandState = {
+      **snapshot["demand"],
+      "closing": True,
+      "intent_time": current_time.isoformat(),
+    }
+    trade.set_custom_data(key="legacy_grind_demand_exit", value=closing)
+    return "exit_long_grind_demand_gm0"
+
   # Custom Exit
   # ---------------------------------------------------------------------------------------------
   def custom_exit(
     self, pair: str, trade: "Trade", current_time: "datetime", current_rate: float, current_profit: float, **kwargs
   ):
     trade_is_short = trade.is_short
+    demand_snapshot: LegacyGrindDemandSnapshot | None = getattr(self, "_legacy_grind_demand_snapshot", None)
+    if demand_snapshot is not None and demand_snapshot["trade_id"] == trade.id:
+      self._legacy_grind_demand_snapshot = None
+    else:
+      demand_snapshot = None
 
     long_normal_mode_tags = self.long_normal_mode_tags
     long_pump_mode_tags = self.long_pump_mode_tags
@@ -2504,6 +2664,20 @@ class NostalgiaForInfinityX8(IStrategy):
       if sell and (signal_name is not None):
         return f"{signal_name} ( {enter_tag})"
 
+    if not trade_is_short and enter_tags == ["120"] and trade.is_open and trade.amount > 0:
+      demand: LegacyGrindDemandState | None = trade.get_custom_data(key="legacy_grind_demand_exit")
+      if demand is not None and demand["closing"]:
+        if not trade.has_open_orders:
+          return "exit_long_grind_demand_gm0"
+      elif (
+        self.legacy_grind_demand_exit_enable
+        and demand_snapshot is not None
+        and demand_snapshot["time"] <= current_time
+        and int(demand_snapshot["time"].timestamp()) // 300 == int(current_time.timestamp()) // 300
+        and demand_snapshot["rate"] == current_rate
+        and profit_stake > 0.0
+      ):
+        return self._legacy_grind_demand_start_exit(trade, demand_snapshot, current_time)
     return None
 
   # Custom Stake Amount
@@ -2776,6 +2950,8 @@ class NostalgiaForInfinityX8(IStrategy):
       if trade_enter_tag is not None:
         enter_tag = trade_enter_tag
     enter_tags = enter_tag.split()
+    if not trade_is_short and enter_tags == ["120"]:
+      self._legacy_grind_demand_prepare(trade, current_time)
 
     # =========================================================================
     # SYSTEM VERSION
@@ -2848,7 +3024,7 @@ class NostalgiaForInfinityX8(IStrategy):
         # LEGACY GRIND
         # ---------------------------------------------------------------------
         elif is_long_grind_mode or is_long_btc_mode or not is_v2_date:
-          return self.long_grind_adjust_trade_position(*args)
+          return self._legacy_grind_demand_adjust(trade, self.long_grind_adjust_trade_position(*args))
 
       # -----------------------------------------------------------------------
       # V3 GRIND
@@ -2865,13 +3041,13 @@ class NostalgiaForInfinityX8(IStrategy):
         # LEGACY GRIND
         # ---------------------------------------------------------------------
         elif is_long_grind_mode or is_long_btc_mode or not is_v2_date:
-          return self.long_grind_adjust_trade_position(*args)
+          return self._legacy_grind_demand_adjust(trade, self.long_grind_adjust_trade_position(*args))
 
       # -----------------------------------------------------------------------
       # V2 / LEGACY ROUTING
       # -----------------------------------------------------------------------
       if is_long_grind_mode or is_long_btc_mode or not is_v2_date:
-        return self.long_grind_adjust_trade_position(*args)
+        return self._legacy_grind_demand_adjust(trade, self.long_grind_adjust_trade_position(*args))
 
       is_long_adjust_mode = any(c in self.long_adjust_mode_tags for c in enter_tags)
       is_long_known_mode = any(c in self.long_known_mode_tags for c in enter_tags)
@@ -5490,6 +5666,8 @@ class NostalgiaForInfinityX8(IStrategy):
     open_trades = Trade.get_trades_proxy(is_open=True)
     num_open_grind_mode = sum(1 for t in open_trades if all(c in long_grind_mode_tags for c in t.enter_tag.split()))
     if num_open_grind_mode >= grind_mode_max_slots:
+      if self.legacy_grind_demand_exit_enable:
+        self._legacy_grind_demand_record(open_trades, pair, current_time)
       log.info(f"[{current_time}] Cancelling entry for {pair} due to grind mode slots limit reached.")
       return False
 
@@ -47269,6 +47447,23 @@ class NostalgiaForInfinityX8(IStrategy):
     #     else:
     #       return -ft_sell_amount
 
+    request = getattr(self, "_legacy_grind_demand_request", None)
+    if (
+      request is not None
+      and request[0] == trade.id
+      and request[1] == current_time
+      and not partial_sell
+      and num_open_grinds == 0
+      and min_stake is not None
+    ):
+      self._legacy_grind_demand_snapshot = LegacyGrindDemandSnapshot(
+        trade_id=trade.id,
+        time=current_time,
+        rate=exit_rate,
+        ledger=self._legacy_grind_demand_ledger(trade),
+        min_stake=min_stake,
+        demand=request[2],
+      )
     return None
 
   # Long Grinding Entry
