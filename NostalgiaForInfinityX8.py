@@ -20105,9 +20105,9 @@ class NostalgiaForInfinityX8(IStrategy):
             & (rsi_20 < rsi_20_shift_1)
             # price still below a stretched 5m mean
             & (close < sma_16 * 0.960)
-            # crowded Bollinger breaks: price has been under the lower band for 4+ bars
+            # 5m 4+ bars under the lower band, crowded
             & (bb_below_count < 4)
-            # deep 1h washout tail: %B far below the band is where the slow bleed starts
+            # 1h far under the band
             & (bbb_20_2_0_1h > 5.91026)
           )
 

@@ -37,11 +37,8 @@ NUCLEUS = [
 # (comment, code in the file): the two quality clauses signal 147 adds to the nucleus, in the
 # order they were measured. They were selected against 2023-2026, i.e. in-sample.
 MEASURED_EXTRAS = [
-  ("crowded Bollinger breaks: price has been under the lower band for 4+ bars", "& (bb_below_count < 4)"),
-  (
-    "deep 1h washout tail: %B far below the band is where the slow bleed starts",
-    "& (bbb_20_2_0_1h > 5.91026)",
-  ),
+  ("5m 4+ bars under the lower band, crowded", "& (bb_below_count < 4)"),
+  ("1h far under the band", "& (bbb_20_2_0_1h > 5.91026)"),
 ]
 CLAUSES = NUCLEUS + MEASURED_EXTRAS
 # A raw column name here would raise NameError at runtime, so both series must be np_view
