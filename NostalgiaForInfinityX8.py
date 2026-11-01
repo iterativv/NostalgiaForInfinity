@@ -932,7 +932,7 @@ class NostalgiaForInfinityX8(IStrategy):
   grind_mode_first_entry_stop_threshold_spot = -0.20
   grind_mode_first_entry_stop_threshold_futures = -0.20
   grind_mode_max_slots = 1
-  legacy_grind_demand_exit_enable = True
+  legacy_grind_demand_exit_enable = False
   grind_mode_coins = [
     "AAVE",
     "ADA",

@@ -27,9 +27,9 @@ def strategy_config(tmp_path):
   }
 
 
-def test_constructor_defaults_to_enabled(strategy_config):
+def test_constructor_defaults_to_disabled(strategy_config):
   strategy = NostalgiaForInfinityX8(strategy_config)
-  assert getattr(strategy, FEATURE) is True
+  assert getattr(strategy, FEATURE) is False
 
 
 @pytest.mark.parametrize("config_style", ["nested", "top_level"])
@@ -51,15 +51,17 @@ def test_constructor_top_level_precedence_and_instance_isolation(strategy_config
   clean_config = {key: value for key, value in strategy_config.items() if key not in ("nfi_parameters", FEATURE)}
   clean = NostalgiaForInfinityX8(clean_config)
   assert getattr(configured, FEATURE) is top_level
-  assert getattr(clean, FEATURE) is True
+  assert getattr(clean, FEATURE) is False
 
 
-def test_default_enabled_without_instance_override(case):
+def test_default_disabled_without_instance_override(database):
+  case = make_d1(enabled=None)
   assert FEATURE not in case.strategy.__dict__
-  assert getattr(case.strategy, FEATURE) is True
+  assert getattr(case.strategy, FEATURE) is False
   assert case.demand() is False
   assert case.adjust() is None
-  assert case.exit() == EXIT
+  assert case.exit() is None
+  assert case.trade.get_custom_data(KEY) is None
 
 
 def test_same_candle_demand_waits_for_next_callback(case):
@@ -119,7 +121,7 @@ def test_first_actual_demand_preserves_order(case):
 
 @pytest.mark.parametrize("mode", ["disabled", "initial", "mixed_tag", "short", "other_exit", "canceled_gm0"])
 def test_ineligible_owner_never_records_demand(database, mode):
-  case = make_d1(enabled=False if mode == "disabled" else None, initial_only=mode == "initial")
+  case = make_d1(enabled=mode != "disabled", initial_only=mode == "initial")
   if mode == "mixed_tag":
     case.trade.enter_tag = "120 144"
   if mode == "short":

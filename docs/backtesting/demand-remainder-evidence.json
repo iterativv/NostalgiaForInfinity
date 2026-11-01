@@ -1,7 +1,8 @@
 {
   "schema_version": 1,
   "base": "bbddbd94f97f3c14336387d2958183870891b951",
-  "default_enabled": true,
+  "default_enabled": false,
+  "measured_default_enabled": true,
   "runtime": {
     "image": "freqtradeorg/freqtrade@sha256:4d23160b501d2b34579e76f57ad75edfa274967cd0dd824ff1c1b86d8c166ab4",
     "timeframe": "5m",

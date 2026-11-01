@@ -2,23 +2,23 @@
 
 ## Default and behavior
 
-Base: `bbddbd94f97f3c14336387d2958183870891b951` (X8 v18.0.183). Final implementation: `9d14ddb8ad3b1ffa6c7b46361100821cb4b3b879`.
+Measured base: `bbddbd94f97f3c14336387d2958183870891b951` (X8 v18.0.183). Measured implementation: `9d14ddb8ad3b1ffa6c7b46361100821cb4b3b879`. The November 1 follow-up changes only the production default to OFF; the recorded ON/OFF account results and their source hashes remain historical evidence, not new runs.
 
-`legacy_grind_demand_exit_enable` defaults **True**. The rule is limited to one pure long120 owner with its initial fill and first completed gm0 profit-taking order. Another pair must actually be rejected by the dedicated grind-slot limit. On the next 5m candle, the owner must have no open orders or active original grind queues, a remainder at most the existing `1.55 * correct_min_stake(...)` boundary, and positive native and funding-corrected whole-trade marks. The remainder itself need not be profitable.
+`legacy_grind_demand_exit_enable` defaults **False**. The rule is limited to one pure long120 owner with its initial fill and first completed gm0 profit-taking order. Another pair must actually be rejected by the dedicated grind-slot limit. On the next 5m candle, the owner must have no open orders or active original grind queues, a remainder at most the existing `1.55 * correct_min_stake(...)` boundary, and positive native and funding-corrected whole-trade marks. The remainder itself need not be profitable.
 
 Existing adjustment actions and full exits are checked first. The one-use snapshot requires unchanged price/ledger, nondecreasing time within the due candle, and unchanged original retry/age/force timing predicates. This handles the live bot's exit-before-adjust ordering and separate clock reads. Closing intent persists through restart; it blocks new adds but retains reductions and exit management. Only actual engine closure releases the slot. No replacement pair or immediate re-entry is forced.
 
-Disable new admissions through ordinary configuration (top-level overrides are also supported):
+Enable new admissions explicitly through ordinary configuration (top-level overrides are also supported):
 
 ```json
-{"nfi_parameters": {"legacy_grind_demand_exit_enable": false}}
+{"nfi_parameters": {"legacy_grind_demand_exit_enable": true}}
 ```
 
-Disabling admissions does not abandon an already-persisted closing intent.
+Set the option to `false` to disable new admissions. Disabling admissions does not abandon an already-persisted closing intent.
 
 ## Current-base matched results
 
-Native is unmodified upstream above; ON is the proposed default-enabled policy. Official Freqtrade 2026.8 image `freqtradeorg/freqtrade@sha256:4d23160b501d2b34579e76f57ad75edfa274967cd0dd824ff1c1b86d8c166ab4`; identical ordered 19-pair Binance isolated-futures universe, 5m, 3x leverage, six slots, PA/grinding enabled, 0.05% fee per side, funding included by the engine, unlimited stake and 99% tradable balance. Each year starts with its own 100,000-USDT wallet. Period ends are exclusive.
+Native is unmodified upstream above; ON is the enabled policy, whose measured source originally defaulted to ON. Current code requires the explicit `true` override shown above to enable it. Official Freqtrade 2026.8 image `freqtradeorg/freqtrade@sha256:4d23160b501d2b34579e76f57ad75edfa274967cd0dd824ff1c1b86d8c166ab4`; identical ordered 19-pair Binance isolated-futures universe, 5m, 3x leverage, six slots, PA/grinding enabled, 0.05% fee per side, funding included by the engine, unlimited stake and 99% tradable balance. Each year starts with its own 100,000-USDT wallet. Period ends are exclusive.
 
 ### Pure long120 trades within the shared portfolio
 

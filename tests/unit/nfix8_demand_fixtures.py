@@ -50,7 +50,7 @@ def fill(trade, side, amount, tag, price=100.0, filled=None, time=None):
   return order
 
 
-def configure(trade, enabled=None):
+def configure(trade, enabled=True):
   strategy = NostalgiaForInfinityX8.__new__(NostalgiaForInfinityX8)
   strategy.config = {
     "stake_currency": "USDT",
@@ -102,11 +102,11 @@ class D1Case:
     self.frame(rate)
     return self.strategy.custom_exit(self.trade.pair, self.trade, time, rate, self.trade.calc_profit_ratio(rate))
 
-  def restart(self, enabled=None):
+  def restart(self, enabled=True):
     return D1Case(configure(self.trade, enabled), self.trade, self.entry, self.gm0)
 
 
-def make_d1(enabled=None, initial_only=False, leverage=3.0, base_fee=0.0, fees=0.0005):
+def make_d1(enabled=True, initial_only=False, leverage=3.0, base_fee=0.0, fees=0.0005):
   trade = Trade(
     pair="ETH/USDT:USDT" if leverage > 1 else "ETH/USDT",
     exchange="binance",
