@@ -38,7 +38,7 @@ NUCLEUS = [
 # order they were measured. They were selected against 2023-2026, i.e. in-sample.
 MEASURED_EXTRAS = [
   ("5m 4+ bars under the lower band, crowded", "& (bb_below_count < 4)"),
-  ("1h far under the band", "& (bbb_20_2_0_1h > 5.91026)"),
+  ("1h far under the band", "& (bbb_20_2_0_1h > 5.91)"),
 ]
 CLAUSES = NUCLEUS + MEASURED_EXTRAS
 # A raw column name here would raise NameError at runtime, so both series must be np_view

@@ -20436,7 +20436,7 @@ class NostalgiaForInfinityX8(IStrategy):
             # 5m 4+ bars under the lower band, crowded
             & (bb_below_count < 4)
             # 1h far under the band
-            & (bbb_20_2_0_1h > 5.91026)
+            & (bbb_20_2_0_1h > 5.91)
           )
 
         # Condition #161 - Scalp mode (Long).
