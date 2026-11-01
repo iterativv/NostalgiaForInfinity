@@ -5869,6 +5869,7 @@ class NostalgiaForInfinityX8(IStrategy):
     stochrsi_k_15m = np_view("STOCHRSIk_14_14_3_3_15m")
     stochrsi_k_1d = np_view("STOCHRSIk_14_14_3_3_1d")
     rsi_3 = np_view("RSI_3")
+    bb_below_count = np_view("BB_BELOW_COUNT")
     close = np_view("close")
     high_px = np_view("high")
     low_px = np_view("low")
@@ -20104,6 +20105,10 @@ class NostalgiaForInfinityX8(IStrategy):
             & (rsi_20 < rsi_20_shift_1)
             # price still below a stretched 5m mean
             & (close < sma_16 * 0.960)
+            # crowded Bollinger breaks: price has been under the lower band for 4+ bars
+            & (bb_below_count < 4)
+            # deep 1h washout tail: %B far below the band is where the slow bleed starts
+            & (bbb_20_2_0_1h > 5.91026)
           )
 
         # Condition #161 - Scalp mode (Long).

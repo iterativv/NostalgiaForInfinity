@@ -1,10 +1,11 @@
 """Signal 147 (long): the signal-142 entry nucleus shipped on its own, without the wall.
 
-Signal 147 is measured, not invented. It is exactly what signal 142 opens with -- the three
-Top Coins long preludes plus the four-clause nucleus -- with the 520-line wall of OR chains
-left behind, and it ships off by default. Two things follow, and both are tested here: the
-new block must carry the measured nucleus verbatim, and signal 142 must still be the block
-it was before this signal existed.
+Signal 147 is measured, not invented. It is what signal 142 opens with -- the three Top Coins
+long preludes plus the four-clause nucleus -- with the 520-line wall of OR chains left behind,
+plus two quality clauses chosen by measurement, and it ships off by default. Three things
+follow, and all are tested here: the new block must carry the measured clauses verbatim, both
+series it reads must be np_view locals of populate_entry_trend, and signal 142 must still be
+the block it was before this signal existed.
 
 `NFIX8_STRATEGY_FILE` repoints the file under test, so the same test can be run against an
 unmodified strategy to show that it fails there.
@@ -27,13 +28,29 @@ PRELUDE = [
 ]
 # (comment, code in the file): the nucleus of signal 142, in the order it was measured. The
 # first clause is the chain's lead, so it carries no `& `.
-CLAUSES = [
+NUCLEUS = [
   ("5m not fully sold off yet", "(rsi_3_gt_5)"),
   ("5m still weak", "& (rsi_4 < 46.0)"),
   ("5m momentum already turning up", "& (rsi_20 < rsi_20_shift_1)"),
   ("price still below a stretched 5m mean", "& (close < sma_16 * 0.960)"),
 ]
-# Signal 147 is the nucleus alone. Three preludes, one append, four clauses: anything close
+# (comment, code in the file): the two quality clauses signal 147 adds to the nucleus, in the
+# order they were measured. They were selected against 2023-2026, i.e. in-sample.
+MEASURED_EXTRAS = [
+  ("crowded Bollinger breaks: price has been under the lower band for 4+ bars", "& (bb_below_count < 4)"),
+  (
+    "deep 1h washout tail: %B far below the band is where the slow bleed starts",
+    "& (bbb_20_2_0_1h > 5.91026)",
+  ),
+]
+CLAUSES = NUCLEUS + MEASURED_EXTRAS
+# A raw column name here would raise NameError at runtime, so both series must be np_view
+# locals of populate_entry_trend, declared exactly once each.
+NP_VIEW_DECLARATIONS = [
+  'bb_below_count = np_view("BB_BELOW_COUNT")',
+  'bbb_20_2_0_1h = np_view("BBB_20_2.0_1h")',
+]
+# Signal 147 is the nucleus alone. Three preludes, one append, six clauses: anything close
 # to a wall here is a filter nobody measured.
 MAX_CODE_LINES = 12
 # Signal 142 keeps its wall. This is a floor, not the exact count, so an upstream edit to
@@ -57,6 +74,18 @@ def block_lines(signal):
 def code_lines(block):
   """Body lines of a block: the guard goes, comments go, indentation goes."""
   return [line.strip() for line in block if line.strip() and not line.strip().startswith("#")][1:]
+
+
+def entry_trend_body():
+  """Source of populate_entry_trend: its def to the next method at two spaces of indent."""
+  lines = STRATEGY.read_text(encoding="utf-8").splitlines()
+  start = next((i for i, line in enumerate(lines) if line.startswith("  def populate_entry_trend(")), None)
+  assert start is not None, "populate_entry_trend is not in the strategy"
+  end = next(
+    (i for i in range(start + 1, len(lines)) if lines[i].strip() and not lines[i].startswith("    ")),
+    len(lines),
+  )
+  return "\n".join(lines[start:end])
 
 
 def nucleus(signal):
@@ -91,8 +120,17 @@ def test_signal_147_has_no_wall():
   assert len(code) <= MAX_CODE_LINES, f"signal 147 grew a wall: {len(code)} code lines"
 
 
-def test_signal_147_nucleus_is_the_signal_142_nucleus():
-  assert nucleus(SIGNAL) == nucleus(142)
+def test_signal_147_is_the_signal_142_nucleus_plus_the_measured_clauses():
+  core = nucleus(142)
+  assert core[-1] == ")"
+  expected = core[:-1] + [code for _, code in MEASURED_EXTRAS] + [")"]
+  assert nucleus(SIGNAL) == expected
+
+
+def test_signal_147_reads_both_series_as_np_view_locals():
+  body = entry_trend_body()
+  for declaration in NP_VIEW_DECLARATIONS:
+    assert body.count(declaration) == 1, f"expected exactly one `{declaration}` in populate_entry_trend"
 
 
 def test_signal_147_knob_ships_off():
