@@ -1072,6 +1072,7 @@ class NostalgiaForInfinityX8(IStrategy):
     "long_entry_condition_143_enable": True,
     "long_entry_condition_144_enable": True,
     "long_entry_condition_145_enable": True,
+    "long_entry_condition_147_enable": False,
     "long_entry_condition_161_enable": True,
     "long_entry_condition_162_enable": True,
     "long_entry_condition_163_enable": True,
@@ -20084,6 +20085,25 @@ class NostalgiaForInfinityX8(IStrategy):
             & (bbt_40_2_0 < bbd_40_2_0 * 0.3)
             & (close < bbl_40_2_0_shift_1)
             & (close <= close_shift_1)
+          )
+
+        # Condition #147 - Top Coins mode (Long), the 142 nucleus without its wall.
+        if long_entry_condition_index == 147:
+          # Protections
+          long_entry_logic.append(is_pair_long_top_coins_mode)
+          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          long_entry_logic.append(protections_long_global == True)
+
+          # Logic
+          long_entry_logic.append(
+            # 5m not fully sold off yet
+            (rsi_3_gt_5)
+            # 5m still weak
+            & (rsi_4 < 46.0)
+            # 5m momentum already turning up
+            & (rsi_20 < rsi_20_shift_1)
+            # price still below a stretched 5m mean
+            & (close < sma_16 * 0.960)
           )
 
         # Condition #161 - Scalp mode (Long).
