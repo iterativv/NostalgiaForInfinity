@@ -45852,6 +45852,17 @@ class NostalgiaForInfinityX8(IStrategy):
       + grind_5_total_amount
       + grind_6_total_amount
     )
+    # Preserve gross-fill profit calculations; size spot exits from net inventory.
+    if not is_futures and any(order.safe_fee_base for order in filled_entries):
+      exit_amounts = {order.id: order.safe_amount_after_fee for order in filled_entries}
+      grind_1_total_amount = sum(exit_amounts[order_id] for order_id in grind_1_buy_orders)
+      grind_2_total_amount = sum(exit_amounts[order_id] for order_id in grind_2_buy_orders)
+      grind_3_total_amount = sum(exit_amounts[order_id] for order_id in grind_3_buy_orders)
+      grind_4_total_amount = sum(exit_amounts[order_id] for order_id in grind_4_buy_orders)
+      grind_5_total_amount = sum(exit_amounts[order_id] for order_id in grind_5_buy_orders)
+      grind_6_total_amount = sum(exit_amounts[order_id] for order_id in grind_6_buy_orders)
+      grind_1_derisk_1_total_amount = sum(exit_amounts[order_id] for order_id in grind_1_derisk_1_buy_orders)
+      grind_2_derisk_1_total_amount = sum(exit_amounts[order_id] for order_id in grind_2_derisk_1_buy_orders)
     stake_fmt = ".8f" if self.config["stake_currency"] in ("BTC", "ETH", "BNB", "SOL") else ".3f"
     # Sell remaining if partial fill on exit
     if partial_sell:
