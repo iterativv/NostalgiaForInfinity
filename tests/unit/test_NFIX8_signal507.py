@@ -349,7 +349,7 @@ def _chains() -> list[str]:
   chains = []
   for line in _protections().splitlines():
     m = re.match(r"^\s*&?\s*\((\(.*\|.*\))\)$", line.strip()) or re.match(r"^\s*(\(.*\|.*\))$", line.strip())
-    if m:
+    if m and not m.group(1).startswith("((macdh_12_26_9_1h"):
       chains.append(m.group(1))
   return chains
 
@@ -465,18 +465,29 @@ def test_each_chain_keeps_its_timeframes_in_ascending_order():
     # not already 15% under the previous 20 candle high, not after a 24h crash
     "& (close >= (dc_high_20 * 0.85))",
     "& (roc_288 > -15.0)",
-    # 1h agrees, two of four
-    "((macdh_12_26_9_1h < 0.0) & (minus_di_14_1h > plus_di_14_1h))",
-    "| ((macdh_12_26_9_1h < 0.0) & (close_4h < dc_low_10_1h))",
-    "| ((macdh_12_26_9_1h < 0.0) & (rsi_14_1h < 50.0))",
-    "| ((minus_di_14_1h > plus_di_14_1h) & (close_4h < dc_low_10_1h))",
-    "| ((minus_di_14_1h > plus_di_14_1h) & (rsi_14_1h < 50.0))",
-    "| ((close_4h < dc_low_10_1h) & (rsi_14_1h < 50.0))",
   ],
 )
 def test_the_logic_holds_every_trigger_condition(clause):
   # Then: the entry is the one 507 was validated with, condition for condition.
   assert clause in _logic()
+
+
+def test_the_protections_hold_the_1h_two_of_four_guard():
+  block = _block()
+  protections = block[block.index("# Protections") : block.index("# Logic")]
+  guard = (
+    "& (\n"
+    "              ((macdh_12_26_9_1h < 0.0) & (minus_di_14_1h > plus_di_14_1h))\n"
+    "              | ((macdh_12_26_9_1h < 0.0) & (close_4h < dc_low_10_1h))\n"
+    "              | ((macdh_12_26_9_1h < 0.0) & (rsi_14_1h < 50.0))\n"
+    "              | ((minus_di_14_1h > plus_di_14_1h) & (close_4h < dc_low_10_1h))\n"
+    "              | ((minus_di_14_1h > plus_di_14_1h) & (rsi_14_1h < 50.0))\n"
+    "              | ((close_4h < dc_low_10_1h) & (rsi_14_1h < 50.0))\n"
+    "            )\n"
+  )
+  # Then: 1h agrees, two of four, AND-ed into the protection chain and no longer in the logic.
+  assert guard in protections
+  assert "macdh_12_26_9_1h" not in _logic()
 
 
 def test_the_protections_keep_the_empty_candle_global_and_hot_coin_guards():

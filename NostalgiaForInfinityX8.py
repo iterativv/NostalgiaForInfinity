@@ -27770,6 +27770,15 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((roc_9_4h_lt_5) | (aroonu_14_1d_lt_20) | (roc_9_1d_lt_20))
             # first dip after a 1d fresh high
             & ((aroonu_14_1d_lt_40) | (stochrsi_k_1d > 15.0) | (aroond_14_1d > 20.0))
+            # 1h agrees, two of: macd under zero, -di over +di, 4h close under the 1h donchian low, rsi under 50
+            & (
+              ((macdh_12_26_9_1h < 0.0) & (minus_di_14_1h > plus_di_14_1h))
+              | ((macdh_12_26_9_1h < 0.0) & (close_4h < dc_low_10_1h))
+              | ((macdh_12_26_9_1h < 0.0) & (rsi_14_1h < 50.0))
+              | ((minus_di_14_1h > plus_di_14_1h) & (close_4h < dc_low_10_1h))
+              | ((minus_di_14_1h > plus_di_14_1h) & (rsi_14_1h < 50.0))
+              | ((close_4h < dc_low_10_1h) & (rsi_14_1h < 50.0))
+            )
           )
 
           # Logic
@@ -27790,15 +27799,6 @@ class NostalgiaForInfinityX8(IStrategy):
             & (close >= (dc_high_20 * 0.85))
             # not after a 24h crash
             & (roc_288 > -15.0)
-            # 1h agrees, two of: macd under zero, -di over +di, 4h close under the 1h donchian low, rsi under 50
-            & (
-              ((macdh_12_26_9_1h < 0.0) & (minus_di_14_1h > plus_di_14_1h))
-              | ((macdh_12_26_9_1h < 0.0) & (close_4h < dc_low_10_1h))
-              | ((macdh_12_26_9_1h < 0.0) & (rsi_14_1h < 50.0))
-              | ((minus_di_14_1h > plus_di_14_1h) & (close_4h < dc_low_10_1h))
-              | ((minus_di_14_1h > plus_di_14_1h) & (rsi_14_1h < 50.0))
-              | ((close_4h < dc_low_10_1h) & (rsi_14_1h < 50.0))
-            )
           )
 
         # Condition #506 - Donchian 7-day breakdown (Short, experimental, RAW — mirror).
