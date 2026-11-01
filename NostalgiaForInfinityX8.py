@@ -1081,6 +1081,7 @@ class NostalgiaForInfinityX8(IStrategy):
     "long_entry_condition_144_enable": True,
     "long_entry_condition_145_enable": True,
     "long_entry_condition_146_enable": False,
+    "long_entry_condition_147_enable": False,
     "long_entry_condition_161_enable": True,
     "long_entry_condition_162_enable": True,
     "long_entry_condition_163_enable": True,
@@ -5918,6 +5919,7 @@ class NostalgiaForInfinityX8(IStrategy):
     stochrsi_k_15m = np_view("STOCHRSIk_14_14_3_3_15m")
     stochrsi_k_1d = np_view("STOCHRSIk_14_14_3_3_1d")
     rsi_3 = np_view("RSI_3")
+    bb_below_count = np_view("BB_BELOW_COUNT")
     close = np_view("close")
     high_px = np_view("high")
     low_px = np_view("low")
@@ -20416,6 +20418,29 @@ class NostalgiaForInfinityX8(IStrategy):
             & (aroond_14_4h > 7.1429)
             # tape not cascading over four hours
             & (btc_roc_1_4h > -2.2)
+          )
+
+        # Condition #147 - Top Coins mode (Long), the 142 nucleus without its wall.
+        if long_entry_condition_index == 147:
+          # Protections
+          long_entry_logic.append(is_pair_long_top_coins_mode)
+          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
+          long_entry_logic.append(protections_long_global == True)
+
+          # Logic
+          long_entry_logic.append(
+            # 5m not fully sold off yet
+            (rsi_3_gt_5)
+            # 5m still weak
+            & (rsi_4 < 46.0)
+            # 5m momentum already turning up
+            & (rsi_20 < rsi_20_shift_1)
+            # price still below a stretched 5m mean
+            & (close < sma_16 * 0.960)
+            # 5m 4+ bars under the lower band, crowded
+            & (bb_below_count < 4)
+            # 1h far under the band
+            & (bbb_20_2_0_1h > 5.91)
           )
 
         # Condition #161 - Scalp mode (Long).
