@@ -16,13 +16,20 @@ v4_case = funding.v4_case
 quantity_bot = quantity.quantity_bot
 
 
+@pytest.fixture(params=[None, "system_v3_2"], ids=["v2", "v3"])
+def system_version(request):
+  return request.param
+
+
 @pytest.fixture
-def older_grind_bot(quantity_bot, v4_case, level):
+def older_grind_bot(quantity_bot, v4_case, level, system_version):
   strategy, trade, _ = v4_case
-  trade.set_custom_data("system_version", None)
+  trade.set_custom_data("system_version", system_version)
   strategy.hold_support_enabled = strategy.exit_profit_only = False
   strategy.long_grind_entry_v3 = MagicMock(return_value=False)
   strategy.long_buyback_entry_v2 = MagicMock(return_value=False)
+  strategy.long_buyback_entry_v3 = MagicMock(return_value=False)
+  strategy.long_rebuy_entry_v3 = MagicMock(return_value=False)
   funding.fill(trade, trade.entry_side, 9.0, 100.0, f"grind_{level}_entry")
   frame, _ = strategy.dp.get_analyzed_dataframe(trade.pair, "5m")
   frame = frame.assign(RSI_3_1h=50.0, AROONU_14_15m=100.0)
@@ -99,7 +106,7 @@ def test_older_grind_keeps_minimum_reserve(older_grind_bot, v4_case, level):
 
 
 @pytest.mark.parametrize("v4_case", [(False, 1)], indirect=True)
-def test_older_grind_keeps_gross_weighted_price(older_grind_bot, v4_case, level):
+def test_older_grind_keeps_gross_weighted_price(older_grind_bot, v4_case, level, system_version):
   strategy, trade, _ = v4_case
   last_entry = trade.orders[-1]
   last_entry.price = last_entry.average = last_entry.ft_price = 200.0
@@ -108,7 +115,8 @@ def test_older_grind_keeps_gross_weighted_price(older_grind_bot, v4_case, level)
   for entry in trade.orders:
     if entry.ft_order_tag == f"grind_{level}_entry":
       quantity.settle_base_fee(older_grind_bot, trade, entry, entry.safe_filled * 0.001)
-  threshold = getattr(strategy, f"grinding_v2_grind_{level}_profit_threshold_spot")
+  prefix = "grinding_v2" if system_version is None else "system_v3"
+  threshold = getattr(strategy, f"{prefix}_grind_{level}_profit_threshold_spot")
   rate = 190.0 * (1.0 + threshold + trade.fee_open + trade.fee_close) + 0.000001
   quantity.set_rate(older_grind_bot, trade, rate)
 

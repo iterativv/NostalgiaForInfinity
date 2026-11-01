@@ -40933,6 +40933,14 @@ class NostalgiaForInfinityX8(IStrategy):
 
     # Grinding 1
 
+    # Preserve gross-fill profit calculations; size spot exits from net inventory.
+    if not is_futures_mode and any(order.safe_fee_base for order in filled_entries):
+      grind_1_total_amount = sum(order.safe_amount_after_fee for order in grind_1_orders)
+      grind_2_total_amount = sum(order.safe_amount_after_fee for order in grind_2_orders)
+      grind_3_total_amount = sum(order.safe_amount_after_fee for order in grind_3_orders)
+      grind_4_total_amount = sum(order.safe_amount_after_fee for order in grind_4_orders)
+      grind_5_total_amount = sum(order.safe_amount_after_fee for order in grind_5_orders)
+
     if (
       (self.system_v3_grind_1_enable)
       # and is_derisk_1_found
