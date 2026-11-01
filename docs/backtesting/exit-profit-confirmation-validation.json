@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "base_commit": "57d84e44db42c2da93e6b99d4334874724b07e7c",
+  "strategy": "NostalgiaForInfinityX8.py",
+  "source_sha256": {
+    "native": "a1c64508d7dd264efd72639e5f3d9de2def9f91986dd486989a9b89e9b2356f4",
+    "modified": "19127459fe7e2be02e6cb6e9eedb3e63e7ea0c7ca112eb58ab6faae56f74738f"
+  },
+  "test_file": "tests/unit/test_NFIX8_exit_profit_confirmation.py",
+  "test_sha256": "66e94571bc0f7fd03bb065739d869271ccc4d99c9512b999083c10fa126d1d67",
+  "runtime": {
+    "image": "ghcr.io/iterativv/ci-strategy-backtesting@sha256:c356a7900503e964e0cbe7d92a499171c4090998e9bdf0efa76053b27d249107",
+    "freqtrade": "2026.9",
+    "python": "3.14.7"
+  },
+  "matched_cases": {
+    "direct": {
+      "cases": 25,
+      "native_passed": 23,
+      "native_failed": 2,
+      "modified_passed": 25
+    },
+    "engine": {
+      "cases": 36,
+      "native_passed": 28,
+      "native_failed": 8,
+      "modified_passed": 36
+    },
+    "total": {
+      "cases": 61,
+      "native_passed": 51,
+      "native_failed": 10,
+      "modified_passed": 61,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "native_failure_ids": [
+    "test_engine_confirms_exit_using_realized_and_remaining_profit[long-True-110.0-98.0-0.001]",
+    "test_engine_confirms_exit_using_realized_and_remaining_profit[long-True-110.0-98.0-0.0]",
+    "test_engine_confirms_exit_using_realized_and_remaining_profit[long-True-90.0-102.0-0.001]",
+    "test_engine_confirms_exit_using_realized_and_remaining_profit[long-True-90.0-102.0-0.0]",
+    "test_engine_confirms_exit_using_realized_and_remaining_profit[short-True-110.0-98.0-0.001]",
+    "test_engine_confirms_exit_using_realized_and_remaining_profit[short-True-110.0-98.0-0.0]",
+    "test_engine_confirms_exit_using_realized_and_remaining_profit[short-True-90.0-102.0-0.001]",
+    "test_engine_confirms_exit_using_realized_and_remaining_profit[short-True-90.0-102.0-0.0]",
+    "test_profit_confirmation_includes_remaining_position_funding[-9.0-long]",
+    "test_profit_confirmation_includes_remaining_position_funding[-9.0-short]"
+  ],
+  "first_increment_and_adjacent_tests_passed": 217,
+  "modified_full_unit_tools": {
+    "passed": 3100,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "existing_warnings": 14
+  },
+  "scope": {
+    "real_trade_order_wallet_bot": true,
+    "exchange_rpc_io_mocked": true,
+    "market_backtest": false,
+    "live_fills_proven": false,
+    "portfolio_improvement_claimed": false
+  },
+  "derived_summary": true
+}

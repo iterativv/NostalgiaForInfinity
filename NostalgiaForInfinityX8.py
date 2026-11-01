@@ -5531,7 +5531,6 @@ class NostalgiaForInfinityX8(IStrategy):
     trade_stake_amount = trade.stake_amount
     trade_is_short = trade.is_short
     trade_liquidation_price = trade.liquidation_price
-    trade_open_rate = trade.open_rate
 
     is_backtest = self.is_backtest_mode()
     # Allow force exits
@@ -5551,9 +5550,7 @@ class NostalgiaForInfinityX8(IStrategy):
       if self.exit_profit_only:
         profit = 0.0
         if trade_realized_profit != 0.0:
-          profit = ((rate - trade_open_rate) / trade_open_rate) * trade_stake_amount * (1 - trade.fee_close)
-          profit = profit + trade_realized_profit
-          profit = profit / trade_stake_amount
+          profit = trade.calculate_profit(rate).total_profit / trade_stake_amount
         else:
           profit = trade.calc_profit_ratio(rate)
         if profit < self.exit_profit_offset:
