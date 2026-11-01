@@ -42695,6 +42695,7 @@ class NostalgiaForInfinityX8(IStrategy):
         "grind_4_derisk",
         "grind_5_exit",
         "grind_5_derisk",
+        "buyback_1_derisk",
       ):
         partial_exit_amount = min(partial_exit.safe_remaining, trade_amount)
         exit_amount = partial_exit_amount * exit_rate / trade_leverage
