@@ -21,6 +21,64 @@
       // -31.4% on 2026-09-13 alone with a 62% intraday range. Spot-only (no perp on any
       // venue) and the book is ~$0.4M/day across bybit, gate, mexc and kucoin.
       "(LAVA)/.*",
+      // Falling knife on a thin book — -83.5% off its 2026-05-04 high of 0.008, -33.9%
+      // over the last seven days with seven of the last ten days red and -10.0% on
+      // 2026-10-27 alone. Spot-only on gate, the only venue that lists it, and the book
+      // has thinned from ~$0.5M to ~$0.1M/day.
+      "(BELIEVE)/.*",
+      // Leveraged products, 2x and 3x. The exchanges label the class but not the multiple:
+      // bybit carries symbolType=ETF, binance contractType=TRADIFI_PERPETUAL, bitget isRwa=YES,
+      // and SOXL's market payload is indistinguishable from QQQ's. SOXL is 3x semiconductors,
+      // SOXS -3x, TMF 3x treasuries, TZA -3x small caps, KORU 3x Korea, SPXL 3x S&P; the rest
+      // are 2x single-stock funds (NVDL, TSLL, MSTU, MSFU, CONL, AAPU, AMZU, GGLL, METU, AGPU,
+      // MVLL, MUU, SKUU/SKDD, INTW), 2x index or rates (QLD, TBT) and UVXY on volatility.
+      // On a 3x futures account a SOXL entry is 9x on a semiconductor index. TQQQ and SQQQ were
+      // already here; these are the rest of the class.
+      // The suffixed symbols are the same products under venue-specific naming — ...B on binance
+      // spot, ...G on gate spot, ...ON and ...STOCK on mexc — and the 3L/3S pairs on gate are
+      // leveraged tokens written on top of an already-leveraged fund.
+      "(AAPU|AGPU|AGPUB|AGPUSTOCK|AMZU|CONL|CSOPSAMSUNG2L|CSOPSKHYNIX2L|GGLL|INTW|INTWB|INTWG|KORU|KORU3L|KORU3S|KORUB|KORUG|METU|MSFU|MSTU|MUU|MUU3L|MUU3S|MUUB|MUUG|MVLL|MVLLB|MVLLG|NVDL|QLD|SKDD|SKDDB|SKUU|SKUUB|SOXL|SOXL3L|SOXL3S|SOXLB|SOXLG|SOXLON|SOXS|SOXS3L|SOXS3S|SOXSB|SOXSG|SOXSON|SPXL|TBT|TMF|TMFB|TSLL|TZA|UVXY|UVXYB)/.*",
+      // Binance put both under its Monitoring Tag on 2026-10-09. Neither is a falling
+      // knife — they bleed slowly on a thin book: BICO -24.4% over 30 days on $1.2M/day,
+      // CVC -19.0% on $2.5M/day, both with a 3-day rate of change under 0.15. The tag
+      // itself is the reason: it preceded the 2026-08-17 delisting batch for ACX, PIVX,
+      // PYR and VANRY, and both still trade as perpetuals on binance, bybit and bitget.
+      "(BICO|CVC)/.*",
+      // Thin, long-dead book. kucoin spot turns over $0.10M a day and mexc $0.60M, and the
+      // gate perpetual is effectively inert at 212 USDT in 24 hours. Down 83.9% and 91.3%
+      // off their respective highs and -36% over 90 days, yet +86% over the last 30 on
+      // that book — a size that moves on its own. Not a falling knife, which is why the
+      // 3-day rate of change sits at 0.20 and nothing else screens it out.
+      "(NXT)/.*",
+      // Bybit delisted the perpetual on 2026-10-28 and the chart agrees: -27.2% that day,
+      // -43.7% over the week and 97.7% off its high, on a book that is thin everywhere it
+      // still trades — $0.73M on the bybit perp, $0.18M on bitget and $0.12M on mexc, plus
+      // kucoin and kraken spot. The 3-day rate of change sits at 0.60-0.68, so nothing
+      // else screens it out.
+      "(TMX)/.*",
+      // Two venues dropped the perpetual in two days — bybit on 2026-10-28, mexc on
+      // 10-30 — and it stopped being calm while they did: the seven-day move doubled
+      // from -11.4% to -21.6%, thirty days sit at -53% and 79% off the high, and the
+      // binance spot book grew from $0.67M to $1.22M as the price fell. A 3-day rate of
+      // change of 0.30 keeps it under anything a RangeStabilityFilter would act on.
+      "(MITO)/.*",
+      // Requested by iterativ, 2026-11-01.
+      "(ROLL)/.*",
+      // -40.1% over seven days and -70.0% over thirty, on a 3-day rate of change of 1.16
+      // — it opens wide and stays wide, so a RangeStabilityFilter already screens it out
+      // where one is configured. The list covers the venues and setups where it is not.
+      "(INTW)/.*",
+      // zkLink Nova bridge drained of ~$786k on 2026-10-28 through a forged batch root,
+      // with the main escrow left unpaused. Spot only on bitget and gate, no perpetual
+      // anywhere, and the book was already gone before the exploit: $0.03M and effectively
+      // nothing, 68-72% off its high and down ~20% on the week into it.
+      "(ZKL)/.*",
+      // Binance ended spot trading on 2026-10-28, the same review that took EPIC. Still
+      // listed on gate, mexc and htx spot with no perpetual anywhere, down 54% over seven
+      // days and 74% over thirty on a $60-83k book. The 3-day rate of change is 0.52-0.54,
+      // below the floor a RangeStabilityFilter would act on — it bleeds steadily rather
+      // than opening wide, which is the class this list exists for.
+      "(QUICK)/.*",
       // OpenGradient market maker impaired — the team said on 2026-08-10 its market-making
       // funds are stuck on BitMart, which began winding down on 07-26. Book is thin
       // ($11.8M across the three venues) and the token is -84% from its April high.
@@ -94,6 +152,14 @@
       // recovery phrases. 87.1% of the funds were frozen on-chain, 12.9% had reached MEXC. Lists as
       // QUBIC, spot only on bitget, gate and mexc at ~$0.1-0.2M, no perp anywhere.
       "(QUBIC)/.*",
+      // The chain stopped and the price has not noticed — Initia halted its mainnet on 2026-10-23
+      // after an "infinimint" exploit let an attacker mint 2,000,000 unbacked AUSD and cash out
+      // ~$2.6M. INIT closed that day +15.5% on a 39.0% range and is only -8.9% off its all-time
+      // high, +75.0% above its own first candle 200 days ago and +42.5% over thirty days, so a
+      // 3-day RangeStabilityFilter sees a quiet pair and keeps selecting it. Perp on binance
+      // (~$46.4M), bybit (~$22.1M), bitget (~$3.2M), gate and mexc (~$0.9M each); spot on binance
+      // (~$9.4M), bybit (~$2.9M), htx, kucoin and gate. AUSD, the token minted, is already covered.
+      "(INIT)/.*",
       // Parabolic squeeze in a newly eligible listing — 486.7% range inside the 2026-10-12 21:00
       // hour (0.3785 -> 0.8542 -> 0.1456 -> 0.2002, +126% then -83%), 64 days since listing and
       // -72.8% off its high on ~$196M/day
@@ -101,6 +167,14 @@
       // Pump-and-dump knives — APR +192% then -68% (2026-08-12/15), VELVET -46% in an hour (2026-07-24),
       // JCT -82.4% off its 2026-06-13 peak, single-day ranges of 96%, 96% and 83% (2026-09-10)
       "(APR|JCT|VELVET)/.*",
+      // Post-pump perp — binance futures listed it on 2026-06-04 and it ran 75x to a 2.7536 high on
+      // 2026-10-14, then gave back 47.2% in eight sessions. The last ten daily candles printed
+      // 27-66% ranges: 10-21 swept 2.1569 -> 1.3000 (65.9%) and closed -19.9%, 10-22 ran
+      // 1.8438 -> 1.2569 (46.7%) and is -13.8% on the day; the worst open-to-close day was -39.6%
+      // and the widest range +170%. Perp on binance (~$203M/day), bybit (~$46M), mexc (~$32M),
+      // gate (~$31M), bitget (~$15M), kucoin and okx (perp listed 2026-10-22); spot on bitget,
+      // gate, mexc and htx, and the perp trades ~12% under spot.
+      "(BTW)/.*",
       // Declining alt (2026-08-07; binance already covers via FAN group)
       "(CHZ)/.*",
       // Binance delist 2026-08-17 (full-coin) — iterativ 2026-08-03
