@@ -42675,6 +42675,7 @@ class NostalgiaForInfinityX8(IStrategy):
               exit_rate = ticker["bid"]
 
     # Finish managed partial exits before allowing another de-risk or grind.
+    partial_exit_blocked = False
     partial_exit = filled_exits[-1] if filled_exits else None
     if partial_exit is not None and partial_exit.safe_remaining > 0.0:
       partial_exit_tag = partial_exit.ft_order_tag or ""
@@ -42705,7 +42706,9 @@ class NostalgiaForInfinityX8(IStrategy):
         ):
           return -ft_exit_amount, partial_exit_tag
         # Do not clip the recovery: a fully filled clipped order would hide the leftover.
-        return None
+        if exit_amount >= partial_exit_min_stake:
+          return None
+        partial_exit_blocked = True
 
     if profit_values is None:
       profit_values = self.calc_total_profit(trade, filled_entries, filled_exits, exit_rate)
@@ -43151,37 +43154,37 @@ class NostalgiaForInfinityX8(IStrategy):
 
     grind_1_cluster_max_profit_stake = trade.get_custom_data(key="grind_1_cluster_max_profit_stake") or 0.0
     grind_1_cluster_max_profit_rate = trade.get_custom_data(key="grind_1_cluster_max_profit_rate") or 0.0
-    if grind_1_current_grind_profit_stake > grind_1_cluster_max_profit_stake:
+    if not partial_exit_blocked and grind_1_current_grind_profit_stake > grind_1_cluster_max_profit_stake:
       trade.set_custom_data(key="grind_1_cluster_max_profit_stake", value=grind_1_current_grind_profit_stake)
-    if grind_1_current_grind_profit_rate > grind_1_cluster_max_profit_rate:
+    if not partial_exit_blocked and grind_1_current_grind_profit_rate > grind_1_cluster_max_profit_rate:
       trade.set_custom_data(key="grind_1_cluster_max_profit_rate", value=grind_1_current_grind_profit_rate)
 
     grind_2_cluster_max_profit_stake = trade.get_custom_data(key="grind_2_cluster_max_profit_stake") or 0.0
     grind_2_cluster_max_profit_rate = trade.get_custom_data(key="grind_2_cluster_max_profit_rate") or 0.0
-    if grind_2_current_grind_profit_stake > grind_2_cluster_max_profit_stake:
+    if not partial_exit_blocked and grind_2_current_grind_profit_stake > grind_2_cluster_max_profit_stake:
       trade.set_custom_data(key="grind_2_cluster_max_profit_stake", value=grind_2_current_grind_profit_stake)
-    if grind_2_current_grind_profit_rate > grind_2_cluster_max_profit_rate:
+    if not partial_exit_blocked and grind_2_current_grind_profit_rate > grind_2_cluster_max_profit_rate:
       trade.set_custom_data(key="grind_2_cluster_max_profit_rate", value=grind_2_current_grind_profit_rate)
 
     grind_3_cluster_max_profit_stake = trade.get_custom_data(key="grind_3_cluster_max_profit_stake") or 0.0
     grind_3_cluster_max_profit_rate = trade.get_custom_data(key="grind_3_cluster_max_profit_rate") or 0.0
-    if grind_3_current_grind_profit_stake > grind_3_cluster_max_profit_stake:
+    if not partial_exit_blocked and grind_3_current_grind_profit_stake > grind_3_cluster_max_profit_stake:
       trade.set_custom_data(key="grind_3_cluster_max_profit_stake", value=grind_3_current_grind_profit_stake)
-    if grind_3_current_grind_profit_rate > grind_3_cluster_max_profit_rate:
+    if not partial_exit_blocked and grind_3_current_grind_profit_rate > grind_3_cluster_max_profit_rate:
       trade.set_custom_data(key="grind_3_cluster_max_profit_rate", value=grind_3_current_grind_profit_rate)
 
     grind_4_cluster_max_profit_stake = trade.get_custom_data(key="grind_4_cluster_max_profit_stake") or 0.0
     grind_4_cluster_max_profit_rate = trade.get_custom_data(key="grind_4_cluster_max_profit_rate") or 0.0
-    if grind_4_current_grind_profit_stake > grind_4_cluster_max_profit_stake:
+    if not partial_exit_blocked and grind_4_current_grind_profit_stake > grind_4_cluster_max_profit_stake:
       trade.set_custom_data(key="grind_4_cluster_max_profit_stake", value=grind_4_current_grind_profit_stake)
-    if grind_4_current_grind_profit_rate > grind_4_cluster_max_profit_rate:
+    if not partial_exit_blocked and grind_4_current_grind_profit_rate > grind_4_cluster_max_profit_rate:
       trade.set_custom_data(key="grind_4_cluster_max_profit_rate", value=grind_4_current_grind_profit_rate)
 
     grind_5_cluster_max_profit_stake = trade.get_custom_data(key="grind_5_cluster_max_profit_stake") or 0.0
     grind_5_cluster_max_profit_rate = trade.get_custom_data(key="grind_5_cluster_max_profit_rate") or 0.0
-    if grind_5_current_grind_profit_stake > grind_5_cluster_max_profit_stake:
+    if not partial_exit_blocked and grind_5_current_grind_profit_stake > grind_5_cluster_max_profit_stake:
       trade.set_custom_data(key="grind_5_cluster_max_profit_stake", value=grind_5_current_grind_profit_stake)
-    if grind_5_current_grind_profit_rate > grind_5_cluster_max_profit_rate:
+    if not partial_exit_blocked and grind_5_current_grind_profit_rate > grind_5_cluster_max_profit_rate:
       trade.set_custom_data(key="grind_5_cluster_max_profit_rate", value=grind_5_current_grind_profit_rate)
 
     is_long_extra_checks_entry = (
@@ -43342,6 +43345,9 @@ class NostalgiaForInfinityX8(IStrategy):
         <= trade.liquidation_price * (1.0 + self.system_v4_derisk_level_3_liquidation_distance)
       )
     )
+    if partial_exit_blocked and not force_derisk_3:
+      return None
+
     # ---------------------------------------------------------------------
     # De-risk level 1
     # ---------------------------------------------------------------------
@@ -43445,6 +43451,10 @@ class NostalgiaForInfinityX8(IStrategy):
           f"De-risk Level 3 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         return -ft_sell_amount, "derisk_level_3"
+
+    if partial_exit_blocked:
+      return None
+
     # ---------------------------------------------------------------------
     # De-risk level 4
     # ---------------------------------------------------------------------
@@ -57069,6 +57079,7 @@ class NostalgiaForInfinityX8(IStrategy):
               exit_rate = ticker["bid"]
 
     # Finish managed partial exits before allowing another de-risk or grind.
+    partial_exit_blocked = False
     partial_exit = filled_exits[-1] if filled_exits else None
     if partial_exit is not None and partial_exit.safe_remaining > 0.0:
       partial_exit_tag = partial_exit.ft_order_tag or ""
@@ -57099,7 +57110,9 @@ class NostalgiaForInfinityX8(IStrategy):
         ):
           return -ft_exit_amount, partial_exit_tag
         # Do not clip the recovery: a fully filled clipped order would hide the leftover.
-        return None
+        if exit_amount >= partial_exit_min_stake:
+          return None
+        partial_exit_blocked = True
 
     if profit_values is None:
       profit_values = self.calc_total_profit(trade, filled_entries, filled_exits, exit_rate)
@@ -57503,37 +57516,37 @@ class NostalgiaForInfinityX8(IStrategy):
 
     grind_1_cluster_max_profit_stake = trade.get_custom_data(key="grind_1_cluster_max_profit_stake") or 0.0
     grind_1_cluster_max_profit_rate = trade.get_custom_data(key="grind_1_cluster_max_profit_rate") or 0.0
-    if grind_1_current_grind_profit_stake > grind_1_cluster_max_profit_stake:
+    if not partial_exit_blocked and grind_1_current_grind_profit_stake > grind_1_cluster_max_profit_stake:
       trade.set_custom_data(key="grind_1_cluster_max_profit_stake", value=grind_1_current_grind_profit_stake)
-    if grind_1_current_grind_profit_rate < grind_1_cluster_max_profit_rate:
+    if not partial_exit_blocked and grind_1_current_grind_profit_rate < grind_1_cluster_max_profit_rate:
       trade.set_custom_data(key="grind_1_cluster_max_profit_rate", value=grind_1_current_grind_profit_rate)
 
     grind_2_cluster_max_profit_stake = trade.get_custom_data(key="grind_2_cluster_max_profit_stake") or 0.0
     grind_2_cluster_max_profit_rate = trade.get_custom_data(key="grind_2_cluster_max_profit_rate") or 0.0
-    if grind_2_current_grind_profit_stake > grind_2_cluster_max_profit_stake:
+    if not partial_exit_blocked and grind_2_current_grind_profit_stake > grind_2_cluster_max_profit_stake:
       trade.set_custom_data(key="grind_2_cluster_max_profit_stake", value=grind_2_current_grind_profit_stake)
-    if grind_2_current_grind_profit_rate < grind_2_cluster_max_profit_rate:
+    if not partial_exit_blocked and grind_2_current_grind_profit_rate < grind_2_cluster_max_profit_rate:
       trade.set_custom_data(key="grind_2_cluster_max_profit_rate", value=grind_2_current_grind_profit_rate)
 
     grind_3_cluster_max_profit_stake = trade.get_custom_data(key="grind_3_cluster_max_profit_stake") or 0.0
     grind_3_cluster_max_profit_rate = trade.get_custom_data(key="grind_3_cluster_max_profit_rate") or 0.0
-    if grind_3_current_grind_profit_stake > grind_3_cluster_max_profit_stake:
+    if not partial_exit_blocked and grind_3_current_grind_profit_stake > grind_3_cluster_max_profit_stake:
       trade.set_custom_data(key="grind_3_cluster_max_profit_stake", value=grind_3_current_grind_profit_stake)
-    if grind_3_current_grind_profit_rate < grind_3_cluster_max_profit_rate:
+    if not partial_exit_blocked and grind_3_current_grind_profit_rate < grind_3_cluster_max_profit_rate:
       trade.set_custom_data(key="grind_3_cluster_max_profit_rate", value=grind_3_current_grind_profit_rate)
 
     grind_4_cluster_max_profit_stake = trade.get_custom_data(key="grind_4_cluster_max_profit_stake") or 0.0
     grind_4_cluster_max_profit_rate = trade.get_custom_data(key="grind_4_cluster_max_profit_rate") or 0.0
-    if grind_4_current_grind_profit_stake > grind_4_cluster_max_profit_stake:
+    if not partial_exit_blocked and grind_4_current_grind_profit_stake > grind_4_cluster_max_profit_stake:
       trade.set_custom_data(key="grind_4_cluster_max_profit_stake", value=grind_4_current_grind_profit_stake)
-    if grind_4_current_grind_profit_rate < grind_4_cluster_max_profit_rate:
+    if not partial_exit_blocked and grind_4_current_grind_profit_rate < grind_4_cluster_max_profit_rate:
       trade.set_custom_data(key="grind_4_cluster_max_profit_rate", value=grind_4_current_grind_profit_rate)
 
     grind_5_cluster_max_profit_stake = trade.get_custom_data(key="grind_5_cluster_max_profit_stake") or 0.0
     grind_5_cluster_max_profit_rate = trade.get_custom_data(key="grind_5_cluster_max_profit_rate") or 0.0
-    if grind_5_current_grind_profit_stake > grind_5_cluster_max_profit_stake:
+    if not partial_exit_blocked and grind_5_current_grind_profit_stake > grind_5_cluster_max_profit_stake:
       trade.set_custom_data(key="grind_5_cluster_max_profit_stake", value=grind_5_current_grind_profit_stake)
-    if grind_5_current_grind_profit_rate < grind_5_cluster_max_profit_rate:
+    if not partial_exit_blocked and grind_5_current_grind_profit_rate < grind_5_cluster_max_profit_rate:
       trade.set_custom_data(key="grind_5_cluster_max_profit_rate", value=grind_5_current_grind_profit_rate)
 
     is_short_extra_checks_entry = (
@@ -57696,6 +57709,9 @@ class NostalgiaForInfinityX8(IStrategy):
         < trade.liquidation_price
       )
     )
+    if partial_exit_blocked and not force_derisk_3:
+      return None
+
     # ---------------------------------------------------------------------
     # De-risk level 1
     # ---------------------------------------------------------------------
@@ -57799,6 +57815,9 @@ class NostalgiaForInfinityX8(IStrategy):
           f"De-risk Level 3 [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}%"
         )
         return -ft_sell_amount, "derisk_level_3"
+
+    if partial_exit_blocked:
+      return None
 
     # Grinding 1
 
