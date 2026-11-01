@@ -42701,10 +42701,8 @@ class NostalgiaForInfinityX8(IStrategy):
         ft_exit_amount = partial_exit_amount * trade_stake_amount / trade_amount
         remaining_stake = (trade_amount - partial_exit_amount) * exit_rate / trade_leverage
         partial_exit_min_stake = min_stake or 0.0
-        if (
-          exit_amount > partial_exit_min_stake
-          and ft_exit_amount > partial_exit_min_stake
-          and (remaining_stake == 0.0 or remaining_stake >= partial_exit_min_stake * 1.55)
+        if exit_amount > partial_exit_min_stake and (
+          remaining_stake == 0.0 or remaining_stake >= partial_exit_min_stake * 1.55
         ):
           return -ft_exit_amount, partial_exit_tag
         # Do not clip the recovery: a fully filled clipped order would hide the leftover.
@@ -57107,10 +57105,8 @@ class NostalgiaForInfinityX8(IStrategy):
         ft_exit_amount = partial_exit_amount * trade_stake_amount / trade_amount
         remaining_stake = (trade_amount - partial_exit_amount) * exit_rate / trade_leverage
         partial_exit_min_stake = min_stake or 0.0
-        if (
-          exit_amount > partial_exit_min_stake
-          and ft_exit_amount > partial_exit_min_stake
-          and (remaining_stake == 0.0 or remaining_stake >= partial_exit_min_stake * 1.55)
+        if exit_amount > partial_exit_min_stake and (
+          remaining_stake == 0.0 or remaining_stake >= partial_exit_min_stake * 1.55
         ):
           return -ft_exit_amount, partial_exit_tag
         # Do not clip the recovery: a fully filled clipped order would hide the leftover.
