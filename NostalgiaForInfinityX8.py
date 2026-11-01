@@ -43579,6 +43579,8 @@ class NostalgiaForInfinityX8(IStrategy):
       #   and (grind_1_orders[-1].order_date_utc.replace(tzinfo=None) >= datetime(2025, 8, 3) or is_backtest)
       # ):
       sell_amount = grind_1_total_amount * exit_rate / trade_leverage
+      if not is_futures_mode and any(order.safe_fee_base for order in grind_1_orders):
+        sell_amount = sum(order.safe_amount_after_fee for order in grind_1_orders) * exit_rate / trade_leverage
       if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
         sell_amount = (trade_amount * exit_rate / trade_leverage) - (min_stake * 1.55)
       ft_sell_amount = sell_amount * trade_leverage * (trade_stake_amount / trade_amount) / exit_rate
@@ -43705,6 +43707,8 @@ class NostalgiaForInfinityX8(IStrategy):
       #   and (grind_2_orders[-1].order_date_utc.replace(tzinfo=None) >= datetime(2025, 8, 3) or is_backtest)
       # ):
       sell_amount = grind_2_total_amount * exit_rate / trade_leverage
+      if not is_futures_mode and any(order.safe_fee_base for order in grind_2_orders):
+        sell_amount = sum(order.safe_amount_after_fee for order in grind_2_orders) * exit_rate / trade_leverage
       if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
         sell_amount = (trade_amount * exit_rate / trade_leverage) - (min_stake * 1.55)
       ft_sell_amount = sell_amount * trade_leverage * (trade_stake_amount / trade_amount) / exit_rate
@@ -43831,6 +43835,8 @@ class NostalgiaForInfinityX8(IStrategy):
       #   and (grind_3_orders[-1].order_date_utc.replace(tzinfo=None) >= datetime(2025, 8, 3) or is_backtest)
       # ):
       sell_amount = grind_3_total_amount * exit_rate / trade_leverage
+      if not is_futures_mode and any(order.safe_fee_base for order in grind_3_orders):
+        sell_amount = sum(order.safe_amount_after_fee for order in grind_3_orders) * exit_rate / trade_leverage
       if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
         sell_amount = (trade_amount * exit_rate / trade_leverage) - (min_stake * 1.55)
       ft_sell_amount = sell_amount * trade_leverage * (trade_stake_amount / trade_amount) / exit_rate
@@ -43959,6 +43965,8 @@ class NostalgiaForInfinityX8(IStrategy):
       #   and (grind_4_orders[-1].order_date_utc.replace(tzinfo=None) >= datetime(2025, 8, 3) or is_backtest)
       # ):
       sell_amount = grind_4_total_amount * exit_rate / trade_leverage
+      if not is_futures_mode and any(order.safe_fee_base for order in grind_4_orders):
+        sell_amount = sum(order.safe_amount_after_fee for order in grind_4_orders) * exit_rate / trade_leverage
       if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
         sell_amount = (trade_amount * exit_rate / trade_leverage) - (min_stake * 1.55)
       ft_sell_amount = sell_amount * trade_leverage * (trade_stake_amount / trade_amount) / exit_rate
@@ -44089,6 +44097,8 @@ class NostalgiaForInfinityX8(IStrategy):
       #   and (grind_5_orders[-1].order_date_utc.replace(tzinfo=None) >= datetime(2025, 8, 3) or is_backtest)
       # ):
       sell_amount = grind_5_total_amount * exit_rate / trade_leverage
+      if not is_futures_mode and any(order.safe_fee_base for order in grind_5_orders):
+        sell_amount = sum(order.safe_amount_after_fee for order in grind_5_orders) * exit_rate / trade_leverage
       if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
         sell_amount = (trade_amount * exit_rate / trade_leverage) - (min_stake * 1.55)
       ft_sell_amount = sell_amount * trade_leverage * (trade_stake_amount / trade_amount) / exit_rate
@@ -45170,6 +45180,8 @@ class NostalgiaForInfinityX8(IStrategy):
       trade_amount = trade.amount
       trade_stake_amount = trade.stake_amount
       exit_amount = grind_total_amount * exit_rate / trade_leverage
+      if not self.is_futures_mode and any(order.safe_fee_base for order in grind_open_orders):
+        exit_amount = sum(order.safe_amount_after_fee for order in grind_open_orders) * exit_rate / trade_leverage
       if ((current_stake_amount / trade_leverage) - exit_amount) < (min_stake * 1.55):
         exit_amount = (trade_amount * exit_rate / trade_leverage) - (min_stake * 1.55)
       ft_exit_amount = exit_amount * trade_leverage * (trade_stake_amount / trade_amount) / exit_rate
