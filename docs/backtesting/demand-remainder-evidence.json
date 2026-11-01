@@ -1,0 +1,909 @@
+{
+  "schema_version": 1,
+  "base": "bbddbd94f97f3c14336387d2958183870891b951",
+  "default_enabled": false,
+  "measured_default_enabled": true,
+  "runtime": {
+    "image": "freqtradeorg/freqtrade@sha256:4d23160b501d2b34579e76f57ad75edfa274967cd0dd824ff1c1b86d8c166ab4",
+    "timeframe": "5m",
+    "wallet_usdt": 100000,
+    "leverage": 3,
+    "slots": 6,
+    "pairs": [
+      "BTC/USDT:USDT",
+      "ETH/USDT:USDT",
+      "SOL/USDT:USDT",
+      "XRP/USDT:USDT",
+      "BNB/USDT:USDT",
+      "DOGE/USDT:USDT",
+      "ADA/USDT:USDT",
+      "AVAX/USDT:USDT",
+      "LINK/USDT:USDT",
+      "SAND/USDT:USDT",
+      "AXS/USDT:USDT",
+      "INJ/USDT:USDT",
+      "AAVE/USDT:USDT",
+      "RUNE/USDT:USDT",
+      "FIL/USDT:USDT",
+      "GALA/USDT:USDT",
+      "DOT/USDT:USDT",
+      "ALGO/USDT:USDT",
+      "CRV/USDT:USDT"
+    ],
+    "fee_per_side": 0.0005,
+    "independent_annual_wallets": true,
+    "ends_exclusive": true
+  },
+  "periods": [
+    {
+      "year": "2024",
+      "timerange": "20240101-20250101",
+      "native": {
+        "trades": 141,
+        "wins": 139,
+        "losses": 2,
+        "pnl_usdt": "394848.9870206999",
+        "losing_trade_pnl_subtotal_usdt": "-8405.5060514699999",
+        "equity_dd": {
+          "percent": 27.108663611270828,
+          "absolute": 37716.59569289975,
+          "peak_time": "2024-04-12T23:40:00+00:00",
+          "trough_time": "2024-04-13T20:05:00+00:00",
+          "recovery_time": "2024-04-19T06:45:00+00:00",
+          "recovered": true,
+          "max_absolute_any_peak": 49635.93066340999
+        },
+        "all_slots_loss_minutes": 375,
+        "force_exits": 0,
+        "worst_open_lifecycle_pnl_usdt": -40112.83548930056,
+        "pure120": {
+          "trades": 4,
+          "wins": 3,
+          "losses": 1,
+          "pnl": "11232.1194553700001",
+          "force_exits": 0
+        },
+        "export_sha256": "7eed0eba25bb196c079e6b43c18765018093e132ec5d0966d732f7795fd87f9f",
+        "equity_sha256": "b7c9ed1969f749d58ea53d643f1ded5dfd8ab881de2d85c3737476b161d0bb1c"
+      },
+      "enabled": {
+        "trades": 141,
+        "wins": 139,
+        "losses": 2,
+        "pnl_usdt": "394848.9870206999",
+        "losing_trade_pnl_subtotal_usdt": "-8405.5060514699999",
+        "equity_dd": {
+          "percent": 27.108663611270828,
+          "absolute": 37716.59569289975,
+          "peak_time": "2024-04-12T23:40:00+00:00",
+          "trough_time": "2024-04-13T20:05:00+00:00",
+          "recovery_time": "2024-04-19T06:45:00+00:00",
+          "recovered": true,
+          "max_absolute_any_peak": 49635.93066340999
+        },
+        "all_slots_loss_minutes": 375,
+        "force_exits": 0,
+        "worst_open_lifecycle_pnl_usdt": -40112.83548930056,
+        "pure120": {
+          "trades": 4,
+          "wins": 3,
+          "losses": 1,
+          "pnl": "11232.1194553700001",
+          "force_exits": 0
+        },
+        "export_sha256": "942c759b307d91f1e9e4bcb8851ad257551e5ee101460106a9e6cc705294d5de",
+        "equity_sha256": "b7c9ed1969f749d58ea53d643f1ded5dfd8ab881de2d85c3737476b161d0bb1c"
+      },
+      "portfolio_delta_usdt": "0E-10",
+      "pure120_delta_usdt": "0E-13",
+      "execution_equal": true,
+      "equity_bytes_equal": true,
+      "changes": {
+        "omitted_winners": 0,
+        "omitted_losers": 0,
+        "new_winners": 0,
+        "new_losers": 0,
+        "truncated_winners": 0,
+        "truncated_losers": 0
+      },
+      "actual_demand": {
+        "rows": 5,
+        "demands": 0,
+        "intents": 0,
+        "closed_with_intent": 0
+      }
+    },
+    {
+      "year": "2025",
+      "timerange": "20250101-20260101",
+      "native": {
+        "trades": 138,
+        "wins": 136,
+        "losses": 2,
+        "pnl_usdt": "339270.68005295",
+        "losing_trade_pnl_subtotal_usdt": "-17242.8332980500006",
+        "equity_dd": {
+          "percent": 20.85405264361571,
+          "absolute": 29012.126487849993,
+          "peak_time": "2025-02-03T00:55:00+00:00",
+          "trough_time": "2025-02-03T02:05:00+00:00",
+          "recovery_time": "2025-02-03T03:10:00+00:00",
+          "recovered": true,
+          "max_absolute_any_peak": 29012.126487849993
+        },
+        "all_slots_loss_minutes": 65,
+        "force_exits": 0,
+        "worst_open_lifecycle_pnl_usdt": -25541.81391215,
+        "pure120": {
+          "trades": 3,
+          "wins": 1,
+          "losses": 2,
+          "pnl": "-11497.4902712999996",
+          "force_exits": 0
+        },
+        "export_sha256": "939e32ff77d9a8037b29c03eb3d13b3e3070137168a8a2617f0d7c35d5cc0c2e",
+        "equity_sha256": "2385219c804220b802d473566bde5ac6c356e62f5d4069441609ff87c927743c"
+      },
+      "enabled": {
+        "trades": 140,
+        "wins": 139,
+        "losses": 1,
+        "pnl_usdt": "372882.25106193",
+        "losing_trade_pnl_subtotal_usdt": "-1058.6275605399996",
+        "equity_dd": {
+          "percent": 20.85405264361571,
+          "absolute": 29012.126487849993,
+          "peak_time": "2025-02-03T00:55:00+00:00",
+          "trough_time": "2025-02-03T02:05:00+00:00",
+          "recovery_time": "2025-02-03T03:10:00+00:00",
+          "recovered": true,
+          "max_absolute_any_peak": 29012.126487849993
+        },
+        "all_slots_loss_minutes": 65,
+        "force_exits": 1,
+        "worst_open_lifecycle_pnl_usdt": -27388.464409931767,
+        "pure120": {
+          "trades": 5,
+          "wins": 4,
+          "losses": 1,
+          "pnl": "7857.0699190000014",
+          "force_exits": 1
+        },
+        "export_sha256": "054648a4636a9f1981bd98d91bcedfe0ffeb5bb252803b104dba808e501bbd4f",
+        "equity_sha256": "c796902990fa22c95996103bafb3558abd35ec73a32ef4e3d717580f6af685d9"
+      },
+      "portfolio_delta_usdt": "33611.57100898",
+      "pure120_delta_usdt": "19354.5601903000010",
+      "execution_equal": false,
+      "equity_bytes_equal": false,
+      "changes": {
+        "omitted_winners": 1,
+        "omitted_losers": 0,
+        "new_winners": 3,
+        "new_losers": 0,
+        "truncated_winners": 0,
+        "truncated_losers": 1
+      },
+      "actual_demand": {
+        "rows": 22,
+        "demands": 3,
+        "intents": 2,
+        "closed_with_intent": 2
+      }
+    }
+  ],
+  "final_source_commit": "9d14ddb8ad3b1ffa6c7b46361100821cb4b3b879",
+  "final_source_sha256": "215af939c4088aef637d49268739c2b7f49dcbf64a3e83bf705290a1642a2a5c",
+  "core_measured_source_commit": "b3c6221a90dbbd83c12053eac7bae3fde5a27808",
+  "final_on_replays_match_core": {
+    "2024": true,
+    "2025": true
+  },
+  "native_source_sha256": "80f824e879493babf42cb861d751aa077bcc475ccacf08ae62ebf7abd26eeb8f",
+  "data_files": [
+    {
+      "file": "futures/BTC_USDT_USDT-5m-futures.feather",
+      "sha256": "cf43ec31b07d660154cc742c893a7534e0077f8780c34ddeb42974c16875ded4"
+    },
+    {
+      "file": "futures/BTC_USDT_USDT-15m-futures.feather",
+      "sha256": "43f927a19c74cf1079b24ad823aeb0c644a69b5c67f60a5dd61133ca94c46a79"
+    },
+    {
+      "file": "futures/BTC_USDT_USDT-1h-futures.feather",
+      "sha256": "565699ee9edc4f2d0e4e7eaabe3692af7ec7a59d7247d791151c9dd91afced4b"
+    },
+    {
+      "file": "futures/BTC_USDT_USDT-4h-futures.feather",
+      "sha256": "5f096670866b43e0a5a520461cb7ca2fd82b5bccc22f7089cc8b3251cd76a77c"
+    },
+    {
+      "file": "futures/BTC_USDT_USDT-1d-futures.feather",
+      "sha256": "de69db4459fb8e12ff174704f57e60b7887bcf8830ede361490a19369af9998a"
+    },
+    {
+      "file": "futures/BTC_USDT_USDT-1h-mark.feather",
+      "sha256": "5da4f0a938425b5674abb96b89d2fadecd966b5f5afab9d85c3f9d86f25ccad5"
+    },
+    {
+      "file": "futures/BTC_USDT_USDT-1h-funding_rate.feather",
+      "sha256": "a21500a3fc785f41b3ee0519117f68b563a203dc210f75d893228f485a2eb8c9"
+    },
+    {
+      "file": "futures/ETH_USDT_USDT-5m-futures.feather",
+      "sha256": "1c2251104c71463ff5d680c40c27720f0b9194440e992a63c87e279541929894"
+    },
+    {
+      "file": "futures/ETH_USDT_USDT-15m-futures.feather",
+      "sha256": "d3d5ffe8e3d4cdfab1f60056c90dff5d7714990c8f8edca3c3f0396232079c60"
+    },
+    {
+      "file": "futures/ETH_USDT_USDT-1h-futures.feather",
+      "sha256": "cc3362addc8852db0c7fd9f2919117824650fc3ae6a7f80a8d001de3c29bfe72"
+    },
+    {
+      "file": "futures/ETH_USDT_USDT-4h-futures.feather",
+      "sha256": "6194079580c2f16f20b7975587d944d7e85892b0357335800b9b766767062cf7"
+    },
+    {
+      "file": "futures/ETH_USDT_USDT-1d-futures.feather",
+      "sha256": "071bcdf83676de5fd7657a3381cde393b41ec7958a36bd7862abadb5ff2509b9"
+    },
+    {
+      "file": "futures/ETH_USDT_USDT-1h-mark.feather",
+      "sha256": "c6fb9966130ae80fccc68141790492fd530b2c1403cc3760eb845f34b1b935a5"
+    },
+    {
+      "file": "futures/ETH_USDT_USDT-1h-funding_rate.feather",
+      "sha256": "64c87273c20f125b2698794b22961b8f6d8af0c3585ea13bc362a70ef4d6c868"
+    },
+    {
+      "file": "futures/SOL_USDT_USDT-5m-futures.feather",
+      "sha256": "624fea3f1785bdc066c620775cc6c314cd97156d9a749a697afae8ac06cd4a19"
+    },
+    {
+      "file": "futures/SOL_USDT_USDT-15m-futures.feather",
+      "sha256": "501f617d46b4dcf27fd21e48b3519152526215433269fdabb9f5c706d173e2ec"
+    },
+    {
+      "file": "futures/SOL_USDT_USDT-1h-futures.feather",
+      "sha256": "91ef5cc5b873d5398f652f5f49ea7bb16fd46eae7ab905f778f8a9a856cc945c"
+    },
+    {
+      "file": "futures/SOL_USDT_USDT-4h-futures.feather",
+      "sha256": "b1032a4081d13b21f0ccc13e2e96af11fa4412fa7ad04f74296ee4a126395317"
+    },
+    {
+      "file": "futures/SOL_USDT_USDT-1d-futures.feather",
+      "sha256": "de023e1d6159a5104b07b13ad0a63c60fbf411c9b95d659c269ea81aff303142"
+    },
+    {
+      "file": "futures/SOL_USDT_USDT-1h-mark.feather",
+      "sha256": "29c94edf1a90ede153607697017736a279c9ddfacd4bf6100c8b1849d677431b"
+    },
+    {
+      "file": "futures/SOL_USDT_USDT-1h-funding_rate.feather",
+      "sha256": "444ce5170b7fcf29a904344f3f424dae658c374c4f12357b5bcc5855e6620c07"
+    },
+    {
+      "file": "futures/XRP_USDT_USDT-5m-futures.feather",
+      "sha256": "1d58dae006de66bb4e716b0e89c2be46a4f0f320c0b9c16a2fd7d78b657fef80"
+    },
+    {
+      "file": "futures/XRP_USDT_USDT-15m-futures.feather",
+      "sha256": "052474ceba9de9d09a625c0ce41eef5ee9afbde5a78576de3a01e17b819e647a"
+    },
+    {
+      "file": "futures/XRP_USDT_USDT-1h-futures.feather",
+      "sha256": "974f9f597fc68ceda4be549436224b0ba93c50795a46f73792a323854ad7992a"
+    },
+    {
+      "file": "futures/XRP_USDT_USDT-4h-futures.feather",
+      "sha256": "22b5e8c6b59ed573d238ec394a4e62ceaf3d26b6c47ff4cce0944193db27b27e"
+    },
+    {
+      "file": "futures/XRP_USDT_USDT-1d-futures.feather",
+      "sha256": "1000631f1bd9c8c2b4ec5314daff732f93e9d04beb4fa67813844b6ce7b166c3"
+    },
+    {
+      "file": "futures/XRP_USDT_USDT-1h-mark.feather",
+      "sha256": "6afaa9ec9151e7e8475f7085d687f88df7d829763089293e067bc2a627107853"
+    },
+    {
+      "file": "futures/XRP_USDT_USDT-1h-funding_rate.feather",
+      "sha256": "2d497301f98701e3b09125f2797c000130759c390299543e7051dddf75206677"
+    },
+    {
+      "file": "futures/BNB_USDT_USDT-5m-futures.feather",
+      "sha256": "b85b1f818afb7782219a00c449662f007ec3e11b840cc537ff443768f8173423"
+    },
+    {
+      "file": "futures/BNB_USDT_USDT-15m-futures.feather",
+      "sha256": "897b0719812a43f9585f05c61ef055988b68670d07eeb9127e0f3a81a78266f2"
+    },
+    {
+      "file": "futures/BNB_USDT_USDT-1h-futures.feather",
+      "sha256": "78266c749310e51a4913af3fa01008fded67bb478541446e2149a15fb1d2bfc9"
+    },
+    {
+      "file": "futures/BNB_USDT_USDT-4h-futures.feather",
+      "sha256": "a02078bb632be4ac44b3dd13ef9720fcd6d9b2049373193d4b2ae3b5f40134d8"
+    },
+    {
+      "file": "futures/BNB_USDT_USDT-1d-futures.feather",
+      "sha256": "1d81b831196c954a5e0836f8e3ef28727b3a1ca34f69e36d75c781e8fd1ac856"
+    },
+    {
+      "file": "futures/BNB_USDT_USDT-1h-mark.feather",
+      "sha256": "86e6cdb759bc22d90b1959f54611fccaa2c6989c845c5b776c17c391d626c7e7"
+    },
+    {
+      "file": "futures/BNB_USDT_USDT-1h-funding_rate.feather",
+      "sha256": "5f65c4ec3fc160fcba1f76b7fde1e04abefd958fd3b0332affa79e23b853c5c2"
+    },
+    {
+      "file": "futures/DOGE_USDT_USDT-5m-futures.feather",
+      "sha256": "a0368c6a27291bc4bd60a8b31bf446a8260893ccf96e14c63bea13ccae884bcb"
+    },
+    {
+      "file": "futures/DOGE_USDT_USDT-15m-futures.feather",
+      "sha256": "5c2b52c06aa7edf6ba1531aed8962cbee194857535704ff73f37c143c641a442"
+    },
+    {
+      "file": "futures/DOGE_USDT_USDT-1h-futures.feather",
+      "sha256": "a41bceaa6ca0b5b48d12e5ba97d77bfccf065888d47d260e6dbb33640a9c2e6c"
+    },
+    {
+      "file": "futures/DOGE_USDT_USDT-4h-futures.feather",
+      "sha256": "a453d36f73c797d5d86e589eac4ea48e022e1ed77ad0eb07519a89bea867dc34"
+    },
+    {
+      "file": "futures/DOGE_USDT_USDT-1d-futures.feather",
+      "sha256": "0ba9293efa8004719e0feaeab2b11e741546fa6d948f65184c943fb51786153d"
+    },
+    {
+      "file": "futures/DOGE_USDT_USDT-1h-mark.feather",
+      "sha256": "065d3c20ef3348e89baa3b58680984e5991026ee4866d58ee524bc9dd060eae3"
+    },
+    {
+      "file": "futures/DOGE_USDT_USDT-1h-funding_rate.feather",
+      "sha256": "056a5a6db33af702a26d2d88ecfba3e67f593f5abfd29e77c96055b245086e05"
+    },
+    {
+      "file": "futures/ADA_USDT_USDT-5m-futures.feather",
+      "sha256": "af2ed676ca3978acc690bae7b437eeaf9c55697efa3d2313fe69d959372f17ff"
+    },
+    {
+      "file": "futures/ADA_USDT_USDT-15m-futures.feather",
+      "sha256": "fbc980d9bf0e2ab4372e5c4bf76c392829fc40ee13319370a1764f76dd831cad"
+    },
+    {
+      "file": "futures/ADA_USDT_USDT-1h-futures.feather",
+      "sha256": "a3a1f5bf20c65a81676f5ffad35520c27b952847a5bcd0f387999935dc230465"
+    },
+    {
+      "file": "futures/ADA_USDT_USDT-4h-futures.feather",
+      "sha256": "7ffd26d17d02d33d742b0ac546752b70210f296dbf815635cd898ea792dc246e"
+    },
+    {
+      "file": "futures/ADA_USDT_USDT-1d-futures.feather",
+      "sha256": "97b334e2b1fc7893e1eae5fd05531e80b216f984f3705438186743485b0004de"
+    },
+    {
+      "file": "futures/ADA_USDT_USDT-1h-mark.feather",
+      "sha256": "cbe2327bea7e7b01cfeb713e5d23cabbe030a2fcd554516107613592e4ee3a2c"
+    },
+    {
+      "file": "futures/ADA_USDT_USDT-1h-funding_rate.feather",
+      "sha256": "683605e00749fdec17cfbef3b5cac2b24426d20489b7cffb9b98cc45a0c261cf"
+    },
+    {
+      "file": "futures/AVAX_USDT_USDT-5m-futures.feather",
+      "sha256": "b12ff3bee58a19eae192992f567e7601c56fd097d9073e7cb2057578837d7704"
+    },
+    {
+      "file": "futures/AVAX_USDT_USDT-15m-futures.feather",
+      "sha256": "b893e5691f2bdd5ec23fa5546b46a5dee5e0fed75738d98b3e4b3533bc89ab56"
+    },
+    {
+      "file": "futures/AVAX_USDT_USDT-1h-futures.feather",
+      "sha256": "61cd54de739dc14f56eea65af9af276d439caf90cfe3b672021d3f1fc77a0030"
+    },
+    {
+      "file": "futures/AVAX_USDT_USDT-4h-futures.feather",
+      "sha256": "ab3b8a9d18d35d4594090042c76d88cce5bc1b9c3f980a5a58935cb770a20214"
+    },
+    {
+      "file": "futures/AVAX_USDT_USDT-1d-futures.feather",
+      "sha256": "a20c5038094a7a21b61a8d44e79a5ee114f21dbc3db84be5e154e257f3ae6872"
+    },
+    {
+      "file": "futures/AVAX_USDT_USDT-1h-mark.feather",
+      "sha256": "90ff0326971fd4dff60b68acedcc1f42e2f885b50383c3b7960da9536024e0ee"
+    },
+    {
+      "file": "futures/AVAX_USDT_USDT-1h-funding_rate.feather",
+      "sha256": "3cccc49b0debb2e5d076cb8b7bd0c48dc3c0e40d1d634a9c17d1da8421e3f062"
+    },
+    {
+      "file": "futures/LINK_USDT_USDT-5m-futures.feather",
+      "sha256": "1615c0f58d8eae59544bdd4f7f446234fae3b3c76ae71fcf47ba3bed24c35c63"
+    },
+    {
+      "file": "futures/LINK_USDT_USDT-15m-futures.feather",
+      "sha256": "8eb4fd1b41bb9b3ba2f6decb3381cf5fa9387eaf50998974fedc2dd94d3edce3"
+    },
+    {
+      "file": "futures/LINK_USDT_USDT-1h-futures.feather",
+      "sha256": "8eaf4a745de9fc6bec2ac4acd8ffec1310598aa8ca243dd69ad161fa1b46ea16"
+    },
+    {
+      "file": "futures/LINK_USDT_USDT-4h-futures.feather",
+      "sha256": "684d671156afab8ee7cf587fb57347ac3c804ff096d2d32388586c39c69e4e2e"
+    },
+    {
+      "file": "futures/LINK_USDT_USDT-1d-futures.feather",
+      "sha256": "877a15a04d0fdd9bff054f1ba675b7084ad4cddfe16164bfafbc42edaa73bf11"
+    },
+    {
+      "file": "futures/LINK_USDT_USDT-1h-mark.feather",
+      "sha256": "9e47cf4fde38b2a85d3da837dab199e6d75ae4722aab98b86af4a7a61c07e994"
+    },
+    {
+      "file": "futures/LINK_USDT_USDT-1h-funding_rate.feather",
+      "sha256": "79b85175e53fe700b7588e6842a12813bd9d1ef0d10251e987229ffa98c78ddf"
+    },
+    {
+      "file": "futures/SAND_USDT_USDT-5m-futures.feather",
+      "sha256": "5a8f27c0878eca004ed5ea692c3854dcb4a1a1e6fe32785b7e3d8b44278871fc"
+    },
+    {
+      "file": "futures/SAND_USDT_USDT-15m-futures.feather",
+      "sha256": "463e10a77b6dfe362de2d8c28eccbcf559ab9a8ba0b01fcbe8bc97435f842d79"
+    },
+    {
+      "file": "futures/SAND_USDT_USDT-1h-futures.feather",
+      "sha256": "bdb084a8fea7308b2fade8bf14f2f8213b961417e91f3c6ed0b8ddce27f8a205"
+    },
+    {
+      "file": "futures/SAND_USDT_USDT-4h-futures.feather",
+      "sha256": "8e417c4ac7210fce73b5a8cdc00771ed7d40dd4d1fcade2bb7a14af67543e7ad"
+    },
+    {
+      "file": "futures/SAND_USDT_USDT-1d-futures.feather",
+      "sha256": "8f4d0db146eb8317e6aa8bf88ce8484aa38b09a7d1807730603a6d9c031356b6"
+    },
+    {
+      "file": "futures/SAND_USDT_USDT-1h-mark.feather",
+      "sha256": "256950837e04a3e69c935192899bec9a5148bd16e9ea041a0228f7f90783721b"
+    },
+    {
+      "file": "futures/SAND_USDT_USDT-1h-funding_rate.feather",
+      "sha256": "5c12e9f95a22b9a6fcaf5baa4ef5d3be3f93589b1da4d1174889b2c0756289d6"
+    },
+    {
+      "file": "futures/AXS_USDT_USDT-5m-futures.feather",
+      "sha256": "8f184d1a7382c8904cb38f3f7ef82cd8c95b6368202762bcad6a9a79b39960d4"
+    },
+    {
+      "file": "futures/AXS_USDT_USDT-15m-futures.feather",
+      "sha256": "9b72fcbbd97f0e8f7f00bea07f6d2697887d9728a584abb333d1f1bba8af4adf"
+    },
+    {
+      "file": "futures/AXS_USDT_USDT-1h-futures.feather",
+      "sha256": "5e51886dc1d5cbda38dc9634f8a57e9ec23a8b85fe7aa592bf3c2aaede31320e"
+    },
+    {
+      "file": "futures/AXS_USDT_USDT-4h-futures.feather",
+      "sha256": "c017f03f68d9391a4830fdd3e1362e7046549b9070395a71490b5eefa439d02c"
+    },
+    {
+      "file": "futures/AXS_USDT_USDT-1d-futures.feather",
+      "sha256": "f423e4d5984a88aadb8023e7925632f3b025eb03d04105fe280ef18ec3b4017d"
+    },
+    {
+      "file": "futures/AXS_USDT_USDT-1h-mark.feather",
+      "sha256": "d62338e139697657dcbd63055698515ecacdd6009fbcb7d68ff9a484c1a1c127"
+    },
+    {
+      "file": "futures/AXS_USDT_USDT-1h-funding_rate.feather",
+      "sha256": "c8e10e9775d800e7e52f703936f8d772c7c84456e268757de9e60632493fa89e"
+    },
+    {
+      "file": "futures/INJ_USDT_USDT-5m-futures.feather",
+      "sha256": "d8b9ee06645c3bcea111d49d495299847400ca582b2cf9513ef2fe1df9e9543f"
+    },
+    {
+      "file": "futures/INJ_USDT_USDT-15m-futures.feather",
+      "sha256": "0853290d1dc9902fc66c2a08274733150433a019d4e3f663a1cd4dadcb2d73e6"
+    },
+    {
+      "file": "futures/INJ_USDT_USDT-1h-futures.feather",
+      "sha256": "a2a545b21f05cfa803bc813169fa8abb2fe2ba6d33aa66b88fc86187682f31a5"
+    },
+    {
+      "file": "futures/INJ_USDT_USDT-4h-futures.feather",
+      "sha256": "4dccfa34d3e6f35959554de53a8bc1ef174352780ea1394c98f58ff2d2306a7d"
+    },
+    {
+      "file": "futures/INJ_USDT_USDT-1d-futures.feather",
+      "sha256": "bfc39264a9c8e7b2301da44887b62b30a45a345a7a798cb1d202fd951a960020"
+    },
+    {
+      "file": "futures/INJ_USDT_USDT-1h-mark.feather",
+      "sha256": "b18b97cf4d5231cf3a0652403ffefcdd70e6ccffd60464c00ca04bb4582901bf"
+    },
+    {
+      "file": "futures/INJ_USDT_USDT-1h-funding_rate.feather",
+      "sha256": "78e19cb20647c93644964129d167ad006565643edeb05f4e2649ca1ff7a73c0a"
+    },
+    {
+      "file": "futures/AAVE_USDT_USDT-5m-futures.feather",
+      "sha256": "82d2ec9e70f1b0dd1d35b5b30cd106c5f825350cb379c4de2d5079bbea4803fb"
+    },
+    {
+      "file": "futures/AAVE_USDT_USDT-15m-futures.feather",
+      "sha256": "73a22f156e105351ee9c3b835c5ae4092efd714a0c8b781a7453c2352c6cbe98"
+    },
+    {
+      "file": "futures/AAVE_USDT_USDT-1h-futures.feather",
+      "sha256": "950e0486dbc010aea45adee745201ba9b16a943df6e1a27711ec85ee14869b72"
+    },
+    {
+      "file": "futures/AAVE_USDT_USDT-4h-futures.feather",
+      "sha256": "cb0d8f7d4460fc7bd3faed3614d22aa66d44012b5e8f1f71ae34b10e05100e67"
+    },
+    {
+      "file": "futures/AAVE_USDT_USDT-1d-futures.feather",
+      "sha256": "becbdcab77025a7b9d4883c6d9406b37d9f250fc4aac23fdca22200fcdb1595f"
+    },
+    {
+      "file": "futures/AAVE_USDT_USDT-1h-mark.feather",
+      "sha256": "f39461266a81b01075f29ef6d547c7dbacb7e3f1bc3b3964a39b89ab5c3de802"
+    },
+    {
+      "file": "futures/AAVE_USDT_USDT-1h-funding_rate.feather",
+      "sha256": "617229fec576df01a418d6c0a39344b18a613e785e20ddb2f5c6015c36e1808d"
+    },
+    {
+      "file": "futures/RUNE_USDT_USDT-5m-futures.feather",
+      "sha256": "33e8ccacc79b90b4939387e1793bf732aebb63d9625fe97b8bc488064b026450"
+    },
+    {
+      "file": "futures/RUNE_USDT_USDT-15m-futures.feather",
+      "sha256": "79107c72bd561c28e07b1c47c45e0d31587208030dbed41d07988b6c0124790e"
+    },
+    {
+      "file": "futures/RUNE_USDT_USDT-1h-futures.feather",
+      "sha256": "a281e0b1fc7eaab88eded75c1674dcc8ca7e481a20f25b3b21fc91e57282b5cc"
+    },
+    {
+      "file": "futures/RUNE_USDT_USDT-4h-futures.feather",
+      "sha256": "0c4b412a9c57b3c355a983c3a77d48bf7ed28caa6cda4bbcf42c8909e8a85f7d"
+    },
+    {
+      "file": "futures/RUNE_USDT_USDT-1d-futures.feather",
+      "sha256": "447b7793160a318322fc190ea6cafec0d21f9cb165f36ebd11ba36897e13cac7"
+    },
+    {
+      "file": "futures/RUNE_USDT_USDT-1h-mark.feather",
+      "sha256": "8f5eba077daf1f767c4e7a1e6235ad614b3c699164c6066aee5eba6b6a37a706"
+    },
+    {
+      "file": "futures/RUNE_USDT_USDT-1h-funding_rate.feather",
+      "sha256": "90b0727ec2949c2be478d8a7681e4599a2aadbe82552f99373c6de3cdb3bbed3"
+    },
+    {
+      "file": "futures/FIL_USDT_USDT-5m-futures.feather",
+      "sha256": "17b20926875f699e3cdade0306a57a7f3f59669a148819da79560b15ed633e44"
+    },
+    {
+      "file": "futures/FIL_USDT_USDT-15m-futures.feather",
+      "sha256": "fa9e697b7e4e0a2bed564190a428cf4d0677245c12c00cfbeef4a7922a0a8d5d"
+    },
+    {
+      "file": "futures/FIL_USDT_USDT-1h-futures.feather",
+      "sha256": "2cbf6f31017f8d5c7f17f58b0517b78385ce946f6815661cc69d1c7b1db9226f"
+    },
+    {
+      "file": "futures/FIL_USDT_USDT-4h-futures.feather",
+      "sha256": "3e7452a8377e3df086c52ca9043579bfcffc04abc462edff6e313b4ae66396db"
+    },
+    {
+      "file": "futures/FIL_USDT_USDT-1d-futures.feather",
+      "sha256": "e612b388ee4bc681e77357ab15869c13a7cf8f1c3526c18f490b3a6a5eaf81f2"
+    },
+    {
+      "file": "futures/FIL_USDT_USDT-1h-mark.feather",
+      "sha256": "05f4a232558eb2737dd94a84e21299a0cfe9ca15250cd584b511cf1e20beff59"
+    },
+    {
+      "file": "futures/FIL_USDT_USDT-1h-funding_rate.feather",
+      "sha256": "bcd91484bc26c41be3db624769fe87943defaac61d3869976386e6f1f52b8b0b"
+    },
+    {
+      "file": "futures/GALA_USDT_USDT-5m-futures.feather",
+      "sha256": "b5422c3a15e34ebb0cc796ad16bd0ff50da75cf66490aa029854cba19d70b245"
+    },
+    {
+      "file": "futures/GALA_USDT_USDT-15m-futures.feather",
+      "sha256": "7737904f12f248730b41d731988338127bf94de693babcb7f86935ac212e6138"
+    },
+    {
+      "file": "futures/GALA_USDT_USDT-1h-futures.feather",
+      "sha256": "a4b0811581d94343b921dc9f81fbc77bc50aded342804630ce3ceb0efafbf861"
+    },
+    {
+      "file": "futures/GALA_USDT_USDT-4h-futures.feather",
+      "sha256": "f369159d5cb3cda644c7f7831bf52f9a4d76d5cd9eddc1e4d9413669e45b3958"
+    },
+    {
+      "file": "futures/GALA_USDT_USDT-1d-futures.feather",
+      "sha256": "cc7eabaaefa10ab87df3352dd7c9ed89cf9943fb17e9e3efb2a86bfee3693a42"
+    },
+    {
+      "file": "futures/GALA_USDT_USDT-1h-mark.feather",
+      "sha256": "3b00c7d1b3187bee9bad2b50bd5bf006c2b0055c5f05f0e0ac829fbb9ae6b2b9"
+    },
+    {
+      "file": "futures/GALA_USDT_USDT-1h-funding_rate.feather",
+      "sha256": "8e4315a01909bc71e946405da3f2e7683a72959e773223f0fc88cc4612a45b4a"
+    },
+    {
+      "file": "futures/DOT_USDT_USDT-5m-futures.feather",
+      "sha256": "4d5f19d70b0a97f0f8405e5b52128b5a9ee3de1fbc1cedfb4fe21f4c994a4d34"
+    },
+    {
+      "file": "futures/DOT_USDT_USDT-15m-futures.feather",
+      "sha256": "8a522cfa6206cc3d1571a8969af11c0535c01655c51f130f37e16d8750a6d348"
+    },
+    {
+      "file": "futures/DOT_USDT_USDT-1h-futures.feather",
+      "sha256": "717f567c36530d5681421efa48c64014c1876cda0cfaf934657839a523851757"
+    },
+    {
+      "file": "futures/DOT_USDT_USDT-4h-futures.feather",
+      "sha256": "a8492ff81577fbd87c6a9990ef1f29eb5cfd827507ac9e3629951613708b7294"
+    },
+    {
+      "file": "futures/DOT_USDT_USDT-1d-futures.feather",
+      "sha256": "5909caa91d071ec1b51c974d16de765eb88332145e090f25b9e569b345272863"
+    },
+    {
+      "file": "futures/DOT_USDT_USDT-1h-mark.feather",
+      "sha256": "fb250aa04d034551b8be7af13acc5b419ba9cc56098852450efb390b452bc723"
+    },
+    {
+      "file": "futures/DOT_USDT_USDT-1h-funding_rate.feather",
+      "sha256": "3620af9280c97cf019313414efea9e687f2c6652349fd60919e80e9827e974d1"
+    },
+    {
+      "file": "futures/ALGO_USDT_USDT-5m-futures.feather",
+      "sha256": "8746563f4b9e1d219d7008a7bb04a73ee45c1c49794b2352fdfa3f23f2fe896a"
+    },
+    {
+      "file": "futures/ALGO_USDT_USDT-15m-futures.feather",
+      "sha256": "00ee6904c39bbd124821a35e35d722d00034ce20b166a60c666843d1e4987320"
+    },
+    {
+      "file": "futures/ALGO_USDT_USDT-1h-futures.feather",
+      "sha256": "f10994a8733263dff90939d5e6dc6f25902dec0ae18bf9d69de781a3c99066f8"
+    },
+    {
+      "file": "futures/ALGO_USDT_USDT-4h-futures.feather",
+      "sha256": "5edb3657d79f780e8746c70c7e4e7c67094da20b0ed61b5f8d68d5659889df1d"
+    },
+    {
+      "file": "futures/ALGO_USDT_USDT-1d-futures.feather",
+      "sha256": "d883ae17c8eddfc0bd0a466faf7fa1460d5e8ff3549f748400ed4dbf792dbefd"
+    },
+    {
+      "file": "futures/ALGO_USDT_USDT-1h-mark.feather",
+      "sha256": "ef8f5ca6e73b41fbb9e4b96c1182fb1816505f25bf9450a8776e4d36f5b682ef"
+    },
+    {
+      "file": "futures/ALGO_USDT_USDT-1h-funding_rate.feather",
+      "sha256": "9bbc1087cba819eb38c1ff39632f5ed8d89b93e69289a7533d152ceb7501e226"
+    },
+    {
+      "file": "futures/CRV_USDT_USDT-5m-futures.feather",
+      "sha256": "d86535b0a3c3dbd5006817f9fcbbec1e33f448efd14362ac90a881e1ed375a24"
+    },
+    {
+      "file": "futures/CRV_USDT_USDT-15m-futures.feather",
+      "sha256": "d8009c181919ef49e736ccaa76d21e194e19776b7bc7762e2fd8003e7c4e6f24"
+    },
+    {
+      "file": "futures/CRV_USDT_USDT-1h-futures.feather",
+      "sha256": "c858c304c15e665a2e0580c8e942452a528cfe3aebae6508274220572b61f307"
+    },
+    {
+      "file": "futures/CRV_USDT_USDT-4h-futures.feather",
+      "sha256": "960aaa361d6486f2993af6f38509ea82764d45567929c0eb11afaa95fcf1dc69"
+    },
+    {
+      "file": "futures/CRV_USDT_USDT-1d-futures.feather",
+      "sha256": "78b88eb97a8861924cd28f85d6098630617de31604ee299c9d8c5a0cbca74aa6"
+    },
+    {
+      "file": "futures/CRV_USDT_USDT-1h-mark.feather",
+      "sha256": "61f8cadecd544080dac7e1a6524446ebefe2c10fd6a47130f04e646516c5e974"
+    },
+    {
+      "file": "futures/CRV_USDT_USDT-1h-funding_rate.feather",
+      "sha256": "aba0b5c8f689a79a74bbfe6f9d43861d2d32845637078d9bcff19047defe2e8b"
+    }
+  ],
+  "validation": {
+    "public_ci_image": "ghcr.io/iterativv/ci-strategy-backtesting@sha256:c356a7900503e964e0cbe7d92a499171c4090998e9bdf0efa76053b27d249107",
+    "unit_tools_passed": 2931,
+    "focused_public_cases": 74,
+    "additional_live_boundary_probe_passed": 1,
+    "errors": 0,
+    "skips": 0,
+    "inherited_warnings": 14,
+    "core_off_parity": "2025 exact trades/orders and byte equity; final change is unreachable without an active snapshot",
+    "observer_parity": "2025 exact trades/orders and byte equity",
+    "full_junit_sha256": "14da585618e266859d4bb499bb8b7979b58ca306499d548e8cfb37db481918a1"
+  },
+  "actual_closes": [
+    {
+      "pair": "CRV/USDT:USDT",
+      "demand_pair": "INJ/USDT:USDT",
+      "demand_time": "2025-11-05 01:20:00+00:00",
+      "intent_time": "2025-11-05 01:25:00+00:00",
+      "engine_close_time": "2025-11-05 01:25:00+00:00",
+      "quantity": "64.9",
+      "price": "0.405",
+      "native_mark": "1459.590078498937",
+      "book_mark": "1459.5900785",
+      "margin": "8.7615",
+      "existing_floor": "9.04166666666666770",
+      "next_actual_120_pair": "ADA/USDT:USDT"
+    },
+    {
+      "pair": "ADA/USDT:USDT",
+      "demand_pair": "GALA/USDT:USDT",
+      "demand_time": "2025-11-14 23:10:00+00:00",
+      "intent_time": "2025-11-14 23:15:00+00:00",
+      "engine_close_time": "2025-11-14 23:15:00+00:00",
+      "quantity": "53.0",
+      "price": "0.4973",
+      "native_mark": "720.4200000578587",
+      "book_mark": "720.42000006",
+      "margin": "8.785633333333333333333333333",
+      "existing_floor": "9.04166666666666770",
+      "next_actual_120_pair": "ALGO/USDT:USDT"
+    }
+  ],
+  "omitted": [
+    {
+      "pair": "ALGO/USDT:USDT",
+      "is_short": true,
+      "enter_tag": "562 ",
+      "open_date": "2025-12-21 21:45:00+00:00",
+      "close_date": "2025-12-31 04:20:00+00:00",
+      "profit_abs": "298.72159263",
+      "profit_ratio": "0.008050938898912329",
+      "exit_reason": "exit_profit_short_rebuy_t_0_1_m ( 562 )",
+      "trade_duration": 13355
+    }
+  ],
+  "new_trades": [
+    {
+      "pair": "ADA/USDT:USDT",
+      "is_short": false,
+      "enter_tag": "120 ",
+      "open_date": "2025-11-05 01:25:00+00:00",
+      "close_date": "2025-11-14 23:15:00+00:00",
+      "profit_abs": "720.42000006",
+      "profit_ratio": "0.05544721203385837",
+      "exit_reason": "exit_long_grind_demand_gm0",
+      "trade_duration": 14270
+    },
+    {
+      "pair": "ALGO/USDT:USDT",
+      "is_short": false,
+      "enter_tag": "120 ",
+      "open_date": "2025-12-18 17:10:00+00:00",
+      "close_date": "2026-01-01 00:00:00+00:00",
+      "profit_abs": "990.34437423",
+      "profit_ratio": "0.06360264201899496",
+      "exit_reason": "force_exit",
+      "trade_duration": 19130
+    },
+    {
+      "pair": "CRV/USDT:USDT",
+      "is_short": false,
+      "enter_tag": "141 142 ",
+      "open_date": "2025-11-14 04:40:00+00:00",
+      "close_date": "2025-11-14 07:00:00+00:00",
+      "profit_abs": "13585.41471525",
+      "profit_ratio": "0.20295657858274657",
+      "exit_reason": "exit_long_tc_d_6_1 ( 141 142 )",
+      "trade_duration": 140
+    }
+  ],
+  "crv_lifecycle": {
+    "native": {
+      "whole_trade_pnl": "-16184.205737510001",
+      "before_final_close_realized": "-8206.17626661",
+      "final_residual_settlement": "-7978.029470900001",
+      "realization_events": [
+        {
+          "time": "2025-11-04 18:45:00+00:00",
+          "delta": "1459.423552",
+          "tags": [
+            "gm0"
+          ]
+        },
+        {
+          "time": "2025-11-09 07:35:00+00:00",
+          "delta": "-68.0490598",
+          "tags": [
+            "gd2 314"
+          ]
+        },
+        {
+          "time": "2025-11-10 09:40:00+00:00",
+          "delta": "1706.34595676",
+          "tags": [
+            "gd1 307"
+          ]
+        },
+        {
+          "time": "2025-11-14 04:55:00+00:00",
+          "delta": "1021.47780619",
+          "tags": [
+            "gd1 331"
+          ]
+        },
+        {
+          "time": "2025-11-23 18:40:00+00:00",
+          "delta": "-2321.1944667800003",
+          "tags": [
+            "gd2 388"
+          ]
+        },
+        {
+          "time": "2025-12-18 19:05:00+00:00",
+          "delta": "-6713.8972788799997",
+          "tags": [
+            "dd1 376"
+          ]
+        },
+        {
+          "time": "2025-12-22 12:05:00+00:00",
+          "delta": "-3290.28277610",
+          "tags": [
+            "gd5 400"
+          ]
+        }
+      ]
+    },
+    "candidate": {
+      "whole_trade_pnl": "1459.5900785",
+      "before_final_close_realized": "1459.423552",
+      "final_residual_settlement": "0.1665265",
+      "realization_events": [
+        {
+          "time": "2025-11-04 18:45:00+00:00",
+          "delta": "1459.423552",
+          "tags": [
+            "gm0"
+          ]
+        }
+      ]
+    }
+  },
+  "limits": [
+    "Two active closes in the same exposed 2025 branch previously studied; not independent holdout replication",
+    "2024 no-fire exact parity is preservation, not active efficacy",
+    "Portfolio and tag-cohort outcomes share wallet and slots; no isolated alpha attribution",
+    "Annual equity DD predates the November intervention; unchanged maxima do not prove unchanged later risk",
+    "5m candle/backtest fills do not prove live depth, latency or realized outcome",
+    "Raw market data and full observer traces are retained locally, not bundled in the PR; manifest and archive hashes identify the measured inputs/outputs"
+  ],
+  "config_file": "demand-remainder-config.json",
+  "config_sha256": "565cc33c971977a4502b6b1bfc7686c4d9877c9e197a809a3b68e681fa6367a4"
+}
