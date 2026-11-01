@@ -911,6 +911,7 @@ class NostalgiaForInfinityX8(IStrategy):
   grind_mode_first_entry_stop_threshold_spot = -0.20
   grind_mode_first_entry_stop_threshold_futures = -0.20
   grind_mode_max_slots = 1
+  legacy_grind_derisk_reentry_hold_enable = False
   grind_mode_coins = [
     "AAVE",
     "ADA",
@@ -1201,6 +1202,7 @@ class NostalgiaForInfinityX8(IStrategy):
       "regular_mode_derisk_futures",
       "grind_mode_max_slots",
       "grind_mode_coins",
+      "legacy_grind_derisk_reentry_hold_enable",
       "max_slippage",
       "system_v4_bad_trade_exit_enable",
       "legacy_system_bad_trade_exit_enable",
@@ -45783,6 +45785,29 @@ class NostalgiaForInfinityX8(IStrategy):
         ]:
           grind_1_is_sell_found = True
 
+    legacy_grind_reentry_allowed = True
+    if self.legacy_grind_derisk_reentry_hold_enable and is_grind_mode and has_order_tags:
+      active_grind_ids = set(
+        grind_1_buy_orders
+        + grind_2_buy_orders
+        + grind_3_buy_orders
+        + grind_4_buy_orders
+        + grind_5_buy_orders
+        + grind_6_buy_orders
+      )
+      for index in range(len(filled_orders) - 1, -1, -1):
+        stop_order = filled_orders[index]
+        if stop_order.ft_order_side != "sell":
+          continue
+        stop_tag = (stop_order.ft_order_tag or "").partition(" ")[0]
+        if stop_tag not in ("dd1", "dd2", "dd3", "dd4", "dd5", "dd6"):
+          continue
+        # Native queue barriers release the hold; initial tail and closed-queue dust do not block adds.
+        legacy_grind_reentry_allowed = not any(
+          order.id in active_grind_ids for order in filled_orders[:index] if order.ft_order_side == "buy"
+        )
+        break
+
     if derisk_1_sub_grind_count > 0:
       derisk_1_current_open_rate = derisk_1_total_cost / derisk_1_total_amount
       derisk_1_current_grind_stake = derisk_1_total_amount * exit_rate * (1 - trade_fee_close)
@@ -46285,7 +46310,7 @@ class NostalgiaForInfinityX8(IStrategy):
 
     # Grinding 1
     # Buy
-    if (not partial_sell) and (grind_1_sub_grind_count < grind_1_max_sub_grinds):
+    if legacy_grind_reentry_allowed and (not partial_sell) and (grind_1_sub_grind_count < grind_1_max_sub_grinds):
       buy_amount = slice_amount * grind_1_stakes[grind_1_sub_grind_count] / stake_scale_leverage
       if buy_amount < (min_stake * 1.5):
         buy_amount = min_stake * 1.5
@@ -46340,6 +46365,7 @@ class NostalgiaForInfinityX8(IStrategy):
       is_futures
       and has_order_tags
       and (not partial_sell)
+      and legacy_grind_reentry_allowed
       and slice_profit < (-0.65 / trade_leverage)
       and (is_derisk or is_derisk_calc or is_grind_mode)
       and (grind_1_sub_grind_count < grind_1_max_sub_grinds)
@@ -46463,7 +46489,12 @@ class NostalgiaForInfinityX8(IStrategy):
 
     # Grinding 2
     # Buy
-    if has_order_tags and (not partial_sell) and (grind_2_sub_grind_count < grind_2_max_sub_grinds):
+    if (
+      legacy_grind_reentry_allowed
+      and has_order_tags
+      and (not partial_sell)
+      and (grind_2_sub_grind_count < grind_2_max_sub_grinds)
+    ):
       buy_amount = slice_amount * grind_2_stakes[grind_2_sub_grind_count] / stake_scale_leverage
       if buy_amount < (min_stake * 1.5):
         buy_amount = min_stake * 1.5
@@ -46601,7 +46632,12 @@ class NostalgiaForInfinityX8(IStrategy):
 
     # Grinding 3
     # Buy
-    if has_order_tags and (not partial_sell) and (grind_3_sub_grind_count < grind_3_max_sub_grinds):
+    if (
+      legacy_grind_reentry_allowed
+      and has_order_tags
+      and (not partial_sell)
+      and (grind_3_sub_grind_count < grind_3_max_sub_grinds)
+    ):
       buy_amount = slice_amount * grind_3_stakes[grind_3_sub_grind_count] / stake_scale_leverage
       if buy_amount < (min_stake * 1.5):
         buy_amount = min_stake * 1.5
@@ -46739,7 +46775,12 @@ class NostalgiaForInfinityX8(IStrategy):
 
     # Grinding 4
     # Buy
-    if has_order_tags and (not partial_sell) and (grind_4_sub_grind_count < grind_4_max_sub_grinds):
+    if (
+      legacy_grind_reentry_allowed
+      and has_order_tags
+      and (not partial_sell)
+      and (grind_4_sub_grind_count < grind_4_max_sub_grinds)
+    ):
       buy_amount = slice_amount * grind_4_stakes[grind_4_sub_grind_count] / stake_scale_leverage
       if buy_amount < (min_stake * 1.5):
         buy_amount = min_stake * 1.5
@@ -46885,7 +46926,12 @@ class NostalgiaForInfinityX8(IStrategy):
 
     # Grinding 5
     # Buy
-    if has_order_tags and (not partial_sell) and (grind_5_sub_grind_count < grind_5_max_sub_grinds):
+    if (
+      legacy_grind_reentry_allowed
+      and has_order_tags
+      and (not partial_sell)
+      and (grind_5_sub_grind_count < grind_5_max_sub_grinds)
+    ):
       buy_amount = slice_amount * grind_5_stakes[grind_5_sub_grind_count] / stake_scale_leverage
       if buy_amount < (min_stake * 1.5):
         buy_amount = min_stake * 1.5
@@ -47026,7 +47072,12 @@ class NostalgiaForInfinityX8(IStrategy):
 
     # Grinding 6
     # Buy
-    if has_order_tags and (not partial_sell) and (grind_6_sub_grind_count < grind_6_max_sub_grinds):
+    if (
+      legacy_grind_reentry_allowed
+      and has_order_tags
+      and (not partial_sell)
+      and (grind_6_sub_grind_count < grind_6_max_sub_grinds)
+    ):
       buy_amount = slice_amount * grind_6_stakes[grind_6_sub_grind_count] / stake_scale_leverage
       if buy_amount < (min_stake * 1.5):
         buy_amount = min_stake * 1.5
