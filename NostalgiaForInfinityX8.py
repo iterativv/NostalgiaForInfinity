@@ -47114,7 +47114,7 @@ class NostalgiaForInfinityX8(IStrategy):
           if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
             sell_amount = (trade_amount * exit_rate / trade_leverage) - (min_stake * 1.55)
           ft_sell_amount = sell_amount * trade_leverage * (trade_stake_amount / trade_amount) / exit_rate
-          if sell_amount > min_stake and ft_sell_amount > min_stake:
+          if sell_amount > min_stake:
             grind_profit = (exit_rate - first_entry.safe_price) / first_entry.safe_price
             coin_amount = sell_amount / exit_rate
             send_msg(
