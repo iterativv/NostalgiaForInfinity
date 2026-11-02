@@ -13,7 +13,7 @@ rescue_case = rescue.rescue_case
 buyback_quantity_bot = buyback.buyback_quantity_bot
 
 
-@pytest.mark.parametrize("rescue_case", [(False, 1), (False, 3)], indirect=True)
+@pytest.mark.parametrize("rescue_case", [(False, 1), (False, 3), (True, 3)], indirect=True)
 @pytest.mark.parametrize(
   "mode,entry_tag",
   [("regular", f"g{n}") for n in range(1, 7)]
@@ -41,8 +41,9 @@ def test_legacy_first_profit_exit_uses_current_value(
   trade.open_date = rescue.NOW.replace(year=2024, month=5, day=1)
   trade.fee_open = trade.fee_close = 0.0
   bot.strategy.long_grind_entry = MagicMock(return_value=False)
+  bot.strategy.short_grind_entry = MagicMock(return_value=False)
   if mode == "grind":
-    trade.enter_tag = "120"
+    trade.enter_tag = "620" if trade.is_short else "120"
   first = trade.orders[0]
   first.ft_order_tag = trade.enter_tag
   first.amount = first.ft_amount = first.filled = 5.0 if mode == "regular" else 10.0
@@ -53,6 +54,9 @@ def test_legacy_first_profit_exit_uses_current_value(
     if entry_tag in ("dl1", "dl2"):
       rescue.add_order(trade, trade.exit_side, "d", 2.5)
   entry = rescue.add_order(trade, trade.entry_side, entry_tag, max(1.0, filled), filled, "canceled")
+  entry.price = entry.average = entry.ft_price = 200.0 if trade.is_short else 100.0
+  entry.cost = filled * entry.price
+  trade.recalc_trade_from_orders()
   initial_amount = 5.0 + filled
   assert trade.amount == initial_amount
   if gate == "pending":
