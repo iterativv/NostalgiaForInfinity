@@ -450,10 +450,10 @@ def test_each_chain_keeps_its_timeframes_in_ascending_order():
 @pytest.mark.parametrize(
   "clause",
   [
-    # daily downtrend: slow KAMA under the fast one, red 4h heikin-ashi candle under the slow KAMA
+    # daily downtrend: slow KAMA under the fast one, red 4h fast heikin-ashi candle under the slow KAMA
     "(kama_153_1d < kama_40_1d)",
-    "& (ha_close_4h < ha_open_4h)",
-    "& (ha_close_4h < kama_153_1d)",
+    "& (ha_fast_close_4h < ha_fast_open_4h)",
+    "& (ha_fast_close_4h < kama_153_1d)",
     # not more than 3 ATR under the slow KAMA
     "& (close_4h > (kama_153_1d - (3.0 * atr_14_4h)))",
     # trending but not exhausted, on rising volume
@@ -533,6 +533,29 @@ def test_the_daily_columns_do_not_read_future_candles(daily_frame):
   # Then: every row the cut series has is identical in the whole one.
   for col in ("KAMA_40", "KAMA_153", "MOM_28_HOT"):
     np.testing.assert_allclose(cut[col].to_numpy(), full[col].to_numpy()[: len(cut)], equal_nan=True, err_msg=col)
+
+
+def test_the_hot_flag_does_not_depend_on_how_far_back_history_starts():
+  # Given: 1500 days, once whole and once with the first 500 days missing (a live bot holds about 1000).
+  rng = np.random.default_rng(28)
+  close = 100.0 * np.exp(np.cumsum(rng.normal(0.0, 0.03, 1500)))
+  frame = pd.DataFrame(
+    {
+      "date": pd.date_range("2021-01-01", periods=len(close), freq="D", tz="UTC"),
+      "open": close,
+      "high": close * 1.02,
+      "low": close * 0.98,
+      "close": close,
+      "volume": 1000.0,
+    }
+  )
+  full, cut = (
+    _daily(frame)["MOM_28_HOT"].to_numpy(),
+    _daily(frame.iloc[500:].reset_index(drop=True))["MOM_28_HOT"].to_numpy(),
+  )
+  # Then: once the shorter copy has 704 days (24 returns + 28 + 4 held), the flag is identical.
+  np.testing.assert_array_equal(cut[704:], full[500 + 704 :])
+  assert full[1204:].sum() > 0
 
 
 def test_a_coin_in_its_top_third_run_is_hot_and_stays_hot(daily_frame):

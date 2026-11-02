@@ -3378,7 +3378,8 @@ class NostalgiaForInfinityX8(IStrategy):
     # KAMA 40/153 + hot-coin rank — signal 507 (experimental): daily downtrend, skip hot coins
     kama_40 = ta_kama(close_np, timeperiod=40)
     kama_153 = ta_kama(close_np, timeperiod=153)
-    # 28 d log return vs the coin's earlier non-overlapping 28 d returns (at least 12): top third = hot, held 5 days
+    # 28 d log return vs the coin's last 24 earlier non-overlapping 28 d returns (at least 12): top third = hot, held 5 days
+    # fixed 24 (700 days of candles), not all history: backtest (800 days before start) and live (997+) see the same window
     log_close = np.log(np.where(close_np > 0, close_np, np.nan))
     log_ret_28 = np.full(len(log_close), np.nan)
     log_ret_28[28:] = log_close[28:] - log_close[:-28]
@@ -3387,8 +3388,8 @@ class NostalgiaForInfinityX8(IStrategy):
     phase_grid = np.full(phase_rows * 28, np.nan)
     phase_grid[: len(log_ret_28)] = log_ret_28
     phase = pd.DataFrame(phase_grid.reshape(phase_rows, 28))
-    past_n = (phase.expanding().count() - 1).to_numpy().ravel()[: len(log_ret_28)]
-    past_below = (phase.expanding().rank(method="min") - 1).to_numpy().ravel()[: len(log_ret_28)]
+    past_n = (phase.rolling(25, min_periods=1).count() - 1).to_numpy().ravel()[: len(log_ret_28)]
+    past_below = (phase.rolling(25, min_periods=1).rank(method="min") - 1).to_numpy().ravel()[: len(log_ret_28)]
     mom_28_hot = np.where((past_n >= 12) & (past_below * 3 >= past_n * 2), 1.0, 0.0)
     mom_28_hot = pd.Series(mom_28_hot).rolling(5, min_periods=1).max().to_numpy()
 
@@ -3601,14 +3602,15 @@ class NostalgiaForInfinityX8(IStrategy):
     plus_di_14 = ta_plus_di(high_np, low_np, close_np, timeperiod=14)
     minus_di_14 = ta_minus_di(high_np, low_np, close_np, timeperiod=14)
 
-    # ADX 13, ATR 14, relative volume, heikin-ashi — signal 507 (experimental): the 4h trigger candle
+    # ADX 13, ATR 14, relative volume, fast heikin-ashi — signal 507 (experimental): the 4h trigger candle
     adx_13 = ta_adx(high_np, low_np, close_np, timeperiod=13)
     atr_14 = ta_atr(high_np, low_np, close_np, timeperiod=14)
     vol_ma_27 = np_shift(ta_sma(volume_np, timeperiod=27), 1)
     vol_rel_27 = np.divide(volume_np, vol_ma_27, out=np.full_like(vol_ma_27, np.nan), where=vol_ma_27 > 0)
-    # heikin-ashi without recursion: open = midpoint of the previous candle's open and close
-    ha_open = np.concatenate(([np.nan], (open_np[:-1] + close_np[:-1]) / 2.0))
-    ha_close = (open_np + high_np + low_np + close_np) / 4.0
+    # fast heikin-ashi (non-recursive, NOT the standard one): open = midpoint of the previous RAW candle's open and close,
+    # close = OHLC mean; reacts faster than standard heikin-ashi and needs no history; signal 507 was tuned on this definition
+    ha_fast_open = np.concatenate(([np.nan], (open_np[:-1] + close_np[:-1]) / 2.0))
+    ha_fast_close = (open_np + high_np + low_np + close_np) / 4.0
 
     # =========================================================================
     # ASSIGN DATAFRAME
@@ -3618,8 +3620,8 @@ class NostalgiaForInfinityX8(IStrategy):
         "ADX_13": adx_13,
         "ATR_14": atr_14,
         "VOL_REL_27": vol_rel_27,
-        "HA_OPEN": ha_open,
-        "HA_CLOSE": ha_close,
+        "HA_FAST_OPEN": ha_fast_open,
+        "HA_FAST_CLOSE": ha_fast_close,
         "RSI_3": rsi_3,
         "RSI_14": rsi_14,
         "ADX_14": adx_14,
@@ -6112,8 +6114,8 @@ class NostalgiaForInfinityX8(IStrategy):
     kama_153_1d = np_view("KAMA_153_1d")
     mom_28_hot_1d = np_view("MOM_28_HOT_1d")
     close_4h = np_view("close_4h")
-    ha_open_4h = np_view("HA_OPEN_4h")
-    ha_close_4h = np_view("HA_CLOSE_4h")
+    ha_fast_open_4h = np_view("HA_FAST_OPEN_4h")
+    ha_fast_close_4h = np_view("HA_FAST_CLOSE_4h")
     adx_13_4h = np_view("ADX_13_4h")
     atr_14_4h = np_view("ATR_14_4h")
     vol_rel_27_4h = np_view("VOL_REL_27_4h")
@@ -27783,10 +27785,10 @@ class NostalgiaForInfinityX8(IStrategy):
 
           # Logic
           short_entry_logic.append(
-            # daily downtrend: slow KAMA under the fast one, red 4h heikin-ashi candle under the slow KAMA
+            # daily downtrend: slow KAMA under the fast one, red 4h fast heikin-ashi candle under the slow KAMA
             (kama_153_1d < kama_40_1d)
-            & (ha_close_4h < ha_open_4h)
-            & (ha_close_4h < kama_153_1d)
+            & (ha_fast_close_4h < ha_fast_open_4h)
+            & (ha_fast_close_4h < kama_153_1d)
             # not more than 3 ATR under the slow KAMA
             & (close_4h > (kama_153_1d - (3.0 * atr_14_4h)))
             # trending but not exhausted, on rising volume
