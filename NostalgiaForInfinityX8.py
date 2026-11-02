@@ -39591,6 +39591,12 @@ class NostalgiaForInfinityX8(IStrategy):
 
     # Buyback 1
 
+    # Preserve gross-fill profit calculations; size spot exits from net inventory.
+    if not is_futures and any(order.safe_fee_base for order in filled_entries):
+      buyback_1_total_amount = sum(order.safe_amount_after_fee for order in buyback_1_orders)
+      buyback_2_total_amount = sum(order.safe_amount_after_fee for order in buyback_2_orders)
+      buyback_3_total_amount = sum(order.safe_amount_after_fee for order in buyback_3_orders)
+
     if (
       self.grinding_v2_buyback_1_enable
       and is_derisk_1_found
@@ -41919,6 +41925,10 @@ class NostalgiaForInfinityX8(IStrategy):
           return -ft_sell_amount
 
     # Buyback 1
+
+    # Preserve gross-fill profit calculations; size spot exits from net inventory.
+    if not is_futures_mode and any(order.safe_fee_base for order in filled_entries):
+      buyback_1_total_amount = sum(order.safe_amount_after_fee for order in buyback_1_orders)
 
     if (
       self.system_v3_buyback_1_enable
@@ -44524,6 +44534,10 @@ class NostalgiaForInfinityX8(IStrategy):
           return -ft_sell_amount
 
     # Buyback 1
+
+    # Preserve gross-fill profit calculations; size spot exits from net inventory.
+    if not is_futures_mode and any(order.safe_fee_base for order in filled_entries):
+      buyback_1_total_amount = sum(order.safe_amount_after_fee for order in buyback_1_orders)
 
     if (
       self.system_v4_buyback_1_enable
