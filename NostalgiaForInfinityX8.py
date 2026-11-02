@@ -64333,7 +64333,7 @@ class NostalgiaForInfinityX8(IStrategy):
     ):
       sell_amount = trade_amount * exit_rate / trade_leverage - (min_stake * 1.55)
       ft_sell_amount = sell_amount * trade_leverage * (trade.stake_amount / trade_amount) / exit_rate
-      if sell_amount > min_stake and ft_sell_amount > min_stake:
+      if sell_amount > min_stake:
         grind_profit = 0.0
         dp.send_msg(
           f"❌​​ ​**Rebuy De-risk:** `Level 3`\n"
@@ -64526,7 +64526,7 @@ class NostalgiaForInfinityX8(IStrategy):
     ):
       sell_amount = trade_amount * exit_rate / trade_leverage - (min_stake * 1.55)
       ft_sell_amount = sell_amount * trade_leverage * (trade.stake_amount / trade_amount) / exit_rate
-      if sell_amount > min_stake and ft_sell_amount > min_stake:
+      if sell_amount > min_stake:
         stake_currency = config["stake_currency"]
         stake_fmt = ".8f" if stake_currency in ("BTC", "ETH", "BNB", "SOL") else ".3f"
         send_notifications = not self.is_backtest_mode()
@@ -64720,7 +64720,7 @@ class NostalgiaForInfinityX8(IStrategy):
     ):
       sell_amount = trade_amount * exit_rate / trade_leverage - (min_stake * 1.55)
       ft_sell_amount = sell_amount * trade_leverage * (trade.stake_amount / trade_amount) / exit_rate
-      if sell_amount > min_stake and ft_sell_amount > min_stake:
+      if sell_amount > min_stake:
         stake_currency = config["stake_currency"]
         stake_fmt = ".8f" if stake_currency in ("BTC", "ETH", "BNB", "SOL") else ".3f"
         send_notifications = not self.is_backtest_mode()
