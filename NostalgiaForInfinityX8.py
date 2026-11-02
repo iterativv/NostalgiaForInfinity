@@ -54929,7 +54929,7 @@ class NostalgiaForInfinityX8(IStrategy):
       if ((current_stake_amount / trade.leverage) - exit_amount) < (min_stake * 1.55):
         exit_amount = (trade.amount * exit_rate / trade.leverage) - (min_stake * 1.55)
       ft_exit_amount = exit_amount * trade.leverage * (trade.stake_amount / trade.amount) / exit_rate
-      if exit_amount > min_stake and ft_exit_amount > min_stake:
+      if exit_amount > min_stake:
         self.dp.send_msg(
           self.notification_msg(
             "grinding-exit",
@@ -59402,7 +59402,7 @@ class NostalgiaForInfinityX8(IStrategy):
       if ((current_stake_amount / trade_leverage) - exit_amount) < (min_stake * 1.55):
         exit_amount = (trade_amount * exit_rate / trade_leverage) - (min_stake * 1.55)
       ft_exit_amount = exit_amount * trade_leverage * (trade_stake_amount / trade_amount) / exit_rate
-      if exit_amount > min_stake and ft_exit_amount > min_stake:
+      if exit_amount > min_stake:
         self.dp.send_msg(
           self.notification_msg(
             "grinding-exit",
