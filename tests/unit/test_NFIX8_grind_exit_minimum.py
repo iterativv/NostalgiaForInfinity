@@ -1,5 +1,6 @@
 """First grind profit exits use current order value, not callback stake."""
 
+from decimal import Decimal
 from unittest.mock import MagicMock
 
 import pytest
@@ -11,7 +12,10 @@ from tests.unit import test_NFIX8_v4_grind_quantity as quantity
 
 
 pytestmark = pytest.mark.parametrize(
-  "v4_case", [(False, 1.0), (False, 3.0)], indirect=True, ids=["spot", "long-futures"]
+  "v4_case",
+  [(False, 1.0), (False, 3.0), (True, 3.0)],
+  indirect=True,
+  ids=["spot", "long-futures", "short-futures"],
 )
 v4_case = funding.v4_case
 quantity_bot = quantity.quantity_bot
@@ -30,6 +34,9 @@ def profit_exit_bot(request, quantity_bot, v4_case):
   strategy.long_grind_entry_v3 = MagicMock(return_value=False)
   strategy.long_buyback_entry_v3 = MagicMock(return_value=False)
   strategy.long_rebuy_entry_v3 = MagicMock(return_value=False)
+  strategy.short_grind_entry_v3 = MagicMock(return_value=False)
+  strategy.short_grind_entry_v4 = MagicMock(return_value=False)
+  strategy.short_rebuy_entry_v3 = MagicMock(return_value=False)
   quantity_bot.margin_mode = MarginMode.ISOLATED if strategy.is_futures_mode else MarginMode.NONE
   quantity_bot.exchange.get_min_pair_stake_amount.return_value = 5.0 / trade.leverage
   quantity_bot.exchange.get_max_pair_stake_amount.return_value = 0.0
@@ -38,7 +45,8 @@ def profit_exit_bot(request, quantity_bot, v4_case):
   )
   quantity.set_rate(quantity_bot, trade, 128.0)
   frame, _ = strategy.dp.get_analyzed_dataframe(trade.pair, "5m")
-  frame = frame.assign(RSI_3_1h=50.0, AROONU_14_15m=100.0)
+  frame = frame.assign(RSI_3=0.0 if trade.is_short else 100.0, RSI_3_1h=50.0, AROONU_14_15m=100.0)
+  frame["BBL_20_2.0"] = 64.0
   strategy.dp._set_cached_df(trade.pair, "5m", frame, strategy.config["candle_type_def"])
   return quantity_bot
 
@@ -46,11 +54,11 @@ def profit_exit_bot(request, quantity_bot, v4_case):
 @pytest.mark.parametrize(
   "filled,initial_price,initial_remainder,eligible",
   [
-    (0.046875, 50.0, 6.0, True),
-    (0.125, 50.0, 6.0, True),
+    (0.046875, 100.0, 6.0, True),
+    (0.125, 100.0, 6.0, True),
     (0.03125, 400.0, 6.0, False),
-    (0.0390625, 50.0, 6.0, False),
-    (0.046875, 50.0, 0.02, False),
+    (0.0390625, 100.0, 6.0, False),
+    (0.046875, 100.0, 0.02, False),
   ],
   ids=["current-value-only", "both-values", "below-current-minimum", "exact-current-minimum", "reserve"],
 )
@@ -66,6 +74,7 @@ def test_first_profit_exit_checks_current_order_value(
   entry.amount = entry.ft_amount = 0.25
   entry.filled = filled
   entry.remaining = entry.amount - filled
+  entry.price = entry.average = entry.ft_price = 200.0 if trade.is_short else 100.0
   entry.cost = filled * entry.safe_price
   entry.status = "canceled"
   trade.recalc_trade_from_orders()
@@ -86,7 +95,7 @@ def test_first_profit_exit_checks_current_order_value(
   order = trade.orders[-1]
   assert order.ft_order_side == trade.exit_side
   assert order.ft_order_tag == f"grind_{level}_exit {entry.id}"
-  assert order.amount == pytest.approx(filled, rel=0, abs=1e-8)
+  assert abs(Decimal(str(order.amount)) - Decimal(str(filled))) <= Decimal("0.00000001")
   order.update_from_ccxt_object(
     {
       "id": order.order_id,
@@ -102,4 +111,4 @@ def test_first_profit_exit_checks_current_order_value(
     }
   )
   trade.update_trade(order)
-  assert trade.amount == pytest.approx(initial_remainder, rel=0, abs=1e-8)
+  assert abs(Decimal(str(trade.amount)) - Decimal(str(initial_remainder))) <= Decimal("0.00000001")
