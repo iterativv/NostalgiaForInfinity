@@ -47986,6 +47986,16 @@ class NostalgiaForInfinityX8(IStrategy):
     fee_open_rate = trade_fee_open if self.custom_fee_open_rate is None else self.custom_fee_open_rate
     fee_close_rate = trade_fee_close if self.custom_fee_close_rate is None else self.custom_fee_close_rate
 
+    # Preserve gross-fill profit calculations; size spot exits from net inventory.
+    if not is_futures and any(order.safe_fee_base for order in filled_entries):
+      exit_amounts = {order.id: order.safe_amount_after_fee for order in filled_entries}
+      grind_1_total_amount = sum(exit_amounts[order_id] for order_id in grind_1_buy_orders)
+      grind_2_total_amount = sum(exit_amounts[order_id] for order_id in grind_2_buy_orders)
+      grind_3_total_amount = sum(exit_amounts[order_id] for order_id in grind_3_buy_orders)
+      grind_4_total_amount = sum(exit_amounts[order_id] for order_id in grind_4_buy_orders)
+      grind_5_total_amount = sum(exit_amounts[order_id] for order_id in grind_5_buy_orders)
+      grind_6_total_amount = sum(exit_amounts[order_id] for order_id in grind_6_buy_orders)
+
     # Sell remaining if partial fill on exit
     if partial_sell:
       order = filled_exits[-1]
