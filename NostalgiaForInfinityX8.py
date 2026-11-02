@@ -29196,6 +29196,10 @@ class NostalgiaForInfinityX8(IStrategy):
           short_entry_logic.append(rsi_14_4h < 48.0)
           short_entry_logic.append(rsi_14_1d < 50.0)
           short_entry_logic.append(rsi_14_1d > 25.0)
+          # TAG562-R3: a 4h stochastic at the floor means the flush is spent and a
+          # bounce is the base case.  Keep the short only when the 4h is still making
+          # no highs (Aroon Up pinned at zero); otherwise wait for the bounce.
+          short_entry_logic.append((stochk_14_3_3_4h > 36.0) | (aroonu_14_4h < 14.0))
 
           short_entry_logic.append(
             # Downtrend confirmation (higher TF)
