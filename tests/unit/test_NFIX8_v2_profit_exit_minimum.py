@@ -12,7 +12,7 @@ rescue_case = rescue.rescue_case
 buyback_quantity_bot = buyback.buyback_quantity_bot
 
 
-@pytest.mark.parametrize("rescue_case", [(False, 1), (False, 3)], indirect=True)
+@pytest.mark.parametrize("rescue_case", [(False, 1), (False, 3), (True, 3)], indirect=True)
 @pytest.mark.parametrize("kind,level", [("grind", n) for n in range(1, 6)] + [("buyback", n) for n in range(1, 4)])
 @pytest.mark.parametrize(
   "filled,minimum,gate,expected",
@@ -27,17 +27,32 @@ buyback_quantity_bot = buyback.buyback_quantity_bot
   ],
   ids=["current-value-only", "both-values", "below-minimum", "exact-minimum", "reserve", "pending", "indicator"],
 )
-def test_v2_first_profit_exit_uses_current_value(buyback_quantity_bot, kind, level, filled, minimum, gate, expected):
+def test_v2_first_profit_exit_uses_current_value(
+  buyback_quantity_bot, mocker, kind, level, filled, minimum, gate, expected
+):
   bot, trade, _ = buyback_quantity_bot
   trade.set_custom_data("system_version", None)
   trade.fee_open = trade.fee_close = 0.0
+  for entry_kind in ("grind", "buyback"):
+    mocker.patch.object(bot.strategy, f"short_{entry_kind}_entry_v2", return_value=False)
   rescue.add_order(trade, trade.exit_side, "exit_normal", 5.0)
   entry = rescue.add_order(trade, trade.entry_side, f"{kind}_{level}_entry", max(1.0, filled), filled, "canceled")
+  entry.price = entry.average = entry.ft_price = 200.0 if trade.is_short else 100.0
+  entry.cost = filled * entry.price
+  trade.recalc_trade_from_orders()
   initial_amount = trade.amount
+  frame, _ = bot.strategy.dp.get_analyzed_dataframe(trade.pair, "5m")
+  frame = frame.assign(
+    RSI_3=0.0 if trade.is_short else 100.0,
+    AROOND_14=100.0,
+    AROOND_14_15m=100.0,
+    protections_short_global=True,
+    enter_short=False,
+  )
+  frame["BBL_20_2.0"] = 0.0
   if gate == "indicator":
-    frame, _ = bot.strategy.dp.get_analyzed_dataframe(trade.pair, "5m")
     frame = frame.assign(RSI_3=50.0)
-    bot.strategy.dp._set_cached_df(trade.pair, "5m", frame, bot.strategy.config["candle_type_def"])
+  bot.strategy.dp._set_cached_df(trade.pair, "5m", frame, bot.strategy.config["candle_type_def"])
   if gate == "pending":
     rescue.add_order(trade, trade.entry_side, f"{kind}_{level}_entry", 1.0, 0.0, "open")
   bot.exchange.get_min_pair_stake_amount.return_value = minimum / trade.leverage
