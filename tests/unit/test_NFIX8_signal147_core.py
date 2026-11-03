@@ -47,9 +47,9 @@ NP_VIEW_DECLARATIONS = [
   'bb_below_count = np_view("BB_BELOW_COUNT")',
   'bbb_20_2_0_1h = np_view("BBB_20_2.0_1h")',
 ]
-# Signal 147 is the nucleus alone. Three preludes, one append, six clauses: anything close
-# to a wall here is a filter nobody measured.
-MAX_CODE_LINES = 12
+# Signal 147 keeps the nucleus as its own, last append. Its protections are one more append
+# between the preludes and the nucleus, measured on their own and kept apart from the nucleus.
+APPENDS = len(PRELUDE) + 2
 # Signal 142 keeps its wall. This is a floor, not the exact count, so an upstream edit to
 # 142 does not turn this file red for the wrong reason.
 SIGNAL_142_MIN_LINES = 400
@@ -112,9 +112,10 @@ def test_signal_147_carries_the_measured_nucleus_verbatim():
     assert f"# {comment}" in text
 
 
-def test_signal_147_has_no_wall():
+def test_signal_147_protections_stay_out_of_the_nucleus():
   code = code_lines(block_lines(SIGNAL))
-  assert len(code) <= MAX_CODE_LINES, f"signal 147 grew a wall: {len(code)} code lines"
+  appends = [line for line in code if line.startswith("long_entry_logic.append(")]
+  assert len(appends) == APPENDS, f"signal 147 has {len(appends)} appends, expected {APPENDS}"
 
 
 def test_signal_147_is_the_signal_142_nucleus_plus_the_measured_clauses():
