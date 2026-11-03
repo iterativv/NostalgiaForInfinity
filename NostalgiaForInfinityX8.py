@@ -29198,10 +29198,7 @@ class NostalgiaForInfinityX8(IStrategy):
           short_entry_logic.append(rsi_14_1d > 25.0)
           # Block late 4h flushes; keep the two exhaustion exceptions.
           short_entry_logic.append(
-            (stochk_14_3_3_4h > 36.0)
-            | (aroonu_14_4h < 14.0)
-            | (stoch_60_10 < 2.0)
-            | (willr_14_15m > -60.0)
+            (stochk_14_3_3_4h > 36.0) | (aroonu_14_4h < 14.0) | (stoch_60_10 < 2.0) | (willr_14_15m > -60.0)
           )
 
           short_entry_logic.append(
