@@ -1,4 +1,4 @@
-"""First grind profit exits use current order value, not callback stake."""
+"""First grind exits use current order value, not callback stake."""
 
 from decimal import Decimal
 from unittest.mock import MagicMock
@@ -112,3 +112,88 @@ def test_first_profit_exit_checks_current_order_value(
   )
   trade.update_trade(order)
   assert abs(Decimal(str(trade.amount)) - Decimal(str(initial_remainder))) <= Decimal("0.00000001")
+
+
+@pytest.mark.parametrize("level", range(1, 6))
+@pytest.mark.parametrize(
+  "filled,gate,expected",
+  [
+    (0.046875, "ready", 0.046875),
+    (0.125, "ready", 0.125),
+    (0.03125, "ready", None),
+    (0.0390625, "ready", None),
+    (0.1, "reserve", 0.05945312),
+    (0.046875, "pending", None),
+    (0.046875, "disabled", None),
+    (0.046875, "no-loss", None),
+    (0.046875, "fees", 0.046875),
+  ],
+  ids=[
+    "current-only",
+    "both-values",
+    "below-minimum",
+    "exact-minimum",
+    "reserve",
+    "pending",
+    "disabled",
+    "no-loss",
+    "fees",
+  ],
+)
+def test_first_derisk_exit_checks_current_order_value(profit_exit_bot, v4_case, level, caplog, filled, gate, expected):
+  strategy, trade, _ = v4_case
+  system = "system_v4" if trade.get_custom_data("system_version") == "system_v4" else "system_v3"
+  # Restore native thresholds; the shared funding fixture lowers V4's threshold.
+  for mode in ("spot", "futures"):
+    setting = f"{system}_grind_{level}_derisk_{mode}"
+    setattr(strategy, setting, getattr(type(strategy), setting))
+  setattr(strategy, f"{system}_grind_{level}_use_derisk", gate != "disabled")
+  trade.fee_open = trade.fee_close = 0.001 if gate == "fees" else 0.0
+  _, prior_exit, entry = trade.orders
+  if gate == "reserve":
+    prior_exit.amount = prior_exit.ft_amount = prior_exit.filled = 9.98
+    prior_exit.cost = prior_exit.filled * prior_exit.safe_price
+  entry.amount = entry.ft_amount = 0.25
+  entry.filled = filled
+  entry.remaining = entry.amount - filled
+  entry.price = entry.average = entry.ft_price = 100.0 if trade.is_short else 200.0
+  if gate == "no-loss":
+    entry.price = entry.average = entry.ft_price = 128.0
+  entry.cost = filled * entry.safe_price
+  entry.status = "canceled"
+  trade.recalc_trade_from_orders()
+  before = trade.amount
+  if gate == "pending":
+    entry.status = "open"
+    entry.ft_is_open = True
+
+  profit_exit_bot.check_and_call_adjust_trade_position(trade)
+
+  assert all(record.levelno < 40 for record in caplog.records)
+  profit_exit_bot.execute_entry.assert_not_called()
+  if expected is None:
+    profit_exit_bot.exchange.create_order.assert_not_called()
+    assert trade.amount == before
+    return
+  profit_exit_bot.exchange.create_order.assert_called_once()
+  order = trade.orders[-1]
+  assert order.ft_order_side == trade.exit_side
+  assert order.ft_order_tag == f"grind_{level}_derisk {entry.id}"
+  assert abs(Decimal(str(order.amount)) - Decimal(str(expected))) <= Decimal("0.00000001")
+  order.update_from_ccxt_object(
+    {
+      "id": order.order_id,
+      "status": "closed",
+      "amount": order.amount,
+      "filled": order.amount,
+      "remaining": 0.0,
+      "price": 128.0,
+      "average": 128.0,
+      "cost": order.amount * 128.0,
+      "timestamp": int(funding.NOW.timestamp() * 1000),
+      "lastTradeTimestamp": int(funding.NOW.timestamp() * 1000),
+    }
+  )
+  trade.update_trade(order)
+  assert abs(Decimal(str(trade.amount)) - Decimal(str(before - expected))) <= Decimal("0.00000001")
+  assert trade.is_open
