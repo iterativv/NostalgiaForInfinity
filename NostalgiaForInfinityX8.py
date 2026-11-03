@@ -29196,12 +29196,7 @@ class NostalgiaForInfinityX8(IStrategy):
           short_entry_logic.append(rsi_14_4h < 48.0)
           short_entry_logic.append(rsi_14_1d < 50.0)
           short_entry_logic.append(rsi_14_1d > 25.0)
-          # TAG562-R3: a 4h stochastic at the floor means the flush is spent and a
-          # bounce is the base case.  Keep the short only when the 4h is still making
-          # no highs (Aroon Up pinned at zero); otherwise wait for the bounce.
-          # TAG562-R4: two exhaustion exceptions to R3, both zero-real-loser on the
-          # 2023-2025 fit: a base-frame slow stochastic at the floor (the flush is
-          # still accelerating) or a 15m not yet oversold (the bounce has room).
+          # TAG562: block late 4h flushes; keep the two exhaustion exceptions.
           short_entry_logic.append(
             (stochk_14_3_3_4h > 36.0)
             | (aroonu_14_4h < 14.0)
