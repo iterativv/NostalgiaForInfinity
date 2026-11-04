@@ -47129,7 +47129,7 @@ class NostalgiaForInfinityX8(IStrategy):
         first_entry_distance_ratio = (exit_rate - first_entry.safe_price) / first_entry.safe_price
         # First entry exit
         if first_entry_distance_ratio > (
-          (self.grind_mode_first_entry_profit_threshold_spot + fee_open_rate + fee_close_rate)
+          (self.grind_mode_first_entry_profit_threshold_futures + fee_open_rate + fee_close_rate)
           if is_futures
           else (self.grind_mode_first_entry_profit_threshold_spot + fee_open_rate + fee_close_rate)
         ):
@@ -47169,7 +47169,7 @@ class NostalgiaForInfinityX8(IStrategy):
         if derisk_use_grind_stops and (
           first_entry_distance_ratio
           < (
-            self.grind_mode_first_entry_stop_threshold_spot
+            self.grind_mode_first_entry_stop_threshold_futures
             if is_futures
             else self.grind_mode_first_entry_stop_threshold_spot
           )
