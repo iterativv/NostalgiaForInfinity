@@ -23,9 +23,15 @@ GITHUB_USER="iterativv"
 GITHUB_REPO="NostalgiaForInfinity"
 DEFAULT_BRANCH="main"
 git_branch="$DEFAULT_BRANCH"
-ENV_FILE="$SCRIPT_DIR/.env"
+ENV_FILE="$SCRIPT_DIR/../.env"
+if [ ! -f "$ENV_FILE" ] && [ -f "$SCRIPT_DIR/.env" ]; then
+    ENV_FILE="$SCRIPT_DIR/.env"
+fi
 
-configured_strategy=$(grep -E '^FREQTRADE__STRATEGY=' "$ENV_FILE" | cut -d '=' -f2-)
+configured_strategy=""
+if [ -f "$ENV_FILE" ]; then
+    configured_strategy=$(grep -E '^FREQTRADE__STRATEGY=' "$ENV_FILE" | head -n 1 | cut -d '=' -f2-)
+fi
 
 # Functions
 log() {
@@ -135,6 +141,49 @@ update_blacklists() {
         cp "$source_file" "$destination/$(basename "$source_file")"
         log "Blacklist file copied successfully: $(basename "$source_file")"
     done <<< "$blacklist_files"
+}
+
+reload_freqtrade() {
+    local env_file="$ENV_FILE"
+    local reloaded=false
+
+    # Try reading Freqtrade API credentials from .env
+    if [ -f "$env_file" ]; then
+        local api_enabled api_port api_user api_pass
+        api_enabled=$(grep -E '^FREQTRADE__API_SERVER__ENABLED=' "$env_file" | head -n 1 | cut -d '=' -f2- | tr -d '\"'\'' ')
+        api_port=$(grep -E '^FREQTRADE__API_SERVER__LISTEN_PORT=' "$env_file" | head -n 1 | cut -d '=' -f2- | tr -d '\"'\'' ')
+        api_user=$(grep -E '^FREQTRADE__API_SERVER__USERNAME=' "$env_file" | head -n 1 | cut -d '=' -f2- | tr -d '\"'\'' ')
+        api_pass=$(grep -E '^FREQTRADE__API_SERVER__PASSWORD=' "$env_file" | head -n 1 | cut -d '=' -f2- | tr -d '\"'\'' ')
+
+        api_port=${api_port:-8080}
+
+        if [[ "$api_enabled" == "true" && -n "$api_user" && -n "$api_pass" ]]; then
+            log "Attempting live reload via Freqtrade API on port $api_port (zero downtime)..."
+            local http_code
+            http_code=$(curl -s -o /dev/null -w "%{http_code}" -u "$api_user:$api_pass" -X POST "http://127.0.0.1:$api_port/api/v1/reload_config" 2>/dev/null || echo "000")
+
+            if [ "$http_code" = "200" ]; then
+                log "Freqtrade configuration and strategy reloaded live via API (zero downtime)."
+                reloaded=true
+            else
+                log "Freqtrade API reload returned HTTP $http_code. Falling back to container restart."
+            fi
+        fi
+    fi
+
+    if [ "$reloaded" = "true" ]; then
+        RELOAD_METHOD="api"
+    else
+        RELOAD_METHOD="restart"
+        if [ -f "$SCRIPT_DIR/../docker-compose.yml" ]; then
+            log "Restarting Docker container..."
+            docker compose -f "$SCRIPT_DIR/../docker-compose.yml" down
+            docker compose -f "$SCRIPT_DIR/../docker-compose.yml" up -d
+            log "Docker container restarted."
+        else
+            log "Docker Compose file not found. Skipping Docker restart."
+        fi
+    fi
 }
 
 validate_file_extension() {
@@ -328,20 +377,17 @@ if [ "$UPDATE_AVAILABLE" = "true" ]; then
         log "Cleanup of extracted and downloaded folders skipped."
     fi
 
+    # Reload Freqtrade live via API (zero downtime) or restart container
+    reload_freqtrade
+
     # Send Telegram notification
     if [[ -n "$telegram_bot_token" && -n "$telegram_chat_id" ]]; then
+        local reload_msg="container restarted"
+        if [ "$RELOAD_METHOD" = "api" ]; then
+            reload_msg="live reloaded via API (zero downtime)"
+        fi
         curl -s -X POST "https://api.telegram.org/bot$telegram_bot_token/sendMessage" \
-            -d "chat_id=$telegram_chat_id&text=Updated to version $LATEST_VERSION of $GITHUB_REPO." || \
+            -d "chat_id=$telegram_chat_id&text=Updated to version $LATEST_VERSION of $GITHUB_REPO ($reload_msg)." || \
             log "Failed to send Telegram notification."
-    fi
-
-    # Restart Docker container if docker-compose.yml exists
-    if [ -f "$SCRIPT_DIR/../docker-compose.yml" ]; then
-        log "Restarting Docker container..."
-        docker compose -f "$SCRIPT_DIR/../docker-compose.yml" down
-        docker compose -f "$SCRIPT_DIR/../docker-compose.yml" up -d
-        log "Docker container restarted."
-    else
-        log "Docker Compose file not found. Skipping Docker restart."
     fi
 fi
