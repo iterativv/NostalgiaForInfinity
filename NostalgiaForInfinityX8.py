@@ -5930,6 +5930,7 @@ class NostalgiaForInfinityX8(IStrategy):
     willr_14_4h = np_view("WILLR_14_4h")
     btc_roc_1_5m = np_view("btc_roc_1_5m")
     btc_roc_1_4h = np_view("BTC_ROC_1_4h")
+    btc_rsi_14_4h = np_view("BTC_RSI_14_4h")
     stoch_k_4h = np_view("STOCHk_14_3_3_4h")
 
     sqz_on = np_view("SQZ_ON")
@@ -16835,9 +16836,19 @@ class NostalgiaForInfinityX8(IStrategy):
             # Quality vetoes ranked on the isolated book: short-term money flow
             # must not be collapsing, and the daily must be oversold rather than
             # in an extended downtrend. Thresholds sit on a flat, stable plateau.
-            & (mfi_14_15m > 2.0)
+            & (mfi_14_15m > 2.1)
+            # 1h money flow must be negative enough to be capitulation, but
+            # not already positive (the DEXE 2026 entry was +0.27).
             & (cmf_20_1h > -0.5)
+            & (cmf_20_1h < 0.27)
             & (rsi_14_1d < 38.0)
+            # Quality floors: neither a collapsed 15m money flow (MFI ~2) nor a
+            # daily RSI below 10 is a capitulation worth buying; both were flat
+            # outliers on the 330 book and cost nothing in 2022-2024.
+            & (rsi_14_1d > 10.0)
+            # First leg of a BTC 4h crash: the 4h RSI has not reset yet. Do not
+            # buy the falling knife; this was the 2024-04-12 liquidation cluster.
+            & ((btc_roc_1_4h >= -2.0) | (btc_rsi_14_4h <= 43.0))
           )
 
         # Condition #102 - Rapid mode (Long).
