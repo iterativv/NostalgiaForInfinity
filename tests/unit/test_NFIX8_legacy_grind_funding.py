@@ -170,13 +170,22 @@ def test_emergency_add_also_falls_through_when_unfunded(legacy_grind_case, fundi
 
 @pytest.mark.parametrize("funding_ratio", [0.999, 1.0])
 def test_minimum_stake_uplift_is_included_in_budget(legacy_grind_case, funding_ratio):
-  _, trade, _ = legacy_grind_case
+  _, trade, rate = legacy_grind_case
   minimum = 140.0 / trade.leverage
   proposed = minimum * 1.5
 
   result = adjust(legacy_grind_case, proposed * funding_ratio, min_stake=minimum)
 
-  assert result == ((proposed, "gd1") if funding_ratio >= 1.0 else None)
+  if funding_ratio >= 1.0:
+    assert result == (proposed, "gd1")
+  elif trade.is_short:
+    # The add is unfunded, but the current-value stop still meets the minimum.
+    stake, tag = expected_stop(trade, rate, min_stake=minimum)
+    assert -stake < minimum
+    assert -stake * trade.amount / trade.stake_amount * rate / trade.leverage > minimum
+    assert result == (pytest.approx(stake), tag)
+  else:
+    assert result is None
 
 
 @pytest.mark.parametrize("version", ["system_v4", "system_v3_2", None])
