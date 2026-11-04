@@ -12,7 +12,7 @@ from tests.unit.test_NFIX8_legacy_grind_funding import fill
 
 rescue_case = rescue.rescue_case
 buyback_quantity_bot = buyback.buyback_quantity_bot
-MODES = [(False, 1), (False, 3)]
+MODES = [(False, 1), (False, 3), (True, 3)]
 STAGES = [
   (mode, version, level)
   for mode in MODES
