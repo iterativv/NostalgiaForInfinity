@@ -81,7 +81,7 @@ def test_legacy_first_profit_exit_uses_current_value(
   assert abs(Decimal(str(trade.amount)) - Decimal(str(initial_amount - expected))) <= Decimal("0.00000001")
 
 
-@pytest.mark.parametrize("rescue_case", [(False, 1), (False, 3)], indirect=True)
+@pytest.mark.parametrize("rescue_case", [(False, 1), (False, 3), (True, 3)], indirect=True)
 @pytest.mark.parametrize(
   "mode,entry_tag,exit_tag",
   [("regular", f"g{n}", f"sg{n}") for n in range(1, 7)]
@@ -148,7 +148,7 @@ def test_legacy_queue_stop_uses_current_value(
     rescue.add_order(trade, trade.exit_side, "d" if mode == "grind" else "p", amount)
   entry = rescue.add_order(trade, trade.entry_side, entry_tag, 0.25, filled, "canceled")
   # Qualify the native stop without triggering the earlier futures emergency
-  # add at 65% / leverage. Both modeled entries have above-minimum requests.
+  # add at 65% / leverage. Both modeled entries have minimum-compliant requests.
   entry.price = entry.average = entry.ft_price = 106.0 if trade.is_short else 162.0
   if gate == "no-loss":
     entry.price = entry.average = entry.ft_price = 128.0
