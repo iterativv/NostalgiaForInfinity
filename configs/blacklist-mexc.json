@@ -219,6 +219,8 @@
       // $85k daily volume and -56% to -98% off their highs; PISTACIO printed a 174% day inside the
       // last month, CLAN 141%.
       "(PISTACIO|ALIGN|CLAN|STONKBROKER|QUID)/.*",
+      // MEXC ST warning 2026-11-02/03, spot delisting 11-05/11-06 (THEO date not yet announced)
+      "(QI|COOL|JIMOTHY|THEO|SAUBER|SCCP)/.*",
       // Tokenized stocks (STOCK suffix — universal forward-protection)
       ".*STOCK/.*",
       // Tokenized stocks (direct ticker, no STOCK suffix)

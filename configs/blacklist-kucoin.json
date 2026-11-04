@@ -200,6 +200,8 @@
       "(BLC|AFX|VRSC)/.*",
       // Hacked/high-risk (2026-07) + ROAM KuCoin-futures delist
       "(NIGHT|ROAM)/.*",
+      // KuCoin spot delisting 2026-11-05 08:00 UTC (names from the notice not already covered)
+      "(ANOME|BCUT|CESS|ECHO|ES|EYWA|GAIA|ION|LADYS|NOON|PIGGY|SUNDOG|SUP|U2U|VAYLA|XTER)/.*",
       // Tokenized stocks (STOCK suffix — universal forward-protection)
       ".*STOCK/.*",
       // Tokenized stocks (direct ticker, no STOCK suffix)
