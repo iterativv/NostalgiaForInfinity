@@ -215,3 +215,71 @@ def test_v2_buyback_keeps_raw_profit_price_boundary(buyback_quantity_bot):
   order = trade.orders[-1]
   assert order.ft_order_tag == f"buyback_1_exit {entry.id}"
   assert_exit_units(order, 9.99)
+
+
+@pytest.mark.parametrize("version", ["v3", "v4"])
+@pytest.mark.parametrize(
+  "rescue_case,gate,filled,expected",
+  [
+    (mode, gate, filled, expected)
+    for mode in [(False, 1), (False, 3), (False, 5)]
+    for gate, filled, expected in [
+      ("current-only", 0.046875, 0.046875),
+      ("both-values", 0.125, 0.125),
+      ("below-minimum", 0.03125, None),
+      ("exact-minimum", 0.0390625, None),
+      ("reserve", 0.1, 0.05945312),
+      ("reserve-blocked", 0.046875, None),
+      ("pending", 0.046875, None),
+      ("disabled", 0.046875, None),
+      ("no-loss", 0.046875, None),
+    ]
+  ]
+  + [((False, 1), "base-fee", 0.046875, 0.04682812)],
+  indirect=["rescue_case"],
+)
+def test_buyback_derisk_uses_current_exit_value(buyback_quantity_bot, version, gate, filled, expected, caplog):
+  bot, trade, _ = buyback_quantity_bot
+  trade.set_custom_data("system_version", f"system_{version}")
+  # Model a small first fill and unrelated inventory without changing the
+  # native loss threshold, which is measured against the first entry's cost.
+  initial = trade.orders[0]
+  initial.amount = initial.ft_amount = initial.filled = 0.05
+  initial.cost = 5.0
+  trade.recalc_trade_from_orders()
+  rescue.add_order(trade, trade.entry_side, "initial", 0.95)
+  if gate in ("reserve", "reserve-blocked"):
+    rescue.add_order(trade, trade.exit_side, "exit_normal", 0.98)
+  entry = rescue.add_order(trade, trade.entry_side, "buyback_1_entry", 0.25, filled, "canceled")
+  entry.price = entry.average = entry.ft_price = 128.0 if gate == "no-loss" else 200.0
+  entry.cost = filled * entry.safe_price
+  trade.recalc_trade_from_orders()
+  if gate == "base-fee":
+    settle_base_fee(bot, trade, entry, filled * 0.001)
+  if gate == "disabled":
+    setattr(bot.strategy, f"system_{version}_buyback_1_use_derisk", False)
+  if gate == "pending":
+    entry.status = "open"
+    entry.ft_is_open = True
+  bot.exchange.get_rates.return_value = (128.0, 128.0)
+  before = trade.amount
+  if gate == "current-only":
+    assert filled * 128.0 == 6.0
+    assert filled * trade.stake_amount / trade.amount < 5.0 / trade.leverage
+
+  bot.check_and_call_adjust_trade_position(trade)
+
+  assert all(record.levelno < 40 for record in caplog.records)
+  bot.execute_entry.assert_not_called()
+  if expected is None:
+    bot.exchange.create_order.assert_not_called()
+    assert trade.amount == before
+    return
+  bot.exchange.create_order.assert_called_once()
+  order = trade.orders[-1]
+  assert order.ft_order_side == trade.exit_side
+  assert order.ft_order_tag == f"buyback_1_derisk {entry.id}"
+  assert_exit_units(order, expected)
+  settle_exit(trade, order, order.amount)
+  assert trade.amount == pytest.approx(before - expected, rel=0, abs=1e-8)
+  assert trade.is_open
