@@ -731,6 +731,7 @@ class NostalgiaForInfinityX8(IStrategy):
 
   system_v4_max_stake = 1.0  # ratio of first entry
   system_v4_stake_multiplier = 1.0
+  system_v4_grind_only_after_derisk_enable = False  # Require a filled de-risk level 1, 2 or 3 before grind entries.
   system_v4_grind_entry_before_derisk_enable = True
   system_v4_grind_entry_before_derisk_distance = 0.02  # unleveraged price move from the grind average
 
@@ -1203,6 +1204,7 @@ class NostalgiaForInfinityX8(IStrategy):
       "grind_mode_max_slots",
       "grind_mode_coins",
       "max_slippage",
+      "system_v4_grind_only_after_derisk_enable",
       "system_v4_bad_trade_exit_enable",
       "legacy_system_bad_trade_exit_enable",
       "inclusive_bad_trade_exit_enable",
@@ -44401,7 +44403,13 @@ class NostalgiaForInfinityX8(IStrategy):
       trade.set_custom_data(key="grind_5_cluster_max_profit_rate", value=grind_5_current_grind_profit_rate)
 
     is_long_extra_checks_entry = (
-      grind_entry_retry_time > filled_entries[-1].order_filled_utc
+      (
+        not self.system_v4_grind_only_after_derisk_enable
+        or is_derisk_1_found
+        or is_derisk_2_found
+        or is_derisk_3_found
+      )
+      and grind_entry_retry_time > filled_entries[-1].order_filled_utc
       # and ((current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc) or (slice_profit < -0.02))
       and (
         (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
@@ -58788,7 +58796,13 @@ class NostalgiaForInfinityX8(IStrategy):
       trade.set_custom_data(key="grind_5_cluster_max_profit_rate", value=grind_5_current_grind_profit_rate)
 
     is_short_extra_checks_entry = (
-      grind_entry_retry_time > filled_entries[-1].order_filled_utc
+      (
+        not self.system_v4_grind_only_after_derisk_enable
+        or is_derisk_1_found
+        or is_derisk_2_found
+        or is_derisk_3_found
+      )
+      and grind_entry_retry_time > filled_entries[-1].order_filled_utc
       # and ((current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc) or (slice_profit > 0.02))
       and (
         (current_time - timedelta(hours=6) > filled_orders[-1].order_filled_utc)
