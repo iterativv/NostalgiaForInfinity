@@ -27,7 +27,9 @@ CASES = [
 ]
 
 
-@pytest.mark.parametrize("rescue_case", [(False, 1), (False, 3)], indirect=True, ids=["spot", "long"])
+@pytest.mark.parametrize(
+  "rescue_case", [(False, 1), (False, 3), (True, 3)], indirect=True, ids=["spot", "long", "short"]
+)
 @pytest.mark.parametrize("case", CASES)
 def test_initial_exit_uses_its_market_threshold(buyback_quantity_bot, mocker, tmp_path, caplog, case):
   kind, spot, futures, fee, advanced, allowed = case
