@@ -79,7 +79,12 @@ def test_initial_grind_profit_uses_current_minimum(buyback_quantity_bot, system,
   assert trade.is_open
 
 
-INITIAL_ROUTES = [((False, 1), "gmd0", 192.0), ((False, 3), "gmd0", 192.0)]
+INITIAL_ROUTES = [
+  ((False, 1), "gmd0", 192.0),
+  ((False, 3), "gmd0", 192.0),
+  ((True, 3), "gm0", 192.0),
+  ((True, 3), "gmd0", 100.0),
+]
 REDUCED_CASES = [
   ("current-only", 0.109375, 64.0, 0.04882812),
   ("both-values", 0.1875, 112.0, 0.12695312),
@@ -101,7 +106,7 @@ REDUCED_CASES = [
   "rescue_case,exit_tag,first_price,case",
   [
     pytest.param(
-      (mode[0], 2 if case[0] == "outer-equal" and mode[1] > 1 else mode[1]),
+      (mode[0], 2 if case[0] in ("outer-equal", "current-equal") and mode[1] > 1 else mode[1]),
       exit_tag,
       first_price,
       case,
@@ -162,6 +167,8 @@ def test_initial_exit_after_reductions_uses_current_value(
     assert first_quantity * trade.stake_amount / trade.amount - minimum * 1.5 > minimum
   if gate == "outer-equal":
     assert first_quantity * (trade.stake_amount / trade.amount) - minimum * 1.5 == minimum
+  if gate == "current-equal":
+    assert before * 128.0 / trade.leverage - minimum * 1.55 == minimum
   if gate == "stop-disabled" and exit_tag == "gm0":
     expected = 0.04882812
 
