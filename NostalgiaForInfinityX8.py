@@ -16844,6 +16844,9 @@ class NostalgiaForInfinityX8(IStrategy):
             & (rsi_14_1d < 38.0)
             # CMF 5m floor: THE 2025-03-04 entered with 5m CMF -0.58.
             & (cmf_20 > -0.5785)
+            # RSI 1d upper cap, tightened from 38.0: IO/LUMIA/SCR 2025
+            # entered at 37.4-37.8, at the edge of the capitulation band.
+            & (rsi_14_1d <= 37.4)
             # Quality floors: neither a collapsed 15m money flow (MFI ~2) nor a
             # daily RSI below 10 is a capitulation worth buying; both were flat
             # outliers on the 330 book and cost nothing in 2022-2024.
