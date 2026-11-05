@@ -1074,7 +1074,6 @@ class NostalgiaForInfinityX8(IStrategy):
     "long_entry_condition_103_enable": True,
     "long_entry_condition_104_enable": True,
     "long_entry_condition_105_enable": False,
-    "long_entry_condition_106_enable": False,
     "long_entry_condition_120_enable": True,
     "long_entry_condition_121_enable": False,
     "long_entry_condition_141_enable": True,
@@ -5931,7 +5930,6 @@ class NostalgiaForInfinityX8(IStrategy):
     willr_14_4h = np_view("WILLR_14_4h")
     btc_roc_1_5m = np_view("btc_roc_1_5m")
     btc_roc_1_4h = np_view("BTC_ROC_1_4h")
-    btc_rsi_14_4h = np_view("BTC_RSI_14_4h")
     stoch_k_4h = np_view("STOCHk_14_3_3_4h")
 
     sqz_on = np_view("SQZ_ON")
@@ -18357,37 +18355,6 @@ class NostalgiaForInfinityX8(IStrategy):
             & (change_pct_1d > 0.0)
             # only above the daily 200 EMA: in a bear market the snapback does not come
             & (close > ema_200_1d)
-          )
-
-        # Condition #106 - Rapid mode (Long).
-        if long_entry_condition_index == 106:
-          # Protections
-          long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
-          long_entry_logic.append(protections_long_global == True)
-          long_entry_logic.append(rsi_14_1h_lt_80)
-          long_entry_logic.append(rsi_14_4h_lt_80)
-          long_entry_logic.append(rsi_14_1d_lt_80)
-
-          # 106: rapid capitulation core.
-          long_entry_logic.append(
-            (rsi_3_gt_3)
-            & (rsi_14 < 36.0)
-            & (aroonu_14_lt_25)
-            & (stochrsi_k_lt_20)
-            & (close < (sma_16 * 0.946))
-            & (aroonu_14_15m_lt_50)
-            # 106: quality and crash gates.
-            & (mfi_14_15m > 2.1)
-            & (cmf_20_1h > -0.5)
-            & (cmf_20_1h < 0.27)
-            & (rsi_14_1d < 38.0)
-            & (cmf_20 > -0.5785)
-            & (rsi_14_1d <= 37.4)
-            & (quad_s93_min_12 <= 17.0)
-            & (rsi_14_change_pct_15m <= 9.2)
-            & (vol_rel >= 1.0)
-            & (rsi_14_1d_gt_10)
-            & ((btc_roc_1_4h >= -2.0) | (btc_rsi_14_4h <= 43.0))
           )
 
         # Condition #120 - Grind mode (Long).
