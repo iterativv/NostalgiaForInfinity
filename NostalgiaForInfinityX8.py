@@ -16849,6 +16849,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & (rsi_14_1d <= 37.4)
             # QUAD S93 floor: DIA 2025-10-10 entered with a 20.0 reading.
             & (quad_s93_min_12 <= 17.0)
+            # 15m RSI-change cap: HMSTR 2025-06-11 entered with +22.9.
+            & (rsi_14_change_pct_15m <= 9.2)
             # Quality floors: neither a collapsed 15m money flow (MFI ~2) nor a
             # daily RSI below 10 is a capitulation worth buying; both were flat
             # outliers on the 330 book and cost nothing in 2022-2024.
