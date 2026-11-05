@@ -206,6 +206,8 @@
       ".*STOCK/.*",
       // Tokenized stocks (direct ticker, no STOCK suffix)
       "(AAPL|AMD|ARM|ASTS|CRWV|DELL|GOOGL|IREN|LITE|MRVL|MU|NBIS|QCOM|SNDK|SPCX|AAOI|APLD|BE|COHR|IONQ|SQQQ|TSM|AMZN|AVGO|BABA|HOOD|INTC|META|PLTR|TQQQ|TSLA)/.*",
+      // gate spot tickers of INTC and MRVL above (iterativ, 2026-11-05)
+      "(INTC|MRVL)G/.*",
       // Commodities (tokenized energy/metal perps — crypto gold XAUT/PAXG kept above)
       "(CL|BZ|NATGAS|XPT)/.*",
       // Tokenized stocks (3L/3S leverage)
