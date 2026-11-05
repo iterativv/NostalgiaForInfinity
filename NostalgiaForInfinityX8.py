@@ -16847,6 +16847,8 @@ class NostalgiaForInfinityX8(IStrategy):
             # RSI 1d upper cap, tightened from 38.0: IO/LUMIA/SCR 2025
             # entered at 37.4-37.8, at the edge of the capitulation band.
             & (rsi_14_1d <= 37.4)
+            # QUAD S93 floor: DIA 2025-10-10 entered with a 20.0 reading.
+            & (quad_s93_min_12 <= 17.0)
             # Quality floors: neither a collapsed 15m money flow (MFI ~2) nor a
             # daily RSI below 10 is a capitulation worth buying; both were flat
             # outliers on the 330 book and cost nothing in 2022-2024.
