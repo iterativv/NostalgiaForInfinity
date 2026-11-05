@@ -16842,7 +16842,7 @@ class NostalgiaForInfinityX8(IStrategy):
             & (quad_s93_min_12 <= 17.0)
             & (rsi_14_change_pct_15m <= 9.2)
             & (vol_rel >= 1.0)
-            & (rsi_14_1d > 10.0)
+            & (rsi_14_1d_gt_10)
             & ((btc_roc_1_4h >= -2.0) | (btc_rsi_14_4h <= 43.0))
           )
 
