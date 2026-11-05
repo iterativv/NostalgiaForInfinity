@@ -16851,6 +16851,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & (quad_s93_min_12 <= 17.0)
             # 15m RSI-change cap: HMSTR 2025-06-11 entered with +22.9.
             & (rsi_14_change_pct_15m <= 9.2)
+            # Volume-relative floor: DEXE 2026-07-26 entered with 0.50.
+            & (vol_rel >= 1.0)
             # Quality floors: neither a collapsed 15m money flow (MFI ~2) nor a
             # daily RSI below 10 is a capitulation worth buying; both were flat
             # outliers on the 330 book and cost nothing in 2022-2024.
