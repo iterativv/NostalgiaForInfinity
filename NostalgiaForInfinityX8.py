@@ -16824,8 +16824,7 @@ class NostalgiaForInfinityX8(IStrategy):
           long_entry_logic.append(rsi_14_4h_lt_80)
           long_entry_logic.append(rsi_14_1d_lt_80)
 
-          # Logic: rapid capitulation core. The former guard chain was a volume
-          # valve (it only removed candidates); it is replaced by ranked filters.
+          # 101: rapid capitulation core.
           long_entry_logic.append(
             (rsi_3_gt_3)
             & (rsi_14 < 36.0)
@@ -16833,32 +16832,17 @@ class NostalgiaForInfinityX8(IStrategy):
             & (stochrsi_k_lt_20)
             & (close < (sma_16 * 0.946))
             & (aroonu_14_15m_lt_50)
-            # Quality vetoes ranked on the isolated book: short-term money flow
-            # must not be collapsing, and the daily must be oversold rather than
-            # in an extended downtrend. Thresholds sit on a flat, stable plateau.
+            # 101: quality and crash gates.
             & (mfi_14_15m > 2.1)
-            # 1h money flow must be negative enough to be capitulation, but
-            # not already positive (the DEXE 2026 entry was +0.27).
             & (cmf_20_1h > -0.5)
             & (cmf_20_1h < 0.27)
             & (rsi_14_1d < 38.0)
-            # CMF 5m floor: THE 2025-03-04 entered with 5m CMF -0.58.
             & (cmf_20 > -0.5785)
-            # RSI 1d upper cap, tightened from 38.0: IO/LUMIA/SCR 2025
-            # entered at 37.4-37.8, at the edge of the capitulation band.
             & (rsi_14_1d <= 37.4)
-            # QUAD S93 floor: DIA 2025-10-10 entered with a 20.0 reading.
             & (quad_s93_min_12 <= 17.0)
-            # 15m RSI-change cap: HMSTR 2025-06-11 entered with +22.9.
             & (rsi_14_change_pct_15m <= 9.2)
-            # Volume-relative floor: DEXE 2026-07-26 entered with 0.50.
             & (vol_rel >= 1.0)
-            # Quality floors: neither a collapsed 15m money flow (MFI ~2) nor a
-            # daily RSI below 10 is a capitulation worth buying; both were flat
-            # outliers on the 330 book and cost nothing in 2022-2024.
             & (rsi_14_1d > 10.0)
-            # First leg of a BTC 4h crash: the 4h RSI has not reset yet. Do not
-            # buy the falling knife; this was the 2024-04-12 liquidation cluster.
             & ((btc_roc_1_4h >= -2.0) | (btc_rsi_14_4h <= 43.0))
           )
 
