@@ -228,6 +228,8 @@ def test_forced_derisk_keeps_priority_without_entry_funds(v4_case, level):
 def test_pre_derisk_entry_preserves_funding_and_later_reduction(v4_case, level, funded):
   strategy, trade, _ = v4_case
   strategy.system_v4_grind_entry_before_derisk_enable = True
+  # This trade already holds 63.7% of the first entry, so lift the route's own 0.5 stake cap.
+  strategy.system_v4_grind_entry_before_derisk_max_stake = 2.0
   strategy.long_grind_entry_v4 = MagicMock(return_value=False)
   strategy.short_grind_entry_v4 = MagicMock(return_value=False)
   strategy.system_v4_grind_2_use_derisk = True
