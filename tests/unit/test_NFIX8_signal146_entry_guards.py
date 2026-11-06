@@ -49,7 +49,9 @@ HELPERS = {
 # base strategy. A clause that turns up anywhere else still fails `..._not_leaked...`.
 SHARED = {
   "(rsi_20 < rsi_20_shift_1)": frozenset({3, 6, SIGNAL}),
-  "& (close < sma_16 * 0.960)": frozenset({6, 142, SIGNAL}),
+  # Signal 147 is signal 142's nucleus sold as its own signal, and 142 already carried this
+  # clause, so 147 inherits it rather than leaking it.
+  "& (close < sma_16 * 0.960)": frozenset({6, 142, SIGNAL, 147}),
 }
 # Signal 141 as it stood before signal 146 existed (origin/main): its chain count and the
 # digest of its whole block. 146 is additive, so both must still hold.
@@ -193,7 +195,10 @@ def test_the_dispatch_loop_reaches_the_block_by_its_own_index():
   ]
   position = order.index(SIGNAL)
   assert order[position - 1] == 145, f"signal {SIGNAL} does not follow 145: {order[max(position - 1, 0)]}"
-  assert order[position + 1] == 161, f"signal {SIGNAL} is not followed by 161: {order[position + 1]}"
+  # The loop dispatches in the numeric order of the file, so what has to hold is that
+  # property, not the signal that happened to come next when this test was written: a new
+  # signal inserted between 146 and 161 is growth, not a wiring change.
+  assert order == sorted(order), f"the dispatch order is not the numeric order: {order}"
 
 
 def test_the_three_preludes_are_the_first_three_appends():

@@ -65,7 +65,11 @@ Rapid Long Mode entries are triggered by high-momentum indicators that detect ex
 "long_entry_condition_102_enable": True,
 "long_entry_condition_103_enable": True,
 "long_entry_condition_104_enable": True,
+"long_entry_condition_105_enable": False,
+"long_entry_condition_106_enable": False,
 ```
+
+Signal **106** is the rapid-long rework candidate and is disabled by default until the team validates it.
 
 These conditions typically evaluate indicators such as:
 - **MACD histogram spike**: A sudden increase in the MACD histogram value indicates accelerating bullish momentum.
