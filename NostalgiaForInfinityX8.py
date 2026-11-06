@@ -733,6 +733,7 @@ class NostalgiaForInfinityX8(IStrategy):
   system_v4_stake_multiplier = 1.0
   system_v4_grind_only_after_derisk_enable = False  # Require a filled de-risk level 1, 2 or 3 before grind entries.
   system_v4_grind_entry_before_derisk_enable = True
+  system_v4_grind_entry_before_derisk_max_stake = 0.5  # ratio of first entry
   system_v4_grind_entry_before_derisk_distance = 0.02  # unleveraged price move from the grind average
 
   # Bad-trade exits. Enable for new v4 trades without changing older open trades.
@@ -1791,9 +1792,20 @@ class NostalgiaForInfinityX8(IStrategy):
     return (mfi_14_4h > 100.0 - bound) if is_short else (mfi_14_4h < bound)
 
   def _grind_entry_before_derisk(
-    self, is_short: bool, rate: float, grind_open_rate: float, derisk_threshold: float, use_derisk: bool
+    self,
+    is_short: bool,
+    rate: float,
+    grind_open_rate: float,
+    derisk_threshold: float,
+    use_derisk: bool,
+    current_stake_amount: float,
+    slice_amount: float,
   ) -> bool:
     if not (self.system_v4_grind_entry_before_derisk_enable and use_derisk and grind_open_rate > 0.0):
+      return False
+    # This route stops adding once the trade has grown past its own stake cap, so the last adds before
+    # the de-risk level stay reserved for small positions instead of feeding a large losing one.
+    if current_stake_amount >= (slice_amount * self.system_v4_grind_entry_before_derisk_max_stake):
       return False
     distance = self.system_v4_grind_entry_before_derisk_distance
     if is_short:
@@ -44786,6 +44798,8 @@ class NostalgiaForInfinityX8(IStrategy):
           grind_1_current_open_rate,
           grind_1_derisk_grinds,
           self.system_v4_grind_1_use_derisk,
+          current_stake_amount,
+          slice_amount,
         )
       )
     ):
@@ -44914,6 +44928,8 @@ class NostalgiaForInfinityX8(IStrategy):
           grind_2_current_open_rate,
           grind_2_derisk_grinds,
           self.system_v4_grind_2_use_derisk,
+          current_stake_amount,
+          slice_amount,
         )
       )
     ):
@@ -45042,6 +45058,8 @@ class NostalgiaForInfinityX8(IStrategy):
           grind_3_current_open_rate,
           grind_3_derisk_grinds,
           self.system_v4_grind_3_use_derisk,
+          current_stake_amount,
+          slice_amount,
         )
       )
     ):
@@ -45172,6 +45190,8 @@ class NostalgiaForInfinityX8(IStrategy):
           grind_4_current_open_rate,
           grind_4_derisk_grinds,
           self.system_v4_grind_4_use_derisk,
+          current_stake_amount,
+          slice_amount,
         )
       )
     ):
@@ -45304,6 +45324,8 @@ class NostalgiaForInfinityX8(IStrategy):
           grind_5_current_open_rate,
           grind_5_derisk_grinds,
           self.system_v4_grind_5_use_derisk,
+          current_stake_amount,
+          slice_amount,
         )
       )
     ):
@@ -59147,6 +59169,8 @@ class NostalgiaForInfinityX8(IStrategy):
           grind_1_current_open_rate,
           grind_1_derisk_grinds,
           self.system_v4_grind_1_use_derisk,
+          current_stake_amount,
+          slice_amount,
         )
       )
     ):
@@ -59273,6 +59297,8 @@ class NostalgiaForInfinityX8(IStrategy):
           grind_2_current_open_rate,
           grind_2_derisk_grinds,
           self.system_v4_grind_2_use_derisk,
+          current_stake_amount,
+          slice_amount,
         )
       )
     ):
@@ -59399,6 +59425,8 @@ class NostalgiaForInfinityX8(IStrategy):
           grind_3_current_open_rate,
           grind_3_derisk_grinds,
           self.system_v4_grind_3_use_derisk,
+          current_stake_amount,
+          slice_amount,
         )
       )
     ):
@@ -59527,6 +59555,8 @@ class NostalgiaForInfinityX8(IStrategy):
           grind_4_current_open_rate,
           grind_4_derisk_grinds,
           self.system_v4_grind_4_use_derisk,
+          current_stake_amount,
+          slice_amount,
         )
       )
     ):
@@ -59657,6 +59687,8 @@ class NostalgiaForInfinityX8(IStrategy):
           grind_5_current_open_rate,
           grind_5_derisk_grinds,
           self.system_v4_grind_5_use_derisk,
+          current_stake_amount,
+          slice_amount,
         )
       )
     ):
