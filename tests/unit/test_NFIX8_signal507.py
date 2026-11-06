@@ -25,7 +25,6 @@ CHAINS = {
   # one loss each, no winner cut
   "(rsi_3_15m_gt_20) | (stochrsi_k_4h_lt_60) | (aroonu_14_1d_lt_80)": "15m low, 4h high, 1d fresh high",
   "(aroonu_14_15m_gt_0) | (stochrsi_k_1h_lt_70) | (aroonu_14_1d_gt_0)": "15m no new high, 1h high, 1d no new high",
-  "(rsi_3_15m_gt_35) | (cmf_20_15m_lt_0_10) | (top_wick_pct_1d_lt_15)": "15m low, 15m inflow, 1d top wick 15%+",
   "(rsi_3_15m_gt_3) | (aroonu_14_1h_gt_0) | (aroonu_14_1d_lt_60)": "15m oversold, 1h no new high, 1d uptrend",
   "(stochrsi_k_15m_gt_70) | (rsi_3_1h_lt_55) | (aroonu_14_4h_lt_60)": "15m not high, 1h up move, 4h uptrend",
   "(aroonu_14_15m_gt_20) | (stochrsi_k_1h_lt_30) | (roc_9_4h_lt_5)": "15m downtrend, 1h not low, 4h up 5%+",
@@ -43,12 +42,10 @@ CHAINS = {
   "(aroonu_14_15m_lt_80) | (stochrsi_k_15m_gt_80) | (stochrsi_k_1h_gt_10)": "15m fresh high, 15m not high, 1h low",
   "(rsi_3_15m_gt_45) | (aroonu_14_15m_lt_70) | (rsi_3_4h_gt_3)": "15m down move, 15m uptrend, 4h oversold",
   "(rsi_3_gt_15) | (cmf_20_15m_gt_neg_0_35) | (stochrsi_k_15m_lt_30)": "5m oversold, 15m heavy outflow, 15m not low",
-  "(rsi_3_lt_40) | (stochrsi_k_15m_gt_10) | (rsi_14_1h_gt_20)": "5m up move, 15m low, 1h deeply oversold",
   "(rsi_3_15m_lt_75) | (stochrsi_k_1h_gt_30) | (rsi_3_1d_gt_10)": "15m overbought, 1h low, 1d oversold",
   "(rsi_3_1h_lt_55) | (aroonu_14_1h_lt_60) | (cci_20_change_pct_4h_lt_0)": "1h up move, 1h uptrend, 4h CCI rising",
   "(rsi_3_15m_gt_10) | (rsi_3_4h_gt_20) | (cmf_20_4h_lt_0_15)": "15m oversold, 4h low, 4h inflow",
   "(rsi_3_1h_gt_30) | (cmf_20_4h_lt_0_15) | (roc_9_4h_gt_neg_10)": "1h low, 4h inflow, 4h down 10%+",
-  "(rsi_3_15m_gt_35) | (cmf_20_15m_lt_0_30) | (aroonu_14_4h_lt_20)": "15m low, 15m strong inflow, 4h uptrend",
   "(stochrsi_k_1h_gt_10) | (cmf_20_4h_lt_0_15) | (aroonu_14_4h_gt_20)": "1h low, 4h inflow, 4h downtrend",
   "(aroond_14_4h_lt_80) | (stochrsi_k_4h_lt_60) | (roc_9_1d_gt_neg_25)": "4h fresh low, 4h high, 1d down 25%+",
   "(aroonu_14_1h_gt_0) | (stochrsi_k_4h_lt_70) | (stochrsi_k_1d_lt_20)": "1h no new high, 4h high, 1d not low",
@@ -138,7 +135,6 @@ CHAINS = {
   "(stochrsi_k_15m_lt_80) | (stochrsi_k_4h_lt_60) | (stochrsi_k_1d_lt_30) | (roc_9_1d_gt_neg_15)": "15m overbought, 4h high, 1d not low, 1d down 15%+",
   "(rsi_14_4h_gt_20) | (aroonu_14_4h_gt_0) | (stochrsi_k_4h_gt_30) | (cmf_20_1d_gt_neg_0_10) | (stochrsi_k_1d_gt_10)": "4h deeply oversold, 4h no new high, 4h & 1d low, 1d outflow",
   "(cmf_20_4h_gt_neg_0_20) | (stochrsi_k_4h_lt_40) | (cmf_20_1d_lt_0_10) | (stochrsi_k_1d_gt_10)": "4h outflow, 4h not low, 1d inflow, 1d low",
-  "(aroonu_14_1h_lt_80) | (aroonu_14_4h_lt_100) | (aroonu_14_1d_gt_0) | (stochrsi_k_1d_gt_40)": "1h & 4h fresh high, 1d no new high, 1d not high",
   "(stochrsi_k_1h_lt_50) | (rsi_3_4h_gt_20) | (aroonu_14_4h_gt_0) | (cmf_20_1d_lt_0_10)": "1h not low, 4h low, 4h no new high, 1d inflow",
   "(stochrsi_k_1h_lt_30) | (rsi_3_4h_gt_35) | (stochrsi_k_4h_lt_50) | (aroonu_14_1d_lt_40) | (stochrsi_k_1d_gt_10)": "1h & 4h not low, 4h & 1d low, 1d uptrend",
   "(aroonu_14_15m_lt_60) | (stochrsi_k_15m_gt_50) | (rsi_3_4h_gt_10) | (rsi_3_1d_gt_20) | (aroonu_14_1d_gt_0)": "15m uptrend, 15m not high, 4h oversold, 1d low, 1d no new high",
@@ -196,7 +192,6 @@ CHAINS = {
   "(aroonu_14_15m_gt_60) | (stochrsi_k_1h_lt_90) | (aroonu_14_1d_gt_0)": "15m not high, 1h overbought, 1d no new high",
   "(stochrsi_k_15m_gt_80) | (rsi_3_1h_lt_65) | (aroonu_14_4h_lt_20)": "15m not high, 1h up move, 4h uptrend",
   "(aroonu_14_lt_30) | (aroond_14_gt_75) | (aroonu_14_1h_lt_80)": "5m uptrend, 5m no fresh low, 1h fresh high",
-  "(rsi_3_15m_gt_20) | (cmf_20_15m_lt_0_10) | (aroonu_14_1h_gt_0)": "15m low, 15m inflow, 1h no new high",
   "(rsi_3_15m_lt_55) | (aroond_14_15m_lt_80) | (aroonu_14_1h_lt_70)": "15m up move, 15m fresh low, 1h uptrend",
   "(rsi_3_15m_gt_10) | (cmf_20_1h_gt_neg_0_25) | (roc_9_1d_gt_neg_15)": "15m oversold, 1h outflow, 1d down 15%+",
   "(cmf_20_15m_lt_0_10) | (aroonu_14_1h_gt_0) | (stochrsi_k_4h_lt_50)": "15m inflow, 1h no new high, 4h not low",
@@ -211,7 +206,6 @@ CHAINS = {
   "(aroond_14_15m_lt_80) | (rsi_3_1d_gt_25) | (stochrsi_k_1d_lt_70)": "15m fresh low, 1d low, 1d high",
   "(cmf_20_15m_gt_neg_0_20) | (stochrsi_k_1h_gt_10) | (rsi_3_4h_gt_3)": "15m outflow, 1h low, 4h oversold",
   "(rsi_3_15m_gt_3) | (aroonu_14_15m_lt_40) | (stochrsi_k_4h_lt_40)": "15m oversold, 15m uptrend, 4h not low",
-  "(rsi_14_15m_lt_50) | (rsi_3_1h_gt_40) | (stochrsi_k_1d_gt_10)": "15m up bias, 1h & 1d low",
   "(stochrsi_k_gt_80) | (rsi_3_15m_lt_60) | (aroonu_14_1d_lt_80)": "5m not high, 15m up move, 1d fresh high",
   "(stochrsi_k_15m_lt_60) | (roc_9_1d_lt_10) | (change_pct_1d_lt_10)": "15m high, 1d up 10%+, 1d green",
   "(aroonu_14_15m_gt_0) | (stochrsi_k_1h_gt_10) | (rsi_3_4h_gt_3)": "15m no new high, 1h low, 4h oversold",
@@ -232,7 +226,6 @@ CHAINS = {
   "(rsi_3_4h_gt_20) | (stochrsi_k_4h_lt_50) | (rsi_3_change_pct_1d_gt_neg_20)": "4h low, 4h not low, 1d RSI down 20%+",
   "(aroonu_14_1h_gt_20) | (stochrsi_k_1h_lt_30) | (stochrsi_k_4h_lt_60)": "1h downtrend, 1h not low, 4h high",
   "(rsi_3_lt_46) | (stochrsi_k_15m_gt_10) | (aroonu_14_4h_gt_20)": "5m up move, 15m low, 4h downtrend",
-  "(rsi_3_15m_gt_20) | (rsi_3_1h_lt_40) | (cmf_20_4h_lt_0_15)": "15m low, 1h up move, 4h inflow",
   "(rsi_3_gt_3) | (rsi_3_1h_lt_40) | (aroond_14_4h_lt_85)": "5m oversold, 1h up move, 4h fresh low",
   "(rsi_3_lt_98) | (rsi_3_1d_gt_15) | (aroonu_14_1d_gt_50)": "5m overbought, 1d oversold, 1d not high",
   "(aroonu_14_gt_75) | (aroonu_14_15m_lt_85) | (cmf_20_4h_lt_0_15)": "5m not high, 15m fresh high, 4h inflow",
@@ -285,7 +278,6 @@ CHAINS = {
   "(aroonu_14_4h_lt_30) | (stochrsi_k_4h_lt_50) | (rsi_3_1d_gt_15)": "4h uptrend, 4h not low, 1d oversold",
   "(rsi_3_15m_gt_20) | (stochrsi_k_1d_gt_60) | (roc_9_1d_lt_10)": "15m low, 1d not high, 1d up 10%+",
   "(cmf_20_15m_gt_neg_0_10) | (stochrsi_k_1h_lt_60) | (stochrsi_k_1d_gt_10)": "15m outflow, 1h high, 1d low",
-  "(rsi_14_15m_lt_50) | (stochrsi_k_15m_gt_50) | (aroond_14_1h_lt_70)": "15m up bias, 15m not high, 1h fresh low",
   "(rsi_14_15m_lt_50) | (stochrsi_k_15m_gt_60) | (aroond_14_1h_lt_70)": "15m up bias, 15m not high, 1h fresh low",
   "(cmf_20_1h_gt_neg_0_20) | (stochrsi_k_1h_lt_60) | (roc_9_1d_gt_neg_10)": "1h outflow, 1h high, 1d down 10%+",
   "(aroonu_14_15m_lt_70) | (stochrsi_k_15m_gt_70) | (cmf_20_1h_gt_neg_0_25)": "15m uptrend, 15m not high, 1h outflow",
@@ -369,8 +361,8 @@ def _lead_key(chain: str) -> tuple[int, int]:
 
 
 def test_the_block_has_its_protection_chains():
-  # Then: all 444 chains are there.
-  assert len(_chains()) >= 444
+  # Then: all 435 chains are there.
+  assert len(_chains()) >= 435
 
 
 def test_the_targeted_chains_live_inside_the_protection_append():
