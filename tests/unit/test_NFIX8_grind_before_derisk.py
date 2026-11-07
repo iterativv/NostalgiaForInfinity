@@ -19,6 +19,11 @@ def grind_case(rescue_case):
   strategy.system_v4_max_stake = 2.0
   strategy.system_v4_grind_entry_before_derisk_max_stake = 2.0
   strategy.system_v4_grind_5_liquidation_rescue_enable = False
+  # These cases probe the pre-de-risk route at -20%..-22%; pin the ladder so they do not
+  # depend on whatever thresholds ship by default.
+  for level in range(1, 6):
+    for market in ("spot", "futures"):
+      setattr(strategy, f"system_v4_grind_{level}_thresholds_{market}", [-0.06, -0.07, -0.08, -0.09, -0.10])
   trade.liquidation_price = None
   candle = {
     "close": 100.0,

@@ -48,6 +48,9 @@ def v4_case(request, level):
     stakes = f"system_v4_grind_{level}_stakes_{market}"
     setattr(strategy, stakes, [0.15] * len(getattr(strategy, stakes)))
     setattr(strategy, f"system_v4_grind_{level}_derisk_{market}", -0.10)
+    # Pin the ladder so this fixture tests funding and routing, not the shipped defaults.
+    thresholds = f"system_v4_grind_{level}_thresholds_{market}"
+    setattr(strategy, thresholds, [-0.06] * len(getattr(strategy, thresholds)))
   strategy.long_grind_entry_v4 = MagicMock(return_value=True)
   strategy.short_grind_entry_v4 = MagicMock(return_value=True)
   strategy.dp = DataProvider(strategy.config, None)

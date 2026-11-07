@@ -802,9 +802,12 @@ class NostalgiaForInfinityX8(IStrategy):
 
   system_v4_grind_1_enable = True
   system_v4_grind_1_stakes_spot = [0.20, 0.20, 0.20, 0.20, 0.20]
-  system_v4_grind_1_thresholds_spot = [-0.06, -0.07, -0.08, -0.09, -0.10]
+  # Measured on the 2021 window: shallow -6..-10 steps only reach 34% below the first fill before the
+  # ladder runs out, so most adds land on a nearly unchanged average. The -18..-22 ladder reaches 67%
+  # and each step actually moves the average, which is what lets the exit become reachable.
+  system_v4_grind_1_thresholds_spot = [-0.18, -0.19, -0.20, -0.21, -0.22]
   system_v4_grind_1_stakes_futures = [0.20, 0.20, 0.20, 0.20, 0.20]
-  system_v4_grind_1_thresholds_futures = [-0.06, -0.07, -0.08, -0.09, -0.10]
+  system_v4_grind_1_thresholds_futures = [-0.18, -0.19, -0.20, -0.21, -0.22]
   system_v4_grind_1_profit_threshold_spot = 0.025
   system_v4_grind_1_profit_threshold_futures = 0.025
   system_v4_grind_1_use_derisk = True
