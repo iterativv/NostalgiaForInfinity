@@ -70,7 +70,7 @@ class NostalgiaForInfinityX8(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v18.0.223"
+    return "v18.0.224"
 
   stoploss = -0.99
 
@@ -733,7 +733,7 @@ class NostalgiaForInfinityX8(IStrategy):
   system_v4_stake_multiplier = 1.0
   system_v4_grind_only_after_derisk_enable = False  # Require a filled de-risk level 1, 2 or 3 before grind entries.
   system_v4_grind_entry_before_derisk_enable = True
-  system_v4_grind_entry_before_derisk_max_stake = 0.5  # ratio of first entry
+  system_v4_grind_entry_before_derisk_max_stake = 1.0  # ratio of first entry
   system_v4_grind_entry_before_derisk_distance = 0.02  # unleveraged price move from the grind average
 
   # Bad-trade exits. Enable for new v4 trades without changing older open trades.
