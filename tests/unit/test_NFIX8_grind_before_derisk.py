@@ -48,7 +48,7 @@ def adjust(case, rate, max_stake=10000.0):
 
 def test_feature_is_enabled_by_default():
   assert NostalgiaForInfinityX8.system_v4_grind_entry_before_derisk_enable is True
-  assert NostalgiaForInfinityX8.system_v4_grind_entry_before_derisk_max_stake == 0.5
+  assert NostalgiaForInfinityX8.system_v4_grind_entry_before_derisk_max_stake == 1.0
   assert NostalgiaForInfinityX8.system_v4_grind_entry_before_derisk_distance == 0.02
 
 
@@ -175,25 +175,27 @@ def test_filled_add_updates_average_and_does_not_repeat_at_same_price(grind_case
 
 
 @pytest.mark.parametrize("level", range(1, 6))
-@pytest.mark.parametrize("cap,action", [("default", "none"), ("below", "none"), ("above", "entry")])
-def test_pre_derisk_entry_stops_at_its_own_stake_cap(grind_case, level, cap, action):
+@pytest.mark.parametrize("cap", ["default", "below", "above"])
+def test_pre_derisk_entry_stops_at_its_own_stake_cap(grind_case, level, cap):
   # Given one open grind and no indicator/fallback signal, the trade is worth 0.88 of the first
   # entry at the long band and 1.32 at the short mirror.
   strategy, trade = grind_case
   setattr(strategy, f"system_v4_grind_{level}_enable", True)
   add_order(trade, trade.entry_side, f"grind_{level}_entry", 1.0)
   below_cap, above_cap = (1.31, 1.33) if trade.is_short else (0.87, 0.89)
-  strategy.system_v4_grind_entry_before_derisk_max_stake = {
+  position_ratio = 1.32 if trade.is_short else 0.88
+  limit = {
     "default": NostalgiaForInfinityX8.system_v4_grind_entry_before_derisk_max_stake,
     "below": below_cap,
     "above": above_cap,
   }[cap]
+  strategy.system_v4_grind_entry_before_derisk_max_stake = limit
 
   # When price reaches the pre-de-risk band.
   result = adjust(grind_case, 120.0 if trade.is_short else 80.0)
 
-  # Then the route is closed at or above its cap and still open below it.
-  if action == "entry":
+  # Then the route is open below the cap and closed at or above it, whatever the cap is.
+  if position_ratio < limit:
     assert result is not None and result[0] > 0 and result[1] == f"grind_{level}_entry"
     assert strategy._grind_entry_tag == "g_pre_derisk"
   else:
