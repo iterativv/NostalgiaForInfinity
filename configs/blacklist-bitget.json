@@ -165,6 +165,10 @@
       // hour (0.3785 -> 0.8542 -> 0.1456 -> 0.2002, +126% then -83%), 64 days since listing and
       // -72.8% off its high on ~$196M/day
       "(DOS)/.*",
+      // Thin, falling L2 gaming token (iterativ, 2026-11-10) — Ancient8 is spot-only on bybit,
+      // bitget and htx (no perp anywhere), ~$20k/day on bybit, -81.6% off its 2026-05-08 high and
+      // -42% over thirty days, with a 46% daily range on 2026-11-08
+      "(A8)/.*",
       // Pump-and-dump knives — APR +192% then -68% (2026-08-12/15), VELVET -46% in an hour (2026-07-24),
       // JCT -82.4% off its 2026-06-13 peak, single-day ranges of 96%, 96% and 83% (2026-09-10)
       "(APR|JCT|VELVET)/.*",
