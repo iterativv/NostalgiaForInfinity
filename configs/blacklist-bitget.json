@@ -65,6 +65,10 @@
       "(UAI)/.*",
       // Requested by iterativ, 2026-11-06.
       "(CRDO|DJT|MRNA|Q)/.*",
+      // Pre-IPO perps (Binance PREMARKET / Pre-IPO, Bybit stock, Bitget isRwa), requested by iterativ, 2026-11-10.
+      "(ANTHROPIC|MOONSHOT|OPENAI|OURA|POLYMARKET)/.*",
+      // Bitget pre-market spot ticker of OPENAI (iterativ, 2026-11-10)
+      "(PREOPAI)/.*",
       // -40.1% over seven days and -70.0% over thirty, on a 3-day rate of change of 1.16
       // — it opens wide and stays wide, so a RangeStabilityFilter already screens it out
       // where one is configured. The list covers the venues and setups where it is not.
