@@ -23,9 +23,9 @@ GITHUB_USER="iterativv"
 GITHUB_REPO="NostalgiaForInfinity"
 DEFAULT_BRANCH="main"
 git_branch="$DEFAULT_BRANCH"
-ENV_FILE="$SCRIPT_DIR/.env"
+# ENV_FILE="$SCRIPT_DIR/.env"
 
-configured_strategy=$(grep -E '^FREQTRADE__STRATEGY=' "$ENV_FILE" | cut -d '=' -f2-)
+# configured_strategy=$(grep -E '^FREQTRADE__STRATEGY=' "$ENV_FILE" | cut -d '=' -f2-)
 
 # Functions
 log() {
