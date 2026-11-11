@@ -3397,6 +3397,8 @@ class NostalgiaForInfinityX8(IStrategy):
     kama_40 = ta_kama(close_np, timeperiod=40)
     kama_153 = ta_kama(close_np, timeperiod=153)
     # 28 d log return vs the coin's last 24 earlier non-overlapping 28 d returns (at least 12): bottom third = cold, held 5 days
+    # under 12 earlier returns (about a year of daily candles) the flag stays 0: young coins and short startup histories
+    # (bybit loads 199 daily candles) pass this filter; blocking them instead cost a fifth of signal 14's profit
     # fixed 24 (700 days of candles), not all history: backtest (800 days before start) and live (997+) see the same window
     log_close = np.log(np.where(close_np > 0, close_np, np.nan))
     log_ret_28 = np.full(len(log_close), np.nan)
@@ -3844,18 +3846,16 @@ class NostalgiaForInfinityX8(IStrategy):
     low_min_12 = ta_min(low_np, timeperiod=12)
     low_min_24 = ta_min(low_np, timeperiod=24)
 
-    # MACD histogram, DMI 14, Donchian 10-candle high — signal 14 (experimental): 1h confirmation
+    # MACD histogram, DMI 14 — signal 14 (experimental): 1h confirmation
     _, _, macdh_12_26_9 = ta.MACD(close_np, fastperiod=12, slowperiod=26, signalperiod=9)
     plus_di_14 = ta.PLUS_DI(high_np, low_np, close_np, timeperiod=14)
     minus_di_14 = ta.MINUS_DI(high_np, low_np, close_np, timeperiod=14)
-    dc_high_10 = np_shift(ta_max(high_np, timeperiod=10), 1)
 
     new_cols = pd.DataFrame(
       {
         "MACDh_12_26_9": macdh_12_26_9,
         "PLUS_DI_14": plus_di_14,
         "MINUS_DI_14": minus_di_14,
-        "DC_HIGH_10": dc_high_10,
         "RSI_3": rsi_3,
         "RSI_14": rsi_14,
         "RSI_3_change_pct": rsi_3_change,
@@ -6139,9 +6139,7 @@ class NostalgiaForInfinityX8(IStrategy):
     macdh_12_26_9_1h = np_view("MACDh_12_26_9_1h")
     plus_di_14_1h = np_view("PLUS_DI_14_1h")
     minus_di_14_1h = np_view("MINUS_DI_14_1h")
-    dc_high_10_1h = np_view("DC_HIGH_10_1h")
     dc_low_20 = np_view("DC_LOW_20")
-    btc_rsi_14_1h = np_view("BTC_RSI_14_1h")
     global_protections_short_pump = np_view("global_protections_short_pump")
     global_protections_short_dump = np_view("global_protections_short_dump")
     roc_2 = np_view("ROC_2")
@@ -11157,8 +11155,6 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((rsi_3_lt_46) | (rsi_3_15m_gt_50) | (stochrsi_k_15m_lt_20) | (roc_9_4h_lt_5) | (rsi_3_1d_gt_45))
             # 5m up move, 15m high, 1h & 1d down move
             & ((rsi_3_lt_46) | (stochrsi_k_15m_lt_70) | (rsi_3_1h_gt_65) | (rsi_3_1d_gt_40))
-            # 5m overbought, 4h down move, 1d low
-            & ((rsi_3_lt_97) | (rsi_3_4h_gt_60) | (rsi_3_1d_gt_30))
             # 5m & 1d uptrend, 1h downtrend, 1h overbought, 1d not high
             & (
               (aroonu_14_lt_25)
@@ -11169,8 +11165,6 @@ class NostalgiaForInfinityX8(IStrategy):
             )
             # 5m & 1h not low, 15m down move, 4h high
             & ((stochrsi_k_lt_20) | (rsi_3_15m_gt_45) | (stochrsi_k_1h_lt_40) | (stochrsi_k_4h_lt_70))
-            # 5m not low, 1h down move, 4h up 20%+
-            & ((stochrsi_k_lt_20) | (rsi_3_1h_gt_40) | (roc_9_4h_lt_20))
             # 5m not low, 15m low, 4h down move, 4h fresh high
             & ((stochrsi_k_lt_20) | (rsi_3_15m_gt_30) | (rsi_3_4h_gt_60) | (aroonu_14_4h_lt_90))
             # 5m not low, 15m down move, 15m fresh high, 15m low
@@ -11237,8 +11231,6 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((rsi_3_15m_gt_35) | (rsi_3_1h_lt_50) | (stochrsi_k_1h_gt_40))
             # 15m & 4h overbought, 1d down
             & ((rsi_3_15m_lt_95) | (rsi_3_4h_lt_70) | (roc_9_1d_gt_0))
-            # 15m up move, 15m & 4h not high, 4h up 5%+
-            & ((rsi_3_15m_lt_60) | (stochrsi_k_15m_gt_80) | (stochrsi_k_4h_gt_40) | (roc_9_4h_lt_5))
             # 15m down move, 15m high, 4h overbought
             & ((rsi_3_15m_gt_40) | (stochrsi_k_15m_lt_60) | (stochrsi_k_4h_lt_80))
             # 15m & 1d overbought, 1h fresh high, 4h downtrend
@@ -11263,8 +11255,6 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((rsi_3_15m_lt_50) | (stochrsi_k_15m_gt_40) | (aroonu_14_1d_gt_10))
             # 15m overbought, 1d low, 1d uptrend
             & ((rsi_3_15m_lt_80) | (rsi_3_1d_gt_35) | (aroonu_14_1d_lt_60))
-            # 15m up move, 15m & 4h not high, 4h up 5%+
-            & ((rsi_3_15m_lt_50) | (stochrsi_k_15m_gt_60) | (stochrsi_k_4h_gt_40) | (roc_9_4h_lt_5))
             # 15m & 1d down move, 4h uptrend, 4h low
             & ((rsi_3_15m_gt_45) | (aroonu_14_4h_lt_40) | (stochrsi_k_4h_gt_30) | (rsi_3_1d_gt_55))
             # 15m & 4h overbought, 1h & 1d uptrend, 1h not high
@@ -11491,14 +11481,6 @@ class NostalgiaForInfinityX8(IStrategy):
               | (stochrsi_k_4h_gt_50)
               | (rsi_3_1d_lt_80)
             )
-            # 15m uptrend, 15m & 1h not high, 1d downtrend, 1d up 10%+
-            & (
-              (aroonu_14_15m_lt_75)
-              | (stochrsi_k_15m_gt_80)
-              | (stochrsi_k_1h_gt_50)
-              | (aroonu_14_1d_gt_10)
-              | (roc_9_1d_lt_10)
-            )
             # 15m downtrend, 15m not low, 1h down move, 4h fresh high
             & ((aroonu_14_15m_gt_10) | (stochrsi_k_15m_lt_50) | (rsi_3_1h_gt_50) | (aroonu_14_4h_lt_90))
             # 15m uptrend, 15m not high, 4h overbought, 1d downtrend, 1d not low
@@ -11657,18 +11639,17 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((stochrsi_k_4h_lt_80) | (aroonu_14_1d_gt_30) | (stochrsi_k_1d_lt_60))
             # not after a 1d pump of 35%+
             & (roc_9_1d < 35.0)
-            # 1h agrees, two of: macd over zero, +di over -di, 4h close over the 1h donchian high, rsi over 50
+            # 1h agrees, two of: macd over zero, +di over -di, rsi over 50
             & (
               ((macdh_12_26_9_1h > 0.0) & (plus_di_14_1h > minus_di_14_1h))
-              | ((macdh_12_26_9_1h > 0.0) & (close_4h > dc_high_10_1h))
               | ((macdh_12_26_9_1h > 0.0) & (rsi_14_1h > 50.0))
-              | ((plus_di_14_1h > minus_di_14_1h) & (close_4h > dc_high_10_1h))
               | ((plus_di_14_1h > minus_di_14_1h) & (rsi_14_1h > 50.0))
-              | ((close_4h > dc_high_10_1h) & (rsi_14_1h > 50.0))
             )
           )
 
           # Logic
+          # read here, not with the shared views: BTC 1h is only required while signal 14 is on
+          btc_rsi_14_1h = np_view("BTC_RSI_14_1h")
           long_entry_logic.append(
             # daily recovery: fast KAMA still under the slow one, green 4h fast heikin-ashi candle back over the slow KAMA
             (kama_153_1d > kama_40_1d)
