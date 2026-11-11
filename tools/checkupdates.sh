@@ -15,7 +15,7 @@
 set -e  # Exit immediately if a command exits with a non-zero status
 
 # Constants
-SCRIPT_DIR=$(dirname "$0")
+SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 CONFIG_FILE="$SCRIPT_DIR/config.cfg"
 LOCAL_VERSION_FILE="$SCRIPT_DIR/version.txt"
 LOG_FILE="$SCRIPT_DIR/update.log"
@@ -96,6 +96,11 @@ update_files() {
     local file_type="$1"
     local files="$2"
     local destination="$3"
+    local source_file
+    local file
+    local i
+    local -a files_array
+    local -a source_files=()
 
     log "Processing $file_type files: $files"
     log "Destination directory: $destination"
@@ -105,16 +110,25 @@ update_files() {
 
     IFS=',' read -r -a files_array <<< "$files"
     for file in "${files_array[@]}"; do
+        if [[ -z "$file" ]]; then
+            source_files+=("")
+            continue
+        fi
+
         # Search for the file in the extracted release directory
-        local source_file
         source_file=$(find "$EXTRACTED_DIR" -type f -name "$file" 2>/dev/null | head -n 1)
 
-        if [ -n "$source_file" ]; then
-            cp "$source_file" "$destination/$(basename "$file")"
-            log "$file_type file copied successfully: $file"
-        else
+        if [ -z "$source_file" ]; then
             log "Error: $file_type file not found in the extracted release: $file"
+            return 1
         fi
+        source_files+=("$source_file")
+    done
+    for i in "${!files_array[@]}"; do
+        file="${files_array[$i]}"
+        [[ -z "$file" ]] && continue
+        cp "${source_files[$i]}" "$destination/$(basename "$file")"
+        log "$file_type file copied successfully: $file"
     done
 }
 
@@ -128,7 +142,7 @@ update_blacklists() {
 
     if [ -z "$blacklist_files" ]; then
         log "No blacklist files found in the extracted release."
-        return
+        return 1
     fi
 
     while IFS= read -r source_file; do
@@ -152,6 +166,13 @@ validate_file_extension() {
 }
 
 # Main Script
+check_dependency flock
+exec 9<"$SCRIPT_DIR/$(basename "$0")"
+if ! flock -n 9; then
+    log "Another updater instance is already running. Exiting."
+    exit 1
+fi
+
 log "=== Starting update script ==="
 
 # Ensure strategy symlink exists and is correct
@@ -305,13 +326,16 @@ fi
 
 # Process update if available
 if [ "$UPDATE_AVAILABLE" = "true" ]; then
-    # Update local version file
-    echo "$LATEST_VERSION" > "$LOCAL_VERSION_FILE"
-    log "Updated to version $LATEST_VERSION."
-
     # Update files based on configuration
-    [[ -n "$strategy_file" ]] && update_files "Strategy" "$strategy_file" "$SCRIPT_DIR/.."
+    if [[ -n "$strategy_file" ]]; then
+        update_files "Strategy" "$strategy_file" "$SCRIPT_DIR/.."
+    fi
     update_blacklists "$SCRIPT_DIR/../configs"
+
+    # Record the version only after every requested file has been copied.
+    printf '%s\n' "$LATEST_VERSION" > "$LOCAL_VERSION_FILE.tmp"
+    mv -f "$LOCAL_VERSION_FILE.tmp" "$LOCAL_VERSION_FILE"
+    log "Updated to version $LATEST_VERSION."
 
     # Cleanup old files
     if [[ "$cleanup_old_files" == "y" ]]; then
