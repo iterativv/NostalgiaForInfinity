@@ -4426,11 +4426,6 @@ class NostalgiaForInfinityX8(IStrategy):
     dc_low_7d_col = np_shift(ta_min(close_np, timeperiod=2016), 1)
 
     # =========================================================================
-    # Donchian 20-candle high — signal 507 (experimental): not shorting far under the recent high
-    # =========================================================================
-    dc_high_20_col = np_shift(ta_max(high_np, timeperiod=20), 1)
-
-    # =========================================================================
     # Assign dataframes
     # =========================================================================
     new_cols = pd.DataFrame(
@@ -4451,7 +4446,6 @@ class NostalgiaForInfinityX8(IStrategy):
         "PB_HAMMER": hammer_col,
         "PB_STAR": star_col,
         "DC_HIGH_7D": dc_high_7d_col,
-        "DC_HIGH_20": dc_high_20_col,
         "DC_LOW_7D": dc_low_7d_col,
         "ENGULF_BULL": engulf_bull_col,
         "ENGULF_BEAR": engulf_bear_col,
@@ -6140,7 +6134,6 @@ class NostalgiaForInfinityX8(IStrategy):
     macdh_12_26_9_1h = np_view("MACDh_12_26_9_1h")
     plus_di_14_1h = np_view("PLUS_DI_14_1h")
     minus_di_14_1h = np_view("MINUS_DI_14_1h")
-    dc_high_20 = np_view("DC_HIGH_20")
     global_protections_short_pump = np_view("global_protections_short_pump")
     global_protections_short_dump = np_view("global_protections_short_dump")
     roc_2 = np_view("ROC_2")
@@ -29416,10 +29409,11 @@ class NostalgiaForInfinityX8(IStrategy):
             & (vol_rel_27_4h > 1.0)
             # BTC not strong
             & (btc_rsi_14_1h < 50.0)
-            # not already 15% under the previous 20 candle high
-            & (close >= (dc_high_20 * 0.85))
             # not after a 24h crash
             & (roc_288 > -15.0)
+            # 1d not washed out, not already falling over the last 9 days
+            & (rsi_3_1d > 31.0)
+            & (roc_9_1d > -2.0)
           )
 
         # Condition #506 - Donchian 7-day breakdown (Short, experimental, RAW — mirror).

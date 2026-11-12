@@ -484,9 +484,11 @@ def test_each_chain_keeps_its_timeframes_in_ascending_order():
     "& (vol_rel_27_4h > 1.0)",
     # BTC not strong
     "& (btc_rsi_14_1h < 50.0)",
-    # not already 15% under the previous 20 candle high, not after a 24h crash
-    "& (close >= (dc_high_20 * 0.85))",
+    # not after a 24h crash
     "& (roc_288 > -15.0)",
+    # 1d not washed out, not already falling over the last 9 days
+    "& (rsi_3_1d > 31.0)",
+    "& (roc_9_1d > -2.0)",
   ],
 )
 def test_the_logic_holds_every_trigger_condition(clause):
