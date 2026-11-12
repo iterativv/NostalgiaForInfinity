@@ -12,7 +12,7 @@
 # 1. First run the script manually to create the config file and select your preferred update mode.
 # 2. After the config file is created, you can set up a cron job to run this script periodically.
 # 3. To set up a cron job, run `crontab -e` and add a line like: 0 * * * * /path/to/your/script/checkupdates.sh // to run the script every hour.
-set -e  # Exit immediately if a command exits with a non-zero status
+set -eE  # Exit immediately if a command exits with a non-zero status and inherit ERR traps
 
 # Constants
 SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
@@ -23,9 +23,7 @@ GITHUB_USER="iterativv"
 GITHUB_REPO="NostalgiaForInfinity"
 DEFAULT_BRANCH="main"
 git_branch="$DEFAULT_BRANCH"
-# ENV_FILE="$SCRIPT_DIR/.env"
-
-# configured_strategy=$(grep -E '^FREQTRADE__STRATEGY=' "$ENV_FILE" | cut -d '=' -f2-)
+LOCK_DIR="$SCRIPT_DIR/.checkupdates.lock"
 
 # Functions
 log() {
@@ -151,6 +149,21 @@ update_blacklists() {
     done <<< "$blacklist_files"
 }
 
+handle_update_error() {
+    local status="$1"
+    local line="$2"
+
+    trap - ERR
+    log "Update failed at line $line (exit status $status)."
+    if [[ -n "${telegram_bot_token:-}" && -n "${telegram_chat_id:-}" ]]; then
+        curl -sS -X POST "https://api.telegram.org/bot$telegram_bot_token/sendMessage" \
+            --data-urlencode "chat_id=$telegram_chat_id" \
+            --data-urlencode "text=Update failed at line $line (exit status $status) for $GITHUB_REPO." || \
+            log "Failed to send Telegram failure notification."
+    fi
+    exit "$status"
+}
+
 validate_file_extension() {
     local files="$1"
     local extension="$2"
@@ -166,12 +179,12 @@ validate_file_extension() {
 }
 
 # Main Script
-check_dependency flock
-exec 9<"$SCRIPT_DIR/$(basename "$0")"
-if ! flock -n 9; then
+if ! mkdir "$LOCK_DIR" 2>/dev/null; then
     log "Another updater instance is already running. Exiting."
     exit 1
 fi
+trap 'rmdir "$LOCK_DIR"' EXIT
+trap 'exit 1' HUP INT TERM
 
 log "=== Starting update script ==="
 
@@ -227,6 +240,7 @@ fi
 
 log "Reading configuration from $CONFIG_FILE"
 source "$CONFIG_FILE"
+trap 'handle_update_error "$?" "$LINENO"' ERR
 check_x8_migration
 # Set defaults if not configured
 update_mode=${update_mode:-releases}
