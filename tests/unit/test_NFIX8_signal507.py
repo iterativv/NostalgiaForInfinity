@@ -361,8 +361,8 @@ def _lead_key(chain: str) -> tuple[int, int]:
 
 
 def test_the_block_has_its_protection_chains():
-  # Then: all 435 chains are there.
-  assert len(_chains()) >= 435
+  # Then: all 555 chains are there.
+  assert len(_chains()) >= 555
 
 
 def test_the_targeted_chains_live_inside_the_protection_append():
@@ -424,6 +424,36 @@ def test_the_chains_are_pure_disjunctions_so_they_can_only_block():
     assert len(chain.split(" | ")) >= 2, chain
 
 
+def test_no_chain_is_implied_by_another():
+  src = _src()
+  defs = {
+    m.group(1): (m.group(2), m.group(3), float(m.group(4)))
+    for m in re.finditer(r"^\s{2,6}([a-z0-9_]+) = ([a-z0-9_]+) ([<>]) (-?\d+(?:\.\d+)?)$", src, re.M)
+  }
+
+  def implies(b, a):
+    (series_b, op_b, value_b), (series_a, op_a, value_a) = defs[b], defs[a]
+    return series_b == series_a and op_b == op_a and (value_b <= value_a if op_b == "<" else value_b >= value_a)
+
+  # chains with an inline comparison are left out: their clauses are not all cached booleans
+  sets = [
+    frozenset(CLAUSE.findall(chain)) for chain in _chains() if len(CLAUSE.findall(chain)) == len(chain.split(" | "))
+  ]
+  # Then: every chain is distinct, and no chain is implied by a stricter one (it would never block on its own),
+  # counting thresholds: (rsi_3_lt_40) implies (rsi_3_lt_46).
+  assert len(set(sets)) == len(sets)
+  for i, a in enumerate(sets):
+    for j, b in enumerate(sets):
+      assert i == j or not all(any(implies(x, y) for y in a) for x in b), (sorted(a), sorted(b))
+
+
+def test_btc_1h_is_read_only_inside_the_block():
+  # Then: with signal 507 off, BTC 1h data is not required.
+  src = _src()
+  assert src.count('np_view("BTC_RSI_14_1h")') == 1
+  assert 'np_view("BTC_RSI_14_1h")' in _block()
+
+
 def test_every_clause_is_a_cached_boolean():
   src = _src()
   for name in {c for chain in _chains() for c in CLAUSE.findall(chain)}:
@@ -464,20 +494,17 @@ def test_the_logic_holds_every_trigger_condition(clause):
   assert clause in _logic()
 
 
-def test_the_protections_hold_the_1h_two_of_four_guard():
+def test_the_protections_hold_the_1h_two_of_three_guard():
   block = _block()
   protections = block[block.index("# Protections") : block.index("# Logic")]
   guard = (
     "& (\n"
     "              ((macdh_12_26_9_1h < 0.0) & (minus_di_14_1h > plus_di_14_1h))\n"
-    "              | ((macdh_12_26_9_1h < 0.0) & (close_4h < dc_low_10_1h))\n"
     "              | ((macdh_12_26_9_1h < 0.0) & (rsi_14_1h < 50.0))\n"
-    "              | ((minus_di_14_1h > plus_di_14_1h) & (close_4h < dc_low_10_1h))\n"
     "              | ((minus_di_14_1h > plus_di_14_1h) & (rsi_14_1h < 50.0))\n"
-    "              | ((close_4h < dc_low_10_1h) & (rsi_14_1h < 50.0))\n"
     "            )\n"
   )
-  # Then: 1h agrees, two of four, AND-ed into the protection chain and no longer in the logic.
+  # Then: 1h agrees, two of three, AND-ed into the protection chain and no longer in the logic.
   assert guard in protections
   assert "macdh_12_26_9_1h" not in _logic()
 
