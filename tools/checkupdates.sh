@@ -82,12 +82,8 @@ check_x8_migration() {
     if [[ "$configured_strategy" == "NostalgiaForInfinityX8" ]] && [[ "$strategy_file" == "NostalgiaForInfinityX7.py" ]]; then
         log "X8 is configured in .env, but config.cfg is still using X7."
 
-        # Telegram notification here
-        if [[ -n "$telegram_bot_token" && -n "$telegram_chat_id" ]]; then
-            curl -s -X POST "https://api.telegram.org/bot$telegram_bot_token/sendMessage" \
-                -d "chat_id=$telegram_chat_id&text=Warning: Freqtrade is configured for X8, but updater is still using X7. Please update config.cfg." || \
-                log "Failed to send Telegram notification."
-        fi
+        # Telegram notification
+        send_telegram "Warning: Freqtrade is configured for X8, but updater is still using X7. Please update config.cfg."
     fi
 }
 
@@ -215,7 +211,8 @@ acquire_lock() {
         old_pid=$(cat "$LOCK_DIR/pid" 2>/dev/null || true)
     fi
 
-    if [[ -n "$old_pid" ]] && kill -0 "$old_pid" 2>/dev/null; then
+    # Verify the PID is really this updater (PIDs get reused after a reboot).
+    if [[ -n "$old_pid" ]] && ps -p "$old_pid" -o args= 2>/dev/null | grep -q checkupdates; then
         return 1
     fi
 
@@ -421,13 +418,8 @@ if [ "$UPDATE_AVAILABLE" = "true" ]; then
     else
         log "Cleanup of extracted and downloaded folders skipped."
     fi
-
     # Send Telegram notification
-    if [[ -n "$telegram_bot_token" && -n "$telegram_chat_id" ]]; then
-        curl -s -X POST "https://api.telegram.org/bot$telegram_bot_token/sendMessage" \
-            -d "chat_id=$telegram_chat_id&text=Updated to version $LATEST_VERSION of $GITHUB_REPO." || \
-            log "Failed to send Telegram notification."
-    fi
+    send_telegram "Updated to version $LATEST_VERSION of $GITHUB_REPO."
 
     # Restart Docker container if docker-compose.yml exists
     if [ -f "$SCRIPT_DIR/../docker-compose.yml" ]; then
