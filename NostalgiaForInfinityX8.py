@@ -70,7 +70,7 @@ class NostalgiaForInfinityX8(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v18.0.243"
+    return "v18.0.244"
 
   stoploss = -0.99
 
@@ -16539,6 +16539,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((rsi_3_4h_gt_65) | (stochrsi_k_4h_lt_80) | (stochrsi_k_1d_lt_80) | (roc_9_1d_lt_10))
             # 4h up move, 4h high & overbought
             & ((rsi_3_4h_lt_90) | (rsi_14_4h_lt_70) | (aroonu_14_4h_lt_100) | (stochrsi_k_4h_lt_90) | (roc_9_4h_lt_10))
+            # 1d down move, 1h & 4h high
+            & ((rsi_3_1d_gt_40) | (aroonu_14_1h_lt_80) | (aroonu_14_4h_lt_100))
             # 1d down move, 1h & 4h high, 1d overbought
             & ((rsi_3_1d_gt_40) | (stochrsi_k_1h_lt_80) | (stochrsi_k_4h_lt_80) | (roc_9_1d_lt_20))
             # 1d down move, 4h high, 1h & 4h overbought
