@@ -3398,8 +3398,7 @@ class NostalgiaForInfinityX8(IStrategy):
     kama_40 = ta_kama(close_np, timeperiod=40)
     kama_153 = ta_kama(close_np, timeperiod=153)
     # 28 d log return vs the coin's last 24 earlier non-overlapping 28 d returns (at least 12): top third = hot, held 5 days
-    # under 12 earlier returns (about a year of daily candles) the flag stays 0: young coins and short startup histories
-    # (bybit loads 199 daily candles) pass this filter
+    # under 12 earlier returns (about a year of daily candles) the flag stays 0: young coins pass this filter
     # fixed 24 (700 days of candles), not all history: backtest (800 days before start) and live (997+) see the same window
     log_close = np.log(np.where(close_np > 0, close_np, np.nan))
     log_ret_28 = np.full(len(log_close), np.nan)
