@@ -72,8 +72,8 @@ def _lead_key(chain: str) -> tuple[int, int]:
 
 
 def test_the_block_has_its_protection_chains():
-  # Then: all 183 chains are there.
-  assert len(_chains()) == 183
+  # Then: all 182 chains are there.
+  assert len(_chains()) == 182
 
 
 def test_the_chains_live_inside_one_protection_append():
@@ -163,19 +163,16 @@ def test_the_chains_sit_in_sorted_order():
     "(kama_153_1d > kama_40_1d)",
     "& (ha_fast_close_4h > ha_fast_open_4h)",
     "& (ha_fast_close_4h > kama_153_1d)",
+    # wide 5m Bollinger bands
+    "& (bbb_20_2_0 > 2.3)",
     # not more than 3 ATR over the slow KAMA
     "& (close_4h < (kama_153_1d + (3.0 * atr_14_4h)))",
-    # trending but not exhausted, on rising volume
-    "& (adx_13_4h > 10.0)",
-    "& (adx_13_4h < 55.0)",
+    # rising volume
     "& (vol_rel_27_4h > 1.0)",
     # fresh turn: the previous 4h fast heikin-ashi candle was red
     "& (np_shift(ha_fast_close_4h, 48) < np_shift(ha_fast_open_4h, 48))",
     # BTC not weak
     "& (btc_rsi_14_1h > 50.0)",
-    # not already 15% over the previous 20 candle low, not after a 24h pump
-    "& (close <= (dc_low_20 * 1.15))",
-    "& (roc_288 < 15.0)",
   ],
 )
 def test_the_logic_holds_every_trigger_condition(clause):
